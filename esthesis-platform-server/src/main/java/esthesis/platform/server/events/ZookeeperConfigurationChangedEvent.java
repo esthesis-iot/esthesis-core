@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.platform.common.config.AppConstants.Generic;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.context.ApplicationEvent;
 
@@ -14,6 +15,7 @@ import java.util.logging.Logger;
 
 @Data
 @Accessors(chain = true)
+@EqualsAndHashCode(callSuper=false)
 public class ZookeeperConfigurationChangedEvent extends ApplicationEvent {
 
   // JUL reference.

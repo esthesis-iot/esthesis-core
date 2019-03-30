@@ -2,9 +2,11 @@ package esthesis.platform.server.events;
 
 import esthesis.platform.common.config.AppConstants.Generic;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.context.ApplicationEvent;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class ZookeeperConnectivityEvent extends ApplicationEvent {
   private EVENT_TYPE eventType;
   private Long zookeeperServerId;

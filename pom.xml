@@ -4,91 +4,16 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>esthesis</groupId>
+    <artifactId>esthesis-bom</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
   <groupId>esthesis</groupId>
   <artifactId>esthesis-platform</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-
-  <properties>
-    <apt-maven-plugin.version>1.1.3</apt-maven-plugin.version>
-    <bouncycastle.version>1.60</bouncycastle.version>
-    <commons-collections4.version>4.2</commons-collections4.version>
-    <commons-io.version>2.6</commons-io.version>
-    <commons-text.version>1.3</commons-text.version>
-    <docker-client.version>8.15.1</docker-client.version>
-    <dockerfile-maven-plugin.version>1.4.7</dockerfile-maven-plugin.version>
-    <frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
-    <googleauth.version>1.1.5</googleauth.version>
-    <guava.version>23.6-jre</guava.version>
-    <jjwt.version>0.9.0</jjwt.version>
-    <jjwt.version>0.9.0</jjwt.version>
-    <jrebel-maven-plugin.version>1.1.8</jrebel-maven-plugin.version>
-    <lombok.version>1.18.4</lombok.version>
-    <mapstruct.version>1.3.0.Beta2</mapstruct.version>
-    <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
-    <mongobee.version>0.13</mongobee.version>
-    <mysql-connector-java.version>8.0.13</mysql-connector-java.version>
-    <node.version>v8.9.4</node.version>
-    <npm.version>6.1.0</npm.version>
-    <passay.version>1.3.1</passay.version>
-    <qlack.version>3.0.0-SNAPSHOT</qlack.version>
-    <querydsl.version>4.2.1</querydsl.version>
-    <slugify.version>2.2</slugify.version>
-    <spring.boot.version>2.1.2.RELEASE</spring.boot.version>
-    <squiggly-filter-jackson.version>1.3.11</squiggly-filter-jackson.version>
-    <zookeeper.version>3.4.11</zookeeper.version>
-    <zxing.version>3.3.1</zxing.version>
-  </properties>
-
-  <!-- Spring Boot versions configuration -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring.boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <!-- JRebel -->
-        <plugin>
-          <groupId>org.zeroturnaround</groupId>
-          <artifactId>jrebel-maven-plugin</artifactId>
-          <version>${jrebel-maven-plugin.version}</version>
-          <configuration>
-            <alwaysGenerate>true</alwaysGenerate>
-          </configuration>
-          <executions>
-            <execution>
-              <id>generate-rebel-xml</id>
-              <phase>process-resources</phase>
-              <goals>
-                <goal>generate</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <!-- Global configuration for the compiler to include Mapstruct, Lombok, and QueryDSL -->
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>${maven-compiler-plugin.version}</version>
-          <configuration>
-            <showDeprecation>true</showDeprecation>
-            <source>1.8</source>
-            <target>1.8</target>
-            <encoding>UTF-8</encoding>
-            <useIncrementalCompilation>false</useIncrementalCompilation>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
 
   <modules>
     <module>esthesis-platform-ui</module>
