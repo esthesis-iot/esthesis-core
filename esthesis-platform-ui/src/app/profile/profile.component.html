@@ -1,0 +1,12 @@
+<mat-card>
+  <mat-card-title>Your account</mat-card-title>
+  <mat-card-content>
+    <nav mat-tab-nav-bar>
+      <a mat-tab-link routerLink="details" routerLinkActive
+         #rlaDetails="routerLinkActive" [active]="rlaDetails.isActive">
+        Details
+      </a>
+    </nav>
+    <router-outlet></router-outlet>
+  </mat-card-content>
+</mat-card>

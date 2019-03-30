@@ -1,0 +1,51 @@
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {CaDto} from '../dto/ca-dto';
+import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {BaseComponent} from '../shared/base-component';
+import {QFormsService} from '@eurodyn/forms';
+import {CasService} from './cas.service';
+import * as _ from 'lodash';
+
+@Component({
+  selector: 'app-cas',
+  templateUrl: './cas.component.html',
+  styleUrls: ['./cas.component.scss']
+})
+export class CasComponent extends BaseComponent implements OnInit, AfterViewInit {
+  columns = ['cn', 'parent', 'issued', 'validity'];
+  datasource = new MatTableDataSource<CaDto>();
+
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  constructor(private caService: CasService, private qForms: QFormsService) {
+    super();
+  }
+
+  ngOnInit() {
+  }
+
+  ngAfterViewInit(): void {
+    // Initial fetch of data.
+    this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
+
+    // Each time the sorting changes, reset the page number.
+    this.sort.sortChange.subscribe(onNext => {
+      this.paginator.pageIndex = 0;
+      this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
+    });
+  }
+
+  fetchData(page: number, size: number, sort: string, sortDirection: string) {
+    this.caService.getAll(this.qForms.appendPagingToFilter(null, page, size, sort, sortDirection))
+    .subscribe(onNext => {
+      this.datasource.data = onNext.content;
+      this.paginator.length = onNext.totalElements;
+    });
+  }
+
+  changePage() {
+    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+  }
+
+}

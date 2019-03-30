@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: /db/changelog/qlack.fuse.settings.changelog.xml
+  - includeAll:
+      path: /db/changelog/changes

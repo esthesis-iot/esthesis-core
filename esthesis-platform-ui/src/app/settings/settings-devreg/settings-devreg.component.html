@@ -1,0 +1,46 @@
+<form novalidate [formGroup]="form" fxLayout="column">
+
+  <mat-radio-group formControlName="deviceRegistration">
+    <mat-card-title>
+      <mat-radio-button [value]="constants.SETTING.DEVICE_REGISTRATION._VAL.DISABLED">Disabled</mat-radio-button>
+    </mat-card-title>
+    <div>No devices can be registered with the platform.</div>
+
+    <mat-card-title>
+      <mat-radio-button [value]="constants.SETTING.DEVICE_REGISTRATION._VAL.OPEN">Open registration</mat-radio-button>
+    </mat-card-title>
+    <div>Allow any device to be registered with the platform. Use this mode in controlled environments where only
+      devices you trust can communicate with your platform. Once the device is registered it receives a
+      public/private
+      keypair and all future communication and device identification takes place using this keypair.
+    </div>
+
+    <mat-card-title>
+      <mat-radio-button [value]="constants.SETTING.DEVICE_REGISTRATION._VAL.OPEN_WITH_APPROVAL">Open registration with approval</mat-radio-button>
+    </mat-card-title>
+    <div>Similar to the the Open Registration, however a successful device registration needs to be manually approved
+      by an administrator of the system before the device is allowed to further communicate with the platform.
+    </div>
+
+    <mat-card-title>
+      <mat-radio-button [value]="constants.SETTING.DEVICE_REGISTRATION._VAL.ID">Preregistered ID</mat-radio-button>
+    </mat-card-title>
+    <div>Devices can register using a unique identification available to the device prior to the deployment.
+      This is a more secure way to initially connect your devices than 'Open registration', however it is still
+      based
+      on a shared secret rather than asymmetric encryption.
+      Once the device is registered it receives a public/private keypair and all future communication and device
+      identification takes place using this keypair.
+    </div>
+
+    <mat-card-title>
+      <mat-radio-button [value]="constants.SETTING.DEVICE_REGISTRATION._VAL.CRYPTO">Cryptographic keys</mat-radio-button>
+    </mat-card-title>
+    <div>Devices are registered using a private key available to the device prior to the deployment.</div>
+  </mat-radio-group>
+</form>
+
+<div class="xs-pt2">
+  <button mat-button routerLink="/provisioning/packages">CANCEL</button>
+  <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
+</div>

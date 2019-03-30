@@ -1,0 +1,47 @@
+<mat-card>
+  <mat-card-title>Infrastructure</mat-card-title>
+  <mat-card-content>
+    <mat-tab-group #tabs animationDuration="0ms">
+      <mat-tab label="Overview">
+        <ng-template mat-tab-label>
+          <mat-icon>graphic_eq</mat-icon> Overview
+        </ng-template>
+        <ng-template matTabContent>
+          <app-infrastructure-overview></app-infrastructure-overview>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Virtualization">
+        <ng-template mat-tab-label>
+          <mat-icon>cloud</mat-icon> Virtualization
+        </ng-template>
+        <ng-template matTabContent>
+          <app-infrastructure-virtualization></app-infrastructure-virtualization>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="MQTT">
+        <ng-template mat-tab-label>
+          <mat-icon>settings_remote</mat-icon> MQTT
+        </ng-template>
+        <ng-template matTabContent>
+          <app-infrastructure-mqtt></app-infrastructure-mqtt>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Redis">
+        <ng-template mat-tab-label>
+          <mat-icon>dns</mat-icon> Redis
+        </ng-template>
+        <ng-template matTabContent>
+          <app-infrastructure-redis></app-infrastructure-redis>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Zookeeper">
+        <ng-template mat-tab-label>
+          <mat-icon>device_hub</mat-icon> Zookeeper
+        </ng-template>
+        <ng-template matTabContent>
+          <app-infrastructure-zookeeper></app-infrastructure-zookeeper>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-content>
+</mat-card>

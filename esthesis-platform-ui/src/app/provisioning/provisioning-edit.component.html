@@ -1,0 +1,59 @@
+<mat-card>
+  <mat-card-title>Provisioning package</mat-card-title>
+  <mat-card-content>
+    <form novalidate [formGroup]="form">
+      <input type="hidden" formControlName="id">
+      <div fxLayout="column">
+        <div fxLayout="row">
+          <button mat-button (click)="file.click()">SELECT FILE</button>
+          <div fxFlex="row" fxLayoutAlign="start center">
+            <input type="file" (change)="selectFile($event)" #file hidden>
+            <div *ngIf="form.controls['file'].value">{{form.controls['file'].value.name}}</div>
+          </div>
+        </div>
+
+        <mat-checkbox formControlName="defaultIP"
+                      class="pad-t-1 pad-b-1">Default for initial provisioning</mat-checkbox>
+
+        <mat-form-field class="default-field-width">
+          <input matInput placeholder="Name" formControlName="name">
+        </mat-form-field>
+
+        <mat-form-field class="default-field-width">
+          <input matInput placeholder="Version" formControlName="version">
+        </mat-form-field>
+
+        <mat-form-field class="default-field-width">
+          <mat-select placeholder="Status" formControlName="status">
+            <mat-option value="true">Active</mat-option>
+            <mat-option value="false">Inactive</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="default-field-width">
+          <mat-select placeholder="Prerequisites" formControlName="prerequisites">
+            <!--<mat-option *ngFor="let type of packageTypes | keyvalue" [value]="type.key">-->
+            <!--{{type.value}}-->
+            <!--</mat-option>-->
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="default-field-width">
+          <textarea matInput placeholder="Description" formControlName="description"></textarea>
+        </mat-form-field>
+
+        <app-form-control-tags formControlName="tags" *ngIf="availableTags"
+                               [selectedTags]="form.controls['tags'].value"
+                               [availableTags]="availableTags">
+        </app-form-control-tags>
+      </div>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-button [disabled]="this.id == 0">DOWNLOAD</button>
+    <button mat-button routerLink="/provisioning">CANCEL</button>
+    <button mat-button color="accent" (click)="delete()" [disabled]="this.id == 0">DELETE</button>
+    <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
+  </mat-card-actions>
+</mat-card>

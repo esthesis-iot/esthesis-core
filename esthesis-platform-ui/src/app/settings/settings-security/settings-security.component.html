@@ -1,0 +1,29 @@
+<form novalidate [formGroup]="form" fxLayout="column" fxLayoutGap="0.5rem">
+  <div class="inline-header">Data communication encryption</div>
+  <div class="inline-subheader">
+    Set the default encryption mode supported by the platform when devices transmit data.
+  </div>
+  <mat-form-field class="default-field-width">
+    <mat-select placeholder="Data encryption mode" [formControlName]="constants.SETTING.DEVICE_DATA_ENCRYPTION_MODE._KEY">
+      <mat-option *ngFor="let o of constants.SETTING.DEVICE_DATA_ENCRYPTION_MODE._VAL | keyvalue" [value]="o.value">
+        {{ lookupByValue(constants.SETTING.DEVICE_DATA_ENCRYPTION_MODE._VAL, o.value) }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="inline-header">MQTT Superuser certificate</div>
+  <div class="inline-subheader">
+    Sselect the certificate to use as an MQTT Superuser account for certificate-based MQTT authentication/authorisation.
+  </div>
+  <mat-form-field class="default-field-width">
+    <mat-select placeholder="MQTT Superuser" [formControlName]="constants.SETTING.MQTT.SUPERUSER_CERTIFICATE._KEY">
+      <mat-option *ngFor="let o of certificates" [value]="o.id">
+        {{ o.cn }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+
+<div class="xs-pt2">
+  <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
+</div>

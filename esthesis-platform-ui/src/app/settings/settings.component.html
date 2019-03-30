@@ -1,0 +1,47 @@
+<mat-card>
+  <mat-card-title>Settings</mat-card-title>
+  <mat-card-content>
+    <mat-tab-group animationDuration="0ms">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>security</mat-icon> Security
+        </ng-template>
+        <ng-template matTabContent>
+          <app-settings-security></app-settings-security>
+        </ng-template>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>track_changes</mat-icon> Device registration
+        </ng-template>
+        <ng-template matTabContent>
+          <app-settings-devreg></app-settings-devreg>
+        </ng-template>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>router</mat-icon> Networking
+        </ng-template>
+        <ng-template matTabContent>
+          <app-settings-networking></app-settings-networking>
+        </ng-template>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>cloud</mat-icon> Platform
+        </ng-template>
+        <ng-template matTabContent>
+          <app-settings-platform></app-settings-platform>
+        </ng-template>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>domain</mat-icon> Operator
+        </ng-template>
+        <ng-template matTabContent>
+          <app-settings-operator></app-settings-operator>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-content>
+</mat-card>

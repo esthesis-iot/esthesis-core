@@ -1,0 +1,52 @@
+@import "../../../styles";
+
+.containers-toggle {
+  padding: 1rem 0 0 0;
+  mat-button-toggle-group {
+    border: 0;
+    .inline-header {
+      @extend .inline-header;
+      line-height: 1rem !important;
+      padding-top: 1rem;
+    }
+    .inline-subheader {
+      @extend .inline-subheader;
+      line-height: 1rem !important;
+    }
+    img {
+      padding: 0.5rem;
+      width: 200px;
+      height: 200px;
+    }
+
+    .mat-button-toggle {
+      border: 0 !important;
+    }
+
+    .mat-button-toggle-checked {
+      background-color: $e-color-toggle;
+    }
+  }
+}
+
+.console {
+  background-color: #000;
+  margin: 0 1rem;
+  max-height: 300px;
+  color: #05bc08;
+  font-family: monospace;
+  padding: 0.4rem;
+  line-height: 1.1rem;
+  overflow: scroll;
+  word-wrap: break-word;
+}
+.console-on {
+  visibility: visible;
+}
+.console-off {
+  visibility: hidden;
+}
+
+.error {
+  color: red;
+}

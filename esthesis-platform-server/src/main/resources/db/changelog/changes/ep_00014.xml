@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd" logicalFilePath="ep_00014.xml">
+    <changeSet author="European Dynamics" id="1550566170214-1">
+        <addPrimaryKey columnNames="mqtt_server_id, tag_id" constraintName="PRIMARY" tableName="mqtt_server_tags"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1550566170214-2">
+        <addPrimaryKey columnNames="provisioning_id, tag_id" constraintName="PRIMARY" tableName="provisioning_tags"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1550566170214-3">
+        <createIndex indexName="fk_virt_tagid_idx" tableName="virtualization_tags">
+            <column name="tag_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1550566170214-4">
+        <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="virtualization_tags" constraintName="fk_virt_tagid" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="tag" validate="true"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1550566170214-5">
+        <addForeignKeyConstraint baseColumnNames="virtualization_id" baseTableName="virtualization_tags" constraintName="fk_virt_virtid" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="virtualization" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

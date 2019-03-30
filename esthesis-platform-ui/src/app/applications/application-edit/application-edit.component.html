@@ -1,0 +1,25 @@
+<mat-card>
+  <mat-card-title>Application <span *ngIf="id !== 0">: {{id}}</span></mat-card-title>
+  <mat-card-content>
+    <mat-tab-group animationDuration="0ms">
+      <!-- Description Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>info</mat-icon> Description
+        </ng-template>
+        <ng-template matTabContent>
+          <app-application-edit-description [id]="id"></app-application-edit-description>
+        </ng-template>
+      </mat-tab>
+      <!-- Permissions Tab -->
+      <mat-tab *ngIf="id !== 0">
+        <ng-template mat-tab-label>
+          <mat-icon>vpn_key</mat-icon> Permissions
+        </ng-template>
+        <ng-template matTabContent>
+          <app-application-edit-permissions [id]="id"></app-application-edit-permissions>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-content>
+</mat-card>

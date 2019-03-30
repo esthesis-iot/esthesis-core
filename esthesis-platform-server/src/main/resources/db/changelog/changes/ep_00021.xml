@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd" logicalFilePath="ep_00021.xml">
+    <changeSet author="European Dynamics" id="1552979379814-1">
+        <addColumn tableName="mqtt_server">
+            <column name="ca_cert" type="LONGTEXT(2147483647)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1552979379814-2">
+        <addColumn tableName="mqtt_server">
+            <column name="client_cert" type="LONGTEXT(2147483647)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1552979379814-3">
+        <addColumn tableName="mqtt_server">
+            <column name="client_key" type="LONGTEXT(2147483647)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

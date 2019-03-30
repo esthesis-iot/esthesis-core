@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+  http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
+logicalFilePath="ep_0002.xml">
+  <changeSet id="ep_0002" author="European Dynamics">
+    <sql>
+      insert into user(id, created_by, created_on, version, email, fn, ln, password, salt, state)
+      VALUES (1, 0, now(), 0, 'admin@esthes.is', 'Admin', 'Esthesis', 'c657540d5b315892f950ff30e1394480', 'salt', 1);
+
+      INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`, `sensitivity`, `dbversion`,  `psswrd`)
+      VALUES ('248175bd-1b3e-44c9-b057-e8ede7a113a3', 'System', 'System', 'deviceRegistration', 'DISABLED', now(), 0, 0, 0);
+
+    </sql>
+  </changeSet>
+</databaseChangeLog>

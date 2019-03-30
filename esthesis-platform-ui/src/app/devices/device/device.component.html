@@ -1,0 +1,154 @@
+<mat-card>
+  <mat-card-title>Device {{id}}</mat-card-title>
+  <mat-card-content>
+    <div fxLayout="column" fxLayoutGap="1.5rem">
+      <div fxLayout="row" fxLayoutGap="5rem">
+        <div fxLayout="row" fxLayoutGap="1rem">
+          <div class="fields" fxLayout="column" fxLayoutGap="0.4rem">
+            <div>Serial number:</div>
+            <div>Owner:</div>
+            <div>UserId:</div>
+            <div>Model:</div>
+            <div>Firmware:</div>
+            <div>Registration date:</div>
+            <div>Status:</div>
+            <div>Connection:</div>
+          </div>
+          <div class="values" fxLayout="column" fxLayoutGap="0.4rem">
+            <div class="courier">{{id}}</div>
+            <div>John Doe</div>
+            <div>123</div>
+            <div>Develco F45-224</div>
+            <div>1.33.123
+              <mat-icon matTooltip="Update available">update</mat-icon>
+            </div>
+            <div>2018-01-03</div>
+            <div>Enabled</div>
+            <div>Connected</div>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutGap="1rem">
+          <div class="fields" fxLayout="column" fxLayoutGap="0.4rem">
+            <div>Last event:</div>
+            <div>Last event type:</div>
+            <div>Time since last event:</div>
+            <div>Uptime:</div>
+            <div>Clock:</div>
+            <div>Memory:</div>
+            <div>Filesystem:</div>
+            <div>Load:</div>
+          </div>
+          <div class="values" fxLayout="column" fxLayoutGap="0.4rem">
+            <div>2018-01-05 23:33:44</div>
+            <div>Measurement</div>
+            <div>12 seconds</div>
+            <div>9 days 4 hours 34 minutes</div>
+            <div>2018-01-05 23:33:44</div>
+            <div>12MB / 512MB</div>
+            <div>/ 32% 45MB, /part1 12% 11MB</div>
+            <div>0.93 0.33 0.22</div>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutGap="1rem">
+          <div class="fields" fxLayout="column" fxLayoutGap="0.4rem">
+            <div>Location:</div>
+          </div>
+          <div class="values" fxLayout="column" fxLayoutGap="0.4rem">
+            <div class="map-container" leaflet fxFlex="grow"
+                 [leafletOptions]="options"
+                 [leafletLayers]="layer1">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <mat-form-field class="chip-list">
+        <mat-chip-list #chipList>
+          <mat-chip
+            *ngFor="let group of groups"
+            [selectable]="true"
+            [removable]="true"
+            (removed)="remove(group)">
+            {{group}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input
+            placeholder="Groups"
+            #groupInput
+            [formControl]="groupCtrl"
+            [matAutocomplete]="auto"
+            [matChipInputFor]="chipList"
+            (matChipInputTokenEnd)="add($event)">
+          <!--
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            [matChipInputAddOnBlur]="addOnBlur"
+            -->
+        </mat-chip-list>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+          <mat-option *ngFor="let group of filteredGroups | async" [value]="group">
+            {{group}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-tab-group animationDuration="0ms">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>keyboard</mat-icon> Commands
+          </ng-template>
+          <ng-template matTabContent>
+            <app-device-commands></app-device-commands>
+          </ng-template>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>event_note</mat-icon> Events
+          </ng-template>
+          <ng-template matTabContent>
+            <app-device-events></app-device-events>
+          </ng-template>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>line_style</mat-icon> Logs
+          </ng-template>
+          <ng-template matTabContent>
+            <app-device-logs></app-device-logs>
+          </ng-template>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>satellite</mat-icon> Sensors
+          </ng-template>
+          <ng-template matTabContent>
+            <app-device-sensors></app-device-sensors>
+          </ng-template>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>bar_chart</mat-icon> Measurements
+          </ng-template>
+          <ng-template matTabContent>
+            <app-device-measurements></app-device-measurements>
+          </ng-template>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>devices</mat-icon> Remoting
+          </ng-template>
+          <ng-template matTabContent>
+            <app-device-remoting></app-device-remoting>
+          </ng-template>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>settings</mat-icon> Settings
+          </ng-template>
+          <ng-template matTabContent>
+            <app-device-settings></app-device-settings>
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </mat-card-content>
+</mat-card>

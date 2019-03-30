@@ -1,0 +1,17 @@
+<form novalidate [formGroup]="form" fxLayout="column" fxLayoutGap="0.5rem">
+  <div class="inline-header">MQTT ACL Endpoint status</div>
+  <div class="inline-subheader">
+    Set the status of the MQTT ACL REST endpoint
+  </div>
+  <mat-form-field class="default-field-width">
+    <mat-select placeholder="Status" [formControlName]="constants.SETTING.MQTT.ACL_ENDPOINT_STATUS._KEY">
+      <mat-option *ngFor="let o of constants.SETTING.MQTT.ACL_ENDPOINT_STATUS._VAL | keyvalue" [value]="o.value">
+        {{ lookupByValue(constants.SETTING.MQTT.ACL_ENDPOINT_STATUS._VAL, o.value) }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+
+<div class="xs-pt2">
+  <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
+</div>

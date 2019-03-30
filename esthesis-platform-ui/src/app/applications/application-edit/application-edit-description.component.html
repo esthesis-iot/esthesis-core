@@ -1,0 +1,27 @@
+<form novalidate [formGroup]="form">
+  <input type="hidden" formControlName="id">
+  <div fxLayout="column">
+    <mat-form-field class="default-field-width">
+      <input matInput placeholder="Name" formControlName="name">
+    </mat-form-field>
+    <div fxLayout="row">
+      <mat-form-field style="width:300px">
+        <input matInput placeholder="Security token" formControlName="token">
+      </mat-form-field>
+      <button mat-button (click)="generateToken()">GENERATE TOKEN</button>
+    </div>
+    <mat-form-field class="default-field-width">
+      <mat-select placeholder="Status" formControlName="status">
+        <mat-option *ngFor="let o of applicationStatus" [value]="o.value">
+          {{ o.key }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</form>
+
+<div>
+  <button mat-button routerLink="/applications">CANCEL</button>
+  <button mat-button color="accent" (click)="delete()" [disabled]="id === 0">DELETE</button>
+  <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
+</div>
