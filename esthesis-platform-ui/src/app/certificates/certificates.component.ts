@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {BaseComponent} from '../shared/base-component';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
-import {CaDto} from '../dto/ca-dto';
 import {QFormsService} from '@eurodyn/forms';
 import {CertificatesService} from './certificates.service';
 import {CertificateDto} from '../dto/certificate-dto';
@@ -14,12 +13,11 @@ import {CertificateDto} from '../dto/certificate-dto';
 export class CertificatesComponent extends BaseComponent implements OnInit, AfterViewInit {
   columns = ['cn', 'issued', 'validity', 'issuer'];
   datasource = new MatTableDataSource<CertificateDto>();
-  parentCAs: CaDto[];
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private certificateSerice: CertificatesService, private qForms: QFormsService) {
+  constructor(private certificateService: CertificatesService, private qForms: QFormsService) {
     super();
   }
 
@@ -38,7 +36,7 @@ export class CertificatesComponent extends BaseComponent implements OnInit, Afte
   }
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
-    this.certificateSerice.getAll(this.qForms.appendPagingToFilter(null, page, size, sort, sortDirection))
+    this.certificateService.getAll(this.qForms.appendPagingToFilter(null, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;
       this.paginator.length = onNext.totalElements;

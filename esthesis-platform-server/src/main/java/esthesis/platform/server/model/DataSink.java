@@ -3,7 +3,6 @@ package esthesis.platform.server.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,8 +13,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.Instant;
-
 @Data
 @Entity
 @DynamicUpdate
@@ -25,33 +22,20 @@ import java.time.Instant;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Certificate extends BaseEntity {
-
-  @NotNull
-  @Size(max = 256)
-  @Column(updatable = false)
-  private String cn;
-
-  @Column(updatable = false)
-  private Instant issued;
+public class DataSink extends BaseEntity {
 
   @NotNull
   @Column(updatable = false)
-  private Instant validity;
+  private String factoryClass;
 
   @NotNull
-  @Column(updatable = false)
-  private String certificate;
+  private String sinkType;
 
   @NotNull
-  @Column(updatable = false)
-  private String publicKey;
+  private boolean state;
+
+  private String configuration;
 
   @NotNull
-  @Column(updatable = false)
-  private String privateKey;
-
-  @NotNull
-  @Column(updatable = false)
-  private String issuer;
+  private String name;
 }

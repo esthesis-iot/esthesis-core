@@ -17,10 +17,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@EnableAsync
 @EnableCaching
 @EnableScheduling
 @SpringBootApplication
+@EnableAsync
 @EntityScan({"esthesis", "com.eurodyn.qlack"})
 @ComponentScan({"esthesis", "com.eurodyn.qlack"})
 @EnableJpaRepositories({"esthesis", "com.eurodyn.qlack"})

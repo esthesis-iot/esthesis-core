@@ -10,6 +10,7 @@ import esthesis.platform.server.events.ZookeeperConnectivityEvent.EVENT_TYPE;
 import esthesis.platform.server.mapper.ZookeeperServerMapper;
 import esthesis.platform.server.model.ZookeeperServer;
 import esthesis.platform.server.repository.ZookeeperServerRepository;
+import javax.annotation.PostConstruct;
 import org.apache.curator.framework.CuratorFramework;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
@@ -77,6 +78,7 @@ public class ZookeeperService extends BaseService<ZookeeperServerDTO, ZookeeperS
   }
 
   @Async
+  @PostConstruct
   public void connect() {
     final Optional<ZookeeperServerDTO> zookeeperServers = findActive().stream().findAny();
     if (!zookeeperServers.isPresent()) {

@@ -29,17 +29,8 @@
   <dependencies>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>esthesis-platform-common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <!--<dependency>-->
-      <!--<groupId>org.projectlombok</groupId>-->
-      <!--<artifactId>lombok</artifactId>-->
-      <!--<scope>compile</scope>-->
-    <!--</dependency>-->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
+      <artifactId>esthesis-extension</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
