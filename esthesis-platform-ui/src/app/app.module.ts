@@ -92,36 +92,10 @@ export function getJwtToken(): string {
   providers: [
     CookieService,
     CanActivateGuard,
-    // {
-    //   provide: DateAdapter,
-    //   useClass: MomentDateAdapter,
-    //   deps: [MAT_DATE_LOCALE]
-    // },
-    // {
-    //   provide: MAT_DATE_FORMATS,
-    //   useValue: {
-    //     parse: {
-    //       dateInput: 'LL',
-    //     },
-    //     display: {
-    //       dateInput: 'YYYY-MM-DD',
-    //       monthYearLabel: 'MMM YYYY',
-    //       dateA11yLabel: 'LL',
-    //       monthYearA11yLabel: 'MMMM YYYY',
-    //     },
-    //   }
-    // },
     RxStompService
   ],
-  // schemas: [NO_ERRORS_SCHEMA],
   bootstrap: [AppComponent],
   entryComponents: [ContainerDeployComponent, OkCancelModalComponent],
 })
 export class AppModule {
-  // constructor(private injector: Injector) {
-  //   // Create a global Service Injector.
-  //   // TODO justify why this is needed.
-  //   ServiceLocator.injector = this.injector;
-  // }
-
 }
