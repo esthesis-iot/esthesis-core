@@ -62,10 +62,4 @@ export class TagsComponent implements OnInit, AfterViewInit {
   changePage() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
   }
-
-  navigate(target) {
-    let to: any[] = [];
-    to.push(target);
-    this.router.navigate(to);
-  }
 }

@@ -19,7 +19,8 @@
           <td mat-cell *matCellDef="let element">{{element.name}}</td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let element; columns: displayedColumns;" (click)="navigate(element.id)"></tr>
+        <tr mat-row *matRowDef="let element; columns: displayedColumns;"
+            [routerLink]="element.id"></tr>
       </table>
       <mat-paginator #paginator (page)="changePage()"
                      [pageSize]="10"
