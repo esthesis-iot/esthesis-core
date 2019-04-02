@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-
 import {AuditRoutingModule} from './audit-routing.module';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {
@@ -17,11 +16,11 @@ import {
   MatSortModule,
   MatTableModule
 } from '@angular/material';
-import {QFormsModule} from '@eurodyn/forms';
 import {ReactiveFormsModule} from '@angular/forms';
 import {AuditComponent} from './audit.component';
-import {MomentDateAdapter} from '@angular/material-moment-adapter';
+import {MatMomentDateModule, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {MomentModule} from 'ngx-moment';
+import {QFormsModule} from '@eurodyn/forms';
 
 @NgModule({
   declarations: [
@@ -43,7 +42,8 @@ import {MomentModule} from 'ngx-moment';
     ReactiveFormsModule,
     MatSortModule,
     MatIconModule,
-    MomentModule
+    MomentModule,
+    MatMomentDateModule
   ],
   providers: [
     {

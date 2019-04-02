@@ -5,7 +5,6 @@ import {Observable} from 'rxjs';
 import {QFormsModule, QPageableReply} from '@eurodyn/forms';
 import {AppConstants} from '../app.constants';
 import {AuditDto} from '../dto/audit-dto';
-import {KeyValueDto} from '../dto/key-value-dto';
 import {UserDto} from '../dto/user-dto';
 
 /**
@@ -22,8 +21,7 @@ export class AuditService {
   }
 
   // Returns the audit logs.
-  getLogs(queryString: string):
-    Observable<QPageableReply<AuditDto>> {
+  getLogs(queryString: string): Observable<QPageableReply<AuditDto>> {
     return this.http.get<QPageableReply<AuditDto>>(AppConstants.API_ROOT + `/audit?${queryString}`);
   }
 

@@ -37,6 +37,7 @@ import {OkCancelModalComponent} from './shared/display/ok-cancel-modal/ok-cancel
 import {ContainersModule} from './shared/containers/containers.module';
 import {DisplayModule} from './shared/display/display.module';
 import {NgProgressHttpModule} from '@ngx-progressbar/http';
+import {QFormsModule} from '@eurodyn/forms';
 
 export function getJwtToken(): string {
   return localStorage.getItem(AppConstants.JWT_STORAGE_NAME);
@@ -92,7 +93,8 @@ export function getJwtToken(): string {
   providers: [
     CookieService,
     CanActivateGuard,
-    RxStompService
+    RxStompService,
+    QFormsModule,
   ],
   bootstrap: [AppComponent],
   entryComponents: [ContainerDeployComponent, OkCancelModalComponent],

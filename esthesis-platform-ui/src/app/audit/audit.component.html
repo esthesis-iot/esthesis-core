@@ -68,7 +68,11 @@
         </ng-container>
         <ng-container matColumnDef="user">
           <mat-header-cell *matHeaderCellDef mat-sort-header> User</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.user.fn}} {{element.user.ln}}</mat-cell>
+          <mat-cell *matCellDef="let element">
+            <div *ngIf="element.user">
+              {{element.user.fn}} {{element.user.ln}}
+            </div>
+          </mat-cell>
         </ng-container>
       </table>
       <mat-paginator #paginator (page)="changePage()"
