@@ -7,25 +7,27 @@ import esthesis.platform.datasink.influxdb.sink.InfluxDBMetadataSink;
 import esthesis.platform.datasink.influxdb.sink.InfluxDBTelemetrySink;
 
 public class InfluxDBSinkFactory implements EsthesisDataSinkFactory {
+  private final String DATA_SINK_NAME = "InfluxDB";
+  private String configuration;
 
   @Override
   public EsthesisMetadataSink getMetadataSink() {
-    return new InfluxDBMetadataSink();
+    return new InfluxDBMetadataSink(configuration);
   }
 
   @Override
   public EsthesisTelemetrySink getTelemetrySink() {
-    return new InfluxDBTelemetrySink();
+    return new InfluxDBTelemetrySink(configuration);
   }
 
   @Override
   public String getFriendlyName() {
-    return "InfluxDB data sink";
+    return DATA_SINK_NAME;
   }
 
   @Override
   public void setConfiguration(String configuration) {
-    System.out.println("Got config: " + configuration);
+    this.configuration = configuration;
   }
 
   @Override
@@ -36,11 +38,6 @@ public class InfluxDBSinkFactory implements EsthesisDataSinkFactory {
   @Override
   public boolean supportsTelemetry() {
     return true;
-  }
-
-  @Override
-  public String getVersion() {
-    return "1.0.0-SNAPSHOT";
   }
 
   @Override

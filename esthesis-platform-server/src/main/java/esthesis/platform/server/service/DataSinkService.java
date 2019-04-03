@@ -29,11 +29,11 @@ public class DataSinkService extends BaseService<DataSinkDTO, DataSink> {
   }
 
   public List<DataSinkDTO> findActiveMetadataSinks() {
-    return dataSinkMapper.map(dataSinkRepository.findAllByStateIsTrueAndMetadataIsTrue());
+    return dataSinkMapper.map(dataSinkRepository.findAllByStateAndMetadata(true, true));
   }
 
   public List<DataSinkDTO> findActiveTelemetrySinks() {
-    return dataSinkMapper.map(dataSinkRepository.findAllByStateIsTrueAndMetadataIsTrue());
+    return dataSinkMapper.map(dataSinkRepository.findAllByStateAndTelemetry(true, true));
   }
 
   public List<DataSinkFactoryDTO> findAvailableDataSinkFactories() {
