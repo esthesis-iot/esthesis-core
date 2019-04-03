@@ -1,8 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {BaseComponent} from '../shared/base-component';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
-import {CertificateDto} from '../dto/certificate-dto';
-import {CertificatesService} from '../certificates/certificates.service';
 import {QFormsService} from '@eurodyn/forms';
 import {DataSinkDto} from '../dto/data-sink-dto';
 import {DataSinkService} from './data-sink.service';

@@ -1,50 +1,107 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {Component, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material';
 import {QFormsService} from '@eurodyn/forms';
 import {BaseComponent} from '../shared/base-component';
-import {DataSinkDto} from '../dto/data-sink-dto';
 import {DataSinkService} from './data-sink.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {UtilityService} from '../shared/utility.service';
+import {OkCancelModalComponent} from '../shared/display/ok-cancel-modal/ok-cancel-modal.component';
+import {DataSinkFactoryDto} from '../dto/data-sink-factory-dto';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-datasinks-edit',
   templateUrl: './datasinks-edit.component.html',
   styleUrls: ['./datasinks-edit.component.scss']
 })
-export class DatasinksEditComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['name'];
-  datasource = new MatTableDataSource<DataSinkDto>();
+export class DatasinksEditComponent extends BaseComponent implements OnInit {
+  form: FormGroup;
+  id: number;
+  availableDataSinkFactories: DataSinkFactoryDto[];
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
-  constructor(private dataSinkService: DataSinkService, private qForms: QFormsService) {
+  constructor(private fb: FormBuilder, private dataSinksService: DataSinkService, private qForms: QFormsService,
+              private route: ActivatedRoute, private router: Router,
+              private utilityService: UtilityService, private dialog: MatDialog) {
     super();
   }
 
   ngOnInit() {
+    // Check if an edit is performed and fetch data.
+    this.id = Number(this.route.snapshot.paramMap.get('id'));
+
+    // Setup the form.
+    this.form = this.fb.group({
+      id: [''],
+      name: ['', [Validators.maxLength(256)]],
+      factoryClass: ['', [Validators.maxLength(1024)]],
+      metadata: ['', [Validators.maxLength(5)]],
+      telemetry: ['', [Validators.maxLength(5)]],
+      state: ['', [Validators.maxLength(5)]],
+      configuration: ['', [Validators.maxLength(65535)]],
+    });
+
+    // Fill dropdowns.
+    this.dataSinksService.getAvailableDataSinkFactories().subscribe(onNext => {
+      this.availableDataSinkFactories = onNext;
+    })
   }
 
-  ngAfterViewInit(): void {
-    // Initial fetch of data.
-    this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
-
-    // Each time the sorting changes, reset the page number.
-    this.sort.sortChange.subscribe(onNext => {
-      this.paginator.pageIndex = 0;
-      this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
+  save() {
+    this.dataSinksService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
+      this.utilityService.popupSuccess(this.form.value.id ? 'Data sink was successfully saved.'
+        : 'Data sink was successfully created.');
+      this.router.navigate(['datasinks']);
     });
   }
 
-  fetchData(page: number, size: number, sort: string, sortDirection: string) {
-    this.dataSinkService.getAll(this.qForms.appendPagingToFilter(null, page, size, sort, sortDirection))
-    .subscribe(onNext => {
-      this.datasource.data = onNext.content;
-      this.paginator.length = onNext.totalElements;
+  delete() {
+    this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: 'Delete data sink',
+        question: 'Do you really want to delete this data sink?',
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.dataSinksService.delete(this.id).subscribe(onNext => {
+          this.utilityService.popupSuccess('Data sink successfully deleted.');
+          this.router.navigate(['datasinks']);
+        });
+      }
     });
   }
 
-  changePage() {
-    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
-  }
+  updateHandlers($event) {
+    const factory = _.find<DataSinkFactoryDto>(this.availableDataSinkFactories, {factoryClass: $event.source.value});
+    if (factory.supportsMetadata) {
+      this.form.controls['metadata'].enable();
+    } else {
+      this.form.patchValue({
+        metadata: false
+      });
+      this.form.controls['metadata'].disable();
+    }
 
+    if (factory.supportsTelemetry) {
+      this.form.controls['telemetry'].enable();
+    } else {
+      this.form.patchValue({
+        telemetry: false
+      });
+      this.form.controls['telemetry'].disable();
+    }
+  }
+  
+  template() {
+    const factory = _.find<DataSinkFactoryDto>(this.availableDataSinkFactories, {factoryClass: this.form.controls['factoryClass'].value});
+    console.log(factory);
+    if (factory) {
+      this.form.patchValue({
+        configuration: factory.configurationTemplate
+      })
+    }
+  }
 }

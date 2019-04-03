@@ -28,5 +28,26 @@ public class InfluxDBSinkFactory implements EsthesisDataSinkFactory {
     System.out.println("Got config: " + configuration);
   }
 
+  @Override
+  public boolean supportsMetadata() {
+    return true;
+  }
 
+  @Override
+  public boolean supportsTelemetry() {
+    return true;
+  }
+
+  @Override
+  public String getVersion() {
+    return "1.0.0-SNAPSHOT";
+  }
+
+  @Override
+  public String getConfigurationTemplate() {
+    return
+        "username: \n" +
+        "password: \n" +
+        "url: ";
+  }
 }

@@ -1,6 +1,5 @@
 package esthesis.platform.server.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -25,17 +24,16 @@ import org.hibernate.annotations.DynamicUpdate;
 public class DataSink extends BaseEntity {
 
   @NotNull
-  @Column(updatable = false)
+  private String name;
+
+  @NotNull
   private String factoryClass;
 
-  @NotNull
-  private String sinkType;
+  private boolean metadata;
 
-  @NotNull
+  private boolean telemetry;
+
   private boolean state;
 
   private String configuration;
-
-  @NotNull
-  private String name;
 }

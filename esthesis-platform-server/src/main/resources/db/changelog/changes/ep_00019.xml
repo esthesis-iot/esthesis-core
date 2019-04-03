@@ -6,7 +6,7 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
   http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
 logicalFilePath="ep_0019.xml">
-  <changeSet id="ep_0019" author="European Dynamics">
+  <changeSet id="ep_0019" author="European Dynamics" labels="ignorable">
     <sql>
       INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`, `sensitivity`, `dbversion`,  `psswrd`)
       VALUES ('9a1cfe77-af82-49e6-8b15-828da6bfd534', 'System', 'System', 'mqttAclEndpointStatus', '0', now(), 0, 0, 0);

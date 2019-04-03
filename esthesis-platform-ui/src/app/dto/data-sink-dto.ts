@@ -1,8 +1,9 @@
 export class DataSinkDto {
   id: number;
   factoryClass: string;
-  sinkType: string;
+  name: string;
+  metadata: boolean;
+  telemetry: boolean;
   state: boolean;
   configuration: string;
-  name: string;
 }

@@ -8,6 +8,8 @@ import java.util.List;
 @Repository
 public interface DataSinkRepository extends BaseRepository<DataSink> {
 
-  List<DataSink> findAllByStateIsTrueAndSinkType(String sinkType);
+  List<DataSink> findAllByStateIsTrueAndMetadataIsTrue();
+
+  List<DataSink> findAllByStateIsTrueAndTelemetryIsTrue();
 
 }

@@ -1,4 +1,4 @@
-package esthesis.platform.server.sinks;
+package esthesis.platform.server.datasinks;
 
 import esthesis.extension.platform.event.MQTTDataEvent;
 import esthesis.extension.platform.event.MQTTMetadataEvent;
@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 import java.util.logging.Logger;
 
 @Component
-public class SinkDistributor implements ApplicationListener<MQTTDataEvent> {
+public class DataSinkDistributor implements ApplicationListener<MQTTDataEvent> {
 
   // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(SinkDistributor.class.getName());
-  private final SinkMessenger sinkMessenger;
+  private static final Logger LOGGER = Logger.getLogger(DataSinkDistributor.class.getName());
+  private final DataSinkMessenger sinkMessenger;
 
-  public SinkDistributor(SinkMessenger sinkMessenger) {
+  public DataSinkDistributor(DataSinkMessenger sinkMessenger) {
     this.sinkMessenger = sinkMessenger;
   }
 

@@ -1,9 +1,11 @@
 package esthesis.platform.server.service;
 
-import esthesis.extension.config.AppConstants;
 import esthesis.platform.server.dto.DataSinkDTO;
+import esthesis.platform.server.dto.DataSinkFactoryDTO;
+import esthesis.platform.server.mapper.DataSinkMapper;
 import esthesis.platform.server.model.DataSink;
 import esthesis.platform.server.repository.DataSinkRepository;
+import esthesis.platform.server.datasinks.DataSinkScanner;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -16,17 +18,26 @@ import java.util.List;
 public class DataSinkService extends BaseService<DataSinkDTO, DataSink> {
 
   private final DataSinkRepository dataSinkRepository;
+  private final DataSinkMapper dataSinkMapper;
+  private final DataSinkScanner sinkScanner;
 
-  public DataSinkService(DataSinkRepository dataSinkRepository) {
+  public DataSinkService(DataSinkRepository dataSinkRepository,
+      DataSinkMapper dataSinkMapper, DataSinkScanner sinkScanner) {
     this.dataSinkRepository = dataSinkRepository;
+    this.dataSinkMapper = dataSinkMapper;
+    this.sinkScanner = sinkScanner;
   }
 
-  public List<DataSink> findActiveMetadataSinks() {
-    return dataSinkRepository.findAllByStateIsTrueAndSinkType(AppConstants.DataSink.TYPE_METADATA);
+  public List<DataSinkDTO> findActiveMetadataSinks() {
+    return dataSinkMapper.map(dataSinkRepository.findAllByStateIsTrueAndMetadataIsTrue());
   }
 
-  public List<DataSink> findActiveTelemetrySinks() {
-    return dataSinkRepository.findAllByStateIsTrueAndSinkType(AppConstants.DataSink.TYPE_TELEMETRY);
+  public List<DataSinkDTO> findActiveTelemetrySinks() {
+    return dataSinkMapper.map(dataSinkRepository.findAllByStateIsTrueAndMetadataIsTrue());
+  }
+
+  public List<DataSinkFactoryDTO> findAvailableDataSinkFactories() {
+    return sinkScanner.getAvailableDataSinkFactories();
   }
 
 }

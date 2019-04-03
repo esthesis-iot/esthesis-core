@@ -4,13 +4,17 @@ import {Observable} from 'rxjs';
 import {CrudService} from '../services/crud.service';
 import {QPageableReply} from '@eurodyn/forms';
 import {DataSinkDto} from '../dto/data-sink-dto';
+import {AppConstants} from '../app.constants';
+import {DataSinkFactoryDto} from '../dto/data-sink-factory-dto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataSinkService extends CrudService<DataSinkDto> {
-  constructor(http: HttpClient) {
-    super(http, 'data-sink');
+  private static endpoint = "data-sinks";
+
+  constructor(http: HttpClient, localHttp: HttpClient) {
+    super(http, DataSinkService.endpoint);
   }
 
   getAll(params?: string): Observable<QPageableReply<DataSinkDto>> {
@@ -19,5 +23,9 @@ export class DataSinkService extends CrudService<DataSinkDto> {
     } else {
       return super.getAll(params);
     }
+  }
+
+  getAvailableDataSinkFactories(): Observable<DataSinkFactoryDto[]> {
+    return this.http.get<DataSinkFactoryDto[]>(`${AppConstants.API_ROOT}/${DataSinkService.endpoint}/factories`);
   }
 }

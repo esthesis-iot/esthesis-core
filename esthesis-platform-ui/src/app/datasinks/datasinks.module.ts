@@ -6,15 +6,15 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import {
   MAT_DATE_FORMATS,
   MatButtonModule,
-  MatCardModule,
+  MatCardModule, MatCheckboxModule,
   MatDatepickerModule,
-  MatFormFieldModule,
+  MatFormFieldModule, MatIconModule,
   MatInputModule,
   MatMenuModule,
   MatPaginatorModule,
-  MatSelectModule,
+  MatSelectModule, MatSlideToggleModule,
   MatSortModule,
-  MatTableModule
+  MatTableModule, MatTooltipModule
 } from '@angular/material';
 import {QFormsModule} from '@eurodyn/forms';
 import {ReactiveFormsModule} from '@angular/forms';
@@ -41,7 +41,11 @@ import {DatasinksRoutingModule} from './datasinks-routing.module';
     ReactiveFormsModule,
     MatSortModule,
     DisplayModule,
-    MatMomentDateModule
+    MatMomentDateModule,
+    MatCheckboxModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatSlideToggleModule
   ],
   providers: [
     {

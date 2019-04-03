@@ -6,7 +6,7 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
   http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
 logicalFilePath="ep_0002.xml">
-  <changeSet id="ep_0002" author="European Dynamics">
+  <changeSet id="ep_0002" author="European Dynamics" labels="ignorable">
     <sql>
       insert into user(id, created_by, created_on, version, email, fn, ln, password, salt, state)
       VALUES (1, 0, now(), 0, 'admin@esthes.is', 'Admin', 'Esthesis', 'c657540d5b315892f950ff30e1394480', 'salt', 1);

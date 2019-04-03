@@ -16,16 +16,17 @@ import lombok.experimental.Accessors;
 public class DataSinkDTO extends BaseDTO {
 
   @NotNull
+  private String name;
+
+  @NotNull
   private String factoryClass;
 
-  @NotNull
-  private String sinkType;
+  private boolean metadata;
 
-  @NotNull
+  private boolean telemetry;
+
   private boolean state;
 
   private String configuration;
 
-  @NotNull
-  private String name;
 }

@@ -1,9 +1,9 @@
-package esthesis.platform.server.sinks;
+package esthesis.platform.server.datasinks;
 
 import esthesis.extension.platform.sink.EsthesisDataSinkFactory;
 import esthesis.extension.platform.sink.EsthesisMetadataSink;
 import esthesis.extension.platform.sink.EsthesisTelemetrySink;
-import esthesis.platform.server.service.DataSinkService;
+import esthesis.platform.server.dto.DataSinkFactoryDTO;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
 import io.github.classgraph.ScanResult;
@@ -11,27 +11,24 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
-public class SinkScanner {
+public class DataSinkScanner {
   // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(SinkScanner.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(DataSinkScanner.class.getName());
   private static final String DATA_SINK_FACTORY_PACKAGE = "esthesis.extension.platform.sink.EsthesisDataSinkFactory";
-  // The list of available and active metadata data sinks.
-  private final Map<String, String> availableMetadataSinks = new HashMap<>();
+  // List of available data sink factories.
+  private final List<DataSinkFactoryDTO> availableDataSinkFactories = new ArrayList<>();
+  // List of available and active metadata data sinks.
   private final Map<String, EsthesisMetadataSink> activeMetadataSinks = new HashMap<>();
-  // The list of available telemetry data sinks.
-  private final Map<String, String> availableTelemetrySinks = new HashMap<>();
+  // List of available telemetry data sinks.
   private final Map<String, EsthesisTelemetrySink> activeTelemetrySinks = new HashMap<>();
-  private final DataSinkService dataSinkService;
-
-  public SinkScanner(DataSinkService dataSinkService) {
-    this.dataSinkService = dataSinkService;
-  }
 
   @PostConstruct
   public void start() {
@@ -42,12 +39,14 @@ public class SinkScanner {
         try {
           final EsthesisDataSinkFactory esthesisDataSinkFactory = classInfo.loadClass(EsthesisDataSinkFactory.class)
               .newInstance();
-          if (esthesisDataSinkFactory.getMetadataSink() != null) {
-            availableMetadataSinks.put(classInfo.getName(), esthesisDataSinkFactory.getFriendlyName());
-          }
-          if (esthesisDataSinkFactory.getTelemetrySink() != null) {
-            availableTelemetrySinks.put(classInfo.getName(), esthesisDataSinkFactory.getFriendlyName());
-          }
+          availableDataSinkFactories.add(DataSinkFactoryDTO.builder()
+              .factoryClass(classInfo.getName())
+              .friendlyName(esthesisDataSinkFactory.getFriendlyName())
+              .supportsMetadata(esthesisDataSinkFactory.supportsMetadata())
+              .supportsTelemetry(esthesisDataSinkFactory.supportsTelemetry())
+              .version(esthesisDataSinkFactory.getVersion())
+              .configurationTemplate(esthesisDataSinkFactory.getConfigurationTemplate())
+              .build());
           LOGGER.log(Level.FINE, "Found data sink implementation ''{0}'' [class: {1}].",
               new Object[]{esthesisDataSinkFactory.getFriendlyName(), classInfo.getName()});
         } catch (InstantiationException | IllegalAccessException e) {
@@ -60,12 +59,8 @@ public class SinkScanner {
     updateActiveSinks();
   }
 
-  public Map<String, String> getAvailableMetadataSinks() {
-    return availableMetadataSinks;
-  }
-
-  public Map<String, String> getAvailableTelemetrySinks() {
-    return availableTelemetrySinks;
+  public List<DataSinkFactoryDTO> getAvailableDataSinkFactories() {
+    return availableDataSinkFactories;
   }
 
   public void updateActiveSinks() {
