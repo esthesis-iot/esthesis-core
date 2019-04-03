@@ -40,4 +40,8 @@ public class DataSinkService extends BaseService<DataSinkDTO, DataSink> {
     return sinkScanner.getAvailableDataSinkFactories();
   }
 
+  @Override
+  public DataSinkDTO save(DataSinkDTO dto) {
+    return super.save(dto);
+  }
 }

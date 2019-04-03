@@ -16,15 +16,21 @@
         </ng-container>
         <ng-container matColumnDef="state">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> State</th>
-          <td mat-cell *matCellDef="let element"> {{element.state}}</td>
+          <td mat-cell *matCellDef="let element">
+            <app-boolean-checkbox [value]="element.state"></app-boolean-checkbox>
+          </td>
         </ng-container>
         <ng-container matColumnDef="metadata">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Metadata handler</th>
-          <td mat-cell *matCellDef="let element"> {{element.metadata}}</td>
+          <td mat-cell *matCellDef="let element">
+            <app-boolean-checkbox [value]="element.metadata"></app-boolean-checkbox>
+          </td>
         </ng-container>
         <ng-container matColumnDef="telemetry">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Telemetry handler</th>
-          <td mat-cell *matCellDef="let element"> {{element.telemetry}}</td>
+          <td mat-cell *matCellDef="let element">
+            <app-boolean-checkbox [value]="element.telemetry"></app-boolean-checkbox>
+          </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="columns"></tr>
         <tr mat-row *matRowDef="let row; columns: columns; let element;" [routerLink]="element.id"></tr>
