@@ -41,6 +41,13 @@ export class DatasinksEditComponent extends BaseComponent implements OnInit {
       configuration: ['', [Validators.maxLength(65535)]],
     });
 
+    // Fill-in the form with data if editing an existing item.
+    if (this.id && this.id !== 0) {
+      this.dataSinksService.get(this.id).subscribe(onNext => {
+        this.form.patchValue(onNext);
+      });
+    }
+
     // Fill dropdowns.
     this.dataSinksService.getAvailableDataSinkFactories().subscribe(onNext => {
       this.availableDataSinkFactories = onNext;

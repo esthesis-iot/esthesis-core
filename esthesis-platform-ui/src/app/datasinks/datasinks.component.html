@@ -10,6 +10,22 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Name</th>
           <td mat-cell *matCellDef="let element">{{element.name}}</td>
         </ng-container>
+        <ng-container matColumnDef="createdOn">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Created on</th>
+          <td mat-cell *matCellDef="let element"> {{element.createdOn | date: 'yyyy-MM-dd HH:mm'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="state">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> State</th>
+          <td mat-cell *matCellDef="let element"> {{element.state}}</td>
+        </ng-container>
+        <ng-container matColumnDef="metadata">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Metadata handler</th>
+          <td mat-cell *matCellDef="let element"> {{element.metadata}}</td>
+        </ng-container>
+        <ng-container matColumnDef="telemetry">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Telemetry handler</th>
+          <td mat-cell *matCellDef="let element"> {{element.telemetry}}</td>
+        </ng-container>
         <tr mat-header-row *matHeaderRowDef="columns"></tr>
         <tr mat-row *matRowDef="let row; columns: columns; let element;" [routerLink]="element.id"></tr>
       </table>

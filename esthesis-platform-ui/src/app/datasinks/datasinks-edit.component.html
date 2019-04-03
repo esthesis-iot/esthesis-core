@@ -3,7 +3,7 @@
   <mat-card-content>
     <form novalidate [formGroup]="form">
       <div fxLayout="column">
-        <mat-slide-toggle formControlName="state">
+        <mat-slide-toggle formControlName="state" color="primary">
           {{this.form.controls['state'].value ? 'Enabled' : 'Disabled'}}
         </mat-slide-toggle>
         <mat-form-field class="default-field-width xs-mt1">
@@ -17,8 +17,8 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-checkbox formControlName="metadata" class="xs-mt1">Use for metadata</mat-checkbox>
-        <mat-checkbox formControlName="telemetry" class="xs-mt2">Use for telemetry</mat-checkbox>
+        <mat-checkbox formControlName="metadata" class="xs-mt1" color="primary">Metadata handler</mat-checkbox>
+        <mat-checkbox formControlName="telemetry" class="xs-mt2" color="primary">Telemetry handler</mat-checkbox>
         <mat-form-field class="example-full-width" class="xs-mt2">
           <textarea matInput placeholder="Configuration" formControlName="configuration"
                     matTextareaAutosize class="configuration"></textarea>

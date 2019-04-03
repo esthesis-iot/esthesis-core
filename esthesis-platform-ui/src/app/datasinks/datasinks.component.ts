@@ -11,7 +11,7 @@ import {DataSinkService} from './data-sink.service';
   styleUrls: ['./datasinks.component.scss']
 })
 export class DatasinksComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['name'];
+  columns = ['name', 'createdOn', 'state', 'metadata', 'telemetry'];
   datasource = new MatTableDataSource<DataSinkDto>();
 
   @ViewChild(MatSort) sort: MatSort;
