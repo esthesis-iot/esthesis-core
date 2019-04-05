@@ -45,6 +45,11 @@ public class InfluxDBSinkFactory implements EsthesisDataSinkFactory {
     return
         "username: \n" +
         "password: \n" +
-        "url: ";
+        "databaseName: \n" +
+        "databaseUrl: \n" +
+        "retentionPolicyName: \n" +
+        "retentionPolicyDuration: \n" +
+        "shardDuration: \n" +
+        "replicationFactor:";
   }
 }

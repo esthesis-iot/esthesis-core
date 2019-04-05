@@ -75,6 +75,7 @@ public class AppConstants {
   public class Event {
     public static final String MQTT_CONFIGURATION_EVENT_PATH = "/esthesis/platform/configuration/mqtt";
     public static final String ZOOKEEPER_CONFIGURATION_EVENT_PATH = "/esthesis/platform/configuration/zookeeper";
+    public static final String DATA_SINK_CONFIGURATION_EVENT_PATH = "/esthesis/platform/configuration/datasink";
   }
 
   public class Jwt {

@@ -20,11 +20,15 @@ public class ZookeeperServerDTO extends BaseDTO {
   public String ipAddress;
 
   @NotNull
-  public int state;
+  public boolean state;
 
   private String caCert;
   private String clientCert;
   private String clientKey;
   private String username;
   private String password;
+
+  public boolean getState() {
+    return state;
+  }
 }

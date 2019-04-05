@@ -5,7 +5,7 @@ import com.eurodyn.qlack.fuse.settings.dto.SettingDTO;
 import com.eurodyn.qlack.fuse.settings.service.SettingsService;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyFilter;
-import esthesis.platform.common.config.AppConstants.Generic;
+import esthesis.extension.config.AppConstants.Generic;
 import javax.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;

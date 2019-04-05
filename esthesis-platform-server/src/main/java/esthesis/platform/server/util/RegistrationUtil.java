@@ -15,7 +15,7 @@ import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import com.eurodyn.qlack.fuse.settings.service.SettingsService;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.google.common.collect.Lists;
-import esthesis.platform.common.config.AppConstants.Generic;
+import esthesis.extension.config.AppConstants.Generic;
 import esthesis.platform.server.config.AppConstants.Setting;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.model.Device;

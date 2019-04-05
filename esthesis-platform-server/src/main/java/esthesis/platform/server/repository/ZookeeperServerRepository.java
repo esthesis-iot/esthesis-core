@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface ZookeeperServerRepository extends BaseRepository<ZookeeperServer> {
-  List<ZookeeperServer> findAllByState(int state);
+  List<ZookeeperServer> findAllByState(boolean state);
 }

@@ -18,8 +18,8 @@ public class MQTTConfigurationChangedEvent {
   private static final Logger LOGGER = Logger.getLogger(MQTTConfigurationChangedEvent.class.getName());
 
   private long mqttServerId;
-  private int stateBefore;
-  private int stateAfter;
+  private boolean stateBefore;
+  private boolean stateAfter;
   private String nodeInitiatingChange;
   private boolean deleted;
   private static ObjectMapper mapper = new ObjectMapper();
@@ -49,5 +49,12 @@ public class MQTTConfigurationChangedEvent {
       LOGGER.log(Level.SEVERE, "Could not deserialize MQTTConfigurationChangedEvent.", e);
       return null;
     }
+  }
+
+  public boolean getStateBefore() {
+    return stateBefore;
+  }
+  public boolean getStateAfter() {
+    return stateAfter;
   }
 }

@@ -3,7 +3,6 @@ package esthesis.platform.server.service;
 import static esthesis.platform.server.config.AppConstants.Zookeeper.LEADER_ELECTION_PATH_MQTT;
 
 import esthesis.platform.server.config.AppConstants.Event;
-import esthesis.platform.common.config.AppConstants.Generic;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.dto.MQTTServerDTO;
 import esthesis.platform.server.events.MQTTConfigurationChangedEvent;
@@ -197,19 +196,27 @@ public class MQTTService extends BaseService<MQTTServerDTO, MqttServer> implemen
   }
 
   public List<MQTTServerDTO> findActive() {
-    return mqttServerMapper.map(mqttServerRepository.findAllByState(Generic.ENABLED));
+    return mqttServerMapper.map(mqttServerRepository.findAllByState(true));
   }
 
   @Override
   public MQTTServerDTO save(MQTTServerDTO dto) {
-    final MQTTServerDTO mqttServerDTOBefore = findById(dto.getId());
+    // Find the previous state of this MQTT server if existed.
+    MQTTServerDTO mqttServerDTOBefore = null;
+    if (dto.getId() != 0) {
+      mqttServerDTOBefore = findById(dto.getId());
+    }
+
+    // Save the MQTT server.
     dto = super.save(dto);
+
+    // Restart the MQTT client if necessary.
     try {
-      if (mqttServerDTOBefore.getState() == Generic.ENABLED) {
+      if (mqttServerDTOBefore != null && mqttServerDTOBefore.getState()) {
         disconnect(dto.getId(), true);
       }
 
-      if (dto.getState() == Generic.ENABLED) {
+      if (dto.getState()) {
         connect(dto);
       }
     } catch (IOException e) {
@@ -225,7 +232,7 @@ public class MQTTService extends BaseService<MQTTServerDTO, MqttServer> implemen
             .setNodeInitiatingChange(appProperties.getNodeId())
             .setStateAfter(dto.getState())
             .setDeleted(false)
-            .setStateBefore(mqttServerDTOBefore.getState()));
+            .setStateBefore(mqttServerDTOBefore != null ? mqttServerDTOBefore.getState() : false));
       } catch (Exception e) {
         LOGGER.log(Level.SEVERE, "Could not publish MQTT configuration change event.", e);
       }

@@ -30,7 +30,7 @@ public class ZookeeperServer extends BaseEntity {
   private String ipAddress;
 
   @NotNull
-  private int state;
+  private boolean state;
 
   private String caCert;
   private String clientCert;

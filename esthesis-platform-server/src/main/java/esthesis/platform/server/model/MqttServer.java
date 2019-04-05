@@ -36,7 +36,7 @@ public class MqttServer extends BaseEntity {
   private String ipAddress;
 
   @NotNull
-  private int state;
+  private boolean state;
 
   @Singular
   @OneToMany

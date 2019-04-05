@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface MQTTServerRepository extends BaseRepository<MqttServer> {
-  List<MqttServer> findAllByState(int state);
+  List<MqttServer> findAllByState(boolean state);
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.extension.config.AppConstants.Generic;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.context.ApplicationEvent;
 
@@ -15,20 +14,19 @@ import java.util.logging.Logger;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper=false)
-public class ZookeeperConfigurationChangedEvent extends ApplicationEvent {
+public class DataSinkConfigurationChangedEvent extends ApplicationEvent {
 
   // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(ZookeeperConfigurationChangedEvent.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(DataSinkConfigurationChangedEvent.class.getName());
 
-  private long zookeeperServerId;
+  private long dataSinkId;
   private boolean stateBefore;
   private boolean stateAfter;
   private String nodeInitiatingChange;
   private boolean deleted;
   private static ObjectMapper mapper = new ObjectMapper();
 
-  public ZookeeperConfigurationChangedEvent() {
+  public DataSinkConfigurationChangedEvent() {
     super(Generic.SYSTEM);
   }
 
@@ -37,7 +35,7 @@ public class ZookeeperConfigurationChangedEvent extends ApplicationEvent {
     try {
       return mapper.writeValueAsString(this);
     } catch (JsonProcessingException e) {
-      LOGGER.log(Level.SEVERE, "Could not serialize ZookeeperConfigurationChangedEvent.", e);
+      LOGGER.log(Level.SEVERE, "Could not serialize DataSinkConfigurationChangedEvent.", e);
       return null;
     }
   }
@@ -46,15 +44,15 @@ public class ZookeeperConfigurationChangedEvent extends ApplicationEvent {
     return toString().getBytes(StandardCharsets.UTF_8);
   }
 
-  public static ZookeeperConfigurationChangedEvent fromByteArray(byte[] zookeeperConfigurationChangeEvent) {
+  public static DataSinkConfigurationChangedEvent fromByteArray(byte[] dataSinkConfigurationChangedEvent) {
     try {
-      if (zookeeperConfigurationChangeEvent == null || zookeeperConfigurationChangeEvent.length == 0) {
+      if (dataSinkConfigurationChangedEvent == null || dataSinkConfigurationChangedEvent.length == 0) {
         return null;
       } else {
-        return mapper.readValue(zookeeperConfigurationChangeEvent, ZookeeperConfigurationChangedEvent.class);
+        return mapper.readValue(dataSinkConfigurationChangedEvent, DataSinkConfigurationChangedEvent.class);
       }
     } catch (IOException e) {
-      LOGGER.log(Level.SEVERE, "Could not deserialize ZookeeperConfigurationChangedEvent.", e);
+      LOGGER.log(Level.SEVERE, "Could not deserialize DataSinkConfigurationChangedEvent.", e);
       return null;
     }
   }

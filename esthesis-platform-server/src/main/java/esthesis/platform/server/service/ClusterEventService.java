@@ -1,7 +1,6 @@
 package esthesis.platform.server.service;
 
 import esthesis.platform.server.config.AppConstants.Event;
-import esthesis.platform.common.config.AppConstants.Generic;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.events.MQTTConfigurationChangedEvent;
 import esthesis.platform.server.events.ZookeeperConfigurationChangedEvent;
@@ -56,7 +55,7 @@ public class ClusterEventService implements ApplicationListener<ZookeeperConnect
             if (mqttConfigurationChangedEvent.isDeleted()) {
               mqttService.disconnect(mqttConfigurationChangedEvent.getMqttServerId(), true);
             } else {
-              if (mqttConfigurationChangedEvent.getStateAfter() == Generic.ENABLED) {
+              if (mqttConfigurationChangedEvent.getStateAfter()) {
                 mqttService.disconnect(mqttConfigurationChangedEvent.getMqttServerId(), true);
                 mqttService.connect(mqttConfigurationChangedEvent.getMqttServerId());
               }

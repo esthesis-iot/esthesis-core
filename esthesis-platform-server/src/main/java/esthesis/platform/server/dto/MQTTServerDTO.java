@@ -23,7 +23,7 @@ public class MQTTServerDTO extends BaseDTO {
   public String ipAddress;
 
   @NotNull
-  public int state;
+  public boolean state;
 
   @Singular
   private List<Long> tags;
@@ -34,4 +34,10 @@ public class MQTTServerDTO extends BaseDTO {
   private String caCert;
   private String clientCert;
   private String clientKey;
+
+  public boolean getState() {
+    return state;
+  }
 }
+
+

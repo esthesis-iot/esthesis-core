@@ -29,4 +29,8 @@ public class DataSinkDTO extends BaseDTO {
 
   private String configuration;
 
+  public boolean getState() {
+    return state;
+  }
+
 }

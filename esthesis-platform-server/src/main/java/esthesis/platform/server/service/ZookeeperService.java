@@ -1,7 +1,6 @@
 package esthesis.platform.server.service;
 
 import esthesis.platform.server.config.AppConstants.Event;
-import esthesis.platform.common.config.AppConstants.Generic;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.dto.ZookeeperServerDTO;
 import esthesis.platform.server.events.ZookeeperConfigurationChangedEvent;
@@ -74,7 +73,7 @@ public class ZookeeperService extends BaseService<ZookeeperServerDTO, ZookeeperS
   }
 
   public List<ZookeeperServerDTO> findActive() {
-    return zookeeperServerMapper.map(zookeeperServerRepository.findAllByState(Generic.ENABLED));
+    return zookeeperServerMapper.map(zookeeperServerRepository.findAllByState(true));
   }
 
   @Async
@@ -97,12 +96,19 @@ public class ZookeeperService extends BaseService<ZookeeperServerDTO, ZookeeperS
 
   @Override
   public ZookeeperServerDTO save(ZookeeperServerDTO dto) {
-    final ZookeeperServerDTO zookeeperServerDTOBefore = findById(dto.getId());
+    // Find the previous state of this Zookeeper server if existed.
+    ZookeeperServerDTO zookeeperServerDTOBefore = null;
+    if (dto.getId() != 0) {
+      zookeeperServerDTOBefore = findById(dto.getId());
+    }
+
     // Save Zookeeper server configuration.
     dto = super.save(dto);
 
+    // Reconnect the client.
     reconnect();
 
+    // Notify cluster of the configuration change.
     if (isCluster()) {
       LOGGER.log(Level.FINEST, "Publishing Zookeeper configuration change event.");
       try {
@@ -111,7 +117,7 @@ public class ZookeeperService extends BaseService<ZookeeperServerDTO, ZookeeperS
             .setNodeInitiatingChange(appProperties.getNodeId())
             .setStateAfter(dto.getState())
             .setDeleted(false)
-            .setStateBefore(zookeeperServerDTOBefore.getState()));
+            .setStateBefore(zookeeperServerDTOBefore != null ? zookeeperServerDTOBefore.getState() : false));
       } catch (Exception e) {
         LOGGER.log(Level.SEVERE, "Could not publish Zookeeper configuration change event.", e);
       }
