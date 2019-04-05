@@ -136,7 +136,7 @@ public abstract class InfluxDBSink {
     return pointBuilder;
   }
 
-  public void processEvent(byte[] mqttEventPayload, int eventId, String topic) {
+  public void processEvent(byte[] mqttEventPayload, String eventId, String topic) {
     LOGGER.log(Level.FINEST, "Processing MQTT event {0} on topic {1}.", new Object[]{eventId, topic});
     if (initialized) {
       try {

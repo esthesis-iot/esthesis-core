@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -119,9 +120,15 @@ public class MQTTService extends BaseService<MQTTServerDTO, MqttServer> implemen
         mqttServerDTO.getIpAddress()});
 
     mqttClient.subscribe(mqttServerDTO.getTopicTelemetry(),
-        (topic, message) -> applicationEventPublisher.publishEvent(mqttMessageMapper.mapToTelemetryEvent(message)));
+        (topic, message) -> applicationEventPublisher.publishEvent(
+            mqttMessageMapper.mapToTelemetryEvent(message)
+                .setTopic(topic)
+                .setId(UUID.randomUUID().toString())));
     mqttClient.subscribe(mqttServerDTO.getTopicMetadata(),
-        (topic, message) -> applicationEventPublisher.publishEvent(mqttMessageMapper.mapToMetadataEvent(message)));
+        (topic, message) -> applicationEventPublisher.publishEvent(
+            mqttMessageMapper.mapToMetadataEvent(message)
+                .setTopic(topic)
+                .setId(UUID.randomUUID().toString())));
   }
 
   private void unsubscribe(IMqttClient mqttClient, MQTTServerDTO mqttServerDTO) throws MqttException {
