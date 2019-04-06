@@ -170,8 +170,8 @@ public class DataSinkService extends BaseService<DataSinkDTO, DataSink> implemen
 
   @Override
   public void onApplicationEvent(MQTTDataEvent event) {
-    LOGGER.log(Level.FINEST, "Starting distribution of MQTT event {0} on topic {1}.",
-        new Object[]{event.getId(), event.getTopic()});
+    LOGGER.log(Level.FINEST, "Starting distribution of MQTT event {0} on topic {1} for device {2}.",
+        new Object[]{event.getId(), event.getTopic(), event.getDeviceId()});
     // Pass events to data sinks only if this node is a cluster leader (or in standalone mode).
     if (!zookeeperService.isCluster() || zookeeperService.isLeader()) {
       if (event instanceof MQTTMetadataEvent) {
@@ -182,7 +182,7 @@ public class DataSinkService extends BaseService<DataSinkDTO, DataSink> implemen
             dataSinkEntry -> dataSinkMessenger.telemetryMessage(dataSinkEntry.getValue(), event));
       }
     }
-    LOGGER.log(Level.FINEST, "Finished distribution of MQTT event {0} on topic {1}.",
-        new Object[]{event.getId(), event.getTopic()});
+    LOGGER.log(Level.FINEST, "Finished distribution of MQTT event {0} on topic {1} for device {2}.",
+        new Object[]{event.getId(), event.getTopic(), event.getDeviceId()});
   }
 }

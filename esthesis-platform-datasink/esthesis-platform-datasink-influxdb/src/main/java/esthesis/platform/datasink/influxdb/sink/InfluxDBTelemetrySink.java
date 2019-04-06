@@ -13,12 +13,12 @@ public class InfluxDBTelemetrySink extends InfluxDBSink implements EsthesisTelem
   public static final String SINK_NAME = "InfluxDBTelemetrySink";
 
   public InfluxDBTelemetrySink(String configuration) {
-    super(configuration, SINK_NAME, MqttPayload.TAG_TELEMETRY_NAME);
+    super(configuration, SINK_NAME, MqttPayload.TAG_EVENT_TYPE_TELEMETRY_NAME);
   }
 
   @Override
   public void processEvent(MQTTTelemetryEvent event) {
-    super.processEvent(event.getPayload(), event.getId(), event.getTopic());
+    super.processEvent(event.getDeviceId(), event.getPayload(), event.getId(), event.getTopic());
   }
 }
 

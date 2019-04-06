@@ -13,11 +13,11 @@ public class InfluxDBMetadataSink extends InfluxDBSink implements EsthesisMetada
   public static final String SINK_NAME = "InfluxDBMetadataSink";
 
   public InfluxDBMetadataSink(String configuration) {
-    super(configuration, SINK_NAME, MqttPayload.TAG_METADATA_NAME);
+    super(configuration, SINK_NAME, MqttPayload.TAG_EVENT_TYPE_METADATA_NAME);
   }
 
   @Override
   public void processEvent(MQTTMetadataEvent event) {
-    super.processEvent(event.getPayload(), event.getId(), event.getTopic());
+    super.processEvent(event.getDeviceId(), event.getPayload(), event.getId(), event.getTopic());
   }
 }

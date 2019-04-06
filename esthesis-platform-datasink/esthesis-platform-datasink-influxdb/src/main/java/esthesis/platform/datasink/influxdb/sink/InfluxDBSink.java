@@ -27,15 +27,16 @@ public abstract class InfluxDBSink {
   private boolean initialized;
   private InfluxDBConfiguration influxDBConfiguration;
   private String sinkName;
-  private String tagName;
+  private String eventType;
   // The name of the tag to indicate the type of the measurement.
   public static final String TAG_TYPE_NAME = "type";
+  public static final String TAG_DEVICE_ID_NAME = "deviceId";
   private static ObjectMapper mapper = new ObjectMapper();
 
-  InfluxDBSink(String configuration, String sinkName, String tagName) {
+  InfluxDBSink(String configuration, String sinkName, String eventType) {
     LOGGER.log(Level.FINE, "Instantiating {0}.", sinkName);
     this.sinkName = sinkName;
-    this.tagName = tagName;
+    this.eventType = eventType;
 
     // Parse configuration.
     influxDBConfiguration = new Yaml(new Constructor(InfluxDBConfiguration.class)).load(configuration);
@@ -65,7 +66,11 @@ public abstract class InfluxDBSink {
           influxDBConfiguration.getReplicationFactor(),
           true);
       influxDB.setRetentionPolicy(influxDBConfiguration.getRetentionPolicyName());
-      influxDB.enableBatch(BatchOptions.DEFAULTS);
+      influxDB.enableBatch(BatchOptions.DEFAULTS.exceptionHandler(
+          (failedPoints, throwable) -> {
+            LOGGER.log(Level.SEVERE, "Could not persist data in InfluxDB.", throwable);
+          })
+      );
     }
   }
 
@@ -76,7 +81,7 @@ public abstract class InfluxDBSink {
         influxDBConfiguration.getPassword());
   }
 
-  private Builder preparePoint(byte[] mqttPayload, String tagName) throws IOException {
+  private Builder preparePoint(String deviceId, byte[] mqttPayload, String eventType) throws IOException {
     // Read the payload of the MQTT message.
     final JsonNode jsonNode = mapper.readTree(mqttPayload);
 
@@ -84,8 +89,11 @@ public abstract class InfluxDBSink {
     String metricName = jsonNode.get(MqttPayload.METRIC_KEYNAME).asText();
     final Builder pointBuilder = org.influxdb.dto.Point.measurement(metricName);
 
-    // Add a tag to the Point.
-    pointBuilder.tag(TAG_TYPE_NAME, tagName);
+    // Add a tag to the Point for the type of the message.
+    pointBuilder.tag(TAG_TYPE_NAME, eventType);
+
+    // Add a tag to the Point for the device ID.
+    pointBuilder.tag(TAG_DEVICE_ID_NAME, deviceId);
 
     // If a timestamp is provided use the provided timestamp, otherwise create a timestamp.
     if (jsonNode.get(MqttPayload.TIMESTAMP_KEYNAME) != null) {
@@ -136,20 +144,23 @@ public abstract class InfluxDBSink {
     return pointBuilder;
   }
 
-  public void processEvent(byte[] mqttEventPayload, String eventId, String topic) {
-    LOGGER.log(Level.FINEST, "Processing MQTT event {0} on topic {1}.", new Object[]{eventId, topic});
+  public void processEvent(String deviceId, byte[] mqttEventPayload, String eventId, String topic) {
+    LOGGER.log(Level.FINEST, "Processing MQTT event {0} on topic {1} for device {2}.",
+        new Object[]{eventId, topic, deviceId});
     if (initialized) {
       try {
         influxDB.write(influxDBConfiguration.getDatabaseName(), influxDBConfiguration.getRetentionPolicyName(),
-            preparePoint(mqttEventPayload, tagName).build());
+            preparePoint(deviceId, mqttEventPayload, eventType).build());
       } catch (IOException e) {
-        LOGGER.log(Level.SEVERE, "Could not process MQTT event {0} on topic {1}.", new Object[]{eventId, topic});
+        LOGGER.log(Level.SEVERE, "Could not process MQTT event {0} on topic {1} for device {2}.",
+            new Object[]{eventId, topic, deviceId});
       }
     } else {
-      LOGGER.log(Level.WARNING, "Got an MQTT event {0} on topic {1} before {2} being initialized.",
-          new Object[]{eventId, topic, sinkName});
+      LOGGER.log(Level.WARNING, "Got an MQTT event {0} on topic {1} for device {2} before {3} being initialized.",
+          new Object[]{eventId, topic, deviceId, sinkName});
     }
-    LOGGER.log(Level.FINEST, "Finished processing MQTT event {0} on topic {1}.", new Object[]{eventId, topic});
+    LOGGER.log(Level.FINEST, "Finished processing MQTT event {0} on topic {1} for device {2}.",
+        new Object[]{eventId, topic, deviceId});
   }
 
   public void disconnect() {

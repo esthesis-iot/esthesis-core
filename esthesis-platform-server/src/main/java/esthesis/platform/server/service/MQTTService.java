@@ -112,22 +112,24 @@ public class MQTTService extends BaseService<MQTTServerDTO, MqttServer> implemen
   }
 
   /**
-   * Subscribe to data topics.
+   * Subscribe to MQTT topics.
    */
   private void subscribe(IMqttClient mqttClient, MQTTServerDTO mqttServerDTO) throws MqttException {
     LOGGER.log(Level.FINE, "Subscribing to {0} on MQTT server {1}.", new Object[]{
         mqttServerDTO.getTopicTelemetry() + ", " + mqttServerDTO.getTopicMetadata(),
         mqttServerDTO.getIpAddress()});
 
-    mqttClient.subscribe(mqttServerDTO.getTopicTelemetry(),
+    mqttClient.subscribe(mqttServerDTO.getTopicTelemetry() + "/#",
         (topic, message) -> applicationEventPublisher.publishEvent(
             mqttMessageMapper.mapToTelemetryEvent(message)
                 .setTopic(topic)
+                .setDeviceId(topic.substring(topic.lastIndexOf('/')+ 1))
                 .setId(UUID.randomUUID().toString())));
-    mqttClient.subscribe(mqttServerDTO.getTopicMetadata(),
+    mqttClient.subscribe(mqttServerDTO.getTopicMetadata() + "/#",
         (topic, message) -> applicationEventPublisher.publishEvent(
             mqttMessageMapper.mapToMetadataEvent(message)
                 .setTopic(topic)
+                .setDeviceId(topic.substring(topic.lastIndexOf('/')+ 1))
                 .setId(UUID.randomUUID().toString())));
   }
 
