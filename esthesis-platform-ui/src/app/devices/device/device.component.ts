@@ -1,17 +1,28 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {icon, latLng, marker, tileLayer} from 'leaflet';
-import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
-import {FormControl} from '@angular/forms';
-import {map, startWith} from 'rxjs/operators';
+import {TagDto} from '../../dto/tag-dto';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MatDialog} from '@angular/material';
+import {QFormsService} from '@eurodyn/forms';
+import {TagService} from '../../tags/tag.service';
+import {MqttServerService} from '../../infrastructure/infrastructure-mqtt/mqtt-server.service';
+import {UtilityService} from '../../shared/utility.service';
+import {CertificatesService} from '../../certificates/certificates.service';
+import {CasService} from '../../cas/cas.service';
+import {DevicesService} from '../devices.service';
+import {BaseComponent} from '../../shared/base-component';
 
 @Component({
   selector: 'app-device',
   templateUrl: './device.component.html',
   styleUrls: ['./device.component.scss']
 })
-export class DeviceComponent implements OnInit {
+export class DeviceComponent extends BaseComponent implements OnInit {
+  availableTags: TagDto[];
+  form: FormGroup;
+  id: number;
+
   options = {
     layers: [
       tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 18})
@@ -31,59 +42,36 @@ export class DeviceComponent implements OnInit {
     }),
   ];
 
-  groupCtrl = new FormControl();
-  filteredGroups: Observable<string[]>;
-  groups: string[] = ['Karmelitermarkt'];
-  allGroups: string[] = ['Alte Donau', 'Vienna', 'Praterstern', 'Grinzing', 'Opernring'];
 
-  @ViewChild('groupInput') groupInput: ElementRef<HTMLInputElement>;
-  id: string;
 
-  constructor(private route: ActivatedRoute) {
-    this.filteredGroups = this.groupCtrl.valueChanges.pipe(
-      startWith(null),
-      map((group: string | null) => group ? this._filter(group) : this.allGroups.slice()));
-
+  constructor(private fb: FormBuilder, private dialog: MatDialog,
+              private qForms: QFormsService, private tagService: TagService,
+              private devicesService: DevicesService, private route: ActivatedRoute,
+              private router: Router, private utilityService: UtilityService) {
+    super();
   }
 
   ngOnInit() {
-    this.id = this.route.snapshot.params.id;
-  }
+    // Check if an edit is performed and fetch data.
+    this.id = Number(this.route.snapshot.paramMap.get('id'));
 
-  add(event: MatChipInputEvent): void {
-    const input = event.input;
-    const value = event.value;
+    // Setup the form.
+    this.form = this.fb.group({
+      id: [''],
+      tags: [[]]
+    });
 
-    if ((value || '').trim()) {
-      this.groups.push(value.trim());
+    // Fill-in the form with data if editing an existing item.
+    if (this.id && this.id !== 0) {
+      this.devicesService.get(this.id).subscribe(onNext => {
+        this.form.patchValue(onNext);
+      });
     }
 
-    // Reset the input value
-    if (input) {
-      input.value = '';
-    }
-
-    this.groupCtrl.setValue(null);
-  }
-
-  remove(group: string): void {
-    const index = this.groups.indexOf(group);
-
-    if (index >= 0) {
-      this.groups.splice(index, 1);
-    }
-  }
-
-  selected(event: MatAutocompleteSelectedEvent): void {
-    this.groups.push(event.option.viewValue);
-    this.groupInput.nativeElement.value = '';
-    this.groupCtrl.setValue(null);
-  }
-
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-
-    return this.allGroups.filter(group => group.toLowerCase().indexOf(filterValue) === 0);
+    // Get available tags.
+    this.tagService.getAll().subscribe(onNext => {
+      this.availableTags = onNext.content;
+    });
   }
 
 }
