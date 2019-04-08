@@ -1,7 +1,8 @@
 package esthesis.platform.server.model;
 
-import com.eurodyn.qlack.util.data.encryption.Encrypted;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -39,5 +40,6 @@ public class Device extends BaseEntity {
 
   @Singular
   @OneToMany
+  @JoinTable(inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private List<Tag> tags;
 }

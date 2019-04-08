@@ -12,30 +12,26 @@
              matSort matSortActive="deviceId"
              matSortDirection="asc"
              matSortStart="asc" matSortDisableClear>
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;">
-        </mat-row>
         <ng-container matColumnDef="deviceId">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Device id</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.deviceId}}
-          </mat-cell>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Device id</th>
+          <td mat-cell *matCellDef="let element"> {{element.deviceId}}</td>
         </ng-container>
         <ng-container matColumnDef="status">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Status</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.status | titlecase}}
-          </mat-cell>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Status</th>
+          <td mat-cell *matCellDef="let element"> {{element.status | titlecase}}</td>
         </ng-container>
         <ng-container matColumnDef="tags">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Tags</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.tags}}
-          </mat-cell>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Tags</th>
+          <td mat-cell *matCellDef="let element"> {{element.tags}}</td>
         </ng-container>
         <ng-container matColumnDef="createdOn">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Registration</mat-header-cell>
-          <mat-cell *matCellDef="let element">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Registration</th>
+          <td mat-cell *matCellDef="let element">
             {{element.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}
-          </mat-cell>
+          </td>
         </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns; let element;" [routerLink]="element.id"></tr>
       </table>
       <mat-paginator #paginator (page)="changePage()"
                      [pageSize]="10"

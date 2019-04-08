@@ -34,6 +34,9 @@ export const AppConstants = {
         OPEN_WITH_APPROVAL: 'OPEN_WITH_APPROVAL'
       }
     },
+    DEVICE_PUSH_TAGS: {
+      _KEY: 'devicePushTags'
+    },
     // How devices should transmit data.
     DEVICE_DATA_ENCRYPTION_MODE: {
       _KEY: 'deviceDataEncryptionMode',

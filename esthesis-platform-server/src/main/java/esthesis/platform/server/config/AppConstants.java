@@ -29,11 +29,11 @@ public class AppConstants {
 
   public class Device {
     public class RegistrationMode {
-      public static final String DISABLED = "REGISTRATION_MODE_DISABLED";
-      public static final String OPEN = "REGISTRATION_MODE_OPEN";
-      public static final String OPEN_WITH_APPROVAL = "REGISTRATION_MODE_OPEN_WITH_APPROVAL";
-      public static final String ID = "REGISTRATION_MODE_ID";
-      public static final String CRYPTO = "REGISTRATION_MODE_CRYPTO";
+      public static final String DISABLED = "DISABLED";
+      public static final String OPEN = "OPEN";
+      public static final String OPEN_WITH_APPROVAL = "OPEN_WITH_APPROVAL";
+      public static final String ID = "ID";
+      public static final String CRYPTO = "CRYPTO";
     }
 
     public class Status {
@@ -46,6 +46,7 @@ public class AppConstants {
 
   public class Setting {
     public static final String DEVICE_REGISTRATION = "deviceRegistration";
+    public static final String DEVICE_PUSH_TAGS = "devicePushTags";
     public class Mqtt {
       public static final String ACL_ENDPOINT_STATUS = "mqttAclEndpointStatus";
     }

@@ -6,8 +6,8 @@ import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.settings.service.SettingsService;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import esthesis.extension.config.AppConstants.Generic;
-import esthesis.platform.common.request.RegistrationRequest;
-import esthesis.platform.common.response.RegistrationResponse;
+import esthesis.extension.device.request.RegistrationRequest;
+import esthesis.extension.device.response.RegistrationResponse;
 import esthesis.platform.server.config.AppConstants;
 import esthesis.platform.server.config.AppConstants.Device.Status;
 import esthesis.platform.server.config.AppConstants.Setting;
@@ -29,6 +29,7 @@ import java.security.NoSuchProviderException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
@@ -72,31 +73,49 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
   public void register(String deviceId, String hmac, String tags)
       throws NoSuchProviderException, NoSuchAlgorithmException, IOException, InvalidKeyException {
-    // Check registration preconditions and register device.
+    LOGGER.log(Level.FINE, "Attempting to register device {0}.", deviceId);
+
     DeviceDTO deviceDTO = null;
-    switch (settingsService.getSetting(Generic.SYSTEM, Setting.DEVICE_REGISTRATION, Generic.SYSTEM).getVal()) {
+
+    // Find the registration mode on which the platform is running.
+    final String registrationMode = settingsService.getSetting(Generic.SYSTEM, Setting.DEVICE_REGISTRATION, Generic.SYSTEM).getVal();
+
+    // Find if device-pushed tags are supported.
+    final boolean devicePushedTagsSupported = settingsService.getSetting(Generic.SYSTEM, Setting.DEVICE_PUSH_TAGS, Generic.SYSTEM).getValAsBoolean();
+
+    // Check registration preconditions and register device.
+    LOGGER.log(Level.FINEST, "Platform running on {0} registration mode.", registrationMode);
+    switch (registrationMode) {
       case AppConstants.Device.RegistrationMode.OPEN:
         registrationUtil.checkRegistrationEnabled();
         registrationUtil.checkDeviceIdDoesNotExist(deviceId);
-        registrationUtil.checkTagsExist(tags);
+        if (devicePushedTagsSupported) {
+          registrationUtil.checkTagsExist(tags);
+        }
         deviceDTO = deviceMapper.map(registrationUtil.registerNew(deviceId, tags));
         break;
       case AppConstants.Device.RegistrationMode.OPEN_WITH_APPROVAL:
         registrationUtil.checkRegistrationEnabled();
         registrationUtil.checkDeviceIdDoesNotExist(deviceId);
-        registrationUtil.checkTagsExist(tags);
+        if (devicePushedTagsSupported) {
+          registrationUtil.checkTagsExist(tags);
+        }
         deviceDTO = deviceMapper.map(registrationUtil.registerForApproval(deviceId, tags));
         break;
       case AppConstants.Device.RegistrationMode.ID:
         registrationUtil.checkRegistrationEnabled();
         registrationUtil.checkDeviceIdPreregistered(deviceId);
-        registrationUtil.checkTagsExist(tags);
+        if (devicePushedTagsSupported) {
+          registrationUtil.checkTagsExist(tags);
+        }
         deviceDTO = deviceMapper.map(registrationUtil.registerPreregistered(deviceId, tags));
         break;
       case AppConstants.Device.RegistrationMode.CRYPTO:
         registrationUtil.checkRegistrationEnabled();
         registrationUtil.checkDeviceIdPreregistered(deviceId);
-        registrationUtil.checkTagsExist(tags);
+        if (devicePushedTagsSupported) {
+          registrationUtil.checkTagsExist(tags);
+        }
         registrationUtil.checkHmac(deviceId, hmac);
         deviceDTO = deviceMapper.map(registrationUtil.registerCrypto(deviceId, tags));
         break;

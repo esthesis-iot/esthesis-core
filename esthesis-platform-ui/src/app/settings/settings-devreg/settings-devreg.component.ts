@@ -21,20 +21,27 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     // Define the form.
     this.form = this.fb.group({
-      deviceRegistration: ['', [Validators.required]]
+      deviceRegistration: ['', [Validators.required]],
+      devicePushTags: ['', [Validators.required]]
     });
 
     // Fetch settings.
     this.settingsService.findByName(AppConstants.SETTING.DEVICE_REGISTRATION._KEY).subscribe(onNext => {
       this.form.controls[AppConstants.SETTING.DEVICE_REGISTRATION._KEY].setValue(onNext.val);
     });
+    this.settingsService.findByName(AppConstants.SETTING.DEVICE_PUSH_TAGS._KEY).subscribe(onNext => {
+      this.form.controls[AppConstants.SETTING.DEVICE_PUSH_TAGS._KEY].setValue(onNext.val);
+    });
   }
 
   save() {
     this.settingsService.save(new SettingDto(AppConstants.SETTING.DEVICE_REGISTRATION._KEY,
       this.form.controls[AppConstants.SETTING.DEVICE_REGISTRATION._KEY].value)).subscribe(() => {
-      this.utilityService.popupSuccess('Device registration mode successfully saved.');
     });
+    this.settingsService.save(new SettingDto(AppConstants.SETTING.DEVICE_PUSH_TAGS._KEY,
+      this.form.controls[AppConstants.SETTING.DEVICE_PUSH_TAGS._KEY].value)).subscribe(() => {
+    });
+    this.utilityService.popupSuccess('Settings saved.');
   }
 
 }

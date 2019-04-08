@@ -1,13 +1,12 @@
 package esthesis.platform.server.resource;
 
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
-import com.eurodyn.qlack.util.data.encryption.Decrypt;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
-import esthesis.platform.common.request.RegistrationRequest;
-import esthesis.platform.common.response.RegistrationResponse;
+import esthesis.extension.device.request.RegistrationRequest;
+import esthesis.extension.device.response.RegistrationResponse;
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.DeviceRegistrationDTO;
 import esthesis.platform.server.model.Device;

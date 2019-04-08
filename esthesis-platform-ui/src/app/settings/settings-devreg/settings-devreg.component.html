@@ -1,31 +1,31 @@
 <form novalidate [formGroup]="form" fxLayout="column">
-
+  <div class="inline-header">Registration mode</div>
   <mat-radio-group formControlName="deviceRegistration">
-    <mat-card-title>
+    <h4>
       <mat-radio-button [value]="constants.SETTING.DEVICE_REGISTRATION._VAL.DISABLED">Disabled</mat-radio-button>
-    </mat-card-title>
-    <div>No devices can be registered with the platform.</div>
+    </h4>
+    <div class="inline-subheader">No devices can be registered with the platform.</div>
 
-    <mat-card-title>
+    <h4 class="xs-mt1">
       <mat-radio-button [value]="constants.SETTING.DEVICE_REGISTRATION._VAL.OPEN">Open registration</mat-radio-button>
-    </mat-card-title>
-    <div>Allow any device to be registered with the platform. Use this mode in controlled environments where only
+    </h4>
+    <div class="inline-subheader">Allow any device to be registered with the platform. Use this mode in controlled environments where only
       devices you trust can communicate with your platform. Once the device is registered it receives a
       public/private
       keypair and all future communication and device identification takes place using this keypair.
     </div>
 
-    <mat-card-title>
+    <h4 class="xs-mt1">
       <mat-radio-button [value]="constants.SETTING.DEVICE_REGISTRATION._VAL.OPEN_WITH_APPROVAL">Open registration with approval</mat-radio-button>
-    </mat-card-title>
-    <div>Similar to the the Open Registration, however a successful device registration needs to be manually approved
+    </h4>
+    <div class="inline-subheader">Similar to the the Open Registration, however a successful device registration needs to be manually approved
       by an administrator of the system before the device is allowed to further communicate with the platform.
     </div>
 
-    <mat-card-title>
+    <h4 class="xs-mt1">
       <mat-radio-button [value]="constants.SETTING.DEVICE_REGISTRATION._VAL.ID">Preregistered ID</mat-radio-button>
-    </mat-card-title>
-    <div>Devices can register using a unique identification available to the device prior to the deployment.
+    </h4>
+    <div class="inline-subheader">Devices can register using a unique identification available to the device prior to the deployment.
       This is a more secure way to initially connect your devices than 'Open registration', however it is still
       based
       on a shared secret rather than asymmetric encryption.
@@ -33,11 +33,20 @@
       identification takes place using this keypair.
     </div>
 
-    <mat-card-title>
+    <h4 class="xs-mt1">
       <mat-radio-button [value]="constants.SETTING.DEVICE_REGISTRATION._VAL.CRYPTO">Cryptographic keys</mat-radio-button>
-    </mat-card-title>
-    <div>Devices are registered using a private key available to the device prior to the deployment.</div>
+    </h4>
+    <div class="inline-subheader">Devices are registered using a private key available to the device prior to the deployment.</div>
   </mat-radio-group>
+
+  <div class="inline-header xs-mt2">Permit device to choose tags </div>
+  <div class="inline-subheader">Devices can choose which tags they support. Tags need to be already created on the platform.</div>
+  <mat-form-field>
+    <mat-select placeholder="Device chooses tags" formControlName="devicePushTags" required>
+      <mat-option value="1">Yes</mat-option>
+      <mat-option value="0">No</mat-option>
+    </mat-select>
+  </mat-form-field>
 </form>
 
 <div class="xs-pt2">
