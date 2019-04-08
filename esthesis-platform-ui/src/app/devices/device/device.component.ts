@@ -12,6 +12,7 @@ import {CertificatesService} from '../../certificates/certificates.service';
 import {CasService} from '../../cas/cas.service';
 import {DevicesService} from '../devices.service';
 import {BaseComponent} from '../../shared/base-component';
+import {OkCancelModalComponent} from '../../shared/display/ok-cancel-modal/ok-cancel-modal.component';
 
 @Component({
   selector: 'app-device',
@@ -74,4 +75,30 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     });
   }
 
+  save() {
+    this.devicesService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
+      this.utilityService.popupSuccess('Device successfully saved.');
+      this.router.navigate(['devices']);
+    });
+  }
+
+  delete() {
+    const dialogRef = this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: 'Delete Device',
+        question: 'Do you really want to delete this Device?',
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.devicesService.delete(this.id).subscribe(onNext => {
+          this.utilityService.popupSuccess('Device server successfully deleted.');
+          this.router.navigate(['devices']);
+        });
+      }
+    });
+  }
 }

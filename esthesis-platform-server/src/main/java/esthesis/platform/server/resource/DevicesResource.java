@@ -18,6 +18,7 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,7 +55,7 @@ public class DevicesResource {
   @EmptyPredicateCheck
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not obtain devices list.")
-//  @ReplyPageableFilter("createdOn,deviceId,id,status,tags")
+  //  @ReplyPageableFilter("createdOn,deviceId,id,status,tags")
   public Page<DeviceDTO> findAll(@QuerydslPredicate(root = Device.class) Predicate predicate, Pageable pageable) {
     return deviceService.findAll(predicate, pageable);
   }
@@ -82,4 +83,15 @@ public class DevicesResource {
     return response;
   }
 
+  @DeleteMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete device.")
+  public void delete(@PathVariable long id) {
+    deviceService.deleteById(id);
+  }
+
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save Device.")
+  public DeviceDTO save(@Valid @RequestBody DeviceDTO object) {
+    return deviceService.save(object);
+  }
 }
