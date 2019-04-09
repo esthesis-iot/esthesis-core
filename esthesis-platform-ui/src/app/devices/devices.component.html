@@ -9,7 +9,7 @@
 
       <!-- Table -->
       <table mat-table #table [dataSource]="datasource"
-             matSort matSortActive="deviceId"
+             matSort matSortActive="id"
              matSortDirection="asc"
              matSortStart="asc" matSortDisableClear>
         <ng-container matColumnDef="deviceId">
@@ -40,4 +40,3 @@
     <button mat-button routerLink="preregister">PREREGISTER</button>
   </mat-card-actions>
 </mat-card>
-
