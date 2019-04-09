@@ -1,11 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {BaseComponent} from '../../shared/base-component';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {SettingsService} from '../settings.service';
 import {AppConstants} from '../../app.constants';
 import {SettingDto} from '../../dto/setting-dto';
 import {CertificatesService} from '../../certificates/certificates.service';
 import {CertificateDto} from '../../dto/certificate-dto';
+import {KeyValueDto} from '../../dto/key-value-dto';
+import * as _ from 'lodash';
+import {UtilityService} from '../../shared/utility.service';
 
 @Component({
   selector: 'app-settings-security',
@@ -16,23 +19,32 @@ export class SettingsSecurityComponent extends BaseComponent implements OnInit {
   form: FormGroup;
   certificates: CertificateDto[];
 
-  constructor(private fb: FormBuilder, private settingsService: SettingsService, private certificatesService: CertificatesService) {
+  constructor(private fb: FormBuilder, private settingsService: SettingsService,
+              private certificatesService: CertificatesService, private utilityService: UtilityService) {
     super();
   }
 
   ngOnInit() {
     // Define the form.
     this.form = this.fb.group({
-      deviceDataEncryptionMode: ['', [Validators.required]],
+      deviceOutgoingEncryption: ['', [Validators.required]],
+      deviceIncomingEncryption: ['', [Validators.required]],
+      deviceOutgoingSignature: ['', [Validators.required]],
+      deviceIncomingSignature: ['', [Validators.required]],
       mqttSuperuserCertificate: ['', []],
     });
 
     // Fetch settings.
-    this.settingsService.findByName(AppConstants.SETTING.DEVICE_DATA_ENCRYPTION_MODE._KEY).subscribe(onNext => {
-      this.form.controls[AppConstants.SETTING.DEVICE_DATA_ENCRYPTION_MODE._KEY].patchValue(Number(onNext.val));
-    });
-    this.settingsService.findByName(AppConstants.SETTING.MQTT.SUPERUSER_CERTIFICATE._KEY).subscribe(onNext => {
-      this.form.controls[AppConstants.SETTING.MQTT.SUPERUSER_CERTIFICATE._KEY].patchValue(Number(onNext.val));
+    this.settingsService.findByNames(
+      AppConstants.SETTING.DEVICE_OUTGOING_ENCRYPTION._KEY,
+      AppConstants.SETTING.DEVICE_INCOMING_ENCRYPTION._KEY,
+      AppConstants.SETTING.DEVICE_OUTGOING_SIGNATURE._KEY,
+      AppConstants.SETTING.DEVICE_INCOMING_SIGNATURE._KEY,
+      AppConstants.SETTING.MQTT.SUPERUSER_CERTIFICATE._KEY
+    ).subscribe(onNext => {
+      onNext.forEach(settingDTO => {
+        this.form.controls[settingDTO.key].patchValue(settingDTO.val);
+      })
     });
 
     // Fetch lookup values.
@@ -45,11 +57,11 @@ export class SettingsSecurityComponent extends BaseComponent implements OnInit {
   }
 
   save() {
-    this.settingsService.save(new SettingDto(AppConstants.SETTING.DEVICE_DATA_ENCRYPTION_MODE._KEY,
-      this.form.controls[AppConstants.SETTING.DEVICE_DATA_ENCRYPTION_MODE._KEY].value)).subscribe(() => {
-    });
-    this.settingsService.save(new SettingDto(AppConstants.SETTING.MQTT.SUPERUSER_CERTIFICATE._KEY,
-      this.form.controls[AppConstants.SETTING.MQTT.SUPERUSER_CERTIFICATE._KEY].value)).subscribe(() => {
+    this.settingsService.saveMultiple(
+      _.map(Object.keys(this.form.controls), (fc) => {
+      return new KeyValueDto(fc, this.form.get(fc).value)
+    })).subscribe(onNext => {
+      this.utilityService.popupSuccess("Settings saved successfully.");
     });
   }
 }

@@ -37,13 +37,36 @@ export const AppConstants = {
     DEVICE_PUSH_TAGS: {
       _KEY: 'devicePushTags'
     },
-    // How devices should transmit data.
-    DEVICE_DATA_ENCRYPTION_MODE: {
-      _KEY: 'deviceDataEncryptionMode',
+    DEVICE_OUTGOING_ENCRYPTION: {
+      _KEY: 'deviceOutgoingEncryption',
       _VAL: {
-        ENCRYPTION_NOT_SUPPORTED: 0,
-        ENCRYPTION_OPTIONAL: 1,
-        ENCRYPTION_REQUIRED: 2
+        ENCRYPTED: 'ENCRYPTED',
+        NOT_ENCRYPTED: 'NOT_ENCRYPTED',
+        DEVICE_SPECIFIC: 'DEVICE_SPECIFIC'
+      }
+    },
+    DEVICE_INCOMING_ENCRYPTION: {
+      _KEY: 'deviceIncomingEncryption',
+      _VAL: {
+        ENCRYPTED: 'ENCRYPTED',
+        NOT_ENCRYPTED: 'NOT_ENCRYPTED',
+        OPTIONAL: 'OPTIONAL'
+      }
+    },
+    DEVICE_OUTGOING_SIGNATURE: {
+      _KEY: 'deviceOutgoingSignature',
+      _VAL: {
+        SIGNED: 'SIGNED',
+        NOT_SIGNED: 'NOT_SIGNED',
+        DEVICE_SPECIFIC: 'DEVICE_SPECIFIC'
+      }
+    },
+    DEVICE_INCOMING_SIGNATURE: {
+      _KEY: 'deviceIncomingSignature',
+      _VAL: {
+        SIGNED: 'SIGNED',
+        NOT_SIGNED: 'NOT_SIGNED',
+        OPTIONAL: 'OPTIONAL'
       }
     },
     MQTT: {

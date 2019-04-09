@@ -4,6 +4,8 @@ import {Injectable} from '@angular/core';
 import {AppConstants} from '../app.constants';
 import {SettingDto} from '../dto/setting-dto';
 import {CrudService} from '../services/crud.service';
+import {KeyValueDto} from '../dto/key-value-dto';
+import {Observable, EMPTY} from 'rxjs';
 
 /**
  * A service providing functionality to manage settings.
@@ -19,8 +21,20 @@ export class SettingsService extends CrudService<SettingDto> {
     super(http, 'settings');
   }
 
-  findByName(name: string) {
+  findByName(name: string): Observable<SettingDto> {
     return this.http.get<SettingDto>(
       `${AppConstants.API_ROOT}/settings/byName?name=${name}`);
   }
+
+  saveMultiple(keyValueDtos: KeyValueDto[]): Observable<any> {
+    return this.http.post(
+      `${AppConstants.API_ROOT}/settings/byNames`, keyValueDtos);
+  }
+
+  findByNames(...names: string[]): Observable<SettingDto[]> {
+    return this.http.get<SettingDto[]>(
+      `${AppConstants.API_ROOT}/settings/byNames?names=${names.join(',')}`);
+  }
+
+
 }
