@@ -46,18 +46,6 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-
-  <div class="inline-header xs-mt2">MQTT Superuser certificate</div>
-  <div class="inline-subheader">
-    Sselect the certificate to use as an MQTT Superuser account for certificate-based MQTT authentication/authorisation.
-  </div>
-  <mat-form-field class="default-field-width">
-    <mat-select [compareWith]="compareByStringValue" placeholder="MQTT Superuser" [formControlName]="constants.SETTING.MQTT.SUPERUSER_CERTIFICATE._KEY">
-      <mat-option *ngFor="let o of certificates" [value]="o.id">
-        {{ o.cn }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
 </form>
 
 <div class="xs-pt2">

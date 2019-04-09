@@ -30,7 +30,6 @@ export class SettingsSecurityComponent extends BaseComponent implements OnInit {
       deviceIncomingEncryption: ['', [Validators.required]],
       deviceOutgoingSignature: ['', [Validators.required]],
       deviceIncomingSignature: ['', [Validators.required]],
-      mqttSuperuserCertificate: ['', []],
     });
 
     // Fetch settings.
@@ -39,7 +38,6 @@ export class SettingsSecurityComponent extends BaseComponent implements OnInit {
       AppConstants.SETTING.DEVICE_INCOMING_ENCRYPTION._KEY,
       AppConstants.SETTING.DEVICE_OUTGOING_SIGNATURE._KEY,
       AppConstants.SETTING.DEVICE_INCOMING_SIGNATURE._KEY,
-      AppConstants.SETTING.MQTT.SUPERUSER_CERTIFICATE._KEY
     ).subscribe(onNext => {
       onNext.forEach(settingDTO => {
         this.form.controls[settingDTO.key].patchValue(settingDTO.val);
