@@ -22,8 +22,11 @@ export class LoginComponent extends BaseComponent implements OnInit {
   // Form control.
   loginForm: FormGroup;
 
-  // Show/hide password
-  hide = true;
+  // Show/hidePassword password
+  hidePassword = true;
+
+  // Show/Hide login form.
+  hideLoginForm = false;
 
   // Error message to display in form.
   errorMessage: string;
@@ -56,6 +59,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
   onSubmit({value}: { value: LoginInfoDto }) {
     this.userService.login(value).subscribe(
       onNext => {
+        this.hideLoginForm = true;
         this.renderer.removeAttribute(document.body, 'style');
         // Save the JWT to be used in future requests.
         // sessionStorage.setItem(AppConstants.JWT_STORAGE_NAME, onNext["jwt"]);
@@ -66,6 +70,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
         console.log(onError);
         this.utilityService.popupError('Authentication was unsuccessful.');
         // this.ngProgressService.complete();
+        this.hideLoginForm = false;
       });
   }
 

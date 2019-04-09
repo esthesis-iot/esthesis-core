@@ -1,4 +1,4 @@
-<div class="form-bg" fxLayoutAlign="center center">
+<div class="form-bg" fxLayoutAlign="center center" *ngIf="!hideLoginForm">
   <mat-card>
     <mat-card-title>Welcome, ready to authenticate?</mat-card-title>
     <mat-card-content>
@@ -12,9 +12,9 @@
             <mat-icon matSuffix>email</mat-icon>
           </mat-form-field>
           <mat-form-field>
-            <input matInput placeholder="Enter your password" [type]="hide ? 'password' : 'text'"
+            <input matInput placeholder="Enter your password" [type]="hidePassword ? 'password' : 'text'"
                    formControlName="password">
-            <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}
+            <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility' : 'visibility_off'}}
             </mat-icon>
           </mat-form-field>
           <button mat-button type="submit" color="primary" [disabled]="loginForm.invalid">LOGIN

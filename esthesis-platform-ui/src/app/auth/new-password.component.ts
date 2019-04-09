@@ -18,7 +18,7 @@ export class NewPasswordComponent extends BaseComponent implements OnInit {
   // Form's error message indicator.
   errorMessage: string;
 
-  // Show/hide password
+  // Show/hidePassword password
   hide1 = true;
   hide2 = true;
 
