@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {BaseComponent} from '../../shared/base-component';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {SettingsService} from '../settings.service';
 import {AppConstants} from '../../app.constants';
-import {SettingDto} from '../../dto/setting-dto';
 import {CertificatesService} from '../../certificates/certificates.service';
 import {CertificateDto} from '../../dto/certificate-dto';
 import {KeyValueDto} from '../../dto/key-value-dto';
@@ -59,8 +58,8 @@ export class SettingsSecurityComponent extends BaseComponent implements OnInit {
   save() {
     this.settingsService.saveMultiple(
       _.map(Object.keys(this.form.controls), (fc) => {
-      return new KeyValueDto(fc, this.form.get(fc).value)
-    })).subscribe(onNext => {
+        return new KeyValueDto(fc, this.form.get(fc).value)
+      })).subscribe(onNext => {
       this.utilityService.popupSuccess("Settings saved successfully.");
     });
   }
