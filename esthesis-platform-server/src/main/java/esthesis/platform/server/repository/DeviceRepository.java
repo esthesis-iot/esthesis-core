@@ -7,5 +7,5 @@ import java.util.Optional;
 
 @Repository
 public interface DeviceRepository extends BaseRepository<Device> {
-  Optional<Device> findByDeviceId(String deviceId);
+  Optional<Device> findByHardwareId(String hardwareId);
 }

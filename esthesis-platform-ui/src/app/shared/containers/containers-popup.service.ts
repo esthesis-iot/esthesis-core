@@ -20,10 +20,10 @@ export class ContainersPopupService {
         wsId: wsId
       }
     });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        console.log(result);
-      }
-    });
+    // dialogRef.afterClosed().subscribe(result => {
+    //   if (result) {
+    //     console.log(result);
+    //   }
+    // });
   }
 }

@@ -28,8 +28,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Device extends BaseEntity {
-  @NotNull
-  private String deviceId;
+  private String hardwareId;
 
   private String publicKey;
 

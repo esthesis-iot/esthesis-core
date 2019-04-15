@@ -4,27 +4,27 @@
     <form novalidate [formGroup]="form">
       <input type="hidden" formControlName="id">
       <div fxLayout="column">
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <input matInput placeholder="Name" formControlName="name">
         </mat-form-field>
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <input matInput placeholder="API address" formControlName="ipAddress">
         </mat-form-field>
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <mat-select placeholder="Type" formControlName="serverType">
             <mat-option *ngFor="let stype of constants.VIRTUALIZATION.TYPE | keyvalue" [value]="stype.value">
               {{ lookupByValue(constants.VIRTUALIZATION.TYPE, stype.value) }}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <mat-select placeholder="Security" formControlName="security">
             <mat-option *ngFor="let stype of constants.VIRTUALIZATION.SECURITY| keyvalue" [value]="stype.value">
               {{ lookupByValue(constants.VIRTUALIZATION.SECURITY, stype.value) }}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <mat-select placeholder="Client certificate" formControlName="certificate"
                       [disabled]="this.form.controls['security'].value !== constants.VIRTUALIZATION.SECURITY.CERTIFICATE">
             <mat-option *ngFor="let cert of certificates" [value]="cert.id">
@@ -32,13 +32,13 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <mat-select placeholder="State" formControlName="state">
             <mat-option [value]="true">Active</mat-option>
             <mat-option [value]="false">Inactive</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <mat-select placeholder="Tags" multiple formControlName="tags">
             <mat-option *ngFor="let tag of availableTags" [value]="tag.id">{{tag.name}}</mat-option>
           </mat-select>

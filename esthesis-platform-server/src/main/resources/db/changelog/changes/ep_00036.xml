@@ -1,0 +1,15 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd" logicalFilePath="ep_00036.xml">
+    <changeSet author="European Dynamics" id="1555335626286-1">
+        <addPrimaryKey columnNames="device_id, tag_id" constraintName="PRIMARY" tableName="device_tags"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1555335626286-2">
+        <dropForeignKeyConstraint baseTableName="device_tags" constraintName="FKcavqutwaxwd1gettpllppm372"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1555335626286-3">
+        <dropForeignKeyConstraint baseTableName="device_tags" constraintName="FKfvachxq3jiw1kp1p36018ywp9"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1555335626286-4">
+        <dropUniqueConstraint constraintName="tag_id" tableName="device_tags"/>
+    </changeSet>
+</databaseChangeLog>

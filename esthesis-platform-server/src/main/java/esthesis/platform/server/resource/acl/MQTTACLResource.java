@@ -1,11 +1,11 @@
 package esthesis.platform.server.resource.acl;
 
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
-import com.eurodyn.qlack.fuse.settings.service.SettingsService;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
-import esthesis.extension.config.AppConstants.Generic;
-import esthesis.platform.server.config.AppConstants.Setting;
+import esthesis.platform.server.config.AppSettings.Setting.Networking;
+import esthesis.platform.server.config.AppSettings.SettingValues.Networking.MqttAclEndpointStatus;
 import esthesis.platform.server.dto.acl.MosquittoAuthDTO;
+import esthesis.platform.server.service.SettingResolverService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/acl/mqtt")
 public class MQTTACLResource {
 
-  private final SettingsService settingsService;
+  private final SettingResolverService settingsResolverService;
 
-  public MQTTACLResource(SettingsService settingsService) {
-    this.settingsService = settingsService;
+  public MQTTACLResource(SettingResolverService settingsResolverService) {
+    this.settingsResolverService = settingsResolverService;
   }
 
   private boolean isEnabled() {
-    return settingsService.getSetting(Generic.SYSTEM, Setting.Mqtt.ACL_ENDPOINT_STATUS, Generic.SYSTEM)
-        .getValAsBoolean();
+    return settingsResolverService.is(Networking.MQTT_ACL_ENDPOINT_STATUS, MqttAclEndpointStatus.ACTIVE);
   }
 
   @PostMapping(path = "/auth", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)

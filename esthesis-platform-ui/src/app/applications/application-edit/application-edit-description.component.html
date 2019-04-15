@@ -1,7 +1,7 @@
 <form novalidate [formGroup]="form">
   <input type="hidden" formControlName="id">
   <div fxLayout="column">
-    <mat-form-field class="default-field-width">
+    <mat-form-field>
       <input matInput placeholder="Name" formControlName="name">
     </mat-form-field>
     <div fxLayout="row">
@@ -10,7 +10,7 @@
       </mat-form-field>
       <button mat-button (click)="generateToken()">GENERATE TOKEN</button>
     </div>
-    <mat-form-field class="default-field-width">
+    <mat-form-field>
       <mat-select placeholder="Status" formControlName="status">
         <mat-option *ngFor="let o of applicationStatus" [value]="o.value">
           {{ o.key }}

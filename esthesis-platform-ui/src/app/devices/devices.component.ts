@@ -18,7 +18,7 @@ import {UtilityService} from '../shared/utility.service';
 })
 export class DevicesComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   // Columns to display.
-  displayedColumns = ['deviceId', 'createdOn', 'state'];
+  displayedColumns = ['hardwareId', 'createdOn', 'state'];
 
   // Datasource definition.
   datasource: MatTableDataSource<DeviceDto> = new MatTableDataSource<DeviceDto>();

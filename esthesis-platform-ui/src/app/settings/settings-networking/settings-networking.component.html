@@ -3,10 +3,10 @@
   <div class="inline-subheader">
     Set the status of the MQTT ACL REST endpoint
   </div>
-  <mat-form-field class="default-field-width">
-    <mat-select placeholder="Status" [formControlName]="constants.SETTING.MQTT.ACL_ENDPOINT_STATUS._KEY">
-      <mat-option *ngFor="let o of constants.SETTING.MQTT.ACL_ENDPOINT_STATUS._VAL | keyvalue" [value]="o.value">
-        {{ lookupByValue(constants.SETTING.MQTT.ACL_ENDPOINT_STATUS._VAL, o.value) }}
+  <mat-form-field>
+    <mat-select placeholder="Status" [formControlName]="settings.SETTING.NETWORKING.MQTT_ACL_ENDPOINT_STATUS">
+      <mat-option *ngFor="let o of settings.SETTING_VALUES.NETWORKING.MQTT_ACL_ENDPOINT_STATUS | keyvalue" [value]="o.value">
+        {{ lookupByValue(settings.SETTING_VALUES.NETWORKING.MQTT_ACL_ENDPOINT_STATUS, o.value) }}
       </mat-option>
     </mat-select>
   </mat-form-field>

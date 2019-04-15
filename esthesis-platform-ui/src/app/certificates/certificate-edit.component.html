@@ -1,30 +1,28 @@
 <mat-card>
   <mat-card-title>Certificate</mat-card-title>
   <mat-card-content>
-    <form novalidate [formGroup]="form">
-      <div fxLayout="column">
-        <mat-form-field class="default-field-width">
-          <input matInput placeholder="Common name" formControlName="cn">
-        </mat-form-field>
-        <mat-form-field class="default-field-width">
-          <input matInput placeholder="Expires at" formControlName="validity"
-                 [matDatepicker]="validityPicker">
-          <mat-datepicker-toggle matSuffix [for]="validityPicker"></mat-datepicker-toggle>
-          <mat-datepicker #validityPicker disabled="false"></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field class="default-field-width" *ngIf="!form.controls['id'].value">
-          <mat-select placeholder="Signed by" formControlName="issuer">
-            <mat-option *ngFor="let issuer of issuers" [value]="issuer.cn">
-              {{ issuer.cn }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="default-field-width" *ngIf="form.controls['id'].value">
-          <select matNativeControl placeholder="Signed by" disabled="true">
-            <option value="volvo">{{ form.controls['issuer'].value }}</option>
-          </select>
-        </mat-form-field>
-      </div>
+    <form novalidate [formGroup]="form" fxLayout="column">
+      <mat-form-field>
+        <input matInput placeholder="Common name" formControlName="cn">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Expires at" formControlName="validity"
+               [matDatepicker]="validityPicker">
+        <mat-datepicker-toggle matSuffix [for]="validityPicker"></mat-datepicker-toggle>
+        <mat-datepicker #validityPicker disabled="false"></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field *ngIf="!form.controls['id'].value">
+        <mat-select placeholder="Signed by" formControlName="issuer">
+          <mat-option *ngFor="let issuer of issuers" [value]="issuer.cn">
+            {{ issuer.cn }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field *ngIf="form.controls['id'].value">
+        <select matNativeControl placeholder="Signed by" disabled="true">
+          <option value="volvo">{{ form.controls['issuer'].value }}</option>
+        </select>
+      </mat-form-field>
     </form>
   </mat-card-content>
   <mat-card-actions>

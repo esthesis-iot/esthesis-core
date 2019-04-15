@@ -15,22 +15,22 @@
         <mat-checkbox formControlName="defaultIP"
                       class="pad-t-1 pad-b-1">Default for initial provisioning</mat-checkbox>
 
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <input matInput placeholder="Name" formControlName="name">
         </mat-form-field>
 
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <input matInput placeholder="Version" formControlName="version">
         </mat-form-field>
 
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <mat-select placeholder="Status" formControlName="status">
             <mat-option value="true">Active</mat-option>
             <mat-option value="false">Inactive</mat-option>
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <mat-select placeholder="Prerequisites" formControlName="prerequisites">
             <!--<mat-option *ngFor="let type of packageTypes | keyvalue" [value]="type.key">-->
             <!--{{type.value}}-->
@@ -38,7 +38,7 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <textarea matInput placeholder="Description" formControlName="description"></textarea>
         </mat-form-field>
 

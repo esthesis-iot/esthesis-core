@@ -22,67 +22,6 @@ export const AppConstants = {
     CERTIFICATE: 2
   },
 
-  // List of settings.
-  SETTING: {
-    DEVICE_REGISTRATION: {
-      _KEY: 'deviceRegistration',
-      _VAL: {
-        DISABLED: 'DISABLED',
-        OPEN: 'OPEN',
-        ID: 'ID',
-        CRYPTO: 'CRYPTO',
-        OPEN_WITH_APPROVAL: 'OPEN_WITH_APPROVAL'
-      }
-    },
-    DEVICE_PUSH_TAGS: {
-      _KEY: 'devicePushTags'
-    },
-    DEVICE_OUTGOING_ENCRYPTION: {
-      _KEY: 'deviceOutgoingEncryption',
-      _VAL: {
-        ENCRYPTED: 'ENCRYPTED',
-        NOT_ENCRYPTED: 'NOT_ENCRYPTED',
-        DEVICE_SPECIFIC: 'DEVICE_SPECIFIC'
-      }
-    },
-    DEVICE_INCOMING_ENCRYPTION: {
-      _KEY: 'deviceIncomingEncryption',
-      _VAL: {
-        ENCRYPTED: 'ENCRYPTED',
-        NOT_ENCRYPTED: 'NOT_ENCRYPTED',
-        OPTIONAL: 'OPTIONAL'
-      }
-    },
-    DEVICE_OUTGOING_SIGNATURE: {
-      _KEY: 'deviceOutgoingSignature',
-      _VAL: {
-        SIGNED: 'SIGNED',
-        NOT_SIGNED: 'NOT_SIGNED',
-        DEVICE_SPECIFIC: 'DEVICE_SPECIFIC'
-      }
-    },
-    DEVICE_INCOMING_SIGNATURE: {
-      _KEY: 'deviceIncomingSignature',
-      _VAL: {
-        SIGNED: 'SIGNED',
-        NOT_SIGNED: 'NOT_SIGNED',
-        OPTIONAL: 'OPTIONAL'
-      }
-    },
-    MQTT: {
-      SUPERUSER_CERTIFICATE: {
-        _KEY: 'mqttSuperuserCertificate'
-      },
-      ACL_ENDPOINT_STATUS: {
-        _KEY: 'mqttAclEndpointStatus',
-        _VAL: {
-          INACTIVE: 0,
-          ACTIVE: 1
-        }
-      }
-    }
-  },
-
   // WebSocket topics to subscribe.
   WEBSOCKET: {
     TOPIC_PREFIX: '/topic',

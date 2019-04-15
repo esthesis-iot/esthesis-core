@@ -3,10 +3,10 @@
   <div class="inline-subheader">
     Set whether messages to devices should be encrypted or not.
   </div>
-  <mat-form-field class="default-field-width">
-    <mat-select placeholder="Data encryption mode" [formControlName]="constants.SETTING.DEVICE_OUTGOING_ENCRYPTION._KEY">
-      <mat-option *ngFor="let o of constants.SETTING.DEVICE_OUTGOING_ENCRYPTION._VAL | keyvalue" [value]="o.value">
-        {{ lookupByValue(constants.SETTING.DEVICE_OUTGOING_ENCRYPTION._VAL, o.value) }}
+  <mat-form-field>
+    <mat-select placeholder="Data encryption mode" [formControlName]="settings.SETTING.SECURITY.OUTGOING_ENCRYPTION">
+      <mat-option *ngFor="let o of settings.SETTING_VALUES.SECURITY.OUTGOING_ENCRYPTION | keyvalue" [value]="o.value">
+        {{ lookupByValue(settings.SETTING_VALUES.SECURITY.OUTGOING_ENCRYPTION, o.value) }}
       </mat-option>
     </mat-select>
   </mat-form-field>
@@ -15,10 +15,10 @@
   <div class="inline-subheader">
     Set whether messages from device should be encrypted or not.
   </div>
-  <mat-form-field class="default-field-width">
-    <mat-select placeholder="Data encryption mode" [formControlName]="constants.SETTING.DEVICE_INCOMING_ENCRYPTION._KEY">
-      <mat-option *ngFor="let o of constants.SETTING.DEVICE_INCOMING_ENCRYPTION._VAL | keyvalue" [value]="o.value">
-        {{ lookupByValue(constants.SETTING.DEVICE_INCOMING_ENCRYPTION._VAL, o.value) }}
+  <mat-form-field>
+    <mat-select placeholder="Data encryption mode" [formControlName]="settings.SETTING.SECURITY.INCOMING_ENCRYPTION">
+      <mat-option *ngFor="let o of settings.SETTING_VALUES.SECURITY.INCOMING_ENCRYPTION | keyvalue" [value]="o.value">
+        {{ lookupByValue(settings.SETTING_VALUES.SECURITY.INCOMING_ENCRYPTION, o.value) }}
       </mat-option>
     </mat-select>
   </mat-form-field>
@@ -27,10 +27,10 @@
   <div class="inline-subheader">
     Set whether messages to devices should be signed or not.
   </div>
-  <mat-form-field class="default-field-width">
-    <mat-select placeholder="Data signature mode" [formControlName]="constants.SETTING.DEVICE_OUTGOING_SIGNATURE._KEY">
-      <mat-option *ngFor="let o of constants.SETTING.DEVICE_OUTGOING_SIGNATURE._VAL | keyvalue" [value]="o.value">
-        {{ lookupByValue(constants.SETTING.DEVICE_OUTGOING_SIGNATURE._VAL, o.value) }}
+  <mat-form-field>
+    <mat-select placeholder="Data signature mode" [formControlName]="settings.SETTING.SECURITY.OUTGOING_SIGNATURE">
+      <mat-option *ngFor="let o of settings.SETTING_VALUES.SECURITY.OUTGOING_SIGNATURE | keyvalue" [value]="o.value">
+        {{ lookupByValue(settings.SETTING_VALUES.SECURITY.OUTGOING_SIGNATURE, o.value) }}
       </mat-option>
     </mat-select>
   </mat-form-field>
@@ -39,12 +39,24 @@
   <div class="inline-subheader">
     Set whether messages from devices should be signed or not.
   </div>
-  <mat-form-field class="default-field-width">
-    <mat-select placeholder="Data signature mode" [formControlName]="constants.SETTING.DEVICE_INCOMING_SIGNATURE._KEY">
-      <mat-option *ngFor="let o of constants.SETTING.DEVICE_INCOMING_SIGNATURE._VAL | keyvalue" [value]="o.value">
-        {{ lookupByValue(constants.SETTING.DEVICE_INCOMING_SIGNATURE._VAL, o.value) }}
+  <mat-form-field>
+    <mat-select placeholder="Data signature mode" [formControlName]="settings.SETTING.SECURITY.INCOMING_SIGNATURE">
+      <mat-option *ngFor="let o of settings.SETTING_VALUES.SECURITY.INCOMING_SIGNATURE | keyvalue" [value]="o.value">
+        {{ lookupByValue(settings.SETTING_VALUES.SECURITY.INCOMING_SIGNATURE, o.value) }}
       </mat-option>
     </mat-select>
+  </mat-form-field>
+
+  <div class="inline-header xs-mt2">Platform certificate</div>
+  <div class="inline-subheader">
+    The certificate used to sign and encrypt messages originating from the platform.
+  </div>
+  <mat-form-field>
+      <mat-select [compareWith]="compareByStringValue" placeholder="Certificate" [formControlName]="settings.SETTING.SECURITY.PLATFORM_CERTIFICATE">
+        <mat-option *ngFor="let o of certificates" [value]="o.id">
+          {{ o.cn }}
+        </mat-option>
+      </mat-select>
   </mat-form-field>
 </form>
 

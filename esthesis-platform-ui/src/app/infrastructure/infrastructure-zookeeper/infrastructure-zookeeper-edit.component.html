@@ -5,13 +5,13 @@
       <input type="hidden" formControlName="id">
       <div fxLayout="row" fxLayoutGap="1rem">
         <div fxLayout="column">
-          <mat-form-field class="default-field-width">
+          <mat-form-field>
             <input matInput placeholder="Name" formControlName="name" required>
           </mat-form-field>
-          <mat-form-field class="default-field-width">
+          <mat-form-field>
             <input matInput placeholder="IP address" formControlName="ipAddress" required>
           </mat-form-field>
-          <mat-form-field class="default-field-width">
+          <mat-form-field>
             <mat-select placeholder="State" formControlName="state" required>
               <mat-option [value]="constants.GENERIC.ACTIVE">Active</mat-option>
               <mat-option [value]="constants.GENERIC.DISABLED">Inactive</mat-option>
@@ -20,7 +20,7 @@
 
           <div fxLayout="column" style="padding-top: 2rem">
             <div fxLayout="row">
-              <mat-form-field class="default-field-width">
+              <mat-form-field>
                 <input matInput placeholder="CA certificate" formControlName="caCert">
               </mat-form-field>
               <button mat-button [matMenuTriggerFor]="caCertificatesMenu"><mat-icon>search</mat-icon></button>
@@ -31,7 +31,7 @@
             </div>
 
             <div fxLayout="row">
-              <mat-form-field class="default-field-width">
+              <mat-form-field>
                 <input matInput placeholder="Client certificate" formControlName="clientCert">
               </mat-form-field>
               <button mat-button [matMenuTriggerFor]="clientCertificatesMenu"><mat-icon>search</mat-icon></button>
@@ -42,7 +42,7 @@
             </div>
 
             <div fxLayout="row">
-              <mat-form-field class="default-field-width">
+              <mat-form-field>
                 <input matInput placeholder="Client private key" formControlName="clientKey">
               </mat-form-field>
               <button mat-button [matMenuTriggerFor]="clientKeysMenu"><mat-icon>search</mat-icon></button>
@@ -54,10 +54,10 @@
           </div>
         </div>
         <div fxLayout="column">
-          <mat-form-field class="default-field-width">
+          <mat-form-field>
             <input matInput placeholder="Username" formControlName="username">
           </mat-form-field>
-          <mat-form-field class="default-field-width">
+          <mat-form-field>
             <input matInput placeholder="Password" formControlName="password" type="password">
           </mat-form-field>
         </div>

@@ -10,9 +10,9 @@ export class DashboardInactiveDevicesComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'device', 'lastSeen'];
   dataSource: DeviceDto[] = [
-    {id: 'l32kfid', device: 'Develco Z344-D', lastSeen: new Date()},
-    {id: 'dfj3495', device: 'Develco Z344-D', lastSeen: new Date()},
-    {id: 'f3d3324', device: 'Develco Z344-D', lastSeen: new Date()}
+    {id: 'l32kfid', device: 'Develco Z344-D', lastSeen: new Date(), hardwareId: '123'},
+    {id: 'dfj3495', device: 'Develco Z344-D', lastSeen: new Date(), hardwareId: '123'},
+    {id: 'f3d3324', device: 'Develco Z344-D', lastSeen: new Date(), hardwareId: '123'}
   ];
 
   constructor() { }

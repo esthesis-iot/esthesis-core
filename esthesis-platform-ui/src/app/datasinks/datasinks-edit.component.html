@@ -9,7 +9,7 @@
         <mat-form-field class="default-field-width xs-mt1">
           <input matInput placeholder="Name" formControlName="name">
         </mat-form-field>
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <mat-select placeholder="Driver" formControlName="factoryClass">
             <mat-option *ngFor="let factory of availableDataSinkFactories" [value]="factory.factoryClass"
                         (onSelectionChange)="updateHandlers($event)">

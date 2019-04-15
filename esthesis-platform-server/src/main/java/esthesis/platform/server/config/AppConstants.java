@@ -13,12 +13,14 @@ public class AppConstants {
     public final static String EVENT_PROFILE = "Profile";
   }
 
+  //TODO Turn them to String
   public class Application {
     public static final int STATUS_INACTIVE = 0;
     public static final int STATUS_ACTIVE = 1;
     public static final int STATUS_DISABLED = -1;
   }
 
+  //TODO Turn them to String
   public class User {
     public static final int STATUS_INACTIVE = 0;
     public static final int STATUS_ACTIVE = 1;
@@ -28,14 +30,6 @@ public class AppConstants {
   }
 
   public class Device {
-    public class RegistrationMode {
-      public static final String DISABLED = "DISABLED";
-      public static final String OPEN = "OPEN";
-      public static final String OPEN_WITH_APPROVAL = "OPEN_WITH_APPROVAL";
-      public static final String ID = "ID";
-      public static final String CRYPTO = "CRYPTO";
-    }
-
     public class Status {
       public static final String DISABLED = "DISABLED";
       public static final String PREREGISTERED = "PREREGISTERED";
@@ -44,15 +38,8 @@ public class AppConstants {
     }
   }
 
-  public class Setting {
-    public static final String DEVICE_REGISTRATION = "deviceRegistration";
-    public static final String DEVICE_PUSH_TAGS = "devicePushTags";
-    public class Mqtt {
-      public static final String ACL_ENDPOINT_STATUS = "mqttAclEndpointStatus";
-    }
-  }
-
   public class Cryptography {
+    //TODO Turn them to String
     public class KeyType {
       public static final int PRIVATE_KEY = 0;
       public static final int PUBLIC_KEY = 1;
@@ -90,8 +77,9 @@ public class AppConstants {
     public static final String JWT_CLAIM_USER_ID = "user_id";
     public static final String JWT_CLAIM_SESSION_ID = "session_id";
   }
-  
+
   public class Infrastructure {
+    //TODO Turn them to String
     public class MqttServerType {
       public static final long UNMANAGED = 0;
       public static final long MANAGED_MOSQUITTO = 1;
@@ -99,10 +87,12 @@ public class AppConstants {
   }
 
   public class Virtualization {
+    //TODO Turn them to String
     public class Type {
       public static final int DOCKER_ENGINE = 0;
       public static final int DOCKER_SWARM = 1;
     }
+    //TODO Turn them to String
     public class Security {
       public static final int OPEN = 0;
       public static final int CERTIFICATE = 1;

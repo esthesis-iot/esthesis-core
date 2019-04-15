@@ -1,34 +1,43 @@
 <mat-card>
   <mat-card-title>Preregister devices</mat-card-title>
   <mat-card-content>
-    <form novalidate [formGroup]="form" fxLayout="row">
-      <div>
-        <mat-form-field class="default-field-width">
-          <textarea matTextareaAutosize matAutosizeMinRows=1 matAutosizeMaxRows=30 matInput placeholder="Device id(s)"
+    <form novalidate [formGroup]="form" fxLayout="column">
+      <mat-form-field>
+          <textarea matTextareaAutosize matAutosizeMinRows=1 matAutosizeMaxRows=30 matInput
+                    placeholder="Device id(s)"
                     formControlName="ids"></textarea>
-        </mat-form-field>
-      </div>
-      <div>
-        <button mat-icon-button matTooltip="Scan bar/QR-code" (click)="switchCamControls()">
-          <mat-icon>camera_alt</mat-icon>
-          <br>
-        </button>
-      </div>
-      <div fxLayout="column" *ngIf="camControls">
-        <mat-select placeholder="Camera" (selectionChange)="changeCamera($event.value)"  [(value)]="selectedCam">
-          <mat-option *ngFor="let camera of cameras" [value]="camera.key">
-            {{camera.value}}
-          </mat-option>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-select placeholder="Tags" multiple formControlName="tags">
+          <mat-option *ngFor="let tag of availableTags" [value]="tag.id">{{tag.name}}</mat-option>
         </mat-select>
-        <div class="cam-viewer">
-          <zxing-scanner #scanner
-                         (camerasFound)="camerasFoundHandler($event)"
-                         (scanComplete)="scanCompleteHandler($event)"></zxing-scanner>
-        </div>
-      </div>
+      </mat-form-field>
+
+      <!--      <div>-->
+      <!--        <button mat-icon-button matTooltip="Scan bar/QR-code" (click)="switchCamControls()">-->
+      <!--          <mat-icon>camera_alt</mat-icon>-->
+      <!--          <br>-->
+      <!--        </button>-->
+      <!--      </div>-->
+
+      <!--      <div fxLayout="column" *ngIf="camControls">-->
+      <!--        <mat-select placeholder="Camera" (selectionChange)="changeCamera($event.value)"-->
+      <!--                    [(value)]="selectedCam">-->
+      <!--          <mat-option *ngFor="let camera of cameras" [value]="camera.key">-->
+      <!--            {{camera.value}}-->
+      <!--          </mat-option>-->
+      <!--        </mat-select>-->
+      <!--        <div class="cam-viewer">-->
+      <!--          <zxing-scanner #scanner-->
+      <!--                         (camerasFound)="camerasFoundHandler($event)"-->
+      <!--                         (scanComplete)="scanCompleteHandler($event)"></zxing-scanner>-->
+      <!--        </div>-->
+      <!--      </div>-->
     </form>
   </mat-card-content>
   <mat-card-actions>
+    <button mat-button (click)="useCam()">USE CAMERA</button>
     <button mat-button routerLink="/devices">CANCEL</button>
     <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
   </mat-card-actions>

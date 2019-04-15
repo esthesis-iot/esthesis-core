@@ -9,6 +9,12 @@ import {KeyValueDto} from '../dto/key-value-dto';
 import * as _ from 'lodash';
 import {Log} from 'ng2-logger/browser';
 import {UtilityService} from '../shared/utility.service';
+import {TagDto} from '../dto/tag-dto';
+import {TagService} from '../tags/tag.service';
+import {UUID} from 'angular2-uuid';
+import {ContainerDeployComponent} from '../shared/containers/container-deploy.component';
+import {DevicePreregisterCamComponent} from './device-preregister-cam.component';
+import {MatDialog} from '@angular/material';
 
 @Component({
   selector: 'app-device-preregister',
@@ -16,61 +22,50 @@ import {UtilityService} from '../shared/utility.service';
   styleUrls: ['./device-preregister.component.scss']
 })
 export class DevicePreregisterComponent extends BaseComponent implements OnInit {
-  private log = Log.create('DevicePreregisterComponent');
   form: FormGroup;
-  @ViewChild('scanner')
-  scanner: ZXingScannerComponent;
-  cameras: KeyValueDto[] = [];
-  camControls = false;
-  selectedCam: string;
+  availableTags: TagDto[];
 
-  constructor(private fb: FormBuilder, private qForms: QFormsService, private devicesService: DevicesService,
-              private router: Router, private utilityService: UtilityService) {
+  constructor(private fb: FormBuilder, private qForms: QFormsService,
+              private devicesService: DevicesService, private router: Router,
+              private utilityService: UtilityService, private tagService: TagService,
+              private dialog: MatDialog) {
     super();
   }
 
   ngOnInit() {
     // Setup the form.
     this.form = this.fb.group({
-      ids: ['', [Validators.required]]
+      ids: ['', [Validators.required]],
+      tags: [[]]
+    });
+
+    // Get available tags.
+    this.tagService.getAll().subscribe(onNext => {
+      this.availableTags = onNext.content;
     });
   }
 
   save() {
     this.devicesService.preregister(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
-      this.utilityService.popupSuccess('Devices were successfully registered.');
+      this.utilityService.popupSuccess('Devices are registering.');
       this.router.navigate(['devices']);
     });
   }
 
-  scanCompleteHandler(event) {
-    const existingIds: string = this.form.controls['ids'].value;
-    const newId = event['text'];
-    if (!existingIds) {
-      this.form.controls['ids'].setValue(newId);
-    } else {
-      if (existingIds.indexOf(newId) === -1) {
-        this.form.controls['ids'].setValue(newId + '\n' + existingIds);
+  useCam() {
+    // Create a random topic to monitor this deployment via WebSockets.
+    const wsId = UUID.UUID();
+    const dialogRef = this.dialog.open(DevicePreregisterCamComponent, {
+      height: '70%',
+      width: '80%',
+      data: {
+        wsId: wsId
       }
-    }
-  }
-
-  camerasFoundHandler(event) {
-    this.cameras = [];
-    for (const cam of _.orderBy(event, ['label'], ['asc'])) {
-      this.cameras.push(new KeyValueDto(cam['deviceId'], cam['label']));
-    }
-    if (this.cameras.length > 0) {
-      this.selectedCam = this.cameras[0].key;
-      this.scanner.scan(this.selectedCam);
-    }
-  }
-
-  changeCamera(cameraId: string) {
-    this.scanner.scan(cameraId);
-  }
-
-  switchCamControls() {
-    this.camControls = !this.camControls;
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.form.controls['ids'].patchValue(result);
+      }
+    });
   }
 }

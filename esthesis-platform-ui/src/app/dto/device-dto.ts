@@ -6,4 +6,5 @@ export class DeviceDto {
   status?: string;
   connection?: string;
   firmware?: string;
+  hardwareId: string;
 }

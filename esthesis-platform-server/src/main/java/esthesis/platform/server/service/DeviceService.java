@@ -1,23 +1,24 @@
 package esthesis.platform.server.service;
 
 
+import static esthesis.platform.server.config.AppSettings.SettingValues.DeviceRegistration.RegistrationMode.DISABLED;
+
+import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
 import com.eurodyn.qlack.common.exception.QDisabledException;
-import com.eurodyn.qlack.common.exception.QDoesNotExistException;
-import com.eurodyn.qlack.fuse.settings.service.SettingsService;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
-import esthesis.extension.config.AppConstants.Generic;
 import esthesis.extension.device.request.RegistrationRequest;
-import esthesis.extension.device.response.RegistrationResponse;
-import esthesis.platform.server.config.AppConstants;
 import esthesis.platform.server.config.AppConstants.Device.Status;
-import esthesis.platform.server.config.AppConstants.Setting;
 import esthesis.platform.server.config.AppConstants.WebSocket.Topic;
+import esthesis.platform.server.config.AppSettings.Setting.DeviceRegistration;
+import esthesis.platform.server.config.AppSettings.SettingValues.DeviceRegistration.RegistrationMode;
 import esthesis.platform.server.dto.DeviceDTO;
+import esthesis.platform.server.dto.DeviceRegistrationDTO;
 import esthesis.platform.server.dto.WebSocketMessageDTO;
 import esthesis.platform.server.mapper.DeviceMapper;
 import esthesis.platform.server.model.Device;
 import esthesis.platform.server.repository.DeviceRepository;
 import esthesis.platform.server.util.RegistrationUtil;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -27,10 +28,9 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 @Validated
@@ -44,100 +44,105 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   private final DeviceRepository deviceRepository;
   private final DeviceMapper deviceMapper;
   private final WebSocketService webSocketService;
-  private final SettingsService settingsService;
+  private final SettingResolverService srs;
+  private final TagService tagService;
 
   public DeviceService(RegistrationUtil registrationUtil,
-      DeviceRepository deviceRepository, DeviceMapper deviceMapper,
-      WebSocketService webSocketService, SettingsService settingsService) {
+    DeviceRepository deviceRepository, DeviceMapper deviceMapper,
+    WebSocketService webSocketService, SettingResolverService srs,
+    TagService tagService) {
     this.registrationUtil = registrationUtil;
     this.deviceRepository = deviceRepository;
     this.deviceMapper = deviceMapper;
     this.webSocketService = webSocketService;
-    this.settingsService = settingsService;
+    this.srs = srs;
+    this.tagService = tagService;
   }
 
   /**
    * Preregister a device, so that it can self-register later on.
-   *
-   * @param ids The IDs of the devices to preregister.
    */
-  public void preregister(String[] ids) {
-    //TODO check for existing device IDs.
-    List<DeviceDTO> devices = new ArrayList<>();
-    for (String id : ids) {
-      devices.add(new DeviceDTO().setDeviceId(id).setState(Status.PREREGISTERED));
-    }
+  @Async
+  public void preregister(DeviceRegistrationDTO deviceRegistrationDTO)
+    throws NoSuchAlgorithmException, NoSuchProviderException, IOException {
+    // Split IDs.
+    String ids = deviceRegistrationDTO.getIds();
+    ids = ids.replace("\n", ",");
+    String[] idList = ids.split(",");
 
-    deviceRepository.saveAll(deviceMapper.mapDTOs(devices));
+    // Before preregistering the devices check that all given registration IDs are available. If any
+    // of the given IDs is already assigned on an existing device abort the preregistration.
+    for (String hardwareId : idList) {
+      if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
+        throw new QAlreadyExistsException("Preregistration ID {0} is already assigned to a device "
+          + "registered in the system.", hardwareId);
+      }
+    }
+    // Convert tags to their name-equivalent.
+    String tagNames = String.join(",",deviceRegistrationDTO.getTags().stream().map(tagId -> {
+      return tagService.findById(tagId).getName();
+    }).collect(Collectors.toList()));
+
+    // Register IDs.
+    for (String hardwareId : idList) {
+      registrationUtil.register(hardwareId, tagNames, Status.PREREGISTERED, false);
+    }
   }
 
-  public void register(String deviceId, String hmac, String tags)
-      throws NoSuchProviderException, NoSuchAlgorithmException, IOException, InvalidKeyException {
-    LOGGER.log(Level.FINE, "Attempting to register device {0}.", deviceId);
-
+  public DeviceDTO register(RegistrationRequest registrationRequest)
+    throws NoSuchProviderException, NoSuchAlgorithmException, IOException, InvalidKeyException {
     DeviceDTO deviceDTO = null;
 
-    // Find the registration mode on which the platform is running.
-    final String registrationMode = settingsService.getSetting(Generic.SYSTEM, Setting.DEVICE_REGISTRATION, Generic.SYSTEM).getVal();
+    if (srs.is(DeviceRegistration.REGISTRATION_MODE, DISABLED)) {
+      throw new QDisabledException(
+        "Attempting to register device with hardware ID {0} but registration of new devices is "
+          + "disabled.",
+        registrationRequest.getHardwareId());
+    } else {
+      LOGGER.log(Level.FINE, "Attempting to register device with registration ID {0}.",
+        registrationRequest.getHardwareId());
+      // Check registration preconditions and register device.
+      LOGGER.log(Level.FINEST, "Platform running on {0} registration mode.",
+        srs.get(DeviceRegistration.REGISTRATION_MODE));
+      switch (srs.get(DeviceRegistration.REGISTRATION_MODE)) {
+        case RegistrationMode.OPEN:
+          deviceDTO = deviceMapper
+            .map(registrationUtil.register(registrationRequest.getHardwareId(),
+              registrationRequest.getTags(), Status.REGISTERED, true));
+          break;
+        case RegistrationMode.OPEN_WITH_APPROVAL:
+          deviceDTO = deviceMapper
+            .map(registrationUtil.register(registrationRequest.getHardwareId(),
+              registrationRequest.getTags(), Status.APPROVAL, true));
+          break;
+        case RegistrationMode.ID:
+          deviceDTO = deviceMapper.map(registrationUtil.registerPreregistered(registrationRequest));
+          break;
+        case RegistrationMode.DISABLED:
+          throw new QDisabledException("Device registration is disabled.");
+      }
 
-    // Find if device-pushed tags are supported.
-    final boolean devicePushedTagsSupported = settingsService.getSetting(Generic.SYSTEM, Setting.DEVICE_PUSH_TAGS, Generic.SYSTEM).getValAsBoolean();
-
-    // Check registration preconditions and register device.
-    LOGGER.log(Level.FINEST, "Platform running on {0} registration mode.", registrationMode);
-    switch (registrationMode) {
-      case AppConstants.Device.RegistrationMode.OPEN:
-        registrationUtil.checkRegistrationEnabled();
-        registrationUtil.checkDeviceIdDoesNotExist(deviceId);
-        if (devicePushedTagsSupported) {
-          registrationUtil.checkTagsExist(tags);
-        }
-        deviceDTO = deviceMapper.map(registrationUtil.registerNew(deviceId, tags));
-        break;
-      case AppConstants.Device.RegistrationMode.OPEN_WITH_APPROVAL:
-        registrationUtil.checkRegistrationEnabled();
-        registrationUtil.checkDeviceIdDoesNotExist(deviceId);
-        if (devicePushedTagsSupported) {
-          registrationUtil.checkTagsExist(tags);
-        }
-        deviceDTO = deviceMapper.map(registrationUtil.registerForApproval(deviceId, tags));
-        break;
-      case AppConstants.Device.RegistrationMode.ID:
-        registrationUtil.checkRegistrationEnabled();
-        registrationUtil.checkDeviceIdPreregistered(deviceId);
-        if (devicePushedTagsSupported) {
-          registrationUtil.checkTagsExist(tags);
-        }
-        deviceDTO = deviceMapper.map(registrationUtil.registerPreregistered(deviceId, tags));
-        break;
-      case AppConstants.Device.RegistrationMode.CRYPTO:
-        registrationUtil.checkRegistrationEnabled();
-        registrationUtil.checkDeviceIdPreregistered(deviceId);
-        if (devicePushedTagsSupported) {
-          registrationUtil.checkTagsExist(tags);
-        }
-        registrationUtil.checkHmac(deviceId, hmac);
-        deviceDTO = deviceMapper.map(registrationUtil.registerCrypto(deviceId, tags));
-        break;
-      case AppConstants.Device.RegistrationMode.DISABLED:
-        throw new QDisabledException("Device registration is disabled");
-      default:
-        throw new QDoesNotExistException("Platform server runs on an an unknown registration mode.");
+      // Realtime notification.
+      webSocketService.publish(new WebSocketMessageDTO()
+        .setTopic(Topic.DEVICE_REGISTRATION)
+        .setPayload(MessageFormat
+          .format("Device with registration id {0} registered.",
+            registrationRequest.getHardwareId())));
     }
 
-    // Realtime notification.
-    webSocketService.publish(new WebSocketMessageDTO()
-        .setTopic(Topic.DEVICE_REGISTRATION)
-        .setPayload(MessageFormat.format("Device with id {0} registered.", deviceId)));
+    LOGGER.log(Level.FINE, "Registered device with hardware ID {0}.",
+      registrationRequest.getHardwareId());
+    return deviceDTO;
   }
 
-  public RegistrationResponse register(RegistrationRequest registrationRequest)
-      throws NoSuchAlgorithmException, NoSuchProviderException, IOException, InvalidKeyException {
-    register(registrationRequest.getDeviceId(), registrationRequest.getHmac(), registrationRequest.getTags());
-    final Device device = ReturnOptional.r(deviceRepository.findByDeviceId(registrationRequest.getDeviceId()));
+  public DeviceDTO findByHardwareId(String hardwareId) {
+    return deviceMapper
+      .map(ReturnOptional.r(deviceRepository.findByHardwareId(hardwareId), hardwareId));
+  }
 
-    return new RegistrationResponse()
-        .setPrivateKey(device.getPrivateKey())
-        .setPublicKey(device.getPublicKey());
+  @Async
+  @Override
+  public DeviceDTO deleteById(long id) {
+    return super.deleteById(id);
   }
 }

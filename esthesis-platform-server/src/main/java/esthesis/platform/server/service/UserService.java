@@ -18,7 +18,6 @@ import esthesis.platform.server.repository.UserRepository;
 import javax.validation.constraints.NotBlank;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +36,7 @@ public class UserService extends BaseService<UserDTO, User> {
   private final AuditService auditService;
   private final UserMapper userMapper;
 
-  @Autowired
+//  @Autowired
   public UserService(UserRepository userRepository, JWTService jwtService, AuditServiceProxy auditServiceProxy,
       AuditService auditService, UserMapper userMapper) {
     this.userRepository = userRepository;

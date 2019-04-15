@@ -1,24 +1,24 @@
 <form novalidate [formGroup]="profileForm" (ngSubmit)="onSubmit(profileForm)" >
   <div fxLayout="column">
     <h4>Profile details</h4>
-    <mat-form-field class="default-field-width">
+    <mat-form-field>
       <input matInput placeholder="First name" formControlName="fn" autofocus>
     </mat-form-field>
-    <mat-form-field class="default-field-width">
+    <mat-form-field>
       <input matInput placeholder="Last name" formControlName="ln">
     </mat-form-field>
-    <mat-form-field class="default-field-width">
+    <mat-form-field>
       <input matInput placeholder="Email" formControlName="email" readonly>
     </mat-form-field>
 
     <h4>Change password</h4>
-    <mat-form-field class="default-field-width">
+    <mat-form-field>
       <input matInput placeholder="Current password" formControlName="oldPassword" type="password">
     </mat-form-field>
-    <mat-form-field class="default-field-width">
+    <mat-form-field>
       <input matInput placeholder="New password" formControlName="newPassword1" type="password">
     </mat-form-field>
-    <mat-form-field class="default-field-width">
+    <mat-form-field>
       <input matInput placeholder="Verify new password" formControlName="newPassword2" type="password">
     </mat-form-field>
 
@@ -29,7 +29,7 @@
         To change your email you need to also enter your current password.
       </span>
     </div>
-    <mat-form-field class="default-field-width">
+    <mat-form-field>
       <input matInput placeholder="New email" formControlName="newEmail">
     </mat-form-field>
 

@@ -18,7 +18,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class DeviceDTO extends BaseDTO {
   @NotNull
-  private String deviceId;
+  private String hardwareId;
 
   private String publicKey;
 

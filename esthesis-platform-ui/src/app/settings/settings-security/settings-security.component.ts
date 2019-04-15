@@ -2,12 +2,12 @@ import {Component, OnInit} from '@angular/core';
 import {BaseComponent} from '../../shared/base-component';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {SettingsService} from '../settings.service';
-import {AppConstants} from '../../app.constants';
 import {CertificatesService} from '../../certificates/certificates.service';
 import {CertificateDto} from '../../dto/certificate-dto';
 import {KeyValueDto} from '../../dto/key-value-dto';
 import * as _ from 'lodash';
 import {UtilityService} from '../../shared/utility.service';
+import {AppSettings} from '../../app.settings';
 
 @Component({
   selector: 'app-settings-security',
@@ -30,14 +30,16 @@ export class SettingsSecurityComponent extends BaseComponent implements OnInit {
       deviceIncomingEncryption: ['', [Validators.required]],
       deviceOutgoingSignature: ['', [Validators.required]],
       deviceIncomingSignature: ['', [Validators.required]],
+      platformCertificate: ['', [Validators.required]],
     });
 
     // Fetch settings.
     this.settingsService.findByNames(
-      AppConstants.SETTING.DEVICE_OUTGOING_ENCRYPTION._KEY,
-      AppConstants.SETTING.DEVICE_INCOMING_ENCRYPTION._KEY,
-      AppConstants.SETTING.DEVICE_OUTGOING_SIGNATURE._KEY,
-      AppConstants.SETTING.DEVICE_INCOMING_SIGNATURE._KEY,
+      AppSettings.SETTING.SECURITY.OUTGOING_ENCRYPTION,
+      AppSettings.SETTING.SECURITY.INCOMING_ENCRYPTION,
+      AppSettings.SETTING.SECURITY.OUTGOING_SIGNATURE,
+      AppSettings.SETTING.SECURITY.INCOMING_SIGNATURE,
+      AppSettings.SETTING.SECURITY.PLATFORM_CERTIFICATE,
     ).subscribe(onNext => {
       onNext.forEach(settingDTO => {
         this.form.controls[settingDTO.key].patchValue(settingDTO.val);

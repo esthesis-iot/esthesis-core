@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {SettingsService} from '../settings.service';
-import {AppConstants} from '../../app.constants';
 import {BaseComponent} from '../../shared/base-component';
-import {SettingDto} from '../../dto/setting-dto';
+import {AppSettings} from '../../app.settings';
+import * as _ from 'lodash';
+import {KeyValueDto} from '../../dto/key-value-dto';
+import {UtilityService} from '../../shared/utility.service';
 
 @Component({
   selector: 'app-settings-networking',
   templateUrl: './settings-networking.component.html',
   styleUrls: ['./settings-networking.component.scss']
 })
-export class SettingsNetworkingComponent extends  BaseComponent implements OnInit {
+export class SettingsNetworkingComponent extends BaseComponent implements OnInit {
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private settingsService: SettingsService) {
+  constructor(private fb: FormBuilder, private settingsService: SettingsService, private utilityService: UtilityService) {
     super();
   }
 
@@ -24,14 +26,22 @@ export class SettingsNetworkingComponent extends  BaseComponent implements OnIni
     });
 
     // Fetch settings.
-    this.settingsService.findByName(AppConstants.SETTING.MQTT.ACL_ENDPOINT_STATUS._KEY).subscribe(onNext => {
-      this.form.controls[AppConstants.SETTING.MQTT.ACL_ENDPOINT_STATUS._KEY].patchValue(Number(onNext.val));
+    // Fetch settings.
+    this.settingsService.findByNames(
+      AppSettings.SETTING.NETWORKING.MQTT_ACL_ENDPOINT_STATUS
+    ).subscribe(onNext => {
+      onNext.forEach(settingDTO => {
+        this.form.controls[settingDTO.key].patchValue(settingDTO.val);
+      })
     });
   }
 
   save() {
-    this.settingsService.save(new SettingDto(AppConstants.SETTING.MQTT.ACL_ENDPOINT_STATUS._KEY,
-      this.form.controls[AppConstants.SETTING.MQTT.ACL_ENDPOINT_STATUS._KEY].value)).subscribe(() => {
+    this.settingsService.saveMultiple(
+      _.map(Object.keys(this.form.controls), (fc) => {
+        return new KeyValueDto(fc, this.form.get(fc).value)
+      })).subscribe(onNext => {
+      this.utilityService.popupSuccess("Settings saved successfully.");
     });
   }
 

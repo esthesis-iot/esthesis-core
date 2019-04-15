@@ -3,27 +3,27 @@
   <mat-card-content>
     <form novalidate [formGroup]="form">
       <div fxLayout="column">
-        <!--<mat-form-field class="default-field-width">-->
+        <!--<mat-form-field>-->
         <!--<input matInput placeholder="Id"-->
         <!--formControlName="id">-->
         <!--</mat-form-field>-->
-        <!--<mat-form-field class="default-field-width">-->
+        <!--<mat-form-field>-->
         <!--<input matInput placeholder="Salt"-->
         <!--formControlName="salt">-->
         <!--</mat-form-field>-->
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <input matInput placeholder="Name"
                  formControlName="fn">
         </mat-form-field>
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <input matInput placeholder="Surname"
                  formControlName="ln">
         </mat-form-field>
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <input matInput placeholder="Email"
                  formControlName="email" autocomplete="username email">
         </mat-form-field>
-        <mat-form-field class="default-field-width" *ngIf="id !== 0">
+        <mat-form-field *ngIf="id !== 0">
           <input matInput placeholder="New Email"
                  formControlName="newEmail">
         </mat-form-field>
@@ -46,25 +46,25 @@
           <!--<mat-error *ngIf="statusControl.hasError('required')">Please choose a status</mat-error>-->
         <!--</mat-form-field>-->
 
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <input matInput placeholder="Type"
                  formControlName="userType">
         </mat-form-field>
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <input matInput placeholder="Status"
                  formControlName="status">
         </mat-form-field>
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <input matInput placeholder="Created On"
                  formControlName="createdOn">
         </mat-form-field>
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <input matInput placeholder="New Password" [type]="hide1 ? 'password' :'text'"
                  formControlName=newPassword1>
           <mat-icon matSuffix (click)="hide1 = !hide1">{{hide1 ? 'visibility' : 'visibility_off'}}
           </mat-icon>
         </mat-form-field>
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <input matInput placeholder="Repeated Password" [type]="hide2 ? 'password' :'text'"
                  formControlName="newPassword2">
           <mat-icon matSuffix (click)="hide2 = !hide2">{{hide2 ? 'visibility' : 'visibility_off'}}

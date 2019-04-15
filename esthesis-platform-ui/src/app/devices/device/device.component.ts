@@ -95,7 +95,8 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.devicesService.delete(this.id).subscribe(onNext => {
-          this.utilityService.popupSuccess('Device server successfully deleted.');
+          this.utilityService.popupSuccess('Device deletion request successfully submitted and' +
+            ' songoing.');
           this.router.navigate(['devices']);
         });
       }

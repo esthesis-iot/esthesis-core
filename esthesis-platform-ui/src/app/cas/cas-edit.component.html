@@ -3,16 +3,16 @@
   <mat-card-content>
     <form novalidate [formGroup]="form">
       <div fxLayout="column">
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <input matInput placeholder="Common name" formControlName="cn">
         </mat-form-field>
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <input matInput placeholder="Expires at" formControlName="validity"
                  [matDatepicker]="validityPicker">
           <mat-datepicker-toggle matSuffix [for]="validityPicker"></mat-datepicker-toggle>
           <mat-datepicker #validityPicker disabled="false"></mat-datepicker>
         </mat-form-field>
-        <mat-form-field class="default-field-width">
+        <mat-form-field>
           <mat-select placeholder="Parent CA" formControlName="parentCa">
             <mat-option *ngFor="let option of parents" [value]="option.cn">
               {{ option.cn }}

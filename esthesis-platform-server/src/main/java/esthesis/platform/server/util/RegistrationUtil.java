@@ -1,42 +1,34 @@
 package esthesis.platform.server.util;
 
-import static esthesis.platform.server.config.AppConstants.Device.RegistrationMode.DISABLED;
-import static esthesis.platform.server.config.AppConstants.Device.Status.APPROVAL;
-import static esthesis.platform.server.config.AppConstants.Device.Status.REGISTERED;
-
 import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
-import com.eurodyn.qlack.common.exception.QDisabledException;
-import com.eurodyn.qlack.common.exception.QDoesNotExistException;
-import com.eurodyn.qlack.common.exception.QMismatchException;
 import com.eurodyn.qlack.fuse.crypto.CryptoConversionService;
-import com.eurodyn.qlack.fuse.crypto.CryptoDigestService;
 import com.eurodyn.qlack.fuse.crypto.CryptoKeyService;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
-import com.eurodyn.qlack.fuse.settings.service.SettingsService;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.google.common.collect.Lists;
-import esthesis.extension.config.AppConstants.Generic;
-import esthesis.platform.server.config.AppConstants.Setting;
+import esthesis.extension.device.request.RegistrationRequest;
+import esthesis.platform.server.config.AppConstants.Device.Status;
 import esthesis.platform.server.config.AppProperties;
+import esthesis.platform.server.config.AppSettings.Setting.DeviceRegistration;
+import esthesis.platform.server.config.AppSettings.SettingValues.DeviceRegistration.PushTags;
 import esthesis.platform.server.model.Device;
 import esthesis.platform.server.repository.DeviceRepository;
 import esthesis.platform.server.repository.TagRepository;
 import esthesis.platform.server.service.SecurityService;
+import esthesis.platform.server.service.SettingResolverService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A utility class to provide different types of checks needed during registration of devices under the supported
- * registration modes as well as registration functions.
+ * A utility class to provide different types of checks needed during registration of devices.
  */
 @Component
 public class RegistrationUtil {
@@ -45,112 +37,103 @@ public class RegistrationUtil {
   private static final Logger LOGGER = Logger.getLogger(RegistrationUtil.class.getName());
 
   private final DeviceRepository deviceRepository;
-  private final CryptoDigestService cryptoDigestService;
   private final CryptoKeyService cryptoKeyService;
   private final AppProperties appProperties;
   private final CryptoConversionService cryptoConversionService;
   private final SecurityService securityService;
   private final TagRepository tagRepository;
-  private final SettingsService settingsService;
+  private final SettingResolverService srs;
 
-  public RegistrationUtil(DeviceRepository deviceRepository, CryptoDigestService cryptoDigestService,
-      CryptoKeyService cryptoKeyService, AppProperties appProperties,
-      CryptoConversionService cryptoConversionService, SecurityService securityService,
-      TagRepository tagRepository, SettingsService settingsService) {
+  public RegistrationUtil(DeviceRepository deviceRepository,
+    CryptoKeyService cryptoKeyService, AppProperties appProperties,
+    CryptoConversionService cryptoConversionService, SecurityService securityService,
+    TagRepository tagRepository, SettingResolverService srs) {
     this.deviceRepository = deviceRepository;
-    this.cryptoDigestService = cryptoDigestService;
     this.cryptoKeyService = cryptoKeyService;
     this.appProperties = appProperties;
     this.cryptoConversionService = cryptoConversionService;
     this.securityService = securityService;
     this.tagRepository = tagRepository;
-    this.settingsService = settingsService;
+    this.srs = srs;
   }
 
-  public void checkRegistrationEnabled() {
-    if (settingsService.getSetting(Generic.SYSTEM, Setting.DEVICE_REGISTRATION, Generic.SYSTEM).getVal()
-        .equals(DISABLED)) {
-      throw new QDisabledException("Device registration is disabled.");
-    }
-  }
-
-  public void checkDeviceIdDoesNotExist(String deviceId) {
-    if (deviceRepository.findByDeviceId(deviceId).isPresent()) {
-      throw new QAlreadyExistsException(MessageFormat.format("Device with id {0} already exists.", deviceId));
-    }
-  }
-
-  public void checkDeviceIdPreregistered(String deviceId) {
-    Device device = ReturnOptional.r(deviceRepository.findByDeviceId(deviceId));
-    if (!device.getState().equals(REGISTERED)) {
-      throw new QDoesNotExistException("A device with id {0} is not preregistered.", deviceId);
-    }
-  }
-
-  public void checkHmac(String deviceId, String hmac) throws InvalidKeyException, NoSuchAlgorithmException {
-    LOGGER.log(Level.FINEST, "Received HMAC: {0}.", hmac);
-    Device device = ReturnOptional.r(deviceRepository.findByDeviceId(deviceId));
-    String calculatedHmac = cryptoDigestService
-        .hmacSha256(securityService.decrypt(device.getPrivateKey()), device.getPublicKey());
-    LOGGER.log(Level.FINEST, "Calculated HMAC: {0}.", calculatedHmac);
-    if (!calculatedHmac.equals(hmac)) {
-      throw new QMismatchException("HMAC {0} can not be verified.", hmac);
-    }
-  }
-
-  public void checkTagsExist(String tags) {
-    for (String tag : tags.split(",")) {
-      tag = tag.trim();
-      if (!tagRepository.findByName(tag).isPresent()) {
-        throw new QDoesNotExistException("Tag {0} does not exist.", tag);
+  private void checkTags(String tags) {
+    if (srs.is(DeviceRegistration.PUSH_TAGS, PushTags.ALLOWED)) {
+      for (String tag : tags.split(",")) {
+        tag = tag.trim();
+        if (!tagRepository.findByName(tag).isPresent()) {
+          LOGGER
+            .log(Level.WARNING, "Device-pushed tag {0} does not exist and will be ignored.", tag);
+        }
+      }
+    } else {
+      if (StringUtils.isNotBlank(tags)) {
+        LOGGER.log(Level.FINE, "Device-pushed tags {0} will be ignored.", tags);
       }
     }
   }
 
   private KeyPair createKeyPair() throws NoSuchProviderException, NoSuchAlgorithmException {
     return cryptoKeyService
-        .createKeyPair(CreateKeyPairDTO.builder().keySize(appProperties.getSecurityCaKeypairKeySize())
-            .generatorAlgorithm(appProperties.getSecurityCaKeypairGeneratorAlgorithm())
-            .generatorProvider(appProperties.getSecurityCaKeypairGeneratorProvider())
-            .secretAlgorithm(appProperties.getSecurityCaKeypairSecrectAlgorithm())
-            .secretProvider(appProperties.getSecurityCaKeypairSecrectProvider())
-            .build());
+      .createKeyPair(CreateKeyPairDTO.builder().keySize(appProperties.getSecurityCaKeypairKeySize())
+        .generatorAlgorithm(appProperties.getSecurityCaKeypairGeneratorAlgorithm())
+        .generatorProvider(appProperties.getSecurityCaKeypairGeneratorProvider())
+        .secretAlgorithm(appProperties.getSecurityCaKeypairSecrectAlgorithm())
+        .secretProvider(appProperties.getSecurityCaKeypairSecrectProvider())
+        .build());
   }
 
-  public Device registerNew(String deviceId, String tags)
-      throws NoSuchAlgorithmException, NoSuchProviderException, IOException {
+  public Device register(String hardwareId, String tags, String state, boolean checkTags)
+    throws NoSuchProviderException, NoSuchAlgorithmException, IOException {
     final KeyPair keyPair = createKeyPair();
 
-    return deviceRepository.save(new Device()
-        .setDeviceId(deviceId)
-        .setPublicKey(cryptoConversionService.publicKeyToPEM(keyPair))
-        .setPrivateKey(securityService.encrypt(cryptoConversionService.privateKeyToPEM(keyPair)))
-        .setState(REGISTERED)
-        .setTags(Lists.newArrayList(tagRepository.findAllByNameIn(Arrays.asList(tags.split(","))))));
-  }
+    // Check that a device with the same hardware ID does not already exist.
+    if (deviceRepository.findByHardwareId(hardwareId)
+      .isPresent()) {
+      throw new QAlreadyExistsException(
+        "Device with hardware ID {0} is already registered with the platform.", hardwareId);
+    }
 
-  public Device registerForApproval(String deviceId, String tags)
-      throws NoSuchProviderException, NoSuchAlgorithmException, IOException {
-    final KeyPair keyPair = createKeyPair();
+    // Check tags and display appropriate warnings if necessary.
+    if (checkTags) {
+      checkTags(tags);
+    }
 
-    return deviceRepository.save(new Device()
-        .setDeviceId(deviceId)
-        .setPublicKey(cryptoConversionService.publicKeyToPEM(keyPair))
-        .setPrivateKey(securityService.encrypt(cryptoConversionService.privateKeyToPEM(keyPair)))
-        .setState(APPROVAL)
-        .setTags(Lists.newArrayList(tagRepository.findAllByNameIn(Arrays.asList(tags.split(","))))));
-  }
+    // Prepare the new device.
+    final Device device = new Device()
+      .setPublicKey(cryptoConversionService.publicKeyToPEM(keyPair))
+      .setPrivateKey(securityService.encrypt(cryptoConversionService.privateKeyToPEM(keyPair)))
+      .setHardwareId(hardwareId)
+      .setState(state);
 
-  public Device registerPreregistered(String deviceId, String tags) {
-    Device device = ReturnOptional.r(deviceRepository.findByDeviceId(deviceId));
-    device.setState(REGISTERED);
+    // Add device-pushed tags if supported.
+    if (srs.is(DeviceRegistration.PUSH_TAGS, PushTags.ALLOWED)) {
+      device.setTags(
+        Lists.newArrayList(
+          tagRepository.findAllByNameIn(Arrays.asList(tags.split(",")))));
+    }
 
     return deviceRepository.save(device);
   }
 
-  public Device registerCrypto(String deviceId, String tags) {
-    Device device = ReturnOptional.r(deviceRepository.findByDeviceId(deviceId));
-    device.setState(REGISTERED);
+
+  public Device registerPreregistered(RegistrationRequest registrationRequest) {
+    Device device = ReturnOptional
+      .r(deviceRepository.findByHardwareId(registrationRequest.getHardwareId()),
+        registrationRequest.getHardwareId());
+
+    // Check tags and display appropriate warnings if necessary.
+    checkTags(registrationRequest.getTags());
+
+    // Add device-pushed tags if supported.
+    if (srs.is(DeviceRegistration.PUSH_TAGS, PushTags.ALLOWED)) {
+      device.setTags(
+        Lists.newArrayList(
+          tagRepository.findAllByNameIn(Arrays.asList(registrationRequest.getTags().split(",")))));
+    }
+
+    // Set the status to registered.
+    device.setState(Status.REGISTERED);
 
     return deviceRepository.save(device);
   }

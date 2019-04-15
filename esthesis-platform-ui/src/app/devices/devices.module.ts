@@ -27,6 +27,7 @@ import {LeafletModule} from '@asymmetrik/ngx-leaflet';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {MomentModule} from 'ngx-moment';
 import {ZXingScannerModule} from '@zxing/ngx-scanner';
+import { DevicePreregisterCamComponent } from './device-preregister-cam.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import {ZXingScannerModule} from '@zxing/ngx-scanner';
     DeviceMeasurementsComponent,
     DeviceSensorsComponent,
     DevicePreregisterComponent,
+    DevicePreregisterCamComponent,
   ],
   imports: [
     CommonModule,
@@ -86,6 +88,9 @@ import {ZXingScannerModule} from '@zxing/ngx-scanner';
         },
       }
     }
+  ],
+  entryComponents: [
+    DevicePreregisterCamComponent
   ]
 })
 export class DevicesModule { }
