@@ -12,7 +12,6 @@ import esthesis.platform.server.repository.ZookeeperServerRepository;
 import javax.annotation.PostConstruct;
 import org.apache.curator.framework.CuratorFramework;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -76,7 +75,7 @@ public class ZookeeperService extends BaseService<ZookeeperServerDTO, ZookeeperS
     return zookeeperServerMapper.map(zookeeperServerRepository.findAllByState(true));
   }
 
-  @Async
+//  @Async
   @PostConstruct
   public void connect() {
     final Optional<ZookeeperServerDTO> zookeeperServers = findActive().stream().findAny();

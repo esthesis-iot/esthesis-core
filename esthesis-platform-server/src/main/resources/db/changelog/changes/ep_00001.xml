@@ -94,7 +94,7 @@
         <constraints nullable="false"/>
       </column>
       <column name="tag_id" type="BIGINT UNSIGNED">
-        <constraints nullable="false" unique="true"/>
+        <constraints nullable="false"/>
       </column>
     </createTable>
   </changeSet>
@@ -130,7 +130,7 @@
         <constraints nullable="false"/>
       </column>
       <column name="tag_id" type="BIGINT UNSIGNED">
-        <constraints nullable="false" unique="true"/>
+        <constraints nullable="false"/>
       </column>
     </createTable>
   </changeSet>
@@ -171,7 +171,7 @@
         <constraints nullable="false"/>
       </column>
       <column name="tag_id" type="BIGINT UNSIGNED">
-        <constraints nullable="false" unique="true"/>
+        <constraints nullable="false"/>
       </column>
     </createTable>
   </changeSet>
@@ -265,21 +265,24 @@
     </createIndex>
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-19">
-    <addForeignKeyConstraint baseColumnNames="mqtt_server_id" baseTableName="mqtt_server_tags" constraintName="FK4gwujkhuhxlltjq5vsdkqe4j5" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="mqtt_server" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="mqtt_server_id" baseTableName="mqtt_server_tags"
+      constraintName="FK4gwujkhuhxlltjq5vsdkqe4j5" deferrable="false" initiallyDeferred="false"
+      onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+      referencedTableName="mqtt_server" validate="true"/>
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-20">
-    <addForeignKeyConstraint baseColumnNames="device_id" baseTableName="device_tags" constraintName="FKcavqutwaxwd1gettpllppm372" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="device" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="device_id" baseTableName="device_tags" constraintName="FKcavqutwaxwd1gettpllppm372" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="device" validate="true"/>
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-21">
-    <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="device_tags" constraintName="FKfvachxq3jiw1kp1p36018ywp9" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="tag" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="device_tags" constraintName="FKfvachxq3jiw1kp1p36018ywp9" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="tag" validate="true"/>
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-22">
-    <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="provisioning_tags" constraintName="FKj29sqvxmw82e0ki0iqjx1c3vl" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="tag" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="provisioning_tags" constraintName="FKj29sqvxmw82e0ki0iqjx1c3vl" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="tag" validate="true"/>
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-23">
-    <addForeignKeyConstraint baseColumnNames="provisioning_id" baseTableName="provisioning_tags" constraintName="FKmkpr7d3ck26fn1fuh6931e5ax" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="provisioning" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="provisioning_id" baseTableName="provisioning_tags" constraintName="FKmkpr7d3ck26fn1fuh6931e5ax" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="provisioning" validate="true"/>
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-24">
-    <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="mqtt_server_tags" constraintName="FKprm6g1yd3t05u0ctu6e0pypxs" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="tag" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="mqtt_server_tags" constraintName="FKprm6g1yd3t05u0ctu6e0pypxs" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="tag" validate="true"/>
   </changeSet>
 </databaseChangeLog>
