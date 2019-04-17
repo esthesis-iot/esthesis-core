@@ -18,6 +18,16 @@ public class InfluxDBMetadataSink extends InfluxDBSink implements EsthesisMetada
 
   @Override
   public void processEvent(MQTTMetadataEvent event) {
-    super.processEvent(event.getDeviceId(), event.getPayload(), event.getId(), event.getTopic());
+    processEvent(event.getHardwareId(), event.getPayload(), event.getId(), event.getTopic());
+  }
+
+  @Override
+  public float getPressure() {
+    return super.getPressure();
+  }
+
+  @Override
+  public String getFriendlyName() {
+    return getSinkName();
   }
 }

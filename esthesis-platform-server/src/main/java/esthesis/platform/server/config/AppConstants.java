@@ -50,6 +50,9 @@ public class AppConstants {
   public class Zookeeper {
     public static final String LEADER_ELECTION_PATH_GLOBAL = "/esthesis/platform/leader/global";
     public static final String LEADER_ELECTION_PATH_MQTT = "/esthesis/platform/leader/mqtt";
+    public static final String MQTT_CONFIGURATION_EVENT_PATH = "/esthesis/platform/configuration/mqtt";
+    public static final String ZOOKEEPER_CONFIGURATION_EVENT_PATH = "/esthesis/platform/configuration/zookeeper";
+    public static final String DATA_SINK_CONFIGURATION_EVENT_PATH = "/esthesis/platform/configuration/datasink";
     public static final int CONNECT_RETRY = 29;
   }
 
@@ -58,12 +61,6 @@ public class AppConstants {
     public class Topic {
       public final static String DEVICE_REGISTRATION = "deviceRegistration";
     }
-  }
-
-  public class Event {
-    public static final String MQTT_CONFIGURATION_EVENT_PATH = "/esthesis/platform/configuration/mqtt";
-    public static final String ZOOKEEPER_CONFIGURATION_EVENT_PATH = "/esthesis/platform/configuration/zookeeper";
-    public static final String DATA_SINK_CONFIGURATION_EVENT_PATH = "/esthesis/platform/configuration/datasink";
   }
 
   public class Jwt {
@@ -106,5 +103,14 @@ public class AppConstants {
         public static final String ANY = "ANY";
       }
     }
+  }
+
+  public class MqttTopics {
+    public static final String TELEMETRY = "/telemetry";
+    public static final String CONTROL = "/control";
+    public static final String METADATA = "/metadata";
+    public static final String REQUEST = "/request";
+    public static final String REPLY = "/reply";
+
   }
 }

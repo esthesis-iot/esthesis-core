@@ -18,7 +18,16 @@ public class InfluxDBTelemetrySink extends InfluxDBSink implements EsthesisTelem
 
   @Override
   public void processEvent(MQTTTelemetryEvent event) {
-    super.processEvent(event.getDeviceId(), event.getPayload(), event.getId(), event.getTopic());
+    processEvent(event.getHardwareId(), event.getPayload(), event.getId(), event.getTopic());
+  }
+
+  @Override
+  public float getPressure() {
+    return super.getPressure();
+  }
+
+  @Override
+  public String getFriendlyName() {
+    return getSinkName();
   }
 }
-

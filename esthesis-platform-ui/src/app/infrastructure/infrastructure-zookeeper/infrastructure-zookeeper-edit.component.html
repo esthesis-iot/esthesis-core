@@ -12,9 +12,9 @@
             <input matInput placeholder="IP address" formControlName="ipAddress" required>
           </mat-form-field>
           <mat-form-field>
-            <mat-select placeholder="State" formControlName="state" required>
-              <mat-option [value]="constants.GENERIC.ACTIVE">Active</mat-option>
-              <mat-option [value]="constants.GENERIC.DISABLED">Inactive</mat-option>
+            <mat-select placeholder="State" formControlName="state">
+              <mat-option [value]="true">Active</mat-option>
+              <mat-option [value]="false">Inactive</mat-option>
             </mat-select>
           </mat-form-field>
 

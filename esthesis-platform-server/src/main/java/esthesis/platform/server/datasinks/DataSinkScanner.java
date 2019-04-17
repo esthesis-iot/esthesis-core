@@ -5,17 +5,17 @@ import esthesis.platform.server.dto.DataSinkFactoryDTO;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
 import io.github.classgraph.ScanResult;
-import javax.annotation.PostConstruct;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Service
+@Component
 public class DataSinkScanner {
+
   // JUL reference.
   private static final Logger LOGGER = Logger.getLogger(DataSinkScanner.class.getName());
   private static final String DATA_SINK_FACTORY_PACKAGE = "esthesis.extension.platform.sink.EsthesisDataSinkFactory";
@@ -23,26 +23,27 @@ public class DataSinkScanner {
   private final List<DataSinkFactoryDTO> availableDataSinkFactories = new ArrayList<>();
 
   @Async
-  @PostConstruct
-  public void start() {
+  public void scan() {
     // Find data sink classes.
     try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
       ClassInfoList factoryClasses = scanResult.getClassesImplementing(DATA_SINK_FACTORY_PACKAGE);
       factoryClasses.forEach(classInfo -> {
         try {
-          final EsthesisDataSinkFactory esthesisDataSinkFactory = classInfo.loadClass(EsthesisDataSinkFactory.class)
-              .newInstance();
+          final EsthesisDataSinkFactory esthesisDataSinkFactory = classInfo
+            .loadClass(EsthesisDataSinkFactory.class)
+            .newInstance();
           availableDataSinkFactories.add(DataSinkFactoryDTO.builder()
-              .factoryClass(classInfo.getName())
-              .friendlyName(esthesisDataSinkFactory.getFriendlyName())
-              .supportsMetadata(esthesisDataSinkFactory.supportsMetadata())
-              .supportsTelemetry(esthesisDataSinkFactory.supportsTelemetry())
-              .configurationTemplate(esthesisDataSinkFactory.getConfigurationTemplate())
-              .build());
+            .factoryClass(classInfo.getName())
+            .friendlyName(esthesisDataSinkFactory.getFriendlyName())
+            .supportsMetadata(esthesisDataSinkFactory.supportsMetadata())
+            .supportsTelemetry(esthesisDataSinkFactory.supportsTelemetry())
+            .configurationTemplate(esthesisDataSinkFactory.getConfigurationTemplate())
+            .build());
           LOGGER.log(Level.FINE, "Found data sink factory ''{0}'' [class: {1}].",
-              new Object[]{esthesisDataSinkFactory.getFriendlyName(), classInfo.getName()});
+            new Object[]{esthesisDataSinkFactory.getFriendlyName(), classInfo.getName()});
         } catch (InstantiationException | IllegalAccessException e) {
-          LOGGER.log(Level.SEVERE, "Could not load data sink implementation {0}.", classInfo.getName());
+          LOGGER
+            .log(Level.SEVERE, "Could not load data sink implementation {0}.", classInfo.getName());
         }
       });
     }
@@ -51,4 +52,5 @@ public class DataSinkScanner {
   public List<DataSinkFactoryDTO> getAvailableDataSinkFactories() {
     return availableDataSinkFactories;
   }
+
 }

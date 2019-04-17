@@ -44,13 +44,13 @@ public class InfrastructureResource {
     switch (resourceType) {
       case "mqtt":
         if (resourceId.isPresent()) {
-          mqttService.releaseLeadership(resourceId.get());
+//          mqttService.releaseLeadership(resourceId.get());
         } else {
           return ResponseEntity.badRequest().build();
         }
         break;
       case "zookeeper":
-        zookeeperService.releaseLeadership();
+//        zookeeperService.releaseLeadership();
         break;
     }
 

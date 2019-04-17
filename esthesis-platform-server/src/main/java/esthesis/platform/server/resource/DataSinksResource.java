@@ -28,6 +28,7 @@ import java.util.List;
 @RequestMapping("/data-sinks")
 @Validated
 public class DataSinksResource {
+
   private final DataSinkService dataSinkService;
 
   public DataSinksResource(DataSinkService dataSinkService) {
@@ -35,14 +36,17 @@ public class DataSinksResource {
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not retrieve data sinks list.")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
+    logMessage = "Could not retrieve data sinks list.")
   @EmptyPredicateCheck
-  public Page<DataSinkDTO> findAll(@QuerydslPredicate(root = DataSink.class) Predicate predicate, Pageable pageable) {
+  public Page<DataSinkDTO> findAll(@QuerydslPredicate(root = DataSink.class) Predicate predicate,
+    Pageable pageable) {
     return dataSinkService.findAll(predicate, pageable);
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save data sink.")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
+    logMessage = "Could not save data sink.")
   public DataSinkDTO save(@Valid @RequestBody DataSinkDTO dataSinkDTO) {
     return dataSinkService.save(dataSinkDTO);
   }
@@ -54,7 +58,8 @@ public class DataSinksResource {
   }
 
   @GetMapping(path = "factories", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not get available data sink factories.")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
+    logMessage = "Could not get available data sink factories.")
   public List<DataSinkFactoryDTO> getFactories() {
     return dataSinkService.findAvailableDataSinkFactories();
   }

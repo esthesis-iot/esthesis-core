@@ -14,4 +14,5 @@ public class InfluxDBConfiguration {
   private String retentionPolicyDuration;
   private String shardDuration;
   private int replicationFactor;
+  private int queueSize;
 }

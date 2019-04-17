@@ -7,6 +7,7 @@ import esthesis.platform.datasink.influxdb.sink.InfluxDBMetadataSink;
 import esthesis.platform.datasink.influxdb.sink.InfluxDBTelemetrySink;
 
 public class InfluxDBSinkFactory implements EsthesisDataSinkFactory {
+
   private final String DATA_SINK_NAME = "InfluxDB";
   private String configuration;
 
@@ -43,13 +44,14 @@ public class InfluxDBSinkFactory implements EsthesisDataSinkFactory {
   @Override
   public String getConfigurationTemplate() {
     return
-        "username: \n" +
+      "username: \n" +
         "password: \n" +
         "databaseName: \n" +
         "databaseUrl: \n" +
         "retentionPolicyName: \n" +
         "retentionPolicyDuration: \n" +
         "shardDuration: \n" +
-        "replicationFactor:";
+        "replicationFactor: \n" +
+        "queueSize: ";
   }
 }

@@ -48,11 +48,5 @@ export const AppConstants = {
     DISABLED: -1,
     INACTIVE: 0
   },
-
-  // Generic lookups.
-  GENERIC: {
-    ACTIVE: 1,
-    DISABLED: 0
-  }
 };
 

@@ -4,10 +4,12 @@ import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
+import esthesis.platform.server.config.AppConstants.MqttTopics;
 import esthesis.platform.server.dto.MQTTServerDTO;
 import esthesis.platform.server.model.MqttServer;
 import esthesis.platform.server.service.MQTTService;
 import javax.validation.Valid;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -41,6 +43,17 @@ public class MQTTServerResource {
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save MQTT server.")
   public MQTTServerDTO save(@Valid @RequestBody MQTTServerDTO mqttServerDTO) {
+    // Set default values for topics if none was specified.
+    if (StringUtils.isBlank(mqttServerDTO.getTopicTelemetry())) {
+      mqttServerDTO.setTopicTelemetry(MqttTopics.TELEMETRY);
+    }
+    if (StringUtils.isBlank(mqttServerDTO.getTopicMetadata())) {
+      mqttServerDTO.setTopicMetadata(MqttTopics.METADATA);
+    }
+    if (StringUtils.isBlank(mqttServerDTO.getTopicControl())) {
+      mqttServerDTO.setTopicControl(MqttTopics.CONTROL);
+    }
+
     return mqttServerService.save(mqttServerDTO);
   }
 

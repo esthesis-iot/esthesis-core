@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,8 +31,9 @@ public abstract class InfluxDBSink {
   private String eventType;
   // The name of the tag to indicate the type of the measurement.
   public static final String TAG_TYPE_NAME = "type";
-  public static final String TAG_DEVICE_ID_NAME = "deviceId";
+  public static final String TAG_HARDWARE_ID_NAME = "hardwareId";
   private static ObjectMapper mapper = new ObjectMapper();
+  private static AtomicInteger eventsQueued = new AtomicInteger(0);
 
   InfluxDBSink(String configuration, String sinkName, String eventType) {
     LOGGER.log(Level.FINE, "Instantiating {0}.", sinkName);
@@ -81,7 +83,7 @@ public abstract class InfluxDBSink {
         influxDBConfiguration.getPassword());
   }
 
-  private Builder preparePoint(String deviceId, byte[] mqttPayload, String eventType) throws IOException {
+  private Builder preparePoint(String hardwareId, byte[] mqttPayload, String eventType) throws IOException {
     // Read the payload of the MQTT message.
     final JsonNode jsonNode = mapper.readTree(mqttPayload);
 
@@ -93,7 +95,7 @@ public abstract class InfluxDBSink {
     pointBuilder.tag(TAG_TYPE_NAME, eventType);
 
     // Add a tag to the Point for the device ID.
-    pointBuilder.tag(TAG_DEVICE_ID_NAME, deviceId);
+    pointBuilder.tag(TAG_HARDWARE_ID_NAME, hardwareId);
 
     // If a timestamp is provided use the provided timestamp, otherwise create a timestamp.
     if (jsonNode.get(MqttPayload.TIMESTAMP_KEYNAME) != null) {
@@ -144,23 +146,28 @@ public abstract class InfluxDBSink {
     return pointBuilder;
   }
 
-  public void processEvent(String deviceId, byte[] mqttEventPayload, String eventId, String topic) {
+  public void processEvent(String hardwareId, byte[] mqttEventPayload, String eventId,
+    String topic) {
+    eventsQueued.incrementAndGet();
+
     LOGGER.log(Level.FINEST, "Processing MQTT event {0} on topic {1} for device {2}.",
-        new Object[]{eventId, topic, deviceId});
+        new Object[]{eventId, topic, hardwareId});
     if (initialized) {
       try {
         influxDB.write(influxDBConfiguration.getDatabaseName(), influxDBConfiguration.getRetentionPolicyName(),
-            preparePoint(deviceId, mqttEventPayload, eventType).build());
+            preparePoint(hardwareId, mqttEventPayload, eventType).build());
       } catch (IOException e) {
         LOGGER.log(Level.SEVERE, "Could not process MQTT event {0} on topic {1} for device {2}.",
-            new Object[]{eventId, topic, deviceId});
+            new Object[]{eventId, topic, hardwareId});
       }
     } else {
       LOGGER.log(Level.WARNING, "Got an MQTT event {0} on topic {1} for device {2} before {3} being initialized.",
-          new Object[]{eventId, topic, deviceId, sinkName});
+          new Object[]{eventId, topic, hardwareId, sinkName});
     }
     LOGGER.log(Level.FINEST, "Finished processing MQTT event {0} on topic {1} for device {2}.",
-        new Object[]{eventId, topic, deviceId});
+        new Object[]{eventId, topic, hardwareId});
+
+    eventsQueued.decrementAndGet();
   }
 
   public void disconnect() {
@@ -169,5 +176,13 @@ public abstract class InfluxDBSink {
       influxDB.flush();
       influxDB.close();
     }
+  }
+
+  public float getPressure() {
+    return (float)eventsQueued.intValue() / (float)influxDBConfiguration.getQueueSize();
+  }
+
+  public String getSinkName() {
+    return sinkName;
   }
 }

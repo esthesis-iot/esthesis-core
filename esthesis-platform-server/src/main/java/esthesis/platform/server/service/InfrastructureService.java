@@ -6,7 +6,6 @@ import esthesis.platform.server.dto.InfrastructureReportDTO.ZookeeperReport;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class InfrastructureService {
@@ -23,26 +22,29 @@ public class InfrastructureService {
   }
 
   private List<InfrastructureReportDTO.MqttServerReport> getMqttServersReport() {
-    return mqttService.findActive().stream().map(mqttServerDTO ->
-        new InfrastructureReportDTO.MqttServerReport()
-            .setId(mqttServerDTO.getId())
-            .setIpAddress(mqttServerDTO.getIpAddress())
-            .setLeader(mqttService.isLeader(mqttServerDTO.getId()))
-    ).collect(Collectors.toList());
+//    return mqttService.findActive().stream().map(mqttServerDTO ->
+//        new InfrastructureReportDTO.MqttServerReport()
+//            .setId(mqttServerDTO.getId())
+//            .setIpAddress(mqttServerDTO.getIpAddress())
+//            .setLeader(mqttService.isLeader(mqttServerDTO.getId()))
+//    ).collect(Collectors.toList());
+    return null;
   }
 
   private ZookeeperReport getZookeeperReport() {
-    return new ZookeeperReport()
-        .setIpAddress(zookeeperService.getConnectionString())
-        .setLeader(zookeeperService.isLeader());
+//    return new ZookeeperReport()
+//        .setIpAddress(zookeeperService.getConnectionString())
+//        .setLeader(zookeeperService.isLeader());
+    return null;
   }
 
   public InfrastructureReportDTO getReport() {
-    return new InfrastructureReportDTO()
-        .setNodeId(appProperties.getNodeId())
-        .setInClusterMode(zookeeperService.findActive().size() > 0)
-        .setClusterLeader(zookeeperService.isLeader())
-        .setMqttServerReports(getMqttServersReport())
-        .setZookeeperReport(getZookeeperReport());
+//    return new InfrastructureReportDTO()
+//        .setNodeId(appProperties.getNodeId())
+//        .setInClusterMode(zookeeperService.findActive().size() > 0)
+//        .setClusterLeader(zookeeperService.isLeader())
+//        .setMqttServerReports(getMqttServersReport())
+//        .setZookeeperReport(getZookeeperReport());
+    return null;
   }
 }
