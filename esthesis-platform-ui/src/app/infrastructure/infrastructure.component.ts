@@ -25,10 +25,8 @@ export class InfrastructureComponent implements OnInit, AfterViewInit  {
         this.tabs.selectedIndex = 1;
       } else if (fragment === 'mqtt') {
         this.tabs.selectedIndex = 2;
-      } else if (fragment === 'redis') {
-        this.tabs.selectedIndex = 3;
       } else if (fragment === 'zookeeper') {
-        this.tabs.selectedIndex = 4;
+        this.tabs.selectedIndex = 3;
       }
     });
   }

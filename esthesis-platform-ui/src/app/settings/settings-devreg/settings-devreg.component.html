@@ -51,7 +51,7 @@
 
   <div class="inline-header xs-mt2">Ignore during registration </div>
   <div class="inline-subheader">In case you have a mixture of secure and non-secure devices this setting allows you to
-  relax the security-related requirements during the initial registration of a device.</div>
+  relax the security requirements during the initial registration of a device.</div>
   <mat-form-field>
     <mat-select placeholder="Ignore" formControlName="ignoreDuringDeviceRegistration" required>
       <mat-option *ngFor="let o of settings.SETTING_VALUES.DEVICE_REGISTRATION.IGNORE_DURING_DEVICE_REGISTRATION | keyvalue" [value]="o.value">
@@ -62,6 +62,5 @@
 </form>
 
 <div class="xs-pt2">
-  <button mat-button routerLink="/provisioning/packages">CANCEL</button>
   <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
 </div>

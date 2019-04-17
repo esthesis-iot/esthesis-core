@@ -27,8 +27,6 @@ import {QFormsModule} from '@eurodyn/forms';
 import {ReactiveFormsModule} from '@angular/forms';
 import {DisplayModule} from '../shared/display/display.module';
 import {ContainersModule} from '../shared/containers/containers.module';
-import {InfrastructureRedisComponent} from './infrastructure-redis/infrastructure-redis.component';
-import {InfrastructureRedisEditComponent} from './infrastructure-redis/infrastructure-redis-edit.component';
 import {InfrastructureZookeeperComponent} from './infrastructure-zookeeper/infrastructure-zookeeper.component';
 import {InfrastructureZookeeperEditComponent} from './infrastructure-zookeeper/infrastructure-zookeeper-edit.component';
 
@@ -38,8 +36,6 @@ import {InfrastructureZookeeperEditComponent} from './infrastructure-zookeeper/i
     InfrastructureOverviewComponent,
     InfrastructureMqttComponent,
     InfrastructureMqttEditComponent,
-    InfrastructureRedisComponent,
-    InfrastructureRedisEditComponent,
     InfrastructureZookeeperComponent,
     InfrastructureZookeeperEditComponent,
     InfrastructureVirtualizationComponent,
