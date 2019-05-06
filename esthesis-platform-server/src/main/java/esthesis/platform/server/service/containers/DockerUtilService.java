@@ -23,11 +23,18 @@ import esthesis.platform.server.service.CAService;
 import esthesis.platform.server.service.CertificatesService;
 import esthesis.platform.server.service.SecurityService;
 import esthesis.platform.server.service.WebSocketService;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +50,8 @@ public class DockerUtilService {
   private final AppProperties appProperties;
 
   public DockerUtilService(WebSocketService webSocketService,
-      CertificatesService certificatesService, CAService caService,
-      SecurityService securityService, AppProperties appProperties) {
+    CertificatesService certificatesService, CAService caService,
+    SecurityService securityService, AppProperties appProperties) {
     this.webSocketService = webSocketService;
     this.certificatesService = certificatesService;
     this.caService = caService;
@@ -52,24 +59,29 @@ public class DockerUtilService {
     this.appProperties = appProperties;
   }
 
-  public DockerCertificatesStore setupClientCertificate(ContainerDTO containerDTO, VirtualizationDTO virtualizationDTO)
-      throws DockerCertificateException {
+  public DockerCertificatesStore setupClientCertificate(ContainerDTO containerDTO,
+    VirtualizationDTO virtualizationDTO)
+  throws NoSuchPaddingException, InvalidKeyException,
+         NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException,
+         InvalidAlgorithmParameterException, DockerCertificateException {
     DockerCertificatesStore dockerCertificatesStore = null;
 
     if (virtualizationDTO.getSecurity() == Security.CERTIFICATE) {
-      webSocketService.publish(WebSocketMessageDTO.builder().topic(containerDTO.getWsId()).payload("Preparing client certificates.").build());
-      final CertificateDTO clientCertificate = certificatesService.findById(virtualizationDTO.getCertificate());
+      webSocketService.publish(WebSocketMessageDTO.builder().topic(containerDTO.getWsId())
+        .payload("Preparing client certificates.").build());
+      final CertificateDTO clientCertificate = certificatesService
+        .findById(virtualizationDTO.getCertificate());
 
       // Find the certificate of the CA of the client certificate.
       final Ca ca = caService.findEntityByCN(clientCertificate.getIssuer());
 
       dockerCertificatesStore = DockerInMemoryCertificates.builder()
-          .caCert(ca.getCertificate())
-          .clientCert(clientCertificate.getCertificate())
-          .clientKey(securityService.decrypt(clientCertificate.getPrivateKey()))
-          .securityAlgorithm(appProperties.getSecurityCaKeypairGeneratorAlgorithm())
-          .securityProvider(appProperties.getSecurityCaKeypairGeneratorProvider())
-          .build().get();
+        .caCert(ca.getCertificate())
+        .clientCert(clientCertificate.getCertificate())
+        .clientKey(new String(securityService.decrypt(clientCertificate.getPrivateKey()),
+          StandardCharsets.UTF_8))
+        .securityAlgorithm(appProperties.getSecurityAsymmetricKeyAlgorithm())
+        .build().get();
     }
 
     return dockerCertificatesStore;
@@ -77,13 +89,14 @@ public class DockerUtilService {
 
   public RegistryAuthSupplier setupRegistryAuth(ContainerDTO containerDTO) {
     final RegistryAuth auth;
-    webSocketService.publish(WebSocketMessageDTO.builder().topic(containerDTO.getWsId()).payload("Preparing registry authentication.").build());
+    webSocketService.publish(WebSocketMessageDTO.builder().topic(containerDTO.getWsId())
+      .payload("Preparing registry authentication.").build());
     if (StringUtils.isNotBlank(containerDTO.getRegistryUsername()) && StringUtils
-        .isNotBlank(containerDTO.getRegistryPassword())) {
+      .isNotBlank(containerDTO.getRegistryPassword())) {
       auth = RegistryAuth.builder()
-          .username(containerDTO.getRegistryUsername())
-          .password(containerDTO.getRegistryPassword())
-          .build();
+        .username(containerDTO.getRegistryUsername())
+        .password(containerDTO.getRegistryPassword())
+        .build();
     } else {
       auth = RegistryAuth.builder().build();
     }
@@ -92,7 +105,8 @@ public class DockerUtilService {
   }
 
   public List<String> setupEnvParams(ContainerDTO containerDTO) {
-    webSocketService.publish(WebSocketMessageDTO.builder().topic(containerDTO.getWsId()).payload("Preparing environmental parameters.").build());
+    webSocketService.publish(WebSocketMessageDTO.builder().topic(containerDTO.getWsId())
+      .payload("Preparing environmental parameters.").build());
     // Add environmental parameters.
     List<String> environment = new ArrayList<>();
     containerDTO.getEnv().stream().forEach(o -> {
@@ -103,26 +117,30 @@ public class DockerUtilService {
   }
 
   public String createNetwork(ContainerDTO containerDTO, DockerClient dockerClient)
-      throws DockerException, InterruptedException {
+  throws DockerException, InterruptedException {
     return createNetwork(containerDTO, dockerClient, null);
   }
 
   public String createNetwork(ContainerDTO containerDTO, DockerClient dockerClient, String driver)
-      throws DockerException, InterruptedException {
+  throws DockerException, InterruptedException {
     String networkId = null;
 
-    webSocketService.publish(WebSocketMessageDTO.builder().topic(containerDTO.getWsId()).payload("Preparing networking.").build());
+    webSocketService.publish(
+      WebSocketMessageDTO.builder().topic(containerDTO.getWsId()).payload("Preparing networking.")
+        .build());
     if (StringUtils.isNotBlank(containerDTO.getNetwork())) {
-      final List<Network> networks = dockerClient.listNetworks(ListNetworksParam.byNetworkName(containerDTO.getNetwork()));
+      final List<Network> networks = dockerClient
+        .listNetworks(ListNetworksParam.byNetworkName(containerDTO.getNetwork()));
 
       if (networks.size() == 0) {
         webSocketService.publish(
-            WebSocketMessageDTO.builder().topic(containerDTO.getWsId()).payload("Creating network " + containerDTO.getNetwork() +  ".").build());
+          WebSocketMessageDTO.builder().topic(containerDTO.getWsId())
+            .payload("Creating network " + containerDTO.getNetwork() + ".").build());
         // Prepare network configuration.
         final Builder networkConfigBuilder = NetworkConfig.builder()
-            .checkDuplicate(true)
-            .attachable(true)
-            .name(containerDTO.getNetwork());
+          .checkDuplicate(true)
+          .attachable(true)
+          .name(containerDTO.getNetwork());
 
         // Setup network driver if requested.
         if (StringUtils.isNotBlank(driver)) {

@@ -12,8 +12,12 @@ import esthesis.platform.server.dto.CaDTO;
 import esthesis.platform.server.model.Ca;
 import esthesis.platform.server.service.CAService;
 import esthesis.platform.server.service.SecurityService;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +38,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,7 +82,9 @@ public class CAResource {
   @GetMapping(value = {"{id}/download/{keyType}/{base64}", "{id}/download/{keyType}"})
   @ExceptionWrapper(wrapper = QExceptionWrapper.class,
       logMessage = "Could not fetch security information for the CA.")
-  public ResponseEntity download(@PathVariable long id, @PathVariable int keyType, @PathVariable Optional<Boolean> base64) {
+  public ResponseEntity download(@PathVariable long id, @PathVariable int keyType, @PathVariable Optional<Boolean> base64)
+  throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
+         IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
     final CaDTO caDTO = caService.findById(id);
 
     String filename = new Slugify().slugify(caDTO.getCn());
@@ -92,12 +100,12 @@ public class CAResource {
         break;
       case KeyType.PRIVATE_KEY:
         filename += ".key";
-        body = securityService.decrypt(caDTO.getPrivateKey());
+        body = new String(securityService.decrypt(caDTO.getPrivateKey()), StandardCharsets.UTF_8);
         break;
     }
 
     if (base64.isPresent() && base64.get().booleanValue()) {
-      body = Base64.getEncoder().encodeToString(body.getBytes(StandardCharsets.UTF_8));
+      body = Base64.encodeBase64String(body.getBytes(StandardCharsets.UTF_8));
       filename += ".base64";
     }
 
@@ -110,7 +118,10 @@ public class CAResource {
 
   @GetMapping(value = "{id}/backup")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not create backup for CA.")
-  public ResponseEntity backup(@PathVariable long id) throws IOException {
+  public ResponseEntity backup(@PathVariable long id)
+  throws IOException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+         NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException,
+         InvalidKeyException {
     final CaDTO caDTO = caService.findById(id);
     return ResponseEntity
         .ok()
@@ -122,7 +133,10 @@ public class CAResource {
 
   @PostMapping(value = "/restore")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not restore CA.")
-  public ResponseEntity restore(@NotNull @RequestParam("backup") MultipartFile backup) throws IOException {
+  public ResponseEntity restore(@NotNull @RequestParam("backup") MultipartFile backup)
+  throws IOException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+         NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException,
+         InvalidKeyException {
     caService.restore(IOUtils.toString(backup.getInputStream(), StandardCharsets.UTF_8));
 
     return ResponseEntity.ok().build();

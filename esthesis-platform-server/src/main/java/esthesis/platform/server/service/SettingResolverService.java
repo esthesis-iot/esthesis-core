@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SettingResolverService {
+
   private final SettingsService settingsService;
 
   public SettingResolverService(SettingsService settingsService) {
@@ -20,6 +21,10 @@ public class SettingResolverService {
     return Long.parseLong(get(settingName));
   }
 
+  public int getAsInt(String settingName) {
+    return Integer.parseInt(get(settingName));
+  }
+
   public boolean is(String settingName, String value) {
     return get(settingName).equals(value);
   }
@@ -28,7 +33,7 @@ public class SettingResolverService {
     return !get(settingName).equals(value);
   }
 
-  public boolean isAny(String settingName, String ...values) {
+  public boolean isAny(String settingName, String... values) {
     boolean isAny = false;
 
     for (String value : values) {
@@ -41,7 +46,7 @@ public class SettingResolverService {
     return isAny;
   }
 
-  public boolean isNotAny(String settingName, String ...values) {
+  public boolean isNotAny(String settingName, String... values) {
     boolean isAny = true;
 
     for (String value : values) {

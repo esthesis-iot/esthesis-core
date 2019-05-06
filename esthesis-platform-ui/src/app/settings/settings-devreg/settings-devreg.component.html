@@ -2,60 +2,52 @@
   <div class="inline-header">Registration mode</div>
   <mat-radio-group formControlName="deviceRegistration">
     <h4>
-      <mat-radio-button [value]="settings.SETTING_VALUES.DEVICE_REGISTRATION.REGISTRATION_MODE.DISABLED">Disabled</mat-radio-button>
+      <mat-radio-button
+        [value]="settings.SETTING_VALUES.DEVICE_REGISTRATION.REGISTRATION_MODE.DISABLED">Disabled
+      </mat-radio-button>
     </h4>
     <div class="inline-subheader">No devices can be registered with the platform.</div>
 
     <h4 class="xs-mt1">
-      <mat-radio-button [value]="settings.SETTING_VALUES.DEVICE_REGISTRATION.REGISTRATION_MODE.OPEN">Open registration</mat-radio-button>
+      <mat-radio-button
+        [value]="settings.SETTING_VALUES.DEVICE_REGISTRATION.REGISTRATION_MODE.OPEN">Open
+        registration
+      </mat-radio-button>
     </h4>
-    <div class="inline-subheader">Allow any device to be registered with the platform. Use this mode in controlled environments where only
-      devices you trust can communicate with your platform. Once the device is registered it receives a
-      public/private
-      keypair and all future communication and device identification takes place using this keypair.
+    <div class="inline-subheader">Allow any device to be registered with the platform.
     </div>
 
     <h4 class="xs-mt1">
-      <mat-radio-button [value]="settings.SETTING_VALUES.DEVICE_REGISTRATION.REGISTRATION_MODE.OPEN_WITH_APPROVAL">Open registration with approval</mat-radio-button>
+      <mat-radio-button
+        [value]="settings.SETTING_VALUES.DEVICE_REGISTRATION.REGISTRATION_MODE.OPEN_WITH_APPROVAL">
+        Open registration with approval
+      </mat-radio-button>
     </h4>
-    <div class="inline-subheader">Similar to the the Open Registration, however a successful device registration needs to be manually approved
-      by an administrator of the system before the device is allowed to further communicate with the platform.
+    <div class="inline-subheader">Similar to the the Open Registration, however a successful device
+      registration needs to be manually approved
+      by an administrator of the system before the device is allowed to further communicate with the
+      platform.
     </div>
 
     <h4 class="xs-mt1">
-      <mat-radio-button [value]="settings.SETTING_VALUES.DEVICE_REGISTRATION.REGISTRATION_MODE.ID">Preregistered ID</mat-radio-button>
+      <mat-radio-button [value]="settings.SETTING_VALUES.DEVICE_REGISTRATION.REGISTRATION_MODE.ID">
+        Preregistered ID
+      </mat-radio-button>
     </h4>
-    <div class="inline-subheader">Devices can register using a unique identification available to the device prior to the deployment.
-      This is a more secure way to initially connect your devices than 'Open registration', however it is still
-      based
-      on a shared secret rather than asymmetric encryption.
-      Once the device is registered it receives a public/private keypair and all future communication and device
-      identification takes place using this keypair.
+    <div class="inline-subheader">Devices can only register using a unique
+      device-specific identification provisioned to the device prior to the registration.
     </div>
-
-    <h4 class="xs-mt1">
-      <mat-radio-button [value]="settings.SETTING_VALUES.DEVICE_REGISTRATION.REGISTRATION_MODE.CRYPTO">Cryptographic keys</mat-radio-button>
-    </h4>
-    <div class="inline-subheader">Devices are registered using a private key available to the device prior to the deployment.</div>
   </mat-radio-group>
 
-  <div class="inline-header xs-mt2">Permit device to choose tags </div>
-  <div class="inline-subheader">Devices can choose which tags they support. Tags need to be already created on the platform.</div>
+  <div class="inline-header xs-mt2">Allow device to choose tags</div>
+  <div class="inline-subheader">Devices can choose which tags they support. Tags need to be already
+    created on the platform.
+  </div>
   <mat-form-field>
     <mat-select placeholder="Device chooses tags" formControlName="devicePushTags" required>
-      <mat-option *ngFor="let o of settings.SETTING_VALUES.DEVICE_REGISTRATION.PUSH_TAGS | keyvalue" [value]="o.value">
+      <mat-option *ngFor="let o of settings.SETTING_VALUES.DEVICE_REGISTRATION.PUSH_TAGS | keyvalue"
+                  [value]="o.value">
         {{ lookupByValue(settings.SETTING_VALUES.DEVICE_REGISTRATION.PUSH_TAGS, o.value) }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <div class="inline-header xs-mt2">Ignore during registration </div>
-  <div class="inline-subheader">In case you have a mixture of secure and non-secure devices this setting allows you to
-  relax the security requirements during the initial registration of a device.</div>
-  <mat-form-field>
-    <mat-select placeholder="Ignore" formControlName="ignoreDuringDeviceRegistration" required>
-      <mat-option *ngFor="let o of settings.SETTING_VALUES.DEVICE_REGISTRATION.IGNORE_DURING_DEVICE_REGISTRATION | keyvalue" [value]="o.value">
-        {{ lookupByValue(settings.SETTING_VALUES.DEVICE_REGISTRATION.IGNORE_DURING_DEVICE_REGISTRATION, o.value) }}
       </mat-option>
     </mat-select>
   </mat-form-field>

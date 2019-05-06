@@ -25,15 +25,13 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
     this.form = this.fb.group({
       deviceRegistration: ['', [Validators.required]],
       devicePushTags: ['', [Validators.required]],
-      ignoreDuringDeviceRegistration: ['', [Validators.required]],
     });
 
 
     // Fetch settings.
     this.settingsService.findByNames(
       AppSettings.SETTING.DEVICE_REGISTRATION.REGISTRATION_MODE,
-      AppSettings.SETTING.DEVICE_REGISTRATION.PUSH_TAGS,
-      AppSettings.SETTING.DEVICE_REGISTRATION.IGNORE_DURING_DEVICE_REGISTRATION,
+      AppSettings.SETTING.DEVICE_REGISTRATION.PUSH_TAGS
     ).subscribe(onNext => {
       onNext.forEach(settingDTO => {
         this.form.controls[settingDTO.key].patchValue(settingDTO.val);

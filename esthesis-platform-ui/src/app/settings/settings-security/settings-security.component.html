@@ -37,7 +37,10 @@
 
   <div class="inline-header xs-mt2">Device incoming signature</div>
   <div class="inline-subheader">
-    Set whether messages from devices should be signed or not.
+    Set whether messages from devices should be signed or not. Enabling this option
+    requires all new devices to be preregistered in the system, so that their public key is
+    known to the platform to verify the signature. You also need to provision the device with its
+    public and private keys.
   </div>
   <mat-form-field>
     <mat-select placeholder="Data signature mode" [formControlName]="settings.SETTING.SECURITY.INCOMING_SIGNATURE">

@@ -5,10 +5,10 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
   http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
-logicalFilePath="ep_0041.xml">
-  <changeSet id="ep_0041" author="European Dynamics" labels="ignorable">
+logicalFilePath="ep_0032.xml">
+  <changeSet id="ep_0032" author="European Dynamics" labels="ignorable">
     <sql>
-        DELETE FROM set_setting WHERE id ='9560f35d-51ae-4a9b-a4fd-02f89c3690dc';
+        DELETE FROM set_setting WHERE id ='69204a6f-f858-47e1-a297-b1fab6bee575';
     </sql>
   </changeSet>
 </databaseChangeLog>

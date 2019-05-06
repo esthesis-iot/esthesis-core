@@ -11,7 +11,6 @@ export const AppSettings = {
     DEVICE_REGISTRATION: {
       REGISTRATION_MODE: "deviceRegistration",
       PUSH_TAGS: "devicePushTags",
-      IGNORE_DURING_DEVICE_REGISTRATION: "ignoreDuringDeviceRegistration"
     },
     NETWORKING: {
       MQTT_ACL_ENDPOINT_STATUS: "mqttAclEndpointStatus"
@@ -23,7 +22,6 @@ export const AppSettings = {
       OUTGOING_ENCRYPTION: {
         ENCRYPTED: "ENCRYPTED",
         NOT_ENCRYPTED: "NOT_ENCRYPTED",
-        DEVICE_SPECIFIC: "DEVICE_SPECIFIC"
       },
       INCOMING_ENCRYPTION: {
         ENCRYPTED: "ENCRYPTED",
@@ -33,7 +31,6 @@ export const AppSettings = {
       OUTGOING_SIGNATURE: {
         SIGNED: "SIGNED",
         NOT_SIGNED: "NOT_SIGNED",
-        DEVICE_SPECIFIC: "DEVICE_SPECIFIC"
       },
       INCOMING_SIGNATURE: {
         SIGNED: "SIGNED",
@@ -46,13 +43,7 @@ export const AppSettings = {
         DISABLED: "DISABLED",
         OPEN: "OPEN",
         OPEN_WITH_APPROVAL: "OPEN_WITH_APPROVAL",
-        ID: "ID",
-        CRYPTO: "CRYPTO"
-      },
-      IGNORE_DURING_DEVICE_REGISTRATION: {
-        ENCRYPTION: "ENC",
-        SIGNATURE: "SIG",
-        ENCRYPTION_AND_SIGNATURE: "SIG_ENC"
+        ID: "ID"
       },
       PUSH_TAGS: {
         ALLOWED: "ALLOWED",

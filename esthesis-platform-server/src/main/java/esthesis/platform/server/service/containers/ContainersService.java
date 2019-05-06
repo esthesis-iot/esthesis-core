@@ -8,10 +8,17 @@ import esthesis.platform.server.dto.VirtualizationDTO;
 import esthesis.platform.server.dto.WebSocketMessageDTO;
 import esthesis.platform.server.service.VirtualizationService;
 import esthesis.platform.server.service.WebSocketService;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 @Service
 @Validated
@@ -33,7 +40,9 @@ public class ContainersService {
 
   @Async
   public void deploy(ContainerDTO containerDTO)
-      throws DockerException, InterruptedException, DockerCertificateException {
+  throws DockerException, InterruptedException, DockerCertificateException, NoSuchPaddingException,
+         InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException,
+         BadPaddingException, InvalidAlgorithmParameterException {
     // Find the type of virtualization infrastructure in which the container is to be deployed at.
     final VirtualizationDTO virtualizationDTO = virtualizationService.findById(containerDTO.getServer());
 

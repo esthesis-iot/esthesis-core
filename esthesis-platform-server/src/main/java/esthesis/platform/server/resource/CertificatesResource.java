@@ -10,6 +10,9 @@ import esthesis.platform.server.dto.KeyDownloadReply;
 import esthesis.platform.server.model.Certificate;
 import esthesis.platform.server.service.CertificatesService;
 import esthesis.platform.server.service.SecurityService;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +29,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @RestController
@@ -62,7 +68,9 @@ public class CertificatesResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class,
       logMessage = "Could not fetch security information for the certificate.")
   public ResponseEntity download(@PathVariable long id, @PathVariable int keyType,
-      @PathVariable Optional<Boolean> base64) {
+      @PathVariable Optional<Boolean> base64)
+  throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
+         IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
     KeyDownloadReply keyDownloadReply = certificatesService
         .download(id, keyType, base64.isPresent() && base64.get().booleanValue());
     return ResponseEntity

@@ -17,15 +17,14 @@ import java.util.UUID;
 public class AppProperties {
   private final String randomNodeId = UUID.randomUUID().toString();
 
-  private String securitySymmetricKey;
-  private String securitySymmetricKeySalt;
-  private String securityCaKeypairGeneratorProvider;
-  private String securityCaKeypairGeneratorAlgorithm;
-  private String securityCaKeypairSecrectProvider;
-  private String securityCaKeypairSecrectAlgorithm;
-  private String securityCaKeypairSignatureProvider;
-  private String securityCaKeypairSignatureAlgorithm;
-  private int securityCaKeypairKeySize;
+  private int securitySymmetricKeySize;
+  private String securitySymmetricKeyAlgorithm;
+  private String securitySymmetricCipherAlgorithm;
+
+  private int securityAsymmetricKeySize;
+  private String securityAsymmetricKeyAlgorithm;
+  private String securityAsymmetricCipherAlgorithm;
+  private String securityAsymmetricSignatureAlgorithm;
 
   // The secret to sign JWT.
   private String jwtSecret;

@@ -1,6 +1,7 @@
 package esthesis.platform.server.dto;
 
 import esthesis.platform.common.dto.BaseDTO;
+import esthesis.platform.server.model.DeviceKey;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,13 +21,16 @@ public class DeviceDTO extends BaseDTO {
   @NotNull
   private String hardwareId;
 
-  private String publicKey;
-
-  private String privateKey;
-
   @NotNull
   private String state;
 
   @Singular
   private List<Long> tags;
+
+  @Singular
+  private List<DeviceKey> keys;
+
+  private String publicKey;
+  private String privateKey;
+  private String sessionKey;
 }

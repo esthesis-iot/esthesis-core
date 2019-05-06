@@ -1,6 +1,7 @@
 package esthesis.platform.server.docker;
 
-import com.eurodyn.qlack.fuse.crypto.CryptoConversionService;
+import com.eurodyn.qlack.fuse.crypto.CryptoAsymmetricService;
+import com.eurodyn.qlack.fuse.crypto.CryptoCAService;
 import com.google.common.base.Optional;
 import com.spotify.docker.client.DockerCertificatesStore;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
@@ -19,7 +20,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
@@ -35,46 +35,52 @@ import java.util.UUID;
 public class DockerInMemoryCertificates implements DockerCertificatesStore {
 
   private static final char[] KEY_STORE_PASSWORD = UUID.randomUUID().toString().toCharArray();
-  private static final Logger log = LoggerFactory.getLogger(com.spotify.docker.client.DockerCertificates.class);
+  private static final Logger log = LoggerFactory
+    .getLogger(com.spotify.docker.client.DockerCertificates.class);
   private final SSLContext sslContext;
-  private final CryptoConversionService cryptoConversionService = new CryptoConversionService();
+  private final CryptoAsymmetricService cryptoAsymmetricService = new CryptoAsymmetricService();
+  private final CryptoCAService cryptoCAService = new CryptoCAService(cryptoAsymmetricService);
 
   private DockerInMemoryCertificates(final DockerInMemoryCertificates.Builder builder)
-      throws DockerCertificateException {
+  throws DockerCertificateException {
     if ((builder.caCert == null) || (builder.clientCert == null) || (builder.clientKey == null)) {
       throw new DockerCertificateException(
-          "caCertPath, clientCertPath, and clientKeyPath must all be specified.");
+        "caCertPath, clientCertPath, and clientKeyPath must all be specified.");
     }
 
     try {
-      final PrivateKey clientKey = cryptoConversionService.pemToPrivateKey(
-          builder.clientKey, builder.securityProvider, builder.securityAlgorithm);
+      final PrivateKey clientKey = cryptoAsymmetricService
+        .pemToPrivateKey(builder.clientKey, builder.securityAlgorithm);
 
-      final List<Certificate> clientCerts = Arrays.asList(cryptoConversionService.pemToCertificate(builder.clientCert));
+      final List<Certificate> clientCerts = Arrays
+        .asList(cryptoCAService.pemToCertificate(builder.clientCert));
 
       final KeyStore keyStore = newKeyStore();
       keyStore.setKeyEntry("key", clientKey, KEY_STORE_PASSWORD,
-          clientCerts.toArray(new Certificate[clientCerts.size()]));
+        clientCerts.toArray(new Certificate[clientCerts.size()]));
 
-      final List<Certificate> caCerts = Arrays.asList(cryptoConversionService.pemToCertificate(builder.caCert));
+      final List<Certificate> caCerts = Arrays
+        .asList(cryptoCAService.pemToCertificate(builder.caCert));
 
       final KeyStore trustStore = newKeyStore();
       for (Certificate caCert : caCerts) {
         X509Certificate crt = (X509Certificate) caCert;
         String alias = crt.getSubjectX500Principal()
-            .getName();
+          .getName();
         trustStore.setCertificateEntry(alias, caCert);
       }
 
       this.sslContext = builder.sslContextFactory
-          .newSslContext(keyStore, KEY_STORE_PASSWORD, trustStore);
-    } catch (CertificateException | IOException | NoSuchAlgorithmException | InvalidKeySpecException | KeyStoreException | UnrecoverableKeyException | KeyManagementException | NoSuchProviderException e) {
+        .newSslContext(keyStore, KEY_STORE_PASSWORD, trustStore);
+    } catch (CertificateException | IOException | NoSuchAlgorithmException |
+      InvalidKeySpecException | KeyStoreException | UnrecoverableKeyException |
+      KeyManagementException e) {
       throw new DockerCertificateException(e);
     }
   }
 
   private KeyStore newKeyStore() throws CertificateException, NoSuchAlgorithmException,
-      IOException, KeyStoreException {
+                                        IOException, KeyStoreException {
     final KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
     keyStore.load(null);
     return keyStore;
@@ -98,21 +104,21 @@ public class DockerInMemoryCertificates implements DockerCertificatesStore {
   public interface SslContextFactory {
 
     SSLContext newSslContext(KeyStore keyStore, char[] keyPassword, KeyStore trustStore)
-        throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException,
-        KeyManagementException;
+    throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException,
+           KeyManagementException;
   }
 
   private static class DefaultSslContextFactory implements
-      com.spotify.docker.client.DockerCertificates.SslContextFactory {
+    com.spotify.docker.client.DockerCertificates.SslContextFactory {
 
     @Override
     public SSLContext newSslContext(KeyStore keyStore, char[] keyPassword, KeyStore trustStore)
-        throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException,
-        KeyManagementException {
+    throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException,
+           KeyManagementException {
       return SSLContexts.custom()
-          .loadTrustMaterial(trustStore, null)
-          .loadKeyMaterial(keyStore, keyPassword)
-          .build();
+        .loadTrustMaterial(trustStore, null)
+        .loadKeyMaterial(keyStore, keyPassword)
+        .build();
     }
   }
 
@@ -123,7 +129,7 @@ public class DockerInMemoryCertificates implements DockerCertificatesStore {
   public static class Builder {
 
     private com.spotify.docker.client.DockerCertificates.SslContextFactory sslContextFactory =
-        new DockerInMemoryCertificates.DefaultSslContextFactory();
+      new DockerInMemoryCertificates.DefaultSslContextFactory();
     private String caCert;
     private String clientKey;
     private String clientCert;
@@ -150,13 +156,8 @@ public class DockerInMemoryCertificates implements DockerCertificatesStore {
       return this;
     }
 
-    public DockerInMemoryCertificates.Builder securityProvider(final String securityProvider) {
-      this.securityProvider = securityProvider;
-      return this;
-    }
-
     public DockerInMemoryCertificates.Builder sslFactory(
-        final com.spotify.docker.client.DockerCertificates.SslContextFactory sslContextFactory) {
+      final com.spotify.docker.client.DockerCertificates.SslContextFactory sslContextFactory) {
       this.sslContextFactory = sslContextFactory;
       return this;
     }

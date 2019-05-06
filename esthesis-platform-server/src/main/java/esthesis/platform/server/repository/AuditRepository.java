@@ -24,20 +24,20 @@ import java.util.Optional;
 
 @Repository
 public interface AuditRepository extends BaseRepository<Audit>,
-    QuerydslPredicateExecutor<Audit>, QuerydslBinderCustomizer<QAudit>, AuditRepositoryExt {
+  QuerydslPredicateExecutor<Audit>, QuerydslBinderCustomizer<QAudit>, AuditRepositoryExt {
 
   @Override
   default void customize(QuerydslBindings bindings, QAudit audit) {
     bindings.bind(audit.createdOn)
-        .all((final DateTimePath<Instant> path, final Collection<? extends Instant> values) -> {
-          final List<? extends Instant> dates = new ArrayList<>(values);
-          Collections.sort(dates);
-          if (dates.size() == 2) {
-            return Optional.of(path.between(dates.get(0), dates.get(1)));
-          } else {
-            return Optional.of(path.eq(dates.get(0)));
-          }
-        });
+      .all((final DateTimePath<Instant> path, final Collection<? extends Instant> values) -> {
+        final List<? extends Instant> dates = new ArrayList<>(values);
+        Collections.sort(dates);
+        if (dates.size() == 2) {
+          return Optional.of(path.between(dates.get(0), dates.get(1)));
+        } else {
+          return Optional.of(path.eq(dates.get(0)));
+        }
+      });
 
     // Exclude fields from filter.
     bindings.excluding(audit.description);
@@ -58,22 +58,32 @@ class AuditRepositoryImpl implements AuditRepositoryExt {
   @PersistenceContext
   private EntityManager em;
   private final QAudit audit = QAudit.audit;
-  private final QUser user= QUser.user;
+  private final QUser user = QUser.user;
 
   @Override
   public List<String> findDistinctEvents() {
-    return new JPAQuery<String>(em).distinct().select(audit.event).from(audit).orderBy(audit.event.asc()).fetch();
+    return new JPAQuery<String>(em)
+      .distinct()
+      .select(audit.event)
+      .from(audit)
+      .orderBy(audit.event.asc())
+      .fetch();
   }
 
   @Override
   public List<String> findDistinctLevels() {
-    return new JPAQuery<String>(em).distinct().select(audit.level).from(audit).orderBy(audit.level.asc()).fetch();
+    return new JPAQuery<String>(em)
+      .distinct()
+      .select(audit.level)
+      .from(audit)
+      .orderBy(audit.level.asc())
+      .fetch();
   }
 
   @Override
   public List<User> findDistinctUsers() {
     return
-        new JPAQuery<KeyValue>(em)
+      new JPAQuery<KeyValue>(em)
         .distinct()
         .select(Projections.fields(User.class, user.id, user.fn, user.ln, user.email))
         .from(audit)
