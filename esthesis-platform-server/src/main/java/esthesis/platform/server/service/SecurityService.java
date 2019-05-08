@@ -3,7 +3,6 @@ package esthesis.platform.server.service;
 import com.eurodyn.qlack.fuse.crypto.CryptoAsymmetricService;
 import com.eurodyn.qlack.fuse.crypto.CryptoSymmetricService;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.extension.device.DeviceMessage;
@@ -29,7 +28,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -46,18 +44,19 @@ public class SecurityService {
   private final CryptoSymmetricService cryptoSymmetricService;
   private final CryptoAsymmetricService cryptoAsymmetricService;
   private final SettingResolverService srs;
-  private static ObjectMapper mapper = new ObjectMapper()
-    .setSerializationInclusion(Include.NON_NULL);
   private final CertificateRepository certificateRepository;
+  private final ObjectMapper objectMapper;
 
   public SecurityService(AppProperties appProperties,
     CryptoSymmetricService cryptoSymmetricService, CryptoAsymmetricService cryptoAsymmetricService,
-    SettingResolverService srs, CertificateRepository certificateRepository) {
+    SettingResolverService srs, CertificateRepository certificateRepository,
+    ObjectMapper objectMapper) {
     this.appProperties = appProperties;
     this.cryptoSymmetricService = cryptoSymmetricService;
     this.cryptoAsymmetricService = cryptoAsymmetricService;
     this.srs = srs;
     this.certificateRepository = certificateRepository;
+    this.objectMapper = objectMapper;
   }
 
   /**
@@ -66,29 +65,25 @@ public class SecurityService {
   public <T> void processIncomingMessage(DeviceMessage msg, Class<T> payloadClass,
     DeviceDTO deviceDTO)
   throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-         IllegalBlockSizeException, BadPaddingException, InvalidKeyException, IOException {
+         IllegalBlockSizeException, BadPaddingException, InvalidKeyException, IOException,
+         InvalidKeySpecException, SignatureException {
     // Verify the signature.
     if (srs.is(Security.INCOMING_SIGNATURE, IncomingSignature.SIGNED) &&
       StringUtils.isBlank(msg.getSignature())) {
       throw new SecurityException("There is no signature to verify.");
     }
-    try {
-      if (StringUtils.isNotBlank(msg.getSignature())) {
-        if (StringUtils.isNotBlank(msg.getEncryptedPayload())) {
-          verifySignature(
-            Base64.decodeBase64(msg.getEncryptedPayload().getBytes(StandardCharsets.UTF_8)),
-            msg.getEncryptedPayload(), deviceDTO);
-        } else {
-          verifySignature(Base64.decodeBase64(mapper.writeValueAsBytes(msg.getPayload())),
-            msg.getEncryptedPayload(), deviceDTO);
-        }
+    if (StringUtils.isNotBlank(msg.getSignature())) {
+      if (StringUtils.isNotBlank(msg.getEncryptedPayload())) {
+        verifySignature(
+          msg.getEncryptedPayload().getBytes(StandardCharsets.UTF_8),
+          msg.getSignature(), deviceDTO);
+      } else {
+        verifySignature(objectMapper.writeValueAsBytes(msg.getPayload()),
+          msg.getSignature(), deviceDTO);
       }
-    } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException
-      | SignatureException | JsonProcessingException e) {
-      LOGGER.log(Level.SEVERE, "Could not verify signature.", e);
     }
 
-    // Decrypt the paylod.
+    // Decrypt the payload.
     if (StringUtils.isNotBlank(msg.getEncryptedPayload()) && msg.getPayload() != null) {
       throw new IllegalStateException("An incoming message cannot have both encrypted and "
         + "non-encrypted payload.");
@@ -101,7 +96,7 @@ public class SecurityService {
       byte[] plaintext =
         decrypt(Base64.decodeBase64(msg.getEncryptedPayload().getBytes(StandardCharsets.UTF_8)),
           deviceDTO);
-      msg.setPayload(mapper.readValue(plaintext, payloadClass));
+      msg.setPayload(objectMapper.readValue(plaintext, payloadClass));
       msg.setEncryptedPayload(null);
     }
   }
@@ -116,7 +111,7 @@ public class SecurityService {
     // Encrypt request if required.
     if (srs.is(Security.OUTGOING_ENCRYPTION, OutgoingEncryption.ENCRYPTED)) {
       msg.setEncryptedPayload(Base64.encodeBase64String(
-        encrypt(mapper.writeValueAsBytes(msg.getPayload()), deviceDTO)));
+        encrypt(objectMapper.writeValueAsBytes(msg.getPayload()), deviceDTO)));
       msg.setPayload(null);
     }
 
@@ -126,7 +121,7 @@ public class SecurityService {
       if (StringUtils.isNotBlank(msg.getEncryptedPayload())) {
         signature = sign(msg.getEncryptedPayload().getBytes(StandardCharsets.UTF_8));
       } else {
-        signature = sign(mapper.writeValueAsBytes(msg.getPayload()));
+        signature = sign(objectMapper.writeValueAsBytes(msg.getPayload()));
       }
       msg.setSignature(Base64.encodeBase64String(signature));
     }
@@ -139,10 +134,12 @@ public class SecurityService {
    */
   public byte[] sign(byte[] payload)
   throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
-         SignatureException {
+         SignatureException, IllegalBlockSizeException, BadPaddingException,
+         InvalidAlgorithmParameterException, NoSuchPaddingException {
+
     return cryptoAsymmetricService.sign(
-      ReturnOptional.r(certificateRepository.findById(srs.getAsLong(Security.PLATFORM_CERTIFICATE)))
-        .getPrivateKey(),
+      new String(decrypt(ReturnOptional.r(certificateRepository.findById(srs.getAsLong(Security.PLATFORM_CERTIFICATE)))
+        .getPrivateKey()), StandardCharsets.UTF_8),
       payload,
       appProperties.getSecurityAsymmetricSignatureAlgorithm(),
       appProperties.getSecurityAsymmetricKeyAlgorithm());
@@ -253,8 +250,7 @@ public class SecurityService {
   }
 
   /**
-   * Decrypts an encrypted message coming from a device. To decrypt the message the device is looked
-   * up based on the passed `hardwareId` and the shared session key is retrieved.
+   * Decrypts an encrypted message coming from a device.
    *
    * @param cipherText The ciphertext to decrypt.
    * @param deviceDTO The device to decrypt for.

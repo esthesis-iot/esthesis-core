@@ -1,5 +1,6 @@
 package esthesis.platform.datasink.influxdb.sink;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.extension.config.AppConstants.MqttPayload;
@@ -32,7 +33,8 @@ public abstract class InfluxDBSink {
   // The name of the tag to indicate the type of the measurement.
   public static final String TAG_TYPE_NAME = "type";
   public static final String TAG_HARDWARE_ID_NAME = "hardwareId";
-  private static ObjectMapper mapper = new ObjectMapper();
+  private static ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(
+    Include.NON_EMPTY);
   private static AtomicInteger eventsQueued = new AtomicInteger(0);
 
   InfluxDBSink(String configuration, String sinkName, String eventType) {

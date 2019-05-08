@@ -17,8 +17,9 @@ import java.util.logging.Logger;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class ClusterEvent extends ApplicationEvent {
+
   // JUL reference.
   private static final Logger LOGGER = Logger.getLogger(ClusterEvent.class.getName());
 
@@ -26,7 +27,8 @@ public class ClusterEvent extends ApplicationEvent {
   private CLUSTER_EVENT_TYPE eventType;
   @NotNull
   private String emitterNode;
-  private static ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(Include.NON_NULL);
+  private static ObjectMapper mapper = new ObjectMapper()
+    .setSerializationInclusion(Include.NON_EMPTY);
 
   public enum CLUSTER_EVENT_TYPE {
     CONFIGURATION_ZOOKEEPER,

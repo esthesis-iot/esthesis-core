@@ -2,14 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {icon, latLng, marker, tileLayer} from 'leaflet';
 import {TagDto} from '../../dto/tag-dto';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {QFormsService} from '@eurodyn/forms';
 import {TagService} from '../../tags/tag.service';
-import {MqttServerService} from '../../infrastructure/infrastructure-mqtt/mqtt-server.service';
 import {UtilityService} from '../../shared/utility.service';
-import {CertificatesService} from '../../certificates/certificates.service';
-import {CasService} from '../../cas/cas.service';
 import {DevicesService} from '../devices.service';
 import {BaseComponent} from '../../shared/base-component';
 import {OkCancelModalComponent} from '../../shared/display/ok-cancel-modal/ok-cancel-modal.component';
@@ -42,7 +39,6 @@ export class DeviceComponent extends BaseComponent implements OnInit {
       })
     }),
   ];
-
 
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
@@ -101,5 +97,9 @@ export class DeviceComponent extends BaseComponent implements OnInit {
         });
       }
     });
+  }
+
+  downloadKeys() {
+    this.devicesService.downloadKeys(this.id);
   }
 }

@@ -3,7 +3,6 @@ package esthesis.platform.server.service;
 import static java.text.MessageFormat.format;
 
 import com.eurodyn.qlack.common.exception.QAuthenticationException;
-import com.eurodyn.qlack.common.exception.QSecurityException;
 import com.eurodyn.qlack.common.util.KeyValue;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.google.common.collect.Sets;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.text.MessageFormat;
 import java.util.Set;
 
 @Service
@@ -69,7 +69,7 @@ public class UserService extends BaseService<UserDTO, User> {
       final String emailAlreadyExists = format("Could not insert user. Email {0} already exists.",
           newEmail);
       auditServiceProxy.warning(Audit.EVENT_PROFILE, emailAlreadyExists);
-      throw new QSecurityException(emailAlreadyExists);
+      throw new SecurityException(emailAlreadyExists);
     }
   }
 
@@ -78,7 +78,7 @@ public class UserService extends BaseService<UserDTO, User> {
     if (!verifyPassword(user, updateUserProfileDTO.getOldPassword(), false)) {
       auditServiceProxy.error(Audit.EVENT_PROFILE,
           "Could not change email address due to wrong password.");
-      throw new QSecurityException(
+      throw new SecurityException(
           "To change your email address you need to enter your current password.");
     }
     verifyEmailIsUnique(updateUserProfileDTO.getNewEmail());
@@ -97,7 +97,8 @@ public class UserService extends BaseService<UserDTO, User> {
       auditServiceProxy.info(Audit.EVENT_PROFILE, "Changed password.");
     } else {
       auditServiceProxy.error(Audit.EVENT_PROFILE, "Could not change password.");
-      throw new QSecurityException("Could not change password for user {0}.", user.getId());
+      throw new SecurityException(MessageFormat.format("Could not change password for user {0}.",
+        user.getId()));
     }
   }
 

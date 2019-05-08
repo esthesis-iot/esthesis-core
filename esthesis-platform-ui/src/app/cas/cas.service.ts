@@ -4,7 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {CaDto} from '../dto/ca-dto';
 import {HttpUtilsService} from '../shared/http-utils.service';
 import {FormGroup} from '@angular/forms';
-import {QFormsService, QPageableReply} from '@eurodyn/forms';
+import {QFormsService} from '@eurodyn/forms';
 import {CrudService} from '../services/crud.service';
 import {Observable} from 'rxjs';
 
@@ -40,7 +40,8 @@ export class CasService extends CrudService<CaDto> {
   }
 
   restore(form: FormGroup) {
-    return this.qForms.uploadForm(this.localHttp, form, `${AppConstants.API_ROOT}/cas/restore`, false);
+    return this.qForms.uploadForm(this.localHttp, form, `${AppConstants.API_ROOT}/cas/restore`,
+      false);
   }
 
   getEligibleForSigning(): Observable<CaDto[]> {

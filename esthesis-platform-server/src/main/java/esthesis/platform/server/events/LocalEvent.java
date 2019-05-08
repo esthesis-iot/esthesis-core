@@ -17,8 +17,9 @@ import java.util.logging.Logger;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class LocalEvent extends ApplicationEvent {
+
   // JUL reference.
   private static final Logger LOGGER = Logger.getLogger(LocalEvent.class.getName());
 
@@ -26,7 +27,8 @@ public class LocalEvent extends ApplicationEvent {
   private LOCAL_EVENT_TYPE eventType;
   // A flag indicating that this event is an event that was initially captured as a cluster event.
   private boolean clusterEvent;
-  private static ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(Include.NON_NULL);
+  private static ObjectMapper mapper = new ObjectMapper()
+    .setSerializationInclusion(Include.NON_EMPTY);
 
   public enum LOCAL_EVENT_TYPE {
     CONFIGURATION_ZOOKEEPER,

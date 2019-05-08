@@ -68,6 +68,11 @@
         </mat-form-field>
 
         <mat-card-actions>
+          <button mat-button [matMenuTriggerFor]="menu">DOWNLOAD
+            <mat-menu #menu="matMenu" xPosition="before">
+              <button mat-menu-item (click)="downloadKeys()">Cryptographic keys</button>
+            </mat-menu>
+          </button>
           <button mat-button routerLink="/devices" fragment="mqtt">CANCEL</button>
           <button mat-button color="accent" (click)="delete()" [disabled]="this.id == 0">DELETE</button>
           <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>

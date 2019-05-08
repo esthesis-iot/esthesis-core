@@ -5,6 +5,7 @@ import static esthesis.platform.server.config.AppSettings.SettingValues.DeviceRe
 
 import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
 import com.eurodyn.qlack.common.exception.QDisabledException;
+import com.eurodyn.qlack.common.exception.QSecurityException;
 import com.eurodyn.qlack.fuse.crypto.CryptoAsymmetricService;
 import com.eurodyn.qlack.fuse.crypto.CryptoSymmetricService;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
@@ -18,8 +19,10 @@ import esthesis.platform.server.config.AppSettings.Setting.DeviceRegistration;
 import esthesis.platform.server.config.AppSettings.SettingValues.DeviceRegistration.PushTags;
 import esthesis.platform.server.config.AppSettings.SettingValues.DeviceRegistration.RegistrationMode;
 import esthesis.platform.server.dto.DeviceDTO;
+import esthesis.platform.server.dto.DeviceKeyDTO;
 import esthesis.platform.server.dto.DeviceRegistrationDTO;
 import esthesis.platform.server.dto.WebSocketMessageDTO;
+import esthesis.platform.server.mapper.DeviceKeyMapper;
 import esthesis.platform.server.mapper.DeviceMapper;
 import esthesis.platform.server.model.Device;
 import esthesis.platform.server.model.DeviceKey;
@@ -44,6 +47,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -58,6 +62,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
   private final DeviceRepository deviceRepository;
   private final DeviceMapper deviceMapper;
+  private final DeviceKeyMapper deviceKeyMapper;
   private final WebSocketService webSocketService;
   private final SettingResolverService srs;
   private final TagService tagService;
@@ -70,6 +75,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
   public DeviceService(
     DeviceRepository deviceRepository, DeviceMapper deviceMapper,
+    DeviceKeyMapper deviceKeyMapper,
     WebSocketService webSocketService, SettingResolverService srs,
     TagService tagService,
     DeviceKeyRepository deviceKeyRepository,
@@ -79,6 +85,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     CertificatesService certificatesService) {
     this.deviceRepository = deviceRepository;
     this.deviceMapper = deviceMapper;
+    this.deviceKeyMapper = deviceKeyMapper;
     this.webSocketService = webSocketService;
     this.srs = srs;
     this.tagService = tagService;
@@ -141,15 +148,26 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   }
 
   private void registerPreregistered(RegistrationRequest registrationRequest, String hardwareId) {
-    Device device = ReturnOptional
-      .r(deviceRepository.findByHardwareId(hardwareId),
-        hardwareId);
+    Optional<Device> optionalDevice = deviceRepository.findByHardwareId(hardwareId);
+
+    // Check that a device with the same hardware ID is not already registered.
+    if (optionalDevice.isPresent() && !optionalDevice.get().getState()
+      .equals(Status.PREREGISTERED)) {
+      throw new QSecurityException(
+        "Cannot register device with hardware ID {0} as it is already in {1} state.",
+        hardwareId, optionalDevice.get().getState());
+    } else if (!optionalDevice.isPresent()) {
+      throw new QSecurityException(
+        "Device with hardware ID {0} does not exist.", hardwareId);
+    }
+    Device device = optionalDevice.get();
 
     // Check tags and display appropriate warnings if necessary.
     checkTags(registrationRequest.getTags());
 
     // Add device-pushed tags if supported.
-    if (srs.is(DeviceRegistration.PUSH_TAGS, PushTags.ALLOWED)) {
+    if (srs.is(DeviceRegistration.PUSH_TAGS, PushTags.ALLOWED) && StringUtils
+      .isNotBlank(registrationRequest.getTags())) {
       device.setTags(
         Lists.newArrayList(
           tagService.findAllByNameIn(Arrays.asList(registrationRequest.getTags().split(",")))));
@@ -170,8 +188,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     createKeyPairDTO.setKeySize(appProperties.getSecurityAsymmetricKeySize());
     createKeyPairDTO
       .setKeyPairGeneratorAlgorithm(appProperties.getSecurityAsymmetricKeyAlgorithm());
-    final KeyPair keyPair = cryptoAsymmetricService
-      .createKeyPair(createKeyPairDTO);
+    final KeyPair keyPair = cryptoAsymmetricService.createKeyPair(createKeyPairDTO);
 
     // Check that a device with the same hardware ID does not already exist.
     if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
@@ -270,6 +287,10 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     }
 
     return deviceDTO;
+  }
+
+  public DeviceKeyDTO findKeys(long deviceId) {
+    return deviceKeyMapper.map(deviceKeyRepository.findLatestAccepted(deviceId));
   }
 
   public DeviceDTO findByHardwareId(String hardwareId) {

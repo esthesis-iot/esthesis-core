@@ -6,15 +6,15 @@ import {AppConstants} from '../app.constants';
 import {Observable} from 'rxjs';
 import {DeviceRegisterDto} from '../dto/device-register-dto';
 import {QPageableReply} from '@eurodyn/forms';
-import {AuditDto} from '../dto/audit-dto';
 import {DeviceDto} from '../dto/device-dto';
+import {HttpUtilsService} from '../shared/http-utils.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DevicesService extends CrudService<CaDto> {
 
-  constructor(http: HttpClient) {
+  constructor(http: HttpClient, private localHttp: HttpClient, private httpUtil: HttpUtilsService) {
     super(http, 'devices');
   }
 
@@ -23,6 +23,15 @@ export class DevicesService extends CrudService<CaDto> {
   }
 
   getDevices(queryString: string): Observable<QPageableReply<DeviceDto>> {
-    return this.http.get<QPageableReply<DeviceDto>>(AppConstants.API_ROOT + `/devices?${queryString}`);
+    return this.http.get<QPageableReply<DeviceDto>>(
+      AppConstants.API_ROOT + `/devices?${queryString}`);
+  }
+
+  downloadKeys(deviceId: number) {
+    this.localHttp.get(`${AppConstants.API_ROOT}/devices/${deviceId}/keys`, {
+      responseType: 'blob', observe: 'response'
+    }).subscribe(onNext => {
+      this.httpUtil.saveAs(onNext);
+    });
   }
 }
