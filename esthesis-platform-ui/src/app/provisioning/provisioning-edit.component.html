@@ -4,27 +4,27 @@
     <form novalidate [formGroup]="form">
       <input type="hidden" formControlName="id">
       <div fxLayout="column">
-        <div fxLayout="row">
-          <button mat-button (click)="file.click()">SELECT FILE</button>
+        <mat-checkbox formControlName="defaultIP"
+                      class="xs-pt1">Default for initial provisioning</mat-checkbox>
+
+        <mat-form-field class="xs-pt2">
+          <input matInput placeholder="File" (click)="file.click()" formControlName="fileName"
+                 readonly>
           <div fxFlex="row" fxLayoutAlign="start center">
             <input type="file" (change)="selectFile($event)" #file hidden>
-            <div *ngIf="form.controls['file'].value">{{form.controls['file'].value.name}}</div>
           </div>
-        </div>
+        </mat-form-field>
 
-        <mat-checkbox formControlName="defaultIP"
-                      class="pad-t-1 pad-b-1">Default for initial provisioning</mat-checkbox>
-
-        <mat-form-field>
+        <mat-form-field class="xs-pt1">
           <input matInput placeholder="Name" formControlName="name">
         </mat-form-field>
 
         <mat-form-field>
-          <input matInput placeholder="Version" formControlName="version">
+          <input matInput placeholder="Version" formControlName="packageVersion">
         </mat-form-field>
 
         <mat-form-field>
-          <mat-select placeholder="Status" formControlName="status">
+          <mat-select placeholder="Status" formControlName="state">
             <mat-option value="true">Active</mat-option>
             <mat-option value="false">Inactive</mat-option>
           </mat-select>
@@ -42,10 +42,11 @@
           <textarea matInput placeholder="Description" formControlName="description"></textarea>
         </mat-form-field>
 
-        <app-form-control-tags formControlName="tags" *ngIf="availableTags"
-                               [selectedTags]="form.controls['tags'].value"
-                               [availableTags]="availableTags">
-        </app-form-control-tags>
+        <mat-form-field>
+          <mat-select placeholder="Tags" multiple formControlName="tags">
+            <mat-option *ngFor="let tag of availableTags" [value]="tag.id">{{tag.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
     </form>
   </mat-card-content>

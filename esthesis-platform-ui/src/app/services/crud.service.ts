@@ -1,13 +1,14 @@
 import {AppConstants} from '../app.constants';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {QPageableReply} from '@eurodyn/forms';
+import {QFormsService, QPageableReply} from '@eurodyn/forms';
+import {FormGroup} from '@angular/forms';
 
 /**
  * A convenience CRUD service to be extended by concrete services to provide default CRUD methods.
  */
 export class CrudService<T> {
-  constructor(public http: HttpClient, private endpoint: string) {
+  constructor(public http: HttpClient, private endpoint: string, public qForms: QFormsService) {
   }
 
   save(object: T) {
@@ -16,7 +17,8 @@ export class CrudService<T> {
 
   getAll(queryString?: string): Observable<QPageableReply<T>> {
     if (queryString) {
-      return this.http.get<QPageableReply<T>>(`${AppConstants.API_ROOT}/${this.endpoint}?${queryString}`);
+      return this.http.get<QPageableReply<T>>(
+        `${AppConstants.API_ROOT}/${this.endpoint}?${queryString}`);
     } else {
       return this.http.get<QPageableReply<T>>(`${AppConstants.API_ROOT}/${this.endpoint}`);
     }
@@ -36,5 +38,10 @@ export class CrudService<T> {
 
   deleteAll(): Observable<any> {
     return this.http.delete(`${AppConstants.API_ROOT}/${this.endpoint}`);
+  }
+
+  upload(form: FormGroup): Observable<any> {
+    return this.qForms.uploadForm(this.http, form,
+      `${AppConstants.API_ROOT}/${this.endpoint}`, false);
   }
 }

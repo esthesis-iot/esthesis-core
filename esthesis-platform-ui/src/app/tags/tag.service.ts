@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {TagDto} from '../dto/tag-dto';
 import {Observable} from 'rxjs';
 import {CrudService} from '../services/crud.service';
-import {QPageableReply} from '@eurodyn/forms';
+import {QFormsService, QPageableReply} from '@eurodyn/forms';
 
 /**
  * A service to provide extra functionality for the tags.
@@ -13,8 +13,8 @@ import {QPageableReply} from '@eurodyn/forms';
   providedIn: 'root'
 })
 export class TagService extends CrudService<TagDto> {
-  constructor(http: HttpClient) {
-    super(http, 'tags');
+  constructor(http: HttpClient, qForms: QFormsService) {
+    super(http, 'tags', qForms);
   }
 
   getAll(params?: string): Observable<QPageableReply<TagDto>> {

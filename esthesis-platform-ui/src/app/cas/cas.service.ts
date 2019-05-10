@@ -13,9 +13,9 @@ import {Observable} from 'rxjs';
 })
 export class CasService extends CrudService<CaDto> {
 
-  constructor(http: HttpClient, private localHttp: HttpClient, private httpUtil: HttpUtilsService,
-              private qForms: QFormsService) {
-    super(http, 'cas');
+  constructor(http: HttpClient, private httpUtil: HttpUtilsService,
+              qForms: QFormsService) {
+    super(http, 'cas', qForms);
   }
 
   /**
@@ -24,7 +24,7 @@ export class CasService extends CrudService<CaDto> {
    * @param {number} keyType The type of the key to download as per AppConstants.KEY_TYPE.
    */
   download(caId: number, keyType: number, base64: boolean) {
-    this.localHttp.get(`${AppConstants.API_ROOT}/cas/${caId}/download/${keyType}/${base64}`, {
+    this.http.get(`${AppConstants.API_ROOT}/cas/${caId}/download/${keyType}/${base64}`, {
       responseType: 'blob', observe: 'response'
     }).subscribe(onNext => {
       this.httpUtil.saveAs(onNext);
@@ -32,7 +32,7 @@ export class CasService extends CrudService<CaDto> {
   }
 
   backup(caId: number) {
-    this.localHttp.get(`${AppConstants.API_ROOT}/cas/${caId}/backup`, {
+    this.http.get(`${AppConstants.API_ROOT}/cas/${caId}/backup`, {
       responseType: 'blob', observe: 'response'
     }).subscribe(onNext => {
       this.httpUtil.saveAs(onNext);
@@ -40,12 +40,12 @@ export class CasService extends CrudService<CaDto> {
   }
 
   restore(form: FormGroup) {
-    return this.qForms.uploadForm(this.localHttp, form, `${AppConstants.API_ROOT}/cas/restore`,
+    return this.qForms.uploadForm(this.http, form, `${AppConstants.API_ROOT}/cas/restore`,
       false);
   }
 
   getEligibleForSigning(): Observable<CaDto[]> {
-    return this.localHttp.get<CaDto[]>(`${AppConstants.API_ROOT}/cas/eligible-for-signing`);
+    return this.http.get<CaDto[]>(`${AppConstants.API_ROOT}/cas/eligible-for-signing`);
   }
 
 }

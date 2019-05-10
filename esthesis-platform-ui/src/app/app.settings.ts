@@ -11,6 +11,7 @@ export const AppSettings = {
     DEVICE_REGISTRATION: {
       REGISTRATION_MODE: "deviceRegistration",
       PUSH_TAGS: "devicePushTags",
+      PROVISIONING_URL: "provisioningUrl"
     },
     NETWORKING: {
       MQTT_ACL_ENDPOINT_STATUS: "mqttAclEndpointStatus"

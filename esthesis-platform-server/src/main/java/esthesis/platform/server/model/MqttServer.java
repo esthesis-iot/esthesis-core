@@ -31,18 +31,14 @@ public class MqttServer extends BaseEntity {
 
   @NotNull
   private String name;
-
   @NotNull
   private String ipAddress;
-
   @NotNull
   private boolean state;
-
   @Singular
   @OneToMany
   @JoinTable(inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private List<Tag> tags;
-
   private String topicTelemetry;
   private String topicControl;
   private String topicMetadata;

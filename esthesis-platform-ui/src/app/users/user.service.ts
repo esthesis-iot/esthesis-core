@@ -7,6 +7,7 @@ import {LoginInfoDto} from '../dto/login-info-dto';
 import {UserDto} from '../dto/user-dto';
 import {UserProfileDto} from '../dto/user-profile-dto';
 import {CrudService} from '../services/crud.service';
+import {QFormsService} from '@eurodyn/forms';
 
 /**
  * A service providing functionality for the user of the application, including authentication,
@@ -18,8 +19,8 @@ import {CrudService} from '../services/crud.service';
 export class UserService extends CrudService<UserDto> {
   private resource = `users`;
 
-  constructor(http: HttpClient, private localHttp: HttpClient, private jwtService: JwtHelperService) {
-    super(http, 'users');
+  constructor(http: HttpClient, private jwtService: JwtHelperService, qForms: QFormsService) {
+    super(http, 'users', qForms);
   }
 
   // Returns the JWT.
@@ -30,7 +31,7 @@ export class UserService extends CrudService<UserDto> {
   // Authenticate a user.
   // TODO observable type
   login(loginInfoDTO: LoginInfoDto): Observable<string> {
-    return this.localHttp.post<string>(AppConstants.API_ROOT + `/${this.resource}/auth`, JSON.stringify(loginInfoDTO),
+    return this.http.post<string>(AppConstants.API_ROOT + `/${this.resource}/auth`, JSON.stringify(loginInfoDTO),
       {headers: {'Content-Type': 'application/json'}});
   }
 
@@ -48,12 +49,12 @@ export class UserService extends CrudService<UserDto> {
   // Logs out the user terminating its session.
   // TODO observable type
   logout(): Observable<any> {
-    return this.localHttp.get(AppConstants.API_ROOT + `/${this.resource}/logout`);
+    return this.http.get(AppConstants.API_ROOT + `/${this.resource}/logout`);
   }
 
   // Get the profile of the currently registered user.
   getUserProfile(): Observable<UserProfileDto> {
-    return this.localHttp.get<UserProfileDto>(AppConstants.API_ROOT + `/${this.resource}`);
+    return this.http.get<UserProfileDto>(AppConstants.API_ROOT + `/${this.resource}`);
   }
 
   // // Update the user profile.

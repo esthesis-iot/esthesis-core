@@ -7,9 +7,6 @@ import esthesis.platform.server.repository.ProvisioningRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @Service
 @Transactional
@@ -19,15 +16,15 @@ public class ProvisioningService extends BaseService<ProvisioningDTO, Provisioni
   private final ProvisioningMapper provisioningMapper;
   private final ProvisioningRepository provisioningRepository;
 
-  public ProvisioningService(ProvisioningMapper provisioningMapper, ProvisioningRepository provisioningRepository) {
+  public ProvisioningService(ProvisioningMapper provisioningMapper,
+    ProvisioningRepository provisioningRepository) {
     this.provisioningMapper = provisioningMapper;
     this.provisioningRepository = provisioningRepository;
   }
 
-  public ProvisioningDTO save(ProvisioningDTO provisioningPackageDTO, MultipartFile file) throws IOException {
-    provisioningPackageDTO.setFileSize(file.getSize());
-
-    return provisioningMapper.map(provisioningRepository.save(provisioningMapper.map(provisioningPackageDTO)));
+  public ProvisioningDTO save(ProvisioningDTO provisioningDTO) {
+    return provisioningMapper
+      .map(provisioningRepository.save(provisioningMapper.map(provisioningDTO)));
   }
 
 }

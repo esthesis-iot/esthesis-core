@@ -5,7 +5,7 @@ import {HttpClient} from '@angular/common/http';
 import {AppConstants} from '../app.constants';
 import {Observable} from 'rxjs';
 import {DeviceRegisterDto} from '../dto/device-register-dto';
-import {QPageableReply} from '@eurodyn/forms';
+import {QFormsService, QPageableReply} from '@eurodyn/forms';
 import {DeviceDto} from '../dto/device-dto';
 import {HttpUtilsService} from '../shared/http-utils.service';
 
@@ -14,8 +14,8 @@ import {HttpUtilsService} from '../shared/http-utils.service';
 })
 export class DevicesService extends CrudService<CaDto> {
 
-  constructor(http: HttpClient, private localHttp: HttpClient, private httpUtil: HttpUtilsService) {
-    super(http, 'devices');
+  constructor(http: HttpClient, private httpUtil: HttpUtilsService, qForms: QFormsService) {
+    super(http, 'devices', qForms);
   }
 
   preregister(ids: DeviceRegisterDto): Observable<any> {
@@ -28,7 +28,7 @@ export class DevicesService extends CrudService<CaDto> {
   }
 
   downloadKeys(deviceId: number) {
-    this.localHttp.get(`${AppConstants.API_ROOT}/devices/${deviceId}/keys`, {
+    this.http.get(`${AppConstants.API_ROOT}/devices/${deviceId}/keys`, {
       responseType: 'blob', observe: 'response'
     }).subscribe(onNext => {
       this.httpUtil.saveAs(onNext);

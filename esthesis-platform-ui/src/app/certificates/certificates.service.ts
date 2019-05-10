@@ -13,9 +13,8 @@ import {Observable} from 'rxjs';
 })
 export class CertificatesService extends CrudService<CertificateDto> {
 
-  constructor(http: HttpClient, private localHttp: HttpClient, private httpUtil: HttpUtilsService,
-              private qForms: QFormsService) {
-    super(http, 'certificates');
+  constructor(http: HttpClient, private httpUtil: HttpUtilsService, qForms: QFormsService) {
+    super(http, 'certificates', qForms);
   }
 
   /**
@@ -24,7 +23,7 @@ export class CertificatesService extends CrudService<CertificateDto> {
    * @param {number} keyType The type of the key to download as per AppConstants.KEY_TYPE.
    */
   download(certificateId: number, keyType: number, base64: boolean) {
-    this.localHttp.get(`${AppConstants.API_ROOT}/certificates/${certificateId}/download/${keyType}/${base64}`, {
+    this.http.get(`${AppConstants.API_ROOT}/certificates/${certificateId}/download/${keyType}/${base64}`, {
       responseType: 'blob', observe: 'response'
     }).subscribe(onNext => {
       this.httpUtil.saveAs(onNext);

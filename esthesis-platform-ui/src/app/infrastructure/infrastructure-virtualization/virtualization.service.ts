@@ -3,15 +3,15 @@ import {CrudService} from '../../services/crud.service';
 import {VirtualizationDto} from '../../dto/virtualization-dto';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {QPageableReply} from '@eurodyn/forms';
+import {QFormsService, QPageableReply} from '@eurodyn/forms';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VirtualizationService extends CrudService<VirtualizationDto> {
 
-  constructor(http: HttpClient) {
-    super(http, 'virtualization');
+  constructor(http: HttpClient, qForms: QFormsService) {
+    super(http, 'virtualization', qForms);
   }
 
   getAll(params?: string): Observable<QPageableReply<VirtualizationDto>> {

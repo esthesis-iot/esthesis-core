@@ -1,6 +1,5 @@
 package esthesis.platform.server.dto;
 
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,10 +20,10 @@ public class ProvisioningDTO extends BaseDTO {
   private boolean state;
   private boolean defaultIP;
   @Singular
-  @OneToMany
-  private List<TagDTO> tags;
+  private List<Long> tags;
   @NotNull
-  private String version;
-  private String fileId;
+  private String packageVersion;
+  private byte[] fileContent;
   private long fileSize;
+  private String fileName;
 }

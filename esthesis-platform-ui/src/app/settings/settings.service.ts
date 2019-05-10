@@ -6,6 +6,7 @@ import {SettingDto} from '../dto/setting-dto';
 import {CrudService} from '../services/crud.service';
 import {KeyValueDto} from '../dto/key-value-dto';
 import {Observable, EMPTY} from 'rxjs';
+import {QFormsService} from '@eurodyn/forms';
 
 /**
  * A service providing functionality to manage settings.
@@ -17,8 +18,8 @@ export class SettingsService extends CrudService<SettingDto> {
   // Logger.
   private log = Log.create('SettingsService');
 
-  constructor(http: HttpClient) {
-    super(http, 'settings');
+  constructor(http: HttpClient, qForms: QFormsService) {
+    super(http, 'settings', qForms);
   }
 
   findByName(name: string): Observable<SettingDto> {

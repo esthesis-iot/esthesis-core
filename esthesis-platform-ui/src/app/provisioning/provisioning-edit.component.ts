@@ -9,6 +9,7 @@ import {TagService} from '../tags/tag.service';
 import {ProvisioningService} from './provisioning.service';
 import {UtilityService} from '../shared/utility.service';
 import {OkCancelModalComponent} from '../shared/display/ok-cancel-modal/ok-cancel-modal.component';
+import {TagDto} from '../dto/tag-dto';
 
 @Component({
   selector: 'app-provisioning-edit',
@@ -18,7 +19,7 @@ import {OkCancelModalComponent} from '../shared/display/ok-cancel-modal/ok-cance
 export class ProvisioningEditComponent extends BaseComponent implements OnInit {
   form: FormGroup;
   id: number;
-  availableTags: string[];
+  availableTags: TagDto[];
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
               private qForms: QFormsService, private tagService: TagService,
@@ -31,17 +32,18 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
     // Check if an edit is performed and fetch data.
     this.id = Number(this.route.snapshot.paramMap.get('id'));
 
-    // Setup the form.
+    // // Setup the form.
     this.form = this.fb.group({
       id: [''],
+      defaultIP: [''],
       name: ['', [Validators.required, Validators.maxLength(256)]],
       description: ['', [Validators.maxLength(2048)]],
-      file: ['', [Validators.required]],
-      status: ['false', [Validators.required]],
+      file: [{value: '', disabled: this.id !== 0}, [Validators.required]],
+      state: ['false', [Validators.required]],
       prerequisites: [''],
-      defaultIP: [false],
-      tags: [{value: [], disabled: false}],
-      version: ['', [Validators.required]]
+      tags: [[]],
+      packageVersion: ['', [Validators.required]],
+      fileName: ['']
     });
 
     // Fill-in the form with data if editing an existing item.
@@ -51,13 +53,14 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
       });
     }
 
-    // this.tagService.getTagNames().subscribe(onNext => {
-    //   this.availableTags = onNext;
-    // });
+    // Get available tags.
+    this.tagService.getAll().subscribe(onNext => {
+      this.availableTags = onNext.content;
+    });
   }
 
   save() {
-    this.provisioningService.saveBinary(this.form).subscribe(onEvent => {
+    this.provisioningService.upload(this.form).subscribe(onEvent => {
       if (onEvent.type === HttpEventType.Response) {
         if (onEvent.status === 200) {
           this.utilityService.popupSuccess('Provisioning package successfully saved.');
@@ -70,6 +73,21 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
       this.utilityService.popupError('There was a problem uploading the provisioning package.');
     });
   }
+
+  // // save() {
+  //   this.provisioningService.save(this.form).subscribe(onEvent => {
+  //     if (onEvent.type === HttpEventType.Response) {
+  //       if (onEvent.status === 200) {
+  //         this.utilityService.popupSuccess('Provisioning package successfully saved.');
+  //         this.router.navigate(['provisioning']);
+  //       } else {
+  //         this.utilityService.popupError('There was a problem uploading the provisioning package.');
+  //       }
+  //     }
+  //   }, onError => {
+  //     this.utilityService.popupError('There was a problem uploading the provisioning package.');
+  //   });
+  // }
 
   delete() {
     const dialogRef = this.dialog.open(OkCancelModalComponent, {
@@ -93,6 +111,7 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
 
   selectFile(event) {
     this.form.controls['file'].patchValue(event.target.files[0]);
+    this.form.controls['fileName'].patchValue(event.target.files[0].name);
   }
 
 }

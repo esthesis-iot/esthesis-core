@@ -25,6 +25,7 @@ import {
 } from '@angular/material';
 import {QFormsModule} from '@eurodyn/forms';
 import {ReactiveFormsModule} from '@angular/forms';
+import {FlexModule} from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import {ReactiveFormsModule} from '@angular/forms';
     MatSortModule,
     MatIconModule,
     MatTabsModule,
-    MatRadioModule
+    MatRadioModule,
+    FlexModule
   ]
 })
 export class SettingsModule { }

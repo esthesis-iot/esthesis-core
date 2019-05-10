@@ -4,6 +4,9 @@ import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {QFormsService} from '@eurodyn/forms';
 import {ProvisioningService} from './provisioning.service';
 import {ProvisioningDto} from '../dto/provisioning-dto';
+import {TagService} from '../tags/tag.service';
+import {TagDto} from '../dto/tag-dto';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-provisioning',
@@ -13,11 +16,13 @@ import {ProvisioningDto} from '../dto/provisioning-dto';
 export class ProvisioningComponent extends BaseComponent implements OnInit, AfterViewInit {
   columns = ['name', 'createdOn', 'tags', 'version', 'defaultIP', 'size', 'status'];
   datasource = new MatTableDataSource<ProvisioningDto>();
+  availableTags: TagDto[];
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private provisioningService: ProvisioningService, private qForms: QFormsService) {
+  constructor(private provisioningService: ProvisioningService, private qForms: QFormsService,
+              private tagService: TagService) {
     super();
   }
 
@@ -28,6 +33,11 @@ export class ProvisioningComponent extends BaseComponent implements OnInit, Afte
     // Initial fetch of data.
     this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
+    // Get available tags.
+    this.tagService.getAll().subscribe(onNext => {
+      this.availableTags = onNext.content;
+    });
+
     // Each time the sorting changes, reset the page number.
     this.sort.sortChange.subscribe(onNext => {
       this.paginator.pageIndex = 0;
@@ -36,7 +46,8 @@ export class ProvisioningComponent extends BaseComponent implements OnInit, Afte
   }
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
-    this.provisioningService.getAll(this.qForms.appendPagingToFilter(null, page, size, sort, sortDirection))
+    this.provisioningService.getAll(
+      this.qForms.appendPagingToFilter(null, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;
       this.paginator.length = onNext.totalElements;
@@ -44,7 +55,12 @@ export class ProvisioningComponent extends BaseComponent implements OnInit, Afte
   }
 
   changePage() {
-    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+      this.sort.start);
+  }
+
+  resolveTag(id: number) {
+    return _.find(this.availableTags['content'], {id: id});
   }
 }
 

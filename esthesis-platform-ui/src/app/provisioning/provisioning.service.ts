@@ -12,12 +12,11 @@ import {CrudService} from '../services/crud.service';
 })
 export class ProvisioningService extends CrudService<ProvisioningDto> {
 
-  constructor(http: HttpClient, private localHttp: HttpClient, private httpUtil: HttpUtilsService,
-              private qForms: QFormsService) {
-    super(http, 'provisioning');
+  constructor(http: HttpClient, qForms: QFormsService) {
+    super(http, 'provisioning', qForms);
   }
 
-  saveBinary(form: FormGroup) {
-    return this.qForms.uploadForm(this.localHttp, form, `${AppConstants.API_ROOT}/provisioning`, false);
-  }
+  // save(form: FormGroup) {
+  //   return this.qForms.uploadForm(this.localHttp, form, `${AppConstants.API_ROOT}/provisioning`, false);
+  // }
 }

@@ -67,6 +67,12 @@ public class ApplicationResource {
   /**
    * Saves an application.
    *
+   applicationService.save(applicationDTO);
+
+   auditServiceProxy.info(Audit.EVENT_APPLICATION, "Application {0} saved.", applicationDTO.getName());
+
+   return ResponseEntity.ok().build();
+   }
    * @param applicationDTO The application to save
    */
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

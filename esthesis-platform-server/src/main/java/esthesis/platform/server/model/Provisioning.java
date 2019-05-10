@@ -16,7 +16,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity
@@ -28,6 +28,7 @@ import java.util.Collection;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Accessors(chain = true)
 public class Provisioning extends BaseEntity {
+
   @NotNull
   private String name;
   private String description;
@@ -35,11 +36,12 @@ public class Provisioning extends BaseEntity {
   private boolean defaultIP;
   @Singular
   @OneToMany
-  @JoinTable(inverseJoinColumns=@JoinColumn(name="tag_id"))
-  private Collection<Tag> tags;
+  @JoinTable(inverseJoinColumns = @JoinColumn(name = "tag_id"))
+  private List<Tag> tags;
   @NotNull
   private String packageVersion;
   @NotNull
   private byte[] fileContent;
   private long fileSize;
+  private String fileName;
 }
