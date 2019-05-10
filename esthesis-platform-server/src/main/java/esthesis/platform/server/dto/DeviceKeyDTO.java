@@ -1,6 +1,5 @@
 package esthesis.platform.server.dto;
 
-import esthesis.platform.common.dto.BaseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

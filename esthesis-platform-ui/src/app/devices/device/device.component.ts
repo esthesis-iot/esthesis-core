@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {icon, latLng, marker, tileLayer} from 'leaflet';
 import {TagDto} from '../../dto/tag-dto';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {QFormsService} from '@eurodyn/forms';
 import {TagService} from '../../tags/tag.service';
@@ -40,7 +40,6 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     }),
   ];
 
-
   constructor(private fb: FormBuilder, private dialog: MatDialog,
               private qForms: QFormsService, private tagService: TagService,
               private devicesService: DevicesService, private route: ActivatedRoute,
@@ -55,7 +54,9 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     // Setup the form.
     this.form = this.fb.group({
       id: [''],
-      tags: [[]]
+      tags: [[]],
+      state: ['', [Validators.required, Validators.maxLength(32)]],
+      hardwareId: ['', [Validators.required, Validators.maxLength(512)]]
     });
 
     // Fill-in the form with data if editing an existing item.

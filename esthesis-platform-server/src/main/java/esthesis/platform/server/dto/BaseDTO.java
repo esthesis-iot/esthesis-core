@@ -1,4 +1,4 @@
-package esthesis.platform.common.dto;
+package esthesis.platform.server.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -16,5 +16,11 @@ public abstract class BaseDTO {
 
   @JsonProperty(access = Access.READ_ONLY)
   private long createdBy;
+
+  @JsonProperty(access = Access.READ_ONLY)
+  private Instant modifiedOn;
+
+  @JsonProperty(access = Access.READ_ONLY)
+  private long modifiedBy;
 
 }

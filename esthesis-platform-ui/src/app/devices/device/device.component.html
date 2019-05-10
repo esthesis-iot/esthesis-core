@@ -2,6 +2,13 @@
   <mat-card-title>Device {{id}}</mat-card-title>
   <mat-card-content>
     <form novalidate [formGroup]="form">
+      <mat-form-field>
+        <mat-select formControlName="state" placeholder="Status">
+          <mat-option *ngFor="let o of constants.DEVICE.STATE | keyvalue" [value]="o.value">
+            {{ lookupByValue(constants.DEVICE.STATE, o.value) }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
       <div fxLayout="column" fxLayoutGap="1.5rem">
         <div fxLayout="row" fxLayoutGap="4rem" fxLayoutAlign="space-between">
           <div fxLayout="row" fxLayoutGap="1rem">

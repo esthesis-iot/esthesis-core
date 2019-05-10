@@ -2,7 +2,7 @@ package esthesis.platform.server.service;
 
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.querydsl.core.types.Predicate;
-import esthesis.platform.common.dto.BaseDTO;
+import esthesis.platform.server.dto.BaseDTO;
 import esthesis.platform.server.mapper.BaseMapper;
 import esthesis.platform.server.model.BaseEntity;
 import esthesis.platform.server.repository.BaseRepository;
@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
 
 @Service
 @Validated
@@ -41,6 +43,10 @@ public abstract class BaseService<D extends BaseDTO, E extends BaseEntity> {
     final Page<E> all = repository.findAll(predicate, pageable);
 
     return mapper.map(all);
+  }
+
+  public List<D> findAll() {
+    return mapper.map(repository.findAll());
   }
 
   public D findById(long id) {

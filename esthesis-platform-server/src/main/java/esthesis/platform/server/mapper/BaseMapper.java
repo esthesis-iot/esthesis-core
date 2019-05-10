@@ -1,7 +1,7 @@
 package esthesis.platform.server.mapper;
 
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
-import esthesis.platform.common.dto.BaseDTO;
+import esthesis.platform.server.dto.BaseDTO;
 import esthesis.platform.server.model.BaseEntity;
 import esthesis.platform.server.repository.BaseRepository;
 import org.mapstruct.Mapping;
@@ -39,15 +39,22 @@ public abstract class BaseMapper<D extends BaseDTO, E extends BaseEntity> {
   }
 
   public Iterable<E> mapDTOs(Collection<D> all) {
-    return StreamSupport.stream(all.spliterator(), true).map(this::map).collect(Collectors.toList());
+    return StreamSupport.stream(all.spliterator(), true).map(this::map)
+      .collect(Collectors.toList());
   }
 
   public Iterable<D> mapModels(Collection<E> all) {
-    return StreamSupport.stream(all.spliterator(), true).map(this::map).collect(Collectors.toList());
+    return StreamSupport.stream(all.spliterator(), true).map(this::map)
+      .collect(Collectors.toList());
   }
 
   public List<D> map(List<E> all) {
     return all.stream().map(this::map).collect(Collectors.toList());
+  }
+
+  public List<D> map(Iterable<E> all) {
+    return StreamSupport.stream(all.spliterator(), false).map(this::map)
+      .collect(Collectors.toList());
   }
 
   public E map(Long entityId) {

@@ -12,7 +12,7 @@ import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.google.common.collect.Lists;
 import esthesis.extension.device.request.RegistrationRequest;
-import esthesis.platform.server.config.AppConstants.Device.Status;
+import esthesis.platform.server.config.AppConstants.Device.State;
 import esthesis.platform.server.config.AppConstants.WebSocket.Topic;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting.DeviceRegistration;
@@ -125,7 +125,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
     // Register IDs.
     for (String hardwareId : idList) {
-      register(hardwareId, tagNames, Status.PREREGISTERED, false);
+      register(hardwareId, tagNames, State.PREREGISTERED, false);
     }
   }
 
@@ -147,12 +147,16 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     }
   }
 
+  /**
+   * Register (i.e. activate) a preregistered device. Note that in this mode device-pushed tags are
+   * discarded.
+   */
   private void registerPreregistered(RegistrationRequest registrationRequest, String hardwareId) {
     Optional<Device> optionalDevice = deviceRepository.findByHardwareId(hardwareId);
 
     // Check that a device with the same hardware ID is not already registered.
     if (optionalDevice.isPresent() && !optionalDevice.get().getState()
-      .equals(Status.PREREGISTERED)) {
+      .equals(State.PREREGISTERED)) {
       throw new QSecurityException(
         "Cannot register device with hardware ID {0} as it is already in {1} state.",
         hardwareId, optionalDevice.get().getState());
@@ -165,16 +169,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     // Check tags and display appropriate warnings if necessary.
     checkTags(registrationRequest.getTags());
 
-    // Add device-pushed tags if supported.
-    if (srs.is(DeviceRegistration.PUSH_TAGS, PushTags.ALLOWED) && StringUtils
-      .isNotBlank(registrationRequest.getTags())) {
-      device.setTags(
-        Lists.newArrayList(
-          tagService.findAllByNameIn(Arrays.asList(registrationRequest.getTags().split(",")))));
-    }
-
     // Set the status to registered.
-    device.setState(Status.REGISTERED);
+    device.setState(State.REGISTERED);
 
     deviceRepository.save(device);
   }
@@ -222,7 +218,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     deviceKeyRepository.save(deviceKey);
 
     // Add device-pushed tags if supported.
-    if (srs.is(DeviceRegistration.PUSH_TAGS, PushTags.ALLOWED)) {
+    if (srs.is(DeviceRegistration.PUSH_TAGS, PushTags.ALLOWED) && StringUtils.isNotBlank(tags)) {
       device
         .setTags(Lists.newArrayList(tagService.findAllByNameIn(Arrays.asList(tags.split(",")))));
     }
@@ -246,12 +242,12 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
         srs.get(DeviceRegistration.REGISTRATION_MODE));
       switch (srs.get(DeviceRegistration.REGISTRATION_MODE)) {
         case RegistrationMode.OPEN:
-          register(hardwareId, registrationRequest.getTags(), Status.REGISTERED, true);
+          register(hardwareId, registrationRequest.getTags(), State.REGISTERED, true);
           deviceDTO = findByHardwareId(hardwareId);
           break;
         case RegistrationMode.OPEN_WITH_APPROVAL:
           register(hardwareId,
-            registrationRequest.getTags(), Status.APPROVAL, true);
+            registrationRequest.getTags(), State.APPROVAL, true);
           deviceDTO = findByHardwareId(hardwareId);
           break;
         case RegistrationMode.ID:
@@ -281,6 +277,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
         StandardCharsets.UTF_8));
       deviceDTO
         .setSessionKey(Base64.encodeBase64String(securityService.decrypt(keys.getSessionKey())));
+      deviceDTO.setPsPublicKey(certificatesService.getPSPublicKey());
     } catch (NoSuchPaddingException | InvalidKeyException | BadPaddingException |
       IllegalBlockSizeException | NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
       LOGGER.log(Level.SEVERE, "Could not obtain device's cryptographic keys.", e);

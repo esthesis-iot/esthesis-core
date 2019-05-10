@@ -3,13 +3,25 @@ import { CommonModule } from '@angular/common';
 import { DevicesRoutingModule } from './devices-routing.module';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {
-  DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE,
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
   MatAutocompleteModule,
   MatButtonModule,
-  MatCardModule, MatChipsModule,
-  MatDatepickerModule, MatDialogModule,
-  MatFormFieldModule, MatIconModule,
-  MatInputModule, MatMenuModule, MatPaginatorModule, MatSelectModule, MatSortModule, MatTableModule, MatTabsModule
+  MatCardModule,
+  MatChipsModule,
+  MatDatepickerModule,
+  MatDialogModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatInputModule,
+  MatMenuModule,
+  MatPaginatorModule,
+  MatSelectModule,
+  MatSlideToggleModule,
+  MatSortModule,
+  MatTableModule,
+  MatTabsModule
 } from '@angular/material';
 import {QFormsModule} from '@eurodyn/forms';
 import {ReactiveFormsModule} from '@angular/forms';
@@ -66,7 +78,8 @@ import { DevicePreregisterCamComponent } from './device-preregister-cam.componen
     MatAutocompleteModule,
     MomentModule,
     ZXingScannerModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSlideToggleModule
   ],
   providers: [
     {

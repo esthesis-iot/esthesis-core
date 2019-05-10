@@ -7,16 +7,14 @@ import esthesis.platform.server.events.LocalEvent;
 import esthesis.platform.server.mapper.MQTTServerMapper;
 import esthesis.platform.server.model.MqttServer;
 import esthesis.platform.server.repository.MQTTServerRepository;
-import org.apache.curator.framework.recipes.leader.LeaderLatch;
-import org.eclipse.paho.client.mqttv3.IMqttClient;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service
@@ -27,18 +25,12 @@ public class MQTTService extends BaseService<MQTTServerDTO, MqttServer> {
   // JUL reference.
   private static final Logger LOGGER = Logger.getLogger(MQTTService.class.getName());
 
-
-  // Individual leader latches for all MQTT servers.
-  private Map<Long, LeaderLatch> leaderLatchMQTT = new HashMap<>();
-
-  // A list of active mqtt clients.
-  private Map<Long, IMqttClient> mqttClients = new HashMap<>();
-
   private final MQTTServerMapper mqttServerMapper;
   private final MQTTServerRepository mqttServerRepository;
   private final ApplicationEventPublisher applicationEventPublisher;
 
-  public MQTTService(MQTTServerMapper mqttServerMapper, MQTTServerRepository mqttServerRepository,
+  public MQTTService(
+    MQTTServerMapper mqttServerMapper, MQTTServerRepository mqttServerRepository,
     ApplicationEventPublisher applicationEventPublisher) {
     this.mqttServerMapper = mqttServerMapper;
     this.mqttServerRepository = mqttServerRepository;
@@ -66,6 +58,19 @@ public class MQTTService extends BaseService<MQTTServerDTO, MqttServer> {
 
     // Emit an event about this configuration change.
     applicationEventPublisher.publishEvent(new LocalEvent(CONFIGURATION_MQTT));
+
+    return mqttServerDTO;
+  }
+
+  public Optional<MQTTServerDTO> matchByTag(List<Long> tags) {
+    Optional<MQTTServerDTO> mqttServerDTO;
+
+    if (tags.isEmpty()) {
+      mqttServerDTO = findAll().stream().filter(o -> o.getTags().isEmpty()).findAny();
+    } else {
+      mqttServerDTO = findAll().stream().filter(o ->
+        CollectionUtils.intersection(tags, o.getTags()).size() == tags.size()).findAny();
+    }
 
     return mqttServerDTO;
   }

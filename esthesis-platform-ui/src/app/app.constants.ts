@@ -48,5 +48,15 @@ export const AppConstants = {
     DISABLED: -1,
     INACTIVE: 0
   },
+
+  // Device settings.
+  DEVICE: {
+    STATE: {
+      DISABLED: "DISABLED",
+      PREREGISTERED: "PREREGISTERED",
+      REGISTERED : "REGISTERED",
+      APPROVAL : "APPROVAL"
+    }
+  }
 };
 

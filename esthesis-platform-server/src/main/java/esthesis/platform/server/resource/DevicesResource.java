@@ -11,6 +11,7 @@ import com.querydsl.core.types.Predicate;
 import esthesis.extension.device.DeviceMessage;
 import esthesis.extension.device.request.RegistrationRequest;
 import esthesis.extension.device.response.RegistrationResponse;
+import esthesis.extension.dto.MQTTServer;
 import esthesis.platform.server.config.AppSettings.Setting.Security;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingEncryption;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingSignature;
@@ -19,9 +20,11 @@ import esthesis.platform.server.config.AppSettings.SettingValues.Security.Outgoi
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.DeviceKeyDTO;
 import esthesis.platform.server.dto.DeviceRegistrationDTO;
+import esthesis.platform.server.dto.MQTTServerDTO;
 import esthesis.platform.server.model.Device;
 import esthesis.platform.server.service.CertificatesService;
 import esthesis.platform.server.service.DeviceService;
+import esthesis.platform.server.service.MQTTService;
 import esthesis.platform.server.service.SecurityService;
 import esthesis.platform.server.service.SettingResolverService;
 import javax.crypto.BadPaddingException;
@@ -51,6 +54,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @Validated
@@ -65,14 +69,16 @@ public class DevicesResource {
   private final SettingResolverService srs;
   private final CertificatesService certificatesService;
   private final SecurityService securityService;
+  private final MQTTService mqttService;
 
   public DevicesResource(DeviceService deviceService, SettingResolverService srs,
     CertificatesService certificatesService,
-    SecurityService securityService) {
+    SecurityService securityService, MQTTService mqttService) {
     this.deviceService = deviceService;
     this.srs = srs;
     this.certificatesService = certificatesService;
     this.securityService = securityService;
+    this.mqttService = mqttService;
   }
 
   @PostMapping(path = "/preregister")
@@ -97,9 +103,11 @@ public class DevicesResource {
 
   @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch device.")
-  @ReplyFilter("-certificate,-privateKey,-publicKey")
+  @ReplyFilter("-certificate,-privateKey,-publicKey,-psPublicKey,-sessionKey")
   public DeviceDTO get(@PathVariable long id) {
-    return deviceService.findById(id);
+    final DeviceDTO deviceDTO = deviceService.findById(id);
+
+    return deviceDTO;
   }
 
   @PostMapping(path = "/register")
@@ -113,7 +121,8 @@ public class DevicesResource {
     DeviceDTO deviceDTO;
     try {
       deviceDTO = deviceService.findByHardwareId(registrationRequest.getHardwareId());
-      securityService.processIncomingMessage(registrationRequest, RegistrationRequest.class, deviceDTO);
+      securityService
+        .processIncomingMessage(registrationRequest, RegistrationRequest.class, deviceDTO);
     } catch (QDoesNotExistException e) {
       // If the device is not preregistered it is not possible to verify the signature nor to
       // decrypt its payload.
@@ -126,9 +135,10 @@ public class DevicesResource {
 
     // Verify that the hardware ID on `DeviceMessage` is identical to the one in
     // `RegistrationRequest`. This provides device ID verification but only if your system is set
-    // to require signing of incoming requests (an d operate under "preregistered devices" device
+    // to require signing of incoming requests (and operate under "preregistered devices" device
     // registration mode.
-    if (!registrationRequest.getHardwareId().equals(registrationRequest.getPayload().getHardwareId())) {
+    if (srs.is(Security.INCOMING_SIGNATURE, IncomingSignature.SIGNED) && !registrationRequest
+      .getHardwareId().equals(registrationRequest.getPayload().getHardwareId())) {
       throw new SecurityException("Device ID in the payload does not match to the device ID of "
         + "the payload wrapper.");
     }
@@ -140,14 +150,18 @@ public class DevicesResource {
       throw new SecurityException("Device registration request requires a signed registration "
         + "reply, however the platform operates in non-signing mode.");
     }
-    if (registrationRequest.getPayload().isRepliesEncrypted() && srs.is(Security.OUTGOING_ENCRYPTION,
-      OutgoingEncryption.NOT_ENCRYPTED)) {
+    if (registrationRequest.getPayload().isRepliesEncrypted() && srs
+      .is(Security.OUTGOING_ENCRYPTION,
+        OutgoingEncryption.NOT_ENCRYPTED)) {
       throw new SecurityException("Device registration request requires an encrypted "
         + "registration reply, however the platform operates in non-encryption mode.");
     }
 
-    // Proceed to registration and prepare the reply.
-    deviceDTO = deviceService.register(registrationRequest.getPayload(), registrationRequest.getHardwareId());
+    // Register the device.
+    deviceDTO = deviceService
+      .register(registrationRequest.getPayload(), registrationRequest.getHardwareId());
+
+    // Prepare registration reply.
     DeviceMessage<RegistrationResponse> registrationReply = new DeviceMessage<>();
     registrationReply.setPayload(new RegistrationResponse()
       .setPublicKey(deviceDTO.getPublicKey())
@@ -157,8 +171,18 @@ public class DevicesResource {
         certificatesService.findById(srs.getAsLong(Security.PLATFORM_CERTIFICATE)).getPublicKey())
     );
 
-//    securityService
-//      .prepareOutgoingMessage(msg, deviceService.findByHardwareId(msg.getHardwareId()));
+    // Find the MQTT server to send back to the device.
+    Optional<MQTTServerDTO> mqttServerDTO = mqttService.matchByTag(deviceDTO.getTags());
+    if (mqttServerDTO.isPresent()) {
+      registrationReply.getPayload().setMqttServer(new MQTTServer()
+        .setIpAddress(mqttServerDTO.get().getIpAddress())
+        .setTopicControl(mqttServerDTO.get().getTopicControl())
+        .setTopicMetadata(mqttServerDTO.get().getTopicMetadata())
+        .setTopicTelemetry(mqttServerDTO.get().getTopicTelemetry())
+      );
+    }
+
+    // Sign and/or encrypt the reply according to preferences.
     securityService.prepareOutgoingMessage(registrationReply, deviceDTO);
 
     return registrationReply;

@@ -1,6 +1,5 @@
 package esthesis.platform.server.dto;
 
-import esthesis.platform.common.dto.BaseDTO;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import lombok.Data;

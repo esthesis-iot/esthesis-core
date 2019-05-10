@@ -30,7 +30,7 @@ public class AppConstants {
   }
 
   public class Device {
-    public class Status {
+    public class State {
       public static final String DISABLED = "DISABLED";
       public static final String PREREGISTERED = "PREREGISTERED";
       public static final String REGISTERED = "REGISTERED";
