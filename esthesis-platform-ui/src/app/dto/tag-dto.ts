@@ -1,4 +1,4 @@
 export class TagDto {
-  id: string;
+  id: number;
   name: string;
 }

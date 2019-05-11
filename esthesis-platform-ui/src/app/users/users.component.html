@@ -52,7 +52,7 @@
         </ng-container>
         <ng-container matColumnDef="createdOn">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Created On</th>
-          <td mat-cell *matCellDef="let element">{{element.createdOn| date: 'HH:mm:ss dd-MM-yy'}}</td>
+          <td mat-cell *matCellDef="let element">{{element.createdOn| date: constants.DATE_FORMAT}}</td>
         </ng-container>
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Status</th>

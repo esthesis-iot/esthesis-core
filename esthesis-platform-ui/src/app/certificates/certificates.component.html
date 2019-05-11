@@ -12,11 +12,11 @@
         </ng-container>
         <ng-container matColumnDef="issued">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Issued at</th>
-          <td mat-cell *matCellDef="let element"> {{element.issued | date: 'yyyy-MM-dd HH:mm'}}</td>
+          <td mat-cell *matCellDef="let element"> {{element.issued | date: constants.DATE_FORMAT}}</td>
         </ng-container>
         <ng-container matColumnDef="validity">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Expires at</th>
-          <td mat-cell *matCellDef="let element"> {{element.validity | date: 'yyyy-MM-dd HH:mm'}}</td>
+          <td mat-cell *matCellDef="let element"> {{element.validity | date: constants.DATE_FORMAT}}</td>
         </ng-container>
         <ng-container matColumnDef="issuer">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Issuer</th>

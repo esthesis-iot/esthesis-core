@@ -8,7 +8,6 @@ import com.querydsl.core.types.Predicate;
 import esthesis.platform.server.dto.ProvisioningDTO;
 import esthesis.platform.server.model.Provisioning;
 import esthesis.platform.server.service.ProvisioningService;
-import javax.validation.constraints.NotNull;
 import org.apache.commons.io.IOUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
+
 @RestController
 @Validated
 @RequestMapping("/provisioning")
@@ -40,11 +41,13 @@ public class ProvisioningResource {
 
   @PostMapping
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save provisioning package.")
-  public ResponseEntity save(@NotNull @RequestParam("file") MultipartFile file,
+  public ResponseEntity save(@RequestParam("file") Optional<MultipartFile> file,
     @ModelAttribute ProvisioningDTO provisioningDTO) throws Exception {
-    provisioningDTO.setFileSize(file.getSize());
-    provisioningDTO.setFileContent(IOUtils.toByteArray(file.getInputStream()));
-    provisioningDTO.setFileName(file.getOriginalFilename());
+    if (provisioningDTO.getId() == 0 && file.isPresent()) {
+      provisioningDTO.setFileSize(file.get().getSize());
+      provisioningDTO.setFileContent(IOUtils.toByteArray(file.get().getInputStream()));
+      provisioningDTO.setFileName(file.get().getOriginalFilename());
+    }
     provisioningService.save(provisioningDTO);
 
     return ResponseEntity.ok().build();
@@ -52,7 +55,8 @@ public class ProvisioningResource {
 
   @GetMapping
   @EmptyPredicateCheck
-  @ReplyPageableFilter("defaultIP,fileSize,id,name,packageVersion,state")
+  @ReplyPageableFilter("defaultIP,fileSize,id,name,packageVersion,state,tags,fileName,createdOn,"
+    + "description")
   public Page<ProvisioningDTO> findAll(
     @QuerydslPredicate(root = Provisioning.class) Predicate predicate, Pageable pageable) {
     return provisioningService.findAll(predicate, pageable);

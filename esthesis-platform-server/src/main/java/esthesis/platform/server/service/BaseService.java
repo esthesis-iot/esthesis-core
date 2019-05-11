@@ -28,7 +28,7 @@ public abstract class BaseService<D extends BaseDTO, E extends BaseEntity> {
   private BaseMapper<D, E> mapper;
 
   public D save(D dto) {
-    if (dto.getId() != null) {
+    if (dto.getId() != null && dto.getId() != 0) {
       final E entity = ReturnOptional.r(repository.findById(dto.getId()));
       mapper.map(dto, entity);
       return dto;

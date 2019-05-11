@@ -40,7 +40,6 @@ public class Provisioning extends BaseEntity {
   private List<Tag> tags;
   @NotNull
   private String packageVersion;
-  @NotNull
   private byte[] fileContent;
   private long fileSize;
   private String fileName;

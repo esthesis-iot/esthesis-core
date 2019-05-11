@@ -40,7 +40,6 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
       description: ['', [Validators.maxLength(2048)]],
       file: [{value: '', disabled: this.id !== 0}, [Validators.required]],
       state: ['false', [Validators.required]],
-      prerequisites: [''],
       tags: [[]],
       packageVersion: ['', [Validators.required]],
       fileName: ['']

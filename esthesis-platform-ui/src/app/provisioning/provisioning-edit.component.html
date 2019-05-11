@@ -8,7 +8,8 @@
                       class="xs-pt1">Default for initial provisioning</mat-checkbox>
 
         <mat-form-field class="xs-pt2">
-          <input matInput placeholder="File" (click)="file.click()" formControlName="fileName"
+          <input matInput placeholder="File" (click)="this.id == 0 ? file.click() : null"
+                 formControlName="fileName"
                  readonly>
           <div fxFlex="row" fxLayoutAlign="start center">
             <input type="file" (change)="selectFile($event)" #file hidden>
@@ -24,20 +25,11 @@
         </mat-form-field>
 
         <mat-form-field>
-          <mat-select placeholder="Status" formControlName="state">
-            <mat-option value="true">Active</mat-option>
-            <mat-option value="false">Inactive</mat-option>
+          <mat-select placeholder="State" formControlName="state">
+            <mat-option [value]="true">Active</mat-option>
+            <mat-option [value]="false">Inactive</mat-option>
           </mat-select>
         </mat-form-field>
-
-        <mat-form-field>
-          <mat-select placeholder="Prerequisites" formControlName="prerequisites">
-            <!--<mat-option *ngFor="let type of packageTypes | keyvalue" [value]="type.key">-->
-            <!--{{type.value}}-->
-            <!--</mat-option>-->
-          </mat-select>
-        </mat-form-field>
-
         <mat-form-field>
           <textarea matInput placeholder="Description" formControlName="description"></textarea>
         </mat-form-field>
