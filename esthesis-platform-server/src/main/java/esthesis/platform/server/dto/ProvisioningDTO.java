@@ -26,4 +26,5 @@ public class ProvisioningDTO extends BaseDTO {
   private byte[] fileContent;
   private long fileSize;
   private String fileName;
+  private String signature;
 }

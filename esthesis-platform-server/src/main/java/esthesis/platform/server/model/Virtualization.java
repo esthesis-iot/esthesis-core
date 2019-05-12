@@ -1,6 +1,7 @@
 package esthesis.platform.server.model;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
@@ -44,11 +45,11 @@ public class Virtualization extends BaseEntity {
   @NotNull
   private int security;
 
-  @OneToOne
+  @OneToOne(fetch = FetchType.LAZY)
   private Certificate certificate;
 
   @Singular
-  @OneToMany
+  @OneToMany(fetch = FetchType.LAZY)
   @JoinTable(inverseJoinColumns=@JoinColumn(name="tag_id"))
   private List<Tag> tags;
 }

@@ -1,8 +1,12 @@
 package esthesis.platform.server.model;
 
+import static javax.persistence.FetchType.LAZY;
+
+import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -35,12 +39,15 @@ public class Provisioning extends BaseEntity {
   private boolean state;
   private boolean defaultIP;
   @Singular
-  @OneToMany
+  @OneToMany(fetch = LAZY)
   @JoinTable(inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private List<Tag> tags;
   @NotNull
   private String packageVersion;
+  @Lob
+  @Basic(fetch=LAZY)
   private byte[] fileContent;
   private long fileSize;
   private String fileName;
+  private String signature;
 }

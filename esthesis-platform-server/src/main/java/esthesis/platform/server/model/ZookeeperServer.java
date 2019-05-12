@@ -33,6 +33,7 @@ public class ZookeeperServer extends BaseEntity {
   private boolean state;
 
   private String caCert;
+
   private String clientCert;
   private String clientKey;
   private String username;

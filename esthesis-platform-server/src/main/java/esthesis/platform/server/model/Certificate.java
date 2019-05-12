@@ -1,7 +1,11 @@
 package esthesis.platform.server.model;
 
+import static javax.persistence.FetchType.LAZY;
+
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -39,14 +43,20 @@ public class Certificate extends BaseEntity {
   @Column(updatable = false)
   private Instant validity;
 
+  @Lob
+  @Basic(fetch=LAZY)
   @NotNull
   @Column(updatable = false)
   private String certificate;
 
+  @Lob
+  @Basic(fetch=LAZY)
   @NotNull
   @Column(updatable = false)
   private String publicKey;
 
+  @Lob
+  @Basic(fetch=LAZY)
   @NotNull
   @Column(updatable = false)
   private String privateKey;

@@ -14,7 +14,7 @@ import * as _ from 'lodash';
   styleUrls: ['./provisioning.component.scss']
 })
 export class ProvisioningComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['name', 'version', 'description', 'state', 'defaultIP', 'tags', 'createdOn'];
+  columns = ['name', 'version', 'description', 'state', 'defaultIP', 'size', 'tags', 'createdOn'];
   datasource = new MatTableDataSource<ProvisioningDto>();
   availableTags: TagDto[];
 

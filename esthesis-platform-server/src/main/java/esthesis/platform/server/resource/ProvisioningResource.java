@@ -43,7 +43,7 @@ public class ProvisioningResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save provisioning package.")
   public ResponseEntity save(@RequestParam("file") Optional<MultipartFile> file,
     @ModelAttribute ProvisioningDTO provisioningDTO) throws Exception {
-    if (provisioningDTO.getId() == 0 && file.isPresent()) {
+    if (provisioningDTO.getId() == null && file.isPresent()) {
       provisioningDTO.setFileSize(file.get().getSize());
       provisioningDTO.setFileContent(IOUtils.toByteArray(file.get().getInputStream()));
       provisioningDTO.setFileName(file.get().getOriginalFilename());
