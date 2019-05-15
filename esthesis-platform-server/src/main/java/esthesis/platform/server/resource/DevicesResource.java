@@ -171,6 +171,7 @@ public class DevicesResource {
       .setPsPublicKey(
         certificatesService.findById(srs.getAsLong(Security.PLATFORM_CERTIFICATE)).getPublicKey())
       .setProvisioningUrl(srs.get(Provisioning.URL))
+      .setProvisioningKey(srs.get(Provisioning.AES_KEY))
     );
 
     // Find the MQTT server to send back to the device.
