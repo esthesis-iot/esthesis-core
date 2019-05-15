@@ -23,7 +23,7 @@ public class AppSettings {
       public static final String MQTT_ACL_ENDPOINT_STATUS = "mqttAclEndpointStatus";
     }
     public class Provisioning {
-      public static final String URL = "registrationUrl";
+      public static final String URL = "provisioningUrl";
       public static final String AES_KEY = "provisioningAesKey";
       public static final String ENCRYPTION = "provisioningEncrypt";
       public static final String SIGNATURE = "provisioningSign";

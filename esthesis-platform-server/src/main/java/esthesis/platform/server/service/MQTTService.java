@@ -2,6 +2,7 @@ package esthesis.platform.server.service;
 
 import static esthesis.platform.server.events.LocalEvent.LOCAL_EVENT_TYPE.CONFIGURATION_MQTT;
 
+import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.MQTTServerDTO;
 import esthesis.platform.server.events.LocalEvent;
 import esthesis.platform.server.mapper.MQTTServerMapper;
@@ -62,14 +63,15 @@ public class MQTTService extends BaseService<MQTTServerDTO, MqttServer> {
     return mqttServerDTO;
   }
 
-  public Optional<MQTTServerDTO> matchByTag(List<Long> tags) {
+  public Optional<MQTTServerDTO> matchByTag(DeviceDTO deviceDTO) {
     Optional<MQTTServerDTO> mqttServerDTO;
 
-    if (tags.isEmpty()) {
+    if (CollectionUtils.isEmpty(deviceDTO.getTags())) {
       mqttServerDTO = findAll().stream().filter(o -> o.getTags().isEmpty()).findAny();
     } else {
       mqttServerDTO = findAll().stream().filter(o ->
-        CollectionUtils.intersection(tags, o.getTags()).size() == tags.size()).findAny();
+        CollectionUtils.intersection(deviceDTO.getTags(), o.getTags()).size() == deviceDTO.getTags()
+          .size()).findAny();
     }
 
     return mqttServerDTO;

@@ -39,6 +39,7 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -113,6 +114,7 @@ public class DevicesResource {
 
   @PostMapping(path = "/register")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not register device.")
+  @Transactional
   public DeviceMessage<RegistrationResponse> register(
     @Valid @RequestBody DeviceMessage<RegistrationRequest> registrationRequest)
   throws NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException,
@@ -152,8 +154,7 @@ public class DevicesResource {
         + "reply, however the platform operates in non-signing mode.");
     }
     if (registrationRequest.getPayload().isRepliesEncrypted() && srs
-      .is(Security.OUTGOING_ENCRYPTION,
-        OutgoingEncryption.NOT_ENCRYPTED)) {
+      .is(Security.OUTGOING_ENCRYPTION, OutgoingEncryption.NOT_ENCRYPTED)) {
       throw new SecurityException("Device registration request requires an encrypted "
         + "registration reply, however the platform operates in non-encryption mode.");
     }
@@ -175,7 +176,7 @@ public class DevicesResource {
     );
 
     // Find the MQTT server to send back to the device.
-    Optional<MQTTServerDTO> mqttServerDTO = mqttService.matchByTag(deviceDTO.getTags());
+    Optional<MQTTServerDTO> mqttServerDTO = mqttService.matchByTag(deviceDTO);
     if (mqttServerDTO.isPresent()) {
       registrationReply.getPayload().setMqttServer(new MQTTServer()
         .setIpAddress(mqttServerDTO.get().getIpAddress())
