@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -38,7 +39,7 @@ public class ContainersResource {
   public ResponseEntity deploy(@Valid @RequestBody ContainerDTO containerDTO)
   throws DockerCertificateException, DockerException, InterruptedException, NoSuchPaddingException,
          InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException,
-         BadPaddingException, InvalidKeyException {
+         BadPaddingException, InvalidKeyException, IOException {
     containersService.deploy(containerDTO);
 
     return ResponseEntity.ok().build();

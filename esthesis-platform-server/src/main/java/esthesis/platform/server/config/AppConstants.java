@@ -113,4 +113,9 @@ public class AppConstants {
     public static final String REPLY = "/reply";
 
   }
+
+  public class ExitCodes {
+    public static final int CANT_GENERATE_PLATFORM_AES_KEY = 1;
+    public static final int CANT_GENERATE_PROVISIONING_AES_KEY = 2;
+  }
 }

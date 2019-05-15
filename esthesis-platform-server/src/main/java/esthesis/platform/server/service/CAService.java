@@ -16,8 +16,6 @@ import esthesis.platform.server.dto.CaDTO;
 import esthesis.platform.server.mapper.CaMapper;
 import esthesis.platform.server.model.Ca;
 import esthesis.platform.server.repository.CARepository;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -55,9 +53,9 @@ public class CAService extends BaseService<CaDTO, Ca> {
   private final CARepository caRepository;
 
   public CAService(CryptoCAService cryptoCAService,
-      SecurityService securityService, AppProperties appProperties,
-      AuditServiceProxy auditService, ObjectMapper objectMapper, CaMapper caMapper,
-      CARepository caRepository) {
+    SecurityService securityService, AppProperties appProperties,
+    AuditServiceProxy auditService, ObjectMapper objectMapper, CaMapper caMapper,
+    CARepository caRepository) {
     this.cryptoCAService = cryptoCAService;
     this.securityService = securityService;
     this.appProperties = appProperties;
@@ -81,25 +79,25 @@ public class CAService extends BaseService<CaDTO, Ca> {
     // Create the CA.
     try {
       final CreateCADTOBuilder createCADTOBuilder = CreateCADTO.builder()
-          .createKeyPairRequestDTO(CreateKeyPairDTO.builder()
-              .keySize(appProperties.getSecurityAsymmetricKeySize())
-              .keyPairGeneratorAlgorithm(appProperties.getSecurityAsymmetricKeyAlgorithm())
-              .build())
-          .subjectCN(caDTO.getCn())
-          .locale(Locale.US)
-          .serial(BigInteger.valueOf(1))
-          .signatureAlgorithm(appProperties.getSecurityAsymmetricSignatureAlgorithm())
-          .validFrom(Instant.now())
-          .validTo(caDTO.getValidity());
+        .createKeyPairRequestDTO(CreateKeyPairDTO.builder()
+          .keySize(appProperties.getSecurityAsymmetricKeySize())
+          .keyPairGeneratorAlgorithm(appProperties.getSecurityAsymmetricKeyAlgorithm())
+          .build())
+        .subjectCN(caDTO.getCn())
+        .locale(Locale.US)
+        .serial(BigInteger.valueOf(1))
+        .signatureAlgorithm(appProperties.getSecurityAsymmetricSignatureAlgorithm())
+        .validFrom(Instant.now())
+        .validTo(caDTO.getValidity());
 
       // If this CA has a parent CA (i.e. it is a sub-CA) fetch the details of the parent.
       if (StringUtils.isNotBlank(caDTO.getParentCa())) {
         Ca parentCa = findEntityByCN(caDTO.getParentCa());
         createCADTOBuilder
-            .issuerCN(parentCa.getCn())
-            .issuerPrivateKeyAlgorithm(appProperties.getSecurityAsymmetricKeyAlgorithm())
-            .issuerPrivateKey(new String(securityService.decrypt(parentCa.getPrivateKey()),
-              StandardCharsets.UTF_8));
+          .issuerCN(parentCa.getCn())
+          .issuerPrivateKeyAlgorithm(appProperties.getSecurityAsymmetricKeyAlgorithm())
+          .issuerPrivateKey(new String(securityService.decrypt(parentCa.getPrivateKey()),
+            StandardCharsets.UTF_8));
       }
 
       final CPPPemHolderDTO cppPemHolderDTO = cryptoCAService.createCA(createCADTOBuilder.build());
@@ -116,14 +114,14 @@ public class CAService extends BaseService<CaDTO, Ca> {
       return caDTO;
     } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException |
       OperatorCreationException | NoSuchPaddingException | InvalidAlgorithmParameterException |
-      IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
+      InvalidKeyException e) {
       throw new QCouldNotSaveException("Could not save CA.", e);
     }
   }
 
   public String backup(long id)
   throws IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-         IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+         InvalidAlgorithmParameterException {
     final CaDTO caDTO = caMapper.map(ReturnOptional.r(caRepository.findById(id)));
     caDTO.setPrivateKey(new String(securityService.decrypt(caDTO.getPrivateKey()),
       StandardCharsets.UTF_8));
@@ -133,7 +131,7 @@ public class CAService extends BaseService<CaDTO, Ca> {
 
   public void restore(String backup)
   throws IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-         IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+         InvalidAlgorithmParameterException {
     // Create a local copy of the system's ObjectMapper in order to overwrite Access.READ_ONLY attributes of the
     // underlying object.
     ObjectMapper localObjectMapper = objectMapper.copy();

@@ -10,11 +10,15 @@ export const AppSettings = {
     },
     DEVICE_REGISTRATION: {
       REGISTRATION_MODE: "deviceRegistration",
-      PUSH_TAGS: "devicePushTags",
-      PROVISIONING_URL: "provisioningUrl"
+      PUSH_TAGS: "devicePushTags"
     },
     NETWORKING: {
       MQTT_ACL_ENDPOINT_STATUS: "mqttAclEndpointStatus"
+    },
+    PROVISIONING: {
+      PROVISIONING_URL: "provisioningUrl",
+      ENCRYPTION: "provisioningEncrypt",
+      SIGNATURE: "provisioningSign"
     }
   },
 
@@ -56,6 +60,16 @@ export const AppSettings = {
         ACTIVE: "ACTIVE",
         INACTIVE: "INACTIVE"
       }
+    },
+    PROVISIONING: {
+      ENCRYPTION: {
+        ENCRYPTED: "ENCRYPTED",
+        NOT_ENCRYPTED: "NOT_ENCRYPTED"
+      },
+      SIGNATURE: {
+        SIGNED: "SIGNED",
+        NOT_SIGNED: "NOT_SIGNED",
+      },
     }
   }
 };

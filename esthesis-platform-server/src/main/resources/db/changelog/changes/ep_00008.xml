@@ -1,10 +1,13 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd" logicalFilePath="ep_00008.xml">
-    <changeSet author="European Dynamics" id="1549267220006-1">
-        <addColumn tableName="certificate">
-            <column name="version" type="INT(10)">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-    </changeSet>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
+  logicalFilePath="ep_00008.xml">
+  <changeSet author="European Dynamics" id="1549267220006-1">
+    <addColumn tableName="certificate">
+      <column name="version" type="INT(10)">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

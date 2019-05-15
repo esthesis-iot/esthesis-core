@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd" logicalFilePath="ep_00056.xml">
+    <changeSet author="European Dynamics" id="1557918670320-5">
+        <addColumn tableName="device_key">
+            <column name="provisioning_key" type="VARCHAR(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1557918670320-1">
+        <modifyDataType columnName="private_key" newDataType="clob" tableName="device_key"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1557918670320-2">
+        <modifyDataType columnName="ps_public_key" newDataType="clob" tableName="device_key"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1557918670320-3">
+        <modifyDataType columnName="public_key" newDataType="clob" tableName="device_key"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1557918670320-4">
+        <modifyDataType columnName="session_key" newDataType="varchar(255)" tableName="device_key"/>
+    </changeSet>
+</databaseChangeLog>

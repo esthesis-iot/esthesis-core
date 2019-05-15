@@ -14,6 +14,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 public class ProvisioningDTO extends BaseDTO {
+
   @NotNull
   private String name;
   private String description;
@@ -23,8 +24,8 @@ public class ProvisioningDTO extends BaseDTO {
   private List<Long> tags;
   @NotNull
   private String packageVersion;
-  private byte[] fileContent;
-  private long fileSize;
+  private long size;
   private String fileName;
-  private String signature;
+  private boolean signed;
+  private boolean encrypted;
 }

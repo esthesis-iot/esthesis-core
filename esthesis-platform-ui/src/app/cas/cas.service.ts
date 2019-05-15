@@ -13,8 +13,7 @@ import {Observable} from 'rxjs';
 })
 export class CasService extends CrudService<CaDto> {
 
-  constructor(http: HttpClient, private httpUtil: HttpUtilsService,
-              qForms: QFormsService) {
+  constructor(http: HttpClient, private httpUtil: HttpUtilsService, qForms: QFormsService) {
     super(http, 'cas', qForms);
   }
 

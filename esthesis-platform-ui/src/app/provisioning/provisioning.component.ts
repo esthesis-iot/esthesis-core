@@ -14,7 +14,8 @@ import * as _ from 'lodash';
   styleUrls: ['./provisioning.component.scss']
 })
 export class ProvisioningComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['name', 'version', 'description', 'state', 'defaultIP', 'size', 'tags', 'createdOn'];
+  columns = ['name', 'version', 'description', 'state', 'defaultIP', 'signed', 'encrypted', 'size',
+    'tags', 'createdOn'];
   datasource = new MatTableDataSource<ProvisioningDto>();
   availableTags: TagDto[];
 
@@ -62,10 +63,10 @@ export class ProvisioningComponent extends BaseComponent implements OnInit, Afte
   resolveTag(ids: number[]): string {
     return _.map(
       _.filter(this.availableTags, i => _.includes(ids, i.id)),
-        (j) => {
-          return j.name
-        }
-      ).join(', ');
+      (j) => {
+        return j.name
+      }
+    ).join(', ');
   }
 }
 

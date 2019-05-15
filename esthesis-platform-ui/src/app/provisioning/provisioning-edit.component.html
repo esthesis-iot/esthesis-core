@@ -44,7 +44,7 @@
   </mat-card-content>
 
   <mat-card-actions>
-    <button mat-button [disabled]="this.id == 0">DOWNLOAD</button>
+    <button mat-button [disabled]="this.id == 0" (click)="download()">DOWNLOAD</button>
     <button mat-button routerLink="/provisioning">CANCEL</button>
     <button mat-button color="accent" (click)="delete()" [disabled]="this.id == 0">DELETE</button>
     <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>

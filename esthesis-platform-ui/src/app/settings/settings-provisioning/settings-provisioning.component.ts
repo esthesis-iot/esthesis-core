@@ -1,18 +1,19 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {BaseComponent} from '../../shared/base-component';
 import {SettingsService} from '../settings.service';
 import {UtilityService} from '../../shared/utility.service';
 import {AppSettings} from '../../app.settings';
 import * as _ from 'lodash';
 import {KeyValueDto} from '../../dto/key-value-dto';
+import {BaseComponent} from '../../shared/base-component';
 
 @Component({
-  selector: 'app-settings-devreg',
-  templateUrl: './settings-devreg.component.html',
-  styleUrls: ['./settings-devreg.component.scss']
+  selector: 'app-settings-provisioning',
+  templateUrl: './settings-provisioning.component.html',
+  styleUrls: ['./settings-provisioning.component.scss']
 })
-export class SettingsDevregComponent extends BaseComponent implements OnInit {
+export class SettingsProvisioningComponent extends BaseComponent implements OnInit {
+
   form: FormGroup;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
@@ -23,15 +24,17 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     // Define the form.
     this.form = this.fb.group({
-      deviceRegistration: ['', [Validators.required]],
-      devicePushTags: ['', [Validators.required]]
+      provisioningUrl: ['',[]],
+      provisioningEncrypt: ['',[]],
+      provisioningSign: ['',[]],
     });
 
 
     // Fetch settings.
     this.settingsService.findByNames(
-      AppSettings.SETTING.DEVICE_REGISTRATION.REGISTRATION_MODE,
-      AppSettings.SETTING.DEVICE_REGISTRATION.PUSH_TAGS,
+      AppSettings.SETTING.PROVISIONING.PROVISIONING_URL,
+      AppSettings.SETTING.PROVISIONING.ENCRYPTION,
+      AppSettings.SETTING.PROVISIONING.SIGNATURE
     ).subscribe(onNext => {
       onNext.forEach(settingDTO => {
         this.form.controls[settingDTO.key].patchValue(settingDTO.val);

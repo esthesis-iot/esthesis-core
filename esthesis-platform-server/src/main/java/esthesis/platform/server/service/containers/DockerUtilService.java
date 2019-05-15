@@ -23,14 +23,13 @@ import esthesis.platform.server.service.CAService;
 import esthesis.platform.server.service.CertificatesService;
 import esthesis.platform.server.service.SecurityService;
 import esthesis.platform.server.service.WebSocketService;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -61,9 +60,8 @@ public class DockerUtilService {
 
   public DockerCertificatesStore setupClientCertificate(ContainerDTO containerDTO,
     VirtualizationDTO virtualizationDTO)
-  throws NoSuchPaddingException, InvalidKeyException,
-         NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException,
-         InvalidAlgorithmParameterException, DockerCertificateException {
+  throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
+         InvalidAlgorithmParameterException, DockerCertificateException, IOException {
     DockerCertificatesStore dockerCertificatesStore = null;
 
     if (virtualizationDTO.getSecurity() == Security.CERTIFICATE) {

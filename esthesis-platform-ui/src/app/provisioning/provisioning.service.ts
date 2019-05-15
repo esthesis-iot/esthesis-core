@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {AppConstants} from '../app.constants';
 import {HttpClient} from '@angular/common/http';
 import {ProvisioningDto} from '../dto/provisioning-dto';
-import {FormGroup} from '@angular/forms';
 import {HttpUtilsService} from '../shared/http-utils.service';
 import {QFormsService} from '@eurodyn/forms';
 import {CrudService} from '../services/crud.service';
@@ -12,11 +11,15 @@ import {CrudService} from '../services/crud.service';
 })
 export class ProvisioningService extends CrudService<ProvisioningDto> {
 
-  constructor(http: HttpClient, qForms: QFormsService) {
+  constructor(http: HttpClient, qForms: QFormsService, private httpUtil: HttpUtilsService) {
     super(http, 'provisioning', qForms);
   }
 
-  // save(form: FormGroup) {
-  //   return this.qForms.uploadForm(this.localHttp, form, `${AppConstants.API_ROOT}/provisioning`, false);
-  // }
+  download(id: number) {
+    this.http.get(`${AppConstants.API_ROOT}/provisioning/${id}/download`, {
+      responseType: 'blob', observe: 'response'
+    }).subscribe(onNext => {
+      this.httpUtil.saveAs(onNext);
+    });
+  }
 }

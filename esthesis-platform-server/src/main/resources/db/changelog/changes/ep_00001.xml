@@ -1,11 +1,8 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
-  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
-  http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
-  logicalFilePath="ep_0001.xml">
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
+  logicalFilePath="ep_00001.xml">
   <changeSet author="European Dynamics" id="1546611753105-1">
     <createTable tableName="application">
       <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
@@ -27,7 +24,7 @@
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-4">
     <createTable tableName="audit">
-      <column name="id" autoIncrement="true"  type="BIGINT UNSIGNED">
+      <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
       <column name="created_by" type="BIGINT UNSIGNED"/>
@@ -47,7 +44,7 @@
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-5">
     <createTable tableName="ca">
-      <column name="id" autoIncrement="true"  type="BIGINT UNSIGNED">
+      <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
       <column name="created_by" type="BIGINT UNSIGNED"/>
@@ -70,7 +67,7 @@
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-6">
     <createTable tableName="device">
-      <column name="id" autoIncrement="true"  type="BIGINT UNSIGNED">
+      <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
       <column name="created_by" type="BIGINT UNSIGNED"/>
@@ -100,7 +97,7 @@
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-8">
     <createTable tableName="mqtt_server">
-      <column name="id" autoIncrement="true"  type="BIGINT UNSIGNED">
+      <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
       <column name="created_by" type="BIGINT UNSIGNED"/>
@@ -136,7 +133,7 @@
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-10">
     <createTable tableName="provisioning">
-      <column name="id" autoIncrement="true"  type="BIGINT UNSIGNED">
+      <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
       <column name="created_by" type="BIGINT UNSIGNED"/>
@@ -177,7 +174,7 @@
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-13">
     <createTable tableName="tag">
-      <column name="id" autoIncrement="true"  type="BIGINT UNSIGNED">
+      <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
       <column name="created_by" type="BIGINT UNSIGNED"/>
@@ -192,7 +189,7 @@
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-14">
     <createTable tableName="tunnel_server">
-      <column name="id" autoIncrement="true"  type="BIGINT UNSIGNED">
+      <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
       <column name="created_by" type="BIGINT UNSIGNED"/>
@@ -225,7 +222,7 @@
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-15">
     <createTable tableName="user">
-      <column name="id" autoIncrement="true"  type="BIGINT UNSIGNED">
+      <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
       <column name="created_by" type="BIGINT UNSIGNED"/>
@@ -271,18 +268,33 @@
       referencedTableName="mqtt_server" validate="true"/>
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-20">
-    <addForeignKeyConstraint baseColumnNames="device_id" baseTableName="device_tags" constraintName="FKcavqutwaxwd1gettpllppm372" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="device" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="device_id" baseTableName="device_tags"
+      constraintName="FKcavqutwaxwd1gettpllppm372" deferrable="false" initiallyDeferred="false"
+      onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="device"
+      validate="true"/>
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-21">
-    <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="device_tags" constraintName="FKfvachxq3jiw1kp1p36018ywp9" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="tag" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="device_tags"
+      constraintName="FKfvachxq3jiw1kp1p36018ywp9" deferrable="false" initiallyDeferred="false"
+      onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="tag"
+      validate="true"/>
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-22">
-    <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="provisioning_tags" constraintName="FKj29sqvxmw82e0ki0iqjx1c3vl" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="tag" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="provisioning_tags"
+      constraintName="FKj29sqvxmw82e0ki0iqjx1c3vl" deferrable="false" initiallyDeferred="false"
+      onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="tag"
+      validate="true"/>
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-23">
-    <addForeignKeyConstraint baseColumnNames="provisioning_id" baseTableName="provisioning_tags" constraintName="FKmkpr7d3ck26fn1fuh6931e5ax" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="provisioning" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="provisioning_id" baseTableName="provisioning_tags"
+      constraintName="FKmkpr7d3ck26fn1fuh6931e5ax" deferrable="false" initiallyDeferred="false"
+      onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+      referencedTableName="provisioning" validate="true"/>
   </changeSet>
   <changeSet author="European Dynamics" id="1546611753105-24">
-    <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="mqtt_server_tags" constraintName="FKprm6g1yd3t05u0ctu6e0pypxs" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="tag" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="mqtt_server_tags"
+      constraintName="FKprm6g1yd3t05u0ctu6e0pypxs" deferrable="false" initiallyDeferred="false"
+      onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="tag"
+      validate="true"/>
   </changeSet>
 </databaseChangeLog>

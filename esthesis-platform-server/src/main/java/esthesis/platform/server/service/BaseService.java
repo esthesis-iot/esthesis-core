@@ -7,18 +7,20 @@ import esthesis.platform.server.mapper.BaseMapper;
 import esthesis.platform.server.model.BaseEntity;
 import esthesis.platform.server.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.content.commons.repository.ContentStore;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.InputStream;
 import java.util.List;
 
 @Service
 @Validated
 @Transactional
-public abstract class BaseService<D extends BaseDTO, E extends BaseEntity> {
+abstract class BaseService<D extends BaseDTO, E extends BaseEntity> {
 
   @Autowired
   private BaseRepository<E> repository;
@@ -26,6 +28,23 @@ public abstract class BaseService<D extends BaseDTO, E extends BaseEntity> {
   @Autowired
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   private BaseMapper<D, E> mapper;
+
+  @Autowired(required = false)
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+  private ContentStore<E, String> contentStore;
+
+  public D save(D dto, InputStream file) {
+    if (dto.getId() != null && dto.getId() != 0) {
+      final E entity = ReturnOptional.r(repository.findById(dto.getId()));
+      mapper.map(dto, entity);
+      return dto;
+    } else {
+      E entity = mapper.map(dto);
+      contentStore.setContent(entity, file);
+      entity = repository.save(entity);
+      return mapper.map(entity);
+    }
+  }
 
   public D save(D dto) {
     if (dto.getId() != null && dto.getId() != 0) {

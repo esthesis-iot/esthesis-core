@@ -1,22 +1,29 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
-  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
-  http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
-logicalFilePath="ep_0031.xml">
-  <changeSet id="ep_0031" author="European Dynamics" labels="ignorable">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
+  logicalFilePath="ep_00031.xml">
+  <changeSet id="ep_00031" author="European Dynamics" labels="ignorable">
     <sql>
-        INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`, `sensitivity`, `dbversion`,  `psswrd`)
-        VALUES ('7938d2a3-8a25-4f47-9180-e177c7c938af', 'System', 'System', 'deviceOutgoingEncryption', 'DEVICE_SPECIFIC', now(), 0, 0, 0);
-        INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`, `sensitivity`, `dbversion`,  `psswrd`)
-        VALUES ('48a0af48-5565-4a86-ac88-23339cbdb41d', 'System', 'System', 'deviceIncomingEncryption', 'OPTIONAL', now(), 0, 0, 0);
-        INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`, `sensitivity`, `dbversion`,  `psswrd`)
-        VALUES ('56451d25-cc22-4911-9eb7-381d089508b6', 'System', 'System', 'deviceOutgoingSignature', 'DEVICE_SPECIFIC', now(), 0, 0, 0);
-        INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`, `sensitivity`, `dbversion`,  `psswrd`)
-        VALUES ('91b86728-07bb-439c-a1c8-7e9dd10f798d', 'System', 'System', 'deviceIncomingSignature', 'OPTIONAL', now(), 0, 0, 0);
-        DELETE FROM set_setting WHERE id ='ad63f104-62b5-44e3-9a17-fe53391f442e';
+      INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`,
+                              `sensitivity`, `dbversion`, `psswrd`)
+      VALUES ('7938d2a3-8a25-4f47-9180-e177c7c938af', 'System', 'System',
+              'deviceOutgoingEncryption', 'DEVICE_SPECIFIC', now(), 0, 0, 0);
+      INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`,
+                              `sensitivity`, `dbversion`, `psswrd`)
+      VALUES ('48a0af48-5565-4a86-ac88-23339cbdb41d', 'System', 'System',
+              'deviceIncomingEncryption', 'OPTIONAL', now(), 0, 0, 0);
+      INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`,
+                              `sensitivity`, `dbversion`, `psswrd`)
+      VALUES ('56451d25-cc22-4911-9eb7-381d089508b6', 'System', 'System', 'deviceOutgoingSignature',
+              'DEVICE_SPECIFIC', now(), 0, 0, 0);
+      INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`,
+                              `sensitivity`, `dbversion`, `psswrd`)
+      VALUES ('91b86728-07bb-439c-a1c8-7e9dd10f798d', 'System', 'System', 'deviceIncomingSignature',
+              'OPTIONAL', now(), 0, 0, 0);
+      DELETE
+      FROM set_setting
+      WHERE id = 'ad63f104-62b5-44e3-9a17-fe53391f442e';
     </sql>
   </changeSet>
 </databaseChangeLog>

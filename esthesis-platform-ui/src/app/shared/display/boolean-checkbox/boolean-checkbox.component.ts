@@ -5,12 +5,9 @@ import {Component, Input, OnInit} from '@angular/core';
   templateUrl: './boolean-checkbox.component.html',
   styleUrls: ['./boolean-checkbox.component.scss']
 })
-export class BooleanCheckboxComponent implements OnInit {
+export class BooleanCheckboxComponent {
   @Input() public value: boolean;
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
 }

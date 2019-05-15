@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { SettingsRoutingModule } from './settings-routing.module';
 import {SettingsComponent} from './settings.component';
-import {SettingsPlatformComponent} from './settings-platform/settings-platform.component';
 import {SettingsNetworkingComponent} from './settings-networking/settings-networking.component';
 import {SettingsOperatorComponent} from './settings-operator/settings-operator.component';
 import {SettingsDevregComponent} from './settings-devreg/settings-devreg.component';
@@ -26,11 +25,12 @@ import {
 import {QFormsModule} from '@eurodyn/forms';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FlexModule} from '@angular/flex-layout';
+import {SettingsProvisioningComponent} from './settings-provisioning/settings-provisioning.component';
 
 @NgModule({
   declarations: [
     SettingsComponent,
-    SettingsPlatformComponent,
+    SettingsProvisioningComponent,
     SettingsNetworkingComponent,
     SettingsOperatorComponent,
     SettingsDevregComponent,

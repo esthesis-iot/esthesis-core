@@ -1,15 +1,14 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
-  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
-  http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
-logicalFilePath="ep_0035.xml">
-  <changeSet id="ep_0035" author="European Dynamics" labels="ignorable">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
+  logicalFilePath="ep_00035.xml">
+  <changeSet id="ep_00035" author="European Dynamics" labels="ignorable">
     <sql>
-      INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`, `sensitivity`, `dbversion`,  `psswrd`)
-      VALUES ('9f5431f2-4470-4bb7-8b1a-c09c3bf6d5fc', 'System', 'System', 'platformCertificate', null, now(), 0, 0, 0);
+      INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`,
+                              `sensitivity`, `dbversion`, `psswrd`)
+      VALUES ('9f5431f2-4470-4bb7-8b1a-c09c3bf6d5fc', 'System', 'System', 'platformCertificate',
+              null, now(), 0, 0, 0);
     </sql>
   </changeSet>
 </databaseChangeLog>

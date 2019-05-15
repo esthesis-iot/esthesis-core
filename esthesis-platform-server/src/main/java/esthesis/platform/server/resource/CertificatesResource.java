@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -70,7 +71,7 @@ public class CertificatesResource {
   public ResponseEntity download(@PathVariable long id, @PathVariable int keyType,
       @PathVariable Optional<Boolean> base64)
   throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-         IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+         IllegalBlockSizeException, BadPaddingException, InvalidKeyException, IOException {
     KeyDownloadReply keyDownloadReply = certificatesService
         .download(id, keyType, base64.isPresent() && base64.get().booleanValue());
     return ResponseEntity

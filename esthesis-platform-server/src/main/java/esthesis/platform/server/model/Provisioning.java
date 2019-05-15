@@ -2,11 +2,9 @@ package esthesis.platform.server.model;
 
 import static javax.persistence.FetchType.LAZY;
 
-import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -31,7 +29,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Accessors(chain = true)
-public class Provisioning extends BaseEntity {
+public class Provisioning extends BaseContentEntity {
 
   @NotNull
   private String name;
@@ -44,10 +42,7 @@ public class Provisioning extends BaseEntity {
   private List<Tag> tags;
   @NotNull
   private String packageVersion;
-  @Lob
-  @Basic(fetch=LAZY)
-  private byte[] fileContent;
-  private long fileSize;
   private String fileName;
   private String signature;
+  private boolean encrypted;
 }

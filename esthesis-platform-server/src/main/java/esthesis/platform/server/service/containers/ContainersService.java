@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -42,7 +43,7 @@ public class ContainersService {
   public void deploy(ContainerDTO containerDTO)
   throws DockerException, InterruptedException, DockerCertificateException, NoSuchPaddingException,
          InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException,
-         BadPaddingException, InvalidAlgorithmParameterException {
+         BadPaddingException, InvalidAlgorithmParameterException, IOException {
     // Find the type of virtualization infrastructure in which the container is to be deployed at.
     final VirtualizationDTO virtualizationDTO = virtualizationService.findById(containerDTO.getServer());
 

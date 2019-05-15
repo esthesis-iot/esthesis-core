@@ -1,6 +1,6 @@
 <form novalidate [formGroup]="form" fxLayout="column">
   <div class="inline-header">Registration mode</div>
-  <mat-radio-group formControlName="deviceRegistration">
+  <mat-radio-group formControlName="deviceRegistration" class="xs-mt2">
     <h4>
       <mat-radio-button
         [value]="settings.SETTING_VALUES.DEVICE_REGISTRATION.REGISTRATION_MODE.DISABLED">Disabled
@@ -50,12 +50,6 @@
         {{ lookupByValue(settings.SETTING_VALUES.DEVICE_REGISTRATION.PUSH_TAGS, o.value) }}
       </mat-option>
     </mat-select>
-  </mat-form-field>
-
-  <div class="inline-header xs-mt1">Provisioning URL</div>
-  <div class="inline-subheader">The URL devices contact to obtain firmware updates.</div>
-  <mat-form-field>
-    <input matInput placeholder="URL" formControlName="provisioningUrl">
   </mat-form-field>
 </form>
 

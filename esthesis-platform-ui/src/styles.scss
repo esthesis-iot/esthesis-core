@@ -18,12 +18,14 @@ html, body {
 .inline-header {
   font-size: 1.1rem;
   font-weight: 400;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 .inline-subheader {
   font-size: 0.9rem;
   font-weight: 100;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0 !important;
+  margin-bottom: 0.4rem !important;
 }
 
 .mat-icon {

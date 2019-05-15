@@ -1,0 +1,40 @@
+<form novalidate [formGroup]="form" fxLayout="column">
+  <div class="inline-header">Provisioning URL</div>
+  <div class="inline-subheader">The URL devices contact to obtain firmware updates.</div>
+  <mat-form-field>
+    <input matInput placeholder="URL" formControlName="provisioningUrl">
+  </mat-form-field>
+
+  <div class="inline-header">Provisioning image encryption</div>
+  <div class="inline-subheader">
+    Set whether uploaded provisioning images will be sent encrypted to devices.
+  </div>
+  <mat-form-field>
+    <mat-select placeholder="Provisioning encryption"
+                [formControlName]="settings.SETTING.PROVISIONING.ENCRYPTION">
+      <mat-option *ngFor="let o of settings.SETTING_VALUES.PROVISIONING.ENCRYPTION| keyvalue"
+                  [value]="o.value">
+        {{ lookupByValue(settings.SETTING_VALUES.PROVISIONING.ENCRYPTION, o.value) }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="inline-header">Provisioning image signature</div>
+  <div class="inline-subheader">
+    Set whether uploaded provisioning images will signed and a signature will be sent to
+    devices.
+  </div>
+  <mat-form-field>
+    <mat-select placeholder="Provisioning signature"
+                [formControlName]="settings.SETTING.PROVISIONING.SIGNATURE">
+      <mat-option *ngFor="let o of settings.SETTING_VALUES.PROVISIONING.SIGNATURE| keyvalue"
+                  [value]="o.value">
+        {{ lookupByValue(settings.SETTING_VALUES.PROVISIONING.SIGNATURE, o.value) }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+
+<div class="xs-pt2">
+  <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
+</div>

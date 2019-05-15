@@ -12,6 +12,7 @@ import esthesis.extension.device.DeviceMessage;
 import esthesis.extension.device.request.RegistrationRequest;
 import esthesis.extension.device.response.RegistrationResponse;
 import esthesis.extension.dto.MQTTServer;
+import esthesis.platform.server.config.AppSettings.Setting.Provisioning;
 import esthesis.platform.server.config.AppSettings.Setting.Security;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingEncryption;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingSignature;
@@ -169,6 +170,7 @@ public class DevicesResource {
       .setSessionKey(deviceDTO.getSessionKey())
       .setPsPublicKey(
         certificatesService.findById(srs.getAsLong(Security.PLATFORM_CERTIFICATE)).getPublicKey())
+      .setProvisioningUrl(srs.get(Provisioning.URL))
     );
 
     // Find the MQTT server to send back to the device.
@@ -205,7 +207,7 @@ public class DevicesResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch device keys.")
   public ResponseEntity downloadKeys(@PathVariable long deviceId)
   throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-         IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+         InvalidAlgorithmParameterException, IOException {
     // Prepare a filename for downloading.
     String filename =
       new Slugify().slugify(deviceService.findById(deviceId).getHardwareId()) + ".keys";

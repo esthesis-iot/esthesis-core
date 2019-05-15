@@ -1,17 +1,24 @@
 package esthesis.platform.server.resource;
 
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
+import com.eurodyn.qlack.fuse.crypto.CryptoSymmetricService;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
+import esthesis.platform.server.config.AppSettings.Setting;
+import esthesis.platform.server.config.AppSettings.SettingValues.Provisioning.ENCRYPTION;
+import esthesis.platform.server.config.AppSettings.SettingValues.Provisioning.SIGNATURE;
 import esthesis.platform.server.dto.ProvisioningDTO;
 import esthesis.platform.server.model.Provisioning;
 import esthesis.platform.server.service.ProvisioningService;
-import org.apache.commons.io.IOUtils;
+import esthesis.platform.server.service.SettingResolverService;
+import javax.crypto.NoSuchPaddingException;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,6 +32,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @RestController
@@ -33,10 +44,15 @@ import java.util.Optional;
 public class ProvisioningResource {
 
   private final ProvisioningService provisioningService;
+  private final SettingResolverService srs;
+  private final CryptoSymmetricService cryptoSymmetricService;
 
-  public ProvisioningResource(
-    ProvisioningService provisioningPackageService) {
+  public ProvisioningResource(ProvisioningService provisioningPackageService,
+    SettingResolverService settingResolverService,
+    CryptoSymmetricService cryptoSymmetricService) {
     this.provisioningService = provisioningPackageService;
+    this.srs = settingResolverService;
+    this.cryptoSymmetricService = cryptoSymmetricService;
   }
 
   @PostMapping
@@ -44,19 +60,28 @@ public class ProvisioningResource {
   public ResponseEntity save(@RequestParam("file") Optional<MultipartFile> file,
     @ModelAttribute ProvisioningDTO provisioningDTO) throws Exception {
     if (provisioningDTO.getId() == null && file.isPresent()) {
-      provisioningDTO.setFileSize(file.get().getSize());
-      provisioningDTO.setFileContent(IOUtils.toByteArray(file.get().getInputStream()));
-      provisioningDTO.setFileName(file.get().getOriginalFilename());
+      long id = provisioningService.save(provisioningDTO, file.get());
+      // Encrypt and/or sign the content (this is done in a separate call, so to do it
+      // asynchronously)
+      if (srs.is(Setting.Provisioning.ENCRYPTION, ENCRYPTION.ENCRYPTED) &&
+        srs.is(Setting.Provisioning.SIGNATURE, SIGNATURE.SIGNED)) {
+        provisioningService.encryptSign(id);
+      } else if (srs.is(Setting.Provisioning.ENCRYPTION, ENCRYPTION.ENCRYPTED)) {
+        provisioningService.encrypt(id);
+      } else if (srs.is(Setting.Provisioning.SIGNATURE, SIGNATURE.SIGNED)) {
+        provisioningService.sign(id);
+      }
+    } else {
+      provisioningService.save(provisioningDTO);
     }
-    provisioningService.save(provisioningDTO);
 
     return ResponseEntity.ok().build();
   }
 
   @GetMapping
   @EmptyPredicateCheck
-  @ReplyPageableFilter("defaultIP,fileSize,id,name,packageVersion,state,tags,fileName,createdOn,"
-    + "description")
+  @ReplyPageableFilter("defaultIP,size,id,name,packageVersion,state,tags,fileName,createdOn,"
+    + "description,signed,encrypted")
   public Page<ProvisioningDTO> findAll(
     @QuerydslPredicate(root = Provisioning.class) Predicate predicate, Pageable pageable) {
     return provisioningService.findAll(predicate, pageable);
@@ -72,5 +97,22 @@ public class ProvisioningResource {
     + "provisioning package.")
   public void delete(@PathVariable long id) {
     provisioningService.deleteById(id);
+  }
+
+  @GetMapping(value = "{id}/download")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not download "
+    + "provisioning package.")
+  public ResponseEntity download(@PathVariable long id)
+  throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
+         InvalidKeyException, NoSuchPaddingException {
+    final ProvisioningDTO provisioningDTO = provisioningService.findById(id);
+
+    return ResponseEntity
+      .ok()
+      .header(HttpHeaders.CONTENT_DISPOSITION,
+        "attachment; filename=" + provisioningDTO.getFileName())
+      .contentLength(provisioningDTO.getSize())
+      .contentType(MediaType.APPLICATION_OCTET_STREAM)
+      .body(new InputStreamResource(provisioningService.download(id)));
   }
 }

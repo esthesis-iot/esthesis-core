@@ -1,25 +1,28 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd" logicalFilePath="ep_00005.xml">
-    <changeSet author="European Dynamics" id="1549264301489-1">
-        <createTable tableName="certificate">
-          <column name="id" autoIncrement="true"  type="BIGINT UNSIGNED">
-            <constraints primaryKey="true"/>
-          </column>
-            <column name="cn" type="VARCHAR(256)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="issued" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="validity" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="certificate" type="LONGTEXT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="issuer" type="VARCHAR(256)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
+  logicalFilePath="ep_00005.xml">
+  <changeSet author="European Dynamics" id="1549264301489-1">
+    <createTable tableName="certificate">
+      <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="cn" type="VARCHAR(256)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="issued" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="validity" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="certificate" type="LONGTEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="issuer" type="VARCHAR(256)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
 </databaseChangeLog>

@@ -126,7 +126,9 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
         MessageFormat.format("Certificate {0} created.", certificateDTO.getCn()));
 
       return super.save(certificateDTO);
-    } catch (NoSuchAlgorithmException | IOException | OperatorCreationException | InvalidKeySpecException | NoSuchPaddingException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
+    } catch (NoSuchAlgorithmException | IOException | OperatorCreationException |
+      InvalidKeySpecException | NoSuchPaddingException | InvalidAlgorithmParameterException |
+      InvalidKeyException e) {
       throw new QCouldNotSaveException("Could not save certificate.", e);
     }
   }
@@ -148,7 +150,8 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
 
   public KeyDownloadReply download(long certificateId, int keyType, boolean base64)
   throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-         IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+         IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException,
+         IOException {
     KeyDownloadReply keyDownloadReply = new KeyDownloadReply();
     final CertificateDTO certificateDTO = findById(certificateId);
     keyDownloadReply.setFilename(new Slugify().slugify(certificateDTO.getCn()));
@@ -200,7 +203,7 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
    */
   public String getPSPrivateKey()
   throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-         IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+         InvalidAlgorithmParameterException, IOException {
     return new String(securityService.decrypt(
       findEntityById(settingResolverService.getAsLong(Security.PLATFORM_CERTIFICATE))
         .getPrivateKey()), StandardCharsets.UTF_8);

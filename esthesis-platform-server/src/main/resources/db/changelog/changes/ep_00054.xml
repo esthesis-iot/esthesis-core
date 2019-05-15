@@ -2,12 +2,11 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
-  logicalFilePath="ep_00032.xml">
-  <changeSet id="ep_00032" author="European Dynamics" labels="ignorable">
-    <sql>
-      DELETE
-      FROM set_setting
-      WHERE id = '69204a6f-f858-47e1-a297-b1fab6bee575';
-    </sql>
+  logicalFilePath="ep_00054.xml">
+  <changeSet author="European Dynamics" id="1557842793701-3">
+    <dropColumn columnName="file_content" tableName="provisioning"/>
+  </changeSet>
+  <changeSet author="European Dynamics" id="1557842793701-1">
+    <dropNotNullConstraint columnDataType="clob" columnName="signature" tableName="provisioning"/>
   </changeSet>
 </databaseChangeLog>

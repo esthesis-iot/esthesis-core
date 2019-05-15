@@ -8,4 +8,6 @@ export class ProvisioningDto {
   file: string;
   fileSize: number;
   packageVersion: string;
+  signed: boolean;
+  encrypted: boolean;
 }

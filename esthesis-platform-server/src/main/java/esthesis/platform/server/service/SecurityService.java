@@ -1,9 +1,9 @@
 package esthesis.platform.server.service;
 
 import com.eurodyn.qlack.fuse.crypto.CryptoAsymmetricService;
+import com.eurodyn.qlack.fuse.crypto.CryptoDigestService;
 import com.eurodyn.qlack.fuse.crypto.CryptoSymmetricService;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.extension.device.DeviceMessage;
 import esthesis.platform.server.config.AppProperties;
@@ -14,14 +14,14 @@ import esthesis.platform.server.config.AppSettings.SettingValues.Security.Outgoi
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingSignature;
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.repository.CertificateRepository;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -46,17 +46,20 @@ public class SecurityService {
   private final SettingResolverService srs;
   private final CertificateRepository certificateRepository;
   private final ObjectMapper objectMapper;
+  private final CryptoDigestService cryptoDigestService;
 
   public SecurityService(AppProperties appProperties,
     CryptoSymmetricService cryptoSymmetricService, CryptoAsymmetricService cryptoAsymmetricService,
     SettingResolverService srs, CertificateRepository certificateRepository,
-    ObjectMapper objectMapper) {
+    ObjectMapper objectMapper,
+    CryptoDigestService cryptoDigestService) {
     this.appProperties = appProperties;
     this.cryptoSymmetricService = cryptoSymmetricService;
     this.cryptoAsymmetricService = cryptoAsymmetricService;
     this.srs = srs;
     this.certificateRepository = certificateRepository;
     this.objectMapper = objectMapper;
+    this.cryptoDigestService = cryptoDigestService;
   }
 
   /**
@@ -65,8 +68,7 @@ public class SecurityService {
   public <T> void processIncomingMessage(DeviceMessage msg, Class<T> payloadClass,
     DeviceDTO deviceDTO)
   throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-         IllegalBlockSizeException, BadPaddingException, InvalidKeyException, IOException,
-         InvalidKeySpecException, SignatureException {
+         InvalidKeyException, IOException, InvalidKeySpecException, SignatureException {
     // Verify the signature.
     if (srs.is(Security.INCOMING_SIGNATURE, IncomingSignature.SIGNED) &&
       StringUtils.isBlank(msg.getSignature())) {
@@ -105,9 +107,9 @@ public class SecurityService {
    * Convenience method to sign and/or encrypt outgoing messages to devices.
    */
   public void prepareOutgoingMessage(DeviceMessage msg, DeviceDTO deviceDTO)
-  throws JsonProcessingException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-         NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException,
-         InvalidKeyException, InvalidKeySpecException, SignatureException {
+  throws IOException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+         NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException,
+         SignatureException {
     // Encrypt request if required.
     if (srs.is(Security.OUTGOING_ENCRYPTION, OutgoingEncryption.ENCRYPTED)) {
       msg.setEncryptedPayload(Base64.encodeBase64String(
@@ -134,11 +136,26 @@ public class SecurityService {
    */
   public byte[] sign(byte[] payload)
   throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
-         SignatureException, IllegalBlockSizeException, BadPaddingException,
-         InvalidAlgorithmParameterException, NoSuchPaddingException {
+         SignatureException, InvalidAlgorithmParameterException, NoSuchPaddingException,
+         IOException {
 
     return cryptoAsymmetricService.sign(
-      new String(decrypt(ReturnOptional.r(certificateRepository.findById(srs.getAsLong(Security.PLATFORM_CERTIFICATE)))
+      new String(decrypt(ReturnOptional
+        .r(certificateRepository.findById(srs.getAsLong(Security.PLATFORM_CERTIFICATE)))
+        .getPrivateKey()), StandardCharsets.UTF_8),
+      payload,
+      appProperties.getSecurityAsymmetricSignatureAlgorithm(),
+      appProperties.getSecurityAsymmetricKeyAlgorithm());
+  }
+
+  public byte[] sign(InputStream payload)
+  throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
+         SignatureException, InvalidAlgorithmParameterException, NoSuchPaddingException,
+         IOException {
+
+    return cryptoAsymmetricService.sign(
+      new String(decrypt(ReturnOptional
+        .r(certificateRepository.findById(srs.getAsLong(Security.PLATFORM_CERTIFICATE)))
         .getPrivateKey()), StandardCharsets.UTF_8),
       payload,
       appProperties.getSecurityAsymmetricSignatureAlgorithm(),
@@ -166,6 +183,20 @@ public class SecurityService {
     }
   }
 
+  public void verifySignature(InputStream payload, String signature, DeviceDTO deviceDTO)
+  throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
+         SignatureException, IOException {
+
+    if (!cryptoAsymmetricService.verifySignature(
+      deviceDTO.getPublicKey(),
+      payload,
+      signature,
+      appProperties.getSecurityAsymmetricSignatureAlgorithm(),
+      appProperties.getSecurityAsymmetricKeyAlgorithm())) {
+      throw new SecurityException("Signature validation failed.");
+    }
+  }
+
   /**
    * Encrypts a plaintext to be sent to a device using the shared session key which is retrieved
    * from the passed `hardwareId`.
@@ -174,8 +205,8 @@ public class SecurityService {
    * @param deviceDTO The device to encrypt for.
    */
   public byte[] encrypt(byte[] plaintext, DeviceDTO deviceDTO)
-  throws NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException,
-         BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+  throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
+         InvalidAlgorithmParameterException, IOException {
     if (plaintext == null) {
       throw new IllegalStateException("No payload to encrypt.");
     }
@@ -198,16 +229,17 @@ public class SecurityService {
    * @return A Base64 encoded version of the ciphertext.
    */
   public String encrypt(byte[] plaintext)
-  throws NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException,
-         BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
-    return Base64.encodeBase64String(cryptoSymmetricService.encrypt(plaintext,
-      cryptoSymmetricService
-        .keyFromString(srs.get(Security.AES_KEY),
+  throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
+         InvalidAlgorithmParameterException, IOException {
+    return Base64.encodeBase64String(
+      cryptoSymmetricService.encrypt(
+        plaintext,
+        cryptoSymmetricService.keyFromString(srs.get(Security.AES_KEY),
           appProperties.getSecuritySymmetricKeyAlgorithm()),
-      srs.get(Security.AES_KEY).getBytes(StandardCharsets.UTF_8),
-      appProperties.getSecuritySymmetricCipherAlgorithm(),
-      appProperties.getSecurityAsymmetricKeyAlgorithm(),
-      true));
+        srs.get(Security.AES_KEY).substring(0, 16).getBytes(StandardCharsets.UTF_8),
+        appProperties.getSecuritySymmetricCipherAlgorithm(),
+        appProperties.getSecuritySymmetricKeyAlgorithm(),
+        true));
   }
 
   /**
@@ -218,8 +250,49 @@ public class SecurityService {
    */
   public String encrypt(String plaintext)
   throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-         IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+         InvalidKeyException, IOException {
     return encrypt(plaintext.getBytes(StandardCharsets.UTF_8));
+  }
+
+  /**
+   * Encrypts a file.
+   *
+   * @param fileToEncrypt The file to encrypt.
+   * @return Returns the location of a temporary file with the encrypted version of the
+   * `fileToEncrypt`.
+   */
+  public String encrypt(File fileToEncrypt, String key)
+  throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
+         InvalidKeyException, NoSuchPaddingException {
+    File tmpFile =
+      File.createTempFile(cryptoDigestService.md5(fileToEncrypt.getName()),
+      ".encrypted", new File(appProperties.getFsTmpRoot()));
+    cryptoSymmetricService.encrypt(
+      fileToEncrypt,
+      tmpFile,
+      cryptoSymmetricService.keyFromString(key,
+        appProperties.getSecuritySymmetricKeyAlgorithm()),
+      appProperties.getSecuritySymmetricCipherAlgorithm(),
+      appProperties.getSecuritySymmetricKeyAlgorithm()
+    );
+    tmpFile.deleteOnExit();
+
+    return tmpFile.getAbsolutePath();
+  }
+
+  public String decrypt(File fileToDecrypt, String key)
+  throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeyException,
+         NoSuchPaddingException, IOException {
+    File tmpFile = File.createTempFile(cryptoDigestService.md5(fileToDecrypt.getName()),
+      ".decrypted", new File(appProperties.getFsTmpRoot()));
+    cryptoSymmetricService
+      .decrypt(fileToDecrypt, tmpFile, cryptoSymmetricService.keyFromString(key,
+        appProperties.getSecuritySymmetricKeyAlgorithm()),
+        appProperties.getSecuritySymmetricCipherAlgorithm(),
+        appProperties.getSecuritySymmetricKeyAlgorithm());
+    tmpFile.deleteOnExit();
+
+    return tmpFile.getAbsolutePath();
   }
 
   /**
@@ -228,14 +301,15 @@ public class SecurityService {
    * @param ciphertext The ciphertext to decrypt.
    */
   public byte[] decrypt(byte[] ciphertext)
-  throws NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException,
-         BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
-    return cryptoSymmetricService.decrypt(Base64.decodeBase64(ciphertext),
+  throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
+         InvalidAlgorithmParameterException, IOException {
+    return cryptoSymmetricService.decrypt(
+      Base64.decodeBase64(ciphertext),
       cryptoSymmetricService
         .keyFromString(srs.get(Security.AES_KEY),
           appProperties.getSecuritySymmetricKeyAlgorithm()),
       appProperties.getSecuritySymmetricCipherAlgorithm(),
-      appProperties.getSecurityAsymmetricKeyAlgorithm());
+      appProperties.getSecuritySymmetricKeyAlgorithm());
   }
 
   /**
@@ -245,7 +319,7 @@ public class SecurityService {
    */
   public byte[] decrypt(String ciphertext)
   throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-         IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+         InvalidKeyException, IOException {
     return decrypt(ciphertext.getBytes(StandardCharsets.UTF_8));
   }
 
@@ -256,8 +330,8 @@ public class SecurityService {
    * @param deviceDTO The device to decrypt for.
    */
   public byte[] decrypt(byte[] cipherText, DeviceDTO deviceDTO)
-  throws NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException,
-         BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+  throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
+         InvalidAlgorithmParameterException, IOException {
     if (cipherText == null) {
       throw new IllegalStateException("No encrypted payload to decrypt.");
     }

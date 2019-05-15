@@ -278,8 +278,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
       deviceDTO
         .setSessionKey(Base64.encodeBase64String(securityService.decrypt(keys.getSessionKey())));
       deviceDTO.setPsPublicKey(certificatesService.getPSPublicKey());
-    } catch (NoSuchPaddingException | InvalidKeyException | BadPaddingException |
-      IllegalBlockSizeException | NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
+    } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException |
+      InvalidAlgorithmParameterException | IOException e) {
       LOGGER.log(Level.SEVERE, "Could not obtain device's cryptographic keys.", e);
     }
 

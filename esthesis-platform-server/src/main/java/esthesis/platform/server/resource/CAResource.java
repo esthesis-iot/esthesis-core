@@ -84,7 +84,8 @@ public class CAResource {
       logMessage = "Could not fetch security information for the CA.")
   public ResponseEntity download(@PathVariable long id, @PathVariable int keyType, @PathVariable Optional<Boolean> base64)
   throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-         IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+         InvalidAlgorithmParameterException,
+         IOException {
     final CaDTO caDTO = caService.findById(id);
 
     String filename = new Slugify().slugify(caDTO.getCn());

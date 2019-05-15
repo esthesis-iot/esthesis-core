@@ -34,4 +34,5 @@ public class DeviceKey extends BaseEntity {
   @JoinColumn(name="device_id", nullable=false)
   private Device device;
   private String sessionKey;
+  private String provisioningKey;
 }
