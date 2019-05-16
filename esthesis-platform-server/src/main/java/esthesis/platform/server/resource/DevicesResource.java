@@ -1,6 +1,5 @@
 package esthesis.platform.server.resource;
 
-import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyFilter;
@@ -13,11 +12,6 @@ import esthesis.extension.device.request.RegistrationRequest;
 import esthesis.extension.device.response.RegistrationResponse;
 import esthesis.extension.dto.MQTTServer;
 import esthesis.platform.server.config.AppSettings.Setting.Provisioning;
-import esthesis.platform.server.config.AppSettings.Setting.Security;
-import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingEncryption;
-import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingSignature;
-import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingEncryption;
-import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingSignature;
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.DeviceKeyDTO;
 import esthesis.platform.server.dto.DeviceRegistrationDTO;
@@ -39,7 +33,6 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -114,65 +107,26 @@ public class DevicesResource {
 
   @PostMapping(path = "/register")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not register device.")
-  @Transactional
   public DeviceMessage<RegistrationResponse> register(
     @Valid @RequestBody DeviceMessage<RegistrationRequest> registrationRequest)
   throws NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException,
          BadPaddingException, InvalidKeyException, IOException,
          InvalidAlgorithmParameterException, InvalidKeySpecException, SignatureException {
-    // Verify signature and decrypt according to the configuration.
-    DeviceDTO deviceDTO;
-    try {
-      deviceDTO = deviceService.findByHardwareId(registrationRequest.getHardwareId());
-      securityService
-        .processIncomingMessage(registrationRequest, RegistrationRequest.class, deviceDTO);
-    } catch (QDoesNotExistException e) {
-      // If the device is not preregistered it is not possible to verify the signature nor to
-      // decrypt its payload.
-      if (srs.is(Security.INCOMING_SIGNATURE, IncomingSignature.SIGNED) ||
-        srs.is(Security.INCOMING_ENCRYPTION, IncomingEncryption.ENCRYPTED)) {
-        throw new SecurityException("Signature and/or decryption is not supported during "
-          + "registration unless the device is preregistered with the platform.");
-      }
-    }
-
-    // Verify that the hardware ID on `DeviceMessage` is identical to the one in
-    // `RegistrationRequest`. This provides device ID verification but only if your system is set
-    // to require signing of incoming requests (and operate under "preregistered devices" device
-    // registration mode.
-    if (srs.is(Security.INCOMING_SIGNATURE, IncomingSignature.SIGNED) && !registrationRequest
-      .getHardwareId().equals(registrationRequest.getPayload().getHardwareId())) {
-      throw new SecurityException("Device ID in the payload does not match to the device ID of "
-        + "the payload wrapper.");
-    }
-
-    // Before proceeding to registration, check that the platform is capable to sign and/or encrypt
-    // the reply in case the device requests so.
-    if (registrationRequest.getPayload().isRepliesSigned() && srs.is(Security.OUTGOING_SIGNATURE,
-      OutgoingSignature.NOT_SIGNED)) {
-      throw new SecurityException("Device registration request requires a signed registration "
-        + "reply, however the platform operates in non-signing mode.");
-    }
-    if (registrationRequest.getPayload().isRepliesEncrypted() && srs
-      .is(Security.OUTGOING_ENCRYPTION, OutgoingEncryption.NOT_ENCRYPTED)) {
-      throw new SecurityException("Device registration request requires an encrypted "
-        + "registration reply, however the platform operates in non-encryption mode.");
-    }
-
     // Register the device.
-    deviceDTO = deviceService
-      .register(registrationRequest.getPayload(), registrationRequest.getHardwareId());
+    deviceService.register(registrationRequest, registrationRequest.getHardwareId());
 
-    // Prepare registration reply.
+    // Fetch the just-registered device to also obtain its keys.
+    DeviceDTO deviceDTO = deviceService.findByHardwareId(registrationRequest.getHardwareId());
+
+      // Prepare registration reply.
     DeviceMessage<RegistrationResponse> registrationReply = new DeviceMessage<>();
     registrationReply.setPayload(new RegistrationResponse()
       .setPublicKey(deviceDTO.getPublicKey())
       .setPrivateKey(deviceDTO.getPrivateKey())
       .setSessionKey(deviceDTO.getSessionKey())
-      .setPsPublicKey(
-        certificatesService.findById(srs.getAsLong(Security.PLATFORM_CERTIFICATE)).getPublicKey())
+      .setPsPublicKey(deviceDTO.getPsPublicKey())
       .setProvisioningUrl(srs.get(Provisioning.URL))
-      .setProvisioningKey(srs.get(Provisioning.AES_KEY))
+      .setProvisioningKey(deviceDTO.getProvisioningKey())
     );
 
     // Find the MQTT server to send back to the device.

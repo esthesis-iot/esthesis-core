@@ -5,19 +5,27 @@ import static esthesis.platform.server.config.AppSettings.SettingValues.DeviceRe
 
 import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
 import com.eurodyn.qlack.common.exception.QDisabledException;
+import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.common.exception.QSecurityException;
 import com.eurodyn.qlack.fuse.crypto.CryptoAsymmetricService;
 import com.eurodyn.qlack.fuse.crypto.CryptoSymmetricService;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.google.common.collect.Lists;
+import esthesis.extension.device.DeviceMessage;
 import esthesis.extension.device.request.RegistrationRequest;
 import esthesis.platform.server.config.AppConstants.Device.State;
 import esthesis.platform.server.config.AppConstants.WebSocket.Topic;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting.DeviceRegistration;
+import esthesis.platform.server.config.AppSettings.Setting.Provisioning;
+import esthesis.platform.server.config.AppSettings.Setting.Security;
 import esthesis.platform.server.config.AppSettings.SettingValues.DeviceRegistration.PushTags;
 import esthesis.platform.server.config.AppSettings.SettingValues.DeviceRegistration.RegistrationMode;
+import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingEncryption;
+import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingSignature;
+import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingEncryption;
+import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingSignature;
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.DeviceKeyDTO;
 import esthesis.platform.server.dto.DeviceRegistrationDTO;
@@ -44,6 +52,8 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.Arrays;
@@ -212,6 +222,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
         cryptoSymmetricService.generateKey(
           appProperties.getSecuritySymmetricKeySize(),
           appProperties.getSecuritySymmetricKeyAlgorithm())))
+      // Provisioning key is already encrypted in settings.
+      .setProvisioningKey(srs.get(Provisioning.AES_KEY))
       .setRolledOn(Instant.now())
       .setRolledAccepted(true)
       .setDevice(device);
@@ -224,12 +236,52 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     }
   }
 
-  public DeviceDTO register(RegistrationRequest registrationRequest, String hardwareId)
+  public void register(DeviceMessage<RegistrationRequest> registrationRequest,
+    String hardwareId)
   throws NoSuchAlgorithmException, IOException, InvalidKeyException,
          NoSuchPaddingException, BadPaddingException, InvalidAlgorithmParameterException,
-         IllegalBlockSizeException {
+         IllegalBlockSizeException, InvalidKeySpecException, SignatureException {
     DeviceDTO deviceDTO = null;
 
+    // Verify signature and decrypt according to the configuration.
+    try {
+      deviceDTO = findByHardwareId(registrationRequest.getHardwareId());
+      securityService
+        .processIncomingMessage(registrationRequest, RegistrationRequest.class, deviceDTO);
+    } catch (QDoesNotExistException e) {
+      // If the device is not preregistered it is not possible to verify the signature nor to
+      // decrypt its payload.
+      if (srs.is(Security.INCOMING_SIGNATURE, IncomingSignature.SIGNED) ||
+        srs.is(Security.INCOMING_ENCRYPTION, IncomingEncryption.ENCRYPTED)) {
+        throw new SecurityException("Signature and/or decryption is not supported during "
+          + "registration unless the device is preregistered with the platform.");
+      }
+    }
+
+    // Verify that the hardware ID on `DeviceMessage` is identical to the one in
+    // `RegistrationRequest`. This provides device ID verification but only if your system is set
+    // to require signing of incoming requests (and operate under "preregistered devices" device
+    // registration mode.
+    if (srs.is(Security.INCOMING_SIGNATURE, IncomingSignature.SIGNED) && !registrationRequest
+      .getHardwareId().equals(registrationRequest.getPayload().getHardwareId())) {
+      throw new SecurityException("Device ID in the payload does not match to the device ID of "
+        + "the payload wrapper.");
+    }
+
+    // Before proceeding to registration, check that the platform is capable to sign and/or encrypt
+    // the reply in case the device requests so.
+    if (registrationRequest.getPayload().isRepliesSigned() && srs.is(Security.OUTGOING_SIGNATURE,
+      OutgoingSignature.NOT_SIGNED)) {
+      throw new SecurityException("Device registration request requires a signed registration "
+        + "reply, however the platform operates in non-signing mode.");
+    }
+    if (registrationRequest.getPayload().isRepliesEncrypted() && srs
+      .is(Security.OUTGOING_ENCRYPTION, OutgoingEncryption.NOT_ENCRYPTED)) {
+      throw new SecurityException("Device registration request requires an encrypted "
+        + "registration reply, however the platform operates in non-encryption mode.");
+    }
+
+    // Proceed with device registration.
     if (srs.is(DeviceRegistration.REGISTRATION_MODE, DISABLED)) {
       throw new QDisabledException(
         "Attempting to register device with hardware ID {0} but registration of new devices is "
@@ -242,16 +294,16 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
         srs.get(DeviceRegistration.REGISTRATION_MODE));
       switch (srs.get(DeviceRegistration.REGISTRATION_MODE)) {
         case RegistrationMode.OPEN:
-          register(hardwareId, registrationRequest.getTags(), State.REGISTERED, true);
+          register(hardwareId, registrationRequest.getPayload().getTags(), State.REGISTERED, true);
           deviceDTO = findByHardwareId(hardwareId);
           break;
         case RegistrationMode.OPEN_WITH_APPROVAL:
           register(hardwareId,
-            registrationRequest.getTags(), State.APPROVAL, true);
+            registrationRequest.getPayload().getTags(), State.APPROVAL, true);
           deviceDTO = findByHardwareId(hardwareId);
           break;
         case RegistrationMode.ID:
-          registerPreregistered(registrationRequest, hardwareId);
+          registerPreregistered(registrationRequest.getPayload(), hardwareId);
           deviceDTO = findByHardwareId(hardwareId);
           break;
         case RegistrationMode.DISABLED:
@@ -266,18 +318,19 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     }
 
     LOGGER.log(Level.FINE, "Registered device with hardware ID {0}.", hardwareId);
-    return deviceDTO;
   }
 
   private DeviceDTO findKeys(DeviceDTO deviceDTO) {
     final DeviceKey keys = deviceKeyRepository.findLatestAccepted(deviceDTO.getId());
     try {
-      deviceDTO.setPublicKey(keys.getPublicKey());
       deviceDTO.setPrivateKey(new String(securityService.decrypt(keys.getPrivateKey()),
         StandardCharsets.UTF_8));
+      deviceDTO.setPublicKey(keys.getPublicKey());
+      deviceDTO.setPsPublicKey(keys.getPsPublicKey());
       deviceDTO
         .setSessionKey(Base64.encodeBase64String(securityService.decrypt(keys.getSessionKey())));
-      deviceDTO.setPsPublicKey(certificatesService.getPSPublicKey());
+      deviceDTO.setProvisioningKey(
+        Base64.encodeBase64String(securityService.decrypt(keys.getProvisioningKey())));
     } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException |
       InvalidAlgorithmParameterException | IOException e) {
       LOGGER.log(Level.SEVERE, "Could not obtain device's cryptographic keys.", e);
