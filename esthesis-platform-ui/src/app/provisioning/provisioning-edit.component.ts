@@ -42,7 +42,8 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
       state: [false, [Validators.required]],
       tags: [[]],
       packageVersion: ['', [Validators.required]],
-      fileName: ['']
+      fileName: [''],
+      encrypted: [false]
     });
 
     // Fill-in the form with data if editing an existing item.

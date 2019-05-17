@@ -10,7 +10,6 @@ import esthesis.platform.server.repository.ProvisioningContentStore;
 import esthesis.platform.server.repository.ProvisioningRepository;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -82,9 +81,20 @@ public class ProvisioningService extends BaseService<ProvisioningDTO, Provisioni
          SignatureException, InvalidAlgorithmParameterException, InvalidKeySpecException {
     final Provisioning provisioning = findEntityById(provisioningId);
     StopWatch stopwatch = StopWatch.createStarted();
-    provisioning
-      .setSignature(Base64.encodeBase64String(
-        securityService.sign(provisioningContentStore.getContent(provisioning))));
+
+    // Find the file to sign.
+    String payloadFilePath = Paths
+      .get(appProperties.getFsProvisioningRoot(), provisioning.getContentId()).toFile()
+      .getAbsolutePath();
+    if (provisioning.isEncrypted()) {
+      payloadFilePath += ".encrypted";
+    }
+
+    // Sign the file.
+    try (FileInputStream payload = new FileInputStream(payloadFilePath)) {
+      provisioning
+        .setSignature(Base64.encodeBase64String(securityService.sign(payload)));
+    }
     provisioningRepository.save(provisioning);
     LOGGER.log(Level.FINE, "Signing took {0} msec.", stopwatch.getTime());
   }
@@ -99,19 +109,12 @@ public class ProvisioningService extends BaseService<ProvisioningDTO, Provisioni
     String unencryptedFile = Paths.get(appProperties.getFsProvisioningRoot(),
       provisioning.getContentId()).toFile().getAbsolutePath();
     String encryptedFile = securityService.encrypt(new File(unencryptedFile),
+      new File(Paths.get(appProperties.getFsProvisioningRoot(), provisioning.getContentId() +
+        ".encrypted").toFile().getAbsolutePath()),
       new String(securityService.decrypt(srs.get(Setting.Provisioning.AES_KEY)),
         StandardCharsets.UTF_8));
     LOGGER.log(Level.FINE, "Provisioning content ID {0} was encrypted to file {1}.",
       new Object[]{provisioning.getContentId(), encryptedFile});
-
-    // Replace unencrypted file with the encrypted one.
-    try {
-      FileUtils.forceDelete(new File(unencryptedFile));
-      FileUtils.moveFile(new File(encryptedFile), new File(unencryptedFile));
-    } catch (IOException e) {
-      LOGGER.log(Level.SEVERE, "Could not replace unencrypted {0} with the encrypted {1}.",
-        new Object[]{unencryptedFile, encryptedFile});
-    }
 
     provisioning.setEncrypted(true);
     provisioningRepository.save(provisioning);
@@ -119,24 +122,8 @@ public class ProvisioningService extends BaseService<ProvisioningDTO, Provisioni
     LOGGER.log(Level.FINE, "Encryption took {0} msec.", stopwatch.getTime());
   }
 
-  public InputStream download(long provisioningId)
-  throws NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException,
-         NoSuchPaddingException, IOException {
-    final Provisioning provisioning = findEntityById(provisioningId);
-
-    // Decrypt the provisioning package if encrypted.
-    if (provisioning.isEncrypted()) {
-      String encryptedFile = Paths.get(appProperties.getFsProvisioningRoot(),
-        provisioning.getContentId()).toFile().getAbsolutePath();
-      String decryptedFile = securityService.decrypt(new File(encryptedFile),
-        new String(securityService.decrypt(srs.get(Setting.Provisioning.AES_KEY)),
-          StandardCharsets.UTF_8));
-      LOGGER.log(Level.FINE, "A temporary decrypted version of content ID {0} was created under "
-        + "{1}.", new Object[]{provisioning.getContentId(), decryptedFile});
-      return new FileInputStream(new File(decryptedFile));
-    } else {
-      return provisioningContentStore.getContent(provisioning);
-    }
+  public InputStream download(long provisioningId) {
+    return provisioningContentStore.getContent(findEntityById(provisioningId));
   }
 
   public long save(ProvisioningDTO provisioningDTO, MultipartFile file) throws IOException {

@@ -258,26 +258,23 @@ public class SecurityService {
    * Encrypts a file.
    *
    * @param fileToEncrypt The file to encrypt.
+   * @param encryptedFile The encrypted file to create.
    * @return Returns the location of a temporary file with the encrypted version of the
    * `fileToEncrypt`.
    */
-  public String encrypt(File fileToEncrypt, String key)
+  public String encrypt(File fileToEncrypt, File encryptedFile, String key)
   throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
          InvalidKeyException, NoSuchPaddingException {
-    File tmpFile =
-      File.createTempFile(cryptoDigestService.md5(fileToEncrypt.getName()),
-      ".encrypted", new File(appProperties.getFsTmpRoot()));
     cryptoSymmetricService.encrypt(
       fileToEncrypt,
-      tmpFile,
+      encryptedFile,
       cryptoSymmetricService.keyFromString(key,
         appProperties.getSecuritySymmetricKeyAlgorithm()),
       appProperties.getSecuritySymmetricCipherAlgorithm(),
       appProperties.getSecuritySymmetricKeyAlgorithm()
     );
-    tmpFile.deleteOnExit();
 
-    return tmpFile.getAbsolutePath();
+    return encryptedFile.getAbsolutePath();
   }
 
   public String decrypt(File fileToDecrypt, String key)
