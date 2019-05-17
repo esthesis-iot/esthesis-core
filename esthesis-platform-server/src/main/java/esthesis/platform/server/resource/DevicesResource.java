@@ -7,21 +7,12 @@ import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.github.slugify.Slugify;
 import com.querydsl.core.types.Predicate;
-import esthesis.extension.device.DeviceMessage;
-import esthesis.extension.device.request.RegistrationRequest;
-import esthesis.extension.device.response.RegistrationResponse;
-import esthesis.extension.dto.MQTTServer;
-import esthesis.platform.server.config.AppSettings.Setting.Provisioning;
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.DeviceKeyDTO;
 import esthesis.platform.server.dto.DeviceRegistrationDTO;
-import esthesis.platform.server.dto.MQTTServerDTO;
 import esthesis.platform.server.model.Device;
-import esthesis.platform.server.service.CertificatesService;
 import esthesis.platform.server.service.DeviceService;
-import esthesis.platform.server.service.MQTTService;
 import esthesis.platform.server.service.SecurityService;
-import esthesis.platform.server.service.SettingResolverService;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -47,9 +38,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 @Validated
@@ -61,19 +49,11 @@ public class DevicesResource {
   private static final Logger LOGGER = Logger.getLogger(DevicesResource.class.getName());
 
   private final DeviceService deviceService;
-  private final SettingResolverService srs;
-  private final CertificatesService certificatesService;
   private final SecurityService securityService;
-  private final MQTTService mqttService;
 
-  public DevicesResource(DeviceService deviceService, SettingResolverService srs,
-    CertificatesService certificatesService,
-    SecurityService securityService, MQTTService mqttService) {
+  public DevicesResource(DeviceService deviceService, SecurityService securityService) {
     this.deviceService = deviceService;
-    this.srs = srs;
-    this.certificatesService = certificatesService;
     this.securityService = securityService;
-    this.mqttService = mqttService;
   }
 
   @PostMapping(path = "/preregister")
@@ -103,47 +83,6 @@ public class DevicesResource {
     final DeviceDTO deviceDTO = deviceService.findById(id);
 
     return deviceDTO;
-  }
-
-  @PostMapping(path = "/register")
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not register device.")
-  public DeviceMessage<RegistrationResponse> register(
-    @Valid @RequestBody DeviceMessage<RegistrationRequest> registrationRequest)
-  throws NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException,
-         BadPaddingException, InvalidKeyException, IOException,
-         InvalidAlgorithmParameterException, InvalidKeySpecException, SignatureException {
-    // Register the device.
-    deviceService.register(registrationRequest, registrationRequest.getHardwareId());
-
-    // Fetch the just-registered device to also obtain its keys.
-    DeviceDTO deviceDTO = deviceService.findByHardwareId(registrationRequest.getHardwareId());
-
-      // Prepare registration reply.
-    DeviceMessage<RegistrationResponse> registrationReply = new DeviceMessage<>();
-    registrationReply.setPayload(new RegistrationResponse()
-      .setPublicKey(deviceDTO.getPublicKey())
-      .setPrivateKey(deviceDTO.getPrivateKey())
-      .setSessionKey(deviceDTO.getSessionKey())
-      .setPsPublicKey(deviceDTO.getPsPublicKey())
-      .setProvisioningUrl(srs.get(Provisioning.URL))
-      .setProvisioningKey(deviceDTO.getProvisioningKey())
-    );
-
-    // Find the MQTT server to send back to the device.
-    Optional<MQTTServerDTO> mqttServerDTO = mqttService.matchByTag(deviceDTO);
-    if (mqttServerDTO.isPresent()) {
-      registrationReply.getPayload().setMqttServer(new MQTTServer()
-        .setIpAddress(mqttServerDTO.get().getIpAddress())
-        .setTopicControl(mqttServerDTO.get().getTopicControl())
-        .setTopicMetadata(mqttServerDTO.get().getTopicMetadata())
-        .setTopicTelemetry(mqttServerDTO.get().getTopicTelemetry())
-      );
-    }
-
-    // Sign and/or encrypt the reply according to preferences.
-    securityService.prepareOutgoingMessage(registrationReply, deviceDTO);
-
-    return registrationReply;
   }
 
   @DeleteMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
