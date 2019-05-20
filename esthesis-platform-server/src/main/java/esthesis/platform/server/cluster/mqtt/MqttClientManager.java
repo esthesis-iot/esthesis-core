@@ -72,7 +72,7 @@ public class MqttClientManager {
   }
 
   private void disconnectAll() {
-    mqttServerRepository.findAllByState(true).forEach(mqttServer -> {
+    mqttServerRepository.findAll().forEach(mqttServer -> {
       try {
         disconnect(mqttServer.getId());
       } catch (IOException e) {

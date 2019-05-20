@@ -1,15 +1,19 @@
 package esthesis.platform.server.resource;
 
+import static esthesis.platform.server.events.LocalEvent.LOCAL_EVENT_TYPE.CONFIGURATION_MQTT;
+
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
 import esthesis.platform.server.config.AppConstants.MqttTopics;
 import esthesis.platform.server.dto.MQTTServerDTO;
+import esthesis.platform.server.events.LocalEvent;
 import esthesis.platform.server.model.MqttServer;
 import esthesis.platform.server.service.MQTTService;
 import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -28,9 +32,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class MQTTServerResource {
   private final MQTTService mqttServerService;
+  private final ApplicationEventPublisher applicationEventPublisher;
 
-  public MQTTServerResource(MQTTService mqttServerService) {
+  public MQTTServerResource(MQTTService mqttServerService,
+    ApplicationEventPublisher applicationEventPublisher) {
     this.mqttServerService = mqttServerService;
+    this.applicationEventPublisher = applicationEventPublisher;
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,7 +61,11 @@ public class MQTTServerResource {
       mqttServerDTO.setTopicControl(MqttTopics.CONTROL);
     }
 
-    return mqttServerService.save(mqttServerDTO);
+    mqttServerDTO = mqttServerService.save(mqttServerDTO);
+    // Emit an event about this configuration change.
+    applicationEventPublisher.publishEvent(new LocalEvent(CONFIGURATION_MQTT));
+
+    return mqttServerDTO;
   }
 
   @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -67,5 +78,8 @@ public class MQTTServerResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete tag.")
   public void delete(@PathVariable long id) {
     mqttServerService.deleteById(id);
+
+    // Emit an event about this configuration change.
+    applicationEventPublisher.publishEvent(new LocalEvent(CONFIGURATION_MQTT));
   }
 }

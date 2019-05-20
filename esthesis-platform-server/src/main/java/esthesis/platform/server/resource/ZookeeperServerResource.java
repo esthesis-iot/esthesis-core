@@ -1,13 +1,17 @@
 package esthesis.platform.server.resource;
 
+import static esthesis.platform.server.events.LocalEvent.LOCAL_EVENT_TYPE.CONFIGURATION_ZOOKEEPER;
+
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
 import esthesis.platform.server.dto.ZookeeperServerDTO;
+import esthesis.platform.server.events.LocalEvent;
 import esthesis.platform.server.model.ZookeeperServer;
 import esthesis.platform.server.service.ZookeeperService;
 import javax.validation.Valid;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -28,9 +32,12 @@ import java.io.IOException;
 @Validated
 public class ZookeeperServerResource {
   private final ZookeeperService zookeeperServerService;
+  private final ApplicationEventPublisher applicationEventPublisher;
 
-  public ZookeeperServerResource(ZookeeperService zookeeperServerService) {
+  public ZookeeperServerResource(ZookeeperService zookeeperServerService,
+    ApplicationEventPublisher applicationEventPublisher) {
     this.zookeeperServerService = zookeeperServerService;
+    this.applicationEventPublisher = applicationEventPublisher;
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -43,7 +50,11 @@ public class ZookeeperServerResource {
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save Zookeeper server.")
   public ZookeeperServerDTO save(@Valid @RequestBody ZookeeperServerDTO zookeeperServerDTO) throws IOException {
-    return zookeeperServerService.save(zookeeperServerDTO);
+    zookeeperServerDTO = zookeeperServerService.save(zookeeperServerDTO);
+    // Emit an event about this configuration change.
+    applicationEventPublisher.publishEvent(new LocalEvent(CONFIGURATION_ZOOKEEPER));
+
+    return zookeeperServerDTO;
   }
 
   @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,7 +65,8 @@ public class ZookeeperServerResource {
 
   @DeleteMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete tag.")
-  public void delete(@PathVariable long id) throws IOException {
+  public void delete(@PathVariable long id) {
+    applicationEventPublisher.publishEvent(new LocalEvent(CONFIGURATION_ZOOKEEPER));
     zookeeperServerService.deleteById(id);
   }
 }
