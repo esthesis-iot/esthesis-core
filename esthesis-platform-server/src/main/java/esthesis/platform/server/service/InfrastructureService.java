@@ -41,7 +41,7 @@ public class InfrastructureService {
   public InfrastructureReportDTO getReport() {
 //    return new InfrastructureReportDTO()
 //        .setNodeId(appProperties.getNodeId())
-//        .setInClusterMode(zookeeperService.findActive().size() > 0)
+//        .setInClusterMode(zookeeperService.findActive().fileSize() > 0)
 //        .setClusterLeader(zookeeperService.isLeader())
 //        .setMqttServerReports(getMqttServersReport())
 //        .setZookeeperReport(getZookeeperReport());

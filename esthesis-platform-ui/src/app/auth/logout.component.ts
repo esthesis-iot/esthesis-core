@@ -19,7 +19,8 @@ export class LogoutComponent extends BaseComponent {
 
     bodyBackgroundService.getImageUrl().subscribe(onNext => {
       this.renderer.setAttribute(document.body, 'style', 'background-image:  linear-gradient(to top, rgba(0,0,0,0)' +
-        ' 30%, rgba(255,255,255,0.62) 64%, rgba(255,255,255,1) 89%), url(\'' + onNext + '\'); background-size: cover;');
+        ' 30%, rgba(255,255,255,0.62) 64%, rgba(255,255,255,1) 89%), url(\'' + onNext + '\');' +
+        ' background-size: cover;');
     });
 
     this.userService.logout().subscribe(onNext => {

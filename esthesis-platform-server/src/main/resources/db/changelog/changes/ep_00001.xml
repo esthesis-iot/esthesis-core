@@ -141,9 +141,6 @@
       <column name="modified_by" type="BIGINT UNSIGNED"/>
       <column defaultValueComputed="NULL" name="modified_on" type="DATETIME"/>
       <column defaultValueComputed="NULL" name="version" type="INT"/>
-      <column name="defaultip" type="BIT(1)">
-        <constraints nullable="false"/>
-      </column>
       <column name="description" type="VARCHAR(255)"/>
       <column name="file_content" type="BLOB">
         <constraints nullable="false"/>

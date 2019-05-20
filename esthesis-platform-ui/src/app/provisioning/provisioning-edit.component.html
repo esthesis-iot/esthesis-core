@@ -4,9 +4,6 @@
     <form novalidate [formGroup]="form">
       <input type="hidden" formControlName="id">
       <div fxLayout="column">
-        <mat-checkbox formControlName="defaultIP"
-                      class="xs-pt1">Default for initial provisioning</mat-checkbox>
-
         <mat-form-field class="xs-pt2">
           <input matInput placeholder="File" (click)="this.id == 0 ? file.click() : null"
                  formControlName="fileName"

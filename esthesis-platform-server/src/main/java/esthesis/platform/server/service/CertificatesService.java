@@ -199,7 +199,7 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
   /**
    * A helper method to return the private key of the platform as defined in settings.
    *
-   * @return Returns a decrypted version of the private key.
+   * @return Returns a decrypted packageVersion of the private key.
    */
   public String getPSPrivateKey()
   throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,

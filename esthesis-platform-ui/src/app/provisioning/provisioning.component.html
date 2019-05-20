@@ -18,12 +18,6 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Version</th>
           <td mat-cell *matCellDef="let element">{{element.packageVersion}}</td>
         </ng-container>
-        <ng-container matColumnDef="defaultIP">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Initial Provisioning</th>
-          <td mat-cell *matCellDef="let element">
-            <app-boolean-checkbox [value]="element.defaultIP"></app-boolean-checkbox>
-          </td>
-        </ng-container>
         <ng-container matColumnDef="state">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> State</th>
           <td mat-cell *matCellDef="let element">

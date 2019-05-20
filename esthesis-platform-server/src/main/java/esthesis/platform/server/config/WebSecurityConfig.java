@@ -24,7 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/actuator/*").permitAll()
         .antMatchers("/acl/mqtt/*").permitAll()
         .antMatchers("/actuator").permitAll()
-        .antMatchers("/devices/register").permitAll()
+        .antMatchers("/device/**").permitAll()
         .anyRequest().authenticated()
         .and()
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

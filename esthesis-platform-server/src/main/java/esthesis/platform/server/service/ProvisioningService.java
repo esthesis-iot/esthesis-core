@@ -3,6 +3,7 @@ package esthesis.platform.server.service;
 import com.querydsl.core.types.Predicate;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting;
+import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.ProvisioningDTO;
 import esthesis.platform.server.mapper.ProvisioningMapper;
 import esthesis.platform.server.model.Provisioning;
@@ -10,6 +11,7 @@ import esthesis.platform.server.repository.ProvisioningContentStore;
 import esthesis.platform.server.repository.ProvisioningRepository;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,8 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -130,4 +134,23 @@ public class ProvisioningService extends BaseService<ProvisioningDTO, Provisioni
     return super.save(provisioningDTO, file.getInputStream()).getId();
   }
 
+  public Optional<ProvisioningDTO> matchByTag(DeviceDTO deviceDTO) {
+    Optional<ProvisioningDTO> provisioningDTO;
+
+    if (CollectionUtils.isEmpty(deviceDTO.getTags())) {
+      provisioningDTO = findAll().stream()
+        .filter(ProvisioningDTO::isState)
+        .filter(o -> o.getTags().isEmpty())
+        .max(Comparator.comparing(ProvisioningDTO::getPackageVersion));
+    } else {
+      provisioningDTO = findAll().stream()
+        .filter(ProvisioningDTO::isState)
+        .filter(o ->
+          CollectionUtils.intersection(deviceDTO.getTags(), o.getTags()).size() ==
+            deviceDTO.getTags().size())
+        .max(Comparator.comparing(ProvisioningDTO::getPackageVersion));
+    }
+
+    return provisioningDTO;
+  }
 }

@@ -35,7 +35,6 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
     // // Setup the form.
     this.form = this.fb.group({
       id: [''],
-      defaultIP: [false],
       name: ['', [Validators.required, Validators.maxLength(256)]],
       description: ['', [Validators.maxLength(2048)]],
       file: [{value: '', disabled: this.id !== 0}, [Validators.required]],

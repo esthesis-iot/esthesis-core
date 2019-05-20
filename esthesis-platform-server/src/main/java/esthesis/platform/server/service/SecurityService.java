@@ -226,7 +226,7 @@ public class SecurityService {
    * Encrypts a plaintext with the platform's symmetric key.
    *
    * @param plaintext The plaintext to encrypt.
-   * @return A Base64 encoded version of the ciphertext.
+   * @return A Base64 encoded packageVersion of the ciphertext.
    */
   public String encrypt(byte[] plaintext)
   throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
@@ -246,7 +246,7 @@ public class SecurityService {
    * Encrypts a plaintext with the platform's symmetric key.
    *
    * @param plaintext The plaintext to encrypt.
-   * @return A Base64 encoded version of the ciphertext.
+   * @return A Base64 encoded packageVersion of the ciphertext.
    */
   public String encrypt(String plaintext)
   throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
@@ -259,7 +259,7 @@ public class SecurityService {
    *
    * @param fileToEncrypt The file to encrypt.
    * @param encryptedFile The encrypted file to create.
-   * @return Returns the location of a temporary file with the encrypted version of the
+   * @return Returns the location of a temporary file with the encrypted packageVersion of the
    * `fileToEncrypt`.
    */
   public String encrypt(File fileToEncrypt, File encryptedFile, String key)

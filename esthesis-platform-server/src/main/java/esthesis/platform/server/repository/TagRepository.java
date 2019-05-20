@@ -12,4 +12,6 @@ public interface TagRepository extends BaseRepository<Tag> {
   Optional<Tag> findByName(String name);
 
   Iterable<Tag> findAllByNameIn(List<String> names);
+
+  Iterable<Tag> findAllByIdIn(List<Long> ids);
 }

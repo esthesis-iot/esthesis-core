@@ -19,7 +19,6 @@ public class ProvisioningDTO extends BaseDTO {
   private String name;
   private String description;
   private boolean state;
-  private boolean defaultIP;
   @Singular
   private List<Long> tags;
   @NotNull

@@ -258,16 +258,6 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
       }
     }
 
-    // Verify that the hardware ID on `DeviceMessage` is identical to the one in
-    // `RegistrationRequest`. This provides device ID verification but only if your system is set
-    // to require signing of incoming requests (and operate under "preregistered devices" device
-    // registration mode.
-    if (srs.is(Security.INCOMING_SIGNATURE, IncomingSignature.SIGNED) && !registrationRequest
-      .getHardwareId().equals(registrationRequest.getPayload().getHardwareId())) {
-      throw new SecurityException("Device ID in the payload does not match to the device ID of "
-        + "the payload wrapper.");
-    }
-
     // Before proceeding to registration, check that the platform is capable to sign and/or encrypt
     // the reply in case the device requests so.
     if (registrationRequest.getPayload().isRepliesSigned() && srs.is(Security.OUTGOING_SIGNATURE,
@@ -295,16 +285,13 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
       switch (srs.get(DeviceRegistration.REGISTRATION_MODE)) {
         case RegistrationMode.OPEN:
           register(hardwareId, registrationRequest.getPayload().getTags(), State.REGISTERED, true);
-          deviceDTO = findByHardwareId(hardwareId);
           break;
         case RegistrationMode.OPEN_WITH_APPROVAL:
           register(hardwareId,
             registrationRequest.getPayload().getTags(), State.APPROVAL, true);
-          deviceDTO = findByHardwareId(hardwareId);
           break;
         case RegistrationMode.ID:
           registerPreregistered(registrationRequest.getPayload(), hardwareId);
-          deviceDTO = findByHardwareId(hardwareId);
           break;
         case RegistrationMode.DISABLED:
           throw new QDisabledException("Device registration is disabled.");

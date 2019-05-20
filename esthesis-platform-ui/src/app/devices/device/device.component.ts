@@ -93,7 +93,7 @@ export class DeviceComponent extends BaseComponent implements OnInit {
       if (result) {
         this.devicesService.delete(this.id).subscribe(onNext => {
           this.utilityService.popupSuccess('Device deletion request successfully submitted and' +
-            ' songoing.');
+            ' is ongoing.');
           this.router.navigate(['devices']);
         });
       }

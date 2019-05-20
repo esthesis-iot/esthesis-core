@@ -40,6 +40,6 @@ public class Device extends BaseEntity {
   private List<Tag> tags;
 
   @Singular
-  @OneToMany(mappedBy="device", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy="device", fetch = FetchType.LAZY, orphanRemoval = true)
   private List<DeviceKey> keys;
 }

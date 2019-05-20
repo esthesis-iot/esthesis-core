@@ -35,7 +35,6 @@ public class Provisioning extends BaseContentEntity {
   private String name;
   private String description;
   private boolean state;
-  private boolean defaultIP;
   @Singular
   @OneToMany(fetch = LAZY)
   @JoinTable(inverseJoinColumns = @JoinColumn(name = "tag_id"))

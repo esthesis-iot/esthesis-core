@@ -13,7 +13,6 @@ import esthesis.platform.server.dto.ProvisioningDTO;
 import esthesis.platform.server.model.Provisioning;
 import esthesis.platform.server.service.ProvisioningService;
 import esthesis.platform.server.service.SettingResolverService;
-import javax.crypto.NoSuchPaddingException;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,10 +31,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @RestController
@@ -80,7 +75,7 @@ public class ProvisioningResource {
 
   @GetMapping
   @EmptyPredicateCheck
-  @ReplyPageableFilter("defaultIP,size,id,name,packageVersion,state,tags,fileName,createdOn,"
+  @ReplyPageableFilter("fileSize,id,name,packageVersion,state,tags,fileName,createdOn,"
     + "description,signed,encrypted")
   public Page<ProvisioningDTO> findAll(
     @QuerydslPredicate(root = Provisioning.class) Predicate predicate, Pageable pageable) {
@@ -102,9 +97,7 @@ public class ProvisioningResource {
   @GetMapping(value = "{id}/download")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not download "
     + "provisioning package.")
-  public ResponseEntity download(@PathVariable long id)
-  throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-         InvalidKeyException, NoSuchPaddingException {
+  public ResponseEntity download(@PathVariable long id) {
     final ProvisioningDTO provisioningDTO = provisioningService.findById(id);
 
     return ResponseEntity
