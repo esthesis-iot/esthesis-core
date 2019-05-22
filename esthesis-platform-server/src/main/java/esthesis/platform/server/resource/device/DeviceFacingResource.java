@@ -1,6 +1,5 @@
 package esthesis.platform.server.resource.device;
 
-import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import esthesis.extension.device.DeviceMessage;
@@ -29,7 +28,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -145,15 +143,20 @@ public class DeviceFacingResource {
     // package. For information to be returned, the package must be active and matching the tags of
     // the device.
     // Case 2: When an ID is not specified, an active, tags-matching provisioning package is
-    // returned. In case you have multiple provisioning package candidates the one with the
+    // returned. In there are multiple provisioning package candidates the one with the
     // latest packageVersion (based on String.compareTo) is returned.
     DeviceMessage<ProvisioningInfoResponse> provisioningInfoResponse = new DeviceMessage<>(
       appProperties.getNodeId());
-    final ProvisioningDTO provisioningDTO;
+    ProvisioningDTO provisioningDTO;
     if (!id.isPresent()) {
-      provisioningDTO = provisioningService.matchByTag(deviceDTO)
-        .orElseThrow(() -> new QDoesNotExistException("Could not find a matching provisioning "
-          + "package for device {0}.", provisioningInfoRequest.getHardwareId()));
+      Optional<ProvisioningDTO> optionalProvisioningDTO = provisioningService.matchByTag(deviceDTO);
+      if (!optionalProvisioningDTO.isPresent()) {
+        LOGGER.log(Level.FINE, "Could not find a matching provisioning "
+          + "package for device {0}.", provisioningInfoRequest.getHardwareId());
+        return ResponseEntity.ok().body(provisioningInfoResponse);
+      } else {
+        provisioningDTO = optionalProvisioningDTO.get();
+      }
     } else {
       provisioningDTO = provisioningService.findById(id.get());
       //TODO checks active + tags (read comment above).
@@ -164,7 +167,7 @@ public class DeviceFacingResource {
     if (provisioningDTO == null) {
       LOGGER.log(Level.FINEST, "Device {0} requested provisioning package but no package matched.",
         provisioningInfoRequest.getHardwareId());
-      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+      return ResponseEntity.ok().body(provisioningInfoResponse);
     } else {
       // Prepare and return the details of the provisioning package found.
       provisioningInfoResponse
