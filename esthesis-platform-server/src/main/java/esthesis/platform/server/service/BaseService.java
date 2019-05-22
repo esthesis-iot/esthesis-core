@@ -69,9 +69,7 @@ abstract class BaseService<D extends BaseDTO, E extends BaseEntity> {
   }
 
   public D findById(long id) {
-    final E entity = ReturnOptional.r(repository.findById(id));
-
-    return mapper.map(entity);
+    return mapper.map(ReturnOptional.r(repository.findById(id)));
   }
 
   public E findEntityById(long id) {

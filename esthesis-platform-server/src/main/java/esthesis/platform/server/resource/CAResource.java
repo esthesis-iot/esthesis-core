@@ -7,6 +7,7 @@ import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.github.slugify.Slugify;
 import com.querydsl.core.types.Predicate;
+import esthesis.extension.util.Base64E;
 import esthesis.platform.server.config.AppConstants.Cryptography.KeyType;
 import esthesis.platform.server.dto.CaDTO;
 import esthesis.platform.server.model.Ca;
@@ -17,7 +18,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -106,7 +106,7 @@ public class CAResource {
     }
 
     if (base64.isPresent() && base64.get().booleanValue()) {
-      body = Base64.encodeBase64String(body.getBytes(StandardCharsets.UTF_8));
+      body = Base64E.encode(body.getBytes(StandardCharsets.UTF_8));
       filename += ".base64";
     }
 

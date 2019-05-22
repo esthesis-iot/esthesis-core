@@ -1,6 +1,7 @@
 package esthesis.platform.server.service;
 
 
+import esthesis.extension.util.Base64E;
 import esthesis.platform.server.config.AppConstants.Jwt;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.dto.jwt.JWTClaimsResponseDTO;
@@ -9,7 +10,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -80,7 +80,7 @@ public class JWTService {
 
     // Sign JWT with the ApiKey secret
     final byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(
-        Base64.encodeBase64String(appProperties.getJwtSecret().getBytes()));
+        Base64E.encode(appProperties.getJwtSecret().getBytes()));
     final Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
     // Prepare JWT properties..
@@ -114,7 +114,7 @@ public class JWTService {
     try {
       jwtClaimsResponseDTO.setClaims(
               Jwts.parser().setSigningKey(
-                  Base64.encodeBase64String(appProperties.getJwtSecret().getBytes()))
+                  Base64E.encode(appProperties.getJwtSecret().getBytes()))
                   .setAllowedClockSkewSeconds(jwtSkewAllowed)
                   .parseClaimsJws(jwt).getBody());
       jwtClaimsResponseDTO.setValid(true);

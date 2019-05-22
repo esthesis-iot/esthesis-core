@@ -10,8 +10,6 @@ import esthesis.platform.server.dto.KeyDownloadReply;
 import esthesis.platform.server.model.Certificate;
 import esthesis.platform.server.service.CertificatesService;
 import esthesis.platform.server.service.SecurityService;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -71,9 +69,10 @@ public class CertificatesResource {
   public ResponseEntity download(@PathVariable long id, @PathVariable int keyType,
       @PathVariable Optional<Boolean> base64)
   throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-         IllegalBlockSizeException, BadPaddingException, InvalidKeyException, IOException {
+         InvalidKeyException, IOException {
     KeyDownloadReply keyDownloadReply = certificatesService
         .download(id, keyType, base64.isPresent() && base64.get().booleanValue());
+    //TODO return a safe filename (i.e. new Slugify().slugify())
     return ResponseEntity
         .ok()
         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + keyDownloadReply.getFilename())

@@ -1,5 +1,6 @@
 package esthesis.platform.server.resource.device;
 
+import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import esthesis.extension.device.DeviceMessage;
@@ -11,10 +12,10 @@ import esthesis.extension.device.response.RegistrationResponse;
 import esthesis.extension.dto.MQTTServer;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting.Provisioning;
+import esthesis.platform.server.config.AppSettings.SettingValues.Provisioning.ENCRYPTION;
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.MQTTServerDTO;
 import esthesis.platform.server.dto.ProvisioningDTO;
-import esthesis.platform.server.dto.TagDTO;
 import esthesis.platform.server.mapper.ProvisioningMapper;
 import esthesis.platform.server.service.DeviceService;
 import esthesis.platform.server.service.MQTTService;
@@ -26,7 +27,10 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,16 +48,14 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Validated
 @RestController
 @RequestMapping("/device")
-public class DeviceResource {
+public class DeviceFacingResource {
 
   // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(DeviceResource.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(DeviceFacingResource.class.getName());
 
   private final DeviceService deviceService;
   private final SettingResolverService srs;
@@ -64,7 +66,7 @@ public class DeviceResource {
   private final ProvisioningMapper provisioningMapper;
   private final TagService tagService;
 
-  public DeviceResource(DeviceService deviceService,
+  public DeviceFacingResource(DeviceService deviceService,
     SettingResolverService srs, MQTTService mqttService,
     SecurityService securityService,
     ProvisioningService provisioningService,
@@ -114,22 +116,15 @@ public class DeviceResource {
         .setTopicMetadata(mqttServerDTO.get().getTopicMetadata())
         .setTopicTelemetry(mqttServerDTO.get().getTopicTelemetry())
       );
+    } else {
+      LOGGER.log(Level.WARNING, "Could not find a matching MQTT server for device {0} during "
+        + "registration.", registrationRequest.getHardwareId());
     }
 
     // Sign and/or encrypt the reply according to preferences.
     securityService.prepareOutgoingMessage(registrationReply, deviceDTO);
 
     return registrationReply;
-  }
-
-  /**
-   * A generic `get` without an ID to download an initial provisioning package.
-   */
-  //  @GetMapping({"/provisioning", "/provisioning/{id}"})
-  @PostMapping({"/provisioning/download/{id}"})
-  public ResponseEntity provisioning(@PathVariable Optional<Long> id,
-    @Valid @RequestBody DeviceMessage<ProvisioningRequest> provisioningRequest) {
-    return ResponseEntity.ok().build();
   }
 
   @PostMapping({"/provisioning/info/{id}", "/provisioning/info"})
@@ -144,43 +139,76 @@ public class DeviceResource {
 
     // Verify signature and decrypt according to the configuration.
     securityService
-      .processIncomingMessage(provisioningInfoRequest, ProvisioningRequest.class, deviceDTO);
+      .processIncomingMessage(provisioningInfoRequest, ProvisioningInfoRequest.class, deviceDTO);
 
-    // If a specific ID is requested, obtain information for that specific provisioning package.
-    // Note that in case no checks to the state nor tags of the provisioning package is performed.
-    // When an ID is not specified, an active, tags-matching provisioning package is returned. In
-    // case you have multiple provisioning package candidates the one with the latest packageVersion
-    // (based on String.compareTo) is returned.
+    // Case 1: If a specific ID is requested, obtain information for that specific provisioning
+    // package. For information to be returned, the package must be active and matching the tags of
+    // the device.
+    // Case 2: When an ID is not specified, an active, tags-matching provisioning package is
+    // returned. In case you have multiple provisioning package candidates the one with the
+    // latest packageVersion (based on String.compareTo) is returned.
     DeviceMessage<ProvisioningInfoResponse> provisioningInfoResponse = new DeviceMessage<>(
       appProperties.getNodeId());
-    if (id.isPresent()) {
-      provisioningInfoResponse
-        .setPayload(provisioningMapper
-          .toProvisioningInfoResponse(provisioningService.findEntityById((id.get()))));
+    final ProvisioningDTO provisioningDTO;
+    if (!id.isPresent()) {
+      provisioningDTO = provisioningService.matchByTag(deviceDTO)
+        .orElseThrow(() -> new QDoesNotExistException("Could not find a matching provisioning "
+          + "package for device {0}.", provisioningInfoRequest.getHardwareId()));
     } else {
-      final Optional<ProvisioningDTO> provisioningDTO = provisioningService.matchByTag(deviceDTO);
-      if (provisioningDTO.isPresent()) {
-        provisioningInfoResponse
-          .setPayload(new ProvisioningInfoResponse()
-            .setId(provisioningDTO.get().getId())
-            .setDescription(provisioningDTO.get().getDescription())
-            .setSigned(provisioningDTO.get().isSigned())
-            .setName(provisioningDTO.get().getName())
-            .setPackageVersion(provisioningDTO.get().getPackageVersion())
-            .setEncrypted(provisioningDTO.get().isEncrypted())
-            .setSigned(provisioningDTO.get().isSigned()));
-      } else {
-        LOGGER.log(Level.FINEST, "Device {0} requested latest provisioning package with tags {1} "
-          + "but no package matched.", new Object[]{provisioningInfoRequest.getHardwareId(),
-          StreamSupport.stream(tagService.findAllById(deviceDTO.getTags()).spliterator(), true).map(
-            TagDTO::getName).collect(Collectors.joining(","))});
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-      }
+      provisioningDTO = provisioningService.findById(id.get());
+      //TODO checks active + tags (read comment above).
+    }
+
+    // If not provisioning package found, return empty, otherwise return the details of the
+    // available provisioning package.
+    if (provisioningDTO == null) {
+      LOGGER.log(Level.FINEST, "Device {0} requested provisioning package but no package matched.",
+        provisioningInfoRequest.getHardwareId());
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    } else {
+      // Prepare and return the details of the provisioning package found.
+      provisioningInfoResponse
+        .setPayload(new ProvisioningInfoResponse()
+          .setId(provisioningDTO.getId())
+          .setDescription(provisioningDTO.getDescription())
+          .setName(provisioningDTO.getName())
+          .setPackageVersion(provisioningDTO.getPackageVersion())
+          .setSha256(provisioningDTO.getSha256())
+          .setSignature(srs.is(Provisioning.ENCRYPTION, ENCRYPTION.ENCRYPTED) ?
+            provisioningDTO.getSignatureEncrypted() : provisioningDTO.getSignaturePlain())
+          .setFileSize(provisioningDTO.getFileSize())
+          .setFileName(provisioningDTO.getFileName()));
     }
 
     // Sign and/or encrypt.
-    securityService.prepareOutgoingMessage(provisioningInfoRequest, deviceDTO);
+    securityService.prepareOutgoingMessage(provisioningInfoResponse, deviceDTO);
 
     return ResponseEntity.ok().body(provisioningInfoResponse);
+  }
+
+  @PostMapping(value = "/provisioning/download/{id}")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not download "
+    + "provisioning package.")
+  public ResponseEntity provisioningDownload(@PathVariable long id,
+    @Valid @RequestBody DeviceMessage<ProvisioningRequest> provisioningRequest)
+  throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IOException,
+         SignatureException, InvalidAlgorithmParameterException, InvalidKeySpecException {
+    // Find device information.
+    final DeviceDTO deviceDTO = deviceService
+      .findByHardwareId(provisioningRequest.getHardwareId());
+
+    // Verify signature and decrypt according to the configuration.
+    securityService
+      .processIncomingMessage(provisioningRequest, ProvisioningRequest.class, deviceDTO);
+
+    final ProvisioningDTO provisioningDTO = provisioningService.findById(id);
+    return ResponseEntity.ok()
+      .header(HttpHeaders.CONTENT_DISPOSITION,
+        "attachment; filename=" + provisioningDTO.getFileName() + (
+          srs.is(Provisioning.ENCRYPTION, ENCRYPTION.ENCRYPTED) ? ".encrypted" : ""
+        ))
+      .contentType(MediaType.APPLICATION_OCTET_STREAM)
+      .body(new InputStreamResource(
+        provisioningService.download(id, srs.is(Provisioning.ENCRYPTION, ENCRYPTION.ENCRYPTED))));
   }
 }

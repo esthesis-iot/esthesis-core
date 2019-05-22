@@ -1,6 +1,8 @@
 package esthesis.platform.server.service;
 
+import com.eurodyn.qlack.fuse.crypto.CryptoDigestService;
 import com.querydsl.core.types.Predicate;
+import esthesis.extension.util.Base64E;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting;
 import esthesis.platform.server.dto.DeviceDTO;
@@ -10,7 +12,6 @@ import esthesis.platform.server.model.Provisioning;
 import esthesis.platform.server.repository.ProvisioningContentStore;
 import esthesis.platform.server.repository.ProvisioningRepository;
 import javax.crypto.NoSuchPaddingException;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -51,18 +51,21 @@ public class ProvisioningService extends BaseService<ProvisioningDTO, Provisioni
   private final ProvisioningContentStore provisioningContentStore;
   private final AppProperties appProperties;
   private final SettingResolverService srs;
+  private final CryptoDigestService cryptoDigestService;
 
   public ProvisioningService(ProvisioningMapper provisioningMapper,
     ProvisioningRepository provisioningRepository,
     SecurityService securityService,
     ProvisioningContentStore provisioningContentStore,
-    AppProperties appProperties, SettingResolverService srs) {
+    AppProperties appProperties, SettingResolverService srs,
+    CryptoDigestService cryptoDigestService) {
     this.provisioningMapper = provisioningMapper;
     this.provisioningRepository = provisioningRepository;
     this.securityService = securityService;
     this.provisioningContentStore = provisioningContentStore;
     this.appProperties = appProperties;
     this.srs = srs;
+    this.cryptoDigestService = cryptoDigestService;
   }
 
   @Override
@@ -71,63 +74,51 @@ public class ProvisioningService extends BaseService<ProvisioningDTO, Provisioni
   }
 
   @Async
-  public void encryptSign(long provisioningId)
-  throws IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException,
-         InvalidAlgorithmParameterException, NoSuchPaddingException,
-         InvalidKeySpecException {
-    encrypt(provisioningId);
-    sign(provisioningId);
-  }
-
-  @Async
-  public void sign(long provisioningId)
-  throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
-         SignatureException, InvalidAlgorithmParameterException, InvalidKeySpecException {
+  public void encryptAndSign(long provisioningId)
+  throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
+         NoSuchPaddingException, SignatureException, InvalidKeyException, InvalidKeySpecException {
     final Provisioning provisioning = findEntityById(provisioningId);
-    StopWatch stopwatch = StopWatch.createStarted();
+    StopWatch stopWatch = StopWatch.createStarted();
+    // First sign the non-encrypted version.
+    provisioning.setSignaturePlain(Base64E.encode(
+      securityService.sign(provisioningContentStore.getContent(provisioning))));
 
-    // Find the file to sign.
-    String payloadFilePath = Paths
+    // Create the encrypted version.
+    String plaintextFilePath = Paths
       .get(appProperties.getFsProvisioningRoot(), provisioning.getContentId()).toFile()
       .getAbsolutePath();
-    if (provisioning.isEncrypted()) {
-      payloadFilePath += ".encrypted";
-    }
+    String encryptedFile = securityService.encrypt(new File(plaintextFilePath),
+      new File(plaintextFilePath + ".encrypted"),
+      Base64E.encode(securityService.decrypt(srs.get(Setting.Provisioning.AES_KEY))));
 
-    // Sign the file.
-    try (FileInputStream payload = new FileInputStream(payloadFilePath)) {
-      provisioning
-        .setSignature(Base64.encodeBase64String(securityService.sign(payload)));
-    }
-    provisioningRepository.save(provisioning);
-    LOGGER.log(Level.FINE, "Signing took {0} msec.", stopwatch.getTime());
-  }
-
-  @Async
-  public void encrypt(long provisioningId)
-  throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
-         InvalidAlgorithmParameterException, IOException {
-    final Provisioning provisioning = findEntityById(provisioningId);
-    StopWatch stopwatch = StopWatch.createStarted();
-    // Encrypt file.
-    String unencryptedFile = Paths.get(appProperties.getFsProvisioningRoot(),
-      provisioning.getContentId()).toFile().getAbsolutePath();
-    String encryptedFile = securityService.encrypt(new File(unencryptedFile),
-      new File(Paths.get(appProperties.getFsProvisioningRoot(), provisioning.getContentId() +
-        ".encrypted").toFile().getAbsolutePath()),
-      new String(securityService.decrypt(srs.get(Setting.Provisioning.AES_KEY)),
-        StandardCharsets.UTF_8));
     LOGGER.log(Level.FINE, "Provisioning content ID {0} was encrypted to file {1}.",
       new Object[]{provisioning.getContentId(), encryptedFile});
-
     provisioning.setEncrypted(true);
-    provisioningRepository.save(provisioning);
 
-    LOGGER.log(Level.FINE, "Encryption took {0} msec.", stopwatch.getTime());
+    // Sign the encrypted version.
+    try (FileInputStream payload = new FileInputStream(encryptedFile)) {
+      provisioning
+        .setSignatureEncrypted(Base64E.encode(securityService.sign(payload)));
+    }
+
+    // Calculate a digest of the unencrypted file.
+    provisioning
+      .setSha256(cryptoDigestService.sha256(provisioningContentStore.getContent(provisioning)));
+
+    provisioningRepository.save(provisioning);
+    LOGGER.log(Level.FINE, "Encryption and signing took {0} msec.", stopWatch.getTime());
   }
 
-  public InputStream download(long provisioningId) {
-    return provisioningContentStore.getContent(findEntityById(provisioningId));
+  public InputStream download(long provisioningId, boolean fetchEncryptedVersion)
+  throws IOException {
+    final Provisioning provisioning = findEntityById(provisioningId);
+    if (fetchEncryptedVersion) {
+      return new FileInputStream(Paths
+        .get(appProperties.getFsProvisioningRoot(), provisioning.getContentId() + ".encrypted")
+        .toFile().getAbsolutePath());
+    } else {
+      return provisioningContentStore.getContent(provisioning);
+    }
   }
 
   public long save(ProvisioningDTO provisioningDTO, MultipartFile file) throws IOException {

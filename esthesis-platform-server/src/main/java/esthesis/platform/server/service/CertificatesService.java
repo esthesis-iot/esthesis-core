@@ -8,6 +8,7 @@ import com.eurodyn.qlack.fuse.crypto.CryptoCAService;
 import com.eurodyn.qlack.fuse.crypto.dto.CertificateSignDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import com.github.slugify.Slugify;
+import esthesis.extension.util.Base64E;
 import esthesis.platform.server.config.AppConstants.Audit;
 import esthesis.platform.server.config.AppConstants.Cryptography.KeyType;
 import esthesis.platform.server.config.AppProperties;
@@ -16,10 +17,7 @@ import esthesis.platform.server.dto.CertificateDTO;
 import esthesis.platform.server.dto.KeyDownloadReply;
 import esthesis.platform.server.model.Ca;
 import esthesis.platform.server.model.Certificate;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -150,37 +148,38 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
 
   public KeyDownloadReply download(long certificateId, int keyType, boolean base64)
   throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-         IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException,
-         IOException {
+         InvalidAlgorithmParameterException, IOException {
+    final Certificate certificate = findEntityById(certificateId);
+
     KeyDownloadReply keyDownloadReply = new KeyDownloadReply();
-    final CertificateDTO certificateDTO = findById(certificateId);
-    keyDownloadReply.setFilename(new Slugify().slugify(certificateDTO.getCn()));
+    keyDownloadReply.setFilename(new Slugify().slugify(certificate.getCn()));
 
     switch (keyType) {
       case KeyType.CERTIFICATE:
         keyDownloadReply.setFilename(keyDownloadReply.getFilename() + ".crt");
-        keyDownloadReply.setPayload(certificateDTO.getCertificate());
-        if (!certificateDTO.getIssuer().equals(certificateDTO.getCn()) && StringUtils
-          .isNotBlank(caService.findEntityByCN(certificateDTO.getIssuer()).getParentCa())) {
+        keyDownloadReply.setPayload(certificate.getCertificate());
+        if (!certificate.getIssuer().equals(certificate.getCn()) && StringUtils
+          .isNotBlank(caService.findEntityByCN(certificate.getIssuer()).getParentCa())) {
           getCertificateChain(keyDownloadReply,
-            caService.findEntityByCN(certificateDTO.getIssuer()).getCn());
+            caService.findEntityByCN(certificate.getIssuer()).getCn());
         }
         break;
+
       case KeyType.PUBLIC_KEY:
         keyDownloadReply.setFilename(keyDownloadReply.getFilename() + ".pem");
-        keyDownloadReply.setPayload(certificateDTO.getPublicKey());
+        keyDownloadReply.setPayload(certificate.getPublicKey());
         break;
       case KeyType.PRIVATE_KEY:
         keyDownloadReply.setFilename(keyDownloadReply.getFilename() + ".key");
         keyDownloadReply.setPayload(
-          new String((securityService.decrypt(certificateDTO.getPrivateKey())),
+          new String((securityService.decrypt(certificate.getPrivateKey())),
             StandardCharsets.UTF_8));
         break;
     }
 
     if (base64) {
       keyDownloadReply.setPayload(
-        Base64.encodeBase64String(keyDownloadReply.getPayload().getBytes(StandardCharsets.UTF_8)));
+        Base64E.encode(keyDownloadReply.getPayload().getBytes(StandardCharsets.UTF_8)));
       keyDownloadReply.setFilename(keyDownloadReply.getFilename() + ".base64");
     }
 

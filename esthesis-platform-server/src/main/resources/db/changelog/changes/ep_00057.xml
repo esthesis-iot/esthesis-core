@@ -1,0 +1,21 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd" logicalFilePath="ep_00057.xml">
+    <changeSet author="European Dynamics" id="1558476448254-1">
+        <addColumn tableName="provisioning">
+            <column name="signature_plain" type="LONGTEXT(2147483647)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1558476448254-2">
+        <addColumn tableName="provisioning">
+            <column name="signature_encrypted" type="LONGTEXT(2147483647)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1558476448254-3">
+        <addColumn tableName="provisioning">
+            <column name="sha256" type="VARCHAR(64 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1558476448254-4">
+        <dropColumn columnName="signature" tableName="provisioning"/>
+    </changeSet>
+</databaseChangeLog>

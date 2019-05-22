@@ -6,6 +6,7 @@ import com.eurodyn.qlack.fuse.crypto.CryptoSymmetricService;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.extension.device.DeviceMessage;
+import esthesis.extension.util.Base64E;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting.Security;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingEncryption;
@@ -15,10 +16,12 @@ import esthesis.platform.server.config.AppSettings.SettingValues.Security.Outgoi
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.repository.CertificateRepository;
 import javax.crypto.NoSuchPaddingException;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +38,8 @@ import java.util.logging.Logger;
  * around in other services.
  */
 @Service
+@Validated
+@Transactional
 public class SecurityService {
 
   // JUL reference.
@@ -96,7 +101,7 @@ public class SecurityService {
     }
     if (StringUtils.isNotBlank(msg.getEncryptedPayload())) {
       byte[] plaintext =
-        decrypt(Base64.decodeBase64(msg.getEncryptedPayload().getBytes(StandardCharsets.UTF_8)),
+        decrypt(Base64E.decode(msg.getEncryptedPayload()),
           deviceDTO);
       msg.setPayload(objectMapper.readValue(plaintext, payloadClass));
       msg.setEncryptedPayload(null);
@@ -112,7 +117,7 @@ public class SecurityService {
          SignatureException {
     // Encrypt request if required.
     if (srs.is(Security.OUTGOING_ENCRYPTION, OutgoingEncryption.ENCRYPTED)) {
-      msg.setEncryptedPayload(Base64.encodeBase64String(
+      msg.setEncryptedPayload(Base64E.encode(
         encrypt(objectMapper.writeValueAsBytes(msg.getPayload()), deviceDTO)));
       msg.setPayload(null);
     }
@@ -125,7 +130,7 @@ public class SecurityService {
       } else {
         signature = sign(objectMapper.writeValueAsBytes(msg.getPayload()));
       }
-      msg.setSignature(Base64.encodeBase64String(signature));
+      msg.setSignature(Base64E.encode(signature));
     }
   }
 
@@ -138,21 +143,13 @@ public class SecurityService {
   throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
          SignatureException, InvalidAlgorithmParameterException, NoSuchPaddingException,
          IOException {
-
-    return cryptoAsymmetricService.sign(
-      new String(decrypt(ReturnOptional
-        .r(certificateRepository.findById(srs.getAsLong(Security.PLATFORM_CERTIFICATE)))
-        .getPrivateKey()), StandardCharsets.UTF_8),
-      payload,
-      appProperties.getSecurityAsymmetricSignatureAlgorithm(),
-      appProperties.getSecurityAsymmetricKeyAlgorithm());
+    return sign(new ByteArrayInputStream(payload));
   }
 
   public byte[] sign(InputStream payload)
   throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
          SignatureException, InvalidAlgorithmParameterException, NoSuchPaddingException,
          IOException {
-
     return cryptoAsymmetricService.sign(
       new String(decrypt(ReturnOptional
         .r(certificateRepository.findById(srs.getAsLong(Security.PLATFORM_CERTIFICATE)))
@@ -199,7 +196,7 @@ public class SecurityService {
 
   /**
    * Encrypts a plaintext to be sent to a device using the shared session key which is retrieved
-   * from the passed `hardwareId`.
+   * from the passed `deviceDTO`.
    *
    * @param plaintext The plaintext to encrypt.
    * @param deviceDTO The device to encrypt for.
@@ -231,22 +228,20 @@ public class SecurityService {
   public String encrypt(byte[] plaintext)
   throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
          InvalidAlgorithmParameterException, IOException {
-    return Base64.encodeBase64String(
+    return Base64E.encode(
       cryptoSymmetricService.encrypt(
         plaintext,
         cryptoSymmetricService.keyFromString(srs.get(Security.AES_KEY),
           appProperties.getSecuritySymmetricKeyAlgorithm()),
-        srs.get(Security.AES_KEY).substring(0, 16).getBytes(StandardCharsets.UTF_8),
         appProperties.getSecuritySymmetricCipherAlgorithm(),
-        appProperties.getSecuritySymmetricKeyAlgorithm(),
-        true));
+        appProperties.getSecuritySymmetricKeyAlgorithm()));
   }
 
   /**
    * Encrypts a plaintext with the platform's symmetric key.
    *
    * @param plaintext The plaintext to encrypt.
-   * @return A Base64 encoded packageVersion of the ciphertext.
+   * @return An encrypted Base64 encoded version of the plaintext.
    */
   public String encrypt(String plaintext)
   throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
@@ -259,6 +254,7 @@ public class SecurityService {
    *
    * @param fileToEncrypt The file to encrypt.
    * @param encryptedFile The encrypted file to create.
+   * @param key A Base64 encoded key.
    * @return Returns the location of a temporary file with the encrypted packageVersion of the
    * `fileToEncrypt`.
    */
@@ -301,7 +297,7 @@ public class SecurityService {
   throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
          InvalidAlgorithmParameterException, IOException {
     return cryptoSymmetricService.decrypt(
-      Base64.decodeBase64(ciphertext),
+      Base64E.decode(ciphertext),
       cryptoSymmetricService
         .keyFromString(srs.get(Security.AES_KEY),
           appProperties.getSecuritySymmetricKeyAlgorithm()),

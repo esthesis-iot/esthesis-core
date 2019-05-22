@@ -48,7 +48,7 @@ export class SettingsSecurityComponent extends BaseComponent implements OnInit {
 
     // Fetch lookup values.
     this.certificatesService.getAll('sort=cn,asc').subscribe(onNext => {
-      if (onNext.content.length > 0) {
+      if (onNext.content && onNext.content.length > 0) {
         onNext.content.unshift(new CertificateDto(null, ''));
         this.certificates = onNext.content;
       }

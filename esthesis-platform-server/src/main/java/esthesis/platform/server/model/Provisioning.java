@@ -42,6 +42,14 @@ public class Provisioning extends BaseContentEntity {
   @NotNull
   private String packageVersion;
   private String fileName;
-  private String signature;
+  // The signature of the unencrypted file.
+  private String signaturePlain;
+  // The signature of the encrypted file.
+  private String signatureEncrypted;
+
+  // An indicator that the file has finished being encrypted.
   private boolean encrypted;
+
+  // The SHA256 digest of the unencrypted version of this provisioning package.
+  private String sha256;
 }

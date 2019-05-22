@@ -1,25 +1,16 @@
 package esthesis.platform.server.config;
 
-import static org.apache.commons.io.filefilter.TrueFileFilter.TRUE;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.AgeFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.content.fs.config.EnableFilesystemStores;
 import org.springframework.content.fs.io.FileSystemResourceLoader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -73,15 +64,15 @@ public class FSContentConfig {
   }
 
   // Clean up temporary folder task.
-  @Scheduled(initialDelay = 300000, fixedDelay = 3600000)
-  public void clearUpTmpFolder() {
-    Iterator<File> filesToDelete =
-      FileUtils.iterateFiles(new File(appProperties.getFsTmpRoot()),
-        new AgeFileFilter(Date.from(Instant.now().minus(1, ChronoUnit.HOURS))), TRUE);
-    for (Iterator<File> it = filesToDelete; it.hasNext(); ) {
-      File tmpFile = it.next();
-      LOGGER.log(Level.FINEST, "Deleting temporary file {0}.", tmpFile.getAbsolutePath());
-      tmpFile.delete();
-    }
-  }
+//  @Scheduled(initialDelay = 300000, fixedDelay = 3600000)
+//  public void clearUpTmpFolder() {
+//    Iterator<File> filesToDelete =
+//      FileUtils.iterateFiles(new File(appProperties.getFsTmpRoot()),
+//        new AgeFileFilter(Date.from(Instant.now().minus(1, ChronoUnit.HOURS))), TRUE);
+//    for (Iterator<File> it = filesToDelete; it.hasNext(); ) {
+//      File tmpFile = it.next();
+//      LOGGER.log(Level.FINEST, "Deleting temporary file {0}.", tmpFile.getAbsolutePath());
+//      tmpFile.delete();
+//    }
+//  }
 }

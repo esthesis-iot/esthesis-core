@@ -7,6 +7,7 @@ import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.github.slugify.Slugify;
 import com.querydsl.core.types.Predicate;
+import esthesis.extension.util.Base64E;
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.DeviceKeyDTO;
 import esthesis.platform.server.dto.DeviceRegistrationDTO;
@@ -17,7 +18,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -107,6 +107,8 @@ public class DevicesResource {
     String filename =
       new Slugify().slugify(deviceService.findById(deviceId).getHardwareId()) + ".keys";
 
+    //TODO update with remaining keys for the device (i.e. provisioning)
+
     // Get the keys and decrypt values.
     final DeviceKeyDTO deviceKeys = deviceService.findKeys(deviceId);
     deviceKeys
@@ -114,7 +116,7 @@ public class DevicesResource {
         StandardCharsets.UTF_8));
     deviceKeys
       .setSessionKey(
-        Base64.encodeBase64String(securityService.decrypt(deviceKeys.getSessionKey())));
+        Base64E.encode(securityService.decrypt(deviceKeys.getSessionKey())));
 
     // Prepare the reply.
     StringBuilder stringBuilder = new StringBuilder();

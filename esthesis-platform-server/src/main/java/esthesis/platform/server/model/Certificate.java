@@ -44,20 +44,20 @@ public class Certificate extends BaseEntity {
   private Instant validity;
 
   @Lob
-  @Basic(fetch=LAZY)
   @NotNull
+  @Basic(fetch=LAZY)
   @Column(updatable = false)
   private String certificate;
 
   @Lob
-  @Basic(fetch=LAZY)
   @NotNull
+  @Basic(fetch=LAZY)
   @Column(updatable = false)
   private String publicKey;
 
   @Lob
-  @Basic(fetch=LAZY)
   @NotNull
+  @Basic(fetch=LAZY)
   @Column(updatable = false)
   private String privateKey;
 

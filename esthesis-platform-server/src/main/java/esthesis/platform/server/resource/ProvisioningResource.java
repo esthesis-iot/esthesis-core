@@ -6,9 +6,6 @@ import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
-import esthesis.platform.server.config.AppSettings.Setting;
-import esthesis.platform.server.config.AppSettings.SettingValues.Provisioning.ENCRYPTION;
-import esthesis.platform.server.config.AppSettings.SettingValues.Provisioning.SIGNATURE;
 import esthesis.platform.server.dto.ProvisioningDTO;
 import esthesis.platform.server.model.Provisioning;
 import esthesis.platform.server.service.ProvisioningService;
@@ -31,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @RestController
@@ -55,18 +53,14 @@ public class ProvisioningResource {
   public ResponseEntity save(@RequestParam("file") Optional<MultipartFile> file,
     @ModelAttribute ProvisioningDTO provisioningDTO) throws Exception {
     if (provisioningDTO.getId() == null && file.isPresent()) {
-      long id = provisioningService.save(provisioningDTO, file.get());
-      // Encrypt and/or sign the content (this is done in a separate call, so to do it
-      // asynchronously)
-      if (srs.is(Setting.Provisioning.ENCRYPTION, ENCRYPTION.ENCRYPTED) &&
-        srs.is(Setting.Provisioning.SIGNATURE, SIGNATURE.SIGNED)) {
-        provisioningService.encryptSign(id);
-      } else if (srs.is(Setting.Provisioning.ENCRYPTION, ENCRYPTION.ENCRYPTED)) {
-        provisioningService.encrypt(id);
-      } else if (srs.is(Setting.Provisioning.SIGNATURE, SIGNATURE.SIGNED)) {
-        provisioningService.sign(id);
-      }
+      final long id = provisioningService.save(provisioningDTO, file.get());
+      provisioningService.encryptAndSign(id);
     } else {
+      // Make sure existing r/o atrributes are not overwritten.
+      @SuppressWarnings("ConstantConditions") final Provisioning existingProvisioning =
+        provisioningService.findEntityById(provisioningDTO.getId());
+      provisioningDTO.setFileSize(existingProvisioning.getFileSize());
+      provisioningDTO.setFileName(existingProvisioning.getFileName());
       provisioningService.save(provisioningDTO);
     }
 
@@ -97,15 +91,15 @@ public class ProvisioningResource {
   @GetMapping(value = "{id}/download")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not download "
     + "provisioning package.")
-  public ResponseEntity download(@PathVariable long id) {
+  public ResponseEntity download(@PathVariable long id) throws IOException {
     final ProvisioningDTO provisioningDTO = provisioningService.findById(id);
 
     return ResponseEntity
       .ok()
       .header(HttpHeaders.CONTENT_DISPOSITION,
         "attachment; filename=" + provisioningDTO.getFileName())
-      .contentLength(provisioningDTO.getSize())
+      .contentLength(provisioningDTO.getFileSize())
       .contentType(MediaType.APPLICATION_OCTET_STREAM)
-      .body(new InputStreamResource(provisioningService.download(id)));
+      .body(new InputStreamResource(provisioningService.download(id, false)));
   }
 }

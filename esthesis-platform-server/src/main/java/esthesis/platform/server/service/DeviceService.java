@@ -14,6 +14,7 @@ import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.google.common.collect.Lists;
 import esthesis.extension.device.DeviceMessage;
 import esthesis.extension.device.request.RegistrationRequest;
+import esthesis.extension.util.Base64E;
 import esthesis.platform.server.config.AppConstants.Device.State;
 import esthesis.platform.server.config.AppConstants.WebSocket.Topic;
 import esthesis.platform.server.config.AppProperties;
@@ -39,7 +40,6 @@ import esthesis.platform.server.repository.DeviceRepository;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -214,14 +214,15 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     deviceRepository.save(device);
 
     // Create the keys for the new device.
+    final byte[] sessionKey = cryptoSymmetricService.generateKey(
+      appProperties.getSecuritySymmetricKeySize(),
+      appProperties.getSecuritySymmetricKeyAlgorithm());
+    LOGGER.log(Level.FINEST, "Device session key: {0}.", Arrays.toString(sessionKey));
     final DeviceKey deviceKey = new DeviceKey()
       .setPrivateKey(securityService.encrypt(cryptoAsymmetricService.privateKeyToPEM(keyPair)))
       .setPublicKey(cryptoAsymmetricService.publicKeyToPEM(keyPair))
       .setPsPublicKey(certificatesService.getPSPublicKey())
-      .setSessionKey(securityService.encrypt(
-        cryptoSymmetricService.generateKey(
-          appProperties.getSecuritySymmetricKeySize(),
-          appProperties.getSecuritySymmetricKeyAlgorithm())))
+      .setSessionKey(securityService.encrypt(sessionKey))
       // Provisioning key is already encrypted in settings.
       .setProvisioningKey(srs.get(Provisioning.AES_KEY))
       .setRolledOn(Instant.now())
@@ -307,17 +308,18 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     LOGGER.log(Level.FINE, "Registered device with hardware ID {0}.", hardwareId);
   }
 
-  private DeviceDTO findKeys(DeviceDTO deviceDTO) {
+  private DeviceDTO fillDecryptedKeys(DeviceDTO deviceDTO) {
     final DeviceKey keys = deviceKeyRepository.findLatestAccepted(deviceDTO.getId());
+
     try {
       deviceDTO.setPrivateKey(new String(securityService.decrypt(keys.getPrivateKey()),
         StandardCharsets.UTF_8));
       deviceDTO.setPublicKey(keys.getPublicKey());
       deviceDTO.setPsPublicKey(keys.getPsPublicKey());
-      deviceDTO
-        .setSessionKey(Base64.encodeBase64String(securityService.decrypt(keys.getSessionKey())));
+      deviceDTO.setSessionKey(
+        Base64E.encode(securityService.decrypt(keys.getSessionKey())));
       deviceDTO.setProvisioningKey(
-        Base64.encodeBase64String(securityService.decrypt(keys.getProvisioningKey())));
+        Base64E.encode(securityService.decrypt(keys.getProvisioningKey())));
     } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException |
       InvalidAlgorithmParameterException | IOException e) {
       LOGGER.log(Level.SEVERE, "Could not obtain device's cryptographic keys.", e);
@@ -333,7 +335,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   public DeviceDTO findByHardwareId(String hardwareId) {
     final DeviceDTO deviceDTO = deviceMapper
       .map(ReturnOptional.r(deviceRepository.findByHardwareId(hardwareId), hardwareId));
-    findKeys(deviceDTO);
+    fillDecryptedKeys(deviceDTO);
 
     return deviceDTO;
   }
@@ -341,7 +343,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   @Override
   public DeviceDTO findById(long id) {
     final DeviceDTO deviceDTO = super.findById(id);
-    findKeys(deviceDTO);
+    fillDecryptedKeys(deviceDTO);
 
     return deviceDTO;
   }
