@@ -61,6 +61,9 @@ public class ProvisioningResource {
         provisioningService.findEntityById(provisioningDTO.getId());
       provisioningDTO.setFileSize(existingProvisioning.getFileSize());
       provisioningDTO.setFileName(existingProvisioning.getFileName());
+      provisioningDTO.setSha256(existingProvisioning.getSha256());
+      provisioningDTO.setSignatureEncrypted(existingProvisioning.getSignatureEncrypted());
+      provisioningDTO.setSignaturePlain(existingProvisioning.getSignaturePlain());
       provisioningService.save(provisioningDTO);
     }
 

@@ -16,4 +16,5 @@ public abstract class ProvisioningMapper extends BaseMapper<ProvisioningDTO, Pro
     expression = "java(StringUtils.isNotBlank(entity.getSignaturePlain()) && StringUtils"
       + ".isNotBlank(entity.getSignatureEncrypted()))")
   public abstract ProvisioningDTO map(Provisioning entity);
+
 }
