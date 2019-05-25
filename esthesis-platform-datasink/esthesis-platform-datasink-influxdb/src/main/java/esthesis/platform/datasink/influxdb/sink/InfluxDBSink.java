@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.extension.config.AppConstants.MqttPayload;
 import esthesis.platform.datasink.influxdb.config.InfluxDBConfiguration;
+import org.apache.commons.lang3.StringUtils;
 import org.influxdb.BatchOptions;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
@@ -12,6 +13,7 @@ import org.influxdb.dto.Point;
 import org.influxdb.dto.Point.Builder;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -45,7 +47,10 @@ public abstract class InfluxDBSink {
     this.eventType = eventType;
 
     // Parse configuration.
-    influxDBConfiguration = new Yaml(new Constructor(InfluxDBConfiguration.class))
+    Representer representer = new Representer();
+    representer.getPropertyUtils()
+      .setSkipMissingProperties(true);
+    influxDBConfiguration = new Yaml(new Constructor(InfluxDBConfiguration.class), representer)
       .load(configuration);
 
     // Connect to database.
@@ -143,7 +148,13 @@ public abstract class InfluxDBSink {
         new Object[]{eventId, topic, hardwareId});
       if (initialized) {
         try {
-          influxDB.write(preparePoint(hardwareId, mqttEventPayload, eventType));
+          Point point = preparePoint(hardwareId, mqttEventPayload, eventType);
+          if (StringUtils.isNotBlank(influxDBConfiguration.getRetentionPolicy())) {
+            influxDB.write(influxDBConfiguration.getDatabaseName(),
+              influxDBConfiguration.getRetentionPolicy(), point);
+          } else {
+            influxDB.write(point);
+          }
         } catch (IOException e) {
           LOGGER.log(Level.SEVERE, MessageFormat.format("Could not process MQTT event {0} on topic "
               + "{1} for device {2}.",
