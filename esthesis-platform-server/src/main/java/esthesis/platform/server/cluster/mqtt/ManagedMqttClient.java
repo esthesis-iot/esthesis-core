@@ -52,7 +52,7 @@ public class ManagedMqttClient {
     this.topicControlReply = topicControlReply;
   }
 
-  private String[] getWriteTopicNames() {
+  private String[] getTopicNames() {
     return new String[]{topicTelemetry + "/#", topicMetadata + "/#", topicControlReply + "/#"};
   }
 
@@ -102,7 +102,7 @@ public class ManagedMqttClient {
         ipAddress});
 
     //TODO can this be done in a more efficient way without repeating the listener?
-    client.subscribe(getWriteTopicNames(), new IMqttMessageListener[]{
+    client.subscribe(getTopicNames(), new IMqttMessageListener[]{
       (topic, message) -> applicationEventPublisher.publishEvent(
         mqttMessageMapper.mapToTelemetryEvent(message)
           .setTopic(topic)
@@ -122,7 +122,7 @@ public class ManagedMqttClient {
   }
 
   protected void unsubscribe() throws MqttException {
-    client.unsubscribe(getWriteTopicNames());
+    client.unsubscribe(getTopicNames());
   }
 
   protected void participateInLeaderElection(long mqttServerId, CuratorFramework curatorFramework)

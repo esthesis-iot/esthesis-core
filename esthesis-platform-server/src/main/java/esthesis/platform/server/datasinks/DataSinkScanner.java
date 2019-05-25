@@ -18,7 +18,8 @@ public class DataSinkScanner {
 
   // JUL reference.
   private static final Logger LOGGER = Logger.getLogger(DataSinkScanner.class.getName());
-  private static final String DATA_SINK_FACTORY_PACKAGE = "esthesis.extension.platform.sink.EsthesisDataSinkFactory";
+  private static final String DATA_SINK_FACTORY_PACKAGE =
+    "esthesis.extension.platform.sink.EsthesisDataSinkFactory";
   // List of available data sink factories.
   private final List<DataSinkFactoryDTO> availableDataSinkFactories = new ArrayList<>();
 

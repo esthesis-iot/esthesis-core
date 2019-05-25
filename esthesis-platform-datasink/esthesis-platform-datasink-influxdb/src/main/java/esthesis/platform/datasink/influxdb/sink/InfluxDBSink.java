@@ -8,6 +8,7 @@ import esthesis.platform.datasink.influxdb.config.InfluxDBConfiguration;
 import org.influxdb.BatchOptions;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
+import org.influxdb.dto.Point;
 import org.influxdb.dto.Point.Builder;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -15,6 +16,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -43,49 +45,32 @@ public abstract class InfluxDBSink {
     this.eventType = eventType;
 
     // Parse configuration.
-    influxDBConfiguration = new Yaml(new Constructor(InfluxDBConfiguration.class)).load(configuration);
+    influxDBConfiguration = new Yaml(new Constructor(InfluxDBConfiguration.class))
+      .load(configuration);
 
     // Connect to database.
     influxDB = connect(influxDBConfiguration);
-
-    // Create the database if not exists.
-    createDatabase(influxDB, influxDBConfiguration);
 
     initialized = true;
     LOGGER.log(Level.FINE, "Instantiated {0}.", sinkName);
   }
 
-  private void createDatabase(InfluxDB influxDB, InfluxDBConfiguration influxDBConfiguration) {
-    if (!influxDB.databaseExists(influxDBConfiguration.getDatabaseName())) {
-      // Create and set database as default.
-      influxDB.createDatabase(influxDBConfiguration.getDatabaseName());
-      influxDB.setDatabase(influxDBConfiguration.getDatabaseName());
-
-      // Create a retention policy for this database.
-      influxDB.createRetentionPolicy(
-          influxDBConfiguration.getRetentionPolicyName(),
-          influxDBConfiguration.getDatabaseName(),
-          influxDBConfiguration.getRetentionPolicyDuration(),
-          influxDBConfiguration.getShardDuration(),
-          influxDBConfiguration.getReplicationFactor(),
-          true);
-      influxDB.setRetentionPolicy(influxDBConfiguration.getRetentionPolicyName());
-      influxDB.enableBatch(BatchOptions.DEFAULTS.exceptionHandler(
-          (failedPoints, throwable) -> {
-            LOGGER.log(Level.SEVERE, "Could not persist data in InfluxDB.", throwable);
-          })
-      );
-    }
-  }
-
   private InfluxDB connect(InfluxDBConfiguration influxDBConfiguration) {
-    return InfluxDBFactory.connect(
+    return InfluxDBFactory
+      .connect(
         influxDBConfiguration.getDatabaseUrl(),
         influxDBConfiguration.getUsername(),
-        influxDBConfiguration.getPassword());
+        influxDBConfiguration.getPassword())
+      .setDatabase(influxDBConfiguration.getDatabaseName())
+      .enableBatch(BatchOptions.DEFAULTS.exceptionHandler(
+        (failedPoints, throwable) -> {
+          LOGGER.log(Level.SEVERE, "Could not persist data to InfluxDB.", throwable);
+        })
+      );
   }
 
-  private Builder preparePoint(String hardwareId, byte[] mqttPayload, String eventType) throws IOException {
+  private Point preparePoint(String hardwareId, byte[] mqttPayload, String eventType)
+  throws IOException {
     // Read the payload of the MQTT message.
     final JsonNode jsonNode = mapper.readTree(mqttPayload);
 
@@ -101,7 +86,8 @@ public abstract class InfluxDBSink {
 
     // If a timestamp is provided use the provided timestamp, otherwise create a timestamp.
     if (jsonNode.get(MqttPayload.TIMESTAMP_KEYNAME) != null) {
-      pointBuilder.time(jsonNode.get(MqttPayload.TIMESTAMP_KEYNAME).asLong(), TimeUnit.MILLISECONDS);
+      pointBuilder
+        .time(jsonNode.get(MqttPayload.TIMESTAMP_KEYNAME).asLong(), TimeUnit.MILLISECONDS);
     } else {
       pointBuilder.time(Instant.now().toEpochMilli(), TimeUnit.MILLISECONDS);
     }
@@ -145,29 +131,35 @@ public abstract class InfluxDBSink {
       }
     }
 
-    return pointBuilder;
+    return pointBuilder.build();
   }
 
   public void processEvent(String hardwareId, byte[] mqttEventPayload, String eventId,
     String topic) {
     eventsQueued.incrementAndGet();
 
-    LOGGER.log(Level.FINEST, "Processing MQTT event {0} on topic {1} for device {2}.",
+    try {
+      LOGGER.log(Level.FINEST, "Processing MQTT event {0} on topic {1} for device {2}.",
         new Object[]{eventId, topic, hardwareId});
-    if (initialized) {
-      try {
-        influxDB.write(influxDBConfiguration.getDatabaseName(), influxDBConfiguration.getRetentionPolicyName(),
-            preparePoint(hardwareId, mqttEventPayload, eventType).build());
-      } catch (IOException e) {
-        LOGGER.log(Level.SEVERE, "Could not process MQTT event {0} on topic {1} for device {2}.",
-            new Object[]{eventId, topic, hardwareId});
-      }
-    } else {
-      LOGGER.log(Level.WARNING, "Got an MQTT event {0} on topic {1} for device {2} before {3} being initialized.",
+      if (initialized) {
+        try {
+          influxDB.write(preparePoint(hardwareId, mqttEventPayload, eventType));
+        } catch (IOException e) {
+          LOGGER.log(Level.SEVERE, MessageFormat.format("Could not process MQTT event {0} on topic "
+              + "{1} for device {2}.",
+            new Object[]{eventId, topic, hardwareId}), e);
+        }
+      } else {
+        LOGGER.log(Level.WARNING,
+          "Got an MQTT event {0} on topic {1} for device {2} before {3} being initialized.",
           new Object[]{eventId, topic, hardwareId, sinkName});
-    }
-    LOGGER.log(Level.FINEST, "Finished processing MQTT event {0} on topic {1} for device {2}.",
+      }
+      LOGGER.log(Level.FINEST, "Finished processing MQTT event {0} on topic {1} for device {2}.",
         new Object[]{eventId, topic, hardwareId});
+    } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, MessageFormat.format("An unknown error happened during processing "
+        + "of MQTT event {0}.", eventId), 3);
+    }
 
     eventsQueued.decrementAndGet();
   }
@@ -181,7 +173,7 @@ public abstract class InfluxDBSink {
   }
 
   public float getPressure() {
-    return (float)eventsQueued.intValue() / (float)influxDBConfiguration.getQueueSize();
+    return (float) eventsQueued.intValue() / (float) influxDBConfiguration.getQueueSize();
   }
 
   public String getSinkName() {

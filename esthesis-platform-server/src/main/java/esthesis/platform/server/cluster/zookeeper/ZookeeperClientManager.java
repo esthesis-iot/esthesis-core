@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -88,27 +89,16 @@ public class ZookeeperClientManager {
     applicationEventPublisher.publishEvent(new LocalEvent(CONNECTIVITY_ZOOKEEPER_DISCONNECTED));
   }
 
-  //  public boolean isLeader() {
-  //    return zookeeperClient.isLeader();
-  //  }
-  //
-  //  public boolean isCluster() {
-  //    return zookeeperClient.isCluster();
-  //  }
-  //
-  //  public String getConnectionString() {
-  //    return zookeeperClient.getConnectionString();
-  //  }
-
   public CuratorFramework getZookeeperClient() {
     return zookeeperClient.getClient();
   }
 
   @EventListener
   public void onApplicationEvent(LocalEvent event) {
+    LOGGER.log(Level.FINEST, "Received event {0}.", event);
     switch (event.getEventType()) {
       case CONFIGURATION_ZOOKEEPER:
-        LOGGER.log(Level.FINEST, "EVENT: {0}.", event);
+        LOGGER.log(Level.FINEST, "Handling event: {0}.", event);
         try {
           // Since the configuration of the underlying Zookeeper nodes changed, try to establish a
           // new connection to a Zookeeper node.
@@ -123,7 +113,7 @@ public class ZookeeperClientManager {
                   .setEmitterNode(appProperties.getNodeId()).toByteArray());
           }
         } catch (Exception e) {
-          LOGGER.log(Level.SEVERE, "Could not process PlatformEvent.", e);
+          LOGGER.log(Level.SEVERE, MessageFormat.format("Could not process event {0}.", event), e);
         }
     }
   }

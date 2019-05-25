@@ -7,6 +7,7 @@ import esthesis.extension.config.AppConstants.Generic;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.context.ApplicationEvent;
 
@@ -18,6 +19,7 @@ import java.util.logging.Logger;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
+@ToString
 public class LocalEvent extends ApplicationEvent {
 
   // JUL reference.

@@ -79,6 +79,7 @@ public class DataSinkManager {
         esthesisDataSinkFactory.setConfiguration(dataSink.getConfiguration());
         // Keep the instance of this data sink to a local map.
         startedMetadataSinks.put(dataSink.getId(), esthesisDataSinkFactory.getMetadataSink());
+        LOGGER.log(Level.FINE, "Started metadata sink: {0}.", esthesisDataSinkFactory);
       } catch (Exception e) {
         LOGGER.log(Level.SEVERE, MessageFormat
           .format("Could not instantiate metadata data sink {0}.", dataSink.getFactoryClass()), e);
@@ -95,6 +96,7 @@ public class DataSinkManager {
         esthesisDataSinkFactory.setConfiguration(dataSink.getConfiguration());
         // Keep the instance of this data sink to a local map.
         startedTelemetrySinks.put(dataSink.getId(), esthesisDataSinkFactory.getTelemetrySink());
+        LOGGER.log(Level.FINE, "Started telemetry sink: {0}.", esthesisDataSinkFactory);
       } catch (Exception e) {
         LOGGER.log(Level.SEVERE,
           MessageFormat

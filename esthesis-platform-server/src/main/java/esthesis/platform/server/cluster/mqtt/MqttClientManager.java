@@ -118,17 +118,18 @@ public class MqttClientManager {
 
   @EventListener
   public void onApplicationEventTx(LocalEvent event) {
+    LOGGER.log(Level.FINEST, "Received event {0}.", event);
     switch (event.getEventType()) {
       case CONNECTIVITY_ZOOKEEPER_CONNECTED:
-        LOGGER.log(Level.FINEST, "EVENT: {0}.", event);
+        LOGGER.log(Level.FINEST, "Handling event: {0}.", event);
         connectAll();
         break;
       case CONNECTIVITY_ZOOKEEPER_DISCONNECTED:
-        LOGGER.log(Level.FINEST, "EVENT: {0}.", event);
+        LOGGER.log(Level.FINEST, "Handling event: {0}.", event);
         disconnectAll();
         break;
       case CONFIGURATION_MQTT:
-        LOGGER.log(Level.FINEST, "EVENT: {0}.", event);
+        LOGGER.log(Level.FINEST, "Handling event: {0}.", event);
         disconnectAll();
         connectAll();
         if (!clusterInfoService.isStandalone() && !event.isClusterEvent()) {
@@ -138,7 +139,7 @@ public class MqttClientManager {
                 new ClusterEvent(CLUSTER_EVENT_TYPE.CONFIGURATION_MQTT)
                   .setEmitterNode(appProperties.getNodeId()).toByteArray());
           } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Could not process PlatformEvent.", e);
+            LOGGER.log(Level.SEVERE, "Could not process LocalEvent.", e);
           }
         }
         break;

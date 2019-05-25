@@ -1,14 +1,18 @@
 package esthesis.platform.server.resource;
 
+import static esthesis.platform.server.events.LocalEvent.LOCAL_EVENT_TYPE.CONFIGURATION_DATASINK;
+
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
 import esthesis.platform.server.dto.DataSinkDTO;
 import esthesis.platform.server.dto.DataSinkFactoryDTO;
+import esthesis.platform.server.events.LocalEvent;
 import esthesis.platform.server.model.DataSink;
 import esthesis.platform.server.service.DataSinkService;
 import javax.validation.Valid;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -30,9 +34,12 @@ import java.util.List;
 public class DataSinksResource {
 
   private final DataSinkService dataSinkService;
+  private final ApplicationEventPublisher applicationEventPublisher;
 
-  public DataSinksResource(DataSinkService dataSinkService) {
+  public DataSinksResource(DataSinkService dataSinkService,
+    ApplicationEventPublisher applicationEventPublisher) {
     this.dataSinkService = dataSinkService;
+    this.applicationEventPublisher = applicationEventPublisher;
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,7 +55,11 @@ public class DataSinksResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class,
     logMessage = "Could not save data sink.")
   public DataSinkDTO save(@Valid @RequestBody DataSinkDTO dataSinkDTO) {
-    return dataSinkService.save(dataSinkDTO);
+    dataSinkDTO = dataSinkService.save(dataSinkDTO);
+    // Emit an event about this configuration change.
+    applicationEventPublisher.publishEvent(new LocalEvent(CONFIGURATION_DATASINK));
+
+    return dataSinkDTO;
   }
 
   @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -68,5 +79,8 @@ public class DataSinksResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete data sink.")
   public void delete(@PathVariable long id) {
     dataSinkService.deleteById(id);
+
+    // Emit an event about this configuration change.
+    applicationEventPublisher.publishEvent(new LocalEvent(CONFIGURATION_DATASINK));
   }
 }
