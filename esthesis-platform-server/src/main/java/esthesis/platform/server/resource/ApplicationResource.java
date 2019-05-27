@@ -7,11 +7,9 @@ import com.eurodyn.qlack.util.data.filter.ReplyFilter;
 import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
-import esthesis.platform.server.config.AppConstants.Audit;
 import esthesis.platform.server.dto.ApplicationDTO;
 import esthesis.platform.server.model.Application;
 import esthesis.platform.server.service.ApplicationService;
-import esthesis.platform.server.service.AuditServiceProxy;
 import javax.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,12 +33,9 @@ import java.util.Set;
 public class ApplicationResource {
 
   private final ApplicationService applicationService;
-  private final AuditServiceProxy auditServiceProxy;
 
-  public ApplicationResource(ApplicationService applicationService,
-      AuditServiceProxy auditServiceProxy) {
+  public ApplicationResource(ApplicationService applicationService) {
     this.applicationService = applicationService;
-    this.auditServiceProxy = auditServiceProxy;
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "/status")
@@ -66,21 +61,12 @@ public class ApplicationResource {
 
   /**
    * Saves an application.
-   *
-   applicationService.save(applicationDTO);
-
-   auditServiceProxy.info(Audit.EVENT_APPLICATION, "Application {0} saved.", applicationDTO.getName());
-
-   return ResponseEntity.ok().build();
-   }
    * @param applicationDTO The application to save
    */
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Save was unsuccessful.")
   public ResponseEntity save(@Valid @RequestBody ApplicationDTO applicationDTO) {
     applicationService.save(applicationDTO);
-
-    auditServiceProxy.info(Audit.EVENT_APPLICATION, "Application {0} saved.", applicationDTO.getName());
 
     return ResponseEntity.ok().build();
   }
@@ -96,8 +82,6 @@ public class ApplicationResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete application.")
   public ResponseEntity delete(@PathVariable long id) {
     final ApplicationDTO applicationDTO = applicationService.deleteById(id);
-
-    auditServiceProxy.info(Audit.EVENT_APPLICATION, "Application {0} deleted.", applicationDTO.getName());
 
     return ResponseEntity.ok().build();
   }

@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import {DeviceDto} from '../../dto/device-dto';
+import {BaseComponent} from '../../shared/base-component';
 
 @Component({
   selector: 'app-dashboard-new-registrations',
   templateUrl: './dashboard-new-registrations.component.html',
   styleUrls: ['./dashboard-new-registrations.component.scss']
 })
-export class DashboardNewRegistrationsComponent implements OnInit {
+export class DashboardNewRegistrationsComponent extends BaseComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'device', 'lastSeen'];
   dataSource: DeviceDto[] = [
@@ -17,7 +18,9 @@ export class DashboardNewRegistrationsComponent implements OnInit {
     {id: '12fsfg3', device: 'Develco Z344-D', lastSeen: new Date(), hardwareId: '123'}
   ];
 
-  constructor() { }
+  constructor() {
+    super();
+  }
 
   ngOnInit() {
   }

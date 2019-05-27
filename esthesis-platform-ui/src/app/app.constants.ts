@@ -45,7 +45,6 @@ export const AppConstants = {
   // Applicaton status.
   APPLICATION_STATE: {
     ACTIVE: 1,
-    DISABLED: -1,
     INACTIVE: 0
   },
 
