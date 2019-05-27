@@ -10,3 +10,5 @@ With jRebel support and debugger on port 55000:
 ```
 mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentpath:/JREBELPATH -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=55000"
 ```
+
+## Minimal setup
