@@ -6,11 +6,20 @@ package esthesis.platform.server.config;
 public class AppConstants {
 
   public class Audit {
-    public static final String EVENT_CA = "CA management";
-    public static final String EVENT_CERTS = "Certificates";
-    public final static String EVENT_AUTHENTICATION = "Authentication";
-    public final static String EVENT_APPLICATION = "Application";
-    public final static String EVENT_PROFILE = "Profile";
+    public class Event {
+      public static final String EVENT_CA = "Certificate Authority";
+      public static final String EVENT_CERTS = "Certificate";
+      public static final String EVENT_AUTHENTICATION = "Authentication";
+      public static final String EVENT_APPLICATION = "Application";
+    }
+
+    public class Level {
+      public static final String UPDATE = "Update";
+      public static final String DELETE = "Delete";
+      public static final String INFO = "Info";
+      public static final String SECURITY = "Security";
+      public static final String CREATE = "Create";
+    }
   }
 
   //TODO Turn them to String

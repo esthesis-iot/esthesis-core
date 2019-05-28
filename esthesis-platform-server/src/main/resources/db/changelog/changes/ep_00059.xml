@@ -5,7 +5,7 @@
   logicalFilePath="ep_00059.xml">
   <changeSet id="ep_00059" author="European Dynamics" labels="ignorable">
     <sql>
-      INSERT INTO `esthesis`.`aaa_user`
+      INSERT INTO `aaa_user`
       (`id`,
        `username`,
        `pswd`,

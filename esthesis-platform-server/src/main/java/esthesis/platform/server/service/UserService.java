@@ -3,8 +3,10 @@ package esthesis.platform.server.service;
 import com.eurodyn.qlack.common.exception.QAuthenticationException;
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.aaa.dto.UserDTO;
+import com.eurodyn.qlack.fuse.audit.service.AuditAsyncService;
 import com.eurodyn.qlack.util.data.filter.JSONFilter;
-import esthesis.platform.server.config.AppConstants.Audit;
+import esthesis.platform.server.config.AppConstants.Audit.Event;
+import esthesis.platform.server.config.AppConstants.Audit.Level;
 import esthesis.platform.server.dto.jwt.JWTDTO;
 import javax.validation.constraints.NotBlank;
 import org.apache.commons.lang3.StringUtils;
@@ -22,17 +24,16 @@ import java.util.UUID;
 public class UserService {
 
   private final JWTService jwtService;
-  private final EsthesisAuditServiceProxy auditServiceProxy;
-  private final EsthesisAuditService auditService;
+  private final AuditAsyncService auditService;
   private final com.eurodyn.qlack.fuse.aaa.service.UserService qlackUserService;
 
   //  @Autowired
-  public UserService(JWTService jwtService, EsthesisAuditServiceProxy auditServiceProxy,
-    EsthesisAuditService auditService,
+  public UserService(JWTService jwtService,
+    AuditAsyncService auditService,
     com.eurodyn.qlack.fuse.aaa.service.UserService qlackUserService) {
     this.jwtService = jwtService;
-    this.auditServiceProxy = auditServiceProxy;
     this.auditService = auditService;
+    //    this.auditService = auditService;
     this.qlackUserService = qlackUserService;
   }
 
@@ -42,7 +43,7 @@ public class UserService {
     } catch (QDoesNotExistException e) {
       final String emailAlreadyExists = MessageFormat.format("Could not insert user. Email {0} "
           + "already exists.", newEmail);
-      auditServiceProxy.warning(Audit.EVENT_PROFILE, emailAlreadyExists);
+//      auditServiceProxy.warning(Audit.EVENT_PROFILE, emailAlreadyExists);
       throw new SecurityException(emailAlreadyExists);
     }
   }
@@ -77,6 +78,8 @@ public class UserService {
     // Return an error if the user could not be authenticated.
     String userId = qlackUserService.canAuthenticate(email, password);
     if (StringUtils.isBlank(userId)) {
+      auditService.audit(Level.SECURITY, Event.EVENT_AUTHENTICATION,
+        "User {0} could not be authenticated.",  email);
       throw new QAuthenticationException("User {0} could not authenticate.", email);
     }
 
@@ -84,6 +87,9 @@ public class UserService {
     final UserDTO userDTO = qlackUserService.login(userId, null, true);
 
     jwt = jwtService.generateJwt(userDTO.getUsername(), userDTO.getId());
+
+    auditService.audit(Level.SECURITY, Event.EVENT_AUTHENTICATION,
+      "User {0} authenticated successfully.",  email);
 
     return new JWTDTO().setJwt(jwt);
   }

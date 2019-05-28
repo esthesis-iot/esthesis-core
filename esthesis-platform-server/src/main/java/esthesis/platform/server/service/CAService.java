@@ -10,7 +10,6 @@ import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.platform.server.config.AppConstants.Audit;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.dto.CaDTO;
 import esthesis.platform.server.mapper.CaMapper;
@@ -30,7 +29,6 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
@@ -47,19 +45,17 @@ public class CAService extends BaseService<CaDTO, Ca> {
   private final CryptoCAService cryptoCAService;
   private final SecurityService securityService;
   private final AppProperties appProperties;
-  private final EsthesisAuditServiceProxy auditService;
   private final ObjectMapper objectMapper;
   private final CaMapper caMapper;
   private final CARepository caRepository;
 
   public CAService(CryptoCAService cryptoCAService,
     SecurityService securityService, AppProperties appProperties,
-    EsthesisAuditServiceProxy auditService, ObjectMapper objectMapper, CaMapper caMapper,
+    ObjectMapper objectMapper, CaMapper caMapper,
     CARepository caRepository) {
     this.cryptoCAService = cryptoCAService;
     this.securityService = securityService;
     this.appProperties = appProperties;
-    this.auditService = auditService;
     this.objectMapper = objectMapper;
     this.caMapper = caMapper;
     this.caRepository = caRepository;
@@ -107,9 +103,6 @@ public class CAService extends BaseService<CaDTO, Ca> {
       caDTO.setIssued(Instant.now());
 
       caDTO = super.save(caDTO);
-
-      // Audit.
-      auditService.info(Audit.EVENT_CA, MessageFormat.format("CA {0} created.", caDTO.getCn()));
 
       return caDTO;
     } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException |

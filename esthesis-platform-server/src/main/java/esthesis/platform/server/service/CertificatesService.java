@@ -9,7 +9,6 @@ import com.eurodyn.qlack.fuse.crypto.dto.CertificateSignDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import com.github.slugify.Slugify;
 import esthesis.extension.util.Base64E;
-import esthesis.platform.server.config.AppConstants.Audit;
 import esthesis.platform.server.config.AppConstants.Cryptography.KeyType;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting.Security;
@@ -32,7 +31,6 @@ import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.Locale;
 
@@ -41,7 +39,6 @@ import java.util.Locale;
 @Transactional
 public class CertificatesService extends BaseService<CertificateDTO, Certificate> {
 
-  private final EsthesisAuditServiceProxy auditService;
   private final CAService caService;
   private final AppProperties appProperties;
   private final SecurityService securityService;
@@ -49,12 +46,11 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
   private final CryptoAsymmetricService cryptoAsymmetricService;
   private final CryptoCAService cryptoCAService;
 
-  public CertificatesService(EsthesisAuditServiceProxy auditService, CAService caService,
+  public CertificatesService(CAService caService,
     AppProperties appProperties, SecurityService securityService,
     SettingResolverService settingResolverService,
     CryptoAsymmetricService cryptoAsymmetricService,
     CryptoCAService cryptoCAService) {
-    this.auditService = auditService;
     this.caService = caService;
     this.appProperties = appProperties;
     this.securityService = securityService;
@@ -118,10 +114,6 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
       certificateDTO.setIssuer(signDTO.getIssuerCN());
       certificateDTO
         .setCertificate(cryptoCAService.certificateToPEM(x509CertificateHolder));
-
-      // Audit.
-      auditService.info(Audit.EVENT_CERTS,
-        MessageFormat.format("Certificate {0} created.", certificateDTO.getCn()));
 
       return super.save(certificateDTO);
     } catch (NoSuchAlgorithmException | IOException | OperatorCreationException |
