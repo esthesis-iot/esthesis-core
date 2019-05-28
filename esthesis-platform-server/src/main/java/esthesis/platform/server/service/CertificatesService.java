@@ -41,7 +41,7 @@ import java.util.Locale;
 @Transactional
 public class CertificatesService extends BaseService<CertificateDTO, Certificate> {
 
-  private final AuditServiceProxy auditService;
+  private final EsthesisAuditServiceProxy auditService;
   private final CAService caService;
   private final AppProperties appProperties;
   private final SecurityService securityService;
@@ -49,7 +49,7 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
   private final CryptoAsymmetricService cryptoAsymmetricService;
   private final CryptoCAService cryptoCAService;
 
-  public CertificatesService(AuditServiceProxy auditService, CAService caService,
+  public CertificatesService(EsthesisAuditServiceProxy auditService, CAService caService,
     AppProperties appProperties, SecurityService securityService,
     SettingResolverService settingResolverService,
     CryptoAsymmetricService cryptoAsymmetricService,

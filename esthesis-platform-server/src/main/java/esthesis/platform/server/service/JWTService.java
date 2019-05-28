@@ -47,12 +47,12 @@ public class JWTService {
     }
   }
 
-  public int getUserId() {
+  public String getUserId() {
     if (areCredentialsSet()) {
-      return (int) getClaimValue(String.valueOf(SecurityContextHolder.getContext().getAuthentication().getCredentials()),
-          Jwt.JWT_CLAIM_USER_ID);
+      return getClaimValue(String.valueOf(SecurityContextHolder.getContext().getAuthentication().getCredentials()),
+          Jwt.JWT_CLAIM_USER_ID).toString();
     } else {
-      return 0;
+      return null;
     }
   }
 
@@ -66,11 +66,11 @@ public class JWTService {
     return (String) getClaimValue(jwt, Jwt.JWT_CLAIM_USER_ID);
   }
 
-  public String generateJwt(String subject, long userId) {
+  public String generateJwt(String subject, String userId) {
     return generateJwt(subject, userId, null);
   }
 
-  public String generateJwt(String subject, long userId, Map<String, Object> claims) {
+  public String generateJwt(String subject, String userId, Map<String, Object> claims) {
     // The JWT signature algorithm to be used to sign the token.
     final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 

@@ -18,11 +18,7 @@ public class DBAuditConfig {
   }
 
   @Bean
-  public AuditorAware<Long> auditorProvider() {
-    return () -> {
-//      Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication().getCredentials().toString());
-      //TODO userid is long
-      return Optional.of((long)jwtService.getUserId());
-    };
+  public AuditorAware<String> auditorProvider() {
+    return () -> Optional.of(jwtService.getUserId());
   }
 }

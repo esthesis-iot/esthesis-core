@@ -5,7 +5,6 @@ import {Observable} from 'rxjs';
 import {AppConstants} from '../app.constants';
 import {LoginInfoDto} from '../dto/login-info-dto';
 import {UserDto} from '../dto/user-dto';
-import {UserProfileDto} from '../dto/user-profile-dto';
 import {CrudService} from '../services/crud.service';
 import {QFormsService} from '@eurodyn/forms';
 
@@ -29,7 +28,6 @@ export class UserService extends CrudService<UserDto> {
   }
 
   // Authenticate a user.
-  // TODO observable type
   login(loginInfoDTO: LoginInfoDto): Observable<string> {
     return this.http.post<string>(AppConstants.API_ROOT + `/${this.resource}/auth`, JSON.stringify(loginInfoDTO),
       {headers: {'Content-Type': 'application/json'}});
@@ -47,34 +45,14 @@ export class UserService extends CrudService<UserDto> {
   }
 
   // Logs out the user terminating its session.
-  // TODO observable type
   logout(): Observable<any> {
     return this.http.get(AppConstants.API_ROOT + `/${this.resource}/logout`);
   }
 
-  // Get the profile of the currently registered user.
-  getUserProfile(): Observable<UserProfileDto> {
-    return this.http.get<UserProfileDto>(AppConstants.API_ROOT + `/${this.resource}`);
+  // Save user
+  save(user: UserDto) {
+    return this.http.post(AppConstants.API_ROOT + `/${this.resource}`, JSON.stringify(user),
+      {headers: {'Content-Type': 'application/json'}});
   }
 
-  // // Update the user profile.
-  // // TODO observable type
-  // updateUserProfile(userProfileDTO: UserProfileDto) {
-  //   return this.localHttp.put(AppConstants.API_ROOT + `/${this.resource}`, JSON.stringify(userProfileDTO),
-  //     {headers: {'Content-Type': 'application/json'}});
-  // }
-
-  // Update the user profile.
-  // TODO observable type
-  updateUserProfile(object: UserProfileDto): Observable<any> {
-    return this.http.put(AppConstants.API_ROOT + `/${this.resource}`, object);
-  }
-
-  getUserRoles(): Observable<any> {
-    return this.http.get(AppConstants.API_ROOT + `/${this.resource}` + '/types');
-  }
-
-  getUserStatus(): Observable<any> {
-    return this.http.get(AppConstants.API_ROOT + `/${this.resource}` + '/status');
-  }
 }

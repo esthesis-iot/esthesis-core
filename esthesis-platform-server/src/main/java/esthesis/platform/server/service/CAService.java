@@ -47,14 +47,14 @@ public class CAService extends BaseService<CaDTO, Ca> {
   private final CryptoCAService cryptoCAService;
   private final SecurityService securityService;
   private final AppProperties appProperties;
-  private final AuditServiceProxy auditService;
+  private final EsthesisAuditServiceProxy auditService;
   private final ObjectMapper objectMapper;
   private final CaMapper caMapper;
   private final CARepository caRepository;
 
   public CAService(CryptoCAService cryptoCAService,
     SecurityService securityService, AppProperties appProperties,
-    AuditServiceProxy auditService, ObjectMapper objectMapper, CaMapper caMapper,
+    EsthesisAuditServiceProxy auditService, ObjectMapper objectMapper, CaMapper caMapper,
     CARepository caRepository) {
     this.cryptoCAService = cryptoCAService;
     this.securityService = securityService;

@@ -1,6 +1,7 @@
-# This is identical to the main changelog file `db.changelog-master.yaml`, however it excludes all references to
-# other external changelogs. This is to allow to efficiently run the diff-tool that automatically produces liquibase
-# changelogs (without having to take into account database changes originating from third-party libraries).
+# This is identical to the main changelog file `db.changelog-master.yaml`, however it excludes all
+# references to other external changelogs. This is to allow to efficiently run the diff-tool that
+# automatically produces liquibase changelogs (without having to take into account database changes
+#  originating from third-party libraries).
 databaseChangeLog:
   - includeAll:
       path: /db/changelog/changes

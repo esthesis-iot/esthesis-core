@@ -10,7 +10,6 @@
   </div>
   <div fxFlex fxGrow="0" *ngIf="isLoggedIn()">
     <mat-menu #appMenu="matMenu">
-      <button mat-menu-item [routerLink]="['/' + 'profile']">Your account</button>
       <button mat-menu-item [routerLink]="['/' + 'logout']">Sign out</button>
     </mat-menu>
     <button mat-icon-button [matMenuTriggerFor]="appMenu">

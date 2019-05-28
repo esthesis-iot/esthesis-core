@@ -6,29 +6,28 @@ import {QFilterAlias, QFormsService} from '@eurodyn/forms';
 import {UserDto} from '../dto/user-dto';
 import {UserService} from './user.service';
 import 'rxjs/add/operator/debounceTime';
+import {BaseComponent} from '../shared/base-component';
 
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']
 })
-export class UsersComponent implements OnInit, AfterViewInit {
-  displayedColumns = [ 'email', 'fn', 'ln', 'type', 'status', 'createdOn'];
+export class UsersComponent extends BaseComponent implements OnInit, AfterViewInit {
+  displayedColumns = ['email', 'status'];
   dataSource: MatTableDataSource<UserDto> = new MatTableDataSource<UserDto>();
 
   filterForm: FormGroup;
-  userTypes: string[];
-  userStatus: string[];
 
   // References to sorting and pagination.
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private fb: FormBuilder, private router: Router, private userService: UserService, private qForms: QFormsService) {
+  constructor(private fb: FormBuilder, private router: Router, private userService: UserService,
+              private qForms: QFormsService) {
+    super();
     this.filterForm = this.fb.group({
-      fn: ['', null],
-      ln: ['', null],
-      type: ['', null],
+      username: ['', null],
       status: ['', null],
     });
   }
@@ -45,17 +44,10 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    // Fetch distinct event types and levels to populate filter.
-    this.userService.getUserRoles().subscribe(onNext => {
-      this.userTypes = onNext;
-    });
-    this.userService.getUserStatus().subscribe(onNext => {
-      this.userStatus = onNext;
-    });
-
     // Listen for filter changes to fetch new data.
     this.filterForm.valueChanges.debounceTime(500).subscribe(onNext => {
-      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+        this.sort.start);
     });
   }
 
@@ -71,7 +63,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   changePage() {
-    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+      this.sort.start);
   }
 
   clearFilter() {

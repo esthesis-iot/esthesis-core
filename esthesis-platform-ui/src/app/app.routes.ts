@@ -21,7 +21,6 @@ export const routing: ModuleWithProviders = RouterModule.forRoot([
   {path: 'dashboard',     loadChildren: './dashboard/dashboard.module#DashboardModule', canActivate: [CanActivateGuard]},
   {path: 'audit',         loadChildren: './audit/audit.module#AuditModule', canActivate: [CanActivateGuard]},
   {path: 'devices',       loadChildren: './devices/devices.module#DevicesModule', canActivate: [CanActivateGuard]},
-  {path: 'profile',       loadChildren: './profile/profile.module#ProfileModule', canActivate: [CanActivateGuard]},
   {path: 'cas',           loadChildren: './cas/cas.module#CasModule', canActivate: [CanActivateGuard]},
   {path: 'certificates',  loadChildren: './certificates/certificates.module#CertificatesModule', canActivate: [CanActivateGuard]},
   {path: 'infra',         loadChildren: './infrastructure/infrastructure.module#InfrastructureModule', canActivate: [CanActivateGuard]},

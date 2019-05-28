@@ -50,6 +50,12 @@ export const AppConstants = {
       REGISTERED : "REGISTERED",
       APPROVAL : "APPROVAL"
     }
+  },
+
+  // User statuses.
+  USER_STATUS: {
+    DISABLED: 0,
+    ENABLED: 1
   }
 };
 

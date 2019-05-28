@@ -3,6 +3,7 @@ package esthesis.platform.server.filter;
 
 import static java.util.Collections.emptyList;
 
+import esthesis.platform.server.config.AppConstants.Jwt;
 import esthesis.platform.server.dto.jwt.JWTClaimsResponseDTO;
 import esthesis.platform.server.service.JWTService;
 import io.jsonwebtoken.Jwts;
@@ -76,8 +77,8 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
     if (jwtClaimsResponseDTO != null && StringUtils.isNotBlank(jwtClaimsResponseDTO.getSubject())) {
       // Create a Spring Authentication token, with the email address of the user as a Principal
       // and the User Id as credentials).
-      return new UsernamePasswordAuthenticationToken(jwtClaimsResponseDTO.getSubject(), jwtToken,
-          emptyList());
+      return new UsernamePasswordAuthenticationToken(jwtClaimsResponseDTO.getSubject(),
+        jwtClaimsResponseDTO.getClaims().get(Jwt.JWT_CLAIM_USER_ID), emptyList());
     } else {
       return null;
     }

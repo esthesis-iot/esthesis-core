@@ -24,7 +24,7 @@ export class CrudService<T> {
     }
   }
 
-  get(id: number): Observable<T> {
+  get(id: any): Observable<T> {
     return this.http.get<T>(`${AppConstants.API_ROOT}/${this.endpoint}/${id}`);
   }
 
@@ -32,7 +32,7 @@ export class CrudService<T> {
     return this.http.get<T>(`${AppConstants.API_ROOT}/${this.endpoint}`);
   }
 
-  delete(id: number): Observable<any> {
+  delete(id: any): Observable<any> {
     return this.http.delete(`${AppConstants.API_ROOT}/${this.endpoint}/${id}`);
   }
 
