@@ -1,7 +1,6 @@
 package esthesis.platform.server.resource;
 
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
-import com.eurodyn.qlack.common.util.KeyValue;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyFilter;
 import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
@@ -25,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Set;
-
 @RestController
 @Validated
 @RequestMapping("/applications")
@@ -38,12 +35,6 @@ public class ApplicationResource {
     this.applicationService = applicationService;
   }
 
-  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "/status")
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not get application status.")
-  public Set<KeyValue> getStatus() {
-    return applicationService.getStatuses();
-  }
-
   /**
    * Returns the profile of the current application.
    *
@@ -52,7 +43,7 @@ public class ApplicationResource {
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class,
       logMessage = "There was a problem retrieving application data.")
-  @ReplyPageableFilter("name,token,status,createdOn,id")
+  @ReplyPageableFilter("name,token,state,createdOn,id")
   @EmptyPredicateCheck
   public Page<ApplicationDTO> findAll(@QuerydslPredicate(root = Application.class) Predicate predicate,
       Pageable pageable) {
@@ -73,7 +64,7 @@ public class ApplicationResource {
 
   @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch application.")
-  @ReplyFilter("name,token,status,createdOn,id")
+  @ReplyFilter("name,token,state,createdOn,id")
   public ApplicationDTO get(@PathVariable long id) {
     return applicationService.findById(id);
   }

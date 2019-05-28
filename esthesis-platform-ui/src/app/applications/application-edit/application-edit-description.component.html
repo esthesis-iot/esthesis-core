@@ -11,10 +11,9 @@
       <button mat-button (click)="generateToken()">GENERATE TOKEN</button>
     </div>
     <mat-form-field>
-      <mat-select placeholder="Status" formControlName="status">
-        <mat-option *ngFor="let o of applicationStatus" [value]="o.value">
-          {{ o.key }}
-        </mat-option>
+      <mat-select placeholder="State" formControlName="state">
+        <mat-option [value]="true">Active</mat-option>
+        <mat-option [value]="false">Inactive</mat-option>
       </mat-select>
     </mat-form-field>
   </div>

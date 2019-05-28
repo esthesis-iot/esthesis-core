@@ -44,8 +44,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
-@RestController
 @Validated
+@RestController
 @RequestMapping("/cas")
 public class CAResource {
 

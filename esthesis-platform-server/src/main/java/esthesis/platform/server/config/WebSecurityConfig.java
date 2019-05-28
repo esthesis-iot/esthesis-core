@@ -24,6 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/actuator/*").permitAll()
         .antMatchers("/acl/mqtt/*").permitAll()
         .antMatchers("/actuator").permitAll()
+        .antMatchers("/ping").permitAll()
         .antMatchers("/device/**").permitAll()
         .anyRequest().authenticated()
         .and()

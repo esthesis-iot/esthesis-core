@@ -42,12 +42,6 @@ export const AppConstants = {
     }
   },
 
-  // Applicaton status.
-  APPLICATION_STATE: {
-    ACTIVE: 1,
-    INACTIVE: 0
-  },
-
   // Device settings.
   DEVICE: {
     STATE: {

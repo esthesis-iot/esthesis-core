@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnInit, ViewChild } from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
@@ -16,34 +16,30 @@ import 'rxjs/add/operator/debounceTime';
   styleUrls: ['./applications.component.scss']
 })
 export class ApplicationsComponent extends BaseComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['name', 'status', 'createdOn'];
+  displayedColumns = ['name', 'state', 'createdOn'];
   dataSource: MatTableDataSource<ApplicationDto> = new MatTableDataSource<ApplicationDto>();
 
   filterForm: FormGroup;
-  applicationsStatus: KeyValueDto[];
 
   // References to sorting and pagination.
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private fb: FormBuilder, private router: Router, private applicationsService: ApplicationService,
+  constructor(private fb: FormBuilder, private router: Router,
+              private applicationsService: ApplicationService,
               private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
       name: ['', null],
-      status: ['', null],
+      state: ['', null],
     });
   }
 
   ngOnInit() {
-    // Fetch distinct status types.
-    this.applicationsService.getApplicationsStatus().subscribe(onNext => {
-      this.applicationsStatus = _.orderBy(onNext, ['key', 'asc']);
-    });
-
     // Listen for filter changes to fetch new data.
     this.filterForm.valueChanges.debounceTime(500).subscribe(onNext => {
-      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+        this.sort.start);
     });
   }
 
@@ -69,7 +65,8 @@ export class ApplicationsComponent extends BaseComponent implements OnInit, Afte
   }
 
   changePage() {
-    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+      this.sort.start);
   }
 
   clearFilter() {

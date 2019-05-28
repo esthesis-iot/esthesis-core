@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Base64;
 
 @Component
+//TODO check OncePerRequestFilter instead
 public class JWTAuthenticationFilter extends GenericFilterBean {
 
   // The name of the token when it comes in the headers.
@@ -85,6 +86,7 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
       throws IOException, ServletException {
+    System.out.println("FILTEr...");
     Authentication authentication = getAuthentication((HttpServletRequest) request);
     SecurityContextHolder.getContext().setAuthentication(authentication);
     filterChain.doFilter(request, response);

@@ -20,7 +20,6 @@ export class ApplicationEditDescriptionComponent  extends BaseComponent implemen
   @Input() id: number;
 
   form: FormGroup;
-  applicationStatus: KeyValueDto[];
 
   constructor(private fb: FormBuilder, private applicationService: ApplicationService, private qForms: QFormsService,
               private route: ActivatedRoute, private router: Router, private dialog: MatDialog, private utilityService: UtilityService) {
@@ -33,7 +32,7 @@ export class ApplicationEditDescriptionComponent  extends BaseComponent implemen
       id: [''],
       name: ['', [Validators.maxLength(256)]],
       token: ['', [Validators.required, Validators.maxLength(256)]],
-      status: ['', [Validators.required]]
+      state: ['', [Validators.required]]
     });
 
     if (this.id && this.id !== 0) {
@@ -42,10 +41,6 @@ export class ApplicationEditDescriptionComponent  extends BaseComponent implemen
         this.form.patchValue(onNext);
       });
     }
-
-    this.applicationService.getApplicationsStatus().subscribe(onNext => {
-      this.applicationStatus = _.orderBy(onNext, ['key', 'asc']);
-    });
   }
 
   generateToken() {
