@@ -1,5 +1,6 @@
 package esthesis.platform.server.config;
 
+import esthesis.extension.config.AppConstants.Generic;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -11,20 +12,17 @@ import java.util.Optional;
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider", modifyOnCreate = false)
 public class DBAuditConfig {
-  //  private final JWTService jwtService;
-  //
-  //  public DBAuditConfig(JWTService jwtService) {
-  //    this.jwtService = jwtService;
-  //  }
-  //
-  //  @Bean
-  //  public AuditorAware<String> auditorProvider() {
-  //    return () -> Optional.of(jwtService.getUserId());
-  //  }
 
   @Bean
   public AuditorAware<String> auditorProvider() {
-    return () -> Optional
-      .of(SecurityContextHolder.getContext().getAuthentication().getCredentials().toString());
+
+    if (SecurityContextHolder.getContext() != null
+      && SecurityContextHolder.getContext().getAuthentication() != null
+      && SecurityContextHolder.getContext().getAuthentication().getCredentials() != null) {
+      return () -> Optional
+        .of(SecurityContextHolder.getContext().getAuthentication().getCredentials().toString());
+    } else {
+      return () -> Optional.of(Generic.SYSTEM);
+    }
   }
 }
