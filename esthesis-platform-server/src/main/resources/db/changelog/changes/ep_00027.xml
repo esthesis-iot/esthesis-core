@@ -11,7 +11,7 @@
     <addNotNullConstraint columnDataType="datetime" columnName="created_on" tableName="data_sink"/>
   </changeSet>
   <changeSet author="European Dynamics" id="1554280982357-3">
-    <dropNotNullConstraint columnDataType="bigint(19)" columnName="modified_by"
+    <dropNotNullConstraint columnDataType="varchar(36)" columnName="modified_by"
       tableName="data_sink"/>
   </changeSet>
 </databaseChangeLog>

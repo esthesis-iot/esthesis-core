@@ -7,10 +7,11 @@ public class AppConstants {
 
   public class Audit {
     public class Event {
-      public static final String EVENT_CA = "Certificate Authority";
-      public static final String EVENT_CERTS = "Certificate";
-      public static final String EVENT_AUTHENTICATION = "Authentication";
-      public static final String EVENT_APPLICATION = "Application";
+      public static final String CA = "Certificate Authority";
+      public static final String CERTIFICATE = "Certificate";
+      public static final String AUTHENTICATION = "Authentication";
+      public static final String APPLICATION = "Application";
+      public static final String USER = "User";
     }
 
     public class Level {

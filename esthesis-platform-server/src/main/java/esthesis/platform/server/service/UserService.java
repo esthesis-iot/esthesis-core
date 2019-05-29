@@ -81,7 +81,7 @@ public class UserService {
     if (StringUtils.isBlank(userId)) {
       auditService.audit(new AuditDTO()
         .setLevel(Level.SECURITY)
-        .setEvent(Event.EVENT_AUTHENTICATION)
+        .setEvent(Event.AUTHENTICATION)
         .setOpt1(SecurityContextHolder.getContext().getAuthentication().getCredentials().toString())
         .setShortDescription(MessageFormat.format("User {0} could not be authenticated.", email)));
       throw new QAuthenticationException("User {0} could not authenticate.", email);
@@ -92,7 +92,7 @@ public class UserService {
 
     jwt = jwtService.generateJwt(userDTO.getUsername(), userDTO.getId());
 
-    auditService.audit(Level.SECURITY, Event.EVENT_AUTHENTICATION,
+    auditService.audit(Level.SECURITY, Event.AUTHENTICATION,
       "User {0} authenticated successfully.", email);
 
     return new JWTDTO().setJwt(jwt);

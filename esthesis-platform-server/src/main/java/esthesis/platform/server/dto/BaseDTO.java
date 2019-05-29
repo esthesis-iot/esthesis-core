@@ -15,12 +15,12 @@ public abstract class BaseDTO {
   private Instant createdOn;
 
   @JsonProperty(access = Access.READ_ONLY)
-  private long createdBy;
+  private String createdBy;
 
   @JsonProperty(access = Access.READ_ONLY)
   private Instant modifiedOn;
 
   @JsonProperty(access = Access.READ_ONLY)
-  private long modifiedBy;
+  private String modifiedBy;
 
 }

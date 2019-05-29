@@ -36,14 +36,14 @@ public abstract class BaseEntity {
 
   @CreatedBy
   @Column(name = "created_by", updatable = false, nullable = false)
-  private long createdBy;
+  private String createdBy;
 
   @LastModifiedDate
   @Column(name = "modified_on")
   private Instant modifiedOn;
 
   @LastModifiedBy
-  private Long modifiedBy;
+  private String modifiedBy;
 
   @Version
   private Long version;

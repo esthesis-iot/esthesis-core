@@ -5,7 +5,7 @@
   logicalFilePath="ep_00006.xml">
   <changeSet author="European Dynamics" id="1549265864110-2">
     <addColumn tableName="certificate">
-      <column name="created_by" type="BIGINT(20) UNSIGNED">
+      <column name="created_by" type="varchar(36)">
         <constraints nullable="false"/>
       </column>
     </addColumn>
@@ -19,7 +19,7 @@
   </changeSet>
   <changeSet author="European Dynamics" id="1549265864110-4">
     <addColumn tableName="certificate">
-      <column name="modified_by" type="BIGINT(20) UNSIGNED"/>
+      <column name="modified_by" type="varchar(36)"/>
     </addColumn>
   </changeSet>
   <changeSet author="European Dynamics" id="1549265864110-5">

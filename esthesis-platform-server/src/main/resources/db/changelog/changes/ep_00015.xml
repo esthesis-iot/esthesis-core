@@ -5,7 +5,7 @@
   logicalFilePath="ep_00015.xml">
   <changeSet author="European Dynamics" id="1550573900097-1">
     <addColumn tableName="virtualization">
-      <column name="created_by" type="BIGINT(20) UNSIGNED">
+      <column name="created_by" type="varchar(36)">
         <constraints nullable="false"/>
       </column>
     </addColumn>
@@ -19,7 +19,7 @@
   </changeSet>
   <changeSet author="European Dynamics" id="1550573900097-3">
     <addColumn tableName="virtualization">
-      <column name="modified_by" type="BIGINT(20) UNSIGNED"/>
+      <column name="modified_by" type="varchar(36)"/>
     </addColumn>
   </changeSet>
   <changeSet author="European Dynamics" id="1550573900097-4">

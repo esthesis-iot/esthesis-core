@@ -8,9 +8,9 @@
       <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
-      <column name="created_by" type="BIGINT UNSIGNED"/>
+      <column name="created_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="created_on" type="DATETIME"/>
-      <column name="modified_by" type="BIGINT UNSIGNED"/>
+      <column name="modified_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="modified_on" type="DATETIME"/>
       <column defaultValueComputed="NULL" name="version" type="INT"/>
       <column name="name" type="VARCHAR(255)">
@@ -27,9 +27,9 @@
       <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
-      <column name="created_by" type="BIGINT UNSIGNED"/>
+      <column name="created_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="created_on" type="DATETIME"/>
-      <column name="modified_by" type="BIGINT UNSIGNED"/>
+      <column name="modified_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="modified_on" type="DATETIME"/>
       <column defaultValueComputed="NULL" name="version" type="INT"/>
       <column name="description" type="VARCHAR(255)">
@@ -47,9 +47,9 @@
       <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
-      <column name="created_by" type="BIGINT UNSIGNED"/>
+      <column name="created_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="created_on" type="DATETIME"/>
-      <column name="modified_by" type="BIGINT UNSIGNED"/>
+      <column name="modified_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="modified_on" type="DATETIME"/>
       <column defaultValueComputed="NULL" name="version" type="INT"/>
       <column name="certificate" type="CLOB"/>
@@ -70,9 +70,9 @@
       <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
-      <column name="created_by" type="BIGINT UNSIGNED"/>
+      <column name="created_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="created_on" type="DATETIME"/>
-      <column name="modified_by" type="BIGINT UNSIGNED"/>
+      <column name="modified_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="modified_on" type="DATETIME"/>
       <column defaultValueComputed="NULL" name="version" type="INT"/>
       <column name="device_id" type="VARCHAR(255)">
@@ -100,9 +100,9 @@
       <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
-      <column name="created_by" type="BIGINT UNSIGNED"/>
+      <column name="created_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="created_on" type="DATETIME"/>
-      <column name="modified_by" type="BIGINT UNSIGNED"/>
+      <column name="modified_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="modified_on" type="DATETIME"/>
       <column defaultValueComputed="NULL" name="version" type="INT"/>
       <column name="configuration_token" type="VARCHAR(255)"/>
@@ -136,9 +136,9 @@
       <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
-      <column name="created_by" type="BIGINT UNSIGNED"/>
+      <column name="created_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="created_on" type="DATETIME"/>
-      <column name="modified_by" type="BIGINT UNSIGNED"/>
+      <column name="modified_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="modified_on" type="DATETIME"/>
       <column defaultValueComputed="NULL" name="version" type="INT"/>
       <column name="description" type="VARCHAR(255)"/>
@@ -174,9 +174,9 @@
       <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
-      <column name="created_by" type="BIGINT UNSIGNED"/>
+      <column name="created_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="created_on" type="DATETIME"/>
-      <column name="modified_by" type="BIGINT UNSIGNED"/>
+      <column name="modified_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="modified_on" type="DATETIME"/>
       <column defaultValueComputed="NULL" name="version" type="INT"/>
       <column name="name" type="VARCHAR(255)">
@@ -189,9 +189,9 @@
       <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
-      <column name="created_by" type="BIGINT UNSIGNED"/>
+      <column name="created_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="created_on" type="DATETIME"/>
-      <column name="modified_by" type="BIGINT UNSIGNED"/>
+      <column name="modified_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="modified_on" type="DATETIME"/>
       <column defaultValueComputed="NULL" name="version" type="INT"/>
       <column name="certificate" type="VARCHAR(255)"/>
@@ -222,9 +222,9 @@
       <column name="id" autoIncrement="true" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
-      <column name="created_by" type="BIGINT UNSIGNED"/>
+      <column name="created_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="created_on" type="DATETIME"/>
-      <column name="modified_by" type="BIGINT UNSIGNED"/>
+      <column name="modified_by" type="varchar(36)"/>
       <column defaultValueComputed="NULL" name="modified_on" type="DATETIME"/>
       <column defaultValueComputed="NULL" name="version" type="INT"/>
       <column name="email" type="VARCHAR(255)">

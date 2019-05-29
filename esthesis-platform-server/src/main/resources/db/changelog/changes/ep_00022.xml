@@ -8,9 +8,9 @@
       <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
         <constraints primaryKey="true"/>
       </column>
-      <column name="created_by" type="BIGINT UNSIGNED"/>
+      <column name="created_by" type="varchar(36)"/>
       <column name="created_on" type="datetime"/>
-      <column name="modified_by" type="BIGINT UNSIGNED"/>
+      <column name="modified_by" type="varchar(36)"/>
       <column name="modified_on" type="datetime"/>
       <column name="version" type="INT"/>
       <column name="ip_address" type="VARCHAR(255)">
