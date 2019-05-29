@@ -18,22 +18,15 @@
         </mat-form-field>
         <mat-form-field>
           <mat-select placeholder="Level" formControlName="level">
-            <mat-option *ngFor="let option of auditLevels" [value]="option">
-              {{ option }}
+            <mat-option *ngFor="let i of auditLevels" [value]="i.key">
+              {{ i.value }}
             </mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
           <mat-select placeholder="Event" formControlName="event">
-            <mat-option *ngFor="let option of auditEvents" [value]="option">
-              {{ option }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-select placeholder="User" formControlName="user_id">
-            <mat-option *ngFor="let option of auditUsers" [value]="option.id">
-              {{ option.fn }} {{ option.ln }} ({{ option.email }})
+            <mat-option *ngFor="let i of auditEvents" [value]="i.key">
+              {{ i.value }}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -64,15 +57,7 @@
         </ng-container>
         <ng-container matColumnDef="description">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Description</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.description}}</mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="user">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> User</mat-header-cell>
-          <mat-cell *matCellDef="let element">
-            <div *ngIf="element.user">
-              {{element.user.fn}} {{element.user.ln}}
-            </div>
-          </mat-cell>
+          <mat-cell *matCellDef="let element"> {{element.shortDescription}}</mat-cell>
         </ng-container>
       </table>
       <mat-paginator #paginator (page)="changePage()"

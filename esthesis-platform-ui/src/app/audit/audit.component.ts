@@ -8,7 +8,7 @@ import {AuditDto} from '../dto/audit-dto';
 import {AuditService} from './audit.service';
 import {UserService} from '../users/user.service';
 import {BaseComponent} from '../shared/base-component';
-import {UserDto} from '../dto/user-dto';
+import {KeyValueDto} from '../dto/key-value-dto';
 
 @Component({
   selector: 'app-audit',
@@ -17,16 +17,15 @@ import {UserDto} from '../dto/user-dto';
 })
 export class AuditComponent extends BaseComponent implements OnInit, AfterViewInit {
   // Columns to display.
-  displayedColumns = ['createdOn', 'level', 'event', 'description', 'user'];
+  displayedColumns = ['createdOn', 'level', 'event', 'description'];
 
   // Datasource definition.
   datasource: MatTableDataSource<AuditDto> = new MatTableDataSource<AuditDto>();
 
   // Search filter.
   filterForm: FormGroup;
-  auditEvents: string[];
-  auditLevels: string[];
-  auditUsers: UserDto[];
+  auditEvents: KeyValueDto[];
+  auditLevels: KeyValueDto[];
 
   // References to sorting and pagination.
   @ViewChild(MatSort) sort: MatSort;
@@ -51,13 +50,11 @@ export class AuditComponent extends BaseComponent implements OnInit, AfterViewIn
     this.auditService.getLevels().subscribe(onNext => {
       this.auditLevels = onNext;
     });
-    this.auditService.getUsers().subscribe(onNext => {
-      this.auditUsers = onNext;
-    });
 
     // Listen for filter changes to fetch new data.
     this.filterForm.valueChanges.debounceTime(500).subscribe(onNext => {
-      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+        this.sort.start);
     });
   }
 
@@ -96,14 +93,11 @@ export class AuditComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   changePage() {
-    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+      this.sort.start);
   }
 
   clearFilter() {
     this.filterForm.reset();
-  }
-
-  format(str) {
-    return new Date(str);
   }
 }

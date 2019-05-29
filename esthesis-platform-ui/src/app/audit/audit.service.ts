@@ -6,6 +6,8 @@ import {QFormsModule, QPageableReply} from '@eurodyn/forms';
 import {AppConstants} from '../app.constants';
 import {AuditDto} from '../dto/audit-dto';
 import {UserDto} from '../dto/user-dto';
+import {KeyValue} from '@angular/common';
+import {KeyValueDto} from '../dto/key-value-dto';
 
 /**
  * A service providing functionality to view and manage the audit log.
@@ -25,15 +27,12 @@ export class AuditService {
     return this.http.get<QPageableReply<AuditDto>>(AppConstants.API_ROOT + `/audit?${queryString}`);
   }
 
-  getEvents(): Observable<string[]> {
-    return this.http.get<string[]>(AppConstants.API_ROOT + '/audit/events');
+  getEvents(): Observable<KeyValueDto[]> {
+    return this.http.get<KeyValueDto[]>(AppConstants.API_ROOT + '/audit/events');
   }
 
-  getLevels(): Observable<string[]> {
-    return this.http.get<string[]>(AppConstants.API_ROOT + '/audit/levels');
+  getLevels(): Observable<KeyValueDto[]> {
+    return this.http.get<KeyValueDto[]>(AppConstants.API_ROOT + '/audit/levels');
   }
 
-  getUsers(): Observable<UserDto[]> {
-    return this.http.get<UserDto[]>(AppConstants.API_ROOT + '/audit/users');
-  }
 }
