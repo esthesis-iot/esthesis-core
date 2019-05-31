@@ -1,6 +1,7 @@
 package esthesis.platform.server.resource.dt;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,9 @@ public class DTDeviceResource {
 
   @GetMapping
   public ResponseEntity getDevices() {
+    System.out.println(
+    SecurityContextHolder.getContext().getAuthentication().getCredentials()
+    );
     return ResponseEntity.ok().build();
   }
 

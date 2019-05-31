@@ -1,23 +1,23 @@
 package esthesis.platform.datasink.influxdb.factory;
 
-import esthesis.extension.platform.sink.EsthesisDataSinkFactory;
-import esthesis.extension.platform.sink.EsthesisMetadataSink;
-import esthesis.extension.platform.sink.EsthesisTelemetrySink;
+import esthesis.extension.platform.datasink.DataSinkFactory;
+import esthesis.extension.platform.datasink.MetadataSink;
+import esthesis.extension.platform.datasink.TelemetrySink;
 import esthesis.platform.datasink.influxdb.sink.InfluxDBMetadataSink;
 import esthesis.platform.datasink.influxdb.sink.InfluxDBTelemetrySink;
 
-public class InfluxDBSinkFactory implements EsthesisDataSinkFactory {
+public class InfluxDBSinkFactory implements DataSinkFactory {
 
   private final String DATA_SINK_NAME = "InfluxDB";
   private String configuration;
 
   @Override
-  public EsthesisMetadataSink getMetadataSink() {
+  public MetadataSink getMetadataSink() {
     return new InfluxDBMetadataSink(configuration);
   }
 
   @Override
-  public EsthesisTelemetrySink getTelemetrySink() {
+  public TelemetrySink getTelemetrySink() {
     return new InfluxDBTelemetrySink(configuration);
   }
 
@@ -32,12 +32,22 @@ public class InfluxDBSinkFactory implements EsthesisDataSinkFactory {
   }
 
   @Override
-  public boolean supportsMetadata() {
+  public boolean supportsMetadataForWrite() {
     return true;
   }
 
   @Override
-  public boolean supportsTelemetry() {
+  public boolean supportsTelemetryForWrite() {
+    return true;
+  }
+
+  @Override
+  public boolean supportsMetadataForRead() {
+    return true;
+  }
+
+  @Override
+  public boolean supportsTelemetryForRead() {
     return true;
   }
 

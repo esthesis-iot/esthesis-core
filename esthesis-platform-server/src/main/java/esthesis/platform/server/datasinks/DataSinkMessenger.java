@@ -3,8 +3,8 @@ package esthesis.platform.server.datasinks;
 import esthesis.extension.platform.event.MQTTDataEvent;
 import esthesis.extension.platform.event.MQTTMetadataEvent;
 import esthesis.extension.platform.event.MQTTTelemetryEvent;
-import esthesis.extension.platform.sink.EsthesisMetadataSink;
-import esthesis.extension.platform.sink.EsthesisTelemetrySink;
+import esthesis.extension.platform.datasink.MetadataSink;
+import esthesis.extension.platform.datasink.TelemetrySink;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ public class DataSinkMessenger {
   private float pressureReleasePoint = 0.9f;
 
   @Async
-  public void metadataMessage(EsthesisMetadataSink metadataSink, MQTTDataEvent event) {
+  public void metadataMessage(MetadataSink metadataSink, MQTTDataEvent event) {
     if (metadataSink.getPressure() < pressureReleasePoint) {
       metadataSink.processEvent((MQTTMetadataEvent) event);
     } else {
@@ -32,7 +32,7 @@ public class DataSinkMessenger {
   }
 
   @Async
-  public void telemetryMessage(EsthesisTelemetrySink telemetrySink, MQTTDataEvent event) {
+  public void telemetryMessage(TelemetrySink telemetrySink, MQTTDataEvent event) {
     if (telemetrySink.getPressure() < pressureReleasePoint) {
       telemetrySink.processEvent((MQTTTelemetryEvent) event);
     } else {

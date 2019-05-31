@@ -1,6 +1,6 @@
 package esthesis.platform.server.datasinks;
 
-import esthesis.extension.platform.sink.EsthesisDataSinkFactory;
+import esthesis.extension.platform.datasink.DataSinkFactory;
 import esthesis.platform.server.dto.DataSinkFactoryDTO;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
@@ -30,14 +30,16 @@ public class DataSinkScanner {
       ClassInfoList factoryClasses = scanResult.getClassesImplementing(DATA_SINK_FACTORY_PACKAGE);
       factoryClasses.forEach(classInfo -> {
         try {
-          final EsthesisDataSinkFactory esthesisDataSinkFactory = classInfo
-            .loadClass(EsthesisDataSinkFactory.class)
+          final DataSinkFactory esthesisDataSinkFactory = classInfo
+            .loadClass(DataSinkFactory.class)
             .newInstance();
           availableDataSinkFactories.add(DataSinkFactoryDTO.builder()
             .factoryClass(classInfo.getName())
             .friendlyName(esthesisDataSinkFactory.getFriendlyName())
-            .supportsMetadata(esthesisDataSinkFactory.supportsMetadata())
-            .supportsTelemetry(esthesisDataSinkFactory.supportsTelemetry())
+            .supportsMetadataForRead(esthesisDataSinkFactory.supportsMetadataForRead())
+            .supportsTelemetryForRead(esthesisDataSinkFactory.supportsTelemetryForRead())
+            .supportsMetadataForWrite(esthesisDataSinkFactory.supportsMetadataForWrite())
+            .supportsTelemetryForWrite(esthesisDataSinkFactory.supportsTelemetryForWrite())
             .configurationTemplate(esthesisDataSinkFactory.getConfigurationTemplate())
             .build());
           LOGGER.log(Level.FINE, "Found data sink factory ''{0}'' [class: {1}].",

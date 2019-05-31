@@ -31,4 +31,7 @@ public class Application extends BaseEntity {
 
   @NotNull
   private boolean state;
+
+  // The user created for this application.
+  private String userId;
 }

@@ -20,4 +20,6 @@ public class ApplicationDTO extends BaseDTO {
 
   @NotNull
   private boolean state;
+
+  private String userId;
 }

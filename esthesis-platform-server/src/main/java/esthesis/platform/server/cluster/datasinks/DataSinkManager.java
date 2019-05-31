@@ -3,9 +3,9 @@ package esthesis.platform.server.cluster.datasinks;
 import esthesis.extension.platform.event.MQTTDataEvent;
 import esthesis.extension.platform.event.MQTTMetadataEvent;
 import esthesis.extension.platform.event.MQTTTelemetryEvent;
-import esthesis.extension.platform.sink.EsthesisDataSinkFactory;
-import esthesis.extension.platform.sink.EsthesisMetadataSink;
-import esthesis.extension.platform.sink.EsthesisTelemetrySink;
+import esthesis.extension.platform.datasink.DataSinkFactory;
+import esthesis.extension.platform.datasink.MetadataSink;
+import esthesis.extension.platform.datasink.TelemetrySink;
 import esthesis.platform.server.cluster.ClusterInfoService;
 import esthesis.platform.server.cluster.zookeeper.ZookeeperClientManager;
 import esthesis.platform.server.config.AppConstants.Zookeeper;
@@ -55,9 +55,9 @@ public class DataSinkManager {
   }
 
   // List of available and active metadata data sinks.
-  private final Map<Long, EsthesisMetadataSink> startedMetadataSinks = new HashMap<>();
+  private final Map<Long, MetadataSink> startedMetadataSinks = new HashMap<>();
   // List of available telemetry data sinks.
-  private final Map<Long, EsthesisTelemetrySink> startedTelemetrySinks = new HashMap<>();
+  private final Map<Long, TelemetrySink> startedTelemetrySinks = new HashMap<>();
 
   private List<DataSinkDTO> findActiveMetadataSinks() {
     return dataSinkMapper.map(dataSinkRepository.findAllByStateAndMetadata(true, true));
@@ -73,8 +73,8 @@ public class DataSinkManager {
     findActiveMetadataSinks().forEach(dataSink -> {
       try {
         // Create an instance for this data sink.
-        final EsthesisDataSinkFactory esthesisDataSinkFactory =
-          (EsthesisDataSinkFactory) Class.forName(dataSink.getFactoryClass()).newInstance();
+        final DataSinkFactory esthesisDataSinkFactory =
+          (DataSinkFactory) Class.forName(dataSink.getFactoryClass()).newInstance();
         // Set the configuration to the data sink.
         esthesisDataSinkFactory.setConfiguration(dataSink.getConfiguration());
         // Keep the instance of this data sink to a local map.
@@ -90,8 +90,8 @@ public class DataSinkManager {
     findActiveTelemetrySinks().forEach(dataSink -> {
       try {
         // Create an instance for this data sink.
-        final EsthesisDataSinkFactory esthesisDataSinkFactory =
-          (EsthesisDataSinkFactory) Class.forName(dataSink.getFactoryClass()).newInstance();
+        final DataSinkFactory esthesisDataSinkFactory =
+          (DataSinkFactory) Class.forName(dataSink.getFactoryClass()).newInstance();
         // Set the configuration to the data sink.
         esthesisDataSinkFactory.setConfiguration(dataSink.getConfiguration());
         // Keep the instance of this data sink to a local map.

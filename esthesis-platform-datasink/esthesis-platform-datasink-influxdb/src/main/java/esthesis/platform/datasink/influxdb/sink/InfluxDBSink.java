@@ -1,9 +1,12 @@
 package esthesis.platform.datasink.influxdb.sink;
 
+import static org.influxdb.querybuilder.BuiltQuery.QueryBuilder.eq;
+import static org.influxdb.querybuilder.BuiltQuery.QueryBuilder.select;
+
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.extension.config.AppConstants.MqttPayload;
+import esthesis.extension.config.AppConstants.Mqtt;
 import esthesis.platform.datasink.influxdb.config.InfluxDBConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.influxdb.BatchOptions;
@@ -11,6 +14,8 @@ import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.Point.Builder;
+import org.influxdb.dto.Query;
+import org.influxdb.dto.QueryResult.Result;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
@@ -20,6 +25,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.time.Instant;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -37,6 +43,8 @@ public abstract class InfluxDBSink {
   // The name of the tag to indicate the type of the measurement.
   public static final String TAG_TYPE_NAME = "type";
   public static final String TAG_HARDWARE_ID_NAME = "hardwareId";
+  // The default name of the field when no specific name is provided for a measurement.
+  public static final String NO_NAME_VALUE = "value";
   private static ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(
     Include.NON_EMPTY);
   private static AtomicInteger eventsQueued = new AtomicInteger(0);
@@ -80,7 +88,7 @@ public abstract class InfluxDBSink {
     final JsonNode jsonNode = mapper.readTree(mqttPayload);
 
     // Prepare an InfluxDB Point with the name of the measurement.
-    String metricName = jsonNode.get(MqttPayload.METRIC_KEYNAME).asText();
+    String metricName = jsonNode.get(Mqtt.MqttPayload.METRIC_KEYNAME).asText();
     final Builder pointBuilder = org.influxdb.dto.Point.measurement(metricName);
 
     // Add a tag to the Point for the type of the message.
@@ -90,15 +98,15 @@ public abstract class InfluxDBSink {
     pointBuilder.tag(TAG_HARDWARE_ID_NAME, hardwareId);
 
     // If a timestamp is provided use the provided timestamp, otherwise create a timestamp.
-    if (jsonNode.get(MqttPayload.TIMESTAMP_KEYNAME) != null) {
+    if (jsonNode.get(Mqtt.MqttPayload.TIMESTAMP_KEYNAME) != null) {
       pointBuilder
-        .time(jsonNode.get(MqttPayload.TIMESTAMP_KEYNAME).asLong(), TimeUnit.MILLISECONDS);
+        .time(jsonNode.get(Mqtt.MqttPayload.TIMESTAMP_KEYNAME).asLong(), TimeUnit.MILLISECONDS);
     } else {
       pointBuilder.time(Instant.now().toEpochMilli(), TimeUnit.MILLISECONDS);
     }
 
     // Find the values of the payload.
-    final JsonNode values = jsonNode.get(MqttPayload.VALUES_KEYNAME);
+    final JsonNode values = jsonNode.get(Mqtt.MqttPayload.VALUES_KEYNAME);
     if (values.isObject()) {
       values.fields().forEachRemaining(node -> {
         final JsonNode value = node.getValue();
@@ -120,19 +128,19 @@ public abstract class InfluxDBSink {
       });
     } else {
       if (values.isLong()) {
-        pointBuilder.addField(metricName, values.asLong());
+        pointBuilder.addField(NO_NAME_VALUE, values.asLong());
       } else if (values.isDouble() || values.isFloat()) {
-        pointBuilder.addField(metricName, values.asDouble());
+        pointBuilder.addField(NO_NAME_VALUE, values.asDouble());
       } else if (values.isTextual()) {
-        pointBuilder.addField(metricName, values.asText());
+        pointBuilder.addField(NO_NAME_VALUE, values.asText());
       } else if (values.isBoolean()) {
-        pointBuilder.addField(metricName, values.asBoolean());
+        pointBuilder.addField(NO_NAME_VALUE, values.asBoolean());
       } else if (values.isInt() || values.isShort()) {
-        pointBuilder.addField(metricName, values.asInt());
+        pointBuilder.addField(NO_NAME_VALUE, values.asInt());
       } else if (values.isBigInteger()) {
-        pointBuilder.addField(metricName, BigInteger.valueOf(values.asLong()));
+        pointBuilder.addField(NO_NAME_VALUE, BigInteger.valueOf(values.asLong()));
       } else if (values.isBigDecimal()) {
-        pointBuilder.addField(metricName, BigDecimal.valueOf(values.asDouble()));
+        pointBuilder.addField(NO_NAME_VALUE, BigDecimal.valueOf(values.asDouble()));
       }
     }
 
@@ -189,5 +197,13 @@ public abstract class InfluxDBSink {
 
   public String getSinkName() {
     return sinkName;
+  }
+
+  public void getData(String hardwareId, String measurement) {
+    Query query = select().from(influxDBConfiguration.getDatabaseName(), measurement)
+      .where(eq(TAG_HARDWARE_ID_NAME, hardwareId));
+    final List<Result> results = influxDB.query(query).getResults();
+    System.out.println(results);
+
   }
 }
