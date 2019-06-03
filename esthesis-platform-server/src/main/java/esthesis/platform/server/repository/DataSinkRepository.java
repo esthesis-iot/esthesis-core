@@ -8,8 +8,12 @@ import java.util.List;
 @Repository
 public interface DataSinkRepository extends BaseRepository<DataSink> {
 
-  List<DataSink> findAllByStateAndMetadata(boolean state, boolean metadata);
+  List<DataSink> findAllByStateAndMetadataRead(boolean state, boolean metadata);
 
-  List<DataSink> findAllByStateAndTelemetry(boolean state, boolean telemetry);
+  List<DataSink> findAllByStateAndTelemetryRead(boolean state, boolean telemetry);
+
+  List<DataSink> findAllByStateAndMetadataWrite(boolean state, boolean metadata);
+
+  List<DataSink> findAllByStateAndTelemetryWrite(boolean state, boolean telemetry);
 
 }

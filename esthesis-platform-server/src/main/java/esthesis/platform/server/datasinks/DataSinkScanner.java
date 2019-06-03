@@ -18,8 +18,8 @@ public class DataSinkScanner {
 
   // JUL reference.
   private static final Logger LOGGER = Logger.getLogger(DataSinkScanner.class.getName());
-  private static final String DATA_SINK_FACTORY_PACKAGE =
-    "esthesis.extension.platform.sink.EsthesisDataSinkFactory";
+  private static final String DATA_SINK_FACTORY_PACKAGE = DataSinkFactory.class.getName();
+
   // List of available data sink factories.
   private final List<DataSinkFactoryDTO> availableDataSinkFactories = new ArrayList<>();
 
@@ -30,20 +30,19 @@ public class DataSinkScanner {
       ClassInfoList factoryClasses = scanResult.getClassesImplementing(DATA_SINK_FACTORY_PACKAGE);
       factoryClasses.forEach(classInfo -> {
         try {
-          final DataSinkFactory esthesisDataSinkFactory = classInfo
-            .loadClass(DataSinkFactory.class)
+          final DataSinkFactory dataSinkFactory = classInfo.loadClass(DataSinkFactory.class)
             .newInstance();
           availableDataSinkFactories.add(DataSinkFactoryDTO.builder()
             .factoryClass(classInfo.getName())
-            .friendlyName(esthesisDataSinkFactory.getFriendlyName())
-            .supportsMetadataForRead(esthesisDataSinkFactory.supportsMetadataForRead())
-            .supportsTelemetryForRead(esthesisDataSinkFactory.supportsTelemetryForRead())
-            .supportsMetadataForWrite(esthesisDataSinkFactory.supportsMetadataForWrite())
-            .supportsTelemetryForWrite(esthesisDataSinkFactory.supportsTelemetryForWrite())
-            .configurationTemplate(esthesisDataSinkFactory.getConfigurationTemplate())
+            .friendlyName(dataSinkFactory.getFriendlyName())
+            .supportsMetadataRead(dataSinkFactory.supportsMetadataRead())
+            .supportsTelemetryRead(dataSinkFactory.supportsTelemetryRead())
+            .supportsMetadataWrite(dataSinkFactory.supportsMetadataWrite())
+            .supportsTelemetryWrite(dataSinkFactory.supportsTelemetryWrite())
+            .configurationTemplate(dataSinkFactory.getConfigurationTemplate())
             .build());
           LOGGER.log(Level.FINE, "Found data sink factory ''{0}'' [class: {1}].",
-            new Object[]{esthesisDataSinkFactory.getFriendlyName(), classInfo.getName()});
+            new Object[]{dataSinkFactory.getFriendlyName(), classInfo.getName()});
         } catch (InstantiationException | IllegalAccessException e) {
           LOGGER
             .log(Level.SEVERE, "Could not load data sink implementation {0}.", classInfo.getName());

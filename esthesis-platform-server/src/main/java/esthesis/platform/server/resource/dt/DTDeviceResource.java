@@ -1,5 +1,6 @@
 package esthesis.platform.server.resource.dt;
 
+import esthesis.platform.server.service.DTService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -11,6 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/dt")
 public class DTDeviceResource {
+  private final DTService dtService;
+
+  public DTDeviceResource(DTService dtService) {
+    this.dtService = dtService;
+  }
 
   @GetMapping
   public ResponseEntity getDevices() {

@@ -1,8 +1,10 @@
 export class DataSinkFactoryDto {
   factoryClass: string;
   friendlyName: string;
-  supportsMetadata: boolean;
-  supportsTelemetry: boolean;
+  supportsMetadataRead: boolean;
+  supportsTelemetryRead: boolean;
+  supportsMetadataWrite: boolean;
+  supportsTelemetryWrite: boolean;
   version: string;
   configurationTemplate: string;
 }

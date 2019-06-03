@@ -20,7 +20,8 @@ export class DatasinksEditComponent extends BaseComponent implements OnInit {
   id: number;
   availableDataSinkFactories: DataSinkFactoryDto[];
 
-  constructor(private fb: FormBuilder, private dataSinksService: DataSinkService, private qForms: QFormsService,
+  constructor(private fb: FormBuilder, private dataSinksService: DataSinkService,
+              private qForms: QFormsService,
               private route: ActivatedRoute, private router: Router,
               private utilityService: UtilityService, private dialog: MatDialog) {
     super();
@@ -35,8 +36,10 @@ export class DatasinksEditComponent extends BaseComponent implements OnInit {
       id: [''],
       name: ['', [Validators.maxLength(256)]],
       factoryClass: ['', [Validators.maxLength(1024)]],
-      metadata: ['', [Validators.maxLength(5)]],
-      telemetry: ['', [Validators.maxLength(5)]],
+      metadataRead: ['', [Validators.maxLength(5)]],
+      telemetryRead: ['', [Validators.maxLength(5)]],
+      metadataWrite: ['', [Validators.maxLength(5)]],
+      telemetryWrite: ['', [Validators.maxLength(5)]],
       state: ['', [Validators.maxLength(5)]],
       configuration: ['', [Validators.maxLength(65535)]],
     });
@@ -82,28 +85,47 @@ export class DatasinksEditComponent extends BaseComponent implements OnInit {
   }
 
   updateHandlers($event) {
-    const factory = _.find<DataSinkFactoryDto>(this.availableDataSinkFactories, {factoryClass: $event.source.value});
-    if (factory.supportsMetadata) {
-      this.form.controls['metadata'].enable();
+    const factory = _.find<DataSinkFactoryDto>(this.availableDataSinkFactories,
+      {factoryClass: $event.source.value});
+    if (factory.supportsMetadataRead) {
+      this.form.controls['metadataRead'].enable();
     } else {
       this.form.patchValue({
         metadata: false
       });
-      this.form.controls['metadata'].disable();
+      this.form.controls['metadataRead'].disable();
     }
 
-    if (factory.supportsTelemetry) {
-      this.form.controls['telemetry'].enable();
+    if (factory.supportsTelemetryRead) {
+      this.form.controls['telemetryRead'].enable();
     } else {
       this.form.patchValue({
         telemetry: false
       });
-      this.form.controls['telemetry'].disable();
+      this.form.controls['telemetryRead'].disable();
+    }
+    if (factory.supportsMetadataWrite) {
+      this.form.controls['metadataWrite'].enable();
+    } else {
+      this.form.patchValue({
+        metadata: false
+      });
+      this.form.controls['metadataWrite'].disable();
+    }
+
+    if (factory.supportsTelemetryWrite) {
+      this.form.controls['telemetryWrite'].enable();
+    } else {
+      this.form.patchValue({
+        telemetry: false
+      });
+      this.form.controls['telemetryWrite'].disable();
     }
   }
-  
+
   template() {
-    const factory = _.find<DataSinkFactoryDto>(this.availableDataSinkFactories, {factoryClass: this.form.controls['factoryClass'].value});
+    const factory = _.find<DataSinkFactoryDto>(this.availableDataSinkFactories,
+      {factoryClass: this.form.controls['factoryClass'].value});
     console.log(factory);
     if (factory) {
       this.form.patchValue({

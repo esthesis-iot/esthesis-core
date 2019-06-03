@@ -78,9 +78,13 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
         String token = authHeader.replace(XESTHESISDT_HEADER, "").trim();
         try {
           final ApplicationDTO applicationDTO = applicationService.findByToken(token);
-          final UserDTO userDTO = userService.getUserById(applicationDTO.getUserId());
-          return new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getId(),
-            emptyList());
+          if (applicationDTO.isState()) {
+            final UserDTO userDTO = userService.getUserById(applicationDTO.getUserId());
+            return new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getId(),
+              emptyList());
+          } else {
+            return null;
+          }
         } catch (QDoesNotExistException e) {
           LOGGER.log(Level.WARNING, MessageFormat.format("Could not find application with token "
             + "{0}.", token));

@@ -32,22 +32,22 @@ public class InfluxDBSinkFactory implements DataSinkFactory {
   }
 
   @Override
-  public boolean supportsMetadataForWrite() {
+  public boolean supportsMetadataWrite() {
     return true;
   }
 
   @Override
-  public boolean supportsTelemetryForWrite() {
+  public boolean supportsTelemetryWrite() {
     return true;
   }
 
   @Override
-  public boolean supportsMetadataForRead() {
+  public boolean supportsMetadataRead() {
     return true;
   }
 
   @Override
-  public boolean supportsTelemetryForRead() {
+  public boolean supportsTelemetryRead() {
     return true;
   }
 

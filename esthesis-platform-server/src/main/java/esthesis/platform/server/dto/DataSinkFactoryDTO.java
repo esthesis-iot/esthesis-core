@@ -14,10 +14,10 @@ import lombok.experimental.Accessors;
 public class DataSinkFactoryDTO {
   private String factoryClass;
   private String friendlyName;
-  private boolean supportsMetadataForRead;
-  private boolean supportsTelemetryForRead;
-  private boolean supportsMetadataForWrite;
-  private boolean supportsTelemetryForWrite;
+  private boolean supportsMetadataRead;
+  private boolean supportsTelemetryRead;
+  private boolean supportsMetadataWrite;
+  private boolean supportsTelemetryWrite;
   private String version;
   private String configurationTemplate;
 }

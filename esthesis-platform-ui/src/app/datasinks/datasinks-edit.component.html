@@ -11,14 +11,21 @@
         </mat-form-field>
         <mat-form-field>
           <mat-select placeholder="Driver" formControlName="factoryClass">
-            <mat-option *ngFor="let factory of availableDataSinkFactories" [value]="factory.factoryClass"
+            <mat-option *ngFor="let factory of availableDataSinkFactories"
+                        [value]="factory.factoryClass"
                         (onSelectionChange)="updateHandlers($event)">
               {{ factory.friendlyName + ' (' + factory.factoryClass + ')' }}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-checkbox formControlName="metadata" class="xs-mt1" color="primary">Metadata handler</mat-checkbox>
-        <mat-checkbox formControlName="telemetry" class="xs-mt2" color="primary">Telemetry handler</mat-checkbox>
+        <mat-checkbox formControlName="metadataWrite" class="xs-mt1" color="primary">Metadata writer handler
+        </mat-checkbox>
+        <mat-checkbox formControlName="telemetryWrite" class="xs-mt1" color="primary">Telemetry writer handler
+        </mat-checkbox>
+        <mat-checkbox formControlName="metadataRead" class="xs-mt1" color="primary">Metadata reader handler
+        </mat-checkbox>
+        <mat-checkbox formControlName="telemetryRead" class="xs-mt1" color="primary">Telemetry reader handler
+        </mat-checkbox>
         <mat-form-field class="example-full-width" class="xs-mt2">
           <textarea matInput placeholder="Configuration" formControlName="configuration"
                     matTextareaAutosize class="configuration"></textarea>

@@ -29,9 +29,13 @@ public class DataSink extends BaseEntity {
   @NotNull
   private String factoryClass;
 
-  private boolean metadata;
+  private boolean metadataRead;
 
-  private boolean telemetry;
+  private boolean telemetryRead;
+
+  private boolean metadataWrite;
+
+  private boolean telemetryWrite;
 
   private boolean state;
 
