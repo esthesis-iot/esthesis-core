@@ -1,4 +1,4 @@
-package esthesis.platform.datasink.influxdb.config;
+package esthesis.platform.datasink.influxdb;
 
 import javax.validation.constraints.NotNull;
 import lombok.Data;

@@ -3,7 +3,7 @@ package esthesis.platform.server.events;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.extension.config.AppConstants.Generic;
+import esthesis.extension.common.config.AppConstants.Generic;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

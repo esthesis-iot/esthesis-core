@@ -8,7 +8,7 @@ import com.eurodyn.qlack.fuse.crypto.CryptoCAService;
 import com.eurodyn.qlack.fuse.crypto.dto.CertificateSignDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import com.github.slugify.Slugify;
-import esthesis.extension.util.Base64E;
+import esthesis.extension.common.util.Base64E;
 import esthesis.platform.server.config.AppConstants.Cryptography.KeyType;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting.Security;

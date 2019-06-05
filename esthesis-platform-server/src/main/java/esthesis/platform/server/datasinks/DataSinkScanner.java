@@ -1,6 +1,6 @@
 package esthesis.platform.server.datasinks;
 
-import esthesis.extension.platform.datasink.DataSinkFactory;
+import esthesis.extension.datasink.DataSinkFactory;
 import esthesis.platform.server.dto.DataSinkFactoryDTO;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;

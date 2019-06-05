@@ -1,11 +1,10 @@
 package esthesis.platform.server.cluster.datasinks;
 
-import esthesis.extension.platform.event.MQTTDataEvent;
-import esthesis.extension.platform.event.MQTTMetadataEvent;
-import esthesis.extension.platform.event.MQTTTelemetryEvent;
-import esthesis.extension.platform.datasink.DataSinkFactory;
-import esthesis.extension.platform.datasink.MetadataSink;
-import esthesis.extension.platform.datasink.TelemetrySink;
+import com.eurodyn.qlack.common.exception.QMismatchException;
+import esthesis.extension.datasink.DataSink;
+import esthesis.extension.datasink.DataSinkFactory;
+import esthesis.extension.datasink.MQTTDataEvent;
+import esthesis.extension.datasink.config.AppConstants.Mqtt.EventType;
 import esthesis.platform.server.cluster.ClusterInfoService;
 import esthesis.platform.server.cluster.zookeeper.ZookeeperClientManager;
 import esthesis.platform.server.config.AppConstants.Zookeeper;
@@ -16,8 +15,7 @@ import esthesis.platform.server.events.ClusterEvent;
 import esthesis.platform.server.events.ClusterEvent.CLUSTER_EVENT_TYPE;
 import esthesis.platform.server.events.LocalEvent;
 import esthesis.platform.server.events.LocalEvent.LOCAL_EVENT_TYPE;
-import esthesis.platform.server.mapper.DataSinkMapper;
-import esthesis.platform.server.repository.DataSinkRepository;
+import esthesis.platform.server.service.DataSinkService;
 import javax.annotation.PreDestroy;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -34,43 +32,79 @@ public class DataSinkManager {
 
   // JUL reference.
   private static final Logger LOGGER = Logger.getLogger(DataSinkManager.class.getName());
-  private final DataSinkRepository dataSinkRepository;
-  private final DataSinkMapper dataSinkMapper;
   private final DataSinkMessenger dataSinkMessenger;
   private final ClusterInfoService clusterInfoService;
   private final ZookeeperClientManager zookeeperClientManager;
   private final AppProperties appProperties;
+  private final DataSinkService dataSinkService;
 
-  public DataSinkManager(DataSinkRepository dataSinkRepository, DataSinkMapper dataSinkMapper,
-    DataSinkMessenger dataSinkMessenger,
-    ClusterInfoService clusterInfoService,
+  public DataSinkManager(DataSinkMessenger dataSinkMessenger, ClusterInfoService clusterInfoService,
     ZookeeperClientManager zookeeperClientManager,
-    AppProperties appProperties) {
-    this.dataSinkRepository = dataSinkRepository;
-    this.dataSinkMapper = dataSinkMapper;
+    AppProperties appProperties, DataSinkService dataSinkService) {
     this.dataSinkMessenger = dataSinkMessenger;
     this.clusterInfoService = clusterInfoService;
     this.zookeeperClientManager = zookeeperClientManager;
     this.appProperties = appProperties;
+    this.dataSinkService = dataSinkService;
   }
 
-  // List of available and active metadata data sinks.
-  private final Map<Long, MetadataSink> startedMetadataSinks = new HashMap<>();
-  // List of available telemetry data sinks.
-  private final Map<Long, TelemetrySink> startedTelemetrySinks = new HashMap<>();
+  // List of available and active metadata write data sinks.
+  private final Map<Long, DataSink> startedMetadataWriteSinks = new HashMap<>();
+  // List of available telemetry write data sinks.
+  private final Map<Long, DataSink> startedTelemetryWriteSinks = new HashMap<>();
+  // List of available and active metadata read data sinks.
+  private final Map<Long, DataSink> startedMetadataReadSinks = new HashMap<>();
+  // List of available telemetry data read sinks.
+  private final Map<Long, DataSink> startedTelemetryReadSinks = new HashMap<>();
 
-  private List<DataSinkDTO> findActiveMetadataSinks() {
-    return dataSinkMapper.map(dataSinkRepository.findAllByStateAndMetadata(true, true));
-  }
-
-  private List<DataSinkDTO> findActiveTelemetrySinks() {
-    return dataSinkMapper.map(dataSinkRepository.findAllByStateAndTelemetry(true, true));
+  private void fillSink(List<DataSinkDTO> dataSinks, String eventTypeHandler,
+    Map<Long, DataSink> map) {
+    dataSinks.forEach(dataSink -> {
+      try {
+        // Create an instance for this data sink.
+        final DataSinkFactory esthesisDataSinkFactory =
+          (DataSinkFactory) Class.forName(dataSink.getFactoryClass()).newInstance();
+        // Set the configuration to the data sink.
+        esthesisDataSinkFactory.setConfiguration(dataSink.getConfiguration());
+        // Keep the instance of this data sink to a local map.
+        if (eventTypeHandler.equals(EventType.METADATA)) {
+          map.put(dataSink.getId(), esthesisDataSinkFactory.getMetadataSink());
+          LOGGER.log(Level.FINE, "Started metadata write sink: {0}.", esthesisDataSinkFactory);
+        } else if (eventTypeHandler.equals(EventType.TELEMETRY)) {
+          map.put(dataSink.getId(), esthesisDataSinkFactory.getTelemetrySink());
+          LOGGER.log(Level.FINE, "Started telemetry write sink: {0}.", esthesisDataSinkFactory);
+        } else {
+          throw new QMismatchException("Unspecified event type handler.");
+        }
+      } catch (Exception e) {
+        LOGGER.log(Level.SEVERE, MessageFormat
+          .format("Could not instantiate metadata write sink {0}.", dataSink.getFactoryClass()), e);
+      }
+    });
   }
 
   public void startDataSinks() {
     LOGGER.log(Level.FINEST, "Initializing active data sinks.");
-    // Start all active metadata sinks.
-    findActiveMetadataSinks().forEach(dataSink -> {
+    // Start all active metadata write sinks.
+    fillSink(dataSinkService.findActiveMetadataWriteSinks(), EventType.METADATA,
+      startedMetadataWriteSinks);
+
+    //    dataSinkService.findActiveMetadataWriteSinks().forEach(dataSink -> {
+    //      try {
+    //        // Create an instance for this data sink.
+    //        final DataSinkFactory esthesisDataSinkFactory =
+    //          (DataSinkFactory) Class.forName(dataSink.getFactoryClass()).newInstance();
+    //        // Set the configuration to the data sink.
+    //        esthesisDataSinkFactory.setConfiguration(dataSink.getConfiguration());
+    //        // Keep the instance of this data sink to a local map.
+    //        startedMetadataWriteSinks.put(dataSink.getId(), esthesisDataSinkFactory.getMetadataSink());
+    //        LOGGER.log(Level.FINE, "Started metadata write sink: {0}.", esthesisDataSinkFactory);
+    //      } catch (Exception e) {
+    //        LOGGER.log(Level.SEVERE, MessageFormat
+    //          .format("Could not instantiate metadata write sink {0}.", dataSink.getFactoryClass()), e);
+    //      }
+    //    });
+    dataSinkService.findActiveMetadataReadSinks().forEach(dataSink -> {
       try {
         // Create an instance for this data sink.
         final DataSinkFactory esthesisDataSinkFactory =
@@ -78,16 +112,16 @@ public class DataSinkManager {
         // Set the configuration to the data sink.
         esthesisDataSinkFactory.setConfiguration(dataSink.getConfiguration());
         // Keep the instance of this data sink to a local map.
-        startedMetadataSinks.put(dataSink.getId(), esthesisDataSinkFactory.getMetadataSink());
-        LOGGER.log(Level.FINE, "Started metadata sink: {0}.", esthesisDataSinkFactory);
+        startedMetadataReadSinks.put(dataSink.getId(), esthesisDataSinkFactory.getMetadataSink());
+        LOGGER.log(Level.FINE, "Started metadata write sink: {0}.", esthesisDataSinkFactory);
       } catch (Exception e) {
         LOGGER.log(Level.SEVERE, MessageFormat
-          .format("Could not instantiate metadata data sink {0}.", dataSink.getFactoryClass()), e);
+          .format("Could not instantiate metadata write sink {0}.", dataSink.getFactoryClass()), e);
       }
     });
 
-    // Start all active telemetry sinks.
-    findActiveTelemetrySinks().forEach(dataSink -> {
+    // Start all active telemetry write sinks.
+    dataSinkService.findActiveTelemetryWriteSinks().forEach(dataSink -> {
       try {
         // Create an instance for this data sink.
         final DataSinkFactory esthesisDataSinkFactory =
@@ -95,7 +129,8 @@ public class DataSinkManager {
         // Set the configuration to the data sink.
         esthesisDataSinkFactory.setConfiguration(dataSink.getConfiguration());
         // Keep the instance of this data sink to a local map.
-        startedTelemetrySinks.put(dataSink.getId(), esthesisDataSinkFactory.getTelemetrySink());
+        startedTelemetryWriteSinks
+          .put(dataSink.getId(), esthesisDataSinkFactory.getTelemetrySink());
         LOGGER.log(Level.FINE, "Started telemetry sink: {0}.", esthesisDataSinkFactory);
       } catch (Exception e) {
         LOGGER.log(Level.SEVERE,
@@ -108,9 +143,9 @@ public class DataSinkManager {
 
   @PreDestroy
   public void stopDataSinks() {
-    startedMetadataSinks.entrySet().parallelStream().forEach(dataSyncEntry
+    startedMetadataWriteSinks.entrySet().parallelStream().forEach(dataSyncEntry
       -> dataSyncEntry.getValue().disconnect());
-    startedTelemetrySinks.entrySet().parallelStream().forEach(dataSyncEntry
+    startedTelemetryWriteSinks.entrySet().parallelStream().forEach(dataSyncEntry
       -> dataSyncEntry.getValue().disconnect());
   }
 
@@ -122,12 +157,17 @@ public class DataSinkManager {
   public void onApplicationEvent(MQTTDataEvent event) {
     LOGGER.log(Level.FINEST, "Starting distribution of MQTT event {0} on topic {1} for device {2}.",
       new Object[]{event.getId(), event.getTopic(), event.getHardwareId()});
-    if (event instanceof MQTTMetadataEvent) {
-      startedMetadataSinks.entrySet().parallelStream().forEach(
-        dataSinkEntry -> dataSinkMessenger.metadataMessage(dataSinkEntry.getValue(), event));
-    } else if (event instanceof MQTTTelemetryEvent) {
-      startedTelemetrySinks.entrySet().parallelStream().forEach(
-        dataSinkEntry -> dataSinkMessenger.telemetryMessage(dataSinkEntry.getValue(), event));
+    switch (event.getEventType()) {
+      case (EventType.TELEMETRY):
+        startedTelemetryWriteSinks.entrySet().parallelStream().forEach(
+          dataSinkEntry -> dataSinkMessenger.processMessage(dataSinkEntry.getValue(), event));
+        break;
+      case (EventType.METADATA):
+        startedMetadataWriteSinks.entrySet().parallelStream().forEach(
+          dataSinkEntry -> dataSinkMessenger.processMessage(dataSinkEntry.getValue(), event));
+        break;
+      case (EventType.CONTROL_REPLY):
+        break;
     }
     LOGGER.log(Level.FINEST, "Finished distribution of MQTT event {0} on topic {1} for device {2}.",
       new Object[]{event.getId(), event.getTopic(), event.getHardwareId()});

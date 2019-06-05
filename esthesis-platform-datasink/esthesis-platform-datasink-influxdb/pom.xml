@@ -25,6 +25,11 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
+    <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>esthesis-extension-datasink</artifactId>
+      <version>${esthesis-extension.version}</version>
+    </dependency>
   </dependencies>
 
 </project>

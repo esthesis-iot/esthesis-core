@@ -2,7 +2,7 @@ package esthesis.platform.server.service;
 
 import com.eurodyn.qlack.fuse.crypto.CryptoDigestService;
 import com.querydsl.core.types.Predicate;
-import esthesis.extension.util.Base64E;
+import esthesis.extension.common.util.Base64E;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting;
 import esthesis.platform.server.dto.DeviceDTO;

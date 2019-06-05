@@ -1,4 +1,4 @@
-package esthesis.platform.datasink.influxdb.sink;
+package esthesis.platform.datasink.influxdb;
 
 import static org.influxdb.querybuilder.BuiltQuery.QueryBuilder.eq;
 import static org.influxdb.querybuilder.BuiltQuery.QueryBuilder.select;
@@ -6,8 +6,10 @@ import static org.influxdb.querybuilder.BuiltQuery.QueryBuilder.select;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.extension.config.AppConstants.Mqtt;
-import esthesis.platform.datasink.influxdb.config.InfluxDBConfiguration;
+import esthesis.extension.datasink.DataSink;
+import esthesis.extension.datasink.DataSinkDataPoint;
+import esthesis.extension.datasink.MQTTDataEvent;
+import esthesis.extension.datasink.config.AppConstants.Mqtt;
 import org.apache.commons.lang3.StringUtils;
 import org.influxdb.BatchOptions;
 import org.influxdb.InfluxDB;
@@ -26,15 +28,16 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class InfluxDBSink {
+public class InfluxDBDataSink implements DataSink {
 
   // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(InfluxDBSink.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(InfluxDBDataSink.class.getName());
   private InfluxDB influxDB;
   private boolean initialized;
   private InfluxDBConfiguration influxDBConfiguration;
@@ -49,7 +52,7 @@ public abstract class InfluxDBSink {
     Include.NON_EMPTY);
   private static AtomicInteger eventsQueued = new AtomicInteger(0);
 
-  InfluxDBSink(String configuration, String sinkName, String eventType) {
+  InfluxDBDataSink(String configuration, String sinkName, String eventType) {
     LOGGER.log(Level.FINE, "Instantiating {0}.", sinkName);
     this.sinkName = sinkName;
     this.eventType = eventType;
@@ -147,16 +150,15 @@ public abstract class InfluxDBSink {
     return pointBuilder.build();
   }
 
-  public void processEvent(String hardwareId, byte[] mqttEventPayload, String eventId,
-    String topic) {
+  public void processEvent(MQTTDataEvent event) {
     eventsQueued.incrementAndGet();
 
     try {
       LOGGER.log(Level.FINEST, "Processing MQTT event {0} on topic {1} for device {2}.",
-        new Object[]{eventId, topic, hardwareId});
+        new Object[]{event.getId(), event.getTopic(), event.getHardwareId()});
       if (initialized) {
         try {
-          Point point = preparePoint(hardwareId, mqttEventPayload, eventType);
+          Point point = preparePoint(event.getHardwareId(), event.getPayload(), eventType);
           if (StringUtils.isNotBlank(influxDBConfiguration.getRetentionPolicy())) {
             influxDB.write(influxDBConfiguration.getDatabaseName(),
               influxDBConfiguration.getRetentionPolicy(), point);
@@ -166,18 +168,18 @@ public abstract class InfluxDBSink {
         } catch (IOException e) {
           LOGGER.log(Level.SEVERE, MessageFormat.format("Could not process MQTT event {0} on topic "
               + "{1} for device {2}.",
-            new Object[]{eventId, topic, hardwareId}), e);
+            new Object[]{event.getId(), event.getTopic(), event.getHardwareId()}), e);
         }
       } else {
         LOGGER.log(Level.WARNING,
           "Got an MQTT event {0} on topic {1} for device {2} before {3} being initialized.",
-          new Object[]{eventId, topic, hardwareId, sinkName});
+          new Object[]{event.getId(), event.getTopic(), event.getHardwareId(), sinkName});
       }
       LOGGER.log(Level.FINEST, "Finished processing MQTT event {0} on topic {1} for device {2}.",
-        new Object[]{eventId, topic, hardwareId});
+        new Object[]{event.getId(), event.getTopic(), event.getHardwareId()});
     } catch (Exception e) {
       LOGGER.log(Level.SEVERE, MessageFormat.format("An unknown error happened during processing "
-        + "of MQTT event {0}.", eventId), 3);
+        + "of MQTT event {0}.", event.getId()));
     }
 
     eventsQueued.decrementAndGet();
@@ -193,6 +195,53 @@ public abstract class InfluxDBSink {
 
   public float getPressure() {
     return (float) eventsQueued.intValue() / (float) influxDBConfiguration.getQueueSize();
+  }
+
+  @Override
+  public String getFriendlyName() {
+    return null;
+  }
+
+  @Override
+  public List<DataSinkDataPoint> getDataPoint(String hardwareId, String measurement,
+    Optional<String> field) {
+    return null;
+  }
+
+  @Override
+  public List<DataSinkDataPoint> getDataPoints(String hardwareId, String measurement,
+    Instant fromDate, Instant toDate, String... fields) {
+    return null;
+  }
+
+  @Override
+  public List<DataSinkDataPoint> getDataPoints(String hardwareId, String measurement,
+    Instant fromDate, Instant toDate, int resultsPage, int resultsPageSize, String... fields) {
+    return null;
+  }
+
+  @Override
+  public long countDataPoints(String hardwareId, String measurement, Instant fromDate,
+    Instant toDate, String... fields) {
+    return 0;
+  }
+
+  @Override
+  public long maxDataPoint(String hardwareId, String measurement, Instant fromDate, Instant toDate,
+    Optional<String> field) {
+    return 0;
+  }
+
+  @Override
+  public long minDataPoint(String hardwareId, String measurement, Instant fromDate, Instant toDate,
+    Optional<String> field) {
+    return 0;
+  }
+
+  @Override
+  public long averageDataPoint(String hardwareId, String measurement, Instant fromDate,
+    Instant toDate, Optional<String> field) {
+    return 0;
   }
 
   public String getSinkName() {

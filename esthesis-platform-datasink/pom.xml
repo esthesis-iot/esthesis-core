@@ -26,13 +26,4 @@
     </plugins>
   </build>
 
-  <dependencies>
-    <dependency>
-      <groupId>esthesis</groupId>
-      <artifactId>esthesis-extension</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-  </dependencies>
-
-
 </project>

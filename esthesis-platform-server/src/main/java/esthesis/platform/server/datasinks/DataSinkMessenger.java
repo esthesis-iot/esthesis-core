@@ -1,10 +1,7 @@
 package esthesis.platform.server.datasinks;
 
-import esthesis.extension.platform.event.MQTTDataEvent;
-import esthesis.extension.platform.event.MQTTMetadataEvent;
-import esthesis.extension.platform.event.MQTTTelemetryEvent;
-import esthesis.extension.platform.datasink.MetadataSink;
-import esthesis.extension.platform.datasink.TelemetrySink;
+import esthesis.extension.datasink.DataSink;
+import esthesis.extension.datasink.MQTTDataEvent;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -21,24 +18,13 @@ public class DataSinkMessenger {
   private float pressureReleasePoint = 0.9f;
 
   @Async
-  public void metadataMessage(MetadataSink metadataSink, MQTTDataEvent event) {
-    if (metadataSink.getPressure() < pressureReleasePoint) {
-      metadataSink.processEvent((MQTTMetadataEvent) event);
+  public void processMessage(DataSink dataSink, MQTTDataEvent event) {
+    if (dataSink.getPressure() < pressureReleasePoint) {
+      dataSink.processEvent(event);
     } else {
       LOGGER.log(Level.WARNING,
         "Discarded sending MQTT event {0} to data sink {1} as pressure was higher than {2}.",
-        new Object[]{event.getId(), metadataSink.getFriendlyName(), pressureReleasePoint});
-    }
-  }
-
-  @Async
-  public void telemetryMessage(TelemetrySink telemetrySink, MQTTDataEvent event) {
-    if (telemetrySink.getPressure() < pressureReleasePoint) {
-      telemetrySink.processEvent((MQTTTelemetryEvent) event);
-    } else {
-      LOGGER.log(Level.WARNING,
-        "Discarded sending MQTT event {0} to data sink {1} as pressure was higher than {2}.",
-        new Object[]{event.getId(), telemetrySink.getFriendlyName(), pressureReleasePoint});
+        new Object[]{event.getId(), dataSink.getFriendlyName(), pressureReleasePoint});
     }
   }
 }

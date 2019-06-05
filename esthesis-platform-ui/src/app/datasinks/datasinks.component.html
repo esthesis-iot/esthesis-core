@@ -20,16 +20,28 @@
             <app-boolean-checkbox [value]="element.state"></app-boolean-checkbox>
           </td>
         </ng-container>
-        <ng-container matColumnDef="metadata">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Metadata handler</th>
+        <ng-container matColumnDef="metadataWrite">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Metadata write handler</th>
           <td mat-cell *matCellDef="let element">
-            <app-boolean-checkbox [value]="element.metadata"></app-boolean-checkbox>
+            <app-boolean-checkbox [value]="element.metadataWrite"></app-boolean-checkbox>
           </td>
         </ng-container>
-        <ng-container matColumnDef="telemetry">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Telemetry handler</th>
+        <ng-container matColumnDef="telemetryWrite">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Telemetry write handler</th>
           <td mat-cell *matCellDef="let element">
-            <app-boolean-checkbox [value]="element.telemetry"></app-boolean-checkbox>
+            <app-boolean-checkbox [value]="element.telemetryWrite"></app-boolean-checkbox>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="metadataRead">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Metadata read handler</th>
+          <td mat-cell *matCellDef="let element">
+            <app-boolean-checkbox [value]="element.metadataRead"></app-boolean-checkbox>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="telemetryRead">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Telemetry read handler</th>
+          <td mat-cell *matCellDef="let element">
+            <app-boolean-checkbox [value]="element.telemetryRead"></app-boolean-checkbox>
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="columns"></tr>

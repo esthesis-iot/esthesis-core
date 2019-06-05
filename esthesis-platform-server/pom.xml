@@ -71,8 +71,13 @@
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>esthesis-extension</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <artifactId>esthesis-extension-common</artifactId>
+      <version>${esthesis-extension.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>esthesis-extension-device</artifactId>
+      <version>${esthesis-extension.version}</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
@@ -100,7 +105,7 @@
     <dependency>
       <groupId>com.github.paulcwarren</groupId>
       <artifactId>spring-content-fs-boot-starter</artifactId>
-      <version>0.8.0</version>
+      <version>${spring-content-fs-boot-starter.version}</version>
     </dependency>
 
     <!-- QLACK dependencies -->

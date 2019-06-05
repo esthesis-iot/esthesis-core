@@ -37,16 +37,6 @@ public class DataSinkService extends BaseService<DataSinkDTO, DataSink> {
     return dataSinkScanner.getAvailableDataSinkFactories();
   }
 
-  @Override
-  public DataSinkDTO save(DataSinkDTO dto) {
-    return super.save(dto);
-  }
-
-  @Override
-  public DataSinkDTO deleteById(long id) {
-    return super.deleteById(id);
-  }
-
   public List<DataSinkDTO> findActiveMetadataReadSinks() {
     return dataSinkMapper.map(dataSinkRepository.findAllByStateAndMetadataRead(true, true));
   }

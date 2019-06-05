@@ -45,30 +45,35 @@ public class ApplicationService extends BaseService<ApplicationDTO, Application>
     // Filter read-only fields.
     applicationDTO = JSONFilter.filterNonEmpty(applicationDTO, "-userId");
 
-    // Create a user for this application with an empty password, so this user can not login.
-    String username = "app" + "_" + applicationDTO.getName();
-    String userId = userService.createUser(new UserDTO()
-      .setUsername(username)
-      .setStatus(Status.APP_USER)
-      .setStatus(Status.ACTIVE), null);
+    String auditLevel;
+    String auditCorrelationId;
+    if (applicationDTO.getId() == null) {
+      auditLevel = CREATE;
+      auditCorrelationId = UUID.randomUUID().toString();
+      String username = "application_" + applicationDTO.getName();
+      String userId = userService.createUser(new UserDTO()
+        .setUsername(username)
+        .setStatus(Status.APP_USER)
+        .setStatus(Status.ACTIVE), null);
+      applicationDTO.setUserId(userId);
+      auditService.audit(new AuditDTO()
+        .setLevel(auditLevel).setEvent(Event.USER)
+        .setShortDescription("Created user {0} for application {1}.", username,
+          applicationDTO.getName())
+        .setCorrelationId(auditCorrelationId));
+    } else {
+      auditLevel = UPDATE;
+      auditCorrelationId = null;
+    }
 
-    // Save the application.
-    applicationDTO.setUserId(userId);
-    String auditLevel = applicationDTO.getId() == 0 ? CREATE : UPDATE;
     applicationDTO = super.save(applicationDTO);
 
     // Audit.
-    String auditCorrelationId = UUID.randomUUID().toString();
     String auditMessage = "Application {0}" + (applicationDTO.getId() == 0 ? " created" : " "
       + "updated.");
     auditService.audit(new AuditDTO()
       .setLevel(auditLevel).setEvent(Event.APPLICATION)
       .setShortDescription(auditMessage, applicationDTO.getName())
-      .setCorrelationId(auditCorrelationId));
-    auditService.audit(new AuditDTO()
-      .setLevel(auditLevel).setEvent(Event.USER)
-      .setShortDescription("Created user {0} for application {1}.", username,
-        applicationDTO.getName())
       .setCorrelationId(auditCorrelationId));
 
     return applicationDTO;
@@ -76,6 +81,15 @@ public class ApplicationService extends BaseService<ApplicationDTO, Application>
 
   public ApplicationDTO findByToken(String token) {
     return applicationMapper.map(ReturnOptional.r(applicationRepository.findByTokenEquals(token)));
+  }
+
+  @Override
+  public ApplicationDTO deleteById(long id) {
+    // Delete the user for this application.
+    userService.deleteUser(findById(id).getUserId());
+
+    // Delete the application.
+    return super.deleteById(id);
   }
 }
 

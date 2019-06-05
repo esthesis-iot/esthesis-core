@@ -7,7 +7,7 @@ import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.github.slugify.Slugify;
 import com.querydsl.core.types.Predicate;
-import esthesis.extension.util.Base64E;
+import esthesis.extension.common.util.Base64E;
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.DeviceKeyDTO;
 import esthesis.platform.server.dto.DeviceRegistrationDTO;

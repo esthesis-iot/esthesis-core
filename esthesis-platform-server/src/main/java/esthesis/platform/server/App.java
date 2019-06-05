@@ -10,6 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.security.Security;
 import java.util.TimeZone;
@@ -43,6 +44,9 @@ public class App {
   public static void main(String[] args) {
     // Add BouncyCastle security provider.
     Security.addProvider(new BouncyCastleProvider());
+
+    // Setup Security Context strategy to work with asynchronous events processing.
+    SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
 
     // Start the application.
     SpringApplication.run(App.class, args);

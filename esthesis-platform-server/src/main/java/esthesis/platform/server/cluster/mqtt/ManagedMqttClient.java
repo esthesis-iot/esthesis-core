@@ -2,13 +2,13 @@ package esthesis.platform.server.cluster.mqtt;
 
 import static esthesis.platform.server.config.AppConstants.Zookeeper.LEADER_ELECTION_PATH_MQTT;
 
+import esthesis.extension.datasink.config.AppConstants.Mqtt.EventType;
 import esthesis.platform.server.mapper.MQTTMessageMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.recipes.leader.LeaderLatchListener;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
-import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -50,10 +50,6 @@ public class ManagedMqttClient {
     this.mqttMessageMapper = mqttMessageMapper;
     this.topicControlRequest = topicControlRequest;
     this.topicControlReply = topicControlReply;
-  }
-
-  private String[] getTopicNames() {
-    return new String[]{topicTelemetry + "/#", topicMetadata + "/#", topicControlReply + "/#"};
   }
 
   protected void connect() throws MqttException {
@@ -101,32 +97,38 @@ public class ManagedMqttClient {
       new Object[]{StringUtils.joinWith(", ", topicTelemetry, topicMetadata, topicControlReply),
         ipAddress});
 
-    //TODO can this be done in a more efficient way without repeating the listener?
-    client.subscribe(getTopicNames(), new IMqttMessageListener[]{
-      (topic, message) -> applicationEventPublisher.publishEvent(
-        mqttMessageMapper.mapToTelemetryEvent(message)
+    client.subscribe(topicTelemetry + "/#", (topic, message) ->
+      applicationEventPublisher.publishEvent(
+        mqttMessageMapper.map(message)
           .setTopic(topic)
+          .setEventType(EventType.TELEMETRY)
           .setHardwareId(topic.substring(topic.lastIndexOf('/') + 1))
-          .setId(UUID.randomUUID().toString())),
-      (topic, message) -> applicationEventPublisher.publishEvent(
-        mqttMessageMapper.mapToTelemetryEvent(message)
+          .setId(UUID.randomUUID().toString())));
+
+    client.subscribe(topicMetadata + "/#", (topic, message) ->
+      applicationEventPublisher.publishEvent(
+        mqttMessageMapper.map(message)
           .setTopic(topic)
+          .setEventType(EventType.METADATA)
           .setHardwareId(topic.substring(topic.lastIndexOf('/') + 1))
-          .setId(UUID.randomUUID().toString())),
-      (topic, message) -> applicationEventPublisher.publishEvent(
-        mqttMessageMapper.mapToTelemetryEvent(message)
+          .setId(UUID.randomUUID().toString())));
+
+    client.subscribe(topicControlReply + "/#", (topic, message) ->
+      applicationEventPublisher.publishEvent(
+        mqttMessageMapper.map(message)
           .setTopic(topic)
+          .setEventType(EventType.CONTROL_REPLY)
           .setHardwareId(topic.substring(topic.lastIndexOf('/') + 1))
-          .setId(UUID.randomUUID().toString()))
-    });
+          .setId(UUID.randomUUID().toString())));
   }
 
   protected void unsubscribe() throws MqttException {
-    client.unsubscribe(getTopicNames());
+    client.unsubscribe(
+      new String[]{topicTelemetry + "/#", topicMetadata + "/#", topicControlReply + "/#"});
   }
 
   protected void participateInLeaderElection(long mqttServerId, CuratorFramework curatorFramework)
-    throws Exception {
+  throws Exception {
     curatorFramework.checkExists().creatingParentsIfNeeded()
       .forPath(LEADER_ELECTION_PATH_MQTT + "/" + mqttServerId);
 
@@ -143,7 +145,8 @@ public class ManagedMqttClient {
         try {
           subscribe();
         } catch (MqttException e) {
-          LOGGER.log(Level.SEVERE, MessageFormat.format("Could not subscribe to MQTT topics on server "
+          LOGGER
+            .log(Level.SEVERE, MessageFormat.format("Could not subscribe to MQTT topics on server "
               + "{0}.", ipAddress), e);
         }
       }
@@ -156,7 +159,7 @@ public class ManagedMqttClient {
         } catch (MqttException e) {
           LOGGER
             .log(Level.SEVERE, MessageFormat.format("Could not unsubscribe from MQTT topics on "
-          + "server {0}.", ipAddress), e);
+              + "server {0}.", ipAddress), e);
         }
       }
     });

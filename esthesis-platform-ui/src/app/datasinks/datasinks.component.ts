@@ -11,7 +11,8 @@ import {DataSinkService} from './data-sink.service';
   styleUrls: ['./datasinks.component.scss']
 })
 export class DatasinksComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['name', 'createdOn', 'state', 'metadata', 'telemetry'];
+  columns = ['name', 'createdOn', 'state', 'metadataWrite', 'telemetryWrite',
+    'metadataRead', 'telemetryRead'];
   datasource = new MatTableDataSource<DataSinkDto>();
 
   @ViewChild(MatSort) sort: MatSort;
@@ -36,7 +37,8 @@ export class DatasinksComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
-    this.dataSinkService.getAll(this.qForms.appendPagingToFilter(null, page, size, sort, sortDirection))
+    this.dataSinkService.getAll(
+      this.qForms.appendPagingToFilter(null, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;
       this.paginator.length = onNext.totalElements;
@@ -44,7 +46,8 @@ export class DatasinksComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   changePage() {
-    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+      this.sort.start);
   }
 
 }

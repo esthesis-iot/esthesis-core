@@ -43,6 +43,7 @@ public abstract class BaseEntity {
   private Instant modifiedOn;
 
   @LastModifiedBy
+  @Column(name = "modified_by")
   private String modifiedBy;
 
   @Version

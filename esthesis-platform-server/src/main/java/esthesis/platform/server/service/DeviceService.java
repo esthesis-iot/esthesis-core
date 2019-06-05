@@ -1,6 +1,5 @@
 package esthesis.platform.server.service;
 
-
 import static esthesis.platform.server.config.AppSettings.SettingValues.DeviceRegistration.RegistrationMode.DISABLED;
 
 import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
@@ -12,9 +11,9 @@ import com.eurodyn.qlack.fuse.crypto.CryptoSymmetricService;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.google.common.collect.Lists;
-import esthesis.extension.device.DeviceMessage;
-import esthesis.extension.device.request.RegistrationRequest;
-import esthesis.extension.util.Base64E;
+import esthesis.extension.common.util.Base64E;
+import esthesis.extension.device.device.DeviceMessage;
+import esthesis.extension.device.device.request.RegistrationRequest;
 import esthesis.platform.server.config.AppConstants.Device.State;
 import esthesis.platform.server.config.AppConstants.WebSocket.Topic;
 import esthesis.platform.server.config.AppProperties;

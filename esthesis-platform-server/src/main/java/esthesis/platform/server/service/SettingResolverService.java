@@ -1,7 +1,7 @@
 package esthesis.platform.server.service;
 
 import com.eurodyn.qlack.fuse.settings.service.SettingsService;
-import esthesis.extension.config.AppConstants.Generic;
+import esthesis.extension.common.config.AppConstants.Generic;
 import org.springframework.stereotype.Service;
 
 @Service
