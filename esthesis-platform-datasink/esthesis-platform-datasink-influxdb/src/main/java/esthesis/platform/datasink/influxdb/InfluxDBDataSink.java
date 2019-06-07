@@ -1,15 +1,20 @@
 package esthesis.platform.datasink.influxdb;
 
+import static org.influxdb.querybuilder.BuiltQuery.QueryBuilder.asc;
+import static org.influxdb.querybuilder.BuiltQuery.QueryBuilder.desc;
 import static org.influxdb.querybuilder.BuiltQuery.QueryBuilder.eq;
+import static org.influxdb.querybuilder.BuiltQuery.QueryBuilder.gte;
+import static org.influxdb.querybuilder.BuiltQuery.QueryBuilder.lte;
 import static org.influxdb.querybuilder.BuiltQuery.QueryBuilder.select;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.extension.datasink.DataSink;
-import esthesis.extension.datasink.DataSinkDataPoint;
 import esthesis.extension.datasink.MQTTDataEvent;
 import esthesis.extension.datasink.config.AppConstants.Mqtt;
+import esthesis.extension.datasink.dto.DataSinkMeasurement;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.influxdb.BatchOptions;
 import org.influxdb.InfluxDB;
@@ -17,7 +22,12 @@ import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.Point.Builder;
 import org.influxdb.dto.Query;
-import org.influxdb.dto.QueryResult.Result;
+import org.influxdb.dto.QueryResult;
+import org.influxdb.dto.QueryResult.Series;
+import org.influxdb.querybuilder.Ordering;
+import org.influxdb.querybuilder.SelectionQueryImpl;
+import org.influxdb.querybuilder.WhereQueryImpl;
+import org.springframework.util.CollectionUtils;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
@@ -27,8 +37,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -45,9 +56,13 @@ public class InfluxDBDataSink implements DataSink {
   private String eventType;
   // The name of the tag to indicate the type of the measurement.
   public static final String TAG_TYPE_NAME = "type";
+  // The name of the tag to indicate the hardware ID for which a measurement was recorded.
   public static final String TAG_HARDWARE_ID_NAME = "hardwareId";
   // The default name of the field when no specific name is provided for a measurement.
   public static final String NO_NAME_VALUE = "value";
+  // The default InfluxDB name used for time column.
+  public static final String INFLUXDB_TIME_NAME = "time";
+
   private static ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(
     Include.NON_EMPTY);
   private static AtomicInteger eventsQueued = new AtomicInteger(0);
@@ -202,57 +217,209 @@ public class InfluxDBDataSink implements DataSink {
     return null;
   }
 
-  @Override
-  public List<DataSinkDataPoint> getDataPoint(String hardwareId, String measurement,
-    Optional<String> field) {
-    return null;
+  private DataSinkMeasurement prepareOperationResult(QueryResult queryResult, String hardwareId,
+    String measurement, String type) {
+    // Return an empty response if no results are available.
+    if (CollectionUtils.isEmpty(queryResult.getResults().get(0).getSeries())) {
+      return null;
+    }
+
+    // Set default values about the measurement for which count is calculated.
+    DataSinkMeasurement dataSinkMeasurement = new DataSinkMeasurement();
+    dataSinkMeasurement.setHardwareId(hardwareId);
+    dataSinkMeasurement.setType(type);
+    dataSinkMeasurement.setMeasurement(measurement);
+
+    // Remove unnecessary columns (such as 'time').
+    final Series series = queryResult.getResults().get(0).getSeries().get(0);
+    int timeColumnIndex = series.getColumns().indexOf(INFLUXDB_TIME_NAME);
+    final List<String> columns = series.getColumns();
+    columns.remove(timeColumnIndex);
+    dataSinkMeasurement.setColumns(columns);
+
+    // Set values (removing values of removed columns)
+    final List<List<Object>> values = series.getValues();
+    final List<Integer> indicesToRemove = Collections.singletonList(timeColumnIndex);
+    values.stream().forEach(o ->
+      indicesToRemove.stream().mapToInt(i -> i).forEach(o::remove)
+    );
+    dataSinkMeasurement.setValues(series.getValues());
+
+    return dataSinkMeasurement;
+  }
+
+  private DataSinkMeasurement prepareMeasurementsResults(QueryResult queryResult) {
+    // Return an empty response if no results are available.
+    if (CollectionUtils.isEmpty(queryResult.getResults().get(0).getSeries())) {
+      return null;
+    }
+
+    DataSinkMeasurement dataSinkMeasurement = new DataSinkMeasurement();
+    final Series series = queryResult.getResults().get(0).getSeries().get(0);
+
+    // Set the name of the measurement.
+    dataSinkMeasurement.setMeasurement(series.getName());
+
+    // Remove columns with duplicate values, such as the hardware ID and the measurement type.
+    // Instead, add these values once in the DataSinkMeasurement.
+    int hardwareIdColumnIndex = series.getColumns().indexOf(TAG_HARDWARE_ID_NAME);
+    int measurementTypeColumnIndex = series.getColumns().indexOf(TAG_TYPE_NAME);
+    dataSinkMeasurement
+      .setHardwareId(series.getValues().get(0).get(hardwareIdColumnIndex).toString());
+    dataSinkMeasurement
+      .setType(series.getValues().get(0).get(measurementTypeColumnIndex).toString());
+    final List<String> columns = series.getColumns();
+    columns.remove(hardwareIdColumnIndex);
+    measurementTypeColumnIndex = series.getColumns().indexOf(TAG_TYPE_NAME);
+    columns.remove(measurementTypeColumnIndex);
+    dataSinkMeasurement.setColumns(columns);
+
+    // Set values (removing values of removed columns)
+    final List<List<Object>> values = series.getValues();
+    final List<Integer> indicesToRemove = Arrays
+      .asList(hardwareIdColumnIndex, measurementTypeColumnIndex);
+    values.stream().forEach(o ->
+      indicesToRemove.stream().mapToInt(i -> i).forEach(o::remove)
+    );
+    dataSinkMeasurement.setValues(series.getValues());
+
+    return dataSinkMeasurement;
+  }
+
+  private void setFromTo(WhereQueryImpl whereQuery, long fromDate, long toDate) {
+    if (toDate == 0) {
+      toDate = Instant.now().toEpochMilli();
+    }
+    whereQuery.and(gte(INFLUXDB_TIME_NAME, fromDate * 1000000));
+    whereQuery.and(lte(INFLUXDB_TIME_NAME, toDate * 1000000));
+  }
+
+  private DataSinkMeasurement getOneOrdered(@NotNull String hardwareId, @NotNull String measurement,
+    @NotNull String type, Ordering ordering, String... field) {
+    Query query = select(field)
+      .from(influxDBConfiguration.getDatabaseName(), measurement)
+      .where(eq(TAG_HARDWARE_ID_NAME, hardwareId))
+      .and(eq(TAG_TYPE_NAME, type))
+      .limit(1)
+      .orderBy(ordering);
+
+    LOGGER.log(Level.FINEST, "Executing query: {0}. ", query.getCommand());
+    return prepareMeasurementsResults(influxDB.query(query));
+  }
+
+  private void setPaging(WhereQueryImpl query, int page, int pageSize) {
+    if (page > 0 && pageSize > 0) {
+      query.limit(pageSize, page * pageSize);
+    } else if (pageSize > 0) {
+      query.limit(pageSize);
+    }
   }
 
   @Override
-  public List<DataSinkDataPoint> getDataPoints(String hardwareId, String measurement,
-    Instant fromDate, Instant toDate, String... fields) {
-    return null;
+  public DataSinkMeasurement getLast(@NotNull String hardwareId, @NotNull String measurement,
+    @NotNull String type, String fields) {
+    return getOneOrdered(hardwareId, measurement, type, desc(), fields);
   }
 
   @Override
-  public List<DataSinkDataPoint> getDataPoints(String hardwareId, String measurement,
-    Instant fromDate, Instant toDate, int resultsPage, int resultsPageSize, String... fields) {
-    return null;
+  public DataSinkMeasurement getFirst(@NotNull String hardwareId, @NotNull String measurement,
+    @NotNull String type, String fields) {
+    return getOneOrdered(hardwareId, measurement, type, asc(), fields);
   }
 
   @Override
-  public long countDataPoints(String hardwareId, String measurement, Instant fromDate,
-    Instant toDate, String... fields) {
-    return 0;
+  public DataSinkMeasurement get(@NotNull String hardwareId, @NotNull String measurement,
+    @NotNull String type, long fromDate, long toDate, int page, int pageSize, String fields) {
+    WhereQueryImpl whereQuery = select(fields)
+      .from(influxDBConfiguration.getDatabaseName(), measurement)
+      .where(eq(TAG_HARDWARE_ID_NAME, hardwareId))
+      .and(eq(TAG_TYPE_NAME, type));
+    setFromTo(whereQuery, fromDate, toDate);
+    setPaging(whereQuery, page, pageSize);
+    Query query = whereQuery.orderBy(desc());
+
+    LOGGER.log(Level.FINEST, "Executing query: {0}. ", query.getCommand());
+    return prepareMeasurementsResults(influxDB.query(query));
   }
 
   @Override
-  public long maxDataPoint(String hardwareId, String measurement, Instant fromDate, Instant toDate,
-    Optional<String> field) {
-    return 0;
+  public DataSinkMeasurement count(@NotNull String hardwareId, @NotNull String measurement,
+    @NotNull String type, long fromDate, long toDate, String fields) {
+    SelectionQueryImpl selectQuery = select();
+    if (StringUtils.isNotBlank(fields)) {
+      selectQuery.count(fields);
+    } else {
+      selectQuery.countAll();
+    }
+    WhereQueryImpl query = selectQuery
+      .from(influxDBConfiguration.getDatabaseName(), measurement)
+      .where(eq(TAG_HARDWARE_ID_NAME, hardwareId))
+      .and(eq(TAG_TYPE_NAME, type));
+    setFromTo(query, fromDate, toDate);
+
+    LOGGER.log(Level.FINEST, "Executing query: {0}. ", query.getCommand());
+
+    return prepareOperationResult(influxDB.query(query), hardwareId, measurement, type);
   }
 
   @Override
-  public long minDataPoint(String hardwareId, String measurement, Instant fromDate, Instant toDate,
-    Optional<String> field) {
-    return 0;
+  public DataSinkMeasurement max(@NotNull String hardwareId, @NotNull String measurement,
+    @NotNull String type, long fromDate, long toDate, @NotNull String fields) {
+    WhereQueryImpl query = select().max(fields)
+      .from(influxDBConfiguration.getDatabaseName(), measurement)
+      .where(eq(TAG_HARDWARE_ID_NAME, hardwareId))
+      .and(eq(TAG_TYPE_NAME, type));
+    setFromTo(query, fromDate, toDate);
+
+    LOGGER.log(Level.FINEST, "Executing query: {0}. ", query.getCommand());
+
+    return prepareOperationResult(influxDB.query(query), hardwareId, measurement, type);
   }
 
   @Override
-  public long averageDataPoint(String hardwareId, String measurement, Instant fromDate,
-    Instant toDate, Optional<String> field) {
-    return 0;
+  public DataSinkMeasurement min(@NotNull String hardwareId, @NotNull String measurement,
+    @NotNull String type, long fromDate, long toDate, @NotNull String fields) {
+    WhereQueryImpl query = select().min(fields)
+      .from(influxDBConfiguration.getDatabaseName(), measurement)
+      .where(eq(TAG_HARDWARE_ID_NAME, hardwareId))
+      .and(eq(TAG_TYPE_NAME, type));
+    setFromTo(query, fromDate, toDate);
+
+    LOGGER.log(Level.FINEST, "Executing query: {0}. ", query.getCommand());
+
+    return prepareOperationResult(influxDB.query(query), hardwareId, measurement, type);
+  }
+
+  @Override
+  public DataSinkMeasurement sum(@NotNull String hardwareId, @NotNull String measurement,
+    @NotNull String type, long fromDate, long toDate, @NotNull String fields) {
+    WhereQueryImpl query = select().sum(fields)
+      .from(influxDBConfiguration.getDatabaseName(), measurement)
+      .where(eq(TAG_HARDWARE_ID_NAME, hardwareId))
+      .and(eq(TAG_TYPE_NAME, type));
+    setFromTo(query, fromDate, toDate);
+
+    LOGGER.log(Level.FINEST, "Executing query: {0}. ", query.getCommand());
+
+    return prepareOperationResult(influxDB.query(query), hardwareId, measurement, type);
+  }
+
+  @Override
+  public DataSinkMeasurement average(@NotNull String hardwareId, @NotNull String measurement,
+    @NotNull String type, long fromDate, long toDate, @NotNull String fields) {
+    WhereQueryImpl query = select().mean(fields)
+      .from(influxDBConfiguration.getDatabaseName(), measurement)
+      .where(eq(TAG_HARDWARE_ID_NAME, hardwareId))
+      .and(eq(TAG_TYPE_NAME, type));
+    setFromTo(query, fromDate, toDate);
+
+    LOGGER.log(Level.FINEST, "Executing query: {0}. ", query.getCommand());
+
+    return prepareOperationResult(influxDB.query(query), hardwareId, measurement, type);
   }
 
   public String getSinkName() {
     return sinkName;
   }
 
-  public void getData(String hardwareId, String measurement) {
-    Query query = select().from(influxDBConfiguration.getDatabaseName(), measurement)
-      .where(eq(TAG_HARDWARE_ID_NAME, hardwareId));
-    final List<Result> results = influxDB.query(query).getResults();
-    System.out.println(results);
-
-  }
 }

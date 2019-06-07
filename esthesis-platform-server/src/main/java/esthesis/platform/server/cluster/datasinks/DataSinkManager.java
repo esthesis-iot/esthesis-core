@@ -17,6 +17,7 @@ import esthesis.platform.server.events.LocalEvent;
 import esthesis.platform.server.events.LocalEvent.LOCAL_EVENT_TYPE;
 import esthesis.platform.server.service.DataSinkService;
 import javax.annotation.PreDestroy;
+import lombok.Getter;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -49,15 +50,19 @@ public class DataSinkManager {
   }
 
   // List of available and active metadata write data sinks.
+  @Getter
   private final Map<Long, DataSink> startedMetadataWriteSinks = new HashMap<>();
   // List of available telemetry write data sinks.
+  @Getter
   private final Map<Long, DataSink> startedTelemetryWriteSinks = new HashMap<>();
   // List of available and active metadata read data sinks.
+  @Getter
   private final Map<Long, DataSink> startedMetadataReadSinks = new HashMap<>();
   // List of available telemetry data read sinks.
+  @Getter
   private final Map<Long, DataSink> startedTelemetryReadSinks = new HashMap<>();
 
-  private void fillSink(List<DataSinkDTO> dataSinks, String eventTypeHandler,
+  private void initialiseDataSink(List<DataSinkDTO> dataSinks, String eventTypeHandler,
     Map<Long, DataSink> map) {
     dataSinks.forEach(dataSink -> {
       try {
@@ -86,59 +91,14 @@ public class DataSinkManager {
   public void startDataSinks() {
     LOGGER.log(Level.FINEST, "Initializing active data sinks.");
     // Start all active metadata write sinks.
-    fillSink(dataSinkService.findActiveMetadataWriteSinks(), EventType.METADATA,
+    initialiseDataSink(dataSinkService.findActiveMetadataWriteSinks(), EventType.METADATA,
       startedMetadataWriteSinks);
-
-    //    dataSinkService.findActiveMetadataWriteSinks().forEach(dataSink -> {
-    //      try {
-    //        // Create an instance for this data sink.
-    //        final DataSinkFactory esthesisDataSinkFactory =
-    //          (DataSinkFactory) Class.forName(dataSink.getFactoryClass()).newInstance();
-    //        // Set the configuration to the data sink.
-    //        esthesisDataSinkFactory.setConfiguration(dataSink.getConfiguration());
-    //        // Keep the instance of this data sink to a local map.
-    //        startedMetadataWriteSinks.put(dataSink.getId(), esthesisDataSinkFactory.getMetadataSink());
-    //        LOGGER.log(Level.FINE, "Started metadata write sink: {0}.", esthesisDataSinkFactory);
-    //      } catch (Exception e) {
-    //        LOGGER.log(Level.SEVERE, MessageFormat
-    //          .format("Could not instantiate metadata write sink {0}.", dataSink.getFactoryClass()), e);
-    //      }
-    //    });
-    dataSinkService.findActiveMetadataReadSinks().forEach(dataSink -> {
-      try {
-        // Create an instance for this data sink.
-        final DataSinkFactory esthesisDataSinkFactory =
-          (DataSinkFactory) Class.forName(dataSink.getFactoryClass()).newInstance();
-        // Set the configuration to the data sink.
-        esthesisDataSinkFactory.setConfiguration(dataSink.getConfiguration());
-        // Keep the instance of this data sink to a local map.
-        startedMetadataReadSinks.put(dataSink.getId(), esthesisDataSinkFactory.getMetadataSink());
-        LOGGER.log(Level.FINE, "Started metadata write sink: {0}.", esthesisDataSinkFactory);
-      } catch (Exception e) {
-        LOGGER.log(Level.SEVERE, MessageFormat
-          .format("Could not instantiate metadata write sink {0}.", dataSink.getFactoryClass()), e);
-      }
-    });
-
-    // Start all active telemetry write sinks.
-    dataSinkService.findActiveTelemetryWriteSinks().forEach(dataSink -> {
-      try {
-        // Create an instance for this data sink.
-        final DataSinkFactory esthesisDataSinkFactory =
-          (DataSinkFactory) Class.forName(dataSink.getFactoryClass()).newInstance();
-        // Set the configuration to the data sink.
-        esthesisDataSinkFactory.setConfiguration(dataSink.getConfiguration());
-        // Keep the instance of this data sink to a local map.
-        startedTelemetryWriteSinks
-          .put(dataSink.getId(), esthesisDataSinkFactory.getTelemetrySink());
-        LOGGER.log(Level.FINE, "Started telemetry sink: {0}.", esthesisDataSinkFactory);
-      } catch (Exception e) {
-        LOGGER.log(Level.SEVERE,
-          MessageFormat
-            .format("Could not instantiate telemetry data sink {0}.", dataSink.getFactoryClass()),
-          e);
-      }
-    });
+    initialiseDataSink(dataSinkService.findActiveTelemetryWriteSinks(), EventType.TELEMETRY,
+      startedTelemetryWriteSinks);
+    initialiseDataSink(dataSinkService.findActiveMetadataReadSinks(), EventType.METADATA,
+      startedMetadataReadSinks);
+    initialiseDataSink(dataSinkService.findActiveTelemetryReadSinks(), EventType.TELEMETRY,
+      startedTelemetryReadSinks);
   }
 
   @PreDestroy
@@ -146,6 +106,10 @@ public class DataSinkManager {
     startedMetadataWriteSinks.entrySet().parallelStream().forEach(dataSyncEntry
       -> dataSyncEntry.getValue().disconnect());
     startedTelemetryWriteSinks.entrySet().parallelStream().forEach(dataSyncEntry
+      -> dataSyncEntry.getValue().disconnect());
+    startedMetadataReadSinks.entrySet().parallelStream().forEach(dataSyncEntry
+      -> dataSyncEntry.getValue().disconnect());
+    startedTelemetryReadSinks.entrySet().parallelStream().forEach(dataSyncEntry
       -> dataSyncEntry.getValue().disconnect());
   }
 
@@ -194,4 +158,6 @@ public class DataSinkManager {
       }
     }
   }
+
+
 }

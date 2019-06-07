@@ -37,18 +37,42 @@ public class DataSinkService extends BaseService<DataSinkDTO, DataSink> {
     return dataSinkScanner.getAvailableDataSinkFactories();
   }
 
+  /**
+   * Returns data sinks which are declared as active and can read metadata data. Note that this
+   * method does not guarantee that the returned data sinks are also initialised by the platform.
+   * Initialised data sinks can be queried from
+   * {@link esthesis.platform.server.cluster.datasinks.DataSinkManager}.
+   */
   public List<DataSinkDTO> findActiveMetadataReadSinks() {
     return dataSinkMapper.map(dataSinkRepository.findAllByStateAndMetadataRead(true, true));
   }
 
+  /**
+   * Returns data sinks which are declared as active and can read telemetry data. Note that this
+   * method does not guarantee that the returned data sinks are also initialised by the platform.
+   * Initialised data sinks can be queried from
+   * {@link esthesis.platform.server.cluster.datasinks.DataSinkManager}.
+   */
   public List<DataSinkDTO> findActiveTelemetryReadSinks() {
     return dataSinkMapper.map(dataSinkRepository.findAllByStateAndTelemetryRead(true, true));
   }
 
+  /**
+   * Returns data sinks which are declared as active and can write metadata data. Note that this
+   * method does not guarantee that the returned data sinks are also initialised by the platform.
+   * Initialised data sinks can be queried from
+   * {@link esthesis.platform.server.cluster.datasinks.DataSinkManager}.
+   */
   public List<DataSinkDTO> findActiveMetadataWriteSinks() {
     return dataSinkMapper.map(dataSinkRepository.findAllByStateAndMetadataWrite(true, true));
   }
 
+  /**
+   * Returns data sinks which are declared as active and can write telemetry data. Note that this
+   * method does not guarantee that the returned data sinks are also initialised by the platform.
+   * Initialised data sinks can be queried from
+   * {@link esthesis.platform.server.cluster.datasinks.DataSinkManager}.
+   */
   public List<DataSinkDTO> findActiveTelemetryWriteSinks() {
     return dataSinkMapper.map(dataSinkRepository.findAllByStateAndTelemetryWrite(true, true));
   }
