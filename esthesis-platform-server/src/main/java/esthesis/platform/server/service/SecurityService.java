@@ -6,7 +6,7 @@ import com.eurodyn.qlack.fuse.crypto.CryptoSymmetricService;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.extension.common.util.Base64E;
-import esthesis.extension.device.device.DeviceMessage;
+import esthesis.extension.device.DeviceMessage;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting.Security;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingEncryption;
