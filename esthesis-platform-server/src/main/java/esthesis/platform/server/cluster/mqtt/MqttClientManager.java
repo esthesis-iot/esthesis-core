@@ -2,7 +2,6 @@ package esthesis.platform.server.cluster.mqtt;
 
 import esthesis.platform.server.cluster.ClusterInfoService;
 import esthesis.platform.server.cluster.zookeeper.ZookeeperClientManager;
-import esthesis.platform.server.config.AppConstants.MqttTopics;
 import esthesis.platform.server.config.AppConstants.Zookeeper;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.dto.MQTTServerDTO;
@@ -87,26 +86,16 @@ public class MqttClientManager {
       // Create a new client to connect to the MQTT server.
       LOGGER.log(Level.FINE, "Connecting to MQTT server {0}.", mqttServerDTO.getIpAddress());
       ManagedMqttClient client = new ManagedMqttClient(
-        mqttServerDTO.getIpAddress(),
+        mqttServerDTO,
         appProperties.getNodeId(),
-        mqttServerDTO.getTopicTelemetry(),
-        mqttServerDTO.getTopicMetadata(),
         applicationEventPublisher,
         mqttMessageMapper,
-        mqttServerDTO.getTopicControl() + MqttTopics.REQUEST,
-        mqttServerDTO.getTopicControl() + MqttTopics.REPLY
+        clusterInfoService.isStandalone(),
+        zookeeperClientManager
       );
 
       // Connect to the MQTT server.
       client.connect();
-
-      // Participate in leader election if in cluster.
-      if (clusterInfoService.isStandalone()) {
-        client.subscribe();
-      } else {
-        client.participateInLeaderElection(mqttServerDTO.getId(),
-          zookeeperClientManager.getZookeeperClient());
-      }
 
       mqttClients.put(mqttServerDTO.getId(), client);
     } catch (Exception e) {
