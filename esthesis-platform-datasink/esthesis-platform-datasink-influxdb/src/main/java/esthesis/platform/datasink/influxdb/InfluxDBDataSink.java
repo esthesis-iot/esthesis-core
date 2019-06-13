@@ -194,7 +194,7 @@ public class InfluxDBDataSink implements DataSink {
         new Object[]{event.getId(), event.getTopic(), event.getHardwareId()});
     } catch (Exception e) {
       LOGGER.log(Level.SEVERE, MessageFormat.format("An unknown error happened during processing "
-        + "of MQTT event {0}.", event.getId()));
+        + "of MQTT event {0}.", event.getId()), e);
     }
 
     eventsQueued.decrementAndGet();

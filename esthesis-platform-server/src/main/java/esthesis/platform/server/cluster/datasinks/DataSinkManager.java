@@ -114,8 +114,8 @@ public class DataSinkManager {
   }
 
   /**
-   * Persist MQTT data to the data sinks. MQTTDataEvents are received, by default, only when the
-   * node is a cluster leader.
+   * Distributes MQTT events to the data sinks (MQTTDataEvents are received, only when
+   * the node is a cluster leader for the particular MQTT server).
    */
   @EventListener
   public void onApplicationEvent(MQTTDataEvent event) {

@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { SettingsRoutingModule } from './settings-routing.module';
 import {SettingsComponent} from './settings.component';
 import {SettingsNetworkingComponent} from './settings-networking/settings-networking.component';
-import {SettingsOperatorComponent} from './settings-operator/settings-operator.component';
 import {SettingsDevregComponent} from './settings-devreg/settings-devreg.component';
 import {SettingsSecurityComponent} from './settings-security/settings-security.component';
 import {
@@ -26,13 +25,14 @@ import {QFormsModule} from '@eurodyn/forms';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FlexModule} from '@angular/flex-layout';
 import {SettingsProvisioningComponent} from './settings-provisioning/settings-provisioning.component';
+import {SettingsDeviceMetadataComponent} from './settings-device-metadata/settings-device-metadata.component';
 
 @NgModule({
   declarations: [
     SettingsComponent,
     SettingsProvisioningComponent,
     SettingsNetworkingComponent,
-    SettingsOperatorComponent,
+    SettingsDeviceMetadataComponent,
     SettingsDevregComponent,
     SettingsSecurityComponent,
   ],

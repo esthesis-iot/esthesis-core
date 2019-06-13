@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './settings-operator.component.html',
   styleUrls: ['./settings-operator.component.scss']
 })
-export class SettingsOperatorComponent implements OnInit {
+export class SettingsDeviceMetadataComponent implements OnInit {
 
   constructor() { }
 
