@@ -2,12 +2,12 @@ package esthesis.platform.server.resource.device;
 
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
-import esthesis.extension.device.DeviceMessage;
-import esthesis.extension.device.request.ProvisioningInfoRequest;
-import esthesis.extension.device.request.ProvisioningRequest;
-import esthesis.extension.device.request.RegistrationRequest;
-import esthesis.extension.device.response.ProvisioningInfoResponse;
-import esthesis.extension.device.response.RegistrationResponse;
+import esthesis.extension.device.device.DeviceMessage;
+import esthesis.extension.device.device.request.ProvisioningInfoRequest;
+import esthesis.extension.device.device.request.ProvisioningRequest;
+import esthesis.extension.device.device.request.RegistrationRequest;
+import esthesis.extension.device.device.response.ProvisioningInfoResponse;
+import esthesis.extension.device.device.response.RegistrationResponse;
 import esthesis.extension.device.dto.MQTTServer;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting.Provisioning;
