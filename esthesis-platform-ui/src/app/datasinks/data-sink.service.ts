@@ -26,6 +26,7 @@ export class DataSinkService extends CrudService<DataSinkDto> {
   }
 
   getAvailableDataSinkFactories(): Observable<DataSinkFactoryDto[]> {
-    return this.http.get<DataSinkFactoryDto[]>(`${AppConstants.API_ROOT}/${DataSinkService.endpoint}/factories`);
+    return this.http.get<DataSinkFactoryDto[]>(
+      `${AppConstants.API_ROOT}/${DataSinkService.endpoint}/factories`);
   }
 }

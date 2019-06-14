@@ -1,20 +1,15 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {BaseComponent} from '../shared/base-component';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {QFormsService} from '@eurodyn/forms';
 import {DevicesService} from './devices.service';
 import {Router} from '@angular/router';
-import {ZXingScannerComponent} from '@zxing/ngx-scanner';
-import {KeyValueDto} from '../dto/key-value-dto';
-import * as _ from 'lodash';
-import {Log} from 'ng2-logger/browser';
-import {UtilityService} from '../shared/utility.service';
 import {TagDto} from '../dto/tag-dto';
 import {TagService} from '../tags/tag.service';
 import {UUID} from 'angular2-uuid';
-import {ContainerDeployComponent} from '../shared/containers/container-deploy.component';
 import {DevicePreregisterCamComponent} from './device-preregister-cam.component';
 import {MatDialog} from '@angular/material';
+import {BaseComponent} from '../shared/component/base-component';
+import {UtilityService} from '../shared/service/utility.service';
 
 @Component({
   selector: 'app-device-preregister',

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {DeviceDto} from '../../dto/device-dto';
-import {BaseComponent} from '../../shared/base-component';
+import {BaseComponent} from '../../shared/component/base-component';
 
 @Component({
   selector: 'app-dashboard-new-registrations',

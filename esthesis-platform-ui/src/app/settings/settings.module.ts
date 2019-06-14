@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
-import { SettingsRoutingModule } from './settings-routing.module';
+import {SettingsRoutingModule} from './settings-routing.module';
 import {SettingsComponent} from './settings.component';
 import {SettingsNetworkingComponent} from './settings-networking/settings-networking.component';
 import {SettingsDevregComponent} from './settings-devreg/settings-devreg.component';
@@ -9,6 +9,7 @@ import {SettingsSecurityComponent} from './settings-security/settings-security.c
 import {
   MatButtonModule,
   MatCardModule,
+  MatCheckboxModule,
   MatDatepickerModule,
   MatFormFieldModule,
   MatIconModule,
@@ -54,7 +55,9 @@ import {SettingsDeviceMetadataComponent} from './settings-device-metadata/settin
     MatIconModule,
     MatTabsModule,
     MatRadioModule,
-    FlexModule
+    FlexModule,
+    MatCheckboxModule
   ]
 })
-export class SettingsModule { }
+export class SettingsModule {
+}

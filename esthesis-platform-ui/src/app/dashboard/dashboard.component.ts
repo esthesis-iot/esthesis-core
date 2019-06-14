@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {RxStompService} from '@stomp/ng2-stompjs';
-import {BaseComponent} from '../shared/base-component';
+import {BaseComponent} from '../shared/component/base-component';
 
 @Component({
   selector: 'app-dashboard',

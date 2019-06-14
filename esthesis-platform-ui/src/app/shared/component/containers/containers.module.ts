@@ -10,7 +10,8 @@ import {
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
-  MatMenuModule, MatSelectModule,
+  MatMenuModule,
+  MatSelectModule,
   MatStepperModule
 } from '@angular/material';
 import {FlexLayoutModule} from '@angular/flex-layout';

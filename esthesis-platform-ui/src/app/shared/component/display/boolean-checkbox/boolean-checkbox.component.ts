@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-boolean-checkbox',
@@ -8,6 +8,7 @@ import {Component, Input, OnInit} from '@angular/core';
 export class BooleanCheckboxComponent {
   @Input() public value: boolean;
 
-  constructor() { }
+  constructor() {
+  }
 
 }

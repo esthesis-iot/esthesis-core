@@ -1,15 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {BaseComponent} from '../shared/base-component';
 import {MatDialog} from '@angular/material';
 import {QFormsService} from '@eurodyn/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient, HttpEventType} from '@angular/common/http';
 import {TagService} from '../tags/tag.service';
 import {ProvisioningService} from './provisioning.service';
-import {UtilityService} from '../shared/utility.service';
-import {OkCancelModalComponent} from '../shared/display/ok-cancel-modal/ok-cancel-modal.component';
 import {TagDto} from '../dto/tag-dto';
+import {BaseComponent} from '../shared/component/base-component';
+import {UtilityService} from '../shared/service/utility.service';
+import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 
 @Component({
   selector: 'app-provisioning-edit',

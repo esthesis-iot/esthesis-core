@@ -1,9 +1,9 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {BaseComponent} from '../shared/base-component';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {QFormsService} from '@eurodyn/forms';
 import {CertificatesService} from './certificates.service';
 import {CertificateDto} from '../dto/certificate-dto';
+import {BaseComponent} from '../shared/component/base-component';
 
 @Component({
   selector: 'app-certificates',
@@ -36,7 +36,8 @@ export class CertificatesComponent extends BaseComponent implements OnInit, Afte
   }
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
-    this.certificateService.getAll(this.qForms.appendPagingToFilter(null, page, size, sort, sortDirection))
+    this.certificateService.getAll(
+      this.qForms.appendPagingToFilter(null, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;
       this.paginator.length = onNext.totalElements;
@@ -44,7 +45,8 @@ export class CertificatesComponent extends BaseComponent implements OnInit, Afte
   }
 
   changePage() {
-    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+      this.sort.start);
   }
 
 }

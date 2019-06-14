@@ -1,13 +1,13 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {MatSort, MatTab, MatTabGroup} from '@angular/material';
+import {MatTabGroup} from '@angular/material';
 
 @Component({
   selector: 'app-infrastructure',
   templateUrl: './infrastructure.component.html',
   styleUrls: ['./infrastructure.component.scss']
 })
-export class InfrastructureComponent implements OnInit, AfterViewInit  {
+export class InfrastructureComponent implements OnInit, AfterViewInit {
   @ViewChild(MatTabGroup) tabs: MatTabGroup;
 
   constructor(private activatedRoute: ActivatedRoute) {

@@ -5,11 +5,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material';
 import {CertificatesService} from './certificates.service';
 import {AppConstants} from '../app.constants';
-import {BaseComponent} from '../shared/base-component';
 import {CaDto} from '../dto/ca-dto';
 import {CasService} from '../cas/cas.service';
-import {UtilityService} from '../shared/utility.service';
-import {OkCancelModalComponent} from '../shared/display/ok-cancel-modal/ok-cancel-modal.component';
+import {BaseComponent} from '../shared/component/base-component';
+import {UtilityService} from '../shared/service/utility.service';
+import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 
 @Component({
   selector: 'app-certificate-edit',
@@ -21,7 +21,8 @@ export class CertificateEditComponent extends BaseComponent implements OnInit {
   id: number;
   issuers: CaDto[];
 
-  constructor(private fb: FormBuilder, private certificatesService: CertificatesService, private qForms: QFormsService,
+  constructor(private fb: FormBuilder, private certificatesService: CertificatesService,
+              private qForms: QFormsService,
               private route: ActivatedRoute, private router: Router, private caService: CasService,
               private utilityService: UtilityService, private dialog: MatDialog) {
     super();

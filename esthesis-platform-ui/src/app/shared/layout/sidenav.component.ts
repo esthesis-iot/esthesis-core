@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import {BaseComponent} from '../shared/base-component';
+import {BaseComponent} from '../component/base-component';
 
 @Component({
   selector: 'app-sidenav',

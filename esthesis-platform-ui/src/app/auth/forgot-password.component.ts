@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
@@ -8,9 +8,10 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 })
 export class ForgotPasswordComponent implements OnInit {
 // Form control.
-  form:  FormGroup;
+  form: FormGroup;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder) {
+  }
 
   ngOnInit() {
     this.form = this.fb.group({

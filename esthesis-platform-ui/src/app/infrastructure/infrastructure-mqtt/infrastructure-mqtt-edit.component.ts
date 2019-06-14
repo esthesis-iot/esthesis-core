@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {BaseComponent} from '../../shared/base-component';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {QFormsService} from '@eurodyn/forms';
@@ -7,12 +6,13 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {MqttServerService} from './mqtt-server.service';
 import {TagService} from '../../tags/tag.service';
 import {TagDto} from '../../dto/tag-dto';
-import {UtilityService} from '../../shared/utility.service';
-import {OkCancelModalComponent} from '../../shared/display/ok-cancel-modal/ok-cancel-modal.component';
 import {CertificateDto} from '../../dto/certificate-dto';
 import {CertificatesService} from '../../certificates/certificates.service';
 import {CasService} from '../../cas/cas.service';
 import {CaDto} from '../../dto/ca-dto';
+import {BaseComponent} from '../../shared/component/base-component';
+import {UtilityService} from '../../shared/service/utility.service';
+import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 
 @Component({
   selector: 'app-infrastructure-mqtt-edit',

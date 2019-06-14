@@ -1,9 +1,9 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {BaseComponent} from '../shared/base-component';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {QFormsService} from '@eurodyn/forms';
 import {DataSinkDto} from '../dto/data-sink-dto';
 import {DataSinkService} from './data-sink.service';
+import {BaseComponent} from '../shared/component/base-component';
 
 @Component({
   selector: 'app-datasinks',

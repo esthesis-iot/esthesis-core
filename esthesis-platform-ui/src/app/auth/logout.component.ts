@@ -1,9 +1,9 @@
 import {Component, Renderer2} from '@angular/core';
-import {BaseComponent} from '../shared/base-component';
 import {Log} from 'ng2-logger/browser';
 import {UserService} from '../users/user.service';
 import {WebSocketService} from '../services/web-socket.service';
 import {BodyBackgroundService} from '../services/body-background.service';
+import {BaseComponent} from '../shared/component/base-component';
 
 @Component({
   selector: 'app-logout',
@@ -18,7 +18,8 @@ export class LogoutComponent extends BaseComponent {
     super();
 
     bodyBackgroundService.getImageUrl().subscribe(onNext => {
-      this.renderer.setAttribute(document.body, 'style', 'background-image:  linear-gradient(to top, rgba(0,0,0,0)' +
+      this.renderer.setAttribute(document.body, 'style',
+        'background-image:  linear-gradient(to top, rgba(0,0,0,0)' +
         ' 30%, rgba(255,255,255,0.62) 64%, rgba(255,255,255,1) 89%), url(\'' + onNext + '\');' +
         ' background-size: cover;');
     });

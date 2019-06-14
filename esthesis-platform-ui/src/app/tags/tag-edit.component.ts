@@ -4,11 +4,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {QFormsService} from '@eurodyn/forms';
 import {MatDialog} from '@angular/material';
 import {UUID} from 'angular2-uuid';
-import {BaseComponent} from '../shared/base-component';
 import {TagService} from './tag.service';
-import {UtilityService} from '../shared/utility.service';
 import 'rxjs/add/operator/debounceTime';
-import {OkCancelModalComponent} from '../shared/display/ok-cancel-modal/ok-cancel-modal.component';
+import {BaseComponent} from '../shared/component/base-component';
+import {UtilityService} from '../shared/service/utility.service';
+import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 
 @Component({
   selector: 'app-tag-edit',
@@ -19,8 +19,10 @@ export class TagEditComponent extends BaseComponent implements OnInit {
   form: FormGroup;
   id: number;
 
-  constructor(private fb: FormBuilder, private tagService: TagService, private route: ActivatedRoute,
-              private qForms: QFormsService, private router: Router, private utilityService: UtilityService,
+  constructor(private fb: FormBuilder, private tagService: TagService,
+              private route: ActivatedRoute,
+              private qForms: QFormsService, private router: Router,
+              private utilityService: UtilityService,
               private dialog: MatDialog) {
     super();
   }

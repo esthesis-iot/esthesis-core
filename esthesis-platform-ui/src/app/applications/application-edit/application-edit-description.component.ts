@@ -1,28 +1,28 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {BaseComponent} from '../../shared/base-component';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {QFormsService} from '@eurodyn/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material';
 import {UUID} from 'angular2-uuid';
 import {ApplicationService} from '../application.service';
-import * as _ from 'lodash';
-import {KeyValueDto} from '../../dto/key-value-dto';
-import {UtilityService} from '../../shared/utility.service';
-import {OkCancelModalComponent} from '../../shared/display/ok-cancel-modal/ok-cancel-modal.component';
+import {BaseComponent} from '../../shared/component/base-component';
+import {OkCancelModalComponent} from 'src/app/shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {UtilityService} from '../../shared/service/utility.service';
 
 @Component({
   selector: 'app-application-edit-description',
   templateUrl: './application-edit-description.component.html',
   styleUrls: ['./application-edit-description.component.scss']
 })
-export class ApplicationEditDescriptionComponent  extends BaseComponent implements OnInit {
+export class ApplicationEditDescriptionComponent extends BaseComponent implements OnInit {
   @Input() id: number;
 
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private applicationService: ApplicationService, private qForms: QFormsService,
-              private route: ActivatedRoute, private router: Router, private dialog: MatDialog, private utilityService: UtilityService) {
+  constructor(private fb: FormBuilder, private applicationService: ApplicationService,
+              private qForms: QFormsService,
+              private route: ActivatedRoute, private router: Router, private dialog: MatDialog,
+              private utilityService: UtilityService) {
     super();
   }
 

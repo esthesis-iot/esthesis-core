@@ -1,15 +1,15 @@
 import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {VirtualizationService} from '../../infrastructure/infrastructure-virtualization/virtualization.service';
-import {VirtualizationDto} from '../../dto/virtualization-dto';
 import {BaseComponent} from '../base-component';
-import {CertificatesService} from '../../certificates/certificates.service';
-import {CertificateDto} from '../../dto/certificate-dto';
 import {ContainersService} from './containers.service';
 import {QFormsService} from '@eurodyn/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {Subscription} from 'rxjs';
-import {WebSocketService} from '../../services/web-socket.service';
+import {VirtualizationDto} from '../../../dto/virtualization-dto';
+import {CertificateDto} from '../../../dto/certificate-dto';
+import {VirtualizationService} from '../../../infrastructure/infrastructure-virtualization/virtualization.service';
+import {CertificatesService} from '../../../certificates/certificates.service';
+import {WebSocketService} from 'src/app/services/web-socket.service';
 
 @Component({
   selector: 'app-container-deploy',
@@ -27,10 +27,13 @@ export class ContainerDeployComponent extends BaseComponent implements OnInit, O
   showConsole = false;
   @ViewChild('console') private consoleContainer: ElementRef;
 
-  constructor(private formBuilder: FormBuilder, private virtualizationService: VirtualizationService,
-              private certificatesService: CertificatesService, private containersService: ContainersService,
+  constructor(private formBuilder: FormBuilder,
+              private virtualizationService: VirtualizationService,
+              private certificatesService: CertificatesService,
+              private containersService: ContainersService,
               private qForms: QFormsService, @Inject(MAT_DIALOG_DATA) public data: any,
-              private webSocketService: WebSocketService, public selfDialogRef: MatDialogRef<ContainerDeployComponent>) {
+              private webSocketService: WebSocketService,
+              public selfDialogRef: MatDialogRef<ContainerDeployComponent>) {
     super();
   }
 
@@ -116,13 +119,15 @@ export class ContainerDeployComponent extends BaseComponent implements OnInit, O
 
   pickCertificate(certificateId: number, index: number) {
     this.certificatesService.get(certificateId).subscribe(onNext => {
-      (this.containerForm.get('env') as FormArray).controls[index].patchValue({envValue: onNext.certificate});
+      (this.containerForm.get('env') as FormArray).controls[index].patchValue(
+        {envValue: onNext.certificate});
     });
   }
 
   pickPrivateKey(certificateId: number, index: number) {
     this.certificatesService.get(certificateId).subscribe(onNext => {
-      (this.containerForm.get('env') as FormArray).controls[index].patchValue({envValue: onNext.privateKey});
+      (this.containerForm.get('env') as FormArray).controls[index].patchValue(
+        {envValue: onNext.privateKey});
     });
   }
 

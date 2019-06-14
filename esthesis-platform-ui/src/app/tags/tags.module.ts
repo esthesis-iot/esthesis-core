@@ -17,7 +17,7 @@ import {
 import {QFormsModule} from '@eurodyn/forms';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
-import {DisplayModule} from '../shared/display/display.module';
+import {DisplayModule} from '../shared/component/display/display.module';
 
 @NgModule({
   declarations: [

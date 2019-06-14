@@ -23,7 +23,7 @@ import {ApplicationEditDescriptionComponent} from './application-edit/applicatio
 import {ApplicationEditPermissionsComponent} from './application-edit/application-edit-permissions.component';
 import {ApplicationsRoutingModule} from './applications-routing.module';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
-import {DisplayModule} from '../shared/display/display.module';
+import {DisplayModule} from '../shared/component/display/display.module';
 
 @NgModule({
   declarations: [

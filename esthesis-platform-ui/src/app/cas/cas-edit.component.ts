@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {BaseComponent} from '../shared/base-component';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -7,8 +6,9 @@ import {QFormsService} from '@eurodyn/forms';
 import {CaDto} from '../dto/ca-dto';
 import {AppConstants} from '../app.constants';
 import {CasService} from './cas.service';
-import {UtilityService} from '../shared/utility.service';
-import {OkCancelModalComponent} from '../shared/display/ok-cancel-modal/ok-cancel-modal.component';
+import {BaseComponent} from '../shared/component/base-component';
+import {UtilityService} from '../shared/service/utility.service';
+import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 
 @Component({
   selector: 'app-cas-edit',
@@ -53,8 +53,9 @@ export class CasEditComponent extends BaseComponent implements OnInit {
 
   save() {
     this.caService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
-      this.utilityService.popupSuccess(this.form.value.id ? 'Certificate authority was successfully edited.'
-        : 'Certificate authority was successfully created.');
+      this.utilityService.popupSuccess(
+        this.form.value.id ? 'Certificate authority was successfully edited.'
+          : 'Certificate authority was successfully created.');
       this.router.navigate(['cas']);
     });
   }

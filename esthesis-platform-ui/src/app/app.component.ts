@@ -1,12 +1,12 @@
-import {Component, OnInit, ViewEncapsulation, Renderer2} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Log} from 'ng2-logger/browser';
-import {BaseComponent} from './shared/base-component';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {MatDialog} from '@angular/material';
 import {UserService} from './users/user.service';
 import {WebSocketService} from './services/web-socket.service';
-import {OkCancelModalComponent} from './shared/display/ok-cancel-modal/ok-cancel-modal.component';
+import {BaseComponent} from './shared/component/base-component';
+import {OkCancelModalComponent} from './shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +20,8 @@ export class AppComponent extends BaseComponent implements OnInit {
   // Controller for sidebar's visibility.
   sidebarVisibility = true;
 
-  constructor(private userService: UserService, private router: Router, private jwtService: JwtHelperService,
+  constructor(private userService: UserService, private router: Router,
+              private jwtService: JwtHelperService,
               private wsService: WebSocketService, private dialog: MatDialog) {
     super();
 

@@ -6,7 +6,7 @@ import {QFilterAlias, QFormsService} from '@eurodyn/forms';
 import {UserDto} from '../dto/user-dto';
 import {UserService} from './user.service';
 import 'rxjs/add/operator/debounceTime';
-import {BaseComponent} from '../shared/base-component';
+import {BaseComponent} from '../shared/component/base-component';
 
 @Component({
   selector: 'app-users',

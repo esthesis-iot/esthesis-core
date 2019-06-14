@@ -1,7 +1,7 @@
-import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
-import { DashboardRoutingModule } from './dashboard-routing.module';
+import {DashboardRoutingModule} from './dashboard-routing.module';
 import {DashboardComponent} from './dashboard.component';
 import {DashboardInfoBoxesComponent} from './dashboard-info-boxes/dashboard-info-boxes.component';
 import {DashboardMapComponent} from './dashboard-map/dashboard-map.component';
@@ -54,4 +54,5 @@ import {NgxChartsModule} from '@swimlane/ngx-charts';
     }
   ]
 })
-export class DashboardModule { }
+export class DashboardModule {
+}

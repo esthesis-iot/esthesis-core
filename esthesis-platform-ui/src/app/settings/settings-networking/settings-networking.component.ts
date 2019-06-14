@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {SettingsService} from '../settings.service';
-import {BaseComponent} from '../../shared/base-component';
 import {AppSettings} from '../../app.settings';
 import * as _ from 'lodash';
 import {KeyValueDto} from '../../dto/key-value-dto';
-import {UtilityService} from '../../shared/utility.service';
+import {BaseComponent} from '../../shared/component/base-component';
+import {UtilityService} from '../../shared/service/utility.service';
 
 @Component({
   selector: 'app-settings-networking',
@@ -15,7 +15,8 @@ import {UtilityService} from '../../shared/utility.service';
 export class SettingsNetworkingComponent extends BaseComponent implements OnInit {
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private settingsService: SettingsService, private utilityService: UtilityService) {
+  constructor(private fb: FormBuilder, private settingsService: SettingsService,
+              private utilityService: UtilityService) {
     super();
   }
 

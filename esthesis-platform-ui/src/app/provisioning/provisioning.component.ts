@@ -1,5 +1,4 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {BaseComponent} from '../shared/base-component';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {QFormsService} from '@eurodyn/forms';
 import {ProvisioningService} from './provisioning.service';
@@ -7,6 +6,7 @@ import {ProvisioningDto} from '../dto/provisioning-dto';
 import {TagService} from '../tags/tag.service';
 import {TagDto} from '../dto/tag-dto';
 import * as _ from 'lodash';
+import {BaseComponent} from '../shared/component/base-component';
 
 @Component({
   selector: 'app-provisioning',

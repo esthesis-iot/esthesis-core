@@ -4,7 +4,8 @@ import {AuditRoutingModule} from './audit-routing.module';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {
   DateAdapter,
-  MAT_DATE_FORMATS, MAT_DATE_LOCALE,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
   MatButtonModule,
   MatCardModule,
   MatDatepickerModule,

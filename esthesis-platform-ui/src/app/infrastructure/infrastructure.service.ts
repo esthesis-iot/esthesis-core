@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {CrudService} from '../services/crud.service';
 import {InfrastructureReportDto} from '../dto/infrastructure-report-dto';
 import {HttpClient} from '@angular/common/http';

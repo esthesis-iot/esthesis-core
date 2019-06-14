@@ -4,7 +4,7 @@ import {LoginComponent} from './auth/login.component';
 import {NewPasswordComponent} from './auth/new-password.component';
 import {LogoutComponent} from './auth/logout.component';
 import {ForgotPasswordComponent} from './auth/forgot-password.component';
-import {CanActivateGuard} from './guards/can-activate-guard';
+import {CanActivateGuard} from './shared/guards/can-activate-guard';
 
 // Configuration of Router with all available AppConstants.Routes.
 export const routing: ModuleWithProviders = RouterModule.forRoot([

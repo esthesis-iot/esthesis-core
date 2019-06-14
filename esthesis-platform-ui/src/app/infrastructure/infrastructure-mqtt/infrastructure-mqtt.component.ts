@@ -1,10 +1,10 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {BaseComponent} from '../../shared/base-component';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {QFormsService} from '@eurodyn/forms';
 import {MqttServerDto} from '../../dto/mqtt-server-dto';
 import {MqttServerService} from './mqtt-server.service';
-import {ContainersPopupService} from '../../shared/containers/containers-popup.service';
+import {BaseComponent} from '../../shared/component/base-component';
+import {ContainersPopupService} from '../../shared/component/containers/containers-popup.service';
 
 @Component({
   selector: 'app-infrastructure-mqtt',
@@ -38,7 +38,8 @@ export class InfrastructureMqttComponent extends BaseComponent implements OnInit
   }
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
-    this.mqttServerService.getAll(this.qForms.appendPagingToFilter(null, page, size, sort, sortDirection))
+    this.mqttServerService.getAll(
+      this.qForms.appendPagingToFilter(null, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;
       this.paginator.length = onNext.totalElements;
@@ -46,7 +47,8 @@ export class InfrastructureMqttComponent extends BaseComponent implements OnInit
   }
 
   changePage() {
-    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+      this.sort.start);
   }
 
   deployContainer() {

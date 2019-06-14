@@ -1,7 +1,25 @@
-<div fxLayout="column" fxLayoutGap="1rem">
-  <div>Allow simulated devices to connect:</div>
-  <div>yes/no</div>
-  <br>
-  <div>Allow simulated :</div>
-  <div>yes/no</div>
+<form novalidate [formGroup]="form" fxLayout="column">
+  <div class="inline-header">Device metadata</div>
+  <div class="inline-subheader">
+    Select which metadata will be visible while viewing device information.
+  </div>
+  <div formArrayName="fields" *ngFor="let field of form.get('fields').controls; let i = index">
+    <div [formGroupName]="i" fxLayout="row" fxLayoutGap="1rem">
+      <mat-checkbox formControlName="shown" class="xs-mt1" color="primary"></mat-checkbox>
+      <mat-form-field>
+        <input matInput placeholder="Name" formControlName="name">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Data type" formControlName="datatype">
+      </mat-form-field>
+      <mat-form-field fxFlexFill>
+        <input matInput placeholder="UI label" formControlName="label">
+      </mat-form-field>
+    </div>
+  </div>
+
+</form>
+
+<div class="xs-pt2">
+  <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
 </div>

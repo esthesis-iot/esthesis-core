@@ -6,10 +6,10 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {QFormsService} from '@eurodyn/forms';
 import {TagService} from '../../tags/tag.service';
-import {UtilityService} from '../../shared/utility.service';
 import {DevicesService} from '../devices.service';
-import {BaseComponent} from '../../shared/base-component';
-import {OkCancelModalComponent} from '../../shared/display/ok-cancel-modal/ok-cancel-modal.component';
+import {BaseComponent} from 'src/app/shared/component/base-component';
+import {UtilityService} from '../../shared/service/utility.service';
+import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 
 @Component({
   selector: 'app-device',

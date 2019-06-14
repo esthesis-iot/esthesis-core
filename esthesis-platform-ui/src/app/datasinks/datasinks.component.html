@@ -12,7 +12,8 @@
         </ng-container>
         <ng-container matColumnDef="createdOn">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Created on</th>
-          <td mat-cell *matCellDef="let element"> {{element.createdOn | date: constants.DATE_FORMAT}}</td>
+          <td mat-cell
+              *matCellDef="let element"> {{element.createdOn | date: constants.DATE_FORMAT}}</td>
         </ng-container>
         <ng-container matColumnDef="state">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> State</th>
@@ -45,7 +46,8 @@
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="columns"></tr>
-        <tr mat-row *matRowDef="let row; columns: columns; let element;" [routerLink]="element.id"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns; let element;"
+            [routerLink]="element.id"></tr>
       </table>
       <mat-paginator #paginator (page)="changePage()"
                      [pageSize]="10"

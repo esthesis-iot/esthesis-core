@@ -20,7 +20,8 @@ export class TagsComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private fb: FormBuilder, private router: Router, private tagService: TagService, private qForms: QFormsService) {
+  constructor(private fb: FormBuilder, private router: Router, private tagService: TagService,
+              private qForms: QFormsService) {
     this.filterForm = this.fb.group({
       name: ['', null],
     });
@@ -29,7 +30,8 @@ export class TagsComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     // Listen for filter changes to fetch new data.
     this.filterForm.valueChanges.debounceTime(500).subscribe(onNext => {
-      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+        this.sort.start);
     });
 
   }
@@ -60,6 +62,7 @@ export class TagsComponent implements OnInit, AfterViewInit {
   }
 
   changePage() {
-    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+      this.sort.start);
   }
 }

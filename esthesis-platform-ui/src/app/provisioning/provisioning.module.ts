@@ -20,7 +20,7 @@ import {
 import {QFormsModule} from '@eurodyn/forms';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FileSizeModule} from 'ngx-filesize';
-import {DisplayModule} from '../shared/display/display.module';
+import {DisplayModule} from '../shared/component/display/display.module';
 
 @NgModule({
   declarations: [

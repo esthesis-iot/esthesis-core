@@ -11,15 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 @Service
 @Validated
 @Transactional
 public class DataSinkService extends BaseService<DataSinkDTO, DataSink> {
-
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(DataSinkService.class.getName());
 
   private final DataSinkScanner dataSinkScanner;
   private final DataSinkMapper dataSinkMapper;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {InfrastructureService} from '../infrastructure.service';
 import {InfrastructureReportDto} from '../../dto/infrastructure-report-dto';
 
@@ -10,7 +10,8 @@ import {InfrastructureReportDto} from '../../dto/infrastructure-report-dto';
 export class InfrastructureOverviewComponent implements OnInit {
   report: InfrastructureReportDto;
 
-  constructor(private infrastructureService: InfrastructureService) { }
+  constructor(private infrastructureService: InfrastructureService) {
+  }
 
   private getReport() {
     this.infrastructureService.getFirst().subscribe(onNext => {
@@ -25,12 +26,12 @@ export class InfrastructureOverviewComponent implements OnInit {
   releaseZookeeperLeadership() {
     this.infrastructureService.releaseZookeeperLeadership().subscribe(onNext => {
       this.getReport();
-    } );
+    });
   }
 
   releaseMqttLeadership(mqttServerId: number) {
     this.infrastructureService.releaseMqttLeadership(mqttServerId).subscribe(onNext => {
       this.getReport();
-    } );
+    });
   }
 }

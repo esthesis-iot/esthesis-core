@@ -1,16 +1,16 @@
 import {Component, OnInit} from '@angular/core';
-import {BaseComponent} from '../../shared/base-component';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {QFormsService} from '@eurodyn/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {UtilityService} from '../../shared/utility.service';
-import {OkCancelModalComponent} from '../../shared/display/ok-cancel-modal/ok-cancel-modal.component';
 import {CertificateDto} from '../../dto/certificate-dto';
 import {CertificatesService} from '../../certificates/certificates.service';
 import {ZookeeperServerService} from './zookeeper-server.service';
 import {CaDto} from '../../dto/ca-dto';
 import {CasService} from '../../cas/cas.service';
+import {BaseComponent} from '../../shared/component/base-component';
+import {UtilityService} from 'src/app/shared/service/utility.service';
+import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 
 @Component({
   selector: 'app-infrastructure-zookeeper-edit',

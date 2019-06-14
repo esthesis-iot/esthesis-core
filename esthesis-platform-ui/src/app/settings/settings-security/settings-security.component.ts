@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {BaseComponent} from '../../shared/base-component';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {SettingsService} from '../settings.service';
 import {CertificatesService} from '../../certificates/certificates.service';
 import {CertificateDto} from '../../dto/certificate-dto';
 import {KeyValueDto} from '../../dto/key-value-dto';
 import * as _ from 'lodash';
-import {UtilityService} from '../../shared/utility.service';
 import {AppSettings} from '../../app.settings';
+import {BaseComponent} from '../../shared/component/base-component';
+import {UtilityService} from '../../shared/service/utility.service';
 
 @Component({
   selector: 'app-settings-security',

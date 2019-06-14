@@ -1,6 +1,6 @@
-import {AppConstants} from '../app.constants';
 import * as _ from 'lodash';
-import {AppSettings} from '../app.settings';
+import {AppConstants} from '../../app.constants';
+import {AppSettings} from '../../app.settings';
 
 export class BaseComponent {
 
@@ -21,8 +21,8 @@ export class BaseComponent {
   }
 
   /**
-   * Utility method to lookup within an object by the value of its keys and return the key name. This is particularly
-   * useful when looking up constants.
+   * Utility method to lookup within an object by the value of its keys and return the key name.
+   * This is particularly useful when looking up constants.
    * @param obj The object to search on.
    * @param val The value to search for.
    */
@@ -31,7 +31,8 @@ export class BaseComponent {
   }
 
   /**
-   * A helper to compare two values by their text representation. Useful in <mat-select> via compareWith.
+   * A helper to compare two values by their text representation. Useful in <mat-select> via
+   * compareWith.
    * @param o1 The first value to compare.
    * @param o2 The second value to compare.
    */

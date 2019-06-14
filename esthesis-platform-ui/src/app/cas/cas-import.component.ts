@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {BaseComponent} from '../shared/base-component';
 import {CaDto} from '../dto/ca-dto';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {QFormsService} from '@eurodyn/forms';
-import {MatDialog, MatSnackBar} from '@angular/material';
+import {MatDialog} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {CasService} from './cas.service';
-import {UtilityService} from '../shared/utility.service';
+import {BaseComponent} from '../shared/component/base-component';
+import {UtilityService} from '../shared/service/utility.service';
 
 @Component({
   selector: 'app-cas-import',
@@ -18,9 +18,11 @@ export class CasImportComponent extends BaseComponent implements OnInit {
   parents: CaDto[];
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private casService: CasService, private qForms: QFormsService,
+  constructor(private fb: FormBuilder, private casService: CasService,
+              private qForms: QFormsService,
               private route: ActivatedRoute, private router: Router,
-              private dialog: MatDialog, private http: HttpClient, private utilityService: UtilityService) {
+              private dialog: MatDialog, private http: HttpClient,
+              private utilityService: UtilityService) {
     super();
   }
 

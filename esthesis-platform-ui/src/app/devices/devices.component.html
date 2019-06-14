@@ -2,10 +2,10 @@
   <mat-card-title>Devices</mat-card-title>
   <mat-card-content>
     <div fxLayout="column">
-<!--      &lt;!&ndash; Filter &ndash;&gt;-->
-<!--      <div [formGroup]="filterForm" fxFlex="row" fxLayoutGap="10px">-->
-<!--        <button mat-button (click)="clearFilter()">CLEAR</button>-->
-<!--      </div>-->
+      <!--      &lt;!&ndash; Filter &ndash;&gt;-->
+      <!--      <div [formGroup]="filterForm" fxFlex="row" fxLayoutGap="10px">-->
+      <!--        <button mat-button (click)="clearFilter()">CLEAR</button>-->
+      <!--      </div>-->
 
       <!-- Table -->
       <table mat-table #table [dataSource]="datasource"
@@ -27,7 +27,8 @@
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns; let element;" [routerLink]="element.id"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns; let element;"
+            [routerLink]="element.id"></tr>
       </table>
       <mat-paginator #paginator (page)="changePage()"
                      [pageSize]="10"

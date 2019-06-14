@@ -4,11 +4,9 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {ApplicationDto} from '../dto/application-dto';
 import {ApplicationService} from './application.service';
-import {KeyValueDto} from '../dto/key-value-dto';
-import * as _ from 'lodash';
-import {BaseComponent} from '../shared/base-component';
 import {QFormsService} from '@eurodyn/forms';
 import 'rxjs/add/operator/debounceTime';
+import {BaseComponent} from '../shared/component/base-component';
 
 @Component({
   selector: 'app-applications',

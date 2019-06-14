@@ -8,7 +8,8 @@ import {Component, Input, OnInit} from '@angular/core';
 export class ApplicationEditPermissionsComponent implements OnInit {
   @Input() id: string;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }

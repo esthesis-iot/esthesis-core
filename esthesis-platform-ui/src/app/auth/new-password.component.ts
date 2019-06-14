@@ -2,9 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {Log} from "ng2-logger/browser";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {BaseComponent} from "../shared/base-component";
 import {NewPasswordUserDto} from '../dto/new-password-user-dto';
 import {UserService} from '../users/user.service';
+import {BaseComponent} from '../shared/component/base-component';
 
 @Component({
   selector: 'app-new-password',
@@ -23,7 +23,7 @@ export class NewPasswordComponent extends BaseComponent implements OnInit {
   hide2 = true;
 
   // Form control.
-  newPasswordForm:  FormGroup;
+  newPasswordForm: FormGroup;
 
   constructor(public userService: UserService, private router: Router, private fb: FormBuilder) {
     super();
@@ -38,7 +38,7 @@ export class NewPasswordComponent extends BaseComponent implements OnInit {
     })
   }
 
-  onSubmit({ value, valid }: { value: NewPasswordUserDto, valid: boolean }) {
+  onSubmit({value, valid}: { value: NewPasswordUserDto, valid: boolean }) {
     this.errorMessage = null;
 
   }

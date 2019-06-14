@@ -25,10 +25,10 @@ import {
 } from '@angular/material';
 import {QFormsModule} from '@eurodyn/forms';
 import {ReactiveFormsModule} from '@angular/forms';
-import {DisplayModule} from '../shared/display/display.module';
-import {ContainersModule} from '../shared/containers/containers.module';
 import {InfrastructureZookeeperComponent} from './infrastructure-zookeeper/infrastructure-zookeeper.component';
 import {InfrastructureZookeeperEditComponent} from './infrastructure-zookeeper/infrastructure-zookeeper-edit.component';
+import {DisplayModule} from '../shared/component/display/display.module';
+import {ContainersModule} from '../shared/component/containers/containers.module';
 
 @NgModule({
   declarations: [

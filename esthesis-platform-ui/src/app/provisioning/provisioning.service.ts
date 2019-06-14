@@ -2,9 +2,9 @@ import {Injectable} from '@angular/core';
 import {AppConstants} from '../app.constants';
 import {HttpClient} from '@angular/common/http';
 import {ProvisioningDto} from '../dto/provisioning-dto';
-import {HttpUtilsService} from '../shared/http-utils.service';
 import {QFormsService} from '@eurodyn/forms';
 import {CrudService} from '../services/crud.service';
+import {HttpUtilsService} from '../shared/service/http-utils.service';
 
 @Injectable({
   providedIn: 'root'

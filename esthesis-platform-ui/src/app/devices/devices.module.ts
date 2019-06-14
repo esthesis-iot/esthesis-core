@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { DevicesRoutingModule } from './devices-routing.module';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {DevicesRoutingModule} from './devices-routing.module';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {
   DateAdapter,
@@ -39,7 +39,7 @@ import {LeafletModule} from '@asymmetrik/ngx-leaflet';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {MomentModule} from 'ngx-moment';
 import {ZXingScannerModule} from '@zxing/ngx-scanner';
-import { DevicePreregisterCamComponent } from './device-preregister-cam.component';
+import {DevicePreregisterCamComponent} from './device-preregister-cam.component';
 
 @NgModule({
   declarations: [
@@ -106,4 +106,5 @@ import { DevicePreregisterCamComponent } from './device-preregister-cam.componen
     DevicePreregisterCamComponent
   ]
 })
-export class DevicesModule { }
+export class DevicesModule {
+}

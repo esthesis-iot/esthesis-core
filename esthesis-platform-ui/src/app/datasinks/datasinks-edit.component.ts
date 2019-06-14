@@ -1,14 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {QFormsService} from '@eurodyn/forms';
-import {BaseComponent} from '../shared/base-component';
 import {DataSinkService} from './data-sink.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {UtilityService} from '../shared/utility.service';
-import {OkCancelModalComponent} from '../shared/display/ok-cancel-modal/ok-cancel-modal.component';
 import {DataSinkFactoryDto} from '../dto/data-sink-factory-dto';
 import * as _ from 'lodash';
+import {BaseComponent} from '../shared/component/base-component';
+import {UtilityService} from '../shared/service/utility.service';
+import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 
 @Component({
   selector: 'app-datasinks-edit',

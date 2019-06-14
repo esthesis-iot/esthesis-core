@@ -19,7 +19,7 @@ import {
 } from '@angular/material';
 import {QFormsModule} from '@eurodyn/forms';
 import {ReactiveFormsModule} from '@angular/forms';
-import {DisplayModule} from '../shared/display/display.module';
+import {DisplayModule} from '../shared/component/display/display.module';
 
 @NgModule({
   declarations: [

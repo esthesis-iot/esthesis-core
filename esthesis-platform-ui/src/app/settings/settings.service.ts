@@ -5,8 +5,9 @@ import {AppConstants} from '../app.constants';
 import {SettingDto} from '../dto/setting-dto';
 import {CrudService} from '../services/crud.service';
 import {KeyValueDto} from '../dto/key-value-dto';
-import {Observable, EMPTY} from 'rxjs';
+import {Observable} from 'rxjs';
 import {QFormsService} from '@eurodyn/forms';
+import {FieldDto} from '../dto/field-dto';
 
 /**
  * A service providing functionality to manage settings.
@@ -37,5 +38,9 @@ export class SettingsService extends CrudService<SettingDto> {
       `${AppConstants.API_ROOT}/settings/byNames?names=${names.join(',')}`);
   }
 
+  getMetadataFields(): Observable<FieldDto[]> {
+    return this.http.get<FieldDto[]>(
+      `${AppConstants.API_ROOT}/device-metadata/health/fields`);
+  }
 
 }

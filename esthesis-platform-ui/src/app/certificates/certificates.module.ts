@@ -5,7 +5,8 @@ import {CertificateEditComponent} from './certificate-edit.component';
 import {CertificateImportComponent} from './certificate-import.component';
 import {
   DateAdapter,
-  MAT_DATE_FORMATS, MAT_DATE_LOCALE,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
   MatButtonModule,
   MatCardModule,
   MatDatepickerModule,
@@ -21,8 +22,8 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {QFormsModule} from '@eurodyn/forms';
 import {CertificatesRoutingModule} from './certificates-routing.module';
 import {FlexLayoutModule} from '@angular/flex-layout';
-import {DisplayModule} from '../shared/display/display.module';
 import {MatMomentDateModule, MomentDateAdapter} from '@angular/material-moment-adapter';
+import {DisplayModule} from '../shared/component/display/display.module';
 
 @NgModule({
   declarations: [

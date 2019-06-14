@@ -14,11 +14,13 @@ import esthesis.extension.datasink.DataSink;
 import esthesis.extension.datasink.MQTTDataEvent;
 import esthesis.extension.datasink.config.AppConstants.Mqtt;
 import esthesis.extension.datasink.dto.DataSinkMeasurement;
+import esthesis.extension.datasink.dto.FieldDTO;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.influxdb.BatchOptions;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
+import org.influxdb.dto.BoundParameterQuery.QueryBuilder;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.Point.Builder;
 import org.influxdb.dto.Query;
@@ -37,13 +39,16 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class InfluxDBDataSink implements DataSink {
 
@@ -55,13 +60,13 @@ public class InfluxDBDataSink implements DataSink {
   private String sinkName;
   private String eventType;
   // The name of the tag to indicate the type of the measurement.
-  public static final String TAG_TYPE_NAME = "type";
+  private static final String TAG_TYPE_NAME = "type";
   // The name of the tag to indicate the hardware ID for which a measurement was recorded.
-  public static final String TAG_HARDWARE_ID_NAME = "hardwareId";
+  private static final String TAG_HARDWARE_ID_NAME = "hardwareId";
   // The default name of the field when no specific name is provided for a measurement.
-  public static final String NO_NAME_VALUE = "value";
+  private static final String NO_NAME_VALUE = "value";
   // The default InfluxDB name used for time column.
-  public static final String INFLUXDB_TIME_NAME = "time";
+  private static final String INFLUXDB_TIME_NAME = "time";
 
   private static ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(
     Include.NON_EMPTY);
@@ -416,6 +421,26 @@ public class InfluxDBDataSink implements DataSink {
     LOGGER.log(Level.FINEST, "Executing query: {0}. ", query.getCommand());
 
     return prepareOperationResult(influxDB.query(query), hardwareId, measurement, type);
+  }
+
+  @Override
+  public List<FieldDTO> getFieldsForMeasurement(String measurement) {
+    if (!measurement.matches("[A-Za-z0-9_]+")) {
+      throw new SecurityException("Measurement value should be alphanumeric.");
+    }
+    Query q = QueryBuilder.newQuery("SHOW FIELD KEYS from " + measurement)
+      .forDatabase(influxDBConfiguration.getDatabaseName())
+      .create();
+    final QueryResult results = influxDB.query(q);
+
+    if (results.getResults().get(0).getSeries() != null) {
+      return results.getResults().get(0).getSeries().get(0).getValues().stream()
+        .map(o -> new FieldDTO((String) o.get(0), (String) o.get(1)))
+        .sorted(Comparator.comparing(FieldDTO::getName))
+        .collect(Collectors.toList());
+    } else {
+      return new ArrayList<>();
+    }
   }
 
   public String getSinkName() {

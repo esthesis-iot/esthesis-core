@@ -7,7 +7,7 @@ import {Observable} from 'rxjs';
 import {DeviceRegisterDto} from '../dto/device-register-dto';
 import {QFormsService, QPageableReply} from '@eurodyn/forms';
 import {DeviceDto} from '../dto/device-dto';
-import {HttpUtilsService} from '../shared/http-utils.service';
+import {HttpUtilsService} from '../shared/service/http-utils.service';
 
 @Injectable({
   providedIn: 'root'

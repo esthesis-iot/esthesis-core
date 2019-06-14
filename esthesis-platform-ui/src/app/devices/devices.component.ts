@@ -1,5 +1,4 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {BaseComponent} from '../shared/base-component';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
@@ -9,7 +8,8 @@ import {QFormsService} from '@eurodyn/forms';
 import {WebSocketService} from '../services/web-socket.service';
 import {Subscription} from 'rxjs';
 import {AppConstants} from '../app.constants';
-import {UtilityService} from '../shared/utility.service';
+import {BaseComponent} from '../shared/component/base-component';
+import {UtilityService} from '../shared/service/utility.service';
 
 @Component({
   selector: 'app-devices',
@@ -34,8 +34,10 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
   // WebSocket subcription.
   private wsSubscription: Subscription;
 
-  constructor(private fb: FormBuilder, private router: Router, private deviceService: DevicesService,
-              private qForms: QFormsService, private webSocketService: WebSocketService, private utilityService: UtilityService) {
+  constructor(private fb: FormBuilder, private router: Router,
+              private deviceService: DevicesService,
+              private qForms: QFormsService, private webSocketService: WebSocketService,
+              private utilityService: UtilityService) {
     super();
     this.filterForm = this.fb.group({
       // TODO
@@ -43,9 +45,11 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
   }
 
   ngOnInit() {
-    this.wsSubscription = this.webSocketService.watch(AppConstants.WEBSOCKET.TOPIC.DEVICE_REGISTRATION).subscribe(onNext => {
+    this.wsSubscription = this.webSocketService.watch(
+      AppConstants.WEBSOCKET.TOPIC.DEVICE_REGISTRATION).subscribe(onNext => {
       this.utilityService.popupInfo(onNext.body);
-      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+        this.sort.start);
     });
   }
 
@@ -75,7 +79,8 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
   }
 
   changePage() {
-    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+      this.sort.start);
   }
 
   clearFilter() {

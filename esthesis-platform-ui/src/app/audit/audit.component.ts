@@ -7,8 +7,8 @@ import {QFilterAlias, QFormsService} from '@eurodyn/forms';
 import {AuditDto} from '../dto/audit-dto';
 import {AuditService} from './audit.service';
 import {UserService} from '../users/user.service';
-import {BaseComponent} from '../shared/base-component';
 import {KeyValueDto} from '../dto/key-value-dto';
+import {BaseComponent} from '../shared/component/base-component';
 
 @Component({
   selector: 'app-audit',

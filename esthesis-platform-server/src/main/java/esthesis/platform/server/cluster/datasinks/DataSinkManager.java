@@ -17,7 +17,6 @@ import esthesis.platform.server.events.LocalEvent;
 import esthesis.platform.server.events.LocalEvent.LOCAL_EVENT_TYPE;
 import esthesis.platform.server.service.DataSinkService;
 import javax.annotation.PreDestroy;
-import lombok.Getter;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +24,7 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,16 +50,12 @@ public class DataSinkManager {
   }
 
   // List of available and active metadata write data sinks.
-  @Getter
   private final Map<Long, DataSink> startedMetadataWriteSinks = new HashMap<>();
   // List of available telemetry write data sinks.
-  @Getter
   private final Map<Long, DataSink> startedTelemetryWriteSinks = new HashMap<>();
   // List of available and active metadata read data sinks.
-  @Getter
   private final Map<Long, DataSink> startedMetadataReadSinks = new HashMap<>();
   // List of available telemetry data read sinks.
-  @Getter
   private final Map<Long, DataSink> startedTelemetryReadSinks = new HashMap<>();
 
   private void initialiseDataSink(List<DataSinkDTO> dataSinks, String eventTypeHandler,
@@ -86,6 +82,22 @@ public class DataSinkManager {
           .format("Could not instantiate metadata write sink {0}.", dataSink.getFactoryClass()), e);
       }
     });
+  }
+
+  public Optional<DataSink> getMetadataWriter() {
+    return startedMetadataWriteSinks.values().stream().findAny();
+  }
+
+  public Optional<DataSink> getMetadataReader() {
+    return startedMetadataReadSinks.values().stream().findAny();
+  }
+
+  public Optional<DataSink> getTelemetryWriter() {
+    return startedTelemetryWriteSinks.values().stream().findAny();
+  }
+
+  public Optional<DataSink> getTelemetryReader() {
+    return startedTelemetryReadSinks.values().stream().findAny();
   }
 
   public void startDataSinks() {

@@ -29,7 +29,8 @@ export class UserService extends CrudService<UserDto> {
 
   // Authenticate a user.
   login(loginInfoDTO: LoginInfoDto): Observable<string> {
-    return this.http.post<string>(AppConstants.API_ROOT + `/${this.resource}/auth`, JSON.stringify(loginInfoDTO),
+    return this.http.post<string>(AppConstants.API_ROOT + `/${this.resource}/auth`,
+      JSON.stringify(loginInfoDTO),
       {headers: {'Content-Type': 'application/json'}});
   }
 

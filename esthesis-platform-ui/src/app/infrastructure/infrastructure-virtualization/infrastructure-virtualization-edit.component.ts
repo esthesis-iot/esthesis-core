@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {BaseComponent} from '../../shared/base-component';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TagDto} from '../../dto/tag-dto';
 import {MatDialog} from '@angular/material';
@@ -9,8 +8,9 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {VirtualizationService} from './virtualization.service';
 import {CertificatesService} from '../../certificates/certificates.service';
 import {CertificateDto} from '../../dto/certificate-dto';
-import {UtilityService} from '../../shared/utility.service';
-import {OkCancelModalComponent} from '../../shared/display/ok-cancel-modal/ok-cancel-modal.component';
+import {BaseComponent} from '../../shared/component/base-component';
+import {UtilityService} from '../../shared/service/utility.service';
+import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 
 @Component({
   selector: 'app-infrastructure-virtualization-edit',

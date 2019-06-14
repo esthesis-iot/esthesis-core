@@ -1,7 +1,7 @@
 import { Component} from '@angular/core';
-import {BaseComponent} from '../shared/base-component';
-import {AppConstants} from '../app.constants';
-import {UserService} from '../users/user.service';
+import {BaseComponent} from '../component/base-component';
+import {UserService} from '../../users/user.service';
+import {AppConstants} from '../../app.constants';
 
 @Component({
   selector: 'app-header',

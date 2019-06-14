@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {BaseComponent} from '../../shared/base-component';
 import {SettingsService} from '../settings.service';
-import {UtilityService} from '../../shared/utility.service';
 import {AppSettings} from '../../app.settings';
 import * as _ from 'lodash';
 import {KeyValueDto} from '../../dto/key-value-dto';
+import {BaseComponent} from '../../shared/component/base-component';
+import {UtilityService} from '../../shared/service/utility.service';
 
 @Component({
   selector: 'app-settings-devreg',

@@ -2,13 +2,13 @@ import {Component, OnInit, Renderer2} from '@angular/core';
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Log} from 'ng2-logger/browser';
-import {BaseComponent} from '../shared/base-component';
 import {AppConstants} from '../app.constants';
 import {LoginInfoDto} from '../dto/login-info-dto';
 import {UserService} from '../users/user.service';
 import {WebSocketService} from '../services/web-socket.service';
-import {UtilityService} from '../shared/utility.service';
 import {BodyBackgroundService} from '../services/body-background.service';
+import {BaseComponent} from '../shared/component/base-component';
+import {UtilityService} from '../shared/service/utility.service';
 
 @Component({
   selector: 'app-login',
@@ -36,7 +36,8 @@ export class LoginComponent extends BaseComponent implements OnInit {
               private renderer: Renderer2, private bodyBackgroundService: BodyBackgroundService) {
     super();
     bodyBackgroundService.getImageUrl().subscribe(onNext => {
-      this.renderer.setAttribute(document.body, 'style', 'background-image:  linear-gradient(to top, rgba(0,0,0,0)' +
+      this.renderer.setAttribute(document.body, 'style',
+        'background-image:  linear-gradient(to top, rgba(0,0,0,0)' +
         ' 30%, rgba(255,255,255,0.62) 64%, rgba(255,255,255,1) 89%), url(\'' + onNext + '\');' +
         ' background-size: cover;');
     });

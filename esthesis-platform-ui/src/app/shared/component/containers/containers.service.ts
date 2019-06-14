@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {CrudService} from '../../services/crud.service';
-import {ContainerDto} from '../../dto/container-dto';
 import {HttpClient} from '@angular/common/http';
 import {QFormsService} from '@eurodyn/forms';
+import {ContainerDto} from '../../../dto/container-dto';
+import {CrudService} from '../../../services/crud.service';
 
 @Injectable({
   providedIn: 'root'

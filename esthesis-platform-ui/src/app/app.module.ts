@@ -6,9 +6,6 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpClientModule} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
 import {routing} from './app.routes';
-import {HeaderComponent} from './layout/header.component';
-import {FooterComponent} from './layout/footer.component';
-import {SidenavComponent} from './layout/sidenav.component';
 import {LogoutComponent} from './auth/logout.component';
 import {NewPasswordComponent} from './auth/new-password.component';
 import {LoginComponent} from './auth/login.component';
@@ -17,7 +14,6 @@ import {JwtModule} from '@auth0/angular-jwt';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {NgProgressModule} from '@ngx-progressbar/core';
 import {AppConstants} from './app.constants';
-import {CanActivateGuard} from './guards/can-activate-guard';
 import {RxStompService} from '@stomp/ng2-stompjs';
 import {
   MatButtonModule,
@@ -32,12 +28,16 @@ import {
   MatToolbarModule
 } from '@angular/material';
 import {ReactiveFormsModule} from '@angular/forms';
-import {ContainerDeployComponent} from './shared/containers/container-deploy.component';
-import {OkCancelModalComponent} from './shared/display/ok-cancel-modal/ok-cancel-modal.component';
-import {ContainersModule} from './shared/containers/containers.module';
-import {DisplayModule} from './shared/display/display.module';
 import {NgProgressHttpModule} from '@ngx-progressbar/http';
 import {QFormsModule} from '@eurodyn/forms';
+import {HeaderComponent} from './shared/layout/header.component';
+import {FooterComponent} from './shared/layout/footer.component';
+import {SidenavComponent} from './shared/layout/sidenav.component';
+import {ContainersModule} from './shared/component/containers/containers.module';
+import {DisplayModule} from './shared/component/display/display.module';
+import {CanActivateGuard} from './shared/guards/can-activate-guard';
+import {ContainerDeployComponent} from './shared/component/containers/container-deploy.component';
+import {OkCancelModalComponent} from './shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 
 export function getJwtToken(): string {
   return localStorage.getItem(AppConstants.JWT_STORAGE_NAME);

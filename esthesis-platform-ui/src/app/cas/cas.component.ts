@@ -1,10 +1,9 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {CaDto} from '../dto/ca-dto';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
-import {BaseComponent} from '../shared/base-component';
 import {QFormsService} from '@eurodyn/forms';
 import {CasService} from './cas.service';
-import * as _ from 'lodash';
+import {BaseComponent} from '../shared/component/base-component';
 
 @Component({
   selector: 'app-cas',
@@ -45,7 +44,8 @@ export class CasComponent extends BaseComponent implements OnInit, AfterViewInit
   }
 
   changePage() {
-    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
+    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+      this.sort.start);
   }
 
 }

@@ -5,8 +5,6 @@ import {Observable} from 'rxjs';
 import {QFormsModule, QPageableReply} from '@eurodyn/forms';
 import {AppConstants} from '../app.constants';
 import {AuditDto} from '../dto/audit-dto';
-import {UserDto} from '../dto/user-dto';
-import {KeyValue} from '@angular/common';
 import {KeyValueDto} from '../dto/key-value-dto';
 
 /**
