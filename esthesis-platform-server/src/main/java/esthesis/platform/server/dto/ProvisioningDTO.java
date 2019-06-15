@@ -11,8 +11,8 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
 public class ProvisioningDTO extends BaseDTO {
 
   @NotNull

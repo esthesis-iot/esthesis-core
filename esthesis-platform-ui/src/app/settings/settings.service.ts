@@ -38,9 +38,4 @@ export class SettingsService extends CrudService<SettingDto> {
       `${AppConstants.API_ROOT}/settings/byNames?names=${names.join(',')}`);
   }
 
-  getMetadataFields(): Observable<FieldDto[]> {
-    return this.http.get<FieldDto[]>(
-      `${AppConstants.API_ROOT}/device-metadata/health/fields`);
-  }
-
 }

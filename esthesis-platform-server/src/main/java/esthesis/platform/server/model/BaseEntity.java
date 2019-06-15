@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.OptimisticLockType;
 import org.hibernate.annotations.OptimisticLocking;
 import org.springframework.data.annotation.CreatedBy;

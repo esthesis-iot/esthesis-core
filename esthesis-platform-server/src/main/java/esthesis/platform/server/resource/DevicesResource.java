@@ -38,15 +38,11 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Logger;
 
 @Validated
 @RestController
 @RequestMapping("/devices")
 public class DevicesResource {
-
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(DevicesResource.class.getName());
 
   private final DeviceService deviceService;
   private final SecurityService securityService;

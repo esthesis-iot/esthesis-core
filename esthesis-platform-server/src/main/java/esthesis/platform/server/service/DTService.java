@@ -4,7 +4,6 @@ import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import esthesis.extension.datasink.DataSink;
 import esthesis.extension.datasink.config.AppConstants.Mqtt.EventType;
 import esthesis.extension.datasink.dto.DataSinkMeasurement;
-import esthesis.extension.datasink.dto.FieldDTO;
 import esthesis.platform.server.cluster.datasinks.DataSinkManager;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.ObjectUtils;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -115,9 +113,5 @@ public class DTService {
     return getDataSinkReader(type)
       .average(hardwareId, measurement, type, ObjectUtils.defaultIfNull(from, 0l),
         ObjectUtils.defaultIfNull(to, 0L), fields);
-  }
-
-  public List<FieldDTO> getFieldsForMeasurement(String type, String measurement) {
-    return getDataSinkReader(type).getFieldsForMeasurement(measurement);
   }
 }

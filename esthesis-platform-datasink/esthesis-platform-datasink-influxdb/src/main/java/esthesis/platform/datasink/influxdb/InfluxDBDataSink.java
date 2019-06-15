@@ -14,7 +14,7 @@ import esthesis.extension.datasink.DataSink;
 import esthesis.extension.datasink.MQTTDataEvent;
 import esthesis.extension.datasink.config.AppConstants.Mqtt;
 import esthesis.extension.datasink.dto.DataSinkMeasurement;
-import esthesis.extension.datasink.dto.FieldDTO;
+import esthesis.extension.datasink.dto.MetadataFieldDTO;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.influxdb.BatchOptions;
@@ -424,7 +424,7 @@ public class InfluxDBDataSink implements DataSink {
   }
 
   @Override
-  public List<FieldDTO> getFieldsForMeasurement(String measurement) {
+  public List<MetadataFieldDTO> getFieldsForMeasurement(String measurement) {
     if (!measurement.matches("[A-Za-z0-9_]+")) {
       throw new SecurityException("Measurement value should be alphanumeric.");
     }
@@ -435,8 +435,8 @@ public class InfluxDBDataSink implements DataSink {
 
     if (results.getResults().get(0).getSeries() != null) {
       return results.getResults().get(0).getSeries().get(0).getValues().stream()
-        .map(o -> new FieldDTO((String) o.get(0), (String) o.get(1)))
-        .sorted(Comparator.comparing(FieldDTO::getName))
+        .map(o -> new MetadataFieldDTO((String) o.get(0), (String) o.get(1)))
+        .sorted(Comparator.comparing(MetadataFieldDTO::getName))
         .collect(Collectors.toList());
     } else {
       return new ArrayList<>();

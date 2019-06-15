@@ -1,8 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {SettingsService} from '../settings.service';
 import {FieldDto} from '../../dto/field-dto';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BaseComponent} from '../../shared/component/base-component';
+import {DeviceMetadataService} from '../../shared/service/device-metadata.service';
+import {UtilityService} from '../../shared/service/utility.service';
+import {QFormsService} from '@eurodyn/forms';
 
 @Component({
   selector: 'app-settings-device-metadata',
@@ -14,7 +16,8 @@ export class SettingsDeviceMetadataComponent extends BaseComponent implements On
 
   allFields: FieldDto[];
 
-  constructor(private settingService: SettingsService, private fb: FormBuilder) {
+  constructor(private deviceMetadataService: DeviceMetadataService, private fb: FormBuilder,
+              private utilityService: UtilityService, private qForms: QFormsService) {
     super();
   }
 
@@ -23,7 +26,7 @@ export class SettingsDeviceMetadataComponent extends BaseComponent implements On
       fields: this.fb.array([])
     });
 
-    this.settingService.getMetadataFields().subscribe(onNext => {
+    this.deviceMetadataService.getMetadataFields().subscribe(onNext => {
       this.allFields = onNext;
       onNext.forEach(field => {
         // @ts-ignore
@@ -36,14 +39,15 @@ export class SettingsDeviceMetadataComponent extends BaseComponent implements On
     return this.fb.group({
       name: [{value: fieldDto.name, disabled: true}, Validators.required],
       datatype: [{value: fieldDto.datatype, disabled: true}, Validators.required],
-      shown: [fieldDto.shown, Validators.required],
-      label: ['']
+      shown: [fieldDto.shown],
+      label: [fieldDto.label]
     });
   }
 
-  // save() {
-  //   this.caService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
-  //     this.utilityService.popupSuccess(this.form.value.id ? 'Certificate authority was
-  // successfully edited.' : 'Certificate authority was successfully created.');
-  // this.router.navigate(['cas']); }); }
+  save() {
+    this.deviceMetadataService.save(this.qForms.cleanupForm(this.form)['fields']).subscribe(
+      onNext => {
+        this.utilityService.popupSuccess("Settings saved successfully.");
+      });
+  }
 }
