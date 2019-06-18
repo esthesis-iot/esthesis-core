@@ -17,9 +17,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Data
+@ToString
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-@ToString
 public class LocalEvent extends ApplicationEvent {
 
   // JUL reference.

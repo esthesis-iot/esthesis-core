@@ -40,9 +40,6 @@ public class MqttServer extends BaseEntity {
   @OneToMany(fetch = FetchType.LAZY)
   @JoinTable(inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private List<Tag> tags;
-  private String topicTelemetry;
-  private String topicControl;
-  private String topicMetadata;
   private String caCert;
   private String clientCert;
   private String clientKey;

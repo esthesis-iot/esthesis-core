@@ -58,7 +58,7 @@ public class InfluxDBDataSink implements DataSink {
   private boolean initialized;
   private InfluxDBConfiguration influxDBConfiguration;
   private String sinkName;
-  private String eventType;
+  private String mqttTopic;
   // The name of the tag to indicate the type of the measurement.
   private static final String TAG_TYPE_NAME = "type";
   // The name of the tag to indicate the hardware ID for which a measurement was recorded.
@@ -72,10 +72,10 @@ public class InfluxDBDataSink implements DataSink {
     Include.NON_EMPTY);
   private static AtomicInteger eventsQueued = new AtomicInteger(0);
 
-  InfluxDBDataSink(String configuration, String sinkName, String eventType) {
+  InfluxDBDataSink(String configuration, String sinkName, String mqttTopic) {
     LOGGER.log(Level.FINE, "Instantiating {0}.", sinkName);
     this.sinkName = sinkName;
-    this.eventType = eventType;
+    this.mqttTopic = mqttTopic;
 
     // Parse configuration.
     Representer representer = new Representer();
@@ -105,7 +105,7 @@ public class InfluxDBDataSink implements DataSink {
       );
   }
 
-  private Point preparePoint(String hardwareId, byte[] mqttPayload, String eventType)
+  private Point preparePoint(String hardwareId, byte[] mqttPayload, String mqttTopic)
   throws IOException {
     // Read the payload of the MQTT message.
     final JsonNode jsonNode = mapper.readTree(mqttPayload);
@@ -115,7 +115,7 @@ public class InfluxDBDataSink implements DataSink {
     final Builder pointBuilder = org.influxdb.dto.Point.measurement(metricName);
 
     // Add a tag to the Point for the type of the message.
-    pointBuilder.tag(TAG_TYPE_NAME, eventType);
+    pointBuilder.tag(TAG_TYPE_NAME, mqttTopic.replaceAll("/", ""));
 
     // Add a tag to the Point for the device ID.
     pointBuilder.tag(TAG_HARDWARE_ID_NAME, hardwareId);
@@ -178,7 +178,7 @@ public class InfluxDBDataSink implements DataSink {
         new Object[]{event.getId(), event.getTopic(), event.getHardwareId()});
       if (initialized) {
         try {
-          Point point = preparePoint(event.getHardwareId(), event.getPayload(), eventType);
+          Point point = preparePoint(event.getHardwareId(), event.getPayload(), mqttTopic);
           if (StringUtils.isNotBlank(influxDBConfiguration.getRetentionPolicy())) {
             influxDB.write(influxDBConfiguration.getDatabaseName(),
               influxDBConfiguration.getRetentionPolicy(), point);

@@ -2,13 +2,13 @@ package esthesis.platform.server.resource.device;
 
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
-import esthesis.extension.device.device.DeviceMessage;
-import esthesis.extension.device.device.request.ProvisioningInfoRequest;
-import esthesis.extension.device.device.request.ProvisioningRequest;
-import esthesis.extension.device.device.request.RegistrationRequest;
-import esthesis.extension.device.device.response.ProvisioningInfoResponse;
-import esthesis.extension.device.device.response.RegistrationResponse;
+import esthesis.extension.device.DeviceMessage;
 import esthesis.extension.device.dto.MQTTServer;
+import esthesis.extension.device.request.ProvisioningInfoRequest;
+import esthesis.extension.device.request.ProvisioningRequest;
+import esthesis.extension.device.request.RegistrationRequest;
+import esthesis.extension.device.response.ProvisioningInfoResponse;
+import esthesis.extension.device.response.RegistrationResponse;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting.Provisioning;
 import esthesis.platform.server.config.AppSettings.SettingValues.Provisioning.ENCRYPTION;
@@ -109,11 +109,7 @@ public class DeviceFacingResource {
     Optional<MQTTServerDTO> mqttServerDTO = mqttService.matchByTag(deviceDTO);
     if (mqttServerDTO.isPresent()) {
       registrationReply.getPayload().setMqttServer(new MQTTServer()
-        .setIpAddress(mqttServerDTO.get().getIpAddress())
-        .setTopicControl(mqttServerDTO.get().getTopicControl())
-        .setTopicMetadata(mqttServerDTO.get().getTopicMetadata())
-        .setTopicTelemetry(mqttServerDTO.get().getTopicTelemetry())
-      );
+        .setIpAddress(mqttServerDTO.get().getIpAddress()));
     } else {
       LOGGER.log(Level.WARNING, "Could not find a matching MQTT server for device {0} during "
         + "registration.", registrationRequest.getHardwareId());

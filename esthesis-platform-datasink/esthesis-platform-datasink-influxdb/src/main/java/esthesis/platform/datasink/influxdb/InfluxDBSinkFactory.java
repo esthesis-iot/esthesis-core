@@ -1,25 +1,25 @@
 package esthesis.platform.datasink.influxdb;
 
 
+import esthesis.extension.common.config.AppConstants.Mqtt;
 import esthesis.extension.datasink.DataSink;
 import esthesis.extension.datasink.DataSinkFactory;
-import esthesis.extension.datasink.config.AppConstants.Mqtt.EventType;
 
 public class InfluxDBSinkFactory implements DataSinkFactory {
 
-  private final String DATA_SINK_NAME = "InfluxDB";
+  private final static String DATA_SINK_NAME = "InfluxDB";
   private String configuration;
 
   @Override
   public DataSink getMetadataSink() {
-    return new InfluxDBDataSink(configuration, EventType.METADATA + DATA_SINK_NAME,
-      EventType.METADATA);
+    return new InfluxDBDataSink(configuration, DATA_SINK_NAME + "/" + Mqtt.EventType.METADATA,
+      Mqtt.EventType.METADATA);
   }
 
   @Override
   public DataSink getTelemetrySink() {
-    return new InfluxDBDataSink(configuration, EventType.TELEMETRY + DATA_SINK_NAME,
-      EventType.TELEMETRY);
+    return new InfluxDBDataSink(configuration, DATA_SINK_NAME + "/" + Mqtt.EventType.TELEMETRY,
+      Mqtt.EventType.TELEMETRY);
   }
 
   @Override

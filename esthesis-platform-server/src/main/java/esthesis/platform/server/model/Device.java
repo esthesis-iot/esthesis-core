@@ -17,6 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -42,4 +43,6 @@ public class Device extends BaseEntity {
   @Singular
   @OneToMany(mappedBy="device", fetch = FetchType.LAZY, orphanRemoval = true)
   private List<DeviceKey> keys;
+
+  private Instant lastSeen;
 }

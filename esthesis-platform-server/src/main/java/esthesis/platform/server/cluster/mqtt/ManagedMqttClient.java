@@ -2,10 +2,10 @@ package esthesis.platform.server.cluster.mqtt;
 
 import static esthesis.platform.server.config.AppConstants.Zookeeper.LEADER_ELECTION_PATH_MQTT;
 
-import esthesis.extension.datasink.config.AppConstants.Mqtt.EventType;
+import esthesis.extension.common.config.AppConstants.Mqtt;
 import esthesis.platform.server.cluster.zookeeper.ZookeeperClientManager;
-import esthesis.platform.server.config.AppConstants.MqttTopics;
 import esthesis.platform.server.dto.MQTTServerDTO;
+import esthesis.platform.server.events.PingEvent;
 import esthesis.platform.server.mapper.MQTTMessageMapper;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
@@ -60,7 +60,6 @@ public class ManagedMqttClient {
     options.setAutomaticReconnect(true);
     options.setCleanSession(true);
     client.setCallback(new MqttCallbackExtended() {
-
       @Override
       public void connectionLost(Throwable cause) {
         log.log(Level.FINEST,
@@ -69,7 +68,7 @@ public class ManagedMqttClient {
       }
 
       @Override
-      public void messageArrived(String topic, MqttMessage message) throws Exception {
+      public void messageArrived(String topic, MqttMessage message) {
       }
 
       @Override
@@ -137,41 +136,42 @@ public class ManagedMqttClient {
    */
   protected void subscribe() throws MqttException {
     log.log(Level.FINE, "Subscribing to {0} on MQTT server {1}.",
-      new Object[]{StringUtils.joinWith(", ", mqttServerDTO.getTopicTelemetry(),
-        mqttServerDTO.getTopicMetadata(), mqttServerDTO.getTopicControl() + MqttTopics.REPLY),
+      new Object[]{StringUtils.joinWith(", ", Mqtt.EventType.TELEMETRY,
+        Mqtt.EventType.METADATA, Mqtt.EventType.CONTROL_REPLY),
         mqttServerDTO.getIpAddress()});
 
-    client.subscribe(mqttServerDTO.getTopicTelemetry() + "/#", (topic, message) ->
+    client.subscribe("/" + Mqtt.EventType.TELEMETRY + "/#", (topic, message) ->
       applicationEventPublisher.publishEvent(
         mqttMessageMapper.map(message)
           .setTopic(topic)
-          .setEventType(EventType.TELEMETRY)
           .setHardwareId(topic.substring(topic.lastIndexOf('/') + 1))
           .setId(UUID.randomUUID().toString())));
 
-    client.subscribe(mqttServerDTO.getTopicMetadata() + "/#", (topic, message) ->
+    client.subscribe("/" + Mqtt.EventType.METADATA + "/#", (topic, message) ->
       applicationEventPublisher.publishEvent(
         mqttMessageMapper.map(message)
           .setTopic(topic)
-          .setEventType(EventType.METADATA)
           .setHardwareId(topic.substring(topic.lastIndexOf('/') + 1))
           .setId(UUID.randomUUID().toString())));
 
-    client.subscribe(mqttServerDTO.getTopicControl() + MqttTopics.REPLY + "/#", (topic, message) ->
+    client.subscribe("/" + Mqtt.EventType.CONTROL_REPLY + "/#", (topic, message) ->
       applicationEventPublisher.publishEvent(
         mqttMessageMapper.map(message)
           .setTopic(topic)
-          .setEventType(EventType.CONTROL_REPLY)
           .setHardwareId(topic.substring(topic.lastIndexOf('/') + 1))
           .setId(UUID.randomUUID().toString())));
+
+    client.subscribe("/" + Mqtt.EventType.PING + "/#", (topic, message) ->
+      applicationEventPublisher
+        .publishEvent(new PingEvent(topic.substring(topic.lastIndexOf('/') + 1))));
   }
 
   protected void unsubscribe() throws MqttException {
     if (client != null && client.isConnected()) {
       client.unsubscribe(
-        new String[]{mqttServerDTO.getTopicTelemetry() + "/#",
-          mqttServerDTO.getTopicMetadata() + "/#",
-          mqttServerDTO.getTopicControl() + MqttTopics.REPLY + "/#"});
+        new String[]{"/" + Mqtt.EventType.TELEMETRY + "/#",
+          "/" + Mqtt.EventType.METADATA + "/#",
+          "/" + Mqtt.EventType.CONTROL_REPLY + "/#"});
     }
   }
 

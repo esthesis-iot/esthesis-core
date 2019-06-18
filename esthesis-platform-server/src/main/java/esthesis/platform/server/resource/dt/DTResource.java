@@ -36,10 +36,10 @@ public class DTResource {
     }
   }
 
-  @GetMapping(path = "/{hardwareId}/{type}/{measurement}")
+  @GetMapping(path = "/{hardwareId}/{mqttEventType}/{measurement}")
   public ResponseEntity<DataSinkMeasurement> get(
     @NotNull @PathVariable String hardwareId,
-    @NotNull @PathVariable String type,
+    @NotNull @PathVariable String mqttEventType,
     @NotNull @PathVariable String measurement,
     @RequestParam(required = false) Long from,
     @RequestParam(required = false) Long to,
@@ -48,13 +48,13 @@ public class DTResource {
     @RequestParam(required = false) Integer pageSize) {
 
     return returnResult(
-      dtService.get(hardwareId, type, measurement, from, to, page, pageSize, fields));
+      dtService.get(hardwareId, mqttEventType, measurement, from, to, page, pageSize, fields));
   }
 
-  @GetMapping(path = "/{hardwareId}/{type}/{measurement}/{action}")
+  @GetMapping(path = "/{hardwareId}/{mqttEventType}/{measurement}/{action}")
   public ResponseEntity<DataSinkMeasurement> count(
     @NotNull @PathVariable String hardwareId,
-    @NotNull @PathVariable String type,
+    @NotNull @PathVariable String mqttEventType,
     @NotNull @PathVariable String measurement,
     @NotNull @PathVariable String action,
     @RequestParam(required = false) Long from,
@@ -63,31 +63,31 @@ public class DTResource {
 
     switch (action) {
       case "last":
-        return returnResult(dtService.getLast(hardwareId, type, measurement, fields));
+        return returnResult(dtService.getLast(hardwareId, mqttEventType, measurement, fields));
       case "first":
-        return returnResult(dtService.getFirst(hardwareId, type, measurement, fields));
+        return returnResult(dtService.getFirst(hardwareId, mqttEventType, measurement, fields));
       case "count":
-        return returnResult(dtService.count(hardwareId, type, measurement, from, to, fields));
+        return returnResult(dtService.count(hardwareId, mqttEventType, measurement, from, to, fields));
       case "max":
         if (StringUtils.isBlank(fields)) {
           return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
         }
-        return returnResult(dtService.max(hardwareId, type, measurement, from, to, fields));
+        return returnResult(dtService.max(hardwareId, mqttEventType, measurement, from, to, fields));
       case "min":
         if (StringUtils.isBlank(fields)) {
           return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
         }
-        return returnResult(dtService.min(hardwareId, type, measurement, from, to, fields));
+        return returnResult(dtService.min(hardwareId, mqttEventType, measurement, from, to, fields));
       case "average":
         if (StringUtils.isBlank(fields)) {
           return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
         }
-        return returnResult(dtService.average(hardwareId, type, measurement, from, to, fields));
+        return returnResult(dtService.average(hardwareId, mqttEventType, measurement, from, to, fields));
       case "sum":
         if (StringUtils.isBlank(fields)) {
           return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
         }
-        return returnResult(dtService.sum(hardwareId, type, measurement, from, to, fields));
+        return returnResult(dtService.sum(hardwareId, mqttEventType, measurement, from, to, fields));
       default:
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }

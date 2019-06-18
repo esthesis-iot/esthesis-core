@@ -23,9 +23,6 @@ public class MQTTServerDTO extends BaseDTO {
   public boolean state;
   @Singular
   private List<Long> tags;
-  private String topicTelemetry;
-  private String topicControl;
-  private String topicMetadata;
   private String caCert;
   private String clientCert;
   private String clientKey;

@@ -140,16 +140,6 @@ public class AppConstants {
     }
   }
 
-  public class MqttTopics {
-
-    public static final String TELEMETRY = "/telemetry";
-    public static final String CONTROL = "/control";
-    public static final String METADATA = "/metadata";
-    public static final String REQUEST = "/request";
-    public static final String REPLY = "/reply";
-
-  }
-
   public class ExitCodes {
 
     public static final int CANT_GENERATE_PLATFORM_AES_KEY = 1;

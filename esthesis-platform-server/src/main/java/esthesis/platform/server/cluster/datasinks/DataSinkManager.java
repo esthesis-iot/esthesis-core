@@ -1,10 +1,10 @@
 package esthesis.platform.server.cluster.datasinks;
 
 import com.eurodyn.qlack.common.exception.QMismatchException;
+import esthesis.extension.common.config.AppConstants.Mqtt;
 import esthesis.extension.datasink.DataSink;
 import esthesis.extension.datasink.DataSinkFactory;
 import esthesis.extension.datasink.MQTTDataEvent;
-import esthesis.extension.datasink.config.AppConstants.Mqtt.EventType;
 import esthesis.platform.server.cluster.ClusterInfoService;
 import esthesis.platform.server.cluster.zookeeper.ZookeeperClientManager;
 import esthesis.platform.server.config.AppConstants.Zookeeper;
@@ -17,6 +17,7 @@ import esthesis.platform.server.events.LocalEvent;
 import esthesis.platform.server.events.LocalEvent.LOCAL_EVENT_TYPE;
 import esthesis.platform.server.service.DataSinkService;
 import javax.annotation.PreDestroy;
+import lombok.extern.java.Log;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -26,13 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Component
+@Log
 public class DataSinkManager {
 
   // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(DataSinkManager.class.getName());
   private final DataSinkMessenger dataSinkMessenger;
   private final ClusterInfoService clusterInfoService;
   private final ZookeeperClientManager zookeeperClientManager;
@@ -58,7 +58,7 @@ public class DataSinkManager {
   // List of available telemetry data read sinks.
   private final Map<Long, DataSink> startedTelemetryReadSinks = new HashMap<>();
 
-  private void initialiseDataSink(List<DataSinkDTO> dataSinks, String eventTypeHandler,
+  private void initialiseDataSink(List<DataSinkDTO> dataSinks, String mqttEventType,
     Map<Long, DataSink> map) {
     dataSinks.forEach(dataSink -> {
       try {
@@ -68,17 +68,17 @@ public class DataSinkManager {
         // Set the configuration to the data sink.
         esthesisDataSinkFactory.setConfiguration(dataSink.getConfiguration());
         // Keep the instance of this data sink to a local map.
-        if (eventTypeHandler.equals(EventType.METADATA)) {
+        if (mqttEventType.equals(Mqtt.EventType.METADATA)) {
           map.put(dataSink.getId(), esthesisDataSinkFactory.getMetadataSink());
-          LOGGER.log(Level.FINE, "Started metadata write sink: {0}.", esthesisDataSinkFactory);
-        } else if (eventTypeHandler.equals(EventType.TELEMETRY)) {
+          log.log(Level.FINE, "Started metadata write sink: {0}.", esthesisDataSinkFactory);
+        } else if (mqttEventType.equals(Mqtt.EventType.TELEMETRY)) {
           map.put(dataSink.getId(), esthesisDataSinkFactory.getTelemetrySink());
-          LOGGER.log(Level.FINE, "Started telemetry write sink: {0}.", esthesisDataSinkFactory);
+          log.log(Level.FINE, "Started telemetry write sink: {0}.", esthesisDataSinkFactory);
         } else {
           throw new QMismatchException("Unspecified event type handler.");
         }
       } catch (Exception e) {
-        LOGGER.log(Level.SEVERE, MessageFormat
+        log.log(Level.SEVERE, MessageFormat
           .format("Could not instantiate metadata write sink {0}.", dataSink.getFactoryClass()), e);
       }
     });
@@ -101,15 +101,14 @@ public class DataSinkManager {
   }
 
   public void startDataSinks() {
-    LOGGER.log(Level.FINEST, "Initializing active data sinks.");
-    // Start all active metadata write sinks.
-    initialiseDataSink(dataSinkService.findActiveMetadataWriteSinks(), EventType.METADATA,
+    log.log(Level.FINEST, "Initializing active data sinks.");
+    initialiseDataSink(dataSinkService.findActiveMetadataWriteSinks(), Mqtt.EventType.METADATA,
       startedMetadataWriteSinks);
-    initialiseDataSink(dataSinkService.findActiveTelemetryWriteSinks(), EventType.TELEMETRY,
+    initialiseDataSink(dataSinkService.findActiveTelemetryWriteSinks(), Mqtt.EventType.TELEMETRY,
       startedTelemetryWriteSinks);
-    initialiseDataSink(dataSinkService.findActiveMetadataReadSinks(), EventType.METADATA,
+    initialiseDataSink(dataSinkService.findActiveMetadataReadSinks(), Mqtt.EventType.METADATA,
       startedMetadataReadSinks);
-    initialiseDataSink(dataSinkService.findActiveTelemetryReadSinks(), EventType.TELEMETRY,
+    initialiseDataSink(dataSinkService.findActiveTelemetryReadSinks(), Mqtt.EventType.TELEMETRY,
       startedTelemetryReadSinks);
   }
 
@@ -131,21 +130,20 @@ public class DataSinkManager {
    */
   @EventListener
   public void onApplicationEvent(MQTTDataEvent event) {
-    LOGGER.log(Level.FINEST, "Starting distribution of MQTT event {0} on topic {1} for device {2}.",
+    log.log(Level.FINEST, "Starting distribution of MQTT event {0} on topic {1} from device {2}.",
       new Object[]{event.getId(), event.getTopic(), event.getHardwareId()});
-    switch (event.getEventType()) {
-      case (EventType.TELEMETRY):
-        startedTelemetryWriteSinks.entrySet().parallelStream().forEach(
-          dataSinkEntry -> dataSinkMessenger.processMessage(dataSinkEntry.getValue(), event));
-        break;
-      case (EventType.METADATA):
-        startedMetadataWriteSinks.entrySet().parallelStream().forEach(
-          dataSinkEntry -> dataSinkMessenger.processMessage(dataSinkEntry.getValue(), event));
-        break;
-      case (EventType.CONTROL_REPLY):
-        break;
+    // Distinguish PING events from all others. PING events are handled in the platform database to
+    // update the "last seen" indicator for a device, whereas all other events are distributed to
+    // the data sinks.
+    if (event.getTopic().startsWith("/" + Mqtt.EventType.TELEMETRY)) {
+      startedTelemetryWriteSinks.entrySet().parallelStream().forEach(
+        dataSinkEntry -> dataSinkMessenger.processMessage(dataSinkEntry.getValue(), event));
+    } else if (event.getTopic().startsWith("/" + Mqtt.EventType.METADATA)) {
+      startedMetadataWriteSinks.entrySet().parallelStream().forEach(
+        dataSinkEntry -> dataSinkMessenger.processMessage(dataSinkEntry.getValue(), event));
     }
-    LOGGER.log(Level.FINEST, "Finished distribution of MQTT event {0} on topic {1} for device {2}.",
+
+    log.log(Level.FINEST, "Finished distribution of MQTT event {0} on topic {1} for device {2}.",
       new Object[]{event.getId(), event.getTopic(), event.getHardwareId()});
   }
 
@@ -155,7 +153,7 @@ public class DataSinkManager {
   @EventListener
   public void onApplicationEvent(LocalEvent event) {
     if (event.getEventType().equals(LOCAL_EVENT_TYPE.CONFIGURATION_DATASINK)) {
-      LOGGER.log(Level.FINEST, "EVENT: {0}.", event);
+      log.log(Level.FINEST, "EVENT: {0}.", event);
       stopDataSinks();
       startDataSinks();
       if (!clusterInfoService.isStandalone() && !event.isClusterEvent()) {
@@ -165,7 +163,7 @@ public class DataSinkManager {
               new ClusterEvent(CLUSTER_EVENT_TYPE.CONFIGURATION_DATA_SINK)
                 .setEmitterNode(appProperties.getNodeId()).toByteArray());
         } catch (Exception e) {
-          LOGGER.log(Level.SEVERE, "Could not process PlatformEvent.", e);
+          log.log(Level.SEVERE, "Could not process PlatformEvent.", e);
         }
       }
     }
