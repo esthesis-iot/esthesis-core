@@ -23,7 +23,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @EqualsAndHashCode(callSuper = true)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Accessors(chain = true)
-public class DeviceMetadata extends BaseEntity {
+public class DevicePage extends BaseEntity {
 
   @NotNull
   private String name;

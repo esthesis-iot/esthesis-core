@@ -1,7 +1,7 @@
 <form novalidate [formGroup]="form" fxLayout="column">
-  <div class="inline-header">Device metadata</div>
+  <div class="inline-header">Device telemetry details</div>
   <div class="inline-subheader">
-    Select which metadata will be visible while viewing device information.
+    Select which telemetry data will be visible on device information page.
   </div>
   <div formArrayName="fields" *ngFor="let field of form.get('fields').controls; let i = index">
     <div [formGroupName]="i" fxLayout="row" fxLayoutGap="1rem">

@@ -26,14 +26,14 @@ import {QFormsModule} from '@eurodyn/forms';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FlexModule} from '@angular/flex-layout';
 import {SettingsProvisioningComponent} from './settings-provisioning/settings-provisioning.component';
-import {SettingsDeviceMetadataComponent} from './settings-device-metadata/settings-device-metadata.component';
+import {SettingsDevicePageComponent} from './settings-device-page/settings-device-page.component';
 
 @NgModule({
   declarations: [
     SettingsComponent,
     SettingsProvisioningComponent,
     SettingsNetworkingComponent,
-    SettingsDeviceMetadataComponent,
+    SettingsDevicePageComponent,
     SettingsDevregComponent,
     SettingsSecurityComponent,
   ],

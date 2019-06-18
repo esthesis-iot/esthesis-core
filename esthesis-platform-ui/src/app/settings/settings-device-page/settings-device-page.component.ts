@@ -7,11 +7,11 @@ import {UtilityService} from '../../shared/service/utility.service';
 import {QFormsService} from '@eurodyn/forms';
 
 @Component({
-  selector: 'app-settings-device-metadata',
-  templateUrl: './settings-device-metadata.component.html',
-  styleUrls: ['./settings-device-metadata.component.scss']
+  selector: 'app-settings-device-page',
+  templateUrl: './settings-device-page.component.html',
+  styleUrls: ['./settings-device-page.component.scss']
 })
-export class SettingsDeviceMetadataComponent extends BaseComponent implements OnInit {
+export class SettingsDevicePageComponent extends BaseComponent implements OnInit {
   form: FormGroup;
 
   allFields: FieldDto[];

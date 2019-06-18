@@ -2,8 +2,8 @@ package esthesis.platform.server.resource;
 
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
-import esthesis.extension.datasink.dto.MetadataFieldDTO;
-import esthesis.platform.server.service.DeviceMetadataService;
+import esthesis.extension.datasink.dto.FieldDTO;
+import esthesis.platform.server.service.DevicePageService;
 import javax.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,21 +22,21 @@ import java.util.List;
 @RequestMapping("/device-metadata")
 public class DeviceMetadataResource {
 
-  private final DeviceMetadataService deviceMetadataService;
+  private final DevicePageService deviceMetadataService;
 
-  public DeviceMetadataResource(DeviceMetadataService deviceMetadataService) {
+  public DeviceMetadataResource(DevicePageService deviceMetadataService) {
     this.deviceMetadataService = deviceMetadataService;
   }
 
   @GetMapping(path = "{measurement}/fields", produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class,
     logMessage = "Could not get fields for measurement.")
-  public List<MetadataFieldDTO> get(@PathVariable String measurement) {
+  public List<FieldDTO> get(@PathVariable String measurement) {
     return deviceMetadataService.findAllSynthetic(measurement);
   }
 
   @PostMapping
-  public ResponseEntity save(@Valid @RequestBody List<MetadataFieldDTO> fields) {
+  public ResponseEntity save(@Valid @RequestBody List<FieldDTO> fields) {
     deviceMetadataService.save(fields);
     return ResponseEntity.ok().build();
   }

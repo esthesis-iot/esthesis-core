@@ -1,7 +1,7 @@
 package esthesis.platform.server.mapper;
 
-import esthesis.extension.datasink.dto.MetadataFieldDTO;
-import esthesis.platform.server.model.DeviceMetadata;
+import esthesis.extension.datasink.dto.FieldDTO;
+import esthesis.platform.server.model.DevicePage;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValueCheckStrategy;
@@ -11,14 +11,14 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
-public abstract class DeviceMetadataMapper {
+public abstract class DevicePageMapper {
 
-  public abstract MetadataFieldDTO map(DeviceMetadata entity);
+  public abstract FieldDTO map(DevicePage entity);
 
-  public List<MetadataFieldDTO> map(Iterable<DeviceMetadata> all) {
+  public List<FieldDTO> map(Iterable<DevicePage> all) {
     return StreamSupport.stream(all.spliterator(), false).map(this::map)
       .collect(Collectors.toList());
   }
 
-  public abstract DeviceMetadata map(MetadataFieldDTO source, @MappingTarget DeviceMetadata target);
+  public abstract DevicePage map(FieldDTO source, @MappingTarget DevicePage target);
 }
