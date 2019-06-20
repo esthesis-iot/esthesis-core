@@ -2,9 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {FieldDto} from '../../dto/field-dto';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BaseComponent} from '../../shared/component/base-component';
-import {DeviceMetadataService} from '../../shared/service/device-metadata.service';
 import {UtilityService} from '../../shared/service/utility.service';
 import {QFormsService} from '@eurodyn/forms';
+import {DevicesService} from '../../devices/devices.service';
 
 @Component({
   selector: 'app-settings-device-page',
@@ -16,7 +16,7 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
 
   allFields: FieldDto[];
 
-  constructor(private deviceMetadataService: DeviceMetadataService, private fb: FormBuilder,
+  constructor(private devicesService: DevicesService, private fb: FormBuilder,
               private utilityService: UtilityService, private qForms: QFormsService) {
     super();
   }
@@ -26,7 +26,7 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
       fields: this.fb.array([])
     });
 
-    this.deviceMetadataService.getMetadataFields().subscribe(onNext => {
+    this.devicesService.getFields().subscribe(onNext => {
       this.allFields = onNext;
       onNext.forEach(field => {
         // @ts-ignore
@@ -40,14 +40,19 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
       name: [{value: fieldDto.name, disabled: true}, Validators.required],
       datatype: [{value: fieldDto.datatype, disabled: true}, Validators.required],
       shown: [fieldDto.shown],
-      label: [fieldDto.label]
+      label: [fieldDto.label],
+      datetime: [fieldDto.datetime],
+      formatter: [fieldDto.formatter],
     });
   }
 
   save() {
-    this.deviceMetadataService.save(this.qForms.cleanupForm(this.form)['fields']).subscribe(
+    this.devicesService.saveFields(this.qForms.cleanupForm(this.form)['fields']).subscribe(
       onNext => {
         this.utilityService.popupSuccess("Settings saved successfully.");
       });
   }
+
+  //TODO remove
+  log(val) { console.log(val); }
 }

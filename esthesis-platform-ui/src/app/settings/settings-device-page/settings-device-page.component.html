@@ -6,7 +6,7 @@
   <div formArrayName="fields" *ngFor="let field of form.get('fields').controls; let i = index">
     <div [formGroupName]="i" fxLayout="row" fxLayoutGap="1rem">
       <mat-checkbox formControlName="shown" class="xs-mt1" color="primary"></mat-checkbox>
-      <mat-form-field>
+      <mat-form-field fxFlex="1 0 auto">
         <input matInput placeholder="Name" formControlName="name">
       </mat-form-field>
       <mat-form-field>
@@ -15,6 +15,11 @@
       <mat-form-field fxFlex="1 0 auto">
         <input matInput placeholder="UI label" formControlName="label">
       </mat-form-field>
+      <mat-form-field fxFlex="1 0 auto">
+        <input matInput placeholder="Formatter" formControlName="formatter"
+               [readonly]="field.controls.datetime.value">
+      </mat-form-field>
+      <mat-checkbox formControlName="datetime" class="xs-mt1" color="primary">is epoch</mat-checkbox>
     </div>
   </div>
 

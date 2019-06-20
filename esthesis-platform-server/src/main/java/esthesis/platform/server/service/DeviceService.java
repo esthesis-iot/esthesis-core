@@ -339,10 +339,11 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     return deviceDTO;
   }
 
-  @Override
-  public DeviceDTO findById(long id) {
+  public DeviceDTO findById(long id, boolean processKeys) {
     final DeviceDTO deviceDTO = super.findById(id);
-    fillDecryptedKeys(deviceDTO);
+    if (processKeys) {
+      fillDecryptedKeys(deviceDTO);
+    }
 
     return deviceDTO;
   }

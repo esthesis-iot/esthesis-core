@@ -10,6 +10,7 @@ import {DevicesService} from '../devices.service';
 import {BaseComponent} from 'src/app/shared/component/base-component';
 import {UtilityService} from '../../shared/service/utility.service';
 import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {sprintf} from "sprintf-js";
 
 @Component({
   selector: 'app-device',
@@ -59,10 +60,13 @@ export class DeviceComponent extends BaseComponent implements OnInit {
       hardwareId: ['', [Validators.required, Validators.maxLength(512)]]
     });
 
-    // Fill-in the form with data if editing an existing item.
+    // If viewing an existing device, fetch data for it.
     if (this.id && this.id !== 0) {
       this.devicesService.get(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
+      });
+      this.devicesService.getFieldValues(this.id).subscribe(onNext => {
+        console.log(onNext);
       });
     }
 
@@ -70,6 +74,18 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     this.tagService.getAll().subscribe(onNext => {
       this.availableTags = onNext.content;
     });
+
+
+    // var a = "nassos";
+    // var m = "Hello %s";
+    //
+    // // console.log(
+    // //   sprintf(m, eval ("return new Date(1560938313000).toString()"))
+    // // );
+    //
+    // console.log(
+    // sprintf('Current date and time: %s', function() { return new Date(1560938313000).toString() })
+    // );
   }
 
   save() {

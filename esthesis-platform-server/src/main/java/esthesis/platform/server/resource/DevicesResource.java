@@ -8,10 +8,12 @@ import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.github.slugify.Slugify;
 import com.querydsl.core.types.Predicate;
 import esthesis.extension.common.util.Base64E;
+import esthesis.extension.datasink.dto.FieldDTO;
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.DeviceKeyDTO;
 import esthesis.platform.server.dto.DeviceRegistrationDTO;
 import esthesis.platform.server.model.Device;
+import esthesis.platform.server.service.DevicePageService;
 import esthesis.platform.server.service.DeviceService;
 import esthesis.platform.server.service.SecurityService;
 import javax.crypto.BadPaddingException;
@@ -38,6 +40,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @Validated
 @RestController
@@ -46,10 +49,13 @@ public class DevicesResource {
 
   private final DeviceService deviceService;
   private final SecurityService securityService;
+  private final DevicePageService devicePageService;
 
-  public DevicesResource(DeviceService deviceService, SecurityService securityService) {
+  public DevicesResource(DeviceService deviceService, SecurityService securityService,
+    DevicePageService devicePageService) {
     this.deviceService = deviceService;
     this.securityService = securityService;
+    this.devicePageService = devicePageService;
   }
 
   @PostMapping(path = "/preregister")
@@ -76,7 +82,7 @@ public class DevicesResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch device.")
   @ReplyFilter("-certificate,-privateKey,-publicKey,-psPublicKey,-sessionKey")
   public DeviceDTO get(@PathVariable long id) {
-    final DeviceDTO deviceDTO = deviceService.findById(id);
+    final DeviceDTO deviceDTO = deviceService.findById(id, true);
 
     return deviceDTO;
   }
@@ -101,7 +107,7 @@ public class DevicesResource {
          InvalidAlgorithmParameterException, IOException {
     // Prepare a filename for downloading.
     String filename =
-      new Slugify().slugify(deviceService.findById(deviceId).getHardwareId()) + ".keys";
+      new Slugify().slugify(deviceService.findById(deviceId, true).getHardwareId()) + ".keys";
 
     //TODO update with remaining keys for the device (i.e. provisioning)
 
@@ -141,5 +147,24 @@ public class DevicesResource {
       .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
       .contentType(MediaType.APPLICATION_OCTET_STREAM)
       .body(stringBuilder.toString());
+  }
+
+  @GetMapping(path = "fields", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
+    logMessage = "Could not get fields for measurement.")
+  public List<FieldDTO> getFields() {
+    return devicePageService.findAllSynthetic();
+  }
+
+  @PostMapping("fields")
+  public ResponseEntity saveFields(@Valid @RequestBody List<FieldDTO> fields) {
+    devicePageService.save(fields);
+    return ResponseEntity.ok().build();
+  }
+
+  @GetMapping(path = "field-values/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch device page fields.")
+  public List<FieldDTO> getFieldValues(@PathVariable long id) {
+    return devicePageService.findWithLatestValues(id);
   }
 }

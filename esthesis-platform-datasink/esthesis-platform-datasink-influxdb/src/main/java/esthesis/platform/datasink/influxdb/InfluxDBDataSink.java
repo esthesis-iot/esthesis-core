@@ -13,9 +13,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.extension.datasink.DataSink;
 import esthesis.extension.datasink.MQTTDataEvent;
 import esthesis.extension.datasink.config.AppConstants.Mqtt;
-import esthesis.extension.datasink.dto.DataSinkMeasurement;
+import esthesis.extension.datasink.dto.DataSinkQueryResult;
 import esthesis.extension.datasink.dto.FieldDTO;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.influxdb.BatchOptions;
 import org.influxdb.InfluxDB;
@@ -40,9 +42,7 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -170,6 +170,31 @@ public class InfluxDBDataSink implements DataSink {
     return pointBuilder.build();
   }
 
+  private List<FieldDTO> getFieldsForMeasurement(String database, String measurement) {
+    if (measurement != null && !measurement.matches("[A-Za-z0-9_]+")) {
+      throw new SecurityException("Measurement value should be alphanumeric.");
+    }
+    QueryBuilder queryBuilder;
+    if (measurement == null) {
+      queryBuilder = QueryBuilder.newQuery("SHOW FIELD KEYS on " + database);
+    } else {
+      queryBuilder = QueryBuilder.newQuery("SHOW FIELD KEYS from " + measurement);
+    }
+    queryBuilder
+      .forDatabase(influxDBConfiguration.getDatabaseName());
+    final QueryResult results = influxDB.query(queryBuilder.create());
+
+    if (!CollectionUtils.isEmpty(results.getResults().get(0).getSeries())) {
+      return results.getResults().get(0).getSeries().stream().map(s -> s.getValues().stream()
+        .map(o -> new FieldDTO(s.getName() + "." + (String) o.get(0), (String) o.get(1)))
+        .collect(Collectors.toList())).collect(Collectors.toList()).stream().flatMap(List::stream)
+        .collect(
+          Collectors.toList());
+    } else {
+      return new ArrayList<>();
+    }
+  }
+
   public void processEvent(MQTTDataEvent event) {
     eventsQueued.incrementAndGet();
 
@@ -222,18 +247,17 @@ public class InfluxDBDataSink implements DataSink {
     return null;
   }
 
-  private DataSinkMeasurement prepareOperationResult(QueryResult queryResult, String hardwareId,
-    String measurement, String type) {
+  private DataSinkQueryResult prepareOperationResult(QueryResult queryResult, String hardwareId) {
     // Return an empty response if no results are available.
     if (CollectionUtils.isEmpty(queryResult.getResults().get(0).getSeries())) {
       return null;
     }
 
     // Set default values about the measurement for which count is calculated.
-    DataSinkMeasurement dataSinkMeasurement = new DataSinkMeasurement();
+    DataSinkQueryResult dataSinkMeasurement = new DataSinkQueryResult();
     dataSinkMeasurement.setHardwareId(hardwareId);
-    dataSinkMeasurement.setType(type);
-    dataSinkMeasurement.setMeasurement(measurement);
+    //    dataSinkMeasurement.setType(eventType);
+    //    dataSinkMeasurement.setMeasurements(measurement);
 
     // Remove unnecessary columns (such as 'time').
     final Series series = queryResult.getResults().get(0).getSeries().get(0);
@@ -253,42 +277,22 @@ public class InfluxDBDataSink implements DataSink {
     return dataSinkMeasurement;
   }
 
-  private DataSinkMeasurement prepareMeasurementsResults(QueryResult queryResult) {
+  private DataSinkQueryResult prepareMeasurementsResults(QueryResult queryResult) {
+    // Get the series contained on this result set.
+    DataSinkQueryResult dataSinkQueryResult = new DataSinkQueryResult();
+    final List<Series> series = queryResult.getResults().get(0).getSeries();
+
     // Return an empty response if no results are available.
-    if (CollectionUtils.isEmpty(queryResult.getResults().get(0).getSeries())) {
+    if (CollectionUtils.isEmpty(series)) {
       return null;
     }
 
-    DataSinkMeasurement dataSinkMeasurement = new DataSinkMeasurement();
-    final Series series = queryResult.getResults().get(0).getSeries().get(0);
+    final Series seriesData = series.get(0);
 
-    // Set the name of the measurement.
-    dataSinkMeasurement.setMeasurement(series.getName());
+    dataSinkQueryResult.setColumns(seriesData.getColumns());
+    dataSinkQueryResult.setValues(seriesData.getValues());
 
-    // Remove columns with duplicate values, such as the hardware ID and the measurement type.
-    // Instead, add these values once in the DataSinkMeasurement.
-    int hardwareIdColumnIndex = series.getColumns().indexOf(TAG_HARDWARE_ID_NAME);
-    int measurementTypeColumnIndex = series.getColumns().indexOf(TAG_TYPE_NAME);
-    dataSinkMeasurement
-      .setHardwareId(series.getValues().get(0).get(hardwareIdColumnIndex).toString());
-    dataSinkMeasurement
-      .setType(series.getValues().get(0).get(measurementTypeColumnIndex).toString());
-    final List<String> columns = series.getColumns();
-    columns.remove(hardwareIdColumnIndex);
-    measurementTypeColumnIndex = series.getColumns().indexOf(TAG_TYPE_NAME);
-    columns.remove(measurementTypeColumnIndex);
-    dataSinkMeasurement.setColumns(columns);
-
-    // Set values (removing values of removed columns)
-    final List<List<Object>> values = series.getValues();
-    final List<Integer> indicesToRemove = Arrays
-      .asList(hardwareIdColumnIndex, measurementTypeColumnIndex);
-    values.stream().forEach(o ->
-      indicesToRemove.stream().mapToInt(i -> i).forEach(o::remove)
-    );
-    dataSinkMeasurement.setValues(series.getValues());
-
-    return dataSinkMeasurement;
+    return dataSinkQueryResult;
   }
 
   private void setFromTo(WhereQueryImpl whereQuery, long fromDate, long toDate) {
@@ -299,8 +303,9 @@ public class InfluxDBDataSink implements DataSink {
     whereQuery.and(lte(INFLUXDB_TIME_NAME, toDate * 1000000));
   }
 
-  private DataSinkMeasurement getOneOrdered(@NotNull String hardwareId, @NotNull String measurement,
-    @NotNull String type, Ordering ordering, String... field) {
+  private DataSinkQueryResult getOneOrdered(@NotNull String hardwareId,
+    @NotEmpty String measurement, @NotNull String type, Ordering ordering,
+    @NotEmpty String[] field) {
     Query query = select(field)
       .from(influxDBConfiguration.getDatabaseName(), measurement)
       .where(eq(TAG_HARDWARE_ID_NAME, hardwareId))
@@ -321,126 +326,130 @@ public class InfluxDBDataSink implements DataSink {
   }
 
   @Override
-  public DataSinkMeasurement getLast(@NotNull String hardwareId, @NotNull String measurement,
-    @NotNull String type, String fields) {
-    return getOneOrdered(hardwareId, measurement, type, desc(), fields);
+  public DataSinkQueryResult getLast(@NotNull String hardwareId, @NotEmpty String measurement,
+    @NotNull String eventType, @NotEmpty String[] fields) {
+    return getOneOrdered(hardwareId, measurement, eventType, desc(), fields);
+  }
+
+
+  @Override
+  public DataSinkQueryResult getFirst(@NotNull String hardwareId, @NotEmpty String measurement,
+    @NotNull String eventType, @NotNull String[] fields) {
+    return getOneOrdered(hardwareId, measurement, eventType, asc(), fields);
   }
 
   @Override
-  public DataSinkMeasurement getFirst(@NotNull String hardwareId, @NotNull String measurement,
-    @NotNull String type, String fields) {
-    return getOneOrdered(hardwareId, measurement, type, asc(), fields);
-  }
-
-  @Override
-  public DataSinkMeasurement get(@NotNull String hardwareId, @NotNull String measurement,
-    @NotNull String type, long fromDate, long toDate, int page, int pageSize, String fields) {
+  public DataSinkQueryResult get(@NonNull String hardwareId, @NotEmpty String measurement,
+    @NotNull String eventType, long fromDate, long toDate, int page, int pageSize,
+    @NotEmpty String[] fields) {
     WhereQueryImpl whereQuery = select(fields)
       .from(influxDBConfiguration.getDatabaseName(), measurement)
       .where(eq(TAG_HARDWARE_ID_NAME, hardwareId))
-      .and(eq(TAG_TYPE_NAME, type));
+      .and(eq(TAG_TYPE_NAME, eventType));
     setFromTo(whereQuery, fromDate, toDate);
     setPaging(whereQuery, page, pageSize);
     Query query = whereQuery.orderBy(desc());
 
     LOGGER.log(Level.FINEST, "Executing query: {0}. ", query.getCommand());
-    return prepareMeasurementsResults(influxDB.query(query));
+    return prepareMeasurementsResults(influxDB.query(query))
+      .setHardwareId(hardwareId)
+      .setMeasurement(measurement);
   }
 
   @Override
-  public DataSinkMeasurement count(@NotNull String hardwareId, @NotNull String measurement,
-    @NotNull String type, long fromDate, long toDate, String fields) {
+  public DataSinkQueryResult count(@NotNull String hardwareId, @NotEmpty String measurement,
+    @NotNull String eventType, long fromDate, long toDate, String field) {
     SelectionQueryImpl selectQuery = select();
-    if (StringUtils.isNotBlank(fields)) {
-      selectQuery.count(fields);
+    if (StringUtils.isNotBlank(field)) {
+      selectQuery.count(field);
     } else {
       selectQuery.countAll();
     }
     WhereQueryImpl query = selectQuery
       .from(influxDBConfiguration.getDatabaseName(), measurement)
       .where(eq(TAG_HARDWARE_ID_NAME, hardwareId))
-      .and(eq(TAG_TYPE_NAME, type));
+      .and(eq(TAG_TYPE_NAME, eventType));
     setFromTo(query, fromDate, toDate);
 
     LOGGER.log(Level.FINEST, "Executing query: {0}. ", query.getCommand());
 
-    return prepareOperationResult(influxDB.query(query), hardwareId, measurement, type);
+    return prepareOperationResult(influxDB.query(query), hardwareId)
+      .setHardwareId(hardwareId)
+      .setMeasurement(measurement);
   }
 
   @Override
-  public DataSinkMeasurement max(@NotNull String hardwareId, @NotNull String measurement,
-    @NotNull String type, long fromDate, long toDate, @NotNull String fields) {
-    WhereQueryImpl query = select().max(fields)
+  public DataSinkQueryResult max(@NotNull String hardwareId, @NotEmpty String measurement,
+    @NotNull String eventType, long fromDate, long toDate, @NotEmpty String field) {
+    WhereQueryImpl query = select().max(field)
       .from(influxDBConfiguration.getDatabaseName(), measurement)
       .where(eq(TAG_HARDWARE_ID_NAME, hardwareId))
-      .and(eq(TAG_TYPE_NAME, type));
+      .and(eq(TAG_TYPE_NAME, eventType));
     setFromTo(query, fromDate, toDate);
 
     LOGGER.log(Level.FINEST, "Executing query: {0}. ", query.getCommand());
 
-    return prepareOperationResult(influxDB.query(query), hardwareId, measurement, type);
+    return prepareOperationResult(influxDB.query(query), hardwareId)
+      .setHardwareId(hardwareId)
+      .setMeasurement(measurement);
   }
 
   @Override
-  public DataSinkMeasurement min(@NotNull String hardwareId, @NotNull String measurement,
-    @NotNull String type, long fromDate, long toDate, @NotNull String fields) {
-    WhereQueryImpl query = select().min(fields)
+  public DataSinkQueryResult min(@NotNull String hardwareId, @NotEmpty String measurement,
+    @NotNull String eventType, long fromDate, long toDate, @NotEmpty String field) {
+    WhereQueryImpl query = select().min(field)
       .from(influxDBConfiguration.getDatabaseName(), measurement)
       .where(eq(TAG_HARDWARE_ID_NAME, hardwareId))
-      .and(eq(TAG_TYPE_NAME, type));
+      .and(eq(TAG_TYPE_NAME, eventType));
     setFromTo(query, fromDate, toDate);
 
     LOGGER.log(Level.FINEST, "Executing query: {0}. ", query.getCommand());
 
-    return prepareOperationResult(influxDB.query(query), hardwareId, measurement, type);
+    return prepareOperationResult(influxDB.query(query), hardwareId)
+      .setHardwareId(hardwareId)
+      .setMeasurement(measurement);
   }
 
   @Override
-  public DataSinkMeasurement sum(@NotNull String hardwareId, @NotNull String measurement,
-    @NotNull String type, long fromDate, long toDate, @NotNull String fields) {
-    WhereQueryImpl query = select().sum(fields)
+  public DataSinkQueryResult sum(@NotNull String hardwareId, @NotEmpty String measurement,
+    @NotNull String eventType, long fromDate, long toDate, @NotEmpty String field) {
+    WhereQueryImpl query = select().sum(field)
       .from(influxDBConfiguration.getDatabaseName(), measurement)
       .where(eq(TAG_HARDWARE_ID_NAME, hardwareId))
-      .and(eq(TAG_TYPE_NAME, type));
+      .and(eq(TAG_TYPE_NAME, eventType));
     setFromTo(query, fromDate, toDate);
 
     LOGGER.log(Level.FINEST, "Executing query: {0}. ", query.getCommand());
 
-    return prepareOperationResult(influxDB.query(query), hardwareId, measurement, type);
+    return prepareOperationResult(influxDB.query(query), hardwareId)
+      .setHardwareId(hardwareId)
+      .setMeasurement(measurement);
   }
 
   @Override
-  public DataSinkMeasurement average(@NotNull String hardwareId, @NotNull String measurement,
-    @NotNull String type, long fromDate, long toDate, @NotNull String fields) {
-    WhereQueryImpl query = select().mean(fields)
+  public DataSinkQueryResult average(@NotNull String hardwareId, @NotEmpty String measurement,
+    @NotNull String eventType, long fromDate, long toDate, @NotEmpty String field) {
+    WhereQueryImpl query = select().mean(field)
       .from(influxDBConfiguration.getDatabaseName(), measurement)
       .where(eq(TAG_HARDWARE_ID_NAME, hardwareId))
-      .and(eq(TAG_TYPE_NAME, type));
+      .and(eq(TAG_TYPE_NAME, eventType));
     setFromTo(query, fromDate, toDate);
 
     LOGGER.log(Level.FINEST, "Executing query: {0}. ", query.getCommand());
 
-    return prepareOperationResult(influxDB.query(query), hardwareId, measurement, type);
+    return prepareOperationResult(influxDB.query(query), hardwareId)
+      .setHardwareId(hardwareId)
+      .setMeasurement(measurement);
+  }
+
+  @Override
+  public List<FieldDTO> getFields() {
+    return getFieldsForMeasurement(this.influxDBConfiguration.getDatabaseName(), null);
   }
 
   @Override
   public List<FieldDTO> getFieldsForMeasurement(String measurement) {
-    if (!measurement.matches("[A-Za-z0-9_]+")) {
-      throw new SecurityException("Measurement value should be alphanumeric.");
-    }
-    Query q = QueryBuilder.newQuery("SHOW FIELD KEYS from " + measurement)
-      .forDatabase(influxDBConfiguration.getDatabaseName())
-      .create();
-    final QueryResult results = influxDB.query(q);
-
-    if (results.getResults().get(0).getSeries() != null) {
-      return results.getResults().get(0).getSeries().get(0).getValues().stream()
-        .map(o -> new FieldDTO((String) o.get(0), (String) o.get(1)))
-        .sorted(Comparator.comparing(FieldDTO::getName))
-        .collect(Collectors.toList());
-    } else {
-      return new ArrayList<>();
-    }
+    return getFieldsForMeasurement(null, measurement);
   }
 
   public String getSinkName() {

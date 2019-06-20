@@ -31,4 +31,6 @@ public class DevicePage extends BaseEntity {
   private String datatype;
   private boolean shown;
   private String label;
+  private boolean datetime;
+  private String formatter;
 }

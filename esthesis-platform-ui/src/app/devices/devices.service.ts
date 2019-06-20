@@ -8,6 +8,7 @@ import {DeviceRegisterDto} from '../dto/device-register-dto';
 import {QFormsService, QPageableReply} from '@eurodyn/forms';
 import {DeviceDto} from '../dto/device-dto';
 import {HttpUtilsService} from '../shared/service/http-utils.service';
+import {FieldDto} from '../dto/field-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -27,11 +28,23 @@ export class DevicesService extends CrudService<CaDto> {
       AppConstants.API_ROOT + `/devices?${queryString}`);
   }
 
-  downloadKeys(deviceId: number) {
-    this.http.get(`${AppConstants.API_ROOT}/devices/${deviceId}/keys`, {
+  downloadKeys(hardwareId: number) {
+    this.http.get(`${AppConstants.API_ROOT}/devices/${hardwareId}/keys`, {
       responseType: 'blob', observe: 'response'
     }).subscribe(onNext => {
       this.httpUtil.saveAs(onNext);
     });
+  }
+
+  getFields(): Observable<FieldDto[]> {
+    return this.http.get<FieldDto[]>(`${AppConstants.API_ROOT}/devices/fields`);
+  }
+
+  saveFields(form: any): Observable<any> {
+    return this.http.post(`${AppConstants.API_ROOT}/devices/fields`, form);
+  }
+
+  getFieldValues(id: number): Observable<FieldDto> {
+    return this.http.get<FieldDto>(AppConstants.API_ROOT + `/devices/field-values/${id}`);
   }
 }

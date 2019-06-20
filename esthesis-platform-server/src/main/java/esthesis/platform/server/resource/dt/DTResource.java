@@ -1,6 +1,6 @@
 package esthesis.platform.server.resource.dt;
 
-import esthesis.extension.datasink.dto.DataSinkMeasurement;
+import esthesis.extension.datasink.dto.DataSinkQueryResult;
 import esthesis.platform.server.service.DTService;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +24,7 @@ public class DTResource {
     this.dtService = dtService;
   }
 
-  private ResponseEntity<DataSinkMeasurement> returnEmptyResult() {
+  private ResponseEntity<DataSinkQueryResult> returnEmptyResult() {
     return returnResult(null);
   }
 
@@ -36,58 +36,108 @@ public class DTResource {
     }
   }
 
-  @GetMapping(path = "/{hardwareId}/{mqttEventType}/{measurement}")
-  public ResponseEntity<DataSinkMeasurement> get(
+  /**
+   * Returns the value of one or more fields for a measurement.
+   *
+   * @param hardwareId The id of the device for which the results should be obtained.
+   * @param mqttEventType The type of the MQTT event under which results were submitted (currently,
+   * telemetry or metadata).
+   * @param from The earliest EPOCH to return results from.
+   * @param to The latest EPOCH to return results from.
+   * @param fields A comma-separated list of fields to retrieve, or * for all fields for data sinks
+   * that support it.
+   * @param measurement The measurement for which to retrieve fields.
+   * @param page The page of the results in case a pageable reply is wanted. First page is 0.
+   * @param pageSize The size of each page of results.
+   */
+  @GetMapping(path = {"/{hardwareId}/{mqttEventType}", "/{hardwareId}/{mqttEventType}/{position}"})
+  public ResponseEntity<DataSinkQueryResult> get(
     @NotNull @PathVariable String hardwareId,
     @NotNull @PathVariable String mqttEventType,
-    @NotNull @PathVariable String measurement,
     @RequestParam(required = false) Long from,
     @RequestParam(required = false) Long to,
-    @RequestParam(required = false) String fields,
+    @RequestParam(required = false) @NotNull String fields,
+    @RequestParam(required = false) @NotNull String measurement,
     @RequestParam(required = false) Integer page,
+    @RequestParam(required = false) String position,
     @RequestParam(required = false) Integer pageSize) {
 
-    return returnResult(
-      dtService.get(hardwareId, mqttEventType, measurement, from, to, page, pageSize, fields));
+    if (StringUtils.isNotBlank(position)) {
+      switch (position) {
+        case "last":
+          return returnResult(
+            dtService.getLast(hardwareId, mqttEventType, measurement, fields.split(",")));
+        case "first":
+          return returnResult(
+            dtService.getFirst(hardwareId, mqttEventType, measurement, fields.split(",")));
+        default:
+          return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+      }
+    } else {
+      return returnResult(
+        dtService
+          .get(hardwareId, mqttEventType, measurement, from, to, page, pageSize,
+            StringUtils.defaultIfBlank(fields, "").split(",")));
+    }
   }
 
-  @GetMapping(path = "/{hardwareId}/{mqttEventType}/{measurement}/{action}")
-  public ResponseEntity<DataSinkMeasurement> count(
+  /**
+   * Returns the count of values for a field (or all fields).
+   *
+   * @param hardwareId The id of the device for which the results should be obtained.
+   * @param mqttEventType The type of the MQTT event under which results were submitted (currently,
+   * telemetry or metadata).
+   * @param from The earliest EPOCH to return results from.
+   * @param to The latest EPOCH to return results from.
+   * @param field The field to perform the action on, or empty for all fields.
+   * @param measurement The measurement for which to retrieve fields.
+   */
+  @GetMapping(path = "/{hardwareId}/{mqttEventType}/calculate/count")
+  public ResponseEntity<DataSinkQueryResult> count(
     @NotNull @PathVariable String hardwareId,
     @NotNull @PathVariable String mqttEventType,
-    @NotNull @PathVariable String measurement,
+    @RequestParam String measurement,
+    @RequestParam(required = false) Long from,
+    @RequestParam(required = false) Long to,
+    @RequestParam(required = false) String field) {
+    return returnResult(
+      dtService.count(hardwareId, mqttEventType, measurement, from, to, field));
+  }
+
+  /**
+   * Returns computed values of one or more fields for a measurement.
+   *
+   * @param hardwareId The id of the device for which the results should be obtained.
+   * @param mqttEventType The type of the MQTT event under which results were submitted (currently,
+   * telemetry or metadata).
+   * @param from The earliest EPOCH to return results from.
+   * @param to The latest EPOCH to return results from.
+   * @param field The field to perform the action on.
+   * @param measurement The measurement for which to retrieve fields.
+   */
+  @GetMapping(path = "/{hardwareId}/{mqttEventType}/calculate/{action}")
+  public ResponseEntity<DataSinkQueryResult> calculate(
+    @NotNull @PathVariable String hardwareId,
+    @NotNull @PathVariable String mqttEventType,
+    @RequestParam String measurement,
     @NotNull @PathVariable String action,
     @RequestParam(required = false) Long from,
     @RequestParam(required = false) Long to,
-    @RequestParam(required = false) String fields) {
+    @RequestParam String field) {
 
     switch (action) {
-      case "last":
-        return returnResult(dtService.getLast(hardwareId, mqttEventType, measurement, fields));
-      case "first":
-        return returnResult(dtService.getFirst(hardwareId, mqttEventType, measurement, fields));
-      case "count":
-        return returnResult(dtService.count(hardwareId, mqttEventType, measurement, from, to, fields));
       case "max":
-        if (StringUtils.isBlank(fields)) {
-          return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-        }
-        return returnResult(dtService.max(hardwareId, mqttEventType, measurement, from, to, fields));
+        return returnResult(
+          dtService.max(hardwareId, mqttEventType, measurement, from, to, field));
       case "min":
-        if (StringUtils.isBlank(fields)) {
-          return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-        }
-        return returnResult(dtService.min(hardwareId, mqttEventType, measurement, from, to, fields));
+        return returnResult(
+          dtService.min(hardwareId, mqttEventType, measurement, from, to, field));
       case "average":
-        if (StringUtils.isBlank(fields)) {
-          return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-        }
-        return returnResult(dtService.average(hardwareId, mqttEventType, measurement, from, to, fields));
+        return returnResult(
+          dtService.average(hardwareId, mqttEventType, measurement, from, to, field));
       case "sum":
-        if (StringUtils.isBlank(fields)) {
-          return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-        }
-        return returnResult(dtService.sum(hardwareId, mqttEventType, measurement, from, to, fields));
+        return returnResult(
+          dtService.sum(hardwareId, mqttEventType, measurement, from, to, field));
       default:
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
