@@ -6,6 +6,7 @@
   </div>
   <mat-form-field>
     <mat-select placeholder="Longitude" formControlName="geo_lon">
+      <mat-option value=""></mat-option>
       <mat-option *ngFor="let field of allFields" [value]="field.name">
         {{field.name}}
       </mat-option>
@@ -13,6 +14,7 @@
   </mat-form-field>
   <mat-form-field>
     <mat-select placeholder="Latitude" formControlName="geo_lat">
+      <mat-option value=""></mat-option>
       <mat-option *ngFor="let field of allFields" [value]="field.name">
         {{field.name}}
       </mat-option>
