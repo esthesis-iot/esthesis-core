@@ -9,58 +9,17 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <div fxLayout="column" fxLayoutGap="1.5rem">
-        <div fxLayout="row" fxLayoutGap="4rem" fxLayoutAlign="space-between">
-          <div fxLayout="row" fxLayoutGap="1rem">
-            <div class="fields" fxLayout="column" fxLayoutGap="0.4rem">
-              <div>Serial number:</div>
-              <div>Owner:</div>
-              <div>UserId:</div>
-              <div>Model:</div>
-              <div>Firmware:</div>
-              <div>Registration date:</div>
-              <div>Status:</div>
-              <div>Connection:</div>
-            </div>
-            <div class="values" fxLayout="column" fxLayoutGap="0.4rem">
-              <div class="courier">{{id}}</div>
-              <div>John Doe</div>
-              <div>123</div>
-              <div>Develco F45-224</div>
-              <div>1.33.123</div>
-              <div>2018-01-03</div>
-              <div>Enabled</div>
-              <div>Connected</div>
+      <div fxLayout="column">
+        <div fxLayout="row">
+          <div fxLayout="row wrap" fxFlex="80%" fxFlexAlign="start">
+            <div class="xs-mb05" fxLayout="row" fxFlex="40%" *ngFor="let field of fields; let i = index">
+              <div class="label">{{field.label}}:</div>
+              <div class="value">{{fieldsValues.get(field.name)}}</div>
             </div>
           </div>
-          <div fxLayout="row" fxLayoutGap="1rem">
-            <div class="fields" fxLayout="column" fxLayoutGap="0.4rem">
-              <div>Last event:</div>
-              <div>Last event type:</div>
-              <div>Time since last event:</div>
-              <div>Uptime:</div>
-              <div>Clock:</div>
-              <div>Memory:</div>
-              <div>Filesystem:</div>
-              <div>Load:</div>
-            </div>
-            <div class="values" fxLayout="column" fxLayoutGap="0.4rem">
-              <div>2018-01-05 23:33:44</div>
-              <div>Measurement</div>
-              <div>12 seconds</div>
-              <div>9 days 4 hours 34 minutes</div>
-              <div>2018-01-05 23:33:44</div>
-              <div>12MB / 512MB</div>
-              <div>/ 32% 45MB, /part1 12% 11MB</div>
-              <div>0.93 0.33 0.22</div>
-            </div>
-          </div>
-          <div fxLayout="row" fxLayoutGap="1rem">
-            <div class="fields" fxLayout="column" fxLayoutGap="0.4rem">
-              <div>Location:</div>
-            </div>
-            <div class="values" fxLayout="column" fxLayoutGap="0.4rem">
-              <div class="map-container" leaflet fxFlex="grow"
+          <div fxLayout="row" fxFlex="20%">
+            <div fxLayout="column">
+              <div class="map-container" leaflet fxFlex="150px"
                    [leafletOptions]="options"
                    [leafletLayers]="layer1">
               </div>
@@ -81,8 +40,10 @@
             </mat-menu>
           </button>
           <button mat-button routerLink="/devices" fragment="mqtt">CANCEL</button>
-          <button mat-button color="accent" (click)="delete()" [disabled]="this.id == 0">DELETE</button>
-          <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
+          <button mat-button color="accent" (click)="delete()" [disabled]="this.id == 0">DELETE
+          </button>
+          <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE
+          </button>
         </mat-card-actions>
 
         <mat-tab-group animationDuration="0ms">

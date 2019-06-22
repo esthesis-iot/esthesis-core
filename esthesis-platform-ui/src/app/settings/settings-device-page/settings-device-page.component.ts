@@ -13,7 +13,6 @@ import {DevicesService} from '../../devices/devices.service';
 })
 export class SettingsDevicePageComponent extends BaseComponent implements OnInit {
   form: FormGroup;
-
   allFields: FieldDto[];
 
   constructor(private devicesService: DevicesService, private fb: FormBuilder,
@@ -41,7 +40,7 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
       datatype: [{value: fieldDto.datatype, disabled: true}, Validators.required],
       shown: [fieldDto.shown],
       label: [fieldDto.label],
-      datetime: [fieldDto.datetime],
+      valueHandler: [fieldDto.valueHandler],
       formatter: [fieldDto.formatter],
     });
   }

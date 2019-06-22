@@ -40,7 +40,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Validated
 @RestController
@@ -164,7 +166,9 @@ public class DevicesResource {
 
   @GetMapping(path = "field-values/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch device page fields.")
+  @ReplyFilter("-shown")
   public List<FieldDTO> getFieldValues(@PathVariable long id) {
-    return devicePageService.findWithLatestValues(id);
+    return devicePageService.findWithLatestValues(id).stream().sorted(
+      Comparator.comparing(FieldDTO::getName)).collect(Collectors.toList());
   }
 }

@@ -11,6 +11,8 @@ import {BaseComponent} from 'src/app/shared/component/base-component';
 import {UtilityService} from '../../shared/service/utility.service';
 import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {sprintf} from "sprintf-js";
+import {FieldDto} from '../../dto/field-dto';
+import {FormatterService} from '../../shared/service/formatter.service';
 
 @Component({
   selector: 'app-device',
@@ -21,6 +23,8 @@ export class DeviceComponent extends BaseComponent implements OnInit {
   availableTags: TagDto[];
   form: FormGroup;
   id: number;
+  fields: FieldDto[];
+  fieldsValues: Map<string, any>;
 
   options = {
     layers: [
@@ -44,7 +48,8 @@ export class DeviceComponent extends BaseComponent implements OnInit {
   constructor(private fb: FormBuilder, private dialog: MatDialog,
               private qForms: QFormsService, private tagService: TagService,
               private devicesService: DevicesService, private route: ActivatedRoute,
-              private router: Router, private utilityService: UtilityService) {
+              private router: Router, private utilityService: UtilityService,
+              private formatterService: FormatterService) {
     super();
   }
 
@@ -65,27 +70,36 @@ export class DeviceComponent extends BaseComponent implements OnInit {
       this.devicesService.get(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
       });
-      this.devicesService.getFieldValues(this.id).subscribe(onNext => {
-        console.log(onNext);
-      });
+      this.updateFields();
     }
 
     // Get available tags.
     this.tagService.getAll().subscribe(onNext => {
       this.availableTags = onNext.content;
     });
+  }
 
-
-    // var a = "nassos";
-    // var m = "Hello %s";
-    //
-    // // console.log(
-    // //   sprintf(m, eval ("return new Date(1560938313000).toString()"))
-    // // );
-    //
-    // console.log(
-    // sprintf('Current date and time: %s', function() { return new Date(1560938313000).toString() })
-    // );
+  private updateFields() {
+    this.fieldsValues = new Map<string, any>();
+    this.devicesService.getFieldValues(this.id).subscribe(fieldsValues => {
+      this.fields = fieldsValues;
+      // Update field values formatting.
+      this.fields.forEach(field => {
+        var formatter;
+        if (!field.formatter) {
+          formatter = "%s";
+        } else {
+          formatter = field.formatter;
+        }
+        var value;
+        if (field.valueHandler) {
+          value = this.formatterService.format(field.valueHandler, field.value);
+        } else {
+          value = field.value;
+        }
+        this.fieldsValues.set(field.name, sprintf(formatter, value));
+      })
+    });
   }
 
   save() {
@@ -119,4 +133,5 @@ export class DeviceComponent extends BaseComponent implements OnInit {
   downloadKeys() {
     this.devicesService.downloadKeys(this.id);
   }
+
 }

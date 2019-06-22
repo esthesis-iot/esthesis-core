@@ -16,10 +16,16 @@
         <input matInput placeholder="UI label" formControlName="label">
       </mat-form-field>
       <mat-form-field fxFlex="1 0 auto">
-        <input matInput placeholder="Formatter" formControlName="formatter"
-               [readonly]="field.controls.datetime.value">
+        <input matInput placeholder="Formatter" formControlName="formatter">
       </mat-form-field>
-      <mat-checkbox formControlName="datetime" class="xs-mt1" color="primary">is epoch</mat-checkbox>
+
+      <mat-select placeholder="Value handler"
+                  formControlName="valueHandler" fxFlex="150px">
+        <mat-option *ngFor="let o of constants.FIELD_VALUE_FORMATTER| keyvalue"
+                    [value]="o.value">
+          {{ lookupByValue(constants.FIELD_VALUE_FORMATTER, o.value) }}
+        </mat-option>
+      </mat-select>
     </div>
   </div>
 

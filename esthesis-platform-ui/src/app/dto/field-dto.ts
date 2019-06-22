@@ -3,6 +3,7 @@ export interface FieldDto {
   datatype: string;
   shown: boolean;
   label: string;
-  datetime: boolean;
   formatter: string;
+  valueHandler: string;
+  value: any;
 }

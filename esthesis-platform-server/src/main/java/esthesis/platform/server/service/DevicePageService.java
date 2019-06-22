@@ -1,17 +1,21 @@
 package esthesis.platform.server.service;
 
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
+import esthesis.extension.common.config.AppConstants.Mqtt.EventType;
 import esthesis.extension.datasink.DataSink;
+import esthesis.extension.datasink.dto.DataSinkQueryResult;
 import esthesis.extension.datasink.dto.FieldDTO;
 import esthesis.platform.server.cluster.datasinks.DataSinkManager;
 import esthesis.platform.server.mapper.DevicePageMapper;
 import esthesis.platform.server.model.DevicePage;
 import esthesis.platform.server.repository.DeviceMetadataRepository;
 import lombok.extern.java.Log;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -68,36 +72,28 @@ public class DevicePageService {
    */
   public List<FieldDTO> findWithLatestValues(long id) {
     // Get all fields that the user has configure to see in the device page.
-    final List<FieldDTO> configuredFields = findAll().stream().filter(FieldDTO::isShown).collect(
-      Collectors.toList());
+    final List<FieldDTO> configuredFields = deviceMetadataMapper
+      .map(deviceMetadataRepository.findAllByShownIsTrue());
 
-    // Find measurements from which to extract fields.
-    final String[] measurements = configuredFields.stream()
-      .map(FieldDTO::getName)
-      .map(s -> s.split("\\."))
-      .map(s -> s[0])
-      .distinct()
-      .toArray(String[]::new);
-
-    // Find fields.
-    final String[] fields = configuredFields.stream()
-      .map(FieldDTO::getName)
-      .map(s -> s.split("\\."))
-      .map(s -> s[1])
-      .distinct()
-      .toArray(String[]::new);
-
+    //TODO each field is sequentially queried, the algorithm can be optimised to query for all fields at once.
     final Optional<DataSink> telemetryReader = dataSinkManager.getTelemetryReader();
-//    if (!telemetryReader.isPresent()) {
-//      log.warning("No telemetry reader data sink available to obtain fields.");
-//    } else {
-//      System.out.println(
-//        dataSinkManager.getTelemetryReader().get()
-//          .getLast(deviceService.findById(id, false).getHardwareId(), measurements,
-//            EventType.TELEMETRY, fields));
-//    }
-
-    return null;
+    if (!telemetryReader.isPresent()) {
+      log.warning("No telemetry reader data sink available to obtain fields.");
+      return new ArrayList<>();
+    } else {
+      String hardwareId = deviceService.findById(id, false).getHardwareId();
+      return configuredFields.stream().map(fieldDTO -> {
+        String measurement = fieldDTO.getName().split("\\.")[0];
+        String field = fieldDTO.getName().split("\\.")[1];
+        final DataSinkQueryResult last = telemetryReader.get()
+          .getLast(hardwareId, measurement, EventType.TELEMETRY, new String[]{field});
+        if (last != null && CollectionUtils.isNotEmpty(last.getValues()) && CollectionUtils
+          .isNotEmpty(last.getValues().get(0))) {
+          fieldDTO.setValue(last.getValues().get(0).get(1));
+        }
+        return fieldDTO;
+      }).collect(Collectors.toList());
+    }
   }
 
   /**
