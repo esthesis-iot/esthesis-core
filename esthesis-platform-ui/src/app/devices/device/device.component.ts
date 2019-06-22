@@ -13,6 +13,8 @@ import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-m
 import {sprintf} from "sprintf-js";
 import {FieldDto} from '../../dto/field-dto';
 import {FormatterService} from '../../shared/service/formatter.service';
+import {SettingsService} from '../../settings/settings.service';
+import {AppSettings} from '../../app.settings';
 
 @Component({
   selector: 'app-device',
@@ -25,6 +27,8 @@ export class DeviceComponent extends BaseComponent implements OnInit {
   id: number;
   fields: FieldDto[];
   fieldsValues: Map<string, any>;
+  lonSetting: string;
+  latSetting: string;
 
   options = {
     layers: [
@@ -49,7 +53,8 @@ export class DeviceComponent extends BaseComponent implements OnInit {
               private qForms: QFormsService, private tagService: TagService,
               private devicesService: DevicesService, private route: ActivatedRoute,
               private router: Router, private utilityService: UtilityService,
-              private formatterService: FormatterService) {
+              private formatterService: FormatterService,
+              private settingsService: SettingsService) {
     super();
   }
 
@@ -76,6 +81,22 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     // Get available tags.
     this.tagService.getAll().subscribe(onNext => {
       this.availableTags = onNext.content;
+    });
+
+    // Get lat/lon parameters.
+    // Fetch settings.
+    this.settingsService.findByNames(
+      AppSettings.SETTING.GEOLOCATION.LATITUDE,
+      AppSettings.SETTING.GEOLOCATION.LONGITUDE,
+    ).subscribe(onNext => {
+      onNext.forEach(settingDTO => {
+        if (settingDTO.key === AppSettings.SETTING.GEOLOCATION.LATITUDE) {
+          this.latSetting = settingDTO.val;
+        }
+        if (settingDTO.key === AppSettings.SETTING.GEOLOCATION.LONGITUDE) {
+          this.lonSetting = settingDTO.val;
+        }
+      })
     });
   }
 
