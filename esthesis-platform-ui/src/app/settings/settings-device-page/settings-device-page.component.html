@@ -1,4 +1,26 @@
-<form novalidate [formGroup]="form" fxLayout="column">
+<form novalidate [formGroup]="settingsForm" fxLayout="column">
+  <div class="inline-header">Geollocation telemetry attributes</div>
+  <div class="inline-subheader">
+    If your devices transmit geollocation coordinates you can choose which telemetry data
+    corresponds to the latitude and the longitude.
+  </div>
+  <mat-form-field>
+    <mat-select placeholder="Longitude" formControlName="geo_lon">
+      <mat-option *ngFor="let field of allFields" [value]="field.name">
+        {{field.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-select placeholder="Latitude" formControlName="geo_lat">
+      <mat-option *ngFor="let field of allFields" [value]="field.name">
+        {{field.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+
+<form novalidate [formGroup]="form" fxLayout="column" class="xs-mt1">
   <div class="inline-header">Device telemetry details</div>
   <div class="inline-subheader">
     Select which telemetry data will be visible on device information page.

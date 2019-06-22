@@ -19,6 +19,10 @@ export const AppSettings = {
       PROVISIONING_URL: "provisioningUrl",
       ENCRYPTION: "provisioningEncrypt",
       SIGNATURE: "provisioningSign"
+    },
+    GEOLOCATION: {
+      LATITUDE: "geo_lat",
+      LONGITUDE: "geo_lon",
     }
   },
 

@@ -5,6 +5,10 @@ import {BaseComponent} from '../../shared/component/base-component';
 import {UtilityService} from '../../shared/service/utility.service';
 import {QFormsService} from '@eurodyn/forms';
 import {DevicesService} from '../../devices/devices.service';
+import {SettingsService} from '../settings.service';
+import {AppSettings} from '../../app.settings';
+import * as _ from 'lodash';
+import {KeyValueDto} from '../../dto/key-value-dto';
 
 @Component({
   selector: 'app-settings-device-page',
@@ -13,25 +17,44 @@ import {DevicesService} from '../../devices/devices.service';
 })
 export class SettingsDevicePageComponent extends BaseComponent implements OnInit {
   form: FormGroup;
+  settingsForm: FormGroup;
   allFields: FieldDto[];
 
   constructor(private devicesService: DevicesService, private fb: FormBuilder,
-              private utilityService: UtilityService, private qForms: QFormsService) {
+              private utilityService: UtilityService, private qForms: QFormsService,
+              private settingsService: SettingsService) {
     super();
   }
 
   ngOnInit() {
+    // Setup forms.
     this.form = this.fb.group({
       fields: this.fb.array([])
     });
 
+    this.settingsForm = this.fb.group({
+      geo_lon: ['',[]],
+      geo_lat: ['',[]]
+    });
+
+    // Fetch fields.
     this.devicesService.getFields().subscribe(onNext => {
       this.allFields = onNext;
       onNext.forEach(field => {
         // @ts-ignore
         this.form.controls['fields'].push(this.createFieldElement(field));
       })
-    })
+    });
+
+    // Fetch settings.
+    this.settingsService.findByNames(
+      AppSettings.SETTING.GEOLOCATION.LATITUDE,
+      AppSettings.SETTING.GEOLOCATION.LONGITUDE,
+    ).subscribe(onNext => {
+      onNext.forEach(settingDTO => {
+        this.settingsForm.controls[settingDTO.key].patchValue(settingDTO.val);
+      })
+    });
   }
 
   createFieldElement(fieldDto: FieldDto) {
@@ -48,10 +71,12 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
   save() {
     this.devicesService.saveFields(this.qForms.cleanupForm(this.form)['fields']).subscribe(
       onNext => {
-        this.utilityService.popupSuccess("Settings saved successfully.");
+        this.settingsService.saveMultiple(
+          _.map(Object.keys(this.settingsForm.controls), (fc) => {
+            return new KeyValueDto(fc, this.settingsForm.get(fc).value)
+          })).subscribe(onNext => {
+          this.utilityService.popupSuccess("Settings saved successfully.");
+        });
       });
   }
-
-  //TODO remove
-  log(val) { console.log(val); }
 }

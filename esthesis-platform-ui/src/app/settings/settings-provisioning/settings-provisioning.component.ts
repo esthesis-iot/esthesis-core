@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {SettingsService} from '../settings.service';
 import {AppSettings} from '../../app.settings';
 import * as _ from 'lodash';
@@ -24,9 +24,9 @@ export class SettingsProvisioningComponent extends BaseComponent implements OnIn
   ngOnInit() {
     // Define the form.
     this.form = this.fb.group({
-      provisioningUrl: ['',[]],
-      provisioningEncrypt: ['',[]],
-      provisioningSign: ['',[]],
+      provisioningUrl: ['', []],
+      provisioningEncrypt: ['', []],
+      provisioningSign: ['', []],
     });
 
 

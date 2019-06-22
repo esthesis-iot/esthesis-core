@@ -28,6 +28,10 @@ public class AppSettings {
       public static final String ENCRYPTION = "provisioningEncrypt";
       public static final String SIGNATURE = "provisioningSign";
     }
+    public class Geollocation {
+      public static final String LATITUDE = "geo_lat";
+      public static final String LONGITUDE = "geo_lon";
+    }
   }
 
   /* The possible values of each setting. */

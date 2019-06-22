@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
+  logicalFilePath="ep_00071.xml">
+  <changeSet id="ep_00071" author="European Dynamics" labels="ignorable">
+    <sql>
+      INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`,
+                              `sensitivity`, `dbversion`, `psswrd`)
+      VALUES ('19fea403-633c-41dd-8ce7-0b8b57f2ba04', 'System', 'System', 'geo_lat',
+              'NOT_ENCRYPTED', now(), 0, 0, 0);
+
+      INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`,
+                              `sensitivity`, `dbversion`, `psswrd`)
+      VALUES ('4a7ea163-c580-4c15-8455-6fb1b89dae90', 'System', 'System', 'geo_lon',
+              'NOT_ENCRYPTED', now(), 0, 0, 0);
+    </sql>
+  </changeSet>
+</databaseChangeLog>
