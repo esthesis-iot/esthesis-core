@@ -1,0 +1,45 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd" logicalFilePath="ep_00074.xml">
+    <changeSet author="European Dynamics" id="1561464238299-3">
+        <createTable tableName="command_request_devices">
+            <column name="command_request_id" type="BIGINT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="device_id" type="BIGINT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1561464238299-4">
+        <addColumn tableName="command_reply">
+            <column name="version" type="INT(10)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1561464238299-5">
+        <addColumn tableName="command_request">
+            <column name="version" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1561464238299-6">
+        <createIndex indexName="asdkw8dj9374h2e3rfe_idx" tableName="command_request_devices">
+            <column name="device_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1561464238299-7">
+        <dropTable tableName="command_request_device"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1561464238299-8">
+        <dropColumn columnName="ver" tableName="command_reply"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1561464238299-9">
+        <dropColumn columnName="ver" tableName="command_request"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1561464238299-1">
+        <addForeignKeyConstraint baseColumnNames="device_id" baseTableName="command_request_devices" constraintName="asdkw8dj9374h2e3rfe" referencedColumnNames="id" referencedTableName="device"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1561464238299-2">
+        <addForeignKeyConstraint baseColumnNames="command_request_id" baseTableName="command_request_devices" constraintName="wdjxiu3h49742397452" referencedColumnNames="id" referencedTableName="command_request"/>
+    </changeSet>
+</databaseChangeLog>

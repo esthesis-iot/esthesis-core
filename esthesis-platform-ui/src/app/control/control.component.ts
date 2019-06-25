@@ -2,20 +2,20 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
-import {ApplicationDto} from '../dto/application-dto';
-import {ApplicationService} from './application.service';
 import {QFormsService} from '@eurodyn/forms';
-import 'rxjs/add/operator/debounceTime';
 import {BaseComponent} from '../shared/component/base-component';
+import {ControlService} from './control.service';
+import {CommandRequestDto} from '../dto/command-request-dto';
+import 'rxjs/add/operator/debounceTime';
 
 @Component({
-  selector: 'app-applications',
-  templateUrl: './applications.component.html',
-  styleUrls: ['./applications.component.scss']
+  selector: 'app-control',
+  templateUrl: './control.component.html',
+  styleUrls: ['./control.component.scss']
 })
-export class ApplicationsComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class ControlComponent extends BaseComponent implements OnInit, AfterViewInit {
   displayedColumns = ['name', 'state', 'createdOn'];
-  dataSource: MatTableDataSource<ApplicationDto> = new MatTableDataSource<ApplicationDto>();
+  dataSource: MatTableDataSource<CommandRequestDto> = new MatTableDataSource<CommandRequestDto>();
   filterForm: FormGroup;
 
   // References to sorting and pagination.
@@ -23,7 +23,7 @@ export class ApplicationsComponent extends BaseComponent implements OnInit, Afte
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router,
-              private applicationsService: ApplicationService,
+              private controlService: ControlService,
               private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
@@ -53,7 +53,7 @@ export class ApplicationsComponent extends BaseComponent implements OnInit, Afte
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
-    this.applicationsService.getAll(this.qForms.makeQueryString(this.filterForm,
+    this.controlService.getAll(this.qForms.makeQueryString(this.filterForm,
       null, false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.dataSource.data = onNext.content;
@@ -69,4 +69,5 @@ export class ApplicationsComponent extends BaseComponent implements OnInit, Afte
   clearFilter() {
     this.filterForm.reset();
   }
+
 }

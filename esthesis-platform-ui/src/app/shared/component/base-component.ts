@@ -39,4 +39,8 @@ export class BaseComponent {
   compareByStringValue(o1, o2): boolean {
     return String(o1) == String(o2);
   }
+
+  isArrayEmpty(array: any[]): boolean {
+    return array === undefined || array.length == 0
+  }
 }

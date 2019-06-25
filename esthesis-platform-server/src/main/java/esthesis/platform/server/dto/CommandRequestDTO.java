@@ -13,23 +13,14 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class MQTTServerDTO extends BaseDTO {
+public class CommandRequestDTO extends BaseDTO {
 
   @NotNull
-  public String name;
+  private String command;
+
   @NotNull
-  public String ipAddress;
-  @NotNull
-  public boolean state;
+  private String description;
+
   @Singular
-  private List<Long> tags;
-  private String caCert;
-  private String clientCert;
-  private String clientKey;
-
-  public boolean getState() {
-    return state;
-  }
+  private List<Long> devices;
 }
-
-

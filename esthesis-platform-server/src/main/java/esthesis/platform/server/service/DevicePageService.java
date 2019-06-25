@@ -1,6 +1,5 @@
 package esthesis.platform.server.service;
 
-import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import esthesis.extension.common.config.AppConstants.Mqtt.EventType;
 import esthesis.extension.datasink.DataSink;
 import esthesis.extension.datasink.dto.DataSinkQueryResult;
@@ -102,20 +101,23 @@ public class DevicePageService {
    * these are discovered from the underlying data sink.
    */
   public List<FieldDTO> findAllSynthetic() {
-    DataSink metadataReader = ReturnOptional.r(dataSinkManager.getTelemetryReader());
+    final Optional<DataSink> telemetryReader = dataSinkManager.getTelemetryReader();
+    if (!telemetryReader.isPresent()) {
+      return new ArrayList<>();
+    } else {
+      // Get the list of all fields devices submit.
+      final List<FieldDTO> fields = telemetryReader.get().getFields();
 
-    // Get the list of all fields devices submit.
-    final List<FieldDTO> fields = metadataReader.getFields();
+      // Get the configuration for those fields for the UI and complement them with new fields.
+      final List<FieldDTO> configuredMeasurements = findAll();
+      fields.forEach(o -> {
+        if (configuredMeasurements.stream().noneMatch(metadataFieldDTO
+          -> o.getName().equals(metadataFieldDTO.getName()))) {
+          configuredMeasurements.add(o);
+        }
+      });
 
-    // Get the configuration for those fields for the UI and complement them with new fields.
-    final List<FieldDTO> configuredMeasurements = findAll();
-    fields.forEach(o -> {
-      if (configuredMeasurements.stream().noneMatch(metadataFieldDTO
-        -> o.getName().equals(metadataFieldDTO.getName()))) {
-        configuredMeasurements.add(o);
-      }
-    });
-
-    return configuredMeasurements;
+      return configuredMeasurements;
+    }
   }
 }
