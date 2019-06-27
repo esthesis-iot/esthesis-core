@@ -42,23 +42,23 @@ export class ControlComponent extends BaseComponent implements OnInit, AfterView
 
   ngAfterViewInit(): void {
     // Initial fetch of data.
-    this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
+    // this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
     // Each time the sorting changes, reset the page number.
-    this.sort.sortChange.subscribe(onNext => {
-      this.paginator.pageIndex = 0;
-      this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
-    });
+    // this.sort.sortChange.subscribe(onNext => {
+    //   this.paginator.pageIndex = 0;
+    //   this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
+    // });
   }
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
-    this.controlService.getAll(this.qForms.makeQueryString(this.filterForm,
-      null, false, page, size, sort, sortDirection))
-    .subscribe(onNext => {
-      this.dataSource.data = onNext.content;
-      this.paginator.length = onNext.totalElements;
-    });
+    // this.controlService.getAll(this.qForms.makeQueryString(this.filterForm,
+    //   null, false, page, size, sort, sortDirection))
+    // .subscribe(onNext => {
+    //   this.dataSource.data = onNext.content;
+    //   this.paginator.length = onNext.totalElements;
+    // });
   }
 
   changePage() {

@@ -20,6 +20,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -171,4 +173,19 @@ public class DevicesResource {
     return devicePageService.findWithLatestValues(id).stream().sorted(
       Comparator.comparing(FieldDTO::getName)).collect(Collectors.toList());
   }
+
+  @GetMapping(path = "count/by-hardware-id", produces = MediaType.APPLICATION_JSON_VALUE)
+  public int countByHardwareId(@RequestParam String hardwareIds) {
+    if (StringUtils.isBlank(hardwareIds)) {
+      return 0;
+    } else {
+      return deviceService.countByHardwareIds(hardwareIds);
+    }
+  }
+
+  @GetMapping(path = "count/by-tags", produces = MediaType.APPLICATION_JSON_VALUE)
+  public int countByTags(@RequestParam String tags) {
+    return deviceService.countByTags(tags);
+  }
+
 }

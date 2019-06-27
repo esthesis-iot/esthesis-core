@@ -1,0 +1,92 @@
+<mat-card class="mat-card-flat">
+  <mat-card-title>Command and Control devices</mat-card-title>
+  <mat-card-content>
+    <mat-vertical-stepper linear="true" #stepper>
+      <mat-step [stepControl]="searchDevicesForm">
+        <form [formGroup]="searchDevicesForm" id="searchDevices">
+          <ng-template matStepLabel>Select devices to dispatch a command to
+            [{{searchDevicesForm.controls['matches'].value}} matched]
+          </ng-template>
+
+          <div fxLayout="row" fxLayoutAlign="left center" fxLayoutGap="1rem">
+            <label>Find devices by hardware IDs:</label>
+            <mat-form-field>
+              <input matInput placeholder="Hardware IDs" formControlName="hardwareIds">
+            </mat-form-field>
+            <div class="matches">
+              {{searchDevicesForm.controls['devicesMatchedByHardwareIds'].value}} matches
+            </div>
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="left center" fxLayoutGap="1rem">
+            <label>Find devices by tags:</label>
+            <mat-form-field>
+              <input matInput placeholder="Tag" formControlName="tags">
+            </mat-form-field>
+            <div class="matches">
+              {{searchDevicesForm.controls['devicesMatchedByTags'].value}} matches
+            </div>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step [stepControl]="searchDevicesForm">
+        <form [formGroup]="commandForm">
+          <ng-template matStepLabel>Command</ng-template>
+          <mat-select placeholder="Select a command" formControlName="command">
+            <mat-option *ngFor="let command of commands" [value]="command">
+              {{ command }}
+            </mat-option>
+          </mat-select>
+        </form>
+      </mat-step>
+
+      <mat-step [stepControl]="commandForm">
+        <form [formGroup]="commandForm">
+          <ng-template matStepLabel>Command arguments</ng-template>
+          <mat-form-field fxFlex>
+            <input matInput placeholder="Arguments" formControlName="arguments">
+          </mat-form-field>
+        </form>
+      </mat-step>
+
+      <mat-step [stepControl]="commandForm">
+        <form [formGroup]="commandForm">
+          <ng-template matStepLabel>Command description</ng-template>
+          <mat-form-field fxFlex>
+            <textarea matTextareaAutosize matAutosizeMinRows=1 matAutosizeMaxRows=10 matInput
+                      placeholder="Description" formControlName="description"></textarea>
+          </mat-form-field>
+        </form>
+      </mat-step>
+
+      <mat-step [stepControl]="commandForm">
+        <form [formGroup]="commandForm">
+          <ng-template matStepLabel>Dispatch command</ng-template>
+          <div class="xs-mb3">Summary of the command to be dispatched:</div>
+          <div fxLayout="row">
+            <div class="summaryTitle">Command:</div>
+            <div>{{commandForm.getRawValue()['command']}}</div>
+          </div>
+          <div fxLayout="row">
+            <div class="summaryTitle">Command arguments:</div>
+            <div>{{commandForm.getRawValue()['arguments']}}</div>
+          </div>
+          <div fxLayout="row">
+            <div class="summaryTitle">Command description:</div>
+            <div>{{commandForm.getRawValue()['description']}}</div>
+          </div>
+          <div fxLayout="row">
+            <div class="summaryTitle">Devices affected:</div>
+            <div>{{searchDevicesForm.getRawValue()['matches']}}</div>
+          </div>
+        </form>
+
+        <div class="xs-mt3">
+          <button mat-button color="primary" (click)="execute()">EXECUTE</button>
+        </div>
+      </mat-step>
+
+    </mat-vertical-stepper>
+  </mat-card-content>
+</mat-card>

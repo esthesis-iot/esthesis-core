@@ -17,6 +17,7 @@ import {QFormsModule} from '@eurodyn/forms';
 import {MomentModule} from 'ngx-moment';
 import {MatMomentDateModule, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {AuditRoutingModule} from '../audit/audit-routing.module';
+import {CommandsModule} from '../shared/component/commands/commands.module';
 
 @NgModule({
   declarations: [ControlComponent],
@@ -37,7 +38,8 @@ import {AuditRoutingModule} from '../audit/audit-routing.module';
     MatSortModule,
     MatIconModule,
     MomentModule,
-    MatMomentDateModule
+    MatMomentDateModule,
+    CommandsModule
   ],
   providers: [
     {

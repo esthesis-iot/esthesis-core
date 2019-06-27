@@ -339,6 +339,21 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     return deviceDTO;
   }
 
+  public int countByHardwareIds(String hardwareIds) {
+    int matched = 0;
+    for (String hardwareId : hardwareIds.split(",")) {
+      matched += deviceRepository.findByHardwareIdContains(hardwareId.trim()).size();
+    }
+
+    return matched;
+  }
+
+  public int countByTags(String tags) {
+    return deviceRepository
+      .findByTags(Lists.newArrayList(tagService.findAllByNameIn(Arrays.asList(tags.split(",")))))
+      .size();
+  }
+
   public DeviceDTO findById(long id, boolean processKeys) {
     final DeviceDTO deviceDTO = super.findById(id);
     if (processKeys) {
