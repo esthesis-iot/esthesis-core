@@ -1,5 +1,7 @@
 package esthesis.platform.server.cluster.mqtt;
 
+import com.eurodyn.qlack.fuse.crypto.CryptoAsymmetricService;
+import com.eurodyn.qlack.fuse.crypto.CryptoCAService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.extension.common.config.AppConstants.Mqtt.EventType;
@@ -17,6 +19,7 @@ import esthesis.platform.server.mapper.MQTTMessageMapper;
 import esthesis.platform.server.mapper.MQTTServerMapper;
 import esthesis.platform.server.repository.MQTTServerRepository;
 import esthesis.platform.server.service.MQTTService;
+import esthesis.platform.server.service.SecurityService;
 import lombok.extern.java.Log;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -52,6 +55,9 @@ public class MqttClientManager {
   private final MQTTServerMapper mqttServerMapper;
   private final MQTTService mqttService;
   private final ObjectMapper objectMapper;
+  private final CryptoCAService cryptoCAService;
+  private final CryptoAsymmetricService cryptoAsymmetricService;
+  private final SecurityService securityService;
 
   public MqttClientManager(AppProperties appProperties,
     ApplicationEventPublisher applicationEventPublisher,
@@ -60,7 +66,9 @@ public class MqttClientManager {
     ZookeeperClientManager zookeeperClientManager,
     MQTTServerRepository mqttServerRepository,
     MQTTServerMapper mqttServerMapper, MQTTService mqttService,
-    ObjectMapper objectMapper) {
+    ObjectMapper objectMapper, CryptoCAService cryptoCAService,
+    CryptoAsymmetricService cryptoAsymmetricService,
+    SecurityService securityService) {
     this.appProperties = appProperties;
     this.applicationEventPublisher = applicationEventPublisher;
     this.mqttMessageMapper = mqttMessageMapper;
@@ -70,6 +78,9 @@ public class MqttClientManager {
     this.mqttServerMapper = mqttServerMapper;
     this.mqttService = mqttService;
     this.objectMapper = objectMapper;
+    this.cryptoCAService = cryptoCAService;
+    this.cryptoAsymmetricService = cryptoAsymmetricService;
+    this.securityService = securityService;
   }
 
   private void disconnect(long mqttServerId) throws IOException {
@@ -100,13 +111,9 @@ public class MqttClientManager {
       // Create a new client to connect to the MQTT server.
       log.log(Level.FINE, "Connecting to MQTT server {0}.", mqttServerDTO.getIpAddress());
       ManagedMqttClient client = new ManagedMqttClient(
-        mqttServerDTO,
-        appProperties.getNodeId(),
-        applicationEventPublisher,
-        mqttMessageMapper,
-        clusterInfoService.isStandalone(),
-        zookeeperClientManager
-      );
+        mqttServerDTO, appProperties.getNodeId(), applicationEventPublisher, mqttMessageMapper,
+        clusterInfoService.isStandalone(), zookeeperClientManager,
+        cryptoCAService, cryptoAsymmetricService, appProperties, securityService);
 
       // Connect to the MQTT server.
       client.connect();

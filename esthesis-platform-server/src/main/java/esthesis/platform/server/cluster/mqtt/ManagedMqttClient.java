@@ -1,12 +1,22 @@
 package esthesis.platform.server.cluster.mqtt;
 
 import static esthesis.platform.server.config.AppConstants.Zookeeper.LEADER_ELECTION_PATH_MQTT;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
+import com.eurodyn.qlack.fuse.crypto.CryptoAsymmetricService;
+import com.eurodyn.qlack.fuse.crypto.CryptoCAService;
 import esthesis.extension.common.config.AppConstants.Mqtt;
 import esthesis.platform.server.cluster.zookeeper.ZookeeperClientManager;
+import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.dto.MQTTServerDTO;
 import esthesis.platform.server.events.PingEvent;
 import esthesis.platform.server.mapper.MQTTMessageMapper;
+import esthesis.platform.server.service.SecurityService;
+import javax.crypto.NoSuchPaddingException;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
@@ -23,6 +33,17 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.security.spec.InvalidKeySpecException;
 import java.text.MessageFormat;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -38,22 +59,70 @@ public class ManagedMqttClient {
   private LeaderLatch leaderLatch;
   private boolean isStandalone;
   private final ZookeeperClientManager zookeeperClientManager;
+  private final CryptoCAService cryptoCAService;
+  private final CryptoAsymmetricService cryptoAsymmetricService;
+  private final AppProperties appProperties;
+  private final SecurityService securityService;
 
   public ManagedMqttClient(MQTTServerDTO mqttServerDTO,
-    final String clientName,
-    final ApplicationEventPublisher applicationEventPublisher,
-    final MQTTMessageMapper mqttMessageMapper,
-    final boolean isStandalone,
-    final ZookeeperClientManager zookeeperClientManager) {
+    final String clientName, final ApplicationEventPublisher applicationEventPublisher,
+    final MQTTMessageMapper mqttMessageMapper, final boolean isStandalone,
+    final ZookeeperClientManager zookeeperClientManager, CryptoCAService cryptoCAService,
+    CryptoAsymmetricService cryptoAsymmetricService, AppProperties appProperties,
+    SecurityService securityService) {
     this.mqttServerDTO = mqttServerDTO;
     this.clientName = clientName;
     this.applicationEventPublisher = applicationEventPublisher;
     this.mqttMessageMapper = mqttMessageMapper;
     this.zookeeperClientManager = zookeeperClientManager;
     this.isStandalone = isStandalone;
+    this.cryptoCAService = cryptoCAService;
+    this.cryptoAsymmetricService = cryptoAsymmetricService;
+    this.appProperties = appProperties;
+    this.securityService = securityService;
   }
 
-  protected void connect() throws MqttException {
+  private SSLSocketFactory getSocketFactory(String caCertTxt, String clientCertTxt,
+    String clientKeyTxt)
+  throws CertificateException, IOException, KeyStoreException, NoSuchAlgorithmException,
+         UnrecoverableKeyException, KeyManagementException, InvalidKeySpecException,
+         NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException {
+
+    final X509Certificate caCert = cryptoCAService.pemToCertificate(caCertTxt);
+    final X509Certificate clientCert = cryptoCAService.pemToCertificate(clientCertTxt);
+    final PrivateKey clientPrivateKey = cryptoAsymmetricService.pemToPrivateKey(clientKeyTxt,
+        appProperties.getSecurityAsymmetricKeyAlgorithm());
+
+    // CA certificate is used to authenticate server.
+    KeyStore caKs = KeyStore.getInstance(KeyStore.getDefaultType());
+    caKs.load(null, null);
+    caKs.setCertificateEntry("root-ca", caCert);
+    TrustManagerFactory tmf = TrustManagerFactory.getInstance("X509");
+    tmf.init(caKs);
+
+    // Client key and certificates are sent to server so it can authenticate us.
+    String randomPassword = UUID.randomUUID().toString();
+    KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+    ks.load(null, null);
+    ks.setCertificateEntry("certificate", clientCert);
+    ks.setKeyEntry("private-key", clientPrivateKey, randomPassword.toCharArray(),
+      new java.security.cert.Certificate[]{clientCert});
+    KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory
+      .getDefaultAlgorithm());
+    kmf.init(ks, randomPassword.toCharArray());
+
+    // finally, create SSL socket factory
+    SSLContext context = SSLContext.getInstance("TLSv1.2");
+    context.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+
+    return context.getSocketFactory();
+  }
+
+
+  protected void connect()
+  throws MqttException, CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
+         IOException, KeyManagementException, KeyStoreException, InvalidKeySpecException,
+         NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException {
     // Connect to the MQTT server.
     client = new MqttClient(mqttServerDTO.getIpAddress(), clientName, new MemoryPersistence());
     MqttConnectOptions options = new MqttConnectOptions();
@@ -100,6 +169,17 @@ public class ManagedMqttClient {
         }
       }
     });
+
+    System.out.println("CA cert=" + mqttServerDTO.getCaCert());
+    System.out.println("Client cert=" + mqttServerDTO.getClientCert());
+    System.out.println(
+      "Client key=" + new String(securityService.decrypt(mqttServerDTO.getClientKey()),
+        UTF_8));
+    SSLSocketFactory socketFactory = getSocketFactory(mqttServerDTO.getCaCert(),
+      mqttServerDTO.getClientCert(), new String(securityService.decrypt(mqttServerDTO.getClientKey()),
+        UTF_8));
+    options.setSocketFactory(socketFactory);
+
     client.connect(options);
 
     log.log(Level.FINE, "Connected to MQTT server {0}.", mqttServerDTO.getIpAddress());
