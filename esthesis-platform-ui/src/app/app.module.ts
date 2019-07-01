@@ -38,6 +38,8 @@ import {DisplayModule} from './shared/component/display/display.module';
 import {CanActivateGuard} from './shared/guards/can-activate-guard';
 import {ContainerDeployComponent} from './shared/component/containers/container-deploy.component';
 import {OkCancelModalComponent} from './shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {CommandComponent} from './shared/component/commands/command.component';
+import {CommandsModule} from './shared/component/commands/commands.module';
 
 export function getJwtToken(): string {
   return localStorage.getItem(AppConstants.JWT_STORAGE_NAME);
@@ -78,6 +80,7 @@ export function getJwtToken(): string {
     MatInputModule,
     MatButtonModule,
     ContainersModule,
+    CommandsModule,
     DisplayModule,
     NgProgressModule.withConfig({
       trickleSpeed: 500,
@@ -97,7 +100,7 @@ export function getJwtToken(): string {
     QFormsModule,
   ],
   bootstrap: [AppComponent],
-  entryComponents: [ContainerDeployComponent, OkCancelModalComponent],
+  entryComponents: [ContainerDeployComponent, OkCancelModalComponent, CommandComponent],
 })
 export class AppModule {
 }

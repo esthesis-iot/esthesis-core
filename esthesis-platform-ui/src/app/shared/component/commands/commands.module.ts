@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CommandComponent } from './command.component';
 import {
@@ -13,9 +13,6 @@ import {FlexModule} from '@angular/flex-layout';
 
 @NgModule({
   declarations: [CommandComponent],
-  exports: [
-    CommandComponent
-  ],
   imports: [
     CommonModule,
     MatCardModule,
@@ -27,6 +24,7 @@ import {FlexModule} from '@angular/flex-layout';
     FlexModule,
     MatSelectModule,
     MatButtonModule
-  ]
+  ],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class CommandsModule { }

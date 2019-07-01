@@ -7,6 +7,7 @@ import {BaseComponent} from '../shared/component/base-component';
 import {ControlService} from './control.service';
 import {CommandRequestDto} from '../dto/command-request-dto';
 import 'rxjs/add/operator/debounceTime';
+import {CommandPopupService} from '../shared/component/commands/command-popup.service';
 
 @Component({
   selector: 'app-control',
@@ -14,7 +15,7 @@ import 'rxjs/add/operator/debounceTime';
   styleUrls: ['./control.component.scss']
 })
 export class ControlComponent extends BaseComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['name', 'state', 'createdOn'];
+  displayedColumns = ['command', 'description', 'hardwareId', 'createdOn'];
   dataSource: MatTableDataSource<CommandRequestDto> = new MatTableDataSource<CommandRequestDto>();
   filterForm: FormGroup;
 
@@ -24,11 +25,10 @@ export class ControlComponent extends BaseComponent implements OnInit, AfterView
 
   constructor(private fb: FormBuilder, private router: Router,
               private controlService: ControlService,
-              private qForms: QFormsService) {
+              private qForms: QFormsService, private commandPopupService: CommandPopupService) {
     super();
     this.filterForm = this.fb.group({
-      name: ['', null],
-      state: ['', null],
+      command: ['', null],
     });
   }
 
@@ -42,23 +42,23 @@ export class ControlComponent extends BaseComponent implements OnInit, AfterView
 
   ngAfterViewInit(): void {
     // Initial fetch of data.
-    // this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
+    this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
     // Each time the sorting changes, reset the page number.
-    // this.sort.sortChange.subscribe(onNext => {
-    //   this.paginator.pageIndex = 0;
-    //   this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
-    // });
+    this.sort.sortChange.subscribe(onNext => {
+      this.paginator.pageIndex = 0;
+      this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
+    });
   }
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
-    // this.controlService.getAll(this.qForms.makeQueryString(this.filterForm,
-    //   null, false, page, size, sort, sortDirection))
-    // .subscribe(onNext => {
-    //   this.dataSource.data = onNext.content;
-    //   this.paginator.length = onNext.totalElements;
-    // });
+    this.controlService.getAll(this.qForms.makeQueryString(this.filterForm,
+      null, false, page, size, sort, sortDirection))
+    .subscribe(onNext => {
+      this.dataSource.data = onNext.content;
+      this.paginator.length = onNext.totalElements;
+    });
   }
 
   changePage() {
@@ -70,4 +70,7 @@ export class ControlComponent extends BaseComponent implements OnInit, AfterView
     this.filterForm.reset();
   }
 
+  create() {
+    this.commandPopupService.commandPopup();
+  }
 }

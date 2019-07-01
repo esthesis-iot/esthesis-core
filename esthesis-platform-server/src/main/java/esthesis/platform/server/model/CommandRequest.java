@@ -1,10 +1,9 @@
 package esthesis.platform.server.model;
 
+import esthesis.extension.device.config.AppConstants;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,8 +15,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import java.util.List;
 
 @Data
 @Entity
@@ -31,12 +28,11 @@ import java.util.List;
 public class CommandRequest extends BaseEntity {
 
   @NotNull
-  private String command;
+  private AppConstants.MqttCommand command;
 
   private String description;
 
   @Singular
-  @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
-  @JoinTable(inverseJoinColumns = @JoinColumn(name = "device_id"))
-  private List<Device> devices;
+  @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
+  private Device device;
 }

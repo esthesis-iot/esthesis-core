@@ -2,12 +2,15 @@ package esthesis.platform.server.resource;
 
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
+import com.eurodyn.qlack.util.data.filter.ReplyFilter;
+import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
 import esthesis.extension.device.config.AppConstants.MqttCommand;
 import esthesis.platform.server.dto.CommandRequestDTO;
 import esthesis.platform.server.dto.CommandSpecificationDTO;
 import esthesis.platform.server.model.Application;
+import esthesis.platform.server.repository.DeviceRepository;
 import esthesis.platform.server.service.CommandRequestService;
 import javax.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -33,26 +36,32 @@ import java.util.stream.Stream;
 public class ControlResource {
 
   private final CommandRequestService commandRequestService;
+  private final DeviceRepository deviceRepository;
 
   public ControlResource(
-    CommandRequestService commandRequestService) {
+    CommandRequestService commandRequestService,
+    DeviceRepository deviceRepository) {
     this.commandRequestService = commandRequestService;
+    this.deviceRepository = deviceRepository;
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class,
     logMessage = "There was a problem retrieving commands.")
-//  @ReplyPageableFilter("name,token,state,createdOn,id")
+  @ReplyPageableFilter("command,description,device,id,hardwareId,createdOn")
   @EmptyPredicateCheck
   public Page<CommandRequestDTO> findAll(
     @QuerydslPredicate(root = Application.class) Predicate predicate,
     Pageable pageable) {
-    return commandRequestService.findAll(predicate, pageable);
+    //noinspection OptionalGetWithoutIsPresent
+    return commandRequestService.findAll(predicate, pageable).map(
+      commandRequestDTO -> commandRequestDTO.setHardwareId(
+        deviceRepository.findById(commandRequestDTO.getDevice()).get().getHardwareId()));
   }
 
   @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch application.")
-//  @ReplyFilter("name,token,state,createdOn,id")
+  @ReplyFilter("command,description,device,id")
   public CommandRequestDTO get(@PathVariable long id) {
     return commandRequestService.findById(id);
   }

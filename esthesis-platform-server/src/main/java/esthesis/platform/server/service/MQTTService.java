@@ -1,6 +1,5 @@
 package esthesis.platform.server.service;
 
-import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.MQTTServerDTO;
 import esthesis.platform.server.mapper.MQTTServerMapper;
 import esthesis.platform.server.model.MqttServer;
@@ -50,10 +49,10 @@ public class MQTTService extends BaseService<MQTTServerDTO, MqttServer> {
     return mqttServerDTO;
   }
 
-  public Optional<MQTTServerDTO> matchByTag(DeviceDTO deviceDTO) {
+  public Optional<MQTTServerDTO> matchByTag(List<Long> tags) {
     Optional<MQTTServerDTO> mqttServerDTO;
 
-    if (CollectionUtils.isEmpty(deviceDTO.getTags())) {
+    if (CollectionUtils.isEmpty(tags)) {
       mqttServerDTO = findAll().stream()
         .filter(MQTTServerDTO::getState)
         .filter(o -> o.getTags().isEmpty())
@@ -61,8 +60,7 @@ public class MQTTService extends BaseService<MQTTServerDTO, MqttServer> {
     } else {
       mqttServerDTO = findAll().stream()
         .filter(MQTTServerDTO::getState)
-        .filter(o -> CollectionUtils.intersection(deviceDTO.getTags(), o.getTags()).size()
-          == deviceDTO.getTags().size())
+        .filter(o -> CollectionUtils.intersection(tags, o.getTags()).size() == tags.size())
         .findAny();
     }
 

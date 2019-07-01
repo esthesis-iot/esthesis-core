@@ -215,4 +215,17 @@ public class ManagedMqttClient {
     log.log(Level.FINE, "Established participation in MQTT leader election for {0}.",
       mqttServerDTO.getIpAddress());
   }
+
+  protected void publish(String topic, byte[] payload, int qos, boolean retained) {
+    try {
+      client.publish(topic, payload, qos, retained);
+    } catch (MqttException e) {
+      log.log(Level.SEVERE,
+        MessageFormat.format("Could not publish to MQTT server {0}.", client.getServerURI()), e);
+    }
+  }
+
+  protected String getUri() {
+    return client.getServerURI();
+  }
 }

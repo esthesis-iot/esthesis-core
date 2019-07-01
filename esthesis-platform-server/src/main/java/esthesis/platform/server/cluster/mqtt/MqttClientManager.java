@@ -1,5 +1,10 @@
 package esthesis.platform.server.cluster.mqtt;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import esthesis.extension.common.config.AppConstants.Mqtt.EventType;
+import esthesis.extension.device.config.AppConstants.MqttCommand;
+import esthesis.extension.device.control.MqttControlCommand;
 import esthesis.platform.server.cluster.ClusterInfoService;
 import esthesis.platform.server.cluster.zookeeper.ZookeeperClientManager;
 import esthesis.platform.server.config.AppConstants.Zookeeper;
@@ -11,6 +16,8 @@ import esthesis.platform.server.events.LocalEvent;
 import esthesis.platform.server.mapper.MQTTMessageMapper;
 import esthesis.platform.server.mapper.MQTTServerMapper;
 import esthesis.platform.server.repository.MQTTServerRepository;
+import esthesis.platform.server.service.MQTTService;
+import lombok.extern.java.Log;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -18,19 +25,22 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
+@Log
 @Component
 @Validated
 @Transactional
 public class MqttClientManager {
 
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(MqttClientManager.class.getName());
   // The list of mqtt clients connected to.
   private Map<Long, ManagedMqttClient> mqttClients = new HashMap<>();
   private final static String MQTT_PROTOCOL_PREFIX = "tcp://";
@@ -41,6 +51,8 @@ public class MqttClientManager {
   private final ZookeeperClientManager zookeeperClientManager;
   private final MQTTServerRepository mqttServerRepository;
   private final MQTTServerMapper mqttServerMapper;
+  private final MQTTService mqttService;
+  private final ObjectMapper objectMapper;
 
   public MqttClientManager(AppProperties appProperties,
     ApplicationEventPublisher applicationEventPublisher,
@@ -48,7 +60,8 @@ public class MqttClientManager {
     ClusterInfoService clusterInfoService,
     ZookeeperClientManager zookeeperClientManager,
     MQTTServerRepository mqttServerRepository,
-    MQTTServerMapper mqttServerMapper) {
+    MQTTServerMapper mqttServerMapper, MQTTService mqttService,
+    ObjectMapper objectMapper) {
     this.appProperties = appProperties;
     this.applicationEventPublisher = applicationEventPublisher;
     this.mqttMessageMapper = mqttMessageMapper;
@@ -56,6 +69,8 @@ public class MqttClientManager {
     this.zookeeperClientManager = zookeeperClientManager;
     this.mqttServerRepository = mqttServerRepository;
     this.mqttServerMapper = mqttServerMapper;
+    this.mqttService = mqttService;
+    this.objectMapper = objectMapper;
   }
 
   private void disconnect(long mqttServerId) throws IOException {
@@ -75,7 +90,7 @@ public class MqttClientManager {
       try {
         disconnect(mqttServer.getId());
       } catch (IOException e) {
-        LOGGER.log(Level.SEVERE, "Could not disconnect from all MQTT servers.", e);
+        log.log(Level.SEVERE, "Could not disconnect from all MQTT servers.", e);
       }
     });
   }
@@ -84,7 +99,7 @@ public class MqttClientManager {
     mqttServerDTO.setIpAddress(MQTT_PROTOCOL_PREFIX + mqttServerDTO.getIpAddress());
     try {
       // Create a new client to connect to the MQTT server.
-      LOGGER.log(Level.FINE, "Connecting to MQTT server {0}.", mqttServerDTO.getIpAddress());
+      log.log(Level.FINE, "Connecting to MQTT server {0}.", mqttServerDTO.getIpAddress());
       ManagedMqttClient client = new ManagedMqttClient(
         mqttServerDTO,
         appProperties.getNodeId(),
@@ -99,26 +114,26 @@ public class MqttClientManager {
 
       mqttClients.put(mqttServerDTO.getId(), client);
     } catch (Exception e) {
-      LOGGER
-        .log(Level.SEVERE, MessageFormat.format("Could not connect to MQTT server {0}.",
-          mqttServerDTO.getIpAddress()), e);
+      log.log(Level.SEVERE,
+        MessageFormat.format("Could not connect to MQTT server {0}.", mqttServerDTO.getIpAddress()),
+        e);
     }
   }
 
   @EventListener
   public void onApplicationEventTx(LocalEvent event) {
-    LOGGER.log(Level.FINEST, "Received event {0}.", event);
+    log.log(Level.FINEST, "Received event {0}.", event);
     switch (event.getEventType()) {
       case CONNECTIVITY_ZOOKEEPER_CONNECTED:
-        LOGGER.log(Level.FINEST, "Handling event: {0}.", event);
+        log.log(Level.FINEST, "Handling event: {0}.", event);
         connectAll();
         break;
       case CONNECTIVITY_ZOOKEEPER_DISCONNECTED:
-        LOGGER.log(Level.FINEST, "Handling event: {0}.", event);
+        log.log(Level.FINEST, "Handling event: {0}.", event);
         disconnectAll();
         break;
       case CONFIGURATION_MQTT:
-        LOGGER.log(Level.FINEST, "Handling event: {0}.", event);
+        log.log(Level.FINEST, "Handling event: {0}.", event);
         disconnectAll();
         connectAll();
         if (!clusterInfoService.isStandalone() && !event.isClusterEvent()) {
@@ -128,10 +143,37 @@ public class MqttClientManager {
                 new ClusterEvent(CLUSTER_EVENT_TYPE.CONFIGURATION_MQTT)
                   .setEmitterNode(appProperties.getNodeId()).toByteArray());
           } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Could not process LocalEvent.", e);
+            log.log(Level.SEVERE, "Could not process LocalEvent.", e);
           }
         }
         break;
+    }
+  }
+
+  public void sendCommand(String hardwareId, List<Long> tags, MqttCommand command,
+    String commandArgumens) {
+    Optional<MQTTServerDTO> mqttServerDTO = mqttService.matchByTag(tags);
+    if (mqttServerDTO.isPresent()) {
+      MqttControlCommand mqttControlCommand = new MqttControlCommand()
+        .setId(UUID.randomUUID().toString())
+        .setCommand(command)
+        .setCommandPayload(commandArgumens.getBytes(StandardCharsets.UTF_8))
+        .setSentOn(Instant.now());
+      final ManagedMqttClient managedMqttClient = mqttClients.get(mqttServerDTO.get().getId());
+      final String topic = "/" + EventType.CONTROL_REQUEST + "/" + hardwareId;
+      log.log(Level.FINEST, "Publishing command {0} to MQTT server {1}.", new Object[]{command,
+        managedMqttClient.getUri() + topic});
+      try {
+        managedMqttClient
+          .publish(topic, objectMapper.writeValueAsBytes(mqttControlCommand), 0, false);
+      } catch (JsonProcessingException e) {
+        log.log(Level.SEVERE,
+          MessageFormat.format("Could not send MQTT command {0}.", command.toString()), e);
+      }
+    } else {
+      log
+        .log(Level.WARNING, "Could not find MQTT server for tags {0} to send device command {1}.",
+          new Object[]{tags, command});
     }
   }
 }

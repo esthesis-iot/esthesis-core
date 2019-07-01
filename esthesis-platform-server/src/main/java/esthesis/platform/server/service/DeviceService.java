@@ -55,7 +55,9 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.MessageFormat;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -185,9 +187,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   }
 
   private void register(String hardwareId, String tags, String state, boolean checkTags)
-  throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException,
-         InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException,
-         NoSuchPaddingException {
+  throws NoSuchAlgorithmException, IOException, InvalidKeyException,
+         InvalidAlgorithmParameterException, NoSuchPaddingException {
     // Create a keypair.
     CreateKeyPairDTO createKeyPairDTO = new CreateKeyPairDTO();
     createKeyPairDTO.setKeySize(appProperties.getSecurityAsymmetricKeySize());
@@ -340,18 +341,34 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   }
 
   public int countByHardwareIds(String hardwareIds) {
-    int matched = 0;
-    for (String hardwareId : hardwareIds.split(",")) {
-      matched += deviceRepository.findByHardwareIdContains(hardwareId.trim()).size();
-    }
+    return findByHardwareIds(hardwareIds).size();
+  }
 
-    return matched;
+  public List<DeviceDTO> findByHardwareIds(String hardwareIds) {
+    if (StringUtils.isBlank(hardwareIds)) {
+      return new ArrayList<>();
+    } else {
+      List<DeviceDTO> devices = new ArrayList<>();
+      for (String id : hardwareIds.split(",")) {
+        id = id.trim();
+        devices.addAll(deviceMapper.map(deviceRepository.findByHardwareIdContains(id)));
+      }
+      return devices;
+    }
   }
 
   public int countByTags(String tags) {
-    return deviceRepository
-      .findByTags(Lists.newArrayList(tagService.findAllByNameIn(Arrays.asList(tags.split(",")))))
-      .size();
+    return findByTags(tags).size();
+  }
+
+  public List<DeviceDTO> findByTags(String tags) {
+    if (StringUtils.isBlank(tags)) {
+      return new ArrayList<>();
+    } else {
+      return deviceMapper.map(deviceRepository
+        .findByTags(
+          Lists.newArrayList(tagService.findAllByNameIn(Arrays.asList(tags.split(","))))));
+    }
   }
 
   public DeviceDTO findById(long id, boolean processKeys) {

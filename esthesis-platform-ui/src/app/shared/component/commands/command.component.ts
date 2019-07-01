@@ -6,6 +6,7 @@ import {Observable} from 'rxjs';
 import 'rxjs-compat/add/observable/forkJoin';
 import {UtilityService} from '../../service/utility.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {MatDialogRef} from '@angular/material';
 
 @Component({
   selector: 'app-command',
@@ -18,7 +19,8 @@ export class CommandComponent extends BaseComponent implements OnInit, OnDestroy
   commands: string[];
 
   constructor(private formBuilder: FormBuilder, private commandService: CommandService,
-              private utilityService: UtilityService, private router: Router) {
+              private utilityService: UtilityService, private router: Router,
+              public selfDialogRef: MatDialogRef<CommandComponent>) {
     super();
   }
 
@@ -72,4 +74,7 @@ export class CommandComponent extends BaseComponent implements OnInit, OnDestroy
   ngOnDestroy(): void {
   }
 
+  close() {
+    this.selfDialogRef.close();
+  }
 }

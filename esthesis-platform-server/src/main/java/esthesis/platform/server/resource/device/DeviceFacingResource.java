@@ -106,7 +106,7 @@ public class DeviceFacingResource {
     );
 
     // Find the MQTT server to send back to the device.
-    Optional<MQTTServerDTO> mqttServerDTO = mqttService.matchByTag(deviceDTO);
+    Optional<MQTTServerDTO> mqttServerDTO = mqttService.matchByTag(deviceDTO.getTags());
     if (mqttServerDTO.isPresent()) {
       registrationReply.getPayload().setMqttServer(new MQTTServer()
         .setIpAddress(mqttServerDTO.get().getIpAddress()));
