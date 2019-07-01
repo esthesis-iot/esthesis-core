@@ -43,7 +43,6 @@ public class MqttClientManager {
 
   // The list of mqtt clients connected to.
   private Map<Long, ManagedMqttClient> mqttClients = new HashMap<>();
-  private final static String MQTT_PROTOCOL_PREFIX = "tcp://";
   private final AppProperties appProperties;
   private final ApplicationEventPublisher applicationEventPublisher;
   private final MQTTMessageMapper mqttMessageMapper;
@@ -96,7 +95,7 @@ public class MqttClientManager {
   }
 
   private void connect(MQTTServerDTO mqttServerDTO) {
-    mqttServerDTO.setIpAddress(MQTT_PROTOCOL_PREFIX + mqttServerDTO.getIpAddress());
+    mqttServerDTO.setIpAddress(mqttServerDTO.getIpAddress());
     try {
       // Create a new client to connect to the MQTT server.
       log.log(Level.FINE, "Connecting to MQTT server {0}.", mqttServerDTO.getIpAddress());

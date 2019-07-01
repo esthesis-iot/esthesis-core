@@ -42,7 +42,7 @@ public class CertificatesResource {
   private final CertificatesService certificatesService;
 
   public CertificatesResource(SecurityService securityService,
-      CertificatesService certificatesService) {
+    CertificatesService certificatesService) {
     this.securityService = securityService;
 
     this.certificatesService = certificatesService;
@@ -52,62 +52,44 @@ public class CertificatesResource {
   @ReplyPageableFilter("-certificate,-privateKey,-publicKey")
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "There was a problem retrieving certificates.")
-  public Page<CertificateDTO> findAll(@QuerydslPredicate(root = Certificate.class) Predicate predicate,
-      Pageable pageable) {
+  public Page<CertificateDTO> findAll(
+    @QuerydslPredicate(root = Certificate.class) Predicate predicate,
+    Pageable pageable) {
     return certificatesService.findAll(predicate, pageable);
   }
 
   @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch certificate authority.")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch certificate.")
   public CertificateDTO get(@PathVariable long id) {
     return certificatesService.findById(id);
   }
 
   @GetMapping(value = {"{id}/download/{keyType}/{base64}", "{id}/download/{keyType}"})
   @ExceptionWrapper(wrapper = QExceptionWrapper.class,
-      logMessage = "Could not fetch security information for the certificate.")
+    logMessage = "Could not fetch security information for the certificate.")
   public ResponseEntity download(@PathVariable long id, @PathVariable int keyType,
-      @PathVariable Optional<Boolean> base64)
+    @PathVariable Optional<Boolean> base64)
   throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
          InvalidKeyException, IOException {
     KeyDownloadReply keyDownloadReply = certificatesService
-        .download(id, keyType, base64.isPresent() && base64.get().booleanValue());
+      .download(id, keyType, base64.isPresent() && base64.get().booleanValue());
     //TODO return a safe filename (i.e. new Slugify().slugify())
     return ResponseEntity
-        .ok()
-        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + keyDownloadReply.getFilename())
-        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-        .body(keyDownloadReply.getPayload());
+      .ok()
+      .header(HttpHeaders.CONTENT_DISPOSITION,
+        "attachment; filename=" + keyDownloadReply.getFilename())
+      .contentType(MediaType.APPLICATION_OCTET_STREAM)
+      .body(keyDownloadReply.getPayload());
   }
 
-  //  @GetMapping(value = "{id}/backup")
-  //  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not create backup for CA.")
-  //  public ResponseEntity backup(@PathVariable long id) throws IOException {
-  //    final CaDTO caDTO = caService.findById(id);
-  //    return ResponseEntity
-  //        .ok()
-  //        .header(HttpHeaders.CONTENT_DISPOSITION,
-  //            "attachment; filename=" + new Slugify().slugify(caDTO.getCn()) + ".backup")
-  //        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-  //        .body(caService.backup(id));
-  //  }
-
-  //  @PostMapping(value = "/restore")
-  //  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not restore CA.")
-  //  public ResponseEntity restore(@NotNull @RequestParam("backup") MultipartFile backup) throws IOException {
-  //    caService.restore(IOUtils.toString(backup.getInputStream(), StandardCharsets.UTF_8));
-  //
-  //    return ResponseEntity.ok().build();
-  //  }
-
   @DeleteMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete application.")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete certificate.")
   public void delete(@PathVariable long id) {
     certificatesService.deleteById(id);
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save Certificate Authority.")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save certificate.")
   public CertificateDTO save(@Valid @RequestBody CertificateDTO object) {
     return certificatesService.save(object);
   }

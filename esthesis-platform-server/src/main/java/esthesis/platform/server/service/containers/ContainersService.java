@@ -8,8 +8,6 @@ import esthesis.platform.server.dto.VirtualizationDTO;
 import esthesis.platform.server.dto.WebSocketMessageDTO;
 import esthesis.platform.server.service.VirtualizationService;
 import esthesis.platform.server.service.WebSocketService;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -31,8 +29,9 @@ public class ContainersService {
   private final DockerSwarmService dockerSwarmService;
   private final WebSocketService webSocketService;
 
-  public ContainersService(VirtualizationService virtualizationService, DockerEngineService dockerEngineService,
-      DockerSwarmService dockerSwarmService, WebSocketService webSocketService) {
+  public ContainersService(VirtualizationService virtualizationService,
+    DockerEngineService dockerEngineService,
+    DockerSwarmService dockerSwarmService, WebSocketService webSocketService) {
     this.virtualizationService = virtualizationService;
     this.dockerEngineService = dockerEngineService;
     this.dockerSwarmService = dockerSwarmService;
@@ -42,10 +41,11 @@ public class ContainersService {
   @Async
   public void deploy(ContainerDTO containerDTO)
   throws DockerException, InterruptedException, DockerCertificateException, NoSuchPaddingException,
-         InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException,
-         BadPaddingException, InvalidAlgorithmParameterException, IOException {
+         InvalidKeyException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
+         IOException {
     // Find the type of virtualization infrastructure in which the container is to be deployed at.
-    final VirtualizationDTO virtualizationDTO = virtualizationService.findById(containerDTO.getServer());
+    final VirtualizationDTO virtualizationDTO = virtualizationService
+      .findById(containerDTO.getServer());
 
     switch (virtualizationDTO.getServerType()) {
       case Type.DOCKER_ENGINE:
@@ -56,6 +56,8 @@ public class ContainersService {
         break;
     }
 
-    webSocketService.publish(WebSocketMessageDTO.builder().topic(containerDTO.getWsId()).payload("Deployment finished.").build());
+    webSocketService.publish(
+      WebSocketMessageDTO.builder().topic(containerDTO.getWsId()).payload("Deployment finished.")
+        .build());
   }
 }

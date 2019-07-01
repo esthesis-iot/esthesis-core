@@ -9,7 +9,7 @@
             <input matInput placeholder="Name" formControlName="name" required>
           </mat-form-field>
           <mat-form-field>
-            <input matInput placeholder="IP address" formControlName="ipAddress" required>
+            <input matInput placeholder="Protocol, IP address, port" formControlName="ipAddress" required>
           </mat-form-field>
           <mat-form-field>
             <mat-select placeholder="State" formControlName="state">
@@ -19,7 +19,8 @@
           </mat-form-field>
           <mat-form-field>
             <mat-select placeholder="Tags" multiple formControlName="tags">
-              <mat-option *ngFor="let tag of availableTags" [value]="tag.id">{{tag.name}}</mat-option>
+              <mat-option *ngFor="let tag of availableTags"
+                          [value]="tag.id">{{tag.name}}</mat-option>
             </mat-select>
           </mat-form-field>
 
@@ -28,7 +29,9 @@
               <mat-form-field>
                 <input matInput placeholder="CA certificate" formControlName="caCert">
               </mat-form-field>
-              <button mat-button [matMenuTriggerFor]="caCertificatesMenu"><mat-icon>search</mat-icon></button>
+              <button mat-button [matMenuTriggerFor]="caCertificatesMenu">
+                <mat-icon>search</mat-icon>
+              </button>
               <mat-menu #caCertificatesMenu="matMenu">
                 <button mat-menu-item *ngFor="let ca of cas"
                         (click)="pickCaCertificate(ca.id, 'caCert')">{{ca.cn}}</button>
@@ -39,7 +42,9 @@
               <mat-form-field>
                 <input matInput placeholder="Client certificate" formControlName="clientCert">
               </mat-form-field>
-              <button mat-button [matMenuTriggerFor]="clientCertificatesMenu"><mat-icon>search</mat-icon></button>
+              <button mat-button [matMenuTriggerFor]="clientCertificatesMenu">
+                <mat-icon>search</mat-icon>
+              </button>
               <mat-menu #clientCertificatesMenu="matMenu">
                 <button mat-menu-item *ngFor="let cert of certificates"
                         (click)="pickCertificate(cert.id, 'clientCert')">{{cert.cn}}</button>
@@ -50,7 +55,9 @@
               <mat-form-field>
                 <input matInput placeholder="Client private key" formControlName="clientKey">
               </mat-form-field>
-              <button mat-button [matMenuTriggerFor]="clientKeysMenu"><mat-icon>search</mat-icon></button>
+              <button mat-button [matMenuTriggerFor]="clientKeysMenu">
+                <mat-icon>search</mat-icon>
+              </button>
               <mat-menu #clientKeysMenu="matMenu">
                 <button mat-menu-item *ngFor="let cert of certificates"
                         (click)="pickPrivateKey(cert.id, 'clientKey')">{{cert.cn}}</button>
