@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
-public class MosquittoAuthDTO {
+public class MQTTAuthDTO {
   private String username;
   private String topic;
   private int  acc;
