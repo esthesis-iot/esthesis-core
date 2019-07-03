@@ -1,6 +1,7 @@
 package esthesis.platform.server.filter;
 
 
+import static esthesis.platform.server.config.WebSecurityConfig.PUBLIC_URIS;
 import static java.util.Collections.emptyList;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
@@ -11,27 +12,31 @@ import esthesis.platform.server.dto.ApplicationDTO;
 import esthesis.platform.server.dto.jwt.JWTClaimsResponseDTO;
 import esthesis.platform.server.service.ApplicationService;
 import esthesis.platform.server.service.JWTService;
+import javax.annotation.PostConstruct;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Component
-//TODO check OncePerRequestFilter instead
-public class JWTAuthenticationFilter extends GenericFilterBean {
+public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
   // JUL reference.
   private static final Logger LOGGER = Logger.getLogger(JWTAuthenticationFilter.class.getName());
@@ -49,12 +54,19 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
   private static final String BEARER_PARAM = "bearer";
 
   private final JWTService jwtService;
+  private AntPathMatcher antPathMatcher;
+
+  @Value("${server.servlet.context-path}")
+  private String contextRoot;
+
+  private List<String> PUBLIC_URIS_PREFIXED;
 
   public JWTAuthenticationFilter(UserService userService,
     ApplicationService applicationService, JWTService jwtService) {
     this.userService = userService;
     this.applicationService = applicationService;
     this.jwtService = jwtService;
+    antPathMatcher = new AntPathMatcher();
   }
 
   private UsernamePasswordAuthenticationToken decodeJwt(String jwtToken) {
@@ -101,11 +113,24 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
     }
   }
 
+  @PostConstruct
+  public void prefixPublicURLs() {
+    // Prefix public URIs with context root, so that they can be checked against incoming requests.
+    PUBLIC_URIS_PREFIXED = Arrays.stream(PUBLIC_URIS).map(s -> contextRoot + s)
+      .collect(Collectors.toList());
+  }
+
   @Override
-  public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
-  throws IOException, ServletException {
-    Authentication authentication = getAuthentication((HttpServletRequest) request);
-    SecurityContextHolder.getContext().setAuthentication(authentication);
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+    FilterChain filterChain) throws ServletException, IOException {
+    // Filter private resources.
+    if (PUBLIC_URIS_PREFIXED.stream()
+      .noneMatch(p -> antPathMatcher.match(p, ((HttpServletRequest) request).getRequestURI()))) {
+      Authentication authentication = getAuthentication((HttpServletRequest) request);
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    // Proceed with other filters.
     filterChain.doFilter(request, response);
   }
 }

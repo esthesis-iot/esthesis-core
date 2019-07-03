@@ -1,5 +1,6 @@
 package esthesis.platform.server.resource.device;
 
+import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import esthesis.extension.device.DeviceMessage;
@@ -10,22 +11,21 @@ import esthesis.extension.device.request.RegistrationRequest;
 import esthesis.extension.device.response.ProvisioningInfoResponse;
 import esthesis.extension.device.response.RegistrationResponse;
 import esthesis.platform.server.config.AppProperties;
+import esthesis.platform.server.config.AppSettings.Setting.DeviceRegistration;
 import esthesis.platform.server.config.AppSettings.Setting.Provisioning;
 import esthesis.platform.server.config.AppSettings.SettingValues.Provisioning.ENCRYPTION;
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.MQTTServerDTO;
 import esthesis.platform.server.dto.ProvisioningDTO;
-import esthesis.platform.server.mapper.ProvisioningMapper;
+import esthesis.platform.server.service.CAService;
 import esthesis.platform.server.service.DeviceService;
 import esthesis.platform.server.service.MQTTService;
 import esthesis.platform.server.service.ProvisioningService;
 import esthesis.platform.server.service.SecurityService;
 import esthesis.platform.server.service.SettingResolverService;
-import esthesis.platform.server.service.TagService;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
+import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -61,37 +61,48 @@ public class DeviceFacingResource {
   private final SecurityService securityService;
   private final ProvisioningService provisioningService;
   private final AppProperties appProperties;
-  private final ProvisioningMapper provisioningMapper;
-  private final TagService tagService;
+  private final SettingResolverService settingResolverService;
+  private final CAService caService;
 
   public DeviceFacingResource(DeviceService deviceService,
     SettingResolverService srs, MQTTService mqttService,
     SecurityService securityService,
     ProvisioningService provisioningService,
     AppProperties appProperties,
-    ProvisioningMapper provisioningMapper, TagService tagService) {
+    SettingResolverService settingResolverService,
+    CAService caService) {
     this.deviceService = deviceService;
     this.srs = srs;
     this.mqttService = mqttService;
     this.securityService = securityService;
     this.provisioningService = provisioningService;
     this.appProperties = appProperties;
-    this.provisioningMapper = provisioningMapper;
-    this.tagService = tagService;
+    this.settingResolverService = settingResolverService;
+    this.caService = caService;
   }
 
   @PostMapping(path = "/register")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not register device.")
   public DeviceMessage<RegistrationResponse> register(
     @Valid @RequestBody DeviceMessage<RegistrationRequest> registrationRequest)
-  throws NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException,
-         BadPaddingException, InvalidKeyException, IOException,
-         InvalidAlgorithmParameterException, InvalidKeySpecException, SignatureException {
+  throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IOException,
+         InvalidAlgorithmParameterException, InvalidKeySpecException, SignatureException,
+         OperatorCreationException {
     // Register the device.
     deviceService.register(registrationRequest, registrationRequest.getHardwareId());
 
     // Fetch the just-registered device to also obtain its keys.
     DeviceDTO deviceDTO = deviceService.findByHardwareId(registrationRequest.getHardwareId());
+
+    // Find the root CA to be pushed to the device.
+    String rootCACertificate = null;
+    try {
+      rootCACertificate = caService
+        .findEntityById(settingResolverService.getAsLong(DeviceRegistration.ROOT_CA))
+        .getCertificate();
+    } catch (QDoesNotExistException e) {
+      // Ignore if a root CA is not set yet.
+    }
 
     // Prepare registration reply.
     DeviceMessage<RegistrationResponse> registrationReply = new DeviceMessage<>(
@@ -103,6 +114,8 @@ public class DeviceFacingResource {
       .setPsPublicKey(deviceDTO.getPsPublicKey())
       .setProvisioningUrl(srs.get(Provisioning.URL))
       .setProvisioningKey(deviceDTO.getProvisioningKey())
+      .setRootCaCertificate(rootCACertificate)
+      .setCertificate(deviceDTO.getCertificate())
     );
 
     // Find the MQTT server to send back to the device.

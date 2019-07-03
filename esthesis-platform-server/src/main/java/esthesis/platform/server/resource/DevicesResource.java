@@ -16,11 +16,10 @@ import esthesis.platform.server.model.Device;
 import esthesis.platform.server.service.DevicePageService;
 import esthesis.platform.server.service.DeviceService;
 import esthesis.platform.server.service.SecurityService;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -42,6 +41,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,9 +65,9 @@ public class DevicesResource {
   @PostMapping(path = "/preregister")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not register device(s).")
   public ResponseEntity preregister(@Valid @RequestBody DeviceRegistrationDTO deviceRegistrationDTO)
-  throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException,
-         NoSuchPaddingException, BadPaddingException, InvalidAlgorithmParameterException,
-         InvalidKeyException {
+  throws NoSuchAlgorithmException, IOException, NoSuchPaddingException,
+         InvalidAlgorithmParameterException, InvalidKeyException, OperatorCreationException,
+         InvalidKeySpecException {
     deviceService.preregister(deviceRegistrationDTO);
 
     return ResponseEntity.ok().build();

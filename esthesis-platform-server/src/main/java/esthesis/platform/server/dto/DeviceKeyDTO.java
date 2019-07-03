@@ -16,4 +16,6 @@ public class DeviceKeyDTO extends BaseDTO  {
   private String privateKey;
   private String sessionKey;
   private String psPublicKey;
+  private String certificate;
+  private String certificateCaId;
 }

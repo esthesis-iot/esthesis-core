@@ -1,0 +1,36 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd" logicalFilePath="ep_00076.xml">
+    <changeSet author="European Dynamics" id="1562150472571-2">
+        <addColumn tableName="command_request">
+            <column name="device_id" type="BIGINT(20) UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1562150472571-3">
+        <addColumn tableName="device_key">
+            <column name="certificate" type="LONGTEXT(2147483647)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1562150472571-4">
+        <addColumn tableName="device_key">
+            <column name="certificate_ca_id" type="BIGINT(19)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1562150472571-5">
+        <dropForeignKeyConstraint baseTableName="command_request_devices" constraintName="asdkw8dj9374h2e3rfe"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1562150472571-6">
+        <dropForeignKeyConstraint baseTableName="command_request_devices" constraintName="wdjxiu3h49742397452"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1562150472571-7">
+        <dropTable tableName="command_request_devices"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1562150472571-8">
+        <dropColumn columnName="device" tableName="command_request"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1562150472571-1">
+        <dropForeignKeyConstraint baseTableName="command_request" constraintName="djuwdh67w83hfef"/>
+        <addForeignKeyConstraint baseColumnNames="device_id" baseTableName="command_request" constraintName="djuwdh67w83hfef" referencedColumnNames="id" referencedTableName="device"/>
+    </changeSet>
+</databaseChangeLog>

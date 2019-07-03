@@ -67,7 +67,7 @@ public class CAResource {
 
   @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch certificate authority.")
-  @ReplyFilter("-certificate,-privateKey,-publicKey")
+  @ReplyFilter("-privateKey,-publicKey")
   public CaDTO get(@PathVariable long id) {
     return caService.findById(id);
   }

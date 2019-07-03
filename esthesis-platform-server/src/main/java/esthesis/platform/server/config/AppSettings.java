@@ -18,6 +18,7 @@ public class AppSettings {
     public class DeviceRegistration {
       public static final String REGISTRATION_MODE = "deviceRegistration";
       public static final String PUSH_TAGS = "devicePushTags";
+      public static final String ROOT_CA = "deviceRootCA";
     }
     public class Networking {
       public static final String MQTT_ACL_ENDPOINT_STATUS = "mqttAclEndpointStatus";

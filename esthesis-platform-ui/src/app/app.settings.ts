@@ -10,7 +10,8 @@ export const AppSettings = {
     },
     DEVICE_REGISTRATION: {
       REGISTRATION_MODE: "deviceRegistration",
-      PUSH_TAGS: "devicePushTags"
+      PUSH_TAGS: "devicePushTags",
+      ROOT_CA: "deviceRootCA"
     },
     NETWORKING: {
       MQTT_ACL_ENDPOINT_STATUS: "mqttAclEndpointStatus"

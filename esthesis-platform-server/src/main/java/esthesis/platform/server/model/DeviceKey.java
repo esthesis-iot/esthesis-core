@@ -35,4 +35,7 @@ public class DeviceKey extends BaseEntity {
   private Device device;
   private String sessionKey;
   private String provisioningKey;
+  private String certificate;
+  // The ID of the CA that signed device's certificate.
+  private long certificateCaId;
 }

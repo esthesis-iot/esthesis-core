@@ -51,6 +51,19 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+
+  <div class="inline-header xs-mt1">Root Certificate Authority</div>
+  <div class="inline-subheader">
+    The root CA to be pushed to devices.
+  </div>
+  <mat-form-field>
+    <mat-select [compareWith]="compareByStringValue" placeholder="Root CA"
+                [formControlName]="settings.SETTING.DEVICE_REGISTRATION.ROOT_CA">
+      <mat-option *ngFor="let o of cas" [value]="o.id">
+        {{ o.cn }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </form>
 
 <div class="xs-pt2">

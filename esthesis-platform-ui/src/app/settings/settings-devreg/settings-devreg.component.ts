@@ -6,6 +6,9 @@ import * as _ from 'lodash';
 import {KeyValueDto} from '../../dto/key-value-dto';
 import {BaseComponent} from '../../shared/component/base-component';
 import {UtilityService} from '../../shared/service/utility.service';
+import {CertificateDto} from '../../dto/certificate-dto';
+import {CasService} from '../../cas/cas.service';
+import {CaDto} from '../../dto/ca-dto';
 
 @Component({
   selector: 'app-settings-devreg',
@@ -14,9 +17,10 @@ import {UtilityService} from '../../shared/service/utility.service';
 })
 export class SettingsDevregComponent extends BaseComponent implements OnInit {
   form: FormGroup;
+  cas: CaDto[];
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
-              private utilityService: UtilityService) {
+              private utilityService: UtilityService, private casService: CasService) {
     super();
   }
 
@@ -24,7 +28,8 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
     // Define the form.
     this.form = this.fb.group({
       deviceRegistration: ['', [Validators.required]],
-      devicePushTags: ['', [Validators.required]]
+      devicePushTags: ['', [Validators.required]],
+      deviceRootCA: ['', []]
     });
 
 
@@ -32,10 +37,19 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
     this.settingsService.findByNames(
       AppSettings.SETTING.DEVICE_REGISTRATION.REGISTRATION_MODE,
       AppSettings.SETTING.DEVICE_REGISTRATION.PUSH_TAGS,
+      AppSettings.SETTING.DEVICE_REGISTRATION.ROOT_CA,
     ).subscribe(onNext => {
       onNext.forEach(settingDTO => {
         this.form.controls[settingDTO.key].patchValue(settingDTO.val);
       })
+    });
+
+    // Fetch lookup values.
+    this.casService.getAll('sort=cn,asc').subscribe(onNext => {
+      if (onNext.content && onNext.content.length > 0) {
+        onNext.content.unshift(new CaDto(null, ''));
+        this.cas = onNext.content;
+      }
     });
   }
 

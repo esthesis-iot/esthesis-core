@@ -30,7 +30,6 @@ public class TopicSubscriptionInterceptor implements ChannelInterceptor {
   @Override
   public Message<?> preSend(Message<?> message, MessageChannel channel) {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
-//    System.out.println("COMMAND: " + headerAccessor.getCommand());
     if (StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand())) {
       Principal userPrincipal = headerAccessor.getUser();
       if (!validateSubscription(userPrincipal, headerAccessor.getDestination())) {

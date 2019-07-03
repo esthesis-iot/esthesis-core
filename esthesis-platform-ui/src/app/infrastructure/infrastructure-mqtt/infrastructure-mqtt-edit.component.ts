@@ -100,14 +100,14 @@ export class InfrastructureMqttEditComponent extends BaseComponent implements On
     });
   }
 
-  pickCertificate(certificateId: number, control: string) {
-    this.certificatesService.get(certificateId).subscribe(onNext => {
+  pickCaCertificate(caId: number, control: string) {
+    this.casService.get(caId).subscribe(onNext => {
       this.form.get(control).setValue(onNext.certificate);
     });
   }
 
-  pickCaCertificate(caId: number, control: string) {
-    this.certificatesService.get(caId).subscribe(onNext => {
+  pickCertificate(certificateId: number, control: string) {
+    this.certificatesService.get(certificateId).subscribe(onNext => {
       this.form.get(control).setValue(onNext.certificate);
     });
   }

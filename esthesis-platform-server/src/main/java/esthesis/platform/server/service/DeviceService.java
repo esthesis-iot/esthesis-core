@@ -7,7 +7,9 @@ import com.eurodyn.qlack.common.exception.QDisabledException;
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.common.exception.QSecurityException;
 import com.eurodyn.qlack.fuse.crypto.CryptoAsymmetricService;
+import com.eurodyn.qlack.fuse.crypto.CryptoCAService;
 import com.eurodyn.qlack.fuse.crypto.CryptoSymmetricService;
+import com.eurodyn.qlack.fuse.crypto.dto.CertificateSignDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.google.common.collect.Lists;
@@ -32,14 +34,14 @@ import esthesis.platform.server.dto.DeviceRegistrationDTO;
 import esthesis.platform.server.dto.WebSocketMessageDTO;
 import esthesis.platform.server.mapper.DeviceKeyMapper;
 import esthesis.platform.server.mapper.DeviceMapper;
+import esthesis.platform.server.model.Ca;
 import esthesis.platform.server.model.Device;
 import esthesis.platform.server.model.DeviceKey;
 import esthesis.platform.server.repository.DeviceKeyRepository;
 import esthesis.platform.server.repository.DeviceRepository;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +60,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,6 +86,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   private final CryptoAsymmetricService cryptoAsymmetricService;
   private final CryptoSymmetricService cryptoSymmetricService;
   private final CertificatesService certificatesService;
+  private final CAService caService;
+  private final CryptoCAService cryptoCAService;
 
   public DeviceService(
     DeviceRepository deviceRepository, DeviceMapper deviceMapper,
@@ -93,7 +98,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     SecurityService securityService, AppProperties appProperties,
     CryptoAsymmetricService cryptoAsymmetricService,
     CryptoSymmetricService cryptoSymmetricService,
-    CertificatesService certificatesService) {
+    CertificatesService certificatesService, CAService caService,
+    CryptoCAService cryptoCAService) {
     this.deviceRepository = deviceRepository;
     this.deviceMapper = deviceMapper;
     this.deviceKeyMapper = deviceKeyMapper;
@@ -106,6 +112,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     this.cryptoAsymmetricService = cryptoAsymmetricService;
     this.cryptoSymmetricService = cryptoSymmetricService;
     this.certificatesService = certificatesService;
+    this.caService = caService;
+    this.cryptoCAService = cryptoCAService;
   }
 
   /**
@@ -114,8 +122,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   @Async
   public void preregister(DeviceRegistrationDTO deviceRegistrationDTO)
   throws NoSuchAlgorithmException, IOException, InvalidKeyException,
-         BadPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException,
-         NoSuchPaddingException {
+         InvalidAlgorithmParameterException, NoSuchPaddingException, OperatorCreationException,
+         InvalidKeySpecException {
     // Split IDs.
     String ids = deviceRegistrationDTO.getIds();
     ids = ids.replace("\n", ",");
@@ -130,9 +138,9 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
       }
     }
     // Convert tags to their name-equivalent.
-    String tagNames = String.join(",", deviceRegistrationDTO.getTags().stream().map(tagId -> {
-      return tagService.findById(tagId).getName();
-    }).collect(Collectors.toList()));
+    String tagNames = String.join(",",
+      deviceRegistrationDTO.getTags().stream().map(tagId -> tagService.findById(tagId).getName())
+        .collect(Collectors.toList()));
 
     // Register IDs.
     for (String hardwareId : idList) {
@@ -188,7 +196,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
   private void register(String hardwareId, String tags, String state, boolean checkTags)
   throws NoSuchAlgorithmException, IOException, InvalidKeyException,
-         InvalidAlgorithmParameterException, NoSuchPaddingException {
+         InvalidAlgorithmParameterException, NoSuchPaddingException, OperatorCreationException,
+         InvalidKeySpecException {
     // Create a keypair.
     CreateKeyPairDTO createKeyPairDTO = new CreateKeyPairDTO();
     createKeyPairDTO.setKeySize(appProperties.getSecurityAsymmetricKeySize());
@@ -228,6 +237,27 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
       .setRolledOn(Instant.now())
       .setRolledAccepted(true)
       .setDevice(device);
+
+    // Create a certificate for this device if the root CA is set.
+    if (StringUtils.isNotBlank(srs.get(DeviceRegistration.ROOT_CA))) {
+      final Ca ca = caService.findEntityById(srs.getAsLong(DeviceRegistration.ROOT_CA));
+      CertificateSignDTO signDTO = new CertificateSignDTO()
+        .setLocale(Locale.US)
+        .setPrivateKey(keyPair.getPrivate())
+        .setPublicKey(keyPair.getPublic())
+        .setSignatureAlgorithm(appProperties.getSecurityAsymmetricSignatureAlgorithm())
+        .setSubjectCN(hardwareId)
+        .setValidForm(Instant.now())
+        .setValidTo(ca.getValidity())
+        .setIssuerCN(ca.getCn())
+        .setIssuerPrivateKey(cryptoAsymmetricService.pemToPrivateKey(
+          new String(securityService.decrypt(ca.getPrivateKey()), StandardCharsets.UTF_8),
+          appProperties.getSecurityAsymmetricKeyAlgorithm()));
+      deviceKey.setCertificate(
+        cryptoCAService.certificateToPEM(cryptoCAService.generateCertificate(signDTO)));
+      deviceKey.setCertificateCaId(ca.getId());
+    }
+
     deviceKeyRepository.save(deviceKey);
 
     // Add device-pushed tags if supported.
@@ -239,10 +269,10 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
   public void register(DeviceMessage<RegistrationRequest> registrationRequest,
     String hardwareId)
-  throws NoSuchAlgorithmException, IOException, InvalidKeyException,
-         NoSuchPaddingException, BadPaddingException, InvalidAlgorithmParameterException,
-         IllegalBlockSizeException, InvalidKeySpecException, SignatureException {
-    DeviceDTO deviceDTO = null;
+  throws NoSuchAlgorithmException, IOException, InvalidKeyException, NoSuchPaddingException,
+         InvalidAlgorithmParameterException, InvalidKeySpecException, SignatureException,
+         OperatorCreationException {
+    DeviceDTO deviceDTO;
 
     // Verify signature and decrypt according to the configuration.
     try {
@@ -320,6 +350,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
         Base64E.encode(securityService.decrypt(keys.getSessionKey())));
       deviceDTO.setProvisioningKey(
         Base64E.encode(securityService.decrypt(keys.getProvisioningKey())));
+      deviceDTO.setCertificate(keys.getCertificate());
     } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException |
       InvalidAlgorithmParameterException | IOException e) {
       LOGGER.log(Level.SEVERE, "Could not obtain device's cryptographic keys.", e);
