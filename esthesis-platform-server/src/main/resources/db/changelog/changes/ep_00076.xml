@@ -26,9 +26,6 @@
     <changeSet author="European Dynamics" id="1562150472571-7">
         <dropTable tableName="command_request_devices"/>
     </changeSet>
-    <changeSet author="European Dynamics" id="1562150472571-8">
-        <dropColumn columnName="device" tableName="command_request"/>
-    </changeSet>
     <changeSet author="European Dynamics" id="1562150472571-1">
         <dropForeignKeyConstraint baseTableName="command_request" constraintName="djuwdh67w83hfef"/>
         <addForeignKeyConstraint baseColumnNames="device_id" baseTableName="command_request" constraintName="djuwdh67w83hfef" referencedColumnNames="id" referencedTableName="device"/>
