@@ -1,0 +1,20 @@
+server {
+  listen  80;
+  server_name esthesis;
+
+  location / {
+    root   /usr/share/nginx/html;
+    index  index.html index.htm;
+  }
+
+  error_page   500 502 503 504  /50x.html;
+  location = /50x.html {
+    root   /usr/share/nginx/html;
+  }
+
+  location /api {
+    proxy_pass http://esthesis-platform-server:46000/;
+#    proxy_buffering off;
+    proxy_set_header X-Real-IP $remote_addr;
+  }
+}

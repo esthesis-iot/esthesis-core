@@ -91,8 +91,10 @@
               <div> <!-- ENV row -->
                 <div fxLayout="column">
                   <div class="inline-subheader">Environmental parameters</div>
-                  <div formArrayName="env"
-                       *ngFor="let item of containerForm.controls['env'].controls; let i = index">
+<!--                  <div formArrayName="env"-->
+<!--                       *ngFor="let item of containerForm.controls['env'].controls; let i = index">-->
+                    <div formArrayName="env"
+                       *ngFor="let item of containerForm.controls['env']['controls']; let i = index">
                     <div [formGroupName]="i">
                       <mat-form-field>
                         <input matInput placeholder="Name" formControlName='envName' required>
@@ -130,8 +132,10 @@
               <div> <!-- PORTS row -->
                 <div fxLayout="column">
                   <div class="inline-subheader">Ports</div>
-                  <div formArrayName="ports"
-                       *ngFor="let item of containerForm.controls['ports'].controls; let i = index">
+<!--                  <div formArrayName="ports"-->
+<!--                       *ngFor="let item of containerForm.controls['ports'].controls; let i = index">-->
+                    <div formArrayName="ports"
+                       *ngFor="let item of containerForm.controls['ports']['controls']; let i = index">
                     <div [formGroupName]="i">
                       <mat-form-field>
                         <input matInput placeholder="Host port" formControlName="host" required>
@@ -161,8 +165,10 @@
               <div> <!-- VOLUMES row -->
                 <div fxLayout="column">
                   <div class="inline-subheader">Volumes</div>
-                  <div formArrayName="volumes"
-                       *ngFor="let item of containerForm.controls['volumes'].controls; let i = index">
+<!--                  <div formArrayName="volumes"-->
+<!--                       *ngFor="let item of containerForm.controls['volumes'].controls; let i = index">-->
+                    <div formArrayName="volumes"
+                       *ngFor="let item of containerForm.controls['volumes']['controls']; let i = index">
                     <div [formGroupName]="i">
                       <mat-form-field>
                         <input matInput placeholder="Source volume" formControlName="source" required>

@@ -27,38 +27,31 @@
   <div class="inline-subheader">
     Select which telemetry data will be visible on device information page.
   </div>
-  <div *ngIf="!isArrayEmpty(form.get('fields'))">
-    <div formArrayName="fields" *ngFor="let field of form.get('fields')['controls']; let i = index">
-      <div [formGroupName]="i" fxLayout="row" fxLayoutGap="1rem">
-        <mat-checkbox formControlName="shown" class="xs-mt1" color="primary"></mat-checkbox>
-        <mat-form-field fxFlex="1 0 auto">
-          <input matInput placeholder="Name" formControlName="name">
-        </mat-form-field>
-        <mat-form-field>
-          <input matInput placeholder="Data type" formControlName="datatype">
-        </mat-form-field>
-        <mat-form-field fxFlex="1 0 auto">
-          <input matInput placeholder="UI label" formControlName="label">
-        </mat-form-field>
-        <mat-form-field fxFlex="1 0 auto">
-          <input matInput placeholder="Formatter" formControlName="formatter">
-        </mat-form-field>
+  <div formArrayName="fields" *ngFor="let field of form.get('fields')['controls']; let i = index">
+    <div [formGroupName]="i" fxLayout="row" fxLayoutGap="1rem">
+      <mat-checkbox formControlName="shown" class="xs-mt1" color="primary"></mat-checkbox>
+      <mat-form-field fxFlex="1 0 auto">
+        <input matInput placeholder="Name" formControlName="name">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Data type" formControlName="datatype">
+      </mat-form-field>
+      <mat-form-field fxFlex="1 0 auto">
+        <input matInput placeholder="UI label" formControlName="label">
+      </mat-form-field>
+      <mat-form-field fxFlex="1 0 auto">
+        <input matInput placeholder="Formatter" formControlName="formatter">
+      </mat-form-field>
 
-        <mat-select placeholder="Value handler"
-                    formControlName="valueHandler" fxFlex="150px">
-          <mat-option *ngFor="let o of constants.FIELD_VALUE_FORMATTER| keyvalue"
-                      [value]="o.value">
-            {{ lookupByValue(constants.FIELD_VALUE_FORMATTER, o.value) }}
-          </mat-option>
-        </mat-select>
-      </div>
+      <mat-select placeholder="Value handler"
+                  formControlName="valueHandler" fxFlex="150px">
+        <mat-option *ngFor="let o of constants.FIELD_VALUE_FORMATTER| keyvalue"
+                    [value]="o.value">
+          {{ lookupByValue(constants.FIELD_VALUE_FORMATTER, o.value) }}
+        </mat-option>
+      </mat-select>
     </div>
   </div>
-  <div *ngIf="isArrayEmpty(form.get('fields'))">
-    <em>Your devices have not sent any telemetry data just yet, or you have not configured any data sinks
-      capable of handling telemtry data.</em>
-  </div>
-
 </form>
 
 <div class="xs-pt2">

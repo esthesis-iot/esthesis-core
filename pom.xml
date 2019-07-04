@@ -20,7 +20,6 @@
   </properties>
 
   <modules>
-    <module>esthesis-platform-ui</module>
     <module>esthesis-platform-server</module>
     <module>esthesis-platform-common</module>
     <module>esthesis-platform-datasink</module>
