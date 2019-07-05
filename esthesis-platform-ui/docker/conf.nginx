@@ -1,20 +1,26 @@
+upstream esthesis-platform-server {
+  server esthesis-platform-server:46000;
+}
+
 server {
-  listen  80;
-  server_name esthesis;
+  listen 80;
 
   location / {
     root   /usr/share/nginx/html;
-    index  index.html index.htm;
+    try_files $uri $uri/ /index.html;
   }
 
-  error_page   500 502 503 504  /50x.html;
-  location = /50x.html {
-    root   /usr/share/nginx/html;
+  location /api/ws {
+    proxy_pass http://esthesis-platform-server;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
   }
 
   location /api {
-    proxy_pass http://esthesis-platform-server:46000/;
-#    proxy_buffering off;
-    proxy_set_header X-Real-IP $remote_addr;
+    proxy_pass         http://esthesis-platform-server;
+    proxy_redirect     off;
+    proxy_set_header   Host $host;
+    proxy_set_header   ddForwarded-Host $server_name;
   }
 }

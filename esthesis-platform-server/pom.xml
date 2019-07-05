@@ -81,6 +81,11 @@
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
+      <artifactId>esthesis-extension-dt</artifactId>
+      <version>${esthesis-extension.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>esthesis</groupId>
       <artifactId>esthesis-platform-datasink-influxdb</artifactId>
       <version>${project.version}</version>
     </dependency>

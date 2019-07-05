@@ -7,6 +7,7 @@ import static java.util.Collections.emptyList;
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.aaa.dto.UserDTO;
 import com.eurodyn.qlack.fuse.aaa.service.UserService;
+import esthesis.extension.dt.config.AppConstants;
 import esthesis.platform.server.config.AppConstants.Jwt;
 import esthesis.platform.server.dto.ApplicationDTO;
 import esthesis.platform.server.dto.jwt.JWTClaimsResponseDTO;
@@ -47,8 +48,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
   // The prefix of the token's value when it comes in the headers.
   // A JWT logged-in user.
   private static final String BEARER_HEADER = "Bearer";
-  // An esthesis Digital Twins app.
-  private static final String XESTHESISDT_HEADER = "X-ESTHESIS-DT";
 
   // The name of the token when it comes as a url param.
   private static final String BEARER_PARAM = "bearer";
@@ -86,8 +85,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
       if (authHeader.startsWith(BEARER_HEADER)) {
         return decodeJwt(authHeader.replace(BEARER_HEADER, "").trim());
       }
-      if (authHeader.startsWith(XESTHESISDT_HEADER)) {
-        String token = authHeader.replace(XESTHESISDT_HEADER, "").trim();
+      if (authHeader.startsWith(AppConstants.XESTHESISDT_HEADER)) {
+        String token = authHeader.replace(AppConstants.XESTHESISDT_HEADER, "").trim();
         try {
           final ApplicationDTO applicationDTO = applicationService.findByToken(token);
           if (applicationDTO.isState()) {
