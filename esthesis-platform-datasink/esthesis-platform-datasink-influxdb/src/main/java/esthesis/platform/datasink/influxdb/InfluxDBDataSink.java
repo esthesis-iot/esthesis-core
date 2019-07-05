@@ -122,8 +122,14 @@ public class InfluxDBDataSink implements DataSink {
 
     // If a timestamp is provided use the provided timestamp, otherwise create a timestamp.
     if (jsonNode.get(Mqtt.MqttPayload.TIMESTAMP_KEYNAME) != null) {
-      pointBuilder
-        .time(jsonNode.get(Mqtt.MqttPayload.TIMESTAMP_KEYNAME).asLong(), TimeUnit.MILLISECONDS);
+      String ts = jsonNode.get(Mqtt.MqttPayload.TIMESTAMP_KEYNAME).asText();
+      if (ts.length() == 10) {
+        pointBuilder.time(Long.valueOf(ts), TimeUnit.SECONDS);
+      } else if (ts.length() == 13) {
+        pointBuilder.time(Long.valueOf(ts), TimeUnit.MILLISECONDS);
+      } else if (ts.length() == 16) {
+        pointBuilder.time(Long.valueOf(ts), TimeUnit.MICROSECONDS);
+      }
     } else {
       pointBuilder.time(Instant.now().toEpochMilli(), TimeUnit.MILLISECONDS);
     }
