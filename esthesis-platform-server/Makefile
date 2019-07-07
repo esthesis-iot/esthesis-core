@@ -4,7 +4,9 @@ all: build push
 
 build:
 	echo Building image with tag: $(BUILD_TAG)
-	mvn clean install spring-boot:repackage
+	mvn clean install -f ../../esthesis-bom/pom.xml
+	mvn clean install -f ../../esthesis-parent/pom.xml
+	mvn clean install spring-boot:repackage -DskipTests=true
 	mv target/esthesis-platform-server*.jar target/esthesis-platform-server.jar
 	docker build . -t esthesis/platform-server:$(BUILD_TAG)
 	docker build . -t esthesis/platform-server:latest
