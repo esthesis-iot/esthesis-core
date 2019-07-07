@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import lombok.experimental.Accessors;
 
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -32,4 +33,5 @@ public class DeviceDTO extends BaseDTO {
   private String psPublicKey;
   private String provisioningKey;
   private String certificate;
+  private Instant lastSeen;
 }

@@ -18,7 +18,7 @@ import {UtilityService} from '../shared/service/utility.service';
 })
 export class DevicesComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   // Columns to display.
-  displayedColumns = ['hardwareId', 'createdOn', 'state'];
+  displayedColumns = ['hardwareId', 'lastSeen', 'createdOn', 'state'];
 
   // Datasource definition.
   datasource: MatTableDataSource<DeviceDto> = new MatTableDataSource<DeviceDto>();
@@ -76,6 +76,11 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
       this.datasource.data = onNext.content;
       this.paginator.length = onNext.totalElements;
     });
+  }
+
+  refreshCurrentData() {
+    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+      this.sort.start);
   }
 
   changePage() {

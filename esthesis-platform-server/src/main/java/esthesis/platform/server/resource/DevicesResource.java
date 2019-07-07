@@ -76,7 +76,7 @@ public class DevicesResource {
   @EmptyPredicateCheck
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not obtain devices list.")
-  @ReplyPageableFilter("createdOn,hardwareId,id,state")
+  @ReplyPageableFilter("createdOn,hardwareId,id,state,lastSeen")
   public Page<DeviceDTO> findAll(@QuerydslPredicate(root = Device.class) Predicate predicate,
     Pageable pageable) {
     return deviceService.findAll(predicate, pageable);
