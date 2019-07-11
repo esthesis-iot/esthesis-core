@@ -5,13 +5,18 @@ import esthesis.extension.common.config.AppConstants.Mqtt;
 import esthesis.extension.datasink.DataSink;
 import esthesis.extension.datasink.dto.DataSinkQueryResult;
 import esthesis.platform.server.cluster.datasinks.DataSinkManager;
+import esthesis.platform.server.model.Device;
+import esthesis.platform.server.repository.DeviceRepository;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Validated
@@ -19,9 +24,12 @@ import java.util.Optional;
 public class DTService {
 
   private final DataSinkManager dataSinkManager;
+  private final DeviceRepository deviceRepository;
 
-  public DTService(DataSinkManager dataSinkManager) {
+  public DTService(DataSinkManager dataSinkManager,
+    DeviceRepository deviceRepository) {
     this.dataSinkManager = dataSinkManager;
+    this.deviceRepository = deviceRepository;
   }
 
   private DataSink getDataSinkReader(String mqttEventType) {
@@ -117,5 +125,14 @@ public class DTService {
     return getDataSinkReader(mqttEventType)
       .average(hardwareId, measurements, mqttEventType, ObjectUtils.defaultIfNull(from, 0l),
         ObjectUtils.defaultIfNull(to, 0L), field);
+  }
+
+  /**
+   * Returns the list of devices registered
+   */
+  public List<String> getDevicesRegisteredAfter(Instant date) {
+    return deviceRepository.findAllByCreatedOnAfter(date).stream()
+      .map(Device::getHardwareId)
+      .collect(Collectors.toList());
   }
 }

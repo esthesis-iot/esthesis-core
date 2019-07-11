@@ -1,6 +1,8 @@
 package esthesis.platform.server.resource.dt;
 
 import esthesis.extension.datasink.dto.DataSinkQueryResult;
+import esthesis.platform.server.model.Device;
+import esthesis.platform.server.repository.DeviceRepository;
 import esthesis.platform.server.service.DTService;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
@@ -13,15 +15,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Optional;
+
 @Validated
 @RestController
 @RequestMapping("/dt")
 public class DTResource {
 
   private final DTService dtService;
+  private final DeviceRepository deviceRepository;
 
-  public DTResource(DTService dtService) {
+  public DTResource(DTService dtService,
+    DeviceRepository deviceRepository) {
     this.dtService = dtService;
+    this.deviceRepository = deviceRepository;
   }
 
   private ResponseEntity<DataSinkQueryResult> returnEmptyResult() {
@@ -142,5 +150,23 @@ public class DTResource {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
   }
+
+  /**
+   * Finds all devices registered after another device's registration date.
+   *
+   * @param hardwareId The device ID after which newer registrations are returned.
+   * @return Returns a list of device IDs.
+   */
+  @GetMapping(path = "/registered-after-device")
+  public ResponseEntity<List<String>> getDevicesRegisteredAfterDevice(
+    @RequestParam String hardwareId) {
+    final Optional<Device> device = deviceRepository.findByHardwareId(hardwareId);
+    if (device.isPresent()) {
+      return ResponseEntity.ok(dtService.getDevicesRegisteredAfter(device.get().getCreatedOn()));
+    } else {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+  }
+
 
 }
