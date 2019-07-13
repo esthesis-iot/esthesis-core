@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -155,7 +156,7 @@ public class DTResource {
    * Finds all devices registered after another device's registration date.
    *
    * @param hardwareId The device ID after which newer registrations are returned.
-   * @return Returns a list of device IDs.
+   * @return Returns a list of hardware IDs.
    */
   @GetMapping(path = "/registered-after-device")
   public ResponseEntity<List<String>> getDevicesRegisteredAfterDevice(
@@ -168,5 +169,15 @@ public class DTResource {
     }
   }
 
+  /**
+   * Returns the devices registered after a specific date.
+   * @param epoch The date after which devices will be matched as an EPOCH value in milliseconds.
+   * @return Returns a list of hardware IDs.
+   */
+  @GetMapping(path = "/registered-after-date")
+  public ResponseEntity<List<String>> getDevicesRegisteredAfterDate(
+    @RequestParam long epoch) {
+    return ResponseEntity.ok(dtService.getDevicesRegisteredAfter(Instant.ofEpochMilli(epoch)));
+  }
 
 }
