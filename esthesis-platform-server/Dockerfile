@@ -7,5 +7,8 @@ WORKDIR /app
 # add app
 COPY target/esthesis-platform-server.jar /app
 
+# Change entropy source and random blocking algorithm to non-blocking.
+COPY docker/java.security /usr/lib/jvm/zulu-8/jre/lib/security
+
 ENTRYPOINT ["/usr/bin/java"]
 CMD ["-jar", "/app/esthesis-platform-server.jar"]

@@ -15,6 +15,7 @@
 
   <modules>
     <module>esthesis-platform-datasink-influxdb</module>
+    <module>esthesis-platform-datasink-mysql</module>
   </modules>
 
   <build>
