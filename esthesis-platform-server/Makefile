@@ -8,8 +8,7 @@ build:
 	mvn clean install -f ../../esthesis-parent/pom.xml
 	mvn clean install spring-boot:repackage -DskipTests=true
 	mv target/esthesis-platform-server-$(BUILD_TAG).jar target/esthesis-platform-server.jar
-	docker build . -t esthesis/esthesis-platform-server:$(BUILD_TAG)
-	docker build . -t esthesis/esthesis-platform-server:latest
+	docker build . -t esthesis/esthesis-platform-server:$(BUILD_TAG) -t esthesis/esthesis-platform-server
 
 push:
 	docker push esthesis/esthesis-platform-server:$(BUILD_TAG)
