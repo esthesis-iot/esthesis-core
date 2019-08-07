@@ -9,7 +9,7 @@ import {circle, icon, latLng, marker, polygon, tileLayer} from 'leaflet';
 export class DashboardMapComponent implements OnInit {
   options = {
     layers: [
-      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 })
+      tileLayer(window.location.protocol + '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 })
     ],
     zoom: 8,
     center: latLng(47.2287109, 14.3009642)
