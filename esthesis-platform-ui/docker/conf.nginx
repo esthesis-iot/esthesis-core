@@ -5,11 +5,18 @@ upstream esthesis {
 server {
   listen 80;
 
+  # Serve the static files of the frontend.
   location / {
     root   /usr/share/nginx/html;
     try_files $uri $uri/ /index.html;
   }
 
+  # Do not allow to access device-facing resources through the platform frontend.
+  location /api/device {
+    return 404;
+  }
+
+  # Redirect WebSocket calls to the underlying platform backend.
   location /api/ws {
     proxy_pass http://esthesis-platform-server-service;
     proxy_http_version 1.1;
@@ -17,6 +24,7 @@ server {
     proxy_set_header Connection "Upgrade";
   }
 
+  # Redirect REST calls to the underlying platform backend.
   location /api {
     proxy_pass         http://esthesis-platform-server-service;
     proxy_redirect     off;
