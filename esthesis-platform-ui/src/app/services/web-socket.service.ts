@@ -16,11 +16,16 @@ export class WebSocketService {
   }
 
   connect() {
+    // Check if a secure or plain WebSocket connection should be established.
+    var wsProtocol = "ws:";
+    if (window.location.protocol === 'https:') {
+      wsProtocol = "wss:";
+    }
+
     // Connect to WebSocket.
     const rxStompConfig: InjectableRxStompConfig = {
       // STOMP server.
-      brokerURL: `ws://${window.location.hostname}:${window.location.port}/api/ws?bearer=${localStorage.getItem(
-        AppConstants.JWT_STORAGE_NAME)}`,
+      brokerURL: `${wsProtocol}//${window.location.hostname}:${window.location.port}/api/ws?bearer=${localStorage.getItem(AppConstants.JWT_STORAGE_NAME)}`,
 
       // How often to heartbeat?
       // Interval in milliseconds, set to 0 to disable
