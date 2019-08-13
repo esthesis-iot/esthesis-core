@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Validated
 @RestController
@@ -180,4 +183,23 @@ public class DTResource {
     return ResponseEntity.ok(dtService.getDevicesRegisteredAfter(Instant.ofEpochMilli(epoch)));
   }
 
+  /**
+   * Finds all devices registered. This is a tem
+   *
+   * @return Returns a list of all registered device IDs.
+   */
+  @GetMapping(path = "/all-registered-devices")
+  public ResponseEntity<List<String>> getAllRegisteredDevices() {
+    Iterable<Device> all = deviceRepository.findAll();
+    final List<String> allDevices =
+        StreamSupport
+            .stream(all.spliterator(), false)
+            .map(Device::getHardwareId)
+            .collect(Collectors.toList());
+    if (allDevices.size() > 0) {
+      return ResponseEntity.ok(allDevices);
+    } else {
+      return ResponseEntity.ok(Collections.singletonList(""));
+    }
+}
 }
