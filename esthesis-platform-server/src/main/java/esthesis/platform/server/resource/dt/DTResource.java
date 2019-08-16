@@ -16,11 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Validated
 @RestController
@@ -174,6 +171,7 @@ public class DTResource {
 
   /**
    * Returns the devices registered after a specific date.
+   *
    * @param epoch The date after which devices will be matched as an EPOCH value in milliseconds.
    * @return Returns a list of hardware IDs.
    */
@@ -184,22 +182,12 @@ public class DTResource {
   }
 
   /**
-   * Finds all devices registered. This is a tem
+   * Returns all devices registered.
    *
-   * @return Returns a list of all registered device IDs.
+   * @return Returns a list of hardware IDs.
    */
   @GetMapping(path = "/all-registered-devices")
   public ResponseEntity<List<String>> getAllRegisteredDevices() {
-    Iterable<Device> all = deviceRepository.findAll();
-    final List<String> allDevices =
-        StreamSupport
-            .stream(all.spliterator(), false)
-            .map(Device::getHardwareId)
-            .collect(Collectors.toList());
-    if (allDevices.size() > 0) {
-      return ResponseEntity.ok(allDevices);
-    } else {
-      return ResponseEntity.ok(Collections.singletonList(""));
-    }
-}
+    return ResponseEntity.ok(dtService.getDevicesRegisteredAfter(Instant.EPOCH));
+  }
 }

@@ -254,49 +254,46 @@ public class InfluxDBDataSink implements DataSink {
   }
 
   private DataSinkQueryResult prepareOperationResult(QueryResult queryResult, String hardwareId) {
-    // Return an empty response if no results are available.
-    if (CollectionUtils.isEmpty(queryResult.getResults().get(0).getSeries())) {
-      return null;
-    }
-
-    // Set default values about the measurement for which count is calculated.
     DataSinkQueryResult dataSinkMeasurement = new DataSinkQueryResult();
-    dataSinkMeasurement.setHardwareId(hardwareId);
-    //    dataSinkMeasurement.setType(eventType);
-    //    dataSinkMeasurement.setMeasurements(measurement);
 
-    // Remove unnecessary columns (such as 'time').
-    final Series series = queryResult.getResults().get(0).getSeries().get(0);
-    int timeColumnIndex = series.getColumns().indexOf(INFLUXDB_TIME_NAME);
-    final List<String> columns = series.getColumns();
-    columns.remove(timeColumnIndex);
-    dataSinkMeasurement.setColumns(columns);
+    // Return an empty response if no results are available.
+    if (!CollectionUtils.isEmpty(queryResult.getResults().get(0).getSeries())) {
+      dataSinkMeasurement.setHardwareId(hardwareId);
+      //    dataSinkMeasurement.setType(eventType);
+      //    dataSinkMeasurement.setMeasurements(measurement);
 
-    // Set values (removing values of removed columns)
-    final List<List<Object>> values = series.getValues();
-    final List<Integer> indicesToRemove = Collections.singletonList(timeColumnIndex);
-    values.stream().forEach(o ->
-      indicesToRemove.stream().mapToInt(i -> i).forEach(o::remove)
-    );
-    dataSinkMeasurement.setValues(series.getValues());
+      // Remove unnecessary columns (such as 'time').
+      final Series series = queryResult.getResults().get(0).getSeries().get(0);
+      int timeColumnIndex = series.getColumns().indexOf(INFLUXDB_TIME_NAME);
+      final List<String> columns = series.getColumns();
+      columns.remove(timeColumnIndex);
+      dataSinkMeasurement.setColumns(columns);
+
+      // Set values (removing values of removed columns)
+      final List<List<Object>> values = series.getValues();
+      final List<Integer> indicesToRemove = Collections.singletonList(timeColumnIndex);
+      values.stream().forEach(o ->
+        indicesToRemove.stream().mapToInt(i -> i).forEach(o::remove)
+      );
+      dataSinkMeasurement.setValues(series.getValues());
+    }
 
     return dataSinkMeasurement;
   }
 
   private DataSinkQueryResult prepareMeasurementsResults(QueryResult queryResult) {
-    // Get the series contained on this result set.
     DataSinkQueryResult dataSinkQueryResult = new DataSinkQueryResult();
+
+    // Get the series contained on this result set.
     final List<Series> series = queryResult.getResults().get(0).getSeries();
 
-    // Return an empty response if no results are available.
-    if (CollectionUtils.isEmpty(series)) {
-      return null;
+    // Fill-in results.
+    if (!CollectionUtils.isEmpty(series)) {
+      final Series seriesData = series.get(0);
+
+      dataSinkQueryResult.setColumns(seriesData.getColumns());
+      dataSinkQueryResult.setValues(seriesData.getValues());
     }
-
-    final Series seriesData = series.get(0);
-
-    dataSinkQueryResult.setColumns(seriesData.getColumns());
-    dataSinkQueryResult.setValues(seriesData.getValues());
 
     return dataSinkQueryResult;
   }
