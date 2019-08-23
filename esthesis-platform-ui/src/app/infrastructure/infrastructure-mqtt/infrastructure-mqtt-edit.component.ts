@@ -43,6 +43,7 @@ export class InfrastructureMqttEditComponent extends BaseComponent implements On
       id: [''],
       name: ['', [Validators.required, Validators.maxLength(256)]],
       ipAddress: ['', [Validators.required, Validators.maxLength(256)]],
+      aIpAddress: ['', [Validators.maxLength(256)]],
       state: ['', [Validators.required, Validators.maxLength(5)]],
       caCert: ['', []],
       clientCert: ['', []],

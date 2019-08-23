@@ -12,6 +12,9 @@
             <input matInput placeholder="Protocol, IP address, port" formControlName="ipAddress" required>
           </mat-form-field>
           <mat-form-field>
+            <input matInput placeholder="Advertised protocol, IP address, port" formControlName="aIpAddress">
+          </mat-form-field>
+          <mat-form-field>
             <mat-select placeholder="State" formControlName="state">
               <mat-option [value]="true">Active</mat-option>
               <mat-option [value]="false">Inactive</mat-option>

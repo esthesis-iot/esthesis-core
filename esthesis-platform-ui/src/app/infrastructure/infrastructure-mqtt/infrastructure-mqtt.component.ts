@@ -12,7 +12,7 @@ import {ContainersPopupService} from '../../shared/component/containers/containe
   styleUrls: ['./infrastructure-mqtt.component.scss']
 })
 export class InfrastructureMqttComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['name', 'ipAddress', 'status'];
+  columns = ['name', 'ipAddress', 'aIpAddress', 'status'];
   datasource = new MatTableDataSource<MqttServerDto>();
 
   @ViewChild(MatSort) sort: MatSort;

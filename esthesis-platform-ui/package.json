@@ -3,9 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "start intellij": "ng serve --proxy-config  proxy.conf.json",
-    "build": "ng build",
+    "start": "node git-info.js && ng serve --proxy-config  proxy.conf.json",
+    "build": "node git-info.js && ng build --prod --output-path=dist",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -64,6 +63,7 @@
     "@types/node": "~10.12.21",
     "@types/sprintf-js": "^1.1.2",
     "codelyzer": "~4.5.0",
+    "git-describe": "^4.0.4",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~3.0.0",

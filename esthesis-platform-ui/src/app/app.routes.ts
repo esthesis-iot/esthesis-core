@@ -31,6 +31,7 @@ export const routing: ModuleWithProviders = RouterModule.forRoot([
   {path: 'applications',  loadChildren: './applications/applications.module#ApplicationsModule', canActivate: [CanActivateGuard]},
   {path: 'datasinks',     loadChildren: './datasinks/datasinks.module#DatasinksModule', canActivate: [CanActivateGuard]},
   {path: 'control',       loadChildren: './control/control.module#ControlModule', canActivate: [CanActivateGuard]},
+  {path: 'about',         loadChildren: './about/about.module#AboutModule', canActivate: [CanActivateGuard]},
 
   // Redirect all other urls to Dashboard.
   {path: '**', redirectTo: 'dashboard'}

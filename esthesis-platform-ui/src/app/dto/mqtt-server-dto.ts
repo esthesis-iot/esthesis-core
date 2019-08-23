@@ -2,6 +2,7 @@ export class MqttServerDto {
   id: string;
   name: string;
   ipAddress: string;
+  aIpAddress: string;
   state: boolean;
   tags: number[];
   topicTelemetry: string;

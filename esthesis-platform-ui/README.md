@@ -4,7 +4,7 @@
 - Setup your dev env from `esthesis-setup` module.
 
 ## Running
-`ng serve --proxy-config proxy.conf.json`
+`npm start`
 
 ## Logging in
 [http://localhost:19345/login](http://localhost:19345/login)
