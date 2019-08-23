@@ -58,6 +58,7 @@ public class DTResource {
    * @param measurement The measurement for which to retrieve fields.
    * @param page The page of the results in case a pageable reply is wanted. First page is 0.
    * @param pageSize The size of each page of results.
+   * @param position 'first' to get the first measurement, 'last' to get the last measurement, or empty to get all measurements.
    */
   @GetMapping(path = {"/{hardwareId}/{mqttEventType}", "/{hardwareId}/{mqttEventType}/{position}"})
   public ResponseEntity<DataSinkQueryResult> get(

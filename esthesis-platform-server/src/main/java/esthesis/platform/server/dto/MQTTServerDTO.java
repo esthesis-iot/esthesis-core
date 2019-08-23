@@ -19,6 +19,7 @@ public class MQTTServerDTO extends BaseDTO {
   public String name;
   @NotNull
   public String ipAddress;
+  public String aIpAddress;
   @NotNull
   public boolean state;
   @Singular

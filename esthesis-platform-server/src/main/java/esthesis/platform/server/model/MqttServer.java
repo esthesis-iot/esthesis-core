@@ -36,6 +36,7 @@ public class MqttServer extends BaseEntity {
   private String name;
   @NotNull
   private String ipAddress;
+  private String aIpAddress;
   @NotNull
   private boolean state;
   @Singular
@@ -45,4 +46,5 @@ public class MqttServer extends BaseEntity {
   private String caCert;
   private String clientCert;
   private String clientKey;
+  private String description;
 }
