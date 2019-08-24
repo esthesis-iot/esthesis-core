@@ -1,7 +1,6 @@
 package esthesis.platform.server.resource;
 
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
-import com.eurodyn.qlack.fuse.crypto.CryptoSymmetricService;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
@@ -9,7 +8,6 @@ import com.querydsl.core.types.Predicate;
 import esthesis.platform.server.dto.ProvisioningDTO;
 import esthesis.platform.server.model.Provisioning;
 import esthesis.platform.server.service.ProvisioningService;
-import esthesis.platform.server.service.SettingResolverService;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,15 +35,9 @@ import java.util.Optional;
 public class ProvisioningResource {
 
   private final ProvisioningService provisioningService;
-  private final SettingResolverService srs;
-  private final CryptoSymmetricService cryptoSymmetricService;
 
-  public ProvisioningResource(ProvisioningService provisioningPackageService,
-    SettingResolverService settingResolverService,
-    CryptoSymmetricService cryptoSymmetricService) {
+  public ProvisioningResource(ProvisioningService provisioningPackageService) {
     this.provisioningService = provisioningPackageService;
-    this.srs = settingResolverService;
-    this.cryptoSymmetricService = cryptoSymmetricService;
   }
 
   @PostMapping
@@ -56,7 +48,7 @@ public class ProvisioningResource {
       final long id = provisioningService.save(provisioningDTO, file.get());
       provisioningService.encryptAndSign(id);
     } else {
-      // Make sure existing r/o atrributes are not overwritten.
+      // Make sure existing r/o attributes are not overwritten.
       @SuppressWarnings("ConstantConditions") final Provisioning existingProvisioning =
         provisioningService.findEntityById(provisioningDTO.getId());
       provisioningDTO.setFileSize(existingProvisioning.getFileSize());
