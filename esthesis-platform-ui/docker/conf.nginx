@@ -24,6 +24,18 @@ server {
     proxy_set_header    Connection "Upgrade";
   }
 
+  # Proxy REST calls to the provisioning underlying platform backend, allowing large payloads.
+  location /api/provisioning {
+    proxy_pass          http://esthesis;
+    proxy_redirect      off;
+    proxy_set_header    X-Forwarded-Host $host:$server_port;
+    proxy_set_header    X-Forwarded-Server $host;
+    proxy_set_header    X-Real-IP $remote_addr;
+    proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header    X-Forwarded-Proto $scheme;
+    client_max_body_size  1024M;
+  }
+
   # Proxy REST calls to the underlying platform backend.
   location /api {
     proxy_pass          http://esthesis;
