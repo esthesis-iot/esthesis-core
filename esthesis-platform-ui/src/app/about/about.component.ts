@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { semver } from './git-version.json';
-import { raw } from './git-version.json';
+import {Component, OnInit} from '@angular/core';
+import {AboutService} from './about.service';
+import {AboutDto} from '../dto/about-dto';
 
 @Component({
   selector: 'app-about',
@@ -8,12 +8,15 @@ import { raw } from './git-version.json';
   styleUrls: ['./about.component.scss']
 })
 export class AboutComponent implements OnInit {
-  private semver = semver;
-  private raw = raw;
+  private about: AboutDto;
 
-  constructor() { }
+  constructor(private aboutService: AboutService) {
+  }
 
   ngOnInit() {
+    this.aboutService.getAbout().subscribe(onNext => {
+      this.about = onNext;
+    })
   }
 
 }

@@ -59,6 +59,30 @@
           <dir>${project.build.outputDirectory}/esthesis/platform/server/model</dir>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>pl.project13.maven</groupId>
+        <artifactId>git-commit-id-plugin</artifactId>
+        <version>${git-commit-id-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>git-info</id>
+            <goals>
+              <goal>revision</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <prefix></prefix>
+              <generateGitPropertiesFilename>${project.basedir}/src/main/resources/git.json</generateGitPropertiesFilename>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <dateFormat>yyyy-MM-dd HH:mm:ss</dateFormat>
+          <generateGitPropertiesFile>true</generateGitPropertiesFile>
+          <format>json</format>
+          <skipPoms>false</skipPoms>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 

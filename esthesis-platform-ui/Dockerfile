@@ -19,8 +19,7 @@ RUN npm install -g @angular/cli@7.3.0
 COPY . /app
 
 # generate build
-#RUN ng build --prod --output-path=dist
-RUN npm run-script build
+RUN ng build --prod --output-path=dist
 
 ####################################################################################################
 # Create runtime container.
