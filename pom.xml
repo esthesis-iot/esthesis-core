@@ -18,7 +18,6 @@
 
   <modules>
     <module>esthesis-platform-server</module>
-    <module>esthesis-platform-datasink</module>
   </modules>
 
 </project>

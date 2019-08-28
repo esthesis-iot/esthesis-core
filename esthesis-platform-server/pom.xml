@@ -111,7 +111,7 @@
     <!-- Esthesis dependencies -->
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>esthesis-platform-datasink-influxdb</artifactId>
+      <artifactId>esthesis-datasink-influxdb</artifactId>
       <version>${project.version}</version>
     </dependency>
 
