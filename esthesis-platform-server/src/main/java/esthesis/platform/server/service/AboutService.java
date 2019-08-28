@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.dto.AboutDTO;
 import lombok.extern.java.Log;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -33,7 +32,7 @@ public class AboutService {
   public AboutDTO getAbout() throws IOException {
     // Get versioning info.
     AboutDTO aboutDTO = objectMapper
-      .readValue(new ClassPathResource("/git.json").getFile(), AboutDTO.class);
+      .readValue(this.getClass().getResourceAsStream("/git.json"), AboutDTO.class);
 
     // Get system info.
     aboutDTO.setNodeId(appProperties.getNodeId());
