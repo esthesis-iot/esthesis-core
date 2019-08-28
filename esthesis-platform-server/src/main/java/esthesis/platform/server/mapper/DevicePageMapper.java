@@ -1,6 +1,6 @@
 package esthesis.platform.server.mapper;
 
-import esthesis.extension.datasink.dto.FieldDTO;
+import esthesis.common.datasink.dto.FieldDTO;
 import esthesis.platform.server.model.DevicePage;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

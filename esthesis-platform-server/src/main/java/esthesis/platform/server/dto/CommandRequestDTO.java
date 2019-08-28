@@ -1,6 +1,6 @@
 package esthesis.platform.server.dto;
 
-import esthesis.extension.device.config.AppConstants;
+import esthesis.common.config.AppConstants;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,10 +1,10 @@
 package esthesis.platform.server.cluster.datasinks;
 
 import com.eurodyn.qlack.common.exception.QMismatchException;
-import esthesis.extension.common.config.AppConstants.Mqtt;
-import esthesis.extension.datasink.DataSink;
-import esthesis.extension.datasink.DataSinkFactory;
-import esthesis.extension.datasink.MQTTDataEvent;
+import esthesis.common.config.AppConstants.Mqtt;
+import esthesis.common.datasink.DataSink;
+import esthesis.common.datasink.DataSinkFactory;
+import esthesis.common.datasink.MQTTDataEvent;
 import esthesis.platform.server.cluster.ClusterInfoService;
 import esthesis.platform.server.cluster.zookeeper.ZookeeperClientManager;
 import esthesis.platform.server.config.AppConstants.Zookeeper;

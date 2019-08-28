@@ -6,8 +6,9 @@
 
   <parent>
     <groupId>esthesis</groupId>
-    <artifactId>esthesis-bom</artifactId>
+    <artifactId>esthesis-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../esthesis-parent</relativePath>
   </parent>
 
   <groupId>esthesis</groupId>
@@ -15,13 +16,8 @@
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <properties>
-    <esthesis-extension.version>1.0.0-SNAPSHOT</esthesis-extension.version>
-  </properties>
-
   <modules>
     <module>esthesis-platform-server</module>
-    <module>esthesis-platform-common</module>
     <module>esthesis-platform-datasink</module>
   </modules>
 

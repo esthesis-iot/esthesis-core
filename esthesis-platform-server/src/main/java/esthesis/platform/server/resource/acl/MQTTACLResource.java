@@ -2,7 +2,7 @@ package esthesis.platform.server.resource.acl;
 
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
-import esthesis.extension.common.config.AppConstants.Mqtt;
+import esthesis.common.config.AppConstants.Mqtt;
 import esthesis.platform.server.config.AppSettings.Setting.Networking;
 import esthesis.platform.server.config.AppSettings.Setting.Security;
 import esthesis.platform.server.config.AppSettings.SettingValues.Networking.MqttAclEndpointStatus;

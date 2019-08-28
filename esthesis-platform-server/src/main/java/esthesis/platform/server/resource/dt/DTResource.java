@@ -1,6 +1,6 @@
 package esthesis.platform.server.resource.dt;
 
-import esthesis.extension.datasink.dto.DataSinkQueryResult;
+import esthesis.common.datasink.dto.DataSinkQueryResult;
 import esthesis.platform.server.model.Device;
 import esthesis.platform.server.repository.DeviceRepository;
 import esthesis.platform.server.service.DTService;

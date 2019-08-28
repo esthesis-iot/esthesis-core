@@ -7,7 +7,7 @@ import com.eurodyn.qlack.fuse.crypto.CryptoSSLService;
 import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryCertificateDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryPrivateKeyDTO;
-import esthesis.extension.common.config.AppConstants.Mqtt;
+import esthesis.common.config.AppConstants.Mqtt;
 import esthesis.platform.server.cluster.zookeeper.ZookeeperClientManager;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.dto.MQTTServerDTO;

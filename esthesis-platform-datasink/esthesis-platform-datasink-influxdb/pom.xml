@@ -12,14 +12,54 @@
 
   <artifactId>esthesis-platform-datasink-influxdb</artifactId>
 
+  <properties>
+    <jrebel-maven-plugin.version>1.1.9</jrebel-maven-plugin.version>
+    <influxdb-java.version>2.15</influxdb-java.version>
+    <snakeyaml.version>1.24</snakeyaml.version>
+    <commons-lang3.version>3.8.1</commons-lang3.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Spring Boot -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring.boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.zeroturnaround</groupId>
+        <artifactId>jrebel-maven-plugin</artifactId>
+        <version>${jrebel-maven-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>8</source>
+          <target>8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.influxdb</groupId>
       <artifactId>influxdb-java</artifactId>
+      <version>${influxdb-java.version}</version>
     </dependency>
     <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
+      <version>${snakeyaml.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -27,8 +67,13 @@
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>esthesis-extension-datasink</artifactId>
-      <version>${esthesis-extension.version}</version>
+      <artifactId>esthesis-common</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${commons-lang3.version}</version>
     </dependency>
   </dependencies>
 

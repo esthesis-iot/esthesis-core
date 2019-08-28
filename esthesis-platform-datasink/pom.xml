@@ -17,13 +17,4 @@
     <module>esthesis-platform-datasink-influxdb</module>
   </modules>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.zeroturnaround</groupId>
-        <artifactId>jrebel-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
-
 </project>

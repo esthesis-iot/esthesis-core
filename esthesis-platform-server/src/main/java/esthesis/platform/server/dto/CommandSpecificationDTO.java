@@ -1,6 +1,6 @@
 package esthesis.platform.server.dto;
 
-import esthesis.extension.device.config.AppConstants.MqttCommand;
+import esthesis.common.config.AppConstants.MqttCommand;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;

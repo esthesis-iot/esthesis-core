@@ -1,6 +1,6 @@
 package esthesis.platform.server.model;
 
-import esthesis.extension.device.config.AppConstants;
+import esthesis.common.config.AppConstants;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;

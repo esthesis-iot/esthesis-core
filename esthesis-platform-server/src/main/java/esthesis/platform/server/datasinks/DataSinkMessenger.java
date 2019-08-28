@@ -1,7 +1,7 @@
 package esthesis.platform.server.datasinks;
 
-import esthesis.extension.datasink.DataSink;
-import esthesis.extension.datasink.MQTTDataEvent;
+import esthesis.common.datasink.DataSink;
+import esthesis.common.datasink.MQTTDataEvent;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 

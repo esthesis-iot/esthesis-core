@@ -1,9 +1,8 @@
 package esthesis.platform.datasink.influxdb;
 
-
-import esthesis.extension.common.config.AppConstants.Mqtt;
-import esthesis.extension.datasink.DataSink;
-import esthesis.extension.datasink.DataSinkFactory;
+import esthesis.common.config.AppConstants.Mqtt;
+import esthesis.common.datasink.DataSink;
+import esthesis.common.datasink.DataSinkFactory;
 
 public class InfluxDBSinkFactory implements DataSinkFactory {
 

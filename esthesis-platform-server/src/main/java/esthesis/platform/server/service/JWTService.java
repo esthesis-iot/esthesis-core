@@ -1,6 +1,6 @@
 package esthesis.platform.server.service;
 
-import esthesis.extension.common.util.Base64E;
+import esthesis.common.util.Base64E;
 import esthesis.platform.server.config.AppConstants.Jwt;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.dto.jwt.JWTClaimsResponseDTO;

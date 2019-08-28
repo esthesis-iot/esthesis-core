@@ -1,9 +1,9 @@
 package esthesis.platform.server.service;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
-import esthesis.extension.common.config.AppConstants.Mqtt;
-import esthesis.extension.datasink.DataSink;
-import esthesis.extension.datasink.dto.DataSinkQueryResult;
+import esthesis.common.config.AppConstants.Mqtt;
+import esthesis.common.datasink.DataSink;
+import esthesis.common.datasink.dto.DataSinkQueryResult;
 import esthesis.platform.server.cluster.datasinks.DataSinkManager;
 import esthesis.platform.server.model.Device;
 import esthesis.platform.server.repository.DeviceRepository;

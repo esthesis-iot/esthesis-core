@@ -6,7 +6,7 @@ import com.eurodyn.qlack.util.data.filter.ReplyFilter;
 import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
-import esthesis.extension.device.config.AppConstants.MqttCommand;
+import esthesis.common.config.AppConstants.MqttCommand;
 import esthesis.platform.server.dto.CommandRequestDTO;
 import esthesis.platform.server.dto.CommandSpecificationDTO;
 import esthesis.platform.server.model.Application;

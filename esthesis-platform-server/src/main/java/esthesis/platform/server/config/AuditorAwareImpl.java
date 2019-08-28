@@ -1,6 +1,6 @@
 package esthesis.platform.server.config;
 
-import esthesis.extension.common.config.AppConstants.Generic;
+import esthesis.common.config.AppConstants.Generic;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.context.SecurityContextHolder;
 

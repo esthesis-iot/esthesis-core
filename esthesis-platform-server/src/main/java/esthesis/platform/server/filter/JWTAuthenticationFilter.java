@@ -7,7 +7,7 @@ import static java.util.Collections.emptyList;
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.aaa.dto.UserDTO;
 import com.eurodyn.qlack.fuse.aaa.service.UserService;
-import esthesis.extension.dt.config.AppConstants;
+import esthesis.common.config.AppConstants;
 import esthesis.platform.server.config.AppConstants.Jwt;
 import esthesis.platform.server.dto.ApplicationDTO;
 import esthesis.platform.server.dto.jwt.JWTClaimsResponseDTO;

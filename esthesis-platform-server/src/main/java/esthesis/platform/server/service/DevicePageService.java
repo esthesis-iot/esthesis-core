@@ -1,9 +1,10 @@
 package esthesis.platform.server.service;
 
-import esthesis.extension.common.config.AppConstants.Mqtt.EventType;
-import esthesis.extension.datasink.DataSink;
-import esthesis.extension.datasink.dto.DataSinkQueryResult;
-import esthesis.extension.datasink.dto.FieldDTO;
+
+import esthesis.common.config.AppConstants.Mqtt.EventType;
+import esthesis.common.datasink.DataSink;
+import esthesis.common.datasink.dto.DataSinkQueryResult;
+import esthesis.common.datasink.dto.FieldDTO;
 import esthesis.platform.server.cluster.datasinks.DataSinkManager;
 import esthesis.platform.server.mapper.DevicePageMapper;
 import esthesis.platform.server.model.DevicePage;

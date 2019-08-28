@@ -1,6 +1,6 @@
 package esthesis.platform.server.events;
 
-import esthesis.extension.common.config.AppConstants.Generic;
+import esthesis.common.config.AppConstants.Generic;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
