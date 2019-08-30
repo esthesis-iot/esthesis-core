@@ -1311,7 +1311,7 @@
                     </relationships>
                     <state>RUNNING</state>
                     <style/>
-                    <type>org.apache.nifi.processors.influxdb.ExecuteInfluxDBQuery</type>
+                    <type>org.apache.nifi.processors.esthesis.datasink.influxdb.ExecuteInfluxDBQuery</type>
                 </processors>
                 <processors>
                     <id>be43bf2b-cc5c-30f5-0000-000000000000</id>
@@ -4117,7 +4117,7 @@ if (flowFile != null) {
             </relationships>
             <state>STOPPED</state>
             <style/>
-            <type>org.apache.nifi.processors.influxdb.PutInfluxDB</type>
+            <type>org.apache.nifi.processors.esthesis.datasink.influxdb.PutInfluxDB</type>
         </processors>
     </contents>
     <name>InfluxDB writers</name>
