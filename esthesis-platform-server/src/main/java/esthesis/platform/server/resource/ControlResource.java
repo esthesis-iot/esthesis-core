@@ -11,6 +11,7 @@ import esthesis.platform.server.dto.CommandRequestDTO;
 import esthesis.platform.server.dto.CommandSpecificationDTO;
 import esthesis.platform.server.model.Application;
 import esthesis.platform.server.repository.DeviceRepository;
+import esthesis.platform.server.service.CommandReplyService;
 import esthesis.platform.server.service.CommandRequestService;
 import javax.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -37,12 +38,15 @@ public class ControlResource {
 
   private final CommandRequestService commandRequestService;
   private final DeviceRepository deviceRepository;
+  private final CommandReplyService commandReplyService;
 
   public ControlResource(
     CommandRequestService commandRequestService,
-    DeviceRepository deviceRepository) {
+    DeviceRepository deviceRepository,
+    CommandReplyService commandReplyService) {
     this.commandRequestService = commandRequestService;
     this.deviceRepository = deviceRepository;
+    this.commandReplyService = commandReplyService;
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -84,8 +88,8 @@ public class ControlResource {
   }
 
 //  @GetMapping(path = "reply", produces = MediaType.APPLICATION_JSON_VALUE)
-//  public String getReply(@Param long id) {
-//    return Stream.of(MqttCommand.values()).map(Enum::name).sorted().collect(Collectors.toList());
+//  public String getReply(@RequestParam long id) {
+//    return commandReplyService.findByCommandRequestId(id).getPayload();
 //  }
 
 }
