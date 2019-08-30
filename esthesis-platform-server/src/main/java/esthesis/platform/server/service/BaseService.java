@@ -47,15 +47,17 @@ abstract class BaseService<D extends BaseDTO, E extends BaseEntity> {
   }
 
   public D save(D dto) {
+    E entity;
+
     if (dto.getId() != null && dto.getId() != 0) {
-      final E entity = ReturnOptional.r(repository.findById(dto.getId()));
+      entity = ReturnOptional.r(repository.findById(dto.getId()));
       mapper.map(dto, entity);
-      return dto;
     } else {
-      E entity = mapper.map(dto);
+      entity = mapper.map(dto);
       entity = repository.save(entity);
-      return mapper.map(entity);
     }
+
+    return mapper.map(entity);
   }
 
   public Page<D> findAll(Predicate predicate, Pageable pageable) {

@@ -1,0 +1,11 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd" logicalFilePath="ep_00080.xml">
+    <changeSet author="European Dynamics" id="1567158270836-1">
+        <addColumn tableName="command_reply">
+            <column name="payload" type="MEDIUMBLOB(16777215)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1567158270836-2">
+        <dropColumn columnName="reply" tableName="command_reply"/>
+    </changeSet>
+</databaseChangeLog>

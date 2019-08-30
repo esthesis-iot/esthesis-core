@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd" logicalFilePath="ep_00081.xml">
+    <changeSet author="European Dynamics" id="1567158624610-2">
+        <addColumn tableName="command_reply">
+            <column name="command_request_id" type="BIGINT(20) UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1567158624610-3">
+        <dropColumn columnName="command_request" tableName="command_reply"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1567158624610-1">
+        <dropForeignKeyConstraint baseTableName="command_reply" constraintName="ejfxniu359s8fhbdh"/>
+        <addForeignKeyConstraint baseColumnNames="command_request_id"
+          baseTableName="command_reply" constraintName="ejfxniu359s8fhbdh" referencedColumnNames="id"
+          referencedTableName="command_request" onDelete="CASCADE" onUpdate="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>

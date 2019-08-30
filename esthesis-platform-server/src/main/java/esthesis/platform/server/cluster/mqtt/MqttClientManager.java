@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.logging.Level;
 
 @Log
@@ -153,12 +152,12 @@ public class MqttClientManager {
     }
   }
 
-  public void sendCommand(String hardwareId, List<Long> tags, MqttCommand command,
+  public void sendCommand(long commandId, String hardwareId, List<Long> tags, MqttCommand command,
     String commandArgumens) {
     Optional<MQTTServerDTO> mqttServerDTO = mqttService.matchByTag(tags);
     if (mqttServerDTO.isPresent()) {
       MqttControlCommand mqttControlCommand = new MqttControlCommand()
-        .setId(UUID.randomUUID().toString())
+        .setId(commandId)
         .setCommand(command)
         .setCommandPayload(commandArgumens.getBytes(StandardCharsets.UTF_8))
         .setSentOn(Instant.now());

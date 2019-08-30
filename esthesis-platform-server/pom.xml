@@ -89,7 +89,7 @@
             <goals>
               <goal>revision</goal>
             </goals>
-            <phase>generate-resources</phase>
+            <phase>install</phase>
             <configuration>
               <prefix></prefix>
               <generateGitPropertiesFilename>${project.basedir}/src/main/resources/git.json

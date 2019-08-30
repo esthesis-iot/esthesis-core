@@ -12,7 +12,6 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 public class CommandRequestDTO extends BaseDTO {
-
   @NotNull
   private AppConstants.MqttCommand command;
 

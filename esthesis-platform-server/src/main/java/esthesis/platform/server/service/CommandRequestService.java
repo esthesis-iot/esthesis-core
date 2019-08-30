@@ -30,18 +30,19 @@ public class CommandRequestService extends BaseService<CommandRequestDTO, Comman
     devices.addAll(deviceService.findByTags(cmd.getTags()));
 
     // Persist the command to platform's database.
+    CommandRequestDTO commandRequest = new CommandRequestDTO();
     for (DeviceDTO device : devices) {
-      CommandRequestDTO commandRequest = new CommandRequestDTO();
       commandRequest.setCommand(cmd.getCommand());
       commandRequest.setDescription(cmd.getDescription());
       commandRequest.setDevice(device.getId());
-      save(commandRequest);
+      commandRequest = save(commandRequest);
     }
 
     // Send the command to devices via MQTT.
     for (DeviceDTO deviceDTO : devices) {
       mqttClientManager
-        .sendCommand(deviceDTO.getHardwareId(), deviceDTO.getTags(), cmd.getCommand(), cmd.getArguments());
+        .sendCommand(commandRequest.getId(), deviceDTO.getHardwareId(), deviceDTO.getTags(), cmd.getCommand(),
+          cmd.getArguments());
     }
   }
 }

@@ -82,4 +82,10 @@ public class ControlResource {
   public List<String> commands() {
     return Stream.of(MqttCommand.values()).map(Enum::name).sorted().collect(Collectors.toList());
   }
+
+//  @GetMapping(path = "reply", produces = MediaType.APPLICATION_JSON_VALUE)
+//  public String getReply(@Param long id) {
+//    return Stream.of(MqttCommand.values()).map(Enum::name).sorted().collect(Collectors.toList());
+//  }
+
 }

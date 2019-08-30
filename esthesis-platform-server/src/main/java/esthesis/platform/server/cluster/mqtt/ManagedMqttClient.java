@@ -11,6 +11,7 @@ import esthesis.common.config.AppConstants.Mqtt;
 import esthesis.platform.server.cluster.zookeeper.ZookeeperClientManager;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.dto.MQTTServerDTO;
+import esthesis.platform.server.events.CommandReplyEvent;
 import esthesis.platform.server.events.PingEvent;
 import esthesis.platform.server.mapper.MQTTMessageMapper;
 import esthesis.platform.server.service.SecurityService;
@@ -62,7 +63,8 @@ public class ManagedMqttClient {
     final String clientName, final ApplicationEventPublisher applicationEventPublisher,
     final MQTTMessageMapper mqttMessageMapper, final boolean isStandalone,
     final ZookeeperClientManager zookeeperClientManager,
-    SecurityService securityService, CryptoSSLService cryptoSSLService, AppProperties appProperties) {
+    SecurityService securityService, CryptoSSLService cryptoSSLService,
+    AppProperties appProperties) {
     this.mqttServerDTO = mqttServerDTO;
     this.clientName = clientName;
     this.applicationEventPublisher = applicationEventPublisher;
@@ -197,10 +199,11 @@ public class ManagedMqttClient {
 
     client.subscribe("/" + Mqtt.EventType.CONTROL_REPLY + "/#", (topic, message) ->
       applicationEventPublisher.publishEvent(
-        mqttMessageMapper.map(message)
-          .setTopic(topic)
-          .setHardwareId(topic.substring(topic.lastIndexOf('/') + 1))
-          .setId(UUID.randomUUID().toString())));
+        new CommandReplyEvent(
+          mqttMessageMapper.map(message)
+            .setTopic(topic)
+            .setHardwareId(topic.substring(topic.lastIndexOf('/') + 1))
+            .setId(UUID.randomUUID().toString()))));
 
     client.subscribe("/" + Mqtt.EventType.PING + "/#", (topic, message) ->
       applicationEventPublisher

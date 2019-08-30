@@ -15,7 +15,7 @@ import {CommandPopupService} from '../shared/component/commands/command-popup.se
   styleUrls: ['./control.component.scss']
 })
 export class ControlComponent extends BaseComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['command', 'description', 'hardwareId', 'createdOn'];
+  displayedColumns = ['command', 'description', 'hardwareId', 'createdOn', 'actions'];
   dataSource: MatTableDataSource<CommandRequestDto> = new MatTableDataSource<CommandRequestDto>();
   filterForm: FormGroup;
 
@@ -72,5 +72,13 @@ export class ControlComponent extends BaseComponent implements OnInit, AfterView
 
   create() {
     this.commandPopupService.commandPopup();
+  }
+
+  download(replyId: number) {
+    //TODO
+  }
+
+  view(replyId: number) {
+
   }
 }

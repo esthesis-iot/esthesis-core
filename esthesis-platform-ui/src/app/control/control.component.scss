@@ -1,0 +1,13 @@
+@import "../../styles-variables.scss";
+
+#results {
+  .mat-icon {
+    color: $e-color-grey;
+  }
+  .mat-button {
+    min-width: 0;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    min-height: 0;
+  }
+}

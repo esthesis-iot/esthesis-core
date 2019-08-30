@@ -8,7 +8,7 @@ import {
   MatCardModule,
   MatDatepickerModule,
   MatFormFieldModule, MatIconModule, MatInputModule, MatPaginatorModule,
-  MatSelectModule, MatSortModule, MatTableModule
+  MatSelectModule, MatSortModule, MatTableModule, MatTooltipModule
 } from '@angular/material';
 import {ReactiveFormsModule} from '@angular/forms';
 import {DisplayModule} from '../shared/component/display/display.module';
@@ -39,7 +39,8 @@ import {CommandsModule} from '../shared/component/commands/commands.module';
     MatIconModule,
     MomentModule,
     MatMomentDateModule,
-    CommandsModule
+    CommandsModule,
+    MatTooltipModule
   ],
   providers: [
     {

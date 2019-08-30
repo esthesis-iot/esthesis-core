@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class CommandReplyDTO extends BaseDTO {
 
-  private String reply;
+  private byte[] payload;
 
   @NotNull
   private Long commandRequest;

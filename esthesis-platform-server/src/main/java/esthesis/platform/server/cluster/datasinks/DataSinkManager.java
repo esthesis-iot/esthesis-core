@@ -132,9 +132,8 @@ public class DataSinkManager {
   public void onApplicationEvent(MQTTDataEvent event) {
     log.log(Level.FINEST, "Starting distribution of MQTT event {0} on topic {1} from device {2}.",
       new Object[]{event.getId(), event.getTopic(), event.getHardwareId()});
-    // Distinguish PING events from all others. PING events are handled in the platform database to
-    // update the "last seen" indicator for a device, whereas all other events are distributed to
-    // the data sinks.
+    // Distinguish PING and COMMAND_REPLY events from all others, as these are handled locally by
+    // the platform.
     if (event.getTopic().startsWith("/" + Mqtt.EventType.TELEMETRY)) {
       startedTelemetryWriteSinks.entrySet().parallelStream().forEach(
         dataSinkEntry -> dataSinkMessenger.processMessage(dataSinkEntry.getValue(), event));
