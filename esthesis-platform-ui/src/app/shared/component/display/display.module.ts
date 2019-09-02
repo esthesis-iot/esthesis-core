@@ -8,11 +8,13 @@ import {
   MatIconModule
 } from '@angular/material';
 import {BooleanCheckboxComponent} from './boolean-checkbox/boolean-checkbox.component';
+import {TextModalComponent} from './text-modal/text-modal.component';
 
 @NgModule({
   declarations: [
     OkCancelModalComponent,
     BooleanCheckboxComponent,
+    TextModalComponent
   ],
   imports: [
     CommonModule,

@@ -5,6 +5,7 @@ import {AppConstants} from '../app.constants';
 import {CrudService} from '../services/crud.service';
 import {QFormsService} from '@eurodyn/forms';
 import {CommandRequestDto} from '../dto/command-request-dto';
+import {CommandReplyDto} from '../dto/command-reply-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,8 @@ export class ControlService extends CrudService<CommandRequestDto> {
     super(http, 'control', qForms);
   }
 
-  getReply(replyId: number): Observable<string> {
-    return this.http.get<string>(
-      AppConstants.API_ROOT + `/${this.resource}` + '/reply?replyId=${replyId}');
+  getReply(replyId: number): Observable<CommandReplyDto> {
+    return this.http.get<CommandReplyDto>(
+      AppConstants.API_ROOT + `/${this.resource}` + `/reply?id=${replyId}`);
   }
 }

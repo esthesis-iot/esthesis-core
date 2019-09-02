@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {MatDialog, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {QFormsService} from '@eurodyn/forms';
@@ -8,6 +8,8 @@ import {ControlService} from './control.service';
 import {CommandRequestDto} from '../dto/command-request-dto';
 import 'rxjs/add/operator/debounceTime';
 import {CommandPopupService} from '../shared/component/commands/command-popup.service';
+import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {TextModalComponent} from '../shared/component/display/text-modal/text-modal.component';
 
 @Component({
   selector: 'app-control',
@@ -24,7 +26,7 @@ export class ControlComponent extends BaseComponent implements OnInit, AfterView
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router,
-              private controlService: ControlService,
+              private controlService: ControlService, private dialog: MatDialog,
               private qForms: QFormsService, private commandPopupService: CommandPopupService) {
     super();
     this.filterForm = this.fb.group({
@@ -75,10 +77,17 @@ export class ControlComponent extends BaseComponent implements OnInit, AfterView
   }
 
   download(replyId: number) {
-    //TODO
+    //TODO #62
   }
 
   view(replyId: number) {
-
+    this.controlService.getReply(replyId).subscribe(onNext => {
+      this.dialog.open(TextModalComponent, {
+        data: {
+          title: 'Command output',
+          text: atob(onNext.payload).replace('\n', '<br>')
+        }
+      });
+    })
   }
 }

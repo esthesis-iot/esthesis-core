@@ -38,10 +38,10 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef> Actions</th>
           <td mat-cell *matCellDef="let element">
-            <button mat-button (click)="download(element.id)" matTooltip="Download content">
+            <button mat-button (click)="$event.stopPropagation();download(element.id)" matTooltip="Download content">
               <mat-icon>cloud_download</mat-icon>
             </button>
-            <button mat-button (click)="view(element.id)" matTooltip="View content">
+            <button mat-button (click)="$event.stopPropagation();view(element.id)" matTooltip="View content">
               <mat-icon>remove_red_eye</mat-icon>
             </button>
           </td>

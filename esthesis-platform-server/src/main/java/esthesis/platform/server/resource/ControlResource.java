@@ -7,6 +7,7 @@ import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
 import esthesis.common.config.AppConstants.MqttCommand;
+import esthesis.platform.server.dto.CommandReplyDTO;
 import esthesis.platform.server.dto.CommandRequestDTO;
 import esthesis.platform.server.dto.CommandSpecificationDTO;
 import esthesis.platform.server.model.Application;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -87,9 +89,11 @@ public class ControlResource {
     return Stream.of(MqttCommand.values()).map(Enum::name).sorted().collect(Collectors.toList());
   }
 
-//  @GetMapping(path = "reply", produces = MediaType.APPLICATION_JSON_VALUE)
-//  public String getReply(@RequestParam long id) {
-//    return commandReplyService.findByCommandRequestId(id).getPayload();
-//  }
+  @GetMapping(path = "reply", produces = MediaType.APPLICATION_JSON_VALUE)
+  public CommandReplyDTO getReply(@RequestParam long id) {
+    return new CommandReplyDTO()
+      .setCommandRequest(id)
+      .setPayload(commandReplyService.findByCommandRequestId(id).getPayload());
+  }
 
 }

@@ -40,6 +40,7 @@ import {ContainerDeployComponent} from './shared/component/containers/container-
 import {OkCancelModalComponent} from './shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {CommandComponent} from './shared/component/commands/command.component';
 import {CommandsModule} from './shared/component/commands/commands.module';
+import {TextModalComponent} from './shared/component/display/text-modal/text-modal.component';
 
 export function getJwtToken(): string {
   return localStorage.getItem(AppConstants.JWT_STORAGE_NAME);
@@ -100,7 +101,7 @@ export function getJwtToken(): string {
     QFormsModule,
   ],
   bootstrap: [AppComponent],
-  entryComponents: [ContainerDeployComponent, OkCancelModalComponent, CommandComponent],
+  entryComponents: [ContainerDeployComponent, OkCancelModalComponent, CommandComponent, TextModalComponent],
 })
 export class AppModule {
 }
