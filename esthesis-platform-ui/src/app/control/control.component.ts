@@ -85,7 +85,7 @@ export class ControlComponent extends BaseComponent implements OnInit, AfterView
       this.dialog.open(TextModalComponent, {
         data: {
           title: 'Command output',
-          text: atob(onNext.payload).replace('\n', '<br>')
+          text: atob(onNext.payload)
         }
       });
     })
