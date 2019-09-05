@@ -134,7 +134,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-datasink-influxdb</artifactId>
-      <version>${project.version}</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Spring dependencies -->
