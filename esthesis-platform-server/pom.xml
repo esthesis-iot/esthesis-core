@@ -14,6 +14,28 @@
   <groupId>esthesis</groupId>
   <artifactId>esthesis-platform-server</artifactId>
 
+  <!-- Prod profile -->
+  <profiles>
+    <profile>
+      <id>prod</id>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-maven-plugin</artifactId>
+              <configuration>
+                <profiles>
+                  <profile>prod</profile>
+                </profiles>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
+
   <build>
     <plugins>
       <plugin>
