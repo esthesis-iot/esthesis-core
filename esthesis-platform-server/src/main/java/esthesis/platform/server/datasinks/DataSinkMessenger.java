@@ -13,6 +13,7 @@ import java.util.logging.Logger;
  */
 @Component
 public class DataSinkMessenger {
+
   // JUL reference.
   private static final Logger LOGGER = Logger.getLogger(DataSinkMessenger.class.getName());
   private float pressureReleasePoint = 0.9f;
