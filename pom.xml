@@ -4,18 +4,113 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>esthesis</groupId>
-    <artifactId>esthesis-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <relativePath>../esthesis-parent</relativePath>
-  </parent>
-
   <groupId>esthesis</groupId>
   <artifactId>esthesis-platform</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
+  <properties>
+    <classgraph.version>4.8.22</classgraph.version>
+    <commons-codec.version>1.12</commons-codec.version>
+    <commons-collections4.version>4.2</commons-collections4.version>
+    <commons-exec>1.3</commons-exec>
+    <commons-io.version>2.6</commons-io.version>
+    <commons-lang3.version>3.8.1</commons-lang3.version>
+    <curator-recipes.version>4.2.0</curator-recipes.version>
+    <docker-client.version>8.15.1</docker-client.version>
+    <git-commit-id-plugin.version>3.0.1</git-commit-id-plugin.version>
+    <hibernate-enhance-maven-plugin.version>5.3.7.Final
+    </hibernate-enhance-maven-plugin.version> <!-- Keep this inline to Spring's packageVersion -->
+    <influxdb-java.version>2.15</influxdb-java.version>
+    <jjwt.version>0.9.0</jjwt.version>
+    <jna-platform.version>5.3.1</jna-platform.version>
+    <jna.version>5.3.1</jna.version>
+    <jrebel-maven-plugin.version>1.1.9</jrebel-maven-plugin.version>
+    <jsondb-core.version>1.0.85</jsondb-core.version>
+    <lombok.version>1.18.4</lombok.version>
+    <mapstruct.version>1.3.0.Final</mapstruct.version>
+    <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+    <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+    <moquette-broker.version>0.12.1</moquette-broker.version>
+    <mysql-connector-java.version>8.0.13</mysql-connector-java.version>
+    <org.eclipse.paho.client.mqttv3.version>1.2.0</org.eclipse.paho.client.mqttv3.version>
+    <oshi-core.version>3.13.3</oshi-core.version>
+    <qlack.version>3.1.2</qlack.version>
+    <querydsl.version>4.2.1</querydsl.version>
+    <slugify.version>2.2</slugify.version>
+    <snakeyaml.version>1.24</snakeyaml.version>
+    <spring-content-fs-boot-starter.version>0.8.0</spring-content-fs-boot-starter.version>
+    <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Spring Boot -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring.boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- This shouldn't be necessary, however 2.14 seems to be pulled instead of 2.15 -->
+      <dependency>
+        <groupId>org.influxdb</groupId>
+        <artifactId>influxdb-java</artifactId>
+        <version>${influxdb-java.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- Configuration for the resources plugin-->
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${maven-resources-plugin.version}</version>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        <!-- JRebel configuration -->
+        <plugin>
+          <groupId>org.zeroturnaround</groupId>
+          <artifactId>jrebel-maven-plugin</artifactId>
+          <version>${jrebel-maven-plugin.version}</version>
+          <configuration>
+            <alwaysGenerate>true</alwaysGenerate>
+          </configuration>
+          <executions>
+            <execution>
+              <id>generate-rebel-xml</id>
+              <phase>process-resources</phase>
+              <goals>
+                <goal>generate</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <!-- Compiler configuration -->
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+          <configuration>
+            <showDeprecation>true</showDeprecation>
+            <source>1.8</source>
+            <target>1.8</target>
+            <encoding>UTF-8</encoding>
+            <useIncrementalCompilation>false</useIncrementalCompilation>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
   <modules>
+    <module>esthesis-common</module>
+    <module>esthesis-datasink</module>
+    <module>esthesis-device</module>
     <module>esthesis-platform-server</module>
   </modules>
 
