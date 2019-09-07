@@ -6,7 +6,7 @@
 
   <groupId>esthesis</groupId>
   <artifactId>esthesis-platform</artifactId>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.5</version>
   <packaging>pom</packaging>
 
   <properties>
