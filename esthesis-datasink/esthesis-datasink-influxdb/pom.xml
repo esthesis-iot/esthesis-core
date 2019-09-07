@@ -5,7 +5,7 @@
   <parent>
     <artifactId>esthesis-datasink</artifactId>
     <groupId>esthesis</groupId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <relativePath>../</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -42,7 +42,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-common</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
+      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
