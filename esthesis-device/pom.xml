@@ -13,6 +13,7 @@
 
   <artifactId>esthesis-device</artifactId>
 
+
   <repositories>
     <repository>
       <!-- For moquette dependency -->
@@ -44,10 +45,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>org.springframework.boot</groupId>-->
-<!--      <artifactId>spring-boot-starter-data-jpa</artifactId>-->
-<!--    </dependency>-->
     <dependency>
       <groupId>org.springframework.retry</groupId>
       <artifactId>spring-retry</artifactId>
@@ -155,6 +152,7 @@
   </dependencies>
 
   <build>
+    <finalName>esthesis-device-java</finalName>
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
