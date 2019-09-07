@@ -1,4 +1,4 @@
-BUILD_TAG := $(shell mvn -f ../../esthesis-parent/pom.xml -q -Dexec.executable=echo -Dexec.args='$${project.version}' --non-recursive exec:exec)
+BUILD_TAG := $(shell mvn -f ../pom.xml -q -Dexec.executable=echo -Dexec.args='$${project.version}' --non-recursive exec:exec)
 
 all: build push
 

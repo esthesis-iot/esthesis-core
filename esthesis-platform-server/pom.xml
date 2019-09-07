@@ -7,7 +7,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-platform</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -36,6 +36,7 @@
   </profiles>
 
   <build>
+    <finalName>esthesis-platform-server</finalName>
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
@@ -133,7 +134,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-datasink-influxdb</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1-SNAPSHOT</version>
     </dependency>
 
     <!-- Spring dependencies -->
