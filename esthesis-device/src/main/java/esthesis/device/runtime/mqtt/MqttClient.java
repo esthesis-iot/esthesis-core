@@ -109,6 +109,7 @@ public class MqttClient {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
         options.setCleanSession(true);
+        options.setKeepAliveInterval(30);
         client.setCallback(new MqttCallbackExtended() {
           @Override
           public void connectionLost(Throwable cause) {
