@@ -13,6 +13,54 @@
 
   <artifactId>esthesis-device</artifactId>
 
+  <!-- Prod profile -->
+  <profiles>
+    <profile>
+      <id>prod</id>
+      <build>
+        <finalName>esthesis-device-java</finalName>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-maven-plugin</artifactId>
+              <configuration>
+                <profiles>
+                  <profile>prod</profile>
+                </profiles>
+              </configuration>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>repackage</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>cy.github</groupId>
+            <artifactId>github-release-plugin</artifactId>
+            <version>0.5.1</version>
+            <configuration>
+              <tagName>${project.version}</tagName>
+              <preRelease>true</preRelease>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>gh-upload</goal>
+                </goals>
+                <phase>install</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <repositories>
     <repository>
@@ -152,7 +200,6 @@
   </dependencies>
 
   <build>
-    <finalName>esthesis-device-java</finalName>
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>

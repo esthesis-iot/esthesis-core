@@ -9,6 +9,34 @@
   <version>1.0.8-SNAPSHOT</version>
   <packaging>pom</packaging>
 
+  <name>esthesis IoT</name>
+  <description>esthesis IoT platform</description>
+  <developers>
+    <developer>
+      <name>European Dynamics SA</name>
+      <email>qlack@eurodyn.com</email>
+      <organization>European Dynamics SA</organization>
+      <organizationUrl>http://www.eurodyn.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git@github.com:esthesis-iot/esthesis-platform.git</connection>
+    <url>https://github.com/esthesis-iot</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <pluginRepositories>
+    <!-- Attach artifacts to GitHub releases -->
+    <pluginRepository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>bintray-cy6ergn0m-maven</id>
+      <name>bintray-plugins</name>
+      <url>http://dl.bintray.com/cy6ergn0m/maven</url>
+    </pluginRepository>
+  </pluginRepositories>
+
   <properties>
     <classgraph.version>4.8.22</classgraph.version>
     <commons-codec.version>1.12</commons-codec.version>

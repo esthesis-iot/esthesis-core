@@ -18,6 +18,7 @@
     <profile>
       <id>prod</id>
       <build>
+        <finalName>esthesis-platform-server</finalName>
         <pluginManagement>
           <plugins>
             <plugin>
@@ -28,6 +29,13 @@
                   <profile>prod</profile>
                 </profiles>
               </configuration>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>repackage</goal>
+                  </goals>
+                </execution>
+              </executions>
             </plugin>
           </plugins>
         </pluginManagement>
@@ -36,7 +44,6 @@
   </profiles>
 
   <build>
-    <finalName>esthesis-platform-server</finalName>
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
