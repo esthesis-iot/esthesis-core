@@ -7,7 +7,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-platform</artifactId>
-    <version>1.0.11-SNAPSHOT</version>
+    <version>1.0.8</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -81,7 +81,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-common</artifactId>
-      <version>1.0.11-SNAPSHOT</version>
+      <version>1.0.8</version>
     </dependency>
 
     <!-- Spring dependencies -->
@@ -219,8 +219,7 @@
             <phase>install</phase>
             <configuration>
               <prefix></prefix>
-              <generateGitPropertiesFilename>${project.basedir}/src/main/resources/git.json
-              </generateGitPropertiesFilename>
+              <generateGitPropertiesFilename>${project.basedir}/src/main/resources/git.json</generateGitPropertiesFilename>
             </configuration>
           </execution>
         </executions>
