@@ -46,7 +46,7 @@
             <version>0.5.1</version>
             <configuration>
               <tagName>${project.version}</tagName>
-              <preRelease>true</preRelease>
+              <preRelease>false</preRelease>
             </configuration>
             <executions>
               <execution>
