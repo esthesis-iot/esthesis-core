@@ -216,7 +216,7 @@
             <goals>
               <goal>revision</goal>
             </goals>
-            <phase>install</phase>
+            <phase>initialize</phase>
             <configuration>
               <generateGitPropertiesFilename>${project.basedir}/src/main/resources/git.json</generateGitPropertiesFilename>
               <verbose>true</verbose>
