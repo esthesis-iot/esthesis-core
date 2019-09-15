@@ -7,7 +7,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-platform</artifactId>
-    <version>1.0.10-SNAPSHOT</version>
+    <version>1.0.10</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -143,7 +143,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-datasink-influxdb</artifactId>
-      <version>1.0.10-SNAPSHOT</version>
+      <version>1.0.10</version>
     </dependency>
 
     <!-- Spring dependencies -->
