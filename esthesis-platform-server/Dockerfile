@@ -11,4 +11,4 @@ COPY target/esthesis-platform-server.jar /app
 COPY docker/java.security /usr/lib/jvm/zulu-8/jre/lib/security
 
 ENTRYPOINT ["/usr/bin/java"]
-CMD ["-jar", "/app/esthesis-platform-server.jar"]
+CMD ["-jar", "-Dspring.profiles.active=prod", "/app/esthesis-platform-server.jar"]
