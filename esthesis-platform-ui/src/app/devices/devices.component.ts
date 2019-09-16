@@ -80,7 +80,7 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
 
   refreshCurrentData() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-      this.sort.start);
+      this.sort.direction);
   }
 
   changePage() {
