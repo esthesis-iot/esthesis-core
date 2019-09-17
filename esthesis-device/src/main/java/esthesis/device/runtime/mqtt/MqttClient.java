@@ -13,7 +13,6 @@ import esthesis.device.runtime.config.AppProperties;
 import esthesis.device.runtime.util.SecurityUtil;
 import javax.annotation.PreDestroy;
 import lombok.extern.java.Log;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -205,13 +204,6 @@ public class MqttClient {
       log.log(Level.SEVERE, e.getMessage());
     } catch (MqttException e) {
       log.log(Level.SEVERE, "Could not publish message.", e);
-      if (e.getMessage().equals("Client is not connected")) {
-        if (StringUtils.isNotEmpty(lastConnectedMqttServerAddress)) {
-          log.log(Level.SEVERE,
-            "Attempted to publish but client is not connected. Will try to reconnect now.");
-          connect(lastConnectedMqttServerAddress);
-        }
-      }
     }
   }
 }
