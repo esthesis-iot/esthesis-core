@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, Renderer2} from '@angular/core';
 import {RxStompService} from '@stomp/ng2-stompjs';
 import {BaseComponent} from '../shared/component/base-component';
 
@@ -9,12 +9,12 @@ import {BaseComponent} from '../shared/component/base-component';
 })
 export class DashboardComponent extends BaseComponent implements OnInit, AfterViewInit {
 
-  constructor(private rxStompService: RxStompService) {
+  constructor(private renderer: Renderer2) {
     super();
   }
 
   ngOnInit() {
-
+    this.renderer.removeAttribute(document.body, 'style');
   }
 
   ngAfterViewInit(): void {
