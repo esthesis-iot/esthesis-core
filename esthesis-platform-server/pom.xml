@@ -37,6 +37,14 @@
                 </execution>
               </executions>
             </plugin>
+            <plugin>
+              <groupId>pl.project13.maven</groupId>
+              <artifactId>git-commit-id-plugin</artifactId>
+              <version>${git-commit-id-plugin.version}</version>
+              <configuration>
+                <verbose>true</verbose>
+              </configuration>
+            </plugin>
           </plugins>
         </pluginManagement>
       </build>
@@ -121,7 +129,6 @@
             <phase>initialize</phase>
             <configuration>
               <generateGitPropertiesFilename>${project.basedir}/src/main/resources/git.json</generateGitPropertiesFilename>
-              <verbose>true</verbose>
               <excludeProperties>
                 <excludeProperty>^git.local.branch.*$</excludeProperty>
               </excludeProperties>
