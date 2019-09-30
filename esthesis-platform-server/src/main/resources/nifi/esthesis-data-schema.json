@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "esthesis measurement",
+  "description": "JSON schema definition of valid measurements esthesis can process.",
+  "definitions": {
+    "esthesis_data": {
+      "type": "object",
+      "properties": {
+        "m": {
+          "description": "The measurement title.",
+          "type": "string"
+        },
+        "v": {
+          "description": "The set of value of the measurement.",
+          "anyOf": [
+            {
+              "not": {
+                "type": "null"
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "not": {
+                  "type": "null"
+                }
+              }
+            }
+          ]
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The EPOCH time this set of measurements took place in milliseconds."
+        }
+      },
+      "required": [
+        "m",
+        "v"
+      ]
+    }
+  },
+  "anyOf": [
+    {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/esthesis_data"
+      }
+    },
+    {
+      "$ref": "#/definitions/esthesis_data"
+    }
+  ]
+}
