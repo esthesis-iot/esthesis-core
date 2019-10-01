@@ -9,6 +9,10 @@ import esthesis.platform.server.cluster.datasinks.DataSinkManager;
 import esthesis.platform.server.mapper.DevicePageMapper;
 import esthesis.platform.server.model.DevicePage;
 import esthesis.platform.server.repository.DeviceMetadataRepository;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collector;
+import java.util.stream.Stream;
 import lombok.extern.java.Log;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -77,6 +81,16 @@ public class DevicePageService {
 
     //TODO each field is sequentially queried, the algorithm can be optimised to query for all fields at once.
     final Optional<DataSink> telemetryReader = dataSinkManager.getTelemetryReader();
+    final Optional<DataSink> metadataReader = dataSinkManager.getMetadataReader();
+
+    return Stream.of(telemetryReader, metadataReader)
+      .map(reader -> getDataSinksCollections(id, configuredFields, reader))
+      .flatMap(Collection::stream)
+      .collect(Collectors.toList());
+  }
+
+  private List<FieldDTO> getDataSinksCollections(long id, List<FieldDTO> configuredFields,
+    Optional<DataSink> telemetryReader) {
     if (!telemetryReader.isPresent()) {
       log.warning("No telemetry reader data sink available to obtain fields.");
       return new ArrayList<>();
