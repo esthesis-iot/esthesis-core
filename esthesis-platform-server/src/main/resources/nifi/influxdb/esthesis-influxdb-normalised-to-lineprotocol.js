@@ -1,4 +1,5 @@
 /*
+ * esthesis-influxdb-normalised-to-lineprotocol.js
  * NiFi ExecuteScript to convert normalised (via esthesis-normalise-data.js) esthesis
  * telemetry/metadata to InfluxDB line protocol.
  */

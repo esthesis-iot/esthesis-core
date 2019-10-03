@@ -1,8 +1,10 @@
 /*
+ * esthesis-influxdb-create-query.js
  * NiFi ExecuteScript to convert incoming telemetry/metadata read requests to an InfluxDB query.
  *
- * version: 1.0.0
+ * All incoming parameters are expected to be already sanitised.
  */
+var allowedOperations = ['count', 'max', 'min', 'mean', 'sum'];
 
 /**
  * Utility method to set the fields of a query.
@@ -12,7 +14,8 @@
  * @private
  */
 function _updateFields(flowFile, queryTemplate) {
-  var fields = flowFile.getAttribute('http.query.param.fields');
+  var fields = flowFile.getAttribute('esthesis.param.fields').trim();
+  log.error("---------- using fields" + fields);
   if (!fields) {
     fields = "*";
   }
@@ -27,10 +30,10 @@ function _updateFields(flowFile, queryTemplate) {
  * @private
  */
 function _updateMeasurement(flowFile, queryTemplate) {
-  var measurement = flowFile.getAttribute('http.query.param.measurement');
+  var measurement = flowFile.getAttribute('esthesis.param.measurement');
   if (!measurement) {
-    log.error('Measurement parameter can not be empty.');
-    session.transfer(flowFile, REL_FAILURE);
+    throw  "Measurement parameter can not be empty.";
+    //session.transfer(flowFile, REL_FAILURE);
   }
   return queryTemplate.replace("$MEASUREMENT", measurement);
 }
@@ -43,87 +46,55 @@ function _updateMeasurement(flowFile, queryTemplate) {
  * @private
  */
 function _updateTags(flowFile, queryTemplate) {
-  return queryTemplate.replace("$TAGS",
-    "deviceId = '" + flowFile.getAttribute('esthesis.deviceId') +
-    "' and type = '" + flowFile.getAttribute('esthesis.dataType') + "'");
-}
+  var hardwareId = flowFile.getAttribute('esthesis.hardwareId');
 
-function _createCalculation(flowFile, calculation) {
-
-}
-
-function createGetRequest(flowFile) {
-  // Set the template for this type of execution.
-  var queryTemplate = "SELECT $FIELDS FROM $MEASUREMENT WHERE $TAGS ORDER BY time $ORDER LIMIT 1";
-
-  // Set fields, measurement and tags.
-  queryTemplate = _updateFields(flowFile, queryTemplate);
-  queryTemplate = _updateMeasurement(flowFile, queryTemplate);
-  queryTemplate = _updateTags(flowFile, queryTemplate);
-
-  // Set order by.
-  var position = flowFile.getAttribute('http.query.param.position');
-  if (!position) {
-    position = 'last';
-  }
-  if (position.toLowerCase() === 'first') {
-    queryTemplate = queryTemplate.replace("$ORDER", "ASC");
-  } else if ((position.toLowerCase() === 'last')) {
-    queryTemplate = queryTemplate.replace("$ORDER", "DESC");
-  }
-
-  log.trace("Created InfluxDB query: " + queryTemplate);
-  return queryTemplate;
-}
-
-function createCalculateRequest(flowFile) {
-  // Get the function to perform.
-  var func = flowFile.getAttribute('http.query.param.function');
-  if (!func) {
-    func = 'count';
-  }
-
-  // Create the calculation query.
-  queryTemplate = "SELECT $CALCULATION FROM $MEASUREMENT";
-  queryTemplate = _updateMeasurement(flowFile, queryTemplate);
-  var fields = flowFile.getAttribute('http.query.param.fields');
-  if (!fields) {
-    queryTemplate = queryTemplate.replace("$CALCULATION", func + "(*)");
+  var hardwareIdQuery;
+  if ((hardwareId.startsWith('/') && hardwareId.endsWith('/'))) {
+    hardwareIdQuery = "deviceId =~ " + hardwareId;
   } else {
-    var calculationQuery = "";
-    var i = 0;
-    for (var field in fields.split(",")) {
-      calculationQuery += func + "(" + field.trim() + ") as " + func + "_" + field.trim();
-      i++;
-      if (i < fields.split(",")) {
-        calculationQuery += ", ";
-      } else {
-        calculationQuery += " ";
-      }
-    }
-    queryTemplate = queryTemplate.replace("$CALCULATION", calculationQuery);
+    hardwareIdQuery = "deviceId = '" + hardwareId + "'";
   }
 
-  log.trace("Created InfluxDB query: " + queryTemplate);
-  return queryTemplate;
+  return queryTemplate.replace("$TAGS",
+    hardwareIdQuery + " and type = '" + flowFile.getAttribute('esthesis.type') + "'");
+}
+
+function getCalculateFields(flowFile) {
+  // Create the fields template (i.e. first part of the SELECT query).
+  var fieldsTemplate;
+  var fields = flowFile.getAttribute('esthesis.param.fields');
+  var operation = flowFile.getAttribute('esthesis.operation').trim().toLowerCase();
+  if (!fields) {
+    fieldsTemplate = operation + "(*)";
+  } else {
+    fieldsTemplate = fields.split(",").map(function (f) {
+      return operation + "(" + f.trim() + ") as " + operation + "_" + f
+    }).join(',')
+  }
+
+  return fieldsTemplate;
 }
 
 /**
  * Create a generic query request.
  * @param flowFile The FlowFile to process information to create the request.
  */
-function createQueryRequest(flowFile) {
+function createQueryRequest(flowFile, fields) {
   // Set the template for this type of execution.
   var queryTemplate = "SELECT $FIELDS FROM $MEASUREMENT WHERE $TAGS $TIME ORDER BY time $ORDER $PAGING";
 
   // Set fields, measurement and tags.
-  queryTemplate = _updateFields(flowFile, queryTemplate);
+  if (fields) {
+    queryTemplate = queryTemplate.replace("$FIELDS", fields);
+  } else {
+    queryTemplate = _updateFields(flowFile, queryTemplate);
+  }
   queryTemplate = _updateMeasurement(flowFile, queryTemplate);
   queryTemplate = _updateTags(flowFile, queryTemplate);
 
   // Set time (incoming time is in msec, so it needs to be converted to nanoseconds for InfluxDB).
-  var timeFrom = flowFile.getAttribute('http.query.param.from');
-  var timeTo = flowFile.getAttribute('http.query.param.to');
+  var timeFrom = flowFile.getAttribute('esthesis.param.from');
+  var timeTo = flowFile.getAttribute('esthesis.param.to');
   if (timeFrom && timeTo) {
     timeFrom = timeFrom * 1000000;
     timeTo = timeTo * 1000000;
@@ -140,7 +111,7 @@ function createQueryRequest(flowFile) {
   }
 
   // Set order.
-  var order = flowFile.getAttribute('http.query.param.order');
+  var order = flowFile.getAttribute('esthesis.param.order');
   if (order) {
     order = order.toLowerCase();
     if ((order === 'asc' || order === 'desc')) {
@@ -174,39 +145,30 @@ var OutputStreamCallback = Java.type("org.apache.nifi.processor.io.OutputStreamC
 var StandardCharsets = Java.type("java.nio.charset.StandardCharsets");
 var flowFile = session.get();
 
-// If FlowFile does not exist, transition to the failure relationship, otherwise proceed with processing.
+// If FlowFile exists proceed with processing.
 if (flowFile != null) {
-  // Define the query to be executed.
-  var queryTemplate;
+  try {
+    // Define the query to be executed.
+    var queryTemplate;
 
-  // Call the appropriate handler for the the type of query requested.
-  switch (flowFile.getAttribute('esthesis.queryType')) {
-    case "query": {
+    // Call the appropriate handler for the the type of query requested.
+    var operation = flowFile.getAttribute('esthesis.operation').trim().toLowerCase();
+    if (operation === 'query') {
       queryTemplate = createQueryRequest(flowFile);
-      break;
+    } else if (allowedOperations.indexOf(operation) > -1) {
+      queryTemplate = createQueryRequest(flowFile, getCalculateFields(flowFile));
+    } else {
+      throw('Requested operation \'' + operation + "\' is not supported.");
     }
-    case "get": {
-      queryTemplate = createGetRequest(flowFile);
-      break;
-    }
-    case "calculate": {
-      queryTemplate = createCalculateRequest(flowFile);
-      break;
-    }
-    default: {
-      log.error(
-        'Requested query type \'' + flowFile.getAttribute('esthesis.queryType')
-        + "\' is not supported.");
-      session.transfer(flowFile, REL_FAILURE);
-    }
+
+    // Replace FlowFile's content with the query to be executed.
+    flowFile = session.write(flowFile, new OutputStreamCallback(function (outputStream) {
+      outputStream.write(queryTemplate.getBytes(StandardCharsets.UTF_8))
+    }));
+
+    session.transfer(flowFile, REL_SUCCESS);
+  } catch (e) {
+    log.error(e);
+    session.transfer(flowFile, REL_FAILURE);
   }
-
-  // Replace FlowFile's content with the query to be executed.
-  flowFile = session.write(flowFile, new OutputStreamCallback(function (outputStream) {
-    outputStream.write(queryTemplate.getBytes(StandardCharsets.UTF_8))
-  }));
-
-  session.transfer(flowFile, REL_SUCCESS);
-} else {
-  session.transfer(flowFile, REL_FAILURE);
 }
