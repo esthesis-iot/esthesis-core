@@ -19,9 +19,10 @@ var allowedOperations = ['count', 'max', 'min', 'mean', 'sum'];
 function _updateFields(flowFile, queryTemplate) {
   var fields = flowFile.getAttribute('esthesis.param.fields').trim();
   if (!fields) {
-    fields = "*";
+    return queryTemplate.replace("$FIELDS", "*");
+  } else {
+    return queryTemplate.replace("$FIELDS", fields + ", timestamp");
   }
-  return queryTemplate.replace("$FIELDS", fields);
 }
 
 /**
@@ -86,10 +87,11 @@ function createQueryRequest(flowFile, fields) {
 
   // Set fields, measurement and tags.
   if (fields) {
-    queryTemplate = queryTemplate.replace("$FIELDS", fields);
+    queryTemplate = queryTemplate.replace("$FIELDS", fields + ", timestamp");
   } else {
     queryTemplate = _updateFields(flowFile, queryTemplate);
   }
+
   queryTemplate = _updateMeasurement(flowFile, queryTemplate);
   queryTemplate = _updateTags(flowFile, queryTemplate);
 

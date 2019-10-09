@@ -1,8 +1,10 @@
 /*
  * esthesis-influxdb-results-transformer.js
- * NiFi ExecuteScript to convert InfluxDB data to esthesis schema.
+ * NiFi ExecuteScript to convert InfluxDB data to esthesis schema:
  *
- * version: 1.0.0
+ * {"measurement": [
+ *  {"time": , "field1": , "field2":, ...
+ * ]}
  */
 
 // Get references the the output stream to write results, the input stream to read the content of
@@ -33,7 +35,7 @@ if (flowFile != null) {
           val = {};
           for (key in series.values[i]) {
             if (columns[key] === 'time') {
-              val[columns[key]] = Math.round(series.values[i][key] / 1000000);
+              val['timestamp'] = Math.round(series.values[i][key] / 1000000);
             } else {
               // Ignore null values.
               if (series.values[i][key]) {
