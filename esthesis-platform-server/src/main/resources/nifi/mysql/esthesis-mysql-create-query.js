@@ -1,9 +1,12 @@
 /*
- * esthesis-influxdb-create-query.js
- * NiFi ExecuteScript to convert incoming telemetry/metadata read requests to an InfluxDB query.
+ * esthesis-mysql-create-query.js
+ * NiFi ExecuteScript to convert incoming telemetry/metadata read requests to a MySQL query.
  *
  * All incoming parameters are expected to be already sanitised.
  */
+
+// The list of allowed operations on data.
+// 'mean' is converted to 'avg' for MySQL.
 var allowedOperations = ['count', 'max', 'min', 'mean', 'sum'];
 
 /**
@@ -49,13 +52,12 @@ function _updateTags(flowFile, queryTemplate) {
 
   var hardwareIdQuery;
   if ((hardwareId.startsWith('/') && hardwareId.endsWith('/'))) {
-    hardwareIdQuery = "hardwareId =~ " + hardwareId;
+    hardwareIdQuery = "hardwareId REGEXP " + hardwareId;
   } else {
     hardwareIdQuery = "hardwareId = '" + hardwareId + "'";
   }
 
-  return queryTemplate.replace("$TAGS",
-    hardwareIdQuery + " and type = '" + flowFile.getAttribute('esthesis.type') + "'");
+  return queryTemplate.replace("$TAGS", hardwareIdQuery);
 }
 
 function getCalculateFields(flowFile, operation) {
@@ -80,7 +82,7 @@ function getCalculateFields(flowFile, operation) {
  */
 function createQueryRequest(flowFile, fields) {
   // Set the template for this type of execution.
-  var queryTemplate = "SELECT $FIELDS FROM $MEASUREMENT WHERE $TAGS $TIME ORDER BY time $ORDER $PAGING";
+  var queryTemplate = "SELECT $FIELDS FROM $MEASUREMENT WHERE $TAGS $TIME ORDER BY timestamp $ORDER $PAGING";
 
   // Set fields, measurement and tags.
   if (fields) {
@@ -135,7 +137,7 @@ function createQueryRequest(flowFile, fields) {
     queryTemplate = queryTemplate.replace("$PAGING", "");
   }
 
-  log.info("Created InfluxDB query: " + queryTemplate);
+  log.trace("Created InfluxDB query: " + queryTemplate);
   return queryTemplate;
 }
 
@@ -155,6 +157,9 @@ if (flowFile != null) {
     if (operation === 'query') {
       queryTemplate = createQueryRequest(flowFile);
     } else if (allowedOperations.indexOf(operation) > -1) {
+      if (operation == "mean") {
+        operation = "avg";
+      }
       queryTemplate = createQueryRequest(flowFile, getCalculateFields(flowFile, operation));
     } else {
       throw('Requested operation \'' + operation + "\' is not supported.");
