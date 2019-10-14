@@ -25,7 +25,7 @@ export class ContainerDeployComponent extends BaseComponent implements OnInit, O
   private wsSubscription: Subscription;
   consoleOutput = '';
   showConsole = false;
-  @ViewChild('console') private consoleContainer: ElementRef;
+  @ViewChild('console', { static: true }) private consoleContainer: ElementRef;
 
   constructor(private formBuilder: FormBuilder,
               private virtualizationService: VirtualizationService,

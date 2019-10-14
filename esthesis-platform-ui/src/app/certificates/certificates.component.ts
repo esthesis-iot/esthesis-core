@@ -14,8 +14,8 @@ export class CertificatesComponent extends BaseComponent implements OnInit, Afte
   columns = ['cn', 'issued', 'validity', 'issuer'];
   datasource = new MatTableDataSource<CertificateDto>();
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private certificateService: CertificatesService, private qForms: QFormsService) {
     super();

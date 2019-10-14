@@ -17,8 +17,8 @@ export class TagsComponent implements OnInit, AfterViewInit {
   filterForm: FormGroup;
 
   // References to sorting and pagination.
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router, private tagService: TagService,
               private qForms: QFormsService) {

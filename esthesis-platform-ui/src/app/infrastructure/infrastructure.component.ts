@@ -8,7 +8,7 @@ import {MatTabGroup} from '@angular/material';
   styleUrls: ['./infrastructure.component.scss']
 })
 export class InfrastructureComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatTabGroup) tabs: MatTabGroup;
+  @ViewChild(MatTabGroup, { static: true }) tabs: MatTabGroup;
 
   constructor(private activatedRoute: ActivatedRoute) {
   }

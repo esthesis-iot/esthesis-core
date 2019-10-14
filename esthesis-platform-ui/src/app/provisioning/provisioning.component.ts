@@ -19,8 +19,8 @@ export class ProvisioningComponent extends BaseComponent implements OnInit, Afte
   datasource = new MatTableDataSource<ProvisioningDto>();
   availableTags: TagDto[];
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private provisioningService: ProvisioningService, private qForms: QFormsService,
               private tagService: TagService) {

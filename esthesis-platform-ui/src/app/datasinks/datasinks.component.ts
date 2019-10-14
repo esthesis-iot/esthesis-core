@@ -15,8 +15,8 @@ export class DatasinksComponent extends BaseComponent implements OnInit, AfterVi
     'metadataRead', 'telemetryRead'];
   datasource = new MatTableDataSource<DataSinkDto>();
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private dataSinkService: DataSinkService, private qForms: QFormsService) {
     super();

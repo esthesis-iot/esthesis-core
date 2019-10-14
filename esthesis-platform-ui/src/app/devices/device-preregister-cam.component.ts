@@ -12,7 +12,7 @@ import {MatDialogRef} from '@angular/material';
 })
 export class DevicePreregisterCamComponent implements OnInit {
   form: FormGroup;
-  @ViewChild('scanner')
+  @ViewChild('scanner', { static: true })
   scanner: ZXingScannerComponent;
   cameras: KeyValueDto[] = [];
   selectedCam: string;

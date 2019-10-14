@@ -14,8 +14,8 @@ export class CasComponent extends BaseComponent implements OnInit, AfterViewInit
   columns = ['cn', 'parent', 'issued', 'validity'];
   datasource = new MatTableDataSource<CaDto>();
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private caService: CasService, private qForms: QFormsService) {
     super();

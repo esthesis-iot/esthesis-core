@@ -28,8 +28,8 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
   filterForm: FormGroup;
 
   // References to sorting and pagination.
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   // WebSocket subcription.
   private wsSubscription: Subscription;

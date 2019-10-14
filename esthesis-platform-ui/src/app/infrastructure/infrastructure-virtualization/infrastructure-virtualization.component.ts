@@ -15,8 +15,8 @@ export class InfrastructureVirtualizationComponent extends BaseComponent
   columns = ['name', 'ipAddress', 'status', 'serverType'];
   datasource = new MatTableDataSource<VirtualizationDto>();
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private virtualizationService: VirtualizationService, private qForms: QFormsService) {
     super();

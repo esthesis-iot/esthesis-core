@@ -16,8 +16,8 @@ export class InfrastructureZookeeperComponent extends BaseComponent
   columns = ['name', 'ipAddress', 'status'];
   datasource = new MatTableDataSource<ZookeeperServerDto>();
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private zookeeperServerService: ZookeeperServerService, private qForms: QFormsService,
               private containersPopupService: ContainersPopupService) {

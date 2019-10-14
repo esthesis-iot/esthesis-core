@@ -15,8 +15,8 @@ export class InfrastructureMqttComponent extends BaseComponent implements OnInit
   columns = ['name', 'ipAddress', 'aIpAddress', 'status'];
   datasource = new MatTableDataSource<MqttServerDto>();
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private mqttServerService: MqttServerService, private qForms: QFormsService,
               private containersPopupService: ContainersPopupService) {

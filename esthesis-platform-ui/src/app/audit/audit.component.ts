@@ -28,8 +28,8 @@ export class AuditComponent extends BaseComponent implements OnInit, AfterViewIn
   auditLevels: KeyValueDto[];
 
   // References to sorting and pagination.
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private auditService: AuditService, private fb: FormBuilder,
               private userService: UserService, private qForms: QFormsService) {
