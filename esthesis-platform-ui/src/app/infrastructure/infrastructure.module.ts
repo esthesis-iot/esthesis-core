@@ -29,6 +29,7 @@ import {InfrastructureZookeeperComponent} from './infrastructure-zookeeper/infra
 import {InfrastructureZookeeperEditComponent} from './infrastructure-zookeeper/infrastructure-zookeeper-edit.component';
 import {DisplayModule} from '../shared/component/display/display.module';
 import {ContainersModule} from '../shared/component/containers/containers.module';
+import { InfrastructureNifiComponent } from './infrastructure-nifi/infrastructure-nifi.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import {ContainersModule} from '../shared/component/containers/containers.module
     InfrastructureZookeeperEditComponent,
     InfrastructureVirtualizationComponent,
     InfrastructureVirtualizationEditComponent,
+    InfrastructureNifiComponent,
   ],
   imports: [
     CommonModule,
