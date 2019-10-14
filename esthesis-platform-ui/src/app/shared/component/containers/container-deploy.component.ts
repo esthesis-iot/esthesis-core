@@ -3,7 +3,7 @@ import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BaseComponent} from '../base-component';
 import {ContainersService} from './containers.service';
 import {QFormsService} from '@eurodyn/forms';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {Subscription} from 'rxjs';
 import {VirtualizationDto} from '../../../dto/virtualization-dto';
 import {CertificateDto} from '../../../dto/certificate-dto';

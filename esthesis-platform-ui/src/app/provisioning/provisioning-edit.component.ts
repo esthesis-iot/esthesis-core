@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {QFormsService} from '@eurodyn/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient, HttpEventType} from '@angular/common/http';

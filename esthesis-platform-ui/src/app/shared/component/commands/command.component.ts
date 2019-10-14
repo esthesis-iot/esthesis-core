@@ -6,7 +6,7 @@ import {Observable} from 'rxjs';
 import 'rxjs-compat/add/observable/forkJoin';
 import {UtilityService} from '../../service/utility.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {MatDialogRef} from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-command',

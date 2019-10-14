@@ -1,7 +1,9 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {QFormsService} from '@eurodyn/forms';
 import {VirtualizationService} from './virtualization.service';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import {VirtualizationDto} from '../../dto/virtualization-dto';
 import {BaseComponent} from '../../shared/component/base-component';
 

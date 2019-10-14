@@ -3,7 +3,9 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {ZXingScannerComponent} from '@zxing/ngx-scanner';
 import {KeyValueDto} from '../dto/key-value-dto';
 import * as _ from 'lodash';
-import {MatDialogRef} from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
+import {BehaviorSubject} from 'rxjs';
+import { BarcodeFormat } from '@zxing/library';
 
 @Component({
   selector: 'app-device-preregister-cam',
@@ -12,16 +14,22 @@ import {MatDialogRef} from '@angular/material';
 })
 export class DevicePreregisterCamComponent implements OnInit {
   form: FormGroup;
-  @ViewChild('scanner', { static: true })
-  scanner: ZXingScannerComponent;
-  cameras: KeyValueDto[] = [];
-  selectedCam: string;
-  private audioContext = new AudioContext();
-  // A list of strings for cams to be ignored.
-  private ignoreCams = ['CamTwist'];
+  audioContext = AudioContext && new AudioContext();
+  availableDevices: MediaDeviceInfo[];
+  currentDevice: MediaDeviceInfo = null;
+  formatsEnabled: BarcodeFormat[] = [
+    BarcodeFormat.CODE_128,
+    BarcodeFormat.DATA_MATRIX,
+    BarcodeFormat.EAN_13,
+    BarcodeFormat.QR_CODE,
+  ];
+  hasDevices: boolean;
+  hasPermission: boolean;
+  torchEnabled = false;
+  torchAvailable$ = new BehaviorSubject<boolean>(false);
+  tryHarder = false;
 
   constructor(private fb: FormBuilder, public selfDialogRef: MatDialogRef<DevicePreregisterCamComponent>) {
-
   }
 
   ngOnInit() {
@@ -31,40 +39,41 @@ export class DevicePreregisterCamComponent implements OnInit {
     });
   }
 
-  scanCompleteHandler(event) {
+  onCamerasFound(devices: MediaDeviceInfo[]): void {
+    this.availableDevices = devices;
+    this.hasDevices = Boolean(devices && devices.length);
+  }
+  onCodeResult(resultString: string) {
     const existingIds: string = this.form.controls['ids'].value;
-    const newId = event['text'];
     if (!existingIds) {
       this.beepOK();
-      this.form.controls['ids'].setValue(newId);
+      this.form.controls['ids'].setValue(resultString);
     } else {
-      if (existingIds.indexOf(newId) === -1) {
+      if (existingIds.indexOf(resultString) === -1) {
         this.beepOK();
-        this.form.controls['ids'].setValue(newId + '\n' + existingIds);
+        this.form.controls['ids'].setValue(resultString + '\n' + existingIds);
       } else {
         this.beepExists();
       }
     }
   }
-
-  camerasFoundHandler(event) {
-    this.cameras = [];
-    for (const cam of _.orderBy(event, ['label'], ['asc'])) {
-      // Ignore camera names that should be ignored.
-      if (!this.ignoreCams.find(o => {
-        return cam['label'].toLowerCase().indexOf(o.toLowerCase()) > -1
-      })) {
-        this.cameras.push(new KeyValueDto(cam['deviceId'], cam['label']));
-      }
-    }
-    if (this.cameras.length > 0) {
-      this.selectedCam = this.cameras[0].key;
-      this.scanner.scan(this.selectedCam);
-    }
+  onDeviceSelectChange(selected: string) {
+    const device = this.availableDevices.find(x => x.deviceId === selected);
+    this.currentDevice = device || null;
+  }
+  onHasPermission(has: boolean) {
+    this.hasPermission = has;
+  }
+  onTorchCompatible(isCompatible: boolean): void {
+    this.torchAvailable$.next(isCompatible || false);
   }
 
-  changeCamera(cameraId: string) {
-    this.scanner.scan(cameraId);
+  toggleTorch(): void {
+    this.torchEnabled = !this.torchEnabled;
+  }
+
+  toggleTryHarder(): void {
+    this.tryHarder = !this.tryHarder;
   }
 
   save() {
@@ -80,7 +89,7 @@ export class DevicePreregisterCamComponent implements OnInit {
     u.connect(this.audioContext.destination);
     u.gain.value = 0.1;
     v.start(this.audioContext.currentTime);
-    v.stop(this.audioContext.currentTime + 100 * 0.001);
+    v.stop(this.audioContext.currentTime + 0.1);
   }
 
   beepExists() {

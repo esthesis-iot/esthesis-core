@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {icon, latLng, marker, tileLayer} from 'leaflet';
 import {TagDto} from '../../dto/tag-dto';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {QFormsService} from '@eurodyn/forms';
 import {TagService} from '../../tags/tag.service';
 import {DevicesService} from '../devices.service';

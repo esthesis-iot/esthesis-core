@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {QFormsService} from '@eurodyn/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {UUID} from 'angular2-uuid';
 import {ApplicationService} from '../application.service';
 import {BaseComponent} from '../../shared/component/base-component';

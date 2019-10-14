@@ -1,5 +1,7 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
 import * as moment from 'moment';

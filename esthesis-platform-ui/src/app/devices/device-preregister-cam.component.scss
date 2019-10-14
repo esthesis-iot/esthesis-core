@@ -1,4 +1,5 @@
 zxing-scanner {
-  -webkit-transform: scaleX(-1);
-  transform: scaleX(-1);
+  //-webkit-transform: scaleX(-1);
+  //transform: scaleX(-1);
+  width: 10rem;
 }

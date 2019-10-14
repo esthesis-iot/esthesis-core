@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TagDto} from '../../dto/tag-dto';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {QFormsService} from '@eurodyn/forms';
 import {TagService} from '../../tags/tag.service';
 import {ActivatedRoute, Router} from '@angular/router';

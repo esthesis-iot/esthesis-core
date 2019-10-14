@@ -1,20 +1,29 @@
 <form novalidate [formGroup]="form" fxLayout="row" fxLayoutGap="2rem">
-  <div fxLayout="column">
+  <div fxLayout="column" fxFlex="300px">
     <mat-form-field>
-      <mat-select placeholder="Camera" (selectionChange)="changeCamera($event.value)"
-                  [(value)]="selectedCam">
-        <mat-option *ngFor="let camera of cameras" [value]="camera.key">
-          {{camera.value}}
-        </mat-option>
-      </mat-select>
+      <select matNativeControl matInput (change)="onDeviceSelectChange($event.target.value)">
+        <option value="" [selected]="!currentDevice">No Device Selected</option>
+        <option *ngFor="let device of availableDevices" [value]="device.deviceId"
+                [selected]="currentDevice && device.deviceId === currentDevice.deviceId">{{device.label}}</option>
+      </select>
     </mat-form-field>
+    <mat-selection-list>
+      <mat-list-option checkboxPosition="start" (click)="toggleTryHarder()" [selected]="tryHarder">
+        Advanced matching
+      </mat-list-option>
+      <mat-list-option checkboxPosition="start" (click)="toggleTorch()" [selected]="torchEnabled"
+                       *ngIf="torchAvailable$ | async">
+        Torch
+      </mat-list-option>
+    </mat-selection-list>
 
-    <div class="cam-viewer" fxLayout="100px">
-      <zxing-scanner #scanner
-                     [formats]="['QR_CODE', 'EAN_13', 'CODE_128', 'DATA_MATRIX']"
-                     (camerasFound)="camerasFoundHandler($event)"
-                     (scanComplete)="scanCompleteHandler($event)">
-      </zxing-scanner>
+    <div class="cam-viewer">
+      <zxing-scanner [torch]="torchEnabled" [(device)]="currentDevice"
+                     (scanSuccess)="onCodeResult($event)"
+                     [formats]="formatsEnabled"
+                     [tryHarder]="tryHarder" (permissionResponse)="onHasPermission($event)"
+                     (camerasFound)="onCamerasFound($event)"
+                     (torchCompatible)="onTorchCompatible($event)"></zxing-scanner>
     </div>
 
     <div fxLayout="row">

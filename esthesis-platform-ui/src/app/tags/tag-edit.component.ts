@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QFormsService} from '@eurodyn/forms';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {UUID} from 'angular2-uuid';
 import {TagService} from './tag.service';
 import 'rxjs/add/operator/debounceTime';

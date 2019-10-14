@@ -7,7 +7,7 @@ import {TagDto} from '../dto/tag-dto';
 import {TagService} from '../tags/tag.service';
 import {UUID} from 'angular2-uuid';
 import {DevicePreregisterCamComponent} from './device-preregister-cam.component';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
 

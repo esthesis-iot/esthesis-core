@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {MatTabGroup} from '@angular/material';
+import { MatTabGroup } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-infrastructure',

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {QFormsService} from '@eurodyn/forms';
 import {DataSinkService} from './data-sink.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';

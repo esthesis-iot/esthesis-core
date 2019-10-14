@@ -11,7 +11,10 @@ import {DashboardErrorLogComponent} from './dashboard-error-log/dashboard-error-
 import {DashboardNewRegistrationsComponent} from './dashboard-new-registrations/dashboard-new-registrations.component';
 import {LeafletModule} from '@asymmetrik/ngx-leaflet';
 import {FlexLayoutModule} from '@angular/flex-layout';
-import {MAT_DATE_FORMATS, MatCardModule, MatIconModule, MatTableModule} from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
 import {InfoBoxIconValueLegendComponent} from './dashboard-widgets/info-box-icon-value-legend/info-box-icon-value-legend.component';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 

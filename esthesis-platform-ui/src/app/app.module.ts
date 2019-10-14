@@ -15,18 +15,16 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import {NgProgressModule} from '@ngx-progressbar/core';
 import {AppConstants} from './app.constants';
 import {RxStompService} from '@stomp/ng2-stompjs';
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatDialogModule,
-  MatFormFieldModule,
-  MatIconModule,
-  MatInputModule,
-  MatListModule,
-  MatMenuModule,
-  MatSnackBarModule,
-  MatToolbarModule
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import {ReactiveFormsModule} from '@angular/forms';
 import {NgProgressHttpModule} from '@ngx-progressbar/http';
 import {QFormsModule} from '@eurodyn/forms';

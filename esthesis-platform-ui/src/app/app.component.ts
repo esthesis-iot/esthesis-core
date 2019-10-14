@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Log} from 'ng2-logger/browser';
 import {JwtHelperService} from '@auth0/angular-jwt';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {UserService} from './users/user.service';
 import {WebSocketService} from './services/web-socket.service';
 import {BaseComponent} from './shared/component/base-component';
