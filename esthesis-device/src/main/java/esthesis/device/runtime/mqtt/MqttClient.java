@@ -33,6 +33,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.MessageFormat;
+import java.util.UUID;
 import java.util.logging.Level;
 
 @Log
@@ -103,8 +104,7 @@ public class MqttClient {
         log.log(Level.FINE, "Connecting to MQTT server {0}.", mqttServerAddress);
         this.mqttServerAddress = mqttServerAddress;
         client = new org.eclipse.paho.client.mqttv3.MqttClient(mqttServerAddress,
-          appProperties.getHardwareId(),
-          new MemoryPersistence());
+          UUID.randomUUID().toString(), new MemoryPersistence());
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
         options.setCleanSession(true);
