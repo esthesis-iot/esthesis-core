@@ -23,6 +23,7 @@ export const routing: ModuleWithProviders = RouterModule.forRoot([
   {path: 'devices',       loadChildren: () => import('./devices/devices.module').then(m => m.DevicesModule), canActivate: [CanActivateGuard]},
   {path: 'cas',           loadChildren: () => import('./cas/cas.module').then(m => m.CasModule), canActivate: [CanActivateGuard]},
   {path: 'certificates',  loadChildren: () => import('./certificates/certificates.module').then(m => m.CertificatesModule), canActivate: [CanActivateGuard]},
+  {path: 'stores',        loadChildren: () => import('./stores/stores.module').then(m => m.StoresModule), canActivate: [CanActivateGuard]},
   {path: 'infra',         loadChildren: () => import('./infrastructure/infrastructure.module').then(m => m.InfrastructureModule), canActivate: [CanActivateGuard]},
   {path: 'provisioning',  loadChildren: () => import('./provisioning/provisioning.module').then(m => m.ProvisioningModule), canActivate: [CanActivateGuard]},
   {path: 'users',         loadChildren: () => import('./users/users.module').then(m => m.UsersModule), canActivate: [CanActivateGuard]},

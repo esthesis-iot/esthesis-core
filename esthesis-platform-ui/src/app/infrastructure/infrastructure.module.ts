@@ -28,6 +28,8 @@ import {InfrastructureZookeeperEditComponent} from './infrastructure-zookeeper/i
 import {DisplayModule} from '../shared/component/display/display.module';
 import {ContainersModule} from '../shared/component/containers/containers.module';
 import { InfrastructureNifiComponent } from './infrastructure-nifi/infrastructure-nifi.component';
+import { InfrastructureNifiEditComponent } from './infrastructure-nifi/infrastructure-nifi-edit.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -40,6 +42,7 @@ import { InfrastructureNifiComponent } from './infrastructure-nifi/infrastructur
     InfrastructureVirtualizationComponent,
     InfrastructureVirtualizationEditComponent,
     InfrastructureNifiComponent,
+    InfrastructureNifiEditComponent,
   ],
   imports: [
     CommonModule,
@@ -61,6 +64,7 @@ import { InfrastructureNifiComponent } from './infrastructure-nifi/infrastructur
     MatTabsModule,
     DisplayModule,
     ContainersModule,
+    MatProgressSpinnerModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],
 })

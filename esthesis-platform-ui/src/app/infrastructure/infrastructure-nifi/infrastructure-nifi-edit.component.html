@@ -1,0 +1,34 @@
+<mat-card>
+  <mat-card-title>NiFi server</mat-card-title>
+  <mat-card-content>
+    <form novalidate [formGroup]="form">
+      <input type="hidden" formControlName="id">
+      <div fxLayout="row" fxLayoutGap="1rem">
+        <div fxLayout="column">
+          <mat-form-field>
+            <input matInput placeholder="Name" formControlName="name" required>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="URL" formControlName="url" required>
+          </mat-form-field>
+          <mat-form-field>
+            <textarea matInput placeholder="Description" formControlName="description"
+                      matTextareaAutosize></textarea>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select placeholder="State" formControlName="state">
+              <mat-option [value]="true">Active</mat-option>
+              <mat-option [value]="false">Inactive</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-button routerLink="/infra" fragment="mqtt">CANCEL</button>
+    <button mat-button color="accent" (click)="delete()" [disabled]="this.id == 0">DELETE</button>
+    <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
+  </mat-card-actions>
+</mat-card>

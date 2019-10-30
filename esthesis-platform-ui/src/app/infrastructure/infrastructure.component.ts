@@ -27,6 +27,8 @@ export class InfrastructureComponent implements OnInit, AfterViewInit {
         this.tabs.selectedIndex = 2;
       } else if (fragment === 'zookeeper') {
         this.tabs.selectedIndex = 3;
+      } else if (fragment === 'nifi') {
+        this.tabs.selectedIndex = 4;
       }
     });
   }

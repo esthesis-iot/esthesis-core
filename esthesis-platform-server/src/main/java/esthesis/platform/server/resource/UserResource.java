@@ -11,6 +11,7 @@ import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
 import esthesis.platform.server.dto.LoginDTO;
 import esthesis.platform.server.dto.jwt.JWTDTO;
+import esthesis.platform.server.service.StoreService;
 import esthesis.platform.server.service.UserService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,11 +97,11 @@ public class UserResource {
    *
    * @param userDTO The object to save.
    */
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Save was unsuccessful.")
-    public UserDTO save(@Valid @RequestBody UserDTO userDTO) {
-      return userService.save(userDTO);
-    }
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Save was unsuccessful.")
+  public UserDTO save(@Valid @RequestBody UserDTO userDTO) {
+    return userService.save(userDTO);
+  }
 
   /**
    * Logs a user out of the application, effectively terminating its session in AAA.
