@@ -1,6 +1,6 @@
 package esthesis.platform.server.service;
 
-import com.eurodyn.qlack.fuse.crypto.CryptoDigestService;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoDigestService;
 import com.querydsl.core.types.Predicate;
 import esthesis.common.util.Base64E;
 import esthesis.platform.server.config.AppProperties;

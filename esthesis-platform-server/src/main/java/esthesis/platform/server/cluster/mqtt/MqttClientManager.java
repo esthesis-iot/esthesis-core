@@ -1,6 +1,6 @@
 package esthesis.platform.server.cluster.mqtt;
 
-import com.eurodyn.qlack.fuse.crypto.CryptoSSLService;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoSSLService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.common.config.AppConstants.Mqtt.EventType;

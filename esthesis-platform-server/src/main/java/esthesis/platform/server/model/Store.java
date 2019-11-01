@@ -41,7 +41,7 @@ public class Store extends BaseEntity {
   private Set<Certificate> certificates;
 
   @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-  @JoinTable(name="store_certificates",
+  @JoinTable(name="store_cas",
     joinColumns={@JoinColumn(name="store_id")},
     inverseJoinColumns={@JoinColumn(name="ca_id")})
   private Set<Ca> cas;

@@ -3,17 +3,17 @@ package esthesis.platform.server.service;
 import com.eurodyn.qlack.common.exception.QCouldNotSaveException;
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.common.exception.QMutationNotPermittedException;
-import com.eurodyn.qlack.fuse.crypto.CryptoAsymmetricService;
-import com.eurodyn.qlack.fuse.crypto.CryptoCAService;
 import com.eurodyn.qlack.fuse.crypto.dto.CertificateSignDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoAsymmetricService;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoCAService;
 import com.github.slugify.Slugify;
 import esthesis.common.util.Base64E;
 import esthesis.platform.server.config.AppConstants.Cryptography.KeyType;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting.Security;
 import esthesis.platform.server.dto.CertificateDTO;
-import esthesis.platform.server.dto.KeyDownloadReply;
+import esthesis.platform.server.dto.DownloadReply;
 import esthesis.platform.server.model.Ca;
 import esthesis.platform.server.model.Certificate;
 import javax.crypto.NoSuchPaddingException;
@@ -123,7 +123,7 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
     }
   }
 
-  private KeyDownloadReply getCertificateChain(KeyDownloadReply keyDownloadReply, String caCN) {
+  private DownloadReply getCertificateChain(DownloadReply keyDownloadReply, String caCN) {
     try {
       Ca ca = caService.findEntityByCN(caCN);
       if (ca.getParentCa() != null && caService.findEntityByCN(ca.getParentCa()) != null) {
@@ -138,12 +138,12 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
     return keyDownloadReply;
   }
 
-  public KeyDownloadReply download(long certificateId, int keyType, boolean base64)
+  public DownloadReply download(long certificateId, int keyType, boolean base64)
   throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
          InvalidAlgorithmParameterException, IOException {
     final Certificate certificate = findEntityById(certificateId);
 
-    KeyDownloadReply keyDownloadReply = new KeyDownloadReply();
+    DownloadReply keyDownloadReply = new DownloadReply();
     keyDownloadReply.setFilename(new Slugify().slugify(certificate.getCn()));
 
     switch (keyType) {

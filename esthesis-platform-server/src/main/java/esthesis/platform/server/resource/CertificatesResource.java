@@ -6,7 +6,7 @@ import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
 import esthesis.platform.server.dto.CertificateDTO;
-import esthesis.platform.server.dto.KeyDownloadReply;
+import esthesis.platform.server.dto.DownloadReply;
 import esthesis.platform.server.model.Certificate;
 import esthesis.platform.server.service.CertificatesService;
 import esthesis.platform.server.service.SecurityService;
@@ -71,7 +71,7 @@ public class CertificatesResource {
     @PathVariable Optional<Boolean> base64)
   throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
          InvalidKeyException, IOException {
-    KeyDownloadReply keyDownloadReply = certificatesService
+    DownloadReply keyDownloadReply = certificatesService
       .download(id, keyType, base64.isPresent() && base64.get().booleanValue());
     //TODO return a safe filename (i.e. new Slugify().slugify())
     return ResponseEntity

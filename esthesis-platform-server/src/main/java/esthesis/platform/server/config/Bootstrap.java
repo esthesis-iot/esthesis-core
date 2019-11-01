@@ -1,7 +1,7 @@
 package esthesis.platform.server.config;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
-import com.eurodyn.qlack.fuse.crypto.CryptoSymmetricService;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoSymmetricService;
 import com.eurodyn.qlack.fuse.settings.dto.SettingDTO;
 import com.eurodyn.qlack.fuse.settings.service.SettingsService;
 import esthesis.common.config.AppConstants.Generic;

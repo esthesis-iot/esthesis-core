@@ -3,10 +3,10 @@ package esthesis.platform.server.cluster.mqtt;
 import static esthesis.platform.server.config.AppConstants.Zookeeper.LEADER_ELECTION_PATH_MQTT;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.eurodyn.qlack.fuse.crypto.CryptoSSLService;
 import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryCertificateDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryPrivateKeyDTO;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoSSLService;
 import esthesis.common.config.AppConstants.Mqtt;
 import esthesis.platform.server.cluster.zookeeper.ZookeeperClientManager;
 import esthesis.platform.server.config.AppProperties;

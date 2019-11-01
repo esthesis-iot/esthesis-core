@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
-public class KeyDownloadReply {
+public class DownloadReply {
   private String filename;
   private String payload;
 }

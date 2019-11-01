@@ -5,7 +5,7 @@ import esthesis.platform.server.model.Store;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
 
-@Mapper(componentModel = "spring", uses = CertificateMapper.class, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+@Mapper(componentModel = "spring", uses = {CertificateMapper.class, CaMapper.class}, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public abstract class StoreMapper extends BaseMapper<StoreDTO, Store>  {
 
 }

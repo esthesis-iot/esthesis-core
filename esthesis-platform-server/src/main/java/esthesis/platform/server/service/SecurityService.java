@@ -1,8 +1,8 @@
 package esthesis.platform.server.service;
 
-import com.eurodyn.qlack.fuse.crypto.CryptoAsymmetricService;
-import com.eurodyn.qlack.fuse.crypto.CryptoDigestService;
-import com.eurodyn.qlack.fuse.crypto.CryptoSymmetricService;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoAsymmetricService;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoDigestService;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoSymmetricService;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.common.dto.DeviceMessage;
@@ -276,7 +276,7 @@ public class SecurityService {
   public String decrypt(File fileToDecrypt, String key)
   throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeyException,
          NoSuchPaddingException, IOException {
-    File tmpFile = File.createTempFile(cryptoDigestService.md5(fileToDecrypt.getName()),
+    File tmpFile = File.createTempFile(cryptoDigestService.sha256(fileToDecrypt.getName()),
       ".decrypted", new File(appProperties.getFsTmpRoot()));
     cryptoSymmetricService
       .decrypt(fileToDecrypt, tmpFile, cryptoSymmetricService.keyFromString(key,

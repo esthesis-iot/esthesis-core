@@ -1,1 +1,36 @@
-<p>stores-edit works!</p>
+<mat-card>
+  <mat-card-title>Store</mat-card-title>
+  <mat-card-content>
+    <form novalidate [formGroup]="form" fxLayout="column">
+      <mat-form-field>
+        <input matInput placeholder="Name" formControlName="name">
+      </mat-form-field>
+      <div fxLayout="row" fxLayoutGap="2rem" class="xs-pt1">
+        <div fxFlex>
+          <div class="inline-header">Certificates</div>
+          <mat-selection-list formControlName="certificates">
+            <mat-list-option *ngFor="let cert of certs" [value]="cert.id" color="primary">
+              {{cert.cn}}
+            </mat-list-option>
+          </mat-selection-list>
+        </div>
+        <div fxFlex>
+          <div class="inline-header">Certificate Authorities</div>
+          <mat-selection-list formControlName="cas">
+            <mat-list-option class="" *ngFor="let ca of cas" [value]="ca.id" color="primary">
+              {{ca.cn}}
+            </mat-list-option>
+          </mat-selection-list>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button (click)="download()")>DOWNLOAD</button>
+    <button mat-button routerLink="/stores">CANCEL</button>
+    <button mat-button color="warn" (click)="delete()" [disabled]="this.id == 0">DELETE</button>
+    <button mat-button color="primary" (click)="save()"
+            [disabled]="form.invalid">SAVE
+    </button>
+  </mat-card-actions>
+</mat-card>

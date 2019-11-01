@@ -18,4 +18,6 @@ public class StoreDTO extends BaseDTO {
   private String name;
   @Singular
   private List<Long> certificates;
+  @Singular
+  private List<Long> cas;
 }

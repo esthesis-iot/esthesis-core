@@ -12,6 +12,13 @@ import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {MatSortModule} from '@angular/material/sort';
 import {MatButtonModule} from '@angular/material/button';
 import { StoresEditComponent } from './stores-edit.component';
+import {ReactiveFormsModule} from '@angular/forms';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {FlexLayoutModule} from '@angular/flex-layout';
+import {MatInputModule} from '@angular/material/input';
+import {QFormsModule} from '@eurodyn/forms';
+import {DisplayModule} from '../shared/component/display/display.module';
+import {MatListModule} from '@angular/material/list';
 
 
 @NgModule({
@@ -25,6 +32,13 @@ import { StoresEditComponent } from './stores-edit.component';
     MomentModule,
     MatSortModule,
     MatButtonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    FlexLayoutModule,
+    MatInputModule,
+    QFormsModule,
+    DisplayModule,
+    MatListModule
   ],
   providers: [
     {

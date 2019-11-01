@@ -1,7 +1,7 @@
 package esthesis.platform.server.docker;
 
-import com.eurodyn.qlack.fuse.crypto.CryptoAsymmetricService;
-import com.eurodyn.qlack.fuse.crypto.CryptoCAService;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoAsymmetricService;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoCAService;
 import com.google.common.base.Optional;
 import com.spotify.docker.client.DockerCertificatesStore;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
