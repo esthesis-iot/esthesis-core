@@ -1,10 +1,10 @@
 package esthesis.device.runtime.mqtt;
 
 import com.eurodyn.qlack.common.exception.QMismatchException;
-import com.eurodyn.qlack.fuse.crypto.CryptoSSLService;
 import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryCertificateDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryPrivateKeyDTO;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoSSLService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.common.config.AppConstants.Mqtt;
 import esthesis.common.config.AppConstants.Mqtt.EventType;

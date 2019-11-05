@@ -41,6 +41,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Comparator;
 import java.util.List;
@@ -67,7 +68,7 @@ public class DevicesResource {
   public ResponseEntity preregister(@Valid @RequestBody DeviceRegistrationDTO deviceRegistrationDTO)
   throws NoSuchAlgorithmException, IOException, NoSuchPaddingException,
          InvalidAlgorithmParameterException, InvalidKeyException, OperatorCreationException,
-         InvalidKeySpecException {
+         InvalidKeySpecException, NoSuchProviderException {
     deviceService.preregister(deviceRegistrationDTO);
 
     return ResponseEntity.ok().build();

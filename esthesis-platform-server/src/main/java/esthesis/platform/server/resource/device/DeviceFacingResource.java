@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Optional;
@@ -87,7 +88,7 @@ public class DeviceFacingResource {
     @Valid @RequestBody DeviceMessage<RegistrationRequest> registrationRequest)
   throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IOException,
          InvalidAlgorithmParameterException, InvalidKeySpecException, SignatureException,
-         OperatorCreationException {
+         OperatorCreationException, NoSuchProviderException {
     // Register the device.
     deviceService.register(registrationRequest, registrationRequest.getHardwareId());
 

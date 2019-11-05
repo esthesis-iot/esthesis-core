@@ -1,0 +1,111 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.7.xsd" logicalFilePath="ep_00083.xml">
+    <changeSet author="European Dynamics" id="1572962177123-1">
+        <createTable tableName="store">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="created_on" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_on" type="datetime"/>
+            <column name="modified_by" type="VARCHAR(36)"/>
+            <column name="version" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-2">
+        <createTable tableName="store_cert_cas">
+            <column name="store_id" type="BIGINT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="ca_id" type="BIGINT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-3">
+        <createTable tableName="store_cert_certificates">
+            <column name="store_id" type="BIGINT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="certificate_id" type="BIGINT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-4">
+        <createTable tableName="store_pk_cas">
+            <column name="store_id" type="BIGINT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="ca_id" type="BIGINT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-5">
+        <createTable tableName="store_pk_certificates">
+            <column name="store_id" type="BIGINT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="certificate_id" type="BIGINT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-6">
+        <createIndex indexName="czx879739hrbbnsfkj_idx" tableName="store_cert_cas">
+            <column name="ca_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-7">
+        <createIndex indexName="km358x3jnlrsh7shcoueh_idx" tableName="store_cert_certificates">
+            <column name="certificate_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-8">
+        <createIndex indexName="ksdoicjosduhfeufsf_idx" tableName="store_pk_certificates">
+            <column name="certificate_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-9">
+        <createIndex indexName="skfixjeopfixjeg_idx" tableName="store_pk_cas">
+            <column name="ca_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-10">
+        <addForeignKeyConstraint baseColumnNames="ca_id" baseTableName="store_cert_cas" constraintName="czx879739hrbbnsfkj" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ca" validate="true"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-11">
+        <addForeignKeyConstraint baseColumnNames="store_id" baseTableName="store_pk_certificates" constraintName="fdmslij38j9sdfskjhdk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="store" validate="true"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-12">
+        <addForeignKeyConstraint baseColumnNames="ca_id" baseTableName="store_pk_cas" constraintName="fksifjeofijefopisf" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="ca" validate="true"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-13">
+        <addForeignKeyConstraint baseColumnNames="store_id" baseTableName="store_cert_cas" constraintName="hksxd83nbehsbidygf" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="store" validate="true"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-14">
+        <addForeignKeyConstraint baseColumnNames="certificate_id" baseTableName="store_cert_certificates" constraintName="km358x3jnlrsh7shcoueh" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="certificate" validate="true"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-15">
+        <addForeignKeyConstraint baseColumnNames="store_id" baseTableName="store_cert_certificates" constraintName="mzeoifmz38rjnouwednz" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="store" validate="true"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-16">
+        <addForeignKeyConstraint baseColumnNames="certificate_id" baseTableName="store_pk_certificates" constraintName="scjudhcukhskuh37fusf" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="certificate" validate="true"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1572962177123-17">
+        <addForeignKeyConstraint baseColumnNames="store_id" baseTableName="store_pk_cas" constraintName="spkdivdjitjridofvi" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="store" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

@@ -38,8 +38,11 @@ export class StoresEditComponent extends BaseComponent implements OnInit {
     this.form = this.fb.group({
       id: [''],
       name: ['', [Validators.required, Validators.maxLength(256)]],
-      certificates: [''],
-      cas: ['']
+      password: ['', [Validators.required, Validators.maxLength(256)]],
+      certCertificates: [''],
+      certCas: [''],
+      pkCertificates: [''],
+      pkCas: [''],
     });
 
     // Fill form.
@@ -86,6 +89,6 @@ export class StoresEditComponent extends BaseComponent implements OnInit {
   }
 
   download() {
-
+    this.storesService.download(this.id);
   }
 }

@@ -1,7 +1,7 @@
 package esthesis.device.runtime.service;
 
 import com.eurodyn.qlack.common.exception.QSecurityException;
-import com.eurodyn.qlack.fuse.crypto.CryptoDigestService;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoDigestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.common.device.ProvisioningInfoRequest;
 import esthesis.common.device.ProvisioningInfoResponse;

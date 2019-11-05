@@ -53,6 +53,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.MessageFormat;
@@ -123,7 +124,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   public void preregister(DeviceRegistrationDTO deviceRegistrationDTO)
   throws NoSuchAlgorithmException, IOException, InvalidKeyException,
          InvalidAlgorithmParameterException, NoSuchPaddingException, OperatorCreationException,
-         InvalidKeySpecException {
+         InvalidKeySpecException, NoSuchProviderException {
     // Split IDs.
     String ids = deviceRegistrationDTO.getIds();
     ids = ids.replace("\n", ",");
@@ -197,7 +198,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   private void register(String hardwareId, String tags, String state, boolean checkTags)
   throws NoSuchAlgorithmException, IOException, InvalidKeyException,
          InvalidAlgorithmParameterException, NoSuchPaddingException, OperatorCreationException,
-         InvalidKeySpecException {
+         InvalidKeySpecException, NoSuchProviderException {
     // Create a keypair.
     CreateKeyPairDTO createKeyPairDTO = new CreateKeyPairDTO();
     createKeyPairDTO.setKeySize(appProperties.getSecurityAsymmetricKeySize());
@@ -271,7 +272,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     String hardwareId)
   throws NoSuchAlgorithmException, IOException, InvalidKeyException, NoSuchPaddingException,
          InvalidAlgorithmParameterException, InvalidKeySpecException, SignatureException,
-         OperatorCreationException {
+         OperatorCreationException, NoSuchProviderException {
     DeviceDTO deviceDTO;
 
     // Verify signature and decrypt according to the configuration.

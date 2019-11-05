@@ -5,18 +5,41 @@
       <mat-form-field>
         <input matInput placeholder="Name" formControlName="name">
       </mat-form-field>
-      <div fxLayout="row" fxLayoutGap="2rem" class="xs-pt1">
-        <div fxFlex>
-          <div class="inline-header">Certificates</div>
-          <mat-selection-list formControlName="certificates">
+      <mat-form-field>
+        <input matInput placeholder="Password" formControlName="password" type="password">
+      </mat-form-field>
+      <div class="inline-header xs-pt1">Add certificates from:</div>
+      <div fxLayout="row" fxLayoutGap="2rem">
+        <div fxFlex class="xs-pt1">
+          <div class="inline-subheader">Certificates</div>
+          <mat-selection-list formControlName="certCertificates">
             <mat-list-option *ngFor="let cert of certs" [value]="cert.id" color="primary">
               {{cert.cn}}
             </mat-list-option>
           </mat-selection-list>
         </div>
         <div fxFlex>
-          <div class="inline-header">Certificate Authorities</div>
-          <mat-selection-list formControlName="cas">
+          <div class="inline-subheader">Certificate Authorities</div>
+          <mat-selection-list formControlName="certCas">
+            <mat-list-option class="" *ngFor="let ca of cas" [value]="ca.id" color="primary">
+              {{ca.cn}}
+            </mat-list-option>
+          </mat-selection-list>
+        </div>
+      </div>
+      <div class="inline-header xs-pt1">Add private keys from:</div>
+      <div fxLayout="row" fxLayoutGap="2rem">
+        <div fxFlex class="xs-pt1">
+          <div class="inline-subheader">Certificates</div>
+          <mat-selection-list formControlName="pkCertificates">
+            <mat-list-option *ngFor="let cert of certs" [value]="cert.id" color="primary">
+              {{cert.cn}}
+            </mat-list-option>
+          </mat-selection-list>
+        </div>
+        <div fxFlex>
+          <div class="inline-subheader">Certificate Authorities</div>
+          <mat-selection-list formControlName="pkCas">
             <mat-list-option class="" *ngFor="let ca of cas" [value]="ca.id" color="primary">
               {{ca.cn}}
             </mat-list-option>
@@ -26,7 +49,7 @@
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button (click)="download()")>DOWNLOAD</button>
+    <button mat-button (click)="download()">DOWNLOAD</button>
     <button mat-button routerLink="/stores">CANCEL</button>
     <button mat-button color="warn" (click)="delete()" [disabled]="this.id == 0">DELETE</button>
     <button mat-button color="primary" (click)="save()"

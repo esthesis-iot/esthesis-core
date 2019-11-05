@@ -1,8 +1,8 @@
 package esthesis.device.runtime.util;
 
 import com.eurodyn.qlack.common.exception.QSecurityException;
-import com.eurodyn.qlack.fuse.crypto.CryptoAsymmetricService;
-import com.eurodyn.qlack.fuse.crypto.CryptoSymmetricService;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoAsymmetricService;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoSymmetricService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.common.dto.DeviceMessage;
 import esthesis.common.util.Base64E;

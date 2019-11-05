@@ -34,15 +34,31 @@ public class Store extends BaseEntity {
   @Size(max = 256)
   private String name;
 
-  @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-  @JoinTable(name="store_certificates",
-    joinColumns={@JoinColumn(name="store_id")},
-    inverseJoinColumns={@JoinColumn(name="certificate_id")})
-  private Set<Certificate> certificates;
+  @NotNull
+  @Size(max = 256)
+  private String password;
 
   @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-  @JoinTable(name="store_cas",
+  @JoinTable(name="store_cert_certificates",
+    joinColumns={@JoinColumn(name="store_id")},
+    inverseJoinColumns={@JoinColumn(name="certificate_id")})
+  private Set<Certificate> certCertificates;
+
+  @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+  @JoinTable(name="store_cert_cas",
     joinColumns={@JoinColumn(name="store_id")},
     inverseJoinColumns={@JoinColumn(name="ca_id")})
-  private Set<Ca> cas;
+  private Set<Ca> certCas;
+
+  @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+  @JoinTable(name="store_pk_certificates",
+    joinColumns={@JoinColumn(name="store_id")},
+    inverseJoinColumns={@JoinColumn(name="certificate_id")})
+  private Set<Certificate> pkCertificates;
+
+  @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+  @JoinTable(name="store_pk_cas",
+    joinColumns={@JoinColumn(name="store_id")},
+    inverseJoinColumns={@JoinColumn(name="ca_id")})
+  private Set<Ca> pkCas;
 }

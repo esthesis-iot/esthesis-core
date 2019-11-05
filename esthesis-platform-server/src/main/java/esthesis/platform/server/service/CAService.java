@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
 import java.util.List;
@@ -105,9 +106,7 @@ public class CAService extends BaseService<CaDTO, Ca> {
       caDTO = super.save(caDTO);
 
       return caDTO;
-    } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException |
-      OperatorCreationException | NoSuchPaddingException | InvalidAlgorithmParameterException |
-      InvalidKeyException e) {
+    } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException | OperatorCreationException | NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchProviderException e) {
       throw new QCouldNotSaveException("Could not save CA.", e);
     }
   }

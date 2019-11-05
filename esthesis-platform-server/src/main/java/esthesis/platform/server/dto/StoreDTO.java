@@ -16,8 +16,14 @@ import java.util.List;
 public class StoreDTO extends BaseDTO {
   @NotNull
   private String name;
+  @NotNull
+  private String password;
   @Singular
-  private List<Long> certificates;
+  private List<Long> certCertificates;
   @Singular
-  private List<Long> cas;
+  private List<Long> certCas;
+  @Singular
+  private List<Long> pkCertificates;
+  @Singular
+  private List<Long> pkCas;
 }

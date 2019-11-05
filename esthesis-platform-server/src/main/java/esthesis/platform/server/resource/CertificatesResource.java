@@ -66,14 +66,13 @@ public class CertificatesResource {
 
   @GetMapping(value = {"{id}/download/{keyType}/{base64}", "{id}/download/{keyType}"})
   @ExceptionWrapper(wrapper = QExceptionWrapper.class,
-    logMessage = "Could not fetch security information for the certificate.")
+    logMessage = "Could not download certificate.")
   public ResponseEntity download(@PathVariable long id, @PathVariable int keyType,
     @PathVariable Optional<Boolean> base64)
   throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
          InvalidKeyException, IOException {
     DownloadReply keyDownloadReply = certificatesService
       .download(id, keyType, base64.isPresent() && base64.get().booleanValue());
-    //TODO return a safe filename (i.e. new Slugify().slugify())
     return ResponseEntity
       .ok()
       .header(HttpHeaders.CONTENT_DISPOSITION,

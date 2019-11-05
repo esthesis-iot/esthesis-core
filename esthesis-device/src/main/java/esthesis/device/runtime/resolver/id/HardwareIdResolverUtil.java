@@ -1,6 +1,6 @@
 package esthesis.device.runtime.resolver.id;
 
-import com.eurodyn.qlack.fuse.crypto.CryptoDigestService;
+import com.eurodyn.qlack.fuse.crypto.service.CryptoDigestService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;

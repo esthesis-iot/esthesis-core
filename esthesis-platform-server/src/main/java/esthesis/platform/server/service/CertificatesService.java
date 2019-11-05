@@ -30,6 +30,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
 import java.util.Locale;
@@ -116,9 +117,7 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
         .setCertificate(cryptoCAService.certificateToPEM(x509CertificateHolder));
 
       return super.save(certificateDTO);
-    } catch (NoSuchAlgorithmException | IOException | OperatorCreationException |
-      InvalidKeySpecException | NoSuchPaddingException | InvalidAlgorithmParameterException |
-      InvalidKeyException e) {
+    } catch (NoSuchAlgorithmException | IOException | OperatorCreationException | InvalidKeySpecException | NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchProviderException e) {
       throw new QCouldNotSaveException("Could not save certificate.", e);
     }
   }

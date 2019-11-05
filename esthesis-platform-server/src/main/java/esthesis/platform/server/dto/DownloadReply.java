@@ -10,4 +10,5 @@ import lombok.experimental.Accessors;
 public class DownloadReply {
   private String filename;
   private String payload;
+  private byte[] binaryPayload;
 }
