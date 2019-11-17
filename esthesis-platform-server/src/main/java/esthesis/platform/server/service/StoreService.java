@@ -15,15 +15,18 @@ import esthesis.platform.server.model.Certificate;
 import esthesis.platform.server.model.Store;
 import esthesis.platform.server.repository.CertificateRepository;
 import esthesis.platform.server.repository.StoreRepository;
-import javax.crypto.SecretKey;
+import javax.crypto.NoSuchPaddingException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 
@@ -42,6 +45,7 @@ public class StoreService extends BaseService<StoreDTO, Store> {
   private final CryptoSymmetricService cryptoSymmetricService;
   private final CryptoAsymmetricService cryptoAsymmetricService;
   private final AppProperties appProperties;
+  private final SecurityService securityService;
 
   public StoreService(StoreRepository storeRepository,
     CertificateRepository certificateRepository,
@@ -49,7 +53,7 @@ public class StoreService extends BaseService<StoreDTO, Store> {
     CryptoCAService cryptoCAService,
     CryptoSymmetricService cryptoSymmetricService,
     CryptoAsymmetricService cryptoAsymmetricService,
-    AppProperties appProperties) {
+    AppProperties appProperties, SecurityService securityService) {
     this.storeRepository = storeRepository;
     this.certificateRepository = certificateRepository;
     this.cryptoKeystoreService = cryptoKeystoreService;
@@ -57,11 +61,13 @@ public class StoreService extends BaseService<StoreDTO, Store> {
     this.cryptoSymmetricService = cryptoSymmetricService;
     this.cryptoAsymmetricService = cryptoAsymmetricService;
     this.appProperties = appProperties;
+    this.securityService = securityService;
   }
 
   public DownloadReply download(long id)
   throws NoSuchAlgorithmException, CertificateException, NoSuchProviderException, KeyStoreException,
-         IOException, InvalidKeySpecException {
+         IOException, InvalidKeySpecException, NoSuchPaddingException,
+         InvalidAlgorithmParameterException, InvalidKeyException {
     // Get the store to download.
     final Store store = ReturnOptional.r(storeRepository.findById(id));
 
@@ -88,12 +94,13 @@ public class StoreService extends BaseService<StoreDTO, Store> {
 
     // Collect private keys.
     for (Certificate cert : store.getPkCertificates()) {
-      final SecretKey privateKey = cryptoSymmetricService
-        .keyFromString(cert.getPrivateKey(), appProperties.getSecurityAsymmetricKeyAlgorithm());
+      final PrivateKey privateKey = cryptoAsymmetricService
+        .pemToPrivateKey(new String(securityService.decrypt(cert.getPrivateKey())),
+          appProperties.getSecurityAsymmetricKeyAlgorithm());
+
       keystore = cryptoKeystoreService
         .savePrivateKey(keystore, KEYSTORE_TYPE, KEYSTORE_PROVIDER, store.getPassword(),
-          cert.getCn(), cryptoAsymmetricService.pemToPrivateKey(cert.getPrivateKey(),
-            appProperties.getSecurityAsymmetricKeyAlgorithm()).getEncoded(),
+          cert.getCn(), privateKey.getEncoded(),
           appProperties.getSecurityAsymmetricKeyAlgorithm(),
           null, null,
           ImmutableSet.of(cryptoCAService.pemToCertificate(cert.getCertificate()).getEncoded()));

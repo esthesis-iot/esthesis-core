@@ -61,7 +61,7 @@
     <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
     <moquette-broker.version>0.12.1</moquette-broker.version>
     <mysql-connector-java.version>8.0.13</mysql-connector-java.version>
-    <org.eclipse.paho.client.mqttv3.version>1.2.0</org.eclipse.paho.client.mqttv3.version>
+    <org.eclipse.paho.client.mqttv3.version>1.2.2</org.eclipse.paho.client.mqttv3.version>
     <oshi-core.version>3.13.3</oshi-core.version>
     <qlack.version>3.2.2-SNAPSHOT</qlack.version>
     <querydsl.version>4.2.1</querydsl.version>

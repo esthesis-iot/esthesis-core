@@ -8,6 +8,7 @@ import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryPrivateKeyDTO;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoSSLService;
 import esthesis.common.config.AppConstants.Mqtt;
+import esthesis.common.config.AppConstants.Mqtt.EventType;
 import esthesis.platform.server.cluster.zookeeper.ZookeeperClientManager;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.dto.MQTTServerDTO;
@@ -85,45 +86,33 @@ public class ManagedMqttClient {
     MqttConnectOptions options = new MqttConnectOptions();
     options.setAutomaticReconnect(true);
     options.setCleanSession(true);
-    options.setKeepAliveInterval(30);
+//    options.setKeepAliveInterval(5);
     client.setCallback(new MqttCallbackExtended() {
       @Override
       public void connectionLost(Throwable cause) {
         log.log(Level.FINEST,
-          MessageFormat.format("Lost connection to MQTT server {0}.", mqttServerDTO.getIpAddress()),
-          cause);
+          MessageFormat.format("Lost connection to MQTT server {0} due to {1}.",
+            mqttServerDTO.getIpAddress(), cause.getMessage()), cause);
       }
 
       @Override
       public void messageArrived(String topic, MqttMessage message) {
+        System.out.println("DEBUG*** Msg arrived " + message.getId());
+        System.out.println("DEBUG*** Msg arrived " + new String(message.getPayload()));
       }
 
       @Override
       public void deliveryComplete(IMqttDeliveryToken token) {
+        System.out.println("DEBUG*** Delivery complete " + token.toString());
       }
 
       @Override
       public void connectComplete(boolean reconnect, String serverURI) {
+        log.log(Level.FINEST, "Connection to {0} completed.", serverURI);
+
         // Participate in leader election if in cluster.
-        if (isStandalone) {
-          try {
-            unsubscribe();
-            subscribe();
-          } catch (MqttException e) {
-            log.log(Level.SEVERE,
-              MessageFormat.format("Could not subscribe to MQTT server {0}.", serverURI), e);
-          }
-        } else {
-          try {
-            unsubscribe();
-            participateInLeaderElection(mqttServerDTO.getId(),
-              zookeeperClientManager.getZookeeperClient());
-          } catch (Exception e) {
-            log.log(Level.SEVERE,
-              MessageFormat
-                .format("Could not participate in leader election for MQTT server {0}.", serverURI),
-              e);
-          }
+        if (reconnect) {
+          establishSubscriptions();
         }
       }
     });
@@ -145,8 +134,33 @@ public class ManagedMqttClient {
     }
 
     client.connect(options);
+    establishSubscriptions();
 
     log.log(Level.FINE, "Connected to MQTT server {0}.", mqttServerDTO.getIpAddress());
+  }
+
+  protected void establishSubscriptions() {
+    if (isStandalone) {
+      try {
+        unsubscribe();
+        subscribe();
+      } catch (MqttException e) {
+        log.log(Level.SEVERE,
+          MessageFormat.format("Could not subscribe to MQTT server {0}.", this.getUri()), e);
+      }
+    } else {
+      try {
+        unsubscribe();
+        participateInLeaderElection(mqttServerDTO.getId(),
+          zookeeperClientManager.getZookeeperClient());
+      } catch (Exception e) {
+        log.log(Level.SEVERE,
+          MessageFormat
+            .format("Could not participate in leader election for MQTT server {0}.",
+              this.getUri()),
+          e);
+      }
+    }
   }
 
   protected void disconnect() throws IOException {
@@ -181,34 +195,42 @@ public class ManagedMqttClient {
   protected void subscribe() throws MqttException {
     log.log(Level.FINE, "Subscribing to {0} on MQTT server {1}.",
       new Object[]{StringUtils.joinWith(", ", Mqtt.EventType.TELEMETRY,
-        Mqtt.EventType.METADATA, Mqtt.EventType.CONTROL_REPLY),
+        Mqtt.EventType.METADATA, Mqtt.EventType.CONTROL_REPLY, EventType.PING),
         mqttServerDTO.getIpAddress()});
 
-    client.subscribe("/" + Mqtt.EventType.TELEMETRY + "/#", (topic, message) ->
-      applicationEventPublisher.publishEvent(
-        mqttMessageMapper.map(message)
-          .setTopic(topic)
-          .setHardwareId(topic.substring(topic.lastIndexOf('/') + 1))
-          .setId(UUID.randomUUID().toString())));
+    String pingTopic = "/" + Mqtt.EventType.PING + "/#";
+    client.subscribe(pingTopic, (topic, message) ->
+      applicationEventPublisher
+        .publishEvent(new PingEvent(topic.substring(topic.lastIndexOf('/') + 1))));
+    log.log(Level.FINE, "Subscribed successfully to {0}.", pingTopic);
 
-    client.subscribe("/" + Mqtt.EventType.METADATA + "/#", (topic, message) ->
-      applicationEventPublisher.publishEvent(
-        mqttMessageMapper.map(message)
-          .setTopic(topic)
-          .setHardwareId(topic.substring(topic.lastIndexOf('/') + 1))
-          .setId(UUID.randomUUID().toString())));
-
-    client.subscribe("/" + Mqtt.EventType.CONTROL_REPLY + "/#", (topic, message) ->
+    String controlreplyTopic ="/" + Mqtt.EventType.CONTROL_REPLY + "/#";
+    client.subscribe(controlreplyTopic, (topic, message) ->
       applicationEventPublisher.publishEvent(
         new CommandReplyEvent(
           mqttMessageMapper.map(message)
             .setTopic(topic)
             .setHardwareId(topic.substring(topic.lastIndexOf('/') + 1))
             .setId(UUID.randomUUID().toString()))));
+    log.log(Level.FINE, "Subscribed successfully to {0}.", controlreplyTopic);
 
-    client.subscribe("/" + Mqtt.EventType.PING + "/#", (topic, message) ->
-      applicationEventPublisher
-        .publishEvent(new PingEvent(topic.substring(topic.lastIndexOf('/') + 1))));
+    String telemetryTopic = "/" + Mqtt.EventType.TELEMETRY + "/#";
+    client.subscribe(telemetryTopic, (topic, message) ->
+      applicationEventPublisher.publishEvent(
+        mqttMessageMapper.map(message)
+          .setTopic(topic)
+          .setHardwareId(topic.substring(topic.lastIndexOf('/') + 1))
+          .setId(UUID.randomUUID().toString())));
+    log.log(Level.FINE, "Subscribed successfully to {0}.", telemetryTopic);
+
+    String metadataTopic = "/" + Mqtt.EventType.METADATA + "/#";
+    client.subscribe(metadataTopic, (topic, message) ->
+      applicationEventPublisher.publishEvent(
+        mqttMessageMapper.map(message)
+          .setTopic(topic)
+          .setHardwareId(topic.substring(topic.lastIndexOf('/') + 1))
+          .setId(UUID.randomUUID().toString())));
+    log.log(Level.FINE, "Subscribed successfully to {0}.", metadataTopic);
   }
 
   protected void unsubscribe() throws MqttException {
@@ -216,7 +238,8 @@ public class ManagedMqttClient {
       client.unsubscribe(
         new String[]{"/" + Mqtt.EventType.TELEMETRY + "/#",
           "/" + Mqtt.EventType.METADATA + "/#",
-          "/" + Mqtt.EventType.CONTROL_REPLY + "/#"});
+          "/" + Mqtt.EventType.CONTROL_REPLY + "/#",
+          "/" + Mqtt.EventType.PING + "/#"});
     }
   }
 

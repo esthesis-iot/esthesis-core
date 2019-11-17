@@ -8,6 +8,7 @@ import esthesis.platform.server.dto.DownloadReply;
 import esthesis.platform.server.dto.StoreDTO;
 import esthesis.platform.server.model.Store;
 import esthesis.platform.server.service.StoreService;
+import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -73,7 +76,8 @@ public class StoreResource {
     logMessage = "Could not download keystore.")
   public ResponseEntity download(@PathVariable long id)
   throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException,
-         NoSuchProviderException, InvalidKeySpecException {
+         NoSuchProviderException, InvalidKeySpecException, NoSuchPaddingException,
+         InvalidAlgorithmParameterException, InvalidKeyException {
     DownloadReply keyDownloadReply = storeService.download(id);
     return ResponseEntity
       .ok()

@@ -68,21 +68,28 @@ public class MQTTACLResource {
   @PostMapping(path = "/auth", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not check for auth.")
   public ResponseEntity auth(MQTTAuthDTO mqttAuthDTO) {
-    // Only certificate-based authentication is supported, so no support for account-based authentication.
+    // Only certificate-based authentication is supported, so no support for account-based
+    // authentication.
     return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
   }
 
   @PostMapping(path = "/acl", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not check for acl auth.")
   public ResponseEntity acl(MQTTAuthDTO mqttAuthDTO) {
+    log.log(Level.FINEST, "ACL check for client {0} to topic {1}.", new Object[]{
+      mqttAuthDTO.getTopic(), mqttAuthDTO.getUsername()});
     if (isEnabled()) {
       if (topics.stream()
         .anyMatch(p -> mqttAuthDTO.getTopic().equals(p + "/" + mqttAuthDTO.getUsername()))) {
+        log.log(Level.FINEST, "\tALLOWED.");
         return ResponseEntity.ok().build();
       } else {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        log.log(Level.FINEST, "\tNOT ALLOWED.");
+        return ResponseEntity.status(
+          HttpStatus.NOT_FOUND).build();
       }
     } else {
+      log.log(Level.FINEST, "\tACL checks not enabled.");
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
   }
@@ -94,15 +101,20 @@ public class MQTTACLResource {
   @PostMapping(path = "/superuser", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not check for superuser.")
   public ResponseEntity superuser(MQTTAuthDTO mosquittoACLDTO) {
+    log.log(Level.FINEST, "Superuser check for client {0}.",
+      new Object[]{mosquittoACLDTO.getUsername()});
     if (isEnabled()) {
       if (mosquittoACLDTO.getUsername().equals(certificatesService
         .findEntityById(settingsResolverService.getAsLong(Security.PLATFORM_CERTIFICATE))
         .getCn())) {
+        log.log(Level.FINEST, "\tALLOWED.");
         return ResponseEntity.ok().build();
       } else {
+        log.log(Level.FINEST, "\tNOT ALLOWED.");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
       }
     } else {
+      log.log(Level.FINEST, "\tSuperuser checks not enabled.");
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
   }

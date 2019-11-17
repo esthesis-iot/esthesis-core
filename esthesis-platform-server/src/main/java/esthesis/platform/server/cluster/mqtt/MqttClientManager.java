@@ -80,18 +80,28 @@ public class MqttClientManager {
 
   private void disconnect(long mqttServerId) throws IOException {
     if (mqttClients.get(mqttServerId) != null) {
+      log.log(Level.FINEST, "Disconnecting {0}.", mqttClients.get(mqttServerId).getUri());
       mqttClients.get(mqttServerId).disconnect();
       mqttClients.remove(mqttServerId);
     }
   }
 
   private void connectAll() {
-    mqttServerRepository.findAllByState(true).forEach(mqttServer -> {
-      connect(mqttServerMapper.map(mqttServer));
+    log.log(Level.FINEST, "Connecting all MQTT clients.");
+    mqttServerRepository.findAll().forEach(mqttServer -> {
+      if (mqttServer.isState()) {
+        log.log(Level.FINEST, "Found active {0} at {1}.",
+          new Object[]{mqttServer.getName(), mqttServer.getIpAddress()});
+        connect(mqttServerMapper.map(mqttServer));
+      } else {
+        log.log(Level.FINEST, "Found inactive {0} at {1}.",
+          new Object[]{mqttServer.getName(), mqttServer.getIpAddress()});
+      }
     });
   }
 
   private void disconnectAll() {
+    log.log(Level.FINEST, "Disconnecting all MQTT clients.");
     mqttServerRepository.findAll().forEach(mqttServer -> {
       try {
         disconnect(mqttServer.getId());
@@ -105,7 +115,8 @@ public class MqttClientManager {
     mqttServerDTO.setIpAddress(mqttServerDTO.getIpAddress());
     try {
       // Create a new client to connect to the MQTT server.
-      log.log(Level.FINE, "Connecting to MQTT server {0}.", mqttServerDTO.getIpAddress());
+      log.log(Level.FINE, "Connecting to MQTT server {0}. Total number of clients: [1].",
+        new Object[]{mqttServerDTO.getIpAddress(), mqttClients.size()});
       ManagedMqttClient client = new ManagedMqttClient(
         mqttServerDTO, appProperties.getNodeId(), applicationEventPublisher, mqttMessageMapper,
         clusterInfoService.isStandalone(), zookeeperClientManager, securityService,
