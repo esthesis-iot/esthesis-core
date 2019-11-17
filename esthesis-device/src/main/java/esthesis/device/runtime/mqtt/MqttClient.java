@@ -126,10 +126,12 @@ public class MqttClient {
           @Override
           public void connectComplete(boolean reconnect, String serverURI) {
             log.log(Level.FINE, "Connected to MQTT server {0}.", serverURI);
-            try {
-              subscribe();
-            } catch (MqttException e) {
-              log.log(Level.SEVERE, "Could not subscribe to MQTT topic.", e);
+            if (reconnect) {
+              try {
+                subscribe();
+              } catch (MqttException e) {
+                log.log(Level.SEVERE, "Could not subscribe to MQTT topic.", e);
+              }
             }
           }
         });
@@ -154,6 +156,7 @@ public class MqttClient {
         }
 
         client.connect(options);
+        subscribe();
 
         lastConnectedMqttServerAddress = mqttServerAddress;
       } catch (MqttException | CertificateException | IOException | KeyStoreException |
