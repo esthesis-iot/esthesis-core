@@ -28,10 +28,8 @@ import esthesis.platform.server.config.AppSettings.SettingValues.Security.Incomi
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingSignature;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingEncryption;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingSignature;
-import esthesis.platform.server.dto.DeviceDTO;
-import esthesis.platform.server.dto.DeviceKeyDTO;
-import esthesis.platform.server.dto.DeviceRegistrationDTO;
-import esthesis.platform.server.dto.WebSocketMessageDTO;
+import esthesis.platform.server.dto.*;
+import esthesis.platform.server.mapper.DTDeviceMapper;
 import esthesis.platform.server.mapper.DeviceKeyMapper;
 import esthesis.platform.server.mapper.DeviceMapper;
 import esthesis.platform.server.model.Ca;
@@ -77,6 +75,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
   private final DeviceRepository deviceRepository;
   private final DeviceMapper deviceMapper;
+  private final DTDeviceMapper dtDeviceMapper;
   private final DeviceKeyMapper deviceKeyMapper;
   private final WebSocketService webSocketService;
   private final SettingResolverService srs;
@@ -91,19 +90,20 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   private final CryptoCAService cryptoCAService;
 
   public DeviceService(
-    DeviceRepository deviceRepository, DeviceMapper deviceMapper,
-    DeviceKeyMapper deviceKeyMapper,
-    WebSocketService webSocketService, SettingResolverService srs,
-    TagService tagService,
-    DeviceKeyRepository deviceKeyRepository,
-    SecurityService securityService, AppProperties appProperties,
-    CryptoAsymmetricService cryptoAsymmetricService,
-    CryptoSymmetricService cryptoSymmetricService,
-    CertificatesService certificatesService, CAService caService,
-    CryptoCAService cryptoCAService) {
+          DeviceRepository deviceRepository, DeviceMapper deviceMapper,
+          DTDeviceMapper dtDeviceMapper, DeviceKeyMapper deviceKeyMapper,
+          WebSocketService webSocketService, SettingResolverService srs,
+          TagService tagService,
+          DeviceKeyRepository deviceKeyRepository,
+          SecurityService securityService, AppProperties appProperties,
+          CryptoAsymmetricService cryptoAsymmetricService,
+          CryptoSymmetricService cryptoSymmetricService,
+          CertificatesService certificatesService, CAService caService,
+          CryptoCAService cryptoCAService) {
     this.deviceRepository = deviceRepository;
     this.deviceMapper = deviceMapper;
-    this.deviceKeyMapper = deviceKeyMapper;
+      this.dtDeviceMapper = dtDeviceMapper;
+      this.deviceKeyMapper = deviceKeyMapper;
     this.webSocketService = webSocketService;
     this.srs = srs;
     this.tagService = tagService;
@@ -411,6 +411,10 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
     return deviceDTO;
   }
+
+    public List<DTDeviceDTO> findAllDT() {
+      return dtDeviceMapper.map(deviceRepository.findAll());
+    }
 
   @Async
   @Override
