@@ -7,7 +7,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-platform</artifactId>
-    <version>1.0.18</version>
+    <version>1.0.19</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -89,7 +89,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-common</artifactId>
-      <version>1.0.18</version>
+      <version>1.0.19</version>
     </dependency>
 
     <!-- Spring dependencies -->
