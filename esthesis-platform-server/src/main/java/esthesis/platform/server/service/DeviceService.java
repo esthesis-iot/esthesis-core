@@ -226,7 +226,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     // Create the keys for the new device.
     final byte[] sessionKey = cryptoSymmetricService.generateKey(
       appProperties.getSecuritySymmetricKeySize(),
-      appProperties.getSecuritySymmetricKeyAlgorithm());
+      appProperties.getSecuritySymmetricKeyAlgorithm()).getEncoded();
     LOGGER.log(Level.FINEST, "Device session key: {0}.", Arrays.toString(sessionKey));
     final DeviceKey deviceKey = new DeviceKey()
       .setPrivateKey(securityService.encrypt(cryptoAsymmetricService.privateKeyToPEM(keyPair)))

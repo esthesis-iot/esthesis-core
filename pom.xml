@@ -63,12 +63,12 @@
     <mysql-connector-java.version>8.0.13</mysql-connector-java.version>
     <org.eclipse.paho.client.mqttv3.version>1.2.2</org.eclipse.paho.client.mqttv3.version>
     <oshi-core.version>3.13.3</oshi-core.version>
-    <qlack.version>3.2.4-SNAPSHOT</qlack.version>
+    <qlack.version>3.2.4</qlack.version>
     <querydsl.version>4.2.1</querydsl.version>
     <slugify.version>2.2</slugify.version>
     <snakeyaml.version>1.24</snakeyaml.version>
     <spring-content-fs-boot-starter.version>0.8.0</spring-content-fs-boot-starter.version>
-    <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
+    <spring.boot.version>2.1.8.RELEASE</spring.boot.version>
   </properties>
 
   <dependencyManagement>

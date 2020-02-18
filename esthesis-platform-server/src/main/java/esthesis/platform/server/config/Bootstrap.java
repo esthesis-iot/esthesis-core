@@ -78,7 +78,7 @@ public class Bootstrap {
 
     final byte[] aes = cryptoSymmetricService.generateKey(
       appProperties.getSecuritySymmetricKeySize(),
-      appProperties.getSecuritySymmetricKeyAlgorithm());
+      appProperties.getSecuritySymmetricKeyAlgorithm()).getEncoded();
     LOGGER.log(Level.FINEST, "Generating AES key: {0}.", Arrays.toString(aes));
     SettingDTO settingDTO = new SettingDTO();
     settingDTO.setGroup(Generic.SYSTEM);
