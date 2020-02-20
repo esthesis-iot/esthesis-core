@@ -39,7 +39,7 @@ public class AppProperties {
   @Value("${provisioningRoot:${storageRoot}/provisioning}")
   private String provisioningRoot;
 
-  // The root folder to store remotely retrieved provisioning packages.
+  // The root folder to use when unpacking remotely retrieved provisioning packages.
   @Value("${provisioningTempRoot:${storageRoot}/provisioning/.tmp}")
   private String provisioningTempRoot;
 
