@@ -49,22 +49,42 @@
         </pluginManagement>
         <plugins>
           <plugin>
-            <groupId>cy.github</groupId>
+            <groupId>de.jutzig</groupId>
             <artifactId>github-release-plugin</artifactId>
-            <version>0.5.1</version>
+            <version>${github-release-plugin.version}</version>
             <configuration>
-              <tagName>${project.version}</tagName>
-              <preRelease>false</preRelease>
+<!--              <description>Description of your release</description>-->
+<!--              <releaseName>1.0 Final</releaseName>-->
+              <tag>${project.version}</tag>
+<!--              <fileSets>-->
+<!--                <fileSet>-->
+<!--                  <directory>${project.build.directory}</directory>-->
+<!--                  <includes>-->
+<!--                    <include>${project.artifactId}*.tar.gz</include>-->
+<!--                    <include>${project.artifactId}*.zip</include>-->
+<!--                  </includes>-->
+<!--                </fileSet>-->
+<!--              </fileSets>-->
             </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>gh-upload</goal>
-                </goals>
-                <phase>install</phase>
-              </execution>
-            </executions>
           </plugin>
+<!--          <plugin>-->
+<!--            <groupId>cy.github</groupId>-->
+<!--            <artifactId>github-release-plugin</artifactId>-->
+<!--            <version>0.5.1</version>-->
+<!--            <configuration>-->
+<!--              <tagName>${project.version}</tagName>-->
+<!--              <preRelease>false</preRelease>-->
+<!--            </configuration>-->
+<!--            <executions>-->
+<!--              <execution>-->
+<!--                <goals>-->
+<!--                  <goal>gh-upload</goal>-->
+<!--                </goals>-->
+<!--                <phase>install</phase>-->
+<!--              </execution>-->
+<!--            </executions>-->
+<!--          </plugin>-->
+
         </plugins>
       </build>
     </profile>
