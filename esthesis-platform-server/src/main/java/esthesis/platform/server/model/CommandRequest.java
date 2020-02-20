@@ -33,6 +33,6 @@ public class CommandRequest extends BaseEntity {
   private String description;
 
   @Singular
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
   private Device device;
 }

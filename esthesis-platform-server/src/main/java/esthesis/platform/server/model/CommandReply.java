@@ -30,6 +30,6 @@ public class CommandReply extends BaseEntity {
   @Basic(fetch = FetchType.LAZY)
   private byte[] payload;
 
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
   private CommandRequest commandRequest;
 }
