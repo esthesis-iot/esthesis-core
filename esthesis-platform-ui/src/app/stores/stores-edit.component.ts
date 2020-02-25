@@ -39,6 +39,7 @@ export class StoresEditComponent extends BaseComponent implements OnInit {
       id: [''],
       name: ['', [Validators.required, Validators.maxLength(256)]],
       password: ['', [Validators.required, Validators.maxLength(256)]],
+      passwordForKeys: [''],
       certCertificates: [''],
       certCas: [''],
       pkCertificates: [''],

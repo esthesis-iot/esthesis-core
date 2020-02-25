@@ -18,6 +18,7 @@ public class StoreDTO extends BaseDTO {
   private String name;
   @NotNull
   private String password;
+  private boolean passwordForKeys;
   @Singular
   private List<Long> certCertificates;
   @Singular

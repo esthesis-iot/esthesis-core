@@ -3,7 +3,6 @@ package esthesis.platform.server.service;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoAsymmetricService;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoCAService;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoKeystoreService;
-import com.eurodyn.qlack.fuse.crypto.service.CryptoSymmetricService;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.github.slugify.Slugify;
 import com.google.common.collect.ImmutableSet;
@@ -13,7 +12,6 @@ import esthesis.platform.server.dto.StoreDTO;
 import esthesis.platform.server.model.Ca;
 import esthesis.platform.server.model.Certificate;
 import esthesis.platform.server.model.Store;
-import esthesis.platform.server.repository.CertificateRepository;
 import esthesis.platform.server.repository.StoreRepository;
 import javax.crypto.NoSuchPaddingException;
 import org.springframework.stereotype.Service;
@@ -39,26 +37,20 @@ public class StoreService extends BaseService<StoreDTO, Store> {
   private final static String KEYSTORE_PROVIDER = "SunJSSE";
 
   private final StoreRepository storeRepository;
-  private final CertificateRepository certificateRepository;
   private final CryptoKeystoreService cryptoKeystoreService;
   private final CryptoCAService cryptoCAService;
-  private final CryptoSymmetricService cryptoSymmetricService;
   private final CryptoAsymmetricService cryptoAsymmetricService;
   private final AppProperties appProperties;
   private final SecurityService securityService;
 
   public StoreService(StoreRepository storeRepository,
-    CertificateRepository certificateRepository,
     CryptoKeystoreService cryptoKeystoreService,
     CryptoCAService cryptoCAService,
-    CryptoSymmetricService cryptoSymmetricService,
     CryptoAsymmetricService cryptoAsymmetricService,
     AppProperties appProperties, SecurityService securityService) {
     this.storeRepository = storeRepository;
-    this.certificateRepository = certificateRepository;
     this.cryptoKeystoreService = cryptoKeystoreService;
     this.cryptoCAService = cryptoCAService;
-    this.cryptoSymmetricService = cryptoSymmetricService;
     this.cryptoAsymmetricService = cryptoAsymmetricService;
     this.appProperties = appProperties;
     this.securityService = securityService;
@@ -102,7 +94,7 @@ public class StoreService extends BaseService<StoreDTO, Store> {
         .savePrivateKey(keystore, KEYSTORE_TYPE, KEYSTORE_PROVIDER, store.getPassword(),
           cert.getCn(), privateKey.getEncoded(),
           appProperties.getSecurityAsymmetricKeyAlgorithm(),
-          null, null,
+          null, store.isPasswordForKeys() ? store.getPassword() : null,
           ImmutableSet.of(cryptoCAService.pemToCertificate(cert.getCertificate()).getEncoded()));
     }
 

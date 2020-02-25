@@ -19,6 +19,7 @@ import {MatInputModule} from '@angular/material/input';
 import {QFormsModule} from '@eurodyn/forms';
 import {DisplayModule} from '../shared/component/display/display.module';
 import {MatListModule} from '@angular/material/list';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import {MatListModule} from '@angular/material/list';
     MatInputModule,
     QFormsModule,
     DisplayModule,
-    MatListModule
+    MatListModule,
+    MatCheckboxModule
   ],
   providers: [
     {

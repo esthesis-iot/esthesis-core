@@ -38,6 +38,8 @@ public class Store extends BaseEntity {
   @Size(max = 256)
   private String password;
 
+  private boolean passwordForKeys;
+
   @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
   @JoinTable(name="store_cert_certificates",
     joinColumns={@JoinColumn(name="store_id")},

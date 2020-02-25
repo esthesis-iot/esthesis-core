@@ -6,8 +6,11 @@
         <input matInput placeholder="Name" formControlName="name">
       </mat-form-field>
       <mat-form-field>
-        <input matInput placeholder="Password" formControlName="password" type="password">
+        <input matInput placeholder="Store password" formControlName="password" type="password">
       </mat-form-field>
+      <div fxLayout="row" class="xs-pb1">
+        <mat-checkbox formControlName="passwordForKeys">Keys have the same password</mat-checkbox>
+      </div>
       <div class="inline-header xs-pt1">Add certificates from:</div>
       <div fxLayout="row" fxLayoutGap="2rem">
         <div fxFlex class="xs-pt1">
