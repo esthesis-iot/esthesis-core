@@ -12,13 +12,17 @@ import java.time.Instant;
 @Transactional
 public class PingHandlerService {
   private final DeviceRepository deviceRepository;
+  private final MQTTMonitor mqttMonitor;
 
-  public PingHandlerService(DeviceRepository deviceRepository) {
+  public PingHandlerService(DeviceRepository deviceRepository,
+    MQTTMonitor mqttMonitor) {
     this.deviceRepository = deviceRepository;
+    this.mqttMonitor = mqttMonitor;
   }
 
   @EventListener
   public void onApplicationEvent(PingEvent event) {
+    mqttMonitor.setLastMessageReceived(Instant.now());
     deviceRepository.updateLastSeen(Instant.now(), event.getHardwareId());
   }
 }
