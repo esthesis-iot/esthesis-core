@@ -139,3 +139,5 @@ fabric.properties
 *.iml
 .idea/
 /esthesis-platform-server/src/main/resources/git.json
+/esthesis-platform-ui/build/
+/esthesis-platform-ui/package-lock.json.old
