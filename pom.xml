@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>esthesis</groupId>
@@ -25,17 +25,17 @@
     <tag>HEAD</tag>
   </scm>
 
-<!--  <pluginRepositories>-->
-<!--    &lt;!&ndash; Attach artifacts to GitHub releases &ndash;&gt;-->
-<!--    <pluginRepository>-->
-<!--      <snapshots>-->
-<!--        <enabled>false</enabled>-->
-<!--      </snapshots>-->
-<!--      <id>bintray-cy6ergn0m-maven</id>-->
-<!--      <name>bintray-plugins</name>-->
-<!--      <url>http://dl.bintray.com/cy6ergn0m/maven</url>-->
-<!--    </pluginRepository>-->
-<!--  </pluginRepositories>-->
+  <!--  <pluginRepositories>-->
+  <!--    &lt;!&ndash; Attach artifacts to GitHub releases &ndash;&gt;-->
+  <!--    <pluginRepository>-->
+  <!--      <snapshots>-->
+  <!--        <enabled>false</enabled>-->
+  <!--      </snapshots>-->
+  <!--      <id>bintray-cy6ergn0m-maven</id>-->
+  <!--      <name>bintray-plugins</name>-->
+  <!--      <url>http://dl.bintray.com/cy6ergn0m/maven</url>-->
+  <!--    </pluginRepository>-->
+  <!--  </pluginRepositories>-->
 
   <properties>
     <classgraph.version>4.8.22</classgraph.version>
@@ -70,6 +70,11 @@
     <spring-content-fs-boot-starter.version>0.8.0</spring-content-fs-boot-starter.version>
     <spring.boot.version>2.1.8.RELEASE</spring.boot.version>
     <github-release-plugin.version>1.4.0</github-release-plugin.version>
+
+    <version.sonar>3.7.0.1746</version.sonar>
+    <version.dependency-check-maven>5.3.0</version.dependency-check-maven>
+    <sonar.dependencyCheck.reportPath>target/dependency-check-report.xml</sonar.dependencyCheck.reportPath>
+    <sonar.dependencyCheck.htmlReportPath>target/dependency-check-report.html</sonar.dependencyCheck.htmlReportPath>
   </properties>
 
   <dependencyManagement>
@@ -130,6 +135,21 @@
             <target>1.8</target>
             <encoding>UTF-8</encoding>
             <useIncrementalCompilation>false</useIncrementalCompilation>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>${version.sonar}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>${version.dependency-check-maven}</version>
+          <configuration>
+            <format>ALL</format>
+            <failOnError>false</failOnError>
           </configuration>
         </plugin>
       </plugins>
