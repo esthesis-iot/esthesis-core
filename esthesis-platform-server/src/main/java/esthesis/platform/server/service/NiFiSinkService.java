@@ -59,6 +59,7 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
       }
     } else {
       NiFiSink latestVersion = super.findEntityById(niFiSinkDTO.getId());
+      niFiSinkDTO.setCustomInfo(latestVersion.getCustomInfo());
 
       boolean isStateChanged = latestVersion.isState() != niFiSinkDTO.isState();
       boolean isConfigurationChanged = !latestVersion.getConfiguration()

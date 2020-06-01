@@ -99,14 +99,13 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
     PutDatabaseRecordConfiguration prevConf = extractConfiguration(sink.getConfiguration());
     conf = extractConfiguration(sinkDTO.getConfiguration());
 
-    CustomInfo customInfo = objectMapper.readValue(sink.getCustomInfo(), CustomInfo.class);
-
     if (!(conf.getDatabaseConnectionURL().equals(prevConf.getDatabaseConnectionURL())
       && conf.getDatabaseDriverClassName().equals(prevConf.getDatabaseDriverClassName())
       && conf.getDatabaseDriverClassLocation().equals(prevConf.getDatabaseDriverClassLocation())
       && conf.getDatabaseUser().equals(prevConf.getDatabaseUser())
       && conf.getPassword().equals(prevConf.getPassword()))) {
 
+      CustomInfo customInfo = objectMapper.readValue(sink.getCustomInfo(), CustomInfo.class);
       niFiClientService
         .updateDBCConnectionPool(customInfo.getDbConnectionPool(), conf.getDatabaseConnectionURL(),
           conf.getDatabaseDriverClassName(),
@@ -115,10 +114,8 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
           conf.getPassword());
     }
 
-    niFiClientService.updatePutDatabaseRecord(sink.getProcessorId(),
+    return niFiClientService.updatePutDatabaseRecord(sink.getProcessorId(),
       getStatementType(conf.getStatementType()), conf.getTableName());
-
-    return null;
   }
 
   @Override
