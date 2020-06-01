@@ -145,4 +145,11 @@ public class AppConstants {
     public static final int CANT_GENERATE_PLATFORM_AES_KEY = 1;
     public static final int CANT_GENERATE_PROVISIONING_AES_KEY = 2;
   }
+
+  public class NiFiSinkHandler {
+
+    public static final int PING = 1;
+    public static final int METADATA = 2;
+    public static final int TELEMETRY = 3;
+  }
 }

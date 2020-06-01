@@ -1,6 +1,5 @@
 package esthesis.platform.server.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -14,8 +13,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.Instant;
-
 @Data
 @Entity
 @DynamicUpdate
@@ -25,18 +22,19 @@ import java.time.Instant;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Table(name = "nifi")
-public class NiFi extends BaseEntity {
-
-  @NotNull
-  private boolean state;
+@Table(name = "nifi_sink")
+public class NiFiSink extends BaseEntity {
 
   @NotNull
   private String name;
+
   @NotNull
-  private String url;
-  private String description;
-  private String wfVersion;
-  @Column(name = "synced_on")
-  private Instant syncedOn;
+  private String factoryClass;
+  private int handler;
+  private boolean state;
+  private String configuration;
+  private String customInfo;
+  private String type;
+  private String processorId;
+  private String validationErrors;
 }

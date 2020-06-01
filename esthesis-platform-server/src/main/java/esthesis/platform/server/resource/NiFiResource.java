@@ -43,7 +43,7 @@ public class NiFiResource {
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class,
     logMessage = "There was a problem retrieving application data.")
-  @ReplyPageableFilter("name,state,createdOn,id,url,description,wfVersion")
+  @ReplyPageableFilter("name,state,createdOn,id,url,description,wfVersion,syncedOn")
   @EmptyPredicateCheck
   public Page<NiFiDTO> findAll(
     @QuerydslPredicate(root = NiFi.class) Predicate predicate, Pageable pageable) {
@@ -59,7 +59,6 @@ public class NiFiResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Save was unsuccessful.")
   public ResponseEntity save(@Valid @RequestBody NiFiDTO nifiDTO) {
     nifiService.save(nifiDTO);
-
     return ResponseEntity.ok().build();
   }
 
@@ -83,5 +82,11 @@ public class NiFiResource {
   public WfVersionDTO get() {
     return new WfVersionDTO()
       .setVersion(nifiService.getLatestWFVersion());
+  }
+
+  @GetMapping(path = "/active", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch NiFi object.")
+  public NiFiDTO getActive() {
+    return nifiService.getActiveNiFi();
   }
 }

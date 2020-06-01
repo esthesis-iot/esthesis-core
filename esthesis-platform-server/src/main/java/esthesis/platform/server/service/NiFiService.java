@@ -1,14 +1,18 @@
 package esthesis.platform.server.service;
 
+import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import esthesis.platform.server.dto.NiFiDTO;
 import esthesis.platform.server.mapper.NiFiMapper;
 import esthesis.platform.server.model.NiFi;
+import esthesis.platform.server.model.QNiFi;
 import esthesis.platform.server.repository.NiFiRepository;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ResourceList;
 import io.github.classgraph.ScanResult;
 import lombok.extern.java.Log;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -38,13 +42,30 @@ public class NiFiService extends BaseService<NiFiDTO, NiFi> {
       .scan()) {
       final ResourceList resources = scanResult.getResourcesWithExtension("xml");
       if (CollectionUtils.isNotEmpty(resources)) {
-       version = resources.get(0).getPath();
+        version = resources.get(0).getPath();
       }
     }
 
     // Extract version information from the filename.
-    String versionPrefix = "nifi/template/esthesis_nifi_";
+    String versionPrefix = "nifi/template/esthesis_";
     String versionSuffix = ".xml";
     return version.substring(versionPrefix.length(), version.length() - versionSuffix.length());
+  }
+
+  @Cacheable("esthesis.platform.server.activeNiFi")
+  public NiFiDTO getActiveNiFi() {
+    NiFi activeNiFi = ReturnOptional.r(this.nifiRepository.findOne(QNiFi.niFi.state.eq(true)));
+    return this.nifiMapper.map(activeNiFi);
+  }
+
+  @Override
+  @CacheEvict("esthesis.platform.server.activeNiFi")
+  public NiFiDTO save(NiFiDTO dto) {
+    if (dto.isState()) {
+      NiFiDTO activeNiFi = getActiveNiFi();
+      activeNiFi.setState(false);
+      super.save(activeNiFi);
+    }
+    return super.save(dto);
   }
 }
