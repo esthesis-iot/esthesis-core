@@ -6,4 +6,5 @@ export class NiFiDto extends BaseDto {
   description: string;
   url: string;
   wfVersion: string;
+  syncedOn: Date;
 }

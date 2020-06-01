@@ -71,6 +71,13 @@ export const AppConstants = {
     BYTES_TO_GB: "BYTES_TO_GB",
     FAHRENHEIT_TO_CELCIUS: "FAHRENHEIT_TO_CELCIUS",
     CELCIUS_TO_FAHRENHEIT: "CELCIUS_TO_FAHRENHEIT",
-  }
+  },
+
+  // The different types of NiFiSinks handlers.
+  HANDLER: {
+    PING: 1,
+    METADATA: 2,
+    TELEMETRY: 3,
+  },
 };
 

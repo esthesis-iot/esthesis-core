@@ -1,10 +1,11 @@
-export class DataSinkFactoryDto {
+import {BaseDto} from '../base-dto';
+
+export class NifiReaderFactoryDto extends BaseDto {
   factoryClass: string;
   friendlyName: string;
+  version: string;
+  supportsPingRead: boolean;
   supportsMetadataRead: boolean;
   supportsTelemetryRead: boolean;
-  supportsMetadataWrite: boolean;
-  supportsTelemetryWrite: boolean;
-  version: string;
   configurationTemplate: string;
 }

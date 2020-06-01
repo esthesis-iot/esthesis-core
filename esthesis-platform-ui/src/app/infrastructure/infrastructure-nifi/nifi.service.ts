@@ -21,4 +21,7 @@ export class NiFiService extends CrudService<NiFiDto> {
       `${AppConstants.API_ROOT}/infrastructure/nifi/latest-wf-version`);
   }
 
+  getActive(): Observable<NiFiDto> {
+    return this.http.get<NiFiDto>(`${AppConstants.API_ROOT}/infrastructure/nifi/active`);
+  }
 }
