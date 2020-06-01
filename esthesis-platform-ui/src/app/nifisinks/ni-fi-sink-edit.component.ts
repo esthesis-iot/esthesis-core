@@ -103,6 +103,8 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
     const factory = _.find<typeof nifiSinkTypeDTO>(this.availableNiFiDataFactories,
       {factoryClass: $event.source.value});
 
+    this.handlers = Object.values(AppConstants.HANDLER);
+
     //Keeping only supported handlers in edit mode.
     if (!this.isEdit) {
       //Action is derived from the type (read, write, produce).
