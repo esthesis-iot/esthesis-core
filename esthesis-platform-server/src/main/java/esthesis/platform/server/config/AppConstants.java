@@ -68,16 +68,6 @@ public class AppConstants {
     }
   }
 
-  public class Zookeeper {
-
-    public static final String LEADER_ELECTION_PATH_GLOBAL = "/esthesis/platform/leader/global";
-    public static final String LEADER_ELECTION_PATH_MQTT = "/esthesis/platform/leader/mqtt";
-    public static final String MQTT_CONFIGURATION_EVENT_PATH = "/esthesis/platform/configuration/mqtt";
-    public static final String ZOOKEEPER_CONFIGURATION_EVENT_PATH = "/esthesis/platform/configuration/zookeeper";
-    public static final String DATA_SINK_CONFIGURATION_EVENT_PATH = "/esthesis/platform/configuration/datasink";
-    public static final int CONNECT_RETRY = 29;
-  }
-
   public class WebSocket {
 
     public static final String TOPIC_PREFIX = "/topic";
@@ -151,5 +141,9 @@ public class AppConstants {
     public static final int PING = 1;
     public static final int METADATA = 2;
     public static final int TELEMETRY = 3;
+  }
+
+  public class Http {
+    public static final String AUTHORIZATION = "Authorization";
   }
 }

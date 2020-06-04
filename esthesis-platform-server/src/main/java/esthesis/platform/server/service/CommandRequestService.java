@@ -1,6 +1,5 @@
 package esthesis.platform.server.service;
 
-import esthesis.platform.server.cluster.mqtt.MqttClientManager;
 import esthesis.platform.server.dto.CommandRequestDTO;
 import esthesis.platform.server.dto.CommandSpecificationDTO;
 import esthesis.platform.server.dto.DeviceDTO;
@@ -17,11 +16,13 @@ import java.util.List;
 public class CommandRequestService extends BaseService<CommandRequestDTO, CommandRequest> {
 
   private final DeviceService deviceService;
-  private final MqttClientManager mqttClientManager;
+//  private final MqttClientManager mqttClientManager;
 
-  public CommandRequestService(DeviceService deviceService, MqttClientManager mqttClientManager) {
+  public CommandRequestService(DeviceService deviceService
+//    MqttClientManager mqttClientManager
+        ) {
     this.deviceService = deviceService;
-    this.mqttClientManager = mqttClientManager;
+//    this.mqttClientManager = mqttClientManager;
   }
 
   public void execute(CommandSpecificationDTO cmd) {
@@ -36,9 +37,9 @@ public class CommandRequestService extends BaseService<CommandRequestDTO, Comman
       commandRequest.setDescription(cmd.getDescription());
       commandRequest.setDevice(device.getId());
       commandRequest = save(commandRequest);
-      mqttClientManager
-        .sendCommand(commandRequest.getId(), device.getHardwareId(), device.getTags(), cmd.getCommand(),
-          cmd.getArguments());
+//      mqttClientManager
+//        .sendCommand(commandRequest.getId(), device.getHardwareId(), device.getTags(), cmd.getCommand(),
+//          cmd.getArguments());
     }
   }
 }

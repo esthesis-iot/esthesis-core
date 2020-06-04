@@ -6,8 +6,6 @@ import {InfrastructureComponent} from './infrastructure.component';
 import {InfrastructureOverviewComponent} from './infrastructure-overview/infrastructure-overview.component';
 import {InfrastructureMqttComponent} from './infrastructure-mqtt/infrastructure-mqtt.component';
 import {InfrastructureMqttEditComponent} from './infrastructure-mqtt/infrastructure-mqtt-edit.component';
-import {InfrastructureVirtualizationComponent} from './infrastructure-virtualization/infrastructure-virtualization.component';
-import {InfrastructureVirtualizationEditComponent} from './infrastructure-virtualization/infrastructure-virtualization-edit.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
@@ -23,10 +21,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
 import {QFormsModule} from '@eurodyn/forms';
 import {ReactiveFormsModule} from '@angular/forms';
-import {InfrastructureZookeeperComponent} from './infrastructure-zookeeper/infrastructure-zookeeper.component';
-import {InfrastructureZookeeperEditComponent} from './infrastructure-zookeeper/infrastructure-zookeeper-edit.component';
 import {DisplayModule} from '../shared/component/display/display.module';
-import {ContainersModule} from '../shared/component/containers/containers.module';
 import {InfrastructureNiFiComponent} from './infrastructure-nifi/infrastructure-nifi.component';
 import {InfrastructureNiFiEditComponent} from './infrastructure-nifi/infrastructure-nifi-edit.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -37,10 +32,6 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     InfrastructureOverviewComponent,
     InfrastructureMqttComponent,
     InfrastructureMqttEditComponent,
-    InfrastructureZookeeperComponent,
-    InfrastructureZookeeperEditComponent,
-    InfrastructureVirtualizationComponent,
-    InfrastructureVirtualizationEditComponent,
     InfrastructureNiFiComponent,
     InfrastructureNiFiEditComponent,
   ],
@@ -63,7 +54,6 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     MatIconModule,
     MatTabsModule,
     DisplayModule,
-    ContainersModule,
     MatProgressSpinnerModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],

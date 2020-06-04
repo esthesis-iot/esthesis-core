@@ -7,7 +7,7 @@ import static java.util.Collections.emptyList;
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.aaa.dto.UserDTO;
 import com.eurodyn.qlack.fuse.aaa.service.UserService;
-import esthesis.common.config.AppConstants;
+import esthesis.platform.server.config.AppConstants;
 import esthesis.platform.server.config.AppConstants.Jwt;
 import esthesis.platform.server.dto.ApplicationDTO;
 import esthesis.platform.server.dto.jwt.JWTClaimsResponseDTO;
@@ -19,7 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -79,14 +78,14 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
   }
 
   private Authentication getAuthentication(HttpServletRequest request) {
-    String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+    String authHeader = request.getHeader(AppConstants.Http.AUTHORIZATION);
 
     if (StringUtils.isNotBlank(authHeader)) {
       if (authHeader.startsWith(BEARER_HEADER)) {
         return decodeJwt(authHeader.replace(BEARER_HEADER, "").trim());
       }
-      if (authHeader.startsWith(AppConstants.XESTHESISDT_HEADER)) {
-        String token = authHeader.replace(AppConstants.XESTHESISDT_HEADER, "").trim();
+      if (authHeader.startsWith(esthesis.common.config.AppConstants.XESTHESISDT_HEADER)) {
+        String token = authHeader.replace(esthesis.common.config.AppConstants.XESTHESISDT_HEADER, "").trim();
         try {
           final ApplicationDTO applicationDTO = applicationService.findByToken(token);
           if (applicationDTO.isState()) {

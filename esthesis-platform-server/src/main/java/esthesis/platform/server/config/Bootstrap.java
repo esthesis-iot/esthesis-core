@@ -6,12 +6,9 @@ import com.eurodyn.qlack.fuse.settings.dto.SettingDTO;
 import com.eurodyn.qlack.fuse.settings.service.SettingsService;
 import esthesis.common.config.AppConstants.Generic;
 import esthesis.common.util.Base64E;
-import esthesis.platform.server.cluster.datasinks.DataSinkManager;
-import esthesis.platform.server.cluster.zookeeper.ZookeeperClientManager;
 import esthesis.platform.server.config.AppConstants.ExitCodes;
 import esthesis.platform.server.config.AppSettings.Setting.Provisioning;
 import esthesis.platform.server.config.AppSettings.Setting.Security;
-import esthesis.platform.server.datasinks.DataSinkScanner;
 import esthesis.platform.server.repository.CertificateRepository;
 import esthesis.platform.server.service.SecurityService;
 import esthesis.platform.server.service.SettingResolverService;
@@ -44,9 +41,6 @@ public class Bootstrap {
   // JUL reference.
   private static final Logger LOGGER = Logger.getLogger(Bootstrap.class.getName());
 
-  private final ZookeeperClientManager zookeeperClientManager;
-  private final DataSinkScanner dataSinkScanner;
-  private final DataSinkManager dataSinkManager;
   private final AppProperties appProperties;
   private final CryptoSymmetricService cryptoSymmetricService;
   private final SettingResolverService srs;
@@ -54,16 +48,12 @@ public class Bootstrap {
   private final SecurityService securityService;
   private final CertificateRepository certificateRepository;
 
-  public Bootstrap(ZookeeperClientManager zookeeperClientManager, DataSinkScanner dataSinkScanner,
-    DataSinkManager dataSinkManager, AppProperties appProperties,
+  public Bootstrap(AppProperties appProperties,
     CryptoSymmetricService cryptoSymmetricService,
     SettingResolverService srs,
     SettingsService settingsService,
     SecurityService securityService,
     CertificateRepository certificateRepository) {
-    this.zookeeperClientManager = zookeeperClientManager;
-    this.dataSinkScanner = dataSinkScanner;
-    this.dataSinkManager = dataSinkManager;
     this.appProperties = appProperties;
     this.cryptoSymmetricService = cryptoSymmetricService;
     this.srs = srs;
@@ -133,9 +123,5 @@ public class Bootstrap {
 
     // Generate a key to shared with devices to encrypt provisioning packages.
     generateProvisioningAESKey();
-
-    zookeeperClientManager.connect();
-    dataSinkScanner.scan();
-    dataSinkManager.startDataSinks();
   }
 }

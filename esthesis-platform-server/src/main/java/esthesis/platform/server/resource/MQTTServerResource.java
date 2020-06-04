@@ -1,13 +1,10 @@
 package esthesis.platform.server.resource;
 
-import static esthesis.platform.server.events.LocalEvent.LOCAL_EVENT_TYPE.CONFIGURATION_MQTT;
-
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
 import esthesis.platform.server.dto.MQTTServerDTO;
-import esthesis.platform.server.events.LocalEvent;
 import esthesis.platform.server.model.MqttServer;
 import esthesis.platform.server.service.MQTTService;
 import javax.validation.Valid;
@@ -50,7 +47,7 @@ public class MQTTServerResource {
   public MQTTServerDTO save(@Valid @RequestBody MQTTServerDTO mqttServerDTO) {
     mqttServerDTO = mqttServerService.save(mqttServerDTO);
     // Emit an event about this configuration change.
-    applicationEventPublisher.publishEvent(new LocalEvent(CONFIGURATION_MQTT));
+//    applicationEventPublisher.publishEvent(new LocalEvent(CONFIGURATION_MQTT));
 
     return mqttServerDTO;
   }
@@ -67,6 +64,6 @@ public class MQTTServerResource {
     mqttServerService.deleteById(id);
 
     // Emit an event about this configuration change.
-    applicationEventPublisher.publishEvent(new LocalEvent(CONFIGURATION_MQTT));
+//    applicationEventPublisher.publishEvent(new LocalEvent(CONFIGURATION_MQTT));
   }
 }

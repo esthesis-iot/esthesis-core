@@ -1,23 +1,16 @@
 package esthesis.platform.server.service;
 
 
-import esthesis.common.config.AppConstants.Mqtt.EventType;
-import esthesis.common.datasink.DataSink;
-import esthesis.common.datasink.dto.DataSinkQueryResult;
 import esthesis.common.datasink.dto.FieldDTO;
-import esthesis.platform.server.cluster.datasinks.DataSinkManager;
 import esthesis.platform.server.mapper.DevicePageMapper;
 import esthesis.platform.server.model.DevicePage;
 import esthesis.platform.server.repository.DeviceMetadataRepository;
 import lombok.extern.java.Log;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,17 +19,17 @@ import java.util.stream.Collectors;
 @Log
 public class DevicePageService {
 
-  private final DataSinkManager dataSinkManager;
+//  private final DataSinkManager dataSinkManager;
   private final DeviceMetadataRepository deviceMetadataRepository;
   private final DevicePageMapper deviceMetadataMapper;
   private final DeviceService deviceService;
 
   public DevicePageService(
-    DataSinkManager dataSinkManager,
+//    DataSinkManager dataSinkManager,
     DeviceMetadataRepository deviceMetadataRepository,
     DevicePageMapper deviceMetadataMapper,
     DeviceService deviceService) {
-    this.dataSinkManager = dataSinkManager;
+//    this.dataSinkManager = dataSinkManager;
     this.deviceMetadataRepository = deviceMetadataRepository;
     this.deviceMetadataMapper = deviceMetadataMapper;
     this.deviceService = deviceService;
@@ -76,24 +69,25 @@ public class DevicePageService {
       .map(deviceMetadataRepository.findAllByShownIsTrue());
 
     //TODO each field is sequentially queried, the algorithm can be optimised to query for all fields at once.
-    final Optional<DataSink> telemetryReader = dataSinkManager.getTelemetryReader();
-    if (!telemetryReader.isPresent()) {
-      log.warning("No telemetry reader data sink available to obtain fields.");
-      return new ArrayList<>();
-    } else {
-      String hardwareId = deviceService.findById(id, false).getHardwareId();
-      return configuredFields.stream().map(fieldDTO -> {
-        String measurement = fieldDTO.getName().split("\\.")[0];
-        String field = fieldDTO.getName().split("\\.")[1];
-        final DataSinkQueryResult last = telemetryReader.get()
-          .getLast(hardwareId, measurement, EventType.TELEMETRY, new String[]{field});
-        if (last != null && CollectionUtils.isNotEmpty(last.getValues()) && CollectionUtils
-          .isNotEmpty(last.getValues().get(0))) {
-          fieldDTO.setValue(last.getValues().get(0).get(1));
-        }
-        return fieldDTO;
-      }).collect(Collectors.toList());
-    }
+//    final Optional<DataSink> telemetryReader = dataSinkManager.getTelemetryReader();
+//    if (!telemetryReader.isPresent()) {
+//      log.warning("No telemetry reader data sink available to obtain fields.");
+//      return new ArrayList<>();
+//    } else {
+//      String hardwareId = deviceService.findById(id, false).getHardwareId();
+//      return configuredFields.stream().map(fieldDTO -> {
+//        String measurement = fieldDTO.getName().split("\\.")[0];
+//        String field = fieldDTO.getName().split("\\.")[1];
+//        final DataSinkQueryResult last = telemetryReader.get()
+//          .getLast(hardwareId, measurement, EventType.TELEMETRY, new String[]{field});
+//        if (last != null && CollectionUtils.isNotEmpty(last.getValues()) && CollectionUtils
+//          .isNotEmpty(last.getValues().get(0))) {
+//          fieldDTO.setValue(last.getValues().get(0).get(1));
+//        }
+//        return fieldDTO;
+//      }).collect(Collectors.toList());
+//    }
+    return null;
   }
 
   /**
@@ -102,23 +96,24 @@ public class DevicePageService {
    * these are discovered from the underlying data sink.
    */
   public List<FieldDTO> findAllSynthetic() {
-    final Optional<DataSink> telemetryReader = dataSinkManager.getTelemetryReader();
-    if (!telemetryReader.isPresent()) {
-      return new ArrayList<>();
-    } else {
-      // Get the list of all fields devices submit.
-      final List<FieldDTO> fields = telemetryReader.get().getFields();
-
-      // Get the configuration for those fields for the UI and complement them with new fields.
-      final List<FieldDTO> configuredMeasurements = findAll();
-      fields.forEach(o -> {
-        if (configuredMeasurements.stream().noneMatch(metadataFieldDTO
-          -> o.getName().equals(metadataFieldDTO.getName()))) {
-          configuredMeasurements.add(o);
-        }
-      });
-
-      return configuredMeasurements;
-    }
+//    final Optional<DataSink> telemetryReader = dataSinkManager.getTelemetryReader();
+//    if (!telemetryReader.isPresent()) {
+//      return new ArrayList<>();
+//    } else {
+//      // Get the list of all fields devices submit.
+//      final List<FieldDTO> fields = telemetryReader.get().getFields();
+//
+//      // Get the configuration for those fields for the UI and complement them with new fields.
+//      final List<FieldDTO> configuredMeasurements = findAll();
+//      fields.forEach(o -> {
+//        if (configuredMeasurements.stream().noneMatch(metadataFieldDTO
+//          -> o.getName().equals(metadataFieldDTO.getName()))) {
+//          configuredMeasurements.add(o);
+//        }
+//      });
+//
+//      return configuredMeasurements;
+//    }
+    return null;
   }
 }

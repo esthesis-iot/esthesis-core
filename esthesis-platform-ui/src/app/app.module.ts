@@ -31,10 +31,8 @@ import {QFormsModule} from '@eurodyn/forms';
 import {HeaderComponent} from './shared/layout/header.component';
 import {FooterComponent} from './shared/layout/footer.component';
 import {SidenavComponent} from './shared/layout/sidenav.component';
-import {ContainersModule} from './shared/component/containers/containers.module';
 import {DisplayModule} from './shared/component/display/display.module';
 import {CanActivateGuard} from './shared/guards/can-activate-guard';
-import {ContainerDeployComponent} from './shared/component/containers/container-deploy.component';
 import {OkCancelModalComponent} from './shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {CommandComponent} from './shared/component/commands/command.component';
 import {CommandsModule} from './shared/component/commands/commands.module';
@@ -78,7 +76,6 @@ export function getJwtToken(): string {
     MatSnackBarModule,
     MatInputModule,
     MatButtonModule,
-    ContainersModule,
     CommandsModule,
     DisplayModule,
     NgProgressModule.withConfig({
@@ -99,7 +96,7 @@ export function getJwtToken(): string {
     QFormsModule,
   ],
   bootstrap: [AppComponent],
-  entryComponents: [ContainerDeployComponent, OkCancelModalComponent, CommandComponent, TextModalComponent],
+  entryComponents: [OkCancelModalComponent, CommandComponent, TextModalComponent],
 })
 export class AppModule {
 }

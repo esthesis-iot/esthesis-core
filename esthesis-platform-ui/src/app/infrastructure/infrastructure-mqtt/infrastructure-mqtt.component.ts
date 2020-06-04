@@ -6,7 +6,6 @@ import {QFormsService} from '@eurodyn/forms';
 import {MqttServerDto} from '../../dto/mqtt-server-dto';
 import {MqttServerService} from './mqtt-server.service';
 import {BaseComponent} from '../../shared/component/base-component';
-import {ContainersPopupService} from '../../shared/component/containers/containers-popup.service';
 
 @Component({
   selector: 'app-infrastructure-mqtt',
@@ -20,8 +19,7 @@ export class InfrastructureMqttComponent extends BaseComponent implements OnInit
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private mqttServerService: MqttServerService, private qForms: QFormsService,
-              private containersPopupService: ContainersPopupService) {
+  constructor(private mqttServerService: MqttServerService, private qForms: QFormsService) {
     super();
   }
 
@@ -51,10 +49,6 @@ export class InfrastructureMqttComponent extends BaseComponent implements OnInit
   changePage() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
       this.sort.start);
-  }
-
-  deployContainer() {
-    this.containersPopupService.deployContainerPopup();
   }
 
 }

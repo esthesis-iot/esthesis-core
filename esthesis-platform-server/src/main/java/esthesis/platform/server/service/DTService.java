@@ -1,10 +1,7 @@
 package esthesis.platform.server.service;
 
-import com.eurodyn.qlack.common.exception.QDoesNotExistException;
-import esthesis.common.config.AppConstants.Mqtt;
 import esthesis.common.datasink.DataSink;
 import esthesis.common.datasink.dto.DataSinkQueryResult;
-import esthesis.platform.server.cluster.datasinks.DataSinkManager;
 import esthesis.platform.server.model.Device;
 import esthesis.platform.server.repository.DeviceRepository;
 import javax.validation.constraints.NotNull;
@@ -23,51 +20,54 @@ import java.util.stream.Collectors;
 @Transactional
 public class DTService {
 
-  private final DataSinkManager dataSinkManager;
+//  private final DataSinkManager dataSinkManager;
   private final DeviceRepository deviceRepository;
 
-  public DTService(DataSinkManager dataSinkManager,
+  public DTService(
+//    DataSinkManager dataSinkManager,
     DeviceRepository deviceRepository) {
-    this.dataSinkManager = dataSinkManager;
+//    this.dataSinkManager = dataSinkManager;
     this.deviceRepository = deviceRepository;
   }
 
   private DataSink getDataSinkReader(String mqttEventType) {
-    Optional<DataSink> dataSinkEntry = Optional.empty();
-
-    switch (mqttEventType) {
-      case Mqtt.EventType.METADATA:
-        dataSinkEntry = dataSinkManager.getMetadataReader();
-        break;
-      case Mqtt.EventType.TELEMETRY:
-        dataSinkEntry = dataSinkManager.getTelemetryReader();
-        break;
-    }
-
-    if (!dataSinkEntry.isPresent()) {
-      throw new QDoesNotExistException("Could not find a matching data sink.");
-    }
-
-    return dataSinkEntry.get();
+//    Optional<DataSink> dataSinkEntry = Optional.empty();
+//
+//    switch (mqttEventType) {
+//      case Mqtt.EventType.METADATA:
+//        dataSinkEntry = dataSinkManager.getMetadataReader();
+//        break;
+//      case Mqtt.EventType.TELEMETRY:
+//        dataSinkEntry = dataSinkManager.getTelemetryReader();
+//        break;
+//    }
+//
+//    if (!dataSinkEntry.isPresent()) {
+//      throw new QDoesNotExistException("Could not find a matching data sink.");
+//    }
+//
+//    return dataSinkEntry.get();
+    return null;
   }
 
   private DataSink getDataSinkWriter(String mqttEventType) {
     Optional<DataSink> dataSinkEntry = Optional.empty();
 
-    switch (mqttEventType) {
-      case Mqtt.EventType.METADATA:
-        dataSinkEntry = dataSinkManager.getMetadataWriter();
-        break;
-      case Mqtt.EventType.TELEMETRY:
-        dataSinkEntry = dataSinkManager.getTelemetryWriter();
-        break;
-    }
-
-    if (!dataSinkEntry.isPresent()) {
-      throw new QDoesNotExistException("Could not find a matching data sink.");
-    }
-
-    return dataSinkEntry.get();
+//    switch (mqttEventType) {
+//      case Mqtt.EventType.METADATA:
+//        dataSinkEntry = dataSinkManager.getMetadataWriter();
+//        break;
+//      case Mqtt.EventType.TELEMETRY:
+//        dataSinkEntry = dataSinkManager.getTelemetryWriter();
+//        break;
+//    }
+//
+//    if (!dataSinkEntry.isPresent()) {
+//      throw new QDoesNotExistException("Could not find a matching data sink.");
+//    }
+//
+//    return dataSinkEntry.get();
+    return null;
   }
 
   public DataSinkQueryResult getFirst(@NotNull String hardwareId, @NotNull String mqttEventType,
