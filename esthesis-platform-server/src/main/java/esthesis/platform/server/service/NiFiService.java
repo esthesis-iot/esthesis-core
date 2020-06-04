@@ -42,7 +42,7 @@ public class NiFiService extends BaseService<NiFiDTO, NiFi> {
       .scan()) {
       final ResourceList resources = scanResult.getResourcesWithExtension("xml");
       if (CollectionUtils.isNotEmpty(resources)) {
-        version = resources.get(0).getPath();
+        version = resources.get(resources.size() - 1).getPath();
       }
     }
 
@@ -61,7 +61,7 @@ public class NiFiService extends BaseService<NiFiDTO, NiFi> {
   @Override
   @CacheEvict("esthesis.platform.server.activeNiFi")
   public NiFiDTO save(NiFiDTO dto) {
-    if (dto.isState()) {
+    if (this.nifiRepository.count() > 0 && dto.isState()) {
       NiFiDTO activeNiFi = getActiveNiFi();
       activeNiFi.setState(false);
       super.save(activeNiFi);
