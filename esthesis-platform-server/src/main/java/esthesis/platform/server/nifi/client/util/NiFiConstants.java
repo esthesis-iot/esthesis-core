@@ -8,28 +8,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class NifiConstants {
+public class NiFiConstants {
 
   public enum PATH {
     //root group
     ESTHESIS(new String[]{"[ESTHESIS]"}),
 
-    //consumers
-    CONSUMERS_PING_CONSUMER_HTTP(new String[]{"[ESTHESIS]", "[C]", "[PC]", "[H]"}),
-    CONSUMERS_PING_CONSUMER_MQTT(new String[]{"[ESTHESIS]", "[C]", "[PC]", "[M]", "[C]"}),
-    CONSUMERS_PING_WRITER(new String[]{"[ESTHESIS]", "[C]", "[PW]"}),
-
-    CONSUMERS_METADATA_CONSUMER_MQTT(new String[]{"[ESTHESIS]", "[C]", "[MC]", "[M]", "[C]"}),
-    CONSUMERS_METADATA_WRITER_INFLUXDB(new String[]{"[ESTHESIS]", "[C]", "[MW]", "[I]", "[W]"}),
-    CONSUMERS_METADATA_WRITER_MYSQL(new String[]{"[ESTHESIS]", "[C]", "[MW]", "[M]", "[W]"}),
-
-    CONSUMERS_TELEMETRY_CONSUMER_MQTT(new String[]{"[ESTHESIS]", "[C]", "[TC]", "[M]", "[C]"}),
-    CONSUMERS_TELEMETRY_WRITER_INFLUXDB(new String[]{"[ESTHESIS]", "[C]", "[TW]", "[I]", "[W]"}),
-    CONSUMERS_TELEMETRY_WRITER_MYSQL(new String[]{"[ESTHESIS]", "[C]", "[TW]", "[M]", "[W]"}),
-
-    //producers
-    PRODUCERS_INFLUXDB_READER_EXECUTOR(new String[]{"[ESTHESIS]", "[P]", "[R]", "[I]", "[E]"}),
-    PRODUCERS_MYSQL_READER_EXECUTOR(new String[]{"[ESTHESIS]", "[P]", "[R]", "[M]", "[E]"});
+    //sink types
+    CONSUMERS(new String[]{"[C]"}),
+    PRODUCERS(new String[]{"[P]"}),
+    WRITERS(new String[]{"[W]"}),
+    LOGGERS(new String[]{"[L]"}),
+    INSTANCES(new String[]{"[I]"});
 
     @Getter
     private final String[] path;
@@ -45,35 +35,6 @@ public class NifiConstants {
     PATH(String[] path) {
       this.path = path;
     }
-  }
-
-  @UtilityClass
-  public static final class PORTS {
-
-    //input ports
-    public static final String CONSUMERS_METADATA_INFLUX_WRITERS_IN =
-      "consumers_metadatawriters_influxdb_writers_in";
-    public static final String CONSUMERS_METADATA_MYSQL_WRITERS_IN =
-      "consumers_metadatawriters_mysql_writers_in";
-    public static final String CONSUMERS_TELEMETRY_INFLUX_WRITERS_IN =
-      "consumers_telemetrywriters_influxdb_writers_in";
-    public static final String CONSUMERS_TELEMETRY_MYSQL_WRITERS_IN =
-      "consumers_telemetrywriters_mysql_writers_in";
-
-    //output ports
-    public static final String CONSUMERS_PING_MQTT_CONSUMERS_OUT = "consumers_pingconsumers_mqtt_consumers_out";
-    public static final String CONSUMERS_METADATA_MQTT_CONSUMERS_OUT =
-      "consumers_metadataconsumers_mqtt_consumers_out";
-    public static final String CONSUMERS_TELEMETRY_MQTT_CONSUMERS_OUT =
-      "consumers_telemetryconsumers_mqtt_consumers_out";
-    public static final String CONSUMERS_METADATA_INFLUX_WRITERS_LOGOUT =
-      "consumers_metadatawriters_influxdb_writers_logout";
-    public static final String CONSUMERS_METADATA_MYSQL_WRITERS_LOGOUT =
-      "consumers_metadatawriters_mysql_writers_logout";
-    public static final String CONSUMERS_TELEMETRY_INFLUX_WRITERS_LOGOUT =
-      "consumers_telemetrywriters_influxdb_writers_logout";
-    public static final String CONSUMERS_TELEMETRY_MYSQL_WRITERS_LOGOUT =
-      "consumers_telemetrywriters_mysql_writers_logout";
   }
 
   @UtilityClass
@@ -119,6 +80,8 @@ public class NifiConstants {
       public static final String MQTT_CONSUME = "org.apache.nifi.processors.mqtt.ConsumeMQTT";
       public static final String PUT_INFLUX_DB = "org.apache.nifi.processors.influxdb.PutInfluxDB";
       public static final String PUT_DATABASE_RECORD = "org.apache.nifi.processors.standard.PutDatabaseRecord";
+      public static final String EXECUTE_INFLUX_DB = "org.apache.nifi.processors.influxdb.ExecuteInfluxDBQuery";
+      public static final String EXECUTE_SQL = "org.apache.nifi.processors.standard.ExecuteSQL";
 
     }
   }
@@ -153,12 +116,26 @@ public class NifiConstants {
     public static final String INFLUX_CONSISTENCY_LEVEL = "influxdb-consistency-level";
     public static final String INFLUX_RETENTION_POLICY = "influxdb-retention-policy";
     public static final String INFLUX_MAX_RECORDS_SIZE = "influxdb-max-records-size";
+
+    public static final String INFLUX_QUERY_RESULT_TIME_UNIT = "influxdb-query-result-time-unit";
+    public static final String INFLUX_QUERY = "influxdb-query";
+    public static final String INFLUX_QUERY_CHUNK_SIZE = "influxdb-query-chunk-size";
+
     public static final String PUT_DB_RECORD_READER = "put-db-record-record-reader";
     public static final String PUT_DB_RECORD_STATEMENT_TYPE = "put-db-record-statement-type";
     public static final String PUT_DB_RECORD_DCBP_SERVICE = "put-db-record-dcbp-service";
     public static final String PUT_DB_RECORD_TABLE_NAME = "put-db-record-table-name";
     public static final String AUTO_TERMINATED_RELATIONSHIPS = "autoTerminatedRelationships";
 
+    public static final String SQL_PRE_QUERY = "sql-pre-query";
+    public static final String SQL_SELECT_QUERY = "SQL select query";
+    public static final String SQL_POST_QUERY = "sql-post-query";
+    public static final String DBF_NORMALIZE = "dbf-normalize";
+    public static final String DBF_USER_LOGICAL_TYPES = "dbf-user-logical-types";
+    public static final String COMPRESSION_FORMAT = "compression-format";
+    public static final String DBF_DEFAULT_PRECISION = "dbf-default-precision";
+    public static final String ESQL_MAX_ROWS = "esql-max-rows";
+    public static final String DCBP_SERVICE = "Database Connection Pooling Service";
 
     @UtilityClass
     public static final class Values {
@@ -210,11 +187,19 @@ public class NifiConstants {
 
       @AllArgsConstructor
       @Getter
-      public enum RELATIONSHIP_TYPE {
-        MESSAGE("Message"),
+      public enum FAILED_RELATIONSHIP_TYPES {
+
         FAILURE("failure"),
         FAILURE_MAX_SIZE("failure-max-size"),
-        RETRY("retry"),
+        RETRY("retry");
+
+        private final String type;
+      }
+
+      @AllArgsConstructor
+      @Getter
+      public enum SUCCESSFUL_RELATIONSHIP_TYPES {
+        MESSAGE("Message"),
         SUCCESS("success");
 
         private final String type;

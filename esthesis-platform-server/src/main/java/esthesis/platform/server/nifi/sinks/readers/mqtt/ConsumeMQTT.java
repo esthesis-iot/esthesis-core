@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.platform.server.dto.nifisinks.NiFiSinkDTO;
 import esthesis.platform.server.model.NiFiSink;
 import esthesis.platform.server.nifi.client.services.NiFiClientService;
-import esthesis.platform.server.nifi.client.util.NifiConstants.PATH;
-import esthesis.platform.server.nifi.client.util.NifiConstants.PORTS;
-import esthesis.platform.server.nifi.client.util.NifiConstants.Properties.Values.STATE;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import esthesis.platform.server.nifi.sinks.readers.NiFiReaderFactory;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -21,9 +19,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class ConsumeMQTT implements NiFiReaderFactory {
 
+  private final static String NAME = "ConsumeMQTT";
   private final ObjectMapper objectMapper;
   private final NiFiClientService niFiClientService;
-  private final static String NAME = "ConsumeMQTT";
   private ConsumeMQTTConfiguration conf;
 
   @Override
@@ -59,12 +57,9 @@ public class ConsumeMQTT implements NiFiReaderFactory {
   }
 
   @Override
-  public NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
+  public NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
 
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
-
-    PATH pathByHandler = findPathByHandler(niFiSinkDTO.getHandler());
-    String portByHandler = findOutputPortByHandler(niFiSinkDTO.getHandler());
 
     String sslContextId = null;
     conf.getKeystoreFilename();
@@ -81,17 +76,18 @@ public class ConsumeMQTT implements NiFiReaderFactory {
         conf.getKeystoreFilename(),
         conf.getKeystorePassword(),
         conf.getTruststoreFilename(),
-        conf.getTruststorePassword(), pathByHandler);
+        conf.getTruststorePassword(), path);
 
       CustomInfo customInfo = new CustomInfo();
       customInfo.setSslContextId(sslContextId);
       niFiSinkDTO.setCustomInfo(objectMapper.writeValueAsString(customInfo));
+      enableControllerServices(sslContextId);
     }
 
     String consumerMqtt = niFiClientService
       .createConsumerMqtt(niFiSinkDTO.getName(), conf.getUri(),
         conf.getTopic(), conf.getQos(),
-        conf.getQueueSize(), sslContextId, pathByHandler, portByHandler);
+        conf.getQueueSize(), sslContextId, path);
 
     niFiSinkDTO.setProcessorId(consumerMqtt);
     return niFiSinkDTO;
@@ -133,30 +129,6 @@ public class ConsumeMQTT implements NiFiReaderFactory {
   public void enableControllerServices(String... controllerServices) throws IOException {
     for (String id : controllerServices) {
       niFiClientService.changeControllerServiceStatus(id, STATE.ENABLED);
-    }
-  }
-
-  @Override
-  public PATH findPathByHandler(int handler) {
-    switch (handler) {
-      case 1:
-        return PATH.CONSUMERS_PING_CONSUMER_MQTT;
-      case 2:
-        return PATH.CONSUMERS_METADATA_CONSUMER_MQTT;
-      default:
-        return PATH.CONSUMERS_TELEMETRY_CONSUMER_MQTT;
-    }
-  }
-
-  @Override
-  public String findOutputPortByHandler(int handler) {
-    switch (handler) {
-      case 1:
-        return PORTS.CONSUMERS_PING_MQTT_CONSUMERS_OUT;
-      case 2:
-        return PORTS.CONSUMERS_METADATA_MQTT_CONSUMERS_OUT;
-      default:
-        return PORTS.CONSUMERS_TELEMETRY_MQTT_CONSUMERS_OUT;
     }
   }
 

@@ -2,7 +2,6 @@ package esthesis.platform.server.nifi.sinks;
 
 import esthesis.platform.server.dto.nifisinks.NiFiSinkDTO;
 import esthesis.platform.server.model.NiFiSink;
-import esthesis.platform.server.nifi.client.util.NifiConstants.PATH;
 
 import java.io.IOException;
 
@@ -29,7 +28,7 @@ public interface NiFiSinkFactory {
    * @param niFiSinkDTO An object containing all required properties.
    * @return the id of the newly created sink.
    */
-  NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO) throws IOException;
+  NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException;
 
   String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO) throws IOException;
 
@@ -38,10 +37,6 @@ public interface NiFiSinkFactory {
   String toggleSink(String id, boolean isEnabled) throws IOException;
 
   void enableControllerServices(String... controllerServices) throws IOException;
-
-  PATH findPathByHandler(int handler);
-
-  String findOutputPortByHandler(int handler);
 
   String getSinkValidationErrors(String id) throws IOException;
 }

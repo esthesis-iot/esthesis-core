@@ -1,5 +1,8 @@
 package esthesis.platform.server.config;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * Various constants used throughout the application.
  */
@@ -136,14 +139,20 @@ public class AppConstants {
     public static final int CANT_GENERATE_PROVISIONING_AES_KEY = 2;
   }
 
-  public class NiFiSinkHandler {
+  @AllArgsConstructor
+  @Getter
+  public enum NIFI_SINK_HANDLER {
 
-    public static final int PING = 1;
-    public static final int METADATA = 2;
-    public static final int TELEMETRY = 3;
+    PING(1),
+    METADATA(2),
+    TELEMETRY(3);
+
+    private final int type;
+
   }
 
   public class Http {
+
     public static final String AUTHORIZATION = "Authorization";
   }
 }

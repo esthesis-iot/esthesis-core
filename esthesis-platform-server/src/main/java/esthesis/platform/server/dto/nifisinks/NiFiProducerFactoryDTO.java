@@ -19,7 +19,6 @@ public class NiFiProducerFactoryDTO extends BaseDTO {
   private String factoryClass;
   private String friendlyName;
   private String version;
-  private String configurationTemplate;
-  private boolean supportsMetadataProduce;
   private boolean supportsTelemetryProduce;
+  private String configurationTemplate;
 }

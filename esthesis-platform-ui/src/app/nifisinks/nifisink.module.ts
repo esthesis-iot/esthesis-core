@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {NifiSinkComponent} from './nifi-sink.component';
-import {NiFiSinkEditComponent} from './ni-fi-sink-edit.component';
+import {NiFiSinkComponent} from './nifi-sink.component';
+import {NiFiSinkEditComponent} from './nifi-sink-edit.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
@@ -21,14 +21,14 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {QFormsModule} from '@eurodyn/forms';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
-import {NifiSinkRoutingModule} from './nifi-sink-routing.module';
+import {NiFiSinkRoutingModule} from './nifi-sink-routing.module';
 import {DisplayModule} from '../shared/component/display/display.module';
 
 @NgModule({
-  declarations: [NifiSinkComponent, NiFiSinkEditComponent],
+  declarations: [NiFiSinkComponent, NiFiSinkEditComponent],
   imports: [
     CommonModule,
-    NifiSinkRoutingModule,
+    NiFiSinkRoutingModule,
     FlexLayoutModule,
     MatButtonModule,
     MatCardModule,

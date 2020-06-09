@@ -7,16 +7,14 @@ import esthesis.platform.server.nifi.client.dto.NiFiAboutDTO;
 import esthesis.platform.server.nifi.client.dto.NiFiSearchAlgorithm;
 import esthesis.platform.server.nifi.client.dto.NiFiTemplateDTO;
 import esthesis.platform.server.nifi.client.util.JacksonIgnoreInvalidFormatException;
-import esthesis.platform.server.nifi.client.util.NifiConstants;
-import esthesis.platform.server.nifi.client.util.NifiConstants.PATH;
-import esthesis.platform.server.nifi.client.util.NifiConstants.Properties.Values.CONSISTENCY_LEVEL;
-import esthesis.platform.server.nifi.client.util.NifiConstants.Properties.Values.DATA_UNIT;
-import esthesis.platform.server.nifi.client.util.NifiConstants.Properties.Values.STATE;
+import esthesis.platform.server.nifi.client.util.NiFiConstants;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONSISTENCY_LEVEL;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.DATA_UNIT;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.nifi.web.api.entity.AboutEntity;
 import org.apache.nifi.web.api.entity.ControllerServiceEntity;
-import org.apache.nifi.web.api.entity.ProcessGroupEntity;
 import org.apache.nifi.web.api.entity.ProcessorEntity;
 import org.apache.nifi.web.api.entity.ScheduleComponentsEntity;
 import org.apache.nifi.web.api.entity.TemplateEntity;
@@ -28,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -193,10 +192,10 @@ public class NiFiClientService {
   /**
    * Find the id of the process group containing the element under the requested path.
    */
-  private String findProcessGroupId(PATH path) throws IOException {
-    return niFiClient.findProcessGroup(NiFiSearchAlgorithm.NAME_ENDS_WITH, path.asList())
+  private String findProcessGroupId(String[] path) throws IOException {
+    return niFiClient.findProcessGroup(NiFiSearchAlgorithm.NAME_ENDS_WITH, Arrays.asList(path))
       .orElseThrow(() -> new IllegalArgumentException(
-        MessageFormat.format("Could not find process for {0}.", path.asString()))).getId();
+        MessageFormat.format("Could not find process for {0}.", Arrays.asList(path)))).getId();
   }
 
   /**
@@ -206,7 +205,7 @@ public class NiFiClientService {
    * @param type The type of the ControllerService.
    * @return the id of the controller service if found, null otherwise.
    */
-  public String findControllerServiceId(@NotNull PATH path, @NotNull String type)
+  public String findControllerServiceId(@NotNull String[] path, @NotNull String type)
     throws IOException {
     String parentProcessGroupId = findProcessGroupId(path);
     Optional<ControllerServiceEntity> controllerService = this.niFiClient
@@ -216,37 +215,20 @@ public class NiFiClientService {
   }
 
   /**
-   * Changesthe state of all elements in given processor group.
+   * Changes the state of all elements in given processor group.
    *
    * @param path The path of the group.
    * @param state The state all elements will be changed to.
    * @return The update state.
    */
-  public String changeProcessorGroupState(@NotNull PATH path,
-    @NotNull NifiConstants.Properties.Values.STATE state) throws IOException {
+  public String changeProcessorGroupState(@NotNull String[] path,
+    @NotNull NiFiConstants.Properties.Values.STATE state) throws IOException {
     String parentProcessGroupId = findProcessGroupId(path);
 
     final ScheduleComponentsEntity scheduleComponentsEntity =
       this.niFiClient.changeProcessorGroupState(parentProcessGroupId,
         state);
     return scheduleComponentsEntity.getState();
-  }
-
-  /**
-   * Searches for an Output Port by name and parent group id.
-   *
-   * @param path The path where the output port is located.
-   * @param name The name of the output port.
-   * @return The id of the matching output port, null otherwise.
-   */
-  public String findOutputPortByName(PATH path, String name) throws IOException {
-    Optional<ProcessGroupEntity> parentProcessGroup = niFiClient
-      .findProcessGroup(NiFiSearchAlgorithm.NAME_ENDS_WITH,
-        path.asList());
-
-    return parentProcessGroup.isPresent() ? niFiClient
-      .findOutputPortByName(
-        parentProcessGroup.get().getId(), name).getComponent().getId() : null;
   }
 
   /**
@@ -261,7 +243,7 @@ public class NiFiClientService {
    * @return The id of the newly created service.
    */
   public String createSSLContext(String name, String keystoreFilename, String keystorePassword,
-    String truststoreFilename, String truststorePassword, PATH path)
+    String truststoreFilename, String truststorePassword, String[] path)
     throws IOException {
     String parentProcessGroupId = findProcessGroupId(path);
 
@@ -307,7 +289,7 @@ public class NiFiClientService {
   public String createDBConnectionPool(String name, String databaseConnectionURL,
     String databaseDriverClassName, String databaseDriverClassLocation, String databaseUser,
     String password,
-    PATH path)
+    String[] path)
     throws IOException {
     String parentProcessGroupId = findProcessGroupId(path);
 
@@ -342,7 +324,14 @@ public class NiFiClientService {
     return controllerServiceEntity.getId();
   }
 
-  public String createJsonTreeReader(String name, PATH path) throws IOException {
+  /**
+   * Creates a JSON Tree Reader Controller Service
+   *
+   * @param name The name of the service.
+   * @param path The path of the parent group where the service will be created.
+   * @return The id of the newly created service.
+   */
+  public String createJsonTreeReader(String name, String[] path) throws IOException {
     String parentProcessGroupId = findProcessGroupId(path);
 
     return niFiClient.createJsonTreeReader(name, parentProcessGroupId).getId();
@@ -385,12 +374,10 @@ public class NiFiClientService {
    * @param sslContextServiceId the if of the SSL Context Service used to provide client certificate
    * information for TLS/SSL connections.
    * @param path The path of the parent group where the processor will be created.
-   * @param outputPortName The name of the output port to connect.
    * @return The id of the newly created processor.
    */
   public String createConsumerMqtt(@NotNull String name, @NotNull String uri, @NotNull String topic,
-    int qos, int queueSize, @Nullable String sslContextServiceId, @NotNull PATH path,
-    @NotNull String outputPortName)
+    int qos, int queueSize, @Nullable String sslContextServiceId, @NotNull String[] path)
     throws IOException {
     // Find the group Id of the process group under which this reader will be created.
     String parentProcessGroupId = findProcessGroupId(path);
@@ -398,7 +385,7 @@ public class NiFiClientService {
     // Create the consumer.
     final ProcessorEntity processorEntity = niFiClient
       .createConsumerMQTT(parentProcessGroupId, name, uri, topic, qos, queueSize,
-        sslContextServiceId, outputPortName);
+        sslContextServiceId);
 
     return processorEntity.getId();
   }
@@ -412,12 +399,11 @@ public class NiFiClientService {
    * @param qos The Quality of Service(QoS) to receive the message with.
    * @param queueSize Maximum number of messages this processor will hold in memory at one time.
    * @param path The path of the parent group where the processor will be created.
-   * @param outputPortName The name of the output port to connect.
    * @return The id of the newly created processor.
    */
   public String createConsumerMqtt(String name, String uri, String topic, int qos, int queueSize,
-    PATH path, String outputPortName) throws IOException {
-    return createConsumerMqtt(name, uri, topic, qos, queueSize, null, path, outputPortName);
+    String[] path) throws IOException {
+    return createConsumerMqtt(name, uri, topic, qos, queueSize, null, path);
   }
 
   public String updateConsumerMQTT(String id, String uri, String topic, int qos, int queueSize)
@@ -441,27 +427,40 @@ public class NiFiClientService {
    * @param maxRecordSize Maximum size of records allowed to be posted in one batch
    * @param maxRecordSizeUnit Unit for max record size.
    * @param path The path of the parent group where the processor will be created.
-   * @param outputPortName The name of the output port to connect.
-   * @param inputPortName The name of the input port to connect.
    * @return The id of the newly created processor.
    */
   public String createPutInfluxDB(@NotNull String name, @NotNull String dbName, @NotNull String url,
     int maxConnectionTimeoutSeconds, String username, String password, String charset,
     CONSISTENCY_LEVEL level, String retentionPolicy, int maxRecordSize,
-    DATA_UNIT maxRecordSizeUnit, @NotNull PATH path, @NotNull String inputPortName,
-    @NotNull String outputPortName) throws IOException {
+    DATA_UNIT maxRecordSizeUnit, @NotNull String[] path) throws IOException {
     // Find the group Id of the process group under which this reader will be created.
     String parentProcessGroupId = findProcessGroupId(path);
 
     // Create the influx db writer.
     final ProcessorEntity processorEntity = niFiClient
       .createPutInfluxDB(parentProcessGroupId, name, dbName, url, maxConnectionTimeoutSeconds,
-        username, password, charset, level, retentionPolicy, maxRecordSize, maxRecordSizeUnit
-        , inputPortName, outputPortName);
+        username, password, charset, level, retentionPolicy, maxRecordSize, maxRecordSizeUnit);
 
     return processorEntity.getId();
   }
 
+  /**
+   * Updates a PutInfluxDB processor.
+   *
+   * @param id The id of the processor that will be updated.
+   * @param dbName InfluxDB database to connect to.
+   * @param url InfluxDB URL to connect to.
+   * @param maxConnectionTimeoutSeconds The maximum time (in seconds) for establishing connection to
+   * the InfluxDB.
+   * @param username Username for accessing InfluxDB.
+   * @param password Password for user.
+   * @param charset Specifies the character set of the document data.
+   * @param level InfluxDB consistency level.
+   * @param retentionPolicy Retention policy for the saving the records.
+   * @param maxRecordSize Maximum size of records allowed to be posted in one batch
+   * @param maxRecordSizeUnit Unit for max record size.
+   * @return The id of the processor.
+   */
   public String updatePutInfluxDB(String id, @NotNull String dbName, @NotNull String url,
     int maxConnectionTimeoutSeconds, String username, String password, String charset,
     CONSISTENCY_LEVEL level, String retentionPolicy, int maxRecordSize,
@@ -482,30 +481,138 @@ public class NiFiClientService {
    * @param statementType Specifies the type of SQL Statement to generate.
    * @param tableName The name of the table that the statement should affect.
    * @param path The path of the parent group where the processor will be created.
-   * @param outputPortName The name of the output port to connect.
    * @return The id of the newly created processor.
    */
   public String createPutDatabaseRecord(
     @NotNull String name, @NotNull String recordReaderId, @NotNull String dcbpServiceId,
-    @NotNull NifiConstants.Properties.Values.STATEMENT_TYPE statementType,
-    @NotNull String tableName, @NotNull PATH path, @NotNull String inputPortName,
-    @NotNull String outputPortName) throws IOException {
+    @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType,
+    @NotNull String tableName, @NotNull String[] path) throws IOException {
     // Configuration.
     String parentProcessGroupId = findProcessGroupId(path);
 
     // Create the database writer.
     final ProcessorEntity processorEntity = niFiClient
       .createPutDatabaseRecord(parentProcessGroupId, name, recordReaderId,
-        dcbpServiceId, statementType, tableName, inputPortName, outputPortName);
+        dcbpServiceId, statementType, tableName);
 
     return processorEntity.getId();
   }
 
+  /**
+   * Updates a PutDatabaseRecord processor.
+   *
+   * @param processorId The id of the processor.
+   * @param statementType Specifies the type of SQL Statement to generate.
+   * @param tableName The name of the table that the statement should affect.
+   * @return The id of the newly updated processor.
+   */
   public String updatePutDatabaseRecord(String processorId,
-    @NotNull NifiConstants.Properties.Values.STATEMENT_TYPE statementType,
+    @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType,
     @NotNull String tableName) throws IOException {
 
     return niFiClient.updatePutDatabaseRecord(processorId, statementType, tableName).getId();
+  }
+
+  /**
+   * Creates an ExecuteInfluxDb processor.
+   *
+   * @param name The name of the processor.
+   * @param dbName The name of the Influx Database.
+   * @param url The url of the Influx Database.
+   * @param maxConnectionTimeoutSeconds The maximum time of establising connection to Influx
+   * Database
+   * @param queryResultTimeUnit The time unit of query results from theInflux Database.
+   * @param query The query to execute.
+   * @param queryChunkSize The chunk size of the query result.
+   * @param path The path of the parent group where the processor will be created.
+   * @return the id of the newly created processor.
+   */
+  public String createExecuteInfluxDB(@NotNull String name, @NotNull String dbName,
+    @NotNull String url,
+    int maxConnectionTimeoutSeconds, String queryResultTimeUnit,
+    String query, int queryChunkSize, @NotNull String[] path)
+    throws IOException {
+
+    String parentProcessGroupId = findProcessGroupId(path);
+
+    return niFiClient.createExecuteInfluxDB(parentProcessGroupId, name, dbName, url,
+      maxConnectionTimeoutSeconds, queryResultTimeUnit, query, queryChunkSize)
+      .getId();
+  }
+
+  /**
+   * Updates an ExecuteInfluxDb processor.
+   *
+   * @param processorId The id of the processor.
+   * @param dbName The name of the Influx Database.
+   * @param url The url of the Influx Database.
+   * @param maxConnectionTimeoutSeconds The maximum time of establising connection to Influx
+   * Database
+   * @param queryResultTimeUnit The time unit of query results from theInflux Database.
+   * @param query The query to execute.
+   * @param queryChunkSize The chunk size of the query result.
+   * @return the id of the updated processor.
+   */
+  public String updateExecuteInfluxDB(@NotNull String processorId, @NotNull String dbName,
+    @NotNull String url,
+    int maxConnectionTimeoutSeconds, String queryResultTimeUnit,
+    String query, int queryChunkSize) throws IOException {
+
+    return niFiClient.updateExecuteInfluxDB(processorId, dbName, url, maxConnectionTimeoutSeconds
+      , queryResultTimeUnit, query, queryChunkSize).getId();
+  }
+
+  /**
+   * Creates an ExecuteSQL processor.
+   *
+   * @param name The name of the processor.
+   * @param dcbpServiceId The if of the Database Connection Pool service.
+   * @param sqlPreQuery SQL Queries executed before the main query.
+   * @param sqlSelectQuery The SQL select query that tha will be executed.
+   * @param sqlPostQuery SQL Queries executed after the main query.
+   * @param dbfNormalize Whether to normalize non-Avro-compatible characters to compatible.
+   * @param dbfUserLogicalTypes Whether to use Avro Logical types for Numbers/Dates/Timestamps etc.
+   * @param compressionFormat Compression type when writing Avro files.
+   * @param dbfDefaultPrecision Precision of Avro logical type.
+   * @param esqlMaxRows Maximum number of result rows.
+   * @param path The path of the parent group where the processor will be created.
+   * @return the id of the newly created processor.
+   */
+  public String createExecuteSQL(@NotNull String name, String dcbpServiceId, String sqlPreQuery,
+    String sqlSelectQuery, String sqlPostQuery, String dbfNormalize, String dbfUserLogicalTypes,
+    String compressionFormat, String dbfDefaultPrecision, String esqlMaxRows,
+    @NotNull String[] path) throws IOException {
+
+    String parentProcessGroupId = findProcessGroupId(path);
+
+    return niFiClient.createExecuteSQL(parentProcessGroupId, name, dcbpServiceId, sqlPreQuery,
+      sqlSelectQuery, sqlPostQuery, dbfNormalize, dbfUserLogicalTypes, compressionFormat,
+      dbfDefaultPrecision,
+      esqlMaxRows).getId();
+  }
+
+  /**
+   * Updates an ExecuteSQL processor.
+   *
+   * @param processorId The id of the processor to update.
+   * @param sqlPreQuery SQL Queries executed before the main query.
+   * @param sqlSelectQuery The SQL select query that tha will be executed.
+   * @param sqlPostQuery SQL Queries executed after the main query.
+   * @param dbfNormalize Whether to normalize non-Avro-compatible characters to compatible.
+   * @param dbfUserLogicalTypes Whether to use Avro Logical types for Numbers/Dates/Timestamps etc.
+   * @param compressionFormat Compression type when writing Avro files.
+   * @param dbfDefaultPrecision Precision of Avro logical type.
+   * @param esqlMaxRows Maximum number of result rows.
+   * @return The id of the updated processor.
+   */
+  public String updateExecuteSQL(@NotNull String processorId, String sqlPreQuery,
+    String sqlSelectQuery, String sqlPostQuery, String dbfNormalize, String dbfUserLogicalTypes,
+    String compressionFormat, String dbfDefaultPrecision, String esqlMaxRows) throws IOException {
+
+    return niFiClient.updateExecuteSQL(processorId, sqlPreQuery, sqlSelectQuery,
+      sqlPostQuery, dbfNormalize, dbfUserLogicalTypes, compressionFormat, dbfDefaultPrecision,
+      esqlMaxRows).getId();
+
   }
 
   /**
@@ -531,6 +638,12 @@ public class NiFiClientService {
     return processorEntity.getComponent().getState();
   }
 
+  /**
+   * Gets the validation errors of a processor.
+   *
+   * @param processorId The id of the processor.
+   * @return A string containing the validation errors.
+   */
   public String getValidationErrors(String processorId) throws IOException {
     Collection<String> errors = niFiClient.getValidationErrors(processorId);
     String join = errors != null ? String.join("\n", errors) : "";

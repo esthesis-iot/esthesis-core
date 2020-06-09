@@ -3,11 +3,9 @@ package esthesis.platform.server.nifi.sinks.writers.influxdb;
 import esthesis.platform.server.dto.nifisinks.NiFiSinkDTO;
 import esthesis.platform.server.model.NiFiSink;
 import esthesis.platform.server.nifi.client.services.NiFiClientService;
-import esthesis.platform.server.nifi.client.util.NifiConstants.PATH;
-import esthesis.platform.server.nifi.client.util.NifiConstants.PORTS;
-import esthesis.platform.server.nifi.client.util.NifiConstants.Properties.Values.CONSISTENCY_LEVEL;
-import esthesis.platform.server.nifi.client.util.NifiConstants.Properties.Values.DATA_UNIT;
-import esthesis.platform.server.nifi.client.util.NifiConstants.Properties.Values.STATE;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONSISTENCY_LEVEL;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.DATA_UNIT;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import esthesis.platform.server.nifi.sinks.writers.NiFiWriterFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,8 +19,8 @@ import java.io.IOException;
 @Component
 public class PutInfluxDB implements NiFiWriterFactory {
 
-  private final NiFiClientService niFiClientService;
   private final static String NAME = "PutInfluxDB";
+  private final NiFiClientService niFiClientService;
   private PutInfluxDBConfiguration conf;
 
   @Override
@@ -61,10 +59,9 @@ public class PutInfluxDB implements NiFiWriterFactory {
   }
 
   @Override
-  public NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO)
+  public NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO, String[] path)
     throws IOException {
     extractConfiguration(niFiSinkDTO.getConfiguration());
-    int handler = niFiSinkDTO.getHandler();
 
     String putInfluxDB = niFiClientService.createPutInfluxDB(niFiSinkDTO.getName(),
       conf.getDatabaseName(),
@@ -74,9 +71,7 @@ public class PutInfluxDB implements NiFiWriterFactory {
       getConsistencyLevel(conf.getConsistencyLevel()),
       conf.getRetentionPolicy(),
       getMaxRecordSize(conf.getMaxRecordSize()),
-      getDataUnit(conf.getMaxRecordSizeUnit()),
-      findPathByHandler(handler), findInputPortByHandler(handler),
-      findOutputPortByHandler(handler));
+      getDataUnit(conf.getMaxRecordSizeUnit()), path);
 
     niFiSinkDTO.setProcessorId(putInfluxDB);
     return niFiSinkDTO;
@@ -110,27 +105,6 @@ public class PutInfluxDB implements NiFiWriterFactory {
     for (String id : controllerServices) {
       niFiClientService.changeControllerServiceStatus(id, STATE.ENABLED);
     }
-  }
-
-  @Override
-  public PATH findPathByHandler(int handler) {
-    return handler == 2 ?
-      PATH.CONSUMERS_METADATA_WRITER_INFLUXDB :
-      PATH.CONSUMERS_TELEMETRY_WRITER_INFLUXDB;
-  }
-
-  @Override
-  public String findOutputPortByHandler(int handler) {
-    return handler == 2 ?
-      PORTS.CONSUMERS_METADATA_INFLUX_WRITERS_LOGOUT :
-      PORTS.CONSUMERS_TELEMETRY_INFLUX_WRITERS_LOGOUT;
-  }
-
-  @Override
-  public String findInputPortByHandler(int handler) {
-    return handler == 2 ?
-      PORTS.CONSUMERS_METADATA_INFLUX_WRITERS_IN :
-      PORTS.CONSUMERS_TELEMETRY_INFLUX_WRITERS_IN;
   }
 
   @Override

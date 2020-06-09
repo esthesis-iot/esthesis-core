@@ -1,13 +1,11 @@
-package esthesis.platform.server.nifi.sinks.writers.db;
+package esthesis.platform.server.nifi.sinks.writers.mysql;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.platform.server.dto.nifisinks.NiFiSinkDTO;
 import esthesis.platform.server.model.NiFiSink;
 import esthesis.platform.server.nifi.client.services.NiFiClientService;
-import esthesis.platform.server.nifi.client.util.NifiConstants.PATH;
-import esthesis.platform.server.nifi.client.util.NifiConstants.PORTS;
-import esthesis.platform.server.nifi.client.util.NifiConstants.Properties.Values.STATE;
-import esthesis.platform.server.nifi.client.util.NifiConstants.Properties.Values.STATEMENT_TYPE;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATEMENT_TYPE;
 import esthesis.platform.server.nifi.sinks.writers.NiFiWriterFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,9 +19,9 @@ import java.io.IOException;
 @Component
 public class PutDatabaseRecord implements NiFiWriterFactory {
 
+  private final static String NAME = "PutDatabaseRecord";
   private final ObjectMapper objectMapper;
   private final NiFiClientService niFiClientService;
-  private final static String NAME = "PutDatabaseRecord";
   private PutDatabaseRecordConfiguration conf;
 
   @Override
@@ -59,13 +57,8 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
   }
 
   @Override
-  public NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
+  public NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
-
-    int handler = niFiSinkDTO.getHandler();
-    PATH path = findPathByHandler(handler);
-    String inputPort = findInputPortByHandler(handler);
-    String outputPort = findOutputPortByHandler(handler);
 
     String jsonTreeReader = niFiClientService
       .createJsonTreeReader(niFiSinkDTO.getName() + " [JSON TREE READER] ", path);
@@ -80,8 +73,7 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
 
     String putDatabaseRecord = niFiClientService
       .createPutDatabaseRecord(niFiSinkDTO.getName(), jsonTreeReader, dbConnectionPool,
-        getStatementType(conf.getStatementType()), conf.getTableName(), path, inputPort,
-        outputPort);
+        getStatementType(conf.getStatementType()), conf.getTableName(), path);
 
     CustomInfo customInfo = new CustomInfo();
     customInfo.setJsonTreeReader(jsonTreeReader);
@@ -133,27 +125,6 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
     for (String id : controllerServices) {
       niFiClientService.changeControllerServiceStatus(id, STATE.ENABLED);
     }
-  }
-
-  @Override
-  public PATH findPathByHandler(int handler) {
-    return handler == 2 ?
-      PATH.CONSUMERS_METADATA_WRITER_MYSQL :
-      PATH.CONSUMERS_TELEMETRY_WRITER_MYSQL;
-  }
-
-  @Override
-  public String findOutputPortByHandler(int handler) {
-    return handler == 2 ?
-      PORTS.CONSUMERS_METADATA_MYSQL_WRITERS_LOGOUT :
-      PORTS.CONSUMERS_TELEMETRY_MYSQL_WRITERS_LOGOUT;
-  }
-
-  @Override
-  public String findInputPortByHandler(int handler) {
-    return handler == 2 ?
-      PORTS.CONSUMERS_METADATA_MYSQL_WRITERS_IN :
-      PORTS.CONSUMERS_TELEMETRY_MYSQL_WRITERS_IN;
   }
 
   @Override

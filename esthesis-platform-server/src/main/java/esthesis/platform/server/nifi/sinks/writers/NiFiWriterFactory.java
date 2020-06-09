@@ -19,6 +19,4 @@ public interface NiFiWriterFactory extends NiFiSinkFactory {
    */
   boolean supportsPingWrite();
 
-  String findInputPortByHandler(int handler);
-
 }
