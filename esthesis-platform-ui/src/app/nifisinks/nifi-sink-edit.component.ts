@@ -8,7 +8,7 @@ import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
 import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {NifiReaderFactoryDto} from '../dto/nifisinks/nifi-reader-factory-dto';
-import {NiFiProducerFactoryDto} from '../dto/nifisinks/ni-fi-producer-factory-dto';
+import {NifiProducerFactoryDto} from '../dto/nifisinks/nifi-producer-factory-dto';
 import * as _ from 'lodash';
 import {NiFiWriterFactoryDto} from '../dto/nifisinks/nifi-writer-factory-dto';
 import {NiFiLoggerFactoryDto} from '../dto/nifisinks/nifi-logger-factory-dto';
@@ -16,15 +16,15 @@ import {AppConstants} from '../app.constants';
 
 @Component({
   selector: 'app-nifisink-edit',
-  templateUrl: './ni-fi-sink-edit.component.html',
-  styleUrls: ['./ni-fi-sink-edit.component.scss']
+  templateUrl: './nifi-sink-edit.component.html',
+  styleUrls: ['./nifi-sink-edit.component.scss']
 })
 export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
   form: FormGroup;
   id: number;
   availableNiFiDataFactories: any;
   type: string
-  handlers = Object.values(AppConstants.HANDLER);
+  handlers = [];
   isEdit: boolean;
 
   constructor(private fb: FormBuilder, private nifDataService: NifiSinkService,
@@ -103,22 +103,23 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
     const factory = _.find<typeof nifiSinkTypeDTO>(this.availableNiFiDataFactories,
       {factoryClass: $event.source.value});
 
-    this.handlers = Object.values(AppConstants.HANDLER);
+    this.handlers = [];
 
     //Keeping only supported handlers in edit mode.
     if (!this.isEdit) {
       //Action is derived from the type (read, write, produce).
       let action = this.type.charAt(0).toUpperCase() + this.type.slice(1,
         this.type == "readers" ? -3 : -2);
+      console.log(action);
       if (this.type != "loggers") {
-        if (!factory["supportsTelemetry" + action]) {
-          this.handlers.pop();
+        if (factory["supportsTelemetry" + action]) {
+          this.handlers.push(AppConstants.HANDLER.TELEMETRY.valueOf())
         }
-        if (!factory["supportsMetadata" + action]) {
-          this.handlers.pop();
+        if (factory["supportsMetadata" + action]) {
+          this.handlers.push(AppConstants.HANDLER.METADATA.valueOf())
         }
-        if ((this.type == "writers") || !factory["supportsPing" + action]) {
-          this.handlers.shift();
+        if (factory["supportsPing" + action]) {
+          this.handlers.push(AppConstants.HANDLER.PING.valueOf())
         }
       }
       this.form.get('handler').enable();
@@ -143,7 +144,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
       case "writers" :
         return NiFiWriterFactoryDto;
       case "producers" :
-        return NiFiProducerFactoryDto;
+        return NifiProducerFactoryDto;
       default:
         return NiFiLoggerFactoryDto;
     }

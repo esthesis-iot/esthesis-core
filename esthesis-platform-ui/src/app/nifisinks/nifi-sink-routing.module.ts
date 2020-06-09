@@ -1,10 +1,10 @@
 import {NgModule} from '@angular/core';
-import {NifiSinkComponent} from './nifi-sink.component';
-import {NiFiSinkEditComponent} from './ni-fi-sink-edit.component';
+import {NiFiSinkComponent} from './nifi-sink.component';
+import {NiFiSinkEditComponent} from './nifi-sink-edit.component';
 import {RouterModule, Routes} from '@angular/router';
 
 const routes: Routes = [
-  {path: '', component: NifiSinkComponent},
+  {path: '', component: NiFiSinkComponent},
   {path: ':id', component: NiFiSinkEditComponent},
 ];
 
@@ -12,5 +12,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class NifiSinkRoutingModule {
+export class NiFiSinkRoutingModule {
 }

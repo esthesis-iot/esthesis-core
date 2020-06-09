@@ -4,12 +4,12 @@ import {Observable} from 'rxjs';
 import {CrudService} from '../services/crud.service';
 import {QFormsService} from '@eurodyn/forms';
 import {AppConstants} from '../app.constants';
-import {NifiSinkDto} from '../dto/nifisinks/nifi-sink-dto';
+import {NiFiSinkDto} from '../dto/nifisinks/nifi-sink-dto';
 
 @Injectable({
   providedIn: 'root'
 })
-export class NifiSinkService extends CrudService<NifiSinkDto> {
+export class NifiSinkService extends CrudService<NiFiSinkDto> {
   private static endpoint = "nifi-sinks";
 
   constructor(http: HttpClient, qForms: QFormsService) {

@@ -5,7 +5,7 @@ import {QFormsService} from '@eurodyn/forms';
 import {NifiSinkService} from './nifi-sink.service';
 import {BaseComponent} from '../shared/component/base-component';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NifiSinkDto} from '../dto/nifisinks/nifi-sink-dto';
+import {NiFiSinkDto} from '../dto/nifisinks/nifi-sink-dto';
 import {MatTableDataSource} from '@angular/material/table';
 
 @Component({
@@ -13,9 +13,9 @@ import {MatTableDataSource} from '@angular/material/table';
   templateUrl: './nifi-sink.component.html',
   styleUrls: ['./nifi-sink.component.scss']
 })
-export class NifiSinkComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class NiFiSinkComponent extends BaseComponent implements OnInit, AfterViewInit {
   columns = ['name', 'createdOn', 'factory', 'handler', 'state', 'validationErrors'];
-  datasource = new MatTableDataSource<NifiSinkDto>();
+  datasource = new MatTableDataSource<NiFiSinkDto>();
   type: string;
 
   @ViewChild(MatSort, {static: true}) sort: MatSort;

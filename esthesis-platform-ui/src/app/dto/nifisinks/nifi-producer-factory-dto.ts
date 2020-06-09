@@ -1,10 +1,9 @@
 import {BaseDto} from '../base-dto';
 
-export class NiFiProducerFactoryDto extends BaseDto {
+export class NifiProducerFactoryDto extends BaseDto {
   factoryClass: string;
   friendlyName: string;
   version: string;
-  supportsMetadataProduce: boolean;
   supportsTelemetryProduce: boolean;
   configurationTemplate: string;
 }
