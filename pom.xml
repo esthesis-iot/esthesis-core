@@ -47,8 +47,7 @@
     <curator-recipes.version>4.2.0</curator-recipes.version>
     <docker-client.version>8.15.1</docker-client.version>
     <git-commit-id-plugin.version>3.0.1</git-commit-id-plugin.version>
-    <hibernate-enhance-maven-plugin.version>5.3.7.Final
-    </hibernate-enhance-maven-plugin.version> <!-- Keep this inline to Spring's packageVersion -->
+    <hibernate-enhance-maven-plugin.version>5.3.7.Final</hibernate-enhance-maven-plugin.version> <!-- Keep this inline to Spring's packageVersion -->
     <influxdb-java.version>2.15</influxdb-java.version>
     <jjwt.version>0.9.0</jjwt.version>
     <jna-platform.version>5.3.1</jna-platform.version>
@@ -68,7 +67,7 @@
     <slugify.version>2.2</slugify.version>
     <snakeyaml.version>1.24</snakeyaml.version>
     <spring-content-fs-boot-starter.version>0.8.0</spring-content-fs-boot-starter.version>
-    <spring.boot.version>2.1.8.RELEASE</spring.boot.version>
+    <spring.boot.version>2.3.0.RELEASE</spring.boot.version>
     <github-release-plugin.version>1.4.0</github-release-plugin.version>
 
     <version.sonar>3.7.0.1746</version.sonar>
