@@ -21,14 +21,10 @@ export class InfrastructureComponent implements OnInit, AfterViewInit {
     this.activatedRoute.fragment.subscribe((fragment: string) => {
       if (fragment === 'overview') {
         this.tabs.selectedIndex = 0;
-      } else if (fragment === 'virtualization') {
-        this.tabs.selectedIndex = 1;
       } else if (fragment === 'mqtt') {
-        this.tabs.selectedIndex = 2;
-      } else if (fragment === 'zookeeper') {
-        this.tabs.selectedIndex = 3;
+        this.tabs.selectedIndex = 1;
       } else if (fragment === 'nifi') {
-        this.tabs.selectedIndex = 4;
+        this.tabs.selectedIndex = 2;
       }
     });
   }
