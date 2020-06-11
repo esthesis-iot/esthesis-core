@@ -398,7 +398,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
       return new ArrayList<>();
     } else {
       return deviceMapper.map(deviceRepository
-        .findByTags(
+        .findByTagsIn(
           Lists.newArrayList(tagService.findAllByNameIn(Arrays.asList(tags.split(","))))));
     }
   }

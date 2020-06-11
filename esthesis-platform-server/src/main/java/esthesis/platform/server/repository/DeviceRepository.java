@@ -22,7 +22,7 @@ public interface DeviceRepository extends BaseRepository<Device> {
 
   List<Device> findByHardwareIdContains(String hardwareId);
 
-  List<Device> findByTags(List<Tag> tags);
+  List<Device> findByTagsIn(List<Tag> tags);
 
   List<Device> findAllByCreatedOnAfter(Instant date);
 }

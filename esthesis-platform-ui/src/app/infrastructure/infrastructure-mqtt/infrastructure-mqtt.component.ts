@@ -13,7 +13,7 @@ import {BaseComponent} from '../../shared/component/base-component';
   styleUrls: ['./infrastructure-mqtt.component.scss']
 })
 export class InfrastructureMqttComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['name', 'ipAddress', 'aIpAddress', 'status'];
+  columns = ['name', 'ipAddress', 'status'];
   datasource = new MatTableDataSource<MqttServerDto>();
 
   @ViewChild(MatSort, { static: true }) sort: MatSort;

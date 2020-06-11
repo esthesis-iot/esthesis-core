@@ -36,15 +36,11 @@ public class MqttServer extends BaseEntity {
   private String name;
   @NotNull
   private String ipAddress;
-  private String aIpAddress;
   @NotNull
   private boolean state;
   @Singular
   @OneToMany(fetch = FetchType.LAZY)
   @JoinTable(inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private List<Tag> tags;
-  private String caCert;
-  private String clientCert;
-  private String clientKey;
   private String description;
 }

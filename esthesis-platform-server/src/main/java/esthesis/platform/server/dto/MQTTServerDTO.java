@@ -19,14 +19,10 @@ public class MQTTServerDTO extends BaseDTO {
   public String name;
   @NotNull
   public String ipAddress;
-  public String aIpAddress;
   @NotNull
   public boolean state;
   @Singular
   private List<Long> tags;
-  private String caCert;
-  private String clientCert;
-  private String clientKey;
 
   public boolean getState() {
     return state;

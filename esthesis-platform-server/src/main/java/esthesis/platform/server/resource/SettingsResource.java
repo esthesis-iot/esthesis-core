@@ -8,7 +8,6 @@ import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyFilter;
 import esthesis.common.config.AppConstants.Generic;
 import javax.validation.Valid;
-import javax.ws.rs.core.Response;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,14 +57,12 @@ public class SettingsResource {
   @PostMapping("byNames")
   @ReplyFilter("key,val")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save settings.")
-  public Response saveMultiple(@Valid @RequestBody List<KeyValue> settings) {
+  public void saveMultiple(@Valid @RequestBody List<KeyValue> settings) {
     settingsService.setVals(Generic.SYSTEM,
       settings.stream().map(keyValue -> keyValue.getKey().toString()).collect(Collectors.toList()),
       settings.stream().map(keyValue -> keyValue.getValue() != null ?
         keyValue.getValue().toString() : "").collect(Collectors.toList()),
       Generic.SYSTEM);
-
-    return Response.ok().build();
   }
 
 }
