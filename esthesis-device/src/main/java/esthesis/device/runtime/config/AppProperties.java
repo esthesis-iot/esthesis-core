@@ -235,6 +235,21 @@ public class AppProperties {
   @Value("${supportedCommands:PROVISIONING_CHECK_NEW,PING,HEALTH,REBOOT,EXECUTE}")
   private String supportedCommands;
 
+  @Value("${topicPing:ping}")
+  private String topicPing;
+
+  @Value("${topicTelemetry:telemetry}")
+  private String topicTelemetry;
+
+  @Value("${topicMetadata:metadata}")
+  private String topicMetadata;
+
+  @Value("${topicControlRequest:control/request}")
+  private String topicControlRequest;
+
+  @Value("${topicControlReply:control/reply}")
+  private String topicControlReply;
+
   public String getHardwareId() {
     try {
       return HardwareIdResolverUtil.resolve(hardwareId);

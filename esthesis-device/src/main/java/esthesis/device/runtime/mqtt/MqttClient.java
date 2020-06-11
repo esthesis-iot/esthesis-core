@@ -67,17 +67,17 @@ public class MqttClient {
    * @param mqttEventType The {@link Mqtt.EventType}
    * to suffix.
    */
-  public String getTopicForDevice(String mqttEventType) {
+  private String getTopicForDevice(String mqttEventType) {
     if (mqttEventType.equals(Mqtt.EventType.TELEMETRY)) {
-      return String.join("/", "", Mqtt.EventType.TELEMETRY, appProperties.getHardwareId());
+      return String.join("/", Mqtt.EventType.TELEMETRY, appProperties.getHardwareId());
     } else if (mqttEventType.equals(Mqtt.EventType.METADATA)) {
-      return String.join("/", "", Mqtt.EventType.METADATA, appProperties.getHardwareId());
+      return String.join("/", Mqtt.EventType.METADATA, appProperties.getHardwareId());
     } else if (mqttEventType.equals(Mqtt.EventType.PING)) {
-      return String.join("/", "", Mqtt.EventType.PING, appProperties.getHardwareId());
+      return String.join("/", Mqtt.EventType.PING, appProperties.getHardwareId());
     } else if (mqttEventType.equals(Mqtt.EventType.CONTROL_REQUEST)) {
-      return String.join("/", "", EventType.CONTROL_REQUEST, appProperties.getHardwareId());
+      return String.join("/", EventType.CONTROL_REQUEST, appProperties.getHardwareId());
     } else if (mqttEventType.equals(EventType.CONTROL_REPLY)) {
-      return String.join("/", "", EventType.CONTROL_REPLY, appProperties.getHardwareId());
+      return String.join("/", EventType.CONTROL_REPLY, appProperties.getHardwareId());
     } else {
       throw new QMismatchException(
         "Name resolution of an unknown MQTT event type was requested: {0}.", mqttEventType);
@@ -199,8 +199,8 @@ public class MqttClient {
   public void publish(String mqttEventType, byte[] msg, int qos, boolean retain) {
     try {
       String publishingTopic = getTopicForDevice(mqttEventType);
-      log.log(Level.FINEST, "Publishing to {0} payload {1}.",
-        new Object[]{mqttServerAddress + publishingTopic,
+      log.log(Level.FINEST, "Publishing to {0} {1} payload {2}.",
+        new Object[]{mqttServerAddress, publishingTopic,
           new String(msg, StandardCharsets.UTF_8)});
       client.publish(publishingTopic, msg, qos, retain);
     } catch (QMismatchException e) {
