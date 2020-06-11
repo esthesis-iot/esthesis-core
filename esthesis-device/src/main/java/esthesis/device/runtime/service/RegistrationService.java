@@ -158,8 +158,6 @@ public class RegistrationService {
       LOGGER.log(Level.FINE, "Writing device certificate at: {0}.",
         securityUtil.getCertificateLocation());
       LOGGER.log(Level.FINEST, registrationResponse.getPayload().getCertificate());
-      LOGGER.log(Level.FINEST,
-        Arrays.toString(Base64E.decode(registrationResponse.getPayload().getCertificate())));
       FileUtils.writeStringToFile(new File(securityUtil.getCertificateLocation()),
         registrationResponse.getPayload().getCertificate(), StandardCharsets.UTF_8);
     }
