@@ -7,11 +7,10 @@ import com.eurodyn.qlack.fuse.aaa.model.User;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyFilter;
 import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
+import com.eurodyn.qlack.util.jwt.dto.JwtDTO;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
 import esthesis.platform.server.dto.LoginDTO;
-import esthesis.platform.server.dto.jwt.JWTDTO;
-import esthesis.platform.server.service.StoreService;
 import esthesis.platform.server.service.UserService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +63,7 @@ public class UserResource {
   @Transactional(noRollbackFor = QAuthenticationException.class)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, ignore = {
     QAuthenticationException.class})
-  public JWTDTO authenticate(@RequestBody LoginDTO loginDTO) {
+  public JwtDTO authenticate(@RequestBody LoginDTO loginDTO) {
     // Try to authenticate the user.
     return userService.authenticate(loginDTO.getEmail(), loginDTO.getPassword());
   }

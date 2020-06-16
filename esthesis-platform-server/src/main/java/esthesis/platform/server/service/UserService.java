@@ -6,9 +6,12 @@ import com.eurodyn.qlack.fuse.aaa.dto.UserDTO;
 import com.eurodyn.qlack.fuse.audit.dto.AuditDTO;
 import com.eurodyn.qlack.fuse.audit.service.AuditAsyncService;
 import com.eurodyn.qlack.util.data.filter.JSONFilter;
+import com.eurodyn.qlack.util.jwt.dto.JwtDTO;
+import com.eurodyn.qlack.util.jwt.dto.JwtGenerateRequestDTO;
+import com.eurodyn.qlack.util.jwt.service.JwtService;
 import esthesis.platform.server.config.AppConstants.Audit.Event;
 import esthesis.platform.server.config.AppConstants.Audit.Level;
-import esthesis.platform.server.dto.jwt.JWTDTO;
+import esthesis.platform.server.config.AppConstants.Jwt;
 import javax.validation.constraints.NotBlank;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
@@ -25,17 +28,21 @@ import java.util.UUID;
 @Transactional
 public class UserService {
 
-  private final JWTService jwtService;
+  private final JwtService jwtService;
   private final AuditAsyncService auditService;
   private final com.eurodyn.qlack.fuse.aaa.service.UserService qlackUserService;
+  //  private final AuthenticationService authenticationService;
 
   //  @Autowired
-  public UserService(JWTService jwtService,
+  public UserService(JwtService jwtService,
     AuditAsyncService auditService,
-    com.eurodyn.qlack.fuse.aaa.service.UserService qlackUserService) {
+    com.eurodyn.qlack.fuse.aaa.service.UserService qlackUserService
+    //    AuthenticationService authenticationService
+  ) {
     this.jwtService = jwtService;
     this.auditService = auditService;
     this.qlackUserService = qlackUserService;
+    //    this.authenticationService = authenticationService;
   }
 
   private void verifyEmailIsUnique(String newEmail) {
@@ -72,10 +79,7 @@ public class UserService {
    * @return Returns a JWT if authentication was successful, or null otherwise.
    */
   @Transactional(noRollbackFor = QAuthenticationException.class)
-  public JWTDTO authenticate(@NotBlank String email, @NotBlank String password) {
-    // The JWT to return if authentication was successful.
-    String jwt;
-
+  public JwtDTO authenticate(@NotBlank String email, @NotBlank String password) {
     // Return an error if the user could not be authenticated.
     String userId = qlackUserService.canAuthenticate(email, password);
     if (StringUtils.isBlank(userId)) {
@@ -89,13 +93,15 @@ public class UserService {
 
     // Login the user and prepare a JWT.
     final UserDTO userDTO = qlackUserService.login(userId, null, true);
-
-    jwt = jwtService.generateJwt(userDTO.getUsername(), userDTO.getId());
-
     auditService.audit(Level.SECURITY, Event.AUTHENTICATION,
       "User {0} authenticated successfully.", email);
 
-    return new JWTDTO().setJwt(jwt);
+    final String jwt = jwtService.generateJwt(JwtGenerateRequestDTO.builder()
+      .subject(userDTO.getId())
+      .claim(Jwt.CLAIM_EMAIL, userDTO.getUsername())
+      .build());
+
+    return JwtDTO.builder().jwt(jwt).build();
   }
 
   /**

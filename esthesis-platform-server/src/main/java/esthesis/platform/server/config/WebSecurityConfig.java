@@ -1,6 +1,6 @@
 package esthesis.platform.server.config;
 
-import esthesis.platform.server.filter.JWTAuthenticationFilter;
+import com.eurodyn.qlack.util.jwt.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,9 +12,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   public static final String[] PUBLIC_URIS =
     {"/users/auth", "/mqtt-acl/**", "/ping", "/device/**"};
-  private final JWTAuthenticationFilter jwtAuthenticationFilter;
+  private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-  public WebSecurityConfig(JWTAuthenticationFilter jwtAuthenticationFilter) {
+  public WebSecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
     this.jwtAuthenticationFilter = jwtAuthenticationFilter;
   }
 
