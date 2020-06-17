@@ -21,12 +21,26 @@
               <mat-option [value]="false">Inactive</mat-option>
             </mat-select>
           </mat-form-field>
+          <div *ngIf="id != 0">
+            <mat-form-field>
+              <mat-select placeholder="Synced" formControlName="synced">
+                <mat-option [value]="true">Synced</mat-option>
+                <mat-option [value]="false">Unsynced</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput placeholder="Last Checked" formControlName="lastChecked"
+                     matTextareaAutosize>
+            </mat-form-field>
+          </div>
         </div>
       </div>
     </form>
   </mat-card-content>
 
   <mat-card-actions>
+    <button [disabled]="id==0 || form.dirty" mat-button (click)="sync()">SYNCHRONISE
+    </button>
     <button mat-button routerLink="/infra" fragment="mqtt">CANCEL</button>
     <button mat-button color="accent" (click)="delete()" [disabled]="this.id == 0">DELETE</button>
     <button mat-button color="primary" (click)="save()"

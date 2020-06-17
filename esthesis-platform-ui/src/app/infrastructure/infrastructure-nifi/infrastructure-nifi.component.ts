@@ -13,7 +13,7 @@ import {BaseComponent} from '../../shared/component/base-component';
   styleUrls: ['./infrastructure-nifi.component.scss']
 })
 export class InfrastructureNiFiComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['name', 'url', 'description', 'state', 'wfVersion', 'syncedOn'];
+  columns = ['name', 'url', 'description', 'state', 'wfVersion', 'synced', 'lastChecked'];
   datasource = new MatTableDataSource<NiFiDto>();
   // NiFi workflow version available in the backend.
   backendWfVersion: string;
@@ -50,7 +50,8 @@ export class InfrastructureNiFiComponent extends BaseComponent implements OnInit
       this.datasource.data = onNext.content;
       this.paginator.length = onNext.totalElements;
       this.nifiService.getActive().subscribe(value => {
-        localStorage.setItem("activeNiFi", value.id.toString());
+        value ? localStorage.setItem("activeNiFi", value.id.toString()) : localStorage.removeItem(
+          "activeNiFi")
       });
     });
   }

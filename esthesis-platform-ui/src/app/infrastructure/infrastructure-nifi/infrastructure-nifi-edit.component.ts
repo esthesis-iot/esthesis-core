@@ -8,6 +8,7 @@ import {UtilityService} from '../../shared/service/utility.service';
 import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {NiFiDto} from '../../dto/ni-fi-dto';
 import {NiFiService} from './nifi.service';
+import {NifiSinkService} from '../../nifisinks/nifi-sink.service';
 
 @Component({
   selector: 'app-infrastructure-nifi-edit',
@@ -18,10 +19,11 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
   form: FormGroup;
   id: number;
   nifi: NiFiDto[];
+  activeNiFiId = localStorage.getItem('activeNiFi');
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
               private qForms: QFormsService,
-              private nifiService: NiFiService, private route: ActivatedRoute,
+              private nifiService: NiFiService, private nifiSinkService: NifiSinkService, private route: ActivatedRoute,
               private router: Router, private utilityService: UtilityService) {
     super();
   }
@@ -36,11 +38,13 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
       name: ['', [Validators.required, Validators.maxLength(256)]],
       url: ['', [Validators.required, Validators.maxLength(2048)]],
       description: ['', [Validators.maxLength(4096)]],
-      state: ['', [Validators.required, Validators.maxLength(5)]]
+      state: ['', [Validators.required, Validators.maxLength(5)]],
+      synced: [{value: '', disabled: true}],
+      lastChecked: [{value: '', disabled: true}]
     });
 
     // Fill-in the form with data if editing an existing item.
-    if (this.id && this.id !== 0) {
+    if (this.id !== 0) {
       this.nifiService.getAll().subscribe(value => {
 
       });
@@ -51,7 +55,8 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
   }
 
   save() {
-    if (this.form.get('state').value && localStorage.getItem('activeNiFi')) {
+    if (this.form.get('state').value && this.activeNiFiId != null && parseInt(
+      this.activeNiFiId) != this.id) {
       this.activate();
     } else {
       this.submit();
@@ -62,7 +67,7 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
     this.nifiService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
       this.utilityService.popupSuccess('NiFi server successfully saved.');
       this.router.navigate(['infra'], {fragment: 'nifi'});
-    });
+    })
   }
 
   delete() {
@@ -79,6 +84,10 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
       if (result) {
         this.nifiService.delete(this.id).subscribe(onNext => {
           this.utilityService.popupSuccess('NiFi server successfully deleted.');
+          if (this.activeNiFiId != null && parseInt(this.activeNiFiId) == this.id) {
+            localStorage.removeItem('activeNiFi');
+          }
+
           this.router.navigate(['infra'], {fragment: 'nifi'});
         });
       }
@@ -99,8 +108,17 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.submit();
+      } else {
+        this.form.get('state').setValue(false);
       }
     });
+  }
+
+  sync() {
+    this.nifiSinkService.isSynced().subscribe(value => {
+      this.nifiService.sync(value).subscribe(
+        value => this.router.navigate(['infra'], {fragment: 'nifi'}));
+    })
   }
 
 }

@@ -48,16 +48,19 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
       name: [{value: '', disabled: this.isEdit}, [Validators.required, Validators.maxLength(256)]],
       factoryClass: [{value: '', disabled: this.isEdit}, [Validators.required, Validators.maxLength(
         1024)]],
-      handler: [{value: '', disabled: true}, [Validators.required, Validators.maxLength(1024)]],
+      handler: [{value: '', disabled: this.isEdit}, [Validators.required, Validators.maxLength(
+        1024)]],
       state: ['', [Validators.maxLength(5)]],
       configuration: ['', [Validators.maxLength(65535)]],
       type: ['', [Validators.maxLength(1024)]],
-      processorId: ['']
+      processorId: [''],
+      validationErrors: []
     });
 
     // Fill-in the form with data if editing an existing item.
     if (this.isEdit) {
       this.nifDataService.get(this.id).subscribe(onNext => {
+        this.handlers.push(onNext.handler);
         this.form.patchValue(onNext);
       });
     }
@@ -76,6 +79,8 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
       this.utilityService.popupSuccess(this.form.value.id ? 'NiFi sink was successfully saved.'
         : 'NiFi sink was successfully created.');
       this.router.navigate([this.type]);
+    }, error => {
+      this.utilityService.popupError(error.error);
     });
   }
 
@@ -93,20 +98,21 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
         this.nifDataService.delete(this.id).subscribe(onNext => {
           this.utilityService.popupSuccess('Data sink successfully deleted.');
           this.router.navigate([this.type]);
+        }, error => {
+          this.utilityService.popupError(error.error);
         });
       }
     });
   }
 
   updateHandlers($event) {
-    let nifiSinkTypeDTO = this.getNifiSinkTypeDTO();
+    let nifiSinkTypeDTO = this.getNiFiSinkTypeDTO();
     const factory = _.find<typeof nifiSinkTypeDTO>(this.availableNiFiDataFactories,
       {factoryClass: $event.source.value});
 
-    this.handlers = [];
-
     //Keeping only supported handlers in edit mode.
     if (!this.isEdit) {
+      this.handlers = [];
       //Action is derived from the type (read, write, produce).
       let action = this.type.charAt(0).toUpperCase() + this.type.slice(1,
         this.type == "readers" ? -3 : -2);
@@ -127,7 +133,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
   }
 
   template() {
-    let nifiSinkTypeDTO = this.getNifiSinkTypeDTO();
+    let nifiSinkTypeDTO = this.getNiFiSinkTypeDTO();
     const factory = _.find<typeof nifiSinkTypeDTO>(this.availableNiFiDataFactories,
       {factoryClass: this.form.controls['factoryClass'].value});
     if (factory) {
@@ -137,7 +143,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
     }
   }
 
-  private getNifiSinkTypeDTO(): any {
+  private getNiFiSinkTypeDTO(): any {
     switch (this.type) {
       case "readers":
         return NifiReaderFactoryDto;
