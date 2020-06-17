@@ -14,6 +14,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -98,10 +99,10 @@ public class ConsumeMQTT implements NiFiReaderFactory {
     ConsumeMQTTConfiguration prevConf = extractConfiguration(sink.getConfiguration());
     conf = extractConfiguration(sinkDTO.getConfiguration());
 
-    if (!(conf.getKeystoreFilename().equals(prevConf.getKeystoreFilename()) && conf
-      .getKeystorePassword().equals(prevConf.getKeystorePassword()) && conf.getTruststoreFilename()
-      .equals(prevConf.getTruststoreFilename()) && conf.getTruststorePassword()
-      .equals(prevConf.getTruststorePassword()))) {
+    if (!(Objects.equals(conf.getKeystoreFilename(), prevConf.getKeystoreFilename()) &&
+      Objects.equals(conf.getKeystorePassword(), prevConf.getKeystorePassword()) &&
+      Objects.equals(conf.getTruststoreFilename(), prevConf.getTruststoreFilename()) &&
+      Objects.equals(conf.getTruststorePassword(), prevConf.getTruststorePassword()))) {
 
       CustomInfo customInfo = objectMapper.readValue(sink.getCustomInfo(), CustomInfo.class);
 
@@ -135,6 +136,14 @@ public class ConsumeMQTT implements NiFiReaderFactory {
   @Override
   public String getSinkValidationErrors(String id) throws IOException {
     return niFiClientService.getValidationErrors(id);
+  }
+
+  @Override
+  public boolean isSynced(NiFiSinkDTO niFiSinkDTO) {
+    conf = extractConfiguration(niFiSinkDTO.getConfiguration());
+    return niFiClientService.isConsumeMQTTSynced(niFiSinkDTO.getProcessorId(), conf.getUri(),
+      conf.getTopic(), conf.getQos(),
+      conf.getQueueSize());
   }
 
   private ConsumeMQTTConfiguration extractConfiguration(String configuration) {

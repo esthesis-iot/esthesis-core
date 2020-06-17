@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 @Validated
 @RequestMapping("/infrastructure/nifi")
@@ -43,7 +45,7 @@ public class NiFiResource {
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class,
     logMessage = "There was a problem retrieving application data.")
-  @ReplyPageableFilter("name,state,createdOn,id,url,description,wfVersion,syncedOn")
+  @ReplyPageableFilter("-createdOn,-createdBy,-modifiedOn,-modifiedBy")
   @EmptyPredicateCheck
   public Page<NiFiDTO> findAll(
     @QuerydslPredicate(root = NiFi.class) Predicate predicate, Pageable pageable) {
@@ -88,5 +90,11 @@ public class NiFiResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch NiFi object.")
   public NiFiDTO getActive() {
     return nifiService.getActiveNiFi();
+  }
+
+  @PostMapping(path = "/sync/{synced}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not init NiFi template.")
+  public boolean sync(@PathVariable boolean synced) throws IOException {
+    return nifiService.sync(synced);
   }
 }

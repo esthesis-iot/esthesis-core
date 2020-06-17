@@ -23,20 +23,56 @@ public interface NiFiSinkFactory {
   String getConfigurationTemplate();
 
   /**
-   * Creates the nifi sink and returns it's id.
+   * Creates the NiFi sink and returns it's id.
    *
    * @param niFiSinkDTO An object containing all required properties.
    * @return the id of the newly created sink.
    */
   NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException;
 
+  /**
+   * Updates a NiFi sink
+   *
+   * @param sink The existing sink.
+   * @param sinkDTO An object containing the updates of the sink.
+   * @return The id of the updated sink.
+   */
   String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO) throws IOException;
 
+  /**
+   * Deletes a NiFi sink.
+   *
+   * @param id The id of the NiFi sink that will be deleted.
+   * @return The id of the deleted .
+   */
   String deleteSink(String id) throws IOException;
 
+  /**
+   * Toggles the state of the sink.
+   *
+   * @param id The id of the NiFi sink to toggle.
+   * @param isEnabled Whether to enable or disable the sink.
+   * @return The id of the toggled sink.
+   */
   String toggleSink(String id, boolean isEnabled) throws IOException;
 
+  /**
+   * Enables the controller services of a sink
+   *
+   * @param controllerServices The id(s) of the the service(s).
+   */
   void enableControllerServices(String... controllerServices) throws IOException;
 
+  /**
+   * Gets the validation errors of a sink.
+   *
+   * @param id The id of the sink.
+   * @return A String containing all validation errors.
+   */
   String getSinkValidationErrors(String id) throws IOException;
+
+  /**
+   * Checks whether the Nifi Sink is synced between the esthesis and NiFI Workflow.
+   */
+  boolean isSynced(NiFiSinkDTO niFiSinkDTO);
 }

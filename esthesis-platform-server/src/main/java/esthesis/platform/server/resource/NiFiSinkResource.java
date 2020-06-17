@@ -39,7 +39,7 @@ public class NiFiSinkResource {
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class,
-    logMessage = "Could not retrieve nifi sinks list.")
+    logMessage = "Could not retrieve NiFi sinks list.")
   @EmptyPredicateCheck
   public Page<NiFiSinkDTO> findAll(@QuerydslPredicate(root = NiFiSink.class) Predicate predicate,
     Pageable pageable) {
@@ -75,24 +75,28 @@ public class NiFiSinkResource {
   }
 
   @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch nifi sink.")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch NiFi sink.")
   public NiFiSinkDTO get(@PathVariable long id) {
     return niFiSinkService.findById(id);
   }
 
   @DeleteMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete nifi sink.")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete NiFi sink.")
   public NiFiSinkDTO delete(@PathVariable long id) throws IOException {
     return niFiSinkService.deleteSink(id);
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
-    logMessage = "Could not save nifi sink.")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save NiFi sink.")
   public NiFiSinkDTO save(@Valid @RequestBody NiFiSinkDTO niFiSinkDTO)
     throws IOException {
     return niFiSinkService.saveSink(niFiSinkDTO);
+  }
+
+  @GetMapping(path = "/synced", produces = MediaType.APPLICATION_JSON_VALUE)
+  public boolean isSynced() {
+    return niFiSinkService.isSynced();
   }
 
 

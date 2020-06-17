@@ -89,6 +89,17 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
     return niFiClientService.getValidationErrors(id);
   }
 
+  @Override
+  public boolean isSynced(NiFiSinkDTO niFiSinkDTO) {
+    conf = extractConfiguration(niFiSinkDTO.getConfiguration());
+    return niFiClientService.isExecuteInfluxSynced(niFiSinkDTO.getProcessorId(),
+      conf.getDatabaseName(),
+      conf.getDatabaseUrl(), Integer.parseInt(conf.getMaxConnectionTimeoutSeconds()),
+      conf.getQueryResultTimeUnit()
+      , conf.getQuery(), Integer.parseInt(conf.getQueryChunkSize()));
+
+  }
+
   private ExecuteInfluxDBConfiguration extractConfiguration(String configuration) {
     Representer representer = new Representer();
     representer.getPropertyUtils().setSkipMissingProperties(true);

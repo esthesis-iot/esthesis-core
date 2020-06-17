@@ -11,6 +11,7 @@ import esthesis.platform.server.nifi.client.util.NiFiConstants;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONSISTENCY_LEVEL;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.DATA_UNIT;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATEMENT_TYPE;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.nifi.web.api.entity.AboutEntity;
@@ -570,25 +571,16 @@ public class NiFiClientService {
    * @param sqlPreQuery SQL Queries executed before the main query.
    * @param sqlSelectQuery The SQL select query that tha will be executed.
    * @param sqlPostQuery SQL Queries executed after the main query.
-   * @param dbfNormalize Whether to normalize non-Avro-compatible characters to compatible.
-   * @param dbfUserLogicalTypes Whether to use Avro Logical types for Numbers/Dates/Timestamps etc.
-   * @param compressionFormat Compression type when writing Avro files.
-   * @param dbfDefaultPrecision Precision of Avro logical type.
-   * @param esqlMaxRows Maximum number of result rows.
    * @param path The path of the parent group where the processor will be created.
    * @return the id of the newly created processor.
    */
   public String createExecuteSQL(@NotNull String name, String dcbpServiceId, String sqlPreQuery,
-    String sqlSelectQuery, String sqlPostQuery, String dbfNormalize, String dbfUserLogicalTypes,
-    String compressionFormat, String dbfDefaultPrecision, String esqlMaxRows,
-    @NotNull String[] path) throws IOException {
+    String sqlSelectQuery, String sqlPostQuery, @NotNull String[] path) throws IOException {
 
     String parentProcessGroupId = findProcessGroupId(path);
 
     return niFiClient.createExecuteSQL(parentProcessGroupId, name, dcbpServiceId, sqlPreQuery,
-      sqlSelectQuery, sqlPostQuery, dbfNormalize, dbfUserLogicalTypes, compressionFormat,
-      dbfDefaultPrecision,
-      esqlMaxRows).getId();
+      sqlSelectQuery, sqlPostQuery).getId();
   }
 
   /**
@@ -598,20 +590,13 @@ public class NiFiClientService {
    * @param sqlPreQuery SQL Queries executed before the main query.
    * @param sqlSelectQuery The SQL select query that tha will be executed.
    * @param sqlPostQuery SQL Queries executed after the main query.
-   * @param dbfNormalize Whether to normalize non-Avro-compatible characters to compatible.
-   * @param dbfUserLogicalTypes Whether to use Avro Logical types for Numbers/Dates/Timestamps etc.
-   * @param compressionFormat Compression type when writing Avro files.
-   * @param dbfDefaultPrecision Precision of Avro logical type.
-   * @param esqlMaxRows Maximum number of result rows.
    * @return The id of the updated processor.
    */
   public String updateExecuteSQL(@NotNull String processorId, String sqlPreQuery,
-    String sqlSelectQuery, String sqlPostQuery, String dbfNormalize, String dbfUserLogicalTypes,
-    String compressionFormat, String dbfDefaultPrecision, String esqlMaxRows) throws IOException {
+    String sqlSelectQuery, String sqlPostQuery) throws IOException {
 
     return niFiClient.updateExecuteSQL(processorId, sqlPreQuery, sqlSelectQuery,
-      sqlPostQuery, dbfNormalize, dbfUserLogicalTypes, compressionFormat, dbfDefaultPrecision,
-      esqlMaxRows).getId();
+      sqlPostQuery).getId();
 
   }
 
@@ -648,5 +633,112 @@ public class NiFiClientService {
     Collection<String> errors = niFiClient.getValidationErrors(processorId);
     String join = errors != null ? String.join("\n", errors) : "";
     return join;
+  }
+
+  /**
+   * Checks if ExecuteInflux processor is synced between esthesis and NiFi Workflow.
+   *
+   * @param processorId The id of the Processor.
+   * @param dbName The name of the Influx Database.
+   * @param url The url of the Influx Database.
+   * @param maxConnectionTimeoutSeconds The maximum time (in seconds) for establishing connection to
+   * the InfluxDB.
+   * @param queryResultTimeUnit The time unit of query results from theInflux Database.
+   * @param query The query to execute.
+   * @param queryChunkSize The chunk size of the query result.
+   * @return true if synced, false otherwise.
+   */
+  public boolean isExecuteInfluxSynced(@NotNull String processorId, @NotNull String dbName,
+    @NotNull String url,
+    int maxConnectionTimeoutSeconds, String queryResultTimeUnit,
+    String query, int queryChunkSize) {
+    try {
+      return niFiClient.isExecuteDBSynced(processorId, dbName, url, maxConnectionTimeoutSeconds,
+        queryResultTimeUnit, query, queryChunkSize);
+    } catch (IOException exception) {
+      return false;
+    }
+  }
+
+  /**
+   * Checks if ExecuteSQL processor is synced between esthesis and NiFi Workflow.
+   *
+   * @param processorId The id of the Processor.
+   * @param sqlPreQuery SQL Queries executed before the main query.
+   * @param sqlSelectQuery The SQL select query that tha will be executed.
+   * @param sqlPostQuery SQL Queries executed after the main query.
+   * @return true if synced, false otherwise.
+   */
+  public boolean isExecuteSQLSynced(String processorId, String sqlPreQuery, String sqlSelectQuery,
+    String sqlPostQuery) {
+
+    try {
+      return niFiClient.isExecuteSQLSynced(processorId, sqlPreQuery, sqlSelectQuery,
+        sqlPostQuery);
+    } catch (IOException exception) {
+      return false;
+    }
+  }
+
+  /**
+   * Checks if ConsumeMQTT processor is synced between esthesis and NiFi Workflow.
+   *
+   * @param processorId The id of the Processor.
+   * @param uri The URI to use to connect to the MQTT broker.
+   * @param topic The MQTT topic filter to designate the topics to subscribe to.
+   * @param qos The Quality of Service(QoS) to receive the message with.
+   * @param queueSize Maximum number of messages this processor will hold in memory at one time.
+   * @return true if synced, false otherwise.
+   */
+  public boolean isConsumeMQTTSynced(String processorId, String uri, String topic, int qos,
+    int queueSize) {
+
+    try {
+      return niFiClient.isConsumeMQTTSynced(processorId, uri, topic, qos, queueSize);
+    } catch (IOException exception) {
+      return false;
+    }
+  }
+
+  /**
+   * Checks if PutInfluxDB processor is synced between esthesis and NiFi Workflow.
+   *
+   * @param processorId The id of the Processor.
+   * @param databaseName The name of the InfluxDB to connect with.
+   * @param databaseUrl The url of the Influx Database.
+   * @param maxConnectionTimeoutSeconds The maximum time (in seconds) for establishing connection to
+   * the InfluxDB.
+   * @param username Username for accessing InfluxDB.
+   * @param password Database password for given user.
+   * @param charset Specifies the character set of the document data.
+   * @param consistencyLevel InfluxDB Consistency Level.
+   * @param retentionPolicy Retention policy for the saving the records.
+   * @param maxRecordSize Maximum size of records allowed to be posted in one batch
+   * @param dataUnit The unit of macRecordSize.
+   * @return true if synced, false otherwise.
+   */
+  public boolean isPutInfluxDBSynced(String processorId, String databaseName, String databaseUrl,
+    int maxConnectionTimeoutSeconds, String username, String password, String charset,
+    CONSISTENCY_LEVEL consistencyLevel, String retentionPolicy, int maxRecordSize,
+    DATA_UNIT dataUnit) {
+
+    try {
+      return niFiClient.isPutInfluxDBSynced(processorId, databaseName, databaseUrl,
+        maxConnectionTimeoutSeconds, username, password, charset,
+        consistencyLevel, retentionPolicy, maxRecordSize,
+        dataUnit);
+    } catch (IOException exception) {
+      return false;
+    }
+  }
+
+  public boolean isPutDatabaseSynced(String processorId, STATEMENT_TYPE statementType,
+    String tableName) {
+
+    try {
+      return niFiClient.isPutDatabaseRecordSynced(processorId, statementType, tableName);
+    } catch (IOException exception) {
+      return false;
+    }
   }
 }

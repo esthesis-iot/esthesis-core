@@ -15,7 +15,7 @@ public class NiFiConstants {
     ESTHESIS(new String[]{"[ESTHESIS]"}),
 
     //sink types
-    CONSUMERS(new String[]{"[C]"}),
+    READERS(new String[]{"[R]"}),
     PRODUCERS(new String[]{"[P]"}),
     WRITERS(new String[]{"[W]"}),
     LOGGERS(new String[]{"[L]"}),
@@ -35,6 +35,14 @@ public class NiFiConstants {
     PATH(String[] path) {
       this.path = path;
     }
+  }
+
+  @UtilityClass
+  public static final class SyncErrors {
+
+    public static final String NON_EXISTENT_PROCESSOR = "Does not exist in the NiFi workflow.";
+    public static final String NOT_MATCHING_PROPERTIES = "Properties are different in esthesis "
+      + "and  NiFi workflow.";
   }
 
   @UtilityClass
@@ -82,7 +90,7 @@ public class NiFiConstants {
       public static final String PUT_DATABASE_RECORD = "org.apache.nifi.processors.standard.PutDatabaseRecord";
       public static final String EXECUTE_INFLUX_DB = "org.apache.nifi.processors.influxdb.ExecuteInfluxDBQuery";
       public static final String EXECUTE_SQL = "org.apache.nifi.processors.standard.ExecuteSQL";
-
+      public static final String DISTRIBUTE_LOAD = "org.apache.nifi.processors.standard.DistributeLoad";
     }
   }
 
@@ -130,11 +138,6 @@ public class NiFiConstants {
     public static final String SQL_PRE_QUERY = "sql-pre-query";
     public static final String SQL_SELECT_QUERY = "SQL select query";
     public static final String SQL_POST_QUERY = "sql-post-query";
-    public static final String DBF_NORMALIZE = "dbf-normalize";
-    public static final String DBF_USER_LOGICAL_TYPES = "dbf-user-logical-types";
-    public static final String COMPRESSION_FORMAT = "compression-format";
-    public static final String DBF_DEFAULT_PRECISION = "dbf-default-precision";
-    public static final String ESQL_MAX_ROWS = "esql-max-rows";
     public static final String DCBP_SERVICE = "Database Connection Pooling Service";
 
     @UtilityClass

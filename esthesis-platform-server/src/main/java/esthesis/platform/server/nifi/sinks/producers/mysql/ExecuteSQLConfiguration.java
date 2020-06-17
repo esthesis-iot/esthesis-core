@@ -21,10 +21,5 @@ public class ExecuteSQLConfiguration {
   private String sqlPreQuery;
   private String sqlSelectQuery;
   private String sqlPostQuery;
-  private String dbfNormalize;
-  private String dbfUserLogicalTypes;
-  private String compressionFormat;
-  private String dbfDefaultPrecision;
-  private String esqlMaxRows;
 
 }

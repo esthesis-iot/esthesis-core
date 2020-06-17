@@ -1,11 +1,8 @@
 package esthesis.platform.server.nifi.client.services;
 
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.COMPRESSION_FORMAT;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DBF_DEFAULT_PRECISION;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DBF_NORMALIZE;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DBF_USER_LOGICAL_TYPES;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Processor.Type.DISTRIBUTE_LOAD;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.BROKER_URI;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DCBP_SERVICE;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.ESQL_MAX_ROWS;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_CHARSET;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_CONSISTENCY_LEVEL;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_DB_NAME;
@@ -18,16 +15,20 @@ import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_RETENTION_POLICY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_URL;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_USERNAME;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.MAX_QUEUE_SIZE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_DCBP_SERVICE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_READER;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_STATEMENT_TYPE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_TABLE_NAME;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.QOS;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_POST_QUERY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_PRE_QUERY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_SELECT_QUERY;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.TOPIC_FILTER;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONNECTABLE_COMPONENT_TYPE.INPUT_PORT;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONNECTABLE_COMPONENT_TYPE.OUTPUT_PORT;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONNECTABLE_COMPONENT_TYPE.PROCESSOR;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.SyncErrors.NON_EXISTENT_PROCESSOR;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,6 +48,7 @@ import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.DATA_UNIT;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.FAILED_RELATIONSHIP_TYPES;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATEMENT_TYPE;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.SUCCESSFUL_RELATIONSHIP_TYPES;
 import esthesis.platform.server.nifi.client.util.Util;
 import esthesis.platform.server.service.NiFiService;
@@ -83,6 +85,7 @@ import org.apache.nifi.web.api.entity.ProcessGroupEntity;
 import org.apache.nifi.web.api.entity.ProcessGroupFlowEntity;
 import org.apache.nifi.web.api.entity.ProcessorEntity;
 import org.apache.nifi.web.api.entity.ProcessorRunStatusEntity;
+import org.apache.nifi.web.api.entity.ProcessorsEntity;
 import org.apache.nifi.web.api.entity.ScheduleComponentsEntity;
 import org.apache.nifi.web.api.entity.TemplateEntity;
 import org.apache.nifi.web.api.entity.TemplatesEntity;
@@ -93,10 +96,12 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -507,7 +512,7 @@ public class NiFiClient {
         .readValue(callReplyDTO.getBody(), InputPortsEntity.class);
       Optional<PortEntity> optionalPortEntity = inputPortsEntity.getInputPorts().stream()
         .findFirst();
-      return optionalPortEntity.get();
+      return optionalPortEntity.isPresent() ? optionalPortEntity.get() : null;
     } else {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
     }
@@ -803,6 +808,31 @@ public class NiFiClient {
   }
 
   /**
+   * Finds a DistributeLoad processor in the given parent group.
+   *
+   * @param parentProcessGroupId The id of the parent group.
+   * @return ProcessorEnity object containing the newly created processor.
+   */
+  private ProcessorEntity findDistributeLoad(String parentProcessGroupId) throws IOException {
+    final CallReplyDTO callReplyDTO = getCall(
+      "/process-groups/" + parentProcessGroupId + "/processors");
+
+    if (callReplyDTO.isSuccessful()) {
+      ProcessorsEntity processorsEntity = mapper
+        .readValue(callReplyDTO.getBody(), ProcessorsEntity.class);
+      Optional<ProcessorEntity> optionalDistributeLoad = processorsEntity.getProcessors().stream()
+        .filter(
+          processorEntity -> processorEntity.getComponent().getType().equals(DISTRIBUTE_LOAD))
+        .findFirst();
+
+      return optionalDistributeLoad.isPresent() ? optionalDistributeLoad.get() : null;
+    } else {
+      throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
+    }
+
+  }
+
+  /**
    * Creates a ConsumeMQTT processor.
    *
    * @param parentProcessGroupId The id of the parent group where the processor will be created.
@@ -857,6 +887,24 @@ public class NiFiClient {
     return properties;
   }
 
+  public boolean isConsumeMQTTSynced(String processorId, String uri, String topic, int qos,
+    int queueSize) throws IOException {
+
+    Map<String, String> properties = getProcessorConfig(processorId);
+
+    if (properties == null) {
+      log.warning("ConsumeMQTT with id: " + processorId + " does not exist in NiFi workdlow.");
+      return false;
+    }
+
+    return
+      compareProperties(processorId, BROKER_URI, properties.get(Properties.BROKER_URI), uri) &&
+        compareProperties(processorId, MAX_QUEUE_SIZE, properties.get(Properties.MAX_QUEUE_SIZE),
+          String.valueOf(queueSize)) &&
+        compareProperties(processorId, TOPIC_FILTER, properties.get(Properties.TOPIC_FILTER), topic)
+        && compareProperties(processorId, QOS, properties.get(Properties.QOS), String.valueOf(qos));
+  }
+
   /**
    * Creates a PutInfluxDB processor.
    *
@@ -895,9 +943,8 @@ public class NiFiClient {
     // Create the processor component for the resource.
     ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.PUT_INFLUX_DB,
       name, processorConfigDTO, bundleDTO);
-    ProcessorEntity processor = createProcessor(parentProcessGroupId, processorDTO);
 
-    return processor;
+    return createProcessor(parentProcessGroupId, processorDTO);
   }
 
   /**
@@ -953,6 +1000,41 @@ public class NiFiClient {
     return properties;
   }
 
+  public boolean isPutInfluxDBSynced(String processorId, String databaseName, String databaseUrl,
+    int maxConnectionTimeoutSeconds, String username, String password, String charset,
+    CONSISTENCY_LEVEL consistencyLevel, String retentionPolicy, int maxRecordSize,
+    DATA_UNIT dataUnit) throws IOException {
+
+    Map<String, String> properties = getProcessorConfig(processorId);
+
+    if (properties == null) {
+      log.warning("PutInfluxDB with id: " + processorId + " does not exist in NiFi workflow.");
+      return false;
+    }
+
+    return
+      compareProperties(processorId, INFLUX_DB_NAME, properties.get(INFLUX_DB_NAME),
+        databaseName) &&
+        compareProperties(processorId, INFLUX_URL, properties.get(INFLUX_URL), databaseUrl) &&
+        compareProperties(processorId, INFLUX_MAX_CONNECTION_TIMEOUT,
+          properties.get(INFLUX_MAX_CONNECTION_TIMEOUT), maxConnectionTimeoutSeconds + " seconds")
+        &&
+        compareProperties(processorId, INFLUX_USERNAME, properties.get(INFLUX_USERNAME), username)
+        &&
+        compareProperties(processorId, INFLUX_PASSWORD, properties.get(INFLUX_PASSWORD),
+          password) &&
+        compareProperties(processorId,
+          INFLUX_CHARSET, properties.get(INFLUX_CHARSET), charset) &&
+        compareProperties(processorId, INFLUX_CONSISTENCY_LEVEL,
+          properties.get(INFLUX_CONSISTENCY_LEVEL), String.valueOf(consistencyLevel))
+        &&
+        compareProperties(processorId,
+          INFLUX_RETENTION_POLICY,
+          properties.get(INFLUX_RETENTION_POLICY), retentionPolicy) &&
+        compareProperties(processorId, INFLUX_MAX_RECORDS_SIZE,
+          properties.get(INFLUX_MAX_RECORDS_SIZE), maxRecordSize + " " + dataUnit);
+  }
+
   /**
    * Creates a PutDatabaseRecord processor.
    *
@@ -986,9 +1068,7 @@ public class NiFiClient {
     ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.PUT_DATABASE_RECORD,
       name, processorConfigDTO, bundleDTO);
 
-    ProcessorEntity processor = createProcessor(parentProcessGroupId, processorDTO);
-
-    return processor;
+    return createProcessor(parentProcessGroupId, processorDTO);
   }
 
   /**
@@ -1015,6 +1095,22 @@ public class NiFiClient {
     properties.put(PUT_DB_RECORD_TABLE_NAME, tableName);
 
     return properties;
+  }
+
+  public boolean isPutDatabaseRecordSynced(String processorId, STATEMENT_TYPE statementType,
+    String tableName)
+    throws IOException {
+    Map<String, String> properties = getProcessorConfig(processorId);
+
+    if (properties == null) {
+      log.warning("PutDatabaseRecord with id: " + processorId + " does not exist in NiFi workflow"
+        + ".");
+      return false;
+    }
+
+    return compareProperties(processorId, PUT_DB_RECORD_STATEMENT_TYPE,
+      properties.get(PUT_DB_RECORD_STATEMENT_TYPE), statementType.getType()) && compareProperties(
+      processorId, PUT_DB_RECORD_TABLE_NAME, properties.get(PUT_DB_RECORD_TABLE_NAME), tableName);
   }
 
   /**
@@ -1047,9 +1143,7 @@ public class NiFiClient {
     ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.EXECUTE_INFLUX_DB,
       name, processorConfigDTO, bundleDTO);
 
-    ProcessorEntity processor = createProcessor(parentProcessGroupId, processorDTO);
-
-    return processor;
+    return createProcessor(parentProcessGroupId, processorDTO);
   }
 
   /**
@@ -1093,6 +1187,41 @@ public class NiFiClient {
     return properties;
   }
 
+  public boolean isExecuteDBSynced(@NotNull String processorId, @NotNull String dbName,
+    @NotNull String url,
+    int maxConnectionTimeoutSeconds, String queryResultTimeUnit,
+    String query, int queryChunkSize) throws IOException {
+    Map<String, String> properties = getProcessorConfig(processorId);
+
+    if (properties == null) {
+      log.warning("ExecuteDB with id: " + processorId + " does not exist in NiFi workflow.");
+      return false;
+    }
+
+    return
+      compareProperties(processorId, INFLUX_DB_NAME,
+        properties.get(INFLUX_DB_NAME), dbName) &&
+        compareProperties(processorId, INFLUX_URL, properties.get(INFLUX_URL), url) &&
+        compareProperties(processorId, INFLUX_MAX_CONNECTION_TIMEOUT,
+          properties.get(INFLUX_MAX_CONNECTION_TIMEOUT),
+          maxConnectionTimeoutSeconds + " seconds") &&
+        compareProperties(processorId, INFLUX_QUERY_RESULT_TIME_UNIT,
+          properties.get(INFLUX_QUERY_RESULT_TIME_UNIT), queryResultTimeUnit.toUpperCase()) &&
+        compareProperties(processorId, INFLUX_QUERY, properties.get(INFLUX_QUERY), query) &&
+        compareProperties(processorId, INFLUX_QUERY_CHUNK_SIZE,
+          properties.get(INFLUX_QUERY_CHUNK_SIZE), String.valueOf(queryChunkSize));
+  }
+
+  private Map<String, String> getProcessorConfig(String processorId) throws IOException {
+    try {
+      ProcessorEntity processor = getProcessorById(processorId);
+      return processor.getComponent().getConfig().getProperties();
+    } catch (NiFiProcessingException e) {
+      return null;
+    }
+  }
+
+
   /**
    * Creates an ExecuteSQL processor.
    *
@@ -1102,21 +1231,14 @@ public class NiFiClient {
    * @param sqlPreQuery SQL Queries executed before the main query.
    * @param sqlSelectQuery The SQL select query that tha will be executed.
    * @param sqlPostQuery SQL Queries executed after the main query.
-   * @param dbfNormalize Whether to normalize non-Avro-compatible characters to compatible.
-   * @param dbfUserLogicalTypes Whether to use Avro Logical types for Numbers/Dates/Timestamps etc.
-   * @param compressionFormat Compression type when writing Avro files.
-   * @param dbfDefaultPrecision Precision of Avro logical type.
-   * @param esqlMaxRows Maximum number of result rows.
    * @return The newly created processor.
    */
   public ProcessorEntity createExecuteSQL(@NotNull String parentProcessGroupId,
     @NotNull String name, @NotNull String dcbpServiceId, String sqlPreQuery,
-    String sqlSelectQuery, String sqlPostQuery, String dbfNormalize, String dbfUserLogicalTypes,
-    String compressionFormat, String dbfDefaultPrecision, String esqlMaxRows) throws IOException {
+    String sqlSelectQuery, String sqlPostQuery) throws IOException {
 
     Map<String, String> properties = setExecuteSQLProperties(sqlPreQuery,
-      sqlSelectQuery, sqlPostQuery, dbfNormalize, dbfUserLogicalTypes, compressionFormat,
-      dbfDefaultPrecision, esqlMaxRows);
+      sqlSelectQuery, sqlPostQuery);
 
     properties.put(DCBP_SERVICE, dcbpServiceId);
 
@@ -1128,9 +1250,7 @@ public class NiFiClient {
     ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.EXECUTE_SQL,
       name, processorConfigDTO, bundleDTO);
 
-    ProcessorEntity processor = createProcessor(parentProcessGroupId, processorDTO);
-
-    return processor;
+    return createProcessor(parentProcessGroupId, processorDTO);
   }
 
   /**
@@ -1140,40 +1260,57 @@ public class NiFiClient {
    * @param sqlPreQuery SQL Queries executed before the main query.
    * @param sqlSelectQuery The SQL select query that tha will be executed.
    * @param sqlPostQuery SQL Queries executed after the main query.
-   * @param dbfNormalize Whether to normalize non-Avro-compatible characters to compatible.
-   * @param dbfUserLogicalTypes Whether to use Avro Logical types for Numbers/Dates/Timestamps etc.
-   * @param compressionFormat Compression type when writing Avro files.
-   * @param dbfDefaultPrecision Precision of Avro logical type.
-   * @param esqlMaxRows Maximum number of result rows.
    * @return The updated processor.
    */
   public ProcessorEntity updateExecuteSQL(@NotNull String processorId,
     String sqlPreQuery,
-    String sqlSelectQuery, String sqlPostQuery, String dbfNormalize, String dbfUserLogicalTypes,
-    String compressionFormat, String dbfDefaultPrecision, String esqlMaxRows) throws IOException {
+    String sqlSelectQuery, String sqlPostQuery) throws IOException {
 
     Map<String, String> properties = setExecuteSQLProperties(sqlPreQuery,
-      sqlSelectQuery, sqlPostQuery, dbfNormalize, dbfUserLogicalTypes, compressionFormat,
-      dbfDefaultPrecision, esqlMaxRows);
+      sqlSelectQuery, sqlPostQuery);
 
     return updateProcessor(processorId, properties);
   }
 
   private Map<String, String> setExecuteSQLProperties(String sqlPreQuery,
-    String sqlSelectQuery, String sqlPostQuery, String dbfNormalize, String dbfUserLogicalTypes,
-    String compressionFormat, String dbfDefaultPrecision, String esqlMaxRows) {
+    String sqlSelectQuery, String sqlPostQuery) {
 
     Map<String, String> properties = new HashMap<>();
     properties.put(SQL_PRE_QUERY, sqlPreQuery);
     properties.put(SQL_SELECT_QUERY, sqlSelectQuery);
     properties.put(SQL_POST_QUERY, sqlPostQuery);
-    properties.put(DBF_NORMALIZE, dbfNormalize);
-    properties.put(DBF_USER_LOGICAL_TYPES, dbfUserLogicalTypes);
-    properties.put(COMPRESSION_FORMAT, compressionFormat);
-    properties.put(DBF_DEFAULT_PRECISION, dbfDefaultPrecision);
-    properties.put(ESQL_MAX_ROWS, esqlMaxRows);
 
     return properties;
+  }
+
+  public boolean isExecuteSQLSynced(String processorId, String sqlPreQuery, String sqlSelectQuery,
+    String sqlPostQuery) throws IOException {
+
+    Map<String, String> properties = getProcessorConfig(processorId);
+
+    if (properties == null) {
+      log.warning("ExecuteDB with id: " + processorId + " does not exist in NiFi workflow.");
+      return false;
+    }
+
+    return
+      compareProperties(processorId, SQL_PRE_QUERY, properties.get(SQL_PRE_QUERY), sqlPreQuery) &&
+        compareProperties(processorId, SQL_SELECT_QUERY, properties.get(SQL_SELECT_QUERY),
+          sqlSelectQuery) &&
+        compareProperties(processorId, SQL_POST_QUERY, properties.get(SQL_POST_QUERY),
+          sqlPostQuery);
+  }
+
+  private boolean compareProperties(String processorId, String propertyName, String workflowValue
+    , String esthesisValue) {
+    boolean equals = Objects.equals(workflowValue, esthesisValue);
+
+    if (!equals) {
+      log.warning("Processor with id: " + processorId + " has different values for property: "
+        + propertyName);
+    }
+
+    return equals;
   }
 
   /**
@@ -1230,11 +1367,18 @@ public class NiFiClient {
         relationshipDTO.getName().toUpperCase().replace("-", "_"))).map(RelationshipDTO::getName)
       .collect(Collectors.toList());
 
-    if (processorEntity.getInputRequirement().equals("INPUT_REQUIRED")) {
-      PortEntity inputPort = findInputPort(parentProcessGroupId);
-      connectToPort(processorId, parentProcessGroupId, INPUT_PORT.name(),
-        PROCESSOR.name(),
-        inputPort.getId(), connections);
+    ProcessorEntity distributeLoad = findDistributeLoad(parentProcessGroupId);
+    PortEntity inputPort = findInputPort(parentProcessGroupId);
+
+    if (distributeLoad != null) {
+      Set<String> distributeLoadConnections =
+        distributeLoad.getComponent().getRelationships().stream().map(RelationshipDTO::getName)
+          .collect(Collectors.toSet());
+      connectSourceAndDestination(parentProcessGroupId, PROCESSOR.name(), PROCESSOR.name(),
+        distributeLoad.getId(), processorId, distributeLoadConnections);
+    } else if (inputPort != null) {
+      connectSourceAndDestination(parentProcessGroupId, INPUT_PORT.name(), PROCESSOR.name(),
+        inputPort.getId(), processorId, connections);
     }
 
     OutputPortsEntity outputPorts = findOutputPorts(parentProcessGroupId);
@@ -1244,9 +1388,8 @@ public class NiFiClient {
       Optional<PortEntity> logout = outputPorts.getOutputPorts().stream()
         .filter(portEntity -> portEntity.getComponent().getName().contains("_logout")).findFirst();
 
-      connectToPort(processorId, parentProcessGroupId, PROCESSOR.name(),
-        OUTPUT_PORT.name(),
-        logout.get().getId(), connections);
+      connectSourceAndDestination(parentProcessGroupId, PROCESSOR.name(), OUTPUT_PORT.name(),
+        processorId, logout.get().getId(), connections);
 
     }
 
@@ -1260,17 +1403,25 @@ public class NiFiClient {
       Optional<PortEntity> out = outputPorts.getOutputPorts().stream()
         .filter(portEntity -> portEntity.getComponent().getName().contains("_out")).findFirst();
 
-      connectToPort(processorId, parentProcessGroupId, PROCESSOR.name(),
-        OUTPUT_PORT.name(),
-        out.get().getId(), connections);
+      connectSourceAndDestination(parentProcessGroupId, PROCESSOR.name(), OUTPUT_PORT.name(),
+        processorId, out.get().getId(), connections);
     }
 
     return getProcessorById(processorId);
   }
 
-  private void connectToPort(String processorId,
-    String parentProcessGroupId, String sourceType, String destinationType, String portId,
-    Set<String> connections)
+  /**
+   * Helper method that connects a source with a destination.
+   *
+   * @param parentProcessGroupId The id of the group where the connection will be created.
+   * @param sourceType The type of the source.
+   * @param destinationType The type of the destination.
+   * @param sourceId The id of the source.
+   * @param destinationId The id of the destination.
+   * @param relationships A set of all relationships that the connection is responsible for.
+   */
+  private void connectSourceAndDestination(String parentProcessGroupId, String sourceType,
+    String destinationType, String sourceId, String destinationId, Set<String> relationships)
     throws IOException {
 
     boolean isOutputConnection =
@@ -1282,15 +1433,15 @@ public class NiFiClient {
     ConnectableDTO sourceDTO = new ConnectableDTO();
     sourceDTO.setGroupId(parentProcessGroupId);
     sourceDTO.setType(sourceType);
-    sourceDTO.setId(isOutputConnection ? processorId : portId);
+    sourceDTO.setId(sourceId);
 
     ConnectableDTO destinationDTO = new ConnectableDTO();
     destinationDTO.setGroupId(parentProcessGroupId);
     destinationDTO.setType(destinationType);
-    destinationDTO.setId(isOutputConnection ? portId : processorId);
+    destinationDTO.setId(destinationId);
 
-    if (connections != null) {
-      connectionDTO.setSelectedRelationships(connections);
+    if (relationships != null) {
+      connectionDTO.setSelectedRelationships(relationships);
     }
 
     connectionDTO.setSource(sourceDTO);
@@ -1407,10 +1558,14 @@ public class NiFiClient {
    * @return A Collection containing all the validation errors.
    */
   public Collection<String> getValidationErrors(String processorId) throws IOException {
-    return getProcessorById(processorId).getComponent().getValidationErrors();
+    try {
+      return getProcessorById(processorId).getComponent().getValidationErrors();
+    } catch (NiFiProcessingException e) {
+      return Collections.singletonList(NON_EXISTENT_PROCESSOR);
+    }
   }
 
-  private ProcessorEntity getProcessorById(String processorId) throws IOException {
+  public ProcessorEntity getProcessorById(String processorId) throws IOException {
     CallReplyDTO callReplyDTO = getCall("/processors/" + processorId);
     if (callReplyDTO.isSuccessful()) {
       return mapper.readValue(callReplyDTO.getBody(), ProcessorEntity.class);

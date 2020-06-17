@@ -14,6 +14,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Component
@@ -91,11 +92,12 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
     PutDatabaseRecordConfiguration prevConf = extractConfiguration(sink.getConfiguration());
     conf = extractConfiguration(sinkDTO.getConfiguration());
 
-    if (!(conf.getDatabaseConnectionURL().equals(prevConf.getDatabaseConnectionURL())
-      && conf.getDatabaseDriverClassName().equals(prevConf.getDatabaseDriverClassName())
-      && conf.getDatabaseDriverClassLocation().equals(prevConf.getDatabaseDriverClassLocation())
-      && conf.getDatabaseUser().equals(prevConf.getDatabaseUser())
-      && conf.getPassword().equals(prevConf.getPassword()))) {
+    if (!(Objects.equals(conf.getDatabaseConnectionURL(), prevConf.getDatabaseConnectionURL())
+      && Objects.equals(conf.getDatabaseDriverClassName(), prevConf.getDatabaseDriverClassName())
+      && Objects.equals(conf.getDatabaseDriverClassLocation(),
+      prevConf.getDatabaseDriverClassLocation())
+      && Objects.equals(conf.getDatabaseUser(), prevConf.getDatabaseUser())
+      && Objects.equals(conf.getPassword(), prevConf.getPassword()))) {
 
       CustomInfo customInfo = objectMapper.readValue(sink.getCustomInfo(), CustomInfo.class);
       niFiClientService
@@ -130,6 +132,13 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
   @Override
   public String getSinkValidationErrors(String id) throws IOException {
     return niFiClientService.getValidationErrors(id);
+  }
+
+  @Override
+  public boolean isSynced(NiFiSinkDTO niFiSinkDTO) {
+    conf = extractConfiguration(niFiSinkDTO.getConfiguration());
+    return niFiClientService.isPutDatabaseSynced(niFiSinkDTO.getProcessorId(),
+      getStatementType(conf.getStatementType()), conf.getTableName());
   }
 
   private PutDatabaseRecordConfiguration extractConfiguration(String configuration) {

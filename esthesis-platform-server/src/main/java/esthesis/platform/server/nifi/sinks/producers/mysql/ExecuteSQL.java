@@ -43,12 +43,7 @@ public class ExecuteSQL implements NiFiProducerFactory {
       "password: \n" +
       "sqlPreQuery: \n" +
       "sqlSelectQuery: \n" +
-      "sqlPostQuery: \n" +
-      "dbfNormalize: \n" +
-      "dbfUserLogicalTypes: \n" +
-      "compressionFormat: \n" +
-      "dbfDefaultPrecision: \n" +
-      "esqlMaxRows: ";
+      "sqlPostQuery: ";
   }
 
   @Override
@@ -70,9 +65,7 @@ public class ExecuteSQL implements NiFiProducerFactory {
     niFiSinkDTO.setCustomInfo(objectMapper.writeValueAsString(customInfo));
 
     String executeSQL = niFiClientService.createExecuteSQL(niFiSinkDTO.getName(), dbConnectionPool,
-      conf.getSqlPreQuery(), conf.getSqlSelectQuery(), conf.getSqlPostQuery(),
-      conf.getDbfNormalize(), conf.getDbfUserLogicalTypes(), conf.getCompressionFormat(),
-      conf.getDbfDefaultPrecision(), conf.getEsqlMaxRows(), path);
+      conf.getSqlPreQuery(), conf.getSqlSelectQuery(), conf.getSqlPostQuery(), path);
 
     niFiSinkDTO.setProcessorId(executeSQL);
     enableControllerServices(dbConnectionPool);
@@ -102,9 +95,7 @@ public class ExecuteSQL implements NiFiProducerFactory {
     }
 
     return niFiClientService.updateExecuteSQL(sink.getProcessorId(),
-      conf.getSqlPreQuery(), conf.getSqlSelectQuery(), conf.getSqlPostQuery(),
-      conf.getDbfNormalize(), conf.getDbfUserLogicalTypes(), conf.getCompressionFormat(),
-      conf.getDbfDefaultPrecision(), conf.getEsqlMaxRows());
+      conf.getSqlPreQuery(), conf.getSqlSelectQuery(), conf.getSqlPostQuery());
   }
 
   @Override
@@ -127,6 +118,13 @@ public class ExecuteSQL implements NiFiProducerFactory {
   @Override
   public String getSinkValidationErrors(String id) throws IOException {
     return niFiClientService.getValidationErrors(id);
+  }
+
+  @Override
+  public boolean isSynced(NiFiSinkDTO niFiSinkDTO) {
+    conf = extractConfiguration(niFiSinkDTO.getConfiguration());
+    return niFiClientService.isExecuteSQLSynced(niFiSinkDTO.getProcessorId(),
+      conf.getSqlPreQuery(), conf.getSqlSelectQuery(), conf.getSqlPostQuery());
   }
 
   private ExecuteSQLConfiguration extractConfiguration(String configuration) {

@@ -1,7 +1,5 @@
 package esthesis.platform.server.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +25,6 @@ public class NiFiDTO extends BaseDTO {
   private String url;
   private String description;
   private String wfVersion;
-  @JsonProperty(access = Access.READ_ONLY)
-  private Instant syncedOn;
+  private boolean synced;
+  private Instant lastChecked;
 }

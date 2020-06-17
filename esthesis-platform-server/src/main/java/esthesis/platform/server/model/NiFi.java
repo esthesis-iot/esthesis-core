@@ -37,6 +37,7 @@ public class NiFi extends BaseEntity {
   private String url;
   private String description;
   private String wfVersion;
-  @Column(name = "synced_on")
-  private Instant syncedOn;
+  private boolean synced;
+  @Column(name = "last_checked")
+  private Instant lastChecked;
 }

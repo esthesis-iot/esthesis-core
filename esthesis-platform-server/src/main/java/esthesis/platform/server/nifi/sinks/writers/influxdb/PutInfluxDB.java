@@ -61,7 +61,7 @@ public class PutInfluxDB implements NiFiWriterFactory {
   @Override
   public NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO, String[] path)
     throws IOException {
-    extractConfiguration(niFiSinkDTO.getConfiguration());
+    conf = extractConfiguration(niFiSinkDTO.getConfiguration());
 
     String putInfluxDB = niFiClientService.createPutInfluxDB(niFiSinkDTO.getName(),
       conf.getDatabaseName(),
@@ -79,7 +79,7 @@ public class PutInfluxDB implements NiFiWriterFactory {
 
   @Override
   public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO) throws IOException {
-    extractConfiguration(sinkDTO.getConfiguration());
+    conf = extractConfiguration(sinkDTO.getConfiguration());
     return niFiClientService.updatePutInfluxDB(sinkDTO.getProcessorId(), conf.getDatabaseName(),
       conf.getDatabaseUrl(), 10,
       conf.getUsername(), conf.getPassword(),
@@ -112,10 +112,24 @@ public class PutInfluxDB implements NiFiWriterFactory {
     return niFiClientService.getValidationErrors(id);
   }
 
-  private void extractConfiguration(String configuration) {
+  @Override
+  public boolean isSynced(NiFiSinkDTO niFiSinkDTO) {
+    conf = extractConfiguration(niFiSinkDTO.getConfiguration());
+    return niFiClientService.isPutInfluxDBSynced(niFiSinkDTO.getProcessorId(),
+      conf.getDatabaseName(),
+      conf.getDatabaseUrl(), 10,
+      conf.getUsername(), conf.getPassword(),
+      conf.getCharset(),
+      getConsistencyLevel(conf.getConsistencyLevel()),
+      conf.getRetentionPolicy(),
+      getMaxRecordSize(conf.getMaxRecordSize()),
+      getDataUnit(conf.getMaxRecordSizeUnit()));
+  }
+
+  private PutInfluxDBConfiguration extractConfiguration(String configuration) {
     Representer representer = new Representer();
     representer.getPropertyUtils().setSkipMissingProperties(true);
-    conf = new Yaml(new Constructor(PutInfluxDBConfiguration.class), representer)
+    return new Yaml(new Constructor(PutInfluxDBConfiguration.class), representer)
       .load(configuration);
   }
 
