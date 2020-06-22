@@ -17,7 +17,7 @@ export class HeaderComponent extends BaseComponent {
   }
 
   getUserEmail(): string {
-    return this.userService.getJWTClaim(AppConstants.jwt.claims.USERNAME);
+    return this.userService.getJWTClaim(AppConstants.jwt.claims.EMAIL);
   }
 
 }

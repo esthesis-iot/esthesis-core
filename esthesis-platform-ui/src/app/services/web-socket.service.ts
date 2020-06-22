@@ -16,6 +16,7 @@ export class WebSocketService {
   }
 
   connect() {
+    return;
     // Check if a secure or plain WebSocket connection should be established.
     var wsProtocol = "ws:";
     if (window.location.protocol === 'https:') {
@@ -25,7 +26,12 @@ export class WebSocketService {
     // Connect to WebSocket.
     const rxStompConfig: InjectableRxStompConfig = {
       // STOMP server.
-      brokerURL: `${wsProtocol}//${window.location.hostname}:${window.location.port}/api/ws?bearer=${localStorage.getItem(AppConstants.JWT_STORAGE_NAME)}`,
+      // brokerURL: `${wsProtocol}//${window.location.hostname}:${window.location.port}/api/ws?bearer=${}`,
+      brokerURL: `${wsProtocol}//${window.location.hostname}:${window.location.port}/api/ws`,
+
+      connectHeaders: {
+        Authentication: 'Bearer ' + localStorage.getItem(AppConstants.JWT_STORAGE_NAME)
+      },
 
       // How often to heartbeat?
       // Interval in milliseconds, set to 0 to disable
@@ -39,9 +45,9 @@ export class WebSocketService {
       // Will log diagnostics on console
       // It can be quite verbose, not recommended in production
       // Skip this key to stop logging to console
-      // debug: (msg: string): void => {
-      //   console.log(new Date(), msg);
-      // }
+      debug: (msg: string): void => {
+        console.log(new Date(), msg);
+      }
     };
 
     this.logger.info('Connecting WebSocket client.');

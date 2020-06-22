@@ -11,7 +11,7 @@ export const AppConstants = {
   // The claims available in JWT.
   jwt: {
     claims: {
-      USERNAME: 'sub'
+      EMAIL: 'email'
     }
   },
 

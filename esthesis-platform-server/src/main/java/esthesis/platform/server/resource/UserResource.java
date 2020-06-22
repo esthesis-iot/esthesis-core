@@ -112,7 +112,7 @@ public class UserResource {
     logMessage = "There was a problem logging you out.")
   public ResponseEntity logout() {
     userService
-      .logout(SecurityContextHolder.getContext().getAuthentication().getCredentials().toString());
+      .logout(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
     return ResponseEntity.ok().build();
   }
 

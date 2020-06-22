@@ -175,6 +175,10 @@
       <artifactId>spring-content-fs-boot-starter</artifactId>
       <version>${spring-content-fs-boot-starter.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+    </dependency>
 
     <!-- QLACK dependencies -->
     <dependency>

@@ -14,7 +14,7 @@ public class AuditorAwareImpl implements AuditorAware<String> {
       && SecurityContextHolder.getContext().getAuthentication() != null
       && SecurityContextHolder.getContext().getAuthentication().getCredentials() != null) {
       return Optional
-        .of(SecurityContextHolder.getContext().getAuthentication().getCredentials().toString());
+        .of(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
     } else {
       return Optional.of(Generic.SYSTEM);
     }

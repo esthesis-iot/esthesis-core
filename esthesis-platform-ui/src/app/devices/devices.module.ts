@@ -71,7 +71,7 @@ import {MatListModule} from '@angular/material/list';
     MatIconModule,
     MatTabsModule,
     MatChipsModule,
-    LeafletModule.forRoot(),
+    LeafletModule,
     MatAutocompleteModule,
     MomentModule,
     ZXingScannerModule,

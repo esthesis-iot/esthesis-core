@@ -15,7 +15,6 @@ import esthesis.platform.server.config.AppConstants.Jwt;
 import javax.validation.constraints.NotBlank;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -31,18 +30,14 @@ public class UserService {
   private final JwtService jwtService;
   private final AuditAsyncService auditService;
   private final com.eurodyn.qlack.fuse.aaa.service.UserService qlackUserService;
-  //  private final AuthenticationService authenticationService;
 
-  //  @Autowired
   public UserService(JwtService jwtService,
     AuditAsyncService auditService,
     com.eurodyn.qlack.fuse.aaa.service.UserService qlackUserService
-    //    AuthenticationService authenticationService
   ) {
     this.jwtService = jwtService;
     this.auditService = auditService;
     this.qlackUserService = qlackUserService;
-    //    this.authenticationService = authenticationService;
   }
 
   private void verifyEmailIsUnique(String newEmail) {
@@ -86,7 +81,7 @@ public class UserService {
       auditService.audit(new AuditDTO()
         .setLevel(Level.SECURITY)
         .setEvent(Event.AUTHENTICATION)
-        .setOpt1(SecurityContextHolder.getContext().getAuthentication().getCredentials().toString())
+        .setOpt1(email)
         .setShortDescription(MessageFormat.format("User {0} could not be authenticated.", email)));
       throw new QAuthenticationException("User {0} could not authenticate.", email);
     }
@@ -95,7 +90,6 @@ public class UserService {
     final UserDTO userDTO = qlackUserService.login(userId, null, true);
     auditService.audit(Level.SECURITY, Event.AUTHENTICATION,
       "User {0} authenticated successfully.", email);
-
     final String jwt = jwtService.generateJwt(JwtGenerateRequestDTO.builder()
       .subject(userDTO.getId())
       .claim(Jwt.CLAIM_EMAIL, userDTO.getUsername())
