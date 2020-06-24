@@ -10,6 +10,7 @@ import esthesis.platform.server.dto.WfVersionDTO;
 import esthesis.platform.server.model.NiFi;
 import esthesis.platform.server.service.NiFiService;
 import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -24,18 +25,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-
 @RestController
 @Validated
 @RequestMapping("/infrastructure/nifi")
+@RequiredArgsConstructor
 public class NiFiResource {
 
   private final NiFiService nifiService;
-
-  public NiFiResource(NiFiService nifiService) {
-    this.nifiService = nifiService;
-  }
 
   /**
    * Returns the profile of the current application.
@@ -90,11 +86,5 @@ public class NiFiResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch NiFi object.")
   public NiFiDTO getActive() {
     return nifiService.getActiveNiFi();
-  }
-
-  @PostMapping(path = "/sync/{synced}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not init NiFi template.")
-  public boolean sync(@PathVariable boolean synced) throws IOException {
-    return nifiService.sync(synced);
   }
 }

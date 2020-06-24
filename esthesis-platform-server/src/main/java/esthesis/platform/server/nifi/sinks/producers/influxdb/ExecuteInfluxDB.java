@@ -49,8 +49,8 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
     String executeInfluxDB = niFiClientService
       .createExecuteInfluxDB(niFiSinkDTO.getName(), conf.getDatabaseName(),
         conf.getDatabaseUrl(), Integer.parseInt(conf.getMaxConnectionTimeoutSeconds()),
-        conf.getQueryResultTimeUnit()
-        , conf.getQuery(), Integer.parseInt(conf.getQueryChunkSize()), path);
+        conf.getQueryResultTimeUnit(), conf.getQuery(), Integer.parseInt(conf.getQueryChunkSize()),
+        path);
 
     niFiSinkDTO.setProcessorId(executeInfluxDB);
 
@@ -68,8 +68,8 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
   }
 
   @Override
-  public String deleteSink(String id) throws IOException {
-    return niFiClientService.deleteProcessor(id);
+  public String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
+    return niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
   }
 
   @Override
@@ -90,14 +90,8 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
   }
 
   @Override
-  public boolean isSynced(NiFiSinkDTO niFiSinkDTO) {
-    conf = extractConfiguration(niFiSinkDTO.getConfiguration());
-    return niFiClientService.isExecuteInfluxSynced(niFiSinkDTO.getProcessorId(),
-      conf.getDatabaseName(),
-      conf.getDatabaseUrl(), Integer.parseInt(conf.getMaxConnectionTimeoutSeconds()),
-      conf.getQueryResultTimeUnit()
-      , conf.getQuery(), Integer.parseInt(conf.getQueryChunkSize()));
-
+  public boolean exists(String id) throws IOException {
+    return niFiClientService.processorExists(id);
   }
 
   private ExecuteInfluxDBConfiguration extractConfiguration(String configuration) {

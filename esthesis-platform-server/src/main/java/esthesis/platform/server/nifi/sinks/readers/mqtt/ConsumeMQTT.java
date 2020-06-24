@@ -60,24 +60,20 @@ public class ConsumeMQTT implements NiFiReaderFactory {
   @Override
   public NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
 
+    deleteControllerServices(niFiSinkDTO);
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
 
     String sslContextId = null;
-    conf.getKeystoreFilename();
-    conf.getKeystoreFilename();
-    conf.getTruststoreFilename();
-    conf.getTruststorePassword();
+    String keystoreFilename = conf.getKeystoreFilename();
+    String keystorePassword = conf.getKeystorePassword();
+    String truststoreFilename = conf.getTruststoreFilename();
+    String truststorePassword = conf.getTruststorePassword();
 
-    if (ObjectUtils.allNotNull(conf.getKeystoreFilename(),
-      conf.getKeystoreFilename(),
-      conf.getTruststoreFilename(),
-      conf.getTruststorePassword())) {
+    if (ObjectUtils
+      .allNotNull(keystoreFilename, keystorePassword, truststoreFilename, truststorePassword)) {
 
       sslContextId = niFiClientService.createSSLContext(niFiSinkDTO.getName() + " [SSL Context] ",
-        conf.getKeystoreFilename(),
-        conf.getKeystorePassword(),
-        conf.getTruststoreFilename(),
-        conf.getTruststorePassword(), path);
+        keystoreFilename, keystorePassword, truststoreFilename, truststorePassword, path);
 
       CustomInfo customInfo = new CustomInfo();
       customInfo.setSslContextId(sslContextId);
@@ -86,8 +82,7 @@ public class ConsumeMQTT implements NiFiReaderFactory {
     }
 
     String consumerMqtt = niFiClientService
-      .createConsumerMqtt(niFiSinkDTO.getName(), conf.getUri(),
-        conf.getTopic(), conf.getQos(),
+      .createConsumerMqtt(niFiSinkDTO.getName(), conf.getUri(), conf.getTopic(), conf.getQos(),
         conf.getQueueSize(), sslContextId, path);
 
     niFiSinkDTO.setProcessorId(consumerMqtt);
@@ -107,18 +102,27 @@ public class ConsumeMQTT implements NiFiReaderFactory {
       CustomInfo customInfo = objectMapper.readValue(sink.getCustomInfo(), CustomInfo.class);
 
       niFiClientService.updateSSLContext(customInfo.getSslContextId(), conf.getKeystoreFilename(),
-        conf.getKeystorePassword(), conf.getTruststoreFilename(), conf.getKeystoreFilename());
+        conf.getKeystorePassword(), conf.getTruststoreFilename(), conf.getTruststorePassword());
     }
 
     return niFiClientService
-      .updateConsumerMQTT(sinkDTO.getProcessorId(), conf.getUri(),
-        conf.getTopic(), conf.getQos(),
+      .updateConsumerMQTT(sinkDTO.getProcessorId(), conf.getUri(), conf.getTopic(), conf.getQos(),
         conf.getQueueSize());
   }
 
   @Override
-  public String deleteSink(String id) throws IOException {
-    return niFiClientService.deleteProcessor(id);
+  public String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
+    String id = niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
+    deleteControllerServices(niFiSinkDTO);
+    return id;
+  }
+
+  private void deleteControllerServices(NiFiSinkDTO niFiSinkDTO) throws IOException {
+    String customInfoString = niFiSinkDTO.getCustomInfo();
+    if (customInfoString != null) {
+      CustomInfo customInfo = objectMapper.readValue(customInfoString, CustomInfo.class);
+      niFiClientService.deleteController(customInfo.getSslContextId());
+    }
   }
 
   @Override
@@ -139,11 +143,8 @@ public class ConsumeMQTT implements NiFiReaderFactory {
   }
 
   @Override
-  public boolean isSynced(NiFiSinkDTO niFiSinkDTO) {
-    conf = extractConfiguration(niFiSinkDTO.getConfiguration());
-    return niFiClientService.isConsumeMQTTSynced(niFiSinkDTO.getProcessorId(), conf.getUri(),
-      conf.getTopic(), conf.getQos(),
-      conf.getQueueSize());
+  public boolean exists(String id) throws IOException {
+    return niFiClientService.processorExists(id);
   }
 
   private ConsumeMQTTConfiguration extractConfiguration(String configuration) {

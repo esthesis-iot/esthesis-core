@@ -1,14 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {BaseComponent} from '../../shared/component/base-component';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatDialog} from '@angular/material/dialog';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {QFormsService} from '@eurodyn/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UtilityService} from '../../shared/service/utility.service';
 import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {NiFiDto} from '../../dto/ni-fi-dto';
 import {NiFiService} from './nifi.service';
-import {NifiSinkService} from '../../nifisinks/nifi-sink.service';
+import {SyncService} from './sync.service';
 
 @Component({
   selector: 'app-infrastructure-nifi-edit',
@@ -23,7 +23,7 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
               private qForms: QFormsService,
-              private nifiService: NiFiService, private nifiSinkService: NifiSinkService, private route: ActivatedRoute,
+              private nifiService: NiFiService, private syncService: SyncService, private route: ActivatedRoute,
               private router: Router, private utilityService: UtilityService) {
     super();
   }
@@ -80,18 +80,44 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
         }
       }
     });
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.nifiService.delete(this.id).subscribe(onNext => {
-          this.utilityService.popupSuccess('NiFi server successfully deleted.');
-          if (this.activeNiFiId != null && parseInt(this.activeNiFiId) == this.id) {
-            localStorage.removeItem('activeNiFi');
+        this.deleteWF().afterClosed().subscribe(result => {
+          if (result) {
+            this.syncService.deleteWorkflow().subscribe(value => {
+              this.deleteNiFiInstance();
+            })
+          } else {
+            this.deleteNiFiInstance();
           }
-
-          this.router.navigate(['infra'], {fragment: 'nifi'});
         });
       }
     });
+  }
+
+  private deleteNiFiInstance() {
+    this.nifiService.delete(this.id).subscribe(onNext => {
+      this.utilityService.popupSuccess('NiFi server successfully deleted.');
+      if (this.activeNiFiId != null && parseInt(this.activeNiFiId) == this.id) {
+        localStorage.removeItem('activeNiFi');
+      }
+      this.router.navigate(['infra'], {fragment: 'nifi'});
+    });
+  }
+
+  private deleteWF(): MatDialogRef<OkCancelModalComponent> {
+    const dialogRefWF = this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: 'Delete NiFi Workflow',
+        question: 'Do you also want to delete the Workflow from the NiFi instance?',
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    });
+
+    return dialogRefWF;
   }
 
   activate() {
@@ -115,10 +141,8 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
   }
 
   sync() {
-    this.nifiSinkService.isSynced().subscribe(value => {
-      this.nifiService.sync(value).subscribe(
-        value => this.router.navigate(['infra'], {fragment: 'nifi'}));
-    })
+    this.syncService.sync().subscribe(
+      value => this.router.navigate(['infra'], {fragment: 'nifi'}));
   }
 
 }

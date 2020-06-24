@@ -59,6 +59,7 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
 
   @Override
   public NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+    deleteControllerServices(niFiSinkDTO);
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
 
     String jsonTreeReader = niFiClientService
@@ -113,8 +114,19 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
   }
 
   @Override
-  public String deleteSink(String id) throws IOException {
-    return niFiClientService.deleteProcessor(id);
+  public String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
+    String id = niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
+    deleteControllerServices(niFiSinkDTO);
+    return id;
+  }
+
+  private void deleteControllerServices(NiFiSinkDTO niFiSinkDTO) throws IOException {
+    String customInfoString = niFiSinkDTO.getCustomInfo();
+    if (customInfoString != null) {
+      CustomInfo customInfo = objectMapper.readValue(customInfoString, CustomInfo.class);
+      niFiClientService.deleteController(customInfo.getJsonTreeReader());
+      niFiClientService.deleteController(customInfo.getDbConnectionPool());
+    }
   }
 
   @Override
@@ -135,10 +147,8 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
   }
 
   @Override
-  public boolean isSynced(NiFiSinkDTO niFiSinkDTO) {
-    conf = extractConfiguration(niFiSinkDTO.getConfiguration());
-    return niFiClientService.isPutDatabaseSynced(niFiSinkDTO.getProcessorId(),
-      getStatementType(conf.getStatementType()), conf.getTableName());
+  public boolean exists(String id) throws IOException {
+    return niFiClientService.processorExists(id);
   }
 
   private PutDatabaseRecordConfiguration extractConfiguration(String configuration) {

@@ -24,8 +24,4 @@ export class NiFiService extends CrudService<NiFiDto> {
   getActive(): Observable<NiFiDto> {
     return this.http.get<NiFiDto>(`${AppConstants.API_ROOT}/infrastructure/nifi/active`);
   }
-
-  sync(synced: boolean): Observable<any> {
-    return this.http.post(`${AppConstants.API_ROOT}/infrastructure/nifi/sync/${synced}`, null);
-  }
 }

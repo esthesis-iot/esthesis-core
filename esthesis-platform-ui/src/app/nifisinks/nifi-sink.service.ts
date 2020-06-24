@@ -20,8 +20,4 @@ export class NifiSinkService extends CrudService<NiFiSinkDto> {
     return this.http.get<any[]>(
       `${AppConstants.API_ROOT}/${NifiSinkService.endpoint}/factories/${type}`);
   }
-
-  isSynced(): Observable<boolean> {
-    return this.http.get<boolean>(`${AppConstants.API_ROOT}/${NifiSinkService.endpoint}/synced`);
-  }
 }

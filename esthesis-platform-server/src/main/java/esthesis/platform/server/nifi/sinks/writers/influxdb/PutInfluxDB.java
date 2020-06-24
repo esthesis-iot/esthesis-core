@@ -91,8 +91,8 @@ public class PutInfluxDB implements NiFiWriterFactory {
   }
 
   @Override
-  public String deleteSink(String id) throws IOException {
-    return niFiClientService.deleteProcessor(id);
+  public String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
+    return niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
   }
 
   @Override
@@ -113,17 +113,8 @@ public class PutInfluxDB implements NiFiWriterFactory {
   }
 
   @Override
-  public boolean isSynced(NiFiSinkDTO niFiSinkDTO) {
-    conf = extractConfiguration(niFiSinkDTO.getConfiguration());
-    return niFiClientService.isPutInfluxDBSynced(niFiSinkDTO.getProcessorId(),
-      conf.getDatabaseName(),
-      conf.getDatabaseUrl(), 10,
-      conf.getUsername(), conf.getPassword(),
-      conf.getCharset(),
-      getConsistencyLevel(conf.getConsistencyLevel()),
-      conf.getRetentionPolicy(),
-      getMaxRecordSize(conf.getMaxRecordSize()),
-      getDataUnit(conf.getMaxRecordSizeUnit()));
+  public boolean exists(String id) throws IOException {
+    return niFiClientService.processorExists(id);
   }
 
   private PutInfluxDBConfiguration extractConfiguration(String configuration) {

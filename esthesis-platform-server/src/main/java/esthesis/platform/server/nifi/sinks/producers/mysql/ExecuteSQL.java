@@ -99,8 +99,8 @@ public class ExecuteSQL implements NiFiProducerFactory {
   }
 
   @Override
-  public String deleteSink(String id) throws IOException {
-    return niFiClientService.deleteProcessor(id);
+  public String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
+    return niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
   }
 
   @Override
@@ -121,10 +121,8 @@ public class ExecuteSQL implements NiFiProducerFactory {
   }
 
   @Override
-  public boolean isSynced(NiFiSinkDTO niFiSinkDTO) {
-    conf = extractConfiguration(niFiSinkDTO.getConfiguration());
-    return niFiClientService.isExecuteSQLSynced(niFiSinkDTO.getProcessorId(),
-      conf.getSqlPreQuery(), conf.getSqlSelectQuery(), conf.getSqlPostQuery());
+  public boolean exists(String id) throws IOException {
+    return niFiClientService.processorExists(id);
   }
 
   private ExecuteSQLConfiguration extractConfiguration(String configuration) {

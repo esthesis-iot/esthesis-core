@@ -1,7 +1,10 @@
 package esthesis.platform.server.nifi.client.services;
 
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Processor.Type.DISTRIBUTE_LOAD;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.BROKER_URI;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DB_CONNECTION_URL;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DB_DRIVER_CLASS_NAME;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DB_DRIVER_LOCATION;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DB_USER;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DCBP_SERVICE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_CHARSET;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_CONSISTENCY_LEVEL;
@@ -15,20 +18,19 @@ import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_RETENTION_POLICY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_URL;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_USERNAME;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.MAX_QUEUE_SIZE;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PSWD;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_DCBP_SERVICE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_READER;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_STATEMENT_TYPE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_TABLE_NAME;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.QOS;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_POST_QUERY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_PRE_QUERY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_SELECT_QUERY;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.TOPIC_FILTER;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONNECTABLE_COMPONENT_TYPE.INPUT_PORT;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONNECTABLE_COMPONENT_TYPE.OUTPUT_PORT;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONNECTABLE_COMPONENT_TYPE.PROCESSOR;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.SyncErrors.NON_EXISTENT_PROCESSOR;
+import static org.awaitility.Awaitility.await;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,7 +50,6 @@ import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.DATA_UNIT;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.FAILED_RELATIONSHIP_TYPES;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
-import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATEMENT_TYPE;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.SUCCESSFUL_RELATIONSHIP_TYPES;
 import esthesis.platform.server.nifi.client.util.Util;
 import esthesis.platform.server.service.NiFiService;
@@ -101,7 +102,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -374,6 +374,29 @@ public class NiFiClient {
     }
   }
 
+  public void deleteTemplate(String templateId) throws IOException {
+    CallReplyDTO callReplyDTO =
+      deleteCall("/templates/" + templateId);
+  }
+
+  public void deleteProcessGroup(String processGroupId) throws IOException {
+    ProcessGroupEntity processGroup = getProcessGroup(processGroupId);
+
+    CallReplyDTO callReplyDTO =
+      deleteCall("/process-groups/" + processGroupId
+        + "?version=" + processGroup.getRevision().getVersion()
+        + "&clientId=" + processGroup.getRevision().getClientId());
+  }
+
+  private ProcessGroupEntity getProcessGroup(String processGroupId) throws IOException {
+    final CallReplyDTO callReplyDTO = getCall("/process-groups/" + processGroupId);
+    if (callReplyDTO.isSuccessful()) {
+      return mapper.readValue(callReplyDTO.getBody(), ProcessGroupEntity.class);
+    } else {
+      throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
+    }
+  }
+
   /**
    * Returns the Id of the root process group under which everything else resides.
    */
@@ -621,11 +644,11 @@ public class NiFiClient {
       name, bundleDTO);
 
     Map<String, String> properties = new HashMap<>();
-    properties.put(Properties.DB_CONNECTION_URL, databaseConnectionURL);
-    properties.put(Properties.DB_DRIVER_CLASS_NAME, databaseDriverClassName);
-    properties.put(Properties.DB_DRIVER_LOCATION, databaseDriverClassLocation);
-    properties.put(Properties.DB_USER, databaseUser);
-    properties.put(Properties.PSWD, password);
+    properties.put(DB_CONNECTION_URL, databaseConnectionURL);
+    properties.put(DB_DRIVER_CLASS_NAME, databaseDriverClassName);
+    properties.put(DB_DRIVER_LOCATION, databaseDriverClassLocation);
+    properties.put(DB_USER, databaseUser);
+    properties.put(PSWD, password);
 
     controllerServiceDTO.setProperties(properties);
 
@@ -647,11 +670,11 @@ public class NiFiClient {
     String databaseUser, String password) throws IOException {
 
     Map<String, String> properties = new HashMap<>();
-    properties.put(Properties.DB_CONNECTION_URL, databaseConnectionURL);
-    properties.put(Properties.DB_DRIVER_CLASS_NAME, databaseDriverClassName);
-    properties.put(Properties.DB_DRIVER_LOCATION, databaseDriverClassLocation);
-    properties.put(Properties.DB_USER, databaseUser);
-    properties.put(Properties.PSWD, password);
+    properties.put(DB_CONNECTION_URL, databaseConnectionURL);
+    properties.put(DB_DRIVER_CLASS_NAME, databaseDriverClassName);
+    properties.put(DB_DRIVER_LOCATION, databaseDriverClassLocation);
+    properties.put(DB_USER, databaseUser);
+    properties.put(PSWD, password);
 
     return updateController(id, properties);
   }
@@ -747,6 +770,17 @@ public class NiFiClient {
     }
   }
 
+  private String findControllerStatus(String controllerId) throws IOException {
+    CallReplyDTO callReplyDTO = getCall("/controller-services/" + controllerId);
+    if (callReplyDTO.isSuccessful()) {
+      ControllerServiceEntity controllerServiceEntity = mapper
+        .readValue(callReplyDTO.getBody(), ControllerServiceEntity.class);
+      return controllerServiceEntity.getStatus().getRunStatus();
+    } else {
+      throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
+    }
+  }
+
   /**
    * Deletes a Controller service.
    *
@@ -757,6 +791,8 @@ public class NiFiClient {
     //Disabling controller before deleting
     ControllerServiceEntity controllerServiceEntity = this
       .changeControllerServiceStatus(id, STATE.DISABLED);
+
+    await().until(() -> findControllerStatus(id).equals(STATE.DISABLED.name()));
 
     CallReplyDTO callReplyDTO =
       deleteCall(
@@ -887,24 +923,6 @@ public class NiFiClient {
     return properties;
   }
 
-  public boolean isConsumeMQTTSynced(String processorId, String uri, String topic, int qos,
-    int queueSize) throws IOException {
-
-    Map<String, String> properties = getProcessorConfig(processorId);
-
-    if (properties == null) {
-      log.warning("ConsumeMQTT with id: " + processorId + " does not exist in NiFi workdlow.");
-      return false;
-    }
-
-    return
-      compareProperties(processorId, BROKER_URI, properties.get(Properties.BROKER_URI), uri) &&
-        compareProperties(processorId, MAX_QUEUE_SIZE, properties.get(Properties.MAX_QUEUE_SIZE),
-          String.valueOf(queueSize)) &&
-        compareProperties(processorId, TOPIC_FILTER, properties.get(Properties.TOPIC_FILTER), topic)
-        && compareProperties(processorId, QOS, properties.get(Properties.QOS), String.valueOf(qos));
-  }
-
   /**
    * Creates a PutInfluxDB processor.
    *
@@ -1000,41 +1018,6 @@ public class NiFiClient {
     return properties;
   }
 
-  public boolean isPutInfluxDBSynced(String processorId, String databaseName, String databaseUrl,
-    int maxConnectionTimeoutSeconds, String username, String password, String charset,
-    CONSISTENCY_LEVEL consistencyLevel, String retentionPolicy, int maxRecordSize,
-    DATA_UNIT dataUnit) throws IOException {
-
-    Map<String, String> properties = getProcessorConfig(processorId);
-
-    if (properties == null) {
-      log.warning("PutInfluxDB with id: " + processorId + " does not exist in NiFi workflow.");
-      return false;
-    }
-
-    return
-      compareProperties(processorId, INFLUX_DB_NAME, properties.get(INFLUX_DB_NAME),
-        databaseName) &&
-        compareProperties(processorId, INFLUX_URL, properties.get(INFLUX_URL), databaseUrl) &&
-        compareProperties(processorId, INFLUX_MAX_CONNECTION_TIMEOUT,
-          properties.get(INFLUX_MAX_CONNECTION_TIMEOUT), maxConnectionTimeoutSeconds + " seconds")
-        &&
-        compareProperties(processorId, INFLUX_USERNAME, properties.get(INFLUX_USERNAME), username)
-        &&
-        compareProperties(processorId, INFLUX_PASSWORD, properties.get(INFLUX_PASSWORD),
-          password) &&
-        compareProperties(processorId,
-          INFLUX_CHARSET, properties.get(INFLUX_CHARSET), charset) &&
-        compareProperties(processorId, INFLUX_CONSISTENCY_LEVEL,
-          properties.get(INFLUX_CONSISTENCY_LEVEL), String.valueOf(consistencyLevel))
-        &&
-        compareProperties(processorId,
-          INFLUX_RETENTION_POLICY,
-          properties.get(INFLUX_RETENTION_POLICY), retentionPolicy) &&
-        compareProperties(processorId, INFLUX_MAX_RECORDS_SIZE,
-          properties.get(INFLUX_MAX_RECORDS_SIZE), maxRecordSize + " " + dataUnit);
-  }
-
   /**
    * Creates a PutDatabaseRecord processor.
    *
@@ -1095,22 +1078,6 @@ public class NiFiClient {
     properties.put(PUT_DB_RECORD_TABLE_NAME, tableName);
 
     return properties;
-  }
-
-  public boolean isPutDatabaseRecordSynced(String processorId, STATEMENT_TYPE statementType,
-    String tableName)
-    throws IOException {
-    Map<String, String> properties = getProcessorConfig(processorId);
-
-    if (properties == null) {
-      log.warning("PutDatabaseRecord with id: " + processorId + " does not exist in NiFi workflow"
-        + ".");
-      return false;
-    }
-
-    return compareProperties(processorId, PUT_DB_RECORD_STATEMENT_TYPE,
-      properties.get(PUT_DB_RECORD_STATEMENT_TYPE), statementType.getType()) && compareProperties(
-      processorId, PUT_DB_RECORD_TABLE_NAME, properties.get(PUT_DB_RECORD_TABLE_NAME), tableName);
   }
 
   /**
@@ -1187,41 +1154,6 @@ public class NiFiClient {
     return properties;
   }
 
-  public boolean isExecuteDBSynced(@NotNull String processorId, @NotNull String dbName,
-    @NotNull String url,
-    int maxConnectionTimeoutSeconds, String queryResultTimeUnit,
-    String query, int queryChunkSize) throws IOException {
-    Map<String, String> properties = getProcessorConfig(processorId);
-
-    if (properties == null) {
-      log.warning("ExecuteDB with id: " + processorId + " does not exist in NiFi workflow.");
-      return false;
-    }
-
-    return
-      compareProperties(processorId, INFLUX_DB_NAME,
-        properties.get(INFLUX_DB_NAME), dbName) &&
-        compareProperties(processorId, INFLUX_URL, properties.get(INFLUX_URL), url) &&
-        compareProperties(processorId, INFLUX_MAX_CONNECTION_TIMEOUT,
-          properties.get(INFLUX_MAX_CONNECTION_TIMEOUT),
-          maxConnectionTimeoutSeconds + " seconds") &&
-        compareProperties(processorId, INFLUX_QUERY_RESULT_TIME_UNIT,
-          properties.get(INFLUX_QUERY_RESULT_TIME_UNIT), queryResultTimeUnit.toUpperCase()) &&
-        compareProperties(processorId, INFLUX_QUERY, properties.get(INFLUX_QUERY), query) &&
-        compareProperties(processorId, INFLUX_QUERY_CHUNK_SIZE,
-          properties.get(INFLUX_QUERY_CHUNK_SIZE), String.valueOf(queryChunkSize));
-  }
-
-  private Map<String, String> getProcessorConfig(String processorId) throws IOException {
-    try {
-      ProcessorEntity processor = getProcessorById(processorId);
-      return processor.getComponent().getConfig().getProperties();
-    } catch (NiFiProcessingException e) {
-      return null;
-    }
-  }
-
-
   /**
    * Creates an ExecuteSQL processor.
    *
@@ -1281,36 +1213,6 @@ public class NiFiClient {
     properties.put(SQL_POST_QUERY, sqlPostQuery);
 
     return properties;
-  }
-
-  public boolean isExecuteSQLSynced(String processorId, String sqlPreQuery, String sqlSelectQuery,
-    String sqlPostQuery) throws IOException {
-
-    Map<String, String> properties = getProcessorConfig(processorId);
-
-    if (properties == null) {
-      log.warning("ExecuteDB with id: " + processorId + " does not exist in NiFi workflow.");
-      return false;
-    }
-
-    return
-      compareProperties(processorId, SQL_PRE_QUERY, properties.get(SQL_PRE_QUERY), sqlPreQuery) &&
-        compareProperties(processorId, SQL_SELECT_QUERY, properties.get(SQL_SELECT_QUERY),
-          sqlSelectQuery) &&
-        compareProperties(processorId, SQL_POST_QUERY, properties.get(SQL_POST_QUERY),
-          sqlPostQuery);
-  }
-
-  private boolean compareProperties(String processorId, String propertyName, String workflowValue
-    , String esthesisValue) {
-    boolean equals = Objects.equals(workflowValue, esthesisValue);
-
-    if (!equals) {
-      log.warning("Processor with id: " + processorId + " has different values for property: "
-        + propertyName);
-    }
-
-    return equals;
   }
 
   /**
@@ -1423,9 +1325,6 @@ public class NiFiClient {
   private void connectSourceAndDestination(String parentProcessGroupId, String sourceType,
     String destinationType, String sourceId, String destinationId, Set<String> relationships)
     throws IOException {
-
-    boolean isOutputConnection =
-      sourceType.equals(PROCESSOR.name()) && destinationType.equals(OUTPUT_PORT.name());
 
     ConnectionEntity connectionEntity = new ConnectionEntity();
     ConnectionDTO connectionDTO = new ConnectionDTO();

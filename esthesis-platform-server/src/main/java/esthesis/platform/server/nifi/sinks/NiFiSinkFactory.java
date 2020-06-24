@@ -42,10 +42,10 @@ public interface NiFiSinkFactory {
   /**
    * Deletes a NiFi sink.
    *
-   * @param id The id of the NiFi sink that will be deleted.
+   * @param niFiSinkDTO The id of the NiFi sink that will be deleted.
    * @return The id of the deleted .
    */
-  String deleteSink(String id) throws IOException;
+  String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException;
 
   /**
    * Toggles the state of the sink.
@@ -71,8 +71,5 @@ public interface NiFiSinkFactory {
    */
   String getSinkValidationErrors(String id) throws IOException;
 
-  /**
-   * Checks whether the Nifi Sink is synced between the esthesis and NiFI Workflow.
-   */
-  boolean isSynced(NiFiSinkDTO niFiSinkDTO);
+  boolean exists(String id) throws IOException;
 }

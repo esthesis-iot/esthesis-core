@@ -1,8 +1,5 @@
 package esthesis.platform.server.service;
 
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.SyncErrors.NON_EXISTENT_PROCESSOR;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.SyncErrors.NOT_MATCHING_PROPERTIES;
-
 import com.eurodyn.qlack.common.exception.QCouldNotSaveException;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.querydsl.core.types.Predicate;
@@ -25,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -94,35 +92,15 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
     String[] path = createPath(niFiSinkDTO, niFiSinkFactory);
 
     if (niFiSinkDTO.getId() == null) {
-      niFiSinkDTO = niFiSinkFactory.createSink(niFiSinkDTO, path);
-      if (niFiSinkDTO.isState()) {
-        niFiSinkFactory.toggleSink(niFiSinkDTO.getProcessorId(), niFiSinkDTO.isState());
-      }
+      niFiSinkDTO = createNiFiSink(niFiSinkDTO, niFiSinkFactory, path);
     } else {
       NiFiSink latestVersion = super.findEntityById(niFiSinkDTO.getId());
       niFiSinkDTO.setCustomInfo(latestVersion.getCustomInfo());
 
-      boolean isStateChanged = latestVersion.isState() != niFiSinkDTO.isState();
-      boolean isConfigurationChanged = !latestVersion.getConfiguration()
-        .equals(niFiSinkDTO.getConfiguration());
-
-      //if sink is running, stop it before updating.
-      if (latestVersion.isState() && isConfigurationChanged) {
-        niFiSinkFactory.toggleSink(niFiSinkDTO.getProcessorId(), false);
-      }
-
-      //update configuration if needed
-      if (isConfigurationChanged) {
-        try {
-          niFiSinkFactory.updateSink(latestVersion, niFiSinkDTO);
-        } catch (NiFiProcessingException e) {
-          throw new QCouldNotSaveException("Could not save NiFi Sink.", e);
-        }
-      }
-
-      //update state if needed
-      if (isStateChanged || (isConfigurationChanged && latestVersion.isState())) {
-        niFiSinkFactory.toggleSink(niFiSinkDTO.getProcessorId(), niFiSinkDTO.isState());
+      if (!niFiSinkFactory.exists(niFiSinkDTO.getProcessorId())) {
+        niFiSinkDTO = createNiFiSink(niFiSinkDTO, niFiSinkFactory, path);
+      } else {
+        updateNiFiSink(niFiSinkDTO, niFiSinkFactory, latestVersion);
       }
     }
 
@@ -136,22 +114,54 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
     return super.save(niFiSinkDTO);
   }
 
+  private void updateNiFiSink(NiFiSinkDTO niFiSinkDTO, NiFiSinkFactory niFiSinkFactory,
+    NiFiSink latestVersion) throws IOException {
+    boolean isStateChanged = latestVersion.isState() != niFiSinkDTO.isState();
+    boolean isConfigurationChanged = !latestVersion.getConfiguration()
+      .equals(niFiSinkDTO.getConfiguration());
+
+    //if sink is running, stop it before updating.
+    if (latestVersion.isState() && isConfigurationChanged) {
+      niFiSinkFactory.toggleSink(niFiSinkDTO.getProcessorId(), false);
+    }
+
+    //update configuration if needed
+    if (isConfigurationChanged) {
+      try {
+        niFiSinkFactory.updateSink(latestVersion, niFiSinkDTO);
+      } catch (NiFiProcessingException e) {
+        throw new QCouldNotSaveException("Could not save NiFi Sink.", e);
+      }
+    }
+
+    //update state if needed
+    if (isStateChanged || (isConfigurationChanged && latestVersion.isState())) {
+      niFiSinkFactory.toggleSink(niFiSinkDTO.getProcessorId(), niFiSinkDTO.isState());
+    }
+  }
+
+  private NiFiSinkDTO createNiFiSink(NiFiSinkDTO niFiSinkDTO, NiFiSinkFactory niFiSinkFactory,
+    String[] path) throws IOException {
+    niFiSinkDTO = niFiSinkFactory.createSink(niFiSinkDTO, path);
+    if (niFiSinkDTO.isState()) {
+      niFiSinkFactory.toggleSink(niFiSinkDTO.getProcessorId(), niFiSinkDTO.isState());
+    }
+    return niFiSinkDTO;
+  }
+
   private String validateNiFiSink(NiFiSinkDTO niFiSinkDTO, NiFiSinkFactory niFiSinkFactory)
     throws IOException {
     String sinkValidationErrors = niFiSinkFactory
       .getSinkValidationErrors(niFiSinkDTO.getProcessorId());
-
-    if (!niFiSinkFactory.isSynced(niFiSinkDTO) && !sinkValidationErrors
-      .contains(NON_EXISTENT_PROCESSOR)) {
-      sinkValidationErrors += "\n" + NOT_MATCHING_PROPERTIES;
-    }
     return sinkValidationErrors;
   }
 
   public NiFiSinkDTO deleteSink(Long id) throws IOException {
     NiFiSinkDTO niFiSinkDTO = super.findById(id);
     NiFiSinkFactory niFiSinkFactory = getNiFiSinkFactoryImplementation(niFiSinkDTO);
-    niFiSinkFactory.deleteSink(niFiSinkDTO.getProcessorId());
+    if (niFiSinkFactory.exists(niFiSinkDTO.getProcessorId())) {
+      niFiSinkFactory.deleteSink(niFiSinkDTO);
+    }
 
     return super.deleteById(id);
   }
@@ -188,13 +198,33 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
 
   public boolean isSynced() {
     List<NiFiSinkDTO> allSinks = findAll();
-
-    List<NiFiSinkDTO> syncedSinks = allSinks.stream()
-      .filter(niFiSinkDTO -> getNiFiSinkFactoryImplementation(niFiSinkDTO).isSynced(niFiSinkDTO))
-      .collect(
-        Collectors.toList());
+    List<NiFiSinkDTO> syncedSinks =
+      allSinks.stream().filter(niFiSinkDTO -> {
+        try {
+          return getNiFiSinkFactoryImplementation(niFiSinkDTO).exists(niFiSinkDTO.getProcessorId());
+        } catch (IOException e) {
+          throw new UncheckedIOException(e);
+        }
+      }).collect(Collectors.toList());
 
     return allSinks.size() == syncedSinks.size();
+  }
+
+  public boolean createAllMissingSinks() {
+    List<NiFiSinkDTO> allSinks = findAll();
+
+    allSinks.stream().forEach(niFiSinkDTO -> {
+      NiFiSinkFactory niFiSinkFactoryImplementation = getNiFiSinkFactoryImplementation(niFiSinkDTO);
+      try {
+        if (!niFiSinkFactoryImplementation.exists(niFiSinkDTO.getProcessorId())) {
+          saveSink(niFiSinkDTO);
+        }
+      } catch (IOException exception) {
+        exception.printStackTrace();
+      }
+    });
+
+    return true;
   }
 
 }

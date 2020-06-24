@@ -6,12 +6,12 @@ import esthesis.platform.server.nifi.client.dto.EsthesisTemplateVersionDTO;
 import esthesis.platform.server.nifi.client.dto.NiFiAboutDTO;
 import esthesis.platform.server.nifi.client.dto.NiFiSearchAlgorithm;
 import esthesis.platform.server.nifi.client.dto.NiFiTemplateDTO;
+import esthesis.platform.server.nifi.client.exception.NiFiProcessingException;
 import esthesis.platform.server.nifi.client.util.JacksonIgnoreInvalidFormatException;
 import esthesis.platform.server.nifi.client.util.NiFiConstants;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONSISTENCY_LEVEL;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.DATA_UNIT;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
-import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATEMENT_TYPE;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.nifi.web.api.entity.AboutEntity;
@@ -108,9 +108,6 @@ public class NiFiClientService {
    * Returns the list of esthesis templates already instantiated in NiFi. This list should normally
    * have a single entry, however in case a previous template installation went wrong you may end up
    * with more than one entry.
-   *
-   * Note that templates returned from this method have their templateId empty as it is not know
-   * from which template a process group was instantiated.
    */
   public List<EsthesisTemplateDTO> getDeployedEsthesisTemplates() throws IOException {
     return niFiClient.getProcessGroups(getRootProcessGroupId()).getProcessGroupFlow().getFlow()
@@ -122,6 +119,13 @@ public class NiFiClientService {
           EsthesisTemplateDTO esthesisTemplateDTO = new EsthesisTemplateDTO();
           esthesisTemplateDTO.setFlowGroupId(processFlowGroup.getId());
           esthesisTemplateDTO.setName(processFlowGroup.getComponent().getName());
+          try {
+            esthesisTemplateDTO.setTemplateId(
+              getTemplate(StringUtils.substringBefore(esthesisTemplateDTO.getName(), " ")).get()
+                .getId());
+          } catch (IOException exception) {
+            exception.printStackTrace();
+          }
           final EsthesisTemplateVersionDTO esthesisTemplateVersion =
             extractEsthesisVersionFromFlowGroupName(processFlowGroup.getComponent().getName());
           esthesisTemplateDTO.setVersionMajor(esthesisTemplateVersion.getMajor());
@@ -636,109 +640,35 @@ public class NiFiClientService {
   }
 
   /**
-   * Checks if ExecuteInflux processor is synced between esthesis and NiFi Workflow.
+   * Checks if a processor exists.
    *
-   * @param processorId The id of the Processor.
-   * @param dbName The name of the Influx Database.
-   * @param url The url of the Influx Database.
-   * @param maxConnectionTimeoutSeconds The maximum time (in seconds) for establishing connection to
-   * the InfluxDB.
-   * @param queryResultTimeUnit The time unit of query results from theInflux Database.
-   * @param query The query to execute.
-   * @param queryChunkSize The chunk size of the query result.
-   * @return true if synced, false otherwise.
+   * @param processorId The id of the processor.
+   * @return True if exists, false otherwise.
    */
-  public boolean isExecuteInfluxSynced(@NotNull String processorId, @NotNull String dbName,
-    @NotNull String url,
-    int maxConnectionTimeoutSeconds, String queryResultTimeUnit,
-    String query, int queryChunkSize) {
+  public boolean processorExists(String processorId) throws IOException {
     try {
-      return niFiClient.isExecuteDBSynced(processorId, dbName, url, maxConnectionTimeoutSeconds,
-        queryResultTimeUnit, query, queryChunkSize);
-    } catch (IOException exception) {
+      return niFiClient.getProcessorById(processorId) != null;
+    } catch (NiFiProcessingException ex) {
       return false;
     }
   }
 
   /**
-   * Checks if ExecuteSQL processor is synced between esthesis and NiFi Workflow.
+   * Deletes given process group.
    *
-   * @param processorId The id of the Processor.
-   * @param sqlPreQuery SQL Queries executed before the main query.
-   * @param sqlSelectQuery The SQL select query that tha will be executed.
-   * @param sqlPostQuery SQL Queries executed after the main query.
-   * @return true if synced, false otherwise.
+   * @param processGroupId The id of the group that will be deleted.
    */
-  public boolean isExecuteSQLSynced(String processorId, String sqlPreQuery, String sqlSelectQuery,
-    String sqlPostQuery) {
-
-    try {
-      return niFiClient.isExecuteSQLSynced(processorId, sqlPreQuery, sqlSelectQuery,
-        sqlPostQuery);
-    } catch (IOException exception) {
-      return false;
-    }
+  public void deleteProcessGroup(String processGroupId) throws IOException {
+    niFiClient.deleteProcessGroup(processGroupId);
   }
 
   /**
-   * Checks if ConsumeMQTT processor is synced between esthesis and NiFi Workflow.
+   * Deletes given template.
    *
-   * @param processorId The id of the Processor.
-   * @param uri The URI to use to connect to the MQTT broker.
-   * @param topic The MQTT topic filter to designate the topics to subscribe to.
-   * @param qos The Quality of Service(QoS) to receive the message with.
-   * @param queueSize Maximum number of messages this processor will hold in memory at one time.
-   * @return true if synced, false otherwise.
+   * @param templateId The id of the template.
    */
-  public boolean isConsumeMQTTSynced(String processorId, String uri, String topic, int qos,
-    int queueSize) {
-
-    try {
-      return niFiClient.isConsumeMQTTSynced(processorId, uri, topic, qos, queueSize);
-    } catch (IOException exception) {
-      return false;
-    }
-  }
-
-  /**
-   * Checks if PutInfluxDB processor is synced between esthesis and NiFi Workflow.
-   *
-   * @param processorId The id of the Processor.
-   * @param databaseName The name of the InfluxDB to connect with.
-   * @param databaseUrl The url of the Influx Database.
-   * @param maxConnectionTimeoutSeconds The maximum time (in seconds) for establishing connection to
-   * the InfluxDB.
-   * @param username Username for accessing InfluxDB.
-   * @param password Database password for given user.
-   * @param charset Specifies the character set of the document data.
-   * @param consistencyLevel InfluxDB Consistency Level.
-   * @param retentionPolicy Retention policy for the saving the records.
-   * @param maxRecordSize Maximum size of records allowed to be posted in one batch
-   * @param dataUnit The unit of macRecordSize.
-   * @return true if synced, false otherwise.
-   */
-  public boolean isPutInfluxDBSynced(String processorId, String databaseName, String databaseUrl,
-    int maxConnectionTimeoutSeconds, String username, String password, String charset,
-    CONSISTENCY_LEVEL consistencyLevel, String retentionPolicy, int maxRecordSize,
-    DATA_UNIT dataUnit) {
-
-    try {
-      return niFiClient.isPutInfluxDBSynced(processorId, databaseName, databaseUrl,
-        maxConnectionTimeoutSeconds, username, password, charset,
-        consistencyLevel, retentionPolicy, maxRecordSize,
-        dataUnit);
-    } catch (IOException exception) {
-      return false;
-    }
-  }
-
-  public boolean isPutDatabaseSynced(String processorId, STATEMENT_TYPE statementType,
-    String tableName) {
-
-    try {
-      return niFiClient.isPutDatabaseRecordSynced(processorId, statementType, tableName);
-    } catch (IOException exception) {
-      return false;
-    }
+  public void deleteTemplate(String templateId) throws IOException {
+    niFiClient.deleteTemplate(templateId);
   }
 }
+
