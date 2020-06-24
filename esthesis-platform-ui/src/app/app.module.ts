@@ -33,7 +33,6 @@ import {CommandsModule} from './shared/component/commands/commands.module';
 import {DisplayModule} from './shared/component/display/display.module';
 import {OkCancelModalComponent} from './shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {TextModalComponent} from './shared/component/display/text-modal/text-modal.component';
-import {CanActivateGuard} from './shared/guards/can-activate-guard';
 import {FooterComponent} from './shared/layout/footer.component';
 import {HeaderComponent} from './shared/layout/header.component';
 import {SidenavComponent} from './shared/layout/sidenav.component';
@@ -92,7 +91,6 @@ export function getJwtToken(): string {
   ],
   providers: [
     CookieService,
-    CanActivateGuard,
     RxStompService,
     QFormsModule,
   ],

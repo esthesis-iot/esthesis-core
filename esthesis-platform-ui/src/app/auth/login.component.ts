@@ -35,20 +35,17 @@ export class LoginComponent extends BaseComponent implements OnInit {
               private wsService: WebSocketService, private utilityService: UtilityService,
               private renderer: Renderer2, private bodyBackgroundService: BodyBackgroundService) {
     super();
-    bodyBackgroundService.getImageUrl().subscribe(onNext => {
-      this.renderer.setAttribute(document.body, 'style',
-        'background-image:  linear-gradient(to top, rgba(0,0,0,0)' +
-        ' 30%, rgba(255,255,255,0.62) 64%, rgba(255,255,255,1) 89%), url(\'' + onNext + '\');' +
-        ' background-size: cover;');
-    });
   }
 
   ngOnInit() {
-    // If the user is already logged in just redirect back to the originating application.
-    if (this.isLoggedIn()) {
-      this.log.data('User is already logged in.');
-      this.wsService.connect();
-      this.router.navigate(['dashboard']);
+    if (!this.isLoggedIn()) {
+      this.bodyBackgroundService.getImageUrl().subscribe(onNext => {
+        this.log.data('Setting background image to {0}.', onNext);
+        this.renderer.setAttribute(document.body, 'style',
+          'background-image:  linear-gradient(to top, rgba(0,0,0,0)' +
+          ' 30%, rgba(255,255,255,0.62) 64%, rgba(255,255,255,1) 89%), url(\'' + onNext + '\');' +
+          ' background-size: cover;');
+      });
     }
 
     // Prepare login form.

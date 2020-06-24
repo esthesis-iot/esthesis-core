@@ -1,4 +1,4 @@
-import {Component, Renderer2} from '@angular/core';
+import {Component, OnInit, Renderer2} from '@angular/core';
 import {Log} from 'ng2-logger/browser';
 import {UserService} from '../users/user.service';
 import {WebSocketService} from '../services/web-socket.service';
@@ -10,14 +10,17 @@ import {BaseComponent} from '../shared/component/base-component';
   templateUrl: './logout.component.html',
   styleUrls: ['./logout.component.scss']
 })
-export class LogoutComponent extends BaseComponent {
+export class LogoutComponent extends BaseComponent implements OnInit {
   private log = Log.create('LogoutComponent');
 
   constructor(private userService: UserService, private wsService: WebSocketService,
               private renderer: Renderer2, private bodyBackgroundService: BodyBackgroundService) {
     super();
+  }
 
-    bodyBackgroundService.getImageUrl().subscribe(onNext => {
+  ngOnInit(): void {
+    this.bodyBackgroundService.getImageUrl().subscribe(onNext => {
+      this.log.data('Setting background image to {0}.', onNext);
       this.renderer.setAttribute(document.body, 'style',
         'background-image:  linear-gradient(to top, rgba(0,0,0,0)' +
         ' 30%, rgba(255,255,255,0.62) 64%, rgba(255,255,255,1) 89%), url(\'' + onNext + '\');' +

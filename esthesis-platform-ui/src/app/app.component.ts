@@ -45,8 +45,10 @@ export class AppComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     this.log.info('Initialising application.');
     if (!this.isLoggedIn()) {
+      this.log.data('User is not logged in (JWT not found). Redirecting to login.');
       this.router.navigate(['login']);
     } else {
+      this.log.data('User is logged in (JWT found).');
       this.wsService.connect();
 
       // Check for token expiration.

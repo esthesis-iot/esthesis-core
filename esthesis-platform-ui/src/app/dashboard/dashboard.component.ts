@@ -8,13 +8,11 @@ import {BaseComponent} from '../shared/component/base-component';
 })
 export class DashboardComponent extends BaseComponent implements OnInit, AfterViewInit {
 
-  // constructor(private renderer: Renderer2) {
   constructor() {
     super();
   }
 
   ngOnInit() {
-    //this.renderer.removeAttribute(document.body, 'style');
   }
 
   ngAfterViewInit(): void {
