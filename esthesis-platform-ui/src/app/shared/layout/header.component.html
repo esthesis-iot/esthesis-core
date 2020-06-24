@@ -1,9 +1,12 @@
 <div fxLayout="row" class="top-line" fxLayoutAlign="left center">
-  <div fxFlex fxGrow="0">
-    <a href="https://admin.esthesis.io"><img src="/assets/img/logo.svg" class="logo"></a>
+  <div fxGrow="0">
+    <img src="/assets/img/logo.png" class="logo">
   </div>
   <div fxFlex fxGrow="1" class="logo-text">
-    esthesis
+    <div fxLayout="column">
+      <div class="main">esthesis</div>
+      <div class="sub">IoT platform</div>
+    </div>
   </div>
   <div fxFlex fxGrow="0" *ngIf="isLoggedIn()">
     <div>{{ getUserEmail() }}</div>
