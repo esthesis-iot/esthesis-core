@@ -18,11 +18,13 @@ import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_RETENTION_POLICY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_URL;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_USERNAME;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.JDBC_CONNECTION_POOL;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PSWD;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_DCBP_SERVICE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_READER;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_STATEMENT_TYPE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_TABLE_NAME;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_SQL_STATEMENT;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_POST_QUERY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_PRE_QUERY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_SELECT_QUERY;
@@ -1213,6 +1215,34 @@ public class NiFiClient {
     properties.put(SQL_POST_QUERY, sqlPostQuery);
 
     return properties;
+  }
+
+  public ProcessorEntity createPutSQL(String parentProcessGroupId, String name,
+    String jdbcServiceId,
+    String sqlStatement) throws IOException {
+
+    Map<String, String> properties = new HashMap<>();
+    properties.put(PUT_SQL_STATEMENT, sqlStatement);
+    properties.put(JDBC_CONNECTION_POOL, jdbcServiceId);
+
+    ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
+    processorConfigDTO.setProperties(properties);
+    processorConfigDTO.setAutoTerminatedRelationships(new HashSet<>(
+      Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType())));
+    BundleDTO bundleDTO = createBundleDTO(BundleGroup.NIFI, BundleArtifact.STANDARD);
+
+    // Create the processor component for the resource.
+    ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.PUT_SQL,
+      name, processorConfigDTO, bundleDTO);
+
+    return createProcessor(parentProcessGroupId, processorDTO);
+  }
+
+  public ProcessorEntity updatePutSQL(String processorId, String sqlStatement) throws IOException {
+    Map<String, String> properties = new HashMap<>();
+    properties.put(PUT_SQL_STATEMENT, sqlStatement);
+
+    return updateProcessor(processorId, properties);
   }
 
   /**

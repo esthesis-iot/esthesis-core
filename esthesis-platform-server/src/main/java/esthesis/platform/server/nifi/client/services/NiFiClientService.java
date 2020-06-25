@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.nifi.web.api.entity.AboutEntity;
 import org.apache.nifi.web.api.entity.ControllerServiceEntity;
+import org.apache.nifi.web.api.entity.FlowEntity;
 import org.apache.nifi.web.api.entity.ProcessorEntity;
 import org.apache.nifi.web.api.entity.ScheduleComponentsEntity;
 import org.apache.nifi.web.api.entity.TemplateEntity;
@@ -184,7 +185,17 @@ public class NiFiClientService {
    * @return true if created, false otherwise.
    */
   public boolean instantiateTemplate(String templateId) throws IOException {
-    return niFiClient.instantiateTemplate(templateId) != null;
+    FlowEntity flowEntity = niFiClient.instantiateTemplate(templateId);
+    if (flowEntity != null) {
+      flowEntity.getFlow().getProcessGroups().forEach(processGroupEntity -> {
+        try {
+          niFiClient.changeProcessorGroupState(processGroupEntity.getId(), STATE.RUNNING);
+        } catch (IOException exception) {
+          exception.printStackTrace();
+        }
+      });
+    }
+    return flowEntity != null;
   }
 
   /**
@@ -602,6 +613,16 @@ public class NiFiClientService {
     return niFiClient.updateExecuteSQL(processorId, sqlPreQuery, sqlSelectQuery,
       sqlPostQuery).getId();
 
+  }
+
+  public String createPutSQL(@NotNull String name, @NotNull String jdbcServiceId,
+    @NotNull String sqlStatement, String[] path) throws IOException {
+    String parentProcessGroupId = findProcessGroupId(path);
+    return niFiClient.createPutSQL(parentProcessGroupId, name, jdbcServiceId, sqlStatement).getId();
+  }
+
+  public String updatePutSQL(@NotNull String processorId, String sqlStatement) throws IOException {
+    return niFiClient.updatePutSQL(processorId, sqlStatement).getId();
   }
 
   /**

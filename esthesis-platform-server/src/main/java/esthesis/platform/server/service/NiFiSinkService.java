@@ -32,6 +32,8 @@ import java.util.stream.Collectors;
 @Transactional
 public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
 
+  public static final String ESTHESIS_NIFI_SINK_PACKAGE_PATH = "esthesis.platform"
+    + ".server.nifi.sinks.";
   private final NiFiSinkConfiguration niFiSinkConfiguration;
   private final List<NiFiSinkFactory> niFiSinkFactories;
 
@@ -187,10 +189,11 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
         handlerType = "[" + value.name().toUpperCase().charAt(0) + sinkType.substring(1);
       }
     }
-
-    String[] splittedFactoryName = niFiSinkFactory.getClass().getName().split("\\.");
+    String factoryTypePath = niFiSinkFactory.getClass().getName().replace(
+      ESTHESIS_NIFI_SINK_PACKAGE_PATH, "");
+    String[] splittedFactoryName = factoryTypePath.split("\\.");
     String factoryType =
-      "[" + splittedFactoryName[splittedFactoryName.length - 2].toUpperCase().charAt(0) + "]";
+      "[" + splittedFactoryName[1].toUpperCase().charAt(0) + "]";
 
     return new String[]{PATH.ESTHESIS.asString(), sinkType, handlerType, factoryType,
       PATH.INSTANCES.asString()};
