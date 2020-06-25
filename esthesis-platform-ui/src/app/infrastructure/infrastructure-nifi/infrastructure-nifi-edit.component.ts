@@ -83,15 +83,19 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.deleteWF().afterClosed().subscribe(result => {
-          if (result) {
-            this.syncService.deleteWorkflow().subscribe(value => {
+        if (this.form.get('synced').value) {
+          this.deleteWF().afterClosed().subscribe(result => {
+            if (result) {
+              this.syncService.deleteWorkflow().subscribe(value => {
+                this.deleteNiFiInstance();
+              })
+            } else {
               this.deleteNiFiInstance();
-            })
-          } else {
-            this.deleteNiFiInstance();
-          }
-        });
+            }
+          });
+        } else {
+          this.deleteNiFiInstance();
+        }
       }
     });
   }

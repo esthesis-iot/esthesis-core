@@ -33,7 +33,7 @@ public class SyncService {
     String latestTemplateName = "esthesis_" + niFiService.getLatestWFVersion();
     NiFiDTO activeNiFi = niFiService.getActiveNiFi();
 
-    List<EsthesisTemplateDTO> deployedEsthesisTemplates = getDeployedTemplate();
+    List<EsthesisTemplateDTO> deployedEsthesisTemplates = getDeployedTemplates();
     boolean isLatestDeployed = deployedEsthesisTemplates.stream()
       .filter(esthesisTemplateDTO -> esthesisTemplateDTO.getName().contains(latestTemplateName))
       .findFirst().isPresent();
@@ -80,15 +80,25 @@ public class SyncService {
    * Deletes deployed Workflow.
    */
   public void deleteWorkflow() throws IOException {
-    List<EsthesisTemplateDTO> deployedTemplate = getDeployedTemplate();
-    String rootProcessGroupId = deployedTemplate.get(0).getFlowGroupId();
-    String workflowId = deployedTemplate.get(0).getTemplateId();
+    List<EsthesisTemplateDTO> deployedTemplates = getDeployedTemplates();
 
-    niFiClientService.deleteTemplate(workflowId);
-    niFiClientService.deleteProcessGroup(rootProcessGroupId);
+    if (deployedTemplates.size() > 0) {
+      niFiClientService.changeProcessorGroupState(PATH.ESTHESIS.getPath(), STATE.DISABLED);
+      deployedTemplates.forEach(esthesisTemplateDTO -> {
+        String rootProcessGroupId = esthesisTemplateDTO.getFlowGroupId();
+        String workflowId = esthesisTemplateDTO.getTemplateId();
+
+        try {
+          niFiClientService.deleteTemplate(workflowId);
+          niFiClientService.deleteProcessGroup(rootProcessGroupId);
+        } catch (IOException exception) {
+          exception.printStackTrace();
+        }
+      });
+    }
   }
 
-  private List<EsthesisTemplateDTO> getDeployedTemplate() throws IOException {
+  private List<EsthesisTemplateDTO> getDeployedTemplates() throws IOException {
     return niFiClientService
       .getDeployedEsthesisTemplates();
   }
