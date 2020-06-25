@@ -115,6 +115,8 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
       data: {
         title: 'Delete NiFi Workflow',
         question: 'Do you also want to delete the Workflow from the NiFi instance?',
+        okValue: "YES",
+        cancelValue: "NO",
         buttons: {
           ok: true, cancel: true, reload: false
         }
