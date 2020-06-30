@@ -615,16 +615,6 @@ public class NiFiClientService {
 
   }
 
-  public String createPutSQL(@NotNull String name, @NotNull String jdbcServiceId,
-    @NotNull String sqlStatement, String[] path) throws IOException {
-    String parentProcessGroupId = findProcessGroupId(path);
-    return niFiClient.createPutSQL(parentProcessGroupId, name, jdbcServiceId, sqlStatement).getId();
-  }
-
-  public String updatePutSQL(@NotNull String processorId, String sqlStatement) throws IOException {
-    return niFiClient.updatePutSQL(processorId, sqlStatement).getId();
-  }
-
   /**
    * Changes the status of a Processor..
    *

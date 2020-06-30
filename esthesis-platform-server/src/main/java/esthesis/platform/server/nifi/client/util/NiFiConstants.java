@@ -91,7 +91,6 @@ public class NiFiConstants {
       public static final String EXECUTE_INFLUX_DB = "org.apache.nifi.processors.influxdb.ExecuteInfluxDBQuery";
       public static final String EXECUTE_SQL = "org.apache.nifi.processors.standard.ExecuteSQL";
       public static final String DISTRIBUTE_LOAD = "org.apache.nifi.processors.standard.DistributeLoad";
-      public static final String PUT_SQL = "org.apache.nifi.processors.standard.PutSQL";
     }
   }
 
@@ -140,9 +139,6 @@ public class NiFiConstants {
     public static final String SQL_SELECT_QUERY = "SQL select query";
     public static final String SQL_POST_QUERY = "sql-post-query";
     public static final String DCBP_SERVICE = "Database Connection Pooling Service";
-
-    public static final String JDBC_CONNECTION_POOL = "JDBC Connection Pool";
-    public static final String PUT_SQL_STATEMENT = "putsql-sql-statement";
 
     @UtilityClass
     public static final class Values {

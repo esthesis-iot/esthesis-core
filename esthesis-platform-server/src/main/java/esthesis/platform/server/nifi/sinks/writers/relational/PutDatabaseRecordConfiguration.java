@@ -1,4 +1,4 @@
-package esthesis.platform.server.nifi.sinks.writers.mysql;
+package esthesis.platform.server.nifi.sinks.writers.relational;
 
 import javax.validation.constraints.NotNull;
 import lombok.Data;
@@ -17,6 +17,5 @@ public class PutDatabaseRecordConfiguration {
   @NotNull
   private String databaseUser;
   private String password;
-  private String statementType;
   private String tableName;
 }

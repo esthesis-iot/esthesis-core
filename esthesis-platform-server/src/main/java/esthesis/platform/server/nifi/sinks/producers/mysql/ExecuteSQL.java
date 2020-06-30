@@ -6,7 +6,7 @@ import esthesis.platform.server.model.NiFiSink;
 import esthesis.platform.server.nifi.client.services.NiFiClientService;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import esthesis.platform.server.nifi.sinks.producers.NiFiProducerFactory;
-import esthesis.platform.server.nifi.sinks.writers.mysql.CustomInfo;
+import esthesis.platform.server.nifi.sinks.writers.relational.CustomInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;

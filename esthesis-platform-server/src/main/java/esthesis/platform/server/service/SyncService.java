@@ -83,7 +83,9 @@ public class SyncService {
     List<EsthesisTemplateDTO> deployedTemplates = getDeployedTemplates();
 
     if (deployedTemplates.size() > 0) {
+      niFiClientService.changeProcessorGroupState(PATH.ESTHESIS.getPath(), STATE.STOPPED);
       niFiClientService.changeProcessorGroupState(PATH.ESTHESIS.getPath(), STATE.DISABLED);
+
       deployedTemplates.forEach(esthesisTemplateDTO -> {
         String rootProcessGroupId = esthesisTemplateDTO.getFlowGroupId();
         String workflowId = esthesisTemplateDTO.getTemplateId();

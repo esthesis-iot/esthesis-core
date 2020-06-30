@@ -1,4 +1,4 @@
-package esthesis.platform.server.nifi.sinks.writers.mysql;
+package esthesis.platform.server.nifi.sinks.writers.relational;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

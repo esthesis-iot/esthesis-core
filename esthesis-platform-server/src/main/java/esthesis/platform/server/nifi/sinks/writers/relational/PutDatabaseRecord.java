@@ -1,10 +1,12 @@
-package esthesis.platform.server.nifi.sinks.writers.mysql.ping;
+package esthesis.platform.server.nifi.sinks.writers.relational;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import esthesis.platform.server.config.AppConstants.NIFI_SINK_HANDLER;
 import esthesis.platform.server.dto.nifisinks.NiFiSinkDTO;
 import esthesis.platform.server.model.NiFiSink;
 import esthesis.platform.server.nifi.client.services.NiFiClientService;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATEMENT_TYPE;
 import esthesis.platform.server.nifi.sinks.writers.NiFiWriterFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,21 +19,21 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Component
-public class PutSQL implements NiFiWriterFactory {
+public class PutDatabaseRecord implements NiFiWriterFactory {
 
+  private final static String NAME = "Relational";
   private final ObjectMapper objectMapper;
   private final NiFiClientService niFiClientService;
-  private final static String NAME = "PutSQL";
-  private PutSQLConfiguration conf;
+  private PutDatabaseRecordConfiguration conf;
 
   @Override
   public boolean supportsMetadataWrite() {
-    return false;
+    return true;
   }
 
   @Override
   public boolean supportsTelemetryWrite() {
-    return false;
+    return true;
   }
 
   @Override
@@ -51,39 +53,45 @@ public class PutSQL implements NiFiWriterFactory {
         "databaseDriverClassName: \n" +
         "databaseDriverClassLocation: \n" +
         "databaseUser: \n" +
-        "sqlStatement: ";
+        "password: \n" +
+        "tableName: ";
   }
 
   @Override
-  public NiFiSinkDTO createSink(
-    NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+  public NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
     deleteControllerServices(niFiSinkDTO);
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
 
-    String jdbcServiceId = niFiClientService
-      .createDBConnectionPool(niFiSinkDTO.getName() + " [JDBC Connection Pool] ",
+    String jsonTreeReader = niFiClientService
+      .createJsonTreeReader(niFiSinkDTO.getName() + " [JSON TREE READER] ", path);
+
+    String dbConnectionPool = niFiClientService
+      .createDBConnectionPool(niFiSinkDTO.getName() + " [DB CONNECTION POOL] ",
         conf.getDatabaseConnectionURL(),
         conf.getDatabaseDriverClassName(),
         conf.getDatabaseDriverClassLocation(),
         conf.getDatabaseUser(),
         conf.getPassword(), path);
 
+
     String putDatabaseRecord = niFiClientService
-      .createPutSQL(niFiSinkDTO.getName(), jdbcServiceId, conf.getSqlStatement(), path);
+      .createPutDatabaseRecord(niFiSinkDTO.getName(), jsonTreeReader, dbConnectionPool,
+        getStatementType(niFiSinkDTO.getHandler()), conf.getTableName(), path);
 
     CustomInfo customInfo = new CustomInfo();
-    customInfo.setJdbcServiceId(jdbcServiceId);
+    customInfo.setJsonTreeReader(jsonTreeReader);
+    customInfo.setDbConnectionPool(dbConnectionPool);
     niFiSinkDTO.setCustomInfo(objectMapper.writeValueAsString(customInfo));
 
     niFiSinkDTO.setProcessorId(putDatabaseRecord);
-    enableControllerServices(jdbcServiceId);
+    enableControllerServices(jsonTreeReader, dbConnectionPool);
 
     return niFiSinkDTO;
   }
 
   @Override
   public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO) throws IOException {
-    PutSQLConfiguration prevConf = extractConfiguration(sink.getConfiguration());
+    PutDatabaseRecordConfiguration prevConf = extractConfiguration(sink.getConfiguration());
     conf = extractConfiguration(sinkDTO.getConfiguration());
 
     if (!(Objects.equals(conf.getDatabaseConnectionURL(), prevConf.getDatabaseConnectionURL())
@@ -93,17 +101,17 @@ public class PutSQL implements NiFiWriterFactory {
       && Objects.equals(conf.getDatabaseUser(), prevConf.getDatabaseUser())
       && Objects.equals(conf.getPassword(), prevConf.getPassword()))) {
 
-      CustomInfo customInfo = objectMapper
-        .readValue(sink.getCustomInfo(), CustomInfo.class);
+      CustomInfo customInfo = objectMapper.readValue(sink.getCustomInfo(), CustomInfo.class);
       niFiClientService
-        .updateDBCConnectionPool(customInfo.getJdbcServiceId(), conf.getDatabaseConnectionURL(),
+        .updateDBCConnectionPool(customInfo.getDbConnectionPool(), conf.getDatabaseConnectionURL(),
           conf.getDatabaseDriverClassName(),
           conf.getDatabaseDriverClassLocation(),
           conf.getDatabaseUser(),
           conf.getPassword());
     }
 
-    return niFiClientService.updatePutSQL(sink.getProcessorId(), conf.getSqlStatement());
+    return niFiClientService.updatePutDatabaseRecord(sink.getProcessorId(),
+      getStatementType(sinkDTO.getHandler()), conf.getTableName());
   }
 
   @Override
@@ -117,7 +125,8 @@ public class PutSQL implements NiFiWriterFactory {
     String customInfoString = niFiSinkDTO.getCustomInfo();
     if (customInfoString != null) {
       CustomInfo customInfo = objectMapper.readValue(customInfoString, CustomInfo.class);
-      niFiClientService.deleteController(customInfo.getJdbcServiceId());
+      niFiClientService.deleteController(customInfo.getJsonTreeReader());
+      niFiClientService.deleteController(customInfo.getDbConnectionPool());
     }
   }
 
@@ -143,11 +152,16 @@ public class PutSQL implements NiFiWriterFactory {
     return niFiClientService.processorExists(id);
   }
 
-  private PutSQLConfiguration extractConfiguration(String configuration) {
+  private PutDatabaseRecordConfiguration extractConfiguration(String configuration) {
     Representer representer = new Representer();
     representer.getPropertyUtils().setSkipMissingProperties(true);
-    return new Yaml(new Constructor(PutSQLConfiguration.class),
+    return new Yaml(new Constructor(PutDatabaseRecordConfiguration.class),
       representer)
       .load(configuration);
+  }
+
+  private STATEMENT_TYPE getStatementType(int handler) {
+    return NIFI_SINK_HANDLER.PING.getType() == handler ?
+      STATEMENT_TYPE.UPDATE : STATEMENT_TYPE.INSERT;
   }
 }

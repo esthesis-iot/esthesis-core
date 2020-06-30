@@ -18,13 +18,11 @@ import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_RETENTION_POLICY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_URL;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_USERNAME;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.JDBC_CONNECTION_POOL;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PSWD;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_DCBP_SERVICE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_READER;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_STATEMENT_TYPE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_TABLE_NAME;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_SQL_STATEMENT;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_POST_QUERY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_PRE_QUERY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_SELECT_QUERY;
@@ -84,6 +82,7 @@ import org.apache.nifi.web.api.entity.InputPortsEntity;
 import org.apache.nifi.web.api.entity.InstantiateTemplateRequestEntity;
 import org.apache.nifi.web.api.entity.OutputPortsEntity;
 import org.apache.nifi.web.api.entity.PortEntity;
+import org.apache.nifi.web.api.entity.PortRunStatusEntity;
 import org.apache.nifi.web.api.entity.ProcessGroupEntity;
 import org.apache.nifi.web.api.entity.ProcessGroupFlowEntity;
 import org.apache.nifi.web.api.entity.ProcessorEntity;
@@ -1217,34 +1216,6 @@ public class NiFiClient {
     return properties;
   }
 
-  public ProcessorEntity createPutSQL(String parentProcessGroupId, String name,
-    String jdbcServiceId,
-    String sqlStatement) throws IOException {
-
-    Map<String, String> properties = new HashMap<>();
-    properties.put(PUT_SQL_STATEMENT, sqlStatement);
-    properties.put(JDBC_CONNECTION_POOL, jdbcServiceId);
-
-    ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
-    processorConfigDTO.setProperties(properties);
-    processorConfigDTO.setAutoTerminatedRelationships(new HashSet<>(
-      Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType())));
-    BundleDTO bundleDTO = createBundleDTO(BundleGroup.NIFI, BundleArtifact.STANDARD);
-
-    // Create the processor component for the resource.
-    ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.PUT_SQL,
-      name, processorConfigDTO, bundleDTO);
-
-    return createProcessor(parentProcessGroupId, processorDTO);
-  }
-
-  public ProcessorEntity updatePutSQL(String processorId, String sqlStatement) throws IOException {
-    Map<String, String> properties = new HashMap<>();
-    properties.put(PUT_SQL_STATEMENT, sqlStatement);
-
-    return updateProcessor(processorId, properties);
-  }
-
   /**
    * Helper method to create a processor.
    *
@@ -1339,7 +1310,41 @@ public class NiFiClient {
         processorId, out.get().getId(), connections);
     }
 
+    if (inputPort != null) {
+      togglePort(inputPort, STATE.RUNNING, false);
+    }
+
+    outputPorts.getOutputPorts().stream().forEach(portEntity -> {
+      try {
+        togglePort(portEntity,
+          STATE.RUNNING, true);
+      } catch (IOException exception) {
+        exception.printStackTrace();
+      }
+    });
+
     return getProcessorById(processorId);
+  }
+
+  private void togglePort(PortEntity portEntity, STATE state, boolean isOutputPort)
+    throws IOException {
+
+    PortRunStatusEntity portRunStatusEntity = new PortRunStatusEntity();
+    portRunStatusEntity.setState(state.name());
+    portRunStatusEntity.setRevision(portEntity.getRevision());
+
+    CallReplyDTO callReplyDTO;
+    if (isOutputPort) {
+      callReplyDTO = putJSONCall("/output-ports/" + portEntity.getId() + "/run-status/",
+        portRunStatusEntity);
+    } else {
+      callReplyDTO = putJSONCall("/input-ports/" + portEntity.getId() + "/run-status/",
+        portRunStatusEntity);
+    }
+
+    if (!callReplyDTO.isSuccessful()) {
+      throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
+    }
   }
 
   /**
