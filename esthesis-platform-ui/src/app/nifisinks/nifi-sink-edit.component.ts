@@ -129,6 +129,9 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
             this.handlers.push(AppConstants.HANDLER.PING.valueOf())
           }
         }
+
+        this.handlers = this.handlers.sort((a, b) => (a > b ? 1 : -1) );
+
         this.form.get('handler').enable();
       }
     }

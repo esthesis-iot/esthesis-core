@@ -94,6 +94,11 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
     return niFiClientService.processorExists(id);
   }
 
+  @Override
+  public boolean isSinkRunning(String id) throws IOException {
+    return niFiClientService.isProcessorRunning(id);
+  }
+
   private ExecuteInfluxDBConfiguration extractConfiguration(String configuration) {
     Representer representer = new Representer();
     representer.getPropertyUtils().setSkipMissingProperties(true);

@@ -117,6 +117,11 @@ public class PutInfluxDB implements NiFiWriterFactory {
     return niFiClientService.processorExists(id);
   }
 
+  @Override
+  public boolean isSinkRunning(String id) throws IOException {
+    return niFiClientService.isProcessorRunning(id);
+  }
+
   private PutInfluxDBConfiguration extractConfiguration(String configuration) {
     Representer representer = new Representer();
     representer.getPropertyUtils().setSkipMissingProperties(true);

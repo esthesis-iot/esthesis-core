@@ -147,6 +147,11 @@ public class ConsumeMQTT implements NiFiReaderFactory {
     return niFiClientService.processorExists(id);
   }
 
+  @Override
+  public boolean isSinkRunning(String id) throws IOException {
+    return niFiClientService.isProcessorRunning(id);
+  }
+
   private ConsumeMQTTConfiguration extractConfiguration(String configuration) {
     Representer representer = new Representer();
     representer.getPropertyUtils()

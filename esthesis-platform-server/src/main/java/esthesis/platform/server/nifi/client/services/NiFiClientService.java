@@ -681,5 +681,9 @@ public class NiFiClientService {
   public void deleteTemplate(String templateId) throws IOException {
     niFiClient.deleteTemplate(templateId);
   }
+
+  public boolean isProcessorRunning(String id) throws IOException {
+    return niFiClient.isProcessorRunning(id);
+  }
 }
 

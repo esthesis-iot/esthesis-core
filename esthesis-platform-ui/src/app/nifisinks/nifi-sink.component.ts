@@ -14,7 +14,7 @@ import {MatTableDataSource} from '@angular/material/table';
   styleUrls: ['./nifi-sink.component.scss']
 })
 export class NiFiSinkComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['name', 'createdOn', 'factory', 'handler', 'state', 'validationErrors'];
+  columns = ['name', 'createdOn', 'handler', 'state', 'validationErrors'];
   datasource = new MatTableDataSource<NiFiSinkDto>();
   type: string;
 

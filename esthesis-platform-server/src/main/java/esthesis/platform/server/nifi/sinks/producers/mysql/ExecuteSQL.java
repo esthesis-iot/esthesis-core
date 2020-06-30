@@ -125,6 +125,11 @@ public class ExecuteSQL implements NiFiProducerFactory {
     return niFiClientService.processorExists(id);
   }
 
+  @Override
+  public boolean isSinkRunning(String id) throws IOException {
+    return niFiClientService.isProcessorRunning(id);
+  }
+
   private ExecuteSQLConfiguration extractConfiguration(String configuration) {
     Representer representer = new Representer();
     representer.getPropertyUtils().setSkipMissingProperties(true);

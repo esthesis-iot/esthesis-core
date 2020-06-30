@@ -72,4 +72,6 @@ public interface NiFiSinkFactory {
   String getSinkValidationErrors(String id) throws IOException;
 
   boolean exists(String id) throws IOException;
+
+  boolean isSinkRunning(String id) throws IOException;
 }

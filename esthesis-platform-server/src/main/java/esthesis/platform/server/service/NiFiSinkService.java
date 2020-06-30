@@ -65,8 +65,18 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
 
     sinks.forEach(niFiSinkDTO -> {
       try {
+        NiFiSinkFactory niFiSinkFactory = getNiFiSinkFactoryImplementation(
+          niFiSinkDTO);
         niFiSinkDTO.setValidationErrors(validateNiFiSink(niFiSinkDTO,
-          getNiFiSinkFactoryImplementation(niFiSinkDTO)));
+          niFiSinkFactory));
+        boolean savedState = niFiSinkDTO.isState();
+        boolean niFiState = niFiSinkFactory.isSinkRunning(niFiSinkDTO.getProcessorId());
+
+        if (savedState != niFiState) {
+          niFiSinkDTO.setState(niFiState);
+          save(niFiSinkDTO);
+        }
+
       } catch (IOException exception) {
         exception.printStackTrace();
       }

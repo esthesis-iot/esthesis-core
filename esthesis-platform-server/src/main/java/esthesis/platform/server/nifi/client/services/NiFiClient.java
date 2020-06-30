@@ -73,6 +73,7 @@ import org.apache.nifi.web.api.dto.ProcessorDTO;
 import org.apache.nifi.web.api.dto.RelationshipDTO;
 import org.apache.nifi.web.api.dto.RevisionDTO;
 import org.apache.nifi.web.api.entity.AboutEntity;
+import org.apache.nifi.web.api.entity.BulletinEntity;
 import org.apache.nifi.web.api.entity.ConnectionEntity;
 import org.apache.nifi.web.api.entity.ControllerServiceEntity;
 import org.apache.nifi.web.api.entity.ControllerServiceRunStatusEntity;
@@ -96,6 +97,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -1493,7 +1495,18 @@ public class NiFiClient {
    */
   public Collection<String> getValidationErrors(String processorId) throws IOException {
     try {
-      return getProcessorById(processorId).getComponent().getValidationErrors();
+      ProcessorEntity processor = getProcessorById(processorId);
+      Collection<String> validationErrors = processor.getComponent().getValidationErrors();
+
+      List<BulletinEntity> bulletins = processor.getBulletins();
+      if (bulletins.size() > 0) {
+        if (validationErrors == null) {
+          validationErrors = new ArrayList<>();
+        }
+          validationErrors.add(bulletins.get(0).getBulletin().getMessage());
+      }
+
+      return validationErrors;
     } catch (NiFiProcessingException e) {
       return Collections.singletonList(NON_EXISTENT_PROCESSOR);
     }
@@ -1507,6 +1520,10 @@ public class NiFiClient {
       throw new NiFiProcessingException(callReplyDTO.getBody(),
         callReplyDTO.getCode());
     }
+  }
+
+  public boolean isProcessorRunning(String id) throws IOException {
+    return getProcessorById(id).getStatus().getRunStatus().toLowerCase().equals(STATE.RUNNING.name().toLowerCase());
   }
 
   /**
