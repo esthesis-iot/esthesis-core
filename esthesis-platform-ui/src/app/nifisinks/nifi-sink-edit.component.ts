@@ -106,29 +106,31 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
   }
 
   updateHandlers($event) {
-    let nifiSinkTypeDTO = this.getNiFiSinkTypeDTO();
-    const factory = _.find<typeof nifiSinkTypeDTO>(this.availableNiFiDataFactories,
-      {factoryClass: $event.source.value});
+    if ($event.isUserInput) {
+      let nifiSinkTypeDTO = this.getNiFiSinkTypeDTO();
+      const factory = _.find<typeof nifiSinkTypeDTO>(this.availableNiFiDataFactories,
+        {factoryClass: $event.source.value});
 
-    //Keeping only supported handlers in edit mode.
-    if (!this.isEdit) {
-      this.handlers = [];
-      //Action is derived from the type (read, write, produce).
-      let action = this.type.charAt(0).toUpperCase() + this.type.slice(1,
-        this.type == "readers" ? -3 : -2);
-      console.log(action);
-      if (this.type != "loggers") {
-        if (factory["supportsTelemetry" + action]) {
-          this.handlers.push(AppConstants.HANDLER.TELEMETRY.valueOf())
+      //Keeping only supported handlers in edit mode.
+      if (!this.isEdit) {
+        this.handlers = [];
+        //Action is derived from the type (read, write, produce).
+        let action = this.type.charAt(0).toUpperCase() + this.type.slice(1,
+          this.type == "readers" ? -3 : -2);
+
+        if (this.type != "loggers") {
+          if (factory["supportsTelemetry" + action]) {
+            this.handlers.push(AppConstants.HANDLER.TELEMETRY.valueOf())
+          }
+          if (factory["supportsMetadata" + action]) {
+            this.handlers.push(AppConstants.HANDLER.METADATA.valueOf())
+          }
+          if (factory["supportsPing" + action]) {
+            this.handlers.push(AppConstants.HANDLER.PING.valueOf())
+          }
         }
-        if (factory["supportsMetadata" + action]) {
-          this.handlers.push(AppConstants.HANDLER.METADATA.valueOf())
-        }
-        if (factory["supportsPing" + action]) {
-          this.handlers.push(AppConstants.HANDLER.PING.valueOf())
-        }
+        this.form.get('handler').enable();
       }
-      this.form.get('handler').enable();
     }
   }
 
