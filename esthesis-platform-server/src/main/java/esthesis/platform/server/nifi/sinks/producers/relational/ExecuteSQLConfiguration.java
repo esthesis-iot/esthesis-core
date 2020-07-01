@@ -1,4 +1,4 @@
-package esthesis.platform.server.nifi.sinks.producers.mysql;
+package esthesis.platform.server.nifi.sinks.producers.relational;
 
 import javax.validation.constraints.NotNull;
 import lombok.Data;

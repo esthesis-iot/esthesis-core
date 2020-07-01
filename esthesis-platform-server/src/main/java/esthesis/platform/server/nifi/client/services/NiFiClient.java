@@ -1281,6 +1281,9 @@ public class NiFiClient {
           .collect(Collectors.toSet());
       connectSourceAndDestination(parentProcessGroupId, PROCESSOR.name(), PROCESSOR.name(),
         distributeLoad.getId(), processorId, distributeLoadConnections);
+
+      changeProcessorStatus(distributeLoad.getComponent().getId(), STATE.RUNNING);
+
     } else if (inputPort != null) {
       connectSourceAndDestination(parentProcessGroupId, INPUT_PORT.name(), PROCESSOR.name(),
         inputPort.getId(), processorId, connections);
@@ -1458,16 +1461,47 @@ public class NiFiClient {
     ProcessorEntity processorEntity = this.changeProcessorStatus(processorId,
       STATE.STOPPED);
 
-    ProcessGroupFlowEntity processGroups = getProcessGroups(
-      processorEntity.getComponent().getParentGroupId());
+    String parentGroupId = processorEntity.getComponent().getParentGroupId();
+    ProcessGroupFlowEntity processGroups = getProcessGroups(parentGroupId);
+    OutputPortsEntity outputPorts = findOutputPorts(parentGroupId);
 
-    List<ConnectionEntity> connections = processGroups.getProcessGroupFlow().getFlow()
-      .getConnections().stream()
+    Set<ConnectionEntity> allConnections = processGroups.getProcessGroupFlow().getFlow()
+      .getConnections();
+    PortEntity inputPort = findInputPort(parentGroupId);
+    Optional<ConnectionEntity> optProcessorIncomingConnection = allConnections.stream()
       .filter(connectionEntity -> connectionEntity.getDestinationId().equals(processorId))
+      .findFirst();
+    ConnectionEntity processorIncomingConnection = optProcessorIncomingConnection.isPresent() ?
+      optProcessorIncomingConnection.get() : null;
+
+    //Stop processor incoming connection.
+    if (processorIncomingConnection != null) {
+      String sourceType = processorIncomingConnection.getSourceType();
+      if (INPUT_PORT.name().equals(sourceType)) {
+        togglePort(inputPort, STATE.STOPPED, false);
+      } else {
+        changeProcessorStatus(processorIncomingConnection.getSourceId(), STATE.STOPPED);
+      }
+    }
+
+    //Stop output port(s)
+    outputPorts.getOutputPorts().forEach(portEntity -> {
+      try {
+        togglePort(portEntity, STATE.STOPPED, true);
+      } catch (IOException exception) {
+        exception.printStackTrace();
+      }
+    });
+
+    //Get all connections of the processor
+    List<ConnectionEntity> processorConnections = allConnections.stream()
+      .filter(connectionEntity -> connectionEntity.getDestinationId().equals(processorId)
+        || connectionEntity.getSourceId().equals(processorId))
       .collect(
         Collectors.toList());
 
-    for (ConnectionEntity connectionEntity : connections) {
+    //Delete connections of the processor
+    for (ConnectionEntity connectionEntity : processorConnections) {
       CallReplyDTO callReplyDTO = deleteConnection(connectionEntity);
       if (!callReplyDTO.isSuccessful()) {
         throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
@@ -1479,6 +1513,39 @@ public class NiFiClient {
         + "?version=" + processorEntity.getRevision().getVersion()
         + "&clientId=" + processorId
         + "&disconnectedNodeAcknowledged=false");
+
+    //Start processor incoming connection.
+    if (processorIncomingConnection != null) {
+      String sourceType = processorIncomingConnection.getSourceType();
+      if (INPUT_PORT.name().equals(sourceType)) {
+        Long version = inputPort.getRevision().getVersion();
+        inputPort.getRevision().setVersion(version + 1L);
+        boolean inputPotHasConnections = allConnections.stream().filter(
+          connectionEntity -> connectionEntity.getSourceId().equals(inputPort.getId())).count() > 1l;
+        if (inputPotHasConnections) {
+          togglePort(inputPort, STATE.RUNNING, false);
+        }
+      } else {
+        changeProcessorStatus(processorIncomingConnection.getSourceId(), STATE.RUNNING);
+      }
+    }
+
+    //Start output port(s) if other connections exist.
+    outputPorts.getOutputPorts().forEach(outputPort -> {
+      boolean ouputPortHasConnections = allConnections.stream().filter(
+        connectionEntity -> connectionEntity.getDestinationId().equals(outputPort.getId())).count()
+        > 1l;
+
+      if (ouputPortHasConnections) {
+        try {
+          Long version = outputPort.getRevision().getVersion();
+          outputPort.getRevision().setVersion(version + 1L);
+          togglePort(outputPort, STATE.RUNNING, true);
+        } catch (IOException exception) {
+          exception.printStackTrace();
+        }
+      }
+    });
 
     if (callReplyDTO.isSuccessful()) {
       return mapper.readValue(callReplyDTO.getBody(), ProcessorEntity.class);
@@ -1503,7 +1570,7 @@ public class NiFiClient {
         if (validationErrors == null) {
           validationErrors = new ArrayList<>();
         }
-          validationErrors.add(bulletins.get(0).getBulletin().getMessage());
+        validationErrors.add(bulletins.get(0).getBulletin().getMessage());
       }
 
       return validationErrors;
@@ -1523,7 +1590,8 @@ public class NiFiClient {
   }
 
   public boolean isProcessorRunning(String id) throws IOException {
-    return getProcessorById(id).getStatus().getRunStatus().toLowerCase().equals(STATE.RUNNING.name().toLowerCase());
+    return getProcessorById(id).getStatus().getRunStatus().toLowerCase()
+      .equals(STATE.RUNNING.name().toLowerCase());
   }
 
   /**

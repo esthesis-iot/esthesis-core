@@ -1,4 +1,4 @@
-package esthesis.platform.server.nifi.sinks.producers.mysql;
+package esthesis.platform.server.nifi.sinks.producers.relational;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.platform.server.dto.nifisinks.NiFiSinkDTO;
