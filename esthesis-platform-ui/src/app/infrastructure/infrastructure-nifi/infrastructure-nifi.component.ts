@@ -13,7 +13,7 @@ import {BaseComponent} from '../../shared/component/base-component';
   styleUrls: ['./infrastructure-nifi.component.scss']
 })
 export class InfrastructureNiFiComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['name', 'url', 'description', 'state', 'wfVersion', 'synced', 'lastChecked'];
+  columns = ['name', 'url', 'description', 'state', 'wfVersion', 'lastChecked'];
   datasource = new MatTableDataSource<NiFiDto>();
   // NiFi workflow version available in the backend.
   backendWfVersion: string;

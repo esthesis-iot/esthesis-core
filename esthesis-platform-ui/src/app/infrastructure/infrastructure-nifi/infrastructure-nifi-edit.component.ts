@@ -20,6 +20,8 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
   id: number;
   nifi: NiFiDto[];
   activeNiFiId = localStorage.getItem('activeNiFi');
+  synced: boolean;
+  lastChecked: any;
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
               private qForms: QFormsService,
@@ -39,8 +41,9 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
       url: ['', [Validators.required, Validators.maxLength(2048)]],
       description: ['', [Validators.maxLength(4096)]],
       state: ['', [Validators.required, Validators.maxLength(5)]],
-      synced: [{value: '', disabled: true}],
-      lastChecked: [{value: '', disabled: true}]
+      // wfVersion: [''],
+      // synced:[''],
+      // lastChecked: ['']
     });
 
     // Fill-in the form with data if editing an existing item.
@@ -50,6 +53,8 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
       });
       this.nifiService.get(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
+        this.synced = onNext.synced;
+        this.lastChecked = onNext.lastChecked;
       });
     }
   }
@@ -83,7 +88,7 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        if (this.form.get('synced').value) {
+        if (this.synced) {
           this.deleteWF().afterClosed().subscribe(result => {
             if (result) {
               this.syncService.deleteWorkflow().subscribe(value => {

@@ -1,6 +1,7 @@
 package esthesis.platform.server.service;
 
 import esthesis.platform.server.dto.NiFiDTO;
+import esthesis.platform.server.model.NiFi;
 import esthesis.platform.server.nifi.client.dto.EsthesisTemplateDTO;
 import esthesis.platform.server.nifi.client.dto.NiFiTemplateDTO;
 import esthesis.platform.server.nifi.client.services.NiFiClientService;
@@ -69,11 +70,10 @@ public class SyncService {
       niFiClientService.deleteProcessGroup(rootProcessGroupId);
     }
 
-    activeNiFi.setWfVersion(niFiService.getLatestWFVersion());
-    activeNiFi.setLastChecked(Instant.now());
-    activeNiFi.setSynced(allMissingSinks);
-
-    niFiService.save(activeNiFi);
+    NiFi entity = niFiService.findEntityById(activeNiFi.getId());
+    entity.setWfVersion(niFiService.getLatestWFVersion());
+    entity.setLastChecked(Instant.now());
+    entity.setSynced(allMissingSinks);
   }
 
   /**

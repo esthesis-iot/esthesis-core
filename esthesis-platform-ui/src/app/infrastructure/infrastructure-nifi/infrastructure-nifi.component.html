@@ -30,11 +30,6 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header> State</th>
       <td mat-cell *matCellDef="let element"> {{element.state ? 'Active' : 'Inactive'}}</td>
     </ng-container>
-    <ng-container matColumnDef="synced">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Sync Status</th>
-      <td mat-cell *matCellDef="let element">
-        {{element.synced ? 'Synced' : 'Unsynced'}}</td>
-    </ng-container>
     <ng-container matColumnDef="lastChecked">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Last checked</th>
       <td mat-cell *matCellDef="let element">
