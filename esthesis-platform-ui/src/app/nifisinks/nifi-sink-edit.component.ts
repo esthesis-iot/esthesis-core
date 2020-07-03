@@ -128,6 +128,13 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
           if (factory["supportsPing" + action]) {
             this.handlers.push(AppConstants.HANDLER.PING.valueOf())
           }
+        } else {
+          if (factory["supportsSyslogLog"]) {
+            this.handlers.push(AppConstants.HANDLER.SYSLOG.valueOf())
+          }
+          if (factory["supportsFilesystemLog"]) {
+            this.handlers.push(AppConstants.HANDLER.FILESYSTEM.valueOf())
+          }
         }
 
         this.handlers = this.handlers.sort((a, b) => (a > b ? 1 : -1) );

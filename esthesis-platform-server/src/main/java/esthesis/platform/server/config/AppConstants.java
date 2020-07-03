@@ -138,7 +138,9 @@ public class AppConstants {
 
     PING(1),
     METADATA(2),
-    TELEMETRY(3);
+    TELEMETRY(3),
+    SYSLOG(4),
+    FILESYSTEM(5);
 
     private final int type;
 

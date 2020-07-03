@@ -20,4 +20,6 @@ public class NiFiLoggerFactoryDTO extends BaseDTO {
   private String friendlyName;
   private String version;
   private String configurationTemplate;
+  private boolean supportsSyslogLog;
+  private boolean supportsFilesystemLog;
 }

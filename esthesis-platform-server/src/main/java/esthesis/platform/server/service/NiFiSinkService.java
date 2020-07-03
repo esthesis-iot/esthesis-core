@@ -23,7 +23,6 @@ import org.springframework.validation.annotation.Validated;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,7 +55,7 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
   }
 
   public List<NiFiLoggerFactoryDTO> findAvailableNiFiLoggerFactories() {
-    return new ArrayList<>(); //niFiSinkConfiguration.getAvailableLoggers();
+    return niFiSinkConfiguration.getAvailableLoggers();
   }
 
   @Override
@@ -193,19 +192,26 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
       }
     }
 
-    String handlerType = "";
-    for (NIFI_SINK_HANDLER value : NIFI_SINK_HANDLER.values()) {
-      if (value.getType() == niFiSinkDTO.getHandler()) {
-        handlerType = "[" + value.name().toUpperCase().charAt(0) + sinkType.substring(1);
+    String handlerType = null;
+
+    if (niFiSinkDTO.getHandler() < NIFI_SINK_HANDLER.SYSLOG.getType()) {
+      for (NIFI_SINK_HANDLER value : NIFI_SINK_HANDLER.values()) {
+        if (value.getType() == niFiSinkDTO.getHandler()) {
+          handlerType = "[" + value.name().toUpperCase().charAt(0) + sinkType.substring(1);
+        }
       }
     }
+
     String factoryTypePath = niFiSinkFactory.getClass().getName().replace(
       ESTHESIS_NIFI_SINK_PACKAGE_PATH, "");
     String[] splittedFactoryName = factoryTypePath.split("\\.");
     String factoryType =
       "[" + splittedFactoryName[1].toUpperCase().charAt(0) + "]";
 
-    return new String[]{PATH.ESTHESIS.asString(), sinkType, handlerType, factoryType,
+    return handlerType != null ? new String[]{PATH.ESTHESIS.asString(), sinkType, handlerType,
+      factoryType,
+      PATH.INSTANCES.asString()} : new String[]{PATH.ESTHESIS.asString(), sinkType,
+      factoryType,
       PATH.INSTANCES.asString()};
   }
 

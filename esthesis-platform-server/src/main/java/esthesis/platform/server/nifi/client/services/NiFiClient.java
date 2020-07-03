@@ -1,11 +1,14 @@
 package esthesis.platform.server.nifi.client.services;
 
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Processor.Type.DISTRIBUTE_LOAD;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.CONFLICT_RESOLUTION_STRATEGY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DB_CONNECTION_URL;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DB_DRIVER_CLASS_NAME;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DB_DRIVER_LOCATION;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DB_USER;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DCBP_SERVICE;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DIRECTORY;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.HOSTNAME;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_CHARSET;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_CONSISTENCY_LEVEL;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_DB_NAME;
@@ -18,6 +21,10 @@ import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_RETENTION_POLICY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_URL;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_USERNAME;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.MESSAGE_BODY;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.MESSAGE_PRIORITY;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PORT;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PROTOCOL;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PSWD;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_DCBP_SERVICE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_READER;
@@ -26,6 +33,7 @@ import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_POST_QUERY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_PRE_QUERY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_SELECT_QUERY;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SSL_CONTEXT_SERVICE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONNECTABLE_COMPONENT_TYPE.INPUT_PORT;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONNECTABLE_COMPONENT_TYPE.OUTPUT_PORT;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONNECTABLE_COMPONENT_TYPE.PROCESSOR;
@@ -894,7 +902,7 @@ public class NiFiClient {
     Map<String, String> properties = setConsumeMQTTProperties(uri, topic, qos, queueSize);
     properties.put(Properties.CLIENT_ID, name + " [NIFI] ");
     if (StringUtils.isNotBlank(sslContextServiceId)) {
-      properties.put(Properties.SSL_CONTEXT_SERVICE, sslContextServiceId);
+      properties.put(SSL_CONTEXT_SERVICE, sslContextServiceId);
     }
 
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
@@ -1219,6 +1227,120 @@ public class NiFiClient {
   }
 
   /**
+   * Creates a PutFile processor.
+   * @param parentProcessGroupId The if od the parent group where the processor will be created.
+   * @param name The name of the processor.
+   * @param directory The directory where the files will be created.
+   * @return The newly created processor.
+   * @throws IOException
+   */
+  public ProcessorEntity createPutFile(String parentProcessGroupId, String name, String directory)
+    throws IOException {
+    Map<String, String> properties = new HashMap<>();
+    properties.put(DIRECTORY, directory);
+    properties.put(CONFLICT_RESOLUTION_STRATEGY, "replace");
+
+    ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
+    processorConfigDTO.setAutoTerminatedRelationships(new HashSet<>(
+      Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType(),
+        FAILED_RELATIONSHIP_TYPES.FAILURE.getType())));
+    processorConfigDTO.setProperties(properties);
+    BundleDTO bundleDTO = createBundleDTO(BundleGroup.NIFI, BundleArtifact.STANDARD);
+
+    // Create the processor component for the resource.
+    ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.PUT_FILE,
+      name, processorConfigDTO, bundleDTO);
+
+    return createProcessor(parentProcessGroupId, processorDTO);
+  }
+
+  /**
+   * Updates a PutFile processor.
+   * @param processorId The id of the processor to update.
+   * @param directory he directory where the files will be created.
+   * @return The newly created processor.
+   * @throws IOException
+   */
+  public ProcessorEntity updatePutFile(String processorId, String directory) throws IOException {
+    Map<String, String> properties = new HashMap<>();
+    properties.put(DIRECTORY, directory);
+
+    return updateProcessor(processorId, properties);
+  }
+
+  /**
+   * Creates a PutSyslog processor.
+   * @param name The name of the processor.
+   * @param sslContextId The id of the SSL Context Service used to provide client certificate
+   * information for TLS/SSL connections.
+   * @param hostname The hostname of the Syslog server.
+   * @param port The port of the Syslog server.
+   * @param protocol The protocol used to communicate with the Syslog server (UDP / TCP).
+   * @param messageBody The body of the Syslog message.
+   * @param messagePriority The priority of the Syslog message.
+   * @return The newly created processor.
+   * @throws IOException
+   */
+  public ProcessorEntity createPutSyslog(String parentProcessGroupId, String name,
+    String sslContextId, String hostname, int port, String protocol, String messageBody,
+    String messagePriority)
+    throws IOException {
+
+    Map<String, String> properties = setPutSyslogProperties(sslContextId, hostname, port,
+      protocol, messageBody, messagePriority);
+
+    ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
+    processorConfigDTO.setProperties(properties);
+    processorConfigDTO.setAutoTerminatedRelationships(new HashSet<>(
+      Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType(),
+        FAILED_RELATIONSHIP_TYPES.FAILURE.getType(), FAILED_RELATIONSHIP_TYPES.INVALID.getType())));
+    BundleDTO bundleDTO = createBundleDTO(BundleGroup.NIFI, BundleArtifact.STANDARD);
+
+    // Create the processor component for the resource.
+    ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.PUT_SYSLOG,
+      name, processorConfigDTO, bundleDTO);
+
+    return createProcessor(parentProcessGroupId, processorDTO);
+  }
+
+  /**
+   * Updates a PutSyslog processor.
+   * @param processorId The id of the processor that will be updated.
+   * @param hostname The hostname of the Syslog server.
+   * @param port The port of the Syslog server.
+   * @param protocol The protocol used to communicate with the Syslog server (UDP / TCP).
+   * @param messageBody The body of the Syslog message.
+   * @param messagePriority The priority of the Syslog message.
+   * @return The id of the updated processor.
+   * @throws IOException
+   */
+  public ProcessorEntity updatePutSyslog(String processorId, String hostname, int port,
+    String protocol, String messageBody, String messagePriority) throws IOException {
+
+    Map<String, String> properties = setPutSyslogProperties(null, hostname, port,
+      protocol, messageBody, messagePriority);
+
+    return updateProcessor(processorId, properties);
+  }
+
+  private Map<String, String> setPutSyslogProperties(String sslContextId, String hostname, int port,
+    String protocol, String messageBody, String messagePriority) {
+
+    Map<String, String> properties = new HashMap<>();
+    properties.put(HOSTNAME, hostname);
+    properties.put(PORT, "" + port);
+    properties.put(PROTOCOL, protocol.toUpperCase());
+    properties.put(MESSAGE_BODY, messageBody);
+    properties.put(MESSAGE_PRIORITY, messagePriority);
+
+    if (sslContextId != null) {
+      properties.put(SSL_CONTEXT_SERVICE, sslContextId);
+    }
+
+    return properties;
+  }
+
+  /**
    * Helper method to create a processor.
    *
    * @param parentProcessGroupId The id of the parent group where the processor will be created.
@@ -1291,28 +1413,31 @@ public class NiFiClient {
 
     OutputPortsEntity outputPorts = findOutputPorts(parentProcessGroupId);
 
-    if (failedRelationships.size() > 0) {
-      connections = new HashSet<>(failedRelationships);
-      Optional<PortEntity> logout = outputPorts.getOutputPorts().stream()
-        .filter(portEntity -> portEntity.getComponent().getName().contains("_logout")).findFirst();
+    if (outputPorts.getOutputPorts().size() > 0) {
+      if (failedRelationships.size() > 0) {
+        connections = new HashSet<>(failedRelationships);
+        Optional<PortEntity> logout = outputPorts.getOutputPorts().stream()
+          .filter(portEntity -> portEntity.getComponent().getName().contains("_logout"))
+          .findFirst();
 
-      connectSourceAndDestination(parentProcessGroupId, PROCESSOR.name(), OUTPUT_PORT.name(),
-        processorId, logout.get().getId(), connections);
+        connectSourceAndDestination(parentProcessGroupId, PROCESSOR.name(), OUTPUT_PORT.name(),
+          processorId, logout.get().getId(), connections);
 
-    }
+      }
 
-    if (!autoTerminatedSuccess) {
-      List<String> successful = relationships.stream().filter(
-        relationshipDTO -> EnumUtils.isValidEnum(SUCCESSFUL_RELATIONSHIP_TYPES.class,
-          relationshipDTO.getName().toUpperCase())).map(RelationshipDTO::getName)
-        .collect(Collectors.toList());
+      if (!autoTerminatedSuccess) {
+        List<String> successful = relationships.stream().filter(
+          relationshipDTO -> EnumUtils.isValidEnum(SUCCESSFUL_RELATIONSHIP_TYPES.class,
+            relationshipDTO.getName().toUpperCase())).map(RelationshipDTO::getName)
+          .collect(Collectors.toList());
 
-      connections = new HashSet<>(successful);
-      Optional<PortEntity> out = outputPorts.getOutputPorts().stream()
-        .filter(portEntity -> portEntity.getComponent().getName().contains("_out")).findFirst();
+        connections = new HashSet<>(successful);
+        Optional<PortEntity> out = outputPorts.getOutputPorts().stream()
+          .filter(portEntity -> portEntity.getComponent().getName().contains("_out")).findFirst();
 
-      connectSourceAndDestination(parentProcessGroupId, PROCESSOR.name(), OUTPUT_PORT.name(),
-        processorId, out.get().getId(), connections);
+        connectSourceAndDestination(parentProcessGroupId, PROCESSOR.name(), OUTPUT_PORT.name(),
+          processorId, out.get().getId(), connections);
+      }
     }
 
     if (inputPort != null) {
@@ -1521,7 +1646,8 @@ public class NiFiClient {
         Long version = inputPort.getRevision().getVersion();
         inputPort.getRevision().setVersion(version + 1L);
         boolean inputPotHasConnections = allConnections.stream().filter(
-          connectionEntity -> connectionEntity.getSourceId().equals(inputPort.getId())).count() > 1l;
+          connectionEntity -> connectionEntity.getSourceId().equals(inputPort.getId())).count()
+          > 1l;
         if (inputPotHasConnections) {
           togglePort(inputPort, STATE.RUNNING, false);
         }

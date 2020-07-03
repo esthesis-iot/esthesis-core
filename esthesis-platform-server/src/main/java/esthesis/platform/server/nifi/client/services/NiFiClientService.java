@@ -612,11 +612,76 @@ public class NiFiClientService {
 
     return niFiClient.updateExecuteSQL(processorId, sqlPreQuery, sqlSelectQuery,
       sqlPostQuery).getId();
-
   }
 
   /**
-   * Changes the status of a Processor..
+   * Creates a PutFile processor.
+   * @param name The name of the processor.
+   * @param directory The directory where the files will be created.
+   * @param path The path of the parent group where the processor will be created.
+   * @return the id of the newly created processor.
+   * @throws IOException
+   */
+  public String createPutFile(String name, String directory, String[] path)
+    throws IOException {
+
+    String parentProcessGroupId = findProcessGroupId(path);
+    return niFiClient.createPutFile(parentProcessGroupId, name, directory).getId();
+  }
+
+  /**
+   * Updates a PutFile processor.
+   * @param processorId The id of the processor to update.
+   * @param directory he directory where the files will be created.
+   * @return The id of the updated processor.
+   * @throws IOException
+   */
+  public String updatePutFile(String processorId, String directory) throws IOException {
+    return niFiClient.updatePutFile(processorId, directory).getId();
+  }
+
+  /**
+   * Creates a PutSyslog processor.
+   * @param name The name of the processor.
+   * @param sslContextId The id of the SSL Context Service used to provide client certificate
+   * information for TLS/SSL connections.
+   * @param hostname The hostname of the Syslog server.
+   * @param port The port of the Syslog server.
+   * @param protocol The protocol used to communicate with the Syslog server (UDP / TCP).
+   * @param messageBody The body of the Syslog message.
+   * @param messagePriority The priority of the Syslog message.
+   * @param path The path of the parent group where the processor will be created.
+   * @return The id of the created processor.
+   * @throws IOException
+   */
+  public String createPutSyslog(String name, String sslContextId, String hostname, int port,
+    String protocol, String messageBody, String messagePriority, String[] path)
+    throws IOException {
+    String parentProcessGroupId = findProcessGroupId(path);
+
+    return niFiClient.createPutSyslog(parentProcessGroupId, name, sslContextId, hostname, port,
+      protocol, messageBody, messagePriority).getId();
+  }
+
+  /**
+   * Updates a PutSyslog processor.
+   * @param processorId The id of the processor that will be updated.
+   * @param hostname The hostname of the Syslog server.
+   * @param port The port of the Syslog server.
+   * @param protocol The protocol used to communicate with the Syslog server (UDP / TCP).
+   * @param messageBody The body of the Syslog message.
+   * @param messagePriority The priority of the Syslog message.
+   * @return The id of the updated processor.
+   * @throws IOException
+   */
+  public String updatePutSyslog(String processorId, String hostname, int port,
+    String protocol, String messageBody, String messagePriority) throws IOException {
+
+    return niFiClient.updatePutSyslog(processorId, hostname, port, protocol, messageBody, messagePriority).getId();
+  }
+
+  /**
+   * Changes the status of a Processor.
    *
    * @param processorId The id of the Processor.
    * @param state The desired state of the component.
@@ -682,6 +747,12 @@ public class NiFiClientService {
     niFiClient.deleteTemplate(templateId);
   }
 
+  /**
+   * Checks whether given processor is running.
+   * @param id The id of the processor to check.
+   * @return true if processor is running, false otherwise.
+   * @throws IOException
+   */
   public boolean isProcessorRunning(String id) throws IOException {
     return niFiClient.isProcessorRunning(id);
   }

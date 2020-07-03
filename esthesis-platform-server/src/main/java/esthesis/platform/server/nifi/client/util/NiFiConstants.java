@@ -64,6 +64,7 @@ public class NiFiConstants {
       public static final String INFLUX_DB = "nifi-influxdb-nar";
       public static final String STANDARD = "nifi-standard-nar";
       public static final String RECORD_SERIALIZATION = "nifi-record-serialization-services-nar";
+
     }
   }
 
@@ -91,6 +92,8 @@ public class NiFiConstants {
       public static final String EXECUTE_INFLUX_DB = "org.apache.nifi.processors.influxdb.ExecuteInfluxDBQuery";
       public static final String EXECUTE_SQL = "org.apache.nifi.processors.standard.ExecuteSQL";
       public static final String DISTRIBUTE_LOAD = "org.apache.nifi.processors.standard.DistributeLoad";
+      public static final String PUT_FILE = "org.apache.nifi.processors.standard.PutFile";
+      public static final String PUT_SYSLOG = "org.apache.nifi.processors.standard.PutSyslog";
     }
   }
 
@@ -139,6 +142,15 @@ public class NiFiConstants {
     public static final String SQL_SELECT_QUERY = "SQL select query";
     public static final String SQL_POST_QUERY = "sql-post-query";
     public static final String DCBP_SERVICE = "Database Connection Pooling Service";
+
+    public static final String DIRECTORY = "Directory";
+    public static final String CONFLICT_RESOLUTION_STRATEGY = "Conflict Resolution Strategy";
+
+    public static final String HOSTNAME = "Hostname";
+    public static final String PORT = "Port";
+    public static final String PROTOCOL = "Protocol";
+    public static final String MESSAGE_BODY = "Message Body";
+    public static final String MESSAGE_PRIORITY = "Message Priority";
 
     @UtilityClass
     public static final class Values {
@@ -194,7 +206,8 @@ public class NiFiConstants {
 
         FAILURE("failure"),
         FAILURE_MAX_SIZE("failure-max-size"),
-        RETRY("retry");
+        RETRY("retry"),
+        INVALID("invalid");
 
         private final String type;
       }
