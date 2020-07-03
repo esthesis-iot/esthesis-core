@@ -273,22 +273,44 @@ public class NiFiClientService {
   /**
    * Updates an existing SSL Context Controller service.
    *
-   * @param id The id of the existing service.
+   * @param controllerId The id of the existing service.
    * @param keystoreFilename The fully-qualified filename of the Keystore.
    * @param keystorePassword The password for the Keystore.
    * @param truststoreFilename The fully-qualified filename of the Truststore.
    * @param truststorePassword The password for the Truststore.
    * @return The id of the updated SSL Context service.
    */
-  public String updateSSLContext(String id, String keystoreFilename, String keystorePassword,
+  public String updateSSLContext(String controllerId, String keystoreFilename,
+    String keystorePassword,
     String truststoreFilename, String truststorePassword)
     throws IOException {
 
     final ControllerServiceEntity controllerServiceEntity = niFiClient
-      .updateSSLContext(id, keystoreFilename, keystorePassword, truststoreFilename,
+      .updateSSLContext(controllerId, keystoreFilename, keystorePassword, truststoreFilename,
         truststorePassword);
 
     return controllerServiceEntity.getId();
+  }
+
+  /**
+   * Creates an SSLContextController for an existing processor.
+   * @param processorId The id of the processor.
+   * @param keystoreFilename The fully-qualified filename of the Keystore.
+   * @param keystorePassword The password for the Keystore.
+   * @param truststoreFilename The fully-qualified filename of the Truststore.
+   * @param truststorePassword The password for the Truststore.
+   * @return The id of the created SSL Context service.
+   * @throws IOException
+   */
+  public String createSSLContextForExistingProcessor(String processorId, String keystoreFilename,
+    String keystorePassword, String truststoreFilename, String truststorePassword)
+    throws IOException {
+    ProcessorEntity processor = niFiClient.getProcessorById(processorId);
+    String parentGroupId = processor.getComponent().getParentGroupId();
+
+    return niFiClient.createSSLContext(processor.getComponent().getName() + " [SSL Context] ",
+      keystoreFilename, keystorePassword, truststoreFilename, truststorePassword,
+      parentGroupId).getId();
   }
 
   /**
@@ -422,9 +444,11 @@ public class NiFiClientService {
     return createConsumerMqtt(name, uri, topic, qos, queueSize, null, path);
   }
 
-  public String updateConsumerMQTT(String id, String uri, String topic, int qos, int queueSize)
+  public String updateConsumerMQTT(String id, String sslContextId, String uri, String topic,
+    int qos,
+    int queueSize)
     throws IOException {
-    return niFiClient.updateConsumeMQTT(id, uri, topic, qos, queueSize).getId();
+    return niFiClient.updateConsumeMQTT(id, sslContextId, uri, topic, qos, queueSize).getId();
   }
 
   /**
@@ -616,11 +640,11 @@ public class NiFiClientService {
 
   /**
    * Creates a PutFile processor.
+   *
    * @param name The name of the processor.
    * @param directory The directory where the files will be created.
    * @param path The path of the parent group where the processor will be created.
    * @return the id of the newly created processor.
-   * @throws IOException
    */
   public String createPutFile(String name, String directory, String[] path)
     throws IOException {
@@ -674,10 +698,12 @@ public class NiFiClientService {
    * @return The id of the updated processor.
    * @throws IOException
    */
-  public String updatePutSyslog(String processorId, String hostname, int port,
+  public String updatePutSyslog(String processorId, String sslContextId, String hostname, int port,
     String protocol, String messageBody, String messagePriority) throws IOException {
 
-    return niFiClient.updatePutSyslog(processorId, hostname, port, protocol, messageBody, messagePriority).getId();
+    return niFiClient
+      .updatePutSyslog(processorId, sslContextId, hostname, port, protocol, messageBody,
+        messagePriority).getId();
   }
 
   /**

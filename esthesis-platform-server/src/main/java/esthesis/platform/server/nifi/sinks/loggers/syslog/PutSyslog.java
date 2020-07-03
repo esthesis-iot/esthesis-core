@@ -6,7 +6,6 @@ import esthesis.platform.server.model.NiFiSink;
 import esthesis.platform.server.nifi.client.services.NiFiClientService;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import esthesis.platform.server.nifi.sinks.loggers.NiFiLoggerFactory;
-import esthesis.platform.server.nifi.sinks.readers.mqtt.CustomInfo;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
@@ -94,23 +93,48 @@ public class PutSyslog implements NiFiLoggerFactory {
     PutSyslogConfiguration prevConf = extractConfiguration(sink.getConfiguration());
     conf = extractConfiguration(sinkDTO.getConfiguration());
 
+    String sslContextId = null;
+
     if (!(Objects.equals(conf.getKeystoreFilename(), prevConf.getKeystoreFilename()) &&
       Objects.equals(conf.getKeystorePassword(), prevConf.getKeystorePassword()) &&
       Objects.equals(conf.getTruststoreFilename(), prevConf.getTruststoreFilename()) &&
       Objects.equals(conf.getTruststorePassword(), prevConf.getTruststorePassword()))) {
 
-      CustomInfo customInfo = objectMapper.readValue(sink.getCustomInfo(), CustomInfo.class);
-      niFiClientService.updateSSLContext(customInfo.getSslContextId(), conf.getKeystoreFilename(),
-        conf.getKeystorePassword(), conf.getTruststoreFilename(), conf.getTruststorePassword());
+      esthesis.platform.server.nifi.sinks.readers.mqtt.CustomInfo customInfo =
+        sinkDTO.getCustomInfo() != null ?
+          objectMapper.readValue(sink.getCustomInfo(),
+            esthesis.platform.server.nifi.sinks.readers.mqtt.CustomInfo.class) : null;
+
+      if (customInfo == null) {
+
+        sslContextId = niFiClientService
+          .createSSLContextForExistingProcessor(sinkDTO.getProcessorId(),
+            conf.getKeystoreFilename(),
+            conf.getKeystorePassword(), conf.getTruststoreFilename(), conf.getTruststorePassword());
+
+        customInfo = new esthesis.platform.server.nifi.sinks.readers.mqtt.CustomInfo();
+        customInfo.setSslContextId(sslContextId);
+        sinkDTO.setCustomInfo(objectMapper.writeValueAsString(customInfo));
+        enableControllerServices(sslContextId);
+      } else {
+        niFiClientService
+          .updateSSLContext(customInfo.getSslContextId(), conf.getKeystoreFilename(),
+            conf.getKeystorePassword(), conf.getTruststoreFilename(), conf.getTruststorePassword());
+      }
     }
 
     return niFiClientService
-      .updatePutSyslog(sink.getProcessorId(), conf.getHostname(), conf.getPort(),
+      .updatePutSyslog(sink.getProcessorId(), sslContextId, conf.getHostname(), conf.getPort(),
         conf.getProtocol(), conf.getMessageBody(), conf.getMessagePriority());
   }
 
   @Override
   public String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
+    String customInfoString = niFiSinkDTO.getCustomInfo();
+    if (customInfoString != null) {
+      CustomInfo customInfo = objectMapper.readValue(customInfoString, CustomInfo.class);
+      niFiClientService.deleteController(customInfo.getSslContextId());
+    }
     return niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
   }
 

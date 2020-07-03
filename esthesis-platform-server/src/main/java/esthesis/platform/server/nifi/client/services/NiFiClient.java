@@ -899,11 +899,9 @@ public class NiFiClient {
     throws IOException {
 
     // Configuration.
-    Map<String, String> properties = setConsumeMQTTProperties(uri, topic, qos, queueSize);
+    Map<String, String> properties = setConsumeMQTTProperties(uri, sslContextServiceId, topic,
+      qos, queueSize);
     properties.put(Properties.CLIENT_ID, name + " [NIFI] ");
-    if (StringUtils.isNotBlank(sslContextServiceId)) {
-      properties.put(SSL_CONTEXT_SERVICE, sslContextServiceId);
-    }
 
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
     processorConfigDTO.setProperties(properties);
@@ -916,20 +914,27 @@ public class NiFiClient {
     return createProcessor(parentProcessGroupId, processorDTO);
   }
 
-  public ProcessorEntity updateConsumeMQTT(String id, @NotNull String uri, @NotNull String topic,
+  public ProcessorEntity updateConsumeMQTT(String id, String sslContextId, @NotNull String uri,
+    @NotNull String topic,
     int qos,
     int queueSize) throws IOException {
-    Map<String, String> properties = setConsumeMQTTProperties(uri, topic, qos, queueSize);
+    Map<String, String> properties = setConsumeMQTTProperties(uri, sslContextId, topic, qos,
+      queueSize);
     return updateProcessor(id, properties);
   }
 
-  private Map<String, String> setConsumeMQTTProperties(String uri, @NotNull String topic, int qos,
+  private Map<String, String> setConsumeMQTTProperties(String uri, String sslContextServiceId,
+    @NotNull String topic,
+    int qos,
     int queueSize) {
     Map<String, String> properties = new HashMap<>();
     properties.put(Properties.BROKER_URI, uri);
     properties.put(Properties.MAX_QUEUE_SIZE, String.valueOf(queueSize));
     properties.put(Properties.TOPIC_FILTER, topic);
     properties.put(Properties.QOS, String.valueOf(qos));
+    if (StringUtils.isNotBlank(sslContextServiceId)) {
+      properties.put(SSL_CONTEXT_SERVICE, sslContextServiceId);
+    }
 
     return properties;
   }
@@ -1228,11 +1233,11 @@ public class NiFiClient {
 
   /**
    * Creates a PutFile processor.
+   *
    * @param parentProcessGroupId The if od the parent group where the processor will be created.
    * @param name The name of the processor.
    * @param directory The directory where the files will be created.
    * @return The newly created processor.
-   * @throws IOException
    */
   public ProcessorEntity createPutFile(String parentProcessGroupId, String name, String directory)
     throws IOException {
@@ -1256,10 +1261,10 @@ public class NiFiClient {
 
   /**
    * Updates a PutFile processor.
+   *
    * @param processorId The id of the processor to update.
    * @param directory he directory where the files will be created.
    * @return The newly created processor.
-   * @throws IOException
    */
   public ProcessorEntity updatePutFile(String processorId, String directory) throws IOException {
     Map<String, String> properties = new HashMap<>();
@@ -1270,6 +1275,7 @@ public class NiFiClient {
 
   /**
    * Creates a PutSyslog processor.
+   *
    * @param name The name of the processor.
    * @param sslContextId The id of the SSL Context Service used to provide client certificate
    * information for TLS/SSL connections.
@@ -1279,7 +1285,6 @@ public class NiFiClient {
    * @param messageBody The body of the Syslog message.
    * @param messagePriority The priority of the Syslog message.
    * @return The newly created processor.
-   * @throws IOException
    */
   public ProcessorEntity createPutSyslog(String parentProcessGroupId, String name,
     String sslContextId, String hostname, int port, String protocol, String messageBody,
@@ -1305,6 +1310,7 @@ public class NiFiClient {
 
   /**
    * Updates a PutSyslog processor.
+   *
    * @param processorId The id of the processor that will be updated.
    * @param hostname The hostname of the Syslog server.
    * @param port The port of the Syslog server.
@@ -1312,12 +1318,11 @@ public class NiFiClient {
    * @param messageBody The body of the Syslog message.
    * @param messagePriority The priority of the Syslog message.
    * @return The id of the updated processor.
-   * @throws IOException
    */
-  public ProcessorEntity updatePutSyslog(String processorId, String hostname, int port,
-    String protocol, String messageBody, String messagePriority) throws IOException {
+  public ProcessorEntity updatePutSyslog(String processorId, String sslContextId, String hostname,
+    int port, String protocol, String messageBody, String messagePriority) throws IOException {
 
-    Map<String, String> properties = setPutSyslogProperties(null, hostname, port,
+    Map<String, String> properties = setPutSyslogProperties(sslContextId, hostname, port,
       protocol, messageBody, messagePriority);
 
     return updateProcessor(processorId, properties);

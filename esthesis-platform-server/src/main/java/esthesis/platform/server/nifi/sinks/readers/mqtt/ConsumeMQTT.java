@@ -93,20 +93,36 @@ public class ConsumeMQTT implements NiFiReaderFactory {
   public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO) throws IOException {
     ConsumeMQTTConfiguration prevConf = extractConfiguration(sink.getConfiguration());
     conf = extractConfiguration(sinkDTO.getConfiguration());
+    String sslContextId = null;
 
     if (!(Objects.equals(conf.getKeystoreFilename(), prevConf.getKeystoreFilename()) &&
       Objects.equals(conf.getKeystorePassword(), prevConf.getKeystorePassword()) &&
       Objects.equals(conf.getTruststoreFilename(), prevConf.getTruststoreFilename()) &&
       Objects.equals(conf.getTruststorePassword(), prevConf.getTruststorePassword()))) {
 
-      CustomInfo customInfo = objectMapper.readValue(sink.getCustomInfo(), CustomInfo.class);
+      CustomInfo customInfo = sinkDTO.getCustomInfo() != null ?
+        objectMapper.readValue(sink.getCustomInfo(), CustomInfo.class) : null;
 
-      niFiClientService.updateSSLContext(customInfo.getSslContextId(), conf.getKeystoreFilename(),
-        conf.getKeystorePassword(), conf.getTruststoreFilename(), conf.getTruststorePassword());
+      if (customInfo == null) {
+        sslContextId = niFiClientService
+          .createSSLContextForExistingProcessor(sinkDTO.getProcessorId(),
+            conf.getKeystoreFilename(), conf.getKeystorePassword(), conf.getTruststoreFilename(),
+            conf.getTruststorePassword());
+
+        customInfo = new CustomInfo();
+        customInfo.setSslContextId(sslContextId);
+        sinkDTO.setCustomInfo(objectMapper.writeValueAsString(customInfo));
+        enableControllerServices(sslContextId);
+      } else {
+        niFiClientService
+          .updateSSLContext(customInfo.getSslContextId(), conf.getKeystoreFilename(),
+            conf.getKeystorePassword(), conf.getTruststoreFilename(), conf.getTruststorePassword());
+      }
     }
 
     return niFiClientService
-      .updateConsumerMQTT(sinkDTO.getProcessorId(), conf.getUri(), conf.getTopic(), conf.getQos(),
+      .updateConsumerMQTT(sinkDTO.getProcessorId(), sslContextId, conf.getUri(), conf.getTopic(),
+        conf.getQos(),
         conf.getQueueSize());
   }
 
