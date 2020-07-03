@@ -32,10 +32,10 @@ public class App {
 
   @PostConstruct
   void started() {
-    LOGGER.log(Level.INFO, "Timezone name  : " + TimeZone.getDefault().getDisplayName());
-    LOGGER.log(Level.INFO, "Timezone ID    : " + TimeZone.getDefault().getID());
-    LOGGER.log(Level.INFO, "Timezone offset: "
-        + TimeUnit.MILLISECONDS.toMinutes(TimeZone.getDefault().getRawOffset()) + " minutes");
+    LOGGER.log(Level.INFO, "Timezone name  : {0}}", TimeZone.getDefault().getDisplayName());
+    LOGGER.log(Level.INFO, "Timezone ID    : {0}}", TimeZone.getDefault().getID());
+    LOGGER.log(Level.INFO, "Timezone offset: {0}} minutes",
+      TimeUnit.MILLISECONDS.toMinutes(TimeZone.getDefault().getRawOffset()));
   }
 
   /**
