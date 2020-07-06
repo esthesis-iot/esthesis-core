@@ -91,8 +91,8 @@ public class SyncService {
         String workflowId = esthesisTemplateDTO.getTemplateId();
 
         try {
-          niFiClientService.deleteTemplate(workflowId);
           niFiClientService.deleteProcessGroup(rootProcessGroupId);
+          niFiClientService.deleteTemplate(workflowId);
         } catch (IOException exception) {
           exception.printStackTrace();
         }

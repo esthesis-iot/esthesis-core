@@ -397,6 +397,11 @@ public class NiFiClient {
       deleteCall("/process-groups/" + processGroupId
         + "?version=" + processGroup.getRevision().getVersion()
         + "&clientId=" + processGroup.getRevision().getClientId());
+
+    if (!callReplyDTO.isSuccessful()) {
+      throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
+    }
+
   }
 
   private ProcessGroupEntity getProcessGroup(String processGroupId) throws IOException {

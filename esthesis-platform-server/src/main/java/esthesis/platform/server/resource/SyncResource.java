@@ -30,7 +30,8 @@ public class SyncResource {
   }
 
   @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete NiFi object.")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete NiFi "
+    + "Workflow.")
   public ResponseEntity delete() throws IOException {
     syncService.deleteWorkflow();
     return ResponseEntity.ok().build();

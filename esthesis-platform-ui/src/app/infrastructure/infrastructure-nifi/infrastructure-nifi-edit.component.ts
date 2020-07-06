@@ -93,6 +93,8 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
             if (result) {
               this.syncService.deleteWorkflow().subscribe(value => {
                 this.deleteNiFiInstance();
+              }, error => {
+                this.utilityService.popupError(error.error);
               })
             } else {
               this.deleteNiFiInstance();
