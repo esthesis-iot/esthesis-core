@@ -28,7 +28,11 @@ import esthesis.platform.server.config.AppSettings.SettingValues.Security.Incomi
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingSignature;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingEncryption;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingSignature;
-import esthesis.platform.server.dto.*;
+import esthesis.platform.server.dto.DTDeviceDTO;
+import esthesis.platform.server.dto.DeviceDTO;
+import esthesis.platform.server.dto.DeviceKeyDTO;
+import esthesis.platform.server.dto.DeviceRegistrationDTO;
+import esthesis.platform.server.dto.WebSocketMessageDTO;
 import esthesis.platform.server.mapper.DTDeviceMapper;
 import esthesis.platform.server.mapper.DeviceKeyMapper;
 import esthesis.platform.server.mapper.DeviceMapper;
@@ -38,6 +42,7 @@ import esthesis.platform.server.model.DeviceKey;
 import esthesis.platform.server.repository.DeviceKeyRepository;
 import esthesis.platform.server.repository.DeviceRepository;
 import javax.crypto.NoSuchPaddingException;
+import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.scheduling.annotation.Async;
@@ -62,16 +67,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+@Log
 @Service
 @Validated
 @Transactional
 public class DeviceService extends BaseService<DeviceDTO, Device> {
-
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(DeviceService.class.getName());
 
   private final DeviceRepository deviceRepository;
   private final DeviceMapper deviceMapper;
@@ -90,20 +92,20 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   private final CryptoCAService cryptoCAService;
 
   public DeviceService(
-          DeviceRepository deviceRepository, DeviceMapper deviceMapper,
-          DTDeviceMapper dtDeviceMapper, DeviceKeyMapper deviceKeyMapper,
-          WebSocketService webSocketService, SettingResolverService srs,
-          TagService tagService,
-          DeviceKeyRepository deviceKeyRepository,
-          SecurityService securityService, AppProperties appProperties,
-          CryptoAsymmetricService cryptoAsymmetricService,
-          CryptoSymmetricService cryptoSymmetricService,
-          CertificatesService certificatesService, CAService caService,
-          CryptoCAService cryptoCAService) {
+    DeviceRepository deviceRepository, DeviceMapper deviceMapper,
+    DTDeviceMapper dtDeviceMapper, DeviceKeyMapper deviceKeyMapper,
+    WebSocketService webSocketService, SettingResolverService srs,
+    TagService tagService,
+    DeviceKeyRepository deviceKeyRepository,
+    SecurityService securityService, AppProperties appProperties,
+    CryptoAsymmetricService cryptoAsymmetricService,
+    CryptoSymmetricService cryptoSymmetricService,
+    CertificatesService certificatesService, CAService caService,
+    CryptoCAService cryptoCAService) {
     this.deviceRepository = deviceRepository;
     this.deviceMapper = deviceMapper;
-      this.dtDeviceMapper = dtDeviceMapper;
-      this.deviceKeyMapper = deviceKeyMapper;
+    this.dtDeviceMapper = dtDeviceMapper;
+    this.deviceKeyMapper = deviceKeyMapper;
     this.webSocketService = webSocketService;
     this.srs = srs;
     this.tagService = tagService;
@@ -155,13 +157,12 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
         for (String tag : tags.split(",")) {
           tag = tag.trim();
           if (!tagService.findByName(tag).isPresent()) {
-            LOGGER
-              .log(Level.WARNING, "Device-pushed tag {0} does not exist and will be ignored.", tag);
+            log.log(Level.WARNING, "Device-pushed tag {0} does not exist and will be ignored.", tag);
           }
         }
       } else {
         if (StringUtils.isNotBlank(tags)) {
-          LOGGER.log(Level.FINE, "Device-pushed tags {0} will be ignored.", tags);
+          log.log(Level.FINE, "Device-pushed tags {0} will be ignored.", tags);
         }
       }
     }
@@ -227,7 +228,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     final byte[] sessionKey = cryptoSymmetricService.generateKey(
       appProperties.getSecuritySymmetricKeySize(),
       appProperties.getSecuritySymmetricKeyAlgorithm()).getEncoded();
-    LOGGER.log(Level.FINEST, "Device session key: {0}.", Arrays.toString(sessionKey));
+    log.log(Level.FINEST, "Device session key: {0}.", Arrays.toString(sessionKey));
     final DeviceKey deviceKey = new DeviceKey()
       .setPrivateKey(securityService.encrypt(cryptoAsymmetricService.privateKeyToPEM(keyPair)))
       .setPublicKey(cryptoAsymmetricService.publicKeyToPEM(keyPair))
@@ -309,10 +310,10 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
         "Attempting to register device with hardware ID {0} but registration of new devices is "
           + "disabled.", hardwareId);
     } else {
-      LOGGER.log(Level.FINE, "Attempting to register device with registration ID {0}.",
+      log.log(Level.FINE, "Attempting to register device with registration ID {0}.",
         hardwareId);
       // Check registration preconditions and register device.
-      LOGGER.log(Level.FINEST, "Platform running on {0} registration mode.",
+      log.log(Level.FINEST, "Platform running on {0} registration mode.",
         srs.get(DeviceRegistration.REGISTRATION_MODE));
       switch (srs.get(DeviceRegistration.REGISTRATION_MODE)) {
         case RegistrationMode.OPEN:
@@ -336,7 +337,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
           MessageFormat.format("Device with registration id {0} registered.", hardwareId)));
     }
 
-    LOGGER.log(Level.FINE, "Registered device with hardware ID {0}.", hardwareId);
+    log.log(Level.FINE, "Registered device with hardware ID {0}.", hardwareId);
   }
 
   private DeviceDTO fillDecryptedKeys(DeviceDTO deviceDTO) {
@@ -354,7 +355,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
       deviceDTO.setCertificate(keys.getCertificate());
     } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException |
       InvalidAlgorithmParameterException | IOException e) {
-      LOGGER.log(Level.SEVERE, "Could not obtain device's cryptographic keys.", e);
+      log.log(Level.SEVERE, "Could not obtain device\\'s cryptographic keys.", e);
     }
 
     return deviceDTO;
@@ -412,9 +413,9 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     return deviceDTO;
   }
 
-    public List<DTDeviceDTO> findAllDT() {
-      return dtDeviceMapper.map(deviceRepository.findAll());
-    }
+  public List<DTDeviceDTO> findAllDT() {
+    return dtDeviceMapper.map(deviceRepository.findAll());
+  }
 
   @Async
   @Override

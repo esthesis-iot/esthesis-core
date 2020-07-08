@@ -158,7 +158,6 @@
 
   <modules>
     <module>esthesis-common</module>
-    <module>esthesis-datasink</module>
     <module>esthesis-device</module>
     <module>esthesis-platform-server</module>
   </modules>
