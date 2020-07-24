@@ -4,7 +4,7 @@
  *
  * All incoming parameters are expected to be already sanitised.
  */
-var allowedOperations = ['count', 'max', 'min', 'mean', 'sum'];
+var allowedOperations = ['query', 'count', 'max', 'min', 'mean', 'sum'];
 
 /**
  * Utility method to set the fields of a query.
@@ -65,10 +65,8 @@ function getCalculateFields(flowFile, operation) {
   if (!fields) {
     fieldsTemplate = operation + "(*)";
   } else {
-    fieldsTemplate = fields.split(",").map(function (f) {
-      return operation + "(" + f.trim() + ") as " + operation + "_" + f
-    }).join(',')
-  }
+    fieldsTemplate = operation + "(" + fields + ") as " +  operation + "_" + fields;
+   }
 
   return fieldsTemplate;
 }
@@ -85,7 +83,8 @@ function createQueryRequest(flowFile, fields) {
   // Set fields, measurement and tags.
   if (fields) {
     queryTemplate = queryTemplate.replace("$FIELDS", fields);
-  } else {
+  }
+  else {
     queryTemplate = _updateFields(flowFile, queryTemplate);
   }
   queryTemplate = _updateMeasurement(flowFile, queryTemplate);
@@ -118,12 +117,15 @@ function createQueryRequest(flowFile, fields) {
     } else {
       queryTemplate = queryTemplate.replace("$ORDER", "asc");
     }
+  } else if (isMetadataQuery) {
+    queryTemplate = queryTemplate.replace("$ORDER", "desc");
   } else {
     queryTemplate = queryTemplate.replace("$ORDER", "asc");
   }
 
   // Set paging.
-  var limit = flowFile.getAttribute('http.query.param.limit');
+  var limit = isMetadataQuery ? 1 : flowFile.getAttribute(
+    'http.query.param.limit');
   var offset = flowFile.getAttribute('http.query.param.offset');
   if (limit && offset) {
     queryTemplate = queryTemplate.replace("$PAGING", "LIMIT " + limit + " OFFSET " + offset);
@@ -143,6 +145,7 @@ function createQueryRequest(flowFile, fields) {
 var OutputStreamCallback = Java.type("org.apache.nifi.processor.io.OutputStreamCallback");
 var StandardCharsets = Java.type("java.nio.charset.StandardCharsets");
 var flowFile = session.get();
+var isMetadataQuery = flowFile.getAttribute('esthesis.type') === "metadata";
 
 // If FlowFile exists proceed with processing.
 if (flowFile != null) {
@@ -152,10 +155,15 @@ if (flowFile != null) {
 
     // Call the appropriate handler for the the type of query requested.
     var operation = flowFile.getAttribute('esthesis.operation').trim().toLowerCase();
-    if (operation === 'query') {
-      queryTemplate = createQueryRequest(flowFile);
-    } else if (allowedOperations.indexOf(operation) > -1) {
-      queryTemplate = createQueryRequest(flowFile, getCalculateFields(flowFile, operation));
+    var fields = flowFile.getAttribute('esthesis.param.fields');
+
+    if (isMetadataQuery && operation !== 'query' ) {
+      throw('Requested operation \'' + operation + "\' is not supported for metadata");
+    }
+
+    if (allowedOperations.indexOf(operation) > -1) {
+      queryTemplate = operation === 'query' ? createQueryRequest(flowFile) : createQueryRequest(
+        flowFile, getCalculateFields(flowFile, operation));
     } else {
       throw('Requested operation \'' + operation + "\' is not supported.");
     }

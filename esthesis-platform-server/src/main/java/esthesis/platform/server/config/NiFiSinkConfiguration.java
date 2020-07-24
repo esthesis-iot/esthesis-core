@@ -75,6 +75,7 @@ public class NiFiSinkConfiguration {
         .add(NiFiProducerFactoryDTO.builder().factoryClass(niFiProducerFactory.getClass().getName())
           .friendlyName(niFiProducerFactory.getFriendlyName())
           .supportsTelemetryProduce(niFiProducerFactory.supportsTelemetryProduce())
+          .supportsMetadataProduce(niFiProducerFactory.supportsMetadataProduce())
           .configurationTemplate(niFiProducerFactory.getConfigurationTemplate())
           .build()));
 

@@ -23,18 +23,25 @@ if (flowFile != null) {
     var json = JSON.parse(text);
 
     // Iterate through records.
-    json.forEach(function(record) {
+    json.forEach(function (record) {
       output += record['measurement'] +
         ",hardwareId=" + record['tags']['hardwareId'] +
         ",type=" + record['tags']['type'] + " ";
       var currentField = 0;
       var totalFields = Object.keys(record['fields']).length;
       for (f in record['fields']) {
-        output += f + "=" + record["fields"][f];
+        var fieldValue = typeof record["fields"][f] === "string" ? '"' + record["fields"][f] + '"'
+          : record["fields"][f];
+
+        output += f + "=" + fieldValue;
         currentField++;
         if (currentField < totalFields) {
           output += ",";
         }
+      }
+
+      if (record.timestamp) {
+        output += " " + record.timestamp * 1000000;
       }
       output += "\n";
     });

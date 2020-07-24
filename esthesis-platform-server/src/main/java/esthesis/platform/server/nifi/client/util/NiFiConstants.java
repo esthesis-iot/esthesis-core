@@ -94,6 +94,8 @@ public class NiFiConstants {
       public static final String DISTRIBUTE_LOAD = "org.apache.nifi.processors.standard.DistributeLoad";
       public static final String PUT_FILE = "org.apache.nifi.processors.standard.PutFile";
       public static final String PUT_SYSLOG = "org.apache.nifi.processors.standard.PutSyslog";
+      public static final String STANDARD_HTTP_CONTEXT_MAP = "org.apache.nifi.http"
+        + ".StandardHttpContextMap";
     }
   }
 

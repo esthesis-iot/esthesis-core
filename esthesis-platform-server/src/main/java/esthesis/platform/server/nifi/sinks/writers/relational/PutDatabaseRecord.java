@@ -53,8 +53,7 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
         "databaseDriverClassName: \n" +
         "databaseDriverClassLocation: \n" +
         "databaseUser: \n" +
-        "password: \n" +
-        "tableName: ";
+        "password: ";
   }
 
   @Override
@@ -73,10 +72,9 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
         conf.getDatabaseUser(),
         conf.getPassword(), path);
 
-
     String putDatabaseRecord = niFiClientService
       .createPutDatabaseRecord(niFiSinkDTO.getName(), jsonTreeReader, dbConnectionPool,
-        getStatementType(niFiSinkDTO.getHandler()), conf.getTableName(), path);
+        getStatementType(niFiSinkDTO.getHandler()), path);
 
     CustomInfo customInfo = new CustomInfo();
     customInfo.setJsonTreeReader(jsonTreeReader);
@@ -111,7 +109,7 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
     }
 
     return niFiClientService.updatePutDatabaseRecord(sink.getProcessorId(),
-      getStatementType(sinkDTO.getHandler()), conf.getTableName());
+      getStatementType(sinkDTO.getHandler()));
   }
 
   @Override
@@ -166,7 +164,7 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
   }
 
   private STATEMENT_TYPE getStatementType(int handler) {
-    return NIFI_SINK_HANDLER.PING.getType() == handler ?
-      STATEMENT_TYPE.UPDATE : STATEMENT_TYPE.INSERT;
+    return NIFI_SINK_HANDLER.TELEMETRY.getType() == handler ?
+      STATEMENT_TYPE.INSERT : STATEMENT_TYPE.UPDATE;
   }
 }

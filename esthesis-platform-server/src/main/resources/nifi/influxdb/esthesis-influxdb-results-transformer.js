@@ -7,6 +7,14 @@
  * ]}
  */
 
+function parseToMilis(date) {
+  var dotPosition = date.indexOf(".");
+  var timezonePosition = date.length -1;
+  var nanos = date.substring(dotPosition - 1, timezonePosition);
+  var milis = (parseFloat(nanos).toFixed(3) + date.charAt(timezonePosition));
+  return date.substring(0, dotPosition - 1) + milis;
+}
+
 // Get references the the output stream to write results, the input stream to read the content of
 // the FlowFile, and to the incoming FlowFile.
 var InputStreamCallback = Java.type("org.apache.nifi.processor.io.InputStreamCallback")
@@ -14,14 +22,48 @@ var OutputStreamCallback = Java.type("org.apache.nifi.processor.io.OutputStreamC
 var IOUtils = Java.type("org.apache.commons.io.IOUtils")
 var StandardCharsets = Java.type("java.nio.charset.StandardCharsets")
 var flowFile = session.get();
+var nonTimeOperations = ['count', 'mean', 'sum'];
 
 if (flowFile != null) {
+  var operation = flowFile.getAttribute('esthesis.operation');
   try {
     var output = {};
     session.read(flowFile, new InputStreamCallback(function (inputStream) {
       // Parse incoming FlowFile content to JSON.
       var text = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
       var json = JSON.parse(text);
+
+      if (json.length > 0) {
+        for (i in json) {
+          var series = json[i].results[0].series[0];
+          var columns = series.columns;
+          // Set the root-level key as the name of the measurement.
+          if (!output[series.name]) {
+            output[series.name] = [];
+          }
+
+          // Fill-in each value from the result set.
+          for (j in series.values) {
+            val = {};
+            for (key in series.values[j]) {
+              if (columns[key] === 'time') {
+                if (nonTimeOperations.indexOf(operation) == -1) {
+                  val['timestamp'] = Date.parse(parseToMilis(series.values[j][key]));
+                }
+              } else {
+                // Ignore null values.
+                if (series.values[j][key]) {
+                  val[columns[key]] = series.values[j][key];
+                }
+              }
+              if (columns.indexOf('type') == -1) {
+                val['type'] = flowFile.getAttribute('esthesis.type');
+              }
+            }
+            output[series.name].push(val);
+          }
+        }
+      }
 
       // Convert content.
       if (json.results && json.results[0] && json.results[0].series && json.results[0].series[0]) {
@@ -35,12 +77,18 @@ if (flowFile != null) {
           val = {};
           for (key in series.values[i]) {
             if (columns[key] === 'time') {
-              val['timestamp'] = Math.round(series.values[i][key] / 1000000);
+              if (nonTimeOperations.indexOf(operation) == -1) {
+                val['timestamp'] = Date.parse(parseToMilis(series.values[i][key]));
+              }
             } else {
               // Ignore null values.
               if (series.values[i][key]) {
                 val[columns[key]] = series.values[i][key];
               }
+            }
+
+            if (columns.indexOf('type') == -1) {
+              val['type'] = flowFile.getAttribute('esthesis.type');
             }
           }
           output[series.name].push(val);

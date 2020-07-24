@@ -15,7 +15,6 @@ import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_MAX_CONNECTION_TIMEOUT;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_MAX_RECORDS_SIZE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_PASSWORD;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_QUERY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_QUERY_CHUNK_SIZE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_QUERY_RESULT_TIME_UNIT;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_RETENTION_POLICY;
@@ -30,9 +29,6 @@ import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_READER;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_STATEMENT_TYPE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_TABLE_NAME;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_POST_QUERY;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_PRE_QUERY;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_SELECT_QUERY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SSL_CONTEXT_SERVICE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONNECTABLE_COMPONENT_TYPE.INPUT_PORT;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONNECTABLE_COMPONENT_TYPE.OUTPUT_PORT;
@@ -1049,16 +1045,14 @@ public class NiFiClient {
    * @param statementType Specifies the type of SQL Statement to generate.
    * @param dcbpServiceId The id of the Controller Service that is used to obtain a connection to
    * the database for sending records.
-   * @param tableName The name of the table that the statement should affect.
    * @return ProcessorEntity object containing the newly created processor.
    */
   public ProcessorEntity createPutDatabaseRecord(@NotNull String parentProcessGroupId,
     @NotNull String name, @NotNull String recordReaderId, @NotNull String dcbpServiceId,
-    @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType,
-    @NotNull String tableName)
+    @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType)
     throws IOException {
     // Configuration.
-    Map<String, String> properties = setPutDatabaseRecordProperties(statementType, tableName);
+    Map<String, String> properties = setPutDatabaseRecordProperties(statementType);
     properties.put(PUT_DB_RECORD_READER, recordReaderId);
     properties.put(PUT_DB_RECORD_DCBP_SERVICE, dcbpServiceId);
 
@@ -1080,23 +1074,20 @@ public class NiFiClient {
    *
    * @param processorId The id of the PutDatabaseProcessor that will be updated.
    * @param statementType Specifies the type of SQL Statement to generate.
-   * @param tableName The name of the table that the statement should affect.
    * @return ProcessorEntity object containing the newly created processor.
    */
   public ProcessorEntity updatePutDatabaseRecord(@NotNull String processorId,
-    NiFiConstants.Properties.Values.STATEMENT_TYPE statementType,
-    String tableName)
+    NiFiConstants.Properties.Values.STATEMENT_TYPE statementType)
     throws IOException {
-    return updateProcessor(processorId, setPutDatabaseRecordProperties(statementType, tableName));
+    return updateProcessor(processorId, setPutDatabaseRecordProperties(statementType));
   }
 
   private Map<String, String> setPutDatabaseRecordProperties(
-    NiFiConstants.Properties.Values.STATEMENT_TYPE statementType,
-    @NotNull String tableName) {
+    NiFiConstants.Properties.Values.STATEMENT_TYPE statementType) {
     Map<String, String> properties = new HashMap<>();
 
     properties.put(PUT_DB_RECORD_STATEMENT_TYPE, statementType.getType());
-    properties.put(PUT_DB_RECORD_TABLE_NAME, tableName);
+    properties.put(PUT_DB_RECORD_TABLE_NAME, "${esthesis.measurement}");
 
     return properties;
   }
@@ -1111,17 +1102,16 @@ public class NiFiClient {
    * @param maxConnectionTimeoutSeconds The maximum time of establising connection to Influx
    * Database
    * @param queryResultTimeUnit The time unit of query results from theInflux Database.
-   * @param query The query to execute.
    * @param queryChunkSize The chunk size of the query result.
    * @return The newly created processor.
    */
   public ProcessorEntity createExecuteInfluxDB(@NotNull String parentProcessGroupId,
     @NotNull String name, @NotNull String dbName, @NotNull String url,
     int maxConnectionTimeoutSeconds, String queryResultTimeUnit,
-    String query, int queryChunkSize) throws IOException {
+    int queryChunkSize) throws IOException {
 
     Map<String, String> properties = setExecuteInfluxDBProperties(dbName, url,
-      maxConnectionTimeoutSeconds, queryResultTimeUnit, query, queryChunkSize);
+      maxConnectionTimeoutSeconds, queryResultTimeUnit, queryChunkSize);
 
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
     processorConfigDTO.setProperties(properties);
@@ -1143,16 +1133,15 @@ public class NiFiClient {
    * @param maxConnectionTimeoutSeconds The maximum time of establising connection to Influx
    * Database
    * @param queryResultTimeUnit The time unit of query results from theInflux Database.
-   * @param query The query to execute.
    * @param queryChunkSize The chunk size of the query result.
    * @return The updated processor.
    */
   public ProcessorEntity updateExecuteInfluxDB(String processorId, String dbName, String url,
-    int maxConnectionTimeoutSeconds, String queryResultTimeUnit, String query, int queryChunkSize)
+    int maxConnectionTimeoutSeconds, String queryResultTimeUnit, int queryChunkSize)
     throws IOException {
 
     Map<String, String> properties = setExecuteInfluxDBProperties(dbName, url,
-      maxConnectionTimeoutSeconds, queryResultTimeUnit, query, queryChunkSize);
+      maxConnectionTimeoutSeconds, queryResultTimeUnit, queryChunkSize);
 
     return updateProcessor(processorId, properties);
 
@@ -1160,8 +1149,7 @@ public class NiFiClient {
 
   private Map<String, String> setExecuteInfluxDBProperties(@NotNull String dbName,
     @NotNull String url,
-    int maxConnectionTimeoutSeconds, String queryResultTimeUnit,
-    String query, int queryChunkSize) {
+    int maxConnectionTimeoutSeconds, String queryResultTimeUnit, int queryChunkSize) {
 
     Map<String, String> properties = new HashMap<>();
     properties.put(INFLUX_DB_NAME, dbName);
@@ -1169,7 +1157,6 @@ public class NiFiClient {
     properties.put(INFLUX_MAX_CONNECTION_TIMEOUT, (maxConnectionTimeoutSeconds) +
       " seconds");
     properties.put(INFLUX_QUERY_RESULT_TIME_UNIT, queryResultTimeUnit.toUpperCase());
-    properties.put(INFLUX_QUERY, query);
     properties.put(INFLUX_QUERY_CHUNK_SIZE, String.valueOf(queryChunkSize));
 
     return properties;
@@ -1181,18 +1168,12 @@ public class NiFiClient {
    * @param parentProcessGroupId The if od the parent group where the processor will be created.
    * @param name The name of the processor.
    * @param dcbpServiceId The if of the Database Connection Pool service.
-   * @param sqlPreQuery SQL Queries executed before the main query.
-   * @param sqlSelectQuery The SQL select query that tha will be executed.
-   * @param sqlPostQuery SQL Queries executed after the main query.
    * @return The newly created processor.
    */
   public ProcessorEntity createExecuteSQL(@NotNull String parentProcessGroupId,
-    @NotNull String name, @NotNull String dcbpServiceId, String sqlPreQuery,
-    String sqlSelectQuery, String sqlPostQuery) throws IOException {
+    @NotNull String name, @NotNull String dcbpServiceId) throws IOException {
 
-    Map<String, String> properties = setExecuteSQLProperties(sqlPreQuery,
-      sqlSelectQuery, sqlPostQuery);
-
+    Map<String, String> properties = new HashMap<>();
     properties.put(DCBP_SERVICE, dcbpServiceId);
 
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
@@ -1204,36 +1185,6 @@ public class NiFiClient {
       name, processorConfigDTO, bundleDTO);
 
     return createProcessor(parentProcessGroupId, processorDTO);
-  }
-
-  /**
-   * Updates an ExecuteSQL processor.
-   *
-   * @param processorId The id of the processor to update.
-   * @param sqlPreQuery SQL Queries executed before the main query.
-   * @param sqlSelectQuery The SQL select query that tha will be executed.
-   * @param sqlPostQuery SQL Queries executed after the main query.
-   * @return The updated processor.
-   */
-  public ProcessorEntity updateExecuteSQL(@NotNull String processorId,
-    String sqlPreQuery,
-    String sqlSelectQuery, String sqlPostQuery) throws IOException {
-
-    Map<String, String> properties = setExecuteSQLProperties(sqlPreQuery,
-      sqlSelectQuery, sqlPostQuery);
-
-    return updateProcessor(processorId, properties);
-  }
-
-  private Map<String, String> setExecuteSQLProperties(String sqlPreQuery,
-    String sqlSelectQuery, String sqlPostQuery) {
-
-    Map<String, String> properties = new HashMap<>();
-    properties.put(SQL_PRE_QUERY, sqlPreQuery);
-    properties.put(SQL_SELECT_QUERY, sqlSelectQuery);
-    properties.put(SQL_POST_QUERY, sqlPostQuery);
-
-    return properties;
   }
 
   /**

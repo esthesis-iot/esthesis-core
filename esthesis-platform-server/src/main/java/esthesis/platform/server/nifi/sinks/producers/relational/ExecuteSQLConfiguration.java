@@ -18,8 +18,4 @@ public class ExecuteSQLConfiguration {
   private String databaseUser;
   private String password;
 
-  private String sqlPreQuery;
-  private String sqlSelectQuery;
-  private String sqlPostQuery;
-
 }

@@ -35,15 +35,17 @@ public class ExecuteSQL implements NiFiProducerFactory {
   }
 
   @Override
+  public boolean supportsMetadataProduce() {
+    return true;
+  }
+
+  @Override
   public String getConfigurationTemplate() {
     return "databaseConnectionURL: \n" +
       "databaseDriverClassName: \n" +
       "databaseDriverClassLocation: \n" +
       "databaseUser: \n" +
-      "password: \n" +
-      "sqlPreQuery: \n" +
-      "sqlSelectQuery: \n" +
-      "sqlPostQuery: ";
+      "password: ";
   }
 
   @Override
@@ -64,8 +66,7 @@ public class ExecuteSQL implements NiFiProducerFactory {
     customInfo.setDbConnectionPool(dbConnectionPool);
     niFiSinkDTO.setCustomInfo(objectMapper.writeValueAsString(customInfo));
 
-    String executeSQL = niFiClientService.createExecuteSQL(niFiSinkDTO.getName(), dbConnectionPool,
-      conf.getSqlPreQuery(), conf.getSqlSelectQuery(), conf.getSqlPostQuery(), path);
+    String executeSQL = niFiClientService.createExecuteSQL(niFiSinkDTO.getName(), dbConnectionPool, path);
 
     niFiSinkDTO.setProcessorId(executeSQL);
     enableControllerServices(dbConnectionPool);
@@ -86,7 +87,7 @@ public class ExecuteSQL implements NiFiProducerFactory {
       && conf.getPassword().equals(prevConf.getPassword()))) {
 
       CustomInfo customInfo = objectMapper.readValue(sink.getCustomInfo(), CustomInfo.class);
-      niFiClientService
+       niFiClientService
         .updateDBCConnectionPool(customInfo.getDbConnectionPool(), conf.getDatabaseConnectionURL(),
           conf.getDatabaseDriverClassName(),
           conf.getDatabaseDriverClassLocation(),
@@ -94,8 +95,7 @@ public class ExecuteSQL implements NiFiProducerFactory {
           conf.getPassword());
     }
 
-    return niFiClientService.updateExecuteSQL(sink.getProcessorId(),
-      conf.getSqlPreQuery(), conf.getSqlSelectQuery(), conf.getSqlPostQuery());
+    return sink.getProcessorId();
   }
 
   @Override

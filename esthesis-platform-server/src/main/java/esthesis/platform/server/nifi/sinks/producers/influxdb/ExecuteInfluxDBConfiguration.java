@@ -15,7 +15,6 @@ public class ExecuteInfluxDBConfiguration {
   private String databaseUrl;
   private String maxConnectionTimeoutSeconds;
   private String queryResultTimeUnit;
-  private String query;
   private String queryChunkSize;
 
 }

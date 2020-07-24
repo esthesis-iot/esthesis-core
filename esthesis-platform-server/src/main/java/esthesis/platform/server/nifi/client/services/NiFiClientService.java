@@ -9,6 +9,8 @@ import esthesis.platform.server.nifi.client.dto.NiFiTemplateDTO;
 import esthesis.platform.server.nifi.client.exception.NiFiProcessingException;
 import esthesis.platform.server.nifi.client.util.JacksonIgnoreInvalidFormatException;
 import esthesis.platform.server.nifi.client.util.NiFiConstants;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.PATH;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Processor.Type;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONSISTENCY_LEVEL;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.DATA_UNIT;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
@@ -189,6 +191,7 @@ public class NiFiClientService {
     if (flowEntity != null) {
       flowEntity.getFlow().getProcessGroups().forEach(processGroupEntity -> {
         try {
+          enableStandardContextHttpMap();
           niFiClient.changeProcessorGroupState(processGroupEntity.getId(), STATE.RUNNING);
         } catch (IOException exception) {
           exception.printStackTrace();
@@ -212,6 +215,19 @@ public class NiFiClientService {
     return niFiClient.findProcessGroup(NiFiSearchAlgorithm.NAME_ENDS_WITH, Arrays.asList(path))
       .orElseThrow(() -> new IllegalArgumentException(
         MessageFormat.format("Could not find process for {0}.", Arrays.asList(path)))).getId();
+  }
+
+  private void enableStandardContextHttpMap() throws IOException {
+    String processGroupId = findProcessGroupId(new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString()});
+
+    Optional<ControllerServiceEntity> standardHttpContextMap = this.niFiClient
+      .findControllerService(processGroupId, Type.STANDARD_HTTP_CONTEXT_MAP);
+
+    if (standardHttpContextMap.isPresent()) {
+      this.niFiClient.changeControllerServiceStatus(standardHttpContextMap.get().getId(),
+        STATE.ENABLED);
+    }
+
   }
 
   /**
@@ -294,13 +310,13 @@ public class NiFiClientService {
 
   /**
    * Creates an SSLContextController for an existing processor.
+   *
    * @param processorId The id of the processor.
    * @param keystoreFilename The fully-qualified filename of the Keystore.
    * @param keystorePassword The password for the Keystore.
    * @param truststoreFilename The fully-qualified filename of the Truststore.
    * @param truststorePassword The password for the Truststore.
    * @return The id of the created SSL Context service.
-   * @throws IOException
    */
   public String createSSLContextForExistingProcessor(String processorId, String keystoreFilename,
     String keystorePassword, String truststoreFilename, String truststorePassword)
@@ -519,21 +535,20 @@ public class NiFiClientService {
    * @param dcbpServiceId The id of the Controller Service that is used to obtain a connection to
    * the database for sending records.
    * @param statementType Specifies the type of SQL Statement to generate.
-   * @param tableName The name of the table that the statement should affect.
    * @param path The path of the parent group where the processor will be created.
    * @return The id of the newly created processor.
    */
   public String createPutDatabaseRecord(
     @NotNull String name, @NotNull String recordReaderId, @NotNull String dcbpServiceId,
     @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType,
-    @NotNull String tableName, @NotNull String[] path) throws IOException {
+    @NotNull String[] path) throws IOException {
     // Configuration.
     String parentProcessGroupId = findProcessGroupId(path);
 
     // Create the database writer.
     final ProcessorEntity processorEntity = niFiClient
       .createPutDatabaseRecord(parentProcessGroupId, name, recordReaderId,
-        dcbpServiceId, statementType, tableName);
+        dcbpServiceId, statementType);
 
     return processorEntity.getId();
   }
@@ -543,14 +558,12 @@ public class NiFiClientService {
    *
    * @param processorId The id of the processor.
    * @param statementType Specifies the type of SQL Statement to generate.
-   * @param tableName The name of the table that the statement should affect.
    * @return The id of the newly updated processor.
    */
   public String updatePutDatabaseRecord(String processorId,
-    @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType,
-    @NotNull String tableName) throws IOException {
+    @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType) throws IOException {
 
-    return niFiClient.updatePutDatabaseRecord(processorId, statementType, tableName).getId();
+    return niFiClient.updatePutDatabaseRecord(processorId, statementType).getId();
   }
 
   /**
@@ -562,21 +575,20 @@ public class NiFiClientService {
    * @param maxConnectionTimeoutSeconds The maximum time of establising connection to Influx
    * Database
    * @param queryResultTimeUnit The time unit of query results from theInflux Database.
-   * @param query The query to execute.
    * @param queryChunkSize The chunk size of the query result.
    * @param path The path of the parent group where the processor will be created.
    * @return the id of the newly created processor.
    */
   public String createExecuteInfluxDB(@NotNull String name, @NotNull String dbName,
     @NotNull String url,
-    int maxConnectionTimeoutSeconds, String queryResultTimeUnit,
-    String query, int queryChunkSize, @NotNull String[] path)
+    int maxConnectionTimeoutSeconds, String queryResultTimeUnit, int queryChunkSize,
+    @NotNull String[] path)
     throws IOException {
 
     String parentProcessGroupId = findProcessGroupId(path);
 
     return niFiClient.createExecuteInfluxDB(parentProcessGroupId, name, dbName, url,
-      maxConnectionTimeoutSeconds, queryResultTimeUnit, query, queryChunkSize)
+      maxConnectionTimeoutSeconds, queryResultTimeUnit, queryChunkSize)
       .getId();
   }
 
@@ -589,17 +601,16 @@ public class NiFiClientService {
    * @param maxConnectionTimeoutSeconds The maximum time of establising connection to Influx
    * Database
    * @param queryResultTimeUnit The time unit of query results from theInflux Database.
-   * @param query The query to execute.
    * @param queryChunkSize The chunk size of the query result.
    * @return the id of the updated processor.
    */
   public String updateExecuteInfluxDB(@NotNull String processorId, @NotNull String dbName,
     @NotNull String url,
-    int maxConnectionTimeoutSeconds, String queryResultTimeUnit,
-    String query, int queryChunkSize) throws IOException {
+    int maxConnectionTimeoutSeconds, String queryResultTimeUnit, int queryChunkSize)
+    throws IOException {
 
     return niFiClient.updateExecuteInfluxDB(processorId, dbName, url, maxConnectionTimeoutSeconds
-      , queryResultTimeUnit, query, queryChunkSize).getId();
+      , queryResultTimeUnit, queryChunkSize).getId();
   }
 
   /**
@@ -607,35 +618,15 @@ public class NiFiClientService {
    *
    * @param name The name of the processor.
    * @param dcbpServiceId The if of the Database Connection Pool service.
-   * @param sqlPreQuery SQL Queries executed before the main query.
-   * @param sqlSelectQuery The SQL select query that tha will be executed.
-   * @param sqlPostQuery SQL Queries executed after the main query.
    * @param path The path of the parent group where the processor will be created.
    * @return the id of the newly created processor.
    */
-  public String createExecuteSQL(@NotNull String name, String dcbpServiceId, String sqlPreQuery,
-    String sqlSelectQuery, String sqlPostQuery, @NotNull String[] path) throws IOException {
+  public String createExecuteSQL(@NotNull String name, String dcbpServiceId, @NotNull String[] path)
+    throws IOException {
 
     String parentProcessGroupId = findProcessGroupId(path);
 
-    return niFiClient.createExecuteSQL(parentProcessGroupId, name, dcbpServiceId, sqlPreQuery,
-      sqlSelectQuery, sqlPostQuery).getId();
-  }
-
-  /**
-   * Updates an ExecuteSQL processor.
-   *
-   * @param processorId The id of the processor to update.
-   * @param sqlPreQuery SQL Queries executed before the main query.
-   * @param sqlSelectQuery The SQL select query that tha will be executed.
-   * @param sqlPostQuery SQL Queries executed after the main query.
-   * @return The id of the updated processor.
-   */
-  public String updateExecuteSQL(@NotNull String processorId, String sqlPreQuery,
-    String sqlSelectQuery, String sqlPostQuery) throws IOException {
-
-    return niFiClient.updateExecuteSQL(processorId, sqlPreQuery, sqlSelectQuery,
-      sqlPostQuery).getId();
+    return niFiClient.createExecuteSQL(parentProcessGroupId, name, dcbpServiceId).getId();
   }
 
   /**
@@ -655,10 +646,10 @@ public class NiFiClientService {
 
   /**
    * Updates a PutFile processor.
+   *
    * @param processorId The id of the processor to update.
    * @param directory he directory where the files will be created.
    * @return The id of the updated processor.
-   * @throws IOException
    */
   public String updatePutFile(String processorId, String directory) throws IOException {
     return niFiClient.updatePutFile(processorId, directory).getId();
@@ -666,6 +657,7 @@ public class NiFiClientService {
 
   /**
    * Creates a PutSyslog processor.
+   *
    * @param name The name of the processor.
    * @param sslContextId The id of the SSL Context Service used to provide client certificate
    * information for TLS/SSL connections.
@@ -676,7 +668,6 @@ public class NiFiClientService {
    * @param messagePriority The priority of the Syslog message.
    * @param path The path of the parent group where the processor will be created.
    * @return The id of the created processor.
-   * @throws IOException
    */
   public String createPutSyslog(String name, String sslContextId, String hostname, int port,
     String protocol, String messageBody, String messagePriority, String[] path)
@@ -689,6 +680,7 @@ public class NiFiClientService {
 
   /**
    * Updates a PutSyslog processor.
+   *
    * @param processorId The id of the processor that will be updated.
    * @param hostname The hostname of the Syslog server.
    * @param port The port of the Syslog server.
@@ -696,7 +688,6 @@ public class NiFiClientService {
    * @param messageBody The body of the Syslog message.
    * @param messagePriority The priority of the Syslog message.
    * @return The id of the updated processor.
-   * @throws IOException
    */
   public String updatePutSyslog(String processorId, String sslContextId, String hostname, int port,
     String protocol, String messageBody, String messagePriority) throws IOException {
@@ -775,9 +766,9 @@ public class NiFiClientService {
 
   /**
    * Checks whether given processor is running.
+   *
    * @param id The id of the processor to check.
    * @return true if processor is running, false otherwise.
-   * @throws IOException
    */
   public boolean isProcessorRunning(String id) throws IOException {
     return niFiClient.isProcessorRunning(id);
