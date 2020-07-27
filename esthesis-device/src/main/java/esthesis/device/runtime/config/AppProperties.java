@@ -31,7 +31,8 @@ public class AppProperties {
   @Value("${storageRoot}")
   private String storageRoot;
 
-  // The root folder under which secure persistent storage is provided. If this is left empty, the storageRoot is used.
+  // The root folder under which secure persistent storage is provided. If this is left empty,
+  // storageRoot is used.
   @Value("${secureStorageRoot:${storageRoot}}")
   private String secureStorageRoot;
 
@@ -44,14 +45,17 @@ public class AppProperties {
   @Value("${provisioningTempRoot:${storageRoot}/provisioning/.tmp}")
   private String provisioningTempRoot;
 
+  // TODO explain what kind of request that is
   // The maximum number a request is retried.
   @Value("${device.runtime.request.attempts:100}")
   private int requestAttempts;
 
+  // TODO connect this description with the one above
   // Number of milliseconds to wait before trying again.
   @Value("${device.runtime.request.backoff:1000}")
   private int requestRetryBackoff;
 
+  // TODO what kind of attempts?
   // The maximum number of minutes to wait between attempts.
   @Value("${device.runtime.request.backoff.max:60}")
   private int requestMaxBackoff;
@@ -72,11 +76,11 @@ public class AppProperties {
   @Value("${incomingSigned:false}")
   private boolean incomingSigned;
 
-  // Whether provisioning packages should be encrypted.
+  // Whether incoming provisioning packages should be encrypted.
   @Value("${provisioningEncrypted:false}")
   private boolean provisioningEncrypted;
 
-  // Whether provisioning packages should be signed.
+  // Whether incoming provisioning packages should be signed.
   @Value("${provisioningSigned:false}")
   private boolean provisioningSigned;
 
@@ -105,14 +109,15 @@ public class AppProperties {
   @Value("${skipInitialProvisioning:false}")
   private boolean skipInitialProvisioning;
 
-  // How to fork the external script during provisioning.
+  // A provisioning package contains a script that will be executed by the agent in order to
+  // initiate the actual provisioning process. This flag defines how such execution will take place:
   // soft: The script is called as a child process, controlled by the runtime agent. As soon as the
   //       agent terminates, the provisioning script terminates too.
   // hard: The script is called as an independent process, not controlled by the runtime agent.
   @Value("${provisioningForkType:soft}")
   private String provisioningForkType;
 
-  // A flag indicating that initial device registration is skipped.
+  // A flag indicating to skip the initial device registration.
   @Value("${skipRegistration:false}")
   private boolean skipRegistration;
 
@@ -120,10 +125,10 @@ public class AppProperties {
   @Value("${pauseStartup:false}")
   private boolean pauseStartup;
 
-  // A script to be called after every time a provisioning package is downloaded.
+  // The script to be called after a provisioning package is downloaded.
   // The script is handed the following parameters:
   // 1. The full pathname to the provisioning package.
-  // 2. Whether this is an initial provisioning or not (as true/false values).
+  // 2. Whether this is an initial provisioning or not (as a true/false value).
   @Value("${provisioningPostHook:}")
   private String provisioningPostHook;
 
@@ -153,12 +158,12 @@ public class AppProperties {
   @Value("${healthDataInitialDelayMsec:300000}")
   private long healthDataInitialDelayMsec;
 
-  // How often health the platform is pinged.
+  // How often ping data is sent.
   // See also HealthMetadataCollection#ping.
   @Value("${pingFreqMsec:60000}")
   private long pingFreqMsec;
 
-  // How long to wait before starting pinging the platform.
+  // How long to wait before start sending ping data.
   // See also HealthMetadataCollection#ping.
   @Value("${pingInitialDelayMsec:60000}")
   private long pingInitialDelayMsec;
@@ -235,16 +240,16 @@ public class AppProperties {
   @Value("${supportedCommands:PROVISIONING_CHECK_NEW,PING,HEALTH,REBOOT,EXECUTE}")
   private String supportedCommands;
 
-  @Value("${topicPing:ping}")
+  @Value("${topicPing:esthesis/ping}")
   private String topicPing;
 
-  @Value("${topicTelemetry:telemetry}")
+  @Value("${topicTelemetry:esthesis/telemetry}")
   private String topicTelemetry;
 
-  @Value("${topicMetadata:metadata}")
+  @Value("${topicMetadata:esthesis/metadata}")
   private String topicMetadata;
 
-  @Value("${topicControlRequest:control/request}")
+  @Value("${topicControlRequest:esthesis/control/request}")
   private String topicControlRequest;
 
   @Value("${topicControlReply:control/reply}")
