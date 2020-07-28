@@ -1,6 +1,7 @@
 package esthesis.platform.server.nifi.client.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import esthesis.platform.server.config.AppConstants.NIFI_SINK_HANDLER;
 import esthesis.platform.server.nifi.client.dto.EsthesisTemplateDTO;
 import esthesis.platform.server.nifi.client.dto.EsthesisTemplateVersionDTO;
 import esthesis.platform.server.nifi.client.dto.NiFiAboutDTO;
@@ -218,16 +219,13 @@ public class NiFiClientService {
   }
 
   private void enableStandardContextHttpMap() throws IOException {
-    String processGroupId = findProcessGroupId(new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString()});
 
-    Optional<ControllerServiceEntity> standardHttpContextMap = this.niFiClient
-      .findControllerService(processGroupId, Type.STANDARD_HTTP_CONTEXT_MAP);
+    String controllerServiceId = findControllerServiceId(
+      new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString()},
+      Type.STANDARD_HTTP_CONTEXT_MAP);
 
-    if (standardHttpContextMap.isPresent()) {
-      this.niFiClient.changeControllerServiceStatus(standardHttpContextMap.get().getId(),
-        STATE.ENABLED);
-    }
-
+    this.niFiClient.changeControllerServiceStatus(controllerServiceId,
+      STATE.ENABLED);
   }
 
   /**
@@ -773,5 +771,39 @@ public class NiFiClientService {
   public boolean isProcessorRunning(String id) throws IOException {
     return niFiClient.isProcessorRunning(id);
   }
+
+  /**
+   * Distributes the load in the producers group dynamically.
+   * @param handler The producer handler (metadata/telemetry).
+   * @param isRelational whether the producer is relational or influx.
+   * @throws IOException
+   */
+  public void distributeLoadOfProducers(int handler, boolean isRelational) throws IOException {
+
+    String path = NIFI_SINK_HANDLER.METADATA.getType() == handler ? "[MP]" : "[TP]";
+
+    String rootGroupId = findProcessGroupId(
+      new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString(), path});
+
+    String influxInstanceGroupId = findProcessGroupId(
+      new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString(), path
+        , "[I]", PATH.INSTANCES.asString()});
+
+    String relationalInstanceGroupId = findProcessGroupId(
+      new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString(), path
+        , "[R]", PATH.INSTANCES.asString()});
+
+    String influxGroupId = findProcessGroupId(
+      new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString(), path
+        , "[I]"});
+
+    String relationalGroupId = findProcessGroupId(
+      new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString(), path
+        , "[R]"});
+
+    niFiClient.distributeLoadOfProducers(isRelational, rootGroupId, influxInstanceGroupId,
+      relationalInstanceGroupId, influxGroupId, relationalGroupId);
+  }
+
 }
 

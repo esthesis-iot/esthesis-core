@@ -436,6 +436,18 @@ public class NiFiClient {
     }
   }
 
+  public ProcessorsEntity getProcessorsOfGroup(String parentProcessGroupId) throws IOException {
+    final CallReplyDTO callReplyDTO = getCall("/process-groups/" + parentProcessGroupId +
+      "/processors");
+
+    if (callReplyDTO.isSuccessful()) {
+      return mapper.readValue(callReplyDTO.getBody(),
+        ProcessorsEntity.class);
+    } else {
+      throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
+    }
+  }
+
   /**
    * Searches for a process group.
    *
@@ -1302,6 +1314,102 @@ public class NiFiClient {
   }
 
   /**
+   * Distributes the load in the producers group.
+   * @param isRelational Whether the target is relational or infux.
+   * @param rootGroupId The metadata/telemetry producers group id.
+   * @param influxInstanceGroupId The id of the influx instances group.
+   * @param relationalInstanceGroupId The id of the relational instances group.
+   * @param influxGroupId The id of the influx group.
+   * @param relationalGroupId The id of the relational group.
+   * @throws IOException
+   */
+  public void distributeLoadOfProducers(boolean isRelational, String rootGroupId,
+    String influxInstanceGroupId, String relationalInstanceGroupId, String influxGroupId,
+    String relationalGroupId) throws IOException {
+    PortEntity influxInputPort = findInputPort(influxGroupId);
+    PortEntity relationalInputPort = findInputPort(relationalGroupId);
+    String typeInputPort = isRelational ? relationalInputPort.getId() : influxInputPort.getId();
+
+    ProcessorEntity distributeLoadProcessor = getProcessorsOfGroup(rootGroupId)
+      .getProcessors().stream().filter(
+        processorEntity -> processorEntity.getComponent().getType()
+          .equals(Processor.Type.DISTRIBUTE_LOAD))
+      .findFirst().get();
+
+    List<ConnectionEntity> allConnectionsOfProcessor = getAllConnectionsOfProcessor(
+      distributeLoadProcessor.getId(), rootGroupId);
+
+    ProcessorsEntity influxProcessors = getProcessorsOfGroup(influxInstanceGroupId);
+    ProcessorsEntity relationalProcessors = getProcessorsOfGroup(relationalInstanceGroupId);
+
+    long influxCount = influxProcessors.getProcessors().stream().filter(
+      processorEntity -> processorEntity.getComponent().getType()
+        .equals(Processor.Type.EXECUTE_INFLUX_DB))
+      .count();
+
+    long relationalCount = relationalProcessors.getProcessors().stream().filter(
+      processorEntity -> processorEntity.getComponent().getType()
+        .equals(Processor.Type.EXECUTE_SQL))
+      .count();
+
+    List<ConnectionEntity> distributeLoadOutgoingConnections =
+      allConnectionsOfProcessor.stream().filter(
+        connectionEntity -> connectionEntity.getSourceId().equals(distributeLoadProcessor.getId()))
+        .collect(Collectors.toList());
+    int connections = distributeLoadOutgoingConnections.size();
+
+    long typeCount = isRelational ? relationalCount : influxCount;
+
+    Optional<ConnectionEntity> typeConnection = distributeLoadOutgoingConnections.stream()
+      .filter(connectionEntity -> connectionEntity.getDestinationId().equals(typeInputPort))
+      .findFirst();
+
+    Optional<ConnectionEntity> otherConnection = distributeLoadOutgoingConnections.stream()
+      .filter(connectionEntity -> !connectionEntity.getDestinationId().equals(typeInputPort))
+      .findFirst();
+
+    if (connections < 2 && !typeConnection.isPresent()) {
+      connections += 1;
+      updateDistributeLoad(connections, distributeLoadProcessor.getId());
+      createDistributeLOadConnection(connections, rootGroupId, isRelational ?
+          relationalGroupId : influxGroupId, distributeLoadProcessor.getId(),
+        isRelational ? relationalInputPort.getId() : influxInputPort.getId());
+    }
+
+    if (typeConnection.isPresent() && typeCount == 0) {
+      ConnectableDTO source = typeConnection.get().getComponent().getSource();
+      changeProcessorStatus(source.getId(), STATE.STOPPED);
+      changeProcessorGroupState(isRelational ? relationalGroupId : influxGroupId,
+        STATE.STOPPED);
+      if (connections == 2 && typeConnection.get().getStatus().getName().equals("1")) {
+        ConnectionEntity connectionEntity = otherConnection.get();
+        connectionEntity.getComponent().setSelectedRelationships(new HashSet<>(Arrays.asList("1")));
+        updateConnection(connectionEntity);
+      }
+      deleteConnection(typeConnection.get());
+      updateDistributeLoad(--connections, distributeLoadProcessor.getId());
+      changeProcessorStatus(source.getId(), STATE.RUNNING);
+    }
+
+    changeProcessorGroupState(rootGroupId, STATE.RUNNING);
+  }
+
+  private void updateDistributeLoad(int relationships, String processorId) throws IOException {
+    Map<String, String> properties = new HashMap<>();
+    properties.put("Number of Relationships", "" + relationships);
+    updateProcessor(processorId, properties);
+  }
+
+  private void createDistributeLOadConnection(int relationships, String parentProcessGroupId,
+    String destinationProcessGroup, String processorId,
+    String inputPortId) throws IOException {
+    String name = "" + relationships;
+    connectSourceAndDestination(parentProcessGroupId, destinationProcessGroup,
+      PROCESSOR.name(),
+      INPUT_PORT.name(), processorId, inputPortId, new HashSet<>(Arrays.asList(name)));
+  }
+
+  /**
    * Helper method to create a processor.
    *
    * @param parentProcessGroupId The id of the parent group where the processor will be created.
@@ -1362,14 +1470,14 @@ public class NiFiClient {
       Set<String> distributeLoadConnections =
         distributeLoad.getComponent().getRelationships().stream().map(RelationshipDTO::getName)
           .collect(Collectors.toSet());
-      connectSourceAndDestination(parentProcessGroupId, PROCESSOR.name(), PROCESSOR.name(),
-        distributeLoad.getId(), processorId, distributeLoadConnections);
+      connectSourceAndDestination(parentProcessGroupId, parentProcessGroupId, PROCESSOR.name(),
+        PROCESSOR.name(), distributeLoad.getId(), processorId, distributeLoadConnections);
 
       changeProcessorStatus(distributeLoad.getComponent().getId(), STATE.RUNNING);
 
     } else if (inputPort != null) {
-      connectSourceAndDestination(parentProcessGroupId, INPUT_PORT.name(), PROCESSOR.name(),
-        inputPort.getId(), processorId, connections);
+      connectSourceAndDestination(parentProcessGroupId, parentProcessGroupId, INPUT_PORT.name(),
+        PROCESSOR.name(), inputPort.getId(), processorId, connections);
     }
 
     OutputPortsEntity outputPorts = findOutputPorts(parentProcessGroupId);
@@ -1381,8 +1489,8 @@ public class NiFiClient {
           .filter(portEntity -> portEntity.getComponent().getName().contains("_logout"))
           .findFirst();
 
-        connectSourceAndDestination(parentProcessGroupId, PROCESSOR.name(), OUTPUT_PORT.name(),
-          processorId, logout.get().getId(), connections);
+        connectSourceAndDestination(parentProcessGroupId, parentProcessGroupId, PROCESSOR.name(),
+          OUTPUT_PORT.name(), processorId, logout.get().getId(), connections);
 
       }
 
@@ -1396,8 +1504,8 @@ public class NiFiClient {
         Optional<PortEntity> out = outputPorts.getOutputPorts().stream()
           .filter(portEntity -> portEntity.getComponent().getName().contains("_out")).findFirst();
 
-        connectSourceAndDestination(parentProcessGroupId, PROCESSOR.name(), OUTPUT_PORT.name(),
-          processorId, out.get().getId(), connections);
+        connectSourceAndDestination(parentProcessGroupId, parentProcessGroupId, PROCESSOR.name(),
+          OUTPUT_PORT.name(), processorId, out.get().getId(), connections);
       }
     }
 
@@ -1441,14 +1549,16 @@ public class NiFiClient {
   /**
    * Helper method that connects a source with a destination.
    *
-   * @param parentProcessGroupId The id of the group where the connection will be created.
+   * @param sourceProcessGroupId The id of the group where the source is located.
+   * @param destinationProcessGroupId The id of the group where the destination is located.
    * @param sourceType The type of the source.
    * @param destinationType The type of the destination.
    * @param sourceId The id of the source.
    * @param destinationId The id of the destination.
    * @param relationships A set of all relationships that the connection is responsible for.
    */
-  private void connectSourceAndDestination(String parentProcessGroupId, String sourceType,
+  private void connectSourceAndDestination(String sourceProcessGroupId,
+    String destinationProcessGroupId, String sourceType,
     String destinationType, String sourceId, String destinationId, Set<String> relationships)
     throws IOException {
 
@@ -1456,12 +1566,12 @@ public class NiFiClient {
     ConnectionDTO connectionDTO = new ConnectionDTO();
 
     ConnectableDTO sourceDTO = new ConnectableDTO();
-    sourceDTO.setGroupId(parentProcessGroupId);
+    sourceDTO.setGroupId(sourceProcessGroupId);
     sourceDTO.setType(sourceType);
     sourceDTO.setId(sourceId);
 
     ConnectableDTO destinationDTO = new ConnectableDTO();
-    destinationDTO.setGroupId(parentProcessGroupId);
+    destinationDTO.setGroupId(destinationProcessGroupId);
     destinationDTO.setType(destinationType);
     destinationDTO.setId(destinationId);
 
@@ -1475,16 +1585,22 @@ public class NiFiClient {
     connectionEntity.setRevision(createRevisionDTO());
 
     CallReplyDTO callReplyDTO = postJSONCall(
-      "/process-groups/" + parentProcessGroupId + "/connections", connectionEntity);
+      "/process-groups/" + sourceProcessGroupId + "/connections", connectionEntity);
     if (!callReplyDTO.isSuccessful()) {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
     }
   }
 
-
   private ProcessorEntity updateProcessor(String processorId, Map<String, String> properties)
     throws IOException {
+
     ProcessorEntity latestEntity = getProcessorById(processorId);
+    String latestState = latestEntity.getComponent().getState();
+
+    if (latestState.equals(STATE.RUNNING.name())) {
+      latestEntity = changeProcessorStatus(processorId, STATE.STOPPED);
+    }
+
     Long currentVersion = latestEntity.getRevision().getVersion();
 
     ProcessorDTO processorDTO = new ProcessorDTO();
@@ -1506,6 +1622,9 @@ public class NiFiClient {
     CallReplyDTO callReplyDTO = putJSONCall("/processors/" + processorId, processorEntity);
 
     if (callReplyDTO.isSuccessful()) {
+      if (latestState.equals(STATE.RUNNING.name())) {
+        return changeProcessorStatus(processorId, STATE.RUNNING);
+      }
       return mapper.readValue(callReplyDTO.getBody(), ProcessorEntity.class);
     } else {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
@@ -1548,11 +1667,9 @@ public class NiFiClient {
       STATE.STOPPED);
 
     String parentGroupId = processorEntity.getComponent().getParentGroupId();
-    ProcessGroupFlowEntity processGroups = getProcessGroups(parentGroupId);
     OutputPortsEntity outputPorts = findOutputPorts(parentGroupId);
 
-    Set<ConnectionEntity> allConnections = processGroups.getProcessGroupFlow().getFlow()
-      .getConnections();
+    Set<ConnectionEntity> allConnections = getAllConnectionsOfProcessGroup(parentGroupId);
     PortEntity inputPort = findInputPort(parentGroupId);
     Optional<ConnectionEntity> optProcessorIncomingConnection = allConnections.stream()
       .filter(connectionEntity -> connectionEntity.getDestinationId().equals(processorId))
@@ -1580,18 +1697,12 @@ public class NiFiClient {
     });
 
     //Get all connections of the processor
-    List<ConnectionEntity> processorConnections = allConnections.stream()
-      .filter(connectionEntity -> connectionEntity.getDestinationId().equals(processorId)
-        || connectionEntity.getSourceId().equals(processorId))
-      .collect(
-        Collectors.toList());
+    List<ConnectionEntity> processorConnections = getAllConnectionsOfProcessor(processorId,
+      parentGroupId);
 
     //Delete connections of the processor
     for (ConnectionEntity connectionEntity : processorConnections) {
-      CallReplyDTO callReplyDTO = deleteConnection(connectionEntity);
-      if (!callReplyDTO.isSuccessful()) {
-        throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
-      }
+      deleteConnection(connectionEntity);
     }
 
     CallReplyDTO callReplyDTO =
@@ -1606,10 +1717,10 @@ public class NiFiClient {
       if (INPUT_PORT.name().equals(sourceType)) {
         Long version = inputPort.getRevision().getVersion();
         inputPort.getRevision().setVersion(version + 1L);
-        boolean inputPotHasConnections = allConnections.stream().filter(
+        boolean inputPortHasConnections = allConnections.stream().filter(
           connectionEntity -> connectionEntity.getSourceId().equals(inputPort.getId())).count()
           > 1l;
-        if (inputPotHasConnections) {
+        if (inputPortHasConnections) {
           togglePort(inputPort, STATE.RUNNING, false);
         }
       } else {
@@ -1640,6 +1751,27 @@ public class NiFiClient {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
     }
   }
+
+  private Set<ConnectionEntity> getAllConnectionsOfProcessGroup(String parentGroupId)
+    throws IOException {
+    ProcessGroupFlowEntity processGroups = getProcessGroups(parentGroupId);
+    return processGroups.getProcessGroupFlow().getFlow()
+      .getConnections();
+  }
+
+  private List<ConnectionEntity> getAllConnectionsOfProcessor(String processorId,
+    String parentGroupId)
+    throws IOException {
+    Set<ConnectionEntity> allConnections = getAllConnectionsOfProcessGroup(
+      parentGroupId);
+
+    return allConnections.stream()
+      .filter(connectionEntity -> connectionEntity.getDestinationId().equals(processorId)
+        || connectionEntity.getSourceId().equals(processorId))
+      .collect(
+        Collectors.toList());
+  }
+
 
   /**
    * Gets the validation errors of a processor.
@@ -1687,11 +1819,24 @@ public class NiFiClient {
    * @param connectionEntity the connection to delete.
    * @return The result of the delete REST call.
    */
-  private CallReplyDTO deleteConnection(ConnectionEntity connectionEntity) throws IOException {
-
-    return deleteCall("/connections/" + connectionEntity.getId() + "?version"
+  private void deleteConnection(ConnectionEntity connectionEntity) throws IOException {
+    CallReplyDTO callReplyDTO = deleteCall("/connections/" + connectionEntity.getId() + "?version"
       + "=" + connectionEntity.getRevision().getVersion());
+    if (!callReplyDTO.isSuccessful()) {
+      throw new NiFiProcessingException(callReplyDTO.getBody(),
+        callReplyDTO.getCode());
+    }
   }
+
+  private void updateConnection(ConnectionEntity connectionEntity) throws IOException {
+    CallReplyDTO callReplyDTO = putJSONCall("/connections/" + connectionEntity.getId(),
+      connectionEntity);
+    if (!callReplyDTO.isSuccessful()) {
+      throw new NiFiProcessingException(callReplyDTO.getBody(),
+        callReplyDTO.getCode());
+    }
+  }
+
 
   private RevisionDTO createRevisionDTO() {
     RevisionDTO revisionDTO = new RevisionDTO();

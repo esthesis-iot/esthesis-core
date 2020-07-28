@@ -6,6 +6,7 @@ import esthesis.platform.server.nifi.client.dto.EsthesisTemplateDTO;
 import esthesis.platform.server.nifi.client.dto.NiFiTemplateDTO;
 import esthesis.platform.server.nifi.client.services.NiFiClientService;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.PATH;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Processor.Type;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -83,6 +84,10 @@ public class SyncService {
     List<EsthesisTemplateDTO> deployedTemplates = getDeployedTemplates();
 
     if (deployedTemplates.size() > 0) {
+      String controllerServiceId = niFiClientService
+        .findControllerServiceId(new String[]{PATH.ESTHESIS.asString(),
+          PATH.PRODUCERS.asString()}, Type.STANDARD_HTTP_CONTEXT_MAP);
+      niFiClientService.changeControllerServiceStatus(controllerServiceId, STATE.DISABLED);
       niFiClientService.changeProcessorGroupState(PATH.ESTHESIS.getPath(), STATE.STOPPED);
       niFiClientService.changeProcessorGroupState(PATH.ESTHESIS.getPath(), STATE.DISABLED);
 

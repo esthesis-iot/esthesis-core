@@ -71,6 +71,8 @@ public class ExecuteSQL implements NiFiProducerFactory {
     niFiSinkDTO.setProcessorId(executeSQL);
     enableControllerServices(dbConnectionPool);
 
+    niFiClientService.distributeLoadOfProducers(niFiSinkDTO.getHandler(), true);
+
     return niFiSinkDTO;
   }
 
@@ -100,7 +102,9 @@ public class ExecuteSQL implements NiFiProducerFactory {
 
   @Override
   public String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
-    return niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
+    String deletedProcessorId = niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
+    niFiClientService.distributeLoadOfProducers(niFiSinkDTO.getHandler(), true);
+    return deletedProcessorId;
   }
 
   @Override

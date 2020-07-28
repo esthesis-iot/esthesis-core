@@ -56,6 +56,8 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
 
     niFiSinkDTO.setProcessorId(executeInfluxDB);
 
+    niFiClientService.distributeLoadOfProducers(niFiSinkDTO.getHandler(), false);
+
     return niFiSinkDTO;
   }
 
@@ -70,7 +72,9 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
 
   @Override
   public String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
-    return niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
+    String deletedProcessorId = niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
+    niFiClientService.distributeLoadOfProducers(niFiSinkDTO.getHandler(), false);
+    return deletedProcessorId;
   }
 
   @Override
