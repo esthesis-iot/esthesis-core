@@ -126,6 +126,7 @@ public class DevicesResource {
         Base64E.encode(securityService.decrypt(deviceKeys.getSessionKey())));
 
     // Prepare the reply.
+    // TODO switch to a JSON reply
     StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append("****************************************************************\n");
     stringBuilder.append("PUBLIC KEY\n");

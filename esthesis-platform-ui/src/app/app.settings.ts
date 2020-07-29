@@ -10,7 +10,7 @@ export const AppSettings = {
     },
     DEVICE_REGISTRATION: {
       REGISTRATION_MODE: "deviceRegistration",
-      PUSH_TAGS: "devicePushTags",
+      TAGS_ALGORITHM: "deviceTagsAlgorithm",
       ROOT_CA: "deviceRootCA"
     },
     NETWORKING: {
@@ -55,9 +55,9 @@ export const AppSettings = {
         OPEN_WITH_APPROVAL: "OPEN_WITH_APPROVAL",
         ID: "ID"
       },
-      PUSH_TAGS: {
-        ALLOWED: "ALLOWED",
-        IGNORED: "IGNORED"
+      TAGS_ALGORITHM: {
+        ALL: "ALL",
+        ANY: "ANY"
       }
     },
     NETWORKING: {

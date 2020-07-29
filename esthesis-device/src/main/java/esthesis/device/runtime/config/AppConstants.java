@@ -6,15 +6,15 @@ public class AppConstants {
   public static final String URL_PS_PREFIX = "/api";
 
   // The URL of the registration service in PS.
-  public static final String URL_PS_REGISTER = URL_PS_PREFIX + "/device/register";
+  public static final String URL_PS_REGISTER = URL_PS_PREFIX + "/agent/register";
 
   // The URL of the provisioning service in PS.
-  public static final String URL_PS_PROVISIONING = URL_PS_PREFIX + "/device/provisioning";
+  public static final String URL_PS_PROVISIONING = URL_PS_PREFIX + "/agent/provisioning";
   public static final String URL_PS_PROVISIONING_INFO = URL_PS_PROVISIONING + "/info";
   public static final String URL_PS_PROVISIONING_DOWNLOAD = URL_PS_PROVISIONING + "/download";
 
   // Exit codes.
-  public class ExitCode {
+  public static class ExitCode {
 
     public static final int CANNOT_FIND_DEVICE_ID = 1;
   }

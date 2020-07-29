@@ -64,6 +64,7 @@ public class DevicePageService {
    * @param id The ID of the device for which to fetch the values of the fields.
    */
   public List<FieldDTO> findWithLatestValues(long id) {
+
     // Get all fields that the user has configure to see in the device page.
     final List<FieldDTO> configuredFields = deviceMetadataMapper
       .map(deviceMetadataRepository.findAllByShownIsTrue());

@@ -36,4 +36,8 @@ public class TagService extends BaseService<TagDTO, Tag> {
     return tagMapper.map(tagRepository.findAllByIdIn(ids));
   }
 
+  public Iterable<Tag> findAllEntityById(List<Long> ids) {
+    return tagRepository.findAllByIdIn(ids);
+  }
+
 }

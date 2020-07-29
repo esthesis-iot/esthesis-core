@@ -1,8 +1,6 @@
-package esthesis.platform.server.resource.device;
+package esthesis.platform.server.service;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
-import com.eurodyn.qlack.common.exception.QExceptionWrapper;
-import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import esthesis.common.device.ProvisioningInfoRequest;
 import esthesis.common.device.ProvisioningInfoResponse;
 import esthesis.common.device.ProvisioningRequest;
@@ -13,29 +11,21 @@ import esthesis.common.dto.DeviceMessage;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting.DeviceRegistration;
 import esthesis.platform.server.config.AppSettings.Setting.Provisioning;
-import esthesis.platform.server.config.AppSettings.SettingValues.Provisioning.ENCRYPTION;
+import esthesis.platform.server.config.AppSettings.SettingValues.Provisioning.Encryption;
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.MQTTServerDTO;
 import esthesis.platform.server.dto.ProvisioningDTO;
-import esthesis.platform.server.service.CAService;
-import esthesis.platform.server.service.DeviceService;
-import esthesis.platform.server.service.MQTTService;
-import esthesis.platform.server.service.ProvisioningService;
-import esthesis.platform.server.service.SecurityService;
-import esthesis.platform.server.service.SettingResolverService;
 import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
+import lombok.extern.java.Log;
+import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -46,15 +36,15 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Optional;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
+/**
+ * Device-facing functionality, handling provisioning and device registration services.
+ */
+@Log
+@Service
 @Validated
-@RestController
-@RequestMapping("/device")
-public class DeviceFacingResource {
-
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(DeviceFacingResource.class.getName());
+@Transactional
+public class DeviceAgentService {
 
   private final DeviceService deviceService;
   private final SettingResolverService srs;
@@ -65,7 +55,7 @@ public class DeviceFacingResource {
   private final SettingResolverService settingResolverService;
   private final CAService caService;
 
-  public DeviceFacingResource(DeviceService deviceService,
+  public DeviceAgentService(DeviceService deviceService,
     SettingResolverService srs, MQTTService mqttService,
     SecurityService securityService,
     ProvisioningService provisioningService,
@@ -82,10 +72,11 @@ public class DeviceFacingResource {
     this.caService = caService;
   }
 
-  @PostMapping(path = "/register")
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not register device.")
+  /**
+   * Registers a new device into the system.
+   */
   public DeviceMessage<RegistrationResponse> register(
-    @Valid @RequestBody DeviceMessage<RegistrationRequest> registrationRequest)
+    DeviceMessage<RegistrationRequest> registrationRequest)
   throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IOException,
          InvalidAlgorithmParameterException, InvalidKeySpecException, SignatureException,
          OperatorCreationException, NoSuchProviderException {
@@ -120,25 +111,30 @@ public class DeviceFacingResource {
     );
 
     // Find the MQTT server to send back to the device.
-    Optional<MQTTServerDTO> mqttServerDTO = mqttService.matchByTag(deviceDTO.getTags());
-    if (mqttServerDTO.isPresent()) {
+    Optional<MQTTServerDTO> mqttServersDTO = mqttService
+      .matchByTag(registrationRequest.getPayload().getTags());
+    if (mqttServersDTO.isPresent()) {
       registrationReply.getPayload().setMqttServer(new MQTTServer()
-        .setIpAddress(mqttServerDTO.get().getIpAddress()));
+        .setIpAddress(mqttServersDTO.get().getIpAddress()));
     } else {
-      LOGGER.log(Level.WARNING, "Could not find a matching MQTT server for device {0} during "
-        + "registration.", registrationRequest.getHardwareId());
+      throw new QDoesNotExistException(
+        "Could not find a matching MQTT server for device {0} with tags {1} during "
+          + "registration.",
+        ArrayUtils.toArray(registrationRequest.getHardwareId(), deviceDTO.getTags()));
     }
 
     // Sign and/or encrypt the reply according to preferences.
     securityService.prepareOutgoingMessage(registrationReply, deviceDTO);
 
+    log.log(Level.FINE, "Registered device with hardware ID {0}.", deviceDTO.getHardwareId());
     return registrationReply;
   }
 
-  @PostMapping({"/provisioning/info/{id}", "/provisioning/info"})
-  public ResponseEntity<DeviceMessage<ProvisioningInfoResponse>> provisioningInfo(
-    @PathVariable Optional<Long> id,
-    @Valid @RequestBody DeviceMessage<ProvisioningInfoRequest> provisioningInfoRequest)
+  /**
+   * Checks for available downloads for device's provisioning.
+   */
+  public DeviceMessage<ProvisioningInfoResponse> provisioningInfo(
+    Optional<Long> id, DeviceMessage<ProvisioningInfoRequest> provisioningInfoRequest)
   throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IOException,
          SignatureException, InvalidAlgorithmParameterException, InvalidKeySpecException {
     // Find device information.
@@ -161,9 +157,9 @@ public class DeviceFacingResource {
     if (!id.isPresent()) {
       Optional<ProvisioningDTO> optionalProvisioningDTO = provisioningService.matchByTag(deviceDTO);
       if (!optionalProvisioningDTO.isPresent()) {
-        LOGGER.log(Level.FINE, "Could not find a matching provisioning "
+        log.log(Level.FINE, "Could not find a matching provisioning "
           + "package for device {0}.", provisioningInfoRequest.getHardwareId());
-        return ResponseEntity.ok().body(provisioningInfoResponse);
+        return provisioningInfoResponse;
       } else {
         provisioningDTO = optionalProvisioningDTO.get();
       }
@@ -175,9 +171,9 @@ public class DeviceFacingResource {
     // If not provisioning package found, return empty, otherwise return the details of the
     // available provisioning package.
     if (provisioningDTO == null) {
-      LOGGER.log(Level.FINEST, "Device {0} requested provisioning package but no package matched.",
+      log.log(Level.FINEST, "Device {0} requested provisioning package but no package matched.",
         provisioningInfoRequest.getHardwareId());
-      return ResponseEntity.ok().body(provisioningInfoResponse);
+      return provisioningInfoResponse;
     } else {
       // Prepare and return the details of the provisioning package found.
       provisioningInfoResponse
@@ -187,7 +183,7 @@ public class DeviceFacingResource {
           .setName(provisioningDTO.getName())
           .setPackageVersion(provisioningDTO.getPackageVersion())
           .setSha256(provisioningDTO.getSha256())
-          .setSignature(srs.is(Provisioning.ENCRYPTION, ENCRYPTION.ENCRYPTED) ?
+          .setSignature(srs.is(Provisioning.ENCRYPTION, Encryption.ENCRYPTED) ?
             provisioningDTO.getSignatureEncrypted() : provisioningDTO.getSignaturePlain())
           .setFileSize(provisioningDTO.getFileSize())
           .setFileName(provisioningDTO.getFileName()));
@@ -196,13 +192,13 @@ public class DeviceFacingResource {
     // Sign and/or encrypt.
     securityService.prepareOutgoingMessage(provisioningInfoResponse, deviceDTO);
 
-    return ResponseEntity.ok().body(provisioningInfoResponse);
+    return provisioningInfoResponse;
   }
 
-  @PostMapping(value = "/provisioning/download/{id}")
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not download "
-    + "provisioning package.")
-  public ResponseEntity provisioningDownload(@PathVariable long id,
+  /**
+   * Returns a stream with a provisioning package.
+   */
+  public InputStreamResource provisioningDownload(@PathVariable long id,
     @Valid @RequestBody DeviceMessage<ProvisioningRequest> provisioningRequest)
   throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IOException,
          SignatureException, InvalidAlgorithmParameterException, InvalidKeySpecException {
@@ -214,14 +210,7 @@ public class DeviceFacingResource {
     securityService
       .processIncomingMessage(provisioningRequest, ProvisioningRequest.class, deviceDTO);
 
-    final ProvisioningDTO provisioningDTO = provisioningService.findById(id);
-    return ResponseEntity.ok()
-      .header(HttpHeaders.CONTENT_DISPOSITION,
-        "attachment; filename=" + provisioningDTO.getFileName() + (
-          srs.is(Provisioning.ENCRYPTION, ENCRYPTION.ENCRYPTED) ? ".encrypted" : ""
-        ))
-      .contentType(MediaType.APPLICATION_OCTET_STREAM)
-      .body(new InputStreamResource(
-        provisioningService.download(id, srs.is(Provisioning.ENCRYPTION, ENCRYPTION.ENCRYPTED))));
+    return new InputStreamResource(
+      provisioningService.download(id, srs.is(Provisioning.ENCRYPTION, Encryption.ENCRYPTED)));
   }
 }

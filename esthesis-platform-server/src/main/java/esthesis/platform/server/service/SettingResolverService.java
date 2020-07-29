@@ -1,5 +1,6 @@
 package esthesis.platform.server.service;
 
+import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.settings.service.SettingsService;
 import esthesis.common.config.AppConstants.Generic;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,15 @@ public class SettingResolverService {
 
   public SettingResolverService(SettingsService settingsService) {
     this.settingsService = settingsService;
+  }
+
+  public boolean exists(String settingName) {
+    try {
+      settingsService.getSetting(Generic.SYSTEM, settingName, Generic.SYSTEM).getVal();
+      return true;
+    } catch (QDoesNotExistException e) {
+      return false;
+    }
   }
 
   public String get(String settingName) {

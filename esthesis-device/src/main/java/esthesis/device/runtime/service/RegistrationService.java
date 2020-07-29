@@ -11,6 +11,7 @@ import esthesis.device.runtime.model.Registration;
 import esthesis.device.runtime.repository.RegistrationRepository;
 import esthesis.device.runtime.util.DeviceMessageUtil;
 import esthesis.device.runtime.util.SecurityUtil;
+import lombok.extern.java.Log;
 import org.apache.commons.io.FileUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -27,14 +28,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Service
 @Validated
+@Log
 public class RegistrationService {
-
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(RegistrationService.class.getName());
 
   private final AppProperties appProperties;
   private final RetryTemplate retryTemplate;
@@ -64,15 +62,15 @@ public class RegistrationService {
     }
 
     // No registration in the past, so proceed with registration.
-    LOGGER.log(Level.CONFIG, "Device is not registered, attempting registration now.");
+    log.log(Level.CONFIG, "Device is not registered, attempting registration now.");
     if (!appProperties.getRegistrationUrl().toLowerCase().startsWith("https://")) {
-      LOGGER.log(Level.WARNING,
+      log.log(Level.WARNING,
         "Registration is taking place over a non-encrypted protocol.");
     }
 
     // Attempt to register.
     String registrationUrl = appProperties.getRegistrationUrl() + AppConstants.URL_PS_REGISTER;
-    LOGGER.log(Level.FINEST, "Attempting registration to {0}.", registrationUrl);
+    log.log(Level.FINEST, "Attempting registration to {0}.", registrationUrl);
 
     DeviceMessage<RegistrationRequest> registrationRequest = new DeviceMessage<>();
     registrationRequest.setHardwareId(appProperties.getHardwareId());
@@ -100,64 +98,64 @@ public class RegistrationService {
     }
 
     // Registration was successful at this stage, so store registration details.
-    LOGGER.log(Level.CONFIG, "Persisting registration information.");
+    log.log(Level.CONFIG, "Registration successful. Persisting registration information.");
 
     if (!securityUtil.areSecurityKeysPresent()) {
-      LOGGER.log(Level.FINE, "Writing device private key at: {0}.",
+      log.log(Level.FINE, "Writing device private key at: {0}.",
         securityUtil.getPrivateKeyLocation());
-      LOGGER.log(Level.FINEST, registrationResponse.getPayload().getPrivateKey());
+      log.log(Level.FINEST, registrationResponse.getPayload().getPrivateKey());
       FileUtils.writeStringToFile(new File(securityUtil.getPrivateKeyLocation()),
         registrationResponse.getPayload().getPrivateKey(), StandardCharsets.UTF_8);
 
-      LOGGER.log(Level.FINE, "Writing device public key at: {0}.",
+      log.log(Level.FINE, "Writing device public key at: {0}.",
         securityUtil.getPublicKeyLocation());
-      LOGGER.log(Level.FINEST, registrationResponse.getPayload().getPublicKey());
+      log.log(Level.FINEST, registrationResponse.getPayload().getPublicKey());
       FileUtils.writeStringToFile(new File(securityUtil.getPublicKeyLocation()),
         registrationResponse.getPayload().getPublicKey(), StandardCharsets.UTF_8);
     }
 
     if (!securityUtil.isPSPublicKeyPresent()) {
-      LOGGER.log(Level.FINE, "Writing platform public key at: {0}.",
+      log.log(Level.FINE, "Writing platform public key at: {0}.",
         securityUtil.getPSPublicKeyLocation());
-      LOGGER.log(Level.FINEST, registrationResponse.getPayload().getPsPublicKey());
+      log.log(Level.FINEST, registrationResponse.getPayload().getPsPublicKey());
       FileUtils.writeStringToFile(new File(securityUtil.getPSPublicKeyLocation()),
         registrationResponse.getPayload().getPsPublicKey(), StandardCharsets.UTF_8);
     }
 
     if (!securityUtil.isSessionKeyPresent()) {
-      LOGGER.log(Level.FINE, "Writing session key at: {0}.",
+      log.log(Level.FINE, "Writing session key at: {0}.",
         securityUtil.getSessionKeyLocation());
-      LOGGER.log(Level.FINEST, registrationResponse.getPayload().getSessionKey());
-      LOGGER.log(Level.FINEST,
+      log.log(Level.FINEST, registrationResponse.getPayload().getSessionKey());
+      log.log(Level.FINEST,
         Arrays.toString(Base64E.decode(registrationResponse.getPayload().getSessionKey())));
       FileUtils.writeStringToFile(new File(securityUtil.getSessionKeyLocation()),
         registrationResponse.getPayload().getSessionKey(), StandardCharsets.UTF_8);
     }
 
     if (!securityUtil.isProvisioningKeyPresent()) {
-      LOGGER.log(Level.FINE, "Writing provisioning key at: {0}.",
+      log.log(Level.FINE, "Writing provisioning key at: {0}.",
         securityUtil.getProvisioningKeyLocation());
-      LOGGER.log(Level.FINEST, registrationResponse.getPayload().getProvisioningKey());
-      LOGGER.log(Level.FINEST,
+      log.log(Level.FINEST, registrationResponse.getPayload().getProvisioningKey());
+      log.log(Level.FINEST,
         Arrays.toString(Base64E.decode(registrationResponse.getPayload().getProvisioningKey())));
       FileUtils.writeStringToFile(new File(securityUtil.getProvisioningKeyLocation()),
         registrationResponse.getPayload().getProvisioningKey(), StandardCharsets.UTF_8);
     }
 
     if (!securityUtil.isRootCACertificatePresent()) {
-      LOGGER.log(Level.FINE, "Writing root CA certificate at: {0}.",
+      log.log(Level.FINE, "Writing root CA certificate at: {0}.",
         securityUtil.getRootCaCertificateLocation());
-      LOGGER.log(Level.FINEST, registrationResponse.getPayload().getRootCaCertificate());
-      LOGGER.log(Level.FINEST,
+      log.log(Level.FINEST, registrationResponse.getPayload().getRootCaCertificate());
+      log.log(Level.FINEST,
         Arrays.toString(Base64E.decode(registrationResponse.getPayload().getRootCaCertificate())));
       FileUtils.writeStringToFile(new File(securityUtil.getRootCaCertificateLocation()),
         registrationResponse.getPayload().getRootCaCertificate(), StandardCharsets.UTF_8);
     }
 
     if (!securityUtil.isCertificatePresent()) {
-      LOGGER.log(Level.FINE, "Writing device certificate at: {0}.",
+      log.log(Level.FINE, "Writing device certificate at: {0}.",
         securityUtil.getCertificateLocation());
-      LOGGER.log(Level.FINEST, registrationResponse.getPayload().getCertificate());
+      log.log(Level.FINEST, registrationResponse.getPayload().getCertificate());
       FileUtils.writeStringToFile(new File(securityUtil.getCertificateLocation()),
         registrationResponse.getPayload().getCertificate(), StandardCharsets.UTF_8);
     }
@@ -177,7 +175,7 @@ public class RegistrationService {
     if (!registration.isEmpty()) {
       return registrationRepository.findAll().get(0).getProvisioningUrl();
     } else {
-      LOGGER.log(Level.WARNING, "Requested provisioning URL, however registration of the device "
+      log.log(Level.WARNING, "Requested provisioning URL, however registration of the device "
         + "is not yet completed.");
       return null;
     }

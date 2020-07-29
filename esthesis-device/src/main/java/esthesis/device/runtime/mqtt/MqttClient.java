@@ -99,7 +99,7 @@ public class MqttClient {
   }
 
   public void connect(String mqttServerAddress) {
-    if ((client != null && !client.isConnected()) || client == null) {
+    if (client == null || !client.isConnected()) {
       try {
         log.log(Level.FINE, "Connecting to MQTT server {0}.", mqttServerAddress);
         this.mqttServerAddress = mqttServerAddress;
@@ -191,7 +191,7 @@ public class MqttClient {
   }
 
   @Async
-  public void publish(String mqttEventType, byte[] msg) throws MqttException {
+  public void publish(String mqttEventType, byte[] msg) {
     publish(mqttEventType, msg, 0, false);
   }
 

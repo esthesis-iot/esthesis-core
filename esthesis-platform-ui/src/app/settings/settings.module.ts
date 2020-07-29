@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 
 import {SettingsRoutingModule} from './settings-routing.module';
 import {SettingsComponent} from './settings.component';
-import {SettingsNetworkingComponent} from './settings-networking/settings-networking.component';
 import {SettingsDevregComponent} from './settings-devreg/settings-devreg.component';
 import {SettingsSecurityComponent} from './settings-security/settings-security.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -30,7 +29,6 @@ import {SettingsDevicePageComponent} from './settings-device-page/settings-devic
   declarations: [
     SettingsComponent,
     SettingsProvisioningComponent,
-    SettingsNetworkingComponent,
     SettingsDevicePageComponent,
     SettingsDevregComponent,
     SettingsSecurityComponent,

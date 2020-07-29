@@ -5,7 +5,7 @@ public class AppConstants {
   // HTTP header delivering DT security token.
   public static final String XESTHESISDT_HEADER = "X-ESTHESIS-DT";
 
-  public class Generic {
+  public static class Generic {
 
     // A generic 'System' persona to be used when no user-specific information needs to be handled.
     public static final String SYSTEM = "System";
@@ -26,10 +26,10 @@ public class AppConstants {
     EXECUTE
   }
 
-  public class Mqtt {
+  public static class Mqtt {
 
     // The names of JSON nodes expected into an MQTT message to be processed by the platform.
-    public class MqttPayload {
+    public static class MqttPayload {
 
       // The name of JSON node providing the name of the metric.
       public static final String METRIC_KEYNAME = "m";
@@ -41,13 +41,14 @@ public class AppConstants {
     }
 
     // The default MQTT event types.
-    public class EventType {
-      public static final String TELEMETRY = "telemetry";
-      public static final String CONTROL = "control";
-      public static final String METADATA = "metadata";
-      public static final String CONTROL_REQUEST = CONTROL + "/request";
-      public static final String CONTROL_REPLY = CONTROL + "/reply";
-      public static final String PING = "ping";
+    public static class EventType {
+      public static final String ESTHESIS = "esthesis/";
+      public static final String TELEMETRY = ESTHESIS + "telemetry";
+      public static final String METADATA = ESTHESIS + "metadata";
+      public static final String CONTROL = ESTHESIS + "control/";
+      public static final String CONTROL_REQUEST = ESTHESIS + CONTROL + "request";
+      public static final String CONTROL_REPLY = ESTHESIS + CONTROL + "reply";
+      public static final String PING = ESTHESIS + "ping";
     }
   }
 }

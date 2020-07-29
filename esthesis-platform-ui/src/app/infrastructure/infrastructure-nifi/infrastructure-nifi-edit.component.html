@@ -24,8 +24,11 @@
         </div>
       </div>
     </form>
+    <div class="inline-subheader">
+      Synchronisation status
+    </div>
     <div *ngIf="id != 0">
-        <mat-label>{{synced ? "Synced on " : "Unsynced"}}</mat-label>
+        <mat-label>{{synced ? "Synchronised on " : "Not synchronised"}}</mat-label>
         <mat-label>{{ lastChecked | date:'medium' }}</mat-label>
     </div>
   </mat-card-content>

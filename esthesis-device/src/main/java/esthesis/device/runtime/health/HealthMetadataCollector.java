@@ -10,7 +10,6 @@ import esthesis.device.runtime.mqtt.MqttClient;
 import lombok.extern.java.Log;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -149,7 +148,7 @@ public class HealthMetadataCollector {
 
       try {
         mqttClient.publish(Mqtt.EventType.TELEMETRY, objectMapper.writeValueAsBytes(node));
-      } catch (MqttException | JsonProcessingException e) {
+      } catch (JsonProcessingException e) {
         log.log(Level.SEVERE, "Could not produce JSON output for health data.", e);
       }
     } catch (Exception e) {

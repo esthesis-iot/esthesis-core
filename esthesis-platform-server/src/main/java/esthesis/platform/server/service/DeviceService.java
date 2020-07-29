@@ -1,5 +1,6 @@
 package esthesis.platform.server.service;
 
+import static esthesis.platform.server.config.AppSettings.Setting.DeviceRegistration.REGISTRATION_MODE;
 import static esthesis.platform.server.config.AppSettings.SettingValues.DeviceRegistration.RegistrationMode.DISABLED;
 
 import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
@@ -22,7 +23,6 @@ import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting.DeviceRegistration;
 import esthesis.platform.server.config.AppSettings.Setting.Provisioning;
 import esthesis.platform.server.config.AppSettings.Setting.Security;
-import esthesis.platform.server.config.AppSettings.SettingValues.DeviceRegistration.PushTags;
 import esthesis.platform.server.config.AppSettings.SettingValues.DeviceRegistration.RegistrationMode;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingEncryption;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingSignature;
@@ -43,6 +43,7 @@ import esthesis.platform.server.repository.DeviceKeyRepository;
 import esthesis.platform.server.repository.DeviceRepository;
 import javax.crypto.NoSuchPaddingException;
 import lombok.extern.java.Log;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.scheduling.annotation.Async;
@@ -141,9 +142,9 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
       }
     }
     // Convert tags to their name-equivalent.
-    String tagNames = String.join(",",
-      deviceRegistrationDTO.getTags().stream().map(tagId -> tagService.findById(tagId).getName())
-        .collect(Collectors.toList()));
+    String tagNames = deviceRegistrationDTO.getTags().stream()
+      .map(tagId -> tagService.findById(tagId).getName())
+      .collect(Collectors.joining(","));
 
     // Register IDs.
     for (String hardwareId : idList) {
@@ -151,19 +152,17 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     }
   }
 
+  /**
+   * Checks if device-provided tags exist in the system and reports the ones that do not exist.
+   *
+   * @param tags The comma-separated list of tags to check.
+   */
   private void checkTags(String tags) {
-    if (StringUtils.isNotBlank(tags)) {
-      if (srs.is(DeviceRegistration.PUSH_TAGS, PushTags.ALLOWED)) {
-        for (String tag : tags.split(",")) {
-          tag = tag.trim();
-          if (!tagService.findByName(tag).isPresent()) {
-            log.log(Level.WARNING, "Device-pushed tag {0} does not exist and will be ignored.", tag);
-          }
-        }
-      } else {
-        if (StringUtils.isNotBlank(tags)) {
-          log.log(Level.FINE, "Device-pushed tags {0} will be ignored.", tags);
-        }
+    for (String tag : tags.split(",")) {
+      tag = tag.trim();
+      if (!tagService.findByName(tag).isPresent()) {
+        log
+          .log(Level.WARNING, "Device-pushed tag {0} does not exist.", tag);
       }
     }
   }
@@ -196,11 +195,14 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     deviceRepository.save(device);
   }
 
+  /**
+   * The internal registration handler.
+   */
   private void register(String hardwareId, String tags, String state, boolean checkTags)
   throws NoSuchAlgorithmException, IOException, InvalidKeyException,
          InvalidAlgorithmParameterException, NoSuchPaddingException, OperatorCreationException,
          InvalidKeySpecException, NoSuchProviderException {
-    // Create a keypair.
+    // Create a keypair for the device to be registered.
     CreateKeyPairDTO createKeyPairDTO = new CreateKeyPairDTO();
     createKeyPairDTO.setKeySize(appProperties.getSecurityAsymmetricKeySize());
     createKeyPairDTO
@@ -213,18 +215,13 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
         "Device with hardware ID {0} is already registered with the platform.", hardwareId);
     }
 
-    // Check tags and display appropriate warnings if necessary.
-    if (checkTags) {
-      checkTags(tags);
-    }
-
     // Create the new device.
     final Device device = new Device()
       .setHardwareId(hardwareId)
       .setState(state);
     deviceRepository.save(device);
 
-    // Create the keys for the new device.
+    // Create the security keys for the new device.
     final byte[] sessionKey = cryptoSymmetricService.generateKey(
       appProperties.getSecuritySymmetricKeySize(),
       appProperties.getSecuritySymmetricKeyAlgorithm()).getEncoded();
@@ -262,13 +259,18 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
     deviceKeyRepository.save(deviceKey);
 
-    // Add device-pushed tags if supported.
-    if (srs.is(DeviceRegistration.PUSH_TAGS, PushTags.ALLOWED) && StringUtils.isNotBlank(tags)) {
+    // Add device-pushed tags.
+    if (StringUtils.isNotBlank(tags)) {
+      checkTags(tags);
       device
         .setTags(Lists.newArrayList(tagService.findAllByNameIn(Arrays.asList(tags.split(",")))));
     }
   }
 
+  /**
+   * Register a new device into the system. This method checks the currently active registration
+   * mode of the platform and decides accordingly which registration process to follow.
+   */
   public void register(DeviceMessage<RegistrationRequest> registrationRequest,
     String hardwareId)
   throws NoSuchAlgorithmException, IOException, InvalidKeyException, NoSuchPaddingException,
@@ -305,17 +307,17 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     }
 
     // Proceed with device registration.
-    if (srs.is(DeviceRegistration.REGISTRATION_MODE, DISABLED)) {
+    if (srs.is(REGISTRATION_MODE, DISABLED)) {
       throw new QDisabledException(
         "Attempting to register device with hardware ID {0} but registration of new devices is "
           + "disabled.", hardwareId);
     } else {
-      log.log(Level.FINE, "Attempting to register device with registration ID {0}.",
-        hardwareId);
       // Check registration preconditions and register device.
       log.log(Level.FINEST, "Platform running on {0} registration mode.",
-        srs.get(DeviceRegistration.REGISTRATION_MODE));
-      switch (srs.get(DeviceRegistration.REGISTRATION_MODE)) {
+        srs.get(REGISTRATION_MODE));
+      log.log(Level.FINE, "Attempting to register device with registration ID {0} and tags {1}.",
+        ArrayUtils.toArray(hardwareId, registrationRequest.getPayload().getTags()));
+      switch (srs.get(REGISTRATION_MODE)) {
         case RegistrationMode.OPEN:
           register(hardwareId, registrationRequest.getPayload().getTags(), State.REGISTERED, true);
           break;
@@ -336,8 +338,6 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
         .setPayload(
           MessageFormat.format("Device with registration id {0} registered.", hardwareId)));
     }
-
-    log.log(Level.FINE, "Registered device with hardware ID {0}.", hardwareId);
   }
 
   private DeviceDTO fillDecryptedKeys(DeviceDTO deviceDTO) {

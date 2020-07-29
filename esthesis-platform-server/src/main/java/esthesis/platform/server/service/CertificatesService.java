@@ -166,6 +166,8 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
           new String((securityService.decrypt(certificate.getPrivateKey())),
             StandardCharsets.UTF_8));
         break;
+      default:
+        throw new QDoesNotExistException("Request key type {0} does not exist.", keyType);
     }
 
     if (base64) {

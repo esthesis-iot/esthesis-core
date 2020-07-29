@@ -1,27 +1,16 @@
-package esthesis.platform.server.resource.dt;
+package esthesis.platform.server.resource;
 
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
-import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
-import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.Predicate;
 import esthesis.common.datasink.dto.DataSinkQueryResult;
 import esthesis.platform.server.dto.DTDeviceDTO;
-import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.model.Device;
 import esthesis.platform.server.repository.DeviceRepository;
 import esthesis.platform.server.service.DTService;
-
-import javax.validation.constraints.NotNull;
-
 import esthesis.platform.server.service.DeviceService;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;

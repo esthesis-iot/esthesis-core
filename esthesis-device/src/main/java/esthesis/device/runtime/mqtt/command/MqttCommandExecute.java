@@ -14,7 +14,6 @@ import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang3.ArrayUtils;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -78,7 +77,7 @@ public class MqttCommandExecute {
         reply.setCommandId(cmd.getId());
         reply.setPayload(outputStream.toByteArray());
         mqttClient.publish(EventType.CONTROL_REPLY, objectMapper.writeValueAsBytes(reply));
-      } catch (MqttException | JsonProcessingException e) {
+      } catch (JsonProcessingException e) {
         log.log(Level.SEVERE, "Could not publish command reply.", e);
       }
     } else {

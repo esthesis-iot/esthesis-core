@@ -1,6 +1,5 @@
 package esthesis.platform.server.config;
 
-import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoSymmetricService;
 import com.eurodyn.qlack.fuse.settings.dto.SettingDTO;
 import com.eurodyn.qlack.fuse.settings.service.SettingsService;
@@ -77,11 +76,8 @@ public class Bootstrap {
    * Generate an AES key for the platform if none is already generated.
    */
   private void generatePlatformAESKey() {
-    try {
-      final String key = srs.get(Security.AES_KEY);
-      log.log(Level.FINEST, "Platform\\'s AES key: {0}", Arrays.toString(Base64E.decode(key)));
-    } catch (QDoesNotExistException e) {
-      log.log(Level.CONFIG, "Platform\\'s AES key is not set, creating one now.");
+    if (!srs.exists(Security.AES_KEY)) {
+      log.log(Level.CONFIG, "Platform AES key is not set, creating one now.");
       try {
         createAESKey(Security.AES_KEY, false);
       } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException |
@@ -92,14 +88,11 @@ public class Bootstrap {
     }
   }
 
+  /**
+   * Generate platform's provisioning key if none is already generated.
+   */
   private void generateProvisioningAESKey() {
-    try {
-      final String key = srs.get(Provisioning.AES_KEY);
-      log.log(Level.FINEST,
-        "Platform's Provisioning AES key: " + Arrays.toString(securityService.decrypt(key)));
-    } catch (QDoesNotExistException | NoSuchPaddingException | InvalidAlgorithmParameterException |
-      NoSuchAlgorithmException | InvalidKeyException | IOException e) {
-      log.log(Level.CONFIG, "Provisioning AES key is not set, creating one now.");
+    if (!srs.exists(Provisioning.AES_KEY)) {
       try {
         createAESKey(Provisioning.AES_KEY, true);
       } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException |

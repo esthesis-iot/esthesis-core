@@ -10,8 +10,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
   public static final String[] PUBLIC_URIS =
-    {"/users/auth", "/mqtt-acl/**", "/ping", "/device/**"};
+    {"/users/auth", "/ping", "/agent/**"};
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
   public WebSecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
@@ -21,9 +22,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.csrf().disable().authorizeRequests()
-        .antMatchers(PUBLIC_URIS).permitAll()
-        .anyRequest().authenticated()
-        .and()
-        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+      .antMatchers(PUBLIC_URIS).permitAll()
+      .anyRequest().authenticated()
+      .and()
+      .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
   }
 }

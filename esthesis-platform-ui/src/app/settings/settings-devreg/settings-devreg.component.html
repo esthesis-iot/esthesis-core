@@ -39,15 +39,16 @@
     </div>
   </mat-radio-group>
 
-  <div class="inline-header xs-mt2">Allow device to choose tags</div>
-  <div class="inline-subheader">Devices can choose which tags they support. Tags need to be already
-    created on the platform.
+  <div class="inline-header xs-mt2">Tag selection algorithm</div>
+  <div class="inline-subheader">Tags matching can check if a device supports all tags or just any
+    tag.
   </div>
   <mat-form-field>
-    <mat-select placeholder="Device chooses tags" formControlName="devicePushTags" required>
-      <mat-option *ngFor="let o of settings.SETTING_VALUES.DEVICE_REGISTRATION.PUSH_TAGS | keyvalue"
+    <mat-select placeholder="Tags matching algorithm" formControlName="deviceTagsAlgorithm"
+                required>
+      <mat-option *ngFor="let o of settings.SETTING_VALUES.DEVICE_REGISTRATION.TAGS_ALGORITHM | keyvalue"
                   [value]="o.value">
-        {{ lookupByValue(settings.SETTING_VALUES.DEVICE_REGISTRATION.PUSH_TAGS, o.value) }}
+        {{ lookupByValue(settings.SETTING_VALUES.DEVICE_REGISTRATION.TAGS_ALGORITHM, o.value) }}
       </mat-option>
     </mat-select>
   </mat-form-field>

@@ -6,7 +6,6 @@ import * as _ from 'lodash';
 import {KeyValueDto} from '../../dto/key-value-dto';
 import {BaseComponent} from '../../shared/component/base-component';
 import {UtilityService} from '../../shared/service/utility.service';
-import {CertificateDto} from '../../dto/certificate-dto';
 import {CasService} from '../../cas/cas.service';
 import {CaDto} from '../../dto/ca-dto';
 
@@ -28,7 +27,7 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
     // Define the form.
     this.form = this.fb.group({
       deviceRegistration: ['', [Validators.required]],
-      devicePushTags: ['', [Validators.required]],
+      deviceTagsAlgorithm: ['', [Validators.required]],
       deviceRootCA: ['', []]
     });
 
@@ -36,7 +35,7 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
     // Fetch settings.
     this.settingsService.findByNames(
       AppSettings.SETTING.DEVICE_REGISTRATION.REGISTRATION_MODE,
-      AppSettings.SETTING.DEVICE_REGISTRATION.PUSH_TAGS,
+      AppSettings.SETTING.DEVICE_REGISTRATION.TAGS_ALGORITHM,
       AppSettings.SETTING.DEVICE_REGISTRATION.ROOT_CA,
     ).subscribe(onNext => {
       onNext.forEach(settingDTO => {
