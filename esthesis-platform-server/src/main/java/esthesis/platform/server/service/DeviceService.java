@@ -39,8 +39,10 @@ import esthesis.platform.server.mapper.DeviceMapper;
 import esthesis.platform.server.model.Ca;
 import esthesis.platform.server.model.Device;
 import esthesis.platform.server.model.DeviceKey;
+import esthesis.platform.server.model.Ping;
 import esthesis.platform.server.repository.DeviceKeyRepository;
 import esthesis.platform.server.repository.DeviceRepository;
+import esthesis.platform.server.repository.PingRepository;
 import javax.crypto.NoSuchPaddingException;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.ArrayUtils;
@@ -91,6 +93,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   private final CertificatesService certificatesService;
   private final CAService caService;
   private final CryptoCAService cryptoCAService;
+  private final PingRepository pingRepository;
 
   public DeviceService(
     DeviceRepository deviceRepository, DeviceMapper deviceMapper,
@@ -102,7 +105,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     CryptoAsymmetricService cryptoAsymmetricService,
     CryptoSymmetricService cryptoSymmetricService,
     CertificatesService certificatesService, CAService caService,
-    CryptoCAService cryptoCAService) {
+    CryptoCAService cryptoCAService,
+    PingRepository pingRepository) {
     this.deviceRepository = deviceRepository;
     this.deviceMapper = deviceMapper;
     this.dtDeviceMapper = dtDeviceMapper;
@@ -118,6 +122,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     this.certificatesService = certificatesService;
     this.caService = caService;
     this.cryptoCAService = cryptoCAService;
+    this.pingRepository = pingRepository;
   }
 
   /**
@@ -168,10 +173,11 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   }
 
   /**
-   * Register (i.e. activate) a preregistered device. Note that in this mode device-pushed tags are
-   * discarded.
+   * Activate a preregistered device. There is no actual device registration taking place here as
+   * the device already exists in system's database.
    */
-  private void registerPreregistered(RegistrationRequest registrationRequest, String hardwareId) {
+  private void activatePreregisteredDevice(RegistrationRequest registrationRequest,
+    String hardwareId) {
     Optional<Device> optionalDevice = deviceRepository.findByHardwareId(hardwareId);
 
     // Check that a device with the same hardware ID is not already registered.
@@ -184,14 +190,10 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
       throw new QSecurityException(
         "Device with hardware ID {0} does not exist.", hardwareId);
     }
+
+    // Find the device and set its status to registered.
     Device device = optionalDevice.get();
-
-    // Check tags and display appropriate warnings if necessary.
-    checkTags(registrationRequest.getTags());
-
-    // Set the status to registered.
     device.setState(State.REGISTERED);
-
     deviceRepository.save(device);
   }
 
@@ -259,12 +261,19 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
     deviceKeyRepository.save(deviceKey);
 
-    // Add device-pushed tags.
+    // Set device-pushed tags.
     if (StringUtils.isNotBlank(tags)) {
       checkTags(tags);
       device
         .setTags(Lists.newArrayList(tagService.findAllByNameIn(Arrays.asList(tags.split(",")))));
     }
+
+    // Create an entry in the 'ping' table for this device, so that it can be updated in the future
+    // when the device starts sending ping data.
+    Ping ping = new Ping();
+    ping.setHardwareId(device.getHardwareId());
+    ping.setLastSeen(0);
+    pingRepository.save(ping);
   }
 
   /**
@@ -326,7 +335,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
             registrationRequest.getPayload().getTags(), State.APPROVAL, true);
           break;
         case RegistrationMode.ID:
-          registerPreregistered(registrationRequest.getPayload(), hardwareId);
+          activatePreregisteredDevice(registrationRequest.getPayload(), hardwareId);
           break;
         case RegistrationMode.DISABLED:
           throw new QDisabledException("Device registration is disabled.");

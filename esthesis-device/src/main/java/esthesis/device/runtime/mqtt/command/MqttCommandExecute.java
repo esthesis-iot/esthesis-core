@@ -2,10 +2,10 @@ package esthesis.device.runtime.mqtt.command;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.common.config.AppConstants.Mqtt.EventType;
 import esthesis.common.config.AppConstants.MqttCommand;
 import esthesis.common.device.control.MqttCommandReplyPayload;
 import esthesis.common.device.control.MqttControlCommand;
+import esthesis.device.runtime.config.AppConstants.Mqtt.EventType;
 import esthesis.device.runtime.mqtt.MqttClient;
 import lombok.extern.java.Log;
 import org.apache.commons.exec.CommandLine;

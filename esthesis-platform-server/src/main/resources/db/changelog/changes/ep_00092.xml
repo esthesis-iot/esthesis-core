@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
+  logicalFilePath="ep_00092.xml">
+  <changeSet id="ep_00092" author="European Dynamics">
+    <renameColumn
+      oldColumnName="hardwareId"
+      newColumnName="hardware_id"
+      columnDataType="varchar(512)"
+      tableName="ping"/>
+    <renameColumn
+      oldColumnName="lastSeen"
+      newColumnName="last_seen"
+      columnDataType="bigint(20)"
+      tableName="ping"/>
+  </changeSet>
+</databaseChangeLog>

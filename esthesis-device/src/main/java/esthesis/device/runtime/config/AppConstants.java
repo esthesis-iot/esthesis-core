@@ -22,4 +22,28 @@ public class AppConstants {
   // The types of forking when a provisioning package is downloaded.
   public static final String PROVISIONING_FORK_TYPE_SOFT = "soft";
   public static final String PROVISIONING_FORK_TYPE_HARD = "hard";
+
+    public static class Mqtt {
+
+      // The names of JSON nodes expected into an MQTT message to be processed by the platform.
+      public static class MqttPayload {
+
+        // The name of JSON node providing the name of the metric.
+        public static final String METRIC_KEYNAME = "m";
+        // The name of JSON node providing the value of the metric.
+        public static final String VALUES_KEYNAME = "v";
+        // The name of JSON node providing the timestamp of the metric. A timestamp is expected as an
+        // EPOCH time in msec.
+        public static final String TIMESTAMP_KEYNAME = "t";
+      }
+
+      // The default MQTT event types.
+      public enum EventType {
+        TELEMETRY,
+        METADATA,
+        CONTROL_REQUEST,
+        CONTROL_REPLY,
+        PING
+      }
+    }
 }

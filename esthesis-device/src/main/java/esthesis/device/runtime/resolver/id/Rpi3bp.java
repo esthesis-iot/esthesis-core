@@ -16,6 +16,6 @@ public class Rpi3bp implements HardwareIdResolver {
       "/sys/class/net/eth0/address"
     });
 
-    return HardwareIdResolverUtil.md5(deviceId + macId);
+    return HardwareIdResolverUtil.hashGenerator(deviceId + macId);
   }
 }

@@ -25,10 +25,10 @@ import java.util.logging.Logger;
 @EntityScan({"esthesis", "com.eurodyn.qlack"})
 @ComponentScan({"esthesis", "com.eurodyn.qlack"})
 @EnableJpaRepositories({"esthesis", "com.eurodyn.qlack"})
-public class App {
+public class EsthesisPlatform {
 
   // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(App.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(EsthesisPlatform.class.getName());
 
   @PostConstruct
   void started() {
@@ -49,6 +49,6 @@ public class App {
     SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
 
     // Start the application.
-    SpringApplication.run(App.class, args);
+    SpringApplication.run(EsthesisPlatform.class, args);
   }
 }

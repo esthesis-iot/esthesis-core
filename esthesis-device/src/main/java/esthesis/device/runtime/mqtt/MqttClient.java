@@ -6,9 +6,8 @@ import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryPrivateKeyDTO;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoSSLService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.common.config.AppConstants.Mqtt;
-import esthesis.common.config.AppConstants.Mqtt.EventType;
 import esthesis.common.device.control.MqttControlCommand;
+import esthesis.device.runtime.config.AppConstants.Mqtt;
 import esthesis.device.runtime.config.AppProperties;
 import esthesis.device.runtime.util.SecurityUtil;
 import javax.annotation.PreDestroy;
@@ -48,7 +47,6 @@ public class MqttClient {
   private final ObjectMapper objectMapper;
   private final SecurityUtil securityUtil;
   private final CryptoSSLService cryptoSSLService;
-  private String lastConnectedMqttServerAddress;
 
   public MqttClient(AppProperties appProperties,
     ApplicationEventPublisher applicationEventPublisher,
@@ -64,23 +62,23 @@ public class MqttClient {
   /**
    * Returns the name of the topic suffixed with the device ID.
    *
-   * @param mqttEventType The {@link Mqtt.EventType}
-   * to suffix.
+   * @param mqttEventType The {@link Mqtt.EventType} to suffix.
    */
-  private String getTopicForDevice(String mqttEventType) {
-    if (mqttEventType.equals(Mqtt.EventType.TELEMETRY)) {
-      return String.join("/", Mqtt.EventType.TELEMETRY, appProperties.getHardwareId());
-    } else if (mqttEventType.equals(Mqtt.EventType.METADATA)) {
-      return String.join("/", Mqtt.EventType.METADATA, appProperties.getHardwareId());
-    } else if (mqttEventType.equals(Mqtt.EventType.PING)) {
-      return String.join("/", Mqtt.EventType.PING, appProperties.getHardwareId());
-    } else if (mqttEventType.equals(Mqtt.EventType.CONTROL_REQUEST)) {
-      return String.join("/", EventType.CONTROL_REQUEST, appProperties.getHardwareId());
-    } else if (mqttEventType.equals(EventType.CONTROL_REPLY)) {
-      return String.join("/", EventType.CONTROL_REPLY, appProperties.getHardwareId());
-    } else {
-      throw new QMismatchException(
-        "Name resolution of an unknown MQTT event type was requested: {0}.", mqttEventType);
+  private String getTopicForDevice(Mqtt.EventType mqttEventType) {
+    switch (mqttEventType) {
+      case PING:
+        return String.join("/", appProperties.getTopicPing(), appProperties.getHardwareId());
+      case METADATA:
+        return String.join("/", appProperties.getTopicMetadata(), appProperties.getHardwareId());
+      case TELEMETRY:
+        return String.join("/", appProperties.getTopicTelemetry(), appProperties.getHardwareId());
+      case CONTROL_REPLY:
+        return String.join("/", appProperties.getTopicControlReply(), appProperties.getHardwareId());
+      case CONTROL_REQUEST:
+        return String.join("/", appProperties.getTopicControlRequest(), appProperties.getHardwareId());
+      default:
+        throw new QMismatchException(
+          "Name resolution of an unknown MQTT event type was requested: {0}.", mqttEventType);
     }
   }
 
@@ -157,8 +155,6 @@ public class MqttClient {
 
         client.connect(options);
         subscribe();
-
-        lastConnectedMqttServerAddress = mqttServerAddress;
       } catch (MqttException | CertificateException | IOException | KeyStoreException |
         NoSuchAlgorithmException | UnrecoverableKeyException | KeyManagementException |
         InvalidKeySpecException e) {
@@ -191,12 +187,12 @@ public class MqttClient {
   }
 
   @Async
-  public void publish(String mqttEventType, byte[] msg) {
+  public void publish(Mqtt.EventType mqttEventType, byte[] msg) {
     publish(mqttEventType, msg, 0, false);
   }
 
   @Async
-  public void publish(String mqttEventType, byte[] msg, int qos, boolean retain) {
+  public void publish(Mqtt.EventType mqttEventType, byte[] msg, int qos, boolean retain) {
     try {
       String publishingTopic = getTopicForDevice(mqttEventType);
       log.log(Level.FINEST, "Publishing to {0} {1} payload {2}.",

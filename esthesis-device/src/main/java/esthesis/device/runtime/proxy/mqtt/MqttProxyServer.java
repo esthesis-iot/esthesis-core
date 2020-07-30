@@ -2,6 +2,7 @@ package esthesis.device.runtime.proxy.mqtt;
 
 import esthesis.device.runtime.config.AppProperties;
 import esthesis.device.runtime.mqtt.MqttClient;
+import esthesis.device.runtime.util.DeviceMessageUtil;
 import io.moquette.BrokerConstants;
 import javax.annotation.PreDestroy;
 import org.springframework.stereotype.Component;
@@ -20,10 +21,13 @@ public class MqttProxyServer {
   private io.moquette.broker.Server server;
   private final AppProperties appProperties;
   private final MqttClient mqttProxyClient;
+  private final DeviceMessageUtil deviceMessageUtil;
 
-  public MqttProxyServer(AppProperties appProperties, MqttClient mqttProxyClient) {
+  public MqttProxyServer(AppProperties appProperties, MqttClient mqttProxyClient,
+    DeviceMessageUtil deviceMessageUtil) {
     this.appProperties = appProperties;
     this.mqttProxyClient = mqttProxyClient;
+    this.deviceMessageUtil = deviceMessageUtil;
   }
 
   public void start() {
@@ -33,7 +37,7 @@ public class MqttProxyServer {
       properties.put(BrokerConstants.PORT_PROPERTY_NAME,
         String.valueOf(appProperties.getProxyMqttPort()));
       server.startServer(properties);
-      server.addInterceptHandler(new MqttProxyInterceptor(mqttProxyClient));
+      server.addInterceptHandler(new MqttProxyInterceptor(mqttProxyClient, deviceMessageUtil));
       LOGGER.log(Level.CONFIG, "Embedded MQTT server started on port {0}.",
         String.valueOf(appProperties.getProxyMqttPort()));
     } catch (IOException e) {

@@ -84,7 +84,9 @@ public class MQTTService extends BaseService<MQTTServerDTO, MqttServer> {
           mqttServerDTO = findAll().stream()
             .filter(MQTTServerDTO::getState)
             .filter(
-              o -> CollectionUtils.intersection(tagIds, o.getTags()).size() == o.getTags().size())
+              o -> CollectionUtils.intersection(tagIds, o.getTags()).size() == o.getTags().size() &&
+                   CollectionUtils.intersection(tagIds, o.getTags()).size() == tagIds.size()
+            )
             .findFirst();
           break;
         case TagsAlgorithm.ANY:

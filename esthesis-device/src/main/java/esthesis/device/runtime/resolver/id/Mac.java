@@ -11,6 +11,6 @@ public class Mac implements HardwareIdResolver {
       "-c",
       "ioreg -d2 -c IOPlatformExpertDevice | awk -F\\\" '/IOPlatformUUID/{print $(NF-1)}'"
     });
-    return HardwareIdResolverUtil.md5(deviceId);
+    return HardwareIdResolverUtil.hashGenerator(deviceId);
   }
 }

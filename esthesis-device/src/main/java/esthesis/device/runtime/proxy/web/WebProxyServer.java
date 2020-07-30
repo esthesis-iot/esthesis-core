@@ -1,6 +1,7 @@
 package esthesis.device.runtime.proxy.web;
 
 import esthesis.device.runtime.mqtt.MqttClient;
+import esthesis.device.runtime.util.DeviceMessageUtil;
 import javax.validation.constraints.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +20,20 @@ import java.nio.charset.StandardCharsets;
 public class WebProxyServer {
 
   private final MqttClient mqttProxyClient;
+  private final DeviceMessageUtil deviceMessageUtil;
 
-  public WebProxyServer(MqttClient mqttProxyClient) {
+  public WebProxyServer(MqttClient mqttProxyClient,
+    DeviceMessageUtil deviceMessageUtil) {
     this.mqttProxyClient = mqttProxyClient;
+    this.deviceMessageUtil = deviceMessageUtil;
   }
 
   @PostMapping(path = "{topic}", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity save(@PathVariable @NotNull String topic,
+  public ResponseEntity<Void> save(@PathVariable @NotNull String topic,
     @NotNull @RequestBody String payload) {
-    mqttProxyClient.publish(topic, payload.getBytes(StandardCharsets.UTF_8));
+
+    mqttProxyClient
+      .publish(deviceMessageUtil.resolveTopic(topic), payload.getBytes(StandardCharsets.UTF_8));
 
     return ResponseEntity.ok().build();
   }

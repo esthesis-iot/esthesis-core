@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,9 +43,8 @@ public class HardwareIdResolverUtil {
         String hardware = hardwareId.substring(DEVICE_PREFIX.length());
         String resolverClass = RESOLVE_CLASS_PACKAGE + hardware;
         LOGGER.log(Level.FINEST, "Using ID resolver class: {0}.", resolverClass);
-        deviceId = (String) ReflectionUtils.invokeMethod(
-          ReflectionUtils
-            .findMethod(Class.forName(resolverClass), RESOLVE_CLASS_METHOD, String.class),
+        deviceId = (String) ReflectionUtils.invokeMethod(Objects.requireNonNull(ReflectionUtils
+            .findMethod(Class.forName(resolverClass), RESOLVE_CLASS_METHOD, String.class)),
           Class.forName(resolverClass).newInstance(), deviceId);
       } else {
         deviceId = hardwareId;
@@ -69,7 +69,7 @@ public class HardwareIdResolverUtil {
     return output.toString();
   }
 
-  public static String md5(String text) {
-    return cryptoDigestService.md5(text);
+  public static String hashGenerator(String text) {
+    return cryptoDigestService.sha256(text);
   }
 }

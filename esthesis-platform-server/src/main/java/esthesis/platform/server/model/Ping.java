@@ -18,9 +18,9 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "ping")
 @Accessors(chain = true)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Table(name = "ping")
 public class Ping {
 
   @Id

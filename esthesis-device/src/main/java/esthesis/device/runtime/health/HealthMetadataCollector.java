@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import esthesis.common.config.AppConstants.Mqtt;
+import esthesis.device.runtime.config.AppConstants.Mqtt;
 import esthesis.device.runtime.config.AppProperties;
 import esthesis.device.runtime.mqtt.MqttClient;
 import lombok.extern.java.Log;
