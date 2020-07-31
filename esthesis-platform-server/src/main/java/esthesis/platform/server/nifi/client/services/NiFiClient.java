@@ -29,6 +29,7 @@ import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_READER;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_STATEMENT_TYPE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_TABLE_NAME;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_TRANSLATE_FIELD_NAMES;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SSL_CONTEXT_SERVICE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONNECTABLE_COMPONENT_TYPE.INPUT_PORT;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONNECTABLE_COMPONENT_TYPE.OUTPUT_PORT;
@@ -1067,6 +1068,7 @@ public class NiFiClient {
     Map<String, String> properties = setPutDatabaseRecordProperties(statementType);
     properties.put(PUT_DB_RECORD_READER, recordReaderId);
     properties.put(PUT_DB_RECORD_DCBP_SERVICE, dcbpServiceId);
+    properties.put(PUT_DB_RECORD_TRANSLATE_FIELD_NAMES, "false");
 
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
     processorConfigDTO.setAutoTerminatedRelationships(new HashSet<>(

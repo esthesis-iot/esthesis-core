@@ -49,9 +49,9 @@ function _updateTags(flowFile, queryTemplate) {
 
   var hardwareIdQuery;
   if ((hardwareId.startsWith('/') && hardwareId.endsWith('/'))) {
-    hardwareIdQuery = "hardwareId =~ " + hardwareId;
+    hardwareIdQuery = "hardware_id =~ " + hardwareId;
   } else {
-    hardwareIdQuery = "hardwareId = '" + hardwareId + "'";
+    hardwareIdQuery = "hardware_id = '" + hardwareId + "'";
   }
 
   return queryTemplate.replace("$TAGS",

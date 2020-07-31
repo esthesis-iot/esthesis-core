@@ -96,7 +96,7 @@ if (flowFile != null) {
 
       // Add tags.
       dataPoint['tags'] = {
-        'hardwareId': flowFile.getAttribute('esthesis.hardwareId'),
+        'hardware_id': flowFile.getAttribute('esthesis.hardwareId'),
         'type': flowFile.getAttribute('esthesis.type')
       };
 

@@ -25,7 +25,7 @@ if (flowFile != null) {
     // Iterate through records.
     json.forEach(function (record) {
       output += record['measurement'] +
-        ",hardwareId=" + record['tags']['hardwareId'] +
+        ",hardware_id=" + record['tags']['hardware_id'] +
         ",type=" + record['tags']['type'] + " ";
       var currentField = 0;
       var totalFields = Object.keys(record['fields']).length;
