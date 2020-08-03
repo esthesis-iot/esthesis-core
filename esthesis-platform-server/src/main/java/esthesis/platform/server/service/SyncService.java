@@ -61,6 +61,8 @@ public class SyncService {
     //Deploy latest workflow
     if (!isLatestDeployed) {
       initWorkflow(niFiTemplateDTO);
+      niFiClientService.changeProcessorGroupState(new String[]{PATH.ESTHESIS.asString(),
+        PATH.PRODUCERS.asString()}, STATE.RUNNING);
     }
 
     boolean allMissingSinks = niFiSinkService.createAllMissingSinks();
@@ -87,9 +89,12 @@ public class SyncService {
       String controllerServiceId = niFiClientService
         .findControllerServiceId(new String[]{PATH.ESTHESIS.asString(),
           PATH.PRODUCERS.asString()}, Type.STANDARD_HTTP_CONTEXT_MAP);
-      niFiClientService.changeControllerServiceStatus(controllerServiceId, STATE.DISABLED);
+
+      niFiClientService.changeProcessorGroupState(new String[]{PATH.ESTHESIS.asString(),
+        PATH.PRODUCERS.asString()}, STATE.STOPPED);
       niFiClientService.changeProcessorGroupState(PATH.ESTHESIS.getPath(), STATE.STOPPED);
       niFiClientService.changeProcessorGroupState(PATH.ESTHESIS.getPath(), STATE.DISABLED);
+      niFiClientService.changeControllerServiceStatus(controllerServiceId, STATE.DISABLED);
 
       deployedTemplates.forEach(esthesisTemplateDTO -> {
         String rootProcessGroupId = esthesisTemplateDTO.getFlowGroupId();

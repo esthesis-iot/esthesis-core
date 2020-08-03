@@ -1331,11 +1331,11 @@ public class NiFiClient {
    * @param relationalInstanceGroupId The id of the relational instances group.
    * @param influxGroupId The id of the influx group.
    * @param relationalGroupId The id of the relational group.
-   * @throws IOException
    */
   public void distributeLoadOfProducers(boolean isRelational, String rootGroupId,
     String influxInstanceGroupId, String relationalInstanceGroupId, String influxGroupId,
     String relationalGroupId) throws IOException {
+
     PortEntity influxInputPort = findInputPort(influxGroupId);
     PortEntity relationalInputPort = findInputPort(relationalGroupId);
     String typeInputPort = isRelational ? relationalInputPort.getId() : influxInputPort.getId();
@@ -1381,10 +1381,13 @@ public class NiFiClient {
     if (connections < 2 && !typeConnection.isPresent()) {
       connections += 1;
       updateDistributeLoad(connections, distributeLoadProcessor.getId());
-      createDistributeLOadConnection(connections, rootGroupId, isRelational ?
+      createDistributeLoadConnection(connections, rootGroupId, isRelational ?
           relationalGroupId : influxGroupId, distributeLoadProcessor.getId(),
         isRelational ? relationalInputPort.getId() : influxInputPort.getId());
     }
+
+    updateConnectionsInInstancesGroup(isRelational ? relationalInstanceGroupId :
+      influxInstanceGroupId);
 
     if (typeConnection.isPresent() && typeCount == 0) {
       ConnectableDTO source = typeConnection.get().getComponent().getSource();
@@ -1401,7 +1404,59 @@ public class NiFiClient {
       changeProcessorStatus(source.getId(), STATE.RUNNING);
     }
 
-    changeProcessorGroupState(rootGroupId, STATE.RUNNING);
+    if (distributeLoadProcessor.getStatus().equals(STATE.STOPPED)) {
+      changeProcessorStatus(distributeLoadProcessor.getId(), STATE.RUNNING);
+    }
+    changeProcessorGroupState(isRelational ? relationalGroupId : influxGroupId, STATE.RUNNING);
+  }
+
+  private void updateConnectionsInInstancesGroup(String groupId) throws IOException {
+    ProcessorEntity distributeLoad = findDistributeLoad(groupId);
+
+    List<ConnectionEntity> distributeLoadOutgoingConnections = getDistributeLoadOutgoingConnections(
+      groupId, distributeLoad);
+
+    int existingConnections = distributeLoadOutgoingConnections.size();
+    int numberOfRelationships = Integer.valueOf(
+      distributeLoad.getComponent().getConfig().getProperties()
+        .get("Number of Relationships"));
+
+    if (numberOfRelationships != existingConnections) {
+      changeProcessorGroupState(groupId, STATE.STOPPED);
+      ScheduleComponentsEntity scheduleComponentsEntity = null;
+      updateDistributeLoad(existingConnections, distributeLoad.getId());
+
+      List<String> expectedNames = new ArrayList<>();
+      for (int i = 1; i <= existingConnections; i++) {
+        expectedNames.add(String.valueOf(i));
+      }
+
+      List<String> existingNames = distributeLoadOutgoingConnections.stream()
+        .map(connectionEntity -> connectionEntity.getStatus().getName()).collect(
+          Collectors.toList());
+
+      String newName = "";
+      for (String n : expectedNames) {
+        if (!existingNames.contains(n)) {
+          newName = n;
+          break;
+        }
+      }
+
+      Optional<ConnectionEntity> entityToUpdate = distributeLoadOutgoingConnections.stream().filter(
+        connectionEntity -> Integer.parseInt(connectionEntity.getStatus().getName())
+          > existingConnections).findAny();
+
+      if (entityToUpdate.isPresent()) {
+        entityToUpdate.get().getComponent()
+          .setSelectedRelationships(new HashSet<>(Arrays.asList(newName)));
+        updateConnection(entityToUpdate.get());
+      }
+
+      if (scheduleComponentsEntity != null) {
+        changeProcessorGroupState(groupId, STATE.RUNNING);
+      }
+    }
   }
 
   private void updateDistributeLoad(int relationships, String processorId) throws IOException {
@@ -1410,7 +1465,7 @@ public class NiFiClient {
     updateProcessor(processorId, properties);
   }
 
-  private void createDistributeLOadConnection(int relationships, String parentProcessGroupId,
+  private void createDistributeLoadConnection(int relationships, String parentProcessGroupId,
     String destinationProcessGroup, String processorId,
     String inputPortId) throws IOException {
     String name = "" + relationships;
@@ -1477,11 +1532,15 @@ public class NiFiClient {
     PortEntity inputPort = findInputPort(parentProcessGroupId);
 
     if (distributeLoad != null) {
-      Set<String> distributeLoadConnections =
-        distributeLoad.getComponent().getRelationships().stream().map(RelationshipDTO::getName)
-          .collect(Collectors.toSet());
+      int outgoingRelationships = getDistributeLoadOutgoingConnections(parentProcessGroupId,
+        distributeLoad).size();
+
+      outgoingRelationships += 1;
+      updateDistributeLoad(outgoingRelationships, distributeLoad.getId());
+
       connectSourceAndDestination(parentProcessGroupId, parentProcessGroupId, PROCESSOR.name(),
-        PROCESSOR.name(), distributeLoad.getId(), processorId, distributeLoadConnections);
+        PROCESSOR.name(), distributeLoad.getId(), processorId,
+        new HashSet<>(Arrays.asList(String.valueOf(outgoingRelationships))));
 
       changeProcessorStatus(distributeLoad.getComponent().getId(), STATE.RUNNING);
 
@@ -1533,6 +1592,15 @@ public class NiFiClient {
     });
 
     return getProcessorById(processorId);
+  }
+
+  private List<ConnectionEntity> getDistributeLoadOutgoingConnections(String parentProcessGroupId,
+    ProcessorEntity distributeLoad) throws IOException {
+    return getAllConnectionsOfProcessor(
+      distributeLoad.getId(), parentProcessGroupId).stream()
+      .filter(connectionEntity -> connectionEntity.getSourceId().equals(distributeLoad.getId()))
+      .collect(
+        Collectors.toList());
   }
 
   private void togglePort(PortEntity portEntity, STATE state, boolean isOutputPort)
@@ -1846,7 +1914,6 @@ public class NiFiClient {
         callReplyDTO.getCode());
     }
   }
-
 
   private RevisionDTO createRevisionDTO() {
     RevisionDTO revisionDTO = new RevisionDTO();

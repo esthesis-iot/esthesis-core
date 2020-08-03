@@ -9,6 +9,7 @@ import esthesis.platform.server.nifi.sinks.producers.NiFiProducerFactory;
 import esthesis.platform.server.nifi.sinks.writers.relational.CustomInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
@@ -66,7 +67,8 @@ public class ExecuteSQL implements NiFiProducerFactory {
     customInfo.setDbConnectionPool(dbConnectionPool);
     niFiSinkDTO.setCustomInfo(objectMapper.writeValueAsString(customInfo));
 
-    String executeSQL = niFiClientService.createExecuteSQL(niFiSinkDTO.getName(), dbConnectionPool, path);
+    String executeSQL = niFiClientService
+      .createExecuteSQL(niFiSinkDTO.getName(), dbConnectionPool, path);
 
     niFiSinkDTO.setProcessorId(executeSQL);
     enableControllerServices(dbConnectionPool);
@@ -89,7 +91,7 @@ public class ExecuteSQL implements NiFiProducerFactory {
       && conf.getPassword().equals(prevConf.getPassword()))) {
 
       CustomInfo customInfo = objectMapper.readValue(sink.getCustomInfo(), CustomInfo.class);
-       niFiClientService
+      niFiClientService
         .updateDBCConnectionPool(customInfo.getDbConnectionPool(), conf.getDatabaseConnectionURL(),
           conf.getDatabaseDriverClassName(),
           conf.getDatabaseDriverClassLocation(),
@@ -103,8 +105,22 @@ public class ExecuteSQL implements NiFiProducerFactory {
   @Override
   public String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
     String deletedProcessorId = niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
+    deleteControllerServices(niFiSinkDTO);
     niFiClientService.distributeLoadOfProducers(niFiSinkDTO.getHandler(), true);
     return deletedProcessorId;
+  }
+
+  private void deleteControllerServices(NiFiSinkDTO niFiSinkDTO) throws IOException {
+    String customInfoString = niFiSinkDTO.getCustomInfo();
+    if (customInfoString != null) {
+      CustomInfo customInfo = objectMapper.readValue(customInfoString, CustomInfo.class);
+      if (!StringUtils.isEmpty(customInfo.getJsonTreeReader())) {
+        niFiClientService.deleteController(customInfo.getJsonTreeReader());
+      }
+      if (!StringUtils.isEmpty(customInfo.getDbConnectionPool())) {
+        niFiClientService.deleteController(customInfo.getDbConnectionPool());
+      }
+    }
   }
 
   @Override
