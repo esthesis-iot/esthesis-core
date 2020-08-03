@@ -3,6 +3,9 @@ package esthesis.platform.server.config;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Various constants used throughout the application.
  */
@@ -143,6 +146,17 @@ public class AppConstants {
     FILESYSTEM(5);
 
     private final int type;
+    private static Map map = new HashMap<>();
+
+    static {
+      for (NIFI_SINK_HANDLER nifi_sink_handler : NIFI_SINK_HANDLER.values()) {
+        map.put(nifi_sink_handler.type, nifi_sink_handler);
+      }
+    }
+
+    public static NIFI_SINK_HANDLER valueOf(int type) {
+      return (NIFI_SINK_HANDLER) map.get(type);
+    }
 
   }
 

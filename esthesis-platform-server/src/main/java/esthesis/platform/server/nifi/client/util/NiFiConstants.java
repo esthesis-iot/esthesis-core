@@ -141,6 +141,7 @@ public class NiFiConstants {
     public static final String PUT_DB_RECORD_TRANSLATE_FIELD_NAMES = "put-db-record-translate"
       + "-field-names";
     public static final String AUTO_TERMINATED_RELATIONSHIPS = "autoTerminatedRelationships";
+    public static final String PUT_DB_RECORD_FIELD_CONTAINING_SQL = "put-db-record-field-containing-sql";
 
     public static final String SQL_PRE_QUERY = "sql-pre-query";
     public static final String SQL_SELECT_QUERY = "SQL select query";

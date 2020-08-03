@@ -26,6 +26,7 @@ import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PROTOCOL;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PSWD;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_DCBP_SERVICE;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_FIELD_CONTAINING_SQL;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_READER;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_STATEMENT_TYPE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_TABLE_NAME;
@@ -55,6 +56,7 @@ import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.DATA_UNIT;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.FAILED_RELATIONSHIP_TYPES;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATEMENT_TYPE;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.SUCCESSFUL_RELATIONSHIP_TYPES;
 import esthesis.platform.server.nifi.client.util.Util;
 import esthesis.platform.server.service.NiFiService;
@@ -1069,6 +1071,12 @@ public class NiFiClient {
     properties.put(PUT_DB_RECORD_READER, recordReaderId);
     properties.put(PUT_DB_RECORD_DCBP_SERVICE, dcbpServiceId);
     properties.put(PUT_DB_RECORD_TRANSLATE_FIELD_NAMES, "false");
+
+
+    if (statementType.equals(STATEMENT_TYPE.USE_STATE_ATTRIBUTE)) {
+      properties.put(PUT_DB_RECORD_FIELD_CONTAINING_SQL, "sql");
+    }
+
 
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
     processorConfigDTO.setAutoTerminatedRelationships(new HashSet<>(

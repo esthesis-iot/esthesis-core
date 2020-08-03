@@ -164,7 +164,14 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
   }
 
   private STATEMENT_TYPE getStatementType(int handler) {
-    return NIFI_SINK_HANDLER.TELEMETRY.getType() == handler ?
-      STATEMENT_TYPE.INSERT : STATEMENT_TYPE.UPDATE;
+    NIFI_SINK_HANDLER nifi_sink_handler = NIFI_SINK_HANDLER.valueOf(handler);
+    switch (nifi_sink_handler) {
+      case TELEMETRY:
+        return STATEMENT_TYPE.INSERT;
+      case METADATA:
+        return STATEMENT_TYPE.UPDATE;
+      default:
+        return STATEMENT_TYPE.USE_STATE_ATTRIBUTE;
+    }
   }
 }
