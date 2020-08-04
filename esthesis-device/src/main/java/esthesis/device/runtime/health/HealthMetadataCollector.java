@@ -48,11 +48,13 @@ public class HealthMetadataCollector {
   @Scheduled(fixedRateString = "${pingFreqMsec:60000}",
     initialDelayString = "${pingInitialDelayMsec:60000}")
   public void ping() {
-    try {
-      mqttClient.publish(Mqtt.EventType.PING, objectMapper
-        .writeValueAsBytes(new DevicePingDTO().setDeviceTime(Instant.now().toEpochMilli())));
-    } catch (Exception e) {
-      log.log(Level.SEVERE, "Could not produce JSON output for ping data.", e);
+    if (appProperties.isProxyMqtt()) {
+      try {
+        mqttClient.publish(Mqtt.EventType.PING, objectMapper
+          .writeValueAsBytes(new DevicePingDTO().setDeviceTime(Instant.now().toEpochMilli())));
+      } catch (Exception e) {
+        log.log(Level.SEVERE, "Could not produce JSON output for ping data.", e);
+      }
     }
   }
 
@@ -60,99 +62,101 @@ public class HealthMetadataCollector {
   @Scheduled(fixedRateString = "${healthDataFreqMsec:900000}",
     initialDelayString = "${healthDataInitialDelayMsec:300000}")
   public void collectHealthData() {
-    try {
-      DeviceHealthDataDTO deviceHealthDataDTO = new DeviceHealthDataDTO();
-
-      SystemInfo si = new SystemInfo();
-
-      // OS details.
-      final OperatingSystem operatingSystem = si.getOperatingSystem();
-
-      // CPU.
-      HardwareAbstractionLayer hal = si.getHardware();
-      final CentralProcessor processor = hal.getProcessor();
-      final Sensors sensors = hal.getSensors();
-      if (appProperties.isHcCpuTemperature()) {
-        deviceHealthDataDTO.setCpuTemperature(sensors.getCpuTemperature());
-      }
-
-      // Memory.
-      final GlobalMemory memory = hal.getMemory();
-      if (appProperties.isHcMemoryAvailable()) {
-        deviceHealthDataDTO.setMemoryAvailable(memory.getAvailable());
-      }
-      if (appProperties.isHcMemoryTotal()) {
-        deviceHealthDataDTO.setMemoryTotal(memory.getTotal());
-      }
-
-      // Load.
-      double[] loadAverage = processor.getSystemLoadAverage(3);
-      if (appProperties.isHcLoad1()) {
-        deviceHealthDataDTO.setLoad1(loadAverage[0] < 0 ? 0 : loadAverage[0]);
-      }
-      if (appProperties.isHcLoad5()) {
-        deviceHealthDataDTO.setLoad5(loadAverage[1] < 0 ? 0 : loadAverage[1]);
-      }
-      if (appProperties.isHcLoad15()) {
-        deviceHealthDataDTO.setLoad15(loadAverage[2] < 0 ? 0 : loadAverage[2]);
-      }
-
-      // Time.
-      if (appProperties.isHcCurrentTime()) {
-        deviceHealthDataDTO.setCurrentTime(Instant.now().toEpochMilli());
-      }
-      if (appProperties.isHcUpTime()) {
-        deviceHealthDataDTO.setUpTime(ChronoUnit.MILLIS.between(startupTime, Instant.now()));
-      }
-
-      // IP Address.
-      if (appProperties.isHcIpAddress()) {
-        deviceHealthDataDTO.setIpAddress(IPHelper.getIPAddress());
-      }
-
-      // Runtime agent version information.
-      if (appProperties.isRuntimeVersion() || appProperties.isRuntimeCommitId()) {
-        // Get versioning info.
-        VersionDTO versionDTO = objectMapper
-          .readValue(this.getClass().getResourceAsStream("/git.json"), VersionDTO.class);
-        if (appProperties.isRuntimeVersion()) {
-          deviceHealthDataDTO.setRuntimeVersion(versionDTO.getBuildVersion());
-        }
-        if (appProperties.isRuntimeCommitId()) {
-          deviceHealthDataDTO.setRuntimeCommitId(versionDTO.getCommitId());
-        }
-      }
-
-      // Firmware version information.
-      if (StringUtils.isNotEmpty(appProperties.getFirmwareVersionFile())) {
-        deviceHealthDataDTO.setFirmwareVersion(FileUtils
-          .readFileToString(new File(appProperties.getFirmwareVersionFile()),
-            StandardCharsets.UTF_8));
-      }
-
-      // Create a JSON representation of the health data.
-      DeviceHealthDTO deviceHealthDTO = new DeviceHealthDTO();
-      deviceHealthDTO.setDeviceHealthDataDTO(deviceHealthDataDTO);
-      JsonNode node = objectMapper.valueToTree(deviceHealthDTO);
-
-      // Add additional nodes to JSON for the filesystems.
-      if (appProperties.isHcFs()) {
-        JsonNode valuesRoot = node.get("v");
-        final FileSystem fileSystem = operatingSystem.getFileSystem();
-        OSFileStore[] fsArray = fileSystem.getFileStores();
-        for (OSFileStore fs : fsArray) {
-          ((ObjectNode) valuesRoot).put("mount_free_" + fs.getMount(), fs.getUsableSpace());
-          ((ObjectNode) valuesRoot).put("mount_total_" + fs.getMount(), fs.getTotalSpace());
-        }
-      }
-
+    if (appProperties.isProxyMqtt()) {
       try {
-        mqttClient.publish(Mqtt.EventType.TELEMETRY, objectMapper.writeValueAsBytes(node));
-      } catch (JsonProcessingException e) {
-        log.log(Level.SEVERE, "Could not produce JSON output for health data.", e);
+        DeviceHealthDataDTO deviceHealthDataDTO = new DeviceHealthDataDTO();
+
+        SystemInfo si = new SystemInfo();
+
+        // OS details.
+        final OperatingSystem operatingSystem = si.getOperatingSystem();
+
+        // CPU.
+        HardwareAbstractionLayer hal = si.getHardware();
+        final CentralProcessor processor = hal.getProcessor();
+        final Sensors sensors = hal.getSensors();
+        if (appProperties.isHcCpuTemperature()) {
+          deviceHealthDataDTO.setCpuTemperature(sensors.getCpuTemperature());
+        }
+
+        // Memory.
+        final GlobalMemory memory = hal.getMemory();
+        if (appProperties.isHcMemoryAvailable()) {
+          deviceHealthDataDTO.setMemoryAvailable(memory.getAvailable());
+        }
+        if (appProperties.isHcMemoryTotal()) {
+          deviceHealthDataDTO.setMemoryTotal(memory.getTotal());
+        }
+
+        // Load.
+        double[] loadAverage = processor.getSystemLoadAverage(3);
+        if (appProperties.isHcLoad1()) {
+          deviceHealthDataDTO.setLoad1(loadAverage[0] < 0 ? 0 : loadAverage[0]);
+        }
+        if (appProperties.isHcLoad5()) {
+          deviceHealthDataDTO.setLoad5(loadAverage[1] < 0 ? 0 : loadAverage[1]);
+        }
+        if (appProperties.isHcLoad15()) {
+          deviceHealthDataDTO.setLoad15(loadAverage[2] < 0 ? 0 : loadAverage[2]);
+        }
+
+        // Time.
+        if (appProperties.isHcCurrentTime()) {
+          deviceHealthDataDTO.setCurrentTime(Instant.now().toEpochMilli());
+        }
+        if (appProperties.isHcUpTime()) {
+          deviceHealthDataDTO.setUpTime(ChronoUnit.MILLIS.between(startupTime, Instant.now()));
+        }
+
+        // IP Address.
+        if (appProperties.isHcIpAddress()) {
+          deviceHealthDataDTO.setIpAddress(IPHelper.getIPAddress());
+        }
+
+        // Runtime agent version information.
+        if (appProperties.isRuntimeVersion() || appProperties.isRuntimeCommitId()) {
+          // Get versioning info.
+          VersionDTO versionDTO = objectMapper
+            .readValue(this.getClass().getResourceAsStream("/git.json"), VersionDTO.class);
+          if (appProperties.isRuntimeVersion()) {
+            deviceHealthDataDTO.setRuntimeVersion(versionDTO.getBuildVersion());
+          }
+          if (appProperties.isRuntimeCommitId()) {
+            deviceHealthDataDTO.setRuntimeCommitId(versionDTO.getCommitId());
+          }
+        }
+
+        // Firmware version information.
+        if (StringUtils.isNotEmpty(appProperties.getFirmwareVersionFile())) {
+          deviceHealthDataDTO.setFirmwareVersion(FileUtils
+            .readFileToString(new File(appProperties.getFirmwareVersionFile()),
+              StandardCharsets.UTF_8));
+        }
+
+        // Create a JSON representation of the health data.
+        DeviceHealthDTO deviceHealthDTO = new DeviceHealthDTO();
+        deviceHealthDTO.setDeviceHealthDataDTO(deviceHealthDataDTO);
+        JsonNode node = objectMapper.valueToTree(deviceHealthDTO);
+
+        // Add additional nodes to JSON for the filesystems.
+        if (appProperties.isHcFs()) {
+          JsonNode valuesRoot = node.get("v");
+          final FileSystem fileSystem = operatingSystem.getFileSystem();
+          OSFileStore[] fsArray = fileSystem.getFileStores();
+          for (OSFileStore fs : fsArray) {
+            ((ObjectNode) valuesRoot).put("mount_free_" + fs.getMount(), fs.getUsableSpace());
+            ((ObjectNode) valuesRoot).put("mount_total_" + fs.getMount(), fs.getTotalSpace());
+          }
+        }
+
+        try {
+          mqttClient.publish(Mqtt.EventType.TELEMETRY, objectMapper.writeValueAsBytes(node));
+        } catch (JsonProcessingException e) {
+          log.log(Level.SEVERE, "Could not produce JSON output for health data.", e);
+        }
+      } catch (Exception e) {
+        log.log(Level.SEVERE, "Could not obtain health data.", e);
       }
-    } catch (Exception e) {
-      log.log(Level.SEVERE, "Could not obtain health data.", e);
     }
   }
 }
