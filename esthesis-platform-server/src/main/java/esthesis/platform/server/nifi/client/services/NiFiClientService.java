@@ -17,9 +17,12 @@ import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.nifi.web.api.dto.flow.ProcessGroupFlowDTO;
 import org.apache.nifi.web.api.entity.AboutEntity;
+import org.apache.nifi.web.api.entity.ConnectionEntity;
 import org.apache.nifi.web.api.entity.ControllerServiceEntity;
 import org.apache.nifi.web.api.entity.FlowEntity;
+import org.apache.nifi.web.api.entity.ProcessGroupEntity;
 import org.apache.nifi.web.api.entity.ProcessorEntity;
 import org.apache.nifi.web.api.entity.ScheduleComponentsEntity;
 import org.apache.nifi.web.api.entity.TemplateEntity;
@@ -35,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -750,7 +754,36 @@ public class NiFiClientService {
    * @param processGroupId The id of the group that will be deleted.
    */
   public void deleteProcessGroup(String processGroupId) throws IOException {
+    niFiClient.changeProcessorGroupState(processGroupId, STATE.STOPPED);
+    niFiClient.changeProcessorGroupState(processGroupId, STATE.DISABLED);
+    niFiClient.getStatus();
+    if(niFiClient.getStatus().getControllerStatus().getFlowFilesQueued() > 0) {
+      clearQueue(processGroupId);
+    }
+    niFiClient.changeGroupControllerServicesState(processGroupId, STATE.DISABLED);
     niFiClient.deleteProcessGroup(processGroupId);
+  }
+
+  private void clearQueue(String id) throws IOException {
+    ProcessGroupFlowDTO processGroupFlow = niFiClient.getProcessGroups(id).getProcessGroupFlow();
+    Set<ProcessGroupEntity> processGroups = processGroupFlow.getFlow().getProcessGroups();
+
+    if (processGroups.size() != 0) {
+      Set<ConnectionEntity> allConnectionsOfProcessGroup = niFiClient
+        .getAllConnectionsOfProcessGroup(id);
+      allConnectionsOfProcessGroup.stream()
+        .forEach(connectionEntity -> {
+          try {
+            niFiClient.emptyQueueOfConnection(connectionEntity.getId());
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        });
+
+      for (ProcessGroupEntity processGroupEntity : processGroups) {
+        clearQueue(processGroupEntity.getId());
+      }
+    }
   }
 
   /**
@@ -774,9 +807,9 @@ public class NiFiClientService {
 
   /**
    * Distributes the load in the producers group dynamically.
+   *
    * @param handler The producer handler (metadata/telemetry).
    * @param isRelational whether the producer is relational or influx.
-   * @throws IOException
    */
   public void distributeLoadOfProducers(int handler, boolean isRelational) throws IOException {
 

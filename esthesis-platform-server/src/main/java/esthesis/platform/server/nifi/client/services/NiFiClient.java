@@ -80,11 +80,13 @@ import org.apache.nifi.web.api.dto.ProcessorDTO;
 import org.apache.nifi.web.api.dto.RelationshipDTO;
 import org.apache.nifi.web.api.dto.RevisionDTO;
 import org.apache.nifi.web.api.entity.AboutEntity;
+import org.apache.nifi.web.api.entity.ActivateControllerServicesEntity;
 import org.apache.nifi.web.api.entity.BulletinEntity;
 import org.apache.nifi.web.api.entity.ConnectionEntity;
 import org.apache.nifi.web.api.entity.ControllerServiceEntity;
 import org.apache.nifi.web.api.entity.ControllerServiceRunStatusEntity;
 import org.apache.nifi.web.api.entity.ControllerServicesEntity;
+import org.apache.nifi.web.api.entity.ControllerStatusEntity;
 import org.apache.nifi.web.api.entity.FlowEntity;
 import org.apache.nifi.web.api.entity.InputPortsEntity;
 import org.apache.nifi.web.api.entity.InstantiateTemplateRequestEntity;
@@ -318,6 +320,16 @@ public class NiFiClient {
     }
   }
 
+  public ControllerStatusEntity getStatus() throws IOException {
+    final CallReplyDTO callReplyDTO = getCall("/flow/status");
+
+    if (callReplyDTO.isSuccessful()) {
+      return mapper.readValue(callReplyDTO.getBody(), ControllerStatusEntity.class);
+    } else {
+      throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
+    }
+  }
+
   //  public AccessStatusEntity getAccessStatus()
   //      throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException, IOException, KeyManagementException, KeyStoreException {
   //    CallReplyDTO callReplyDTO = getSSLCall("/access");
@@ -446,6 +458,25 @@ public class NiFiClient {
     if (callReplyDTO.isSuccessful()) {
       return mapper.readValue(callReplyDTO.getBody(),
         ProcessorsEntity.class);
+    } else {
+      throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
+    }
+  }
+
+  public ActivateControllerServicesEntity changeGroupControllerServicesState(String parentGroupId,
+    STATE state) throws IOException {
+    ActivateControllerServicesEntity activateControllerServicesEntity =
+      new ActivateControllerServicesEntity();
+
+    activateControllerServicesEntity.setId(parentGroupId);
+    activateControllerServicesEntity.setState(state.name());
+
+    final CallReplyDTO callReplyDTO  = putJSONCall("/flow/process-groups/" + parentGroupId +
+      "/controller-services", activateControllerServicesEntity);
+
+    if (callReplyDTO.isSuccessful()) {
+      return mapper.readValue(callReplyDTO.getBody(),
+        ActivateControllerServicesEntity.class);
     } else {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
     }
@@ -1780,6 +1811,7 @@ public class NiFiClient {
 
     //Delete connections of the processor
     for (ConnectionEntity connectionEntity : processorConnections) {
+      emptyQueueOfConnection(connectionEntity.getId());
       deleteConnection(connectionEntity);
     }
 
@@ -1830,7 +1862,7 @@ public class NiFiClient {
     }
   }
 
-  private Set<ConnectionEntity> getAllConnectionsOfProcessGroup(String parentGroupId)
+  public Set<ConnectionEntity> getAllConnectionsOfProcessGroup(String parentGroupId)
     throws IOException {
     ProcessGroupFlowEntity processGroups = getProcessGroups(parentGroupId);
     return processGroups.getProcessGroupFlow().getFlow()
@@ -1848,6 +1880,10 @@ public class NiFiClient {
         || connectionEntity.getSourceId().equals(processorId))
       .collect(
         Collectors.toList());
+  }
+
+  public void emptyQueueOfConnection(String connectionId) throws IOException {
+    postJSONCall("/flowfile-queues/" + connectionId + "/drop-requests", "");
   }
 
 
