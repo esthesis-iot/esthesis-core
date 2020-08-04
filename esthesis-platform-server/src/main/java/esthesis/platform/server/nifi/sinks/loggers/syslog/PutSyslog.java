@@ -49,7 +49,8 @@ public class PutSyslog implements NiFiLoggerFactory {
       "keystoreFilename: \n" +
       "keystorePassword: \n" +
       "truststoreFilename: \n" +
-      "truststorePassword: ";
+      "truststorePassword:  \n" +
+      "schedulingPeriod: ";
   }
 
   @Override
@@ -79,7 +80,7 @@ public class PutSyslog implements NiFiLoggerFactory {
     String putSyslog = niFiClientService
       .createPutSyslog(niFiSinkDTO.getName(), sslContextId, conf.getHostname(),
         conf.getPort(),
-        conf.getProtocol(), conf.getMessageBody(), conf.getMessagePriority(), path);
+        conf.getProtocol(), conf.getMessageBody(), conf.getMessagePriority(), conf.getSchedulingPeriod(), path);
 
     niFiSinkDTO.setProcessorId(putSyslog);
 
@@ -125,7 +126,7 @@ public class PutSyslog implements NiFiLoggerFactory {
 
     return niFiClientService
       .updatePutSyslog(sink.getProcessorId(), sslContextId, conf.getHostname(), conf.getPort(),
-        conf.getProtocol(), conf.getMessageBody(), conf.getMessagePriority());
+        conf.getProtocol(), conf.getMessageBody(), conf.getMessagePriority(), conf.getSchedulingPeriod());
   }
 
   @Override

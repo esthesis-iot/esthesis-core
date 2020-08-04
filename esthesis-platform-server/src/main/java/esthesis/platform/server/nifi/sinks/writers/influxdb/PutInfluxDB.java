@@ -55,7 +55,8 @@ public class PutInfluxDB implements NiFiWriterFactory {
         "consistencyLevel: \n" +
         "charset : \n" +
         "maxRecordSize: \n" +
-        "maxRecordSizeUnit: ";
+        "maxRecordSizeUnit:  \n" +
+        "schedulingPeriod: ";
   }
 
   @Override
@@ -71,7 +72,7 @@ public class PutInfluxDB implements NiFiWriterFactory {
       getConsistencyLevel(conf.getConsistencyLevel()),
       conf.getRetentionPolicy(),
       getMaxRecordSize(conf.getMaxRecordSize()),
-      getDataUnit(conf.getMaxRecordSizeUnit()), path);
+      getDataUnit(conf.getMaxRecordSizeUnit()), conf.getSchedulingPeriod(), path);
 
     niFiSinkDTO.setProcessorId(putInfluxDB);
     return niFiSinkDTO;
@@ -87,7 +88,7 @@ public class PutInfluxDB implements NiFiWriterFactory {
       getConsistencyLevel(conf.getConsistencyLevel()),
       conf.getRetentionPolicy(),
       getMaxRecordSize(conf.getMaxRecordSize()),
-      getDataUnit(conf.getMaxRecordSizeUnit()));
+      getDataUnit(conf.getMaxRecordSizeUnit()), conf.getSchedulingPeriod());
   }
 
   @Override

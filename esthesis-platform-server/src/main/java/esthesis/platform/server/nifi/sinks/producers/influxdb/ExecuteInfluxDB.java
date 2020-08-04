@@ -27,7 +27,9 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
   }
 
   @Override
-  public boolean supportsMetadataProduce() { return true; }
+  public boolean supportsMetadataProduce() {
+    return true;
+  }
 
   @Override
   public String getFriendlyName() {
@@ -40,7 +42,8 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
       + "databaseUrl: \n"
       + "maxConnectionTimeoutSeconds: \n"
       + "queryResultTimeUnit: \n"
-      + "queryChunkSize: ";
+      + "queryChunkSize: \n"
+      + "schedulingPeriod: ";
   }
 
   @Override
@@ -52,6 +55,7 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
       .createExecuteInfluxDB(niFiSinkDTO.getName(), conf.getDatabaseName(),
         conf.getDatabaseUrl(), Integer.parseInt(conf.getMaxConnectionTimeoutSeconds()),
         conf.getQueryResultTimeUnit(), Integer.parseInt(conf.getQueryChunkSize()),
+        conf.getSchedulingPeriod(),
         path);
 
     niFiSinkDTO.setProcessorId(executeInfluxDB);
@@ -67,7 +71,8 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
     return niFiClientService
       .updateExecuteInfluxDB(sinkDTO.getProcessorId(), conf.getDatabaseName(),
         conf.getDatabaseUrl(), Integer.parseInt(conf.getMaxConnectionTimeoutSeconds()),
-        conf.getQueryResultTimeUnit(), Integer.parseInt(conf.getQueryChunkSize()));
+        conf.getQueryResultTimeUnit(), Integer.parseInt(conf.getQueryChunkSize()),
+        conf.getSchedulingPeriod());
   }
 
   @Override

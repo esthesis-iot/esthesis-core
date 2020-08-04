@@ -46,7 +46,8 @@ public class ExecuteSQL implements NiFiProducerFactory {
       "databaseDriverClassName: \n" +
       "databaseDriverClassLocation: \n" +
       "databaseUser: \n" +
-      "password: ";
+      "password:  \n" +
+      "schedulingPeriod: ";
   }
 
   @Override
@@ -68,7 +69,7 @@ public class ExecuteSQL implements NiFiProducerFactory {
     niFiSinkDTO.setCustomInfo(objectMapper.writeValueAsString(customInfo));
 
     String executeSQL = niFiClientService
-      .createExecuteSQL(niFiSinkDTO.getName(), dbConnectionPool, path);
+      .createExecuteSQL(niFiSinkDTO.getName(), dbConnectionPool, conf.getSchedulingPeriod(), path);
 
     niFiSinkDTO.setProcessorId(executeSQL);
     enableControllerServices(dbConnectionPool);
@@ -98,6 +99,8 @@ public class ExecuteSQL implements NiFiProducerFactory {
           conf.getDatabaseUser(),
           conf.getPassword());
     }
+
+    niFiClientService.updateExecuteSQL(sink.getProcessorId(), conf.getSchedulingPeriod());
 
     return sink.getProcessorId();
   }

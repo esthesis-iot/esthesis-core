@@ -10,5 +10,6 @@ public class PutFileConfiguration {
 
   @NotNull
   private String directory;
+  private String schedulingPeriod;
 
 }

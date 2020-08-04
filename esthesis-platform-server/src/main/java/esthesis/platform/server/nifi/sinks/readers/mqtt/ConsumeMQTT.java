@@ -54,7 +54,8 @@ public class ConsumeMQTT implements NiFiReaderFactory {
         "keystoreFilename: \n" +
         "keystorePassword: \n" +
         "truststoreFilename: \n" +
-        "truststorePassword: ";
+        "truststorePassword:  \n" +
+        "schedulingPeriod: ";
   }
 
   @Override
@@ -83,7 +84,7 @@ public class ConsumeMQTT implements NiFiReaderFactory {
 
     String consumerMqtt = niFiClientService
       .createConsumerMqtt(niFiSinkDTO.getName(), conf.getUri(), conf.getTopic(), conf.getQos(),
-        conf.getQueueSize(), sslContextId, path);
+        conf.getQueueSize(), sslContextId, conf.getSchedulingPeriod(), path);
 
     niFiSinkDTO.setProcessorId(consumerMqtt);
     return niFiSinkDTO;
@@ -123,7 +124,7 @@ public class ConsumeMQTT implements NiFiReaderFactory {
     return niFiClientService
       .updateConsumerMQTT(sinkDTO.getProcessorId(), sslContextId, conf.getUri(), conf.getTopic(),
         conf.getQos(),
-        conf.getQueueSize());
+        conf.getQueueSize(), conf.getSchedulingPeriod());
   }
 
   @Override

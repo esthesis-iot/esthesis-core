@@ -22,4 +22,5 @@ public class PutInfluxDBConfiguration {
   private String charset;
   private String maxRecordSize;
   private String maxRecordSizeUnit;
+  private String schedulingPeriod;
 }

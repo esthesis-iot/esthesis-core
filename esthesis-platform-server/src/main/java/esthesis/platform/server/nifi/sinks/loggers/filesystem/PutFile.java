@@ -37,7 +37,8 @@ public class PutFile implements NiFiLoggerFactory {
 
   @Override
   public String getConfigurationTemplate() {
-    return "directory: ";
+    return "directory: \n" +
+      "schedulingPeriod: ";
   }
 
   @Override
@@ -46,7 +47,8 @@ public class PutFile implements NiFiLoggerFactory {
 
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
 
-    String putFileId = niFiClientService.createPutFile(niFiSinkDTO.getName(), conf.getDirectory(), path);
+    String putFileId = niFiClientService
+      .createPutFile(niFiSinkDTO.getName(), conf.getDirectory(), conf.getSchedulingPeriod(), path);
 
     niFiSinkDTO.setProcessorId(putFileId);
 
@@ -58,7 +60,7 @@ public class PutFile implements NiFiLoggerFactory {
     NiFiSinkDTO sinkDTO) throws IOException {
     conf = extractConfiguration(sinkDTO.getConfiguration());
     return niFiClientService
-      .updatePutFile(sinkDTO.getProcessorId(), conf.getDirectory());
+      .updatePutFile(sinkDTO.getProcessorId(), conf.getDirectory(), conf.getSchedulingPeriod());
   }
 
   @Override

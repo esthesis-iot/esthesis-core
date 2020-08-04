@@ -53,7 +53,8 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
         "databaseDriverClassName: \n" +
         "databaseDriverClassLocation: \n" +
         "databaseUser: \n" +
-        "password: ";
+        "password: \n" +
+        "schedulingPeriod: ";
   }
 
   @Override
@@ -74,7 +75,7 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
 
     String putDatabaseRecord = niFiClientService
       .createPutDatabaseRecord(niFiSinkDTO.getName(), jsonTreeReader, dbConnectionPool,
-        getStatementType(niFiSinkDTO.getHandler()), path);
+        getStatementType(niFiSinkDTO.getHandler()), conf.getSchedulingPeriod(), path);
 
     CustomInfo customInfo = new CustomInfo();
     customInfo.setJsonTreeReader(jsonTreeReader);
@@ -109,7 +110,7 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
     }
 
     return niFiClientService.updatePutDatabaseRecord(sink.getProcessorId(),
-      getStatementType(sinkDTO.getHandler()));
+      getStatementType(sinkDTO.getHandler()), conf.getSchedulingPeriod());
   }
 
   @Override

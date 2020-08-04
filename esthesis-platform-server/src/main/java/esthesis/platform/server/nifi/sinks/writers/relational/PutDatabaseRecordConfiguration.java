@@ -17,5 +17,5 @@ public class PutDatabaseRecordConfiguration {
   @NotNull
   private String databaseUser;
   private String password;
-  private String tableName;
+  private String schedulingPeriod;
 }

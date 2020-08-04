@@ -17,5 +17,6 @@ public class ExecuteSQLConfiguration {
   @NotNull
   private String databaseUser;
   private String password;
+  private String schedulingPeriod;
 
 }

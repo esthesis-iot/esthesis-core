@@ -20,4 +20,5 @@ public class ConsumeMQTTConfiguration {
   private String keystorePassword;
   private String truststoreFilename;
   private String truststorePassword;
+  private String schedulingPeriod;
 }

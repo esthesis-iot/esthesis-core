@@ -429,11 +429,13 @@ public class NiFiClientService {
    * @param queueSize Maximum number of messages this processor will hold in memory at one time.
    * @param sslContextServiceId the if of the SSL Context Service used to provide client certificate
    * information for TLS/SSL connections.
+   * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @param path The path of the parent group where the processor will be created.
    * @return The id of the newly created processor.
    */
   public String createConsumerMqtt(@NotNull String name, @NotNull String uri, @NotNull String topic,
-    int qos, int queueSize, @Nullable String sslContextServiceId, @NotNull String[] path)
+    int qos, int queueSize, @Nullable String sslContextServiceId,
+    String schedulingPeriod, @NotNull String[] path)
     throws IOException {
     // Find the group Id of the process group under which this reader will be created.
     String parentProcessGroupId = findProcessGroupId(path);
@@ -441,7 +443,7 @@ public class NiFiClientService {
     // Create the consumer.
     final ProcessorEntity processorEntity = niFiClient
       .createConsumerMQTT(parentProcessGroupId, name, uri, topic, qos, queueSize,
-        sslContextServiceId);
+        sslContextServiceId, schedulingPeriod);
 
     return processorEntity.getId();
   }
@@ -454,19 +456,21 @@ public class NiFiClientService {
    * @param topic The MQTT topic filter to designate the topics to subscribe to.
    * @param qos The Quality of Service(QoS) to receive the message with.
    * @param queueSize Maximum number of messages this processor will hold in memory at one time.
+   * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @param path The path of the parent group where the processor will be created.
    * @return The id of the newly created processor.
    */
   public String createConsumerMqtt(String name, String uri, String topic, int qos, int queueSize,
-    String[] path) throws IOException {
-    return createConsumerMqtt(name, uri, topic, qos, queueSize, null, path);
+    String schedulingPeriod, String[] path) throws IOException {
+    return createConsumerMqtt(name, uri, topic, qos, queueSize, schedulingPeriod, path);
   }
 
   public String updateConsumerMQTT(String id, String sslContextId, String uri, String topic,
     int qos,
-    int queueSize)
+    int queueSize, String schedulingPeriod)
     throws IOException {
-    return niFiClient.updateConsumeMQTT(id, sslContextId, uri, topic, qos, queueSize).getId();
+    return niFiClient
+      .updateConsumeMQTT(id, sslContextId, uri, topic, qos, queueSize, schedulingPeriod).getId();
   }
 
   /**
@@ -484,20 +488,23 @@ public class NiFiClientService {
    * @param retentionPolicy Retention policy for the saving the records.
    * @param maxRecordSize Maximum size of records allowed to be posted in one batch
    * @param maxRecordSizeUnit Unit for max record size.
+   * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @param path The path of the parent group where the processor will be created.
    * @return The id of the newly created processor.
    */
   public String createPutInfluxDB(@NotNull String name, @NotNull String dbName, @NotNull String url,
     int maxConnectionTimeoutSeconds, String username, String password, String charset,
     CONSISTENCY_LEVEL level, String retentionPolicy, int maxRecordSize,
-    DATA_UNIT maxRecordSizeUnit, @NotNull String[] path) throws IOException {
+    DATA_UNIT maxRecordSizeUnit, String schedulingPeriod, @NotNull String[] path)
+    throws IOException {
     // Find the group Id of the process group under which this reader will be created.
     String parentProcessGroupId = findProcessGroupId(path);
 
     // Create the influx db writer.
     final ProcessorEntity processorEntity = niFiClient
       .createPutInfluxDB(parentProcessGroupId, name, dbName, url, maxConnectionTimeoutSeconds,
-        username, password, charset, level, retentionPolicy, maxRecordSize, maxRecordSizeUnit);
+        username, password, charset, level, retentionPolicy, maxRecordSize, maxRecordSizeUnit,
+        schedulingPeriod);
 
     return processorEntity.getId();
   }
@@ -517,15 +524,17 @@ public class NiFiClientService {
    * @param retentionPolicy Retention policy for the saving the records.
    * @param maxRecordSize Maximum size of records allowed to be posted in one batch
    * @param maxRecordSizeUnit Unit for max record size.
+   * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return The id of the processor.
    */
   public String updatePutInfluxDB(String id, @NotNull String dbName, @NotNull String url,
     int maxConnectionTimeoutSeconds, String username, String password, String charset,
     CONSISTENCY_LEVEL level, String retentionPolicy, int maxRecordSize,
-    DATA_UNIT maxRecordSizeUnit) throws IOException {
+    DATA_UNIT maxRecordSizeUnit, String schedulingPeriod) throws IOException {
 
     return niFiClient.updatePutInfluxDB(id, dbName, url, maxConnectionTimeoutSeconds, username,
-      password, charset, level, retentionPolicy, maxRecordSize, maxRecordSizeUnit).getId();
+      password, charset, level, retentionPolicy, maxRecordSize, maxRecordSizeUnit, schedulingPeriod)
+      .getId();
   }
 
   /**
@@ -537,12 +546,13 @@ public class NiFiClientService {
    * @param dcbpServiceId The id of the Controller Service that is used to obtain a connection to
    * the database for sending records.
    * @param statementType Specifies the type of SQL Statement to generate.
+   * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @param path The path of the parent group where the processor will be created.
    * @return The id of the newly created processor.
    */
   public String createPutDatabaseRecord(
     @NotNull String name, @NotNull String recordReaderId, @NotNull String dcbpServiceId,
-    @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType,
+    @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType, String schedulingPeriod,
     @NotNull String[] path) throws IOException {
     // Configuration.
     String parentProcessGroupId = findProcessGroupId(path);
@@ -550,7 +560,7 @@ public class NiFiClientService {
     // Create the database writer.
     final ProcessorEntity processorEntity = niFiClient
       .createPutDatabaseRecord(parentProcessGroupId, name, recordReaderId,
-        dcbpServiceId, statementType);
+        dcbpServiceId, statementType, schedulingPeriod);
 
     return processorEntity.getId();
   }
@@ -560,12 +570,14 @@ public class NiFiClientService {
    *
    * @param processorId The id of the processor.
    * @param statementType Specifies the type of SQL Statement to generate.
+   * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return The id of the newly updated processor.
    */
   public String updatePutDatabaseRecord(String processorId,
-    @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType) throws IOException {
+    @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType, String schedulingPeriod)
+    throws IOException {
 
-    return niFiClient.updatePutDatabaseRecord(processorId, statementType).getId();
+    return niFiClient.updatePutDatabaseRecord(processorId, statementType, schedulingPeriod).getId();
   }
 
   /**
@@ -578,19 +590,21 @@ public class NiFiClientService {
    * Database
    * @param queryResultTimeUnit The time unit of query results from theInflux Database.
    * @param queryChunkSize The chunk size of the query result.
+   * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @param path The path of the parent group where the processor will be created.
    * @return the id of the newly created processor.
    */
   public String createExecuteInfluxDB(@NotNull String name, @NotNull String dbName,
     @NotNull String url,
     int maxConnectionTimeoutSeconds, String queryResultTimeUnit, int queryChunkSize,
+    String schedulingPeriod,
     @NotNull String[] path)
     throws IOException {
 
     String parentProcessGroupId = findProcessGroupId(path);
 
     return niFiClient.createExecuteInfluxDB(parentProcessGroupId, name, dbName, url,
-      maxConnectionTimeoutSeconds, queryResultTimeUnit, queryChunkSize)
+      maxConnectionTimeoutSeconds, queryResultTimeUnit, queryChunkSize, schedulingPeriod)
       .getId();
   }
 
@@ -604,15 +618,17 @@ public class NiFiClientService {
    * Database
    * @param queryResultTimeUnit The time unit of query results from theInflux Database.
    * @param queryChunkSize The chunk size of the query result.
+   * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return the id of the updated processor.
    */
   public String updateExecuteInfluxDB(@NotNull String processorId, @NotNull String dbName,
     @NotNull String url,
-    int maxConnectionTimeoutSeconds, String queryResultTimeUnit, int queryChunkSize)
+    int maxConnectionTimeoutSeconds, String queryResultTimeUnit, int queryChunkSize,
+    String schedulingPeriod)
     throws IOException {
 
     return niFiClient.updateExecuteInfluxDB(processorId, dbName, url, maxConnectionTimeoutSeconds
-      , queryResultTimeUnit, queryChunkSize).getId();
+      , queryResultTimeUnit, queryChunkSize, schedulingPeriod).getId();
   }
 
   /**
@@ -620,15 +636,22 @@ public class NiFiClientService {
    *
    * @param name The name of the processor.
    * @param dcbpServiceId The if of the Database Connection Pool service.
+   * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @param path The path of the parent group where the processor will be created.
    * @return the id of the newly created processor.
    */
-  public String createExecuteSQL(@NotNull String name, String dcbpServiceId, @NotNull String[] path)
+  public String createExecuteSQL(@NotNull String name, String dcbpServiceId,
+    String schedulingPeriod, @NotNull String[] path)
     throws IOException {
 
     String parentProcessGroupId = findProcessGroupId(path);
 
-    return niFiClient.createExecuteSQL(parentProcessGroupId, name, dcbpServiceId).getId();
+    return niFiClient.createExecuteSQL(parentProcessGroupId, name, dcbpServiceId, schedulingPeriod)
+      .getId();
+  }
+
+  public String updateExecuteSQL(String processorId, String schedulingPeriod) throws IOException {
+    return niFiClient.updateExecuteSQL(processorId, schedulingPeriod).getId();
   }
 
   /**
@@ -636,14 +659,17 @@ public class NiFiClientService {
    *
    * @param name The name of the processor.
    * @param directory The directory where the files will be created.
+   * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @param path The path of the parent group where the processor will be created.
    * @return the id of the newly created processor.
    */
-  public String createPutFile(String name, String directory, String[] path)
+  public String createPutFile(String name, String directory, String schedulingPeriod,
+    String[] path)
     throws IOException {
 
     String parentProcessGroupId = findProcessGroupId(path);
-    return niFiClient.createPutFile(parentProcessGroupId, name, directory).getId();
+    return niFiClient.createPutFile(parentProcessGroupId, name, directory, schedulingPeriod)
+      .getId();
   }
 
   /**
@@ -651,10 +677,12 @@ public class NiFiClientService {
    *
    * @param processorId The id of the processor to update.
    * @param directory he directory where the files will be created.
+   * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return The id of the updated processor.
    */
-  public String updatePutFile(String processorId, String directory) throws IOException {
-    return niFiClient.updatePutFile(processorId, directory).getId();
+  public String updatePutFile(String processorId, String directory, String schedulingPeriod)
+    throws IOException {
+    return niFiClient.updatePutFile(processorId, directory, schedulingPeriod).getId();
   }
 
   /**
@@ -668,16 +696,18 @@ public class NiFiClientService {
    * @param protocol The protocol used to communicate with the Syslog server (UDP / TCP).
    * @param messageBody The body of the Syslog message.
    * @param messagePriority The priority of the Syslog message.
+   * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @param path The path of the parent group where the processor will be created.
    * @return The id of the created processor.
    */
   public String createPutSyslog(String name, String sslContextId, String hostname, int port,
-    String protocol, String messageBody, String messagePriority, String[] path)
+    String protocol, String messageBody, String messagePriority, String schedulingPeriod,
+    String[] path)
     throws IOException {
     String parentProcessGroupId = findProcessGroupId(path);
 
     return niFiClient.createPutSyslog(parentProcessGroupId, name, sslContextId, hostname, port,
-      protocol, messageBody, messagePriority).getId();
+      protocol, messageBody, messagePriority, schedulingPeriod).getId();
   }
 
   /**
@@ -689,14 +719,16 @@ public class NiFiClientService {
    * @param protocol The protocol used to communicate with the Syslog server (UDP / TCP).
    * @param messageBody The body of the Syslog message.
    * @param messagePriority The priority of the Syslog message.
+   * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return The id of the updated processor.
    */
   public String updatePutSyslog(String processorId, String sslContextId, String hostname, int port,
-    String protocol, String messageBody, String messagePriority) throws IOException {
+    String protocol, String messageBody, String messagePriority, String schedulingPeriod)
+    throws IOException {
 
     return niFiClient
       .updatePutSyslog(processorId, sslContextId, hostname, port, protocol, messageBody,
-        messagePriority).getId();
+        messagePriority, schedulingPeriod).getId();
   }
 
   /**
@@ -757,7 +789,7 @@ public class NiFiClientService {
     niFiClient.changeProcessorGroupState(processGroupId, STATE.STOPPED);
     niFiClient.changeProcessorGroupState(processGroupId, STATE.DISABLED);
     niFiClient.getStatus();
-    if(niFiClient.getStatus().getControllerStatus().getFlowFilesQueued() > 0) {
+    if (niFiClient.getStatus().getControllerStatus().getFlowFilesQueued() > 0) {
       clearQueue(processGroupId);
     }
     niFiClient.changeGroupControllerServicesState(processGroupId, STATE.DISABLED);
