@@ -252,7 +252,7 @@ public class AppProperties {
   @Value("${topicControlRequest:esthesis/control/request}")
   private String topicControlRequest;
 
-  @Value("${topicControlReply:control/reply}")
+  @Value("${topicControlReply:esthesis/control/reply}")
   private String topicControlReply;
 
   public String getHardwareId() {
