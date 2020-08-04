@@ -135,7 +135,7 @@ public class PutInfluxDB implements NiFiWriterFactory {
   }
 
   private int getMaxRecordSize(String maxRecordSize) {
-    return maxRecordSize != null ? Integer.getInteger(maxRecordSize) : 1;
+    return maxRecordSize != null ? Integer.parseInt(maxRecordSize) : 1;
   }
 
   private DATA_UNIT getDataUnit(String maxRecordSizeUnit) {
