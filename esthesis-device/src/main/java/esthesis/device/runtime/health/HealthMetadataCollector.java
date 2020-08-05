@@ -26,6 +26,8 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.logging.Level;
 
 @Log
@@ -51,7 +53,8 @@ public class HealthMetadataCollector {
     if (appProperties.isProxyMqtt()) {
       try {
         mqttClient.publish(Mqtt.EventType.PING, objectMapper
-          .writeValueAsBytes(new DevicePingDTO().setDeviceTime(Instant.now().toEpochMilli())));
+          .writeValueAsBytes(
+            new DevicePingMessageDTO().setDeviceTime(Instant.now().toEpochMilli())));
       } catch (Exception e) {
         log.log(Level.SEVERE, "Could not produce JSON output for ping data.", e);
       }
@@ -110,7 +113,8 @@ public class HealthMetadataCollector {
 
         // IP Address.
         if (appProperties.isHcIpAddress()) {
-          deviceHealthDataDTO.setIpAddress(IPHelper.getIPAddress());
+          deviceHealthDataDTO
+            .setIpAddress(IPHelper.getIPAddress(Optional.of(appProperties.getHcIpIfFilter())));
         }
 
         // Runtime agent version information.
@@ -134,7 +138,7 @@ public class HealthMetadataCollector {
         }
 
         // Create a JSON representation of the health data.
-        DeviceHealthDTO deviceHealthDTO = new DeviceHealthDTO();
+        DeviceHealthMessageDTO deviceHealthDTO = new DeviceHealthMessageDTO();
         deviceHealthDTO.setDeviceHealthDataDTO(deviceHealthDataDTO);
         JsonNode node = objectMapper.valueToTree(deviceHealthDTO);
 
@@ -144,8 +148,12 @@ public class HealthMetadataCollector {
           final FileSystem fileSystem = operatingSystem.getFileSystem();
           OSFileStore[] fsArray = fileSystem.getFileStores();
           for (OSFileStore fs : fsArray) {
-            ((ObjectNode) valuesRoot).put("mount_free_" + fs.getMount(), fs.getUsableSpace());
-            ((ObjectNode) valuesRoot).put("mount_total_" + fs.getMount(), fs.getTotalSpace());
+            if (StringUtils.isEmpty(appProperties.getHcFilterFs()) ||
+              Arrays.stream(appProperties.getHcFilterFs().split(","))
+                .anyMatch(f -> f.equals(fs.getMount()))) {
+              ((ObjectNode) valuesRoot).put("mount_free_" + fs.getMount(), fs.getUsableSpace());
+              ((ObjectNode) valuesRoot).put("mount_total_" + fs.getMount(), fs.getTotalSpace());
+            }
           }
         }
 

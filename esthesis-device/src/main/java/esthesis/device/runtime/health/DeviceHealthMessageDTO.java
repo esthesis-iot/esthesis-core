@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 @Data
 @ToString
 @Accessors(chain = true)
-public class DeviceHealthDTO {
+public class DeviceHealthMessageDTO {
 
   @JsonProperty("m")
   private final String measurement = "health";

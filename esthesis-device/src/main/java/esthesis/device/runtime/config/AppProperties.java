@@ -168,63 +168,93 @@ public class AppProperties {
   @Value("${pingInitialDelayMsec:60000}")
   private long pingInitialDelayMsec;
 
+  // Return manufacturer information in health messages.
   @Value("${hcOsManufacturer:true}")
   private boolean hcOsManufacturer;
 
+  // Return OS version information in health messages.
   @Value("${hcOsVersion:true}")
   private boolean hcOsVersion;
 
+  // Return hardware serial number information in health messages.
   @Value("${hcHwSerial:true}")
   private boolean hcHwSerial;
 
+  // Return the number of CPUs information in health messages.
   @Value("${hcCpuPhysicalPackage:true}")
   private boolean hcCpuPhysicalPackage;
 
+  // Return the number of physical CPU cores information in health messages.
   @Value("${hcCpuPhysicalCores:true}")
   private boolean hcCpuPhysicalCores;
 
+  // Return the number of logical CPU cores information in health messages.
   @Value("${hcCpuLogicalCores:true}")
   private boolean hcCpuLogicalCores;
 
+  // Return the CPU identifier information in health messages.
   @Value("${hcCpuIdentifier:true}")
   private boolean hcCpuIdentifier;
 
+  // Return the CPU processor ID information in health messages.
   @Value("${hcCpuProcessorId:true}")
   private boolean hcCpuProcessorId;
 
+  // Return the CPU temperature information in health messages.
   @Value("${hcCpuTemperature:true}")
   private boolean hcCpuTemperature;
 
+  // Return the available memory information in health messages.
   @Value("${hcMemoryAvailable:true}")
   private boolean hcMemoryAvailable;
 
+  // Return the total memory information in health messages.
   @Value("${hcMemoryTotal:true}")
   private boolean hcMemoryTotal;
 
+  // Return the load in the last 1' information in health messages.
   @Value("${hcLoad1:true}")
   private boolean hcLoad1;
 
+  // Return the load in the last 5' information in health messages.
   @Value("${hcLoad5:true}")
   private boolean hcLoad5;
 
+  // Return the load in the last 15' information in health messages.
   @Value("${hcLoad15:true}")
   private boolean hcLoad15;
 
+  // Return information about filesystems usage in health messages.
   @Value("${hcFs:true}")
   private boolean hcFs;
 
+  // A comma-separated list of filestystems to include in health messages. If left empty, all
+  // discovered filesystems will be included.
+  @Value("${hcFilterFs:}")
+  private String hcFilterFs;
+
+  // Return the device's local clock date/time.
   @Value("${hcCurrentTime:true}")
   private boolean hcCurrentTime;
 
+  // Returns the device's uptime in health messages.
   @Value("${hcUpTime:true}")
   private boolean hcUpTime;
 
+  // Returns the device's IP address in health messages.
   @Value("${hcIpAddress:true}")
   private boolean hcIpAddress;
 
+  // A comma-separated list of interface names to include when reporting their IP address. If left
+  // empty, all interfaces will be included.
+  @Value("${hcIpIfFilter:}")
+  private String hcIpIfFilter;
+
+  // Returns the device's agent version in health messages.
   @Value("${runtimeVersion:true}")
   private boolean runtimeVersion;
 
+  // Returns the commit ID of the runtime agent running on the device in health messages.
   @Value("${runtimeCommitId:true}")
   private boolean runtimeCommitId;
 
@@ -240,18 +270,23 @@ public class AppProperties {
   @Value("${supportedCommands:PROVISIONING_CHECK_NEW,PING,HEALTH,REBOOT,EXECUTE}")
   private String supportedCommands;
 
+  // The MQTT topic to send PING messages.
   @Value("${topicPing:esthesis/ping}")
   private String topicPing;
 
+  // The MQTT topic to send TELEMETRY messages.
   @Value("${topicTelemetry:esthesis/telemetry}")
   private String topicTelemetry;
 
+  // The MQTT topic to send METADATA messages.
   @Value("${topicMetadata:esthesis/metadata}")
   private String topicMetadata;
 
+  // The MQTT topic to listen for CONTROL REQUEST messages.
   @Value("${topicControlRequest:esthesis/control/request}")
   private String topicControlRequest;
 
+  // The MQTT topic to send CONTROL REPLY messages.
   @Value("${topicControlReply:esthesis/control/reply}")
   private String topicControlReply;
 
