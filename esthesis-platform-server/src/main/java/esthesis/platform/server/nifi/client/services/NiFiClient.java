@@ -133,7 +133,9 @@ public class NiFiClient {
   // The HTTP client to use when making calls.
   private final OkHttpClient client;
   private final ObjectMapper xmlMapper;
+
   private enum HTTP_METHOD {PUT, POST}
+
   @Autowired
   private NiFiService niFiService;
 
@@ -1134,7 +1136,8 @@ public class NiFiClient {
   public ProcessorEntity updatePutDatabaseRecord(@NotNull String processorId,
     NiFiConstants.Properties.Values.STATEMENT_TYPE statementType, String schedulingPeriod)
     throws IOException {
-    return updateProcessor(processorId, schedulingPeriod, setPutDatabaseRecordProperties(statementType));
+    return updateProcessor(processorId, schedulingPeriod,
+      setPutDatabaseRecordProperties(statementType));
   }
 
   private Map<String, String> setPutDatabaseRecordProperties(
@@ -1733,6 +1736,8 @@ public class NiFiClient {
 
     if (latestState.equals(STATE.RUNNING.name())) {
       latestEntity = changeProcessorStatus(processorId, STATE.STOPPED);
+      await()
+        .until(() -> getProcessorById(processorId).getComponent().getState().equals(STATE.STOPPED));
     }
 
     Long currentVersion = latestEntity.getRevision().getVersion();
