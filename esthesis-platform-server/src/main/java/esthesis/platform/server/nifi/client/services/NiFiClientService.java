@@ -1,5 +1,7 @@
 package esthesis.platform.server.nifi.client.services;
 
+import static org.awaitility.Awaitility.await;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.platform.server.config.AppConstants.NIFI_SINK_HANDLER;
 import esthesis.platform.server.nifi.client.dto.EsthesisTemplateDTO;
@@ -788,10 +790,10 @@ public class NiFiClientService {
   public void deleteProcessGroup(String processGroupId) throws IOException {
     niFiClient.changeProcessorGroupState(processGroupId, STATE.STOPPED);
     niFiClient.changeProcessorGroupState(processGroupId, STATE.DISABLED);
-    niFiClient.getStatus();
     if (niFiClient.getStatus().getControllerStatus().getFlowFilesQueued() > 0) {
       clearQueue(processGroupId);
     }
+    await().until(() -> niFiClient.getStatus().getControllerStatus().getRunningCount() == 0);
     niFiClient.changeGroupControllerServicesState(processGroupId, STATE.DISABLED);
     niFiClient.deleteProcessGroup(processGroupId);
   }
