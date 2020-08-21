@@ -221,7 +221,7 @@ public class NiFiClientService {
   private String findProcessGroupId(String[] path) throws IOException {
     return niFiClient.findProcessGroup(NiFiSearchAlgorithm.NAME_ENDS_WITH, Arrays.asList(path))
       .orElseThrow(() -> new IllegalArgumentException(
-        MessageFormat.format("Could not find process for {0}.", Arrays.asList(path)))).getId();
+        MessageFormat.format("Could not find process group for {0}.", Arrays.asList(path)))).getId();
   }
 
   private void enableStandardContextHttpMap() throws IOException {

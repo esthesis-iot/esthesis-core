@@ -617,6 +617,24 @@ public class NiFiClient {
     }
   }
 
+  private PortEntity changePortStatus(PortEntity portEntity, STATE state) throws IOException {
+    PortRunStatusEntity portRunStatusEntity = new PortRunStatusEntity();
+    portRunStatusEntity.setState(state.name());
+    portRunStatusEntity.setRevision(portEntity.getRevision());
+
+    String portTypePath = portEntity.getPortType().equals("INPUT_PORT") ? "input-ports/" : "output"
+      + "-ports/";
+
+    final CallReplyDTO callReplyDTO = putJSONCall("/" + portTypePath + portEntity.getId() + "/run"
+      + "-status", portRunStatusEntity);
+
+    if (callReplyDTO.isSuccessful()) {
+      return mapper.readValue(callReplyDTO.getBody(), PortEntity.class);
+    } else {
+      throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
+    }
+  }
+
   /**
    * Creates the SSL Context Controller service.
    *
@@ -1394,9 +1412,7 @@ public class NiFiClient {
     String influxInstanceGroupId, String relationalInstanceGroupId, String influxGroupId,
     String relationalGroupId) throws IOException {
 
-    PortEntity influxInputPort = findInputPort(influxGroupId);
-    PortEntity relationalInputPort = findInputPort(relationalGroupId);
-    String typeInputPort = isRelational ? relationalInputPort.getId() : influxInputPort.getId();
+    PortEntity inputPort = findInputPort(isRelational ? relationalGroupId : influxGroupId);
 
     ProcessorEntity distributeLoadProcessor = getProcessorsOfGroup(rootGroupId)
       .getProcessors().stream().filter(
@@ -1420,28 +1436,28 @@ public class NiFiClient {
         .equals(Processor.Type.EXECUTE_SQL))
       .count();
 
+    long typeCount = isRelational ? relationalCount : influxCount;
+    long totalCount = influxCount + relationalCount;
+
     List<ConnectionEntity> distributeLoadOutgoingConnections =
       allConnectionsOfProcessor.stream().filter(
         connectionEntity -> connectionEntity.getSourceId().equals(distributeLoadProcessor.getId()))
         .collect(Collectors.toList());
     int connections = distributeLoadOutgoingConnections.size();
 
-    long typeCount = isRelational ? relationalCount : influxCount;
-
     Optional<ConnectionEntity> typeConnection = distributeLoadOutgoingConnections.stream()
-      .filter(connectionEntity -> connectionEntity.getDestinationId().equals(typeInputPort))
+      .filter(connectionEntity -> connectionEntity.getDestinationId().equals(inputPort.getId()))
       .findFirst();
 
     Optional<ConnectionEntity> otherConnection = distributeLoadOutgoingConnections.stream()
-      .filter(connectionEntity -> !connectionEntity.getDestinationId().equals(typeInputPort))
+      .filter(connectionEntity -> !connectionEntity.getDestinationId().equals(inputPort.getId()))
       .findFirst();
 
     if (connections < 2 && !typeConnection.isPresent()) {
       connections += 1;
       updateDistributeLoad(connections, distributeLoadProcessor.getId());
       createDistributeLoadConnection(connections, rootGroupId, isRelational ?
-          relationalGroupId : influxGroupId, distributeLoadProcessor.getId(),
-        isRelational ? relationalInputPort.getId() : influxInputPort.getId());
+          relationalGroupId : influxGroupId, distributeLoadProcessor.getId(), inputPort.getId());
     }
 
     updateConnectionsInInstancesGroup(isRelational ? relationalInstanceGroupId :
@@ -1450,8 +1466,7 @@ public class NiFiClient {
     if (typeConnection.isPresent() && typeCount == 0) {
       ConnectableDTO source = typeConnection.get().getComponent().getSource();
       changeProcessorStatus(source.getId(), STATE.STOPPED);
-      changeProcessorGroupState(isRelational ? relationalGroupId : influxGroupId,
-        STATE.STOPPED);
+      changePortStatus(inputPort, STATE.STOPPED);
       if (connections == 2 && typeConnection.get().getStatus().getName().equals("1")) {
         ConnectionEntity connectionEntity = otherConnection.get();
         connectionEntity.getComponent().setSelectedRelationships(new HashSet<>(Arrays.asList("1")));
@@ -1462,10 +1477,21 @@ public class NiFiClient {
       changeProcessorStatus(source.getId(), STATE.RUNNING);
     }
 
-    if (distributeLoadProcessor.getStatus().equals(STATE.STOPPED)) {
+    if (totalCount > 0 && !distributeLoadProcessor.getStatus()
+      .equals(STATE.RUNNING)) {
       changeProcessorStatus(distributeLoadProcessor.getId(), STATE.RUNNING);
     }
-    changeProcessorGroupState(isRelational ? relationalGroupId : influxGroupId, STATE.RUNNING);
+
+    allConnectionsOfProcessor = getAllConnectionsOfProcessor(
+      distributeLoadProcessor.getId(), rootGroupId);
+
+    Optional<ConnectionEntity> connectionToInputPort = allConnectionsOfProcessor.stream().filter(
+      connectionEntity -> connectionEntity.getDestinationId().equals(inputPort.getId()))
+      .findFirst();
+
+    if (connectionToInputPort.isPresent()) {
+      changePortStatus(inputPort, STATE.RUNNING);
+    }
   }
 
   private void updateConnectionsInInstancesGroup(String groupId) throws IOException {
@@ -1480,8 +1506,7 @@ public class NiFiClient {
         .get("Number of Relationships"));
 
     if (numberOfRelationships != existingConnections) {
-      changeProcessorGroupState(groupId, STATE.STOPPED);
-      ScheduleComponentsEntity scheduleComponentsEntity = null;
+      changeProcessorStatus(distributeLoad.getId(), STATE.STOPPED);
       updateDistributeLoad(existingConnections, distributeLoad.getId());
 
       List<String> expectedNames = new ArrayList<>();
@@ -1506,14 +1531,25 @@ public class NiFiClient {
           > existingConnections).findAny();
 
       if (entityToUpdate.isPresent()) {
+        String destinationId = entityToUpdate.get().getDestinationId();
+        String destinationState = getProcessorById(destinationId).getComponent().getState();
+
+        //Stop destination if it's running
+        if (destinationState.equals(STATE.RUNNING)) {
+          changeProcessorStatus(destinationId, STATE.STOPPED);
+        }
+
         entityToUpdate.get().getComponent()
           .setSelectedRelationships(new HashSet<>(Arrays.asList(newName)));
         updateConnection(entityToUpdate.get());
+
+        //If destination was running, we need to restart it.
+        if (destinationState.equals(STATE.RUNNING)) {
+          changeProcessorStatus(destinationId, STATE.RUNNING);
+        }
+        changeProcessorStatus(distributeLoad.getId(), STATE.RUNNING);
       }
 
-      if (scheduleComponentsEntity != null) {
-        changeProcessorGroupState(groupId, STATE.RUNNING);
-      }
     }
   }
 
@@ -1736,8 +1772,6 @@ public class NiFiClient {
 
     if (latestState.equals(STATE.RUNNING.name())) {
       latestEntity = changeProcessorStatus(processorId, STATE.STOPPED);
-      await()
-        .until(() -> getProcessorById(processorId).getComponent().getState().equals(STATE.STOPPED));
     }
 
     Long currentVersion = latestEntity.getRevision().getVersion();
