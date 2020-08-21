@@ -109,7 +109,7 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
           conf.getPassword());
     }
 
-    return niFiClientService.updatePutDatabaseRecord(sink.getProcessorId(),
+    return niFiClientService.updatePutDatabaseRecord(sink.getProcessorId(), sinkDTO.getName(),
       getStatementType(sinkDTO.getHandler()), conf.getSchedulingPeriod());
   }
 

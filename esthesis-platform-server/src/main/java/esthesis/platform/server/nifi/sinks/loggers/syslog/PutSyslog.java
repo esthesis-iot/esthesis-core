@@ -125,7 +125,8 @@ public class PutSyslog implements NiFiLoggerFactory {
     }
 
     return niFiClientService
-      .updatePutSyslog(sink.getProcessorId(), sslContextId, conf.getHostname(), conf.getPort(),
+      .updatePutSyslog(sink.getProcessorId(),sinkDTO.getName(), sslContextId, conf.getHostname(),
+        conf.getPort(),
         conf.getProtocol(), conf.getMessageBody(), conf.getMessagePriority(), conf.getSchedulingPeriod());
   }
 

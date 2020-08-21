@@ -100,7 +100,8 @@ public class ExecuteSQL implements NiFiProducerFactory {
           conf.getPassword());
     }
 
-    niFiClientService.updateExecuteSQL(sink.getProcessorId(), conf.getSchedulingPeriod());
+    niFiClientService.updateExecuteSQL(sink.getProcessorId(), sinkDTO.getName(),
+      conf.getSchedulingPeriod());
 
     return sink.getProcessorId();
   }

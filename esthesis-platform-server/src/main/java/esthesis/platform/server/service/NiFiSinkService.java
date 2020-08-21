@@ -130,14 +130,15 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
     boolean isStateChanged = latestVersion.isState() != niFiSinkDTO.isState();
     boolean isConfigurationChanged = !latestVersion.getConfiguration()
       .equals(niFiSinkDTO.getConfiguration());
+    boolean isRenamed = !latestVersion.getName().equals(niFiSinkDTO.getName());
 
     //if sink is running, stop it before updating.
     if (latestVersion.isState() && isConfigurationChanged) {
       niFiSinkFactory.toggleSink(niFiSinkDTO.getProcessorId(), false);
     }
 
-    //update configuration if needed
-    if (isConfigurationChanged) {
+    //Update sink if needed.
+    if (isConfigurationChanged || isRenamed) {
       try {
         niFiSinkFactory.updateSink(latestVersion, niFiSinkDTO);
       } catch (NiFiProcessingException e) {

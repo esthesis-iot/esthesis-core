@@ -122,7 +122,8 @@ public class ConsumeMQTT implements NiFiReaderFactory {
     }
 
     return niFiClientService
-      .updateConsumerMQTT(sinkDTO.getProcessorId(), sslContextId, conf.getUri(), conf.getTopic(),
+      .updateConsumerMQTT(sinkDTO.getProcessorId(), sinkDTO.getName(), sslContextId, conf.getUri(),
+        conf.getTopic(),
         conf.getQos(),
         conf.getQueueSize(), conf.getSchedulingPeriod());
   }

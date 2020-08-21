@@ -979,13 +979,14 @@ public class NiFiClient {
     return createProcessor(parentProcessGroupId, processorDTO);
   }
 
-  public ProcessorEntity updateConsumeMQTT(String id, String sslContextId, @NotNull String uri,
+  public ProcessorEntity updateConsumeMQTT(String id, String name, String sslContextId,
+    @NotNull String uri,
     @NotNull String topic,
     int qos,
     int queueSize, String schedulingPeriod) throws IOException {
     Map<String, String> properties = setConsumeMQTTProperties(uri, sslContextId, topic, qos,
       queueSize);
-    return updateProcessor(id, schedulingPeriod, properties);
+    return updateProcessor(id, name, schedulingPeriod, properties);
   }
 
   private Map<String, String> setConsumeMQTTProperties(String uri, String sslContextServiceId,
@@ -1051,6 +1052,8 @@ public class NiFiClient {
   /**
    * Updates a PutInfluxDB processor.
    *
+   * @param processorId The id of the processor that will be updated.
+   * @param name The name of the processor.
    * @param dbName InfluxDB database to connect to.
    * @param url InfluxDB URL to connect to.
    * @param maxConnectionTimeoutSeconds The maximum time (in seconds) for establishing connection to
@@ -1065,7 +1068,7 @@ public class NiFiClient {
    * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return ProcessorEntity object containing the newly created processor.
    */
-  public ProcessorEntity updatePutInfluxDB(String processorId,
+  public ProcessorEntity updatePutInfluxDB(String processorId, String name,
     @NotNull String dbName,
     @NotNull String url,
     int maxConnectionTimeoutSeconds, String username, String password, String charset,
@@ -1077,7 +1080,7 @@ public class NiFiClient {
       maxConnectionTimeoutSeconds, username, password, charset, level, retentionPolicy,
       maxRecordSize, maxRecordSizeUnit);
 
-    return updateProcessor(processorId, schedulingPeriod, properties);
+    return updateProcessor(processorId, name, schedulingPeriod, properties);
 
   }
 
@@ -1147,14 +1150,15 @@ public class NiFiClient {
    * Creates a PutDatabaseRecord processor.
    *
    * @param processorId The id of the PutDatabaseProcessor that will be updated.
+   * @param name The name of the processor.
    * @param statementType Specifies the type of SQL Statement to generate.
    * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return ProcessorEntity object containing the newly created processor.
    */
-  public ProcessorEntity updatePutDatabaseRecord(@NotNull String processorId,
+  public ProcessorEntity updatePutDatabaseRecord(@NotNull String processorId, String name,
     NiFiConstants.Properties.Values.STATEMENT_TYPE statementType, String schedulingPeriod)
     throws IOException {
-    return updateProcessor(processorId, schedulingPeriod,
+    return updateProcessor(processorId, name, schedulingPeriod,
       setPutDatabaseRecordProperties(statementType));
   }
 
@@ -1206,6 +1210,7 @@ public class NiFiClient {
    * Updates an ExecuteInfluxDb processor.
    *
    * @param processorId The id of the processor.
+   * @param name The name of the processor.
    * @param dbName The name of the Influx Database.
    * @param url The url of the Influx Database.
    * @param maxConnectionTimeoutSeconds The maximum time of establising connection to Influx
@@ -1215,7 +1220,8 @@ public class NiFiClient {
    * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return The updated processor.
    */
-  public ProcessorEntity updateExecuteInfluxDB(String processorId, String dbName, String url,
+  public ProcessorEntity updateExecuteInfluxDB(String processorId, String name, String dbName,
+    String url,
     int maxConnectionTimeoutSeconds, String queryResultTimeUnit, int queryChunkSize,
     String schedulingPeriod)
     throws IOException {
@@ -1223,7 +1229,7 @@ public class NiFiClient {
     Map<String, String> properties = setExecuteInfluxDBProperties(dbName, url,
       maxConnectionTimeoutSeconds, queryResultTimeUnit, queryChunkSize);
 
-    return updateProcessor(processorId, schedulingPeriod, properties);
+    return updateProcessor(processorId, name, schedulingPeriod, properties);
 
   }
 
@@ -1270,9 +1276,9 @@ public class NiFiClient {
     return createProcessor(parentProcessGroupId, processorDTO);
   }
 
-  public ProcessorEntity updateExecuteSQL(String processorId, String schedulingPeriod)
+  public ProcessorEntity updateExecuteSQL(String processorId, String name,  String schedulingPeriod)
     throws IOException {
-    return updateProcessor(processorId, schedulingPeriod, new HashMap<>());
+    return updateProcessor(processorId, name, schedulingPeriod, new HashMap<>());
   }
 
   /**
@@ -1310,16 +1316,17 @@ public class NiFiClient {
    * Updates a PutFile processor.
    *
    * @param processorId The id of the processor to update.
+   * @param name The name of the processor.
    * @param directory he directory where the files will be created.
    * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return The newly created processor.
    */
-  public ProcessorEntity updatePutFile(String processorId, String directory,
+  public ProcessorEntity updatePutFile(String processorId, String name,  String directory,
     String schedulingPeriod) throws IOException {
     Map<String, String> properties = new HashMap<>();
     properties.put(DIRECTORY, directory);
 
-    return updateProcessor(processorId, schedulingPeriod, properties);
+    return updateProcessor(processorId, name, schedulingPeriod, properties);
   }
 
   /**
@@ -1363,6 +1370,7 @@ public class NiFiClient {
    * Updates a PutSyslog processor.
    *
    * @param processorId The id of the processor that will be updated.
+   * @param name The name of the processor.
    * @param hostname The hostname of the Syslog server.
    * @param port The port of the Syslog server.
    * @param protocol The protocol used to communicate with the Syslog server (UDP / TCP).
@@ -1371,14 +1379,15 @@ public class NiFiClient {
    * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return The id of the updated processor.
    */
-  public ProcessorEntity updatePutSyslog(String processorId, String sslContextId, String hostname,
+  public ProcessorEntity updatePutSyslog(String processorId, String name, String sslContextId,
+    String hostname,
     int port, String protocol, String messageBody, String messagePriority, String schedulingPeriod)
     throws IOException {
 
     Map<String, String> properties = setPutSyslogProperties(sslContextId, hostname, port,
       protocol, messageBody, messagePriority);
 
-    return updateProcessor(processorId, schedulingPeriod, properties);
+    return updateProcessor(processorId, name, schedulingPeriod, properties);
   }
 
   private Map<String, String> setPutSyslogProperties(String sslContextId, String hostname, int port,
@@ -1556,7 +1565,7 @@ public class NiFiClient {
   private void updateDistributeLoad(int relationships, String processorId) throws IOException {
     Map<String, String> properties = new HashMap<>();
     properties.put("Number of Relationships", "" + relationships);
-    updateProcessor(processorId, "0 sec", properties);
+    updateProcessor(processorId, "DistributeLoad","0 sec", properties);
   }
 
   private void createDistributeLoadConnection(int relationships, String parentProcessGroupId,
@@ -1763,7 +1772,7 @@ public class NiFiClient {
     }
   }
 
-  private ProcessorEntity updateProcessor(String processorId, String schedulingPeriod,
+  private ProcessorEntity updateProcessor(String processorId, String name, String schedulingPeriod,
     Map<String, String> properties)
     throws IOException {
 
@@ -1778,6 +1787,7 @@ public class NiFiClient {
 
     ProcessorDTO processorDTO = new ProcessorDTO();
     processorDTO.setId(processorId);
+    processorDTO.setName(name);
 
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
     processorConfigDTO.setSchedulingPeriod(schedulingPeriod);

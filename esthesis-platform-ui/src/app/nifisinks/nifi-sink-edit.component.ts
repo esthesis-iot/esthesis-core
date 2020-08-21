@@ -45,7 +45,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
     // Setup the form.
     this.form = this.fb.group({
       id: [''],
-      name: [{value: '', disabled: this.isEdit}, [Validators.required, Validators.maxLength(256)]],
+      name: ['', [Validators.required, Validators.maxLength(256)]],
       factoryClass: [{value: '', disabled: this.isEdit}, [Validators.required, Validators.maxLength(
         1024)]],
       handler: [{value: '', disabled: this.isEdit}, [Validators.required, Validators.maxLength(

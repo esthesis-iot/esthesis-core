@@ -81,7 +81,8 @@ public class PutInfluxDB implements NiFiWriterFactory {
   @Override
   public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO) throws IOException {
     conf = extractConfiguration(sinkDTO.getConfiguration());
-    return niFiClientService.updatePutInfluxDB(sinkDTO.getProcessorId(), conf.getDatabaseName(),
+    return niFiClientService.updatePutInfluxDB(sinkDTO.getProcessorId(),
+      sinkDTO.getName(), conf.getDatabaseName(),
       conf.getDatabaseUrl(), 10,
       conf.getUsername(), conf.getPassword(),
       conf.getCharset(),

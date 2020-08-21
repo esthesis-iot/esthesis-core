@@ -69,7 +69,7 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
   public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO) throws IOException {
     conf = extractConfiguration(sinkDTO.getConfiguration());
     return niFiClientService
-      .updateExecuteInfluxDB(sinkDTO.getProcessorId(), conf.getDatabaseName(),
+      .updateExecuteInfluxDB(sinkDTO.getProcessorId(), sinkDTO.getName(), conf.getDatabaseName(),
         conf.getDatabaseUrl(), Integer.parseInt(conf.getMaxConnectionTimeoutSeconds()),
         conf.getQueryResultTimeUnit(), Integer.parseInt(conf.getQueryChunkSize()),
         conf.getSchedulingPeriod());

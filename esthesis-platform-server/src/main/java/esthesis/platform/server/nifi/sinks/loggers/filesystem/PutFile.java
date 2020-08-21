@@ -60,7 +60,8 @@ public class PutFile implements NiFiLoggerFactory {
     NiFiSinkDTO sinkDTO) throws IOException {
     conf = extractConfiguration(sinkDTO.getConfiguration());
     return niFiClientService
-      .updatePutFile(sinkDTO.getProcessorId(), conf.getDirectory(), conf.getSchedulingPeriod());
+      .updatePutFile(sinkDTO.getProcessorId(), sinkDTO.getName(), conf.getDirectory(),
+        conf.getSchedulingPeriod());
   }
 
   @Override

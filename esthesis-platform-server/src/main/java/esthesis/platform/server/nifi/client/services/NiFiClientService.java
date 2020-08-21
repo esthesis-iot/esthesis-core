@@ -467,12 +467,13 @@ public class NiFiClientService {
     return createConsumerMqtt(name, uri, topic, qos, queueSize, schedulingPeriod, path);
   }
 
-  public String updateConsumerMQTT(String id, String sslContextId, String uri, String topic,
+  public String updateConsumerMQTT(String id, String name, String sslContextId, String uri,
+    String topic,
     int qos,
     int queueSize, String schedulingPeriod)
     throws IOException {
     return niFiClient
-      .updateConsumeMQTT(id, sslContextId, uri, topic, qos, queueSize, schedulingPeriod).getId();
+      .updateConsumeMQTT(id, name, sslContextId, uri, topic, qos, queueSize, schedulingPeriod).getId();
   }
 
   /**
@@ -515,6 +516,7 @@ public class NiFiClientService {
    * Updates a PutInfluxDB processor.
    *
    * @param id The id of the processor that will be updated.
+   * @param name The name of the processor.
    * @param dbName InfluxDB database to connect to.
    * @param url InfluxDB URL to connect to.
    * @param maxConnectionTimeoutSeconds The maximum time (in seconds) for establishing connection to
@@ -529,12 +531,14 @@ public class NiFiClientService {
    * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return The id of the processor.
    */
-  public String updatePutInfluxDB(String id, @NotNull String dbName, @NotNull String url,
+  public String updatePutInfluxDB(String id, String name, @NotNull String dbName,
+    @NotNull String url,
     int maxConnectionTimeoutSeconds, String username, String password, String charset,
     CONSISTENCY_LEVEL level, String retentionPolicy, int maxRecordSize,
     DATA_UNIT maxRecordSizeUnit, String schedulingPeriod) throws IOException {
 
-    return niFiClient.updatePutInfluxDB(id, dbName, url, maxConnectionTimeoutSeconds, username,
+    return niFiClient.updatePutInfluxDB(id, name, dbName, url, maxConnectionTimeoutSeconds,
+      username,
       password, charset, level, retentionPolicy, maxRecordSize, maxRecordSizeUnit, schedulingPeriod)
       .getId();
   }
@@ -575,11 +579,11 @@ public class NiFiClientService {
    * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return The id of the newly updated processor.
    */
-  public String updatePutDatabaseRecord(String processorId,
+  public String updatePutDatabaseRecord(String processorId, String name,
     @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType, String schedulingPeriod)
     throws IOException {
 
-    return niFiClient.updatePutDatabaseRecord(processorId, statementType, schedulingPeriod).getId();
+    return niFiClient.updatePutDatabaseRecord(processorId, name, statementType, schedulingPeriod).getId();
   }
 
   /**
@@ -614,6 +618,7 @@ public class NiFiClientService {
    * Updates an ExecuteInfluxDb processor.
    *
    * @param processorId The id of the processor.
+   * @param name The name of the processor.
    * @param dbName The name of the Influx Database.
    * @param url The url of the Influx Database.
    * @param maxConnectionTimeoutSeconds The maximum time of establising connection to Influx
@@ -623,13 +628,15 @@ public class NiFiClientService {
    * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return the id of the updated processor.
    */
-  public String updateExecuteInfluxDB(@NotNull String processorId, @NotNull String dbName,
+  public String updateExecuteInfluxDB(@NotNull String processorId,
+    String name, @NotNull String dbName,
     @NotNull String url,
     int maxConnectionTimeoutSeconds, String queryResultTimeUnit, int queryChunkSize,
     String schedulingPeriod)
     throws IOException {
 
-    return niFiClient.updateExecuteInfluxDB(processorId, dbName, url, maxConnectionTimeoutSeconds
+    return niFiClient.updateExecuteInfluxDB(processorId, name, dbName, url,
+      maxConnectionTimeoutSeconds
       , queryResultTimeUnit, queryChunkSize, schedulingPeriod).getId();
   }
 
@@ -652,8 +659,8 @@ public class NiFiClientService {
       .getId();
   }
 
-  public String updateExecuteSQL(String processorId, String schedulingPeriod) throws IOException {
-    return niFiClient.updateExecuteSQL(processorId, schedulingPeriod).getId();
+  public String updateExecuteSQL(String processorId, String name, String schedulingPeriod) throws IOException {
+    return niFiClient.updateExecuteSQL(processorId, name, schedulingPeriod).getId();
   }
 
   /**
@@ -678,13 +685,15 @@ public class NiFiClientService {
    * Updates a PutFile processor.
    *
    * @param processorId The id of the processor to update.
+   * @param name The name of the processor.
    * @param directory he directory where the files will be created.
    * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return The id of the updated processor.
    */
-  public String updatePutFile(String processorId, String directory, String schedulingPeriod)
+  public String updatePutFile(String processorId, String name, String directory,
+    String schedulingPeriod)
     throws IOException {
-    return niFiClient.updatePutFile(processorId, directory, schedulingPeriod).getId();
+    return niFiClient.updatePutFile(processorId, name, directory, schedulingPeriod).getId();
   }
 
   /**
@@ -716,6 +725,7 @@ public class NiFiClientService {
    * Updates a PutSyslog processor.
    *
    * @param processorId The id of the processor that will be updated.
+   * @param name The name of the processor.
    * @param hostname The hostname of the Syslog server.
    * @param port The port of the Syslog server.
    * @param protocol The protocol used to communicate with the Syslog server (UDP / TCP).
@@ -724,12 +734,13 @@ public class NiFiClientService {
    * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return The id of the updated processor.
    */
-  public String updatePutSyslog(String processorId, String sslContextId, String hostname, int port,
+  public String updatePutSyslog(String processorId, String name, String sslContextId,
+    String hostname, int port,
     String protocol, String messageBody, String messagePriority, String schedulingPeriod)
     throws IOException {
 
     return niFiClient
-      .updatePutSyslog(processorId, sslContextId, hostname, port, protocol, messageBody,
+      .updatePutSyslog(processorId, name, sslContextId, hostname, port, protocol, messageBody,
         messagePriority, schedulingPeriod).getId();
   }
 
