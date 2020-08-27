@@ -35,6 +35,5 @@ public class NiFiSink extends BaseEntity {
   private String configuration;
   private String customInfo;
   private String type;
-  private String processorId;
   private String validationErrors;
 }

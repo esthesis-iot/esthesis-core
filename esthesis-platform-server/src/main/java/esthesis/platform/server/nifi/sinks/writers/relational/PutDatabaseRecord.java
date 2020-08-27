@@ -58,7 +58,7 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
   }
 
   @Override
-  public NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+  public void createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
     deleteControllerServices(niFiSinkDTO);
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
 
@@ -73,7 +73,7 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
         conf.getDatabaseUser(),
         conf.getPassword(), path);
 
-    String putDatabaseRecord = niFiClientService
+    niFiClientService
       .createPutDatabaseRecord(niFiSinkDTO.getName(), jsonTreeReader, dbConnectionPool,
         getStatementType(niFiSinkDTO.getHandler()), conf.getSchedulingPeriod(), path);
 
@@ -82,14 +82,11 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
     customInfo.setDbConnectionPool(dbConnectionPool);
     niFiSinkDTO.setCustomInfo(objectMapper.writeValueAsString(customInfo));
 
-    niFiSinkDTO.setProcessorId(putDatabaseRecord);
     enableControllerServices(jsonTreeReader, dbConnectionPool);
-
-    return niFiSinkDTO;
   }
 
   @Override
-  public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO) throws IOException {
+  public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO, String[] path) throws IOException {
     PutDatabaseRecordConfiguration prevConf = extractConfiguration(sink.getConfiguration());
     conf = extractConfiguration(sinkDTO.getConfiguration());
 
@@ -109,13 +106,16 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
           conf.getPassword());
     }
 
-    return niFiClientService.updatePutDatabaseRecord(sink.getProcessorId(), sinkDTO.getName(),
+    String processorId = niFiClientService.findProcessorIDByNameAndProcessGroup(sink.getName(),
+      path);
+
+    return niFiClientService.updatePutDatabaseRecord(processorId, sinkDTO.getName(),
       getStatementType(sinkDTO.getHandler()), conf.getSchedulingPeriod());
   }
 
   @Override
-  public String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
-    String id = niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
+  public String deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+    String id = niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
     deleteControllerServices(niFiSinkDTO);
     return id;
   }
@@ -130,8 +130,9 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
   }
 
   @Override
-  public String toggleSink(String id, boolean isEnabled) throws IOException {
-    return niFiClientService.changeProcessorStatus(id, isEnabled ? STATE.RUNNING : STATE.STOPPED);
+  public String toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
+    return niFiClientService.changeProcessorStatus(name, path,
+      isEnabled ? STATE.RUNNING : STATE.STOPPED);
   }
 
   @Override
@@ -142,18 +143,18 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
   }
 
   @Override
-  public String getSinkValidationErrors(String id) throws IOException {
-    return niFiClientService.getValidationErrors(id);
+  public String getSinkValidationErrors(String name, String[] path) throws IOException {
+    return niFiClientService.getValidationErrors(name, path);
   }
 
   @Override
-  public boolean exists(String id) throws IOException {
-    return niFiClientService.processorExists(id);
+  public boolean exists(String name, String[] path) throws IOException {
+    return niFiClientService.processorExists(name, path);
   }
 
   @Override
-  public boolean isSinkRunning(String id) throws IOException {
-    return niFiClientService.isProcessorRunning(id);
+  public boolean isSinkRunning(String name, String[] path) throws IOException {
+    return niFiClientService.isProcessorRunning(name, path);
   }
 
   private PutDatabaseRecordConfiguration extractConfiguration(String configuration) {

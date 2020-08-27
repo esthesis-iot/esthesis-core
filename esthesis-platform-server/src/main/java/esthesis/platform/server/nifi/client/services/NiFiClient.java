@@ -553,6 +553,13 @@ public class NiFiClient {
     }
   }
 
+  public boolean controllerExists(String controllerServiceId)
+    throws IOException {
+    CallReplyDTO callReplyDTO = getCall("/controller-services/" + controllerServiceId);
+
+    return callReplyDTO.isSuccessful();
+  }
+
   /**
    * Changes the state of a ProcessorGroup.
    *
@@ -1995,6 +2002,28 @@ public class NiFiClient {
       throw new NiFiProcessingException(callReplyDTO.getBody(),
         callReplyDTO.getCode());
     }
+  }
+
+  public ProcessorEntity findProcessorByNameAndGroup(String name, String parentProcessGroupId)
+    throws IOException {
+    CallReplyDTO callReplyDTO = getCall(
+      "/process-groups/" + parentProcessGroupId + "/processors");
+
+    if (callReplyDTO.isSuccessful()) {
+      ProcessorsEntity processorsEntity = mapper
+        .readValue(callReplyDTO.getBody(), ProcessorsEntity.class);
+      Optional<ProcessorEntity> match = processorsEntity.getProcessors().stream()
+        .filter(processorEntity -> processorEntity.getComponent().getName().equals(name))
+        .findFirst();
+      if (match.isPresent()) {
+        return match.get();
+      } else {
+        throw new NiFiProcessingException("Cannot find processor with given name");
+      }
+    } else {
+      throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
+    }
+
   }
 
   public boolean isProcessorRunning(String id) throws IOException {

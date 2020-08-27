@@ -26,35 +26,37 @@ public interface NiFiSinkFactory {
    * Creates the NiFi sink and returns it's id.
    *
    * @param niFiSinkDTO An object containing all required properties.
-   * @return the id of the newly created sink.
    */
-  NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException;
+  void createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException;
 
   /**
    * Updates a NiFi sink
    *
    * @param sink The existing sink.
    * @param sinkDTO An object containing the updates of the sink.
+   * @param path
    * @return The id of the updated sink.
    */
-  String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO) throws IOException;
+  String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO, String[] path) throws IOException;
 
   /**
    * Deletes a NiFi sink.
    *
    * @param niFiSinkDTO The id of the NiFi sink that will be deleted.
+   * @param path
    * @return The id of the deleted .
    */
-  String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException;
+  String deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException;
 
   /**
    * Toggles the state of the sink.
    *
-   * @param id The id of the NiFi sink to toggle.
+   * @param name The id of the NiFi sink to toggle.
+   * @param path
    * @param isEnabled Whether to enable or disable the sink.
    * @return The id of the toggled sink.
    */
-  String toggleSink(String id, boolean isEnabled) throws IOException;
+  String toggleSink(String name, String[] path, boolean isEnabled) throws IOException;
 
   /**
    * Enables the controller services of a sink
@@ -66,12 +68,13 @@ public interface NiFiSinkFactory {
   /**
    * Gets the validation errors of a sink.
    *
-   * @param id The id of the sink.
+   * @param name The id of the sink.
+   * @param path
    * @return A String containing all validation errors.
    */
-  String getSinkValidationErrors(String id) throws IOException;
+  String getSinkValidationErrors(String name, String[] path) throws IOException;
 
-  boolean exists(String id) throws IOException;
+  boolean exists(String name, String[] path) throws IOException;
 
-  boolean isSinkRunning(String id) throws IOException;
+  boolean isSinkRunning(String name, String[] path) throws IOException;
 }

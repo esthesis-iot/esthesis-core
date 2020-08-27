@@ -29,7 +29,6 @@ public class NiFiSinkDTO extends BaseDTO {
   private String configuration;
   private String customInfo;
   private String type;
-  private String processorId;
   private String validationErrors;
 
 }

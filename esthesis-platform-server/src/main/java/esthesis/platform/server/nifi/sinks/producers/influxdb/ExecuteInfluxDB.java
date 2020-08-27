@@ -47,44 +47,44 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
   }
 
   @Override
-  public NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+  public void createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
 
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
 
-    String executeInfluxDB = niFiClientService
+    niFiClientService
       .createExecuteInfluxDB(niFiSinkDTO.getName(), conf.getDatabaseName(),
         conf.getDatabaseUrl(), Integer.parseInt(conf.getMaxConnectionTimeoutSeconds()),
         conf.getQueryResultTimeUnit(), Integer.parseInt(conf.getQueryChunkSize()),
         conf.getSchedulingPeriod(),
         path);
 
-    niFiSinkDTO.setProcessorId(executeInfluxDB);
-
     niFiClientService.distributeLoadOfProducers(niFiSinkDTO.getHandler(), false);
-
-    return niFiSinkDTO;
   }
 
   @Override
-  public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO) throws IOException {
+  public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO, String[] path) throws IOException {
     conf = extractConfiguration(sinkDTO.getConfiguration());
+    String processorId = niFiClientService.findProcessorIDByNameAndProcessGroup(sink.getName(),
+      path);
+
     return niFiClientService
-      .updateExecuteInfluxDB(sinkDTO.getProcessorId(), sinkDTO.getName(), conf.getDatabaseName(),
+      .updateExecuteInfluxDB(processorId, sinkDTO.getName(), conf.getDatabaseName(),
         conf.getDatabaseUrl(), Integer.parseInt(conf.getMaxConnectionTimeoutSeconds()),
         conf.getQueryResultTimeUnit(), Integer.parseInt(conf.getQueryChunkSize()),
         conf.getSchedulingPeriod());
   }
 
   @Override
-  public String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
-    String deletedProcessorId = niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
+  public String deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+    String deletedProcessorId = niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
     niFiClientService.distributeLoadOfProducers(niFiSinkDTO.getHandler(), false);
     return deletedProcessorId;
   }
 
   @Override
-  public String toggleSink(String id, boolean isEnabled) throws IOException {
-    return niFiClientService.changeProcessorStatus(id, isEnabled ? STATE.RUNNING : STATE.STOPPED);
+  public String toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
+    return niFiClientService.changeProcessorStatus(name, path,
+      isEnabled ? STATE.RUNNING : STATE.STOPPED);
   }
 
   @Override
@@ -95,18 +95,18 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
   }
 
   @Override
-  public String getSinkValidationErrors(String id) throws IOException {
-    return niFiClientService.getValidationErrors(id);
+  public String getSinkValidationErrors(String name, String[] path) throws IOException {
+    return niFiClientService.getValidationErrors(name, path);
   }
 
   @Override
-  public boolean exists(String id) throws IOException {
-    return niFiClientService.processorExists(id);
+  public boolean exists(String name, String[] path) throws IOException {
+    return niFiClientService.processorExists(name, path);
   }
 
   @Override
-  public boolean isSinkRunning(String id) throws IOException {
-    return niFiClientService.isProcessorRunning(id);
+  public boolean isSinkRunning(String name, String[] path) throws IOException {
+    return niFiClientService.isProcessorRunning(name, path);
   }
 
   private ExecuteInfluxDBConfiguration extractConfiguration(String configuration) {

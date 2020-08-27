@@ -42,36 +42,37 @@ public class PutFile implements NiFiLoggerFactory {
   }
 
   @Override
-  public NiFiSinkDTO createSink(
+  public void createSink(
     NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
 
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
 
-    String putFileId = niFiClientService
+    niFiClientService
       .createPutFile(niFiSinkDTO.getName(), conf.getDirectory(), conf.getSchedulingPeriod(), path);
-
-    niFiSinkDTO.setProcessorId(putFileId);
-
-    return niFiSinkDTO;
   }
 
   @Override
   public String updateSink(NiFiSink sink,
-    NiFiSinkDTO sinkDTO) throws IOException {
+    NiFiSinkDTO sinkDTO, String[] path) throws IOException {
     conf = extractConfiguration(sinkDTO.getConfiguration());
+
+    String processorId = niFiClientService.findProcessorIDByNameAndProcessGroup(sink.getName(),
+      path);
+
     return niFiClientService
-      .updatePutFile(sinkDTO.getProcessorId(), sinkDTO.getName(), conf.getDirectory(),
+      .updatePutFile(processorId, sinkDTO.getName(), conf.getDirectory(),
         conf.getSchedulingPeriod());
   }
 
   @Override
-  public String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
-    return niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
+  public String deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+    return niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
   }
 
   @Override
-  public String toggleSink(String id, boolean isEnabled) throws IOException {
-    return niFiClientService.changeProcessorStatus(id, isEnabled ? STATE.RUNNING : STATE.STOPPED);
+  public String toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
+    return niFiClientService.changeProcessorStatus(name, path,
+      isEnabled ? STATE.RUNNING : STATE.STOPPED);
   }
 
   @Override
@@ -82,18 +83,18 @@ public class PutFile implements NiFiLoggerFactory {
   }
 
   @Override
-  public String getSinkValidationErrors(String id) throws IOException {
-    return niFiClientService.getValidationErrors(id);
+  public String getSinkValidationErrors(String name, String[] path) throws IOException {
+    return niFiClientService.getValidationErrors(name, path);
   }
 
   @Override
-  public boolean exists(String id) throws IOException {
-    return niFiClientService.processorExists(id);
+  public boolean exists(String name, String[] path) throws IOException {
+    return niFiClientService.processorExists(name, path);
   }
 
   @Override
-  public boolean isSinkRunning(String id) throws IOException {
-    return niFiClientService.isProcessorRunning(id);
+  public boolean isSinkRunning(String name, String[] path) throws IOException {
+    return niFiClientService.isProcessorRunning(name, path);
   }
 
   private PutFileConfiguration extractConfiguration(String configuration) {

@@ -5,6 +5,7 @@ import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.querydsl.core.types.Predicate;
 import esthesis.platform.server.config.AppConstants.NIFI_SINK_HANDLER;
 import esthesis.platform.server.config.NiFiSinkConfiguration;
+import esthesis.platform.server.dto.NiFiDTO;
 import esthesis.platform.server.dto.nifisinks.NiFiLoggerFactoryDTO;
 import esthesis.platform.server.dto.nifisinks.NiFiProducerFactoryDTO;
 import esthesis.platform.server.dto.nifisinks.NiFiReaderFactoryDTO;
@@ -35,11 +36,14 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
     + ".server.nifi.sinks.";
   private final NiFiSinkConfiguration niFiSinkConfiguration;
   private final List<NiFiSinkFactory> niFiSinkFactories;
+  private final NiFiService niFiService;
 
   public NiFiSinkService(NiFiSinkConfiguration niFiSinkConfiguration,
-    List<NiFiSinkFactory> niFiSinkFactories) {
+    List<NiFiSinkFactory> niFiSinkFactories,
+    NiFiService niFiService) {
     this.niFiSinkConfiguration = niFiSinkConfiguration;
     this.niFiSinkFactories = niFiSinkFactories;
+    this.niFiService = niFiService;
   }
 
   public List<NiFiReaderFactoryDTO> findAvailableNiFiReaderFactories() {
@@ -66,16 +70,19 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
       try {
         NiFiSinkFactory niFiSinkFactory = getNiFiSinkFactoryImplementation(
           niFiSinkDTO);
-        niFiSinkDTO.setValidationErrors(validateNiFiSink(niFiSinkDTO,
-          niFiSinkFactory));
-        boolean savedState = niFiSinkDTO.isState();
-        boolean niFiState = niFiSinkFactory.isSinkRunning(niFiSinkDTO.getProcessorId());
 
-        if (savedState != niFiState) {
-          niFiSinkDTO.setState(niFiState);
-          save(niFiSinkDTO);
+        NiFiDTO activeNiFi = niFiService.getActiveNiFi();
+        if (activeNiFi != null && activeNiFi.getSynced()) {
+          niFiSinkDTO.setValidationErrors(validateNiFiSink(niFiSinkDTO,
+            niFiSinkFactory));
+          String[] path = createPath(niFiSinkDTO, niFiSinkFactory);
+          boolean savedState = niFiSinkDTO.isState();
+          boolean niFiState = niFiSinkFactory.isSinkRunning(niFiSinkDTO.getName(), path);
+          if (savedState != niFiState) {
+            niFiSinkDTO.setState(niFiState);
+            save(niFiSinkDTO);
+          }
         }
-
       } catch (IOException exception) {
         exception.printStackTrace();
       }
@@ -86,15 +93,7 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
 
   @Override
   public NiFiSinkDTO findById(long id) {
-    NiFiSinkDTO niFiSinkDTO = super.findById(id);
-    try {
-      niFiSinkDTO.setValidationErrors(validateNiFiSink(niFiSinkDTO,
-        getNiFiSinkFactoryImplementation(niFiSinkDTO)));
-    } catch (IOException exception) {
-      exception.printStackTrace();
-    }
-
-    return niFiSinkDTO;
+   return super.findById(id);
   }
 
   public NiFiSinkDTO saveSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
@@ -108,7 +107,7 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
       NiFiSink latestVersion = super.findEntityById(niFiSinkDTO.getId());
       niFiSinkDTO.setCustomInfo(latestVersion.getCustomInfo());
 
-      if (!niFiSinkFactory.exists(niFiSinkDTO.getProcessorId())) {
+      if (!niFiSinkFactory.exists(latestVersion.getName(), path)) {
         niFiSinkDTO = createNiFiSink(niFiSinkDTO, niFiSinkFactory, path);
       } else {
         updateNiFiSink(niFiSinkDTO, niFiSinkFactory, latestVersion);
@@ -132,15 +131,19 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
       .equals(niFiSinkDTO.getConfiguration());
     boolean isRenamed = !latestVersion.getName().equals(niFiSinkDTO.getName());
 
+    String[] path = createPath(niFiSinkDTO, niFiSinkFactory);
+
     //if sink is running, stop it before updating.
     if (latestVersion.isState() && isConfigurationChanged) {
-      niFiSinkFactory.toggleSink(niFiSinkDTO.getProcessorId(), false);
+
+      niFiSinkFactory.toggleSink(niFiSinkDTO.getName(), path, false);
     }
 
     //Update sink if needed.
     if (isConfigurationChanged || isRenamed) {
       try {
-        niFiSinkFactory.updateSink(latestVersion, niFiSinkDTO);
+        niFiSinkFactory.updateSink(latestVersion, niFiSinkDTO,
+          path);
       } catch (NiFiProcessingException e) {
         throw new QCouldNotSaveException("Could not save NiFi Sink.", e);
       }
@@ -148,31 +151,33 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
 
     //update state if needed
     if (isStateChanged || (isConfigurationChanged && latestVersion.isState())) {
-      niFiSinkFactory.toggleSink(niFiSinkDTO.getProcessorId(), niFiSinkDTO.isState());
+      niFiSinkFactory.toggleSink(niFiSinkDTO.getName(), path, niFiSinkDTO.isState());
     }
   }
 
   private NiFiSinkDTO createNiFiSink(NiFiSinkDTO niFiSinkDTO, NiFiSinkFactory niFiSinkFactory,
     String[] path) throws IOException {
-    niFiSinkDTO = niFiSinkFactory.createSink(niFiSinkDTO, path);
+    niFiSinkFactory.createSink(niFiSinkDTO, path);
     if (niFiSinkDTO.isState()) {
-      niFiSinkFactory.toggleSink(niFiSinkDTO.getProcessorId(), niFiSinkDTO.isState());
+      niFiSinkFactory.toggleSink(niFiSinkDTO.getName(), path, niFiSinkDTO.isState());
     }
     return niFiSinkDTO;
   }
 
   private String validateNiFiSink(NiFiSinkDTO niFiSinkDTO, NiFiSinkFactory niFiSinkFactory)
     throws IOException {
+    String[] path = createPath(niFiSinkDTO, niFiSinkFactory);
     String sinkValidationErrors = niFiSinkFactory
-      .getSinkValidationErrors(niFiSinkDTO.getProcessorId());
+      .getSinkValidationErrors(niFiSinkDTO.getName(), path);
     return sinkValidationErrors;
   }
 
   public NiFiSinkDTO deleteSink(Long id) throws IOException {
     NiFiSinkDTO niFiSinkDTO = super.findById(id);
     NiFiSinkFactory niFiSinkFactory = getNiFiSinkFactoryImplementation(niFiSinkDTO);
-    if (niFiSinkFactory.exists(niFiSinkDTO.getProcessorId())) {
-      niFiSinkFactory.deleteSink(niFiSinkDTO);
+    String path[] = createPath(niFiSinkDTO, niFiSinkFactory);
+    if (niFiSinkFactory.exists(niFiSinkDTO.getName(), path)) {
+      niFiSinkFactory.deleteSink(niFiSinkDTO, path);
     }
 
     return super.deleteById(id);
@@ -221,7 +226,10 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
     List<NiFiSinkDTO> syncedSinks =
       allSinks.stream().filter(niFiSinkDTO -> {
         try {
-          return getNiFiSinkFactoryImplementation(niFiSinkDTO).exists(niFiSinkDTO.getProcessorId());
+          NiFiSinkFactory niFiSinkFactoryImplementation = getNiFiSinkFactoryImplementation(
+            niFiSinkDTO);
+          String[] path = createPath(niFiSinkDTO, niFiSinkFactoryImplementation);
+          return niFiSinkFactoryImplementation.exists(niFiSinkDTO.getName(), path);
         } catch (IOException e) {
           throw new UncheckedIOException(e);
         }
@@ -236,7 +244,8 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
     allSinks.stream().forEach(niFiSinkDTO -> {
       NiFiSinkFactory niFiSinkFactoryImplementation = getNiFiSinkFactoryImplementation(niFiSinkDTO);
       try {
-        if (!niFiSinkFactoryImplementation.exists(niFiSinkDTO.getProcessorId())) {
+        String[] path = createPath(niFiSinkDTO, niFiSinkFactoryImplementation);
+        if (!niFiSinkFactoryImplementation.exists(niFiSinkDTO.getName(), path)) {
           saveSink(niFiSinkDTO);
         }
       } catch (IOException exception) {

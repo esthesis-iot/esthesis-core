@@ -6,7 +6,6 @@ import esthesis.platform.server.model.NiFiSink;
 import esthesis.platform.server.nifi.client.services.NiFiClientService;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import esthesis.platform.server.nifi.sinks.producers.NiFiProducerFactory;
-import esthesis.platform.server.nifi.sinks.writers.relational.CustomInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -51,7 +50,7 @@ public class ExecuteSQL implements NiFiProducerFactory {
   }
 
   @Override
-  public NiFiSinkDTO createSink(
+  public void createSink(
     NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
 
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
@@ -68,19 +67,16 @@ public class ExecuteSQL implements NiFiProducerFactory {
     customInfo.setDbConnectionPool(dbConnectionPool);
     niFiSinkDTO.setCustomInfo(objectMapper.writeValueAsString(customInfo));
 
-    String executeSQL = niFiClientService
+   niFiClientService
       .createExecuteSQL(niFiSinkDTO.getName(), dbConnectionPool, conf.getSchedulingPeriod(), path);
 
-    niFiSinkDTO.setProcessorId(executeSQL);
     enableControllerServices(dbConnectionPool);
 
     niFiClientService.distributeLoadOfProducers(niFiSinkDTO.getHandler(), true);
-
-    return niFiSinkDTO;
   }
 
   @Override
-  public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO) throws IOException {
+  public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO, String[] path) throws IOException {
 
     ExecuteSQLConfiguration prevConf = extractConfiguration(sink.getConfiguration());
     conf = extractConfiguration(sinkDTO.getConfiguration());
@@ -100,15 +96,16 @@ public class ExecuteSQL implements NiFiProducerFactory {
           conf.getPassword());
     }
 
-    niFiClientService.updateExecuteSQL(sink.getProcessorId(), sinkDTO.getName(),
-      conf.getSchedulingPeriod());
+    String processorId = niFiClientService.findProcessorIDByNameAndProcessGroup(sink.getName(),
+      path);
 
-    return sink.getProcessorId();
+    return  niFiClientService.updateExecuteSQL(processorId, sinkDTO.getName(),
+      conf.getSchedulingPeriod());
   }
 
   @Override
-  public String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
-    String deletedProcessorId = niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
+  public String deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+    String deletedProcessorId = niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
     deleteControllerServices(niFiSinkDTO);
     niFiClientService.distributeLoadOfProducers(niFiSinkDTO.getHandler(), true);
     return deletedProcessorId;
@@ -118,9 +115,6 @@ public class ExecuteSQL implements NiFiProducerFactory {
     String customInfoString = niFiSinkDTO.getCustomInfo();
     if (customInfoString != null) {
       CustomInfo customInfo = objectMapper.readValue(customInfoString, CustomInfo.class);
-      if (!StringUtils.isEmpty(customInfo.getJsonTreeReader())) {
-        niFiClientService.deleteController(customInfo.getJsonTreeReader());
-      }
       if (!StringUtils.isEmpty(customInfo.getDbConnectionPool())) {
         niFiClientService.deleteController(customInfo.getDbConnectionPool());
       }
@@ -128,8 +122,9 @@ public class ExecuteSQL implements NiFiProducerFactory {
   }
 
   @Override
-  public String toggleSink(String id, boolean isEnabled) throws IOException {
-    return niFiClientService.changeProcessorStatus(id, isEnabled ? STATE.RUNNING : STATE.STOPPED);
+  public String toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
+    return niFiClientService.changeProcessorStatus(name, path,
+      isEnabled ? STATE.RUNNING : STATE.STOPPED);
   }
 
   @Override
@@ -140,18 +135,18 @@ public class ExecuteSQL implements NiFiProducerFactory {
   }
 
   @Override
-  public String getSinkValidationErrors(String id) throws IOException {
-    return niFiClientService.getValidationErrors(id);
+  public String getSinkValidationErrors(String name, String[] path) throws IOException {
+    return niFiClientService.getValidationErrors(name, path);
   }
 
   @Override
-  public boolean exists(String id) throws IOException {
-    return niFiClientService.processorExists(id);
+  public boolean exists(String name, String[] path) throws IOException {
+    return niFiClientService.processorExists(name, path);
   }
 
   @Override
-  public boolean isSinkRunning(String id) throws IOException {
-    return niFiClientService.isProcessorRunning(id);
+  public boolean isSinkRunning(String name, String[] path) throws IOException {
+    return niFiClientService.isProcessorRunning(name, path);
   }
 
   private ExecuteSQLConfiguration extractConfiguration(String configuration) {

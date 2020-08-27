@@ -54,7 +54,7 @@ public class PutSyslog implements NiFiLoggerFactory {
   }
 
   @Override
-  public NiFiSinkDTO createSink(
+  public void createSink(
     NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
 
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
@@ -77,43 +77,43 @@ public class PutSyslog implements NiFiLoggerFactory {
       enableControllerServices(sslContextId);
     }
 
-    String putSyslog = niFiClientService
+    niFiClientService
       .createPutSyslog(niFiSinkDTO.getName(), sslContextId, conf.getHostname(),
         conf.getPort(),
-        conf.getProtocol(), conf.getMessageBody(), conf.getMessagePriority(), conf.getSchedulingPeriod(), path);
-
-    niFiSinkDTO.setProcessorId(putSyslog);
-
-    return niFiSinkDTO;
+        conf.getProtocol(), conf.getMessageBody(), conf.getMessagePriority(),
+        conf.getSchedulingPeriod(), path);
   }
 
   @Override
   public String updateSink(NiFiSink sink,
-    NiFiSinkDTO sinkDTO) throws IOException {
+    NiFiSinkDTO sinkDTO, String[] path) throws IOException {
 
     PutSyslogConfiguration prevConf = extractConfiguration(sink.getConfiguration());
     conf = extractConfiguration(sinkDTO.getConfiguration());
 
     String sslContextId = null;
+    String processorId = niFiClientService.findProcessorIDByNameAndProcessGroup(sink.getName(),
+      path);
+
 
     if (!(Objects.equals(conf.getKeystoreFilename(), prevConf.getKeystoreFilename()) &&
       Objects.equals(conf.getKeystorePassword(), prevConf.getKeystorePassword()) &&
       Objects.equals(conf.getTruststoreFilename(), prevConf.getTruststoreFilename()) &&
       Objects.equals(conf.getTruststorePassword(), prevConf.getTruststorePassword()))) {
 
-      esthesis.platform.server.nifi.sinks.readers.mqtt.CustomInfo customInfo =
+      CustomInfo customInfo =
         sinkDTO.getCustomInfo() != null ?
           objectMapper.readValue(sink.getCustomInfo(),
-            esthesis.platform.server.nifi.sinks.readers.mqtt.CustomInfo.class) : null;
+            CustomInfo.class) : null;
 
       if (customInfo == null) {
 
         sslContextId = niFiClientService
-          .createSSLContextForExistingProcessor(sinkDTO.getProcessorId(),
+          .createSSLContextForExistingProcessor(sinkDTO.getName(), path,
             conf.getKeystoreFilename(),
             conf.getKeystorePassword(), conf.getTruststoreFilename(), conf.getTruststorePassword());
 
-        customInfo = new esthesis.platform.server.nifi.sinks.readers.mqtt.CustomInfo();
+        customInfo = new CustomInfo();
         customInfo.setSslContextId(sslContextId);
         sinkDTO.setCustomInfo(objectMapper.writeValueAsString(customInfo));
         enableControllerServices(sslContextId);
@@ -125,24 +125,26 @@ public class PutSyslog implements NiFiLoggerFactory {
     }
 
     return niFiClientService
-      .updatePutSyslog(sink.getProcessorId(),sinkDTO.getName(), sslContextId, conf.getHostname(),
+      .updatePutSyslog(processorId, sinkDTO.getName(), sslContextId, conf.getHostname(),
         conf.getPort(),
-        conf.getProtocol(), conf.getMessageBody(), conf.getMessagePriority(), conf.getSchedulingPeriod());
+        conf.getProtocol(), conf.getMessageBody(), conf.getMessagePriority(),
+        conf.getSchedulingPeriod());
   }
 
   @Override
-  public String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
+  public String deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
     String customInfoString = niFiSinkDTO.getCustomInfo();
     if (customInfoString != null) {
       CustomInfo customInfo = objectMapper.readValue(customInfoString, CustomInfo.class);
       niFiClientService.deleteController(customInfo.getSslContextId());
     }
-    return niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
+    return niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
   }
 
   @Override
-  public String toggleSink(String id, boolean isEnabled) throws IOException {
-    return niFiClientService.changeProcessorStatus(id, isEnabled ? STATE.RUNNING : STATE.STOPPED);
+  public String toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
+    return niFiClientService.changeProcessorStatus(name, path,
+      isEnabled ? STATE.RUNNING : STATE.STOPPED);
   }
 
   @Override
@@ -153,18 +155,18 @@ public class PutSyslog implements NiFiLoggerFactory {
   }
 
   @Override
-  public String getSinkValidationErrors(String id) throws IOException {
-    return niFiClientService.getValidationErrors(id);
+  public String getSinkValidationErrors(String name, String[] path) throws IOException {
+    return niFiClientService.getValidationErrors(name, path);
   }
 
   @Override
-  public boolean exists(String id) throws IOException {
-    return niFiClientService.processorExists(id);
+  public boolean exists(String name, String[] path) throws IOException {
+    return niFiClientService.processorExists(name, path);
   }
 
   @Override
-  public boolean isSinkRunning(String id) throws IOException {
-    return niFiClientService.isProcessorRunning(id);
+  public boolean isSinkRunning(String name, String[] path) throws IOException {
+    return niFiClientService.isProcessorRunning(name, path);
   }
 
   private PutSyslogConfiguration extractConfiguration(String configuration) {

@@ -315,22 +315,24 @@ public class NiFiClientService {
   /**
    * Creates an SSLContextController for an existing processor.
    *
-   * @param processorId The id of the processor.
+   * @param processorName The name of the processor.
+   * @param path The path of the processor.
    * @param keystoreFilename The fully-qualified filename of the Keystore.
    * @param keystorePassword The password for the Keystore.
    * @param truststoreFilename The fully-qualified filename of the Truststore.
    * @param truststorePassword The password for the Truststore.
    * @return The id of the created SSL Context service.
    */
-  public String createSSLContextForExistingProcessor(String processorId, String keystoreFilename,
+  public String createSSLContextForExistingProcessor(String processorName,
+    String[] path, String keystoreFilename,
     String keystorePassword, String truststoreFilename, String truststorePassword)
     throws IOException {
-    ProcessorEntity processor = niFiClient.getProcessorById(processorId);
-    String parentGroupId = processor.getComponent().getParentGroupId();
 
-    return niFiClient.createSSLContext(processor.getComponent().getName() + " [SSL Context] ",
+    String processGroupId = findProcessGroupId(path);
+
+    return niFiClient.createSSLContext(processorName + " [SSL Context] ",
       keystoreFilename, keystorePassword, truststoreFilename, truststorePassword,
-      parentGroupId).getId();
+      processGroupId).getId();
   }
 
   /**
@@ -399,11 +401,11 @@ public class NiFiClientService {
    * Deletes a Controller service.
    *
    * @param id The id of the service that will be deleted.
-   * @return The status of the deleted controller.
    */
-  public String deleteController(String id) throws IOException {
-    final ControllerServiceEntity controllerServiceEntity = niFiClient.deleteController(id);
-    return controllerServiceEntity.getStatus().getRunStatus();
+  public void deleteController(String id) throws IOException {
+    if (niFiClient.controllerExists(id)) {
+      niFiClient.deleteController(id);
+    }
   }
 
   /**
@@ -419,6 +421,11 @@ public class NiFiClientService {
       .changeControllerServiceStatus(controllerServiceId, state);
 
     return controllerServiceEntity.getComponent().getState();
+  }
+
+  public String findProcessorIDByNameAndProcessGroup(String name, String[] path) throws IOException {
+    String parentProcessGroupId = findProcessGroupId(path);
+    return niFiClient.findProcessorByNameAndGroup(name, parentProcessGroupId).getId();
   }
 
   /**
@@ -472,6 +479,7 @@ public class NiFiClientService {
     int qos,
     int queueSize, String schedulingPeriod)
     throws IOException {
+
     return niFiClient
       .updateConsumeMQTT(id, name, sslContextId, uri, topic, qos, queueSize, schedulingPeriod).getId();
   }
@@ -747,22 +755,28 @@ public class NiFiClientService {
   /**
    * Changes the status of a Processor.
    *
-   * @param processorId The id of the Processor.
+   * @param name The id of the Processor.
+   * @param path
    * @param state The desired state of the component.
    * @return The updated status of the processor.
    */
-  public String changeProcessorStatus(String processorId, STATE state) throws IOException {
-    return niFiClient.changeProcessorStatus(processorId, state).getStatus().getRunStatus();
+  public String changeProcessorStatus(String name, String[] path, STATE state) throws IOException {
+    String id = findProcessorIDByNameAndProcessGroup(name, path);
+    return niFiClient.changeProcessorStatus(id, state).getStatus().getRunStatus();
   }
 
   /**
    * Deletes a processor. If the processor is the destination of a connection, the connection will
    * be also deleted.
    *
-   * @param id The id of the processor to delete.
+   * @param name The name of the processor to delete.
    * @return The state of the deleted processor.
    */
-  public String deleteProcessor(String id) throws IOException {
+  public String deleteProcessor(String name, String[] path) throws IOException {
+
+    String processGroupId = findProcessGroupId(path);
+    String id = niFiClient.findProcessorByNameAndGroup(name, processGroupId).getId();
+
     final ProcessorEntity processorEntity = niFiClient.deleteProcessor(id);
     return processorEntity.getComponent().getState();
   }
@@ -770,11 +784,14 @@ public class NiFiClientService {
   /**
    * Gets the validation errors of a processor.
    *
-   * @param processorId The id of the processor.
+   * @param name The id of the processor.
+   * @param path
    * @return A string containing the validation errors.
    */
-  public String getValidationErrors(String processorId) throws IOException {
-    Collection<String> errors = niFiClient.getValidationErrors(processorId);
+  public String getValidationErrors(String name, String[] path) throws IOException {
+    String id = findProcessorIDByNameAndProcessGroup(name, path);
+
+    Collection<String> errors = niFiClient.getValidationErrors(id);
     String join = errors != null ? String.join("\n", errors) : "";
     return join;
   }
@@ -782,12 +799,14 @@ public class NiFiClientService {
   /**
    * Checks if a processor exists.
    *
-   * @param processorId The id of the processor.
+   * @param name The id of the processor.
+   * @param path
    * @return True if exists, false otherwise.
    */
-  public boolean processorExists(String processorId) throws IOException {
+  public boolean processorExists(String name, String[] path) throws IOException {
     try {
-      return niFiClient.getProcessorById(processorId) != null;
+      String processGroupId = findProcessGroupId(path);
+      return niFiClient.findProcessorByNameAndGroup(name,processGroupId) != null;
     } catch (NiFiProcessingException ex) {
       return false;
     }
@@ -843,10 +862,12 @@ public class NiFiClientService {
   /**
    * Checks whether given processor is running.
    *
-   * @param id The id of the processor to check.
+   * @param name The id of the processor to check.
+   * @param path
    * @return true if processor is running, false otherwise.
    */
-  public boolean isProcessorRunning(String id) throws IOException {
+  public boolean isProcessorRunning(String name, String[] path) throws IOException {
+    String id = findProcessorIDByNameAndProcessGroup(name, path);
     return niFiClient.isProcessorRunning(id);
   }
 
@@ -884,4 +905,3 @@ public class NiFiClientService {
   }
 
 }
-

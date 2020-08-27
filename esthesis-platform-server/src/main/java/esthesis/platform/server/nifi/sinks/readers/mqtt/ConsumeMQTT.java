@@ -59,7 +59,7 @@ public class ConsumeMQTT implements NiFiReaderFactory {
   }
 
   @Override
-  public NiFiSinkDTO createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+  public void createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
 
     deleteControllerServices(niFiSinkDTO);
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
@@ -82,19 +82,18 @@ public class ConsumeMQTT implements NiFiReaderFactory {
       enableControllerServices(sslContextId);
     }
 
-    String consumerMqtt = niFiClientService
+    niFiClientService
       .createConsumerMqtt(niFiSinkDTO.getName(), conf.getUri(), conf.getTopic(), conf.getQos(),
         conf.getQueueSize(), sslContextId, conf.getSchedulingPeriod(), path);
-
-    niFiSinkDTO.setProcessorId(consumerMqtt);
-    return niFiSinkDTO;
   }
 
   @Override
-  public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO) throws IOException {
+  public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO, String[] path) throws IOException {
     ConsumeMQTTConfiguration prevConf = extractConfiguration(sink.getConfiguration());
     conf = extractConfiguration(sinkDTO.getConfiguration());
     String sslContextId = null;
+    String processorId = niFiClientService.findProcessorIDByNameAndProcessGroup(sink.getName(),
+      path);
 
     if (!(Objects.equals(conf.getKeystoreFilename(), prevConf.getKeystoreFilename()) &&
       Objects.equals(conf.getKeystorePassword(), prevConf.getKeystorePassword()) &&
@@ -106,7 +105,7 @@ public class ConsumeMQTT implements NiFiReaderFactory {
 
       if (customInfo == null) {
         sslContextId = niFiClientService
-          .createSSLContextForExistingProcessor(sinkDTO.getProcessorId(),
+          .createSSLContextForExistingProcessor(sinkDTO.getName(), path,
             conf.getKeystoreFilename(), conf.getKeystorePassword(), conf.getTruststoreFilename(),
             conf.getTruststorePassword());
 
@@ -122,15 +121,15 @@ public class ConsumeMQTT implements NiFiReaderFactory {
     }
 
     return niFiClientService
-      .updateConsumerMQTT(sinkDTO.getProcessorId(), sinkDTO.getName(), sslContextId, conf.getUri(),
+      .updateConsumerMQTT(processorId, sinkDTO.getName(), sslContextId, conf.getUri(),
         conf.getTopic(),
         conf.getQos(),
         conf.getQueueSize(), conf.getSchedulingPeriod());
   }
 
   @Override
-  public String deleteSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
-    String id = niFiClientService.deleteProcessor(niFiSinkDTO.getProcessorId());
+  public String deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+    String id = niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
     deleteControllerServices(niFiSinkDTO);
     return id;
   }
@@ -144,8 +143,9 @@ public class ConsumeMQTT implements NiFiReaderFactory {
   }
 
   @Override
-  public String toggleSink(String id, boolean isEnabled) throws IOException {
-    return niFiClientService.changeProcessorStatus(id, isEnabled ? STATE.RUNNING : STATE.STOPPED);
+  public String toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
+    return niFiClientService.changeProcessorStatus(name, path,
+      isEnabled ? STATE.RUNNING : STATE.STOPPED);
   }
 
   @Override
@@ -156,18 +156,18 @@ public class ConsumeMQTT implements NiFiReaderFactory {
   }
 
   @Override
-  public String getSinkValidationErrors(String id) throws IOException {
-    return niFiClientService.getValidationErrors(id);
+  public String getSinkValidationErrors(String name, String[] path) throws IOException {
+    return niFiClientService.getValidationErrors(name, path);
   }
 
   @Override
-  public boolean exists(String id) throws IOException {
-    return niFiClientService.processorExists(id);
+  public boolean exists(String name, String[] path) throws IOException {
+    return niFiClientService.processorExists(name, path);
   }
 
   @Override
-  public boolean isSinkRunning(String id) throws IOException {
-    return niFiClientService.isProcessorRunning(id);
+  public boolean isSinkRunning(String name, String[] path) throws IOException {
+    return niFiClientService.isProcessorRunning(name, path);
   }
 
   private ConsumeMQTTConfiguration extractConfiguration(String configuration) {
