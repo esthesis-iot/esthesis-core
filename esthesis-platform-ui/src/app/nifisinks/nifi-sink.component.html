@@ -1,4 +1,9 @@
 <mat-card>
+  <div *ngIf="!activeNiFiId">
+    <mat-error>
+      No active NiFi instance found
+    </mat-error>
+  </div>
   <mat-card-title>Data {{type}}</mat-card-title>
   <mat-card-content>
     <div fxLayout="column">
@@ -47,6 +52,6 @@
     </div>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button routerLink="0">CREATE</button>
+    <button [disabled]="!activeNiFiId" mat-button routerLink="0">CREATE</button>
   </mat-card-actions>
 </mat-card>

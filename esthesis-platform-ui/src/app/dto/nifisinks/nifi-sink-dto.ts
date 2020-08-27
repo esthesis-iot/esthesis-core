@@ -7,6 +7,5 @@ export class NiFiSinkDto extends BaseDto {
   state: boolean;
   configuration: string;
   type: string;
-  processorId: string;
   validationErrors: string;
 }

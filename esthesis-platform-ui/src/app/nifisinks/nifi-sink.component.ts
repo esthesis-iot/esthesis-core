@@ -17,6 +17,7 @@ export class NiFiSinkComponent extends BaseComponent implements OnInit, AfterVie
   columns = ['name', 'createdOn', 'handler', 'state', 'validationErrors'];
   datasource = new MatTableDataSource<NiFiSinkDto>();
   type: string;
+  activeNiFiId = localStorage.getItem('activeNiFi');
 
   @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -56,5 +57,4 @@ export class NiFiSinkComponent extends BaseComponent implements OnInit, AfterVie
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
       this.sort.start);
   }
-
 }

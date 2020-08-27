@@ -1,4 +1,10 @@
 <mat-card>
+  <div *ngIf="!activeNiFiId">
+    <mat-error>
+      No active NiFi instance found
+    </mat-error>
+  </div>
+
   <mat-card-title>Data {{type.slice(0, -1)}}</mat-card-title>
   <mat-card-content>
     <form [formGroup]="form">
@@ -40,7 +46,9 @@
   </mat-card-content>
   <mat-card-actions>
     <button mat-button routerLink="/{{type}}">CANCEL</button>
-    <button mat-button color="primary" [disabled]="form.invalid" (click)="save()">SAVE</button>
-    <button mat-button color="warn" (click)="delete()" *ngIf="id !== 0">DELETE</button>
+    <button mat-button color="primary" [disabled]="!activeNiFiId"  (click)="save()">
+      SAVE</button>
+    <button mat-button color="warn"   [disabled]="!activeNiFiId"   (click)="delete()" *ngIf="id !== 0">DELETE
+    </button>
   </mat-card-actions>
 </mat-card>

@@ -26,6 +26,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
   type: string
   handlers = [];
   isEdit: boolean;
+  activeNiFiId = localStorage.getItem('activeNiFi');
 
   constructor(private fb: FormBuilder, private nifDataService: NifiSinkService,
               private qForms: QFormsService,

@@ -1,5 +1,6 @@
-import {AfterViewInit, Component, OnInit, Renderer2} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {BaseComponent} from '../shared/component/base-component';
+import {NiFiService} from '../infrastructure/infrastructure-nifi/nifi.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,11 +9,15 @@ import {BaseComponent} from '../shared/component/base-component';
 })
 export class DashboardComponent extends BaseComponent implements OnInit, AfterViewInit {
 
-  constructor() {
+  constructor(private nifiService: NiFiService) {
     super();
   }
 
   ngOnInit() {
+    this.nifiService.getActive().subscribe(value => {
+      value ? localStorage.setItem("activeNiFi", value.id.toString()) : localStorage.removeItem(
+        "activeNiFi")
+    });
   }
 
   ngAfterViewInit(): void {
