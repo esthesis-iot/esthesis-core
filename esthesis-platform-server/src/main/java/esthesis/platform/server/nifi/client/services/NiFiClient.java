@@ -75,6 +75,7 @@ import org.apache.nifi.web.api.dto.BundleDTO;
 import org.apache.nifi.web.api.dto.ConnectableDTO;
 import org.apache.nifi.web.api.dto.ConnectionDTO;
 import org.apache.nifi.web.api.dto.ControllerServiceDTO;
+import org.apache.nifi.web.api.dto.PositionDTO;
 import org.apache.nifi.web.api.dto.ProcessorConfigDTO;
 import org.apache.nifi.web.api.dto.ProcessorDTO;
 import org.apache.nifi.web.api.dto.RelationshipDTO;
@@ -113,6 +114,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -1283,7 +1285,7 @@ public class NiFiClient {
     return createProcessor(parentProcessGroupId, processorDTO);
   }
 
-  public ProcessorEntity updateExecuteSQL(String processorId, String name,  String schedulingPeriod)
+  public ProcessorEntity updateExecuteSQL(String processorId, String name, String schedulingPeriod)
     throws IOException {
     return updateProcessor(processorId, name, schedulingPeriod, new HashMap<>());
   }
@@ -1328,7 +1330,7 @@ public class NiFiClient {
    * @param schedulingPeriod The amount of time that should elapse between task executions.
    * @return The newly created processor.
    */
-  public ProcessorEntity updatePutFile(String processorId, String name,  String directory,
+  public ProcessorEntity updatePutFile(String processorId, String name, String directory,
     String schedulingPeriod) throws IOException {
     Map<String, String> properties = new HashMap<>();
     properties.put(DIRECTORY, directory);
@@ -1473,7 +1475,7 @@ public class NiFiClient {
       connections += 1;
       updateDistributeLoad(connections, distributeLoadProcessor.getId());
       createDistributeLoadConnection(connections, rootGroupId, isRelational ?
-          relationalGroupId : influxGroupId, distributeLoadProcessor.getId(), inputPort.getId());
+        relationalGroupId : influxGroupId, distributeLoadProcessor.getId(), inputPort.getId());
     }
 
     updateConnectionsInInstancesGroup(isRelational ? relationalInstanceGroupId :
@@ -1572,7 +1574,7 @@ public class NiFiClient {
   private void updateDistributeLoad(int relationships, String processorId) throws IOException {
     Map<String, String> properties = new HashMap<>();
     properties.put("Number of Relationships", "" + relationships);
-    updateProcessor(processorId, "DistributeLoad","0 sec", properties);
+    updateProcessor(processorId, "DistributeLoad", "0 sec", properties);
   }
 
   private void createDistributeLoadConnection(int relationships, String parentProcessGroupId,
@@ -1595,7 +1597,58 @@ public class NiFiClient {
     ProcessorDTO processorDTO)
     throws IOException {
 
+    PortEntity inputPort = findInputPort(parentProcessGroupId);
+
+    ProcessorsEntity processorsOfGroup = getProcessorsOfGroup(parentProcessGroupId);
+    Set<ProcessorEntity> processors = processorsOfGroup.getProcessors();
+
+    List<Double> yPositions = processors.stream().filter(
+      processorEntity -> processorEntity.getComponent().getType().equals(processorDTO.getType()))
+      .map(processorEntity -> processorEntity.getPosition().getY()).collect(Collectors.toList());
+
+    List<Double> xPositions = processors.stream().filter(
+      processorEntity -> processorEntity.getComponent().getType().equals(processorDTO.getType()))
+      .map(processorEntity -> processorEntity.getPosition().getX()).collect(Collectors.toList());
+
+    Collections.sort(yPositions);
+    Collections.sort(xPositions);
+
+    int availablePositionY = 0;
+    int availablePositionX = 0;
+
+    if (inputPort == null) {
+      ListIterator<Double> iterator = yPositions.listIterator();
+      availablePositionY = yPositions.size();
+      while (iterator.hasNext()) {
+        int i = iterator.nextIndex();
+        double next = iterator.next().doubleValue();
+        double v = 150 * i;
+        if (v != next) {
+          availablePositionY = i;
+          break;
+        }
+      }
+    } else {
+      ListIterator<Double> iteratorX = xPositions.listIterator();
+
+      availablePositionX = yPositions.size();
+      while (iteratorX.hasNext()) {
+        int i = iteratorX.nextIndex();
+        double next = iteratorX.next().doubleValue();
+        double v = 550 * i;
+        if (v != next) {
+          availablePositionX = i;
+          break;
+        }
+      }
+    }
+
     RevisionDTO revisionDTO = createRevisionDTO();
+    PositionDTO positionDTO = new PositionDTO();
+    positionDTO.setX(availablePositionX * 550.0);
+    positionDTO.setY(availablePositionY * 150.0);
+
+    processorDTO.setPosition(positionDTO);
 
     ProcessorEntity processorEntity = new ProcessorEntity();
     processorEntity.setComponent(processorDTO);
