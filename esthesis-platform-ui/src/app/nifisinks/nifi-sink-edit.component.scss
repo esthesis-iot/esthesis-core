@@ -18,3 +18,12 @@ mat-icon {
   margin: 10px;
   color: #267326;
 }
+
+mat-error {
+  text-align: center;
+  background-color: $e-color-error;
+  color: white;
+  padding: 0.15rem;
+  border-radius: 3px;
+  margin-bottom: 0.5rem;
+}
