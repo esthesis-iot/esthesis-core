@@ -32,7 +32,7 @@
           </td>
         </ng-container>
         <ng-container matColumnDef="validationErrors">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Validation</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>NiFi Status</th>
           <td mat-cell *matCellDef="let element">
             <mat-icon *ngIf="element.validationErrors"
                       color="warn" [matTooltip]=element.validationErrors>warning
