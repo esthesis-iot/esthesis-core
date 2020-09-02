@@ -7,6 +7,8 @@ import esthesis.device.runtime.proxy.mqtt.MqttProxyServer;
 import esthesis.device.runtime.service.ProvisioningService;
 import esthesis.device.runtime.service.RegistrationService;
 import esthesis.device.runtime.util.SecurityUtil;
+import lombok.extern.java.Log;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.retry.support.RetryTemplate;
@@ -16,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A bootstrap class to allow component initialization after application has fully started and all
@@ -27,11 +28,9 @@ import java.util.logging.Logger;
  * In addition, bootstrapping all components in a well-defined sequence here allows greater control
  * over system's boot up times.
  */
+@Log
 @Component
 public class Bootstrap {
-
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(Bootstrap.class.getName());
 
   private final AppProperties appProperties;
   private final ProvisioningService provisioningService;
@@ -65,7 +64,7 @@ public class Bootstrap {
       scanner.nextLine();
     }
 
-    LOGGER.log(Level.INFO, "Initialising esthesis device runtime.");
+    log.log(Level.INFO, "Initialising esthesis device runtime.");
 
     // Check if outgoing encryption is required that the public & private keys of the device are
     // available (note that, technically, only the private key is needed).
@@ -86,7 +85,7 @@ public class Bootstrap {
         try {
           return registrationService.register();
         } catch (Exception e) {
-          LOGGER.log(Level.SEVERE, e.getMessage(), e);
+          log.log(Level.SEVERE, e.getMessage(), e);
           throw e;
         }
       });
@@ -95,19 +94,16 @@ public class Bootstrap {
     // Perform initial provisioning.
     if (!appProperties.isSkipInitialProvisioning() && !provisioningService
       .isInitialProvisioningDone()) {
-      LOGGER.log(Level.CONFIG, "Initial provisioning not done. Trying to initialise it now.");
+      log.log(Level.CONFIG, "Initial provisioning not done. Trying to initialise it now.");
       retryTemplate.execute(context -> {
         try {
           return provisioningService.provisioning();
         } catch (Exception e) {
-          LOGGER.log(Level.SEVERE, e.getMessage(), e);
+          log.log(Level.SEVERE, e.getMessage(), e);
           throw e;
         }
       });
     }
-
-    // Start MQTT client.
-    mqttClient.connect(registrationService.getEmbeddedMqttServer());
 
     // Start embedded MQTT server.
     if (appProperties.isProxyMqtt()) {
@@ -116,14 +112,21 @@ public class Bootstrap {
 
     // Inform whether the embedded web server is started.
     if (appProperties.isProxyWeb()) {
-      LOGGER.log(Level.CONFIG, "Embedded Web server started on port {0}.",
+      log.log(Level.CONFIG, "Embedded Web server started on port {0}.",
         String.valueOf(appProperties.getProxyWebPort()));
     }
 
-    // Publish ping & health data as soon as the device is initialised.
-    healthMetadataCollector.ping();
-    healthMetadataCollector.collectHealthData();
+    // Start MQTT client, if an MQTT server has been provided.
+    if (StringUtils.isNotEmpty(registrationService.getEmbeddedMqttServer())) {
+      mqttClient.connect(registrationService.getEmbeddedMqttServer());
 
-    LOGGER.log(Level.INFO, "esthesis device runtime initialised.");
+      // Publish ping & health data.
+      healthMetadataCollector.ping();
+      healthMetadataCollector.collectHealthData();
+    } else {
+      log.log(Level.WARNING, "No MQTT server details were provided for this device.");
+    }
+
+    log.log(Level.INFO, "esthesis device runtime initialised.");
   }
 }

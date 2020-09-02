@@ -13,6 +13,7 @@ import esthesis.device.runtime.model.Provisioning;
 import esthesis.device.runtime.repository.ProvisioningRepository;
 import esthesis.device.runtime.util.DeviceMessageUtil;
 import javax.crypto.NoSuchPaddingException;
+import lombok.extern.java.Log;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.io.FileUtils;
@@ -42,14 +43,12 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
+@Log
 @Service
 @Validated
 public class ProvisioningService {
 
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(ProvisioningService.class.getName());
   private final AppProperties appProperties;
   private final RegistrationService registrationService;
   private final DeviceMessageUtil deviceMessageUtil;
@@ -90,9 +89,17 @@ public class ProvisioningService {
   public Long provisioning()
   throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
          SignatureException, InvalidAlgorithmParameterException, NoSuchPaddingException {
+    // Do not attempt provisioning if a provisioning URL was not provided.
+    if (StringUtils.isEmpty(registrationService.getProvisioningUrl())) {
+      log.log(Level.WARNING, "Requested " + (isInitialProvisioningDone() ? "initial " : "") +
+        "provisioning, however a provisioning URL has not been provided for this device");
+      return null;
+    }
+
+    // Proceed with provisioning.
     String provisioningUrl =
       registrationService.getProvisioningUrl() + AppConstants.URL_PS_PROVISIONING;
-    LOGGER.log(Level.CONFIG, "Attempting " + (isInitialProvisioningDone() ? "initial " : "") +
+    log.log(Level.CONFIG, "Attempting " + (isInitialProvisioningDone() ? "initial " : "") +
       "provisioning at {0}.", provisioningUrl);
     String provisioningInfoUrl =
       registrationService.getProvisioningUrl() + AppConstants.URL_PS_PROVISIONING_INFO;
@@ -117,7 +124,7 @@ public class ProvisioningService {
 
     // Check if the reply contains a provisioning package that should be downloaded.
     if (provisioningInfoResponse.getPayload() == null) {
-      LOGGER.log(Level.FINE, "No provisioning package found to download.");
+      log.log(Level.FINE, "No provisioning package found to download.");
       return null;
     }
 
@@ -125,7 +132,7 @@ public class ProvisioningService {
     final Provisioning existingProvisioning = provisioningRepository
       .findByPackageId(provisioningInfoResponse.getPayload().getId());
     if (existingProvisioning != null) {
-      LOGGER.log(Level.FINE, "Ignored provisioning package with ID ''{0}'', file ''{1}'', "
+      log.log(Level.FINE, "Ignored provisioning package with ID ''{0}'', file ''{1}'', "
         + "version ''{2}'' as it was already downloaded on ''{3}''.", new Object[]{
         provisioningInfoResponse.getPayload().getId(),
         provisioningInfoResponse.getPayload().getFileName(),
@@ -139,7 +146,7 @@ public class ProvisioningService {
       provisioningInfoResponse.getPayload().getFileName());
     Files.deleteIfExists(tmpDownloadFile);
 
-    LOGGER.log(Level.FINE, "Downloading {0} ({1}) to {2}.",
+    log.log(Level.FINE, "Downloading {0} ({1}) to {2}.",
       new Object[]{provisioningInfoResponse.getPayload().getFileName(),
         FileUtils.byteCountToDisplaySize(provisioningInfoResponse.getPayload().getFileSize()),
         tmpDownloadFile});
@@ -208,19 +215,19 @@ public class ProvisioningService {
 
       if (appProperties.getProvisioningForkType()
         .equals(AppConstants.PROVISIONING_FORK_TYPE_SOFT)) {
-        LOGGER.log(Level.FINE, "Calling (soft) post-provisioning hook {0}.",
+        log.log(Level.FINE, "Calling (soft) post-provisioning hook {0}.",
           String.join(" ", cmdLine.toStrings()));
         DefaultExecutor executor = new DefaultExecutor();
         executor.execute(cmdLine);
-        LOGGER.log(Level.FINE, "Finished post-provisioning (soft) hook execution.");
+        log.log(Level.FINE, "Finished post-provisioning (soft) hook execution.");
       } else if (appProperties.getProvisioningForkType()
         .equals(AppConstants.PROVISIONING_FORK_TYPE_HARD)) {
-        LOGGER.log(Level.FINE, "Calling (hard) post-provisioning hook {0}.",
+        log.log(Level.FINE, "Calling (hard) post-provisioning hook {0}.",
           String.join(" ", cmdLine.toStrings()));
         Runtime.getRuntime().exec(cmdLine.toStrings());
-        LOGGER.log(Level.FINE, "Finished post-provisioning (hard) hook execution.");
+        log.log(Level.FINE, "Finished post-provisioning (hard) hook execution.");
       } else {
-        LOGGER.log(Level.SEVERE, "Provisioning fork mode {0} is not supported.",
+        log.log(Level.SEVERE, "Provisioning fork mode {0} is not supported.",
           appProperties.getProvisioningForkType());
       }
     }

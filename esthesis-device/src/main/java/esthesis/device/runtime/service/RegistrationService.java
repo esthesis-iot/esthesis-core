@@ -1,6 +1,5 @@
 package esthesis.device.runtime.service;
 
-import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import esthesis.common.device.RegistrationRequest;
 import esthesis.common.device.RegistrationResponse;
 import esthesis.common.dto.DeviceMessage;
@@ -94,7 +93,7 @@ public class RegistrationService {
 
     // Check if an MQTT server was received.
     if (registrationResponse.getPayload().getMqttServer() == null) {
-      throw new QDoesNotExistException("Did not receive details for an MQTT server.");
+      log.warning("Did not receive an MQTT server.");
     }
 
     // Registration was successful at this stage, so store registration details.
@@ -163,7 +162,9 @@ public class RegistrationService {
     // Save registration details.
     Registration registration = new Registration();
     registration.setProvisioningUrl(registrationResponse.getPayload().getProvisioningUrl());
-    registration.setMqttServerIp(registrationResponse.getPayload().getMqttServer().getIpAddress());
+    if (registrationResponse.getPayload().getMqttServer() != null) {
+      registration.setMqttServerIp(registrationResponse.getPayload().getMqttServer().getIpAddress());
+    }
     registration.setRegisteredOn(new Date());
     registrationRepository.save(registration);
 

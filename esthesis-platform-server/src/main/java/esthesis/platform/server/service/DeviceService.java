@@ -39,7 +39,6 @@ import esthesis.platform.server.mapper.DeviceMapper;
 import esthesis.platform.server.model.Ca;
 import esthesis.platform.server.model.Device;
 import esthesis.platform.server.model.DeviceKey;
-import esthesis.platform.server.model.Ping;
 import esthesis.platform.server.repository.DeviceKeyRepository;
 import esthesis.platform.server.repository.DeviceRepository;
 import esthesis.platform.server.repository.PingRepository;
@@ -270,10 +269,10 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
     // Create an entry in the 'ping' table for this device, so that it can be updated in the future
     // when the device starts sending ping data.
-    Ping ping = new Ping();
-    ping.setHardwareId(device.getHardwareId());
-    ping.setLastSeen(0);
-    pingRepository.save(ping);
+//    Ping ping = new Ping();
+//    ping.setHardwareId(device.getHardwareId());
+//    ping.setLastSeen(0);
+//    pingRepository.save(ping);
   }
 
   /**

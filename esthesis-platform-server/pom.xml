@@ -8,7 +8,6 @@
     <groupId>esthesis</groupId>
     <artifactId>esthesis-platform</artifactId>
     <version>1.0.22</version>
-    <relativePath>../</relativePath>
   </parent>
 
   <artifactId>esthesis-platform-server</artifactId>

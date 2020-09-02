@@ -34,6 +34,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.logging.Level;
 
@@ -117,10 +118,10 @@ public class DeviceAgentService {
       registrationReply.getPayload().setMqttServer(new MQTTServer()
         .setIpAddress(mqttServersDTO.get().getIpAddress()));
     } else {
-      throw new QDoesNotExistException(
+      log.warning(MessageFormat.format(
         "Could not find a matching MQTT server for device {0} with tags {1} during "
           + "registration.",
-        ArrayUtils.toArray(registrationRequest.getHardwareId(), deviceDTO.getTags()));
+        ArrayUtils.toArray(registrationRequest.getHardwareId(), deviceDTO.getTags())));
     }
 
     // Sign and/or encrypt the reply according to preferences.

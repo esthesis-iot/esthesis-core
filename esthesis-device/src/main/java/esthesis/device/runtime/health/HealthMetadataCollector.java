@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import esthesis.device.runtime.config.AppConstants.Mqtt;
 import esthesis.device.runtime.config.AppProperties;
 import esthesis.device.runtime.mqtt.MqttClient;
+import esthesis.device.runtime.service.RegistrationService;
 import lombok.extern.java.Log;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,20 +38,23 @@ public class HealthMetadataCollector {
   private final MqttClient mqttClient;
   private final AppProperties appProperties;
   private final ObjectMapper objectMapper;
+  private final RegistrationService registrationService;
   private final static Instant startupTime = Instant.now();
 
   public HealthMetadataCollector(MqttClient mqttClient,
-    AppProperties appProperties, ObjectMapper objectMapper) {
+    AppProperties appProperties, ObjectMapper objectMapper,
+    RegistrationService registrationService) {
     this.mqttClient = mqttClient;
     this.appProperties = appProperties;
     this.objectMapper = objectMapper;
+    this.registrationService = registrationService;
   }
 
   @Async
   @Scheduled(fixedRateString = "${pingFreqMsec:60000}",
     initialDelayString = "${pingInitialDelayMsec:60000}")
   public void ping() {
-    if (appProperties.isProxyMqtt()) {
+    if (StringUtils.isNotEmpty(registrationService.getEmbeddedMqttServer())) {
       try {
         mqttClient.publish(Mqtt.EventType.PING, objectMapper
           .writeValueAsBytes(
@@ -65,7 +69,7 @@ public class HealthMetadataCollector {
   @Scheduled(fixedRateString = "${healthDataFreqMsec:900000}",
     initialDelayString = "${healthDataInitialDelayMsec:300000}")
   public void collectHealthData() {
-    if (appProperties.isProxyMqtt()) {
+    if (StringUtils.isNotEmpty(registrationService.getEmbeddedMqttServer())) {
       try {
         DeviceHealthDataDTO deviceHealthDataDTO = new DeviceHealthDataDTO();
 

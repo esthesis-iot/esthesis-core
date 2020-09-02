@@ -22,17 +22,12 @@ public class DevicePageService {
 //  private final DataSinkManager dataSinkManager;
   private final DeviceMetadataRepository deviceMetadataRepository;
   private final DevicePageMapper deviceMetadataMapper;
-  private final DeviceService deviceService;
 
   public DevicePageService(
-//    DataSinkManager dataSinkManager,
     DeviceMetadataRepository deviceMetadataRepository,
-    DevicePageMapper deviceMetadataMapper,
-    DeviceService deviceService) {
-//    this.dataSinkManager = dataSinkManager;
+    DevicePageMapper deviceMetadataMapper) {
     this.deviceMetadataRepository = deviceMetadataRepository;
     this.deviceMetadataMapper = deviceMetadataMapper;
-    this.deviceService = deviceService;
   }
 
   public void save(List<FieldDTO> fields) {
