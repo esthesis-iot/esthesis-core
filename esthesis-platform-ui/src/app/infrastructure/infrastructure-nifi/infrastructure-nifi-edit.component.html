@@ -24,10 +24,10 @@
         </div>
       </div>
     </form>
-    <div class="inline-subheader">
-      Synchronisation status
-    </div>
     <div *ngIf="id != 0">
+      <div class="inline-subheader">
+        Synchronisation status
+      </div>
         <mat-label>{{synced ? "Synchronised on " : "Not synchronised"}}</mat-label>
         <mat-label>{{ lastChecked | date:'medium' }}</mat-label>
     </div>
