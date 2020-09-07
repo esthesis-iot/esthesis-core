@@ -35,6 +35,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -221,7 +222,8 @@ public class NiFiClientService {
   private String findProcessGroupId(String[] path) throws IOException {
     return niFiClient.findProcessGroup(NiFiSearchAlgorithm.NAME_ENDS_WITH, Arrays.asList(path))
       .orElseThrow(() -> new IllegalArgumentException(
-        MessageFormat.format("Could not find process group for {0}.", Arrays.asList(path)))).getId();
+        MessageFormat.format("Could not find process group for {0}.", Arrays.asList(path))))
+      .getId();
   }
 
   private void enableStandardContextHttpMap() throws IOException {
@@ -423,7 +425,8 @@ public class NiFiClientService {
     return controllerServiceEntity.getComponent().getState();
   }
 
-  public String findProcessorIDByNameAndProcessGroup(String name, String[] path) throws IOException {
+  public String findProcessorIDByNameAndProcessGroup(String name, String[] path)
+    throws IOException {
     String parentProcessGroupId = findProcessGroupId(path);
     return niFiClient.findProcessorByNameAndGroup(name, parentProcessGroupId).getId();
   }
@@ -481,7 +484,8 @@ public class NiFiClientService {
     throws IOException {
 
     return niFiClient
-      .updateConsumeMQTT(id, name, sslContextId, uri, topic, qos, queueSize, schedulingPeriod).getId();
+      .updateConsumeMQTT(id, name, sslContextId, uri, topic, qos, queueSize, schedulingPeriod)
+      .getId();
   }
 
   /**
@@ -591,7 +595,8 @@ public class NiFiClientService {
     @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType, String schedulingPeriod)
     throws IOException {
 
-    return niFiClient.updatePutDatabaseRecord(processorId, name, statementType, schedulingPeriod).getId();
+    return niFiClient.updatePutDatabaseRecord(processorId, name, statementType, schedulingPeriod)
+      .getId();
   }
 
   /**
@@ -667,7 +672,8 @@ public class NiFiClientService {
       .getId();
   }
 
-  public String updateExecuteSQL(String processorId, String name, String schedulingPeriod) throws IOException {
+  public String updateExecuteSQL(String processorId, String name, String schedulingPeriod)
+    throws IOException {
     return niFiClient.updateExecuteSQL(processorId, name, schedulingPeriod).getId();
   }
 
@@ -756,7 +762,6 @@ public class NiFiClientService {
    * Changes the status of a Processor.
    *
    * @param name The id of the Processor.
-   * @param path
    * @param state The desired state of the component.
    * @return The updated status of the processor.
    */
@@ -785,7 +790,6 @@ public class NiFiClientService {
    * Gets the validation errors of a processor.
    *
    * @param name The id of the processor.
-   * @param path
    * @return A string containing the validation errors.
    */
   public String getValidationErrors(String name, String[] path) throws IOException {
@@ -800,13 +804,12 @@ public class NiFiClientService {
    * Checks if a processor exists.
    *
    * @param name The id of the processor.
-   * @param path
    * @return True if exists, false otherwise.
    */
   public boolean processorExists(String name, String[] path) throws IOException {
     try {
       String processGroupId = findProcessGroupId(path);
-      return niFiClient.findProcessorByNameAndGroup(name,processGroupId) != null;
+      return niFiClient.findProcessorByNameAndGroup(name, processGroupId) != null;
     } catch (NiFiProcessingException ex) {
       return false;
     }
@@ -823,7 +826,8 @@ public class NiFiClientService {
     if (niFiClient.getStatus().getControllerStatus().getFlowFilesQueued() > 0) {
       clearQueue(processGroupId);
     }
-    await().until(() -> niFiClient.getStatus().getControllerStatus().getRunningCount() == 0);
+    await().atMost(Duration.ofSeconds(20))
+      .until(() -> niFiClient.getStatus().getControllerStatus().getRunningCount() == 0);
     niFiClient.changeGroupControllerServicesState(processGroupId, STATE.DISABLED);
     niFiClient.deleteProcessGroup(processGroupId);
   }
@@ -831,24 +835,20 @@ public class NiFiClientService {
   private void clearQueue(String id) throws IOException {
     ProcessGroupFlowDTO processGroupFlow = niFiClient.getProcessGroups(id).getProcessGroupFlow();
     Set<ProcessGroupEntity> processGroups = processGroupFlow.getFlow().getProcessGroups();
+    Set<ProcessGroupEntity> groupsWithQueued = processGroups.stream().filter(processGroupEntity ->
+      processGroupEntity.getStatus().getAggregateSnapshot().getFlowFilesQueued() > 0).collect(
+      Collectors.toSet());
 
-    if (processGroups.size() != 0) {
+    for (ProcessGroupEntity processGroupEntity : groupsWithQueued) {
       Set<ConnectionEntity> allConnectionsOfProcessGroup = niFiClient
-        .getAllConnectionsOfProcessGroup(id);
-      allConnectionsOfProcessGroup.stream()
-        .forEach(connectionEntity -> {
-          try {
-            niFiClient.emptyQueueOfConnection(connectionEntity.getId());
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-        });
-
-      for (ProcessGroupEntity processGroupEntity : processGroups) {
-        clearQueue(processGroupEntity.getId());
+        .getAllConnectionsOfProcessGroup(processGroupEntity.getId());
+      for (ConnectionEntity connectionEntity : allConnectionsOfProcessGroup) {
+          niFiClient.emptyQueueOfConnection(connectionEntity.getId());
       }
+      clearQueue(processGroupEntity.getId());
     }
   }
+
 
   /**
    * Deletes given template.
@@ -863,7 +863,6 @@ public class NiFiClientService {
    * Checks whether given processor is running.
    *
    * @param name The id of the processor to check.
-   * @param path
    * @return true if processor is running, false otherwise.
    */
   public boolean isProcessorRunning(String name, String[] path) throws IOException {

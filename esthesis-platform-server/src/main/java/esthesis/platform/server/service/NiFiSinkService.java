@@ -1,5 +1,6 @@
 package esthesis.platform.server.service;
 
+import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
 import com.eurodyn.qlack.common.exception.QCouldNotSaveException;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.querydsl.core.types.Predicate;
@@ -15,6 +16,7 @@ import esthesis.platform.server.model.NiFiSink;
 import esthesis.platform.server.nifi.client.exception.NiFiProcessingException;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.PATH;
 import esthesis.platform.server.nifi.sinks.NiFiSinkFactory;
+import esthesis.platform.server.repository.NiFiSinkRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,13 +39,16 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
   private final NiFiSinkConfiguration niFiSinkConfiguration;
   private final List<NiFiSinkFactory> niFiSinkFactories;
   private final NiFiService niFiService;
+  private final NiFiSinkRepository niFiSinkRepository;
 
   public NiFiSinkService(NiFiSinkConfiguration niFiSinkConfiguration,
     List<NiFiSinkFactory> niFiSinkFactories,
-    NiFiService niFiService) {
+    NiFiService niFiService,
+    NiFiSinkRepository niFiSinkRepository) {
     this.niFiSinkConfiguration = niFiSinkConfiguration;
     this.niFiSinkFactories = niFiSinkFactories;
     this.niFiService = niFiService;
+    this.niFiSinkRepository = niFiSinkRepository;
   }
 
   public List<NiFiReaderFactoryDTO> findAvailableNiFiReaderFactories() {
@@ -101,6 +106,10 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
 
     String[] path = createPath(niFiSinkDTO, niFiSinkFactory);
 
+    if (validateNameIsUsed(niFiSinkDTO)) {
+      throw new QAlreadyExistsException("Name must be unique");
+    }
+
     if (niFiSinkDTO.getId() == null) {
       niFiSinkDTO = createNiFiSink(niFiSinkDTO, niFiSinkFactory, path);
     } else {
@@ -124,6 +133,12 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
     return super.save(niFiSinkDTO);
   }
 
+  private boolean validateNameIsUsed(NiFiSinkDTO niFiSinkDTO) {
+    NiFiSink byName = niFiSinkRepository.findByName(niFiSinkDTO.getName());
+
+    return byName != null && byName.getId().longValue() != niFiSinkDTO.getId().longValue();
+  }
+
   private void updateNiFiSink(NiFiSinkDTO niFiSinkDTO, NiFiSinkFactory niFiSinkFactory,
     NiFiSink latestVersion) throws IOException {
     boolean isStateChanged = latestVersion.isState() != niFiSinkDTO.isState();
@@ -136,7 +151,7 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
     //if sink is running, stop it before updating.
     if (latestVersion.isState() && isConfigurationChanged) {
 
-      niFiSinkFactory.toggleSink(niFiSinkDTO.getName(), path, false);
+      niFiSinkFactory.toggleSink(latestVersion.getName(), path, false);
     }
 
     //Update sink if needed.
