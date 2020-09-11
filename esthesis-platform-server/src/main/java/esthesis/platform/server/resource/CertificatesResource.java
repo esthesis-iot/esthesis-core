@@ -2,6 +2,7 @@ package esthesis.platform.server.resource;
 
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
+import com.eurodyn.qlack.util.data.filter.ReplyFilter;
 import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
@@ -89,6 +90,7 @@ public class CertificatesResource {
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save certificate.")
+  @ReplyFilter("-privateKey,-publicKey,-certificate,-createdBy,-createdOn")
   public CertificateDTO save(@Valid @RequestBody CertificateDTO object) {
     return certificatesService.save(object);
   }
