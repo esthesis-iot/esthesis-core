@@ -151,6 +151,7 @@ public class CAResource {
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save Certificate Authority.")
+  @ReplyFilter("-privateKey,-publicKey,-certificate,-createdBy,-createdOn")
   public CaDTO save(@Valid @RequestBody CaDTO object) {
     return caService.save(object);
   }
