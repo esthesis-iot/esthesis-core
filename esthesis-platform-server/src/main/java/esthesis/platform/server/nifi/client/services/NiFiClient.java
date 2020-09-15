@@ -418,7 +418,7 @@ public class NiFiClient {
 
   }
 
-  public ProcessGroupEntity getProcessGroup(String processGroupId) throws IOException {
+  private ProcessGroupEntity getProcessGroup(String processGroupId) throws IOException {
     final CallReplyDTO callReplyDTO = getCall("/process-groups/" + processGroupId);
     if (callReplyDTO.isSuccessful()) {
       return mapper.readValue(callReplyDTO.getBody(), ProcessGroupEntity.class);
@@ -876,8 +876,7 @@ public class NiFiClient {
     ControllerServiceEntity controllerServiceEntity = this
       .changeControllerServiceStatus(id, STATE.DISABLED);
 
-    await().atMost(Duration.ofSeconds(20))
-      .until(() -> findControllerStatus(id).equals(STATE.DISABLED.name()));
+    await().atMost(Duration.ofSeconds(30)).until(() -> findControllerStatus(id).equals(STATE.DISABLED.name()));
 
     CallReplyDTO callReplyDTO =
       deleteCall(
@@ -1555,7 +1554,7 @@ public class NiFiClient {
         String destinationState = getProcessorById(destinationId).getComponent().getState();
 
         //Stop destination if it's running
-        if (destinationState.equals(STATE.RUNNING.name())) {
+        if (destinationState.equals(STATE.RUNNING)) {
           changeProcessorStatus(destinationId, STATE.STOPPED);
         }
 
@@ -1564,7 +1563,7 @@ public class NiFiClient {
         updateConnection(entityToUpdate.get());
 
         //If destination was running, we need to restart it.
-        if (destinationState.equals(STATE.RUNNING.name())) {
+        if (destinationState.equals(STATE.RUNNING)) {
           changeProcessorStatus(destinationId, STATE.RUNNING);
         }
         changeProcessorStatus(distributeLoad.getId(), STATE.RUNNING);
@@ -1845,9 +1844,6 @@ public class NiFiClient {
       latestEntity = changeProcessorStatus(processorId, STATE.STOPPED);
     }
 
-    await().atMost(Duration.ofSeconds(30)).until(
-      () -> !getProcessorById(processorId).getComponent().getState().equals(STATE.RUNNING.name()));
-
     Long currentVersion = latestEntity.getRevision().getVersion();
 
     ProcessorDTO processorDTO = new ProcessorDTO();
@@ -1872,13 +1868,10 @@ public class NiFiClient {
     CallReplyDTO callReplyDTO = putJSONCall("/processors/" + processorId, processorEntity);
 
     if (callReplyDTO.isSuccessful()) {
-      ProcessorEntity updatedEntity = mapper
-        .readValue(callReplyDTO.getBody(), ProcessorEntity.class);
-      if (!updatedEntity.getComponent().getState().equals("INVALID") && latestState
-        .equals(STATE.RUNNING.name())) {
+      if (latestState.equals(STATE.RUNNING.name())) {
         return changeProcessorStatus(processorId, STATE.RUNNING);
       }
-      return updatedEntity;
+      return mapper.readValue(callReplyDTO.getBody(), ProcessorEntity.class);
     } else {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
     }
@@ -1978,10 +1971,7 @@ public class NiFiClient {
           togglePort(inputPort, STATE.RUNNING, false);
         }
       } else {
-        ProcessorEntity source = getProcessorById(processorIncomingConnection.getSourceId());
-        if (!source.getStatus().getRunStatus().equals("Invalid")) {
-          changeProcessorStatus(processorIncomingConnection.getSourceId(), STATE.RUNNING);
-        }
+        changeProcessorStatus(processorIncomingConnection.getSourceId(), STATE.RUNNING);
       }
     }
 

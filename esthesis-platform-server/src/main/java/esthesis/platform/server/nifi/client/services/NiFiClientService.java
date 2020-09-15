@@ -826,8 +826,7 @@ public class NiFiClientService {
     if (niFiClient.getStatus().getControllerStatus().getFlowFilesQueued() > 0) {
       clearQueue(processGroupId);
     }
-    await().atMost(Duration.ofSeconds(20))
-      .until(() -> niFiClient.getStatus().getControllerStatus().getRunningCount() == 0);
+    await().atMost(Duration.ofSeconds(30)).until(() -> niFiClient.getStatus().getControllerStatus().getRunningCount() == 0);
     niFiClient.changeGroupControllerServicesState(processGroupId, STATE.DISABLED);
     niFiClient.deleteProcessGroup(processGroupId);
   }

@@ -917,7 +917,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -1013,7 +1013,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -1127,7 +1127,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -1441,7 +1441,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -1937,7 +1937,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -2033,7 +2033,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -2147,7 +2147,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -2461,7 +2461,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -2975,7 +2975,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -3069,7 +3069,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -3127,7 +3127,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -3243,7 +3243,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -3367,7 +3367,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -3449,7 +3449,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -3747,7 +3747,7 @@
                       </entry>
                     </properties>
                     <runDurationMillis>0</runDurationMillis>
-                    <schedulingPeriod>1 sec</schedulingPeriod>
+                    <schedulingPeriod>100 ms</schedulingPeriod>
                     <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                     <yieldDuration>1 sec</yieldDuration>
                   </config>
@@ -4016,7 +4016,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -4633,7 +4633,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -4723,7 +4723,7 @@
                       </entry>
                     </properties>
                     <runDurationMillis>0</runDurationMillis>
-                    <schedulingPeriod>1 sec</schedulingPeriod>
+                    <schedulingPeriod>100 ms</schedulingPeriod>
                     <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                     <yieldDuration>1 sec</yieldDuration>
                   </config>
@@ -4995,7 +4995,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -5085,7 +5085,7 @@
                       </entry>
                     </properties>
                     <runDurationMillis>0</runDurationMillis>
-                    <schedulingPeriod>1 sec</schedulingPeriod>
+                    <schedulingPeriod>100 ms</schedulingPeriod>
                     <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                     <yieldDuration>1 sec</yieldDuration>
                   </config>
@@ -5345,7 +5345,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -5435,7 +5435,7 @@
                       </entry>
                     </properties>
                     <runDurationMillis>0</runDurationMillis>
-                    <schedulingPeriod>1 sec</schedulingPeriod>
+                    <schedulingPeriod>100 ms</schedulingPeriod>
                     <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                     <yieldDuration>1 sec</yieldDuration>
                   </config>
@@ -5525,7 +5525,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -5637,7 +5637,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -5727,7 +5727,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -5916,7 +5916,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -6006,7 +6006,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -6119,7 +6119,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -6209,7 +6209,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -7459,7 +7459,7 @@
                               </entry>
                             </properties>
                             <runDurationMillis>0</runDurationMillis>
-                            <schedulingPeriod>1 sec</schedulingPeriod>
+                            <schedulingPeriod>100 ms</schedulingPeriod>
                             <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                             <yieldDuration>1 sec</yieldDuration>
                           </config>
@@ -7558,7 +7558,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -7819,7 +7819,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -8008,7 +8008,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -8481,7 +8481,7 @@
                               </entry>
                             </properties>
                             <runDurationMillis>0</runDurationMillis>
-                            <schedulingPeriod>1 sec</schedulingPeriod>
+                            <schedulingPeriod>100 ms</schedulingPeriod>
                             <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                             <yieldDuration>1 sec</yieldDuration>
                           </config>
@@ -8766,7 +8766,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -8837,7 +8837,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -8961,7 +8961,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -9081,7 +9081,7 @@
                       </entry>
                     </properties>
                     <runDurationMillis>0</runDurationMillis>
-                    <schedulingPeriod>1 sec</schedulingPeriod>
+                    <schedulingPeriod>100 ms</schedulingPeriod>
                     <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                     <yieldDuration>1 sec</yieldDuration>
                   </config>
@@ -9143,7 +9143,7 @@
                       </entry>
                     </properties>
                     <runDurationMillis>0</runDurationMillis>
-                    <schedulingPeriod>1 sec</schedulingPeriod>
+                    <schedulingPeriod>100 ms</schedulingPeriod>
                     <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                     <yieldDuration>1 sec</yieldDuration>
                   </config>
@@ -9854,7 +9854,7 @@
                               </entry>
                             </properties>
                             <runDurationMillis>0</runDurationMillis>
-                            <schedulingPeriod>1 sec</schedulingPeriod>
+                            <schedulingPeriod>100 ms</schedulingPeriod>
                             <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                             <yieldDuration>1 sec</yieldDuration>
                           </config>
@@ -10111,7 +10111,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -10210,7 +10210,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -10399,7 +10399,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -10872,7 +10872,7 @@
                               </entry>
                             </properties>
                             <runDurationMillis>0</runDurationMillis>
-                            <schedulingPeriod>1 sec</schedulingPeriod>
+                            <schedulingPeriod>100 ms</schedulingPeriod>
                             <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                             <yieldDuration>1 sec</yieldDuration>
                           </config>
@@ -11007,7 +11007,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -11078,7 +11078,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -11367,7 +11367,7 @@
                           </entry>
                         </properties>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>100 ms</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                       </config>
@@ -11433,7 +11433,7 @@
                       </entry>
                     </properties>
                     <runDurationMillis>0</runDurationMillis>
-                    <schedulingPeriod>1 sec</schedulingPeriod>
+                    <schedulingPeriod>100 ms</schedulingPeriod>
                     <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                     <yieldDuration>1 sec</yieldDuration>
                   </config>
@@ -11541,7 +11541,7 @@
                       </entry>
                     </properties>
                     <runDurationMillis>0</runDurationMillis>
-                    <schedulingPeriod>1 sec</schedulingPeriod>
+                    <schedulingPeriod>100 ms</schedulingPeriod>
                     <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                     <yieldDuration>1 sec</yieldDuration>
                   </config>
@@ -11617,7 +11617,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -11801,7 +11801,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -12008,7 +12008,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -12086,7 +12086,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -12148,7 +12148,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -12238,7 +12238,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -12350,7 +12350,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -12413,7 +12413,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -12496,7 +12496,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
@@ -12558,7 +12558,7 @@
                   </entry>
                 </properties>
                 <runDurationMillis>0</runDurationMillis>
-                <schedulingPeriod>1 sec</schedulingPeriod>
+                <schedulingPeriod>100 ms</schedulingPeriod>
                 <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                 <yieldDuration>1 sec</yieldDuration>
               </config>
