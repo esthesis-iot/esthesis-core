@@ -53,5 +53,8 @@ public class AppProperties {
   // is restarted (the node clears its own temporary files) and also hourly (by removing
   // temporary files older than one hour).
   private String fsTmpRoot;
+
+  // The HTTP port NiFi listens for Data Producers requests.
+  private int nifiProducersHttpPort = 20000;
 }
 

@@ -9,7 +9,6 @@ import esthesis.platform.server.repository.DeviceRepository;
 import esthesis.platform.server.service.DTService;
 import esthesis.platform.server.service.DeviceService;
 import javax.validation.constraints.NotNull;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -55,7 +54,7 @@ public class DTResource {
      * Returns the value of one or more fields for a measurement.
      *
      * @param hardwareId    The id of the device for which the results should be obtained.
-     * @param mqttEventType The type of the MQTT event under which results were submitted (currently,
+     * @param eventType     The type of the event under which results were submitted (currently,
      *                      telemetry or metadata).
      * @param from          The earliest EPOCH to return results from.
      * @param to            The latest EPOCH to return results from.
@@ -69,7 +68,7 @@ public class DTResource {
     @GetMapping(path = {"/{hardwareId}/{mqttEventType}", "/{hardwareId}/{mqttEventType}/{position}"})
     public ResponseEntity<DataSinkQueryResult> get(
             @NotNull @PathVariable String hardwareId,
-            @NotNull @PathVariable String mqttEventType,
+            @NotNull @PathVariable String eventType,
             @RequestParam(required = false) Long from,
             @RequestParam(required = false) Long to,
             @RequestParam(required = false) @NotNull String fields,
@@ -78,30 +77,31 @@ public class DTResource {
             @RequestParam(required = false) String position,
             @RequestParam(required = false) Integer pageSize) {
 
-        if (StringUtils.isNotBlank(position)) {
-            switch (position) {
-                case "last":
-                    return returnResult(
-                            dtService.getLast(hardwareId, mqttEventType, measurement, fields.split(",")));
-                case "first":
-                    return returnResult(
-                            dtService.getFirst(hardwareId, mqttEventType, measurement, fields.split(",")));
-                default:
-                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-            }
-        } else {
-            return returnResult(
-                    dtService
-                            .get(hardwareId, mqttEventType, measurement, from, to, page, pageSize,
-                                    StringUtils.defaultIfBlank(fields, "").split(",")));
-        }
+//        if (StringUtils.isNotBlank(position)) {
+//            switch (position) {
+//                case "last":
+//                    return returnResult(
+//                            dtService.getLast(hardwareId, eventType, measurement, fields.split(",")));
+//                case "first":
+//                    return returnResult(
+//                            dtService.getFirst(hardwareId, eventType, measurement, fields.split(",")));
+//                default:
+//                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+//            }
+//        } else {
+//            return returnResult(
+//                    dtService
+//                            .get(hardwareId, eventType, measurement, from, to, page, pageSize,
+//                                    StringUtils.defaultIfBlank(fields, "").split(",")));
+//        }
+      return null;
     }
 
     /**
      * Returns the count of values for a field (or all fields).
      *
      * @param hardwareId    The id of the device for which the results should be obtained.
-     * @param mqttEventType The type of the MQTT event under which results were submitted (currently,
+     * @param eventType     The type of the event under which results were submitted (currently,
      *                      telemetry or metadata).
      * @param from          The earliest EPOCH to return results from.
      * @param to            The latest EPOCH to return results from.
@@ -111,20 +111,21 @@ public class DTResource {
     @GetMapping(path = "/{hardwareId}/{mqttEventType}/calculate/count")
     public ResponseEntity<DataSinkQueryResult> count(
             @NotNull @PathVariable String hardwareId,
-            @NotNull @PathVariable String mqttEventType,
+            @NotNull @PathVariable String eventType,
             @RequestParam String measurement,
             @RequestParam(required = false) Long from,
             @RequestParam(required = false) Long to,
             @RequestParam(required = false) String field) {
-        return returnResult(
-                dtService.count(hardwareId, mqttEventType, measurement, from, to, field));
+//        return returnResult(
+//                dtService.count(hardwareId, eventType, measurement, from, to, field));
+      return null;
     }
 
     /**
      * Returns computed values of one or more fields for a measurement.
      *
      * @param hardwareId    The id of the device for which the results should be obtained.
-     * @param mqttEventType The type of the MQTT event under which results were submitted (currently,
+     * @param eventType The type of the MQTT event under which results were submitted (currently,
      *                      telemetry or metadata).
      * @param from          The earliest EPOCH to return results from.
      * @param to            The latest EPOCH to return results from.
@@ -134,29 +135,30 @@ public class DTResource {
     @GetMapping(path = "/{hardwareId}/{mqttEventType}/calculate/{action}")
     public ResponseEntity<DataSinkQueryResult> calculate(
             @NotNull @PathVariable String hardwareId,
-            @NotNull @PathVariable String mqttEventType,
+            @NotNull @PathVariable String eventType,
             @RequestParam String measurement,
             @NotNull @PathVariable String action,
             @RequestParam(required = false) Long from,
             @RequestParam(required = false) Long to,
             @RequestParam String field) {
 
-        switch (action) {
-            case "max":
-                return returnResult(
-                        dtService.max(hardwareId, mqttEventType, measurement, from, to, field));
-            case "min":
-                return returnResult(
-                        dtService.min(hardwareId, mqttEventType, measurement, from, to, field));
-            case "average":
-                return returnResult(
-                        dtService.average(hardwareId, mqttEventType, measurement, from, to, field));
-            case "sum":
-                return returnResult(
-                        dtService.sum(hardwareId, mqttEventType, measurement, from, to, field));
-            default:
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+//        switch (action) {
+//            case "max":
+//                return returnResult(
+//                        dtService.max(hardwareId, eventType, measurement, from, to, field));
+//            case "min":
+//                return returnResult(
+//                        dtService.min(hardwareId, eventType, measurement, from, to, field));
+//            case "average":
+//                return returnResult(
+//                        dtService.average(hardwareId, eventType, measurement, from, to, field));
+//            case "sum":
+//                return returnResult(
+//                        dtService.sum(hardwareId, eventType, measurement, from, to, field));
+//            default:
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+      return null;
     }
 
     /**
@@ -179,9 +181,6 @@ public class DTResource {
 
     /**
      * Finds all devices registered in esthesis and returns their status.
-     * This API endpoint is a copy of the https://esthesis.bengr.prod.ath.esthesis.cloud/api/devices?size=100 call
-     * but without the size
-     * @return
      */
     @GetMapping(path = "/devices")
     @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not obtain devices list.")

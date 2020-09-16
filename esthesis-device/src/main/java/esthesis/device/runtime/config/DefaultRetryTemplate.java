@@ -1,6 +1,5 @@
-package esthesis.device.runtime.util;
+package esthesis.device.runtime.config;
 
-import esthesis.device.runtime.config.AppProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
