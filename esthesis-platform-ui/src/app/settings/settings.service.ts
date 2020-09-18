@@ -38,4 +38,12 @@ export class SettingsService extends CrudService<SettingDto> {
       `${AppConstants.API_ROOT}/settings/byNames?names=${names.join(',')}`);
   }
 
+  getDevicePageFields(): Observable<FieldDto[]> {
+    return this.http.get<FieldDto[]>(`${AppConstants.API_ROOT}/settings/fields`);
+  }
+
+  saveDevicePageFields(form: any): Observable<any> {
+    return this.http.post(`${AppConstants.API_ROOT}/settings/fields`, form);
+  }
+
 }

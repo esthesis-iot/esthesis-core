@@ -25,6 +25,7 @@ public class NiFiDTO extends BaseDTO {
   private String name;
   @NotNull
   private String url;
+  private String dtUrl;
   private String description;
   @JsonProperty(access = Access.READ_ONLY)
   private String wfVersion;

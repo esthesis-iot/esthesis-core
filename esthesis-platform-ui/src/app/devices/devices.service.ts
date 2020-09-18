@@ -36,15 +36,7 @@ export class DevicesService extends CrudService<CaDto> {
     });
   }
 
-  getFields(): Observable<FieldDto[]> {
-    return this.http.get<FieldDto[]>(`${AppConstants.API_ROOT}/devices/fields`);
-  }
-
-  saveFields(form: any): Observable<any> {
-    return this.http.post(`${AppConstants.API_ROOT}/devices/fields`, form);
-  }
-
-  getFieldValues(id: number): Observable<any> {
-    return this.http.get<FieldDto>(AppConstants.API_ROOT + `/devices/field-values/${id}`);
-  }
+  // getFieldValues(id: number): Observable<any> {
+  //   return this.http.get<FieldDto>(AppConstants.API_ROOT + `/devices/field-values/${id}`);
+  // }
 }

@@ -35,6 +35,7 @@ public class NiFi extends BaseEntity {
   private String name;
   @NotNull
   private String url;
+  private String dtUrl;
   private String description;
   private String wfVersion;
   private boolean synced;

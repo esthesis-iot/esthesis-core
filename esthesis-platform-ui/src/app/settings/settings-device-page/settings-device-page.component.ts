@@ -33,17 +33,17 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
     });
 
     this.settingsForm = this.fb.group({
-      geo_lon: ['',[]],
-      geo_lat: ['',[]]
+      geo_lon: ['', []],
+      geo_lat: ['', []]
     });
 
     // Fetch fields.
-    this.devicesService.getFields().subscribe(onNext => {
+    this.settingsService.getDevicePageFields().subscribe(onNext => {
       this.allFields = onNext;
       onNext.forEach(field => {
         // @ts-ignore
         this.form.controls['fields'].push(this.createFieldElement(field));
-      })
+      });
     });
 
     // Fetch settings.
@@ -53,30 +53,43 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
     ).subscribe(onNext => {
       onNext.forEach(settingDTO => {
         this.settingsForm.controls[settingDTO.key].patchValue(settingDTO.val);
-      })
+      });
     });
   }
 
   createFieldElement(fieldDto: FieldDto) {
     return this.fb.group({
-      name: [{value: fieldDto.name, disabled: true}, Validators.required],
-      datatype: [{value: fieldDto.datatype, disabled: true}, Validators.required],
-      shown: [fieldDto.shown],
-      label: [fieldDto.label],
-      valueHandler: [fieldDto.valueHandler],
-      formatter: [fieldDto.formatter],
+      name: [fieldDto?.name],
+      shown: [fieldDto?.shown],
+      label: [fieldDto?.label],
+      datatype: [fieldDto?.datatype],
+      valueHandler: [fieldDto?.valueHandler],
+      formatter: [fieldDto?.formatter],
     });
   }
 
   save() {
-    this.devicesService.saveFields(this.qForms.cleanupForm(this.form)['fields']).subscribe(
+    this.settingsService.saveDevicePageFields(this.qForms.cleanupForm(this.form)['fields']).subscribe(
       onNext => {
         this.settingsService.saveMultiple(
           _.map(Object.keys(this.settingsForm.controls), (fc) => {
-            return new KeyValueDto(fc, this.settingsForm.get(fc).value)
+            return new KeyValueDto(fc, this.settingsForm.get(fc).value);
           })).subscribe(onNext => {
-          this.utilityService.popupSuccess("Settings saved successfully.");
+          this.utilityService.popupSuccess('Settings saved successfully.');
         });
       });
+  }
+
+  newMeasurement() {
+    // @ts-ignore
+    this.form.controls['fields'].push(this.createFieldElement({
+      name: '',
+      value: '',
+      valueHandler: '',
+      datatype: this.constants.MEASUREMENT_TYPE.TELEMETRY,
+      label: '',
+      formatter: '',
+      shown: true,
+    }));
   }
 }

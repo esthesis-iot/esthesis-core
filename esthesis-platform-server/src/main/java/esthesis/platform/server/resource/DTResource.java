@@ -2,7 +2,7 @@ package esthesis.platform.server.resource;
 
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
-import esthesis.common.datasink.dto.DataSinkQueryResult;
+import com.eurodyn.qlack.util.data.filter.ReplyFilter;
 import esthesis.platform.server.dto.DTDeviceDTO;
 import esthesis.platform.server.model.Device;
 import esthesis.platform.server.repository.DeviceRepository;
@@ -27,186 +27,78 @@ import java.util.Optional;
 @RequestMapping("/dt")
 public class DTResource {
 
-    private final DTService dtService;
-    private final DeviceRepository deviceRepository;
-    private final DeviceService deviceService;
+  private final DTService dtService;
+  private final DeviceRepository deviceRepository;
+  private final DeviceService deviceService;
 
-    public DTResource(DTService dtService,
-                      DeviceRepository deviceRepository, DeviceService deviceService) {
-        this.dtService = dtService;
-        this.deviceRepository = deviceRepository;
-        this.deviceService = deviceService;
-    }
+  public DTResource(DTService dtService, DeviceRepository deviceRepository, DeviceService deviceService) {
+    this.dtService = dtService;
+    this.deviceRepository = deviceRepository;
+    this.deviceService = deviceService;
+  }
 
-    private ResponseEntity<DataSinkQueryResult> returnEmptyResult() {
-        return returnResult(null);
-    }
+  @GetMapping(path = {"/{hardwareId}/{dataType}/{operation}",
+    "/{hardwareId}/{dataType}/{operation}/{position}"})
+  public String get(
+    @NotNull @PathVariable final String hardwareId,
+    @NotNull @PathVariable final String dataType,
+    @NotNull @PathVariable final String operation,
+    @RequestParam(required = false) final Long from,
+    @RequestParam(required = false) final Long to,
+    @RequestParam(required = false) final String fields,
+    @RequestParam(required = false) final String measurement,
+    @RequestParam(required = false) final Integer page,
+    @RequestParam(required = false) final Integer pageSize) {
 
-    private <T> ResponseEntity<T> returnResult(T result) {
-        if (result != null) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
-    }
+    return dtService
+      .nifiProxy(hardwareId, dataType, operation, from, to, fields, measurement, page, pageSize);
+  }
 
-    /**
-     * Returns the value of one or more fields for a measurement.
-     *
-     * @param hardwareId    The id of the device for which the results should be obtained.
-     * @param eventType     The type of the event under which results were submitted (currently,
-     *                      telemetry or metadata).
-     * @param from          The earliest EPOCH to return results from.
-     * @param to            The latest EPOCH to return results from.
-     * @param fields        A comma-separated list of fields to retrieve, or * for all fields for data sinks
-     *                      that support it.
-     * @param measurement   The measurement for which to retrieve fields.
-     * @param page          The page of the results in case a pageable reply is wanted. First page is 0.
-     * @param pageSize      The size of each page of results.
-     * @param position      'first' to get the first measurement, 'last' to get the last measurement, or empty to get all measurements.
-     */
-    @GetMapping(path = {"/{hardwareId}/{mqttEventType}", "/{hardwareId}/{mqttEventType}/{position}"})
-    public ResponseEntity<DataSinkQueryResult> get(
-            @NotNull @PathVariable String hardwareId,
-            @NotNull @PathVariable String eventType,
-            @RequestParam(required = false) Long from,
-            @RequestParam(required = false) Long to,
-            @RequestParam(required = false) @NotNull String fields,
-            @RequestParam(required = false) @NotNull String measurement,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) String position,
-            @RequestParam(required = false) Integer pageSize) {
+  /**
+   * Finds all devices registered after another device's registration date.
+   *
+   * @param hardwareId The device ID after which newer registrations are returned.
+   * @return Returns a list of hardware IDs.
+   */
+  @GetMapping(path = "/registered-after-device")
+  public ResponseEntity<List<String>> getDevicesRegisteredAfterDevice(
+    @RequestParam String hardwareId) {
+    final Optional<Device> device = deviceRepository.findByHardwareId(hardwareId);
 
-//        if (StringUtils.isNotBlank(position)) {
-//            switch (position) {
-//                case "last":
-//                    return returnResult(
-//                            dtService.getLast(hardwareId, eventType, measurement, fields.split(",")));
-//                case "first":
-//                    return returnResult(
-//                            dtService.getFirst(hardwareId, eventType, measurement, fields.split(",")));
-//                default:
-//                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-//            }
-//        } else {
-//            return returnResult(
-//                    dtService
-//                            .get(hardwareId, eventType, measurement, from, to, page, pageSize,
-//                                    StringUtils.defaultIfBlank(fields, "").split(",")));
-//        }
-      return null;
-    }
+    return device
+      .map(value -> ResponseEntity.ok(dtService.getDevicesRegisteredAfter(value.getCreatedOn())))
+      .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+  }
 
-    /**
-     * Returns the count of values for a field (or all fields).
-     *
-     * @param hardwareId    The id of the device for which the results should be obtained.
-     * @param eventType     The type of the event under which results were submitted (currently,
-     *                      telemetry or metadata).
-     * @param from          The earliest EPOCH to return results from.
-     * @param to            The latest EPOCH to return results from.
-     * @param field         The field to perform the action on, or empty for all fields.
-     * @param measurement   The measurement for which to retrieve fields.
-     */
-    @GetMapping(path = "/{hardwareId}/{mqttEventType}/calculate/count")
-    public ResponseEntity<DataSinkQueryResult> count(
-            @NotNull @PathVariable String hardwareId,
-            @NotNull @PathVariable String eventType,
-            @RequestParam String measurement,
-            @RequestParam(required = false) Long from,
-            @RequestParam(required = false) Long to,
-            @RequestParam(required = false) String field) {
-//        return returnResult(
-//                dtService.count(hardwareId, eventType, measurement, from, to, field));
-      return null;
-    }
+  /**
+   * Finds all devices registered in esthesis and returns their status.
+   */
+  @GetMapping(path = "/devices")
+  @ReplyFilter("-createdBy,-modifiedBy")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not obtain devices list.")
+  public List<DTDeviceDTO> findAll() {
+    return deviceService.findAllDT();
+  }
 
-    /**
-     * Returns computed values of one or more fields for a measurement.
-     *
-     * @param hardwareId    The id of the device for which the results should be obtained.
-     * @param eventType The type of the MQTT event under which results were submitted (currently,
-     *                      telemetry or metadata).
-     * @param from          The earliest EPOCH to return results from.
-     * @param to            The latest EPOCH to return results from.
-     * @param field         The field to perform the action on.
-     * @param measurement   The measurement for which to retrieve fields.
-     */
-    @GetMapping(path = "/{hardwareId}/{mqttEventType}/calculate/{action}")
-    public ResponseEntity<DataSinkQueryResult> calculate(
-            @NotNull @PathVariable String hardwareId,
-            @NotNull @PathVariable String eventType,
-            @RequestParam String measurement,
-            @NotNull @PathVariable String action,
-            @RequestParam(required = false) Long from,
-            @RequestParam(required = false) Long to,
-            @RequestParam String field) {
+  /**
+   * Returns the devices registered after a specific date.
+   *
+   * @param epoch The date after which devices will be matched as an EPOCH value in milliseconds.
+   * @return Returns a list of hardware IDs.
+   */
+  @GetMapping(path = "/registered-after-date")
+  public ResponseEntity<List<String>> getDevicesRegisteredAfterDate(
+    @RequestParam long epoch) {
+    return ResponseEntity.ok(dtService.getDevicesRegisteredAfter(Instant.ofEpochMilli(epoch)));
+  }
 
-//        switch (action) {
-//            case "max":
-//                return returnResult(
-//                        dtService.max(hardwareId, eventType, measurement, from, to, field));
-//            case "min":
-//                return returnResult(
-//                        dtService.min(hardwareId, eventType, measurement, from, to, field));
-//            case "average":
-//                return returnResult(
-//                        dtService.average(hardwareId, eventType, measurement, from, to, field));
-//            case "sum":
-//                return returnResult(
-//                        dtService.sum(hardwareId, eventType, measurement, from, to, field));
-//            default:
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-      return null;
-    }
-
-    /**
-     * Finds all devices registered after another device's registration date.
-     *
-     * @param hardwareId The device ID after which newer registrations are returned.
-     * @return Returns a list of hardware IDs.
-     */
-    @GetMapping(path = "/registered-after-device")
-    public ResponseEntity<List<String>> getDevicesRegisteredAfterDevice(
-            @RequestParam String hardwareId) {
-        final Optional<Device> device = deviceRepository.findByHardwareId(hardwareId);
-        if (device.isPresent()) {
-            return ResponseEntity.ok(dtService.getDevicesRegisteredAfter(device.get().getCreatedOn()));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
-
-    /**
-     * Finds all devices registered in esthesis and returns their status.
-     */
-    @GetMapping(path = "/devices")
-    @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not obtain devices list.")
-    public List<DTDeviceDTO> findAll() {
-        return deviceService.findAllDT();
-    }
-
-    /**
-     * Returns the devices registered after a specific date.
-     *
-     * @param epoch The date after which devices will be matched as an EPOCH value in milliseconds.
-     * @return Returns a list of hardware IDs.
-     */
-    @GetMapping(path = "/registered-after-date")
-    public ResponseEntity<List<String>> getDevicesRegisteredAfterDate(
-            @RequestParam long epoch) {
-        return ResponseEntity.ok(dtService.getDevicesRegisteredAfter(Instant.ofEpochMilli(epoch)));
-    }
-
-    /**
-     * Returns all devices registered.
-     *
-     * @return Returns a list of hardware IDs.
-     */
-    @GetMapping(path = "/all-registered-devices")
-    public ResponseEntity<List<String>> getAllRegisteredDevices() {
-        return ResponseEntity.ok(dtService.getDevicesRegisteredAfter(Instant.EPOCH));
-    }
+  /**
+   * Returns all devices registered.
+   *
+   * @return Returns a list of hardware IDs.
+   */
+  @GetMapping(path = "/all-registered-devices")
+  public ResponseEntity<List<String>> getAllRegisteredDevices() {
+    return ResponseEntity.ok(dtService.getDevicesRegisteredAfter(Instant.EPOCH));
+  }
 }

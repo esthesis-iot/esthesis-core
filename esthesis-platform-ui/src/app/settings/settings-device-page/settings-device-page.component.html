@@ -23,28 +23,36 @@
 </form>
 
 <form novalidate [formGroup]="form" fxLayout="column" class="xs-mt1">
-  <div class="inline-header">Device telemetry details</div>
+  <div class="inline-header">Device page data</div>
   <div class="inline-subheader">
-    Select which telemetry data will be visible on device information page.
+    Select which device data will be visible on device information page.
   </div>
   <div formArrayName="fields" *ngFor="let field of form.get('fields')['controls']; let i = index">
     <div [formGroupName]="i" fxLayout="row" fxLayoutGap="1rem">
       <mat-checkbox formControlName="shown" class="xs-mt1" color="primary"></mat-checkbox>
-      <mat-form-field fxFlex="1 0 auto">
+
+      <mat-form-field fxFlex="20rem">
         <input matInput placeholder="Name" formControlName="name">
       </mat-form-field>
-      <mat-form-field>
-        <input matInput placeholder="Data type" formControlName="datatype">
-      </mat-form-field>
-      <mat-form-field fxFlex="1 0 auto">
+
+      <mat-select placeholder="Data type" formControlName="datatype" fxFlex="10rem">
+        <mat-option *ngFor="let o of constants.MEASUREMENT_TYPE| keyvalue"
+                    [value]="o.value">
+          {{ lookupByValue(constants.MEASUREMENT_TYPE, o.value) }}
+        </mat-option>
+      </mat-select>
+
+      <mat-form-field fxFlex="grow">
         <input matInput placeholder="UI label" formControlName="label">
       </mat-form-field>
-      <mat-form-field fxFlex="1 0 auto">
+
+      <mat-form-field>
         <input matInput placeholder="Formatter" formControlName="formatter">
       </mat-form-field>
 
       <mat-select placeholder="Value handler"
-                  formControlName="valueHandler" fxFlex="150px">
+                  formControlName="valueHandler" fxFlex="15rem">
+        <mat-option></mat-option>
         <mat-option *ngFor="let o of constants.FIELD_VALUE_FORMATTER| keyvalue"
                     [value]="o.value">
           {{ lookupByValue(constants.FIELD_VALUE_FORMATTER, o.value) }}
@@ -52,6 +60,7 @@
       </mat-select>
     </div>
   </div>
+  <button mat-button (click)="newMeasurement()">Add measurement</button>
 </form>
 
 <div class="xs-pt2">

@@ -4,6 +4,14 @@
     <mat-tab-group animationDuration="0ms">
       <mat-tab>
         <ng-template mat-tab-label>
+          <mat-icon>domain</mat-icon> Device page
+        </ng-template>
+        <ng-template matTabContent>
+          <app-settings-device-page></app-settings-device-page>
+        </ng-template>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
           <mat-icon>security</mat-icon> Security
         </ng-template>
         <ng-template matTabContent>
@@ -24,14 +32,6 @@
         </ng-template>
         <ng-template matTabContent>
           <app-settings-provisioning></app-settings-provisioning>
-        </ng-template>
-      </mat-tab>
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <mat-icon>domain</mat-icon> Device page
-        </ng-template>
-        <ng-template matTabContent>
-          <app-settings-device-page></app-settings-device-page>
         </ng-template>
       </mat-tab>
     </mat-tab-group>

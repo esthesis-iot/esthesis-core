@@ -7,8 +7,11 @@ import com.eurodyn.qlack.fuse.settings.service.SettingsService;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyFilter;
 import esthesis.common.config.AppConstants.Generic;
+import esthesis.common.datasink.dto.FieldDTO;
+import esthesis.platform.server.service.DevicePageService;
 import javax.validation.Valid;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,9 +30,12 @@ import java.util.stream.Collectors;
 public class SettingsResource {
 
   private final SettingsService settingsService;
+  private final DevicePageService devicePageService;
 
-  public SettingsResource(SettingsService settingsService) {
+  public SettingsResource(SettingsService settingsService,
+    DevicePageService devicePageService) {
     this.settingsService = settingsService;
+    this.devicePageService = devicePageService;
   }
 
   @GetMapping("byName")
@@ -63,6 +69,19 @@ public class SettingsResource {
       settings.stream().map(keyValue -> keyValue.getValue() != null ?
         keyValue.getValue().toString() : "").collect(Collectors.toList()),
       Generic.SYSTEM);
+  }
+
+  @GetMapping(path = "fields", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
+    logMessage = "Could not get fields for measurement.")
+  public List<FieldDTO> getFields() {
+    return devicePageService.findAll();
+  }
+
+  @PostMapping("fields")
+  public ResponseEntity saveFields(@Valid @RequestBody List<FieldDTO> fields) {
+    devicePageService.save(fields);
+    return ResponseEntity.ok().build();
   }
 
 }

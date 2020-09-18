@@ -7,13 +7,11 @@ import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.github.slugify.Slugify;
 import com.querydsl.core.types.Predicate;
-import esthesis.common.datasink.dto.FieldDTO;
 import esthesis.common.util.Base64E;
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.DeviceKeyDTO;
 import esthesis.platform.server.dto.DeviceRegistrationDTO;
 import esthesis.platform.server.model.Device;
-import esthesis.platform.server.service.DevicePageService;
 import esthesis.platform.server.service.DeviceService;
 import esthesis.platform.server.service.SecurityService;
 import javax.crypto.NoSuchPaddingException;
@@ -43,9 +41,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Validated
 @RestController
@@ -54,13 +49,10 @@ public class DevicesResource {
 
   private final DeviceService deviceService;
   private final SecurityService securityService;
-  private final DevicePageService devicePageService;
 
-  public DevicesResource(DeviceService deviceService, SecurityService securityService,
-    DevicePageService devicePageService) {
+  public DevicesResource(DeviceService deviceService, SecurityService securityService) {
     this.deviceService = deviceService;
     this.securityService = securityService;
-    this.devicePageService = devicePageService;
   }
 
   @PostMapping(path = "/preregister")
@@ -155,26 +147,13 @@ public class DevicesResource {
       .body(stringBuilder.toString());
   }
 
-  @GetMapping(path = "fields", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
-    logMessage = "Could not get fields for measurement.")
-  public List<FieldDTO> getFields() {
-    return devicePageService.findAllSynthetic();
-  }
-
-  @PostMapping("fields")
-  public ResponseEntity saveFields(@Valid @RequestBody List<FieldDTO> fields) {
-    devicePageService.save(fields);
-    return ResponseEntity.ok().build();
-  }
-
-  @GetMapping(path = "field-values/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch device page fields.")
-  @ReplyFilter("-shown")
-  public List<FieldDTO> getFieldValues(@PathVariable long id) {
-    return devicePageService.findWithLatestValues(id).stream().sorted(
-      Comparator.comparing(FieldDTO::getName)).collect(Collectors.toList());
-  }
+//  @GetMapping(path = "field-values/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+//  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch device page fields.")
+//  @ReplyFilter("-shown")
+//  public List<FieldDTO> getFieldValues(@PathVariable long id) {
+//    return devicePageService.findWithLatestValues(id).stream().sorted(
+//      Comparator.comparing(FieldDTO::getName)).collect(Collectors.toList());
+//  }
 
   @GetMapping(path = "count/by-hardware-id", produces = MediaType.APPLICATION_JSON_VALUE)
   public int countByHardwareId(@RequestParam String hardwareIds) {

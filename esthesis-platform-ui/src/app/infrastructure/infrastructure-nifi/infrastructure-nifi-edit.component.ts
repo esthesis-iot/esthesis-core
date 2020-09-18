@@ -39,6 +39,7 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
       id: [''],
       name: ['', [Validators.required, Validators.maxLength(256)]],
       url: ['', [Validators.required, Validators.maxLength(2048)]],
+      dtUrl: ['', [Validators.maxLength(2048)]],
       description: ['', [Validators.maxLength(4096)]],
       state: ['', [Validators.required, Validators.maxLength(5)]],
       // wfVersion: [''],
@@ -61,7 +62,7 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
 
   save() {
     if (this.form.get('state').value && this.activeNiFiId != null && parseInt(
-      this.activeNiFiId) != this.id) {
+      this.activeNiFiId) !== this.id) {
       this.activate();
     } else {
       this.submit();
@@ -72,7 +73,7 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
     this.nifiService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
       this.utilityService.popupSuccess('NiFi server successfully saved.');
       this.router.navigate(['infra'], {fragment: 'nifi'});
-    })
+    });
   }
 
   delete() {
@@ -95,7 +96,7 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
                 this.deleteNiFiInstance();
               }, error => {
                 this.utilityService.popupError(error.error);
-              })
+              });
             } else {
               this.deleteNiFiInstance();
             }
@@ -110,7 +111,7 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
   private deleteNiFiInstance() {
     this.nifiService.delete(this.id).subscribe(onNext => {
       this.utilityService.popupSuccess('NiFi server successfully deleted.');
-      if (this.activeNiFiId != null && parseInt(this.activeNiFiId) == this.id) {
+      if (this.activeNiFiId != null && parseInt(this.activeNiFiId) === this.id) {
         localStorage.removeItem('activeNiFi');
       }
       this.router.navigate(['infra'], {fragment: 'nifi'});
@@ -122,8 +123,8 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
       data: {
         title: 'Delete NiFi Workflow',
         question: 'Do you also want to delete the Workflow from the NiFi instance?',
-        okValue: "YES",
-        cancelValue: "NO",
+        okValue: 'YES',
+        cancelValue: 'NO',
         buttons: {
           ok: true, cancel: true, reload: false
         }

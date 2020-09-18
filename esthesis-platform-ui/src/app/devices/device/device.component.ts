@@ -10,7 +10,7 @@ import {DevicesService} from '../devices.service';
 import {BaseComponent} from 'src/app/shared/component/base-component';
 import {UtilityService} from '../../shared/service/utility.service';
 import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
-import {sprintf} from "sprintf-js";
+import {sprintf} from 'sprintf-js';
 import {FieldDto} from '../../dto/field-dto';
 import {FormatterService} from '../../shared/service/formatter.service';
 import {SettingsService} from '../../settings/settings.service';
@@ -96,31 +96,31 @@ export class DeviceComponent extends BaseComponent implements OnInit {
         if (settingDTO.key === AppSettings.SETTING.GEOLOCATION.LONGITUDE) {
           this.lonSetting = settingDTO.val;
         }
-      })
+      });
     });
   }
 
   private updateFields() {
-    this.fieldsValues = new Map<string, any>();
-    this.devicesService.getFieldValues(this.id).subscribe(fieldsValues => {
-      this.fields = fieldsValues;
-      // Update field values formatting.
-      this.fields.forEach(field => {
-        var formatter;
-        if (!field.formatter) {
-          formatter = "%s";
-        } else {
-          formatter = field.formatter;
-        }
-        var value;
-        if (field.valueHandler) {
-          value = this.formatterService.format(field.valueHandler, field.value);
-        } else {
-          value = field.value;
-        }
-        this.fieldsValues.set(field.name, sprintf(formatter, value));
-      })
-    });
+    // this.fieldsValues = new Map<string, any>();
+    // this.devicesService.getFieldValues(this.id).subscribe(fieldsValues => {
+    //   this.fields = fieldsValues;
+    //   // Update field values formatting.
+    //   this.fields.forEach(field => {
+    //     var formatter;
+    //     if (!field.formatter) {
+    //       formatter = "%s";
+    //     } else {
+    //       formatter = field.formatter;
+    //     }
+    //     var value;
+    //     if (field.valueHandler) {
+    //       value = this.formatterService.format(field.valueHandler, field.value);
+    //     } else {
+    //       value = field.value;
+    //     }
+    //     this.fieldsValues.set(field.name, sprintf(formatter, value));
+    //   })
+    // });
   }
 
   save() {
