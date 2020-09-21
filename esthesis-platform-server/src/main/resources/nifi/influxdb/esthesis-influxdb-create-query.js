@@ -65,8 +65,8 @@ function getCalculateFields(flowFile, operation) {
   if (!fields) {
     fieldsTemplate = operation + "(*)";
   } else {
-    fieldsTemplate = operation + "(" + fields + ") as " +  operation + "_" + fields;
-   }
+    fieldsTemplate = operation + "(" + fields + ") as " + operation + "_" + fields;
+  }
 
   return fieldsTemplate;
 }
@@ -83,14 +83,12 @@ function createQueryRequest(flowFile, fields) {
   // Set fields, measurement and tags.
   if (fields) {
     queryTemplate = queryTemplate.replace("$FIELDS", fields);
-  }
-  else {
+  } else {
     queryTemplate = _updateFields(flowFile, queryTemplate);
   }
   queryTemplate = _updateMeasurement(flowFile, queryTemplate);
   queryTemplate = _updateTags(flowFile, queryTemplate);
 
-  // Set time (incoming time is in msec, so it needs to be converted to nanoseconds for InfluxDB).
   var timeFrom = flowFile.getAttribute('esthesis.param.from');
   var timeTo = flowFile.getAttribute('esthesis.param.to');
   if (timeFrom && timeTo) {
@@ -115,18 +113,15 @@ function createQueryRequest(flowFile, fields) {
     if ((order === 'asc' || order === 'desc')) {
       queryTemplate = queryTemplate.replace("$ORDER", order);
     } else {
-      queryTemplate = queryTemplate.replace("$ORDER", "asc");
+      queryTemplate = queryTemplate.replace("$ORDER", "desc");
     }
-  } else if (isMetadataQuery) {
-    queryTemplate = queryTemplate.replace("$ORDER", "desc");
   } else {
-    queryTemplate = queryTemplate.replace("$ORDER", "asc");
+    queryTemplate = queryTemplate.replace("$ORDER", "desc");
   }
 
   // Set paging.
-  var limit = isMetadataQuery ? 1 : flowFile.getAttribute(
-    'http.query.param.limit');
-  var offset = flowFile.getAttribute('http.query.param.offset');
+  var limit = isMetadataQuery ? 1 : flowFile.getAttribute('esthesis.param.pageSize');
+  var offset = flowFile.getAttribute('esthesis.param.page');
   if (limit && offset) {
     queryTemplate = queryTemplate.replace("$PAGING", "LIMIT " + limit + " OFFSET " + offset);
   } else if (limit) {
@@ -157,7 +152,7 @@ if (flowFile != null) {
     var operation = flowFile.getAttribute('esthesis.operation').trim().toLowerCase();
     var fields = flowFile.getAttribute('esthesis.param.fields');
 
-    if (isMetadataQuery && operation !== 'query' ) {
+    if (isMetadataQuery && operation !== 'query') {
       throw('Requested operation \'' + operation + "\' is not supported for metadata");
     }
 

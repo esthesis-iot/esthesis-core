@@ -52,7 +52,7 @@ if (flowFile != null) {
                 }
               } else {
                 // Ignore null values.
-                if (series.values[j][key]) {
+                if (series.values[j][key] !== null) {
                   val[columns[key]] = series.values[j][key];
                 }
               }
@@ -82,7 +82,7 @@ if (flowFile != null) {
               }
             } else {
               // Ignore null values.
-              if (series.values[i][key]) {
+              if (series.values[i][key] !== null) {
                 val[columns[key]] = series.values[i][key];
               }
             }

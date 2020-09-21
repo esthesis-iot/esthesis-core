@@ -75,19 +75,14 @@ function getCalculateFields(flowFile, operation) {
 }
 
 function _updateTime(flowFile, queryTemplate) {
-  // Set time (incoming time is in msec, so it needs to be converted to nanoseconds for InfluxDB).
   var timeFrom = flowFile.getAttribute('esthesis.param.from');
   var timeTo = flowFile.getAttribute('esthesis.param.to');
   if (timeFrom && timeTo) {
-    timeFrom = timeFrom * 1000000;
-    timeTo = timeTo * 1000000;
     queryTemplate = queryTemplate.replace("$TIME",
       "and timestamp >= " + timeFrom + " and timestamp <= " + timeTo);
   } else if (timeFrom) {
-    timeFrom = timeFrom * 1000000;
     queryTemplate = queryTemplate.replace("$TIME", "and timestamp >= " + timeFrom);
   } else if (timeTo) {
-    timeTo = timeTo * 1000000;
     queryTemplate = queryTemplate.replace("$TIME", "and timestamp <= " + timeTo);
   } else {
     queryTemplate = queryTemplate.replace("$TIME", "");
@@ -103,10 +98,10 @@ function _updateOrder(flowFile, queryTemplate) {
     if ((order === 'asc' || order === 'desc')) {
       queryTemplate = queryTemplate.replace("$ORDER", order);
     } else {
-      queryTemplate = queryTemplate.replace("$ORDER", "asc");
+      queryTemplate = queryTemplate.replace("$ORDER", "desc");
     }
   } else {
-    queryTemplate = queryTemplate.replace("$ORDER", "asc");
+    queryTemplate = queryTemplate.replace("$ORDER", "desc");
   }
   return queryTemplate;
 }
@@ -128,7 +123,7 @@ function createQueryRequest(flowFile, fields) {
   // Set the template for this type of execution.
   var queryTemplate = "SELECT $FIELDS FROM $MEASUREMENT WHERE $TAGS $TIME $GROUPBY ORDER BY timestamp $ORDER $PAGING";
 
-  if (nonTimeOperations.indexOf(operation) == -1) {
+  if (nonTimeOperations.indexOf(operation) > -1) {
     queryTemplate = queryTemplate.replace("ORDER BY timestamp $ORDER", "");
   }
 
@@ -146,8 +141,8 @@ function createQueryRequest(flowFile, fields) {
   queryTemplate = _updateOrder(flowFile, queryTemplate);
 
   // Set paging.
-  var limit = flowFile.getAttribute('http.query.param.limit');
-  var offset = flowFile.getAttribute('http.query.param.offset');
+  var limit = isMetadataQuery ? 1 : flowFile.getAttribute('esthesis.param.pageSize');
+  var offset = flowFile.getAttribute('esthesis.param.page');
   if (limit && offset) {
     queryTemplate = queryTemplate.replace("$PAGING", "LIMIT " + limit + " OFFSET " + offset);
   } else if (limit) {
