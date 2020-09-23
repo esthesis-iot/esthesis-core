@@ -3,6 +3,7 @@ package esthesis.device.runtime.proxy.web;
 import esthesis.device.runtime.mqtt.MqttClient;
 import esthesis.device.runtime.util.DeviceMessageUtil;
 import javax.validation.constraints.NotNull;
+import lombok.extern.java.Log;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 
+@Log
 @Validated
 @RestController
 @RequestMapping("/")
@@ -32,6 +35,7 @@ public class WebProxyServer {
   public ResponseEntity<Void> save(@PathVariable @NotNull String topic,
     @NotNull @RequestBody String payload) {
 
+    log.log(Level.FINEST, "Proxying to MQTT topic {0}: {1}", new String[]{topic, payload});
     mqttProxyClient
       .publish(deviceMessageUtil.resolveTopic(topic), payload.getBytes(StandardCharsets.UTF_8));
 
