@@ -14,7 +14,7 @@
           <div fxLayout="row wrap" fxFlex="80%" fxFlexAlign="start" *ngIf="!isArrayEmpty(fields)">
             <div class="xs-mb05" fxLayout="row" fxFlex="40%" *ngFor="let field of fields; let i = index">
               <div class="label">{{field.label ? field.label : field.field}}:</div>
-              <div class="value">{{fieldsValues.get(field.measurement + "." + field.field)}}</div>
+              <div [matTooltip]="field.lastUpdatedOn|date: 'medium'" class="value">{{fieldsValues.get(field.measurement + "." + field.field)}}</div>
             </div>
           </div>
           <div fxLayout="row" fxFlex="20%" *ngIf="lonSetting && latSetting">
