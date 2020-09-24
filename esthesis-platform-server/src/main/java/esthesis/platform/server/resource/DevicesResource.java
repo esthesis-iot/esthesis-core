@@ -10,6 +10,7 @@ import com.querydsl.core.types.Predicate;
 import esthesis.common.util.Base64E;
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.DeviceKeyDTO;
+import esthesis.platform.server.dto.DevicePageDTO;
 import esthesis.platform.server.dto.DeviceRegistrationDTO;
 import esthesis.platform.server.model.Device;
 import esthesis.platform.server.service.DeviceService;
@@ -41,6 +42,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 @Validated
 @RestController
@@ -147,13 +149,12 @@ public class DevicesResource {
       .body(stringBuilder.toString());
   }
 
-//  @GetMapping(path = "field-values/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch device page fields.")
-//  @ReplyFilter("-shown")
-//  public List<FieldDTO> getFieldValues(@PathVariable long id) {
-//    return devicePageService.findWithLatestValues(id).stream().sorted(
-//      Comparator.comparing(FieldDTO::getName)).collect(Collectors.toList());
-//  }
+  @GetMapping(path = "field-values/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch device page fields.")
+  @ReplyFilter("-shown,-createdBy,-createdOn,-modifiedBy,-modifiedOn")
+  public List<DevicePageDTO> getFieldValues(@PathVariable long id) {
+    return deviceService.getFieldValues(id);
+  }
 
   @GetMapping(path = "count/by-hardware-id", produces = MediaType.APPLICATION_JSON_VALUE)
   public int countByHardwareId(@RequestParam String hardwareIds) {

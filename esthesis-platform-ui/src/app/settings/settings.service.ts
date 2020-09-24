@@ -45,5 +45,4 @@ export class SettingsService extends CrudService<SettingDto> {
   saveDevicePageFields(form: any): Observable<any> {
     return this.http.post(`${AppConstants.API_ROOT}/settings/fields`, form);
   }
-
 }

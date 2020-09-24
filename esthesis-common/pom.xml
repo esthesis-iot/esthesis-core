@@ -43,11 +43,6 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven-compiler-plugin.version}</version>
         <configuration>
-          <showDeprecation>true</showDeprecation>
-          <source>1.8</source>
-          <target>1.8</target>
-          <encoding>UTF-8</encoding>
-          <useIncrementalCompilation>false</useIncrementalCompilation>
           <annotationProcessorPaths>
             <annotationProcessorPath>
               <groupId>org.projectlombok</groupId>

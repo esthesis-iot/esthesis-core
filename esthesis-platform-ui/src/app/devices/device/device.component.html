@@ -10,18 +10,12 @@
         </mat-select>
       </mat-form-field>
       <div fxLayout="column">
-        <div fxLayout="row">
+        <div fxLayout="row" *ngIf="!fetchingDeviceData">
           <div fxLayout="row wrap" fxFlex="80%" fxFlexAlign="start" *ngIf="!isArrayEmpty(fields)">
             <div class="xs-mb05" fxLayout="row" fxFlex="40%" *ngFor="let field of fields; let i = index">
-              <div class="label">{{field.label ? field.label : field.name}}:</div>
-              <div class="value">{{fieldsValues.get(field.name)}}</div>
+              <div class="label">{{field.label ? field.label : field.field}}:</div>
+              <div class="value">{{fieldsValues.get(field.measurement + "." + field.field)}}</div>
             </div>
-          </div>
-          <div fxLayout="row wrap" fxFlex="80%" fxFlexAlign="start" *ngIf="isArrayEmpty(fields)">
-            <p><em>You have not setup any data to be visible for your devices.</em></p>
-            <p><em>Once your devices start
-              transmitting telemetry data, you can specifiy which fields will be visible on this page
-              by going to Settings > Device page.</em></p>
           </div>
           <div fxLayout="row" fxFlex="20%" *ngIf="lonSetting && latSetting">
             <div fxLayout="column">
@@ -31,6 +25,9 @@
               </div>
             </div>
           </div>
+        </div>
+        <div fxLayout="row" *ngIf="fetchingDeviceData">
+          <mat-spinner [diameter]="15" [strokeWidth]="1"></mat-spinner>
         </div>
 
         <mat-form-field class="xs-mt1">

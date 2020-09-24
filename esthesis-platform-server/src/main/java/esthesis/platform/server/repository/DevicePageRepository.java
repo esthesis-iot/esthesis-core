@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface DeviceMetadataRepository extends BaseRepository<DevicePage> {
-  DevicePage findByName(String name);
+public interface DevicePageRepository extends BaseRepository<DevicePage> {
   List<DevicePage> findAllByShownIsTrue();
 }

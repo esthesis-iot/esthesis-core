@@ -26,7 +26,9 @@ import org.hibernate.annotations.DynamicUpdate;
 public class DevicePage extends BaseEntity {
 
   @NotNull
-  private String name;
+  private String measurement;
+  @NotNull
+  private String field;
   @NotNull
   private String datatype;
   private boolean shown;

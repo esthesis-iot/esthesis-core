@@ -36,7 +36,7 @@ export class DevicesService extends CrudService<CaDto> {
     });
   }
 
-  // getFieldValues(id: number): Observable<any> {
-  //   return this.http.get<FieldDto>(AppConstants.API_ROOT + `/devices/field-values/${id}`);
-  // }
+  getFieldValues(id: number): Observable<any> {
+    return this.http.get<FieldDto>(AppConstants.API_ROOT + `/devices/field-values/${id}`);
+  }
 }

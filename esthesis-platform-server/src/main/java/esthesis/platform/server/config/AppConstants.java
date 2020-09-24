@@ -90,45 +90,6 @@ public class AppConstants {
     public static final String CLAIM_EMAIL = "email";
   }
 
-  public class Infrastructure {
-
-    //TODO Turn them to String
-    public class MqttServerType {
-
-      public static final long UNMANAGED = 0;
-      public static final long MANAGED_MOSQUITTO = 1;
-    }
-  }
-
-  public class Virtualization {
-
-    //TODO Turn them to String
-    public class Type {
-
-      public static final int DOCKER_ENGINE = 0;
-      public static final int DOCKER_SWARM = 1;
-    }
-
-    //TODO Turn them to String
-    public class Security {
-
-      public static final int OPEN = 0;
-      public static final int CERTIFICATE = 1;
-    }
-
-    public class Container {
-
-      public class RestartPolicy {
-
-        public static final String NONE = "NONE";
-        public static final String ON_FAILURE = "ON_FAILURE";
-        public static final String ALWAYS = "ALWAYS";
-        public static final String UNLESS_STOPPED = "UNLESS_STOPPED";
-        public static final String ANY = "ANY";
-      }
-    }
-  }
-
   public class ExitCodes {
 
     public static final int CANT_GENERATE_PLATFORM_AES_KEY = 1;
@@ -163,5 +124,31 @@ public class AppConstants {
   public class Http {
 
     public static final String AUTHORIZATION = "Authorization";
+  }
+
+  // The list of available device data types.
+  public static class DataType {
+
+    public static final String TELEMETRY = "TELEMETRY";
+    public static final String METADATA = "METADATA";
+  }
+
+  // The list of Digital Twins supported operations.
+  public static class DTOperations {
+
+    public static final String OPERATION_QUERY = "QUERY";
+    public static final String OPERATION_MIN = "MIN";
+    public static final String OPERATION_MAX = "MAX";
+    public static final String OPERATION_COUNT = "COUNT";
+    public static final String OPERATION_MEAN = "MEAN";
+    public static final String OPERATION_SUM = "SUM";
+    public static final String[] SUPPORTED_OPERATIONS = {OPERATION_COUNT, OPERATION_MAX, OPERATION_MEAN,
+      OPERATION_MIN, OPERATION_QUERY, OPERATION_SUM};
+  }
+
+  public static class NiFiQueryResults {
+
+    public static final String TIMESTAMP = "timestamp";
+    public static final String TYPE = "type";
   }
 }

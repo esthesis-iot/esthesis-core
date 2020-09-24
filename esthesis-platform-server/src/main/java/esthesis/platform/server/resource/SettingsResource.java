@@ -7,7 +7,7 @@ import com.eurodyn.qlack.fuse.settings.service.SettingsService;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyFilter;
 import esthesis.common.config.AppConstants.Generic;
-import esthesis.common.datasink.dto.FieldDTO;
+import esthesis.platform.server.dto.DevicePageDTO;
 import esthesis.platform.server.service.DevicePageService;
 import javax.validation.Valid;
 import org.springframework.http.MediaType;
@@ -72,16 +72,24 @@ public class SettingsResource {
   }
 
   @GetMapping(path = "fields", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
-    logMessage = "Could not get fields for measurement.")
-  public List<FieldDTO> getFields() {
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not get fields.")
+  public List<DevicePageDTO> getFields() {
     return devicePageService.findAll();
   }
 
   @PostMapping("fields")
-  public ResponseEntity saveFields(@Valid @RequestBody List<FieldDTO> fields) {
-    devicePageService.save(fields);
+  public ResponseEntity saveFields(@Valid @RequestBody List<DevicePageDTO> fields) {
+    // Delete removed fields.
+    devicePageService.deleteByIdIn(
+      devicePageService.findAll().stream().map(DevicePageDTO::getId)
+        .filter(
+          f -> !fields.stream().map(DevicePageDTO::getId).collect(Collectors.toList()).contains(f))
+        .collect(Collectors.toList())
+    );
+
+    // Save all fields.
+    devicePageService.saveAll(fields);
+
     return ResponseEntity.ok().build();
   }
-
 }

@@ -1,8 +1,15 @@
 package esthesis.platform.server.service;
 
+import static esthesis.platform.server.config.AppConstants.DTOperations.OPERATION_COUNT;
+import static esthesis.platform.server.config.AppConstants.DTOperations.OPERATION_MAX;
+import static esthesis.platform.server.config.AppConstants.DTOperations.OPERATION_MEAN;
+import static esthesis.platform.server.config.AppConstants.DTOperations.OPERATION_MIN;
+import static esthesis.platform.server.config.AppConstants.DTOperations.OPERATION_QUERY;
+import static esthesis.platform.server.config.AppConstants.DTOperations.OPERATION_SUM;
+import static esthesis.platform.server.config.AppConstants.DTOperations.SUPPORTED_OPERATIONS;
+
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.common.exception.QMismatchException;
-import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.dto.NiFiDTO;
 import esthesis.platform.server.model.Device;
 import esthesis.platform.server.repository.DeviceRepository;
@@ -12,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -29,24 +35,12 @@ import java.util.stream.Collectors;
 public class DTService {
 
   private final DeviceRepository deviceRepository;
-  private final AppProperties appProperties;
   private final RestTemplate restTemplate;
   private final NiFiService niFiService;
-  // Supported operations for NiFi data producers.
-  private final String OPERATION_QUERY = "QUERY";
-  private final String OPERATION_MIN = "MIN";
-  private final String OPERATION_MAX = "MAX";
-  private final String OPERATION_COUNT = "COUNT";
-  private final String OPERATION_MEAN = "MEAN";
-  private final String OPERATION_SUM = "SUM";
-  private final String[] SUPPORTED_OPERATIONS = {OPERATION_COUNT, OPERATION_MAX, OPERATION_MEAN,
-    OPERATION_MIN, OPERATION_QUERY, OPERATION_SUM};
 
-  public DTService(DeviceRepository deviceRepository,
-    AppProperties appProperties, RestTemplate restTemplate,
+  public DTService(DeviceRepository deviceRepository, RestTemplate restTemplate,
     NiFiService niFiService) {
     this.deviceRepository = deviceRepository;
-    this.appProperties = appProperties;
     this.restTemplate = restTemplate;
     this.niFiService = niFiService;
   }
@@ -64,9 +58,22 @@ public class DTService {
       .collect(Collectors.toList());
   }
 
+  /**
+   *
+   * @param hardwareId
+   * @param dataType
+   * @param operation
+   * @param from
+   * @param to
+   * @param fields
+   * @param measurement
+   * @param page A number >=1 indicating the starting page of the results.
+   * @param pageSize A number >=1 indicated the numer of results on each results page.
+   * @return
+   */
   public String nifiProxy(@NotNull final String hardwareId, @NotNull final String dataType,
-    @NotNull @PathVariable final String operation, final Long from, final Long to,
-    final String fields, final String measurement, final Integer page, final Integer pageSize) {
+    @NotNull final String operation, final Long from, final Long to,
+    final String fields, final String measurement, Integer page, final Integer pageSize) {
 
     // TODO security checks
     // ...
@@ -75,6 +82,8 @@ public class DTService {
     if (Arrays.stream(SUPPORTED_OPERATIONS).noneMatch(o -> o.equals(operation.toUpperCase()))) {
       throw new QDoesNotExistException("Operation {} is not supported", operation);
     }
+
+
 
     // Find the currently active NiFi instance.
     final NiFiDTO activeNiFi = niFiService.getActiveNiFi();
@@ -111,10 +120,10 @@ public class DTService {
           request.queryParam("to", to);
         }
         if (page != null) {
-          request.queryParam("page", page);
+          request.queryParam("page", page > 0 ? page - 1 : 0);
         }
         if (pageSize != null) {
-          request.queryParam("pageSize", pageSize);
+          request.queryParam("pageSize", pageSize > 1 ? pageSize : 1);
         }
         break;
       case OPERATION_COUNT:

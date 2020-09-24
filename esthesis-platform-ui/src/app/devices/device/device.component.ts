@@ -29,6 +29,7 @@ export class DeviceComponent extends BaseComponent implements OnInit {
   fieldsValues: Map<string, any>;
   lonSetting: string;
   latSetting: string;
+  fetchingDeviceData = true;
 
   options = {
     layers: [
@@ -72,6 +73,7 @@ export class DeviceComponent extends BaseComponent implements OnInit {
 
     // If viewing an existing device, fetch data for it.
     if (this.id && this.id !== 0) {
+
       this.devicesService.get(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
       });
@@ -101,26 +103,27 @@ export class DeviceComponent extends BaseComponent implements OnInit {
   }
 
   private updateFields() {
-    // this.fieldsValues = new Map<string, any>();
-    // this.devicesService.getFieldValues(this.id).subscribe(fieldsValues => {
-    //   this.fields = fieldsValues;
-    //   // Update field values formatting.
-    //   this.fields.forEach(field => {
-    //     var formatter;
-    //     if (!field.formatter) {
-    //       formatter = "%s";
-    //     } else {
-    //       formatter = field.formatter;
-    //     }
-    //     var value;
-    //     if (field.valueHandler) {
-    //       value = this.formatterService.format(field.valueHandler, field.value);
-    //     } else {
-    //       value = field.value;
-    //     }
-    //     this.fieldsValues.set(field.name, sprintf(formatter, value));
-    //   })
-    // });
+    this.fieldsValues = new Map<string, any>();
+    this.devicesService.getFieldValues(this.id).subscribe(fieldsValues => {
+      this.fields = fieldsValues;
+      // Update field values formatting.
+      this.fields.forEach(field => {
+        let formatter;
+        if (!field.formatter) {
+          formatter = '%s';
+        } else {
+          formatter = field.formatter;
+        }
+        let value;
+        if (field.valueHandler) {
+          value = this.formatterService.format(field.valueHandler, field.value);
+        } else {
+          value = field.value;
+        }
+        this.fieldsValues.set(field.measurement + '.' + field.field, sprintf(formatter, value));
+      });
+      this.fetchingDeviceData = false;
+    });
   }
 
   save() {

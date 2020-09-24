@@ -36,8 +36,8 @@ import java.util.Locale;
 import java.util.logging.Logger;
 
 @Service
-@Transactional
 @Validated
+@Transactional
 public class CAService extends BaseService<CaDTO, Ca> {
 
   // JUL reference.

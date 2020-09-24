@@ -7,16 +7,19 @@
   <mat-form-field>
     <mat-select placeholder="Longitude" formControlName="geo_lon">
       <mat-option value=""></mat-option>
-      <mat-option *ngFor="let field of allFields" [value]="field.name">
-        {{field.name}}
+      <mat-option
+        *ngFor="let field of allFields"
+        [value]='field.datatype + "." + field.measurement + "." + field.field'>
+        {{field.datatype.toLowerCase()}}.{{field.measurement}}.{{field.field}}
       </mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field>
     <mat-select placeholder="Latitude" formControlName="geo_lat">
       <mat-option value=""></mat-option>
-      <mat-option *ngFor="let field of allFields" [value]="field.name">
-        {{field.name}}
+      <mat-option *ngFor="let field of allFields"
+                  [value]='field.datatype + "." + field.measurement + "." + field.field'>
+        {{field.datatype.toLowerCase()}}.{{field.measurement}}.{{field.field}}
       </mat-option>
     </mat-select>
   </mat-form-field>
@@ -25,15 +28,16 @@
 <form novalidate [formGroup]="form" fxLayout="column" class="xs-mt1">
   <div class="inline-header">Device page data</div>
   <div class="inline-subheader">
-    Select which device data will be visible on device information page.
+    Select which device data will be visible on device information page. Custom formatting is
+    supported
+    via
+    <a href="https://github.com/alexei/sprintf.js#readme" target="_blank">sprintf-js</a>
+    .
   </div>
   <div formArrayName="fields" *ngFor="let field of form.get('fields')['controls']; let i = index">
     <div [formGroupName]="i" fxLayout="row" fxLayoutGap="1rem">
+      <input type="hidden" name="id" value="{{field.controls.id.value}}">
       <mat-checkbox formControlName="shown" class="xs-mt1" color="primary"></mat-checkbox>
-
-      <mat-form-field fxFlex="20rem">
-        <input matInput placeholder="Name" formControlName="name">
-      </mat-form-field>
 
       <mat-select placeholder="Data type" formControlName="datatype" fxFlex="10rem">
         <mat-option *ngFor="let o of constants.MEASUREMENT_TYPE| keyvalue"
@@ -41,6 +45,14 @@
           {{ lookupByValue(constants.MEASUREMENT_TYPE, o.value) }}
         </mat-option>
       </mat-select>
+
+      <mat-form-field fxFlex="20rem">
+        <input matInput placeholder="Measurement" formControlName="measurement">
+      </mat-form-field>
+
+      <mat-form-field fxFlex="20rem">
+        <input matInput placeholder="Field" formControlName="field">
+      </mat-form-field>
 
       <mat-form-field fxFlex="grow">
         <input matInput placeholder="UI label" formControlName="label">
@@ -58,6 +70,11 @@
           {{ lookupByValue(constants.FIELD_VALUE_FORMATTER, o.value) }}
         </mat-option>
       </mat-select>
+
+      <button type="button" mat-icon-button (click)="deleteField(i)"
+              matTooltip="Remove field">
+        <mat-icon>delete</mat-icon>
+      </button>
     </div>
   </div>
   <button mat-button (click)="newMeasurement()">Add measurement</button>

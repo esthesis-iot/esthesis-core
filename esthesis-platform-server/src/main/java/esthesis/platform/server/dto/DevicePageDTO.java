@@ -1,27 +1,29 @@
-package esthesis.common.datasink.dto;
+package esthesis.platform.server.dto;
 
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.time.Instant;
+
 @Data
 @NoArgsConstructor
-@Accessors(chain = true)
 @EqualsAndHashCode
-public class FieldDTO {
+@Accessors(chain = true)
+public class DevicePageDTO extends BaseDTO {
 
-  // The name of the field prefixed with the measurement, i.e. measurement.field, health.cpu.
-  private String name;
+  @NotNull
+  private String measurement;
+  @NotNull
+  private String field;
+  @NotNull
   private String datatype;
   private boolean shown;
   private String label;
   private String formatter;
   private String valueHandler;
   private Object value;
-
-  public FieldDTO(String name, String datatype) {
-    this.name = name;
-    this.datatype = datatype;
-  }
+  private Instant lastUpdatedOn;
 }

@@ -40,7 +40,9 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
     // Fetch fields.
     this.settingsService.getDevicePageFields().subscribe(onNext => {
       this.allFields = onNext;
-      onNext.forEach(field => {
+      onNext
+      .sort((a, b) => (a.measurement + a.field).localeCompare(b.measurement + b.field))
+      .forEach(field => {
         // @ts-ignore
         this.form.controls['fields'].push(this.createFieldElement(field));
       });
@@ -59,7 +61,9 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
 
   createFieldElement(fieldDto: FieldDto) {
     return this.fb.group({
-      name: [fieldDto?.name],
+      id:  [fieldDto?.id],
+      measurement: [fieldDto?.measurement],
+      field: [fieldDto?.field],
       shown: [fieldDto?.shown],
       label: [fieldDto?.label],
       datatype: [fieldDto?.datatype],
@@ -83,7 +87,8 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
   newMeasurement() {
     // @ts-ignore
     this.form.controls['fields'].push(this.createFieldElement({
-      name: '',
+      measurement: '',
+      field: '',
       value: '',
       valueHandler: '',
       datatype: this.constants.MEASUREMENT_TYPE.TELEMETRY,
@@ -91,5 +96,10 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
       formatter: '',
       shown: true,
     }));
+  }
+
+  deleteField(fieldIndex: number) {
+    // @ts-ignore
+    this.form.controls['fields'].controls.splice(fieldIndex, 1);
   }
 }

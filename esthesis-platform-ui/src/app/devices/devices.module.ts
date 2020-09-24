@@ -37,6 +37,7 @@ import {MomentModule} from 'ngx-moment';
 import {ZXingScannerModule} from '@zxing/ngx-scanner';
 import {DevicePreregisterCamComponent} from './device-preregister-cam.component';
 import {MatListModule} from '@angular/material/list';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -77,7 +78,8 @@ import {MatListModule} from '@angular/material/list';
     ZXingScannerModule,
     MatDialogModule,
     MatSlideToggleModule,
-    MatListModule
+    MatListModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     {

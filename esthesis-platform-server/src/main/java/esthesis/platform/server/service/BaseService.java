@@ -46,6 +46,12 @@ abstract class BaseService<D extends BaseDTO, E extends BaseEntity> {
     }
   }
 
+  public void saveAll(List<D> dto) {
+    for (D d : dto) {
+      save(d);
+    }
+  }
+
   public D save(D dto) {
     E entity;
 
@@ -85,5 +91,9 @@ abstract class BaseService<D extends BaseDTO, E extends BaseEntity> {
     repository.deleteById(id);
 
     return dto;
+  }
+
+  public void deleteByIdIn(List<Long> ids) {
+    repository.deleteAll(repository.findAllById(ids));
   }
 }

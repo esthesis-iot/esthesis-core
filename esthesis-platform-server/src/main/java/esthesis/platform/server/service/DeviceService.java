@@ -13,11 +13,15 @@ import com.eurodyn.qlack.fuse.crypto.service.CryptoAsymmetricService;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoCAService;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoSymmetricService;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import esthesis.common.device.RegistrationRequest;
 import esthesis.common.dto.DeviceMessage;
 import esthesis.common.util.Base64E;
+import esthesis.platform.server.config.AppConstants.DTOperations;
 import esthesis.platform.server.config.AppConstants.Device.State;
+import esthesis.platform.server.config.AppConstants.NiFiQueryResults;
 import esthesis.platform.server.config.AppConstants.WebSocket.Topic;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting.DeviceRegistration;
@@ -31,6 +35,7 @@ import esthesis.platform.server.config.AppSettings.SettingValues.Security.Outgoi
 import esthesis.platform.server.dto.DTDeviceDTO;
 import esthesis.platform.server.dto.DeviceDTO;
 import esthesis.platform.server.dto.DeviceKeyDTO;
+import esthesis.platform.server.dto.DevicePageDTO;
 import esthesis.platform.server.dto.DeviceRegistrationDTO;
 import esthesis.platform.server.dto.WebSocketMessageDTO;
 import esthesis.platform.server.mapper.DTDeviceMapper;
@@ -41,7 +46,6 @@ import esthesis.platform.server.model.Device;
 import esthesis.platform.server.model.DeviceKey;
 import esthesis.platform.server.repository.DeviceKeyRepository;
 import esthesis.platform.server.repository.DeviceRepository;
-import esthesis.platform.server.repository.PingRepository;
 import javax.crypto.NoSuchPaddingException;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.ArrayUtils;
@@ -65,8 +69,10 @@ import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -92,7 +98,9 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   private final CertificatesService certificatesService;
   private final CAService caService;
   private final CryptoCAService cryptoCAService;
-  private final PingRepository pingRepository;
+  private final DevicePageService devicePageService;
+  private final DTService dtService;
+  private final ObjectMapper mapper;
 
   public DeviceService(
     DeviceRepository deviceRepository, DeviceMapper deviceMapper,
@@ -105,7 +113,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     CryptoSymmetricService cryptoSymmetricService,
     CertificatesService certificatesService, CAService caService,
     CryptoCAService cryptoCAService,
-    PingRepository pingRepository) {
+    DevicePageService devicePageService, DTService dtService,
+    ObjectMapper mapper) {
     this.deviceRepository = deviceRepository;
     this.deviceMapper = deviceMapper;
     this.dtDeviceMapper = dtDeviceMapper;
@@ -121,7 +130,9 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     this.certificatesService = certificatesService;
     this.caService = caService;
     this.cryptoCAService = cryptoCAService;
-    this.pingRepository = pingRepository;
+    this.devicePageService = devicePageService;
+    this.dtService = dtService;
+    this.mapper = mapper;
   }
 
   /**
@@ -266,13 +277,6 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
       device
         .setTags(Lists.newArrayList(tagService.findAllByNameIn(Arrays.asList(tags.split(",")))));
     }
-
-    // Create an entry in the 'ping' table for this device, so that it can be updated in the future
-    // when the device starts sending ping data.
-//    Ping ping = new Ping();
-//    ping.setHardwareId(device.getHardwareId());
-//    ping.setLastSeen(0);
-//    pingRepository.save(ping);
   }
 
   /**
@@ -430,4 +434,44 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   public DeviceDTO deleteById(long id) {
     return super.deleteById(id);
   }
+
+  public List<DevicePageDTO> getFieldValues(long deviceId) {
+    final DeviceDTO deviceDTO = findById(deviceId);
+    List<DevicePageDTO> fieldValues = new ArrayList<>();
+
+    // Iterate over the available data types to find which fields to fetch.
+    return devicePageService.findAll()
+      .stream()
+      .filter(DevicePageDTO::isShown)
+      .map(field -> {
+        final String fieldValue = dtService
+          .nifiProxy(deviceDTO.getHardwareId(), field.getDatatype().toLowerCase(),
+            DTOperations.OPERATION_QUERY.toLowerCase(), null, null,
+            field.getField(), field.getMeasurement(), 1, 1);
+        try {
+          Map<String, List<Map<String, Object>>> jsonFields =
+            mapper.readValue(fieldValue, HashMap.class);
+          field.setMeasurement(jsonFields.keySet().iterator().next());
+          final List<Map<String, Object>> fields = jsonFields.get(field.getMeasurement());
+          if (fields.size() > 0) {
+            String valueField = jsonFields.get(field.getMeasurement()).get(0).keySet().stream()
+              .filter(
+                f -> !(f.equals(NiFiQueryResults.TIMESTAMP) || f.equals(NiFiQueryResults.TYPE)))
+              .collect(Collectors.joining());
+            field.setField(valueField);
+            field.setValue(jsonFields.get(field.getMeasurement()).get(0).get(valueField));
+            field.setLastUpdatedOn(Instant.ofEpochMilli(
+              Long.parseLong(
+                jsonFields.get(field.getMeasurement()).get(0).get(NiFiQueryResults.TIMESTAMP)
+                  .toString())));
+          }
+        } catch (JsonProcessingException e) {
+          log.log(Level.SEVERE,
+            MessageFormat.format("Could not obtain field values for device {0}.", deviceId), e);
+        }
+        return field;
+      })
+      .collect(Collectors.toList());
+  }
+
 }

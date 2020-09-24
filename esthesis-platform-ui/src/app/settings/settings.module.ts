@@ -24,6 +24,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {FlexModule} from '@angular/flex-layout';
 import {SettingsProvisioningComponent} from './settings-provisioning/settings-provisioning.component';
 import {SettingsDevicePageComponent} from './settings-device-page/settings-device-page.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import {SettingsDevicePageComponent} from './settings-device-page/settings-devic
     MatTabsModule,
     MatRadioModule,
     FlexModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatTooltipModule
   ]
 })
 export class SettingsModule {

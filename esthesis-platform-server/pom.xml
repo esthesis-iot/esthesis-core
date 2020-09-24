@@ -65,12 +65,6 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven-compiler-plugin.version}</version>
         <configuration>
-          <showDeprecation>true</showDeprecation>
-          <source>13</source>
-          <target>13</target>
-          <release>13</release>
-          <encoding>UTF-8</encoding>
-          <useIncrementalCompilation>false</useIncrementalCompilation>
           <annotationProcessorPaths>
             <annotationProcessorPath>
               <groupId>org.mapstruct</groupId>
