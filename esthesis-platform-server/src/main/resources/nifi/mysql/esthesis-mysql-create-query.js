@@ -11,27 +11,27 @@ var allowedOperations = ['query', 'count', 'max', 'min', 'mean', 'sum'];
 var nonTimeOperations = ['count', 'mean', 'sum'];
 
 /**
- * Utility method to set the fields of a query.
- * @param flowFile The FlowFile to get the fields from.
- * @param queryTemplate The query template in which fields are updated.
- * @returns {void | string} The original query template updated with the fields value.
+ * Utility method to set the field of a query.
+ * @param flowFile The FlowFile to get the field from.
+ * @param queryTemplate The query template in which field are updated.
+ * @returns {void | string} The original query template updated with the field value.
  * @private
  */
-function _updateFields(flowFile, queryTemplate) {
-  var fields = flowFile.getAttribute('esthesis.param.fields').trim();
-  if (!fields) {
+function _updateField(flowFile, queryTemplate) {
+  var field = flowFile.getAttribute('esthesis.param.field').trim();
+  if (!field) {
     queryTemplate = queryTemplate.replace("$GROUPBY", "");
-    return queryTemplate.replace("$FIELDS", "*");
+    return queryTemplate.replace("$FIELD", "*");
   } else {
-    queryTemplate = queryTemplate.replace("$GROUPBY", "GROUP BY " + fields + ", timestamp");
-    return queryTemplate.replace("$FIELDS", fields + ", timestamp");
+    queryTemplate = queryTemplate.replace("$GROUPBY", "GROUP BY " + field + ", timestamp");
+    return queryTemplate.replace("$FIELD", field + ", timestamp");
   }
 }
 
 /**
  * Utility method to set the measurement of a query.
  * @param flowFile The FlowFile to get the measurement from.
- * @param queryTemplate The query template in which fields are updated.
+ * @param queryTemplate The query template in which field are updated.
  * @returns {void | string} The original query template updated with the measurement value.
  * @private
  */
@@ -64,12 +64,12 @@ function _updateTags(flowFile, queryTemplate) {
   return queryTemplate.replace("$TAGS", hardwareIdQuery);
 }
 
-function getCalculateFields(flowFile, operation) {
-  // Create the fields template (i.e. first part of the SELECT query).
+function getCalculateField(flowFile, operation) {
+  // Create the field template (i.e. first part of the SELECT query).
   var fieldsTemplate;
-  var fields = flowFile.getAttribute('esthesis.param.fields');
-  fieldsTemplate = operation + "(" + fields + ") as " + (operation === "avg" ? "mean" : operation)
-    + "_" + fields;
+  var field = flowFile.getAttribute('esthesis.param.field');
+  fieldsTemplate = operation + "(" + field + ") as " + (operation === "avg" ? "mean" : operation)
+    + "_" + field;
 
   return fieldsTemplate;
 }
@@ -108,31 +108,31 @@ function _updateOrder(flowFile, queryTemplate) {
 
 function addTimestampToOperation(queryTemplate) {
   var measurement = flowFile.getAttribute('esthesis.param.measurement');
-  var fields = flowFile.getAttribute('esthesis.param.fields');
-  return "SELECT " + fields +
-  " as " + operation + "_" + fields + ", timestamp from " + measurement + " WHERE "
-  + fields + " in " + "(" + queryTemplate + ")" + " ORDER BY  timestamp desc LIMIT 1;";
+  var field = flowFile.getAttribute('esthesis.param.field');
+  return "SELECT " + field +
+  " as " + operation + "_" + field + ", timestamp from " + measurement + " WHERE "
+  + field + " in " + "(" + queryTemplate + ")" + " ORDER BY  timestamp desc LIMIT 1;";
 }
 
 /**
  * Create a generic query request.
  * @param flowFile The FlowFile to process information to create the request.
- * @param fields A list of fields already resolved in a previous step.
+ * @param field A list of field already resolved in a previous step.
  */
-function createQueryRequest(flowFile, fields) {
+function createQueryRequest(flowFile, field) {
   // Set the template for this type of execution.
-  var queryTemplate = "SELECT $FIELDS FROM $MEASUREMENT WHERE $TAGS $TIME $GROUPBY ORDER BY timestamp $ORDER $PAGING";
+  var queryTemplate = "SELECT $FIELD FROM $MEASUREMENT WHERE $TAGS $TIME $GROUPBY ORDER BY timestamp $ORDER $PAGING";
 
   if (nonTimeOperations.indexOf(operation) > -1) {
     queryTemplate = queryTemplate.replace("ORDER BY timestamp $ORDER", "");
   }
 
-  // Set fields, measurement and tags.
-  if (fields) {
-    queryTemplate = queryTemplate.replace("$FIELDS", fields);
+  // Set field, measurement and tags.
+  if (field) {
+    queryTemplate = queryTemplate.replace("$FIELD", field);
     queryTemplate = queryTemplate.replace("$GROUPBY", "");
   } else {
-    queryTemplate = _updateFields(flowFile, queryTemplate);
+    queryTemplate = _updateField(flowFile, queryTemplate);
   }
 
   queryTemplate = _updateMeasurement(flowFile, queryTemplate);
@@ -185,7 +185,7 @@ if (flowFile != null) {
         if (operation == "mean") {
           operation = "avg";
         }
-        queryTemplate = createQueryRequest(flowFile, getCalculateFields(flowFile, operation));
+        queryTemplate = createQueryRequest(flowFile, getCalculateField(flowFile, operation));
       }
     } else {
       throw('Requested operation \'' + operation + "\' is not supported.");

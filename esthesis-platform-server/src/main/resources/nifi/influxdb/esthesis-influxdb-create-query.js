@@ -7,24 +7,24 @@
 var allowedOperations = ['query', 'count', 'max', 'min', 'mean', 'sum'];
 
 /**
- * Utility method to set the fields of a query.
- * @param flowFile The FlowFile to get the fields from.
- * @param queryTemplate The query template in which fields are updated.
- * @returns {void | string} The original query template updated with the fields value.
+ * Utility method to set the field of a query.
+ * @param flowFile The FlowFile to get the field from.
+ * @param queryTemplate The query template in which field are updated.
+ * @returns {void | string} The original query template updated with the field value.
  * @private
  */
-function _updateFields(flowFile, queryTemplate) {
-  var fields = flowFile.getAttribute('esthesis.param.fields').trim();
-  if (!fields) {
-    fields = "*";
+function _updateField(flowFile, queryTemplate) {
+  var field = flowFile.getAttribute('esthesis.param.field').trim();
+  if (!field) {
+    field = "*";
   }
-  return queryTemplate.replace("$FIELDS", fields);
+  return queryTemplate.replace("$FIELD", field);
 }
 
 /**
  * Utility method to set the measurement of a query.
  * @param flowFile The FlowFile to get the measurement from.
- * @param queryTemplate The query template in which fields are updated.
+ * @param queryTemplate The query template in which field are updated.
  * @returns {void | string} The original query template updated with the measurement value.
  * @private
  */
@@ -58,33 +58,33 @@ function _updateTags(flowFile, queryTemplate) {
     hardwareIdQuery + " and type = '" + flowFile.getAttribute('esthesis.type') + "'");
 }
 
-function getCalculateFields(flowFile, operation) {
-  // Create the fields template (i.e. first part of the SELECT query).
-  var fieldsTemplate;
-  var fields = flowFile.getAttribute('esthesis.param.fields');
-  if (!fields) {
-    fieldsTemplate = operation + "(*)";
+function getCalculateField(flowFile, operation) {
+  // Create the field template (i.e. first part of the SELECT query).
+  var fieldTemplate;
+  var field = flowFile.getAttribute('esthesis.param.field');
+  if (!field) {
+    fieldTemplate = operation + "(*)";
   } else {
-    fieldsTemplate = operation + "(" + fields + ") as " + operation + "_" + fields;
+    fieldTemplate = operation + "(" + field + ") as " + operation + "_" + field;
   }
 
-  return fieldsTemplate;
+  return fieldTemplate;
 }
 
 /**
  * Create a generic query request.
  * @param flowFile The FlowFile to process information to create the request.
- * @param fields A list of fields already resolved in a previous step.
+ * @param field The field that will be used in the query
  */
-function createQueryRequest(flowFile, fields) {
+function createQueryRequest(flowFile, field) {
   // Set the template for this type of execution.
-  var queryTemplate = "SELECT $FIELDS FROM $MEASUREMENT WHERE $TAGS $TIME ORDER BY time $ORDER $PAGING";
+  var queryTemplate = "SELECT $FIELD FROM $MEASUREMENT WHERE $TAGS $TIME ORDER BY time $ORDER $PAGING";
 
-  // Set fields, measurement and tags.
-  if (fields) {
-    queryTemplate = queryTemplate.replace("$FIELDS", fields);
+  // Set field, measurement and tags.
+  if (field) {
+    queryTemplate = queryTemplate.replace("$FIELD", field);
   } else {
-    queryTemplate = _updateFields(flowFile, queryTemplate);
+    queryTemplate = _updateField(flowFile, queryTemplate);
   }
   queryTemplate = _updateMeasurement(flowFile, queryTemplate);
   queryTemplate = _updateTags(flowFile, queryTemplate);
@@ -150,7 +150,7 @@ if (flowFile != null) {
 
     // Call the appropriate handler for the the type of query requested.
     var operation = flowFile.getAttribute('esthesis.operation').trim().toLowerCase();
-    var fields = flowFile.getAttribute('esthesis.param.fields');
+    var field = flowFile.getAttribute('esthesis.param.field');
 
     if (isMetadataQuery && operation !== 'query') {
       throw('Requested operation \'' + operation + "\' is not supported for metadata");
@@ -158,7 +158,7 @@ if (flowFile != null) {
 
     if (allowedOperations.indexOf(operation) > -1) {
       queryTemplate = operation === 'query' ? createQueryRequest(flowFile) : createQueryRequest(
-        flowFile, getCalculateFields(flowFile, operation));
+        flowFile, getCalculateField(flowFile, operation));
     } else {
       throw('Requested operation \'' + operation + "\' is not supported.");
     }
