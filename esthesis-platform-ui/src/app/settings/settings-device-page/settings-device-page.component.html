@@ -29,10 +29,8 @@
   <div class="inline-header">Device page data</div>
   <div class="inline-subheader">
     Select which device data will be visible on device information page. Custom formatting is
-    supported
-    via
-    <a href="https://github.com/alexei/sprintf.js#readme" target="_blank">sprintf-js</a>
-    .
+    supported via
+    <a href="https://github.com/alexei/sprintf.js#readme" target="_blank">sprintf-js</a>.
   </div>
   <div formArrayName="fields" *ngFor="let field of form.get('fields')['controls']; let i = index">
     <div [formGroupName]="i" fxLayout="row" fxLayoutGap="1rem">
@@ -46,11 +44,11 @@
         </mat-option>
       </mat-select>
 
-      <mat-form-field fxFlex="20rem">
+      <mat-form-field>
         <input matInput placeholder="Measurement" formControlName="measurement">
       </mat-form-field>
 
-      <mat-form-field fxFlex="20rem">
+      <mat-form-field>
         <input matInput placeholder="Field" formControlName="field">
       </mat-form-field>
 
