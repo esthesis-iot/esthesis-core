@@ -38,7 +38,9 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
 
   @Override
   public String getConfigurationTemplate() {
-    return "databaseName: \n"
+    return "username: \n"
+      + "password: \n"
+      + "databaseName: \n"
       + "databaseUrl: \n"
       + "maxConnectionTimeoutSeconds: \n"
       + "queryResultTimeUnit: \n"
@@ -54,6 +56,7 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
     niFiClientService
       .createExecuteInfluxDB(niFiSinkDTO.getName(), conf.getDatabaseName(),
         conf.getDatabaseUrl(), Integer.parseInt(conf.getMaxConnectionTimeoutSeconds()),
+        conf.getUsername(), conf.getPassword(),
         conf.getQueryResultTimeUnit(), Integer.parseInt(conf.getQueryChunkSize()),
         conf.getSchedulingPeriod(),
         path);
@@ -70,6 +73,7 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
     return niFiClientService
       .updateExecuteInfluxDB(processorId, sinkDTO.getName(), conf.getDatabaseName(),
         conf.getDatabaseUrl(), Integer.parseInt(conf.getMaxConnectionTimeoutSeconds()),
+        conf.getUsername(), conf.getPassword(),
         conf.getQueryResultTimeUnit(), Integer.parseInt(conf.getQueryChunkSize()),
         conf.getSchedulingPeriod());
   }

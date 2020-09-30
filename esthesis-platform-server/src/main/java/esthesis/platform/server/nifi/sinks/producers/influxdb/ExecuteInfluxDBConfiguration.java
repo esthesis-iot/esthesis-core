@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 public class ExecuteInfluxDBConfiguration {
 
+  private String username;
+  private String password;
   @NotNull
   private String databaseName;
   @NotNull

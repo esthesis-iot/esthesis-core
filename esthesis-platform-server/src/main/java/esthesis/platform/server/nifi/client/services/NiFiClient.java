@@ -1198,11 +1198,11 @@ public class NiFiClient {
    */
   public ProcessorEntity createExecuteInfluxDB(@NotNull String parentProcessGroupId,
     @NotNull String name, @NotNull String dbName, @NotNull String url,
-    int maxConnectionTimeoutSeconds, String queryResultTimeUnit,
+    int maxConnectionTimeoutSeconds, String username, String password, String queryResultTimeUnit,
     int queryChunkSize, String schedulingPeriod) throws IOException {
 
     Map<String, String> properties = setExecuteInfluxDBProperties(dbName, url,
-      maxConnectionTimeoutSeconds, queryResultTimeUnit, queryChunkSize);
+      maxConnectionTimeoutSeconds, username, password, queryResultTimeUnit, queryChunkSize);
 
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
     processorConfigDTO.setProperties(properties);
@@ -1232,12 +1232,13 @@ public class NiFiClient {
    */
   public ProcessorEntity updateExecuteInfluxDB(String processorId, String name, String dbName,
     String url,
-    int maxConnectionTimeoutSeconds, String queryResultTimeUnit, int queryChunkSize,
+    int maxConnectionTimeoutSeconds, String username, String password, String queryResultTimeUnit
+    , int queryChunkSize,
     String schedulingPeriod)
     throws IOException {
 
     Map<String, String> properties = setExecuteInfluxDBProperties(dbName, url,
-      maxConnectionTimeoutSeconds, queryResultTimeUnit, queryChunkSize);
+      maxConnectionTimeoutSeconds, username, password, queryResultTimeUnit, queryChunkSize);
 
     return updateProcessor(processorId, name, schedulingPeriod, properties);
 
@@ -1245,11 +1246,14 @@ public class NiFiClient {
 
   private Map<String, String> setExecuteInfluxDBProperties(@NotNull String dbName,
     @NotNull String url,
-    int maxConnectionTimeoutSeconds, String queryResultTimeUnit, int queryChunkSize) {
+    int maxConnectionTimeoutSeconds, String username, String password, String queryResultTimeUnit,
+    int queryChunkSize) {
 
     Map<String, String> properties = new HashMap<>();
     properties.put(INFLUX_DB_NAME, dbName);
     properties.put(INFLUX_URL, url);
+    properties.put(INFLUX_USERNAME, username);
+    properties.put(INFLUX_PASSWORD, password);
     properties.put(INFLUX_MAX_CONNECTION_TIMEOUT, (maxConnectionTimeoutSeconds) +
       " seconds");
     properties.put(INFLUX_QUERY_RESULT_TIME_UNIT, queryResultTimeUnit.toUpperCase());

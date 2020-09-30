@@ -615,7 +615,8 @@ public class NiFiClientService {
    */
   public String createExecuteInfluxDB(@NotNull String name, @NotNull String dbName,
     @NotNull String url,
-    int maxConnectionTimeoutSeconds, String queryResultTimeUnit, int queryChunkSize,
+    int maxConnectionTimeoutSeconds,String username, String password, String queryResultTimeUnit,
+    int queryChunkSize,
     String schedulingPeriod,
     @NotNull String[] path)
     throws IOException {
@@ -623,7 +624,8 @@ public class NiFiClientService {
     String parentProcessGroupId = findProcessGroupId(path);
 
     return niFiClient.createExecuteInfluxDB(parentProcessGroupId, name, dbName, url,
-      maxConnectionTimeoutSeconds, queryResultTimeUnit, queryChunkSize, schedulingPeriod)
+      maxConnectionTimeoutSeconds, username, password, queryResultTimeUnit, queryChunkSize,
+      schedulingPeriod)
       .getId();
   }
 
@@ -644,12 +646,13 @@ public class NiFiClientService {
   public String updateExecuteInfluxDB(@NotNull String processorId,
     String name, @NotNull String dbName,
     @NotNull String url,
-    int maxConnectionTimeoutSeconds, String queryResultTimeUnit, int queryChunkSize,
+    int maxConnectionTimeoutSeconds, String username, String password, String queryResultTimeUnit,
+    int queryChunkSize,
     String schedulingPeriod)
     throws IOException {
 
     return niFiClient.updateExecuteInfluxDB(processorId, name, dbName, url,
-      maxConnectionTimeoutSeconds
+      maxConnectionTimeoutSeconds, username, password
       , queryResultTimeUnit, queryChunkSize, schedulingPeriod).getId();
   }
 
