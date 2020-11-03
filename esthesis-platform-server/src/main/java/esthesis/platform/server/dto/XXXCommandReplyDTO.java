@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class CommandReplyDTO extends BaseDTO {
+public class XXXCommandReplyDTO extends BaseDTO {
 
   private byte[] payload;
 

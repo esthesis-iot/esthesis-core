@@ -1,10 +1,10 @@
-package esthesis.device.runtime.mqtt.command;
+package esthesis.device.runtime.commands;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.common.config.AppConstants.MqttCommand;
-import esthesis.common.device.control.MqttCommandReplyPayload;
-import esthesis.common.device.control.MqttControlCommand;
+import esthesis.common.config.AppConstants.CommandReply;
+import esthesis.common.device.control.ControlCommandReply;
+import esthesis.common.device.control.ControlCommandRequest;
 import esthesis.device.runtime.config.AppConstants.Mqtt.EventType;
 import esthesis.device.runtime.mqtt.MqttClient;
 import lombok.extern.java.Log;
@@ -14,25 +14,26 @@ import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 
 @Service
 @Validated
 @Log
-public class MqttCommandExecute {
-
-  private final MqttCommandUtil mqttCommandUtil;
+public class ControlCommandExecute {
+  private final static String COMMAND_NAME = "EXECUTE";
+  private final ControlCommandUtil mqttCommandUtil;
   private final MqttClient mqttClient;
   private final ObjectMapper objectMapper;
 
-  public MqttCommandExecute(MqttCommandUtil mqttCommandUtil,
+  public ControlCommandExecute(ControlCommandUtil mqttCommandUtil,
     MqttClient mqttClient, ObjectMapper objectMapper) {
     this.mqttCommandUtil = mqttCommandUtil;
     this.mqttClient = mqttClient;
@@ -40,17 +41,16 @@ public class MqttCommandExecute {
   }
 
   @EventListener
-  public void receiveCommand(MqttControlCommand cmd) {
-    if (cmd.getCommand() != MqttCommand.EXECUTE || !mqttCommandUtil.isCommandSupported(cmd)) {
+  public void receiveCommand(ControlCommandRequest cmd) {
+    if (!cmd.getOperation().equals(COMMAND_NAME) || !mqttCommandUtil.isCommandEnabled(cmd)) {
       return;
     }
 
-    if (cmd.getCommandPayload() != null && cmd.getCommandPayload().length > 0) {
-      log.log(Level.FINE, "Processing command: {0}", cmd.getCommand());
+    if (StringUtils.isNotBlank(cmd.getArgs())) {
+      log.log(Level.FINE, "Processing command: {0}", cmd.getOperation());
 
       // Split the command to be executed.
-      String[] commandArray = new String(cmd.getCommandPayload(), StandardCharsets.UTF_8)
-        .split(" ");
+      String[] commandArray = cmd.getArgs().split(" ");
       CommandLine cmdLine = new CommandLine(commandArray[0]);
       if (commandArray.length > 1) {
         cmdLine.addArguments(ArrayUtils.remove(commandArray, 0));
@@ -73,15 +73,17 @@ public class MqttCommandExecute {
 
       // Send back the reply.
       try {
-        MqttCommandReplyPayload reply = new MqttCommandReplyPayload();
-        reply.setCommandId(cmd.getId());
-        reply.setPayload(outputStream.toByteArray());
+        ControlCommandReply reply = new ControlCommandReply();
+        reply.setCommandRequestId(cmd.getId());
+        reply.setPayload(new String(outputStream.toByteArray()));
+        reply.setPayloadType(MediaType.TEXT_PLAIN_VALUE);
+        reply.setPayloadEncoding(CommandReply.PAYLOAD_ENCODING_PLAIN);
         mqttClient.publish(EventType.CONTROL_REPLY, objectMapper.writeValueAsBytes(reply));
       } catch (JsonProcessingException e) {
         log.log(Level.SEVERE, "Could not publish command reply.", e);
       }
     } else {
-      log.log(Level.WARNING, "Received an {0} command with empty payload.", cmd.getCommand());
+      log.log(Level.WARNING, "Received an {0} command with empty payload.", cmd.getOperation());
     }
   }
 }

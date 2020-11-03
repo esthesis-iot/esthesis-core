@@ -19,8 +19,8 @@ import com.google.common.collect.Lists;
 import esthesis.common.device.RegistrationRequest;
 import esthesis.common.dto.DeviceMessage;
 import esthesis.common.util.Base64E;
-import esthesis.platform.server.config.AppConstants.DTOperations;
 import esthesis.platform.server.config.AppConstants.Device.State;
+import esthesis.platform.server.config.AppConstants.DigitalTwins.DTOperations;
 import esthesis.platform.server.config.AppConstants.NiFiQueryResults;
 import esthesis.platform.server.config.AppConstants.WebSocket.Topic;
 import esthesis.platform.server.config.AppProperties;
@@ -385,16 +385,16 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     return deviceDTO;
   }
 
-  public int countByHardwareIds(String hardwareIds) {
+  public int countByHardwareIds(List<String> hardwareIds) {
     return findByHardwareIds(hardwareIds).size();
   }
 
-  public List<DeviceDTO> findByHardwareIds(String hardwareIds) {
-    if (StringUtils.isBlank(hardwareIds)) {
+  public List<DeviceDTO> findByHardwareIds(List<String> hardwareIds) {
+    if (hardwareIds.isEmpty()) {
       return new ArrayList<>();
     } else {
       List<DeviceDTO> devices = new ArrayList<>();
-      for (String id : hardwareIds.split(",")) {
+      for (String id : hardwareIds) {
         id = id.trim();
         devices.addAll(deviceMapper.map(deviceRepository.findByHardwareIdContains(id)));
       }
@@ -402,17 +402,17 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     }
   }
 
-  public int countByTags(String tags) {
+  public int countByTags(List<String> tags) {
     return findByTags(tags).size();
   }
 
-  public List<DeviceDTO> findByTags(String tags) {
-    if (StringUtils.isBlank(tags)) {
+  public List<DeviceDTO> findByTags(List<String> tags) {
+    if (tags.isEmpty()) {
       return new ArrayList<>();
     } else {
       return deviceMapper.map(deviceRepository
         .findByTagsIn(
-          Lists.newArrayList(tagService.findAllByNameIn(Arrays.asList(tags.split(","))))));
+          Lists.newArrayList(tagService.findAllByNameIn(tags))));
     }
   }
 
@@ -445,9 +445,9 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
       .filter(DevicePageDTO::isShown)
       .map(field -> {
         final String fieldValue = dtService
-          .nifiProxy(deviceDTO.getHardwareId(), field.getDatatype().toLowerCase(),
-            DTOperations.OPERATION_QUERY.toLowerCase(), null, null,
-            field.getField(), field.getMeasurement(), 1, 1);
+          .executeMetadataOrTelemetry(field.getDatatype().toLowerCase(), deviceDTO.getHardwareId(),
+            DTOperations.OPERATION_QUERY.toLowerCase(), field.getMeasurement(), field.getField(),
+            null, null, 1, 1);
         try {
           Map<String, List<Map<String, Object>>> jsonFields =
             mapper.readValue(fieldValue, HashMap.class);

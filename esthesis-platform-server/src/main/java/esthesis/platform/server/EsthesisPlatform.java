@@ -1,6 +1,7 @@
 package esthesis.platform.server;
 
 import javax.annotation.PostConstruct;
+import lombok.extern.java.Log;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,8 +17,8 @@ import java.security.Security;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
+@Log
 @EnableAsync
 @EnableCaching
 @EnableScheduling
@@ -27,14 +28,11 @@ import java.util.logging.Logger;
 @EnableJpaRepositories({"esthesis", "com.eurodyn.qlack"})
 public class EsthesisPlatform {
 
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(EsthesisPlatform.class.getName());
-
   @PostConstruct
   void started() {
-    LOGGER.log(Level.INFO, "Timezone name  : {0}}", TimeZone.getDefault().getDisplayName());
-    LOGGER.log(Level.INFO, "Timezone ID    : {0}}", TimeZone.getDefault().getID());
-    LOGGER.log(Level.INFO, "Timezone offset: {0}} minutes",
+    log.log(Level.INFO, "Timezone name  : {0}}", TimeZone.getDefault().getDisplayName());
+    log.log(Level.INFO, "Timezone ID    : {0}}", TimeZone.getDefault().getID());
+    log.log(Level.INFO, "Timezone offset: {0}} minutes",
       TimeUnit.MILLISECONDS.toMinutes(TimeZone.getDefault().getRawOffset()));
   }
 

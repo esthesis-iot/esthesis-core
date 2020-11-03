@@ -1,6 +1,5 @@
 package esthesis.platform.server.dto;
 
-import esthesis.common.config.AppConstants;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,9 +10,10 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class CommandRequestDTO extends BaseDTO {
+public class XXXCommandRequestDTO extends BaseDTO {
+
   @NotNull
-  private AppConstants.MqttCommand command;
+  private String command;
 
   @NotNull
   private String description;

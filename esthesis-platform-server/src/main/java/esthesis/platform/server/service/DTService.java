@@ -1,21 +1,24 @@
 package esthesis.platform.server.service;
 
-import static esthesis.platform.server.config.AppConstants.DTOperations.OPERATION_COUNT;
-import static esthesis.platform.server.config.AppConstants.DTOperations.OPERATION_MAX;
-import static esthesis.platform.server.config.AppConstants.DTOperations.OPERATION_MEAN;
-import static esthesis.platform.server.config.AppConstants.DTOperations.OPERATION_MIN;
-import static esthesis.platform.server.config.AppConstants.DTOperations.OPERATION_QUERY;
-import static esthesis.platform.server.config.AppConstants.DTOperations.OPERATION_SUM;
-import static esthesis.platform.server.config.AppConstants.DTOperations.SUPPORTED_OPERATIONS;
+
+import static esthesis.platform.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_COUNT;
+import static esthesis.platform.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_MAX;
+import static esthesis.platform.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_MEAN;
+import static esthesis.platform.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_MIN;
+import static esthesis.platform.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_QUERY;
+import static esthesis.platform.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_SUM;
+import static esthesis.platform.server.config.AppConstants.DigitalTwins.DTOperations.SUPPORTED_OPERATIONS;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.common.exception.QMismatchException;
+import esthesis.common.device.control.ControlCommandRequest;
+import esthesis.platform.server.config.AppConstants.DigitalTwins.Type;
 import esthesis.platform.server.dto.NiFiDTO;
 import esthesis.platform.server.model.Device;
 import esthesis.platform.server.repository.DeviceRepository;
-import javax.validation.constraints.NotNull;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -45,12 +48,8 @@ public class DTService {
     this.niFiService = niFiService;
   }
 
-  public void aVoid() {
-
-  }
-
   /**
-   * Returns the list of devices registered
+   * Returns the list of devices registered after a specific date.
    */
   public List<String> getDevicesRegisteredAfter(Instant date) {
     return deviceRepository.findAllByCreatedOnAfter(date).stream()
@@ -58,33 +57,15 @@ public class DTService {
       .collect(Collectors.toList());
   }
 
-  /**
-   *
-   * @param hardwareId
-   * @param dataType
-   * @param operation
-   * @param from
-   * @param to
-   * @param fields
-   * @param measurement
-   * @param page A number >=1 indicating the starting page of the results.
-   * @param pageSize A number >=1 indicated the numer of results on each results page.
-   * @return
-   */
-  public String nifiProxy(@NotNull final String hardwareId, @NotNull final String dataType,
-    @NotNull final String operation, final Long from, final Long to,
-    final String fields, final String measurement, Integer page, final Integer pageSize) {
-
-    // TODO security checks
-    // ...
-
+  private void checkAllowedOperationForTelemetryAndMetadata(String operation) {
     // Check if requested operation exists; if not, throw an exception.
-    if (Arrays.stream(SUPPORTED_OPERATIONS).noneMatch(o -> o.equals(operation.toUpperCase()))) {
+    if (Arrays.stream(SUPPORTED_OPERATIONS)
+      .noneMatch(o -> o.equals(operation.toUpperCase()))) {
       throw new QDoesNotExistException("Operation {} is not supported", operation);
     }
+  }
 
-
-
+  private NiFiDTO getActiveNifi() {
     // Find the currently active NiFi instance.
     final NiFiDTO activeNiFi = niFiService.getActiveNiFi();
     if (activeNiFi == null) {
@@ -94,30 +75,39 @@ public class DTService {
         "The currently active NiFi instance is not configured with a Digital Twins URL.");
     }
 
-    // According to the operation requested, prepare the REST request to NiFi.
-    final UriComponentsBuilder request = UriComponentsBuilder
-      .fromHttpUrl(activeNiFi.getDtUrl())
-      .pathSegment("dt", hardwareId, dataType, operation);
+    return activeNiFi;
+  }
 
-    // Add common query parameters.
+  private void addMeasurement(UriComponentsBuilder request, String operation, String measurement) {
     if (StringUtils.isEmpty(measurement)) {
       throw new QDoesNotExistException(
         "Operation \"{0}\" needs a \"measurement\" parameter.", operation);
     } else {
       request.queryParam("measurement", measurement);
     }
+  }
+
+  public String executeMetadataOrTelemetry(String type, String hardwareId, String operation,
+    String measurement, String fields, Long from, Long to, Integer page, Integer pageSize) {
+    // TODO security checks
+    // ...
+
+    checkAllowedOperationForTelemetryAndMetadata(operation);
+    NiFiDTO niFiDTO = getActiveNifi();
+    final UriComponentsBuilder request = UriComponentsBuilder.fromHttpUrl(niFiDTO.getDtUrl());
+    addMeasurement(request, operation, measurement);
 
     // Add operation-specific parameters.
+    if (from != null) {
+      request.queryParam("from", from);
+    }
+    if (to != null) {
+      request.queryParam("to", to);
+    }
     switch (operation.toUpperCase()) {
       case OPERATION_QUERY:
         if (StringUtils.isNotEmpty(fields)) {
           request.queryParam("fields", fields);
-        }
-        if (from != null) {
-          request.queryParam("from", from);
-        }
-        if (to != null) {
-          request.queryParam("to", to);
         }
         if (page != null) {
           request.queryParam("page", page > 0 ? page - 1 : 0);
@@ -137,12 +127,6 @@ public class DTService {
           throw new QDoesNotExistException(
             "Operation \"{0}\" needs a \"fields\" parameter.", operation);
         }
-        if (from != null) {
-          request.queryParam("from", from);
-        }
-        if (to != null) {
-          request.queryParam("to", to);
-        }
         if (page != null && pageSize != null) {
           throw new QDoesNotExistException(
             "Operation \"{0}\" does not support a \"page\" or \"pageSize\"parameter.", operation);
@@ -152,9 +136,27 @@ public class DTService {
         throw new QDoesNotExistException(
           "Operation \"{0}\" is not supported.", operation);
     }
+    request.pathSegment("dt", hardwareId, type, operation);
 
-    log.finest(MessageFormat.format("Executing NiFi query: {0}", request.build().toUriString()));
-
+    log.finest(MessageFormat.format("Executing NiFi call: {0}", request.build().toUriString()));
     return restTemplate.getForEntity(request.build().toUri(), String.class).getBody();
   }
+
+  public String executeCommand(String hardwareId, String operation, String description, String args) {
+    // TODO security checks
+    // ...
+
+    NiFiDTO niFiDTO = getActiveNifi();
+    final UriComponentsBuilder request = UriComponentsBuilder.fromHttpUrl(niFiDTO.getDtUrl());
+    request.pathSegment("dt", hardwareId, Type.COMMAND, operation);
+    ControlCommandRequest body = new ControlCommandRequest();
+    body.setDescription(description);
+    body.setCreatedBy(
+      SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+    body.setArgs(args);
+
+    log.finest(MessageFormat.format("Executing NiFi call: {0}", request.build().toUriString()));
+    return restTemplate.postForEntity(request.build().toUri(), body, String.class).getBody();
+  }
+
 }

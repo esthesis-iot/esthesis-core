@@ -42,6 +42,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 import java.util.List;
 
 @Validated
@@ -161,13 +162,13 @@ public class DevicesResource {
     if (StringUtils.isBlank(hardwareIds)) {
       return 0;
     } else {
-      return deviceService.countByHardwareIds(hardwareIds);
+      return deviceService.countByHardwareIds(Arrays.asList(hardwareIds.split(",")));
     }
   }
 
   @GetMapping(path = "count/by-tags", produces = MediaType.APPLICATION_JSON_VALUE)
   public int countByTags(@RequestParam String tags) {
-    return deviceService.countByTags(tags);
+    return deviceService.countByTags(Arrays.asList(tags.split(",")));
   }
 
 }

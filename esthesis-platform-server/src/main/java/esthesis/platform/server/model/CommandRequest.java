@@ -1,6 +1,5 @@
 package esthesis.platform.server.model;
 
-import esthesis.common.config.AppConstants;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
@@ -28,7 +27,9 @@ import org.hibernate.annotations.DynamicUpdate;
 public class CommandRequest extends BaseEntity {
 
   @NotNull
-  private AppConstants.MqttCommand command;
+  private String operation;
+
+  private String ags;
 
   private String description;
 

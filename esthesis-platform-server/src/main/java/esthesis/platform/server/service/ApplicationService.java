@@ -30,6 +30,7 @@ public class ApplicationService extends BaseService<ApplicationDTO, Application>
   private final UserService userService;
   private final ApplicationMapper applicationMapper;
   private final ApplicationRepository applicationRepository;
+  public static final String APPLICATION_PREFIX = "Application ";
 
   public ApplicationService(AuditService auditService,
     UserService userService, ApplicationMapper applicationMapper,
@@ -50,7 +51,7 @@ public class ApplicationService extends BaseService<ApplicationDTO, Application>
     if (applicationDTO.getId() == null) {
       auditLevel = CREATE;
       auditCorrelationId = UUID.randomUUID().toString();
-      String username = "application_" + applicationDTO.getName();
+      String username = APPLICATION_PREFIX + applicationDTO.getName();
       String userId = userService.createUser(new UserDTO()
         .setUsername(username)
         .setStatus(Status.APP_USER)

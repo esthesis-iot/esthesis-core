@@ -121,29 +121,32 @@ public class AppConstants {
 
   }
 
-  public class Http {
+  //  public class Http {
+  //
+  //    public static final String AUTHORIZATION = "Authorization";
+  //  }
 
-    public static final String AUTHORIZATION = "Authorization";
-  }
+  public static class DigitalTwins {
 
-  // The list of available device data types.
-  public static class DataType {
+    public static class Type {
 
-    public static final String TELEMETRY = "TELEMETRY";
-    public static final String METADATA = "METADATA";
-  }
+      public static final String TELEMETRY = "telemetry";
+      public static final String METADATA = "metadata";
+      public static final String COMMAND = "command";
+    }
 
-  // The list of Digital Twins supported operations.
-  public static class DTOperations {
+    public static class DTOperations {
 
-    public static final String OPERATION_QUERY = "QUERY";
-    public static final String OPERATION_MIN = "MIN";
-    public static final String OPERATION_MAX = "MAX";
-    public static final String OPERATION_COUNT = "COUNT";
-    public static final String OPERATION_MEAN = "MEAN";
-    public static final String OPERATION_SUM = "SUM";
-    public static final String[] SUPPORTED_OPERATIONS = {OPERATION_COUNT, OPERATION_MAX, OPERATION_MEAN,
-      OPERATION_MIN, OPERATION_QUERY, OPERATION_SUM};
+      public static final String OPERATION_QUERY = "QUERY";
+      public static final String OPERATION_MIN = "MIN";
+      public static final String OPERATION_MAX = "MAX";
+      public static final String OPERATION_COUNT = "COUNT";
+      public static final String OPERATION_MEAN = "MEAN";
+      public static final String OPERATION_SUM = "SUM";
+      public static final String[] SUPPORTED_OPERATIONS = {OPERATION_COUNT, OPERATION_MAX,
+        OPERATION_MEAN,
+        OPERATION_MIN, OPERATION_QUERY, OPERATION_SUM};
+    }
   }
 
   public static class NiFiQueryResults {

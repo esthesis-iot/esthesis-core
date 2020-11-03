@@ -1,9 +1,7 @@
 package esthesis.platform.server.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.platform.server.dto.CommandReplyDTO;
 import esthesis.platform.server.mapper.CommandReplyMapper;
-import esthesis.platform.server.model.CommandReply;
 import esthesis.platform.server.repository.CommandReplyRepository;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
@@ -14,7 +12,8 @@ import org.springframework.validation.annotation.Validated;
 @Service
 @Validated
 @Transactional
-public class CommandReplyService extends BaseService<CommandReplyDTO, CommandReply> {
+//public class CommandReplyService extends BaseService<CommandReplyDTO, CommandReply> {
+public class CommandReplyService {
 
   private final ObjectMapper objectMapper;
   private final CommandReplyRepository commandReplyRepository;
@@ -44,8 +43,8 @@ public class CommandReplyService extends BaseService<CommandReplyDTO, CommandRep
 //      log.log(Level.SEVERE, "Could not process command reply.", e);
 //    }
 //  }
-
-  public CommandReplyDTO findByCommandRequestId(long commandRequestId) {
-    return commandReplyMapper.map(commandReplyRepository.findByCommandRequestId(commandRequestId));
-  }
+//
+//  public CommandReplyDTO findByCommandRequestId(long commandRequestId) {
+//    return commandReplyMapper.map(commandReplyRepository.findByCommandRequestId(commandRequestId));
+//  }
 }
