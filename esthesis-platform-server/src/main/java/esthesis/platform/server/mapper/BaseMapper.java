@@ -1,7 +1,7 @@
 package esthesis.platform.server.mapper;
 
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
-import esthesis.platform.server.dto.BaseDTO;
+import esthesis.common.device.dto.BaseDTO;
 import esthesis.platform.server.model.BaseEntity;
 import esthesis.platform.server.repository.BaseRepository;
 import org.mapstruct.Mapping;

@@ -33,7 +33,7 @@ import esthesis.platform.server.config.AppSettings.SettingValues.Security.Incomi
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingEncryption;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingSignature;
 import esthesis.platform.server.dto.DTDeviceDTO;
-import esthesis.platform.server.dto.DeviceDTO;
+import esthesis.common.device.dto.DeviceDTO;
 import esthesis.platform.server.dto.DeviceKeyDTO;
 import esthesis.platform.server.dto.DevicePageDTO;
 import esthesis.platform.server.dto.DeviceRegistrationDTO;

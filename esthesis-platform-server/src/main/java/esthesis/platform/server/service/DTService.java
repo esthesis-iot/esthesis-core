@@ -11,7 +11,7 @@ import static esthesis.platform.server.config.AppConstants.DigitalTwins.DTOperat
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.common.exception.QMismatchException;
-import esthesis.common.device.control.ControlCommandRequest;
+import esthesis.common.device.commands.CommandRequestDTO;
 import esthesis.platform.server.config.AppConstants.DigitalTwins.Type;
 import esthesis.platform.server.dto.NiFiDTO;
 import esthesis.platform.server.model.Device;
@@ -149,7 +149,7 @@ public class DTService {
     NiFiDTO niFiDTO = getActiveNifi();
     final UriComponentsBuilder request = UriComponentsBuilder.fromHttpUrl(niFiDTO.getDtUrl());
     request.pathSegment("dt", hardwareId, Type.COMMAND, operation);
-    ControlCommandRequest body = new ControlCommandRequest();
+    CommandRequestDTO body = new CommandRequestDTO();
     body.setDescription(description);
     body.setCreatedBy(
       SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());

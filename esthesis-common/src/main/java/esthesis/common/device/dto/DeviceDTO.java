@@ -1,4 +1,4 @@
-package esthesis.platform.server.dto;
+package esthesis.common.device.dto;
 
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
 package esthesis.platform.server.config;
 
-import com.eurodyn.qlack.common.exception.QAuthenticationException;
+import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.aaa.dto.UserDTO;
 import com.eurodyn.qlack.fuse.aaa.service.UserService;
 import esthesis.platform.server.dto.ApplicationDTO;
@@ -10,7 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -22,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 
 @Log
 @Component
@@ -46,22 +46,20 @@ public class DTSecurityFilter extends GenericFilterBean {
     String authHeader =
       ((HttpServletRequest) request).getHeader(X_HEADER_NAME);
     if (StringUtils.isNotEmpty(authHeader)) {
-      final ApplicationDTO application = applicationService.findByToken(authHeader);
-      if (application != null) {
-        final UserDTO user = userService.getUserById(application.getUserId());
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-          user.getId(), authHeader, null);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+      try {
+        final ApplicationDTO application = applicationService.findByToken(authHeader);
+        if (application != null) {
+          final UserDTO user = userService.getUserById(application.getUserId());
+          Authentication authentication = new UsernamePasswordAuthenticationToken(
+            user.getId(), authHeader, null);
+          SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+      } catch (QDoesNotExistException e) {
+        log.warning(MessageFormat.format("Did not find a Digital Twin registration for key {0}.", authHeader));
       }
     }
 
-    if (SecurityContextHolder.getContext().getAuthentication() != null) {
-      filterChain.doFilter(request, response);
-    } else {
-      ((HttpServletResponse)response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      throw new QAuthenticationException(
-        "You have no permission to access the Digital Twin interface.");
-    }
+    filterChain.doFilter(request, response);
   }
 
   @Bean(name = "DTSecurityFilterRegistrationBean")

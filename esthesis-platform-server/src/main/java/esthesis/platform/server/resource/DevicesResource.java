@@ -8,7 +8,7 @@ import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.github.slugify.Slugify;
 import com.querydsl.core.types.Predicate;
 import esthesis.common.util.Base64E;
-import esthesis.platform.server.dto.DeviceDTO;
+import esthesis.common.device.dto.DeviceDTO;
 import esthesis.platform.server.dto.DeviceKeyDTO;
 import esthesis.platform.server.dto.DevicePageDTO;
 import esthesis.platform.server.dto.DeviceRegistrationDTO;

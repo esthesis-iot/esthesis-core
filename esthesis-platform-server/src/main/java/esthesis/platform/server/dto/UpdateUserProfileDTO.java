@@ -1,6 +1,7 @@
 package esthesis.platform.server.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import esthesis.common.device.dto.BaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

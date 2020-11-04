@@ -6,7 +6,7 @@ import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryPrivateKeyDTO;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoSSLService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.common.device.control.ControlCommandRequest;
+import esthesis.common.device.commands.CommandRequestDTO;
 import esthesis.device.runtime.config.AppConstants.Mqtt;
 import esthesis.device.runtime.config.AppProperties;
 import esthesis.device.runtime.util.SecurityUtil;
@@ -90,7 +90,7 @@ public class MqttClient {
       try {
         log.log(Level.FINEST, "Received command: {0}", message);
         applicationEventPublisher
-          .publishEvent(objectMapper.readValue(message.getPayload(), ControlCommandRequest.class));
+          .publishEvent(objectMapper.readValue(message.getPayload(), CommandRequestDTO.class));
       } catch (Exception e) { // Catch any exception to not break client's connection.
         log.log(Level.SEVERE, "Could not parse received command.", e);
       }

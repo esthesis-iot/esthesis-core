@@ -2,7 +2,7 @@ package esthesis.platform.server.service;
 
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.querydsl.core.types.Predicate;
-import esthesis.platform.server.dto.BaseDTO;
+import esthesis.common.device.dto.BaseDTO;
 import esthesis.platform.server.mapper.BaseMapper;
 import esthesis.platform.server.model.BaseEntity;
 import esthesis.platform.server.repository.BaseRepository;

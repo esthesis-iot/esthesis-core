@@ -1,6 +1,6 @@
 package esthesis.platform.server.dto.nifisinks;
 
-import esthesis.platform.server.dto.BaseDTO;
+import esthesis.common.device.dto.BaseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

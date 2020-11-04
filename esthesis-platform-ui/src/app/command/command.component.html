@@ -1,11 +1,11 @@
 <mat-card>
-  <mat-card-title>Control</mat-card-title>
+  <mat-card-title>Command</mat-card-title>
   <mat-card-content>
     <div fxLayout="column">
       <!-- Filter -->
       <div [formGroup]="filterForm" fxFlex="row" fxLayoutGap="10px">
         <mat-form-field>
-          <input matInput placeholder="Command" formControlName="command">
+          <input matInput placeholder="Command" formControlName="operation">
         </mat-form-field>
         <button mat-button (click)="clearFilter()">CLEAR</button>
       </div>
@@ -20,7 +20,7 @@
 
         <ng-container matColumnDef="command">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Command</th>
-          <td mat-cell *matCellDef="let element">{{element.command}}</td>
+          <td mat-cell *matCellDef="let element">{{element.operation}}</td>
         </ng-container>
         <ng-container matColumnDef="description">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Description</th>
@@ -28,7 +28,7 @@
         </ng-container>
         <ng-container matColumnDef="hardwareId">
           <th mat-header-cell *matHeaderCellDef> Device ID</th>
-          <td mat-cell *matCellDef="let element">{{element.hardwareId}}</td>
+          <td mat-cell *matCellDef="let element">{{element.deviceHardwareId}}</td>
         </ng-container>
         <ng-container matColumnDef="createdOn">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Created On</th>

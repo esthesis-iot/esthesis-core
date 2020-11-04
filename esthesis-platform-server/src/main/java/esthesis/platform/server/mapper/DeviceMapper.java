@@ -1,6 +1,6 @@
 package esthesis.platform.server.mapper;
 
-import esthesis.platform.server.dto.DeviceDTO;
+import esthesis.common.device.dto.DeviceDTO;
 import esthesis.platform.server.model.Device;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;

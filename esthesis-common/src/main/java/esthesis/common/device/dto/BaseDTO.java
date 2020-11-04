@@ -1,4 +1,4 @@
-package esthesis.platform.server.dto;
+package esthesis.common.device.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;

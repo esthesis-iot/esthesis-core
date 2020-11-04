@@ -1,11 +1,8 @@
 package esthesis.platform.server.dto;
 
+import esthesis.common.device.dto.DeviceDTO;
 import lombok.*;
 import lombok.experimental.Accessors;
-
-import javax.validation.constraints.NotNull;
-import java.time.Instant;
-import java.util.List;
 
 @Data
 @Accessors(chain = true)

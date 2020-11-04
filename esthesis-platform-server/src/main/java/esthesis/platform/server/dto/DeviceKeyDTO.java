@@ -1,5 +1,6 @@
 package esthesis.platform.server.dto;
 
+import esthesis.common.device.dto.BaseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,7 +12,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper=false)
-public class DeviceKeyDTO extends BaseDTO  {
+public class DeviceKeyDTO extends BaseDTO {
   private String publicKey;
   private String privateKey;
   private String sessionKey;

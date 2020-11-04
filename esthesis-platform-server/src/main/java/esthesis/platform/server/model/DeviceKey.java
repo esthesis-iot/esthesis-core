@@ -4,9 +4,10 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -15,7 +16,8 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.Instant;
 
-@Data
+@Getter
+@Setter
 @Entity
 @DynamicUpdate
 @DynamicInsert

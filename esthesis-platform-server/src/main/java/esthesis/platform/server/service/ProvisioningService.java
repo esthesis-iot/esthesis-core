@@ -5,7 +5,7 @@ import com.querydsl.core.types.Predicate;
 import esthesis.common.util.Base64E;
 import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting;
-import esthesis.platform.server.dto.DeviceDTO;
+import esthesis.common.device.dto.DeviceDTO;
 import esthesis.platform.server.dto.ProvisioningDTO;
 import esthesis.platform.server.mapper.ProvisioningMapper;
 import esthesis.platform.server.model.Provisioning;

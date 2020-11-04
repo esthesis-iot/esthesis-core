@@ -3,7 +3,7 @@ package esthesis.platform.server.resource;
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyFilter;
-import esthesis.common.device.control.ControlCommandRequest;
+import esthesis.common.device.commands.CommandRequestDTO;
 import esthesis.platform.server.config.AppConstants.DigitalTwins.Type;
 import esthesis.platform.server.dto.DTDeviceDTO;
 import esthesis.platform.server.model.Device;
@@ -43,12 +43,11 @@ public class DTResource {
     this.deviceService = deviceService;
   }
 
-
   @PostMapping(path = {"/{hardwareId}/" + Type.COMMAND + "/request/{operation}"})
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not execute command.")
   public String executeCommand(@NotNull @PathVariable final String hardwareId,
     @NotNull @PathVariable final String operation,
-    @RequestBody ControlCommandRequest controlCommandRequest) {
+    @RequestBody CommandRequestDTO controlCommandRequest) {
     return dtService.executeCommand(hardwareId, operation, controlCommandRequest.getDescription(),
       controlCommandRequest.getArgs());
   }

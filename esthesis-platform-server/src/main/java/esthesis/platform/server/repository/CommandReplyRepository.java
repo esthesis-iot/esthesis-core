@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommandReplyRepository extends BaseRepository<CommandReply> {
-  CommandReply findByCommandRequestId(long commandRequest);
+  CommandReply findByCommandRequestId(long commandRequestId);
 }

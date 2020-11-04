@@ -1,7 +1,7 @@
 package esthesis.platform.server.service;
 
-import esthesis.common.device.control.ControlCommandRequest;
-import esthesis.platform.server.dto.DeviceDTO;
+import esthesis.common.device.commands.CommandRequestDTO;
+import esthesis.common.device.dto.DeviceDTO;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +20,7 @@ public class ControlService {
   }
 
   @Async
-  public void execute(ControlCommandRequest cmd, List<String> hardwareIds, List<String> tags) {
+  public void execute(CommandRequestDTO cmd, List<String> hardwareIds, List<String> tags) {
     // Find the devices to dispatch the command to.
     List<DeviceDTO> devices = deviceService.findByHardwareIds(hardwareIds);
     devices.addAll(deviceService.findByTags(tags));

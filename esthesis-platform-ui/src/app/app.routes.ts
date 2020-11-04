@@ -86,8 +86,8 @@ export const routing: ModuleWithProviders = RouterModule.forRoot([
       loadChildren: () => import('./nifisinks/nifisink.module').then(m => m.NifisinkModule)
     },
     {
-      path: 'control',
-      loadChildren: () => import('./control/control.module').then(m => m.ControlModule)
+      path: 'command',
+      loadChildren: () => import('./command/command.module').then(m => m.CommandModule)
     },
     {
       path: 'about',

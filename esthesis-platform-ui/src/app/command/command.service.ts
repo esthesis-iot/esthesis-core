@@ -10,15 +10,15 @@ import {CommandReplyDto} from '../dto/command-reply-dto';
 @Injectable({
   providedIn: 'root'
 })
-export class ControlService extends CrudService<CommandRequestDto> {
-  private resource = `control`;
+export class CommandService extends CrudService<CommandRequestDto> {
+  private resource = `command`;
 
   constructor(http: HttpClient, qForms: QFormsService) {
-    super(http, 'control', qForms);
+    super(http, 'command', qForms);
   }
 
-  getReply(replyId: number): Observable<CommandReplyDto> {
+  getReply(requestId: number): Observable<CommandReplyDto> {
     return this.http.get<CommandReplyDto>(
-      AppConstants.API_ROOT + `/${this.resource}` + `/reply?id=${replyId}`);
+      AppConstants.API_ROOT + `/${this.resource}` + `/reply?requestId=${requestId}`);
   }
 }

@@ -3,8 +3,8 @@ package esthesis.device.runtime.commands;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.common.config.AppConstants.CommandReply;
-import esthesis.common.device.control.ControlCommandReply;
-import esthesis.common.device.control.ControlCommandRequest;
+import esthesis.common.device.commands.CommandReplyDTO;
+import esthesis.common.device.commands.CommandRequestDTO;
 import esthesis.device.runtime.config.AppConstants.Mqtt.EventType;
 import esthesis.device.runtime.config.AppProperties;
 import esthesis.device.runtime.mqtt.MqttClient;
@@ -37,14 +37,14 @@ public class ControlCommandReboot {
   }
 
   @EventListener
-  public void receiveCommand(ControlCommandRequest cmd) throws IOException {
+  public void receiveCommand(CommandRequestDTO cmd) throws IOException {
     if (!cmd.getOperation().equals(COMMAND_NAME) || !mqttCommandUtil.isCommandEnabled(cmd)) {
       return;
     }
     log.log(Level.FINE, "Processing command: {0}", cmd.getOperation());
 
     try {
-      ControlCommandReply reply = new ControlCommandReply();
+      CommandReplyDTO reply = new CommandReplyDTO();
       reply.setCommandRequestId(cmd.getId());
       reply.setPayload((COMMAND_NAME + " received."));
       reply.setPayloadType(MediaType.TEXT_PLAIN_VALUE);

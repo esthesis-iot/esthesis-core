@@ -1,10 +1,8 @@
 import {BaseDto} from './base-dto';
 
 export class CommandRequestDto extends BaseDto {
-  command: string;
+  operation: string;
   description: string;
-  hardwareId: string;
+  deviceHardwareId: string;
   id: number;
-  device: number;
-
 }

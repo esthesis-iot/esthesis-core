@@ -13,7 +13,7 @@ import esthesis.platform.server.config.AppSettings.SettingValues.Security.Incomi
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingSignature;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingEncryption;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingSignature;
-import esthesis.platform.server.dto.DeviceDTO;
+import esthesis.common.device.dto.DeviceDTO;
 import esthesis.platform.server.repository.CertificateRepository;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.commons.lang3.StringUtils;

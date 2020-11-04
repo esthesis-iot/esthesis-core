@@ -1,6 +1,6 @@
 package esthesis.device.runtime.commands;
 
-import esthesis.common.device.control.ControlCommandRequest;
+import esthesis.common.device.commands.CommandRequestDTO;
 import esthesis.device.runtime.config.AppProperties;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ public class ControlCommandUtil {
     this.appProperties = appProperties;
   }
 
-  public boolean isCommandEnabled(ControlCommandRequest mqttControlCommand) {
+  public boolean isCommandEnabled(CommandRequestDTO mqttControlCommand) {
     return Arrays.asList(appProperties.getSupportedCommands().split(","))
       .contains(mqttControlCommand.getOperation());
   }

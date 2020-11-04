@@ -1,33 +1,31 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ControlComponent } from './control.component';
-import {ControlRoutingModule} from './control-routing.module';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSelectModule} from '@angular/material/select';
+import {MatSortModule} from '@angular/material/sort';
+import {MatTableModule} from '@angular/material/table';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {ReactiveFormsModule} from '@angular/forms';
-import {DisplayModule} from '../shared/component/display/display.module';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {QFormsModule} from '@eurodyn/forms';
 import {MomentModule} from 'ngx-moment';
 import {MatMomentDateModule, MomentDateAdapter} from '@angular/material-moment-adapter';
-import {AuditRoutingModule} from '../audit/audit-routing.module';
 import {CommandsModule} from '../shared/component/commands/commands.module';
+import {CommandRoutingModule} from './command-routing.module';
+import {CommandComponent} from './command.component';
 
 @NgModule({
-  declarations: [ControlComponent],
+  declarations: [CommandComponent],
   imports: [
     CommonModule,
-    ControlRoutingModule,
+    CommandRoutingModule,
     FlexLayoutModule,
     MatButtonModule,
     MatCardModule,
@@ -68,4 +66,5 @@ import {CommandsModule} from '../shared/component/commands/commands.module';
     }
   ]
 })
-export class ControlModule { }
+export class CommandModule {
+}

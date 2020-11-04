@@ -12,7 +12,7 @@ import esthesis.platform.server.config.AppProperties;
 import esthesis.platform.server.config.AppSettings.Setting.DeviceRegistration;
 import esthesis.platform.server.config.AppSettings.Setting.Provisioning;
 import esthesis.platform.server.config.AppSettings.SettingValues.Provisioning.Encryption;
-import esthesis.platform.server.dto.DeviceDTO;
+import esthesis.common.device.dto.DeviceDTO;
 import esthesis.platform.server.dto.MQTTServerDTO;
 import esthesis.platform.server.dto.ProvisioningDTO;
 import javax.crypto.NoSuchPaddingException;

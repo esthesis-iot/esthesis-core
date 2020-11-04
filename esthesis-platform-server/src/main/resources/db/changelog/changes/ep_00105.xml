@@ -1,0 +1,15 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" logicalFilePath="ep_00105.xml">
+    <changeSet author="European Dynamics" id="1604503218212-1">
+        <dropForeignKeyConstraint baseTableName="command_reply" constraintName="command_reply_command_request_request_id_fk"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1604503218212-2">
+        <dropUniqueConstraint constraintName="command_request_request_id_uindex" tableName="command_request"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1604503218212-3">
+        <dropColumn columnName="command_request_id" tableName="command_reply"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1604503218212-4">
+        <dropColumn columnName="request_id" tableName="command_request"/>
+    </changeSet>
+</databaseChangeLog>

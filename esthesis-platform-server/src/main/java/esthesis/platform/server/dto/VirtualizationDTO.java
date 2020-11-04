@@ -1,5 +1,6 @@
 package esthesis.platform.server.dto;
 
+import esthesis.common.device.dto.BaseDTO;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class VirtualizationDTO extends BaseDTO  {
+public class VirtualizationDTO extends BaseDTO {
   @NotNull
   private String name;
 

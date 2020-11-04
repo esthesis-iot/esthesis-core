@@ -30,6 +30,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Device extends BaseEntity {
+
   private String hardwareId;
 
   //TODO Why a String?
@@ -42,7 +43,7 @@ public class Device extends BaseEntity {
   private List<Tag> tags;
 
   @Singular
-  @OneToMany(mappedBy="device", fetch = FetchType.LAZY, orphanRemoval = true)
+  @OneToMany(mappedBy = "device", fetch = FetchType.LAZY, orphanRemoval = true)
   private List<DeviceKey> keys;
 
   private Instant lastSeen;

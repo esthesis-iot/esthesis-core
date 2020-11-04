@@ -28,12 +28,9 @@ public class CommandReply extends BaseEntity {
 
   @Lob
   @Basic(fetch = FetchType.LAZY)
-  private byte[] payload;
-
+  private String payload;
   @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
-  private CommandRequest commandRequestId;
-
+  private CommandRequest commandRequest;
   private String payloadType;
-
   private String payloadEncoding;
 }
