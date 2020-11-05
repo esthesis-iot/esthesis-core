@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
@@ -17,12 +17,13 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import {QFormsModule} from '@eurodyn/forms';
 import {MomentModule} from 'ngx-moment';
 import {MatMomentDateModule, MomentDateAdapter} from '@angular/material-moment-adapter';
-import {CommandsModule} from '../shared/component/commands/commands.module';
 import {CommandRoutingModule} from './command-routing.module';
 import {CommandComponent} from './command.component';
+import {CommandCreateComponent} from './command-create.component';
+import {MatStepperModule} from '@angular/material/stepper';
 
 @NgModule({
-  declarations: [CommandComponent],
+  declarations: [CommandComponent, CommandCreateComponent],
   imports: [
     CommonModule,
     CommandRoutingModule,
@@ -41,8 +42,8 @@ import {CommandComponent} from './command.component';
     MatIconModule,
     MomentModule,
     MatMomentDateModule,
-    CommandsModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatStepperModule
   ],
   providers: [
     {
@@ -64,7 +65,8 @@ import {CommandComponent} from './command.component';
         },
       }
     }
-  ]
+  ],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class CommandModule {
 }

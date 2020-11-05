@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {AppConstants} from '../../../app.constants';
+import {AppConstants} from '../app.constants';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CommandService {
+export class CommandCreateService {
 
   constructor(private http: HttpClient) {
   }
@@ -21,11 +21,13 @@ export class CommandService {
       {params: new HttpParams().set('tags', tags)});
   }
 
-  findCommands(): Observable<string[]> {
-    return this.http.get<string[]>(`${AppConstants.API_ROOT}/control/commands`);
-  }
-
   execute(data: any): Observable<any> {
-    return this.http.post<string[]>(`${AppConstants.API_ROOT}/control/execute`, data);
+    return this.http.post<string[]>(`${AppConstants.API_ROOT}/command/execute`, {
+      command: data.command,
+      arguments: data.arguments,
+      description: data.description,
+      tags: data.tags,
+      hardwareIds: data.hardwareIds
+    });
   }
 }

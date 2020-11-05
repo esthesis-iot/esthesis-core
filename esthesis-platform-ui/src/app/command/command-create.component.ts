@@ -1,26 +1,26 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {BaseComponent} from '../shared/component/base-component';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {BaseComponent} from '../base-component';
-import {CommandService} from './command.service';
+import {UtilityService} from '../shared/service/utility.service';
+import {Router} from '@angular/router';
+import {MatDialogRef} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
+import {CommandCreateService} from './command-create.service';
 import 'rxjs-compat/add/observable/forkJoin';
-import {UtilityService} from '../../service/utility.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-command',
-  templateUrl: './command.component.html',
-  styleUrls: ['./command.component.scss']
+  selector: 'app-command-create',
+  templateUrl: './command-create.component.html',
+  styleUrls: ['./command-create.component.scss']
 })
-export class CommandComponent extends BaseComponent implements OnInit, OnDestroy {
+export class CommandCreateComponent extends BaseComponent implements OnInit, OnDestroy {
   searchDevicesForm: FormGroup;
   commandForm: FormGroup;
   commands: string[];
 
-  constructor(private formBuilder: FormBuilder, private commandService: CommandService,
+  constructor(private formBuilder: FormBuilder, private commandCreateService: CommandCreateService,
               private utilityService: UtilityService, private router: Router,
-              public selfDialogRef: MatDialogRef<CommandComponent>) {
+              public selfDialogRef: MatDialogRef<CommandCreateComponent>) {
     super();
   }
 
@@ -45,8 +45,8 @@ export class CommandComponent extends BaseComponent implements OnInit, OnDestroy
     // Watch changes on the hardware / tags.
     this.searchDevicesForm.valueChanges.debounceTime(500).subscribe(onNext => {
       Observable.forkJoin([
-        this.commandService.findDevicesByHardwareIds(onNext['hardwareIds']),
-        this.commandService.findDevicesByTags(onNext['tags'])]).subscribe(results => {
+        this.commandCreateService.findDevicesByHardwareIds(onNext['hardwareIds']),
+        this.commandCreateService.findDevicesByTags(onNext['tags'])]).subscribe(results => {
         this.searchDevicesForm.patchValue({
           devicesMatchedByHardwareIds: results[0],
           devicesMatchedByTags: results[1],
@@ -54,20 +54,15 @@ export class CommandComponent extends BaseComponent implements OnInit, OnDestroy
         }, {emitEvent: false});
       });
     });
-
-    // Fetch available commands.
-    this.commandService.findCommands().subscribe(onNext => {
-      // this.commands = onNext.map(value => _.startCase(value));
-      this.commands = onNext;
-    });
   }
 
   execute() {
-    this.commandService.execute(
+    this.commandCreateService.execute(
       {...this.searchDevicesForm.getRawValue(), ...this.commandForm.getRawValue()}).subscribe(
-      onNext => {
-        this.utilityService.popupSuccess("Command dispatched successfully.");
-        // this.router.navigate(['control']);
+      () => {
+        this.utilityService.popupSuccess('Command dispatched successfully.');
+        this.close();
+        this.router.navigate(['command']);
       });
   }
 

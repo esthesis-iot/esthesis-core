@@ -9,10 +9,10 @@ import {QFormsService} from '@eurodyn/forms';
 import {BaseComponent} from '../shared/component/base-component';
 import {CommandRequestDto} from '../dto/command-request-dto';
 import 'rxjs/add/operator/debounceTime';
-import {CommandPopupService} from '../shared/component/commands/command-popup.service';
 import {TextModalComponent} from '../shared/component/display/text-modal/text-modal.component';
 import {CommandService} from './command.service';
 import {CommandReplyDto} from '../dto/command-reply-dto';
+import {CommandCreateComponent} from './command-create.component';
 
 @Component({
   selector: 'app-command',
@@ -30,7 +30,7 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
 
   constructor(private fb: FormBuilder, private router: Router,
               private commandService: CommandService, private dialog: MatDialog,
-              private qForms: QFormsService, private commandPopupService: CommandPopupService) {
+              private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
       operation: ['', null],
@@ -87,7 +87,13 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   }
 
   create() {
-    this.commandPopupService.commandPopup();
+    const dialogRef = this.dialog.open(CommandCreateComponent, {
+      height: '70%',
+      width: '80%',
+      data: {
+        // wsId: wsId
+      }
+    });
   }
 
   download(replyId: number) {

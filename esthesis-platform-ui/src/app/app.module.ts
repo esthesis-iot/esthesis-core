@@ -28,8 +28,6 @@ import {ForgotPasswordComponent} from './auth/forgot-password.component';
 import {LoginComponent} from './auth/login.component';
 import {LogoutComponent} from './auth/logout.component';
 import {NewPasswordComponent} from './auth/new-password.component';
-import {CommandComponent} from './shared/component/commands/command.component';
-import {CommandsModule} from './shared/component/commands/commands.module';
 import {DisplayModule} from './shared/component/display/display.module';
 import {OkCancelModalComponent} from './shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {TextModalComponent} from './shared/component/display/text-modal/text-modal.component';
@@ -53,7 +51,7 @@ export function getJwtToken(): string {
     NewPasswordComponent,
     ForgotPasswordComponent
   ],
-  entryComponents: [OkCancelModalComponent, CommandComponent, TextModalComponent],
+  entryComponents: [OkCancelModalComponent, TextModalComponent],
   imports: [
     BrowserModule,
     FlexLayoutModule,
@@ -77,7 +75,6 @@ export function getJwtToken(): string {
     MatSnackBarModule,
     MatInputModule,
     MatButtonModule,
-    CommandsModule,
     DisplayModule,
     NgProgressModule.withConfig({
       color: '#50A7D7',
