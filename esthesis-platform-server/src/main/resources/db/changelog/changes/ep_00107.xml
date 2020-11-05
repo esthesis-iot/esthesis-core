@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" logicalFilePath="ep_00107.xml">
+    <changeSet author="European Dynamics" id="1604575546952-1">
+        <dropForeignKeyConstraint baseTableName="virtualization" constraintName="FK_virt_cert_id"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1604575546952-2">
+        <dropForeignKeyConstraint baseTableName="virtualization_tags" constraintName="fk_virt_tagid"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1604575546952-3">
+        <dropForeignKeyConstraint baseTableName="virtualization_tags" constraintName="fk_virt_virtid"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1604575546952-4">
+        <dropTable tableName="tunnel_server"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1604575546952-5">
+        <dropTable tableName="virtualization"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1604575546952-6">
+        <dropTable tableName="virtualization_tags"/>
+    </changeSet>
+    <changeSet author="European Dynamics" id="1604575546952-7">
+        <dropTable tableName="zookeeper_server"/>
+    </changeSet>
+</databaseChangeLog>
