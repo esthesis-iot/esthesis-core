@@ -11,13 +11,11 @@ import java.util.List;
 public class InfrastructureService {
 
   private final AppProperties appProperties;
-  private final ZookeeperService zookeeperService;
   private final MQTTService mqttService;
 
-  public InfrastructureService(AppProperties appProperties, ZookeeperService zookeeperServerService,
+  public InfrastructureService(AppProperties appProperties,
       MQTTService mqttServerService) {
     this.appProperties = appProperties;
-    this.zookeeperService = zookeeperServerService;
     this.mqttService = mqttServerService;
   }
 
