@@ -23,13 +23,6 @@ import {QFormsModule} from '@eurodyn/forms';
 import {ReactiveFormsModule} from '@angular/forms';
 import {DeviceComponent} from './device/device.component';
 import {DevicesComponent} from './devices.component';
-import {DeviceEventsComponent} from './device/device-events/device-events.component';
-import {DeviceLogsComponent} from './device/device-logs/device-logs.component';
-import {DeviceRemotingComponent} from './device/device-remoting/device-remoting.component';
-import {DeviceCommandsComponent} from './device/device-commands/device-commands.component';
-import {DeviceSettingsComponent} from './device/device-settings/device-settings.component';
-import {DeviceMeasurementsComponent} from './device/device-measurements/device-measurements.component';
-import {DeviceSensorsComponent} from './device/device-sensors/device-sensors.component';
 import {DevicePreregisterComponent} from './device-preregister.component';
 import {LeafletModule} from '@asymmetrik/ngx-leaflet';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
@@ -39,20 +32,17 @@ import {DevicePreregisterCamComponent} from './device-preregister-cam.component'
 import {MatListModule} from '@angular/material/list';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { DeviceProfileComponent } from './device/device-profile/device-profile.component';
+import { DeviceTerminalComponent } from './device/device-terminal/device-terminal.component';
 
 @NgModule({
   declarations: [
     DeviceComponent,
     DevicesComponent,
-    DeviceEventsComponent,
-    DeviceLogsComponent,
-    DeviceRemotingComponent,
-    DeviceCommandsComponent,
-    DeviceSettingsComponent,
-    DeviceMeasurementsComponent,
-    DeviceSensorsComponent,
     DevicePreregisterComponent,
     DevicePreregisterCamComponent,
+    DeviceProfileComponent,
+    DeviceTerminalComponent,
   ],
   imports: [
     CommonModule,

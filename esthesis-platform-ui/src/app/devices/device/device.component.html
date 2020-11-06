@@ -52,65 +52,20 @@
         <mat-tab-group animationDuration="0ms">
           <mat-tab>
             <ng-template mat-tab-label>
+              <mat-icon>developer_board</mat-icon>
+              Profile
+            </ng-template>
+            <ng-template matTabContent>
+              <app-device-profile></app-device-profile>
+            </ng-template>
+          </mat-tab>
+          <mat-tab>
+            <ng-template mat-tab-label>
               <mat-icon>keyboard</mat-icon>
-              Commands
+              Pseudoterminal
             </ng-template>
             <ng-template matTabContent>
-              <app-device-commands></app-device-commands>
-            </ng-template>
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <mat-icon>event_note</mat-icon>
-              Events
-            </ng-template>
-            <ng-template matTabContent>
-              <app-device-events></app-device-events>
-            </ng-template>
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <mat-icon>line_style</mat-icon>
-              Logs
-            </ng-template>
-            <ng-template matTabContent>
-              <app-device-logs></app-device-logs>
-            </ng-template>
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <mat-icon>satellite</mat-icon>
-              Sensors
-            </ng-template>
-            <ng-template matTabContent>
-              <app-device-sensors></app-device-sensors>
-            </ng-template>
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <mat-icon>bar_chart</mat-icon>
-              Measurements
-            </ng-template>
-            <ng-template matTabContent>
-              <app-device-measurements></app-device-measurements>
-            </ng-template>
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <mat-icon>devices</mat-icon>
-              Remoting
-            </ng-template>
-            <ng-template matTabContent>
-              <app-device-remoting></app-device-remoting>
-            </ng-template>
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <mat-icon>settings</mat-icon>
-              Settings
-            </ng-template>
-            <ng-template matTabContent>
-              <app-device-settings></app-device-settings>
+              <app-device-terminal></app-device-terminal>
             </ng-template>
           </mat-tab>
         </mat-tab-group>
