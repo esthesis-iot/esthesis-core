@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {AppConstants} from '../app.constants';
+import {CommandExecuteOrderDto} from '../dto/command-execute-order-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class CommandCreateService {
       {params: new HttpParams().set('tags', tags)});
   }
 
-  execute(data: any): Observable<any> {
+  execute(data: CommandExecuteOrderDto): Observable<any> {
     return this.http.post<string[]>(`${AppConstants.API_ROOT}/command/execute`, {
       command: data.command,
       arguments: data.arguments,

@@ -36,6 +36,7 @@
     "leaflet": "~1.6.0",
     "lodash": "~4.17.15",
     "moment": "~2.26.0",
+    "ng-terminal": "^3.0.1",
     "ng2-logger": "~3.0.12",
     "ngx-chips": "^2.1.0",
     "ngx-cookie-service": "~3.0.4",

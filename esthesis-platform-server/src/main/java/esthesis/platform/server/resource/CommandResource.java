@@ -16,6 +16,8 @@ import esthesis.platform.server.service.CommandRequestService;
 import esthesis.platform.server.service.DTService;
 import esthesis.platform.server.service.DeviceService;
 import javax.validation.Valid;
+import lombok.extern.java.Log;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -29,9 +31,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.MessageFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
+@Log
 @Validated
 @RestController
 @RequestMapping("/command")
@@ -69,23 +77,61 @@ public class CommandResource {
     return commandReplyService.findByCommandRequestId(requestId);
   }
 
+  @GetMapping(path = "reply-sync", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch command reply.")
+  @ReplyFilter("-createdBy")
+  public CommandReplyDTO getReplySync(@RequestParam long requestId,
+    @RequestParam(defaultValue = "5000") long msec) throws InterruptedException {
+    CommandReplyDTO reply = null;
+    Instant start = Instant.now();
+    boolean cb = false;
+    while (start.plus(msec, ChronoUnit.MILLIS).isAfter(Instant.now()) && !cb) {
+      reply = commandReplyService.findByCommandRequestId(requestId);
+      if (reply != null) {
+        cb = true;
+      } else {
+        Thread.sleep(1000);
+      }
+    }
+
+    if (!cb) {
+      log.fine(MessageFormat.format("Command reply timed out after waiting for {0} msec.", msec));
+    }
+
+    return reply;
+  }
+
+  @PostMapping(path = "execute-sync")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not execute command.")
+  public List<String> executeCommandSync(
+    @Valid @RequestBody CommandExecuteOrderDTO commandExecuteOrderDTO) {
+    return executeCommand(commandExecuteOrderDTO);
+  }
+
   @Async
   @PostMapping(path = "execute")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not execute command.")
-  public void executeCommand(@Valid @RequestBody CommandExecuteOrderDTO commandExecuteOrderDTO) {
+  public List<String> executeCommand(
+    @Valid @RequestBody CommandExecuteOrderDTO commandExecuteOrderDTO) {
+    List<String> requestIds = new ArrayList<>();
+
     // Collect all devices that should receive the command.
     Stream.concat(
       deviceService
-        .findByTags(Arrays.asList(commandExecuteOrderDTO.getTags().split(",")))
+        .findByTags(Arrays
+          .asList(StringUtils.defaultIfEmpty(commandExecuteOrderDTO.getTags(), "").split(",")))
         .stream()
         .map(DeviceDTO::getHardwareId),
       deviceService
-        .findByHardwareIds(Arrays.asList(commandExecuteOrderDTO.getHardwareIds().split(",")))
+        .findByHardwareIds(Arrays.asList(
+          StringUtils.defaultIfEmpty(commandExecuteOrderDTO.getHardwareIds(), "").split(",")))
         .stream()
         .map(DeviceDTO::getHardwareId)
     ).forEach(hardwareId -> {
-      dtService.executeCommand(hardwareId, commandExecuteOrderDTO.getCommand(),
-        commandExecuteOrderDTO.getDescription(), commandExecuteOrderDTO.getArguments());
+      requestIds.add(dtService.executeCommand(hardwareId, commandExecuteOrderDTO.getCommand(),
+        commandExecuteOrderDTO.getDescription(), commandExecuteOrderDTO.getArguments()));
     });
+
+    return requestIds;
   }
 }

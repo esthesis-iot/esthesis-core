@@ -18,6 +18,7 @@ import esthesis.platform.server.model.Device;
 import esthesis.platform.server.repository.DeviceRepository;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -156,6 +157,8 @@ public class DTService {
     body.setArgs(args);
 
     log.finest(MessageFormat.format("Executing NiFi call: {0}", request.build().toUriString()));
+    final ResponseEntity<String> reply = restTemplate
+      .postForEntity(request.build().toUri(), body, String.class);
     return restTemplate.postForEntity(request.build().toUri(), body, String.class).getBody();
   }
 

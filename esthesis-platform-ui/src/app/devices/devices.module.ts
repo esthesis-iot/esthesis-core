@@ -34,6 +34,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { DeviceProfileComponent } from './device/device-profile/device-profile.component';
 import { DeviceTerminalComponent } from './device/device-terminal/device-terminal.component';
+import {NgTerminalModule} from 'ng-terminal';
 
 @NgModule({
   declarations: [
@@ -71,7 +72,8 @@ import { DeviceTerminalComponent } from './device/device-terminal/device-termina
     MatSlideToggleModule,
     MatListModule,
     MatProgressSpinnerModule,
-    MatTooltipModule
+    MatTooltipModule,
+    NgTerminalModule
   ],
   providers: [
     {
