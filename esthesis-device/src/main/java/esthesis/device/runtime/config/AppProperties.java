@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 
 @Data
@@ -293,7 +294,8 @@ public class AppProperties {
   public String getHardwareId() {
     try {
       return HardwareIdResolverUtil.resolve(hardwareId);
-    } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | IOException e) {
+    } catch (ClassNotFoundException | IllegalAccessException | InstantiationException |
+      IOException | InvocationTargetException e) {
       log.log(Level.SEVERE, "Could not obtain device ID.", e);
       System.exit(ExitCode.CANNOT_FIND_DEVICE_ID);
       return null;

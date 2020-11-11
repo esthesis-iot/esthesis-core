@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.text.MessageFormat;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service("EsthesisUserService")
@@ -57,7 +58,7 @@ public class UserService {
 
     if (userDTO.getId().equals("0")) {
       userDTO.setId(UUID.randomUUID().toString());
-      qlackUserService.createUser(userDTO, null);
+      qlackUserService.createUser(userDTO, Optional.empty());
     } else {
       qlackUserService.updateUser(userDTO, false, false);
     }

@@ -6,7 +6,6 @@ import lombok.experimental.UtilityClass;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class NiFiConstants {
 
@@ -29,7 +28,7 @@ public class NiFiConstants {
     }
 
     public String asString() {
-      return asList().stream().collect(Collectors.joining(" > "));
+      return String.join(" > ", asList());
     }
 
     PATH(String[] path) {

@@ -41,7 +41,7 @@ public class SyncService {
 
     String latestWorkflowTemplateResource = niFiService.getLatestWorkflowTemplateResource();
     Optional<NiFiTemplateDTO> template = niFiClientService.getTemplate(latestTemplateName);
-    NiFiTemplateDTO niFiTemplateDTO = template.isPresent() ? template.get() : null;
+    NiFiTemplateDTO niFiTemplateDTO = template.orElse(null);
 
     //Upload latest workflow.
     if (niFiTemplateDTO == null) {

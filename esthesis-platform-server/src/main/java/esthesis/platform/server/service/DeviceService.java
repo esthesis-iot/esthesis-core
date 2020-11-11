@@ -449,7 +449,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
             DTOperations.OPERATION_QUERY.toLowerCase(), field.getMeasurement(), field.getField(),
             null, null, 1, 1);
         try {
-          Map<String, List<Map<String, Object>>> jsonFields =
+          @SuppressWarnings("unchecked") Map<String, List<Map<String, Object>>> jsonFields =
             mapper.readValue(fieldValue, HashMap.class);
           field.setMeasurement(jsonFields.keySet().iterator().next());
           final List<Map<String, Object>> fields = jsonFields.get(field.getMeasurement());

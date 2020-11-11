@@ -121,8 +121,7 @@ public class CAResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not create backup for CA.")
   public ResponseEntity backup(@PathVariable long id)
   throws IOException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-         NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException,
-         InvalidKeyException {
+         NoSuchAlgorithmException, InvalidKeyException {
     final CaDTO caDTO = caService.findById(id);
     return ResponseEntity
         .ok()
@@ -136,8 +135,7 @@ public class CAResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not restore CA.")
   public ResponseEntity restore(@NotNull @RequestParam("backup") MultipartFile backup)
   throws IOException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-         NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException,
-         InvalidKeyException {
+         NoSuchAlgorithmException, InvalidKeyException {
     caService.restore(IOUtils.toString(backup.getInputStream(), StandardCharsets.UTF_8));
 
     return ResponseEntity.ok().build();

@@ -40,7 +40,7 @@ public class MqttServer extends BaseEntity {
   private boolean state;
   @Singular
   @OneToMany(fetch = FetchType.LAZY)
-  @JoinTable(inverseJoinColumns = @JoinColumn(name = "tag_id"))
+  @JoinTable(inverseJoinColumns = @JoinColumn(name = "tag_id"), name = "mqtt_server_tags")
   private List<Tag> tags;
   private String description;
 }

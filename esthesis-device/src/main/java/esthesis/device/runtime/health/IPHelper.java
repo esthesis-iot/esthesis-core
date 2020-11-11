@@ -1,14 +1,13 @@
 package esthesis.device.runtime.health;
 
 import lombok.extern.java.Log;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -24,12 +23,12 @@ public class IPHelper {
    * @param ifFilter A comma-separated list of interface names to include. If omitted, all
    * interfaces are included.
    */
-  public static String getIPAddress(Optional<String> ifFilter) {
+  public static String getIPAddress(String ifFilter) {
     try {
       return Collections.list(NetworkInterface.getNetworkInterfaces()).stream()
         .filter(net ->
-          !ifFilter.isPresent() || StringUtils.isEmpty(ifFilter.get()) || Arrays
-            .asList(ifFilter.get().split(",")).contains(net.getName()))
+          StringUtils.isBlank(ifFilter) || StringUtils.isBlank(ifFilter) || Arrays
+            .asList(ifFilter.split(",")).contains(net.getName()))
         .map(net -> net.getDisplayName() + ": " +
           Collections.list(net.getInetAddresses()).stream()
             .map(InetAddress::getHostAddress)

@@ -8,7 +8,7 @@ import {AboutDto} from '../dto/about-dto';
   styleUrls: ['./about.component.scss']
 })
 export class AboutComponent implements OnInit {
-  private about: AboutDto;
+  about: AboutDto;
 
   constructor(private aboutService: AboutService) {
   }
@@ -16,7 +16,7 @@ export class AboutComponent implements OnInit {
   ngOnInit() {
     this.aboutService.getAbout().subscribe(onNext => {
       this.about = onNext;
-    })
+    });
   }
 
 }

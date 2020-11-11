@@ -6,7 +6,6 @@ import esthesis.common.config.AppConstants.CommandReply;
 import esthesis.common.device.commands.CommandReplyDTO;
 import esthesis.common.device.commands.CommandRequestDTO;
 import esthesis.device.runtime.config.AppConstants.Mqtt.EventType;
-import esthesis.device.runtime.health.HealthMetadataCollector;
 import esthesis.device.runtime.mqtt.MqttClient;
 import lombok.extern.java.Log;
 import org.springframework.context.event.EventListener;
@@ -23,16 +22,12 @@ import java.util.logging.Level;
 public class ControlCommandPing {
 
   private final static String COMMAND_NAME = "PING";
-  private final HealthMetadataCollector healthMetadataCollector;
   private final ControlCommandUtil mqttCommandUtil;
   private final MqttClient mqttClient;
   private final ObjectMapper objectMapper;
 
-  public ControlCommandPing(
-    HealthMetadataCollector healthMetadataCollector,
-    ControlCommandUtil mqttCommandUtil, MqttClient mqttClient,
+  public ControlCommandPing(ControlCommandUtil mqttCommandUtil, MqttClient mqttClient,
     ObjectMapper objectMapper) {
-    this.healthMetadataCollector = healthMetadataCollector;
     this.mqttCommandUtil = mqttCommandUtil;
     this.mqttClient = mqttClient;
     this.objectMapper = objectMapper;

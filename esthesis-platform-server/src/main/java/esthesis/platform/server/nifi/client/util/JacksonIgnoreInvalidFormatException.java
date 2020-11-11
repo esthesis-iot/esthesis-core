@@ -24,8 +24,7 @@ public class JacksonIgnoreInvalidFormatException extends DeserializationProblemH
 
   @Override
   public boolean handleUnknownProperty(DeserializationContext ctxt, JsonParser p,
-    JsonDeserializer<?> deserializer, Object beanOrClass, String propertyName)
-    throws IOException {
+    JsonDeserializer<?> deserializer, Object beanOrClass, String propertyName) {
     log.log(Level.FINEST, "JSON deserialization: Ignoring unknown property {0}.", propertyName);
     return false;
   }

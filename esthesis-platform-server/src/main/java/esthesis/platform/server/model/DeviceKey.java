@@ -1,7 +1,6 @@
 package esthesis.platform.server.model;
 
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -33,7 +32,6 @@ public class DeviceKey extends BaseEntity {
   private String psPublicKey;
   private boolean rolledAccepted;
   @ManyToOne
-  @JoinColumn(name="device_id", nullable=false)
   private Device device;
   private String sessionKey;
   private String provisioningKey;

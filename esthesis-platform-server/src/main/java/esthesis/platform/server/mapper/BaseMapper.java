@@ -78,7 +78,7 @@ public abstract class BaseMapper<D extends BaseDTO, E extends BaseEntity> {
    * @return Returns an {@link Iterable} of Entity classes mapped after the given DTOs.
    */
   public Iterable<E> mapDTOs(Collection<D> collection) {
-    return StreamSupport.stream(collection.spliterator(), true).map(this::map)
+    return collection.parallelStream().map(this::map)
       .collect(Collectors.toList());
   }
 
@@ -90,7 +90,7 @@ public abstract class BaseMapper<D extends BaseDTO, E extends BaseEntity> {
    * @return Returns an {@link Iterable} of DTOs mapped after their given Entity classes.
    */
   public Iterable<D> mapModels(Collection<E> collection) {
-    return StreamSupport.stream(collection.spliterator(), true).map(this::map)
+    return collection.parallelStream().map(this::map)
       .collect(Collectors.toList());
   }
 

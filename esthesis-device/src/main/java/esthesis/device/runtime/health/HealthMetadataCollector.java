@@ -27,7 +27,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.logging.Level;
 
 @Log
@@ -127,7 +126,7 @@ public class HealthMetadataCollector {
       // IP Address.
       if (appProperties.isHcIpAddress()) {
         deviceHealthDataDTO
-          .setIpAddress(IPHelper.getIPAddress(Optional.of(appProperties.getHcIpIfFilter())));
+          .setIpAddress(IPHelper.getIPAddress(appProperties.getHcIpIfFilter()));
       }
 
       // Runtime agent version information.

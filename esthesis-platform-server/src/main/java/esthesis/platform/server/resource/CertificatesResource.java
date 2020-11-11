@@ -10,7 +10,6 @@ import esthesis.platform.server.dto.CertificateDTO;
 import esthesis.platform.server.dto.DownloadReply;
 import esthesis.platform.server.model.Certificate;
 import esthesis.platform.server.service.CertificatesService;
-import esthesis.platform.server.service.SecurityService;
 import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -39,13 +38,9 @@ import java.util.Optional;
 @RequestMapping("/certificates")
 public class CertificatesResource {
 
-  private final SecurityService securityService;
   private final CertificatesService certificatesService;
 
-  public CertificatesResource(SecurityService securityService,
-    CertificatesService certificatesService) {
-    this.securityService = securityService;
-
+  public CertificatesResource(CertificatesService certificatesService) {
     this.certificatesService = certificatesService;
   }
 

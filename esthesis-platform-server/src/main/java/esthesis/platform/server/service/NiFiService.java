@@ -29,8 +29,8 @@ public class NiFiService extends BaseService<NiFiDTO, NiFi> {
   private final NiFiMapper nifiMapper;
   private final NiFiRepository nifiRepository;
 
-  private final String versionPrefix = "nifi/template/esthesis_";
-  private final String versionSuffix = ".xml";
+  private static final String VERSION_PREFIX = "nifi/template/esthesis_";
+  private static final String VERSION_SUFFIX = ".xml";
 
   /**
    * Finds the NiFi workflow template version shipped with this version of esthesis.
@@ -39,7 +39,7 @@ public class NiFiService extends BaseService<NiFiDTO, NiFi> {
     String version = getLatestWorkflowTemplateResource();
 
     // Extract version information from the filename.
-    return version.substring(versionPrefix.length(), version.length() - versionSuffix.length());
+    return version.substring(VERSION_PREFIX.length(), version.length() - VERSION_SUFFIX.length());
   }
 
   /**
@@ -61,7 +61,7 @@ public class NiFiService extends BaseService<NiFiDTO, NiFi> {
   @CachePut("esthesis.platform.server.activeNiFi")
   public NiFiDTO getActiveNiFi() {
     Optional<NiFi> activeNiFi = this.nifiRepository.findOne(QNiFi.niFi.state.eq(true));
-    return activeNiFi.isPresent() ? this.nifiMapper.map(activeNiFi.get()) : null;
+    return activeNiFi.map(this.nifiMapper::map).orElse(null);
   }
 
   @Override

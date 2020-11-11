@@ -21,6 +21,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.nifi.web.api.dto.flow.ProcessGroupFlowDTO;
 import org.apache.nifi.web.api.entity.AboutEntity;
+import org.apache.nifi.web.api.entity.ComponentEntity;
 import org.apache.nifi.web.api.entity.ConnectionEntity;
 import org.apache.nifi.web.api.entity.ControllerServiceEntity;
 import org.apache.nifi.web.api.entity.FlowEntity;
@@ -249,7 +250,7 @@ public class NiFiClientService {
     Optional<ControllerServiceEntity> controllerService = this.niFiClient
       .findControllerService(parentProcessGroupId, type);
 
-    return controllerService.isPresent() ? controllerService.get().getId() : null;
+    return controllerService.map(ComponentEntity::getId).orElse(null);
   }
 
   /**

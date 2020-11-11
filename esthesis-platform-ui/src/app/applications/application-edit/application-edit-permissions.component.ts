@@ -6,7 +6,7 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrls: ['./application-edit-permissions.component.scss']
 })
 export class ApplicationEditPermissionsComponent implements OnInit {
-  @Input() id: string;
+  @Input() id: number;
 
   constructor() {
   }

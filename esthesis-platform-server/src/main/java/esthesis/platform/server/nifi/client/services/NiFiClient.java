@@ -603,7 +603,7 @@ public class NiFiClient {
         .readValue(callReplyDTO.getBody(), InputPortsEntity.class);
       Optional<PortEntity> optionalPortEntity = inputPortsEntity.getInputPorts().stream()
         .findFirst();
-      return optionalPortEntity.isPresent() ? optionalPortEntity.get() : null;
+      return optionalPortEntity.orElse(null);
     } else {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
     }
@@ -945,7 +945,7 @@ public class NiFiClient {
           processorEntity -> processorEntity.getComponent().getType().equals(DISTRIBUTE_LOAD))
         .findFirst();
 
-      return optionalDistributeLoad.isPresent() ? optionalDistributeLoad.get() : null;
+      return optionalDistributeLoad.orElse(null);
     } else {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
     }
@@ -1049,7 +1049,7 @@ public class NiFiClient {
     processorConfigDTO.setProperties(properties);
     processorConfigDTO.setSchedulingPeriod(schedulingPeriod);
     processorConfigDTO.setAutoTerminatedRelationships(new HashSet<>(
-      Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType())));
+      Collections.singletonList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType())));
     BundleDTO bundleDTO = createBundleDTO(BundleGroup.NIFI, BundleArtifact.INFLUX_DB);
 
     // Create the processor component for the resource.
@@ -1145,7 +1145,7 @@ public class NiFiClient {
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
     processorConfigDTO.setSchedulingPeriod(schedulingPeriod);
     processorConfigDTO.setAutoTerminatedRelationships(new HashSet<>(
-      Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType())));
+      Collections.singletonList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType())));
     processorConfigDTO.setProperties(properties);
     BundleDTO bundleDTO = createBundleDTO(BundleGroup.NIFI, BundleArtifact.STANDARD);
 
@@ -1492,7 +1492,8 @@ public class NiFiClient {
       changePortStatus(inputPort, STATE.STOPPED);
       if (connections == 2 && typeConnection.get().getStatus().getName().equals("1")) {
         ConnectionEntity connectionEntity = otherConnection.get();
-        connectionEntity.getComponent().setSelectedRelationships(new HashSet<>(Arrays.asList("1")));
+        connectionEntity.getComponent().setSelectedRelationships(new HashSet<>(
+          Collections.singletonList("1")));
         updateConnection(connectionEntity);
       }
       deleteConnection(typeConnection.get());
@@ -1563,7 +1564,7 @@ public class NiFiClient {
         }
 
         entityToUpdate.get().getComponent()
-          .setSelectedRelationships(new HashSet<>(Arrays.asList(newName)));
+          .setSelectedRelationships(new HashSet<>(Collections.singletonList(newName)));
         updateConnection(entityToUpdate.get());
 
         //If destination was running, we need to restart it.
@@ -1588,7 +1589,7 @@ public class NiFiClient {
     String name = "" + relationships;
     connectSourceAndDestination(parentProcessGroupId, destinationProcessGroup,
       PROCESSOR.name(),
-      INPUT_PORT.name(), processorId, inputPortId, new HashSet<>(Arrays.asList(name)));
+      INPUT_PORT.name(), processorId, inputPortId, new HashSet<>(Collections.singletonList(name)));
   }
 
   /**
@@ -1708,7 +1709,7 @@ public class NiFiClient {
 
       connectSourceAndDestination(parentProcessGroupId, parentProcessGroupId, PROCESSOR.name(),
         PROCESSOR.name(), distributeLoad.getId(), processorId,
-        new HashSet<>(Arrays.asList(String.valueOf(outgoingRelationships))));
+        new HashSet<>(Collections.singletonList(String.valueOf(outgoingRelationships))));
 
       changeProcessorStatus(distributeLoad.getComponent().getId(), STATE.RUNNING);
 
@@ -1924,8 +1925,7 @@ public class NiFiClient {
     Optional<ConnectionEntity> optProcessorIncomingConnection = allConnections.stream()
       .filter(connectionEntity -> connectionEntity.getDestinationId().equals(processorId))
       .findFirst();
-    ConnectionEntity processorIncomingConnection = optProcessorIncomingConnection.isPresent() ?
-      optProcessorIncomingConnection.get() : null;
+    ConnectionEntity processorIncomingConnection = optProcessorIncomingConnection.orElse(null);
 
     //Stop processor incoming connection.
     if (processorIncomingConnection != null) {
@@ -1970,7 +1970,7 @@ public class NiFiClient {
         inputPort.getRevision().setVersion(version + 1L);
         boolean inputPortHasConnections = allConnections.stream().filter(
           connectionEntity -> connectionEntity.getSourceId().equals(inputPort.getId())).count()
-          > 1l;
+          > 1L;
         if (inputPortHasConnections) {
           togglePort(inputPort, STATE.RUNNING, false);
         }
@@ -1983,7 +1983,7 @@ public class NiFiClient {
     outputPorts.getOutputPorts().forEach(outputPort -> {
       boolean ouputPortHasConnections = allConnections.stream().filter(
         connectionEntity -> connectionEntity.getDestinationId().equals(outputPort.getId())).count()
-        > 1l;
+        > 1L;
 
       if (ouputPortHasConnections) {
         try {
@@ -2115,7 +2115,7 @@ public class NiFiClient {
 
   private RevisionDTO createRevisionDTO() {
     RevisionDTO revisionDTO = new RevisionDTO();
-    revisionDTO.setVersion(0l);
+    revisionDTO.setVersion(0L);
     return revisionDTO;
   }
 

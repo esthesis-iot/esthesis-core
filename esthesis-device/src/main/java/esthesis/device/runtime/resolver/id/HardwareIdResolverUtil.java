@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -33,7 +34,8 @@ public class HardwareIdResolverUtil {
    * ID.
    */
   public static String resolve(String hardwareId)
-  throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException {
+  throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException,
+         InvocationTargetException {
     if (StringUtils.isEmpty(deviceId)) {
       LOGGER.log(Level.FINEST, "Registration ID to resolve: {0}", hardwareId);
       if (hardwareId.startsWith(FILE_PREFIX)) {
@@ -45,7 +47,7 @@ public class HardwareIdResolverUtil {
         LOGGER.log(Level.FINEST, "Using ID resolver class: {0}.", resolverClass);
         deviceId = (String) ReflectionUtils.invokeMethod(Objects.requireNonNull(ReflectionUtils
             .findMethod(Class.forName(resolverClass), RESOLVE_CLASS_METHOD, String.class)),
-          Class.forName(resolverClass).newInstance(), deviceId);
+          Class.forName(resolverClass).getDeclaredConstructors()[0].newInstance(), deviceId);
       } else {
         deviceId = hardwareId;
       }

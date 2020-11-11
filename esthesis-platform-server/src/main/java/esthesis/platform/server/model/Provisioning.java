@@ -37,7 +37,7 @@ public class Provisioning extends BaseContentEntity {
   private boolean state;
   @Singular
   @OneToMany(fetch = LAZY)
-  @JoinTable(inverseJoinColumns = @JoinColumn(name = "tag_id"))
+  @JoinTable(inverseJoinColumns = @JoinColumn(name = "tag_id"), name = "provisioning_tags")
   private List<Tag> tags;
   @NotNull
   private String packageVersion;

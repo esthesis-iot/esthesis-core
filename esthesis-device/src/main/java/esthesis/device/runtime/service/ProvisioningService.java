@@ -112,6 +112,7 @@ public class ProvisioningService {
     deviceMessageUtil.prepareOutgoing(provisioningInfoRequest);
 
     // Fire up request.
+    //noinspection unchecked
     DeviceMessage<ProvisioningInfoResponse> provisioningInfoResponse =
       retryTemplate.execute(context ->
         restTemplate

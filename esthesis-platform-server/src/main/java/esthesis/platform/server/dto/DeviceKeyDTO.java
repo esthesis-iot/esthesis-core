@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode
 public class DeviceKeyDTO extends BaseDTO {
   private String publicKey;
   private String privateKey;

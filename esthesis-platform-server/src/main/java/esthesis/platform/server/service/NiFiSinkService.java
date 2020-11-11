@@ -190,7 +190,7 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
   public NiFiSinkDTO deleteSink(Long id) throws IOException {
     NiFiSinkDTO niFiSinkDTO = super.findById(id);
     NiFiSinkFactory niFiSinkFactory = getNiFiSinkFactoryImplementation(niFiSinkDTO);
-    String path[] = createPath(niFiSinkDTO, niFiSinkFactory);
+    String[] path = createPath(niFiSinkDTO, niFiSinkFactory);
     if (niFiSinkFactory.exists(niFiSinkDTO.getName(), path)) {
       niFiSinkFactory.deleteSink(niFiSinkDTO, path);
     }

@@ -12,7 +12,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Logger;
 
 @EnableAsync
 @EnableCaching
@@ -20,9 +19,6 @@ import java.util.logging.Logger;
 @ComponentScan({"esthesis", "com.eurodyn.qlack"})
 @EnableScheduling
 public class App {
-
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(App.class.getName());
 
   // proxyWeb needs special handling here, since although defined in AppProperties it can not be
   // accessed at this stage (i.e. before Spring is initialised).
@@ -50,7 +46,7 @@ public class App {
     final ApplicationContext ctx = ctxBuilder.run(args);
 
     final CountDownLatch closeLatch = ctx.getBean(CountDownLatch.class);
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> closeLatch.countDown()));
+    Runtime.getRuntime().addShutdownHook(new Thread(closeLatch::countDown));
     closeLatch.await();
   }
 }

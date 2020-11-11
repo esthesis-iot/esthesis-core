@@ -213,6 +213,7 @@ public class DeviceMessageUtil {
           .keyFromString(securityUtil.getSessionKey(), appProperties.getSymmetricKeyAlgorithm()),
         appProperties.getSymmetricCipher(),
         appProperties.getSymmetricKeyAlgorithm())));
+    //noinspection unchecked
     msg.setPayload(null);
   }
 

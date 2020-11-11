@@ -27,12 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class MQTTServerResource {
   private final MQTTService mqttServerService;
-  private final ApplicationEventPublisher applicationEventPublisher;
 
-  public MQTTServerResource(MQTTService mqttServerService,
-    ApplicationEventPublisher applicationEventPublisher) {
+  public MQTTServerResource(MQTTService mqttServerService) {
     this.mqttServerService = mqttServerService;
-    this.applicationEventPublisher = applicationEventPublisher;
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

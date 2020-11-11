@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -55,7 +56,7 @@ public class ApplicationService extends BaseService<ApplicationDTO, Application>
       String userId = userService.createUser(new UserDTO()
         .setUsername(username)
         .setStatus(Status.APP_USER)
-        .setStatus(Status.ACTIVE), null);
+        .setStatus(Status.ACTIVE), Optional.empty());
       applicationDTO.setUserId(userId);
       auditService.audit(new AuditDTO()
         .setLevel(auditLevel).setEvent(Event.USER)

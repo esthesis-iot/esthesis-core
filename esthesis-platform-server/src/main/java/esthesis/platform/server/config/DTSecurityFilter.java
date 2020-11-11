@@ -62,6 +62,7 @@ public class DTSecurityFilter extends GenericFilterBean {
     filterChain.doFilter(request, response);
   }
 
+  @SuppressWarnings("unchecked")
   @Bean(name = "DTSecurityFilterRegistrationBean")
   public FilterRegistrationBean registration(DTSecurityFilter filter) {
     FilterRegistrationBean registration = new FilterRegistrationBean(filter);

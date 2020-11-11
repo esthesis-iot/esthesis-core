@@ -39,7 +39,7 @@ public class Device extends BaseEntity {
 
   @Singular
   @OneToMany(fetch = FetchType.LAZY)
-  @JoinTable(inverseJoinColumns = @JoinColumn(name = "tag_id"))
+  @JoinTable(inverseJoinColumns = @JoinColumn(name = "tag_id"), name = "device_tags")
   private List<Tag> tags;
 
   @Singular

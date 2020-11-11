@@ -16,7 +16,7 @@ import java.util.logging.Level;
 public class JsonDbRepository {
   private final AppProperties appProperties;
   // Package name where POJO's are present.
-  private final String baseScanPackage = "esthesis.device.runtime.model";
+  private final static String BASE_SCAN_PACKAGE = "esthesis.device.runtime.model";
   private JsonDBTemplate jsonDBTemplate;
 
   public JsonDbRepository(AppProperties appProperties) {
@@ -28,7 +28,7 @@ public class JsonDbRepository {
     // The location of JSONDB.
     String dbFilesLocation = Paths.get(appProperties.getStorageRoot(), "db").toString();
     log.log(Level.INFO,  "Initialising JSONDB on {0}.", dbFilesLocation);
-    jsonDBTemplate = new JsonDBTemplate(dbFilesLocation, baseScanPackage);
+    jsonDBTemplate = new JsonDBTemplate(dbFilesLocation, BASE_SCAN_PACKAGE);
 
     // Initialise collections.
     if (!jsonDBTemplate.collectionExists(Registration.class)) {

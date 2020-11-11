@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class AppConstants {
 
-  public class Audit {
+  public static class Audit {
 
     public class Event {
 
@@ -32,7 +32,7 @@ public class AppConstants {
     }
   }
 
-  public class Application {
+  public static class Application {
 
     public class Status {
 
@@ -41,7 +41,7 @@ public class AppConstants {
     }
   }
 
-  public class User {
+  public static class User {
 
     // Status is, exceptionally, byte as it is fetched to qlack-fuse-aaa.
     public class Status {
@@ -52,7 +52,7 @@ public class AppConstants {
     }
   }
 
-  public class Device {
+  public static class Device {
 
     public class State {
 
@@ -63,7 +63,7 @@ public class AppConstants {
     }
   }
 
-  public class Cryptography {
+  public static class Cryptography {
 
     //TODO Turn them to String
     public class KeyType {
@@ -74,7 +74,7 @@ public class AppConstants {
     }
   }
 
-  public class WebSocket {
+  public static class WebSocket {
 
     public static final String TOPIC_PREFIX = "/topic";
 
@@ -84,13 +84,13 @@ public class AppConstants {
     }
   }
 
-  public class Jwt {
+  public static class Jwt {
 
     // The unique JWT id.
     public static final String CLAIM_EMAIL = "email";
   }
 
-  public class ExitCodes {
+  public static class ExitCodes {
 
     public static final int CANT_GENERATE_PLATFORM_AES_KEY = 1;
     public static final int CANT_GENERATE_PROVISIONING_AES_KEY = 2;
@@ -107,10 +107,11 @@ public class AppConstants {
     FILESYSTEM(5);
 
     private final int type;
-    private static Map map = new HashMap<>();
+    private static final Map map = new HashMap<>();
 
     static {
       for (NIFI_SINK_HANDLER nifi_sink_handler : NIFI_SINK_HANDLER.values()) {
+        //noinspection unchecked
         map.put(nifi_sink_handler.type, nifi_sink_handler);
       }
     }
