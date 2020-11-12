@@ -31,15 +31,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.logging.Logger;
-
 @Validated
 @RestController
 @RequestMapping("/users")
 public class UserResource {
-
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(UserResource.class.getName());
 
   // Service references.
   private final com.eurodyn.qlack.fuse.aaa.service.UserService qlackUserService;
@@ -87,7 +82,6 @@ public class UserResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch user.")
   @ReplyFilter("id,status,username")
   public UserDTO get(@PathVariable String userId) {
-    final UserDTO userById = qlackUserService.getUserById(userId);
     return qlackUserService.getUserById(userId);
   }
 

@@ -33,8 +33,8 @@ import java.security.spec.InvalidKeySpecException;
 @Transactional
 public class StoreService extends BaseService<StoreDTO, Store> {
 
-  private final static String KEYSTORE_TYPE = "PKCS12";
-  private final static String KEYSTORE_PROVIDER = "SunJSSE";
+  private static final String KEYSTORE_TYPE = "PKCS12";
+  private static final String KEYSTORE_PROVIDER = "SunJSSE";
 
   private final StoreRepository storeRepository;
   private final CryptoKeystoreService cryptoKeystoreService;

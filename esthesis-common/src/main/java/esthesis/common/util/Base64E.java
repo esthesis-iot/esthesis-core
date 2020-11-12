@@ -7,6 +7,9 @@ import org.apache.commons.codec.binary.Base64;
  */
 public class Base64E {
 
+  private Base64E() {
+  }
+
   public static String encode(byte[] payload) {
     return Base64.encodeBase64String(payload);
   }

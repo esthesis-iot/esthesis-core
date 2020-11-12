@@ -50,10 +50,10 @@ public class MQTTService extends BaseService<MQTTServerDTO, MqttServer> {
     return dto;
   }
 
-  @Override
-  public MQTTServerDTO deleteById(long id) {
-    return super.deleteById(id);
-  }
+//  @Override
+//  public MQTTServerDTO deleteById(long id) {
+//    return super.deleteById(id);
+//  }
 
   /**
    * Finds an MQTT server with the given tags.
@@ -92,7 +92,7 @@ public class MQTTService extends BaseService<MQTTServerDTO, MqttServer> {
         case TagsAlgorithm.ANY:
           mqttServerDTO = findAll().stream()
             .filter(MQTTServerDTO::getState)
-            .filter(o -> CollectionUtils.intersection(tagIds, o.getTags()).size() > 0)
+            .filter(o -> !CollectionUtils.intersection(tagIds, o.getTags()).isEmpty())
             .findFirst();
           break;
         default:

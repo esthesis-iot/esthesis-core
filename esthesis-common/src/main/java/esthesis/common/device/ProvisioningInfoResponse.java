@@ -14,6 +14,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 public class ProvisioningInfoResponse extends GenericResponse {
+
   private long id;
   private String description;
   private long fileSize;

@@ -8,7 +8,6 @@ import esthesis.platform.server.dto.MQTTServerDTO;
 import esthesis.platform.server.model.MqttServer;
 import esthesis.platform.server.service.MQTTService;
 import javax.validation.Valid;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -26,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/mqtt-server")
 @Validated
 public class MQTTServerResource {
+
   private final MQTTService mqttServerService;
 
   public MQTTServerResource(MQTTService mqttServerService) {
@@ -35,7 +35,8 @@ public class MQTTServerResource {
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not retrieve MQTT servers list.")
   @EmptyPredicateCheck
-  public Page<MQTTServerDTO> findAll(@QuerydslPredicate(root = MqttServer.class) Predicate predicate, Pageable pageable) {
+  public Page<MQTTServerDTO> findAll(
+    @QuerydslPredicate(root = MqttServer.class) Predicate predicate, Pageable pageable) {
     return mqttServerService.findAll(predicate, pageable);
   }
 
@@ -43,9 +44,6 @@ public class MQTTServerResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save MQTT server.")
   public MQTTServerDTO save(@Valid @RequestBody MQTTServerDTO mqttServerDTO) {
     mqttServerDTO = mqttServerService.save(mqttServerDTO);
-    // Emit an event about this configuration change.
-//    applicationEventPublisher.publishEvent(new LocalEvent(CONFIGURATION_MQTT));
-
     return mqttServerDTO;
   }
 
@@ -59,8 +57,5 @@ public class MQTTServerResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete tag.")
   public void delete(@PathVariable long id) {
     mqttServerService.deleteById(id);
-
-    // Emit an event about this configuration change.
-//    applicationEventPublisher.publishEvent(new LocalEvent(CONFIGURATION_MQTT));
   }
 }

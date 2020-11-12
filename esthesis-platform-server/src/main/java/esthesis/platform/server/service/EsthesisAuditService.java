@@ -13,11 +13,6 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class EsthesisAuditService {
 
-  // Log levels.
-  private static final String LOG_LEVEL_INFO = "INFO";
-  private static final String LOG_LEVEL_WARNING = "WARNING";
-  private static final String LOG_LEVEL_ERROR = "ERROR";
-
   /**
    * Default constructor.
    */

@@ -1,6 +1,5 @@
 package esthesis.common.device;
 
-import esthesis.common.device.GenericRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,5 +14,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 public class ProvisioningInfoRequest extends GenericRequest {
+
   private Long provisioningPackageId;
 }

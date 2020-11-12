@@ -13,7 +13,10 @@ public class AppConstants {
 
   public static class Audit {
 
-    public class Event {
+    private Audit() {
+    }
+
+    public static class Event {
 
       public static final String CA = "Certificate Authority";
       public static final String CERTIFICATE = "Certificate";
@@ -22,7 +25,10 @@ public class AppConstants {
       public static final String USER = "User";
     }
 
-    public class Level {
+    public static class Level {
+
+      private Level() {
+      }
 
       public static final String UPDATE = "Update";
       public static final String DELETE = "Delete";
@@ -34,7 +40,13 @@ public class AppConstants {
 
   public static class Application {
 
-    public class Status {
+    private Application() {
+    }
+
+    public static class Status {
+
+      private Status() {
+      }
 
       public static final String INACTIVE = "0";
       public static final String ACTIVE = "1";
@@ -43,8 +55,14 @@ public class AppConstants {
 
   public static class User {
 
+    private User() {
+    }
+
     // Status is, exceptionally, byte as it is fetched to qlack-fuse-aaa.
     public class Status {
+
+      private Status() {
+      }
 
       public static final byte INACTIVE = 0;
       public static final byte ACTIVE = 1;
@@ -54,7 +72,13 @@ public class AppConstants {
 
   public static class Device {
 
+    private Device() {
+    }
+
     public class State {
+
+      private State() {
+      }
 
       public static final String DISABLED = "DISABLED";
       public static final String PREREGISTERED = "PREREGISTERED";
@@ -65,8 +89,14 @@ public class AppConstants {
 
   public static class Cryptography {
 
+    private Cryptography() {
+    }
+
     //TODO Turn them to String
-    public class KeyType {
+    public static class KeyType {
+
+      private KeyType() {
+      }
 
       public static final int PRIVATE_KEY = 0;
       public static final int PUBLIC_KEY = 1;
@@ -76,9 +106,15 @@ public class AppConstants {
 
   public static class WebSocket {
 
+    private WebSocket() {
+    }
+
     public static final String TOPIC_PREFIX = "/topic";
 
-    public class Topic {
+    public static class Topic {
+
+      private Topic() {
+      }
 
       public final static String DEVICE_REGISTRATION = "deviceRegistration";
     }
@@ -86,11 +122,17 @@ public class AppConstants {
 
   public static class Jwt {
 
+    private Jwt() {
+    }
+
     // The unique JWT id.
     public static final String CLAIM_EMAIL = "email";
   }
 
   public static class ExitCodes {
+
+    private ExitCodes() {
+    }
 
     public static final int CANT_GENERATE_PLATFORM_AES_KEY = 1;
     public static final int CANT_GENERATE_PROVISIONING_AES_KEY = 2;
@@ -122,14 +164,15 @@ public class AppConstants {
 
   }
 
-  //  public class Http {
-  //
-  //    public static final String AUTHORIZATION = "Authorization";
-  //  }
-
   public static class DigitalTwins {
 
+    private DigitalTwins() {
+    }
+
     public static class Type {
+
+      private Type() {
+      }
 
       public static final String TELEMETRY = "telemetry";
       public static final String METADATA = "metadata";
@@ -137,6 +180,9 @@ public class AppConstants {
     }
 
     public static class DTOperations {
+
+      private DTOperations() {
+      }
 
       public static final String OPERATION_QUERY = "QUERY";
       public static final String OPERATION_MIN = "MIN";
@@ -151,6 +197,9 @@ public class AppConstants {
   }
 
   public static class NiFiQueryResults {
+
+    private NiFiQueryResults() {
+    }
 
     public static final String TIMESTAMP = "timestamp";
     public static final String TYPE = "type";

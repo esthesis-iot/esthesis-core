@@ -1,5 +1,6 @@
 package esthesis.platform.server.resource;
 
+import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyFilter;
@@ -13,11 +14,10 @@ import esthesis.platform.server.dto.CaDTO;
 import esthesis.platform.server.model.Ca;
 import esthesis.platform.server.service.CAService;
 import esthesis.platform.server.service.SecurityService;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import lombok.extern.java.Log;
 import org.apache.commons.io.IOUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,6 +44,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
+@Log
 @Validated
 @RestController
 @RequestMapping("/cas")
@@ -61,7 +62,8 @@ public class CAResource {
   @ReplyPageableFilter("-certificate,-privateKey,-publicKey")
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "There was a problem retrieving CAs.")
-  public Page<CaDTO> findAll(@QuerydslPredicate(root = Ca.class)Predicate predicate, Pageable pageable) {
+  public Page<CaDTO> findAll(@QuerydslPredicate(root = Ca.class) Predicate predicate,
+    Pageable pageable) {
     return caService.findAll(predicate, pageable);
   }
 
@@ -81,8 +83,9 @@ public class CAResource {
 
   @GetMapping(value = {"{id}/download/{keyType}/{base64}", "{id}/download/{keyType}"})
   @ExceptionWrapper(wrapper = QExceptionWrapper.class,
-      logMessage = "Could not fetch security information for the CA.")
-  public ResponseEntity download(@PathVariable long id, @PathVariable int keyType, @PathVariable Optional<Boolean> base64)
+    logMessage = "Could not fetch security information for the CA.")
+  public ResponseEntity download(@PathVariable long id, @PathVariable int keyType,
+    @PathVariable Optional<Boolean> base64)
   throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
          InvalidAlgorithmParameterException,
          IOException {
@@ -103,6 +106,8 @@ public class CAResource {
         filename += ".key";
         body = new String(securityService.decrypt(caDTO.getPrivateKey()), StandardCharsets.UTF_8);
         break;
+      default:
+        throw new QDoesNotExistException("Requested key type does not exist.");
     }
 
     if (base64.isPresent() && base64.get().booleanValue()) {
@@ -111,10 +116,10 @@ public class CAResource {
     }
 
     return ResponseEntity
-        .ok()
-        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
-        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-        .body(body);
+      .ok()
+      .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+      .contentType(MediaType.APPLICATION_OCTET_STREAM)
+      .body(body);
   }
 
   @GetMapping(value = "{id}/backup")
@@ -124,11 +129,11 @@ public class CAResource {
          NoSuchAlgorithmException, InvalidKeyException {
     final CaDTO caDTO = caService.findById(id);
     return ResponseEntity
-        .ok()
-        .header(HttpHeaders.CONTENT_DISPOSITION,
-            "attachment; filename=" + new Slugify().slugify(caDTO.getCn()) + ".backup")
-        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-        .body(caService.backup(id));
+      .ok()
+      .header(HttpHeaders.CONTENT_DISPOSITION,
+        "attachment; filename=" + new Slugify().slugify(caDTO.getCn()) + ".backup")
+      .contentType(MediaType.APPLICATION_OCTET_STREAM)
+      .body(caService.backup(id));
   }
 
   @PostMapping(value = "/restore")

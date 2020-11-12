@@ -127,10 +127,9 @@ public class CommandResource {
           StringUtils.defaultIfEmpty(commandExecuteOrderDTO.getHardwareIds(), "").split(",")))
         .stream()
         .map(DeviceDTO::getHardwareId)
-    ).forEach(hardwareId -> {
-      requestIds.add(dtService.executeCommand(hardwareId, commandExecuteOrderDTO.getCommand(),
-        commandExecuteOrderDTO.getDescription(), commandExecuteOrderDTO.getArguments()));
-    });
+    ).forEach(hardwareId -> requestIds
+      .add(dtService.executeCommand(hardwareId, commandExecuteOrderDTO.getCommand(),
+        commandExecuteOrderDTO.getDescription(), commandExecuteOrderDTO.getArguments())));
 
     return requestIds;
   }

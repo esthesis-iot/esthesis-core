@@ -2,18 +2,20 @@ package esthesis.platform.server.util;
 
 
 import com.eurodyn.qlack.common.util.KeyValue;
+import lombok.extern.java.Log;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+@Log
 public class ReflectionUtils {
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(ReflectionUtils.class.getName());
+
+  private ReflectionUtils() {
+  }
 
   public static List<KeyValue<String, String>> getStaticFieldsValue(Class clazz) {
     return Arrays.stream(clazz.getDeclaredFields())
@@ -22,7 +24,7 @@ public class ReflectionUtils {
         try {
           return new com.eurodyn.qlack.common.util.KeyValue<>(f.getName(), (String)f.get(null));
         } catch (IllegalAccessException e) {
-          LOGGER.log(Level.SEVERE,  e.getMessage(), e);
+          log.log(Level.SEVERE,  e.getMessage(), e);
           return null;
         }
       })

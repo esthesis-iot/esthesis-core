@@ -47,6 +47,7 @@ public class SettingResolverService {
     boolean isAny = false;
 
     for (String value : values) {
+      //TODO always false...
       isAny = isAny || get(settingName).equals(value);
       if (isAny) {
         break;

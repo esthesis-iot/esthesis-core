@@ -70,7 +70,7 @@ public class NiFiResource {
   @DeleteMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete NiFi object.")
   public ResponseEntity delete(@PathVariable long id) {
-    final NiFiDTO nifiDTO = nifiService.deleteById(id);
+    nifiService.deleteById(id);
 
     return ResponseEntity.ok().build();
   }

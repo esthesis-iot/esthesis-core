@@ -36,8 +36,7 @@ public class SyncService {
 
     List<EsthesisTemplateDTO> deployedEsthesisTemplates = getDeployedTemplates();
     boolean isLatestDeployed = deployedEsthesisTemplates.stream()
-      .filter(esthesisTemplateDTO -> esthesisTemplateDTO.getName().contains(latestTemplateName))
-      .findFirst().isPresent();
+      .anyMatch(esthesisTemplateDTO -> esthesisTemplateDTO.getName().contains(latestTemplateName));
 
     String latestWorkflowTemplateResource = niFiService.getLatestWorkflowTemplateResource();
     Optional<NiFiTemplateDTO> template = niFiClientService.getTemplate(latestTemplateName);
@@ -85,7 +84,7 @@ public class SyncService {
 
     List<EsthesisTemplateDTO> deployedTemplates = getDeployedTemplates();
 
-    if (deployedTemplates.size() > 0) {
+    if (!deployedTemplates.isEmpty()) {
       deployedTemplates.forEach(esthesisTemplateDTO -> {
         String rootProcessGroupId = esthesisTemplateDTO.getFlowGroupId();
         String workflowId = esthesisTemplateDTO.getTemplateId();

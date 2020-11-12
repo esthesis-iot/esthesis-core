@@ -9,9 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class DefaultRetryTemplate {
 
-  public DefaultRetryTemplate() {
-  }
-
   /**
    * Specify a RetryTemplate to be used while making requests.
    */

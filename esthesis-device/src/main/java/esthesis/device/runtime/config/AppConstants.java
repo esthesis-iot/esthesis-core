@@ -2,6 +2,9 @@ package esthesis.device.runtime.config;
 
 public class AppConstants {
 
+  private AppConstants() {
+  }
+
   // The context root of the API of the PS.
   public static final String URL_PS_PREFIX = "/api";
 
@@ -16,6 +19,9 @@ public class AppConstants {
   // Exit codes.
   public static class ExitCode {
 
+    private ExitCode() {
+    }
+
     public static final int CANNOT_FIND_DEVICE_ID = 1;
   }
 
@@ -24,6 +30,9 @@ public class AppConstants {
   public static final String PROVISIONING_FORK_TYPE_HARD = "hard";
 
     public static class Mqtt {
+
+      private Mqtt() {
+      }
 
       // The names of JSON nodes expected into an MQTT message to be processed by the platform.
       public static class MqttPayload {

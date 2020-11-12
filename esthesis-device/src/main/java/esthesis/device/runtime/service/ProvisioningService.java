@@ -58,6 +58,7 @@ public class ProvisioningService {
   private final CryptoDigestService cryptoDigestService;
   private final ProvisioningRepository provisioningRepository;
 
+  @SuppressWarnings("java:S107")
   public ProvisioningService(AppProperties appProperties,
     RegistrationService registrationService,
     DeviceMessageUtil deviceMessageUtil,

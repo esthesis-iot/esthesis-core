@@ -24,7 +24,7 @@ class DeviceKeyRepositoryImpl implements DeviceKeyRepositoryExt {
 
   @PersistenceContext
   private EntityManager em;
-  private final static QDeviceKey deviceKey = QDeviceKey.deviceKey;
+  private static final QDeviceKey deviceKey = QDeviceKey.deviceKey;
 
   @Override
   public DeviceKey findLatestAccepted(long deviceId) {

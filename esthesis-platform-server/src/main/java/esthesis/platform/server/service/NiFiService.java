@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -68,13 +69,12 @@ public class NiFiService extends BaseService<NiFiDTO, NiFi> {
   @CacheEvict("esthesis.platform.server.activeNiFi")
   public NiFiDTO save(NiFiDTO dto) {
     NiFiDTO activeNiFi = getActiveNiFi();
-    if (activeNiFi != null && activeNiFi.getId() != dto.getId() && dto.isState()) {
+    if (!Objects.equals(activeNiFi.getId(), dto.getId()) && dto.isState()) {
       activeNiFi.setState(false);
       super.save(activeNiFi);
     }
 
-    NiFiDTO savedDTO = super.save(dto);
-    return savedDTO;
+    return super.save(dto);
   }
 
   @Override

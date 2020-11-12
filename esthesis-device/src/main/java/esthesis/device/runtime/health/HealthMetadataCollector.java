@@ -37,7 +37,7 @@ public class HealthMetadataCollector {
   private final AppProperties appProperties;
   private final ObjectMapper objectMapper;
   private final RegistrationService registrationService;
-  private final static Instant startupTime = Instant.now();
+  private static final Instant STARTUP_TIME = Instant.now();
 
   public HealthMetadataCollector(MqttClient mqttClient,
     AppProperties appProperties, ObjectMapper objectMapper,
@@ -77,6 +77,7 @@ public class HealthMetadataCollector {
     }
   }
 
+  @SuppressWarnings("java:S3776")
   public byte[] collectHealthData() {
     try {
       DeviceHealthDataDTO deviceHealthDataDTO = new DeviceHealthDataDTO();
@@ -120,7 +121,7 @@ public class HealthMetadataCollector {
         deviceHealthDataDTO.setCurrentTime(Instant.now().toEpochMilli());
       }
       if (appProperties.isHcUpTime()) {
-        deviceHealthDataDTO.setUpTime(ChronoUnit.MILLIS.between(startupTime, Instant.now()));
+        deviceHealthDataDTO.setUpTime(ChronoUnit.MILLIS.between(STARTUP_TIME, Instant.now()));
       }
 
       // IP Address.
@@ -172,7 +173,7 @@ public class HealthMetadataCollector {
       return objectMapper.writeValueAsBytes(node);
     } catch (Exception e) {
       log.log(Level.SEVERE, "Could not obtain health data.", e);
-      return null;
+      return new byte[0];
     }
   }
 }

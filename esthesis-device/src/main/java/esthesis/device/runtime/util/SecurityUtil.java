@@ -90,10 +90,6 @@ public class SecurityUtil {
     return readFile(getProvisioningKeyLocation());
   }
 
-  public String getRootCaCertificate() {
-    return readFile(getRootCaCertificateLocation());
-  }
-
   public String getCertificate() {
     return readFile(getCertificateLocation());
   }
@@ -128,7 +124,7 @@ public class SecurityUtil {
   }
 
   public boolean isRootCACertificatePresent() {
-    return StringUtils.isNotBlank(getRootCaCertificate());
+    return StringUtils.isNotBlank(getRootCACertificate());
   }
 
   public boolean isCertificatePresent() {

@@ -56,6 +56,7 @@ public class DeviceAgentService {
   private final SettingResolverService settingResolverService;
   private final CAService caService;
 
+  @SuppressWarnings("java:S107")
   public DeviceAgentService(DeviceService deviceService,
     SettingResolverService srs, MQTTService mqttService,
     SecurityService securityService,

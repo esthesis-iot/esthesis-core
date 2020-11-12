@@ -21,7 +21,7 @@ import java.util.logging.Level;
 @Log
 public class ControlCommandHealth {
 
-  private final static String COMMAND_NAME = "HEALTH";
+  private static final String COMMAND_NAME = "HEALTH";
   private final HealthMetadataCollector healthMetadataCollector;
   private final ControlCommandUtil mqttCommandUtil;
   private final MqttClient mqttClient;

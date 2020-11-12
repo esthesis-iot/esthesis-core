@@ -8,6 +8,7 @@ import com.querydsl.core.types.Predicate;
 import esthesis.platform.server.dto.ProvisioningDTO;
 import esthesis.platform.server.model.Provisioning;
 import esthesis.platform.server.service.ProvisioningService;
+import javax.crypto.NoSuchPaddingException;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Optional;
 
 @RestController
@@ -43,7 +49,9 @@ public class ProvisioningResource {
   @PostMapping
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save provisioning package.")
   public ResponseEntity save(@RequestParam("file") Optional<MultipartFile> file,
-    @ModelAttribute ProvisioningDTO provisioningDTO) throws Exception {
+    @ModelAttribute ProvisioningDTO provisioningDTO)
+  throws IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
+         SignatureException, InvalidAlgorithmParameterException, InvalidKeySpecException {
     if (provisioningDTO.getId() == null && file.isPresent()) {
       final long id = provisioningService.save(provisioningDTO, file.get());
       provisioningService.encryptAndSign(id);

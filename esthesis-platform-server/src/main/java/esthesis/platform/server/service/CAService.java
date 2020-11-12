@@ -33,15 +33,11 @@ import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Logger;
 
 @Service
 @Validated
 @Transactional
 public class CAService extends BaseService<CaDTO, Ca> {
-
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(CAService.class.getName());
 
   private final CryptoCAService cryptoCAService;
   private final SecurityService securityService;

@@ -74,7 +74,7 @@ public class ApplicationResource {
   @DeleteMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete application.")
   public ResponseEntity delete(@PathVariable long id) {
-    final ApplicationDTO applicationDTO = applicationService.deleteById(id);
+    applicationService.deleteById(id);
 
     return ResponseEntity.ok().build();
   }

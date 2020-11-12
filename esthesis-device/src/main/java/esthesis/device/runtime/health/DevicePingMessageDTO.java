@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DevicePingMessageDTO {
   @JsonProperty("m")
-  private final String measurement = "ping";
+  private final static String MEASUREMENT = "ping";
 
   @Getter
   @Setter

@@ -5,6 +5,7 @@ import com.eurodyn.qlack.fuse.crypto.service.CryptoDigestService;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoSymmetricService;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import esthesis.common.device.dto.DeviceDTO;
 import esthesis.common.dto.DeviceMessage;
 import esthesis.common.util.Base64E;
 import esthesis.platform.server.config.AppProperties;
@@ -13,7 +14,6 @@ import esthesis.platform.server.config.AppSettings.SettingValues.Security.Incomi
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.IncomingSignature;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingEncryption;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingSignature;
-import esthesis.common.device.dto.DeviceDTO;
 import esthesis.platform.server.repository.CertificateRepository;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +31,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.logging.Logger;
 
 /**
  * A utility service to centralise all encryption/decryption functions without scattering keys
@@ -41,9 +40,6 @@ import java.util.logging.Logger;
 @Validated
 @Transactional
 public class SecurityService {
-
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(SecurityService.class.getName());
 
   private final AppProperties appProperties;
   private final CryptoSymmetricService cryptoSymmetricService;

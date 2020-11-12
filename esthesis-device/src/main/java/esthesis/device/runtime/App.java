@@ -15,14 +15,14 @@ import java.util.concurrent.CountDownLatch;
 
 @EnableAsync
 @EnableCaching
+@EnableScheduling
 @SpringBootApplication
 @ComponentScan({"esthesis", "com.eurodyn.qlack"})
-@EnableScheduling
 public class App {
 
   // proxyWeb needs special handling here, since although defined in AppProperties it can not be
   // accessed at this stage (i.e. before Spring is initialised).
-  private static final String proxyWeb = "proxyWeb";
+  private static final String PROXY_WEB = "proxyWeb";
 
   @Bean
   public CountDownLatch closeLatch() {
@@ -32,12 +32,13 @@ public class App {
   /**
    * Main application start interface.
    */
+  @SuppressWarnings({"java:S4823", "java:S5304"})
   public static void main(String[] args) throws InterruptedException {
     SpringApplicationBuilder ctxBuilder = new SpringApplicationBuilder(App.class)
       .logStartupInfo(false);
 
     // Check if the embedded Web server should be started.
-    if (BooleanUtils.toBooleanDefaultIfNull(Boolean.valueOf(System.getenv(proxyWeb)), false)) {
+    if (BooleanUtils.toBooleanDefaultIfNull(Boolean.valueOf(System.getenv(PROXY_WEB)), false)) {
       ctxBuilder.web(WebApplicationType.SERVLET);
     } else {
       ctxBuilder.web(WebApplicationType.NONE);

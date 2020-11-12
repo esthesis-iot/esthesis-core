@@ -28,7 +28,7 @@ import java.util.logging.Level;
 @Validated
 @Log
 public class ControlCommandExecute {
-  private final static String COMMAND_NAME = "EXECUTE";
+  private static final String COMMAND_NAME = "EXECUTE";
   private final ControlCommandUtil mqttCommandUtil;
   private final MqttClient mqttClient;
   private final ObjectMapper objectMapper;

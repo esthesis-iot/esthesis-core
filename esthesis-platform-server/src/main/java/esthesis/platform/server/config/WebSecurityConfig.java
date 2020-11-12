@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  public static final String[] PUBLIC_URIS =
+  private static final String[] PUBLIC_URIS =
     {"/users/auth", "/ping", "/agent/**"};
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final DTSecurityFilter dtSecurityFilter;

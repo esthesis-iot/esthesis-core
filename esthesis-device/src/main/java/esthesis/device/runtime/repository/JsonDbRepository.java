@@ -16,7 +16,7 @@ import java.util.logging.Level;
 public class JsonDbRepository {
   private final AppProperties appProperties;
   // Package name where POJO's are present.
-  private final static String BASE_SCAN_PACKAGE = "esthesis.device.runtime.model";
+  private static final String BASE_SCAN_PACKAGE = "esthesis.device.runtime.model";
   private JsonDBTemplate jsonDBTemplate;
 
   public JsonDbRepository(AppProperties appProperties) {

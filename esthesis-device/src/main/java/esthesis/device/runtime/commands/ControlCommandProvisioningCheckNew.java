@@ -28,7 +28,7 @@ import java.util.logging.Level;
 @Log
 public class ControlCommandProvisioningCheckNew {
 
-  private final static String COMMAND_NAME = "PROVISIONING_CHECK_NEW";
+  private static final String COMMAND_NAME = "PROVISIONING_CHECK_NEW";
   private final ProvisioningService provisioningService;
   private final ControlCommandUtil mqttCommandUtil;
   private final MqttClient mqttClient;

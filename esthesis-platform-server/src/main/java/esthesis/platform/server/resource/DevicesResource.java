@@ -82,9 +82,7 @@ public class DevicesResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch device.")
   @ReplyFilter("-certificate,-privateKey,-publicKey,-psPublicKey,-sessionKey")
   public DeviceDTO get(@PathVariable long id) {
-    final DeviceDTO deviceDTO = deviceService.findById(id, true);
-
-    return deviceDTO;
+    return deviceService.findById(id, true);
   }
 
   @DeleteMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -101,6 +99,7 @@ public class DevicesResource {
   }
 
   @GetMapping(path = "{deviceId}/keys")
+  @SuppressWarnings("java:S1192")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch device keys.")
   public ResponseEntity downloadKeys(@PathVariable long deviceId)
   throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,

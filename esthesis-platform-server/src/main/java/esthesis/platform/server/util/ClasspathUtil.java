@@ -8,6 +8,9 @@ import java.io.InputStreamReader;
 
 public class ClasspathUtil {
 
+  private ClasspathUtil() {
+  }
+
   /**
    * Returns the content of a text resource from the classpath. Works during development as well as
    * in fat JARs.

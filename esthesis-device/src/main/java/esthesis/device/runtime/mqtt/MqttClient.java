@@ -97,6 +97,7 @@ public class MqttClient {
     });
   }
 
+  @SuppressWarnings("java:S3776")
   public void connect(String mqttServerAddress) {
     if (client == null || !client.isConnected()) {
       try {
@@ -111,15 +112,18 @@ public class MqttClient {
         client.setCallback(new MqttCallbackExtended() {
           @Override
           public void connectionLost(Throwable cause) {
+            // Just report the connection lost, an automatic reconnect will be tried.
             log.log(Level.FINEST, "Lost connection to MQTT server.", cause);
           }
 
           @Override
           public void messageArrived(String topic, MqttMessage message) {
+            // No special handling needed.
           }
 
           @Override
           public void deliveryComplete(IMqttDeliveryToken token) {
+            // No special handling needed.
           }
 
           @Override

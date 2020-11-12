@@ -57,7 +57,7 @@ public class RegistrationService {
   public String register() throws IOException {
     // Check if registration is already done in the past.
     final List<Registration> registrations = registrationRepository.findAll();
-    if (registrations.size() > 0) {
+    if (!registrations.isEmpty()) {
       return appProperties.getHardwareId();
     }
 

@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import esthesis.common.device.RegistrationRequest;
+import esthesis.common.device.dto.DeviceDTO;
 import esthesis.common.dto.DeviceMessage;
 import esthesis.common.util.Base64E;
 import esthesis.platform.server.config.AppConstants.Device.State;
@@ -33,7 +34,6 @@ import esthesis.platform.server.config.AppSettings.SettingValues.Security.Incomi
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingEncryption;
 import esthesis.platform.server.config.AppSettings.SettingValues.Security.OutgoingSignature;
 import esthesis.platform.server.dto.DTDeviceDTO;
-import esthesis.common.device.dto.DeviceDTO;
 import esthesis.platform.server.dto.DeviceKeyDTO;
 import esthesis.platform.server.dto.DevicePageDTO;
 import esthesis.platform.server.dto.DeviceRegistrationDTO;
@@ -102,6 +102,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   private final DTService dtService;
   private final ObjectMapper mapper;
 
+  @SuppressWarnings("java:S107")
   public DeviceService(
     DeviceRepository deviceRepository, DeviceMapper deviceMapper,
     DTDeviceMapper dtDeviceMapper, DeviceKeyMapper deviceKeyMapper,
@@ -342,6 +343,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
           break;
         case RegistrationMode.DISABLED:
           throw new QDisabledException("Device registration is disabled.");
+        default:
+          throw new QDoesNotExistException("The requested registration mode does not exist.");
       }
 
       // Realtime notification.
@@ -437,7 +440,6 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
   public List<DevicePageDTO> getFieldValues(long deviceId) {
     final DeviceDTO deviceDTO = findById(deviceId);
-    List<DevicePageDTO> fieldValues = new ArrayList<>();
 
     // Iterate over the available data types to find which fields to fetch.
     return devicePageService.findAll()
@@ -453,7 +455,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
             mapper.readValue(fieldValue, HashMap.class);
           field.setMeasurement(jsonFields.keySet().iterator().next());
           final List<Map<String, Object>> fields = jsonFields.get(field.getMeasurement());
-          if (fields.size() > 0) {
+          if (!fields.isEmpty()) {
             String valueField = jsonFields.get(field.getMeasurement()).get(0).keySet().stream()
               .filter(
                 f -> !(f.equals(NiFiQueryResults.TIMESTAMP) || f.equals(NiFiQueryResults.TYPE)))

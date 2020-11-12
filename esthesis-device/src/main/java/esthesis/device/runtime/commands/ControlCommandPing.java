@@ -21,7 +21,7 @@ import java.util.logging.Level;
 @Log
 public class ControlCommandPing {
 
-  private final static String COMMAND_NAME = "PING";
+  private static final String COMMAND_NAME = "PING";
   private final ControlCommandUtil mqttCommandUtil;
   private final MqttClient mqttClient;
   private final ObjectMapper objectMapper;

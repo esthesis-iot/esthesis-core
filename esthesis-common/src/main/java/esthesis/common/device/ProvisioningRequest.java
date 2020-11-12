@@ -14,5 +14,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 public class ProvisioningRequest extends GenericRequest {
+
   private Long provisioningPackageId;
 }

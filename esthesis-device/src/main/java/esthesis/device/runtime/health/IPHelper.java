@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
 @Log
 public class IPHelper {
 
+  private IPHelper() {
+  }
+
   /**
    * A helper method to discover the IP address of the available interfaces.
    *

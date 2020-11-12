@@ -12,6 +12,6 @@ import org.springframework.validation.annotation.Validated;
 public class CommandRequestService extends BaseService<CommandRequestDTO, CommandRequest> {
 
   public CommandRequestService() {
+    super();
   }
-
 }

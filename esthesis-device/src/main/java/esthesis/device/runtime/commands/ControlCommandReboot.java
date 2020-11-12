@@ -21,7 +21,7 @@ import java.util.logging.Level;
 @Validated
 @Log
 public class ControlCommandReboot {
-  private final static String COMMAND_NAME = "REBOOT";
+  private static final String COMMAND_NAME = "REBOOT";
   private final AppProperties appProperties;
   private final ControlCommandUtil mqttCommandUtil;
   private final MqttClient mqttClient;

@@ -39,6 +39,7 @@ public class EsthesisPlatform {
   /**
    * Main application start interface.
    */
+  @SuppressWarnings("java:S4823")
   public static void main(String[] args) {
     // Add BouncyCastle security provider.
     Security.addProvider(new BouncyCastleProvider());
