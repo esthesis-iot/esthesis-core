@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'eddevopsd2/mvn3-jdk13:1.0.0'
-            args '-v /root/.m2:/root/.m2'
+            args '-v /root/.m2:/root/.m2 -v /root/sonar-scanner:/root/sonar-scanner'
         }
     }
     stages {
@@ -18,7 +18,7 @@ pipeline {
         }
         stage('Sonar Analysis') {
             steps {
-                sh 'mvn sonar:sonar -Dsonar.projectName=Esthesis-Platform -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_KEY_ESTHESIS_PLATF}'
+                sh '/root/sonar-scanner/bin/sonar-scanner -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_KEY_ESTHESIS_PLATF}'
             }
         }
         stage('Produce bom.xml'){
