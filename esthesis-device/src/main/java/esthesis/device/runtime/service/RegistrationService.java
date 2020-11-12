@@ -90,7 +90,7 @@ public class RegistrationService {
         }).getBody());
 
     // Verify and/or decrypt incoming reply according to preferences.
-    deviceMessageUtil.processIncoming(registrationResponse, RegistrationRequest.class);
+    deviceMessageUtil.processIncoming(registrationResponse, RegistrationResponse.class);
 
     // Check if an MQTT server was received.
     if (registrationResponse.getPayload().getMqttServer() == null) {
@@ -164,7 +164,8 @@ public class RegistrationService {
     Registration registration = new Registration();
     registration.setProvisioningUrl(registrationResponse.getPayload().getProvisioningUrl());
     if (registrationResponse.getPayload().getMqttServer() != null) {
-      registration.setMqttServerIp(registrationResponse.getPayload().getMqttServer().getIpAddress());
+      registration
+        .setMqttServerIp(registrationResponse.getPayload().getMqttServer().getIpAddress());
     }
     registration.setRegisteredOn(new Date());
     registrationRepository.save(registration);

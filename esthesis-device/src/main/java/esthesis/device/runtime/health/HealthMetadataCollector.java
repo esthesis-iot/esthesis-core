@@ -49,8 +49,8 @@ public class HealthMetadataCollector {
   }
 
   @Async
-  @Scheduled(fixedRateString = "${pingFreqMsec:60000}",
-    initialDelayString = "${pingInitialDelayMsec:60000}")
+  @Scheduled(fixedRateString = "${pingFreqMsec:10000}",
+    initialDelayString = "${pingInitialDelayMsec:10000}")
   public void pingScheduler() {
     if (StringUtils.isNotEmpty(registrationService.getEmbeddedMqttServer())) {
       mqttClient.publish(Mqtt.EventType.PING, ping());

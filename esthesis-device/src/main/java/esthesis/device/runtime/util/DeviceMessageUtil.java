@@ -59,7 +59,7 @@ public class DeviceMessageUtil {
   /**
    * Convenience method to verify the signature and/or decrypt incoming messages.
    */
-  public <T> void processIncoming(DeviceMessage msg, Class<T> payloadClass) {
+  public <T> void processIncoming(DeviceMessage<T> msg, Class<T> payloadClass) {
     // Verify the signature of the response if requested.
     if (appProperties.isIncomingSigned()) {
       if (StringUtils.isBlank(msg.getSignature())) {
@@ -98,7 +98,7 @@ public class DeviceMessageUtil {
   /**
    * Convenience method to sign and/or encrypt outgoing messages.
    */
-  public void prepareOutgoing(DeviceMessage msg) {
+  public void prepareOutgoing(DeviceMessage<?> msg) {
     // Encrypt request if required.
     if (appProperties.isOutgoingEncrypted()) {
       try {
@@ -120,7 +120,7 @@ public class DeviceMessageUtil {
     }
   }
 
-  public void sign(DeviceMessage msg)
+  public void sign(DeviceMessage<?> msg)
   throws IOException, NoSuchAlgorithmException, InvalidKeySpecException,
          InvalidKeyException, SignatureException {
     if (msg.getPayload() != null && msg.getEncryptedPayload() != null) {
@@ -145,7 +145,7 @@ public class DeviceMessageUtil {
     }
   }
 
-  public void verifySignature(DeviceMessage msg)
+  public void verifySignature(DeviceMessage<?> msg)
   throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
          SignatureException {
     if (msg.getSignature() == null) {
@@ -200,7 +200,7 @@ public class DeviceMessageUtil {
   }
 
 
-  public void encrypt(DeviceMessage msg)
+  public void encrypt(DeviceMessage<?> msg)
   throws NoSuchPaddingException, IOException, NoSuchAlgorithmException, InvalidKeyException,
          InvalidAlgorithmParameterException {
     if (msg.getPayload() == null) {
@@ -219,16 +219,8 @@ public class DeviceMessageUtil {
 
   /**
    * Decrypts the payload of a message using the session key established with the platform.
-   * @param msg
-   * @param payloadClass
-   * @param <T>
-   * @throws NoSuchPaddingException
-   * @throws NoSuchAlgorithmException
-   * @throws InvalidKeyException
-   * @throws InvalidAlgorithmParameterException
-   * @throws IOException
    */
-  public <T> void decrypt(DeviceMessage msg, Class<T> payloadClass)
+  public <T> void decrypt(DeviceMessage<T> msg, Class<T> payloadClass)
   throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
          InvalidAlgorithmParameterException, IOException {
     if (msg.getEncryptedPayload() == null) {
@@ -247,14 +239,10 @@ public class DeviceMessageUtil {
 
   /**
    * Decrypts a file using the session key established with the platform.
-   * @param path
-   * @param deleteEncrypted Whether to delete the encrypted file after successful decryption or not.
+   *
+   * @param deleteEncrypted Whether to delete the encrypted file after successful decryption or
+   * not.
    * @return Returns a full path to the decrypted file.
-   * @throws IOException
-   * @throws InvalidAlgorithmParameterException
-   * @throws NoSuchAlgorithmException
-   * @throws InvalidKeyException
-   * @throws NoSuchPaddingException
    */
   public String decrypt(Path path, boolean deleteEncrypted)
   throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
@@ -270,7 +258,8 @@ public class DeviceMessageUtil {
           fileInputStream,
           fileOutputStream,
           cryptoSymmetricService
-            .keyFromString(securityUtil.getProvisioningKey(), appProperties.getSymmetricKeyAlgorithm()),
+            .keyFromString(securityUtil.getProvisioningKey(),
+              appProperties.getSymmetricKeyAlgorithm()),
           null,
           appProperties.getSymmetricCipher(),
           appProperties.getSymmetricKeyAlgorithm()
@@ -288,8 +277,9 @@ public class DeviceMessageUtil {
 
   /**
    * Resolves a text-based topic name to its enum equivalent. If the topic name is not one of the
-   * supported ones an exception is thrown. The CONTROL_REQUEST topic is not supported as this is
-   * a topic where message are not originated from the agent.
+   * supported ones an exception is thrown. The CONTROL_REQUEST topic is not supported as this is a
+   * topic where message are not originated from the agent.
+   *
    * @param topic The name of the topic to resolve.
    */
   public EventType resolveTopic(String topic) {
