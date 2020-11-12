@@ -10,7 +10,6 @@ import esthesis.common.device.RegistrationResponse;
 import esthesis.common.dto.DeviceMessage;
 import esthesis.platform.server.config.AppSettings.Setting.Provisioning;
 import esthesis.platform.server.config.AppSettings.SettingValues.Provisioning.Encryption;
-import esthesis.platform.server.service.CAService;
 import esthesis.platform.server.service.DeviceAgentService;
 import esthesis.platform.server.service.ProvisioningService;
 import esthesis.platform.server.service.SettingResolverService;
@@ -48,7 +47,7 @@ public class DeviceAgentResource {
   private final DeviceAgentService deviceAgentService;
 
   public DeviceAgentResource(SettingResolverService srs, ProvisioningService provisioningService,
-    CAService caService, DeviceAgentService deviceAgentService) {
+    DeviceAgentService deviceAgentService) {
     this.srs = srs;
     this.provisioningService = provisioningService;
     this.deviceAgentService = deviceAgentService;

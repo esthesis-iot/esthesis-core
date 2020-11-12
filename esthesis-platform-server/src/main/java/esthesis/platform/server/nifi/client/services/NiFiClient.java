@@ -1145,7 +1145,7 @@ public class NiFiClient {
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
     processorConfigDTO.setSchedulingPeriod(schedulingPeriod);
     processorConfigDTO.setAutoTerminatedRelationships(new HashSet<>(
-      Collections.singletonList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType())));
+      Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType())));
     processorConfigDTO.setProperties(properties);
     BundleDTO bundleDTO = createBundleDTO(BundleGroup.NIFI, BundleArtifact.STANDARD);
 
@@ -1492,8 +1492,7 @@ public class NiFiClient {
       changePortStatus(inputPort, STATE.STOPPED);
       if (connections == 2 && typeConnection.get().getStatus().getName().equals("1")) {
         ConnectionEntity connectionEntity = otherConnection.get();
-        connectionEntity.getComponent().setSelectedRelationships(new HashSet<>(
-          Collections.singletonList("1")));
+        connectionEntity.getComponent().setSelectedRelationships(new HashSet<>(Arrays.asList("1")));
         updateConnection(connectionEntity);
       }
       deleteConnection(typeConnection.get());
@@ -1564,7 +1563,7 @@ public class NiFiClient {
         }
 
         entityToUpdate.get().getComponent()
-          .setSelectedRelationships(new HashSet<>(Collections.singletonList(newName)));
+          .setSelectedRelationships(new HashSet<>(Arrays.asList(newName)));
         updateConnection(entityToUpdate.get());
 
         //If destination was running, we need to restart it.
@@ -1589,7 +1588,7 @@ public class NiFiClient {
     String name = "" + relationships;
     connectSourceAndDestination(parentProcessGroupId, destinationProcessGroup,
       PROCESSOR.name(),
-      INPUT_PORT.name(), processorId, inputPortId, new HashSet<>(Collections.singletonList(name)));
+      INPUT_PORT.name(), processorId, inputPortId, new HashSet<>(Arrays.asList(name)));
   }
 
   /**
@@ -1709,7 +1708,7 @@ public class NiFiClient {
 
       connectSourceAndDestination(parentProcessGroupId, parentProcessGroupId, PROCESSOR.name(),
         PROCESSOR.name(), distributeLoad.getId(), processorId,
-        new HashSet<>(Collections.singletonList(String.valueOf(outgoingRelationships))));
+        new HashSet<>(Arrays.asList(String.valueOf(outgoingRelationships))));
 
       changeProcessorStatus(distributeLoad.getComponent().getId(), STATE.RUNNING);
 

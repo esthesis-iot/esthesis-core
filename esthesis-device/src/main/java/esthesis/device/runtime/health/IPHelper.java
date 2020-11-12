@@ -27,8 +27,8 @@ public class IPHelper {
     try {
       return Collections.list(NetworkInterface.getNetworkInterfaces()).stream()
         .filter(net ->
-          StringUtils.isBlank(ifFilter) || StringUtils.isBlank(ifFilter) || Arrays
-            .asList(ifFilter.split(",")).contains(net.getName()))
+          StringUtils.isBlank(ifFilter) || Arrays.asList(ifFilter.split(","))
+            .contains(net.getName()))
         .map(net -> net.getDisplayName() + ": " +
           Collections.list(net.getInetAddresses()).stream()
             .map(InetAddress::getHostAddress)

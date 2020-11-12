@@ -60,7 +60,7 @@ public class ControlCommandExecute {
       // Execute the command and capture its output.
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
-      ExecuteWatchdog watchdog = new ExecuteWatchdog(60 * 1000);
+      ExecuteWatchdog watchdog = new ExecuteWatchdog(60L * 1000L);
       Executor executor = new DefaultExecutor();
       executor.setExitValue(0);
       executor.setStreamHandler(streamHandler);
