@@ -152,11 +152,10 @@ public class AppConstants {
     FILESYSTEM(5);
 
     private final int type;
-    private static final Map map = new HashMap<>();
+    private static final Map<Integer, NIFI_SINK_HANDLER> map = new HashMap<>();
 
     static {
       for (NIFI_SINK_HANDLER nifi_sink_handler : NIFI_SINK_HANDLER.values()) {
-        //noinspection unchecked
         map.put(nifi_sink_handler.type, nifi_sink_handler);
       }
     }

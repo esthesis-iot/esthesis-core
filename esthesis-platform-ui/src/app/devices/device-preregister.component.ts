@@ -14,7 +14,7 @@ import {UtilityService} from '../shared/service/utility.service';
 @Component({
   selector: 'app-device-preregister',
   templateUrl: './device-preregister.component.html',
-  styleUrls: ['./device-preregister.component.scss']
+  styleUrls: []
 })
 export class DevicePreregisterComponent extends BaseComponent implements OnInit {
   form: FormGroup;

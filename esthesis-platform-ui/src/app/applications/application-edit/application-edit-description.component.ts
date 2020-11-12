@@ -12,7 +12,7 @@ import {UtilityService} from '../../shared/service/utility.service';
 @Component({
   selector: 'app-application-edit-description',
   templateUrl: './application-edit-description.component.html',
-  styleUrls: ['./application-edit-description.component.scss']
+  styleUrls: []
 })
 export class ApplicationEditDescriptionComponent extends BaseComponent implements OnInit {
   @Input() id: number;

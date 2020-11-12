@@ -13,7 +13,7 @@ import {SyncService} from './sync.service';
 @Component({
   selector: 'app-infrastructure-nifi-edit',
   templateUrl: './infrastructure-nifi-edit.component.html',
-  styleUrls: ['./infrastructure-nifi-edit.component.scss']
+  styleUrls: []
 })
 export class InfrastructureNiFiEditComponent extends BaseComponent implements OnInit {
   form: FormGroup;
@@ -90,9 +90,9 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         if (this.synced) {
-          this.deleteWF().afterClosed().subscribe(result => {
-            if (result) {
-              this.syncService.deleteWorkflow().subscribe(value => {
+          this.deleteWF().afterClosed().subscribe(deleteResult => {
+            if (deleteResult) {
+              this.syncService.deleteWorkflow().subscribe(() => {
                 this.deleteNiFiInstance();
               }, error => {
                 this.utilityService.popupError(error.error);

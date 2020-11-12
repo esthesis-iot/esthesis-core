@@ -6,7 +6,7 @@ import {CommandExecuteOrderDto} from '../../../dto/command-execute-order-dto';
 @Component({
   selector: 'app-device-terminal',
   templateUrl: './device-terminal.component.html',
-  styleUrls: ['./device-terminal.component.scss']
+  styleUrls: []
 })
 export class DeviceTerminalComponent implements OnInit, AfterViewInit {
   @Input() deviceId: number;

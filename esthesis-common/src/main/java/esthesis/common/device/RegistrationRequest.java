@@ -11,9 +11,9 @@ import lombok.experimental.Accessors;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
-public class RegistrationRequest extends GenericRequest {
+public class RegistrationRequest implements GenericRequest {
 
   // Comma-separated list of tags.
   private String tags;

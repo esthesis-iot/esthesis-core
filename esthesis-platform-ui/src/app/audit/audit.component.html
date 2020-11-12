@@ -37,7 +37,7 @@
       <table mat-table #table [dataSource]="datasource"
              matSort matSortActive="createdOn"
              matSortDirection="desc"
-             matSortStart="desc" matSortDisableClear>
+             matSortStart="desc" matSortDisableClear aria-describedby="List of audit events">
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;">
         </mat-row>

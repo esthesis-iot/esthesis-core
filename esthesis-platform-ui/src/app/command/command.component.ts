@@ -39,10 +39,8 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
 
   private formatPayload(commandReply: CommandReplyDto): string {
     let retVal = commandReply.payload;
-    switch (commandReply.payloadEncoding) {
-      case 'base64':
-        retVal = atob(commandReply.payload);
-        break;
+    if (commandReply.payloadEncoding === 'base64') {
+      retVal = atob(commandReply.payload);
     }
 
     return retVal;
@@ -87,7 +85,7 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   }
 
   create() {
-    const dialogRef = this.dialog.open(CommandCreateComponent, {
+    this.dialog.open(CommandCreateComponent, {
       height: '70%',
       width: '80%',
       data: {

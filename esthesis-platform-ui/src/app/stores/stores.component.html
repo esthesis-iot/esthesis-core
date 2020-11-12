@@ -8,13 +8,13 @@
       <table mat-table #table [dataSource]="datasource"
              matSort matSortActive="name"
              matSortDirection="asc"
-             matSortStart="asc" matSortDisableClear>
+             matSortStart="asc" matSortDisableClear aria-describedby="List of stores">
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Name</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Name</th>
           <td mat-cell *matCellDef="let element"> {{element.name}}</td>
         </ng-container>
         <ng-container matColumnDef="createdOn">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Created on</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Created on</th>
           <td mat-cell *matCellDef="let element">
             {{element.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}
           </td>

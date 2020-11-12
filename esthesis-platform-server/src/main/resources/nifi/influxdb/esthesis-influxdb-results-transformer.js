@@ -34,7 +34,7 @@ if (flowFile != null) {
       var json = JSON.parse(text);
 
       if (json.length > 0) {
-        for (i in json) {
+        for (var i in json) {
           var series = json[i].results[0].series[0];
           var columns = series.columns;
           // Set the root-level key as the name of the measurement.
@@ -43,9 +43,9 @@ if (flowFile != null) {
           }
 
           // Fill-in each value from the result set.
-          for (j in series.values) {
-            val = {};
-            for (key in series.values[j]) {
+          for (var j in series.values) {
+            var val = {};
+            for (var key in series.values[j]) {
               if (columns[key] === 'time') {
                 if (nonTimeOperations.indexOf(operation) == -1) {
                   val['timestamp'] = Date.parse(parseToMilis(series.values[j][key]));

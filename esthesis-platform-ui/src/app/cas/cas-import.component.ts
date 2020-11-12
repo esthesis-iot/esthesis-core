@@ -12,7 +12,7 @@ import {UtilityService} from '../shared/service/utility.service';
 @Component({
   selector: 'app-cas-import',
   templateUrl: './cas-import.component.html',
-  styleUrls: ['./cas-import.component.scss']
+  styleUrls: []
 })
 export class CasImportComponent extends BaseComponent implements OnInit {
   parents: CaDto[];

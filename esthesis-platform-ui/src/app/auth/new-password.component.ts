@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
-import {Log} from "ng2-logger/browser";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {Router} from '@angular/router';
+import {Log} from 'ng2-logger/browser';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {NewPasswordUserDto} from '../dto/new-password-user-dto';
 import {UserService} from '../users/user.service';
 import {BaseComponent} from '../shared/component/base-component';
@@ -9,7 +9,7 @@ import {BaseComponent} from '../shared/component/base-component';
 @Component({
   selector: 'app-new-password',
   templateUrl: './new-password.component.html',
-  styleUrls: ['./new-password.component.scss']
+  styleUrls: []
 })
 export class NewPasswordComponent extends BaseComponent implements OnInit {
   // Logger.
@@ -35,7 +35,7 @@ export class NewPasswordComponent extends BaseComponent implements OnInit {
       username: [''],
       existingPassword: [''],
       newPassword: [''],
-    })
+    });
   }
 
   onSubmit({value, valid}: { value: NewPasswordUserDto, valid: boolean }) {

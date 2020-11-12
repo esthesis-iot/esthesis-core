@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 @Component({
   selector: 'app-ok-cancel-modal',
   templateUrl: './ok-cancel-modal.component.html',
-  styleUrls: ['./ok-cancel-modal.component.scss']
+  styleUrls: []
 })
 export class OkCancelModalComponent implements OnInit {
 

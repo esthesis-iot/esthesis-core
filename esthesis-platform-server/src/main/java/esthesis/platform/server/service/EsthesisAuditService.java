@@ -13,13 +13,6 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class EsthesisAuditService {
 
-  /**
-   * Default constructor.
-   */
-  public EsthesisAuditService() {
-
-  }
-
 //  /**
 //   * Creates a new audit entry.
 //   *

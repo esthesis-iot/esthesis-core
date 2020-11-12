@@ -5,42 +5,42 @@
       <table mat-table [dataSource]="datasource" class="mat-elevation-z0" fxFlex="grow" matSort
              matSortActive="name"
              matSortDirection="asc"
-             matSortStart="asc" matSortDisableClear>
+             matSortStart="asc" matSortDisableClear aria-describedby="List of datasinks">
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Name</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Name</th>
           <td mat-cell *matCellDef="let element">{{element.name}}</td>
         </ng-container>
         <ng-container matColumnDef="createdOn">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Created on</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Created on</th>
           <td mat-cell
               *matCellDef="let element"> {{element.createdOn | date: constants.DATE_FORMAT}}</td>
         </ng-container>
         <ng-container matColumnDef="state">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> State</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> State</th>
           <td mat-cell *matCellDef="let element">
             <app-boolean-checkbox [value]="element.state"></app-boolean-checkbox>
           </td>
         </ng-container>
         <ng-container matColumnDef="metadataWrite">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Metadata write handler</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Metadata write handler</th>
           <td mat-cell *matCellDef="let element">
             <app-boolean-checkbox [value]="element.metadataWrite"></app-boolean-checkbox>
           </td>
         </ng-container>
         <ng-container matColumnDef="telemetryWrite">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Telemetry write handler</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Telemetry write handler</th>
           <td mat-cell *matCellDef="let element">
             <app-boolean-checkbox [value]="element.telemetryWrite"></app-boolean-checkbox>
           </td>
         </ng-container>
         <ng-container matColumnDef="metadataRead">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Metadata read handler</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Metadata read handler</th>
           <td mat-cell *matCellDef="let element">
             <app-boolean-checkbox [value]="element.metadataRead"></app-boolean-checkbox>
           </td>
         </ng-container>
         <ng-container matColumnDef="telemetryRead">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Telemetry read handler</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Telemetry read handler</th>
           <td mat-cell *matCellDef="let element">
             <app-boolean-checkbox [value]="element.telemetryRead"></app-boolean-checkbox>
           </td>

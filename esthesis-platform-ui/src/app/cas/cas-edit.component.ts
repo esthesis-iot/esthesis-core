@@ -13,7 +13,7 @@ import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-moda
 @Component({
   selector: 'app-cas-edit',
   templateUrl: './cas-edit.component.html',
-  styleUrls: ['./cas-edit.component.scss']
+  styleUrls: []
 })
 export class CasEditComponent extends BaseComponent implements OnInit {
   form: FormGroup;

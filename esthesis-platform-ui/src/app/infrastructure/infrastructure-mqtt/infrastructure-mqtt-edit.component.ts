@@ -17,7 +17,7 @@ import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-m
 @Component({
   selector: 'app-infrastructure-mqtt-edit',
   templateUrl: './infrastructure-mqtt-edit.component.html',
-  styleUrls: ['./infrastructure-mqtt-edit.component.scss']
+  styleUrls: []
 })
 export class InfrastructureMqttEditComponent extends BaseComponent implements OnInit {
   form: FormGroup;

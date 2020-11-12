@@ -1,10 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {AuditDto} from '../../dto/audit-dto';
 
 @Component({
   selector: 'app-dashboard-error-log',
   templateUrl: './dashboard-error-log.component.html',
-  styleUrls: ['./dashboard-error-log.component.scss']
+  styleUrls: []
 })
 export class DashboardErrorLogComponent implements OnInit {
 

@@ -5,7 +5,7 @@ import { MatTabGroup } from '@angular/material/tabs';
 @Component({
   selector: 'app-infrastructure',
   templateUrl: './infrastructure.component.html',
-  styleUrls: ['./infrastructure.component.scss']
+  styleUrls: []
 })
 export class InfrastructureComponent implements OnInit, AfterViewInit {
   @ViewChild(MatTabGroup, { static: true }) tabs: MatTabGroup;

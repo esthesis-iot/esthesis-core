@@ -13,7 +13,7 @@ import {KeyValueDto} from '../../dto/key-value-dto';
 @Component({
   selector: 'app-settings-device-page',
   templateUrl: './settings-device-page.component.html',
-  styleUrls: ['./settings-device-page.component.scss']
+  styleUrls: []
 })
 export class SettingsDevicePageComponent extends BaseComponent implements OnInit {
   form: FormGroup;

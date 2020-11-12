@@ -5,7 +5,7 @@ import {BaseComponent} from '../../shared/component/base-component';
 @Component({
   selector: 'app-dashboard-inactive-devices',
   templateUrl: './dashboard-inactive-devices.component.html',
-  styleUrls: ['./dashboard-inactive-devices.component.scss']
+  styleUrls: []
 })
 export class DashboardInactiveDevicesComponent extends BaseComponent implements OnInit {
 

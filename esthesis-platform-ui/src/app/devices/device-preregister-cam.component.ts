@@ -1,11 +1,8 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {ZXingScannerComponent} from '@zxing/ngx-scanner';
-import {KeyValueDto} from '../dto/key-value-dto';
-import * as _ from 'lodash';
-import { MatDialogRef } from '@angular/material/dialog';
+import {MatDialogRef} from '@angular/material/dialog';
 import {BehaviorSubject} from 'rxjs';
-import { BarcodeFormat } from '@zxing/library';
+import {BarcodeFormat} from '@zxing/library';
 
 @Component({
   selector: 'app-device-preregister-cam',
@@ -29,7 +26,8 @@ export class DevicePreregisterCamComponent implements OnInit {
   torchAvailable$ = new BehaviorSubject<boolean>(false);
   tryHarder = false;
 
-  constructor(private fb: FormBuilder, public selfDialogRef: MatDialogRef<DevicePreregisterCamComponent>) {
+  constructor(private fb: FormBuilder,
+              public selfDialogRef: MatDialogRef<DevicePreregisterCamComponent>) {
   }
 
   ngOnInit() {
@@ -43,6 +41,7 @@ export class DevicePreregisterCamComponent implements OnInit {
     this.availableDevices = devices;
     this.hasDevices = Boolean(devices && devices.length);
   }
+
   onCodeResult(resultString: string) {
     const existingIds: string = this.form.controls['ids'].value;
     if (!existingIds) {
@@ -57,13 +56,16 @@ export class DevicePreregisterCamComponent implements OnInit {
       }
     }
   }
+
   onDeviceSelectChange(selected: string) {
     const device = this.availableDevices.find(x => x.deviceId === selected);
     this.currentDevice = device || null;
   }
+
   onHasPermission(has: boolean) {
     this.hasPermission = has;
   }
+
   onTorchCompatible(isCompatible: boolean): void {
     this.torchAvailable$.next(isCompatible || false);
   }

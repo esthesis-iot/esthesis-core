@@ -12,7 +12,7 @@ import {CaDto} from '../../dto/ca-dto';
 @Component({
   selector: 'app-settings-devreg',
   templateUrl: './settings-devreg.component.html',
-  styleUrls: ['./settings-devreg.component.scss']
+  styleUrls: []
 })
 export class SettingsDevregComponent extends BaseComponent implements OnInit {
   form: FormGroup;

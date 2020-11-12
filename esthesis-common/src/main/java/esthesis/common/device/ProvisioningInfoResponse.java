@@ -11,9 +11,9 @@ import lombok.experimental.Accessors;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
-public class ProvisioningInfoResponse extends GenericResponse {
+public class ProvisioningInfoResponse implements GenericResponse {
 
   private long id;
   private String description;

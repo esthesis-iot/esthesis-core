@@ -5,7 +5,7 @@ import {BaseComponent} from '../../shared/component/base-component';
 @Component({
   selector: 'app-dashboard-new-registrations',
   templateUrl: './dashboard-new-registrations.component.html',
-  styleUrls: ['./dashboard-new-registrations.component.scss']
+  styleUrls: []
 })
 export class DashboardNewRegistrationsComponent extends BaseComponent implements OnInit {
 

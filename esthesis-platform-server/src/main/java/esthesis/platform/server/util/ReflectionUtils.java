@@ -1,6 +1,5 @@
 package esthesis.platform.server.util;
 
-
 import com.eurodyn.qlack.common.util.KeyValue;
 import lombok.extern.java.Log;
 
@@ -22,9 +21,9 @@ public class ReflectionUtils {
       .filter(f -> Modifier.isStatic(f.getModifiers()))
       .map(f -> {
         try {
-          return new com.eurodyn.qlack.common.util.KeyValue<>(f.getName(), (String)f.get(null));
+          return new com.eurodyn.qlack.common.util.KeyValue<>(f.getName(), (String) f.get(null));
         } catch (IllegalAccessException e) {
-          log.log(Level.SEVERE,  e.getMessage(), e);
+          log.log(Level.SEVERE, e.getMessage(), e);
           return null;
         }
       })

@@ -10,7 +10,7 @@ import {UtilityService} from '../../shared/service/utility.service';
 @Component({
   selector: 'app-settings-provisioning',
   templateUrl: './settings-provisioning.component.html',
-  styleUrls: ['./settings-provisioning.component.scss']
+  styleUrls: []
 })
 export class SettingsProvisioningComponent extends BaseComponent implements OnInit {
 

@@ -27,9 +27,9 @@ import java.util.List;
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Accessors(chain = true)
 public class MqttServer extends BaseEntity {
 
   @NotNull

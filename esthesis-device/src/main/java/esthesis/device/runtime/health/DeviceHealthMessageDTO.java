@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 public class DeviceHealthMessageDTO {
 
   @JsonProperty("m")
-  private final String MEASUREMENT = "health";
+  private static final String MEASUREMENT = "health";
 
   @JsonProperty("v")
   private DeviceHealthDataDTO deviceHealthDataDTO;

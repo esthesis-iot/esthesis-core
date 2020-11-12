@@ -14,6 +14,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 public class CommandReplyDTO extends BaseDTO  {
+
   // The command id for which this reply is for.
   @NotEmpty
   private long commandRequestId;

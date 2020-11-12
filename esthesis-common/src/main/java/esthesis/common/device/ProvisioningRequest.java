@@ -11,9 +11,10 @@ import lombok.experimental.Accessors;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
-public class ProvisioningRequest extends GenericRequest {
+public class ProvisioningRequest implements GenericRequest {
 
   private Long provisioningPackageId;
+
 }

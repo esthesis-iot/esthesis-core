@@ -4,11 +4,13 @@ import esthesis.common.device.dto.BaseDTO;
 import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode
 @AllArgsConstructor
 @Accessors(chain = true)
 public class CommandRequestDTO extends BaseDTO {

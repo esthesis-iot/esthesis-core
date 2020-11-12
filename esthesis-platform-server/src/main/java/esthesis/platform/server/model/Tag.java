@@ -18,9 +18,9 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Accessors(chain = true)
 public class Tag extends BaseEntity {
 
   @NotNull

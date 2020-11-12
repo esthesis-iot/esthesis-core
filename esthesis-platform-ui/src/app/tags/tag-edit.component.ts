@@ -13,7 +13,7 @@ import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-moda
 @Component({
   selector: 'app-tag-edit',
   templateUrl: './tag-edit.component.html',
-  styleUrls: ['./tag-edit.component.scss']
+  styleUrls: []
 })
 export class TagEditComponent extends BaseComponent implements OnInit {
   form: FormGroup;

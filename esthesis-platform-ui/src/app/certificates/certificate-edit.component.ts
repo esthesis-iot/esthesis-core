@@ -14,7 +14,7 @@ import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-moda
 @Component({
   selector: 'app-certificate-edit',
   templateUrl: './certificate-edit.component.html',
-  styleUrls: ['./certificate-edit.component.scss']
+  styleUrls: []
 })
 export class CertificateEditComponent extends BaseComponent implements OnInit {
   form: FormGroup;

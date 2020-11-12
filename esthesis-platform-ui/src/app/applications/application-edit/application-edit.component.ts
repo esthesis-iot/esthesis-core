@@ -4,7 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 @Component({
   selector: 'app-application-edit',
   templateUrl: './application-edit.component.html',
-  styleUrls: ['./application-edit.component.scss']
+  styleUrls: []
 })
 export class ApplicationEditComponent implements OnInit {
   id: number;

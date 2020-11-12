@@ -87,6 +87,7 @@ public class DTService {
     }
   }
 
+  @SuppressWarnings("java:")
   public String executeMetadataOrTelemetry(String type, String hardwareId, String operation,
     String measurement, String fields, Long from, Long to, Integer page, Integer pageSize) {
     // TODO security checks

@@ -3,7 +3,7 @@ import {Component, Input, OnInit} from '@angular/core';
 @Component({
   selector: 'app-application-edit-permissions',
   templateUrl: './application-edit-permissions.component.html',
-  styleUrls: ['./application-edit-permissions.component.scss']
+  styleUrls: []
 })
 export class ApplicationEditPermissionsComponent implements OnInit {
   @Input() id: number;

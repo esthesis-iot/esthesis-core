@@ -12,7 +12,7 @@ import {UtilityService} from '../../shared/service/utility.service';
 @Component({
   selector: 'app-settings-security',
   templateUrl: './settings-security.component.html',
-  styleUrls: ['./settings-security.component.scss']
+  styleUrls: []
 })
 export class SettingsSecurityComponent extends BaseComponent implements OnInit {
   form: FormGroup;

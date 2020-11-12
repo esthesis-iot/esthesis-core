@@ -29,7 +29,7 @@ if (flowFile != null) {
         ",type=" + record['tags']['type'] + " ";
       var currentField = 0;
       var totalFields = Object.keys(record['fields']).length;
-      for (f in record['fields']) {
+      for (var f in record['fields']) {
         var fieldValue = typeof record["fields"][f] === "string" ? '"' + record["fields"][f] + '"'
           : record["fields"][f];
 

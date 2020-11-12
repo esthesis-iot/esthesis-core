@@ -10,11 +10,11 @@ import lombok.experimental.Accessors;
 
 @Data
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
+@AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
-public class RegistrationResponse extends GenericResponse {
+public class RegistrationResponse implements GenericResponse {
 
   // The public key created for the device, encoded in Base64.
   private String publicKey;

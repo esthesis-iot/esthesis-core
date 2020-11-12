@@ -47,25 +47,25 @@
           </plugins>
         </pluginManagement>
         <plugins>
-          <plugin>
-            <groupId>de.jutzig</groupId>
-            <artifactId>github-release-plugin</artifactId>
-            <version>${github-release-plugin.version}</version>
-            <configuration>
-<!--              <description>Description of your release</description>-->
-<!--              <releaseName>1.0 Final</releaseName>-->
-              <tag>${project.version}</tag>
-<!--              <fileSets>-->
-<!--                <fileSet>-->
-<!--                  <directory>${project.build.directory}</directory>-->
-<!--                  <includes>-->
-<!--                    <include>${project.artifactId}*.tar.gz</include>-->
-<!--                    <include>${project.artifactId}*.zip</include>-->
-<!--                  </includes>-->
-<!--                </fileSet>-->
-<!--              </fileSets>-->
-            </configuration>
-          </plugin>
+<!--          <plugin>-->
+<!--            <groupId>de.jutzig</groupId>-->
+<!--            <artifactId>github-release-plugin</artifactId>-->
+<!--            <version>${github-release-plugin.version}</version>-->
+<!--            <configuration>-->
+<!--&lt;!&ndash;              <description>Description of your release</description>&ndash;&gt;-->
+<!--&lt;!&ndash;              <releaseName>1.0 Final</releaseName>&ndash;&gt;-->
+<!--              <tag>${project.version}</tag>-->
+<!--&lt;!&ndash;              <fileSets>&ndash;&gt;-->
+<!--&lt;!&ndash;                <fileSet>&ndash;&gt;-->
+<!--&lt;!&ndash;                  <directory>${project.build.directory}</directory>&ndash;&gt;-->
+<!--&lt;!&ndash;                  <includes>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <include>${project.artifactId}*.tar.gz</include>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <include>${project.artifactId}*.zip</include>&ndash;&gt;-->
+<!--&lt;!&ndash;                  </includes>&ndash;&gt;-->
+<!--&lt;!&ndash;                </fileSet>&ndash;&gt;-->
+<!--&lt;!&ndash;              </fileSets>&ndash;&gt;-->
+<!--            </configuration>-->
+<!--          </plugin>-->
 <!--          <plugin>-->
 <!--            <groupId>cy.github</groupId>-->
 <!--            <artifactId>github-release-plugin</artifactId>-->
@@ -83,7 +83,6 @@
 <!--              </execution>-->
 <!--            </executions>-->
 <!--          </plugin>-->
-
         </plugins>
       </build>
     </profile>

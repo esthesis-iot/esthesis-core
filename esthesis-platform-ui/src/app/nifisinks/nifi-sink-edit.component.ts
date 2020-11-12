@@ -23,7 +23,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
   form: FormGroup;
   id: number;
   availableNiFiDataFactories: any;
-  type: string
+  type: string;
   handlers = [];
   isEdit: boolean;
   activeNiFiId = localStorage.getItem('activeNiFi');
@@ -40,7 +40,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
     this.isEdit = this.id != 0;
 
-    let strings = this.router.url.split("/");
+    const strings = this.router.url.split('/');
     this.type = strings[1];
 
     // Setup the form.
@@ -69,7 +69,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
     // Fill dropdowns.
     this.nifDataService.getAvailableDataFactoriesByType(this.type).subscribe(onNext => {
       this.availableNiFiDataFactories = onNext;
-    })
+    });
   }
 
   save() {

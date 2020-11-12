@@ -96,11 +96,6 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
     return sinks;
   }
 
-  @Override
-  public NiFiSinkDTO findById(long id) {
-   return super.findById(id);
-  }
-
   public NiFiSinkDTO saveSink(NiFiSinkDTO niFiSinkDTO) throws IOException {
     NiFiSinkFactory niFiSinkFactory = getNiFiSinkFactoryImplementation(niFiSinkDTO);
 

@@ -14,7 +14,7 @@ import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-moda
 @Component({
   selector: 'app-provisioning-edit',
   templateUrl: './provisioning-edit.component.html',
-  styleUrls: ['./provisioning-edit.component.scss']
+  styleUrls: []
 })
 export class ProvisioningEditComponent extends BaseComponent implements OnInit {
   form: FormGroup;

@@ -9,29 +9,29 @@
   <table mat-table [dataSource]="datasource" class="mat-elevation-z0" fxFlex="grow" matSort
          matSortActive="name"
          matSortDirection="asc"
-         matSortStart="asc" matSortDisableClear>
+         matSortStart="asc" matSortDisableClear aria-describedby="List of NiFi servers">
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Name</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Name</th>
       <td mat-cell *matCellDef="let element">{{element.name}}</td>
     </ng-container>
     <ng-container matColumnDef="url">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> URL</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> URL</th>
       <td mat-cell *matCellDef="let element">{{element.url}}</td>
     </ng-container>
     <ng-container matColumnDef="wfVersion">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Workflow version</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Workflow version</th>
       <td mat-cell *matCellDef="let element">{{element.wfVersion}}</td>
     </ng-container>
     <ng-container matColumnDef="description">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Description</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Description</th>
       <td mat-cell *matCellDef="let element">{{element.description}}</td>
     </ng-container>
     <ng-container matColumnDef="state">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> State</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> State</th>
       <td mat-cell *matCellDef="let element"> {{element.state ? 'Active' : 'Inactive'}}</td>
     </ng-container>
     <ng-container matColumnDef="lastChecked">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Last checked</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col">Last checked</th>
       <td mat-cell *matCellDef="let element">
         {{element.lastChecked ? (element.lastChecked| date:'medium') : 'Never'}}</td>
     </ng-container>

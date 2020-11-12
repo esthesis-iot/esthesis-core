@@ -15,7 +15,7 @@ import {CertificateDto} from '../dto/certificate-dto';
 @Component({
   selector: 'app-stores-edit',
   templateUrl: './stores-edit.component.html',
-  styleUrls: ['./stores-edit.component.scss']
+  styleUrls: []
 })
 export class StoresEditComponent extends BaseComponent implements OnInit {
   form: FormGroup;
