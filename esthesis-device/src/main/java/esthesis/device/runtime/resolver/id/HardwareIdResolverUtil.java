@@ -18,6 +18,9 @@ import java.util.logging.Logger;
 
 public class HardwareIdResolverUtil {
 
+  private HardwareIdResolverUtil() {
+  }
+
   // JUL reference.
   private static final Logger LOGGER = Logger.getLogger(HardwareIdResolverUtil.class.getName());
 
@@ -26,7 +29,7 @@ public class HardwareIdResolverUtil {
   private static final String RESOLVE_CLASS_METHOD = "resolve";
   private static final String RESOLVE_CLASS_PACKAGE = "esthesis.device.runtime.resolver.id.";
   private static String deviceId;
-  private final static CryptoDigestService cryptoDigestService = new CryptoDigestService();
+  private static final CryptoDigestService cryptoDigestService = new CryptoDigestService();
 
   /**
    * Returns the registration id of the device on which the runtime agent runs. IDs are resolved by

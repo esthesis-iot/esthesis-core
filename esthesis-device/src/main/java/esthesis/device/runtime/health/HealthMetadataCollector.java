@@ -64,7 +64,7 @@ public class HealthMetadataCollector {
           new DevicePingMessageDTO().setDeviceTime(Instant.now().toEpochMilli()));
     } catch (Exception e) {
       log.log(Level.SEVERE, "Could not produce JSON output for ping data.", e);
-      return null;
+      return new byte[0];
     }
   }
 

@@ -50,11 +50,6 @@ public class MQTTService extends BaseService<MQTTServerDTO, MqttServer> {
     return dto;
   }
 
-//  @Override
-//  public MQTTServerDTO deleteById(long id) {
-//    return super.deleteById(id);
-//  }
-
   /**
    * Finds an MQTT server with the given tags.
    *

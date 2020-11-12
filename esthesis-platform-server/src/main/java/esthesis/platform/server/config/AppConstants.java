@@ -18,6 +18,9 @@ public class AppConstants {
 
     public static class Event {
 
+      private Event() {
+      }
+
       public static final String CA = "Certificate Authority";
       public static final String CERTIFICATE = "Certificate";
       public static final String AUTHENTICATION = "Authentication";
@@ -116,7 +119,7 @@ public class AppConstants {
       private Topic() {
       }
 
-      public final static String DEVICE_REGISTRATION = "deviceRegistration";
+      public static final String DEVICE_REGISTRATION = "deviceRegistration";
     }
   }
 

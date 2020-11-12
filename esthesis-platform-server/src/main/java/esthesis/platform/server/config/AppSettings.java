@@ -5,6 +5,9 @@ package esthesis.platform.server.config;
  */
 public class AppSettings {
 
+  private AppSettings() {
+  }
+
   /* The name of the settings as held in the database. */
   public static class Setting {
 

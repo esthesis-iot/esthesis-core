@@ -7,13 +7,9 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 
 import java.security.Principal;
-import java.util.logging.Logger;
 
 //TODO STOMP security
 public class TopicSubscriptionInterceptor implements ChannelInterceptor {
-
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(TopicSubscriptionInterceptor.class.getName());
 
   private boolean validateSubscription(Principal principal, String topicDestination) {
     if (principal == null) {

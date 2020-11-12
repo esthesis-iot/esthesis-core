@@ -41,7 +41,7 @@ public class Bootstrap {
   private final MqttClient mqttClient;
   private final HealthMetadataCollector healthMetadataCollector;
 
-  @SuppressWarnings("java:S3776")
+  @SuppressWarnings({"java:S3776", "java:S107"})
   public Bootstrap(AppProperties appProperties, ProvisioningService provisioningService,
     RegistrationService registrationService, SecurityUtil securityUtil,
     RetryTemplate retryTemplate, MqttProxyServer mqttProxyServer,
@@ -57,7 +57,7 @@ public class Bootstrap {
   }
 
   @EventListener
-  @SuppressWarnings({"java:S106","java:S112"})
+  @SuppressWarnings({"java:S106", "java:S112", "java:S3776", "java:S4829"})
   public void applicationStarted(ContextRefreshedEvent contextRefreshedEvent) throws Exception {
     if (appProperties.isPauseStartup()) {
       System.out.println("Device booting paused. Press \"ENTER\" to continue...");
