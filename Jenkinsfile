@@ -7,8 +7,20 @@ pipeline {
     }
     stages {
         stage('Build') {
-            steps {
-                sh 'mvn clean install'
+            parallel {
+                stage('common | device | platform-server') {
+                    steps {
+                        sh 'mvn clean install'
+                    }
+                }
+                stage('platform-ui') {
+                    steps {
+                        sh '''
+                            cd esthesis-platform-ui
+                            npm install
+                        '''
+                    }
+                }
             }
         }
         stage('Dependencies Check') {
