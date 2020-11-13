@@ -137,4 +137,11 @@
     <packageUrl regex="true">^pkg:maven/org\.apache\.nifi/nifi\-client\-dto@.*$</packageUrl>
     <cve>CVE-2020-9491</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: spring-content-autoconfigure-1.1.0.M4.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/com\.github\.paulcwarren/spring\-content\-autoconfigure@.*$</packageUrl>
+    <cpe>cpe:/a:pivotal_software:spring_framework</cpe>
+  </suppress>
 </suppressions>
