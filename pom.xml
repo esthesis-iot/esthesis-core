@@ -151,6 +151,9 @@
           <configuration>
             <format>ALL</format>
             <failOnError>false</failOnError>
+            <suppressionFiles>
+              <suppressionFile>owasp-suppression.xml</suppressionFile>
+            </suppressionFiles>
           </configuration>
         </plugin>
       </plugins>
