@@ -51,7 +51,7 @@ public class SyncService {
     String outdatedWorkflowId = null;
     //Stop previous workflow and collect all needed ids.
     if (deployedEsthesisTemplates.size() == 1 && !isLatestDeployed) {
-      niFiClientService.changeProcessorGroupState(PATH.ESTHESIS.getPath(), STATE.DISABLED);
+      niFiClientService.changeProcessorGroupState(PATH.ESTHESIS.getGroupPath(), STATE.DISABLED);
       rootProcessGroupId = deployedEsthesisTemplates.get(0).getFlowGroupId();
       outdatedWorkflowId = deployedEsthesisTemplates.get(0).getTemplateId();
     }
@@ -110,6 +110,6 @@ public class SyncService {
 
   private void initWorkflow(NiFiTemplateDTO niFiTemplateDTO) throws IOException {
     niFiClientService.instantiateTemplate(niFiTemplateDTO.getId());
-    niFiClientService.changeProcessorGroupState(PATH.ESTHESIS.getPath(), STATE.RUNNING);
+    niFiClientService.changeProcessorGroupState(PATH.ESTHESIS.getGroupPath(), STATE.RUNNING);
   }
 }

@@ -7,6 +7,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class NiFiClientException extends RuntimeException {
 
-  private int httpStatusCode;
-  private String httpBody;
+  private final int httpStatusCode;
+  private final String httpBody;
 }

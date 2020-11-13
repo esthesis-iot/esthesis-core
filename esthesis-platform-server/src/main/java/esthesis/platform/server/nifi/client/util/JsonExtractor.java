@@ -5,9 +5,10 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.TypeRef;
 import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 
-//todo make spring component
+@UtilityClass
 public class JsonExtractor {
 
   private static final Configuration conf;

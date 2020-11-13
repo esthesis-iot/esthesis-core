@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.platform.server.config.AppConstants.NIFI_SINK_HANDLER;
 import esthesis.platform.server.dto.nifisinks.NiFiSinkDTO;
 import esthesis.platform.server.model.NiFiSink;
+import esthesis.platform.server.nifi.client.dto.NiFiSearchAlgorithm;
 import esthesis.platform.server.nifi.client.services.NiFiClientService;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATEMENT_TYPE;
+import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.SUCCESSFUL_RELATIONSHIP_TYPES;
 import esthesis.platform.server.nifi.sinks.writers.NiFiWriterFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,13 +17,16 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Component
 public class PutDatabaseRecord implements NiFiWriterFactory {
 
-  private final static String NAME = "Relational";
+  private static final String NAME = "Relational";
   private final ObjectMapper objectMapper;
   private final NiFiClientService niFiClientService;
   private PutDatabaseRecordConfiguration conf;
@@ -38,6 +43,11 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
 
   @Override
   public boolean supportsPingWrite() {
+    return true;
+  }
+
+  @Override
+  public boolean supportsCommandWrite() {
     return true;
   }
 
@@ -59,6 +69,8 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
 
   @Override
   public void createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+    boolean isCommandHandler = niFiSinkDTO.getHandler() == NIFI_SINK_HANDLER.COMMAND.getType();
+
     deleteControllerServices(niFiSinkDTO);
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
 
@@ -73,9 +85,10 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
         conf.getDatabaseUser(),
         conf.getPassword(), path);
 
-    niFiClientService
+    String putDatabaseRecordId = niFiClientService
       .createPutDatabaseRecord(niFiSinkDTO.getName(), jsonTreeReader, dbConnectionPool,
-        getStatementType(niFiSinkDTO.getHandler()), conf.getSchedulingPeriod(), path);
+        getStatementType(niFiSinkDTO.getHandler()), conf.getSchedulingPeriod(), path,
+        isCommandHandler);
 
     CustomInfo customInfo = new CustomInfo();
     customInfo.setJsonTreeReader(jsonTreeReader);
@@ -83,6 +96,24 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
     niFiSinkDTO.setCustomInfo(objectMapper.writeValueAsString(customInfo));
 
     enableControllerServices(jsonTreeReader, dbConnectionPool);
+
+    if(isCommandHandler) {
+      Set<String> relationship = new HashSet<>(
+        Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType()));
+
+      String prepareDatabaseOperationId = niFiClientService.findProcessorIDByNameAndProcessGroup(
+        "[PDO]", path,
+        NiFiSearchAlgorithm.NAME_ENDS_WITH);
+
+      niFiClientService.connectComponentsInSameGroup(path, prepareDatabaseOperationId, putDatabaseRecordId
+       ,relationship);
+
+      niFiClientService.changeProcessorGroupState(path, STATE.RUNNING);
+
+      if (!niFiSinkDTO.isState()) {
+        niFiClientService.changeProcessorStatus(niFiSinkDTO.getName(), path, STATE.STOPPED);
+      }
+    }
   }
 
   @Override
@@ -114,10 +145,12 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
   }
 
   @Override
-  public String deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
-    String id = niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
+  public void deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+    if (niFiSinkDTO.getHandler() == NIFI_SINK_HANDLER.COMMAND.getType()) {
+      niFiClientService.changeProcessorGroupState(path, STATE.STOPPED);
+    }
+    niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
     deleteControllerServices(niFiSinkDTO);
-    return id;
   }
 
   private void deleteControllerServices(NiFiSinkDTO niFiSinkDTO) throws IOException {
@@ -166,9 +199,10 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
   }
 
   private STATEMENT_TYPE getStatementType(int handler) {
-    NIFI_SINK_HANDLER nifi_sink_handler = NIFI_SINK_HANDLER.valueOf(handler);
-    switch (nifi_sink_handler) {
+    NIFI_SINK_HANDLER nifiSinkHandler = NIFI_SINK_HANDLER.valueOf(handler);
+    switch (nifiSinkHandler) {
       case TELEMETRY:
+      case COMMAND:
         return STATEMENT_TYPE.INSERT;
       case METADATA:
         return STATEMENT_TYPE.UPDATE;

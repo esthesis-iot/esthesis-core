@@ -44,9 +44,8 @@ public interface NiFiSinkFactory {
    *
    * @param niFiSinkDTO The id of the NiFi sink that will be deleted.
    * @param path
-   * @return The id of the deleted .
    */
-  String deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException;
+  void deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException;
 
   /**
    * Toggles the state of the sink.

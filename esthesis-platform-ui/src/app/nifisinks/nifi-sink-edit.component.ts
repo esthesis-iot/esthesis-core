@@ -68,7 +68,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
 
     // Fill dropdowns.
     this.nifDataService.getAvailableDataFactoriesByType(this.type).subscribe(onNext => {
-      this.availableNiFiDataFactories = onNext;
+      this.availableNiFiDataFactories = onNext.sort((a, b) => (a.friendlyName > b.friendlyName) ? 1 : -1)
     });
   }
 
@@ -121,20 +121,23 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
 
         if (this.type != "loggers") {
           if (factory["supportsTelemetry" + action]) {
-            this.handlers.push(AppConstants.HANDLER.TELEMETRY.valueOf())
+            this.handlers.push(AppConstants.HANDLER.TELEMETRY.valueOf());
           }
           if (factory["supportsMetadata" + action]) {
-            this.handlers.push(AppConstants.HANDLER.METADATA.valueOf())
+            this.handlers.push(AppConstants.HANDLER.METADATA.valueOf());
           }
           if (factory["supportsPing" + action]) {
-            this.handlers.push(AppConstants.HANDLER.PING.valueOf())
+            this.handlers.push(AppConstants.HANDLER.PING.valueOf());
+          }
+          if (factory["supportsCommand" + action]) {
+            this.handlers.push(AppConstants.HANDLER.COMMAND.valueOf());
           }
         } else {
           if (factory["supportsSyslogLog"]) {
-            this.handlers.push(AppConstants.HANDLER.SYSLOG.valueOf())
+            this.handlers.push(AppConstants.HANDLER.SYSLOG.valueOf());
           }
           if (factory["supportsFilesystemLog"]) {
-            this.handlers.push(AppConstants.HANDLER.FILESYSTEM.valueOf())
+            this.handlers.push(AppConstants.HANDLER.FILESYSTEM.valueOf());
           }
         }
 

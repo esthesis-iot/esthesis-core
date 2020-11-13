@@ -1,14 +1,13 @@
-package esthesis.platform.server.nifi.sinks.readers.mqtt;
+package esthesis.platform.server.nifi.sinks.producers.mqtt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.platform.server.config.AppConstants.NIFI_SINK_HANDLER;
 import esthesis.platform.server.dto.nifisinks.NiFiSinkDTO;
 import esthesis.platform.server.model.NiFiSink;
 import esthesis.platform.server.nifi.client.dto.NiFiSearchAlgorithm;
 import esthesis.platform.server.nifi.client.services.NiFiClientService;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.SUCCESSFUL_RELATIONSHIP_TYPES;
-import esthesis.platform.server.nifi.sinks.readers.NiFiReaderFactory;
+import esthesis.platform.server.nifi.sinks.producers.NiFiProducerFactory;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
@@ -22,14 +21,29 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Component
 @RequiredArgsConstructor
-public class ConsumeMQTT implements NiFiReaderFactory {
+@Component
+public class PublishMQTT implements NiFiProducerFactory {
 
-  private static final String NAME = "ConsumeMQTT";
+  private static final String NAME = "PublishMQTT";
   private final ObjectMapper objectMapper;
   private final NiFiClientService niFiClientService;
-  private ConsumeMQTTConfiguration conf;
+  private PublishMQTTConfiguration conf;
+
+  @Override
+  public boolean supportsTelemetryProduce() {
+    return false;
+  }
+
+  @Override
+  public boolean supportsMetadataProduce() {
+    return false;
+  }
+
+  @Override
+  public boolean supportsCommandProduce() {
+    return true;
+  }
 
   @Override
   public String getFriendlyName() {
@@ -37,31 +51,12 @@ public class ConsumeMQTT implements NiFiReaderFactory {
   }
 
   @Override
-  public boolean supportsPingRead() {
-    return true;
-  }
-
-  @Override
-  public boolean supportsMetadataRead() {
-    return true;
-  }
-
-  @Override
-  public boolean supportsTelemetryRead() {
-    return true;
-  }
-
-  @Override
-  public boolean supportsCommandRead() {
-    return true;
-  }
-
   public String getConfigurationTemplate() {
     return
       "uri: \n" +
         "topic: \n" +
         "qos: \n" +
-        "queueSize: \n" +
+        "retainMesage: \n" +
         "keystoreFilename: \n" +
         "keystorePassword: \n" +
         "truststoreFilename: \n" +
@@ -71,7 +66,6 @@ public class ConsumeMQTT implements NiFiReaderFactory {
 
   @Override
   public void createSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
-    boolean isCommandHandler = niFiSinkDTO.getHandler() == NIFI_SINK_HANDLER.COMMAND.getType();
     deleteControllerServices(niFiSinkDTO);
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
 
@@ -93,33 +87,35 @@ public class ConsumeMQTT implements NiFiReaderFactory {
       enableControllerServices(sslContextId);
     }
 
-    String mqttConsumerId = niFiClientService
-      .createMQTTConsumer(niFiSinkDTO.getName(), conf.getUri(), conf.getTopic(), conf.getQos(),
-        conf.getQueueSize(), sslContextId, conf.getSchedulingPeriod(), path,
-        isCommandHandler);
+    String mqttPublisherId = niFiClientService
+      .createMQTTPublisher(niFiSinkDTO.getName(), conf.getUri(), conf.getTopic(), conf.getQos(),
+        conf.isRetainMessage(), sslContextId, conf.getSchedulingPeriod(), path,
+        true);
 
-    if (isCommandHandler) {
-      Set<String> relationship = new HashSet<>(
-        Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.MESSAGE.getType()));
+    Set<String> relationship = new HashSet<>(
+      Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType()));
 
-      String hardwareIdSetterId = niFiClientService.findProcessorIDByNameAndProcessGroup("[SH]",
-        path,
-        NiFiSearchAlgorithm.NAME_ENDS_WITH);
 
-      niFiClientService
-        .connectComponentsInSameGroup(path, mqttConsumerId, hardwareIdSetterId, relationship);
+    String mqttCommandBodyGeneratorId = niFiClientService.findProcessorIDByNameAndProcessGroup(
+      "[GMCB]", path,
+      NiFiSearchAlgorithm.NAME_ENDS_WITH);
+    String commandIdResponseSetterId = niFiClientService.findProcessorIDByNameAndProcessGroup("[SCIDR]", path,
+      NiFiSearchAlgorithm.NAME_ENDS_WITH);
 
-      niFiClientService.changeProcessorGroupState(path, STATE.RUNNING);
+    niFiClientService.connectComponentsInSameGroup(path, mqttCommandBodyGeneratorId,
+      mqttPublisherId, relationship);
+    niFiClientService.connectComponentsInSameGroup(path, mqttPublisherId, commandIdResponseSetterId, relationship);
+    niFiClientService.moveComponent(path, mqttPublisherId);
+    niFiClientService.changeProcessorGroupState(path, STATE.RUNNING);
 
-      if (!niFiSinkDTO.isState()) {
-        niFiClientService.changeProcessorStatus(niFiSinkDTO.getName(), path, STATE.STOPPED);
-      }
+    if (!niFiSinkDTO.isState()) {
+      niFiClientService.changeProcessorStatus(niFiSinkDTO.getName(), path, STATE.STOPPED);
     }
   }
 
   @Override
   public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO, String[] path) throws IOException {
-    ConsumeMQTTConfiguration prevConf = extractConfiguration(sink.getConfiguration());
+    PublishMQTTConfiguration prevConf = extractConfiguration(sink.getConfiguration());
     conf = extractConfiguration(sinkDTO.getConfiguration());
     String sslContextId = null;
     String processorId = niFiClientService.findProcessorIDByNameAndProcessGroup(sink.getName(),
@@ -130,8 +126,10 @@ public class ConsumeMQTT implements NiFiReaderFactory {
       Objects.equals(conf.getTruststoreFilename(), prevConf.getTruststoreFilename()) &&
       Objects.equals(conf.getTruststorePassword(), prevConf.getTruststorePassword()))) {
 
-      CustomInfo customInfo = sinkDTO.getCustomInfo() != null ?
-        objectMapper.readValue(sink.getCustomInfo(), CustomInfo.class) : null;
+      CustomInfo customInfo =
+        sinkDTO.getCustomInfo() != null ?
+          objectMapper.readValue(sink.getCustomInfo(),
+           CustomInfo.class) : null;
 
       if (customInfo == null) {
         sslContextId = niFiClientService
@@ -151,19 +149,14 @@ public class ConsumeMQTT implements NiFiReaderFactory {
     }
 
     return niFiClientService
-      .updateConsumerMQTT(processorId, sinkDTO.getName(), sslContextId, conf.getUri(),
+      .updatePublisherMQTT(processorId, sinkDTO.getName(), sslContextId, conf.getUri(),
         conf.getTopic(),
-        conf.getQos(),
-        conf.getQueueSize(), conf.getSchedulingPeriod());
+        conf.getQos(), conf.isRetainMessage(), conf.getSchedulingPeriod());
   }
 
   @Override
   public void deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
-    if (niFiSinkDTO.getHandler() == NIFI_SINK_HANDLER.COMMAND.getType()) {
-      niFiClientService.changeProcessorGroupState(path, STATE.STOPPED
-      );
-    }
-
+    niFiClientService.changeProcessorGroupState(path, STATE.STOPPED);
     niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
     deleteControllerServices(niFiSinkDTO);
   }
@@ -171,7 +164,8 @@ public class ConsumeMQTT implements NiFiReaderFactory {
   private void deleteControllerServices(NiFiSinkDTO niFiSinkDTO) throws IOException {
     String customInfoString = niFiSinkDTO.getCustomInfo();
     if (customInfoString != null) {
-      CustomInfo customInfo = objectMapper.readValue(customInfoString, CustomInfo.class);
+      CustomInfo customInfo = objectMapper
+        .readValue(customInfoString, CustomInfo.class);
       niFiClientService.deleteController(customInfo.getSslContextId());
     }
   }
@@ -204,11 +198,11 @@ public class ConsumeMQTT implements NiFiReaderFactory {
     return niFiClientService.isProcessorRunning(name, path);
   }
 
-  private ConsumeMQTTConfiguration extractConfiguration(String configuration) {
+  private PublishMQTTConfiguration extractConfiguration(String configuration) {
     Representer representer = new Representer();
     representer.getPropertyUtils()
       .setSkipMissingProperties(true);
-    return new Yaml(new Constructor(ConsumeMQTTConfiguration.class),
+    return new Yaml(new Constructor(PublishMQTTConfiguration.class),
       representer)
       .load(configuration);
   }

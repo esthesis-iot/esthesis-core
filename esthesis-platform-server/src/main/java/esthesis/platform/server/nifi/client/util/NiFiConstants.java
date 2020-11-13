@@ -21,18 +21,18 @@ public class NiFiConstants {
     INSTANCES(new String[]{"[I]"});
 
     @Getter
-    private final String[] path;
+    private final String[] groupPath;
 
     public List<String> asList() {
-      return Arrays.asList(path);
+      return Arrays.asList(groupPath);
     }
 
     public String asString() {
       return String.join(" > ", asList());
     }
 
-    PATH(String[] path) {
-      this.path = path;
+    PATH(String[] groupPath) {
+      this.groupPath = groupPath;
     }
   }
 
@@ -40,8 +40,6 @@ public class NiFiConstants {
   public static final class SyncErrors {
 
     public static final String NON_EXISTENT_PROCESSOR = "Does not exist in the NiFi workflow.";
-    public static final String NOT_MATCHING_PROPERTIES = "Properties are different in esthesis "
-      + "and  NiFi workflow.";
   }
 
   @UtilityClass
@@ -83,8 +81,21 @@ public class NiFiConstants {
   public static final class Processor {
 
     @UtilityClass
+    public static final class UrlPaths {
+
+      public static final String PROCESS_GROUPS = "process-groups";
+      public static final String CONTROLLER_SERVICES = "controller-services";
+      public static final String FLOW = "flow";
+      public static final String PROCESSORS = "processors";
+      public static final String RUN_STATUS = "/run-status/";
+      public static final String VERSION = "?version=";
+      public static final String CLIENT_ID = "&clientId=";
+    }
+
+    @UtilityClass
     public static final class Type {
 
+      public static final String MQTT_PUBLISH = "org.apache.nifi.processors.mqtt.PublishMQTT";
       public static final String MQTT_CONSUME = "org.apache.nifi.processors.mqtt.ConsumeMQTT";
       public static final String PUT_INFLUX_DB = "org.apache.nifi.processors.influxdb.PutInfluxDB";
       public static final String PUT_DATABASE_RECORD = "org.apache.nifi.processors.standard.PutDatabaseRecord";
@@ -95,12 +106,15 @@ public class NiFiConstants {
       public static final String PUT_SYSLOG = "org.apache.nifi.processors.standard.PutSyslog";
       public static final String STANDARD_HTTP_CONTEXT_MAP = "org.apache.nifi.http"
         + ".StandardHttpContextMap";
+      public static final String PUT_SQL = "org.apache.nifi.processors.standard.PutSQL";
     }
   }
 
   @UtilityClass
   public static final class Properties {
 
+    public static final String TOPIC = "Topic";
+    public static final String RETAIN_MSG = "Retain Message";
     public static final String BROKER_URI = "Broker URI";
     public static final String CLIENT_ID = "Client ID";
     public static final String DB_CONNECTION_URL = "Database Connection URL";
@@ -130,7 +144,6 @@ public class NiFiConstants {
     public static final String INFLUX_MAX_RECORDS_SIZE = "influxdb-max-records-size";
 
     public static final String INFLUX_QUERY_RESULT_TIME_UNIT = "influxdb-query-result-time-unit";
-    public static final String INFLUX_QUERY = "influxdb-query";
     public static final String INFLUX_QUERY_CHUNK_SIZE = "influxdb-query-chunk-size";
 
     public static final String PUT_DB_RECORD_READER = "put-db-record-record-reader";
@@ -139,12 +152,8 @@ public class NiFiConstants {
     public static final String PUT_DB_RECORD_TABLE_NAME = "put-db-record-table-name";
     public static final String PUT_DB_RECORD_TRANSLATE_FIELD_NAMES = "put-db-record-translate"
       + "-field-names";
-    public static final String AUTO_TERMINATED_RELATIONSHIPS = "autoTerminatedRelationships";
     public static final String PUT_DB_RECORD_FIELD_CONTAINING_SQL = "put-db-record-field-containing-sql";
 
-    public static final String SQL_PRE_QUERY = "sql-pre-query";
-    public static final String SQL_SELECT_QUERY = "SQL select query";
-    public static final String SQL_POST_QUERY = "sql-post-query";
     public static final String DCBP_SERVICE = "Database Connection Pooling Service";
 
     public static final String DIRECTORY = "Directory";
@@ -156,6 +165,16 @@ public class NiFiConstants {
     public static final String MESSAGE_BODY = "Message Body";
     public static final String MESSAGE_PRIORITY = "Message Priority";
 
+    public static final String JDBC_CONNECTION_POOL = "JDBC Connection Pool";
+    public static final String PUT_SQL_STATEMENT = "putsql-sql-statement";
+    public static final String COMMAND_REQUEST_INSERT_QUERY = "insert into command_request"
+      + "(created_by, created_on, version, operation, description, args, device_id) values('${esthesis.command.createdBy}', "
+      + "'${now():toDate():format('yyyy-MM-dd HH:mm:ss')}', 0, '${esthesis.operation}', '${esthesis.command.description}', "
+      + "'${esthesis.command.args}', ${esthesis.command.deviceId});";
+
+    public static final String SQL_SELECT_QUERY = "SQL select query";
+    public static final String DEVICE_ID_QUERY = "select id from device where hardware_id = '${esthesis.hardwareId}'";
+
     @UtilityClass
     public static final class Values {
 
@@ -166,12 +185,6 @@ public class NiFiConstants {
         PKCS12("PKCS12");
 
         private final String type;
-      }
-
-      @AllArgsConstructor
-      @Getter
-      public enum TIME_UNIT {
-        days, hrs, millis, mins, nanos, secs
       }
 
       @AllArgsConstructor

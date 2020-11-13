@@ -132,13 +132,13 @@ public class PutSyslog implements NiFiLoggerFactory {
   }
 
   @Override
-  public String deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+  public void deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
     String customInfoString = niFiSinkDTO.getCustomInfo();
     if (customInfoString != null) {
       CustomInfo customInfo = objectMapper.readValue(customInfoString, CustomInfo.class);
       niFiClientService.deleteController(customInfo.getSslContextId());
     }
-    return niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
+    niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
   }
 
   @Override

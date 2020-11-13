@@ -1,7 +1,6 @@
 package esthesis.platform.server.nifi.client.util;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -19,7 +18,7 @@ import java.util.logging.Level;
  * mitigate any possible errors.
  */
 @Log
-public class JacksonIgnoreInvalidFormatException extends DeserializationProblemHandler {
+public class JacksonIgnoreInvalidFormatHandler extends DeserializationProblemHandler {
 
   @Override
   public boolean handleUnknownProperty(DeserializationContext ctxt, JsonParser p,
@@ -57,14 +56,6 @@ public class JacksonIgnoreInvalidFormatException extends DeserializationProblemH
     Object valueToConvert, JsonParser p) {
     log.log(Level.FINEST, "JSON deserialization: Ignoring weird native value {0}.",
       valueToConvert);
-    return null;
-  }
-
-  @Override
-  public Object handleUnexpectedToken(DeserializationContext ctxt, Class<?> targetType, JsonToken t,
-    JsonParser p, String failureMsg) {
-    log.log(Level.FINEST, "JSON deserialization: Ignoring unexpected token {0}, {1}.",
-      new Object[]{t.toString(), failureMsg});
     return null;
   }
 

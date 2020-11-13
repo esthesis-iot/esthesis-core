@@ -5,12 +5,17 @@ import esthesis.platform.server.nifi.sinks.NiFiSinkFactory;
 public interface NiFiProducerFactory extends NiFiSinkFactory {
 
   /**
-   * Returns whether this producer is capable to produce telemetry data.
+   * Returns whether this producer is capable of producing telemetry data.
    */
   boolean supportsTelemetryProduce();
 
   /**
-   * Returns whether this producer is capable to produce metadata data.
+   * Returns whether this producer is capable of producing metadata data.
    */
   boolean supportsMetadataProduce();
+
+  /**
+   * Returns whether this producer is capable of producing command data.
+   */
+  boolean supportsCommandProduce();
 }

@@ -5,11 +5,7 @@ import lombok.Getter;
 public class NiFiProcessingException extends RuntimeException {
 
   @Getter
-  private int httpCode;
-
-  public NiFiProcessingException(String message) {
-    super(message);
-  }
+  private final int httpCode;
 
   public NiFiProcessingException(String message, int httpCode) {
     super(message);

@@ -1,8 +1,9 @@
 package esthesis.platform.server.nifi.client.services;
 
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.CONNECTABLE_COMPONENT_TYPE.PROCESSOR;
 import static org.awaitility.Awaitility.await;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import esthesis.platform.server.config.AppConstants.NIFI_SINK_HANDLER;
 import esthesis.platform.server.nifi.client.dto.EsthesisTemplateDTO;
 import esthesis.platform.server.nifi.client.dto.EsthesisTemplateVersionDTO;
@@ -10,7 +11,6 @@ import esthesis.platform.server.nifi.client.dto.NiFiAboutDTO;
 import esthesis.platform.server.nifi.client.dto.NiFiSearchAlgorithm;
 import esthesis.platform.server.nifi.client.dto.NiFiTemplateDTO;
 import esthesis.platform.server.nifi.client.exception.NiFiProcessingException;
-import esthesis.platform.server.nifi.client.util.JacksonIgnoreInvalidFormatException;
 import esthesis.platform.server.nifi.client.util.NiFiConstants;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.PATH;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Processor.Type;
@@ -51,10 +51,7 @@ public class NiFiClientService {
   @Autowired
   private NiFiClient niFiClient;
   //TODO use PATH_CODE_ROOT instead
-  private final static String TEMPLATE_PREFIX = "esthesis_v";
-  //TODO inject via Spring
-  private static final ObjectMapper objectMapper = new ObjectMapper()
-    .addHandler(new JacksonIgnoreInvalidFormatException());
+  private static final String TEMPLATE_PREFIX = "esthesis_v";
 
   /**
    * Returns the version of the remote NiFi server.
@@ -428,9 +425,48 @@ public class NiFiClientService {
 
   public String findProcessorIDByNameAndProcessGroup(String name, String[] path)
     throws IOException {
-    String parentProcessGroupId = findProcessGroupId(path);
-    return niFiClient.findProcessorByNameAndGroup(name, parentProcessGroupId).getId();
+    return findProcessorIDByNameAndProcessGroup(name, path, NiFiSearchAlgorithm.NAME_EQUALS);
   }
+
+  public String findProcessorIDByNameAndProcessGroup(String name, String[] path,
+    NiFiSearchAlgorithm niFiSearchAlgorithm)
+    throws IOException {
+    Optional<ProcessorEntity> processor = niFiClient
+      .findProcessorInGroup(niFiSearchAlgorithm, Arrays.asList(path), name);
+
+    if (processor.isPresent()) {
+      return processor.get().getId();
+    } else throw new QDoesNotExistException();
+  }
+
+  public String createMQTTPublisher(@NotNull String name, @NotNull String uri,
+    @NotNull String topic,
+    int qos, boolean retainMessage, @Nullable String sslContextServiceId,
+    String schedulingPeriod, @NotNull String[] path, boolean isCommandHandler)
+    throws IOException {
+    // Find the group Id of the process group under which this reader will be created.
+    String parentProcessGroupId = findProcessGroupId(path);
+
+    // Create the consumer.
+    final ProcessorEntity processorEntity = niFiClient
+      .createMQTTPublisher(parentProcessGroupId, name, uri, topic, qos, retainMessage,
+        sslContextServiceId, schedulingPeriod, isCommandHandler);
+
+    return processorEntity.getId();
+  }
+
+  public String updatePublisherMQTT(String id, String name, String sslContextId, String uri,
+    String topic,
+    int qos,
+    boolean retainMessaage, String schedulingPeriod)
+    throws IOException {
+
+    return niFiClient
+      .updateMQTTPublisher(id, name, sslContextId, uri, topic, qos, retainMessaage, schedulingPeriod)
+      .getId();
+  }
+
+
 
   /**
    * Creates a ConsumeMQTT processor.
@@ -446,36 +482,19 @@ public class NiFiClientService {
    * @param path The path of the parent group where the processor will be created.
    * @return The id of the newly created processor.
    */
-  public String createConsumerMqtt(@NotNull String name, @NotNull String uri, @NotNull String topic,
+  public String createMQTTConsumer(@NotNull String name, @NotNull String uri, @NotNull String topic,
     int qos, int queueSize, @Nullable String sslContextServiceId,
-    String schedulingPeriod, @NotNull String[] path)
+    String schedulingPeriod, @NotNull String[] path, boolean isCommandHandler)
     throws IOException {
     // Find the group Id of the process group under which this reader will be created.
     String parentProcessGroupId = findProcessGroupId(path);
 
     // Create the consumer.
     final ProcessorEntity processorEntity = niFiClient
-      .createConsumerMQTT(parentProcessGroupId, name, uri, topic, qos, queueSize,
-        sslContextServiceId, schedulingPeriod);
+      .createMQTTConsumer(parentProcessGroupId, name, uri, topic, qos, queueSize,
+        sslContextServiceId, schedulingPeriod, isCommandHandler);
 
     return processorEntity.getId();
-  }
-
-  /**
-   * Creates a ConsumeMQTT processor.
-   *
-   * @param name The name of the processor.
-   * @param uri The URI to use to connect to the MQTT broker.
-   * @param topic The MQTT topic filter to designate the topics to subscribe to.
-   * @param qos The Quality of Service(QoS) to receive the message with.
-   * @param queueSize Maximum number of messages this processor will hold in memory at one time.
-   * @param schedulingPeriod The amount of time that should elapse between task executions.
-   * @param path The path of the parent group where the processor will be created.
-   * @return The id of the newly created processor.
-   */
-  public String createConsumerMqtt(String name, String uri, String topic, int qos, int queueSize,
-    String schedulingPeriod, String[] path) throws IOException {
-    return createConsumerMqtt(name, uri, topic, qos, queueSize, schedulingPeriod, path);
   }
 
   public String updateConsumerMQTT(String id, String name, String sslContextId, String uri,
@@ -572,14 +591,14 @@ public class NiFiClientService {
   public String createPutDatabaseRecord(
     @NotNull String name, @NotNull String recordReaderId, @NotNull String dcbpServiceId,
     @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType, String schedulingPeriod,
-    @NotNull String[] path) throws IOException {
+    @NotNull String[] path, boolean isCommandHandler) throws IOException {
     // Configuration.
     String parentProcessGroupId = findProcessGroupId(path);
 
     // Create the database writer.
     final ProcessorEntity processorEntity = niFiClient
       .createPutDatabaseRecord(parentProcessGroupId, name, recordReaderId,
-        dcbpServiceId, statementType, schedulingPeriod);
+        dcbpServiceId, statementType, schedulingPeriod, isCommandHandler);
 
     return processorEntity.getId();
   }
@@ -616,7 +635,7 @@ public class NiFiClientService {
    */
   public String createExecuteInfluxDB(@NotNull String name, @NotNull String dbName,
     @NotNull String url,
-    int maxConnectionTimeoutSeconds,String username, String password, String queryResultTimeUnit,
+    int maxConnectionTimeoutSeconds, String username, String password, String queryResultTimeUnit,
     int queryChunkSize,
     String schedulingPeriod,
     @NotNull String[] path)
@@ -667,12 +686,13 @@ public class NiFiClientService {
    * @return the id of the newly created processor.
    */
   public String createExecuteSQL(@NotNull String name, String dcbpServiceId,
-    String schedulingPeriod, @NotNull String[] path)
+    String schedulingPeriod, @NotNull String[] path, boolean isCommandHandler)
     throws IOException {
 
     String parentProcessGroupId = findProcessGroupId(path);
 
-    return niFiClient.createExecuteSQL(parentProcessGroupId, name, dcbpServiceId, schedulingPeriod)
+    return niFiClient.createExecuteSQL(parentProcessGroupId, name, dcbpServiceId,
+      schedulingPeriod, isCommandHandler)
       .getId();
   }
 
@@ -762,6 +782,20 @@ public class NiFiClientService {
         messagePriority, schedulingPeriod).getId();
   }
 
+  public String createPutSQL(String name, String dbConnectionPool, String schedulingPeriod,
+    String[] path, boolean isCommandHandler)
+    throws IOException {
+    String parentProcessGroupId = findProcessGroupId(path);
+
+    return niFiClient.createPutSQL(parentProcessGroupId, name, dbConnectionPool,
+      schedulingPeriod, isCommandHandler).getId();
+  }
+
+  public String updatePutSQL(String processorId, String name, String schedulingPeriod)
+    throws IOException {
+    return niFiClient.updatePutSQL(processorId, name, schedulingPeriod).getId();
+  }
+
   /**
    * Changes the status of a Processor.
    *
@@ -781,13 +815,14 @@ public class NiFiClientService {
    * @param name The name of the processor to delete.
    * @return The state of the deleted processor.
    */
-  public String deleteProcessor(String name, String[] path) throws IOException {
+  public void deleteProcessor(String name, String[] path) throws IOException {
+    Optional<ProcessorEntity> processor = niFiClient
+      .findProcessorInGroup(NiFiSearchAlgorithm.NAME_EQUALS,
+        Arrays.asList(path), name);
 
-    String processGroupId = findProcessGroupId(path);
-    String id = niFiClient.findProcessorByNameAndGroup(name, processGroupId).getId();
-
-    final ProcessorEntity processorEntity = niFiClient.deleteProcessor(id);
-    return processorEntity.getComponent().getState();
+    if (processor.isPresent()) {
+      niFiClient.deleteProcessor(processor.get().getId()).getComponent().getState();
+    }
   }
 
   /**
@@ -800,8 +835,7 @@ public class NiFiClientService {
     String id = findProcessorIDByNameAndProcessGroup(name, path);
 
     Collection<String> errors = niFiClient.getValidationErrors(id);
-    String join = errors != null ? String.join("\n", errors) : "";
-    return join;
+    return errors != null ? String.join("\n", errors) : "";
   }
 
   /**
@@ -812,8 +846,7 @@ public class NiFiClientService {
    */
   public boolean processorExists(String name, String[] path) throws IOException {
     try {
-      String processGroupId = findProcessGroupId(path);
-      return niFiClient.findProcessorByNameAndGroup(name, processGroupId) != null;
+      return niFiClient.findProcessorInGroup(NiFiSearchAlgorithm.NAME_EQUALS, Arrays.asList(path),name).isPresent();
     } catch (NiFiProcessingException ex) {
       return false;
     }
@@ -830,7 +863,8 @@ public class NiFiClientService {
     if (niFiClient.getStatus().getControllerStatus().getFlowFilesQueued() > 0) {
       clearQueue(processGroupId);
     }
-    await().atMost(Duration.ofSeconds(30)).until(() -> niFiClient.getStatus().getControllerStatus().getRunningCount() == 0);
+    await().atMost(Duration.ofSeconds(30))
+      .until(() -> niFiClient.getStatus().getControllerStatus().getRunningCount() == 0);
     niFiClient.changeGroupControllerServicesState(processGroupId, STATE.DISABLED);
     niFiClient.deleteProcessGroup(processGroupId);
   }
@@ -846,7 +880,7 @@ public class NiFiClientService {
       Set<ConnectionEntity> allConnectionsOfProcessGroup = niFiClient
         .getAllConnectionsOfProcessGroup(processGroupEntity.getId());
       for (ConnectionEntity connectionEntity : allConnectionsOfProcessGroup) {
-          niFiClient.emptyQueueOfConnection(connectionEntity.getId());
+        niFiClient.emptyQueueOfConnection(connectionEntity.getId());
       }
       clearQueue(processGroupEntity.getId());
     }
@@ -906,4 +940,17 @@ public class NiFiClientService {
       relationalInstanceGroupId, influxGroupId, relationalGroupId);
   }
 
+  public void connectComponentsInSameGroup(String[] path, String sourceId, String destinationId,
+    Set<String> relationships) throws IOException {
+    String processGroupId = findProcessGroupId(path);
+    niFiClient.connectSourceAndDestination(processGroupId, processGroupId, PROCESSOR.name(),
+      PROCESSOR.name(), sourceId, destinationId, relationships);
+  }
+
+  public void moveComponent(String[] path, String processorId) throws IOException {
+    String processGroupId = findProcessGroupId(path);
+
+    niFiClient.moveComponent(processGroupId, processorId);
+
+  }
 }

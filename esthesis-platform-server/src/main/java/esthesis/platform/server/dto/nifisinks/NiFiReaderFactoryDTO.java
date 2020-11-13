@@ -23,4 +23,5 @@ public class NiFiReaderFactoryDTO extends BaseDTO {
   private boolean supportsPingRead;
   private boolean supportsMetadataRead;
   private boolean supportsTelemetryRead;
+  private boolean supportsCommandRead;
 }

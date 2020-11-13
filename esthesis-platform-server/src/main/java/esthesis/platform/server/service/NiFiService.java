@@ -69,7 +69,7 @@ public class NiFiService extends BaseService<NiFiDTO, NiFi> {
   @CacheEvict("esthesis.platform.server.activeNiFi")
   public NiFiDTO save(NiFiDTO dto) {
     NiFiDTO activeNiFi = getActiveNiFi();
-    if (!Objects.equals(activeNiFi.getId(), dto.getId()) && dto.isState()) {
+    if (Objects.nonNull(activeNiFi) && !Objects.equals(activeNiFi.getId(), dto.getId()) && dto.isState()) {
       activeNiFi.setState(false);
       super.save(activeNiFi);
     }

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ExecuteSQLConfiguration {
+public class RelationProducerConfiguration {
 
   @NotNull
   private String databaseConnectionURL;

@@ -1,7 +1,6 @@
 package esthesis.platform.server.nifi.sinks.producers.relational;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.platform.server.config.AppConstants.NIFI_SINK_HANDLER;
 import esthesis.platform.server.dto.nifisinks.NiFiSinkDTO;
 import esthesis.platform.server.model.NiFiSink;
 import esthesis.platform.server.nifi.client.dto.NiFiSearchAlgorithm;
@@ -23,31 +22,31 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 @Component
-public class ExecuteSQL implements NiFiProducerFactory {
+public class PutSQL implements NiFiProducerFactory {
 
-  private static final String NAME = "ExecuteSQL";
+  private static final String NAME = "PutSQL";
   private final ObjectMapper objectMapper;
   private final NiFiClientService niFiClientService;
   private RelationProducerConfiguration conf;
 
   @Override
-  public String getFriendlyName() {
-    return NAME;
-  }
-
-  @Override
   public boolean supportsTelemetryProduce() {
-    return true;
+    return false;
   }
 
   @Override
   public boolean supportsMetadataProduce() {
-    return true;
+    return false;
   }
 
   @Override
   public boolean supportsCommandProduce() {
     return true;
+  }
+
+  @Override
+  public String getFriendlyName() {
+    return NAME;
   }
 
   @Override
@@ -61,10 +60,9 @@ public class ExecuteSQL implements NiFiProducerFactory {
   }
 
   @Override
-  public void createSink(
-    NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+  public void createSink(NiFiSinkDTO niFiSinkDTO,
+    String[] path) throws IOException {
 
-    boolean isCommandHandler = niFiSinkDTO.getHandler() == NIFI_SINK_HANDLER.COMMAND.getType();
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
 
     String dbConnectionPool = niFiClientService
@@ -77,46 +75,40 @@ public class ExecuteSQL implements NiFiProducerFactory {
 
     CustomInfo customInfo = new CustomInfo();
     customInfo.setDbConnectionPool(dbConnectionPool);
-    niFiSinkDTO.setCustomInfo(objectMapper.writeValueAsString(customInfo));
+    niFiSinkDTO
+      .setCustomInfo(objectMapper.writeValueAsString(customInfo));
 
-    String sqlExecutorId = niFiClientService
-      .createExecuteSQL(niFiSinkDTO.getName(), dbConnectionPool, conf.getSchedulingPeriod(), path
-        , isCommandHandler);
+    String putSQLId = niFiClientService
+      .createPutSQL(niFiSinkDTO.getName(), dbConnectionPool, conf.getSchedulingPeriod(), path,
+        true);
 
     enableControllerServices(dbConnectionPool);
 
-    if (!isCommandHandler) {
-      niFiClientService.distributeLoadOfProducers(niFiSinkDTO.getHandler(), true);
-    } else {
-      Set<String> relationship = new HashSet<>(
-        Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType()));
+    Set<String> relationship = new HashSet<>(
+      Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType()));
 
-      String postBodyCleanerId = niFiClientService.findProcessorIDByNameAndProcessGroup(
-        "[CPB]", path,
-        NiFiSearchAlgorithm.NAME_ENDS_WITH);
-      String sqlResultConverterId = niFiClientService.findProcessorIDByNameAndProcessGroup(
-        "[CSR]", path,
-        NiFiSearchAlgorithm.NAME_ENDS_WITH);
+    String sqlResultBodyCleanerId = niFiClientService.findProcessorIDByNameAndProcessGroup(
+      "[CSRB]", path,
+      NiFiSearchAlgorithm.NAME_ENDS_WITH);
+    String mqttCommandBodyGeneratorId = niFiClientService.findProcessorIDByNameAndProcessGroup(
+      "[GMCB]", path,
+      NiFiSearchAlgorithm.NAME_ENDS_WITH);
 
-      niFiClientService.connectComponentsInSameGroup(path, postBodyCleanerId,
-        sqlExecutorId, relationship);
-      niFiClientService
-        .connectComponentsInSameGroup(path, sqlExecutorId, sqlResultConverterId,
-          relationship);
+    niFiClientService.connectComponentsInSameGroup(path, sqlResultBodyCleanerId, putSQLId, relationship);
+    niFiClientService.connectComponentsInSameGroup(path, putSQLId, mqttCommandBodyGeneratorId,relationship);
 
-      niFiClientService.moveComponent(path, sqlExecutorId);
+    niFiClientService.moveComponent(path, putSQLId);
 
-      niFiClientService.changeProcessorGroupState(path, STATE.RUNNING);
+    niFiClientService.changeProcessorGroupState(path, STATE.RUNNING);
 
-      if (!niFiSinkDTO.isState()) {
-        niFiClientService.changeProcessorStatus(niFiSinkDTO.getName(), path, STATE.STOPPED);
-      }
+    if (!niFiSinkDTO.isState()) {
+      niFiClientService.changeProcessorStatus(niFiSinkDTO.getName(), path, STATE.STOPPED);
     }
   }
 
   @Override
-  public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO, String[] path) throws IOException {
-
+  public String updateSink(NiFiSink sink,
+    NiFiSinkDTO sinkDTO, String[] path) throws IOException {
     RelationProducerConfiguration prevConf = extractConfiguration(sink.getConfiguration());
     conf = extractConfiguration(sinkDTO.getConfiguration());
 
@@ -138,16 +130,13 @@ public class ExecuteSQL implements NiFiProducerFactory {
     String processorId = niFiClientService.findProcessorIDByNameAndProcessGroup(sink.getName(),
       path);
 
-    return niFiClientService.updateExecuteSQL(processorId, sinkDTO.getName(),
+    return niFiClientService.updatePutSQL(processorId, sinkDTO.getName(),
       conf.getSchedulingPeriod());
   }
 
   @Override
   public void deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
-    if (niFiSinkDTO.getHandler() == NIFI_SINK_HANDLER.COMMAND.getType()) {
-      niFiClientService.changeProcessorGroupState(path, STATE.STOPPED);
-    }
-
+    niFiClientService.changeProcessorGroupState(path, STATE.STOPPED);
     niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
     deleteControllerServices(niFiSinkDTO);
     niFiClientService.distributeLoadOfProducers(niFiSinkDTO.getHandler(), true);

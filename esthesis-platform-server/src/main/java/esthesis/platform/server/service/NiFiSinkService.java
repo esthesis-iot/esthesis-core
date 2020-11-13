@@ -13,6 +13,7 @@ import esthesis.platform.server.dto.nifisinks.NiFiReaderFactoryDTO;
 import esthesis.platform.server.dto.nifisinks.NiFiSinkDTO;
 import esthesis.platform.server.dto.nifisinks.NiFiWriterFactoryDTO;
 import esthesis.platform.server.model.NiFiSink;
+import esthesis.platform.server.model.QNiFiSink;
 import esthesis.platform.server.nifi.client.exception.NiFiProcessingException;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.PATH;
 import esthesis.platform.server.nifi.sinks.NiFiSinkFactory;
@@ -26,7 +27,9 @@ import org.springframework.validation.annotation.Validated;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -101,6 +104,17 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
 
     String[] path = createPath(niFiSinkDTO, niFiSinkFactory);
 
+    if (niFiSinkDTO.getHandler() == NIFI_SINK_HANDLER.COMMAND.getType()) {
+      QNiFiSink qNiFiSink = QNiFiSink.niFiSink;
+      Optional<NiFiSink> optional = niFiSinkRepository.findOne(
+        qNiFiSink.handler.eq(NIFI_SINK_HANDLER.COMMAND.getType())
+          .and(qNiFiSink.factoryClass.eq(niFiSinkDTO.getFactoryClass())));
+
+      if (optional.isPresent() && optional.get().getId() != niFiSinkDTO.getId()) {
+        throw new QAlreadyExistsException("Cannot have multiple nifi sinks for command " + niFiSinkDTO.getFactoryClass());
+      }
+    }
+
     if (validateNameIsUsed(niFiSinkDTO)) {
       throw new QAlreadyExistsException("Name must be unique");
     }
@@ -131,7 +145,7 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
   private boolean validateNameIsUsed(NiFiSinkDTO niFiSinkDTO) {
     NiFiSink byName = niFiSinkRepository.findByName(niFiSinkDTO.getName());
 
-    return byName != null && byName.getId().longValue() != niFiSinkDTO.getId().longValue();
+    return byName != null && byName.getId() != niFiSinkDTO.getId();
   }
 
   private void updateNiFiSink(NiFiSinkDTO niFiSinkDTO, NiFiSinkFactory niFiSinkFactory,
@@ -210,13 +224,22 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
 
     String handlerType = null;
 
-    if (niFiSinkDTO.getHandler() < NIFI_SINK_HANDLER.SYSLOG.getType()) {
+    int[] loggingHandlers = new int[]{NIFI_SINK_HANDLER.SYSLOG.getType(),
+      NIFI_SINK_HANDLER.FILESYSTEM.getType()};
+    int handler = niFiSinkDTO.getHandler();
+
+    if (!Arrays.stream(loggingHandlers).anyMatch(value -> value == handler)) {
       for (NIFI_SINK_HANDLER value : NIFI_SINK_HANDLER.values()) {
-        if (value.getType() == niFiSinkDTO.getHandler()) {
+        if (value.getType() == handler) {
           handlerType = "[" + value.name().toUpperCase().charAt(0) + sinkType.substring(1);
         }
       }
     }
+
+    if (handler == NIFI_SINK_HANDLER.COMMAND.getType()) {
+      return new String[]{PATH.ESTHESIS.asString(), sinkType, handlerType};
+    }
+
 
     String factoryTypePath = niFiSinkFactory.getClass().getName().replace(
       ESTHESIS_NIFI_SINK_PACKAGE_PATH, "");
@@ -265,5 +288,6 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
 
     return true;
   }
+
 
 }

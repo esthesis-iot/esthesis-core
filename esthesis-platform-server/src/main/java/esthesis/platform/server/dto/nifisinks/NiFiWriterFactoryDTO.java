@@ -23,4 +23,5 @@ public class NiFiWriterFactoryDTO extends BaseDTO {
   private boolean supportsMetadataWrite;
   private boolean supportsTelemetryWrite;
   private boolean supportsPingWrite;
+  private boolean supportsCommandWrite;
 }

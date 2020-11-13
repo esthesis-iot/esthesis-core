@@ -73,7 +73,8 @@ export const AppConstants = {
     METADATA: 2,
     TELEMETRY: 3,
     SYSLOG: 4,
-    FILESYSTEM: 5
+    FILESYSTEM: 5,
+    COMMAND: 6
   },
 };
 

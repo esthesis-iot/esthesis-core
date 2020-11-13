@@ -1,11 +1,13 @@
 package esthesis.platform.server.nifi.client.util;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+@UtilityClass
 public class Util {
 
   public static String readFromClasspath(String resource)

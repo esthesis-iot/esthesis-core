@@ -65,8 +65,8 @@ public class PutFile implements NiFiLoggerFactory {
   }
 
   @Override
-  public String deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
-    return niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
+  public void deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+    niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
   }
 
   @Override

@@ -17,7 +17,7 @@ import java.io.IOException;
 @Component
 public class ExecuteInfluxDB implements NiFiProducerFactory {
 
-  private final static String NAME = "ExecuteInfluxDB";
+  private static final String NAME = "ExecuteInfluxDB";
   private final NiFiClientService niFiClientService;
   private ExecuteInfluxDBConfiguration conf;
 
@@ -29,6 +29,11 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
   @Override
   public boolean supportsMetadataProduce() {
     return true;
+  }
+
+  @Override
+  public boolean supportsCommandProduce() {
+    return false;
   }
 
   @Override
@@ -79,10 +84,9 @@ public class ExecuteInfluxDB implements NiFiProducerFactory {
   }
 
   @Override
-  public String deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
-    String deletedProcessorId = niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
+  public void deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+    niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
     niFiClientService.distributeLoadOfProducers(niFiSinkDTO.getHandler(), false);
-    return deletedProcessorId;
   }
 
   @Override

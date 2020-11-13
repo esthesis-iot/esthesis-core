@@ -44,6 +44,7 @@ public class NiFiSinkConfiguration {
         .supportsPingRead(niFiReaderFactory.supportsPingRead())
         .supportsMetadataRead(niFiReaderFactory.supportsMetadataRead())
         .supportsTelemetryRead(niFiReaderFactory.supportsTelemetryRead())
+        .supportsCommandRead(niFiReaderFactory.supportsCommandRead())
         .configurationTemplate(niFiReaderFactory.getConfigurationTemplate())
         .build()));
     return niFiReaderFactoryDTOS;
@@ -60,6 +61,7 @@ public class NiFiSinkConfiguration {
         .supportsPingWrite(niFiWriterFactory.supportsPingWrite())
         .supportsMetadataWrite(niFiWriterFactory.supportsMetadataWrite())
         .supportsTelemetryWrite(niFiWriterFactory.supportsTelemetryWrite())
+        .supportsCommandWrite(niFiWriterFactory.supportsCommandWrite())
         .configurationTemplate(niFiWriterFactory.getConfigurationTemplate())
         .build()));
 
@@ -76,6 +78,7 @@ public class NiFiSinkConfiguration {
           .friendlyName(niFiProducerFactory.getFriendlyName())
           .supportsTelemetryProduce(niFiProducerFactory.supportsTelemetryProduce())
           .supportsMetadataProduce(niFiProducerFactory.supportsMetadataProduce())
+          .supportsCommandProduce(niFiProducerFactory.supportsCommandProduce())
           .configurationTemplate(niFiProducerFactory.getConfigurationTemplate())
           .build()));
 

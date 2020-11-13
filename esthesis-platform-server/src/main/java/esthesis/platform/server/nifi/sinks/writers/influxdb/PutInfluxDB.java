@@ -19,7 +19,7 @@ import java.io.IOException;
 @Component
 public class PutInfluxDB implements NiFiWriterFactory {
 
-  private final static String NAME = "PutInfluxDB";
+  private static final  String NAME = "PutInfluxDB";
   private final NiFiClientService niFiClientService;
   private PutInfluxDBConfiguration conf;
 
@@ -40,6 +40,11 @@ public class PutInfluxDB implements NiFiWriterFactory {
 
   @Override
   public boolean supportsPingWrite() {
+    return false;
+  }
+
+  @Override
+  public boolean supportsCommandWrite() {
     return false;
   }
 
@@ -94,8 +99,8 @@ public class PutInfluxDB implements NiFiWriterFactory {
   }
 
   @Override
-  public String deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
-    return niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
+  public void deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
+    niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
   }
 
   @Override
