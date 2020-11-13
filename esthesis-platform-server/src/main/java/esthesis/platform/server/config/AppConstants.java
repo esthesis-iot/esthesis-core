@@ -95,7 +95,6 @@ public class AppConstants {
     private Cryptography() {
     }
 
-    //TODO Turn them to String
     public static class KeyType {
 
       private KeyType() {
@@ -161,7 +160,7 @@ public class AppConstants {
     }
 
     public static NIFI_SINK_HANDLER valueOf(int type) {
-      return (NIFI_SINK_HANDLER) map.get(type);
+      return map.get(type);
     }
 
   }

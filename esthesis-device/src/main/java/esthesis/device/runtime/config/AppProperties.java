@@ -46,18 +46,15 @@ public class AppProperties {
   @Value("${provisioningTempRoot:${storageRoot}/provisioning/.tmp}")
   private String provisioningTempRoot;
 
-  // TODO explain what kind of request that is
-  // The maximum number a request is retried.
+  // The maximum number a request (to esthesis platform) is retried.
   @Value("${device.runtime.request.attempts:100}")
   private int requestAttempts;
 
-  // TODO connect this description with the one above
-  // Number of milliseconds to wait before trying again.
+  // Number of milliseconds to wait before trying again a previously failed request.
   @Value("${device.runtime.request.backoff:1000}")
   private int requestRetryBackoff;
 
-  // TODO what kind of attempts?
-  // The maximum number of minutes to wait between attempts.
+  // The maximum number of minutes to wait between attempts of previously failed requests.
   @Value("${device.runtime.request.backoff.max:60}")
   private int requestMaxBackoff;
 

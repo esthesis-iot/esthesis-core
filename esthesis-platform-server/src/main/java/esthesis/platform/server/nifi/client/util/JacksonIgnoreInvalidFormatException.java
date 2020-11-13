@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.deser.ValueInstantiator;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
 import lombok.extern.java.Log;
 
-import java.io.IOException;
 import java.util.logging.Level;
 
 /**

@@ -33,7 +33,6 @@ public class Device extends BaseEntity {
 
   private String hardwareId;
 
-  //TODO Why a String?
   @NotNull
   private String state;
 

@@ -8,31 +8,30 @@
   <mat-card-content>
     <div fxLayout="column">
       <table mat-table [dataSource]="datasource" class="mat-elevation-z0" fxFlex="grow" matSort
-             matSortActive="name"
-             matSortDirection="asc"
-             matSortStart="asc" matSortDisableClear>
+             matSortActive="name" matSortDirection="asc" matSortStart="asc" matSortDisableClear
+            aria-describedby="List of sinks">
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Name</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Name</th>
           <td mat-cell *matCellDef="let element">{{element.name}}</td>
         </ng-container>
         <ng-container matColumnDef="createdOn">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Created on</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Created on</th>
           <td mat-cell
               *matCellDef="let element"> {{element.createdOn | date: constants.DATE_FORMAT}}</td>
         </ng-container>
         <ng-container matColumnDef="handler">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Handler</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Handler</th>
           <td mat-cell *matCellDef="let element">
             {{lookupByValue(constants.HANDLER, element.handler)}}</td>
         </ng-container>
         <ng-container matColumnDef="state">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> State</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> State</th>
           <td mat-cell *matCellDef="let element">
             <app-boolean-checkbox [value]="element.state"></app-boolean-checkbox>
           </td>
         </ng-container>
         <ng-container matColumnDef="validationErrors">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>NiFi Status</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col">NiFi Status</th>
           <td mat-cell *matCellDef="let element">
             <mat-icon *ngIf="element.validationErrors"
                       color="warn" [matTooltip]=element.validationErrors>warning

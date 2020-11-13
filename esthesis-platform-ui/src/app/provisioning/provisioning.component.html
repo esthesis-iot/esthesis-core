@@ -3,50 +3,49 @@
   <mat-card-content>
     <div fxLayout="column">
       <table mat-table [dataSource]="datasource" class="mat-elevation-z0" fxFlex="grow" matSort
-             matSortActive="name"
-             matSortDirection="asc"
-             matSortStart="asc" matSortDisableClear>
+             matSortActive="name" matSortDirection="asc" matSortStart="asc" matSortDisableClear
+             aria-describedby="List of provisioning packages">
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Name</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Name</th>
           <td mat-cell *matCellDef="let element">{{element.name}}</td>
         </ng-container>
         <ng-container matColumnDef="description">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Description</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Description</th>
           <td mat-cell *matCellDef="let element">{{element.description}}</td>
         </ng-container>
         <ng-container matColumnDef="version">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Version</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Version</th>
           <td mat-cell *matCellDef="let element">{{element.packageVersion}}</td>
         </ng-container>
         <ng-container matColumnDef="state">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> State</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> State</th>
           <td mat-cell *matCellDef="let element">
             <app-boolean-checkbox [value]="element.state"></app-boolean-checkbox>
           </td>
         </ng-container>
         <ng-container matColumnDef="signed">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Signed</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Signed</th>
           <td mat-cell *matCellDef="let element">
             <app-boolean-checkbox [value]="element.signed"></app-boolean-checkbox>
           </td>
         </ng-container>
         <ng-container matColumnDef="encrypted">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Encrypted</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Encrypted</th>
           <td mat-cell *matCellDef="let element">
             <app-boolean-checkbox [value]="element.encrypted"></app-boolean-checkbox>
           </td>
         </ng-container>
         <ng-container matColumnDef="createdOn">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Created</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Created</th>
           <td mat-cell *matCellDef="let element">{{element.createdOn | date:
             constants.DATE_FORMAT}}</td>
         </ng-container>
         <ng-container matColumnDef="size">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Size</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Size</th>
           <td mat-cell *matCellDef="let element">{{element.fileSize | filesize}}</td>
         </ng-container>
         <ng-container matColumnDef="tags">
-          <th mat-header-cell *matHeaderCellDef> Tags</th>
+          <th mat-header-cell *matHeaderCellDef scope="col"> Tags</th>
           <td mat-cell *matCellDef="let element">
               {{resolveTag(element.tags)}}
           </td>

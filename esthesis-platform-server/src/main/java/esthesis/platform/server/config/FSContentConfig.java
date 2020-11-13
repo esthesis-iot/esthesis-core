@@ -63,16 +63,4 @@ public class FSContentConfig {
     return new FileSystemResourceLoader(filesystemRoot().getAbsolutePath());
   }
 
-  // Clean up temporary folder task.
-//  @Scheduled(initialDelay = 300000, fixedDelay = 3600000)
-//  public void clearUpTmpFolder() {
-//    Iterator<File> filesToDelete =
-//      FileUtils.iterateFiles(new File(appProperties.getFsTmpRoot()),
-//        new AgeFileFilter(Date.from(Instant.now().minus(1, ChronoUnit.HOURS))), TRUE);
-//    for (Iterator<File> it = filesToDelete; it.hasNext(); ) {
-//      File tmpFile = it.next();
-//      LOGGER.log(Level.FINEST, "Deleting temporary file {0}.", tmpFile.getAbsolutePath());
-//      tmpFile.delete();
-//    }
-//  }
 }
