@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions
+  xmlns="https://www.owasp.org/index.php/OWASP_Dependency_Check_Suppression">
+  <suppress>
+    <suppress>
+      <!-- Wrongly identified as core NiFi module -->
+      <notes><![CDATA[
+   file name: nifi-registry-data-model-0.3.0.jar
+   ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.apache\.nifi\.registry/nifi\-registry\-data\-model@.*$</packageUrl>
+      <cve>CVE-2016-8748</cve>
+    </suppress>
+    <suppress>
+      <notes><![CDATA[
+   file name: nifi-registry-data-model-0.3.0.jar
+   ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.apache\.nifi\.registry/nifi\-registry\-data\-model@.*$</packageUrl>
+      <cve>CVE-2017-12632</cve>
+    </suppress>
+    <suppress>
+      <notes><![CDATA[
+   file name: nifi-registry-data-model-0.3.0.jar
+   ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.apache\.nifi\.registry/nifi\-registry\-data\-model@.*$</packageUrl>
+      <cve>CVE-2017-7665</cve>
+    </suppress>
+    <suppress>
+      <notes><![CDATA[
+   file name: nifi-registry-data-model-0.3.0.jar
+   ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.apache\.nifi\.registry/nifi\-registry\-data\-model@.*$</packageUrl>
+      <cve>CVE-2017-7667</cve>
+    </suppress>
+    <suppress>
+      <notes><![CDATA[
+   file name: nifi-registry-data-model-0.3.0.jar
+   ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.apache\.nifi\.registry/nifi\-registry\-data\-model@.*$</packageUrl>
+      <cve>CVE-2018-1309</cve>
+    </suppress>
+    <suppress>
+      <notes><![CDATA[
+   file name: nifi-registry-data-model-0.3.0.jar
+   ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.apache\.nifi\.registry/nifi\-registry\-data\-model@.*$</packageUrl>
+      <cve>CVE-2018-1310</cve>
+    </suppress>
+    <suppress>
+      <notes><![CDATA[
+   file name: nifi-registry-data-model-0.3.0.jar
+   ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.apache\.nifi\.registry/nifi\-registry\-data\-model@.*$</packageUrl>
+      <cve>CVE-2020-1942</cve>
+    </suppress>
+    <suppress>
+      <notes><![CDATA[
+   file name: nifi-registry-data-model-0.3.0.jar
+   ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.apache\.nifi\.registry/nifi\-registry\-data\-model@.*$</packageUrl>
+      <cve>CVE-2020-9482</cve>
+    </suppress>
+  </suppress>
+</suppressions>
