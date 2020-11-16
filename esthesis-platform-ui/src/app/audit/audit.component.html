@@ -38,27 +38,27 @@
              matSort matSortActive="createdOn"
              matSortDirection="desc"
              matSortStart="desc" matSortDisableClear aria-describedby="List of audit events">
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;">
-        </mat-row>
         <ng-container matColumnDef="createdOn">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Date</mat-header-cell>
-          <mat-cell *matCellDef="let element">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Date</th>
+          <td mat-cell *matCellDef="let element">
             {{element.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}
-          </mat-cell>
+          </td>
         </ng-container>
         <ng-container matColumnDef="level">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Level</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.level}}</mat-cell>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Level</th>
+          <td mat-cell *matCellDef="let element"> {{element.level}}</td>
         </ng-container>
         <ng-container matColumnDef="event">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Event</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.event}}</mat-cell>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Event</th>
+          <td mat-cell *matCellDef="let element"> {{element.event}}</td>
         </ng-container>
         <ng-container matColumnDef="description">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Description</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.shortDescription}}</mat-cell>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Description</th>
+          <td mat-cell *matCellDef="let element"> {{element.shortDescription}}</td>
         </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; let element; columns: displayedColumns;"
+            [routerLink]="element.id"></tr>
       </table>
       <mat-paginator #paginator (page)="changePage()"
                      [pageSize]="10"
