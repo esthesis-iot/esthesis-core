@@ -189,7 +189,7 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
   }
 
   private String validateNiFiSink(NiFiSinkDTO niFiSinkDTO, NiFiSinkFactory niFiSinkFactory)
-    throws IOException {
+  throws IOException {
     String[] path = createPath(niFiSinkDTO, niFiSinkFactory);
     return niFiSinkFactory
       .getSinkValidationErrors(niFiSinkDTO.getName(), path);
@@ -239,7 +239,6 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
       return new String[]{PATH.ESTHESIS.asString(), sinkType, handlerType};
     }
 
-
     String factoryTypePath = niFiSinkFactory.getClass().getName().replace(
       ESTHESIS_NIFI_SINK_PACKAGE_PATH, "");
     String[] splittedFactoryName = factoryTypePath.split("\\.");
@@ -270,20 +269,16 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
     return allSinks.size() == syncedSinks.size();
   }
 
-  public boolean createAllMissingSinks() {
+  public boolean createAllMissingSinks() throws IOException {
     List<NiFiSinkDTO> allSinks = findAll();
 
-    allSinks.forEach(niFiSinkDTO -> {
+    for (NiFiSinkDTO niFiSinkDTO : allSinks) {
       NiFiSinkFactory niFiSinkFactoryImplementation = getNiFiSinkFactoryImplementation(niFiSinkDTO);
-      try {
-        String[] path = createPath(niFiSinkDTO, niFiSinkFactoryImplementation);
-        if (!niFiSinkFactoryImplementation.exists(niFiSinkDTO.getName(), path)) {
-          saveSink(niFiSinkDTO);
-        }
-      } catch (IOException exception) {
-        exception.printStackTrace();
+      String[] path = createPath(niFiSinkDTO, niFiSinkFactoryImplementation);
+      if (!niFiSinkFactoryImplementation.exists(niFiSinkDTO.getName(), path)) {
+        saveSink(niFiSinkDTO);
       }
-    });
+    }
 
     return true;
   }
