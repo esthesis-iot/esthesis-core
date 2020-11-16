@@ -165,6 +165,75 @@
     <packageUrl regex="true">^pkg:maven/com\.github\.paulcwarren/spring\-content\-autoconfigure@.*$</packageUrl>
     <cve>CVE-2014-0054</cve>
   </suppress>
-
+  <suppress>
+    <notes><![CDATA[
+   file name: spring-content-autoconfigure-1.1.0.M4.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/com\.github\.paulcwarren/spring\-content\-autoconfigure@.*$</packageUrl>
+    <cve>CVE-2016-9878</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: spring-content-autoconfigure-1.1.0.M4.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/com\.github\.paulcwarren/spring\-content\-autoconfigure@.*$</packageUrl>
+    <cve>CVE-2018-1270</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: spring-content-autoconfigure-1.1.0.M4.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/com\.github\.paulcwarren/spring\-content\-autoconfigure@.*$</packageUrl>
+    <cve>CVE-2018-1271</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: spring-content-autoconfigure-1.1.0.M4.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/com\.github\.paulcwarren/spring\-content\-autoconfigure@.*$</packageUrl>
+    <cve>CVE-2018-1272</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: spring-content-autoconfigure-1.1.0.M4.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/com\.github\.paulcwarren/spring\-content\-autoconfigure@.*$</packageUrl>
+    <cve>CVE-2020-5421</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: commons-beanutils-1.9.3.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/commons\-beanutils/commons\-beanutils@.*$</packageUrl>
+    <cve>CVE-2019-10086</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: guava-18.0.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/com\.google\.guava/guava@.*$</packageUrl>
+    <cve>CVE-2018-10237</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: mysql-connector-java-8.0.13.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/mysql/mysql\-connector\-java@.*$</packageUrl>
+    <cve>CVE-2019-2692</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: mysql-connector-java-8.0.13.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/mysql/mysql\-connector\-java@.*$</packageUrl>
+    <cve>CVE-2020-2934</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: snakeyaml-1.24.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
+    <cve>CVE-2017-18640</cve>
+  </suppress>
 
 </suppressions>

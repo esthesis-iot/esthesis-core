@@ -192,9 +192,9 @@ public class AppConstants {
       public static final String OPERATION_COUNT = "COUNT";
       public static final String OPERATION_MEAN = "MEAN";
       public static final String OPERATION_SUM = "SUM";
+      @SuppressWarnings("java:S2386")
       public static final String[] SUPPORTED_OPERATIONS = {OPERATION_COUNT, OPERATION_MAX,
-        OPERATION_MEAN,
-        OPERATION_MIN, OPERATION_QUERY, OPERATION_SUM};
+        OPERATION_MEAN, OPERATION_MIN, OPERATION_QUERY, OPERATION_SUM};
     }
   }
 
