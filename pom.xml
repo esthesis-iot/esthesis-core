@@ -152,6 +152,15 @@
             <format>ALL</format>
             <failOnError>false</failOnError>
             <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+            <scanSet>
+              <fileSet>
+                <directory>.</directory>
+                <includes>
+                  <include>esthesis-platform-ui/package.json</include>
+                  <include>esthesis-platform-ui/package-lock.json</include>
+                </includes>
+              </fileSet>
+            </scanSet>
             <suppressionFiles>
               <suppressionFile>owasp-suppression.xml</suppressionFile>
             </suppressionFiles>
