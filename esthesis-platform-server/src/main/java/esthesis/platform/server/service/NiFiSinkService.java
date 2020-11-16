@@ -110,8 +110,9 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
         qNiFiSink.handler.eq(NIFI_SINK_HANDLER.COMMAND.getType())
           .and(qNiFiSink.factoryClass.eq(niFiSinkDTO.getFactoryClass())));
 
-      if (optional.isPresent() && optional.get().getId() != niFiSinkDTO.getId()) {
-        throw new QAlreadyExistsException("Cannot have multiple nifi sinks for command " + niFiSinkDTO.getFactoryClass());
+      if (optional.isPresent() && !optional.get().getId().equals(niFiSinkDTO.getId())) {
+        throw new QAlreadyExistsException(
+          "Cannot have multiple nifi sinks for command " + niFiSinkDTO.getFactoryClass());
       }
     }
 
@@ -120,13 +121,13 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
     }
 
     if (niFiSinkDTO.getId() == null) {
-      niFiSinkDTO = createNiFiSink(niFiSinkDTO, niFiSinkFactory, path);
+      createNiFiSink(niFiSinkDTO, niFiSinkFactory, path);
     } else {
       NiFiSink latestVersion = super.findEntityById(niFiSinkDTO.getId());
       niFiSinkDTO.setCustomInfo(latestVersion.getCustomInfo());
 
       if (!niFiSinkFactory.exists(latestVersion.getName(), path)) {
-        niFiSinkDTO = createNiFiSink(niFiSinkDTO, niFiSinkFactory, path);
+        createNiFiSink(niFiSinkDTO, niFiSinkFactory, path);
       } else {
         updateNiFiSink(niFiSinkDTO, niFiSinkFactory, latestVersion);
       }
@@ -145,7 +146,7 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
   private boolean validateNameIsUsed(NiFiSinkDTO niFiSinkDTO) {
     NiFiSink byName = niFiSinkRepository.findByName(niFiSinkDTO.getName());
 
-    return byName != null && byName.getId() != niFiSinkDTO.getId();
+    return byName != null && !byName.getId().equals(niFiSinkDTO.getId());
   }
 
   private void updateNiFiSink(NiFiSinkDTO niFiSinkDTO, NiFiSinkFactory niFiSinkFactory,
@@ -179,21 +180,19 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
     }
   }
 
-  private NiFiSinkDTO createNiFiSink(NiFiSinkDTO niFiSinkDTO, NiFiSinkFactory niFiSinkFactory,
+  private void createNiFiSink(NiFiSinkDTO niFiSinkDTO, NiFiSinkFactory niFiSinkFactory,
     String[] path) throws IOException {
     niFiSinkFactory.createSink(niFiSinkDTO, path);
     if (niFiSinkDTO.isState()) {
       niFiSinkFactory.toggleSink(niFiSinkDTO.getName(), path, niFiSinkDTO.isState());
     }
-    return niFiSinkDTO;
   }
 
   private String validateNiFiSink(NiFiSinkDTO niFiSinkDTO, NiFiSinkFactory niFiSinkFactory)
     throws IOException {
     String[] path = createPath(niFiSinkDTO, niFiSinkFactory);
-    String sinkValidationErrors = niFiSinkFactory
+    return niFiSinkFactory
       .getSinkValidationErrors(niFiSinkDTO.getName(), path);
-    return sinkValidationErrors;
   }
 
   public NiFiSinkDTO deleteSink(Long id) throws IOException {
@@ -228,7 +227,7 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
       NIFI_SINK_HANDLER.FILESYSTEM.getType()};
     int handler = niFiSinkDTO.getHandler();
 
-    if (!Arrays.stream(loggingHandlers).anyMatch(value -> value == handler)) {
+    if (Arrays.stream(loggingHandlers).noneMatch(value -> value == handler)) {
       for (NIFI_SINK_HANDLER value : NIFI_SINK_HANDLER.values()) {
         if (value.getType() == handler) {
           handlerType = "[" + value.name().toUpperCase().charAt(0) + sinkType.substring(1);
@@ -239,7 +238,6 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
     if (handler == NIFI_SINK_HANDLER.COMMAND.getType()) {
       return new String[]{PATH.ESTHESIS.asString(), sinkType, handlerType};
     }
-
 
     String factoryTypePath = niFiSinkFactory.getClass().getName().replace(
       ESTHESIS_NIFI_SINK_PACKAGE_PATH, "");
@@ -274,7 +272,7 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
   public boolean createAllMissingSinks() {
     List<NiFiSinkDTO> allSinks = findAll();
 
-    allSinks.stream().forEach(niFiSinkDTO -> {
+    allSinks.forEach(niFiSinkDTO -> {
       NiFiSinkFactory niFiSinkFactoryImplementation = getNiFiSinkFactoryImplementation(niFiSinkDTO);
       try {
         String[] path = createPath(niFiSinkDTO, niFiSinkFactoryImplementation);
