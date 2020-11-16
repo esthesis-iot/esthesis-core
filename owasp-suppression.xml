@@ -298,5 +298,33 @@
     <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-config@.*$</packageUrl>
     <cve>CVE-2018-1258</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: elliptic:6.5.2
+   ]]></notes>
+    <packageUrl regex="true">^pkg:npm/elliptic@.*$</packageUrl>
+    <vulnerabilityName>CWE-190: Integer Overflow or Wraparound</vulnerabilityName>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: lodash:4.17.15
+   ]]></notes>
+    <packageUrl regex="true">^pkg:npm/lodash@.*$</packageUrl>
+    <vulnerabilityName>CWE-770: Allocation of Resources Without Limits or Throttling</vulnerabilityName>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: npm-registry-fetch:4.0.4
+   ]]></notes>
+    <packageUrl regex="true">^pkg:npm/npm\-registry\-fetch@.*$</packageUrl>
+    <vulnerabilityName>CWE-200: Information Exposure</vulnerabilityName>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: serialize-javascript:2.1.2
+   ]]></notes>
+    <packageUrl regex="true">^pkg:npm/serialize\-javascript@.*$</packageUrl>
+    <vulnerabilityName>CWE-502: Deserialization of Untrusted Data</vulnerabilityName>
+  </suppress>
 
 </suppressions>
