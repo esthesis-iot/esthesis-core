@@ -7,7 +7,7 @@ import {BarcodeFormat} from '@zxing/library';
 @Component({
   selector: 'app-device-preregister-cam',
   templateUrl: './device-preregister-cam.component.html',
-  styleUrls: ['./device-preregister-cam.component.scss']
+  styleUrls: []
 })
 export class DevicePreregisterCamComponent implements OnInit {
   form: FormGroup;
