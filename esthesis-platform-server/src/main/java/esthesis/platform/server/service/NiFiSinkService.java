@@ -239,6 +239,7 @@ public class NiFiSinkService extends BaseService<NiFiSinkDTO, NiFiSink> {
       return new String[]{PATH.ESTHESIS.asString(), sinkType, handlerType};
     }
 
+
     String factoryTypePath = niFiSinkFactory.getClass().getName().replace(
       ESTHESIS_NIFI_SINK_PACKAGE_PATH, "");
     String[] splittedFactoryName = factoryTypePath.split("\\.");

@@ -20,7 +20,7 @@ export class BodyBackgroundService {
       'https://pixabay.com/api/?key=11450182-74bb65cfe11d586f9a5fc8846&image_type=photo&orientation=horizontal&category=nature&safesearch=true&per_page='
       + this.imageSample + '&order=latest')
     .map(value => {
-        return value['hits'][Math.floor(Math.random() * this.imageSample)]['largeImageURL'];
+        return value['hits'][Math.floor(Math.random() * this.imageSample)]['largeImageURL']; // NOSONAR
       });
   }
 }

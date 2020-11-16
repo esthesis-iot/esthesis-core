@@ -9,6 +9,7 @@ import esthesis.platform.server.nifi.client.util.NiFiConstants.PATH;
 import esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+@Log
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -85,17 +87,13 @@ public class SyncService {
     List<EsthesisTemplateDTO> deployedTemplates = getDeployedTemplates();
 
     if (!deployedTemplates.isEmpty()) {
-      deployedTemplates.forEach(esthesisTemplateDTO -> {
+      for (EsthesisTemplateDTO esthesisTemplateDTO : deployedTemplates) {
         String rootProcessGroupId = esthesisTemplateDTO.getFlowGroupId();
         String workflowId = esthesisTemplateDTO.getTemplateId();
 
-        try {
-          niFiClientService.deleteProcessGroup(rootProcessGroupId);
-          niFiClientService.deleteTemplate(workflowId);
-        } catch (IOException exception) {
-          exception.printStackTrace();
-        }
-      });
+        niFiClientService.deleteProcessGroup(rootProcessGroupId);
+        niFiClientService.deleteTemplate(workflowId);
+      }
     }
   }
 
