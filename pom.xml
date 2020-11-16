@@ -71,7 +71,7 @@
     <github-release-plugin.version>1.4.0</github-release-plugin.version>
 
     <version.sonar>3.7.0.1746</version.sonar>
-    <version.dependency-check-maven>5.3.0</version.dependency-check-maven>
+    <version.dependency-check-maven>5.3.2</version.dependency-check-maven>
     <sonar.dependencyCheck.reportPath>target/dependency-check-report.xml</sonar.dependencyCheck.reportPath>
     <sonar.dependencyCheck.htmlReportPath>target/dependency-check-report.html</sonar.dependencyCheck.htmlReportPath>
   </properties>
@@ -151,6 +151,7 @@
           <configuration>
             <format>ALL</format>
             <failOnError>false</failOnError>
+            <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
             <suppressionFiles>
               <suppressionFile>owasp-suppression.xml</suppressionFile>
             </suppressionFiles>
