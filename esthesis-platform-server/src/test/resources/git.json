@@ -1,0 +1,23 @@
+{
+  "git.branch" : "master",
+  "git.build.host" : "local.nassosmichas.com",
+  "git.build.time" : "2020-11-16 11:22:11",
+  "git.build.user.email" : "nassosmichas@me.com",
+  "git.build.user.name" : "Nassos Michas",
+  "git.build.version" : "1.0.22",
+  "git.closest.tag.commit.count" : "",
+  "git.closest.tag.name" : "",
+  "git.commit.id" : "b5d5ade3a66ea6cab04f27f67a6e7426baa844a2",
+  "git.commit.id.abbrev" : "b5d5ade",
+  "git.commit.id.describe" : "b5d5ade",
+  "git.commit.id.describe-short" : "b5d5ade",
+  "git.commit.message.full" : "QA fixes",
+  "git.commit.message.short" : "QA fixes",
+  "git.commit.time" : "2020-11-16 11:12:29",
+  "git.commit.user.email" : "nassosmichas@me.com",
+  "git.commit.user.name" : "Nassos Michas",
+  "git.dirty" : "false",
+  "git.remote.origin.url" : "https://github.com/esthesis-iot/esthesis-platform",
+  "git.tags" : "",
+  "git.total.commit.count" : "341"
+}
