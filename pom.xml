@@ -38,6 +38,7 @@
   <!--  </pluginRepositories>-->
 
   <properties>
+    <awaitility.version>4.0.3</awaitility.version>
     <classgraph.version>4.8.22</classgraph.version>
     <commons-codec.version>1.12</commons-codec.version>
     <commons-collections4.version>4.2</commons-collections4.version>

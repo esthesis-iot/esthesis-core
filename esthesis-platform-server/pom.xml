@@ -337,7 +337,7 @@
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
-      <version>${awaitability.version}</version>
+      <version>${awaitility.version}</version>
     </dependency>
 
     <!-- Test dependencies -->

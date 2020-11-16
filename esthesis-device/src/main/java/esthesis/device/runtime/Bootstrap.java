@@ -122,8 +122,8 @@ public class Bootstrap {
       mqttClient.connect(registrationService.getEmbeddedMqttServer());
 
       // Publish ping & health data.
-      healthMetadataCollector.ping();
-      healthMetadataCollector.collectHealthData();
+      healthMetadataCollector.pingScheduler();
+      healthMetadataCollector.collectHealthDataScheduler();
     } else {
       log.log(Level.WARNING, "No MQTT server details were provided for this device.");
     }
