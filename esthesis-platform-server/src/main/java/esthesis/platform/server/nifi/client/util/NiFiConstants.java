@@ -150,8 +150,6 @@ public class NiFiConstants {
     public static final String PUT_DB_RECORD_STATEMENT_TYPE = "put-db-record-statement-type";
     public static final String PUT_DB_RECORD_DCBP_SERVICE = "put-db-record-dcbp-service";
     public static final String PUT_DB_RECORD_TABLE_NAME = "put-db-record-table-name";
-    public static final String PUT_DB_RECORD_TRANSLATE_FIELD_NAMES = "put-db-record-translate"
-      + "-field-names";
     public static final String PUT_DB_RECORD_FIELD_CONTAINING_SQL = "put-db-record-field-containing-sql";
 
     public static final String DCBP_SERVICE = "Database Connection Pooling Service";
@@ -172,8 +170,13 @@ public class NiFiConstants {
       + "'${now():toDate():format('yyyy-MM-dd HH:mm:ss')}', 0, '${esthesis.operation}', '${esthesis.command.description}', "
       + "'${esthesis.command.args}', ${esthesis.command.deviceId});";
 
+    public static final String ESTHESIS_HARDWARE_ID = "${esthesis.hardwareId}";
     public static final String SQL_SELECT_QUERY = "SQL select query";
-    public static final String DEVICE_ID_QUERY = "select id from device where hardware_id = '${esthesis.hardwareId}'";
+    public static final String DEVICE_ID_QUERY =
+      "select id from device where hardware_id = '" + ESTHESIS_HARDWARE_ID +  "'";
+
+    public static final String OBTAIN_GENERATED_KEYS = "Obtain Generated Keys";
+
 
     @UtilityClass
     public static final class Values {

@@ -17,6 +17,7 @@ import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DCBP_SERVICE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DEVICE_ID_QUERY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.DIRECTORY;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.ESTHESIS_HARDWARE_ID;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.HOSTNAME;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_CHARSET;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.INFLUX_CONSISTENCY_LEVEL;
@@ -32,6 +33,7 @@ import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.JDBC_CONNECTION_POOL;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.MESSAGE_BODY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.MESSAGE_PRIORITY;
+import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.OBTAIN_GENERATED_KEYS;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PORT;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PROTOCOL;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PSWD;
@@ -40,7 +42,6 @@ import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_READER;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_STATEMENT_TYPE;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_TABLE_NAME;
-import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_DB_RECORD_TRANSLATE_FIELD_NAMES;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.PUT_SQL_STATEMENT;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SQL_SELECT_QUERY;
 import static esthesis.platform.server.nifi.client.util.NiFiConstants.Properties.SSL_CONTEXT_SERVICE;
@@ -1030,7 +1031,7 @@ public class NiFiClient {
     Map<String, String> properties = new HashMap<>();
     properties.put(Properties.BROKER_URI, uri);
     properties.put(Properties.RETAIN_MSG, String.valueOf(retainMessage));
-    properties.put(Properties.TOPIC, topic);
+    properties.put(Properties.TOPIC, topic + "/" + ESTHESIS_HARDWARE_ID);
     properties.put(Properties.QOS, String.valueOf(qos));
     if (StringUtils.isNotBlank(sslContextServiceId)) {
       properties.put(SSL_CONTEXT_SERVICE, sslContextServiceId);
@@ -1225,7 +1226,6 @@ public class NiFiClient {
     Map<String, String> properties = setPutDatabaseRecordProperties(statementType);
     properties.put(PUT_DB_RECORD_READER, recordReaderId);
     properties.put(PUT_DB_RECORD_DCBP_SERVICE, dcbpServiceId);
-    properties.put(PUT_DB_RECORD_TRANSLATE_FIELD_NAMES, "false");
     properties.put(PUT_DB_RECORD_TABLE_NAME, isCommandHandler ? "command_reply" : "${esthesis"
       + ".measurement}");
 
@@ -1524,6 +1524,7 @@ public class NiFiClient {
     Map<String, String> properties = new HashMap<>();
     properties.put(JDBC_CONNECTION_POOL, dbConnectionPool);
     properties.put(PUT_SQL_STATEMENT, COMMAND_REQUEST_INSERT_QUERY);
+    properties.put(OBTAIN_GENERATED_KEYS, "true");
 
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
     processorConfigDTO.setProperties(properties);
