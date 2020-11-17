@@ -65,17 +65,23 @@ public class ControlCommandExecute {
       executor.setExitValue(0);
       executor.setStreamHandler(streamHandler);
       executor.setWatchdog(watchdog);
+      String exceptionMsg = null;
       try {
         executor.execute(cmdLine);
       } catch (IOException e) {
         log.log(Level.SEVERE, "Could not execute command.", e);
+        exceptionMsg = e.toString();
       }
 
       // Send back the reply.
       try {
         CommandReplyDTO reply = new CommandReplyDTO();
         reply.setCommandRequestId(cmd.getId());
-        reply.setPayload(new String(outputStream.toByteArray()));
+
+        String payload = exceptionMsg != null ? exceptionMsg :
+          new String(outputStream.toByteArray());
+
+        reply.setPayload(payload);
         reply.setPayloadType(MediaType.TEXT_PLAIN_VALUE);
         reply.setPayloadEncoding(CommandReply.PAYLOAD_ENCODING_PLAIN);
         mqttClient.publish(EventType.CONTROL_REPLY, objectMapper.writeValueAsBytes(reply));
