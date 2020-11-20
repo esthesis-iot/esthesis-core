@@ -6,7 +6,7 @@
 
   <groupId>esthesis</groupId>
   <artifactId>esthesis-platform</artifactId>
-  <version>1.0.22</version>
+  <version>2.0.0</version>
   <packaging>pom</packaging>
 
   <name>esthesis IoT</name>
@@ -158,8 +158,8 @@
               <fileSet>
                 <directory>.</directory>
                 <includes>
-                  <include>esthesis-platform-ui/package.json</include>
-                  <include>esthesis-platform-ui/package-lock.json</include>
+                  <include>esthesis-ui/package.json</include>
+                  <include>esthesis-ui/package-lock.json</include>
                 </includes>
               </fileSet>
             </scanSet>
@@ -175,7 +175,7 @@
   <modules>
     <module>esthesis-common</module>
     <module>esthesis-device</module>
-    <module>esthesis-platform-server</module>
+    <module>esthesis-backend</module>
   </modules>
 
 </project>

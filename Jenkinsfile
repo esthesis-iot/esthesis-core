@@ -16,7 +16,7 @@ pipeline {
                 stage('platform-ui') {
                     steps {
                         sh '''
-                            cd esthesis-platform-ui
+                            cd esthesis-ui
                             npm install
                         '''
                     }
