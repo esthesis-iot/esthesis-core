@@ -1,4 +1,4 @@
-package esthesis.platform.server.nifi.sinks.loggers.syslog;
+package esthesis.backend.nifi.sinks.loggers.syslog;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
