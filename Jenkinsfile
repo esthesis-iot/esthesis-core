@@ -38,19 +38,19 @@ pipeline {
                 sh '/root/sonar-scanner/bin/sonar-scanner -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_KEY_ESTHESIS_PLATF}'
             }
         }
-        stage('Produce bom.xml'){
+        stage('Produce bom.xml for backend'){
             steps{
-                sh 'mvn org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom'
+                sh 'mvn -f esthesis-platform-backend/pom.xml org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom'
             }
         }
-        stage('Dependency-Track Analysis')
+        stage('Dependency-Track Analysis for backend')
         {
             steps{
                 sh '''
                     cat > payload.json <<__HERE__
                     {
                       "project": "027dcc1e-f095-41ba-92c8-460eb0b93dbb",
-                      "bom": "$(cat target/bom.xml |base64 -w 0 -)"
+                      "bom": "$(cat esthesis-platform-backend/target/bom.xml |base64 -w 0 -)"
                     }
                     __HERE__
                     '''
@@ -59,7 +59,28 @@ pipeline {
                     curl -X "PUT" ${DEPENDENCY_TRACK_URL} -H 'Content-Type: application/json' -H 'X-API-Key: '${DEPENDENCY_TRACK_API_KEY} -d @payload.json
                    '''
             }
+        }
+        stage('Produce bom.xml for device'){
+            steps{
+                sh 'mvn -f esthesis-platform-device/pom.xml org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom'
+            }
+        }
+        stage('Dependency-Track Analysis for device')
+        {
+            steps{
+                sh '''
+                    cat > payload.json <<__HERE__
+                    {
+                      "project": "3068f979-f3a5-4768-b93f-12a03b059919",
+                      "bom": "$(cat esthesis-platform-device/target/bom.xml |base64 -w 0 -)"
+                    }
+                    __HERE__
+                    '''
 
+                sh '''
+                    curl -X "PUT" ${DEPENDENCY_TRACK_URL} -H 'Content-Type: application/json' -H 'X-API-Key: '${DEPENDENCY_TRACK_API_KEY} -d @payload.json
+                   '''
+            }
         }
     }
     post {
