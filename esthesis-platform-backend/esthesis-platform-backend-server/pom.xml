@@ -143,6 +143,7 @@
           <skipPoms>false</skipPoms>
         </configuration>
       </plugin>
+      <!--Generates lombok .jar files, so that SonarQube doesn't identify false-positive codesmells-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>

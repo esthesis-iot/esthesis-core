@@ -1,1 +1,45 @@
-<!-- keep -->
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>esthesis</groupId>
+  <artifactId>esthesis-platform</artifactId>
+  <version>2.0.0</version>
+
+  <properties>
+    <version.dependency-check-maven>5.3.2</version.dependency-check-maven>
+  </properties>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>${version.dependency-check-maven}</version>
+          <configuration>
+            <format>ALL</format>
+            <failOnError>false</failOnError>
+            <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+            <scanSet>
+              <fileSet>
+                <directory>.</directory>
+                <includes>
+                  <include>esthesis-platform-ui/package.json</include>
+                  <include>esthesis-platform-ui/package-lock.json</include>
+                  <include>esthesis-platform-device/**</include>
+                  <include>esthesis-platform-backend/**</include>
+                </includes>
+              </fileSet>
+            </scanSet>
+            <suppressionFiles>
+              <suppressionFile>esthesis-platform-backend/owasp-suppression.xml</suppressionFile>
+            </suppressionFiles>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

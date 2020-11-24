@@ -302,35 +302,6 @@
             <useIncrementalCompilation>false</useIncrementalCompilation>
           </configuration>
         </plugin>
-        <!-- Sonar configuration -->
-        <plugin>
-          <groupId>org.sonarsource.scanner.maven</groupId>
-          <artifactId>sonar-maven-plugin</artifactId>
-          <version>${version.sonar}</version>
-        </plugin>
-        <!-- OWASP dependency check configuration -->
-        <plugin>
-          <groupId>org.owasp</groupId>
-          <artifactId>dependency-check-maven</artifactId>
-          <version>${version.dependency-check-maven}</version>
-          <configuration>
-            <format>ALL</format>
-            <failOnError>false</failOnError>
-            <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
-            <scanSet>
-              <fileSet>
-                <directory>.</directory>
-                <includes>
-                  <include>esthesis-ui/package.json</include>
-                  <include>esthesis-ui/package-lock.json</include>
-                </includes>
-              </fileSet>
-            </scanSet>
-            <suppressionFiles>
-              <suppressionFile>owasp-suppression.xml</suppressionFile>
-            </suppressionFiles>
-          </configuration>
-        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -384,6 +355,7 @@
           </annotationProcessorPaths>
         </configuration>
       </plugin>
+      <!--Generates lombok .jar files, so that SonarQube doesn't identify false-positive codesmells-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>

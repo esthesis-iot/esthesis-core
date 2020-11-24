@@ -8,15 +8,20 @@ pipeline {
     stages {
         stage('Build') {
             parallel {
-                stage('common | device | platform-server') {
+                stage('platform-backend') {
                     steps {
-                        sh 'mvn clean install'
+                        sh 'mvn -f esthesis-platform-backend/pom.xml clean install'
+                    }
+                }
+                stage('platform-device') {
+                    steps {
+                        sh 'mvn -f esthesis-platform-device/pom.xml clean install'
                     }
                 }
                 stage('platform-ui') {
                     steps {
                         sh '''
-                            cd esthesis-ui
+                            cd esthesis-platform-ui
                             npm install
                         '''
                     }
@@ -25,7 +30,7 @@ pipeline {
         }
         stage('Dependencies Check') {
              steps {
-                sh 'mvn org.owasp:dependency-check-maven:aggregate'
+                sh 'mvn -f pom-dependency-check.xml org.owasp:dependency-check-maven:aggregate'
              }
         }
         stage('Sonar Analysis') {
