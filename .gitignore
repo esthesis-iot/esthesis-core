@@ -68,7 +68,6 @@ update-db.sh
 .tern-project
 iTermocil.yml
 teamscale_plugin_mappings.properties
-/esthesis-gateway/esthesis-gateway-simulator/esthesis-gateway-runtime.zip
 
 
 ### JetBrains template
@@ -138,6 +137,3 @@ fabric.properties
 ############
 *.iml
 .idea/
-/esthesis-backend/src/main/resources/git.json
-/esthesis-ui/build/
-/esthesis-ui/package-lock.json.old
