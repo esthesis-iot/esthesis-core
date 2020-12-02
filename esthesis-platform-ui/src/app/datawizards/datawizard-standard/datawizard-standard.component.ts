@@ -50,7 +50,7 @@ export class DatawizardStandardComponent implements OnInit {
       //     truststoreFilename: null,
       //     truststorePassword: null
       //   }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
-      //   factoryClass: 'esthesis.backend.nifi.sinks.readers.mqtt.ConsumeMQTT',
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.readers.mqtt.ConsumeMQTT',
       //   name: 'Ping reader (from MQTT)',
       //   handler: AppConstants.HANDLER.PING,
       //   state: true,
@@ -65,7 +65,7 @@ export class DatawizardStandardComponent implements OnInit {
       //     password: this.form.get('esthesisDbPassword').value,
       //     schedulingPeriod: '100 ms'
       //   }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
-      //   factoryClass: 'esthesis.backend.nifi.sinks.writers.relational.PutDatabaseRecord',
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.writers.relational.PutDatabaseRecord',
       //   name: 'Ping writer (to esthesis database)',
       //   handler: AppConstants.HANDLER.PING,
       //   state: true,
@@ -83,9 +83,9 @@ export class DatawizardStandardComponent implements OnInit {
       //     truststoreFilename: null,
       //     truststorePassword: null
       //   }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
-      //   factoryClass: 'esthesis.backend.nifi.sinks.readers.mqtt.ConsumeMQTT',
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.readers.mqtt.ConsumeMQTT',
       //   name: 'Metadata reader (from MQTT)',
-      //   handler: AppConstants.HANDLER.PING,
+      //   handler: AppConstants.HANDLER.METADATA,
       //   state: true,
       //   type: 'readers'
       // },
@@ -101,9 +101,9 @@ export class DatawizardStandardComponent implements OnInit {
       //     truststoreFilename: null,
       //     truststorePassword: null
       //   }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
-      //   factoryClass: 'esthesis.backend.nifi.sinks.readers.mqtt.ConsumeMQTT',
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.readers.mqtt.ConsumeMQTT',
       //   name: 'Telemetry reader (from MQTT)',
-      //   handler: AppConstants.HANDLER.PING,
+      //   handler: AppConstants.HANDLER.TELEMETRY
       //   state: true,
       //   type: 'readers'
       // },
@@ -116,7 +116,7 @@ export class DatawizardStandardComponent implements OnInit {
       //     password: this.form.get('esthesisDbPassword').value,
       //     schedulingPeriod: '100 ms'
       //   }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
-      //   factoryClass: 'esthesis.backend.nifi.sinks.writers.relational.PutDatabaseRecord',
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.writers.relational.PutDatabaseRecord',
       //   name: 'Metadata writer (to esthesis database)',
       //   handler: AppConstants.HANDLER.METADATA,
       //   state: true,
@@ -136,7 +136,7 @@ export class DatawizardStandardComponent implements OnInit {
       //     maxRecordSizeUnit: 'kb',
       //     schedulingPeriod: '100 ms'
       //   }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
-      //   factoryClass: 'esthesis.backend.nifi.sinks.writers.influxdb.PutInfluxDB',
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.writers.influxdb.PutInfluxDB',
       //   name: 'Telemetry writer (to InfluxDB)',
       //   handler: AppConstants.HANDLER.TELEMETRY,
       //   state: true,
@@ -151,7 +151,7 @@ export class DatawizardStandardComponent implements OnInit {
       //     password: this.form.get('esthesisDbPassword').value,
       //     schedulingPeriod: '100 ms'
       //   }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
-      //   factoryClass: 'esthesis.backend.nifi.sinks.producers.relational.ExecuteSQL',
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.producers.relational.ExecuteSQL',
       //   name: 'Metadata producer (from esthesis database)',
       //   handler: AppConstants.HANDLER.METADATA,
       //   state: true,
@@ -168,12 +168,68 @@ export class DatawizardStandardComponent implements OnInit {
       //     queryChunkSize: 1,
       //     schedulingPeriod: '100 ms'
       //   }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
-      //   factoryClass: 'esthesis.backend.nifi.sinks.producers.influxdb.ExecuteInfluxDB',
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.producers.influxdb.ExecuteInfluxDB',
       //   name: 'Telemetry producer (from InfluxDB)',
       //   handler: AppConstants.HANDLER.TELEMETRY,
       //   state: true,
       //   type: 'producers'
       // },
+      // {
+      //   configuration: safeDump(Object.entries({
+      //     databaseConnectionURL: this.form.get('esthesisDbUri').value,
+      //     databaseDriverClassName: this.form.get('esthesisDbDriver').value,
+      //     databaseDriverClassLocation: this.form.get('esthesisDbDriverLocation').value,
+      //     databaseUser: this.form.get('esthesisDbUser').value,
+      //     password: this.form.get('esthesisDbPassword').value,
+      //     uri: this.form.get('mqttUri').value,
+      //     topic: 'esthesis/control/request/${esthesis.hardwareId}',
+      //     qos: 0,
+      //     retainMessage: false,
+      //     schedulingPeriod: '100 ms',
+      //     keystoreFilename: null,
+      //     keystorePassword: null,
+      //     truststoreFilename: null,
+      //     truststorePassword: null
+      //   }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.producers.command.CommandProducer',
+      //   name: 'Command Producer',
+      //   handler: AppConstants.HANDLER.COMMAND,
+      //   state: true,
+      //   type: 'producers'
+      // },
+      // {
+      //   configuration: safeDump(Object.entries({
+      //     uri: this.form.get('mqttUri').value,
+      //     topic: 'esthesis/control/reply/#',
+      //     qos: 0,
+      //     queueSize: 1000,
+      //     schedulingPeriod: '100 ms',
+      //     keystoreFilename: null,
+      //     keystorePassword: null,
+      //     truststoreFilename: null,
+      //     truststorePassword: null
+      //   }).reduce((a, [k, v]) => (v ? (a[k] = v, a) : a), {})),
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.readers.mqtt.ConsumeMQTT',
+      //   name: 'Command Reply Reader (from MQTT)',
+      //   handler: AppConstants.HANDLER.COMMAND,
+      //   state: true,
+      //   type: 'readers'
+      // },
+      // {
+      //   configuration: safeDump(Object.entries({
+      //     databaseConnectionURL: this.form.get('esthesisDbUri').value,
+      //     databaseDriverClassName: this.form.get('esthesisDbDriver').value,
+      //     databaseDriverClassLocation: this.form.get('esthesisDbDriverLocation').value,
+      //     databaseUser: this.form.get('esthesisDbUser').value,
+      //     password: this.form.get('esthesisDbPassword').value,
+      //     schedulingPeriod: '100 ms'
+      //   }).reduce((a, [k, v]) => (v ? (a[k] = v, a) : a), {})),
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.writers.relational.PutDatabaseRecord',
+      //   name: 'Command writer (to esthesis database)',
+      //   handler: AppConstants.HANDLER.COMMAND,
+      //   state: true,
+      //   type: 'writers'
+      // }
     ];
 
     let index = 0;
