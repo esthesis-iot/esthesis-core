@@ -118,7 +118,7 @@ public class ConsumeMQTT implements NiFiReaderFactory {
   }
 
   @Override
-  public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO, String[] path) throws IOException {
+  public void updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO, String[] path) throws IOException {
     ConsumeMQTTConfiguration prevConf = extractConfiguration(sink.getConfiguration());
     conf = extractConfiguration(sinkDTO.getConfiguration());
     String sslContextId = null;
@@ -150,7 +150,7 @@ public class ConsumeMQTT implements NiFiReaderFactory {
       }
     }
 
-    return niFiClientService
+    niFiClientService
       .updateConsumerMQTT(processorId, sinkDTO.getName(), sslContextId, conf.getUri(),
         conf.getTopic(),
         conf.getQos(),
@@ -177,8 +177,8 @@ public class ConsumeMQTT implements NiFiReaderFactory {
   }
 
   @Override
-  public String toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
-    return niFiClientService.changeProcessorStatus(name, path,
+  public void toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
+    niFiClientService.changeProcessorStatus(name, path,
       isEnabled ? STATE.RUNNING : STATE.STOPPED);
   }
 

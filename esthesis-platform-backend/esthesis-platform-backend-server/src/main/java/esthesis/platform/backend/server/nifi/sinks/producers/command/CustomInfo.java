@@ -1,5 +1,4 @@
-package esthesis.platform.backend.server.nifi.sinks.producers.mqtt;
-
+package esthesis.platform.backend.server.nifi.sinks.producers.command;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,5 +8,7 @@ import lombok.NoArgsConstructor;
 public class CustomInfo {
 
   private String sslContextId;
+  private String dbConnectionPool;
+
 
 }

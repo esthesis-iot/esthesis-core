@@ -117,7 +117,7 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
   }
 
   @Override
-  public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO, String[] path) throws IOException {
+  public void updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO, String[] path) throws IOException {
     PutDatabaseRecordConfiguration prevConf = extractConfiguration(sink.getConfiguration());
     conf = extractConfiguration(sinkDTO.getConfiguration());
 
@@ -140,7 +140,7 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
     String processorId = niFiClientService.findProcessorIDByNameAndProcessGroup(sink.getName(),
       path);
 
-    return niFiClientService.updatePutDatabaseRecord(processorId, sinkDTO.getName(),
+    niFiClientService.updatePutDatabaseRecord(processorId, sinkDTO.getName(),
       getStatementType(sinkDTO.getHandler()), conf.getSchedulingPeriod());
   }
 
@@ -163,9 +163,8 @@ public class PutDatabaseRecord implements NiFiWriterFactory {
   }
 
   @Override
-  public String toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
-    return niFiClientService.changeProcessorStatus(name, path,
-      isEnabled ? STATE.RUNNING : STATE.STOPPED);
+  public void toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
+    niFiClientService.changeProcessorStatus(name, path,    isEnabled ? STATE.RUNNING : STATE.STOPPED);
   }
 
   @Override

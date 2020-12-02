@@ -52,14 +52,14 @@ public class PutFile implements NiFiLoggerFactory {
   }
 
   @Override
-  public String updateSink(NiFiSink sink,
+  public void updateSink(NiFiSink sink,
     NiFiSinkDTO sinkDTO, String[] path) throws IOException {
     conf = extractConfiguration(sinkDTO.getConfiguration());
 
     String processorId = niFiClientService.findProcessorIDByNameAndProcessGroup(sink.getName(),
       path);
 
-    return niFiClientService
+   niFiClientService
       .updatePutFile(processorId, sinkDTO.getName(), conf.getDirectory(),
         conf.getSchedulingPeriod());
   }
@@ -70,8 +70,8 @@ public class PutFile implements NiFiLoggerFactory {
   }
 
   @Override
-  public String toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
-    return niFiClientService.changeProcessorStatus(name, path,
+  public void toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
+   niFiClientService.changeProcessorStatus(name, path,
       isEnabled ? STATE.RUNNING : STATE.STOPPED);
   }
 

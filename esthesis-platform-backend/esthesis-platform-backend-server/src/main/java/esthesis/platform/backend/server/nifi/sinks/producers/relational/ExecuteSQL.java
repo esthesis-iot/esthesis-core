@@ -115,7 +115,7 @@ public class ExecuteSQL implements NiFiProducerFactory {
   }
 
   @Override
-  public String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO, String[] path) throws IOException {
+  public void updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO, String[] path) throws IOException {
 
     RelationProducerConfiguration prevConf = extractConfiguration(sink.getConfiguration());
     conf = extractConfiguration(sinkDTO.getConfiguration());
@@ -138,7 +138,7 @@ public class ExecuteSQL implements NiFiProducerFactory {
     String processorId = niFiClientService.findProcessorIDByNameAndProcessGroup(sink.getName(),
       path);
 
-    return niFiClientService.updateExecuteSQL(processorId, sinkDTO.getName(),
+    niFiClientService.updateExecuteSQL(processorId, sinkDTO.getName(),
       conf.getSchedulingPeriod());
   }
 
@@ -157,15 +157,15 @@ public class ExecuteSQL implements NiFiProducerFactory {
     String customInfoString = niFiSinkDTO.getCustomInfo();
     if (customInfoString != null) {
       CustomInfo customInfo = objectMapper.readValue(customInfoString, CustomInfo.class);
-      if (!StringUtils.isEmpty(customInfo.getDbConnectionPool())) {
+      if (StringUtils.hasText(customInfo.getDbConnectionPool())) {
         niFiClientService.deleteController(customInfo.getDbConnectionPool());
       }
     }
   }
 
   @Override
-  public String toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
-    return niFiClientService.changeProcessorStatus(name, path,
+  public void toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
+    niFiClientService.changeProcessorStatus(name, path,
       isEnabled ? STATE.RUNNING : STATE.STOPPED);
   }
 

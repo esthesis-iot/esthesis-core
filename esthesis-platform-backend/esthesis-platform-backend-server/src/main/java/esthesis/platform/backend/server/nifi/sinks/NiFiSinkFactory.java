@@ -35,9 +35,8 @@ public interface NiFiSinkFactory {
    * @param sink The existing sink.
    * @param sinkDTO An object containing the updates of the sink.
    * @param path
-   * @return The id of the updated sink.
    */
-  String updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO, String[] path) throws IOException;
+  void updateSink(NiFiSink sink, NiFiSinkDTO sinkDTO, String[] path) throws IOException;
 
   /**
    * Deletes a NiFi sink.
@@ -49,13 +48,11 @@ public interface NiFiSinkFactory {
 
   /**
    * Toggles the state of the sink.
-   *
-   * @param name The id of the NiFi sink to toggle.
+   *  @param name The id of the NiFi sink to toggle.
    * @param path
    * @param isEnabled Whether to enable or disable the sink.
-   * @return The id of the toggled sink.
    */
-  String toggleSink(String name, String[] path, boolean isEnabled) throws IOException;
+  void toggleSink(String name, String[] path, boolean isEnabled) throws IOException;
 
   /**
    * Enables the controller services of a sink
