@@ -137,3 +137,4 @@ fabric.properties
 ############
 *.iml
 .idea/
+/esthesis-platform-backend/esthesis-platform-backend-server/src/main/resources/git.json

@@ -5,7 +5,7 @@ MAINTAINER esthesis@eurodyn.com
 WORKDIR /app
 
 # Add app.
-COPY target/esthesis-platform-backend-server.jar /app
+COPY esthesis-platform-backend-server/target/esthesis-platform-backend-server.jar /app
 
 RUN sed -i.bak \
     -e "s/securerandom.source=file:\/dev\/random/securerandom.source=file:\/dev\/urandom/g" \
