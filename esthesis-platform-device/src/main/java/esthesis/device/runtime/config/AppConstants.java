@@ -23,6 +23,7 @@ public class AppConstants {
     }
 
     public static final int CANNOT_FIND_DEVICE_ID = 1;
+    public static final int NO_PROVISIONING_URL = 2;
   }
 
   // The types of forking when a provisioning package is downloaded.

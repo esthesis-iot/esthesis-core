@@ -13,11 +13,11 @@ import java.util.logging.Level;
 @Component
 public class MqttProxyInterceptor extends AbstractInterceptHandler {
 
-  private final MqttClient mqttProxyClient;
+  private final MqttClient mqttClient;
   private final DeviceMessageUtil deviceMessageUtil;
 
-  public MqttProxyInterceptor(MqttClient mqttProxyClient, DeviceMessageUtil deviceMessageUtil) {
-    this.mqttProxyClient = mqttProxyClient;
+  public MqttProxyInterceptor(MqttClient mqttClient, DeviceMessageUtil deviceMessageUtil) {
+    this.mqttClient = mqttClient;
     this.deviceMessageUtil = deviceMessageUtil;
   }
 
@@ -32,7 +32,7 @@ public class MqttProxyInterceptor extends AbstractInterceptHandler {
     message.getPayload().readBytes(bytes);
     log.log(Level.FINEST, "Proxying to MQTT topic {0}: {1}",
       new String[]{message.getTopicName(), new String(bytes)});
-    mqttProxyClient.publish(deviceMessageUtil.resolveTopic(message.getTopicName()), bytes,
+    mqttClient.publish(deviceMessageUtil.resolveTopic(message.getTopicName()), bytes,
       message.getQos().value(),
       message.isRetainFlag());
   }

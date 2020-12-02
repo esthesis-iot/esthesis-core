@@ -46,7 +46,7 @@
     <profile>
       <id>prod</id>
       <build>
-        <finalName>esthesis-device-java</finalName>
+        <finalName>esthesis-platform-device</finalName>
         <pluginManagement>
           <plugins>
             <plugin>

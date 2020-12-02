@@ -11,6 +11,7 @@ import esthesis.platform.backend.common.device.RegistrationResponse;
 import esthesis.platform.backend.common.dto.DeviceMessage;
 import esthesis.platform.backend.common.util.Base64E;
 import lombok.extern.java.Log;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -184,7 +185,15 @@ public class RegistrationService {
     }
   }
 
-  public String getEmbeddedMqttServer() {
-    return registrationRepository.findAll().get(0).getMqttServerIp();
+  /**
+   * Returns
+   * @return
+   */
+  public String getMqttServer() {
+    if (CollectionUtils.isNotEmpty(registrationRepository.findAll())) {
+      return registrationRepository.findAll().get(0).getMqttServerIp();
+    } else {
+      return null;
+    }
   }
 }

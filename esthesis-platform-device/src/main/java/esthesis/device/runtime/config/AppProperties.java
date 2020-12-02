@@ -5,15 +5,17 @@ import esthesis.device.runtime.resolver.id.HardwareIdResolverUtil;
 import lombok.Data;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 
+@Log
 @Data
 @Component
-@Log
+@Configuration
 public class AppProperties {
 
   // The URL of the registration server.
@@ -104,7 +106,7 @@ public class AppProperties {
 
   // A flag for the device to skip initial provisioning. This is useful in case the device comes
   // with a firmware image already installed during factory setup.
-  @Value("${skipInitialProvisioning:false}")
+  @Value("${skipInitialProvisioning:true}")
   private boolean skipInitialProvisioning;
 
   // A provisioning package contains a script that will be executed by the agent in order to
@@ -298,4 +300,25 @@ public class AppProperties {
       return null;
     }
   }
+
+  // A flag indicating this device should send demo data.
+  @Value("${demo:false}")
+  private boolean demo;
+
+  // The frequency (in msec) in which demo data is transmitted.
+  @Value("${demoFreqMsec:5000}")
+  private long demoFreqMsec;
+
+  @Value("${demoInitialDelayMsec:5000}")
+  private long demoInitialDelayMsec;
+
+  // The JSON payload to send as demo content.
+  // Variable substitution:
+  //    %i%: Random integer 0-100
+  //    %f%: Random float 0-100.
+  @Value("${demoPayload:{\"m\": \"demo\", \"v\": { \"temperature\": %i%, \"humidity\": %f%}}}")
+  private String demoPayload;
+
 }
+
+

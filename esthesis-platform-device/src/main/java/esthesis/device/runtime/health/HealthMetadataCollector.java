@@ -52,15 +52,14 @@ public class HealthMetadataCollector {
   @Scheduled(fixedRateString = "${pingFreqMsec:60000}",
     initialDelayString = "${pingInitialDelayMsec:60000}")
   public void pingScheduler() {
-    if (StringUtils.isNotEmpty(registrationService.getEmbeddedMqttServer())) {
+    if (StringUtils.isNotEmpty(registrationService.getMqttServer())) {
       mqttClient.publish(Mqtt.EventType.PING, ping());
     }
   }
 
   public byte[] ping() {
     try {
-      return objectMapper
-        .writeValueAsBytes(
+      return objectMapper.writeValueAsBytes(
           new DevicePingMessageDTO().setDeviceTime(Instant.now().toEpochMilli()));
     } catch (Exception e) {
       log.log(Level.SEVERE, "Could not produce JSON output for ping data.", e);
@@ -72,7 +71,7 @@ public class HealthMetadataCollector {
   @Scheduled(fixedRateString = "${healthDataFreqMsec:900000}",
     initialDelayString = "${healthDataInitialDelayMsec:300000}")
   public void collectHealthDataScheduler() {
-    if (StringUtils.isNotEmpty(registrationService.getEmbeddedMqttServer())) {
+    if (StringUtils.isNotEmpty(registrationService.getMqttServer())) {
       mqttClient.publish(Mqtt.EventType.TELEMETRY, collectHealthData());
     }
   }
