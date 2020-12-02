@@ -6,6 +6,7 @@ import esthesis.platform.backend.server.model.NiFi;
 import esthesis.platform.backend.server.model.QNiFi;
 import esthesis.platform.backend.server.repository.NiFiRepository;
 import io.github.classgraph.ClassGraph;
+import io.github.classgraph.Resource;
 import io.github.classgraph.ResourceList;
 import io.github.classgraph.ScanResult;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Level;
 
 @RequiredArgsConstructor
 @Service
@@ -47,16 +50,22 @@ public class NiFiService extends BaseService<NiFiDTO, NiFi> {
    * Finds the NiFi workflow template resource shipped with this version of esthesis.
    */
   public String getLatestWorkflowTemplateResource() {
+    String workflowResource = null;
+
     // Get workflow template from resources.
     try (ScanResult scanResult = new ClassGraph().whitelistPathsNonRecursive("nifi/template")
       .scan()) {
       final ResourceList resources = scanResult.getResourcesWithExtension("xml");
       if (CollectionUtils.isNotEmpty(resources)) {
-        return resources.get(resources.size() - 1).getPath();
+        workflowResource = Objects.requireNonNull(resources.stream()
+          .sorted(Comparator.comparing(Resource::getPath))
+          .reduce((a, b) -> b).orElse(null)).getPath();
       }
     }
 
-    return null;
+    log.log(Level.FINEST, "NiFi Workflow version discovered: {0}.", workflowResource);
+
+    return workflowResource;
   }
 
   @CachePut("esthesis.backend.activeNiFi")
