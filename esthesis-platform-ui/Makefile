@@ -5,8 +5,8 @@ all: build push
 build:
 	echo Building image with tag: $(BUILD_TAG)
 	rm -rf dist
-	docker build . -t esthesis/esthesis-platform-ui:$(BUILD_TAG) -t esthesis/esthesis-platform-ui
+	docker build . -t esthesis/esthesis-platform-frontend-server:$(BUILD_TAG) -t esthesis/esthesis-platform-frontend-server
 
 push:
-	docker push esthesis/esthesis-platform-ui:$(BUILD_TAG)
-	docker push esthesis/esthesis-platform-ui:latest
+	docker push esthesis/esthesis-platform-frontend-server:$(BUILD_TAG)
+	docker push esthesis/esthesis-platform-frontend-server:latest

@@ -10,4 +10,3 @@ build:
 push:
 	docker push esthesis/esthesis-platform-backend-server:$(BUILD_TAG)
 	docker push esthesis/esthesis-platform-backend-server:latest
-
