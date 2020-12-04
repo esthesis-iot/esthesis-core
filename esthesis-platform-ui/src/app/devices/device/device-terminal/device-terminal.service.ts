@@ -15,7 +15,7 @@ export class DeviceTerminalService {
 
   getReply(requestId: number): Observable<CommandReplyDto> {
     return this.http.get<CommandReplyDto>(
-      `${AppConstants.API_ROOT}/command/reply-sync?requestId=${requestId}`);
+      `${AppConstants.API_ROOT}/command/reply-sync?requestId=${requestId}&waitFor=1000`);
   }
 
   executeCommand(data: CommandExecuteOrderDto): Observable<number> {

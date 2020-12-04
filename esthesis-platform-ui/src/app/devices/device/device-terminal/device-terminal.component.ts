@@ -27,6 +27,10 @@ export class DeviceTerminalComponent implements OnInit, AfterViewInit {
     );
   }
 
+  private termColorRed(message: string) {
+    return "\u001b[31m" + message + "\u001b[39m";
+  }
+
   private getReply(requestId: number) {
     this.deviceTerminalService.getReply(requestId).subscribe(onNext => {
       let output = '';
@@ -36,6 +40,10 @@ export class DeviceTerminalComponent implements OnInit, AfterViewInit {
       }
       this.blockInput = false;
       this.terminal.write('$ ');
+    }, onError => {
+      this.terminal.write(this.termColorRed("ERROR: Timeout waiting for device to reply.\n"));
+      this.terminal.write("\r$ ");
+      this.blockInput = false;
     });
   }
 
@@ -53,6 +61,10 @@ export class DeviceTerminalComponent implements OnInit, AfterViewInit {
       this.deviceTerminalService.executeCommand(cmd).subscribe(onNext => {
         this.command = '';
         this.getReply(onNext);
+      }, onError => {
+        this.terminal.write(this.termColorRed("ERROR: Could not dispatch command to device.\n"));
+        this.terminal.write("\r$ ");
+        this.blockInput = false;
       });
     } else {
       this.terminal.write('$ ');

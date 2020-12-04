@@ -21,7 +21,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -80,25 +82,28 @@ public class CommandResource {
   @GetMapping(path = "reply-sync", produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch command reply.")
   @ReplyFilter("-createdBy")
-  public CommandReplyDTO getReplySync(@RequestParam long requestId,
-    @RequestParam(defaultValue = "5000") long msec) throws InterruptedException {
+  public ResponseEntity<CommandReplyDTO> getReplySync(@RequestParam long requestId,
+    @RequestParam(defaultValue = "10000") long waitFor) throws InterruptedException {
     CommandReplyDTO reply = null;
     Instant start = Instant.now();
-    boolean cb = false;
-    while (start.plus(msec, ChronoUnit.MILLIS).isAfter(Instant.now()) && !cb) {
+    boolean deviceReplied = false;
+    while (start.plus(waitFor, ChronoUnit.MILLIS).isAfter(Instant.now()) && !deviceReplied) {
       reply = commandReplyService.findByCommandRequestId(requestId);
       if (reply != null) {
-        cb = true;
+        deviceReplied = true;
       } else {
         Thread.sleep(1000);
       }
     }
 
-    if (!cb) {
-      log.fine(MessageFormat.format("Command reply timed out after waiting for {0} msec.", msec));
+    if (!deviceReplied) {
+      String errorMessage = MessageFormat
+        .format("Command reply timed out after waiting for {0} msec.", waitFor);
+      log.fine(errorMessage);
+      return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).build();
+    } else {
+      return ResponseEntity.ok(reply);
     }
-
-    return reply;
   }
 
   @PostMapping(path = "execute-sync")
