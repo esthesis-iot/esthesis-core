@@ -182,7 +182,7 @@ export class DatawizardStandardComponent implements OnInit {
           databaseUser: this.form.get('esthesisDbUser').value,
           password: this.form.get('esthesisDbPassword').value,
           uri: this.form.get('mqttUri').value,
-          topic: 'esthesis/control/request/${esthesis.hardwareId}',
+          topic: 'esthesis/control/request',
           qos: 0,
           retainMessage: false,
           schedulingPeriod: '100 ms',
