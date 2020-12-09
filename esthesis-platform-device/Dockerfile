@@ -12,5 +12,4 @@ RUN sed -i.bak \
     -e "s/securerandom.strongAlgorithms=NativePRNGBlocking/securerandom.strongAlgorithms=NativePRNG/g" \
     $JAVA_HOME/conf/security/java.security
 
-ENTRYPOINT ["/usr/bin/java"]
-CMD ["-jar", "-Dspring.profiles.active=prod", "/app/esthesis-platform-device.jar"]
+CMD ["/usr/bin/java", "-jar", "-Dspring.profiles.active=prod", "/app/esthesis-platform-device.jar"]
