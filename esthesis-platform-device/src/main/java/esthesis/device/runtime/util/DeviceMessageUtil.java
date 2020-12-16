@@ -1,11 +1,9 @@
 package esthesis.device.runtime.util;
 
-import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.common.exception.QSecurityException;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoAsymmetricService;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoSymmetricService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.device.runtime.config.AppConstants.Mqtt.EventType;
 import esthesis.device.runtime.config.AppProperties;
 import esthesis.platform.backend.common.dto.DeviceMessage;
 import esthesis.platform.backend.common.util.Base64E;
@@ -275,24 +273,24 @@ public class DeviceMessageUtil {
     return decryptedFile.toFile().getAbsolutePath();
   }
 
-  /**
-   * Resolves a text-based topic name to its enum equivalent. If the topic name is not one of the
-   * supported ones an exception is thrown. The CONTROL_REQUEST topic is not supported as this is a
-   * topic where message are not originated from the agent.
-   *
-   * @param topic The name of the topic to resolve.
-   */
-  public EventType resolveTopic(String topic) {
-    if (appProperties.getTopicPing().equals(topic)) {
-      return EventType.PING;
-    } else if (appProperties.getTopicMetadata().equals(topic)) {
-      return EventType.METADATA;
-    } else if (appProperties.getTopicTelemetry().equals(topic)) {
-      return EventType.TELEMETRY;
-    } else if (appProperties.getTopicControlReply().equals(topic)) {
-      return EventType.CONTROL_REPLY;
-    } else {
-      throw new QDoesNotExistException("Unsupported MQTT topic {0}.", topic);
-    }
-  }
+//  /**
+//   * Resolves a text-based topic name to its enum equivalent. If the topic name is not one of the
+//   * supported ones an exception is thrown. The CONTROL_REQUEST topic is not supported as this is a
+//   * topic where message are not originated from the agent.
+//   *
+//   * @param topic The name of the topic to resolve.
+//   */
+//  public EventType resolveTopic(String topic) {
+//    if (appProperties.getTopicPing().equals(topic)) {
+//      return EventType.PING;
+//    } else if (appProperties.getTopicMetadata().equals(topic)) {
+//      return EventType.METADATA;
+//    } else if (appProperties.getTopicTelemetry().equals(topic)) {
+//      return EventType.TELEMETRY;
+//    } else if (appProperties.getTopicControlReply().equals(topic)) {
+//      return EventType.CONTROL_REPLY;
+//    } else {
+//      throw new QDoesNotExistException("Unsupported MQTT topic {0}.", topic);
+//    }
+//  }
 }

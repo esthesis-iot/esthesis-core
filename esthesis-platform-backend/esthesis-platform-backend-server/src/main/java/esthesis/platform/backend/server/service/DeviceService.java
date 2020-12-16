@@ -6,6 +6,7 @@ import static esthesis.platform.backend.server.config.AppSettings.SettingValues.
 import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
 import com.eurodyn.qlack.common.exception.QDisabledException;
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
+import com.eurodyn.qlack.common.exception.QMismatchException;
 import com.eurodyn.qlack.common.exception.QSecurityException;
 import com.eurodyn.qlack.fuse.crypto.dto.CertificateSignDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
@@ -438,7 +439,11 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     return super.deleteById(id);
   }
 
-  public List<DevicePageDTO> getFieldValues(long deviceId) {
+  /**
+   * Returns all non-hidden telemetry and metadata fields to be displayed on the device page.
+   * @param deviceId The device Id to fetch fata for.
+   */
+  public List<DevicePageDTO> getDevicePageData(long deviceId) {
     final DeviceDTO deviceDTO = findById(deviceId);
 
     // Iterate over the available data types to find which fields to fetch.
@@ -476,4 +481,43 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
       .collect(Collectors.toList());
   }
 
+  /**
+   * Returns the last value of a specific telemetry or metadata field for a device.
+   * @param deviceId The Id of the device to fetch the field value for.
+   * @param field The name of the telemetry or metadata field to fetch. The field needs to follow
+   * the following format:
+   *  TYPE.MEASUREMENT.FIELD
+   * For example, TELEMETRY.geolocation.latitude
+   */
+  public DevicePageDTO getDeviceDataField(long deviceId, String field) {
+    final DevicePageDTO devicePageDTO = new DevicePageDTO();
+
+    // Split the field to each individual identifying components.
+    final String[] splitField = field.split("\\.");
+    String dataType = splitField[0];
+    String measurement = splitField[1];
+    String fieldName = splitField[2];
+
+    // Find the hardware Id of the device.
+    String hardwareId = findById(deviceId).getHardwareId();
+
+    // Fetch field value.
+    final String fieldValue = dtService
+      .executeMetadataOrTelemetry(dataType.toLowerCase(), hardwareId,
+        DTOperations.OPERATION_QUERY.toLowerCase(), measurement, fieldName,
+        null, null, 1, 1);
+    try {
+      @SuppressWarnings("unchecked")
+      Map<String, List<Map<String, Object>>> jsonFields = mapper.readValue(fieldValue, HashMap.class);
+      devicePageDTO.setValue(jsonFields.get(measurement).get(0).get(fieldName).toString());
+      devicePageDTO.setLastUpdatedOn(Instant.ofEpochMilli(
+        (long)jsonFields.get(measurement).get(0).get("timestamp")));
+    } catch (JsonProcessingException e) {
+      throw new QMismatchException("Could not process field value.", e);
+    }
+
+    return devicePageDTO
+      .setField(fieldName)
+      .setMeasurement(measurement);
+  }
 }

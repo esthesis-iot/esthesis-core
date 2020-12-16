@@ -1,6 +1,7 @@
 package esthesis.platform.backend.server.resource;
 
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
+import com.eurodyn.qlack.common.exception.QMismatchException;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyFilter;
 import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
@@ -42,6 +43,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,7 +60,7 @@ public class DevicesResource {
     this.securityService = securityService;
   }
 
-  @PostMapping(path = "/preregister")
+  @PostMapping(path = "preregister")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not register device(s).")
   public ResponseEntity preregister(@Valid @RequestBody DeviceRegistrationDTO deviceRegistrationDTO)
   throws NoSuchAlgorithmException, IOException, NoSuchPaddingException,
@@ -149,11 +151,37 @@ public class DevicesResource {
       .body(stringBuilder.toString());
   }
 
-  @GetMapping(path = "field-values/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch device page fields.")
+  @GetMapping(path = "device-page-data/{deviceId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
+    logMessage = "Could not fetch device page fields.")
   @ReplyFilter("-shown,-createdBy,-createdOn,-modifiedBy,-modifiedOn")
-  public List<DevicePageDTO> getFieldValues(@PathVariable long id) {
-    return deviceService.getFieldValues(id);
+  public List<DevicePageDTO> getDevicePageData(@PathVariable long deviceId) {
+    return deviceService.getDevicePageData(deviceId);
+  }
+
+  /**
+   * Returns the last value of a specific telemetry or metadata field for a device.
+   *
+   * @param deviceId The Id of the device to fetch the field value for.
+   * @param fields The name of the telemetry or metadata field to fetch. The field needs to follow
+   * the following format: TYPE.MEASUREMENT.FIELD For example, TELEMETRY.geolocation.latitude.
+   * Multiple fields can be requested separated by comma.
+   */
+  @GetMapping(path = "device-data-field/{deviceId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
+    logMessage = "Could not fetch device page field.")
+  @ReplyFilter("-shown,-createdBy,-createdOn,-modifiedBy,-modifiedOn")
+  public List<DevicePageDTO> getDeviceDataFields(@PathVariable long deviceId,
+    @RequestParam String fields) {
+    List<DevicePageDTO> results = new ArrayList<>();
+    for (String field : fields.split(",")) {
+      if (field.split("\\.").length < 3) {
+        throw new QMismatchException("Unsupported field name format.");
+      }
+      results.add(deviceService.getDeviceDataField(deviceId, field));
+    }
+
+    return results;
   }
 
   @GetMapping(path = "count/by-hardware-id", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {icon, latLng, marker, tileLayer} from 'leaflet';
+import {icon, latLng, MapOptions, Marker, marker, tileLayer} from 'leaflet';
 import {TagDto} from '../../dto/tag-dto';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {QFormsService} from '@eurodyn/forms';
 import {TagService} from '../../tags/tag.service';
 import {DevicesService} from '../devices.service';
@@ -31,24 +31,23 @@ export class DeviceComponent extends BaseComponent implements OnInit {
   latSetting: string;
   fetchingDeviceData = true;
 
-  options = {
+  private marker: Marker = marker([47.2287109, 14.3009642], {
+    // icon: icon({
+    //   iconSize: [25, 41],
+    //   iconAnchor: [13, 41],
+    //   iconUrl: 'assets/marker-icon.png',
+    //   shadowUrl: 'assets/marker-shadow.png'
+    // })
+  });
+  mapLayer = [marker];
+  mapOptions: MapOptions = {
     layers: [
-      tileLayer(window.location.protocol + '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 18})
+      tileLayer(window.location.protocol + '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        {maxZoom: 18})
     ],
     zoom: 14,
-    center: latLng(47.2287109, 14.3009642)
+    // center: latLng(47.2287109, 14.3009642)
   };
-
-  layer1 = [
-    marker([47.2287109, 14.3009642], {
-      icon: icon({
-        iconSize: [25, 41],
-        iconAnchor: [13, 41],
-        iconUrl: 'assets/marker-icon.png',
-        shadowUrl: 'assets/marker-shadow.png'
-      })
-    }),
-  ];
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
               private qForms: QFormsService, private tagService: TagService,
@@ -71,40 +70,49 @@ export class DeviceComponent extends BaseComponent implements OnInit {
       hardwareId: ['', [Validators.required, Validators.maxLength(512)]]
     });
 
-    // If viewing an existing device, fetch data for it.
-    if (this.id && this.id !== 0) {
-
-      this.devicesService.get(this.id).subscribe(onNext => {
-        this.form.patchValue(onNext);
-      });
-      this.updateFields();
-    }
-
     // Get available tags.
     this.tagService.getAll().subscribe(onNext => {
       this.availableTags = onNext.content;
     });
 
-    // Get lat/lon parameters.
-    // Fetch settings.
-    this.settingsService.findByNames(
-      AppSettings.SETTING.GEOLOCATION.LATITUDE,
-      AppSettings.SETTING.GEOLOCATION.LONGITUDE,
-    ).subscribe(onNext => {
-      onNext.forEach(settingDTO => {
-        if (settingDTO.key === AppSettings.SETTING.GEOLOCATION.LATITUDE) {
-          this.latSetting = settingDTO.val;
-        }
-        if (settingDTO.key === AppSettings.SETTING.GEOLOCATION.LONGITUDE) {
-          this.lonSetting = settingDTO.val;
-        }
+    // If viewing an existing device, fetch data for it.
+    if (this.id && this.id !== 0) {
+      this.devicesService.get(this.id).subscribe(onNext => {
+        this.form.patchValue(onNext);
       });
-    });
+      this.settingsService.findByNames(
+        AppSettings.SETTING.GEOLOCATION.LATITUDE,
+        AppSettings.SETTING.GEOLOCATION.LONGITUDE,
+      ).subscribe(onNext => {
+        onNext.forEach(settingDTO => {
+          if (settingDTO.key === AppSettings.SETTING.GEOLOCATION.LATITUDE) {
+            this.latSetting = settingDTO.val;
+          }
+          if (settingDTO.key === AppSettings.SETTING.GEOLOCATION.LONGITUDE) {
+            this.lonSetting = settingDTO.val;
+          }
+        });
+        this.updateFields();
+        this.devicesService.getDeviceDataField(this.id,
+          [this.latSetting, this.lonSetting]).subscribe(onNext => {
+          // this.mapLayer = [
+          //   marker([onNext[0].value, onNext[1].value], {
+          //     icon: icon({
+          //       iconSize: [25, 41],
+          //       iconAnchor: [13, 41],
+          //       iconUrl: 'assets/marker-icon.png',
+          //       shadowUrl: 'assets/marker-shadow.png'
+          //     })
+          //   }),
+          // ];
+        })
+      });
+    }
   }
 
   private updateFields() {
     this.fieldsValues = new Map<string, any>();
-    this.devicesService.getFieldValues(this.id).subscribe(fieldsValues => {
+    this.devicesService.getDevicePageData(this.id).subscribe(fieldsValues => {
       this.fields = fieldsValues;
       // Update field values formatting.
       this.fields.forEach(field => {

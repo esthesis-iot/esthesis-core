@@ -20,8 +20,8 @@
           <div fxLayout="row" fxFlex="20%" *ngIf="lonSetting && latSetting">
             <div fxLayout="column">
               <div class="map-container" leaflet fxFlex="150px"
-                   [leafletOptions]="options"
-                   [leafletLayers]="layer1">
+                   [leafletOptions]="mapOptions"
+                   [leafletLayers]="mapLayer">
               </div>
             </div>
           </div>
