@@ -27,7 +27,7 @@
     "@auth0/angular-jwt": "~4.2.0",
     "@eurodyn/forms": "1.6.0",
     "@stomp/ng2-stompjs": "^7.2.0",
-    "@swimlane/ngx-charts": "~14.0.0",
+    "@swimlane/ngx-charts": "~16.0.0",
     "@types/js-yaml": "^3.12.5",
     "@zxing/ngx-scanner": "~3.0.0",
     "angular2-uuid": "1.1.1",
