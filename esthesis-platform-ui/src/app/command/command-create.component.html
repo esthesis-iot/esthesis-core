@@ -48,7 +48,7 @@
           <div fxLayout="row" fxLayoutAlign="left center" fxLayoutGap="1rem">
             <label>Description:</label>
             <mat-form-field>
-              <textarea matTextareaAutosize matAutosizeMinRows=1 matAutosizeMaxRows=10 matInput
+              <textarea [matTextareaAutosize]="true" [matAutosizeMinRows]=1 [matAutosizeMaxRows]=10 matInput
                         placeholder="Description" formControlName="description"></textarea>
             </mat-form-field>
           </div>

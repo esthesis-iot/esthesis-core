@@ -20,11 +20,11 @@ import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-m
   styleUrls: []
 })
 export class InfrastructureMqttEditComponent extends BaseComponent implements OnInit {
-  form: FormGroup;
-  id: number;
-  availableTags: TagDto[];
-  certificates: CertificateDto[];
-  cas: CaDto[];
+  form!: FormGroup;
+  id: number | undefined;
+  availableTags: TagDto[] | undefined;
+  certificates: CertificateDto[] | undefined;
+  cas: CaDto[] | undefined;
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
               private qForms: QFormsService, private tagService: TagService,
@@ -50,7 +50,7 @@ export class InfrastructureMqttEditComponent extends BaseComponent implements On
     // Fill-in the form with data if editing an existing item.
     if (this.id && this.id !== 0) {
       this.mqttServerService.get(this.id).subscribe(onNext => {
-        this.form.patchValue(onNext);
+        this.form!.patchValue(onNext);
       });
     }
 
@@ -71,7 +71,7 @@ export class InfrastructureMqttEditComponent extends BaseComponent implements On
   }
 
   save() {
-    this.mqttServerService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
+    this.mqttServerService.save(this.qForms.cleanupForm(this.form!)).subscribe(onNext => {
       this.utilityService.popupSuccess('MQTT server successfully saved.');
       this.router.navigate(['infra'], {fragment: 'mqtt'});
     });
@@ -99,19 +99,19 @@ export class InfrastructureMqttEditComponent extends BaseComponent implements On
 
   pickCaCertificate(caId: number, control: string) {
     this.casService.get(caId).subscribe(onNext => {
-      this.form.get(control).setValue(onNext.certificate);
+      this.form!.get(control)!.setValue(onNext.certificate);
     });
   }
 
   pickCertificate(certificateId: number, control: string) {
     this.certificatesService.get(certificateId).subscribe(onNext => {
-      this.form.get(control).setValue(onNext.certificate);
+      this.form!.get(control)!.setValue(onNext.certificate);
     });
   }
 
   pickPrivateKey(certificateId: number, control: string) {
     this.certificatesService.get(certificateId).subscribe(onNext => {
-      this.form.get(control).setValue(onNext.privateKey);
+      this.form!.get(control)!.setValue(onNext.privateKey);
     });
   }
 

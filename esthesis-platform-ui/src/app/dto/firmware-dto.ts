@@ -1,4 +1,4 @@
-export class FirmwareDto {
+export interface FirmwareDto {
   id: string;
   version: string;
   releaseDate: Date;

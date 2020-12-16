@@ -20,7 +20,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
   private log = Log.create('LoginComponent');
 
   // Form control.
-  loginForm: FormGroup;
+  loginForm!: FormGroup;
 
   // Show/hidePassword password
   hidePassword = true;
@@ -29,7 +29,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
   hideLoginForm = false;
 
   // Error message to display in form.
-  errorMessage: string;
+  errorMessage: string | undefined;
 
   constructor(private router: Router, private userService: UserService, private fb: FormBuilder,
               private wsService: WebSocketService, private utilityService: UtilityService,
@@ -62,13 +62,12 @@ export class LoginComponent extends BaseComponent implements OnInit {
         this.renderer.removeAttribute(document.body, 'style');
         // Save the JWT to be used in future requests.
         // sessionStorage.setItem(AppConstants.JWT_STORAGE_NAME, onNext["jwt"]);
-        localStorage.setItem(AppConstants.JWT_STORAGE_NAME, onNext['jwt']);
+        localStorage.setItem(AppConstants.JWT_STORAGE_NAME, onNext.jwt);
         this.wsService.connect();
         this.router.navigate(['dashboard']);
       }, onError => {
         console.log(onError);
         this.utilityService.popupError('Authentication was unsuccessful.');
-        // this.ngProgressService.complete();
         this.hideLoginForm = false;
       });
   }

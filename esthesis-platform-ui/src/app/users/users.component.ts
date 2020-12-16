@@ -22,8 +22,8 @@ export class UsersComponent extends BaseComponent implements OnInit, AfterViewIn
   filterForm: FormGroup;
 
   // References to sorting and pagination.
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort!: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router, private userService: UserService,
               private qForms: QFormsService) {
@@ -39,9 +39,9 @@ export class UsersComponent extends BaseComponent implements OnInit, AfterViewIn
     this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
     // Each time the sorting changes, reset the page number.
-    this.sort.sortChange.subscribe(onNext => {
-      this.paginator.pageIndex = 0;
-      this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
+    this.sort!.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
+      this.paginator!.pageIndex = 0;
+      this.fetchData(0, this.paginator!.pageSize, onNext.active, onNext.direction);
     });
   }
 
@@ -59,7 +59,7 @@ export class UsersComponent extends BaseComponent implements OnInit, AfterViewIn
       [new QFilterAlias('type', 'userType')], false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.dataSource.data = onNext.content;
-      this.paginator.length = onNext.totalElements;
+      this.paginator!.length = onNext.totalElements;
       console.log(onNext); // TODO REMOVE before commit
     });
   }

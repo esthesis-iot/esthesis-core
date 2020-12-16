@@ -15,8 +15,8 @@ import {UtilityService} from '../shared/service/utility.service';
   styleUrls: []
 })
 export class CasImportComponent extends BaseComponent implements OnInit {
-  parents: CaDto[];
-  form: FormGroup;
+  parents: CaDto[] | undefined;
+  form!: FormGroup;
 
   constructor(private fb: FormBuilder, private casService: CasService,
               private qForms: QFormsService,
@@ -33,7 +33,7 @@ export class CasImportComponent extends BaseComponent implements OnInit {
     });
   }
 
-  selectFile(event) {
+  selectFile(event:any) {
     this.form.controls['backup'].patchValue(event.target.files[0]);
   }
 

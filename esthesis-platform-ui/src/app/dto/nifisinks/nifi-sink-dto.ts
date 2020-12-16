@@ -1,6 +1,6 @@
 import {BaseDto} from '../base-dto';
 
-export class NiFiSinkDto extends BaseDto {
+export interface NiFiSinkDto extends BaseDto {
   name: string;
   factoryClass: string;
   handler: number;

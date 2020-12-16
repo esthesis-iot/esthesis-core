@@ -16,10 +16,10 @@ export class InfrastructureNiFiComponent extends BaseComponent implements OnInit
   columns = ['name', 'url', 'description', 'state', 'wfVersion', 'lastChecked'];
   datasource = new MatTableDataSource<NiFiDto>();
   // NiFi workflow version available in the backend.
-  backendWfVersion: string;
+  backendWfVersion: string | undefined;
 
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private nifiService: NiFiService, private qForms: QFormsService) {
     super();
@@ -37,28 +37,28 @@ export class InfrastructureNiFiComponent extends BaseComponent implements OnInit
     this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
     // Each time the sorting changes, reset the page number.
-    this.sort.sortChange.subscribe(onNext => {
-      this.paginator.pageIndex = 0;
+    this.sort!.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
+      this.paginator!.pageIndex = 0;
       this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
     });
   }
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     this.nifiService.getAll(
-      this.qForms.appendPagingToFilter(null, page, size, sort, sortDirection))
+      this.qForms.appendPagingToFilter(null!, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;
-      this.paginator.length = onNext.totalElements;
+      this.paginator!.length = onNext.totalElements;
       this.nifiService.getActive().subscribe(value => {
-        value ? localStorage.setItem("activeNiFi", value.id.toString()) : localStorage.removeItem(
+        value ? localStorage.setItem("activeNiFi", value.id!.toString()) : localStorage.removeItem(
           "activeNiFi")
       });
     });
   }
 
   changePage() {
-    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-      this.sort.start);
+    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort!.active,
+      this.sort!.start);
   }
 
 }

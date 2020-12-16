@@ -9,7 +9,7 @@ import {Router} from '@angular/router';
   styleUrls: ['./datawizards.component.scss']
 })
 export class DatawizardsComponent extends BaseComponent implements OnInit {
-  form: FormGroup;
+  form!: FormGroup;
   WIZARD_STANDARD = 'standard';
 
   constructor(private fb: FormBuilder, private router: Router) {
@@ -24,6 +24,6 @@ export class DatawizardsComponent extends BaseComponent implements OnInit {
   }
 
   executeWizard() {
-    this.router.navigate(['data-wizards', this.form.get('wizard').value]);
+    this.router.navigate(['data-wizards', this.form!.get('wizard')!.value]);
   }
 }

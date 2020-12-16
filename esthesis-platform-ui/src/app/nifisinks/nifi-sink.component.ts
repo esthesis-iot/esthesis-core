@@ -16,11 +16,11 @@ import {MatTableDataSource} from '@angular/material/table';
 export class NiFiSinkComponent extends BaseComponent implements OnInit, AfterViewInit {
   columns = ['name', 'createdOn', 'handler', 'state', 'validationErrors'];
   datasource = new MatTableDataSource<NiFiSinkDto>();
-  type: string;
+  type: string | undefined;
   activeNiFiId = localStorage.getItem('activeNiFi');
 
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private nifiSinkService: NifiSinkService,
               private qForms: QFormsService,
@@ -38,7 +38,7 @@ export class NiFiSinkComponent extends BaseComponent implements OnInit, AfterVie
     this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
     // Each time the sorting changes, reset the page number.
-    this.sort.sortChange.subscribe(onNext => {
+    this.sort.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
       this.paginator.pageIndex = 0;
       this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
     });

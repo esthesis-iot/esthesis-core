@@ -17,8 +17,8 @@ export class DatasinksComponent extends BaseComponent implements OnInit, AfterVi
     'metadataRead', 'telemetryRead'];
   datasource = new MatTableDataSource<DataSinkDto>();
 
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort!: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   constructor(private dataSinkService: DataSinkService, private qForms: QFormsService) {
     super();
@@ -32,7 +32,7 @@ export class DatasinksComponent extends BaseComponent implements OnInit, AfterVi
     this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
     // Each time the sorting changes, reset the page number.
-    this.sort.sortChange.subscribe(onNext => {
+    this.sort.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
       this.paginator.pageIndex = 0;
       this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
     });

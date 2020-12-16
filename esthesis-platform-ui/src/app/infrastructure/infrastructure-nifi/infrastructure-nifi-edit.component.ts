@@ -16,11 +16,11 @@ import {SyncService} from './sync.service';
   styleUrls: []
 })
 export class InfrastructureNiFiEditComponent extends BaseComponent implements OnInit {
-  form: FormGroup;
-  id: number;
-  nifi: NiFiDto[];
+  form!: FormGroup;
+  id!: number;
+  nifi: NiFiDto[] | undefined;
   activeNiFiId = localStorage.getItem('activeNiFi');
-  synced: boolean;
+  synced: boolean | undefined;
   lastChecked: any;
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
@@ -61,7 +61,7 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
   }
 
   save() {
-    if (this.form.get('state').value && this.activeNiFiId != null && parseInt(
+    if (this.form.get('state')!.value && this.activeNiFiId != null && parseInt(
       this.activeNiFiId) !== this.id) {
       this.activate();
     } else {
@@ -149,7 +149,7 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
       if (result) {
         this.submit();
       } else {
-        this.form.get('state').setValue(false);
+        this.form.get('state')!.setValue(false);
       }
     });
   }

@@ -1,7 +1,7 @@
-import {BaseDto} from '../base-dto';
-
-export class NiFiLoggerFactoryDto extends BaseDto {
-  factoryClass: string;
-  friendlyName: string;
-  version: string;
+export class NiFiLoggerFactoryDto {
+  id?: number;
+  createdOn?: Date;
+  factoryClass?: string;
+  friendlyName?: string;
+  version?: string;
 }

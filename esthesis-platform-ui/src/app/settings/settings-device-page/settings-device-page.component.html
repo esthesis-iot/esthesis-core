@@ -32,7 +32,7 @@
     supported via
     <a href="https://github.com/alexei/sprintf.js#readme" target="_blank" rel="noopener noreferrer">sprintf-js</a>.
   </div>
-  <div formArrayName="fields" *ngFor="let field of form.get('fields')['controls']; let i = index">
+  <div formArrayName="fields" *ngFor="let field of getFormFields(); let i = index">
     <div [formGroupName]="i" fxLayout="row" fxLayoutGap="1rem">
       <input type="hidden" name="id" value="{{field.controls.id.value}}">
       <mat-checkbox formControlName="shown" class="xs-mt1" color="primary"></mat-checkbox>

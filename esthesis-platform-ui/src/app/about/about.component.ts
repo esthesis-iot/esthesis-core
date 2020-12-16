@@ -8,7 +8,7 @@ import {AboutDto} from '../dto/about-dto';
   styleUrls: ['./about.component.scss']
 })
 export class AboutComponent implements OnInit {
-  about: AboutDto;
+  about!: AboutDto;
 
   constructor(private aboutService: AboutService) {
   }

@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatDialogRef} from '@angular/material/dialog';
 import {BehaviorSubject} from 'rxjs';
 import {BarcodeFormat} from '@zxing/library';
+import {MatSelect} from '@angular/material/select';
 
 @Component({
   selector: 'app-device-preregister-cam',
@@ -10,18 +11,18 @@ import {BarcodeFormat} from '@zxing/library';
   styleUrls: []
 })
 export class DevicePreregisterCamComponent implements OnInit {
-  form: FormGroup;
+  form!: FormGroup;
   audioContext = AudioContext && new AudioContext();
-  availableDevices: MediaDeviceInfo[];
-  currentDevice: MediaDeviceInfo = null;
+  availableDevices: MediaDeviceInfo[] | undefined;
+  currentDevice: MediaDeviceInfo | undefined;
   formatsEnabled: BarcodeFormat[] = [
     BarcodeFormat.CODE_128,
     BarcodeFormat.DATA_MATRIX,
     BarcodeFormat.EAN_13,
     BarcodeFormat.QR_CODE,
   ];
-  hasDevices: boolean;
-  hasPermission: boolean;
+  hasDevices: boolean | undefined;
+  hasPermission: boolean | undefined;
   torchEnabled = false;
   torchAvailable$ = new BehaviorSubject<boolean>(false);
   tryHarder = false;
@@ -57,9 +58,9 @@ export class DevicePreregisterCamComponent implements OnInit {
     }
   }
 
-  onDeviceSelectChange(selected: string) {
-    const device = this.availableDevices.find(x => x.deviceId === selected);
-    this.currentDevice = device || null;
+  onDeviceSelectChange(deviceId: string) {
+    console.log(deviceId);
+    this.currentDevice = this.availableDevices!.find(x => x.deviceId === deviceId);
   }
 
   onHasPermission(has: boolean) {

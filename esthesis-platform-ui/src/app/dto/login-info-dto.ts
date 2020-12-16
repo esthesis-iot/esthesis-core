@@ -1,4 +1,4 @@
-export class LoginInfoDto {
+export interface LoginInfoDto {
   email: string;
   password: string;
   capthca: string;

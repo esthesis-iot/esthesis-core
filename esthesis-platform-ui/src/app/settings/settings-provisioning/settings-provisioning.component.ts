@@ -14,7 +14,7 @@ import {UtilityService} from '../../shared/service/utility.service';
 })
 export class SettingsProvisioningComponent extends BaseComponent implements OnInit {
 
-  form: FormGroup;
+  form!: FormGroup;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
               private utilityService: UtilityService) {
@@ -45,7 +45,7 @@ export class SettingsProvisioningComponent extends BaseComponent implements OnIn
   save() {
     this.settingsService.saveMultiple(
       _.map(Object.keys(this.form.controls), (fc) => {
-        return new KeyValueDto(fc, this.form.get(fc).value)
+        return new KeyValueDto(fc, this.form.get(fc)!.value)
       })).subscribe(onNext => {
       this.utilityService.popupSuccess("Settings saved successfully.");
     });

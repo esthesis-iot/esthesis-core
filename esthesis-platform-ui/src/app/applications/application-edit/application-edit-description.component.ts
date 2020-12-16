@@ -15,9 +15,8 @@ import {UtilityService} from '../../shared/service/utility.service';
   styleUrls: []
 })
 export class ApplicationEditDescriptionComponent extends BaseComponent implements OnInit {
-  @Input() id: number;
-
-  form: FormGroup;
+  @Input() id: number | undefined;
+  form!: FormGroup;
 
   constructor(private fb: FormBuilder, private applicationService: ApplicationService,
               private qForms: QFormsService,

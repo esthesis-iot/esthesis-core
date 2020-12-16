@@ -1,4 +1,4 @@
-export class InfrastructureReportDto {
+export interface InfrastructureReportDto {
   clusterLeader: boolean;
   inClusterMode: boolean;
   nodeId: string;
@@ -6,13 +6,13 @@ export class InfrastructureReportDto {
   zookeeperReport: ZookeeperReport;
 }
 
-class MqttServerReport {
+interface MqttServerReport {
   id: number;
   ipAddress: string;
   leader: boolean;
 }
 
-class ZookeeperReport {
+interface ZookeeperReport {
   id: number;
   ipAddress: string;
   leader: boolean;

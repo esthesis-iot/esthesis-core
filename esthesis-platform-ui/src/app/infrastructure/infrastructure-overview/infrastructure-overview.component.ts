@@ -8,7 +8,7 @@ import {InfrastructureReportDto} from '../../dto/infrastructure-report-dto';
   styleUrls: ['./infrastructure-overview.component.scss']
 })
 export class InfrastructureOverviewComponent implements OnInit {
-  report: InfrastructureReportDto;
+  report: InfrastructureReportDto | undefined;
 
   constructor(private infrastructureService: InfrastructureService) {
   }

@@ -1,4 +1,4 @@
-export class DataSinkFactoryDto {
+export interface DataSinkFactoryDto {
   factoryClass: string;
   friendlyName: string;
   supportsMetadataRead: boolean;

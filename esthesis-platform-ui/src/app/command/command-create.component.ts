@@ -14,9 +14,9 @@ import 'rxjs-compat/add/observable/forkJoin';
   styleUrls: ['./command-create.component.scss']
 })
 export class CommandCreateComponent extends BaseComponent implements OnInit, OnDestroy {
-  searchDevicesForm: FormGroup;
-  commandForm: FormGroup;
-  commands: string[];
+  searchDevicesForm!: FormGroup;
+  commandForm!: FormGroup;
+  commands!: string[];
 
   constructor(private formBuilder: FormBuilder, private commandCreateService: CommandCreateService,
               private utilityService: UtilityService, private router: Router,
@@ -47,7 +47,7 @@ export class CommandCreateComponent extends BaseComponent implements OnInit, OnD
       Observable.forkJoin([
         this.commandCreateService.findDevicesByHardwareIds(onNext['hardwareIds']),
         this.commandCreateService.findDevicesByTags(onNext['tags'])]).subscribe(results => {
-        this.searchDevicesForm.patchValue({
+        this.searchDevicesForm!.patchValue({
           devicesMatchedByHardwareIds: results[0],
           devicesMatchedByTags: results[1],
           matches: (results[0] + results[1])
@@ -58,7 +58,7 @@ export class CommandCreateComponent extends BaseComponent implements OnInit, OnD
 
   execute() {
     this.commandCreateService.execute(
-      {...this.searchDevicesForm.getRawValue(), ...this.commandForm.getRawValue()}).subscribe(
+      {...this.searchDevicesForm!.getRawValue(), ...this.commandForm!.getRawValue()}).subscribe(
       () => {
         this.utilityService.popupSuccess('Command dispatched successfully.');
         this.close();

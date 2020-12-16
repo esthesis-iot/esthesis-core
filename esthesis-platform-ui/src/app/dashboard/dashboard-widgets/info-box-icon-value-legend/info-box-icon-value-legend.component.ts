@@ -8,16 +8,16 @@ import {Component, Input, OnInit} from '@angular/core';
 export class InfoBoxIconValueLegendComponent implements OnInit {
 
   @Input()
-  color: string;
+  color: string | undefined;
 
   @Input()
-  icon: string;
+  icon: string | undefined;
 
   @Input()
-  measurement: string;
+  measurement: string | undefined;
 
   @Input()
-  legend: string;
+  legend: string | undefined;
 
   constructor() { }
 

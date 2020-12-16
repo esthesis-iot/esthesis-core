@@ -20,12 +20,12 @@ import {AppConstants} from '../app.constants';
   styleUrls: ['./nifi-sink-edit.component.scss']
 })
 export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
-  form: FormGroup;
-  id: number;
+  form!: FormGroup;
+  id: number | undefined;
   availableNiFiDataFactories: any;
-  type: string;
-  handlers = [];
-  isEdit: boolean;
+  type: string | undefined;
+  handlers: Array<number> = [];
+  isEdit: boolean | undefined;
   activeNiFiId = localStorage.getItem('activeNiFi');
 
   constructor(private fb: FormBuilder, private nifDataService: NifiSinkService,
@@ -62,22 +62,23 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
     if (this.isEdit) {
       this.nifDataService.get(this.id).subscribe(onNext => {
         this.handlers.push(onNext.handler);
-        this.form.patchValue(onNext);
+        this.form!.patchValue(onNext);
       });
     }
 
     // Fill dropdowns.
     this.nifDataService.getAvailableDataFactoriesByType(this.type).subscribe(onNext => {
-      this.availableNiFiDataFactories = onNext.sort((a, b) => (a.friendlyName > b.friendlyName) ? 1 : -1)
+      this.availableNiFiDataFactories = onNext.sort(
+        (a, b) => (a.friendlyName > b.friendlyName) ? 1 : -1)
     });
   }
 
   save() {
-    this.form.patchValue({
+    this.form!.patchValue({
       type: this.type
     });
-    this.nifDataService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
-      this.utilityService.popupSuccess(this.form.value.id ? 'NiFi sink was successfully saved.'
+    this.nifDataService.save(this.qForms.cleanupForm(this.form!)).subscribe(onNext => {
+      this.utilityService.popupSuccess(this.form!.value.id ? 'NiFi sink was successfully saved.'
         : 'NiFi sink was successfully created.');
       this.router.navigate([this.type]);
     }, error => {
@@ -106,7 +107,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
     });
   }
 
-  updateHandlers($event) {
+  updateHandlers($event: any) { //TODO add correct type for $event
     if ($event.isUserInput) {
       let nifiSinkTypeDTO = this.getNiFiSinkTypeDTO();
       const factory = _.find<typeof nifiSinkTypeDTO>(this.availableNiFiDataFactories,
@@ -116,34 +117,40 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
       if (!this.isEdit) {
         this.handlers = [];
         //Action is derived from the type (read, write, produce).
-        let action = this.type.charAt(0).toUpperCase() + this.type.slice(1,
+        let action = this.type!.charAt(0).toUpperCase() + this.type!.slice(1,
           this.type == "readers" ? -3 : -2);
 
         if (this.type != "loggers") {
+          // @ts-ignore
           if (factory["supportsTelemetry" + action]) {
             this.handlers.push(AppConstants.HANDLER.TELEMETRY.valueOf());
           }
+          // @ts-ignore
           if (factory["supportsMetadata" + action]) {
             this.handlers.push(AppConstants.HANDLER.METADATA.valueOf());
           }
+          // @ts-ignore
           if (factory["supportsPing" + action]) {
             this.handlers.push(AppConstants.HANDLER.PING.valueOf());
           }
+          // @ts-ignore
           if (factory["supportsCommand" + action]) {
             this.handlers.push(AppConstants.HANDLER.COMMAND.valueOf());
           }
         } else {
+          // @ts-ignore
           if (factory["supportsSyslogLog"]) {
             this.handlers.push(AppConstants.HANDLER.SYSLOG.valueOf());
           }
+          // @ts-ignore
           if (factory["supportsFilesystemLog"]) {
             this.handlers.push(AppConstants.HANDLER.FILESYSTEM.valueOf());
           }
         }
 
-        this.handlers = this.handlers.sort((a, b) => (a > b ? 1 : -1) );
+        this.handlers = this.handlers.sort((a, b) => (a > b ? 1 : -1));
 
-        this.form.get('handler').enable();
+        this.form.get('handler')!.enable();
       }
     }
   }
@@ -151,7 +158,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
   template() {
     let nifiSinkTypeDTO = this.getNiFiSinkTypeDTO();
     const factory = _.find<typeof nifiSinkTypeDTO>(this.availableNiFiDataFactories,
-      {factoryClass: this.form.controls['factoryClass'].value});
+      {factoryClass: this.form!.controls['factoryClass'].value});
     if (factory) {
       this.form.patchValue({
         configuration: factory.configurationTemplate
@@ -163,9 +170,9 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
     switch (this.type) {
       case "readers":
         return NifiReaderFactoryDto;
-      case "writers" :
+      case "writers":
         return NiFiWriterFactoryDto;
-      case "producers" :
+      case "producers":
         return NifiProducerFactoryDto;
       default:
         return NiFiLoggerFactoryDto;

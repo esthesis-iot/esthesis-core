@@ -1,4 +1,4 @@
-export class CommandExecuteOrderDto {
+export interface CommandExecuteOrderDto {
   command: string;
   arguments: string;
   description: string;

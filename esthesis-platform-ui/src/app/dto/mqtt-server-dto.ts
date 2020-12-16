@@ -1,4 +1,4 @@
-export class MqttServerDto {
+export interface MqttServerDto {
   id: string;
   name: string;
   ipAddress: string;

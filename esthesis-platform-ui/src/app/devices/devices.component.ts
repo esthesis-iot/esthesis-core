@@ -30,11 +30,11 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
   filterForm: FormGroup;
 
   // References to sorting and pagination.
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort!: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   // WebSocket subcription.
-  private wsSubscription: Subscription;
+  private wsSubscription: Subscription | undefined;
 
   constructor(private fb: FormBuilder, private router: Router,
               private deviceService: DevicesService,
@@ -56,7 +56,7 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
   }
 
   ngOnDestroy(): void {
-    this.webSocketService.unwatch(this.wsSubscription);
+    this.webSocketService.unwatch(this.wsSubscription!);
   }
 
   ngAfterViewInit(): void {
@@ -64,7 +64,7 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
     this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
     // Each time the sorting changes, reset the page number.
-    this.sort.sortChange.subscribe(onNext => {
+    this.sort.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
       this.paginator.pageIndex = 0;
       this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
     });

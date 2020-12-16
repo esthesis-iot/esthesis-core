@@ -14,8 +14,8 @@ import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-moda
   styleUrls: ['./user-edit.component.scss']
 })
 export class UserEditComponent extends BaseComponent implements OnInit {
-  form: FormGroup;
-  id: string;
+  form!: FormGroup;
+  id: string | null | undefined;
   hide1 = true;
   hide2 = true;
   isEdit = false;
@@ -44,7 +44,7 @@ export class UserEditComponent extends BaseComponent implements OnInit {
     // Fill-in the form with data if editing an existing item.
     if (this.id && this.id !== '0') {
       this.userService.get(this.id).subscribe(onNext => {
-        this.form.patchValue(onNext);
+        this.form!.patchValue(onNext);
       });
     }
   }

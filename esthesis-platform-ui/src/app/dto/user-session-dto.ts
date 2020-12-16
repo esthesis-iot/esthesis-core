@@ -1,11 +1,11 @@
-export class UserSessionDTO {
+export interface UserSessionDTO {
   id: string;
   createdOn: Date;
   terminatedOn: Date;
   // attributes: SessionAttributeDTO[];
 }
 
-export class SessionAttributeDTO {
+export interface SessionAttributeDTO {
   name: string;
   value: string;
 }

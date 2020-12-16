@@ -1,17 +1,19 @@
 <form novalidate [formGroup]="form" fxLayout="row" fxLayoutGap="2rem">
   <div fxLayout="column" fxFlex="300px">
     <mat-form-field>
-      <select matNativeControl matInput (change)="onDeviceSelectChange($event.target.value)">
+      <select matNativeControl matInput #deviceSelector
+              (change)="onDeviceSelectChange(deviceSelector.value)">
         <option value="" [selected]="!currentDevice">No Device Selected</option>
         <option *ngFor="let device of availableDevices" [value]="device.deviceId"
-                [selected]="currentDevice && device.deviceId === currentDevice.deviceId">{{device.label}}</option>
+                [selected]="currentDevice && device.deviceId === currentDevice.deviceId">{{device.label}}
+        </option>
       </select>
     </mat-form-field>
     <mat-selection-list>
-      <mat-list-option checkboxPosition="start" (click)="toggleTryHarder()" [selected]="tryHarder">
+      <mat-list-option (click)="toggleTryHarder()" [selected]="tryHarder">
         Advanced matching
       </mat-list-option>
-      <mat-list-option checkboxPosition="start" (click)="toggleTorch()" [selected]="torchEnabled"
+      <mat-list-option (click)="toggleTorch()" [selected]="torchEnabled"
                        *ngIf="torchAvailable$ | async">
         Torch
       </mat-list-option>
@@ -33,7 +35,7 @@
   </div>
   <div>
     <mat-form-field>
-          <textarea matTextareaAutosize matAutosizeMinRows=1 matAutosizeMaxRows=30 matInput
+          <textarea [matTextareaAutosize]="true" [matAutosizeMinRows]=1 [matAutosizeMaxRows]=30 matInput
                     placeholder="Device id(s)"
                     formControlName="ids"></textarea>
     </mat-form-field>

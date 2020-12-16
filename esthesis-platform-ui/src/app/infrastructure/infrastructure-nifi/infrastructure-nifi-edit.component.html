@@ -16,7 +16,7 @@
           </mat-form-field>
           <mat-form-field>
             <textarea matInput placeholder="Description" formControlName="description"
-                      matTextareaAutosize></textarea>
+                      [matTextareaAutosize]="true"></textarea>
           </mat-form-field>
           <mat-form-field>
             <mat-select placeholder="State" formControlName="state">
@@ -37,7 +37,7 @@
   </mat-card-content>
 
   <mat-card-actions>
-    <button [disabled]="id==0 || form.dirty || !form.get('state').value" mat-button
+    <button [disabled]="id==0 || form.dirty || !form.get('state')!.value" mat-button
             (click)="sync()">SYNCHRONISE
     </button>
     <button mat-button routerLink="/infra" fragment="nifi">CANCEL</button>

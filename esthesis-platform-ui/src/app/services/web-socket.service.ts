@@ -72,6 +72,5 @@ export class WebSocketService {
   unwatch(subscription: Subscription) {
     this.logger.info('Unwatching topic: ', subscription);
     subscription.unsubscribe();
-    subscription = null;
   }
 }

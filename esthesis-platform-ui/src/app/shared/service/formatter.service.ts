@@ -11,7 +11,7 @@ export class FormatterService {
   constructor() {
   }
 
-  format(formatter: string, val): string {
+  format(formatter: string, val: any): string {
     switch (formatter) {
       case AppConstants.FIELD_VALUE_FORMATTER.DATETIME_SHORT:
         return moment(val).format('YYYY-MM-DD HH:mm:ss');

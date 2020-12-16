@@ -9,9 +9,9 @@ import {CommandExecuteOrderDto} from '../../../dto/command-execute-order-dto';
   styleUrls: []
 })
 export class DeviceTerminalComponent implements OnInit, AfterViewInit {
-  @Input() deviceId: number;
-  private hardwareId: string;
-  @ViewChild('term', {static: true}) terminal: NgTerminal;
+  @Input() deviceId!: number;
+  private hardwareId!: string;
+  @ViewChild('term', {static: true}) terminal!: NgTerminal;
   private command = '';
   private blockInput = false;
 

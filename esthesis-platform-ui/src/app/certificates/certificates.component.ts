@@ -16,8 +16,8 @@ export class CertificatesComponent extends BaseComponent implements OnInit, Afte
   columns = ['cn', 'issued', 'validity', 'issuer'];
   datasource = new MatTableDataSource<CertificateDto>();
 
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort!: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   constructor(private certificateService: CertificatesService, private qForms: QFormsService) {
     super();
@@ -31,7 +31,7 @@ export class CertificatesComponent extends BaseComponent implements OnInit, Afte
     this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
     // Each time the sorting changes, reset the page number.
-    this.sort.sortChange.subscribe(onNext => {
+    this.sort.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
       this.paginator.pageIndex = 0;
       this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
     });
@@ -39,7 +39,7 @@ export class CertificatesComponent extends BaseComponent implements OnInit, Afte
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     this.certificateService.getAll(
-      this.qForms.appendPagingToFilter(null, page, size, sort, sortDirection))
+      this.qForms.appendPagingToFilter(null!, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;
       this.paginator.length = onNext.totalElements;

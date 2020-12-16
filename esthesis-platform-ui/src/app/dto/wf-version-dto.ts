@@ -1,3 +1,3 @@
-export class WfVersionDto {
+export interface WfVersionDto {
   version: string;
 }

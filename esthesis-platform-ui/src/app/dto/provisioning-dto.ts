@@ -1,4 +1,4 @@
-export class ProvisioningDto {
+export interface ProvisioningDto {
   id: string;
   name: string;
   description: string;

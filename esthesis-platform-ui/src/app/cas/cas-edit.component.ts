@@ -16,9 +16,9 @@ import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-moda
   styleUrls: []
 })
 export class CasEditComponent extends BaseComponent implements OnInit {
-  form: FormGroup;
-  id: number;
-  parents: CaDto[];
+  form!: FormGroup;
+  id: number | undefined;
+  parents: CaDto[] | undefined;
 
   constructor(private fb: FormBuilder, private caService: CasService, private qForms: QFormsService,
               private route: ActivatedRoute, private router: Router, private dialog: MatDialog,
@@ -80,18 +80,18 @@ export class CasEditComponent extends BaseComponent implements OnInit {
   }
 
   downloadPublicKey(base64: boolean) {
-    this.caService.download(this.id, AppConstants.KEY_TYPE.PUBLIC_KEY, base64);
+    this.caService.download(this.id!, AppConstants.KEY_TYPE.PUBLIC_KEY, base64);
   }
 
   downloadPrivateKey(base64: boolean) {
-    this.caService.download(this.id, AppConstants.KEY_TYPE.PRIVATE_KEY, base64);
+    this.caService.download(this.id!, AppConstants.KEY_TYPE.PRIVATE_KEY, base64);
   }
 
   downloadCertificate(base64: boolean) {
-    this.caService.download(this.id, AppConstants.KEY_TYPE.CERTIFICATE, base64);
+    this.caService.download(this.id!, AppConstants.KEY_TYPE.CERTIFICATE, base64);
   }
 
   downloadBackup() {
-    this.caService.backup(this.id);
+    this.caService.backup(this.id!);
   }
 }

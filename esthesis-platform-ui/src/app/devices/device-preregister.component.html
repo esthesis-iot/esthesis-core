@@ -3,7 +3,7 @@
   <mat-card-content>
     <form novalidate [formGroup]="form" fxLayout="column">
       <mat-form-field>
-          <textarea matTextareaAutosize matAutosizeMinRows=1 matAutosizeMaxRows=30 matInput
+          <textarea [matTextareaAutosize]="true" [matAutosizeMinRows]=1 [matAutosizeMaxRows]=30 matInput
                     placeholder="Device id(s)"
                     formControlName="ids"></textarea>
       </mat-form-field>

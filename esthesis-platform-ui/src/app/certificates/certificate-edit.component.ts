@@ -17,9 +17,9 @@ import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-moda
   styleUrls: []
 })
 export class CertificateEditComponent extends BaseComponent implements OnInit {
-  form: FormGroup;
-  id: number;
-  issuers: CaDto[];
+  form!: FormGroup;
+  id: number | undefined;
+  issuers: CaDto[] | undefined;
 
   constructor(private fb: FormBuilder, private certificatesService: CertificatesService,
               private qForms: QFormsService,
@@ -48,14 +48,14 @@ export class CertificateEditComponent extends BaseComponent implements OnInit {
     // Fill-in the form with data if editing an existing item.
     if (this.id && this.id !== 0) {
       this.certificatesService.get(this.id).subscribe(onNext => {
-        this.form.patchValue(onNext);
+        this.form!.patchValue(onNext);
       });
     }
   }
 
   save() {
-    this.certificatesService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
-      this.utilityService.popupSuccess(this.form.value.id ? 'Certificate was successfully edited.'
+    this.certificatesService.save(this.qForms.cleanupForm(this.form!)).subscribe(onNext => {
+      this.utilityService.popupSuccess(this.form!.value.id ? 'Certificate was successfully edited.'
         : 'Certificate was successfully created.');
       this.router.navigate(['certificates']);
     });
@@ -81,19 +81,19 @@ export class CertificateEditComponent extends BaseComponent implements OnInit {
   }
 
   downloadPublicKey(base64: boolean) {
-    this.certificatesService.download(this.id, AppConstants.KEY_TYPE.PUBLIC_KEY, base64);
+    this.certificatesService.download(this.id!, AppConstants.KEY_TYPE.PUBLIC_KEY, base64);
   }
 
   downloadPrivateKey(base64: boolean) {
-    this.certificatesService.download(this.id, AppConstants.KEY_TYPE.PRIVATE_KEY, base64);
+    this.certificatesService.download(this.id!, AppConstants.KEY_TYPE.PRIVATE_KEY, base64);
   }
 
   downloadCertificate(base64: boolean) {
-    this.certificatesService.download(this.id, AppConstants.KEY_TYPE.CERTIFICATE, base64);
+    this.certificatesService.download(this.id!, AppConstants.KEY_TYPE.CERTIFICATE, base64);
   }
 
   downloadBackup() {
-    this.certificatesService.backup(this.id);
+    this.certificatesService.backup(this.id!);
   }
 
 }

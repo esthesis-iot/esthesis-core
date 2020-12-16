@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {icon, latLng, MapOptions, Marker, marker, tileLayer} from 'leaflet';
+import {icon, latLng, marker, tileLayer} from 'leaflet';
 import {TagDto} from '../../dto/tag-dto';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
@@ -15,6 +15,7 @@ import {FieldDto} from '../../dto/field-dto';
 import {FormatterService} from '../../shared/service/formatter.service';
 import {SettingsService} from '../../settings/settings.service';
 import {AppSettings} from '../../app.settings';
+import {LeafletDirective} from '@asymmetrik/ngx-leaflet';
 
 @Component({
   selector: 'app-device',
@@ -22,31 +23,23 @@ import {AppSettings} from '../../app.settings';
   styleUrls: ['./device.component.scss']
 })
 export class DeviceComponent extends BaseComponent implements OnInit {
-  availableTags: TagDto[];
-  form: FormGroup;
-  id: number;
-  fields: FieldDto[];
-  fieldsValues: Map<string, any>;
-  lonSetting: string;
-  latSetting: string;
+  availableTags: TagDto[] | undefined;
+  form!: FormGroup;
+  id!: number;
+  fields!: FieldDto[];
+  fieldsValues!: Map<string, any>;
+  lonSetting: string | undefined;
+  latSetting: string | undefined;
   fetchingDeviceData = true;
+  @ViewChild(LeafletDirective)
+  leaflet!: LeafletDirective;
 
-  private marker: Marker = marker([47.2287109, 14.3009642], {
-    // icon: icon({
-    //   iconSize: [25, 41],
-    //   iconAnchor: [13, 41],
-    //   iconUrl: 'assets/marker-icon.png',
-    //   shadowUrl: 'assets/marker-shadow.png'
-    // })
-  });
-  mapLayer = [marker];
-  mapOptions: MapOptions = {
+  mapOptions = {
     layers: [
-      tileLayer(window.location.protocol + '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        {maxZoom: 18})
+      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        {maxZoom: 18, attribution: '...'})
     ],
-    zoom: 14,
-    // center: latLng(47.2287109, 14.3009642)
+    zoom: 12
   };
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
@@ -93,18 +86,21 @@ export class DeviceComponent extends BaseComponent implements OnInit {
           }
         });
         this.updateFields();
-        this.devicesService.getDeviceDataField(this.id,
-          [this.latSetting, this.lonSetting]).subscribe(onNext => {
-          // this.mapLayer = [
-          //   marker([onNext[0].value, onNext[1].value], {
-          //     icon: icon({
-          //       iconSize: [25, 41],
-          //       iconAnchor: [13, 41],
-          //       iconUrl: 'assets/marker-icon.png',
-          //       shadowUrl: 'assets/marker-shadow.png'
-          //     })
-          //   }),
-          // ];
+        this.devicesService.getDeviceDataField(this.id!,
+          [this.latSetting!, this.lonSetting!]).subscribe(onNext => {
+          this.leaflet.map.addLayer(
+            // @ts-ignore
+            marker([onNext[0].value, onNext[1].value], {
+              icon: icon({
+                iconSize: [25, 41],
+                iconAnchor: [13, 41],
+                iconUrl: 'leaflet/marker-icon.png',
+                shadowUrl: 'leaflet/marker-shadow.png'
+              })
+            })
+          )
+          // @ts-ignore
+          this.leaflet.map.panTo(latLng([onNext[0].value, onNext[1].value]));
         })
       });
     }
@@ -112,10 +108,10 @@ export class DeviceComponent extends BaseComponent implements OnInit {
 
   private updateFields() {
     this.fieldsValues = new Map<string, any>();
-    this.devicesService.getDevicePageData(this.id).subscribe(fieldsValues => {
+    this.devicesService.getDevicePageData(this.id!).subscribe(fieldsValues => {
       this.fields = fieldsValues;
       // Update field values formatting.
-      this.fields.forEach(field => {
+      this.fields!.forEach(field => {
         let formatter;
         if (!field.formatter) {
           formatter = '%s';
@@ -128,7 +124,7 @@ export class DeviceComponent extends BaseComponent implements OnInit {
         } else {
           value = field.value;
         }
-        this.fieldsValues.set(field.measurement + '.' + field.field, sprintf(formatter, value));
+        this.fieldsValues!.set(field.measurement + '.' + field.field, sprintf(formatter, value));
       });
       this.fetchingDeviceData = false;
     });
@@ -162,8 +158,12 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     });
   }
 
+  getLastUpdatedDate(date: Date): string {
+    return date.toLocaleDateString();
+  }
+
   downloadKeys() {
-    this.devicesService.downloadKeys(this.id);
+    this.devicesService.downloadKeys(this.id!);
   }
 
 }

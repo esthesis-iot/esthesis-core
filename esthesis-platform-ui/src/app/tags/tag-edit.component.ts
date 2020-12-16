@@ -16,8 +16,8 @@ import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-moda
   styleUrls: []
 })
 export class TagEditComponent extends BaseComponent implements OnInit {
-  form: FormGroup;
-  id: number;
+  form!: FormGroup;
+  id: number | undefined;
 
   constructor(private fb: FormBuilder, private tagService: TagService,
               private route: ActivatedRoute,

@@ -4,9 +4,10 @@ import {LoginComponent} from './auth/login.component';
 import {NewPasswordComponent} from './auth/new-password.component';
 import {LogoutComponent} from './auth/logout.component';
 import {ForgotPasswordComponent} from './auth/forgot-password.component';
+import {AppModule} from './app.module';
 
 // Configuration of Router with all available AppConstants.Routes.
-export const routing: ModuleWithProviders = RouterModule.forRoot([
+export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
     // Redirect for empty path.
     {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
 
@@ -103,5 +104,5 @@ export const routing: ModuleWithProviders = RouterModule.forRoot([
   ],
   {
     enableTracing: false,
-    scrollPositionRestoration: 'enabled'
+    scrollPositionRestoration: 'top'
   });

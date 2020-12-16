@@ -7,8 +7,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
   styleUrls: ['./forgot-password.component.scss']
 })
 export class ForgotPasswordComponent implements OnInit {
-// Form control.
-  form: FormGroup;
+  form!: FormGroup;
 
   constructor(private fb: FormBuilder) {
   }

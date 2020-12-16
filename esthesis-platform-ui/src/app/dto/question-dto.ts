@@ -1,4 +1,4 @@
-export class QuestionDto {
+export interface QuestionDto {
   id: string;
   text: string;
   answers: string;

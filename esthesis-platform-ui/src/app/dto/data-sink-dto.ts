@@ -1,4 +1,4 @@
-export class DataSinkDto {
+export interface DataSinkDto {
   id: number;
   factoryClass: string;
   name: string;

@@ -14,7 +14,7 @@ import {safeDump} from 'js-yaml';
   styleUrls: ['./datawizard-standard.component.scss']
 })
 export class DatawizardStandardComponent implements OnInit {
-  form: FormGroup;
+  form!: FormGroup;
   wizardProgress = 0;
 
   constructor(private fb: FormBuilder, private nifiSinfService: NifiSinkService,
@@ -36,11 +36,12 @@ export class DatawizardStandardComponent implements OnInit {
     });
   }
 
+  // @ts-ignore
   async executeWizard() {
     const requests: NiFiSinkDto[] = [
       {
         configuration: safeDump(Object.entries({
-          uri: this.form.get('mqttUri').value,
+          uri: this.form!.get('mqttUri')!.value,
           topic: 'esthesis/ping/#',
           qos: 0,
           queueSize: 1000,
@@ -49,7 +50,7 @@ export class DatawizardStandardComponent implements OnInit {
           keystorePassword: null,
           truststoreFilename: null,
           truststorePassword: null
-        }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
+        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
         factoryClass: 'esthesis.platform.backend.server.nifi.sinks.readers.mqtt.ConsumeMQTT',
         name: 'Ping reader (from MQTT)',
         handler: AppConstants.HANDLER.PING,
@@ -58,13 +59,13 @@ export class DatawizardStandardComponent implements OnInit {
       },
       {
         configuration: safeDump(Object.entries({
-          databaseConnectionURL: this.form.get('esthesisDbUri').value,
-          databaseDriverClassName: this.form.get('esthesisDbDriver').value,
-          databaseDriverClassLocation: this.form.get('esthesisDbDriverLocation').value,
-          databaseUser: this.form.get('esthesisDbUser').value,
-          password: this.form.get('esthesisDbPassword').value,
+          databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
+          databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
+          databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
+          databaseUser: this.form!.get('esthesisDbUser')!.value,
+          password: this.form!.get('esthesisDbPassword')!.value,
           schedulingPeriod: '100 ms'
-        }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
+        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
         factoryClass: 'esthesis.platform.backend.server.nifi.sinks.writers.relational.PutDatabaseRecord',
         name: 'Ping writer (to esthesis database)',
         handler: AppConstants.HANDLER.PING,
@@ -73,7 +74,7 @@ export class DatawizardStandardComponent implements OnInit {
       },
       {
         configuration: safeDump(Object.entries({
-          uri: this.form.get('mqttUri').value,
+          uri: this.form!.get('mqttUri')!.value,
           topic: 'esthesis/metadata/#',
           qos: 0,
           queueSize: 1000,
@@ -82,7 +83,7 @@ export class DatawizardStandardComponent implements OnInit {
           keystorePassword: null,
           truststoreFilename: null,
           truststorePassword: null
-        }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
+        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
         factoryClass: 'esthesis.platform.backend.server.nifi.sinks.readers.mqtt.ConsumeMQTT',
         name: 'Metadata reader (from MQTT)',
         handler: AppConstants.HANDLER.METADATA,
@@ -91,7 +92,7 @@ export class DatawizardStandardComponent implements OnInit {
       },
       {
         configuration: safeDump(Object.entries({
-          uri: this.form.get('mqttUri').value,
+          uri: this.form!.get('mqttUri')!.value,
           topic: 'esthesis/telemetry/#',
           qos: 0,
           queueSize: 1000,
@@ -100,7 +101,7 @@ export class DatawizardStandardComponent implements OnInit {
           keystorePassword: null,
           truststoreFilename: null,
           truststorePassword: null
-        }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
+        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
         factoryClass: 'esthesis.platform.backend.server.nifi.sinks.readers.mqtt.ConsumeMQTT',
         name: 'Telemetry reader (from MQTT)',
         handler: AppConstants.HANDLER.TELEMETRY,
@@ -109,13 +110,13 @@ export class DatawizardStandardComponent implements OnInit {
       },
       {
         configuration: safeDump(Object.entries({
-          databaseConnectionURL: this.form.get('esthesisDbUri').value,
-          databaseDriverClassName: this.form.get('esthesisDbDriver').value,
-          databaseDriverClassLocation: this.form.get('esthesisDbDriverLocation').value,
-          databaseUser: this.form.get('esthesisDbUser').value,
-          password: this.form.get('esthesisDbPassword').value,
+          databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
+          databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
+          databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
+          databaseUser: this.form!.get('esthesisDbUser')!.value,
+          password: this.form!.get('esthesisDbPassword')!.value,
           schedulingPeriod: '100 ms'
-        }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
+        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
         factoryClass: 'esthesis.platform.backend.server.nifi.sinks.writers.relational.PutDatabaseRecord',
         name: 'Metadata writer (to esthesis database)',
         handler: AppConstants.HANDLER.METADATA,
@@ -124,18 +125,18 @@ export class DatawizardStandardComponent implements OnInit {
       },
       {
         configuration: safeDump(Object.entries({
-          username: this.form.get('influxDbUser').value,
-          password: this.form.get('influxDbPassword').value,
+          username: this.form!.get('influxDbUser')!.value,
+          password: this.form!.get('influxDbPassword')!.value,
           databaseName: 'esthesis',
-          databaseUrl: this.form.get('influxDbUri').value,
+          databaseUrl: this.form!.get('influxDbUri')!.value,
           retentionPolicy: 'autogen',
           maxConnectionTimeoutSeconds: 60,
           consistencyLevel: 'ANY',
-          charset : 'UTF-8',
+          charset: 'UTF-8',
           maxRecordSize: 100,
           maxRecordSizeUnit: 'kb',
           schedulingPeriod: '100 ms'
-        }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
+        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
         factoryClass: 'esthesis.platform.backend.server.nifi.sinks.writers.influxdb.PutInfluxDB',
         name: 'Telemetry writer (to InfluxDB)',
         handler: AppConstants.HANDLER.TELEMETRY,
@@ -144,13 +145,13 @@ export class DatawizardStandardComponent implements OnInit {
       },
       {
         configuration: safeDump(Object.entries({
-          databaseConnectionURL: this.form.get('esthesisDbUri').value,
-          databaseDriverClassName: this.form.get('esthesisDbDriver').value,
-          databaseDriverClassLocation: this.form.get('esthesisDbDriverLocation').value,
-          databaseUser: this.form.get('esthesisDbUser').value,
-          password: this.form.get('esthesisDbPassword').value,
+          databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
+          databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
+          databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
+          databaseUser: this.form!.get('esthesisDbUser')!.value,
+          password: this.form!.get('esthesisDbPassword')!.value,
           schedulingPeriod: '100 ms'
-        }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
+        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
         factoryClass: 'esthesis.platform.backend.server.nifi.sinks.producers.relational.ExecuteSQL',
         name: 'Metadata producer (from esthesis database)',
         handler: AppConstants.HANDLER.METADATA,
@@ -159,15 +160,15 @@ export class DatawizardStandardComponent implements OnInit {
       },
       {
         configuration: safeDump(Object.entries({
-          username: this.form.get('influxDbUser').value,
-          password: this.form.get('influxDbPassword').value,
+          username: this.form!.get('influxDbUser')!.value,
+          password: this.form!.get('influxDbPassword')!.value,
           databaseName: 'esthesis',
-          databaseUrl: this.form.get('influxDbUri').value,
+          databaseUrl: this.form!.get('influxDbUri')!.value,
           maxConnectionTimeoutSeconds: 60,
           queryResultTimeUnit: 'Nanoseconds',
           queryChunkSize: 1,
           schedulingPeriod: '100 ms'
-        }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
+        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
         factoryClass: 'esthesis.platform.backend.server.nifi.sinks.producers.influxdb.ExecuteInfluxDB',
         name: 'Telemetry producer (from InfluxDB)',
         handler: AppConstants.HANDLER.TELEMETRY,
@@ -176,12 +177,12 @@ export class DatawizardStandardComponent implements OnInit {
       },
       {
         configuration: safeDump(Object.entries({
-          databaseConnectionURL: this.form.get('esthesisDbUri').value,
-          databaseDriverClassName: this.form.get('esthesisDbDriver').value,
-          databaseDriverClassLocation: this.form.get('esthesisDbDriverLocation').value,
-          databaseUser: this.form.get('esthesisDbUser').value,
-          password: this.form.get('esthesisDbPassword').value,
-          uri: this.form.get('mqttUri').value,
+          databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
+          databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
+          databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
+          databaseUser: this.form!.get('esthesisDbUser')!.value,
+          password: this.form!.get('esthesisDbPassword')!.value,
+          uri: this.form!.get('mqttUri')!.value,
           topic: 'esthesis/control/request',
           qos: 0,
           retainMessage: false,
@@ -190,7 +191,7 @@ export class DatawizardStandardComponent implements OnInit {
           keystorePassword: null,
           truststoreFilename: null,
           truststorePassword: null
-        }).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})),
+        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
         factoryClass: 'esthesis.platform.backend.server.nifi.sinks.producers.command.CommandProducer',
         name: 'Command Producer',
         handler: AppConstants.HANDLER.COMMAND,
@@ -199,7 +200,7 @@ export class DatawizardStandardComponent implements OnInit {
       },
       {
         configuration: safeDump(Object.entries({
-          uri: this.form.get('mqttUri').value,
+          uri: this.form!.get('mqttUri')!.value,
           topic: 'esthesis/control/reply/#',
           qos: 0,
           queueSize: 1000,
@@ -208,7 +209,7 @@ export class DatawizardStandardComponent implements OnInit {
           keystorePassword: null,
           truststoreFilename: null,
           truststorePassword: null
-        }).reduce((a, [k, v]) => (v ? (a[k] = v, a) : a), {})),
+        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
         factoryClass: 'esthesis.platform.backend.server.nifi.sinks.readers.mqtt.ConsumeMQTT',
         name: 'Command Reply Reader (from MQTT)',
         handler: AppConstants.HANDLER.COMMAND,
@@ -217,13 +218,13 @@ export class DatawizardStandardComponent implements OnInit {
       },
       {
         configuration: safeDump(Object.entries({
-          databaseConnectionURL: this.form.get('esthesisDbUri').value,
-          databaseDriverClassName: this.form.get('esthesisDbDriver').value,
-          databaseDriverClassLocation: this.form.get('esthesisDbDriverLocation').value,
-          databaseUser: this.form.get('esthesisDbUser').value,
-          password: this.form.get('esthesisDbPassword').value,
+          databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
+          databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
+          databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
+          databaseUser: this.form!.get('esthesisDbUser')!.value,
+          password: this.form!.get('esthesisDbPassword')!.value,
           schedulingPeriod: '100 ms'
-        }).reduce((a, [k, v]) => (v ? (a[k] = v, a) : a), {})),
+        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
         factoryClass: 'esthesis.platform.backend.server.nifi.sinks.writers.relational.PutDatabaseRecord',
         name: 'Command writer (to esthesis database)',
         handler: AppConstants.HANDLER.COMMAND,

@@ -1,6 +1,6 @@
 import {BaseDto} from './base-dto';
 
-export class CommandReplyDto extends BaseDto {
+export interface CommandReplyDto extends BaseDto {
   id: number;
   payload: string;
   payloadType: string;

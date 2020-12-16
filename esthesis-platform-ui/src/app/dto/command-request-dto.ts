@@ -1,6 +1,6 @@
 import {BaseDto} from './base-dto';
 
-export class CommandRequestDto extends BaseDto {
+export interface CommandRequestDto extends BaseDto {
   operation: string;
   description: string;
   deviceHardwareId: string;

@@ -1,6 +1,6 @@
 import {BaseDto} from './base-dto';
 
-export class ApplicationDto extends BaseDto {
+export interface ApplicationDto extends BaseDto {
   name: string;
   token: string;
   state: number;

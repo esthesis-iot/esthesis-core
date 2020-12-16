@@ -15,8 +15,9 @@ export class DashboardComponent extends BaseComponent implements OnInit, AfterVi
 
   ngOnInit() {
     this.nifiService.getActive().subscribe(value => {
-      value ? localStorage.setItem("activeNiFi", value.id.toString()) : localStorage.removeItem(
-        "activeNiFi")
+      value
+        ? localStorage.setItem("activeNiFi", value.id!.toString())
+        : localStorage.removeItem("activeNiFi")
     });
   }
 

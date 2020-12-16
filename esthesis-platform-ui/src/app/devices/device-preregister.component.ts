@@ -17,8 +17,8 @@ import {UtilityService} from '../shared/service/utility.service';
   styleUrls: []
 })
 export class DevicePreregisterComponent extends BaseComponent implements OnInit {
-  form: FormGroup;
-  availableTags: TagDto[];
+  form!: FormGroup;
+  availableTags: TagDto[] | undefined;
 
   constructor(private fb: FormBuilder, private qForms: QFormsService,
               private devicesService: DevicesService, private router: Router,

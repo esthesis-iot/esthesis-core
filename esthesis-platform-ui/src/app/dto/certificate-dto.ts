@@ -1,12 +1,12 @@
 export class CertificateDto {
   id: number;
   cn: string;
-  issued: Date;
-  validity: Date;
-  certificate: string;
-  publicKey: string;
-  privateKey: string;
-  issuer: string;
+  issued: Date | undefined;
+  validity: Date | undefined;
+  certificate: string | undefined;
+  publicKey: string | undefined;
+  privateKey: string | undefined;
+  issuer: string | undefined;
 
   constructor(id: number, cn: string) {
     this.id = id;

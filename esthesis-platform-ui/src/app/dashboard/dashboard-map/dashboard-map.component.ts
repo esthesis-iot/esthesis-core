@@ -8,9 +8,9 @@ import {circle, icon, latLng, marker, polygon, tileLayer} from 'leaflet';
 })
 export class DashboardMapComponent implements OnInit {
   options = {
-    layers: [
-      tileLayer(window.location.protocol + '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 })
-    ],
+    // layers: [
+    //   tileLayer(window.location.protocol + '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 })
+    // ],
     zoom: 8,
     center: latLng(47.2287109, 14.3009642)
   };
@@ -23,6 +23,21 @@ export class DashboardMapComponent implements OnInit {
       'Water': polygon([[ 46.8, -121.55 ], [ 46.9, -121.55 ], [ 46.9, -121.7 ], [ 46.8, -121.7 ]]),
       'Gas': polygon([[ 46.8, -121.55 ], [ 46.9, -121.55 ], [ 46.9, -121.7 ], [ 46.8, -121.7 ]]),
     }
+  };
+
+  // Open Street Map and Open Cycle Map definitions
+  LAYER_OSM = {
+    id: 'openstreetmap',
+    name: 'Open Street Map',
+    enabled: false,
+    layer: tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: 'Open Street Map'
+    })
+  };
+
+  baseLayers = {
+    'Open Street Map': this.LAYER_OSM.layer,
   };
 
   layer1 =[

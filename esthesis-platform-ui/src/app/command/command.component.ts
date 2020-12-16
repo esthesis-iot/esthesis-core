@@ -25,8 +25,8 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   filterForm: FormGroup;
 
   // References to sorting and pagination.
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router,
               private commandService: CommandService, private dialog: MatDialog,
@@ -59,7 +59,7 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
     this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
     // Each time the sorting changes, reset the page number.
-    this.sort.sortChange.subscribe(onNext => {
+    this.sort.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
       this.paginator.pageIndex = 0;
       this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
     });
@@ -68,7 +68,7 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
     this.commandService.getAll(this.qForms.makeQueryString(this.filterForm,
-      null, false, page, size, sort, sortDirection))
+      null!, false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.dataSource.data = onNext.content;
       this.paginator.length = onNext.totalElements;

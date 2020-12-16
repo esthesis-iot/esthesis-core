@@ -17,9 +17,9 @@ import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-moda
   styleUrls: []
 })
 export class ProvisioningEditComponent extends BaseComponent implements OnInit {
-  form: FormGroup;
-  id: number;
-  availableTags: TagDto[];
+  form!: FormGroup;
+  id: number | undefined;
+  availableTags: TagDto[] | undefined;
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
               private qForms: QFormsService, private tagService: TagService,
@@ -108,12 +108,12 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
     });
   }
 
-  selectFile(event) {
+  selectFile(event:any) {
     this.form.controls['file'].patchValue(event.target.files[0]);
     this.form.controls['fileName'].patchValue(event.target.files[0].name);
   }
 
   download() {
-    this.provisioningService.download(this.id);
+    this.provisioningService.download(this.id!);
   }
 }

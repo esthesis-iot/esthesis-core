@@ -16,21 +16,21 @@ export class NewPasswordComponent extends BaseComponent implements OnInit {
   private log = Log.create('NewPasswordComponent');
 
   // Form's error message indicator.
-  errorMessage: string;
+  errorMessage: string | undefined;
 
   // Show/hidePassword password
   hide1 = true;
   hide2 = true;
 
   // Form control.
-  newPasswordForm: FormGroup;
+  newPasswordForm!: FormGroup;
 
   constructor(public userService: UserService, private router: Router, private fb: FormBuilder) {
     super();
   }
 
   ngOnInit(): void {
-    this.errorMessage = null;
+    this.errorMessage = undefined;
     this.newPasswordForm = this.fb.group({
       username: [''],
       existingPassword: [''],
@@ -39,7 +39,6 @@ export class NewPasswordComponent extends BaseComponent implements OnInit {
   }
 
   onSubmit({value, valid}: { value: NewPasswordUserDto, valid: boolean }) {
-    this.errorMessage = null;
-
+    this.errorMessage = undefined;
   }
 }

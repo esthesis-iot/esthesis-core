@@ -1,4 +1,4 @@
-export class AboutDto {
+export interface AboutDto {
   branch: string;
   buildHost: string;
   buildTime: string;

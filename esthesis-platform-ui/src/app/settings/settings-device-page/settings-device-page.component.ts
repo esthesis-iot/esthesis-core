@@ -16,9 +16,9 @@ import {KeyValueDto} from '../../dto/key-value-dto';
   styleUrls: []
 })
 export class SettingsDevicePageComponent extends BaseComponent implements OnInit {
-  form: FormGroup;
-  settingsForm: FormGroup;
-  allFields: FieldDto[];
+  form!: FormGroup;
+  settingsForm!: FormGroup;
+  allFields!: FieldDto[];
 
   constructor(private devicesService: DevicesService, private fb: FormBuilder,
               private utilityService: UtilityService, private qForms: QFormsService,
@@ -77,7 +77,7 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
       onNext => {
         this.settingsService.saveMultiple(
           _.map(Object.keys(this.settingsForm.controls), (fc) => {
-            return new KeyValueDto(fc, this.settingsForm.get(fc).value);
+            return new KeyValueDto(fc, this.settingsForm.get(fc)!.value);
           })).subscribe(onNext => {
           this.utilityService.popupSuccess('Settings saved successfully.');
         });
@@ -96,6 +96,11 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
       formatter: '',
       shown: true,
     }));
+  }
+
+  getFormFields() {
+    // @ts-ignore
+    return this.form.get('fields')!['controls'];
   }
 
   deleteField(fieldIndex: number) {

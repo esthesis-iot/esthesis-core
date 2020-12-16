@@ -5,7 +5,7 @@
     </mat-error>
   </div>
 
-  <mat-card-title>Data {{type.slice(0, -1)}}</mat-card-title>
+  <mat-card-title>Data {{type!.slice(0, -1)}}</mat-card-title>
   <mat-card-content>
     <form [formGroup]="form">
       <div fxLayout="column">
@@ -36,7 +36,7 @@
 
         <mat-form-field class="example-full-width" class="xs-mt2">
           <textarea matInput placeholder="Configuration" formControlName="configuration"
-                    matTextareaAutosize class="configuration"></textarea>
+                   [matTextareaAutosize]="true" class="configuration"></textarea>
           <button mat-button matSuffix matTooltip="Use configuration template" (click)="template()">
             <mat-icon>file_copy</mat-icon>
           </button>

@@ -7,6 +7,7 @@ import {LoginInfoDto} from '../dto/login-info-dto';
 import {UserDto} from '../dto/user-dto';
 import {CrudService} from '../services/crud.service';
 import {QFormsService} from '@eurodyn/forms';
+import {JwtDto} from '../dto/jwt-dto';
 
 /**
  * A service providing functionality for the user of the application, including authentication,
@@ -23,26 +24,25 @@ export class UserService extends CrudService<UserDto> {
   }
 
   // Returns the JWT.
-  private static getJwt(): string {
+  private static getJwt(): string|null {
     return localStorage.getItem(AppConstants.JWT_STORAGE_NAME);
   }
 
   // Authenticate a user.
-  login(loginInfoDTO: LoginInfoDto): Observable<string> {
-    return this.http.post<string>(AppConstants.API_ROOT + `/${this.resource}/auth`,
+  login(loginInfoDTO: LoginInfoDto): Observable<JwtDto> {
+    return this.http.post<JwtDto>(AppConstants.API_ROOT + `/${this.resource}/auth`,
       JSON.stringify(loginInfoDTO),
       {headers: {'Content-Type': 'application/json'}});
   }
 
   // Return a claim from JWT.
-  getJWTClaim(claim: string): string {
-    let claimValue: string;
-
+  getJWTClaim(claim: string): string|null {
     if (UserService.getJwt()) {
-      claimValue = this.jwtService.decodeToken(UserService.getJwt())[claim];
+      // @ts-ignore
+      return this.jwtService.decodeToken(UserService.getJwt())[claim];
+    } else {
+      return null;
     }
-
-    return claimValue;
   }
 
   // Logs out the user terminating its session.

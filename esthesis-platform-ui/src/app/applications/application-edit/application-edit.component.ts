@@ -7,7 +7,7 @@ import {ActivatedRoute} from '@angular/router';
   styleUrls: []
 })
 export class ApplicationEditComponent implements OnInit {
-  id: number;
+  id!: number;
 
   constructor(private route: ActivatedRoute) {
   }

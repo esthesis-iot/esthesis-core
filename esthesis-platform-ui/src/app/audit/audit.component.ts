@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
 import * as moment from 'moment';
@@ -26,12 +26,12 @@ export class AuditComponent extends BaseComponent implements OnInit, AfterViewIn
 
   // Search filter.
   filterForm: FormGroup;
-  auditEvents: KeyValueDto[];
-  auditLevels: KeyValueDto[];
+  auditEvents: KeyValueDto[] | undefined;
+  auditLevels: KeyValueDto[] | undefined;
 
   // References to sorting and pagination.
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private auditService: AuditService, private fb: FormBuilder,
               private userService: UserService, private qForms: QFormsService) {
@@ -55,8 +55,7 @@ export class AuditComponent extends BaseComponent implements OnInit, AfterViewIn
 
     // Listen for filter changes to fetch new data.
     this.filterForm.valueChanges.debounceTime(500).subscribe(onNext => {
-      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-        this.sort.start);
+      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
     });
   }
 
@@ -65,7 +64,7 @@ export class AuditComponent extends BaseComponent implements OnInit, AfterViewIn
     this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
     // Each time the sorting changes, reset the page number.
-    this.sort.sortChange.subscribe(onNext => {
+    this.sort.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
       this.paginator.pageIndex = 0;
       this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
     });

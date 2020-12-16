@@ -10,13 +10,13 @@ import {AppConstants} from '../../app.constants';
 })
 export class HeaderComponent extends BaseComponent {
   // The user email extracted from JWT.
-  public userEmail: string;
+  public userEmail: string | undefined;
 
   constructor(private userService: UserService) {
     super();
   }
 
-  getUserEmail(): string {
+  getUserEmail(): string | null {
     return this.userService.getJWTClaim(AppConstants.jwt.claims.EMAIL);
   }
 

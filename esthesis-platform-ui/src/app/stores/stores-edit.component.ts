@@ -18,10 +18,10 @@ import {CertificateDto} from '../dto/certificate-dto';
   styleUrls: []
 })
 export class StoresEditComponent extends BaseComponent implements OnInit {
-  form: FormGroup;
-  id: number;
-  cas: CaDto[];
-  certs: CertificateDto[];
+  form!: FormGroup;
+  id: number | undefined;
+  cas: CaDto[] | undefined;
+  certs: CertificateDto[] | undefined;
 
   constructor(private fb: FormBuilder, private storesService: StoresService,
               private qForms: QFormsService, private route: ActivatedRoute, private router: Router,
@@ -90,6 +90,6 @@ export class StoresEditComponent extends BaseComponent implements OnInit {
   }
 
   download() {
-    this.storesService.download(this.id);
+    this.storesService.download(this.id!);
   }
 }

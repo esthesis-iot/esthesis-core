@@ -35,7 +35,7 @@ import {FooterComponent} from './shared/layout/footer.component';
 import {HeaderComponent} from './shared/layout/header.component';
 import {SidenavComponent} from './shared/layout/sidenav.component';
 
-export function getJwtToken(): string {
+export function getJwtToken(): string | null {
   return localStorage.getItem(AppConstants.JWT_STORAGE_NAME);
 }
 
@@ -61,7 +61,7 @@ export function getJwtToken(): string {
     JwtModule.forRoot({
       config: {
         tokenGetter: getJwtToken,
-        whitelistedDomains: new Array(new RegExp('^null$'))
+        allowedDomains: new Array(new RegExp('^null$'))
       }
     }),
     MatMenuModule,

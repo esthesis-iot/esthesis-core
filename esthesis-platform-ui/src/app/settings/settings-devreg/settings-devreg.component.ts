@@ -15,8 +15,8 @@ import {CaDto} from '../../dto/ca-dto';
   styleUrls: []
 })
 export class SettingsDevregComponent extends BaseComponent implements OnInit {
-  form: FormGroup;
-  cas: CaDto[];
+  form!: FormGroup;
+  cas: CaDto[] | undefined;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
               private utilityService: UtilityService, private casService: CasService) {
@@ -46,7 +46,7 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
     // Fetch lookup values.
     this.casService.getAll('sort=cn,asc').subscribe(onNext => {
       if (onNext.content && onNext.content.length > 0) {
-        onNext.content.unshift(new CaDto(null, ''));
+        onNext.content.unshift(new CaDto(null!, ''));
         this.cas = onNext.content;
       }
     });
@@ -55,7 +55,7 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
   save() {
     this.settingsService.saveMultiple(
       _.map(Object.keys(this.form.controls), (fc) => {
-        return new KeyValueDto(fc, this.form.get(fc).value);
+        return new KeyValueDto(fc, this.form.get(fc)!.value);
       })).subscribe(onNext => {
       this.utilityService.popupSuccess('Settings saved successfully.');
     });

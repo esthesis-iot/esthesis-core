@@ -1,4 +1,4 @@
-export class DeviceDto {
+export interface DeviceDto {
   id: string;
   device: string;
   lastSeen?: Date;
