@@ -40,7 +40,7 @@ export class DatasinksComponent extends BaseComponent implements OnInit, AfterVi
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     this.dataSinkService.getAll(
-      this.qForms.appendPagingToFilter(null, page, size, sort, sortDirection))
+      this.qForms.appendPagingToFilter(null!, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;
       this.paginator.length = onNext.totalElements;
