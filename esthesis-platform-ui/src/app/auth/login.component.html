@@ -12,9 +12,11 @@
             <mat-icon matSuffix>email</mat-icon>
           </mat-form-field>
           <mat-form-field>
-            <input matInput placeholder="Enter your password" [type]="hidePassword ? 'password' : 'text'"
+            <input matInput placeholder="Enter your password"
+                   [type]="hidePassword ? 'password' : 'text'"
                    formControlName="password">
-            <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility' : 'visibility_off'}}
+            <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility'
+              : 'visibility_off'}}
             </mat-icon>
           </mat-form-field>
           <button mat-button type="submit" color="primary" [disabled]="loginForm.invalid">LOGIN
@@ -27,4 +29,6 @@
     </mat-card-content>
   </mat-card>
 </div>
-<div class="pixabay">Photo from <a href="https://pixabay.com" target="_blank" rel="noopener noreferrer">Pixabay</a></div>
+<div class="pixabay">Photo from
+  <a href="https://pixabay.com" target="_blank" rel="noopener noreferrer">Pixabay</a>
+</div>

@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
+  logicalFilePath="ep_00110.xml">
+  <changeSet id="ep_00110" author="European Dynamics" labels="ignorable">
+    <sql>
+      INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`,
+                              `sensitivity`, `dbversion`, `psswrd`)
+      VALUES ('e63ce21c-4e52-44c0-80fe-b586e8405fd3', 'System', 'System', 'pixabay_key',
+              '11450182-74bb65cfe11d586f9a5fc8846', now(), 0, 0, 0);
+
+      INSERT INTO set_setting(`id`, `owner`, `group_name`, `key_name`, `val`, `created_on`,
+                              `sensitivity`, `dbversion`, `psswrd`)
+      VALUES ('a8a4ce87-0f42-4479-aeb9-915763382ef2', 'System', 'System', 'pixabay_category',
+              'nature', now(), 0, 0, 0);
+
+    </sql>
+  </changeSet>
+</databaseChangeLog>

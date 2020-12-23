@@ -14,6 +14,16 @@ public class AppSettings {
     private Setting() {
     }
 
+    public static class UI {
+      private UI() {
+
+      }
+
+      public static final String PIXABAY_KEY = "pixabay_key";
+      public static final String PIXABAY_CATEGORY = "pixabay_category";
+      public static final String PIXABAY_ENABLED = "pixabay_enabled";
+    }
+
     public static class Security {
 
       private Security() {
@@ -46,14 +56,6 @@ public class AppSettings {
       public static final String ENCRYPTION = "provisioningEncrypt";
       public static final String SIGNATURE = "provisioningSign";
     }
-//    public static class Geollocation {
-//
-//      private Geollocation() {
-//      }
-//
-//      public static final String LATITUDE = "geo_lat";
-//      public static final String LONGITUDE = "geo_lon";
-//    }
   }
 
   /* The possible values of each setting. */

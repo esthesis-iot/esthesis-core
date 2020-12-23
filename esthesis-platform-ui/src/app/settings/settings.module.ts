@@ -25,6 +25,7 @@ import {FlexModule} from '@angular/flex-layout';
 import {SettingsProvisioningComponent} from './settings-provisioning/settings-provisioning.component';
 import {SettingsDevicePageComponent} from './settings-device-page/settings-device-page.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { SettingsUiComponent } from './settings-ui/settings-ui.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     SettingsDevicePageComponent,
     SettingsDevregComponent,
     SettingsSecurityComponent,
+    SettingsUiComponent,
   ],
   imports: [
     CommonModule,
