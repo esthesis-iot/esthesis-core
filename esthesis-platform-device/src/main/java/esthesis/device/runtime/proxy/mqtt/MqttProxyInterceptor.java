@@ -1,5 +1,6 @@
 package esthesis.device.runtime.proxy.mqtt;
 
+import esthesis.device.runtime.config.AppConstants.Mqtt.EventType;
 import esthesis.device.runtime.mqtt.MqttClient;
 import esthesis.device.runtime.util.DeviceMessageUtil;
 import io.moquette.interception.AbstractInterceptHandler;
@@ -28,12 +29,11 @@ public class MqttProxyInterceptor extends AbstractInterceptHandler {
 
   @Override
   public void onPublish(InterceptPublishMessage message) {
-    byte[] bytes = new byte[message.getPayload().readableBytes()];
-    message.getPayload().readBytes(bytes);
+    byte[] payload = new byte[message.getPayload().readableBytes()];
+    message.getPayload().readBytes(payload);
     log.log(Level.FINEST, "Proxying to MQTT topic {0}: {1}",
-      new String[]{message.getTopicName(), new String(bytes)});
-    mqttClient.publish(deviceMessageUtil.resolveTopic(message.getTopicName()), bytes,
-      message.getQos().value(),
-      message.isRetainFlag());
+      new String[]{message.getTopicName(), new String(payload)});
+    mqttClient.publish(EventType.valueOf(message.getTopicName().toUpperCase()), payload,
+      message.getQos().value(), message.isRetainFlag());
   }
 }
