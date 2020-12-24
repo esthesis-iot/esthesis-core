@@ -1,6 +1,13 @@
 export const AppSettings = {
   // List of settings.
   SETTING: {
+    UI: {
+      PIXABAY: {
+        CATEGORY: "pixabay_category",
+        KEY: "pixabay_key",
+        ENABLED: "pixabay_enabled"
+      }
+    },
     SECURITY: {
       OUTGOING_ENCRYPTION: "deviceOutgoingEncryption",
       INCOMING_ENCRYPTION: "deviceIncomingEncryption",
@@ -28,6 +35,32 @@ export const AppSettings = {
   },
 
   SETTING_VALUES: {
+    UI: {
+      PIXABAY: {
+        CATEGORY: {
+          ANIMALS: "animals",
+          BACKGROUNDS: "backgrounds",
+          BUILDINGS: "buildings",
+          BUSINESS: "business",
+          COMPUTER: "computer",
+          EDUCATION: "education",
+          FASHION: "fashion",
+          FEELINGS: "feelings",
+          FOOD: "food",
+          HEALTH: "health",
+          INDUSTRY: "industry",
+          MUSIC: "music",
+          NATURE: "nature",
+          PEOPLE: "people",
+          PLACES: "places",
+          RELIGION: "religion",
+          SCIENCE: "science",
+          SPORTS: "sports",
+          TRANSPORTATION: "transportation",
+          TRAVEL: "travel"
+        }
+      }
+    },
     SECURITY: {
       OUTGOING_ENCRYPTION: {
         ENCRYPTED: "ENCRYPTED",
