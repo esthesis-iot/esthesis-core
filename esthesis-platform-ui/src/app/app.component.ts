@@ -4,7 +4,6 @@ import {Log} from 'ng2-logger/browser';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import { MatDialog } from '@angular/material/dialog';
 import {UserService} from './users/user.service';
-import {WebSocketService} from './services/web-socket.service';
 import {BaseComponent} from './shared/component/base-component';
 import {OkCancelModalComponent} from './shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 
@@ -21,8 +20,7 @@ export class AppComponent extends BaseComponent implements OnInit {
   sidebarVisibility = true;
 
   constructor(private userService: UserService, private router: Router,
-              private jwtService: JwtHelperService,
-              private wsService: WebSocketService, private dialog: MatDialog) {
+              private jwtService: JwtHelperService, private dialog: MatDialog) {
     super();
 
     // Check if an expired JWT exists and remove it.
@@ -49,7 +47,6 @@ export class AppComponent extends BaseComponent implements OnInit {
       this.router.navigate(['login']);
     } else {
       this.log.data('User is logged in (JWT found).');
-      this.wsService.connect();
 
       // Check for token expiration.
       const checkInterval: any = setInterval(() => {
@@ -64,7 +61,6 @@ export class AppComponent extends BaseComponent implements OnInit {
         }
 
         if (tokenExpired) {
-          this.wsService.disconnect();
           // Setup a timer to check for token expiration.
           window.clearInterval(checkInterval);
           this.dialog.open(OkCancelModalComponent, {

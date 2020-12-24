@@ -48,7 +48,6 @@ export class DevicePreregisterComponent extends BaseComponent implements OnInit 
   }
 
   useCam() {
-    // Create a random topic to monitor this deployment via WebSockets.
     const wsId = UUID.UUID();
     const dialogRef = this.dialog.open(DevicePreregisterCamComponent, {
       height: '70%',

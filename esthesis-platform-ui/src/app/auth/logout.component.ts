@@ -1,7 +1,6 @@
 import {Component, OnInit, Renderer2} from '@angular/core';
 import {Log} from 'ng2-logger/browser';
 import {UserService} from '../users/user.service';
-import {WebSocketService} from '../services/web-socket.service';
 import {BodyBackgroundService} from '../services/body-background.service';
 import {BaseComponent} from '../shared/component/base-component';
 
@@ -13,8 +12,8 @@ import {BaseComponent} from '../shared/component/base-component';
 export class LogoutComponent extends BaseComponent implements OnInit {
   private log = Log.create('LogoutComponent');
 
-  constructor(private userService: UserService, private wsService: WebSocketService,
-              private renderer: Renderer2, private bodyBackgroundService: BodyBackgroundService) {
+  constructor(private userService: UserService, private renderer: Renderer2,
+              private bodyBackgroundService: BodyBackgroundService) {
     super();
   }
 
@@ -28,7 +27,6 @@ export class LogoutComponent extends BaseComponent implements OnInit {
     });
 
     this.userService.logout().subscribe(onNext => {
-      this.wsService.disconnect();
       this.log.data('Successfully terminated session.');
       localStorage.removeItem(this.constants.JWT_STORAGE_NAME);
     }, onError => {

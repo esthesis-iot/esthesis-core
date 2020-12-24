@@ -24,7 +24,6 @@ import esthesis.platform.backend.common.util.Base64E;
 import esthesis.platform.backend.server.config.AppConstants.Device.State;
 import esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations;
 import esthesis.platform.backend.server.config.AppConstants.NiFi.QueryResults;
-import esthesis.platform.backend.server.config.AppConstants.WebSocket.Topic;
 import esthesis.platform.backend.server.config.AppProperties;
 import esthesis.platform.backend.server.config.AppSettings.Setting.DeviceRegistration;
 import esthesis.platform.backend.server.config.AppSettings.Setting.Provisioning;
@@ -38,7 +37,6 @@ import esthesis.platform.backend.server.dto.DTDeviceDTO;
 import esthesis.platform.backend.server.dto.DeviceKeyDTO;
 import esthesis.platform.backend.server.dto.DevicePageDTO;
 import esthesis.platform.backend.server.dto.DeviceRegistrationDTO;
-import esthesis.platform.backend.server.dto.WebSocketMessageDTO;
 import esthesis.platform.backend.server.mapper.DTDeviceMapper;
 import esthesis.platform.backend.server.mapper.DeviceKeyMapper;
 import esthesis.platform.backend.server.mapper.DeviceMapper;
@@ -88,7 +86,6 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   private final DeviceMapper deviceMapper;
   private final DTDeviceMapper dtDeviceMapper;
   private final DeviceKeyMapper deviceKeyMapper;
-  private final WebSocketService webSocketService;
   private final SettingResolverService srs;
   private final TagService tagService;
   private final DeviceKeyRepository deviceKeyRepository;
@@ -105,23 +102,16 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
   @SuppressWarnings("java:S107")
   public DeviceService(
-    DeviceRepository deviceRepository, DeviceMapper deviceMapper,
-    DTDeviceMapper dtDeviceMapper, DeviceKeyMapper deviceKeyMapper,
-    WebSocketService webSocketService, SettingResolverService srs,
-    TagService tagService,
-    DeviceKeyRepository deviceKeyRepository,
-    SecurityService securityService, AppProperties appProperties,
-    CryptoAsymmetricService cryptoAsymmetricService,
-    CryptoSymmetricService cryptoSymmetricService,
-    CertificatesService certificatesService, CAService caService,
-    CryptoCAService cryptoCAService,
-    DevicePageService devicePageService, DTService dtService,
-    ObjectMapper mapper) {
+    DeviceRepository deviceRepository, DeviceMapper deviceMapper, DTDeviceMapper dtDeviceMapper,
+    DeviceKeyMapper deviceKeyMapper, SettingResolverService srs, TagService tagService,
+    DeviceKeyRepository deviceKeyRepository, SecurityService securityService, AppProperties appProperties,
+    CryptoAsymmetricService cryptoAsymmetricService, CryptoSymmetricService cryptoSymmetricService,
+    CertificatesService certificatesService, CAService caService, CryptoCAService cryptoCAService,
+    DevicePageService devicePageService, DTService dtService, ObjectMapper mapper) {
     this.deviceRepository = deviceRepository;
     this.deviceMapper = deviceMapper;
     this.dtDeviceMapper = dtDeviceMapper;
     this.deviceKeyMapper = deviceKeyMapper;
-    this.webSocketService = webSocketService;
     this.srs = srs;
     this.tagService = tagService;
     this.deviceKeyRepository = deviceKeyRepository;
@@ -347,12 +337,6 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
         default:
           throw new QDoesNotExistException("The requested registration mode does not exist.");
       }
-
-      // Realtime notification.
-      webSocketService.publish(new WebSocketMessageDTO()
-        .setTopic(Topic.DEVICE_REGISTRATION)
-        .setPayload(
-          MessageFormat.format("Device with registration id {0} registered.", hardwareId)));
     }
   }
 

@@ -106,22 +106,6 @@ public class AppConstants {
     }
   }
 
-  public static class WebSocket {
-
-    private WebSocket() {
-    }
-
-    public static final String TOPIC_PREFIX = "/topic";
-
-    public static class Topic {
-
-      private Topic() {
-      }
-
-      public static final String DEVICE_REGISTRATION = "deviceRegistration";
-    }
-  }
-
   public static class Jwt {
 
     private Jwt() {

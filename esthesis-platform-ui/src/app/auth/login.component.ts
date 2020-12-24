@@ -5,7 +5,6 @@ import {Log} from 'ng2-logger/browser';
 import {AppConstants} from '../app.constants';
 import {LoginInfoDto} from '../dto/login-info-dto';
 import {UserService} from '../users/user.service';
-import {WebSocketService} from '../services/web-socket.service';
 import {BodyBackgroundService} from '../services/body-background.service';
 import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
@@ -32,8 +31,8 @@ export class LoginComponent extends BaseComponent implements OnInit {
   errorMessage: string | undefined;
 
   constructor(private router: Router, private userService: UserService, private fb: FormBuilder,
-              private wsService: WebSocketService, private utilityService: UtilityService,
-              private renderer: Renderer2, private bodyBackgroundService: BodyBackgroundService) {
+              private utilityService: UtilityService, private renderer: Renderer2,
+              private bodyBackgroundService: BodyBackgroundService) {
     super();
   }
 
@@ -63,7 +62,6 @@ export class LoginComponent extends BaseComponent implements OnInit {
         // Save the JWT to be used in future requests.
         // sessionStorage.setItem(AppConstants.JWT_STORAGE_NAME, onNext["jwt"]);
         localStorage.setItem(AppConstants.JWT_STORAGE_NAME, onNext.jwt);
-        this.wsService.connect();
         this.router.navigate(['dashboard']);
       }, onError => {
         console.log(onError);

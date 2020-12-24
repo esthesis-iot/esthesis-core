@@ -22,14 +22,6 @@ export const AppConstants = {
     CERTIFICATE: 2
   },
 
-  // WebSocket topics to subscribe.
-  WEBSOCKET: {
-    TOPIC_PREFIX: '/topic',
-    TOPIC: {
-      DEVICE_REGISTRATION: '/deviceRegistration'
-    }
-  },
-
   // Device settings.
   DEVICE: {
     STATE: {
