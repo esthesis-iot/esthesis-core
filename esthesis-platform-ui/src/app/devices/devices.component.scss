@@ -1,4 +1,5 @@
 @import "../shared/style/table-highlight-pointer";
+@import "../../styles-variables";
 
 .gw-connected {
   color: #249926;
@@ -12,6 +13,7 @@
   color: #999999;
 }
 
-.refresh-icon {
-  margin-bottom: 0.2rem;
+.refresh-button {
+  float: right;
+  background-color: $e-color-blue-light;
 }

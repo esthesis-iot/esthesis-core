@@ -1,16 +1,15 @@
 <mat-card>
   <mat-card-title>
     Devices
-    <button mat-icon-button (click)="refreshCurrentData()">
-      <mat-icon inline="true" class="refresh-icon">refresh</mat-icon>
+    <button mat-mini-fab (click)="refreshCurrentData()" class="refresh-button">
+      <mat-icon inline="true">refresh</mat-icon>
     </button>
   </mat-card-title>
   <mat-card-content>
     <div fxLayout="column">
       <!-- Table -->
       <table mat-table #table [dataSource]="datasource"
-             matSort matSortActive="hardwareId"
-             matSortDirection="asc"
+             matSort matSortActive="hardwareId" matSortDirection="asc"
              matSortStart="asc" matSortDisableClear aria-describedby="List of devices">
         <ng-container matColumnDef="hardwareId">
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Hardware ID</th>
