@@ -24,7 +24,7 @@
     <moquette-broker.version>0.12.1</moquette-broker.version>
     <org.eclipse.paho.client.mqttv3.version>1.2.2</org.eclipse.paho.client.mqttv3.version>
     <oshi-core.version>3.13.3</oshi-core.version>
-    <qlack.version>3.4.5-SNAPSHOT</qlack.version>
+    <qlack.version>3.4.7-SNAPSHOT</qlack.version>
     <spring.boot.version>2.4.0</spring.boot.version>
   </properties>
 
