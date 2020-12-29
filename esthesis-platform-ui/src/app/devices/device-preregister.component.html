@@ -3,9 +3,8 @@
   <mat-card-content>
     <form novalidate [formGroup]="form" fxLayout="column">
       <mat-form-field>
-          <textarea [matTextareaAutosize]="true" [matAutosizeMinRows]=1 [matAutosizeMaxRows]=30 matInput
-                    placeholder="Device id(s)"
-                    formControlName="ids"></textarea>
+          <textarea [matTextareaAutosize]="true" [matAutosizeMinRows]=1 [matAutosizeMaxRows]=30
+                    matInput placeholder="Device id(s)" formControlName="ids"></textarea>
       </mat-form-field>
 
       <mat-form-field>
@@ -13,27 +12,6 @@
           <mat-option *ngFor="let tag of availableTags" [value]="tag.id">{{tag.name}}</mat-option>
         </mat-select>
       </mat-form-field>
-
-      <!--      <div>-->
-      <!--        <button mat-icon-button matTooltip="Scan bar/QR-code" (click)="switchCamControls()">-->
-      <!--          <mat-icon>camera_alt</mat-icon>-->
-      <!--          <br>-->
-      <!--        </button>-->
-      <!--      </div>-->
-
-      <!--      <div fxLayout="column" *ngIf="camControls">-->
-      <!--        <mat-select placeholder="Camera" (selectionChange)="changeCamera($event.value)"-->
-      <!--                    [(value)]="selectedCam">-->
-      <!--          <mat-option *ngFor="let camera of cameras" [value]="camera.key">-->
-      <!--            {{camera.value}}-->
-      <!--          </mat-option>-->
-      <!--        </mat-select>-->
-      <!--        <div class="cam-viewer">-->
-      <!--          <zxing-scanner #scanner-->
-      <!--                         (camerasFound)="camerasFoundHandler($event)"-->
-      <!--                         (scanComplete)="scanCompleteHandler($event)"></zxing-scanner>-->
-      <!--        </div>-->
-      <!--      </div>-->
     </form>
   </mat-card-content>
   <mat-card-actions>
