@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {QFormsService} from '@eurodyn/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {CertificatesService} from './certificates.service';
 import {AppConstants} from '../app.constants';
 import {CaDto} from '../dto/ca-dto';
@@ -10,6 +9,8 @@ import {CasService} from '../cas/cas.service';
 import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
 import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {QFormsService} from '@qlack/forms';
+import {CertificateDto} from '../dto/certificate-dto';
 
 @Component({
   selector: 'app-certificate-edit',
@@ -54,11 +55,14 @@ export class CertificateEditComponent extends BaseComponent implements OnInit {
   }
 
   save() {
-    this.certificatesService.save(this.qForms.cleanupForm(this.form!)).subscribe(onNext => {
-      this.utilityService.popupSuccess(this.form!.value.id ? 'Certificate was successfully edited.'
-        : 'Certificate was successfully created.');
-      this.router.navigate(['certificates']);
-    });
+    this.certificatesService.save(
+      this.qForms.cleanupData(this.form.getRawValue()) as CertificateDto).subscribe(
+      onNext => {
+        this.utilityService.popupSuccess(
+          this.form!.value.id ? 'Certificate was successfully edited.'
+            : 'Certificate was successfully created.');
+        this.router.navigate(['certificates']);
+      });
   }
 
   delete() {

@@ -2,7 +2,7 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
-import {QFormsService} from '@eurodyn/forms';
+import {QFormsService} from '@qlack/forms';
 import {NiFiDto} from '../../dto/ni-fi-dto';
 import {NiFiService} from './nifi.service';
 import {BaseComponent} from '../../shared/component/base-component';

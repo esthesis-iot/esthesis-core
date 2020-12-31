@@ -19,7 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import {QFormsModule} from '@eurodyn/forms';
+import {QFormsModule} from '@qlack/forms';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
 import {DisplayModule} from '../shared/component/display/display.module';

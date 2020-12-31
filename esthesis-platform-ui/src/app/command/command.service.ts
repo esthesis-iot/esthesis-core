@@ -3,7 +3,6 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {AppConstants} from '../app.constants';
 import {CrudService} from '../services/crud.service';
-import {QFormsService} from '@eurodyn/forms';
 import {CommandRequestDto} from '../dto/command-request-dto';
 import {CommandReplyDto} from '../dto/command-reply-dto';
 
@@ -13,8 +12,8 @@ import {CommandReplyDto} from '../dto/command-reply-dto';
 export class CommandService extends CrudService<CommandRequestDto> {
   private resource = `command`;
 
-  constructor(http: HttpClient, qForms: QFormsService) {
-    super(http, 'command', qForms);
+  constructor(http: HttpClient) {
+    super(http, 'command');
   }
 
   getReply(requestId: number): Observable<CommandReplyDto> {

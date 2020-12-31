@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import {QFormsService} from '@eurodyn/forms';
+import {MatDialog} from '@angular/material/dialog';
 import {DataSinkService} from './data-sink.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -9,6 +8,8 @@ import * as _ from 'lodash';
 import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
 import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {DataSinkDto} from '../dto/data-sink-dto';
+import {QFormsService} from '@qlack/forms';
 
 @Component({
   selector: 'app-datasinks-edit',
@@ -16,9 +17,9 @@ import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-moda
   styleUrls: ['./datasinks-edit.component.scss']
 })
 export class DatasinksEditComponent extends BaseComponent implements OnInit {
-  form: FormGroup;
-  id: number;
-  availableDataSinkFactories: DataSinkFactoryDto[];
+  form!: FormGroup;
+  id!: number;
+  availableDataSinkFactories!: DataSinkFactoryDto[];
 
   constructor(private fb: FormBuilder, private dataSinksService: DataSinkService,
               private qForms: QFormsService,
@@ -58,7 +59,8 @@ export class DatasinksEditComponent extends BaseComponent implements OnInit {
   }
 
   save() {
-    this.dataSinksService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
+    this.dataSinksService.save(
+      this.qForms.cleanupData(this.form.getRawValue()) as DataSinkDto).subscribe(onNext => {
       this.utilityService.popupSuccess(this.form.value.id ? 'Data sink was successfully saved.'
         : 'Data sink was successfully created.');
       this.router.navigate(['datasinks']);
@@ -84,42 +86,44 @@ export class DatasinksEditComponent extends BaseComponent implements OnInit {
     });
   }
 
-  updateHandlers($event) {
+  updateHandlers($event: any) {
     const factory = _.find<DataSinkFactoryDto>(this.availableDataSinkFactories,
       {factoryClass: $event.source.value});
-    if (factory.supportsMetadataRead) {
-      this.form.controls['metadataRead'].enable();
-    } else {
-      this.form.patchValue({
-        metadata: false
-      });
-      this.form.controls['metadataRead'].disable();
-    }
+    if (factory) {
+      if (factory.supportsMetadataRead) {
+        this.form.controls['metadataRead'].enable();
+      } else {
+        this.form.patchValue({
+          metadata: false
+        });
+        this.form.controls['metadataRead'].disable();
+      }
 
-    if (factory.supportsTelemetryRead) {
-      this.form.controls['telemetryRead'].enable();
-    } else {
-      this.form.patchValue({
-        telemetry: false
-      });
-      this.form.controls['telemetryRead'].disable();
-    }
-    if (factory.supportsMetadataWrite) {
-      this.form.controls['metadataWrite'].enable();
-    } else {
-      this.form.patchValue({
-        metadata: false
-      });
-      this.form.controls['metadataWrite'].disable();
-    }
+      if (factory.supportsTelemetryRead) {
+        this.form.controls['telemetryRead'].enable();
+      } else {
+        this.form.patchValue({
+          telemetry: false
+        });
+        this.form.controls['telemetryRead'].disable();
+      }
+      if (factory.supportsMetadataWrite) {
+        this.form.controls['metadataWrite'].enable();
+      } else {
+        this.form.patchValue({
+          metadata: false
+        });
+        this.form.controls['metadataWrite'].disable();
+      }
 
-    if (factory.supportsTelemetryWrite) {
-      this.form.controls['telemetryWrite'].enable();
-    } else {
-      this.form.patchValue({
-        telemetry: false
-      });
-      this.form.controls['telemetryWrite'].disable();
+      if (factory.supportsTelemetryWrite) {
+        this.form.controls['telemetryWrite'].enable();
+      } else {
+        this.form.patchValue({
+          telemetry: false
+        });
+        this.form.controls['telemetryWrite'].disable();
+      }
     }
   }
 

@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {BaseComponent} from '../shared/component/base-component';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {QFormsService} from '@eurodyn/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {StoresService} from './stores.service';
@@ -11,6 +10,8 @@ import {UtilityService} from '../shared/service/utility.service';
 import {CasService} from '../cas/cas.service';
 import {CertificatesService} from '../certificates/certificates.service';
 import {CertificateDto} from '../dto/certificate-dto';
+import {QFormsService} from '@qlack/forms';
+import {StoreDto} from '../dto/store-dto';
 
 @Component({
   selector: 'app-stores-edit',
@@ -63,11 +64,12 @@ export class StoresEditComponent extends BaseComponent implements OnInit {
   }
 
   save() {
-    this.storesService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
-      this.utilityService.popupSuccess(this.form.value.id ? 'Store was successfully edited.'
-        : 'Store was successfully created.');
-      this.router.navigate(['stores']);
-    });
+    this.storesService.save(this.qForms.cleanupData(this.form.getRawValue()) as StoreDto).subscribe(
+      onNext => {
+        this.utilityService.popupSuccess(this.form.value.id ? 'Store was successfully edited.'
+          : 'Store was successfully created.');
+        this.router.navigate(['stores']);
+      });
   }
 
   delete() {

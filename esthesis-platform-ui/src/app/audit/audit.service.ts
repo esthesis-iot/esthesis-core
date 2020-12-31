@@ -2,7 +2,7 @@ import {Log} from 'ng2-logger/browser';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {QFormsModule, QPageableReply} from '@eurodyn/forms';
+import {QFormsModule, QPageableReply} from '@qlack/forms';
 import {AppConstants} from '../app.constants';
 import {AuditDto} from '../dto/audit-dto';
 import {KeyValueDto} from '../dto/key-value-dto';

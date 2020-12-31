@@ -14,7 +14,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
-import {QFormsModule} from '@eurodyn/forms';
+import {QFormsModule} from '@qlack/forms';
 import {MomentModule} from 'ngx-moment';
 import {MatMomentDateModule, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {CommandRoutingModule} from './command-routing.module';

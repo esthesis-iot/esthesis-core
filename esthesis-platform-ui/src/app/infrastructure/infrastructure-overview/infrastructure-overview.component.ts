@@ -14,7 +14,7 @@ export class InfrastructureOverviewComponent implements OnInit {
   }
 
   private getReport() {
-    this.infrastructureService.getFirst().subscribe(onNext => {
+    this.infrastructureService.getAny().subscribe(onNext => {
       this.report = onNext;
     });
   }

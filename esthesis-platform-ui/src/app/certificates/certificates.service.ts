@@ -2,19 +2,18 @@ import {Injectable} from '@angular/core';
 import {AppConstants} from '../app.constants';
 import {HttpClient} from '@angular/common/http';
 import {FormGroup} from '@angular/forms';
-import {QFormsService, QPageableReply} from '@eurodyn/forms';
 import {CrudService} from '../services/crud.service';
 import {CertificateDto} from '../dto/certificate-dto';
 import {Observable} from 'rxjs';
-import {HttpUtilsService} from '../shared/service/http-utils.service';
+import {QPageableReply} from '@qlack/forms';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CertificatesService extends CrudService<CertificateDto> {
 
-  constructor(http: HttpClient, private httpUtil: HttpUtilsService, qForms: QFormsService) {
-    super(http, 'certificates', qForms);
+  constructor(http: HttpClient) {
+    super(http, 'certificates');
   }
 
   /**
@@ -27,7 +26,7 @@ export class CertificatesService extends CrudService<CertificateDto> {
       `${AppConstants.API_ROOT}/certificates/${certificateId}/download/${keyType}/${base64}`, {
         responseType: 'blob', observe: 'response'
       }).subscribe(onNext => {
-      this.httpUtil.saveAs(onNext);
+      this.saveAs(onNext);
     });
   }
 

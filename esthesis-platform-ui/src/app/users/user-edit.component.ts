@@ -1,12 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {QFormsService} from '@eurodyn/forms';
 import {UserService} from './user.service';
-import { MatDialog } from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
 import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {QFormsService} from '@qlack/forms';
+import {UserDto} from '../dto/user-dto';
 
 @Component({
   selector: 'app-user',
@@ -55,11 +56,12 @@ export class UserEditComponent extends BaseComponent implements OnInit {
       this.form.controls['newPassword1'].setValue(null);
       this.form.controls['newPassword2'].setValue(null);
     }
-    this.userService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
-      this.utilityService.popupSuccess(this.isEdit ? 'User was successfully edited.'
-        : 'User was successfully created.');
-      this.router.navigate(['users']);
-    });
+    this.userService.save(this.qForms.cleanupData(this.form.getRawValue()) as UserDto).subscribe(
+      onNext => {
+        this.utilityService.popupSuccess(this.isEdit ? 'User was successfully edited.'
+          : 'User was successfully created.');
+        this.router.navigate(['users']);
+      });
   }
 
   delete() {

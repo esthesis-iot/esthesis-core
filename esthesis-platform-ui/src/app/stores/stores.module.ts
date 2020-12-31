@@ -16,7 +16,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatInputModule} from '@angular/material/input';
-import {QFormsModule} from '@eurodyn/forms';
+import {QFormsModule} from '@qlack/forms';
 import {DisplayModule} from '../shared/component/display/display.module';
 import {MatListModule} from '@angular/material/list';
 import {MatCheckboxModule} from '@angular/material/checkbox';

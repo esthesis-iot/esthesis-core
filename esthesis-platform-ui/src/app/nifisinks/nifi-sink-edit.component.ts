@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {QFormsService} from '@eurodyn/forms';
 import {NifiSinkService} from './nifi-sink.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -13,6 +12,8 @@ import * as _ from 'lodash';
 import {NiFiWriterFactoryDto} from '../dto/nifisinks/nifi-writer-factory-dto';
 import {NiFiLoggerFactoryDto} from '../dto/nifisinks/nifi-logger-factory-dto';
 import {AppConstants} from '../app.constants';
+import {QFormsService} from '@qlack/forms';
+import {NiFiSinkDto} from '../dto/nifisinks/nifi-sink-dto';
 
 @Component({
   selector: 'app-nifisink-edit',
@@ -77,7 +78,8 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
     this.form!.patchValue({
       type: this.type
     });
-    this.nifDataService.save(this.qForms.cleanupForm(this.form!)).subscribe(onNext => {
+    this.nifDataService.save(
+      this.qForms.cleanupData(this.form.getRawValue()) as NiFiSinkDto).subscribe(onNext => {
       this.utilityService.popupSuccess(this.form!.value.id ? 'NiFi sink was successfully saved.'
         : 'NiFi sink was successfully created.');
       this.router.navigate([this.type]);

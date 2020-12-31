@@ -6,9 +6,9 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {ApplicationDto} from '../dto/application-dto';
 import {ApplicationService} from './application.service';
-import {QFormsService} from '@eurodyn/forms';
 import 'rxjs/add/operator/debounceTime';
 import {BaseComponent} from '../shared/component/base-component';
+import {QFormsService} from '@qlack/forms';
 
 @Component({
   selector: 'app-applications',
@@ -55,7 +55,7 @@ export class ApplicationsComponent extends BaseComponent implements OnInit, Afte
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
-    this.applicationsService.getAll(this.qForms.makeQueryString(this.filterForm,
+    this.applicationsService.getAll(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
       null!, false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.dataSource.data = onNext.content;

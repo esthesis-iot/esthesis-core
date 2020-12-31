@@ -4,8 +4,12 @@
     <form novalidate [formGroup]="form">
       <div fxLayout="column">
         <mat-form-field>
-          <input matInput placeholder="Name"
-                 formControlName="name">
+          <input matInput placeholder="Name" formControlName="name">
+          <mat-icon matSuffix color="warn" *ngIf="form.controls['name'].invalid && form.controls['name'].dirty"
+                    matTooltip="{{form.controls['name'].getError('message')}}"
+                    matTooltipPosition="above" matTooltipClass="error-tooltip"
+          style="cursor: help"
+          >warning</mat-icon>
         </mat-form-field>
       </div>
     </form>

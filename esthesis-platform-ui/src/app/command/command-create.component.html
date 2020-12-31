@@ -61,19 +61,19 @@
           <div class="xs-mb3">Summary of the command to be dispatched:</div>
           <div fxLayout="row">
             <div class="summaryTitle">Command:</div>
-            <div>{{commandForm.getRawValue()['command']}}</div>
+            <div>{{commandForm.value['command']}}</div>
           </div>
           <div fxLayout="row">
             <div class="summaryTitle">Command arguments:</div>
-            <div>{{commandForm.getRawValue()['arguments']}}</div>
+            <div>{{commandForm.value['arguments']}}</div>
           </div>
           <div fxLayout="row">
             <div class="summaryTitle">Command description:</div>
-            <div>{{commandForm.getRawValue()['description']}}</div>
+            <div>{{commandForm.value['description']}}</div>
           </div>
           <div fxLayout="row">
             <div class="summaryTitle">Devices affected:</div>
-            <div>{{searchDevicesForm.getRawValue()['matches']}}</div>
+            <div>{{searchDevicesForm.value['matches']}}</div>
           </div>
         </form>
 

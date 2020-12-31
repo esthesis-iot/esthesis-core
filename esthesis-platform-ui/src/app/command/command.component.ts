@@ -5,7 +5,6 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
-import {QFormsService} from '@eurodyn/forms';
 import {BaseComponent} from '../shared/component/base-component';
 import {CommandRequestDto} from '../dto/command-request-dto';
 import 'rxjs/add/operator/debounceTime';
@@ -13,6 +12,7 @@ import {TextModalComponent} from '../shared/component/display/text-modal/text-mo
 import {CommandService} from './command.service';
 import {CommandReplyDto} from '../dto/command-reply-dto';
 import {CommandCreateComponent} from './command-create.component';
+import {QFormsService} from '@qlack/forms';
 
 @Component({
   selector: 'app-command',
@@ -67,7 +67,7 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
-    this.commandService.getAll(this.qForms.makeQueryString(this.filterForm,
+    this.commandService.getAll(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
       null!, false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.dataSource.data = onNext.content;

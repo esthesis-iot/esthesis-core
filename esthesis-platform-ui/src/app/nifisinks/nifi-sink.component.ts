@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
-import {QFormsService} from '@eurodyn/forms';
+import {QFormsService} from '@qlack/forms';
 import {NifiSinkService} from './nifi-sink.service';
 import {BaseComponent} from '../shared/component/base-component';
 import {ActivatedRoute, Router} from '@angular/router';

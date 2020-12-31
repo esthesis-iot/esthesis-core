@@ -4,11 +4,11 @@ import {Router} from '@angular/router';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import {QFilterAlias, QFormsService} from '@eurodyn/forms';
 import {UserDto} from '../dto/user-dto';
 import {UserService} from './user.service';
 import 'rxjs/add/operator/debounceTime';
 import {BaseComponent} from '../shared/component/base-component';
+import {QFilterAlias, QFormsService} from '@qlack/forms';
 
 @Component({
   selector: 'app-users',
@@ -55,7 +55,7 @@ export class UsersComponent extends BaseComponent implements OnInit, AfterViewIn
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
-    this.userService.getAll(this.qForms.makeQueryString(this.filterForm,
+    this.userService.getAll(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
       [new QFilterAlias('type', 'userType')], false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.dataSource.data = onNext.content;

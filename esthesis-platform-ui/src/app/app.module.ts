@@ -16,8 +16,6 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {JwtModule} from '@auth0/angular-jwt';
-import {QFormsModule} from '@eurodyn/forms';
-import {RxStompService} from '@stomp/ng2-stompjs';
 import {CookieService} from 'ngx-cookie-service';
 import {NgProgressModule} from 'ngx-progressbar';
 import { NgProgressHttpModule } from 'ngx-progressbar/http';
@@ -34,6 +32,8 @@ import {TextModalComponent} from './shared/component/display/text-modal/text-mod
 import {FooterComponent} from './shared/layout/footer.component';
 import {HeaderComponent} from './shared/layout/header.component';
 import {SidenavComponent} from './shared/layout/sidenav.component';
+import {QFormsModule} from '@qlack/forms';
+import {QFormValidationModule} from '@qlack/form-validation';
 
 export function getJwtToken(): string | null {
   return localStorage.getItem(AppConstants.JWT_STORAGE_NAME);
@@ -88,8 +88,8 @@ export function getJwtToken(): string | null {
   ],
   providers: [
     CookieService,
-    RxStompService,
     QFormsModule,
+    QFormValidationModule
   ],
 })
 export class AppModule {

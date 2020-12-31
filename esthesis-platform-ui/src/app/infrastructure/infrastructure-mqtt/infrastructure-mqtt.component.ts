@@ -2,7 +2,7 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import {QFormsService} from '@eurodyn/forms';
+import {QFormsService} from '@qlack/forms';
 import {MqttServerDto} from '../../dto/mqtt-server-dto';
 import {MqttServerService} from './mqtt-server.service';
 import {BaseComponent} from '../../shared/component/base-component';

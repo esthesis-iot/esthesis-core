@@ -1,14 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {FieldDto} from '../../dto/field-dto';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {BaseComponent} from '../../shared/component/base-component';
 import {UtilityService} from '../../shared/service/utility.service';
-import {QFormsService} from '@eurodyn/forms';
 import {DevicesService} from '../../devices/devices.service';
 import {SettingsService} from '../settings.service';
 import {AppSettings} from '../../app.settings';
 import * as _ from 'lodash';
 import {KeyValueDto} from '../../dto/key-value-dto';
+import {QFormsService} from '@qlack/forms';
 
 @Component({
   selector: 'app-settings-device-page',
@@ -61,7 +61,7 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
 
   createFieldElement(fieldDto: FieldDto) {
     return this.fb.group({
-      id:  [fieldDto?.id],
+      id: [fieldDto?.id],
       measurement: [fieldDto?.measurement],
       field: [fieldDto?.field],
       shown: [fieldDto?.shown],
@@ -73,7 +73,8 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
   }
 
   save() {
-    this.settingsService.saveDevicePageFields(this.qForms.cleanupForm(this.form)['fields']).subscribe(
+    this.settingsService.saveDevicePageFields(
+      this.qForms.cleanupData(this.form.getRawValue())['fields']).subscribe(
       onNext => {
         this.settingsService.saveMultiple(
           _.map(Object.keys(this.settingsForm.controls), (fc) => {

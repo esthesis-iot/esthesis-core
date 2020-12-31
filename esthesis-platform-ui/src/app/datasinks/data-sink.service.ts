@@ -2,7 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {CrudService} from '../services/crud.service';
-import {QFormsService, QPageableReply} from '@eurodyn/forms';
+import {QFormsService, QPageableReply} from '@qlack/forms';
 import {DataSinkDto} from '../dto/data-sink-dto';
 import {AppConstants} from '../app.constants';
 import {DataSinkFactoryDto} from '../dto/data-sink-factory-dto';

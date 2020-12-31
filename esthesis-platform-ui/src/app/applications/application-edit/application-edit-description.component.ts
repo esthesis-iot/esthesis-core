@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {QFormsService} from '@eurodyn/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import {UUID} from 'angular2-uuid';
@@ -8,6 +7,7 @@ import {ApplicationService} from '../application.service';
 import {BaseComponent} from '../../shared/component/base-component';
 import {OkCancelModalComponent} from 'src/app/shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {UtilityService} from '../../shared/service/utility.service';
+import {QFormsService} from '@qlack/forms';
 
 @Component({
   selector: 'app-application-edit-description',

@@ -6,7 +6,6 @@ import {AppConstants} from '../app.constants';
 import {LoginInfoDto} from '../dto/login-info-dto';
 import {UserDto} from '../dto/user-dto';
 import {CrudService} from '../services/crud.service';
-import {QFormsService} from '@eurodyn/forms';
 import {JwtDto} from '../dto/jwt-dto';
 
 /**
@@ -19,12 +18,12 @@ import {JwtDto} from '../dto/jwt-dto';
 export class UserService extends CrudService<UserDto> {
   private resource = `users`;
 
-  constructor(http: HttpClient, private jwtService: JwtHelperService, qForms: QFormsService) {
-    super(http, 'users', qForms);
+  constructor(http: HttpClient, private jwtService: JwtHelperService) {
+    super(http, 'users');
   }
 
   // Returns the JWT.
-  private static getJwt(): string|null {
+  private static getJwt(): string | null {
     return localStorage.getItem(AppConstants.JWT_STORAGE_NAME);
   }
 
@@ -36,7 +35,7 @@ export class UserService extends CrudService<UserDto> {
   }
 
   // Return a claim from JWT.
-  getJWTClaim(claim: string): string|null {
+  getJWTClaim(claim: string): string | null {
     if (UserService.getJwt()) {
       // @ts-ignore
       return this.jwtService.decodeToken(UserService.getJwt())[claim];

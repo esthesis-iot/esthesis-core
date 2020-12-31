@@ -2,7 +2,6 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {CrudService} from '../services/crud.service';
-import {QFormsService} from '@eurodyn/forms';
 import {AppConstants} from '../app.constants';
 import {NiFiSinkDto} from '../dto/nifisinks/nifi-sink-dto';
 
@@ -12,8 +11,8 @@ import {NiFiSinkDto} from '../dto/nifisinks/nifi-sink-dto';
 export class NifiSinkService extends CrudService<NiFiSinkDto> {
   private static endpoint = 'nifi-sinks';
 
-  constructor(http: HttpClient, qForms: QFormsService) {
-    super(http, NifiSinkService.endpoint, qForms);
+  constructor(http: HttpClient) {
+    super(http, NifiSinkService.endpoint);
   }
 
   getAvailableDataFactoriesByType(type: string): Observable<any[]> {

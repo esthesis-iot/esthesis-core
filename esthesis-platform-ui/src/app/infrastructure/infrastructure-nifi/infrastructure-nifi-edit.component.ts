@@ -2,13 +2,13 @@ import {Component, OnInit} from '@angular/core';
 import {BaseComponent} from '../../shared/component/base-component';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {QFormsService} from '@eurodyn/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UtilityService} from '../../shared/service/utility.service';
 import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {NiFiDto} from '../../dto/ni-fi-dto';
 import {NiFiService} from './nifi.service';
 import {SyncService} from './sync.service';
+import {QFormsService} from '@qlack/forms';
 
 @Component({
   selector: 'app-infrastructure-nifi-edit',
@@ -25,7 +25,8 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
               private qForms: QFormsService,
-              private nifiService: NiFiService, private syncService: SyncService, private route: ActivatedRoute,
+              private nifiService: NiFiService, private syncService: SyncService,
+              private route: ActivatedRoute,
               private router: Router, private utilityService: UtilityService) {
     super();
   }
@@ -70,10 +71,11 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
   }
 
   submit() {
-    this.nifiService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
-      this.utilityService.popupSuccess('NiFi server successfully saved.');
-      this.router.navigate(['infra'], {fragment: 'nifi'});
-    });
+    this.nifiService.save(this.qForms.cleanupData(this.form.getRawValue()) as NiFiDto).subscribe(
+      onNext => {
+        this.utilityService.popupSuccess('NiFi server successfully saved.');
+        this.router.navigate(['infra'], {fragment: 'nifi'});
+      });
   }
 
   delete() {

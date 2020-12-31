@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import {QFormsService} from '@eurodyn/forms';
+import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MqttServerService} from './mqtt-server.service';
 import {TagService} from '../../tags/tag.service';
@@ -13,6 +12,8 @@ import {CaDto} from '../../dto/ca-dto';
 import {BaseComponent} from '../../shared/component/base-component';
 import {UtilityService} from '../../shared/service/utility.service';
 import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {QFormsService} from '@qlack/forms';
+import {MqttServerDto} from '../../dto/mqtt-server-dto';
 
 @Component({
   selector: 'app-infrastructure-mqtt-edit',
@@ -71,7 +72,8 @@ export class InfrastructureMqttEditComponent extends BaseComponent implements On
   }
 
   save() {
-    this.mqttServerService.save(this.qForms.cleanupForm(this.form!)).subscribe(onNext => {
+    this.mqttServerService.save(
+      this.qForms.cleanupData(this.form.getRawValue()) as MqttServerDto).subscribe(onNext => {
       this.utilityService.popupSuccess('MQTT server successfully saved.');
       this.router.navigate(['infra'], {fragment: 'mqtt'});
     });

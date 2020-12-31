@@ -14,7 +14,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import {ReactiveFormsModule} from '@angular/forms';
-import {QFormsModule} from '@eurodyn/forms';
+import {QFormsModule} from '@qlack/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {ApplicationsComponent} from './applications.component';
 import {ApplicationEditComponent} from './application-edit/application-edit.component';

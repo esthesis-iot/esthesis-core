@@ -15,7 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import {ReactiveFormsModule} from '@angular/forms';
-import {QFormsModule} from '@eurodyn/forms';
+import {QFormsModule} from '@qlack/forms';
 import {CertificatesRoutingModule} from './certificates-routing.module';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatMomentDateModule, MomentDateAdapter} from '@angular/material-moment-adapter';

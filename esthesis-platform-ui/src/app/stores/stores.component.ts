@@ -5,10 +5,10 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 import {Router} from '@angular/router';
-import {QFormsService} from '@eurodyn/forms';
 import {StoreDto} from '../dto/store-dto';
 import {StoresService} from './stores.service';
 import 'rxjs/add/operator/debounceTime';
+import {QFormsService} from '@qlack/forms';
 
 @Component({
   selector: 'app-stores',
@@ -54,7 +54,7 @@ export class StoresComponent extends BaseComponent implements OnInit, AfterViewI
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
-    this.storesService.getAll(this.qForms.makeQueryString(this.filterForm,
+    this.storesService.getAll(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
       null!, false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;

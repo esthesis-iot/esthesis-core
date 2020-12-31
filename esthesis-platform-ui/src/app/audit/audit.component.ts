@@ -5,12 +5,12 @@ import {MatTableDataSource} from '@angular/material/table';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
 import * as moment from 'moment';
-import {QFilterAlias, QFormsService} from '@eurodyn/forms';
 import {AuditDto} from '../dto/audit-dto';
 import {AuditService} from './audit.service';
 import {UserService} from '../users/user.service';
 import {KeyValueDto} from '../dto/key-value-dto';
 import {BaseComponent} from '../shared/component/base-component';
+import {QFilterAlias, QFormsService} from '@qlack/forms';
 
 @Component({
   selector: 'app-audit',
@@ -84,7 +84,7 @@ export class AuditComponent extends BaseComponent implements OnInit, AfterViewIn
     }
 
     // Convert FormGroup to a query string to pass as a filter.
-    this.auditService.getLogs(this.qForms.makeQueryString(this.filterForm, [
+    this.auditService.getLogs(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(), [
       new QFilterAlias('dateFrom', 'createdOn'),
       new QFilterAlias('dateTo', 'createdOn')], false, page, size, sort, sortDirection))
     .subscribe(onNext => {

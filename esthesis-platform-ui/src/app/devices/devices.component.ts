@@ -6,10 +6,8 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {DeviceDto} from '../dto/device-dto';
 import {DevicesService} from './devices.service';
-import {QFormsService} from '@eurodyn/forms';
-import {Subscription} from 'rxjs';
 import {BaseComponent} from '../shared/component/base-component';
-import {UtilityService} from '../shared/service/utility.service';
+import {QFormsService} from '@qlack/forms';
 
 @Component({
   selector: 'app-devices',
@@ -58,7 +56,7 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
-    this.deviceService.getDevices(this.qForms.makeQueryString(this.filterForm, [],
+    this.deviceService.getDevices(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(), [],
       false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;

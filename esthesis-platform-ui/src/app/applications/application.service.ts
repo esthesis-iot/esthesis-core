@@ -4,7 +4,6 @@ import {Observable} from 'rxjs';
 import {AppConstants} from '../app.constants';
 import {ApplicationDto} from '../dto/application-dto';
 import {CrudService} from '../services/crud.service';
-import {QFormsService} from '@eurodyn/forms';
 
 /**
  * A service providing functionality for the user of the application, including authentication,
@@ -16,8 +15,8 @@ import {QFormsService} from '@eurodyn/forms';
 export class ApplicationService extends CrudService<ApplicationDto> {
   private resource = `applications`;
 
-  constructor(http: HttpClient, qForms: QFormsService) {
-    super(http, 'applications', qForms);
+  constructor(http: HttpClient) {
+    super(http, 'applications');
   }
 
   getApplicationsStatus(): Observable<any> {

@@ -1,15 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {QFormsService} from '@eurodyn/forms';
 import {DevicesService} from './devices.service';
 import {Router} from '@angular/router';
 import {TagDto} from '../dto/tag-dto';
 import {TagService} from '../tags/tag.service';
 import {UUID} from 'angular2-uuid';
 import {DevicePreregisterCamComponent} from './device-preregister-cam.component';
-import { MatDialog } from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
+import {QFormsService} from '@qlack/forms';
+import {DeviceRegisterDto} from '../dto/device-register-dto';
 
 @Component({
   selector: 'app-device-preregister',
@@ -41,7 +42,8 @@ export class DevicePreregisterComponent extends BaseComponent implements OnInit 
   }
 
   save() {
-    this.devicesService.preregister(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
+    this.devicesService.preregister(
+      this.qForms.cleanupData(this.form.getRawValue()) as DeviceRegisterDto).subscribe(onNext => {
       this.utilityService.popupSuccess('Devices are registering... Please refresh devices list.');
       this.router.navigate(['devices']);
     });

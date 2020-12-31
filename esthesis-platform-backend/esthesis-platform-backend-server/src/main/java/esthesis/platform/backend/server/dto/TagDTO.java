@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Length;
 
 @Data
 @NoArgsConstructor
@@ -14,6 +15,7 @@ import lombok.experimental.Accessors;
 public class TagDTO extends BaseDTO {
 
   @NotNull
+  @Length(min = 3, max = 255)
   private String name;
 
 }

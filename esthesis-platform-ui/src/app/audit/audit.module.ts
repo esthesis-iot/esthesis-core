@@ -17,7 +17,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {AuditComponent} from './audit.component';
 import {MatMomentDateModule, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {MomentModule} from 'ngx-moment';
-import {QFormsModule} from '@eurodyn/forms';
+import {QFormsModule} from '@qlack/forms';
 
 @NgModule({
   declarations: [

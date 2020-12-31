@@ -12,10 +12,12 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import {QFormsModule} from '@eurodyn/forms';
+import {QFormsModule} from '@qlack/forms';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {DisplayModule} from '../shared/component/display/display.module';
+import {MatIconModule} from '@angular/material/icon';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import {DisplayModule} from '../shared/component/display/display.module';
     QFormsModule,
     ReactiveFormsModule,
     MatSortModule,
-    DisplayModule
+    DisplayModule,
+    MatIconModule,
+    MatTooltipModule
   ]
 })
 export class TagsModule {

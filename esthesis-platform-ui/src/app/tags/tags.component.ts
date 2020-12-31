@@ -4,9 +4,9 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
-import {QFormsService} from '@eurodyn/forms';
 import {TagDto} from '../dto/tag-dto';
 import {TagService} from './tag.service';
+import {QFormsService} from '@qlack/forms';
 
 @Component({
   selector: 'app-groups',
@@ -51,7 +51,7 @@ export class TagsComponent implements OnInit, AfterViewInit {
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
-    this.tagService.getAll(this.qForms.makeQueryString(this.filterForm,
+    this.tagService.getAll(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
       [], false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.dataSource.data = onNext.content;

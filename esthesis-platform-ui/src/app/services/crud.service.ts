@@ -1,14 +1,15 @@
 import {AppConstants} from '../app.constants';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpEvent, HttpRequest, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {QFormsService, QPageableReply} from '@eurodyn/forms';
 import {FormGroup} from '@angular/forms';
+import {QPageableReply} from '@qlack/forms';
+import * as fs from 'file-saver';
 
 /**
  * A convenience CRUD service to be extended by concrete services to provide default CRUD methods.
  */
 export class CrudService<T> {
-  constructor(public http: HttpClient, private endpoint: string, public qForms: QFormsService) {
+  constructor(public http: HttpClient, private endpoint: string) {
   }
 
   save(object: T) {
@@ -28,7 +29,7 @@ export class CrudService<T> {
     return this.http.get<T>(`${AppConstants.API_ROOT}/${this.endpoint}/${id}`);
   }
 
-  getFirst(): Observable<T> {
+  getAny(): Observable<T> {
     return this.http.get<T>(`${AppConstants.API_ROOT}/${this.endpoint}`);
   }
 
@@ -40,8 +41,25 @@ export class CrudService<T> {
     return this.http.delete(`${AppConstants.API_ROOT}/${this.endpoint}`);
   }
 
-  upload(form: FormGroup): Observable<any> {
-    return this.qForms.uploadForm(this.http, form,
-      `${AppConstants.API_ROOT}/${this.endpoint}`, false);
+  upload(form: FormGroup, url?: string, reportProgress?: boolean): Observable<HttpEvent<{}>> {
+    const formData = new FormData();
+      for (const formField in form.value) {
+        formData.append(formField, form.value[formField]);
+      }
+      const req = new HttpRequest(
+        'POST',
+        url ? url : `${AppConstants.API_ROOT}/${this.endpoint}`,
+        formData, {
+          reportProgress: reportProgress,
+        }
+      );
+
+      return this.http.request(req);
+  }
+
+  saveAs(onNext: HttpResponse<Blob>) {
+    const blob = new Blob([onNext.body!], {type: 'application/octet-stream'});
+    const filename = onNext.headers.get('Content-Disposition')!.split(';')[1].split('=')[1];
+    fs.saveAs(blob, filename);
   }
 }

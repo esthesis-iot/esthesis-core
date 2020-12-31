@@ -1,14 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {QFormsService} from '@eurodyn/forms';
-import { MatDialog } from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {UUID} from 'angular2-uuid';
 import {TagService} from './tag.service';
 import 'rxjs/add/operator/debounceTime';
 import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
 import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {TagDto} from '../dto/tag-dto';
+import {QFormsService} from '@qlack/forms';
+import {QFormValidationService} from '@qlack/form-validation';
 
 @Component({
   selector: 'app-tag-edit',
@@ -23,7 +25,7 @@ export class TagEditComponent extends BaseComponent implements OnInit {
               private route: ActivatedRoute,
               private qForms: QFormsService, private router: Router,
               private utilityService: UtilityService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog, private qFormValidation: QFormValidationService) {
     super();
   }
 
@@ -48,29 +50,26 @@ export class TagEditComponent extends BaseComponent implements OnInit {
         salt: UUID.UUID()
       });
     }
-
   }
 
   save() {
-    if (this.id === 0) {
-      this.insert();
-    } else {
-      this.update();
-    }
-  }
-
-  private update() {
-    this.tagService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
-      this.utilityService.popupSuccess('Tag was successfully edited.');
-      this.router.navigate(['tags']);
-    });
-  }
-
-  private insert() {
-    this.tagService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
-      this.utilityService.popupSuccess('Tag was successfully created.');
-      this.router.navigate(['tags']);
-    });
+    this.tagService.save(this.qForms.cleanupData(this.form.getRawValue()) as TagDto).subscribe(
+      onSuccess => {
+        if (this.id === 0) {
+          this.utilityService.popupSuccess('Tag was successfully created.');
+        } else {
+          this.utilityService.popupSuccess('Tag was successfully edited.');
+        }
+        this.router.navigate(['tags']);
+      }, onError => {
+        if (onError.status == 400) {
+          let validationErrors = onError.error;
+          if (validationErrors) {
+            // @ts-ignore
+            this.qFormValidation.validateForm(this.form, validationErrors);
+          }
+        }
+      });
   }
 
   delete() {

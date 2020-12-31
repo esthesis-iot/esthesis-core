@@ -4,7 +4,6 @@ import {icon, latLng, marker, tileLayer} from 'leaflet';
 import {TagDto} from '../../dto/tag-dto';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
-import {QFormsService} from '@eurodyn/forms';
 import {TagService} from '../../tags/tag.service';
 import {DevicesService} from '../devices.service';
 import {BaseComponent} from 'src/app/shared/component/base-component';
@@ -16,6 +15,8 @@ import {FormatterService} from '../../shared/service/formatter.service';
 import {SettingsService} from '../../settings/settings.service';
 import {AppSettings} from '../../app.settings';
 import {LeafletDirective} from '@asymmetrik/ngx-leaflet';
+import {QFormsService} from '@qlack/forms';
+import {CaDto} from '../../dto/ca-dto';
 
 @Component({
   selector: 'app-device',
@@ -131,10 +132,11 @@ export class DeviceComponent extends BaseComponent implements OnInit {
   }
 
   save() {
-    this.devicesService.save(this.qForms.cleanupForm(this.form)).subscribe(onNext => {
-      this.utilityService.popupSuccess('Device successfully saved.');
-      this.router.navigate(['devices']);
-    });
+    this.devicesService.save(this.qForms.cleanupData(this.form.getRawValue()) as CaDto).subscribe(
+      onNext => {
+        this.utilityService.popupSuccess('Device successfully saved.');
+        this.router.navigate(['devices']);
+      });
   }
 
   delete() {

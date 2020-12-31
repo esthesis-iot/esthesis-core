@@ -3,18 +3,16 @@ import {AppConstants} from '../app.constants';
 import {HttpClient} from '@angular/common/http';
 import {CaDto} from '../dto/ca-dto';
 import {FormGroup} from '@angular/forms';
-import {QFormsService} from '@eurodyn/forms';
 import {CrudService} from '../services/crud.service';
 import {Observable} from 'rxjs';
-import {HttpUtilsService} from '../shared/service/http-utils.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CasService extends CrudService<CaDto> {
 
-  constructor(http: HttpClient, private httpUtil: HttpUtilsService, qForms: QFormsService) {
-    super(http, 'cas', qForms);
+  constructor(http: HttpClient) {
+    super(http, 'cas')
   }
 
   /**
@@ -26,7 +24,7 @@ export class CasService extends CrudService<CaDto> {
     this.http.get(`${AppConstants.API_ROOT}/cas/${caId}/download/${keyType}/${base64}`, {
       responseType: 'blob', observe: 'response'
     }).subscribe(onNext => {
-      this.httpUtil.saveAs(onNext);
+      this.saveAs(onNext);
     });
   }
 
@@ -34,13 +32,12 @@ export class CasService extends CrudService<CaDto> {
     this.http.get(`${AppConstants.API_ROOT}/cas/${caId}/backup`, {
       responseType: 'blob', observe: 'response'
     }).subscribe(onNext => {
-      this.httpUtil.saveAs(onNext);
+      this.saveAs(onNext);
     });
   }
 
   restore(form: FormGroup) {
-    return this.qForms.uploadForm(this.http, form, `${AppConstants.API_ROOT}/cas/restore`,
-      false);
+    return this.upload(form, `${AppConstants.API_ROOT}/cas/restore`, false);
   }
 
   getEligibleForSigning(): Observable<CaDto[]> {
