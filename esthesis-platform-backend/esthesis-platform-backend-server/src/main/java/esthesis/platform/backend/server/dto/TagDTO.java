@@ -1,7 +1,6 @@
 package esthesis.platform.backend.server.dto;
 
 import esthesis.platform.backend.common.dto.BaseDTO;
-import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,6 @@ import org.hibernate.validator.constraints.Length;
 @EqualsAndHashCode(callSuper = true)
 public class TagDTO extends BaseDTO {
 
-  @NotNull
   @Length(min = 3, max = 255)
   private String name;
 
