@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {icon, latLng, marker, tileLayer} from 'leaflet';
 import {TagDto} from '../../dto/tag-dto';
@@ -23,7 +23,7 @@ import {CaDto} from '../../dto/ca-dto';
   templateUrl: './device.component.html',
   styleUrls: ['./device.component.scss']
 })
-export class DeviceComponent extends BaseComponent implements OnInit {
+export class DeviceComponent extends BaseComponent implements OnInit, AfterViewInit {
   availableTags: TagDto[] | undefined;
   form!: FormGroup;
   id!: number;
@@ -52,23 +52,7 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     super();
   }
 
-  ngOnInit() {
-    // Check if an edit is performed and fetch data.
-    this.id = Number(this.route.snapshot.paramMap.get('id'));
-
-    // Setup the form.
-    this.form = this.fb.group({
-      id: [''],
-      tags: [[]],
-      state: ['', [Validators.required, Validators.maxLength(32)]],
-      hardwareId: ['', [Validators.required, Validators.maxLength(512)]]
-    });
-
-    // Get available tags.
-    this.tagService.getAll().subscribe(onNext => {
-      this.availableTags = onNext.content;
-    });
-
+  ngAfterViewInit(): void {
     // If viewing an existing device, fetch data for it.
     if (this.id && this.id !== 0) {
       this.devicesService.get(this.id).subscribe(onNext => {
@@ -105,6 +89,24 @@ export class DeviceComponent extends BaseComponent implements OnInit {
         })
       });
     }
+  }
+
+  ngOnInit() {
+    // Check if an edit is performed and fetch data.
+    this.id = Number(this.route.snapshot.paramMap.get('id'));
+
+    // Setup the form.
+    this.form = this.fb.group({
+      id: [''],
+      tags: [[]],
+      state: ['', [Validators.required, Validators.maxLength(32)]],
+      hardwareId: ['', [Validators.required, Validators.maxLength(512)]]
+    });
+
+    // Get available tags.
+    this.tagService.getAll().subscribe(onNext => {
+      this.availableTags = onNext.content;
+    });
   }
 
   private updateFields() {
@@ -161,7 +163,11 @@ export class DeviceComponent extends BaseComponent implements OnInit {
   }
 
   getLastUpdatedDate(date: Date): string {
-    return date.toLocaleDateString();
+    if (!(date instanceof Date)) {
+      date = new Date(date);
+    }
+
+    return new Date(date).toLocaleString();
   }
 
   downloadKeys() {
