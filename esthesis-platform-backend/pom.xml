@@ -38,6 +38,9 @@
   <!--  </pluginRepositories>-->
 
   <properties>
+    <spring.boot.version>2.4.1</spring.boot.version>
+    <qlack.version>3.5.0</qlack.version>
+
     <awaitility.version>4.0.3</awaitility.version>
     <classgraph.version>4.8.22</classgraph.version>
     <commons-codec.version>1.12</commons-codec.version>
@@ -63,12 +66,11 @@
     <mysql-connector-java.version>8.0.13</mysql-connector-java.version>
     <org.eclipse.paho.client.mqttv3.version>1.2.2</org.eclipse.paho.client.mqttv3.version>
     <oshi-core.version>3.13.3</oshi-core.version>
-    <qlack.version>3.4.7-SNAPSHOT</qlack.version>
     <querydsl.version>4.3.1</querydsl.version>
     <slugify.version>2.2</slugify.version>
     <snakeyaml.version>1.24</snakeyaml.version>
     <spring-content-fs-boot-starter.version>1.1.0.M4</spring-content-fs-boot-starter.version>
-    <spring.boot.version>2.4.1</spring.boot.version>
+
     <github-release-plugin.version>1.4.0</github-release-plugin.version>
   </properties>
 
