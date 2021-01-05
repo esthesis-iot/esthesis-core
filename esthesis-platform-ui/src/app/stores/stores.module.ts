@@ -20,6 +20,7 @@ import {QFormsModule} from '@qlack/forms';
 import {DisplayModule} from '../shared/component/display/display.module';
 import {MatListModule} from '@angular/material/list';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatSelectModule} from '@angular/material/select';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     QFormsModule,
     DisplayModule,
     MatListModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatSelectModule
   ],
   providers: [
     {

@@ -40,4 +40,6 @@ public class CaDTO extends BaseDTO {
   // The parent CA CN.
   private String parentCa;
 
+  private int type;
+
 }

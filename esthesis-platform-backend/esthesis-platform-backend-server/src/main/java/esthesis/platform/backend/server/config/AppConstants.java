@@ -104,6 +104,13 @@ public class AppConstants {
       public static final int PUBLIC_KEY = 1;
       public static final int CERTIFICATE = 2;
     }
+
+    public static class Type {
+      private Type() {}
+
+      public static final int CA = 0;
+      public static final int CERTIFICATE = 1;
+    }
   }
 
   public static class Jwt {

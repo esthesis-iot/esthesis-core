@@ -19,9 +19,7 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field *ngIf="form.controls['id'].value">
-        <select matNativeControl placeholder="Signed by" disabled="true">
-          <option value="volvo">{{ form.controls['issuer'].value }}</option>
-        </select>
+        <input matInput placeholder="Signed by" formControlName="issuer">
       </mat-form-field>
     </form>
   </mat-card-content>

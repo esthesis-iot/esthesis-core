@@ -10,12 +10,14 @@ import com.eurodyn.qlack.fuse.crypto.service.CryptoCAService;
 import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import esthesis.platform.backend.server.config.AppConstants.Cryptography.Type;
 import esthesis.platform.backend.server.config.AppProperties;
 import esthesis.platform.backend.server.dto.CaDTO;
 import esthesis.platform.backend.server.mapper.CaMapper;
 import esthesis.platform.backend.server.model.Ca;
 import esthesis.platform.backend.server.repository.CARepository;
 import javax.crypto.NoSuchPaddingException;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.stereotype.Service;
@@ -33,10 +35,12 @@ import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 @Service
 @Validated
 @Transactional
+@RequiredArgsConstructor
 public class CAService extends BaseService<CaDTO, Ca> {
 
   private final CryptoCAService cryptoCAService;
@@ -45,18 +49,6 @@ public class CAService extends BaseService<CaDTO, Ca> {
   private final ObjectMapper objectMapper;
   private final CaMapper caMapper;
   private final CARepository caRepository;
-
-  public CAService(CryptoCAService cryptoCAService,
-    SecurityService securityService, AppProperties appProperties,
-    ObjectMapper objectMapper, CaMapper caMapper,
-    CARepository caRepository) {
-    this.cryptoCAService = cryptoCAService;
-    this.securityService = securityService;
-    this.appProperties = appProperties;
-    this.objectMapper = objectMapper;
-    this.caMapper = caMapper;
-    this.caRepository = caRepository;
-  }
 
   public Ca findEntityByCN(String caCN) {
     return caRepository.findByCn(caCN);
@@ -113,6 +105,7 @@ public class CAService extends BaseService<CaDTO, Ca> {
     final CaDTO caDTO = caMapper.map(ReturnOptional.r(caRepository.findById(id)));
     caDTO.setPrivateKey(new String(securityService.decrypt(caDTO.getPrivateKey()),
       StandardCharsets.UTF_8));
+    caDTO.setType(Type.CA);
 
     return objectMapper.writeValueAsString(caDTO);
   }
@@ -125,6 +118,11 @@ public class CAService extends BaseService<CaDTO, Ca> {
     ObjectMapper localObjectMapper = objectMapper.copy();
     localObjectMapper.configure(MapperFeature.USE_ANNOTATIONS, false);
     final CaDTO caDTO = localObjectMapper.readValue(backup, CaDTO.class);
+
+    if (!Objects.equals(caDTO.getType(),Type.CA)) {
+      throw new QCouldNotSaveException("Backup is not a CA.");
+    }
+
     caDTO.setPrivateKey(securityService.encrypt(caDTO.getPrivateKey()));
 
     caRepository.save(caMapper.map(caDTO));

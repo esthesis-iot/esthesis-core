@@ -7,16 +7,22 @@ import com.eurodyn.qlack.fuse.crypto.dto.CertificateSignDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoAsymmetricService;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoCAService;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.slugify.Slugify;
 import esthesis.platform.backend.common.util.Base64E;
 import esthesis.platform.backend.server.config.AppConstants.Cryptography.KeyType;
+import esthesis.platform.backend.server.config.AppConstants.Cryptography.Type;
 import esthesis.platform.backend.server.config.AppProperties;
 import esthesis.platform.backend.server.config.AppSettings.Setting.Security;
 import esthesis.platform.backend.server.dto.CertificateDTO;
 import esthesis.platform.backend.server.dto.DownloadReply;
+import esthesis.platform.backend.server.mapper.CertificateMapper;
 import esthesis.platform.backend.server.model.Ca;
 import esthesis.platform.backend.server.model.Certificate;
+import esthesis.platform.backend.server.repository.CertificateRepository;
 import javax.crypto.NoSuchPaddingException;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -34,10 +40,12 @@ import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
 import java.util.Locale;
+import java.util.Objects;
 
 @Service
 @Validated
 @Transactional
+@RequiredArgsConstructor
 public class CertificatesService extends BaseService<CertificateDTO, Certificate> {
 
   private final CAService caService;
@@ -46,19 +54,9 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
   private final SettingResolverService settingResolverService;
   private final CryptoAsymmetricService cryptoAsymmetricService;
   private final CryptoCAService cryptoCAService;
-
-  public CertificatesService(CAService caService,
-    AppProperties appProperties, SecurityService securityService,
-    SettingResolverService settingResolverService,
-    CryptoAsymmetricService cryptoAsymmetricService,
-    CryptoCAService cryptoCAService) {
-    this.caService = caService;
-    this.appProperties = appProperties;
-    this.securityService = securityService;
-    this.settingResolverService = settingResolverService;
-    this.cryptoAsymmetricService = cryptoAsymmetricService;
-    this.cryptoCAService = cryptoCAService;
-  }
+  private final ObjectMapper objectMapper;
+  private final CertificateMapper certificateMapper;
+  private final CertificateRepository certificateRepository;
 
   @Override
   public CertificateDTO save(CertificateDTO certificateDTO) {
@@ -138,8 +136,8 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
   }
 
   public DownloadReply download(long certificateId, int keyType, boolean base64)
-  throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-         InvalidAlgorithmParameterException, IOException {
+    throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
+    InvalidAlgorithmParameterException, IOException {
     final Certificate certificate = findEntityById(certificateId);
 
     DownloadReply keyDownloadReply = new DownloadReply();
@@ -194,10 +192,39 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
    * @return Returns a decrypted packageVersion of the private key.
    */
   public String getPSPrivateKey()
-  throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-         InvalidAlgorithmParameterException, IOException {
+    throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
+    InvalidAlgorithmParameterException, IOException {
     return new String(securityService.decrypt(
       findEntityById(settingResolverService.getAsLong(Security.PLATFORM_CERTIFICATE))
         .getPrivateKey()), StandardCharsets.UTF_8);
+  }
+
+  public void restore(String backup)
+    throws IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
+    InvalidAlgorithmParameterException {
+    // Create a local copy of the system's ObjectMapper in order to overwrite Access.READ_ONLY attributes of the
+    // underlying object.
+    ObjectMapper localObjectMapper = objectMapper.copy();
+    localObjectMapper.configure(MapperFeature.USE_ANNOTATIONS, false);
+    final CertificateDTO certificateDTO = localObjectMapper.readValue(backup, CertificateDTO.class);
+
+    if (!Objects.equals(certificateDTO.getType(),Type.CERTIFICATE)) {
+      throw new QCouldNotSaveException("Backup is not a certificate.");
+    }
+
+    certificateDTO.setPrivateKey(securityService.encrypt(certificateDTO.getPrivateKey()));
+
+    certificateRepository.save(certificateMapper.map(certificateDTO));
+  }
+
+  public String backup(long id)
+    throws IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
+    InvalidAlgorithmParameterException {
+    final CertificateDTO certificateDTO = findById(id);
+    certificateDTO.setPrivateKey(new String(securityService.decrypt(certificateDTO.getPrivateKey()),
+      StandardCharsets.UTF_8));
+    certificateDTO.setType(Type.CERTIFICATE);
+
+    return objectMapper.writeValueAsString(certificateDTO);
   }
 }

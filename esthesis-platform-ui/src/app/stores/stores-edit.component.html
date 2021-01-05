@@ -12,41 +12,49 @@
         <mat-checkbox formControlName="passwordForKeys">Keys have the same password</mat-checkbox>
       </div>
       <div class="inline-header xs-pt1">Add certificates from:</div>
-      <div fxLayout="row" fxLayoutGap="2rem">
-        <div fxFlex class="xs-pt1">
+      <div fxLayout="row" fxLayoutGap="2rem" class="xs-pt1">
+        <div fxFlex="row">
           <div class="inline-subheader">Certificates</div>
-          <mat-selection-list formControlName="certCertificates">
-            <mat-list-option *ngFor="let cert of certs" [value]="cert.id" color="primary">
-              {{cert.cn}}
-            </mat-list-option>
-          </mat-selection-list>
+          <mat-form-field fxFill>
+            <mat-select formControlName="certCertificates" multiple>
+              <mat-option *ngFor="let cert of certs" [value]="cert.id" color="primary">
+                {{cert.cn}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
-        <div fxFlex>
+        <div fxFlex="row">
           <div class="inline-subheader">Certificate Authorities</div>
-          <mat-selection-list formControlName="certCas">
-            <mat-list-option class="" *ngFor="let ca of cas" [value]="ca.id" color="primary">
-              {{ca.cn}}
-            </mat-list-option>
-          </mat-selection-list>
+          <mat-form-field fxFill>
+            <mat-select formControlName="certCas" multiple>
+              <mat-option class="" *ngFor="let ca of cas" [value]="ca.id" color="primary">
+                {{ca.cn}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
       </div>
       <div class="inline-header xs-pt1">Add private keys from:</div>
-      <div fxLayout="row" fxLayoutGap="2rem">
-        <div fxFlex class="xs-pt1">
+      <div fxLayout="row" fxLayoutGap="2rem" class="xs-pt1">
+        <div fxFlex="row">
           <div class="inline-subheader">Certificates</div>
-          <mat-selection-list formControlName="pkCertificates">
-            <mat-list-option *ngFor="let cert of certs" [value]="cert.id" color="primary">
-              {{cert.cn}}
-            </mat-list-option>
-          </mat-selection-list>
+          <mat-form-field fxFill>
+            <mat-select formControlName="pkCertificates" multiple>
+              <mat-option *ngFor="let cert of certs" [value]="cert.id" color="primary">
+                {{cert.cn}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
-        <div fxFlex>
+        <div fxFlex="row">
           <div class="inline-subheader">Certificate Authorities</div>
-          <mat-selection-list formControlName="pkCas">
-            <mat-list-option class="" *ngFor="let ca of cas" [value]="ca.id" color="primary">
-              {{ca.cn}}
-            </mat-list-option>
-          </mat-selection-list>
+          <mat-form-field fxFill>
+            <mat-select formControlName="pkCas" multiple>
+              <mat-option class="" *ngFor="let ca of cas" [value]="ca.id" color="primary">
+                {{ca.cn}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
       </div>
     </form>

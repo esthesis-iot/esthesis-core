@@ -2,9 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {CaDto} from '../dto/ca-dto';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {QFormsService} from '@qlack/forms';
-import { MatDialog } from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpResponse} from '@angular/common/http';
 import {CasService} from './cas.service';
 import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
@@ -21,7 +21,7 @@ export class CasImportComponent extends BaseComponent implements OnInit {
   constructor(private fb: FormBuilder, private casService: CasService,
               private qForms: QFormsService,
               private route: ActivatedRoute, private router: Router,
-              private dialog: MatDialog, private http: HttpClient,
+              private dialog: MatDialog,
               private utilityService: UtilityService) {
     super();
   }
@@ -33,7 +33,7 @@ export class CasImportComponent extends BaseComponent implements OnInit {
     });
   }
 
-  selectFile(event:any) {
+  selectFile(event: any) {
     this.form.controls['backup'].patchValue(event.target.files[0]);
   }
 
@@ -47,6 +47,8 @@ export class CasImportComponent extends BaseComponent implements OnInit {
           this.utilityService.popupError('Something went wrong, please try again.');
         }
       }
+    }, error => {
+      this.utilityService.popupError(error.error);
     });
   }
 }

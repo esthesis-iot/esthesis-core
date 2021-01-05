@@ -31,16 +31,16 @@ export class CertificatesService extends CrudService<CertificateDto> {
   }
 
   backup(caId: number) {
-    // this.localHttp.get(`${AppConstants.API_ROOT}/cas/${caId}/backup`, {
-    //   responseType: 'blob', observe: 'response'
-    // }).subscribe(onNext => {
-    //   this.httpUtil.saveAs(onNext);
-    // });
+    this.http.get(`${AppConstants.API_ROOT}/certificates/${caId}/backup`, {
+      responseType: 'blob', observe: 'response'
+    }).subscribe(onNext => {
+      this.saveAs(onNext);
+    });
   }
 
   restore(form: FormGroup) {
-    // return this.qForms.uploadForm(this.localHttp, form, `${AppConstants.API_ROOT}/cas/restore`,
-    // false);
+    return this.upload(form, `${AppConstants.API_ROOT}/certificates/restore`,
+    false);
   }
 
 

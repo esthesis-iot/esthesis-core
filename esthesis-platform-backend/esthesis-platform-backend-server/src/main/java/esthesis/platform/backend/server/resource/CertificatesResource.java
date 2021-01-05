@@ -5,6 +5,7 @@ import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyFilter;
 import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
+import com.github.slugify.Slugify;
 import com.querydsl.core.types.Predicate;
 import esthesis.platform.backend.server.dto.CertificateDTO;
 import esthesis.platform.backend.server.dto.DownloadReply;
@@ -12,6 +13,8 @@ import esthesis.platform.backend.server.model.Certificate;
 import esthesis.platform.backend.server.service.CertificatesService;
 import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import org.apache.commons.io.IOUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -25,9 +28,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -65,8 +71,8 @@ public class CertificatesResource {
     logMessage = "Could not download certificate.")
   public ResponseEntity download(@PathVariable long id, @PathVariable int keyType,
     @PathVariable Optional<Boolean> base64)
-  throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-         InvalidKeyException, IOException {
+    throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
+    InvalidKeyException, IOException {
     DownloadReply keyDownloadReply = certificatesService
       .download(id, keyType, base64.isPresent() && base64.get().booleanValue());
     return ResponseEntity
@@ -88,6 +94,32 @@ public class CertificatesResource {
   @ReplyFilter("-privateKey,-publicKey,-certificate,-createdBy,-createdOn")
   public CertificateDTO save(@Valid @RequestBody CertificateDTO object) {
     return certificatesService.save(object);
+  }
+
+  @PostMapping(value = "/restore")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not restore "
+    + "certificate.")
+  public ResponseEntity restore(@NotNull @RequestParam("backup") MultipartFile backup)
+    throws IOException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+    NoSuchAlgorithmException, InvalidKeyException {
+    certificatesService.restore(IOUtils.toString(backup.getInputStream(), StandardCharsets.UTF_8));
+
+    return ResponseEntity.ok().build();
+  }
+
+  @GetMapping(value = "{id}/backup")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not create backup for "
+    + "certificate.")
+  public ResponseEntity backup(@PathVariable long id)
+    throws IOException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+    NoSuchAlgorithmException, InvalidKeyException {
+    final CertificateDTO certificateDTO = certificatesService.findById(id);
+    return ResponseEntity
+      .ok()
+      .header(HttpHeaders.CONTENT_DISPOSITION,
+        "attachment; filename=" + new Slugify().slugify(certificateDTO.getCn()) + ".backup")
+      .contentType(MediaType.APPLICATION_OCTET_STREAM)
+      .body(certificatesService.backup(id));
   }
 
 }

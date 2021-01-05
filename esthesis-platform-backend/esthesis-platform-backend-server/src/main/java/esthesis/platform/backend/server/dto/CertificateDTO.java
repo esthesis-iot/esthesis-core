@@ -39,4 +39,6 @@ public class CertificateDTO extends BaseDTO {
 
   private String issuer;
 
+  private int type;
+
 }
