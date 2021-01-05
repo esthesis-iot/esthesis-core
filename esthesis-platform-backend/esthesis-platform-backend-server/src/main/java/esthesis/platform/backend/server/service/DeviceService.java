@@ -481,6 +481,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     String dataType = splitField[0];
     String measurement = splitField[1];
     String fieldName = splitField[2];
+    devicePageDTO.setField(fieldName).setMeasurement(measurement);
 
     // Find the hardware Id of the device.
     String hardwareId = findById(deviceId).getHardwareId();
@@ -490,18 +491,19 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
       .executeMetadataOrTelemetry(dataType.toLowerCase(), hardwareId,
         DTOperations.OPERATION_QUERY.toLowerCase(), measurement, fieldName,
         null, null, 1, 1);
-    try {
-      @SuppressWarnings("unchecked")
-      Map<String, List<Map<String, Object>>> jsonFields = mapper.readValue(fieldValue, HashMap.class);
-      devicePageDTO.setValue(jsonFields.get(measurement).get(0).get(fieldName).toString());
-      devicePageDTO.setLastUpdatedOn(Instant.ofEpochMilli(
-        (long)jsonFields.get(measurement).get(0).get("timestamp")));
-    } catch (JsonProcessingException e) {
-      throw new QMismatchException("Could not process field value.", e);
+    if (StringUtils.isNotBlank(fieldValue) && !fieldValue.trim().equals("{}")) {
+      try {
+        @SuppressWarnings("unchecked")
+        Map<String, List<Map<String, Object>>> jsonFields = mapper
+          .readValue(fieldValue, HashMap.class);
+        devicePageDTO.setValue(jsonFields.get(measurement).get(0).get(fieldName).toString());
+        devicePageDTO.setLastUpdatedOn(Instant.ofEpochMilli(
+          (long) jsonFields.get(measurement).get(0).get("timestamp")));
+      } catch (JsonProcessingException e) {
+        throw new QMismatchException("Could not process field value.", e);
+      }
     }
 
-    return devicePageDTO
-      .setField(fieldName)
-      .setMeasurement(measurement);
+    return devicePageDTO;
   }
 }

@@ -29,11 +29,10 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
   id!: number;
   fields!: FieldDto[];
   fieldsValues!: Map<string, any>;
-  lonSetting: string | undefined;
-  latSetting: string | undefined;
   fetchingDeviceData = true;
   @ViewChild(LeafletDirective)
   leaflet!: LeafletDirective;
+  deviceHasGeolocation = false;
 
   mapOptions = {
     layers: [
@@ -55,37 +54,39 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
   ngAfterViewInit(): void {
     // If viewing an existing device, fetch data for it.
     if (this.id && this.id !== 0) {
-      this.devicesService.get(this.id).subscribe(onNext => {
-        this.form.patchValue(onNext);
-      });
+      let latSetting: string;
+      let lonSetting: string;
       this.settingsService.findByNames(
         AppSettings.SETTING.GEOLOCATION.LATITUDE,
         AppSettings.SETTING.GEOLOCATION.LONGITUDE,
       ).subscribe(onNext => {
         onNext.forEach(settingDTO => {
           if (settingDTO.key === AppSettings.SETTING.GEOLOCATION.LATITUDE) {
-            this.latSetting = settingDTO.val;
+            latSetting = settingDTO.val;
           }
           if (settingDTO.key === AppSettings.SETTING.GEOLOCATION.LONGITUDE) {
-            this.lonSetting = settingDTO.val;
+            lonSetting = settingDTO.val;
           }
         });
-        this.updateFields();
-        this.devicesService.getDeviceDataField(this.id!,
-          [this.latSetting!, this.lonSetting!]).subscribe(onNext => {
-          this.leaflet.map.addLayer(
-            // @ts-ignore
-            marker([onNext[0].value, onNext[1].value], {
-              icon: icon({
-                iconSize: [25, 41],
-                iconAnchor: [13, 41],
-                iconUrl: 'leaflet/marker-icon.png',
-                shadowUrl: 'leaflet/marker-shadow.png'
-              })
-            })
-          )
+        this.devicesService.getDeviceDataField(this.id, [latSetting, lonSetting]).subscribe(
+          onNext => {
           // @ts-ignore
-          this.leaflet.map.panTo(latLng([onNext[0].value, onNext[1].value]));
+            if (onNext[0].value != undefined && onNext[1].value != undefined) {
+              this.deviceHasGeolocation = true;
+              this.leaflet.map.addLayer(
+                // @ts-ignore
+                marker([onNext[0].value, onNext[1].value], {
+                  icon: icon({
+                    iconSize: [25, 41],
+                    iconAnchor: [13, 41],
+                    iconUrl: 'leaflet/marker-icon.png',
+                    shadowUrl: 'leaflet/marker-shadow.png'
+                  })
+                })
+              );
+              // @ts-ignore
+              this.leaflet.map.panTo(latLng([onNext[0].value, onNext[1].value]));
+            }
         })
       });
     }
@@ -107,9 +108,17 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
     this.tagService.getAll().subscribe(onNext => {
       this.availableTags = onNext.content;
     });
+
+    if (this.id && this.id !== 0) {
+      this.devicesService.get(this.id).subscribe(onNext => {
+        this.form.patchValue(onNext);
+      });
+    }
+
+    this.updateTelemetryMetadata();
   }
 
-  private updateFields() {
+  private updateTelemetryMetadata() {
     this.fieldsValues = new Map<string, any>();
     this.devicesService.getDevicePageData(this.id!).subscribe(fieldsValues => {
       this.fields = fieldsValues;

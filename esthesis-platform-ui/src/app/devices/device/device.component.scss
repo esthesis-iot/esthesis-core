@@ -8,6 +8,14 @@
 }
 
 .map-container {
-  width:300px;
+  width: 20rem;
+  border-radius: 5px;
+  box-shadow: #dddddd 2px 2px;
 }
 
+.map-wrapper {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+
+}

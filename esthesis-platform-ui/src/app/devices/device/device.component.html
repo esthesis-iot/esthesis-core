@@ -1,8 +1,8 @@
 <mat-card>
   <mat-card-title>Device {{id}}</mat-card-title>
   <mat-card-content>
-    <form novalidate [formGroup]="form">
-      <mat-form-field>
+    <form novalidate [formGroup]="form" fxLayout="column">
+      <mat-form-field style="max-width: 15rem">
         <mat-select formControlName="state" placeholder="Status">
           <mat-option *ngFor="let o of constants.DEVICE.STATE | keyvalue" [value]="o.value">
             {{ lookupByValue(constants.DEVICE.STATE, o.value) }}
@@ -18,19 +18,15 @@
                    class="value">{{fieldsValues.get(field.measurement + "." + field.field)}}</div>
             </div>
           </div>
-          <div fxLayout="row" fxFlex="20%" *ngIf="lonSetting && latSetting">
-            <div fxLayout="column">
-              <div #map class="map-container" leaflet fxFlex="150px"
-                   [leafletOptions]="mapOptions">
-              </div>
-            </div>
+          <div class="map-wrapper" [style.visibility]="deviceHasGeolocation? 'visible': 'hidden'" fxLayout="column">
+            <div class="map-container" leaflet fxFlex="10rem" [leafletOptions]="mapOptions"></div>
           </div>
         </div>
         <div fxLayout="row" *ngIf="fetchingDeviceData">
           <mat-spinner [diameter]="15" [strokeWidth]="1"></mat-spinner>
         </div>
 
-        <mat-form-field class="xs-mt1">
+        <mat-form-field class="xs-mt1" style="max-width: 15rem">
           <mat-select placeholder="Tags" multiple formControlName="tags">
             <mat-option *ngFor="let tag of availableTags" [value]="tag.id">{{tag.name}}</mat-option>
           </mat-select>
