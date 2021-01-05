@@ -52,7 +52,6 @@
     <docker-client.version>8.15.1</docker-client.version>
     <git-commit-id-plugin.version>3.0.1</git-commit-id-plugin.version>
     <hibernate-enhance-maven-plugin.version>5.3.7.Final</hibernate-enhance-maven-plugin.version> <!-- Keep this inline to Spring's packageVersion -->
-    <influxdb-java.version>2.15</influxdb-java.version>
     <jjwt.version>0.9.0</jjwt.version>
     <jna-platform.version>5.3.1</jna-platform.version>
     <jna.version>5.3.1</jna.version>
@@ -69,7 +68,7 @@
     <querydsl.version>4.3.1</querydsl.version>
     <slugify.version>2.2</slugify.version>
     <snakeyaml.version>1.24</snakeyaml.version>
-    <spring-content-fs-boot-starter.version>1.1.0.M4</spring-content-fs-boot-starter.version>
+    <spring-content-fs-boot-starter.version>1.2.0</spring-content-fs-boot-starter.version>
 
     <github-release-plugin.version>1.4.0</github-release-plugin.version>
   </properties>
@@ -83,12 +82,6 @@
         <version>${spring.boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <!-- This shouldn't be necessary, however 2.14 seems to be pulled instead of 2.15 -->
-      <dependency>
-        <groupId>org.influxdb</groupId>
-        <artifactId>influxdb-java</artifactId>
-        <version>${influxdb-java.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

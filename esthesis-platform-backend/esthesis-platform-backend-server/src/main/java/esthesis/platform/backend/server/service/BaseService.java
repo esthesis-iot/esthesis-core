@@ -4,6 +4,7 @@ import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import com.querydsl.core.types.Predicate;
 import esthesis.platform.backend.common.dto.BaseDTO;
 import esthesis.platform.backend.server.mapper.BaseMapper;
+import esthesis.platform.backend.server.model.BaseContentEntity;
 import esthesis.platform.backend.server.model.BaseEntity;
 import esthesis.platform.backend.server.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +89,10 @@ abstract class BaseService<D extends BaseDTO, E extends BaseEntity> {
     final E entity = findEntityById(id);
     final D dto = mapper.map(entity);
 
+    // Check and remove any file associated with this entity.
+    if (entity instanceof BaseContentEntity) {
+      contentStore.unsetContent(entity);
+    }
     repository.deleteById(id);
 
     return dto;

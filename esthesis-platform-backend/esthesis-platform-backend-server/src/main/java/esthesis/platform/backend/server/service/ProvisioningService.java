@@ -12,6 +12,7 @@ import esthesis.platform.backend.server.model.Provisioning;
 import esthesis.platform.backend.server.repository.ProvisioningContentStore;
 import esthesis.platform.backend.server.repository.ProvisioningRepository;
 import javax.crypto.NoSuchPaddingException;
+import lombok.extern.java.Log;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -35,15 +38,12 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
+@Log
 @Service
 @Validated
 @Transactional
 public class ProvisioningService extends BaseService<ProvisioningDTO, Provisioning> {
-
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(ProvisioningService.class.getName());
 
   private final ProvisioningMapper provisioningMapper;
   private final ProvisioningRepository provisioningRepository;
@@ -91,7 +91,7 @@ public class ProvisioningService extends BaseService<ProvisioningDTO, Provisioni
       new File(plaintextFilePath + ".encrypted"),
       Base64E.encode(securityService.decrypt(srs.get(Setting.Provisioning.AES_KEY))));
 
-    LOGGER.log(Level.FINE, "Provisioning content ID {0} was encrypted to file {1}.",
+    log.log(Level.FINE, "Provisioning content ID {0} was encrypted to file {1}.",
       new Object[]{provisioning.getContentId(), encryptedFile});
     provisioning.setEncrypted(true);
 
@@ -106,7 +106,7 @@ public class ProvisioningService extends BaseService<ProvisioningDTO, Provisioni
       .setSha256(cryptoDigestService.sha256(provisioningContentStore.getContent(provisioning)));
 
     provisioningRepository.save(provisioning);
-    LOGGER.log(Level.FINE, "Encryption and signing took {0} msec.", stopWatch.getTime());
+    log.log(Level.FINE, "Encryption and signing took {0} msec.", stopWatch.getTime());
   }
 
   public InputStream download(long provisioningId, boolean fetchEncryptedVersion)
@@ -143,5 +143,19 @@ public class ProvisioningService extends BaseService<ProvisioningDTO, Provisioni
     }
 
     return provisioningDTO;
+  }
+
+  @Override
+  public ProvisioningDTO deleteById(long id) {
+    String contentId = findEntityById(id).getContentId();
+    final Path encryptedFile = Paths
+      .get(appProperties.getFsProvisioningRoot(), contentId + ".encrypted");
+    try {
+      Files.deleteIfExists(encryptedFile);
+    } catch (IOException e) {
+      log.log(Level.SEVERE, "Could not delete encrypted provisioning file: {0}.",
+        encryptedFile.toAbsolutePath().toString());
+    }
+    return super.deleteById(id);
   }
 }
