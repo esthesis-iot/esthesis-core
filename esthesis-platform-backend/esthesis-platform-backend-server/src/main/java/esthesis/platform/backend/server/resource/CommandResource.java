@@ -36,9 +36,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 @Log
@@ -92,7 +92,7 @@ public class CommandResource {
       if (reply != null) {
         deviceReplied = true;
       } else {
-        Thread.sleep(1000);
+        Thread.sleep(500);
       }
     }
 
@@ -106,19 +106,34 @@ public class CommandResource {
     }
   }
 
+  /**
+   *
+   * @param commandExecuteOrderDTO
+   * @return Returns a map having as key the hardware Id of the device on which the command was
+   *    * executed and as value the command Id (so that the reply for that command can be queried later
+   *    * on if needed).
+   */
   @PostMapping(path = "execute-sync")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not execute command.")
-  public List<String> executeCommandSync(
+  public Map<String, String> executeCommandSync(
     @Valid @RequestBody CommandExecuteOrderDTO commandExecuteOrderDTO) {
     return executeCommand(commandExecuteOrderDTO);
   }
 
+  /**
+   *
+   * @param commandExecuteOrderDTO
+   * @return Returns a map having as key the hardware Id of the device on which the command was
+   * executed and as value the command Id (so that the reply for that command can be queried later
+   * on if needed).
+   *
+   */
   @Async
   @PostMapping(path = "execute")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not execute command.")
-  public List<String> executeCommand(
+  public Map<String, String> executeCommand(
     @Valid @RequestBody CommandExecuteOrderDTO commandExecuteOrderDTO) {
-    List<String> requestIds = new ArrayList<>();
+    Map<String, String> commands = new HashMap<>();
 
     // Collect all devices that should receive the command.
     Stream.concat(
@@ -127,15 +142,17 @@ public class CommandResource {
           .asList(StringUtils.defaultIfEmpty(commandExecuteOrderDTO.getTags(), "").split(",")))
         .stream()
         .map(DeviceDTO::getHardwareId),
-      deviceService
+      deviceService // Check if the given hardware Ids correspond to registered devices.
         .findByHardwareIds(Arrays.asList(
           StringUtils.defaultIfEmpty(commandExecuteOrderDTO.getHardwareIds(), "").split(",")))
         .stream()
         .map(DeviceDTO::getHardwareId)
-    ).forEach(hardwareId -> requestIds
-      .add(dtService.executeCommand(hardwareId, commandExecuteOrderDTO.getCommand(),
-        commandExecuteOrderDTO.getDescription(), commandExecuteOrderDTO.getArguments())));
+    ).forEach(hardwareId ->
+      commands.put(hardwareId,
+        dtService.executeCommand(hardwareId, commandExecuteOrderDTO.getCommand(),
+          commandExecuteOrderDTO.getDescription(), commandExecuteOrderDTO.getArguments()))
+    );
 
-    return requestIds;
+    return commands;
   }
 }

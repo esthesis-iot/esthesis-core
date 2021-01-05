@@ -1,5 +1,5 @@
 <mat-card>
-  <mat-card-title>Device {{id}}</mat-card-title>
+  <mat-card-title>Device <span class="hardware-id">{{hardwareId}}</span></mat-card-title>
   <mat-card-content>
     <form novalidate [formGroup]="form" fxLayout="column">
       <mat-form-field style="max-width: 15rem">
@@ -61,7 +61,7 @@
               Pseudo-terminal
             </ng-template>
             <ng-template matTabContent>
-              <app-device-terminal [deviceId]="id"></app-device-terminal>
+              <app-device-terminal [hardwareId]="hardwareId"></app-device-terminal>
             </ng-template>
           </mat-tab>
         </mat-tab-group>

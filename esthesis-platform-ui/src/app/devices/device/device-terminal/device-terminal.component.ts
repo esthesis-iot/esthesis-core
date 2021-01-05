@@ -8,9 +8,8 @@ import {CommandExecuteOrderDto} from '../../../dto/command-execute-order-dto';
   templateUrl: './device-terminal.component.html',
   styleUrls: []
 })
-export class DeviceTerminalComponent implements OnInit, AfterViewInit {
-  @Input() deviceId!: number;
-  private hardwareId!: string;
+export class DeviceTerminalComponent implements AfterViewInit {
+  @Input() hardwareId!: string;
   @ViewChild('term', {static: true}) terminal!: NgTerminal;
   private command = '';
   private blockInput = false;
@@ -18,33 +17,28 @@ export class DeviceTerminalComponent implements OnInit, AfterViewInit {
   constructor(private deviceTerminalService: DeviceTerminalService) {
   }
 
-  ngOnInit(): void {
-    this.deviceTerminalService.getHardwareId(this.deviceId).subscribe(
-      onNext => {
-        // @ts-ignore
-        this.hardwareId = onNext.content[0].hardwareId;
-      }
-    );
-  }
 
   private termColorRed(message: string) {
     return "\u001b[31m" + message + "\u001b[39m";
   }
 
   private getReply(requestId: number) {
-    this.deviceTerminalService.getReply(requestId).subscribe(onNext => {
-      let output = '';
-      if (onNext && onNext.payload) {
-        output = onNext.payload.replace(/\n/g, '\n\r');
-        this.terminal.write(output);
+    this.deviceTerminalService.getReply(requestId).subscribe(
+      onNext => {
+        let output = '';
+        if (onNext && onNext.payload) {
+          output = onNext.payload.replace(/\n/g, '\n\r');
+          this.terminal.write(output);
+        }
+        this.blockInput = false;
+        this.terminal.write('$ ');
+      },
+      onError => {
+        this.terminal.write(this.termColorRed("ERROR: Timeout waiting for device to reply.\n"));
+        this.terminal.write("\r$ ");
+        this.blockInput = false;
       }
-      this.blockInput = false;
-      this.terminal.write('$ ');
-    }, onError => {
-      this.terminal.write(this.termColorRed("ERROR: Timeout waiting for device to reply.\n"));
-      this.terminal.write("\r$ ");
-      this.blockInput = false;
-    });
+    );
   }
 
   private executeCommand() {
@@ -57,15 +51,17 @@ export class DeviceTerminalComponent implements OnInit, AfterViewInit {
         tags: ''
       };
       this.blockInput = true;
-      // this.terminal.underlying.buffer.active.cursorX = 0;
-      this.deviceTerminalService.executeCommand(cmd).subscribe(onNext => {
-        this.command = '';
-        this.getReply(onNext);
-      }, onError => {
-        this.terminal.write(this.termColorRed("ERROR: Could not dispatch command to device.\n"));
-        this.terminal.write("\r$ ");
-        this.blockInput = false;
-      });
+      this.command = '';
+      this.deviceTerminalService.executeCommand(cmd).subscribe(
+        onNext => {
+          this.getReply(Object.values(onNext)[0]);
+        },
+        onError => {
+          this.terminal.write(this.termColorRed("ERROR: Could not dispatch command to device.\n"));
+          this.terminal.write("\r$ ");
+          this.blockInput = false;
+        }
+      );
     } else {
       this.terminal.write('$ ');
     }

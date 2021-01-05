@@ -17,6 +17,7 @@ import {AppSettings} from '../../app.settings';
 import {LeafletDirective} from '@asymmetrik/ngx-leaflet';
 import {QFormsService} from '@qlack/forms';
 import {CaDto} from '../../dto/ca-dto';
+import {DeviceDto} from '../../dto/device-dto';
 
 @Component({
   selector: 'app-device',
@@ -33,6 +34,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
   @ViewChild(LeafletDirective)
   leaflet!: LeafletDirective;
   deviceHasGeolocation = false;
+  hardwareId = "";
 
   mapOptions = {
     layers: [
@@ -112,6 +114,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
     if (this.id && this.id !== 0) {
       this.devicesService.get(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
+        this.hardwareId = onNext.hardwareId;
       });
     }
 
@@ -143,7 +146,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
   }
 
   save() {
-    this.devicesService.save(this.qForms.cleanupData(this.form.getRawValue()) as CaDto).subscribe(
+    this.devicesService.save(this.qForms.cleanupData(this.form.getRawValue()) as DeviceDto).subscribe(
       onNext => {
         this.utilityService.popupSuccess('Device successfully saved.');
         this.router.navigate(['devices']);

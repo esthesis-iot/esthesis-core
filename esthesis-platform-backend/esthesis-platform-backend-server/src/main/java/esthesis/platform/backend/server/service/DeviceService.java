@@ -378,16 +378,12 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   }
 
   public List<DeviceDTO> findByHardwareIds(List<String> hardwareIds) {
-    if (hardwareIds.isEmpty()) {
-      return new ArrayList<>();
-    } else {
-      List<DeviceDTO> devices = new ArrayList<>();
-      for (String id : hardwareIds) {
-        id = id.trim();
-        devices.addAll(deviceMapper.map(deviceRepository.findByHardwareIdContains(id)));
-      }
-      return devices;
-    }
+    return hardwareIds.stream()
+      .map(deviceRepository::findByHardwareId)
+      .filter(Optional::isPresent)
+      .map(Optional::get)
+      .map(deviceMapper::map)
+      .collect(Collectors.toList());
   }
 
   public int countByTags(List<String> tags) {

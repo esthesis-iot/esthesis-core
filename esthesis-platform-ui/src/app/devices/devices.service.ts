@@ -12,7 +12,7 @@ import {FieldDto} from '../dto/field-dto';
 @Injectable({
   providedIn: 'root'
 })
-export class DevicesService extends CrudService<CaDto> {
+export class DevicesService extends CrudService<DeviceDto> {
 
   constructor(http: HttpClient) {
     super(http, 'devices');
