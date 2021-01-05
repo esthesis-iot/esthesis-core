@@ -1,5 +1,10 @@
 <mat-card>
-  <mat-card-title>Provisioning</mat-card-title>
+  <mat-card-title>
+    Provisioning
+    <button mat-mini-fab (click)="refreshCurrentData()" class="refresh-button">
+      <mat-icon inline="true">refresh</mat-icon>
+    </button>
+  </mat-card-title>
   <mat-card-content>
     <div fxLayout="column">
       <table mat-table [dataSource]="datasource" class="mat-elevation-z0" fxFlex="grow" matSort

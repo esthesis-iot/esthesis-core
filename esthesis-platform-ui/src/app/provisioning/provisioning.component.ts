@@ -70,5 +70,10 @@ export class ProvisioningComponent extends BaseComponent implements OnInit, Afte
       }
     ).join(', ');
   }
+
+  refreshCurrentData() {
+    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+      this.sort.direction);
+  }
 }
 
