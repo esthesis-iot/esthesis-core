@@ -70,6 +70,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
             lonSetting = settingDTO.val;
           }
         });
+        if (latSetting && latSetting != "" && lonSetting && lonSetting != "")
         this.devicesService.getDeviceDataField(this.id, [latSetting, lonSetting]).subscribe(
           onNext => {
           // @ts-ignore
