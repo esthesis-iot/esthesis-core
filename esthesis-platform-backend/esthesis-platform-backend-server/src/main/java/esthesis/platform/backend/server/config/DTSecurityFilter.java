@@ -43,8 +43,7 @@ public class DTSecurityFilter extends GenericFilterBean {
   throws IOException, ServletException {
     log.finest("Applying filter DTSecurityFilter.");
 
-    String authHeader =
-      ((HttpServletRequest) request).getHeader(X_HEADER_NAME);
+    String authHeader = ((HttpServletRequest) request).getHeader(X_HEADER_NAME);
     if (StringUtils.isNotEmpty(authHeader)) {
       try {
         final ApplicationDTO application = applicationService.findByToken(authHeader);
