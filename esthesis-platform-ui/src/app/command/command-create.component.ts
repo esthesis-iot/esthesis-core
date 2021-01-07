@@ -58,7 +58,7 @@ export class CommandCreateComponent extends BaseComponent implements OnInit, OnD
 
   execute() {
     this.commandCreateService.execute(
-      {...this.searchDevicesForm!.value(), ...this.commandForm!.value()}).subscribe(
+      {...this.searchDevicesForm!.value, ...this.commandForm!.value}).subscribe(
       () => {
         this.utilityService.popupSuccess('Command dispatched successfully.');
         this.close();
