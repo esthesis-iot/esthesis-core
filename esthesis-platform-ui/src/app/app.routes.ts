@@ -98,6 +98,10 @@ export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
       path: 'data-wizards',
       loadChildren: () => import('./datawizards/datawizards.module').then(m => m.DatawizardsModule)
     },
+    {
+      path: 'campaigns',
+      loadChildren: () => import('./campaigns/campaigns.module').then(m => m.CampaignsModule)
+    },
 
     // Redirect all other urls to Dashboard.
     {path: '**', redirectTo: 'dashboard'}

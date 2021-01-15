@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {CrudService} from '../services/crud.service';
-import {CaDto} from '../dto/ca-dto';
 import {HttpClient} from '@angular/common/http';
 import {AppConstants} from '../app.constants';
 import {Observable} from 'rxjs';
@@ -42,5 +41,10 @@ export class DevicesService extends CrudService<DeviceDto> {
   getDeviceDataField(deviceId: number, fields: string[]): Observable<FieldDto> {
     return this.http.get<FieldDto>(AppConstants.API_ROOT +
       `/devices/device-data-field/${deviceId}?fields=${fields.join(",")}`);
+  }
+
+  findDeviceByPartialHardwareId(hardwareId: string): Observable<DeviceDto[]> {
+    return this.http.get<DeviceDto[]>(
+      AppConstants.API_ROOT + `/devices/by-partial-hardware-id/${hardwareId}`);
   }
 }

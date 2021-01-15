@@ -16,7 +16,6 @@ import {SettingsService} from '../../settings/settings.service';
 import {AppSettings} from '../../app.settings';
 import {LeafletDirective} from '@asymmetrik/ngx-leaflet';
 import {QFormsService} from '@qlack/forms';
-import {CaDto} from '../../dto/ca-dto';
 import {DeviceDto} from '../../dto/device-dto';
 
 @Component({

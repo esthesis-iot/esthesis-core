@@ -108,4 +108,5 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
     // @ts-ignore
     this.form.controls['fields'].controls.splice(fieldIndex, 1);
   }
+
 }

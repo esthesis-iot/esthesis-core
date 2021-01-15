@@ -1,6 +1,6 @@
 /* tslint:disable:max-line-length */
 import {HttpClientModule} from '@angular/common/http';
-import {NgModule} from '@angular/core';
+import {NgModule, Pipe, PipeTransform} from '@angular/core';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
@@ -92,5 +92,6 @@ export function getJwtToken(): string | null {
     QFormValidationModule
   ],
 })
+
 export class AppModule {
 }

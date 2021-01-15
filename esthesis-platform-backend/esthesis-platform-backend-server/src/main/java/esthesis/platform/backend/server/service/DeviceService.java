@@ -365,9 +365,15 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     return deviceKeyMapper.map(deviceKeyRepository.findLatestAccepted(deviceId));
   }
 
+  public List<DeviceDTO> findByPartialHardwareId(String hardwareId) {
+    return deviceMapper
+      .map(deviceRepository.findByHardwareIdContains(hardwareId));
+  }
+
   public DeviceDTO findByHardwareId(String hardwareId) {
     final DeviceDTO deviceDTO = deviceMapper
       .map(ReturnOptional.r(deviceRepository.findByHardwareId(hardwareId), hardwareId));
+    //TODO make this a boolean method param.
     fillDecryptedKeys(deviceDTO);
 
     return deviceDTO;

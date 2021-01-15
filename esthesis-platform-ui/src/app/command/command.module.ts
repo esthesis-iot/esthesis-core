@@ -2,8 +2,6 @@ import {NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
-import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
@@ -16,11 +14,11 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {QFormsModule} from '@qlack/forms';
 import {MomentModule} from 'ngx-moment';
-import {MatMomentDateModule, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {CommandRoutingModule} from './command-routing.module';
 import {CommandComponent} from './command.component';
 import {CommandCreateComponent} from './command-create.component';
 import {MatStepperModule} from '@angular/material/stepper';
+import {DateSupportModule} from '../shared/module/date-support.module';
 
 @NgModule({
   declarations: [CommandComponent, CommandCreateComponent],
@@ -30,7 +28,6 @@ import {MatStepperModule} from '@angular/material/stepper';
     FlexLayoutModule,
     MatButtonModule,
     MatCardModule,
-    MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
     MatPaginatorModule,
@@ -41,30 +38,9 @@ import {MatStepperModule} from '@angular/material/stepper';
     MatSortModule,
     MatIconModule,
     MomentModule,
-    MatMomentDateModule,
     MatTooltipModule,
-    MatStepperModule
-  ],
-  providers: [
-    {
-      provide: DateAdapter,
-      useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE]
-    },
-    {
-      provide: MAT_DATE_FORMATS,
-      useValue: {
-        parse: {
-          dateInput: 'LL',
-        },
-        display: {
-          dateInput: 'YYYY-MM-DD',
-          monthYearLabel: 'MMM YYYY',
-          dateA11yLabel: 'LL',
-          monthYearA11yLabel: 'MMMM YYYY',
-        },
-      }
-    }
+    MatStepperModule,
+    DateSupportModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

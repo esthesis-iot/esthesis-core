@@ -1,4 +1,4 @@
-export interface BaseDto {
+export class BaseDto {
   id?: number;
   createdOn?: Date;
 }

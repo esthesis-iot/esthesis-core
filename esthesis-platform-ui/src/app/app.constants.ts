@@ -69,5 +69,44 @@ export const AppConstants = {
     COMMAND: 6
   },
 
+  // Campaign constants.
+  CAMPAIGN: {
+    TYPE: {
+      PROVISIONING: 0,
+      COMMAND: 1,
+      REBOOT: 2,
+      SHUTDOWN: 3
+    },
+    CONSTRAINT: {
+      TYPE: {
+        DATETIME: 0,
+        SUCCESS: 1,
+        FAILURE: 2,
+        PROPERTY: 3,
+        PAUSE: 4,
+        BATCH: 5
+      },
+      STAGE: {
+        ENTRY: 0,
+        EXIT: 1,
+        CONTINUOUS: 2
+      },
+      CONDITION_TYPE: {
+        BEFORE: 0,
+        AFTER: 1,
+        ABOVE: 2,
+        BELOW: 3,
+        FOREVER: 4,
+        TIMER_MINUTES: 5,
+        EQUAL: 6,
+        GT: 7,
+        LT: 8,
+        GTE: 9,
+        LTE: 10
+      }
+    }
+  },
+
+
 };
 

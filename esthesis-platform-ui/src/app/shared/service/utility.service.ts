@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import * as _ from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +16,10 @@ export class UtilityService {
    * @param message The message to display.
    */
   popupSuccess(message: string) {
-    this.snackBar.open(message, '', {
+    this.snackBar.open(message, 'CLOSE', {
       duration: 5000,
       verticalPosition: 'top',
-      panelClass: 'bg-green'
+      panelClass: 'snackbar-green'
     });
   }
 
@@ -27,10 +28,10 @@ export class UtilityService {
    * @param message The message to display.
    */
   popupError(message: string) {
-    this.snackBar.open(message, '', {
-      duration: 5000,
+    this.snackBar.open(message, 'CLOSE', {
+      duration: 10000,
       verticalPosition: 'top',
-      panelClass: 'bg-red'
+      panelClass: 'snackbar-red'
     });
   }
 
@@ -39,11 +40,24 @@ export class UtilityService {
    * @param message The message to display.
    */
   popupInfo(message: string) {
-    this.snackBar.open(message, '', {
-      duration: 5000,
+    this.snackBar.open(message, 'CLOSE', {
+      duration: 10000,
       verticalPosition: 'top',
-      panelClass: 'bg-blue'
+      panelClass: 'snackbar-blue'
     });
+  }
+
+  /**
+   * A utility method to return a sequence of numbers, padded with 0.
+   * @param min The minimum number to start with.
+   * @param max The maximum number to finish on.
+   * @param step The distance between two consecutive numbers.
+   */
+  getZeroPaddedStringRange(min: number, max: number, step: number): Array<string> {
+    return _.range(min, max + 1, step)
+      .map(e => {
+        return _.padStart(e.toString(), (max+1).toString().length, "0")
+      });
   }
 
 }

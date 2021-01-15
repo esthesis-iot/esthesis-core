@@ -1,0 +1,296 @@
+<mat-card>
+  <mat-card-title>Campaign</mat-card-title>
+  <mat-card-content>
+    <form novalidate [formGroup]="form" fxLayout="row" fxLayoutGap="1rem" fxLayout.lt-lg="column">
+      <div fxLayout="column" fxFlex="30" fxLayoutGap="1rem">
+        <div fxLayout="column">
+          <div class="inline-header">Details</div>
+          <mat-form-field>
+            <input matInput placeholder="Name" formControlName="name">
+          </mat-form-field>
+
+          <mat-form-field>
+            <textarea [matTextareaAutosize]="true" matInput placeholder="Description"
+                      formControlName="description"></textarea>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-select placeholder="Type" formControlName="type">
+              <mat-option *ngFor="let o of constants.CAMPAIGN.TYPE| keyvalue"
+                          [value]="o.value">
+                {{ lookupByValue(constants.CAMPAIGN.TYPE, o.value) }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div fxLayout="column" *ngIf="form.value['type']===constants.CAMPAIGN.TYPE.COMMAND">
+            <mat-form-field>
+              <input matInput placeholder="Command name" formControlName="commandName">
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput placeholder="Command arguments" formControlName="commandArguments">
+            </mat-form-field>
+          </div>
+          <div *ngIf="form.value['type']===constants.CAMPAIGN.TYPE.PROVISIONING">
+            <mat-form-field fxFlexFill>
+              <mat-select placeholder="Provisioning package"
+                          formControlName="provisioningPackageId">
+                <mat-option *ngFor="let pp of provisioningPackages"
+                            value="pp.id">{{pp.name}} - {{pp.packageVersion}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div>
+          <div class="inline-header">Devices</div>
+          <div fxLayout="row" fxLayoutGap="1rem">
+            <mat-form-field fxFlex="60">
+              <input matInput placeholder="Search by hardware Id" [matAutocomplete]="auto"
+                     formControlName="searchByHardwareId">
+              <mat-hint>Search by full or partial device hardware Id</mat-hint>
+              <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let device of searchDevices" [value]="device.hardwareId">
+                  <span>{{device.hardwareId}}</span>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field fxFlex="40">
+              <mat-select placeholder="Tags" multiple formControlName="searchByTags">
+                <mat-option *ngFor="let tag of availableTags"
+                            [value]="tag.name">{{tag.name}}</mat-option>
+              </mat-select>
+              <mat-hint>Devices should have all selected tags assigned</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" class="xs-mt2">
+            <button mat-button (click)="addDeviceOrTag()">ADD</button>
+            <button mat-button>REMOVE</button>
+            <button mat-button (click)="groupSplit()">GROUP SPLIT</button>
+            <button mat-button (click)="test()">TEST</button>
+          </div>
+
+          <div class="xs-mt1 devices-list" cdkDropListGroup>
+            <div *ngFor="let group of form.get('devicesAndTags')!.value; index as i"
+                 class="device-group" fxLayout="column">
+              <div fxLayout="row" class="group" fxLayoutAlign="space-between center">
+                <div>Group {{i + 1}}</div>
+                <button mat-button color="primary" (click)="removeGroup(i)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+              <div cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="i">
+                <div class="device" *ngFor="let item of group" cdkDrag fxLayout="row" fxLayoutAlign="start center">
+                  <div [ngSwitch]="item.substring(0,4)">
+                    <mat-icon *ngSwitchCase="'dev_'">developer_board</mat-icon>
+                    <mat-icon *ngSwitchCase="'tag_'">label</mat-icon>
+                  </div>
+                  <div fxFlex="20rem">{{item.substring(4)}}</div>
+                  <div>
+                    <button mat-button color="primary"
+                            (click)="removeDeviceOrTag(i, item)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div fxFlex="70">
+        <div class="inline-header">Conditions
+          <button matSuffix mat-button [matMenuTriggerFor]="menu">
+            <mat-icon>add_circle_outline</mat-icon>
+          </button>
+        </div>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="addConstraint(constants.CAMPAIGN.CONSTRAINT.TYPE.BATCH)">
+            <mat-icon>layers</mat-icon>
+            <span>Batch</span>
+          </button>
+          <button mat-menu-item
+                  (click)="addConstraint(constants.CAMPAIGN.CONSTRAINT.TYPE.DATETIME)">
+            <mat-icon>alarm</mat-icon>
+            <span>Date & Time</span>
+          </button>
+          <button mat-menu-item (click)="addConstraint(constants.CAMPAIGN.CONSTRAINT.TYPE.FAILURE)">
+            <mat-icon>flash_off</mat-icon>
+            <span>Failure</span>
+          </button>
+          <button mat-menu-item (click)="addConstraint(constants.CAMPAIGN.CONSTRAINT.TYPE.PAUSE)">
+            <mat-icon>pause</mat-icon>
+            <span>Pause</span>
+          </button>
+          <button mat-menu-item
+                  (click)="addConstraint(constants.CAMPAIGN.CONSTRAINT.TYPE.PROPERTY)">
+            <mat-icon>tune</mat-icon>
+            <span>Property</span>
+          </button>
+          <button mat-menu-item (click)="addConstraint(constants.CAMPAIGN.CONSTRAINT.TYPE.SUCCESS)">
+            <mat-icon>outlined_flag</mat-icon>
+            <span>Success</span>
+          </button>
+        </mat-menu>
+        <div formArrayName="constraints" *ngFor="let constraint of getConstraints(); let i = index">
+          <div [formGroupName]="i">
+            <div fxLayout="row" fxLayoutGap="1rem" class="constraints">
+              <div fxLayout="row" fxLayoutGap="1rem">
+                <div fxLayoutAlign="none center">{{i + 1}}</div>
+                <div fxLayoutAlign="none center">
+                  <mat-icon>{{getIcon(constraint.value.type)}}</mat-icon>
+                </div>
+                <mat-form-field>
+                  <mat-select placeholder="Target" formControlName="target">
+                    <mat-option value="0">Global</mat-option>
+                    <mat-option value="1">Group 1</mat-option>
+                    <mat-option value="2">Group 2</mat-option>
+                    <mat-option value="2">Group 3</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field
+                  *ngIf="constraint.value.type !== constants.CAMPAIGN.CONSTRAINT.TYPE.BATCH">
+                  <mat-select placeholder="Stage" formControlName="stage">
+                    <mat-option [value]="constants.CAMPAIGN.CONSTRAINT.STAGE.ENTRY">Entry
+                    </mat-option>
+                    <mat-option [value]="constants.CAMPAIGN.CONSTRAINT.STAGE.EXIT">Exit</mat-option>
+                    <mat-option [value]="constants.CAMPAIGN.CONSTRAINT.STAGE.CONTINUOUS">
+                      Continuous
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div fxLayout="row" fxLayoutGap="1rem" [ngSwitch]="constraint.value.type">
+                <!-- DATE TIME -->
+                <div *ngSwitchCase="constants.CAMPAIGN.CONSTRAINT.TYPE.DATETIME" fxLayoutGap="1rem">
+                  <mat-form-field>
+                    <mat-select placeholder="Condition" formControlName="conditionType">
+                      <mat-option [value]="constants.CAMPAIGN.CONSTRAINT.CONDITION_TYPE.BEFORE">
+                        Before
+                      </mat-option>
+                      <mat-option [value]="constants.CAMPAIGN.CONSTRAINT.CONDITION_TYPE.AFTER">
+                        After
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <input matInput placeholder="Date" formControlName="scheduleDate"
+                           [matDatepicker]="scheduleDatePicker">
+                    <mat-datepicker-toggle matSuffix
+                                           [for]="scheduleDatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #scheduleDatePicker disabled="false"></mat-datepicker>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-select placeholder="HH" formControlName="scheduleHour">
+                      <mat-option
+                        *ngFor="let iteration of utilityService.getZeroPaddedStringRange(0, 23, 1)"
+                        [value]="iteration">
+                        {{iteration}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-select placeholder="MM" formControlName="scheduleMinute">
+                      <mat-option
+                        *ngFor="let iteration of utilityService.getZeroPaddedStringRange(0, 59, 15)"
+                        [value]="iteration">
+                        {{iteration}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <!-- FAILURE -->
+                <div *ngSwitchCase="constants.CAMPAIGN.CONSTRAINT.TYPE.FAILURE" fxLayoutGap="1rem">
+                  <mat-form-field>
+                    <mat-select placeholder="Condition" formControlName="conditionType">
+                      <mat-option [value]="constants.CAMPAIGN.CONSTRAINT.CONDITION_TYPE.ABOVE">
+                        Above
+                      </mat-option>
+                      <mat-option [value]="constants.CAMPAIGN.CONSTRAINT.CONDITION_TYPE.BELOW">
+                        Below
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <input matInput placeholder="Value" formControlName="value">
+                  </mat-form-field>
+                </div>
+
+                <!-- PAUSE -->
+                <div *ngSwitchCase="constants.CAMPAIGN.CONSTRAINT.TYPE.PAUSE" fxLayoutGap="1rem">
+                  <mat-form-field>
+                    <mat-select placeholder="Condition" formControlName="conditionType">
+                      <mat-option [value]="constants.CAMPAIGN.CONSTRAINT.CONDITION_TYPE.FOREVER">
+                        Forever
+                      </mat-option>
+                      <mat-option
+                        [value]="constants.CAMPAIGN.CONSTRAINT.CONDITION_TYPE.TIMER_MINUTES">Timer
+                        (minutes)
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <input matInput placeholder="Value" formControlName="value">
+                  </mat-form-field>
+                </div>
+
+                <!-- PROPERTY -->
+                <div *ngSwitchCase="constants.CAMPAIGN.CONSTRAINT.TYPE.PROPERTY" fxLayoutGap="1rem">
+                  <mat-form-field>
+                    <input matInput placeholder="Property name" formControlName="propertyName">
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-select placeholder="Condition" formControlName="conditionType">
+                      <mat-option [value]="constants.CAMPAIGN.CONSTRAINT.CONDITION_TYPE.EQUAL">=
+                      </mat-option>
+                      <mat-option [value]="constants.CAMPAIGN.CONSTRAINT.CONDITION_TYPE.GT">&gt;
+                      </mat-option>
+                      <mat-option [value]="constants.CAMPAIGN.CONSTRAINT.CONDITION_TYPE.LT">&lt;
+                      </mat-option>
+                      <mat-option [value]="constants.CAMPAIGN.CONSTRAINT.CONDITION_TYPE.GTE">&gt;=
+                      </mat-option>
+                      <mat-option [value]="constants.CAMPAIGN.CONSTRAINT.CONDITION_TYPE.LTE">&lt;=
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <input matInput placeholder="Value" formControlName="value">
+                  </mat-form-field>
+                </div>
+
+                <!-- SUCCESS -->
+                <div *ngSwitchCase="constants.CAMPAIGN.CONSTRAINT.TYPE.SUCCESS" fxLayoutGap="1rem">
+                  <mat-form-field>
+                    <mat-select placeholder="Condition" formControlName="conditionType">
+                      <mat-option [value]="constants.CAMPAIGN.CONSTRAINT.CONDITION_TYPE.ABOVE">
+                        Above
+                      </mat-option>
+                      <mat-option [value]="constants.CAMPAIGN.CONSTRAINT.CONDITION_TYPE.BELOW">
+                        Below
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <input matInput placeholder="Value" formControlName="value">
+                  </mat-form-field>
+                </div>
+
+                <!-- BATCH -->
+                <div *ngSwitchCase="constants.CAMPAIGN.CONSTRAINT.TYPE.BATCH" fxLayoutGap="1rem">
+                  <mat-form-field>
+                    <input matInput placeholder="Value" formControlName="value">
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button routerLink="0" (click)="save()">CREATE</button>
+  </mat-card-actions>
+</mat-card>

@@ -198,4 +198,10 @@ public class DevicesResource {
     return deviceService.countByTags(Arrays.asList(tags.split(",")));
   }
 
+  @GetMapping(path = "/by-partial-hardware-id/{hardwareId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not search for device.")
+  @ReplyFilter("-certificate,-privateKey,-publicKey,-psPublicKey,-sessionKey")
+  public List<DeviceDTO> findByPartialHardwareId(@PathVariable String hardwareId) {
+    return deviceService.findByPartialHardwareId(hardwareId);
+  }
 }
