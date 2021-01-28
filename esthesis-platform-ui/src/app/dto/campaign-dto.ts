@@ -1,8 +1,9 @@
-import {Validators} from '@angular/forms';
-import {CampaignConstraintDto} from './campaign-constraint-dto';
+import {CampaignConditionDto} from './campaign-condition-dto';
+import {CampaignMemberDto} from './campaign-member-dto';
 
 export interface CampaignDto {
-  name:string;
+  id: number;
+  name: string;
   description: string;
   scheduleDate: string;
   scheduleHour: number;
@@ -11,6 +12,6 @@ export interface CampaignDto {
   commandName: string;
   commandArguments: string;
   provisioningPackageId: string;
-  constraints: CampaignConstraintDto[];
-  devicesAndTags: String[][];
+  conditions: CampaignConditionDto[];
+  members: CampaignMemberDto[];
 }

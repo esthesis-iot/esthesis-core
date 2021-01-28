@@ -22,9 +22,9 @@ import java.time.Instant;
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Accessors(chain = true)
 public class DeviceKey extends BaseEntity {
   private String publicKey;
   private String privateKey;

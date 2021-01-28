@@ -22,6 +22,8 @@ import {CampaignEditComponent} from './campaign/campaign-edit/campaign-edit.comp
 import {LogPipeModule} from '../shared/module/log-pipe.module';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {NgxSplitButtonModule} from 'ngx-split-button';
+import {MatSortModule} from '@angular/material/sort';
 
 @NgModule({
   schemas: [NO_ERRORS_SCHEMA],
@@ -40,13 +42,15 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     MatPaginatorModule,
     MatSelectModule,
     QFormsModule,
+    MatSortModule,
     DisplayModule,
     DateSupportModule,
     MatIconModule,
     MatDividerModule,
     LogPipeModule,
     MatAutocompleteModule,
-    DragDropModule
+    DragDropModule,
+    NgxSplitButtonModule,
   ]
 })
 export class CampaignsModule {

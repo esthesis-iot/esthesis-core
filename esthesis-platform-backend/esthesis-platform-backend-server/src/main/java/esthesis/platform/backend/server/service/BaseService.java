@@ -7,6 +7,7 @@ import esthesis.platform.backend.server.mapper.BaseMapper;
 import esthesis.platform.backend.server.model.BaseContentEntity;
 import esthesis.platform.backend.server.model.BaseEntity;
 import esthesis.platform.backend.server.repository.BaseRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.content.commons.repository.ContentStore;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import java.util.List;
 abstract class BaseService<D extends BaseDTO, E extends BaseEntity> {
 
   @Autowired
+  @Getter
   private BaseRepository<E> repository;
 
   @Autowired

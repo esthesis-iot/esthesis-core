@@ -71,39 +71,48 @@ export const AppConstants = {
 
   // Campaign constants.
   CAMPAIGN: {
-    TYPE: {
-      PROVISIONING: 0,
-      COMMAND: 1,
-      REBOOT: 2,
-      SHUTDOWN: 3
+    STATE: {
+      CREATED: 1,
+      STARTED: 2,
+      PAUSED: 3,
+      TERMINATED: 4
     },
-    CONSTRAINT: {
+    TYPE: {
+      PROVISIONING: 1,
+      COMMAND: 2,
+      REBOOT: 3,
+      SHUTDOWN: 4
+    },
+    CONDITION: {
       TYPE: {
-        DATETIME: 0,
-        SUCCESS: 1,
-        FAILURE: 2,
-        PROPERTY: 3,
-        PAUSE: 4,
-        BATCH: 5
+        DATETIME: 1,
+        SUCCESS: 2,
+        FAILURE: 3,
+        PROPERTY: 4,
+        PAUSE: 5,
+        BATCH: 6
       },
       STAGE: {
-        ENTRY: 0,
-        EXIT: 1,
-        CONTINUOUS: 2
+        ENTRY: 1,
+        EXIT: 2
       },
-      CONDITION_TYPE: {
-        BEFORE: 0,
-        AFTER: 1,
-        ABOVE: 2,
-        BELOW: 3,
-        FOREVER: 4,
-        TIMER_MINUTES: 5,
-        EQUAL: 6,
-        GT: 7,
-        LT: 8,
-        GTE: 9,
-        LTE: 10
+      OP: {
+        BEFORE: 1,
+        AFTER: 2,
+        ABOVE: 3,
+        BELOW: 4,
+        FOREVER: 5,
+        TIMER_MINUTES: 6,
+        EQUAL: 7,
+        GT: 8,
+        LT: 9,
+        GTE: 10,
+        LTE: 11
       }
+    },
+    MEMBER_TYPE: {
+      DEVICE: 1,
+      TAG: 2
     }
   },
 

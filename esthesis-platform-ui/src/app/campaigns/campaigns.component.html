@@ -3,24 +3,12 @@
   <mat-card-content>
     <div fxLayout="column">
       <table mat-table [dataSource]="datasource" class="mat-elevation-z0" fxFlex="grow" matSort
-             matSortActive="cn"
+             matSortActive="name"
              matSortDirection="asc"
-             matSortStart="asc" matSortDisableClear aria-describedby="List of certificates">
-        <ng-container matColumnDef="cn">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Common name</th>
-          <td mat-cell *matCellDef="let element">{{element.cn}}</td>
-        </ng-container>
-        <ng-container matColumnDef="issued">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Issued at</th>
-          <td mat-cell *matCellDef="let element"> {{element.issued | date: constants.DATE_FORMAT}}</td>
-        </ng-container>
-        <ng-container matColumnDef="validity">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Expires at</th>
-          <td mat-cell *matCellDef="let element"> {{element.validity | date: constants.DATE_FORMAT}}</td>
-        </ng-container>
-        <ng-container matColumnDef="issuer">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Issuer</th>
-          <td mat-cell *matCellDef="let element"> {{element.issuer}}</td>
+             matSortStart="asc" matSortDisableClear aria-describedby="List of campaigns">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col">Name</th>
+          <td mat-cell *matCellDef="let element">{{element.name}}</td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="columns"></tr>
         <tr mat-row *matRowDef="let row; columns: columns; let element;" [routerLink]="element.id"></tr>

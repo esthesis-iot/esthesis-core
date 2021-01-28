@@ -3,6 +3,7 @@ package esthesis.platform.backend.server;
 import javax.annotation.PostConstruct;
 import lombok.extern.java.Log;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.camunda.bpm.spring.boot.starter.annotation.EnableProcessApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -23,6 +24,7 @@ import java.util.logging.Level;
 @EnableCaching
 @EnableScheduling
 @SpringBootApplication
+@EnableProcessApplication
 @EntityScan({"esthesis", "com.eurodyn.qlack"})
 @ComponentScan({"esthesis", "com.eurodyn.qlack"})
 @EnableJpaRepositories({"esthesis", "com.eurodyn.qlack"})
@@ -30,9 +32,9 @@ public class EsthesisPlatform {
 
   @PostConstruct
   void started() {
-    log.log(Level.INFO, "Timezone name  : {0}}", TimeZone.getDefault().getDisplayName());
-    log.log(Level.INFO, "Timezone ID    : {0}}", TimeZone.getDefault().getID());
-    log.log(Level.INFO, "Timezone offset: {0}} minutes",
+    log.log(Level.INFO, "Timezone name  : {0}", TimeZone.getDefault().getDisplayName());
+    log.log(Level.INFO, "Timezone ID    : {0}", TimeZone.getDefault().getID());
+    log.log(Level.INFO, "Timezone offset: {0} minutes",
       TimeUnit.MILLISECONDS.toMinutes(TimeZone.getDefault().getRawOffset()));
   }
 

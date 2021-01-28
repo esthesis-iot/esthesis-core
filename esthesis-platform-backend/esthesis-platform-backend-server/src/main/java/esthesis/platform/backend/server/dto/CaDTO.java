@@ -14,8 +14,8 @@ import java.time.Instant;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
 public class CaDTO extends BaseDTO {
 
   @NotNull

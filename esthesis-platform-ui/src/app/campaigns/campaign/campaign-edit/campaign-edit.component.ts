@@ -1,20 +1,24 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {BaseComponent} from '../../../shared/component/base-component';
 import {QFormsService} from '@qlack/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UtilityService} from '../../../shared/service/utility.service';
-import {CampaignConstraintDto} from '../../../dto/campaign-constraint-dto';
 import {ProvisioningService} from '../../../provisioning/provisioning.service';
 import {ProvisioningDto} from '../../../dto/provisioning-dto';
+import {CampaignMemberDto} from '../../../dto/campaign-member-dto';
 import {DevicesService} from '../../../devices/devices.service';
 import {DeviceDto} from '../../../dto/device-dto';
 import 'rxjs/add/operator/debounceTime';
 import {TagDto} from '../../../dto/tag-dto';
 import {TagService} from '../../../tags/tag.service';
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {CampaignsService} from '../../campaigns.service';
 import {CampaignDto} from '../../../dto/campaign-dto';
+import {CampaignConditionDto} from '../../../dto/campaign-condition-dto';
+import * as _ from "lodash"
+import {AppConstants} from '../../../app.constants';
+import {OkCancelModalComponent} from '../../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-campaign-edit',
@@ -22,17 +26,28 @@ import {CampaignDto} from '../../../dto/campaign-dto';
   styleUrls: ['./campaign-edit.component.scss']
 })
 export class CampaignEditComponent extends BaseComponent implements OnInit {
+  // Campaign details form.
   form!: FormGroup;
-  id: number | undefined;
+  // The id of the form currently being processed.
+  id?: number;
+  // The list of currently active provisioning packages.
   provisioningPackages?: ProvisioningDto[];
+  // A helper auto-complete container for devices matching the user's search input.
   searchDevices?: DeviceDto[];
+  // The list of currently available tags.
   availableTags: TagDto[] | undefined;
+  memberGroups: any;
+  // Validation errors.
+  errorsMain?: string[];
+  errorsDevices?: string[];
+  errorsConditions?: string[];
 
   constructor(private fb: FormBuilder, public utilityService: UtilityService,
               private qForms: QFormsService, private provisioningService: ProvisioningService,
               private route: ActivatedRoute, private router: Router,
               private utilService: UtilityService, private deviceService: DevicesService,
-              private tagService: TagService, private campaignService: CampaignsService) {
+              private tagService: TagService, private campaignService: CampaignsService,
+              private dialog: MatDialog) {
     super();
   }
 
@@ -42,17 +57,19 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
 
     // Setup the form.
     this.form = this.fb.group({
-      name: ['', [Validators.required]],
+      id: ['', []],
+      state: ['', []],
+      name: ['', []],
       description: ['', []],
       scheduleDate: ['', []],
       scheduleHour: ['', []],
       scheduleMinute: ['', []],
-      type: ['', [Validators.required]],
+      type: ['', []],
       commandName: ['', []],
       commandArguments: ['', []],
       provisioningPackageId: ['', []],
-      constraints: this.fb.array([]),
-      devicesAndTags: [[], []],
+      conditions: this.fb.array([]),
+      members: [[]],
 
       searchByHardwareId: ['', []],
       searchByTags: ['', []],
@@ -67,7 +84,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
 
     // Monitor for changes in search by hardware Id input.
     this.form.get("searchByHardwareId")!.valueChanges.debounceTime(500).subscribe(onNext => {
-      if (onNext.trim() !== "") {
+      if (onNext && onNext.trim() !== "") {
         this.deviceService.findDeviceByPartialHardwareId(onNext).subscribe(
           onNext => {
             if (onNext && onNext.length > 0) {
@@ -86,48 +103,61 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     this.tagService.getAll().subscribe(onNext => {
       this.availableTags = onNext.content;
     });
+
+    // Fill-in the form with data if editing an existing item.
+    if (this.id && this.id !== 0) {
+      this.campaignService.get(this.id).subscribe(onNext => {
+        this.form.patchValue(onNext);
+        // Update device membership into this campaign.
+        this.memberGroups = this.getMemberGroups();
+        this.form.patchValue({"conditions": []});
+        onNext.conditions.forEach(c => {
+          // @ts-ignore
+          this.form.controls['conditions'].push(this.createCondition(c));
+        });
+      });
+    }
   }
 
-  private createConstraint(campaignConstraintDto: CampaignConstraintDto) {
+  private createCondition(campaignConditionDto: CampaignConditionDto) {
     return this.fb.group({
-      id: [campaignConstraintDto.id],
-      type: [campaignConstraintDto.type, [Validators.required]],
-      name: [campaignConstraintDto.name],
-      target: [campaignConstraintDto.target],
-      stage: [campaignConstraintDto.target],
-      scheduleDate: [campaignConstraintDto.target],
-      scheduleHour: [campaignConstraintDto.target],
-      scheduleMinute: [campaignConstraintDto.target],
-      conditionType: [campaignConstraintDto.target],
-      value: [campaignConstraintDto.target],
-      propertyName: [campaignConstraintDto.target],
+      id: campaignConditionDto.id,
+      type: campaignConditionDto.type,
+      target: campaignConditionDto.target,
+      stage: campaignConditionDto.stage,
+      scheduleDate: campaignConditionDto.scheduleDate,
+      scheduleHour: campaignConditionDto.scheduleHour,
+      scheduleMinute: campaignConditionDto.scheduleMinute,
+      operation: campaignConditionDto.operation,
+      value: campaignConditionDto.value,
+      propertyName: campaignConditionDto.propertyName,
     });
   }
 
-  addConstraint(type: number) {
+  addCondition(type: number) {
     // @ts-ignore
-    this.form.controls['constraints'].push(
-      this.createConstraint(new CampaignConstraintDto(type)));
+    this.form.controls['conditions'].push(
+      this.createCondition(new CampaignConditionDto(type)));
   }
 
-  getConstraints() {
+  getConditions() {
     // @ts-ignore
-    return this.form.get('constraints')['controls'];
+    return this.form.get('conditions')['controls'];
   }
 
   getIcon(type: number): string | undefined {
     switch (type) {
-      case this.constants.CAMPAIGN.CONSTRAINT.TYPE.DATETIME:
+      case this.constants.CAMPAIGN.CONDITION.TYPE.DATETIME:
         return "alarm";
-      case this.constants.CAMPAIGN.CONSTRAINT.TYPE.FAILURE:
+      case this.constants.CAMPAIGN.CONDITION.TYPE.FAILURE:
         return "flash_off";
-      case this.constants.CAMPAIGN.CONSTRAINT.TYPE.PAUSE:
+      case this.constants.CAMPAIGN.CONDITION.TYPE.PAUSE:
         return "pause";
-      case this.constants.CAMPAIGN.CONSTRAINT.TYPE.PROPERTY:
+      case this.constants.CAMPAIGN.CONDITION.TYPE.PROPERTY:
         return "tune";
-      case this.constants.CAMPAIGN.CONSTRAINT.TYPE.SUCCESS:
+      case this.constants.CAMPAIGN.CONDITION.TYPE.SUCCESS:
         return "outlined_flag";
-      case this.constants.CAMPAIGN.CONSTRAINT.TYPE.BATCH:
+      case this.constants.CAMPAIGN.CONDITION.TYPE.BATCH:
         return "layers";
       default:
         return undefined;
@@ -141,41 +171,65 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   }
 
   /**
-   * Creates a new campaign group if no groups are already defined and returns the index of the next
-   * group to be used in insert operations.
+   *
    */
-  private nextGroup(): number {
-    let groupNo = this.form.get('devicesAndTags')?.value.length;
-    if (groupNo == 0) {
-      this.groupSplit();
+  public currentGroup(): number {
+    let groupNo;
+    if (this.form.get('members')?.value.length == 0) {
+      groupNo = 1;
     } else {
-      groupNo--;
+      groupNo = (_.maxBy(this.form.get('members')?.value, function (o: CampaignMemberDto) {
+        return o.groupOrder;
+      }) as CampaignMemberDto).groupOrder;
     }
 
     return groupNo;
   }
 
-  addDeviceOrTag() {
+  getMemberGroups() {
+    return _(this.form.get('members')?.value).groupBy('groupOrder').values().value();
+  }
+
+  /**
+   *
+   * @param groupNumber
+   *          undefined: The entry is added on the last group. If no groups exist, a new group is
+   *                     automatically created.
+   *         number > 0: The entry is added in the specified group.
+   *                  0: The entry is added in a new group.
+   */
+  addDeviceOrTag(groupNumber?: number) {
+    let groupNo: number;
+    if (groupNumber == undefined) {
+      groupNo = this.currentGroup();
+    } else {
+      if (groupNumber == 0) {
+        groupNo = this.currentGroup() + 1;
+      } else {
+        groupNo = groupNumber;
+      }
+    }
+
     // Add hardware Ids.
-    const hardwareId = this.form.get("searchByHardwareId")?.value.trim();
-    if (hardwareId !== "") {
+    let hardwareId = this.form.get("searchByHardwareId")?.value;
+    if (hardwareId && hardwareId !== "") {
+      hardwareId = hardwareId.trim();
       // this.deviceService.getDevices(`hardwareId=${hardwareId}`).subscribe(onNext => {
-        // if (onNext.content && onNext.content.length == 1) {
-          const groupNo = this.nextGroup();
-          this.form.get("devicesAndTags")?.value[groupNo].push(`dev_${hardwareId}`);
-          this.utilityService.popupSuccess("Device added successfully.");
-        // } else {
-        //   this.utilityService.popupError("Could not find a device with the requested hardware Id.");
-        // }
-      // });
+      //   if (onNext.content && onNext.content.length == 1) {
+      this.form.get("members")?.value.push(
+        new CampaignMemberDto(this.constants.CAMPAIGN.MEMBER_TYPE.DEVICE, hardwareId, groupNo));
+      this.utilityService.popupSuccess("Device added successfully.");
+      // } else {
+      //   this.utilityService.popupError("Could not find a device with the requested hardware
+      // Id."); } });
     }
 
     // Add tags.
     const tags = this.form.get("searchByTags")!.value;
-    if (tags.length > 0) {
+    if (tags && tags.length > 0) {
       const tagString = tags.join(", ");
-      const groupNo = this.nextGroup();
-      this.form.get("devicesAndTags")?.value[groupNo].push(`tag_${tagString}`);
+      this.form.get("members")?.value.push(
+        new CampaignMemberDto(this.constants.CAMPAIGN.MEMBER_TYPE.TAG, tagString, groupNo));
     }
 
     // Clear search boxes.
@@ -183,73 +237,142 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
       searchByHardwareId: "",
       searchByTags: ""
     });
+
+    this.memberGroups = this.getMemberGroups();
   }
 
-  test(): void {
-    for (let i = 0; i<5; i++) {
-      this.form.patchValue({
-        searchByHardwareId: "Item " + i
-      });
-      this.addDeviceOrTag();
-    }
-    this.groupSplit();
-    for (let i = 6; i<10; i++) {
-      this.form.patchValue({
-        searchByHardwareId: "Item " + i
-      });
-      this.addDeviceOrTag();
-    }
-    this.groupSplit();
-    for (let i = 11; i<15; i++) {
-      this.form.patchValue({
-        searchByHardwareId: "Item " + i
-      });
-      this.addDeviceOrTag();
-    }
-  }
-
-  /**
-   * Adds a new group.
-   */
-  groupSplit() {
-    this.form.get('devicesAndTags')!.value.push([]);
-  }
-
-  drop(event: CdkDragDrop<number>) {
-    console.log(event);
-    if (event.previousContainer === event.container) {
-      const sourceGroupOrder = event.container.data as number;
-      moveItemInArray(this.form.get("devicesAndTags")?.value[sourceGroupOrder], event.previousIndex, event.currentIndex);
-    } else {
-      const currentGroupOrder = event.previousContainer.data as number;
-      const targetGroupOrder = event.container.data as number;
-      transferArrayItem(
-        this.form.get("devicesAndTags")?.value[currentGroupOrder],
-        this.form.get("devicesAndTags")?.value[targetGroupOrder],
-        event.previousIndex,
-        event.currentIndex);
-    }
-  }
-
-  removeDeviceOrTag(groupOrder: number, item: string) {
-    const index = this.form.get("devicesAndTags")!.value[groupOrder].indexOf(item)
-    this.form.get("devicesAndTags")!.value[groupOrder].splice(index, 1);
+  removeMember(identifier: string) {
+    _.remove(this.form.get("members")!.value, function (o: CampaignMemberDto) {
+      return o.identifier === identifier
+    });
+    this.memberGroups = this.getMemberGroups();
   }
 
   removeGroup(groupOrder: number) {
-    this.form.get("devicesAndTags")!.value.splice(groupOrder, 1);
+    groupOrder++;
+    // Remove group members.
+    _.remove(this.form.get("members")!.value, function (o: CampaignMemberDto) {
+      return o.groupOrder === groupOrder
+    });
+
+    // Rearrange groups.
+    _.map(this.form.get("members")!.value, function (o: CampaignMemberDto) {
+      if (o.groupOrder > groupOrder) {
+        o.groupOrder = o.groupOrder - 1;
+      }
+      return o;
+    })
+
+    this.memberGroups = this.getMemberGroups();
   }
 
   save() {
-    // Clear unused entries.
+    // Clear unused entries and errors.
     this.form.get("searchByHardwareId")?.setValue(undefined);
     this.form.get("searchByTags")?.setValue(undefined);
 
     this.campaignService.save(
       this.qForms.cleanupData(this.form.getRawValue()) as CampaignDto).subscribe(
       onNext => {
+        this.errorsMain = undefined;
+        this.errorsDevices = undefined;
+        this.errorsConditions = undefined;
         this.utilityService.popupSuccess('Campaign successfully saved.');
         //this.router.navigate(['devices']);
+      },
+      onError => {
+        this.errorsMain = onError.error.main;
+        this.errorsDevices = onError.error.devices;
+        this.errorsConditions = onError.error.conditions;
+        this.utilityService.popupError("Campaign can not be created.");
       });
+  }
+
+  test(): void {
+    for (let i = 1; i < 13; i++) {
+      this.form.patchValue({
+        searchByHardwareId: "Item " + i
+      });
+      i % 4 == 0 ? this.addDeviceOrTag(0) : this.addDeviceOrTag();
+    }
+
+    this.form.patchValue({
+      name: "My camp",
+      description: "my desc",
+      type: this.constants.CAMPAIGN.TYPE.COMMAND,
+      commandName: "mycmd",
+      commandArguments: "arg1"
+    })
+
+    this.addCondition(AppConstants.CAMPAIGN.CONDITION.TYPE.BATCH);
+    // @ts-ignore
+    this.form.get("conditions").controls[0].setValue(
+      {"operation": null, "propertyName": null, "scheduleDate": null, "scheduleHour": null,
+        "scheduleMinute": null, "stage": null, "target": 1,
+        "type": AppConstants.CAMPAIGN.CONDITION.TYPE.BATCH, "value": 10}
+    );
+
+    this.addCondition(AppConstants.CAMPAIGN.CONDITION.TYPE.DATETIME);
+    // @ts-ignore
+    this.form.get("conditions").controls[1].setValue(
+      {"operation": 1, "propertyName": null, "scheduleDate": new Date(),
+        "scheduleHour": "21", "scheduleMinute": "15", "stage": 1,
+        "target": 1, "type": AppConstants.CAMPAIGN.CONDITION.TYPE.DATETIME, "value": null}
+    );
+
+    this.addCondition(AppConstants.CAMPAIGN.CONDITION.TYPE.FAILURE);
+    // @ts-ignore
+    this.form.get("conditions").controls[2].setValue(
+      {"operation": 3, "propertyName": null, "scheduleDate": null,
+        "scheduleHour": null, "scheduleMinute": null, "stage": 1,
+        "target": 1, "type": AppConstants.CAMPAIGN.CONDITION.TYPE.FAILURE, "value": 10}
+    );
+
+    this.addCondition(AppConstants.CAMPAIGN.CONDITION.TYPE.PAUSE);
+    // @ts-ignore
+    this.form.get("conditions").controls[3].setValue(
+      {"operation": 6, "propertyName": null, "scheduleDate": null,
+        "scheduleHour": null, "scheduleMinute": null, "stage": 1,
+        "target": 1, "type": AppConstants.CAMPAIGN.CONDITION.TYPE.PAUSE, "value": 10}
+    );
+
+    this.addCondition(AppConstants.CAMPAIGN.CONDITION.TYPE.PROPERTY);
+    // @ts-ignore
+    this.form.get("conditions").controls[4].setValue(
+      {"operation": 8, "propertyName": "abc", "scheduleDate": null,
+        "scheduleHour": null, "scheduleMinute": null, "stage": 1,
+        "target": 1, "type": AppConstants.CAMPAIGN.CONDITION.TYPE.PROPERTY, "value": 10}
+    );
+
+    this.addCondition(AppConstants.CAMPAIGN.CONDITION.TYPE.SUCCESS);
+    // @ts-ignore
+    this.form.get("conditions").controls[5].setValue(
+      {"operation": 4, "propertyName": null, "scheduleDate": null,
+        "scheduleHour": null, "scheduleMinute": null, "stage": 1,
+        "target": 1, "type": AppConstants.CAMPAIGN.CONDITION.TYPE.SUCCESS, "value": 10}
+    );
+  }
+
+  removeCondition(i: number) {
+    (this.form.controls['conditions'] as FormArray).removeAt(i);
+  }
+
+  start() {
+    // this.dialog.open(OkCancelModalComponent, {
+    //   data: {
+    //     title: "Starting campaign",
+    //     question: "Once a campaign is started it can not be further edited. Are you sure you" +
+    //       " want to proceed?",
+    //     buttons: {
+    //       ok: true, cancel: true, reload: false
+    //     }
+    //   }
+    // }).afterClosed().subscribe(result => {
+    //   if (result) {
+        this.campaignService.startCampaign(this.id!).subscribe(onNext => {
+          console.log(onNext);
+        });
+    //   }
+    // });
   }
 }

@@ -13,13 +13,14 @@ import {CrudService} from '../services/crud.service';
   providedIn: 'root'
 })
 export class ApplicationService extends CrudService<ApplicationDto> {
-  private resource = `applications`;
+  private static resource = `applications`;
 
   constructor(http: HttpClient) {
-    super(http, 'applications');
+    super(http, ApplicationService.resource);
   }
 
   getApplicationsStatus(): Observable<any> {
-    return this.http.get(AppConstants.API_ROOT + `/${this.resource}` + '/status');
+    return this.http.get(
+      `${AppConstants.API_ROOT}/${ApplicationService.resource}/status`);
   }
 }

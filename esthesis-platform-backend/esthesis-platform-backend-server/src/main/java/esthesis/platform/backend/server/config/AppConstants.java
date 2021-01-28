@@ -204,8 +204,47 @@ public class AppConstants {
       public static final String TIMESTAMP = "timestamp";
       public static final String TYPE = "type";
     }
-
   }
 
-
+  public static class Campaign {
+    public static class State {
+      public static final int CREATED = 1;
+      public static final int STARTED = 2;
+      public static final int PAUSED = 3;
+      public static final int TERMINATED = 4;
+    }
+    public static class Type {
+      public static final int PROVISIONING = 1;
+      public static final int COMMAND = 2;
+      public static final int REBOOT = 3;
+      public static final int SHUTDOWN = 4;
+    }
+    public static  class Condition {
+      public static class Type {
+        public static final int DATETIME = 1;
+        public static final int SUCCESS = 2;
+        public static final int FAILURE = 3;
+        public static final int PROPERTY = 4;
+        public static final int PAUSE = 5;
+        public static final int BATCH = 6;
+      }
+      public static  class Stage {
+        public static final int ENTRY = 1;
+        public static final int EXIT = 2;
+      }
+      public static  class Op {
+        public static final int BEFORE = 1;
+        public static final int AFTER = 2;
+        public static final int ABOVE = 3;
+        public static final int BELOW = 4;
+        public static final int FOREVER = 5;
+        public static final int TIMER_MINUTES = 6;
+        public static final int EQUAL = 7;
+        public static final int GT = 8;
+        public static final int LT = 9;
+        public static final int GTE = 10;
+        public static final int LTE = 11;
+      }
+    }
+  }
 }

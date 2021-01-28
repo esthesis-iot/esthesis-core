@@ -1,11 +1,11 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {BaseComponent} from '../shared/component/base-component';
 import {MatTableDataSource} from '@angular/material/table';
-import {CertificateDto} from '../dto/certificate-dto';
-import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
-import {CertificatesService} from '../certificates/certificates.service';
 import {QFormsService} from '@qlack/forms';
+import {CampaignsService} from './campaigns.service';
+import {CampaignDto} from '../dto/campaign-dto';
+import {MatSort} from '@angular/material/sort';
 
 @Component({
   selector: 'app-campaigns',
@@ -13,17 +13,18 @@ import {QFormsService} from '@qlack/forms';
   styleUrls: ['./campaigns.component.scss']
 })
 export class CampaignsComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['cn', 'issued', 'validity', 'issuer'];
-  datasource = new MatTableDataSource<CertificateDto>();
+  columns = ['name'];
+  datasource = new MatTableDataSource<CampaignDto>();
 
-  @ViewChild(MatSort, { static: true }) sort!: MatSort;
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
-  constructor(private certificateService: CertificatesService, private qForms: QFormsService) {
+  constructor(private campaignsService: CampaignsService, private qForms: QFormsService) {
     super();
   }
 
   ngOnInit() {
+
   }
 
   ngAfterViewInit(): void {
@@ -38,7 +39,7 @@ export class CampaignsComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
-    this.certificateService.getAll(
+    this.campaignsService.getAll(
       this.qForms.appendPagingToFilter(null!, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;
