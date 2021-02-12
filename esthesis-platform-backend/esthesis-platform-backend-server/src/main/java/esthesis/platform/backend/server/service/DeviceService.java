@@ -1,13 +1,6 @@
 package esthesis.platform.backend.server.service;
 
-import static esthesis.platform.backend.server.config.AppSettings.Setting.DeviceRegistration.REGISTRATION_MODE;
-import static esthesis.platform.backend.server.config.AppSettings.SettingValues.DeviceRegistration.RegistrationMode.DISABLED;
-
-import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
-import com.eurodyn.qlack.common.exception.QDisabledException;
-import com.eurodyn.qlack.common.exception.QDoesNotExistException;
-import com.eurodyn.qlack.common.exception.QMismatchException;
-import com.eurodyn.qlack.common.exception.QSecurityException;
+import com.eurodyn.qlack.common.exception.*;
 import com.eurodyn.qlack.fuse.crypto.dto.CertificateSignDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoAsymmetricService;
@@ -43,9 +36,9 @@ import esthesis.platform.backend.server.mapper.DeviceMapper;
 import esthesis.platform.backend.server.model.Ca;
 import esthesis.platform.backend.server.model.Device;
 import esthesis.platform.backend.server.model.DeviceKey;
+import esthesis.platform.backend.server.model.Tag;
 import esthesis.platform.backend.server.repository.DeviceKeyRepository;
 import esthesis.platform.backend.server.repository.DeviceRepository;
-import javax.crypto.NoSuchPaddingException;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -55,26 +48,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SignatureException;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.text.MessageFormat;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import static esthesis.platform.backend.server.config.AppSettings.Setting.DeviceRegistration.REGISTRATION_MODE;
+import static esthesis.platform.backend.server.config.AppSettings.SettingValues.DeviceRegistration.RegistrationMode.DISABLED;
 
 @Log
 @Service
@@ -132,9 +118,9 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
    */
   @Async
   public void preregister(DeviceRegistrationDTO deviceRegistrationDTO)
-  throws NoSuchAlgorithmException, IOException, InvalidKeyException,
-         InvalidAlgorithmParameterException, NoSuchPaddingException, OperatorCreationException,
-         InvalidKeySpecException, NoSuchProviderException {
+    throws NoSuchAlgorithmException, IOException, InvalidKeyException,
+    InvalidAlgorithmParameterException, NoSuchPaddingException, OperatorCreationException,
+    InvalidKeySpecException, NoSuchProviderException {
     // Split IDs.
     String ids = deviceRegistrationDTO.getIds();
     ids = ids.replace("\n", ",");
@@ -179,7 +165,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
    * the device already exists in system's database.
    */
   private void activatePreregisteredDevice(RegistrationRequest registrationRequest,
-    String hardwareId) {
+                                           String hardwareId) {
     Optional<Device> optionalDevice = deviceRepository.findByHardwareId(hardwareId);
 
     // Check that a device with the same hardware ID is not already registered.
@@ -203,9 +189,9 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
    * The internal registration handler.
    */
   private void register(String hardwareId, String tags, String state, boolean checkTags)
-  throws NoSuchAlgorithmException, IOException, InvalidKeyException,
-         InvalidAlgorithmParameterException, NoSuchPaddingException, OperatorCreationException,
-         InvalidKeySpecException, NoSuchProviderException {
+    throws NoSuchAlgorithmException, IOException, InvalidKeyException,
+    InvalidAlgorithmParameterException, NoSuchPaddingException, OperatorCreationException,
+    InvalidKeySpecException, NoSuchProviderException {
     // Create a keypair for the device to be registered.
     CreateKeyPairDTO createKeyPairDTO = new CreateKeyPairDTO();
     createKeyPairDTO.setKeySize(appProperties.getSecurityAsymmetricKeySize());
@@ -276,10 +262,10 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
    * mode of the platform and decides accordingly which registration process to follow.
    */
   public void register(DeviceMessage<RegistrationRequest> registrationRequest,
-    String hardwareId)
-  throws NoSuchAlgorithmException, IOException, InvalidKeyException, NoSuchPaddingException,
-         InvalidAlgorithmParameterException, InvalidKeySpecException, SignatureException,
-         OperatorCreationException, NoSuchProviderException {
+                       String hardwareId)
+    throws NoSuchAlgorithmException, IOException, InvalidKeyException, NoSuchPaddingException,
+    InvalidAlgorithmParameterException, InvalidKeySpecException, SignatureException,
+    OperatorCreationException, NoSuchProviderException {
     DeviceDTO deviceDTO;
 
     // Verify signature and decrypt according to the configuration.
@@ -396,13 +382,18 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     return findByTags(tags).size();
   }
 
+  public List<DeviceDTO> findByTags(String[] tags) {
+    return findByTags(Arrays.asList(tags));
+  }
+
   public List<DeviceDTO> findByTags(List<String> tags) {
     if (tags.isEmpty()) {
       return new ArrayList<>();
     } else {
-      return deviceMapper.map(deviceRepository
-        .findByTagsIn(
-          Lists.newArrayList(tagService.findAllByNameIn(tags))));
+      List<Tag> tagsByName = Lists.newArrayList(tagService.findAllByNameIn(tags));
+      List<Device> devices = deviceRepository.findByTagsIdIn(tagsByName.stream()
+        .map(Tag::getId).collect(Collectors.toList()));
+      return deviceMapper.map(devices);
     }
   }
 
@@ -427,6 +418,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
   /**
    * Returns all non-hidden telemetry and metadata fields to be displayed on the device page.
+   *
    * @param deviceId The device Id to fetch fata for.
    */
   public List<DevicePageDTO> getDevicePageData(long deviceId) {
@@ -469,11 +461,12 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
   /**
    * Returns the last value of a specific telemetry or metadata field for a device.
+   *
    * @param deviceId The Id of the device to fetch the field value for.
-   * @param field The name of the telemetry or metadata field to fetch. The field needs to follow
-   * the following format:
-   *  TYPE.MEASUREMENT.FIELD
-   * For example, TELEMETRY.geolocation.latitude
+   * @param field    The name of the telemetry or metadata field to fetch. The field needs to follow
+   *                 the following format:
+   *                 TYPE.MEASUREMENT.FIELD
+   *                 For example, TELEMETRY.geolocation.latitude
    */
   public DevicePageDTO getDeviceDataField(long deviceId, String field) {
     final DevicePageDTO devicePageDTO = new DevicePageDTO();

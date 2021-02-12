@@ -284,7 +284,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
         this.errorsMain = onError.error.main;
         this.errorsDevices = onError.error.devices;
         this.errorsConditions = onError.error.conditions;
-        this.utilityService.popupError("Campaign can not be created.");
+        this.utilityService.popupError("Campaign can not be saved.");
       });
   }
 
@@ -374,5 +374,11 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
         });
     //   }
     // });
+  }
+
+  testWorkflow() {
+    this.campaignService.testWorkflow(this.id!).subscribe(onNext => {
+      console.log(onNext);
+    });
   }
 }

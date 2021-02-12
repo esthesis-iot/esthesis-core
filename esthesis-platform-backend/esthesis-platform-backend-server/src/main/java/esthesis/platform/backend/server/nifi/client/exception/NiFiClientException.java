@@ -2,9 +2,11 @@ package esthesis.platform.backend.server.nifi.client.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class NiFiClientException extends RuntimeException {
 
   private final int httpStatusCode;

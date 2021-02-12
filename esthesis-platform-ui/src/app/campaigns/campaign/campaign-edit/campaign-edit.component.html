@@ -184,8 +184,10 @@
                 <mat-form-field>
                   <mat-select placeholder="Target" formControlName="target">
                     <mat-option *ngFor="let item of [].constructor(currentGroup()); let i = index" [value]="i+1">Group {{i+1}}</mat-option>
-                    <mat-divider></mat-divider>
-                    <mat-option [value]="0">Global</mat-option>
+                    <mat-divider
+                      *ngIf="condition.value.type !== constants.CAMPAIGN.CONDITION.TYPE.SUCCESS && condition.value.type !== constants.CAMPAIGN.CONDITION.TYPE.FAILURE"></mat-divider>
+                    <mat-option
+                      *ngIf="condition.value.type !== constants.CAMPAIGN.CONDITION.TYPE.SUCCESS && condition.value.type !== constants.CAMPAIGN.CONDITION.TYPE.FAILURE" [value]="0">Global</mat-option>
                   </mat-select>
                 </mat-form-field>
                 <mat-form-field
@@ -211,47 +213,15 @@
                     </mat-select>
                   </mat-form-field>
                   <mat-form-field>
-                    <input matInput placeholder="Date" formControlName="scheduleDate"
-                           [matDatepicker]="scheduleDatePicker">
-                    <mat-datepicker-toggle matSuffix
-                                           [for]="scheduleDatePicker"></mat-datepicker-toggle>
-                    <mat-datepicker #scheduleDatePicker></mat-datepicker>
-                  </mat-form-field>
-                  <mat-form-field>
-                    <mat-select placeholder="Hour" formControlName="scheduleHour">
-                      <mat-option [value]="0">00</mat-option>
-                      <mat-option [value]="1">01</mat-option>
-                      <mat-option [value]="2">02</mat-option>
-                      <mat-option [value]="3">03</mat-option>
-                      <mat-option [value]="4">04</mat-option>
-                      <mat-option [value]="5">05</mat-option>
-                      <mat-option [value]="6">06</mat-option>
-                      <mat-option [value]="7">07</mat-option>
-                      <mat-option [value]="8">08</mat-option>
-                      <mat-option [value]="9">09</mat-option>
-                      <mat-option [value]="10">10</mat-option>
-                      <mat-option [value]="11">11</mat-option>
-                      <mat-option [value]="12">12</mat-option>
-                      <mat-option [value]="13">13</mat-option>
-                      <mat-option [value]="14">14</mat-option>
-                      <mat-option [value]="15">15</mat-option>
-                      <mat-option [value]="16">16</mat-option>
-                      <mat-option [value]="17">17</mat-option>
-                      <mat-option [value]="18">18</mat-option>
-                      <mat-option [value]="19">19</mat-option>
-                      <mat-option [value]="20">20</mat-option>
-                      <mat-option [value]="21">21</mat-option>
-                      <mat-option [value]="22">22</mat-option>
-                      <mat-option [value]="23">23</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                  <mat-form-field>
-                    <mat-select placeholder="Minutes" formControlName="scheduleMinute">
-                      <mat-option [value]="0">00</mat-option>
-                      <mat-option [value]="15">15</mat-option>
-                      <mat-option [value]="30">30</mat-option>
-                      <mat-option [value]="45">45</mat-option>
-                    </mat-select>
+                    <input matInput [ngxMatDatetimePicker]="picker" placeholder="Choose a date" formControlName="scheduleDate">
+                    <mat-datepicker-toggle matSuffix [for]="$any(picker)"></mat-datepicker-toggle>
+                    <ngx-mat-datetime-picker #picker [showSeconds]="false"
+                                             [enableMeridian]="false">
+                      <!-- Custom icon or text of Apply icon -->
+                      <ng-template>
+                        <span>SELECT</span>
+                      </ng-template>
+                    </ngx-mat-datetime-picker>
                   </mat-form-field>
                   <button mat-button color="primary" (click)="removeCondition(i)">
                     <mat-icon>delete</mat-icon>
@@ -366,6 +336,8 @@
     <button mat-button
             *ngIf="form.get('state')!.value === constants.CAMPAIGN.STATE.CREATED"
             (click)="start()">START</button>
+    <button mat-button
+            (click)="testWorkflow()">TEST</button>
     <button mat-button (click)="save()">SAVE</button>
   </mat-card-actions>
 </mat-card>

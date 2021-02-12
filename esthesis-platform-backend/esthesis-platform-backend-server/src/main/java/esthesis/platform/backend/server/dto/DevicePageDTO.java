@@ -1,18 +1,18 @@
 package esthesis.platform.backend.server.dto;
 
 import esthesis.platform.backend.common.dto.BaseDTO;
-import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode
 @Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
 public class DevicePageDTO extends BaseDTO {
 
   @NotNull

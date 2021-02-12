@@ -207,6 +207,12 @@ public class AppConstants {
   }
 
   public static class Campaign {
+    public static class Member {
+      public static class Type {
+        public static final int DEVICE = 1;
+        public static final int TAG = 2;
+      }
+    }
     public static class State {
       public static final int CREATED = 1;
       public static final int STARTED = 2;
@@ -231,6 +237,13 @@ public class AppConstants {
       public static  class Stage {
         public static final int ENTRY = 1;
         public static final int EXIT = 2;
+        public static String of(int stage) {
+          return switch (stage) {
+            case ENTRY -> "Entry";
+            case EXIT -> "Exit";
+            default -> "Global";
+          };
+        }
       }
       public static  class Op {
         public static final int BEFORE = 1;

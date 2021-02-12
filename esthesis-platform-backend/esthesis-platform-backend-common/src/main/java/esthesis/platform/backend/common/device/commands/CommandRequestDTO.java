@@ -1,18 +1,19 @@
 package esthesis.platform.backend.common.device.commands;
 
 import esthesis.platform.backend.common.dto.BaseDTO;
-import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
+
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode
 @AllArgsConstructor
 @Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
 public class CommandRequestDTO extends BaseDTO {
 
   // The operation this command is about (for example, PING, EXECUTE, etc.)

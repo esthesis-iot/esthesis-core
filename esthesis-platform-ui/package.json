@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --proxy-config proxy.conf.json",
+    "start": "ng serve --host 0.0.0.0 --disable-host-check --proxy-config proxy.conf.json",
     "build": "ng build --prod --output-path=dist",
     "test": "ng test",
     "lint": "ng lint",
@@ -11,6 +11,8 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-material-components/datetime-picker": "^5.0.3",
+    "@angular-material-components/moment-adapter": "^5.0.0",
     "@angular/animations": "~11.0.4",
     "@angular/cdk": "~11.0.3",
     "@angular/common": "~11.0.4",

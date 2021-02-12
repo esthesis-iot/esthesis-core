@@ -19,4 +19,13 @@ export class CampaignsService extends CrudService<CampaignDto>{
       `${AppConstants.API_ROOT}/${CampaignsService.resource}/${id}/start`);
   }
 
+  /**
+   * A helper method when developing to test elements of the workflow.
+   * @param id
+   */
+  public testWorkflow(id: number) {
+    return this.http.get(
+      `${AppConstants.API_ROOT}/${CampaignsService.resource}/${id}/test-workflow`);
+  }
+
 }

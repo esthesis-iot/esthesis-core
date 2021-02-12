@@ -1,15 +1,10 @@
 package esthesis.platform.backend.server.service;
 
-import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_COUNT;
-import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_MAX;
-import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_MEAN;
-import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_MIN;
-import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_QUERY;
-import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_SUM;
-import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.SUPPORTED_OPERATIONS;
-
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.common.exception.QMismatchException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.platform.backend.common.device.commands.CommandRequestDTO;
 import esthesis.platform.backend.server.config.AppConstants.DigitalTwins.Type;
 import esthesis.platform.backend.server.dto.NiFiDTO;
@@ -30,6 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.*;
+
 @Log
 @Service
 @Validated
@@ -39,12 +36,14 @@ public class DTService {
   private final DeviceRepository deviceRepository;
   private final RestTemplate restTemplate;
   private final NiFiService niFiService;
+  private final ObjectMapper objectMapper;
 
   public DTService(DeviceRepository deviceRepository, RestTemplate restTemplate,
-    NiFiService niFiService) {
+                   NiFiService niFiService, ObjectMapper objectMapper) {
     this.deviceRepository = deviceRepository;
     this.restTemplate = restTemplate;
     this.niFiService = niFiService;
+    this.objectMapper = objectMapper;
   }
 
   /**
@@ -86,9 +85,56 @@ public class DTService {
     }
   }
 
-  @SuppressWarnings("java:")
+  /**
+   * Executes an operation against NiFi and extracts the value of the given field.
+   *
+   * @param type        The type of measurement (e.g. telemetry, metadata)/
+   * @param hardwareId  The hardware Id of the device to query.
+   * @param operation   The type of operation to perform (QUERY, COUNT, MIN, etc.).
+   * @param measurement The name of the measurement holding the values.
+   * @param field       The field to extract from the given measurement.
+   * @param from        Lower bound date/time restriction (in msec).
+   * @param to          Upper bound date/time restriction (in msec).
+   * @param page        The results page to return.
+   * @param pageSize    The number of results on each page.
+   * @return Returns an Object representation of the value of the requested field. If multiple values are obtained
+   * from NiFi, the first one is picked.
+   */
+  public String extractMetadataOrTelemetrySingleValue(String type, String hardwareId, String operation,
+                                                      String measurement, String field, Long from, Long to, Integer page,
+                                                      Integer pageSize) throws JsonProcessingException {
+    String retVal = null;
+    if (field.contains(",")) {
+      throw new QMismatchException("Only a single field is supported.");
+    }
+    String reply = executeMetadataOrTelemetry(type, hardwareId, operation, measurement, field, from, to, page, pageSize);
+    if (StringUtils.isNotBlank(reply) && !StringUtils.replace(reply, " ", "").equals("{}")) {
+      JsonNode measurementNode = objectMapper.readTree(reply).get(measurement);
+      if (measurementNode != null && measurementNode.isArray() && measurementNode.size() > 0) {
+        retVal = measurementNode.get(0).get(field).asText();
+      }
+    }
+
+    return retVal;
+  }
+
+  /**
+   * Executes an operation against NiFi and returns the JSON reply.
+   *
+   * @param type        The type of measurement (e.g. telemetry, metadata)/
+   * @param hardwareId  The hardware Id of the device to query.
+   * @param operation   The type of operation to perform (QUERY, COUNT, MIN, etc.).
+   * @param measurement The name of the measurement holding the values.
+   * @param fields      A comma-separated list of fields to extract from the given measurement.
+   * @param from        Lower bound date/time restriction (in msec).
+   * @param to          Upper bound date/time restriction (in msec).
+   * @param page        The results page to return.
+   * @param pageSize    The number of results on each page.
+   * @return Returns the JSON reply from nifi, e.g.
+   * {"health":[{"cpuTemperature":30.2,"timestamp":1612787754010,"type":"telemetry"}]}
+   */
   public String executeMetadataOrTelemetry(String type, String hardwareId, String operation,
-    String measurement, String fields, Long from, Long to, Integer page, Integer pageSize) {
+                                           String measurement, String fields, Long from, Long to, Integer page, Integer pageSize) {
     // TODO security checks
     // ...
 
@@ -143,7 +189,7 @@ public class DTService {
   }
 
   public String executeCommand(String hardwareId, String operation, String description,
-    String args) {
+                               String args) {
     // TODO security checks
     // ...
 
