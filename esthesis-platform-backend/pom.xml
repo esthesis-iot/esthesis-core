@@ -39,7 +39,7 @@
 
   <properties>
     <spring.boot.version>2.4.1</spring.boot.version>
-    <qlack.version>3.5.0</qlack.version>
+    <qlack.version>3.5.2</qlack.version>
 
     <awaitility.version>4.0.3</awaitility.version>
     <classgraph.version>4.8.22</classgraph.version>
