@@ -1,3 +1,5 @@
+@import "../../../../styles-variables";
+
 .devices-list {
   mat-icon {
     color: #999999;
@@ -45,4 +47,37 @@
   border-radius: 5px;
   color: #721c24;
   margin-bottom: 1rem;
+}
+
+.workflow-controls {
+  color: #004085;
+  background-color: #e4effb;
+  border: 1px solid #d2e4f8;
+  border-radius: 5px;
+  padding: 2rem 2rem 1rem 2rem;
+  margin-bottom: 1rem;
+  mat-icon {
+    top: -1px;
+    position: relative;
+  }
+  .status-info {
+    font-size: 1.05rem;
+    .info {
+      text-align: center;
+      .header {
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.blinking {
+  animation: blinker 4s ease-in-out infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0.5;
+    color: #7c0092;
+  }
 }

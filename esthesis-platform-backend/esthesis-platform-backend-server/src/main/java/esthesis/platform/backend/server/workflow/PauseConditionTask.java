@@ -1,19 +1,19 @@
 package esthesis.platform.backend.server.workflow;
 
+import static esthesis.platform.backend.server.workflow.CWFLConstants.VAR_TIMER;
+
 import esthesis.platform.backend.server.config.AppConstants.Campaign.Condition.Op;
 import esthesis.platform.backend.server.config.AppConstants.Campaign.Condition.Type;
 import esthesis.platform.backend.server.dto.CampaignConditionDTO;
 import esthesis.platform.backend.server.service.CampaignService;
+import java.util.List;
+import java.util.logging.Level;
 import lombok.extern.java.Log;
+import org.apache.commons.collections4.ListUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.variable.Variables;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.logging.Level;
-
-import static esthesis.platform.backend.server.workflow.CWFLConstants.VAR_TIMER;
 
 @Log
 @Component
@@ -37,7 +37,8 @@ public class PauseConditionTask implements JavaDelegate {
 
     final List<CampaignConditionDTO> conditions = campaignService
       .findConditions(campaignId, tokenLocation, Type.PAUSE);
-    log.log(Level.FINEST, "Found ''{0}'' conditions to evaluate.", conditions.size());
+    log.log(Level.FINEST, "Found ''{0}'' conditions to evaluate.",
+      ListUtils.emptyIfNull(conditions).size());
 
     int timerValue = -1;
     if (!conditions.isEmpty()) {

@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.time.Instant;
 import java.util.Collection;
 
 @Data
@@ -22,4 +23,7 @@ public class CampaignDTO extends BaseDTO {
   private String provisioningPackageId;
   private Collection<CampaignConditionDTO> conditions;
   private Collection<CampaignMemberDTO> members;
+  private Instant startedOn;
+  private Instant terminatedOn;
+  private Long provisioningId;
 }

@@ -19,6 +19,7 @@ import * as _ from "lodash"
 import {AppConstants} from '../../../app.constants';
 import {OkCancelModalComponent} from '../../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {MatDialog} from '@angular/material/dialog';
+import {CampaignStatsDto} from "../../../dto/campaign-stats-dto";
 
 @Component({
   selector: 'app-campaign-edit',
@@ -41,6 +42,15 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   errorsMain?: string[];
   errorsDevices?: string[];
   errorsConditions?: string[];
+  // A flag to indicate whether the form is disabled.
+  formDisabled = false;
+  // An object containing the full details of the campaign as returned by the back-end. This is to facilitate displaying
+  // information on the UI that might not necessarily be part of the underlying form object representing the campaign.
+  // For example, the date a campaign started (needs to be displayed but is not exchanged with the campaign form object).
+  campaign?: CampaignDto;
+  now = new Date();
+  campaignStats?: CampaignStatsDto;
+  campaignChart?: any;
 
   constructor(private fb: FormBuilder, public utilityService: UtilityService,
               private qForms: QFormsService, private provisioningService: ProvisioningService,
@@ -49,6 +59,50 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
               private tagService: TagService, private campaignService: CampaignsService,
               private dialog: MatDialog) {
     super();
+  }
+
+  private getCampaignStats() {
+    this.campaignService.stats(this.id).subscribe(
+      onNext => {
+        // Save campaign stats to an object.
+        this.campaignStats = onNext
+
+        // Extract group members for the chart.
+        this.campaignChart =
+          onNext.groupMembersReplied?.map((value, index, array) => {
+            return {
+              "name": "Group " + (index + 1),
+              "value": value
+            }
+          });
+      });
+  }
+
+  private initData(): void {
+    // Fill-in the form with data if editing an existing item.
+    if (this.id && this.id !== 0) {
+      this.campaignService.get(this.id).subscribe(onNext => {
+        // Keep a copy of the complete campaign data for UI references.
+        this.campaign = onNext;
+        // Fill-in the campaign form object.
+        this.form.patchValue(onNext);
+        // Update device membership into this campaign.
+        this.memberGroups = this.getMemberGroups();
+        this.form.patchValue({"conditions": []});
+        if (onNext.conditions) {
+          onNext.conditions.forEach(c => {
+            // @ts-ignore
+            this.form.controls['conditions'].push(this.createCondition(c));
+          });
+        }
+
+        // Disable the form if the campaign is already running.
+        if (this.form.value.state !== AppConstants.CAMPAIGN.STATE.CREATED) {
+          this.disableForm();
+          this.getCampaignStats();
+        }
+      });
+    }
   }
 
   ngOnInit(): void {
@@ -104,19 +158,12 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
       this.availableTags = onNext.content;
     });
 
-    // Fill-in the form with data if editing an existing item.
-    if (this.id && this.id !== 0) {
-      this.campaignService.get(this.id).subscribe(onNext => {
-        this.form.patchValue(onNext);
-        // Update device membership into this campaign.
-        this.memberGroups = this.getMemberGroups();
-        this.form.patchValue({"conditions": []});
-        onNext.conditions.forEach(c => {
-          // @ts-ignore
-          this.form.controls['conditions'].push(this.createCondition(c));
-        });
-      });
-    }
+    this.initData();
+  }
+
+  private disableForm() {
+    this.form.disable();
+    this.formDisabled = true;
   }
 
   private createCondition(campaignConditionDto: CampaignConditionDto) {
@@ -149,8 +196,6 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     switch (type) {
       case this.constants.CAMPAIGN.CONDITION.TYPE.DATETIME:
         return "alarm";
-      case this.constants.CAMPAIGN.CONDITION.TYPE.FAILURE:
-        return "flash_off";
       case this.constants.CAMPAIGN.CONDITION.TYPE.PAUSE:
         return "pause";
       case this.constants.CAMPAIGN.CONDITION.TYPE.PROPERTY:
@@ -170,10 +215,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     })
   }
 
-  /**
-   *
-   */
-  public currentGroup(): number {
+  currentGroup(): number {
     let groupNo;
     if (this.form.get('members')?.value.length == 0) {
       groupNo = 1;
@@ -214,14 +256,8 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     let hardwareId = this.form.get("searchByHardwareId")?.value;
     if (hardwareId && hardwareId !== "") {
       hardwareId = hardwareId.trim();
-      // this.deviceService.getDevices(`hardwareId=${hardwareId}`).subscribe(onNext => {
-      //   if (onNext.content && onNext.content.length == 1) {
       this.form.get("members")?.value.push(
         new CampaignMemberDto(this.constants.CAMPAIGN.MEMBER_TYPE.DEVICE, hardwareId, groupNo));
-      this.utilityService.popupSuccess("Device added successfully.");
-      // } else {
-      //   this.utilityService.popupError("Could not find a device with the requested hardware
-      // Id."); } });
     }
 
     // Add tags.
@@ -266,7 +302,24 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     this.memberGroups = this.getMemberGroups();
   }
 
-  save() {
+  start() {
+    this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: "Starting campaign",
+        question: "Once a campaign is started it can not be further edited. Are you sure you" +
+          " want to proceed?",
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.save(true);
+      }
+    });
+  }
+
+  save(startCampaign: boolean) {
     // Clear unused entries and errors.
     this.form.get("searchByHardwareId")?.setValue(undefined);
     this.form.get("searchByTags")?.setValue(undefined);
@@ -277,108 +330,110 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
         this.errorsMain = undefined;
         this.errorsDevices = undefined;
         this.errorsConditions = undefined;
-        this.utilityService.popupSuccess('Campaign successfully saved.');
-        //this.router.navigate(['devices']);
+        if (startCampaign) {
+          this.campaignService.startCampaign(Number(onNext)).subscribe(
+            onNext => {
+              this.utilityService.popupSuccess('Campaign successfully started.');
+              this.router.navigate(['campaigns']);
+            }, onError => {
+              this.utilityService.popupError("Campaign could not be started.");
+            }
+          );
+        } else {
+          this.utilityService.popupSuccess('Campaign successfully saved.');
+          this.router.navigate(['campaigns']);
+        }
       },
       onError => {
         this.errorsMain = onError.error.main;
         this.errorsDevices = onError.error.devices;
         this.errorsConditions = onError.error.conditions;
-        this.utilityService.popupError("Campaign can not be saved.");
+        if (startCampaign) {
+          this.utilityService.popupError("Campaign could not be started.");
+        } else {
+          this.utilityService.popupError("Campaign can not be saved.");
+        }
       });
-  }
-
-  test(): void {
-    for (let i = 1; i < 13; i++) {
-      this.form.patchValue({
-        searchByHardwareId: "Item " + i
-      });
-      i % 4 == 0 ? this.addDeviceOrTag(0) : this.addDeviceOrTag();
-    }
-
-    this.form.patchValue({
-      name: "My camp",
-      description: "my desc",
-      type: this.constants.CAMPAIGN.TYPE.COMMAND,
-      commandName: "mycmd",
-      commandArguments: "arg1"
-    })
-
-    this.addCondition(AppConstants.CAMPAIGN.CONDITION.TYPE.BATCH);
-    // @ts-ignore
-    this.form.get("conditions").controls[0].setValue(
-      {"operation": null, "propertyName": null, "scheduleDate": null, "scheduleHour": null,
-        "scheduleMinute": null, "stage": null, "target": 1,
-        "type": AppConstants.CAMPAIGN.CONDITION.TYPE.BATCH, "value": 10}
-    );
-
-    this.addCondition(AppConstants.CAMPAIGN.CONDITION.TYPE.DATETIME);
-    // @ts-ignore
-    this.form.get("conditions").controls[1].setValue(
-      {"operation": 1, "propertyName": null, "scheduleDate": new Date(),
-        "scheduleHour": "21", "scheduleMinute": "15", "stage": 1,
-        "target": 1, "type": AppConstants.CAMPAIGN.CONDITION.TYPE.DATETIME, "value": null}
-    );
-
-    this.addCondition(AppConstants.CAMPAIGN.CONDITION.TYPE.FAILURE);
-    // @ts-ignore
-    this.form.get("conditions").controls[2].setValue(
-      {"operation": 3, "propertyName": null, "scheduleDate": null,
-        "scheduleHour": null, "scheduleMinute": null, "stage": 1,
-        "target": 1, "type": AppConstants.CAMPAIGN.CONDITION.TYPE.FAILURE, "value": 10}
-    );
-
-    this.addCondition(AppConstants.CAMPAIGN.CONDITION.TYPE.PAUSE);
-    // @ts-ignore
-    this.form.get("conditions").controls[3].setValue(
-      {"operation": 6, "propertyName": null, "scheduleDate": null,
-        "scheduleHour": null, "scheduleMinute": null, "stage": 1,
-        "target": 1, "type": AppConstants.CAMPAIGN.CONDITION.TYPE.PAUSE, "value": 10}
-    );
-
-    this.addCondition(AppConstants.CAMPAIGN.CONDITION.TYPE.PROPERTY);
-    // @ts-ignore
-    this.form.get("conditions").controls[4].setValue(
-      {"operation": 8, "propertyName": "abc", "scheduleDate": null,
-        "scheduleHour": null, "scheduleMinute": null, "stage": 1,
-        "target": 1, "type": AppConstants.CAMPAIGN.CONDITION.TYPE.PROPERTY, "value": 10}
-    );
-
-    this.addCondition(AppConstants.CAMPAIGN.CONDITION.TYPE.SUCCESS);
-    // @ts-ignore
-    this.form.get("conditions").controls[5].setValue(
-      {"operation": 4, "propertyName": null, "scheduleDate": null,
-        "scheduleHour": null, "scheduleMinute": null, "stage": 1,
-        "target": 1, "type": AppConstants.CAMPAIGN.CONDITION.TYPE.SUCCESS, "value": 10}
-    );
   }
 
   removeCondition(i: number) {
     (this.form.controls['conditions'] as FormArray).removeAt(i);
   }
 
-  start() {
-    // this.dialog.open(OkCancelModalComponent, {
-    //   data: {
-    //     title: "Starting campaign",
-    //     question: "Once a campaign is started it can not be further edited. Are you sure you" +
-    //       " want to proceed?",
-    //     buttons: {
-    //       ok: true, cancel: true, reload: false
-    //     }
-    //   }
-    // }).afterClosed().subscribe(result => {
-    //   if (result) {
-        this.campaignService.startCampaign(this.id!).subscribe(onNext => {
-          console.log(onNext);
+  delete() {
+    this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: 'Delete campaign',
+        question: 'Do you really want to delete this campaign?',
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.campaignService.delete(this.id).subscribe(onNext => {
+          this.utilityService.popupSuccess('Campaign successfully deleted.');
+          this.router.navigate(['campaigns']);
         });
-    //   }
-    // });
+      }
+    });
   }
 
-  testWorkflow() {
-    this.campaignService.testWorkflow(this.id!).subscribe(onNext => {
-      console.log(onNext);
+  stop() {
+    this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: "Terminate campaign",
+        question: "Terminating a campaign is a permanent action and you will not be able to resume this campaign later. " +
+          "Do you want to terminate this campaign?",
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.campaignService.stopCampaign(this.id!).subscribe(onNext => {
+          this.utilityService.popupSuccess('Campaign successfully terminated.');
+          this.router.navigate(['campaigns']);
+        });
+      }
+    });
+  }
+
+  pause() {
+    this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: "Pause campaign",
+        question: "Do you really want to pause this campaign?",
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.campaignService.pauseCampaign(this.id!).subscribe(onNext => {
+          this.utilityService.popupSuccess('Campaign successfully paused.');
+          this.ngOnInit();
+        });
+      }
+    });
+  }
+
+  resume() {
+    this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: "Resume campaign",
+        question: "Do you really want to resume this campaign?",
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.campaignService.resumeCampaign(this.id!).subscribe(onNext => {
+          this.utilityService.popupSuccess('Campaign successfully resumed.');
+          this.ngOnInit();
+        });
+      }
     });
   }
 }

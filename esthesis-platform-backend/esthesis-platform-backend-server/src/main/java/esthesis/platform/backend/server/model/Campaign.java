@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,11 @@ public class Campaign extends BaseEntity {
   private String description;
   private String commandName;
   private String commandArguments;
+  private Long provisioningId;
+  private Instant startedOn;
+  private Instant terminatedOn;
+  private String stateDescription;
+  private String processInstanceId;
 
   @OneToMany(mappedBy = "campaign", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<CampaignCondition> conditions = new ArrayList<>();

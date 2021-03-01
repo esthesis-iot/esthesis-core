@@ -1,12 +1,28 @@
 BUILD_TAG := $(shell mvn -q -Dexec.executable=echo -Dexec.args='$${project.version}' --non-recursive exec:exec)
 
-all: build push
+all: build-all push-all
 
-build:
-	echo Building image with tag: $(BUILD_TAG)
+build-all: build-src build-amd64 build-arm64
+
+build-src:
+	echo "Building image with tag: $(BUILD_TAG)"
 	mvn clean install -Pprod
-	docker build . -t esthesis/esthesis-platform-backend-server:$(BUILD_TAG) -t esthesis/esthesis-platform-backend-server
 
-push:
-	docker push esthesis/esthesis-platform-backend-server:$(BUILD_TAG)
-	docker push esthesis/esthesis-platform-backend-server:latest
+build-amd64:
+	if docker buildx ls | grep -q esthesis_backend; then echo "esthesis_backend buildx already exists."; else docker buildx create --name esthesis_backend --use; fi
+	docker buildx build -f Dockerfile.amd64 --platform linux/amd64 . -t esthesis/esthesis-platform-backend:$(BUILD_TAG)-amd64 --load
+
+build-arm64:
+	if docker buildx ls | grep -q esthesis_backend; then echo "esthesis_backend buildx already exists."; else docker buildx create --name esthesis_backend --use; fi
+	docker buildx build -f Dockerfile.arm64 --platform linux/arm64 . -t esthesis/esthesis-platform-backend:$(BUILD_TAG)-arm64 --load
+
+push-all: push-amd64 push-arm64
+
+push-amd64:
+	docker push esthesis/esthesis-platform-backend:$(BUILD_TAG)-amd64
+
+push-arm64:
+	docker push esthesis/esthesis-platform-backend:$(BUILD_TAG)-arm64
+
+clear:
+	docker buildx rm esthesis_backend

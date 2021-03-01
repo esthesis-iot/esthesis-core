@@ -2,26 +2,26 @@
 # ESTHESIS PLATFORM CONFIG
 ####################################################################################################
 esthesis:
-    node-id: ${random.uuid}
-    security-asymmetric-cipher-algorithm: RSA/ECB/PKCS1Padding
-    security-asymmetric-key-algorithm: RSA
-    security-asymmetric-key-size: 2048
-    security-asymmetric-signature-algorithm: SHA256WITHRSA
-    security-symmetric-cipher-algorithm: AES/CBC/PKCS5Padding
-    security-symmetric-key-algorithm: AES
-    security-symmetric-key-size: 128
+  node-id: ${random.uuid}
+  security-asymmetric-cipher-algorithm: RSA/ECB/PKCS1Padding
+  security-asymmetric-key-algorithm: RSA
+  security-asymmetric-key-size: 2048
+  security-asymmetric-signature-algorithm: SHA256WITHRSA
+  security-symmetric-cipher-algorithm: AES/CBC/PKCS5Padding
+  security-symmetric-key-algorithm: AES
+  security-symmetric-key-size: 128
 
 ####################################################################################################
 # QLACK CONFIG
 ####################################################################################################
 qlack:
-    util:
-        jwt:
-            issuer: esthesis
-            validity: 1440
-        logger:
-            logParamValues: false
-            logPerformance: false
+  util:
+    jwt:
+      issuer: esthesis
+      validity: 1440
+    logger:
+      logParamValues: false
+      logPerformance: false
 
 ####################################################################################################
 # CAMUNDA CONFIG
@@ -34,65 +34,65 @@ camunda.bpm:
 # SPRING CONFIG
 ####################################################################################################
 logging:
-    level:
-        com:
-            eurodyn:
-                qlack: debug
-                qlack.util.logger: warn
-        esthesis: trace
-        esthesis.platform.backend.server.config: debug
-        esthesis.platform.backend.server.nifi.client.util.JacksonIgnoreInvalidFormatException: error
-        root: warn
-    pattern:
-        console: '%highlight(%-3level) %green(%25.25logger{25}:%-4L) %white(%msg) %n'
+  level:
+    com:
+      eurodyn:
+        qlack: debug
+        qlack.util.logger: warn
+    esthesis: trace
+    esthesis.platform.backend.server.config: debug
+    esthesis.platform.backend.server.nifi.client.util.JacksonIgnoreInvalidFormatException: error
+    root: warn
+  pattern:
+    console: '%highlight(%-3level) %green(%25.25logger{25}:%-4L) %white(%msg) %n'
 server:
-    compression:
-        enabled: true
-    error:
-        include-stacktrace: never
-    port: 46000
-    servlet:
-        context-path: /api
+  compression:
+    enabled: true
+  error:
+    include-stacktrace: never
+  port: 46000
+  servlet:
+    context-path: /api
 spring:
-    datasource:
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        hikari:
-            connection-test-query: SELECT 1
-            initialization-fail-timeout: 120000
-        name: appDS
-        password: esthesis
-        url: jdbc:mysql://localhost:45000/esthesis?autoReconnect=true&createDatabaseIfNotExist=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-        username: esthesis
-    jackson:
-        default-property-inclusion: non_empty
-    jpa:
-        generate-ddl: false
-        hibernate:
-            ddl-auto: none
-        open-in-view: false
-        properties:
-            hibernate:
-                dialect: org.hibernate.dialect.MySQL8Dialect
-                jdbc:
-                    batch_size: 10
-                order_inserts: true
-    mail:
-        defaultEncoding: UTF-8
-        host: localhost
-        password: ''
-        port: 45002
-        properties:
-            mail:
-                smtp:
-                    auth: false
-                    starttls:
-                        enable: false
-        username: ''
-    main:
-        lazy-initialization: true
-    servlet:
-        multipart:
-            enabled: true
-            file-size-threshold: 30MB
-            max-file-size: 1024MB
-            max-request-size: 1025MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-test-query: SELECT 1
+      initialization-fail-timeout: 120000
+    name: appDS
+    password: esthesis
+    url: jdbc:mysql://localhost:45000/esthesis?autoReconnect=true&createDatabaseIfNotExist=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: esthesis
+  jackson:
+    default-property-inclusion: non_empty
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        jdbc:
+          batch_size: 10
+        order_inserts: true
+  mail:
+    defaultEncoding: UTF-8
+    host: localhost
+    password: ''
+    port: 45002
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+    username: ''
+  main:
+    lazy-initialization: true
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 30MB
+      max-file-size: 1024MB
+      max-request-size: 1025MB

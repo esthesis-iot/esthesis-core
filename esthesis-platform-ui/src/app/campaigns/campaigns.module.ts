@@ -23,33 +23,37 @@ import {LogPipeModule} from '../shared/module/log-pipe.module';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatSortModule} from '@angular/material/sort';
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {PieChartModule} from "@swimlane/ngx-charts";
 
 @NgModule({
   schemas: [NO_ERRORS_SCHEMA],
   declarations: [CampaignsComponent, CampaignEditComponent],
-  imports: [
-    CommonModule,
-    CampaignsRoutingModule,
-    MatCardModule,
-    MatTableModule,
-    MatButtonModule,
-    FlexLayoutModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatMenuModule,
-    MatPaginatorModule,
-    MatSelectModule,
-    QFormsModule,
-    MatSortModule,
-    DisplayModule,
-    DateSupportModule,
-    MatIconModule,
-    MatDividerModule,
-    LogPipeModule,
-    MatAutocompleteModule,
-    DragDropModule,
-  ]
+    imports: [
+        CommonModule,
+        CampaignsRoutingModule,
+        MatCardModule,
+        MatTableModule,
+        MatButtonModule,
+        FlexLayoutModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatMenuModule,
+        MatPaginatorModule,
+        MatSelectModule,
+        QFormsModule,
+        MatSortModule,
+        DisplayModule,
+        DateSupportModule,
+        MatIconModule,
+        MatDividerModule,
+        LogPipeModule,
+        MatAutocompleteModule,
+        DragDropModule,
+        MatProgressBarModule,
+        PieChartModule,
+    ]
 })
 export class CampaignsModule {
 }

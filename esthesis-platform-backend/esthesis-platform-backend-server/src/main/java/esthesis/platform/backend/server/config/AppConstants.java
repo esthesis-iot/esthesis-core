@@ -214,10 +214,12 @@ public class AppConstants {
       }
     }
     public static class State {
-      public static final int CREATED = 1;
-      public static final int STARTED = 2;
-      public static final int PAUSED = 3;
-      public static final int TERMINATED = 4;
+      public static final int CREATED = 10;
+      public static final int RUNNING = 20;
+      public static final int PAUSED_BY_USER = 30;
+      public static final int PAUSED_BY_WORKFLOW = 40;
+      public static final int TERMINATED_BY_WORKFLOW = 50;
+      public static final int TERMINATED_BY_USER = 60;
     }
     public static class Type {
       public static final int PROVISIONING = 1;
@@ -229,7 +231,6 @@ public class AppConstants {
       public static class Type {
         public static final int DATETIME = 1;
         public static final int SUCCESS = 2;
-        public static final int FAILURE = 3;
         public static final int PROPERTY = 4;
         public static final int PAUSE = 5;
         public static final int BATCH = 6;

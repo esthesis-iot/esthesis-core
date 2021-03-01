@@ -72,10 +72,12 @@ export const AppConstants = {
   // Campaign constants.
   CAMPAIGN: {
     STATE: {
-      CREATED: 1,
-      STARTED: 2,
-      PAUSED: 3,
-      TERMINATED: 4
+      CREATED: 10,
+      RUNNING: 20,
+      PAUSED_BY_USER: 30,
+      PAUSED_BY_WORKFLOW: 40,
+      TERMINATED_BY_WORKFLOW: 50,
+      TERMINATED_BY_USER: 60,
     },
     TYPE: {
       PROVISIONING: 1,
@@ -87,7 +89,6 @@ export const AppConstants = {
       TYPE: {
         DATETIME: 1,
         SUCCESS: 2,
-        FAILURE: 3,
         PROPERTY: 4,
         PAUSE: 5,
         BATCH: 6
@@ -99,8 +100,6 @@ export const AppConstants = {
       OP: {
         BEFORE: 1,
         AFTER: 2,
-        ABOVE: 3,
-        BELOW: 4,
         FOREVER: 5,
         TIMER_MINUTES: 6,
         EQUAL: 7,

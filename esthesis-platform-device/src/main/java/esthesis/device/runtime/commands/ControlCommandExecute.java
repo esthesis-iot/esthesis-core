@@ -4,9 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.device.runtime.config.AppConstants.Mqtt.EventType;
 import esthesis.device.runtime.mqtt.MqttClient;
-import esthesis.platform.backend.common.config.AppConstants.CommandReply;
+import esthesis.platform.backend.common.config.AppConstants.Device;
+import esthesis.platform.backend.common.config.AppConstants.Device.CommandType;
 import esthesis.platform.backend.common.device.commands.CommandReplyDTO;
 import esthesis.platform.backend.common.device.commands.CommandRequestDTO;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
 import lombok.extern.java.Log;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -20,15 +24,11 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.logging.Level;
-
 @Service
 @Validated
 @Log
 public class ControlCommandExecute {
-  private static final String COMMAND_NAME = "EXECUTE";
+  private static final String COMMAND_NAME = CommandType.EXECUTE;
   private final ControlCommandUtil mqttCommandUtil;
   private final MqttClient mqttClient;
   private final ObjectMapper objectMapper;
@@ -83,7 +83,7 @@ public class ControlCommandExecute {
 
         reply.setPayload(payload);
         reply.setPayloadType(MediaType.TEXT_PLAIN_VALUE);
-        reply.setPayloadEncoding(CommandReply.PAYLOAD_ENCODING_PLAIN);
+        reply.setPayloadEncoding(Device.CommandReply.PAYLOAD_ENCODING_PLAIN);
         mqttClient.publish(EventType.CONTROL_REPLY, objectMapper.writeValueAsBytes(reply));
       } catch (JsonProcessingException e) {
         log.log(Level.SEVERE, "Could not publish command reply.", e);

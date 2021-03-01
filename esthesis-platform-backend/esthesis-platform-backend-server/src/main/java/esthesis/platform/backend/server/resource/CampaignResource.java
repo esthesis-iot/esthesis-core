@@ -9,12 +9,19 @@ import esthesis.platform.backend.server.config.AppConstants;
 import esthesis.platform.backend.server.config.AppConstants.Campaign.Condition;
 import esthesis.platform.backend.server.config.AppConstants.Campaign.Condition.Op;
 import esthesis.platform.backend.server.config.AppConstants.Campaign.Condition.Stage;
+import esthesis.platform.backend.server.config.AppConstants.Campaign.State;
 import esthesis.platform.backend.server.config.AppConstants.Campaign.Type;
 import esthesis.platform.backend.server.dto.CampaignConditionDTO;
 import esthesis.platform.backend.server.dto.CampaignDTO;
+import esthesis.platform.backend.server.dto.CampaignStatsDTO;
 import esthesis.platform.backend.server.dto.CampaignValidationErrorDTO;
 import esthesis.platform.backend.server.model.Campaign;
 import esthesis.platform.backend.server.service.CampaignService;
+import esthesis.platform.backend.server.service.WorkflowService;
+import java.time.Instant;
+import java.util.Objects;
+import java.util.stream.Stream;
+import javax.validation.Valid;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -23,12 +30,13 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.time.Instant;
-import java.util.Objects;
-import java.util.stream.Stream;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Log
 @Validated
@@ -37,53 +45,90 @@ import java.util.stream.Stream;
 public class CampaignResource {
 
   private final CampaignService campaignService;
+  private final WorkflowService workflowService;
 
-  public CampaignResource(CampaignService campaignService) {
+  public CampaignResource(CampaignService campaignService,
+    WorkflowService workflowService) {
 
     this.campaignService = campaignService;
+    this.workflowService = workflowService;
   }
 
   /**
-   * @return Returns a map having as key the hardware Id of the device on which the command was *
-   * executed and as value the command Id (so that the reply for that command can be queried later *
-   * on if needed).
+   * @param campaignDTO
+   * @return Returns validation errors for the form, or the Id of the newly created campaign.
    */
   @PostMapping()
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save campaign.")
   public ResponseEntity save(
     @Valid @RequestBody CampaignDTO campaignDTO) {
-    System.out.println(campaignDTO);
     final CampaignValidationErrorDTO errors = validate(campaignDTO);
 
     if (errors.hasValidationErrors()) {
       return ResponseEntity.badRequest().body(errors);
     } else {
-      campaignService.save(campaignDTO);
-      return ResponseEntity.ok().build();
+      return ResponseEntity.ok().body(campaignService.save(campaignDTO).getId());
     }
   }
 
-  @ReplyFilter("-createdBy,-createdOn,-modifedBy,-modifiedOn")
-  @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch campaign.")
-  public CampaignDTO get(@PathVariable long id) {
-    return campaignService.findById(id);
+  @DeleteMapping(path = "{campaignId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete campaign.")
+  public void delete(@PathVariable long campaignId) {
+    String processInstanceId = campaignService.delete(campaignId);
+    workflowService.delete(processInstanceId);
   }
 
-  @GetMapping(path = "{id}/start", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not start workflow.")
-  public ResponseEntity start(@PathVariable long id) {
-    campaignService.startCampaign(id);
+  @ReplyFilter("-createdBy,-createdOn,-modifiedBy,-modifiedOn")
+  @GetMapping(path = "{campaignId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch campaign.")
+  public CampaignDTO get(@PathVariable long campaignId) {
+    campaignService.updateDeviceReplies(campaignId);
+
+    return campaignService.findById(campaignId);
+  }
+
+  @GetMapping(path = "{campaignId}/start", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not start campaign.")
+  public ResponseEntity start(@PathVariable long campaignId) {
+    campaignService.instantiate(campaignId);
+    workflowService.instantiate(campaignId);
+
     return ResponseEntity.ok().build();
   }
 
-  /**
-   * A helper method to test during development/debugging. Keep it disabled.
-   */
-  @GetMapping(path = "{id}/test-workflow", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not start testing.")
-  public ResponseEntity testWorkflow(@PathVariable long id) {
-    campaignService.testWorkflow(id);
+  @GetMapping(path = "{campaignId}/stats", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not campaign statistics.")
+  public ResponseEntity<CampaignStatsDTO> stats(@PathVariable long campaignId) {
+    return ResponseEntity.ok().body(campaignService.statsCampaign(campaignId));
+  }
+
+  @GetMapping(path = "{campaignId}/terminate", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not terminate campaign.")
+  public ResponseEntity terminate(@PathVariable long campaignId) {
+    campaignService.terminateCampaignByUser(campaignId);
+    workflowService.suspend(campaignId);
+    return ResponseEntity.ok().build();
+  }
+
+  @GetMapping(path = "{campaignId}/pause", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not pause campaign.")
+  public ResponseEntity pause(@PathVariable long campaignId) {
+    campaignService.pauseCampaignByUser(campaignId);
+    workflowService.suspend(campaignId);
+    return ResponseEntity.ok().build();
+  }
+
+  @GetMapping(path = "{campaignId}/resume", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not resume campaign.")
+  public ResponseEntity resume(@PathVariable long campaignId) {
+    int campaignStateSnapshot = campaignService.getState(campaignId);
+    campaignService.resume(campaignId);
+    if (campaignStateSnapshot == State.PAUSED_BY_USER) {
+      workflowService.resume(campaignId);
+    } else if (campaignStateSnapshot == State.PAUSED_BY_WORKFLOW) {
+      workflowService.correlateMessage(campaignId);
+    }
+
     return ResponseEntity.ok().build();
   }
 
@@ -158,15 +203,29 @@ public class CampaignResource {
       }
     });
 
-    // Check only a single PAUSE type exists per target & stage.
+    // Check only a single SUCCESS type exists per target.
     dto.getConditions().stream().map(CampaignConditionDTO::getTarget).distinct()
       .filter(Objects::nonNull).forEach(target -> {
+      if (dto.getConditions().stream().filter(condition ->
+        Objects.equals(condition.getType(), Condition.Type.SUCCESS)
+          && Objects.equals(condition.getTarget(), target)).count() > 1) {
+        err.addConditionsError(
+          "No more than 1 Success conditions are allowed for Group " + target + ".");
+      }
+    });
+
+    // Check only a single PAUSE type exists per target & stage.
+    dto.getConditions().stream().filter(condition ->
+      condition.getType() == Condition.Type.PAUSE)
+      .map(CampaignConditionDTO::getTarget).distinct()
+      .filter(Objects::nonNull).forEach(target -> {
       Stream.of(Stage.ENTRY, Stage.EXIT).forEach(stage -> {
-        if (dto.getConditions().stream().filter(Objects::nonNull).filter(condition -> {
-          return condition.getTarget().intValue() == target
-            && condition.getStage().intValue() == stage
-            && condition.getType().intValue() == Condition.Type.PAUSE;
-        }).count() > 1) {
+        if (dto.getConditions().stream().filter(Objects::nonNull)
+          .filter(condition ->
+            condition.getType() == Condition.Type.PAUSE)
+          .filter(condition ->
+            condition.getTarget().intValue() == target
+              && condition.getStage().intValue() == stage).count() > 1) {
           if (target == 0) {
             err.addConditionsError(
               "No more than 1 Pause conditions are allowed for Global level, stage " +
@@ -225,14 +284,8 @@ public class CampaignResource {
         }
       }
 
-      // SUCCESS/FAILURE checks.
-      if (cType == Condition.Type.FAILURE || cType == Condition.Type.SUCCESS) {
-        if (cStage == null) {
-          err.addConditionsError(index, "Stage can not be empty.");
-        }
-        if (cOperation == null) {
-          err.addConditionsError(index, "Operation can not be empty.");
-        }
+      // SUCCESS checks.
+      if (cType == Condition.Type.SUCCESS) {
         if (StringUtils.isEmpty(cValue)) {
           err.addConditionsError(index,
             "Value can not be empty, enter a number or percentage (e.g. 23 or 23%).");
@@ -276,7 +329,8 @@ public class CampaignResource {
           err.addConditionsError(index, "Value can not be empty.");
         }
         if (StringUtils.isEmpty(cPropertyName) || cPropertyName.split("\\.").length != 3) {
-          err.addConditionsError(index, "Property name should be in the form of x.y.z, e.g. telemetry.health.temperature.");
+          err.addConditionsError(index,
+            "Property name should be in the form of x.y.z, e.g. telemetry.health.temperature.");
         }
       }
       index++;

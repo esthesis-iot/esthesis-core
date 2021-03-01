@@ -1,6 +1,13 @@
 package esthesis.platform.backend.server.service;
 
-import com.eurodyn.qlack.common.exception.*;
+import static esthesis.platform.backend.server.config.AppSettings.Setting.DeviceRegistration.REGISTRATION_MODE;
+import static esthesis.platform.backend.server.config.AppSettings.SettingValues.DeviceRegistration.RegistrationMode.DISABLED;
+
+import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
+import com.eurodyn.qlack.common.exception.QDisabledException;
+import com.eurodyn.qlack.common.exception.QDoesNotExistException;
+import com.eurodyn.qlack.common.exception.QMismatchException;
+import com.eurodyn.qlack.common.exception.QSecurityException;
 import com.eurodyn.qlack.fuse.crypto.dto.CertificateSignDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoAsymmetricService;
@@ -39,6 +46,27 @@ import esthesis.platform.backend.server.model.DeviceKey;
 import esthesis.platform.backend.server.model.Tag;
 import esthesis.platform.backend.server.repository.DeviceKeyRepository;
 import esthesis.platform.backend.server.repository.DeviceRepository;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
+import java.text.MessageFormat;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+import javax.crypto.NoSuchPaddingException;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -47,20 +75,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-
-import javax.crypto.NoSuchPaddingException;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.security.spec.InvalidKeySpecException;
-import java.text.MessageFormat;
-import java.time.Instant;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-
-import static esthesis.platform.backend.server.config.AppSettings.Setting.DeviceRegistration.REGISTRATION_MODE;
-import static esthesis.platform.backend.server.config.AppSettings.SettingValues.DeviceRegistration.RegistrationMode.DISABLED;
 
 @Log
 @Service
@@ -363,6 +377,10 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     fillDecryptedKeys(deviceDTO);
 
     return deviceDTO;
+  }
+
+  public Optional<Device> findEntityByHardwareId(String hardwareId) {
+    return deviceRepository.findByHardwareId(hardwareId);
   }
 
   public int countByHardwareIds(List<String> hardwareIds) {

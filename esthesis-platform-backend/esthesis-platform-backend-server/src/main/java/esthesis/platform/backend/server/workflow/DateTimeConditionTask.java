@@ -5,6 +5,7 @@ import esthesis.platform.backend.server.config.AppConstants.Campaign.Condition.T
 import esthesis.platform.backend.server.dto.CampaignConditionDTO;
 import esthesis.platform.backend.server.service.CampaignService;
 import lombok.extern.java.Log;
+import org.apache.commons.collections4.ListUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
@@ -35,7 +36,7 @@ public class DateTimeConditionTask implements JavaDelegate {
 
     final List<CampaignConditionDTO> conditions = campaignService
       .findConditions(campaignId, tokenLocation, Type.DATETIME);
-    log.log(Level.FINEST, "Found ''{0}'' conditions to evaluate.", conditions.size());
+    log.log(Level.FINEST, "Found ''{0}'' conditions to evaluate.", ListUtils.emptyIfNull(conditions).size());
 
     boolean dateCheck = true;
     for (CampaignConditionDTO campaignConditionDTO : conditions) {

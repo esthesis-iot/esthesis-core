@@ -5,7 +5,7 @@
 ####################################################################################################
 # Cache NPM mobuldes.
 ####################################################################################################
-FROM node:13.10-alpine as npm
+FROM node:12.20.2-alpine as npm
 MAINTAINER esthesis@eurodyn.com
 
 # Set working directory
@@ -24,7 +24,7 @@ RUN npm install
 ####################################################################################################
 # Build application.
 ####################################################################################################
-FROM node:13.10-alpine as build
+FROM node:12.20.2-alpine as build
 MAINTAINER info@eurodyn.com
 
 # Set working directory
@@ -48,7 +48,7 @@ RUN ng build --prod --output-path=dist
 ####################################################################################################
 # Create runtime container.
 ####################################################################################################
-FROM nginx:1.19.1-alpine
+FROM nginx:1.19.7-alpine
 MAINTAINER info@eurodyn.com
 
 # Copy artifact build from the 'build environment'.

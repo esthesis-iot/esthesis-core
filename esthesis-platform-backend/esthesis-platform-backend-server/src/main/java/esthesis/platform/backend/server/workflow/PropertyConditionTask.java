@@ -5,6 +5,7 @@ import esthesis.platform.backend.server.dto.CampaignConditionDTO;
 import esthesis.platform.backend.server.service.CampaignService;
 import esthesis.platform.backend.server.service.DTService;
 import lombok.extern.java.Log;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -36,7 +37,7 @@ public class PropertyConditionTask implements JavaDelegate {
 
     final List<CampaignConditionDTO> conditions = campaignService
       .findConditions(campaignId, tokenLocation, AppConstants.Campaign.Condition.Type.PROPERTY);
-    log.log(Level.FINEST, "Found ''{0}'' conditions to evaluate.", conditions.size());
+    log.log(Level.FINEST, "Found ''{0}'' conditions to evaluate.", ListUtils.emptyIfNull(conditions).size());
 
     int target = ConditionsHelper.getTokenTarget(execution);
     List<String> hardwareIds;

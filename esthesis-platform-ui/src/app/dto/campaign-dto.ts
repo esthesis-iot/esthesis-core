@@ -14,4 +14,6 @@ export interface CampaignDto {
   provisioningPackageId: string;
   conditions: CampaignConditionDto[];
   members: CampaignMemberDto[];
+  startedOn: Date;
+  terminatedOn: Date;
 }

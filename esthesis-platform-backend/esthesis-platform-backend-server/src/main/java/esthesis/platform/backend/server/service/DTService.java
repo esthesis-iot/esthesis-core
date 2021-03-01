@@ -1,5 +1,13 @@
 package esthesis.platform.backend.server.service;
 
+import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_COUNT;
+import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_MAX;
+import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_MEAN;
+import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_MIN;
+import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_QUERY;
+import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.OPERATION_SUM;
+import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.SUPPORTED_OPERATIONS;
+
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.common.exception.QMismatchException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,6 +18,11 @@ import esthesis.platform.backend.server.config.AppConstants.DigitalTwins.Type;
 import esthesis.platform.backend.server.dto.NiFiDTO;
 import esthesis.platform.backend.server.model.Device;
 import esthesis.platform.backend.server.repository.DeviceRepository;
+import java.text.MessageFormat;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,14 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.text.MessageFormat;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations.*;
 
 @Log
 @Service
@@ -188,6 +193,15 @@ public class DTService {
     return restTemplate.getForEntity(request.build().toUri(), String.class).getBody();
   }
 
+  /**
+   * Executes a command against a device.
+   * @param hardwareId The hardware Id of the device to be contacted.
+   * @param operation The operation to be executed on the device.
+   * @param description A description for this command.
+   * @param args The arguments to be supplied to the operation.
+   * @return Returns a Id of the command-request that was generated to contact the device.
+   * Based on this Id, the reply of the device can later on be obtained.
+   */
   public String executeCommand(String hardwareId, String operation, String description,
                                String args) {
     // TODO security checks

@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface CampaignConditionRepository extends CrudRepository<CampaignCondition, Long> {
   List<CampaignCondition> findByCampaignIdAndTargetAndStageAndType(long campaign, int target, int stage, int type);
+  List<CampaignCondition> findByCampaignIdAndTargetAndType(long campaign, int target, int type);
 }
