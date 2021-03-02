@@ -22,7 +22,7 @@
         <ng-container matColumnDef="state">
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col">State</th>
           <td mat-cell *matCellDef="let element" [ngSwitch]="element.state"
-              [ngStyle]="element.state == constants.CAMPAIGN.STATE.RUNNING ? {'color': 'green'} : ''">
+              [ngStyle]="element.state == constants.CAMPAIGN.STATE.RUNNING ? {'color': 'green'} : {}">
             <span *ngSwitchCase="10"><mat-icon>adjust</mat-icon>Created</span>
             <span *ngSwitchCase="20"><mat-icon style="color: green">play_circle</mat-icon>Running</span>
             <span *ngSwitchCase="30"><mat-icon style="color: blue">pause_cirle</mat-icon>Paused by user</span>
