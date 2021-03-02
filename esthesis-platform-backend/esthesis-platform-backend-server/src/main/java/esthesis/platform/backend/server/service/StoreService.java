@@ -14,6 +14,7 @@ import esthesis.platform.backend.server.model.Certificate;
 import esthesis.platform.backend.server.model.Store;
 import esthesis.platform.backend.server.repository.StoreRepository;
 import javax.crypto.NoSuchPaddingException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -31,6 +32,7 @@ import java.security.spec.InvalidKeySpecException;
 @Service
 @Validated
 @Transactional
+@RequiredArgsConstructor
 public class StoreService extends BaseService<StoreDTO, Store> {
 
   private static final String KEYSTORE_TYPE = "PKCS12";
@@ -41,20 +43,6 @@ public class StoreService extends BaseService<StoreDTO, Store> {
   private final CryptoCAService cryptoCAService;
   private final CryptoAsymmetricService cryptoAsymmetricService;
   private final AppProperties appProperties;
-  private final SecurityService securityService;
-
-  public StoreService(StoreRepository storeRepository,
-    CryptoKeystoreService cryptoKeystoreService,
-    CryptoCAService cryptoCAService,
-    CryptoAsymmetricService cryptoAsymmetricService,
-    AppProperties appProperties, SecurityService securityService) {
-    this.storeRepository = storeRepository;
-    this.cryptoKeystoreService = cryptoKeystoreService;
-    this.cryptoCAService = cryptoCAService;
-    this.cryptoAsymmetricService = cryptoAsymmetricService;
-    this.appProperties = appProperties;
-    this.securityService = securityService;
-  }
 
   public DownloadReply download(long id)
   throws NoSuchAlgorithmException, CertificateException, NoSuchProviderException, KeyStoreException,
@@ -87,7 +75,7 @@ public class StoreService extends BaseService<StoreDTO, Store> {
     // Collect private keys.
     for (Certificate cert : store.getPkCertificates()) {
       final PrivateKey privateKey = cryptoAsymmetricService
-        .pemToPrivateKey(new String(securityService.decrypt(cert.getPrivateKey())),
+        .pemToPrivateKey(cert.getPrivateKey(),
           appProperties.getSecurityAsymmetricKeyAlgorithm());
 
       keystore = cryptoKeystoreService

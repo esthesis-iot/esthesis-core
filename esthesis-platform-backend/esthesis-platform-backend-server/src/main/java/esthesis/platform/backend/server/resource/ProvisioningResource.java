@@ -54,7 +54,7 @@ public class ProvisioningResource {
          SignatureException, InvalidAlgorithmParameterException, InvalidKeySpecException {
     if (provisioningDTO.getId() == null && file.isPresent()) {
       final long id = provisioningService.save(provisioningDTO, file.get());
-      provisioningService.encryptAndSign(id);
+//      provisioningService.encryptAndSign(id);
     } else {
       // Make sure existing r/o attributes are not overwritten.
       @SuppressWarnings("ConstantConditions") final Provisioning existingProvisioning =
@@ -103,6 +103,6 @@ public class ProvisioningResource {
         "attachment; filename=" + provisioningDTO.getFileName())
       .contentLength(provisioningDTO.getFileSize())
       .contentType(MediaType.APPLICATION_OCTET_STREAM)
-      .body(new InputStreamResource(provisioningService.download(id, false)));
+      .body(new InputStreamResource(provisioningService.download(id)));
   }
 }

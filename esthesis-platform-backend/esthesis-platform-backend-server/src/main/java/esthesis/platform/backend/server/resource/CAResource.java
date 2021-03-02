@@ -13,7 +13,13 @@ import esthesis.platform.backend.server.config.AppConstants.Cryptography.KeyType
 import esthesis.platform.backend.server.dto.CaDTO;
 import esthesis.platform.backend.server.model.Ca;
 import esthesis.platform.backend.server.service.CAService;
-import esthesis.platform.backend.server.service.SecurityService;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Optional;
 import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -36,25 +42,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Optional;
-
 @Log
 @Validated
 @RestController
 @RequestMapping("/cas")
 public class CAResource {
 
-  private final SecurityService securityService;
   private final CAService caService;
 
-  public CAResource(SecurityService securityService, CAService caService) {
-    this.securityService = securityService;
+  public CAResource(CAService caService) {
     this.caService = caService;
   }
 
@@ -104,7 +100,7 @@ public class CAResource {
         break;
       case KeyType.PRIVATE_KEY:
         filename += ".key";
-        body = new String(securityService.decrypt(caDTO.getPrivateKey()), StandardCharsets.UTF_8);
+        body = caDTO.getPrivateKey();
         break;
       default:
         throw new QDoesNotExistException("Requested key type does not exist.");

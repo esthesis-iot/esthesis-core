@@ -16,17 +16,8 @@ import esthesis.platform.backend.server.dto.CaDTO;
 import esthesis.platform.backend.server.mapper.CaMapper;
 import esthesis.platform.backend.server.model.Ca;
 import esthesis.platform.backend.server.repository.CARepository;
-import javax.crypto.NoSuchPaddingException;
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
 import java.io.IOException;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -36,6 +27,13 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import javax.crypto.NoSuchPaddingException;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
@@ -44,7 +42,6 @@ import java.util.Objects;
 public class CAService extends BaseService<CaDTO, Ca> {
 
   private final CryptoCAService cryptoCAService;
-  private final SecurityService securityService;
   private final AppProperties appProperties;
   private final ObjectMapper objectMapper;
   private final CaMapper caMapper;
@@ -81,49 +78,46 @@ public class CAService extends BaseService<CaDTO, Ca> {
         createCADTOBuilder
           .issuerCN(parentCa.getCn())
           .issuerPrivateKeyAlgorithm(appProperties.getSecurityAsymmetricKeyAlgorithm())
-          .issuerPrivateKey(new String(securityService.decrypt(parentCa.getPrivateKey()),
-            StandardCharsets.UTF_8));
+          .issuerPrivateKey(parentCa.getPrivateKey());
       }
 
       final CPPPemHolderDTO cppPemHolderDTO = cryptoCAService.createCA(createCADTOBuilder.build());
       caDTO.setCertificate(cppPemHolderDTO.getCertificate());
-      caDTO.setPrivateKey(securityService.encrypt(cppPemHolderDTO.getPrivateKey()));
+      caDTO.setPrivateKey(cppPemHolderDTO.getPrivateKey());
       caDTO.setPublicKey(cppPemHolderDTO.getPublicKey());
       caDTO.setIssued(Instant.now());
 
       caDTO = super.save(caDTO);
 
       return caDTO;
-    } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException | OperatorCreationException | NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchProviderException e) {
+    } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException | OperatorCreationException | NoSuchProviderException e) {
       throw new QCouldNotSaveException("Could not save CA.", e);
     }
   }
 
   public String backup(long id)
-  throws IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-         InvalidAlgorithmParameterException {
+    throws IOException {
     final CaDTO caDTO = caMapper.map(ReturnOptional.r(caRepository.findById(id)));
-    caDTO.setPrivateKey(new String(securityService.decrypt(caDTO.getPrivateKey()),
-      StandardCharsets.UTF_8));
+    caDTO.setPrivateKey(caDTO.getPrivateKey());
     caDTO.setType(Type.CA);
 
     return objectMapper.writeValueAsString(caDTO);
   }
 
   public void restore(String backup)
-  throws IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-         InvalidAlgorithmParameterException {
+    throws IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
+    InvalidAlgorithmParameterException {
     // Create a local copy of the system's ObjectMapper in order to overwrite Access.READ_ONLY attributes of the
     // underlying object.
     ObjectMapper localObjectMapper = objectMapper.copy();
     localObjectMapper.configure(MapperFeature.USE_ANNOTATIONS, false);
     final CaDTO caDTO = localObjectMapper.readValue(backup, CaDTO.class);
 
-    if (!Objects.equals(caDTO.getType(),Type.CA)) {
+    if (!Objects.equals(caDTO.getType(), Type.CA)) {
       throw new QCouldNotSaveException("Backup is not a CA.");
     }
 
-    caDTO.setPrivateKey(securityService.encrypt(caDTO.getPrivateKey()));
+    caDTO.setPrivateKey(caDTO.getPrivateKey());
 
     caRepository.save(caMapper.map(caDTO));
   }

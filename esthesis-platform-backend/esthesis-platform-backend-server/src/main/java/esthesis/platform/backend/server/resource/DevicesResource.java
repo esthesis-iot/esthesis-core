@@ -9,13 +9,20 @@ import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.github.slugify.Slugify;
 import com.querydsl.core.types.Predicate;
 import esthesis.platform.backend.common.device.dto.DeviceDTO;
-import esthesis.platform.backend.common.util.Base64E;
 import esthesis.platform.backend.server.dto.DeviceKeyDTO;
 import esthesis.platform.backend.server.dto.DevicePageDTO;
 import esthesis.platform.backend.server.dto.DeviceRegistrationDTO;
 import esthesis.platform.backend.server.model.Device;
 import esthesis.platform.backend.server.service.DeviceService;
-import esthesis.platform.backend.server.service.SecurityService;
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
@@ -36,28 +43,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 @Validated
 @RestController
 @RequestMapping("/devices")
 public class DevicesResource {
 
   private final DeviceService deviceService;
-  private final SecurityService securityService;
 
-  public DevicesResource(DeviceService deviceService, SecurityService securityService) {
+  public DevicesResource(DeviceService deviceService) {
     this.deviceService = deviceService;
-    this.securityService = securityService;
   }
 
   @PostMapping(path = "preregister")
@@ -103,9 +97,7 @@ public class DevicesResource {
   @GetMapping(path = "{deviceId}/keys")
   @SuppressWarnings("java:S1192")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch device keys.")
-  public ResponseEntity downloadKeys(@PathVariable long deviceId)
-  throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-         InvalidAlgorithmParameterException, IOException {
+  public ResponseEntity downloadKeys(@PathVariable long deviceId) {
     // Prepare a filename for downloading.
     String filename =
       new Slugify().slugify(deviceService.findById(deviceId, true).getHardwareId()) + ".keys";
@@ -115,11 +107,7 @@ public class DevicesResource {
     // Get the keys and decrypt values.
     final DeviceKeyDTO deviceKeys = deviceService.findKeys(deviceId);
     deviceKeys
-      .setPrivateKey(new String(securityService.decrypt(deviceKeys.getPrivateKey()),
-        StandardCharsets.UTF_8));
-    deviceKeys
-      .setSessionKey(
-        Base64E.encode(securityService.decrypt(deviceKeys.getSessionKey())));
+      .setPrivateKey(deviceKeys.getPrivateKey());
 
     // Prepare the reply.
     // TODO switch to a JSON reply
@@ -134,15 +122,7 @@ public class DevicesResource {
     stringBuilder.append("****************************************************************\n");
     stringBuilder.append(deviceKeys.getPrivateKey());
     stringBuilder.append("\n");
-    stringBuilder.append("****************************************************************\n");
-    stringBuilder.append("SESSION KEY\n");
-    stringBuilder.append("****************************************************************\n");
-    stringBuilder.append(deviceKeys.getSessionKey());
-    stringBuilder.append("\n\n");
-    stringBuilder.append("****************************************************************\n");
-    stringBuilder.append("PLATFORM PUBLIC KEY\n");
-    stringBuilder.append("****************************************************************\n");
-    stringBuilder.append(deviceKeys.getPsPublicKey());
+    // TODO we don't need the certificate too?
 
     return ResponseEntity
       .ok()

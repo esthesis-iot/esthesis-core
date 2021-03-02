@@ -4,12 +4,15 @@ import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyFilter;
 import esthesis.platform.backend.common.device.commands.CommandRequestDTO;
+import esthesis.platform.backend.common.device.dto.DeviceDTO;
 import esthesis.platform.backend.server.config.AppConstants.DigitalTwins.Type;
-import esthesis.platform.backend.server.dto.DTDeviceDTO;
 import esthesis.platform.backend.server.model.Device;
 import esthesis.platform.backend.server.repository.DeviceRepository;
 import esthesis.platform.backend.server.service.DTService;
 import esthesis.platform.backend.server.service.DeviceService;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 import javax.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,10 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
 
 @Validated
 @RestController
@@ -104,13 +103,13 @@ public class DTResource {
   }
 
   /**
-   * Finds all devices registered in esthesis and returns their status.
+   * Finds all devices registered.
    */
   @GetMapping(path = "/devices")
   @ReplyFilter("-createdBy,-modifiedBy")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not obtain devices list.")
-  public List<DTDeviceDTO> findAll() {
-    return deviceService.findAllDT();
+  public List<DeviceDTO> findAll() {
+    return deviceService.findAll();
   }
 
   /**

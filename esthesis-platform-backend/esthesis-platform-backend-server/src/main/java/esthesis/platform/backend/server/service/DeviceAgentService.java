@@ -12,21 +12,8 @@ import esthesis.platform.backend.common.dto.DeviceMessage;
 import esthesis.platform.backend.server.config.AppProperties;
 import esthesis.platform.backend.server.config.AppSettings.Setting.DeviceRegistration;
 import esthesis.platform.backend.server.config.AppSettings.Setting.Provisioning;
-import esthesis.platform.backend.server.config.AppSettings.SettingValues.Provisioning.Encryption;
 import esthesis.platform.backend.server.dto.MQTTServerDTO;
 import esthesis.platform.backend.server.dto.ProvisioningDTO;
-import javax.crypto.NoSuchPaddingException;
-import javax.validation.Valid;
-import lombok.extern.java.Log;
-import org.apache.commons.lang3.ArrayUtils;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -37,6 +24,18 @@ import java.security.spec.InvalidKeySpecException;
 import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.logging.Level;
+import javax.crypto.NoSuchPaddingException;
+import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import org.apache.commons.lang3.ArrayUtils;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * Device-facing functionality, handling provisioning and device registration services.
@@ -45,43 +44,25 @@ import java.util.logging.Level;
 @Service
 @Validated
 @Transactional
+@RequiredArgsConstructor
 public class DeviceAgentService {
 
   private final DeviceService deviceService;
   private final SettingResolverService srs;
   private final MQTTService mqttService;
-  private final SecurityService securityService;
   private final ProvisioningService provisioningService;
   private final AppProperties appProperties;
   private final SettingResolverService settingResolverService;
   private final CAService caService;
-
-  @SuppressWarnings("java:S107")
-  public DeviceAgentService(DeviceService deviceService,
-    SettingResolverService srs, MQTTService mqttService,
-    SecurityService securityService,
-    ProvisioningService provisioningService,
-    AppProperties appProperties,
-    SettingResolverService settingResolverService,
-    CAService caService) {
-    this.deviceService = deviceService;
-    this.srs = srs;
-    this.mqttService = mqttService;
-    this.securityService = securityService;
-    this.provisioningService = provisioningService;
-    this.appProperties = appProperties;
-    this.settingResolverService = settingResolverService;
-    this.caService = caService;
-  }
 
   /**
    * Registers a new device into the system.
    */
   public DeviceMessage<RegistrationResponse> register(
     DeviceMessage<RegistrationRequest> registrationRequest)
-  throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IOException,
-         InvalidAlgorithmParameterException, InvalidKeySpecException, SignatureException,
-         OperatorCreationException, NoSuchProviderException {
+    throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IOException,
+    InvalidAlgorithmParameterException, InvalidKeySpecException, SignatureException,
+    OperatorCreationException, NoSuchProviderException {
     // Register the device.
     deviceService.register(registrationRequest, registrationRequest.getHardwareId());
 
@@ -104,10 +85,7 @@ public class DeviceAgentService {
     registrationReply.setPayload(new RegistrationResponse()
       .setPublicKey(deviceDTO.getPublicKey())
       .setPrivateKey(deviceDTO.getPrivateKey())
-      .setSessionKey(deviceDTO.getSessionKey())
-      .setPsPublicKey(deviceDTO.getPsPublicKey())
       .setProvisioningUrl(srs.get(Provisioning.URL))
-      .setProvisioningKey(deviceDTO.getProvisioningKey())
       .setRootCaCertificate(rootCACertificate)
       .setCertificate(deviceDTO.getCertificate())
     );
@@ -125,9 +103,6 @@ public class DeviceAgentService {
         ArrayUtils.toArray(registrationRequest.getHardwareId(), deviceDTO.getTags())));
     }
 
-    // Sign and/or encrypt the reply according to preferences.
-    securityService.prepareOutgoingMessage(registrationReply, deviceDTO);
-
     log.log(Level.FINE, "Registered device with hardware ID {0}.", deviceDTO.getHardwareId());
     return registrationReply;
   }
@@ -136,16 +111,10 @@ public class DeviceAgentService {
    * Checks for available downloads for device's provisioning.
    */
   public DeviceMessage<ProvisioningInfoResponse> provisioningInfo(
-    Optional<Long> id, DeviceMessage<ProvisioningInfoRequest> provisioningInfoRequest)
-  throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IOException,
-         SignatureException, InvalidAlgorithmParameterException, InvalidKeySpecException {
+    Optional<Long> id, DeviceMessage<ProvisioningInfoRequest> provisioningInfoRequest) {
     // Find device information.
     final DeviceDTO deviceDTO = deviceService
       .findByHardwareId(provisioningInfoRequest.getHardwareId());
-
-    // Verify signature and decrypt according to the configuration.
-    securityService
-      .processIncomingMessage(provisioningInfoRequest, ProvisioningInfoRequest.class, deviceDTO);
 
     // Case 1: If a specific ID is requested, obtain information for that specific provisioning
     // package. For information to be returned, the package must be active and matching the tags of
@@ -185,14 +154,9 @@ public class DeviceAgentService {
           .setName(provisioningDTO.getName())
           .setPackageVersion(provisioningDTO.getPackageVersion())
           .setSha256(provisioningDTO.getSha256())
-          .setSignature(srs.is(Provisioning.ENCRYPTION, Encryption.ENCRYPTED) ?
-            provisioningDTO.getSignatureEncrypted() : provisioningDTO.getSignaturePlain())
           .setFileSize(provisioningDTO.getFileSize())
           .setFileName(provisioningDTO.getFileName()));
     }
-
-    // Sign and/or encrypt.
-    securityService.prepareOutgoingMessage(provisioningInfoResponse, deviceDTO);
 
     return provisioningInfoResponse;
   }
@@ -202,17 +166,11 @@ public class DeviceAgentService {
    */
   public InputStreamResource provisioningDownload(@PathVariable long id,
     @Valid @RequestBody DeviceMessage<ProvisioningRequest> provisioningRequest)
-  throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IOException,
-         SignatureException, InvalidAlgorithmParameterException, InvalidKeySpecException {
+    throws IOException {
     // Find device information.
     final DeviceDTO deviceDTO = deviceService
       .findByHardwareId(provisioningRequest.getHardwareId());
 
-    // Verify signature and decrypt according to the configuration.
-    securityService
-      .processIncomingMessage(provisioningRequest, ProvisioningRequest.class, deviceDTO);
-
-    return new InputStreamResource(
-      provisioningService.download(id, srs.is(Provisioning.ENCRYPTION, Encryption.ENCRYPTED)));
+    return new InputStreamResource(provisioningService.download(id));
   }
 }

@@ -30,9 +30,6 @@ public class DeviceDTO extends BaseDTO {
 
   private String publicKey;
   private String privateKey;
-  private String sessionKey;
-  private String psPublicKey;
-  private String provisioningKey;
   private String certificate;
   private Instant lastSeen;
 }

@@ -29,10 +29,10 @@ public class AppSettings {
       private Security() {
       }
 
-      public static final String OUTGOING_ENCRYPTION = "deviceOutgoingEncryption";
-      public static final String INCOMING_ENCRYPTION = "deviceIncomingEncryption";
-      public static final String OUTGOING_SIGNATURE = "deviceOutgoingSignature";
-      public static final String INCOMING_SIGNATURE = "deviceIncomingSignature";
+//      public static final String OUTGOING_ENCRYPTION = "deviceOutgoingEncryption";
+//      public static final String INCOMING_ENCRYPTION = "deviceIncomingEncryption";
+//      public static final String OUTGOING_SIGNATURE = "deviceOutgoingSignature";
+//      public static final String INCOMING_SIGNATURE = "deviceIncomingSignature";
       public static final String PLATFORM_CERTIFICATE = "platformCertificate";
       public static final String AES_KEY = "aesKey";
     }
@@ -69,38 +69,38 @@ public class AppSettings {
       private Security() {
       }
 
-      public static class OutgoingEncryption {
-
-        private OutgoingEncryption() {
-        }
-
-        public static final String ENCRYPTED = "ENCRYPTED";
-        public static final String NOT_ENCRYPTED = "NOT_ENCRYPTED";
-      }
-      public static class IncomingEncryption {
-
-        private IncomingEncryption() {
-        }
-
-        public static final String ENCRYPTED = "ENCRYPTED";
-        public static final String OPTIONAL = "OPTIONAL";
-      }
-      public static class OutgoingSignature {
-
-        private OutgoingSignature() {
-        }
-
-        public static final String SIGNED = "SIGNED";
-        public static final String NOT_SIGNED = "NOT_SIGNED";
-      }
-      public static class IncomingSignature {
-
-        private IncomingSignature() {
-        }
-
-        public static final String SIGNED = "SIGNED";
-        public static final String OPTIONAL = "OPTIONAL";
-      }
+//      public static class OutgoingEncryption {
+//
+//        private OutgoingEncryption() {
+//        }
+//
+//        public static final String ENCRYPTED = "ENCRYPTED";
+//        public static final String NOT_ENCRYPTED = "NOT_ENCRYPTED";
+//      }
+//      public static class IncomingEncryption {
+//
+//        private IncomingEncryption() {
+//        }
+//
+//        public static final String ENCRYPTED = "ENCRYPTED";
+//        public static final String OPTIONAL = "OPTIONAL";
+//      }
+//      public static class OutgoingSignature {
+//
+//        private OutgoingSignature() {
+//        }
+//
+//        public static final String SIGNED = "SIGNED";
+//        public static final String NOT_SIGNED = "NOT_SIGNED";
+//      }
+//      public static class IncomingSignature {
+//
+//        private IncomingSignature() {
+//        }
+//
+//        public static final String SIGNED = "SIGNED";
+//        public static final String OPTIONAL = "OPTIONAL";
+//      }
     }
     public static class DeviceRegistration {
 
@@ -132,22 +132,22 @@ public class AppSettings {
       private Provisioning() {
       }
 
-      public static class Encryption {
-
-        private Encryption() {
-        }
-
-        public static final String ENCRYPTED = "ENCRYPTED";
-        public static final String NOT_ENCRYPTED = "NOT_ENCRYPTED";
-      }
-      public static class Signature {
-
-        private Signature() {
-        }
-
-        public static final String SIGNED = "SIGNED";
-        public static final String NOT_SIGNED = "NOT_SIGNED";
-      }
+//      public static class Encryption {
+//
+//        private Encryption() {
+//        }
+//
+//        public static final String ENCRYPTED = "ENCRYPTED";
+//        public static final String NOT_ENCRYPTED = "NOT_ENCRYPTED";
+//      }
+//      public static class Signature {
+//
+//        private Signature() {
+//        }
+//
+//        public static final String SIGNED = "SIGNED";
+//        public static final String NOT_SIGNED = "NOT_SIGNED";
+//      }
     }
   }
 }

@@ -15,8 +15,6 @@ import lombok.experimental.Accessors;
 public class DeviceKeyDTO extends BaseDTO {
   private String publicKey;
   private String privateKey;
-  private String sessionKey;
-  private String psPublicKey;
   private String certificate;
   private String certificateCaId;
 }

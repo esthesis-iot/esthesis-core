@@ -110,7 +110,7 @@ public class ProvisioningService {
     // Get the details of the package to be downloaded.
     DeviceMessage<ProvisioningInfoRequest> provisioningInfoRequest = new DeviceMessage<>(
       appProperties.getHardwareId());
-    deviceMessageUtil.prepareOutgoing(provisioningInfoRequest);
+//    deviceMessageUtil.prepareOutgoing(provisioningInfoRequest);
 
     // Fire up request.
     //noinspection unchecked
@@ -122,7 +122,7 @@ public class ProvisioningService {
             }).getBody());
 
     // Verify reply.
-    deviceMessageUtil.processIncoming(provisioningInfoResponse, ProvisioningInfoResponse.class);
+//    deviceMessageUtil.processIncoming(provisioningInfoResponse, ProvisioningInfoResponse.class);
 
     // Check if the reply contains a provisioning package that should be downloaded.
     if (provisioningInfoResponse.getPayload() == null) {
@@ -155,7 +155,7 @@ public class ProvisioningService {
 
     DeviceMessage<ProvisioningRequest> provisioningRequest = new DeviceMessage<>(
       appProperties.getHardwareId());
-    deviceMessageUtil.prepareOutgoing(provisioningRequest);
+//    deviceMessageUtil.prepareOutgoing(provisioningRequest);
 
     RequestCallback requestCallback = request -> {
       request.getHeaders()
@@ -172,16 +172,16 @@ public class ProvisioningService {
       HttpMethod.POST, requestCallback, responseExtractor);
 
     // Verify signature if requested so.
-    if (appProperties.isProvisioningSigned()) {
-      deviceMessageUtil.verifySignature(tmpDownloadFile,
-        provisioningInfoResponse.getPayload().getSignature());
-    }
+//    if (appProperties.isProvisioningSigned()) {
+//      deviceMessageUtil.verifySignature(tmpDownloadFile,
+//        provisioningInfoResponse.getPayload().getSignature());
+//    }
 
     // Decrypt if encrypted is requested so.
-    if (appProperties.isProvisioningEncrypted()) {
-      String decryptedFile = deviceMessageUtil.decrypt(tmpDownloadFile, true);
-      Files.move(Paths.get(decryptedFile), tmpDownloadFile);
-    }
+//    if (appProperties.isProvisioningEncrypted()) {
+//      String decryptedFile = deviceMessageUtil.decrypt(tmpDownloadFile, true);
+//      Files.move(Paths.get(decryptedFile), tmpDownloadFile);
+//    }
 
     // Validate SHA256.
     try (FileInputStream fileInputStream = new FileInputStream(

@@ -20,24 +20,15 @@ import com.google.common.collect.Lists;
 import esthesis.platform.backend.common.device.RegistrationRequest;
 import esthesis.platform.backend.common.device.dto.DeviceDTO;
 import esthesis.platform.backend.common.dto.DeviceMessage;
-import esthesis.platform.backend.common.util.Base64E;
 import esthesis.platform.backend.server.config.AppConstants.Device.State;
 import esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations;
 import esthesis.platform.backend.server.config.AppConstants.NiFi.QueryResults;
 import esthesis.platform.backend.server.config.AppProperties;
 import esthesis.platform.backend.server.config.AppSettings.Setting.DeviceRegistration;
-import esthesis.platform.backend.server.config.AppSettings.Setting.Provisioning;
-import esthesis.platform.backend.server.config.AppSettings.Setting.Security;
 import esthesis.platform.backend.server.config.AppSettings.SettingValues.DeviceRegistration.RegistrationMode;
-import esthesis.platform.backend.server.config.AppSettings.SettingValues.Security.IncomingEncryption;
-import esthesis.platform.backend.server.config.AppSettings.SettingValues.Security.IncomingSignature;
-import esthesis.platform.backend.server.config.AppSettings.SettingValues.Security.OutgoingEncryption;
-import esthesis.platform.backend.server.config.AppSettings.SettingValues.Security.OutgoingSignature;
-import esthesis.platform.backend.server.dto.DTDeviceDTO;
 import esthesis.platform.backend.server.dto.DeviceKeyDTO;
 import esthesis.platform.backend.server.dto.DevicePageDTO;
 import esthesis.platform.backend.server.dto.DeviceRegistrationDTO;
-import esthesis.platform.backend.server.mapper.DTDeviceMapper;
 import esthesis.platform.backend.server.mapper.DeviceKeyMapper;
 import esthesis.platform.backend.server.mapper.DeviceMapper;
 import esthesis.platform.backend.server.model.Ca;
@@ -47,13 +38,9 @@ import esthesis.platform.backend.server.model.Tag;
 import esthesis.platform.backend.server.repository.DeviceKeyRepository;
 import esthesis.platform.backend.server.repository.DeviceRepository;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.MessageFormat;
 import java.time.Instant;
@@ -66,7 +53,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
-import javax.crypto.NoSuchPaddingException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -80,60 +67,87 @@ import org.springframework.validation.annotation.Validated;
 @Service
 @Validated
 @Transactional
+@RequiredArgsConstructor
 public class DeviceService extends BaseService<DeviceDTO, Device> {
 
   private final DeviceRepository deviceRepository;
   private final DeviceMapper deviceMapper;
-  private final DTDeviceMapper dtDeviceMapper;
   private final DeviceKeyMapper deviceKeyMapper;
   private final SettingResolverService srs;
   private final TagService tagService;
   private final DeviceKeyRepository deviceKeyRepository;
-  private final SecurityService securityService;
   private final AppProperties appProperties;
   private final CryptoAsymmetricService cryptoAsymmetricService;
   private final CryptoSymmetricService cryptoSymmetricService;
-  private final CertificatesService certificatesService;
   private final CAService caService;
   private final CryptoCAService cryptoCAService;
   private final DevicePageService devicePageService;
   private final DTService dtService;
   private final ObjectMapper mapper;
 
-  @SuppressWarnings("java:S107")
-  public DeviceService(
-    DeviceRepository deviceRepository, DeviceMapper deviceMapper, DTDeviceMapper dtDeviceMapper,
-    DeviceKeyMapper deviceKeyMapper, SettingResolverService srs, TagService tagService,
-    DeviceKeyRepository deviceKeyRepository, SecurityService securityService, AppProperties appProperties,
-    CryptoAsymmetricService cryptoAsymmetricService, CryptoSymmetricService cryptoSymmetricService,
-    CertificatesService certificatesService, CAService caService, CryptoCAService cryptoCAService,
-    DevicePageService devicePageService, DTService dtService, ObjectMapper mapper) {
-    this.deviceRepository = deviceRepository;
-    this.deviceMapper = deviceMapper;
-    this.dtDeviceMapper = dtDeviceMapper;
-    this.deviceKeyMapper = deviceKeyMapper;
-    this.srs = srs;
-    this.tagService = tagService;
-    this.deviceKeyRepository = deviceKeyRepository;
-    this.securityService = securityService;
-    this.appProperties = appProperties;
-    this.cryptoAsymmetricService = cryptoAsymmetricService;
-    this.cryptoSymmetricService = cryptoSymmetricService;
-    this.certificatesService = certificatesService;
-    this.caService = caService;
-    this.cryptoCAService = cryptoCAService;
-    this.devicePageService = devicePageService;
-    this.dtService = dtService;
-    this.mapper = mapper;
+  /**
+   * Populates the cryptographic keys of a device.
+   *
+   * @param deviceDTO The DTO of the device to populate the keys into.
+   */
+  private DeviceDTO fillCryptoKeys(DeviceDTO deviceDTO) {
+    final DeviceKey keys = deviceKeyRepository.findLatestAccepted(deviceDTO.getId());
+    deviceDTO.setPrivateKey(keys.getPrivateKey());
+    deviceDTO.setPublicKey(keys.getPublicKey());
+    deviceDTO.setCertificate(keys.getCertificate());
+
+    return deviceDTO;
   }
 
   /**
-   * Preregister a device, so that it can self-register later on.
+   * Checks if device-provided tags exist in the system and reports the ones that do not exist.
+   *
+   * @param tags The comma-separated list of tags to check.
+   */
+  private void checkTags(String tags) {
+    for (String tag : tags.split(",")) {
+      tag = tag.trim();
+      if (!tagService.findByName(tag).isPresent()) {
+        log
+          .log(Level.WARNING, "Device-pushed tag {0} does not exist.", tag);
+      }
+    }
+  }
+
+  /**
+   * Activate a preregistered device. There is no actual device registration taking place here as
+   * the device already exists in system's database.
+   *
+   * @param hardwareId The hardware Id of the device to activate.
+   */
+  private void activatePreregisteredDevice(String hardwareId) {
+    Optional<Device> optionalDevice = deviceRepository.findByHardwareId(hardwareId);
+
+    // Check that a device with the same hardware ID is not already registered.
+    if (optionalDevice.isPresent() && !optionalDevice.get().getState()
+      .equals(State.PREREGISTERED)) {
+      throw new QSecurityException(
+        "Cannot register device with hardware ID {0} as it is already in {1} state.",
+        hardwareId, optionalDevice.get().getState());
+    } else if (!optionalDevice.isPresent()) {
+      throw new QSecurityException(
+        "Device with hardware ID {0} does not exist.", hardwareId);
+    }
+
+    // Find the device and set its status to registered.
+    Device device = optionalDevice.get();
+    device.setState(State.REGISTERED);
+    deviceRepository.save(device);
+  }
+
+  /**
+   * Preregisters a device, so that it can self-register later on.
+   *
+   * @param deviceRegistrationDTO The preregistration details of the device.
    */
   @Async
   public void preregister(DeviceRegistrationDTO deviceRegistrationDTO)
-    throws NoSuchAlgorithmException, IOException, InvalidKeyException,
-    InvalidAlgorithmParameterException, NoSuchPaddingException, OperatorCreationException,
+    throws NoSuchAlgorithmException, IOException, OperatorCreationException,
     InvalidKeySpecException, NoSuchProviderException {
     // Split IDs.
     String ids = deviceRegistrationDTO.getIds();
@@ -155,56 +169,19 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
     // Register IDs.
     for (String hardwareId : idList) {
-      register(hardwareId, tagNames, State.PREREGISTERED, false);
+      register(hardwareId, tagNames, State.PREREGISTERED);
     }
   }
 
   /**
-   * Checks if device-provided tags exist in the system and reports the ones that do not exist.
+   * The internal registration handler, see {@link #register(DeviceMessage, String)}.
    *
-   * @param tags The comma-separated list of tags to check.
+   * @param hardwareId The hardware Id of the device to be registered.
+   * @param tags       The tags associated with this device as a comma-separated list.
+   * @param state      The initial state of the registration of the device.
    */
-  private void checkTags(String tags) {
-    for (String tag : tags.split(",")) {
-      tag = tag.trim();
-      if (!tagService.findByName(tag).isPresent()) {
-        log
-          .log(Level.WARNING, "Device-pushed tag {0} does not exist.", tag);
-      }
-    }
-  }
-
-  /**
-   * Activate a preregistered device. There is no actual device registration taking place here as
-   * the device already exists in system's database.
-   */
-  private void activatePreregisteredDevice(RegistrationRequest registrationRequest,
-                                           String hardwareId) {
-    Optional<Device> optionalDevice = deviceRepository.findByHardwareId(hardwareId);
-
-    // Check that a device with the same hardware ID is not already registered.
-    if (optionalDevice.isPresent() && !optionalDevice.get().getState()
-      .equals(State.PREREGISTERED)) {
-      throw new QSecurityException(
-        "Cannot register device with hardware ID {0} as it is already in {1} state.",
-        hardwareId, optionalDevice.get().getState());
-    } else if (!optionalDevice.isPresent()) {
-      throw new QSecurityException(
-        "Device with hardware ID {0} does not exist.", hardwareId);
-    }
-
-    // Find the device and set its status to registered.
-    Device device = optionalDevice.get();
-    device.setState(State.REGISTERED);
-    deviceRepository.save(device);
-  }
-
-  /**
-   * The internal registration handler.
-   */
-  private void register(String hardwareId, String tags, String state, boolean checkTags)
-    throws NoSuchAlgorithmException, IOException, InvalidKeyException,
-    InvalidAlgorithmParameterException, NoSuchPaddingException, OperatorCreationException,
+  private void register(String hardwareId, String tags, String state)
+    throws NoSuchAlgorithmException, IOException, OperatorCreationException,
     InvalidKeySpecException, NoSuchProviderException {
     // Create a keypair for the device to be registered.
     CreateKeyPairDTO createKeyPairDTO = new CreateKeyPairDTO();
@@ -229,14 +206,9 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     final byte[] sessionKey = cryptoSymmetricService.generateKey(
       appProperties.getSecuritySymmetricKeySize(),
       appProperties.getSecuritySymmetricKeyAlgorithm()).getEncoded();
-    log.log(Level.FINEST, "Device session key: {0}.", Arrays.toString(sessionKey));
     final DeviceKey deviceKey = new DeviceKey()
-      .setPrivateKey(securityService.encrypt(cryptoAsymmetricService.privateKeyToPEM(keyPair)))
       .setPublicKey(cryptoAsymmetricService.publicKeyToPEM(keyPair))
-      .setPsPublicKey(certificatesService.getPSPublicKey())
-      .setSessionKey(securityService.encrypt(sessionKey))
-      // Provisioning key is already encrypted in settings.
-      .setProvisioningKey(srs.get(Provisioning.AES_KEY))
+      .setPrivateKey(cryptoAsymmetricService.privateKeyToPEM(keyPair))
       .setRolledOn(Instant.now())
       .setRolledAccepted(true)
       .setDevice(device);
@@ -253,8 +225,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
         .setValidForm(Instant.now())
         .setValidTo(ca.getValidity())
         .setIssuerCN(ca.getCn())
-        .setIssuerPrivateKey(cryptoAsymmetricService.pemToPrivateKey(
-          new String(securityService.decrypt(ca.getPrivateKey()), StandardCharsets.UTF_8),
+        .setIssuerPrivateKey(cryptoAsymmetricService.pemToPrivateKey(ca.getPrivateKey(),
           appProperties.getSecurityAsymmetricKeyAlgorithm()));
       deviceKey.setCertificate(
         cryptoCAService.certificateToPEM(cryptoCAService.generateCertificate(signDTO)));
@@ -274,63 +245,35 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
   /**
    * Register a new device into the system. This method checks the currently active registration
    * mode of the platform and decides accordingly which registration process to follow.
+   *
+   * @param registrationRequest The details of the registration for the device.
+   * @param hardwareId          The hardware Id of the device to be registered.
    */
-  public void register(DeviceMessage<RegistrationRequest> registrationRequest,
-                       String hardwareId)
-    throws NoSuchAlgorithmException, IOException, InvalidKeyException, NoSuchPaddingException,
-    InvalidAlgorithmParameterException, InvalidKeySpecException, SignatureException,
+  public void register(DeviceMessage<RegistrationRequest> registrationRequest, String hardwareId)
+    throws NoSuchAlgorithmException, IOException, InvalidKeySpecException,
     OperatorCreationException, NoSuchProviderException {
-    DeviceDTO deviceDTO;
-
-    // Verify signature and decrypt according to the configuration.
-    try {
-      deviceDTO = findByHardwareId(registrationRequest.getHardwareId());
-      securityService
-        .processIncomingMessage(registrationRequest, RegistrationRequest.class, deviceDTO);
-    } catch (QDoesNotExistException e) {
-      // If the device is not preregistered it is not possible to verify the signature nor to
-      // decrypt its payload.
-      if (srs.is(Security.INCOMING_SIGNATURE, IncomingSignature.SIGNED) ||
-        srs.is(Security.INCOMING_ENCRYPTION, IncomingEncryption.ENCRYPTED)) {
-        throw new SecurityException("Signature and/or decryption is not supported during "
-          + "registration unless the device is preregistered with the platform.");
-      }
-    }
-
-    // Before proceeding to registration, check that the platform is capable to sign and/or encrypt
-    // the reply in case the device requests so.
-    if (registrationRequest.getPayload().isRepliesSigned() && srs.is(Security.OUTGOING_SIGNATURE,
-      OutgoingSignature.NOT_SIGNED)) {
-      throw new SecurityException("Device registration request requires a signed registration "
-        + "reply, however the platform operates in non-signing mode.");
-    }
-    if (registrationRequest.getPayload().isRepliesEncrypted() && srs
-      .is(Security.OUTGOING_ENCRYPTION, OutgoingEncryption.NOT_ENCRYPTED)) {
-      throw new SecurityException("Device registration request requires an encrypted "
-        + "registration reply, however the platform operates in non-encryption mode.");
-    }
 
     // Proceed with device registration.
     if (srs.is(REGISTRATION_MODE, DISABLED)) {
       throw new QDisabledException(
-        "Attempting to register device with hardware ID {0} but registration of new devices is "
+        "Attempting to register device with hardware Id ''{0}'' but registration of new devices is "
           + "disabled.", hardwareId);
     } else {
       // Check registration preconditions and register device.
-      log.log(Level.FINEST, "Platform running on {0} registration mode.",
+      log.log(Level.FINEST, "Platform running on ''{0}'' registration mode.",
         srs.get(REGISTRATION_MODE));
-      log.log(Level.FINE, "Attempting to register device with registration ID {0} and tags {1}.",
+      log.log(Level.FINE,
+        "Attempting to register device with registration Id ''{0}'' and tags ''{1}''.",
         ArrayUtils.toArray(hardwareId, registrationRequest.getPayload().getTags()));
       switch (srs.get(REGISTRATION_MODE)) {
         case RegistrationMode.OPEN:
-          register(hardwareId, registrationRequest.getPayload().getTags(), State.REGISTERED, true);
+          register(hardwareId, registrationRequest.getPayload().getTags(), State.REGISTERED);
           break;
         case RegistrationMode.OPEN_WITH_APPROVAL:
-          register(hardwareId,
-            registrationRequest.getPayload().getTags(), State.APPROVAL, true);
+          register(hardwareId, registrationRequest.getPayload().getTags(), State.APPROVAL);
           break;
         case RegistrationMode.ID:
-          activatePreregisteredDevice(registrationRequest.getPayload(), hardwareId);
+          activatePreregisteredDevice(hardwareId);
           break;
         case RegistrationMode.DISABLED:
           throw new QDisabledException("Device registration is disabled.");
@@ -340,53 +283,67 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     }
   }
 
-  private DeviceDTO fillDecryptedKeys(DeviceDTO deviceDTO) {
-    final DeviceKey keys = deviceKeyRepository.findLatestAccepted(deviceDTO.getId());
-
-    try {
-      deviceDTO.setPrivateKey(new String(securityService.decrypt(keys.getPrivateKey()),
-        StandardCharsets.UTF_8));
-      deviceDTO.setPublicKey(keys.getPublicKey());
-      deviceDTO.setPsPublicKey(keys.getPsPublicKey());
-      deviceDTO.setSessionKey(
-        Base64E.encode(securityService.decrypt(keys.getSessionKey())));
-      deviceDTO.setProvisioningKey(
-        Base64E.encode(securityService.decrypt(keys.getProvisioningKey())));
-      deviceDTO.setCertificate(keys.getCertificate());
-    } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException |
-      InvalidAlgorithmParameterException | IOException e) {
-      log.log(Level.SEVERE, "Could not obtain device\\'s cryptographic keys.", e);
-    }
-
-    return deviceDTO;
-  }
-
+  /**
+   * Finds the cryptographic keyts associated with a device.
+   *
+   * @param deviceId The device Id to find the keys of.
+   * @return The cryptographic keys of the device.
+   */
   public DeviceKeyDTO findKeys(long deviceId) {
     return deviceKeyMapper.map(deviceKeyRepository.findLatestAccepted(deviceId));
   }
 
+  /**
+   * Finds devices performing a partial (i.e. wildcard) search by its hardware Id.
+   *
+   * @param hardwareId The hardware Id to search by.
+   * @return A list of devices found without having their cryptographic keys populated.
+   */
   public List<DeviceDTO> findByPartialHardwareId(String hardwareId) {
     return deviceMapper
       .map(deviceRepository.findByHardwareIdContains(hardwareId));
   }
 
+  /**
+   * Finds a device based on its hardware Id.
+   *
+   * @param hardwareId The hardware Id to search by.
+   * @return The device details with its cryptographic keys populated.
+   */
   public DeviceDTO findByHardwareId(String hardwareId) {
     final DeviceDTO deviceDTO = deviceMapper
       .map(ReturnOptional.r(deviceRepository.findByHardwareId(hardwareId), hardwareId));
-    //TODO make this a boolean method param.
-    fillDecryptedKeys(deviceDTO);
+    fillCryptoKeys(deviceDTO);
 
     return deviceDTO;
   }
 
+  /**
+   * Finds the device entity class.
+   *
+   * @param hardwareId The hardware Id to search the device by.
+   * @return Returns the Device as an {@link Optional}.
+   */
   public Optional<Device> findEntityByHardwareId(String hardwareId) {
     return deviceRepository.findByHardwareId(hardwareId);
   }
 
+  /**
+   * Counts the devices in a list of hardware Ids. Search takes place via an exact match algorithm.
+   *
+   * @param hardwareIds The list of hardware Ids to check.
+   * @return The number of the devices in the list that matched.
+   */
   public int countByHardwareIds(List<String> hardwareIds) {
     return findByHardwareIds(hardwareIds).size();
   }
 
+  /**
+   * Finds the devices in a list of hardware Ids. Search takes place via an exact match algorithm.
+   *
+   * @param hardwareIds The list of hardware Ids to check.
+   * @return Returns the list of devices matched.
+   */
   public List<DeviceDTO> findByHardwareIds(List<String> hardwareIds) {
     return hardwareIds.stream()
       .map(deviceRepository::findByHardwareId)
@@ -396,14 +353,32 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
       .collect(Collectors.toList());
   }
 
+  /**
+   * Counts the number of devices in the specific list of tags.
+   *
+   * @param tags The list of tags to search by.
+   * @return Returns the number of devices matched.
+   */
   public int countByTags(List<String> tags) {
     return findByTags(tags).size();
   }
 
+  /**
+   * Finds the devices matched by the specific list of tags.
+   *
+   * @param tags The list of tags to search by.
+   * @return Returns the devices matched.
+   */
   public List<DeviceDTO> findByTags(String[] tags) {
     return findByTags(Arrays.asList(tags));
   }
 
+  /**
+   * Finds the devices matched by the specific list of tags.
+   *
+   * @param tags The list of tags to search by.
+   * @return Returns the devices matched.
+   */
   public List<DeviceDTO> findByTags(List<String> tags) {
     if (tags.isEmpty()) {
       return new ArrayList<>();
@@ -415,19 +390,28 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     }
   }
 
+  /**
+   * Finds a device by its Id, optionally populating its cryptographic keys.
+   *
+   * @param id          The Id of the device to find.
+   * @param processKeys Whether to populate the device's cryptographic keys or not.
+   * @return Returns the device matched.
+   */
   public DeviceDTO findById(long id, boolean processKeys) {
     final DeviceDTO deviceDTO = super.findById(id);
     if (processKeys) {
-      fillDecryptedKeys(deviceDTO);
+      fillCryptoKeys(deviceDTO);
     }
 
     return deviceDTO;
   }
 
-  public List<DTDeviceDTO> findAllDT() {
-    return dtDeviceMapper.map(deviceRepository.findAll());
-  }
-
+  /**
+   * Delete a device by its Id
+   *
+   * @param id The Device Id to delete by.
+   * @return Returns the details of the device deleted.
+   */
   @Async
   @Override
   public DeviceDTO deleteById(long id) {
@@ -438,6 +422,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
    * Returns all non-hidden telemetry and metadata fields to be displayed on the device page.
    *
    * @param deviceId The device Id to fetch fata for.
+   * @return A list of device page data.
    */
   public List<DevicePageDTO> getDevicePageData(long deviceId) {
     final DeviceDTO deviceDTO = findById(deviceId);
@@ -482,9 +467,9 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
    *
    * @param deviceId The Id of the device to fetch the field value for.
    * @param field    The name of the telemetry or metadata field to fetch. The field needs to follow
-   *                 the following format:
-   *                 TYPE.MEASUREMENT.FIELD
-   *                 For example, TELEMETRY.geolocation.latitude
+   *                 the following format: TYPE.MEASUREMENT.FIELD For example,
+   *                 TELEMETRY.geolocation.latitude
+   * @return The details of the device page.
    */
   public DevicePageDTO getDeviceDataField(long deviceId, String field) {
     final DevicePageDTO devicePageDTO = new DevicePageDTO();

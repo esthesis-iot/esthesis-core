@@ -63,10 +63,14 @@ public class Bootstrap {
     this.context = context;
   }
 
+  /**
+   * Default device startup sequence.
+   */
   @EventListener
   @SuppressWarnings({"java:S106", "java:S112", "java:S3776", "java:S4829"})
   public void applicationStarted(ContextRefreshedEvent contextRefreshedEvent) throws Exception {
 
+    // A device can start in paused-mode for debugging.
     if (appProperties.isPauseStartup()) {
       System.out.println("Device booting paused. Press \"ENTER\" to continue...");
       Scanner scanner = new Scanner(System.in);
@@ -77,10 +81,10 @@ public class Bootstrap {
 
     // Check if outgoing encryption is required that the public & private keys of the device are
     // available (note that, technically, only the private key is needed).
-    if (appProperties.isOutgoingEncrypted() && !securityUtil.areSecurityKeysPresent()) {
-      throw new SecurityException("Encryption of outgoing requests is required, however the "
-        + "public and private keys of the device are not available.");
-    }
+//    if (appProperties.isOutgoingEncrypted() && !securityUtil.areSecurityKeysPresent()) {
+//      throw new SecurityException("Encryption of outgoing requests is required, however the "
+//        + "public and private keys of the device are not available.");
+//    }
 
     // Create local paths.
     Files.createDirectories(Paths.get(appProperties.getStorageRoot()));

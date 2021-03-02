@@ -61,48 +61,48 @@ public class AppProperties {
   private int requestMaxBackoff;
 
   // Whether outgoing messages are encrypted.
-  @Value("${outgoingEncrypted:false}")
-  private boolean outgoingEncrypted;
+//  @Value("${outgoingEncrypted:false}")
+//  private boolean outgoingEncrypted;
 
   // Whether outgoing messages are signed.
-  @Value("${outgoingSigned:false}")
-  private boolean outgoingSigned;
+//  @Value("${outgoingSigned:false}")
+//  private boolean outgoingSigned;
 
   // Whether incoming messages should be encrypted.
-  @Value("${incomingEncrypted:false}")
-  private boolean incomingEncrypted;
+//  @Value("${incomingEncrypted:false}")
+//  private boolean incomingEncrypted;
 
   // Whether incoming messages should be signed.
-  @Value("${incomingSigned:false}")
-  private boolean incomingSigned;
+//  @Value("${incomingSigned:false}")
+//  private boolean incomingSigned;
 
   // Whether incoming provisioning packages should be encrypted.
-  @Value("${provisioningEncrypted:false}")
-  private boolean provisioningEncrypted;
+//  @Value("${provisioningEncrypted:false}")
+//  private boolean provisioningEncrypted;
 
   // Whether incoming provisioning packages should be signed.
-  @Value("${provisioningSigned:false}")
-  private boolean provisioningSigned;
+//  @Value("${provisioningSigned:false}")
+//  private boolean provisioningSigned;
 
   // The cipher used for symmetric encryption/decryption.
-  @Value("${symmetricCipher:AES/CBC/PKCS5Padding}")
-  private String symmetricCipher;
+//  @Value("${symmetricCipher:AES/CBC/PKCS5Padding}")
+//  private String symmetricCipher;
 
   // The cipher used for asymmetric encryption/decryption.
-  @Value("${asymmetricCipher:RSA/ECB/PKCS1Padding}")
-  private String asymmetricCipher;
+//  @Value("${asymmetricCipher:RSA/ECB/PKCS1Padding}")
+//  private String asymmetricCipher;
 
   // The algorithm the symmetric key (i.e. the session key) is created with.
-  @Value("${symmetricKeyAlgorithm:AES}")
-  private String symmetricKeyAlgorithm;
+//  @Value("${symmetricKeyAlgorithm:AES}")
+//  private String symmetricKeyAlgorithm;
 
   // The algorithm the asymmetric keys (i.e. public and private keys) are created with.
   @Value("${asymmetricKeyAlgorithm:RSA}")
   private String asymmetricKeyAlgorithm;
 
   // The algorithm to be used when signing messages.
-  @Value("${signatureAlgorithm:SHA256withRSA}")
-  private String signatureAlgorithm;
+//  @Value("${signatureAlgorithm:SHA256withRSA}")
+//  private String signatureAlgorithm;
 
   // A flag for the device to skip initial provisioning. This is useful in case the device comes
   // with a firmware image already installed during factory setup.

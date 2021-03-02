@@ -32,9 +32,7 @@ export class SettingsProvisioningComponent extends BaseComponent implements OnIn
 
     // Fetch settings.
     this.settingsService.findByNames(
-      AppSettings.SETTING.PROVISIONING.PROVISIONING_URL,
-      AppSettings.SETTING.PROVISIONING.ENCRYPTION,
-      AppSettings.SETTING.PROVISIONING.SIGNATURE
+      AppSettings.SETTING.PROVISIONING.PROVISIONING_URL
     ).subscribe(onNext => {
       onNext.forEach(settingDTO => {
         this.form.controls[settingDTO.key].patchValue(settingDTO.val);

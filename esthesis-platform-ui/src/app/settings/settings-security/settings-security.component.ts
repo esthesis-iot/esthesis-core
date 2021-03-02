@@ -26,19 +26,11 @@ export class SettingsSecurityComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     // Define the form.
     this.form = this.fb.group({
-      deviceOutgoingEncryption: ['', [Validators.required]],
-      deviceIncomingEncryption: ['', [Validators.required]],
-      deviceOutgoingSignature: ['', [Validators.required]],
-      deviceIncomingSignature: ['', [Validators.required]],
       platformCertificate: ['', [Validators.required]],
     });
 
     // Fetch settings.
     this.settingsService.findByNames(
-      AppSettings.SETTING.SECURITY.OUTGOING_ENCRYPTION,
-      AppSettings.SETTING.SECURITY.INCOMING_ENCRYPTION,
-      AppSettings.SETTING.SECURITY.OUTGOING_SIGNATURE,
-      AppSettings.SETTING.SECURITY.INCOMING_SIGNATURE,
       AppSettings.SETTING.SECURITY.PLATFORM_CERTIFICATE,
     ).subscribe(onNext => {
       onNext.forEach(settingDTO => {

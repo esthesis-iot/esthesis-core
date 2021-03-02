@@ -18,9 +18,4 @@ public class RegistrationRequest implements GenericRequest {
   // Comma-separated list of tags.
   private String tags;
 
-  // An indicator that the device expects the registration reply from the platform to be encrypted.
-  private boolean repliesEncrypted;
-
-  // An indicator that the device expects the registration reply from the platform to be signed.
-  private boolean repliesSigned;
 }

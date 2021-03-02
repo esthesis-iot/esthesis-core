@@ -1,33 +1,12 @@
 package esthesis.device.runtime.util;
 
-import com.eurodyn.qlack.common.exception.QSecurityException;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoAsymmetricService;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoSymmetricService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.device.runtime.config.AppProperties;
-import esthesis.platform.backend.common.dto.DeviceMessage;
-import esthesis.platform.backend.common.util.Base64E;
-import javax.crypto.NoSuchPaddingException;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.StopWatch;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
-import java.security.spec.InvalidKeySpecException;
-import java.text.MessageFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Service
 @Validated
@@ -53,10 +32,10 @@ public class DeviceMessageUtil {
     this.appProperties = appProperties;
     this.objectMapper = objectMapper;
   }
-
-  /**
+/*
+  *//**
    * Convenience method to verify the signature and/or decrypt incoming messages.
-   */
+   *//*
   public <T> void processIncoming(DeviceMessage<T> msg, Class<T> payloadClass) {
     // Verify the signature of the response if requested.
     if (appProperties.isIncomingSigned()) {
@@ -80,7 +59,7 @@ public class DeviceMessageUtil {
       if (StringUtils.isBlank(msg.getEncryptedPayload())) {
         throw new QSecurityException("There is no encrypted payload to decrypt.");
       }
-      if (StringUtils.isBlank(securityUtil.getPrivateKey())) {
+      if (StringUtils.isBlank(securityUtil.getDevicePrivateKey())) {
         throw new SecurityException("Incoming response is encrypted, however the device's private "
           + "key is not available.");
       }
@@ -93,9 +72,9 @@ public class DeviceMessageUtil {
     }
   }
 
-  /**
+  *//**
    * Convenience method to sign and/or encrypt outgoing messages.
-   */
+   *//*
   public void prepareOutgoing(DeviceMessage<?> msg) {
     // Encrypt request if required.
     if (appProperties.isOutgoingEncrypted()) {
@@ -130,13 +109,13 @@ public class DeviceMessageUtil {
 
     if (StringUtils.isNotBlank(msg.getEncryptedPayload())) {
       msg.setSignature(Base64E.encode(cryptoAsymmetricService.sign(
-        securityUtil.getPrivateKey(),
+        securityUtil.getDevicePrivateKey(),
         msg.getEncryptedPayload().getBytes(StandardCharsets.UTF_8),
         appProperties.getSignatureAlgorithm(),
         appProperties.getAsymmetricKeyAlgorithm())));
     } else {
       msg.setSignature(Base64E.encode(cryptoAsymmetricService.sign(
-        securityUtil.getPrivateKey(),
+        securityUtil.getDevicePrivateKey(),
         objectMapper.writeValueAsBytes(msg.getPayload()),
         appProperties.getSignatureAlgorithm(),
         appProperties.getAsymmetricKeyAlgorithm())));
@@ -215,9 +194,9 @@ public class DeviceMessageUtil {
     msg.setPayload(null);
   }
 
-  /**
+  *//**
    * Decrypts the payload of a message using the session key established with the platform.
-   */
+   *//*
   public <T> void decrypt(DeviceMessage<T> msg, Class<T> payloadClass)
   throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
          InvalidAlgorithmParameterException, IOException {
@@ -235,13 +214,13 @@ public class DeviceMessageUtil {
     msg.setEncryptedPayload(null);
   }
 
-  /**
+  *//**
    * Decrypts a file using the session key established with the platform.
    *
    * @param deleteEncrypted Whether to delete the encrypted file after successful decryption or
    * not.
    * @return Returns a full path to the decrypted file.
-   */
+   *//*
   public String decrypt(Path path, boolean deleteEncrypted)
   throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
          InvalidKeyException, NoSuchPaddingException {
@@ -271,5 +250,5 @@ public class DeviceMessageUtil {
     LOGGER.log(Level.FINE, "Decryption of {0} took {1} msec.",
       new Object[]{path.toFile().getAbsolutePath(), stopWatch.getTime()});
     return decryptedFile.toFile().getAbsolutePath();
-  }
+  }*/
 }

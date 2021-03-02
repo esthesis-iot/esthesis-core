@@ -113,7 +113,7 @@ public class MqttClient {
           @Override
           public void connectionLost(Throwable cause) {
             // Just report the connection lost, an automatic reconnect will be tried.
-            log.log(Level.FINEST, "Lost connection to MQTT server.", cause);
+            log.log(Level.WARNING, "Lost connection to MQTT server.", cause);
           }
 
           @Override
@@ -128,7 +128,7 @@ public class MqttClient {
 
           @Override
           public void connectComplete(boolean reconnect, String serverURI) {
-            log.log(Level.FINE, "Connected to MQTT server {0}.", serverURI);
+            log.log(Level.INFO, "Connected to MQTT server {0}.", serverURI);
             if (reconnect) {
               try {
                 subscribe();
@@ -150,9 +150,9 @@ public class MqttClient {
             .trustedCertificate(SSLSocketFactoryCertificateDTO.builder().name("ca")
               .pemCertificate(securityUtil.getRootCACertificate()).build())
             .clientCertificate(SSLSocketFactoryCertificateDTO.builder().name("client-cert")
-              .pemCertificate(securityUtil.getCertificate()).build())
+              .pemCertificate(securityUtil.getDeviceCertificate()).build())
             .clientPrivateKey(SSLSocketFactoryPrivateKeyDTO.builder().name("client-private-key")
-              .pemPrivateKey(securityUtil.getPrivateKey())
+              .pemPrivateKey(securityUtil.getDevicePrivateKey())
               .algorithm(appProperties.getAsymmetricKeyAlgorithm())
               .build())
             .build()));
