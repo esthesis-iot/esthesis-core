@@ -13,7 +13,7 @@ import {MatSort} from '@angular/material/sort';
   styleUrls: ['./campaigns.component.scss']
 })
 export class CampaignsComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['name'];
+  columns = ['name','type','state','startedOn','terminatedOn'];
   datasource = new MatTableDataSource<CampaignDto>();
 
   @ViewChild(MatSort, {static: true}) sort!: MatSort;

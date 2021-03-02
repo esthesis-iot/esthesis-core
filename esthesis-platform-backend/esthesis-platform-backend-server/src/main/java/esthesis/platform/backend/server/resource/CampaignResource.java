@@ -3,6 +3,7 @@ package esthesis.platform.backend.server.resource;
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
 import com.eurodyn.qlack.util.data.exceptions.ExceptionWrapper;
 import com.eurodyn.qlack.util.data.filter.ReplyFilter;
+import com.eurodyn.qlack.util.data.filter.ReplyPageableFilter;
 import com.eurodyn.qlack.util.querydsl.EmptyPredicateCheck;
 import com.querydsl.core.types.Predicate;
 import esthesis.platform.backend.server.config.AppConstants;
@@ -133,7 +134,8 @@ public class CampaignResource {
   }
 
   @EmptyPredicateCheck
-  //  @ReplyPageableFilter("-certificate,-privateKey,-publicKey")
+//  @ReplyPageableFilter("-certificate,-privateKey,-publicKey,-createdBy,-modifiedBy,-")
+  @ReplyPageableFilter("id,name,type,state,startedOn,terminatedOn")
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "There was a problem retrieving campaigns.")
   public Page<CampaignDTO> findAll(

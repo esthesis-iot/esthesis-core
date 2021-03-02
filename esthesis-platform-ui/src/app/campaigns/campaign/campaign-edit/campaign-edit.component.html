@@ -3,7 +3,7 @@
   <mat-card-content>
     <div class="workflow-controls" fxLayout="column" fxLayoutGap="2rem"
          *ngIf="form.value.state && form.value.state != constants.CAMPAIGN.STATE.CREATED">
-      <mat-progress-bar mode="determinate" value="{{campaignStats.progress}}"
+      <mat-progress-bar mode="determinate" value="{{campaignStats?.progress}}"
                         *ngIf="![constants.CAMPAIGN.STATE.TERMINATED_BY_WORKFLOW,
                  constants.CAMPAIGN.STATE.TERMINATED_BY_USER].includes(form.value.state)"></mat-progress-bar>
       <div fxLayout="row" fxLayoutGap="1rem">
@@ -27,11 +27,11 @@
                  *ngIf="![constants.CAMPAIGN.STATE.TERMINATED_BY_WORKFLOW,
                   constants.CAMPAIGN.STATE.TERMINATED_BY_USER].includes(form.value.state)">
               <div class="header">ETA</div>
-              <div class="nowrap">{{campaignStats.eta}}</div>
+              <div class="nowrap">{{campaignStats?.eta}}</div>
             </div>
             <div class="info">
               <div class="header">DURATION</div>
-              <div class="nowrap">{{campaignStats.duration}}</div>
+              <div class="nowrap">{{campaignStats?.duration}}</div>
             </div>
             <div class="info">
               <div class="header">DEVICES</div>
