@@ -91,14 +91,14 @@
         <bpmn:incoming>Flow_0n5brig</bpmn:incoming>
         <bpmn:outgoing>Flow_11e38eq</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_04a8zlb">
-          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5S</bpmn:timeDuration>
+          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
       <bpmn:intermediateCatchEvent id="Event_1iysv52">
         <bpmn:incoming>Flow_0ppuk9q</bpmn:incoming>
         <bpmn:outgoing>Flow_0k2yzcj</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_1g85c2v">
-          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5S</bpmn:timeDuration>
+          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
       <bpmn:exclusiveGateway id="Gateway_1obnbuc">
@@ -182,14 +182,14 @@
           <bpmn:incoming>Flow_0izenfr</bpmn:incoming>
           <bpmn:outgoing>Flow_1gfqvpp</bpmn:outgoing>
           <bpmn:timerEventDefinition id="TimerEventDefinition_0kgbpxf">
-            <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5S</bpmn:timeDuration>
+            <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
           </bpmn:timerEventDefinition>
         </bpmn:intermediateCatchEvent>
         <bpmn:intermediateCatchEvent id="Event_1574gkb">
           <bpmn:incoming>Flow_1che4nj</bpmn:incoming>
           <bpmn:outgoing>Flow_1eg59p4</bpmn:outgoing>
           <bpmn:timerEventDefinition id="TimerEventDefinition_0aupl5y">
-            <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5S</bpmn:timeDuration>
+            <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
           </bpmn:timerEventDefinition>
         </bpmn:intermediateCatchEvent>
         <bpmn:exclusiveGateway id="Gateway_1e7arii">
@@ -283,7 +283,7 @@
           <bpmn:incoming>Flow_145cxdl</bpmn:incoming>
           <bpmn:outgoing>Flow_1j07f1f</bpmn:outgoing>
           <bpmn:timerEventDefinition id="TimerEventDefinition_03nmzt1">
-            <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5S</bpmn:timeDuration>
+            <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
           </bpmn:timerEventDefinition>
         </bpmn:intermediateCatchEvent>
         <bpmn:exclusiveGateway id="Gateway_07qy9ul">
@@ -354,14 +354,14 @@
           <bpmn:incoming>Flow_1sqq03y</bpmn:incoming>
           <bpmn:outgoing>Flow_0xopggb</bpmn:outgoing>
           <bpmn:timerEventDefinition id="TimerEventDefinition_0indpx0">
-            <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5S</bpmn:timeDuration>
+            <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
           </bpmn:timerEventDefinition>
         </bpmn:intermediateCatchEvent>
         <bpmn:intermediateCatchEvent id="Event_1cfbi7o">
           <bpmn:incoming>Flow_1k0b098</bpmn:incoming>
           <bpmn:outgoing>Flow_03zlhf0</bpmn:outgoing>
           <bpmn:timerEventDefinition id="TimerEventDefinition_1dd81te">
-            <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5S</bpmn:timeDuration>
+            <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
           </bpmn:timerEventDefinition>
         </bpmn:intermediateCatchEvent>
         <bpmn:exclusiveGateway id="Gateway_05ouloi">
@@ -383,6 +383,9 @@
           </bpmn:timerEventDefinition>
         </bpmn:intermediateCatchEvent>
         <bpmn:receiveTask id="Activity_08c1j58" name="Manual Pause" messageRef="Message_0gs1180">
+          <bpmn:extensionElements>
+            <camunda:executionListener delegateExpression="#{workflowPauseListener}" event="start" />
+          </bpmn:extensionElements>
           <bpmn:incoming>Flow_1o0hbyq</bpmn:incoming>
           <bpmn:outgoing>Flow_0wsji3k</bpmn:outgoing>
         </bpmn:receiveTask>
@@ -479,14 +482,14 @@
         <bpmn:incoming>Flow_0ci6lo0</bpmn:incoming>
         <bpmn:outgoing>Flow_0e6n6ae</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_1051i2v">
-          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5S</bpmn:timeDuration>
+          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
       <bpmn:intermediateCatchEvent id="Event_0zy54tn">
         <bpmn:incoming>Flow_1ovn8gr</bpmn:incoming>
         <bpmn:outgoing>Flow_1ws6bmw</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_0bfjo85">
-          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5S</bpmn:timeDuration>
+          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
       <bpmn:exclusiveGateway id="Gateway_0anwgfn">

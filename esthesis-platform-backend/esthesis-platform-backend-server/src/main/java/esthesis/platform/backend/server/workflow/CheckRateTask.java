@@ -15,6 +15,9 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.variable.Variables;
 import org.springframework.stereotype.Component;
 
+/**
+ * Checks if the success rate of a campaign is satisfied before allowing the workflow to proceed.
+ */
 @Log
 @Component
 public class CheckRateTask implements JavaDelegate {

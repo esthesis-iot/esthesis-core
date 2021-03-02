@@ -15,9 +15,14 @@ import java.time.Instant;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * Checks that all devices in a group satisfy a specific property. Property checks are performed
+ * using the Digital Twin API.
+ */
 @Log
 @Component
 public class PropertyConditionTask implements JavaDelegate {
+
   private final DTService dtService;
   private final CampaignService campaignService;
 
@@ -33,11 +38,13 @@ public class PropertyConditionTask implements JavaDelegate {
     long campaignId = ConditionsHelper.getCampaignId(execution);
     String tokenLocation = ConditionsHelper.getTokenLocation(execution);
     log
-      .log(Level.FINEST, "Campaign Id ''{0}'', Token at ''{1}''.", new Object[]{campaignId, tokenLocation});
+      .log(Level.FINEST, "Campaign Id ''{0}'', Token at ''{1}''.",
+        new Object[]{campaignId, tokenLocation});
 
     final List<CampaignConditionDTO> conditions = campaignService
       .findConditions(campaignId, tokenLocation, AppConstants.Campaign.Condition.Type.PROPERTY);
-    log.log(Level.FINEST, "Found ''{0}'' conditions to evaluate.", ListUtils.emptyIfNull(conditions).size());
+    log.log(Level.FINEST, "Found ''{0}'' conditions to evaluate.",
+      ListUtils.emptyIfNull(conditions).size());
 
     int target = ConditionsHelper.getTokenTarget(execution);
     List<String> hardwareIds;
@@ -54,8 +61,9 @@ public class PropertyConditionTask implements JavaDelegate {
       String measurement = condition.getPropertyName().split("\\.")[1];
       String field = condition.getPropertyName().split("\\.")[2];
       for (String hardwareId : hardwareIds) {
-        log.log(Level.FINEST, "Checking property ''{0}.{1}.{2}'' for device with hardware Id ''{3}''.", new Object[]{
-          type, measurement, field, hardwareId});
+        log.log(Level.FINEST,
+          "Checking property ''{0}.{1}.{2}'' for device with hardware Id ''{3}''.", new Object[]{
+            type, measurement, field, hardwareId});
         String reply = dtService.extractMetadataOrTelemetrySingleValue(type, hardwareId,
           AppConstants.DigitalTwins.DTOperations.OPERATION_QUERY, measurement, field, 0L,
           Instant.now().toEpochMilli(), 1, 1);
@@ -64,18 +72,29 @@ public class PropertyConditionTask implements JavaDelegate {
         // Otherwise, perform a String comparison.
         if (StringUtils.isNumeric(condition.getValue())) {
           switch (condition.getOperation()) {
-            case (AppConstants.Campaign.Condition.Op.LT) -> propertyCheck = propertyCheck && Double.parseDouble(reply) < Double.parseDouble(condition.getValue());
-            case (AppConstants.Campaign.Condition.Op.LTE) -> propertyCheck = propertyCheck && Double.parseDouble(reply) <= Double.parseDouble(condition.getValue());
-            case (AppConstants.Campaign.Condition.Op.EQUAL) -> propertyCheck = propertyCheck && Double.parseDouble(reply) == Double.parseDouble(condition.getValue());
-            case (AppConstants.Campaign.Condition.Op.GT) -> propertyCheck = propertyCheck && Double.parseDouble(reply) > Double.parseDouble(condition.getValue());
-            case (AppConstants.Campaign.Condition.Op.GTE) -> propertyCheck = propertyCheck && Double.parseDouble(reply) >= Double.parseDouble(condition.getValue());
+            case (AppConstants.Campaign.Condition.Op.LT) -> propertyCheck =
+              propertyCheck && Double.parseDouble(reply) < Double.parseDouble(condition.getValue());
+            case (AppConstants.Campaign.Condition.Op.LTE) -> propertyCheck =
+              propertyCheck && Double.parseDouble(reply) <= Double
+                .parseDouble(condition.getValue());
+            case (AppConstants.Campaign.Condition.Op.EQUAL) -> propertyCheck =
+              propertyCheck && Double.parseDouble(reply) == Double
+                .parseDouble(condition.getValue());
+            case (AppConstants.Campaign.Condition.Op.GT) -> propertyCheck =
+              propertyCheck && Double.parseDouble(reply) > Double.parseDouble(condition.getValue());
+            case (AppConstants.Campaign.Condition.Op.GTE) -> propertyCheck =
+              propertyCheck && Double.parseDouble(reply) >= Double
+                .parseDouble(condition.getValue());
           }
         } else {
           int comparisonResult = reply.compareTo(condition.getValue());
           switch (condition.getOperation()) {
-            case (AppConstants.Campaign.Condition.Op.LT), (AppConstants.Campaign.Condition.Op.LTE) -> propertyCheck = propertyCheck && comparisonResult == -1;
-            case (AppConstants.Campaign.Condition.Op.GT), (AppConstants.Campaign.Condition.Op.GTE) -> propertyCheck = propertyCheck && comparisonResult == 1;
-            case (AppConstants.Campaign.Condition.Op.EQUAL) -> propertyCheck = propertyCheck && comparisonResult == 0;
+            case (AppConstants.Campaign.Condition.Op.LT), (AppConstants.Campaign.Condition.Op.LTE) -> propertyCheck =
+              propertyCheck && comparisonResult == -1;
+            case (AppConstants.Campaign.Condition.Op.GT), (AppConstants.Campaign.Condition.Op.GTE) -> propertyCheck =
+              propertyCheck && comparisonResult == 1;
+            case (AppConstants.Campaign.Condition.Op.EQUAL) -> propertyCheck =
+              propertyCheck && comparisonResult == 0;
           }
         }
         if (!propertyCheck) {

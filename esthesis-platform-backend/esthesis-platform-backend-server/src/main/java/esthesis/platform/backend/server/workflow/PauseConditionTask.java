@@ -15,6 +15,10 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.variable.Variables;
 import org.springframework.stereotype.Component;
 
+/**
+ * Evaluates a pause condition, to decide whether the worfklow should wait for a specific amount of
+ * time or indefinitely for user input.
+ */
 @Log
 @Component
 public class PauseConditionTask implements JavaDelegate {

@@ -9,9 +9,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.logging.Level;
 
+/**
+ * Finds the groups defined on a campaign, so to loop over them.
+ */
 @Log
 @Component
 public class FindGroupsTask implements JavaDelegate {
+
   private final CampaignService campaignService;
 
   public FindGroupsTask(CampaignService campaignService) {

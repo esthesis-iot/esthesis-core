@@ -39,6 +39,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Campaigns management endpoints.
+ */
 @Log
 @Validated
 @RestController
@@ -56,95 +59,10 @@ public class CampaignResource {
   }
 
   /**
-   * @param campaignDTO
-   * @return Returns validation errors for the form, or the Id of the newly created campaign.
-   */
-  @PostMapping()
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save campaign.")
-  public ResponseEntity save(
-    @Valid @RequestBody CampaignDTO campaignDTO) {
-    final CampaignValidationErrorDTO errors = validate(campaignDTO);
-
-    if (errors.hasValidationErrors()) {
-      return ResponseEntity.badRequest().body(errors);
-    } else {
-      return ResponseEntity.ok().body(campaignService.save(campaignDTO).getId());
-    }
-  }
-
-  @DeleteMapping(path = "{campaignId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete campaign.")
-  public void delete(@PathVariable long campaignId) {
-    String processInstanceId = campaignService.delete(campaignId);
-    workflowService.delete(processInstanceId);
-  }
-
-  @ReplyFilter("-createdBy,-createdOn,-modifiedBy,-modifiedOn")
-  @GetMapping(path = "{campaignId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch campaign.")
-  public CampaignDTO get(@PathVariable long campaignId) {
-    campaignService.updateDeviceReplies(campaignId);
-
-    return campaignService.findById(campaignId);
-  }
-
-  @GetMapping(path = "{campaignId}/start", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not start campaign.")
-  public ResponseEntity start(@PathVariable long campaignId) {
-    campaignService.instantiate(campaignId);
-    workflowService.instantiate(campaignId);
-
-    return ResponseEntity.ok().build();
-  }
-
-  @GetMapping(path = "{campaignId}/stats", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not campaign statistics.")
-  public ResponseEntity<CampaignStatsDTO> stats(@PathVariable long campaignId) {
-    return ResponseEntity.ok().body(campaignService.statsCampaign(campaignId));
-  }
-
-  @GetMapping(path = "{campaignId}/terminate", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not terminate campaign.")
-  public ResponseEntity terminate(@PathVariable long campaignId) {
-    campaignService.terminateCampaignByUser(campaignId);
-    workflowService.suspend(campaignId);
-    return ResponseEntity.ok().build();
-  }
-
-  @GetMapping(path = "{campaignId}/pause", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not pause campaign.")
-  public ResponseEntity pause(@PathVariable long campaignId) {
-    campaignService.pauseCampaignByUser(campaignId);
-    workflowService.suspend(campaignId);
-    return ResponseEntity.ok().build();
-  }
-
-  @GetMapping(path = "{campaignId}/resume", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not resume campaign.")
-  public ResponseEntity resume(@PathVariable long campaignId) {
-    int campaignStateSnapshot = campaignService.getState(campaignId);
-    campaignService.resume(campaignId);
-    if (campaignStateSnapshot == State.PAUSED_BY_USER) {
-      workflowService.resume(campaignId);
-    } else if (campaignStateSnapshot == State.PAUSED_BY_WORKFLOW) {
-      workflowService.correlateMessage(campaignId);
-    }
-
-    return ResponseEntity.ok().build();
-  }
-
-  @EmptyPredicateCheck
-//  @ReplyPageableFilter("-certificate,-privateKey,-publicKey,-createdBy,-modifiedBy,-")
-  @ReplyPageableFilter("id,name,type,state,startedOn,terminatedOn")
-  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "There was a problem retrieving campaigns.")
-  public Page<CampaignDTO> findAll(
-    @QuerydslPredicate(root = Campaign.class) Predicate predicate, Pageable pageable) {
-    return campaignService.findAll(predicate, pageable);
-  }
-
-  /**
-   * Custom validation checks.
+   * A parent method to call all custom validations on the campaign object.
+   *
+   * @param campaignDTO The campaign DTO to validate.
+   * @return Returns a list of validation errors.
    */
   private CampaignValidationErrorDTO validate(CampaignDTO campaignDTO) {
     CampaignValidationErrorDTO err = new CampaignValidationErrorDTO();
@@ -154,6 +72,12 @@ public class CampaignResource {
     return err;
   }
 
+  /**
+   * Validates the main parameters of the campaign (i.e. name, type, etc.)
+   *
+   * @param err The error object to augment with validation errors.
+   * @param dto The campaign DTO to validate
+   */
   private void validateMain(CampaignValidationErrorDTO err, CampaignDTO dto) {
     if (StringUtils.isEmpty(dto.getName())) {
       err.addMainError("Campaign name can not be empty.");
@@ -176,6 +100,12 @@ public class CampaignResource {
     }
   }
 
+  /**
+   * Checks if a String represents a number or a percentage.
+   *
+   * @param value The value to check.
+   * @return True if the given text is a number or a percentage, false otherwise.
+   */
   private boolean isNumberOrPercentage(String value) {
     if (value.endsWith("%")) {
       return StringUtils.isNumeric(value.substring(0, value.length() - 1));
@@ -184,6 +114,12 @@ public class CampaignResource {
     }
   }
 
+  /**
+   * Validate the conditions of a campaign.
+   *
+   * @param err The error object to augment with validation errors.
+   * @param dto The campaign DTO to validate
+   */
   private void validateConditions(CampaignValidationErrorDTO err, CampaignDTO dto) {
 
     // ************************************************************************
@@ -337,5 +273,136 @@ public class CampaignResource {
       }
       index++;
     }
+  }
+
+  /**
+   * Saves a campaign.
+   *
+   * @param campaignDTO
+   * @return Returns validation errors for the form, or the Id of the newly created campaign.
+   */
+  @PostMapping()
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save campaign.")
+  public ResponseEntity save(
+    @Valid @RequestBody CampaignDTO campaignDTO) {
+    final CampaignValidationErrorDTO errors = validate(campaignDTO);
+
+    if (errors.hasValidationErrors()) {
+      return ResponseEntity.badRequest().body(errors);
+    } else {
+      return ResponseEntity.ok().body(campaignService.save(campaignDTO).getId());
+    }
+  }
+
+  /**
+   * Deletes a campaign.
+   *
+   * @param campaignId The Id of the campaign to delete.
+   */
+  @DeleteMapping(path = "{campaignId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete campaign.")
+  public void delete(@PathVariable long campaignId) {
+    String processInstanceId = campaignService.delete(campaignId);
+    workflowService.delete(processInstanceId);
+  }
+
+  /**
+   * Returns the details of a campaign.
+   *
+   * @param campaignId The Id of the campaign to retrieve.
+   */
+  @ReplyFilter("-createdBy,-createdOn,-modifiedBy,-modifiedOn")
+  @GetMapping(path = "{campaignId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch campaign.")
+  public CampaignDTO get(@PathVariable long campaignId) {
+    campaignService.updateDeviceReplies(campaignId);
+
+    return campaignService.findById(campaignId);
+  }
+
+  /**
+   * Creates and starts a new workflow instance for a campaign.
+   *
+   * @param campaignId The Id of the campaign to start.
+   */
+  @GetMapping(path = "{campaignId}/start", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not start campaign.")
+  public ResponseEntity start(@PathVariable long campaignId) {
+    campaignService.instantiate(campaignId);
+    workflowService.instantiate(campaignId);
+
+    return ResponseEntity.ok().build();
+  }
+
+  /**
+   * Returns various statistics about a campaign.
+   *
+   * @param campaignId The Id of the campaign to retrieve statistics for.
+   */
+  @GetMapping(path = "{campaignId}/stats", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not campaign statistics.")
+  public ResponseEntity<CampaignStatsDTO> stats(@PathVariable long campaignId) {
+    return ResponseEntity.ok().body(campaignService.statsCampaign(campaignId));
+  }
+
+  /**
+   * Terminates a running campaign.
+   *
+   * @param campaignId The Id of the campaign to terminate.
+   */
+  @GetMapping(path = "{campaignId}/terminate", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not terminate campaign.")
+  public ResponseEntity terminate(@PathVariable long campaignId) {
+    campaignService.setState(campaignId, State.TERMINATED_BY_USER);
+    workflowService.suspend(campaignId);
+    return ResponseEntity.ok().build();
+  }
+
+  /**
+   * Pauses a running campaign.
+   *
+   * @param campaignId The Id of the campaign to pause.
+   */
+  @GetMapping(path = "{campaignId}/pause", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not pause campaign.")
+  public ResponseEntity pause(@PathVariable long campaignId) {
+    campaignService.setState(campaignId, State.PAUSED_BY_USER);
+    workflowService.suspend(campaignId);
+    return ResponseEntity.ok().build();
+  }
+
+  /**
+   * Resumes a previously paused campaign. A campaign might have been originally paused either
+   * manually by the user or automatically by the workflow.
+   *
+   * @param campaignId The Id of the campaign to resume.
+   */
+  @GetMapping(path = "{campaignId}/resume", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not resume campaign.")
+  public ResponseEntity resume(@PathVariable long campaignId) {
+    int campaignStateSnapshot = campaignService.getState(campaignId);
+    campaignService.setState(campaignId, State.RUNNING);
+    if (campaignStateSnapshot == State.PAUSED_BY_USER) {
+      workflowService.resume(campaignId);
+    } else if (campaignStateSnapshot == State.PAUSED_BY_WORKFLOW) {
+      workflowService.correlateMessage(campaignId);
+    }
+
+    return ResponseEntity.ok().build();
+  }
+
+  /**
+   * Searches and returns all available campaigns.
+   *
+   * @param predicate The predicate to search by.
+   * @param pageable  The paging parameters for the results.
+   */
+  @EmptyPredicateCheck
+  @ReplyPageableFilter("id,name,type,state,startedOn,terminatedOn")
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "There was a problem retrieving campaigns.")
+  public Page<CampaignDTO> findAll(
+    @QuerydslPredicate(root = Campaign.class) Predicate predicate, Pageable pageable) {
+    return campaignService.findAll(predicate, pageable);
   }
 }

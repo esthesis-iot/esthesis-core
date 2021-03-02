@@ -17,6 +17,9 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 
+/**
+ * Sends a command to a device.
+ */
 @Log
 @Component
 public class SendCommandTask implements JavaDelegate {
@@ -73,10 +76,13 @@ public class SendCommandTask implements JavaDelegate {
             campaign.getCommandName() + " " + campaign.getCommandArguments());
           break;
         case (Type.PROVISIONING):
+          //TODO
           break;
         case (Type.REBOOT):
+          //TODO
           break;
         case (Type.SHUTDOWN):
+          //TODO
           break;
       }
       cdm.setCommandRequestId(Long.parseLong(commandRequestId));

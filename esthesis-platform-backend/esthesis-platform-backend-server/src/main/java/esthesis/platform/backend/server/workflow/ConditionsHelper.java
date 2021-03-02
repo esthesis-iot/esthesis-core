@@ -5,13 +5,15 @@ import static esthesis.platform.backend.server.workflow.CWFLConstants.VAR_LOOP_C
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 
+/**
+ * Helper methods for workflow tasks.
+ */
 public class ConditionsHelper {
 
   /**
    * Returns the campaign Id associated with this process instance.
    *
-   * @param execution
-   * @return
+   * @param execution The currently executing instance.
    */
   public static long getCampaignId(DelegateExecution execution) {
     return Long.parseLong(execution.getVariable(CWFLConstants.VAR_CAMPAIGN_ID).toString());
@@ -25,8 +27,7 @@ public class ConditionsHelper {
    * <p>
    * Examples: - global_entry - group_entry_1 - group_process_2 - etc.
    *
-   * @param execution
-   * @return
+   * @param execution The currently executing instance.
    */
   public static String getTokenLocation(DelegateExecution execution) {
     String tokenLocation = execution.getParentActivityInstanceId();
@@ -45,8 +46,7 @@ public class ConditionsHelper {
    * denotes the underlying group order, e.g. Global group is 0 and all other groups are 1, 2, 3,
    * etc.
    *
-   * @param execution
-   * @return
+   * @param execution The currently executing instance.
    */
   public static int getTokenTarget(DelegateExecution execution) {
     String tokenLocation = getTokenLocation(execution);

@@ -34,6 +34,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ * Campaign management functionality.
+ */
 @Log
 @Service
 @Validated
@@ -69,8 +72,13 @@ public class CampaignService extends BaseService<CampaignDTO, Campaign> {
     this.commandReplyRepository = commandReplyRepository;
   }
 
+  /**
+   * Saves a campaign.
+   * @param campaignDTO The campaign information to save.
+   */
   public CampaignDTO save(CampaignDTO campaignDTO) {
     final Campaign campaign;
+    // Modify an existing or create a new campaign.
     if (campaignDTO.getId() != null) {
       campaign = findEntityById(campaignDTO.getId());
       campaignMapper.map(campaignDTO, campaign);
@@ -81,12 +89,14 @@ public class CampaignService extends BaseService<CampaignDTO, Campaign> {
       campaign.setState(State.CREATED);
     }
 
+    // Map campaign conditions.
     for (CampaignConditionDTO campaignConditionDTO : campaignDTO.getConditions()) {
       CampaignCondition campaignCondition = campaignConditionMapper.map(campaignConditionDTO);
       campaignCondition.setCampaign(campaign);
       campaign.getConditions().add(campaignCondition);
     }
 
+    // Map campaign members.
     for (CampaignMemberDTO campaignMemberDTO : campaignDTO.getMembers()) {
       CampaignMember campaignMember = campaignMemberMapper.map(campaignMemberDTO);
       campaignMember.setCampaign(campaign);
@@ -97,6 +107,13 @@ public class CampaignService extends BaseService<CampaignDTO, Campaign> {
     return campaignMapper.map(getRepository().save(campaign));
   }
 
+  /**
+   * Creates a new instance for a campaign. This method only affects the state of the campaign in
+   * esthesis database; the workflow engine needs to be called in a separate call in order to
+   * instantiate the actual workflow instance (this is necessary in order to start the workflow
+   * instance on a separate, non-blocking thread).
+   * @param campaignId The Id of the campaign to start.
+   */
   public void instantiate(long campaignId) {
     Campaign campaign = findEntityById(campaignId);
 
@@ -122,33 +139,17 @@ public class CampaignService extends BaseService<CampaignDTO, Campaign> {
     campaign.setStartedOn(Instant.now());
   }
 
-  public void terminateCampaignByUser(long campaignId) {
+  /**
+   * Sets the state of the campaign. Note that setting the state of the campaign with this method
+   * only affects
+   * @param campaignId
+   * @param state
+   */
+  public void setState(long campaignId, int state) {
     findEntityById(campaignId)
-      .setState(State.TERMINATED_BY_USER)
+      .setState(state)
       .setTerminatedOn(Instant.now());
   }
-
-  public void terminateCampaignByWorkflow(long campaignId) {
-    findEntityById(campaignId)
-      .setState(State.TERMINATED_BY_WORKFLOW)
-      .setTerminatedOn(Instant.now());
-  }
-
-  public void pauseCampaignByUser(long campaignId) {
-    findEntityById(campaignId)
-      .setState(State.PAUSED_BY_USER);
-  }
-
-  public void pauseCampaignByWorkflow(long campaignId) {
-    findEntityById(campaignId)
-      .setState(State.PAUSED_BY_WORKFLOW);
-  }
-
-  public void resume(long campaignId) {
-    findEntityById(campaignId)
-      .setState(State.RUNNING);
-  }
-
 
   /**
    * Finds the workflow condition associated with a specific workflow location.
@@ -179,13 +180,6 @@ public class CampaignService extends BaseService<CampaignDTO, Campaign> {
       stage = Stage.EXIT;
     }
 
-//    if (target == null || stage == null) {
-//      log.log(Level.SEVERE, "Could not find conditions for campaign id ''{0}'', "
-//          + "token location ''{1}'' and condition type ''{2}''.",
-//        new Object[]{campaignId, tokenLocation, conditionType});
-//      return null;
-//    }
-
     if (stage == null) {
       return campaignConditionMapper
         .map(campaignConditionRepository
@@ -202,9 +196,8 @@ public class CampaignService extends BaseService<CampaignDTO, Campaign> {
    * resolve tags into members, it simply enlists all members as assigned in the campaign edit
    * screen.
    *
-   * @param campaignId
-   * @param group
-   * @return
+   * @param campaignId The Id of the campaign to find the members of.
+   * @param group The group order to find the members of.
    */
   public List<CampaignMemberDTO> findCampaignMembersForGroup(long campaignId, int group) {
     return campaignMemberMapper.map(
@@ -215,8 +208,7 @@ public class CampaignService extends BaseService<CampaignDTO, Campaign> {
    * Finds the campaign members assigned to a specific campaign. This method does not resolve tags
    * into members, it simply enlists all members as assigned in the campaign edit screen.
    *
-   * @param campaignId
-   * @return
+   * @param campaignId The Id of the campaign to find the members of.
    */
   public List<CampaignMemberDTO> findCampaignMembersForCampaign(long campaignId) {
     return campaignMemberMapper.map(campaignMemberRepository.findByCampaignId(campaignId));
@@ -227,9 +219,8 @@ public class CampaignService extends BaseService<CampaignDTO, Campaign> {
    * tags, the tags are resolved and the devices associated with those tags are included in the
    * returned list.
    *
-   * @param campaignId
-   * @param group
-   * @return
+   * @param campaignId The Id of the campaign to find the hardware Ids of.
+   * @param group The group order to find the memers of.
    */
   public List<String> findHardwareIdsForGroup(long campaignId, int group) {
     final List<String> hardwareIds = new ArrayList<>();
@@ -248,12 +239,11 @@ public class CampaignService extends BaseService<CampaignDTO, Campaign> {
   }
 
   /**
-   * Finds the hardware Ids of the devices belonging to a campaign. If the group contains tags, the
-   * tags are resolved and the devices associated with those tags are included in the returned
+   * Finds the hardware Ids of the devices belonging to a campaign. If the campaign contains tags,
+   * the tags are resolved and the devices associated with those tags are included in the returned
    * list.
    *
-   * @param campaignId
-   * @return
+   * @param campaignId The Id of the campaign to find the hardware Ids of.
    */
   public List<String> findHardwareIdsForCampaign(long campaignId) {
     final List<String> hardwareIds = new ArrayList<>();
@@ -312,7 +302,6 @@ public class CampaignService extends BaseService<CampaignDTO, Campaign> {
    * Gather various statistics on a campaign.
    *
    * @param campaignId The campaign Id to gether statistics for.
-   * @return
    */
   public CampaignStatsDTO statsCampaign(long campaignId) {
     Campaign campaign = findEntityById(campaignId);
@@ -390,10 +379,21 @@ public class CampaignService extends BaseService<CampaignDTO, Campaign> {
     }
   }
 
+  /**
+   * Get the current state of a campaign.
+   * @param campaignId The Id of the campaign to find the state of.
+   * @return See {@link AppConstants.Campaign.State}
+   */
   public int getState(long campaignId) {
     return findEntityById(campaignId).getState();
   }
 
+  /**
+   * Delete a campaign. Note that deleting a campaign via this method only affects the esthesis
+   * database; a separate call to the workflow engine is required to delete the workflow instance
+   * associated with this campaign.
+   * @param campaignId The Id of the campaign to delete.
+   */
   public String delete(long campaignId) {
     Campaign campaign = findEntityById(campaignId);
     String processInstanceId = campaign.getProcessInstanceId();

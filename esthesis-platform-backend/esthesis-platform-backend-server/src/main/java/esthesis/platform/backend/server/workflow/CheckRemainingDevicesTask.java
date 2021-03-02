@@ -1,7 +1,6 @@
 package esthesis.platform.backend.server.workflow;
 
 import esthesis.platform.backend.server.repository.CampaignDeviceMonitorRepository;
-import esthesis.platform.backend.server.repository.CommandReplyRepository;
 import esthesis.platform.backend.server.service.CampaignService;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
@@ -10,21 +9,21 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.variable.Variables;
 import org.springframework.stereotype.Component;
 
+/**
+ * Checks if there are any devices left to be contacted for this campaign.
+ */
 @Log
 @Component
 public class CheckRemainingDevicesTask implements JavaDelegate {
 
   private final CampaignService campaignService;
   private final CampaignDeviceMonitorRepository campaignDeviceMonitorRepository;
-  private final CommandReplyRepository commandReplyRepository;
 
   public CheckRemainingDevicesTask(
     CampaignService campaignService,
-    CampaignDeviceMonitorRepository campaignDeviceMonitorRepository,
-    CommandReplyRepository commandReplyRepository) {
+    CampaignDeviceMonitorRepository campaignDeviceMonitorRepository) {
     this.campaignService = campaignService;
     this.campaignDeviceMonitorRepository = campaignDeviceMonitorRepository;
-    this.commandReplyRepository = commandReplyRepository;
   }
 
   @Override

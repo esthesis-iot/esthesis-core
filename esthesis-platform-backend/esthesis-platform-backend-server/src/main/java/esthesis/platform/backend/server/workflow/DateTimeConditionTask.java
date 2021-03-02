@@ -14,6 +14,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * Checks if the workflow can continue based on a Date/Time condition.
+ */
 @Log
 @Component
 public class DateTimeConditionTask implements JavaDelegate {
@@ -36,7 +39,8 @@ public class DateTimeConditionTask implements JavaDelegate {
 
     final List<CampaignConditionDTO> conditions = campaignService
       .findConditions(campaignId, tokenLocation, Type.DATETIME);
-    log.log(Level.FINEST, "Found ''{0}'' conditions to evaluate.", ListUtils.emptyIfNull(conditions).size());
+    log.log(Level.FINEST, "Found ''{0}'' conditions to evaluate.",
+      ListUtils.emptyIfNull(conditions).size());
 
     boolean dateCheck = true;
     for (CampaignConditionDTO campaignConditionDTO : conditions) {
