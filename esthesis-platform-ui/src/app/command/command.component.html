@@ -28,11 +28,11 @@
           <td mat-cell *matCellDef="let element">{{element.description}}</td>
         </ng-container>
         <ng-container matColumnDef="hardwareId">
-          <th mat-header-cell *matHeaderCellDef scope="col"> Device ID</th>
+          <th mat-header-cell *matHeaderCellDef scope="col"> Hardware Id</th>
           <td mat-cell *matCellDef="let element">{{element.deviceHardwareId}}</td>
         </ng-container>
         <ng-container matColumnDef="createdOn">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Created On</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Sent On</th>
           <td mat-cell
               *matCellDef="let element">{{element.createdOn | date: constants.DATE_FORMAT}}</td>
         </ng-container>
