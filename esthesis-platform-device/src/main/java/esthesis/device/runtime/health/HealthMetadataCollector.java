@@ -2,11 +2,15 @@ package esthesis.device.runtime.health;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import esthesis.device.runtime.config.AppConstants.Mqtt;
 import esthesis.device.runtime.config.AppProperties;
 import esthesis.device.runtime.mqtt.MqttClient;
 import esthesis.device.runtime.service.RegistrationService;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.logging.Level;
 import lombok.extern.java.Log;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -14,21 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import oshi.SystemInfo;
-import oshi.hardware.CentralProcessor;
-import oshi.hardware.GlobalMemory;
-import oshi.hardware.HardwareAbstractionLayer;
-import oshi.hardware.Sensors;
-import oshi.software.os.FileSystem;
-import oshi.software.os.OSFileStore;
-import oshi.software.os.OperatingSystem;
-
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.logging.Level;
 
 @Log
 @Component
@@ -65,7 +54,7 @@ public class HealthMetadataCollector {
   public byte[] ping() {
     try {
       return objectMapper.writeValueAsBytes(
-          new DevicePingMessageDTO().setDeviceTime(Instant.now().toEpochMilli()));
+        new DevicePingMessageDTO().setDeviceTime(Instant.now().toEpochMilli()));
     } catch (Exception e) {
       log.log(Level.SEVERE, "Could not produce JSON output for ping data.", e);
       return new byte[0];
@@ -92,40 +81,6 @@ public class HealthMetadataCollector {
 
     try {
       DeviceHealthDataDTO deviceHealthDataDTO = new DeviceHealthDataDTO();
-
-      SystemInfo si = new SystemInfo();
-
-      // OS details.
-      final OperatingSystem operatingSystem = si.getOperatingSystem();
-
-      // CPU.
-      HardwareAbstractionLayer hal = si.getHardware();
-      final CentralProcessor processor = hal.getProcessor();
-      final Sensors sensors = hal.getSensors();
-      if (appProperties.isHcCpuTemperature()) {
-        deviceHealthDataDTO.setCpuTemperature(sensors.getCpuTemperature());
-      }
-
-      // Memory.
-      final GlobalMemory memory = hal.getMemory();
-      if (appProperties.isHcMemoryAvailable()) {
-        deviceHealthDataDTO.setMemoryAvailable(memory.getAvailable());
-      }
-      if (appProperties.isHcMemoryTotal()) {
-        deviceHealthDataDTO.setMemoryTotal(memory.getTotal());
-      }
-
-      // Load.
-      double[] loadAverage = processor.getSystemLoadAverage(3);
-      if (appProperties.isHcLoad1()) {
-        deviceHealthDataDTO.setLoad1(loadAverage[0] < 0 ? 0 : loadAverage[0]);
-      }
-      if (appProperties.isHcLoad5()) {
-        deviceHealthDataDTO.setLoad5(loadAverage[1] < 0 ? 0 : loadAverage[1]);
-      }
-      if (appProperties.isHcLoad15()) {
-        deviceHealthDataDTO.setLoad15(loadAverage[2] < 0 ? 0 : loadAverage[2]);
-      }
 
       // Time.
       if (appProperties.isHcCurrentTime()) {
@@ -166,25 +121,11 @@ public class HealthMetadataCollector {
       deviceHealthDTO.setDeviceHealthDataDTO(deviceHealthDataDTO);
       JsonNode node = objectMapper.valueToTree(deviceHealthDTO);
 
-      // Add additional nodes to JSON for the filesystems.
-      if (appProperties.isHcFs()) {
-        JsonNode valuesRoot = node.get("v");
-        final FileSystem fileSystem = operatingSystem.getFileSystem();
-        OSFileStore[] fsArray = fileSystem.getFileStores();
-        for (OSFileStore fs : fsArray) {
-          if (StringUtils.isEmpty(appProperties.getHcFilterFs()) ||
-            Arrays.stream(appProperties.getHcFilterFs().split(","))
-              .anyMatch(f -> f.equals(fs.getMount()))) {
-            ((ObjectNode) valuesRoot).put("mount_free_" + fs.getMount(), fs.getUsableSpace());
-            ((ObjectNode) valuesRoot).put("mount_total_" + fs.getMount(), fs.getTotalSpace());
-          }
-        }
-      }
-
       return objectMapper.writeValueAsBytes(node);
     } catch (java.lang.UnsatisfiedLinkError e) {
       hwPlatformError = true;
-      log.log(Level.SEVERE, "Could not obtain hardware information. Future health checks will be ignored.", e);
+      log.log(Level.SEVERE,
+        "Could not obtain hardware information. Future health checks will be ignored.", e);
       return null;
     } catch (Exception e) {
       log.log(Level.SEVERE, "Could not obtain health data.", e);

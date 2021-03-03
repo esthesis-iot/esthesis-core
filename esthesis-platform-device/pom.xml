@@ -178,34 +178,6 @@
        <artifactId>jsondb-core</artifactId>
        <version>${jsondb-core.version}</version>
      </dependency>
-    <!-- Implicitly include the correct JNA version for OSHI -->
-    <dependency>
-      <groupId>com.github.oshi</groupId>
-      <artifactId>oshi-core</artifactId>
-      <version>${oshi-core.version}</version>
-      <!-- Exclude transitive JNA deps to manually include newer ones -->
-      <exclusions>
-        <exclusion>
-          <artifactId>jna</artifactId>
-          <groupId>net.java.dev.jna</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jna-platform</artifactId>
-          <groupId>net.java.dev.jna</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>net.java.dev.jna</groupId>
-      <artifactId>jna</artifactId>
-      <version>${jna.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>net.java.dev.jna</groupId>
-      <artifactId>jna-platform</artifactId>
-      <version>${jna-platform.version}</version>
-    </dependency>
-    <!-- /Implicitly include the correct JNA version for OSHI -->
     <dependency>
       <groupId>com.eurodyn.qlack.fuse</groupId>
       <artifactId>qlack-fuse-crypto</artifactId>
@@ -295,9 +267,9 @@
           <version>${maven-compiler-plugin.version}</version>
           <configuration>
             <showDeprecation>true</showDeprecation>
-            <source>15</source>
-            <target>15</target>
-            <release>15</release>
+            <source>11</source>
+            <target>11</target>
+            <release>11</release>
             <encoding>UTF-8</encoding>
             <showDeprecation>true</showDeprecation>
             <useIncrementalCompilation>false</useIncrementalCompilation>

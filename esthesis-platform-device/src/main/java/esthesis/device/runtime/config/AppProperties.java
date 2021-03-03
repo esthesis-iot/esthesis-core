@@ -60,49 +60,9 @@ public class AppProperties {
   @Value("${device.runtime.request.backoff.max:60}")
   private int requestMaxBackoff;
 
-  // Whether outgoing messages are encrypted.
-//  @Value("${outgoingEncrypted:false}")
-//  private boolean outgoingEncrypted;
-
-  // Whether outgoing messages are signed.
-//  @Value("${outgoingSigned:false}")
-//  private boolean outgoingSigned;
-
-  // Whether incoming messages should be encrypted.
-//  @Value("${incomingEncrypted:false}")
-//  private boolean incomingEncrypted;
-
-  // Whether incoming messages should be signed.
-//  @Value("${incomingSigned:false}")
-//  private boolean incomingSigned;
-
-  // Whether incoming provisioning packages should be encrypted.
-//  @Value("${provisioningEncrypted:false}")
-//  private boolean provisioningEncrypted;
-
-  // Whether incoming provisioning packages should be signed.
-//  @Value("${provisioningSigned:false}")
-//  private boolean provisioningSigned;
-
-  // The cipher used for symmetric encryption/decryption.
-//  @Value("${symmetricCipher:AES/CBC/PKCS5Padding}")
-//  private String symmetricCipher;
-
-  // The cipher used for asymmetric encryption/decryption.
-//  @Value("${asymmetricCipher:RSA/ECB/PKCS1Padding}")
-//  private String asymmetricCipher;
-
-  // The algorithm the symmetric key (i.e. the session key) is created with.
-//  @Value("${symmetricKeyAlgorithm:AES}")
-//  private String symmetricKeyAlgorithm;
-
   // The algorithm the asymmetric keys (i.e. public and private keys) are created with.
   @Value("${asymmetricKeyAlgorithm:RSA}")
   private String asymmetricKeyAlgorithm;
-
-  // The algorithm to be used when signing messages.
-//  @Value("${signatureAlgorithm:SHA256withRSA}")
-//  private String signatureAlgorithm;
 
   // A flag for the device to skip initial provisioning. This is useful in case the device comes
   // with a firmware image already installed during factory setup.
@@ -167,71 +127,6 @@ public class AppProperties {
   // See also HealthMetadataCollection#ping.
   @Value("${pingInitialDelayMsec:60000}")
   private long pingInitialDelayMsec;
-
-  // Return manufacturer information in health messages.
-  @Value("${hcOsManufacturer:true}")
-  private boolean hcOsManufacturer;
-
-  // Return OS version information in health messages.
-  @Value("${hcOsVersion:true}")
-  private boolean hcOsVersion;
-
-  // Return hardware serial number information in health messages.
-  @Value("${hcHwSerial:true}")
-  private boolean hcHwSerial;
-
-  // Return the number of CPUs information in health messages.
-  @Value("${hcCpuPhysicalPackage:true}")
-  private boolean hcCpuPhysicalPackage;
-
-  // Return the number of physical CPU cores information in health messages.
-  @Value("${hcCpuPhysicalCores:true}")
-  private boolean hcCpuPhysicalCores;
-
-  // Return the number of logical CPU cores information in health messages.
-  @Value("${hcCpuLogicalCores:true}")
-  private boolean hcCpuLogicalCores;
-
-  // Return the CPU identifier information in health messages.
-  @Value("${hcCpuIdentifier:true}")
-  private boolean hcCpuIdentifier;
-
-  // Return the CPU processor ID information in health messages.
-  @Value("${hcCpuProcessorId:true}")
-  private boolean hcCpuProcessorId;
-
-  // Return the CPU temperature information in health messages.
-  @Value("${hcCpuTemperature:true}")
-  private boolean hcCpuTemperature;
-
-  // Return the available memory information in health messages.
-  @Value("${hcMemoryAvailable:true}")
-  private boolean hcMemoryAvailable;
-
-  // Return the total memory information in health messages.
-  @Value("${hcMemoryTotal:true}")
-  private boolean hcMemoryTotal;
-
-  // Return the load in the last 1' information in health messages.
-  @Value("${hcLoad1:true}")
-  private boolean hcLoad1;
-
-  // Return the load in the last 5' information in health messages.
-  @Value("${hcLoad5:true}")
-  private boolean hcLoad5;
-
-  // Return the load in the last 15' information in health messages.
-  @Value("${hcLoad15:true}")
-  private boolean hcLoad15;
-
-  // Return information about filesystems usage in health messages.
-  @Value("${hcFs:true}")
-  private boolean hcFs;
-
-  // A comma-separated list of filestystems to include in health messages. If left empty, all
-  // discovered filesystems will be included.
-  @Value("${hcFilterFs:}")
-  private String hcFilterFs;
 
   // Return the device's local clock date/time.
   @Value("${hcCurrentTime:true}")
