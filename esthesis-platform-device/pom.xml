@@ -267,9 +267,9 @@
           <version>${maven-compiler-plugin.version}</version>
           <configuration>
             <showDeprecation>true</showDeprecation>
-            <source>11</source>
-            <target>11</target>
-            <release>11</release>
+            <source>15</source>
+            <target>15</target>
+            <release>15</release>
             <encoding>UTF-8</encoding>
             <showDeprecation>true</showDeprecation>
             <useIncrementalCompilation>false</useIncrementalCompilation>
