@@ -21,6 +21,7 @@ public class AppConstants {
       public static final String HEALTH = "HEALTH";
       public static final String REBOOT = "REBOOT";
       public static final String EXECUTE = "EXECUTE";
+      public static final String SHUTDOWN = "SHUTDOWN";
     }
   }
 

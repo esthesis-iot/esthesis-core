@@ -161,8 +161,12 @@ public class AppProperties {
   @Value("${rebootCommand:reboot}")
   private String rebootCommand;
 
+  // The command to shutdown the device.
+  @Value("${shutdownCommand:shutdown}")
+  private String shutdownCommand;
+
   // A comma-separated list of the commands this device supports.
-  @Value("${supportedCommands:PROVISIONING_CHECK_NEW,PING,HEALTH,REBOOT,EXECUTE}")
+  @Value("${supportedCommands:PROVISIONING_CHECK_NEW,PING,HEALTH,REBOOT,EXECUTE,SHUTDOWN}")
   private String supportedCommands;
 
   // The MQTT topic to send PING messages.

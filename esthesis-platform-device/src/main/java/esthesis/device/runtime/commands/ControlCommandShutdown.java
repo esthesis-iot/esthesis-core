@@ -20,15 +20,15 @@ import org.springframework.validation.annotation.Validated;
 @Service
 @Validated
 @Log
-public class ControlCommandReboot {
+public class ControlCommandShutdown {
 
-  private static final String COMMAND_NAME = CommandType.REBOOT;
+  private static final String COMMAND_NAME = CommandType.SHUTDOWN;
   private final AppProperties appProperties;
   private final ControlCommandUtil mqttCommandUtil;
   private final MqttClient mqttClient;
   private final ObjectMapper objectMapper;
 
-  public ControlCommandReboot(AppProperties appProperties,
+  public ControlCommandShutdown(AppProperties appProperties,
     ControlCommandUtil mqttCommandUtil, MqttClient mqttClient,
     ObjectMapper objectMapper) {
     this.appProperties = appProperties;
@@ -48,7 +48,7 @@ public class ControlCommandReboot {
       CommandReplyDTO reply = new CommandReplyDTO();
       reply.setCommandRequestId(cmd.getId());
       reply.setPayload(
-        (COMMAND_NAME + " received. Will execute: " + appProperties.getRebootCommand()));
+        (COMMAND_NAME + " received. Will execute: " + appProperties.getShutdownCommand()));
       reply.setPayloadType(MediaType.TEXT_PLAIN_VALUE);
       reply.setPayloadEncoding(Device.CommandReply.PAYLOAD_ENCODING_PLAIN);
       mqttClient.publish(EventType.CONTROL_REPLY, objectMapper.writeValueAsBytes(reply));
@@ -56,6 +56,6 @@ public class ControlCommandReboot {
       log.log(Level.SEVERE, "Could not publish command reply.", e);
     }
 
-    Runtime.getRuntime().exec(appProperties.getRebootCommand().split(" "));
+    Runtime.getRuntime().exec(appProperties.getShutdownCommand().split(" "));
   }
 }
