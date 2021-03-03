@@ -1,5 +1,10 @@
 <mat-card>
-  <mat-card-title>Command</mat-card-title>
+  <mat-card-title>
+    Command
+    <button mat-mini-fab (click)="refreshCurrentData()" class="refresh-button">
+      <mat-icon inline="true">refresh</mat-icon>
+    </button>
+  </mat-card-title>
   <mat-card-content>
     <div fxLayout="column">
       <!-- Filter -->
