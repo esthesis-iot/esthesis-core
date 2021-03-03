@@ -86,11 +86,8 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
 
   create() {
     this.dialog.open(CommandCreateComponent, {
-      height: '70%',
-      width: '80%',
-      data: {
-        // wsId: wsId
-      }
+      // height: '90%',
+      width: '40%',
     });
   }
 

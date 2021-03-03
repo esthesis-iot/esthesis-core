@@ -212,7 +212,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   getProvisioningPackages() {
     this.provisioningService.getAll("state=1&sort=name,packageVersion").subscribe(onNext => {
       this.provisioningPackages = onNext.content;
-    })
+    });
   }
 
   currentGroup(): number {

@@ -7,6 +7,9 @@ import {MatDialogRef} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
 import {CommandCreateService} from './command-create.service';
 import 'rxjs-compat/add/observable/forkJoin';
+import {ProvisioningDto} from "../dto/provisioning-dto";
+import {ProvisioningService} from "../provisioning/provisioning.service";
+import {AppConstants} from "../app.constants";
 
 @Component({
   selector: 'app-command-create',
@@ -16,11 +19,13 @@ import 'rxjs-compat/add/observable/forkJoin';
 export class CommandCreateComponent extends BaseComponent implements OnInit, OnDestroy {
   searchDevicesForm!: FormGroup;
   commandForm!: FormGroup;
-  commands!: string[];
+  // The list of currently active provisioning packages.
+  provisioningPackages?: ProvisioningDto[];
 
   constructor(private formBuilder: FormBuilder, private commandCreateService: CommandCreateService,
               private utilityService: UtilityService, private router: Router,
-              public selfDialogRef: MatDialogRef<CommandCreateComponent>) {
+              public selfDialogRef: MatDialogRef<CommandCreateComponent>,
+              private provisioningService: ProvisioningService) {
     super();
   }
 
@@ -37,7 +42,6 @@ export class CommandCreateComponent extends BaseComponent implements OnInit, OnD
     // Step 2 form.
     this.commandForm = this.formBuilder.group({
       command: ['', [Validators.required]],
-      commandText: [''],
       arguments: [''],
       description: ['']
     });
@@ -53,6 +57,11 @@ export class CommandCreateComponent extends BaseComponent implements OnInit, OnD
           matches: (results[0] + results[1])
         }, {emitEvent: false});
       });
+    });
+
+    // Get provisioning packages.
+    this.provisioningService.getAll("state=1&sort=name,packageVersion").subscribe(onNext => {
+      this.provisioningPackages = onNext.content;
     });
   }
 
@@ -71,5 +80,19 @@ export class CommandCreateComponent extends BaseComponent implements OnInit, OnD
 
   close() {
     this.selfDialogRef.close();
+  }
+
+  canDispatch(): boolean {
+    let dispatchOK = true;
+
+    dispatchOK = dispatchOK && this.searchDevicesForm.controls['devicesMatchedByHardwareIds'].value > 0;
+    dispatchOK = dispatchOK && this.commandForm.valid;
+
+    if ([AppConstants.DEVICE.COMMANDS.PROVISIONING, AppConstants.DEVICE.COMMANDS.EXECUTE]
+    .includes(this.commandForm.value.command)) {
+      dispatchOK = dispatchOK && this.commandForm.value.arguments;
+    }
+
+    return dispatchOK;
   }
 }

@@ -29,6 +29,14 @@ export const AppConstants = {
       PREREGISTERED: 'PREREGISTERED',
       REGISTERED: 'REGISTERED',
       APPROVAL: 'APPROVAL'
+    },
+    COMMANDS: {
+      EXECUTE: 'EXECUTE',
+      HEALTH: 'HEALTH',
+      PING: 'PING',
+      PROVISIONING: 'PROVISIONING',
+      REBOOT: 'REBOOT',
+      SHUTDOWN: 'SHUTDOWN'
     }
   },
 
@@ -114,7 +122,5 @@ export const AppConstants = {
       TAG: 2
     }
   },
-
-
 };
 
