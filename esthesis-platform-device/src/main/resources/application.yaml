@@ -10,6 +10,8 @@ spring:
     enabled: false
   thymeleaf:
     cache: false
+  main:
+    log-startup-info: false
 
 logging:
   level:

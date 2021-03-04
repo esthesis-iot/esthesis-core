@@ -86,6 +86,7 @@ spring:
     username: ''
   main:
     lazy-initialization: true
+    log-startup-info: false
   servlet:
     multipart:
       enabled: true
