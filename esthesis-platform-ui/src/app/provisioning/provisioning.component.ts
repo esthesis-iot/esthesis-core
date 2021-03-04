@@ -16,8 +16,7 @@ import {BaseComponent} from '../shared/component/base-component';
   styleUrls: ['./provisioning.component.scss']
 })
 export class ProvisioningComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['name', 'version', 'description', 'state', 'signed', 'encrypted', 'size',
-    'tags', 'createdOn'];
+  columns = ['name', 'version', 'description', 'state', 'size', 'tags', 'createdOn'];
   datasource = new MatTableDataSource<ProvisioningDto>();
   availableTags: TagDto[] | undefined;
 
@@ -71,9 +70,5 @@ export class ProvisioningComponent extends BaseComponent implements OnInit, Afte
     ).join(', ');
   }
 
-  refreshCurrentData() {
-    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-      this.sort.direction);
-  }
 }
 

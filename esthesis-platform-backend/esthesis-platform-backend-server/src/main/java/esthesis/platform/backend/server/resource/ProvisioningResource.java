@@ -50,11 +50,10 @@ public class ProvisioningResource {
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save provisioning package.")
   public ResponseEntity save(@RequestParam("file") Optional<MultipartFile> file,
     @ModelAttribute ProvisioningDTO provisioningDTO)
-  throws IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-         SignatureException, InvalidAlgorithmParameterException, InvalidKeySpecException {
+    throws IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
+    SignatureException, InvalidAlgorithmParameterException, InvalidKeySpecException {
     if (provisioningDTO.getId() == null && file.isPresent()) {
-      final long id = provisioningService.save(provisioningDTO, file.get());
-//      provisioningService.encryptAndSign(id);
+      provisioningService.save(provisioningDTO, file.get());
     } else {
       // Make sure existing r/o attributes are not overwritten.
       @SuppressWarnings("ConstantConditions") final Provisioning existingProvisioning =
@@ -62,8 +61,6 @@ public class ProvisioningResource {
       provisioningDTO.setFileSize(existingProvisioning.getFileSize());
       provisioningDTO.setFileName(existingProvisioning.getFileName());
       provisioningDTO.setSha256(existingProvisioning.getSha256());
-      provisioningDTO.setSignatureEncrypted(existingProvisioning.getSignatureEncrypted());
-      provisioningDTO.setSignaturePlain(existingProvisioning.getSignaturePlain());
       provisioningService.save(provisioningDTO);
     }
 

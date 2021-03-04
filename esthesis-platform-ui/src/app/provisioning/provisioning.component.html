@@ -1,9 +1,6 @@
 <mat-card>
   <mat-card-title>
     Provisioning
-    <button mat-mini-fab (click)="refreshCurrentData()" class="refresh-button">
-      <mat-icon inline="true">refresh</mat-icon>
-    </button>
   </mat-card-title>
   <mat-card-content>
     <div fxLayout="column">
@@ -26,18 +23,6 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> State</th>
           <td mat-cell *matCellDef="let element">
             <app-boolean-checkbox [value]="element.state"></app-boolean-checkbox>
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="signed">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Signed</th>
-          <td mat-cell *matCellDef="let element">
-            <app-boolean-checkbox [value]="element.signed"></app-boolean-checkbox>
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="encrypted">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Encrypted</th>
-          <td mat-cell *matCellDef="let element">
-            <app-boolean-checkbox [value]="element.encrypted"></app-boolean-checkbox>
           </td>
         </ng-container>
         <ng-container matColumnDef="createdOn">

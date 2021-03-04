@@ -3,13 +3,9 @@
 ####################################################################################################
 esthesis:
   node-id: ${random.uuid}
-  security-asymmetric-cipher-algorithm: RSA/ECB/PKCS1Padding
   security-asymmetric-key-algorithm: RSA
   security-asymmetric-key-size: 2048
   security-asymmetric-signature-algorithm: SHA256WITHRSA
-  security-symmetric-cipher-algorithm: AES/CBC/PKCS5Padding
-  security-symmetric-key-algorithm: AES
-  security-symmetric-key-size: 128
 
 ####################################################################################################
 # QLACK CONFIG

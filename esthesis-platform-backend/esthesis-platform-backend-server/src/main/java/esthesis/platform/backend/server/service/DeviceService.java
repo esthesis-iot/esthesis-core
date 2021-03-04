@@ -203,9 +203,6 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
     deviceRepository.save(device);
 
     // Create the security keys for the new device.
-    final byte[] sessionKey = cryptoSymmetricService.generateKey(
-      appProperties.getSecuritySymmetricKeySize(),
-      appProperties.getSecuritySymmetricKeyAlgorithm()).getEncoded();
     final DeviceKey deviceKey = new DeviceKey()
       .setPublicKey(cryptoAsymmetricService.publicKeyToPEM(keyPair))
       .setPrivateKey(cryptoAsymmetricService.privateKeyToPEM(keyPair))

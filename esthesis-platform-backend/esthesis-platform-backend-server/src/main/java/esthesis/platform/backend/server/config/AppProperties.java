@@ -17,13 +17,8 @@ import java.util.UUID;
 public class AppProperties {
   private final String randomNodeId = UUID.randomUUID().toString();
 
-  private int securitySymmetricKeySize;
-  private String securitySymmetricKeyAlgorithm;
-  private String securitySymmetricCipherAlgorithm;
-
   private int securityAsymmetricKeySize;
   private String securityAsymmetricKeyAlgorithm;
-  private String securityAsymmetricCipherAlgorithm;
   private String securityAsymmetricSignatureAlgorithm;
 
   // The secret to sign JWT.

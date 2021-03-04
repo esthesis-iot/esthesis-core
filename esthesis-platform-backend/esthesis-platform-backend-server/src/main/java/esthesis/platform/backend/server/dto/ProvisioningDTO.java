@@ -26,14 +26,6 @@ public class ProvisioningDTO extends BaseDTO {
   private String packageVersion;
   private long fileSize;
   private String fileName;
-  private boolean signed;
-  private boolean encrypted;
-  // The signature of the unencrypted file.
-  private String signaturePlain;
-
-  // The signature of the encrypted file.
-  private String signatureEncrypted;
-
-  // The SHA256 digest of the unencrypted version of this provisioning package.
+  // The SHA256 digest of the provisioning package.
   private String sha256;
 }
