@@ -1,22 +1,20 @@
-<mat-card>
-  <mat-card-title>Dashboard
-    <div style="opacity: 1 !important; font-size: 1rem">Welcome to esthesis IoT platform. The dashboard page is still under development.</div>
+<mat-card fxFlexFill>
+  <mat-card-title>
+    Dashboard
+    <button mat-mini-fab class="refresh-button" (click)="addWidget()">
+      <mat-icon inline="true">add</mat-icon>
+    </button>
   </mat-card-title>
-  <mat-card-content fxLayout="column" fxLayoutGap="1.5rem" style="opacity: 0.2">
-    <!-- Top info-boxes -->
-    <app-dashboard-info-boxes fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="space-between"></app-dashboard-info-boxes>
-
-    <!-- Map and charts -->
-    <div fxLayout="row" fxLayoutGap="15px">
-      <app-dashboard-map fxFlex="grow"></app-dashboard-map>
-      <app-dashboard-charts fxLayout="column"></app-dashboard-charts>
-    </div>
-
-    <!-- Lists and messages -->
-    <div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="start">
-      <app-dashboard-inactive-devices fxFlex="grow"></app-dashboard-inactive-devices>
-      <app-dashboard-new-registrations fxFlex="grow"></app-dashboard-new-registrations>
-      <app-dashboard-error-log fxFlex="grow"></app-dashboard-error-log>
-    </div>
+  <mat-card-content fxFlexFill class="xs-mt3">
+    <gridster [options]="dashboardOptions" class="gridster">
+      <gridster-item [item]="item.grid" *ngFor="let item of dashboardWidgets">
+        <div [ngSwitch]="item.type">
+          <app-widget-sensor-value
+            *ngSwitchCase="constants.DASHBOARD.WIDGETS.SENSOR_VALUE"
+            [id]="item.id" [dashboard]="item.dashboardId">
+          </app-widget-sensor-value>
+        </div>
+      </gridster-item>
+    </gridster>
   </mat-card-content>
 </mat-card>

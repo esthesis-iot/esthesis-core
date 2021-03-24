@@ -6,6 +6,7 @@ import {QFormsService} from '@qlack/forms';
 import {CampaignsService} from './campaigns.service';
 import {CampaignDto} from '../dto/campaign-dto';
 import {MatSort} from '@angular/material/sort';
+import {AppConstants} from "../app.constants";
 
 @Component({
   selector: 'app-campaigns',
@@ -15,6 +16,8 @@ import {MatSort} from '@angular/material/sort';
 export class CampaignsComponent extends BaseComponent implements OnInit, AfterViewInit {
   columns = ['name','type','state','startedOn','terminatedOn'];
   datasource = new MatTableDataSource<CampaignDto>();
+  // Expose application constants.
+  constants = AppConstants;
 
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;

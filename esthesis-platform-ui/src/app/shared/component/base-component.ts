@@ -1,15 +1,10 @@
 import * as _ from 'lodash';
 import {AppConstants} from '../../app.constants';
-import {AppSettings} from '../../app.settings';
 
 export class BaseComponent {
 
   constructor() {
   }
-
-  // Expose constants and settings to all components extending this class.
-  constants = AppConstants;
-  settings = AppSettings;
 
   /**
    * Checks if the current user is logged in or not.

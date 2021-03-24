@@ -128,6 +128,11 @@
             </path>
             <!-- /QueryDSL - Compatibility with JDK >= 9 -->
           </annotationProcessorPaths>
+          <compilerArgs>
+            <compilerArg>
+              -Amapstruct.unmappedTargetPolicy=IGNORE
+            </compilerArg>
+          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>
@@ -204,6 +209,16 @@
     <dependency>
       <groupId>org.springframework.retry</groupId>
       <artifactId>spring-retry</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-websocket</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-messaging</artifactId>
+      <version>5.2.2.RELEASE</version>
     </dependency>
 
     <!-- QLACK dependencies -->

@@ -9,6 +9,7 @@ import {AppSettings} from '../../app.settings';
 import * as _ from 'lodash';
 import {KeyValueDto} from '../../dto/key-value-dto';
 import {QFormsService} from '@qlack/forms';
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: 'app-settings-device-page',
@@ -16,6 +17,8 @@ import {QFormsService} from '@qlack/forms';
   styleUrls: []
 })
 export class SettingsDevicePageComponent extends BaseComponent implements OnInit {
+  // Expose application constants.
+  constants = AppConstants;
   form!: FormGroup;
   settingsForm!: FormGroup;
   allFields!: FieldDto[];

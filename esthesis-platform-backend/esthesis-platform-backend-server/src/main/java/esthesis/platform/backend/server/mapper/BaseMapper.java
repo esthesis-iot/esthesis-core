@@ -4,15 +4,14 @@ import com.eurodyn.qlack.util.data.optional.ReturnOptional;
 import esthesis.platform.backend.common.dto.BaseDTO;
 import esthesis.platform.backend.server.model.BaseEntity;
 import esthesis.platform.backend.server.repository.BaseRepository;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 
 /**
  * A base mapper providing default conversions.

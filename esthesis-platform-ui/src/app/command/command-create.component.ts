@@ -21,6 +21,8 @@ export class CommandCreateComponent extends BaseComponent implements OnInit, OnD
   commandForm!: FormGroup;
   // The list of currently active provisioning packages.
   provisioningPackages?: ProvisioningDto[];
+  // Expose application constants.
+  constants = AppConstants;
 
   constructor(private formBuilder: FormBuilder, private commandCreateService: CommandCreateService,
               private utilityService: UtilityService, private router: Router,

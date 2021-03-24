@@ -17,6 +17,7 @@ import {UtilityService} from '../../shared/service/utility.service';
 export class SettingsSecurityComponent extends BaseComponent implements OnInit {
   form!: FormGroup;
   certificates: CertificateDto[] | undefined;
+  settings = AppSettings;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
               private certificatesService: CertificatesService, private utilityService: UtilityService) {

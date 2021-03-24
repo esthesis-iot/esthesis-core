@@ -122,5 +122,18 @@ export const AppConstants = {
       TAG: 2
     }
   },
+
+  DASHBOARD: {
+    WIDGETS: {
+      SENSOR_VALUE: "sensor-value"
+    }
+  },
+
+  DIALOG_RESULT: {
+    CANCEL: 0,
+    SAVE: 1,
+    DELETE: 2,
+    OK: 3
+  }
 };
 

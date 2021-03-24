@@ -21,6 +21,8 @@ export class CertificateEditComponent extends BaseComponent implements OnInit {
   form!: FormGroup;
   id: number | undefined;
   issuers: CaDto[] | undefined;
+  // Expose application constants.
+  constants = AppConstants;
 
   constructor(private fb: FormBuilder, private certificatesService: CertificatesService,
               private qForms: QFormsService,

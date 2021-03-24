@@ -28,6 +28,8 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
   handlers: Array<number> = [];
   isEdit: boolean | undefined;
   activeNiFiId = localStorage.getItem('activeNiFi');
+  // Expose application constants.
+  constants = AppConstants;
 
   constructor(private fb: FormBuilder, private nifDataService: NifiSinkService,
               private qForms: QFormsService,

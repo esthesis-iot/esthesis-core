@@ -13,6 +13,7 @@ import {CommandService} from './command.service';
 import {CommandReplyDto} from '../dto/command-reply-dto';
 import {CommandCreateComponent} from './command-create.component';
 import {QFormsService} from '@qlack/forms';
+import {AppConstants} from "../app.constants";
 
 @Component({
   selector: 'app-command',
@@ -23,6 +24,8 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   displayedColumns = ['command', 'description', 'hardwareId', 'createdOn', 'actions'];
   dataSource: MatTableDataSource<CommandRequestDto> = new MatTableDataSource<CommandRequestDto>();
   filterForm: FormGroup;
+  // Expose application constants.
+  constants = AppConstants;
 
   // References to sorting and pagination.
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
@@ -86,7 +89,6 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
 
   create() {
     this.dialog.open(CommandCreateComponent, {
-      // height: '90%',
       width: '40%',
     });
   }

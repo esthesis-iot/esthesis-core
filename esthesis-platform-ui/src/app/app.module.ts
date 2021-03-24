@@ -34,6 +34,7 @@ import {HeaderComponent} from './shared/layout/header.component';
 import {SidenavComponent} from './shared/layout/sidenav.component';
 import {QFormsModule} from '@qlack/forms';
 import {QFormValidationModule} from '@qlack/form-validation';
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 export function getJwtToken(): string | null {
   return localStorage.getItem(AppConstants.JWT_STORAGE_NAME);
@@ -84,7 +85,8 @@ export function getJwtToken(): string | null {
       thick: false,
       trickleSpeed: 500
     }),
-    NgProgressHttpModule
+    NgProgressHttpModule,
+    MatAutocompleteModule
   ],
   providers: [
     CookieService,

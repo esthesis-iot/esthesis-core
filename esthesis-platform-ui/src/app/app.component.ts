@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import {UserService} from './users/user.service';
 import {BaseComponent} from './shared/component/base-component';
 import {OkCancelModalComponent} from './shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {AppConstants} from "./app.constants";
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,8 @@ import {OkCancelModalComponent} from './shared/component/display/ok-cancel-modal
 export class AppComponent extends BaseComponent implements OnInit {
   // Logger.
   private log = Log.create('AppComponent');
+  // Expose application constants.
+  constants = AppConstants;
 
   // Controller for sidebar's visibility.
   sidebarVisibility = true;

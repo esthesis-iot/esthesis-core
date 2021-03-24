@@ -27,6 +27,8 @@ import {CampaignStatsDto} from "../../../dto/campaign-stats-dto";
   styleUrls: ['./campaign-edit.component.scss']
 })
 export class CampaignEditComponent extends BaseComponent implements OnInit {
+  // Expose application constants.
+  constants = AppConstants;
   // Campaign details form.
   form!: FormGroup;
   // The id of the form currently being processed.

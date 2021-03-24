@@ -14,6 +14,8 @@ import {KeyValueDto} from '../../dto/key-value-dto';
 })
 export class SettingsUiComponent extends BaseComponent implements OnInit {
   form!: FormGroup;
+  // Expose application constants.
+  settings = AppSettings;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
               private utilityService: UtilityService) {

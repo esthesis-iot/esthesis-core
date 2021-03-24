@@ -12,8 +12,8 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
 public class MQTTServerDTO extends BaseDTO {
 
   @NotNull

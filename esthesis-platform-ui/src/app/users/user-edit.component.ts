@@ -8,6 +8,7 @@ import {UtilityService} from '../shared/service/utility.service';
 import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {QFormsService} from '@qlack/forms';
 import {UserDto} from '../dto/user-dto';
+import {AppConstants} from "../app.constants";
 
 @Component({
   selector: 'app-user',
@@ -20,6 +21,8 @@ export class UserEditComponent extends BaseComponent implements OnInit {
   hide1 = true;
   hide2 = true;
   isEdit = false;
+  // Expose application constants.
+  constants = AppConstants;
 
   constructor(private fb: FormBuilder, private userService: UserService,
               private route: ActivatedRoute,

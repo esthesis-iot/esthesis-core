@@ -6,6 +6,7 @@ import {CertificatesService} from './certificates.service';
 import {CertificateDto} from '../dto/certificate-dto';
 import {BaseComponent} from '../shared/component/base-component';
 import {QFormsService} from '@qlack/forms';
+import {AppConstants} from "../app.constants";
 
 @Component({
   selector: 'app-certificates',
@@ -15,6 +16,8 @@ import {QFormsService} from '@qlack/forms';
 export class CertificatesComponent extends BaseComponent implements OnInit, AfterViewInit {
   columns = ['cn', 'issued', 'validity', 'issuer'];
   datasource = new MatTableDataSource<CertificateDto>();
+  // Expose application constants.
+  constants = AppConstants;
 
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;

@@ -1,0 +1,22 @@
+@import "../../../../styles-variables.scss";
+
+.widget {
+  &:hover .buttons {
+    opacity: 1;
+    transition: opacity 1s;
+    background-color: #eeeeee;
+    border-radius: 15px;
+  }
+
+  .buttons {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding-left: 1px;
+    &:hover {
+      color: $e-color-blue-light;
+      cursor: pointer;
+    }
+  }
+}

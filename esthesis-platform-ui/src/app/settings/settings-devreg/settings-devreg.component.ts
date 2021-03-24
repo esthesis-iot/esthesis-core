@@ -17,6 +17,7 @@ import {CaDto} from '../../dto/ca-dto';
 export class SettingsDevregComponent extends BaseComponent implements OnInit {
   form!: FormGroup;
   cas: CaDto[] | undefined;
+  settings = AppSettings;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
               private utilityService: UtilityService, private casService: CasService) {

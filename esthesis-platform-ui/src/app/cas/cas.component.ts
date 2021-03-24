@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import {QFormsService} from '@qlack/forms';
 import {CasService} from './cas.service';
 import {BaseComponent} from '../shared/component/base-component';
+import {AppConstants} from "../app.constants";
 
 @Component({
   selector: 'app-cas',
@@ -15,6 +16,8 @@ import {BaseComponent} from '../shared/component/base-component';
 export class CasComponent extends BaseComponent implements OnInit, AfterViewInit {
   columns = ['cn', 'parent', 'issued', 'validity'];
   datasource = new MatTableDataSource<CaDto>();
+  // Expose application constants.
+  constants = AppConstants;
 
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;

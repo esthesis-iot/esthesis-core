@@ -7,6 +7,7 @@ import {BaseComponent} from '../shared/component/base-component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NiFiSinkDto} from '../dto/nifisinks/nifi-sink-dto';
 import {MatTableDataSource} from '@angular/material/table';
+import {AppConstants} from "../app.constants";
 
 @Component({
   selector: 'app-nifisink',
@@ -18,6 +19,8 @@ export class NiFiSinkComponent extends BaseComponent implements OnInit, AfterVie
   datasource = new MatTableDataSource<NiFiSinkDto>();
   type: string | undefined;
   activeNiFiId = localStorage.getItem('activeNiFi');
+  // Expose application constants.
+  constants = AppConstants;
 
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;

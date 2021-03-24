@@ -44,7 +44,6 @@ public class DateTimeConditionTask implements JavaDelegate {
 
     boolean dateCheck = true;
     for (CampaignConditionDTO campaignConditionDTO : conditions) {
-      System.out.println(campaignConditionDTO.getScheduleDate());
       switch (campaignConditionDTO.getOperation()) {
         case AppConstants.Campaign.Condition.Op.BEFORE: {
           dateCheck = dateCheck && Instant.now().isBefore(campaignConditionDTO.getScheduleDate());

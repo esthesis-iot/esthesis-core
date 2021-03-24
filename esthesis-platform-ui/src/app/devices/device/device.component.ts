@@ -17,6 +17,7 @@ import {AppSettings} from '../../app.settings';
 import {LeafletDirective} from '@asymmetrik/ngx-leaflet';
 import {QFormsService} from '@qlack/forms';
 import {DeviceDto} from '../../dto/device-dto';
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: 'app-device',
@@ -34,6 +35,8 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
   leaflet!: LeafletDirective;
   deviceHasGeolocation = false;
   hardwareId = "";
+  // Expose application constants.
+  constants = AppConstants;
 
   mapOptions = {
     layers: [

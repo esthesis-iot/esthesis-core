@@ -298,7 +298,7 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
    */
   public List<DeviceDTO> findByPartialHardwareId(String hardwareId) {
     return deviceMapper
-      .map(deviceRepository.findByHardwareIdContains(hardwareId));
+      .map(deviceRepository.findByHardwareIdContainsOrderByHardwareId(hardwareId));
   }
 
   /**

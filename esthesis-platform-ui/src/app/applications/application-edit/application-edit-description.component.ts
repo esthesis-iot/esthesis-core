@@ -15,6 +15,7 @@ import {QFormsService} from '@qlack/forms';
   styleUrls: []
 })
 export class ApplicationEditDescriptionComponent extends BaseComponent implements OnInit {
+  //TODO is @Input() needed?
   @Input() id: number | undefined;
   form!: FormGroup;
 

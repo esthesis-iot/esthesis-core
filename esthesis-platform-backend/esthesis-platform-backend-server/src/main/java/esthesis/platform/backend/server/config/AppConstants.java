@@ -158,25 +158,12 @@ public class AppConstants {
   }
 
   public static class DigitalTwins {
-
-    private DigitalTwins() {
-    }
-
     public static class Type {
-
-      private Type() {
-      }
-
       public static final String TELEMETRY = "telemetry";
       public static final String METADATA = "metadata";
       public static final String COMMAND = "command";
     }
-
     public static class DTOperations {
-
-      private DTOperations() {
-      }
-
       public static final String OPERATION_QUERY = "QUERY";
       public static final String OPERATION_MIN = "MIN";
       public static final String OPERATION_MAX = "MAX";
@@ -189,18 +176,15 @@ public class AppConstants {
     }
   }
 
-  public static class NiFi {
-
-    public static final String SINKS_PACKAGE = "esthesis.platform.backend.server.nifi.sinks.";
-
-    private NiFi() {
+  public static class Dashboard {
+    public static class WidgetType {
+      public static final String SENSOR_VALUE = "sensor-value";
     }
+  }
 
+  public static class NiFi {
+    public static final String SINKS_PACKAGE = "esthesis.platform.backend.server.nifi.sinks.";
     public static class QueryResults {
-
-      private QueryResults() {
-      }
-
       public static final String TIMESTAMP = "timestamp";
       public static final String TYPE = "type";
     }

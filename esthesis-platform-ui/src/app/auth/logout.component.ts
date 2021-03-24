@@ -3,6 +3,7 @@ import {Log} from 'ng2-logger/browser';
 import {UserService} from '../users/user.service';
 import {BodyBackgroundService} from '../services/body-background.service';
 import {BaseComponent} from '../shared/component/base-component';
+import {AppConstants} from "../app.constants";
 
 @Component({
   selector: 'app-logout',
@@ -11,6 +12,8 @@ import {BaseComponent} from '../shared/component/base-component';
 })
 export class LogoutComponent extends BaseComponent implements OnInit {
   private log = Log.create('LogoutComponent');
+  // Expose application constants.
+  constants = AppConstants;
 
   constructor(private userService: UserService, private renderer: Renderer2,
               private bodyBackgroundService: BodyBackgroundService) {

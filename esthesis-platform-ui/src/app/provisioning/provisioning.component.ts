@@ -9,6 +9,7 @@ import {TagService} from '../tags/tag.service';
 import {TagDto} from '../dto/tag-dto';
 import * as _ from 'lodash';
 import {BaseComponent} from '../shared/component/base-component';
+import {AppConstants} from "../app.constants";
 
 @Component({
   selector: 'app-provisioning',
@@ -19,6 +20,8 @@ export class ProvisioningComponent extends BaseComponent implements OnInit, Afte
   columns = ['name', 'version', 'description', 'state', 'size', 'tags', 'createdOn'];
   datasource = new MatTableDataSource<ProvisioningDto>();
   availableTags: TagDto[] | undefined;
+  // Expose application constants.
+  constants = AppConstants;
 
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;

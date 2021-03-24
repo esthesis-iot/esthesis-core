@@ -7,17 +7,17 @@ import esthesis.platform.backend.server.mapper.BaseMapper;
 import esthesis.platform.backend.server.model.BaseContentEntity;
 import esthesis.platform.backend.server.model.BaseEntity;
 import esthesis.platform.backend.server.repository.BaseRepository;
+import java.io.InputStream;
+import java.util.List;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.content.commons.repository.ContentStore;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-
-import java.io.InputStream;
-import java.util.List;
 
 @Service
 @Validated
@@ -102,5 +102,10 @@ abstract class BaseService<D extends BaseDTO, E extends BaseEntity> {
 
   public void deleteByIdIn(List<Long> ids) {
     repository.deleteAll(repository.findAllById(ids));
+  }
+
+  public String getUserId() {
+    return SecurityContextHolder.getContext().getAuthentication().getPrincipal()
+      .toString();
   }
 }

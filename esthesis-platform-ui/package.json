@@ -34,6 +34,7 @@
     "@zxing/browser": "~0.0.5",
     "@zxing/library": "~0.18.3",
     "@zxing/ngx-scanner": "~3.1.2",
+    "angular-gridster2": "^11.1.3",
     "angular2-uuid": "1.1.1",
     "bf-solid": "^2.11.2",
     "file-saver": "~2.0.5",

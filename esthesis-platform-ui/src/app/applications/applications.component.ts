@@ -9,6 +9,7 @@ import {ApplicationService} from './application.service';
 import 'rxjs/add/operator/debounceTime';
 import {BaseComponent} from '../shared/component/base-component';
 import {QFormsService} from '@qlack/forms';
+import {AppConstants} from "../app.constants";
 
 @Component({
   selector: 'app-applications',
@@ -19,6 +20,8 @@ export class ApplicationsComponent extends BaseComponent implements OnInit, Afte
   displayedColumns = ['name', 'state', 'createdOn'];
   dataSource: MatTableDataSource<ApplicationDto> = new MatTableDataSource<ApplicationDto>();
   filterForm: FormGroup;
+  // Expose application constants.
+  constants = AppConstants;
 
   // References to sorting and pagination.
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
