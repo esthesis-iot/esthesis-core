@@ -56,4 +56,8 @@ export class DashboardService {
     return this.http.get<DashboardWidgetDto>(`${AppConstants.API_ROOT}/dashboard/widget/${widgetId}`);
   }
 
+  updateWidgetCoordinates(widgetId: number, x: number, y: number, columns: number, rows: number): Observable<any> {
+    return this.http.put(`${AppConstants.API_ROOT}/dashboard/widget/${widgetId}/${x},${y}/${columns},${rows}`, {});
+  }
+
 }

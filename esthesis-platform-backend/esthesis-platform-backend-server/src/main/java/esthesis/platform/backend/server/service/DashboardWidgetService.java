@@ -18,6 +18,7 @@ public class DashboardWidgetService extends BaseService<DashboardWidgetDTO, Dash
 
   private final DashboardWidgetRepository dashboardWidgetRepository;
   private final DashboardWidgetMapper dashboardWidgetMapper;
+  private final DashboardService dashboardService;
 
   /**
    * Finds the widgets of the default-view dashboard of the logged-in user.
@@ -41,14 +42,12 @@ public class DashboardWidgetService extends BaseService<DashboardWidgetDTO, Dash
    * @param dashboardWidgetDTO The widget configuration to persist.
    */
   public DashboardWidgetDTO saveWidget(DashboardWidgetDTO dashboardWidgetDTO) {
-    System.out.println(dashboardWidgetDTO);
-    // Associate new dashboard items with user's default dashboard.
-//    if (dashboardWidgetDTO.getId() == 0) {
-//      dashboardWidgetDTO.setDashboard(dashboard.getId());
-//    }
-//
-//    return dashboardWidgetMapper.map(dashboardWidgetRepository
-//      .save(dashboardWidgetMapper.map(dashboardWidgetDTO)));
+    // If no dashboard Id is provided, associate widget with the currently default user
+    // dashboard.
+    if (dashboardWidgetDTO.getId() == 0) {
+      dashboardWidgetDTO.setDashboard(dashboardService.getDashboard().getId());
+    }
+
     return save(dashboardWidgetDTO);
   }
 
@@ -56,4 +55,13 @@ public class DashboardWidgetService extends BaseService<DashboardWidgetDTO, Dash
     deleteById(widgetId);
   }
 
+  public DashboardWidgetDTO updateWidgetCoordinates(long widgetId, int x, int y, int columns,
+    int rows) {
+    return dashboardWidgetMapper.map(
+    findEntityById(widgetId)
+      .setGridX(x)
+      .setGridY(y)
+      .setGridCols(columns)
+      .setGridRows(rows));
+  }
 }

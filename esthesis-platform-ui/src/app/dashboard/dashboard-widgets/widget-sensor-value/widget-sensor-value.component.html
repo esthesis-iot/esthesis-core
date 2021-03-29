@@ -2,8 +2,15 @@
   <div class="buttons">
     <mat-icon (click)="setup()">settings</mat-icon>
   </div>
-  <div class="body">
-    widget-sensor-value works!
-    widget-sensor-value works!
+  <div class="body" fxLayout="row">
+    <div class="icon" fxFlex="30%" fxLayout="column"
+         fxLayoutAlign="center center">
+      <mat-icon>{{configuration?.icon}}</mat-icon>
+    </div>
+    <div fxFlex="70%" fxLayout="column"
+         fxLayoutAlign="center end">
+      <div class="value">242523</div>
+      <div class="title">{{configuration?.title}}</div>
+    </div>
   </div>
 </div>

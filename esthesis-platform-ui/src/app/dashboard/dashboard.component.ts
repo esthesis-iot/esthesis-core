@@ -1,7 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {BaseComponent} from '../shared/component/base-component';
 import {NiFiService} from '../infrastructure/infrastructure-nifi/nifi.service';
-import {GridsterConfig} from "angular-gridster2";
+import {GridsterComponent, GridsterConfig} from "angular-gridster2";
 import {MatDialog} from "@angular/material/dialog";
 import {DashboardAddWidgetComponent} from "./dashboard-add-widget.component";
 import {AppConstants} from "../app.constants";
@@ -9,6 +9,7 @@ import {WidgetSensorValueSetupComponent} from "./dashboard-widgets/widget-sensor
 import {DashboardService} from "./dashboard.service";
 import {DashboardWidgetForGridDto} from "../dto/dashboard-widget-for-grid-dto";
 import {Subscription} from "rxjs";
+
 
 @Component({
   selector: 'app-dashboard',
@@ -21,6 +22,8 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   private refreshSubscription: Subscription;
   // Expose application constants.
   constants = AppConstants;
+  @ViewChild(GridsterComponent,
+    {static: false}) gridsterComponent!: GridsterComponent;
 
   constructor(private nifiService: NiFiService, private dialog: MatDialog,
               private dashboardService: DashboardService) {
@@ -30,31 +33,6 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     this.refreshSubscription = this.dashboardService.refreshDashboardObservable.subscribe(onNext => {
       this.getDashboardWidgets();
     });
-  }
-
-  public getDashboardWidgets() {
-    this.dashboardService.getWidgets().subscribe(
-      onNext => {
-        this.dashboardWidgets = onNext.map(widget => {
-          return <DashboardWidgetForGridDto>{
-            id: widget.id,
-            type: widget.type,
-            grid: {
-              cols: widget.gridCols,
-              rows: widget.gridRows,
-              y: widget.gridY,
-              x: widget.gridX,
-              dragEnabled: true
-            },
-            dashboardId: widget.dashboard
-          }
-        });
-      }
-    );
-  }
-
-  ngOnDestroy() {
-    this.refreshSubscription.unsubscribe();
   }
 
   ngOnInit() {
@@ -68,23 +46,54 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     // Specify default layout options for the dashboard.
     this.dashboardOptions = {
       minCols: 8, maxCols: 8, minRows: 10,
+      maxItemCols: 4, maxItemRows: 4,
       disableScrollVertical: true, disableScrollHorizontal: true,
       displayGrid: "none",
       compactType: "compactUp&Left",
       fixedRowHeight: 100,
-      gridType: "verticalFixed"
+      gridType: "verticalFixed",
+      itemChangeCallback: this.itemChange.bind(this),
     };
 
     // Refresh widgets list.
     this.getDashboardWidgets();
+  }
 
-    // TEMP
-    this.dialog.open(WidgetSensorValueSetupComponent, {
-      width: '40%',
-      data: {
-        id: 0
+  itemChange(item: any, itemComponent: any) {
+    console.log(item);
+    console.log(itemComponent);
+    const widgetId = itemComponent.el.id;
+    if (widgetId) {
+      this.dashboardService.updateWidgetCoordinates(widgetId, item.x, item.y, item.cols, item.rows).subscribe(
+        onNext => {
+        });
+    }
+  }
+
+  ngOnDestroy() {
+    this.refreshSubscription.unsubscribe();
+  }
+
+  getDashboardWidgets() {
+    this.dashboardService.getWidgets().subscribe(
+      onNext => {
+        this.dashboardWidgets = onNext.map(widget => {
+          return <DashboardWidgetForGridDto>{
+            id: widget.id,
+            type: widget.type,
+            grid: {
+              cols: widget.gridCols,
+              rows: widget.gridRows,
+              y: widget.gridY,
+              x: widget.gridX,
+              dragEnabled: true,
+              resizeEnabled: true
+            },
+            dashboardId: widget.dashboard
+          }
+        });
       }
-    });
+    );
   }
 
   addWidget() {

@@ -6,9 +6,9 @@
     </button>
   </mat-card-title>
   <mat-card-content fxFlexFill class="xs-mt3">
-    <gridster [options]="dashboardOptions" class="gridster">
-      <gridster-item [item]="item.grid" *ngFor="let item of dashboardWidgets">
-        <div [ngSwitch]="item.type">
+    <gridster [options]="dashboardOptions" class="gridster" #gridsterComponent>
+      <gridster-item [id]="item.id" [item]="item.grid" *ngFor="let item of dashboardWidgets">
+        <div [ngSwitch]="item.type" fxFlexFill>
           <app-widget-sensor-value
             *ngSwitchCase="constants.DASHBOARD.WIDGETS.SENSOR_VALUE"
             [id]="item.id" [dashboard]="item.dashboardId">

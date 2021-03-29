@@ -9,9 +9,9 @@ import {UtilityService} from "../../../shared/service/utility.service";
 import {DevicesService} from "../../../devices/devices.service";
 import {DeviceDto} from "../../../dto/device-dto";
 import "rxjs-compat/add/operator/debounceTime";
-import {QFormsService} from "@qlack/forms";
 import {BaseComponent} from "../../../shared/component/base-component";
 import {AppExtendedConstants} from "../../../app.extended-constants";
+import {WidgetSensorValueConf} from "./widget-sensor-value-conf";
 
 @Component({
   selector: 'app-widget-sensor-value-setup',
@@ -98,12 +98,13 @@ export class WidgetSensorValueSetupComponent extends BaseComponent implements On
       gridRows: this.form.value['gridRows'],
       gridX: this.form.value['gridX'],
       gridY: this.form.value['gridY'],
-      configuration: JSON.stringify({
-        icon: this.form.value['icon'],
-        title: this.form.value['title'],
-        hardwareId: this.form.value['hardwareId'],
-        measurement: this.form.value['measurement']
-      }),
+      configuration:
+        new WidgetSensorValueConf(
+          this.form.value['title'],
+          this.form.value['icon'],
+          this.form.value['hardwareId'],
+          this.form.value['measurement']
+        ).serialise(),
       dashboard: this.data.dashboard
     }
 
