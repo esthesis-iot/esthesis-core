@@ -12,6 +12,8 @@ import "rxjs-compat/add/operator/debounceTime";
 import {BaseComponent} from "../../../shared/component/base-component";
 import {AppExtendedConstants} from "../../../app.extended-constants";
 import {WidgetSensorValueConf} from "./widget-sensor-value-conf";
+import {Color} from '@angular-material-components/color-picker';
+import {FormatterService} from "../../../shared/service/formatter.service";
 
 @Component({
   selector: 'app-widget-sensor-value-setup',
@@ -26,7 +28,8 @@ export class WidgetSensorValueSetupComponent extends BaseComponent implements On
   constructor(private fb: FormBuilder, private dialog: MatDialog,
               public dialogRef: MatDialogRef<WidgetSensorValueSetupComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any, private dashboardService: DashboardService,
-              private utilityService: UtilityService, private devicesService: DevicesService) {
+              private utilityService: UtilityService, private devicesService: DevicesService,
+              private formatterService: FormatterService) {
     super();
   }
 
@@ -40,14 +43,21 @@ export class WidgetSensorValueSetupComponent extends BaseComponent implements On
       icon: [],
       title: [],
       hardwareId: ['', [Validators.required]],
-      measurement: ['']
+      measurement: [''],
+      bgColor: [],
+      fgColor: []
     });
 
     // If editing an existing widget, fetch widget configuration.
     if (this.data.id !== 0) {
       this.dashboardService.getWidget(this.data.id).subscribe(onNext => {
-        this.form.patchValue(JSON.parse(onNext.configuration));
         this.form.patchValue(onNext);
+        const conf: WidgetSensorValueConf = JSON.parse(onNext.configuration);
+        this.form.patchValue(conf);
+        this.form.patchValue({
+          fgColor: this.formatterService.rgbaStringToColor(conf.fgColor),
+          bgColor: this.formatterService.rgbaStringToColor(conf.bgColor)
+        });
       })
     }
 
@@ -103,7 +113,9 @@ export class WidgetSensorValueSetupComponent extends BaseComponent implements On
           this.form.value['title'],
           this.form.value['icon'],
           this.form.value['hardwareId'],
-          this.form.value['measurement']
+          this.form.value['measurement'],
+          this.formatterService.colorToRgbaString(this.form.value['bgColor']),
+          this.formatterService.colorToRgbaString(this.form.value['fgColor']),
         ).serialise(),
       dashboard: this.data.dashboard
     }

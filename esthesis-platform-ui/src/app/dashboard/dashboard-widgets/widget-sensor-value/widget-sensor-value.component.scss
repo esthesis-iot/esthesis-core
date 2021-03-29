@@ -1,6 +1,4 @@
 .widget {
-  color: #ffffff;
-
   .body {
     .icon {
       mat-icon {
@@ -9,15 +7,10 @@
     }
     .value {
       font-size: 2rem;
-      //padding-right: 0;
-      //margin-right: 0;
-      //transform: scale(3);
     }
-
     .title {
       padding-right: 2px;
       font-size: 1.05rem;
     }
   }
-
 }

@@ -2,7 +2,11 @@ import {Injectable} from '@angular/core';
 import {AppConstants} from '../../app.constants';
 import * as moment from 'moment';
 import * as hd from 'human-duration';
+import {Color} from "@angular-material-components/color-picker";
 
+/**
+ * Utility services for various components.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -11,6 +15,11 @@ export class FormatterService {
   constructor() {
   }
 
+  /**
+   * Converts from one date format to another.
+   * @param formatter The type of the format to convert to.
+   * @param val The source value to convert from.
+   */
   format(formatter: string, val: any): string {
     switch (formatter) {
       case AppConstants.FIELD_VALUE_FORMATTER.DATETIME_SHORT:
@@ -51,4 +60,20 @@ export class FormatterService {
     }
   }
 
+  /**
+   * Converts a string comma-separated value representing a color in RGBA to a Color object.
+   * @param color The RGBA value to convert.
+   */
+  rgbaStringToColor(color: string): Color {
+    const cc = color.split(",");
+    return new Color(Number(cc[0]), Number(cc[1]), Number(cc[2]), Number(cc[3]));
+  }
+
+  /**
+   * Converts a Color object to a comma-separated RGBA string representation.
+   * @param color The color object to convert from.
+   */
+  colorToRgbaString(color: Color): string {
+    return [color.r, color.g, color.b, color.a].join(",");
+  }
 }

@@ -4,6 +4,8 @@ import {WidgetSensorValueSetupComponent} from "./widget-sensor-value-setup.compo
 import {DashboardService} from "../../dashboard.service";
 import {DashboardWidgetDto} from "../../../dto/dashboard-widget-dto";
 import {WidgetSensorValueConf} from "./widget-sensor-value-conf";
+import {FormatterService} from "../../../shared/service/formatter.service";
+import {Color} from "@angular-material-components/color-picker";
 
 @Component({
   selector: 'app-widget-sensor-value',
@@ -15,14 +17,19 @@ export class WidgetSensorValueComponent implements OnInit {
   @Input() dashboard!: number
   dashboardWidget!: DashboardWidgetDto;
   configuration!: WidgetSensorValueConf;
+  bgColor = new Color(64, 199, 247, 1);
+  fgColor = new Color(255, 255, 255, 1);
 
-  constructor(private dialog: MatDialog, private dashboardService: DashboardService) {
+  constructor(private dialog: MatDialog, private dashboardService: DashboardService,
+              private formatterService: FormatterService) {
   }
 
   ngOnInit(): void {
     this.dashboardService.getWidget(this.id).subscribe(onNext => {
       this.dashboardWidget = onNext;
       this.configuration = WidgetSensorValueConf.deserialise(onNext.configuration);
+      this.bgColor = this.formatterService.rgbaStringToColor(this.configuration.bgColor);
+      this.fgColor = this.formatterService.rgbaStringToColor(this.configuration.fgColor);
     })
   }
 

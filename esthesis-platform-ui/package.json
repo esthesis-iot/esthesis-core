@@ -11,6 +11,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-material-components/color-picker": "^5.0.2",
     "@angular-material-components/datetime-picker": "^5.0.3",
     "@angular-material-components/moment-adapter": "^5.0.0",
     "@angular/animations": "~11.0.4",
@@ -46,7 +47,6 @@
     "ng-terminal": "^3.0.1",
     "ng2-logger": "~4.0.7",
     "ngx-chips": "^2.2.2",
-    "ngx-color": "^6.2.0",
     "ngx-cookie-service": "~11.0.2",
     "ngx-filesize": "~2.0.16",
     "ngx-moment": "~5.0.0",

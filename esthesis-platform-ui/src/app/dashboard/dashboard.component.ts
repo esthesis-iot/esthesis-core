@@ -60,8 +60,6 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   }
 
   itemChange(item: any, itemComponent: any) {
-    console.log(item);
-    console.log(itemComponent);
     const widgetId = itemComponent.el.id;
     if (widgetId) {
       this.dashboardService.updateWidgetCoordinates(widgetId, item.x, item.y, item.cols, item.rows).subscribe(

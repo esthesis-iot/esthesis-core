@@ -5,7 +5,6 @@ import {DashboardRoutingModule} from './dashboard-routing.module';
 import {DashboardComponent} from './dashboard.component';
 import {DashboardMapComponent} from './dashboard-map/dashboard-map.component';
 import {DashboardChartsComponent} from './dashboard-charts/dashboard-charts.component';
-import {DashboardErrorLogComponent} from './dashboard-error-log/dashboard-error-log.component';
 import {LeafletModule} from '@asymmetrik/ngx-leaflet';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatCardModule} from '@angular/material/card';
@@ -23,6 +22,7 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
 import {MatInputModule} from "@angular/material/input";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {MAT_COLOR_FORMATS, NgxMatColorPickerModule, NGX_MAT_COLOR_FORMATS} from "@angular-material-components/color-picker";
 
 // @ts-ignore
 @NgModule({
@@ -30,7 +30,6 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
     DashboardComponent,
     DashboardMapComponent,
     DashboardChartsComponent,
-    DashboardErrorLogComponent,
     DashboardAddWidgetComponent,
     WidgetSensorValueComponent,
     WidgetSensorValueSetupComponent,
@@ -51,9 +50,11 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
     MatSelectModule,
     MatInputModule,
     MatAutocompleteModule,
+    NgxMatColorPickerModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [
+    { provide: MAT_COLOR_FORMATS, useValue: NGX_MAT_COLOR_FORMATS },
     {
       provide: MAT_DATE_FORMATS,
       useValue: {

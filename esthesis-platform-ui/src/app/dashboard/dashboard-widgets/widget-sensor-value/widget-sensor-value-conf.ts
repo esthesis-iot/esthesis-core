@@ -1,15 +1,19 @@
 export class WidgetSensorValueConf {
 
-  title!: string;
-  icon!: string;
-  hardwareId!: string;
-  measurement!: string;
+  title: string;
+  icon: string;
+  hardwareId: string;
+  measurement: string;
+  bgColor: string;
+  fgColor: string;
 
-  constructor(title: string, icon: string, hardwareId: string, measurement: string) {
+  constructor(title: string, icon: string, hardwareId: string, measurement: string, bgColor: string,  fgColor: string) {
     this.title = title;
     this.icon = icon;
     this.hardwareId = hardwareId;
     this.measurement = measurement;
+    this.bgColor = bgColor;
+    this.fgColor = fgColor;
   }
 
   serialise(): string {
