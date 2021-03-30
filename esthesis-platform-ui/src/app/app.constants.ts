@@ -125,7 +125,7 @@ export const AppConstants = {
 
   DASHBOARD: {
     WIDGETS: {
-      SENSOR_VALUE: "sensor-value"
+      SENSOR_VALUE: "sensorValue"
     }
   },
 

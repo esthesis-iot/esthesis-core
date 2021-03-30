@@ -16,24 +16,27 @@ build-src:
 	mvn clean install -Pprod
 
 build-amd64: _create-buildx
-	docker $(context) buildx build -f Dockerfile.amd64 --platform linux/amd64 . -t esthesis/esthesis-platform-device:$(BUILD_TAG)-amd64 --load
+	docker $(context) buildx build -f Dockerfile.amd64 --platform linux/amd64 . -t esthesis/esthesis-platform-device:$(BUILD_TAG)-amd64 -t esthesis/esthesis-platform-device:latest-amd64 --load
 
 build-arm64: _create-buildx
-	docker $(context) buildx build -f Dockerfile.arm64 --platform linux/arm64 . -t esthesis/esthesis-platform-device:$(BUILD_TAG)-arm64 --load
+	docker $(context) buildx build -f Dockerfile.arm64 --platform linux/arm64 . -t esthesis/esthesis-platform-device:$(BUILD_TAG)-arm64 -t esthesis/esthesis-platform-device:latest-arm64 --load
 
 build-armv7: _create-buildx
-	docker $(context) buildx build -f Dockerfile.armv7 --platform linux/arm/v7 . -t esthesis/esthesis-platform-device:$(BUILD_TAG)-armv7 --load
+	docker $(context) buildx build -f Dockerfile.armv7 --platform linux/arm/v7 . -t esthesis/esthesis-platform-device:$(BUILD_TAG)-armv7 -t esthesis/esthesis-platform-device:latest-armv7 --load
 
 push-all: push-amd64 push-arm64 push-armv7
 
 push-amd64:
 	docker $(context) push esthesis/esthesis-platform-device:$(BUILD_TAG)-amd64
+	docker $(context) push esthesis/esthesis-platform-device:latest-amd64
 
 push-arm64:
 	docker $(context) push esthesis/esthesis-platform-device:$(BUILD_TAG)-arm64
+	docker $(context) push esthesis/esthesis-platform-device:latest-arm64
 
 push-armv7:
 	docker $(context) push esthesis/esthesis-platform-device:$(BUILD_TAG)-armv7
+	docker $(context) push esthesis/esthesis-platform-device:latest-armv7
 
 clear:
 	docker $(context) buildx rm esthesis_device

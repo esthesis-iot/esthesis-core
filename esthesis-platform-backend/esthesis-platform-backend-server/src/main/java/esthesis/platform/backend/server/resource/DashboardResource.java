@@ -71,10 +71,10 @@ public class DashboardResource {
     return dashboardWiddgetService.updateWidgetCoordinates(id, x, y, columns, rows);
   }
 
-//  @GetMapping(path = "widget/{widgetId}/value", produces = MediaType.APPLICATION_JSON_VALUE)
-//  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
-//    logMessage = "Could not get widget value.")
-//  public DevicePageDTO getWidgetValue(@PathVariable long widgetId) {
-//
-//  }
+  @GetMapping(path = "widget/{widgetId}/value", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
+    logMessage = "Could not get widget value.")
+  public Object getWidgetValue(@PathVariable long widgetId) {
+      return dashboardWiddgetService.getWidgetValue(widgetId);
+  }
 }

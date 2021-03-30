@@ -60,4 +60,11 @@ export class DashboardService {
     return this.http.put(`${AppConstants.API_ROOT}/dashboard/widget/${widgetId}/${x},${y}/${columns},${rows}`, {});
   }
 
+  /**
+   * Fetches the last value for a specific widget.
+   * @param widgetId The Id of the widget to fetch its last value.
+   */
+  getWidgetValue(widgetId: number): Observable<string> {
+    return this.http.get<string>(`${AppConstants.API_ROOT}/dashboard/widget/${widgetId}/value`);
+  }
 }

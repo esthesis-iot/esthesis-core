@@ -178,7 +178,8 @@ public class AppConstants {
 
   public static class Dashboard {
     public static class WidgetType {
-      public static final String SENSOR_VALUE = "sensor-value";
+      // Keep these inline with the beans under esthesis.platform.backend.server.service.widgets.
+      public static final String SENSOR_VALUE = "sensorValue";
     }
   }
 
