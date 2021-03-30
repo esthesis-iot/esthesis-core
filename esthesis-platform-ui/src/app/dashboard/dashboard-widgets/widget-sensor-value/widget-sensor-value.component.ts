@@ -35,7 +35,7 @@ export class WidgetSensorValueComponent implements OnInit {
 
   setup() {
     this.dialog.open(WidgetSensorValueSetupComponent, {
-      width: '40%',
+      width: '35%',
       data: {
         id: this.id,
         dashboard: this.dashboard

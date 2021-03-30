@@ -1,5 +1,6 @@
 package esthesis.platform.backend.server.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.platform.backend.server.dto.DashboardWidgetDTO;
 import esthesis.platform.backend.server.mapper.DashboardWidgetMapper;
 import esthesis.platform.backend.server.model.DashboardWidget;
@@ -19,6 +20,8 @@ public class DashboardWidgetService extends BaseService<DashboardWidgetDTO, Dash
   private final DashboardWidgetRepository dashboardWidgetRepository;
   private final DashboardWidgetMapper dashboardWidgetMapper;
   private final DashboardService dashboardService;
+  private final DeviceService deviceService;
+  private final ObjectMapper mapper;
 
   /**
    * Finds the widgets of the default-view dashboard of the logged-in user.
@@ -64,4 +67,17 @@ public class DashboardWidgetService extends BaseService<DashboardWidgetDTO, Dash
       .setGridCols(columns)
       .setGridRows(rows));
   }
+
+  /**
+   * Returns the last value for the requested widget.
+   * @param widgetId The Id of the widget ot find its latest value.
+   */
+//  public DevicePageDTO getWidgetValue(long widgetId) {
+//    // Find the widget and obtain its configuration.
+//    DashboardWidget widget = findEntityById(widgetId);
+//    switch (widget.getType()) {
+//      case WidgetType.SENSOR_VALUE:
+//        mapper.readTree(widget.getConfiguration()).get
+//    }
+//  }
 }

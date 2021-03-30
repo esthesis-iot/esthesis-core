@@ -62,6 +62,9 @@
       <input matInput placeholder="Measurement" formControlName="measurement">
       <mat-hint>e.g. telemetry.health.cpuTemperature</mat-hint>
     </mat-form-field>
+
+    <label class="sm-pt2">Update frequency: {{form.value.updateEvery}} seconds</label>
+    <mat-slider min="30" max="600" thumbLabel tickInterval="5" step="5" formControlName="updateEvery"></mat-slider>
   </form>
 
   <div>

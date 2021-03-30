@@ -23,6 +23,7 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatInputModule} from "@angular/material/input";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MAT_COLOR_FORMATS, NgxMatColorPickerModule, NGX_MAT_COLOR_FORMATS} from "@angular-material-components/color-picker";
+import {MatSliderModule} from "@angular/material/slider";
 
 // @ts-ignore
 @NgModule({
@@ -50,7 +51,8 @@ import {MAT_COLOR_FORMATS, NgxMatColorPickerModule, NGX_MAT_COLOR_FORMATS} from 
     MatSelectModule,
     MatInputModule,
     MatAutocompleteModule,
-    NgxMatColorPickerModule
+    NgxMatColorPickerModule,
+    MatSliderModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [

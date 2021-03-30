@@ -19,4 +19,5 @@ public class DashboardWidgetDTO extends BaseDTO {
   private int gridY;
   private String configuration;
   private long dashboard;
+  private int updateEvery;
 }

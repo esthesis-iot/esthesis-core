@@ -34,4 +34,7 @@ public class DashboardWidget extends BaseEntity {
   private int gridY;
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   private Dashboard dashboard;
+  // Data update frequency in seconds.
+  private int updateEvery;
+
 }

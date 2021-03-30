@@ -12,7 +12,6 @@ import "rxjs-compat/add/operator/debounceTime";
 import {BaseComponent} from "../../../shared/component/base-component";
 import {AppExtendedConstants} from "../../../app.extended-constants";
 import {WidgetSensorValueConf} from "./widget-sensor-value-conf";
-import {Color} from '@angular-material-components/color-picker';
 import {FormatterService} from "../../../shared/service/formatter.service";
 
 @Component({
@@ -45,7 +44,8 @@ export class WidgetSensorValueSetupComponent extends BaseComponent implements On
       hardwareId: ['', [Validators.required]],
       measurement: [''],
       bgColor: [],
-      fgColor: []
+      fgColor: [],
+      updateEvery: [60, [Validators.required]]
     });
 
     // If editing an existing widget, fetch widget configuration.
@@ -108,6 +108,7 @@ export class WidgetSensorValueSetupComponent extends BaseComponent implements On
       gridRows: this.form.value['gridRows'],
       gridX: this.form.value['gridX'],
       gridY: this.form.value['gridY'],
+      updateEvery: this.form.value['updateEvery'],
       configuration:
         new WidgetSensorValueConf(
           this.form.value['title'],

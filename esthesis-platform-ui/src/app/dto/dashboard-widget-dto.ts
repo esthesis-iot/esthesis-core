@@ -8,4 +8,5 @@ export interface DashboardWidgetDto extends BaseDto {
   gridY: number;
   configuration: any;
   dashboard: number;
+  updateEvery: number;
 }
