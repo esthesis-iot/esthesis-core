@@ -1,4 +1,4 @@
-FROM adoptopenjdk:15.0.2_7-jre-hotspot-focal
+FROM adoptopenjdk:15.0.2_7-jre-hotspot
 MAINTAINER esthesis@eurodyn.com
 
 # Set working directory.
