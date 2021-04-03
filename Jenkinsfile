@@ -83,7 +83,7 @@ pipeline {
             }
         }
     }
-    /*post {
+    post {
         changed {
             script {
                 if (currentBuild.result == 'SUCCESS') {
@@ -115,5 +115,5 @@ def getChangeString(maxMessages) {
         changeString = " There have not been any changes since the last build"
     }
 
-    return changeString*/
+    return changeString
 }
