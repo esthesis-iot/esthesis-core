@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'eddevopsd2/mvn3-jdk13:1.0.0'
-            args '-v /root/.m2:/root/.m2 -v /root/sonar-scanner:/root/sonar-scanner'
+            args '-v /root/.m2/Esthesis:/root/.m2 -v /root/sonar-scanner:/root/sonar-scanner'
         }
     }
     stages {
@@ -83,7 +83,7 @@ pipeline {
             }
         }
     }
-    post {
+    /*post {
         changed {
             script {
                 if (currentBuild.result == 'SUCCESS') {
@@ -115,5 +115,5 @@ def getChangeString(maxMessages) {
         changeString = " There have not been any changes since the last build"
     }
 
-    return changeString
+    return changeString*/
 }
