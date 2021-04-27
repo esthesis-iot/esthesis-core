@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import {AppConstants} from '../../app.constants';
 
 export class BaseComponent {

@@ -45,6 +45,8 @@ export class LoginComponent extends BaseComponent implements OnInit {
           ' 30%, rgba(255,255,255,0.62) 64%, rgba(255,255,255,1) 89%), url(\'' + onNext + '\');' +
           ' background-size: cover;');
       });
+    } else {
+      this.router.navigate(['dashboard']);
     }
 
     // Prepare login form.

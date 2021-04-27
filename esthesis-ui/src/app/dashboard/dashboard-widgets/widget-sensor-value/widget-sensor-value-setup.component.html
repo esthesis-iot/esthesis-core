@@ -4,9 +4,14 @@
 </div>
 <div fxLayout="column">
   <form novalidate [formGroup]="form" fxLayout="column">
-    <mat-form-field>
-      <input matInput placeholder="Title" formControlName="title">
-    </mat-form-field>
+    <div fxLayout="row" fxLayoutGap="1rem">
+      <mat-form-field fxFlex="70%">
+        <input matInput placeholder="Title" formControlName="title">
+      </mat-form-field>
+      <mat-form-field fxFlex="30%">
+        <input matInput placeholder="Unit" formControlName="unit">
+      </mat-form-field>
+    </div>
     <mat-form-field>
       <mat-select placeholder="Icon" formControlName="icon">
         <mat-option></mat-option>

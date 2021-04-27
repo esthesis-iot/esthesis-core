@@ -2,14 +2,16 @@
   <div class="buttons">
     <mat-icon (click)="setup()">settings</mat-icon>
   </div>
-  <div class="body" fxLayout="row">
-    <div class="icon" fxFlex="30%" fxLayout="column"
+  <div class="body" fxLayout="row" fxLayoutAlign="space-between center">
+    <div class="icon" fxFlex="3rem" fxLayout="column"
          fxLayoutAlign="center center">
       <mat-icon>{{configuration?.icon}}</mat-icon>
     </div>
-    <div fxFlex="70%" fxLayout="column"
-         fxLayoutAlign="center end">
-      <div class="value">{{lastValue}}</div>
+    <div fxLayout="column" fxLayoutAlign="center end">
+      <div class="value">
+        {{lastValue ? lastValue : '...'}}
+        <span class="unit">{{configuration?.unit ? configuration?.unit : ''}}</span>
+      </div>
       <div class="title">{{configuration?.title}}</div>
     </div>
   </div>

@@ -1,6 +1,6 @@
 /* tslint:disable:max-line-length */
 import {HttpClientModule} from '@angular/common/http';
-import {NgModule, Pipe, PipeTransform} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
@@ -17,8 +17,6 @@ import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {JwtModule} from '@auth0/angular-jwt';
 import {CookieService} from 'ngx-cookie-service';
-import {NgProgressModule} from 'ngx-progressbar';
-import { NgProgressHttpModule } from 'ngx-progressbar/http';
 import {AppComponent} from './app.component';
 import {AppConstants} from './app.constants';
 import {routing} from './app.routes';
@@ -34,6 +32,8 @@ import {HeaderComponent} from './shared/layout/header.component';
 import {SidenavComponent} from './shared/layout/sidenav.component';
 import {QFormsModule} from '@qlack/forms';
 import {QFormValidationModule} from '@qlack/form-validation';
+import {NgProgressModule} from "ngx-progressbar";
+import {NgProgressHttpModule} from "ngx-progressbar/http";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 export function getJwtToken(): string | null {
@@ -77,12 +77,13 @@ export function getJwtToken(): string | null {
     MatInputModule,
     MatButtonModule,
     DisplayModule,
+    HttpClientModule,
     NgProgressModule.withConfig({
       color: '#50A7D7',
       debounceTime: 500,
       meteor: false,
       spinner: false,
-      thick: false,
+      thick: true,
       trickleSpeed: 500
     }),
     NgProgressHttpModule,

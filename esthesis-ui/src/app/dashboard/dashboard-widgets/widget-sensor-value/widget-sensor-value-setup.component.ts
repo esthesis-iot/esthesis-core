@@ -41,6 +41,8 @@ export class WidgetSensorValueSetupComponent extends BaseComponent implements On
       gridY: [0, [Validators.required]],
       icon: [],
       title: [],
+      unit: [],
+      displayNodeName: [],
       hardwareId: ['', [Validators.required]],
       measurement: [''],
       bgColor: [],
@@ -117,6 +119,8 @@ export class WidgetSensorValueSetupComponent extends BaseComponent implements On
           this.form.value['measurement'],
           this.formatterService.colorToRgbaString(this.form.value['bgColor']),
           this.formatterService.colorToRgbaString(this.form.value['fgColor']),
+          this.form.value['unit'],
+          this.form.value['displayNodeName'],
         ).serialise(),
       dashboard: this.data.dashboard
     }

@@ -45,7 +45,6 @@ export class WidgetSensorValueComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Get the widget to display.
     this.dashboardService.getWidget(this.id).subscribe(onNext => {
-      console.log(onNext);
       this.dashboardWidget = onNext;
       this.configuration = WidgetSensorValueConf.deserialise(onNext.configuration);
       this.bgColor = this.formatterService.rgbaStringToColor(this.configuration.bgColor);

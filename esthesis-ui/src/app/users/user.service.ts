@@ -27,7 +27,7 @@ export class UserService extends CrudService<UserDto> {
     return localStorage.getItem(AppConstants.JWT_STORAGE_NAME);
   }
 
-  // Authenticate a user.
+  // Authenticate a user.`
   login(loginInfoDTO: LoginInfoDto): Observable<JwtDto> {
     return this.http.post<JwtDto>(AppConstants.API_ROOT + `/${this.resource}/auth`,
       JSON.stringify(loginInfoDTO),
