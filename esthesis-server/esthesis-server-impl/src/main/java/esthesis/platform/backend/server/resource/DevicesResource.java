@@ -15,15 +15,12 @@ import esthesis.platform.backend.server.dto.DeviceRegistrationDTO;
 import esthesis.platform.backend.server.model.Device;
 import esthesis.platform.backend.server.service.DeviceService;
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -57,8 +54,7 @@ public class DevicesResource {
   @PostMapping(path = "preregister")
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not register device(s).")
   public ResponseEntity preregister(@Valid @RequestBody DeviceRegistrationDTO deviceRegistrationDTO)
-  throws NoSuchAlgorithmException, IOException, NoSuchPaddingException,
-         InvalidAlgorithmParameterException, InvalidKeyException, OperatorCreationException,
+  throws NoSuchAlgorithmException, IOException, OperatorCreationException,
          InvalidKeySpecException, NoSuchProviderException {
     deviceService.preregister(deviceRegistrationDTO);
 

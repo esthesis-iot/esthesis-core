@@ -147,8 +147,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
    */
   @Async
   public void preregister(DeviceRegistrationDTO deviceRegistrationDTO)
-    throws NoSuchAlgorithmException, IOException, OperatorCreationException,
-    InvalidKeySpecException, NoSuchProviderException {
+  throws NoSuchAlgorithmException, OperatorCreationException, InvalidKeySpecException,
+         NoSuchProviderException, IOException {
     // Split IDs.
     String ids = deviceRegistrationDTO.getIds();
     ids = ids.replace("\n", ",");
@@ -181,8 +181,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
    * @param state      The initial state of the registration of the device.
    */
   private void register(String hardwareId, String tags, String state)
-    throws NoSuchAlgorithmException, IOException, OperatorCreationException,
-    InvalidKeySpecException, NoSuchProviderException {
+  throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, OperatorCreationException,
+         NoSuchProviderException {
     // Create a keypair for the device to be registered.
     CreateKeyPairDTO createKeyPairDTO = new CreateKeyPairDTO();
     createKeyPairDTO.setKeySize(appProperties.getSecurityAsymmetricKeySize());
@@ -247,8 +247,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
    * @param hardwareId          The hardware Id of the device to be registered.
    */
   public void register(DeviceMessage<RegistrationRequest> registrationRequest, String hardwareId)
-    throws NoSuchAlgorithmException, IOException, InvalidKeySpecException,
-    OperatorCreationException, NoSuchProviderException {
+  throws NoSuchAlgorithmException, IOException, InvalidKeySpecException,
+         OperatorCreationException, NoSuchProviderException {
 
     // Proceed with device registration.
     if (srs.is(REGISTRATION_MODE, DISABLED)) {

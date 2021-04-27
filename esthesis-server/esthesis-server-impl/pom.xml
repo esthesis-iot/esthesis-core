@@ -111,7 +111,7 @@
             </annotationProcessorPath>
             <annotationProcessorPath>
               <groupId>org.projectlombok</groupId>
-              <artifactId>lombok-mapstruct-binding </artifactId>
+              <artifactId>lombok-mapstruct-binding</artifactId>
               <version>${lombok-mapstruct-binding.version}</version>
             </annotationProcessorPath>
             <!-- QueryDSL - Compatibility with JDK >= 9 -->

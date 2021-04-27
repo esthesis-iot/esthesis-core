@@ -9,6 +9,7 @@ import esthesis.platform.backend.server.dto.ProvisioningDTO;
 import esthesis.platform.backend.server.model.Provisioning;
 import esthesis.platform.backend.server.service.ProvisioningService;
 import javax.crypto.NoSuchPaddingException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,16 +36,13 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Optional;
 
-@RestController
 @Validated
+@RestController
+@RequiredArgsConstructor
 @RequestMapping("/provisioning")
 public class ProvisioningResource {
 
   private final ProvisioningService provisioningService;
-
-  public ProvisioningResource(ProvisioningService provisioningPackageService) {
-    this.provisioningService = provisioningPackageService;
-  }
 
   @PostMapping
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save provisioning package.")
