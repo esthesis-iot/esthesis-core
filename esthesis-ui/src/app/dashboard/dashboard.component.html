@@ -13,6 +13,10 @@
             *ngSwitchCase="constants.DASHBOARD.WIDGETS.SENSOR_VALUE"
             [id]="item.id" [dashboard]="item.dashboardId">
           </app-widget-sensor-value>
+          <app-widget-sensor-gauge
+            *ngSwitchCase="constants.DASHBOARD.WIDGETS.SENSOR_GAUGE"
+            [id]="item.id" [dashboard]="item.dashboardId">
+          </app-widget-sensor-gauge>
         </div>
       </gridster-item>
     </gridster>

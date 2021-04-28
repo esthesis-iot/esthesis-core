@@ -24,6 +24,9 @@ import {MatInputModule} from "@angular/material/input";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MAT_COLOR_FORMATS, NgxMatColorPickerModule, NGX_MAT_COLOR_FORMATS} from "@angular-material-components/color-picker";
 import {MatSliderModule} from "@angular/material/slider";
+import { WidgetSensorGaugeComponent } from './dashboard-widgets/widget-sensor-gauge/widget-sensor-gauge.component';
+import { WidgetSensorGaugeSetupComponent } from './dashboard-widgets/widget-sensor-gauge/widget-sensor-gauge-setup.component';
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 // @ts-ignore
 @NgModule({
@@ -34,6 +37,8 @@ import {MatSliderModule} from "@angular/material/slider";
     DashboardAddWidgetComponent,
     WidgetSensorValueComponent,
     WidgetSensorValueSetupComponent,
+    WidgetSensorGaugeComponent,
+    WidgetSensorGaugeSetupComponent,
   ],
   imports: [
     CommonModule,
@@ -52,7 +57,8 @@ import {MatSliderModule} from "@angular/material/slider";
     MatInputModule,
     MatAutocompleteModule,
     NgxMatColorPickerModule,
-    MatSliderModule
+    MatSliderModule,
+    MatCheckboxModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [

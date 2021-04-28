@@ -1,0 +1,19 @@
+<div fxLayout="column" class="widget" [ngStyle]="{'background-color': bgColor, 'color': fgColor}">
+  <div class="buttons">
+    <mat-icon (click)="setup()">settings</mat-icon>
+  </div>
+  <div class="body" fxLayout="column" fxFlexFill>
+    <div class="title">{{configuration.title}}</div>
+      <ngx-charts-gauge
+        [results]="lastValue"
+        [legend]="false"
+        [min]="configuration.min"
+        [max]="configuration.max"
+        [units]="configuration.unit"
+        [bigSegments]="configuration.bigSegments"
+        [smallSegments]="configuration.smallSegments"
+        [showAxis]="configuration.showAxis"
+        [style]="'fill:' + fgColor">
+      </ngx-charts-gauge>
+  </div>
+</div>

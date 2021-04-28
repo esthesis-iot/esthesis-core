@@ -9,6 +9,8 @@ import {WidgetSensorValueSetupComponent} from "./dashboard-widgets/widget-sensor
 import {DashboardService} from "./dashboard.service";
 import {DashboardWidgetForGridDto} from "../dto/dashboard-widget-for-grid-dto";
 import {Subscription} from "rxjs";
+import {WidgetSensorGaugeComponent} from "./dashboard-widgets/widget-sensor-gauge/widget-sensor-gauge.component";
+import {WidgetSensorGaugeSetupComponent} from "./dashboard-widgets/widget-sensor-gauge/widget-sensor-gauge-setup.component";
 
 
 @Component({
@@ -106,6 +108,15 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
               id: 0
             }
           });
+          break;
+        case AppConstants.DASHBOARD.WIDGETS.SENSOR_GAUGE:
+          this.dialog.open(WidgetSensorGaugeSetupComponent, {
+            width: '40%',
+            data: {
+              id: 0
+            }
+          });
+          break;
       }
     });
   }

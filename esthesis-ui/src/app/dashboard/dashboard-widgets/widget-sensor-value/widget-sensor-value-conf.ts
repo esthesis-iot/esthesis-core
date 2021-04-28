@@ -7,10 +7,9 @@ export class WidgetSensorValueConf {
   measurement: string;
   bgColor: string;
   fgColor: string;
-  displayNodeName: boolean;
 
   constructor(title: string, icon: string, hardwareId: string, measurement: string,
-              bgColor: string, fgColor: string, unit: string, displayNodeName: boolean) {
+              bgColor: string, fgColor: string, unit: string) {
     this.title = title;
     this.icon = icon;
     this.hardwareId = hardwareId;
@@ -18,7 +17,6 @@ export class WidgetSensorValueConf {
     this.bgColor = bgColor;
     this.fgColor = fgColor;
     this.unit = unit;
-    this.displayNodeName = displayNodeName;
   }
 
   serialise(): string {
