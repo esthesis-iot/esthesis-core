@@ -100,7 +100,7 @@ public class ProvisioningService {
     // Proceed with provisioning.
     String provisioningUrl =
       registrationService.getProvisioningUrl() + AppConstants.URL_PS_PROVISIONING;
-    log.log(Level.CONFIG, "Attempting " + (isInitialProvisioningDone() ? "initial " : "") +
+    log.log(Level.INFO, "Attempting " + (isInitialProvisioningDone() ? "initial " : "") +
       "provisioning at {0}.", provisioningUrl);
     String provisioningInfoUrl =
       registrationService.getProvisioningUrl() + AppConstants.URL_PS_PROVISIONING_INFO;

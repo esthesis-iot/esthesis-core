@@ -5,9 +5,14 @@ import esthesis.device.runtime.config.AppProperties;
 import esthesis.device.runtime.health.HealthMetadataCollector;
 import esthesis.device.runtime.mqtt.MqttClient;
 import esthesis.device.runtime.proxy.mqtt.MqttProxyServer;
+import esthesis.device.runtime.service.AboutService;
 import esthesis.device.runtime.service.ProvisioningService;
 import esthesis.device.runtime.service.RegistrationService;
 import esthesis.device.runtime.util.SecurityUtil;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Scanner;
+import java.util.logging.Level;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.SpringApplication;
@@ -17,17 +22,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Scanner;
-import java.util.logging.Level;
-
 /**
  * A bootstrap class to allow component initialization after application has fully started and all
  * Beans are properly configured (in contrast to @{@link javax.annotation.PostConstruct}). This is
  * particularly useful in case a component needs to emit events during initialization (otherwise
  * events are lost since @{@link EventListener} annotations are not fully discovered).
- *
+ * <p>
  * In addition, bootstrapping all components in a well-defined sequence here allows greater control
  * over system's boot up times.
  */
@@ -79,13 +79,6 @@ public class Bootstrap {
 
     log.log(Level.INFO, "Initialising esthesis device runtime.");
 
-    // Check if outgoing encryption is required that the public & private keys of the device are
-    // available (note that, technically, only the private key is needed).
-//    if (appProperties.isOutgoingEncrypted() && !securityUtil.areSecurityKeysPresent()) {
-//      throw new SecurityException("Encryption of outgoing requests is required, however the "
-//        + "public and private keys of the device are not available.");
-//    }
-
     // Create local paths.
     Files.createDirectories(Paths.get(appProperties.getStorageRoot()));
     Files.createDirectories(Paths.get(appProperties.getSecureStorageRoot()));
@@ -111,7 +104,7 @@ public class Bootstrap {
     // Perform initial provisioning.
     if (!appProperties.isSkipInitialProvisioning() && !provisioningService
       .isInitialProvisioningDone()) {
-      log.log(Level.CONFIG, "Initial provisioning not done. Trying to initialise it now.");
+      log.log(Level.INFO, "Initial provisioning not done. Trying to initialise it now.");
       retryTemplate.execute(context -> {
         try {
           return provisioningService.provisioning();
@@ -129,7 +122,7 @@ public class Bootstrap {
 
     // Inform whether the embedded web server is started.
     if (appProperties.isProxyWeb()) {
-      log.log(Level.CONFIG, "Embedded Web server started on port {0}.",
+      log.log(Level.INFO, "Embedded Web server started on port {0}.",
         String.valueOf(appProperties.getProxyWebPort()));
     }
 
@@ -144,6 +137,10 @@ public class Bootstrap {
       log.log(Level.WARNING, "No MQTT server details were provided for this device.");
     }
 
-    log.log(Level.INFO, "esthesis device runtime initialised.");
+    if (appProperties.isDemo()) {
+      log.log(Level.INFO, "Demo mode enabled.");
+    }
+    log.log(Level.INFO, "esthesis device runtime {0} initialised.",
+      AboutService.getAbout().getBuildVersion());
   }
 }

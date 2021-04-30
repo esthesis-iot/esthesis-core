@@ -39,16 +39,11 @@ push-manifest:
 	$(info Checking for existing manifest esthesis/device:$(BUILD_TAG))
 	@docker manifest inspect esthesis/device:$(BUILD_TAG); \
 	if [ $$? -eq 0 ]; then \
-		 	docker $(context) manifest create \
-				--amend esthesis/device:$(BUILD_TAG) \
-				--amend esthesis/device:$(BUILD_TAG)-amd64 \
-				--amend esthesis/device:$(BUILD_TAG)-arm64 \
-				--amend esthesis/device:$(BUILD_TAG)-armv7 \
-	;else \
-		docker $(context) manifest create \
-				esthesis/device:$(BUILD_TAG) \
-				esthesis/device:$(BUILD_TAG)-amd64 \
-				esthesis/device:$(BUILD_TAG)-arm64 \
-				esthesis/device:$(BUILD_TAG)-armv7 \
+		 	docker $(context) manifest rm esthesis/device:$(BUILD_TAG) \
 	;fi
+	docker $(context) manifest create \
+		esthesis/device:$(BUILD_TAG) \
+		esthesis/device:$(BUILD_TAG)-amd64 \
+		esthesis/device:$(BUILD_TAG)-arm64 \
+		esthesis/device:$(BUILD_TAG)-armv7
 	docker $(context) manifest push esthesis/device:$(BUILD_TAG)

@@ -56,7 +56,7 @@ public class RegistrationService {
     }
 
     // No registration in the past, so proceed with registration.
-    log.log(Level.CONFIG, "Device is not registered, attempting registration now.");
+    log.log(Level.INFO, "Device is not registered, attempting registration now.");
     if (!appProperties.getRegistrationUrl().toLowerCase().startsWith("https://")) {
       log.log(Level.WARNING,
         "Registration is taking place over a non-encrypted protocol.");
@@ -85,7 +85,7 @@ public class RegistrationService {
     }
 
     // Registration was successful at this stage, so store registration details.
-    log.log(Level.CONFIG, "Registration successful. Persisting registration information.");
+    log.log(Level.INFO, "Registration successful. Persisting registration information.");
 
     log.log(Level.FINE, "Writing device private key at: {0}.",
       securityUtil.getDevicePrivateKeyLocation());

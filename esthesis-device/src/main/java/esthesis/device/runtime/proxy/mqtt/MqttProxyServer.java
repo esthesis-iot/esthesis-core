@@ -38,7 +38,7 @@ public class MqttProxyServer {
         String.valueOf(appProperties.getProxyMqttPort()));
       server.startServer(properties);
       server.addInterceptHandler(new MqttProxyInterceptor(mqttProxyClient, deviceMessageUtil));
-      LOGGER.log(Level.CONFIG, "Embedded MQTT server started on port {0}.",
+      LOGGER.log(Level.INFO, "Embedded MQTT server started on port {0}.",
         String.valueOf(appProperties.getProxyMqttPort()));
     } catch (IOException e) {
       LOGGER.log(Level.SEVERE, "Could not start embedded MQTT server.", e);
@@ -50,7 +50,7 @@ public class MqttProxyServer {
     if (server != null) {
       mqttProxyClient.disconnect();
       server.stopServer();
-      LOGGER.log(Level.CONFIG, "Stopped embedded MQTT server on port {0}.",
+      LOGGER.log(Level.INFO, "Stopped embedded MQTT server on port {0}.",
         String.valueOf(appProperties.getProxyMqttPort()));
     }
   }

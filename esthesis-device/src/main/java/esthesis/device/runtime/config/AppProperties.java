@@ -215,7 +215,12 @@ public class AppProperties {
   // Variable substitution:
   //    %i%: Random integer 0-100
   //    %f%: Random float 0-100.
-  @Value("${demoPayload:{\"m\": \"demo\", \"v\": { \"temperature\": %i%, \"humidity\": %f%}}}")
+  @Value("${demoPayload:{\"m\": \"demo\", \"v\": "
+    + "{ \"temperature\": %i%,"
+    + "  \"humidity\": %f%,"
+    + "  \"lon\": %lon%,"
+    + "  \"lat\": %lat%"
+    + "}}}")
   private String demoPayload;
 
 }
