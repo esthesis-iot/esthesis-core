@@ -34,7 +34,7 @@ public class FSContentConfig {
       log.log(Level.WARNING, "Filesystem root is not set, setting it under {0}.", fsRoot);
     } else {
       fsRoot = Paths.get(appProperties.getFsRoot());
-      log.log(Level.CONFIG, "Setting root filesystem under {0}.", fsRoot);
+      log.log(Level.INFO, "Setting root filesystem under {0}.", fsRoot);
     }
 
     // Update application properties with the path for provisioning packages.

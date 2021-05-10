@@ -11,6 +11,7 @@ import {DashboardWidgetForGridDto} from "../dto/dashboard-widget-for-grid-dto";
 import {Subscription} from "rxjs";
 import {WidgetSensorGaugeComponent} from "./dashboard-widgets/widget-sensor-gauge/widget-sensor-gauge.component";
 import {WidgetSensorGaugeSetupComponent} from "./dashboard-widgets/widget-sensor-gauge/widget-sensor-gauge-setup.component";
+import {WidgetMapSetupComponent} from "./dashboard-widgets/widget-map/widget-map-setup.component";
 
 
 @Component({
@@ -111,6 +112,14 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
           break;
         case AppConstants.DASHBOARD.WIDGETS.SENSOR_GAUGE:
           this.dialog.open(WidgetSensorGaugeSetupComponent, {
+            width: '40%',
+            data: {
+              id: 0
+            }
+          });
+          break;
+        case AppConstants.DASHBOARD.WIDGETS.MAP:
+          this.dialog.open(WidgetMapSetupComponent, {
             width: '40%',
             data: {
               id: 0

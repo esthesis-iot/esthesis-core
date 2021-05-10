@@ -21,8 +21,8 @@ public class SensorGaugeResolver implements WidgetValueResolver {
   @Override
   public Object getValue(DashboardWidget widget) {
     try {
-      SensorValueConf conf = mapper.readValue(widget.getConfiguration(),
-        SensorValueConf.class);
+      SensorGaugeConf conf = mapper.readValue(widget.getConfiguration(),
+        SensorGaugeConf.class);
       return deviceService.getDeviceDataField(
         deviceService.findByHardwareId(conf.getHardwareId()).getId(),
         conf.getMeasurement()).getValue();
@@ -33,7 +33,7 @@ public class SensorGaugeResolver implements WidgetValueResolver {
   }
 
   @Data
-  private static class SensorValueConf {
+  private static class SensorGaugeConf {
 
     private String hardwareId;
     private String measurement;

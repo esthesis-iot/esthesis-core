@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {icon, latLng, marker, tileLayer} from 'leaflet';
+import {latLng, marker, tileLayer} from 'leaflet';
 import {TagDto} from '../../dto/tag-dto';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
@@ -73,26 +73,19 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
           }
         });
         if (latSetting && latSetting != "" && lonSetting && lonSetting != "")
-        this.devicesService.getDeviceDataField(this.id, [latSetting, lonSetting]).subscribe(
-          onNext => {
-          // @ts-ignore
-            if (onNext[0].value != undefined && onNext[1].value != undefined) {
-              this.deviceHasGeolocation = true;
-              this.leaflet.map.addLayer(
-                // @ts-ignore
-                marker([onNext[0].value, onNext[1].value], {
-                  icon: icon({
-                    iconSize: [25, 41],
-                    iconAnchor: [13, 41],
-                    iconUrl: 'leaflet/marker-icon.png',
-                    shadowUrl: 'leaflet/marker-shadow.png'
-                  })
-                })
-              );
+          this.devicesService.getDeviceDataField(this.id, [latSetting, lonSetting]).subscribe(
+            onNext => {
               // @ts-ignore
-              this.leaflet.map.panTo(latLng([onNext[0].value, onNext[1].value]));
-            }
-        })
+              if (onNext[0].value != undefined && onNext[1].value != undefined) {
+                this.deviceHasGeolocation = true;
+                this.leaflet.map.addLayer(
+                  // @ts-ignore
+                  marker([onNext[0].value, onNext[1].value])
+                );
+                // @ts-ignore
+                this.leaflet.map.panTo(latLng([onNext[0].value, onNext[1].value]));
+              }
+            })
       });
     }
   }

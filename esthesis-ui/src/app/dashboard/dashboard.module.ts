@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 
 import {DashboardRoutingModule} from './dashboard-routing.module';
 import {DashboardComponent} from './dashboard.component';
-import {DashboardMapComponent} from './dashboard-map/dashboard-map.component';
 import {DashboardChartsComponent} from './dashboard-charts/dashboard-charts.component';
 import {LeafletModule} from '@asymmetrik/ngx-leaflet';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -27,18 +26,21 @@ import {MatSliderModule} from "@angular/material/slider";
 import { WidgetSensorGaugeComponent } from './dashboard-widgets/widget-sensor-gauge/widget-sensor-gauge.component';
 import { WidgetSensorGaugeSetupComponent } from './dashboard-widgets/widget-sensor-gauge/widget-sensor-gauge-setup.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import { WidgetMapComponent } from './dashboard-widgets/widget-map/widget-map.component';
+import { WidgetMapSetupComponent } from './dashboard-widgets/widget-map/widget-map-setup.component';
 
 // @ts-ignore
 @NgModule({
   declarations: [
     DashboardComponent,
-    DashboardMapComponent,
     DashboardChartsComponent,
     DashboardAddWidgetComponent,
     WidgetSensorValueComponent,
     WidgetSensorValueSetupComponent,
     WidgetSensorGaugeComponent,
     WidgetSensorGaugeSetupComponent,
+    WidgetMapComponent,
+    WidgetMapSetupComponent,
   ],
   imports: [
     CommonModule,

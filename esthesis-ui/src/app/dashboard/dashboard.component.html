@@ -17,6 +17,10 @@
             *ngSwitchCase="constants.DASHBOARD.WIDGETS.SENSOR_GAUGE"
             [id]="item.id" [dashboard]="item.dashboardId">
           </app-widget-sensor-gauge>
+          <app-widget-map
+            *ngSwitchCase="constants.DASHBOARD.WIDGETS.MAP"
+            [id]="item.id" [dashboard]="item.dashboardId">
+          </app-widget-map>
         </div>
       </gridster-item>
     </gridster>

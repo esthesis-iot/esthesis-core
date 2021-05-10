@@ -32,7 +32,7 @@
               {
                 "glob": "**/*",
                 "input": "./node_modules/leaflet/dist/images",
-                "output": "leaflet/"
+                "output": "/"
               }
             ],
             "styles": [
@@ -102,7 +102,7 @@
               {
                 "glob": "**/*",
                 "input": "./node_modules/leaflet/dist/images",
-                "output": "leaflet/"
+                "output": "/"
               }
             ],
             "styles": [
