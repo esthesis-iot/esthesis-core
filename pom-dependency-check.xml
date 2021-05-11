@@ -27,15 +27,15 @@
               <fileSet>
                 <directory>.</directory>
                 <includes>
-                  <include>esthesis-platform-ui/package.json</include>
-                  <include>esthesis-platform-ui/package-lock.json</include>
-                  <include>esthesis-platform-device/**</include>
-                  <include>esthesis-platform-backend/**</include>
+                  <include>esthesis-ui/package.json</include>
+                  <include>esthesis-ui/package-lock.json</include>
+                  <include>esthesis-device/**</include>
+                  <include>esthesis-server/**</include>
                 </includes>
               </fileSet>
             </scanSet>
             <suppressionFiles>
-              <suppressionFile>esthesis-platform-backend/owasp-suppression.xml</suppressionFile>
+              <suppressionFile>esthesis-server/owasp-suppression.xml</suppressionFile>
             </suppressionFiles>
           </configuration>
         </plugin>
