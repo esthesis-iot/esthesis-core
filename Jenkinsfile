@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'eddevopsd2/mvn3-jdk13:1.0.0'
+            image 'eddevopsd2/mvn3-jdk15:1.0.0'
             args '-v /root/.m2/Esthesis:/root/.m2 -v /root/sonar-scanner:/root/sonar-scanner'
         }
     }
@@ -10,18 +10,18 @@ pipeline {
             parallel {
                 stage('platform-backend') {
                     steps {
-                        sh 'mvn -f esthesis-platform-backend/pom.xml clean install'
+                        sh 'mvn -f esthesis-server/pom.xml clean install'
                     }
                 }
                 stage('platform-device') {
                     steps {
-                        sh 'mvn -f esthesis-platform-device/pom.xml clean install'
+                        sh 'mvn -f esthesis-device/pom.xml clean install'
                     }
                 }
                 stage('platform-ui') {
                     steps {
                         sh '''
-                            cd esthesis-platform-ui
+                            cd esthesis-ui
                             npm install
                         '''
                     }
@@ -40,7 +40,7 @@ pipeline {
         }
         stage('Produce bom.xml for backend'){
             steps{
-                sh 'mvn -f esthesis-platform-backend/pom.xml org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom'
+                sh 'mvn -f esthesis-server/pom.xml org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom'
             }
         }
         stage('Dependency-Track Analysis for backend')
@@ -50,7 +50,7 @@ pipeline {
                     cat > payload.json <<__HERE__
                     {
                       "project": "027dcc1e-f095-41ba-92c8-460eb0b93dbb",
-                      "bom": "$(cat esthesis-platform-backend/target/bom.xml |base64 -w 0 -)"
+                      "bom": "$(cat esthesis-server/target/bom.xml |base64 -w 0 -)"
                     }
                     __HERE__
                     '''
@@ -62,7 +62,7 @@ pipeline {
         }
         stage('Produce bom.xml for device'){
             steps{
-                sh 'mvn -f esthesis-platform-device/pom.xml org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom'
+                sh 'mvn -f esthesis-device/pom.xml org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom'
             }
         }
         stage('Dependency-Track Analysis for device')
@@ -72,7 +72,7 @@ pipeline {
                     cat > payload.json <<__HERE__
                     {
                       "project": "3068f979-f3a5-4768-b93f-12a03b059919",
-                      "bom": "$(cat esthesis-platform-device/target/bom.xml |base64 -w 0 -)"
+                      "bom": "$(cat esthesis-device/target/bom.xml |base64 -w 0 -)"
                     }
                     __HERE__
                     '''
