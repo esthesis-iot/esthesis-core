@@ -35,7 +35,9 @@ pipeline {
         }
         stage('Sonar Analysis') {
             steps {
-                sh '/root/sonar-scanner/bin/sonar-scanner -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_KEY_ESTHESIS_PLATF}'
+                withSonarQubeEnv('sonar'){
+                    sh '/root/sonar-scanner/bin/sonar-scanner -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_KEY_ESTHESIS_PLATF}'
+                }
             }
         }
         stage('Produce bom.xml for backend'){
