@@ -39,6 +39,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Log
@@ -137,20 +138,21 @@ public class CommandResource {
 
     // Collect all devices that should receive the command.
     Stream.concat(
-      deviceService
-        .findByTags(Arrays
-          .asList(StringUtils.defaultIfEmpty(commandExecuteOrderDTO.getTags(), "").split(",")))
-        .stream()
-        .map(DeviceDTO::getHardwareId),
-      deviceService // Check if the given hardware Ids correspond to registered devices.
-        .findByHardwareIds(Arrays.asList(
-          StringUtils.defaultIfEmpty(commandExecuteOrderDTO.getHardwareIds(), "").split(",")))
-        .stream()
-        .map(DeviceDTO::getHardwareId)
-    ).forEach(hardwareId ->
-      commands.put(hardwareId,
-        dtService.executeCommand(hardwareId, commandExecuteOrderDTO.getCommand(),
-          commandExecuteOrderDTO.getDescription(), commandExecuteOrderDTO.getArguments()))
+        deviceService
+            .findByTags(Arrays
+                .asList(
+                    StringUtils.defaultIfEmpty(commandExecuteOrderDTO.getTags(), "").split(",")))
+            .stream()
+            .map(DeviceDTO::getHardwareId),
+        deviceService // Check if the given hardware Ids correspond to registered deviceIds.
+            .findByHardwareIds(Arrays.asList(
+                StringUtils.defaultIfEmpty(commandExecuteOrderDTO.getHardwareIds(), "").split(",")))
+            .stream()
+            .map(DeviceDTO::getHardwareId))
+        .collect(Collectors.toSet()).forEach(hardwareId ->
+        commands.put(hardwareId,
+            dtService.executeCommand(hardwareId, commandExecuteOrderDTO.getCommand(),
+                commandExecuteOrderDTO.getDescription(), commandExecuteOrderDTO.getArguments()))
     );
 
     return commands;
