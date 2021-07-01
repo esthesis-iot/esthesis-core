@@ -24,9 +24,7 @@ export class SettingsProvisioningComponent extends BaseComponent implements OnIn
   ngOnInit() {
     // Define the form.
     this.form = this.fb.group({
-      provisioningUrl: ['', []],
-      provisioningEncrypt: ['', []],
-      provisioningSign: ['', []],
+      provisioningUrl: ['', []]
     });
 
 
