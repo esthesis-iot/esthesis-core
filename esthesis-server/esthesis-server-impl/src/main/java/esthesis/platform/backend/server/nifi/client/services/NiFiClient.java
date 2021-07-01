@@ -141,7 +141,7 @@ public class NiFiClient {
 
   //TODO: Both variables next, will be fetched by the NiFiConnector services of esthesis
   // (NiFiConnector should cache these values whenever a NiFi server is registered/edited).
-  private static final String NIFI_VERSION = "1.10.0";
+  private static final String NIFI_VERSION = "1.12.1";
 
   private static final ObjectMapper mapper = new ObjectMapper()
     .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,
