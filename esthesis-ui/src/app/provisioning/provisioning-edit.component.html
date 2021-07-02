@@ -28,8 +28,9 @@
           </mat-select>
         </mat-form-field>
         <mat-form-field>
-          <textarea [matTextareaAutosize]="true" matInput placeholder="Description"
-                    formControlName="description"></textarea>
+           <textarea [matTextareaAutosize]="true" [matAutosizeMinRows]=1 matInput
+                     placeholder="Description"
+                     formControlName="description"></textarea>
         </mat-form-field>
 
         <mat-form-field>

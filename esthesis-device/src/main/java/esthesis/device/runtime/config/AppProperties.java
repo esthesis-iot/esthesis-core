@@ -92,6 +92,9 @@ public class AppProperties {
   @Value("${provisioningPostHook:}")
   private String provisioningPostHook;
 
+  @Value("${validateProvisioningChecksum:true}")
+  private boolean validateProvisioningChecksum;
+
   // A flag to indicate that the embedded MQTT-to-MQTT proxy server should be started.
   @Value("${proxyMqtt:false}")
   private boolean proxyMqtt;

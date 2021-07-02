@@ -1,5 +1,6 @@
 package esthesis.platform.backend.server.service;
 
+import com.eurodyn.qlack.fuse.crypto.service.CryptoDigestService;
 import com.querydsl.core.types.Predicate;
 import esthesis.platform.backend.common.device.dto.DeviceDTO;
 import esthesis.platform.backend.server.config.AppProperties;
@@ -37,6 +38,7 @@ public class ProvisioningService extends BaseService<ProvisioningDTO, Provisioni
   private final ProvisioningRepository provisioningRepository;
   private final ProvisioningContentStore provisioningContentStore;
   private final AppProperties appProperties;
+  private final CryptoDigestService cryptoDigestService;
 
   //TODO Is it needed or the one from superclass can be used instead?
   @Override
@@ -52,6 +54,14 @@ public class ProvisioningService extends BaseService<ProvisioningDTO, Provisioni
 
   public long save(ProvisioningDTO provisioningDTO, MultipartFile file) throws IOException {
     return super.save(provisioningDTO, file.getInputStream()).getId();
+  }
+
+  public String createSha256(long id) throws IOException {
+    Provisioning provisioning = findEntityById(id);
+    provisioning
+        .setSha256(cryptoDigestService.sha256(provisioningContentStore.getContent(provisioning)));
+    provisioningRepository.save(provisioning);
+    return provisioning.getSha256();
   }
 
   public Optional<ProvisioningDTO> matchByTag(DeviceDTO deviceDTO) {

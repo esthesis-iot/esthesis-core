@@ -51,7 +51,8 @@ public class ProvisioningResource {
     throws IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
     SignatureException, InvalidAlgorithmParameterException, InvalidKeySpecException {
     if (provisioningDTO.getId() == null && file.isPresent()) {
-      provisioningService.save(provisioningDTO, file.get());
+      long id = provisioningService.save(provisioningDTO, file.get());
+      provisioningDTO.setSha256(provisioningService.createSha256(id));
     } else {
       // Make sure existing r/o attributes are not overwritten.
       @SuppressWarnings("ConstantConditions") final Provisioning existingProvisioning =
