@@ -183,14 +183,17 @@ public class ProvisioningService {
 //      Files.move(Paths.get(decryptedFile), tmpDownloadFile);
 //    }
 
-    // Validate SHA256.
-    try (FileInputStream fileInputStream = new FileInputStream(
-      tmpDownloadFile.toFile().getAbsoluteFile())) {
-      if (!provisioningInfoResponse.getPayload().getSha256()
-        .equals(cryptoDigestService.sha256(fileInputStream))) {
-        throw new QSecurityException("SHA256 for provisioning package does not match.");
+    // Validate SHA256 if requested so.
+    if (appProperties.isValidateProvisioningChecksum()) {
+      try (FileInputStream fileInputStream = new FileInputStream(
+          tmpDownloadFile.toFile().getAbsoluteFile())) {
+        if (!provisioningInfoResponse.getPayload().getSha256()
+            .equals(cryptoDigestService.sha256(fileInputStream))) {
+          throw new QSecurityException("SHA256 for provisioning package does not match.");
+        }
       }
     }
+
 
     // Rename the temporary file downloaded.
     Path finalFile = Paths.get(appProperties.getProvisioningRoot(),
