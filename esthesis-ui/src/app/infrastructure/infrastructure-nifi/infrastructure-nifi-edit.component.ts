@@ -19,7 +19,7 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
   form!: FormGroup;
   id!: number;
   nifi: NiFiDto[] | undefined;
-  activeNiFiId = localStorage.getItem('activeNiFi');
+  activeNiFiId: any;
   synced: boolean | undefined;
   lastChecked: any;
 
@@ -34,6 +34,10 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
   ngOnInit() {
     // Check if an edit is performed and fetch data.
     this.id = Number(this.route.snapshot.paramMap.get('id'));
+
+    this.nifiService.getActive().subscribe(value => {
+      this.activeNiFiId = value?.id;
+    });
 
     // Setup the form.
     this.form = this.fb.group({
@@ -50,9 +54,6 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
 
     // Fill-in the form with data if editing an existing item.
     if (this.id !== 0) {
-      this.nifiService.getAll().subscribe(value => {
-
-      });
       this.nifiService.get(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
         this.synced = onNext.synced;
@@ -62,8 +63,7 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
   }
 
   save() {
-    if (this.form.get('state')!.value && this.activeNiFiId != null && parseInt(
-      this.activeNiFiId) !== this.id) {
+    if (this.form.get('state')!.value && this.activeNiFiId != null && this.activeNiFiId !== this.id) {
       this.activate();
     } else {
       this.submit();
@@ -113,9 +113,6 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
   private deleteNiFiInstance() {
     this.nifiService.delete(this.id).subscribe(onNext => {
       this.utilityService.popupSuccess('NiFi server successfully deleted.');
-      if (this.activeNiFiId != null && parseInt(this.activeNiFiId) === this.id) {
-        localStorage.removeItem('activeNiFi');
-      }
       this.router.navigate(['infra'], {fragment: 'nifi'});
     });
   }

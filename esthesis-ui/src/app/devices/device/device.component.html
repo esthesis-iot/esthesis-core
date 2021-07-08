@@ -1,4 +1,10 @@
 <mat-card>
+  <div *ngIf="!isNiFiConfigured">
+    <mat-error>
+      {{!hasActiveNiFi ? 'No active NiFi instance found.' : 'No NiFi Digital Twin url found.'}}
+      Pseudo-terminal is disabled.
+    </mat-error>
+  </div>
   <mat-card-title>Device <span class="hardware-id">{{hardwareId}}</span></mat-card-title>
   <mat-card-content>
     <form novalidate [formGroup]="form" fxLayout="column">
@@ -55,7 +61,7 @@
               <app-device-profile></app-device-profile>
             </ng-template>
           </mat-tab>
-          <mat-tab>
+          <mat-tab [disabled]="!isNiFiConfigured">
             <ng-template mat-tab-label>
               <mat-icon>keyboard</mat-icon>
               Pseudo-terminal

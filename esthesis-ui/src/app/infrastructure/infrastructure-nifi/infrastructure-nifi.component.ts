@@ -49,10 +49,6 @@ export class InfrastructureNiFiComponent extends BaseComponent implements OnInit
     .subscribe(onNext => {
       this.datasource.data = onNext.content;
       this.paginator!.length = onNext.totalElements;
-      this.nifiService.getActive().subscribe(value => {
-        value ? localStorage.setItem("activeNiFi", value.id!.toString()) : localStorage.removeItem(
-          "activeNiFi")
-      });
     });
   }
 

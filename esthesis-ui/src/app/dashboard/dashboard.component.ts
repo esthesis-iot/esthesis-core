@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {BaseComponent} from '../shared/component/base-component';
-import {NiFiService} from '../infrastructure/infrastructure-nifi/nifi.service';
 import {GridsterComponent, GridsterConfig} from "angular-gridster2";
 import {MatDialog} from "@angular/material/dialog";
 import {DashboardAddWidgetComponent} from "./dashboard-add-widget.component";
@@ -9,7 +8,6 @@ import {WidgetSensorValueSetupComponent} from "./dashboard-widgets/widget-sensor
 import {DashboardService} from "./dashboard.service";
 import {DashboardWidgetForGridDto} from "../dto/dashboard-widget-for-grid-dto";
 import {Subscription} from "rxjs";
-import {WidgetSensorGaugeComponent} from "./dashboard-widgets/widget-sensor-gauge/widget-sensor-gauge.component";
 import {WidgetSensorGaugeSetupComponent} from "./dashboard-widgets/widget-sensor-gauge/widget-sensor-gauge-setup.component";
 import {WidgetMapSetupComponent} from "./dashboard-widgets/widget-map/widget-map-setup.component";
 
@@ -28,7 +26,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   @ViewChild(GridsterComponent,
     {static: false}) gridsterComponent!: GridsterComponent;
 
-  constructor(private nifiService: NiFiService, private dialog: MatDialog,
+  constructor(private dialog: MatDialog,
               private dashboardService: DashboardService) {
     super();
 
@@ -39,12 +37,6 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   }
 
   ngOnInit() {
-    //TODO this needs to be removed!
-    this.nifiService.getActive().subscribe(value => {
-      value
-        ? localStorage.setItem("activeNiFi", value.id!.toString())
-        : localStorage.removeItem("activeNiFi")
-    });
 
     // Specify default layout options for the dashboard.
     this.dashboardOptions = {

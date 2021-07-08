@@ -14,6 +14,7 @@ import {NiFiLoggerFactoryDto} from '../dto/nifisinks/nifi-logger-factory-dto';
 import {AppConstants} from '../app.constants';
 import {QFormsService} from '@qlack/forms';
 import {NiFiSinkDto} from '../dto/nifisinks/nifi-sink-dto';
+import {NiFiService} from '../infrastructure/infrastructure-nifi/nifi.service';
 
 @Component({
   selector: 'app-nifisink-edit',
@@ -27,11 +28,11 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
   type: string | undefined;
   handlers: Array<number> = [];
   isEdit: boolean | undefined;
-  activeNiFiId = localStorage.getItem('activeNiFi');
+  activeNiFiId: any| undefined;
   // Expose application constants.
   constants = AppConstants;
 
-  constructor(private fb: FormBuilder, private nifDataService: NifiSinkService,
+  constructor(private fb: FormBuilder, private nifiSinkService: NifiSinkService, private nifiService: NiFiService,
               private qForms: QFormsService,
               private route: ActivatedRoute, private router: Router,
               private utilityService: UtilityService, private dialog: MatDialog) {
@@ -45,6 +46,10 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
 
     const strings = this.router.url.split('/');
     this.type = strings[1];
+
+    this.nifiService.getActive().subscribe(value => {
+      this.activeNiFiId = value?.id;
+    });
 
     // Setup the form.
     this.form = this.fb.group({
@@ -63,14 +68,14 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
 
     // Fill-in the form with data if editing an existing item.
     if (this.isEdit) {
-      this.nifDataService.get(this.id).subscribe(onNext => {
+      this.nifiSinkService.get(this.id).subscribe(onNext => {
         this.handlers.push(onNext.handler);
         this.form!.patchValue(onNext);
       });
     }
 
     // Fill dropdowns.
-    this.nifDataService.getAvailableDataFactoriesByType(this.type).subscribe(onNext => {
+    this.nifiSinkService.getAvailableDataFactoriesByType(this.type).subscribe(onNext => {
       this.availableNiFiDataFactories = onNext.sort(
         (a, b) => (a.friendlyName > b.friendlyName) ? 1 : -1)
     });
@@ -80,7 +85,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
     this.form!.patchValue({
       type: this.type
     });
-    this.nifDataService.save(
+    this.nifiSinkService.save(
       this.qForms.cleanupData(this.form.getRawValue()) as NiFiSinkDto).subscribe(onNext => {
       this.utilityService.popupSuccess(this.form!.value.id ? 'NiFi sink was successfully saved.'
         : 'NiFi sink was successfully created.');
@@ -101,7 +106,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.nifDataService.delete(this.id).subscribe(onNext => {
+        this.nifiSinkService.delete(this.id).subscribe(onNext => {
           this.utilityService.popupSuccess('Data sink successfully deleted.');
           this.router.navigate([this.type]);
         }, error => {

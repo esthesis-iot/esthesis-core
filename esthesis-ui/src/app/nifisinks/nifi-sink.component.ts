@@ -8,6 +8,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NiFiSinkDto} from '../dto/nifisinks/nifi-sink-dto';
 import {MatTableDataSource} from '@angular/material/table';
 import {AppConstants} from "../app.constants";
+import {NiFiService} from '../infrastructure/infrastructure-nifi/nifi.service';
 
 @Component({
   selector: 'app-nifisink',
@@ -18,14 +19,14 @@ export class NiFiSinkComponent extends BaseComponent implements OnInit, AfterVie
   columns = ['name', 'createdOn', 'handler', 'state', 'validationErrors'];
   datasource = new MatTableDataSource<NiFiSinkDto>();
   type: string | undefined;
-  activeNiFiId = localStorage.getItem('activeNiFi');
+  activeNiFiId: any;
   // Expose application constants.
   constants = AppConstants;
 
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
-  constructor(private nifiSinkService: NifiSinkService,
+  constructor(private nifiSinkService: NifiSinkService, private nifiService: NiFiService,
               private qForms: QFormsService,
               private route: ActivatedRoute,
               private router: Router) {
@@ -34,9 +35,14 @@ export class NiFiSinkComponent extends BaseComponent implements OnInit, AfterVie
 
   ngOnInit() {
     this.type = this.router.url.replace("/", "");
+    this.nifiService.getActive().subscribe(value => {
+      this.activeNiFiId = value?.id;
+    });
   }
 
   ngAfterViewInit(): void {
+
+
     // Initial fetch of data.
     this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
@@ -49,7 +55,7 @@ export class NiFiSinkComponent extends BaseComponent implements OnInit, AfterVie
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     this.nifiSinkService.getAll(
-      this.qForms.appendPagingToFilter("type=" + this.type, page, size, sort, sortDirection))
+        this.qForms.appendPagingToFilter("type=" + this.type, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;
       this.paginator.length = onNext.totalElements;
@@ -58,6 +64,6 @@ export class NiFiSinkComponent extends BaseComponent implements OnInit, AfterVie
 
   changePage() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-      this.sort.start);
+        this.sort.start);
   }
 }

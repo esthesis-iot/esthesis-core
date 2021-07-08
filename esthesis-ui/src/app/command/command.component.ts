@@ -14,6 +14,7 @@ import {CommandReplyDto} from '../dto/command-reply-dto';
 import {CommandCreateComponent} from './command-create.component';
 import {QFormsService} from '@qlack/forms';
 import {AppConstants} from "../app.constants";
+import {NiFiService} from '../infrastructure/infrastructure-nifi/nifi.service';
 
 @Component({
   selector: 'app-command',
@@ -27,13 +28,17 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   // Expose application constants.
   constants = AppConstants;
 
+  isNiFiConfigured = false;
+  hasActiveNifi = false;
+  hasDTUrl = false;
+
   // References to sorting and pagination.
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router,
               private commandService: CommandService, private dialog: MatDialog,
-              private qForms: QFormsService) {
+              private qForms: QFormsService, private nifiService: NiFiService) {
     super();
     this.filterForm = this.fb.group({
       operation: ['', null],
@@ -50,14 +55,17 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   }
 
   ngOnInit() {
+    this.fetchActiveNifi();
     // Listen for filter changes to fetch new data.
     this.filterForm.valueChanges.debounceTime(500).subscribe(onNext => {
+      this.fetchActiveNifi();
       this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-        this.sort.start);
+          this.sort.start);
     });
   }
 
   ngAfterViewInit(): void {
+
     // Initial fetch of data.
     this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
@@ -78,9 +86,17 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
     });
   }
 
+  fetchActiveNifi() {
+    this.nifiService.getActive().subscribe(value => {
+      this.hasActiveNifi = value?.id != null ;
+      this.hasDTUrl = value?.dtUrl != null;
+      this.isNiFiConfigured = this.hasActiveNifi && this.hasDTUrl;
+    });
+  }
+
   changePage() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-      this.sort.start);
+        this.sort.start);
   }
 
   clearFilter() {
@@ -109,7 +125,8 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   }
 
   refreshCurrentData() {
+    this.fetchActiveNifi();
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-      this.sort.direction);
+        this.sort.direction);
   }
 }

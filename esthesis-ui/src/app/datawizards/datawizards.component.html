@@ -1,4 +1,9 @@
 <mat-card>
+  <div *ngIf="!activeNiFiId">
+    <mat-error>
+      No active NiFi instance found. Data wizard functionality is disabled.
+    </mat-error>
+  </div>
   <mat-card-title>Data wizards</mat-card-title>
   <mat-card-content>
     <div class="inline-subheader">Data wizards allow you to create all necessary data management
@@ -67,6 +72,6 @@
 
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button (click)="executeWizard()">START WIZARD</button>
+    <button [disabled]="!activeNiFiId" mat-button (click)="executeWizard()">START WIZARD</button>
   </mat-card-actions>
 </mat-card>
