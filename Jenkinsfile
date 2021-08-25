@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'eddevopsd2/mvn3-jdk15:1.0.0'
+            image 'eddevopsd2/maven-java-npm-docker:mvn3.6.3-jdk15-npm6.14.4-docker'
             args '-v /root/.m2/Esthesis:/root/.m2 -v /root/sonar-scanner:/root/sonar-scanner'
         }
     }
