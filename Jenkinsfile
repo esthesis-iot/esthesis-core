@@ -6,27 +6,23 @@ pipeline {
         }
     }
     stages {
-        stage('Build') {
-            parallel {
-                stage('platform-backend') {
-                    steps {
-                        sh 'mvn -f esthesis-server/pom.xml clean install'
-                    }
-                }
-                stage('platform-device') {
-                    steps {
-                        sh 'mvn -f esthesis-device/pom.xml clean install'
-                    }
-                }
-                stage('platform-ui') {
-                    steps {
-                        sh '''
-                            cd esthesis-ui
-                            npm install
-                        '''
-                    }
-                }
-            }
+        stage('Build platform-backend') {
+             steps {
+                sh 'mvn -f esthesis-server/pom.xml clean install'
+             }
+        }
+        stage('Build platform-device') {
+             steps {
+                sh 'mvn -f esthesis-device/pom.xml clean install'
+             }
+        }
+        stage('Build platform-ui') {
+             steps {
+                sh '''
+                    cd esthesis-ui
+                    npm install
+                '''
+             }
         }
         stage('Dependencies Check') {
              steps {
