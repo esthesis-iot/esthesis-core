@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 
 import {InfrastructureRoutingModule} from './infrastructure-routing.module';
 import {InfrastructureComponent} from './infrastructure.component';
-import {InfrastructureOverviewComponent} from './infrastructure-overview/infrastructure-overview.component';
 import {InfrastructureMqttComponent} from './infrastructure-mqtt/infrastructure-mqtt.component';
 import {InfrastructureMqttEditComponent} from './infrastructure-mqtt/infrastructure-mqtt-edit.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -28,7 +27,6 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 @NgModule({
   declarations: [
     InfrastructureComponent,
-    InfrastructureOverviewComponent,
     InfrastructureMqttComponent,
     InfrastructureMqttEditComponent,
     InfrastructureNiFiComponent,

@@ -19,12 +19,10 @@ export class InfrastructureComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     // Tab activation.
     this.activatedRoute.fragment.subscribe((fragment: string) => {
-      if (fragment === 'overview') {
+      if (fragment === 'mqtt') {
         this.tabs.selectedIndex = 0;
-      } else if (fragment === 'mqtt') {
-        this.tabs.selectedIndex = 1;
       } else if (fragment === 'nifi') {
-        this.tabs.selectedIndex = 2;
+        this.tabs.selectedIndex = 1;
       }
     });
   }
