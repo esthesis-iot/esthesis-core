@@ -2,6 +2,8 @@ package esthesis.platform.backend.server.nifi.sinks.loggers;
 
 import esthesis.platform.backend.server.nifi.sinks.NiFiSinkFactory;
 
+import java.io.IOException;
+
 public interface NiFiLoggerFactory extends NiFiSinkFactory {
 
   /**
@@ -14,4 +16,12 @@ public interface NiFiLoggerFactory extends NiFiSinkFactory {
    */
   boolean supportsFilesystemLog();
 
+  /**
+   *  Creates/deletes the connection to the Clear Queue processor.
+   *  Connection is created when no loggers of specific type are available and deleted when
+   *  at least one exists.
+   * @param path The path to the Instance group of the logger type.
+   * @throws IOException
+   */
+  void manageConnectionWithClearQueueProcessor(String[] path) throws IOException;
 }

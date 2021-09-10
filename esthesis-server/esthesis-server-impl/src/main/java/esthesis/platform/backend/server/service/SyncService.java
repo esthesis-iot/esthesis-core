@@ -110,4 +110,9 @@ public class SyncService {
     niFiClientService.instantiateTemplate(niFiTemplateDTO.getId());
     niFiClientService.changeProcessorGroupState(PATH.ESTHESIS.getGroupPath(), STATE.RUNNING);
   }
+
+
+  public void clearQueues() throws IOException {
+    niFiClientService.clearRootGroupQueues();
+  }
 }

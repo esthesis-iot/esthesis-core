@@ -18,4 +18,9 @@ export class SyncService {
   deleteWorkflow(): Observable<boolean> {
     return this.httpClient.delete<boolean>(`${AppConstants.API_ROOT}/sync`);
   }
+
+  clearQueues(): Observable<any>{
+    return this.httpClient.post(`${AppConstants.API_ROOT}/sync/clear-queues`, "");
+
+  }
 }

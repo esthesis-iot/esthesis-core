@@ -47,9 +47,6 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
       dtUrl: ['', [Validators.maxLength(2048)]],
       description: ['', [Validators.maxLength(4096)]],
       state: ['', [Validators.required, Validators.maxLength(5)]],
-      // wfVersion: [''],
-      // synced:[''],
-      // lastChecked: ['']
     });
 
     // Fill-in the form with data if editing an existing item.
@@ -97,7 +94,7 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
               this.syncService.deleteWorkflow().subscribe(() => {
                 this.deleteNiFiInstance();
               }, error => {
-                this.utilityService.popupError(error.error);
+                this.utilityService.popupError(error?.error?.message);
               });
             } else {
               this.deleteNiFiInstance();
@@ -118,7 +115,7 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
   }
 
   private deleteWF(): MatDialogRef<OkCancelModalComponent> {
-    const dialogRefWF = this.dialog.open(OkCancelModalComponent, {
+    return this.dialog.open(OkCancelModalComponent, {
       data: {
         title: 'Delete NiFi Workflow',
         question: 'Do you also want to delete the Workflow from the NiFi instance?',
@@ -129,8 +126,6 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
         }
       }
     });
-
-    return dialogRefWF;
   }
 
   activate() {
@@ -158,4 +153,24 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
       value => this.router.navigate(['infra'], {fragment: 'nifi'}));
   }
 
+  clearQueues() {
+    const dialogRef = this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: 'Clear Queues',
+        question: 'Do you wish to proceed with clearing all queues in NiFi?',
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.syncService.clearQueues().subscribe(value => {
+          this.utilityService.popupSuccess("All queues have been cleared.");
+        }, error => {
+          this.utilityService.popupSuccess(error?.error?.message);
+        });
+      }
+    });
+  }
 }

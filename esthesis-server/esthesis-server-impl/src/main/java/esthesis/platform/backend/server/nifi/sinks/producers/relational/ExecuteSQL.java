@@ -6,6 +6,7 @@ import esthesis.platform.backend.server.dto.nifisinks.NiFiSinkDTO;
 import esthesis.platform.backend.server.model.NiFiSink;
 import esthesis.platform.backend.server.nifi.client.dto.NiFiSearchAlgorithm;
 import esthesis.platform.backend.server.nifi.client.services.NiFiClientService;
+import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Processor.ExistingProcessorSuffix;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.SUCCESSFUL_RELATIONSHIP_TYPES;
 import esthesis.platform.backend.server.nifi.sinks.producers.NiFiProducerFactory;
@@ -17,8 +18,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -89,13 +90,13 @@ public class ExecuteSQL implements NiFiProducerFactory {
       niFiClientService.distributeLoadOfProducers(niFiSinkDTO.getHandler(), true);
     } else {
       Set<String> relationship = new HashSet<>(
-        Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType()));
+          List.of(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType()));
 
       String postBodyCleanerId = niFiClientService.findProcessorIDByNameAndProcessGroup(
-        "[CPB]", path,
+          ExistingProcessorSuffix.CLEAR_POST_BODY, path,
         NiFiSearchAlgorithm.NAME_ENDS_WITH);
       String sqlResultConverterId = niFiClientService.findProcessorIDByNameAndProcessGroup(
-        "[CSR]", path,
+        ExistingProcessorSuffix.CONVERT_SQL_RESULT, path,
         NiFiSearchAlgorithm.NAME_ENDS_WITH);
 
       niFiClientService.connectComponentsInSameGroup(path, postBodyCleanerId,

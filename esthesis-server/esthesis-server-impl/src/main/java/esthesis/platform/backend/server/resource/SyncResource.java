@@ -37,4 +37,12 @@ public class SyncResource {
     return ResponseEntity.ok().build();
   }
 
+  @PostMapping(path = "/clear-queues")
+  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not clear queues.")
+  public ResponseEntity clearQueues() throws IOException {
+    syncService.clearQueues();
+
+    return ResponseEntity.ok().build();
+  }
+
 }

@@ -5,6 +5,8 @@ import esthesis.platform.backend.server.dto.nifisinks.NiFiSinkDTO;
 import esthesis.platform.backend.server.model.NiFiSink;
 import esthesis.platform.backend.server.nifi.client.dto.NiFiSearchAlgorithm;
 import esthesis.platform.backend.server.nifi.client.services.NiFiClientService;
+import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Processor.ExistingProcessorSuffix;
+import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Processor.Type;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.SUCCESSFUL_RELATIONSHIP_TYPES;
 import esthesis.platform.backend.server.nifi.sinks.producers.NiFiProducerFactory;
@@ -17,8 +19,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -27,9 +29,9 @@ import java.util.Set;
 public class CommandProducer implements NiFiProducerFactory {
 
   private static final String NAME = "CommandProducer";
-  private static final String executeSQLName = "Find device ID from hardware ID";
-  private static final String putSQLName = "Insert command request into the db";
-  private static final String publishMQTTName = "PublishMQTT";
+  private static final String EXECUTE_SQL_NAME = "Find device ID from hardware ID";
+  private static final String PUT_SQL_NAME = "Insert command request into the db";
+  private static final String PUBLISH_MQTT_NAME = "PublishMQTT";
   private final ObjectMapper objectMapper;
   private final NiFiClientService niFiClientService;
   private CommandConfiguration conf;
@@ -91,12 +93,12 @@ public class CommandProducer implements NiFiProducerFactory {
     niFiSinkDTO.setCustomInfo(objectMapper.writeValueAsString(customInfo));
 
     String sqlExecutorId = niFiClientService
-      .createExecuteSQL(executeSQLName, dbConnectionPool,
+      .createExecuteSQL(EXECUTE_SQL_NAME, dbConnectionPool,
         conf.getSchedulingPeriod(), path
         , true);
 
     String putSQLId = niFiClientService
-      .createPutSQL(putSQLName, dbConnectionPool, conf.getSchedulingPeriod(),
+      .createPutSQL(PUT_SQL_NAME, dbConnectionPool, conf.getSchedulingPeriod(),
         path,
         true);
 
@@ -120,7 +122,7 @@ public class CommandProducer implements NiFiProducerFactory {
     }
 
     String mqttPublisherId = niFiClientService
-      .createMQTTPublisher(publishMQTTName, conf.getUri(), conf.getTopic(),
+      .createMQTTPublisher(PUBLISH_MQTT_NAME, conf.getUri(), conf.getTopic(),
         conf.getQos(),
         conf.isRetainMessage(), sslContextId, conf.getSchedulingPeriod(), path,
         true);
@@ -129,6 +131,8 @@ public class CommandProducer implements NiFiProducerFactory {
     if (niFiSinkDTO.isState()) {
       niFiClientService.changeProcessorGroupState(path, STATE.RUNNING);
     }
+
+    niFiClientService.manageQueueHandling(path, Type.EXECUTE_SQL);
   }
 
   @Override
@@ -152,15 +156,15 @@ public class CommandProducer implements NiFiProducerFactory {
 
       if (isSchedulingPeriodUpdated) {
         String executeSQLProcessorId =
-          niFiClientService.findProcessorIDByNameAndProcessGroup(executeSQLName,
+          niFiClientService.findProcessorIDByNameAndProcessGroup(EXECUTE_SQL_NAME,
             path);
-        niFiClientService.updateExecuteSQL(executeSQLProcessorId, executeSQLName,
+        niFiClientService.updateExecuteSQL(executeSQLProcessorId, EXECUTE_SQL_NAME,
           conf.getSchedulingPeriod());
 
         String putSQLProcessorId = niFiClientService
-          .findProcessorIDByNameAndProcessGroup(putSQLName,
+          .findProcessorIDByNameAndProcessGroup(PUT_SQL_NAME,
             path);
-        niFiClientService.updatePutSQL(putSQLProcessorId, putSQLName,
+        niFiClientService.updatePutSQL(putSQLProcessorId, PUT_SQL_NAME,
           conf.getSchedulingPeriod());
       }
 
@@ -171,10 +175,10 @@ public class CommandProducer implements NiFiProducerFactory {
 
       if (isSchedulingPeriodUpdated || isMQTTUpdated) {
         String publishMQTTProcessorId =
-          niFiClientService.findProcessorIDByNameAndProcessGroup(publishMQTTName,
+          niFiClientService.findProcessorIDByNameAndProcessGroup(PUBLISH_MQTT_NAME,
             path);
         niFiClientService
-          .updatePublisherMQTT(publishMQTTProcessorId, publishMQTTName, sslContextId, conf.getUri(),
+          .updatePublisherMQTT(publishMQTTProcessorId, PUBLISH_MQTT_NAME, sslContextId, conf.getUri(),
             conf.getTopic(),
             conf.getQos(), conf.isRetainMessage(), conf.getSchedulingPeriod());
       }
@@ -227,9 +231,10 @@ public class CommandProducer implements NiFiProducerFactory {
   public void deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
     niFiClientService.changeProcessorGroupState(path, STATE.STOPPED);
     CustomInfo customInfo = objectMapper.readValue(niFiSinkDTO.getCustomInfo(), CustomInfo.class);
-    niFiClientService.deleteProcessor(executeSQLName, path);
-    niFiClientService.deleteProcessor(putSQLName, path);
-    niFiClientService.deleteProcessor(publishMQTTName, path);
+    niFiClientService.deleteProcessor(EXECUTE_SQL_NAME, path);
+    niFiClientService.deleteProcessor(PUT_SQL_NAME, path);
+    niFiClientService.deleteProcessor(PUBLISH_MQTT_NAME, path);
+    niFiClientService.manageQueueHandling(path, Type.EXECUTE_SQL);
     deleteControllerServices(customInfo);
   }
 
@@ -247,6 +252,7 @@ public class CommandProducer implements NiFiProducerFactory {
   @Override
   public void toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
     niFiClientService.changeProcessorGroupState(path, isEnabled ? STATE.RUNNING : STATE.STOPPED);
+    niFiClientService.changeProcessorStatus("Clear Queue [CR]" ,path, STATE.STOPPED);
   }
 
   @Override
@@ -259,23 +265,23 @@ public class CommandProducer implements NiFiProducerFactory {
   @Override
   public String getSinkValidationErrors(String name, String[] path) throws IOException {
     return StringUtils
-      .trimAllWhitespace(niFiClientService.getValidationErrors(executeSQLName,
-        path) + "\n" + niFiClientService.getValidationErrors(putSQLName, path)
-        + "\n" + niFiClientService.getValidationErrors(publishMQTTName, path));
+      .trimAllWhitespace(niFiClientService.getValidationErrors(EXECUTE_SQL_NAME,
+        path) + "\n" + niFiClientService.getValidationErrors(PUT_SQL_NAME, path)
+        + "\n" + niFiClientService.getValidationErrors(PUBLISH_MQTT_NAME, path));
   }
 
   @Override
   public boolean exists(String name, String[] path) throws IOException {
-    return niFiClientService.processorExists(publishMQTTName, path) &&
-      niFiClientService.processorExists(putSQLName, path) &&
-      niFiClientService.processorExists(executeSQLName, path);
+    return niFiClientService.processorExists(PUBLISH_MQTT_NAME, path) &&
+      niFiClientService.processorExists(PUT_SQL_NAME, path) &&
+      niFiClientService.processorExists(EXECUTE_SQL_NAME, path);
   }
 
   @Override
   public boolean isSinkRunning(String name, String[] path) throws IOException {
-    return niFiClientService.isProcessorRunning(publishMQTTName, path) &&
-      niFiClientService.isProcessorRunning(putSQLName, path) &&
-      niFiClientService.isProcessorRunning(executeSQLName, path);
+    return niFiClientService.isProcessorRunning(PUBLISH_MQTT_NAME, path) &&
+      niFiClientService.isProcessorRunning(PUT_SQL_NAME, path) &&
+      niFiClientService.isProcessorRunning(EXECUTE_SQL_NAME, path);
   }
 
   private CommandConfiguration extractConfiguration(String configuration) {
@@ -292,13 +298,13 @@ public class CommandProducer implements NiFiProducerFactory {
 
     //executeSQL
     Set<String> relationship = new HashSet<>(
-      Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType()));
+        List.of(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType()));
 
     String postBodyCleanerId = niFiClientService.findProcessorIDByNameAndProcessGroup(
-      "[CPB]", path,
+        ExistingProcessorSuffix.CLEAR_POST_BODY, path,
       NiFiSearchAlgorithm.NAME_ENDS_WITH);
     String sqlResultConverterId = niFiClientService.findProcessorIDByNameAndProcessGroup(
-      "[CSR]", path,
+      ExistingProcessorSuffix.CONVERT_SQL_RESULT, path,
       NiFiSearchAlgorithm.NAME_ENDS_WITH);
 
     niFiClientService.connectComponentsInSameGroup(path, postBodyCleanerId,
@@ -311,13 +317,13 @@ public class CommandProducer implements NiFiProducerFactory {
 
     //puSQL
     relationship = new HashSet<>(
-      Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType()));
+        List.of(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType()));
 
     String sqlResultBodyCleanerId = niFiClientService.findProcessorIDByNameAndProcessGroup(
-      "[CSRB]", path,
+      ExistingProcessorSuffix.CLEAR_SQL_RESULT_BODY, path,
       NiFiSearchAlgorithm.NAME_ENDS_WITH);
     String mqttCommandBodyGeneratorId = niFiClientService.findProcessorIDByNameAndProcessGroup(
-      "[GMCB]", path,
+      ExistingProcessorSuffix.GENERATE_MQTT_COMMAND_BODY, path,
       NiFiSearchAlgorithm.NAME_ENDS_WITH);
 
     niFiClientService
@@ -329,10 +335,10 @@ public class CommandProducer implements NiFiProducerFactory {
 
     //publishMQTT
     relationship = new HashSet<>(
-      Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType()));
+        List.of(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType()));
 
     String commandIdResponseSetterId = niFiClientService
-      .findProcessorIDByNameAndProcessGroup("[SCIDR]", path,
+      .findProcessorIDByNameAndProcessGroup(ExistingProcessorSuffix.SET_COMMAND_ID_RESPONSE, path,
         NiFiSearchAlgorithm.NAME_ENDS_WITH);
 
     niFiClientService

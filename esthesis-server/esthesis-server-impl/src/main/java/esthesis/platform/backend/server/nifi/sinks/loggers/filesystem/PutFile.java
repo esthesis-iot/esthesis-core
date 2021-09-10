@@ -3,6 +3,7 @@ package esthesis.platform.backend.server.nifi.sinks.loggers.filesystem;
 import esthesis.platform.backend.server.dto.nifisinks.NiFiSinkDTO;
 import esthesis.platform.backend.server.model.NiFiSink;
 import esthesis.platform.backend.server.nifi.client.services.NiFiClientService;
+import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Processor.Type;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import esthesis.platform.backend.server.nifi.sinks.loggers.NiFiLoggerFactory;
 import lombok.RequiredArgsConstructor;
@@ -46,9 +47,9 @@ public class PutFile implements NiFiLoggerFactory {
     NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
 
     conf = extractConfiguration(niFiSinkDTO.getConfiguration());
-
     niFiClientService
       .createPutFile(niFiSinkDTO.getName(), conf.getDirectory(), conf.getSchedulingPeriod(), path);
+    manageConnectionWithClearQueueProcessor(path);
   }
 
   @Override
@@ -67,6 +68,7 @@ public class PutFile implements NiFiLoggerFactory {
   @Override
   public void deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
     niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
+    manageConnectionWithClearQueueProcessor(path);
   }
 
   @Override
@@ -95,6 +97,11 @@ public class PutFile implements NiFiLoggerFactory {
   @Override
   public boolean isSinkRunning(String name, String[] path) throws IOException {
     return niFiClientService.isProcessorRunning(name, path);
+  }
+
+  @Override
+  public void manageConnectionWithClearQueueProcessor(String[] path) throws IOException {
+   niFiClientService.manageQueueHandling(path, Type.PUT_FILE);
   }
 
   private PutFileConfiguration extractConfiguration(String configuration) {

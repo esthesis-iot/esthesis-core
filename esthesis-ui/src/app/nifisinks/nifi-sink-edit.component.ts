@@ -91,7 +91,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
         : 'NiFi sink was successfully created.');
       this.router.navigate([this.type]);
     }, error => {
-      this.utilityService.popupError(error.error);
+      this.utilityService.popupError(error?.error?.message);
     });
   }
 
@@ -110,7 +110,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
           this.utilityService.popupSuccess('Data sink successfully deleted.');
           this.router.navigate([this.type]);
         }, error => {
-          this.utilityService.popupError(error.error);
+          this.utilityService.popupError(error?.error?.message);
         });
       }
     });

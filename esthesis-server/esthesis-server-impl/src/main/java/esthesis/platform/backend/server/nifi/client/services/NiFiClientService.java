@@ -13,19 +13,19 @@ import esthesis.platform.backend.server.nifi.client.dto.NiFiTemplateDTO;
 import esthesis.platform.backend.server.nifi.client.exception.NiFiProcessingException;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.PATH;
+import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Processor.ExistingProcessorSuffix;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Processor.Type;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.CONSISTENCY_LEVEL;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.DATA_UNIT;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.nifi.web.api.dto.flow.ProcessGroupFlowDTO;
 import org.apache.nifi.web.api.entity.AboutEntity;
 import org.apache.nifi.web.api.entity.ComponentEntity;
 import org.apache.nifi.web.api.entity.ConnectionEntity;
 import org.apache.nifi.web.api.entity.ControllerServiceEntity;
 import org.apache.nifi.web.api.entity.FlowEntity;
-import org.apache.nifi.web.api.entity.ProcessGroupEntity;
+import org.apache.nifi.web.api.entity.PortEntity;
 import org.apache.nifi.web.api.entity.ProcessorEntity;
 import org.apache.nifi.web.api.entity.ScheduleComponentsEntity;
 import org.apache.nifi.web.api.entity.TemplateEntity;
@@ -40,6 +40,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -59,9 +60,9 @@ public class NiFiClientService {
   public NiFiAboutDTO getAbout() throws IOException {
     final AboutEntity about = niFiClient.getAbout();
     return NiFiAboutDTO.builder()
-      .title(about.getAbout().getTitle())
-      .version(about.getAbout().getVersion())
-      .build();
+        .title(about.getAbout().getTitle())
+        .version(about.getAbout().getVersion())
+        .build();
 
   }
 
@@ -73,12 +74,12 @@ public class NiFiClientService {
     final TemplatesEntity templates = niFiClient.getTemplates();
     for (TemplateEntity template : templates.getTemplates()) {
       templatesCollection.add(
-        NiFiTemplateDTO.builder()
-          .name(template.getTemplate().getName())
-          .description(template.getTemplate().getDescription())
-          .groupId(template.getTemplate().getGroupId())
-          .id(template.getId())
-          .build()
+          NiFiTemplateDTO.builder()
+              .name(template.getTemplate().getName())
+              .description(template.getTemplate().getDescription())
+              .groupId(template.getTemplate().getGroupId())
+              .id(template.getId())
+              .build()
       );
     }
 
@@ -103,14 +104,14 @@ public class NiFiClientService {
    * @param flowGroupName The name of the flow group to extract the version from.
    */
   private static EsthesisTemplateVersionDTO extractEsthesisVersionFromFlowGroupName(
-    String flowGroupName) {
+      String flowGroupName) {
     //TODO replace with a pattern matching instead?
     String version = StringUtils.substringAfter(flowGroupName, TEMPLATE_PREFIX);
     version = version.split(" ")[0];
     String[] versionElements = version.split("\\.");
 
-    return new EsthesisTemplateVersionDTO(version, Integer.valueOf(versionElements[0]),
-      Integer.valueOf(versionElements[1]), Integer.valueOf(versionElements[2]));
+    return new EsthesisTemplateVersionDTO(version, Integer.parseInt(versionElements[0]),
+        Integer.parseInt(versionElements[1]), Integer.parseInt(versionElements[2]));
   }
 
   /**
@@ -120,30 +121,30 @@ public class NiFiClientService {
    */
   public List<EsthesisTemplateDTO> getDeployedEsthesisTemplates() throws IOException {
     return niFiClient.getProcessGroups(getRootProcessGroupId()).getProcessGroupFlow().getFlow()
-      .getProcessGroups().stream()
-      .filter(
-        processFlowGroup -> processFlowGroup.getComponent().getName()
-          .startsWith(TEMPLATE_PREFIX))
-      .map(processFlowGroup -> {
-          EsthesisTemplateDTO esthesisTemplateDTO = new EsthesisTemplateDTO();
-          esthesisTemplateDTO.setFlowGroupId(processFlowGroup.getId());
-          esthesisTemplateDTO.setName(processFlowGroup.getComponent().getName());
-          try {
-            esthesisTemplateDTO.setTemplateId(
-              getTemplate(StringUtils.substringBefore(esthesisTemplateDTO.getName(), " ")).get()
-                .getId());
-          } catch (IOException exception) {
-            exception.printStackTrace();
-          }
-          final EsthesisTemplateVersionDTO esthesisTemplateVersion =
-            extractEsthesisVersionFromFlowGroupName(processFlowGroup.getComponent().getName());
-          esthesisTemplateDTO.setVersionMajor(esthesisTemplateVersion.getMajor());
-          esthesisTemplateDTO.setVersionMinor(esthesisTemplateVersion.getMinor());
-          esthesisTemplateDTO.setVersionPatch(esthesisTemplateVersion.getPatch());
-          return esthesisTemplateDTO;
-        }
-      )
-      .collect(Collectors.toList());
+        .getProcessGroups().stream()
+        .filter(
+            processFlowGroup -> processFlowGroup.getComponent().getName()
+                .startsWith(TEMPLATE_PREFIX))
+        .map(processFlowGroup -> {
+              EsthesisTemplateDTO esthesisTemplateDTO = new EsthesisTemplateDTO();
+              esthesisTemplateDTO.setFlowGroupId(processFlowGroup.getId());
+              esthesisTemplateDTO.setName(processFlowGroup.getComponent().getName());
+              try {
+                esthesisTemplateDTO.setTemplateId(
+                    getTemplate(StringUtils.substringBefore(esthesisTemplateDTO.getName(), " ")).get()
+                        .getId());
+              } catch (IOException exception) {
+                exception.printStackTrace();
+              }
+              final EsthesisTemplateVersionDTO esthesisTemplateVersion =
+                  extractEsthesisVersionFromFlowGroupName(processFlowGroup.getComponent().getName());
+              esthesisTemplateDTO.setVersionMajor(esthesisTemplateVersion.getMajor());
+              esthesisTemplateDTO.setVersionMinor(esthesisTemplateVersion.getMinor());
+              esthesisTemplateDTO.setVersionPatch(esthesisTemplateVersion.getPatch());
+              return esthesisTemplateDTO;
+            }
+        )
+        .collect(Collectors.toList());
   }
 
   /**
@@ -154,20 +155,20 @@ public class NiFiClientService {
    */
   public List<EsthesisTemplateDTO> getAvailableEsthesisTemplates() throws IOException {
     return niFiClient.getTemplates().getTemplates().stream()
-      .filter(
-        niFiTemplateDTO -> niFiTemplateDTO.getTemplate().getName().startsWith(TEMPLATE_PREFIX))
-      .map(niFiTemplateDTO -> {
-        EsthesisTemplateDTO esthesisTemplateDTO = new EsthesisTemplateDTO();
-        esthesisTemplateDTO.setTemplateId(niFiTemplateDTO.getId());
-        esthesisTemplateDTO.setName(niFiTemplateDTO.getTemplate().getName());
-        final EsthesisTemplateVersionDTO esthesisTemplateVersion = extractEsthesisVersionFromFlowGroupName(
-          niFiTemplateDTO.getTemplate().getName());
-        esthesisTemplateDTO.setVersionMajor(esthesisTemplateVersion.getMajor());
-        esthesisTemplateDTO.setVersionMinor(esthesisTemplateVersion.getMinor());
-        esthesisTemplateDTO.setVersionPatch(esthesisTemplateVersion.getPatch());
-        return esthesisTemplateDTO;
-      })
-      .collect(Collectors.toList());
+        .filter(
+            niFiTemplateDTO -> niFiTemplateDTO.getTemplate().getName().startsWith(TEMPLATE_PREFIX))
+        .map(niFiTemplateDTO -> {
+          EsthesisTemplateDTO esthesisTemplateDTO = new EsthesisTemplateDTO();
+          esthesisTemplateDTO.setTemplateId(niFiTemplateDTO.getId());
+          esthesisTemplateDTO.setName(niFiTemplateDTO.getTemplate().getName());
+          final EsthesisTemplateVersionDTO esthesisTemplateVersion = extractEsthesisVersionFromFlowGroupName(
+              niFiTemplateDTO.getTemplate().getName());
+          esthesisTemplateDTO.setVersionMajor(esthesisTemplateVersion.getMajor());
+          esthesisTemplateDTO.setVersionMinor(esthesisTemplateVersion.getMinor());
+          esthesisTemplateDTO.setVersionPatch(esthesisTemplateVersion.getPatch());
+          return esthesisTemplateDTO;
+        })
+        .collect(Collectors.toList());
   }
 
   /**
@@ -179,11 +180,11 @@ public class NiFiClientService {
     final TemplateEntity templateEntity = niFiClient.uploadTemplate(templateResource);
 
     return NiFiTemplateDTO.builder()
-      .id(templateEntity.getTemplate().getId())
-      .description(templateEntity.getTemplate().getDescription())
-      .name(templateEntity.getTemplate().getName())
-      .groupId(templateEntity.getTemplate().getGroupId())
-      .build();
+        .id(templateEntity.getTemplate().getId())
+        .description(templateEntity.getTemplate().getDescription())
+        .name(templateEntity.getTemplate().getName())
+        .groupId(templateEntity.getTemplate().getGroupId())
+        .build();
   }
 
   /**
@@ -219,19 +220,19 @@ public class NiFiClientService {
    */
   private String findProcessGroupId(String[] path) throws IOException {
     return niFiClient.findProcessGroup(NiFiSearchAlgorithm.NAME_ENDS_WITH, Arrays.asList(path))
-      .orElseThrow(() -> new IllegalArgumentException(
-        MessageFormat.format("Could not find process group for {0}.", Arrays.asList(path))))
-      .getId();
+        .orElseThrow(() -> new IllegalArgumentException(
+            MessageFormat.format("Could not find process group for {0}.", Arrays.asList(path))))
+        .getId();
   }
 
   private void enableStandardContextHttpMap() throws IOException {
 
     String controllerServiceId = findControllerServiceId(
-      new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString()},
-      Type.STANDARD_HTTP_CONTEXT_MAP);
+        new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString()},
+        Type.STANDARD_HTTP_CONTEXT_MAP);
 
     this.niFiClient.changeControllerServiceStatus(controllerServiceId,
-      STATE.ENABLED);
+        STATE.ENABLED);
   }
 
   /**
@@ -242,10 +243,10 @@ public class NiFiClientService {
    * @return the id of the controller service if found, null otherwise.
    */
   public String findControllerServiceId(@NotNull String[] path, @NotNull String type)
-    throws IOException {
+      throws IOException {
     String parentProcessGroupId = findProcessGroupId(path);
     Optional<ControllerServiceEntity> controllerService = this.niFiClient
-      .findControllerService(parentProcessGroupId, type);
+        .findControllerService(parentProcessGroupId, type);
 
     return controllerService.map(ComponentEntity::getId).orElse(null);
   }
@@ -258,12 +259,12 @@ public class NiFiClientService {
    * @return The update state.
    */
   public String changeProcessorGroupState(@NotNull String[] path,
-    @NotNull NiFiConstants.Properties.Values.STATE state) throws IOException {
+      @NotNull NiFiConstants.Properties.Values.STATE state) throws IOException {
     String parentProcessGroupId = findProcessGroupId(path);
 
     final ScheduleComponentsEntity scheduleComponentsEntity =
-      this.niFiClient.changeProcessorGroupState(parentProcessGroupId,
-        state);
+        this.niFiClient.changeProcessorGroupState(parentProcessGroupId,
+            state);
     return scheduleComponentsEntity.getState();
   }
 
@@ -279,13 +280,13 @@ public class NiFiClientService {
    * @return The id of the newly created service.
    */
   public String createSSLContext(String name, String keystoreFilename, String keystorePassword,
-    String truststoreFilename, String truststorePassword, String[] path)
-    throws IOException {
+      String truststoreFilename, String truststorePassword, String[] path)
+      throws IOException {
     String parentProcessGroupId = findProcessGroupId(path);
 
     final ControllerServiceEntity controllerServiceEntity = niFiClient
-      .createSSLContext(name, keystoreFilename, keystorePassword, truststoreFilename,
-        truststorePassword, parentProcessGroupId);
+        .createSSLContext(name, keystoreFilename, keystorePassword, truststoreFilename,
+            truststorePassword, parentProcessGroupId);
 
     return controllerServiceEntity.getId();
   }
@@ -301,13 +302,13 @@ public class NiFiClientService {
    * @return The id of the updated SSL Context service.
    */
   public String updateSSLContext(String controllerId, String keystoreFilename,
-    String keystorePassword,
-    String truststoreFilename, String truststorePassword)
-    throws IOException {
+      String keystorePassword,
+      String truststoreFilename, String truststorePassword)
+      throws IOException {
 
     final ControllerServiceEntity controllerServiceEntity = niFiClient
-      .updateSSLContext(controllerId, keystoreFilename, keystorePassword, truststoreFilename,
-        truststorePassword);
+        .updateSSLContext(controllerId, keystoreFilename, keystorePassword, truststoreFilename,
+            truststorePassword);
 
     return controllerServiceEntity.getId();
   }
@@ -324,15 +325,15 @@ public class NiFiClientService {
    * @return The id of the created SSL Context service.
    */
   public String createSSLContextForExistingProcessor(String processorName,
-    String[] path, String keystoreFilename,
-    String keystorePassword, String truststoreFilename, String truststorePassword)
-    throws IOException {
+      String[] path, String keystoreFilename,
+      String keystorePassword, String truststoreFilename, String truststorePassword)
+      throws IOException {
 
     String processGroupId = findProcessGroupId(path);
 
     return niFiClient.createSSLContext(processorName + " [SSL Context] ",
-      keystoreFilename, keystorePassword, truststoreFilename, truststorePassword,
-      processGroupId).getId();
+        keystoreFilename, keystorePassword, truststoreFilename, truststorePassword,
+        processGroupId).getId();
   }
 
   /**
@@ -347,16 +348,16 @@ public class NiFiClientService {
    * @return The id of the newly created Database Connection Pool service.
    */
   public String createDBConnectionPool(String name, String databaseConnectionURL,
-    String databaseDriverClassName, String databaseDriverClassLocation, String databaseUser,
-    String password,
-    String[] path)
-    throws IOException {
+      String databaseDriverClassName, String databaseDriverClassLocation, String databaseUser,
+      String password,
+      String[] path)
+      throws IOException {
     String parentProcessGroupId = findProcessGroupId(path);
 
     final ControllerServiceEntity controllerServiceEntity = niFiClient
-      .createDBCConnectionPool(name, databaseConnectionURL, databaseDriverClassName,
-        databaseDriverClassLocation,
-        databaseUser, password, parentProcessGroupId);
+        .createDBCConnectionPool(name, databaseConnectionURL, databaseDriverClassName,
+            databaseDriverClassLocation,
+            databaseUser, password, parentProcessGroupId);
 
     return controllerServiceEntity.getId();
   }
@@ -372,14 +373,14 @@ public class NiFiClientService {
    * @return The id of the updated Database Connection Pool service.
    */
   public String updateDBCConnectionPool(String id, String databaseConnectionURL,
-    String databaseDriverClassName, String databaseDriverClassLocation, String databaseUser,
-    String password)
-    throws IOException {
+      String databaseDriverClassName, String databaseDriverClassLocation, String databaseUser,
+      String password)
+      throws IOException {
 
     final ControllerServiceEntity controllerServiceEntity = niFiClient
-      .updateDBCConnectionPool(id, databaseConnectionURL, databaseDriverClassName,
-        databaseDriverClassLocation,
-        databaseUser, password);
+        .updateDBCConnectionPool(id, databaseConnectionURL, databaseDriverClassName,
+            databaseDriverClassLocation,
+            databaseUser, password);
 
     return controllerServiceEntity.getId();
   }
@@ -416,56 +417,58 @@ public class NiFiClientService {
    * @return The updated state of the controller.
    */
   public String changeControllerServiceStatus(String controllerServiceId, STATE state)
-    throws IOException {
+      throws IOException {
     ControllerServiceEntity controllerServiceEntity = niFiClient
-      .changeControllerServiceStatus(controllerServiceId, state);
+        .changeControllerServiceStatus(controllerServiceId, state);
 
     return controllerServiceEntity.getComponent().getState();
   }
 
   public String findProcessorIDByNameAndProcessGroup(String name, String[] path)
-    throws IOException {
+      throws IOException {
     return findProcessorIDByNameAndProcessGroup(name, path, NiFiSearchAlgorithm.NAME_EQUALS);
   }
 
   public String findProcessorIDByNameAndProcessGroup(String name, String[] path,
-    NiFiSearchAlgorithm niFiSearchAlgorithm)
-    throws IOException {
+      NiFiSearchAlgorithm niFiSearchAlgorithm)
+      throws IOException {
     Optional<ProcessorEntity> processor = niFiClient
-      .findProcessorInGroup(niFiSearchAlgorithm, Arrays.asList(path), name);
+        .findProcessorInGroup(niFiSearchAlgorithm, Arrays.asList(path), name);
 
     if (processor.isPresent()) {
       return processor.get().getId();
-    } else throw new QDoesNotExistException();
+    } else {
+      throw new QDoesNotExistException();
+    }
   }
 
   public String createMQTTPublisher(@NotNull String name, @NotNull String uri,
-    @NotNull String topic,
-    int qos, boolean retainMessage, @Nullable String sslContextServiceId,
-    String schedulingPeriod, @NotNull String[] path, boolean isCommandHandler)
-    throws IOException {
+      @NotNull String topic,
+      int qos, boolean retainMessage, @Nullable String sslContextServiceId,
+      String schedulingPeriod, @NotNull String[] path, boolean isCommandHandler)
+      throws IOException {
     // Find the group Id of the process group under which this reader will be created.
     String parentProcessGroupId = findProcessGroupId(path);
 
     // Create the consumer.
     final ProcessorEntity processorEntity = niFiClient
-      .createMQTTPublisher(parentProcessGroupId, name, uri, topic, qos, retainMessage,
-        sslContextServiceId, schedulingPeriod, isCommandHandler);
+        .createMQTTPublisher(parentProcessGroupId, name, uri, topic, qos, retainMessage,
+            sslContextServiceId, schedulingPeriod, isCommandHandler);
 
     return processorEntity.getId();
   }
 
   public String updatePublisherMQTT(String id, String name, String sslContextId, String uri,
-    String topic,
-    int qos,
-    boolean retainMessaage, String schedulingPeriod)
-    throws IOException {
+      String topic,
+      int qos,
+      boolean retainMessaage, String schedulingPeriod)
+      throws IOException {
 
     return niFiClient
-      .updateMQTTPublisher(id, name, sslContextId, uri, topic, qos, retainMessaage, schedulingPeriod)
-      .getId();
+        .updateMQTTPublisher(id, name, sslContextId, uri, topic, qos, retainMessaage,
+            schedulingPeriod)
+        .getId();
   }
-
 
 
   /**
@@ -483,29 +486,29 @@ public class NiFiClientService {
    * @return The id of the newly created processor.
    */
   public String createMQTTConsumer(@NotNull String name, @NotNull String uri, @NotNull String topic,
-    int qos, int queueSize, @Nullable String sslContextServiceId,
-    String schedulingPeriod, @NotNull String[] path, boolean isCommandHandler)
-    throws IOException {
+      int qos, int queueSize, @Nullable String sslContextServiceId,
+      String schedulingPeriod, @NotNull String[] path, boolean isCommandHandler)
+      throws IOException {
     // Find the group Id of the process group under which this reader will be created.
     String parentProcessGroupId = findProcessGroupId(path);
 
     // Create the consumer.
     final ProcessorEntity processorEntity = niFiClient
-      .createMQTTConsumer(parentProcessGroupId, name, uri, topic, qos, queueSize,
-        sslContextServiceId, schedulingPeriod, isCommandHandler);
+        .createMQTTConsumer(parentProcessGroupId, name, uri, topic, qos, queueSize,
+            sslContextServiceId, schedulingPeriod, isCommandHandler);
 
     return processorEntity.getId();
   }
 
   public String updateConsumerMQTT(String id, String name, String sslContextId, String uri,
-    String topic,
-    int qos,
-    int queueSize, String schedulingPeriod)
-    throws IOException {
+      String topic,
+      int qos,
+      int queueSize, String schedulingPeriod)
+      throws IOException {
 
     return niFiClient
-      .updateConsumeMQTT(id, name, sslContextId, uri, topic, qos, queueSize, schedulingPeriod)
-      .getId();
+        .updateConsumeMQTT(id, name, sslContextId, uri, topic, qos, queueSize, schedulingPeriod)
+        .getId();
   }
 
   /**
@@ -528,18 +531,18 @@ public class NiFiClientService {
    * @return The id of the newly created processor.
    */
   public String createPutInfluxDB(@NotNull String name, @NotNull String dbName, @NotNull String url,
-    int maxConnectionTimeoutSeconds, String username, String password, String charset,
-    CONSISTENCY_LEVEL level, String retentionPolicy, int maxRecordSize,
-    DATA_UNIT maxRecordSizeUnit, String schedulingPeriod, @NotNull String[] path)
-    throws IOException {
+      int maxConnectionTimeoutSeconds, String username, String password, String charset,
+      CONSISTENCY_LEVEL level, String retentionPolicy, int maxRecordSize,
+      DATA_UNIT maxRecordSizeUnit, String schedulingPeriod, @NotNull String[] path)
+      throws IOException {
     // Find the group Id of the process group under which this reader will be created.
     String parentProcessGroupId = findProcessGroupId(path);
 
     // Create the influx db writer.
     final ProcessorEntity processorEntity = niFiClient
-      .createPutInfluxDB(parentProcessGroupId, name, dbName, url, maxConnectionTimeoutSeconds,
-        username, password, charset, level, retentionPolicy, maxRecordSize, maxRecordSizeUnit,
-        schedulingPeriod);
+        .createPutInfluxDB(parentProcessGroupId, name, dbName, url, maxConnectionTimeoutSeconds,
+            username, password, charset, level, retentionPolicy, maxRecordSize, maxRecordSizeUnit,
+            schedulingPeriod);
 
     return processorEntity.getId();
   }
@@ -564,15 +567,16 @@ public class NiFiClientService {
    * @return The id of the processor.
    */
   public String updatePutInfluxDB(String id, String name, @NotNull String dbName,
-    @NotNull String url,
-    int maxConnectionTimeoutSeconds, String username, String password, String charset,
-    CONSISTENCY_LEVEL level, String retentionPolicy, int maxRecordSize,
-    DATA_UNIT maxRecordSizeUnit, String schedulingPeriod) throws IOException {
+      @NotNull String url,
+      int maxConnectionTimeoutSeconds, String username, String password, String charset,
+      CONSISTENCY_LEVEL level, String retentionPolicy, int maxRecordSize,
+      DATA_UNIT maxRecordSizeUnit, String schedulingPeriod) throws IOException {
 
     return niFiClient.updatePutInfluxDB(id, name, dbName, url, maxConnectionTimeoutSeconds,
-      username,
-      password, charset, level, retentionPolicy, maxRecordSize, maxRecordSizeUnit, schedulingPeriod)
-      .getId();
+            username,
+            password, charset, level, retentionPolicy, maxRecordSize, maxRecordSizeUnit,
+            schedulingPeriod)
+        .getId();
   }
 
   /**
@@ -589,16 +593,17 @@ public class NiFiClientService {
    * @return The id of the newly created processor.
    */
   public String createPutDatabaseRecord(
-    @NotNull String name, @NotNull String recordReaderId, @NotNull String dcbpServiceId,
-    @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType, String schedulingPeriod,
-    @NotNull String[] path, boolean isCommandHandler) throws IOException {
+      @NotNull String name, @NotNull String recordReaderId, @NotNull String dcbpServiceId,
+      @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType,
+      String schedulingPeriod,
+      @NotNull String[] path, boolean isCommandHandler) throws IOException {
     // Configuration.
     String parentProcessGroupId = findProcessGroupId(path);
 
     // Create the database writer.
     final ProcessorEntity processorEntity = niFiClient
-      .createPutDatabaseRecord(parentProcessGroupId, name, recordReaderId,
-        dcbpServiceId, statementType, schedulingPeriod, isCommandHandler);
+        .createPutDatabaseRecord(parentProcessGroupId, name, recordReaderId,
+            dcbpServiceId, statementType, schedulingPeriod, isCommandHandler);
 
     return processorEntity.getId();
   }
@@ -612,11 +617,12 @@ public class NiFiClientService {
    * @return The id of the newly updated processor.
    */
   public String updatePutDatabaseRecord(String processorId, String name,
-    @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType, String schedulingPeriod)
-    throws IOException {
+      @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType,
+      String schedulingPeriod)
+      throws IOException {
 
     return niFiClient.updatePutDatabaseRecord(processorId, name, statementType, schedulingPeriod)
-      .getId();
+        .getId();
   }
 
   /**
@@ -634,19 +640,19 @@ public class NiFiClientService {
    * @return the id of the newly created processor.
    */
   public String createExecuteInfluxDB(@NotNull String name, @NotNull String dbName,
-    @NotNull String url,
-    int maxConnectionTimeoutSeconds, String username, String password, String queryResultTimeUnit,
-    int queryChunkSize,
-    String schedulingPeriod,
-    @NotNull String[] path)
-    throws IOException {
+      @NotNull String url,
+      int maxConnectionTimeoutSeconds, String username, String password, String queryResultTimeUnit,
+      int queryChunkSize,
+      String schedulingPeriod,
+      @NotNull String[] path)
+      throws IOException {
 
     String parentProcessGroupId = findProcessGroupId(path);
 
     return niFiClient.createExecuteInfluxDB(parentProcessGroupId, name, dbName, url,
-      maxConnectionTimeoutSeconds, username, password, queryResultTimeUnit, queryChunkSize,
-      schedulingPeriod)
-      .getId();
+            maxConnectionTimeoutSeconds, username, password, queryResultTimeUnit, queryChunkSize,
+            schedulingPeriod)
+        .getId();
   }
 
   /**
@@ -664,16 +670,16 @@ public class NiFiClientService {
    * @return the id of the updated processor.
    */
   public String updateExecuteInfluxDB(@NotNull String processorId,
-    String name, @NotNull String dbName,
-    @NotNull String url,
-    int maxConnectionTimeoutSeconds, String username, String password, String queryResultTimeUnit,
-    int queryChunkSize,
-    String schedulingPeriod)
-    throws IOException {
+      String name, @NotNull String dbName,
+      @NotNull String url,
+      int maxConnectionTimeoutSeconds, String username, String password, String queryResultTimeUnit,
+      int queryChunkSize,
+      String schedulingPeriod)
+      throws IOException {
 
     return niFiClient.updateExecuteInfluxDB(processorId, name, dbName, url,
-      maxConnectionTimeoutSeconds, username, password
-      , queryResultTimeUnit, queryChunkSize, schedulingPeriod).getId();
+        maxConnectionTimeoutSeconds, username, password
+        , queryResultTimeUnit, queryChunkSize, schedulingPeriod).getId();
   }
 
   /**
@@ -686,18 +692,18 @@ public class NiFiClientService {
    * @return the id of the newly created processor.
    */
   public String createExecuteSQL(@NotNull String name, String dcbpServiceId,
-    String schedulingPeriod, @NotNull String[] path, boolean isCommandHandler)
-    throws IOException {
+      String schedulingPeriod, @NotNull String[] path, boolean isCommandHandler)
+      throws IOException {
 
     String parentProcessGroupId = findProcessGroupId(path);
 
     return niFiClient.createExecuteSQL(parentProcessGroupId, name, dcbpServiceId,
-      schedulingPeriod, isCommandHandler)
-      .getId();
+            schedulingPeriod, isCommandHandler)
+        .getId();
   }
 
   public String updateExecuteSQL(String processorId, String name, String schedulingPeriod)
-    throws IOException {
+      throws IOException {
     return niFiClient.updateExecuteSQL(processorId, name, schedulingPeriod).getId();
   }
 
@@ -711,12 +717,12 @@ public class NiFiClientService {
    * @return the id of the newly created processor.
    */
   public String createPutFile(String name, String directory, String schedulingPeriod,
-    String[] path)
-    throws IOException {
+      String[] path)
+      throws IOException {
 
     String parentProcessGroupId = findProcessGroupId(path);
     return niFiClient.createPutFile(parentProcessGroupId, name, directory, schedulingPeriod)
-      .getId();
+        .getId();
   }
 
   /**
@@ -729,8 +735,8 @@ public class NiFiClientService {
    * @return The id of the updated processor.
    */
   public String updatePutFile(String processorId, String name, String directory,
-    String schedulingPeriod)
-    throws IOException {
+      String schedulingPeriod)
+      throws IOException {
     return niFiClient.updatePutFile(processorId, name, directory, schedulingPeriod).getId();
   }
 
@@ -750,13 +756,13 @@ public class NiFiClientService {
    * @return The id of the created processor.
    */
   public String createPutSyslog(String name, String sslContextId, String hostname, int port,
-    String protocol, String messageBody, String messagePriority, String schedulingPeriod,
-    String[] path)
-    throws IOException {
+      String protocol, String messageBody, String messagePriority, String schedulingPeriod,
+      String[] path)
+      throws IOException {
     String parentProcessGroupId = findProcessGroupId(path);
 
     return niFiClient.createPutSyslog(parentProcessGroupId, name, sslContextId, hostname, port,
-      protocol, messageBody, messagePriority, schedulingPeriod).getId();
+        protocol, messageBody, messagePriority, schedulingPeriod).getId();
   }
 
   /**
@@ -773,26 +779,26 @@ public class NiFiClientService {
    * @return The id of the updated processor.
    */
   public String updatePutSyslog(String processorId, String name, String sslContextId,
-    String hostname, int port,
-    String protocol, String messageBody, String messagePriority, String schedulingPeriod)
-    throws IOException {
+      String hostname, int port,
+      String protocol, String messageBody, String messagePriority, String schedulingPeriod)
+      throws IOException {
 
     return niFiClient
-      .updatePutSyslog(processorId, name, sslContextId, hostname, port, protocol, messageBody,
-        messagePriority, schedulingPeriod).getId();
+        .updatePutSyslog(processorId, name, sslContextId, hostname, port, protocol, messageBody,
+            messagePriority, schedulingPeriod).getId();
   }
 
   public String createPutSQL(String name, String dbConnectionPool, String schedulingPeriod,
-    String[] path, boolean isCommandHandler)
-    throws IOException {
+      String[] path, boolean isCommandHandler)
+      throws IOException {
     String parentProcessGroupId = findProcessGroupId(path);
 
     return niFiClient.createPutSQL(parentProcessGroupId, name, dbConnectionPool,
-      schedulingPeriod, isCommandHandler).getId();
+        schedulingPeriod, isCommandHandler).getId();
   }
 
   public String updatePutSQL(String processorId, String name, String schedulingPeriod)
-    throws IOException {
+      throws IOException {
     return niFiClient.updatePutSQL(processorId, name, schedulingPeriod).getId();
   }
 
@@ -813,12 +819,11 @@ public class NiFiClientService {
    * be also deleted.
    *
    * @param name The name of the processor to delete.
-   * @return The state of the deleted processor.
    */
   public void deleteProcessor(String name, String[] path) throws IOException {
     Optional<ProcessorEntity> processor = niFiClient
-      .findProcessorInGroup(NiFiSearchAlgorithm.NAME_EQUALS,
-        Arrays.asList(path), name);
+        .findProcessorInGroup(NiFiSearchAlgorithm.NAME_EQUALS,
+            Arrays.asList(path), name);
 
     if (processor.isPresent()) {
       niFiClient.deleteProcessor(processor.get().getId()).getComponent().getState();
@@ -846,7 +851,8 @@ public class NiFiClientService {
    */
   public boolean processorExists(String name, String[] path) throws IOException {
     try {
-      return niFiClient.findProcessorInGroup(NiFiSearchAlgorithm.NAME_EQUALS, Arrays.asList(path),name).isPresent();
+      return niFiClient.findProcessorInGroup(NiFiSearchAlgorithm.NAME_EQUALS, Arrays.asList(path),
+          name).isPresent();
     } catch (NiFiProcessingException ex) {
       return false;
     }
@@ -861,31 +867,21 @@ public class NiFiClientService {
     niFiClient.changeProcessorGroupState(processGroupId, STATE.STOPPED);
     niFiClient.changeProcessorGroupState(processGroupId, STATE.DISABLED);
     if (niFiClient.getStatus().getControllerStatus().getFlowFilesQueued() > 0) {
-      clearQueue(processGroupId);
+      clearQueues(processGroupId);
     }
-    await().atMost(Duration.ofSeconds(30))
-      .until(() -> niFiClient.getStatus().getControllerStatus().getRunningCount() == 0);
+    await().atMost(Duration.ofMinutes(1))
+        .until(() -> niFiClient.getStatus().getControllerStatus().getRunningCount() == 0);
     niFiClient.changeGroupControllerServicesState(processGroupId, STATE.DISABLED);
     niFiClient.deleteProcessGroup(processGroupId);
   }
 
-  private void clearQueue(String id) throws IOException {
-    ProcessGroupFlowDTO processGroupFlow = niFiClient.getProcessGroups(id).getProcessGroupFlow();
-    Set<ProcessGroupEntity> processGroups = processGroupFlow.getFlow().getProcessGroups();
-    Set<ProcessGroupEntity> groupsWithQueued = processGroups.stream().filter(processGroupEntity ->
-      processGroupEntity.getStatus().getAggregateSnapshot().getFlowFilesQueued() > 0).collect(
-      Collectors.toSet());
-
-    for (ProcessGroupEntity processGroupEntity : groupsWithQueued) {
-      Set<ConnectionEntity> allConnectionsOfProcessGroup = niFiClient
-        .getAllConnectionsOfProcessGroup(processGroupEntity.getId());
-      for (ConnectionEntity connectionEntity : allConnectionsOfProcessGroup) {
-        niFiClient.emptyQueueOfConnection(connectionEntity.getId());
-      }
-      clearQueue(processGroupEntity.getId());
-    }
+  private void clearQueues(String processGroupId) throws IOException {
+    niFiClient.emptyAllQueuesOfGroup(processGroupId);
   }
 
+  public void clearRootGroupQueues() throws IOException {
+    clearQueues(getRootProcessGroupId());
+  }
 
   /**
    * Deletes given template.
@@ -918,39 +914,159 @@ public class NiFiClientService {
     String path = NIFI_SINK_HANDLER.METADATA.getType() == handler ? "[MP]" : "[TP]";
 
     String rootGroupId = findProcessGroupId(
-      new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString(), path});
+        new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString(), path});
 
     String influxInstanceGroupId = findProcessGroupId(
-      new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString(), path
-        , "[I]", PATH.INSTANCES.asString()});
+        new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString(), path
+            , "[I]", PATH.INSTANCES.asString()});
 
     String relationalInstanceGroupId = findProcessGroupId(
-      new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString(), path
-        , "[R]", PATH.INSTANCES.asString()});
+        new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString(), path
+            , "[R]", PATH.INSTANCES.asString()});
 
     String influxGroupId = findProcessGroupId(
-      new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString(), path
-        , "[I]"});
+        new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString(), path
+            , "[I]"});
 
     String relationalGroupId = findProcessGroupId(
-      new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString(), path
-        , "[R]"});
+        new String[]{PATH.ESTHESIS.asString(), PATH.PRODUCERS.asString(), path
+            , "[R]"});
 
-    niFiClient.distributeLoadOfProducers(isRelational, rootGroupId, influxInstanceGroupId,
-      relationalInstanceGroupId, influxGroupId, relationalGroupId);
+    niFiClient.distributeLoadOfProducers(isRelational, rootGroupId, influxGroupId,
+        relationalGroupId, influxInstanceGroupId,
+        relationalInstanceGroupId);
   }
 
   public void connectComponentsInSameGroup(String[] path, String sourceId, String destinationId,
-    Set<String> relationships) throws IOException {
+      Set<String> relationships) throws IOException {
     String processGroupId = findProcessGroupId(path);
+    connectComponentsInSameGroup(processGroupId, sourceId, destinationId, relationships);
+  }
+
+  private void connectComponentsInSameGroup(String processGroupId, String sourceId,
+      String destinationId,
+      Set<String> relationships) throws IOException {
     niFiClient.connectSourceAndDestination(processGroupId, processGroupId, PROCESSOR.name(),
-      PROCESSOR.name(), sourceId, destinationId, relationships);
+        PROCESSOR.name(), sourceId, destinationId, relationships);
   }
 
   public void moveComponent(String[] path, String processorId) throws IOException {
     String processGroupId = findProcessGroupId(path);
 
     niFiClient.moveComponent(processGroupId, processorId);
+  }
+
+  /**
+   * Manages the connection with the processor responsible for the queue handling.
+   * @param path The path of the group where the queue handling is needed.
+   * @param processorType The type of the nifi sink.
+   */
+  public void manageQueueHandling(String[] path, String processorType) throws IOException {
+    manageQueueHandling(path, processorType, false);
+  }
+
+  /**
+   * Manages the connection with the processor responsible for the queue handling.
+   * @param path The path of the group where the queue handling is needed.
+   * @param processorType The type of the nifi sink.
+   * @param isCommandWriter Whether the nifi sink is a command writer.
+   */
+  public void manageQueueHandling(String[] path, String processorType,
+      boolean isCommandWriter) throws IOException {
+    String processGroupId = findProcessGroupId(path);
+    PortEntity inputPort = niFiClient.findInputPort(processGroupId);
+    String processorId;
+
+    boolean needsClearQueueProcessor = needsQueueHandlerConnection(processGroupId, processorType);
+
+    if (processorType.equals(Type.EXECUTE_SQL)) {
+      manageCommandProducerConnections(path, processGroupId, inputPort, needsClearQueueProcessor);
+      processorId =
+          findProcessorIDByNameAndProcessGroup(ExistingProcessorSuffix.HTTP_RESPONSE_HANDLER,
+              path, NiFiSearchAlgorithm.NAME_ENDS_WITH);
+    } else {
+      processorId = getIdOfClearQueueProcessor(path);
+    }
+
+    if (isCommandWriter) {
+      manageCommandWriterConnections(path, processGroupId, inputPort, needsClearQueueProcessor);
+    }
+
+    niFiClient.manageQueueHandling(processGroupId, inputPort, processorId, needsClearQueueProcessor);
+
+  }
+
+  private void manageCommandProducerConnections(String[] path,
+      String processGroupId, PortEntity inputPort,
+      boolean connectToCR)
+      throws IOException {
+
+    String dataExtractorId = findProcessorIDByNameAndProcessGroup(
+        ExistingProcessorSuffix.EXTRACT_DATA_FROM_POST_BODY, path,
+        NiFiSearchAlgorithm.NAME_ENDS_WITH);
+
+    Set<ConnectionEntity> allConnectionsOfProcessGroup = niFiClient.getAllConnectionsOfProcessGroup(
+        processGroupId);
+
+    if (connectToCR) {
+      Optional<ConnectionEntity> connectionWithDataExtractor = allConnectionsOfProcessGroup.stream()
+          .filter(connectionEntity -> connectionEntity.getDestinationId().equals(dataExtractorId))
+          .findFirst();
+      if (connectionWithDataExtractor.isPresent()) {
+        deleteConnectionWithComponent(inputPort, dataExtractorId, connectionWithDataExtractor.get());
+      }
+    } else {
+      connectComponentsInSameGroup(processGroupId, inputPort.getId(), dataExtractorId, new HashSet<>());
+    }
+
+  }
+
+  private void manageCommandWriterConnections(String[] path, String processGroupId,
+      PortEntity inputPort, boolean connectToCR) throws IOException {
+
+    String jsonTransformerProcessorId = findProcessorIDByNameAndProcessGroup(
+        ExistingProcessorSuffix.PREPARE_DATABASE_OPERATION, path,
+        NiFiSearchAlgorithm.NAME_ENDS_WITH);
+
+    Set<ConnectionEntity> allConnectionsOfProcessGroup = niFiClient.getAllConnectionsOfProcessGroup(
+        processGroupId);
+
+    Optional<ConnectionEntity> connectionOfJsonTransformer = allConnectionsOfProcessGroup
+        .stream()
+        .filter(connectionEntity -> connectionEntity.getDestinationId()
+            .equals(jsonTransformerProcessorId))
+        .findFirst();
+
+    if (connectToCR) {
+      if (connectionOfJsonTransformer.isPresent()) {
+        deleteConnectionWithComponent(inputPort, jsonTransformerProcessorId,
+            connectionOfJsonTransformer.get());
+      }
+    } else {
+      if (connectionOfJsonTransformer.isEmpty()) {
+        connectComponentsInSameGroup(processGroupId, inputPort.getId(), jsonTransformerProcessorId,
+            new HashSet<>());
+        niFiClient.changeProcessorStatus(jsonTransformerProcessorId, STATE.RUNNING);
+      }
+    }
+
+  }
+
+  private String getIdOfClearQueueProcessor(String[] path) throws IOException {
+    return findProcessorIDByNameAndProcessGroup(ExistingProcessorSuffix.CLEAR_QUEUE, path,
+        NiFiSearchAlgorithm.NAME_ENDS_WITH);
+  }
+
+  private boolean needsQueueHandlerConnection(String processGroupId, String processorType)
+      throws IOException {
+    return niFiClient.getProcessorsOfGroup(processGroupId).getProcessors().stream().noneMatch(
+        processorEntity -> processorEntity.getComponent().getType().equals(processorType));
+  }
+
+  private void deleteConnectionWithComponent(PortEntity inputPort, String processorId,
+      ConnectionEntity connectionEntity) throws IOException {
+
+    niFiClient.deleteConnectionBetweenPortAndProcessor(inputPort, processorId, connectionEntity);
 
   }
 }

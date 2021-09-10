@@ -6,6 +6,7 @@ import esthesis.platform.backend.server.dto.nifisinks.NiFiSinkDTO;
 import esthesis.platform.backend.server.model.NiFiSink;
 import esthesis.platform.backend.server.nifi.client.dto.NiFiSearchAlgorithm;
 import esthesis.platform.backend.server.nifi.client.services.NiFiClientService;
+import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Processor.ExistingProcessorSuffix;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.SUCCESSFUL_RELATIONSHIP_TYPES;
 import esthesis.platform.backend.server.nifi.sinks.readers.NiFiReaderFactory;
@@ -17,8 +18,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -100,9 +101,10 @@ public class ConsumeMQTT implements NiFiReaderFactory {
 
     if (isCommandHandler) {
       Set<String> relationship = new HashSet<>(
-        Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.MESSAGE.getType()));
+          List.of(SUCCESSFUL_RELATIONSHIP_TYPES.MESSAGE.getType()));
 
-      String hardwareIdSetterId = niFiClientService.findProcessorIDByNameAndProcessGroup("[SH]",
+      String hardwareIdSetterId = niFiClientService.findProcessorIDByNameAndProcessGroup(
+          ExistingProcessorSuffix.SET_HARDWARE_ID,
         path,
         NiFiSearchAlgorithm.NAME_ENDS_WITH);
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.platform.backend.server.dto.nifisinks.NiFiSinkDTO;
 import esthesis.platform.backend.server.model.NiFiSink;
 import esthesis.platform.backend.server.nifi.client.services.NiFiClientService;
+import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Processor.Type;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import esthesis.platform.backend.server.nifi.sinks.loggers.NiFiLoggerFactory;
 import lombok.RequiredArgsConstructor;
@@ -82,6 +83,8 @@ public class PutSyslog implements NiFiLoggerFactory {
         conf.getPort(),
         conf.getProtocol(), conf.getMessageBody(), conf.getMessagePriority(),
         conf.getSchedulingPeriod(), path);
+
+    manageConnectionWithClearQueueProcessor(path);
   }
 
   @Override
@@ -139,6 +142,7 @@ public class PutSyslog implements NiFiLoggerFactory {
       niFiClientService.deleteController(customInfo.getSslContextId());
     }
     niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
+    manageConnectionWithClearQueueProcessor(path);
   }
 
   @Override
@@ -167,6 +171,11 @@ public class PutSyslog implements NiFiLoggerFactory {
   @Override
   public boolean isSinkRunning(String name, String[] path) throws IOException {
     return niFiClientService.isProcessorRunning(name, path);
+  }
+
+  @Override
+  public void manageConnectionWithClearQueueProcessor(String[] path) throws IOException {
+    niFiClientService.manageQueueHandling(path, Type.PUT_SYSLOG);
   }
 
   private PutSyslogConfiguration extractConfiguration(String configuration) {

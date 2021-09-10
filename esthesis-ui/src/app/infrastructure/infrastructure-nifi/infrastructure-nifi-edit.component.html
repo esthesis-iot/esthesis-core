@@ -40,6 +40,8 @@
     <button [disabled]="id==0 || form.dirty || !form.get('state')!.value" mat-button
             (click)="sync()">SYNCHRONISE
     </button>
+    <button  [disabled]="id==0 || !synced || !form.get('state')!.value" mat-button
+             color="accent" (click)="clearQueues()">CLEAR QUEUES</button>
     <button mat-button routerLink="/infra" fragment="nifi">CANCEL</button>
     <button mat-button color="accent" (click)="delete()" [disabled]="this.id == 0">DELETE</button>
     <button mat-button color="primary" (click)="save()"

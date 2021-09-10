@@ -3,6 +3,7 @@ package esthesis.platform.backend.server.nifi.sinks.writers.influxdb;
 import esthesis.platform.backend.server.dto.nifisinks.NiFiSinkDTO;
 import esthesis.platform.backend.server.model.NiFiSink;
 import esthesis.platform.backend.server.nifi.client.services.NiFiClientService;
+import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Processor.Type;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.CONSISTENCY_LEVEL;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.DATA_UNIT;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
@@ -78,6 +79,8 @@ public class PutInfluxDB implements NiFiWriterFactory {
       conf.getRetentionPolicy(),
       getMaxRecordSize(conf.getMaxRecordSize()),
       getDataUnit(conf.getMaxRecordSizeUnit()), conf.getSchedulingPeriod(), path);
+
+    manageConnectionWithClearQueueProcessor(path);
   }
 
   @Override
@@ -101,6 +104,7 @@ public class PutInfluxDB implements NiFiWriterFactory {
   @Override
   public void deleteSink(NiFiSinkDTO niFiSinkDTO, String[] path) throws IOException {
     niFiClientService.deleteProcessor(niFiSinkDTO.getName(), path);
+    manageConnectionWithClearQueueProcessor(path);
   }
 
   @Override
@@ -129,6 +133,11 @@ public class PutInfluxDB implements NiFiWriterFactory {
   @Override
   public boolean isSinkRunning(String name, String[] path) throws IOException {
     return niFiClientService.isProcessorRunning(name, path);
+  }
+
+  @Override
+  public void manageConnectionWithClearQueueProcessor(String[] path) throws IOException {
+    niFiClientService.manageQueueHandling(path, Type.PUT_INFLUX_DB);
   }
 
   private PutInfluxDBConfiguration extractConfiguration(String configuration) {

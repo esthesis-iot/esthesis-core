@@ -64,6 +64,7 @@ import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Bundle.Bu
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Bundle.BundleGroup;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.ControllerService.Type;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Processor;
+import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Processor.ExistingProcessorSuffix;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.CONSISTENCY_LEVEL;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.DATA_UNIT;
@@ -144,9 +145,9 @@ public class NiFiClient {
   private static final String NIFI_VERSION = "1.12.1";
 
   private static final ObjectMapper mapper = new ObjectMapper()
-    .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,
-      DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-    .addHandler(new JacksonIgnoreInvalidFormatHandler());
+      .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,
+          DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+      .addHandler(new JacksonIgnoreInvalidFormatHandler());
   // The HTTP client to use when making calls.
   private final OkHttpClient client;
   private final ObjectMapper xmlMapper;
@@ -159,9 +160,9 @@ public class NiFiClient {
   public NiFiClient() {
     client = new OkHttpClient();
     xmlMapper = new XmlMapper()
-      .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,
-        DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-      .addHandler(new JacksonIgnoreInvalidFormatHandler());
+        .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,
+            DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+        .addHandler(new JacksonIgnoreInvalidFormatHandler());
   }
 
   private String getNiFiUrl() {
@@ -231,8 +232,8 @@ public class NiFiClient {
    */
   private CallReplyDTO getCall(String context) throws IOException {
     Request request = new Request.Builder()
-      .url(getNiFiUrl() + context)
-      .build();
+        .url(getNiFiUrl() + context)
+        .build();
 
     try (Response response = client.newCall(request).execute()) {
       return prepareReply(response);
@@ -244,9 +245,9 @@ public class NiFiClient {
    */
   private CallReplyDTO deleteCall(String context) throws IOException {
     Request request = new Request.Builder()
-      .url(getNiFiUrl() + context)
-      .delete()
-      .build();
+        .url(getNiFiUrl() + context)
+        .delete()
+        .build();
 
     try (Response response = client.newCall(request).execute()) {
       return prepareReply(response);
@@ -260,16 +261,16 @@ public class NiFiClient {
    * @param body The form's keys and values to send.
    */
   private CallReplyDTO postFormCall(String context, Map<String, Object> body)
-    throws IOException {
+      throws IOException {
     // Add form parameters.
     final Builder builder = new Builder().setType(MultipartBody.FORM);
     body.keySet().forEach(key -> builder.addFormDataPart(key, body.get(key).toString()));
 
     // Prepare POST call.
     Request request = new Request.Builder()
-      .url(getNiFiUrl() + context)
-      .post(builder.build())
-      .build();
+        .url(getNiFiUrl() + context)
+        .post(builder.build())
+        .build();
 
     // Return reply.
     try (Response response = client.newCall(request).execute()) {
@@ -285,11 +286,11 @@ public class NiFiClient {
    * @param httpMethod The method type.
    */
   private CallReplyDTO jsonCall(String context, Object jsonBody, HTTP_METHOD httpMethod)
-    throws IOException {
+      throws IOException {
 
     // Add JSON payload.
     RequestBody body = RequestBody.create(mapper.writeValueAsString(jsonBody),
-      MediaType.parse("application/json; charset=utf-8"));
+        MediaType.parse("application/json; charset=utf-8"));
 
     // Prepare POST call.
     final Request.Builder requestBuilder = new Request.Builder().url(getNiFiUrl() + context);
@@ -358,8 +359,8 @@ public class NiFiClient {
     String templateBody = Util.readFromClasspath(templateResource);
 
     final CallReplyDTO callReplyDTO = postFormCall(
-      getNifiGroupByIdUrlPath(rootProcessGroupId) + "/templates/upload",
-      ImmutableMap.of("template", templateBody));
+        getNifiGroupByIdUrlPath(rootProcessGroupId) + "/templates/upload",
+        ImmutableMap.of("template", templateBody));
 
     if (callReplyDTO.isSuccessful()) {
       return xmlMapper.readValue(callReplyDTO.getBody(), TemplateEntity.class);
@@ -392,7 +393,7 @@ public class NiFiClient {
     request.setOriginY(100d);
 
     final CallReplyDTO callReplyDTO = postJSONCall(getNifiGroupByIdUrlPath(rootProcessGroupId) +
-      "/template-instance", request);
+        "/template-instance", request);
 
     if (callReplyDTO.isSuccessful()) {
       return mapper.readValue(callReplyDTO.getBody(), FlowEntity.class);
@@ -422,9 +423,9 @@ public class NiFiClient {
     ProcessGroupEntity processGroup = getProcessGroup(processGroupId);
 
     CallReplyDTO callReplyDTO =
-      deleteCall(getNifiGroupByIdUrlPath(processGroupId)
-        + VERSION + processGroup.getRevision().getVersion()
-        + CLIENT_ID + processGroup.getRevision().getClientId());
+        deleteCall(getNifiGroupByIdUrlPath(processGroupId)
+            + VERSION + processGroup.getRevision().getVersion()
+            + CLIENT_ID + processGroup.getRevision().getClientId());
 
     if (!callReplyDTO.isSuccessful()) {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
@@ -460,7 +461,7 @@ public class NiFiClient {
    */
   public ProcessGroupFlowEntity getProcessGroups(String parentProcessGroupId) throws IOException {
     final CallReplyDTO callReplyDTO =
-      getCall("/" + FLOW + getNifiGroupByIdUrlPath(parentProcessGroupId));
+        getCall("/" + FLOW + getNifiGroupByIdUrlPath(parentProcessGroupId));
 
     if (callReplyDTO.isSuccessful()) {
       return mapper.readValue(callReplyDTO.getBody(), ProcessGroupFlowEntity.class);
@@ -471,27 +472,27 @@ public class NiFiClient {
 
   public ProcessorsEntity getProcessorsOfGroup(String parentProcessGroupId) throws IOException {
     final CallReplyDTO callReplyDTO = getCall(
-      getNifiGroupByIdUrlPath(parentProcessGroupId) + "/" + PROCESSORS);
+        getNifiGroupByIdUrlPath(parentProcessGroupId) + "/" + PROCESSORS);
 
     if (callReplyDTO.isSuccessful()) {
       return mapper.readValue(callReplyDTO.getBody(),
-        ProcessorsEntity.class);
+          ProcessorsEntity.class);
     } else {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
     }
   }
 
   public void changeGroupControllerServicesState(String parentGroupId,
-    STATE state) throws IOException {
+      STATE state) throws IOException {
     ActivateControllerServicesEntity activateControllerServicesEntity =
-      new ActivateControllerServicesEntity();
+        new ActivateControllerServicesEntity();
 
     activateControllerServicesEntity.setId(parentGroupId);
     activateControllerServicesEntity.setState(state.name());
 
     final CallReplyDTO callReplyDTO = putJSONCall(
-      "/" + FLOW + getNifiGroupByIdUrlPath(parentGroupId) + "/" + CONTROLLER_SERVICES,
-      activateControllerServicesEntity);
+        "/" + FLOW + getNifiGroupByIdUrlPath(parentGroupId) + "/" + CONTROLLER_SERVICES,
+        activateControllerServicesEntity);
 
     if (!callReplyDTO.isSuccessful()) {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
@@ -506,25 +507,25 @@ public class NiFiClient {
    * @return An optional including the found group, empty if nothing is found.
    */
   public Optional<ProcessGroupEntity> findProcessGroup(NiFiSearchAlgorithm niFiSearchAlgorithm,
-    List<String> searchPath)
-    throws IOException {
+      List<String> searchPath)
+      throws IOException {
     Optional<ProcessGroupEntity> processGroupEntity = Optional.empty();
     String rootProcessGroupId = getRootProcessGroup().getProcessGroupFlow().getId();
     for (String path : searchPath) {
       final ProcessGroupFlowEntity processGroupFlowEntity =
-        getProcessGroups(processGroupEntity.isPresent() ? processGroupEntity.get().getId()
-          : rootProcessGroupId);
+          getProcessGroups(processGroupEntity.isPresent() ? processGroupEntity.get().getId()
+              : rootProcessGroupId);
       final Optional<ProcessGroupEntity> match = processGroupFlowEntity.getProcessGroupFlow()
-        .getFlow().getProcessGroups().stream().filter(p -> {
-          switch (niFiSearchAlgorithm) {
-            case NAME_ENDS_WITH:
-              return p.getComponent().getName().endsWith(path);
-            case NAME_EQUALS:
-              return p.getComponent().getName().equals(path);
-            default:
-              return false;
-          }
-        }).findFirst();
+          .getFlow().getProcessGroups().stream().filter(p -> {
+            switch (niFiSearchAlgorithm) {
+              case NAME_ENDS_WITH:
+                return p.getComponent().getName().endsWith(path);
+              case NAME_EQUALS:
+                return p.getComponent().getName().equals(path);
+              default:
+                return false;
+            }
+          }).findFirst();
       if (match.isPresent()) {
         processGroupEntity = match;
       } else {
@@ -536,9 +537,9 @@ public class NiFiClient {
   }
 
   public Optional<ProcessorEntity> findProcessorInGroup(NiFiSearchAlgorithm niFiSearchAlgorithm,
-    List<String> searchPath, String nameSearchTerm) throws IOException {
+      List<String> searchPath, String nameSearchTerm) throws IOException {
     Optional<ProcessGroupEntity> processGroup = findProcessGroup(NiFiSearchAlgorithm.NAME_ENDS_WITH,
-      searchPath);
+        searchPath);
     Optional<ProcessorEntity> processorEntity = Optional.empty();
 
     if (processGroup.isPresent()) {
@@ -567,22 +568,22 @@ public class NiFiClient {
    * if nothing matches.
    */
   public Optional<ControllerServiceEntity> findControllerService(String parentProcessGroupId,
-    String type)
-    throws IOException {
+      String type)
+      throws IOException {
     CallReplyDTO callReplyDTO = getCall(
-      "/" + FLOW + getNifiGroupByIdUrlPath(parentProcessGroupId) + "/" + CONTROLLER_SERVICES);
+        "/" + FLOW + getNifiGroupByIdUrlPath(parentProcessGroupId) + "/" + CONTROLLER_SERVICES);
 
     Optional<ControllerServiceEntity> match = Optional.empty();
 
     if (callReplyDTO.isSuccessful()) {
       ControllerServicesEntity controllerServicesEntity = mapper
-        .readValue(callReplyDTO.getBody(), ControllerServicesEntity.class);
+          .readValue(callReplyDTO.getBody(), ControllerServicesEntity.class);
       Optional<ControllerServiceEntity> controllerByType =
-        controllerServicesEntity.getControllerServices()
-          .stream().filter(
-          controllerServiceEntity ->
-            controllerServiceEntity.getComponent().getType().equals(type))
-          .findFirst();
+          controllerServicesEntity.getControllerServices()
+              .stream().filter(
+                  controllerServiceEntity ->
+                      controllerServiceEntity.getComponent().getType().equals(type))
+              .findFirst();
       if (controllerByType.isPresent()) {
         match = controllerByType;
       }
@@ -593,7 +594,7 @@ public class NiFiClient {
   }
 
   public boolean controllerExists(String controllerServiceId)
-    throws IOException {
+      throws IOException {
     CallReplyDTO callReplyDTO = getCall("/" + CONTROLLER_SERVICES + "/" + controllerServiceId);
 
     return callReplyDTO.isSuccessful();
@@ -607,15 +608,15 @@ public class NiFiClient {
    * @return ScheduleComponentsEntity
    */
   public ScheduleComponentsEntity changeProcessorGroupState(String processGroupId,
-    STATE state)
-    throws IOException {
+      STATE state)
+      throws IOException {
     ScheduleComponentsEntity scheduleComponentsEntity = new ScheduleComponentsEntity();
     scheduleComponentsEntity.setId(processGroupId);
     scheduleComponentsEntity.setState(state.name());
 
     final CallReplyDTO callReplyDTO = putJSONCall(
-      "/" + FLOW + getNifiGroupByIdUrlPath(processGroupId),
-      scheduleComponentsEntity);
+        "/" + FLOW + getNifiGroupByIdUrlPath(processGroupId),
+        scheduleComponentsEntity);
 
     if (callReplyDTO.isSuccessful()) {
       return mapper.readValue(callReplyDTO.getBody(), ScheduleComponentsEntity.class);
@@ -631,15 +632,15 @@ public class NiFiClient {
    * @return PortEntity object containing the wanted input port.
    */
   public PortEntity findInputPort(String parentProcessGroupId)
-    throws IOException {
+      throws IOException {
     final CallReplyDTO callReplyDTO = getCall(
-      getNifiGroupByIdUrlPath(parentProcessGroupId) + "/input-ports");
+        getNifiGroupByIdUrlPath(parentProcessGroupId) + "/input-ports");
 
     if (callReplyDTO.isSuccessful()) {
       InputPortsEntity inputPortsEntity = mapper
-        .readValue(callReplyDTO.getBody(), InputPortsEntity.class);
+          .readValue(callReplyDTO.getBody(), InputPortsEntity.class);
       Optional<PortEntity> optionalPortEntity = inputPortsEntity.getInputPorts().stream()
-        .findFirst();
+          .findFirst();
       return optionalPortEntity.orElse(null);
     } else {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
@@ -653,9 +654,9 @@ public class NiFiClient {
    * @return PortEntity object containing the wanted output port.
    */
   public OutputPortsEntity findOutputPorts(String parentProcessGroupId)
-    throws IOException {
+      throws IOException {
     final CallReplyDTO callReplyDTO = getCall(getNifiGroupByIdUrlPath(parentProcessGroupId) +
-      "/output-ports");
+        "/output-ports");
 
     if (callReplyDTO.isSuccessful()) {
       return mapper.readValue(callReplyDTO.getBody(), OutputPortsEntity.class);
@@ -670,10 +671,10 @@ public class NiFiClient {
     portRunStatusEntity.setRevision(portEntity.getRevision());
 
     String portTypePath = portEntity.getPortType().equals("INPUT_PORT") ? "input-ports/" : "output"
-      + "-ports/";
+        + "-ports/";
 
     final CallReplyDTO callReplyDTO = putJSONCall("/" + portTypePath + portEntity.getId() + "/run"
-      + "-status", portRunStatusEntity);
+        + "-status", portRunStatusEntity);
 
     if (!callReplyDTO.isSuccessful()) {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
@@ -692,13 +693,13 @@ public class NiFiClient {
    * @return The ControlServiceEntity containing the newly created SSL Context service.
    */
   public ControllerServiceEntity createSSLContext(String name, String keystoreFilename,
-    String keystorePassword,
-    String truststoreFilename, String truststorePassword, String parentProcessGroupId)
-    throws IOException {
+      String keystorePassword,
+      String truststoreFilename, String truststorePassword, String parentProcessGroupId)
+      throws IOException {
 
     BundleDTO bundleDTO = createBundleDTO(BundleGroup.NIFI, BundleArtifact.SSL_CONTEXT);
     ControllerServiceDTO controllerServiceDTO = createControllerServiceDTO(
-      Type.SSL_CONTEXT, name, bundleDTO);
+        Type.SSL_CONTEXT, name, bundleDTO);
 
     Map<String, String> properties = new HashMap<>();
     properties.put(Properties.KEYSTORE_FILENAME, keystoreFilename);
@@ -725,8 +726,8 @@ public class NiFiClient {
    * @return The ControlServiceEntity containing the updated SSL Context service.
    */
   public ControllerServiceEntity updateSSLContext(String id, String keystoreFilename,
-    String keystorePassword, String truststoreFilename, String truststorePassword)
-    throws IOException {
+      String keystorePassword, String truststoreFilename, String truststorePassword)
+      throws IOException {
 
     Map<String, String> properties = new HashMap<>();
     properties.put(Properties.KEYSTORE_FILENAME, keystoreFilename);
@@ -752,16 +753,16 @@ public class NiFiClient {
    * @return The ControlServiceEntity containing the newly created Database Connection Pool service.
    */
   public ControllerServiceEntity createDBCConnectionPool(String name, String databaseConnectionURL,
-    String databaseDriverClassName, String databaseDriverClassLocation,
-    String databaseUser, String password,
-    String parentProcessGroupId) throws IOException {
+      String databaseDriverClassName, String databaseDriverClassLocation,
+      String databaseUser, String password,
+      String parentProcessGroupId) throws IOException {
 
     BundleDTO bundleDTO = createBundleDTO(
-      BundleGroup.NIFI,
-      BundleArtifact.DBCP);
+        BundleGroup.NIFI,
+        BundleArtifact.DBCP);
     ControllerServiceDTO controllerServiceDTO = createControllerServiceDTO(
-      Type.DBCP_POOL,
-      name, bundleDTO);
+        Type.DBCP_POOL,
+        name, bundleDTO);
 
     Map<String, String> properties = new HashMap<>();
     properties.put(DB_CONNECTION_URL, databaseConnectionURL);
@@ -786,8 +787,8 @@ public class NiFiClient {
    * @return The ControlServiceEntity containing the updated Database Connection Pool service.
    */
   public ControllerServiceEntity updateDBCConnectionPool(String id, String databaseConnectionURL,
-    String databaseDriverClassName, String databaseDriverClassLocation,
-    String databaseUser, String password) throws IOException {
+      String databaseDriverClassName, String databaseDriverClassLocation,
+      String databaseUser, String password) throws IOException {
 
     Map<String, String> properties = new HashMap<>();
     properties.put(DB_CONNECTION_URL, databaseConnectionURL);
@@ -807,13 +808,13 @@ public class NiFiClient {
    * @return The ControlServiceEntity containing the created JSON Tree Reader service.
    */
   public ControllerServiceEntity createJsonTreeReader(String name, String parentProcessGroupId)
-    throws IOException {
+      throws IOException {
     BundleDTO bundleDTO = createBundleDTO(
-      BundleGroup.NIFI,
-      BundleArtifact.RECORD_SERIALIZATION);
+        BundleGroup.NIFI,
+        BundleArtifact.RECORD_SERIALIZATION);
     ControllerServiceDTO controllerServiceDTO = createControllerServiceDTO(
-      Type.JSON_TREE_READER,
-      name, bundleDTO);
+        Type.JSON_TREE_READER,
+        name, bundleDTO);
 
     return createController(parentProcessGroupId, controllerServiceDTO);
   }
@@ -827,16 +828,16 @@ public class NiFiClient {
    * @return The ControlServiceEntity containing the newly created controller.
    */
   private ControllerServiceEntity createController(String parentProcessGroupId,
-    ControllerServiceDTO controllerServiceDTO)
-    throws IOException {
+      ControllerServiceDTO controllerServiceDTO)
+      throws IOException {
 
     RevisionDTO revisionDTO = createRevisionDTO();
     ControllerServiceEntity controllerServiceEntity = new ControllerServiceEntity();
     controllerServiceEntity.setRevision(revisionDTO);
     controllerServiceEntity.setComponent(controllerServiceDTO);
     CallReplyDTO callReplyDTO = postJSONCall(getNifiGroupByIdUrlPath(parentProcessGroupId) +
-        "/" + CONTROLLER_SERVICES,
-      controllerServiceEntity);
+            "/" + CONTROLLER_SERVICES,
+        controllerServiceEntity);
 
     if (callReplyDTO.isSuccessful()) {
       return mapper.readValue(callReplyDTO.getBody(), ControllerServiceEntity.class);
@@ -853,7 +854,7 @@ public class NiFiClient {
    * @return The ControlServiceEntity containing the updated controller.
    */
   private ControllerServiceEntity updateController(String id, Map<String, String> properties)
-    throws IOException {
+      throws IOException {
 
     changeControllerServiceStatus(id, STATE.DISABLED);
 
@@ -862,7 +863,7 @@ public class NiFiClient {
 
     if (callReplyDTO.isSuccessful()) {
       controllerServiceEntity = mapper
-        .readValue(callReplyDTO.getBody(), ControllerServiceEntity.class);
+          .readValue(callReplyDTO.getBody(), ControllerServiceEntity.class);
     } else {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
     }
@@ -893,7 +894,7 @@ public class NiFiClient {
     CallReplyDTO callReplyDTO = getCall("/" + CONTROLLER_SERVICES + "/" + controllerId);
     if (callReplyDTO.isSuccessful()) {
       ControllerServiceEntity controllerServiceEntity = mapper
-        .readValue(callReplyDTO.getBody(), ControllerServiceEntity.class);
+          .readValue(callReplyDTO.getBody(), ControllerServiceEntity.class);
       return controllerServiceEntity.getStatus().getRunStatus();
     } else {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
@@ -909,17 +910,17 @@ public class NiFiClient {
   public ControllerServiceEntity deleteController(String id) throws IOException {
     //Disabling controller before deleting
     ControllerServiceEntity controllerServiceEntity = this
-      .changeControllerServiceStatus(id, STATE.DISABLED);
+        .changeControllerServiceStatus(id, STATE.DISABLED);
 
     await().atMost(Duration.ofSeconds(30))
-      .until(() -> findControllerStatus(id).equals(STATE.DISABLED.name()));
+        .until(() -> findControllerStatus(id).equals(STATE.DISABLED.name()));
 
     CallReplyDTO callReplyDTO =
-      deleteCall(
-        "/" + CONTROLLER_SERVICES + "/" + id + VERSION + controllerServiceEntity.getRevision()
-          .getVersion() +
-          CLIENT_ID + id
-          + "&disconnectedNodeAcknowledged=false");
+        deleteCall(
+            "/" + CONTROLLER_SERVICES + "/" + id + VERSION + controllerServiceEntity.getRevision()
+                .getVersion() +
+                CLIENT_ID + id
+                + "&disconnectedNodeAcknowledged=false");
 
     if (callReplyDTO.isSuccessful()) {
       return mapper.readValue(callReplyDTO.getBody(), ControllerServiceEntity.class);
@@ -936,24 +937,24 @@ public class NiFiClient {
    * @return ControllerServiceEntity
    */
   public ControllerServiceEntity changeControllerServiceStatus(String controllerServiceId,
-    STATE state)
-    throws IOException {
+      STATE state)
+      throws IOException {
 
     CallReplyDTO getControllerCallReplyDTO =
-      getCall("/" + CONTROLLER_SERVICES + "/" + controllerServiceId);
+        getCall("/" + CONTROLLER_SERVICES + "/" + controllerServiceId);
 
     if (getControllerCallReplyDTO.isSuccessful()) {
       ControllerServiceEntity controllerServiceEntity = mapper
-        .readValue(getControllerCallReplyDTO.getBody(), ControllerServiceEntity.class);
+          .readValue(getControllerCallReplyDTO.getBody(), ControllerServiceEntity.class);
       ControllerServiceRunStatusEntity controllerServiceRunStatusEntity =
-        new ControllerServiceRunStatusEntity();
+          new ControllerServiceRunStatusEntity();
 
       controllerServiceRunStatusEntity.setRevision(controllerServiceEntity.getRevision());
       controllerServiceRunStatusEntity.setState(state.name());
 
       CallReplyDTO callReplyDTO =
-        putJSONCall("/" + CONTROLLER_SERVICES + "/" + controllerServiceId + "/run"
-          + "-status", controllerServiceRunStatusEntity);
+          putJSONCall("/" + CONTROLLER_SERVICES + "/" + controllerServiceId + "/run"
+              + "-status", controllerServiceRunStatusEntity);
       if (callReplyDTO.isSuccessful()) {
         return mapper.readValue(callReplyDTO.getBody(), ControllerServiceEntity.class);
       } else {
@@ -961,7 +962,7 @@ public class NiFiClient {
       }
     } else {
       throw new NiFiProcessingException(getControllerCallReplyDTO.getBody(),
-        getControllerCallReplyDTO.getCode());
+          getControllerCallReplyDTO.getCode());
     }
   }
 
@@ -973,15 +974,15 @@ public class NiFiClient {
    */
   private ProcessorEntity findDistributeLoad(String parentProcessGroupId) throws IOException {
     final CallReplyDTO callReplyDTO = getCall(
-      getNifiGroupByIdUrlPath(parentProcessGroupId) + "/" + PROCESSORS);
+        getNifiGroupByIdUrlPath(parentProcessGroupId) + "/" + PROCESSORS);
 
     if (callReplyDTO.isSuccessful()) {
       ProcessorsEntity processorsEntity = mapper
-        .readValue(callReplyDTO.getBody(), ProcessorsEntity.class);
+          .readValue(callReplyDTO.getBody(), ProcessorsEntity.class);
       Optional<ProcessorEntity> optionalDistributeLoad = processorsEntity.getProcessors().stream()
-        .filter(
-          processorEntity -> processorEntity.getComponent().getType().equals(DISTRIBUTE_LOAD))
-        .findFirst();
+          .filter(
+              processorEntity -> processorEntity.getComponent().getType().equals(DISTRIBUTE_LOAD))
+          .findFirst();
 
       return optionalDistributeLoad.orElse(null);
     } else {
@@ -991,15 +992,15 @@ public class NiFiClient {
   }
 
   public ProcessorEntity createMQTTPublisher(@NotNull String parentProcessGroupId,
-    @NotNull String name,
-    @NotNull String uri, @NotNull String topic, int qos, boolean retainMesage,
-    @Nullable String sslContextServiceId, String schedulingPeriod,
-    boolean isCommandHandler)
-    throws IOException {
+      @NotNull String name,
+      @NotNull String uri, @NotNull String topic, int qos, boolean retainMesage,
+      @Nullable String sslContextServiceId, String schedulingPeriod,
+      boolean isCommandHandler)
+      throws IOException {
 
     // Configuration.
     Map<String, String> properties = setPublishMQTTProperties(uri, sslContextServiceId, topic,
-      qos, retainMesage);
+        qos, retainMesage);
     properties.put(Properties.CLIENT_ID, name + " [NIFI] ");
 
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
@@ -1009,25 +1010,25 @@ public class NiFiClient {
 
     // Create the processor component for the resource.
     ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.MQTT_PUBLISH,
-      name, processorConfigDTO, bundleDTO);
+        name, processorConfigDTO, bundleDTO);
 
     return createProcessor(parentProcessGroupId, processorDTO, isCommandHandler);
   }
 
   public ProcessorEntity updateMQTTPublisher(String id, String name, String sslContextId,
-    String uri, String topic, int qos, boolean retainMessage, String schedulingPeriod)
-    throws IOException {
+      String uri, String topic, int qos, boolean retainMessage, String schedulingPeriod)
+      throws IOException {
 
     Map<String, String> properties = setPublishMQTTProperties(uri, sslContextId, topic,
-      qos, retainMessage);
+        qos, retainMessage);
 
     return updateProcessor(id, name, schedulingPeriod, properties);
   }
 
   private Map<String, String> setPublishMQTTProperties(String uri, String sslContextServiceId,
-    @NotNull String topic,
-    int qos,
-    boolean retainMessage) {
+      @NotNull String topic,
+      int qos,
+      boolean retainMessage) {
     Map<String, String> properties = new HashMap<>();
     properties.put(Properties.BROKER_URI, uri);
     properties.put(Properties.RETAIN_MSG, String.valueOf(retainMessage));
@@ -1055,15 +1056,15 @@ public class NiFiClient {
    * @return ProcessorEntity object containing the newly created processor.
    */
   public ProcessorEntity createMQTTConsumer(@NotNull String parentProcessGroupId,
-    @NotNull String name,
-    @NotNull String uri, @NotNull String topic, int qos, int queueSize,
-    @Nullable String sslContextServiceId, String schedulingPeriod,
-    boolean isCommandHandler)
-    throws IOException {
+      @NotNull String name,
+      @NotNull String uri, @NotNull String topic, int qos, int queueSize,
+      @Nullable String sslContextServiceId, String schedulingPeriod,
+      boolean isCommandHandler)
+      throws IOException {
 
     // Configuration.
     Map<String, String> properties = setConsumeMQTTProperties(uri, sslContextServiceId, topic,
-      qos, queueSize);
+        qos, queueSize);
     properties.put(Properties.CLIENT_ID, name + " [NIFI] ");
 
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
@@ -1073,25 +1074,25 @@ public class NiFiClient {
 
     // Create the processor component for the resource.
     ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.MQTT_CONSUME,
-      name, processorConfigDTO, bundleDTO);
+        name, processorConfigDTO, bundleDTO);
 
     return createProcessor(parentProcessGroupId, processorDTO, isCommandHandler);
   }
 
   public ProcessorEntity updateConsumeMQTT(String id, String name, String sslContextId,
-    @NotNull String uri,
-    @NotNull String topic,
-    int qos,
-    int queueSize, String schedulingPeriod) throws IOException {
+      @NotNull String uri,
+      @NotNull String topic,
+      int qos,
+      int queueSize, String schedulingPeriod) throws IOException {
     Map<String, String> properties = setConsumeMQTTProperties(uri, sslContextId, topic, qos,
-      queueSize);
+        queueSize);
     return updateProcessor(id, name, schedulingPeriod, properties);
   }
 
   private Map<String, String> setConsumeMQTTProperties(String uri, String sslContextServiceId,
-    @NotNull String topic,
-    int qos,
-    int queueSize) {
+      @NotNull String topic,
+      int qos,
+      int queueSize) {
     Map<String, String> properties = new HashMap<>();
     properties.put(Properties.BROKER_URI, uri);
     properties.put(Properties.MAX_QUEUE_SIZE, String.valueOf(queueSize));
@@ -1124,26 +1125,26 @@ public class NiFiClient {
    * @return ProcessorEntity object containing the newly created processor.
    */
   public ProcessorEntity createPutInfluxDB(@NotNull String parentProcessGroupId,
-    @NotNull String name, @NotNull String dbName, @NotNull String url,
-    int maxConnectionTimeoutSeconds, String username, String password, String charset,
-    CONSISTENCY_LEVEL level, String retentionPolicy, int maxRecordSize,
-    DATA_UNIT maxRecordSizeUnit, String schedulingPeriod) throws IOException {
+      @NotNull String name, @NotNull String dbName, @NotNull String url,
+      int maxConnectionTimeoutSeconds, String username, String password, String charset,
+      CONSISTENCY_LEVEL level, String retentionPolicy, int maxRecordSize,
+      DATA_UNIT maxRecordSizeUnit, String schedulingPeriod) throws IOException {
 
     // Configuration.
     Map<String, String> properties = setPutInfluxDBProperties(dbName, url,
-      maxConnectionTimeoutSeconds, username, password, charset, level, retentionPolicy,
-      maxRecordSize, maxRecordSizeUnit);
+        maxConnectionTimeoutSeconds, username, password, charset, level, retentionPolicy,
+        maxRecordSize, maxRecordSizeUnit);
 
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
     processorConfigDTO.setProperties(properties);
     processorConfigDTO.setSchedulingPeriod(schedulingPeriod);
     processorConfigDTO.setAutoTerminatedRelationships(new HashSet<>(
-      Collections.singletonList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType())));
+        Collections.singletonList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType())));
     BundleDTO bundleDTO = createBundleDTO(BundleGroup.NIFI, BundleArtifact.INFLUX_DB);
 
     // Create the processor component for the resource.
     ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.PUT_INFLUX_DB,
-      name, processorConfigDTO, bundleDTO);
+        name, processorConfigDTO, bundleDTO);
 
     return createProcessor(parentProcessGroupId, processorDTO);
   }
@@ -1168,26 +1169,26 @@ public class NiFiClient {
    * @return ProcessorEntity object containing the newly created processor.
    */
   public ProcessorEntity updatePutInfluxDB(String processorId, String name,
-    @NotNull String dbName,
-    @NotNull String url,
-    int maxConnectionTimeoutSeconds, String username, String password, String charset,
-    CONSISTENCY_LEVEL level, String retentionPolicy, int maxRecordSize,
-    DATA_UNIT maxRecordSizeUnit, String schedulingPeriod) throws IOException {
+      @NotNull String dbName,
+      @NotNull String url,
+      int maxConnectionTimeoutSeconds, String username, String password, String charset,
+      CONSISTENCY_LEVEL level, String retentionPolicy, int maxRecordSize,
+      DATA_UNIT maxRecordSizeUnit, String schedulingPeriod) throws IOException {
 
     // Configuration.
     Map<String, String> properties = setPutInfluxDBProperties(dbName, url,
-      maxConnectionTimeoutSeconds, username, password, charset, level, retentionPolicy,
-      maxRecordSize, maxRecordSizeUnit);
+        maxConnectionTimeoutSeconds, username, password, charset, level, retentionPolicy,
+        maxRecordSize, maxRecordSizeUnit);
 
     return updateProcessor(processorId, name, schedulingPeriod, properties);
 
   }
 
   private Map<String, String> setPutInfluxDBProperties(@NotNull String dbName,
-    @NotNull String url,
-    int maxConnectionTimeoutSeconds, String username, String password, String charset,
-    CONSISTENCY_LEVEL level, String retentionPolicy, int maxRecordSize,
-    DATA_UNIT maxRecordSizeUnit) {
+      @NotNull String url,
+      int maxConnectionTimeoutSeconds, String username, String password, String charset,
+      CONSISTENCY_LEVEL level, String retentionPolicy, int maxRecordSize,
+      DATA_UNIT maxRecordSizeUnit) {
 
     // Configuration.
     Map<String, String> properties = new HashMap<>();
@@ -1218,16 +1219,16 @@ public class NiFiClient {
    * @return ProcessorEntity object containing the newly created processor.
    */
   public ProcessorEntity createPutDatabaseRecord(@NotNull String parentProcessGroupId,
-    @NotNull String name, @NotNull String recordReaderId, @NotNull String dcbpServiceId,
-    @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType,
-    String schedulingPeriod, boolean isCommandHandler)
-    throws IOException {
+      @NotNull String name, @NotNull String recordReaderId, @NotNull String dcbpServiceId,
+      @NotNull NiFiConstants.Properties.Values.STATEMENT_TYPE statementType,
+      String schedulingPeriod, boolean isCommandHandler)
+      throws IOException {
     // Configuration.
     Map<String, String> properties = setPutDatabaseRecordProperties(statementType);
     properties.put(PUT_DB_RECORD_READER, recordReaderId);
     properties.put(PUT_DB_RECORD_DCBP_SERVICE, dcbpServiceId);
     properties.put(PUT_DB_RECORD_TABLE_NAME, isCommandHandler ? "command_reply" : "${esthesis"
-      + ".measurement}");
+        + ".measurement}");
 
     if (statementType.equals(STATEMENT_TYPE.USE_STATE_ATTRIBUTE)) {
       properties.put(PUT_DB_RECORD_FIELD_CONTAINING_SQL, "sql");
@@ -1236,13 +1237,13 @@ public class NiFiClient {
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
     processorConfigDTO.setSchedulingPeriod(schedulingPeriod);
     processorConfigDTO.setAutoTerminatedRelationships(
-      Collections.singleton(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType()));
+        Collections.singleton(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType()));
     processorConfigDTO.setProperties(properties);
     BundleDTO bundleDTO = createBundleDTO(BundleGroup.NIFI, BundleArtifact.STANDARD);
 
     // Create the processor component for the resource.
     ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.PUT_DATABASE_RECORD,
-      name, processorConfigDTO, bundleDTO);
+        name, processorConfigDTO, bundleDTO);
 
     return createProcessor(parentProcessGroupId, processorDTO, isCommandHandler);
   }
@@ -1257,14 +1258,14 @@ public class NiFiClient {
    * @return ProcessorEntity object containing the newly created processor.
    */
   public ProcessorEntity updatePutDatabaseRecord(@NotNull String processorId, String name,
-    NiFiConstants.Properties.Values.STATEMENT_TYPE statementType, String schedulingPeriod)
-    throws IOException {
+      NiFiConstants.Properties.Values.STATEMENT_TYPE statementType, String schedulingPeriod)
+      throws IOException {
     return updateProcessor(processorId, name, schedulingPeriod,
-      setPutDatabaseRecordProperties(statementType));
+        setPutDatabaseRecordProperties(statementType));
   }
 
   private Map<String, String> setPutDatabaseRecordProperties(
-    NiFiConstants.Properties.Values.STATEMENT_TYPE statementType) {
+      NiFiConstants.Properties.Values.STATEMENT_TYPE statementType) {
     Map<String, String> properties = new HashMap<>();
 
     properties.put(PUT_DB_RECORD_STATEMENT_TYPE, statementType.getType());
@@ -1287,12 +1288,12 @@ public class NiFiClient {
    * @return The newly created processor.
    */
   public ProcessorEntity createExecuteInfluxDB(@NotNull String parentProcessGroupId,
-    @NotNull String name, @NotNull String dbName, @NotNull String url,
-    int maxConnectionTimeoutSeconds, String username, String password, String queryResultTimeUnit,
-    int queryChunkSize, String schedulingPeriod) throws IOException {
+      @NotNull String name, @NotNull String dbName, @NotNull String url,
+      int maxConnectionTimeoutSeconds, String username, String password, String queryResultTimeUnit,
+      int queryChunkSize, String schedulingPeriod) throws IOException {
 
     Map<String, String> properties = setExecuteInfluxDBProperties(dbName, url,
-      maxConnectionTimeoutSeconds, username, password, queryResultTimeUnit, queryChunkSize);
+        maxConnectionTimeoutSeconds, username, password, queryResultTimeUnit, queryChunkSize);
 
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
     processorConfigDTO.setProperties(properties);
@@ -1301,7 +1302,7 @@ public class NiFiClient {
 
     // Create the processor component for the resource.
     ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.EXECUTE_INFLUX_DB,
-      name, processorConfigDTO, bundleDTO);
+        name, processorConfigDTO, bundleDTO);
 
     return createProcessor(parentProcessGroupId, processorDTO);
   }
@@ -1321,23 +1322,23 @@ public class NiFiClient {
    * @return The updated processor.
    */
   public ProcessorEntity updateExecuteInfluxDB(String processorId, String name, String dbName,
-    String url,
-    int maxConnectionTimeoutSeconds, String username, String password, String queryResultTimeUnit
-    , int queryChunkSize,
-    String schedulingPeriod)
-    throws IOException {
+      String url,
+      int maxConnectionTimeoutSeconds, String username, String password, String queryResultTimeUnit
+      , int queryChunkSize,
+      String schedulingPeriod)
+      throws IOException {
 
     Map<String, String> properties = setExecuteInfluxDBProperties(dbName, url,
-      maxConnectionTimeoutSeconds, username, password, queryResultTimeUnit, queryChunkSize);
+        maxConnectionTimeoutSeconds, username, password, queryResultTimeUnit, queryChunkSize);
 
     return updateProcessor(processorId, name, schedulingPeriod, properties);
 
   }
 
   private Map<String, String> setExecuteInfluxDBProperties(@NotNull String dbName,
-    @NotNull String url,
-    int maxConnectionTimeoutSeconds, String username, String password, String queryResultTimeUnit,
-    int queryChunkSize) {
+      @NotNull String url,
+      int maxConnectionTimeoutSeconds, String username, String password, String queryResultTimeUnit,
+      int queryChunkSize) {
 
     Map<String, String> properties = new HashMap<>();
     properties.put(INFLUX_DB_NAME, dbName);
@@ -1345,7 +1346,7 @@ public class NiFiClient {
     properties.put(INFLUX_USERNAME, username);
     properties.put(INFLUX_PASSWORD, password);
     properties.put(INFLUX_MAX_CONNECTION_TIMEOUT, (maxConnectionTimeoutSeconds) +
-      " seconds");
+        " seconds");
     properties.put(INFLUX_QUERY_RESULT_TIME_UNIT, queryResultTimeUnit.toUpperCase());
     properties.put(INFLUX_QUERY_CHUNK_SIZE, String.valueOf(queryChunkSize));
 
@@ -1362,9 +1363,9 @@ public class NiFiClient {
    * @return The newly created processor.
    */
   public ProcessorEntity createExecuteSQL(@NotNull String parentProcessGroupId,
-    @NotNull String name, @NotNull String dcbpServiceId, String schedulingPeriod,
-    boolean isCommandHandler)
-    throws IOException {
+      @NotNull String name, @NotNull String dcbpServiceId, String schedulingPeriod,
+      boolean isCommandHandler)
+      throws IOException {
 
     Map<String, String> properties = new HashMap<>();
     properties.put(DCBP_SERVICE, dcbpServiceId);
@@ -1380,13 +1381,13 @@ public class NiFiClient {
 
     // Create the processor component for the resource.
     ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.EXECUTE_SQL,
-      name, processorConfigDTO, bundleDTO);
+        name, processorConfigDTO, bundleDTO);
 
     return createProcessor(parentProcessGroupId, processorDTO, isCommandHandler);
   }
 
   public ProcessorEntity updateExecuteSQL(String processorId, String name, String schedulingPeriod)
-    throws IOException {
+      throws IOException {
     return updateProcessor(processorId, name, schedulingPeriod, new HashMap<>());
   }
 
@@ -1400,8 +1401,8 @@ public class NiFiClient {
    * @return The newly created processor.
    */
   public ProcessorEntity createPutFile(String parentProcessGroupId, String name, String directory,
-    String schedulingPeriod)
-    throws IOException {
+      String schedulingPeriod)
+      throws IOException {
     Map<String, String> properties = new HashMap<>();
     properties.put(DIRECTORY, directory);
     properties.put(CONFLICT_RESOLUTION_STRATEGY, "replace");
@@ -1409,14 +1410,14 @@ public class NiFiClient {
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
     processorConfigDTO.setSchedulingPeriod(schedulingPeriod);
     processorConfigDTO.setAutoTerminatedRelationships(new HashSet<>(
-      Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType(),
-        FAILED_RELATIONSHIP_TYPES.FAILURE.getType())));
+        Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType(),
+            FAILED_RELATIONSHIP_TYPES.FAILURE.getType())));
     processorConfigDTO.setProperties(properties);
     BundleDTO bundleDTO = createBundleDTO(BundleGroup.NIFI, BundleArtifact.STANDARD);
 
     // Create the processor component for the resource.
     ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.PUT_FILE,
-      name, processorConfigDTO, bundleDTO);
+        name, processorConfigDTO, bundleDTO);
 
     return createProcessor(parentProcessGroupId, processorDTO);
   }
@@ -1431,7 +1432,7 @@ public class NiFiClient {
    * @return The newly created processor.
    */
   public ProcessorEntity updatePutFile(String processorId, String name, String directory,
-    String schedulingPeriod) throws IOException {
+      String schedulingPeriod) throws IOException {
     Map<String, String> properties = new HashMap<>();
     properties.put(DIRECTORY, directory);
 
@@ -1453,24 +1454,25 @@ public class NiFiClient {
    * @return The newly created processor.
    */
   public ProcessorEntity createPutSyslog(String parentProcessGroupId, String name,
-    String sslContextId, String hostname, int port, String protocol, String messageBody,
-    String messagePriority, String schedulingPeriod)
-    throws IOException {
+      String sslContextId, String hostname, int port, String protocol, String messageBody,
+      String messagePriority, String schedulingPeriod)
+      throws IOException {
 
     Map<String, String> properties = setPutSyslogProperties(sslContextId, hostname, port,
-      protocol, messageBody, messagePriority);
+        protocol, messageBody, messagePriority);
 
     ProcessorConfigDTO processorConfigDTO = new ProcessorConfigDTO();
     processorConfigDTO.setProperties(properties);
     processorConfigDTO.setSchedulingPeriod(schedulingPeriod);
     processorConfigDTO.setAutoTerminatedRelationships(new HashSet<>(
-      Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType(),
-        FAILED_RELATIONSHIP_TYPES.FAILURE.getType(), FAILED_RELATIONSHIP_TYPES.INVALID.getType())));
+        Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType(),
+            FAILED_RELATIONSHIP_TYPES.FAILURE.getType(),
+            FAILED_RELATIONSHIP_TYPES.INVALID.getType())));
     BundleDTO bundleDTO = createBundleDTO(BundleGroup.NIFI, BundleArtifact.STANDARD);
 
     // Create the processor component for the resource.
     ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.PUT_SYSLOG,
-      name, processorConfigDTO, bundleDTO);
+        name, processorConfigDTO, bundleDTO);
 
     return createProcessor(parentProcessGroupId, processorDTO);
   }
@@ -1489,18 +1491,19 @@ public class NiFiClient {
    * @return The id of the updated processor.
    */
   public ProcessorEntity updatePutSyslog(String processorId, String name, String sslContextId,
-    String hostname,
-    int port, String protocol, String messageBody, String messagePriority, String schedulingPeriod)
-    throws IOException {
+      String hostname,
+      int port, String protocol, String messageBody, String messagePriority,
+      String schedulingPeriod)
+      throws IOException {
 
     Map<String, String> properties = setPutSyslogProperties(sslContextId, hostname, port,
-      protocol, messageBody, messagePriority);
+        protocol, messageBody, messagePriority);
 
     return updateProcessor(processorId, name, schedulingPeriod, properties);
   }
 
   private Map<String, String> setPutSyslogProperties(String sslContextId, String hostname, int port,
-    String protocol, String messageBody, String messagePriority) {
+      String protocol, String messageBody, String messagePriority) {
 
     Map<String, String> properties = new HashMap<>();
     properties.put(HOSTNAME, hostname);
@@ -1518,8 +1521,8 @@ public class NiFiClient {
 
 
   public ProcessorEntity createPutSQL(String parentProcessGroupId, String name,
-    String dbConnectionPool,
-    String schedulingPeriod, boolean isCommandHandler) throws IOException {
+      String dbConnectionPool,
+      String schedulingPeriod, boolean isCommandHandler) throws IOException {
 
     Map<String, String> properties = new HashMap<>();
     properties.put(JDBC_CONNECTION_POOL, dbConnectionPool);
@@ -1530,19 +1533,20 @@ public class NiFiClient {
     processorConfigDTO.setProperties(properties);
     processorConfigDTO.setSchedulingPeriod(schedulingPeriod);
     processorConfigDTO.setAutoTerminatedRelationships(new HashSet<>(
-      Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType(),
-        FAILED_RELATIONSHIP_TYPES.FAILURE.getType(), FAILED_RELATIONSHIP_TYPES.INVALID.getType())));
+        Arrays.asList(SUCCESSFUL_RELATIONSHIP_TYPES.SUCCESS.getType(),
+            FAILED_RELATIONSHIP_TYPES.FAILURE.getType(),
+            FAILED_RELATIONSHIP_TYPES.INVALID.getType())));
     BundleDTO bundleDTO = createBundleDTO(BundleGroup.NIFI, BundleArtifact.STANDARD);
 
     // Create the processor component for the resource.
     ProcessorDTO processorDTO = createProcessorDTO(Processor.Type.PUT_SQL,
-      name, processorConfigDTO, bundleDTO);
+        name, processorConfigDTO, bundleDTO);
 
     return createProcessor(parentProcessGroupId, processorDTO, isCommandHandler);
   }
 
   public ProcessorEntity updatePutSQL(String processorId, String name, String schedulingPeriod)
-    throws IOException {
+      throws IOException {
 
     return updateProcessor(processorId, name, schedulingPeriod, new HashMap<>());
   }
@@ -1552,110 +1556,184 @@ public class NiFiClient {
    *
    * @param isRelational Whether the target is relational or infux.
    * @param rootGroupId The metadata/telemetry producers group id.
-   * @param influxInstanceGroupId The id of the influx instances group.
-   * @param relationalInstanceGroupId The id of the relational instances group.
    * @param influxGroupId The id of the influx group.
    * @param relationalGroupId The id of the relational group.
+   * @param influxInstanceGroupId The id of the influx instances group.
+   * @param relationalInstanceGroupId The id of the relational instances group.
    */
   public void distributeLoadOfProducers(boolean isRelational, String rootGroupId,
-    String influxInstanceGroupId, String relationalInstanceGroupId, String influxGroupId,
-    String relationalGroupId) throws IOException {
+      String influxGroupId,
+      String relationalGroupId, String influxInstanceGroupId, String relationalInstanceGroupId)
+      throws IOException {
 
-    PortEntity inputPort = findInputPort(isRelational ? relationalGroupId : influxGroupId);
+    ProcessorsEntity allProcessorsOfRootGroup = getProcessorsOfGroup(rootGroupId);
+    PortEntity rootGroupInputPort = findInputPort(rootGroupId);
+    PortEntity typeGroupInputPort = findInputPort(isRelational ? relationalGroupId : influxGroupId);
 
-    ProcessorEntity distributeLoadProcessor = getProcessorsOfGroup(rootGroupId)
-      .getProcessors().stream().filter(
-        processorEntity -> processorEntity.getComponent().getType()
-          .equals(Processor.Type.DISTRIBUTE_LOAD))
-      .findFirst().get();
+    ProcessorEntity topLevelLoadDistributor = allProcessorsOfRootGroup
+        .getProcessors().stream().filter(
+            processorEntity -> processorEntity.getComponent().getType()
+                .equals(Processor.Type.DISTRIBUTE_LOAD))
+        .findFirst().get();
 
-    List<ConnectionEntity> allConnectionsOfProcessor = getAllConnectionsOfProcessor(
-      distributeLoadProcessor.getId(), rootGroupId);
+    List<ConnectionEntity> allConnectionsOfTopLevelLoadDistributor =
+        getAllConnectionsOfProcessor(
+            topLevelLoadDistributor.getId(), rootGroupId);
 
     ProcessorsEntity influxProcessors = getProcessorsOfGroup(influxInstanceGroupId);
     ProcessorsEntity relationalProcessors = getProcessorsOfGroup(relationalInstanceGroupId);
 
     long influxCount = influxProcessors.getProcessors().stream().filter(
-      processorEntity -> processorEntity.getComponent().getType()
-        .equals(Processor.Type.EXECUTE_INFLUX_DB))
-      .count();
+            processorEntity -> processorEntity.getComponent().getType()
+                .equals(Processor.Type.EXECUTE_INFLUX_DB))
+        .count();
 
     long relationalCount = relationalProcessors.getProcessors().stream().filter(
-      processorEntity -> processorEntity.getComponent().getType()
-        .equals(Processor.Type.EXECUTE_SQL))
-      .count();
+            processorEntity -> processorEntity.getComponent().getType()
+                .equals(Processor.Type.EXECUTE_SQL))
+        .count();
 
     long typeCount = isRelational ? relationalCount : influxCount;
-    long totalCount = influxCount + relationalCount;
+    long allProducers = influxCount + relationalCount;
+
+    Optional<ConnectionEntity> portToLoadDistributorConnectionOpt = allConnectionsOfTopLevelLoadDistributor.stream()
+        .filter(
+            connectionEntity -> connectionEntity.getDestinationId()
+                .equals(topLevelLoadDistributor.getId())).findFirst();
+
+    if (allProducers > 0 && portToLoadDistributorConnectionOpt.isEmpty()) {
+      connectSourceAndDestination(rootGroupId, rootGroupId,
+          INPUT_PORT.name(), PROCESSOR.name(), rootGroupInputPort.getId(),
+          topLevelLoadDistributor.getId(),
+          new HashSet<>());
+    }
 
     List<ConnectionEntity> distributeLoadOutgoingConnections =
-      allConnectionsOfProcessor.stream().filter(
-        connectionEntity -> connectionEntity.getSourceId().equals(distributeLoadProcessor.getId()))
-        .collect(Collectors.toList());
+        allConnectionsOfTopLevelLoadDistributor.stream().filter(
+                connectionEntity -> connectionEntity.getSourceId()
+                    .equals(topLevelLoadDistributor.getId()))
+            .collect(Collectors.toList());
     int connections = distributeLoadOutgoingConnections.size();
 
     Optional<ConnectionEntity> typeConnection = distributeLoadOutgoingConnections.stream()
-      .filter(connectionEntity -> connectionEntity.getDestinationId().equals(inputPort.getId()))
-      .findFirst();
+        .filter(connectionEntity -> connectionEntity.getDestinationId()
+            .equals(typeGroupInputPort.getId()))
+        .findFirst();
 
     Optional<ConnectionEntity> otherConnection = distributeLoadOutgoingConnections.stream()
-      .filter(connectionEntity -> !connectionEntity.getDestinationId().equals(inputPort.getId()))
-      .findFirst();
+        .filter(connectionEntity -> !connectionEntity.getDestinationId()
+            .equals(typeGroupInputPort.getId()))
+        .findFirst();
 
     if (connections < 2 && !typeConnection.isPresent()) {
       connections += 1;
-      updateDistributeLoad(connections, distributeLoadProcessor.getId());
+      updateDistributeLoad(connections, topLevelLoadDistributor.getId());
       createDistributeLoadConnection(connections, rootGroupId, isRelational ?
-        relationalGroupId : influxGroupId, distributeLoadProcessor.getId(), inputPort.getId());
+              relationalGroupId : influxGroupId, topLevelLoadDistributor.getId(),
+          typeGroupInputPort.getId());
     }
 
+    String instanceGroupId = isRelational ? relationalInstanceGroupId : influxInstanceGroupId;
+    ProcessorEntity instanceLoadDistributor = findDistributeLoad(instanceGroupId);
 
-    String instanceGroupId = isRelational ? relationalInstanceGroupId :  influxInstanceGroupId;
-    ProcessorEntity distributeLoad = findDistributeLoad(instanceGroupId);
-
-    if (distributeLoad != null) {
-      updateConnectionsInInstancesGroup(instanceGroupId, distributeLoad);
+    if (instanceLoadDistributor != null) {
+      updateConnectionsInInstancesGroup(instanceGroupId, instanceLoadDistributor);
     }
 
     if (typeConnection.isPresent() && typeCount == 0) {
       ConnectableDTO source = typeConnection.get().getComponent().getSource();
-      changeProcessorStatus(source.getId(), STATE.STOPPED);
-      changePortStatus(inputPort, STATE.STOPPED);
+      deleteConnectionBetweenPortAndProcessor(typeGroupInputPort, source.getId(),
+          typeConnection.get());
       if (connections == 2 && typeConnection.get().getStatus().getName().equals("1")) {
         ConnectionEntity connectionEntity = otherConnection.get();
         connectionEntity.getComponent().setSelectedRelationships(Collections.singleton("1"));
         updateConnection(connectionEntity);
       }
-      deleteConnection(typeConnection.get());
-      updateDistributeLoad(--connections, distributeLoadProcessor.getId());
+      updateDistributeLoad(--connections, topLevelLoadDistributor.getId());
       changeProcessorStatus(source.getId(), STATE.RUNNING);
     }
 
-    if (totalCount > 0 && !distributeLoadProcessor.getStatus().getRunStatus()
-      .equals(STATE.RUNNING.name())) {
-      changeProcessorStatus(distributeLoadProcessor.getId(), STATE.RUNNING);
+    if (allProducers > 0) {
+
+      if (!topLevelLoadDistributor.getStatus().getRunStatus()
+          .equals(STATE.RUNNING.name())) {
+        changeProcessorStatus(topLevelLoadDistributor.getId(), STATE.RUNNING);
+      }
+
+      if (!typeGroupInputPort.getComponent().getState().equals(STATE.RUNNING.name())) {
+        changePortStatus(typeGroupInputPort, STATE.RUNNING);
+      }
     }
 
-    allConnectionsOfProcessor = getAllConnectionsOfProcessor(
-      distributeLoadProcessor.getId(), rootGroupId);
+    managerLoadBalanceAndHttpResponseConnections(rootGroupId, allProcessorsOfRootGroup,
+        rootGroupInputPort, topLevelLoadDistributor,
+        allProducers, portToLoadDistributorConnectionOpt);
 
-    Optional<ConnectionEntity> connectionToInputPort = allConnectionsOfProcessor.stream().filter(
-      connectionEntity -> connectionEntity.getDestinationId().equals(inputPort.getId()))
-      .findFirst();
+  }
 
-    if (connectionToInputPort.isPresent()) {
-      changePortStatus(inputPort, STATE.RUNNING);
+  private void managerLoadBalanceAndHttpResponseConnections(String rootGroupId,
+      ProcessorsEntity allProcessorsOfRootGroup,
+      PortEntity rootGroupInputPort, ProcessorEntity topLevelLoadDistributor, long allProducers,
+      Optional<ConnectionEntity> portToLoadDistributorConnectionOpt) throws IOException {
+    Optional<ProcessorEntity> optionalHttpResponseProcessor = allProcessorsOfRootGroup.getProcessors()
+        .stream()
+        .filter(processorEntity -> processorEntity.getComponent().getName().endsWith(
+            ExistingProcessorSuffix.HTTP_RESPONSE_HANDLER))
+        .findFirst();
+
+    if (optionalHttpResponseProcessor.isPresent()) {
+      if (allProducers < 1 && portToLoadDistributorConnectionOpt.isPresent()) {
+        deleteConnectionWithLoadBalancer(rootGroupInputPort, topLevelLoadDistributor.getId(),
+            portToLoadDistributorConnectionOpt.get());
+      }
+
+      manageQueueHandling(rootGroupId, rootGroupInputPort,
+          optionalHttpResponseProcessor.get().getId(), allProducers < 1);
     }
   }
 
-  private void updateConnectionsInInstancesGroup(String groupId, ProcessorEntity distributeLoad) throws IOException {
+  /**
+   * Creates or deletes the connection with processor responsible for the queue handling.
+   *
+   * @param rootGroupId The id of the group where the queue handling is needed.
+   * @param inputPort The input port of the group.
+   * @param queueHandlerId The id of the processor that handles the queue, when sink is missing.
+   * @param shouldCreateConnection Whether the connection between the port and the Clear Queue
+   * processor should be created (or deleted).
+   */
+  public void manageQueueHandling(String rootGroupId, PortEntity inputPort,
+      String queueHandlerId, boolean shouldCreateConnection) throws IOException {
+    if (shouldCreateConnection) {
+      connectSourceAndDestination(rootGroupId, rootGroupId, INPUT_PORT.name(), PROCESSOR.name(),
+          inputPort.getId(), queueHandlerId, new HashSet<>());
+      changeProcessorStatus(queueHandlerId, STATE.RUNNING);
+    } else {
+      List<ConnectionEntity> allConnectionsOfProcessor = getAllConnectionsOfProcessor(
+          queueHandlerId, rootGroupId);
+      if (!allConnectionsOfProcessor.isEmpty()) {
+        deleteConnectionBetweenPortAndProcessor(inputPort, queueHandlerId,
+            allConnectionsOfProcessor.get(0));
+      }
+    }
+    changePortStatus(findInputPort(rootGroupId), STATE.RUNNING);
+  }
+
+  private void deleteConnectionWithLoadBalancer(PortEntity rootGroupInputPort,
+      String topLevelLoadDistributor, ConnectionEntity portToLoadDistributorConnection)
+      throws IOException {
+    deleteConnectionBetweenPortAndProcessor(rootGroupInputPort, topLevelLoadDistributor,
+        portToLoadDistributorConnection);
+  }
+
+  private void updateConnectionsInInstancesGroup(String groupId, ProcessorEntity distributeLoad)
+      throws IOException {
     List<ConnectionEntity> distributeLoadOutgoingConnections = getDistributeLoadOutgoingConnections(
-      groupId, distributeLoad);
+        groupId, distributeLoad);
 
     int existingConnections = distributeLoadOutgoingConnections.size();
     int numberOfRelationships = Integer
-      .parseInt(distributeLoad.getComponent().getConfig().getProperties()
-        .get("Number of Relationships"));
+        .parseInt(distributeLoad.getComponent().getConfig().getProperties()
+            .get("Number of Relationships"));
 
     if (numberOfRelationships != existingConnections) {
       changeProcessorStatus(distributeLoad.getId(), STATE.STOPPED);
@@ -1667,8 +1745,8 @@ public class NiFiClient {
       }
 
       List<String> existingNames = distributeLoadOutgoingConnections.stream()
-        .map(connectionEntity -> connectionEntity.getStatus().getName()).collect(
-          Collectors.toList());
+          .map(connectionEntity -> connectionEntity.getStatus().getName()).collect(
+              Collectors.toList());
 
       String newName = "";
       for (String n : expectedNames) {
@@ -1679,8 +1757,8 @@ public class NiFiClient {
       }
 
       Optional<ConnectionEntity> entityToUpdate = distributeLoadOutgoingConnections.stream().filter(
-        connectionEntity -> Integer.parseInt(connectionEntity.getStatus().getName())
-          > existingConnections).findAny();
+          connectionEntity -> Integer.parseInt(connectionEntity.getStatus().getName())
+              > existingConnections).findAny();
 
       if (entityToUpdate.isPresent()) {
         String destinationId = entityToUpdate.get().getDestinationId();
@@ -1692,7 +1770,7 @@ public class NiFiClient {
         }
 
         entityToUpdate.get().getComponent()
-          .setSelectedRelationships(Collections.singleton(newName));
+            .setSelectedRelationships(Collections.singleton(newName));
         updateConnection(entityToUpdate.get());
 
         //If destination was running, we need to restart it.
@@ -1712,12 +1790,12 @@ public class NiFiClient {
   }
 
   private void createDistributeLoadConnection(int relationships, String parentProcessGroupId,
-    String destinationProcessGroup, String processorId,
-    String inputPortId) throws IOException {
+      String destinationProcessGroup, String processorId,
+      String inputPortId) throws IOException {
     String name = "" + relationships;
     connectSourceAndDestination(parentProcessGroupId, destinationProcessGroup,
-      PROCESSOR.name(),
-      INPUT_PORT.name(), processorId, inputPortId, Collections.singleton(name));
+        PROCESSOR.name(),
+        INPUT_PORT.name(), processorId, inputPortId, Collections.singleton(name));
   }
 
   /**
@@ -1728,13 +1806,13 @@ public class NiFiClient {
    * @return A ProcessorEntity object containing the newly created processor.
    */
   private ProcessorEntity createProcessor(@NotNull String parentProcessGroupId,
-    ProcessorDTO processorDTO) throws IOException {
+      ProcessorDTO processorDTO) throws IOException {
     return createProcessor(parentProcessGroupId, processorDTO, false);
   }
 
   private ProcessorEntity createProcessor(@NotNull String parentProcessGroupId,
-    ProcessorDTO processorDTO, boolean isCommandHandler)
-    throws IOException {
+      ProcessorDTO processorDTO, boolean isCommandHandler)
+      throws IOException {
 
     PortEntity inputPort = findInputPort(parentProcessGroupId);
 
@@ -1742,12 +1820,12 @@ public class NiFiClient {
     Set<ProcessorEntity> processors = processorsOfGroup.getProcessors();
 
     List<Double> yPositions = processors.stream().filter(
-      processorEntity -> processorEntity.getComponent().getType().equals(processorDTO.getType()))
-      .map(processorEntity -> processorEntity.getPosition().getY()).collect(Collectors.toList());
+            processorEntity -> processorEntity.getComponent().getType().equals(processorDTO.getType()))
+        .map(processorEntity -> processorEntity.getPosition().getY()).collect(Collectors.toList());
 
     List<Double> xPositions = processors.stream().filter(
-      processorEntity -> processorEntity.getComponent().getType().equals(processorDTO.getType()))
-      .map(processorEntity -> processorEntity.getPosition().getX()).collect(Collectors.toList());
+            processorEntity -> processorEntity.getComponent().getType().equals(processorDTO.getType()))
+        .map(processorEntity -> processorEntity.getPosition().getX()).collect(Collectors.toList());
 
     Collections.sort(yPositions);
     Collections.sort(xPositions);
@@ -1795,7 +1873,7 @@ public class NiFiClient {
 
     // Create processor.
     final CallReplyDTO callReplyDTO = postJSONCall(
-      getNifiGroupByIdUrlPath(parentProcessGroupId) + "/" + PROCESSORS, processorEntity);
+        getNifiGroupByIdUrlPath(parentProcessGroupId) + "/" + PROCESSORS, processorEntity);
 
     // Return if processor creation was unsuccessfull.
     if (!callReplyDTO.isSuccessful()) {
@@ -1805,7 +1883,7 @@ public class NiFiClient {
     processorEntity = mapper.readValue(callReplyDTO.getBody(), ProcessorEntity.class);
 
     createConnections(parentProcessGroupId, processorEntity,
-      processorDTO.getConfig().getAutoTerminatedRelationships() != null, isCommandHandler);
+        processorDTO.getConfig().getAutoTerminatedRelationships() != null, isCommandHandler);
 
     return processorEntity;
   }
@@ -1818,38 +1896,46 @@ public class NiFiClient {
    * @return A ProcessorEntity object containing the newly connected processor.
    */
   private ProcessorEntity createConnections(String parentProcessGroupId,
-    ProcessorEntity processorEntity,
-    boolean autoTerminatedSuccess, boolean isCommandHandler) throws IOException {
+      ProcessorEntity processorEntity,
+      boolean autoTerminatedSuccess, boolean isCommandHandler) throws IOException {
 
     Set<String> connections = new HashSet<>();
     String processorId = processorEntity.getComponent().getId();
 
     List<RelationshipDTO> relationships = processorEntity.getComponent().getRelationships();
     List<String> failedRelationships = relationships.stream().filter(
-      relationshipDTO -> EnumUtils.isValidEnum(FAILED_RELATIONSHIP_TYPES.class,
-        relationshipDTO.getName().toUpperCase().replace("-", "_"))).map(RelationshipDTO::getName)
-      .collect(Collectors.toList());
+            relationshipDTO -> EnumUtils.isValidEnum(FAILED_RELATIONSHIP_TYPES.class,
+                relationshipDTO.getName().toUpperCase().replace("-", "_")))
+        .map(RelationshipDTO::getName)
+        .collect(Collectors.toList());
 
-    ProcessorEntity distributeLoad = findDistributeLoad(parentProcessGroupId);
     PortEntity inputPort = findInputPort(parentProcessGroupId);
 
     if (!isCommandHandler) {
+      ProcessorEntity distributeLoad = findDistributeLoad(parentProcessGroupId);
       if (distributeLoad != null) {
         int outgoingRelationships = getDistributeLoadOutgoingConnections(parentProcessGroupId,
-          distributeLoad).size();
+            distributeLoad).size();
+
+        if (outgoingRelationships == 0) {
+          Set<ConnectionEntity> allConnectionsOfProcessGroup = getAllConnectionsOfProcessGroup(
+              parentProcessGroupId);
+
+
+        }
 
         outgoingRelationships += 1;
         updateDistributeLoad(outgoingRelationships, distributeLoad.getId());
 
         connectSourceAndDestination(parentProcessGroupId, parentProcessGroupId, PROCESSOR.name(),
-          PROCESSOR.name(), distributeLoad.getId(), processorId,
-          Collections.singleton(String.valueOf(outgoingRelationships)));
+            PROCESSOR.name(), distributeLoad.getId(), processorId,
+            Collections.singleton(String.valueOf(outgoingRelationships)));
 
         changeProcessorStatus(distributeLoad.getComponent().getId(), STATE.RUNNING);
 
       } else if (inputPort != null) {
         connectSourceAndDestination(parentProcessGroupId, parentProcessGroupId, INPUT_PORT.name(),
-          PROCESSOR.name(), inputPort.getId(), processorId, connections);
+            PROCESSOR.name(), inputPort.getId(), processorId, connections);
       }
     }
 
@@ -1859,26 +1945,26 @@ public class NiFiClient {
       if (!failedRelationships.isEmpty()) {
         connections = new HashSet<>(failedRelationships);
         Optional<PortEntity> logout = outputPorts.getOutputPorts().stream()
-          .filter(portEntity -> portEntity.getComponent().getName().contains("_logout"))
-          .findFirst();
+            .filter(portEntity -> portEntity.getComponent().getName().contains("_logout"))
+            .findFirst();
 
         connectSourceAndDestination(parentProcessGroupId, parentProcessGroupId, PROCESSOR.name(),
-          OUTPUT_PORT.name(), processorId, logout.get().getId(), connections);
+            OUTPUT_PORT.name(), processorId, logout.get().getId(), connections);
 
       }
 
       if (!autoTerminatedSuccess && !isCommandHandler) {
         List<String> successful = relationships.stream().filter(
-          relationshipDTO -> EnumUtils.isValidEnum(SUCCESSFUL_RELATIONSHIP_TYPES.class,
-            relationshipDTO.getName().toUpperCase())).map(RelationshipDTO::getName)
-          .collect(Collectors.toList());
+                relationshipDTO -> EnumUtils.isValidEnum(SUCCESSFUL_RELATIONSHIP_TYPES.class,
+                    relationshipDTO.getName().toUpperCase())).map(RelationshipDTO::getName)
+            .collect(Collectors.toList());
 
         connections = new HashSet<>(successful);
         Optional<PortEntity> out = outputPorts.getOutputPorts().stream()
-          .filter(portEntity -> portEntity.getComponent().getName().contains("_out")).findFirst();
+            .filter(portEntity -> portEntity.getComponent().getName().contains("_out")).findFirst();
 
         connectSourceAndDestination(parentProcessGroupId, parentProcessGroupId, PROCESSOR.name(),
-          OUTPUT_PORT.name(), processorId, out.get().getId(), connections);
+            OUTPUT_PORT.name(), processorId, out.get().getId(), connections);
       }
     }
 
@@ -1886,10 +1972,10 @@ public class NiFiClient {
       togglePort(inputPort, STATE.RUNNING, false);
     }
 
-    outputPorts.getOutputPorts().stream().forEach(portEntity -> {
+    outputPorts.getOutputPorts().forEach(portEntity -> {
       try {
         togglePort(portEntity,
-          STATE.RUNNING, true);
+            STATE.RUNNING, true);
       } catch (IOException exception) {
         exception.printStackTrace();
       }
@@ -1898,17 +1984,18 @@ public class NiFiClient {
     return getProcessorById(processorId);
   }
 
+
   private List<ConnectionEntity> getDistributeLoadOutgoingConnections(String parentProcessGroupId,
-    ProcessorEntity distributeLoad) throws IOException {
+      ProcessorEntity distributeLoad) throws IOException {
     return getAllConnectionsOfProcessor(
-      distributeLoad.getId(), parentProcessGroupId).stream()
-      .filter(connectionEntity -> connectionEntity.getSourceId().equals(distributeLoad.getId()))
-      .collect(
-        Collectors.toList());
+        distributeLoad.getId(), parentProcessGroupId).stream()
+        .filter(connectionEntity -> connectionEntity.getSourceId().equals(distributeLoad.getId()))
+        .collect(
+            Collectors.toList());
   }
 
   private void togglePort(PortEntity portEntity, STATE state, boolean isOutputPort)
-    throws IOException {
+      throws IOException {
 
     PortRunStatusEntity portRunStatusEntity = new PortRunStatusEntity();
     portRunStatusEntity.setState(state.name());
@@ -1917,10 +2004,10 @@ public class NiFiClient {
     CallReplyDTO callReplyDTO;
     if (isOutputPort) {
       callReplyDTO = putJSONCall("/output-ports/" + portEntity.getId() + RUN_STATUS,
-        portRunStatusEntity);
+          portRunStatusEntity);
     } else {
       callReplyDTO = putJSONCall("/input-ports/" + portEntity.getId() + RUN_STATUS,
-        portRunStatusEntity);
+          portRunStatusEntity);
     }
 
     if (!callReplyDTO.isSuccessful()) {
@@ -1940,9 +2027,9 @@ public class NiFiClient {
    * @param relationships A set of all relationships that the connection is responsible for.
    */
   public void connectSourceAndDestination(String sourceProcessGroupId,
-    String destinationProcessGroupId, String sourceType,
-    String destinationType, String sourceId, String destinationId, Set<String> relationships)
-    throws IOException {
+      String destinationProcessGroupId, String sourceType,
+      String destinationType, String sourceId, String destinationId, Set<String> relationships)
+      throws IOException {
 
     ConnectionEntity connectionEntity = new ConnectionEntity();
     ConnectionDTO connectionDTO = new ConnectionDTO();
@@ -1967,16 +2054,16 @@ public class NiFiClient {
     connectionEntity.setRevision(createRevisionDTO());
 
     CallReplyDTO callReplyDTO = postJSONCall(
-      getNifiGroupByIdUrlPath(sourceProcessGroupId) + "/connections",
-      connectionEntity);
+        getNifiGroupByIdUrlPath(sourceProcessGroupId) + "/connections",
+        connectionEntity);
     if (!callReplyDTO.isSuccessful()) {
       throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
     }
   }
 
   private ProcessorEntity updateProcessor(String processorId, String name, String schedulingPeriod,
-    Map<String, String> properties)
-    throws IOException {
+      Map<String, String> properties)
+      throws IOException {
 
     ProcessorEntity latestEntity = getProcessorById(processorId);
     String latestState = latestEntity.getComponent().getState();
@@ -1986,7 +2073,7 @@ public class NiFiClient {
     }
 
     ProcessorEntity processorEntity = updateBuilder(latestEntity, processorId, name,
-      schedulingPeriod, properties);
+        schedulingPeriod, properties);
 
     CallReplyDTO callReplyDTO = putJSONCall("/" + PROCESSORS + "/" + processorId, processorEntity);
 
@@ -2001,8 +2088,8 @@ public class NiFiClient {
   }
 
   private ProcessorEntity updateBuilder(ProcessorEntity latestEntity, String processorId,
-    String name, String schedulingPeriod,
-    Map<String, String> properties) {
+      String name, String schedulingPeriod,
+      Map<String, String> properties) {
     Long currentVersion = latestEntity.getRevision().getVersion();
 
     ProcessorDTO processorDTO = new ProcessorDTO();
@@ -2044,8 +2131,8 @@ public class NiFiClient {
     processorRunStatusEntity.setRevision(processorEntity.getRevision());
 
     final CallReplyDTO callReplyDTO =
-      putJSONCall("/" + PROCESSORS + "/" + processorId + "/run-status/",
-        processorRunStatusEntity);
+        putJSONCall("/" + PROCESSORS + "/" + processorId + "/run-status/",
+            processorRunStatusEntity);
 
     if (callReplyDTO.isSuccessful()) {
       return mapper.readValue(callReplyDTO.getBody(), ProcessorEntity.class);
@@ -2057,11 +2144,11 @@ public class NiFiClient {
   public void moveComponent(String processGroupId, String processorId) throws IOException {
     ProcessorEntity processorToMove = getProcessorById(processorId);
     List<ConnectionEntity> allConnections = getAllConnectionsOfProcessor(processorId,
-      processGroupId);
+        processGroupId);
 
     Optional<ConnectionEntity> optionalCon = allConnections.stream()
-      .filter(connectionEntity -> connectionEntity.getDestinationId().equals(processorId))
-      .findFirst();
+        .filter(connectionEntity -> connectionEntity.getDestinationId().equals(processorId))
+        .findFirst();
 
     if (optionalCon.isPresent()) {
       ConnectionEntity connectionEntity = optionalCon.get();
@@ -2070,14 +2157,14 @@ public class NiFiClient {
       PositionDTO position = getProcessorById(sourceId).getComponent().getPosition();
 
       ProcessorEntity processorEntity = updateBuilder(processorToMove, processorId,
-        processorToMove.getComponent().getName(),
-        processorToMove.getComponent().getConfig().getSchedulingPeriod(), new HashMap<>());
+          processorToMove.getComponent().getName(),
+          processorToMove.getComponent().getConfig().getSchedulingPeriod(), new HashMap<>());
 
       position.setY(position.getY() + 210);
       processorEntity.getComponent().setPosition(position);
 
       CallReplyDTO callReplyDTO = putJSONCall("/" + PROCESSORS + "/" + processorId,
-        processorEntity);
+          processorEntity);
       if (!callReplyDTO.isSuccessful()) {
         throw new NiFiProcessingException(callReplyDTO.getBody(), callReplyDTO.getCode());
       }
@@ -2093,7 +2180,7 @@ public class NiFiClient {
    */
   public ProcessorEntity deleteProcessor(String processorId) throws IOException {
     ProcessorEntity processorEntity = this.changeProcessorStatus(processorId,
-      STATE.STOPPED);
+        STATE.STOPPED);
 
     String parentGroupId = processorEntity.getComponent().getParentGroupId();
     OutputPortsEntity outputPorts = findOutputPorts(parentGroupId);
@@ -2101,8 +2188,8 @@ public class NiFiClient {
     Set<ConnectionEntity> allConnections = getAllConnectionsOfProcessGroup(parentGroupId);
     PortEntity inputPort = findInputPort(parentGroupId);
     Optional<ConnectionEntity> optProcessorIncomingConnection = allConnections.stream()
-      .filter(connectionEntity -> connectionEntity.getDestinationId().equals(processorId))
-      .findFirst();
+        .filter(connectionEntity -> connectionEntity.getDestinationId().equals(processorId))
+        .findFirst();
     ConnectionEntity processorIncomingConnection = optProcessorIncomingConnection.orElse(null);
 
     //Stop processor incoming connection.
@@ -2126,19 +2213,18 @@ public class NiFiClient {
 
     //Get all connections of the processor
     List<ConnectionEntity> processorConnections = getAllConnectionsOfProcessor(processorId,
-      parentGroupId);
+        parentGroupId);
 
     //Delete connections of the processor
     for (ConnectionEntity connectionEntity : processorConnections) {
-      emptyQueueOfConnection(connectionEntity.getId());
       deleteConnection(connectionEntity);
     }
 
     CallReplyDTO callReplyDTO =
-      deleteCall("/" + PROCESSORS + "/" + processorId
-        + VERSION + processorEntity.getRevision().getVersion()
-        + CLIENT_ID + processorId
-        + "&disconnectedNodeAcknowledged=false");
+        deleteCall("/" + PROCESSORS + "/" + processorId
+            + VERSION + processorEntity.getRevision().getVersion()
+            + CLIENT_ID + processorId
+            + "&disconnectedNodeAcknowledged=false");
 
     //Start processor incoming connection.
     if (processorIncomingConnection != null) {
@@ -2147,8 +2233,8 @@ public class NiFiClient {
         Long version = inputPort.getRevision().getVersion();
         inputPort.getRevision().setVersion(version + 1L);
         boolean inputPortHasConnections = allConnections.stream().filter(
-          connectionEntity -> connectionEntity.getSourceId().equals(inputPort.getId())).count()
-          > 1L;
+            connectionEntity -> connectionEntity.getSourceId().equals(inputPort.getId())).count()
+            > 1L;
         if (inputPortHasConnections) {
           togglePort(inputPort, STATE.RUNNING, false);
         }
@@ -2160,8 +2246,9 @@ public class NiFiClient {
     //Start output port(s) if other connections exist.
     outputPorts.getOutputPorts().forEach(outputPort -> {
       boolean ouputPortHasConnections = allConnections.stream().filter(
-        connectionEntity -> connectionEntity.getDestinationId().equals(outputPort.getId())).count()
-        > 1L;
+              connectionEntity -> connectionEntity.getDestinationId().equals(outputPort.getId()))
+          .count()
+          > 1L;
 
       if (ouputPortHasConnections) {
         try {
@@ -2182,27 +2269,31 @@ public class NiFiClient {
   }
 
   public Set<ConnectionEntity> getAllConnectionsOfProcessGroup(String parentGroupId)
-    throws IOException {
+      throws IOException {
     ProcessGroupFlowEntity processGroups = getProcessGroups(parentGroupId);
     return processGroups.getProcessGroupFlow().getFlow()
-      .getConnections();
+        .getConnections();
   }
 
   private List<ConnectionEntity> getAllConnectionsOfProcessor(String processorId,
-    String parentGroupId)
-    throws IOException {
+      String parentGroupId)
+      throws IOException {
     Set<ConnectionEntity> allConnections = getAllConnectionsOfProcessGroup(
-      parentGroupId);
+        parentGroupId);
 
     return allConnections.stream()
-      .filter(connectionEntity -> connectionEntity.getDestinationId().equals(processorId)
-        || connectionEntity.getSourceId().equals(processorId))
-      .collect(
-        Collectors.toList());
+        .filter(connectionEntity -> connectionEntity.getDestinationId().equals(processorId)
+            || connectionEntity.getSourceId().equals(processorId))
+        .collect(
+            Collectors.toList());
   }
 
   public void emptyQueueOfConnection(String connectionId) throws IOException {
     postJSONCall("/flowfile-queues/" + connectionId + "/drop-requests", "");
+  }
+
+  public void emptyAllQueuesOfGroup(String groupId) throws IOException {
+    postJSONCall("/process-groups/" + groupId + "/empty-all-connections-requests", "");
   }
 
   /**
@@ -2241,7 +2332,14 @@ public class NiFiClient {
 
   public boolean isProcessorRunning(String id) throws IOException {
     return getProcessorById(id).getStatus().getRunStatus()
-      .equalsIgnoreCase(STATE.RUNNING.name());
+        .equalsIgnoreCase(STATE.RUNNING.name());
+  }
+
+  public void deleteConnectionBetweenPortAndProcessor(PortEntity port, String processorId,
+      ConnectionEntity connectionEntity) throws IOException {
+    changePortStatus(port, STATE.STOPPED);
+    changeProcessorStatus(processorId, STATE.STOPPED);
+    deleteConnection(connectionEntity);
   }
 
   /**
@@ -2250,20 +2348,22 @@ public class NiFiClient {
    * @param connectionEntity the connection to delete.
    */
   private void deleteConnection(ConnectionEntity connectionEntity) throws IOException {
+    emptyQueueOfConnection(connectionEntity.getId());
+
     CallReplyDTO callReplyDTO = deleteCall("/connections/" + connectionEntity.getId() + "?version"
-      + "=" + connectionEntity.getRevision().getVersion());
+        + "=" + connectionEntity.getRevision().getVersion());
     if (!callReplyDTO.isSuccessful()) {
       throw new NiFiProcessingException(callReplyDTO.getBody(),
-        callReplyDTO.getCode());
+          callReplyDTO.getCode());
     }
   }
 
   private void updateConnection(ConnectionEntity connectionEntity) throws IOException {
     CallReplyDTO callReplyDTO = putJSONCall("/connections/" + connectionEntity.getId(),
-      connectionEntity);
+        connectionEntity);
     if (!callReplyDTO.isSuccessful()) {
       throw new NiFiProcessingException(callReplyDTO.getBody(),
-        callReplyDTO.getCode());
+          callReplyDTO.getCode());
     }
   }
 
@@ -2282,7 +2382,7 @@ public class NiFiClient {
   }
 
   private ControllerServiceDTO createControllerServiceDTO(String controllerServiceType,
-    String controllerServiceName, BundleDTO bundleDTO) {
+      String controllerServiceName, BundleDTO bundleDTO) {
     ControllerServiceDTO controllerServiceDTO = new ControllerServiceDTO();
     controllerServiceDTO.setType(controllerServiceType);
     controllerServiceDTO.setName(controllerServiceName);
@@ -2291,7 +2391,7 @@ public class NiFiClient {
   }
 
   private ProcessorDTO createProcessorDTO(String processorType, String processorName,
-    ProcessorConfigDTO processorConfigDTO, BundleDTO bundleDTO) {
+      ProcessorConfigDTO processorConfigDTO, BundleDTO bundleDTO) {
     ProcessorDTO processorDTO = new ProcessorDTO();
     processorDTO.setType(processorType);
     processorDTO.setName(processorName);

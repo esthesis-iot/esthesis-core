@@ -108,6 +108,20 @@ public class NiFiConstants {
         + ".StandardHttpContextMap";
       public static final String PUT_SQL = "org.apache.nifi.processors.standard.PutSQL";
     }
+
+    @UtilityClass
+    public static final class ExistingProcessorSuffix {
+      public static final String CLEAR_QUEUE = "[CR]";
+      public static final String PREPARE_DATABASE_OPERATION = "[PDO]";
+      public static final String EXTRACT_DATA_FROM_POST_BODY = "[EDPB]";
+      public static final String CLEAR_POST_BODY = "[CPB]";
+      public static final String CONVERT_SQL_RESULT = "[CSR]";
+      public static final String CLEAR_SQL_RESULT_BODY = "[CSRB]";
+      public static final String GENERATE_MQTT_COMMAND_BODY = "[GMCB]";
+      public static final String SET_COMMAND_ID_RESPONSE = "[SCIDR]";
+      public static final String SET_HARDWARE_ID = "[SH]";
+      public static final String HTTP_RESPONSE_HANDLER = "[HRH]";
+    }
   }
 
   @UtilityClass
