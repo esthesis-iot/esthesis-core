@@ -3,6 +3,7 @@ package esthesis.platform.backend.server.config;
 import com.eurodyn.qlack.util.jwt.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -12,13 +13,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private static final String[] PUBLIC_URIS =
-    {"/users/auth", "/ping", "/agent/**", "/util/bg-photo", "/camunda/app/**"};
+  private static final String[] PUBLIC_URIS = {"/users/auth", "/ping", "/agent/**", "/util/bg-photo", "/camunda/app/**"};
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final DTSecurityFilter dtSecurityFilter;
 
-  public WebSecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
-    DTSecurityFilter dtSecurityFilter) {
+  public WebSecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, DTSecurityFilter dtSecurityFilter) {
     this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     this.dtSecurityFilter = dtSecurityFilter;
   }
@@ -36,4 +35,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       .sessionManagement()
       .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
   }
+
+  @Override
+  public void configure(WebSecurity web) throws Exception {
+    web.ignoring().antMatchers("/v3/api-docs/**", "/swagger.json", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/swagger-ui/***");
+  }
+
 }

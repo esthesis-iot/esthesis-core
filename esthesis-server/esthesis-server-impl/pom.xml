@@ -221,6 +221,12 @@
       <version>5.2.2.RELEASE</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-ui</artifactId>
+      <version>1.5.12</version>
+    </dependency>
+
     <!-- QLACK dependencies -->
     <dependency>
       <groupId>com.eurodyn.qlack.fuse</groupId>
