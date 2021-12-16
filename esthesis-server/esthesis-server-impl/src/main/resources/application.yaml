@@ -95,3 +95,5 @@ spring:
       max-request-size: 1025MB
 springdoc:
   paths-to-match: /dt/**
+  swagger-ui:
+    disable-swagger-default-url: true
