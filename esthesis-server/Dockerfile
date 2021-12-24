@@ -54,5 +54,10 @@ WORKDIR /app
 # Add app
 COPY --from=build /build/esthesis-server/esthesis-server-impl/target/esthesis-server-impl-*.jar /app/esthesis-server.jar
 
+RUN sed -i.bak \
+    -e "s/securerandom.source=file:\/dev\/random/securerandom.source=file:\/dev\/urandom/g" \
+    -e "s/securerandom.strongAlgorithms=NativePRNGBlocking/securerandom.strongAlgorithms=NativePRNG/g" \
+    $JAVA_HOME/conf/security/java.security
+
 ENTRYPOINT ["/opt/java/openjdk/bin/java"]
 CMD ["-jar", "-Dspring.profiles.active=prod", "/app/esthesis-server.jar"]
