@@ -1,5 +1,5 @@
 upstream esthesis {
-  server esthesis-platform-backend-server:46000;
+  server esthesis-server:46000;
 }
 
 server {
