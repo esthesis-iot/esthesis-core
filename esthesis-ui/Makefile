@@ -11,35 +11,35 @@ build-all: build-amd64 build-arm64
 build-amd64:
 	echo Building image with tag: $(BUILD_TAG)
 	rm -rf dist
-	docker $(context) build --platform linux/amd64 . -t esthesis/ui:$(BUILD_TAG)-amd64
+	docker $(context) build --platform linux/amd64 . -t esthesisiot/esthesis-ui:$(BUILD_TAG)-amd64
 
 build-arm64:
 	echo Building image with tag: $(BUILD_TAG)
 	rm -rf dist
-	docker $(context) build --platform linux/arm64 . -t esthesis/ui:$(BUILD_TAG)-arm64
+	docker $(context) build --platform linux/arm64 . -t esthesisiot/esthesis-ui:$(BUILD_TAG)-arm64
 
 push-all: push-arm64 push-amd64 push-manifest
 
 push-amd64:
-	docker $(context) push esthesis/ui:$(BUILD_TAG)-amd64
+	docker $(context) push esthesisiot/esthesis-ui:$(BUILD_TAG)-amd64
 
 push-arm64:
-	docker $(context) push esthesis/ui:$(BUILD_TAG)-arm64
+	docker $(context) push esthesisiot/esthesis-ui:$(BUILD_TAG)-arm64
 
 # Utility
 # Build & push manifest
 push-manifest:
 	$(info Checking for existing manifest esthesis/ui:$(BUILD_TAG))
-	@docker manifest inspect esthesis/ui:$(BUILD_TAG); \
+	@docker manifest inspect esthesisiot/esthesis-ui:$(BUILD_TAG); \
 	if [ $$? -eq 0 ]; then \
 		 	docker $(context) manifest create \
-				--amend esthesis/ui:$(BUILD_TAG) \
-				--amend esthesis/ui:$(BUILD_TAG)-amd64 \
-				--amend esthesis/ui:$(BUILD_TAG)-arm64 \
+				--amend esthesisiot/esthesis-ui:$(BUILD_TAG) \
+				--amend esthesisiot/esthesis-ui:$(BUILD_TAG)-amd64 \
+				--amend esthesisiot/esthesis-ui:$(BUILD_TAG)-arm64 \
 	;else \
 		docker $(context) manifest create \
-				esthesis/ui:$(BUILD_TAG) \
-				esthesis/ui:$(BUILD_TAG)-amd64 \
-				esthesis/ui:$(BUILD_TAG)-arm64 \
+				esthesisiot/esthesis-ui:$(BUILD_TAG) \
+				esthesisiot/esthesis-ui:$(BUILD_TAG)-amd64 \
+				esthesisiot/esthesis-ui:$(BUILD_TAG)-arm64 \
 	;fi
-	docker $(context) manifest push esthesis/ui:$(BUILD_TAG)
+	docker $(context) manifest push esthesisiot/esthesis-ui:$(BUILD_TAG)

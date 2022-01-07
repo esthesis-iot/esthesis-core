@@ -1,41 +1,9 @@
-upstream esthesis {
-  server esthesis-server:46000;
-}
-
 server {
-  listen 80;
+  listen 8080;
 
   # Serve the static files of the frontend.
   location / {
     root   /usr/share/nginx/html;
     try_files $uri $uri/ /index.html;
-  }
-
-  # Do not allow to access device-facing resources through the platform frontend.
-  location /api/device/ {
-    return 404;
-  }
-
-  # Proxy REST calls to the provisioning underlying platform backend, allowing large payloads.
-  location /api/provisioning {
-    proxy_pass          http://esthesis;
-    proxy_redirect      off;
-    proxy_set_header    X-Forwarded-Host $host:$server_port;
-    proxy_set_header    X-Forwarded-Server $host;
-    proxy_set_header    X-Real-IP $remote_addr;
-    proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header    X-Forwarded-Proto $scheme;
-    client_max_body_size  1024M;
-  }
-
-  # Proxy REST calls to the underlying platform backend.
-  location /api {
-    proxy_pass          http://esthesis;
-    proxy_redirect      off;
-    proxy_set_header    X-Forwarded-Host $host:$server_port;
-    proxy_set_header    X-Forwarded-Server $host;
-    proxy_set_header    X-Real-IP $remote_addr;
-    proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header    X-Forwarded-Proto $scheme;
   }
 }
