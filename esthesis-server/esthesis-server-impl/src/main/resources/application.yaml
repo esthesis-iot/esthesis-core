@@ -57,7 +57,7 @@ spring:
       initialization-fail-timeout: 120000
     name: appDS
     password: esthesis
-    url: jdbc:mysql://localhost:45000/esthesis?autoReconnect=true&createDatabaseIfNotExist=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/esthesis?autoReconnect=true&createDatabaseIfNotExist=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: esthesis
   jackson:
     default-property-inclusion: non_empty

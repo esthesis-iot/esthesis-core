@@ -10,6 +10,11 @@ import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Processor
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.STATE;
 import esthesis.platform.backend.server.nifi.client.util.NiFiConstants.Properties.Values.SUCCESSFUL_RELATIONSHIP_TYPES;
 import esthesis.platform.backend.server.nifi.sinks.producers.NiFiProducerFactory;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
@@ -17,12 +22,6 @@ import org.springframework.util.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
-
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 @RequiredArgsConstructor
 @Component
@@ -252,7 +251,6 @@ public class CommandProducer implements NiFiProducerFactory {
   @Override
   public void toggleSink(String name, String[] path, boolean isEnabled) throws IOException {
     niFiClientService.changeProcessorGroupState(path, isEnabled ? STATE.RUNNING : STATE.STOPPED);
-    niFiClientService.changeProcessorStatus("Clear Queue [CR]" ,path, STATE.STOPPED);
   }
 
   @Override

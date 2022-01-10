@@ -7,6 +7,7 @@ import 'rxjs-compat/add/observable/concat';
 import {NiFiSinkDto} from '../../dto/nifisinks/nifi-sink-dto';
 import {UtilityService} from '../../shared/service/utility.service';
 import {safeDump} from 'js-yaml';
+import {Log} from "ng2-logger/browser";
 
 @Component({
   selector: 'app-datawizard-standard',
@@ -14,6 +15,8 @@ import {safeDump} from 'js-yaml';
   styleUrls: ['./datawizard-standard.component.scss']
 })
 export class DatawizardStandardComponent implements OnInit {
+  // Logger.
+  private log = Log.create('DatawizardStandardComponent');
   form!: FormGroup;
   wizardProgress = 0;
 
@@ -39,142 +42,142 @@ export class DatawizardStandardComponent implements OnInit {
   // @ts-ignore
   async executeWizard() {
     const requests: NiFiSinkDto[] = [
-      {
-        configuration: safeDump(Object.entries({
-          uri: this.form!.get('mqttUri')!.value,
-          topic: 'esthesis/ping/#',
-          qos: 0,
-          queueSize: 1000,
-          schedulingPeriod: '100 ms',
-          keystoreFilename: null,
-          keystorePassword: null,
-          truststoreFilename: null,
-          truststorePassword: null
-        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
-        factoryClass: 'esthesis.platform.backend.server.nifi.sinks.readers.mqtt.ConsumeMQTT',
-        name: 'Ping reader (from MQTT)',
-        handler: AppConstants.HANDLER.PING,
-        state: true,
-        type: 'readers'
-      },
-      {
-        configuration: safeDump(Object.entries({
-          databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
-          databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
-          databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
-          databaseUser: this.form!.get('esthesisDbUser')!.value,
-          password: this.form!.get('esthesisDbPassword')!.value,
-          schedulingPeriod: '100 ms'
-        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
-        factoryClass: 'esthesis.platform.backend.server.nifi.sinks.writers.relational.PutDatabaseRecord',
-        name: 'Ping writer (to esthesis database)',
-        handler: AppConstants.HANDLER.PING,
-        state: true,
-        type: 'writers'
-      },
-      {
-        configuration: safeDump(Object.entries({
-          uri: this.form!.get('mqttUri')!.value,
-          topic: 'esthesis/metadata/#',
-          qos: 0,
-          queueSize: 1000,
-          schedulingPeriod: '100 ms',
-          keystoreFilename: null,
-          keystorePassword: null,
-          truststoreFilename: null,
-          truststorePassword: null
-        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
-        factoryClass: 'esthesis.platform.backend.server.nifi.sinks.readers.mqtt.ConsumeMQTT',
-        name: 'Metadata reader (from MQTT)',
-        handler: AppConstants.HANDLER.METADATA,
-        state: true,
-        type: 'readers'
-      },
-      {
-        configuration: safeDump(Object.entries({
-          uri: this.form!.get('mqttUri')!.value,
-          topic: 'esthesis/telemetry/#',
-          qos: 0,
-          queueSize: 1000,
-          schedulingPeriod: '100 ms',
-          keystoreFilename: null,
-          keystorePassword: null,
-          truststoreFilename: null,
-          truststorePassword: null
-        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
-        factoryClass: 'esthesis.platform.backend.server.nifi.sinks.readers.mqtt.ConsumeMQTT',
-        name: 'Telemetry reader (from MQTT)',
-        handler: AppConstants.HANDLER.TELEMETRY,
-        state: true,
-        type: 'readers'
-      },
-      {
-        configuration: safeDump(Object.entries({
-          databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
-          databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
-          databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
-          databaseUser: this.form!.get('esthesisDbUser')!.value,
-          password: this.form!.get('esthesisDbPassword')!.value,
-          schedulingPeriod: '100 ms'
-        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
-        factoryClass: 'esthesis.platform.backend.server.nifi.sinks.writers.relational.PutDatabaseRecord',
-        name: 'Metadata writer (to esthesis database)',
-        handler: AppConstants.HANDLER.METADATA,
-        state: true,
-        type: 'writers'
-      },
-      {
-        configuration: safeDump(Object.entries({
-          username: this.form!.get('influxDbUser')!.value,
-          password: this.form!.get('influxDbPassword')!.value,
-          databaseName: 'esthesis',
-          databaseUrl: this.form!.get('influxDbUri')!.value,
-          retentionPolicy: 'autogen',
-          maxConnectionTimeoutSeconds: 60,
-          consistencyLevel: 'ANY',
-          charset: 'UTF-8',
-          maxRecordSize: 100,
-          maxRecordSizeUnit: 'kb',
-          schedulingPeriod: '100 ms'
-        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
-        factoryClass: 'esthesis.platform.backend.server.nifi.sinks.writers.influxdb.PutInfluxDB',
-        name: 'Telemetry writer (to InfluxDB)',
-        handler: AppConstants.HANDLER.TELEMETRY,
-        state: true,
-        type: 'writers'
-      },
-      {
-        configuration: safeDump(Object.entries({
-          databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
-          databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
-          databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
-          databaseUser: this.form!.get('esthesisDbUser')!.value,
-          password: this.form!.get('esthesisDbPassword')!.value,
-          schedulingPeriod: '100 ms'
-        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
-        factoryClass: 'esthesis.platform.backend.server.nifi.sinks.producers.relational.ExecuteSQL',
-        name: 'Metadata producer (from esthesis database)',
-        handler: AppConstants.HANDLER.METADATA,
-        state: true,
-        type: 'producers'
-      },
-      {
-        configuration: safeDump(Object.entries({
-          username: this.form!.get('influxDbUser')!.value,
-          password: this.form!.get('influxDbPassword')!.value,
-          databaseName: 'esthesis',
-          databaseUrl: this.form!.get('influxDbUri')!.value,
-          maxConnectionTimeoutSeconds: 60,
-          queryResultTimeUnit: 'Nanoseconds',
-          queryChunkSize: 1,
-          schedulingPeriod: '100 ms'
-        }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
-        factoryClass: 'esthesis.platform.backend.server.nifi.sinks.producers.influxdb.ExecuteInfluxDB',
-        name: 'Telemetry producer (from InfluxDB)',
-        handler: AppConstants.HANDLER.TELEMETRY,
-        state: true,
-        type: 'producers'
-      },
+      // {
+      //   configuration: safeDump(Object.entries({
+      //     uri: this.form!.get('mqttUri')!.value,
+      //     topic: 'esthesis/ping/#',
+      //     qos: 0,
+      //     queueSize: 1000,
+      //     schedulingPeriod: '100 ms',
+      //     keystoreFilename: null,
+      //     keystorePassword: null,
+      //     truststoreFilename: null,
+      //     truststorePassword: null
+      //   }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.readers.mqtt.ConsumeMQTT',
+      //   name: 'Ping reader (from MQTT)',
+      //   handler: AppConstants.HANDLER.PING,
+      //   state: true,
+      //   type: 'readers'
+      // },
+      // {
+      //   configuration: safeDump(Object.entries({
+      //     databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
+      //     databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
+      //     databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
+      //     databaseUser: this.form!.get('esthesisDbUser')!.value,
+      //     password: this.form!.get('esthesisDbPassword')!.value,
+      //     schedulingPeriod: '100 ms'
+      //   }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.writers.relational.PutDatabaseRecord',
+      //   name: 'Ping writer (to esthesis database)',
+      //   handler: AppConstants.HANDLER.PING,
+      //   state: true,
+      //   type: 'writers'
+      // },
+      // {
+      //   configuration: safeDump(Object.entries({
+      //     uri: this.form!.get('mqttUri')!.value,
+      //     topic: 'esthesis/metadata/#',
+      //     qos: 0,
+      //     queueSize: 1000,
+      //     schedulingPeriod: '100 ms',
+      //     keystoreFilename: null,
+      //     keystorePassword: null,
+      //     truststoreFilename: null,
+      //     truststorePassword: null
+      //   }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.readers.mqtt.ConsumeMQTT',
+      //   name: 'Metadata reader (from MQTT)',
+      //   handler: AppConstants.HANDLER.METADATA,
+      //   state: true,
+      //   type: 'readers'
+      // },
+      // {
+      //   configuration: safeDump(Object.entries({
+      //     uri: this.form!.get('mqttUri')!.value,
+      //     topic: 'esthesis/telemetry/#',
+      //     qos: 0,
+      //     queueSize: 1000,
+      //     schedulingPeriod: '100 ms',
+      //     keystoreFilename: null,
+      //     keystorePassword: null,
+      //     truststoreFilename: null,
+      //     truststorePassword: null
+      //   }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.readers.mqtt.ConsumeMQTT',
+      //   name: 'Telemetry reader (from MQTT)',
+      //   handler: AppConstants.HANDLER.TELEMETRY,
+      //   state: true,
+      //   type: 'readers'
+      // },
+      // {
+      //   configuration: safeDump(Object.entries({
+      //     databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
+      //     databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
+      //     databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
+      //     databaseUser: this.form!.get('esthesisDbUser')!.value,
+      //     password: this.form!.get('esthesisDbPassword')!.value,
+      //     schedulingPeriod: '100 ms'
+      //   }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.writers.relational.PutDatabaseRecord',
+      //   name: 'Metadata writer (to esthesis database)',
+      //   handler: AppConstants.HANDLER.METADATA,
+      //   state: true,
+      //   type: 'writers'
+      // },
+      // {
+      //   configuration: safeDump(Object.entries({
+      //     username: this.form!.get('influxDbUser')!.value,
+      //     password: this.form!.get('influxDbPassword')!.value,
+      //     databaseName: 'esthesis',
+      //     databaseUrl: this.form!.get('influxDbUri')!.value,
+      //     retentionPolicy: 'autogen',
+      //     maxConnectionTimeoutSeconds: 60,
+      //     consistencyLevel: 'ANY',
+      //     charset: 'UTF-8',
+      //     maxRecordSize: 100,
+      //     maxRecordSizeUnit: 'kb',
+      //     schedulingPeriod: '100 ms'
+      //   }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.writers.influxdb.PutInfluxDB',
+      //   name: 'Telemetry writer (to InfluxDB)',
+      //   handler: AppConstants.HANDLER.TELEMETRY,
+      //   state: true,
+      //   type: 'writers'
+      // },
+      // {
+      //   configuration: safeDump(Object.entries({
+      //     databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
+      //     databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
+      //     databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
+      //     databaseUser: this.form!.get('esthesisDbUser')!.value,
+      //     password: this.form!.get('esthesisDbPassword')!.value,
+      //     schedulingPeriod: '100 ms'
+      //   }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.producers.relational.ExecuteSQL',
+      //   name: 'Metadata producer (from esthesis database)',
+      //   handler: AppConstants.HANDLER.METADATA,
+      //   state: true,
+      //   type: 'producers'
+      // },
+      // {
+      //   configuration: safeDump(Object.entries({
+      //     username: this.form!.get('influxDbUser')!.value,
+      //     password: this.form!.get('influxDbPassword')!.value,
+      //     databaseName: 'esthesis',
+      //     databaseUrl: this.form!.get('influxDbUri')!.value,
+      //     maxConnectionTimeoutSeconds: 60,
+      //     queryResultTimeUnit: 'Nanoseconds',
+      //     queryChunkSize: 1,
+      //     schedulingPeriod: '100 ms'
+      //   }).reduce((a: any, [k, v]) => v ? (a[k] = v, a) : a, {})),
+      //   factoryClass: 'esthesis.platform.backend.server.nifi.sinks.producers.influxdb.ExecuteInfluxDB',
+      //   name: 'Telemetry producer (from InfluxDB)',
+      //   handler: AppConstants.HANDLER.TELEMETRY,
+      //   state: true,
+      //   type: 'producers'
+      // },
       {
         configuration: safeDump(Object.entries({
           databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
@@ -235,15 +238,18 @@ export class DatawizardStandardComponent implements OnInit {
 
     let index = 0;
     let isError = false;
+    let lastRequestName;
     for (const request of requests) {
       try {
         index++;
+        lastRequestName = request.name;
+        this.log.info("Executing request for: " + lastRequestName);
         this.wizardProgress = Math.floor((index / requests.length) * 100);
         await this.nifiSinfService.save(request).toPromise();
       } catch (e) {
         isError = true;
-        this.utilityService.popupError('Could not execute wizard successfully. Please delete' +
-          ' manually the esthesis NiFi workflow and try again.');
+        this.utilityService.popupError("Could not execute wizard successfully. Please delete" +
+          " manually the esthesis NiFi workflow and try again.<br><br>Failed request:<br>" + request.name);
         break;
       }
     }

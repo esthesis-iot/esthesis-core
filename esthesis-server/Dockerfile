@@ -12,12 +12,12 @@ MAINTAINER esthesis@eurodyn.com
 WORKDIR /maven
 
 # Copy application's pom.xml.
-COPY esthesis-server/pom.xml esthesis-server/pom.xml
-COPY esthesis-server/esthesis-server-common/pom.xml esthesis-server/esthesis-server-common/pom.xml
-COPY esthesis-server/esthesis-server-impl/pom.xml esthesis-server/esthesis-server-impl/pom.xml
+COPY pom.xml pom.xml
+COPY esthesis-server-common/pom.xml esthesis-server-common/pom.xml
+COPY esthesis-server-impl/pom.xml esthesis-server-impl/pom.xml
 
 # Download Maven dependencies.
-RUN cd esthesis-server && mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies -Pprod
+RUN mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies -Pprod
 
 ####################################################################################################
 # Build application.
@@ -29,18 +29,17 @@ MAINTAINER esthesis@eurodyn.com
 WORKDIR /build
 
 COPY .git .git
-COPY esthesis-server/pom.xml esthesis-server/pom.xml
+COPY pom.xml pom.xml
 
-COPY esthesis-server/esthesis-server-common/pom.xml esthesis-server/esthesis-server-common/pom.xml
-COPY esthesis-server/esthesis-server-common/src esthesis-server/esthesis-server-common/src
+COPY esthesis-server-common/pom.xml esthesis-server-common/pom.xml
+COPY esthesis-server-common/src esthesis-server-common/src
 
-COPY esthesis-server/esthesis-server-impl/pom.xml esthesis-server/esthesis-server-impl/pom.xml
-COPY esthesis-server/esthesis-server-impl/src esthesis-server/esthesis-server-impl/src
+COPY esthesis-server-impl/pom.xml esthesis-server-impl/pom.xml
+COPY esthesis-server-impl/src esthesis-server-impl/src
 
 COPY --from=maven /root/.m2 /root/.m2
 
-RUN cd esthesis-server && mvn clean package -Pprod
-#RUN cd esthesis-server-impl && mvn spring-boot:repackage -Pprod
+RUN mvn clean package -Pprod
 
 ####################################################################################################
 # Create application image.
@@ -52,7 +51,7 @@ MAINTAINER esthesis@eurodyn.com
 WORKDIR /app
 
 # Add app
-COPY --from=build /build/esthesis-server/esthesis-server-impl/target/esthesis-server-impl-*.jar /app/esthesis-server.jar
+COPY --from=build /build/esthesis-server-impl/target/esthesis-server-impl-*.jar /app/esthesis-server.jar
 
 RUN sed -i.bak \
     -e "s/securerandom.source=file:\/dev\/random/securerandom.source=file:\/dev\/urandom/g" \
