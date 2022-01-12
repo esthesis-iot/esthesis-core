@@ -1,5 +1,6 @@
 ####################################################################################################
-# Docker multistage build setup for the frontend app.
+# Docker multistage build for esthesis server UI.
+# Build this Dockerfile from `esthesis-setup` by executing `docker compose build esthesis-ui`.
 ####################################################################################################
 
 ####################################################################################################
