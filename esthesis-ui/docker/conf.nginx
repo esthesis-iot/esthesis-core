@@ -1,9 +1,0 @@
-server {
-  listen 8080;
-
-  # Serve the static files of the frontend.
-  location / {
-    root   /usr/share/nginx/html;
-    try_files $uri $uri/ /index.html;
-  }
-}
