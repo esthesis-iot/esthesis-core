@@ -24,11 +24,6 @@ pipeline {
                 '''
              }
         }
-        stage('Dependencies Check') {
-             steps {
-                sh 'mvn -f pom-dependency-check.xml org.owasp:dependency-check-maven:aggregate'
-             }
-        }
         stage('Sonar Analysis') {
             steps {
                 withSonarQubeEnv('sonar'){
@@ -47,7 +42,7 @@ pipeline {
                 sh '''
                     cat > payload.json <<__HERE__
                     {
-                      "project": "027dcc1e-f095-41ba-92c8-460eb0b93dbb",
+                      "project": "7a17ee16-0434-45e9-a164-f32cc3129984",
                       "bom": "$(cat esthesis-server/target/bom.xml |base64 -w 0 -)"
                     }
                     __HERE__
@@ -69,7 +64,7 @@ pipeline {
                 sh '''
                     cat > payload.json <<__HERE__
                     {
-                      "project": "3068f979-f3a5-4768-b93f-12a03b059919",
+                      "project": "cd0e48ff-6cbc-490f-82d5-927414a3bda5",
                       "bom": "$(cat esthesis-device/target/bom.xml |base64 -w 0 -)"
                     }
                     __HERE__
@@ -85,9 +80,9 @@ pipeline {
         changed {
             script {
                 if (currentBuild.result == 'SUCCESS') {
-                        rocketSend avatar: "http://cicd-jenkins.eurodyn.com/static/ff676c77/images/headshot.png", channel: 'esthesis-iot', message: ":white_check_mark: | ${BUILD_URL} \n\nBuild succeeded on branch *${env.BRANCH_NAME}* \nChangelog: ${getChangeString(10)}", rawMessage: true
+                        rocketSend avatar: "http://d2-np.eurodyn.com/jenkins/jenkins.png", channel: 'esthesis-iot', message: ":white_check_mark: | ${BUILD_URL} \n\nBuild succeeded on branch *${env.BRANCH_NAME}* \nChangelog: ${getChangeString(10)}", rawMessage: true
                 } else {
-                        rocketSend avatar: "http://cicd-jenkins.eurodyn.com/static/ff676c77/images/headshot.png", channel: 'esthesis-iot', message: ":negative_squared_cross_mark: | ${BUILD_URL} \n\nBuild failed on branch *${env.BRANCH_NAME}* \nChangelog: ${getChangeString(10)}", rawMessage: true
+                        rocketSend avatar: "http://d2-np.eurodyn.com/jenkins/jenkins.png", channel: 'esthesis-iot', message: ":negative_squared_cross_mark: | ${BUILD_URL} \n\nBuild failed on branch *${env.BRANCH_NAME}* \nChangelog: ${getChangeString(10)}", rawMessage: true
                 }
             }
         }
