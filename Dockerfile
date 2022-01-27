@@ -1,6 +1,7 @@
 ####################################################################################################
 # Docker multistage build for esthesis server backend.
-# Build this Dockerfile from `esthesis-setup/docker` by executing `docker compose build esthesis-server`.
+# Build this Dockerfile from `esthesis-setup/docker` by executing:
+# `docker compose build esthesis-server`.
 ####################################################################################################
 
 ####################################################################################################
@@ -13,15 +14,15 @@ MAINTAINER esthesis@eurodyn.com
 WORKDIR /maven
 
 # Copy application's pom.xml.
-COPY esthesis-server/pom.xml pom.xml
-COPY esthesis-server/esthesis-server-common/pom.xml esthesis-server-common/pom.xml
-COPY esthesis-server/esthesis-server-impl/pom.xml esthesis-server-impl/pom.xml
+COPY pom.xml pom.xml
+COPY esthesis-server-common/pom.xml esthesis-server-common/pom.xml
+COPY esthesis-server-impl/pom.xml esthesis-server-impl/pom.xml
 
 # Download Maven dependencies.
 RUN mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies -Pprod
 
 ####################################################################################################
-# Build application.
+## Build application.
 ####################################################################################################
 FROM maven:3.8.1-openjdk-15 as build
 MAINTAINER esthesis@eurodyn.com
@@ -30,11 +31,11 @@ MAINTAINER esthesis@eurodyn.com
 WORKDIR /build
 
 COPY .git .git
-COPY esthesis-server/pom.xml pom.xml
-COPY esthesis-server/esthesis-server-common/pom.xml esthesis-server-common/pom.xml
-COPY esthesis-server/esthesis-server-common/src esthesis-server-common/src
-COPY esthesis-server/esthesis-server-impl/pom.xml esthesis-server-impl/pom.xml
-COPY esthesis-server/esthesis-server-impl/src esthesis-server-impl/src
+COPY pom.xml pom.xml
+COPY esthesis-server-common/pom.xml esthesis-server-common/pom.xml
+COPY esthesis-server-common/src esthesis-server-common/src
+COPY esthesis-server-impl/pom.xml esthesis-server-impl/pom.xml
+COPY esthesis-server-impl/src esthesis-server-impl/src
 
 COPY --from=maven /root/.m2 /root/.m2
 
