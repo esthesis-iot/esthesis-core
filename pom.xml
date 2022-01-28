@@ -69,6 +69,8 @@
     <querydsl.version>4.4.0</querydsl.version>
     <slugify.version>2.2</slugify.version>
     <spring-content-fs-boot-starter.version>1.2.0</spring-content-fs-boot-starter.version>
+    <version.sonar>3.7.0.1746</version.sonar>
+    <version.jacoco>0.8.6</version.jacoco>
   </properties>
 
   <dependencyManagement>
@@ -127,8 +129,46 @@
             <useIncrementalCompilation>false</useIncrementalCompilation>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>${version.sonar}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${version.jacoco}</version>
+        <executions>
+          <execution>
+            <id>prepare-unit-test-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>generate-unit-test-report</id>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>prepare-integration-test-agent</id>
+            <goals>
+              <goal>prepare-agent-integration</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>generate-integration-test-report</id>
+            <goals>
+              <goal>report-integration</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <modules>
