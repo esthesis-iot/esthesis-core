@@ -325,9 +325,9 @@
       <version>${commons-collections4.version}</version>
     </dependency>
     <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>${mysql-connector-java.version}</version>
+      <groupId>org.mariadb.jdbc</groupId>
+      <artifactId>mariadb-java-client</artifactId>
+      <version>${mariadb-connector-java.version}</version>
     </dependency>
     <dependency>
       <groupId>org.liquibase</groupId>
