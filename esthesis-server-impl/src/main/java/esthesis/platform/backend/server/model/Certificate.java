@@ -36,6 +36,10 @@ public class Certificate extends BaseEntity {
   @Column(updatable = false)
   private String cn;
 
+  @Size(max = 2048)
+  @Column(updatable = false, length = 2048)
+  private String san;
+
   @Column(updatable = false)
   private Instant issued;
 

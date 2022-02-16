@@ -39,7 +39,7 @@
 
   <properties>
     <spring.boot.version>2.4.1</spring.boot.version>
-    <qlack.version>3.5.2</qlack.version>
+    <qlack.version>3.5.6-SNAPSHOT</qlack.version>
 
     <awaitility.version>4.0.3</awaitility.version>
     <camunda.spring-boot.version>7.14.0</camunda.spring-boot.version>
@@ -63,7 +63,7 @@
     <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
     <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
     <moquette-broker.version>0.12.1</moquette-broker.version>
-    <mariadb-connector-java.version>3.0.3</mariadb-connector-java.version>
+    <mariadb-connector-java.version>2.7.5</mariadb-connector-java.version> <!-- v3.x had a regression error that is expected to be fixed in 3.0.4 / restart esthesis server a couple of times to see if fixed -->
     <org.eclipse.paho.client.mqttv3.version>1.2.2</org.eclipse.paho.client.mqttv3.version>
     <oshi-core.version>3.13.3</oshi-core.version>
     <querydsl.version>4.4.0</querydsl.version>

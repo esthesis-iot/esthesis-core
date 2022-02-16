@@ -37,6 +37,8 @@ public class CertificateDTO extends BaseDTO {
   @JsonProperty(access = Access.READ_ONLY)
   private String certificate;
 
+  private String san;
+
   private String issuer;
 
   private int type;

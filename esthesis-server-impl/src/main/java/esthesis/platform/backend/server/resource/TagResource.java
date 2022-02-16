@@ -39,9 +39,7 @@ public class TagResource {
   }
 
   /**
-   * Returns the profile of the current application.
-   *
-   * @return Returns the profile of the current application
+   * Returns the tags.
    */
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not retrieve tags list.")
@@ -52,9 +50,7 @@ public class TagResource {
   }
 
   /**
-   * Saves an application.
-   *
-   * @param tagDTO The application to save
+   * Saves a tag.
    */
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save tag.",

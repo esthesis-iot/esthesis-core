@@ -29,8 +29,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.crypto.NoSuchPaddingException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -76,8 +78,8 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
       );
 
       // Prepare the sign request.
-      CertificateSignDTO signDTO = new CertificateSignDTO();
-      signDTO
+      CertificateSignDTO certificateSignDTO = new CertificateSignDTO();
+      certificateSignDTO
         .setLocale(Locale.US)
         .setPrivateKey(keyPair.getPrivate())
         .setPublicKey(keyPair.getPublic())
@@ -86,29 +88,37 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
         .setValidForm(Instant.now())
         .setValidTo(certificateDTO.getValidity());
 
+      if (StringUtils.isNotEmpty(certificateDTO.getSan())) {
+        certificateSignDTO.setSan(
+          Arrays.stream(certificateDTO.getSan().split(",")).map(String::trim)
+            .collect(Collectors.joining(","))
+        );
+      }
+
       if (ca != null) {
-        signDTO.setIssuerCN(ca.getCn());
-        signDTO.setIssuerPrivateKey(
+        certificateSignDTO.setIssuerCN(ca.getCn());
+        certificateSignDTO.setIssuerPrivateKey(
           cryptoAsymmetricService.pemToPrivateKey(
             ca.getPrivateKey(),
             appProperties.getSecurityAsymmetricKeyAlgorithm()));
       } else {
-        signDTO.setIssuerCN(certificateDTO.getCn());
-        signDTO.setIssuerPrivateKey(keyPair.getPrivate());
+        certificateSignDTO.setIssuerCN(certificateDTO.getCn());
+        certificateSignDTO.setIssuerPrivateKey(keyPair.getPrivate());
       }
 
       // Sign the certificate.
       final X509CertificateHolder x509CertificateHolder = cryptoCAService
-        .generateCertificate(signDTO);
+        .generateCertificate(certificateSignDTO);
 
       // Populate the certificate DTO to persist it.
-      certificateDTO.setIssued(signDTO.getValidForm());
+      certificateDTO.setIssued(certificateSignDTO.getValidForm());
       certificateDTO
         .setPrivateKey(cryptoAsymmetricService.privateKeyToPEM(keyPair));
       certificateDTO.setPublicKey(cryptoAsymmetricService.publicKeyToPEM(keyPair));
-      certificateDTO.setIssuer(signDTO.getIssuerCN());
+      certificateDTO.setIssuer(certificateSignDTO.getIssuerCN());
       certificateDTO
         .setCertificate(cryptoCAService.certificateToPEM(x509CertificateHolder));
+      certificateDTO.setSan(certificateSignDTO.getSan());
 
       return super.save(certificateDTO);
     } catch (NoSuchAlgorithmException | IOException | OperatorCreationException | InvalidKeySpecException | NoSuchProviderException e) {
@@ -132,8 +142,8 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
   }
 
   public DownloadReply download(long certificateId, int keyType, boolean base64)
-    throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-    InvalidAlgorithmParameterException, IOException {
+  throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
+         InvalidAlgorithmParameterException, IOException {
     final Certificate certificate = findEntityById(certificateId);
 
     DownloadReply keyDownloadReply = new DownloadReply();
@@ -189,8 +199,8 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
 //        .getPrivateKey();
 //  }
   public void restore(String backup)
-    throws IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-    InvalidAlgorithmParameterException {
+  throws IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
+         InvalidAlgorithmParameterException {
     // Create a local copy of the system's ObjectMapper in order to overwrite Access.READ_ONLY attributes of the
     // underlying object.
     ObjectMapper localObjectMapper = objectMapper.copy();
@@ -207,8 +217,8 @@ public class CertificatesService extends BaseService<CertificateDTO, Certificate
   }
 
   public String backup(long id)
-    throws IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
-    InvalidAlgorithmParameterException {
+  throws IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
+         InvalidAlgorithmParameterException {
     final CertificateDTO certificateDTO = findById(id);
     certificateDTO.setPrivateKey(certificateDTO.getPrivateKey());
     certificateDTO.setType(Type.CERTIFICATE);
