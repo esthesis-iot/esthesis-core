@@ -39,7 +39,7 @@
 
   <properties>
     <spring.boot.version>2.4.1</spring.boot.version>
-    <qlack.version>3.5.6-SNAPSHOT</qlack.version>
+    <qlack.version>3.5.6</qlack.version>
 
     <awaitility.version>4.0.3</awaitility.version>
     <camunda.spring-boot.version>7.14.0</camunda.spring-boot.version>
