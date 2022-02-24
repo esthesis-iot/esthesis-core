@@ -8,6 +8,7 @@ import com.querydsl.core.types.Predicate;
 import esthesis.platform.backend.server.dto.TagDTO;
 import esthesis.platform.backend.server.model.Tag;
 import esthesis.platform.backend.server.service.TagService;
+import java.io.ObjectInputFilter;
 import javax.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -59,8 +60,7 @@ public class TagResource {
     BindingResult bindingResult) throws MethodArgumentNotValidException {
     // Check tag name does not exist.
     final Optional<Tag> existingTag = tagService.findByName(tagDTO.getName());
-    if (((tagDTO.getId() == null && existingTag.isPresent()) ||
-      ((tagDTO.getId() != null && !existingTag.orElseThrow().getId().equals(tagDTO.getId()))))) {
+    if (existingTag.isPresent()) {
       new QValidationUtil(errors, bindingResult)
         .throwValidationError("name", "TAG_ALREADY_EXISTS", "Tag name already exists.");
     }
