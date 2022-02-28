@@ -210,20 +210,9 @@
       <artifactId>spring-retry</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-websocket</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-messaging</artifactId>
-      <version>5.2.2.RELEASE</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-ui</artifactId>
-      <version>1.5.12</version>
+      <version>${springdoc-openapi-ui.version}</version>
     </dependency>
 
     <!-- QLACK dependencies -->
@@ -341,7 +330,7 @@
     <dependency>
       <groupId>org.apache.nifi</groupId>
       <artifactId>nifi-client-dto</artifactId>
-      <version>1.9.0</version>
+      <version>${nifi-client-dto.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -350,7 +339,7 @@
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <version>4.2.0</version>
+      <version>${okhttp.version}</version>
     </dependency>
     <dependency>
       <groupId>org.yaml</groupId>

@@ -1,7 +1,9 @@
 package esthesis.platform.backend.common.device.commands;
 
 import esthesis.platform.backend.common.dto.BaseDTO;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,6 +33,7 @@ public class CommandRequestDTO extends BaseDTO {
   // A description for this command.
   @Schema(description = "A description for this command.")
   private String description;
+
 
   @Schema(description = "The hardwareId of the device on which the command will be executed.")
   private String deviceHardwareId;

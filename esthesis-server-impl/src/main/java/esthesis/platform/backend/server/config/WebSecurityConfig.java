@@ -13,7 +13,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private static final String[] PUBLIC_URIS = {"/users/auth", "/ping", "/agent/**", "/util/bg-photo", "/camunda/app/**"};
+  private static final String[] PUBLIC_URIS = {"/users/auth", "/ping", "/agent/**",
+    "/util/bg-photo", "/camunda/app/**"};
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final DTSecurityFilter dtSecurityFilter;
 
@@ -38,7 +39,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   public void configure(WebSecurity web) throws Exception {
-    web.ignoring().antMatchers("/v3/api-docs/**", "/swagger.json", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/swagger-ui/***");
+    web.ignoring().antMatchers("/v3/api-docs/**", "/swagger.json", "/swagger-ui.html",
+      "/swagger-resources/**", "/webjars/**", "/swagger-ui/***");
   }
 
 }

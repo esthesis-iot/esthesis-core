@@ -1,6 +1,7 @@
 package esthesis.platform.backend.server.workflow;
 
 import esthesis.platform.backend.server.config.AppConstants;
+import esthesis.platform.backend.server.config.AppConstants.DigitalTwins;
 import esthesis.platform.backend.server.dto.CampaignConditionDTO;
 import esthesis.platform.backend.server.service.CampaignService;
 import esthesis.platform.backend.server.service.DTService;
@@ -64,8 +65,8 @@ public class PropertyConditionTask implements JavaDelegate {
         log.log(Level.FINEST,
           "Checking property ''{0}.{1}.{2}'' for device with hardware Id ''{3}''.", new Object[]{
             type, measurement, field, hardwareId});
-        String reply = dtService.extractMetadataOrTelemetrySingleValue(type, hardwareId,
-          AppConstants.DigitalTwins.DTOperations.OPERATION_QUERY, measurement, field, 0L,
+        String reply = dtService.extractMetadataOrTelemetrySingleValue(DigitalTwins.Type.valueOf(type),
+          hardwareId, AppConstants.DigitalTwins.DTOperations.QUERY, measurement, field, 0L,
           Instant.now().toEpochMilli(), 1, 1);
         log.log(Level.FINEST, "Property value: {0}.", reply);
         // If the value given for this property is numeric, perform a numeric comparison.

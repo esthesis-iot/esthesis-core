@@ -154,25 +154,14 @@ public class AppConstants {
     public static NIFI_SINK_HANDLER valueOf(int type) {
       return map.get(type);
     }
-
   }
 
   public static class DigitalTwins {
-    public static class Type {
-      public static final String TELEMETRY = "telemetry";
-      public static final String METADATA = "metadata";
-      public static final String COMMAND = "command";
+    public enum Type {
+      telemetry, metadata, command
     }
-    public static class DTOperations {
-      public static final String OPERATION_QUERY = "QUERY";
-      public static final String OPERATION_MIN = "MIN";
-      public static final String OPERATION_MAX = "MAX";
-      public static final String OPERATION_COUNT = "COUNT";
-      public static final String OPERATION_MEAN = "MEAN";
-      public static final String OPERATION_SUM = "SUM";
-      @SuppressWarnings("java:S2386")
-      public static final String[] SUPPORTED_OPERATIONS = {OPERATION_COUNT, OPERATION_MAX,
-        OPERATION_MEAN, OPERATION_MIN, OPERATION_QUERY, OPERATION_SUM};
+    public enum DTOperations {
+      QUERY, MIN, MAX, COUNT, MEAN, SUM
     }
   }
 

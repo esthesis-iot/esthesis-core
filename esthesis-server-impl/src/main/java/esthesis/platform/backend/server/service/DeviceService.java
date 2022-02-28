@@ -21,6 +21,7 @@ import esthesis.platform.backend.common.device.RegistrationRequest;
 import esthesis.platform.backend.common.device.dto.DeviceDTO;
 import esthesis.platform.backend.common.dto.DeviceMessage;
 import esthesis.platform.backend.server.config.AppConstants.Device.State;
+import esthesis.platform.backend.server.config.AppConstants.DigitalTwins;
 import esthesis.platform.backend.server.config.AppConstants.DigitalTwins.DTOperations;
 import esthesis.platform.backend.server.config.AppConstants.NiFi.QueryResults;
 import esthesis.platform.backend.server.config.AppProperties;
@@ -430,8 +431,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
       .filter(DevicePageDTO::isShown)
       .map(field -> {
         final String fieldValue = dtService
-          .executeMetadataOrTelemetry(field.getDatatype().toLowerCase(), deviceDTO.getHardwareId(),
-            DTOperations.OPERATION_QUERY.toLowerCase(), field.getMeasurement(), field.getField(),
+          .executeMetadataOrTelemetry(DigitalTwins.Type.valueOf(field.getDatatype().toLowerCase()),
+            deviceDTO.getHardwareId(), DTOperations.QUERY, field.getMeasurement(), field.getField(),
             null, null, 1, 1);
         try {
           @SuppressWarnings("unchecked") Map<String, List<Map<String, Object>>> jsonFields =
@@ -483,9 +484,8 @@ public class DeviceService extends BaseService<DeviceDTO, Device> {
 
     // Fetch field value.
     final String fieldValue = dtService
-      .executeMetadataOrTelemetry(dataType.toLowerCase(), hardwareId,
-        DTOperations.OPERATION_QUERY.toLowerCase(), measurement, fieldName,
-        null, null, 1, 1);
+      .executeMetadataOrTelemetry(DigitalTwins.Type.valueOf(dataType.toLowerCase()), hardwareId,
+        DTOperations.QUERY, measurement, fieldName, null, null, 1, 1);
     if (StringUtils.isNotBlank(fieldValue) && !fieldValue.trim().equals("{}")) {
       try {
         @SuppressWarnings("unchecked")

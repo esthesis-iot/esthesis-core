@@ -15,15 +15,9 @@ public class AppConstants {
       public static final String PAYLOAD_ENCODING_PLAIN = "plain";
       public static final String PAYLOAD_ENCODING_BASE64 = "base64";
     }
-    public static class CommandType {
-      public static final String PROVISIONING = "PROVISIONING";
-      public static final String PING = "PING";
-      public static final String HEALTH = "HEALTH";
-      public static final String REBOOT = "REBOOT";
-      public static final String EXECUTE = "EXECUTE";
-      public static final String SHUTDOWN = "SHUTDOWN";
+    public enum CommandType {
+      PROVISIONING, PING, HEALTH, REBOOT, EXECUTE, SHUTDOWN;
     }
   }
-
 
 }

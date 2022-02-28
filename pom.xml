@@ -39,7 +39,7 @@
 
   <properties>
     <spring.boot.version>2.4.1</spring.boot.version>
-    <qlack.version>3.5.7</qlack.version>
+    <qlack.version>3.5.8</qlack.version>
 
     <awaitility.version>4.0.3</awaitility.version>
     <camunda.spring-boot.version>7.14.0</camunda.spring-boot.version>
@@ -64,11 +64,14 @@
     <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
     <moquette-broker.version>0.12.1</moquette-broker.version>
     <mariadb-connector-java.version>2.7.5</mariadb-connector-java.version> <!-- v3.x had a regression error that is expected to be fixed in 3.0.4 / restart esthesis server a couple of times to see if fixed -->
+    <nifi-client-dto.version>1.9.0</nifi-client-dto.version>
     <org.eclipse.paho.client.mqttv3.version>1.2.2</org.eclipse.paho.client.mqttv3.version>
+    <okhttp.version>4.2.0</okhttp.version>
     <oshi-core.version>3.13.3</oshi-core.version>
     <querydsl.version>4.4.0</querydsl.version>
     <slugify.version>2.2</slugify.version>
     <spring-content-fs-boot-starter.version>1.2.0</spring-content-fs-boot-starter.version>
+    <springdoc-openapi-ui.version>1.6.6</springdoc-openapi-ui.version>
     <version.sonar>3.7.0.1746</version.sonar>
     <version.jacoco>0.8.6</version.jacoco>
   </properties>
