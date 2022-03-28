@@ -178,7 +178,7 @@ pipeline{
                         cd ../esthesis-setup/k8s/helm/esthesis-platform
                         find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: $NEXT_DEV_VERSION|"
                         git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-setup.git
-                        git commit -a -m "charts: prepare for next development iteration"
+                        git commit -a -m "update esthesis-platform helm charts to release version: $RELEASE_VERSION"
                         git push https://$Username:$Password@github.com/esthesis-iot/esthesis-setup HEAD:master
                     '''
                 }                
