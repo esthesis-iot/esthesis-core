@@ -78,26 +78,6 @@ pipeline{
                 }                
             }   
         }
-        stage ("esthesis-server: Push changes for next development version"){
-            steps{
-                withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
-                usernameVariable: 'Username',
-                passwordVariable: 'Password')]){
-                    sh '''
-                        cd esthesis-server
-                        mvn versions:set -DnewVersion=$NEXT_DEV_VERSION
-                        mvn versions:commit
-                        git commit -a -m "release: prepare for next development iteration"
-                        git push https://$Username:$Password@github.com/esthesis-iot/esthesis-server HEAD:master
-                        cd ..
-
-                        cd esthesis-setup/docker
-                        sed -i "s|esthesisiot/esthesis-server:.*$|esthesisiot/esthesis-server:$NEXT_DEV_VERSION|" docker-compose.yml
-                        cd ../..
-                    '''
-                }                
-            }             
-        }
         stage ("esthesis-ui: Push changes for RELEASE version"){
             steps{
                 withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
@@ -136,6 +116,54 @@ pipeline{
                 }                
             }   
         }
+        stage ("Helm Package for RELEASE version"){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                usernameVariable: 'Username',
+                passwordVariable: 'Password')]){
+                    sh '''#!/bin/bash
+                        cd esthesis-setup/k8s/helm/esthesis-platform
+                        find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: $RELEASE_VERSION|"
+                        git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-setup.git
+                        git commit -a -m "update esthesis-platform helm charts and docker-compose.yml to release version: $RELEASE_VERSION"
+                        git push https://$Username:$Password@github.com/esthesis-iot/esthesis-setup HEAD:master
+                        cd ..
+                        pushd . && \
+                        helm package esthesis-platform -d ../../../esthesis-docs/helm && \
+                        cd ../../../esthesis-docs/helm && \
+                        helm repo index . && \
+                        popd
+                        cd ../../..
+                        cd esthesis-docs
+                        git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-docs.git
+                        git add .
+                        git commit -m "package esthesis-platform charts for release version: $RELEASE_VERSION"
+                        git push https://$Username:$Password@github.com/esthesis-iot/esthesis-docs HEAD:master
+                        cd ..
+                    '''
+                }                
+            }   
+        }  
+        stage ("esthesis-server: Push changes for next development version"){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                usernameVariable: 'Username',
+                passwordVariable: 'Password')]){
+                    sh '''
+                        cd esthesis-server
+                        mvn versions:set -DnewVersion=$NEXT_DEV_VERSION
+                        mvn versions:commit
+                        git commit -a -m "release: prepare for next development iteration"
+                        git push https://$Username:$Password@github.com/esthesis-iot/esthesis-server HEAD:master
+                        cd ..
+
+                        cd esthesis-setup/docker
+                        sed -i "s|esthesisiot/esthesis-server:.*$|esthesisiot/esthesis-server:$NEXT_DEV_VERSION|" docker-compose.yml
+                        cd ../..
+                    '''
+                }                
+            }             
+        }
         stage ("esthesis-ui: Push changes for next development version"){
             steps{
                 withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
@@ -155,30 +183,16 @@ pipeline{
                 }                
             }             
         }  
-        stage ("Helm Package"){
+        stage ("Helm Charts for next development version"){
             steps{
                 withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
                 usernameVariable: 'Username',
                 passwordVariable: 'Password')]){
-                    sh '''#!/bin/bash
+                    sh '''
                         cd esthesis-setup/k8s/helm/esthesis-platform
-                        find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: $RELEASE_VERSION|"
-                        cd ..
-                        pushd . && \
-                        helm package esthesis-platform -d ../../../esthesis-docs/helm && \
-                        cd ../../../esthesis-docs/helm && \
-                        helm repo index . && \
-                        popd
-                        cd ../../..
-                        cd esthesis-docs
-                        git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-docs.git
-                        git add .
-                        git commit -m "update helm charts to release version: $RELEASE_VERSION"
-                        git push https://$Username:$Password@github.com/esthesis-iot/esthesis-docs HEAD:master
-                        cd ../esthesis-setup/k8s/helm/esthesis-platform
                         find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: $NEXT_DEV_VERSION|"
                         git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-setup.git
-                        git commit -a -m "update esthesis-platform helm charts to release version: $RELEASE_VERSION"
+                        git commit -a -m "update esthesis-platform helm charts and docker-compose.yaml for next development version: $NEXT_DEV_VERSION"
                         git push https://$Username:$Password@github.com/esthesis-iot/esthesis-setup HEAD:master
                     '''
                 }                
