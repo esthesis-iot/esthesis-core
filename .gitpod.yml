@@ -6,5 +6,9 @@ image: gitpod/workspace-java-17
 
 tasks:
   - init: mvn install -DskipTests=false
+  - name: MySQL
+    command: docker run mysql
 
-
+vscode:
+  extensions:
+    - "ms-azuretools.vscode-docker"
