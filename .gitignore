@@ -140,3 +140,4 @@ fabric.properties
 /esthesis-platform-backend/esthesis-platform-backend-server/src/main/resources/git.json
 /esthesis-platform-ui/proxy-nassos.conf.json
 /esthesis-ui/proxy-nassos.conf.json
+/esthesis-server-impl/src/main/resources/git.json

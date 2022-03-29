@@ -5,10 +5,6 @@ image: gitpod/workspace-java-17
 
 additionalRepositories:
   - url: https://github.com/esthesis-iot/esthesis-setup
-  - url: https://github.com/esthesis-iot/esthesis-ui
-  - url: https://github.com/esthesis-iot/esthesis-docs
-  - url: https://github.com/esthesis-iot/esthesis-device
-  - url: https://github.com/esthesis-iot/esthesis-docker
 
 # tasks:
 #   - init: mvn install -DskipTests=false
