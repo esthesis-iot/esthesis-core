@@ -15,7 +15,7 @@ pipeline{
                 script {
                     env.RELEASE_VERSION = input message: 'Release version:',
                                      parameters: [string(defaultValue: '',
-                                                  description: 'Attention: To avoid Git conflicts, please do not build esthesis-device release job before this one finishes.',
+                                                  description: 'Attention: To avoid Git conflicts, please do not push to esthesis-iot git repositories or build esthesis-device release job before this one finishes.',
                                                   name: 'Release version')]
                     env.NEXT_DEV_VERSION = input message: 'Snapshot version:',
                                      parameters: [string(defaultValue: '',
@@ -64,9 +64,6 @@ pipeline{
 		            DOCKERHUB_CREDENTIALS=credentials('devops_d2_dockerhub')
 	                }
             steps{
-                withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
-                usernameVariable: 'Username',
-                passwordVariable: 'Password')]){
                     sh '''
                         echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
                         cd esthesis-setup
@@ -74,8 +71,7 @@ pipeline{
                         docker compose -f docker/docker-compose.yml build esthesis-server
                         docker push esthesisiot/esthesis-server:$RELEASE_VERSION
                         cd ..
-                    '''
-                }                
+                    '''               
             }   
         }
         stage ("esthesis-ui: Push changes for RELEASE version"){
@@ -102,9 +98,6 @@ pipeline{
 		            DOCKERHUB_CREDENTIALS=credentials('devops_d2_dockerhub')
 	                }
             steps{
-                withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
-                usernameVariable: 'Username',
-                passwordVariable: 'Password')]){
                     sh '''
                         echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
                         cd esthesis-setup/docker
@@ -112,8 +105,7 @@ pipeline{
                         docker compose build esthesis-ui
                         docker push esthesisiot/esthesis-ui:$RELEASE_VERSION
                         cd ../..
-                    '''
-                }                
+                    '''               
             }   
         }
         stage ("Helm Package for RELEASE version"){
