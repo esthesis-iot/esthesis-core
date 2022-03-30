@@ -1,5 +1,6 @@
 ---
-image: gitpod/workspace-java-17
+#image: gitpod/workspace-java-17
+image: gitpod/workspace-full
 
 additionalRepositories:
   - url: https://github.com/esthesis-iot/esthesis-setup
