@@ -20,3 +20,6 @@ vscode:
   extensions:
     - "ms-azuretools.vscode-docker"
     - "vscjava.vscode-java-pack"
+    - "eamodio.gitlens"
+    - "Pivotal.vscode-boot-dev-pack"
+    - "redhat.vscode-xml"
