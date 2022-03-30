@@ -25,7 +25,7 @@ tasks:
       docker compose \
         -f ../esthesis-setup/docker/docker-compose.yml \
         -f ../esthesis-setup/docker/docker-compose-devenv.yml \
-        -d \
+        up -d \
         esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
 
 ports:
