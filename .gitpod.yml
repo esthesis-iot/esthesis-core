@@ -11,7 +11,7 @@ additionalRepositories:
 #  - url: https://github.com/esthesis-iot/esthesis-docker
 
 workspaceLocation:
-  esthesis-setup/.code-workspace
+  esthesis-server/.code-workspace
 
 # tasks:
 #   - init: mvn install -DskipTests=false
