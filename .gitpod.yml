@@ -20,6 +20,14 @@ vscode:
     - pivotal.vscode-spring-boot
     - asciidoctor.asciidoctor-vscode
 
+tasks:
+  - command: |
+      docker compose \
+        -f ../esthesis-setup/docker/docker-compose.yml \
+        -f ../esthesis-setup/docker/docker-compose-devenv.yml \
+        up -d \
+        esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
+
 ports:
   - port: 3306
     onOpen: ignore
