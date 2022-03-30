@@ -5,10 +5,10 @@ image: gitpod/workspace-java-17
 
 additionalRepositories:
   - url: https://github.com/esthesis-iot/esthesis-setup
-#  - url: https://github.com/esthesis-iot/esthesis-ui
-#  - url: https://github.com/esthesis-iot/esthesis-docs
-#  - url: https://github.com/esthesis-iot/esthesis-device
-#  - url: https://github.com/esthesis-iot/esthesis-docker
+  - url: https://github.com/esthesis-iot/esthesis-ui
+  - url: https://github.com/esthesis-iot/esthesis-docs
+  - url: https://github.com/esthesis-iot/esthesis-device
+  - url: https://github.com/esthesis-iot/esthesis-docker
 
 workspaceLocation:
   esthesis-server/.code-workspace
@@ -19,3 +19,4 @@ workspaceLocation:
 vscode:
   extensions:
     - "ms-azuretools.vscode-docker"
+    - "vscjava.vscode-java-pack"

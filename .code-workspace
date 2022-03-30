@@ -5,6 +5,18 @@
 		},
 		{
 			"path": "../esthesis-setup"
+		},
+		{
+			"path": "../esthesis-ui"
+		},
+		{
+			"path": "../esthesis-docs"
+		},
+		{
+			"path": "../esthesis-device"
+		},
+		{
+			"path": "../esthesis-docker"
 		}
 	],
 	"settings": {}
