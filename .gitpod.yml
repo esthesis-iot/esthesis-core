@@ -32,7 +32,8 @@ tasks:
       gp sync-done docker
     openIn: right
   - name: Backend
-    init: mvn clean install -DskipTests=true
+    init: |
+      mvn clean install -DskipTests=true
     command: |
       gp sync-await docker
       mvn spring-boot:run -Xdebug -XX:+ShowCodeDetailsInExceptionMessages \
@@ -49,3 +50,5 @@ tasks:
 ports:
   - port: 3306
     onOpen: ignore
+  - port: 4200
+    onOpen: open-preview
