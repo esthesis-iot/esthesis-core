@@ -11,14 +11,14 @@ additionalRepositories:
 workspaceLocation:
   esthesis-server/.code-workspace
 
-#vscode:
-#  extensions:
-#    - ms-azuretools.vscode-docker
-#    - vscjava.vscode-java-pack
-#    - Pivotal.vscode-boot-dev-pack
-#    - redhat.vscode-xml
-#    - pivotal.vscode-spring-boot
-#    - asciidoctor.asciidoctor-vscode
+vscode:
+  extensions:
+    - ms-azuretools.vscode-docker
+    - vscjava.vscode-java-pack
+    - Pivotal.vscode-boot-dev-pack
+    - redhat.vscode-xml
+    - pivotal.vscode-spring-boot
+    - asciidoctor.asciidoctor-vscode
 
 #tasks:
 #  - command: |
