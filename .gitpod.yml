@@ -18,7 +18,7 @@ vscode:
     - Pivotal.vscode-boot-dev-pack
     - redhat.vscode-xml
     - pivotal.vscode-spring-boot
-    - asciidoctor.asciidoctor-vscode
+#    - asciidoctor.asciidoctor-vscode
 
 tasks:
   - command: |
