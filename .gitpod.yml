@@ -20,13 +20,39 @@ vscode:
     - pivotal.vscode-spring-boot
     - asciidoctor.asciidoctor-vscode
 
-#tasks:
-#  - command: |
-#      docker compose \
-#        -f ../esthesis-setup/docker/docker-compose.yml \
-#        -f ../esthesis-setup/docker/docker-compose-devenv.yml \
-#        up -d \
-#        esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
+tasks:
+  - name: Supporting containers
+    command: |
+      docker compose \
+        -f ../esthesis-setup/docker/docker-compose.yml \
+        -f ../esthesis-setup/docker/docker-compose-devenv.yml \
+        up -d \
+        esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
+      gp sync-done docker
+    openIn: right
+  - name: Backend (build)
+    command: |
+      mvn clean install -DskipTests=true
+      gp sync-done backend-build
+    openIn: right
+  - name: Backend
+    init: gp sync-await docker && gp sync-await backend-build
+    command: |
+      mvn spring-boot:run -Xdebug -XX:+ShowCodeDetailsInExceptionMessages \
+        -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=55000" -Dspring-boot.run.arguments="--server.port=46000"
+    openIn: left
+  - name: Frontend (build)
+    command: |
+      cd ../esthesis-frontend
+      npm install
+      gp sync-done frontend-build
+    openIn: right
+  - name: Frontend
+    init: gp sync-await docker && gp sync-await frontend-build
+    command: |
+      cd ../esthesis-frontend
+      ng serve --host 0.0.0.0 --disable-host-check --proxy-config proxy.conf.json
+    openIn: left
 
 ports:
   - port: 3306
