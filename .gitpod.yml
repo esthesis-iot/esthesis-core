@@ -37,7 +37,7 @@ tasks:
     command: |
       gp sync-await docker
       mvn spring-boot:run -Xdebug -XX:+ShowCodeDetailsInExceptionMessages \
-        -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=55000" -Dspring-boot.run.arguments="--server.port=46000"
+        -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=55000 -Dspring-boot.run.arguments="--server.port=46000"
   - name: Frontend
     init: |
       cd ../esthesis-ui
