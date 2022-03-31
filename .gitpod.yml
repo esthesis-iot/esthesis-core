@@ -20,7 +20,7 @@ vscode:
     - pivotal.vscode-spring-boot
     - asciidoctor.asciidoctor-vscode
 
-tasks:
+#tasks:
 #  - name: Supporting containers
 #    init: |
 #      docker compose \
