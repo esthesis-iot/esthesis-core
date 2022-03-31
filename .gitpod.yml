@@ -32,9 +32,13 @@ tasks:
       docker compose \
         -f ../esthesis-setup/docker/docker-compose.yml \
         -f ../esthesis-setup/docker/docker-compose-devenv.yml \
-        up \
+        up -d \
         esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
       gp sync-done docker
+      docker compose \
+        -f ../esthesis-setup/docker/docker-compose.yml \
+        -f ../esthesis-setup/docker/docker-compose-devenv.yml \
+        logs -f
   - name: Backend
     init: |
       yes | sdk install java 17.0.2-tem
