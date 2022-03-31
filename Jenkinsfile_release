@@ -123,7 +123,7 @@ pipeline{
                         git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-setup.git
                         git commit -a -m "update esthesis-platform helm charts and docker-compose.yml to release version: $RELEASE_VERSION"
                         git push https://$Username:$Password@github.com/esthesis-iot/esthesis-setup HEAD:master
-                        cd ..
+                        cd ../..
                         pushd . && \
                         helm package esthesis-platform -d ../../../esthesis-docs/helm && \
                         cd ../../../esthesis-docs/helm && \
