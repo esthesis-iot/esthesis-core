@@ -119,7 +119,6 @@ pipeline{
                         cd charts
                         find . -name *.yaml | xargs sed -i "s|esthesisiot/esthesis-ui:.*$|esthesisiot/esthesis-ui:$RELEASE_VERSION|"
                         find . -name *.yaml | xargs sed -i "s|esthesisiot/esthesis-server:.*$|esthesisiot/esthesis-server:$RELEASE_VERSION|"
-                        find . -name *.yaml | xargs sed -i "s|esthesisiot/esthesis-nifi:.*$|esthesisiot/esthesis-nifi:$RELEASE_VERSION|"
                         git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-setup.git
                         git commit -a -m "update esthesis-platform helm charts and docker-compose.yml to release version: $RELEASE_VERSION"
                         git push https://$Username:$Password@github.com/esthesis-iot/esthesis-setup HEAD:master
@@ -190,7 +189,6 @@ pipeline{
                         cd charts
                         find . -name *.yaml | xargs sed -i "s|esthesisiot/esthesis-ui:.*$|esthesisiot/esthesis-ui:$NEXT_DEV_VERSION|"
                         find . -name *.yaml | xargs sed -i "s|esthesisiot/esthesis-server:.*$|esthesisiot/esthesis-server:$NEXT_DEV_VERSION|"
-                        find . -name *.yaml | xargs sed -i "s|esthesisiot/esthesis-nifi:.*$|esthesisiot/esthesis-nifi:$NEXT_DEV_VERSION|"
                         git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-setup.git
                         git commit -a -m "update esthesis-platform helm charts and docker-compose.yaml for next development version: $NEXT_DEV_VERSION"
                         git push https://$Username:$Password@github.com/esthesis-iot/esthesis-setup HEAD:master
