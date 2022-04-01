@@ -46,8 +46,10 @@ tasks:
     command: |
       gp sync-await docker
       cd esthesis-server-impl
-      mvn spring-boot:run -Xdebug -XX:+ShowCodeDetailsInExceptionMessages \
-        -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=55000 -Dspring-boot.run.arguments="--server.port=46000"
+      mvn spring-boot:run \
+        -Dspring-boot.run.jvmArguments="-Xdebug -XX:+ShowCodeDetailsInExceptionMessages \
+          -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=55000" \
+        -Dspring-boot.run.arguments="--server.port=46000"
   - name: Frontend
     init: |
       cd ../esthesis-ui
