@@ -19,6 +19,8 @@ vscode:
     - redhat.vscode-xml
     - pivotal.vscode-spring-boot
     - asciidoctor.asciidoctor-vscode
+    - vscjava.vscode-java-pack
+    - GabrielBB.vscode-lombok
 
 tasks:
   - name: Supporting containers
