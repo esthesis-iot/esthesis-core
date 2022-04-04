@@ -68,3 +68,7 @@ ports:
   - port: 4200
     name: Angular
     onOpen: open-preview
+
+github:
+  prebuilds:
+    branches: true
