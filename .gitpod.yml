@@ -32,7 +32,7 @@ tasks:
         esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
       yes | sdk install java 17.0.2-tem
       cd /workspace/esthesis-server && mvn clean install -DskipTests=true
-      cd /workspace/esthesis-ui && npm install
+      cd /workspace/esthesis-ui && npm install && npx -y @angular/cli build
     command: gp sync-done env
 
   - name: Supporting containers
