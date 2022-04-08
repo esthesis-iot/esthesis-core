@@ -72,3 +72,13 @@ ports:
   - port: 4200
     name: Angular
     onOpen: open-preview
+  - port: 8888
+    onOpen: ignore
+  - port: 8883
+    onOpen: ignore
+  - port: 8086
+    onOpen: ignore
+  - port: 8080
+    onOpen: ignore
+  - port: 1883
+    onOpen: ignore

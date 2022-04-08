@@ -19,5 +19,9 @@
 			"path": "../esthesis-docker"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"conventionalCommits.scopes": [
+			"gitpod"
+		]
+	}
 }
