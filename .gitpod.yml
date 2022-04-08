@@ -61,10 +61,17 @@ ports:
   - port: 8888
     onOpen: ignore
   - port: 8883
+    name: mqqt-secure
     onOpen: ignore
   - port: 8086
+    name: InfluxDB
     onOpen: ignore
   - port: 8080
+    name: NiFi
     onOpen: ignore
   - port: 1883
+    name: mqtt
+    onOpen: ignore
+  - port: 20000
+    name: NiFi Digital Twins API
     onOpen: ignore
