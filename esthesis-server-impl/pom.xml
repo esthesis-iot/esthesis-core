@@ -85,10 +85,6 @@
         <version>${spring.boot.version}</version>
       </plugin>
       <plugin>
-        <groupId>org.zeroturnaround</groupId>
-        <artifactId>jrebel-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven-compiler-plugin.version}</version>
         <configuration>
