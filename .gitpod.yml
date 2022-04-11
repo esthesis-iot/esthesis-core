@@ -78,5 +78,5 @@ ports:
     name: MQTT
     onOpen: ignore
   - port: 8883
-    name MQTT/s
+    name: MQTT/s
     onOpen: ignore
