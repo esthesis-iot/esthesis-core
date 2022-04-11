@@ -7,7 +7,7 @@ additionalRepositories:
   - url: https://github.com/esthesis-iot/esthesis-docker
 
 workspaceLocation:
-  ./.code-workspace
+  esthesis-platform/.code-workspace
 
 vscode:
   extensions:
