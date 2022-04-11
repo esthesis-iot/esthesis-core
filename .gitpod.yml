@@ -20,14 +20,23 @@ vscode:
     - GabrielBB.vscode-lombok
 
 tasks:
-  - name: Supporting containers
+  - name: Preparing env
     init: |
       docker compose \
         -f /workspace/esthesis-platform/docker-compose.yml \
         -f /workspace/esthesis-platform/docker-compose-devenv.yml \
         pull \
         esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
+      yes | sdk install java 17.0.2-tem
+      cd /workspace/esthesis-platform/esthesis-server
+      mvn clean install -DskipTests=true
+      cd /workspace/esthesis-platform/esthesis-ui
+      npm install
+    command: gp sync-done env
+
+  - name: Supporting containers  
     command: |
+      gp sync-await env
       docker compose \
         -f /workspace/esthesis-platform/docker-compose.yml \
         -f /workspace/esthesis-platform/docker-compose-devenv.yml \
@@ -40,12 +49,9 @@ tasks:
         logs -f
 
   - name: Backend
-    init: |
-      yes | sdk install java 17.0.2-tem
-      cd /workspace/esthesis-platform/esthesis-server
-      mvn clean install -DskipTests=true
     command: |
       gp sync-await docker
+      yes | sdk install java 17.0.2-tem
       cd /workspace/esthesis-platform/esthesis-server/esthesis-server-impl
       export esthesis_fsRoot=/workspace/.esthesis/platform
       mvn spring-boot:run \
@@ -54,9 +60,6 @@ tasks:
         -Dspring-boot.run.arguments="--server.port=46000"
 
   - name: Frontend
-    init: |
-      cd /workspace/esthesis-platform/esthesis-ui
-      npm install
     command: |
       gp sync-await docker
       cd /workspace/esthesis-platform/esthesis-ui
