@@ -1,0 +1,27 @@
+####################################################################################################
+# esthesis-config
+####################################################################################################
+
+####################################################################################################
+# Secrets
+####################################################################################################
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: esthesis-secret
+type: Opaque
+stringData:
+  # MySQL
+  db_root_password: "root"
+  db_user_password: "esthesis"
+
+  # InfluxDB
+  tsdb_admin_password: "esthesis"
+
+  # esthesis backend
+  server.jwt_secret: "V4h67m2xsHZmBPbcT2pTAWLZdr8SqbLv3ZZhjJKs3DPv9ww5T7LfqftUdbUGtpKk"
+  server.db_password: "esthesis"
+  server.spring.datasource.url: "jdbc:mysql://esthesis-db-service:3306/esthesis?autoReconnect=true&createDatabaseIfNotExist=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&maxReconnects=10&&allowPublicKeyRetrieval=true"
+  server.spring.datasource.username: "esthesis"
+  server.spring.datasource.password: "esthesis"
