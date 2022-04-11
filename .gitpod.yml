@@ -46,7 +46,7 @@ tasks:
       mvn clean install -DskipTests=true
     command: |
       gp sync-await docker
-      cd /workspace/esthesis-platform/esthesis-server-impl
+      cd /workspace/esthesis-platform/esthesis-server/esthesis-server-impl
       export esthesis_fsRoot=/workspace/.esthesis/platform
       mvn spring-boot:run \
         -Dspring-boot.run.jvmArguments="-Xdebug -XX:+ShowCodeDetailsInExceptionMessages \
@@ -69,3 +69,14 @@ ports:
   - port: 4200
     name: Angular UI
     onOpen: open-preview
+  - port: 8086
+    onOpen: ignore
+  - port: 8080
+    name: NiFi UI
+    onOpen: ignore
+  - port: 1883
+    name: MQTT
+    onOpen: ignore
+  - port: 8883
+    name MQTT/s
+    onOpen: ignore
