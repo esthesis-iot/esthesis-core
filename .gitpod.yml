@@ -23,10 +23,10 @@ tasks:
   - name: Supporting containers
     init: |
       docker compose \
-      -f /workspace/esthesis-platform/docker-compose.yml \
-      -f /workspace/esthesis-platform/docker-compose-devenv.yml \
-      pull \
-      esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
+        -f /workspace/esthesis-platform/docker-compose.yml \
+        -f /workspace/esthesis-platform/docker-compose-devenv.yml \
+        pull \
+        esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
     command: |
       docker compose \
         -f /workspace/esthesis-platform/docker-compose.yml \
@@ -38,30 +38,34 @@ tasks:
         -f /workspace/esthesis-platform/docker-compose.yml \
         -f /workspace/esthesis-platform/docker-compose-devenv.yml \
         logs -f
-  # - name: Backend
-  #   init: |
-  #     yes | sdk install java 17.0.2-tem
-  #     mvn clean install -DskipTests=true
-  #   command: |
-  #     gp sync-await docker
-  #     cd esthesis-server-impl
-  #     mvn spring-boot:run \
-  #       -Dspring-boot.run.jvmArguments="-Xdebug -XX:+ShowCodeDetailsInExceptionMessages \
-  #         -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=55000" \
-  #       -Dspring-boot.run.arguments="--server.port=46000"
-  # - name: Frontend
-  #   init: |
-  #     cd ../esthesis-ui
-  #     npm install
-  #   command: |
-  #     gp sync-await docker
-  #     cd ../esthesis-ui
-  #     npx -y @angular/cli serve --host 0.0.0.0 --disable-host-check --proxy-config proxy.conf.json
+
+  - name: Backend
+    init: |
+      yes | sdk install java 17.0.2-tem
+      cd /workspace/esthesis-platform/esthesis-server
+      mvn clean install -DskipTests=true
+    command: |
+      gp sync-await docker
+      cd /workspace/esthesis-platform/esthesis-server-impl
+      export esthesis_fsRoot=/workspace/.esthesis/platform
+      mvn spring-boot:run \
+        -Dspring-boot.run.jvmArguments="-Xdebug -XX:+ShowCodeDetailsInExceptionMessages \
+          -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=55000" \
+        -Dspring-boot.run.arguments="--server.port=46000"
+
+  - name: Frontend
+    init: |
+      cd /workspace/esthesis-platform/esthesis-ui
+      npm install
+    command: |
+      gp sync-await docker
+      cd /workspace/esthesis-platform/esthesis-ui
+      npx -y @angular/cli serve --host 0.0.0.0 --disable-host-check --proxy-config proxy.conf.json
 
 ports:
   - port: 3306
     name: MariaDB
     onOpen: ignore
   - port: 4200
-    name: Angular
+    name: Angular UI
     onOpen: open-preview
