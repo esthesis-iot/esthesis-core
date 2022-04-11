@@ -25,7 +25,7 @@ vscode:
 tasks:
   - name: Prepare env
     init: |
-      docker compose -f ../esthesis-setup/docker/docker-compose.yml -f ../esthesis-setup/docker/docker-compose-devenv.yml pull esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
+      docker compose -f /workspace/esthesis-setup/docker/docker-compose.yml -f /workspace/esthesis-setup/docker/docker-compose-devenv.yml pull esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
       yes | sdk install java 17.0.2-tem
       cd /workspace/esthesis-server && mvn clean install -DskipTests=true
       cd /workspace/esthesis-ui && npm install && npx -y @angular/cli build
@@ -34,21 +34,21 @@ tasks:
   - name: Supporting containers
     command: |
       gp sync-await env
-      docker compose -f ../esthesis-setup/docker/docker-compose.yml -f ../esthesis-setup/docker/docker-compose-devenv.yml up -d esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
+      docker compose -f /workspace/esthesis-setup/docker/docker-compose.yml -f /workspace/esthesis-setup/docker/docker-compose-devenv.yml up -d esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
       gp sync-done docker
-      docker compose -f ../esthesis-setup/docker/docker-compose.yml -f ../esthesis-setup/docker/docker-compose-devenv.yml logs -f
+      docker compose -f /workspace/esthesis-setup/docker/docker-compose.yml -f /workspace/esthesis-setup/docker/docker-compose-devenv.yml logs -f
 
   - name: Backend
     before: yes | sdk install java 17.0.2-tem
     command: |
       gp sync-await docker
-      cd esthesis-server-impl
+      cd /workspace/esthesis-server/esthesis-server-impl
       mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -XX:+ShowCodeDetailsInExceptionMessages -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=55000" -Dspring-boot.run.arguments="--server.port=46000"
 
   - name: Frontend
     command: |
       gp sync-await docker
-      cd ../esthesis-ui
+      cd /workspace/esthesis-ui
       npx -y @angular/cli serve --host 0.0.0.0 --disable-host-check --proxy-config proxy.conf.json
 
 ports:
