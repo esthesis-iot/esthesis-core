@@ -4,12 +4,6 @@
 			"path": "."
 		},
 		{
-			"path": "../esthesis-setup"
-		},
-		{
-			"path": "../esthesis-ui"
-		},
-		{
 			"path": "../esthesis-docs"
 		},
 		{

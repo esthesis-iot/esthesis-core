@@ -1,0 +1,67 @@
+---
+image: gitpod/workspace-full
+
+additionalRepositories:
+  - url: https://github.com/esthesis-iot/esthesis-device
+  - url: https://github.com/esthesis-iot/esthesis-docs  
+  - url: https://github.com/esthesis-iot/esthesis-docker
+
+workspaceLocation:
+  .code-workspace
+
+vscode:
+  extensions:
+    - ms-azuretools.vscode-docker
+    - Pivotal.vscode-boot-dev-pack
+    - redhat.vscode-xml
+    - pivotal.vscode-spring-boot
+    - asciidoctor.asciidoctor-vscode
+    - vscjava.vscode-java-pack
+    - GabrielBB.vscode-lombok
+
+# tasks:
+  # - name: Supporting containers
+  #   init: |
+  #     docker compose \
+  #     -f ../esthesis-setup/docker/docker-compose.yml \
+  #     -f ../esthesis-setup/docker/docker-compose-devenv.yml \
+  #     pull \
+  #     esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
+  #   command: |
+  #     docker compose \
+  #       -f ../esthesis-setup/docker/docker-compose.yml \
+  #       -f ../esthesis-setup/docker/docker-compose-devenv.yml \
+  #       up -d \
+  #       esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
+  #     gp sync-done docker
+  #     docker compose \
+  #       -f ../esthesis-setup/docker/docker-compose.yml \
+  #       -f ../esthesis-setup/docker/docker-compose-devenv.yml \
+  #       logs -f
+  # - name: Backend
+  #   init: |
+  #     yes | sdk install java 17.0.2-tem
+  #     mvn clean install -DskipTests=true
+  #   command: |
+  #     gp sync-await docker
+  #     cd esthesis-server-impl
+  #     mvn spring-boot:run \
+  #       -Dspring-boot.run.jvmArguments="-Xdebug -XX:+ShowCodeDetailsInExceptionMessages \
+  #         -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=55000" \
+  #       -Dspring-boot.run.arguments="--server.port=46000"
+  # - name: Frontend
+  #   init: |
+  #     cd ../esthesis-ui
+  #     npm install
+  #   command: |
+  #     gp sync-await docker
+  #     cd ../esthesis-ui
+  #     npx -y @angular/cli serve --host 0.0.0.0 --disable-host-check --proxy-config proxy.conf.json
+
+ports:
+  - port: 3306
+    name: MariaDB
+    onOpen: ignore
+  - port: 4200
+    name: Angular
+    onOpen: open-preview
