@@ -3,11 +3,11 @@ image: gitpod/workspace-full
 
 additionalRepositories:
   - url: https://github.com/esthesis-iot/esthesis-device
-  - url: https://github.com/esthesis-iot/esthesis-docs  
+  - url: https://github.com/esthesis-iot/esthesis-docs
   - url: https://github.com/esthesis-iot/esthesis-docker
 
 workspaceLocation:
-  .code-workspace
+  ./.code-workspace
 
 vscode:
   extensions:
