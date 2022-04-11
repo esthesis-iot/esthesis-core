@@ -80,3 +80,6 @@ ports:
   - port: 8883
     name: MQTT/s
     onOpen: ignore
+  - port: 8888
+    name: Chronograf
+    onOpen: ignore
