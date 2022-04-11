@@ -1,0 +1,39 @@
+version: "3.9"
+
+volumes:
+  esthesis-chronograf:
+
+services:
+  esthesis-db:
+    ports:
+      - "3306:3306"
+  esthesis-mqtt:
+    ports:
+      - "1883:1883"
+      - "8883:8883"
+  esthesis-tsdb:
+    ports:
+      - "8086:8086"
+  esthesis-nifi:
+    ports:
+      - "8080:8080"
+      - "20000:20000"
+  esthesis-chronograf:
+    image: chronograf:1.6.2
+    hostname: esthesis-chronograf
+    container_name: esthesis-chronograf
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    volumes:
+      - "esthesis-chronograf:/var/lib/chronograf"
+    command: chronograf --influxdb-url=http://esthesis-tsdb:8086
+    deploy:
+      resources:
+        limits:
+          memory: "1G"
+#    healthcheck:
+#      test: curl -sI 127.0.0.1:8088 | grep -q "200 OK"
+#      start_period: 2m
+    networks:
+      - esthesis

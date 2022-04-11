@@ -1,0 +1,118 @@
+####################################################################################################
+# esthesis-nifi
+####################################################################################################
+
+####################################################################################################
+# PVC
+####################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: esthesis-nifi-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: {{ .Values.global.storageClassName }}
+
+####################################################################################################
+# Service
+####################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: esthesis-nifi-service
+spec:
+  selector:
+    app: esthesis-nifi
+  ports:
+    - port: 8080
+      name: web
+    - port: 20000
+      name: digital-twins
+
+####################################################################################################
+# Deployment
+####################################################################################################
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: esthesis-nifi-deployment
+spec:
+  selector:
+    matchLabels:
+      app: esthesis-nifi
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: esthesis-nifi
+    spec:
+      initContainers:
+        - name: init1
+          image: busybox:1.28
+          volumeMounts:
+            - name: esthesis-nifi-pv
+              mountPath: "/opt/nifi/nifi-current"
+          command: [ "sh", "-c", "chown -R 1000:1000 /opt/nifi/nifi-current" ]
+      containers:
+        - name: esthesis-nifi
+          image: esthesisiot/esthesis-nifi:2.0.4
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: web
+            - containerPort: 20000
+              name: digital-twins
+          env:
+            - name: NIFI_WEB_HTTP_HOST
+              value: "0.0.0.0"
+          volumeMounts:
+            - name: esthesis-nifi-pv
+              mountPath: /opt/nifi/nifi-current/archive
+              subPath: archive
+            - name: esthesis-nifi-pv
+              mountPath: /opt/nifi/nifi-current/logs
+              subPath: logs
+            - name: esthesis-nifi-pv
+              mountPath: /opt/nifi/nifi-current/database_repository
+              subPath: database_repository
+            - name: esthesis-nifi-pv
+              mountPath: /opt/nifi/nifi-current/flowfile_repository
+              subPath: flowfile_repository
+            - name: esthesis-nifi-pv
+              mountPath: /opt/nifi/nifi-current/content_repository
+              subPath: content_repository
+            - name: esthesis-nifi-pv
+              mountPath: /opt/nifi/nifi-current/provenance_repository
+              subPath: provenance_repository
+            - name: esthesis-nifi-pv
+              mountPath: /opt/nifi/nifi-current/state
+              subPath: state
+            - name: esthesis-nifi-pv
+              mountPath: /opt/nifi/nifi-current/conf/flow
+              subPath: flow
+          startupProbe:
+            httpGet:
+              path: /api/ping
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /api/ping
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 2
+      volumes:
+        - name: esthesis-nifi-pv
+          persistentVolumeClaim:
+            claimName: esthesis-nifi-pvc

@@ -1,0 +1,93 @@
+####################################################################################################
+# esthesis db
+####################################################################################################
+
+####################################################################################################
+# PVC
+####################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: esthesis-db-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: {{ .Values.global.storageClassName }}
+
+####################################################################################################
+# Service
+####################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: esthesis-db-service
+spec:
+  selector:
+    app: esthesis-db
+  ports:
+    - port: 3306
+
+####################################################################################################
+# Deployment
+####################################################################################################
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: esthesis-db-deployment
+spec:
+  selector:
+    matchLabels:
+      app: esthesis-db
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: esthesis-db
+    spec:
+      containers:
+        - name: esthesis-db
+          image: mysql:8.0.16
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_DATABASE
+              value: "esthesis"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: esthesis-secret
+                  key: db_root_password
+            - name: MYSQL_USER
+              value: "esthesis"
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: esthesis-secret
+                  key: db_user_password
+          volumeMounts:
+            - mountPath: "/var/opt/mssql"
+              name: esthesis-db-pv
+          startupProbe:
+            tcpSocket:
+              port: 3306
+            periodSeconds: 10
+            failureThreshold: 30
+          livenessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 2
+      volumes:
+        - name: esthesis-db-pv
+          persistentVolumeClaim:
+            claimName: esthesis-db-pvc
