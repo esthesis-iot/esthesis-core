@@ -31,7 +31,7 @@ pipeline {
         stage('Sonar Analysis') {
             steps {
                 withSonarQubeEnv('sonar'){
-                    sh '/root/sonar-scanner/bin/sonar-scanner -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_KEY_ESTHESIS_UI}'
+                    sh '/root/sonar-scanner/bin/sonar-scanner -Dsonar.projectVersion="$(mvn -f esthesis-server/pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_KEY_ESTHESIS_UI}'
                 }
             }
         }
