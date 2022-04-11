@@ -1,0 +1,26 @@
+<form novalidate [formGroup]="form">
+  <input type="hidden" formControlName="id">
+  <div fxLayout="column">
+    <mat-form-field>
+      <input matInput placeholder="Name" formControlName="name">
+    </mat-form-field>
+    <div fxLayout="row">
+      <mat-form-field style="width:300px">
+        <input matInput placeholder="Security token" formControlName="token">
+      </mat-form-field>
+      <button mat-button (click)="generateToken()">GENERATE TOKEN</button>
+    </div>
+    <mat-form-field>
+      <mat-select placeholder="State" formControlName="state">
+        <mat-option [value]="true">Active</mat-option>
+        <mat-option [value]="false">Inactive</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</form>
+
+<div>
+  <button mat-button routerLink="/applications">CANCEL</button>
+  <button mat-button color="accent" (click)="delete()" [disabled]="id === 0">DELETE</button>
+  <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
+</div>

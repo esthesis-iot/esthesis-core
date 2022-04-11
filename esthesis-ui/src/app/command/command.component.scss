@@ -1,0 +1,23 @@
+@import "../../styles-variables.scss";
+@import "../shared/style/table-highlight-pointer";
+
+#results {
+  .mat-icon {
+    color: $e-color-grey;
+  }
+  .mat-button {
+    min-width: 0;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    min-height: 0;
+  }
+}
+
+mat-error {
+  text-align: center;
+  background-color: $e-color-error;
+  color: white;
+  padding: 0.15rem;
+  border-radius: 3px;
+  margin-bottom: 0.5rem;
+}

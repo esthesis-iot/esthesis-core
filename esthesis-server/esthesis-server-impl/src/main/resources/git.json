@@ -1,0 +1,23 @@
+{
+  "git.branch" : "gitpod-test",
+  "git.build.host" : "Nassos-M1-Air.home.nassosmichas.com",
+  "git.build.time" : "2022-04-01 10:20:08",
+  "git.build.user.email" : "nassosmichas@me.com",
+  "git.build.user.name" : "Nassos Michas",
+  "git.build.version" : "2.0.4-SNAPSHOT",
+  "git.closest.tag.commit.count" : "36",
+  "git.closest.tag.name" : "2.0.3",
+  "git.commit.id" : "b37a8ac75d6364f1e906f039e806aa31545f7c77",
+  "git.commit.id.abbrev" : "b37a8ac",
+  "git.commit.id.describe" : "2.0.3-36-gb37a8ac-dirty",
+  "git.commit.id.describe-short" : "2.0.3-36-dirty",
+  "git.commit.message.full" : "Gitpod",
+  "git.commit.message.short" : "Gitpod",
+  "git.commit.time" : "2022-03-31 17:08:40",
+  "git.commit.user.email" : "nassosmichas@me.com",
+  "git.commit.user.name" : "Nassos Michas",
+  "git.dirty" : "true",
+  "git.remote.origin.url" : "https://github.com/esthesis-iot/esthesis-server.git",
+  "git.tags" : "",
+  "git.total.commit.count" : "526"
+}

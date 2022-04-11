@@ -1,0 +1,103 @@
+pipeline{
+    agent {
+        docker {
+            image 'eddevopsd2/ubuntu-dind:dind-mvn3.6.3-jdk15-npm6.14.13-buildx'
+            args '--privileged -v /root/.m2/Esthesis:/root/.m2'
+        }
+    }
+    options {
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+    stages{
+        stage ("Prompt for Input") {
+            steps {
+                script {
+                    env.RELEASE_VERSION = input message: 'Release version:',
+                                     parameters: [string(defaultValue: '',
+                                                  description: 'Attention: To avoid Git conflicts, please do not build esthesis-server/device release jobs before this one finishes.',
+                                                  name: 'Release version')]
+                    env.NEXT_DEV_VERSION = input message: 'Snapshot version:',
+                                     parameters: [string(defaultValue: '',
+                                                  description: '',
+                                                  name: 'Next development version')]
+                }
+            }
+        }
+        stage ("Clone projects") {
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                usernameVariable: 'Username',
+                passwordVariable: 'Password')]){
+                    sh '''
+                        git config --global user.email "devops-d2@eurodyn.com"
+                        git config --global user.name "$Username"
+                        git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-ui.git
+                        git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-setup.git
+                    '''
+                }
+            }
+        }
+        stage ("Push changes for release version"){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                usernameVariable: 'Username',
+                passwordVariable: 'Password')]){
+                    sh '''
+                        git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-ui.git
+                        cd esthesis-ui
+                        sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package.json
+                        npm install
+                        npx ng build --configuration production --output-path=dist
+                        git commit -a -m "release: prepare release $RELEASE_VERSION"
+                        git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
+                        git push https://$Username:$Password@github.com/esthesis-iot/esthesis-ui HEAD:main --tags
+                        cd ..
+                    '''
+                }                
+
+            }
+        }
+        stage ("Build & Push docker container for esthesis-ui"){     
+            environment {
+		            DOCKERHUB_CREDENTIALS=credentials('devops_d2_dockerhub')
+	                }
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                usernameVariable: 'Username',
+                passwordVariable: 'Password')]){
+                    sh '''
+                        echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                        cd esthesis-setup/docker
+                        sed -i "s|esthesisiot/esthesis-ui:.*$|esthesisiot/esthesis-ui:$RELEASE_VERSION|" docker-compose.yml
+                        docker compose build esthesis-ui
+                        docker push esthesisiot/esthesis-ui:$RELEASE_VERSION
+                        cd ../..
+                    '''
+                }                
+
+            }   
+        }
+        stage ("Push changes for next development version"){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                usernameVariable: 'Username',
+                passwordVariable: 'Password')]){
+                    sh '''
+                        cd esthesis-ui
+                        sed -i 's|\"version\":.*$|\"version\": \"'$NEXT_DEV_VERSION'\",|' package.json
+                        git commit -a -m "release: prepare for next development iteration"
+                        git push https://$Username:$Password@github.com/esthesis-iot/esthesis-ui HEAD:main
+                        cd ..
+
+                        git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-setup.git
+                        cd esthesis-setup/docker
+                        sed -i "s|esthesisiot/esthesis-ui:.*$|esthesisiot/esthesis-ui:$NEXT_DEV_VERSION|" docker-compose.yml
+                        git commit -a -m "release: prepare for next development iteration"
+                        git push https://$Username:$Password@github.com/esthesis-iot/esthesis-setup HEAD:master
+                    '''
+                }                
+            }             
+        }  
+    }
+}

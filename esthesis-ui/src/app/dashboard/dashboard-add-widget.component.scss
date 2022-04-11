@@ -1,0 +1,11 @@
+.widget {
+  padding: 0 0 1rem 0;
+  border: 1px solid #46A5DB;
+  border-radius: 5px;
+  :hover {
+    cursor: pointer;
+  }
+  .preview-pic {
+    max-width: 10rem;
+  }
+}

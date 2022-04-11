@@ -1,0 +1,29 @@
+.techvatar {
+  width: 14rem;
+  border: 1px solid deepskyblue;
+  border-radius: 5px;
+  //padding: 0.5rem;
+  min-height: 6rem;
+  margin-bottom: 1rem;
+
+  .tech {
+    background-color: #46A5DB;
+    color: white;
+    padding: 0.25rem;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+
+  .desc {
+    padding: 0.25rem;
+  }
+}
+
+mat-error {
+  text-align: center;
+  background-color: #8b0101;
+  color: white;
+  padding: 0.15rem;
+  border-radius: 3px;
+  margin-bottom: 0.5rem;
+}

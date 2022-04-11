@@ -1,0 +1,12 @@
+<form novalidate [formGroup]="form" fxLayout="column">
+  <div class="inline-header">Provisioning URL</div>
+  <div class="inline-subheader">The URL devices contact to obtain firmware updates.</div>
+  <mat-form-field>
+    <input matInput placeholder="URL" formControlName="provisioningUrl">
+    <mat-hint>ex: http://esthesis.server:46000</mat-hint>
+  </mat-form-field>
+</form>
+
+<div class="xs-pt2">
+  <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
+</div>

@@ -1,0 +1,23 @@
+{
+  "dirty": true,
+  "raw": "v1.0.0-0-g2d5a5e7-dirty",
+  "hash": "g2d5a5e7",
+  "distance": 0,
+  "tag": "v1.0.0",
+  "semver": {
+    "options": {
+      "loose": false,
+      "includePrerelease": false
+    },
+    "loose": false,
+    "raw": "v1.0.0",
+    "major": 1,
+    "minor": 0,
+    "patch": 0,
+    "prerelease": [],
+    "build": [],
+    "version": "1.0.0"
+  },
+  "suffix": "0-g2d5a5e7-dirty",
+  "semverString": "1.0.0+0.g2d5a5e7.dirty"
+}

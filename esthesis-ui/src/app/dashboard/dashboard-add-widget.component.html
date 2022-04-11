@@ -1,0 +1,19 @@
+<div class="mat-card-title">Select a widget to add</div>
+
+<div fxLayout="row" class="xs-mt2" fxLayoutGap="1rem">
+  <div class="widget" fxLayout="column" fxLayoutGap="1rem"
+       (click)="selectWidget(constants.DASHBOARD.WIDGETS.SENSOR_VALUE)">
+    <img src="../../assets/img/widgets/sensor-value.png" class="preview-pic">
+    <div class="title" fxLayoutAlign="center">Sensor value</div>
+  </div>
+  <div class="widget" fxLayout="column" fxLayoutGap="1rem"
+       (click)="selectWidget(constants.DASHBOARD.WIDGETS.SENSOR_GAUGE)">
+    <img src="../../assets/img/widgets/gauge.png" class="preview-pic">
+    <div class="title" fxLayoutAlign="center">Sensor gauge</div>
+  </div>
+  <div class="widget" fxLayout="column" fxLayoutGap="1rem"
+       (click)="selectWidget(constants.DASHBOARD.WIDGETS.MAP)">
+    <img src="../../assets/img/widgets/map.png" class="preview-pic">
+    <div class="title" fxLayoutAlign="center">Map</div>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+@import "../shared/style/table-highlight-pointer";
+
+mat-error {
+  text-align: center;
+  background-color: $e-color-error;
+  color: white;
+  padding: 0.15rem;
+  border-radius: 3px;
+  margin-bottom: 0.5rem;
+}

@@ -1,0 +1,12 @@
+<div fxLayout="column" class="widget" [ngStyle]="{'background-color': bgColor, 'color': fgColor}">
+  <div class="buttons">
+    <mat-icon (click)="setup()">settings</mat-icon>
+  </div>
+  <div class="body" fxLayout="column" fxFlexFill>
+    <div class="title xs-mb1">{{configuration && configuration.title ? configuration.title : ''}}</div>
+    <div class="map-container" leaflet
+         [leafletOptions]="options"
+         (mousedown)="$event.stopPropagation()" (touchstart)="$event.stopPropagation()">
+    </div>
+  </div>
+</div>

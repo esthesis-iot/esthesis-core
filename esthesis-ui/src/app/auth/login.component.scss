@@ -1,0 +1,19 @@
+@import "../../styles-variables.scss";
+
+mat-icon {
+  color: $e-color-black;
+}
+
+.form-bg {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.pixabay {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  text-shadow: 1px 1px 2px #666666;
+  color: #fff;
+}
