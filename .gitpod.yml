@@ -19,25 +19,25 @@ vscode:
     - vscjava.vscode-java-pack
     - GabrielBB.vscode-lombok
 
-# tasks:
-  # - name: Supporting containers
-  #   init: |
-  #     docker compose \
-  #     -f ../esthesis-setup/docker/docker-compose.yml \
-  #     -f ../esthesis-setup/docker/docker-compose-devenv.yml \
-  #     pull \
-  #     esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
-  #   command: |
-  #     docker compose \
-  #       -f ../esthesis-setup/docker/docker-compose.yml \
-  #       -f ../esthesis-setup/docker/docker-compose-devenv.yml \
-  #       up -d \
-  #       esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
-  #     gp sync-done docker
-  #     docker compose \
-  #       -f ../esthesis-setup/docker/docker-compose.yml \
-  #       -f ../esthesis-setup/docker/docker-compose-devenv.yml \
-  #       logs -f
+tasks:
+  - name: Supporting containers
+    init: |
+      docker compose \
+      -f /workspace/esthesis-platform/docker-compose.yml \
+      -f /workspace/esthesis-platform/docker-compose-devenv.yml \
+      pull \
+      esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
+    command: |
+      docker compose \
+        -f /workspace/esthesis-platform/docker-compose.yml \
+        -f /workspace/esthesis-platform/docker-compose-devenv.yml \
+        up -d \
+        esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
+      gp sync-done docker
+      docker compose \
+        -f /workspace/esthesis-platform/docker-compose.yml \
+        -f /workspace/esthesis-platform/docker-compose-devenv.yml \
+        logs -f
   # - name: Backend
   #   init: |
   #     yes | sdk install java 17.0.2-tem
