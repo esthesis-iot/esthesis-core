@@ -33,10 +33,10 @@ public class AppProperties {
   // The ID of this node. If missing, a random one will be created each time this node boots.
   private String nodeId;
 
-  // The root of the filesystem where the platform can store data (for example,
-  // provisioning packages). If left empty, a folder under `.esthesis` on the user's home dir will
-  // be created. Note that in cluster configurations this filesystem needs to be shared among the
-  // instances of the cluster.
+  // The root of the filesystem where the platform can store data (for example, provisioning 
+  // packages). If left empty, a folder named `.esthesis` under the user's home dir will be 
+  // created. Note that in cluster configurations this filesystem needs to be shared among 
+  // the nodes of the cluster.
   private String fsRoot;
 
   // The location in which provisioning packages are stored. This is set automatically by
@@ -49,7 +49,7 @@ public class AppProperties {
   // temporary files older than one hour).
   private String fsTmpRoot;
 
-  // The HTTP port NiFi listens for Data Producers requests.
-  private int nifiProducersHttpPort = 20000;
+  // // The HTTP port NiFi listens for Data Producers requests.
+  // private int nifiProducersHttpPort = 20000;
 }
 
