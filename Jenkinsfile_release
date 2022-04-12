@@ -102,9 +102,9 @@ pipeline{
             steps{
                 sh '''
                     cd esthesis-platform
+                    echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
                     docker compose -f docker-compose.yml build esthesis-ui
                     docker push esthesisiot/esthesis-ui:$RELEASE_VERSION
-                    echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
                     docker compose -f docker-compose.yml build esthesis-server
                     docker push esthesisiot/esthesis-server:$RELEASE_VERSION
                  '''
