@@ -94,7 +94,7 @@ services:
     build:
       context: .
       dockerfile: esthesis-server/Dockerfile
-    image: esthesisiot/esthesis-server:2.0.15
+    image: esthesisiot/esthesis-server:2.0.16
     hostname: esthesis-server
     container_name: esthesis-server
     restart: unless-stopped
@@ -119,7 +119,7 @@ services:
   esthesis-ui:
     build:
       context: ./esthesis-ui
-    image: esthesisiot/esthesis-ui:2.0.15
+    image: esthesisiot/esthesis-ui:2.0.16
     hostname: esthesis-ui
     container_name: esthesis-ui
     restart: unless-stopped
