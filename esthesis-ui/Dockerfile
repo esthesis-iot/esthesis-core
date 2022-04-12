@@ -6,7 +6,7 @@
 ####################################################################################################
 # Cache NPM mobules.
 ####################################################################################################
-FROM node:13.10-alpine as npm
+FROM node:16.14.2-alpine as npm
 MAINTAINER esthesis@eurodyn.com
 
 # Set working directory
@@ -25,7 +25,7 @@ RUN npm install
 ####################################################################################################
 # Build application.
 ####################################################################################################
-FROM node:12.20.2-alpine as build
+FROM node:16.14.2-alpine as build
 MAINTAINER info@eurodyn.com
 
 # Set working directory
