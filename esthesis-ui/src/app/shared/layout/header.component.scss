@@ -25,4 +25,15 @@
       padding-left: 0.6rem;
     }
   }
+  
+}
+.mode-selection {
+  padding: 10px;
+  min-height: 25px;
+  > * {
+    float: left !important;
+  }
+  mat-icon {
+    color: #333333;
+  }
 }

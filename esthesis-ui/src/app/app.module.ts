@@ -36,6 +36,7 @@ import {NgProgressModule} from "ngx-progressbar";
 import {NgProgressHttpModule} from "ngx-progressbar/http";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatCheckboxModule } from '@angular/material/checkbox';
+import { NgxDarkModule } from 'ngx-dark';
 
 export function getJwtToken(): string | null {
   return localStorage.getItem(AppConstants.JWT_STORAGE_NAME);
@@ -88,7 +89,8 @@ export function getJwtToken(): string | null {
             trickleSpeed: 500
         }),
         NgProgressHttpModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
+        NgxDarkModule
     ],
     providers: [
         CookieService,

@@ -11,8 +11,13 @@
   <div fxFlex fxGrow="0" *ngIf="isLoggedIn()">
     <div>{{ getUserEmail() }}</div>
   </div>
-  <div fxFlex fxGrow="0" *ngIf="isLoggedIn()">
-    <mat-menu #appMenu="matMenu">            
+  <div fxFlex fxGrow="0" *ngIf="isLoggedIn()">    
+    <mat-menu #appMenu="matMenu">      
+      <div class="mode-selection">
+        <mat-icon>light_mode</mat-icon>
+        <ngx-dark></ngx-dark>
+        <mat-icon>dark_mode</mat-icon>
+      </div>
       <button mat-menu-item [routerLink]="['/logout']">Sign out</button>
     </mat-menu>
     <button mat-icon-button [matMenuTriggerFor]="appMenu">
