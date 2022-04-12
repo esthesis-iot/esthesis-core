@@ -1,6 +1,7 @@
 {
     "conventionalCommits.scopes": [
         "gitpod",
-        "vscode"
+        "vscode",
+        "ui"
     ]
 }
