@@ -93,7 +93,7 @@ services:
   esthesis-server:
     build:
       context: ./esthesis-server
-    image: esthesisiot/esthesis-server:2.0.10-SNAPSHOT
+    image: esthesisiot/esthesis-server:2.0.10
     hostname: esthesis-server
     container_name: esthesis-server
     restart: unless-stopped
@@ -118,7 +118,7 @@ services:
   esthesis-ui:
     build:
       context: ./esthesis-ui
-    image: esthesisiot/esthesis-ui:2.0.10-SNAPSHOT
+    image: esthesisiot/esthesis-ui:2.0.10
     hostname: esthesis-ui
     container_name: esthesis-ui
     restart: unless-stopped
