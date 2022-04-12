@@ -32,21 +32,16 @@ tasks:
       mvn clean install -DskipTests=true
       cd /workspace/esthesis-platform/esthesis-ui
       npm install
+      cd /workspace/esthesis-device/java
+      mvn clean install -DskipTests=true
     command: gp sync-done env
 
   - name: Supporting containers  
     command: |
       gp sync-await env
-      docker compose \
-        -f /workspace/esthesis-platform/docker-compose.yml \
-        -f /workspace/esthesis-platform/docker-compose-devenv.yml \
-        up -d \
-        esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
+      docker compose -f /workspace/esthesis-platform/docker-compose.yml -f /workspace/esthesis-platform/docker-compose-devenv.yml up -d esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
       gp sync-done docker
-      docker compose \
-        -f /workspace/esthesis-platform/docker-compose.yml \
-        -f /workspace/esthesis-platform/docker-compose-devenv.yml \
-        logs -f
+      docker compose -f /workspace/esthesis-platform/docker-compose.yml -f /workspace/esthesis-platform/docker-compose-devenv.yml logs -f
 
   - name: Backend
     command: |
@@ -54,10 +49,7 @@ tasks:
       yes | sdk install java 17.0.2-tem
       cd /workspace/esthesis-platform/esthesis-server/esthesis-server-impl
       export esthesis_fsRoot=/workspace/.esthesis/platform
-      mvn spring-boot:run \
-        -Dspring-boot.run.jvmArguments="-Xdebug -XX:+ShowCodeDetailsInExceptionMessages \
-          -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=55000" \
-        -Dspring-boot.run.arguments="--server.port=46000"
+      mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -XX:+ShowCodeDetailsInExceptionMessages -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=55000" -Dspring-boot.run.arguments="--server.port=46000"
 
   - name: Frontend
     command: |
