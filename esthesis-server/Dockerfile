@@ -30,7 +30,7 @@ MAINTAINER esthesis@eurodyn.com
 # Set working directory
 WORKDIR /build
 
-COPY .git .git
+COPY ../.git .git
 COPY pom.xml pom.xml
 COPY esthesis-server-common/pom.xml esthesis-server-common/pom.xml
 COPY esthesis-server-common/src esthesis-server-common/src
