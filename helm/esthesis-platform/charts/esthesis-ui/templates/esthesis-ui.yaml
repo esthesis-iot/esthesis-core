@@ -39,7 +39,7 @@ spec:
     spec:
       containers:
         - name: esthesis-ui
-          image: esthesisiot/esthesis-ui:2.0.17
+          image: esthesisiot/esthesis-ui:2.0.18-SNAPSHOT
           imagePullPolicy: Always
           ports:
             - containerPort: 80
