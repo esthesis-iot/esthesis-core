@@ -93,7 +93,7 @@ services:
   esthesis-server:
     build:
       context: .
-      dockerfile: esthesis-platform/esthesis-server/Dockerfile
+      dockerfile: esthesis-server/Dockerfile
     image: esthesisiot/esthesis-server:2.0.11
     hostname: esthesis-server
     container_name: esthesis-server
