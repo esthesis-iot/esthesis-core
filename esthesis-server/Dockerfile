@@ -14,9 +14,9 @@ MAINTAINER esthesis@eurodyn.com
 WORKDIR /maven
 
 # Copy application's pom.xml.
-COPY pom.xml pom.xml
-COPY esthesis-server-common/pom.xml esthesis-server-common/pom.xml
-COPY esthesis-server-impl/pom.xml esthesis-server-impl/pom.xml
+COPY esthesis-server/pom.xml pom.xml
+COPY esthesis-server/esthesis-server-common/pom.xml esthesis-server-common/pom.xml
+COPY esthesis-server/esthesis-server-impl/pom.xml esthesis-server-impl/pom.xml
 
 # Download Maven dependencies.
 RUN mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies -Pprod
@@ -30,12 +30,12 @@ MAINTAINER esthesis@eurodyn.com
 # Set working directory
 WORKDIR /build
 
-COPY ../.git .git
-COPY pom.xml pom.xml
-COPY esthesis-server-common/pom.xml esthesis-server-common/pom.xml
-COPY esthesis-server-common/src esthesis-server-common/src
-COPY esthesis-server-impl/pom.xml esthesis-server-impl/pom.xml
-COPY esthesis-server-impl/src esthesis-server-impl/src
+COPY .git .git
+COPY esthesis-server/pom.xml pom.xml
+COPY esthesis-server/esthesis-server-common/pom.xml esthesis-server-common/pom.xml
+COPY esthesis-server/esthesis-server-common/src esthesis-server-common/src
+COPY esthesis-server/esthesis-server-impl/pom.xml esthesis-server-impl/pom.xml
+COPY esthesis-server/esthesis-server-impl/src esthesis-server-impl/src
 
 COPY --from=maven /root/.m2 /root/.m2
 
