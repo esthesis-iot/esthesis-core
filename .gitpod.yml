@@ -32,8 +32,6 @@ tasks:
       mvn clean install -DskipTests=true
       cd /workspace/esthesis-platform/esthesis-ui
       npm install
-      cd /workspace/esthesis-device/java
-      mvn clean install -DskipTests=true
     command: gp sync-done env
 
   - name: Supporting containers  
