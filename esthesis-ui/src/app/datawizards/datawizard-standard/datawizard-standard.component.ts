@@ -6,7 +6,7 @@ import 'rxjs-compat/add/operator/concat';
 import 'rxjs-compat/add/observable/concat';
 import {NiFiSinkDto} from '../../dto/nifisinks/nifi-sink-dto';
 import {UtilityService} from '../../shared/service/utility.service';
-import {safeDump} from 'js-yaml';
+import {dump} from 'js-yaml';
 import {Log} from "ng2-logger/browser";
 
 @Component({
@@ -43,7 +43,7 @@ export class DatawizardStandardComponent implements OnInit {
   async executeWizard() {
     const requests: NiFiSinkDto[] = [
       {
-        configuration: safeDump(Object.entries({
+        configuration: dump(Object.entries({
           uri: this.form!.get('mqttUri')!.value,
           topic: 'esthesis/ping/#',
           qos: 0,
@@ -61,7 +61,7 @@ export class DatawizardStandardComponent implements OnInit {
         type: 'readers'
       },
       {
-        configuration: safeDump(Object.entries({
+        configuration: dump(Object.entries({
           databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
           databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
           databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
@@ -76,7 +76,7 @@ export class DatawizardStandardComponent implements OnInit {
         type: 'writers'
       },
       {
-        configuration: safeDump(Object.entries({
+        configuration: dump(Object.entries({
           uri: this.form!.get('mqttUri')!.value,
           topic: 'esthesis/metadata/#',
           qos: 0,
@@ -94,7 +94,7 @@ export class DatawizardStandardComponent implements OnInit {
         type: 'readers'
       },
       {
-        configuration: safeDump(Object.entries({
+        configuration: dump(Object.entries({
           uri: this.form!.get('mqttUri')!.value,
           topic: 'esthesis/telemetry/#',
           qos: 0,
@@ -112,7 +112,7 @@ export class DatawizardStandardComponent implements OnInit {
         type: 'readers'
       },
       {
-        configuration: safeDump(Object.entries({
+        configuration: dump(Object.entries({
           databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
           databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
           databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
@@ -127,7 +127,7 @@ export class DatawizardStandardComponent implements OnInit {
         type: 'writers'
       },
       {
-        configuration: safeDump(Object.entries({
+        configuration: dump(Object.entries({
           username: this.form!.get('influxDbUser')!.value,
           password: this.form!.get('influxDbPassword')!.value,
           databaseName: 'esthesis',
@@ -147,7 +147,7 @@ export class DatawizardStandardComponent implements OnInit {
         type: 'writers'
       },
       {
-        configuration: safeDump(Object.entries({
+        configuration: dump(Object.entries({
           databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
           databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
           databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
@@ -162,7 +162,7 @@ export class DatawizardStandardComponent implements OnInit {
         type: 'producers'
       },
       {
-        configuration: safeDump(Object.entries({
+        configuration: dump(Object.entries({
           username: this.form!.get('influxDbUser')!.value,
           password: this.form!.get('influxDbPassword')!.value,
           databaseName: 'esthesis',
@@ -179,7 +179,7 @@ export class DatawizardStandardComponent implements OnInit {
         type: 'producers'
       },
       {
-        configuration: safeDump(Object.entries({
+        configuration: dump(Object.entries({
           databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
           databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
           databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
@@ -202,7 +202,7 @@ export class DatawizardStandardComponent implements OnInit {
         type: 'producers'
       },
       {
-        configuration: safeDump(Object.entries({
+        configuration: dump(Object.entries({
           uri: this.form!.get('mqttUri')!.value,
           topic: 'esthesis/control/reply/#',
           qos: 0,
@@ -220,7 +220,7 @@ export class DatawizardStandardComponent implements OnInit {
         type: 'readers'
       },
       {
-        configuration: safeDump(Object.entries({
+        configuration: dump(Object.entries({
           databaseConnectionURL: this.form!.get('esthesisDbUri')!.value,
           databaseDriverClassName: this.form!.get('esthesisDbDriver')!.value,
           databaseDriverClassLocation: this.form!.get('esthesisDbDriverLocation')!.value,
