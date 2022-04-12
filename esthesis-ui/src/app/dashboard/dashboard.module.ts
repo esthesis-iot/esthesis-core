@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 
 import {DashboardRoutingModule} from './dashboard-routing.module';
 import {DashboardComponent} from './dashboard.component';
-import {DashboardChartsComponent} from './dashboard-charts/dashboard-charts.component';
 import {LeafletModule} from '@asymmetrik/ngx-leaflet';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatCardModule} from '@angular/material/card';
@@ -33,7 +32,6 @@ import { WidgetMapSetupComponent } from './dashboard-widgets/widget-map/widget-m
 @NgModule({
   declarations: [
     DashboardComponent,
-    DashboardChartsComponent,
     DashboardAddWidgetComponent,
     WidgetSensorValueComponent,
     WidgetSensorValueSetupComponent,

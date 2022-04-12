@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MatTabGroup } from '@angular/material/tabs';
 
 @Component({
@@ -18,13 +18,14 @@ export class InfrastructureComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     // Tab activation.
-    this.activatedRoute.fragment.subscribe((fragment: string) => {
-      if (fragment === 'mqtt') {
-        this.tabs.selectedIndex = 0;
-      } else if (fragment === 'nifi') {
-        this.tabs.selectedIndex = 1;
-      }
-    });
+    let fragment = this.activatedRoute.snapshot.fragment;
+
+    if (fragment === 'mqtt') {
+      this.tabs.selectedIndex = 0;
+    } else if (fragment === 'nifi') {
+      this.tabs.selectedIndex = 1;
+    }
+
   }
 
 }

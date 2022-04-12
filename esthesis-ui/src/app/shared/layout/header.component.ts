@@ -2,7 +2,6 @@ import { Component} from '@angular/core';
 import {BaseComponent} from '../component/base-component';
 import {UserService} from '../../users/user.service';
 import {AppConstants} from '../../app.constants';
-import { DarkModeService } from 'angular-dark-mode';
 import { Observable } from 'rxjs-compat';
 
 @Component({

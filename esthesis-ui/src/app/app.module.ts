@@ -42,60 +42,59 @@ export function getJwtToken(): string | null {
 }
 
 @NgModule({
-  bootstrap: [AppComponent],
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-    FooterComponent,
-    SidenavComponent,
-    LoginComponent,
-    LogoutComponent,
-    NewPasswordComponent,
-    ForgotPasswordComponent
-  ],
-  entryComponents: [OkCancelModalComponent, TextModalComponent],
-  imports: [
-    BrowserModule,
-    FlexLayoutModule,
-    BrowserAnimationsModule,
-    routing,
-    HttpClientModule,
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: getJwtToken,
-        allowedDomains: new Array(new RegExp('^null$'))
-      }
-    }),
-    MatMenuModule,
-    MatDialogModule,
-    MatToolbarModule,
-    MatListModule,
-    MatCardModule,
-    MatIconModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSnackBarModule,
-    MatCheckboxModule,
-    MatInputModule,
-    MatButtonModule,
-    DisplayModule,
-    HttpClientModule,
-    NgProgressModule.withConfig({
-      color: '#50A7D7',
-      debounceTime: 500,
-      meteor: false,
-      spinner: false,
-      thick: true,
-      trickleSpeed: 500
-    }),
-    NgProgressHttpModule,
-    MatAutocompleteModule
-  ],
-  providers: [
-    CookieService,
-    QFormsModule,
-    QFormValidationModule
-  ],
+    bootstrap: [AppComponent],
+    declarations: [
+        AppComponent,
+        HeaderComponent,
+        FooterComponent,
+        SidenavComponent,
+        LoginComponent,
+        LogoutComponent,
+        NewPasswordComponent,
+        ForgotPasswordComponent
+    ],
+    imports: [
+        BrowserModule,
+        FlexLayoutModule,
+        BrowserAnimationsModule,
+        routing,
+        HttpClientModule,
+        JwtModule.forRoot({
+            config: {
+                tokenGetter: getJwtToken,
+                allowedDomains: new Array(new RegExp('^null$'))
+            }
+        }),
+        MatMenuModule,
+        MatDialogModule,
+        MatToolbarModule,
+        MatListModule,
+        MatCardModule,
+        MatIconModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSnackBarModule,
+        MatCheckboxModule,
+        MatInputModule,
+        MatButtonModule,
+        DisplayModule,
+        HttpClientModule,
+        NgProgressModule.withConfig({
+            color: '#50A7D7',
+            debounceTime: 500,
+            meteor: false,
+            spinner: false,
+            thick: true,
+            trickleSpeed: 500
+        }),
+        NgProgressHttpModule,
+        MatAutocompleteModule
+    ],
+    providers: [
+        CookieService,
+        QFormsModule,
+        QFormValidationModule
+    ]
 })
 
 export class AppModule {

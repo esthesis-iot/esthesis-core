@@ -34,46 +34,43 @@ import {DeviceTerminalComponent} from './device/device-terminal/device-terminal.
 import {NgTerminalModule} from 'ng-terminal';
 
 @NgModule({
-  declarations: [
-    DeviceComponent,
-    DevicesComponent,
-    DevicePreregisterComponent,
-    DevicePreregisterCamComponent,
-    DeviceProfileComponent,
-    DeviceTerminalComponent,
-  ],
-  imports: [
-    CommonModule,
-    DevicesRoutingModule,
-    FlexLayoutModule,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatMenuModule,
-    MatPaginatorModule,
-    MatSelectModule,
-    MatTableModule,
-    QFormsModule,
-    ReactiveFormsModule,
-    MatSortModule,
-    MatIconModule,
-    MatTabsModule,
-    MatChipsModule,
-    LeafletModule,
-    MatAutocompleteModule,
-    MomentModule,
-    ZXingScannerModule,
-    MatDialogModule,
-    MatSlideToggleModule,
-    MatListModule,
-    MatProgressSpinnerModule,
-    MatTooltipModule,
-    NgTerminalModule
-  ],
-  entryComponents: [
-    DevicePreregisterCamComponent
-  ]
+    declarations: [
+        DeviceComponent,
+        DevicesComponent,
+        DevicePreregisterComponent,
+        DevicePreregisterCamComponent,
+        DeviceProfileComponent,
+        DeviceTerminalComponent,
+    ],
+    imports: [
+        CommonModule,
+        DevicesRoutingModule,
+        FlexLayoutModule,
+        MatButtonModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatMenuModule,
+        MatPaginatorModule,
+        MatSelectModule,
+        MatTableModule,
+        QFormsModule,
+        ReactiveFormsModule,
+        MatSortModule,
+        MatIconModule,
+        MatTabsModule,
+        MatChipsModule,
+        LeafletModule,
+        MatAutocompleteModule,
+        MomentModule,
+        ZXingScannerModule,
+        MatDialogModule,
+        MatSlideToggleModule,
+        MatListModule,
+        MatProgressSpinnerModule,
+        MatTooltipModule,
+        NgTerminalModule
+    ]
 })
 export class DevicesModule {
 }

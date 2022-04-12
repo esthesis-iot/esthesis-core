@@ -12,25 +12,24 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
-  declarations: [
-    OkCancelModalComponent,
-    BooleanCheckboxComponent,
-    TextModalComponent,
-  ],
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatIconModule,
-    MatSelectModule,
-    FlexLayoutModule,
-    ReactiveFormsModule
-  ],
-  entryComponents: [OkCancelModalComponent],
-  exports: [
-    BooleanCheckboxComponent
-  ]
+    declarations: [
+        OkCancelModalComponent,
+        BooleanCheckboxComponent,
+        TextModalComponent,
+    ],
+    imports: [
+        CommonModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatIconModule,
+        MatSelectModule,
+        FlexLayoutModule,
+        ReactiveFormsModule
+    ],
+    exports: [
+        BooleanCheckboxComponent
+    ]
 })
 export class DisplayModule {
 }
