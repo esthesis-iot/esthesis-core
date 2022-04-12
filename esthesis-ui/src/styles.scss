@@ -1,7 +1,7 @@
 @import 'styles-variables.scss';
 @import 'styles-material.scss';
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
-@import '~bf-solid/dist/solid.latest.css';
+// @import '~bf-solid/dist/solid.latest.css';
 
 html, body {
   margin: 0;
@@ -75,13 +75,3 @@ html, body {
     font-weight: bold;
   }
 }
-
-// body.dark-mode {
-//   background-color: #2d3436 !important;
-//   color: #dfe6e9 !important;
-// }
-
-// body.light-mode {
-//   background-color: #dfe6e9 !important;
-//   color: #2d3436 !important;
-// }

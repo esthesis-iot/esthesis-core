@@ -35,7 +35,6 @@
     "@zxing/browser": "^0.0.10",
     "@zxing/library": "^0.18.6",
     "@zxing/ngx-scanner": "3.3.0",
-    "angular-dark-mode": "^3.0.2",
     "angular-gridster2": "11.1.3",
     "angular2-uuid": "1.1.1",
     "bf-solid": "2.11.2",

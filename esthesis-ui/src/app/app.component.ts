@@ -7,8 +7,6 @@ import {UserService} from './users/user.service';
 import {BaseComponent} from './shared/component/base-component';
 import {OkCancelModalComponent} from './shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {AppConstants} from "./app.constants";
-import { Observable } from 'rxjs-compat';
-import { DarkModeService } from 'angular-dark-mode';
 
 @Component({
   selector: 'app-root',
@@ -20,14 +18,12 @@ export class AppComponent extends BaseComponent implements OnInit {
   private log = Log.create('AppComponent');
   // Expose application constants.
   constants = AppConstants;
-  darkMode$: Observable<boolean> = this.darkModeService.darkMode$;
 
   // Controller for sidebar's visibility.
   sidebarVisibility = true;
 
   constructor(private userService: UserService, private router: Router,
-              private jwtService: JwtHelperService, private dialog: MatDialog,
-              private darkModeService: DarkModeService) {
+              private jwtService: JwtHelperService, private dialog: MatDialog) {
     super();
 
     // Check if an expired JWT exists and remove it.
@@ -89,10 +85,5 @@ export class AppComponent extends BaseComponent implements OnInit {
 
   toggleSidebar() {
     this.sidebarVisibility = !this.sidebarVisibility;
-  }
-
-  onToggle(): void {
-    console.log("toggle");
-    this.darkModeService.toggle();
   }
 }
