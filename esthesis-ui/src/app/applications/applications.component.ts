@@ -6,7 +6,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {ApplicationDto} from '../dto/application-dto';
 import {ApplicationService} from './application.service';
-import 'rxjs/add/operator/debounceTime';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {BaseComponent} from '../shared/component/base-component';
 import {QFormsService} from '@qlack/forms';
 import {AppConstants} from "../app.constants";
@@ -39,7 +39,10 @@ export class ApplicationsComponent extends BaseComponent implements OnInit, Afte
 
   ngOnInit() {
     // Listen for filter changes to fetch new data.
-    this.filterForm.valueChanges.debounceTime(500).subscribe(onNext => {
+    this.filterForm.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(onNext => {
       this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
         this.sort.start);
     });

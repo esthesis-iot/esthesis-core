@@ -6,7 +6,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import {UserDto} from '../dto/user-dto';
 import {UserService} from './user.service';
-import 'rxjs/add/operator/debounceTime';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {BaseComponent} from '../shared/component/base-component';
 import {QFilterAlias, QFormsService} from '@qlack/forms';
 
@@ -47,7 +47,10 @@ export class UsersComponent extends BaseComponent implements OnInit, AfterViewIn
 
   ngOnInit() {
     // Listen for filter changes to fetch new data.
-    this.filterForm.valueChanges.debounceTime(500).subscribe(onNext => {
+    this.filterForm.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(onNext => {
       this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
         this.sort.start);
     });

@@ -12,6 +12,7 @@ import {OkCancelModalComponent} from "../../../shared/component/display/ok-cance
 import {AppConstants} from "../../../app.constants";
 import {DashboardWidgetDto} from "../../../dto/dashboard-widget-dto";
 import {WidgetSensorGaugeConf} from "./widget-sensor-gauge-conf";
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-widget-sensor-gauge-setup',
@@ -66,7 +67,10 @@ export class WidgetSensorGaugeSetupComponent extends BaseComponent implements On
     }
 
     // Monitor devices search autocomplete.
-    this.form.get("hardwareId")!.valueChanges.debounceTime(500).subscribe(onNext => {
+    this.form.get("hardwareId")!.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(onNext => {
       if (onNext && onNext.trim() !== "") {
         this.devicesService.findDeviceByPartialHardwareId(onNext).subscribe(
           onNext => {

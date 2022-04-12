@@ -2,8 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NifiSinkService} from '../../nifisinks/nifi-sink.service';
 import {AppConstants} from '../../app.constants';
-import 'rxjs-compat/add/operator/concat';
-import 'rxjs-compat/add/observable/concat';
 import {NiFiSinkDto} from '../../dto/nifisinks/nifi-sink-dto';
 import {UtilityService} from '../../shared/service/utility.service';
 import {dump} from 'js-yaml';

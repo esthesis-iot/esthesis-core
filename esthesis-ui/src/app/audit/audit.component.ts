@@ -3,7 +3,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import 'rxjs/add/operator/debounceTime';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import * as moment from 'moment';
 import {AuditDto} from '../dto/audit-dto';
 import {AuditService} from './audit.service';
@@ -54,7 +54,10 @@ export class AuditComponent extends BaseComponent implements OnInit, AfterViewIn
     });
 
     // Listen for filter changes to fetch new data.
-    this.filterForm.valueChanges.debounceTime(500).subscribe(onNext => {
+    this.filterForm.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(onNext => {
       this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.start);
     });
   }

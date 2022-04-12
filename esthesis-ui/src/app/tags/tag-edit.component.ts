@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {UUID} from 'angular2-uuid';
 import {TagService} from './tag.service';
-import 'rxjs/add/operator/debounceTime';
+import { debounceTime } from 'rxjs/operators';
 import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
 import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';

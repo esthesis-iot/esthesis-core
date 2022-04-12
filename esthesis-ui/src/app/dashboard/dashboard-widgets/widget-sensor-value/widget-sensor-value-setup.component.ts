@@ -8,7 +8,7 @@ import {OkCancelModalComponent} from "../../../shared/component/display/ok-cance
 import {UtilityService} from "../../../shared/service/utility.service";
 import {DevicesService} from "../../../devices/devices.service";
 import {DeviceDto} from "../../../dto/device-dto";
-import "rxjs-compat/add/operator/debounceTime";
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {BaseComponent} from "../../../shared/component/base-component";
 import {AppExtendedConstants} from "../../../app.extended-constants";
 import {WidgetSensorValueConf} from "./widget-sensor-value-conf";
@@ -64,7 +64,10 @@ export class WidgetSensorValueSetupComponent extends BaseComponent implements On
     }
 
     // Monitor devices search autocomplete.
-    this.form.get("hardwareId")!.valueChanges.debounceTime(500).subscribe(onNext => {
+    this.form.get("hardwareId")!.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(onNext => {
       if (onNext && onNext.trim() !== "") {
         this.devicesService.findDeviceByPartialHardwareId(onNext).subscribe(
           onNext => {

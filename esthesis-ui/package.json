@@ -51,7 +51,7 @@
     "ngx-filesize": "2.0.16",
     "ngx-moment": "6.0.2",
     "ngx-progressbar": "8.0.0",
-    "rxjs-compat": "6.6.7",
+    "rxjs": "7.5.5",
     "sprintf-js": "1.1.2",
     "tslib": "2.3.1"
   },

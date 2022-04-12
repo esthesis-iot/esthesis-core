@@ -9,7 +9,7 @@ import {ProvisioningDto} from '../../../dto/provisioning-dto';
 import {CampaignMemberDto} from '../../../dto/campaign-member-dto';
 import {DevicesService} from '../../../devices/devices.service';
 import {DeviceDto} from '../../../dto/device-dto';
-import 'rxjs/add/operator/debounceTime';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {TagDto} from '../../../dto/tag-dto';
 import {TagService} from '../../../tags/tag.service';
 import {CampaignsService} from '../../campaigns.service';
@@ -139,7 +139,10 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     });
 
     // Monitor for changes in search by hardware Id input.
-    this.form.get("searchByHardwareId")!.valueChanges.debounceTime(500).subscribe(onNext => {
+    this.form.get("searchByHardwareId")!.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(onNext => {
       if (onNext && onNext.trim() !== "") {
         this.deviceService.findDeviceByPartialHardwareId(onNext).subscribe(
           onNext => {

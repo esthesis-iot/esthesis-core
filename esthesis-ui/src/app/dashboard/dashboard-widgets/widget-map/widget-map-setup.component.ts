@@ -15,6 +15,7 @@ import {WidgetMapConf} from "./widget-map-conf";
 import {TagService} from "../../../tags/tag.service";
 import {TagDto} from "../../../dto/tag-dto";
 import {Color} from "@angular-material-components/color-picker";
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-widget-map-setup',
@@ -67,7 +68,10 @@ export class WidgetMapSetupComponent extends BaseComponent implements OnInit {
     }
 
     // Monitor for changes in search by hardware Id input.
-    this.form.get("hardwareIds")!.valueChanges.debounceTime(500).subscribe(onNext => {
+    this.form.get("hardwareIds")!.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(onNext => {
       if (onNext && onNext.trim() !== "") {
         // Find the last hardware ID in the comma-separated list.
         let hardwareIdToSearch: string;

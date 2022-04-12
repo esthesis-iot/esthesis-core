@@ -7,7 +7,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {BaseComponent} from '../shared/component/base-component';
 import {CommandRequestDto} from '../dto/command-request-dto';
-import 'rxjs/add/operator/debounceTime';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {TextModalComponent} from '../shared/component/display/text-modal/text-modal.component';
 import {CommandService} from './command.service';
 import {CommandReplyDto} from '../dto/command-reply-dto';
@@ -57,7 +57,10 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   ngOnInit() {
     this.fetchActiveNifi();
     // Listen for filter changes to fetch new data.
-    this.filterForm.valueChanges.debounceTime(500).subscribe(onNext => {
+    this.filterForm.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(onNext => {
       this.fetchActiveNifi();
       this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
           this.sort.start);

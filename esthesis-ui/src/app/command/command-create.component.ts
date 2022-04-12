@@ -4,9 +4,9 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {UtilityService} from '../shared/service/utility.service';
 import {Router} from '@angular/router';
 import {MatDialogRef} from '@angular/material/dialog';
-import {Observable} from 'rxjs';
 import {CommandCreateService} from './command-create.service';
-import 'rxjs-compat/add/observable/forkJoin';
+import {forkJoin} from 'rxjs'
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {ProvisioningDto} from "../dto/provisioning-dto";
 import {ProvisioningService} from "../provisioning/provisioning.service";
 import {AppConstants} from "../app.constants";
@@ -49,8 +49,11 @@ export class CommandCreateComponent extends BaseComponent implements OnInit, OnD
     });
 
     // Watch changes on the hardware / tags.
-    this.searchDevicesForm.valueChanges.debounceTime(500).subscribe(onNext => {
-      Observable.forkJoin([
+    this.searchDevicesForm.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(onNext => {
+      forkJoin([
         this.commandCreateService.findDevicesByHardwareIds(onNext['hardwareIds']),
         this.commandCreateService.findDevicesByTags(onNext['tags'])]).subscribe(results => {
         this.searchDevicesForm!.patchValue({

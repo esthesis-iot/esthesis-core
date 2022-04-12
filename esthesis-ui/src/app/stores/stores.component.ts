@@ -7,7 +7,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {Router} from '@angular/router';
 import {StoreDto} from '../dto/store-dto';
 import {StoresService} from './stores.service';
-import 'rxjs/add/operator/debounceTime';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {QFormsService} from '@qlack/forms';
 
 @Component({
@@ -35,7 +35,10 @@ export class StoresComponent extends BaseComponent implements OnInit, AfterViewI
 
   ngOnInit() {
     // Listen for filter changes to fetch new data.
-    this.filterForm.valueChanges.debounceTime(500).subscribe(onNext => {
+    this.filterForm.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(onNext => {
       this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
         this.sort.start);
     });

@@ -7,6 +7,7 @@ import {Router} from '@angular/router';
 import {TagDto} from '../dto/tag-dto';
 import {TagService} from './tag.service';
 import {QFormsService} from '@qlack/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-groups',
@@ -31,7 +32,10 @@ export class TagsComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     // Listen for filter changes to fetch new data.
-    this.filterForm.valueChanges.debounceTime(500).subscribe(onNext => {
+    this.filterForm.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(onNext => {
       this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
         this.sort.start);
     });
