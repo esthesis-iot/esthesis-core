@@ -2,6 +2,7 @@
     "conventionalCommits.scopes": [
         "gitpod",
         "vscode",
-        "ui"
+        "ui",
+        "docker"
     ]
 }

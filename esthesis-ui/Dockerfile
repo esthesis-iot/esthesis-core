@@ -17,10 +17,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 # Install and cache app dependencies
 COPY package.json /app/package.json
-RUN npm install
-
-# Download NPM modules.
-RUN npm install
+RUN npm install --force
 
 ####################################################################################################
 # Build application.
@@ -37,14 +34,13 @@ ENV PATH /app/node_modules/.bin:$PATH
 # Install and cache app dependencies
 COPY --from=npm /app/node_modules /app/node_modules
 COPY package.json /app/package.json
-RUN npm install
 RUN npm install -g @angular/cli
 
 # Add app
 COPY . /app
 
 # Generate build
-RUN ng build --prod --output-path=dist
+RUN ng build --configuration production --output-path=dist
 
 ####################################################################################################
 # Create runtime container.
