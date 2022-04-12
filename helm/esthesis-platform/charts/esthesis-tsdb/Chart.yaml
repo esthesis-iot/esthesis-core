@@ -1,4 +1,4 @@
 apiVersion: v2
 name: esthesis-tsdb
 description: A Helm chart to deploy an InfluxDB.
-version: 2.0.16
+version: 2.0.17
