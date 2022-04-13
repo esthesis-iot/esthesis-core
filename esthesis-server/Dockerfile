@@ -1,6 +1,6 @@
 ####################################################################################################
 # Docker multistage build for esthesis server backend.
-# Build this Dockerfile from `esthesis-setup/docker` by executing:
+# Build this Dockerfile from `esthesis-setup/` by executing:
 # `docker compose build esthesis-server`.
 ####################################################################################################
 
@@ -8,7 +8,7 @@
 # Cache Maven dependencies.
 ####################################################################################################
 FROM maven:3.8.1-openjdk-15 as maven
-MAINTAINER esthesis@eurodyn.com
+LABEL maintainer="esthesis@eurodyn.com"
 
 # Set working directory.
 WORKDIR /maven
@@ -25,7 +25,7 @@ RUN mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies -Pprod
 ## Build application.
 ####################################################################################################
 FROM maven:3.8.1-openjdk-15 as build
-MAINTAINER esthesis@eurodyn.com
+LABEL maintainer="esthesis@eurodyn.com"
 
 # Set working directory
 WORKDIR /build
@@ -45,7 +45,7 @@ RUN mvn clean package -Pprod
 # Create application image.
 ####################################################################################################
 FROM adoptopenjdk:15.0.2_7-jre-hotspot
-MAINTAINER esthesis@eurodyn.com
+LABEL maintainer="esthesis@eurodyn.com"
 
 # Set working directory
 WORKDIR /app
