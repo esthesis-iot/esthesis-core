@@ -52,6 +52,7 @@ pipeline{
 
                         cd ../esthesis-ui
                         sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package.json
+                        sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package-lock.json
                         npm install
                         npx ng build --configuration production --output-path=dist
 
@@ -122,6 +123,7 @@ pipeline{
 
                         cd ../esthesis-ui
                         sed -i 's|\"version\":.*$|\"version\": \"'$NEXT_DEV_VERSION'\",|' package.json
+                        sed -i 's|\"version\":.*$|\"version\": \"'$NEXT_DEV_VERSION'\",|' package-lock.json
 
                         cd ..
                         sed -i "s|esthesisiot/esthesis-server:.*$|esthesisiot/esthesis-server:$NEXT_DEV_VERSION|" docker-compose.yml
