@@ -32,6 +32,8 @@ tasks:
       mvn clean install -DskipTests=true
       cd /workspace/esthesis-platform/esthesis-ui
       npm install
+      cd /workspace/esthesis-device/java
+      mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
     command: gp sync-done env
 
   - name: Supporting containers  
