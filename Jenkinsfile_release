@@ -51,7 +51,7 @@ pipeline{
 
                         cd ../esthesis-ui
                         sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package.json
-                        sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package-lock.json
+                        awk -v sb='  \"name\": \"esthesis-ui\",\n  \"version\": \"'$RELEASE_VERSION'\",' '/"name": "esthesis-ui",/,/"version":.*/ { if ( $0 ~ /"version":.*/ ) print sb; next } 1' package-lock.json > temp.json && cp -f temp.json package-lock.json && rm temp.json
 
                         cd ..
                         sed -i "s|esthesisiot/esthesis-server:.*$|esthesisiot/esthesis-server:$RELEASE_VERSION|" docker-compose.yml
