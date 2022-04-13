@@ -39,7 +39,7 @@ public class AboutService {
       aboutDTO = objectMapper
           .readValue(gitResource, AboutDTO.class);
     } else {
-      log.warning("There is no git.json file available under src/main/resources." +
+      log.warning("There is no git.json file available under src/main/resources. " +
                   "If you are in a develpoment environemnt, execute mvn " + 
                   "initialize -Pprod to generate it.");
     }

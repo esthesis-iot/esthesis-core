@@ -1,13 +1,13 @@
 ####################################################################################################
 # Docker multistage build for esthesis server UI.
-# Build this Dockerfile from `esthesis-setup` by executing `docker compose build esthesis-ui`.
+# Build this Dockerfile from `esthesis-platform/` by executing `docker compose build esthesis-ui`.
 ####################################################################################################
 
 ####################################################################################################
 # Cache NPM mobules.
 ####################################################################################################
 FROM node:16.14.2-alpine as npm
-MAINTAINER esthesis@eurodyn.com
+LABEL maintainer="esthesis@eurodyn.com"
 
 # Set working directory
 WORKDIR /app
@@ -23,7 +23,7 @@ RUN npm install --force
 # Build application.
 ####################################################################################################
 FROM node:16.14.2-alpine as build
-MAINTAINER info@eurodyn.com
+LABEL maintainer="esthesis@eurodyn.com"
 
 # Set working directory
 WORKDIR /app
@@ -46,7 +46,7 @@ RUN ng build --configuration production --output-path=dist
 # Create runtime container.
 ####################################################################################################
 FROM nginx:1.19.7-alpine
-MAINTAINER info@eurodyn.com
+LABEL maintainer="esthesis@eurodyn.com"
 
 # Copy artifact build from the 'build environment'.
 COPY --from=build /app/dist /usr/share/nginx/html

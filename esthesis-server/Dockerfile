@@ -1,6 +1,6 @@
 ####################################################################################################
 # Docker multistage build for esthesis server backend.
-# Build this Dockerfile from `esthesis-setup/` by executing:
+# Build this Dockerfile from `esthesis-platform/` by executing:
 # `docker compose build esthesis-server`.
 ####################################################################################################
 
