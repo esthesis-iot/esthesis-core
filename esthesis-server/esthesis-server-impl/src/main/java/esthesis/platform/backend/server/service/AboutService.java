@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 //TODO Port to QLACK
 /**
@@ -22,7 +23,7 @@ public class AboutService {
   private final AppProperties appProperties;
 
   public AboutService(ObjectMapper objectMapper,
-    AppProperties appProperties) {
+      AppProperties appProperties) {
     this.objectMapper = objectMapper;
     this.appProperties = appProperties;
   }
@@ -32,8 +33,16 @@ public class AboutService {
    */
   public AboutDTO getAbout() throws IOException {
     // Get versioning info.
-    AboutDTO aboutDTO = objectMapper
-      .readValue(this.getClass().getResourceAsStream("/git.json"), AboutDTO.class);
+    AboutDTO aboutDTO = new AboutDTO();
+    InputStream gitResource = this.getClass().getResourceAsStream("/git.json");
+    if (gitResource != null) {
+      aboutDTO = objectMapper
+          .readValue(gitResource, AboutDTO.class);
+    } else {
+      log.warning("There is no git.json file available under src/main/resources." +
+                  "If you are in a develpoment environemnt, execute mvn " + 
+                  "initialize -Pprod to generate it.");
+    }
 
     // Get system info.
     aboutDTO.setNodeId(appProperties.getNodeId());
