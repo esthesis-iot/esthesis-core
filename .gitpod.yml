@@ -22,11 +22,7 @@ vscode:
 tasks:
   - name: Preparing env
     init: |
-      docker compose \
-        -f /workspace/esthesis-platform/docker-compose.yml \
-        -f /workspace/esthesis-platform/docker-compose-devenv.yml \
-        pull \
-        esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
+      docker compose -f /workspace/esthesis-platform/docker-compose.yml -f /workspace/esthesis-platform/docker-compose-devenv.yml pull esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf
       yes | sdk install java 17.0.2-tem
       cd /workspace/esthesis-platform/esthesis-server
       mvn clean install -DskipTests=true
