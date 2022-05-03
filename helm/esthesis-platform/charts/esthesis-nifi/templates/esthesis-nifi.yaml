@@ -61,7 +61,7 @@ spec:
           volumeMounts:
             - name: esthesis-nifi-pv
               mountPath: "/opt/nifi/nifi-current"
-          command: [ "sh", "-c", "chown -R 1000:1000 /opt/nifi/nifi-current" ]
+          command: [ "sh", "-c", "chown -fR 1000:1000 /opt/nifi/nifi-current || true" ]
       containers:
         - name: esthesis-nifi
           image: esthesisiot/esthesis-nifi:2.0.4
