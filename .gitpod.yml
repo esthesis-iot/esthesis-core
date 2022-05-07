@@ -1,4 +1,3 @@
----
 image: gitpod/workspace-full
 
 additionalRepositories:
@@ -18,6 +17,8 @@ vscode:
     - asciidoctor.asciidoctor-vscode
     - vscjava.vscode-java-pack
     - GabrielBB.vscode-lombok
+
+    - golang.Go
 
 tasks:
   - name: Preparing env
