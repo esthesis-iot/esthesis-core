@@ -32,6 +32,7 @@ public class EsthesisPlatform {
 
   @PostConstruct
   void started() {
+    log.log(Level.INFO, "Java version   : {0}", System.getProperty("java.version"));
     log.log(Level.INFO, "Timezone name  : {0}", TimeZone.getDefault().getDisplayName());
     log.log(Level.INFO, "Timezone ID    : {0}", TimeZone.getDefault().getID());
     log.log(Level.INFO, "Timezone offset: {0} minutes",
