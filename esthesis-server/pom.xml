@@ -26,7 +26,7 @@
   </scm>
 
   <properties>
-    <spring.boot.version>2.4.1</spring.boot.version>
+    <spring.boot.version>2.6.7</spring.boot.version>
     <qlack.version>3.5.8</qlack.version>
 
     <awaitility.version>4.0.3</awaitility.version>
