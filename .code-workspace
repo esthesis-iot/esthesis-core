@@ -26,6 +26,10 @@
 		"java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx8G -Xms100m -javaagent:\"/workspace/.vscode-remote/extensions/gabrielbb.vscode-lombok-1.0.1/server/lombok.jar\"",
 		"java.configuration.updateBuildConfiguration": "automatic",
 		"files.autoSave": "off",
-		"editor.wordWrap": "on"
+		"editor.wordWrap": "on",
+		"workbench.colorCustomizations": {
+		"tab.activeBackground": "#454545",
+		"tab.activeForeground": "#ffffff"
+		}
 	}
 }
