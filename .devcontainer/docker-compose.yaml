@@ -2,8 +2,9 @@ version: "3.9"
 
 services:
   devenv:
-    build:
-      dockerfile: .devcontainer/Dockerfile      
+    build :
+      dockerfile: .devcontainer/Dockerfile
+      context: .
       args:
         - VARIANT=17-bullseye
         - INSTALL_MAVEN=true

@@ -1,58 +1,30 @@
 {
-    "version": "2.0.0",
-    "presentation": {
-        // "echo": false,
-        // "reveal": "always",
-        // "focus": false,
-        // "panel": "dedicated",
-        // "showReuseMessage": true
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Backend",
+      "type": "shell",
+      "presentation": {
+        "panel": "new",
+        "showReuseMessage": false,
       },
-    "tasks": [        
-        // {
-        //     "label": "Preparing env",
-        //     "type": "shell",
-        //     "presentation": {
-        //         "reveal": "always"
-        //     },
-        //     "group": "build",
-        //     "runOptions": {
-        //         "runOn": "folderOpen"
-        //     },
-
-        //     "command": "docker compose -f docker-compose.yml -f docker-compose-devenv.yml pull esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf && cd ${workspaceFolder}/esthesis-server && mvn clean install -DskipTests=true && cd ${workspaceFolder}/esthesis-ui && npm install",            
-        //     "problemMatcher": [
-        //         "$tsc"
-        //     ],
-        // },
-
-        // {
-        //     "label": "Supporting containers",
-        //     "command": "docker compose -f docker-compose.yml -f docker-compose-devenv.yml run esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf"
-        // },
-
-        {   "label": "Hello",
-            "type": "shell",
-            "presentation": {
-                "panel": "new",
-                "showReuseMessage": false,
-            },
-            "runOptions": {
-                "runOn": "folderOpen"
-            },
-            "command": "echo hello"
-        },
-
-        // {   "label": "Hello2",
-        //     "type": "shell",            
-        //     "presentation": {
-        //         "panel": "new",
-        //         "showReuseMessage": false,
-        //     },
-        //     "runOptions": {
-        //         "runOn": "folderOpen"
-        //     },
-        //     "command": "sleep 3;echo hello2",
-        // },
-
-    ]
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "command": "cd esthesis-server && mvn install && cd esthesis-server-impl && mvn spring-boot:run -Dspring-boot.run.jvmArguments=\"-Xdebug -XX:+ShowCodeDetailsInExceptionMessages -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=46001\" -Dspring-boot.run.arguments=\"--server.port=46000\""
+    },
+    {
+      "label": "Frontend",
+      "type": "shell",
+      "presentation": {
+        "panel": "new",
+        "showReuseMessage": false,
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "command": "cd esthesis-ui && npm install --force && npx ng serve --host 0.0.0.0 --disable-host-check --proxy-config proxy.conf.json",
+      "isBackground": true
+    }
+  ]
 }
