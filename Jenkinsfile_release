@@ -10,6 +10,11 @@ pipeline{
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
     stages{
+    	stage ('Dockerd') {
+            steps {
+                sh 'dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock &> dockerd-logfile &'
+            }
+        }
         stage ("Prompt for Input") {
             steps {
                 script {
