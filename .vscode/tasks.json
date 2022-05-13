@@ -1,0 +1,58 @@
+{
+    "version": "2.0.0",
+    "presentation": {
+        // "echo": false,
+        // "reveal": "always",
+        // "focus": false,
+        // "panel": "dedicated",
+        // "showReuseMessage": true
+      },
+    "tasks": [        
+        // {
+        //     "label": "Preparing env",
+        //     "type": "shell",
+        //     "presentation": {
+        //         "reveal": "always"
+        //     },
+        //     "group": "build",
+        //     "runOptions": {
+        //         "runOn": "folderOpen"
+        //     },
+
+        //     "command": "docker compose -f docker-compose.yml -f docker-compose-devenv.yml pull esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf && cd ${workspaceFolder}/esthesis-server && mvn clean install -DskipTests=true && cd ${workspaceFolder}/esthesis-ui && npm install",            
+        //     "problemMatcher": [
+        //         "$tsc"
+        //     ],
+        // },
+
+        // {
+        //     "label": "Supporting containers",
+        //     "command": "docker compose -f docker-compose.yml -f docker-compose-devenv.yml run esthesis-db esthesis-mqtt esthesis-tsdb esthesis-nifi esthesis-chronograf"
+        // },
+
+        {   "label": "Hello",
+            "type": "shell",
+            "presentation": {
+                "panel": "new",
+                "showReuseMessage": false,
+            },
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
+            "command": "echo hello"
+        },
+
+        // {   "label": "Hello2",
+        //     "type": "shell",            
+        //     "presentation": {
+        //         "panel": "new",
+        //         "showReuseMessage": false,
+        //     },
+        //     "runOptions": {
+        //         "runOn": "folderOpen"
+        //     },
+        //     "command": "sleep 3;echo hello2",
+        // },
+
+    ]
+}

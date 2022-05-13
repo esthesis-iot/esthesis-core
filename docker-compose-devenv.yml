@@ -35,5 +35,5 @@ services:
 #    healthcheck:
 #      test: curl -sI 127.0.0.1:8088 | grep -q "200 OK"
 #      start_period: 2m
-    networks:
-      - esthesis
+    # networks:
+    #   - esthesis

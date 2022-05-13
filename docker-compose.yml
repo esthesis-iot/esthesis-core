@@ -1,9 +1,5 @@
 version: "3.9"
 
-networks:
-  esthesis:
-    name: esthesis
-
 volumes:
   esthesis-db-storage:
   esthesis-tsdb-storage:
@@ -31,8 +27,6 @@ services:
     healthcheck:
       test: mysqladmin ping -h 127.0.0.1 -u $$MARIADB_USER --password=$$MARIADB_PASSWORD
       start_period: 10m
-    networks:
-      - esthesis
 
   esthesis-mqtt:
     image: eclipse-mosquitto:1.6.12
@@ -49,8 +43,6 @@ services:
     healthcheck:
       test: nc -vz localhost 1883 || nc -vz localhost 8883
       start_period: 10m
-    networks:
-      - esthesis
 
   esthesis-tsdb:
     image: influxdb:1.7.8
@@ -70,13 +62,9 @@ services:
     healthcheck:
       test: curl -sI 127.0.0.1:8086/ping | grep -q "204 No Content"
       start_period: 10m
-    networks:
-      - esthesis
 
-  esthesis-nifi:
-    build:
-      context: ../../esthesis-docker/esthesis-nifi
-    image: esthesisiot/esthesis-nifi:1.10.0-2
+  esthesis-nifi:    
+    image: esthesisiot/esthesis-nifi:2.0.4
     hostname: esthesis-nifi
     container_name: esthesis-nifi
     restart: unless-stopped
@@ -87,8 +75,6 @@ services:
     healthcheck:
       test: curl -sI http://esthesis-nifi:8080/nifi | grep -q "HTTP/1.1 302 Found"
       start_period: 10m
-    networks:
-      - esthesis
 
   esthesis-server:
     build:
@@ -113,8 +99,6 @@ services:
       start_period: 10m
     depends_on:
       - esthesis-db
-    networks:
-      - esthesis
 
   esthesis-ui:
     build:
@@ -134,5 +118,3 @@ services:
       start_period: 10m
     depends_on:
       - esthesis-server
-    networks:
-      - esthesis

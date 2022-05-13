@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  devenv:
+    build:
+      dockerfile: .devcontainer/Dockerfile      
+      args:
+        - VARIANT=17-bullseye
+        - INSTALL_MAVEN=true
+        - MAVEN_VERSION=3.8.4
+        - NODE_VERSION=16
+    command: sleep infinity
+    volumes:
+      - .:/workspace
