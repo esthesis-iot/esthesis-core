@@ -1,31 +1,31 @@
 {
   "version": "2.0.0",
   "tasks": [
-    {
-      "label": "Backend",
-      "type": "shell",
-      "presentation": {
-        "panel": "new",
-        "showReuseMessage": false,
-      },
-      "runOptions": {
-        "runOn": "folderOpen"
-      },
-      "command": "java --version && cd esthesis-server && mvn install && mvn spring-boot:run -Dspring-boot.run.jvmArguments=\"-Xdebug -XX:+ShowCodeDetailsInExceptionMessages -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=46001\" -Dspring-boot.run.arguments=\"--server.port=46000 --spring.datasource.url='jdbc:mariadb://esthesis-db:3306/esthesis?autoReconnect=true&createDatabaseIfNotExist=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true'\"",
-      "isBackground": true
-    },
-    {
-      "label": "Frontend",
-      "type": "shell",
-      "presentation": {
-        "panel": "new",
-        "showReuseMessage": false,
-      },
-      "runOptions": {
-        "runOn": "folderOpen"
-      },
-      "command": "cd esthesis-ui && npm install --force && npx ng serve --host 0.0.0.0 --disable-host-check --proxy-config proxy.conf.json",
-      "isBackground": true
-    }
+    // {
+    //   "label": "Backend",
+    //   "type": "shell",
+    //   "presentation": {
+    //     "panel": "new",
+    //     "showReuseMessage": false,
+    //   },
+    //   "runOptions": {
+    //     "runOn": "folderOpen"
+    //   },
+    //   "command": "java --version && cd esthesis-server && mvn install && mvn spring-boot:run -Dspring-boot.run.jvmArguments=\"-Xdebug -XX:+ShowCodeDetailsInExceptionMessages -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=46001\" -Dspring-boot.run.arguments=\"--server.port=46000 --spring.datasource.url='jdbc:mariadb://esthesis-db:3306/esthesis?autoReconnect=true&createDatabaseIfNotExist=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true'\"",
+    //   "isBackground": true
+    // },
+    // {
+    //   "label": "Frontend",
+    //   "type": "shell",
+    //   "presentation": {
+    //     "panel": "new",
+    //     "showReuseMessage": false,
+    //   },
+    //   "runOptions": {
+    //     "runOn": "folderOpen"
+    //   },
+    //   "command": "cd esthesis-ui && npm install --force && npx ng serve --host 0.0.0.0 --disable-host-check --proxy-config proxy.conf.json",
+    //   "isBackground": true
+    // }
   ]
 }

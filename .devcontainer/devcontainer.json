@@ -1,29 +1,19 @@
 {
-    "name": "esthesis container",
+    "name": "esthesis devcontainer",
     "dockerComposeFile": [
-        "../docker-compose.yml",
-        "../docker-compose-devenv.yml",
         "./docker-compose.yaml"
     ],
     "service": "devenv",
-    "runServices": [
-        "devenv", "esthesis-db", "esthesis-mqtt", "esthesis-tsdb",
-        "zookeeper", "broker"
-    ],
 	"workspaceFolder": "/workspace",
 	"extensions": [
 		"ms-azuretools.vscode-docker",
 		"GabrielBB.vscode-lombok",
 		"vscjava.vscode-java-pack",
-		"Pivotal.vscode-boot-dev-pack",
 		"formulahendry.auto-close-tag",
 		"formulahendry.auto-rename-tag",
 		"streetsidesoftware.code-spell-checker",
-		"mtxr.sqltools-driver-mysql",
-		"mtxr.sqltools",
-		"xyz.local-history"
-	]    
-    // "forwardPorts": [3000],
-    // "postCreateCommand": "yarn install",
-    // "remoteUser": "node"
+		"xyz.local-history",
+		"redhat.vscode-quarkus",
+		"EditorConfig.EditorConfig"
+	]
 }

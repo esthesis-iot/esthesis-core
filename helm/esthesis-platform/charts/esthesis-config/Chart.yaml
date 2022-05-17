@@ -1,4 +1,0 @@
-apiVersion: v2
-name: esthesis-config
-description: A Helm chart to deploy configuration options and secrets for the esthesis IoT platform.
-version: 2.0.19-SNAPSHOT
