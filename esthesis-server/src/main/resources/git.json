@@ -1,0 +1,26 @@
+
+{
+    "git.branch": "master",
+    "git.build.host": "Nassos-M1-Air.home.nassosmichas.com",
+    "git.build.time": "2022-05-09 08:56:42",
+    "git.build.user.email": "nassosmichas@me.com",
+    "git.build.user.name": "Nassos Michas",
+    "git.build.version": "2.0.19-SNAPSHOT",
+    "git.closest.tag.commit.count": "3",
+    "git.closest.tag.name": "2.0.18",
+    "git.commit.author.time": "2022-05-03 20:54:58",
+    "git.commit.committer.time": "2022-05-03 20:54:58",
+    "git.commit.id": "07459347ecb91a709fecf96223fa3a5a3eecd507",
+    "git.commit.id.abbrev": "0745934",
+    "git.commit.id.describe": "2.0.18-3-g0745934",
+    "git.commit.id.describe-short": "2.0.18-3",
+    "git.commit.message.full": "helm: don't fail when can't change nifi permissions",
+    "git.commit.message.short": "helm: don't fail when can't change nifi permissions",
+    "git.commit.time": "2022-05-03 20:54:58",
+    "git.commit.user.email": "nassosmichas@me.com",
+    "git.commit.user.name": "Nassos Michas",
+    "git.dirty": "false",
+    "git.remote.origin.url": "https://github.com/esthesis-iot/esthesis-platform.git",
+    "git.tags": "",
+    "git.total.commit.count": "627"
+}

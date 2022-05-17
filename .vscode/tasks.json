@@ -11,7 +11,8 @@
       "runOptions": {
         "runOn": "folderOpen"
       },
-      "command": "cd esthesis-server && mvn install && cd esthesis-server-impl && mvn spring-boot:run -Dspring-boot.run.jvmArguments=\"-Xdebug -XX:+ShowCodeDetailsInExceptionMessages -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=46001\" -Dspring-boot.run.arguments=\"--server.port=46000\""
+      "command": "java --version && cd esthesis-server && mvn install && mvn spring-boot:run -Dspring-boot.run.jvmArguments=\"-Xdebug -XX:+ShowCodeDetailsInExceptionMessages -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=46001\" -Dspring-boot.run.arguments=\"--server.port=46000 --spring.datasource.url='jdbc:mariadb://esthesis-db:3306/esthesis?autoReconnect=true&createDatabaseIfNotExist=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true'\"",
+      "isBackground": true
     },
     {
       "label": "Frontend",
