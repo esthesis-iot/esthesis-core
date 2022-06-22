@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable, Subject} from "rxjs";
-import {AppConstants} from "../app.constants";
 import {DashboardWidgetDto} from "../dto/dashboard-widget-dto";
+import {environment} from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,7 @@ export class DashboardService {
    * Returns the widgets for the default dashboard of the logged-in user.
    */
   getWidgets(): Observable<Array<DashboardWidgetDto>> {
-    return this.http.get<Array<DashboardWidgetDto>>(`${AppConstants.API_ROOT}/dashboard/widget`);
+    return this.http.get<Array<DashboardWidgetDto>>(`${environment.apiPrefix}/dashboard/widget`);
   }
 
   /**
@@ -28,7 +28,7 @@ export class DashboardService {
    */
   saveWidget(widget: DashboardWidgetDto): Observable<DashboardWidgetDto> {
     return this.http.post<DashboardWidgetDto>(
-      `${AppConstants.API_ROOT}/${DashboardService.resource}/widget`, widget);
+      `${environment.apiPrefix}/${DashboardService.resource}/widget`, widget);
   }
 
   /**
@@ -36,7 +36,7 @@ export class DashboardService {
    * @param widgetId
    */
   deleteWidget(widgetId: number) {
-    return this.http.delete(`${AppConstants.API_ROOT}/${DashboardService.resource}/widget/${widgetId}`);
+    return this.http.delete(`${environment.apiPrefix}/${DashboardService.resource}/widget/${widgetId}`);
   }
 
   /**
@@ -53,11 +53,11 @@ export class DashboardService {
    * @param widgetId The id of the widget to find.
    */
   getWidget(widgetId: number): Observable<DashboardWidgetDto> {
-    return this.http.get<DashboardWidgetDto>(`${AppConstants.API_ROOT}/dashboard/widget/${widgetId}`);
+    return this.http.get<DashboardWidgetDto>(`${environment.apiPrefix}/dashboard/widget/${widgetId}`);
   }
 
   updateWidgetCoordinates(widgetId: number, x: number, y: number, columns: number, rows: number): Observable<any> {
-    return this.http.put(`${AppConstants.API_ROOT}/dashboard/widget/${widgetId}/${x},${y}/${columns},${rows}`, {});
+    return this.http.put(`${environment.apiPrefix}/dashboard/widget/${widgetId}/${x},${y}/${columns},${rows}`, {});
   }
 
   /**
@@ -65,6 +65,6 @@ export class DashboardService {
    * @param widgetId The Id of the widget to fetch its last value.
    */
   getWidgetValue(widgetId: number): Observable<string> {
-    return this.http.get<string>(`${AppConstants.API_ROOT}/dashboard/widget/${widgetId}/value`);
+    return this.http.get<string>(`${environment.apiPrefix}/dashboard/widget/${widgetId}/value`);
   }
 }

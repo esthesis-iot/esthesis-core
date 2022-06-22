@@ -1,0 +1,12 @@
+quarkus:
+  container-image:
+    group: esthesisiot
+    name: esthesis-srv-device
+  mongodb:
+    connection-string: mongodb://esthesis:esthesis@mongodb:27017/esthesis
+    database: esthesis
+mp:
+  jwt:
+    verify:
+      publickey:
+        location: "http://192.168.21.2/realms/esthesis/protocol/openid-connect/certs"

@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
-import {AppConstants} from '../app.constants';
 import {HttpClient} from '@angular/common/http';
 import {CaDto} from '../dto/ca-dto';
 import {FormGroup} from '@angular/forms';
 import {CrudService} from '../services/crud.service';
 import {Observable} from 'rxjs';
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,7 @@ export class CasService extends CrudService<CaDto> {
    * @param {number} keyType The type of the key to download as per AppConstants.KEY_TYPE.
    */
   download(caId: number, keyType: number, base64: boolean) {
-    this.http.get(`${AppConstants.API_ROOT}/cas/${caId}/download/${keyType}/${base64}`, {
+    this.http.get(`${environment.apiPrefix}/cas/${caId}/download/${keyType}/${base64}`, {
       responseType: 'blob', observe: 'response'
     }).subscribe(onNext => {
       this.saveAs(onNext);
@@ -29,7 +29,7 @@ export class CasService extends CrudService<CaDto> {
   }
 
   backup(caId: number) {
-    this.http.get(`${AppConstants.API_ROOT}/cas/${caId}/backup`, {
+    this.http.get(`${environment.apiPrefix}/cas/${caId}/backup`, {
       responseType: 'blob', observe: 'response'
     }).subscribe(onNext => {
       this.saveAs(onNext);
@@ -37,11 +37,11 @@ export class CasService extends CrudService<CaDto> {
   }
 
   restore(form: FormGroup) {
-    return this.upload(form, `${AppConstants.API_ROOT}/cas/restore`, false);
+    return this.upload(form, `${environment.apiPrefix}/cas/restore`, false);
   }
 
   getEligibleForSigning(): Observable<CaDto[]> {
-    return this.http.get<CaDto[]>(`${AppConstants.API_ROOT}/cas/eligible-for-signing`);
+    return this.http.get<CaDto[]>(`${environment.apiPrefix}/cas/eligible-for-signing`);
   }
 
 }

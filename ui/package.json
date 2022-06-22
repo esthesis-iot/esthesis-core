@@ -27,7 +27,6 @@
     "@angular/platform-browser-dynamic": "13.3.2",
     "@angular/router": "13.3.2",
     "@asymmetrik/ngx-leaflet": "13.0.2",
-    "@auth0/angular-jwt": "5.0.2",
     "@qlack/form-validation": "1.4.0",
     "@qlack/forms": "2.9.0",
     "@swimlane/ngx-charts": "20.1.0",
@@ -53,7 +52,8 @@
     "ngx-progressbar": "8.0.0",
     "rxjs": "7.5.5",
     "sprintf-js": "1.1.2",
-    "tslib": "2.3.1"
+    "tslib": "2.3.1",
+    "angular-auth-oidc-client": "14.0.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "13.3.2",

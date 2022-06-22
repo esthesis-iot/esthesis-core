@@ -4,11 +4,14 @@ import {GridsterComponent, GridsterConfig} from "angular-gridster2";
 import {MatDialog} from "@angular/material/dialog";
 import {DashboardAddWidgetComponent} from "./dashboard-add-widget.component";
 import {AppConstants} from "../app.constants";
-import {WidgetSensorValueSetupComponent} from "./dashboard-widgets/widget-sensor-value/widget-sensor-value-setup.component";
+import {
+  WidgetSensorValueSetupComponent
+} from "./dashboard-widgets/widget-sensor-value/widget-sensor-value-setup.component";
 import {DashboardService} from "./dashboard.service";
 import {DashboardWidgetForGridDto} from "../dto/dashboard-widget-for-grid-dto";
-import {Subscription} from "rxjs";
-import {WidgetSensorGaugeSetupComponent} from "./dashboard-widgets/widget-sensor-gauge/widget-sensor-gauge-setup.component";
+import {
+  WidgetSensorGaugeSetupComponent
+} from "./dashboard-widgets/widget-sensor-gauge/widget-sensor-gauge-setup.component";
 import {WidgetMapSetupComponent} from "./dashboard-widgets/widget-map/widget-map-setup.component";
 
 
@@ -20,7 +23,7 @@ import {WidgetMapSetupComponent} from "./dashboard-widgets/widget-map/widget-map
 export class DashboardComponent extends BaseComponent implements OnInit, OnDestroy {
   dashboardOptions!: GridsterConfig;
   dashboardWidgets!: Array<DashboardWidgetForGridDto>;
-  private refreshSubscription: Subscription;
+  // private refreshSubscription: Subscription;
   // Expose application constants.
   constants = AppConstants;
   @ViewChild(GridsterComponent,
@@ -31,9 +34,9 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     super();
 
     // Subscribe to addition/removal of dashboard widgets.
-    this.refreshSubscription = this.dashboardService.refreshDashboardObservable.subscribe(onNext => {
-      this.getDashboardWidgets();
-    });
+    // this.refreshSubscription = this.dashboardService.refreshDashboardObservable.subscribe(onNext => {
+    //   this.getDashboardWidgets();
+    // });
   }
 
   ngOnInit() {
@@ -51,7 +54,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     };
 
     // Refresh widgets list.
-    this.getDashboardWidgets();
+    // this.getDashboardWidgets();
   }
 
   itemChange(item: any, itemComponent: any) {
@@ -64,7 +67,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   }
 
   ngOnDestroy() {
-    this.refreshSubscription.unsubscribe();
+    // this.refreshSubscription.unsubscribe();
   }
 
   getDashboardWidgets() {

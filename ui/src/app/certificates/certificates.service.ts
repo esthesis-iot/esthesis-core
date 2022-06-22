@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
-import {AppConstants} from '../app.constants';
 import {HttpClient} from '@angular/common/http';
 import {FormGroup} from '@angular/forms';
 import {CrudService} from '../services/crud.service';
 import {CertificateDto} from '../dto/certificate-dto';
 import {Observable} from 'rxjs';
 import {QPageableReply} from '@qlack/forms';
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,7 @@ export class CertificatesService extends CrudService<CertificateDto> {
    */
   download(certificateId: number, keyType: number, base64: boolean) {
     this.http.get(
-      `${AppConstants.API_ROOT}/certificates/${certificateId}/download/${keyType}/${base64}`, {
+      `${environment.apiPrefix}/certificates/${certificateId}/download/${keyType}/${base64}`, {
         responseType: 'blob', observe: 'response'
       }).subscribe(onNext => {
       this.saveAs(onNext);
@@ -31,7 +31,7 @@ export class CertificatesService extends CrudService<CertificateDto> {
   }
 
   backup(caId: number) {
-    this.http.get(`${AppConstants.API_ROOT}/certificates/${caId}/backup`, {
+    this.http.get(`${environment.apiPrefix}/certificates/${caId}/backup`, {
       responseType: 'blob', observe: 'response'
     }).subscribe(onNext => {
       this.saveAs(onNext);
@@ -39,8 +39,8 @@ export class CertificatesService extends CrudService<CertificateDto> {
   }
 
   restore(form: FormGroup) {
-    return this.upload(form, `${AppConstants.API_ROOT}/certificates/restore`,
-    false);
+    return this.upload(form, `${environment.apiPrefix}/certificates/restore`,
+      false);
   }
 
 

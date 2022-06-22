@@ -5,16 +5,6 @@ export const AppConstants = {
   // The date format to use.
   DATE_FORMAT: 'yyyy-MM-dd HH:mm:ss',
 
-  // The root URL of the API.
-  API_ROOT: '/api',
-
-  // The claims available in JWT.
-  jwt: {
-    claims: {
-      EMAIL: 'email'
-    }
-  },
-
   // The different types of security keys and CERTIFICATE.
   KEY_TYPE: {
     PRIVATE_KEY: 0,

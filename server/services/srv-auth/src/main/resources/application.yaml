@@ -1,0 +1,8 @@
+quarkus:
+  container-image:
+    group: esthesisiot
+    name: esthesis-srv-auth
+  log:
+    category:
+      esthesis:
+        level: debug

@@ -1,0 +1,13 @@
+global:
+  # OIDC configuration.
+  oidc:
+    realm: esthesis
+    clientId: esthesis
+    clientSecret: <client-secret>
+    discoveryEndpoint: <discovery-endpoint>
+    introspectionEndpoint: <introspection-endpoint>
+
+  # MongoDB configuration.
+  mongodb:
+    connectionString: mongodb://esthesis:esthesis@mongo:27017
+    database: esthesis

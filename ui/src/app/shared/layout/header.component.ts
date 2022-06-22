@@ -1,7 +1,8 @@
-import { Component} from '@angular/core';
+import {Component} from '@angular/core';
 import {BaseComponent} from '../component/base-component';
 import {UserService} from '../../users/user.service';
-import {AppConstants} from '../../app.constants';
+import {Observable} from "rxjs";
+import {AuthenticatedResult, OidcSecurityService} from "angular-auth-oidc-client";
 
 @Component({
   selector: 'app-header',
@@ -12,11 +13,16 @@ export class HeaderComponent extends BaseComponent {
   // The user email extracted from JWT.
   public userEmail: string | undefined;
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private oidcService: OidcSecurityService) {
     super();
   }
 
   getUserEmail(): string | null {
-    return this.userService.getJWTClaim(AppConstants.jwt.claims.EMAIL);
+    //return this.userService.getJWTClaim(AppConstants.jwt.claims.EMAIL);
+    return "TEST123";
+  }
+
+  isLoggedIn(): Observable<AuthenticatedResult> {
+    return this.oidcService.isAuthenticated$;
   }
 }

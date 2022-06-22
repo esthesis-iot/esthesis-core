@@ -1,5 +1,5 @@
 upstream esthesis-server {
-  server ${ESTHESIS_SERVER_HOSTNAME}:46000;
+  server ${API_SERVER}:80;
 }
 
 server {

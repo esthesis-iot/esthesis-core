@@ -1,12 +1,12 @@
 import {Log} from 'ng2-logger/browser';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {AppConstants} from '../app.constants';
 import {SettingDto} from '../dto/setting-dto';
 import {CrudService} from '../services/crud.service';
 import {KeyValueDto} from '../dto/key-value-dto';
 import {Observable} from 'rxjs';
 import {FieldDto} from '../dto/field-dto';
+import {environment} from 'src/environments/environment';
 
 /**
  * A service providing functionality to manage settings.
@@ -24,24 +24,24 @@ export class SettingsService extends CrudService<SettingDto> {
 
   findByName(name: string): Observable<SettingDto> {
     return this.http.get<SettingDto>(
-      `${AppConstants.API_ROOT}/settings/byName?name=${name}`);
+      `${environment.apiPrefix}/settings/byName?name=${name}`);
   }
 
   saveMultiple(keyValueDtos: KeyValueDto[]): Observable<any> {
     return this.http.post(
-      `${AppConstants.API_ROOT}/settings/byNames`, keyValueDtos);
+      `${environment.apiPrefix}/settings/byNames`, keyValueDtos);
   }
 
   findByNames(...names: string[]): Observable<SettingDto[]> {
     return this.http.get<SettingDto[]>(
-      `${AppConstants.API_ROOT}/settings/byNames?names=${names.join(',')}`);
+      `${environment.apiPrefix}/settings/byNames?names=${names.join(',')}`);
   }
 
   getDevicePageFields(): Observable<FieldDto[]> {
-    return this.http.get<FieldDto[]>(`${AppConstants.API_ROOT}/settings/fields`);
+    return this.http.get<FieldDto[]>(`${environment.apiPrefix}/settings/fields`);
   }
 
   saveDevicePageFields(form: any): Observable<any> {
-    return this.http.post(`${AppConstants.API_ROOT}/settings/fields`, form);
+    return this.http.post(`${environment.apiPrefix}/settings/fields`, form);
   }
 }

@@ -1,5 +1,4 @@
 import * as _ from 'lodash-es';
-import {AppConstants} from '../../app.constants';
 
 export class BaseComponent {
 
@@ -10,10 +9,9 @@ export class BaseComponent {
    * Checks if the current user is logged in or not.
    * @returns {boolean}
    */
-  isLoggedIn(): boolean {
-    return localStorage.getItem(AppConstants.JWT_STORAGE_NAME) != null &&
-      localStorage.getItem(AppConstants.JWT_STORAGE_NAME) !== undefined;
-  }
+  // isLoggedIn(): Observable<AuthenticatedResult> {
+  //   return this.oidcSecurityService.isAuthenticated$;
+  // }
 
   /**
    * Utility method to lookup within an object by the value of its keys and return the key name.

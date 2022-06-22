@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: esthesis-srv-device
+spec:
+  selector:
+    matchLabels:
+      app: esthesis-srv-device
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: esthesis-srv-device
+    spec:
+      containers:
+        - name: esthesis-srv-device
+          image: esthesisiot/esthesis-srv-device:3.0.0-SNAPSHOT
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+         - env:
+             - name: quarkus.mongodb.connection-string
+               valueFrom:
+                 secretKeyRef:
+                   name: esthesis-mongodb
+                   key: connectionString
+             - name: quarkus.mongodb.database
+               valueFrom:
+                 secretKeyRef:
+                   name: esthesis-mongodb
+                   key: database

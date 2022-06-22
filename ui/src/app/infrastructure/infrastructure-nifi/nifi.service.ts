@@ -4,7 +4,7 @@ import {NiFiDto} from '../../dto/ni-fi-dto';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {WfVersionDto} from '../../dto/wf-version-dto';
-import {AppConstants} from '../../app.constants';
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +17,10 @@ export class NiFiService extends CrudService<NiFiDto> {
 
   getLatestWorkflowVersion(): Observable<WfVersionDto> {
     return this.http.get<WfVersionDto>(
-      `${AppConstants.API_ROOT}/infrastructure/nifi/latest-wf-version`);
+      `${environment.apiPrefix}/infrastructure/nifi/latest-wf-version`);
   }
 
   getActive(): Observable<NiFiDto> {
-    return this.http.get<NiFiDto>(`${AppConstants.API_ROOT}/infrastructure/nifi/active`);
+    return this.http.get<NiFiDto>(`${environment.apiPrefix}/infrastructure/nifi/active`);
   }
 }

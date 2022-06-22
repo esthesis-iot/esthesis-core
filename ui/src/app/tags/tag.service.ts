@@ -14,7 +14,7 @@ import {QPageableReply} from '@qlack/forms';
 })
 export class TagService extends CrudService<TagDto> {
   constructor(http: HttpClient) {
-    super(http, 'tags');
+    super(http, 'v1/tag');
   }
 
   getAll(params?: string): Observable<QPageableReply<TagDto>> {
