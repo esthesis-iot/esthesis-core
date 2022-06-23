@@ -54,8 +54,8 @@ export class NiFiSinkComponent extends BaseComponent implements OnInit, AfterVie
   }
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
-    this.nifiSinkService.getAll(
-        this.qForms.appendPagingToFilter("type=" + this.type, page, size, sort, sortDirection))
+    this.nifiSinkService.find(
+      this.qForms.appendPagingToFilter("type=" + this.type, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;
       this.paginator.length = onNext.totalElements;
@@ -64,6 +64,6 @@ export class NiFiSinkComponent extends BaseComponent implements OnInit, AfterVie
 
   changePage() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-        this.sort.start);
+      this.sort.start);
   }
 }

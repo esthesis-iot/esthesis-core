@@ -8,7 +8,9 @@ import {CaDto} from '../dto/ca-dto';
 import {CasService} from '../cas/cas.service';
 import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
-import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {
+  OkCancelModalComponent
+} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {QFormsService} from '@qlack/forms';
 import {CertificateDto} from '../dto/certificate-dto';
 
@@ -51,7 +53,7 @@ export class CertificateEditComponent extends BaseComponent implements OnInit {
 
     // Fill-in the form with data if editing an existing item.
     if (this.id && this.id !== 0) {
-      this.certificatesService.get(this.id).subscribe(onNext => {
+      this.certificatesService.findById(this.id).subscribe(onNext => {
         this.form!.patchValue(onNext);
       });
     }

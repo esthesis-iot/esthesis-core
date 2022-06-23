@@ -45,7 +45,7 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
     });
 
     // Fetch lookup values.
-    this.casService.getAll('sort=cn,asc').subscribe(onNext => {
+    this.casService.find('sort=cn,asc').subscribe(onNext => {
       if (onNext.content && onNext.content.length > 0) {
         onNext.content.unshift(new CaDto(null!, ''));
         this.cas = onNext.content;

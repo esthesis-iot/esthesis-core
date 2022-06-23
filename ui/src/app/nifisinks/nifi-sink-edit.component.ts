@@ -5,7 +5,9 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
-import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {
+  OkCancelModalComponent
+} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {NifiReaderFactoryDto} from '../dto/nifisinks/nifi-reader-factory-dto';
 import {NifiProducerFactoryDto} from '../dto/nifisinks/nifi-producer-factory-dto';
 import * as _ from 'lodash';
@@ -28,7 +30,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
   type: string | undefined;
   handlers: Array<number> = [];
   isEdit: boolean | undefined;
-  activeNiFiId: any| undefined;
+  activeNiFiId: any | undefined;
   // Expose application constants.
   constants = AppConstants;
 
@@ -68,7 +70,7 @@ export class NiFiSinkEditComponent extends BaseComponent implements OnInit {
 
     // Fill-in the form with data if editing an existing item.
     if (this.isEdit) {
-      this.nifiSinkService.get(this.id).subscribe(onNext => {
+      this.nifiSinkService.findById(this.id).subscribe(onNext => {
         this.handlers.push(onNext.handler);
         this.form!.patchValue(onNext);
       });

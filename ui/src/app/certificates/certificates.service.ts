@@ -46,9 +46,9 @@ export class CertificatesService extends CrudService<CertificateDto> {
 
   getAll(params?: string): Observable<QPageableReply<CertificateDto>> {
     if (!params) {
-      return super.getAll('order=cn,asc');
+      return super.find('order=cn,asc');
     } else {
-      return super.getAll(params);
+      return super.find(params);
     }
   }
 }

@@ -1,8 +1,8 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {CaDto} from '../dto/ca-dto';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
 import {QFormsService} from '@qlack/forms';
 import {CasService} from './cas.service';
 import {BaseComponent} from '../shared/component/base-component';
@@ -19,8 +19,8 @@ export class CasComponent extends BaseComponent implements OnInit, AfterViewInit
   // Expose application constants.
   constants = AppConstants;
 
-  @ViewChild(MatSort, { static: true }) sort!: MatSort;
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private caService: CasService, private qForms: QFormsService) {
     super();
@@ -41,7 +41,7 @@ export class CasComponent extends BaseComponent implements OnInit, AfterViewInit
   }
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
-    this.caService.getAll(this.qForms.appendPagingToFilter(null!, page, size, sort, sortDirection))
+    this.caService.find(this.qForms.appendPagingToFilter(null!, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;
       this.paginator.length = onNext.totalElements;

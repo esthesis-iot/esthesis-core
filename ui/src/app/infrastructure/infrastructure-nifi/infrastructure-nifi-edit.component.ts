@@ -4,7 +4,9 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UtilityService} from '../../shared/service/utility.service';
-import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {
+  OkCancelModalComponent
+} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {NiFiDto} from '../../dto/ni-fi-dto';
 import {NiFiService} from './nifi.service';
 import {SyncService} from './sync.service';
@@ -51,7 +53,7 @@ export class InfrastructureNiFiEditComponent extends BaseComponent implements On
 
     // Fill-in the form with data if editing an existing item.
     if (this.id !== 0) {
-      this.nifiService.get(this.id).subscribe(onNext => {
+      this.nifiService.findById(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
         this.synced = onNext.synced;
         this.lastChecked = onNext.lastChecked;

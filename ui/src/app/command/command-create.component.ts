@@ -6,7 +6,7 @@ import {Router} from '@angular/router';
 import {MatDialogRef} from '@angular/material/dialog';
 import {CommandCreateService} from './command-create.service';
 import {forkJoin} from 'rxjs'
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {ProvisioningDto} from "../dto/provisioning-dto";
 import {ProvisioningService} from "../provisioning/provisioning.service";
 import {AppConstants} from "../app.constants";
@@ -65,7 +65,7 @@ export class CommandCreateComponent extends BaseComponent implements OnInit, OnD
     });
 
     // Get provisioning packages.
-    this.provisioningService.getAll("state=1&sort=name,packageVersion").subscribe(onNext => {
+    this.provisioningService.find("state=1&sort=name,packageVersion").subscribe(onNext => {
       this.provisioningPackages = onNext.content;
     });
   }

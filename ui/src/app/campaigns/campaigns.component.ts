@@ -14,7 +14,7 @@ import {AppConstants} from "../app.constants";
   styleUrls: ['./campaigns.component.scss']
 })
 export class CampaignsComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['name','type','state','startedOn','terminatedOn'];
+  columns = ['name', 'type', 'state', 'startedOn', 'terminatedOn'];
   datasource = new MatTableDataSource<CampaignDto>();
   // Expose application constants.
   constants = AppConstants;
@@ -42,7 +42,7 @@ export class CampaignsComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
-    this.campaignsService.getAll(
+    this.campaignsService.find(
       this.qForms.appendPagingToFilter(null!, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;

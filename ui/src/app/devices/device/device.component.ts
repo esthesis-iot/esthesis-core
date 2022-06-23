@@ -8,7 +8,9 @@ import {TagService} from '../../tags/tag.service';
 import {DevicesService} from '../devices.service';
 import {BaseComponent} from 'src/app/shared/component/base-component';
 import {UtilityService} from '../../shared/service/utility.service';
-import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {
+  OkCancelModalComponent
+} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {sprintf} from 'sprintf-js';
 import {FieldDto} from '../../dto/field-dto';
 import {FormatterService} from '../../shared/service/formatter.service';
@@ -45,7 +47,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
   mapOptions = {
     layers: [
       tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          {maxZoom: 18, attribution: '...'})
+        {maxZoom: 18, attribution: '...'})
     ],
     zoom: 12
   };
@@ -65,8 +67,8 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
       let latSetting: string;
       let lonSetting: string;
       this.settingsService.findByNames(
-          AppSettings.SETTING.GEOLOCATION.LATITUDE,
-          AppSettings.SETTING.GEOLOCATION.LONGITUDE,
+        AppSettings.SETTING.GEOLOCATION.LATITUDE,
+        AppSettings.SETTING.GEOLOCATION.LONGITUDE,
       ).subscribe(onNext => {
         onNext.forEach(settingDTO => {
           if (settingDTO.key === AppSettings.SETTING.GEOLOCATION.LATITUDE) {
@@ -78,18 +80,18 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
         });
         if (latSetting && latSetting != "" && lonSetting && lonSetting != "")
           this.devicesService.getDeviceDataField(this.id, [latSetting, lonSetting]).subscribe(
-              onNext => {
-                // @ts-ignore
-                if (onNext[0].value != undefined && onNext[1].value != undefined) {
-                  this.deviceHasGeolocation = true;
-                  this.leaflet.map.addLayer(
-                      // @ts-ignore
-                      marker([onNext[0].value, onNext[1].value])
-                  );
+            onNext => {
+              // @ts-ignore
+              if (onNext[0].value != undefined && onNext[1].value != undefined) {
+                this.deviceHasGeolocation = true;
+                this.leaflet.map.addLayer(
                   // @ts-ignore
-                  this.leaflet.map.panTo(latLng([onNext[0].value, onNext[1].value]));
-                }
-              })
+                  marker([onNext[0].value, onNext[1].value])
+                );
+                // @ts-ignore
+                this.leaflet.map.panTo(latLng([onNext[0].value, onNext[1].value]));
+              }
+            })
       });
     }
   }
@@ -99,7 +101,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
     this.nifiService.getActive().subscribe(value => {
       this.hasActiveNiFi = value?.id != null;
       this.hasDTUrl = value?.dtUrl != null;
-      this.isNiFiConfigured =  this.hasActiveNiFi && this.hasDTUrl;
+      this.isNiFiConfigured = this.hasActiveNiFi && this.hasDTUrl;
     });
 
     // Check if an edit is performed and fetch data.
@@ -119,7 +121,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
     });
 
     if (this.id && this.id !== 0) {
-      this.devicesService.get(this.id).subscribe(onNext => {
+      this.devicesService.findById(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
         this.hardwareId = onNext.hardwareId;
       });
@@ -154,11 +156,11 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
 
   save() {
     this.devicesService.save(
-        this.qForms.cleanupData(this.form.getRawValue()) as DeviceDto).subscribe(
-        onNext => {
-          this.utilityService.popupSuccess('Device successfully saved.');
-          this.router.navigate(['devices']);
-        });
+      this.qForms.cleanupData(this.form.getRawValue()) as DeviceDto).subscribe(
+      onNext => {
+        this.utilityService.popupSuccess('Device successfully saved.');
+        this.router.navigate(['devices']);
+      });
   }
 
   delete() {
@@ -175,7 +177,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
       if (result) {
         this.devicesService.delete(this.id).subscribe(onNext => {
           this.utilityService.popupSuccess('Device deletion request successfully submitted and' +
-              ' is ongoing.');
+            ' is ongoing.');
           this.router.navigate(['devices']);
         });
       }

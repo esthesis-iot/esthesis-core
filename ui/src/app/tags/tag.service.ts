@@ -19,9 +19,9 @@ export class TagService extends CrudService<TagDto> {
 
   getAll(params?: string): Observable<QPageableReply<TagDto>> {
     if (!params) {
-      return super.getAll('order=name,asc');
+      return super.find('order=name,asc');
     } else {
-      return super.getAll(params);
+      return super.find(params);
     }
   }
 }

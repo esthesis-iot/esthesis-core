@@ -4,7 +4,9 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {StoresService} from './stores.service';
-import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {
+  OkCancelModalComponent
+} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {CaDto} from '../dto/ca-dto';
 import {UtilityService} from '../shared/service/utility.service';
 import {CasService} from '../cas/cas.service';
@@ -49,12 +51,12 @@ export class StoresEditComponent extends BaseComponent implements OnInit {
 
     // Fill form.
     if (this.id && this.id !== 0) {
-      this.storesService.get(this.id).subscribe(onNext => {
+      this.storesService.findById(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
       });
     }
 
-    this.casService.getAll('order=name,asc').subscribe(onNext => {
+    this.casService.find('order=name,asc').subscribe(onNext => {
       this.cas = onNext.content;
     });
 

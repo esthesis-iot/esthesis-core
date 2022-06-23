@@ -44,7 +44,7 @@ export class InfrastructureNiFiComponent extends BaseComponent implements OnInit
   }
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
-    this.nifiService.getAll(
+    this.nifiService.find(
       this.qForms.appendPagingToFilter(null!, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;

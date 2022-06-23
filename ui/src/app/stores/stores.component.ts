@@ -7,7 +7,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {Router} from '@angular/router';
 import {StoreDto} from '../dto/store-dto';
 import {StoresService} from './stores.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {QFormsService} from '@qlack/forms';
 
 @Component({
@@ -21,8 +21,8 @@ export class StoresComponent extends BaseComponent implements OnInit, AfterViewI
   filterForm: FormGroup;
 
   // References to sorting and pagination.
-  @ViewChild(MatSort, { static: true }) sort!: MatSort;
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router,
               private storesService: StoresService,
@@ -57,7 +57,7 @@ export class StoresComponent extends BaseComponent implements OnInit, AfterViewI
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
-    this.storesService.getAll(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
+    this.storesService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
       null!, false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;

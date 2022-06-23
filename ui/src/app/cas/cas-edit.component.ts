@@ -7,7 +7,9 @@ import {AppConstants} from '../app.constants';
 import {CasService} from './cas.service';
 import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
-import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {
+  OkCancelModalComponent
+} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {QFormsService} from '@qlack/forms';
 
 @Component({
@@ -40,7 +42,7 @@ export class CasEditComponent extends BaseComponent implements OnInit {
 
     // Fill-in the form with data if editing an existing item.
     if (this.id && this.id !== 0) {
-      this.caService.get(this.id).subscribe(onNext => {
+      this.caService.findById(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
       });
     }

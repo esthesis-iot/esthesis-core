@@ -1,12 +1,12 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {ApplicationDto} from '../dto/application-dto';
 import {ApplicationService} from './application.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {BaseComponent} from '../shared/component/base-component';
 import {QFormsService} from '@qlack/forms';
 import {AppConstants} from "../app.constants";
@@ -24,8 +24,8 @@ export class ApplicationsComponent extends BaseComponent implements OnInit, Afte
   constants = AppConstants;
 
   // References to sorting and pagination.
-  @ViewChild(MatSort, { static: true }) sort!: MatSort;
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router,
               private applicationsService: ApplicationService,
@@ -61,7 +61,7 @@ export class ApplicationsComponent extends BaseComponent implements OnInit, Afte
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
-    this.applicationsService.getAll(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
+    this.applicationsService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
       null!, false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.dataSource.data = onNext.content;

@@ -4,10 +4,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {UUID} from 'angular2-uuid';
 import {TagService} from './tag.service';
-import { debounceTime } from 'rxjs/operators';
 import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
-import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {
+  OkCancelModalComponent
+} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {TagDto} from '../dto/tag-dto';
 import {QFormsService} from '@qlack/forms';
 import {QFormValidationService} from '@qlack/form-validation';
@@ -42,7 +43,7 @@ export class TagEditComponent extends BaseComponent implements OnInit {
     });
     // Fill-in the form with data if editing an existing item.
     if (this.id && this.id !== 0) {
-      this.tagService.get(this.id).subscribe(onNext => {
+      this.tagService.findById(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
       });
     } else {

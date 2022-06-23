@@ -9,4 +9,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="Quarkus Tools">
+    <option name="hash" value="-578559362" />
+    <option name="version" value="1" />
+  </component>
 </module>

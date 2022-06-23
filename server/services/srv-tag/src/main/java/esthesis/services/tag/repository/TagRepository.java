@@ -1,10 +1,10 @@
 package esthesis.services.tag.repository;
 
 import esthesis.dto.Tag;
-import esthesis.repository.BaseRepository;
+import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class TagRepository implements BaseRepository<Tag> {
+public class TagRepository implements PanacheMongoRepository<Tag> {
 
 }

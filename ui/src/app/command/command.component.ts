@@ -7,7 +7,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {BaseComponent} from '../shared/component/base-component';
 import {CommandRequestDto} from '../dto/command-request-dto';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {TextModalComponent} from '../shared/component/display/text-modal/text-modal.component';
 import {CommandService} from './command.service';
 import {CommandReplyDto} from '../dto/command-reply-dto';
@@ -63,7 +63,7 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
     ).subscribe(onNext => {
       this.fetchActiveNifi();
       this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-          this.sort.start);
+        this.sort.start);
     });
   }
 
@@ -81,7 +81,7 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
-    this.commandService.getAll(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
+    this.commandService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
       null!, false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.dataSource.data = onNext.content;
@@ -91,7 +91,7 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
 
   fetchActiveNifi() {
     this.nifiService.getActive().subscribe(value => {
-      this.hasActiveNifi = value?.id != null ;
+      this.hasActiveNifi = value?.id != null;
       this.hasDTUrl = value?.dtUrl != null;
       this.isNiFiConfigured = this.hasActiveNifi && this.hasDTUrl;
     });
@@ -99,7 +99,7 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
 
   changePage() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-        this.sort.start);
+      this.sort.start);
   }
 
   clearFilter() {
@@ -130,6 +130,6 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   refreshCurrentData() {
     this.fetchActiveNifi();
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-        this.sort.direction);
+      this.sort.direction);
   }
 }

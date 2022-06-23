@@ -11,7 +11,9 @@ import {CasService} from '../../cas/cas.service';
 import {CaDto} from '../../dto/ca-dto';
 import {BaseComponent} from '../../shared/component/base-component';
 import {UtilityService} from '../../shared/service/utility.service';
-import {OkCancelModalComponent} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {
+  OkCancelModalComponent
+} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {QFormsService} from '@qlack/forms';
 import {MqttServerDto} from '../../dto/mqtt-server-dto';
 
@@ -50,7 +52,7 @@ export class InfrastructureMqttEditComponent extends BaseComponent implements On
 
     // Fill-in the form with data if editing an existing item.
     if (this.id && this.id !== 0) {
-      this.mqttServerService.get(this.id).subscribe(onNext => {
+      this.mqttServerService.findById(this.id).subscribe(onNext => {
         this.form!.patchValue(onNext);
       });
     }
@@ -66,7 +68,7 @@ export class InfrastructureMqttEditComponent extends BaseComponent implements On
     });
 
     // Get CAs.
-    this.casService.getAll().subscribe(onNext => {
+    this.casService.find().subscribe(onNext => {
       this.cas = onNext.content;
     });
   }
@@ -100,19 +102,19 @@ export class InfrastructureMqttEditComponent extends BaseComponent implements On
   }
 
   pickCaCertificate(caId: number, control: string) {
-    this.casService.get(caId).subscribe(onNext => {
+    this.casService.findById(caId).subscribe(onNext => {
       this.form!.get(control)!.setValue(onNext.certificate);
     });
   }
 
   pickCertificate(certificateId: number, control: string) {
-    this.certificatesService.get(certificateId).subscribe(onNext => {
+    this.certificatesService.findById(certificateId).subscribe(onNext => {
       this.form!.get(control)!.setValue(onNext.certificate);
     });
   }
 
   pickPrivateKey(certificateId: number, control: string) {
-    this.certificatesService.get(certificateId).subscribe(onNext => {
+    this.certificatesService.findById(certificateId).subscribe(onNext => {
       this.form!.get(control)!.setValue(onNext.privateKey);
     });
   }

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {QFormsService} from '@qlack/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient, HttpEventType} from '@angular/common/http';
@@ -9,7 +9,9 @@ import {ProvisioningService} from './provisioning.service';
 import {TagDto} from '../dto/tag-dto';
 import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
-import {OkCancelModalComponent} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {
+  OkCancelModalComponent
+} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 
 @Component({
   selector: 'app-provisioning-edit',
@@ -47,7 +49,7 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
 
     // Fill-in the form with data if editing an existing item.
     if (this.id && this.id !== 0) {
-      this.provisioningService.get(this.id).subscribe(onNext => {
+      this.provisioningService.findById(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
       });
     }
@@ -108,7 +110,7 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
     });
   }
 
-  selectFile(event:any) {
+  selectFile(event: any) {
     this.form.controls['file'].patchValue(event.target.files[0]);
     this.form.controls['fileName'].patchValue(event.target.files[0].name);
   }

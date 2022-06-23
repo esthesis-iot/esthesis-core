@@ -9,7 +9,7 @@ import {ProvisioningDto} from '../../../dto/provisioning-dto';
 import {CampaignMemberDto} from '../../../dto/campaign-member-dto';
 import {DevicesService} from '../../../devices/devices.service';
 import {DeviceDto} from '../../../dto/device-dto';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {TagDto} from '../../../dto/tag-dto';
 import {TagService} from '../../../tags/tag.service';
 import {CampaignsService} from '../../campaigns.service';
@@ -17,7 +17,9 @@ import {CampaignDto} from '../../../dto/campaign-dto';
 import {CampaignConditionDto} from '../../../dto/campaign-condition-dto';
 import * as _ from "lodash"
 import {AppConstants} from '../../../app.constants';
-import {OkCancelModalComponent} from '../../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
+import {
+  OkCancelModalComponent
+} from '../../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {MatDialog} from '@angular/material/dialog';
 import {CampaignStatsDto} from "../../../dto/campaign-stats-dto";
 
@@ -83,7 +85,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   private initData(): void {
     // Fill-in the form with data if editing an existing item.
     if (this.id && this.id !== 0) {
-      this.campaignService.get(this.id).subscribe(onNext => {
+      this.campaignService.findById(this.id).subscribe(onNext => {
         // Keep a copy of the complete campaign data for UI references.
         this.campaign = onNext;
         // Fill-in the campaign form object.
@@ -215,7 +217,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   }
 
   getProvisioningPackages() {
-    this.provisioningService.getAll("state=1&sort=name,packageVersion").subscribe(onNext => {
+    this.provisioningService.find("state=1&sort=name,packageVersion").subscribe(onNext => {
       this.provisioningPackages = onNext.content;
     });
   }
