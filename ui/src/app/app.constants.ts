@@ -1,7 +1,7 @@
 export const AppConstants = {
-  // The name of the JWT key in local storage.
-  JWT_STORAGE_NAME: 'esthesis_platform',
-
+  // An id designating a new record is to be created.
+  NEW_RECORD_ID: 'new',
+  
   // The date format to use.
   DATE_FORMAT: 'yyyy-MM-dd HH:mm:ss',
 

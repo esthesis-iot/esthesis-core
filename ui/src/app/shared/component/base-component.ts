@@ -1,17 +1,12 @@
 import * as _ from 'lodash-es';
+import {AppConstants} from "../../app.constants";
 
 export class BaseComponent {
 
+  readonly appConstants = AppConstants;
+
   constructor() {
   }
-
-  /**
-   * Checks if the current user is logged in or not.
-   * @returns {boolean}
-   */
-  // isLoggedIn(): Observable<AuthenticatedResult> {
-  //   return this.oidcSecurityService.isAuthenticated$;
-  // }
 
   /**
    * Utility method to lookup within an object by the value of its keys and return the key name.
@@ -35,5 +30,13 @@ export class BaseComponent {
 
   isArrayEmpty(array: any[]): boolean {
     return array === undefined || array.length == 0
+  }
+
+  /**
+   * A convenience method to check if the passed-in id designates a new record to be created.
+   * @param id
+   */
+  isNewRecord(id: string): boolean {
+    return id === AppConstants.NEW_RECORD_ID;
   }
 }

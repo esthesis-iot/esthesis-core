@@ -1,30 +1,32 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {TagDto} from '../dto/tag-dto';
 import {TagService} from './tag.service';
 import {QFormsService} from '@qlack/forms';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import {BaseComponent} from "../shared/component/base-component";
 
 @Component({
   selector: 'app-groups',
   templateUrl: './tags.component.html',
   styleUrls: ['./tags.component.scss']
 })
-export class TagsComponent implements OnInit, AfterViewInit {
+export class TagsComponent extends BaseComponent implements OnInit, AfterViewInit {
   displayedColumns = ['name'];
   dataSource: MatTableDataSource<TagDto> = new MatTableDataSource<TagDto>();
   filterForm: FormGroup;
 
   // References to sorting and pagination.
-  @ViewChild(MatSort, { static: true }) sort!: MatSort;
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router, private tagService: TagService,
               private qForms: QFormsService) {
+    super();
     this.filterForm = this.fb.group({
       name: ['', null],
     });

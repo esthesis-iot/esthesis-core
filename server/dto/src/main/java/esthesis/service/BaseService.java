@@ -5,6 +5,7 @@ import esthesis.mapper.BaseMapper;
 import esthesis.resource.Pageable;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import javax.inject.Inject;
+import org.bson.types.ObjectId;
 
 public abstract class BaseService<D extends BaseDTO> {
 
@@ -47,13 +48,16 @@ public abstract class BaseService<D extends BaseDTO> {
     return quarkusPage;
   }
 
-  public D save(D dto) {
-    if (dto.getId() != null) {
-      repository.update(mapper.map(dto, repository.findById(dto.getId())));
-    } else {
-      repository.persist(dto);
-    }
-
-    return repository.findById(dto.getId());
+  public D findById(ObjectId id) {
+    return repository.findById(id);
   }
+//  public D save(D dto) {
+//    if (dto.getId() != null) {
+//      repository.update(mapper.map(dto, repository.findById(dto.getId())));
+//    } else {
+//      repository.persist(dto);
+//    }
+//
+//    return repository.findById(dto.getId());
+//  }
 }

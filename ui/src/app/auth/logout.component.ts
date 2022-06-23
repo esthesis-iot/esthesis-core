@@ -31,10 +31,10 @@ export class LogoutComponent extends BaseComponent implements OnInit {
 
     this.userService.logout().subscribe(onNext => {
       this.log.data('Successfully terminated session.');
-      localStorage.removeItem(this.constants.JWT_STORAGE_NAME);
+      // localStorage.removeItem(this.constants.JWT_STORAGE_NAME);
     }, onError => {
       this.log.error('Could not terminate session.');
-      localStorage.removeItem(this.constants.JWT_STORAGE_NAME);
+      // localStorage.removeItem(this.constants.JWT_STORAGE_NAME);
     });
   }
 }

@@ -1,7 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {AppConstants} from '../app.constants';
 import {LoginInfoDto} from '../dto/login-info-dto';
 import {UserDto} from '../dto/user-dto';
 import {CrudService} from '../services/crud.service';
@@ -24,7 +23,8 @@ export class UserService extends CrudService<UserDto> {
 
   // Returns the JWT.
   private static getJwt(): string | null {
-    return localStorage.getItem(AppConstants.JWT_STORAGE_NAME);
+    // return localStorage.getItem(AppConstants.JWT_STORAGE_NAME);
+    return null;
   }
 
   // Authenticate a user.`

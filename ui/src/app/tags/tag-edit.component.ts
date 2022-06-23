@@ -20,7 +20,7 @@ import {QFormValidationService} from '@qlack/form-validation';
 })
 export class TagEditComponent extends BaseComponent implements OnInit {
   form!: FormGroup;
-  id: number | undefined;
+  id!: string;
 
   constructor(private fb: FormBuilder, private tagService: TagService,
               private route: ActivatedRoute,
@@ -31,7 +31,7 @@ export class TagEditComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.id = Number(this.route.snapshot.paramMap.get('id'));
+    this.id = this.route.snapshot.paramMap.get('id')!;
 
     // Setup the form.
     this.form = this.fb.group({
@@ -42,7 +42,7 @@ export class TagEditComponent extends BaseComponent implements OnInit {
       }, [Validators.maxLength(1024)]],
     });
     // Fill-in the form with data if editing an existing item.
-    if (this.id && this.id !== 0) {
+    if (!this.isNewRecord(this.id)) {
       this.tagService.findById(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
       });
@@ -56,7 +56,7 @@ export class TagEditComponent extends BaseComponent implements OnInit {
   save() {
     this.tagService.save(this.qForms.cleanupData(this.form.getRawValue()) as TagDto).subscribe(
       onSuccess => {
-        if (this.id === 0) {
+        if (this.isNewRecord(this.id)) {
           this.utilityService.popupSuccess('Tag was successfully created.');
         } else {
           this.utilityService.popupSuccess('Tag was successfully edited.');
