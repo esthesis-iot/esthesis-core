@@ -8,6 +8,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -31,5 +32,11 @@ public class TagResource {
   @Produces("application/json")
   public Tag findById(@PathParam("id") ObjectId id) {
     return tagService.findById(id);
+  }
+
+  @POST
+  @Produces("application/json")
+  public Tag save(Tag tag) {
+    return tagService.save(tag);
   }
 }

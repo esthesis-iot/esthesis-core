@@ -51,13 +51,15 @@ public abstract class BaseService<D extends BaseDTO> {
   public D findById(ObjectId id) {
     return repository.findById(id);
   }
-//  public D save(D dto) {
-//    if (dto.getId() != null) {
-//      repository.update(mapper.map(dto, repository.findById(dto.getId())));
-//    } else {
-//      repository.persist(dto);
-//    }
-//
-//    return repository.findById(dto.getId());
-//  }
+
+  public D save(D dto) {
+    if (dto.getId() != null) {
+      repository.update(mapper.map(dto, repository.findById(dto.getId())));
+    } else {
+      dto.setId(new ObjectId());
+      repository.persist(dto);
+    }
+
+    return repository.findById(dto.getId());
+  }
 }
