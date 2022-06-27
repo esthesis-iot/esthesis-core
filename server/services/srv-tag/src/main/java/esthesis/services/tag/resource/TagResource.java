@@ -1,17 +1,19 @@
 package esthesis.services.tag.resource;
 
-import esthesis.dto.Tag;
-import esthesis.resource.Pageable;
-import esthesis.service.Page;
+import esthesis.common.dto.Tag;
+import esthesis.common.service.rest.Page;
+import esthesis.common.service.rest.Pageable;
 import esthesis.services.tag.service.TagService;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 import org.bson.types.ObjectId;
 
 @Path("/api/v1/tag")
@@ -32,6 +34,15 @@ public class TagResource {
   @Produces("application/json")
   public Tag findById(@PathParam("id") ObjectId id) {
     return tagService.findById(id);
+  }
+
+  @DELETE
+  @Path("/{id}")
+  @Produces("application/json")
+  public Response delete(@PathParam("id") ObjectId id) {
+    tagService.deleteById(id);
+    
+    return Response.ok().build();
   }
 
   @POST

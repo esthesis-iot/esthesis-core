@@ -8,37 +8,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="dto" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-arc:2.10.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus.arc:arc:2.10.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: jakarta.transaction:jakarta.transaction-api:1.3.3" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api:1.2" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:bson:4.3.4" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mongodb-panache:2.10.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-panache-common:2.10.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mongodb-panache-common:2.10.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mongodb-client:2.10.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mutiny-reactive-streams-operators:2.10.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-api:1.0.1" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-core:1.0.1" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.reactive:mutiny-reactive-streams-operators:1.5.0" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-sync:4.3.4" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-core:4.3.4" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-reactivestreams:4.3.4" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: io.projectreactor:reactor-core:3.2.22.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongodb-crypt:1.2.1" level="project" />
-    <orderEntry type="library" name="Maven: net.java.dev.jna:jna:5.8.0" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-panacheql:2.10.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.9.2" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-narayana-jta:2.10.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-transaction-annotations:2.10.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye:smallrye-context-propagation-jta:1.2.2" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-converter-api:2.7.0" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-converter-mutiny:2.7.0" level="project" />
-    <orderEntry type="library" name="Maven: org.jboss.narayana.jta:narayana-jta:5.12.6.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.jboss:jboss-transaction-spi:7.6.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.jboss.spec.javax.resource:jboss-connector-api_1.7_spec:1.0.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.jboss.narayana.jts:narayana-jts-integration:5.12.6.Final" level="project" />
+    <orderEntry type="module" module-name="common-service" />
+    <orderEntry type="module" module-name="common-dto" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-config-yaml:2.10.0.Final" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.config:smallrye-config-source-yaml:2.10.1" level="project" />
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.30" level="project" />
@@ -50,10 +21,8 @@
     <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-function:1.12.0" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-constraint:1.12.0" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-core:2.10.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: jakarta.annotation:jakarta.annotation-api:1.3.5" level="project" />
     <orderEntry type="library" name="Maven: jakarta.enterprise:jakarta.enterprise.cdi-api:2.0.2" level="project" />
     <orderEntry type="library" name="Maven: jakarta.el:jakarta.el-api:3.0.3" level="project" />
-    <orderEntry type="library" name="Maven: jakarta.interceptor:jakarta.interceptor-api:1.2.5" level="project" />
     <orderEntry type="library" name="Maven: jakarta.inject:jakarta.inject-api:1.0" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-ide-launcher:2.10.0.Final" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-development-mode-spi:2.10.0.Final" level="project" />
@@ -66,7 +35,6 @@
     <orderEntry type="library" name="Maven: org.graalvm.sdk:graal-sdk:22.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.wildfly.common:wildfly-common:1.5.4.Final-format-001" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-bootstrap-runner:2.10.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-io:1.12.0" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-fs-util:0.0.9" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.microprofile.config:microprofile-config-api:2.0.1" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-reactive:2.10.0.Final" level="project" />
@@ -74,7 +42,6 @@
     <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive-common:2.10.0.Final" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.reactive:mutiny:1.5.0" level="project" />
     <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.3" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-annotation:1.12.0" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-mutiny:2.10.0.Final" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-context-propagation:2.10.0.Final" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye:smallrye-context-propagation:1.2.2" level="project" />
@@ -126,80 +93,153 @@
     <orderEntry type="library" name="Maven: org.glassfish:jakarta.json:1.1.6" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-container-image-docker:2.10.0.Final" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-container-image:2.10.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.rest-assured:rest-assured:4.5.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.groovy:groovy:3.0.9" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.groovy:groovy-xml:3.0.9" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.httpcomponents:httpclient:4.5.13" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.httpcomponents:httpcore:4.4.15" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: commons-codec:commons-codec:1.15" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.httpcomponents:httpmime:4.5.13" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest:2.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.ccil.cowan.tagsoup:tagsoup:1.2.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.rest-assured:json-path:4.5.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.groovy:groovy-json:3.0.9" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.rest-assured:rest-assured-common:4.5.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.rest-assured:xml-path:4.5.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.commons:commons-lang3:3.12.0" level="project" />
+    <orderEntry type="library" name="Maven: org.bouncycastle:bcpkix-jdk15on:1.70" level="project" />
+    <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.70" level="project" />
+    <orderEntry type="library" name="Maven: org.bouncycastle:bcutil-jdk15on:1.70" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-reactive-jackson:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-reactive-jackson-common:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive-jackson:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.3" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.3" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-jackson:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.13.3" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.module:jackson-module-parameter-names:2.13.3" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-jwt:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye:smallrye-jwt:3.5.1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.bitbucket.b_c:jose4j:0.7.12" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye:smallrye-jwt-common:3.5.1" level="project" />
+    <orderEntry type="library" name="Maven: jakarta.annotation:jakarta.annotation-api:1.3.5" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-reactive-routes:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-annotation:1.12.0" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-security:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: jakarta.interceptor:jakarta.interceptor-api:1.2.5" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-jwt-build:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye:smallrye-jwt-build:3.5.1" level="project" />
+    <orderEntry type="module" module-name="service" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mongodb-panache:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-panache-common:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mongodb-panache-common:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mongodb-client:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mutiny-reactive-streams-operators:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-api:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-core:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:mutiny-reactive-streams-operators:1.5.0" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-sync:4.3.4" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:bson:4.3.4" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-core:4.3.4" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-reactivestreams:4.3.4" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: io.projectreactor:reactor-core:3.2.22.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongodb-crypt:1.2.1" level="project" />
+    <orderEntry type="library" name="Maven: net.java.dev.jna:jna:5.8.0" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-panacheql:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.9.2" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-narayana-jta:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-transaction-annotations:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye:smallrye-context-propagation-jta:1.2.2" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-converter-api:2.7.0" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-converter-mutiny:2.7.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.narayana.jta:narayana-jta:5.12.6.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss:jboss-transaction-spi:7.6.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.spec.javax.resource:jboss-connector-api_1.7_spec:1.0.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.narayana.jts:narayana-jts-integration:5.12.6.Final" level="project" />
+    <orderEntry type="module" module-name="dto" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.18.24" level="project" />
     <orderEntry type="library" name="Maven: org.mapstruct:mapstruct:1.5.2.Final" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.mapstruct:mapstruct-processor:1.5.2.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-arc:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus.arc:arc:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: jakarta.transaction:jakarta.transaction-api:1.3.3" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api:1.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-junit5:2.10.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-bootstrap-core:2.10.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-bootstrap-app-model:2.10.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-bootstrap-maven-resolver:2.10.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-embedder:3.8.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-settings:3.8.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-core:3.8.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-artifact:3.8.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-component-annotations:2.1.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-plugin-api:3.8.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-model:3.8.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-model-builder:3.8.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-builder-support:3.8.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.resolver:maven-resolver-api:1.6.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.resolver:maven-resolver-util:1.6.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.shared:maven-shared-utils:3.3.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: commons-io:commons-io:2.11.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.inject:guice:no_aop:4.2.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.guava:guava:31.1-jre" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.guava:failureaccess:1.0.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-classworlds:2.6.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-sec-dispatcher:2.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-cipher:2.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: commons-cli:commons-cli:1.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.sisu:org.eclipse.sisu.plexus:0.3.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-settings-builder:3.8.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-interpolation:1.26" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-resolver-provider:3.8.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-repository-metadata:3.8.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.resolver:maven-resolver-spi:1.6.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.resolver:maven-resolver-impl:1.6.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-utils:3.3.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.resolver:maven-resolver-connector-basic:1.6.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.resolver:maven-resolver-transport-wagon:1.6.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-http:3.4.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-http-shared:3.4.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jsoup:jsoup:1.14.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-provider-api:3.4.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-file:3.4.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-bootstrap-gradle-resolver:2.10.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-io:1.12.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.sisu:org.eclipse.sisu.inject:0.3.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-test-common:2.10.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-core-deployment:2.10.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.aesh:readline:2.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.fusesource.jansi:jansi:1.18" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.aesh:aesh:2.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus.gizmo:gizmo:1.0.11.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-util:9.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm:9.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-commons:9.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-tree:9.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-analysis:9.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-class-change-agent:2.10.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-devtools-utilities:2.10.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-builder:2.10.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-launcher:1.8.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss:jandex:2.4.2.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-junit5-properties:2.10.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter:5.8.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-api:5.8.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.opentest4j:opentest4j:1.2.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-commons:1.8.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apiguardian:apiguardian-api:1.1.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-params:5.8.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-engine:5.8.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-engine:1.8.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.thoughtworks.xstream:xstream:1.4.19" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.github.x-stream:mxparser:1.2.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: xmlpull:xmlpull:1.1.3.1" level="project" />
     <orderEntry type="module-library" scope="PROVIDED">
       <library name="Quarkus (deployment)">
         <CLASSES>
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-arc-deployment/2.10.0.Final/quarkus-arc-deployment-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-core-deployment/2.10.0.Final/quarkus-core-deployment-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/aesh/readline/2.2/readline-2.2.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/fusesource/jansi/jansi/1.18/jansi-1.18.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/aesh/aesh/2.6/aesh-2.6.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/gizmo/gizmo/1.0.11.Final/gizmo-1.0.11.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/ow2/asm/asm/9.3/asm-9.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/ow2/asm/asm-util/9.3/asm-util-9.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/ow2/asm/asm-tree/9.3/asm-tree-9.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/ow2/asm/asm-analysis/9.3/asm-analysis-9.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/jboss/jandex/2.4.2.Final/jandex-2.4.2.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/ow2/asm/asm-commons/9.3/asm-commons-9.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-class-change-agent/2.10.0.Final/quarkus-class-change-agent-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-bootstrap-core/2.10.0.Final/quarkus-bootstrap-core-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-bootstrap-app-model/2.10.0.Final/quarkus-bootstrap-app-model-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-bootstrap-maven-resolver/2.10.0.Final/quarkus-bootstrap-maven-resolver-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-embedder/3.8.4/maven-embedder-3.8.4.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-settings/3.8.4/maven-settings-3.8.4.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-settings-builder/3.8.4/maven-settings-builder-3.8.4.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-builder-support/3.8.4/maven-builder-support-3.8.4.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.26/plexus-interpolation-1.26.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-sec-dispatcher/2.0/plexus-sec-dispatcher-2.0.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-cipher/2.0/plexus-cipher-2.0.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-core/3.8.4/maven-core-3.8.4.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-model/3.8.4/maven-model-3.8.4.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-repository-metadata/3.8.4/maven-repository-metadata-3.8.4.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-artifact/3.8.4/maven-artifact-3.8.4.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-plugin-api/3.8.4/maven-plugin-api-3.8.4.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.plexus/0.3.5/org.eclipse.sisu.plexus-0.3.5.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-component-annotations/2.1.0/plexus-component-annotations-2.1.0.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-classworlds/2.6.0/plexus-classworlds-2.6.0.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-model-builder/3.8.4/maven-model-builder-3.8.4.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-resolver-provider/3.8.4/maven-resolver-provider-3.8.4.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/resolver/maven-resolver-api/1.6.3/maven-resolver-api-1.6.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/resolver/maven-resolver-spi/1.6.3/maven-resolver-spi-1.6.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/resolver/maven-resolver-util/1.6.3/maven-resolver-util-1.6.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/resolver/maven-resolver-impl/1.6.3/maven-resolver-impl-1.6.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/shared/maven-shared-utils/3.3.4/maven-shared-utils-3.3.4.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/commons-io/commons-io/2.11.0/commons-io-2.11.0.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/com/google/inject/guice/4.2.2/guice-4.2.2-no_aop.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/com/google/guava/guava/25.1-android/guava-25.1-android.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/commons-cli/commons-cli/1.4/commons-cli-1.4.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-utils/3.3.0/plexus-utils-3.3.0.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/resolver/maven-resolver-connector-basic/1.6.3/maven-resolver-connector-basic-1.6.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/resolver/maven-resolver-transport-wagon/1.6.3/maven-resolver-transport-wagon-1.6.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/wagon/wagon-http/3.4.3/wagon-http-3.4.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/wagon/wagon-http-shared/3.4.3/wagon-http-shared-3.4.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/jsoup/jsoup/1.12.1/jsoup-1.12.1.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/httpcomponents/httpcore/4.4.14/httpcore-4.4.14.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/commons-codec/commons-codec/1.11/commons-codec-1.11.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/wagon/wagon-provider-api/3.4.3/wagon-provider-api-3.4.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/wagon/wagon-file/3.4.3/wagon-file-3.4.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-bootstrap-gradle-resolver/2.10.0.Final/quarkus-bootstrap-gradle-resolver-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-devtools-utilities/2.10.0.Final/quarkus-devtools-utilities-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.inject/0.3.5/org.eclipse.sisu.inject-0.3.5.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/jakarta/ejb/jakarta.ejb-api/3.2.6/jakarta.ejb-api-3.2.6.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-builder/2.10.0.Final/quarkus-builder-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/junit/platform/junit-platform-launcher/1.8.2/junit-platform-launcher-1.8.2.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/junit/platform/junit-platform-engine/1.8.2/junit-platform-engine-1.8.2.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/junit/jupiter/junit-jupiter/5.8.2/junit-jupiter-5.8.2.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.8.2/junit-jupiter-params-5.8.2.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.8.2/junit-jupiter-engine-5.8.2.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-dev-console-spi/2.10.0.Final/quarkus-vertx-http-dev-console-spi-2.10.0.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/arc/arc-processor/2.10.0.Final/arc-processor-2.10.0.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-deployment/2.10.0.Final/quarkus-vertx-http-deployment-2.10.0.Final.jar!/" />
@@ -210,14 +250,17 @@
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-deployment-spi/2.10.0.Final/quarkus-vertx-http-deployment-spi-2.10.0.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kubernetes-spi/2.10.0.Final/quarkus-kubernetes-spi-2.10.0.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/qute/qute-core/2.10.0.Final/qute-core-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.13.3/jackson-databind-2.13.3.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.13.3/jackson-annotations-2.13.3.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/webjars/bootstrap/4.6.1/bootstrap-4.6.1.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/webjars/jquery/3.6.0/jquery-3.6.0.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/webjars/popper.js/1.16.0/popper.js-1.16.0.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/webjars/font-awesome/6.1.0/font-awesome-6.1.0.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/webjars/codemirror/5.62.2/codemirror-5.62.2.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-security-deployment/2.10.0.Final/quarkus-security-deployment-2.10.0.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-security-spi/2.10.0.Final/quarkus-security-spi-2.10.0.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-docker-deployment/2.10.0.Final/quarkus-container-image-docker-deployment-2.10.0.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-deployment/2.10.0.Final/quarkus-container-image-deployment-2.10.0.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-spi/2.10.0.Final/quarkus-container-image-spi-2.10.0.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-util/2.10.0.Final/quarkus-container-image-util-2.10.0.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-panache-deployment/2.10.0.Final/quarkus-mongodb-panache-deployment-2.10.0.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-panache-common-deployment/2.10.0.Final/quarkus-mongodb-panache-common-deployment-2.10.0.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jsonb-spi/2.10.0.Final/quarkus-jsonb-spi-2.10.0.Final.jar!/" />
@@ -239,145 +282,87 @@
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-junit4-mock/2.10.0.Final/quarkus-junit4-mock-2.10.0.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kubernetes-service-binding-spi/2.10.0.Final/quarkus-kubernetes-service-binding-spi-2.10.0.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-narayana-jta-deployment/2.10.0.Final/quarkus-narayana-jta-deployment-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-docker-deployment/2.10.0.Final/quarkus-container-image-docker-deployment-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-deployment/2.10.0.Final/quarkus-container-image-deployment-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-spi/2.10.0.Final/quarkus-container-image-spi-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-util/2.10.0.Final/quarkus-container-image-util-2.10.0.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-jackson-common-deployment/2.10.0.Final/quarkus-resteasy-reactive-jackson-common-deployment-2.10.0.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-common-deployment/2.10.0.Final/quarkus-resteasy-reactive-common-deployment-2.10.0.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-common-processor/2.10.0.Final/resteasy-reactive-common-processor-2.10.0.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-spi-deployment/2.10.0.Final/quarkus-resteasy-reactive-spi-deployment-2.10.0.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jsonp-deployment/2.10.0.Final/quarkus-jsonp-deployment-2.10.0.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jackson-deployment/2.10.0.Final/quarkus-jackson-deployment-2.10.0.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-config-yaml-deployment/2.10.0.Final/quarkus-config-yaml-deployment-2.10.0.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxrs-spi-deployment/2.10.0.Final/quarkus-jaxrs-spi-deployment-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jsonp-deployment/2.10.0.Final/quarkus-jsonp-deployment-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-spi-deployment/2.10.0.Final/quarkus-resteasy-reactive-spi-deployment-2.10.0.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-deployment/2.10.0.Final/quarkus-resteasy-reactive-deployment-2.10.0.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-processor/2.10.0.Final/resteasy-reactive-processor-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-common-processor/2.10.0.Final/resteasy-reactive-common-processor-2.10.0.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-server-spi-deployment/2.10.0.Final/quarkus-resteasy-reactive-server-spi-deployment-2.10.0.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-common-deployment/2.10.0.Final/quarkus-resteasy-reactive-common-deployment-2.10.0.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-hibernate-validator-spi/2.10.0.Final/quarkus-hibernate-validator-spi-2.10.0.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-reactive-routes-deployment/2.10.0.Final/quarkus-reactive-routes-deployment-2.10.0.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-jwt-deployment/2.10.0.Final/quarkus-smallrye-jwt-deployment-2.10.0.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-jwt-build-deployment/2.10.0.Final/quarkus-smallrye-jwt-build-deployment-2.10.0.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-jackson-deployment/2.10.0.Final/quarkus-resteasy-reactive-jackson-deployment-2.10.0.Final.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-arc-deployment/2.10.0.Final/quarkus-arc-deployment-2.10.0.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/arc/arc-processor/2.10.0.Final/arc-processor-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-deployment/2.10.0.Final/quarkus-vertx-http-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-core-deployment/2.10.0.Final/quarkus-core-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/jboss/jandex/2.4.2.Final/jandex-2.4.2.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-jackson-common-deployment/2.10.0.Final/quarkus-resteasy-reactive-jackson-common-deployment-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-spi-deployment/2.10.0.Final/quarkus-resteasy-reactive-spi-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/commons-cli/commons-cli/1.4/commons-cli-1.4-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-devservices-deployment/2.10.0.Final/quarkus-devservices-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/com/google/inject/guice/4.2.2/guice-4.2.2-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.13.3/jackson-databind-2.13.3-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-repository-metadata/3.8.4/maven-repository-metadata-3.8.4-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/junit/jupiter/junit-jupiter/5.8.2/junit-jupiter-5.8.2-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-dev-console-spi/2.10.0.Final/quarkus-vertx-http-dev-console-spi-2.10.0.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/com/github/docker-java/docker-java-transport/3.2.13/docker-java-transport-3.2.13-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-jwt-build-deployment/2.10.0.Final/quarkus-smallrye-jwt-build-deployment-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-security-spi/2.10.0.Final/quarkus-security-spi-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/resolver/maven-resolver-api/1.6.3/maven-resolver-api-1.6.3-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-netty-deployment/2.10.0.Final/quarkus-netty-deployment-2.10.0.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mutiny-reactive-streams-operators-deployment/2.10.0.Final/quarkus-mutiny-reactive-streams-operators-deployment-2.10.0.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/jakarta/validation/jakarta.validation-api/2.0.2/jakarta.validation-api-2.0.2-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/qute/qute-core/2.10.0.Final/qute-core-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxrs-spi-deployment/2.10.0.Final/quarkus-jaxrs-spi-deployment-2.10.0.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-health-spi/2.10.0.Final/quarkus-smallrye-health-spi-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-devservices-common/2.10.0.Final/quarkus-devservices-common-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-panache-common-deployment/2.10.0.Final/quarkus-panache-common-deployment-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/testcontainers/testcontainers/1.17.2/testcontainers-1.17.2-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-bootstrap-app-model/2.10.0.Final/quarkus-bootstrap-app-model-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-narayana-jta-deployment/2.10.0.Final/quarkus-narayana-jta-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-bootstrap-gradle-resolver/2.10.0.Final/quarkus-bootstrap-gradle-resolver-2.10.0.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-junit4-mock/2.10.0.Final/quarkus-junit4-mock-2.10.0.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-config-yaml-deployment/2.10.0.Final/quarkus-config-yaml-deployment-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/com/github/docker-java/docker-java-transport-zerodep/3.2.13/docker-java-transport-zerodep-3.2.13-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/wagon/wagon-http-shared/3.4.3/wagon-http-shared-3.4.3-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kubernetes-service-binding-spi/2.10.0.Final/quarkus-kubernetes-service-binding-spi-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-deployment-spi/2.10.0.Final/quarkus-vertx-http-deployment-spi-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jackson-spi/2.10.0.Final/quarkus-jackson-spi-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-core/3.8.4/maven-core-3.8.4-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-common-deployment/2.10.0.Final/quarkus-resteasy-reactive-common-deployment-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jsonb-spi/2.10.0.Final/quarkus-jsonb-spi-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-utils/3.3.0/plexus-utils-3.3.0-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.13.3/jackson-annotations-2.13.3-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/resolver/maven-resolver-transport-wagon/1.6.3/maven-resolver-transport-wagon-1.6.3-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-docker-deployment/2.10.0.Final/quarkus-container-image-docker-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-util/2.10.0.Final/quarkus-container-image-util-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/aesh/readline/2.2/readline-2.2-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/junit/platform/junit-platform-engine/1.8.2/junit-platform-engine-1.8.2-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.8.2/junit-jupiter-params-5.8.2-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/webjars/bootstrap/4.6.1/bootstrap-4.6.1-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-deployment/2.10.0.Final/quarkus-resteasy-reactive-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/commons-io/commons-io/2.11.0/commons-io-2.11.0-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/ow2/asm/asm-analysis/9.3/asm-analysis-9.3-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mutiny-deployment/2.10.0.Final/quarkus-mutiny-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/resolver/maven-resolver-util/1.6.3/maven-resolver-util-1.6.3-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-builder-support/3.8.4/maven-builder-support-3.8.4-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-panache-deployment/2.10.0.Final/quarkus-mongodb-panache-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/ow2/asm/asm-tree/9.3/asm-tree-9.3-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-embedder/3.8.4/maven-embedder-3.8.4-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/resolver/maven-resolver-spi/1.6.3/maven-resolver-spi-1.6.3-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/com/google/guava/guava/25.1-android/guava-25.1-android-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-client-deployment/2.10.0.Final/quarkus-mongodb-client-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-plugin-api/3.8.4/maven-plugin-api-3.8.4-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-common-processor/2.10.0.Final/resteasy-reactive-common-processor-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.plexus/0.3.5/org.eclipse.sisu.plexus-0.3.5-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/wagon/wagon-file/3.4.3/wagon-file-3.4.3-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.26/plexus-interpolation-1.26-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/jsoup/jsoup/1.12.1/jsoup-1.12.1-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/arc/arc-processor/2.10.0.Final/arc-processor-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-model-builder/3.8.4/maven-model-builder-3.8.4-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-devtools-utilities/2.10.0.Final/quarkus-devtools-utilities-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/ow2/asm/asm-commons/9.3/asm-commons-9.3-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-model/3.8.4/maven-model-3.8.4-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-class-change-agent/2.10.0.Final/quarkus-class-change-agent-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.inject/0.3.5/org.eclipse.sisu.inject-0.3.5-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-settings-builder/3.8.4/maven-settings-builder-3.8.4-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-builder/2.10.0.Final/quarkus-builder-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-dev-console-spi/2.10.0.Final/quarkus-vertx-http-dev-console-spi-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/com/github/docker-java/docker-java-transport/3.2.13/docker-java-transport-3.2.13-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-netty-deployment/2.10.0.Final/quarkus-netty-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/ow2/asm/asm/9.3/asm-9.3-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mutiny-reactive-streams-operators-deployment/2.10.0.Final/quarkus-mutiny-reactive-streams-operators-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/jakarta/validation/jakarta.validation-api/2.0.2/jakarta.validation-api-2.0.2-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/gizmo/gizmo/1.0.11.Final/gizmo-1.0.11.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-bootstrap-maven-resolver/2.10.0.Final/quarkus-bootstrap-maven-resolver-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-health-spi/2.10.0.Final/quarkus-smallrye-health-spi-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/resolver/maven-resolver-impl/1.6.3/maven-resolver-impl-1.6.3-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-resolver-provider/3.8.4/maven-resolver-provider-3.8.4-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-junit4-mock/2.10.0.Final/quarkus-junit4-mock-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-config-yaml-deployment/2.10.0.Final/quarkus-config-yaml-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/junit/platform/junit-platform-launcher/1.8.2/junit-platform-launcher-1.8.2-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/resolver/maven-resolver-connector-basic/1.6.3/maven-resolver-connector-basic-1.6.3-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-cipher/2.0/plexus-cipher-2.0-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/commons-codec/commons-codec/1.11/commons-codec-1.11-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-classworlds/2.6.0/plexus-classworlds-2.6.0-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-deployment/2.10.0.Final/quarkus-vertx-deployment-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-context-propagation-deployment/2.10.0.Final/quarkus-smallrye-context-propagation-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.8.2/junit-jupiter-engine-5.8.2-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/ow2/asm/asm-util/9.3/asm-util-9.3-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/shared/maven-shared-utils/3.3.4/maven-shared-utils-3.3.4-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/aesh/aesh/2.6/aesh-2.6-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/apache/commons/commons-compress/1.21/commons-compress-1.21-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-sec-dispatcher/2.0/plexus-sec-dispatcher-2.0-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/wagon/wagon-http/3.4.3/wagon-http-3.4.3-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-docker-deployment/2.10.0.Final/quarkus-container-image-docker-deployment-2.10.0.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-util/2.10.0.Final/quarkus-container-image-util-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-processor/2.10.0.Final/resteasy-reactive-processor-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-panache-common-deployment/2.10.0.Final/quarkus-mongodb-panache-common-deployment-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-server-spi-deployment/2.10.0.Final/quarkus-resteasy-reactive-server-spi-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-settings/3.8.4/maven-settings-3.8.4-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/maven-artifact/3.8.4/maven-artifact-3.8.4-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/webjars/bootstrap/4.6.1/bootstrap-4.6.1-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-spi/2.10.0.Final/quarkus-container-image-spi-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/httpcomponents/httpcore/4.4.14/httpcore-4.4.14-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-bootstrap-core/2.10.0.Final/quarkus-bootstrap-core-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/fusesource/jansi/jansi/1.18/jansi-1.18-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-deployment/2.10.0.Final/quarkus-resteasy-reactive-deployment-2.10.0.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-jwt-deployment/2.10.0.Final/quarkus-smallrye-jwt-deployment-2.10.0.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mutiny-deployment/2.10.0.Final/quarkus-mutiny-deployment-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/testcontainers/mongodb/1.17.2/mongodb-1.17.2-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/jakarta/ejb/jakarta.ejb-api/3.2.6/jakarta.ejb-api-3.2.6-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jackson-deployment/2.10.0.Final/quarkus-jackson-deployment-2.10.0.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-jackson-deployment/2.10.0.Final/quarkus-resteasy-reactive-jackson-deployment-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-deployment/2.10.0.Final/quarkus-container-image-deployment-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kubernetes-spi/2.10.0.Final/quarkus-kubernetes-spi-2.10.0.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-panache-deployment/2.10.0.Final/quarkus-mongodb-panache-deployment-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/webjars/jquery/3.6.0/jquery-3.6.0-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/com/github/docker-java/docker-java-api/3.2.13/docker-java-api-3.2.13-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-component-annotations/2.1.0/plexus-component-annotations-2.1.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-security-deployment/2.10.0.Final/quarkus-security-deployment-2.10.0.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-client-deployment/2.10.0.Final/quarkus-mongodb-client-deployment-2.10.0.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-hibernate-validator-spi/2.10.0.Final/quarkus-hibernate-validator-spi-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-common-processor/2.10.0.Final/resteasy-reactive-common-processor-2.10.0.Final-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jsonp-deployment/2.10.0.Final/quarkus-jsonp-deployment-2.10.0.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/apache/maven/wagon/wagon-provider-api/3.4.3/wagon-provider-api-3.4.3-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-reactive-routes-deployment/2.10.0.Final/quarkus-reactive-routes-deployment-2.10.0.Final-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
   </component>
   <component name="Quarkus Tools">
-    <option name="hash" value="-429133872" />
+    <option name="hash" value="416656275" />
     <option name="version" value="1" />
   </component>
 </module>

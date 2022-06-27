@@ -41,10 +41,7 @@ export class CrudService<T> {
   // }
 
   delete(id: any): Observable<any> {
-    // return this.http.delete(`${environment.apiPrefix}/${this.endpoint}/${id}`);
-
-    // @ts-ignore
-    return null;
+    return this.http.delete(`${environment.apiPrefix}/${this.endpoint}/${id}`);
   }
 
   // deleteAll(): Observable<any> {
