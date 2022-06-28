@@ -11,13 +11,9 @@
     <version>3.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>dto</artifactId>
+  <artifactId>util</artifactId>
 
   <dependencies>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-mongodb-panache-common</artifactId>
-    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-hibernate-validator</artifactId>

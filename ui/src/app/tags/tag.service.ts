@@ -1,12 +1,10 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {TagDto} from '../dto/tag-dto';
-import {Observable} from 'rxjs';
 import {CrudService} from '../services/crud.service';
-import {QPageableReply} from '@qlack/forms';
 
 /**
- * A service to provide extra functionality for the tags.
+ * A service to provide tags manipulation.
  *
  */
 @Injectable({
@@ -15,13 +13,5 @@ import {QPageableReply} from '@qlack/forms';
 export class TagService extends CrudService<TagDto> {
   constructor(http: HttpClient) {
     super(http, 'v1/tag');
-  }
-
-  getAll(params?: string): Observable<QPageableReply<TagDto>> {
-    if (!params) {
-      return super.find('order=name,asc');
-    } else {
-      return super.find(params);
-    }
   }
 }

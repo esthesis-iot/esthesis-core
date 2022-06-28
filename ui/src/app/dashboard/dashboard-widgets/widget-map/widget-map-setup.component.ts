@@ -8,14 +8,16 @@ import {DashboardService} from "../../dashboard.service";
 import {UtilityService} from "../../../shared/service/utility.service";
 import {DevicesService} from "../../../devices/devices.service";
 import {FormatterService} from "../../../shared/service/formatter.service";
-import {OkCancelModalComponent} from "../../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+import {
+  OkCancelModalComponent
+} from "../../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
 import {AppConstants} from "../../../app.constants";
 import {DashboardWidgetDto} from "../../../dto/dashboard-widget-dto";
 import {WidgetMapConf} from "./widget-map-conf";
 import {TagService} from "../../../tags/tag.service";
 import {TagDto} from "../../../dto/tag-dto";
 import {Color} from "@angular-material-components/color-picker";
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
 @Component({
   selector: 'app-widget-map-setup',
@@ -96,7 +98,7 @@ export class WidgetMapSetupComponent extends BaseComponent implements OnInit {
     });
 
     // Get available tags.
-    this.tagService.getAll().subscribe(onNext => {
+    this.tagService.find("sort=name,asc").subscribe(onNext => {
       this.availableTags = onNext.content;
     });
   }

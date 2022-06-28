@@ -56,11 +56,11 @@ export class StoresEditComponent extends BaseComponent implements OnInit {
       });
     }
 
-    this.casService.find('order=name,asc').subscribe(onNext => {
+    this.casService.find('sort=name,asc').subscribe(onNext => {
       this.cas = onNext.content;
     });
 
-    this.certificatesService.getAll('order=name,asc').subscribe(onNext => {
+    this.certificatesService.getAll('sort=name,asc').subscribe(onNext => {
       this.certs = onNext.content;
     });
   }

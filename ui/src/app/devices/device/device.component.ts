@@ -116,7 +116,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
     });
 
     // Get available tags.
-    this.tagService.getAll().subscribe(onNext => {
+    this.tagService.find("sort=name,asc").subscribe(onNext => {
       this.availableTags = onNext.content;
     });
 

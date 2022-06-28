@@ -39,7 +39,7 @@ export class ProvisioningComponent extends BaseComponent implements OnInit, Afte
     this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
     // Get available tags.
-    this.tagService.getAll().subscribe(onNext => {
+    this.tagService.find("sort=name,asc").subscribe(onNext => {
       this.availableTags = onNext.content;
     });
 

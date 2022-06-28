@@ -11,7 +11,7 @@ import {
 } from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
 import {TagDto} from '../dto/tag-dto';
 import {QFormsService} from '@qlack/forms';
-import {QFormValidationService} from '@qlack/form-validation';
+import {QFormValidationEEService} from "../shared/service/form-validation.service";
 
 @Component({
   selector: 'app-tag-edit',
@@ -26,7 +26,9 @@ export class TagEditComponent extends BaseComponent implements OnInit {
               private route: ActivatedRoute,
               private qForms: QFormsService, private router: Router,
               private utilityService: UtilityService,
-              private dialog: MatDialog, private qFormValidation: QFormValidationService) {
+              private dialog: MatDialog,
+              // private qFormValidation: QFormValidationService) {
+              private qFormValidation: QFormValidationEEService) {
     super();
   }
 
@@ -64,10 +66,11 @@ export class TagEditComponent extends BaseComponent implements OnInit {
         this.router.navigate(['tags']);
       }, onError => {
         if (onError.status == 400) {
+          console.log("ERROR!");
           let validationErrors = onError.error;
           if (validationErrors) {
             // @ts-ignore
-            this.qFormValidation.validateForm(this.form, validationErrors);
+            this.qFormValidation.validateForm(this.form, validationErrors.violations);
           }
         } else {
           this.utilityService.popupError('There was an error trying to save this tag.');

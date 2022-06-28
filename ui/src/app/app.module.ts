@@ -26,7 +26,6 @@ import {FooterComponent} from './shared/layout/footer.component';
 import {HeaderComponent} from './shared/layout/header.component';
 import {SidenavComponent} from './shared/layout/sidenav.component';
 import {QFormsModule} from '@qlack/forms';
-import {QFormValidationModule} from '@qlack/form-validation';
 import {NgProgressModule} from "ngx-progressbar";
 import {NgProgressHttpModule} from "ngx-progressbar/http";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
@@ -82,7 +81,7 @@ import {AuthConfigModule} from "./auth/auth-config.module";
   providers: [
     CookieService,
     QFormsModule,
-    QFormValidationModule,
+    // QFormValidationModule,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ]
 })

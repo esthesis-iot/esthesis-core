@@ -16,6 +16,7 @@
   <modules>
     <module>dto</module>
     <module>service</module>
+    <module>util</module>
   </modules>
 
 </project>

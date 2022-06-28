@@ -57,7 +57,7 @@ export class TagsComponent extends BaseComponent implements OnInit, AfterViewIni
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
-    this.tagService.getAll(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
+    this.tagService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
       [], false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.dataSource.data = onNext.content;

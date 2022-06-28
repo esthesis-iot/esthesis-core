@@ -58,7 +58,7 @@ export class InfrastructureMqttEditComponent extends BaseComponent implements On
     }
 
     // Get available tags.
-    this.tagService.getAll().subscribe(onNext => {
+    this.tagService.find("sort=name,asc").subscribe(onNext => {
       this.availableTags = onNext.content;
     });
 

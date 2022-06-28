@@ -6,6 +6,7 @@ import esthesis.common.service.rest.Pageable;
 import esthesis.services.tag.service.TagService;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -41,13 +42,13 @@ public class TagResource {
   @Produces("application/json")
   public Response delete(@PathParam("id") ObjectId id) {
     tagService.deleteById(id);
-    
+
     return Response.ok().build();
   }
 
   @POST
   @Produces("application/json")
-  public Tag save(Tag tag) {
+  public Tag save(@Valid Tag tag) {
     return tagService.save(tag);
   }
 }

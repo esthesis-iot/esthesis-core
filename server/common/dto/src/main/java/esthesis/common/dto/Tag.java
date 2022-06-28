@@ -1,10 +1,12 @@
 package esthesis.common.dto;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import javax.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Length;
 
 @Data
 @NoArgsConstructor
@@ -13,5 +15,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 public class Tag extends BaseDTO {
 
+  @NotBlank
+  @Length(min = 3, max = 255)
   private String name;
 }

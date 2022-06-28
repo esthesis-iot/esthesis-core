@@ -4,20 +4,21 @@ import {CommonModule} from '@angular/common';
 import {TagsRoutingModule} from './tags-routing.module';
 import {TagsComponent} from './tags.component';
 import {TagEditComponent} from './tag-edit.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSelectModule} from '@angular/material/select';
+import {MatSortModule} from '@angular/material/sort';
+import {MatTableModule} from '@angular/material/table';
 import {QFormsModule} from '@qlack/forms';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {DisplayModule} from '../shared/component/display/display.module';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {A11yModule} from "@angular/cdk/a11y";
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatSortModule,
     DisplayModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    A11yModule
   ]
 })
 export class TagsModule {
