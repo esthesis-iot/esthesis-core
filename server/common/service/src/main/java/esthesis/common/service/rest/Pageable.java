@@ -1,35 +1,55 @@
 package esthesis.common.service.rest;
 
+import io.quarkus.panache.common.Sort;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@Slf4j
 public class Pageable {
 
   @Context
   private UriInfo uriInfo;
 
   @QueryParam("page")
-  public int page = 0;
+  public Integer page;
+
   @QueryParam("size")
-  public int size = 10;
+  public Integer size;
+
   @QueryParam("sort")
   public String sort;
 
-  public io.quarkus.panache.common.Page getPageObject() {
-    return io.quarkus.panache.common.Page.of(page, size);
+  public Optional<io.quarkus.panache.common.Page> getPageObject() {
+    if (page != null & size != null) {
+      return Optional.of(io.quarkus.panache.common.Page.of(page, size));
+    }
+    return Optional.empty();
   }
 
   public io.quarkus.panache.common.Sort getSortObject() {
-    if (getSort().split(",")[1].equals("asc")) {
-      return io.quarkus.panache.common.Sort.ascending(getSort().split(",")[0]);
+    if (StringUtils.isNotBlank(sort)) {
+      if (getSort().split(",")[1].equals("asc")) {
+        return io.quarkus.panache.common.Sort.ascending(
+            getSort().split(",")[0]);
+      } else {
+        return io.quarkus.panache.common.Sort.descending(
+            getSort().split(",")[0]);
+      }
     } else {
-      return io.quarkus.panache.common.Sort.descending(getSort().split(",")[0]);
+      return Sort.empty();
     }
   }
 

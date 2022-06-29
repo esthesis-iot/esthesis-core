@@ -46,20 +46,39 @@ public abstract class BaseService<D extends BaseDTO> {
       quarkusPage.setTotalElements(
           repository.find(pageable.getQueryKeys(partialMatch),
               pageable.getQueryValues()).list().size());
-      quarkusPage.setContent(
-          repository.find(pageable.getQueryKeys(partialMatch),
-              pageable.getSortObject(),
-              pageable.getQueryValues()).page(pageable.getPageObject()).list());
+      if (pageable.getPageObject().isPresent()) {
+        quarkusPage.setContent(
+            repository.find(pageable.getQueryKeys(partialMatch),
+                    pageable.getSortObject(),
+                    pageable.getQueryValues()).page(pageable.getPageObject().get())
+                .list());
+      } else {
+        quarkusPage.setContent(
+            repository.find(pageable.getQueryKeys(partialMatch),
+                pageable.getSortObject(), pageable.getQueryValues()).list());
+      }
     } else {
-      quarkusPage.setTotalElements(repository.count());
-      quarkusPage.setContent(
-          repository.findAll(pageable.getSortObject())
-              .page(pageable.getPageObject()).list());
+      if (pageable.getPageObject().isPresent()) {
+        quarkusPage.setTotalElements(repository.count());
+        quarkusPage.setContent(
+            repository.findAll(pageable.getSortObject())
+                .page(pageable.getPageObject().get()).list());
+      } else {
+        quarkusPage.setTotalElements(repository.count());
+        quarkusPage.setContent(
+            repository.findAll(pageable.getSortObject()).list());
+      }
+
     }
 
     // Set query metadata.
-    quarkusPage.setPage(pageable.getPage());
-    quarkusPage.setSize(pageable.getSize());
+    if (pageable.getPageObject().isPresent()) {
+      quarkusPage.setPage(pageable.getPage());
+      quarkusPage.setSize(pageable.getSize());
+    } else {
+      quarkusPage.setPage(0);
+      quarkusPage.setSize(quarkusPage.getContent().size());
+    }
 
     return quarkusPage;
   }

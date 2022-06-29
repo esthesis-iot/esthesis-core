@@ -36,8 +36,13 @@ export class DevicePreregisterComponent extends BaseComponent implements OnInit 
     });
 
     // Get available tags.
-    this.tagService.find("sort=name,asc").subscribe(onNext => {
-      this.availableTags = onNext.content;
+    this.tagService.find("sort=name,asc").subscribe({
+      next: (next) => {
+        this.availableTags = next.content;
+      },
+      error: (err) => {
+        this.utilityService.popupError("Error while getting available tags, please try again later.");
+      }
     });
   }
 

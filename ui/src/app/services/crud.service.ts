@@ -11,14 +11,6 @@ export class CrudService<T> {
   constructor(public http: HttpClient, private endpoint: string) {
   }
 
-  // add(object: T) {
-  //   return this.http.post(`${environment.apiPrefix}/${this.endpoint}`, object);
-  // }
-  //
-  // update(object: T) {
-  //   return this.http.put(`${environment.apiPrefix}/${this.endpoint}`, object);
-  // }
-  //
   save(object: T) {
     return this.http.post(`${environment.apiPrefix}/${this.endpoint}`, object);
   }
