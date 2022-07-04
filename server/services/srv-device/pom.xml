@@ -11,11 +11,11 @@
   </parent>
 
   <artifactId>srv-device</artifactId>
+  <packaging>pom</packaging>
 
-  <dependencies>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-mongodb-panache</artifactId>
-    </dependency>
-  </dependencies>
+  <modules>
+    <module>srv-device-impl</module>
+    <module>srv-device-client</module>
+  </modules>
+
 </project>

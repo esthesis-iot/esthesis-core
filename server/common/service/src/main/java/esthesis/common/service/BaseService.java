@@ -1,35 +1,28 @@
 package esthesis.common.service;
 
 import esthesis.common.dto.BaseDTO;
-import esthesis.common.service.mapper.BaseMapper;
 import esthesis.common.service.rest.Page;
 import esthesis.common.service.rest.Pageable;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
-import java.util.Optional;
 import javax.inject.Inject;
 import org.bson.types.ObjectId;
 
 public abstract class BaseService<D extends BaseDTO> {
 
-  @SuppressWarnings("CdiInjectionPointsInspection")
   @Inject
+  @SuppressWarnings("CdiInjectionPointsInspection")
   PanacheMongoRepository<D> repository;
 
-  @SuppressWarnings("CdiInjectionPointsInspection")
-  @Inject
-  BaseMapper<D> mapper;
-
-  public Optional<D> findByColumn(String column, String value,
+  public D findByColumn(String column, String value,
       boolean partialMatch) {
     if (partialMatch) {
-      return repository.find(column + " like ?1", value).firstResultOptional();
+      return repository.find(column + " like ?1", value).firstResult();
     } else {
-      return repository.find(column + " = ?1", value).firstResultOptional();
+      return repository.find(column + " = ?1", value).firstResult();
     }
-
   }
 
-  public Optional<D> findByColumn(String column, String value) {
+  public D findByColumn(String column, String value) {
     return findByColumn(column, value, false);
   }
 
@@ -89,7 +82,7 @@ public abstract class BaseService<D extends BaseDTO> {
 
   public D save(D dto) {
     if (dto.getId() != null) {
-      repository.update(mapper.map(dto, repository.findById(dto.getId())));
+      repository.update(dto);
     } else {
       ObjectId id = new ObjectId();
       dto.setId(id);

@@ -17,8 +17,8 @@ export class DevicesService extends CrudService<DeviceDto> {
     super(http, 'devices');
   }
 
-  preregister(ids: DeviceRegisterDto): Observable<any> {
-    return this.http.post(`${environment.apiPrefix}/devices/preregister`, ids);
+  preregister(devices: DeviceRegisterDto): Observable<any> {
+    return this.http.post(`${environment.apiPrefix}/v1/device/preregister`, devices);
   }
 
   getDevices(queryString: string): Observable<QPageableReply<DeviceDto>> {

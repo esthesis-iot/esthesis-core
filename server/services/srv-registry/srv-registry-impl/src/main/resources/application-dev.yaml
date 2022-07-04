@@ -1,0 +1,16 @@
+quarkus:
+  http:
+    host: 0.0.0.0
+    cors: false
+  log:
+    level: WARN
+    category:
+      esthesis:
+        level: DEBUG
+  mongodb:
+    connection-string: mongodb://esthesis:esthesis@localhost:27017/esthesis
+
+#kafka:
+#  bootstrap:
+#    servers:
+#      - localhost:9092

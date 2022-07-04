@@ -30,7 +30,7 @@
     <bson.version>4.6.1</bson.version>
     <commons-codec.version>1.15</commons-codec.version>
     <org.projectlombok.version>1.18.24</org.projectlombok.version>
-    <mapstruct.version>1.5.2.Final</mapstruct.version>
+    <slugify.version>3.0.1</slugify.version>
   </properties>
 
   <dependencyManagement>
@@ -50,17 +50,6 @@
       <artifactId>lombok</artifactId>
       <groupId>org.projectlombok</groupId>
       <version>${org.projectlombok.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.mapstruct</groupId>
-      <artifactId>mapstruct</artifactId>
-      <version>${mapstruct.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.mapstruct</groupId>
-      <artifactId>mapstruct-processor</artifactId>
-      <version>${mapstruct.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

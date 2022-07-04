@@ -48,9 +48,11 @@ export class DevicePreregisterComponent extends BaseComponent implements OnInit 
 
   save() {
     this.devicesService.preregister(
-      this.qForms.cleanupData(this.form.getRawValue()) as DeviceRegisterDto).subscribe(onNext => {
-      this.utilityService.popupSuccess('Devices are registering... Please refresh devices list.');
-      this.router.navigate(['devices']);
+      this.qForms.cleanupData(this.form.getRawValue()) as DeviceRegisterDto).subscribe({
+      next: (next) => {
+        this.utilityService.popupSuccess('Devices are preregistering... Please refresh devices list.');
+        this.router.navigate(['devices']);
+      }
     });
   }
 

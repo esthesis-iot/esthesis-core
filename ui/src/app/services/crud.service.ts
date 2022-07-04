@@ -18,14 +18,14 @@ export class CrudService<T> {
   find(queryString?: string): Observable<QPageableReply<T>> {
     if (queryString) {
       return this.http.get<QPageableReply<T>>(
-        `${environment.apiPrefix}/${this.endpoint}?${queryString}`);
+        `${environment.apiPrefix}/${this.endpoint}/find?${queryString}`);
     } else {
       return this.http.get<QPageableReply<T>>(`${environment.apiPrefix}/${this.endpoint}`);
     }
   }
 
   findById(id: any): Observable<T> {
-    return this.http.get<T>(`${environment.apiPrefix}/${this.endpoint}/${id}`);
+    return this.http.get<T>(`${environment.apiPrefix}/${this.endpoint}/find/by-id/${id}`);
   }
 
   // getAny(): Observable<T> {

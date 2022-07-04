@@ -1,7 +1,9 @@
 # Installation
 
 ## Mandatory components
+
 ### APISIX & APISIX Ingress Controller
+
 ```
 helm repo add apisix https://charts.apiseven.com
 helm upgrade --install apisix apisix/apisix --version 0.10 \
@@ -16,10 +18,25 @@ helm upgrade --install apisix apisix/apisix --version 0.10 \
   --set ingress-controller.config.apisix.adminKey=esthesis-admin-key
 ```
 
+### Kafka
+
+```
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm  upgrade --install kafka bitnami/kafka --version 18.0.0 
+```
+
+To access from your dev machine, port-forward the Kafka service and add:
+--set advertisedListeners\[0\]=CLIENT://localhost:9092 \
+--set advertisedListeners\[1\]=INTERNAL://kafka-0.kafka-headless.esthesis-dev.svc.cluster.local:9093
+
 ## Equivalent components
+
 ### Keycloak
+
 https://artifacthub.io/packages/helm/codecentric/keycloak/18.1.1?modal=install
-Here is how you can install Keycloak with a self-signed certificate, using APISIX ingress controller:
+Here is how you can install Keycloak with a self-signed certificate, using APISIX ingress
+controller:
+
 ```
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm upgrade --install keycloak bitnami/keycloak --version 9.2.9 \
@@ -31,6 +48,7 @@ helm upgrade --install keycloak bitnami/keycloak --version 9.2.9 \
 ```
 
 ### Creating a Keycloak realm for esthesis
+
 - Click on 'Master > Add Realm'.
 - Name the realm 'esthesis'.
 - Click on 'Clients > Create'.
@@ -42,6 +60,7 @@ helm upgrade --install keycloak bitnami/keycloak --version 9.2.9 \
 - Click on 'Credentials' and set the 'Password' to 'esthesis-admin'.
 
 ### MongoDB
+
 ```
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm upgrade --install mongodb bitnami/mongodb --version 12.1.19 \
@@ -52,8 +71,19 @@ helm upgrade --install mongodb bitnami/mongodb --version 12.1.19 \
   --set auth.databases\[0\]=esthesis
 ```
 
+Liquibase needs `collMod` permission, so `esthesis` user should be made `dbAdmin`:
+
+```
+mongosh -u root -p root mongodb://localhost:27017/esthesis?authSource=admin --eval "db.grantRolesToUser('esthesis', ['dbAdmin'])"
+```
+
+Keep an eye on this:
+https://github.com/quarkusio/quarkus/issues/25850
+
 ## Optional components
+
 ### APISIX Dashboard
+
 ```
 helm repo add apisix https://charts.apiseven.com
 helm upgrade --install apisix-dashboard apisix/apisix-dashboard --version 0.6.0 \
@@ -66,7 +96,10 @@ helm upgrade --install apisix-dashboard apisix/apisix-dashboard --version 0.6.0 
 ```
 
 ## esthesis
+
 helm upgrade --install esthesis . \
-  --set global.oidc.discoveryEndpoint=http://192.168.21.2/realms/esthesis/.well-known/openid-configuration \
-  --set global.oidc.introspectionEndpoint=http://192.168.21.2/realms/esthesis/protocol/openid-connect/token/introspect \
-  --set global.oidc.clientSecret=N6EKsuut0CHzRYDA1NUVF7cBeVBNv3kj
+--set
+global.oidc.discoveryEndpoint=http://192.168.21.2/realms/esthesis/.well-known/openid-configuration \
+--set
+global.oidc.introspectionEndpoint=http://192.168.21.2/realms/esthesis/protocol/openid-connect/token/introspect \
+--set global.oidc.clientSecret=N6EKsuut0CHzRYDA1NUVF7cBeVBNv3kj

@@ -1,0 +1,19 @@
+quarkus:
+  http:
+    host: 0.0.0.0
+    cors: false
+  log:
+    level: WARN
+  mongodb:
+    connection-string: mongodb://esthesis:esthesis@localhost:27017/esthesis
+
+  rest-client:
+    RegistryResource:
+      url: http://localhost:59030
+      scope: Singleton
+    CryptoResource:
+      url: http://localhost:59040
+      scope: Singleton
+    TagResource:
+      url: http://localhost:59020
+      scope: Singleton
