@@ -25,7 +25,7 @@ export class CrudService<T> {
   }
 
   findById(id: any): Observable<T> {
-    return this.http.get<T>(`${environment.apiPrefix}/${this.endpoint}/find/by-id/${id}`);
+    return this.http.get<T>(`${environment.apiPrefix}/${this.endpoint}/${id}`);
   }
 
   // getAny(): Observable<T> {
