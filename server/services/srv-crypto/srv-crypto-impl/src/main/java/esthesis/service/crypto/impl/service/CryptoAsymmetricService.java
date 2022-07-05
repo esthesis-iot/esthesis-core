@@ -53,16 +53,14 @@ public class CryptoAsymmetricService {
     return matcher.replaceAll("");
   }
 
-  protected String convertKeyToPEM(final KeyPair keyPair, final String keyType)
+  protected String convertKeyToPEM(final byte[] key, final String keyType)
   throws IOException {
     try (StringWriter pemStrWriter = new StringWriter()) {
       try (JcaPEMWriter pemWriter = new JcaPEMWriter(pemStrWriter)) {
         if (keyType.equals(RSA_PRIVATE_KEY)) {
-          pemWriter.writeObject(
-              new PemObject(keyType, keyPair.getPrivate().getEncoded()));
+          pemWriter.writeObject(new PemObject(keyType, key));
         } else if (keyType.equals(RSA_PUBLIC_KEY)) {
-          pemWriter.writeObject(
-              new PemObject(keyType, keyPair.getPublic().getEncoded()));
+          pemWriter.writeObject(new PemObject(keyType, key));
         }
         pemWriter.flush();
         return pemStrWriter.toString();
@@ -130,8 +128,7 @@ public class CryptoAsymmetricService {
   }
 
   public PublicKey publicKeyFromByteArray(@NotNull final byte[] key,
-      @NotNull final String keyAlgorithm,
-      final String keyProvider)
+      @NotNull final String keyAlgorithm, final String keyProvider)
   throws NoSuchProviderException, NoSuchAlgorithmException,
          InvalidKeySpecException {
     KeyFactory keyFactory;
@@ -147,23 +144,23 @@ public class CryptoAsymmetricService {
   /**
    * Converts a public key to PEM format.
    *
-   * @param keyPair The keypair containing the public key
-   * @return the generated PEM format
-   * @throws IOException thrown when something unexpected happens
+   * @param publicKey The public key to convert.
+   * @return the generated PEM format.
+   * @throws IOException thrown when something unexpected happens.
    */
-  public String publicKeyToPEM(final KeyPair keyPair) throws IOException {
-    return convertKeyToPEM(keyPair, RSA_PUBLIC_KEY);
+  public String publicKeyToPEM(final byte[] publicKey) throws IOException {
+    return convertKeyToPEM(publicKey, RSA_PUBLIC_KEY);
   }
 
   /**
    * Converts a private key to string in PEM format.
    *
-   * @param keyPair the keypair containing the private key to convert
-   * @return the generated PEM format
-   * @throws IOException thrown when generating PEM
+   * @param privateKey the private key to convert.
+   * @return the generated PEM format.
+   * @throws IOException thrown when generating PEM.
    */
-  public String privateKeyToPEM(final KeyPair keyPair) throws IOException {
-    return convertKeyToPEM(keyPair, RSA_PRIVATE_KEY);
+  public String privateKeyToPEM(final byte[] privateKey) throws IOException {
+    return convertKeyToPEM(privateKey, RSA_PRIVATE_KEY);
   }
 
   /**

@@ -6,3 +6,5 @@ quarkus:
     category:
       esthesis:
         level: debug
+  devservices:
+    enabled: false

@@ -1,8 +1,8 @@
 package esthesis.service.crypto.resource;
 
 import esthesis.service.crypto.dto.CertificateRequest;
+import esthesis.service.crypto.dto.KeyPairResponse;
 import java.io.IOException;
-import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
@@ -11,22 +11,22 @@ import javax.ws.rs.Path;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-@Path("/crypto")
+@Path("/api/v1/crypto")
 @RegisterRestClient(configKey = "CryptoResource")
-public interface CryptoResource {
+public interface CryptoResourceV1 {
 
   @GET
   @Path("/keypair")
-  KeyPair generateKeyPair()
+  KeyPairResponse generateKeyPair()
   throws NoSuchAlgorithmException, NoSuchProviderException;
 
   @GET
   @Path("/publicKeyToPEM")
-  String publicKeyToPEM(KeyPair keyPair) throws IOException;
+  String publicKeyToPEM(byte[] keyPair) throws IOException;
 
   @GET
   @Path("/privateKeyToPEM")
-  String privateKeyToPEM(KeyPair keyPair) throws IOException;
+  String privateKeyToPEM(byte[] keyPair) throws IOException;
 
   @GET
   @Path("/certificate")

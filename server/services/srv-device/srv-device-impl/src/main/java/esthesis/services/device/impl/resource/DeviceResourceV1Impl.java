@@ -8,6 +8,7 @@ import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DeviceKey;
 import esthesis.service.device.dto.DevicePage;
 import esthesis.service.device.dto.DeviceRegistration;
+import esthesis.service.device.resource.DeviceResourceV1;
 import esthesis.services.device.impl.service.DeviceService;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -16,13 +17,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.HttpHeaders;
@@ -33,9 +29,7 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
-@Path("/api/v1/device")
-@RequestScoped
-public class DeviceResource {
+public class DeviceResourceV1Impl implements DeviceResourceV1 {
 
   @Inject
   DeviceService deviceService;
@@ -43,8 +37,7 @@ public class DeviceResource {
   @Inject
   JsonWebToken jwt;
 
-  @POST
-  @Path("preregister")
+  @Override
   public Response preregister(@Valid DeviceRegistration deviceRegistration)
   throws NoSuchAlgorithmException, IOException, OperatorCreationException,
          InvalidKeySpecException, NoSuchProviderException {
@@ -53,36 +46,28 @@ public class DeviceResource {
     return Response.ok().build();
   }
 
-  @GET
-  //@ReplyPageableFilter("createdOn,hardwareId,id,state,lastSeen")
-  public Page<Device> findAll(Pageable pageable) {
+  @Override
+  public Page<Device> find(Pageable pageable) {
     return deviceService.find(pageable);
   }
 
-  @GET
-  @Path("{id}")
-//  @ReplyFilter("-certificate,-privateKey,-publicKey,-psPublicKey,-sessionKey")
+  @Override
   public Device get(@PathParam("id") ObjectId id) {
     return deviceService.findById(id, true);
   }
 
-  @DELETE
-  @Path("{id}")
-//  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not delete device.")
+  @Override
   public void delete(@PathParam("id") ObjectId id) {
     deviceService.deleteById(id);
   }
 
-  @POST
-//  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not save Device.")
+  @Override
   public Device save(@Valid Device object) {
     return deviceService.save(object);
   }
 
-  @GET
-  @Path("{deviceId}/keys")
+  @Override
   @SuppressWarnings("java:S1192")
-//  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not fetch device keys.")
   public Response downloadKeys(@PathParam("deviceId") ObjectId deviceId) {
     // Prepare a filename for downloading.
     String filename =
@@ -124,8 +109,7 @@ public class DeviceResource {
         .build();
   }
 
-  @GET
-  @Path("device-page-data/{deviceId}")
+  @Override
 //  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
 //      logMessage = "Could not fetch device page fields.")
 //  @ReplyFilter("-shown,-createdBy,-createdOn,-modifiedBy,-modifiedOn")
@@ -145,8 +129,7 @@ public class DeviceResource {
    *                 TELEMETRY.geolocation.latitude. Multiple fields can be
    *                 requested separated by comma.
    */
-  @GET
-  @Path("device-data-field/{deviceId}")
+  @Override
 //  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
 //      logMessage = "Could not fetch device page field.")
 //  @ReplyFilter("-shown,-createdBy,-createdOn,-modifiedBy,-modifiedOn")
@@ -164,8 +147,7 @@ public class DeviceResource {
     return results;
   }
 
-  @GET
-  @Path("count/by-hardware-id")
+  @Override
   public int countByHardwareId(@QueryParam("hardwareIds") String hardwareIds) {
     if (StringUtils.isBlank(hardwareIds)) {
       return 0;
@@ -175,16 +157,12 @@ public class DeviceResource {
     }
   }
 
-  @GET
-  @Path("count/by-tags")
+  @Override
   public int countByTags(@QueryParam("tags") String tags) {
     return deviceService.countByTags(Arrays.asList(tags.split(",")));
   }
 
-  @GET
-  @Path("/by-partial-hardware-id/{hardwareId}")
-//  @ExceptionWrapper(wrapper = QExceptionWrapper.class, logMessage = "Could not search for device.")
-//  @ReplyFilter("-certificate,-privateKey,-publicKey,-psPublicKey,-sessionKey")
+  @Override
   public List<Device> findByPartialHardwareId(
       @PathParam("hardwareId") String hardwareId) {
     return deviceService.findByPartialHardwareId(hardwareId);

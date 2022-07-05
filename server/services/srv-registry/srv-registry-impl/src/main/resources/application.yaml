@@ -8,7 +8,8 @@ quarkus:
   liquibase-mongodb:
     migrate-at-start: true
     validate-on-migrate: false
-
+  devservices:
+    enabled: false
 #mp:
 #  jwt:
 #    verify:

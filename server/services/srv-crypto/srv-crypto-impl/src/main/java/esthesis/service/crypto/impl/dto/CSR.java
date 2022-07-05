@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class CertificateSign {
+public class CSR {
 
   @NotNull
   private PrivateKey privateKey;

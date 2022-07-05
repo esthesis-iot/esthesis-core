@@ -1,7 +1,7 @@
 package esthesis.service.crypto.impl.service;
 
 import esthesis.service.crypto.impl.dto.CPPPemHolder;
-import esthesis.service.crypto.impl.dto.CertificateSign;
+import esthesis.service.crypto.impl.dto.CSR;
 import esthesis.service.crypto.impl.dto.CreateCA;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -81,39 +81,41 @@ public class CryptoCAService {
         createCADTO.getCreateKeyPairRequest());
 
     // Prepare signing.
-    CertificateSign certificateSign = new CertificateSign();
-    certificateSign.setValidForm(createCADTO.getValidFrom());
-    certificateSign.setValidTo(createCADTO.getValidTo());
-    certificateSign.setLocale(createCADTO.getLocale());
-    certificateSign.setPublicKey(keyPair.getPublic());
-    certificateSign.setPrivateKey(keyPair.getPrivate());
-    certificateSign.setSignatureAlgorithm(
+    CSR CSR = new CSR();
+    CSR.setValidForm(createCADTO.getValidFrom());
+    CSR.setValidTo(createCADTO.getValidTo());
+    CSR.setLocale(createCADTO.getLocale());
+    CSR.setPublicKey(keyPair.getPublic());
+    CSR.setPrivateKey(keyPair.getPrivate());
+    CSR.setSignatureAlgorithm(
         createCADTO.getSignatureAlgorithm());
-    certificateSign.setSubjectCN(createCADTO.getSubjectCN());
-    certificateSign.setCa(true);
+    CSR.setSubjectCN(createCADTO.getSubjectCN());
+    CSR.setCa(true);
 
     // Choose which private key to use. If no parent key is found then this is a self-signed certificate and the
     // private key created for the keypair will be used.
     if (StringUtils.isNotEmpty(createCADTO.getIssuerCN())
         && StringUtils.isNotEmpty(
         createCADTO.getIssuerPrivateKey())) {
-      certificateSign.setIssuerPrivateKey(
+      CSR.setIssuerPrivateKey(
           cryptoAsymmetricService.pemToPrivateKey(
               createCADTO.getIssuerPrivateKey(),
               createCADTO.getIssuerPrivateKeyAlgorithm()));
-      certificateSign.setIssuerCN(createCADTO.getIssuerCN());
+      CSR.setIssuerCN(createCADTO.getIssuerCN());
     } else {
-      certificateSign.setIssuerPrivateKey(keyPair.getPrivate());
-      certificateSign.setIssuerCN(createCADTO.getSubjectCN());
+      CSR.setIssuerPrivateKey(keyPair.getPrivate());
+      CSR.setIssuerCN(createCADTO.getSubjectCN());
     }
 
     final X509CertificateHolder certHolder = generateCertificate(
-        certificateSign);
+        CSR);
 
     // Prepare reply.
     final CPPPemHolder cppPemKey = new CPPPemHolder();
-    cppPemKey.setPublicKey(cryptoAsymmetricService.publicKeyToPEM(keyPair));
-    cppPemKey.setPrivateKey(cryptoAsymmetricService.privateKeyToPEM(keyPair));
+    cppPemKey.setPublicKey(cryptoAsymmetricService.publicKeyToPEM(
+        keyPair.getPublic().getEncoded()));
+    cppPemKey.setPrivateKey(cryptoAsymmetricService.privateKeyToPEM(
+        keyPair.getPrivate().getEncoded()));
     cppPemKey.setCertificate(certificateToPEM(certHolder));
 
     return cppPemKey;
@@ -122,7 +124,7 @@ public class CryptoCAService {
   /**
    * Signs a key with another key providing a certificate.
    *
-   * @param certificateSign the details of the signing to take place
+   * @param CSR the details of the signing to take place
    * @return the generated signature
    * @throws OperatorCreationException thrown when something unexpected happens
    *                                   during the encryption
@@ -131,7 +133,7 @@ public class CryptoCAService {
    */
   @SuppressWarnings({"squid:S2274", "squid:S2142"})
   public X509CertificateHolder generateCertificate(
-      final CertificateSign certificateSign)
+      final CSR CSR)
   throws OperatorCreationException, CertIOException {
 
     // Create a generator for the certificate including all certificate details.
@@ -141,22 +143,22 @@ public class CryptoCAService {
     synchronized (this) {
       certGenerator = new X509v3CertificateBuilder(new X500Name(
           CN + "=" + StringUtils.defaultIfBlank(
-              certificateSign.getIssuerCN(),
-              certificateSign.getSubjectCN())),
-          certificateSign.isCa() ? BigInteger.ONE
+              CSR.getIssuerCN(),
+              CSR.getSubjectCN())),
+          CSR.isCa() ? BigInteger.ONE
               : BigInteger.valueOf(Instant.now().toEpochMilli()),
-          new Date(certificateSign.getValidForm().toEpochMilli()),
-          new Date(certificateSign.getValidTo().toEpochMilli()),
-          certificateSign.getLocale(),
-          new X500Name(CN + "=" + certificateSign.getSubjectCN()),
+          new Date(CSR.getValidForm().toEpochMilli()),
+          new Date(CSR.getValidTo().toEpochMilli()),
+          CSR.getLocale(),
+          new X500Name(CN + "=" + CSR.getSubjectCN()),
           SubjectPublicKeyInfo.getInstance(
-              certificateSign.getPublicKey().getEncoded()));
+              CSR.getPublicKey().getEncoded()));
     }
 
     // Add SANs.
-    if (StringUtils.isNotEmpty(certificateSign.getSan())) {
+    if (StringUtils.isNotEmpty(CSR.getSan())) {
       GeneralNames subjectAltNames = new GeneralNames(
-          Arrays.stream(certificateSign.getSan().split(","))
+          Arrays.stream(CSR.getSan().split(","))
               .map(String::trim).map(s -> {
                 if (isValidIPV4Address(s)) {
                   return new GeneralName(GeneralName.iPAddress, s);
@@ -169,7 +171,7 @@ public class CryptoCAService {
     }
 
     // Check if this is a CA certificate and in that case add the necessary key extensions.
-    if (certificateSign.isCa()) {
+    if (CSR.isCa()) {
       certGenerator.addExtension(Extension.basicConstraints, true,
           new BasicConstraints(true));
       certGenerator.addExtension(Extension.keyUsage, true,
@@ -183,8 +185,8 @@ public class CryptoCAService {
     final X509CertificateHolder certHolder;
     certHolder = certGenerator.build(
         new JcaContentSignerBuilder(
-            certificateSign.getSignatureAlgorithm()).build(
-            certificateSign.getIssuerPrivateKey()));
+            CSR.getSignatureAlgorithm()).build(
+            CSR.getIssuerPrivateKey()));
 
     return certHolder;
   }

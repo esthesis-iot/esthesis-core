@@ -3,3 +3,4 @@ quarkus:
     RegistryResource:
       url: http://localhost:59030
       scope: Singleton
+

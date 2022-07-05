@@ -13,6 +13,7 @@ public class RegistryService extends BaseService<RegistryEntry> {
     log.debug("Looking up value '{}'.", name);
     RegistryEntry registryEntry = findByColumn("name", name);
     log.debug("Found value '{}'.", registryEntry);
+    
     return registryEntry;
   }
 }

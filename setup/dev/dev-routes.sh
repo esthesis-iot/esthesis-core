@@ -8,13 +8,11 @@ export KEYCLOAK_IP=192.168.21.2
 ####################################################################################################
 # PROTECTED RESOURCES
 ####################################################################################################
-serviceNames=( auth device tag )
-servicePorts=( 59000 59010 59020 )
+serviceNames=( auth device tag crypto registry )
+servicePorts=( 59000 59010 59020 59040 59030 )
 
 for i in "${!serviceNames[@]}"
 do
-#  echo ${serviceNames[$i]}
-#  echo ${servicePorts[$i]}
   echo "****** REGISTERING DEV ROUTE FOR SERVICE/PORT: ${serviceNames[$i]} / ${servicePorts[$i]}"
   curl -s http://127.0.0.1:$APISIX_LOCAL_PORT/apisix/admin/routes/dev-srv-${serviceNames[$i]}-route -H 'X-API-KEY: esthesis-admin-key' -X PUT -i -d '
   {

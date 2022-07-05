@@ -68,7 +68,10 @@ helm upgrade --install mongodb bitnami/mongodb --version 12.1.19 \
   --set auth.rootPassword=root \
   --set auth.usernames\[0\]=esthesis \
   --set auth.passwords\[0\]=esthesis \
-  --set auth.databases\[0\]=esthesis
+  --set auth.databases\[0\]=esthesis \
+  --set architecture=replicaset \
+  --set auth.replicaSetKey=esthesis \
+  --set replicaSetName=esthesis-rs
 ```
 
 Liquibase needs `collMod` permission, so `esthesis` user should be made `dbAdmin`:

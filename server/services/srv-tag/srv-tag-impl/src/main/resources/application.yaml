@@ -5,6 +5,8 @@ quarkus:
   mongodb:
     connection-string: mongodb://esthesis:esthesis@mongodb:27017/esthesis
     database: esthesis
+  devservices:
+    enabled: false
 mp:
   jwt:
     verify:

@@ -7,9 +7,9 @@ import javax.ws.rs.PathParam;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-@Path("/registry")
+@Path("/api/v1/registry")
 @RegisterRestClient(configKey = "RegistryResource")
-public interface RegistryResource {
+public interface RegistryResourceV1 {
 
   @GET
   @Path("/{id}")

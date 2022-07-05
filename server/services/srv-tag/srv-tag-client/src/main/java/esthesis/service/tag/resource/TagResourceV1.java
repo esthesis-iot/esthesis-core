@@ -15,8 +15,9 @@ import javax.ws.rs.core.Response;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+@Path("/api/v1/tag")
 @RegisterRestClient(configKey = "TagResource")
-public interface TagResource {
+public interface TagResourceV1 {
 
   @GET
   @Path("/find")

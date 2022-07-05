@@ -35,11 +35,7 @@ public class RegistryEntry extends BaseDTO {
   public boolean asBoolean() {
     return Boolean.parseBoolean(String.valueOf(value));
   }
-
-  public boolean isNotEmpty() {
-    return value != null && !value.toString().isEmpty();
-  }
-
+  
   public boolean isTrue() {
     return value != null && asBoolean();
   }

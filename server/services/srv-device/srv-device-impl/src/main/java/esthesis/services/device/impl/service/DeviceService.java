@@ -7,17 +7,18 @@ import esthesis.common.util.AppConstants.Device.State;
 import esthesis.common.util.AppConstants.Registry;
 import esthesis.common.util.exception.QAlreadyExistsException;
 import esthesis.service.crypto.dto.CertificateRequest;
-import esthesis.service.crypto.resource.CryptoResource;
+import esthesis.service.crypto.dto.KeyPairResponse;
+import esthesis.service.crypto.resource.CryptoResourceV1;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DeviceKey;
 import esthesis.service.device.dto.DevicePage;
 import esthesis.service.device.dto.DeviceRegistration;
 import esthesis.service.device.dto.RegistrationRequest;
-import esthesis.service.registry.resource.RegistryResource;
-import esthesis.service.tag.resource.TagResource;
+import esthesis.service.registry.dto.RegistryEntry;
+import esthesis.service.registry.resource.RegistryResourceV1;
+import esthesis.service.tag.resource.TagResourceV1;
 import esthesis.services.device.impl.repository.DeviceRepository;
 import java.io.IOException;
-import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bson.types.ObjectId;
@@ -45,15 +47,15 @@ public class DeviceService extends BaseService<Device> {
 
   @Inject
   @RestClient
-  CryptoResource cryptoResource;
+  CryptoResourceV1 cryptoResourceV1;
 
   @Inject
   @RestClient
-  TagResource tagResource;
+  TagResourceV1 tagResourceV1;
 
   @Inject
   @RestClient
-  RegistryResource registryResource;
+  RegistryResourceV1 registryResourceV1;
 
   /**
    * Populates the cryptographic keys of a device.
@@ -80,7 +82,7 @@ public class DeviceService extends BaseService<Device> {
   private void checkTags(List<String> tags) {
     for (String tag : tags) {
       tag = tag.trim();
-      if (tagResource.findByName(tag) != null) {
+      if (tagResourceV1.findByName(tag) != null) {
         log.warn("Device-pushed tag {} does not exist.", tag);
       }
     }
@@ -118,6 +120,7 @@ public class DeviceService extends BaseService<Device> {
    *
    * @param deviceRegistration The preregistration details of the device.
    */
+  @Transactional
   public void preregister(DeviceRegistration deviceRegistration)
   throws NoSuchAlgorithmException, OperatorCreationException,
          InvalidKeySpecException,
@@ -163,22 +166,27 @@ public class DeviceService extends BaseService<Device> {
     }
 
     // Create a keypair for the device to be registered.
-    KeyPair keyPair = cryptoResource.generateKeyPair();
+    KeyPairResponse keyPairResponse = cryptoResourceV1.generateKeyPair();
 
     // Set the security keys for the new device.
     final DeviceKey deviceKey = new DeviceKey()
-        .setPublicKey(cryptoResource.publicKeyToPEM(keyPair))
-        .setPrivateKey(cryptoResource.privateKeyToPEM(keyPair))
+        .setPublicKey(cryptoResourceV1.publicKeyToPEM(
+            keyPairResponse.getPublicKey()))
+        .setPrivateKey(cryptoResourceV1.privateKeyToPEM(
+            keyPairResponse.getPrivateKey()))
         .setRolledOn(Instant.now())
         .setRolledAccepted(true);
 
     // Create a certificate for this device if the root CA is set.
-    if (registryResource.findByName(Registry.DEVICE_ROOT_CA).isNotEmpty()) {
+    RegistryEntry deviceRootCA = registryResourceV1.findByName(
+        Registry.DEVICE_ROOT_CA);
+    if (deviceRootCA != null) {
       deviceKey.setCertificate(
-          cryptoResource.generateCertificateAsPEM(
-              new CertificateRequest().setCn(hardwareId).setKeyPair(keyPair)));
+          cryptoResourceV1.generateCertificateAsPEM(
+              new CertificateRequest().setCn(hardwareId)
+                  .setKeyPairResponse(keyPairResponse)));
       deviceKey.setCertificateCaId(
-          registryResource.findByName(Registry.DEVICE_ROOT_CA).asString());
+          registryResourceV1.findByName(Registry.DEVICE_ROOT_CA).asString());
     }
 
     // Create the new device.

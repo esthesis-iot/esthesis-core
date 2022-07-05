@@ -3,21 +3,16 @@ package esthesis.services.tag.impl.resource;
 import esthesis.common.service.rest.Page;
 import esthesis.common.service.rest.Pageable;
 import esthesis.service.tag.dto.Tag;
-import esthesis.service.tag.resource.TagResource;
+import esthesis.service.tag.resource.TagResourceV1;
 import esthesis.services.tag.impl.service.TagService;
-import io.smallrye.common.annotation.Blocking;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
-import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import org.bson.types.ObjectId;
 
-@RequestScoped
-@Path("/api/v1/tag")
-public class TagResourceImpl implements TagResource {
+public class TagResourceV1Impl implements TagResourceV1 {
 
   @Inject
   TagService tagService;
@@ -38,7 +33,6 @@ public class TagResourceImpl implements TagResource {
   }
 
   @Override
-  @Blocking
   public Response delete(@PathParam("id") ObjectId id) {
     tagService.deleteById(id);
 

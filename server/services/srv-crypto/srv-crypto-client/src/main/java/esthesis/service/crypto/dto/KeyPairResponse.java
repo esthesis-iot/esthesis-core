@@ -11,8 +11,8 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode
 @RegisterForReflection
 @Accessors(chain = true)
-public class CertificateRequest {
+public class KeyPairResponse {
 
-  private KeyPairResponse keyPairResponse;
-  private String cn;
+  public byte[] publicKey;
+  public byte[] privateKey;
 }
