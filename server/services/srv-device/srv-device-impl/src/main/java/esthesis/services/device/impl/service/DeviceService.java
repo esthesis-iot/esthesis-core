@@ -194,13 +194,14 @@ public class DeviceService extends BaseService<Device> {
         .setHardwareId(hardwareId)
         .setState(state)
         .setDeviceKey(deviceKey);
-    deviceRepository.persist(device);
 
     // Set device-pushed tags.
     if (!tags.isEmpty()) {
       checkTags(tags);
       device.setTags(tags);
     }
+
+    deviceRepository.persist(device);
   }
 
   /**

@@ -4,12 +4,14 @@
     <form novalidate [formGroup]="form" fxLayout="column">
       <mat-form-field>
           <textarea cdkTextareaAutosize [cdkAutosizeMinRows]=1 [cdkAutosizeMaxRows]=30
-                    matInput placeholder="Device id(s)" formControlName="ids"></textarea>
+                    matInput placeholder="Hardware IDs" formControlName="ids"></textarea>
+        <mat-hint>You can preregister multiple devices, adding each hardware ID on a separate line
+        </mat-hint>
       </mat-form-field>
 
       <mat-form-field>
         <mat-select placeholder="Tags" multiple formControlName="tags">
-          <mat-option *ngFor="let tag of availableTags" [value]="tag.id">{{tag.name}}</mat-option>
+          <mat-option *ngFor="let tag of availableTags" [value]="tag.name">{{tag.name}}</mat-option>
         </mat-select>
       </mat-form-field>
     </form>
