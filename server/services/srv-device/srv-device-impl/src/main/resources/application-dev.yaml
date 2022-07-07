@@ -4,10 +4,16 @@ quarkus:
     cors: false
   log:
     level: WARN
+    category:
+      "org.jboss.resteasy.reactive.client.logging":
+        level: DEBUG
   mongodb:
     connection-string: mongodb://esthesis:esthesis@localhost:27017/esthesis
 
   rest-client:
+    logging:
+      scope: request-response
+      body-limit: 4096
     RegistryResource:
       url: http://localhost:59030
       scope: Singleton
@@ -17,3 +23,8 @@ quarkus:
     TagResource:
       url: http://localhost:59020
       scope: Singleton
+
+kafka:
+  bootstrap:
+    servers:
+      - localhost:9092

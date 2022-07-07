@@ -1,11 +1,11 @@
 package esthesis.services.device.impl.service;
 
 
+import esthesis.common.AppConstants.Device.State;
+import esthesis.common.AppConstants.Registry;
 import esthesis.common.dto.DeviceMessage;
+import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.service.BaseService;
-import esthesis.common.util.AppConstants.Device.State;
-import esthesis.common.util.AppConstants.Registry;
-import esthesis.common.util.exception.QAlreadyExistsException;
 import esthesis.service.crypto.dto.CertificateRequest;
 import esthesis.service.crypto.dto.KeyPairResponse;
 import esthesis.service.crypto.resource.CryptoResourceV1;
@@ -252,7 +252,7 @@ public class DeviceService extends BaseService<Device> {
   }
 
   /**
-   * Finds the cryptographic keyts associated with a device.
+   * Finds the cryptographic keys associated with a device.
    *
    * @param deviceId The device Id to find the keys of.
    * @return The cryptographic keys of the device.
@@ -501,5 +501,18 @@ public class DeviceService extends BaseService<Device> {
 //
 //    return devicePageDTO;
     return null;
+  }
+
+  /**
+   * Removes a tag from all devices having it assigned to them.
+   *
+   * @param tagName the name of the tag to be removed.
+   */
+  public void removeTag(String tagName) {
+    deviceRepository.find("tags", tagName).stream()
+        .forEach(device -> {
+          device.getTags().removeIf(s -> s.equals(tagName));
+          deviceRepository.update(device);
+        });
   }
 }

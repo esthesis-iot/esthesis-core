@@ -7,8 +7,10 @@ quarkus:
     database: esthesis
   devservices:
     enabled: false
+
 mp:
   jwt:
     verify:
       publickey:
         location: "http://192.168.21.2/realms/esthesis/protocol/openid-connect/certs"
+

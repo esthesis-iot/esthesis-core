@@ -1,12 +1,25 @@
 package esthesis.services.tag.impl.service;
 
 import esthesis.common.service.BaseService;
-import esthesis.common.util.validation.CVException;
+import esthesis.common.validation.CVException;
 import esthesis.service.tag.dto.Tag;
+import esthesis.service.tag.messaging.TagServiceMessaging;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import org.bson.types.ObjectId;
+import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 @ApplicationScoped
 public class TagService extends BaseService<Tag> {
+
+  @Inject
+  JsonWebToken jwt;
+
+  @Inject
+  @Channel(TagServiceMessaging.CHANNEL_DELETE)
+  Emitter<Tag> tagDeletedEmitter;
 
   @Override
   public Tag save(Tag dto) {
@@ -20,5 +33,13 @@ public class TagService extends BaseService<Tag> {
     }
 
     return super.save(dto);
+  }
+
+  @Override
+  public void deleteById(ObjectId id) {
+    System.out.println(jwt);
+    Tag tag = findById(id);
+    super.deleteById(id);
+    tagDeletedEmitter.send(tag);
   }
 }

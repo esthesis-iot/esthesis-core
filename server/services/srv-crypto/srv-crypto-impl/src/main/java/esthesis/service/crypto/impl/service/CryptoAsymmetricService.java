@@ -1,6 +1,6 @@
 package esthesis.service.crypto.impl.service;
 
-import esthesis.common.util.exception.QDoesNotExistException;
+import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.crypto.impl.dto.CreateKeyPair;
 import java.io.BufferedInputStream;
 import java.io.IOException;

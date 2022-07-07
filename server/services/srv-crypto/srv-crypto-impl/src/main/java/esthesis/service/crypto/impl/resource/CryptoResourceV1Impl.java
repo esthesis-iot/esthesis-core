@@ -1,6 +1,6 @@
 package esthesis.service.crypto.impl.resource;
 
-import esthesis.common.util.AppConstants.Registry;
+import esthesis.common.AppConstants.Registry;
 import esthesis.service.crypto.dto.Ca;
 import esthesis.service.crypto.dto.CertificateRequest;
 import esthesis.service.crypto.dto.KeyPairResponse;
@@ -11,6 +11,7 @@ import esthesis.service.crypto.impl.service.CryptoAsymmetricService;
 import esthesis.service.crypto.impl.service.CryptoCAService;
 import esthesis.service.crypto.resource.CryptoResourceV1;
 import esthesis.service.registry.resource.RegistryResourceV1;
+import io.quarkus.security.Authenticated;
 import java.io.IOException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -26,9 +27,14 @@ import java.util.Locale;
 import javax.inject.Inject;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.operator.OperatorCreationException;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+@Authenticated
 public class CryptoResourceV1Impl implements CryptoResourceV1 {
+
+  @Inject
+  JsonWebToken jwt;
 
   @Inject
   @RestClient
@@ -46,6 +52,7 @@ public class CryptoResourceV1Impl implements CryptoResourceV1 {
   @Override
   public KeyPairResponse generateKeyPair()
   throws NoSuchAlgorithmException, NoSuchProviderException {
+    System.out.println("!@@!!!IN");
     CreateKeyPair createKeyPairDTO = new CreateKeyPair();
     createKeyPairDTO.setKeySize(
         registryResourceV1.findByName(Registry.SECURITY_ASYMMETRIC_KEY_SIZE)

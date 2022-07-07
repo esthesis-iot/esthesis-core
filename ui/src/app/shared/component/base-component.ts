@@ -32,11 +32,4 @@ export class BaseComponent {
     return array === undefined || array.length == 0
   }
 
-  /**
-   * A convenience method to check if the passed-in id designates a new record to be created.
-   * @param id
-   */
-  isNewRecord(id: string): boolean {
-    return id === AppConstants.NEW_RECORD_ID;
-  }
 }

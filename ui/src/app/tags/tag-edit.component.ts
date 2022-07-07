@@ -44,7 +44,7 @@ export class TagEditComponent extends BaseComponent implements OnInit {
       }, [Validators.maxLength(1024)]],
     });
     // Fill-in the form with data if editing an existing item.
-    if (!this.isNewRecord(this.id)) {
+    if (this.id !== this.appConstants.NEW_RECORD_ID) {
       this.tagService.findById(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
       });
@@ -58,7 +58,7 @@ export class TagEditComponent extends BaseComponent implements OnInit {
   save() {
     this.tagService.save(this.qForms.cleanupData(this.form.getRawValue()) as TagDto).subscribe(
       onSuccess => {
-        if (this.isNewRecord(this.id)) {
+        if (this.id === this.appConstants.NEW_RECORD_ID) {
           this.utilityService.popupSuccess('Tag was successfully created.');
         } else {
           this.utilityService.popupSuccess('Tag was successfully edited.');

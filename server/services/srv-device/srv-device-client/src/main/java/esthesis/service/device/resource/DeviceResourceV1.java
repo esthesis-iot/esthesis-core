@@ -1,10 +1,11 @@
 package esthesis.service.device.resource;
 
-import esthesis.common.service.rest.Page;
-import esthesis.common.service.rest.Pageable;
+import esthesis.common.rest.Page;
+import esthesis.common.rest.Pageable;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DevicePage;
 import esthesis.service.device.dto.DeviceRegistration;
+import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -20,8 +21,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bson.types.ObjectId;
+import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
+import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 @Path("/api/v1/device")
+@RegisterRestClient(configKey = "DeviceResource")
+@RegisterProvider(AccessTokenRequestReactiveFilter.class)
 public interface DeviceResourceV1 {
 
   @POST

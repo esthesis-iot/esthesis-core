@@ -1,7 +1,7 @@
 package esthesis.services.tag.impl.resource;
 
-import esthesis.common.service.rest.Page;
-import esthesis.common.service.rest.Pageable;
+import esthesis.common.rest.Page;
+import esthesis.common.rest.Pageable;
 import esthesis.service.tag.dto.Tag;
 import esthesis.service.tag.resource.TagResourceV1;
 import esthesis.services.tag.impl.service.TagService;

@@ -14,34 +14,22 @@
   <packaging>pom</packaging>
 
   <dependencies>
+    <!-- QUARKUS -->
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-config-yaml</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-reactive</artifactId>
+      <artifactId>quarkus-liquibase-mongodb</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-container-image-docker</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>rest-assured</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcpkix-jdk15on</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client-reactive-jackson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -52,13 +40,19 @@
       <artifactId>quarkus-smallrye-jwt-build</artifactId>
     </dependency>
     <dependency>
-      <groupId>esthesis</groupId>
-      <artifactId>service</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-oidc-token-propagation-reactive</artifactId>
+    </dependency>
+
+    <!-- THIRD-PARTY -->
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk15on</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-liquibase-mongodb</artifactId>
+      <groupId>esthesis</groupId>
+      <artifactId>common</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

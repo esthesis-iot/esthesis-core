@@ -23,4 +23,6 @@ public class DeviceRepository implements PanacheMongoRepository<Device> {
 //  public List<Device> findAllByCreatedOnAfter(Instant date) {
 //
 //  }
+
+
 }

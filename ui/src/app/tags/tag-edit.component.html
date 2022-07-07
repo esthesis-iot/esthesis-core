@@ -18,6 +18,8 @@
   <mat-card-actions>
     <button mat-button routerLink="/tags">CANCEL</button>
     <button mat-button color="primary" (click)="save()">SAVE</button>
-    <button mat-button color="warn" (click)="delete()" *ngIf="id">DELETE</button>
+    <button mat-button color="warn" (click)="delete()" *ngIf="id !== appConstants.NEW_RECORD_ID">
+      DELETE
+    </button>
   </mat-card-actions>
 </mat-card>

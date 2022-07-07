@@ -11,9 +11,7 @@
 
   <properties>
     <!-- QUARKUS -->
-    <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>2.10.0.Final</quarkus.platform.version>
-    <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
+    <quarkus.platform.version>2.10.1.Final</quarkus.platform.version>
 
     <!-- ESTHESIS -->
     <esthesis.version>3.0.0-SNAPSHOT</esthesis.version>
@@ -36,8 +34,8 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>${quarkus.platform.group-id}</groupId>
-        <artifactId>${quarkus.platform.artifact-id}</artifactId>
+        <groupId>io.quarkus.platform</groupId>
+        <artifactId>quarkus-bom</artifactId>
         <version>${quarkus.platform.version}</version>
         <type>pom</type>
         <scope>import</scope>
@@ -46,10 +44,10 @@
   </dependencyManagement>
 
   <dependencies>
+    <!-- QUARKUS -->
     <dependency>
-      <artifactId>lombok</artifactId>
-      <groupId>org.projectlombok</groupId>
-      <version>${org.projectlombok.version}</version>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-config-yaml</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -60,12 +58,24 @@
       <artifactId>quarkus-junit5</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- THIRD-PARTY -->
+    <dependency>
+      <artifactId>lombok</artifactId>
+      <groupId>org.projectlombok</groupId>
+      <version>${org.projectlombok.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>${quarkus.platform.group-id}</groupId>
+        <groupId>io.quarkus.platform</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
         <version>${quarkus.platform.version}</version>
         <extensions>true</extensions>

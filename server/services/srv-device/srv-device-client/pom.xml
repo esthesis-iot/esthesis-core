@@ -4,10 +4,12 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-device</artifactId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>srv-device-client</artifactId>
+
 </project>

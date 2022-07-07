@@ -12,4 +12,8 @@
   </parent>
 
   <artifactId>srv-registry-client</artifactId>
+
+  <dependencies>
+    <!-- QUARKUS -->
+  </dependencies>
 </project>

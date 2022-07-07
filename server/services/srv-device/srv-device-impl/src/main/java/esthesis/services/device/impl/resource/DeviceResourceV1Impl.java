@@ -1,9 +1,8 @@
 package esthesis.services.device.impl.resource;
 
 import com.github.slugify.Slugify;
-import esthesis.common.service.rest.Page;
-import esthesis.common.service.rest.Pageable;
-import esthesis.common.util.exception.QMismatchException;
+import esthesis.common.rest.Page;
+import esthesis.common.rest.Pageable;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DeviceKey;
 import esthesis.service.device.dto.DevicePage;
@@ -139,7 +138,8 @@ public class DeviceResourceV1Impl implements DeviceResourceV1 {
     List<DevicePage> results = new ArrayList<>();
     for (String field : fields.split(",")) {
       if (field.split("\\.").length < 3) {
-        throw new QMismatchException("Unsupported field name format.");
+        throw new esthesis.common.exception.QMismatchException(
+            "Unsupported field name format.");
       }
       results.add(deviceService.getDeviceDataField(deviceId, field));
     }
