@@ -23,12 +23,9 @@ export class TagEditComponent extends BaseComponent implements OnInit {
   id!: string;
 
   constructor(private fb: FormBuilder, private tagService: TagService,
-              private route: ActivatedRoute,
-              private qForms: QFormsService, private router: Router,
-              private utilityService: UtilityService,
-              private dialog: MatDialog,
-              // private qFormValidation: QFormValidationService) {
-              private qFormValidation: QFormValidationEEService) {
+    private route: ActivatedRoute, private qForms: QFormsService, private router: Router,
+    private utilityService: UtilityService, private dialog: MatDialog,
+    private qFormValidation: QFormValidationEEService) {
     super();
   }
 
@@ -66,7 +63,6 @@ export class TagEditComponent extends BaseComponent implements OnInit {
         this.router.navigate(['tags']);
       }, onError => {
         if (onError.status == 400) {
-          console.log("ERROR!");
           let validationErrors = onError.error;
           if (validationErrors) {
             // @ts-ignore

@@ -32,45 +32,47 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {DeviceProfileComponent} from './device/device-profile/device-profile.component';
 import {DeviceTerminalComponent} from './device/device-terminal/device-terminal.component';
 import {NgTerminalModule} from 'ng-terminal';
+import {A11yModule} from "@angular/cdk/a11y";
 
 @NgModule({
-    declarations: [
-        DeviceComponent,
-        DevicesComponent,
-        DevicePreregisterComponent,
-        DevicePreregisterCamComponent,
-        DeviceProfileComponent,
-        DeviceTerminalComponent,
-    ],
-    imports: [
-        CommonModule,
-        DevicesRoutingModule,
-        FlexLayoutModule,
-        MatButtonModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatMenuModule,
-        MatPaginatorModule,
-        MatSelectModule,
-        MatTableModule,
-        QFormsModule,
-        ReactiveFormsModule,
-        MatSortModule,
-        MatIconModule,
-        MatTabsModule,
-        MatChipsModule,
-        LeafletModule,
-        MatAutocompleteModule,
-        MomentModule,
-        ZXingScannerModule,
-        MatDialogModule,
-        MatSlideToggleModule,
-        MatListModule,
-        MatProgressSpinnerModule,
-        MatTooltipModule,
-        NgTerminalModule
-    ]
+  declarations: [
+    DeviceComponent,
+    DevicesComponent,
+    DevicePreregisterComponent,
+    DevicePreregisterCamComponent,
+    DeviceProfileComponent,
+    DeviceTerminalComponent,
+  ],
+  imports: [
+    CommonModule,
+    DevicesRoutingModule,
+    FlexLayoutModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatMenuModule,
+    MatPaginatorModule,
+    MatSelectModule,
+    MatTableModule,
+    QFormsModule,
+    ReactiveFormsModule,
+    MatSortModule,
+    MatIconModule,
+    MatTabsModule,
+    MatChipsModule,
+    LeafletModule,
+    MatAutocompleteModule,
+    MomentModule,
+    ZXingScannerModule,
+    MatDialogModule,
+    MatSlideToggleModule,
+    MatListModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    NgTerminalModule,
+    A11yModule
+  ]
 })
 export class DevicesModule {
 }

@@ -11,6 +11,7 @@ import {BaseComponent} from '../shared/component/base-component';
 import {UtilityService} from '../shared/service/utility.service';
 import {QFormsService} from '@qlack/forms';
 import {DeviceRegisterDto} from '../dto/device-register-dto';
+import {QFormValidationEEService} from "../shared/service/form-validation.service";
 
 @Component({
   selector: 'app-device-preregister',
@@ -22,9 +23,9 @@ export class DevicePreregisterComponent extends BaseComponent implements OnInit 
   availableTags: TagDto[] | undefined;
 
   constructor(private fb: FormBuilder, private qForms: QFormsService,
-              private devicesService: DevicesService, private router: Router,
-              private utilityService: UtilityService, private tagService: TagService,
-              private dialog: MatDialog) {
+    private devicesService: DevicesService, private router: Router,
+    private utilityService: UtilityService, private tagService: TagService,
+    private dialog: MatDialog, private qFormValidation: QFormValidationEEService) {
     super();
   }
 
@@ -41,7 +42,7 @@ export class DevicePreregisterComponent extends BaseComponent implements OnInit 
         this.availableTags = next.content;
       },
       error: (err) => {
-        this.utilityService.popupError("Error while getting available tags, please try again later.");
+        this.utilityService.popupError("There was an error while getting available tags, please try again later.");
       }
     });
   }
@@ -50,11 +51,18 @@ export class DevicePreregisterComponent extends BaseComponent implements OnInit 
     this.devicesService.preregister(
       this.qForms.cleanupData(this.form.getRawValue()) as DeviceRegisterDto).subscribe({
       next: (next) => {
-        this.utilityService.popupSuccess("Devices are preregistering... Please refresh devices list.");
+        this.utilityService.popupSuccess("Devices successfully preregistered.");
         this.router.navigate(["devices"]);
       },
       error: (err) => {
-        this.utilityService.popupError("There was an error preregistering devices, please try again later.");
+        if (err.status == 400) {
+          let validationErrors = err.error;
+          if (validationErrors) {
+            this.qFormValidation.validateForm(this.form, validationErrors.violations);
+          }
+        } else {
+          this.utilityService.popupError("There was an error while preregistering devices, please try again later.");
+        }
       }
     });
   }

@@ -1,8 +1,10 @@
 package esthesis.services.device.impl.resource;
 
 import com.github.slugify.Slugify;
+import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.rest.Page;
 import esthesis.common.rest.Pageable;
+import esthesis.common.validation.CVException;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DeviceKey;
 import esthesis.service.device.dto.DevicePage;
@@ -40,7 +42,13 @@ public class DeviceResourceV1Impl implements DeviceResourceV1 {
   public Response preregister(@Valid DeviceRegistration deviceRegistration)
   throws NoSuchAlgorithmException, IOException, OperatorCreationException,
          InvalidKeySpecException, NoSuchProviderException {
-    deviceService.preregister(deviceRegistration);
+    try {
+      deviceService.preregister(deviceRegistration);
+    } catch (QAlreadyExistsException e) {
+      new CVException<DeviceRegistration>()
+          .addViolation("ids", "One or more IDs are already registered.")
+          .throwCVE();
+    }
 
     return Response.ok().build();
   }
