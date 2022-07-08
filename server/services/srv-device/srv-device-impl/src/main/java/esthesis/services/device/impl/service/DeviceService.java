@@ -509,10 +509,8 @@ public class DeviceService extends BaseService<Device> {
    * @param tagName the name of the tag to be removed.
    */
   public void removeTag(String tagName) {
-    deviceRepository.find("tags", tagName).stream()
-        .forEach(device -> {
-          device.getTags().removeIf(s -> s.equals(tagName));
-          deviceRepository.update(device);
-        });
+//
+
+    System.out.println("INSIDE JWT: " + jwt);
   }
 }
