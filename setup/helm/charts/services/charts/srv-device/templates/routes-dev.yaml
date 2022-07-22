@@ -1,0 +1,73 @@
+{{ if .Values.global.devEnv.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-routes-dev-device
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.Version }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: {{ .Release.Name }}-routes-dev-device
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: post-install-job-dev-routes-device
+          image: "wbitt/network-multitool"
+          command:
+            - /bin/sh
+            - -c
+            - |
+              while ! nc -z {{ .Release.Name }}-apisix-admin 9180; do sleep 1; done && \
+              curl -s http://{{ .Release.Name }}-apisix-admin:9180/apisix/admin/routes/dev-srv-device-route -H "X-API-KEY: {{ .Values.global.conf.apisix.adminKey }}" -X PUT -i -d '
+              {
+              "name": "dev-srv-device-route",
+              "uris": ["/dev/api/v1/device", "/dev/api/v1/device/*"],
+              "upstream": {
+                "type": "roundrobin",
+                "nodes": {
+                    "{{ .Values.global.devEnv.ip }}:59010": 1
+                }
+              },
+              "plugins": {
+                "opentelemetry": {
+                  "sampler": {
+                    "name": "always_on"
+                  }
+                },
+                "proxy-rewrite": {
+                    "regex_uri": [
+                      "/dev/(.*)",
+                      "/$1"
+                    ]
+                },
+                "cors": {
+                    "origin": "*"
+                },
+                "openid-connect": {
+                  "client_id": "esthesis",
+                  "client_secret": "",
+                  "discovery": "{{ .Values.global.conf.keycloak.clusterAddress }}/realms/{{ .Values.global.conf.keycloak.realm }}/.well-known/openid-configuration",
+                  "scope": "openid profile",
+                  "use_jwks": true,
+                  "bearer_only": true,
+                  "realm": "esthesis",
+                  "redirect_uri": "/dev/api/v1/device/callback",
+                  "set_access_token_header": false,
+                  "set_id_token_header": false,
+                  "set_userinfo_header": false
+                }
+              }
+              }'
+{{ end }}

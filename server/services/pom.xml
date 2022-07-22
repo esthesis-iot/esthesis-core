@@ -43,6 +43,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-oidc-token-propagation-reactive</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-opentelemetry-exporter-otlp</artifactId>
+    </dependency>
 
     <!-- THIRD-PARTY -->
     <dependency>
@@ -57,7 +61,6 @@
   </dependencies>
 
   <modules>
-    <module>srv-auth</module>
     <module>srv-device</module>
     <module>srv-tag</module>
     <module>srv-registry</module>

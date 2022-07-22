@@ -6,7 +6,7 @@
 
 ```
 helm repo add apisix https://charts.apiseven.com
-helm upgrade --install apisix apisix/apisix --version 0.10 \
+helm upgrade --install apisix apisix/apisix --version 0.10.0 \
   --set ingress-controller.enabled=true \
   --set etcd.replicaCount=1 \
   --set admin.cors=false \
@@ -15,7 +15,10 @@ helm upgrade --install apisix apisix/apisix --version 0.10 \
   --set admin.credentials.admin=esthesis-admin-key \
   --set ingress-controller.config.apisix.serviceName=apisix-admin \
   --set ingress-controller.config.apisix.serviceNamespace=esthesis-dev \
-  --set ingress-controller.config.apisix.adminKey=esthesis-admin-key
+  --set ingress-controller.config.apisix.adminKey=esthesis-admin-key \
+  --set pluginAttrs.opentelemetry.resource.service.name=APISIX \
+  --set pluginAttrs.opentelemetry.collector.address=docker-2.home.nassosmichas.com:4318 \
+  --set plugins=\{real-ip,client-control,proxy-control,request-id,zipkin,opentelemetry,ext-plugin-pre-req,fault-injection,mocking,serverless-pre-function,cors,ip-restriction,ua-restriction,referer-restriction,csrfuri-blocker,request-validation,openid-connect,authz-casbin,authz-casdoor,wolf-rbac,ldap-auth,hmac-auth,basic-auth,jwt-auth,key-auth,consumer-restriction,forward-auth,opa,authz-keycloak,proxy-mirror,proxy-cache,proxy-rewrite,api-breaker,limit-conn,limit-count,limit-req,gzip,server-info,traffic-split,redirect,response-rewrite,kafka-proxy,grpc-transcode,grpc-web,public-api,prometheus,datadog,echo,loggly,http-logger,splunk-hec-logging,skywalking-logger,google-cloud-logging,sls-logger,tcp-logger,kafka-logger,rocketmq-logger,syslog,udp-logger,file-logger,clickhouse-logger,aws-lambda,azure-functions,openwhisk,serverless-post-function,ext-plugin-post-req,ext-plugin-post-resp\}
 ```
 
 ### Kafka
@@ -97,6 +100,8 @@ helm upgrade --install apisix-dashboard apisix/apisix-dashboard --version 0.6.0 
   --set etcd.enabled=false \
   --set etcd.host="{http://apisix-etcd:2379}"
 ```
+
+### Jaeger
 
 ## esthesis
 

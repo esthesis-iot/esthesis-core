@@ -1,4 +1,0 @@
-apiVersion: v2
-name: srv-auth
-description: esthesis IoT - authentication service
-version: 3.0.0-SNAPSHOT

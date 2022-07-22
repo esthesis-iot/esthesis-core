@@ -3,28 +3,35 @@ quarkus:
     host: 0.0.0.0
     cors: false
   log:
-    level: WARN
     category:
-      "org.jboss.resteasy.reactive.client.logging":
+      esthesis:
         level: DEBUG
   mongodb:
-    connection-string: mongodb://esthesis:esthesis@localhost:27017/esthesis
+    connection-string: mongodb://esthesis-dev-mongo-1:27017,esthesis-dev-mongo-2:27017
+  opentelemetry:
+    tracer:
+      exporter:
+        otlp:
+          endpoint: http://esthesis-dev-jaeger-collector:4317
 
   rest-client:
-    logging:
-      scope: request-response
-      body-limit: 4096
     RegistryResource:
-      url: http://localhost:59030
+      url: http://esthesis-dev-apisix-gateway/dev
       scope: Singleton
     CryptoResource:
-      url: http://localhost:59040
+      url: http://esthesis-dev-apisix-gateway/dev
       scope: Singleton
     TagResource:
-      url: http://localhost:59020
+      url: http://esthesis-dev-apisix-gateway/dev
       scope: Singleton
+
+mp:
+  jwt:
+    verify:
+      publickey:
+        location: http://esthesis-dev-keycloak/realms/esthesis/protocol/openid-connect/certs
 
 kafka:
   bootstrap:
     servers:
-      - localhost:9092
+      - esthesis-dev-kafka:9094

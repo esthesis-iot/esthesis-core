@@ -5,7 +5,8 @@ import {AuthModule, LogLevel} from 'angular-auth-oidc-client';
 @NgModule({
   imports: [AuthModule.forRoot({
     config: {
-      authority: 'http://192.168.21.2/realms/esthesis',
+      //TODO make this configurable
+      authority: 'http://esthesis-dev-keycloak/realms/esthesis',
       redirectUrl: window.location.origin,
       postLogoutRedirectUri: window.location.origin,
       clientId: 'esthesis',

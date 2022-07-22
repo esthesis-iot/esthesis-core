@@ -8,77 +8,85 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-liquibase-mongodb:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mongodb-client:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mutiny:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-context-propagation:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-liquibase-mongodb:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mongodb-client:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mutiny:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-context-propagation:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye:smallrye-context-propagation:1.2.2" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye:smallrye-context-propagation-api:1.2.2" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye:smallrye-context-propagation-storage:1.2.2" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.reactive:mutiny-smallrye-context-propagation:1.6.0" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-vertx:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-netty:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-codec:4.1.74.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-codec-haproxy:4.1.74.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye:smallrye-fault-tolerance-vertx:5.4.1" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mutiny-reactive-streams-operators:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-vertx:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-netty:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec:4.1.78.Final" level="project" />
+    <orderEntry type="library" name="Maven: com.aayushatharva.brotli4j:brotli4j:1.7.1" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec-haproxy:4.1.78.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-vertx-latebound-mdc-provider:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye:smallrye-fault-tolerance-vertx:5.5.0" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mutiny-reactive-streams-operators:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-api:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-core:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.reactive:mutiny-reactive-streams-operators:1.6.0" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-sync:4.3.4" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-reactivestreams:4.3.4" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-sync:4.6.1" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-reactivestreams:4.6.1" level="project" />
     <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.3" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: io.projectreactor:reactor-core:3.2.22.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongodb-crypt:1.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongodb-crypt:1.4.1" level="project" />
     <orderEntry type="library" name="Maven: net.java.dev.jna:jna:5.8.0" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-jaxb:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-jaxp:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-jaxb:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-jaxp:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:jaxb-runtime:2.3.3-b02" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:txw2:2.3.3-b02" level="project" />
     <orderEntry type="library" name="Maven: com.sun.istack:istack-commons-runtime:3.0.10" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.sun.activation:jakarta.activation:1.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.3_spec:2.0.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.liquibase:liquibase-core:4.11.0" level="project" />
+    <orderEntry type="library" name="Maven: org.liquibase:liquibase-core:4.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.opencsv:opencsv:5.6" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-text:1.9" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.4" level="project" />
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.30" level="project" />
-    <orderEntry type="library" name="Maven: org.liquibase.ext:liquibase-mongodb:4.11.0" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-core:4.3.4" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:bson:4.3.4" level="project" />
+    <orderEntry type="library" name="Maven: org.liquibase.ext:liquibase-mongodb:4.13.0" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-core:4.6.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.mongodb:bson-record-codec:4.6.1" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:bson:4.6.1" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.3" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-container-image-docker:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-container-image:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-rest-client-reactive-jackson:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive-jackson:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive-common:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-container-image-docker:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-container-image:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-rest-client-reactive-jackson:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive-jackson:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive-common:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive-common-types:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:2.0.1.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.logging:commons-logging-jboss-logging:1.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.logging:jboss-logging:3.5.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-reactive-jackson-common:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-reactive-common:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-rest-client-reactive:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-jaxrs-client-reactive:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive-client:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.vertx:vertx-web-client:4.2.7" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-stork:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-rest-client-config:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-reactive-jackson-common:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-reactive-common:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-rest-client-reactive:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-jaxrs-client-reactive:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive-client:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.vertx:vertx-web-client:4.3.2.1" level="project" />
+    <orderEntry type="library" name="Maven: io.vertx:vertx-uri-template:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-stork:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-rest-client-config:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.stork:stork-api:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.stork:stork-core:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.microprofile.rest.client:microprofile-rest-client-api:2.0" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-reactive-messaging-kafka:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-kafka-client:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-caffeine:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-reactive-messaging-kafka:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-kafka-client:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-caffeine:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: com.github.ben-manes.caffeine:caffeine:2.9.3" level="project" />
-    <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.13.1" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-messaging-kafka:3.17.0" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-messaging-kafka-api:3.17.0" level="project" />
-    <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-api:1.13.0" level="project" />
-    <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-context:1.13.0" level="project" />
-    <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-semconv:1.13.0-alpha" level="project" />
+    <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.14.0" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-messaging-kafka:3.18.0" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-messaging-kafka-api:3.18.0" level="project" />
+    <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-api:1.15.0" level="project" />
+    <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-context:1.15.0" level="project" />
+    <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-semconv:1.15.0-alpha" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-converter-api:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.reactive:mutiny:1.6.0" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-jackson:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-jackson:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.13.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.module:jackson-module-parameter-names:2.13.3" level="project" />
@@ -87,158 +95,190 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.lz4:lz4-java:1.8.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.xerial.snappy:snappy-java:1.1.8.4" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.36" level="project" />
-    <orderEntry type="library" name="Maven: io.vertx:vertx-kafka-client:4.2.7" level="project" />
-    <orderEntry type="library" name="Maven: io.vertx:vertx-core:4.2.7" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-common:4.1.74.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-buffer:4.1.74.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-transport:4.1.74.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-handler:4.1.74.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-tcnative-classes:2.0.48.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-handler-proxy:4.1.74.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-codec-socks:4.1.74.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-codec-http:4.1.74.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-codec-http2:4.1.74.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-resolver:4.1.74.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-resolver-dns:4.1.74.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-codec-dns:4.1.74.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-reactive-messaging:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-reactive-messaging-kotlin:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.vertx:vertx-web:4.2.7" level="project" />
-    <orderEntry type="library" name="Maven: io.vertx:vertx-web-common:4.2.7" level="project" />
-    <orderEntry type="library" name="Maven: io.vertx:vertx-auth-common:4.2.7" level="project" />
-    <orderEntry type="library" name="Maven: io.vertx:vertx-bridge-common:4.2.7" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-annotation:1.12.0" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-messaging-health:3.17.0" level="project" />
+    <orderEntry type="library" name="Maven: io.vertx:vertx-kafka-client:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: io.vertx:vertx-core:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-common:4.1.78.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-buffer:4.1.78.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-transport:4.1.78.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-handler:4.1.78.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-transport-native-unix-common:4.1.78.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-handler-proxy:4.1.78.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec-socks:4.1.78.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec-http:4.1.78.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec-http2:4.1.78.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-resolver:4.1.78.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-resolver-dns:4.1.78.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec-dns:4.1.78.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-reactive-messaging:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-reactive-messaging-kotlin:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.vertx:vertx-web:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: io.vertx:vertx-web-common:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: io.vertx:vertx-auth-common:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: io.vertx:vertx-bridge-common:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-annotation:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-messaging-health:3.18.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.microprofile.health:microprofile-health-api:3.1" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-messaging-provider:3.17.0" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-messaging-api:3.17.0" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-vertx-context:1.12.0" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-mutiny-vertx-core:2.22.0" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-mutiny-vertx-runtime:2.22.0" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.reactive:vertx-mutiny-generator:2.22.0" level="project" />
-    <orderEntry type="library" name="Maven: io.vertx:vertx-codegen:4.2.7" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-messaging-provider:3.18.0" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-messaging-api:3.18.0" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-vertx-context:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-mutiny-vertx-core:2.24.1" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-mutiny-vertx-runtime:2.24.1" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:vertx-mutiny-generator:2.24.1" level="project" />
+    <orderEntry type="library" name="Maven: io.vertx:vertx-codegen:4.3.2" level="project" />
     <orderEntry type="library" name="Maven: jakarta.annotation:jakarta.annotation-api:1.3.5" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-jwt:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye:smallrye-jwt:3.5.1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-jwt:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye:smallrye-jwt:3.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.2" level="project" />
     <orderEntry type="library" name="Maven: org.bitbucket.b_c:jose4j:0.7.12" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye:smallrye-jwt-common:3.5.1" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-core:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye:smallrye-jwt-common:3.5.2" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-core:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: jakarta.enterprise:jakarta.enterprise.cdi-api:2.0.2" level="project" />
     <orderEntry type="library" name="Maven: jakarta.el:jakarta.el-api:3.0.3" level="project" />
     <orderEntry type="library" name="Maven: jakarta.inject:jakarta.inject-api:1.0" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-ide-launcher:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-development-mode-spi:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-ide-launcher:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-development-mode-spi:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.config:smallrye-config:2.10.1" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.config:smallrye-config-core:2.10.1" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-expression:1.12.0" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-function:1.12.0" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-expression:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-function:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.logmanager:jboss-logmanager-embedded:1.0.10" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.logging:jboss-logging-annotations:2.2.1.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.threads:jboss-threads:3.4.2.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.graalvm.sdk:graal-sdk:22.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.wildfly.common:wildfly-common:1.5.4.Final-format-001" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-bootstrap-runner:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-bootstrap-runner:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: io.github.crac:org-crac:0.1.1" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-fs-util:0.0.9" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-reactive-routes:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-vertx-http:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-vertx-http-dev-console-runtime-spi:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-mutiny-vertx-web:2.22.0" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-mutiny-vertx-web-common:2.22.0" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-mutiny-vertx-auth-common:2.22.0" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-mutiny-vertx-bridge-common:2.22.0" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-reactive-routes:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-vertx-http:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-credentials:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-vertx-http-dev-console-runtime-spi:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-mutiny-vertx-web:2.24.1" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-mutiny-vertx-web-common:2.24.1" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-mutiny-vertx-auth-common:2.24.1" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-mutiny-vertx-bridge-common:2.24.1" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-mutiny-vertx-uri-template:2.24.1" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus.security:quarkus-security:1.1.4.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-security:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-security-runtime-spi:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-security:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-security-runtime-spi:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: jakarta.interceptor:jakarta.interceptor-api:1.2.5" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-jsonp:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-jsonp:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish:jakarta.json:1.1.6" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-jwt-build:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye:smallrye-jwt-build:3.5.1" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-oidc-token-propagation-reactive:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-smallrye-jwt-build:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye:smallrye-jwt-build:3.5.2" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-oidc-token-propagation-reactive:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-opentelemetry-exporter-otlp:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-opentelemetry:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-sdk:1.15.0" level="project" />
+    <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-sdk-common:1.15.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: io.opentelemetry:opentelemetry-sdk-logs:1.15.0-alpha" level="project" />
+    <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-extension-annotations:1.15.0" level="project" />
+    <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.15.0" level="project" />
+    <orderEntry type="library" name="Maven: io.opentelemetry.instrumentation:opentelemetry-instrumentation-api:1.15.0-alpha" level="project" />
+    <orderEntry type="library" name="Maven: io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-annotation-support:1.15.0-alpha" level="project" />
+    <orderEntry type="library" name="Maven: io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv:1.15.0-alpha" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-grpc-common:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:3.0.2" level="project" />
+    <orderEntry type="library" name="Maven: io.vertx:vertx-grpc:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: io.grpc:grpc-netty:1.47.0" level="project" />
+    <orderEntry type="library" name="Maven: io.grpc:grpc-core:1.47.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.google.code.gson:gson:2.9.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: io.perfmark:perfmark-api:0.25.0" level="project" />
+    <orderEntry type="library" name="Maven: io.grpc:grpc-protobuf:1.47.0" level="project" />
+    <orderEntry type="library" name="Maven: io.grpc:grpc-api:1.47.0" level="project" />
+    <orderEntry type="library" name="Maven: io.grpc:grpc-context:1.47.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.19.3" level="project" />
+    <orderEntry type="library" name="Maven: com.google.api.grpc:proto-google-common-protos:2.9.1" level="project" />
+    <orderEntry type="library" name="Maven: io.grpc:grpc-protobuf-lite:1.47.0" level="project" />
+    <orderEntry type="library" name="Maven: io.grpc:grpc-stub:1.47.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:31.1-jre" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:failureaccess:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.3" level="project" />
+    <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-exporter-otlp:1.15.0" level="project" />
+    <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-sdk-trace:1.15.0" level="project" />
+    <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-sdk-metrics:1.15.0" level="project" />
+    <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-exporter-otlp-common:1.15.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.squareup.okhttp3:okhttp:3.14.9" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.squareup.okio:okio:1.17.2" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcpkix-jdk15on:1.70" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.70" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcutil-jdk15on:1.70" level="project" />
     <orderEntry type="module" module-name="common" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mongodb-panache-common:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-panache-common:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-panacheql:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mongodb-panache-common:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-panache-common:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-panacheql:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.9.2" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-narayana-jta:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-transaction-annotations:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-narayana-jta:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-transaction-annotations:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye:smallrye-context-propagation-jta:1.2.2" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-converter-mutiny:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.narayana.jta:narayana-jta:5.12.6.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss:jboss-transaction-spi:7.6.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.spec.javax.resource:jboss-connector-api_1.7_spec:1.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.narayana.jts:narayana-jts-integration:5.12.6.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-hibernate-validator:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-hibernate-validator:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate.validator:hibernate-validator:6.2.3.Final" level="project" />
     <orderEntry type="library" name="Maven: jakarta.validation:jakarta.validation-api:2.0.2" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml:classmate:1.5.1" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish:jakarta.el:3.0.4" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.config:smallrye-config-validator:2.10.1" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-reactive-jackson:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-reactive:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive-vertx:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mongodb-panache:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-reactive-jackson:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-reactive:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive-vertx:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-mongodb-panache:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.12.0" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-config-yaml:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-config-yaml:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.config:smallrye-config-source-yaml:2.10.1" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.config:smallrye-config-common:2.10.1" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-classloader:1.12.0" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-constraint:1.12.0" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-classloader:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-constraint:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.microprofile.config:microprofile-config-api:2.0.1" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-arc:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus.arc:arc:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus:quarkus-arc:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.quarkus.arc:arc:2.11.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: jakarta.transaction:jakarta.transaction-api:1.3.3" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api:1.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-junit5:2.10.1.Final" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-bootstrap-core:2.10.1.Final" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-bootstrap-app-model:2.10.1.Final" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-bootstrap-maven-resolver:2.10.1.Final" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-embedder:3.8.4" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-settings:3.8.4" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-core:3.8.4" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-artifact:3.8.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-junit5:2.11.0.CR1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-bootstrap-core:2.11.0.CR1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-bootstrap-app-model:2.11.0.CR1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-bootstrap-maven-resolver:2.11.0.CR1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-embedder:3.8.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-settings:3.8.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-core:3.8.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-artifact:3.8.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-component-annotations:2.1.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-plugin-api:3.8.4" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-model:3.8.4" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-model-builder:3.8.4" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-builder-support:3.8.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-plugin-api:3.8.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-model:3.8.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-model-builder:3.8.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-builder-support:3.8.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.resolver:maven-resolver-api:1.6.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.resolver:maven-resolver-util:1.6.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.shared:maven-shared-utils:3.3.4" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: commons-io:commons-io:2.11.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.google.inject:guice:no_aop:4.2.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: com.google.guava:guava:31.1-jre" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: com.google.guava:failureaccess:1.0.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-classworlds:2.6.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-sec-dispatcher:2.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-cipher:2.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: commons-cli:commons-cli:1.4" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.sisu:org.eclipse.sisu.plexus:0.3.5" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-settings-builder:3.8.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-settings-builder:3.8.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-interpolation:1.26" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-resolver-provider:3.8.4" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-repository-metadata:3.8.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-resolver-provider:3.8.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-repository-metadata:3.8.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.resolver:maven-resolver-spi:1.6.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.resolver:maven-resolver-impl:1.6.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-utils:3.3.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.resolver:maven-resolver-connector-basic:1.6.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.resolver:maven-resolver-transport-wagon:1.6.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-http:3.4.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-http-shared:3.4.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.jsoup:jsoup:1.14.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-provider-api:3.4.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-file:3.4.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-bootstrap-gradle-resolver:2.10.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-io:1.12.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-http:3.5.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-http-shared:3.5.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-provider-api:3.5.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-file:3.5.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-bootstrap-gradle-resolver:2.11.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: io.smallrye.common:smallrye-common-io:1.13.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.sisu:org.eclipse.sisu.inject:0.3.5" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-test-common:2.10.1.Final" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-core-deployment:2.10.1.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-test-common:2.11.0.CR1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-core-deployment:2.11.0.CR1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.aesh:readline:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.fusesource.jansi:jansi:1.18" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.aesh:aesh:2.6" level="project" />
@@ -248,12 +288,12 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-commons:9.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-tree:9.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-analysis:9.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-class-change-agent:2.10.1.Final" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-devtools-utilities:2.10.1.Final" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-builder:2.10.1.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-class-change-agent:2.11.0.CR1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-devtools-utilities:2.11.0.CR1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-builder:2.11.0.CR1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-launcher:1.8.2" level="project" />
-    <orderEntry type="library" name="Maven: org.jboss:jandex:2.4.2.Final" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-junit5-properties:2.10.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss:jandex:2.4.3.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.quarkus:quarkus-junit5-properties:2.11.0.CR1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter:5.8.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-api:5.8.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.opentest4j:opentest4j:1.2.0" level="project" />
@@ -282,168 +322,188 @@
     <orderEntry type="module-library" scope="PROVIDED">
       <library name="Quarkus (deployment)">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mutiny-deployment/2.10.1.Final/quarkus-mutiny-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-arc-deployment/2.10.1.Final/quarkus-arc-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-dev-console-spi/2.10.1.Final/quarkus-vertx-http-dev-console-spi-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/arc/arc-processor/2.10.1.Final/arc-processor-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-context-propagation-deployment/2.10.1.Final/quarkus-smallrye-context-propagation-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-panache-deployment/2.10.1.Final/quarkus-mongodb-panache-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-panache-common-deployment/2.10.1.Final/quarkus-mongodb-panache-common-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jsonb-spi/2.10.1.Final/quarkus-jsonb-spi-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jackson-spi/2.10.1.Final/quarkus-jackson-spi-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-panache-common-deployment/2.10.1.Final/quarkus-panache-common-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-client-deployment/2.10.1.Final/quarkus-mongodb-client-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-deployment/2.10.1.Final/quarkus-vertx-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-netty-deployment/2.10.1.Final/quarkus-netty-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mutiny-reactive-streams-operators-deployment/2.10.1.Final/quarkus-mutiny-reactive-streams-operators-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-health-spi/2.10.1.Final/quarkus-smallrye-health-spi-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/testcontainers/mongodb/1.17.2/mongodb-1.17.2.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/testcontainers/testcontainers/1.17.2/testcontainers-1.17.2.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxrs-client-reactive-deployment/2.11.0.CR1/quarkus-jaxrs-client-reactive-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-client-processor/2.11.0.CR1/resteasy-reactive-client-processor-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-common-processor/2.11.0.CR1/resteasy-reactive-common-processor-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-deployment/2.11.0.CR1/quarkus-vertx-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-arc-deployment/2.11.0.CR1/quarkus-arc-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-dev-console-spi/2.11.0.CR1/quarkus-vertx-http-dev-console-spi-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/arc/arc-processor/2.11.0.CR1/arc-processor-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-netty-deployment/2.11.0.CR1/quarkus-netty-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mutiny-deployment/2.11.0.CR1/quarkus-mutiny-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-context-propagation-deployment/2.11.0.CR1/quarkus-smallrye-context-propagation-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-common-deployment/2.11.0.CR1/quarkus-resteasy-reactive-common-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-spi-deployment/2.11.0.CR1/quarkus-resteasy-reactive-spi-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-security-spi/2.11.0.CR1/quarkus-security-spi-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jsonp-deployment/2.11.0.CR1/quarkus-jsonp-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-security-deployment/2.11.0.CR1/quarkus-security-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-deployment/2.11.0.CR1/quarkus-vertx-http-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-deployment-spi/2.11.0.CR1/quarkus-vertx-http-deployment-spi-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kubernetes-spi/2.11.0.CR1/quarkus-kubernetes-spi-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/qute/qute-core/2.11.0.CR1/qute-core-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-hibernate-validator-deployment/2.11.0.CR1/quarkus-hibernate-validator-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxrs-spi-deployment/2.11.0.CR1/quarkus-jaxrs-spi-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-common-spi/2.11.0.CR1/quarkus-resteasy-common-spi-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-server-common-spi/2.11.0.CR1/quarkus-resteasy-server-common-spi-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-hibernate-validator-spi/2.11.0.CR1/quarkus-hibernate-validator-spi-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-grpc-common-deployment/2.11.0.CR1/quarkus-grpc-common-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-panache-deployment/2.11.0.CR1/quarkus-mongodb-panache-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-panache-common-deployment/2.11.0.CR1/quarkus-mongodb-panache-common-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jsonb-spi/2.11.0.CR1/quarkus-jsonb-spi-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jackson-spi/2.11.0.CR1/quarkus-jackson-spi-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-panache-common-deployment/2.11.0.CR1/quarkus-panache-common-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-client-deployment/2.11.0.CR1/quarkus-mongodb-client-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mutiny-reactive-streams-operators-deployment/2.11.0.CR1/quarkus-mutiny-reactive-streams-operators-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-health-spi/2.11.0.CR1/quarkus-smallrye-health-spi-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/testcontainers/mongodb/1.17.3/mongodb-1.17.3.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/testcontainers/testcontainers/1.17.3/testcontainers-1.17.3.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/apache/commons/commons-compress/1.21/commons-compress-1.21.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/com/github/docker-java/docker-java-api/3.2.13/docker-java-api-3.2.13.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/com/github/docker-java/docker-java-transport-zerodep/3.2.13/docker-java-transport-zerodep-3.2.13.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/com/github/docker-java/docker-java-transport/3.2.13/docker-java-transport-3.2.13.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-devservices-deployment/2.10.1.Final/quarkus-devservices-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-devservices-common/2.10.1.Final/quarkus-devservices-common-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-junit4-mock/2.10.1.Final/quarkus-junit4-mock-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kubernetes-service-binding-spi/2.10.1.Final/quarkus-kubernetes-service-binding-spi-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-narayana-jta-deployment/2.10.1.Final/quarkus-narayana-jta-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-security-deployment/2.10.1.Final/quarkus-security-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-security-spi/2.10.1.Final/quarkus-security-spi-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-config-yaml-deployment/2.10.1.Final/quarkus-config-yaml-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-common-spi/2.10.1.Final/quarkus-resteasy-common-spi-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxrs-spi-deployment/2.10.1.Final/quarkus-jaxrs-spi-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-server-common-spi/2.10.1.Final/quarkus-resteasy-server-common-spi-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-deployment/2.10.1.Final/quarkus-vertx-http-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-deployment-spi/2.10.1.Final/quarkus-vertx-http-deployment-spi-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kubernetes-spi/2.10.1.Final/quarkus-kubernetes-spi-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/qute/qute-core/2.10.1.Final/qute-core-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-hibernate-validator-deployment/2.10.1.Final/quarkus-hibernate-validator-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-hibernate-validator-spi/2.10.1.Final/quarkus-hibernate-validator-spi-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-spi-deployment/2.10.1.Final/quarkus-resteasy-reactive-spi-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jsonp-deployment/2.10.1.Final/quarkus-jsonp-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-rest-client-reactive-jackson-deployment/2.10.1.Final/quarkus-rest-client-reactive-jackson-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-jackson-common-deployment/2.10.1.Final/quarkus-resteasy-reactive-jackson-common-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-common-deployment/2.10.1.Final/quarkus-resteasy-reactive-common-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-common-processor/2.10.1.Final/resteasy-reactive-common-processor-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jackson-deployment/2.10.1.Final/quarkus-jackson-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-rest-client-reactive-deployment/2.10.1.Final/quarkus-rest-client-reactive-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxrs-client-reactive-deployment/2.10.1.Final/quarkus-jaxrs-client-reactive-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-client-processor/2.10.1.Final/resteasy-reactive-client-processor-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-stork-deployment/2.10.1.Final/quarkus-smallrye-stork-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-rest-client-config-deployment/2.10.1.Final/quarkus-rest-client-config-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-jackson-deployment/2.10.1.Final/quarkus-resteasy-reactive-jackson-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-deployment/2.10.1.Final/quarkus-resteasy-reactive-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-processor/2.10.1.Final/resteasy-reactive-processor-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-server-spi-deployment/2.10.1.Final/quarkus-resteasy-reactive-server-spi-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-reactive-messaging-deployment/2.10.1.Final/quarkus-smallrye-reactive-messaging-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/commonmark/commonmark/0.18.2/commonmark-0.18.2.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-devservices-deployment/2.11.0.CR1/quarkus-devservices-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-devservices-common/2.11.0.CR1/quarkus-devservices-common-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-junit4-mock/2.11.0.CR1/quarkus-junit4-mock-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kubernetes-service-binding-spi/2.11.0.CR1/quarkus-kubernetes-service-binding-spi-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-narayana-jta-deployment/2.11.0.CR1/quarkus-narayana-jta-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-config-yaml-deployment/2.11.0.CR1/quarkus-config-yaml-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-liquibase-mongodb-deployment/2.11.0.CR1/quarkus-liquibase-mongodb-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxb-deployment/2.11.0.CR1/quarkus-jaxb-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxp-deployment/2.11.0.CR1/quarkus-jaxp-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-rest-client-config-deployment/2.11.0.CR1/quarkus-rest-client-config-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-jwt-deployment/2.11.0.CR1/quarkus-smallrye-jwt-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-reactive-routes-deployment/2.11.0.CR1/quarkus-reactive-routes-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jackson-deployment/2.11.0.CR1/quarkus-jackson-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-jwt-build-deployment/2.11.0.CR1/quarkus-smallrye-jwt-build-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kafka-client-deployment/2.11.0.CR1/quarkus-kafka-client-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-caffeine-deployment/2.11.0.CR1/quarkus-caffeine-deployment-2.11.0.CR1.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/jetbrains/annotations/17.0.0/annotations-17.0.0.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-jwt-build-deployment/2.10.1.Final/quarkus-smallrye-jwt-build-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-oidc-token-propagation-reactive-deployment/2.10.1.Final/quarkus-oidc-token-propagation-reactive-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-liquibase-mongodb-deployment/2.10.1.Final/quarkus-liquibase-mongodb-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxb-deployment/2.10.1.Final/quarkus-jaxb-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxp-deployment/2.10.1.Final/quarkus-jaxp-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-reactive-routes-deployment/2.10.1.Final/quarkus-reactive-routes-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-reactive-messaging-kafka-deployment/2.10.1.Final/quarkus-smallrye-reactive-messaging-kafka-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kafka-client-deployment/2.10.1.Final/quarkus-kafka-client-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-caffeine-deployment/2.10.1.Final/quarkus-caffeine-deployment-2.10.1.Final.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/strimzi/strimzi-test-container/0.100.0/strimzi-test-container-0.100.0.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-deployment/2.10.1.Final/quarkus-container-image-deployment-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-spi/2.10.1.Final/quarkus-container-image-spi-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-util/2.10.1.Final/quarkus-container-image-util-2.10.1.Final.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-docker-deployment/2.10.1.Final/quarkus-container-image-docker-deployment-2.10.1.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-reactive-messaging-deployment/2.11.0.CR1/quarkus-smallrye-reactive-messaging-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/commonmark/commonmark/0.19.0/commonmark-0.19.0.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-deployment/2.11.0.CR1/quarkus-resteasy-reactive-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-processor/2.11.0.CR1/resteasy-reactive-processor-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-server-spi-deployment/2.11.0.CR1/quarkus-resteasy-reactive-server-spi-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-jackson-deployment/2.11.0.CR1/quarkus-resteasy-reactive-jackson-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-jackson-common-deployment/2.11.0.CR1/quarkus-resteasy-reactive-jackson-common-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-rest-client-reactive-jackson-deployment/2.11.0.CR1/quarkus-rest-client-reactive-jackson-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-rest-client-reactive-deployment/2.11.0.CR1/quarkus-rest-client-reactive-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-stork-deployment/2.11.0.CR1/quarkus-smallrye-stork-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-deployment/2.11.0.CR1/quarkus-container-image-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-spi/2.11.0.CR1/quarkus-container-image-spi-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-util/2.11.0.CR1/quarkus-container-image-util-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-oidc-token-propagation-reactive-deployment/2.11.0.CR1/quarkus-oidc-token-propagation-reactive-deployment-2.11.0.CR1.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/webjars/bootstrap/4.6.1/bootstrap-4.6.1.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/webjars/jquery/3.6.0/jquery-3.6.0.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/webjars/popper.js/1.16.0/popper.js-1.16.0.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/webjars/font-awesome/6.1.0/font-awesome-6.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/webjars/font-awesome/6.1.1/font-awesome-6.1.1.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/webjars/codemirror/5.62.2/codemirror-5.62.2.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-jwt-deployment/2.10.1.Final/quarkus-smallrye-jwt-deployment-2.10.1.Final.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/webjars/d3js/6.6.0/d3js-6.6.0.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/webjars/chartjs/3.7.1/chartjs-3.7.1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/webjars/npm/mermaid/9.1.1/mermaid-9.1.1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-docker-deployment/2.11.0.CR1/quarkus-container-image-docker-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.4.10/kotlin-stdlib-1.4.10.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.4.0/kotlin-stdlib-common-1.4.0.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-reactive-messaging-kafka-deployment/2.11.0.CR1/quarkus-smallrye-reactive-messaging-kafka-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-opentelemetry-exporter-otlp-deployment/2.11.0.CR1/quarkus-opentelemetry-exporter-otlp-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-opentelemetry-deployment/2.11.0.CR1/quarkus-opentelemetry-deployment-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-datasource-deployment-spi/2.11.0.CR1/quarkus-datasource-deployment-spi-2.11.0.CR1.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-datasource-common/2.11.0.CR1/quarkus-datasource-common-2.11.0.CR1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mutiny-deployment/2.10.1.Final/quarkus-mutiny-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-server-common-spi/2.10.1.Final/quarkus-resteasy-server-common-spi-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-panache-deployment/2.10.1.Final/quarkus-mongodb-panache-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jsonb-spi/2.10.1.Final/quarkus-jsonb-spi-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-config-yaml-deployment/2.10.1.Final/quarkus-config-yaml-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxrs-spi-deployment/2.10.1.Final/quarkus-jaxrs-spi-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jackson-spi/2.10.1.Final/quarkus-jackson-spi-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-devservices-common/2.10.1.Final/quarkus-devservices-common-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-hibernate-validator-deployment/2.10.1.Final/quarkus-hibernate-validator-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-rest-client-reactive-jackson-deployment/2.10.1.Final/quarkus-rest-client-reactive-jackson-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-reactive-messaging-deployment/2.10.1.Final/quarkus-smallrye-reactive-messaging-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kubernetes-spi/2.10.1.Final/quarkus-kubernetes-spi-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxrs-client-reactive-deployment/2.10.1.Final/quarkus-jaxrs-client-reactive-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-oidc-token-propagation-reactive-deployment/2.10.1.Final/quarkus-oidc-token-propagation-reactive-deployment-2.10.1.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-grpc-common-deployment/2.11.0.CR1/quarkus-grpc-common-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-junit4-mock/2.11.0.CR1/quarkus-junit4-mock-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-security-deployment/2.11.0.CR1/quarkus-security-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-panache-common-deployment/2.11.0.CR1/quarkus-panache-common-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-health-spi/2.11.0.CR1/quarkus-smallrye-health-spi-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-rest-client-config-deployment/2.11.0.CR1/quarkus-rest-client-config-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-narayana-jta-deployment/2.11.0.CR1/quarkus-narayana-jta-deployment-2.11.0.CR1-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/com/github/docker-java/docker-java-transport/3.2.13/docker-java-transport-3.2.13-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-common-processor/2.10.1.Final/resteasy-reactive-common-processor-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-liquibase-mongodb-deployment/2.10.1.Final/quarkus-liquibase-mongodb-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-deployment-spi/2.10.1.Final/quarkus-vertx-http-deployment-spi-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-client-processor/2.10.1.Final/resteasy-reactive-client-processor-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-util/2.10.1.Final/quarkus-container-image-util-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kubernetes-service-binding-spi/2.10.1.Final/quarkus-kubernetes-service-binding-spi-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-server-spi-deployment/2.10.1.Final/quarkus-resteasy-reactive-server-spi-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-context-propagation-deployment/2.10.1.Final/quarkus-smallrye-context-propagation-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-common-spi/2.10.1.Final/quarkus-resteasy-common-spi-2.10.1.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jackson-deployment/2.11.0.CR1/quarkus-jackson-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kafka-client-deployment/2.11.0.CR1/quarkus-kafka-client-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.4.10/kotlin-stdlib-1.4.10-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-deployment/2.11.0.CR1/quarkus-resteasy-reactive-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-netty-deployment/2.11.0.CR1/quarkus-netty-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-jackson-deployment/2.11.0.CR1/quarkus-resteasy-reactive-jackson-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/commonmark/commonmark/0.19.0/commonmark-0.19.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-deployment/2.11.0.CR1/quarkus-container-image-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/qute/qute-core/2.11.0.CR1/qute-core-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-caffeine-deployment/2.11.0.CR1/quarkus-caffeine-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-jwt-build-deployment/2.11.0.CR1/quarkus-smallrye-jwt-build-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-deployment/2.11.0.CR1/quarkus-vertx-http-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-devservices-deployment/2.11.0.CR1/quarkus-devservices-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxp-deployment/2.11.0.CR1/quarkus-jaxp-deployment-2.11.0.CR1-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/io/strimzi/strimzi-test-container/0.100.0/strimzi-test-container-0.100.0-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-spi/2.10.1.Final/quarkus-container-image-spi-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-deployment/2.10.1.Final/quarkus-container-image-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-devservices-deployment/2.10.1.Final/quarkus-devservices-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-reactive-routes-deployment/2.10.1.Final/quarkus-reactive-routes-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/testcontainers/testcontainers/1.17.2/testcontainers-1.17.2-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-server-spi-deployment/2.11.0.CR1/quarkus-resteasy-reactive-server-spi-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-spi/2.11.0.CR1/quarkus-container-image-spi-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-spi-deployment/2.11.0.CR1/quarkus-resteasy-reactive-spi-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-panache-common-deployment/2.11.0.CR1/quarkus-mongodb-panache-common-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-processor/2.11.0.CR1/resteasy-reactive-processor-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-common-deployment/2.11.0.CR1/quarkus-resteasy-reactive-common-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/testcontainers/testcontainers/1.17.3/testcontainers-1.17.3-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/com/github/docker-java/docker-java-transport-zerodep/3.2.13/docker-java-transport-zerodep-3.2.13-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jsonp-deployment/2.10.1.Final/quarkus-jsonp-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-security-spi/2.10.1.Final/quarkus-security-spi-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kafka-client-deployment/2.10.1.Final/quarkus-kafka-client-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-dev-console-spi/2.10.1.Final/quarkus-vertx-http-dev-console-spi-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-jackson-deployment/2.10.1.Final/quarkus-resteasy-reactive-jackson-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jackson-deployment/2.10.1.Final/quarkus-jackson-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mutiny-reactive-streams-operators-deployment/2.10.1.Final/quarkus-mutiny-reactive-streams-operators-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-deployment/2.10.1.Final/quarkus-resteasy-reactive-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxb-deployment/2.10.1.Final/quarkus-jaxb-deployment-2.10.1.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kubernetes-service-binding-spi/2.11.0.CR1/quarkus-kubernetes-service-binding-spi-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-hibernate-validator-deployment/2.11.0.CR1/quarkus-hibernate-validator-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-deployment-spi/2.11.0.CR1/quarkus-vertx-http-deployment-spi-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-deployment/2.11.0.CR1/quarkus-vertx-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-reactive-messaging-kafka-deployment/2.11.0.CR1/quarkus-smallrye-reactive-messaging-kafka-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jackson-spi/2.11.0.CR1/quarkus-jackson-spi-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-opentelemetry-deployment/2.11.0.CR1/quarkus-opentelemetry-deployment-2.11.0.CR1-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/jetbrains/annotations/17.0.0/annotations-17.0.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.4.0/kotlin-stdlib-common-1.4.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxrs-client-reactive-deployment/2.11.0.CR1/quarkus-jaxrs-client-reactive-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-kubernetes-spi/2.11.0.CR1/quarkus-kubernetes-spi-2.11.0.CR1-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/apache/commons/commons-compress/1.21/commons-compress-1.21-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-junit4-mock/2.10.1.Final/quarkus-junit4-mock-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-security-deployment/2.10.1.Final/quarkus-security-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/qute/qute-core/2.10.1.Final/qute-core-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-client-deployment/2.10.1.Final/quarkus-mongodb-client-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-jwt-build-deployment/2.10.1.Final/quarkus-smallrye-jwt-build-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-netty-deployment/2.10.1.Final/quarkus-netty-deployment-2.10.1.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxrs-spi-deployment/2.11.0.CR1/quarkus-jaxrs-spi-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-datasource-deployment-spi/2.11.0.CR1/quarkus-datasource-deployment-spi-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mutiny-deployment/2.11.0.CR1/quarkus-mutiny-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-context-propagation-deployment/2.11.0.CR1/quarkus-smallrye-context-propagation-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-devservices-common/2.11.0.CR1/quarkus-devservices-common-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-panache-deployment/2.11.0.CR1/quarkus-mongodb-panache-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jsonb-spi/2.11.0.CR1/quarkus-jsonb-spi-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-config-yaml-deployment/2.11.0.CR1/quarkus-config-yaml-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-common-spi/2.11.0.CR1/quarkus-resteasy-common-spi-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-client-processor/2.11.0.CR1/resteasy-reactive-client-processor-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-server-common-spi/2.11.0.CR1/quarkus-resteasy-server-common-spi-2.11.0.CR1-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/webjars/bootstrap/4.6.1/bootstrap-4.6.1-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-rest-client-config-deployment/2.10.1.Final/quarkus-rest-client-config-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-rest-client-reactive-deployment/2.10.1.Final/quarkus-rest-client-reactive-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-deployment/2.10.1.Final/quarkus-vertx-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-spi-deployment/2.10.1.Final/quarkus-resteasy-reactive-spi-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-stork-deployment/2.10.1.Final/quarkus-smallrye-stork-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-jackson-common-deployment/2.10.1.Final/quarkus-resteasy-reactive-jackson-common-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/testcontainers/mongodb/1.17.2/mongodb-1.17.2-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/org/commonmark/commonmark/0.18.2/commonmark-0.18.2-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-common-deployment/2.10.1.Final/quarkus-resteasy-reactive-common-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/arc/arc-processor/2.10.1.Final/arc-processor-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-processor/2.10.1.Final/resteasy-reactive-processor-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-hibernate-validator-spi/2.10.1.Final/quarkus-hibernate-validator-spi-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxp-deployment/2.10.1.Final/quarkus-jaxp-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-reactive-messaging-kafka-deployment/2.10.1.Final/quarkus-smallrye-reactive-messaging-kafka-deployment-2.10.1.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-liquibase-mongodb-deployment/2.11.0.CR1/quarkus-liquibase-mongodb-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jaxb-deployment/2.11.0.CR1/quarkus-jaxb-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-dev-console-spi/2.11.0.CR1/quarkus-vertx-http-dev-console-spi-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-jwt-deployment/2.11.0.CR1/quarkus-smallrye-jwt-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-reactive-messaging-deployment/2.11.0.CR1/quarkus-smallrye-reactive-messaging-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-rest-client-reactive-jackson-deployment/2.11.0.CR1/quarkus-rest-client-reactive-jackson-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-security-spi/2.11.0.CR1/quarkus-security-spi-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-oidc-token-propagation-reactive-deployment/2.11.0.CR1/quarkus-oidc-token-propagation-reactive-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/testcontainers/mongodb/1.17.3/mongodb-1.17.3-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/arc/arc-processor/2.11.0.CR1/arc-processor-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-arc-deployment/2.11.0.CR1/quarkus-arc-deployment-2.11.0.CR1-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/webjars/jquery/3.6.0/jquery-3.6.0-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-arc-deployment/2.10.1.Final/quarkus-arc-deployment-2.10.1.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mutiny-reactive-streams-operators-deployment/2.11.0.CR1/quarkus-mutiny-reactive-streams-operators-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-docker-deployment/2.11.0.CR1/quarkus-container-image-docker-deployment-2.11.0.CR1-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/com/github/docker-java/docker-java-api/3.2.13/docker-java-api-3.2.13-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-docker-deployment/2.10.1.Final/quarkus-container-image-docker-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-vertx-http-deployment/2.10.1.Final/quarkus-vertx-http-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-caffeine-deployment/2.10.1.Final/quarkus-caffeine-deployment-2.10.1.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/webjars/d3js/6.6.0/d3js-6.6.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-resteasy-reactive-jackson-common-deployment/2.11.0.CR1/quarkus-resteasy-reactive-jackson-common-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-container-image-util/2.11.0.CR1/quarkus-container-image-util-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/org/webjars/npm/mermaid/9.1.1/mermaid-9.1.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-jsonp-deployment/2.11.0.CR1/quarkus-jsonp-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-hibernate-validator-spi/2.11.0.CR1/quarkus-hibernate-validator-spi-2.11.0.CR1-sources.jar!/" />
           <root url="jar://$USER_HOME$/.m2/repository/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-jwt-deployment/2.10.1.Final/quarkus-smallrye-jwt-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-panache-common-deployment/2.10.1.Final/quarkus-panache-common-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-health-spi/2.10.1.Final/quarkus-smallrye-health-spi-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-narayana-jta-deployment/2.10.1.Final/quarkus-narayana-jta-deployment-2.10.1.Final-sources.jar!/" />
-          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-panache-common-deployment/2.10.1.Final/quarkus-mongodb-panache-common-deployment-2.10.1.Final-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-smallrye-stork-deployment/2.11.0.CR1/quarkus-smallrye-stork-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-datasource-common/2.11.0.CR1/quarkus-datasource-common-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-rest-client-reactive-deployment/2.11.0.CR1/quarkus-rest-client-reactive-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/resteasy/reactive/resteasy-reactive-common-processor/2.11.0.CR1/resteasy-reactive-common-processor-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-mongodb-client-deployment/2.11.0.CR1/quarkus-mongodb-client-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-reactive-routes-deployment/2.11.0.CR1/quarkus-reactive-routes-deployment-2.11.0.CR1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.m2/repository/io/quarkus/quarkus-opentelemetry-exporter-otlp-deployment/2.11.0.CR1/quarkus-opentelemetry-exporter-otlp-deployment-2.11.0.CR1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
   </component>
   <component name="Quarkus Tools">
-    <option name="hash" value="623442773" />
+    <option name="hash" value="-172181874" />
     <option name="version" value="1" />
   </component>
 </module>

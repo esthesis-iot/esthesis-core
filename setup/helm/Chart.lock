@@ -1,0 +1,27 @@
+dependencies:
+- name: apisix
+  repository: https://charts.apiseven.com
+  version: 0.10.0
+- name: apisix-dashboard
+  repository: https://charts.apiseven.com
+  version: 0.6.0
+- name: apisix-ingress-controller
+  repository: https://charts.apiseven.com
+  version: 0.9.3
+- name: keycloak
+  repository: https://charts.bitnami.com/bitnami
+  version: 9.2.10
+- name: mongodb
+  repository: https://charts.bitnami.com/bitnami
+  version: 12.1.26
+- name: kafka
+  repository: https://charts.bitnami.com/bitnami
+  version: 18.0.3
+- name: grafana-loki
+  repository: https://charts.bitnami.com/bitnami
+  version: 2.2.3
+- name: grafana
+  repository: https://charts.bitnami.com/bitnami
+  version: 8.0.2
+digest: sha256:f9cb06c0755c77ee6d31d09df403081bba301c005377c722bfcda6191db89830
+generated: "2022-07-22T08:00:14.150178+03:00"

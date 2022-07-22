@@ -11,7 +11,8 @@ public class RestExceptionMapper implements
 
   @Override
   public Response toResponse(ClientWebApplicationException exception) {
-    System.out.println(">>>>>>>>>>>>>>>>>>> " + exception);
-    return Response.status(exception.getResponse().getStatus()).build();
+//    System.out.println(">>>>>>>>>>>>>>>>>>> " + exception);
+//    return Response.status(exception.getResponse().getStatus()).build();
+    throw exception;
   }
 }

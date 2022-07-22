@@ -1,6 +1,6 @@
 {
   "/dev/api": {
-    "target": "http://192.168.21.1",
+    "target": "http://esthesis-dev-apisix-gateway",
     "secure": false,
     "ws": true
   }

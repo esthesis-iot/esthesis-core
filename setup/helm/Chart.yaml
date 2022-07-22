@@ -10,3 +10,54 @@ maintainers:
     url: https://www.eurodyn.com
 icon: https://esthes.is/media/logo.png
 version: 3.0.0-SNAPSHOT
+
+dependencies:
+  - name: apisix
+    version: 0.10.0
+    repository: https://charts.apiseven.com
+    condition: apisix.enabled
+  - name: apisix-dashboard
+    version: 0.6.0
+    repository: https://charts.apiseven.com
+    condition: apisix-dashboard.enabled
+  - name: apisix-ingress-controller
+    version: 0.9.3
+    repository: https://charts.apiseven.com
+    condition: apisix-ingress-controller.enabled
+  - name: keycloak
+    version: 9.2.10  # Check https://github.com/bitnami/charts/issues/10796 before upgrading.
+    repository: https://charts.bitnami.com/bitnami
+    condition: keycloak.enabled
+  - name: mongodb
+    version: 12.1.26
+    repository: https://charts.bitnami.com/bitnami
+    condition: mongodb.enabled
+  - name: kafka
+    version: 18.0.3
+    repository: https://charts.bitnami.com/bitnami
+    condition: kafka.enabled
+  - name: grafana-loki
+    alias: loki
+    version: 2.2.3
+    repository: https://charts.bitnami.com/bitnami
+    condition: loki.enabled
+  - name: grafana
+    alias: grafana
+    version: 8.0.2
+    repository: https://charts.bitnami.com/bitnami
+    condition: grafana.enabled
+
+
+    #  - name: minio
+  #    version: 4.0.5
+  #    repository: https://charts.min.io/
+  #    condition: minio.enabled
+#- name: emqx
+#  version: 4.4.3
+#  repository: https://repos.emqx.io/charts
+#  condition: emqx.enabled
+#- name: influxdb2
+#  alias: influxdb
+#  version: 2.0.12
+#  repository: https://helm.influxdata.com
+#  condition: influxdb.enabled

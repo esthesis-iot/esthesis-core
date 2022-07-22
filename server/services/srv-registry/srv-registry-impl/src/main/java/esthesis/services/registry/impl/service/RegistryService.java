@@ -14,6 +14,8 @@ public class RegistryService extends BaseService<RegistryEntry> {
   @Inject
   JsonWebToken jwt;
 
+//  private static final Logger log = Logger.getLogger(RegistryService.class);
+
   public RegistryEntry findByName(String name) {
     System.out.println(">>>>>>>>>>>>>>>>>>> " + jwt);
     log.debug("Looking up value '{}'.", name);

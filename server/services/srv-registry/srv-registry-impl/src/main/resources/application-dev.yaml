@@ -3,14 +3,19 @@ quarkus:
     host: 0.0.0.0
     cors: false
   log:
-    level: WARN
     category:
       esthesis:
-        level: DEBUG
+        level: INFO
   mongodb:
-    connection-string: mongodb://esthesis:esthesis@localhost:27017/esthesis
+    connection-string: mongodb://esthesis-dev-mongo-1:27017,esthesis-dev-mongo-2:27017
+  opentelemetry:
+    tracer:
+      exporter:
+        otlp:
+          endpoint: http://esthesis-dev-jaeger-collector:4317
 
-#kafka:
-#  bootstrap:
-#    servers:
-#      - localhost:9092
+mp:
+  jwt:
+    verify:
+      publickey:
+        location: http://esthesis-dev-keycloak/realms/esthesis/protocol/openid-connect/certs

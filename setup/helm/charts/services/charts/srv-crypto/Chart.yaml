@@ -1,0 +1,4 @@
+apiVersion: v2
+name: srv-crypto
+description: esthesis IoT - Crypto service
+version: 3.0.0-SNAPSHOT

@@ -1,13 +1,206 @@
 global:
-  # OIDC configuration.
-  oidc:
-    realm: esthesis
-    clientId: esthesis
-    clientSecret: <client-secret>
-    discoveryEndpoint: <discovery-endpoint>
-    introspectionEndpoint: <introspection-endpoint>
+  # Indicate whether APISIX should be installed with this chart.
+  apisix: &apisix true
+  # Indicate whether APISIX Ingress Controller should be installed with this chart.
+  apisix-ingress-controller: &apisix-ingress-controller true
+  # Indicate whether APISIX Dashboard should be installed with this chart.
+  apisix-dashboard: &apisix-dashboard true
+  # Indicate whether Keycloak should be installed with this chart.
+  keycloak: &keycloak true
+  # Indicate whether MongoDB should be installed with this chart.
+  mongodb: &mongodb true
+  # Indicate whether Kafka should be installed with this chart.
+  kafka: &kafka true
+  # Indicate whether Jaeger should be installed with this chart.
+  jaeger: true
+  # Indicate whether EMQX should be installed with this chart.
+  emqx: &emqx false
+  # Indicate whether InfluxDB should be installed with this chart.
+  influxdb: &influxdb false
+  # Indicate whether Grafana Loki should be installed with this chart.
+  loki: &loki true
+  # Indicate whether Grafana should be installed with this chart.
+  grafana: &grafana true
 
-  # MongoDB configuration.
-  mongodb:
-    connectionString: mongodb://esthesis:esthesis@mongo:27017
-    database: esthesis
+  devEnv:
+    enabled: false
+
+  conf:
+    apisix:
+      adminKey: &apisixAdminKey esthesis-admin
+    keycloak:
+      clusterAddress: http://esthesis-keycloak
+      realm: esthesis
+    jaeger:
+      ui:
+        serviceType: ClusterIP
+      collector:
+        serviceType: ClusterIP
+
+apisix:
+  enabled: *apisix
+  gateway:
+    type: LoadBalancer
+    externalTrafficPolicy: Local
+  etcd:
+    replicaCount: 1
+    auth:
+      token:
+        type: simple
+  admin:
+    cors: false
+    credentials:
+      admin: *apisixAdminKey
+      viewer: esthesis-viewer
+    allow:
+      ipList:
+        - 0.0.0.0/0
+  plugins:
+    - opentelemetry
+    - api-breaker
+    - authz-keycloak
+    - basic-auth
+    - batch-requests
+    - consumer-restriction
+    - cors
+    - echo
+    - fault-injection
+    - grpc-transcode
+    - hmac-auth
+    - http-logger
+    - ip-restriction
+    - ua-restriction
+    - jwt-auth
+    - kafka-logger
+    - key-auth
+    - limit-conn
+    - limit-count
+    - limit-req
+    - node-status
+    - openid-connect
+    - authz-casbin
+    - prometheus
+    - proxy-cache
+    - proxy-mirror
+    - proxy-rewrite
+    - redirect
+    - referer-restriction
+    - request-id
+    - request-validation
+    - response-rewrite
+    - serverless-post-function
+    - serverless-pre-function
+    - sls-logger
+    - syslog
+    - tcp-logger
+    - udp-logger
+    - uri-blocker
+    - wolf-rbac
+    - zipkin
+    - traffic-split
+    - gzip
+    - real-ip
+    - ext-plugin-pre-req
+    - ext-plugin-post-req
+    - server-info
+  pluginAttrs:
+    opentelemetry:
+      resource:
+        service:
+          name: APISIX
+      collector:
+        address: esthesis-jaeger-collector-otlp-http:4318
+
+apisix-ingress-controller:
+  enabled: *apisix-ingress-controller
+  config:
+    apisix:
+      adminKey: esthesis-admin
+      serviceName: esthesis-apisix-admin
+      serviceNamespace: esthesis
+
+apisix-dashboard:
+  enabled: *apisix-dashboard
+  config:
+    conf:
+      etcd:
+        endpoints:
+          - esthesis-etcd:2379
+    authentication:
+      users:
+        - username: esthesis
+          password: esthesis
+
+keycloak:
+  enabled: *keycloak
+  auth:
+    adminUser: esthesis
+    adminPassword: esthesis
+    managementUser: esthesis
+    managementPassword: esthesis
+  postgresql:
+    auth:
+      postgresPassword: esthesis
+      password: esthesis
+  service:
+    type: LoadBalancer
+  keycloakConfigCli:
+    enabled: true
+    existingConfigmap: keycloak-config
+
+mongodb:
+  enabled: *mongodb
+  auth:
+    rootUser: root
+    rootPassword: root
+    usernames:
+      - esthesis
+      - graylog
+    passwords:
+      - esthesis
+      - graylog
+    databases:
+      - esthesis
+      - graylog
+    replicaSetKey: esthesis
+  architecture: replicaset
+  arbiter:
+    enabled: false
+  replicaSetName: esthesis-rs
+  initdbScripts:
+    addColMod.js: |
+      use esthesis
+      db.grantRolesToUser('esthesis', ["dbAdmin"])
+
+kafka:
+  enabled: *kafka
+
+loki:
+  enabled: *loki
+
+grafana:
+  enabled: *grafana
+  admin:
+    user: esthesis
+    password: esthesis
+
+#minio:
+#  enabled: *minio
+#  rootUser: esthesis
+#  rootPassword: esthesis
+#  replicas: 4
+#  persistence:
+#    size: "100Gi"
+
+#emqx:
+#  enabled: *emqx
+#  service:
+#    type: LoadBalancer
+#  replicaCount: 1
+
+#influxdb:
+#  enabled: *influxdb
+#  adminUser:
+#    organization: esthesis
+#    user: esthesis
+#    password: esthesis

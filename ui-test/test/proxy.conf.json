@@ -1,8 +1,0 @@
-{
-  "/dev/api": {
-    "target": "http://192.168.21.1",
-    "secure": false,
-    "ws": true
-  }
-}
-…

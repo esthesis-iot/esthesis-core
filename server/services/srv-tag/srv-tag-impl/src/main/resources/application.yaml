@@ -1,16 +1,30 @@
 quarkus:
+  application:
+    name: esthesis-srv-tag
   container-image:
     group: esthesisiot
-    name: esthesis-srv-device
+    name: esthesis-srv-tag
   mongodb:
-    connection-string: mongodb://esthesis:esthesis@mongodb:27017/esthesis
+    connection-string: mongodb://mongodb:27017
     database: esthesis
+    credentials:
+      username: esthesis
+      password: esthesis
   devservices:
     enabled: false
+  log:
+    level: warn
+    category:
+      esthesis:
+        level: INFO
+    console:
+      format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+  opentelemetry:
+    enabled: true
 
 mp:
   jwt:
     verify:
       publickey:
-        location: "http://192.168.21.2/realms/esthesis/protocol/openid-connect/certs"
+        location: "http://esthesis-keycloak/realms/esthesis/protocol/openid-connect/certs"
 

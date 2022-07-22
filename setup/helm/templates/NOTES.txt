@@ -1,1 +1,21 @@
 Thank you for installing esthesis IoT platform.
+
+{{ if .Values.global.devEnv.enabled }}
+
+*************************
+* DEV ENVIRONMENT SETUP *
+*************************
+1. Update your hosts file with the result of the following command:
+echo $(kubectl get services {{ .Release.Name }}-apisix-gateway --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-apisix-gateway && \
+echo $(kubectl get services {{ .Release.Name }}-apisix-admin --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-apisix-admin && \
+echo $(kubectl get services {{ .Release.Name }}-apisix-dashboard --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-apisix-dashboard && \
+echo $(kubectl get services {{ .Release.Name }}-mongodb-0-external --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-mongo-1 && \
+echo $(kubectl get services {{ .Release.Name }}-mongodb-1-external --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-mongo-2 && \
+echo $(kubectl get services {{ .Release.Name }}-jaeger-collector-otlp-grpc --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-jaeger-collector && \
+echo $(kubectl get services {{ .Release.Name }}-jaeger-ui --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-jaeger-ui && \
+echo $(kubectl get services {{ .Release.Name }}-kafka-0-external --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-kafka && \
+echo $(kubectl get services {{ .Release.Name }}-keycloak --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-keycloak && \
+echo $(kubectl get services {{ .Release.Name }}-minio-console --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-minio && \
+echo $(kubectl get services {{ .Release.Name }}-grafana --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-grafana
+
+{{ end }}

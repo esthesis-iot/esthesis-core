@@ -1,0 +1,4 @@
+apiVersion: v2
+name: config
+description: esthesis IoT - configuration
+version: 3.0.0-SNAPSHOT
