@@ -16,6 +16,6 @@ echo $(kubectl get services {{ .Release.Name }}-jaeger-ui --output jsonpath='{.s
 echo $(kubectl get services {{ .Release.Name }}-kafka-0-external --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-kafka && \
 echo $(kubectl get services {{ .Release.Name }}-keycloak --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-keycloak && \
 echo $(kubectl get services {{ .Release.Name }}-minio-console --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-minio && \
-echo $(kubectl get services {{ .Release.Name }}-grafana --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-grafana
+echo $(kubectl get services {{ .Release.Name }}-grafana --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-grafana
 
 {{ end }}

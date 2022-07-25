@@ -1,4 +1,5 @@
 {{ if .Values.global.devEnv.enabled }}
+{{- $name := .Values.global.devEnv.ip | required ".Values.global.devEnv.ip is required." -}}
 apiVersion: batch/v1
 kind: Job
 metadata:

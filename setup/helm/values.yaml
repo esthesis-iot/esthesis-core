@@ -177,13 +177,36 @@ kafka:
 
 loki:
   enabled: *loki
+  promtail:
+    configuration: |
+      scrape_configs:
+        - job_name: gelf
+          gelf:
+            listen_address: "0.0.0.0:12201"
+            use_incoming_timestamp: true
+            labels:
+              job: gelf
+          relabel_configs:
+            - action: replace
+              source_labels:
+                - __gelf_message_host
+              target_label: host
+            - action: replace
+              source_labels:
+                - __gelf_message_level
+              target_label: level
+            - action: replace
+              source_labels:
+                - __gelf_message_facility
+              target_label: facility
 
 grafana:
   enabled: *grafana
   admin:
     user: esthesis
     password: esthesis
-
+  datasources:
+    secretName: esthesis-loki-grafana
 #minio:
 #  enabled: *minio
 #  rootUser: esthesis
