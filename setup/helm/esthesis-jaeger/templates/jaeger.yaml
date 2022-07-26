@@ -1,0 +1,71 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: esthesis-jaeger
+spec:
+  selector:
+    matchLabels:
+      app: esthesis-jaeger
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: esthesis-jaeger
+    spec:
+      containers:
+        - name: jaeger
+          image: jaegertracing/all-in-one:1.36.0
+          ports:
+            - containerPort: 16686
+              name: frontend
+            - containerPort: 4317
+              name: otlp-grpc
+            - containerPort: 4318
+              name: otlp-http
+          env:
+            - name: COLLECTOR_OTLP_ENABLED
+              value: "true"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: esthesis-jaeger-ui
+spec:
+  selector:
+    app: esthesis-jaeger
+  ports:
+    - port: 80
+      targetPort: frontend
+      protocol: TCP
+  type: {{ .Values.global.jaeger.ui.serviceType }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: esthesis-jaeger-collector-otlp-grpc
+spec:
+  selector:
+    app: esthesis-jaeger
+  ports:
+    - port: 4317
+      targetPort: otlp-grpc
+      protocol: TCP
+  type: {{ .Values.global.jaeger.collector.serviceType }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: esthesis-jaeger-collector-otlp-http
+spec:
+  selector:
+    app: esthesis-jaeger
+  ports:
+    - port: 4318
+      targetPort: otlp-http
+      protocol: TCP

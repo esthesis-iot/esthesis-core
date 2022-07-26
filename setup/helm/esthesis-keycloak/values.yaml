@@ -1,0 +1,21 @@
+global:
+  devEnv:
+    enabled: false
+
+keycloak:
+  fullnameOverride: esthesis-keycloak
+  auth:
+    adminUser: esthesis
+    adminPassword: esthesis
+    managementUser: esthesis
+    managementPassword: esthesis
+  postgresql:
+    fullnameOverride: esthesis-keycloak-postgresql
+    auth:
+      postgresPassword: esthesis
+      password: esthesis
+  service:
+    type: LoadBalancer
+  keycloakConfigCli:
+    enabled: true
+    existingConfigmap: esthesis-keycloak-config

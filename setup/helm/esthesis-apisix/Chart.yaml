@@ -1,0 +1,22 @@
+apiVersion: v2
+name: esthesis
+description: esthesis IoT platform - APISIX
+home: https://esthes.is
+sources:
+  - https://github.com/esthesis-iot
+maintainers:
+  - name: European Dynamics SA
+    email: esthesis@eurodyn.com
+    url: https://www.eurodyn.com
+icon: https://esthes.is/media/logo.png
+version: 3.0.0-SNAPSHOT
+
+dependencies:
+  - name: apisix
+    version: 0.10.1
+    #    repository: https://charts.apiseven.com
+    repository: file:///Users/nassos/Projects/_External/apisix-helm-chart/charts/apisix
+  - name: apisix-ingress-controller
+    version: 0.9.3
+    #    repository: https://charts.apiseven.com
+    repository: file:///Users/nassos/Projects/_External/apisix-helm-chart/charts/apisix-ingress-controller

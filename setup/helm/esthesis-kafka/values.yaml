@@ -1,0 +1,8 @@
+global:
+  devEnv:
+    enabled: false
+
+kafka:
+  fullnameOverride: esthesis-kafka
+  zookeeper:
+    fullnameOverride: esthesis-kafka-zookeeper

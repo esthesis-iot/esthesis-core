@@ -19,6 +19,11 @@ quarkus:
         level: INFO
     console:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+    handler:
+      gelf:
+        enabled: true
+        host: 192.168.21.12
+        port: 12201
   opentelemetry:
     enabled: true
 

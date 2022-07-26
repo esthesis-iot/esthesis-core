@@ -36,17 +36,6 @@ dependencies:
     version: 18.0.3
     repository: https://charts.bitnami.com/bitnami
     condition: kafka.enabled
-  - name: grafana-loki
-    alias: loki
-    version: 2.2.3
-    repository: https://charts.bitnami.com/bitnami
-    condition: loki.enabled
-  - name: grafana
-    alias: grafana
-    version: 8.0.2
-    repository: https://charts.bitnami.com/bitnami
-    condition: grafana.enabled
-
 
     #  - name: minio
   #    version: 4.0.5

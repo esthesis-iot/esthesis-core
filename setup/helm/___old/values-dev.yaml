@@ -40,9 +40,7 @@ kafka:
     create: true
   rbac:
     create: true
+
 #minio:
 #  consoleService:
 #    type: LoadBalancer
-grafana:
-  service:
-    type: LoadBalancer

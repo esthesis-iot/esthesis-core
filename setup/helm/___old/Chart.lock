@@ -17,11 +17,5 @@ dependencies:
 - name: kafka
   repository: https://charts.bitnami.com/bitnami
   version: 18.0.3
-- name: grafana-loki
-  repository: https://charts.bitnami.com/bitnami
-  version: 2.2.3
-- name: grafana
-  repository: https://charts.bitnami.com/bitnami
-  version: 8.0.2
-digest: sha256:f9cb06c0755c77ee6d31d09df403081bba301c005377c722bfcda6191db89830
-generated: "2022-07-22T08:00:14.150178+03:00"
+digest: sha256:43d03323cd5bb2f69a804daf7e4bb08df9f85fd7c6f895f882c51fcfa3c73f41
+generated: "2022-07-25T13:32:26.944928+03:00"

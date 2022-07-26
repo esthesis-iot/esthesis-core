@@ -1,0 +1,6 @@
+dependencies:
+- name: apisix-dashboard
+  repository: https://charts.apiseven.com
+  version: 0.6.0
+digest: sha256:a092e62faa661d4c3ad0fbfcae7ac981c872b9e86316e1ac3507dcac19a03fa9
+generated: "2022-07-26T07:01:51.976345+03:00"

@@ -1,0 +1,9 @@
+{{ if .Values.global.devEnv.enabled }}
+*************************
+* DEV ENVIRONMENT SETUP *
+*************************
+Update your hosts file with the result of the following command:
+
+echo $(kubectl get services esthesis-jaeger-collector-otlp-grpc --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-jaeger-collector && \
+echo $(kubectl get services esthesis-jaeger-ui --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-jaeger-ui
+{{ end }}

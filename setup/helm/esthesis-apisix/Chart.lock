@@ -1,0 +1,9 @@
+dependencies:
+- name: apisix
+  repository: file:///Users/nassos/Projects/_External/apisix-helm-chart/charts/apisix
+  version: 0.10.1
+- name: apisix-ingress-controller
+  repository: file:///Users/nassos/Projects/_External/apisix-helm-chart/charts/apisix-ingress-controller
+  version: 0.9.3
+digest: sha256:9442974d3dea4d09c74ff992411293edf07e11f51ce3ad765a89465beeebd11b
+generated: "2022-07-25T15:57:51.708119+03:00"

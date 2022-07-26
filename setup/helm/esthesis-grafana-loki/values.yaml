@@ -1,0 +1,23 @@
+global:
+  devEnv:
+    enabled: false
+
+loki:
+  fullnameOverride: esthesis-loki
+  promtail:
+    existingSecret: esthesis-loki-config
+  memcachedchunks:
+    enabled: false
+  memcachedfrontend:
+    enabled: false
+  memcachedindexqueries:
+    enabled: false
+
+grafana:
+  admin:
+    user: esthesis
+    password: esthesis
+  datasources:
+    secretName: esthesis-grafana-config
+  fullnameOverride: esthesis-grafana
+

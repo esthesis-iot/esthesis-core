@@ -1,0 +1,10 @@
+{{ if .Values.global.devEnv.enabled }}
+*************************
+* DEV ENVIRONMENT SETUP *
+*************************
+Update your hosts file with the result of the following command:
+
+echo $(kubectl get services esthesis-mongodb-0-external --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-mongodb-0 && \
+echo $(kubectl get services esthesis-mongodb-1-external --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-mongodb-1
+
+{{ end }}
