@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.BasicConstraints;
@@ -42,7 +42,7 @@ import org.bouncycastle.util.io.pem.PemWriter;
 /**
  * Certificate Authority management.
  */
-@Log
+@Slf4j
 @ApplicationScoped
 public class CryptoCAService {
 
@@ -76,6 +76,7 @@ public class CryptoCAService {
   throws NoSuchAlgorithmException, InvalidKeySpecException,
          OperatorCreationException, IOException,
          NoSuchProviderException {
+    log.debug("Creating a new CA '{}'.", createCADTO);
     // Create a keypair for this CA.
     final KeyPair keyPair = cryptoAsymmetricService.createKeyPair(
         createCADTO.getCreateKeyPairRequest());
@@ -132,10 +133,9 @@ public class CryptoCAService {
    *                                   while generating the certificate
    */
   @SuppressWarnings({"squid:S2274", "squid:S2142"})
-  public X509CertificateHolder generateCertificate(
-      final CSR CSR)
+  public X509CertificateHolder generateCertificate(final CSR CSR)
   throws OperatorCreationException, CertIOException {
-
+    log.debug("Generating a certificate for '{}'.", CSR);
     // Create a generator for the certificate including all certificate details.
     final X509v3CertificateBuilder certGenerator;
     // Synchronize this part, so that no two certificates can be created with the same timestamp.
@@ -200,6 +200,7 @@ public class CryptoCAService {
    */
   public String certificateToPEM(final X509CertificateHolder certificateHolder)
   throws IOException {
+    log.debug("Converting '{}' certificate to PEM.", certificateHolder);
     try (StringWriter pemStrWriter = new StringWriter()) {
       try (PemWriter writer = new PemWriter(pemStrWriter)) {
         writer.writeObject(
@@ -220,6 +221,7 @@ public class CryptoCAService {
    */
   public X509Certificate pemToCertificate(final String cert)
   throws CertificateException {
+    log.debug("Parsing '{}' PEM certificate.", cert);
     CertificateFactory fact = CertificateFactory.getInstance("X.509");
 
     return (X509Certificate) fact.generateCertificate(

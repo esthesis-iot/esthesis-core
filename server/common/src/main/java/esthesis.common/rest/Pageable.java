@@ -11,14 +11,12 @@ import javax.ws.rs.core.UriInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter
 @Slf4j
-@ToString
 @NoArgsConstructor
 public class Pageable {
 
@@ -93,4 +91,9 @@ public class Pageable {
             key));
   }
 
+  @Override
+  public String toString() {
+    return "Pageable(" + "uriInfo=" + uriInfo.getRequestUri() + ", page=" + page
+        + ", size=" + size + ", sort=" + sort + ')';
+  }
 }

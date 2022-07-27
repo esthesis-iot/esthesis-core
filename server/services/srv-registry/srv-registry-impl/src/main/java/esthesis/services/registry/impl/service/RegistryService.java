@@ -17,7 +17,7 @@ public class RegistryService extends BaseService<RegistryEntry> {
 //  private static final Logger log = Logger.getLogger(RegistryService.class);
 
   public RegistryEntry findByName(String name) {
-    log.debug("Looking up value '{}'.", name);
+    log.debug("Looking up key '{}'.", name);
     RegistryEntry registryEntry = findByColumn("name", name);
     log.debug("Found value '{}'.", registryEntry);
 

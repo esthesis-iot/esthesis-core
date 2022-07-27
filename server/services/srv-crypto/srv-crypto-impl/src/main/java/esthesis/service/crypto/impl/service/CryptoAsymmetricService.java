@@ -22,7 +22,6 @@ import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.crypto.BadPaddingException;
@@ -31,13 +30,13 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.enterprise.context.ApplicationScoped;
 import javax.validation.constraints.NotNull;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.util.io.pem.PemObject;
 
-@Log
+@Slf4j
 @ApplicationScoped
 public class CryptoAsymmetricService {
 
@@ -55,6 +54,7 @@ public class CryptoAsymmetricService {
 
   protected String convertKeyToPEM(final byte[] key, final String keyType)
   throws IOException {
+    log.debug("Converting key to PEM.", key);
     try (StringWriter pemStrWriter = new StringWriter()) {
       try (JcaPEMWriter pemWriter = new JcaPEMWriter(pemStrWriter)) {
         if (keyType.equals(RSA_PRIVATE_KEY)) {
@@ -79,6 +79,7 @@ public class CryptoAsymmetricService {
   public KeyPair createKeyPair(final CreateKeyPair createKeyPairRequest)
   throws NoSuchAlgorithmException, NoSuchProviderException {
     final KeyPairGenerator keyPairGenerator;
+    log.debug("Creating a keypair for '{}'.", createKeyPairRequest);
 
     // Set the provider.
     if (StringUtils
@@ -117,6 +118,7 @@ public class CryptoAsymmetricService {
       final String keyProvider)
   throws NoSuchProviderException, NoSuchAlgorithmException,
          InvalidKeySpecException {
+    log.debug("Converting private key '{}' PrivateKey.", key);
     KeyFactory keyFactory;
     if (StringUtils.isNotBlank(keyProvider)) {
       keyFactory = KeyFactory.getInstance(keyAlgorithm, keyProvider);
@@ -131,6 +133,7 @@ public class CryptoAsymmetricService {
       @NotNull final String keyAlgorithm, final String keyProvider)
   throws NoSuchProviderException, NoSuchAlgorithmException,
          InvalidKeySpecException {
+    log.debug("Converting public key '{}' to PublicKey.", key);
     KeyFactory keyFactory;
     if (StringUtils.isNotBlank(keyProvider)) {
       keyFactory = KeyFactory.getInstance(keyAlgorithm, keyProvider);
@@ -175,6 +178,7 @@ public class CryptoAsymmetricService {
    */
   public PublicKey pemToPublicKey(String publicKey, final String algorithm)
   throws NoSuchAlgorithmException, InvalidKeySpecException {
+    log.debug("Converting PEM public key '{}' to PublicKey.", publicKey);
     PublicKey key;
 
     // Cleanup the PEM from unwanted text.
@@ -201,6 +205,7 @@ public class CryptoAsymmetricService {
    */
   public PrivateKey pemToPrivateKey(String privateKey, final String algorithm)
   throws NoSuchAlgorithmException, InvalidKeySpecException {
+    log.debug("Converting PEM private key '{}' to PrivateKey.", privateKey);
     PrivateKey key;
 
     // Cleanup the PEM from unwanted text.
@@ -236,6 +241,7 @@ public class CryptoAsymmetricService {
       final String signatureAlgorithm, final String keyAlgorithm)
   throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
          SignatureException {
+    log.debug("Signing payload.");
     final Signature signatureInstance = Signature
         .getInstance(signatureAlgorithm);
     signatureInstance.initSign(pemToPrivateKey(privateKeyPEM, keyAlgorithm));
@@ -267,6 +273,7 @@ public class CryptoAsymmetricService {
   throws IOException, NoSuchAlgorithmException, SignatureException,
          InvalidKeySpecException,
          InvalidKeyException {
+    log.debug("Signing payload.");
     final Signature signatureInstance = Signature
         .getInstance(signatureAlgorithm);
     signatureInstance.initSign(pemToPrivateKey(privateKeyPEM, keyAlgorithm));
@@ -305,6 +312,7 @@ public class CryptoAsymmetricService {
       final String keyAlgorithm)
   throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
          SignatureException {
+    log.debug("Verifying signature.");
     if (StringUtils.isBlank(signature)) {
       throw new QDoesNotExistException(
           "The signature provided to validate is empty.");
@@ -341,6 +349,7 @@ public class CryptoAsymmetricService {
       final String keyAlgorithm)
   throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
          SignatureException, IOException {
+    log.debug("Verifying signature.");
     if (StringUtils.isBlank(signature)) {
       throw new QDoesNotExistException(
           "The signature provided to validate is empty.");
@@ -386,6 +395,7 @@ public class CryptoAsymmetricService {
   throws NoSuchPaddingException, NoSuchAlgorithmException,
          InvalidKeySpecException,
          InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    log.debug("Encrypting payload.");
     final Cipher cipher = Cipher.getInstance(cipherFactory);
     cipher
         .init(Cipher.ENCRYPT_MODE, pemToPublicKey(publicKeyPEM, keyAlgorithm));
@@ -421,6 +431,7 @@ public class CryptoAsymmetricService {
   throws NoSuchPaddingException, NoSuchAlgorithmException,
          InvalidKeySpecException,
          InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    log.debug("Decrypting payload.");
     final Cipher cipher = Cipher.getInstance(cipherFactory);
     cipher
         .init(Cipher.DECRYPT_MODE,
@@ -439,7 +450,7 @@ public class CryptoAsymmetricService {
       try {
         return SecureRandom.getInstanceStrong().getAlgorithm();
       } catch (NoSuchAlgorithmException e) {
-        log.log(Level.SEVERE, e.getMessage(), e);
+        log.error(e.getMessage(), e);
         return secureRandomAlgorithm;
       }
     } else {

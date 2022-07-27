@@ -79,10 +79,12 @@ public class DeviceService extends BaseService<Device> {
    *
    * @param tags the list of tags to check.
    */
-  private void checkTags(List<String> tags) {
+  private void checkTags(String hardwareId, List<String> tags) {
     for (String tag : tags) {
       if (tagResourceV1.findByName(tag) == null) {
-        log.warn("Device-pushed tag '{}' does not exist.", tag);
+        log.warn(
+            "Device-pushed tag '{}' for device with hardware id '{}' does not exist.",
+            tag, hardwareId);
       }
     }
   }
@@ -129,8 +131,9 @@ public class DeviceService extends BaseService<Device> {
     ids = ids.replace("\n", ",");
     String[] idList = ids.split(",");
 
-    // Before preregistering the devices check that all given registration IDs are available. If any
-    // of the given IDs is already assigned on an existing device abort the preregistration.
+    // Before preregistering the devices check that all given registration IDs
+    // are available. If any of the given IDs is already assigned on an
+    // existing device abort the preregistration.
     for (String hardwareId : idList) {
       if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
         throw new QAlreadyExistsException(
@@ -141,6 +144,8 @@ public class DeviceService extends BaseService<Device> {
 
     // Register IDs.
     for (String hardwareId : idList) {
+      log.debug("Requested to preregister a device with hardware id '{}'.",
+          hardwareId);
       register(hardwareId, deviceRegistration.getTags(), State.PREREGISTERED);
     }
   }
@@ -149,7 +154,7 @@ public class DeviceService extends BaseService<Device> {
    * The internal registration handler, see
    * {@link #register(DeviceMessage, String)}.
    *
-   * @param hardwareId The hardware Id of the device to be registered.
+   * @param hardwareId The hardware id of the device to be registered.
    * @param tags       The tags associated with this device as a comma-separated
    *                   list.
    * @param state      The initial state of the registration of the device.
@@ -157,6 +162,9 @@ public class DeviceService extends BaseService<Device> {
   private void register(String hardwareId, List<String> tags, String state)
   throws IOException, InvalidKeySpecException, NoSuchAlgorithmException,
          OperatorCreationException, NoSuchProviderException {
+    log.debug("Registering device with hardware id '{}'.",
+        hardwareId);
+
     // Check that a device with the same hardware ID does not already exist.
     if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
       throw new QAlreadyExistsException(
@@ -196,7 +204,7 @@ public class DeviceService extends BaseService<Device> {
 
     // Set device-pushed tags.
     if (!tags.isEmpty()) {
-      checkTags(tags);
+      checkTags(hardwareId, tags);
       device.setTags(tags);
     }
 

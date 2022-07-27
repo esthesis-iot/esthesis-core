@@ -21,5 +21,4 @@ public interface RegistryResourceV1 {
   @GET
   @Path("/find/by-name/{name}")
   RegistryEntry findByName(@PathParam("name") String name);
-
 }
