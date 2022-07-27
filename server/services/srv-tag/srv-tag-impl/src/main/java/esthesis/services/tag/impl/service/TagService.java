@@ -27,25 +27,26 @@ public class TagService extends BaseService<Tag> {
 
   @Override
   public Page<Tag> find(Pageable pageable) {
-    log.info("Finding tag...");
+    log.debug("Finding all tags with '{}'.", pageable);
     return super.find(pageable);
   }
 
   @Override
   public Page<Tag> find(Pageable pageable, boolean partialMatch) {
-    log.info("Finding tag2...");
+    log.debug("Finding all tags with partial match with '{}'.", pageable);
     return super.find(pageable, partialMatch);
   }
 
   @Override
   public Tag save(Tag dto) {
-    log.info("Saving tag: {}", dto);
+    log.debug("Saving tag '{}'.", dto);
     // Ensure no other tag has the same name.
     Tag existingTag = findByColumn("name", dto.getName());
     if (existingTag != null && (dto.getId() == null || !existingTag.getId()
         .equals(dto.getId()))) {
       new CVException<Tag>()
-          .addViolation("name", "A tag with this name already exists.")
+          .addViolation("name", "A tag with name '{}' already exists.",
+              dto.getName())
           .throwCVE();
     }
 
@@ -54,7 +55,7 @@ public class TagService extends BaseService<Tag> {
 
   @Override
   public void deleteById(ObjectId id) {
-    System.out.println(jwt);
+    log.debug("Deleting tag with id '{}'.", id);
     Tag tag = findById(id);
     super.deleteById(id);
     tagDeletedEmitter.send(tag);

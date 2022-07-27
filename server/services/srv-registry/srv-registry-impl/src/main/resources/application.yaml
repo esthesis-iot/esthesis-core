@@ -5,7 +5,6 @@ quarkus:
     group: esthesisiot
     name: esthesis-srv-registry
   mongodb:
-    connection-string: mongodb://mongodb:27017
     database: esthesis
     credentials:
       username: esthesis
@@ -21,10 +20,5 @@ quarkus:
         level: INFO
     console:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
-
-mp:
-  jwt:
-    verify:
-      publickey:
-        location: "http://esthesis-keycloak/realms/esthesis/protocol/openid-connect/certs"
-
+  opentelemetry:
+    enabled: false

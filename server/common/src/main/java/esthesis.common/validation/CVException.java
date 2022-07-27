@@ -15,6 +15,17 @@ public class CVException<D> {
     return this;
   }
 
+  public CVException<D> addViolation(String path, String message,
+      Object... args) {
+
+    violations.add(
+        new CVBuilder<D>().path(path).message(
+            org.slf4j.helpers.MessageFormatter.format(message, args)
+                .getMessage()
+        ).build());
+    return this;
+  }
+
   public void throwCVE() {
     throw new ConstraintViolationException(violations);
   }

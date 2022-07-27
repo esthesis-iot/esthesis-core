@@ -14,10 +14,4 @@ quarkus:
     console:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
   opentelemetry:
-    enabled: true
-
-mp:
-  jwt:
-    verify:
-      publickey:
-        location: "http://esthesis-keycloak/realms/esthesis/protocol/openid-connect/certs"
+    enabled: false

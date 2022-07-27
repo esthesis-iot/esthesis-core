@@ -7,83 +7,19 @@ type: Opaque
 stringData:
   promtail.yaml: |-
     server:
-      log_level: info
+      log_level: warn
       http_listen_port: 8080
     clients:
       - url: http://esthesis-loki-gateway:80/loki/api/v1/push
     positions:
       filename: /run/promtail/positions.yaml
     scrape_configs:
-      - job_name: kubernetes-pods
-        pipeline_stages:
-          - cri: {}
-        kubernetes_sd_configs:
-          - role: pod
-        relabel_configs:
-          - source_labels:
-              - __meta_kubernetes_pod_controller_name
-            regex: ([0-9a-z-.]+?)(-[0-9a-f]{8,10})?
-            action: replace
-            target_label: __tmp_controller_name
-          - source_labels:
-              - __meta_kubernetes_pod_label_app_kubernetes_io_name
-              - __meta_kubernetes_pod_label_app
-              - __tmp_controller_name
-              - __meta_kubernetes_pod_name
-            regex: ^;*([^;]+)(;.*)?$
-            action: replace
-            target_label: app
-          - source_labels:
-              - __meta_kubernetes_pod_label_app_kubernetes_io_component
-              - __meta_kubernetes_pod_label_component
-            regex: ^;*([^;]+)(;.*)?$
-            action: replace
-            target_label: component
-          - action: replace
-            source_labels:
-              - __meta_kubernetes_pod_node_name
-            target_label: node_name
-          - action: replace
-            source_labels:
-              - __meta_kubernetes_namespace
-            target_label: namespace
-          - action: replace
-            replacement: $1
-            separator: /
-            source_labels:
-              - namespace
-              - app
-            target_label: job
-          - action: replace
-            source_labels:
-              - __meta_kubernetes_pod_name
-            target_label: pod
-          - action: replace
-            source_labels:
-              - __meta_kubernetes_pod_container_name
-            target_label: container
-          - action: replace
-            replacement: /var/log/pods/*$1/*.log
-            separator: /
-            source_labels:
-              - __meta_kubernetes_pod_uid
-              - __meta_kubernetes_pod_container_name
-            target_label: __path__
-          # - action: replace
-          #   regex: true/(.*)
-          #   replacement: /var/log/pods/*$1/*.log
-          #   separator: /
-          #   source_labels:
-          #   - __meta_kubernetes_pod_annotationpresent_kubernetes_io_config_hash
-          #   - __meta_kubernetes_pod_annotation_kubernetes_io_config_hash
-          #   - __meta_kubernetes_pod_container_name
-          #   target_label: __path__root@esthesis-loki-promtail-cqgz4:/#
       - job_name: gelf
         gelf:
           listen_address: "0.0.0.0:12201"
           use_incoming_timestamp: true
           labels:
-            job: gelf
+            job: esthesis
         relabel_configs:
           - action: replace
             source_labels:
@@ -93,21 +29,11 @@ stringData:
             source_labels:
               - __gelf_message_level
             target_label: level
-          - action: replace
-            source_labels:
-              - __gelf_message_facility
-            target_label: facility
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: esthesis-loki-gelf-udp
-{{/*  labels:*/}}
-{{/*    app.kubernetes.io/name: loki*/}}
-{{/*    app.kubernetes.io/instance: esthesis*/}}
-{{/*    app.kubernetes.io/managed-by: Helm*/}}
-{{/*    app.kubernetes.io/part-of: grafana-loki*/}}
-{{/*    app.kubernetes.io/component: promtail*/}}
 spec:
   {{ if .Values.global.devEnv.enabled }}
   type: LoadBalancer
@@ -124,5 +50,5 @@ spec:
       protocol: UDP
   selector:
     app.kubernetes.io/name: loki
-    app.kubernetes.io/instance: {{ .Release.Namespace }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: promtail

@@ -6,9 +6,16 @@ quarkus:
     category:
       esthesis:
         level: DEBUG
+    handler:
+      gelf:
+        enabled: true
+        host: esthesis-dev-loki-gelf-udp
+        port: 12201
+        include-full-mdc: true
   mongodb:
-    connection-string: mongodb://esthesis-dev-mongo-1:27017,esthesis-dev-mongo-2:27017
+    connection-string: mongodb://esthesis-dev-mongodb-0:27017,esthesis-dev-mongodb-1:27017
   opentelemetry:
+    enabled: true
     tracer:
       exporter:
         otlp:

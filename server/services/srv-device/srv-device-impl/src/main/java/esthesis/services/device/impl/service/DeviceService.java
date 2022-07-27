@@ -74,16 +74,15 @@ public class DeviceService extends BaseService<Device> {
   }
 
   /**
-   * Checks if device-provided tags exist in the system and reports the ones
-   * that do not exist.
+   * Check if device-pushed tags exist in the system and report the ones that do
+   * not exist.
    *
-   * @param tags The comma-separated list of tags to check.
+   * @param tags the list of tags to check.
    */
   private void checkTags(List<String> tags) {
     for (String tag : tags) {
-      tag = tag.trim();
-      if (tagResourceV1.findByName(tag) != null) {
-        log.warn("Device-pushed tag {} does not exist.", tag);
+      if (tagResourceV1.findByName(tag) == null) {
+        log.warn("Device-pushed tag '{}' does not exist.", tag);
       }
     }
   }
@@ -135,7 +134,7 @@ public class DeviceService extends BaseService<Device> {
     for (String hardwareId : idList) {
       if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
         throw new QAlreadyExistsException(
-            "Preregistration ID {0} is already assigned to a device "
+            "Preregistration id '{0}' is already assigned to a device "
                 + "registered in the system.", hardwareId);
       }
     }
@@ -161,7 +160,7 @@ public class DeviceService extends BaseService<Device> {
     // Check that a device with the same hardware ID does not already exist.
     if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
       throw new QAlreadyExistsException(
-          "Device with hardware ID {0} is already registered with the platform.",
+          "Device with hardware id '{0}' is already registered with the platform.",
           hardwareId);
     }
 
@@ -509,8 +508,13 @@ public class DeviceService extends BaseService<Device> {
    * @param tagName the name of the tag to be removed.
    */
   public void removeTag(String tagName) {
-//
-
-    System.out.println("INSIDE JWT: " + jwt);
+    log.debug("Removing tag '{}' from all devices.", tagName);
+    deviceRepository.find("tags", tagName).stream()
+        .forEach(device -> {
+          device.getTags().removeIf(s -> s.equals(tagName));
+          deviceRepository.update(device);
+          log.trace("Removed tag '{}' from device '{}'.", tagName,
+              device.getId());
+        });
   }
 }

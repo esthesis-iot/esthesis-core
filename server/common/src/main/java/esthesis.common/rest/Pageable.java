@@ -11,13 +11,15 @@ import javax.ws.rs.core.UriInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Slf4j
+@ToString
+@NoArgsConstructor
 public class Pageable {
 
   @Context
@@ -90,4 +92,5 @@ public class Pageable {
         key -> !"page".equals(key) && !"size".equals(key) && !"sort".equals(
             key));
   }
+
 }
