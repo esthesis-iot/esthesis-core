@@ -507,6 +507,7 @@ public class DeviceService extends BaseService<Device> {
    *
    * @param tagName the name of the tag to be removed.
    */
+  @Transactional
   public void removeTag(String tagName) {
     log.debug("Removing tag '{}' from all devices.", tagName);
     deviceRepository.find("tags", tagName).stream()
