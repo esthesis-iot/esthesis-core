@@ -1,0 +1,32 @@
+global:
+  devEnv:
+    enabled: false
+
+prometheus:
+  fullnameOverride: esthesis-prometheus
+  alertmanager:
+    enabled: false
+  exporters:
+    node-exporter:
+      enabled: false
+    kube-state-metrics:
+      enabled: false
+  kubelet:
+    enabled: false
+  blackboxExporter:
+    enabled: false
+  coreDns:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  kubeControllerManager:
+    enabled: false
+  kubeApiServer:
+    enabled: false
+  prometheus:
+    additionalScrapeConfigs:
+      enabled: true
+      type: external
+      external:
+        name: esthesis-prometheus-scrapers-config
+        key: config.yaml

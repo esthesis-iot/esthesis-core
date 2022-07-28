@@ -1,0 +1,9 @@
+{{ if .Values.global.devEnv.enabled }}
+*************************
+* DEV ENVIRONMENT SETUP *
+*************************
+Update your hosts file with the result of the following command:
+
+echo $(kubectl get services esthesis-prometheus-prometheus --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-prometheus
+
+{{ end }}

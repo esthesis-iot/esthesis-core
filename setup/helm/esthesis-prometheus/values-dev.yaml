@@ -1,0 +1,8 @@
+global:
+  devEnv:
+    enabled: true
+
+prometheus:
+  prometheus:
+    service:
+      type: LoadBalancer

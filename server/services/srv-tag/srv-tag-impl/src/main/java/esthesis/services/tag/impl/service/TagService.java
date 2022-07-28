@@ -63,9 +63,13 @@ public class TagService extends BaseService<Tag> {
   public void deleteById(ObjectId id) {
     log.debug("Deleting tag with id '{}'.", id);
     Tag tag = findById(id);
-    super.deleteById(id);
-    log.debug("Emitting tag deleted message for tag '{}'.", tag);
-    tagDeletedEmitter.send(Message.of(tag).addMetadata(
-        TracingMetadata.withCurrent(Context.current())));
+    if (tag != null) {
+      super.deleteById(id);
+      log.debug("Emitting tag deleted message for tag '{}'.", tag);
+      tagDeletedEmitter.send(Message.of(tag).addMetadata(
+          TracingMetadata.withCurrent(Context.current())));
+    } else {
+      log.warn("Tag with id '{}' not found to be deleted.", id);
+    }
   }
 }
