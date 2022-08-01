@@ -1,31 +1,31 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {latLng, marker, tileLayer} from 'leaflet';
-import {TagDto} from '../../dto/tag-dto';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatDialog} from '@angular/material/dialog';
-import {TagService} from '../../tags/tag.service';
-import {DevicesService} from '../devices.service';
-import {BaseComponent} from 'src/app/shared/component/base-component';
-import {UtilityService} from '../../shared/service/utility.service';
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {ActivatedRoute, Router} from "@angular/router";
+import {latLng, marker, tileLayer} from "leaflet";
+import {TagDto} from "../../dto/tag-dto";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {MatDialog} from "@angular/material/dialog";
+import {TagService} from "../../tags/tag.service";
+import {DevicesService} from "../devices.service";
+import {BaseComponent} from "src/app/shared/component/base-component";
+import {UtilityService} from "../../shared/service/utility.service";
 import {
   OkCancelModalComponent
-} from '../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
-import {sprintf} from 'sprintf-js';
-import {FieldDto} from '../../dto/field-dto';
-import {FormatterService} from '../../shared/service/formatter.service';
-import {SettingsService} from '../../settings/settings.service';
-import {AppSettings} from '../../app.settings';
-import {LeafletDirective} from '@asymmetrik/ngx-leaflet';
-import {QFormsService} from '@qlack/forms';
-import {DeviceDto} from '../../dto/device-dto';
+} from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+import {sprintf} from "sprintf-js";
+import {FieldDto} from "../../dto/field-dto";
+import {FormatterService} from "../../shared/service/formatter.service";
+import {SettingsService} from "../../settings/settings.service";
+import {AppSettings} from "../../app.settings";
+import {LeafletDirective} from "@asymmetrik/ngx-leaflet";
+import {QFormsService} from "@qlack/forms";
+import {DeviceDto} from "../../dto/device-dto";
 import {AppConstants} from "../../app.constants";
-import {NiFiService} from '../../infrastructure/infrastructure-nifi/nifi.service';
+import {NiFiService} from "../../infrastructure/infrastructure-nifi/nifi.service";
 
 @Component({
-  selector: 'app-device',
-  templateUrl: './device.component.html',
-  styleUrls: ['./device.component.scss']
+  selector: "app-device",
+  templateUrl: "./device.component.html",
+  styleUrls: ["./device.component.scss"]
 })
 export class DeviceComponent extends BaseComponent implements OnInit, AfterViewInit {
   availableTags: TagDto[] | undefined;
@@ -46,18 +46,18 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
 
   mapOptions = {
     layers: [
-      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        {maxZoom: 18, attribution: '...'})
+      tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {maxZoom: 18, attribution: "..."})
     ],
     zoom: 12
   };
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
-              private qForms: QFormsService, private tagService: TagService,
-              private devicesService: DevicesService, private route: ActivatedRoute,
-              private router: Router, private utilityService: UtilityService,
-              private formatterService: FormatterService,
-              private settingsService: SettingsService, private nifiService: NiFiService) {
+    private qForms: QFormsService, private tagService: TagService,
+    private devicesService: DevicesService, private route: ActivatedRoute,
+    private router: Router, private utilityService: UtilityService,
+    private formatterService: FormatterService,
+    private settingsService: SettingsService, private nifiService: NiFiService) {
     super();
   }
 
@@ -70,12 +70,12 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
         AppSettings.SETTING.GEOLOCATION.LATITUDE,
         AppSettings.SETTING.GEOLOCATION.LONGITUDE,
       ).subscribe(onNext => {
-        onNext.forEach(settingDTO => {
-          if (settingDTO.key === AppSettings.SETTING.GEOLOCATION.LATITUDE) {
-            latSetting = settingDTO.val;
+        onNext.forEach(registryEntryDTO => {
+          if (registryEntryDTO.name === AppSettings.SETTING.GEOLOCATION.LATITUDE) {
+            latSetting = registryEntryDTO.value;
           }
-          if (settingDTO.key === AppSettings.SETTING.GEOLOCATION.LONGITUDE) {
-            lonSetting = settingDTO.val;
+          if (registryEntryDTO.name === AppSettings.SETTING.GEOLOCATION.LONGITUDE) {
+            lonSetting = registryEntryDTO.value;
           }
         });
         if (latSetting && latSetting != "" && lonSetting && lonSetting != "")
@@ -91,7 +91,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
                 // @ts-ignore
                 this.leaflet.map.panTo(latLng([onNext[0].value, onNext[1].value]));
               }
-            })
+            });
       });
     }
   }
@@ -105,14 +105,14 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
     });
 
     // Check if an edit is performed and fetch data.
-    this.id = Number(this.route.snapshot.paramMap.get('id'));
+    this.id = Number(this.route.snapshot.paramMap.get("id"));
 
     // Setup the form.
     this.form = this.fb.group({
-      id: [''],
+      id: [""],
       tags: [[]],
-      state: ['', [Validators.required, Validators.maxLength(32)]],
-      hardwareId: ['', [Validators.required, Validators.maxLength(512)]]
+      state: ["", [Validators.required, Validators.maxLength(32)]],
+      hardwareId: ["", [Validators.required, Validators.maxLength(512)]]
     });
 
     // Get available tags.
@@ -138,7 +138,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
       this.fields!.forEach(field => {
         let formatter;
         if (!field.formatter) {
-          formatter = '%s';
+          formatter = "%s";
         } else {
           formatter = field.formatter;
         }
@@ -148,7 +148,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
         } else {
           value = field.value;
         }
-        this.fieldsValues!.set(field.measurement + '.' + field.field, sprintf(formatter, value));
+        this.fieldsValues!.set(field.measurement + "." + field.field, sprintf(formatter, value));
       });
       this.fetchingDeviceData = false;
     });
@@ -158,16 +158,16 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
     this.devicesService.save(
       this.qForms.cleanupData(this.form.getRawValue()) as DeviceDto).subscribe(
       onNext => {
-        this.utilityService.popupSuccess('Device successfully saved.');
-        this.router.navigate(['devices']);
+        this.utilityService.popupSuccess("Device successfully saved.");
+        this.router.navigate(["devices"]);
       });
   }
 
   delete() {
     const dialogRef = this.dialog.open(OkCancelModalComponent, {
       data: {
-        title: 'Delete Device',
-        question: 'Do you really want to delete this Device?',
+        title: "Delete Device",
+        question: "Do you really want to delete this Device?",
         buttons: {
           ok: true, cancel: true, reload: false
         }
@@ -176,9 +176,9 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.devicesService.delete(this.id).subscribe(onNext => {
-          this.utilityService.popupSuccess('Device deletion request successfully submitted and' +
-            ' is ongoing.');
-          this.router.navigate(['devices']);
+          this.utilityService.popupSuccess("Device deletion request successfully submitted and" +
+            " is ongoing.");
+          this.router.navigate(["devices"]);
         });
       }
     });

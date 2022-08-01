@@ -12,6 +12,7 @@ import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import javax.validation.Valid;
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -30,32 +31,33 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface DeviceResourceV1 {
 
   @POST
-  @Path("preregister")
+  @Path("/preregister")
   Response preregister(@Valid DeviceRegistration deviceRegistration)
   throws NoSuchAlgorithmException, IOException, OperatorCreationException,
          InvalidKeySpecException, NoSuchProviderException;
 
   @GET
-  Page<Device> find(Pageable pageable);
+  @Path("/find")
+  Page<Device> find(@BeanParam Pageable pageable);
 
   @GET
-  @Path("{id}")
+  @Path("/{id}")
   Device get(@PathParam("id") ObjectId id);
 
   @DELETE
-  @Path("{id}")
+  @Path("/{id}")
   void delete(@PathParam("id") ObjectId id);
 
   @POST
   Device save(@Valid Device object);
 
   @GET
-  @Path("{deviceId}/keys")
+  @Path("/{deviceId}/keys")
   @SuppressWarnings("java:S1192")
   Response downloadKeys(@PathParam("deviceId") ObjectId deviceId);
 
   @GET
-  @Path("device-page-data/{deviceId}")
+  @Path("/device-page-data/{deviceId}")
   List<DevicePage> getDevicePageData(@PathParam("deviceId") long deviceId);
 
   /**
@@ -70,16 +72,16 @@ public interface DeviceResourceV1 {
    *                 requested separated by comma.
    */
   @GET
-  @Path("device-data-field/{deviceId}")
+  @Path("/device-data-field/{deviceId}")
   List<DevicePage> getDeviceDataFields(@PathParam("deviceId") long deviceId,
       @QueryParam("fields") String fields);
 
   @GET
-  @Path("count/by-hardware-id")
+  @Path("/count/by-hardware-id")
   int countByHardwareId(@QueryParam("hardwareIds") String hardwareIds);
 
   @GET
-  @Path("count/by-tags")
+  @Path("/count/by-tags")
   int countByTags(@QueryParam("tags") String tags);
 
   @GET

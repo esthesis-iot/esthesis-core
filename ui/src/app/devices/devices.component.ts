@@ -30,7 +30,7 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router,
-              private deviceService: DevicesService, private qForms: QFormsService) {
+    private deviceService: DevicesService, private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
       // TODO
@@ -56,7 +56,7 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
-    this.deviceService.getDevices(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(), [],
+    this.deviceService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(), [],
       false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;

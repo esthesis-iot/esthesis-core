@@ -32,11 +32,26 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-mongodb-panache</artifactId>
     </dependency>
-    
+
     <!-- THIRD-PARTY -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.bohnman</groupId>
+      <artifactId>squiggly-filter-jackson</artifactId>
+      <version>${squiggly-filter-jackson.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>antlr4-runtime</artifactId>
+          <groupId>org.antlr</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jackson-databind</artifactId>
+          <groupId>com.fasterxml.jackson.core</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 

@@ -24,7 +24,6 @@ public interface TagResourceV1 {
 
   @GET
   @Path("/find")
-  @Produces("application/json")
   Page<Tag> find(@BeanParam Pageable pageable);
 
   @GET
@@ -37,7 +36,6 @@ public interface TagResourceV1 {
 
   @DELETE
   @Path("/{id}")
-  @Produces("application/json")
   Response delete(@PathParam("id") ObjectId id);
 
   @POST

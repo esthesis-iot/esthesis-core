@@ -1,6 +1,6 @@
 <form novalidate [formGroup]="form" fxLayout="column">
   <div class="inline-header">Registration mode</div>
-  <mat-radio-group formControlName="deviceRegistration" class="xs-mt2">
+  <mat-radio-group formControlName="deviceRegistrationMode" class="xs-mt2">
     <h4>
       <mat-radio-button
         [value]="settings.SETTING_VALUES.DEVICE_REGISTRATION.REGISTRATION_MODE.DISABLED">Disabled
@@ -46,8 +46,9 @@
   <mat-form-field>
     <mat-select placeholder="Tags matching algorithm" formControlName="deviceTagsAlgorithm"
                 required>
-      <mat-option *ngFor="let o of settings.SETTING_VALUES.DEVICE_REGISTRATION.TAGS_ALGORITHM | keyvalue"
-                  [value]="o.value">
+      <mat-option
+        *ngFor="let o of settings.SETTING_VALUES.DEVICE_REGISTRATION.TAGS_ALGORITHM | keyvalue"
+        [value]="o.value">
         {{ lookupByValue(settings.SETTING_VALUES.DEVICE_REGISTRATION.TAGS_ALGORITHM, o.value) }}
       </mat-option>
     </mat-select>

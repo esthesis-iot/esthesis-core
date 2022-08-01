@@ -15,13 +15,11 @@ public class AppConstants {
   public static class Registry {
 
     private Registry() {
-
     }
 
     public static final String SECURITY_ASYMMETRIC_KEY_SIZE = "securityAsymmetricKeySize";
     public static final String SECURITY_ASYMMETRIC_KEY_ALGORITHM = "securityAsymmetricKeyAlgorithm";
     public static final String SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM = "securityAsymmetricSignatureAlgorithm";
-
     public static final String DEVICE_ROOT_CA = "deviceRootCA";
   }
 

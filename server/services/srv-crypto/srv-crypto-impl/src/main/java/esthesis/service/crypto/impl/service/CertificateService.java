@@ -1,27 +1,20 @@
 package esthesis.service.crypto.impl.service;
 
-import esthesis.service.crypto.impl.dto.CPPPemHolder;
 import esthesis.service.crypto.impl.dto.CSR;
-import esthesis.service.crypto.impl.dto.CreateCA;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -39,87 +32,18 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 
-/**
- * Certificate Authority management.
- */
 @Slf4j
 @ApplicationScoped
-public class CryptoCAService {
+public class CertificateService {
 
   private static final String CN = "CN";
   private static final String CERTIFICATE = "CERTIFICATE";
   private final String IPV4_PATTERN = "^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$";
   private final Pattern ipv4Pattern = Pattern.compile(IPV4_PATTERN);
 
-  @Inject
-  private CryptoAsymmetricService cryptoAsymmetricService;
-
   private boolean isValidIPV4Address(final String email) {
     Matcher matcher = ipv4Pattern.matcher(email);
     return matcher.matches();
-  }
-
-  /**
-   * Create a new Certificate Authority. This method also supports creating a
-   * sub-CA by providing the issuer's information.
-   *
-   * @param createCADTO the details of the CA to be created
-   * @return the generated certificate
-   * @throws NoSuchAlgorithmException  thrown when no algorithm is found for
-   *                                   encryption
-   * @throws InvalidKeySpecException   thrown when the provided key is invalid
-   * @throws OperatorCreationException thrown when something unexpected happens
-   *                                   during the encryption
-   * @throws IOException               thrown when something unexpected happens
-   */
-  public CPPPemHolder createCA(final CreateCA createCADTO)
-  throws NoSuchAlgorithmException, InvalidKeySpecException,
-         OperatorCreationException, IOException,
-         NoSuchProviderException {
-    log.debug("Creating a new CA '{}'.", createCADTO);
-    // Create a keypair for this CA.
-    final KeyPair keyPair = cryptoAsymmetricService.createKeyPair(
-        createCADTO.getCreateKeyPairRequest());
-
-    // Prepare signing.
-    CSR CSR = new CSR();
-    CSR.setValidForm(createCADTO.getValidFrom());
-    CSR.setValidTo(createCADTO.getValidTo());
-    CSR.setLocale(createCADTO.getLocale());
-    CSR.setPublicKey(keyPair.getPublic());
-    CSR.setPrivateKey(keyPair.getPrivate());
-    CSR.setSignatureAlgorithm(
-        createCADTO.getSignatureAlgorithm());
-    CSR.setSubjectCN(createCADTO.getSubjectCN());
-    CSR.setCa(true);
-
-    // Choose which private key to use. If no parent key is found then this is a self-signed certificate and the
-    // private key created for the keypair will be used.
-    if (StringUtils.isNotEmpty(createCADTO.getIssuerCN())
-        && StringUtils.isNotEmpty(
-        createCADTO.getIssuerPrivateKey())) {
-      CSR.setIssuerPrivateKey(
-          cryptoAsymmetricService.pemToPrivateKey(
-              createCADTO.getIssuerPrivateKey(),
-              createCADTO.getIssuerPrivateKeyAlgorithm()));
-      CSR.setIssuerCN(createCADTO.getIssuerCN());
-    } else {
-      CSR.setIssuerPrivateKey(keyPair.getPrivate());
-      CSR.setIssuerCN(createCADTO.getSubjectCN());
-    }
-
-    final X509CertificateHolder certHolder = generateCertificate(
-        CSR);
-
-    // Prepare reply.
-    final CPPPemHolder cppPemKey = new CPPPemHolder();
-    cppPemKey.setPublicKey(cryptoAsymmetricService.publicKeyToPEM(
-        keyPair.getPublic().getEncoded()));
-    cppPemKey.setPrivateKey(cryptoAsymmetricService.privateKeyToPEM(
-        keyPair.getPrivate().getEncoded()));
-    cppPemKey.setCertificate(certificateToPEM(certHolder));
-
-    return cppPemKey;
   }
 
   /**

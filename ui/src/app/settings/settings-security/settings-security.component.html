@@ -1,14 +1,15 @@
 <form novalidate [formGroup]="form" fxLayout="column" fxLayoutGap="0.5rem">
   <div class="inline-header">Platform certificate</div>
   <div class="inline-subheader">
-    The certificate used to sign messages originating from the platform.
+    The certificate used to identify the platform.
   </div>
   <mat-form-field>
-      <mat-select [compareWith]="compareByStringValue" placeholder="Certificate" [formControlName]="settings.SETTING.SECURITY.PLATFORM_CERTIFICATE">
-        <mat-option *ngFor="let o of certificates" [value]="o.id">
-          {{ o.cn }}
-        </mat-option>
-      </mat-select>
+    <mat-select [compareWith]="compareByStringValue" placeholder="Certificate"
+                [formControlName]="settings.SETTING.SECURITY.PLATFORM_CERTIFICATE">
+      <mat-option *ngFor="let o of certificates" [value]="o.id">
+        {{ o.cn }}
+      </mat-option>
+    </mat-select>
   </mat-form-field>
 </form>
 

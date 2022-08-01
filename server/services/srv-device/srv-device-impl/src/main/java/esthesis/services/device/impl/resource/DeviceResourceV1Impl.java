@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.HttpHeaders;
@@ -54,7 +55,7 @@ public class DeviceResourceV1Impl implements DeviceResourceV1 {
   }
 
   @Override
-  public Page<Device> find(Pageable pageable) {
+  public Page<Device> find(@BeanParam Pageable pageable) {
     return deviceService.find(pageable);
   }
 

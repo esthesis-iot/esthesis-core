@@ -23,7 +23,8 @@
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button [matMenuTriggerFor]="menu" [disabled]="this.id === 0">DOWNLOAD
+    <button mat-button [matMenuTriggerFor]="menu"
+            [disabled]="this.id === appConstants.NEW_RECORD_ID">DOWNLOAD
       <mat-menu #menu="matMenu" xPosition="before">
         <button mat-menu-item (click)="downloadPublicKey(false)">Public key</button>
         <button mat-menu-item (click)="downloadPrivateKey(false)">Private key</button>
@@ -35,9 +36,11 @@
       </mat-menu>
     </button>
     <button mat-button routerLink="/cas">CANCEL</button>
-    <button mat-button color="warn" (click)="delete()" [disabled]="this.id === 0">DELETE</button>
+    <button mat-button color="warn" (click)="delete()"
+            [disabled]="this.id === appConstants.NEW_RECORD_ID">DELETE
+    </button>
     <button mat-button color="primary" (click)="save()"
-            [disabled]="form.invalid || id !== 0">SAVE
+            [disabled]="form.invalid || id !== appConstants.NEW_RECORD_ID">SAVE
     </button>
   </mat-card-actions>
 </mat-card>

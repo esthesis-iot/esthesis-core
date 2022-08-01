@@ -22,4 +22,12 @@
     </ext:insertMany>
   </changeSet>
 
+  <changeSet id="2" author="European Dynamics SA">
+    <ext:insertOne collectionName="Registry">
+      <ext:document>
+        {"name":"deviceRegistrationMode", "value": "DISABLED"}
+      </ext:document>
+    </ext:insertOne>
+  </changeSet>
+
 </databaseChangeLog>

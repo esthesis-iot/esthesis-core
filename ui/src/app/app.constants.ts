@@ -1,9 +1,9 @@
 export const AppConstants = {
   // An id designating a new record is to be created.
-  NEW_RECORD_ID: 'new',
-  
+  NEW_RECORD_ID: "new",
+
   // The date format to use.
-  DATE_FORMAT: 'yyyy-MM-dd HH:mm:ss',
+  DATE_FORMAT: "yyyy-MM-dd HH:mm:ss",
 
   // The different types of security keys and CERTIFICATE.
   KEY_TYPE: {
@@ -15,18 +15,18 @@ export const AppConstants = {
   // Device settings.
   DEVICE: {
     STATE: {
-      DISABLED: 'DISABLED',
-      PREREGISTERED: 'PREREGISTERED',
-      REGISTERED: 'REGISTERED',
-      APPROVAL: 'APPROVAL'
+      DISABLED: "DISABLED",
+      PREREGISTERED: "PREREGISTERED",
+      REGISTERED: "REGISTERED",
+      APPROVAL: "APPROVAL"
     },
     COMMANDS: {
-      EXECUTE: 'EXECUTE',
-      HEALTH: 'HEALTH',
-      PING: 'PING',
-      PROVISIONING: 'PROVISIONING',
-      REBOOT: 'REBOOT',
-      SHUTDOWN: 'SHUTDOWN'
+      EXECUTE: "EXECUTE",
+      HEALTH: "HEALTH",
+      PING: "PING",
+      PROVISIONING: "PROVISIONING",
+      REBOOT: "REBOOT",
+      SHUTDOWN: "SHUTDOWN"
     }
   },
 
@@ -38,23 +38,23 @@ export const AppConstants = {
 
   // Available formatters for field values.
   FIELD_VALUE_FORMATTER: {
-    DATE_SHORT: 'DATE_SHORT',
-    DATE_MEDIUM: 'DATE_MEDIUM',
-    DATE_LONG: 'DATE_LONG',
-    DATETIME_SHORT: 'DATETIME_SHORT',
-    DATETIME_MEDIUM: 'DATETIME_MEDIUM',
-    DATETIME_LONG: 'DATETIME_LONG',
-    DURATION_MSEC: 'DURATION_MSEC',
-    BYTES_TO_MB: 'BYTES_TO_MB',
-    BYTES_TO_GB: 'BYTES_TO_GB',
-    FAHRENHEIT_TO_CELCIUS: 'FAHRENHEIT_TO_CELCIUS',
-    CELCIUS_TO_FAHRENHEIT: 'CELCIUS_TO_FAHRENHEIT'
+    DATE_SHORT: "DATE_SHORT",
+    DATE_MEDIUM: "DATE_MEDIUM",
+    DATE_LONG: "DATE_LONG",
+    DATETIME_SHORT: "DATETIME_SHORT",
+    DATETIME_MEDIUM: "DATETIME_MEDIUM",
+    DATETIME_LONG: "DATETIME_LONG",
+    DURATION_MSEC: "DURATION_MSEC",
+    BYTES_TO_MB: "BYTES_TO_MB",
+    BYTES_TO_GB: "BYTES_TO_GB",
+    FAHRENHEIT_TO_CELCIUS: "FAHRENHEIT_TO_CELCIUS",
+    CELCIUS_TO_FAHRENHEIT: "CELCIUS_TO_FAHRENHEIT"
   },
 
   // Measurement types.
   MEASUREMENT_TYPE: {
-    TELEMETRY: 'TELEMETRY',
-    METADATA: 'METADATA'
+    TELEMETRY: "TELEMETRY",
+    METADATA: "METADATA"
   },
 
   // The different types of NiFiSinks handlers.

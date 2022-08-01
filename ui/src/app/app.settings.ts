@@ -12,7 +12,7 @@ export const AppSettings = {
       PLATFORM_CERTIFICATE: "platformCertificate"
     },
     DEVICE_REGISTRATION: {
-      REGISTRATION_MODE: "deviceRegistration",
+      REGISTRATION_MODE: "deviceRegistrationMode",
       TAGS_ALGORITHM: "deviceTagsAlgorithm",
       ROOT_CA: "deviceRootCA"
     },

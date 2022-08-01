@@ -1,8 +1,10 @@
 package esthesis.service.registry.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import esthesis.common.dto.BaseDTO;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,7 @@ import org.bson.types.ObjectId;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @RegisterForReflection
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
@@ -35,11 +38,13 @@ public class RegistryEntry extends BaseDTO {
   public boolean asBoolean() {
     return Boolean.parseBoolean(String.valueOf(value));
   }
-  
+
+  @JsonIgnore
   public boolean isTrue() {
     return value != null && asBoolean();
   }
 
+  @JsonIgnore
   public boolean isFalse() {
     return value != null && !asBoolean();
   }

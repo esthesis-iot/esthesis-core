@@ -1,6 +1,6 @@
-import {HttpClient, HttpEvent, HttpResponse} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {QPageableReply} from '@qlack/forms';
+import {HttpClient, HttpEvent, HttpResponse} from "@angular/common/http";
+import {Observable} from "rxjs";
+import {QPageableReply} from "@qlack/forms";
 import {environment} from "../../environments/environment";
 import {FormGroup} from "@angular/forms";
 
@@ -11,7 +11,7 @@ export class CrudService<T> {
   constructor(public http: HttpClient, private endpoint: string) {
   }
 
-  save(object: T) {
+  save(object: T | T[]) {
     return this.http.post(`${environment.apiPrefix}/${this.endpoint}`, object);
   }
 

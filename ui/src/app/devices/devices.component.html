@@ -21,9 +21,6 @@
             <div *ngIf="element.lastSeen">
               {{element.lastSeen | amFromUtc | amLocal | amTimeAgo}}
             </div>
-            <div *ngIf="!(element.lastSeen)">
-              Never
-            </div>
           </td>
         </ng-container>
         <ng-container matColumnDef="state">

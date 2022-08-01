@@ -13,6 +13,10 @@ public abstract class BaseService<D extends BaseDTO> {
   @SuppressWarnings("CdiInjectionPointsInspection")
   PanacheMongoRepository<D> repository;
 
+  public PanacheMongoRepository<D> getRepository() {
+    return repository;
+  }
+
   public D findByColumn(String column, String value,
       boolean partialMatch) {
     if (partialMatch) {

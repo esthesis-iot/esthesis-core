@@ -1,18 +1,18 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {CaDto} from '../dto/ca-dto';
-import {FormGroup} from '@angular/forms';
-import {CrudService} from '../services/crud.service';
-import {Observable} from 'rxjs';
+import {Injectable} from "@angular/core";
+import {HttpClient} from "@angular/common/http";
+import {CaDto} from "../dto/ca-dto";
+import {FormGroup} from "@angular/forms";
+import {CrudService} from "../services/crud.service";
+import {Observable} from "rxjs";
 import {environment} from "../../environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class CasService extends CrudService<CaDto> {
 
   constructor(http: HttpClient) {
-    super(http, 'cas')
+    super(http, "v1/ca");
   }
 
   /**
@@ -20,17 +20,17 @@ export class CasService extends CrudService<CaDto> {
    * @param {number} caId The id of the CA to download the details of.
    * @param {number} keyType The type of the key to download as per AppConstants.KEY_TYPE.
    */
-  download(caId: number, keyType: number, base64: boolean) {
+  download(caId: string, keyType: number, base64: boolean) {
     this.http.get(`${environment.apiPrefix}/cas/${caId}/download/${keyType}/${base64}`, {
-      responseType: 'blob', observe: 'response'
+      responseType: "blob", observe: "response"
     }).subscribe(onNext => {
       this.saveAs(onNext);
     });
   }
 
-  backup(caId: number) {
+  backup(caId: string) {
     this.http.get(`${environment.apiPrefix}/cas/${caId}/backup`, {
-      responseType: 'blob', observe: 'response'
+      responseType: "blob", observe: "response"
     }).subscribe(onNext => {
       this.saveAs(onNext);
     });
@@ -41,7 +41,7 @@ export class CasService extends CrudService<CaDto> {
   }
 
   getEligibleForSigning(): Observable<CaDto[]> {
-    return this.http.get<CaDto[]>(`${environment.apiPrefix}/cas/eligible-for-signing`);
+    return this.http.get<CaDto[]>(`${environment.apiPrefix}/v1/ca/eligible-for-signing`);
   }
 
 }

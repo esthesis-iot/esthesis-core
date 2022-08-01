@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { MatTabGroup } from '@angular/material/tabs';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {MatTabGroup} from '@angular/material/tabs';
 
 @Component({
   selector: 'app-infrastructure',
@@ -8,7 +8,7 @@ import { MatTabGroup } from '@angular/material/tabs';
   styleUrls: []
 })
 export class InfrastructureComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatTabGroup, { static: true }) tabs!: MatTabGroup;
+  @ViewChild(MatTabGroup, {static: true}) tabs!: MatTabGroup;
 
   constructor(private activatedRoute: ActivatedRoute) {
   }

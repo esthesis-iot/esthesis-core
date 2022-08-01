@@ -38,35 +38,10 @@ import org.bouncycastle.util.io.pem.PemObject;
 
 @Slf4j
 @ApplicationScoped
-public class CryptoAsymmetricService {
+public class KeyService {
 
   private static final String RSA_PUBLIC_KEY = "RSA PUBLIC KEY";
   private static final String RSA_PRIVATE_KEY = "RSA PRIVATE KEY";
-
-  @SuppressWarnings("squid:S4784")
-  private String removePEMHeaderFooter(final String key) {
-    String regex = "---.*---\\n*";
-    final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
-    final Matcher matcher = pattern.matcher(key);
-
-    return matcher.replaceAll("");
-  }
-
-  protected String convertKeyToPEM(final byte[] key, final String keyType)
-  throws IOException {
-    log.debug("Converting key to PEM.", key);
-    try (StringWriter pemStrWriter = new StringWriter()) {
-      try (JcaPEMWriter pemWriter = new JcaPEMWriter(pemStrWriter)) {
-        if (keyType.equals(RSA_PRIVATE_KEY)) {
-          pemWriter.writeObject(new PemObject(keyType, key));
-        } else if (keyType.equals(RSA_PUBLIC_KEY)) {
-          pemWriter.writeObject(new PemObject(keyType, key));
-        }
-        pemWriter.flush();
-        return pemStrWriter.toString();
-      }
-    }
-  }
 
   /**
    * Generates a new keypair consisting of a public key and a private key.
@@ -98,11 +73,68 @@ public class CryptoAsymmetricService {
 
     // Set the secret provider and generator.
     keyPairGenerator.initialize(createKeyPairRequest.getKeySize(),
-        SecureRandom.getInstance(
-            getSecureRandomAlgorithm(
-                createKeyPairRequest.getSecureRandomAlgorithm())));
+        SecureRandom.getInstance(getSecureRandomAlgorithm(
+            createKeyPairRequest.getSecureRandomAlgorithm())));
 
     return keyPairGenerator.generateKeyPair();
+  }
+
+  /**
+   * Converts a public key to PEM format.
+   *
+   * @param publicKey The public key to convert.
+   * @return the generated PEM format.
+   * @throws IOException thrown when something unexpected happens.
+   */
+  public String publicKeyToPEM(final byte[] publicKey) throws IOException {
+    return convertKeyToPEM(publicKey, RSA_PUBLIC_KEY);
+  }
+
+  /**
+   * Converts a private key to string in PEM format.
+   *
+   * @param privateKey the private key to convert.
+   * @return the generated PEM format.
+   * @throws IOException thrown when generating PEM.
+   */
+  public String privateKeyToPEM(final byte[] privateKey) throws IOException {
+    return convertKeyToPEM(privateKey, RSA_PRIVATE_KEY);
+  }
+
+  /**
+   * Converts a text-based private key (in PEM format) to {@link PrivateKey}.
+   *
+   * @param privateKey the private key in PEM format to convert
+   * @param algorithm  the security algorithm with which this key was generated
+   * @return the generated PEM format
+   * @throws NoSuchAlgorithmException thrown when no algorithm is found for
+   *                                  encryption
+   * @throws InvalidKeySpecException  thrown when the provided key is invalid
+   */
+  public PrivateKey pemToPrivateKey(String privateKey, final String algorithm)
+  throws NoSuchAlgorithmException, InvalidKeySpecException {
+    log.debug("Converting PEM private key '{}' to PrivateKey.", privateKey);
+    PrivateKey key;
+
+    // Cleanup the PEM from unwanted text.
+    privateKey = removePEMHeaderFooter(privateKey).trim();
+
+    // Read the cleaned up PEM and generate the public key.
+    byte[] encoded = Base64.decodeBase64(privateKey);
+    final PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
+    final KeyFactory factory = KeyFactory.getInstance(algorithm);
+    key = factory.generatePrivate(keySpec);
+
+    return key;
+  }
+
+  @SuppressWarnings("squid:S4784")
+  public String removePEMHeaderFooter(final String key) {
+    String regex = "---.*---\\n*";
+    final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+    final Matcher matcher = pattern.matcher(key);
+
+    return matcher.replaceAll("");
   }
 
   public byte[] keyToByteArray(@NotNull final Key key) {
@@ -142,82 +174,6 @@ public class CryptoAsymmetricService {
     }
 
     return keyFactory.generatePublic(new X509EncodedKeySpec(key));
-  }
-
-  /**
-   * Converts a public key to PEM format.
-   *
-   * @param publicKey The public key to convert.
-   * @return the generated PEM format.
-   * @throws IOException thrown when something unexpected happens.
-   */
-  public String publicKeyToPEM(final byte[] publicKey) throws IOException {
-    return convertKeyToPEM(publicKey, RSA_PUBLIC_KEY);
-  }
-
-  /**
-   * Converts a private key to string in PEM format.
-   *
-   * @param privateKey the private key to convert.
-   * @return the generated PEM format.
-   * @throws IOException thrown when generating PEM.
-   */
-  public String privateKeyToPEM(final byte[] privateKey) throws IOException {
-    return convertKeyToPEM(privateKey, RSA_PRIVATE_KEY);
-  }
-
-  /**
-   * Converts a text-based public key (in PEM format) to {@link PublicKey}.
-   *
-   * @param publicKey the public key in PEM format to convert
-   * @param algorithm the security algorithm with which this key was generated
-   * @return the generated PEM format
-   * @throws NoSuchAlgorithmException thrown when no algorithm is found for
-   *                                  encryption
-   * @throws InvalidKeySpecException  thrown when the provided key is invalid
-   */
-  public PublicKey pemToPublicKey(String publicKey, final String algorithm)
-  throws NoSuchAlgorithmException, InvalidKeySpecException {
-    log.debug("Converting PEM public key '{}' to PublicKey.", publicKey);
-    PublicKey key;
-
-    // Cleanup the PEM from unwanted text.
-    publicKey = removePEMHeaderFooter(publicKey).trim();
-
-    // Read the cleaned up PEM and generate the public key.
-    byte[] encoded = Base64.decodeBase64(publicKey);
-    final X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
-    final KeyFactory factory = KeyFactory.getInstance(algorithm);
-    key = factory.generatePublic(keySpec);
-
-    return key;
-  }
-
-  /**
-   * Converts a text-based private key (in PEM format) to {@link PrivateKey}.
-   *
-   * @param privateKey the private key in PEM format to convert
-   * @param algorithm  the security algorithm with which this key was generated
-   * @return the generated PEM format
-   * @throws NoSuchAlgorithmException thrown when no algorithm is found for
-   *                                  encryption
-   * @throws InvalidKeySpecException  thrown when the provided key is invalid
-   */
-  public PrivateKey pemToPrivateKey(String privateKey, final String algorithm)
-  throws NoSuchAlgorithmException, InvalidKeySpecException {
-    log.debug("Converting PEM private key '{}' to PrivateKey.", privateKey);
-    PrivateKey key;
-
-    // Cleanup the PEM from unwanted text.
-    privateKey = removePEMHeaderFooter(privateKey).trim();
-
-    // Read the cleaned up PEM and generate the public key.
-    byte[] encoded = Base64.decodeBase64(privateKey);
-    final PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
-    final KeyFactory factory = KeyFactory.getInstance(algorithm);
-    key = factory.generatePrivate(keySpec);
-
-    return key;
   }
 
   /**
@@ -441,6 +397,33 @@ public class CryptoAsymmetricService {
   }
 
   /**
+   * Converts a text-based public key (in PEM format) to {@link PublicKey}.
+   *
+   * @param publicKey the public key in PEM format to convert
+   * @param algorithm the security algorithm with which this key was generated
+   * @return the generated PEM format
+   * @throws NoSuchAlgorithmException thrown when no algorithm is found for
+   *                                  encryption
+   * @throws InvalidKeySpecException  thrown when the provided key is invalid
+   */
+  public PublicKey pemToPublicKey(String publicKey, final String algorithm)
+  throws NoSuchAlgorithmException, InvalidKeySpecException {
+    log.debug("Converting PEM public key '{}' to PublicKey.", publicKey);
+    PublicKey key;
+
+    // Cleanup the PEM from unwanted text.
+    publicKey = removePEMHeaderFooter(publicKey).trim();
+
+    // Read the cleaned up PEM and generate the public key.
+    byte[] encoded = Base64.decodeBase64(publicKey);
+    final X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
+    final KeyFactory factory = KeyFactory.getInstance(algorithm);
+    key = factory.generatePublic(keySpec);
+
+    return key;
+  }
+
+  /**
    * Finds the requested secure random algorithm or returns the default one.
    *
    * @param secureRandomAlgorithm the secure random algorithm to find.
@@ -455,6 +438,22 @@ public class CryptoAsymmetricService {
       }
     } else {
       return secureRandomAlgorithm;
+    }
+  }
+
+  public String convertKeyToPEM(final byte[] key, final String keyType)
+  throws IOException {
+    log.debug("Converting key to PEM.", key);
+    try (StringWriter pemStrWriter = new StringWriter()) {
+      try (JcaPEMWriter pemWriter = new JcaPEMWriter(pemStrWriter)) {
+        if (keyType.equals(RSA_PRIVATE_KEY)) {
+          pemWriter.writeObject(new PemObject(keyType, key));
+        } else if (keyType.equals(RSA_PUBLIC_KEY)) {
+          pemWriter.writeObject(new PemObject(keyType, key));
+        }
+        pemWriter.flush();
+        return pemStrWriter.toString();
+      }
     }
   }
 }

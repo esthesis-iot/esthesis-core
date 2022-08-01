@@ -4,6 +4,12 @@ quarkus:
   container-image:
     group: esthesisiot
     name: esthesis-srv-crypto
+  mongodb:
+    connection-string: mongodb://mongodb:27017
+    database: esthesis
+    credentials:
+      username: esthesis
+      password: esthesis
   devservices:
     enabled: false
   log:

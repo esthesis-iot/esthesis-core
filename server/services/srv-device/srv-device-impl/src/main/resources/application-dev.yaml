@@ -25,7 +25,7 @@ quarkus:
     RegistryResource:
       url: http://esthesis-dev-apisix-gateway/dev
       scope: Singleton
-    CryptoResource:
+    CAResource:
       url: http://esthesis-dev-apisix-gateway/dev
       scope: Singleton
     TagResource:

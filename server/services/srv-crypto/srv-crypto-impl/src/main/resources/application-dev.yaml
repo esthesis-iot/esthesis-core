@@ -9,6 +9,8 @@ quarkus:
     RegistryResource:
       url: http://esthesis-dev-apisix-gateway/dev
       scope: Singleton
+  mongodb:
+    connection-string: mongodb://esthesis-dev-mongodb-0:27017,esthesis-dev-mongodb-1:27017
   log:
     category:
       #      "org.jboss.resteasy.reactive.client.logging":
