@@ -43,7 +43,7 @@ export class CasEditComponent extends BaseComponent implements OnInit {
         value: "",
         disabled: this.id !== AppConstants.NEW_RECORD_ID
       }, [Validators.required]],
-      parentCa: [{value: "", disabled: this.id !== AppConstants.NEW_RECORD_ID}],
+      parentCaId: [{value: "", disabled: this.id !== AppConstants.NEW_RECORD_ID}],
     });
 
     // Fill-in the form with data if editing an existing item.
@@ -87,7 +87,7 @@ export class CasEditComponent extends BaseComponent implements OnInit {
           }, error: () => {
             this.utilityService.popupError("Root CA could not be deleted, please try again later.");
           }
-        })
+        });
       }
     });
   }

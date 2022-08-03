@@ -3,6 +3,7 @@ package esthesis.service.crypto.impl.resource;
 import esthesis.common.AppConstants.Registry;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.rest.Page;
+import esthesis.common.rest.PageReplyFilter;
 import esthesis.common.rest.Pageable;
 import esthesis.service.crypto.dto.Ca;
 import esthesis.service.crypto.dto.CertificateRequest;
@@ -32,6 +33,8 @@ import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -142,12 +145,18 @@ public class CAResourceV1Impl implements CAResourceV1 {
     return certificateService.certificateToPEM(x509CertificateHolder);
   }
 
+  @GET
   @Override
+  @Path("/find")
+  @PageReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,content.type")
   public Page<Ca> find(@BeanParam Pageable pageable) {
     return caService.find(pageable);
   }
 
+  @GET
   @Override
+  @Path("/{id}")
+  @PageReplyFilter(filter = "id,cn,issued,parentCa,type")
   public Ca findById(ObjectId id) {
     return caService.findById(id);
   }

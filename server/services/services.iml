@@ -53,7 +53,6 @@
     <orderEntry type="library" name="Maven: org.mongodb:bson:4.6.1" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.3" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.3" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-container-image-docker:2.11.1.Final" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-container-image:2.11.1.Final" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-rest-client-reactive-jackson:2.11.1.Final" level="project" />
@@ -80,6 +79,7 @@
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-kafka-client:2.11.1.Final" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-caffeine:2.11.1.Final" level="project" />
     <orderEntry type="library" name="Maven: com.github.ben-manes.caffeine:caffeine:2.9.3" level="project" />
+    <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.14.0" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-messaging-kafka:3.18.0" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.reactive:smallrye-reactive-messaging-kafka-api:3.18.0" level="project" />
     <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-api:1.15.0" level="project" />
@@ -193,6 +193,9 @@
     <orderEntry type="library" name="Maven: com.google.api.grpc:proto-google-common-protos:2.9.1" level="project" />
     <orderEntry type="library" name="Maven: io.grpc:grpc-protobuf-lite:1.47.0" level="project" />
     <orderEntry type="library" name="Maven: io.grpc:grpc-stub:1.47.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:31.1-jre" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:failureaccess:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.3" level="project" />
     <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-exporter-otlp:1.15.0" level="project" />
     <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-sdk-trace:1.15.0" level="project" />
     <orderEntry type="library" name="Maven: io.opentelemetry:opentelemetry-sdk-metrics:1.15.0" level="project" />
@@ -219,6 +222,7 @@
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-mongodb-panache-common:2.11.1.Final" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-panache-common:2.11.1.Final" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-panacheql:2.11.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.9.2" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-narayana-jta:2.11.1.Final" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-transaction-annotations:2.11.1.Final" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye:smallrye-context-propagation-jta:1.2.2" level="project" />
@@ -238,17 +242,8 @@
     <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive-vertx:2.11.1.Final" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-mongodb-panache:2.11.1.Final" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.12.0" level="project" />
-    <orderEntry type="library" name="Maven: com.github.bohnman:squiggly-filter-jackson:1.3.18" level="project" />
-    <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.9.2" level="project" />
-    <orderEntry type="library" name="Maven: com.google.guava:guava:31.1-jre" level="project" />
-    <orderEntry type="library" name="Maven: com.google.guava:failureaccess:1.0.1" level="project" />
-    <orderEntry type="library" name="Maven: org.checkerframework:checker-qual:3.22.2" level="project" />
-    <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.14.0" level="project" />
-    <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.3" level="project" />
-    <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.3" level="project" />
-    <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
-    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
-    <orderEntry type="library" name="Maven: net.jcip:jcip-annotations:1.0" level="project" />
+    <orderEntry type="library" name="Maven: ch.mfrey.jackson:jackson-antpathfilter:1.0.2" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.3" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-config-yaml:2.11.1.Final" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.config:smallrye-config-source-yaml:2.10.1" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.config:smallrye-config-common:2.10.1" level="project" />

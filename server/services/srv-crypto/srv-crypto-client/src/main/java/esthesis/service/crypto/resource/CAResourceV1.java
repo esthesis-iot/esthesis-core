@@ -70,7 +70,7 @@ public interface CAResourceV1 {
   Response backup(@PathParam("id") ObjectId id);
 
 //  @POST
-//  @Path("/ca/restore")
+//  @Path("/restore")
 //  Response restore(@BeanParam MultipartFile backup);
 
   @DELETE

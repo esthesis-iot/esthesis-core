@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.bson.types.ObjectId;
 
 @Data
 @NoArgsConstructor
@@ -40,6 +41,9 @@ public class Ca extends BaseDTO {
 
   // The parent CA CN.
   private String parentCa;
+
+  // The parent CA id.
+  private ObjectId parentCaId;
 
   private int type;
 

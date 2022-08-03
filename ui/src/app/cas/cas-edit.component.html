@@ -13,8 +13,8 @@
           <mat-datepicker #validityPicker disabled="false"></mat-datepicker>
         </mat-form-field>
         <mat-form-field>
-          <mat-select placeholder="Parent CA" formControlName="parentCa">
-            <mat-option *ngFor="let option of parents" [value]="option.cn">
+          <mat-select placeholder="Parent CA" formControlName="parentCaId">
+            <mat-option *ngFor="let option of parents" [value]="option.id">
               {{ option.cn }}
             </mat-option>
           </mat-select>

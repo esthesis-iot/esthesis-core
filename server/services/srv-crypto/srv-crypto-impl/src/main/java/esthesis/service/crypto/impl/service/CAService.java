@@ -79,6 +79,7 @@ public class CAService extends BaseService<Ca> {
             .issuerPrivateKeyAlgorithm(registryResourceV1.findByName(
                 Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
             .issuerPrivateKey(parentCa.getPrivateKey());
+        ca.setParentCaId(parentCa.getId());
       }
 
       final CPPPemHolder cppPemHolderDTO = createCA(createCABuilder.build());
