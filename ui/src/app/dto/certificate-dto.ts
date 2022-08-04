@@ -1,5 +1,5 @@
 export class CertificateDto {
-  id: number;
+  id: string;
   cn: string;
   issued: Date | undefined;
   validity: Date | undefined;
@@ -8,7 +8,7 @@ export class CertificateDto {
   privateKey: string | undefined;
   issuer: string | undefined;
 
-  constructor(id: number, cn: string) {
+  constructor(id: string, cn: string) {
     this.id = id;
     this.cn = cn;
   }

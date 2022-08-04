@@ -1,23 +1,23 @@
-import {Component, OnInit} from '@angular/core';
-import {BaseComponent} from '../shared/component/base-component';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {MatDialog} from '@angular/material/dialog';
-import {StoresService} from './stores.service';
+import {Component, OnInit} from "@angular/core";
+import {BaseComponent} from "../shared/component/base-component";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ActivatedRoute, Router} from "@angular/router";
+import {MatDialog} from "@angular/material/dialog";
+import {StoresService} from "./stores.service";
 import {
   OkCancelModalComponent
-} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
-import {CaDto} from '../dto/ca-dto';
-import {UtilityService} from '../shared/service/utility.service';
-import {CasService} from '../cas/cas.service';
-import {CertificatesService} from '../certificates/certificates.service';
-import {CertificateDto} from '../dto/certificate-dto';
-import {QFormsService} from '@qlack/forms';
-import {StoreDto} from '../dto/store-dto';
+} from "../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+import {CaDto} from "../dto/ca-dto";
+import {UtilityService} from "../shared/service/utility.service";
+import {CasService} from "../cas/cas.service";
+import {CertificatesService} from "../certificates/certificates.service";
+import {CertificateDto} from "../dto/certificate-dto";
+import {QFormsService} from "@qlack/forms";
+import {StoreDto} from "../dto/store-dto";
 
 @Component({
-  selector: 'app-stores-edit',
-  templateUrl: './stores-edit.component.html',
+  selector: "app-stores-edit",
+  templateUrl: "./stores-edit.component.html",
   styleUrls: []
 })
 export class StoresEditComponent extends BaseComponent implements OnInit {
@@ -27,26 +27,26 @@ export class StoresEditComponent extends BaseComponent implements OnInit {
   certs: CertificateDto[] | undefined;
 
   constructor(private fb: FormBuilder, private storesService: StoresService,
-              private qForms: QFormsService, private route: ActivatedRoute, private router: Router,
-              private dialog: MatDialog, private utilityService: UtilityService,
-              private casService: CasService, private certificatesService: CertificatesService) {
+    private qForms: QFormsService, private route: ActivatedRoute, private router: Router,
+    private dialog: MatDialog, private utilityService: UtilityService,
+    private casService: CasService, private certificatesService: CertificatesService) {
     super();
   }
 
   ngOnInit() {
     // Check if an edit is performed and fetch data.
-    this.id = Number(this.route.snapshot.paramMap.get('id'));
+    this.id = Number(this.route.snapshot.paramMap.get("id"));
 
     // Setup the form.
     this.form = this.fb.group({
-      id: [''],
-      name: ['', [Validators.required, Validators.maxLength(256)]],
-      password: ['', [Validators.required, Validators.maxLength(256)]],
-      passwordForKeys: [''],
-      certCertificates: [''],
-      certCas: [''],
-      pkCertificates: [''],
-      pkCas: [''],
+      id: [""],
+      name: ["", [Validators.required, Validators.maxLength(256)]],
+      password: ["", [Validators.required, Validators.maxLength(256)]],
+      passwordForKeys: [""],
+      certCertificates: [""],
+      certCas: [""],
+      pkCertificates: [""],
+      pkCas: [""],
     });
 
     // Fill form.
@@ -56,11 +56,11 @@ export class StoresEditComponent extends BaseComponent implements OnInit {
       });
     }
 
-    this.casService.find('sort=name,asc').subscribe(onNext => {
+    this.casService.find("sort=name,asc").subscribe(onNext => {
       this.cas = onNext.content;
     });
 
-    this.certificatesService.getAll('sort=name,asc').subscribe(onNext => {
+    this.certificatesService.find("sort=name,asc").subscribe(onNext => {
       this.certs = onNext.content;
     });
   }
@@ -68,17 +68,17 @@ export class StoresEditComponent extends BaseComponent implements OnInit {
   save() {
     this.storesService.save(this.qForms.cleanupData(this.form.getRawValue()) as StoreDto).subscribe(
       onNext => {
-        this.utilityService.popupSuccess(this.form.value.id ? 'Store was successfully edited.'
-          : 'Store was successfully created.');
-        this.router.navigate(['stores']);
+        this.utilityService.popupSuccess(this.form.value.id ? "Store was successfully edited."
+          : "Store was successfully created.");
+        this.router.navigate(["stores"]);
       });
   }
 
   delete() {
     this.dialog.open(OkCancelModalComponent, {
       data: {
-        title: 'Delete store',
-        question: 'Do you really want to delete this store?',
+        title: "Delete store",
+        question: "Do you really want to delete this store?",
         buttons: {
           ok: true, cancel: true, reload: false
         }
@@ -86,8 +86,8 @@ export class StoresEditComponent extends BaseComponent implements OnInit {
     }).afterClosed().subscribe(result => {
       if (result) {
         this.storesService.delete(this.id).subscribe(onNext => {
-          this.utilityService.popupSuccess('Stores successfully deleted.');
-          this.router.navigate(['stores']);
+          this.utilityService.popupSuccess("Stores successfully deleted.");
+          this.router.navigate(["stores"]);
         });
       }
     });

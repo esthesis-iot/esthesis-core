@@ -3,9 +3,9 @@ package esthesis.service.crypto.resource;
 import esthesis.common.rest.Page;
 import esthesis.common.rest.Pageable;
 import esthesis.service.crypto.dto.Ca;
-import esthesis.service.crypto.dto.CertificateRequest;
-import esthesis.service.crypto.dto.ImportCaForm;
-import esthesis.service.crypto.dto.KeyPairResponse;
+import esthesis.service.crypto.dto.form.ImportCaForm;
+import esthesis.service.crypto.dto.request.CreateCertificateRequest;
+import esthesis.service.crypto.dto.response.CreateKeyPairResponse;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -36,7 +36,7 @@ public interface CAResourceV1 {
 
   @GET
   @Path("/keypair")
-  KeyPairResponse generateKeyPair()
+  CreateKeyPairResponse generateKeyPair()
   throws NoSuchAlgorithmException, NoSuchProviderException;
 
   @GET
@@ -49,7 +49,8 @@ public interface CAResourceV1 {
 
   @GET
   @Path("/certificate")
-  String generateCertificateAsPEM(CertificateRequest certificateRequest)
+  String generateCertificateAsPEM(
+      CreateCertificateRequest createCertificateRequest)
   throws NoSuchAlgorithmException, InvalidKeySpecException,
          OperatorCreationException, IOException;
 

@@ -1,4 +1,4 @@
-package esthesis.service.crypto.impl.dto;
+package esthesis.service.crypto.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

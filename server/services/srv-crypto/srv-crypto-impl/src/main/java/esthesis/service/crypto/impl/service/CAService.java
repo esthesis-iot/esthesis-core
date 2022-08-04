@@ -8,16 +8,15 @@ import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QMutationNotPermittedException;
 import esthesis.common.service.BaseService;
 import esthesis.common.validation.CVException;
+import esthesis.service.crypto.dto.CPPPemHolder;
 import esthesis.service.crypto.dto.Ca;
-import esthesis.service.crypto.dto.ImportCaForm;
-import esthesis.service.crypto.impl.dto.CPPPemHolder;
-import esthesis.service.crypto.impl.dto.CSR;
-import esthesis.service.crypto.impl.dto.CreateCA;
-import esthesis.service.crypto.impl.dto.CreateCA.CreateCABuilder;
-import esthesis.service.crypto.impl.dto.CreateKeyPair;
+import esthesis.service.crypto.dto.form.ImportCaForm;
+import esthesis.service.crypto.dto.request.CertificateSignRequest;
+import esthesis.service.crypto.dto.request.CreateCARequest;
+import esthesis.service.crypto.dto.request.CreateCARequest.CreateCARequestBuilder;
+import esthesis.service.crypto.dto.request.CreateKeyPairRequest;
 import esthesis.service.registry.resource.RegistryResourceV1;
 import io.quarkus.panache.common.Sort;
-import io.smallrye.common.annotation.Blocking;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyPair;
@@ -73,8 +72,8 @@ public class CAService extends BaseService<Ca> {
 
     // Create the CA.
     try {
-      CreateCABuilder createCABuilder = CreateCA.builder()
-          .createKeyPairRequest(CreateKeyPair.builder()
+      CreateCARequestBuilder createCARequestBuilder = CreateCARequest.builder()
+          .createKeyPairRequest(CreateKeyPairRequest.builder()
               .keySize(registryResourceV1.findByName(
                   Registry.SECURITY_ASYMMETRIC_KEY_SIZE).asInt())
               .keyPairGeneratorAlgorithm(registryResourceV1.findByName(
@@ -92,7 +91,7 @@ public class CAService extends BaseService<Ca> {
       // If this CA has a parent CA (i.e. it is a sub-CA) fetch the details of the parent.
       if (ca.getParentCaId() != null) {
         Ca parentCa = findById(ca.getParentCaId());
-        createCABuilder
+        createCARequestBuilder
             .issuerCN(parentCa.getCn())
             .issuerPrivateKeyAlgorithm(registryResourceV1.findByName(
                 Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
@@ -100,7 +99,8 @@ public class CAService extends BaseService<Ca> {
         ca.setParentCa(parentCa.getCn());
       }
 
-      final CPPPemHolder cppPemHolderDTO = createCA(createCABuilder.build());
+      final CPPPemHolder cppPemHolderDTO = createCA(
+          createCARequestBuilder.build());
       ca.setCertificate(cppPemHolderDTO.getCertificate());
       ca.setPrivateKey(cppPemHolderDTO.getPrivateKey());
       ca.setPublicKey(cppPemHolderDTO.getPublicKey());
@@ -126,7 +126,7 @@ public class CAService extends BaseService<Ca> {
    *                                   during the encryption
    * @throws IOException               thrown when something unexpected happens
    */
-  public CPPPemHolder createCA(final CreateCA createca)
+  public CPPPemHolder createCA(final CreateCARequest createca)
   throws NoSuchAlgorithmException, InvalidKeySpecException,
          OperatorCreationException, IOException,
          NoSuchProviderException {
@@ -136,34 +136,34 @@ public class CAService extends BaseService<Ca> {
         createca.getCreateKeyPairRequest());
 
     // Prepare signing.
-    CSR CSR = new CSR();
-    CSR.setValidForm(createca.getValidFrom());
-    CSR.setValidTo(createca.getValidTo());
-    CSR.setLocale(createca.getLocale());
-    CSR.setPublicKey(keyPair.getPublic());
-    CSR.setPrivateKey(keyPair.getPrivate());
-    CSR.setSignatureAlgorithm(
+    CertificateSignRequest certificateSignRequest = new CertificateSignRequest();
+    certificateSignRequest.setValidForm(createca.getValidFrom());
+    certificateSignRequest.setValidTo(createca.getValidTo());
+    certificateSignRequest.setLocale(createca.getLocale());
+    certificateSignRequest.setPublicKey(keyPair.getPublic());
+    certificateSignRequest.setPrivateKey(keyPair.getPrivate());
+    certificateSignRequest.setSignatureAlgorithm(
         createca.getSignatureAlgorithm());
-    CSR.setSubjectCN(createca.getSubjectCN());
-    CSR.setCa(true);
+    certificateSignRequest.setSubjectCN(createca.getSubjectCN());
+    certificateSignRequest.setCa(true);
 
     // Choose which private key to use. If no parent key is found then this is a self-signed certificate and the
     // private key created for the keypair will be used.
     if (StringUtils.isNotEmpty(createca.getIssuerCN())
         && StringUtils.isNotEmpty(
         createca.getIssuerPrivateKey())) {
-      CSR.setIssuerPrivateKey(
+      certificateSignRequest.setIssuerPrivateKey(
           keyService.pemToPrivateKey(
               createca.getIssuerPrivateKey(),
               createca.getIssuerPrivateKeyAlgorithm()));
-      CSR.setIssuerCN(createca.getIssuerCN());
+      certificateSignRequest.setIssuerCN(createca.getIssuerCN());
     } else {
-      CSR.setIssuerPrivateKey(keyPair.getPrivate());
-      CSR.setIssuerCN(createca.getSubjectCN());
+      certificateSignRequest.setIssuerPrivateKey(keyPair.getPrivate());
+      certificateSignRequest.setIssuerCN(createca.getSubjectCN());
     }
 
     final X509CertificateHolder certHolder = certificateService.generateCertificate(
-        CSR);
+        certificateSignRequest);
 
     // Prepare reply.
     final CPPPemHolder cppPemKey = new CPPPemHolder();
@@ -181,7 +181,6 @@ public class CAService extends BaseService<Ca> {
         .list();
   }
 
-  @Blocking
   public Ca importCa(ImportCaForm importCaForm) {
     try {
       Ca ca = mapper.readValue(importCaForm.getBackup().uploadedFile().toFile(),

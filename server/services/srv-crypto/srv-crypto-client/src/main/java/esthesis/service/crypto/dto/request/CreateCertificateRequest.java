@@ -1,5 +1,6 @@
-package esthesis.service.crypto.dto;
+package esthesis.service.crypto.dto.request;
 
+import esthesis.service.crypto.dto.response.CreateKeyPairResponse;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,8 +12,8 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode
 @RegisterForReflection
 @Accessors(chain = true)
-public class CertificateRequest {
+public class CreateCertificateRequest {
 
-  private KeyPairResponse keyPairResponse;
+  private CreateKeyPairResponse createKeyPairResponse;
   private String cn;
 }

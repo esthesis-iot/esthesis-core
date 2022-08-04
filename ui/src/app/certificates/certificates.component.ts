@@ -1,26 +1,26 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import {CertificatesService} from './certificates.service';
-import {CertificateDto} from '../dto/certificate-dto';
-import {BaseComponent} from '../shared/component/base-component';
-import {QFormsService} from '@qlack/forms';
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
+import {MatTableDataSource} from "@angular/material/table";
+import {CertificatesService} from "./certificates.service";
+import {CertificateDto} from "../dto/certificate-dto";
+import {BaseComponent} from "../shared/component/base-component";
+import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../app.constants";
 
 @Component({
-  selector: 'app-certificates',
-  templateUrl: './certificates.component.html',
-  styleUrls: ['./certificates.component.scss']
+  selector: "app-certificates",
+  templateUrl: "./certificates.component.html",
+  styleUrls: ["./certificates.component.scss"]
 })
 export class CertificatesComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['cn', 'issued', 'validity', 'issuer'];
+  columns = ["cn", "issued", "validity", "issuer"];
   datasource = new MatTableDataSource<CertificateDto>();
   // Expose application constants.
   constants = AppConstants;
 
-  @ViewChild(MatSort, { static: true }) sort!: MatSort;
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private certificateService: CertificatesService, private qForms: QFormsService) {
     super();
@@ -41,7 +41,7 @@ export class CertificatesComponent extends BaseComponent implements OnInit, Afte
   }
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
-    this.certificateService.getAll(
+    this.certificateService.find(
       this.qForms.appendPagingToFilter(null!, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;

@@ -6,8 +6,8 @@ import esthesis.common.AppConstants.Registry;
 import esthesis.common.dto.DeviceMessage;
 import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.service.BaseService;
-import esthesis.service.crypto.dto.CertificateRequest;
-import esthesis.service.crypto.dto.KeyPairResponse;
+import esthesis.service.crypto.dto.request.CreateCertificateRequest;
+import esthesis.service.crypto.dto.response.CreateKeyPairResponse;
 import esthesis.service.crypto.resource.CAResourceV1;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DeviceKey;
@@ -173,14 +173,14 @@ public class DeviceService extends BaseService<Device> {
     }
 
     // Create a keypair for the device to be registered.
-    KeyPairResponse keyPairResponse = caResourceV1.generateKeyPair();
+    CreateKeyPairResponse createKeyPairResponse = caResourceV1.generateKeyPair();
 
     // Set the security keys for the new device.
     final DeviceKey deviceKey = new DeviceKey()
         .setPublicKey(caResourceV1.publicKeyToPEM(
-            keyPairResponse.getPublicKey()))
+            createKeyPairResponse.getPublicKey()))
         .setPrivateKey(caResourceV1.privateKeyToPEM(
-            keyPairResponse.getPrivateKey()))
+            createKeyPairResponse.getPrivateKey()))
         .setRolledOn(Instant.now())
         .setRolledAccepted(true);
 
@@ -190,8 +190,8 @@ public class DeviceService extends BaseService<Device> {
     if (deviceRootCA != null) {
       deviceKey.setCertificate(
           caResourceV1.generateCertificateAsPEM(
-              new CertificateRequest().setCn(hardwareId)
-                  .setKeyPairResponse(keyPairResponse)));
+              new CreateCertificateRequest().setCn(hardwareId)
+                  .setCreateKeyPairResponse(createKeyPairResponse)));
       deviceKey.setCertificateCaId(
           registryResourceV1.findByName(Registry.DEVICE_ROOT_CA).asString());
     }

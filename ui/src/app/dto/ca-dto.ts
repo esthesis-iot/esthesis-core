@@ -1,13 +1,14 @@
 export class CaDto {
-  id: number;
+  id: string;
   cn: string;
-  parentCa: number | undefined;
+  parentCa: string | undefined;
+  parentCaId: string | undefined;
   issued: Date | undefined;
   validity: Date | undefined;
   publicKey: File | undefined;
   certificate: string | undefined;
 
-  constructor(id: number, cn: string) {
+  constructor(id: string, cn: string) {
     this.id = id;
     this.cn = cn;
   }

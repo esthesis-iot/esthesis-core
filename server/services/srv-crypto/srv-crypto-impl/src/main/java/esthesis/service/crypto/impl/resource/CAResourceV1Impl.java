@@ -10,11 +10,11 @@ import esthesis.common.rest.Page;
 import esthesis.common.rest.PageReplyFilter;
 import esthesis.common.rest.Pageable;
 import esthesis.service.crypto.dto.Ca;
-import esthesis.service.crypto.dto.CertificateRequest;
-import esthesis.service.crypto.dto.ImportCaForm;
-import esthesis.service.crypto.dto.KeyPairResponse;
-import esthesis.service.crypto.impl.dto.CSR;
-import esthesis.service.crypto.impl.dto.CreateKeyPair;
+import esthesis.service.crypto.dto.form.ImportCaForm;
+import esthesis.service.crypto.dto.request.CertificateSignRequest;
+import esthesis.service.crypto.dto.request.CreateCertificateRequest;
+import esthesis.service.crypto.dto.request.CreateKeyPairRequest;
+import esthesis.service.crypto.dto.response.CreateKeyPairResponse;
 import esthesis.service.crypto.impl.repository.CaRepository;
 import esthesis.service.crypto.impl.service.CAService;
 import esthesis.service.crypto.impl.service.CertificateService;
@@ -75,20 +75,20 @@ public class CAResourceV1Impl implements CAResourceV1 {
   ObjectMapper mapper;
 
   @Override
-  public KeyPairResponse generateKeyPair()
+  public CreateKeyPairResponse generateKeyPair()
   throws NoSuchAlgorithmException, NoSuchProviderException {
-    CreateKeyPair createKeyPairDTO = new CreateKeyPair();
-    createKeyPairDTO.setKeySize(
+    CreateKeyPairRequest createKeyPairRequestDTO = new CreateKeyPairRequest();
+    createKeyPairRequestDTO.setKeySize(
         registryResourceV1.findByName(Registry.SECURITY_ASYMMETRIC_KEY_SIZE)
             .asInt());
-    createKeyPairDTO
+    createKeyPairRequestDTO
         .setKeyPairGeneratorAlgorithm(
             registryResourceV1.findByName(
                 Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString());
 
-    KeyPair keyPair = keyService.createKeyPair(createKeyPairDTO);
+    KeyPair keyPair = keyService.createKeyPair(createKeyPairRequestDTO);
 
-    return new KeyPairResponse()
+    return new CreateKeyPairResponse()
         .setPublicKey(keyPair.getPublic().getEncoded())
         .setPrivateKey(keyPair.getPrivate().getEncoded());
   }
@@ -104,7 +104,8 @@ public class CAResourceV1Impl implements CAResourceV1 {
   }
 
   @Override
-  public String generateCertificateAsPEM(CertificateRequest certificateRequest)
+  public String generateCertificateAsPEM(
+      CreateCertificateRequest createCertificateRequest)
   throws NoSuchAlgorithmException, InvalidKeySpecException,
          OperatorCreationException, IOException {
     // Find the CA defined in the registry.
@@ -121,22 +122,24 @@ public class CAResourceV1Impl implements CAResourceV1 {
     PublicKey publicKey = KeyFactory.getInstance(registryResourceV1.findByName(
             Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
         .generatePublic(new X509EncodedKeySpec(
-            certificateRequest.getKeyPairResponse().getPublicKey()));
+            createCertificateRequest.getCreateKeyPairResponse()
+                .getPublicKey()));
     PrivateKey privateKey = KeyFactory.getInstance(
             registryResourceV1.findByName(
                 Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
         .generatePrivate(
             new PKCS8EncodedKeySpec(
-                certificateRequest.getKeyPairResponse().getPrivateKey()));
+                createCertificateRequest.getCreateKeyPairResponse()
+                    .getPrivateKey()));
     KeyPair keyPair = new KeyPair(publicKey, privateKey);
-    CSR CSRRequest = new CSR()
+    CertificateSignRequest certificateSignRequest = new CertificateSignRequest()
         .setLocale(Locale.US)
         .setPrivateKey(privateKey)
         .setPublicKey(publicKey)
         .setSignatureAlgorithm(
             registryResourceV1.findByName(
                 Registry.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM).asString())
-        .setSubjectCN(certificateRequest.getCn())
+        .setSubjectCN(createCertificateRequest.getCn())
         .setValidForm(Instant.now())
         .setValidTo(ca.getValidity())
         .setIssuerCN(ca.getCn())
@@ -147,7 +150,7 @@ public class CAResourceV1Impl implements CAResourceV1 {
 
     // Sign the certificate.
     X509CertificateHolder x509CertificateHolder = certificateService.generateCertificate(
-        CSRRequest);
+        certificateSignRequest);
 
     // Convert the certificate to PEM and return it.
     return certificateService.certificateToPEM(x509CertificateHolder);

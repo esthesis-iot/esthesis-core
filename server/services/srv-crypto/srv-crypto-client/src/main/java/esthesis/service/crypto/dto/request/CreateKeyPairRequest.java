@@ -1,4 +1,4 @@
-package esthesis.service.crypto.impl.dto;
+package esthesis.service.crypto.dto.request;
 
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateKeyPair {
+public class CreateKeyPairRequest {
 
   // The algorithm to use while generating the key-pair, e.g. RSA.
   @NotNull

@@ -1,4 +1,4 @@
-package esthesis.service.crypto.impl.dto;
+package esthesis.service.crypto.dto.request;
 
 import java.math.BigInteger;
 import java.time.Instant;
@@ -10,13 +10,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class CreateCA {
+public class CreateCARequest {
 
   @NotNull
-  private CreateKeyPair createKeyPairRequest;
+  private CreateKeyPairRequest createKeyPairRequest;
   @NotNull
   private String subjectCN;
   @NotNull

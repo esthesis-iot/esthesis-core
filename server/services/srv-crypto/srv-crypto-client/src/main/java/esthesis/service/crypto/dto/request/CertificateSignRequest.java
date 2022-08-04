@@ -1,4 +1,4 @@
-package esthesis.service.crypto.impl.dto;
+package esthesis.service.crypto.dto.request;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class CSR {
+public class CertificateSignRequest {
 
   @NotNull
   private PrivateKey privateKey;

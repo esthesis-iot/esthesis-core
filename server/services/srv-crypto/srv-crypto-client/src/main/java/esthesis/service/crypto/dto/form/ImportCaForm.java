@@ -1,4 +1,4 @@
-package esthesis.service.crypto.dto;
+package esthesis.service.crypto.dto.form;
 
 import javax.ws.rs.core.MediaType;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package esthesis.service.crypto.impl.resource;
+package esthesis.common.logging;
 
 import lombok.Data;
 

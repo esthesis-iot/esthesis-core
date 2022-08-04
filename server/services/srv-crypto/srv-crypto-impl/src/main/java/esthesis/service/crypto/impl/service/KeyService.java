@@ -1,7 +1,7 @@
 package esthesis.service.crypto.impl.service;
 
 import esthesis.common.exception.QDoesNotExistException;
-import esthesis.service.crypto.impl.dto.CreateKeyPair;
+import esthesis.service.crypto.dto.request.CreateKeyPairRequest;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +51,7 @@ public class KeyService {
    * @throws NoSuchAlgorithmException thrown when no algorithm is found for
    *                                  encryption
    */
-  public KeyPair createKeyPair(final CreateKeyPair createKeyPairRequest)
+  public KeyPair createKeyPair(final CreateKeyPairRequest createKeyPairRequest)
   throws NoSuchAlgorithmException, NoSuchProviderException {
     final KeyPairGenerator keyPairGenerator;
     log.debug("Creating a keypair for '{}'.", createKeyPairRequest);
@@ -91,6 +91,17 @@ public class KeyService {
   }
 
   /**
+   * Converts a public key to PEM format.
+   *
+   * @param keyPair The keypair containing the public key
+   * @return the generated PEM format
+   * @throws IOException thrown when something unexpected happens
+   */
+  public String publicKeyToPEM(final KeyPair keyPair) throws IOException {
+    return convertKeyToPEM(keyPair, RSA_PUBLIC_KEY);
+  }
+
+  /**
    * Converts a private key to string in PEM format.
    *
    * @param privateKey the private key to convert.
@@ -99,6 +110,17 @@ public class KeyService {
    */
   public String privateKeyToPEM(final byte[] privateKey) throws IOException {
     return convertKeyToPEM(privateKey, RSA_PRIVATE_KEY);
+  }
+
+  /**
+   * Converts a private key to string in PEM format.
+   *
+   * @param keyPair the keypair containing the private key to convert
+   * @return the generated PEM format
+   * @throws IOException thrown when generating PEM
+   */
+  public String privateKeyToPEM(final KeyPair keyPair) throws IOException {
+    return convertKeyToPEM(keyPair, RSA_PRIVATE_KEY);
   }
 
   /**
@@ -450,6 +472,23 @@ public class KeyService {
           pemWriter.writeObject(new PemObject(keyType, key));
         } else if (keyType.equals(RSA_PUBLIC_KEY)) {
           pemWriter.writeObject(new PemObject(keyType, key));
+        }
+        pemWriter.flush();
+        return pemStrWriter.toString();
+      }
+    }
+  }
+
+  protected String convertKeyToPEM(final KeyPair keyPair, final String keyType)
+  throws IOException {
+    try (StringWriter pemStrWriter = new StringWriter()) {
+      try (JcaPEMWriter pemWriter = new JcaPEMWriter(pemStrWriter)) {
+        if (keyType.equals(RSA_PRIVATE_KEY)) {
+          pemWriter.writeObject(
+              new PemObject(keyType, keyPair.getPrivate().getEncoded()));
+        } else if (keyType.equals(RSA_PUBLIC_KEY)) {
+          pemWriter.writeObject(
+              new PemObject(keyType, keyPair.getPublic().getEncoded()));
         }
         pemWriter.flush();
         return pemStrWriter.toString();
