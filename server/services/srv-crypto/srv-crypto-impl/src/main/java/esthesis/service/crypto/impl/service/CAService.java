@@ -1,10 +1,15 @@
 package esthesis.service.crypto.impl.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.common.AppConstants.Registry;
+import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QCouldNotSaveException;
+import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QMutationNotPermittedException;
 import esthesis.common.service.BaseService;
+import esthesis.common.validation.CVException;
 import esthesis.service.crypto.dto.Ca;
+import esthesis.service.crypto.dto.ImportCaForm;
 import esthesis.service.crypto.impl.dto.CPPPemHolder;
 import esthesis.service.crypto.impl.dto.CSR;
 import esthesis.service.crypto.impl.dto.CreateCA;
@@ -12,6 +17,7 @@ import esthesis.service.crypto.impl.dto.CreateCA.CreateCABuilder;
 import esthesis.service.crypto.impl.dto.CreateKeyPair;
 import esthesis.service.registry.resource.RegistryResourceV1;
 import io.quarkus.panache.common.Sort;
+import io.smallrye.common.annotation.Blocking;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyPair;
@@ -46,11 +52,23 @@ public class CAService extends BaseService<Ca> {
   @Inject
   CertificateService certificateService;
 
+  @Inject
+  ObjectMapper mapper;
+
   public Ca save(Ca ca) {
     // CAs can not be edited, so throw an exception in that case.
     if (ca.getId() != null) {
       throw new QMutationNotPermittedException(
           "A CA can not be edited once created.");
+    }
+
+    // Check a CA with the same name doesn't already exist.
+    if (findByColumn("cn", ca.getCn()) != null) {
+      new CVException<Ca>()
+          .addViolation("cn",
+              "A Certificate Authority with CN '{}' already exists.",
+              ca.getCn())
+          .throwCVE();
     }
 
     // Create the CA.
@@ -72,14 +90,14 @@ public class CAService extends BaseService<Ca> {
           .validTo(ca.getValidity());
 
       // If this CA has a parent CA (i.e. it is a sub-CA) fetch the details of the parent.
-      if (StringUtils.isNotBlank(ca.getParentCa())) {
-        Ca parentCa = findByColumn("cn", ca.getParentCa());
+      if (ca.getParentCaId() != null) {
+        Ca parentCa = findById(ca.getParentCaId());
         createCABuilder
             .issuerCN(parentCa.getCn())
             .issuerPrivateKeyAlgorithm(registryResourceV1.findByName(
                 Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
             .issuerPrivateKey(parentCa.getPrivateKey());
-        ca.setParentCaId(parentCa.getId());
+        ca.setParentCa(parentCa.getCn());
       }
 
       final CPPPemHolder cppPemHolderDTO = createCA(createCABuilder.build());
@@ -161,5 +179,23 @@ public class CAService extends BaseService<Ca> {
   public List<Ca> getEligibleForSigning() {
     return getRepository().find("privateKey != null", Sort.ascending("cn"))
         .list();
+  }
+
+  @Blocking
+  public Ca importCa(ImportCaForm importCaForm) {
+    try {
+      Ca ca = mapper.readValue(importCaForm.getBackup().uploadedFile().toFile(),
+          Ca.class);
+      if (findById(ca.getId()) != null
+          || findByColumn("cn", ca.getCn()) != null) {
+        throw new QAlreadyExistsException(
+            "A CA with this CN or id already exists.");
+      }
+
+      super.getRepository().persistOrUpdate(ca);
+      return ca;
+    } catch (IOException e) {
+      throw new QMismatchException("Could not import CA.", e);
+    }
   }
 }

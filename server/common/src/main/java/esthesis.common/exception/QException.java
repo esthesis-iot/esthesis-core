@@ -1,7 +1,6 @@
 package esthesis.common.exception;
 
 import java.io.Serializable;
-import java.text.MessageFormat;
 
 /**
  * The QException class can be extended by the custom exceptions of the Qlack
@@ -23,7 +22,8 @@ public abstract class QException extends RuntimeException implements
   }
 
   protected QException(String message, Object... args) {
-    super(MessageFormat.format(message, args));
+    super(
+        org.slf4j.helpers.MessageFormatter.format(message, args).getMessage());
   }
 
   protected QException(String message, Throwable cause) {

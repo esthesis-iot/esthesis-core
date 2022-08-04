@@ -5,13 +5,14 @@ import {FormGroup} from "@angular/forms";
 import {CrudService} from "../services/crud.service";
 import {Observable} from "rxjs";
 import {environment} from "../../environments/environment";
+import {UtilityService} from "../shared/service/utility.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class CasService extends CrudService<CaDto> {
 
-  constructor(http: HttpClient) {
+  constructor(http: HttpClient, private utilityService: UtilityService) {
     super(http, "v1/ca");
   }
 
@@ -20,24 +21,20 @@ export class CasService extends CrudService<CaDto> {
    * @param {number} caId The id of the CA to download the details of.
    * @param {number} keyType The type of the key to download as per AppConstants.KEY_TYPE.
    */
-  download(caId: string, keyType: number, base64: boolean) {
-    this.http.get(`${environment.apiPrefix}/cas/${caId}/download/${keyType}/${base64}`, {
+  download(caId: string) {
+    this.http.get(`${environment.apiPrefix}/v1/ca/${caId}/download`, {
       responseType: "blob", observe: "response"
-    }).subscribe(onNext => {
-      this.saveAs(onNext);
+    }).subscribe({
+      next: (response) => {
+        this.saveAs(response);
+      }, error: (error) => {
+        this.utilityService.popupError("There was an error downloading this CA, please try again later.");
+      }
     });
   }
 
-  backup(caId: string) {
-    this.http.get(`${environment.apiPrefix}/cas/${caId}/backup`, {
-      responseType: "blob", observe: "response"
-    }).subscribe(onNext => {
-      this.saveAs(onNext);
-    });
-  }
-
-  restore(form: FormGroup) {
-    return this.upload(form, `${environment.apiPrefix}/cas/restore`, false);
+  import(form: FormGroup) {
+    return this.upload(form, `${environment.apiPrefix}/v1/ca/import`, false);
   }
 
   getEligibleForSigning(): Observable<CaDto[]> {

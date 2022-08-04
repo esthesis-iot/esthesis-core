@@ -11,5 +11,5 @@
     <version>3.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>srv-crypto-client</artifactId>
-  
+
 </project>

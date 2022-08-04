@@ -49,6 +49,7 @@ public class PageReplyFilterImpl implements ContainerResponseFilter {
     String annotationFilter = info.getResourceMethod()
         .getAnnotation(PageReplyFilter.class).filter();
     String[] finalFilter;
+
     if (res.getEntity().getClass() == Page.class) {
       finalFilter = DEFAULT_PAGE_FILTER;
     } else {

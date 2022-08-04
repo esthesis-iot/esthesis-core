@@ -1,12 +1,17 @@
 package esthesis.service.crypto.impl.resource;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.slugify.Slugify;
 import esthesis.common.AppConstants.Registry;
 import esthesis.common.exception.QDoesNotExistException;
+import esthesis.common.exception.QMismatchException;
 import esthesis.common.rest.Page;
 import esthesis.common.rest.PageReplyFilter;
 import esthesis.common.rest.Pageable;
 import esthesis.service.crypto.dto.Ca;
 import esthesis.service.crypto.dto.CertificateRequest;
+import esthesis.service.crypto.dto.ImportCaForm;
 import esthesis.service.crypto.dto.KeyPairResponse;
 import esthesis.service.crypto.impl.dto.CSR;
 import esthesis.service.crypto.impl.dto.CreateKeyPair;
@@ -42,6 +47,7 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
 @Authenticated
 public class CAResourceV1Impl implements CAResourceV1 {
@@ -65,10 +71,12 @@ public class CAResourceV1Impl implements CAResourceV1 {
   @Inject
   CaRepository caRepository;
 
+  @Inject
+  ObjectMapper mapper;
+
   @Override
   public KeyPairResponse generateKeyPair()
   throws NoSuchAlgorithmException, NoSuchProviderException {
-    System.out.println("!@@!!!IN");
     CreateKeyPair createKeyPairDTO = new CreateKeyPair();
     createKeyPairDTO.setKeySize(
         registryResourceV1.findByName(Registry.SECURITY_ASYMMETRIC_KEY_SIZE)
@@ -148,7 +156,7 @@ public class CAResourceV1Impl implements CAResourceV1 {
   @GET
   @Override
   @Path("/find")
-  @PageReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,content.type")
+  @PageReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,content.parentCaId,content.type,content.validity")
   public Page<Ca> find(@BeanParam Pageable pageable) {
     return caService.find(pageable);
   }
@@ -156,24 +164,37 @@ public class CAResourceV1Impl implements CAResourceV1 {
   @GET
   @Override
   @Path("/{id}")
-  @PageReplyFilter(filter = "id,cn,issued,parentCa,type")
+  @PageReplyFilter(filter = "id,cn,issued,parentCa,type,validity,parentCaId")
   public Ca findById(ObjectId id) {
     return caService.findById(id);
   }
 
+  @GET
   @Override
+  @Path("/eligible-for-signing")
+  @PageReplyFilter(filter = "id,cn")
   public List<Ca> getEligbleForSigning() {
     return caService.getEligibleForSigning();
   }
 
   @Override
-  public Response download(ObjectId id, String keyType) {
-    return null;
+  public Response download(ObjectId caId) {
+    try {
+      Ca ca = caService.findById(caId);
+      String filename = Slugify.builder().underscoreSeparator(true).build()
+          .slugify(ca.getCn());
+      return ResponseBuilder.ok(mapper.writeValueAsString(findById(caId)))
+          .header("Content-Disposition",
+              "attachment; filename=" + filename + ".yaml").build()
+          .toResponse();
+    } catch (JsonProcessingException e) {
+      throw new QMismatchException("Could not fetch CA with id '{}'.", caId);
+    }
   }
 
   @Override
-  public Response backup(ObjectId id) {
-    return null;
+  public Ca importCa(ImportCaForm importCaForm) {
+    return caService.importCa(importCaForm);
   }
 
   @Override

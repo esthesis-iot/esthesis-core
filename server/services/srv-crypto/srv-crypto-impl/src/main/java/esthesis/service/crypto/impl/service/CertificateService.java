@@ -59,7 +59,7 @@ public class CertificateService {
   @SuppressWarnings({"squid:S2274", "squid:S2142"})
   public X509CertificateHolder generateCertificate(final CSR CSR)
   throws OperatorCreationException, CertIOException {
-    log.debug("Generating a certificate for '{}'.", CSR);
+    log.trace("Generating a certificate for '{}'.", CSR);
     // Create a generator for the certificate including all certificate details.
     final X509v3CertificateBuilder certGenerator;
     // Synchronize this part, so that no two certificates can be created with the same timestamp.

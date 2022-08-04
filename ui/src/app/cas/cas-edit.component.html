@@ -5,6 +5,11 @@
       <div fxLayout="column">
         <mat-form-field>
           <input matInput placeholder="Common name" formControlName="cn">
+          <mat-icon matSuffix color="warn"
+                    *ngIf="form.controls['cn'].invalid"
+                    matTooltip="{{form.controls['cn'].getError('message')}}"
+                    matTooltipPosition="above" style="cursor: help">warning
+          </mat-icon>
         </mat-form-field>
         <mat-form-field>
           <input matInput placeholder="Expires at" formControlName="validity"
@@ -23,17 +28,8 @@
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button [matMenuTriggerFor]="menu"
-            [disabled]="this.id === appConstants.NEW_RECORD_ID">DOWNLOAD
-      <mat-menu #menu="matMenu" xPosition="before">
-        <button mat-menu-item (click)="downloadPublicKey(false)">Public key</button>
-        <button mat-menu-item (click)="downloadPrivateKey(false)">Private key</button>
-        <button mat-menu-item (click)="downloadCertificate(false)">Certificate</button>
-        <button mat-menu-item (click)="downloadBackup()">Backup</button>
-        <button mat-menu-item (click)="downloadPublicKey(true)">Public key (base64)</button>
-        <button mat-menu-item (click)="downloadPrivateKey(true)">Private key (base64)</button>
-        <button mat-menu-item (click)="downloadCertificate(true)">Certificate (base64)</button>
-      </mat-menu>
+    <button mat-button (click)="download()" [disabled]="this.id === appConstants.NEW_RECORD_ID">
+      DOWNLOAD
     </button>
     <button mat-button routerLink="/cas">CANCEL</button>
     <button mat-button color="warn" (click)="delete()"

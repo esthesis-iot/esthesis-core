@@ -55,7 +55,7 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
     </dependency>
-
+        
     <!-- THIRD-PARTY -->
     <dependency>
       <groupId>org.bouncycastle</groupId>

@@ -28,7 +28,7 @@
     <bson.version>4.6.1</bson.version>
     <commons-codec.version>1.15</commons-codec.version>
     <org.projectlombok.version>1.18.24</org.projectlombok.version>
-    <slugify.version>3.0.1</slugify.version>
+    <slugify.version>3.0.2</slugify.version>
     <jackson-antpathfilter.version>1.0.2</jackson-antpathfilter.version>
   </properties>
 
