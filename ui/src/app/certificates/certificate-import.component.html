@@ -1,4 +1,4 @@
-<p>
+<mat-card>
   <mat-card-title>Import a Certificate</mat-card-title>
   <mat-card-content>
     <form novalidate [formGroup]="form">
@@ -15,4 +15,4 @@
     <button mat-button routerLink="/cas">CANCEL</button>
     <button mat-button color="primary" (click)="import()" [disabled]="form.invalid">IMPORT</button>
   </mat-card-actions>
-</p>
+</mat-card>
