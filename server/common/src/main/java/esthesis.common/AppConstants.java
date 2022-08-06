@@ -21,6 +21,7 @@ public class AppConstants {
     public static final String SECURITY_ASYMMETRIC_KEY_ALGORITHM = "securityAsymmetricKeyAlgorithm";
     public static final String SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM = "securityAsymmetricSignatureAlgorithm";
     public static final String DEVICE_ROOT_CA = "deviceRootCA";
+    public static final String PROVISIONING_URL = "provisioningURL";
   }
 
   public static class Device {

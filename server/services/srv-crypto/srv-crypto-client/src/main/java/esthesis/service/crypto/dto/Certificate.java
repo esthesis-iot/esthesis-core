@@ -1,6 +1,7 @@
 package esthesis.service.crypto.dto;
 
 import esthesis.common.dto.BaseDTO;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.time.Instant;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -11,8 +12,9 @@ import lombok.experimental.Accessors;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@RegisterForReflection
 @Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
 public class Certificate extends BaseDTO {
 
   @NotNull

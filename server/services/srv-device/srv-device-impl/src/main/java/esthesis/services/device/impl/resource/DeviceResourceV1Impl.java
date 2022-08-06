@@ -92,25 +92,21 @@ public class DeviceResourceV1Impl implements DeviceResourceV1 {
 
     // Prepare the reply.
     // TODO switch to a JSON reply
-    StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append(
-        "****************************************************************\n");
-    stringBuilder.append("PUBLIC KEY\n");
-    stringBuilder.append(
-        "****************************************************************\n");
-    stringBuilder.append(deviceKeys.getPublicKey());
-    stringBuilder.append("\n");
-    stringBuilder.append(
-        "****************************************************************\n");
-    stringBuilder.append("PRIVATE KEY\n");
-    stringBuilder.append(
-        "****************************************************************\n");
-    stringBuilder.append(deviceKeys.getPrivateKey());
-    stringBuilder.append("\n");
+    String stringBuilder =
+        "****************************************************************\n"
+            + "PUBLIC KEY\n"
+            + "****************************************************************\n"
+            + deviceKeys.getPublicKey()
+            + "\n"
+            + "****************************************************************\n"
+            + "PRIVATE KEY\n"
+            + "****************************************************************\n"
+            + deviceKeys.getPrivateKey()
+            + "\n";
     // TODO we don't need the certificate too?
 
     return Response
-        .ok(stringBuilder.toString())
+        .ok(stringBuilder)
         .header(HttpHeaders.CONTENT_DISPOSITION,
             "attachment; filename=" + filename)
         .type(MediaType.APPLICATION_OCTET_STREAM)
