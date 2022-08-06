@@ -54,7 +54,7 @@ public class KeyService {
   public KeyPair createKeyPair(final CreateKeyPairRequest createKeyPairRequest)
   throws NoSuchAlgorithmException, NoSuchProviderException {
     final KeyPairGenerator keyPairGenerator;
-    log.debug("Creating a keypair for '{}'.", createKeyPairRequest);
+    log.trace("Creating a keypair for '{}'.", createKeyPairRequest);
 
     // Set the provider.
     if (StringUtils
@@ -135,7 +135,7 @@ public class KeyService {
    */
   public PrivateKey pemToPrivateKey(String privateKey, final String algorithm)
   throws NoSuchAlgorithmException, InvalidKeySpecException {
-    log.debug("Converting PEM private key '{}' to PrivateKey.", privateKey);
+    log.trace("Converting PEM private key '{}' to PrivateKey.", privateKey);
     PrivateKey key;
 
     // Cleanup the PEM from unwanted text.
@@ -172,7 +172,7 @@ public class KeyService {
       final String keyProvider)
   throws NoSuchProviderException, NoSuchAlgorithmException,
          InvalidKeySpecException {
-    log.debug("Converting private key '{}' PrivateKey.", key);
+    log.trace("Converting private key '{}' PrivateKey.", key);
     KeyFactory keyFactory;
     if (StringUtils.isNotBlank(keyProvider)) {
       keyFactory = KeyFactory.getInstance(keyAlgorithm, keyProvider);
@@ -187,7 +187,7 @@ public class KeyService {
       @NotNull final String keyAlgorithm, final String keyProvider)
   throws NoSuchProviderException, NoSuchAlgorithmException,
          InvalidKeySpecException {
-    log.debug("Converting public key '{}' to PublicKey.", key);
+    log.trace("Converting public key '{}' to PublicKey.", key);
     KeyFactory keyFactory;
     if (StringUtils.isNotBlank(keyProvider)) {
       keyFactory = KeyFactory.getInstance(keyAlgorithm, keyProvider);

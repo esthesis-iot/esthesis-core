@@ -1,9 +1,9 @@
 export class StoreDto {
-  id: number;
+  id: string;
   name: string | undefined;
   password: string | undefined;
 
-  constructor(id: number) {
+  constructor(id: string) {
     this.id = id;
   }
 }

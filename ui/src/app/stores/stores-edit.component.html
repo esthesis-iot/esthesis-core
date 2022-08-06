@@ -62,7 +62,9 @@
   <mat-card-actions>
     <button mat-button (click)="download()">DOWNLOAD</button>
     <button mat-button routerLink="/stores">CANCEL</button>
-    <button mat-button color="warn" (click)="delete()" [disabled]="this.id == 0">DELETE</button>
+    <button mat-button color="warn" (click)="delete()"
+            [disabled]="this.id == appConstants.NEW_RECORD_ID">DELETE
+    </button>
     <button mat-button color="primary" (click)="save()"
             [disabled]="form.invalid">SAVE
     </button>

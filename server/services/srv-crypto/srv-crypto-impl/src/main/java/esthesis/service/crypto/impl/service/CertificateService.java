@@ -13,12 +13,17 @@ import esthesis.service.crypto.dto.form.ImportCertificateForm;
 import esthesis.service.crypto.dto.request.CertificateSignRequest;
 import esthesis.service.crypto.dto.request.CreateKeyPairRequest;
 import esthesis.service.registry.resource.RegistryResourceV1;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
@@ -179,7 +184,7 @@ public class CertificateService extends BaseService<Certificate> {
    */
   public X509Certificate pemToCertificate(final String cert)
   throws CertificateException {
-    log.debug("Parsing '{}' PEM certificate.", cert);
+    log.trace("Parsing '{}' PEM certificate.", cert);
     CertificateFactory fact = CertificateFactory.getInstance("X.509");
 
     return (X509Certificate) fact.generateCertificate(
@@ -283,4 +288,56 @@ public class CertificateService extends BaseService<Certificate> {
       throw new QCouldNotSaveException("Could not save certificate.", e);
     }
   }
+
+  /**
+   * Converts a byte array representing a {@link KeyStore} to a KeyStore.
+   *
+   * @param keystore         The keystore representation as a byte array.
+   * @param keystoreType     The type of the keystore, e.g. PKCS12
+   * @param keystorePassword The password of the keystore.
+   * @param keystoreProvider A provider for the specific keystore type.
+   */
+  public KeyStore keystoreFromByteArray(final byte[] keystore,
+      final String keystoreType, final String keystorePassword,
+      final String keystoreProvider)
+  throws KeyStoreException, NoSuchProviderException, IOException,
+         CertificateException,
+         NoSuchAlgorithmException {
+    final KeyStore ks;
+
+    if (StringUtils.isBlank(keystoreType) || StringUtils
+        .isBlank(keystoreProvider)) {
+      ks = KeyStore.getInstance(KeyStore.getDefaultType());
+    } else {
+      ks = KeyStore.getInstance(keystoreType, keystoreProvider);
+    }
+    try (BufferedInputStream bis = new BufferedInputStream(
+        new ByteArrayInputStream(keystore))) {
+      if (StringUtils.isNotBlank(keystorePassword)) {
+        ks.load(bis, keystorePassword.toCharArray());
+      } else {
+        ks.load(bis, null);
+      }
+    }
+
+    return ks;
+  }
+
+  /**
+   * Converts a {@link KeyStore} to a byte array.
+   *
+   * @param keystore         The keystore to convert.
+   * @param keystorePassword The password of the keystore.
+   */
+  public byte[] keystoreToByteArray(final KeyStore keystore,
+      final String keystorePassword)
+  throws IOException, CertificateException, NoSuchAlgorithmException,
+         KeyStoreException {
+    try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        BufferedOutputStream bos = new BufferedOutputStream(baos)) {
+      keystore.store(bos, keystorePassword.toCharArray());
+      return baos.toByteArray();
+    }
+  }
+
 }

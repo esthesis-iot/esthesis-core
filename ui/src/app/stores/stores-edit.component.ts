@@ -22,7 +22,7 @@ import {StoreDto} from "../dto/store-dto";
 })
 export class StoresEditComponent extends BaseComponent implements OnInit {
   form!: FormGroup;
-  id: number | undefined;
+  id!: string | null;
   cas: CaDto[] | undefined;
   certs: CertificateDto[] | undefined;
 
@@ -35,7 +35,7 @@ export class StoresEditComponent extends BaseComponent implements OnInit {
 
   ngOnInit() {
     // Check if an edit is performed and fetch data.
-    this.id = Number(this.route.snapshot.paramMap.get("id"));
+    this.id = this.route.snapshot.paramMap.get("id");
 
     // Setup the form.
     this.form = this.fb.group({
@@ -50,7 +50,7 @@ export class StoresEditComponent extends BaseComponent implements OnInit {
     });
 
     // Fill form.
-    if (this.id && this.id !== 0) {
+    if (this.id && this.id !== this.appConstants.NEW_RECORD_ID) {
       this.storesService.findById(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
       });
