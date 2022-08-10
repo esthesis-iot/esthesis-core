@@ -1,131 +1,136 @@
-import {RouterModule} from '@angular/router';
-import {ModuleWithProviders} from '@angular/core';
-import {NewPasswordComponent} from './auth/new-password.component';
-import {LogoutComponent} from './auth/logout.component';
-import {ForgotPasswordComponent} from './auth/forgot-password.component';
-import {AppModule} from './app.module';
+import {RouterModule} from "@angular/router";
+import {ModuleWithProviders} from "@angular/core";
+import {NewPasswordComponent} from "./auth/new-password.component";
+import {LogoutComponent} from "./auth/logout.component";
+import {ForgotPasswordComponent} from "./auth/forgot-password.component";
+import {AppModule} from "./app.module";
 import {AutoLoginAllRoutesGuard} from "angular-auth-oidc-client";
 
 // Configuration of Router with all available AppConstants.Routes.
 export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
     // Redirect for empty path.
-    {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+    {path: "", redirectTo: "dashboard", pathMatch: "full"},
 
     // Generic routes.
-    {path: 'new-password', component: NewPasswordComponent},
-    {path: 'logout', component: LogoutComponent},
-    {path: 'forgot-password', component: ForgotPasswordComponent},
+    {path: "new-password", component: NewPasswordComponent},
+    {path: "logout", component: LogoutComponent},
+    {path: "forgot-password", component: ForgotPasswordComponent},
 
     // Features routes.
     {
-      path: 'dashboard',
-      loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule),
+      path: "dashboard",
+      loadChildren: () => import("./dashboard/dashboard.module").then(m => m.DashboardModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'audit',
-      loadChildren: () => import('./audit/audit.module').then(m => m.AuditModule),
+      path: "audit",
+      loadChildren: () => import("./audit/audit.module").then(m => m.AuditModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'devices',
-      loadChildren: () => import('./devices/devices.module').then(m => m.DevicesModule),
+      path: "devices",
+      loadChildren: () => import("./devices/devices.module").then(m => m.DevicesModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'cas',
-      loadChildren: () => import('./cas/cas.module').then(m => m.CasModule),
+      path: "cas",
+      loadChildren: () => import("./cas/cas.module").then(m => m.CasModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'certificates',
-      loadChildren: () => import('./certificates/certificates.module').then(
+      path: "certificates",
+      loadChildren: () => import("./certificates/certificates.module").then(
         m => m.CertificatesModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'stores',
-      loadChildren: () => import('./stores/stores.module').then(m => m.StoresModule),
+      path: "stores",
+      loadChildren: () => import("./stores/stores.module").then(m => m.StoresModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'infra',
-      loadChildren: () => import('./infrastructure/infrastructure.module').then(
+      path: "infra",
+      loadChildren: () => import("./infrastructure/infrastructure.module").then(
         m => m.InfrastructureModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'provisioning',
-      loadChildren: () => import('./provisioning/provisioning.module').then(
+      path: "provisioning",
+      loadChildren: () => import("./provisioning/provisioning.module").then(
         m => m.ProvisioningModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'users',
-      loadChildren: () => import('./users/users.module').then(m => m.UsersModule),
+      path: "users",
+      loadChildren: () => import("./users/users.module").then(m => m.UsersModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'settings',
-      loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule),
+      path: "settings",
+      loadChildren: () => import("./settings/settings.module").then(m => m.SettingsModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'tags',
-      loadChildren: () => import('./tags/tags.module').then(m => m.TagsModule),
+      path: "tags",
+      loadChildren: () => import("./tags/tags.module").then(m => m.TagsModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'applications',
-      loadChildren: () => import('./applications/applications.module').then(
+      path: "applications",
+      loadChildren: () => import("./applications/applications.module").then(
         m => m.ApplicationsModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'readers',
-      loadChildren: () => import('./nifisinks/nifisink.module').then(m => m.NifisinkModule),
+      path: "readers",
+      loadChildren: () => import("./nifisinks/nifisink.module").then(m => m.NifisinkModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'producers',
-      loadChildren: () => import('./nifisinks/nifisink.module').then(m => m.NifisinkModule),
+      path: "producers",
+      loadChildren: () => import("./nifisinks/nifisink.module").then(m => m.NifisinkModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'writers',
-      loadChildren: () => import('./nifisinks/nifisink.module').then(m => m.NifisinkModule),
+      path: "writers",
+      loadChildren: () => import("./nifisinks/nifisink.module").then(m => m.NifisinkModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'loggers',
-      loadChildren: () => import('./nifisinks/nifisink.module').then(m => m.NifisinkModule),
+      path: "loggers",
+      loadChildren: () => import("./nifisinks/nifisink.module").then(m => m.NifisinkModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'command',
-      loadChildren: () => import('./command/command.module').then(m => m.CommandModule),
+      path: "command",
+      loadChildren: () => import("./command/command.module").then(m => m.CommandModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'about',
-      loadChildren: () => import('./about/about.module').then(m => m.AboutModule),
+      path: "about",
+      loadChildren: () => import("./about/about.module").then(m => m.AboutModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'data-wizards',
-      loadChildren: () => import('./datawizards/datawizards.module').then(m => m.DatawizardsModule),
+      path: "data-wizards",
+      loadChildren: () => import("./datawizards/datawizards.module").then(m => m.DatawizardsModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: 'campaigns',
-      loadChildren: () => import('./campaigns/campaigns.module').then(m => m.CampaignsModule),
+      path: "campaigns",
+      loadChildren: () => import("./campaigns/campaigns.module").then(m => m.CampaignsModule),
+      canActivate: [AutoLoginAllRoutesGuard]
+    },
+    {
+      path: "dataflow",
+      loadChildren: () => import("./dataflow/dataflow.module").then(m => m.DataflowModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
 
     // Redirect all other urls to Dashboard.
-    {path: '**', redirectTo: 'dashboard'}
+    {path: "**", redirectTo: "dashboard"}
   ],
   {
     enableTracing: false,
-    scrollPositionRestoration: 'top'
+    scrollPositionRestoration: "top"
   });

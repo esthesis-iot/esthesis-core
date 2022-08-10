@@ -55,7 +55,7 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
     </dependency>
-        
+
     <!-- THIRD-PARTY -->
     <dependency>
       <groupId>org.bouncycastle</groupId>
@@ -73,6 +73,7 @@
     <module>srv-tag</module>
     <module>srv-registry</module>
     <module>srv-crypto</module>
+    <module>srv-kubernetes</module>
   </modules>
 
 </project>

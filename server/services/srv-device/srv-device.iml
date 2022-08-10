@@ -38,7 +38,7 @@
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:jaxb-runtime:2.3.3-b02" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:txw2:2.3.3-b02" level="project" />
     <orderEntry type="library" name="Maven: com.sun.istack:istack-commons-runtime:3.0.10" level="project" />
-    <orderEntry type="library" name="Maven: com.sun.activation:jakarta.activation:1.2.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.sun.activation:jakarta.activation:1.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.3_spec:2.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.liquibase:liquibase-core:4.13.0" level="project" />
     <orderEntry type="library" name="Maven: com.opencsv:opencsv:5.6" level="project" />
@@ -59,6 +59,7 @@
     <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive-common:2.11.1.Final" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus.resteasy.reactive:resteasy-reactive-common-types:2.11.1.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:2.0.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.logging:commons-logging-jboss-logging:1.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.logging:jboss-logging:3.5.0.Final" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-reactive-jackson-common:2.11.1.Final" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-reactive-common:2.11.1.Final" level="project" />
@@ -212,22 +213,6 @@
     <orderEntry type="library" name="Maven: io.prometheus:simpleclient_tracer_otel:0.15.0" level="project" />
     <orderEntry type="library" name="Maven: io.prometheus:simpleclient_tracer_common:0.15.0" level="project" />
     <orderEntry type="library" name="Maven: io.prometheus:simpleclient_tracer_otel_agent:0.15.0" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-multipart:2.11.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy:2.11.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-server-common:2.11.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.quarkus:quarkus-resteasy-common:2.11.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: jakarta.validation:jakarta.validation-api:2.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.jboss.resteasy:resteasy-multipart-provider:4.7.5.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.jboss.resteasy:resteasy-core-spi:4.7.5.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.jboss.resteasy:resteasy-core:4.7.5.Final" level="project" />
-    <orderEntry type="library" name="Maven: com.ibm.async:asyncutil:0.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.jboss.resteasy:resteasy-jaxb-provider:4.7.5.Final" level="project" />
-    <orderEntry type="library" name="Maven: com.sun.mail:jakarta.mail:1.6.7" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.james:apache-mime4j-dom:0.8.3" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.james:apache-mime4j-core:0.8.3" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.james:apache-mime4j-storage:0.8.3" level="project" />
-    <orderEntry type="library" name="Maven: commons-io:commons-io:2.11.0" level="project" />
-    <orderEntry type="library" name="Maven: org.jboss.logging:commons-logging-jboss-logging:1.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcpkix-jdk15on:1.70" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.70" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcutil-jdk15on:1.70" level="project" />
@@ -246,6 +231,7 @@
     <orderEntry type="library" name="Maven: org.jboss.narayana.jts:narayana-jts-integration:5.12.6.Final" level="project" />
     <orderEntry type="library" name="Maven: io.quarkus:quarkus-hibernate-validator:2.11.1.Final" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate.validator:hibernate-validator:6.2.3.Final" level="project" />
+    <orderEntry type="library" name="Maven: jakarta.validation:jakarta.validation-api:2.0.2" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml:classmate:1.5.1" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish:jakarta.el:3.0.4" level="project" />
     <orderEntry type="library" name="Maven: io.smallrye.config:smallrye-config-validator:2.10.1" level="project" />
@@ -282,6 +268,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.resolver:maven-resolver-api:1.6.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.resolver:maven-resolver-util:1.6.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.shared:maven-shared-utils:3.3.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: commons-io:commons-io:2.11.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.google.inject:guice:no_aop:4.2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-classworlds:2.6.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-sec-dispatcher:2.0" level="project" />

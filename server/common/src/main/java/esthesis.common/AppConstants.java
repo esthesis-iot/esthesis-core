@@ -12,6 +12,10 @@ public class AppConstants {
     public static final String CHANNEL_PREFIX = "esthesis-";
   }
 
+  public enum Dataflow {
+    MQTT_CLIENT;
+  }
+
   public static class Registry {
 
     private Registry() {

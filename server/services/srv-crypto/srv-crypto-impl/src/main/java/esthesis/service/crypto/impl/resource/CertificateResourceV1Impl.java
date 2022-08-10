@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.slugify.Slugify;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.rest.Page;
+import esthesis.common.rest.PageReplyFilter;
 import esthesis.common.rest.Pageable;
 import esthesis.service.crypto.dto.Certificate;
 import esthesis.service.crypto.dto.form.ImportCertificateForm;
@@ -49,7 +50,7 @@ public class CertificateResourceV1Impl implements CertificateResourceV1 {
   @GET
   @Override
   @Path("/find")
-//  @PageReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,content.parentCaId,content.type,content.validity")
+  @PageReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,content.parentCaId,content.type,content.validity")
   public Page<Certificate> find(@BeanParam Pageable pageable) {
     return certificateService.find(pageable);
   }
@@ -57,7 +58,7 @@ public class CertificateResourceV1Impl implements CertificateResourceV1 {
   @GET
   @Override
   @Path("/{id}")
-//  @PageReplyFilter(filter = "id,cn,issued,parentCa,type,validity,parentCaId")
+  @PageReplyFilter(filter = "id,cn,issued,parentCa,type,validity,parentCaId")
   public Certificate findById(ObjectId id) {
     return certificateService.findById(id);
   }

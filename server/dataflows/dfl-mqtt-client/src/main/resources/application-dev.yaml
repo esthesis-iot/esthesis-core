@@ -1,0 +1,37 @@
+quarkus:
+  http:
+    host: 0.0.0.0
+    cors: false
+  rest-client:
+    #    logging:
+    #      scope: request-response
+    #      body-limit: 16384
+    RegistryResource:
+      url: http://esthesis-dev-apisix-gateway/dev
+      scope: Singleton
+  mongodb:
+    connection-string: mongodb://esthesis-dev-mongodb-0:27017,esthesis-dev-mongodb-1:27017
+  log:
+    category:
+      #      "org.jboss.resteasy.reactive.client.logging":
+      #        level: DEBUG
+      esthesis:
+        level: DEBUG
+    handler:
+      gelf:
+        enabled: true
+        host: esthesis-dev-loki-gelf-udp
+        port: 12201
+        include-full-mdc: true
+  opentelemetry:
+    enabled: true
+    tracer:
+      exporter:
+        otlp:
+          endpoint: http://esthesis-dev-jaeger-collector:4317
+
+mp:
+  jwt:
+    verify:
+      publickey:
+        location: http://esthesis-dev-keycloak/realms/esthesis/protocol/openid-connect/certs

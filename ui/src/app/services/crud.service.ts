@@ -12,7 +12,7 @@ export class CrudService<T> {
   constructor(public http: HttpClient, private endpoint: string) {
   }
 
-  save(object: T | T[]) {
+  save(object: T | T[]): Observable<any> {
     return this.http.post(`${environment.apiPrefix}/${this.endpoint}`, object);
   }
 

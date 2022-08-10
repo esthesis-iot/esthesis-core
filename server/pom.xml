@@ -155,6 +155,7 @@
   <modules>
     <module>common</module>
     <module>services</module>
+    <module>dataflows</module>
   </modules>
 
 </project>

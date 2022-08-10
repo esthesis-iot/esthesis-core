@@ -25,6 +25,7 @@ import {SettingsProvisioningComponent} from './settings-provisioning/settings-pr
 import {SettingsDevicePageComponent} from './settings-device-page/settings-device-page.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {SettingsUiComponent} from './settings-ui/settings-ui.component';
+import { SettingsKubernetesComponent } from './settings-kubernetes/settings-kubernetes.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import {SettingsUiComponent} from './settings-ui/settings-ui.component';
     SettingsDevregComponent,
     SettingsSecurityComponent,
     SettingsUiComponent,
+    SettingsKubernetesComponent,
   ],
   imports: [
     CommonModule,

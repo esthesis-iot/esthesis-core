@@ -1,0 +1,32 @@
+<mat-card>
+  <mat-card-title>Dataflow components</mat-card-title>
+  <mat-card-content>
+    <div fxLayout="column">
+      <div [formGroup]="filterForm" fxFlex="row" fxLayoutGap="10px">
+        <mat-form-field>
+          <input matInput placeholder=" Name" formControlName="name">
+        </mat-form-field>
+        <button mat-button (click)="clearFilter()">CLEAR</button>
+      </div>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z0" fxFlex="grow"
+             matSort matSortActive="name" matSortDirection="asc" matSortStart="asc"
+             matSortDisableClear aria-describedby="List of tags">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Name</th>
+          <td mat-cell *matCellDef="let element">{{element.name}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let element; columns: displayedColumns;"
+            [routerLink]="resolveLink(element)"></tr>
+      </table>
+      <mat-paginator #paginator (page)="changePage()"
+                     [pageSize]="10"
+                     [pageSizeOptions]="[10, 30, 50]"
+                     [showFirstLastButtons]="true">
+      </mat-paginator>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button [routerLink]="appConstants.NEW_RECORD_ID">CREATE</button>
+  </mat-card-actions>
+</mat-card>

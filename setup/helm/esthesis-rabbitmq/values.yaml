@@ -1,0 +1,20 @@
+global:
+  devEnv:
+    enabled: false
+
+rabbitmq:
+  fullnameOverride: esthesis-rabbitmq
+  auth:
+    username: esthesis
+    password: esthesis
+  extraPlugins: rabbitmq_mqtt
+  erlangCookie: esthesis
+  service:
+    extraPorts:
+      - name: mqtt
+        port: 1883
+        protocol: TCP
+        targetPort: 1883
+  extraConfiguration: |-
+    mqtt.default_user = esthesis
+    mqtt.default_pass = esthesis

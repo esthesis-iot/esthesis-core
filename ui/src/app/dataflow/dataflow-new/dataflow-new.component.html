@@ -1,0 +1,26 @@
+<mat-card>
+  <mat-card-title>New dataflow component</mat-card-title>
+  <mat-card-content>
+    <div fxLayout="row wrap" class="dataflows" fxLayoutGap="1rem">
+      <mat-card>
+        <mat-card-title-group>
+          <mat-card-title>MQTT client</mat-card-title>
+          <mat-card-subtitle>Data input</mat-card-subtitle>
+          <img alt="" mat-card-sm-image src="assets/img/dataflows/mqtt.png">
+        </mat-card-title-group>
+        <mat-card-content>
+          An MQTT client allows to fetch external messages into the platform by connecting to an
+          MQTT broker.
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button [routerLink]="'/dataflow/mqtt-client/' + appConstants.NEW_RECORD_ID">
+            CREATE
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button routerLink="/dataflow">CANCEL</button>
+  </mat-card-actions>
+</mat-card>
