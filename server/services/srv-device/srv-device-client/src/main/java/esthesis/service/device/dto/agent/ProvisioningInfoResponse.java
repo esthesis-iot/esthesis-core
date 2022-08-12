@@ -1,6 +1,5 @@
-package esthesis.service.device.dto;
+package esthesis.service.device.dto.agent;
 
-import esthesis.common.dto.GenericResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,7 +13,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Accessors(chain = true)
-public class ProvisioningInfoResponse implements GenericResponse {
+public class ProvisioningInfoResponse {
 
   private long id;
   private String description;

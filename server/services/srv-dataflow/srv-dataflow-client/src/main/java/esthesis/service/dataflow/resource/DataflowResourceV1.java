@@ -4,6 +4,7 @@ import esthesis.common.rest.Page;
 import esthesis.common.rest.Pageable;
 import esthesis.service.dataflow.dto.Dataflow;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
+import java.util.List;
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.DELETE;
@@ -37,4 +38,7 @@ public interface DataflowResourceV1 {
   @POST
   @Produces("application/json")
   Dataflow save(@Valid Dataflow dataflow);
+
+  @GET
+  String matchMqttServerByTags(List<String> tags);
 }

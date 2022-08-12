@@ -12,6 +12,13 @@ quarkus:
         host: esthesis-dev-loki-gelf-udp
         port: 12201
         include-full-mdc: true
+  rest-client:
+    RegistryResource:
+      url: http://esthesis-dev-apisix-gateway/dev
+      scope: Singleton
+    TagResource:
+      url: http://esthesis-dev-apisix-gateway/dev
+      scope: Singleton
   mongodb:
     connection-string: mongodb://esthesis-dev-mongodb-0:27017,esthesis-dev-mongodb-1:27017
   opentelemetry:

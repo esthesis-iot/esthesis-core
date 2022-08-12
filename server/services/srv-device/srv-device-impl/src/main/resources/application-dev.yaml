@@ -31,6 +31,9 @@ quarkus:
     TagResource:
       url: http://esthesis-dev-apisix-gateway/dev
       scope: Singleton
+    DataflowResource:
+      url: http://esthesis-dev-apisix-gateway/dev
+      scope: Singleton
 
 mp:
   jwt:

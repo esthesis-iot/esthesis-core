@@ -6,6 +6,7 @@ import esthesis.common.rest.Pageable;
 import esthesis.service.dataflow.dto.Dataflow;
 import esthesis.service.dataflow.impl.service.DataflowService;
 import esthesis.service.dataflow.resource.DataflowResourceV1;
+import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
@@ -40,5 +41,10 @@ public class DataflowResourceV1Impl implements DataflowResourceV1 {
   @Override
   public Dataflow save(Dataflow dataflow) {
     return dataflowService.save(dataflow);
+  }
+
+  @Override
+  public String matchMqttServerByTags(List<String> tags) {
+    return dataflowService.matchMqttServerByTags(tags);
   }
 }

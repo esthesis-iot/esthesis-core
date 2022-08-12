@@ -1,0 +1,8 @@
+```
+env \
+    esthesis.dataflows.mqttclient.mqtt.brokerUrl=tcp://esthesis-dev-rabbitmq:1883  \
+    esthesis.dataflows.mqttclient.mqtt.username=esthesis \
+    esthesis.dataflows.mqttclient.mqtt.password=esthesis \
+    esthesis.dataflows.mqttclient.kafka.brokers=esthesis-dev-kafka:9094  \
+./mvnw quarkus:dev
+```

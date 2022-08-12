@@ -1,8 +1,7 @@
-package esthesis.common.dto;
+package esthesis.service.device.dto.agent;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -10,8 +9,11 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @RegisterForReflection
 @Accessors(chain = true)
-@EqualsAndHashCode
-public class PublicConfig {
+public class RegistrationRequest {
 
-  private String oidcUrl;
+  private String hardwareId;
+
+  // Comma-separated list of tags.
+  private String tags;
+
 }

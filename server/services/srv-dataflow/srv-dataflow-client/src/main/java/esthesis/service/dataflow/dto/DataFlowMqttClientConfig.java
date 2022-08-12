@@ -16,6 +16,7 @@ import org.hibernate.validator.constraints.Length;
 @Accessors(chain = true)
 public class DataFlowMqttClientConfig {
 
+  private String url;
 
   private List<String> tags;
 

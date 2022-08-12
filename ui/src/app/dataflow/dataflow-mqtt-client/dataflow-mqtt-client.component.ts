@@ -13,6 +13,7 @@ import {
 } from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
 import {TagService} from "../../tags/tag.service";
 import {DataflowDto} from "../../dto/dataflow/dataflow-dto";
+import {UUID} from "angular2-uuid";
 
 @Component({
   selector: "app-dataflow-mqtt-client",
@@ -40,6 +41,9 @@ export class DataflowMqttClientComponent extends BaseComponent implements OnInit
       name: [{value: "", disabled: false}, [Validators.maxLength(1024)]],
       description: [{value: "", disabled: false}, [Validators.maxLength(4096)]],
       url: [{value: "", disabled: false}, [Validators.maxLength(1024)]],
+      outChannel: [{
+        value: "mqttClientOut-" + UUID.UUID(), disabled: false
+      }, [Validators.maxLength(1024)]],
       status: ["", [Validators.required, Validators.maxLength(5)]],
       minPods: [1, [Validators.required, Validators.min(0)]],
       maxPods: [1, [Validators.required, Validators.max(100)]],
@@ -88,7 +92,9 @@ export class DataflowMqttClientComponent extends BaseComponent implements OnInit
     dataflowDto.status = form.status;
     dataflowDto.minPods = form.minPods;
     dataflowDto.maxPods = form.maxPods;
+    dataflowDto.outChannel = form.outChannel;
     dataflowDto.configuration = JSON.stringify({
+      "url": form.url,
       "tags": form.tags,
       "topicPing": form.topicPing,
       "topicTelemetry": form.topicTelemetry,

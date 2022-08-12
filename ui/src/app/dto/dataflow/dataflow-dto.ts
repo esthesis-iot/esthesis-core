@@ -6,6 +6,9 @@ export class DataflowDto {
   type!: string;
   minPods!: number;
   maxPods!: number;
+  inChannel?: string;
+  outChannel?: string;
+  consumerGroup?: string;
 
   configuration?: string;
 }

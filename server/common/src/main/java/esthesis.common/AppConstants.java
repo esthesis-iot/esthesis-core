@@ -16,6 +16,10 @@ public class AppConstants {
     MQTT_CLIENT;
   }
 
+  public enum RegistrationMode {
+    DISABLED, OPEN, OPEN_WITH_APPROVAL, ID
+  }
+
   public static class Registry {
 
     private Registry() {
@@ -26,11 +30,17 @@ public class AppConstants {
     public static final String SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM = "securityAsymmetricSignatureAlgorithm";
     public static final String DEVICE_ROOT_CA = "deviceRootCA";
     public static final String PROVISIONING_URL = "provisioningURL";
+    public static final String REGISTRATION_MODE = "registrationMode";
+    public static final String DEVICE_TAGS_ALGORITHM = "deviceTagsAlgorithm";
   }
 
   public static class Device {
 
     private Device() {
+    }
+    
+    public enum TAGS_ALGORITHM {
+      ALL, ANY
     }
 
     public static class State {

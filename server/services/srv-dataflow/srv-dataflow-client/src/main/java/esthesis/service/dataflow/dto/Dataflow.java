@@ -38,4 +38,8 @@ public class Dataflow extends BaseDTO {
 
   private Integer minPods;
   private Integer maxPods;
+
+  private String inChannel;
+  private String outChannel;
+  private String consumerGroup;
 }

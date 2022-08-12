@@ -72,7 +72,15 @@
           </mat-hint>
         </mat-form-field>
 
-        <div class="inline-subheader">Scheduling</div>
+        <div class="inline-subheader">Kafka integration</div>
+        <mat-form-field>
+          <input matInput formControlName="outChannel" required>
+          <mat-hint align="start">An application-wide unique Kafka topic on which this component
+            outputs data
+          </mat-hint>
+        </mat-form-field>
+
+        <div class="inline-subheader">Kubernetes Scheduling</div>
         <div>Minimum pods: {{form.controls["minPods"].value}}</div>
         <mat-slider min="0" max="100" step="1" value="1"
                     formControlName="minPods" (change)="minPodsChanged()"></mat-slider>
