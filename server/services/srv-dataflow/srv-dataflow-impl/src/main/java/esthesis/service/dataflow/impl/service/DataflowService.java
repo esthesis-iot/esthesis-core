@@ -2,9 +2,9 @@ package esthesis.service.dataflow.impl.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Device.TAGS_ALGORITHM;
+import esthesis.common.AppConstants.DataflowType;
 import esthesis.common.AppConstants.Registry;
+import esthesis.common.AppConstants.TagsAlgorithm;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.service.BaseService;
 import esthesis.service.dataflow.dto.DataFlowMqttClientConfig;
@@ -51,13 +51,13 @@ public class DataflowService extends BaseService<Dataflow> {
     Optional<Dataflow> mqttDataflow = Optional.empty();
 
     // Check whether an MQTT server matches according to the tag matching algorithm.
-    TAGS_ALGORITHM deviceTagsAlgorithm = TAGS_ALGORITHM.valueOf(
+    TagsAlgorithm deviceTagsAlgorithm = TagsAlgorithm.valueOf(
         registryResourceV1.findByName(
             Registry.DEVICE_TAGS_ALGORITHM).asString());
 
     if (tagsList.isEmpty()) {
       mqttDataflow = dataflowRepository.findByType(
-              AppConstants.Dataflow.MQTT_CLIENT)
+              DataflowType.MQTT_CLIENT)
           .stream()
           .filter(Dataflow::isStatus)
           .filter(dataflow -> {
@@ -78,7 +78,7 @@ public class DataflowService extends BaseService<Dataflow> {
       switch (deviceTagsAlgorithm) {
         case ALL -> {
           mqttDataflow = dataflowRepository.findByType(
-                  AppConstants.Dataflow.MQTT_CLIENT)
+                  DataflowType.MQTT_CLIENT)
               .stream()
               .filter(Dataflow::isStatus)
               .filter(dataflow -> {
@@ -95,7 +95,7 @@ public class DataflowService extends BaseService<Dataflow> {
         }
         case ANY -> {
           mqttDataflow = dataflowRepository.findByType(
-                  AppConstants.Dataflow.MQTT_CLIENT)
+                  DataflowType.MQTT_CLIENT)
               .stream()
               .filter(Dataflow::isStatus)
               .filter(dataflow -> {

@@ -20,10 +20,10 @@ export class SettingsService extends CrudService<RegistryEntryDto> {
   constructor(http: HttpClient) {
     super(http, SettingsService.serviceContext);
   }
-  
-  findByNames(...names: string[]): Observable<RegistryEntryDto[]> {
+
+  findByNames(names: string): Observable<RegistryEntryDto[]> {
     return this.http.get<RegistryEntryDto[]>(
-      `${environment.apiPrefix}/${SettingsService.serviceContext}/find/by-names/${names.join(",")}`);
+      `${environment.apiPrefix}/${SettingsService.serviceContext}/find/by-names/${names}`);
   }
 
   getDevicePageFields(): Observable<FieldDto[]> {

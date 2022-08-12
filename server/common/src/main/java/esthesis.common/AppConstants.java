@@ -2,58 +2,48 @@ package esthesis.common;
 
 public class AppConstants {
 
-  public static class Messaging {
+  public static final String KAFKA_TOPIC_PREFIX = "esthesis-";
 
-    private Messaging() {
-
-    }
-
-    // The prefix to be used for all Kafka topics.
-    public static final String CHANNEL_PREFIX = "esthesis-";
-  }
-
-  public enum Dataflow {
+  public enum DataflowType {
     MQTT_CLIENT;
   }
 
-  public enum RegistrationMode {
+  public enum Registry {
+    SECURITY_ASYMMETRIC_KEY_SIZE, SECURITY_ASYMMETRIC_KEY_ALGORITHM,
+    SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM,
+
+    PLATFORM_CERTIFICATE,
+
+    DEVICE_ROOT_CA, DEVICE_PROVISIONING_URL, DEVICE_REGISTRATION_MODE,
+    DEVICE_TAGS_ALGORITHM, DEVICE_GEO_LAT, DEVICE_GEO_LON;
+  }
+
+  public enum TagsAlgorithm {
+    ALL, ANY
+  }
+
+  public enum DeviceStatus {
+    DISABLED, PREREGISTERED, REGISTERED, APPROVAL;
+  }
+
+  public enum DeviceRegistrationMode {
     DISABLED, OPEN, OPEN_WITH_APPROVAL, ID
   }
 
-  public static class Registry {
+//  public static class Registry {
+//
+//    private Registry() {
+//    }
+//
+//    public static final String SECURITY_ASYMMETRIC_KEY_SIZE = "securityAsymmetricKeySize";
+//    public static final String SECURITY_ASYMMETRIC_KEY_ALGORITHM = "securityAsymmetricKeyAlgorithm";
+//    public static final String SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM = "securityAsymmetricSignatureAlgorithm";
+//    public static final String DEVICE_ROOT_CA = "deviceRootCA";
+//    public static final String PROVISIONING_URL = "provisioningURL";
+//    public static final String REGISTRATION_MODE = "registrationMode";
+//    public static final String DEVICE_TAGS_ALGORITHM = "deviceTagsAlgorithm";
+//  }
 
-    private Registry() {
-    }
-
-    public static final String SECURITY_ASYMMETRIC_KEY_SIZE = "securityAsymmetricKeySize";
-    public static final String SECURITY_ASYMMETRIC_KEY_ALGORITHM = "securityAsymmetricKeyAlgorithm";
-    public static final String SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM = "securityAsymmetricSignatureAlgorithm";
-    public static final String DEVICE_ROOT_CA = "deviceRootCA";
-    public static final String PROVISIONING_URL = "provisioningURL";
-    public static final String REGISTRATION_MODE = "registrationMode";
-    public static final String DEVICE_TAGS_ALGORITHM = "deviceTagsAlgorithm";
-  }
-
-  public static class Device {
-
-    private Device() {
-    }
-    
-    public enum TAGS_ALGORITHM {
-      ALL, ANY
-    }
-
-    public static class State {
-
-      private State() {
-      }
-
-      public static final String DISABLED = "DISABLED";
-      public static final String PREREGISTERED = "PREREGISTERED";
-      public static final String REGISTERED = "REGISTERED";
-      public static final String APPROVAL = "APPROVAL";
-    }
-  }
 //  public static class Audit {
 //
 //    private Audit() {

@@ -1,8 +1,9 @@
 package esthesis.services.device.impl.service;
 
 
-import esthesis.common.AppConstants.Device.State;
-import esthesis.common.AppConstants.RegistrationMode;
+import esthesis.common.AppConstants;
+import esthesis.common.AppConstants.DeviceRegistrationMode;
+import esthesis.common.AppConstants.DeviceStatus;
 import esthesis.common.AppConstants.Registry;
 import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QDisabledException;
@@ -108,11 +109,11 @@ public class DeviceService extends BaseService<Device> {
         hardwareId);
 
     // Check that a device with the same hardware ID is not already registered.
-    if (optionalDevice.isPresent() && !optionalDevice.get().getState()
-        .equals(State.PREREGISTERED)) {
+    if (optionalDevice.isPresent() && !optionalDevice.get().getStatus()
+        .equals(DeviceStatus.PREREGISTERED)) {
       throw new QSecurityException(
           "Cannot register device with hardwareId {} as it is already in {} state.",
-          hardwareId, optionalDevice.get().getState());
+          hardwareId, optionalDevice.get().getStatus());
     } else if (!optionalDevice.isPresent()) {
       throw new QSecurityException(
           "Device with hardware ID {0} does not exist.", hardwareId);
@@ -120,7 +121,7 @@ public class DeviceService extends BaseService<Device> {
 
     // Find the device and set its status to registered.
     Device device = optionalDevice.get();
-    device.setState(State.REGISTERED);
+    device.setStatus(DeviceStatus.REGISTERED);
     deviceRepository.update(device);
 
     return device;
@@ -156,7 +157,8 @@ public class DeviceService extends BaseService<Device> {
     for (String hardwareId : idList) {
       log.debug("Requested to preregister a device with hardware id '{}'.",
           hardwareId);
-      register(hardwareId, deviceRegistration.getTags(), State.PREREGISTERED);
+      register(hardwareId, deviceRegistration.getTags(),
+          DeviceStatus.PREREGISTERED);
     }
   }
 
@@ -166,9 +168,9 @@ public class DeviceService extends BaseService<Device> {
    * @param hardwareId The hardware id of the device to be registered.
    * @param tags       The tags associated with this device as a comma-separated
    *                   list.
-   * @param state      The initial state of the registration of the device.
    */
-  private Device register(String hardwareId, List<String> tags, String state)
+  private Device register(String hardwareId, List<String> tags,
+      AppConstants.DeviceStatus status)
   throws IOException, InvalidKeySpecException, NoSuchAlgorithmException,
          OperatorCreationException, NoSuchProviderException {
     log.debug("Registering device with hardware id '{}'.",
@@ -208,7 +210,7 @@ public class DeviceService extends BaseService<Device> {
     // Create the new device.
     final Device device = new Device()
         .setHardwareId(hardwareId)
-        .setState(state)
+        .setStatus(status)
         .setDeviceKey(deviceKey);
 
     // Set device-pushed tags.
@@ -234,29 +236,30 @@ public class DeviceService extends BaseService<Device> {
          OperatorCreationException, NoSuchProviderException {
 
     // Proceed with device registration.
-    RegistrationMode registrationMode = RegistrationMode.valueOf(
-        registryResourceV1.findByName(Registry.REGISTRATION_MODE).asString());
+    DeviceRegistrationMode deviceRegistrationMode = DeviceRegistrationMode.valueOf(
+        registryResourceV1.findByName(Registry.DEVICE_REGISTRATION_MODE)
+            .asString());
 
-    if (registrationMode == RegistrationMode.DISABLED) {
+    if (deviceRegistrationMode == DeviceRegistrationMode.DISABLED) {
       throw new QDisabledException("Attempting to register device with "
           + "hardwareId '{}' but registration of new devices is disabled.",
           registrationRequest.getHardwareId());
     } else {
       // Check registration preconditions and register device.
       log.trace("Platform running on '{}' registration mode.",
-          registrationMode);
+          deviceRegistrationMode);
       log.debug(
           "Attempting to register device with hardwareId ''{}'' and tags ''{}''.",
           registrationRequest.getHardwareId(), registrationRequest.getTags());
-      switch (registrationMode) {
+      switch (deviceRegistrationMode) {
         case OPEN:
           return register(registrationRequest.getHardwareId(),
               Arrays.stream(registrationRequest.getTags().split(",")).toList(),
-              State.REGISTERED);
+              DeviceStatus.REGISTERED);
         case OPEN_WITH_APPROVAL:
           return register(registrationRequest.getHardwareId(),
               Arrays.stream(registrationRequest.getTags().split(",")).toList(),
-              State.APPROVAL);
+              DeviceStatus.APPROVAL);
         case ID:
           return activatePreregisteredDevice(
               registrationRequest.getHardwareId());

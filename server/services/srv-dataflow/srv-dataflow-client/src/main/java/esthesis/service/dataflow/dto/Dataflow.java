@@ -32,7 +32,7 @@ public class Dataflow extends BaseDTO {
   private boolean status;
 
   @NotNull
-  private AppConstants.Dataflow type;
+  private AppConstants.DataflowType type;
 
   private String configuration;
 

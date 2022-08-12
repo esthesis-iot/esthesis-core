@@ -75,7 +75,7 @@ public class AgentResourceV1Impl implements AgentResourceV1 {
 
     // Set provisioning URL.
     RegistryEntry provisioningUrl = registryResourceV1.findByName(
-        Registry.PROVISIONING_URL);
+        Registry.DEVICE_PROVISIONING_URL);
     if (provisioningUrl != null) {
       registrationResponse.setProvisioningUrl(provisioningUrl.getValue());
     } else {

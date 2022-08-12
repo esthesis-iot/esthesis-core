@@ -5,7 +5,6 @@ import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
 import {DevicesService} from "../../devices/devices.service";
 import {SettingsService} from "../settings.service";
-import {AppSettings} from "../../app.settings";
 import * as _ from "lodash";
 import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";
@@ -52,10 +51,7 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
     });
 
     // Fetch settings.
-    this.settingsService.findByNames(
-      AppSettings.SETTING.GEOLOCATION.LATITUDE,
-      AppSettings.SETTING.GEOLOCATION.LONGITUDE,
-    ).subscribe(onNext => {
+    this.settingsService.findByNames("DEVICE_GEO_LAT,DEVICE_GEO_LON").subscribe(onNext => {
       onNext.forEach(registryEntryDto => {
         this.settingsForm.controls[registryEntryDto.name].patchValue(registryEntryDto.value);
       });

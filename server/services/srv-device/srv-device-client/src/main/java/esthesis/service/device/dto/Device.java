@@ -1,5 +1,6 @@
 package esthesis.service.device.dto;
 
+import esthesis.common.AppConstants.DeviceStatus;
 import esthesis.common.dto.BaseDTO;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.time.Instant;
@@ -24,7 +25,7 @@ public class Device extends BaseDTO {
   @Length(min = 1, max = 1024)
   private String hardwareId;
 
-  private String state;
+  private DeviceStatus status;
 
   private List<String> tags;
 

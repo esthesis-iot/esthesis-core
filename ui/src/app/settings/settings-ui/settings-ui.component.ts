@@ -1,9 +1,8 @@
 import {Component, OnInit} from "@angular/core";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 import {SettingsService} from "../settings.service";
 import {UtilityService} from "../../shared/service/utility.service";
 import {BaseComponent} from "../../shared/component/base-component";
-import {AppSettings} from "../../app.settings";
 import * as _ from "lodash";
 import {RegistryEntryDto} from "../../dto/registry-entry-dto";
 
@@ -14,8 +13,6 @@ import {RegistryEntryDto} from "../../dto/registry-entry-dto";
 })
 export class SettingsUiComponent extends BaseComponent implements OnInit {
   form!: FormGroup;
-  // Expose application constants.
-  settings = AppSettings;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
     private utilityService: UtilityService) {
@@ -24,20 +21,14 @@ export class SettingsUiComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     // Define the form.
-    this.form = this.fb.group({
-      pixabay_category: ["", [Validators.required]],
-      pixabay_key: ["", [Validators.required]],
-      pixabay_enabled: ["", [Validators.required]],
-    });
+    this.form = this.fb.group({});
 
     // Fetch settings.
-    this.settingsService.findByNames(
-      AppSettings.SETTING.UI.PIXABAY.CATEGORY,
-      AppSettings.SETTING.UI.PIXABAY.KEY,
-      AppSettings.SETTING.UI.PIXABAY.ENABLED,
-    ).subscribe(onNext => {
+    this.settingsService.findByNames("").subscribe(onNext => {
       onNext.forEach(registryEntryDto => {
-        this.form.controls[registryEntryDto.name].patchValue(registryEntryDto.value);
+        if (registryEntryDto != null) {
+          this.form.controls[registryEntryDto.name].patchValue(registryEntryDto.value);
+        }
       });
     });
   }

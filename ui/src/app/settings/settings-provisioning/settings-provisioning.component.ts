@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {SettingsService} from "../settings.service";
-import {AppSettings} from "../../app.settings";
 import * as _ from "lodash";
 import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
@@ -24,14 +23,12 @@ export class SettingsProvisioningComponent extends BaseComponent implements OnIn
   ngOnInit() {
     // Define the form.
     this.form = this.fb.group({
-      provisioningUrl: ["", []]
+      DEVICE_PROVISIONING_URL: ["", []]
     });
 
 
     // Fetch settings.
-    this.settingsService.findByNames(
-      AppSettings.SETTING.PROVISIONING.PROVISIONING_URL
-    ).subscribe(onNext => {
+    this.settingsService.findByNames("DEVICE_PROVISIONING_URL").subscribe(onNext => {
       onNext.forEach(registryEntryDTO => {
         this.form.controls[registryEntryDTO.name].patchValue(registryEntryDTO.value);
       });

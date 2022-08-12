@@ -26,7 +26,7 @@ public class TagService extends BaseService<Tag> {
   JsonWebToken jwt;
 
   @Inject
-  @Channel(TagServiceMessaging.CHANNEL_DELETE)
+  @Channel(TagServiceMessaging.TOPIC_TAG_DELETE)
   Emitter<Tag> tagDeletedEmitter;
 
   @Override

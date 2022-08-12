@@ -23,7 +23,7 @@ public class MessageHandlers {
   DeviceService deviceService;
 
   @Blocking
-  @Incoming(TagServiceMessaging.CHANNEL_DELETE)
+  @Incoming(TagServiceMessaging.TOPIC_TAG_DELETE)
   public CompletionStage<Void> tagDeleted(Message<Tag> msg) {
     Scope scope = Context.current().makeCurrent();
 

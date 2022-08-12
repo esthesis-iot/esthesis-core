@@ -1,6 +1,5 @@
 package esthesis.service.registry.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import esthesis.common.dto.BaseDTO;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
@@ -37,16 +36,6 @@ public class RegistryEntry extends BaseDTO {
 
   public boolean asBoolean() {
     return Boolean.parseBoolean(String.valueOf(value));
-  }
-
-  @JsonIgnore
-  public boolean isTrue() {
-    return value != null && asBoolean();
-  }
-
-  @JsonIgnore
-  public boolean isFalse() {
-    return value != null && !asBoolean();
   }
 
   public ObjectId asObjectId() {

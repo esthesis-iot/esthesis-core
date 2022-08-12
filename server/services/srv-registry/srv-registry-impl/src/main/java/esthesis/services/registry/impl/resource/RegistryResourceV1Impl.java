@@ -1,11 +1,15 @@
 package esthesis.services.registry.impl.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.service.registry.dto.RegistryEntry;
 import esthesis.service.registry.resource.RegistryResourceV1;
 import esthesis.services.registry.impl.service.RegistryService;
+import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class RegistryResourceV1Impl implements RegistryResourceV1 {
 
   @Inject
@@ -17,13 +21,15 @@ public class RegistryResourceV1Impl implements RegistryResourceV1 {
 //  }
 
   @Override
-  public RegistryEntry findByName(String name) {
+  public RegistryEntry findByName(AppConstants.Registry name) {
     return registryService.findByName(name);
   }
 
   @Override
   public List<RegistryEntry> findByNames(String names) {
-    return registryService.findByNames(names);
+    return Arrays.stream(names.split(",")).map(
+            name -> registryService.findByName(AppConstants.Registry.valueOf(name)))
+        .toList();
   }
 
   @Override
@@ -33,13 +39,18 @@ public class RegistryResourceV1Impl implements RegistryResourceV1 {
     // the registry entry id).
     for (RegistryEntry entry : registryEntry) {
       if (entry.getId() != null) {
+        log.debug("Updating an existing registry entry by id with '{}'.",
+            entry);
         registryService.save(entry);
       } else {
-        RegistryEntry existingEntry = registryService.findByName(
+        RegistryEntry existingEntry = registryService.findByTextName(
             entry.getName());
         if (existingEntry != null) {
+          log.debug("Updating an existing registry entry with '{}'.", entry);
           entry.setId(existingEntry.getId());
+          registryService.save(entry);
         } else {
+          log.debug("Creating a new registry entry '{}'.", entry);
           registryService.save(entry);
         }
       }

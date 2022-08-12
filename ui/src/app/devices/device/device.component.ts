@@ -15,7 +15,6 @@ import {sprintf} from "sprintf-js";
 import {FieldDto} from "../../dto/field-dto";
 import {FormatterService} from "../../shared/service/formatter.service";
 import {SettingsService} from "../../settings/settings.service";
-import {AppSettings} from "../../app.settings";
 import {LeafletDirective} from "@asymmetrik/ngx-leaflet";
 import {QFormsService} from "@qlack/forms";
 import {DeviceDto} from "../../dto/device-dto";
@@ -66,15 +65,12 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
     if (this.id && this.id !== 0) {
       let latSetting: string;
       let lonSetting: string;
-      this.settingsService.findByNames(
-        AppSettings.SETTING.GEOLOCATION.LATITUDE,
-        AppSettings.SETTING.GEOLOCATION.LONGITUDE,
-      ).subscribe(onNext => {
+      this.settingsService.findByNames("DEVICE_GEO_LAT,DEVICE_GEO_LON").subscribe(onNext => {
         onNext.forEach(registryEntryDTO => {
-          if (registryEntryDTO.name === AppSettings.SETTING.GEOLOCATION.LATITUDE) {
+          if (registryEntryDTO.name === "DEVICE_GEO_LAT") {
             latSetting = registryEntryDTO.value;
           }
-          if (registryEntryDTO.name === AppSettings.SETTING.GEOLOCATION.LONGITUDE) {
+          if (registryEntryDTO.name === "DEVICE_GEO_LON") {
             lonSetting = registryEntryDTO.value;
           }
         });

@@ -4,6 +4,6 @@ import esthesis.common.AppConstants;
 
 public class TagServiceMessaging {
 
-  public static final String CHANNEL_DELETE =
-      AppConstants.Messaging.CHANNEL_PREFIX + "tag-delete";
+  public static final String TOPIC_TAG_DELETE =
+      AppConstants.KAFKA_TOPIC_PREFIX + "tag-delete";
 }

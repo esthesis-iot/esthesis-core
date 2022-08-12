@@ -1,28 +1,5 @@
 <form novalidate [formGroup]="form" fxLayout="column" fxLayoutGap="0.5rem">
-  <div class="inline-header">Pixabay integration</div>
-  <div class="inline-subheader">
-    Pixabay provides random, free background photos for the login/logout screens.
-  </div>
 
-  <mat-form-field>
-    <mat-select placeholder="State" [formControlName]="settings.SETTING.UI.PIXABAY.ENABLED">
-      <mat-option [value]="'true'">Active</mat-option>
-      <mat-option [value]="'false'">Inactive</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput placeholder="Integration key" formControlName="pixabay_key">
-  </mat-form-field>
-
-  <mat-form-field>
-    <mat-select placeholder="The category to fetch a random photo from"
-                [formControlName]="settings.SETTING.UI.PIXABAY.CATEGORY">
-      <mat-option *ngFor="let o of settings.SETTING_VALUES.UI.PIXABAY.CATEGORY | keyvalue"
-                  [value]="o.value">
-        {{ lookupByValue(settings.SETTING_VALUES.UI.PIXABAY.CATEGORY, o.value) }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
 </form>
 
 <div class="xs-pt2">

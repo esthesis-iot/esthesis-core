@@ -1,5 +1,6 @@
 package esthesis.service.registry.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.service.registry.dto.RegistryEntry;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.util.List;
@@ -22,7 +23,7 @@ public interface RegistryResourceV1 {
 
   @GET
   @Path("/find/by-name/{name}")
-  RegistryEntry findByName(@PathParam("name") String name);
+  RegistryEntry findByName(@PathParam("name") AppConstants.Registry name);
 
   /**
    * Finds multiple registry entries by name.
@@ -32,13 +33,7 @@ public interface RegistryResourceV1 {
   @GET
   @Path("/find/by-names/{names}")
   List<RegistryEntry> findByNames(@PathParam("names") String names);
-
-//  @POST
-//  void save(@Valid RegistryEntry registryEntry);
-//
-//  @POST
-//  void saveMany(@Valid List<RegistryEntry> registryEntries);
-
+  
   @POST
   void save(@Valid RegistryEntry... registryEntry);
 

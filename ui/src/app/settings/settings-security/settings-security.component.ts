@@ -4,7 +4,6 @@ import {SettingsService} from "../settings.service";
 import {CertificatesService} from "../../certificates/certificates.service";
 import {CertificateDto} from "../../dto/certificate-dto";
 import * as _ from "lodash";
-import {AppSettings} from "../../app.settings";
 import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
 import {RegistryEntryDto} from "../../dto/registry-entry-dto";
@@ -17,7 +16,6 @@ import {RegistryEntryDto} from "../../dto/registry-entry-dto";
 export class SettingsSecurityComponent extends BaseComponent implements OnInit {
   form!: FormGroup;
   certificates: CertificateDto[] | undefined;
-  settings = AppSettings;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
     private certificatesService: CertificatesService, private utilityService: UtilityService) {
@@ -27,15 +25,15 @@ export class SettingsSecurityComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     // Define the form.
     this.form = this.fb.group({
-      platformCertificate: ["", [Validators.required]],
+      PLATFORM_CERTIFICATE: ["", [Validators.required]],
     });
 
     // Fetch settings.
-    this.settingsService.findByNames(
-      AppSettings.SETTING.SECURITY.PLATFORM_CERTIFICATE
-    ).subscribe(onNext => {
+    this.settingsService.findByNames("PLATFORM_CERTIFICATE").subscribe(onNext => {
       onNext.forEach(registryEntryDTO => {
-        this.form.controls[registryEntryDTO.name].patchValue(registryEntryDTO.value);
+        if (registryEntryDTO != null) {
+          this.form.controls[registryEntryDTO.name].patchValue(registryEntryDTO.value);
+        }
       });
     });
 

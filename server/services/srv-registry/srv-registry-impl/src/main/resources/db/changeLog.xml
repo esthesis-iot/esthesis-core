@@ -15,9 +15,9 @@
 
     <ext:insertMany collectionName="Registry">
       <ext:documents>
-        [{"name":"securityAsymmetricKeySize", "value": "2048"},
-        {"name":"securityAsymmetricKeyAlgorithm", "value": "RSA"},
-        {"name":"securityAsymmetricSignatureAlgorithm", "value": "SHA256WITHRSA"}]
+        [{"name":"SECURITY_ASYMMETRIC_KEY_SIZE", "value": "2048"},
+        {"name":"SECURITY_ASYMMETRIC_KEY_ALGORITHM", "value": "RSA"},
+        {"name":"SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM", "value": "SHA256WITHRSA"}]
       </ext:documents>
     </ext:insertMany>
   </changeSet>
@@ -25,7 +25,7 @@
   <changeSet id="2" author="European Dynamics SA">
     <ext:insertOne collectionName="Registry">
       <ext:document>
-        {"name":"deviceRegistrationMode", "value": "DISABLED"}
+        {"name":"DEVICE_REGISTRATION_MODE", "value": "DISABLED"}
       </ext:document>
     </ext:insertOne>
   </changeSet>

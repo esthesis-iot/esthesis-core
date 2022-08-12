@@ -1,9 +1,10 @@
 <form novalidate [formGroup]="form" fxLayout="column">
   <div class="inline-header">Provisioning URL</div>
-  <div class="inline-subheader">The URL devices contact to obtain firmware updates.</div>
   <mat-form-field>
-    <input matInput placeholder="URL" formControlName="provisioningUrl">
-    <mat-hint>ex: http://esthesis.server:46000</mat-hint>
+    <input matInput formControlName="DEVICE_PROVISIONING_URL">
+    <mat-hint>The URL devices contact to obtain firmware updates, e.g.
+      http://esthesis.server:46000
+    </mat-hint>
   </mat-form-field>
 </form>
 

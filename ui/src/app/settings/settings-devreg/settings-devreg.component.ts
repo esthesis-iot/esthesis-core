@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SettingsService} from "../settings.service";
-import {AppSettings} from "../../app.settings";
 import * as _ from "lodash";
 import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
@@ -17,7 +16,6 @@ import {RegistryEntryDto} from "../../dto/registry-entry-dto";
 export class SettingsDevregComponent extends BaseComponent implements OnInit {
   form!: FormGroup;
   cas: CaDto[] | undefined;
-  settings = AppSettings;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
     private utilityService: UtilityService, private casService: CasService) {
@@ -27,19 +25,19 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     // Define the form.
     this.form = this.fb.group({
-      deviceRegistrationMode: ["", [Validators.required]],
-      deviceTagsAlgorithm: ["", [Validators.required]],
-      deviceRootCA: ["", []]
+      DEVICE_REGISTRATION_MODE: ["", [Validators.required]],
+      DEVICE_TAGS_ALGORITHM: ["", [Validators.required]],
+      DEVICE_ROOT_CA: ["", []]
     });
 
     // Fetch settings.
     this.settingsService.findByNames(
-      AppSettings.SETTING.DEVICE_REGISTRATION.REGISTRATION_MODE,
-      AppSettings.SETTING.DEVICE_REGISTRATION.TAGS_ALGORITHM,
-      AppSettings.SETTING.DEVICE_REGISTRATION.ROOT_CA,
+      "DEVICE_REGISTRATION_MODE,DEVICE_TAGS_ALGORITHM,DEVICE_ROOT_CA"
     ).subscribe(onNext => {
       onNext.forEach(registryEntryDto => {
-        this.form.controls[registryEntryDto.name].patchValue(registryEntryDto.value);
+        if (registryEntryDto != null) {
+          this.form.controls[registryEntryDto.name].patchValue(registryEntryDto.value);
+        }
       });
     });
 
