@@ -10,31 +10,27 @@ import esthesis.common.service.BaseService;
 import esthesis.service.dataflow.dto.DataFlowMqttClientConfig;
 import esthesis.service.dataflow.dto.Dataflow;
 import esthesis.service.dataflow.impl.repository.DataflowRepository;
-import esthesis.service.registry.resource.RegistryResourceV1;
-import esthesis.service.tag.dto.Tag;
-import esthesis.service.tag.resource.TagResourceV1;
+import esthesis.service.registry.resource.RegistryResource;
+import esthesis.service.tag.resource.TagResource;
 import java.util.List;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @ApplicationScoped
 public class DataflowService extends BaseService<Dataflow> {
 
-  //  @Inject
-//  JsonWebToken jwt;
   @Inject
   @RestClient
-  RegistryResourceV1 registryResourceV1;
+  RegistryResource registryResource;
 
   @Inject
   @RestClient
-  TagResourceV1 tagResourceV1;
+  TagResource tagResource;
 
   @Inject
   DataflowRepository dataflowRepository;
@@ -47,12 +43,12 @@ public class DataflowService extends BaseService<Dataflow> {
    *
    * @return Returns the MQTT server registered with all given tags matched.
    */
-  public String matchMqttServerByTags(List<String> tagsList) {
+  public DataFlowMqttClientConfig matchMqttServerByTags(List<String> tagsList) {
     Optional<Dataflow> mqttDataflow = Optional.empty();
 
     // Check whether an MQTT server matches according to the tag matching algorithm.
     TagsAlgorithm deviceTagsAlgorithm = TagsAlgorithm.valueOf(
-        registryResourceV1.findByName(
+        registryResource.findByName(
             Registry.DEVICE_TAGS_ALGORITHM).asString());
 
     if (tagsList.isEmpty()) {
@@ -71,10 +67,6 @@ public class DataflowService extends BaseService<Dataflow> {
           })
           .findAny();
     } else {
-      // Convert tag names to tag Ids and find matching registered MQTT servers.
-      List<ObjectId> tagIds = tagsList.stream().map(tagResourceV1::findByName)
-          .map(Tag::getId).toList();
-
       switch (deviceTagsAlgorithm) {
         case ALL -> {
           mqttDataflow = dataflowRepository.findByType(
@@ -117,7 +109,7 @@ public class DataflowService extends BaseService<Dataflow> {
     if (mqttDataflow.isPresent()) {
       try {
         return objectMapper.readValue(mqttDataflow.get().getConfiguration(),
-            DataFlowMqttClientConfig.class).getUrl();
+            DataFlowMqttClientConfig.class);
       } catch (JsonProcessingException e) {
         throw new QMismatchException(
             "Could not parse MQTT server configuration.", e);

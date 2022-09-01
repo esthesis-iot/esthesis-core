@@ -12,7 +12,7 @@ import esthesis.service.crypto.dto.Certificate;
 import esthesis.service.crypto.dto.form.ImportCertificateForm;
 import esthesis.service.crypto.dto.request.CertificateSignRequest;
 import esthesis.service.crypto.dto.request.CreateKeyPairRequest;
-import esthesis.service.registry.resource.RegistryResourceV1;
+import esthesis.service.registry.resource.RegistryResource;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -77,7 +77,7 @@ public class CertificateService extends BaseService<Certificate> {
 
   @Inject
   @RestClient
-  RegistryResourceV1 registryResourceV1;
+  RegistryResource registryResource;
 
   private boolean isValidIPV4Address(final String email) {
     Matcher matcher = ipv4Pattern.matcher(email);
@@ -228,10 +228,10 @@ public class CertificateService extends BaseService<Certificate> {
       // Generate a keypair.
       final KeyPair keyPair = keyService.createKeyPair(
           CreateKeyPairRequest.builder()
-              .keySize(registryResourceV1.findByName(
+              .keySize(registryResource.findByName(
                   Registry.SECURITY_ASYMMETRIC_KEY_SIZE).asInt())
               .keyPairGeneratorAlgorithm(
-                  registryResourceV1.findByName(
+                  registryResource.findByName(
                       Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
               .build()
       );
@@ -242,7 +242,7 @@ public class CertificateService extends BaseService<Certificate> {
           .setLocale(Locale.US)
           .setPrivateKey(keyPair.getPrivate())
           .setPublicKey(keyPair.getPublic())
-          .setSignatureAlgorithm(registryResourceV1.findByName(
+          .setSignatureAlgorithm(registryResource.findByName(
               Registry.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM).asString())
           .setSubjectCN(certificate.getCn())
           .setValidForm(Instant.now())
@@ -260,7 +260,7 @@ public class CertificateService extends BaseService<Certificate> {
         certificateSignRequest.setIssuerPrivateKey(
             keyService.pemToPrivateKey(
                 ca.getPrivateKey(),
-                registryResourceV1.findByName(
+                registryResource.findByName(
                     Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString()));
       } else {
         certificateSignRequest.setIssuerCN(certificate.getCn());

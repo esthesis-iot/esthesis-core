@@ -14,10 +14,10 @@ quarkus:
         include-full-mdc: true
   rest-client:
     RegistryResource:
-      url: http://esthesis-dev-apisix-gateway/dev
+      url: http://localhost:59030
       scope: Singleton
     TagResource:
-      url: http://esthesis-dev-apisix-gateway/dev
+      url: http://localhost:59020
       scope: Singleton
   mongodb:
     connection-string: mongodb://esthesis-dev-mongodb-0:27017,esthesis-dev-mongodb-1:27017

@@ -1,79 +1,85 @@
 <?xml version="1.0"?>
 <project
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
-  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>esthesis</groupId>
-    <artifactId>server</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
-  </parent>
-
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <artifactId>services</artifactId>
-  <packaging>pom</packaging>
 
   <dependencies>
     <!-- QUARKUS -->
     <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-liquibase-mongodb</artifactId>
+      <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-container-image-docker</artifactId>
+      <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client-reactive-jackson</artifactId>
+      <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
+      <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-jwt</artifactId>
+      <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-jwt-build</artifactId>
+      <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-oidc-token-propagation-reactive</artifactId>
+      <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
+      <artifactId>quarkus-oidc-client-reactive-filter</artifactId>
       <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
       <artifactId>quarkus-opentelemetry-exporter-otlp</artifactId>
+      <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-logging-gelf</artifactId>
+      <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
+      <groupId>io.quarkus</groupId>
     </dependency>
 
     <!-- THIRD-PARTY -->
     <dependency>
-      <groupId>org.bouncycastle</groupId>
       <artifactId>bcpkix-jdk15on</artifactId>
+      <groupId>org.bouncycastle</groupId>
     </dependency>
     <dependency>
-      <groupId>esthesis</groupId>
       <artifactId>common</artifactId>
+      <groupId>esthesis</groupId>
       <version>3.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
+  <modelVersion>4.0.0</modelVersion>
   <modules>
     <module>srv-device</module>
     <module>srv-tag</module>
     <module>srv-registry</module>
     <module>srv-crypto</module>
     <module>srv-kubernetes</module>
+    <module>srv-dataflow</module>
+    <module>srv-agent</module>
   </modules>
+
+  <packaging>pom</packaging>
+
+  <parent>
+    <artifactId>server</artifactId>
+    <groupId>esthesis</groupId>
+    <version>3.0.0-SNAPSHOT</version>
+  </parent>
 
 </project>

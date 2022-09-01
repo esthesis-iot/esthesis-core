@@ -15,7 +15,7 @@ import esthesis.service.crypto.dto.request.CertificateSignRequest;
 import esthesis.service.crypto.dto.request.CreateCARequest;
 import esthesis.service.crypto.dto.request.CreateCARequest.CreateCARequestBuilder;
 import esthesis.service.crypto.dto.request.CreateKeyPairRequest;
-import esthesis.service.registry.resource.RegistryResourceV1;
+import esthesis.service.registry.resource.RegistryResource;
 import io.quarkus.panache.common.Sort;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -43,7 +43,7 @@ public class CAService extends BaseService<Ca> {
 
   @Inject
   @RestClient
-  RegistryResourceV1 registryResourceV1;
+  RegistryResource registryResource;
 
   @Inject
   KeyService keyService;
@@ -74,16 +74,16 @@ public class CAService extends BaseService<Ca> {
     try {
       CreateCARequestBuilder createCARequestBuilder = CreateCARequest.builder()
           .createKeyPairRequest(CreateKeyPairRequest.builder()
-              .keySize(registryResourceV1.findByName(
+              .keySize(registryResource.findByName(
                   Registry.SECURITY_ASYMMETRIC_KEY_SIZE).asInt())
-              .keyPairGeneratorAlgorithm(registryResourceV1.findByName(
+              .keyPairGeneratorAlgorithm(registryResource.findByName(
                   Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
               .build())
           .subjectCN(ca.getCn())
           .locale(Locale.US)
           .serial(BigInteger.valueOf(1))
           .signatureAlgorithm(
-              registryResourceV1.findByName(
+              registryResource.findByName(
                   Registry.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM).asString())
           .validFrom(Instant.now())
           .validTo(ca.getValidity());
@@ -93,7 +93,7 @@ public class CAService extends BaseService<Ca> {
         Ca parentCa = findById(ca.getParentCaId());
         createCARequestBuilder
             .issuerCN(parentCa.getCn())
-            .issuerPrivateKeyAlgorithm(registryResourceV1.findByName(
+            .issuerPrivateKeyAlgorithm(registryResource.findByName(
                 Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
             .issuerPrivateKey(parentCa.getPrivateKey());
         ca.setParentCa(parentCa.getCn());

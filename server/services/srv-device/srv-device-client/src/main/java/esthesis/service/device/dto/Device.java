@@ -28,13 +28,7 @@ public class Device extends BaseDTO {
   private DeviceStatus status;
 
   private List<String> tags;
-
-  private String publicKey;
-
-  private String privateKey;
-
-  private String certificate;
-
+  
   private Instant lastSeen;
 
   private DeviceKey deviceKey;

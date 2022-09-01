@@ -12,16 +12,14 @@ import esthesis.common.exception.QSecurityException;
 import esthesis.common.service.BaseService;
 import esthesis.service.crypto.dto.request.CreateCertificateRequest;
 import esthesis.service.crypto.dto.response.CreateKeyPairResponse;
-import esthesis.service.crypto.resource.CAResourceV1;
-import esthesis.service.dataflow.resource.DataflowResourceV1;
+import esthesis.service.crypto.resource.KeyResource;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DeviceKey;
 import esthesis.service.device.dto.DevicePage;
 import esthesis.service.device.dto.DeviceRegistration;
-import esthesis.service.device.dto.agent.RegistrationRequest;
 import esthesis.service.registry.dto.RegistryEntry;
-import esthesis.service.registry.resource.RegistryResourceV1;
-import esthesis.service.tag.resource.TagResourceV1;
+import esthesis.service.registry.resource.RegistryResource;
+import esthesis.service.tag.resource.TagResource;
 import esthesis.services.device.impl.repository.DeviceRepository;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -52,19 +50,15 @@ public class DeviceService extends BaseService<Device> {
 
   @Inject
   @RestClient
-  CAResourceV1 caResourceV1;
+  KeyResource keyResource;
 
   @Inject
   @RestClient
-  TagResourceV1 tagResourceV1;
+  TagResource tagResource;
 
   @Inject
   @RestClient
-  DataflowResourceV1 dataflowResourceV1;
-
-  @Inject
-  @RestClient
-  RegistryResourceV1 registryResourceV1;
+  RegistryResource registryResource;
 
   /**
    * Populates the cryptographic keys of a device.
@@ -90,7 +84,7 @@ public class DeviceService extends BaseService<Device> {
    */
   private void checkTags(String hardwareId, List<String> tags) {
     for (String tag : tags) {
-      if (tagResourceV1.findByName(tag) == null) {
+      if (tagResource.findByName(tag) == null) {
         log.warn(
             "Device-pushed tag '{}' for device with hardware id '{}' does not exist.",
             tag, hardwareId);
@@ -104,7 +98,7 @@ public class DeviceService extends BaseService<Device> {
    *
    * @param hardwareId The hardware Id of the device to activate.
    */
-  private Device activatePreregisteredDevice(String hardwareId) {
+  public Device activatePreregisteredDevice(String hardwareId) {
     Optional<Device> optionalDevice = deviceRepository.findByHardwareId(
         hardwareId);
 
@@ -135,8 +129,7 @@ public class DeviceService extends BaseService<Device> {
   @Transactional
   public void preregister(DeviceRegistration deviceRegistration)
   throws NoSuchAlgorithmException, OperatorCreationException,
-         InvalidKeySpecException,
-         NoSuchProviderException, IOException {
+         InvalidKeySpecException, NoSuchProviderException, IOException {
     // Split IDs.
     String ids = deviceRegistration.getIds();
     ids = ids.replace("\n", ",");
@@ -162,6 +155,40 @@ public class DeviceService extends BaseService<Device> {
     }
   }
 
+  public Device register(DeviceRegistration deviceRegistration)
+  throws IOException, InvalidKeySpecException, NoSuchAlgorithmException,
+         OperatorCreationException, NoSuchProviderException {
+    log.debug(
+        "Attempting to register device with hardwareId ''{}'' and tags ''{}''.",
+        deviceRegistration.getIds(), deviceRegistration.getTags());
+
+    DeviceRegistrationMode deviceRegistrationMode =
+        DeviceRegistrationMode.valueOf(
+            registryResource.findByName(Registry.DEVICE_REGISTRATION_MODE)
+                .asString());
+
+    if (deviceRegistrationMode == DeviceRegistrationMode.DISABLED) {
+      throw new QDisabledException("Registration of new devices is disabled.",
+          deviceRegistration.getIds());
+    } else {
+      // Check registration preconditions and register device.
+      log.trace("Platform running on '{}' registration mode.",
+          deviceRegistrationMode);
+      return switch (deviceRegistrationMode) {
+        case OPEN ->
+            register(deviceRegistration.getIds(), deviceRegistration.getTags(),
+                DeviceStatus.REGISTERED);
+        case OPEN_WITH_APPROVAL ->
+            register(deviceRegistration.getIds(), deviceRegistration.getTags(),
+                DeviceStatus.APPROVAL);
+        case ID -> activatePreregisteredDevice(
+            deviceRegistration.getIds());
+        default -> throw new QDoesNotExistException(
+            "The requested registration mode does not exist.");
+      };
+    }
+  }
+
   /**
    * The internal registration handler.
    *
@@ -179,32 +206,33 @@ public class DeviceService extends BaseService<Device> {
     // Check that a device with the same hardware ID does not already exist.
     if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
       throw new QAlreadyExistsException(
-          "Device with hardware id '{0}' is already registered with the platform.",
+          "A device with hardware id '{0}' is already registered with the platform.",
           hardwareId);
     }
 
     // Create a keypair for the device to be registered.
-    CreateKeyPairResponse createKeyPairResponse = caResourceV1.generateKeyPair();
+    CreateKeyPairResponse createKeyPairResponse = keyResource.generateKeyPair();
 
     // Set the security keys for the new device.
     final DeviceKey deviceKey = new DeviceKey()
-        .setPublicKey(caResourceV1.publicKeyToPEM(
+        .setPublicKey(keyResource.publicKeyToPEM(
             createKeyPairResponse.getPublicKey()))
-        .setPrivateKey(caResourceV1.privateKeyToPEM(
+        .setPrivateKey(keyResource.privateKeyToPEM(
             createKeyPairResponse.getPrivateKey()))
         .setRolledOn(Instant.now())
         .setRolledAccepted(true);
 
     // Create a certificate for this device if the root CA is set.
-    RegistryEntry deviceRootCA = registryResourceV1.findByName(
+    RegistryEntry deviceRootCA = registryResource.findByName(
         Registry.DEVICE_ROOT_CA);
     if (deviceRootCA != null) {
       deviceKey.setCertificate(
-          caResourceV1.generateCertificateAsPEM(
+          keyResource.generateCertificateAsPEM(
               new CreateCertificateRequest().setCn(hardwareId)
                   .setCreateKeyPairResponse(createKeyPairResponse)));
       deviceKey.setCertificateCaId(
-          registryResourceV1.findByName(Registry.DEVICE_ROOT_CA).asString());
+          registryResource.findByName(Registry.DEVICE_ROOT_CA).asString());
+
     }
 
     // Create the new device.
@@ -222,52 +250,6 @@ public class DeviceService extends BaseService<Device> {
     deviceRepository.persist(device);
 
     return device;
-  }
-
-  /**
-   * Register a new device into the system. This method checks the currently
-   * active registration mode of the platform and decides accordingly which
-   * registration process to follow.
-   *
-   * @param registrationRequest The details of the registration for the device.
-   */
-  public Device register(RegistrationRequest registrationRequest)
-  throws NoSuchAlgorithmException, IOException, InvalidKeySpecException,
-         OperatorCreationException, NoSuchProviderException {
-
-    // Proceed with device registration.
-    DeviceRegistrationMode deviceRegistrationMode = DeviceRegistrationMode.valueOf(
-        registryResourceV1.findByName(Registry.DEVICE_REGISTRATION_MODE)
-            .asString());
-
-    if (deviceRegistrationMode == DeviceRegistrationMode.DISABLED) {
-      throw new QDisabledException("Attempting to register device with "
-          + "hardwareId '{}' but registration of new devices is disabled.",
-          registrationRequest.getHardwareId());
-    } else {
-      // Check registration preconditions and register device.
-      log.trace("Platform running on '{}' registration mode.",
-          deviceRegistrationMode);
-      log.debug(
-          "Attempting to register device with hardwareId ''{}'' and tags ''{}''.",
-          registrationRequest.getHardwareId(), registrationRequest.getTags());
-      switch (deviceRegistrationMode) {
-        case OPEN:
-          return register(registrationRequest.getHardwareId(),
-              Arrays.stream(registrationRequest.getTags().split(",")).toList(),
-              DeviceStatus.REGISTERED);
-        case OPEN_WITH_APPROVAL:
-          return register(registrationRequest.getHardwareId(),
-              Arrays.stream(registrationRequest.getTags().split(",")).toList(),
-              DeviceStatus.APPROVAL);
-        case ID:
-          return activatePreregisteredDevice(
-              registrationRequest.getHardwareId());
-        default:
-          throw new QDoesNotExistException(
-              "The requested registration mode does not exist.");
-      }
-    }
   }
 
   /**

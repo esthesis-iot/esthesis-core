@@ -7,7 +7,7 @@ import esthesis.common.service.BaseService;
 import esthesis.service.crypto.dto.Ca;
 import esthesis.service.crypto.dto.Certificate;
 import esthesis.service.crypto.dto.Store;
-import esthesis.service.registry.resource.RegistryResourceV1;
+import esthesis.service.registry.resource.RegistryResource;
 import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -42,7 +42,7 @@ public class StoreService extends BaseService<Store> {
 
   @Inject
   @RestClient
-  RegistryResourceV1 registryResourceV1;
+  RegistryResource registryResource;
 
   public byte[] download(ObjectId id)
   throws CertificateException, KeyStoreException, NoSuchAlgorithmException,
@@ -80,14 +80,14 @@ public class StoreService extends BaseService<Store> {
       Certificate certificate = certificateService.findById(certId);
       final PrivateKey privateKey = keyService
           .pemToPrivateKey(certificate.getPrivateKey(),
-              registryResourceV1.findByName(
+              registryResource.findByName(
                   Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString());
 
       keystore = keystoreService
           .savePrivateKey(keystore, KEYSTORE_TYPE, KEYSTORE_PROVIDER,
               store.getPassword(),
               certificate.getCn(), privateKey.getEncoded(),
-              registryResourceV1.findByName(
+              registryResource.findByName(
                       AppConstants.Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM)
                   .asString(),
               null, store.isPasswordForKeys() ? store.getPassword() : null,

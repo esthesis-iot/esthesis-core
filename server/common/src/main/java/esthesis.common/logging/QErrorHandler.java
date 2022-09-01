@@ -2,6 +2,7 @@ package esthesis.common.logging;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.opentelemetry.api.trace.Span;
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
@@ -48,7 +49,7 @@ public class QErrorHandler implements ExceptionMapper<Exception> {
 
       QErrorReply errorReply = new QErrorReply();
       errorReply.setErrorMessage(exception.getMessage());
-      errorReply.setTraceId("123");
+      errorReply.setTraceId(Span.current().getSpanContext().getTraceId());
 
       return Response.serverError()
           .entity(mapper.writeValueAsString(errorReply)).build();

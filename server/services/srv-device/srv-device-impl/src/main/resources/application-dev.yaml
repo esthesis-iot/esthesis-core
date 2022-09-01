@@ -6,6 +6,8 @@ quarkus:
     category:
       esthesis:
         level: DEBUG
+      "io.quarkus.oidc.token.propagation.reactive":
+        level: DEBUG
     handler:
       gelf:
         enabled: true
@@ -22,17 +24,23 @@ quarkus:
           endpoint: http://esthesis-dev-jaeger-collector:4317
 
   rest-client:
+    logging:
+      scope: request-response
+      body-limit: 65536
     RegistryResource:
-      url: http://esthesis-dev-apisix-gateway/dev
+      url: http://localhost:59030
       scope: Singleton
     CAResource:
-      url: http://esthesis-dev-apisix-gateway/dev
+      url: http://localhost:59040
+      scope: Singleton
+    KeyResource:
+      url: http://localhost:59040
       scope: Singleton
     TagResource:
-      url: http://esthesis-dev-apisix-gateway/dev
+      url: http://localhost:59020
       scope: Singleton
     DataflowResource:
-      url: http://esthesis-dev-apisix-gateway/dev
+      url: http://localhost:59060
       scope: Singleton
 
 mp:
