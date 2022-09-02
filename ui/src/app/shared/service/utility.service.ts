@@ -16,7 +16,7 @@ export class UtilityService {
    * Display a success message.
    * @param message The message to display.
    */
-  popupSuccess(message: string) {
+  popupSuccess(message: string): void {
     this.snackBar.open(message, "CLOSE", {
       duration: 5000,
       verticalPosition: "top",
@@ -28,7 +28,7 @@ export class UtilityService {
    * Display an error message.
    * @param message The message to display.
    */
-  popupError(message: string) {
+  popupError(message: string): void {
     this.snackBar.open(message, "CLOSE", {
       duration: 10000,
       verticalPosition: "top",
@@ -36,11 +36,27 @@ export class UtilityService {
     });
   }
 
-  popupParsableError(error: any) {
-    var errorMessage = error;
+  popupErrorWithTraceId(message: string, error: any): void {
+    console.log(error);
+    let traceId;
     try {
-      errorMessage = JSON.parse(error.error)["errorMessage"] + "\n\n" +
-        "(trace id: " + JSON.parse(error.error)["traceId"] + ")";
+      traceId = "(trace id: " + error.error.traceId + ")";
+    } catch (e) {
+      this.log.error("Could not parse error message to extract trace id.", e, error);
+    }
+    this.snackBar.open(message + "\n\n" + traceId, "CLOSE", {
+      duration: 10000,
+      verticalPosition: "top",
+      panelClass: "snackbar-red"
+    });
+  }
+
+  popupParsableError(error: any): void {
+    console.log(error);
+    let errorMessage = error;
+    try {
+      errorMessage = error.error.errorMessage + "\n\n" +
+        "(trace id: " + error.error.traceId + ")";
     } catch (e) {
       this.log.error("Could not parse error message.", e, error);
     }
@@ -55,7 +71,7 @@ export class UtilityService {
    * Display an info message.
    * @param message The message to display.
    */
-  popupInfo(message: string) {
+  popupInfo(message: string): void {
     this.snackBar.open(message, "CLOSE", {
       duration: 10000,
       verticalPosition: "top",

@@ -1,11 +1,8 @@
 package esthesis.common.logging;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.opentelemetry.api.trace.Span;
 import javax.annotation.Priority;
 import javax.inject.Inject;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -16,43 +13,32 @@ import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 @Provider
-@Priority(10000)
-public class QErrorHandler implements ExceptionMapper<Exception> {
-
-  @Inject
-  ObjectMapper mapper;
+@Priority(Integer.MAX_VALUE)
+public class QErrorHandler implements ExceptionMapper<Throwable> {
 
   @Inject
   UriInfo uriInfo;
 
   @Override
   @SneakyThrows
-  public Response toResponse(Exception exception) {
-    return mapExceptionToResponse(exception);
+  public Response toResponse(Throwable throwable) {
+    return mapExceptionToResponse(throwable);
   }
 
-  private Response mapExceptionToResponse(Exception exception)
-  throws JsonProcessingException {
-    if (exception instanceof javax.ws.rs.WebApplicationException) {
-      Response originalErrorResponse = ((WebApplicationException) exception).getResponse();
-
-      return Response.fromResponse(originalErrorResponse)
-          .entity(originalErrorResponse.getStatusInfo().getReasonPhrase())
-          .build();
+  private Response mapExceptionToResponse(Throwable throwable) {
+    // Log the error, so the full details are available on the server-side.
+    if (uriInfo != null && StringUtils.isNotBlank(uriInfo.getPath())) {
+      log.error("'%s' error while processing request to '%s'."
+          .formatted(throwable.getMessage(), uriInfo.getPath()), throwable);
     } else {
-      if (uriInfo != null && StringUtils.isNotBlank(uriInfo.getPath())) {
-        log.error("Failed to process request to: " + uriInfo.getPath(),
-            exception);
-      } else {
-        log.error(exception.getMessage(), exception);
-      }
-
-      QErrorReply errorReply = new QErrorReply();
-      errorReply.setErrorMessage(exception.getMessage());
-      errorReply.setTraceId(Span.current().getSpanContext().getTraceId());
-
-      return Response.serverError()
-          .entity(mapper.writeValueAsString(errorReply)).build();
+      log.error("'%s' error.".formatted(throwable.getMessage()), throwable);
     }
+
+    // Prepare a custom response for the client, hiding the underlying error.
+    QErrorReply errorReply = new QErrorReply();
+    errorReply.setErrorMessage("There was an error processing this request.");
+    errorReply.setTraceId(Span.current().getSpanContext().getTraceId());
+
+    return Response.serverError().entity(errorReply).build();
   }
 }

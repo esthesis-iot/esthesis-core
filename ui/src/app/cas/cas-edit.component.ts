@@ -64,7 +64,7 @@ export class CasEditComponent extends BaseComponent implements OnInit {
     });
   }
 
-  save() {
+  save(): void {
     this.caService.save(this.qForms.cleanupData(this.form.getRawValue()) as CaDto).subscribe(
       {
         next: ca => {
@@ -73,21 +73,20 @@ export class CasEditComponent extends BaseComponent implements OnInit {
               : "Certificate Authority was successfully created.");
           this.router.navigate(["cas"]);
         }, error: error => {
-          if (error.status == 400) {
-            let validationErrors = error.error;
+          if (error.status === 400) {
+            const validationErrors = error.error;
             if (validationErrors) {
               // @ts-ignore
               this.qFormValidation.validateForm(this.form, validationErrors.violations);
             }
           } else {
-            this.utilityService.popupError("There was an error trying to save this Certificate " +
-              "Authority, please try again later.");
+            this.utilityService.popupErrorWithTraceId("Could not save Certificate Authority.", error);
           }
         }
       });
   }
 
-  delete() {
+  delete(): void {
     this.dialog.open(OkCancelModalComponent, {
       data: {
         title: "Delete CA",
@@ -102,15 +101,16 @@ export class CasEditComponent extends BaseComponent implements OnInit {
           next: () => {
             this.utilityService.popupSuccess("Root CA successfully deleted.");
             this.router.navigate(["cas"]);
-          }, error: () => {
-            this.utilityService.popupError("Root CA could not be deleted, please try again later.");
+          }, error: (error) => {
+            this.utilityService.popupErrorWithTraceId(
+              "Root CA could not be deleted, please try again later.", error);
           }
         });
       }
     });
   }
 
-  download() {
+  download(): void {
     this.caService.download(this.id!);
   }
 }

@@ -1,3 +1,7 @@
+# Build and runn instructions
+
+## Run locally
+
 ```
 env \
     esthesis.dataflows.mqttclient.mqtt.brokerUrl=tcp://esthesis-dev-rabbitmq:1883  \
@@ -5,4 +9,32 @@ env \
     esthesis.dataflows.mqttclient.mqtt.password=esthesis \
     esthesis.dataflows.mqttclient.kafka.brokers=esthesis-dev-kafka:9094  \
 ./mvnw quarkus:dev
+```
+
+## Build image
+
+### In Docker
+
+```
+./mvnw clean package -Dnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true
+```
+
+### Remotely
+
+```
+./mvnw clean package -Dnative -Dquarkus.native.remote-container-build=true -Dquarkus.container-image.build=true
+```
+
+## Build & Push image:
+
+### In Docker
+
+```
+./mvnw clean package -Dnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.group=esthesisiot
+```
+
+### Remotely
+
+```
+./mvnw clean package -Dnative -Dquarkus.native.remote-container-build=true -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.group=esthesisiot
 ```

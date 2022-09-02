@@ -6,7 +6,6 @@
   "rules": {
     "align": {
       "options": [
-        "parameters",
         "statements"
       ]
     },
@@ -66,7 +65,7 @@
     ],
     "quotemark": [
       true,
-      "single"
+      "double"
     ],
     "semicolon": {
       "options": [
@@ -83,7 +82,7 @@
       }
     },
     "typedef": [
-      true,
+      false,
       "call-signature"
     ],
     "typedef-whitespace": {

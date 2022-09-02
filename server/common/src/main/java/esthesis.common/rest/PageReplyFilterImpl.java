@@ -5,6 +5,7 @@ import ch.mfrey.jackson.antpathfilter.AntPathPropertyFilter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.ws.rs.Priorities;
@@ -27,19 +28,24 @@ import org.apache.commons.lang3.StringUtils;
 @Priority(Priorities.HEADER_DECORATOR)
 public class PageReplyFilterImpl implements ContainerResponseFilter {
 
-  @Context
-  private ResourceInfo info;
-
-  @Inject
-  ObjectMapper injectedMapper;
-
   private static final String[] DEFAULT_PAGE_FILTER = new String[]
       {"page", "size", "totalElements"};
   private static final String[] DEFAULT_OBJECT_FILTER = new String[]{};
+  @Inject
+  ObjectMapper injectedMapper;
+  @Context
+  private ResourceInfo info;
 
   @Override
   public void filter(ContainerRequestContext req,
       ContainerResponseContext res) throws JsonProcessingException {
+
+    // If an exception occurred while processing the results that are about
+    // to be filtered, skip the filtering mechanism.
+    if (res.getStatus() == HttpResponseStatus.INTERNAL_SERVER_ERROR.code()) {
+      return;
+    }
+
     // Clone Quarkus ObjectMapper to get a fully-configured mapper, also to avoid
     // mutating the global mapper.
     ObjectMapper clonedMapper = injectedMapper.copy();
