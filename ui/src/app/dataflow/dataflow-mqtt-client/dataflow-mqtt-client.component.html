@@ -4,28 +4,28 @@
     <img alt="" mat-card-avatar src="assets/img/dataflows/mqtt.png">
   </mat-card-title>
   <mat-card-content>
-    <form novalidate [formGroup]="form">
+    <form [formGroup]="form" novalidate>
       <div fxLayout="column">
         <mat-form-field>
-          <mat-select placeholder="Status" formControlName="status">
+          <mat-select formControlName="status" placeholder="Status">
             <mat-option [value]="true">Active</mat-option>
             <mat-option [value]="false">Inactive</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
-          <input matInput placeholder="Name" formControlName="name"
-                 cdkTrapFocus cdkTrapFocusAutoCapture (keyup.enter)="save()">
-          <mat-icon matSuffix color="warn"
-                    *ngIf="form.controls['name'].invalid"
+          <input (keyup.enter)="save()" cdkTrapFocus cdkTrapFocusAutoCapture
+                 formControlName="name" matInput placeholder="Name">
+          <mat-icon *ngIf="form.controls['name'].invalid" color="warn"
+                    matSuffix
                     matTooltip="{{form.controls['name'].getError('message')}}"
                     matTooltipPosition="above" style="cursor: help">warning
           </mat-icon>
         </mat-form-field>
         <mat-form-field>
-      <textarea cdkTextareaAutosize [cdkAutosizeMinRows]=1 [cdkAutosizeMaxRows]=30
-                matInput placeholder="Description" formControlName="description"></textarea>
-          <mat-icon matSuffix color="warn"
-                    *ngIf="form.controls['description'].invalid && form.dirty"
+      <textarea [cdkAutosizeMaxRows]=30 [cdkAutosizeMinRows]=1 cdkTextareaAutosize
+                formControlName="description" matInput placeholder="Description"></textarea>
+          <mat-icon *ngIf="form.controls['description'].invalid && form.dirty" color="warn"
+                    matSuffix
                     matTooltip="{{form.controls['description'].getError('message')}}"
                     matTooltipPosition="above" style="cursor: help">warning
           </mat-icon>
@@ -33,14 +33,15 @@
 
         <div class="inline-subheader">Address</div>
         <mat-form-field>
-          <input matInput placeholder="Protocol, IP address, port" formControlName="url"
+          <input formControlName="url" matInput placeholder="Protocol, IP address, port"
                  required>
           <mat-hint align="start">ex: tcp://mqtt.server:1883, ssl://mqtt.server:8883</mat-hint>
         </mat-form-field>
 
         <div class="inline-subheader">Tags</div>
         <mat-form-field>
-          <mat-select placeholder="Tags" multiple formControlName="tags">
+          <mat-select formControlName="tags" multiple
+                      placeholder="Select the tags this mqtt server is associated with">
             <mat-option *ngFor="let tag of availableTags"
                         [value]="tag.id">{{tag.name}}</mat-option>
           </mat-select>
@@ -48,25 +49,25 @@
 
         <div class="inline-subheader">Topics</div>
         <mat-form-field>
-          <input matInput formControlName="topicPing" required>
+          <input formControlName="topicPing" matInput required>
           <mat-hint align="start">The topic receiving heartbeat messages from devices</mat-hint>
         </mat-form-field>
         <mat-form-field>
-          <input matInput formControlName="topicTelemetry" required>
+          <input formControlName="topicTelemetry" matInput required>
           <mat-hint align="start">The topic receiving telemetry data from devices</mat-hint>
         </mat-form-field>
         <mat-form-field>
-          <input matInput formControlName="topicMetadata" required>
+          <input formControlName="topicMetadata" matInput required>
           <mat-hint align="start">The topic receiving metadata data from devices</mat-hint>
         </mat-form-field>
         <mat-form-field>
-          <input matInput formControlName="topicControlRequest" required>
+          <input formControlName="topicControlRequest" matInput required>
           <mat-hint align="start">The topic in which control requests are submitted by the platform
             to be executed by the devices
           </mat-hint>
         </mat-form-field>
         <mat-form-field>
-          <input matInput formControlName="topicControlReply" required>
+          <input formControlName="topicControlReply" matInput required>
           <mat-hint align="start">The topic in which control replies are submitted back from
             devices
           </mat-hint>
@@ -74,7 +75,7 @@
 
         <div class="inline-subheader">Kafka integration</div>
         <mat-form-field>
-          <input matInput formControlName="outChannel" required>
+          <input formControlName="outChannel" matInput required>
           <mat-hint align="start">An application-wide unique Kafka topic on which this component
             outputs data
           </mat-hint>
@@ -82,11 +83,11 @@
 
         <div class="inline-subheader">Kubernetes Scheduling</div>
         <div>Minimum pods: {{form.controls["minPods"].value}}</div>
-        <mat-slider min="0" max="100" step="1" value="1"
-                    formControlName="minPods" (change)="minPodsChanged()"></mat-slider>
+        <mat-slider (change)="minPodsChanged()" formControlName="minPods" max="100" min="0"
+                    step="1" value="1"></mat-slider>
         <div>Maximum pods: {{form.controls["maxPods"].value}}</div>
-        <mat-slider min="0" max="100" step="1" value="1"
-                    formControlName="maxPods" (change)="maxPodsChanged()"></mat-slider>
+        <mat-slider (change)="maxPodsChanged()" formControlName="maxPods" max="100" min="0"
+                    step="1" value="1"></mat-slider>
         <div *ngIf="form.controls.minPods.value == 0">
           <mat-icon>info</mat-icon>
           Minimum pods are set to zero. This component will not be
@@ -98,8 +99,8 @@
   </mat-card-content>
   <mat-card-actions>
     <button mat-button routerLink="/dataflow">CANCEL</button>
-    <button mat-button color="primary" (click)="save()">SAVE</button>
-    <button mat-button color="warn" (click)="delete()" *ngIf="id !== appConstants.NEW_RECORD_ID">
+    <button (click)="save()" color="primary" mat-button>SAVE</button>
+    <button (click)="delete()" *ngIf="id !== appConstants.NEW_RECORD_ID" color="warn" mat-button>
       DELETE
     </button>
   </mat-card-actions>

@@ -49,19 +49,19 @@ export class DataflowMqttClientComponent extends BaseComponent implements OnInit
       maxPods: [1, [Validators.required, Validators.max(100)]],
       tags: [[]],
       topicPing: [{
-        value: "esthesis/ping/:hardwareId", disabled: false
+        value: "esthesis/ping", disabled: false
       }, [Validators.maxLength(1024)]],
       topicTelemetry: [{
-        value: "esthesis/telemetry/:hardwareId", disabled: false
+        value: "esthesis/telemetry", disabled: false
       }, [Validators.maxLength(1024)]],
       topicMetadata: [{
-        value: "esthesis/metadata/:hardwareId", disabled: false
+        value: "esthesis/metadata", disabled: false
       }, [Validators.maxLength(1024)]],
       topicControlRequest: [{
-        value: "esthesis/control/request/:hardwareId", disabled: false
+        value: "esthesis/control/request", disabled: false
       }, [Validators.maxLength(1024)]],
       topicControlReply: [{
-        value: "esthesis/control/reply/:hardwareId", disabled: false
+        value: "esthesis/control/reply", disabled: false
       }, [Validators.maxLength(1024)]],
     });
 
@@ -94,13 +94,13 @@ export class DataflowMqttClientComponent extends BaseComponent implements OnInit
     dataflowDto.maxPods = form.maxPods;
     dataflowDto.outChannel = form.outChannel;
     dataflowDto.configuration = JSON.stringify({
-      "url": form.url,
-      "tags": form.tags,
-      "topicPing": form.topicPing,
-      "topicTelemetry": form.topicTelemetry,
-      "topicMetadata": form.topicMetadata,
-      "topicControlRequest": form.topicControlRequest,
-      "topicControlReply": form.topicControlReply
+      url: form.url,
+      tags: form.tags,
+      topicPing: form.topicPing,
+      topicTelemetry: form.topicTelemetry,
+      topicMetadata: form.topicMetadata,
+      topicControlRequest: form.topicControlRequest,
+      topicControlReply: form.topicControlReply
     });
 
     this.dataflowService.save(dataflowDto).subscribe({
