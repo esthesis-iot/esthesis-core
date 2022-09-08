@@ -1,28 +1,28 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {Router} from '@angular/router';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
-import {DeviceDto} from '../dto/device-dto';
-import {DevicesService} from './devices.service';
-import {BaseComponent} from '../shared/component/base-component';
-import {QFormsService} from '@qlack/forms';
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {Router} from "@angular/router";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
+import {MatTableDataSource} from "@angular/material/table";
+import {DeviceDto} from "../dto/device-dto";
+import {DevicesService} from "./devices.service";
+import {BaseComponent} from "../shared/component/base-component";
+import {QFormsService} from "@qlack/forms";
+import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 
 @Component({
-  selector: 'app-devices',
-  templateUrl: './devices.component.html',
-  styleUrls: ['./devices.component.scss']
+  selector: "app-devices",
+  templateUrl: "./devices.component.html",
+  styleUrls: ["./devices.component.scss"]
 })
-export class DevicesComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DevicesComponent extends BaseComponent implements OnInit, AfterViewInit {
   // Columns to display.
-  displayedColumns = ['hardwareId', 'lastSeen', 'createdOn', 'state'];
+  displayedColumns = ["hardwareId", "lastSeen", "createdOn", "state"];
 
   // Datasource definition.
   datasource: MatTableDataSource<DeviceDto> = new MatTableDataSource<DeviceDto>();
 
   // Search filter.
-  // TODO
   filterForm: FormGroup;
 
   // References to sorting and pagination.
@@ -33,14 +33,19 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
     private deviceService: DevicesService, private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
-      // TODO
+      hardwareId: ["", null],
     });
   }
 
   ngOnInit() {
-  }
-
-  ngOnDestroy(): void {
+    // Listen for filter changes to fetch new data.
+    this.filterForm.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(onNext => {
+      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+        this.sort.start);
+    });
   }
 
   ngAfterViewInit(): void {

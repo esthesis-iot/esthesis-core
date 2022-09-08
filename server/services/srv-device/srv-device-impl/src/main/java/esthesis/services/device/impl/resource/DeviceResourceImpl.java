@@ -61,8 +61,7 @@ public class DeviceResourceImpl implements DeviceResource {
 
   @Override
   public Page<Device> find(@BeanParam Pageable pageable) {
-    System.out.println("JWT: " + jwt);
-    return deviceService.find(pageable);
+    return deviceService.find(pageable, true);
   }
 
   @Override
@@ -178,5 +177,5 @@ public class DeviceResourceImpl implements DeviceResource {
       @PathParam("hardwareId") String hardwareId) {
     return deviceService.findByPartialHardwareId(hardwareId);
   }
-  
+
 }

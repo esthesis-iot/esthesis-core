@@ -1,22 +1,22 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {Router} from '@angular/router';
-import {TagDto} from '../dto/tag-dto';
-import {TagService} from './tag.service';
-import {QFormsService} from '@qlack/forms';
-import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
+import {MatTableDataSource} from "@angular/material/table";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {Router} from "@angular/router";
+import {TagDto} from "../dto/tag-dto";
+import {TagService} from "./tag.service";
+import {QFormsService} from "@qlack/forms";
+import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {BaseComponent} from "../shared/component/base-component";
 
 @Component({
-  selector: 'app-groups',
-  templateUrl: './tags.component.html',
-  styleUrls: ['./tags.component.scss']
+  selector: "app-groups",
+  templateUrl: "./tags.component.html",
+  styleUrls: ["./tags.component.scss"]
 })
 export class TagsComponent extends BaseComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['name'];
+  displayedColumns = ["name"];
   dataSource: MatTableDataSource<TagDto> = new MatTableDataSource<TagDto>();
   filterForm: FormGroup;
 
@@ -25,10 +25,10 @@ export class TagsComponent extends BaseComponent implements OnInit, AfterViewIni
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router, private tagService: TagService,
-              private qForms: QFormsService) {
+    private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
-      name: ['', null],
+      name: ["", null],
     });
   }
 
@@ -41,7 +41,6 @@ export class TagsComponent extends BaseComponent implements OnInit, AfterViewIni
       this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
         this.sort.start);
     });
-
   }
 
   ngAfterViewInit(): void {
