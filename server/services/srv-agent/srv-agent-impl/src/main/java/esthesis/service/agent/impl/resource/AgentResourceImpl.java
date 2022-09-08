@@ -9,7 +9,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import javax.inject.Inject;
-import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.operator.OperatorCreationException;
 
@@ -20,9 +19,12 @@ public class AgentResourceImpl implements AgentResource {
   AgentService agentService;
 
   public AgentRegistrationResponse register(
-      @Valid AgentRegistrationRequest agentRegistrationRequest)
+      AgentRegistrationRequest agentRegistrationRequest)
   throws NoSuchAlgorithmException, IOException, InvalidKeySpecException,
          OperatorCreationException, NoSuchProviderException {
+    log.debug("Received agent registration request '{}'.",
+        agentRegistrationRequest);
+    
     return agentService.register(agentRegistrationRequest);
   }
 

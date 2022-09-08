@@ -26,12 +26,18 @@ public class QErrorHandler implements ExceptionMapper<Throwable> {
   }
 
   private Response mapExceptionToResponse(Throwable throwable) {
+    String errorMessage = "";
+    if (throwable.getMessage() != null) {
+      errorMessage = throwable.getMessage() + " ";
+    }
+
     // Log the error, so the full details are available on the server-side.
     if (uriInfo != null && StringUtils.isNotBlank(uriInfo.getPath())) {
-      log.error("'%s' error while processing request to '%s'."
-          .formatted(throwable.getMessage(), uriInfo.getPath()), throwable);
+      log.error(
+          "Error %swhile processing request to '%s'.".formatted(errorMessage,
+              uriInfo.getPath()), throwable);
     } else {
-      log.error("'%s' error.".formatted(throwable.getMessage()), throwable);
+      log.error("Error%s.".formatted(errorMessage), throwable);
     }
 
     // Prepare a custom response for the client, hiding the underlying error.
