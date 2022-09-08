@@ -1,24 +1,21 @@
 <mat-card>
   <mat-card-title>New dataflow component</mat-card-title>
-  <mat-card-content>
-    <div fxLayout="row wrap" class="dataflows" fxLayoutGap="1rem">
-      <mat-card>
-        <mat-card-title-group>
-          <mat-card-title>MQTT client</mat-card-title>
-          <mat-card-subtitle>Data input</mat-card-subtitle>
-          <img alt="" mat-card-sm-image src="assets/img/dataflows/mqtt.png">
-        </mat-card-title-group>
-        <mat-card-content>
-          An MQTT client allows to fetch external messages into the platform by connecting to an
-          MQTT broker.
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-button [routerLink]="'/dataflow/mqtt-client/' + appConstants.NEW_RECORD_ID">
-            CREATE
-          </button>
-        </mat-card-actions>
-      </mat-card>
-    </div>
+  <mat-card-content class="dataflows" fxLayout="row wrap" fxLayoutGap="1rem">
+    <mat-card *ngFor="let c of componentsList">
+      <mat-card-title-group>
+        <mat-card-title>{{c.title}}</mat-card-title>
+        <mat-card-subtitle>{{c.category}}</mat-card-subtitle>
+        <img alt="" mat-card-sm-image src="{{c.icon}}">
+      </mat-card-title-group>
+      <mat-card-content>
+        {{c.description}}
+      </mat-card-content>
+      <mat-card-actions>
+        <button [routerLink]="c.action + '/' + appConstants.NEW_RECORD_ID" mat-button>
+          CREATE
+        </button>
+      </mat-card-actions>
+    </mat-card>
   </mat-card-content>
   <mat-card-actions>
     <button mat-button routerLink="/dataflow">CANCEL</button>

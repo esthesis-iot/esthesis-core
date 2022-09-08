@@ -25,7 +25,7 @@ import {MatSliderModule} from "@angular/material/slider";
   declarations: [
     DataflowComponent,
     DataflowNewComponent,
-    DataflowMqttClientComponent
+    DataflowMqttClientComponent,
   ],
   imports: [
     CommonModule,
