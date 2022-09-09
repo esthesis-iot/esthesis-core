@@ -22,7 +22,8 @@ public class MqttRoute extends RouteBuilder {
     from("paho:esthesis/telemetry/#" + "?brokerUrl=" + config.mqttBrokerUrl())
         .bean(mqttMessagingService, "process")
         .split(body())
-        .toD("kafka:${header." + MqttMessagingService.HEADER_KAFKA_TOPIC + "}"
+        .toD("kafka:${headers[kafka.TOPIC]}"
             + "?brokers=" + config.kafkaBrokers());
+
   }
 }

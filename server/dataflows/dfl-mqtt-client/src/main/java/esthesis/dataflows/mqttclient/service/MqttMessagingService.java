@@ -9,6 +9,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
+import org.apache.camel.component.kafka.KafkaConstants;
 
 @Slf4j
 @ApplicationScoped
@@ -18,7 +19,6 @@ public class MqttMessagingService {
   AppConfig config;
 
   private static final String HEADER_TOPIC = "CamelMqttTopic";
-  public static final String HEADER_KAFKA_TOPIC = "X-Esthesis-KafkaTopic";
 
   private MessageType getMessageType(Exchange exchange) {
     String topic = exchange.getIn().getHeader(HEADER_TOPIC, String.class);
@@ -75,7 +75,8 @@ public class MqttMessagingService {
     MessageType messageType = getMessageType(exchange);
     String hardwareId = getHardwareId(exchange);
     exchange.getIn()
-        .setHeader(HEADER_KAFKA_TOPIC, getKafkaOutputTopic(messageType));
+        .setHeader(KafkaConstants.TOPIC, getKafkaOutputTopic(messageType));
+    exchange.getIn().setHeader(KafkaConstants.KEY, hardwareId);
 
     for (String line : body.split("\n")) {
       // Skip lines that don't start with "$".
