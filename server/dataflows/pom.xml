@@ -1,31 +1,19 @@
 <?xml version="1.0"?>
 <project
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>esthesis</groupId>
     <artifactId>server</artifactId>
+    <groupId>esthesis</groupId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>dataflows</artifactId>
   <version>3.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.quarkus.platform</groupId>
-        <artifactId>quarkus-camel-bom</artifactId>
-        <version>${quarkus.platform.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <!-- QUARKUS -->
@@ -41,9 +29,29 @@
       <groupId>org.apache.camel.quarkus</groupId>
       <artifactId>camel-quarkus-kafka</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.camel.quarkus</groupId>
+      <artifactId>camel-quarkus-bean</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel.quarkus</groupId>
+      <artifactId>camel-quarkus-log</artifactId>
+    </dependency>
 
     <!-- THIRD-PARTY -->
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>quarkus-camel-bom</artifactId>
+        <groupId>io.quarkus.platform</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>${quarkus.platform.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <modules>
     <module>dfl-common</module>

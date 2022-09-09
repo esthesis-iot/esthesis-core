@@ -1,6 +1,9 @@
 package esthesis.dataflows.mqttclient.routes;
 
+import esthesis.dataflows.mqttclient.config.AppConfig;
+import esthesis.dataflows.mqttclient.service.MqttMessagingService;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 
@@ -8,13 +11,18 @@ import org.apache.camel.builder.RouteBuilder;
 @ApplicationScoped
 public class MqttRoute extends RouteBuilder {
 
+  @Inject
+  MqttMessagingService mqttMessagingService;
+
+  @Inject
+  AppConfig config;
+
   @Override
   public void configure() {
-    from(
-        "paho:test"
-            + "?brokerUrl={{esthesis.dataflows.mqttclient.mqtt.brokerUrl}}"
-            + "&password={{esthesis.dataflows.mqttclient.mqtt.username}}"
-            + "&userName={{esthesis.dataflows.mqttclient.mqtt.password}}")
-        .to("kafka:test?brokers={{esthesis.dataflows.mqttclient.kafka.brokers");
+    from("paho:esthesis/telemetry/#" + "?brokerUrl=" + config.mqttBrokerUrl())
+        .bean(mqttMessagingService, "process")
+        .split(body())
+        .toD("kafka:${header." + MqttMessagingService.HEADER_KAFKA_TOPIC + "}"
+            + "?brokers=" + config.kafkaBrokers());
   }
 }

@@ -4,10 +4,18 @@
 
 ```
 env \
-    esthesis.dataflows.mqttclient.mqtt.brokerUrl=tcp://esthesis-dev-rabbitmq:1883  \
-    esthesis.dataflows.mqttclient.mqtt.username=esthesis \
-    esthesis.dataflows.mqttclient.mqtt.password=esthesis \
-    esthesis.dataflows.mqttclient.kafka.brokers=esthesis-dev-kafka:9094  \
+    esthesis.dfl.mqtt-client.mqtt-broker-url=tcp://esthesis-dev-rabbitmq:1883 \
+    esthesis.dfl.mqtt-client.kafka-brokers=esthesis-dev-kafka:9094  \
+    esthesis.dfl.mqtt-client.mqtt-ping-topic=esthesis/ping \
+    esthesis.dfl.mqtt-client.mqtt-telemetry-topic=esthesis/telemetry \
+    esthesis.dfl.mqtt-client.mqtt-metadata-topic=esthesis/metadata \
+    esthesis.dfl.mqtt-client.mqtt-control-request-topic=esthesis/control-request \
+    esthesis.dfl.mqtt-client.mqtt-control-reply-topic=esthesis/control-reply \
+    esthesis.dfl.mqtt-client.kafka-ping-topic=esthesis-ping \
+    esthesis.dfl.mqtt-client.kafka-telemetry-topic=esthesis-telemetry \
+    esthesis.dfl.mqtt-client.kafka-metadata-topic=esthesis-metadata \
+    esthesis.dfl.mqtt-client.kafka-control-request-topic=esthesis-control-request \
+    esthesis.dfl.mqtt-client.kafka-control-reply-topic=esthesis-control-reply \
 ./mvnw quarkus:dev
 ```
 
