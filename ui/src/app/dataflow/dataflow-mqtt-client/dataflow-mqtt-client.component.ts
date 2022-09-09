@@ -44,25 +44,20 @@ export class DataflowMqttClientComponent extends BaseComponent implements OnInit
       outChannel: [{
         value: "mqttClientOut-" + UUID.UUID(), disabled: false
       }, [Validators.maxLength(1024)]],
-      status: ["", [Validators.required, Validators.maxLength(5)]],
+      status: [true, [Validators.required, Validators.maxLength(5)]],
       minPods: [1, [Validators.required, Validators.min(0)]],
       maxPods: [1, [Validators.required, Validators.max(100)]],
       tags: [[]],
-      topicPing: [{
-        value: "esthesis/ping", disabled: false
-      }, [Validators.maxLength(1024)]],
-      topicTelemetry: [{
-        value: "esthesis/telemetry", disabled: false
-      }, [Validators.maxLength(1024)]],
-      topicMetadata: [{
-        value: "esthesis/metadata", disabled: false
-      }, [Validators.maxLength(1024)]],
-      topicControlRequest: [{
-        value: "esthesis/control/request", disabled: false
-      }, [Validators.maxLength(1024)]],
-      topicControlReply: [{
-        value: "esthesis/control/reply", disabled: false
-      }, [Validators.maxLength(1024)]],
+      mqttTopicPing: [{value: "esthesis/ping", disabled: false}, [Validators.maxLength(1024)]],
+      mqttTopicTelemetry: [{value: "esthesis/telemetry", disabled: false}, [Validators.maxLength(1024)]],
+      mqttTopicMetadata: [{value: "esthesis/metadata", disabled: false}, [Validators.maxLength(1024)]],
+      mqttTopicControlRequest: [{value: "esthesis/control/request", disabled: false}, [Validators.maxLength(1024)]],
+      mqttTopicControlReply: [{value: "esthesis/control/reply", disabled: false}, [Validators.maxLength(1024)]],
+      kafkaTopicPing: [{value: "esthesis-ping", disabled: false}, [Validators.maxLength(1024)]],
+      kafkaTopicTelemetry: [{value: "esthesis-telemetry", disabled: false}, [Validators.maxLength(1024)]],
+      kafkaTopicMetadata: [{value: "esthesis-metadata", disabled: false}, [Validators.maxLength(1024)]],
+      kafkaTopicControlRequest: [{value: "esthesis-control-request", disabled: false}, [Validators.maxLength(1024)]],
+      kafkaTopicControlReply: [{value: "esthesis-control-reply", disabled: false}, [Validators.maxLength(1024)]],
     });
 
     // Fill-in the form with data if editing an existing item.
@@ -96,11 +91,16 @@ export class DataflowMqttClientComponent extends BaseComponent implements OnInit
     dataflowDto.configuration = JSON.stringify({
       url: form.url,
       tags: form.tags,
-      topicPing: form.topicPing,
-      topicTelemetry: form.topicTelemetry,
-      topicMetadata: form.topicMetadata,
-      topicControlRequest: form.topicControlRequest,
-      topicControlReply: form.topicControlReply
+      mqttTopicPing: form.mqttTopicPing,
+      mqttTopicTelemetry: form.mqttTopicTelemetry,
+      mqttTopicMetadata: form.mqttTopicMetadata,
+      mqttTopicControlRequest: form.mqttTopicControlRequest,
+      mqttTopicControlReply: form.mqttTopicControlReply,
+      kafkaTopicPing: form.kafkaTopicPing,
+      kafkaTopicTelemetry: form.kafkaTopicTelemetry,
+      kafkaTopicMetadata: form.kafkaTopicMetadata,
+      kafkaTopicControlRequest: form.kafkaTopicControlRequest,
+      kafkaTopicControlReply: form.kafkaTopicControlReply
     });
 
     this.dataflowService.save(dataflowDto).subscribe({
@@ -112,8 +112,8 @@ export class DataflowMqttClientComponent extends BaseComponent implements OnInit
         }
         this.router.navigate(["dataflow"]);
       }, error: error => {
-        if (error.status == 400) {
-          let validationErrors = error.error;
+        if (error.status === 400) {
+          const validationErrors = error.error;
           if (validationErrors) {
             // @ts-ignore
             this.qFormValidation.validateForm(this.form, validationErrors.violations);

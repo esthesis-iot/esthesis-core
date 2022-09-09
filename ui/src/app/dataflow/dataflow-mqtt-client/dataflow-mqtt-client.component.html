@@ -6,13 +6,10 @@
   <mat-card-content>
     <form [formGroup]="form" novalidate>
       <div fxLayout="column">
-        <mat-form-field>
-          <mat-select formControlName="status" placeholder="Status">
-            <mat-option [value]="true">Active</mat-option>
-            <mat-option [value]="false">Inactive</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field>
+        <mat-slide-toggle formControlName="status" class="mat-form-field-wrapper">
+          {{form.controls.status.value ? "Active" : "Inactive"}}
+        </mat-slide-toggle>
+        <mat-form-field class="">
           <input (keyup.enter)="save()" cdkTrapFocus cdkTrapFocusAutoCapture
                  formControlName="name" matInput placeholder="Name">
           <mat-icon *ngIf="form.controls['name'].invalid" color="warn"
@@ -31,67 +28,95 @@
           </mat-icon>
         </mat-form-field>
 
-        <div class="inline-subheader">Address</div>
-        <mat-form-field>
-          <input formControlName="url" matInput placeholder="Protocol, IP address, port"
-                 required>
-          <mat-hint align="start">ex: tcp://mqtt.server:1883, ssl://mqtt.server:8883</mat-hint>
-        </mat-form-field>
+        <div class="inline-subheader">MQTT Broker</div>
+        <div class="settings-section" fxLayout="column">
+          <mat-form-field>
+            <input formControlName="url" matInput placeholder="Protocol, IP address, port"
+                   required>
+            <mat-hint align="start">ex: tcp://mqtt.server:1883, ssl://mqtt.server:8883</mat-hint>
+          </mat-form-field>
 
-        <div class="inline-subheader">Tags</div>
-        <mat-form-field>
-          <mat-select formControlName="tags" multiple
-                      placeholder="Select the tags this mqtt server is associated with">
-            <mat-option *ngFor="let tag of availableTags"
-                        [value]="tag.id">{{tag.name}}</mat-option>
-          </mat-select>
-        </mat-form-field>
+          <div class="inline-subheader">Tags</div>
+          <mat-form-field>
+            <mat-select formControlName="tags" multiple
+                        placeholder="Select the tags this mqtt server is associated with">
+              <mat-option *ngFor="let tag of availableTags"
+                          [value]="tag.id">{{tag.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
 
-        <div class="inline-subheader">Topics</div>
-        <mat-form-field>
-          <input formControlName="topicPing" matInput required>
-          <mat-hint align="start">The topic receiving heartbeat messages from devices</mat-hint>
-        </mat-form-field>
-        <mat-form-field>
-          <input formControlName="topicTelemetry" matInput required>
-          <mat-hint align="start">The topic receiving telemetry data from devices</mat-hint>
-        </mat-form-field>
-        <mat-form-field>
-          <input formControlName="topicMetadata" matInput required>
-          <mat-hint align="start">The topic receiving metadata data from devices</mat-hint>
-        </mat-form-field>
-        <mat-form-field>
-          <input formControlName="topicControlRequest" matInput required>
-          <mat-hint align="start">The topic in which control requests are submitted by the platform
-            to be executed by the devices
-          </mat-hint>
-        </mat-form-field>
-        <mat-form-field>
-          <input formControlName="topicControlReply" matInput required>
-          <mat-hint align="start">The topic in which control replies are submitted back from
-            devices
-          </mat-hint>
-        </mat-form-field>
+        <div class="inline-subheader">MQTT Topics</div>
+        <div class="settings-section" fxLayout="column">
+          <mat-form-field>
+            <input formControlName="mqttTopicPing" matInput required>
+            <mat-hint align="start">The topic receiving heartbeat messages from devices</mat-hint>
+          </mat-form-field>
+          <mat-form-field>
+            <input formControlName="mqttTopicTelemetry" matInput required>
+            <mat-hint align="start">The topic receiving telemetry data from devices</mat-hint>
+          </mat-form-field>
+          <mat-form-field>
+            <input formControlName="mqttTopicMetadata" matInput required>
+            <mat-hint align="start">The topic receiving metadata data from devices</mat-hint>
+          </mat-form-field>
+          <mat-form-field>
+            <input formControlName="mqttTopicControlRequest" matInput required>
+            <mat-hint align="start">The topic in which control requests are submitted by the
+              platform
+              to be executed by the devices
+            </mat-hint>
+          </mat-form-field>
+          <mat-form-field>
+            <input formControlName="mqttTopicControlReply" matInput required>
+            <mat-hint align="start">The topic in which control replies are submitted back from
+              devices
+            </mat-hint>
+          </mat-form-field>
+        </div>
 
-        <div class="inline-subheader">Kafka integration</div>
-        <mat-form-field>
-          <input formControlName="outChannel" matInput required>
-          <mat-hint align="start">An application-wide unique Kafka topic on which this component
-            outputs data
-          </mat-hint>
-        </mat-form-field>
+        <div class="inline-subheader">Kafka Topics</div>
+        <div class="settings-section" fxLayout="column">
+          <mat-form-field>
+            <input formControlName="kafkaTopicPing" matInput required>
+            <mat-hint align="start">The topic receiving heartbeat messages from devices</mat-hint>
+          </mat-form-field>
+          <mat-form-field>
+            <input formControlName="kafkaTopicTelemetry" matInput required>
+            <mat-hint align="start">The topic receiving telemetry data from devices</mat-hint>
+          </mat-form-field>
+          <mat-form-field>
+            <input formControlName="kafkaTopicMetadata" matInput required>
+            <mat-hint align="start">The topic receiving metadata data from devices</mat-hint>
+          </mat-form-field>
+          <mat-form-field>
+            <input formControlName="kafkaTopicControlRequest" matInput required>
+            <mat-hint align="start">The topic in which control requests are submitted by the
+              platform
+              to be executed by the devices
+            </mat-hint>
+          </mat-form-field>
+          <mat-form-field>
+            <input formControlName="kafkaTopicControlReply" matInput required>
+            <mat-hint align="start">The topic in which control replies are submitted back from
+              devices
+            </mat-hint>
+          </mat-form-field>
+        </div>
 
         <div class="inline-subheader">Kubernetes Scheduling</div>
-        <div>Minimum pods: {{form.controls["minPods"].value}}</div>
-        <mat-slider (change)="minPodsChanged()" formControlName="minPods" max="100" min="0"
-                    step="1" value="1"></mat-slider>
-        <div>Maximum pods: {{form.controls["maxPods"].value}}</div>
-        <mat-slider (change)="maxPodsChanged()" formControlName="maxPods" max="100" min="0"
-                    step="1" value="1"></mat-slider>
-        <div *ngIf="form.controls.minPods.value == 0">
-          <mat-icon>info</mat-icon>
-          Minimum pods are set to zero. This component will not be
-          scheduled.
+        <div class="settings-section" fxLayout="column">
+          <div>Minimum pods: {{form.controls["minPods"].value}}</div>
+          <mat-slider (change)="minPodsChanged()" formControlName="minPods" max="100" min="0"
+                      step="1" value="1"></mat-slider>
+          <div>Maximum pods: {{form.controls["maxPods"].value}}</div>
+          <mat-slider (change)="maxPodsChanged()" formControlName="maxPods" max="100" min="0"
+                      step="1" value="1"></mat-slider>
+          <div *ngIf="form.controls.minPods.value == 0">
+            <mat-icon>info</mat-icon>
+            Minimum pods are set to zero. This component will not be
+            scheduled.
+          </div>
         </div>
       </div>
 

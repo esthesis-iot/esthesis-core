@@ -19,6 +19,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatSelectModule} from "@angular/material/select";
 import {MatSliderModule} from "@angular/material/slider";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import {MatSliderModule} from "@angular/material/slider";
     MatIconModule,
     MatTooltipModule,
     MatSelectModule,
-    MatSliderModule
+    MatSliderModule,
+    MatSlideToggleModule
   ]
 })
 export class DataflowModule {
