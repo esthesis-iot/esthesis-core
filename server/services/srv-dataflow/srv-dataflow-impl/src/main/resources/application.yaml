@@ -21,6 +21,10 @@ quarkus:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
   opentelemetry:
     enabled: false
+  rest-client:
+    DockerClient:
+      url: https://registry.hub.docker.com
+      scope: Singleton
 
 mp:
   jwt:
@@ -28,3 +32,7 @@ mp:
       publickey:
         location: "http://esthesis-keycloak/realms/esthesis/protocol/openid-connect/certs"
 
+esthesis:
+  docker:
+    dataflows:
+      MQTT_CLIENT: "esthesisiot/esthesis-dfl-mqtt-client"

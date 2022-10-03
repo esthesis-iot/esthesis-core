@@ -22,21 +22,41 @@ public class DataFlowMqttClientConfig {
 
   @NotBlank
   @Length(max = 1024)
-  private String topicPing;
+  private String mqttTopicPing;
 
   @NotBlank
   @Length(max = 1024)
-  private String topicTelemetry;
+  private String mqttTopicTelemetry;
 
   @NotBlank
   @Length(max = 1024)
-  private String topicMetadata;
+  private String mqttTopicMetadata;
 
   @NotBlank
   @Length(max = 1024)
-  private String topicControlRequest;
+  private String mqttTopicControlRequest;
 
   @NotBlank
   @Length(max = 1024)
-  private String topicControlReply;
+  private String mqttTopicControlReply;
+
+  @NotBlank
+  @Length(max = 1024)
+  private String kafkaTopicPing;
+
+  @NotBlank
+  @Length(max = 1024)
+  private String kafkaTopicTelemetry;
+
+  @NotBlank
+  @Length(max = 1024)
+  private String kafkaTopicMetadata;
+
+  @NotBlank
+  @Length(max = 1024)
+  private String kafkaTopicControlRequest;
+
+  @NotBlank
+  @Length(max = 1024)
+  private String kafkaTopicControlReply;
 }

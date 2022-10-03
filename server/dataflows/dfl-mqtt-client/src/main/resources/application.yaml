@@ -16,7 +16,7 @@ quarkus:
   native:
     #    additional-build-args=--initialize-at-run-time=io.quarkus.runtime.generated.Config
     additional-build-args: --initialize-at-run-time=io.quarkus.runner.ApplicationImpl,--initialize-at-run-time=io.quarkus.runtime.generated.Config
-camel:
-  remove:
-    headers:
-      pattern: "X-Esthesis-KafkaTopic"
+#camel:
+#  remove:
+#    headers:
+#      pattern: "X-Esthesis-KafkaTopic"

@@ -9,12 +9,10 @@
         <mat-slide-toggle formControlName="status" class="mat-form-field-wrapper">
           {{form.controls.status.value ? "Active" : "Inactive"}}
         </mat-slide-toggle>
-        <mat-form-field class="">
-          <input (keyup.enter)="save()" cdkTrapFocus cdkTrapFocusAutoCapture
-                 formControlName="name" matInput placeholder="Name">
+        <mat-form-field>
+          <input formControlName="name" matInput placeholder="Name">
           <mat-icon *ngIf="form.controls['name'].invalid" color="warn"
-                    matSuffix
-                    matTooltip="{{form.controls['name'].getError('message')}}"
+                    matSuffix matTooltip="{{form.controls['name'].getError('message')}}"
                     matTooltipPosition="above" style="cursor: help">warning
           </mat-icon>
         </mat-form-field>
@@ -106,6 +104,20 @@
 
         <div class="inline-subheader">Kubernetes Scheduling</div>
         <div class="settings-section" fxLayout="column">
+          <mat-form-field>
+            <mat-select formControlName="namespace"
+                        placeholder="The namespace to deploy this dataflow" required>
+              <mat-option *ngFor="let n of namespaces"
+                          [value]="n">{{n}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select formControlName="version"
+                        placeholder="Select the version of this dataflow to deploy">
+              <mat-option *ngFor="let dflTag of dflTags?.results"
+                          [value]="dflTag.name">{{dflTag.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
           <div>Minimum pods: {{form.controls["minPods"].value}}</div>
           <mat-slider (change)="minPodsChanged()" formControlName="minPods" max="100" min="0"
                       step="1" value="1"></mat-slider>

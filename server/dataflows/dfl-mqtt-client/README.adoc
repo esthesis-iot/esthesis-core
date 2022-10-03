@@ -44,5 +44,5 @@ env \
 ### Remotely
 
 ```
-./mvnw clean package -Dnative -Dquarkus.native.remote-container-build=true -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.group=esthesisiot
+./mvnw clean package -Dnative -Dquarkus.native.remote-container-build=true -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.group=esthesisiot -Dquarkus.container-image.tag=latest
 ```

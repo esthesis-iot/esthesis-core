@@ -13,7 +13,7 @@ import {
 } from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
 import {TagService} from "../../tags/tag.service";
 import {DataflowDto} from "../../dto/dataflow/dataflow-dto";
-import {UUID} from "angular2-uuid";
+import {DockerTagsDto} from "../../dto/dataflow/docker-tags";
 
 @Component({
   selector: "app-dataflow-mqtt-client",
@@ -24,6 +24,8 @@ export class DataflowMqttClientComponent extends BaseComponent implements OnInit
   form!: FormGroup;
   id!: string;
   availableTags: TagDto[] | undefined;
+  dflTags: DockerTagsDto | undefined;
+  namespaces: string[] | undefined;
 
   constructor(private fb: FormBuilder, private route: ActivatedRoute, private qForms: QFormsService,
     private router: Router, private utilityService: UtilityService, private dialog: MatDialog,
@@ -38,26 +40,25 @@ export class DataflowMqttClientComponent extends BaseComponent implements OnInit
     // Form setup.
     this.form = this.fb.group({
       id: [{value: "", disabled: true}],
-      name: [{value: "", disabled: false}, [Validators.maxLength(1024)]],
+      name: [{value: "", disabled: false}, [Validators.maxLength(1024), Validators.required]],
       description: [{value: "", disabled: false}, [Validators.maxLength(4096)]],
-      url: [{value: "", disabled: false}, [Validators.maxLength(1024)]],
-      outChannel: [{
-        value: "mqttClientOut-" + UUID.UUID(), disabled: false
-      }, [Validators.maxLength(1024)]],
+      url: [{value: "", disabled: false}, [Validators.maxLength(1024), Validators.required]],
       status: [true, [Validators.required, Validators.maxLength(5)]],
       minPods: [1, [Validators.required, Validators.min(0)]],
       maxPods: [1, [Validators.required, Validators.max(100)]],
+      namespace: ["esthesis", [Validators.required, Validators.max(255)]],
+      version: ["latest", [Validators.required, Validators.max(255)]],
       tags: [[]],
-      mqttTopicPing: [{value: "esthesis/ping", disabled: false}, [Validators.maxLength(1024)]],
-      mqttTopicTelemetry: [{value: "esthesis/telemetry", disabled: false}, [Validators.maxLength(1024)]],
-      mqttTopicMetadata: [{value: "esthesis/metadata", disabled: false}, [Validators.maxLength(1024)]],
-      mqttTopicControlRequest: [{value: "esthesis/control/request", disabled: false}, [Validators.maxLength(1024)]],
-      mqttTopicControlReply: [{value: "esthesis/control/reply", disabled: false}, [Validators.maxLength(1024)]],
-      kafkaTopicPing: [{value: "esthesis-ping", disabled: false}, [Validators.maxLength(1024)]],
-      kafkaTopicTelemetry: [{value: "esthesis-telemetry", disabled: false}, [Validators.maxLength(1024)]],
-      kafkaTopicMetadata: [{value: "esthesis-metadata", disabled: false}, [Validators.maxLength(1024)]],
-      kafkaTopicControlRequest: [{value: "esthesis-control-request", disabled: false}, [Validators.maxLength(1024)]],
-      kafkaTopicControlReply: [{value: "esthesis-control-reply", disabled: false}, [Validators.maxLength(1024)]],
+      mqttTopicPing: [{value: "esthesis/ping", disabled: false}, [Validators.maxLength(1024), Validators.required]],
+      mqttTopicTelemetry: [{value: "esthesis/telemetry", disabled: false}, [Validators.maxLength(1024), Validators.required]],
+      mqttTopicMetadata: [{value: "esthesis/metadata", disabled: false}, [Validators.maxLength(1024), Validators.required]],
+      mqttTopicControlRequest: [{value: "esthesis/control/request", disabled: false}, [Validators.maxLength(1024), Validators.required]],
+      mqttTopicControlReply: [{value: "esthesis/control/reply", disabled: false}, [Validators.maxLength(1024), Validators.required]],
+      kafkaTopicPing: [{value: "esthesis-ping", disabled: false}, [Validators.maxLength(1024), Validators.required]],
+      kafkaTopicTelemetry: [{value: "esthesis-telemetry", disabled: false}, [Validators.maxLength(1024), Validators.required]],
+      kafkaTopicMetadata: [{value: "esthesis-metadata", disabled: false}, [Validators.maxLength(1024), Validators.required]],
+      kafkaTopicControlRequest: [{value: "esthesis-control-request", disabled: false}, [Validators.maxLength(1024), Validators.required]],
+      kafkaTopicControlReply: [{value: "esthesis-control-reply", disabled: false}, [Validators.maxLength(1024), Validators.required]],
     });
 
     // Fill-in the form with data if editing an existing item.
@@ -68,10 +69,29 @@ export class DataflowMqttClientComponent extends BaseComponent implements OnInit
 
         // Patch form elements specific to this type of dataflow component.
         this.form.patchValue(JSON.parse(dataflowDto.configuration!));
+
+        // Get available Docker tags for this dataflow component.
+        this.dataflowService.getAvailableTags(dataflowDto.type).subscribe({
+          next: tags => {
+            this.dflTags = tags;
+          }, error: err => {
+            this.utilityService.popupErrorWithTraceId(
+              "Could not fetch available Docker tags for this image.", err);
+          }
+        });
+
+        this.dataflowService.getNamespaces().subscribe({
+          next: n => {
+            this.namespaces = n;
+          }, error: err => {
+            this.utilityService.popupErrorWithTraceId(
+              "Could not fetch available Kubernetes namespaces.", err);
+          }
+        });
       });
     }
 
-    // Get available tags.
+    // Get available esthesis tags.
     this.tagService.find("sort=name,asc").subscribe(onNext => {
       this.availableTags = onNext.content;
     });
@@ -87,7 +107,9 @@ export class DataflowMqttClientComponent extends BaseComponent implements OnInit
     dataflowDto.status = form.status;
     dataflowDto.minPods = form.minPods;
     dataflowDto.maxPods = form.maxPods;
-    dataflowDto.outChannel = form.outChannel;
+    dataflowDto.maxPods = form.maxPods;
+    dataflowDto.namespace = form.namespace;
+    dataflowDto.version = form.version;
     dataflowDto.configuration = JSON.stringify({
       url: form.url,
       tags: form.tags,
@@ -119,7 +141,8 @@ export class DataflowMqttClientComponent extends BaseComponent implements OnInit
             this.qFormValidation.validateForm(this.form, validationErrors.violations);
           }
         } else {
-          this.utilityService.popupError("There was an error trying to save this dataflow.");
+          this.utilityService.popupErrorWithTraceId("" +
+            "There was an error trying to save this dataflow.", error);
         }
       }
     });

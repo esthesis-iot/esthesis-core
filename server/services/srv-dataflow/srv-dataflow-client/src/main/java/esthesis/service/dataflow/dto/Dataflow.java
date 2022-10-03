@@ -34,12 +34,21 @@ public class Dataflow extends BaseDTO {
   @NotNull
   private AppConstants.DataflowType type;
 
+  @NotNull
   private String configuration;
 
+  @NotNull
   private Integer minPods;
+
+  @NotNull
   private Integer maxPods;
 
-  private String inChannel;
-  private String outChannel;
-  private String consumerGroup;
+  @NotNull
+  @Length(max = 255)
+  private String namespace;
+
+  @NotNull
+  @Length(max = 255)
+  private String version;
+
 }

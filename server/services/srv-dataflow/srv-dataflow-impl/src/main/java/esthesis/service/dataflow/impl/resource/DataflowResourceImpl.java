@@ -5,6 +5,7 @@ import esthesis.common.rest.PageReplyFilter;
 import esthesis.common.rest.Pageable;
 import esthesis.service.dataflow.dto.DataFlowMqttClientConfig;
 import esthesis.service.dataflow.dto.Dataflow;
+import esthesis.service.dataflow.dto.DockerTags;
 import esthesis.service.dataflow.impl.service.DataflowService;
 import esthesis.service.dataflow.resource.DataflowResource;
 import java.util.List;
@@ -47,6 +48,16 @@ public class DataflowResourceImpl implements DataflowResource {
   @Override
   public DataFlowMqttClientConfig matchMqttServerByTags(List<String> tags) {
     return dataflowService.matchMqttServerByTags(tags);
+  }
+
+  @Override
+  public DockerTags getImageTags(String dflType) {
+    return dataflowService.getImageTags(dflType);
+  }
+
+  @Override
+  public List<String> getNamespaces() {
+    return dataflowService.getNamespaces();
   }
 
 }

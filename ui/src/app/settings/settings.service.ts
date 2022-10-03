@@ -14,8 +14,8 @@ import {RegistryEntryDto} from "../dto/registry-entry-dto";
   providedIn: "root"
 })
 export class SettingsService extends CrudService<RegistryEntryDto> {
-  private log = Log.create("SettingsService");
   private static serviceContext = "v1/registry";
+  private log = Log.create("SettingsService");
 
   constructor(http: HttpClient) {
     super(http, SettingsService.serviceContext);
