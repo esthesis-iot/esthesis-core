@@ -8,7 +8,7 @@ import {Router} from "@angular/router";
 import {QFormsService} from "@qlack/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {DataflowService} from "./dataflow.service";
-import {DataflowDto} from "../dto/dataflow/dataflow-dto";
+import {DataflowDto} from "./dto/dataflow-dto";
 
 @Component({
   selector: "app-dataflow",
@@ -75,11 +75,12 @@ export class DataflowComponent extends BaseComponent implements OnInit, AfterVie
   }
 
   resolveLink(dataflowDto: DataflowDto): string {
-    switch (dataflowDto.type) {
-      case this.appConstants.DATAFLOW_TYPE.MQTT_CLIENT:
-        return "mqtt-client/" + dataflowDto.id;
-      default:
-        return dataflowDto.id;
-    }
+    // switch (dataflowDto.type) {
+    //   case this.appConstants.DATAFLOW_TYPE.MQTT_CLIENT:
+    //     return "mqtt-client/" + dataflowDto.id;
+    //   default:
+    //     return dataflowDto.id;
+    // }
+    return "AAA";
   }
 }

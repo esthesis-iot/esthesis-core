@@ -23,7 +23,8 @@ public class MqttRoute extends RouteBuilder {
         .bean(mqttMessagingService, "process")
         .split(body())
         .toD("kafka:${headers[kafka.TOPIC]}"
-            + "?brokers=" + config.kafkaBrokers());
+            + "?brokers=" + config.kafkaUrl());
 
+    System.out.println("ROUTE OK!");
   }
 }

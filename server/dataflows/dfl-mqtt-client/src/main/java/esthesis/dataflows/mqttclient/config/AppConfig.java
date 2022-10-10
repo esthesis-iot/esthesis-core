@@ -4,43 +4,43 @@ import io.quarkus.runtime.annotations.StaticInitSafe;
 import io.smallrye.config.ConfigMapping;
 
 @StaticInitSafe
-@ConfigMapping
+@ConfigMapping(prefix = "esthesis.dfl")
 public interface AppConfig {
 
   // The URL of the MQTT broker.
   String mqttBrokerUrl();
 
-  // The URLs of the Kafka brokers.
-  String kafkaBrokers();
-
   // The prefix of the MQTT Ping topic.
-  String mqttPingTopic();
+  String mqttTopicPing();
 
   // The prefix of the MQTT Telemetry topic.
-  String mqttTelemetryTopic();
+  String mqttTopicTelemetry();
 
   // The prefix of the MQTT Metadata topic.
-  String mqttMetadataTopic();
+  String mqttTopicMetadata();
 
   // The prefix of the MQTT Control Request topic.
-  String mqttControlRequestTopic();
+  String mqttTopicControlRequest();
 
   // The prefix of the MQTT Control Reply topic.
-  String mqttControlReplyTopic();
+  String mqttTopicControlReply();
+
+  // The URLs of the Kafka brokers.
+  String kafkaUrl();
 
   // The prefix of the Kafka Ping topic.
-  String kafkaPingTopic();
+  String kafkaTopicPing();
 
   // The prefix of the Kafka Telemetry topic.
-  String kafkaTelemetryTopic();
+  String kafkaTopicTelemetry();
 
   // The prefix of the Kafka Metadata topic.
-  String kafkaMetadataTopic();
+  String kafkaTopicMetadata();
 
   // The prefix of the Kafka Control Request topic.
-  String kafkaControlRequestTopic();
+  String kafkaTopicControlRequest();
 
   // The prefix of the Kafka Control Reply topic.
-  String kafkaControlReplyTopic();
+  String kafkaTopicControlReply();
 
 }

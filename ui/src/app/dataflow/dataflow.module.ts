@@ -9,8 +9,6 @@ import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatButtonModule} from "@angular/material/button";
-import {DataflowNewComponent} from "./dataflow-new/dataflow-new.component";
-import {DataflowMqttClientComponent} from "./dataflow-mqtt-client/dataflow-mqtt-client.component";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
@@ -20,13 +18,20 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatSelectModule} from "@angular/material/select";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
-
+import {DataflowEditComponent} from "./dataflow-edit/dataflow-edit.component";
+import {FormlyModule} from "@ngx-formly/core";
+import {FormlyMaterialModule} from "@ngx-formly/material";
+import {DataflowEditSectionComponent} from "./dataflow-edit/dataflow-edit-section.component";
+import {DataflowNewComponent} from "./dataflow-new/dataflow-new.component";
+import {FormlyMatSliderModule} from "@ngx-formly/material/slider";
+import {FormlyMatToggleModule} from "@ngx-formly/material/toggle";
 
 @NgModule({
   declarations: [
     DataflowComponent,
     DataflowNewComponent,
-    DataflowMqttClientComponent,
+    DataflowEditComponent,
+    DataflowEditSectionComponent
   ],
   imports: [
     CommonModule,
@@ -45,7 +50,13 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
     MatTooltipModule,
     MatSelectModule,
     MatSliderModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    FormlyModule.forChild({
+      wrappers: [{name: "section", component: DataflowEditSectionComponent}],
+    }),
+    FormlyMaterialModule,
+    FormlyMatSliderModule,
+    FormlyMatToggleModule
   ]
 })
 export class DataflowModule {

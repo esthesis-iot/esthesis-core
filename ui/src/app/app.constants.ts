@@ -127,10 +127,6 @@ export const AppConstants = {
     DELETE: 2,
     OK: 3
   },
-
-  DATAFLOW_TYPE: {
-    MQTT_CLIENT: "MQTT_CLIENT"
-  }
-
+  
 };
 

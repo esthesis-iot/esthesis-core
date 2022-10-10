@@ -1,27 +1,13 @@
 <mat-card fxFlexFill>
   <mat-card-title>
     Dashboard
-    <button mat-mini-fab class="refresh-button" (click)="addWidget()">
+    <button mat-mini-fab class="refresh-button">
       <mat-icon inline="true">add</mat-icon>
     </button>
   </mat-card-title>
   <mat-card-content fxFlexFill class="xs-mt3">
     <gridster [options]="dashboardOptions" class="gridster" #gridsterComponent>
       <gridster-item [id]="item.id" [item]="item.grid" *ngFor="let item of dashboardWidgets">
-        <div [ngSwitch]="item.type" fxFlexFill>
-          <app-widget-sensor-value
-            *ngSwitchCase="constants.DASHBOARD.WIDGETS.SENSOR_VALUE"
-            [id]="item.id" [dashboard]="item.dashboardId">
-          </app-widget-sensor-value>
-          <app-widget-sensor-gauge
-            *ngSwitchCase="constants.DASHBOARD.WIDGETS.SENSOR_GAUGE"
-            [id]="item.id" [dashboard]="item.dashboardId">
-          </app-widget-sensor-gauge>
-          <app-widget-map
-            *ngSwitchCase="constants.DASHBOARD.WIDGETS.MAP"
-            [id]="item.id" [dashboard]="item.dashboardId">
-          </app-widget-map>
-        </div>
       </gridster-item>
     </gridster>
   </mat-card-content>

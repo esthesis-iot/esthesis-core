@@ -132,6 +132,9 @@
           }
         }
       }
-    }},
-  "defaultProject": "esthesis-ui"
+    }
+  },
+  "cli": {
+    "analytics": false
+  }
 }

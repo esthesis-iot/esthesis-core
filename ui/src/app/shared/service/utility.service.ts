@@ -79,4 +79,27 @@ export class UtilityService {
     });
   }
 
+  /**
+   * Performs a deep map on the given object's values.
+   * @param obj The object to map.
+   * @param cb The function to apply.
+   */
+  deepMap(obj: any, cb: any) {
+    const out = {};
+
+    Object.keys(obj).forEach((k) => {
+      let val;
+
+      if (obj[k] !== null && typeof obj[k] === "object") {
+        val = this.deepMap(obj[k], cb);
+      } else {
+        val = cb(obj[k], k);
+      }
+
+      // @ts-ignore
+      out[k] = val;
+    });
+
+    return out;
+  }
 }

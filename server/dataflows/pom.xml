@@ -37,18 +37,17 @@
       <groupId>org.apache.camel.quarkus</groupId>
       <artifactId>camel-quarkus-log</artifactId>
     </dependency>
-
     <!-- THIRD-PARTY -->
   </dependencies>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <artifactId>quarkus-camel-bom</artifactId>
         <groupId>io.quarkus.platform</groupId>
-        <scope>import</scope>
-        <type>pom</type>
+        <artifactId>quarkus-camel-bom</artifactId>
         <version>${quarkus.platform.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

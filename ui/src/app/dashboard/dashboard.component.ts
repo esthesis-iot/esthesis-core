@@ -1,24 +1,16 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {BaseComponent} from '../shared/component/base-component';
+import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {BaseComponent} from "../shared/component/base-component";
 import {GridsterComponent, GridsterConfig} from "angular-gridster2";
 import {MatDialog} from "@angular/material/dialog";
-import {DashboardAddWidgetComponent} from "./dashboard-add-widget.component";
 import {AppConstants} from "../app.constants";
-import {
-  WidgetSensorValueSetupComponent
-} from "./dashboard-widgets/widget-sensor-value/widget-sensor-value-setup.component";
 import {DashboardService} from "./dashboard.service";
 import {DashboardWidgetForGridDto} from "../dto/dashboard-widget-for-grid-dto";
-import {
-  WidgetSensorGaugeSetupComponent
-} from "./dashboard-widgets/widget-sensor-gauge/widget-sensor-gauge-setup.component";
-import {WidgetMapSetupComponent} from "./dashboard-widgets/widget-map/widget-map-setup.component";
 
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  selector: "app-dashboard",
+  templateUrl: "./dashboard.component.html",
+  styleUrls: ["./dashboard.component.scss"]
 })
 export class DashboardComponent extends BaseComponent implements OnInit, OnDestroy {
   dashboardOptions!: GridsterConfig;
@@ -30,13 +22,12 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     {static: false}) gridsterComponent!: GridsterComponent;
 
   constructor(private dialog: MatDialog,
-              private dashboardService: DashboardService) {
+    private dashboardService: DashboardService) {
     super();
 
     // Subscribe to addition/removal of dashboard widgets.
-    // this.refreshSubscription = this.dashboardService.refreshDashboardObservable.subscribe(onNext => {
-    //   this.getDashboardWidgets();
-    // });
+    // this.refreshSubscription = this.dashboardService.refreshDashboardObservable.subscribe(onNext
+    // => { this.getDashboardWidgets(); });
   }
 
   ngOnInit() {
@@ -74,7 +65,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     this.dashboardService.getWidgets().subscribe(
       onNext => {
         this.dashboardWidgets = onNext.map(widget => {
-          return <DashboardWidgetForGridDto>{
+          return {
             id: widget.id,
             type: widget.type,
             grid: {
@@ -86,42 +77,10 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
               resizeEnabled: true
             },
             dashboardId: widget.dashboard
-          }
+          } as DashboardWidgetForGridDto;
         });
       }
     );
   }
 
-  addWidget() {
-    this.dialog.open(DashboardAddWidgetComponent, {
-      width: '40%',
-    }).afterClosed().subscribe(result => {
-      switch (result) {
-        case AppConstants.DASHBOARD.WIDGETS.SENSOR_VALUE:
-          this.dialog.open(WidgetSensorValueSetupComponent, {
-            width: '40%',
-            data: {
-              id: 0
-            }
-          });
-          break;
-        case AppConstants.DASHBOARD.WIDGETS.SENSOR_GAUGE:
-          this.dialog.open(WidgetSensorGaugeSetupComponent, {
-            width: '40%',
-            data: {
-              id: 0
-            }
-          });
-          break;
-        case AppConstants.DASHBOARD.WIDGETS.MAP:
-          this.dialog.open(WidgetMapSetupComponent, {
-            width: '40%',
-            data: {
-              id: 0
-            }
-          });
-          break;
-      }
-    });
-  }
 }

@@ -32,7 +32,3 @@ mp:
       publickey:
         location: "http://esthesis-keycloak/realms/esthesis/protocol/openid-connect/certs"
 
-esthesis:
-  docker:
-    dataflows:
-      MQTT_CLIENT: "esthesisiot/esthesis-dfl-mqtt-client"

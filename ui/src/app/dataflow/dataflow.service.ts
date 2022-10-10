@@ -1,10 +1,10 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {CrudService} from "../services/crud.service";
-import {DataflowDto} from "../dto/dataflow/dataflow-dto";
 import {Observable} from "rxjs";
 import {environment} from "../../environments/environment";
-import {DockerTagsDto} from "../dto/dataflow/docker-tags";
+import {DataflowDto} from "./dto/dataflow-dto";
+import {DockerTagsDto} from "./dto/docker-tags";
 
 @Injectable({
   providedIn: "root"
@@ -26,4 +26,8 @@ export class DataflowService extends CrudService<DataflowDto> {
       `${environment.apiPrefix}/${DataflowService.serviceContext}/namespaces`);
   }
 
+
+  save(data: any): Observable<any> {
+    return this.http.post(`${environment.apiPrefix}/${DataflowService.serviceContext}`, data);
+  }
 }

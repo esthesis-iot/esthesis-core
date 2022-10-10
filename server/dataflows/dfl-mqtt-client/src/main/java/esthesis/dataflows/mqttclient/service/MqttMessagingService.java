@@ -7,11 +7,9 @@ import java.util.List;
 import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.kafka.KafkaConstants;
 
-@Slf4j
 @ApplicationScoped
 public class MqttMessagingService {
 
@@ -22,15 +20,15 @@ public class MqttMessagingService {
 
   private MessageType getMessageType(Exchange exchange) {
     String topic = exchange.getIn().getHeader(HEADER_TOPIC, String.class);
-    if (topic.startsWith(config.mqttPingTopic())) {
+    if (topic.startsWith(config.mqttTopicPing())) {
       return MessageType.PING;
-    } else if (topic.startsWith(config.mqttTelemetryTopic())) {
+    } else if (topic.startsWith(config.mqttTopicTelemetry())) {
       return MessageType.TELEMETRY;
-    } else if (topic.startsWith(config.mqttMetadataTopic())) {
+    } else if (topic.startsWith(config.mqttTopicMetadata())) {
       return MessageType.METADATA;
-    } else if (topic.startsWith(config.mqttControlRequestTopic())) {
+    } else if (topic.startsWith(config.mqttTopicControlRequest())) {
       return MessageType.CONTROL_REQUEST;
-    } else if (topic.startsWith(config.mqttControlReplyTopic())) {
+    } else if (topic.startsWith(config.mqttTopicControlReply())) {
       return MessageType.CONTROL_REPLY;
     } else {
       throw new UnsupportedOperationException("Received a message "
@@ -42,27 +40,27 @@ public class MqttMessagingService {
     MessageType messageType = getMessageType(exchange);
     return switch (messageType) {
       case PING -> exchange.getIn().getHeader(HEADER_TOPIC, String.class)
-          .substring(config.mqttPingTopic().length() + 1);
+          .substring(config.mqttTopicPing().length() + 1);
       case TELEMETRY -> exchange.getIn().getHeader(HEADER_TOPIC, String.class)
-          .substring(config.mqttTelemetryTopic().length() + 1);
+          .substring(config.mqttTopicTelemetry().length() + 1);
       case METADATA -> exchange.getIn().getHeader(HEADER_TOPIC, String.class)
-          .substring(config.mqttMetadataTopic().length() + 1);
+          .substring(config.mqttTopicMetadata().length() + 1);
       case CONTROL_REQUEST ->
           exchange.getIn().getHeader(HEADER_TOPIC, String.class)
-              .substring(config.mqttControlRequestTopic().length() + 1);
+              .substring(config.mqttTopicControlRequest().length() + 1);
       case CONTROL_REPLY ->
           exchange.getIn().getHeader(HEADER_TOPIC, String.class)
-              .substring(config.mqttControlReplyTopic().length() + 1);
+              .substring(config.mqttTopicControlReply().length() + 1);
     };
   }
 
   private String getKafkaOutputTopic(MessageType messageType) {
     return switch (messageType) {
-      case PING -> config.kafkaPingTopic();
-      case TELEMETRY -> config.kafkaTelemetryTopic();
-      case METADATA -> config.kafkaMetadataTopic();
-      case CONTROL_REQUEST -> config.kafkaControlRequestTopic();
-      case CONTROL_REPLY -> config.kafkaControlReplyTopic();
+      case PING -> config.kafkaTopicPing();
+      case TELEMETRY -> config.kafkaTopicTelemetry();
+      case METADATA -> config.kafkaTopicMetadata();
+      case CONTROL_REQUEST -> config.kafkaTopicControlRequest();
+      case CONTROL_REPLY -> config.kafkaTopicControlReply();
     };
   }
 

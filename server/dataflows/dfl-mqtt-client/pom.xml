@@ -4,6 +4,19 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <artifactId>dfl-mqtt-client</artifactId>
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>dataflows</artifactId>
+    <groupId>esthesis</groupId>
+    <version>3.0.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <quarkus.native.additional-build-args>
+      --initialize-at-run-time=io.quarkus.runner.ApplicationImpl\,io.quarkus.runtime.generated.Config
+    </quarkus.native.additional-build-args>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -12,11 +25,4 @@
     </dependency>
   </dependencies>
 
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <artifactId>dataflows</artifactId>
-    <groupId>esthesis</groupId>
-    <version>3.0.0-SNAPSHOT</version>
-  </parent>
 </project>

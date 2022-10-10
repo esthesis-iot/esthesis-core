@@ -1,17 +1,18 @@
 <mat-card>
   <mat-card-title>New dataflow component</mat-card-title>
   <mat-card-content class="dataflows" fxLayout="row wrap" fxLayoutGap="1rem">
-    <mat-card *ngFor="let c of componentsList">
+    <mat-card *ngFor="let d of dataflows">
       <mat-card-title-group>
-        <mat-card-title>{{c.title}}</mat-card-title>
-        <mat-card-subtitle>{{c.category}}</mat-card-subtitle>
-        <img alt="" mat-card-sm-image src="{{c.icon}}">
+        <mat-card-title>{{d.title}}</mat-card-title>
+        <mat-card-subtitle>{{d.category}}</mat-card-subtitle>
+        <img alt="" mat-card-sm-image src="{{d.icon}}">
       </mat-card-title-group>
       <mat-card-content>
-        {{c.description}}
+        {{d.description}}
       </mat-card-content>
       <mat-card-actions>
-        <button [routerLink]="c.action + '/' + appConstants.NEW_RECORD_ID" mat-button>
+        <button [routerLink]="'/dataflow/edit/' + d.type + '/' + appConstants.NEW_RECORD_ID"
+                mat-button>
           CREATE
         </button>
       </mat-card-actions>

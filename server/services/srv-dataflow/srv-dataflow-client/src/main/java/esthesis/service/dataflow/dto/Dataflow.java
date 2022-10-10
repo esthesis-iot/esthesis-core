@@ -1,8 +1,8 @@
 package esthesis.service.dataflow.dto;
 
-import esthesis.common.AppConstants;
 import esthesis.common.dto.BaseDTO;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import java.util.Map;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -21,34 +21,20 @@ import org.hibernate.validator.constraints.Length;
 public class Dataflow extends BaseDTO {
 
   @NotBlank
-  @Length(max = 1024)
-  private String name;
-
-  @NotBlank
-  @Length(max = 4096)
-  private String description;
+  @Length(max = 256)
+  private String type;
 
   @NotNull
   private boolean status;
 
-  @NotNull
-  private AppConstants.DataflowType type;
+  @NotBlank
+  @Length(max = 1024)
+  private String name;
 
-  @NotNull
-  private String configuration;
+  @Length(max = 4096)
+  private String description;
 
-  @NotNull
-  private Integer minPods;
-
-  @NotNull
-  private Integer maxPods;
-
-  @NotNull
-  @Length(max = 255)
-  private String namespace;
-
-  @NotNull
-  @Length(max = 255)
-  private String version;
+  private Map<String, Object> config;
+  private Map<String, Object> kubernetes;
 
 }

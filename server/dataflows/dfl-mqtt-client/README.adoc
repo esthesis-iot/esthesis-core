@@ -1,21 +1,21 @@
-# Build and runn instructions
+# Build and run instructions
 
-## Run locally
+## Run in dev mode
 
 ```
 env \
-    esthesis.dfl.mqtt-client.mqtt-broker-url=tcp://esthesis-dev-rabbitmq:1883 \
-    esthesis.dfl.mqtt-client.kafka-brokers=esthesis-dev-kafka:9094  \
-    esthesis.dfl.mqtt-client.mqtt-ping-topic=esthesis/ping \
-    esthesis.dfl.mqtt-client.mqtt-telemetry-topic=esthesis/telemetry \
-    esthesis.dfl.mqtt-client.mqtt-metadata-topic=esthesis/metadata \
-    esthesis.dfl.mqtt-client.mqtt-control-request-topic=esthesis/control-request \
-    esthesis.dfl.mqtt-client.mqtt-control-reply-topic=esthesis/control-reply \
-    esthesis.dfl.mqtt-client.kafka-ping-topic=esthesis-ping \
-    esthesis.dfl.mqtt-client.kafka-telemetry-topic=esthesis-telemetry \
-    esthesis.dfl.mqtt-client.kafka-metadata-topic=esthesis-metadata \
-    esthesis.dfl.mqtt-client.kafka-control-request-topic=esthesis-control-request \
-    esthesis.dfl.mqtt-client.kafka-control-reply-topic=esthesis-control-reply \
+    ESTHESIS_DFL_MQTT_TOPIC_PING=esthesis/ping \
+    ESTHESIS_DFL_MQTT_TOPIC_TELEMETRY=esthesis/telemetry \
+    ESTHESIS_DFL_MQTT_TOPIC_METADATA=esthesis/metadata \
+    ESTHESIS_DFL_MQTT_TOPIC_CONTROL_REQUEST=esthesis/control/request \
+    ESTHESIS_DFL_MQTT_TOPIC_CONTROL_REPLY=esthesis/control/reply \
+    ESTHESIS_DFL_KAFKA_TOPIC_PING=esthesis/ping \
+    ESTHESIS_DFL_KAFKA_TOPIC_TELEMETRY=esthesis/telemetry \
+    ESTHESIS_DFL_KAFKA_TOPIC_METADATA=esthesis/metadata \
+    ESTHESIS_DFL_KAFKA_TOPIC_CONTROL_REQUEST=esthesis/control/request \
+    ESTHESIS_DFL_KAFKA_TOPIC_CONTROL_REPLY=esthesis/control/reply \
+    ESTHESIS_DFL_MQTT_BROKER_URL=tcp://esthesis-dev-rabbitmq:1883 \
+    ESTHESIS_DFL_KAFKA_URL=esthesis-dev-kafka:9094 \
 ./mvnw quarkus:dev
 ```
 
@@ -24,13 +24,13 @@ env \
 ### In Docker
 
 ```
-./mvnw clean package -Dnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true
+./mvnw clean package -Dquarkus.container-image.build=true
 ```
 
 ### Remotely
 
 ```
-./mvnw clean package -Dnative -Dquarkus.native.remote-container-build=true -Dquarkus.container-image.build=true
+./mvnw clean package -Dquarkus.native.remote-container-build=true -Dquarkus.container-image.build=true
 ```
 
 ## Build & Push image:
@@ -38,11 +38,11 @@ env \
 ### In Docker
 
 ```
-./mvnw clean package -Dnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.group=esthesisiot
+./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.group=esthesisiot -Dquarkus.container-image.tag=latest
 ```
 
 ### Remotely
 
 ```
-./mvnw clean package -Dnative -Dquarkus.native.remote-container-build=true -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.group=esthesisiot -Dquarkus.container-image.tag=latest
+./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.group=esthesisiot -Dquarkus.container-image.tag=latest
 ```
