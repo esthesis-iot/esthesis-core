@@ -55,6 +55,7 @@
   <modules>
     <module>dfl-common</module>
     <module>dfl-mqtt-client</module>
+    <module>dfl-ping-updater</module>
   </modules>
 
 </project>

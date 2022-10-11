@@ -32,7 +32,7 @@ public class MqttMessagingService {
       return MessageType.CONTROL_REPLY;
     } else {
       throw new UnsupportedOperationException("Received a message "
-          + "on unsupported topic: " + topic);
+          + "on unsupported topic '" + topic + "'.");
     }
   }
 
@@ -54,16 +54,6 @@ public class MqttMessagingService {
     };
   }
 
-  private String getKafkaOutputTopic(MessageType messageType) {
-    return switch (messageType) {
-      case PING -> config.kafkaTopicPing();
-      case TELEMETRY -> config.kafkaTopicTelemetry();
-      case METADATA -> config.kafkaTopicMetadata();
-      case CONTROL_REQUEST -> config.kafkaTopicControlRequest();
-      case CONTROL_REPLY -> config.kafkaTopicControlReply();
-    };
-  }
-
   public void process(Exchange exchange) throws Exception {
     List<EsthesisMessage> generatedMessages = new ArrayList<>();
 
@@ -72,8 +62,6 @@ public class MqttMessagingService {
     String topic = exchange.getIn().getHeader(HEADER_TOPIC, String.class);
     MessageType messageType = getMessageType(exchange);
     String hardwareId = getHardwareId(exchange);
-    exchange.getIn()
-        .setHeader(KafkaConstants.TOPIC, getKafkaOutputTopic(messageType));
     exchange.getIn().setHeader(KafkaConstants.KEY, hardwareId);
 
     for (String line : body.split("\n")) {
