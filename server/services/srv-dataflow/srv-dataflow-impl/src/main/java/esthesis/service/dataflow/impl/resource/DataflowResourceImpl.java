@@ -3,11 +3,12 @@ package esthesis.service.dataflow.impl.resource;
 import esthesis.common.rest.Page;
 import esthesis.common.rest.PageReplyFilter;
 import esthesis.common.rest.Pageable;
-import esthesis.service.dataflow.dto.DataFlowMqttClientConfig;
 import esthesis.service.dataflow.dto.Dataflow;
 import esthesis.service.dataflow.dto.DockerTags;
+import esthesis.service.dataflow.dto.MatchedMqttServer;
 import esthesis.service.dataflow.impl.service.DataflowService;
 import esthesis.service.dataflow.resource.DataflowResource;
+import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
@@ -32,6 +33,9 @@ public class DataflowResourceImpl implements DataflowResource {
 
   @Override
   public Dataflow findById(ObjectId id) {
+    System.out.println(
+        dataflowService.matchMqttServerByTags(Arrays.asList("tag1"))
+    );
     return dataflowService.findById(id);
   }
 
@@ -47,7 +51,7 @@ public class DataflowResourceImpl implements DataflowResource {
   }
 
   @Override
-  public DataFlowMqttClientConfig matchMqttServerByTags(List<String> tags) {
+  public MatchedMqttServer matchMqttServerByTags(List<String> tags) {
     return dataflowService.matchMqttServerByTags(tags);
   }
 

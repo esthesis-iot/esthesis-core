@@ -1,6 +1,6 @@
 package esthesis.service.dataflow.resource;
 
-import esthesis.service.dataflow.dto.DataFlowMqttClientConfig;
+import esthesis.service.dataflow.dto.MatchedMqttServer;
 import io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter;
 import java.util.List;
 import javax.ws.rs.GET;
@@ -15,5 +15,5 @@ public interface DataflowSystemResource {
 
   @GET
   @Path("/v1/dataflow-system/match-mqqt-server-by-tags")
-  DataFlowMqttClientConfig matchMqttServerByTags(List<String> tags);
+  MatchedMqttServer matchMqttServerByTags(List<String> tags);
 }

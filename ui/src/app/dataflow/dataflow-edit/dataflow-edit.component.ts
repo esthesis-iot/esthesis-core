@@ -71,7 +71,7 @@ export class DataflowEditComponent extends BaseComponent implements OnInit {
 
     // Replace the tags field with the actual tags.
     this.tagService.find("sort=name,asc").subscribe(onNext => {
-      this.replaceSelectValues(this.fields, "config.tags",
+      this.replaceSelectValues(this.fields, "tags",
         onNext.content.map(t => {
           return {label: t.name, value: t.id};
         }));

@@ -4,9 +4,9 @@ public class AppConstants {
 
   public static final String KAFKA_TOPIC_PREFIX = "esthesis-";
 
-  public enum DataflowType {
-    MQTT_CLIENT;
-  }
+//  public enum DataflowType {
+//    MQTT_CLIENT;
+//  }
 
   public enum Registry {
     SECURITY_ASYMMETRIC_KEY_SIZE, SECURITY_ASYMMETRIC_KEY_ALGORITHM,

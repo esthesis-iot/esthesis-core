@@ -2,9 +2,9 @@ package esthesis.service.dataflow.resource;
 
 import esthesis.common.rest.Page;
 import esthesis.common.rest.Pageable;
-import esthesis.service.dataflow.dto.DataFlowMqttClientConfig;
 import esthesis.service.dataflow.dto.Dataflow;
 import esthesis.service.dataflow.dto.DockerTags;
+import esthesis.service.dataflow.dto.MatchedMqttServer;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.util.List;
 import javax.validation.Valid;
@@ -42,7 +42,7 @@ public interface DataflowResource {
   @Produces("application/json")
   Dataflow save(@Valid Dataflow dataflow);
 
-  DataFlowMqttClientConfig matchMqttServerByTags(List<String> tags);
+  MatchedMqttServer matchMqttServerByTags(List<String> tags);
 
   @GET
   @Path("/v1/dataflow/docker-tags/{dflType}")

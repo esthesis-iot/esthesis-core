@@ -5,7 +5,7 @@ const TEMPLATE_MAIN = [
 
 const TEMPLATE_TAGS = [
   {
-    key: "config.tags", type: "select",
+    key: "tags", type: "select",
     props: {
       label: "Tags",
       hintStart: "Select the tags associated with this MQTT broker",

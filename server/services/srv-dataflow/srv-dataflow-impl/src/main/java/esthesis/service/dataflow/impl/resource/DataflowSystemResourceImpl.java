@@ -1,6 +1,6 @@
 package esthesis.service.dataflow.impl.resource;
 
-import esthesis.service.dataflow.dto.DataFlowMqttClientConfig;
+import esthesis.service.dataflow.dto.MatchedMqttServer;
 import esthesis.service.dataflow.impl.service.DataflowService;
 import esthesis.service.dataflow.resource.DataflowSystemResource;
 import java.util.List;
@@ -12,7 +12,7 @@ public class DataflowSystemResourceImpl implements DataflowSystemResource {
   DataflowService dataflowService;
 
   @Override
-  public DataFlowMqttClientConfig matchMqttServerByTags(List<String> tags) {
+  public MatchedMqttServer matchMqttServerByTags(List<String> tags) {
     return dataflowService.matchMqttServerByTags(tags);
   }
 
