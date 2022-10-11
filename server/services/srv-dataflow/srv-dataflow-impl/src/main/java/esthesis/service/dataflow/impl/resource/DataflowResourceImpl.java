@@ -24,7 +24,8 @@ public class DataflowResourceImpl implements DataflowResource {
   @GET
   @Override
   @Path("/v1/dataflow/find")
-  @PageReplyFilter(filter = "content,content.id,content.name,content.type")
+  @PageReplyFilter(filter = "content,content.id,content.name,content.type,"
+      + "content.status,content.description")
   public Page<Dataflow> find(@BeanParam Pageable pageable) {
     return dataflowService.find(pageable, true);
   }
@@ -44,7 +45,7 @@ public class DataflowResourceImpl implements DataflowResource {
   public Dataflow save(Dataflow dataflow) {
     return dataflowService.save(dataflow);
   }
-  
+
   @Override
   public DataFlowMqttClientConfig matchMqttServerByTags(List<String> tags) {
     return dataflowService.matchMqttServerByTags(tags);

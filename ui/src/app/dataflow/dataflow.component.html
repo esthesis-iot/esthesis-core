@@ -15,9 +15,23 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Name</th>
           <td mat-cell *matCellDef="let element">{{element.name}}</td>
         </ng-container>
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Description</th>
+          <td mat-cell *matCellDef="let element">{{element.description}}</td>
+        </ng-container>
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Type</th>
+          <td mat-cell *matCellDef="let element">{{element.typeText}}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Status</th>
+          <td mat-cell *matCellDef="let element">
+            <app-boolean-checkbox [value]="element.status"></app-boolean-checkbox>
+          </td>
+        </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let element; columns: displayedColumns;"
-            [routerLink]="resolveLink(element)"></tr>
+            [routerLink]="'/dataflow/edit/' + element.type + '/' + element.id"></tr>
       </table>
       <mat-paginator #paginator (page)="changePage()"
                      [pageSize]="10"

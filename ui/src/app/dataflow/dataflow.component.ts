@@ -9,6 +9,7 @@ import {QFormsService} from "@qlack/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {DataflowService} from "./dataflow.service";
 import {DataflowDto} from "./dto/dataflow-dto";
+import {dataflows} from "./dto/dataflow-definition";
 
 @Component({
   selector: "app-dataflow",
@@ -16,7 +17,7 @@ import {DataflowDto} from "./dto/dataflow-dto";
   styleUrls: ["./dataflow.component.scss"]
 })
 export class DataflowComponent extends BaseComponent implements OnInit, AfterViewInit {
-  displayedColumns = ["name"];
+  displayedColumns = ["name", "description", "type", "status"];
   dataSource: MatTableDataSource<DataflowDto> = new MatTableDataSource<DataflowDto>();
   filterForm: FormGroup;
 
@@ -60,6 +61,13 @@ export class DataflowComponent extends BaseComponent implements OnInit, AfterVie
     this.dataflowService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
       [], false, page, size, sort, sortDirection))
     .subscribe(onNext => {
+      // Convert keys to text.
+      onNext.content.map((dataflowDto: DataflowDto) => {
+        // @ts-ignore
+        dataflowDto.typeText = dataflows.find((dataflow) => {
+          return dataflow.type === dataflowDto.type;
+        }).title;
+      });
       this.dataSource.data = onNext.content;
       this.paginator.length = onNext.totalElements;
     });
@@ -72,15 +80,5 @@ export class DataflowComponent extends BaseComponent implements OnInit, AfterVie
   changePage() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
       this.sort.start);
-  }
-
-  resolveLink(dataflowDto: DataflowDto): string {
-    // switch (dataflowDto.type) {
-    //   case this.appConstants.DATAFLOW_TYPE.MQTT_CLIENT:
-    //     return "mqtt-client/" + dataflowDto.id;
-    //   default:
-    //     return dataflowDto.id;
-    // }
-    return "AAA";
   }
 }

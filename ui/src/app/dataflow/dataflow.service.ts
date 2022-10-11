@@ -26,8 +26,12 @@ export class DataflowService extends CrudService<DataflowDto> {
       `${environment.apiPrefix}/${DataflowService.serviceContext}/namespaces`);
   }
 
-
   save(data: any): Observable<any> {
-    return this.http.post(`${environment.apiPrefix}/${DataflowService.serviceContext}`, data);
+    return this.http.post(
+      `${environment.apiPrefix}/${DataflowService.serviceContext}`, data, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
   }
 }

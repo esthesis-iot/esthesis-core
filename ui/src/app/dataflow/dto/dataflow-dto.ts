@@ -4,10 +4,11 @@ export class DataflowDto {
   description?: string;
   status!: boolean;
   type!: string;
-  minPods!: number;
-  maxPods!: number;
-  namespace!: string;
-  version!: string;
+  typeText!: string;
+  // minPods!: number;
+  // maxPods!: number;
+  // namespace!: string;
+  // version!: string;
 
-  configuration?: string;
+  // configuration?: string;
 }

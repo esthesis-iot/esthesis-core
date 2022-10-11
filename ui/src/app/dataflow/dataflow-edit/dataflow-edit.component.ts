@@ -56,9 +56,17 @@ export class DataflowEditComponent extends BaseComponent implements OnInit {
     this.model = {
       type: this.type
     };
+
     if (this.id !== this.appConstants.NEW_RECORD_ID) {
       // @ts-ignore
       this.model.id = this.id;
+      this.dataflowService.findById(this.id).subscribe({
+        next: (reply) => {
+          this.model = reply;
+        }, error: (err) => {
+          this.utilityService.popupErrorWithTraceId("Could not feth dataflow.", err);
+        }
+      });
     }
 
     // Replace the tags field with the actual tags.
@@ -111,22 +119,16 @@ export class DataflowEditComponent extends BaseComponent implements OnInit {
   }
 
   save() {
-    // if (!this.form.valid) {
-    //   this.utilityService.popupError("Mandatory dataflow configuration is missing.");
-    //   return;
-    // }
-
-    // Switch all model's values to string.
-    const modelText = this.utilityService.deepMap(this.model, (v: any, k: any) => {
-      return "" + v;
-    });
-
-    this.dataflowService.save(modelText).subscribe({
-      next: (reply) => {
-        console.log(reply);
-      }, error: err => {
-        console.log(err);
-      }
-    });
+    if (!this.form.valid) {
+      this.utilityService.popupError("Mandatory dataflow configuration is missing.");
+    } else {
+      this.dataflowService.save(JSON.stringify(this.model)).subscribe({
+        next: (reply) => {
+          this.router.navigate(["dataflow"]);
+        }, error: (err) => {
+          this.utilityService.popupErrorWithTraceId("There was an error saving this dataflow.", err);
+        }
+      });
+    }
   }
 }

@@ -20,6 +20,9 @@ public class PodInfo {
   private String namespace;
   private int minInstances;
   private int maxInstances;
+  private String cpuRequest;
+  private String cpuLimit;
+  private boolean status;
 
   private Map<String, String> configuration;
 }

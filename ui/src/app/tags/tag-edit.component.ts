@@ -1,21 +1,21 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {MatDialog} from '@angular/material/dialog';
-import {UUID} from 'angular2-uuid';
-import {TagService} from './tag.service';
-import {BaseComponent} from '../shared/component/base-component';
-import {UtilityService} from '../shared/service/utility.service';
+import {Component, OnInit} from "@angular/core";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ActivatedRoute, Router} from "@angular/router";
+import {MatDialog} from "@angular/material/dialog";
+import {UUID} from "angular2-uuid";
+import {TagService} from "./tag.service";
+import {BaseComponent} from "../shared/component/base-component";
+import {UtilityService} from "../shared/service/utility.service";
 import {
   OkCancelModalComponent
-} from '../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
-import {TagDto} from '../dto/tag-dto';
-import {QFormsService} from '@qlack/forms';
+} from "../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+import {TagDto} from "../dto/tag-dto";
+import {QFormsService} from "@qlack/forms";
 import {QFormValidationEEService} from "../shared/service/form-validation.service";
 
 @Component({
-  selector: 'app-tag-edit',
-  templateUrl: './tag-edit.component.html',
+  selector: "app-tag-edit",
+  templateUrl: "./tag-edit.component.html",
   styleUrls: []
 })
 export class TagEditComponent extends BaseComponent implements OnInit {
@@ -30,13 +30,13 @@ export class TagEditComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.id = this.route.snapshot.paramMap.get('id')!;
+    this.id = this.route.snapshot.paramMap.get("id")!;
 
     // Setup the form.
     this.form = this.fb.group({
-      id: [{value: '', disabled: true}],
+      id: [{value: "", disabled: true}],
       name: [{
-        value: '',
+        value: "",
         disabled: false
       }, [Validators.maxLength(1024)]],
     });
@@ -56,20 +56,20 @@ export class TagEditComponent extends BaseComponent implements OnInit {
     this.tagService.save(this.qForms.cleanupData(this.form.getRawValue()) as TagDto).subscribe(
       onSuccess => {
         if (this.id === this.appConstants.NEW_RECORD_ID) {
-          this.utilityService.popupSuccess('Tag was successfully created.');
+          this.utilityService.popupSuccess("Tag was successfully created.");
         } else {
-          this.utilityService.popupSuccess('Tag was successfully edited.');
+          this.utilityService.popupSuccess("Tag was successfully edited.");
         }
-        this.router.navigate(['tags']);
+        this.router.navigate(["tags"]);
       }, onError => {
-        if (onError.status == 400) {
-          let validationErrors = onError.error;
+        if (onError.status === 400) {
+          const validationErrors = onError.error;
           if (validationErrors) {
             // @ts-ignore
             this.qFormValidation.validateForm(this.form, validationErrors.violations);
           }
         } else {
-          this.utilityService.popupError('There was an error trying to save this tag.');
+          this.utilityService.popupError("There was an error trying to save this tag.");
         }
       });
   }
@@ -77,8 +77,8 @@ export class TagEditComponent extends BaseComponent implements OnInit {
   delete() {
     this.dialog.open(OkCancelModalComponent, {
       data: {
-        title: 'Delete Tag',
-        question: 'Do you really want to delete this Tag?',
+        title: "Delete Tag",
+        question: "Do you really want to delete this Tag?",
         buttons: {
           ok: true, cancel: true, reload: false
         }
@@ -86,8 +86,8 @@ export class TagEditComponent extends BaseComponent implements OnInit {
     }).afterClosed().subscribe(result => {
       if (result) {
         this.tagService.delete(this.id).subscribe(onNext => {
-          this.utilityService.popupSuccess('Tag successfully deleted.');
-          this.router.navigate(['tags']);
+          this.utilityService.popupSuccess("Tag successfully deleted.");
+          this.router.navigate(["tags"]);
         });
       }
     });

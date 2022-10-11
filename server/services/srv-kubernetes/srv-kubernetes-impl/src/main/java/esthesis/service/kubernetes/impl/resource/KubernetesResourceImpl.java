@@ -12,8 +12,8 @@ public class KubernetesResourceImpl implements KubernetesResource {
   KubernetesService kubernetesService;
 
   @Override
-  public Boolean startPod(PodInfo podInfo) {
-    return kubernetesService.startPod(podInfo);
+  public Boolean schedulePod(PodInfo podInfo) {
+    return kubernetesService.schedulePod(podInfo);
   }
 
   @Override

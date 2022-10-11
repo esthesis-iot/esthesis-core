@@ -16,7 +16,7 @@ public interface KubernetesResource {
 
   @POST
   @Path("/v1/kubernetes/pod/start")
-  Boolean startPod(PodInfo podInfo);
+  Boolean schedulePod(PodInfo podInfo);
 
   @GET
   @Path("/v1/kubernetes/namespaces")

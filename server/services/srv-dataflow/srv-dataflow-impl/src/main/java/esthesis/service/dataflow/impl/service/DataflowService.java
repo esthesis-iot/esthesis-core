@@ -35,6 +35,8 @@ public class DataflowService extends BaseService<Dataflow> {
   private static final String KUBERNETES_NAMESPACE = "namespace";
   private static final String KUBERNETES_MIN_PODS = "pods-min";
   private static final String KUBERNETES_MAX_PODS = "pods-max";
+  private static final String KUBERNETES_CPU_REQUEST = "cpu-request";
+  private static final String KUBERNETES_CPU_LIMIT = "cpu-limit";
 
   @Inject
   @RestClient
@@ -187,11 +189,16 @@ public class DataflowService extends BaseService<Dataflow> {
     podInfo.setMaxInstances(
         Integer.parseInt(
             (String) dataflow.getKubernetes().get(KUBERNETES_MAX_PODS)));
+    podInfo.setCpuRequest(
+        (String) dataflow.getKubernetes().get(KUBERNETES_CPU_REQUEST));
+    podInfo.setCpuLimit(
+        (String) dataflow.getKubernetes().get(KUBERNETES_CPU_LIMIT));
     podInfo.setConfiguration(
         makeEnvironmentVariables(flattenMap(dataflow.getConfig()),
             "ESTHESIS_DFL_"));
+    podInfo.setStatus(dataflow.isStatus());
 
-    Boolean response = kubernetesResource.startPod(podInfo);
+    kubernetesResource.schedulePod(podInfo);
 
     return dataflow;
   }

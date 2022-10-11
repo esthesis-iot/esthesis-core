@@ -25,6 +25,7 @@ import {DataflowEditSectionComponent} from "./dataflow-edit/dataflow-edit-sectio
 import {DataflowNewComponent} from "./dataflow-new/dataflow-new.component";
 import {FormlyMatSliderModule} from "@ngx-formly/material/slider";
 import {FormlyMatToggleModule} from "@ngx-formly/material/toggle";
+import {DisplayModule} from "../shared/component/display/display.module";
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import {FormlyMatToggleModule} from "@ngx-formly/material/toggle";
     }),
     FormlyMaterialModule,
     FormlyMatSliderModule,
-    FormlyMatToggleModule
+    FormlyMatToggleModule,
+    DisplayModule
   ]
 })
 export class DataflowModule {

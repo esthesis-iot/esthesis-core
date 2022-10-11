@@ -28,6 +28,8 @@ const TEMPLATE_KUBERNETES = [{
   props: {label: "Kubernetes Scheduling"},
   fieldGroup: [
     {key: "namespace", type: "select", props: {required: true, type: "text", label: "Namespace"}},
+    {key: "cpu-request", type: "input", defaultValue: "250m", props: {required: true, type: "text", label: "CPU Request"}},
+    {key: "cpu-limit", type: "input", defaultValue: "1", props: {required: true, type: "text", label: "CPU Limit"}},
     {
       key: "docker", type: "select",
       props: {
@@ -36,18 +38,18 @@ const TEMPLATE_KUBERNETES = [{
       }
     },
     {
-      key: "pods-min", type: "slider", defaultValue: 1,
-      props: {label: "Minimum pods", required: true, min: 1, max: 100, thumbLabel: true},
+      key: "pods-min", type: "input", defaultValue: "1",
+      props: {label: "Minimum pods", required: true},
     },
     {
-      key: "pods-max", type: "slider", defaultValue: 1,
-      props: {label: "Maximum pods", required: true, min: 1, max: 100, thumbLabel: true},
+      key: "pods-max", type: "input", defaultValue: "10",
+      props: {label: "Maximum pods", required: true},
     },
   ]
 }];
 
 const TEMPLATE_STATUS = [
-  {key: "status", type: "toggle", defaultValue: true, props: {label: "Active", required: true}},
+  {key: "status", type: "toggle", defaultValue: true, props: {label: "Active"}},
 ];
 
 export const dataflows = [
