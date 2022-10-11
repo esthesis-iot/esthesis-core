@@ -8,7 +8,6 @@ import esthesis.service.dataflow.dto.DockerTags;
 import esthesis.service.dataflow.dto.MatchedMqttServer;
 import esthesis.service.dataflow.impl.service.DataflowService;
 import esthesis.service.dataflow.resource.DataflowResource;
-import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
@@ -33,9 +32,6 @@ public class DataflowResourceImpl implements DataflowResource {
 
   @Override
   public Dataflow findById(ObjectId id) {
-    System.out.println(
-        dataflowService.matchMqttServerByTags(Arrays.asList("tag1"))
-    );
     return dataflowService.findById(id);
   }
 

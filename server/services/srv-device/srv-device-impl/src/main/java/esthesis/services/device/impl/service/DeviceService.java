@@ -110,7 +110,7 @@ public class DeviceService extends BaseService<Device> {
           hardwareId, optionalDevice.get().getStatus());
     } else if (!optionalDevice.isPresent()) {
       throw new QSecurityException(
-          "Device with hardware ID {0} does not exist.", hardwareId);
+          "Device with hardware ID {} does not exist.", hardwareId);
     }
 
     // Find the device and set its status to registered.
@@ -141,7 +141,7 @@ public class DeviceService extends BaseService<Device> {
     for (String hardwareId : idList) {
       if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
         throw new QAlreadyExistsException(
-            "Preregistration id '{0}' is already assigned to a device "
+            "Preregistration id '{}' is already assigned to a device "
                 + "registered in the system.", hardwareId);
       }
     }
@@ -206,7 +206,7 @@ public class DeviceService extends BaseService<Device> {
     // Check that a device with the same hardware ID does not already exist.
     if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
       throw new QAlreadyExistsException(
-          "A device with hardware id '{0}' is already registered with the platform.",
+          "A device with hardware id '{}' is already registered with the platform.",
           hardwareId);
     }
 

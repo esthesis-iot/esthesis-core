@@ -75,6 +75,7 @@ public class DataflowService extends BaseService<Dataflow> {
     final String MQTT_CLIENT_TYPE = "mqtt-client";
     final String MQTT_BROKER = "mqtt-broker";
     final String TAGS = "tags";
+    final String MQTT_BROKER_ADVERTISED_URL = "advertised-url";
 
     // Convert the names of the tags to their IDs.
     log.debug("Looking for a matching MQTT server for tags '{}'.", tagNames);
@@ -126,8 +127,8 @@ public class DataflowService extends BaseService<Dataflow> {
 
     if (match.isPresent()) {
       matchedMqttServer.setUrl(
-          ((Document) match.get().getConfig().get(MQTT_BROKER)).get("url")
-              .toString());
+          ((Document) match.get().getConfig().get(MQTT_BROKER)).get(
+              MQTT_BROKER_ADVERTISED_URL).toString());
       matchedMqttServer.setMatchingAlgorithm(deviceTagsAlgorithm);
       matchedMqttServer.setTagsUsed(tagNames);
       log.debug("Found match for MQTT server '{}'.", matchedMqttServer);

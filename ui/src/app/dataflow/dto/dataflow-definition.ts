@@ -19,7 +19,7 @@ const TEMPLATE_KAFKA = [{
   key: "config.kafka", wrappers: ["section"],
   props: {label: "Kafka Brokers"},
   fieldGroup: [
-    {key: "url", type: "input", props: {required: true, type: "text", label: "URL"}}
+    {key: "cluster-url", type: "input", props: {required: true, type: "text", label: "Cluster URL"}}
   ]
 }];
 
@@ -67,11 +67,18 @@ export const dataflows = [
         props: {label: "MQTT Broker"},
         fieldGroup: [
           {
-            key: "url", type: "input",
+            key: "cluster-url", type: "input",
             props: {
-              required: true, type: "text", label: "URL", placeholder: "Protocol, IP address, port",
-              hintStart: "ex: tcp://mqtt.server:1883, ssl://mqtt.server:8883",
-            },
+              required: true, type: "text", label: "Cluster URL", placeholder: "Protocol, IP address, port",
+              hintStart: "ex: tcp://esthesis-rabbitmq:1883, ssl://esthesis-rabbitmq:8883",
+            }
+          },
+          {
+            key: "advertised-url", type: "input",
+            props: {
+              required: true, type: "text", label: "Advertised URL", placeholder: "Protocol, IP address, port",
+              hintStart: "ex: tcp://mqtt.project.com:1883, ssl://mqtt.project.com:8883",
+            }
           },
           ...TEMPLATE_TAGS
         ],

@@ -19,11 +19,12 @@ public class MqttRoute extends RouteBuilder {
 
   @Override
   public void configure() {
-    from("paho:esthesis/telemetry/#" + "?brokerUrl=" + config.mqttBrokerUrl())
+    from("paho:esthesis/telemetry/#" + "?brokerUrl="
+        + config.mqttBrokerClusterUrl())
         .bean(mqttMessagingService, "process")
         .split(body())
         .toD("kafka:${headers[kafka.TOPIC]}"
-            + "?brokers=" + config.kafkaUrl());
+            + "?brokers=" + config.kafkaClusterUrl());
 
     System.out.println("ROUTE OK!");
   }

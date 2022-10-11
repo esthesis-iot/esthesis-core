@@ -4,7 +4,7 @@ import esthesis.common.AppConstants.Registry;
 import esthesis.service.agent.dto.AgentRegistrationRequest;
 import esthesis.service.agent.dto.AgentRegistrationResponse;
 import esthesis.service.crypto.resource.CASystemResource;
-import esthesis.service.dataflow.dto.DataFlowMqttClientConfig;
+import esthesis.service.dataflow.dto.MatchedMqttServer;
 import esthesis.service.dataflow.resource.DataflowSystemResource;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DeviceRegistration;
@@ -78,9 +78,9 @@ public class AgentService {
       agentRegistrationResponse.setRootCaCertificate(
           caSystemResource.getCACertificate(rootCaId));
     }
-    
+
     // Find the MQTT server to send back to the device.
-    DataFlowMqttClientConfig mqttServer = dataflowSystemResource.matchMqttServerByTags(
+    MatchedMqttServer mqttServer = dataflowSystemResource.matchMqttServerByTags(
         Arrays.asList(agentRegistrationRequest.getTags().split(",")));
     if (mqttServer != null) {
       agentRegistrationResponse.setMqttServer(mqttServer.getUrl());

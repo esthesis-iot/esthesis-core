@@ -8,7 +8,7 @@ import io.smallrye.config.ConfigMapping;
 public interface AppConfig {
 
   // The URL of the MQTT broker.
-  String mqttBrokerUrl();
+  String mqttBrokerClusterUrl();
 
   // The prefix of the MQTT Ping topic.
   String mqttTopicPing();
@@ -26,7 +26,7 @@ public interface AppConfig {
   String mqttTopicControlReply();
 
   // The URLs of the Kafka brokers.
-  String kafkaUrl();
+  String kafkaClusterUrl();
 
   // The prefix of the Kafka Ping topic.
   String kafkaTopicPing();
