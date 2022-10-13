@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
-import {UUID} from "angular2-uuid";
+import {v4 as uuidv4} from "uuid";
 import {TagService} from "./tag.service";
 import {BaseComponent} from "../shared/component/base-component";
 import {UtilityService} from "../shared/service/utility.service";
@@ -47,7 +47,7 @@ export class TagEditComponent extends BaseComponent implements OnInit {
       });
     } else {
       this.form.patchValue({
-        salt: UUID.UUID()
+        salt: uuidv4()
       });
     }
   }

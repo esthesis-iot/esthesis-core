@@ -1,6 +1,5 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
-import {latLng, marker, tileLayer} from "leaflet";
 import {TagDto} from "../../dto/tag-dto";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
@@ -15,7 +14,6 @@ import {sprintf} from "sprintf-js";
 import {FieldDto} from "../../dto/field-dto";
 import {FormatterService} from "../../shared/service/formatter.service";
 import {SettingsService} from "../../settings/settings.service";
-import {LeafletDirective} from "@asymmetrik/ngx-leaflet";
 import {QFormsService} from "@qlack/forms";
 import {DeviceDto} from "../../dto/device-dto";
 import {AppConstants} from "../../app.constants";
@@ -33,8 +31,6 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
   fields!: FieldDto[];
   fieldsValues!: Map<string, any>;
   fetchingDeviceData = true;
-  @ViewChild(LeafletDirective)
-  leaflet!: LeafletDirective;
   deviceHasGeolocation = false;
   hardwareId = "";
   // Expose application constants.
@@ -42,14 +38,6 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
   isNiFiConfigured = false;
   hasActiveNiFi = false;
   hasDTUrl = false;
-
-  mapOptions = {
-    layers: [
-      tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {maxZoom: 18, attribution: "..."})
-    ],
-    zoom: 12
-  };
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
     private qForms: QFormsService, private tagService: TagService,
@@ -74,20 +62,6 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
             lonSetting = registryEntryDTO.value;
           }
         });
-        if (latSetting && latSetting != "" && lonSetting && lonSetting != "")
-          this.devicesService.getDeviceDataField(this.id, [latSetting, lonSetting]).subscribe(
-            onNext => {
-              // @ts-ignore
-              if (onNext[0].value != undefined && onNext[1].value != undefined) {
-                this.deviceHasGeolocation = true;
-                this.leaflet.map.addLayer(
-                  // @ts-ignore
-                  marker([onNext[0].value, onNext[1].value])
-                );
-                // @ts-ignore
-                this.leaflet.map.panTo(latLng([onNext[0].value, onNext[1].value]));
-              }
-            });
       });
     }
   }

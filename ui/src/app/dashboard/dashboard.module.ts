@@ -3,7 +3,6 @@ import {CommonModule} from "@angular/common";
 
 import {DashboardRoutingModule} from "./dashboard-routing.module";
 import {DashboardComponent} from "./dashboard.component";
-import {LeafletModule} from "@asymmetrik/ngx-leaflet";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatCardModule} from "@angular/material/card";
 import {MAT_DATE_FORMATS} from "@angular/material/core";
@@ -18,11 +17,6 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
 import {MatInputModule} from "@angular/material/input";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
-import {
-  MAT_COLOR_FORMATS,
-  NGX_MAT_COLOR_FORMATS,
-  NgxMatColorPickerModule
-} from "@angular-material-components/color-picker";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 
@@ -36,7 +30,6 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     CommonModule,
     DashboardRoutingModule,
     FlexLayoutModule,
-    LeafletModule,
     MatCardModule,
     MatTableModule,
     MatIconModule,
@@ -48,13 +41,11 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     MatSelectModule,
     MatInputModule,
     MatAutocompleteModule,
-    NgxMatColorPickerModule,
     MatSliderModule,
     MatCheckboxModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [
-    {provide: MAT_COLOR_FORMATS, useValue: NGX_MAT_COLOR_FORMATS},
     {
       provide: MAT_DATE_FORMATS,
       useValue: {

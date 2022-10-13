@@ -18,14 +18,12 @@
       <div fxLayout="column">
         <div fxLayout="row" *ngIf="!fetchingDeviceData">
           <div fxLayout="row wrap" fxFlex="80%" fxFlexAlign="start" *ngIf="!isArrayEmpty(fields)">
-            <div class="xs-mb05" fxLayout="row" fxFlex="40%" *ngFor="let field of fields; let i = index">
+            <div class="xs-mb05" fxLayout="row" fxFlex="40%"
+                 *ngFor="let field of fields; let i = index">
               <div class="label">{{field.label ? field.label : field.field}}:</div>
               <div [matTooltip]="getLastUpdatedDate(field.lastUpdatedOn)"
                    class="value">{{fieldsValues.get(field.measurement + "." + field.field)}}</div>
             </div>
-          </div>
-          <div class="map-wrapper" [style.visibility]="deviceHasGeolocation? 'visible': 'hidden'" fxLayout="column">
-            <div class="map-container" leaflet fxFlex="10rem" [leafletOptions]="mapOptions"></div>
           </div>
         </div>
         <div fxLayout="row" *ngIf="fetchingDeviceData">
