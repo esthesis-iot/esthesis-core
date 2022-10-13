@@ -1,0 +1,19 @@
+quarkus:
+  log:
+    category:
+      esthesis:
+        level: DEBUG
+    #      "org.apache.camel":
+    #        level: DEBUG
+    handler:
+      gelf:
+        enabled: true
+        host: esthesis-dev-loki-gelf-udp
+        port: 12201
+        include-full-mdc: true
+  mongodb:
+    connection-string: mongodb://esthesis-dev-mongodb-0:27017,esthesis-dev-mongodb-1:27017
+    database: esthesis
+    credentials:
+      username: esthesis
+      password: esthesis

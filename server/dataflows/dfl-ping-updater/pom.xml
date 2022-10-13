@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <artifactId>dfl-mqtt-client</artifactId>
+  <artifactId>dfl-ping-updater</artifactId>
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -26,7 +26,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.camel.quarkus</groupId>
-      <artifactId>camel-quarkus-paho</artifactId>
+      <artifactId>camel-quarkus-mongodb</artifactId>
     </dependency>
   </dependencies>
 

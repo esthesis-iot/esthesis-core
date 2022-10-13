@@ -16,6 +16,10 @@ quarkus:
         include-full-mdc: true
   mongodb:
     connection-string: mongodb://esthesis-dev-mongodb-0:27017,esthesis-dev-mongodb-1:27017
+    database: esthesis
+    credentials:
+      username: esthesis
+      password: esthesis
   opentelemetry:
     enabled: true
     tracer:

@@ -1,4 +1,4 @@
-package esthesis.dataflows.mqttclient.service;
+package esthesis.dataflow.common.messages;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.AllArgsConstructor;

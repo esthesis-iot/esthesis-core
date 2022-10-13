@@ -1,4 +1,4 @@
-package esthesis.dataflows.mqttclient.config;
+package esthesis.dataflow.mqttclient.config;
 
 import io.quarkus.runtime.annotations.StaticInitSafe;
 import io.smallrye.config.ConfigMapping;

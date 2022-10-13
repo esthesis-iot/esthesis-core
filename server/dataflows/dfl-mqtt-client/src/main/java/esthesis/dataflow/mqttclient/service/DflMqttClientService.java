@@ -1,7 +1,10 @@
-package esthesis.dataflows.mqttclient.service;
+package esthesis.dataflow.mqttclient.service;
 
-import esthesis.dataflows.mqttclient.config.AppConfig;
-import esthesis.dataflows.mqttclient.service.EsthesisMessage.MessageType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import esthesis.dataflow.common.messages.EsthesisMessage;
+import esthesis.dataflow.common.messages.EsthesisMessage.MessageType;
+import esthesis.dataflow.mqttclient.config.AppConfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -11,10 +14,13 @@ import org.apache.camel.Exchange;
 import org.apache.camel.component.kafka.KafkaConstants;
 
 @ApplicationScoped
-public class MqttMessagingService {
+public class DflMqttClientService {
 
   @Inject
   AppConfig config;
+
+  @Inject
+  ObjectMapper objectMapper;
 
   private static final String HEADER_TOPIC = "CamelMqttTopic";
 
@@ -54,8 +60,8 @@ public class MqttMessagingService {
     };
   }
 
-  public void process(Exchange exchange) throws Exception {
-    List<EsthesisMessage> generatedMessages = new ArrayList<>();
+  public void process(Exchange exchange) throws JsonProcessingException {
+    List<String> generatedMessages = new ArrayList<>();
 
     // Get the message body and process every line to generate messages.
     String body = exchange.getIn().getBody(String.class);
@@ -78,7 +84,7 @@ public class MqttMessagingService {
       msg.setType(messageType);
       msg.setPayload(line);
 
-      generatedMessages.add(msg);
+      generatedMessages.add(objectMapper.writeValueAsString(msg));
     }
 
     exchange.getIn().setBody(generatedMessages);
