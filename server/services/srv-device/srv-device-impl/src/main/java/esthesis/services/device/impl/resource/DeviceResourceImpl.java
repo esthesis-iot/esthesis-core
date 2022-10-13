@@ -2,9 +2,9 @@ package esthesis.services.device.impl.resource;
 
 import com.github.slugify.Slugify;
 import esthesis.common.exception.QAlreadyExistsException;
-import esthesis.common.rest.Page;
-import esthesis.common.rest.Pageable;
-import esthesis.common.validation.CVException;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
+import esthesis.service.common.validation.CVException;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DeviceKey;
 import esthesis.service.device.dto.DevicePage;

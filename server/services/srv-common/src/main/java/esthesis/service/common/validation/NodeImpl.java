@@ -1,4 +1,4 @@
-package esthesis.common.validation;
+package esthesis.service.common.validation;
 
 import javax.validation.ElementKind;
 import javax.validation.Path.Node;

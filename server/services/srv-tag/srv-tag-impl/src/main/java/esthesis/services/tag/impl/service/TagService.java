@@ -1,9 +1,9 @@
 package esthesis.services.tag.impl.service;
 
-import esthesis.common.rest.Page;
-import esthesis.common.rest.Pageable;
-import esthesis.common.service.BaseService;
-import esthesis.common.validation.CVException;
+import esthesis.service.common.BaseService;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
+import esthesis.service.common.validation.CVException;
 import esthesis.service.tag.dto.Tag;
 import esthesis.service.tag.messaging.TagServiceMessaging;
 import io.opentelemetry.context.Context;

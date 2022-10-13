@@ -1,8 +1,13 @@
-package esthesis.common.service;
+package esthesis.service.common;
+
+//import esthesis.common.dto.BaseDTO;
+//import esthesis.common.rest.Page;
+//import esthesis.common.rest.Pageable;
+//import io.quarkus.mongodb.panache.PanacheMongoRepository;
 
 import esthesis.common.dto.BaseDTO;
-import esthesis.common.rest.Page;
-import esthesis.common.rest.Pageable;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import javax.inject.Inject;
 import org.bson.types.ObjectId;

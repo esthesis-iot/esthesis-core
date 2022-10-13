@@ -1,4 +1,4 @@
-package esthesis.common.rest;
+package esthesis.service.common.paging;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 

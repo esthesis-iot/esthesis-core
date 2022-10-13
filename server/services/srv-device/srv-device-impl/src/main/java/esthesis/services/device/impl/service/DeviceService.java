@@ -9,7 +9,7 @@ import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QDisabledException;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.exception.QSecurityException;
-import esthesis.common.service.BaseService;
+import esthesis.service.common.BaseService;
 import esthesis.service.crypto.dto.request.CreateCertificateRequest;
 import esthesis.service.crypto.dto.response.CreateKeyPairResponse;
 import esthesis.service.crypto.resource.KeyResource;

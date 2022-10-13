@@ -1,6 +1,4 @@
-package esthesis.common.util.exception;
-
-import esthesis.common.exception.QSecurityException;
+package esthesis.common.exception;
 
 /**
  * A generic exception superclass to facilitate marking of authorisation-related

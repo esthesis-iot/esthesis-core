@@ -1,4 +1,4 @@
-package esthesis.common.logging;
+package esthesis.service.common.logging;
 
 import lombok.Data;
 

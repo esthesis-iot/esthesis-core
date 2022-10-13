@@ -3,7 +3,7 @@ package esthesis.service.crypto.impl.service;
 import com.google.common.collect.ImmutableSet;
 import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Registry;
-import esthesis.common.service.BaseService;
+import esthesis.service.common.BaseService;
 import esthesis.service.crypto.dto.Ca;
 import esthesis.service.crypto.dto.Certificate;
 import esthesis.service.crypto.dto.Store;

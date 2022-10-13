@@ -1,4 +1,4 @@
-package esthesis.common.rest;
+package esthesis.service.common.paging;
 
 import ch.mfrey.jackson.antpathfilter.AntPathFilterMixin;
 import ch.mfrey.jackson.antpathfilter.AntPathPropertyFilter;

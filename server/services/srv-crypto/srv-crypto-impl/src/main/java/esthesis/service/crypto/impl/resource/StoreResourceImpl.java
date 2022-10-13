@@ -1,8 +1,8 @@
 package esthesis.service.crypto.impl.resource;
 
 import com.github.slugify.Slugify;
-import esthesis.common.rest.Page;
-import esthesis.common.rest.Pageable;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.dto.Store;
 import esthesis.service.crypto.impl.service.StoreService;
 import esthesis.service.crypto.resource.StoreResource;

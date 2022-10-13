@@ -1,4 +1,4 @@
-package esthesis.common.rest;
+package esthesis.service.common.paging;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

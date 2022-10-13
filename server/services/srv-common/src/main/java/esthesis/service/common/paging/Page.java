@@ -1,4 +1,4 @@
-package esthesis.common.rest;
+package esthesis.service.common.paging;
 
 import java.util.List;
 import lombok.Data;

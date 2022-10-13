@@ -1,4 +1,4 @@
-package esthesis.common.validation;
+package esthesis.service.common.validation;
 
 import java.util.HashSet;
 import java.util.Set;

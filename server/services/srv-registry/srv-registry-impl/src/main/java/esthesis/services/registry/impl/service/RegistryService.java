@@ -1,7 +1,7 @@
 package esthesis.services.registry.impl.service;
 
 import esthesis.common.AppConstants;
-import esthesis.common.service.BaseService;
+import esthesis.service.common.BaseService;
 import esthesis.service.registry.dto.RegistryEntry;
 import javax.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;

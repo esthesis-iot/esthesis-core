@@ -1,7 +1,7 @@
 package esthesis.service.device.resource;
 
-import esthesis.common.rest.Page;
-import esthesis.common.rest.Pageable;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DevicePage;
 import esthesis.service.device.dto.DeviceRegistration;

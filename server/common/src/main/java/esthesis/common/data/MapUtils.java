@@ -1,4 +1,4 @@
-package esthesis.common.util;
+package esthesis.common.data;
 
 import java.util.AbstractMap;
 import java.util.Map;

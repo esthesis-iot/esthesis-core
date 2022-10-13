@@ -1,8 +1,8 @@
 package esthesis.service.dataflow.impl.resource;
 
-import esthesis.common.rest.Page;
-import esthesis.common.rest.PageReplyFilter;
-import esthesis.common.rest.Pageable;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.PageReplyFilter;
+import esthesis.service.common.paging.Pageable;
 import esthesis.service.dataflow.dto.Dataflow;
 import esthesis.service.dataflow.dto.DockerTags;
 import esthesis.service.dataflow.dto.MatchedMqttServer;

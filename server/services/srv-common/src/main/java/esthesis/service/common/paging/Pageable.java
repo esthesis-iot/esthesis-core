@@ -1,4 +1,4 @@
-package esthesis.common.rest;
+package esthesis.service.common.paging;
 
 import io.quarkus.panache.common.Sort;
 import java.util.HashMap;
@@ -57,7 +57,8 @@ public class Pageable {
     MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
     StringBuilder queryKeys = new StringBuilder();
     queryParams.keySet().stream().sorted().forEach(key -> {
-      if (!"page".equals(key) && !"size".equals(key) && !"sort".equals(key)) {
+      if (!"page" .equals(key) && !"size" .equals(key) && !"sort" .equals(
+          key)) {
         if (partialMatch) {
           queryKeys.append(key).append(" like :p_").append(key).append(",");
         } else {
@@ -77,7 +78,8 @@ public class Pageable {
     MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
     Map<String, Object> queryValues = new HashMap<>();
     queryParams.keySet().stream().sorted().forEach(key -> {
-      if (!"page".equals(key) && !"size".equals(key) && !"sort".equals(key)) {
+      if (!"page" .equals(key) && !"size" .equals(key) && !"sort" .equals(
+          key)) {
         queryValues.put("p_" + key, queryParams.getFirst(key));
       }
     });
@@ -87,7 +89,7 @@ public class Pageable {
 
   public boolean hasQuery() {
     return uriInfo.getQueryParameters().keySet().stream().anyMatch(
-        key -> !"page".equals(key) && !"size".equals(key) && !"sort".equals(
+        key -> !"page" .equals(key) && !"size" .equals(key) && !"sort" .equals(
             key));
   }
 

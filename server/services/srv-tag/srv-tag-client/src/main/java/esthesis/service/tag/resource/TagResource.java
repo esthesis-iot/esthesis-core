@@ -1,7 +1,7 @@
 package esthesis.service.tag.resource;
 
-import esthesis.common.rest.Page;
-import esthesis.common.rest.Pageable;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
 import esthesis.service.tag.dto.Tag;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import javax.validation.Valid;

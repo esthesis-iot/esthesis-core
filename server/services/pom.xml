@@ -1,8 +1,18 @@
 <?xml version="1.0"?>
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>server</artifactId>
+    <groupId>esthesis</groupId>
+    <version>3.0.0-SNAPSHOT</version>
+  </parent>
+
   <artifactId>services</artifactId>
+  <packaging>pom</packaging>
 
   <dependencies>
     <!-- QUARKUS -->
@@ -57,14 +67,15 @@
       <groupId>org.bouncycastle</groupId>
     </dependency>
     <dependency>
-      <artifactId>common</artifactId>
       <groupId>esthesis</groupId>
+      <artifactId>common</artifactId>
       <version>3.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
-  <modelVersion>4.0.0</modelVersion>
+
   <modules>
+    <module>srv-common</module>
     <module>srv-device</module>
     <module>srv-tag</module>
     <module>srv-registry</module>
@@ -73,13 +84,4 @@
     <module>srv-dataflow</module>
     <module>srv-agent</module>
   </modules>
-
-  <packaging>pom</packaging>
-
-  <parent>
-    <artifactId>server</artifactId>
-    <groupId>esthesis</groupId>
-    <version>3.0.0-SNAPSHOT</version>
-  </parent>
-
 </project>

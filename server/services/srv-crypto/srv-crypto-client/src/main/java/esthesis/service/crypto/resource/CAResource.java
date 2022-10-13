@@ -1,7 +1,7 @@
 package esthesis.service.crypto.resource;
 
-import esthesis.common.rest.Page;
-import esthesis.common.rest.Pageable;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.dto.Ca;
 import esthesis.service.crypto.dto.form.ImportCaForm;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;

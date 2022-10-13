@@ -6,7 +6,7 @@ import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QCouldNotSaveException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QMutationNotPermittedException;
-import esthesis.common.service.BaseService;
+import esthesis.service.common.BaseService;
 import esthesis.service.crypto.dto.Ca;
 import esthesis.service.crypto.dto.Certificate;
 import esthesis.service.crypto.dto.form.ImportCertificateForm;
