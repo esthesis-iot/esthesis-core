@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Expression;
-import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mongodb.MongoDbConstants;
 import org.bson.conversions.Bson;
@@ -23,16 +22,14 @@ public class PingRoute extends RouteBuilder {
 //  @Inject
 //  AppConfig config;
 
-//  @Inject
-//  MongoClient mongoClient;
-
-  // @formatter:off
   @Override
   public void configure() {
     BannerUtil.showBanner("dfl-ping-updater");
 
+    // @formatter:off
     from("kafka:esthesis-ping?brokers=esthesis-dev-kafka:9094&groupId"
         + "=esthesis-ping-updater")
+        .bean(pingService, "extractPingTimestamp")
         .setHeader(MongoDbConstants.CRITERIA, new Expression() {
           @Override
           public <T> T evaluate(Exchange exchange, Class<T> type) {
@@ -40,14 +37,13 @@ public class PingRoute extends RouteBuilder {
                 exchange.getIn().getHeader("Kafka.KEY"));
             return exchange.getContext().getTypeConverter().convertTo(type, equalsClause);
           }})
-        .bean(pingService, "extractMessageTimestamp")
-        .log(LoggingLevel.WARN, "${exchangeProperty.EsthesisPingTimestamp}")
+        .bean(pingService, "updateTimestamp")
         .to("mongodb:camelMongoClient?"
             + "database=esthesis"
             + "&collection=Device"
-            + "&operation=findOneByQuery")
-        .bean(pingService, "process");
+            + "&operation=update");
+    // @formatter:on
 
-    System.out.println("ROUTE OK!");
+    log.info("Routes created successfully.");
   }
 }

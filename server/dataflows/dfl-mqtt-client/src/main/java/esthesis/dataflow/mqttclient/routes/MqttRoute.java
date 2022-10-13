@@ -23,6 +23,7 @@ public class MqttRoute extends RouteBuilder {
 
     BannerUtil.showBanner("dfl-mqtt-client");
 
+    // @formatter:off
     from("paho:" + config.mqttTopicTelemetry() + "/#" + "?brokerUrl="
         + config.mqttBrokerClusterUrl())
         .bean(dflMqttClientService, "process")
@@ -57,6 +58,7 @@ public class MqttRoute extends RouteBuilder {
         .split(body())
         .toD("kafka:" + config.kafkaTopicControlRequest()
             + "?brokers=" + config.kafkaClusterUrl());
+    // @formatter:on
 
     log.info("Routes created successfully.");
   }
