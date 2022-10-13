@@ -1,5 +1,6 @@
 package esthesis.dataflow.mqttclient.routes;
 
+import esthesis.common.banner.BannerUtil;
 import esthesis.dataflow.mqttclient.config.AppConfig;
 import esthesis.dataflow.mqttclient.service.DflMqttClientService;
 import javax.enterprise.context.ApplicationScoped;
@@ -19,6 +20,8 @@ public class MqttRoute extends RouteBuilder {
 
   @Override
   public void configure() {
+
+    BannerUtil.showBanner("dfl-mqtt-client");
 
     from("paho:" + config.mqttTopicTelemetry() + "/#" + "?brokerUrl="
         + config.mqttBrokerClusterUrl())

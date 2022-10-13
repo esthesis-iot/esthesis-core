@@ -1,6 +1,7 @@
 package esthesis.dataflows.pingupdater.routes;
 
 import com.mongodb.client.model.Filters;
+import esthesis.common.banner.BannerUtil;
 import esthesis.dataflows.pingupdater.service.PingService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -28,6 +29,7 @@ public class PingRoute extends RouteBuilder {
   // @formatter:off
   @Override
   public void configure() {
+    BannerUtil.showBanner("dfl-ping-updater");
 
     from("kafka:esthesis-ping?brokers=esthesis-dev-kafka:9094&groupId"
         + "=esthesis-ping-updater")
