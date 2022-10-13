@@ -11,9 +11,3 @@ quarkus:
         host: esthesis-dev-loki-gelf-udp
         port: 12201
         include-full-mdc: true
-  mongodb:
-    connection-string: mongodb://esthesis-dev-mongodb-0:27017,esthesis-dev-mongodb-1:27017
-    database: esthesis
-    credentials:
-      username: esthesis
-      password: esthesis

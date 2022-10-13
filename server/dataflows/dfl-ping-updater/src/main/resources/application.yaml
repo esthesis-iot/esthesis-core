@@ -15,3 +15,9 @@ quarkus:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
   banner:
     enabled: false
+  mongodb:
+    connection-string: ${ESTHESIS_DFL_ESTHESIS_DB_URL:}
+    database: ${ESTHESIS_DFL_ESTHESIS_DB_NAME:}
+    credentials:
+      username: ${ESTHESIS_DFL_ESTHESIS_DB_USERNAME:}
+      password: ${ESTHESIS_DFL_ESTHESIS_DB_PASSWORD:}

@@ -2,6 +2,7 @@ package esthesis.dataflows.pingupdater.routes;
 
 import com.mongodb.client.model.Filters;
 import esthesis.common.banner.BannerUtil;
+import esthesis.dataflows.pingupdater.config.AppConfig;
 import esthesis.dataflows.pingupdater.service.PingService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -19,16 +20,18 @@ public class PingRoute extends RouteBuilder {
   @Inject
   PingService pingService;
 
-//  @Inject
-//  AppConfig config;
+  @Inject
+  AppConfig config;
 
   @Override
   public void configure() {
     BannerUtil.showBanner("dfl-ping-updater");
 
     // @formatter:off
-    from("kafka:esthesis-ping?brokers=esthesis-dev-kafka:9094&groupId"
-        + "=esthesis-ping-updater")
+    from("kafka:" + config.kafkaPingTopic() +
+        "?brokers=" + config.kafkaClusterUrl() +
+        (config.kafkaGroup().isPresent() ?
+        "&groupId=" + config.kafkaGroup().get() : ""))
         .bean(pingService, "extractPingTimestamp")
         .setHeader(MongoDbConstants.CRITERIA, new Expression() {
           @Override
@@ -39,7 +42,7 @@ public class PingRoute extends RouteBuilder {
           }})
         .bean(pingService, "updateTimestamp")
         .to("mongodb:camelMongoClient?"
-            + "database=esthesis"
+            + "database=" + config.esthesisDbName()
             + "&collection=Device"
             + "&operation=update");
     // @formatter:on

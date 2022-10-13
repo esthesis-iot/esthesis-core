@@ -17,33 +17,4 @@ env \
     ESTHESIS_DFL_MQTT_BROKER_CLUSTER_URL=tcp://esthesis-dev-rabbitmq:1883 \
     ESTHESIS_DFL_KAFKA_CLUSTER_URL=esthesis-dev-kafka:9094 \
 ./mvnw quarkus:dev
-
-```
-
-## Build image
-
-### In Docker
-
-```
-./mvnw clean package -Dquarkus.container-image.build=true
-```
-
-### Remotely
-
-```
-./mvnw clean package -Dquarkus.native.remote-container-build=true -Dquarkus.container-image.build=true
-```
-
-## Build & Push image:
-
-### In Docker
-
-```
-./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.group=esthesisiot -Dquarkus.container-image.tag=latest
-```
-
-### Remotely
-
-```
-./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.group=esthesisiot -Dquarkus.container-image.tag=latest
 ```

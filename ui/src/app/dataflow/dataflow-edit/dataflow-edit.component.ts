@@ -24,6 +24,7 @@ export class DataflowEditComponent extends BaseComponent implements OnInit {
   form = new FormGroup({});
   fields: FormlyFieldConfig[] = [];
   model = {};
+  dataflow!: any;
 
   constructor(private route: ActivatedRoute, private dataflowService: DataflowService,
     private tagService: TagService, private utilityService: UtilityService,
@@ -49,8 +50,9 @@ export class DataflowEditComponent extends BaseComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get("id")!;
     this.type = this.route.snapshot.paramMap.get("type")!;
 
-    // Find the form definition for this dataflow.
-    this.fields = dataflows.find(d => d.type === this.type)?.fields || [];
+    // Find the form definition for this dataflow and extract dataflow details.
+    this.dataflow = dataflows.find(d => d.type === this.type);
+    this.fields = this.dataflow.fields || [];
 
     // Enrich model with manual entries.
     this.model = {

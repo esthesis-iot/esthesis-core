@@ -54,6 +54,54 @@ const TEMPLATE_STATUS = [
 
 export const dataflows = [
   {
+    type: "ping-updater",
+    title: "Ping updater",
+    category: "Data update",
+    description: "A component handling ping messages from devices, updating their 'last seen' entry in  esthesis database.",
+    icon: "assets/img/dataflows/radar.png",
+    fields: [
+      ...TEMPLATE_STATUS,
+      ...TEMPLATE_MAIN,
+      {
+        key: "config", wrappers: ["section"],
+        props: {label: "Kafka"},
+        fieldGroup: [
+          {
+            key: "kafka-cluster-url", type: "input", defaultValue: "esthesis-kafka-headless:9092",
+            props: {required: true, type: "text", label: "Cluster URL"}
+          },
+          {
+            key: "kafka-ping-topic", type: "input", defaultValue: "esthesis-ping",
+            props: {label: "Kafka topic to read ping messages from", required: true}
+          }, {
+            key: "kafka-group", type: "input", defaultValue: "",
+            props: {label: "Kafka consumer group"}
+          },
+        ]
+      },
+      {
+        key: "config", wrappers: ["section"],
+        props: {label: "Esthesis database"},
+        fieldGroup: [
+          {
+            key: "esthesis-db-url", type: "input", defaultValue: "mongodb://esthesis-mongodb-headless:27017",
+            props: {label: "URL"}
+          }, {
+            key: "esthesis-db-name", type: "input", defaultValue: "esthesis",
+            props: {label: "Database name"}
+          }, {
+            key: "esthesis-db-username", type: "input", defaultValue: "esthesis",
+            props: {label: "Username"}
+          }, {
+            key: "esthesis-db-password", type: "input", defaultValue: "esthesis",
+            props: {label: "Password", type: "password"},
+          },
+        ]
+      },
+      ...TEMPLATE_KUBERNETES
+    ]
+  },
+  {
     type: "mqtt-client",
     title: "MQTT Client",
     category: "Data reader",
