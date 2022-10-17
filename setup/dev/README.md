@@ -206,9 +206,8 @@ Notes:
 
 ## Access to services from your development machine
 
-- APISIX dashboard
-  ```
-  http://esthesis-dev-apisix-dashboard
+- [APISIX dashboard](http://esthesis-dev-apisix-dashboard)
+  ``` 
   Username: esthesis
   Passowrd: esthesis
   ```
@@ -218,9 +217,8 @@ Notes:
   esthesis-dev-kafka:9094
   ```
 
-- Keycloak
-  ```
-  http://esthesis-dev-keycloak/admin
+- [Keycloak](http://esthesis-dev-keycloak/admin)
+  ``` 
   Username: esthesis
   Passowrd: esthesis
   ```
@@ -232,20 +230,18 @@ Notes:
   Passowrd: esthesis
   ```
 
-- Prometheus
+- [Prometheus](http://esthesis-dev-prometheus:9090)
   ```
   http://esthesis-dev-prometheus:9090
   ```
 
-- Grafana Loki
-  ```
-  http://esthesis-dev-grafana-loki:3000
+- [Grafana Loki](http://esthesis-dev-grafana-loki:3000)
+  ``` 
   Username: esthesis
   Passowrd: esthesis
   ```
 
-- Jaeger
-  http://esthesis-dev-jaeger-ui
+- [Jaeger](http://esthesis-dev-jaeger-ui)
 
 ## Logging, Tracing, and Metrics
 
