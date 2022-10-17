@@ -1,3 +1,7 @@
 global:
   devEnv:
     enabled: true
+
+mongodb:
+  service:
+    type: LoadBalancer

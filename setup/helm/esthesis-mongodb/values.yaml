@@ -16,8 +16,6 @@ mongodb:
     replicaSetKey: esthesis
   arbiter:
     enabled: false
-  service:
-    type: LoadBalancer
   serviceAccount:
     create: true
   rbac:

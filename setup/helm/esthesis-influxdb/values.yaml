@@ -1,0 +1,11 @@
+global:
+  devEnv:
+    enabled: false
+
+influxdb:
+  fullnameOverride: esthesis-influxdb
+  auth:
+    user:
+      bucket: esthesis
+      username: esthesis
+      password: esthesis

@@ -1,0 +1,8 @@
+global:
+  devEnv:
+    enabled: true
+
+influxdb:
+  influxdb:
+    service:
+      type: LoadBalancer

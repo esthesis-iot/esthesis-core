@@ -14,8 +14,6 @@ keycloak:
     auth:
       postgresPassword: esthesis
       password: esthesis
-  service:
-    type: LoadBalancer
   keycloakConfigCli:
     enabled: true
     existingConfigmap: esthesis-keycloak-config

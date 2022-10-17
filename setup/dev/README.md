@@ -190,6 +190,14 @@ helm upgrade --install jaeger . \
 Notes: The above chart will create an instance of Jaeger UI, as well as a Jaeger collector which you
 can use from your applications to push your traces to.
 
+### InfluxDB
+
+```bash
+cd esthesis-platform/setup/helm/esthesis-influxdb
+helm upgrade --install influxdb . \
+  -f values.yaml -f values-dev.yaml
+````
+
 ### esthesis
 
 ```bash
@@ -245,6 +253,21 @@ Notes:
   ```
 
 - [Jaeger](http://esthesis-dev-jaeger-ui)
+
+- InfluxDB
+
+    - Admin Interface:
+
+      [InfluxDB](http://esthesis-dev-influxdb:8086)
+      ``` 
+      Username: esthesis
+      Passowrd: esthesis
+      ```
+
+    - Database:
+      ```
+      esthesis-dev-influxdb:8088
+      ```
 
 ## Logging, Tracing, and Metrics
 
