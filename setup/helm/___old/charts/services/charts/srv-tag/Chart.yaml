@@ -1,4 +1,0 @@
-apiVersion: v2
-name: srv-tag
-description: esthesis IoT - Tag service
-version: 3.0.0-SNAPSHOT

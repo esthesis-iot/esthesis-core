@@ -32,8 +32,26 @@ You may find the following tools useful while developing for esthesis:
 - [Lens](https://k8slens.dev) - A Kubernetes IDE. Lens is a desktop application that makes it
   easy to manage Kubernetes clusters. It is available for Windows, macOS and Linux.
 - [KaDeck](https://kadeck.com) - A tool for visualising Kafka topics.
+- [MQTTX](https://mqttx.app) - A tool for visualising MQTT topics.
+- Since you will be running the frontend as well as all services in your development machine, you
+  need a utility allowing you to a/ have multiple shells open in the same application window, b/
+  automate the process of openning/running multiple process in batch. Spend some time to configure
+  your environment with such a tool as it will save you a lot of time. Some recommendations:
+    - For Mac:
+        - [iTerm2](https://iterm2.com) - A terminal emulator for macOS that does
+          amazing things. It is highly configurable and allows you to have multiple shells open in
+          the
+          same window.
+        - [itomate](https://github.com/kamranahmedse/itomate) - A command line tool for automating
+          iTerm2. It allows you to automate the process of opening multiple shells in iTerm2.
+          Example:
 
-## Architecture
+        - ![](docs/itomate.gif)
+
+    - For Linux: (TBC)
+    - For Windows: (TBC - although highly not recommended to develop in Windows)
+
+## Setup architecture
 
 In contrast to a production installation where everything runs inside the Kubernetes cluster, for
 your dev setup you will need to run some services in the Kubernetes cluster and some other
@@ -42,9 +60,24 @@ without having each time to deploy to Kubernetes to test your changes. Please no
 that Quarkus supports remote development, however we found this to not be 100% reliable in detecting
 changes and reloading the code.
 
-At the end of this dev setup session, you should end up with the following architecture:
+### Frontend to service communication
 
-## Setting up using Helm
+The esthesis Angular frontend communicates with the services (running on your local development
+machine) via APISIX. This is necessary, so that OAuth2 is enforced in order for your services to
+have a valid caller/principal. That effectively means that you need to create routes in APISIX that
+point back to your develpoment machine for each of esthesis services.
+
+APISIX dev routes are automatically created for you as part of the `esthesis` Helm chart
+installation in dev mode.
+
+### Service to service communication
+
+Service to service communication takes place directly between the services running on your local
+development machine; there is no need to go through APISIX in this case. Quarkus rest client will
+automatically include the principal on every request, so the target service you're calling can have
+access to it.
+
+## Setup process
 
 Esthesis provides a variety of Helm Charts to cater to the needs of different installation
 environments. As a developer, you need access to all possible services. Services can be installed
@@ -154,6 +187,23 @@ helm upgrade --install jaeger . \
 Notes: The above chart will create an instance of Jaeger UI, as well as a Jaeger collector which you
 can use from your applications to push your traces to.
 
+### esthesis
+
+```bash
+cd esthesis-platform/setup/helm/esthesis
+helm upgrade --install esthesis . \
+  -f values.yaml -f values-dev.yaml \
+  --set global.devEnv.ip=192.168.100.100
+````
+
+Notes:
+
+- You need to provide your development machine's IP address above. This is needed to create APISIX
+  routes pointing back to your development machine.
+- The esthesis Helm chart in dev mode is just a shell to provide various configuration options
+  needed in development. No actual services are installed in dev mode (i.e. the services run in your
+  development machine).
+
 ## Access to services from your development machine
 
 - APISIX dashboard
@@ -208,20 +258,20 @@ appender
 comes from `quarkus-logging-gelf` module and is configured as part of Quarkus' logger
 configuration `quarkus.log.handler.gelf.*`. The GELF appender is automatically enabled in dev mode
 but needs to be manually enabled for prod. In esthesis' default stack, logs aggregation and
-visualisation is provided by (Grafana Loki)[https://grafana.com/oss/loki/].
+visualisation is provided by [Grafana Loki](https://grafana.com/oss/loki/).
 
 ### Tracing
 
 Tracing is enabled throughout esthesis via Quarkus' OpenTelemetry integration
 via `quarkus-opentelemetry-exporter-otlp` module. Tracing is automatically enabled in dev profile,
 however it needs to be manually enabled for prod via Quarkus' `quarkus.opentelemetry.*`
-configuration options. Telemetry traces are captured and visualised in (
-Jaeger)[https://www.jaegertracing.io/].
+configuration options. Telemetry traces are captured and visualised in [
+Jaeger](https://www.jaegertracing.io/).
 
 ### Metrics
 
 Metrics are enabled throughout esthesis via Quarkus' Micrometer integration
 via `quarkus-micrometer-registry-prometheus` module. Metrics are automatically enabled in dev
 profile, however they need to be manually enabled for prod via Quarkus' `quarkus.micrometer.*`
-configuration options. Metrics are captured and visualised in (Prometheus)[https://prometheus.io/].
+configuration options. Metrics are captured and visualised in [Prometheus](https://prometheus.io/).
 Your application Prometheus metrics can be scraped via the `/q/metrics` endpoint.

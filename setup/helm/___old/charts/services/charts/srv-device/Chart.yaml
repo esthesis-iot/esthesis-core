@@ -1,4 +1,0 @@
-apiVersion: v2
-name: srv-device
-description: esthesis IoT - Device service
-version: 3.0.0-SNAPSHOT

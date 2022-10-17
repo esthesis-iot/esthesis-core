@@ -1,4 +1,0 @@
-apiVersion: v2
-name: srv-registry
-description: esthesis IoT - Registry service
-version: 3.0.0-SNAPSHOT

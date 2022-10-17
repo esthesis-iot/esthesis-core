@@ -1,4 +1,0 @@
-apiVersion: v2
-name: services
-description: esthesis IoT - services
-version: 3.0.0-SNAPSHOT
