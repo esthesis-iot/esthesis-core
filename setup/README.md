@@ -103,6 +103,8 @@ helm upgrade --install apisix-dashboard apisix/apisix-dashboard --version 0.6.0 
 
 ### Jaeger
 
+### InfluxDB
+
 ## esthesis
 
 helm upgrade --install esthesis . \

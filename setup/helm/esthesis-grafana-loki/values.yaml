@@ -19,5 +19,5 @@ grafana:
     password: esthesis
   datasources:
     secretName: esthesis-grafana-config
-  fullnameOverride: esthesis-grafana
+  fullnameOverride: esthesis-grafana-loki
 

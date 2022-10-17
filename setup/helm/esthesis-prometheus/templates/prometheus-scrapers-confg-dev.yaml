@@ -8,13 +8,25 @@ metadata:
 type: Opaque
 stringData:
   config.yaml: |-
+    - job_name: "srv-agent"
+      static_configs:
+        - targets: ["{{ .Values.global.devEnv.ip}}:59070"]
+      metrics_path: "/q/metrics"
     - job_name: "srv-crypto"
       static_configs:
         - targets: ["{{ .Values.global.devEnv.ip}}:59040"]
       metrics_path: "/q/metrics"
+    - job_name: "srv-dataflow"
+      static_configs:
+        - targets: ["{{ .Values.global.devEnv.ip}}:59060"]
+      metrics_path: "/q/metrics"
     - job_name: "srv-device"
       static_configs:
         - targets: ["{{ .Values.global.devEnv.ip}}:59010"]
+      metrics_path: "/q/metrics"
+    - job_name: "srv-kubernetes"
+      static_configs:
+        - targets: ["{{ .Values.global.devEnv.ip}}:59050"]
       metrics_path: "/q/metrics"
     - job_name: "srv-registry"
       static_configs:
