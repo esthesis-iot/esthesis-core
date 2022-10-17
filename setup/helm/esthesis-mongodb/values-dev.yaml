@@ -1,15 +1,3 @@
 global:
   devEnv:
     enabled: true
-
-mongodb:
-  externalAccess:
-    enabled: true
-    autoDiscovery:
-      enabled: true
-    service:
-      type: LoadBalancer
-  serviceAccount:
-    create: true
-  rbac:
-    create: true

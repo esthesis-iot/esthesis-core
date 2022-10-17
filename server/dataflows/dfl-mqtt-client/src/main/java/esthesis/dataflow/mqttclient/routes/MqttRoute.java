@@ -23,7 +23,12 @@ public class MqttRoute extends RouteBuilder {
 
     BannerUtil.showBanner("dfl-mqtt-client");
 
+    log.info("Using MQTT broker '{}'.", config.mqttBrokerClusterUrl());
+    log.info("Using Kafka broker '{}'.", config.kafkaClusterUrl());
+
     // @formatter:off
+    log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
+        config.mqttTopicTelemetry(), config.kafkaTopicTelemetry());
     from("paho:" + config.mqttTopicTelemetry() + "/#" + "?brokerUrl="
         + config.mqttBrokerClusterUrl())
         .bean(dflMqttClientService, "process")
@@ -31,6 +36,8 @@ public class MqttRoute extends RouteBuilder {
         .toD("kafka:" + config.kafkaTopicTelemetry()
             + "?brokers=" + config.kafkaClusterUrl());
 
+    log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
+        config.mqttTopicMetadata(), config.kafkaTopicMetadata());
     from("paho:" + config.mqttTopicMetadata() + "/#" + "?brokerUrl="
         + config.mqttBrokerClusterUrl())
         .bean(dflMqttClientService, "process")
@@ -38,6 +45,8 @@ public class MqttRoute extends RouteBuilder {
         .toD("kafka:" + config.kafkaTopicMetadata()
             + "?brokers=" + config.kafkaClusterUrl());
 
+    log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
+        config.mqttTopicPing(), config.kafkaTopicPing());
     from("paho:" + config.mqttTopicPing() + "/#" + "?brokerUrl="
         + config.mqttBrokerClusterUrl())
         .bean(dflMqttClientService, "process")
@@ -45,6 +54,8 @@ public class MqttRoute extends RouteBuilder {
         .toD("kafka:" + config.kafkaTopicPing()
             + "?brokers=" + config.kafkaClusterUrl());
 
+    log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
+        config.mqttTopicControlReply(), config.kafkaTopicControlReply());
     from("paho:" + config.mqttTopicControlReply() + "/#" + "?brokerUrl="
         + config.mqttBrokerClusterUrl())
         .bean(dflMqttClientService, "process")
@@ -52,6 +63,8 @@ public class MqttRoute extends RouteBuilder {
         .toD("kafka:" + config.kafkaTopicControlReply()
             + "?brokers=" + config.kafkaClusterUrl());
 
+    log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
+        config.mqttTopicControlRequest(), config.kafkaTopicControlRequest());
     from("paho:" + config.mqttTopicControlRequest() + "/#" + "?brokerUrl="
         + config.mqttBrokerClusterUrl())
         .bean(dflMqttClientService, "process")

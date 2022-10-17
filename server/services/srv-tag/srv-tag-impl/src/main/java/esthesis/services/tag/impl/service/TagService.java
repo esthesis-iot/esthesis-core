@@ -10,7 +10,6 @@ import io.opentelemetry.context.Context;
 import io.smallrye.reactive.messaging.TracingMetadata;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -42,7 +41,6 @@ public class TagService extends BaseService<Tag> {
   }
 
   @Override
-  @Transactional
   public Tag save(Tag dto) {
     log.debug("Saving tag '{}'.", dto);
     // Ensure no other tag has the same name.
@@ -59,7 +57,6 @@ public class TagService extends BaseService<Tag> {
   }
 
   @Override
-  @Transactional
   public void deleteById(ObjectId id) {
     log.debug("Deleting tag with id '{}'.", id);
     Tag tag = findById(id);

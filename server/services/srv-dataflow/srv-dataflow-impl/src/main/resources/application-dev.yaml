@@ -28,7 +28,7 @@ quarkus:
       url: http://localhost:59050
       scope: Singleton
   mongodb:
-    connection-string: mongodb://esthesis-dev-mongodb-0:27017,esthesis-dev-mongodb-1:27017
+    connection-string: mongodb://esthesis-dev-mongodb:27017
   opentelemetry:
     enabled: true
     tracer:

@@ -122,6 +122,11 @@ Notes:
   be used exclusively by Keycloak.
 - Once Keycloak is up and running, you need to create a user in `esthesis` realm, via Manage users >
   Add user. Once the user is created, navigate to the user's Credentials tab and set a password.
+  This is the user you can login with in the frontend.
+- You also need to setup a "system" user in Keycloak, used when communication between services needs
+  to take place without having a principal established (for example, when an external device is
+  registering with esthesis). Similarly to the above step, create a user `esthesis-system` with
+  password `esthesis-system`.
 - During development, you can set access tokens to expire far in the future, via configuring
   Clients > Settings > Advanced Settings > Access Token Lifespan.
 
@@ -135,8 +140,6 @@ helm upgrade --install mongodb . \
 
 Notes:
 
-- esthesis requires a cluster of MongoDB nodes as it uses transactions. The above chart will create
-  two MongoDB pods.
 - The above chart will also create a MongoDB `esthesis` user and a database `esthesis`.
 - Liquibase requires `collMod` permission, so `esthesis` user is assigned `dbAdmin`.
 

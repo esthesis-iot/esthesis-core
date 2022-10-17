@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bson.types.ObjectId;
@@ -126,7 +125,6 @@ public class DeviceService extends BaseService<Device> {
    *
    * @param deviceRegistration The preregistration details of the device.
    */
-  @Transactional
   public void preregister(DeviceRegistration deviceRegistration)
   throws NoSuchAlgorithmException, OperatorCreationException,
          InvalidKeySpecException, NoSuchProviderException, IOException {
@@ -509,7 +507,6 @@ public class DeviceService extends BaseService<Device> {
    *
    * @param tagName the name of the tag to be removed.
    */
-  @Transactional
   public void removeTag(String tagName) {
     log.debug("Removing tag '{}' from all devices.", tagName);
     deviceRepository.find("tags", tagName).stream()

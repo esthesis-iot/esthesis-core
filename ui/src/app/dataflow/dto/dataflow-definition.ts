@@ -19,7 +19,11 @@ const TEMPLATE_KAFKA = [{
   key: "config.kafka", wrappers: ["section"],
   props: {label: "Kafka Brokers"},
   fieldGroup: [
-    {key: "cluster-url", type: "input", props: {required: true, type: "text", label: "Cluster URL"}}
+    {
+      key: "cluster-url", type: "input", defaultValue: "esthesis-kafka:9092", props: {
+        required: true, type: "text", label: "Cluster URL",
+      }
+    }
   ]
 }];
 
@@ -74,8 +78,8 @@ export const dataflows = [
             key: "kafka-ping-topic", type: "input", defaultValue: "esthesis-ping",
             props: {label: "Kafka topic to read ping messages from", required: true}
           }, {
-            key: "kafka-group", type: "input", defaultValue: "",
-            props: {label: "Kafka consumer group"}
+            key: "kafka-group", type: "input", defaultValue: "esthesis-ping-updater",
+            sprops: {label: "Kafka consumer group"}
           },
         ]
       },
@@ -84,7 +88,7 @@ export const dataflows = [
         props: {label: "Esthesis database"},
         fieldGroup: [
           {
-            key: "esthesis-db-url", type: "input", defaultValue: "mongodb://esthesis-mongodb-headless:27017",
+            key: "esthesis-db-url", type: "input", defaultValue: "mongodb://esthesis-mongodb:27017",
             props: {label: "URL"}
           }, {
             key: "esthesis-db-name", type: "input", defaultValue: "esthesis",
@@ -115,14 +119,14 @@ export const dataflows = [
         props: {label: "MQTT Broker"},
         fieldGroup: [
           {
-            key: "cluster-url", type: "input",
+            key: "cluster-url", type: "input", defaultValue: "tcp://esthesis-rabbitmq:1883",
             props: {
               required: true, type: "text", label: "Cluster URL", placeholder: "Protocol, IP address, port",
               hintStart: "ex: tcp://esthesis-rabbitmq:1883, ssl://esthesis-rabbitmq:8883",
             }
           },
           {
-            key: "advertised-url", type: "input",
+            key: "advertised-url", type: "input", defaultValue: "tcp://esthesis-rabbitmq:1883",
             props: {
               required: true, type: "text", label: "Advertised URL", placeholder: "Protocol, IP address, port",
               hintStart: "ex: tcp://mqtt.project.com:1883, ssl://mqtt.project.com:8883",

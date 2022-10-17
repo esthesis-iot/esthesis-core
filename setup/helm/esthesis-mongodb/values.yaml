@@ -14,10 +14,14 @@ mongodb:
     databases:
       - esthesis
     replicaSetKey: esthesis
-  architecture: replicaset
   arbiter:
     enabled: false
-  replicaSetName: esthesis-rs
+  service:
+    type: LoadBalancer
+  serviceAccount:
+    create: true
+  rbac:
+    create: true
   initdbScripts:
     addColMod.js: |
       use esthesis

@@ -21,14 +21,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 import org.bson.Document;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
-@Transactional
 @ApplicationScoped
 public class DataflowService extends BaseService<Dataflow> {
 

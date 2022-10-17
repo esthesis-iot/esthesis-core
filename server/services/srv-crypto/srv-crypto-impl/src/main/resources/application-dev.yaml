@@ -10,7 +10,7 @@ quarkus:
       url: http://localhost:59030
       scope: Singleton
   mongodb:
-    connection-string: mongodb://esthesis-dev-mongodb-0:27017,esthesis-dev-mongodb-1:27017
+    connection-string: mongodb://esthesis-dev-mongodb:27017
   log:
     category:
       #      "org.jboss.resteasy.reactive.client.logging":

@@ -6,8 +6,8 @@ quarkus:
     category:
       esthesis:
         level: DEBUG
-      #      "org.jboss.resteasy.reactive.client.logging":
-      #        level: DEBUG
+    #      "org.jboss.resteasy.reactive.client.logging":
+    #        level: DEBUG
     #      "io.quarkus.oidc.client.reactive.filter":
     #        level: DEBUG
     handler:
@@ -17,7 +17,7 @@ quarkus:
         port: 12201
         include-full-mdc: true
   mongodb:
-    connection-string: mongodb://esthesis-dev-mongodb-0:27017,esthesis-dev-mongodb-1:27017
+    connection-string: mongodb://esthesis-dev-mongodb:27017
   opentelemetry:
     enabled: true
     tracer:

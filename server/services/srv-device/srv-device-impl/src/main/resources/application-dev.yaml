@@ -15,7 +15,7 @@ quarkus:
         port: 12201
         include-full-mdc: true
   mongodb:
-    connection-string: mongodb://esthesis-dev-mongodb-0:27017,esthesis-dev-mongodb-1:27017
+    connection-string: mongodb://esthesis-dev-mongodb:27017
     database: esthesis
     credentials:
       username: esthesis
