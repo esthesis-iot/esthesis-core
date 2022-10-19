@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
 @RegisterForReflection
 @Accessors(chain = true)
 public class EsthesisMessage {
-
+  
   public enum MessageType {
     PING,
     TELEMETRY,

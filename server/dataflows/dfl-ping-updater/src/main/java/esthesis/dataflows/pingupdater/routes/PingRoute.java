@@ -2,6 +2,7 @@ package esthesis.dataflows.pingupdater.routes;
 
 import com.mongodb.client.model.Filters;
 import esthesis.common.banner.BannerUtil;
+import esthesis.dataflow.common.messages.DflUtils;
 import esthesis.dataflows.pingupdater.config.AppConfig;
 import esthesis.dataflows.pingupdater.service.PingService;
 import javax.enterprise.context.ApplicationScoped;
@@ -18,10 +19,11 @@ import org.bson.conversions.Bson;
 public class PingRoute extends RouteBuilder {
 
   @Inject
-  PingService pingService;
-
+  private PingService pingService;
   @Inject
-  AppConfig config;
+  private DflUtils dflUtils;
+  @Inject
+  private AppConfig config;
 
   @Override
   public void configure() {
@@ -32,12 +34,13 @@ public class PingRoute extends RouteBuilder {
         "?brokers=" + config.kafkaClusterUrl() +
         (config.kafkaGroup().isPresent() ?
         "&groupId=" + config.kafkaGroup().get() : ""))
+        .bean(dflUtils, "extractHardwareIdFromKafka")
         .bean(pingService, "extractPingTimestamp")
         .setHeader(MongoDbConstants.CRITERIA, new Expression() {
           @Override
           public <T> T evaluate(Exchange exchange, Class<T> type) {
             Bson equalsClause = Filters.eq("hardwareId",
-                exchange.getIn().getHeader("Kafka.KEY"));
+                exchange.getProperty(DflUtils.ESTHESIS_CAMEL_PROP_HARDWARE_ID));
             return exchange.getContext().getTypeConverter().convertTo(type, equalsClause);
           }})
         .bean(pingService, "updateTimestamp")

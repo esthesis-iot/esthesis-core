@@ -1,9 +1,9 @@
 quarkus:
   application:
-    name: esthesis-dfl-influxdb
+    name: esthesis-dfl-influxdb-writer
   container-image:
     group: esthesisiot
-    name: esthesis-dfl-influxdb
+    name: esthesis-dfl-influxdb-writer
   devservices:
     enabled: false
   log:
@@ -12,6 +12,6 @@ quarkus:
       esthesis:
         level: INFO
     console:
-      format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+      format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%-30.30c{1.}] %s%e%n"
   banner:
     enabled: false

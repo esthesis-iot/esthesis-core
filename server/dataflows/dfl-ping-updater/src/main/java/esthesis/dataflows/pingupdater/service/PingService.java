@@ -20,7 +20,7 @@ public class PingService {
   private final static String PING_PAYLOAD_PREFIX = "$health.ping=";
   private final static String PING_ATTRIBUTE_NAME = "lastSeen";
   private final static String PING_TIMESTAMP_EXCHANGE_PROPERTY = "EsthesisPingTimestamp";
-  
+
   public void extractPingTimestamp(Exchange exchange)
   throws JsonProcessingException {
     EsthesisMessage esthesisMessage = objectMapper.readValue(

@@ -220,5 +220,59 @@ export const dataflows = [
       },
       ...TEMPLATE_KUBERNETES
     ]
+  },
+  {
+    type: "influxdb-writer",
+    title: "InfluxDB Writer",
+    category: "Data writer",
+    description: "A component handling telemetry and metadata messages from devices, updating an InfluxDB database.",
+    icon: "assets/img/dataflows/influxdb.png",
+    fields: [
+      ...TEMPLATE_STATUS,
+      ...TEMPLATE_MAIN,
+      {
+        key: "config", wrappers: ["section"],
+        props: {label: "InfluxDB database"},
+        fieldGroup: [
+          {
+            key: "influx-url", type: "input", defaultValue: "http://esthesis-influxdb:8086",
+            props: {label: "URL"}
+          }, {
+            key: "influx-token", type: "input",
+            props: {label: "Access token"}
+          }, {
+            key: "influx-org", type: "input", defaultValue: "esthesis",
+            props: {label: "Organisation name"}
+          }, {
+            key: "influx-bucket", type: "input", defaultValue: "esthesis",
+            props: {label: "Storage bucket name"},
+          },
+        ]
+      },
+      {
+        key: "config", wrappers: ["section"],
+        props: {label: "Kafka"},
+        fieldGroup: [
+          {
+            key: "kafka-cluster-url", type: "input", defaultValue: "esthesis-kafka-headless:9092",
+            props: {required: true, type: "text", label: "Cluster URL"}
+          },
+          {
+            key: "kafka-telemetry-topic", type: "input", defaultValue: "esthesis-telemetry",
+            props: {label: "Kafka topic to read telemetry messages from"}
+          },
+          {
+            key: "kafka-metadata-topic", type: "input", defaultValue: "",
+            props: {label: "Kafka topic to read metadata messages from"}
+          },
+          {
+            key: "kafka-group", type: "input", defaultValue: "esthesis-dfl-influxdb-writer",
+            props: {label: "Kafka consumer group"}
+          },
+        ]
+      },
+      ...TEMPLATE_KUBERNETES
+    ]
   }
+
 ];

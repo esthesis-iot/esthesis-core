@@ -11,7 +11,11 @@
     <version>3.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>dfl-influxdb</artifactId>
+  <artifactId>dfl-influxdb-writer</artifactId>
+
+  <properties>
+    <influxdb-client-java.version>6.6.0</influxdb-client-java.version>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -20,18 +24,15 @@
       <version>3.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.camel.quarkus</groupId>
-      <artifactId>camel-quarkus-influxdb</artifactId>
+      <groupId>com.influxdb</groupId>
+      <artifactId>influxdb-client-java</artifactId>
+      <version>${influxdb-client-java.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.influxdb</groupId>
-      <artifactId>influxdb-client-java</artifactId>
-      <version>6.6.0</version>
-    </dependency>
+
   </dependencies>
 
 </project>

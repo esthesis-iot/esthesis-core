@@ -5,7 +5,10 @@ global:
 influxdb:
   fullnameOverride: esthesis-influxdb
   auth:
+    admin:
+      password: esthesis
     user:
+      org: esthesis
       bucket: esthesis
       username: esthesis
       password: esthesis

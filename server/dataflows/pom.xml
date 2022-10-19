@@ -56,7 +56,7 @@
     <module>dfl-common</module>
     <module>dfl-mqtt-client</module>
     <module>dfl-ping-updater</module>
-    <module>dfl-influxdb</module>
+    <module>dfl-influxdb-writer</module>
   </modules>
 
 </project>
