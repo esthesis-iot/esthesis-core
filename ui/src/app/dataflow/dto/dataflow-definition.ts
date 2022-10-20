@@ -143,35 +143,35 @@ export const dataflows = [
             key: "ping", type: "input",
             defaultValue: "esthesis/ping",
             props: {
-              required: true, type: "text", label: "The topic receiving heartbeat messages from devices",
+              type: "text", label: "The topic receiving heartbeat messages from devices",
             },
           },
           {
             key: "telemetry", type: "input",
             defaultValue: "esthesis/telemetry",
             props: {
-              required: true, type: "text", label: "The topic receiving telemetry data from devices",
+              type: "text", label: "The topic receiving telemetry data from devices",
             },
           },
           {
             key: "metadata", type: "input",
             defaultValue: "esthesis/metadata",
             props: {
-              required: true, type: "text", label: "The topic receiving metadata data from devices",
+              type: "text", label: "The topic receiving metadata data from devices",
             },
           },
           {
             key: "control-request", type: "input",
             defaultValue: "esthesis/control/request",
             props: {
-              required: true, type: "text", label: "The topic in which control requests are submitted by the platform to be executed by the devices",
+              type: "text", label: "The topic in which control requests are submitted by the platform to be executed by the devices",
             },
           },
           {
             key: "control-reply", type: "input",
             defaultValue: "esthesis/control/reply",
             props: {
-              required: true, type: "text", label: "The topic in which control replies are submitted back from devices",
+              type: "text", label: "The topic in which control replies are submitted back from devices",
             },
           },
         ],

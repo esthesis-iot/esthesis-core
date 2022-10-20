@@ -26,15 +26,20 @@ public class DflMqttClientService {
 
   private MessageType getMessageType(Exchange exchange) {
     String topic = exchange.getIn().getHeader(HEADER_TOPIC, String.class);
-    if (topic.startsWith(config.mqttTopicPing())) {
+    if (config.mqttTopicPing().isEmpty() && topic.startsWith(
+        config.mqttTopicPing().get())) {
       return MessageType.PING;
-    } else if (topic.startsWith(config.mqttTopicTelemetry())) {
+    } else if (config.mqttTopicTelemetry().isPresent() && topic.startsWith(
+        config.mqttTopicTelemetry().get())) {
       return MessageType.TELEMETRY;
-    } else if (topic.startsWith(config.mqttTopicMetadata())) {
+    } else if (config.mqttTopicMetadata().isPresent() && topic.startsWith(
+        config.mqttTopicMetadata().get())) {
       return MessageType.METADATA;
-    } else if (topic.startsWith(config.mqttTopicControlRequest())) {
+    } else if (config.mqttTopicControlRequest().isPresent() && topic.startsWith(
+        config.mqttTopicControlRequest().get())) {
       return MessageType.CONTROL_REQUEST;
-    } else if (topic.startsWith(config.mqttTopicControlReply())) {
+    } else if (config.mqttTopicControlReply().isPresent() && topic.startsWith(
+        config.mqttTopicControlReply().get())) {
       return MessageType.CONTROL_REPLY;
     } else {
       throw new UnsupportedOperationException("Received a message "
@@ -42,21 +47,23 @@ public class DflMqttClientService {
     }
   }
 
+  @SuppressWarnings("OptionalGetWithoutIsPresent")
   private String getHardwareId(Exchange exchange) {
     MessageType messageType = getMessageType(exchange);
+
     return switch (messageType) {
       case PING -> exchange.getIn().getHeader(HEADER_TOPIC, String.class)
-          .substring(config.mqttTopicPing().length() + 1);
+          .substring(config.mqttTopicPing().get().length() + 1);
       case TELEMETRY -> exchange.getIn().getHeader(HEADER_TOPIC, String.class)
-          .substring(config.mqttTopicTelemetry().length() + 1);
+          .substring(config.mqttTopicTelemetry().get().length() + 1);
       case METADATA -> exchange.getIn().getHeader(HEADER_TOPIC, String.class)
-          .substring(config.mqttTopicMetadata().length() + 1);
+          .substring(config.mqttTopicMetadata().get().length() + 1);
       case CONTROL_REQUEST ->
           exchange.getIn().getHeader(HEADER_TOPIC, String.class)
-              .substring(config.mqttTopicControlRequest().length() + 1);
+              .substring(config.mqttTopicControlRequest().get().length() + 1);
       case CONTROL_REPLY ->
           exchange.getIn().getHeader(HEADER_TOPIC, String.class)
-              .substring(config.mqttTopicControlReply().length() + 1);
+              .substring(config.mqttTopicControlReply().get().length() + 1);
     };
   }
 

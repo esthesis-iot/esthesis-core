@@ -2,6 +2,7 @@ package esthesis.dataflow.mqttclient.config;
 
 import io.quarkus.runtime.annotations.StaticInitSafe;
 import io.smallrye.config.ConfigMapping;
+import java.util.Optional;
 
 @StaticInitSafe
 @ConfigMapping(prefix = "esthesis.dfl")
@@ -11,36 +12,36 @@ public interface AppConfig {
   String mqttBrokerClusterUrl();
 
   // The prefix of the MQTT Ping topic.
-  String mqttTopicPing();
+  Optional<String> mqttTopicPing();
 
   // The prefix of the MQTT Telemetry topic.
-  String mqttTopicTelemetry();
+  Optional<String> mqttTopicTelemetry();
 
   // The prefix of the MQTT Metadata topic.
-  String mqttTopicMetadata();
+  Optional<String> mqttTopicMetadata();
 
   // The prefix of the MQTT Control Request topic.
-  String mqttTopicControlRequest();
+  Optional<String> mqttTopicControlRequest();
 
   // The prefix of the MQTT Control Reply topic.
-  String mqttTopicControlReply();
+  Optional<String> mqttTopicControlReply();
 
   // The URLs of the Kafka brokers.
   String kafkaClusterUrl();
 
   // The prefix of the Kafka Ping topic.
-  String kafkaTopicPing();
+  Optional<String> kafkaTopicPing();
 
   // The prefix of the Kafka Telemetry topic.
-  String kafkaTopicTelemetry();
+  Optional<String> kafkaTopicTelemetry();
 
   // The prefix of the Kafka Metadata topic.
-  String kafkaTopicMetadata();
+  Optional<String> kafkaTopicMetadata();
 
   // The prefix of the Kafka Control Request topic.
-  String kafkaTopicControlRequest();
+  Optional<String> kafkaTopicControlRequest();
 
   // The prefix of the Kafka Control Reply topic.
-  String kafkaTopicControlReply();
+  Optional<String> kafkaTopicControlReply();
 
 }
