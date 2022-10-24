@@ -1,13 +1,13 @@
 package esthesis.dataflows.influxdbwriter.routes;
 
 import esthesis.common.banner.BannerUtil;
-import esthesis.dataflow.common.messages.DflUtils;
 import esthesis.dataflows.influxdbwriter.config.AppConfig;
 import esthesis.dataflows.influxdbwriter.service.InfluxDBService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.dataformat.AvroDataFormat;
 
 @Slf4j
 @ApplicationScoped
@@ -15,9 +15,6 @@ public class InfluxDBRoute extends RouteBuilder {
 
   @Inject
   InfluxDBService influxDBService;
-
-  @Inject
-  DflUtils dflUtils;
 
   @Inject
   AppConfig config;
@@ -28,27 +25,25 @@ public class InfluxDBRoute extends RouteBuilder {
 
     // @formatter:off
     if (config.kafkaTelemetryTopic().isPresent()) {
+      String kafkaTopic = config.kafkaTelemetryTopic().get();
       log.info("Setting up route from Kafka topic '{}' to InfluxDB '{}' "
-              + "bucket '{}'.",
-          config.kafkaTelemetryTopic().get(), config.influxUrl(), config.influxBucket());
-     from("kafka:" + config.kafkaTelemetryTopic().get() +
-        "?brokers=" + config.kafkaClusterUrl() +
-        (config.kafkaGroup().isPresent() ?
-        "&groupId=" + config.kafkaGroup().get() : ""))
-         .bean(dflUtils, "extractHardwareIdFromKafka")
+              + "bucket '{}'.", kafkaTopic, config.influxUrl(), config.influxBucket());
+     from("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl() +
+          (config.kafkaGroup().isPresent() ?
+          "&groupId=" + config.kafkaGroup().get() : ""))
+         .unmarshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
          .bean(influxDBService, "process");
      }
 
     if (config.kafkaMetadataTopic().isPresent()) {
+      String kafkaTopic = config.kafkaMetadataTopic().get();
       log.info("Setting up route from Kafka topic '{}' to InfluxDB '{}' "
-              + "bucket '{}'.",
-          config.kafkaTelemetryTopic().get(), config.influxUrl(), config.influxBucket());
-     from("kafka:" + config.kafkaMetadataTopic().get() +
-        "?brokers=" + config.kafkaClusterUrl() +
-        (config.kafkaGroup().isPresent() ?
-        "&groupId=" + config.kafkaGroup().get() : ""))
-         .bean(dflUtils, "extractHardwareIdFromKafka")
-         .bean(influxDBService, "process");
+              + "bucket '{}'.", kafkaTopic, config.influxUrl(), config.influxBucket());
+      from("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl() +
+          (config.kafkaGroup().isPresent() ?
+              "&groupId=" + config.kafkaGroup().get() : ""))
+          .unmarshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+          .bean(influxDBService, "process");
      }
     // @formatter:on
 

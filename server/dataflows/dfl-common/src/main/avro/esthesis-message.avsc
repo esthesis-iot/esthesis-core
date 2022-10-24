@@ -1,0 +1,105 @@
+{
+  "type": "record",
+  "name": "EsthesisMessage",
+  "namespace": "esthesis.dataflow.common.parser",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string",
+      "doc": "The unique identifier for this message"
+    },
+    {
+      "name": "correlationId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "The id of the message that this message is a response to"
+    },
+    {
+      "name": "hardwareId",
+      "type": "string",
+      "doc": "The hardware id of the device that sent the message"
+    },
+    {
+      "name": "seenBy",
+      "type": "string",
+      "doc": "A text describing the component that originally constructed this message"
+    },
+    {
+      "name": "seenAt",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "A timestamp in ISO-8601 format, created by the first component that received this message"
+    },
+    {
+      "name": "type",
+      "type": {
+        "name": "MessageType",
+        "type": "enum",
+        "symbols": [
+          "P",
+          "T",
+          "M",
+          "CQ",
+          "CA"
+        ],
+        "doc": "P = Ping, T = Telemetry, M = Message, CQ = Command Request, CA = Command Reply"
+      }
+    },
+    {
+      "name": "channel",
+      "type": "string",
+      "doc": "The channel that the message was received on."
+    },
+    {
+      "name": "payload",
+      "type": {
+        "type": "record",
+        "name": "PayloadData",
+        "fields": [
+          {
+            "name": "category",
+            "type": "string",
+            "doc": "The category of the values being submitted"
+          },
+          {
+            "name": "timestamp",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null,
+            "doc": "A timestamp in ISO-8601 format pertaining to the values submitted"
+          },
+          {
+            "name": "values",
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "record",
+                "name": "ValueData",
+                "fields": [
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "The name of the value"
+                  },
+                  {
+                    "name": "value",
+                    "type": "string",
+                    "doc": "The value"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

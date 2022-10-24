@@ -1,0 +1,24 @@
+quarkus:
+  application:
+    name: esthesis-dfl-rdbms-writer
+  container-image:
+    group: esthesisiot
+    name: esthesis-dfl-rdbms-writer
+  devservices:
+    enabled: false
+  log:
+    level: warn
+    category:
+      esthesis:
+        level: INFO
+    console:
+      format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%-30.30c{1.}] %s%e%n"
+  banner:
+    enabled: false
+  datasource:
+    db-kind: ${ESTHESIS_DFL_DB_KIND:}
+    username: ${ESTHESIS_DFL_DB_USERNAME:}
+    password: ${ESTHESIS_DFL_DB_PASSWORD:}
+    jdbc:
+      #      url: jdbc:mysql://esthesis-dev-mysql:3306/esthesis?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC+2
+      url: ${ESTHESIS_DFL_DB_JDBC_URL:}

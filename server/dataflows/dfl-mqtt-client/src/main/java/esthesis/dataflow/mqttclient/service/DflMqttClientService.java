@@ -1,49 +1,57 @@
 package esthesis.dataflow.mqttclient.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.dataflow.common.messages.EsthesisMessage;
-import esthesis.dataflow.common.messages.EsthesisMessage.MessageType;
+import esthesis.common.exception.QMismatchException;
+import esthesis.dataflow.common.DflUtils;
+import esthesis.dataflow.common.parser.EsthesisMessage;
+import esthesis.dataflow.common.parser.EsthesisMessage.Builder;
+import esthesis.dataflow.common.parser.MessageType;
 import esthesis.dataflow.mqttclient.config.AppConfig;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.kafka.KafkaConstants;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+@Slf4j
 @ApplicationScoped
 public class DflMqttClientService {
+
+  private static final String CAMEL_HEADER_TOPIC = "CamelMqttTopic";
 
   @Inject
   AppConfig config;
 
   @Inject
-  ObjectMapper objectMapper;
+  DflUtils dflUtils;
 
-  private static final String HEADER_TOPIC = "CamelMqttTopic";
+  @ConfigProperty(name = "quarkus.application.name")
+  String appName;
 
   private MessageType getMessageType(Exchange exchange) {
-    String topic = exchange.getIn().getHeader(HEADER_TOPIC, String.class);
-    if (config.mqttTopicPing().isEmpty() && topic.startsWith(
+    String topic = exchange.getIn().getHeader(CAMEL_HEADER_TOPIC, String.class);
+    if (config.mqttTopicPing().isPresent() && topic.startsWith(
         config.mqttTopicPing().get())) {
-      return MessageType.PING;
+      return MessageType.P;
     } else if (config.mqttTopicTelemetry().isPresent() && topic.startsWith(
         config.mqttTopicTelemetry().get())) {
-      return MessageType.TELEMETRY;
+      return MessageType.T;
     } else if (config.mqttTopicMetadata().isPresent() && topic.startsWith(
         config.mqttTopicMetadata().get())) {
-      return MessageType.METADATA;
+      return MessageType.M;
     } else if (config.mqttTopicControlRequest().isPresent() && topic.startsWith(
         config.mqttTopicControlRequest().get())) {
-      return MessageType.CONTROL_REQUEST;
+      return MessageType.CQ;
     } else if (config.mqttTopicControlReply().isPresent() && topic.startsWith(
         config.mqttTopicControlReply().get())) {
-      return MessageType.CONTROL_REPLY;
+      return MessageType.CA;
     } else {
       throw new UnsupportedOperationException("Received a message "
-          + "on unsupported topic '" + topic + "'.");
+          + "on an unsupported topic '" + topic + "'.");
     }
   }
 
@@ -52,48 +60,60 @@ public class DflMqttClientService {
     MessageType messageType = getMessageType(exchange);
 
     return switch (messageType) {
-      case PING -> exchange.getIn().getHeader(HEADER_TOPIC, String.class)
+      case P -> exchange.getIn().getHeader(CAMEL_HEADER_TOPIC, String.class)
           .substring(config.mqttTopicPing().get().length() + 1);
-      case TELEMETRY -> exchange.getIn().getHeader(HEADER_TOPIC, String.class)
+      case T -> exchange.getIn().getHeader(CAMEL_HEADER_TOPIC, String.class)
           .substring(config.mqttTopicTelemetry().get().length() + 1);
-      case METADATA -> exchange.getIn().getHeader(HEADER_TOPIC, String.class)
+      case M -> exchange.getIn().getHeader(CAMEL_HEADER_TOPIC, String.class)
           .substring(config.mqttTopicMetadata().get().length() + 1);
-      case CONTROL_REQUEST ->
-          exchange.getIn().getHeader(HEADER_TOPIC, String.class)
-              .substring(config.mqttTopicControlRequest().get().length() + 1);
-      case CONTROL_REPLY ->
-          exchange.getIn().getHeader(HEADER_TOPIC, String.class)
-              .substring(config.mqttTopicControlReply().get().length() + 1);
+      case CQ -> exchange.getIn().getHeader(CAMEL_HEADER_TOPIC, String.class)
+          .substring(config.mqttTopicControlRequest().get().length() + 1);
+      case CA -> exchange.getIn().getHeader(CAMEL_HEADER_TOPIC, String.class)
+          .substring(config.mqttTopicControlReply().get().length() + 1);
     };
   }
 
-  public void process(Exchange exchange) throws JsonProcessingException {
-    List<String> generatedMessages = new ArrayList<>();
+  /**
+   * Convert an esthesis message in text form to an {@link EsthesisMessage}.
+   *
+   * @param exchange The Camel exchange with the text form of the message.
+   */
+  public void process(Exchange exchange) {
+    log.debug("Received message '{}' on topic '{}'.",
+        exchange.getIn().getBody(String.class),
+        exchange.getIn().getHeader(CAMEL_HEADER_TOPIC));
 
-    // Get the message body and process every line to generate messages.
-    String body = exchange.getIn().getBody(String.class);
-    String topic = exchange.getIn().getHeader(HEADER_TOPIC, String.class);
+    // Extract the message type and the hardware id of this message based on
+    // the topic that the message was posted on.
     MessageType messageType = getMessageType(exchange);
     String hardwareId = getHardwareId(exchange);
+
+    // Add the hardware id as the Kafka key.
     exchange.getIn().setHeader(KafkaConstants.KEY, hardwareId);
 
-    for (String line : body.split("\n")) {
-      // Skip lines that don't start with "$".
-      if (!line.startsWith("$")) {
-        continue;
-      }
+    // Create an EsthesisMessage out of each line of the message content.
+    List<EsthesisMessage> messages = new ArrayList<>();
+    exchange.getIn().getBody(String.class).lines()
+        .filter(line -> !line.startsWith("#")).forEach(line -> {
+          Builder esthesisMessageBuilder =
+              EsthesisMessage.newBuilder()
+                  .setId(UUID.randomUUID().toString())
+                  .setHardwareId(hardwareId)
+                  .setType(messageType)
+                  .setSeenAt(Instant.now().toString())
+                  .setChannel(
+                      exchange.getIn().getHeader(CAMEL_HEADER_TOPIC, String.class))
+                  .setSeenBy(appName);
+          try {
+            esthesisMessageBuilder.setPayload(dflUtils.parsePayload(line));
+            log.debug("Parsed message to Avro message '{}'.",
+                esthesisMessageBuilder.build().toString());
+            messages.add(esthesisMessageBuilder.build());
+          } catch (QMismatchException e) {
+            log.warn(e.getMessage());
+          }
+        });
 
-      // Generate the message.
-      EsthesisMessage msg = new EsthesisMessage();
-      msg.setId(UUID.randomUUID().toString());
-      msg.setChannel(topic);
-      msg.setHardwareId(hardwareId);
-      msg.setType(messageType);
-      msg.setPayload(line);
-
-      generatedMessages.add(objectMapper.writeValueAsString(msg));
-    }
-
-    exchange.getIn().setBody(generatedMessages);
+    exchange.getIn().setBody(messages);
   }
 }

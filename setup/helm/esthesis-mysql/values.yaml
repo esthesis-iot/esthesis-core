@@ -1,0 +1,11 @@
+global:
+  devEnv:
+    enabled: false
+
+mysql:
+  fullnameOverride: esthesis-mysql
+  auth:
+    rootPassword: esthesis
+    database: esthesis
+    username: esthesis
+    password: esthesis

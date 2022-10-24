@@ -7,6 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.dataformat.AvroDataFormat;
 
 @Slf4j
 @ApplicationScoped
@@ -28,57 +29,63 @@ public class MqttRoute extends RouteBuilder {
 
     // @formatter:off
     if (config.mqttTopicTelemetry().isPresent() && config.kafkaTopicTelemetry().isPresent()) {
+      String mqttTopic = config.mqttTopicTelemetry().get();
+      String kafkaTopic = config.kafkaTopicTelemetry().get();
       log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
-          config.mqttTopicTelemetry(), config.kafkaTopicTelemetry());
-      from("paho:" + config.mqttTopicTelemetry() + "/#" + "?brokerUrl="
-          + config.mqttBrokerClusterUrl())
+          mqttTopic, kafkaTopic);
+      from("paho:" + mqttTopic + "/#" + "?brokerUrl=" + config.mqttBrokerClusterUrl())
           .bean(dflMqttClientService, "process")
           .split(body())
-          .toD("kafka:" + config.kafkaTopicTelemetry()
-              + "?brokers=" + config.kafkaClusterUrl());
+          .marshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+          .toD("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl());
     }
+
     if (config.mqttTopicMetadata().isPresent() && config.kafkaTopicMetadata().isPresent()) {
+      String mqttTopic = config.mqttTopicMetadata().get();
+      String kafkaTopic = config.kafkaTopicMetadata().get();
       log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
-          config.mqttTopicMetadata(), config.kafkaTopicMetadata());
-      from("paho:" + config.mqttTopicMetadata() + "/#" + "?brokerUrl="
-          + config.mqttBrokerClusterUrl())
+          mqttTopic, kafkaTopic);
+      from("paho:" + mqttTopic + "/#" + "?brokerUrl=" + config.mqttBrokerClusterUrl())
           .bean(dflMqttClientService, "process")
           .split(body())
-          .toD("kafka:" + config.kafkaTopicMetadata()
-              + "?brokers=" + config.kafkaClusterUrl());
+          .marshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+          .toD("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl());
     }
 
     if (config.mqttTopicPing().isPresent() && config.kafkaTopicPing().isPresent()) {
+      String mqttTopic = config.mqttTopicPing().get();
+      String kafkaTopic = config.kafkaTopicPing().get();
       log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
-          config.mqttTopicPing(), config.kafkaTopicPing());
-      from("paho:" + config.mqttTopicPing() + "/#" + "?brokerUrl="
-          + config.mqttBrokerClusterUrl())
+          mqttTopic, kafkaTopic);
+      from("paho:" + mqttTopic + "/#" + "?brokerUrl=" + config.mqttBrokerClusterUrl())
           .bean(dflMqttClientService, "process")
           .split(body())
-          .toD("kafka:" + config.kafkaTopicPing()
-              + "?brokers=" + config.kafkaClusterUrl());
+          .marshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+          .to("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl());
     }
 
     if (config.mqttTopicControlReply().isPresent() && config.kafkaTopicControlReply().isPresent()) {
+      String mqttTopic = config.mqttTopicControlReply().get();
+      String kafkaTopic = config.kafkaTopicControlReply().get();
       log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
-          config.mqttTopicControlReply(), config.kafkaTopicControlReply());
-      from("paho:" + config.mqttTopicControlReply() + "/#" + "?brokerUrl="
-          + config.mqttBrokerClusterUrl())
+          mqttTopic, kafkaTopic);
+      from("paho:" + mqttTopic + "/#" + "?brokerUrl=" + config.mqttBrokerClusterUrl())
           .bean(dflMqttClientService, "process")
           .split(body())
-          .toD("kafka:" + config.kafkaTopicControlReply()
-              + "?brokers=" + config.kafkaClusterUrl());
+          .marshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+          .toD("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl());
     }
 
     if (config.mqttTopicControlRequest().isPresent() && config.kafkaTopicControlRequest().isPresent()) {
+      String mqttTopic = config.mqttTopicControlRequest().get();
+      String kafkaTopic = config.kafkaTopicControlRequest().get();
       log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
-          config.mqttTopicControlRequest(), config.kafkaTopicControlRequest());
-      from("paho:" + config.mqttTopicControlRequest() + "/#" + "?brokerUrl="
-          + config.mqttBrokerClusterUrl())
+          mqttTopic, kafkaTopic);
+      from("paho:" + mqttTopic + "/#" + "?brokerUrl=" + config.mqttBrokerClusterUrl())
           .bean(dflMqttClientService, "process")
           .split(body())
-          .toD("kafka:" + config.kafkaTopicControlRequest()
-              + "?brokers=" + config.kafkaClusterUrl());
+          .marshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+          .toD("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl());
       }
     // @formatter:on
 

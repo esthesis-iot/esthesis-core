@@ -57,6 +57,7 @@
     <module>dfl-mqtt-client</module>
     <module>dfl-ping-updater</module>
     <module>dfl-influxdb-writer</module>
+    <module>dfl-rdbms-writer</module>
   </modules>
 
 </project>

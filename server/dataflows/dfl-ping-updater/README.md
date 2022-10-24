@@ -4,7 +4,7 @@
 
 ```
 env \
-    ESTHESIS_DFL_ESTHESIS_DB_URL=mongodb://esthesis-dev-mongodb-0:27017,esthesis-dev-mongodb-1:27017 \
+    ESTHESIS_DFL_ESTHESIS_DB_URL=mongodb://esthesis-dev-mongodb:27017 \
     ESTHESIS_DFL_ESTHESIS_DB_NAME=esthesis \
     ESTHESIS_DFL_ESTHESIS_DB_USERNAME=esthesis \
     ESTHESIS_DFL_ESTHESIS_DB_PASSWORD=esthesis \

@@ -1,0 +1,13 @@
+quarkus:
+  log:
+    category:
+      esthesis:
+        level: DEBUG
+    #      "org.apache.camel":
+    #        level: DEBUG
+    handler:
+      gelf:
+        enabled: true
+        host: esthesis-dev-loki-gelf-udp
+        port: 12201
+        include-full-mdc: true

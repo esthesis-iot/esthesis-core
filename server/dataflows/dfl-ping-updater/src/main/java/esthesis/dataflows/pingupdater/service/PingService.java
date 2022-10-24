@@ -1,43 +1,52 @@
 package esthesis.dataflows.pingupdater.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.dataflow.common.messages.EsthesisMessage;
+import esthesis.common.exception.QMismatchException;
+import esthesis.dataflow.common.DflUtils;
+import esthesis.dataflow.common.parser.EsthesisMessage;
 import java.time.Instant;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
+import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.BsonDateTime;
 import org.bson.BsonDocument;
 
+@Slf4j
 @ApplicationScoped
 public class PingService {
 
-  @Inject
-  ObjectMapper objectMapper;
+  // The name of the field in the message data that contains the ping value.
+  private final static String PING_MEASUREMENT = "ping";
 
-  private final static String PING_PAYLOAD_PREFIX = "$health.ping=";
+  // The MongoDB field name for the ping value.
   private final static String PING_ATTRIBUTE_NAME = "lastSeen";
-  private final static String PING_TIMESTAMP_EXCHANGE_PROPERTY = "EsthesisPingTimestamp";
-
-  public void extractPingTimestamp(Exchange exchange)
-  throws JsonProcessingException {
-    EsthesisMessage esthesisMessage = objectMapper.readValue(
-        exchange.getIn().getBody(String.class), EsthesisMessage.class);
-    String pingPayload =
-        StringUtils.substringAfter(esthesisMessage.getPayload(),
-            PING_PAYLOAD_PREFIX);
-    exchange.setProperty(PING_TIMESTAMP_EXCHANGE_PROPERTY,
-        Instant.parse(pingPayload));
-  }
 
   public void updateTimestamp(Exchange exchange) {
-    BsonDocument updateObj = new BsonDocument().append("$set",
-        new BsonDocument(PING_ATTRIBUTE_NAME,
-            new BsonDateTime(exchange.getProperty(
-                    PING_TIMESTAMP_EXCHANGE_PROPERTY, Instant.class)
-                .toEpochMilli())));
-    exchange.getIn().setBody(updateObj);
+    log.debug("Updating ping timestamp for hardware ID '{}'.",
+        exchange.getIn().getHeader(KafkaConstants.KEY));
+    // Get the message from the exchange.
+    EsthesisMessage esthesisMessage = exchange.getIn()
+        .getBody(EsthesisMessage.class);
+
+    esthesisMessage.getPayload().getValues().stream().filter(
+            value -> value.getName().equals(PING_MEASUREMENT)).findFirst()
+        .ifPresentOrElse(
+            value -> {
+              BsonDocument updateObj = new BsonDocument().append("$set",
+                  new BsonDocument(PING_ATTRIBUTE_NAME,
+                      new BsonDateTime(
+                          Instant.parse(value.getValue()).toEpochMilli())));
+              exchange.getIn().setBody(updateObj);
+              log.debug("Ping timestamp updated to '{}'.", value.getValue());
+            },
+            () -> {
+              throw new QMismatchException(
+                  "No ping timestamp found in payload '{}'.",
+                  StringUtils.abbreviate(
+                      esthesisMessage.getPayload().toString(),
+                      DflUtils.MESSAGE_LOG_ABBREVIATION_LENGTH));
+            });
+
   }
 }

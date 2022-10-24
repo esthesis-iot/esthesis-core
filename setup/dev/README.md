@@ -198,6 +198,14 @@ helm upgrade --install influxdb . \
   -f values.yaml -f values-dev.yaml
 ````
 
+### MySQL
+
+```bash
+cd esthesis-platform/setup/helm/esthesis-mysql
+helm upgrade --install mysql . \
+  -f values.yaml -f values-dev.yaml
+````
+
 ### esthesis
 
 ```bash

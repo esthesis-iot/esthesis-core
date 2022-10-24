@@ -12,7 +12,7 @@ quarkus:
       esthesis:
         level: INFO
     console:
-      format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%-30.30c{1.}] %s%e%n"
+      format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%-20.20c{1.}] %s%e%n"
   banner:
     enabled: false
   mongodb:
