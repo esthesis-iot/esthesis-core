@@ -63,7 +63,7 @@ public class DflUtils {
     }
 
     // Split the line into category, measurements, and optional timestamp.
-    String[] parts = line.split(" ");
+    String[] parts = line.split(" +(?=((.*?(?<!\\\\)\"){2})*[^\"]*$)");
 
     if (parts.length < 2) {
       throw new QMismatchException(
@@ -97,7 +97,7 @@ public class DflUtils {
           }
           return ValueData.newBuilder()
               .setName(measurementParts[0])
-              .setValue(measurementParts[1])
+              .setValue(StringUtils.strip(measurementParts[1], "\""))
               .build();
         })
         .collect(Collectors.toList()));
