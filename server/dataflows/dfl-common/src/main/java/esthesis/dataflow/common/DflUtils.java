@@ -19,6 +19,55 @@ public class DflUtils {
   // logs.
   public static final int MESSAGE_LOG_ABBREVIATION_LENGTH = 100;
 
+  public enum VALUE_TYPE {
+    STRING, BOOLEAN, BYTE, SHORT, INTEGER, LONG, FLOAT, DOUBLE
+  }
+
+  /**
+   * Sets the value and the value type of the given value data. See
+   * {@link #parsePayload(String)}.
+   *
+   * @param val     The value to introspect.
+   * @param builder The builder to set the resulting values to
+   */
+  public ValueData.Builder setValue(String val, ValueData.Builder builder) {
+    String extractedVal;
+    VALUE_TYPE valType;
+
+    if (val.startsWith("'") && val.endsWith("'")) {
+      extractedVal = val.substring(1, val.length() - 1);
+      valType = VALUE_TYPE.STRING;
+    } else if (val.equalsIgnoreCase("true") || val.equalsIgnoreCase("false")) {
+      extractedVal = val;
+      valType = VALUE_TYPE.BOOLEAN;
+    } else {
+      if (val.endsWith("f")) {
+        extractedVal = val.substring(0, val.length() - 1);
+        valType = VALUE_TYPE.FLOAT;
+      } else if (val.endsWith("d")) {
+        extractedVal = val.substring(0, val.length() - 1);
+        valType = VALUE_TYPE.DOUBLE;
+      } else if (val.endsWith("l")) {
+        extractedVal = val.substring(0, val.length() - 1);
+        valType = VALUE_TYPE.LONG;
+      } else if (val.endsWith("i")) {
+        extractedVal = val.substring(0, val.length() - 1);
+        valType = VALUE_TYPE.INTEGER;
+      } else if (val.endsWith("s")) {
+        extractedVal = val.substring(0, val.length() - 1);
+        valType = VALUE_TYPE.SHORT;
+      } else if (val.endsWith("b")) {
+        extractedVal = val.substring(0, val.length() - 1);
+        valType = VALUE_TYPE.BYTE;
+      } else {
+        extractedVal = val;
+        valType = VALUE_TYPE.INTEGER;
+      }
+    }
+
+    return builder.setValue(extractedVal).setValueType(valType.toString());
+  }
+
   /**
    * Parses a line representing esthesis line protocol into a payload data
    * object for {@link EsthesisMessage}. The format of the line protocol is:
@@ -37,6 +86,24 @@ public class DflUtils {
    * All measurement values will be set as Strings in {@link PayloadData}, it is
    * up to the component receiving the resulting  message to convert them to the
    * correct format for its supported data storage implementation.
+   * <p>
+   * To facilitate downstream data processors, this method will try to detect
+   * the type of the value and set it in the `valueType` attribute of the
+   * resulting message. You can enforce a specific data type using the following
+   * conventions:
+   * <ul>
+   *   <li>Integer: append a 'i' to the value, e.g. 123i</li>
+   *   <li>Float: append a 'f' to the value, e.g. 123.456f</li>
+   *   <li>Long: append a 'l' to the value, e.g. 1234567890123456789l</li>
+   *   <li>Double: append a 'd' to the value, e.g. 123.456d</li>
+   *   <li>Short: append a 's' to the value, e.g. 123s</li>
+   *   <li>Byte: append a 'b' to the value, e.g. 123b</li>
+   *   <li>Boolean: e.g. true or false</li>
+   *   <li>String: enclose the value is single quotes</li>
+   * </ul>
+   * <p>
+   * Any value other than Boolean and String not conforming to the above
+   * conventions will be treated as an Integer.
    * <p>
    * Examples:
    * <pre>
@@ -95,10 +162,8 @@ public class DflUtils {
                     DflUtils.MESSAGE_LOG_ABBREVIATION_LENGTH),
                 measurement);
           }
-          return ValueData.newBuilder()
-              .setName(measurementParts[0])
-              .setValue(StringUtils.strip(measurementParts[1], "\""))
-              .build();
+          return setValue(measurementParts[1], ValueData.newBuilder()
+              .setName(measurementParts[0])).build();
         })
         .collect(Collectors.toList()));
 

@@ -5,6 +5,7 @@ import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
+import esthesis.dataflow.common.DflUtils.VALUE_TYPE;
 import esthesis.dataflow.common.parser.EsthesisMessage;
 import esthesis.dataflows.influxdbwriter.config.AppConfig;
 import java.time.Instant;
@@ -16,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 @Slf4j
@@ -82,16 +82,17 @@ public class InfluxDBService {
       String name = keyValue.getName();
       String value = keyValue.getValue();
 
-      if (StringUtils.isNumeric(value)) {
-        log.debug("Identified value '{}' as Number.", value);
-        point.addField(name, NumberUtils.createNumber(value));
-      } else if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase(
-          "false")) {
-        log.debug("Identified value '{}' as Boolean.", value);
-        point.addField(name, BooleanUtils.toBoolean(value));
-      } else {
-        log.debug("Identified value '{}' as String.", value);
-        point.addField(name, value);
+      switch (VALUE_TYPE.valueOf(keyValue.getValueType())) {
+        case STRING -> point.addField(name, value);
+        case BOOLEAN -> point.addField(name, BooleanUtils.toBoolean(value));
+        case BYTE -> point.addField(name, NumberUtils.toByte(value));
+        case SHORT -> point.addField(name, NumberUtils.toShort(value));
+        case INTEGER -> point.addField(name, NumberUtils.toInt(value));
+        case LONG -> point.addField(name, NumberUtils.toLong(value));
+        case FLOAT -> point.addField(name, NumberUtils.toFloat(value));
+        case DOUBLE -> point.addField(name, NumberUtils.toDouble(value));
+        default -> log.warn("Unknown value type '{}', ignoring value '{}'.",
+            keyValue.getValueType(), value);
       }
     });
 

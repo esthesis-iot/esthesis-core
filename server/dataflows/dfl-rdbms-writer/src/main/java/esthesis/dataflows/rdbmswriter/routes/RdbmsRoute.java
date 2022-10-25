@@ -1,13 +1,14 @@
 package esthesis.dataflows.rdbmswriter.routes;
 
 import esthesis.common.banner.BannerUtil;
-import esthesis.dataflow.common.DflUtils;
 import esthesis.dataflows.rdbmswriter.config.AppConfig;
 import esthesis.dataflows.rdbmswriter.service.RdbmsService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.builder.component.ComponentsBuilderFactory;
+import org.apache.camel.model.dataformat.AvroDataFormat;
 
 @Slf4j
 @ApplicationScoped
@@ -17,35 +18,51 @@ public class RdbmsRoute extends RouteBuilder {
   RdbmsService rdbmsService;
 
   @Inject
-  DflUtils dflUtils;
-
-  @Inject
   AppConfig config;
+
+  private void printRouteInfo(String topic) {
+    log.info("Setting up route from Kafka topic '{}' to '{}', storage "
+            + "strategy '{}'.",
+        topic, config.dbKind() + " - " + config.dbJdbcUrl(),
+        config.dbStorageStrategy() +
+            (config.dbStorageStrategy() == AppConfig.STORAGE_STRATEGY.SINGLE
+                ? ", table: " + config.dbStorageStrategySingleTableName()
+                : ""));
+  }
 
   @Override
   public void configure() {
-    BannerUtil.showBanner("dfl-influxdb-writer");
+    BannerUtil.showBanner("dfl-rdbms-writer");
+
+    // Configure concurrency.
+    ComponentsBuilderFactory.seda()
+        .queueSize(config.queueSize())
+        .defaultPollTimeout(config.pollTimeout())
+        .concurrentConsumers(config.consumers())
+        .register(getContext(), "seda");
 
     // @formatter:off
     if (config.kafkaTelemetryTopic().isPresent()) {
-      log.info("Setting up route from Kafka topic '{}' to MySQL.",
-          config.kafkaTelemetryTopic().get());
-     from("kafka:" + config.kafkaTelemetryTopic().get() +
-        "?brokers=" + config.kafkaClusterUrl() +
-        (config.kafkaGroup().isPresent() ?
-        "&groupId=" + config.kafkaGroup().get() : ""))
-//         .bean(dflUtils, "extractHardwareIdFromKafka")
-         .bean(rdbmsService, "process");
+      printRouteInfo(config.kafkaTelemetryTopic().get());
+      from("kafka:" + config.kafkaTelemetryTopic().get() +
+          "?brokers=" + config.kafkaClusterUrl() +
+          (config.kafkaGroup().isPresent() ?
+              "&groupId=" + config.kafkaGroup().get() : ""))
+          .unmarshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+          .to("seda:telemetry");
+      from("seda:telemetry")
+          .bean(rdbmsService, "process");
      }
 
     if (config.kafkaMetadataTopic().isPresent()) {
-      log.info("Setting up route from Kafka topic '{}' to MySQL.",
-          config.kafkaTelemetryTopic().get());
-     from("kafka:" + config.kafkaMetadataTopic().get() +
+      printRouteInfo(config.kafkaTelemetryTopic().get());
+      from("kafka:" + config.kafkaMetadataTopic().get() +
         "?brokers=" + config.kafkaClusterUrl() +
         (config.kafkaGroup().isPresent() ?
         "&groupId=" + config.kafkaGroup().get() : ""))
-//         .bean(dflUtils, "extractHardwareIdFromKafka")
+          .unmarshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+          .to("seda:metadata");
+      from("seda:metadata")
          .bean(rdbmsService, "process");
      }
     // @formatter:on
@@ -54,6 +71,8 @@ public class RdbmsRoute extends RouteBuilder {
     if (config.kafkaTelemetryTopic().isEmpty() && config.kafkaMetadataTopic()
         .isEmpty()) {
       log.warn("No Kafka topics are configured.");
+    } else {
+      log.info("All routes configured successfully.");
     }
   }
 }

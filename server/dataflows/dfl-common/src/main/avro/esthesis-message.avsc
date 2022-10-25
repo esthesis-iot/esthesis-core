@@ -87,12 +87,17 @@
                   {
                     "name": "name",
                     "type": "string",
-                    "doc": "The name of the value"
+                    "doc": "The name of the key for this value"
                   },
                   {
                     "name": "value",
                     "type": "string",
-                    "doc": "The value"
+                    "doc": "The value for this key"
+                  },
+                  {
+                    "name": "valueType",
+                    "type": "string",
+                    "doc": "An automatic detection of the type of the value"
                   }
                 ]
               }

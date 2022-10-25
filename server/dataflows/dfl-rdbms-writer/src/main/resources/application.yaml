@@ -16,9 +16,11 @@ quarkus:
   banner:
     enabled: false
   datasource:
-    db-kind: ${ESTHESIS_DFL_DB_KIND:}
+    # "mysql" should not be needed below, however leaving this parameter empty results in
+    # "The Agroal dependency is present but no JDBC datasources have been defined.". To be
+    # rechecked in future Quarkus versions.
+    db-kind: ${ESTHESIS_DFL_DB_KIND:mysql}
     username: ${ESTHESIS_DFL_DB_USERNAME:}
     password: ${ESTHESIS_DFL_DB_PASSWORD:}
     jdbc:
-      #      url: jdbc:mysql://esthesis-dev-mysql:3306/esthesis?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC+2
       url: ${ESTHESIS_DFL_DB_JDBC_URL:}
