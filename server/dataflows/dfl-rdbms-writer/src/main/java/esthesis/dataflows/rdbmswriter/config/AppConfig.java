@@ -16,7 +16,7 @@ public interface AppConfig {
   String dbKind();
 
   String dbJdbcUrl();
-  
+
   STORAGE_STRATEGY dbStorageStrategy();
 
   @WithDefault("esthesis_key")
@@ -52,12 +52,15 @@ public interface AppConfig {
   // The URL of the Kafka cluster to connect to.
   String kafkaClusterUrl();
 
+  // The number of messages that can be queued for processing.
   @WithDefault("1000")
   int queueSize();
 
+  // How often the queue is polled for new messages (in milliseconds).
   @WithDefault("500")
   int pollTimeout();
 
+  // The maximum number of concurrent consumers.
   @WithDefault("10")
   int consumers();
 }

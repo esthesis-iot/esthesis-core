@@ -15,7 +15,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
-import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -63,8 +62,7 @@ public class InfluxDBService {
 
     // Create an InfluxDB point for the message.
     Point point = new Point(esthesisMessage.getPayload().getCategory());
-    point.addTag(INFLUXDB_TAG_HARDWARE_ID, exchange.getIn()
-        .getHeader(KafkaConstants.KEY, String.class));
+    point.addTag(INFLUXDB_TAG_HARDWARE_ID, esthesisMessage.getHardwareId());
     if (esthesisMessage.getPayload().getTimestamp() != null) {
       point.time(Instant.parse(esthesisMessage.getPayload().getTimestamp()),
           WritePrecision.NS);

@@ -12,3 +12,9 @@ env \
     ESTHESIS_DFL_KAFKA_PING_TOPIC=esthesis-ping \
 ./mvnw quarkus:dev
 ```
+
+## Sample data
+
+```shell
+mosquitto_pub -h esthesis-dev-rabbitmq -t esthesis/ping/abc123 -m "health ping=2022-10-25T14:28:25Z"
+```

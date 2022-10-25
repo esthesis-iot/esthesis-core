@@ -7,6 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.model.dataformat.AvroDataFormat;
 
 @Slf4j
@@ -23,6 +24,13 @@ public class InfluxDBRoute extends RouteBuilder {
   public void configure() {
     BannerUtil.showBanner("dfl-influxdb-writer");
 
+    // Configure concurrency.
+    ComponentsBuilderFactory.seda()
+        .queueSize(config.queueSize())
+        .defaultPollTimeout(config.pollTimeout())
+        .concurrentConsumers(config.consumers())
+        .register(getContext(), "seda");
+
     // @formatter:off
     if (config.kafkaTelemetryTopic().isPresent()) {
       String kafkaTopic = config.kafkaTelemetryTopic().get();
@@ -32,6 +40,8 @@ public class InfluxDBRoute extends RouteBuilder {
           (config.kafkaGroup().isPresent() ?
           "&groupId=" + config.kafkaGroup().get() : ""))
          .unmarshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+         .to("seda:telemetry");
+      from("seda:telemetry")
          .bean(influxDBService, "process");
      }
 
@@ -43,6 +53,8 @@ public class InfluxDBRoute extends RouteBuilder {
           (config.kafkaGroup().isPresent() ?
               "&groupId=" + config.kafkaGroup().get() : ""))
           .unmarshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+          .to("seda:metadata");
+      from("seda:metadata")
           .bean(influxDBService, "process");
      }
     // @formatter:on
