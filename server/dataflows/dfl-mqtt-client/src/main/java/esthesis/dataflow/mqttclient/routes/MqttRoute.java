@@ -21,11 +21,7 @@ public class MqttRoute extends RouteBuilder {
 
   @Override
   public void configure() {
-
     BannerUtil.showBanner("dfl-mqtt-client");
-
-    log.info("Using MQTT broker '{}'.", config.mqttBrokerClusterUrl());
-    log.info("Using Kafka broker '{}'.", config.kafkaClusterUrl());
 
     // @formatter:off
     if (config.mqttTopicTelemetry().isPresent() && config.kafkaTopicTelemetry().isPresent()) {

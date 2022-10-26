@@ -45,13 +45,7 @@ public class PingService {
     EsthesisMessage esthesisMessage = exchange.getIn()
         .getBody(EsthesisMessage.class);
 
-    System.out.println("PROCESSING...");
-    try {
-      Thread.sleep(5000);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
-
+    // Update.
     esthesisMessage.getPayload().getValues().stream().filter(
             value -> value.getName().equals(PING_MEASUREMENT)).findFirst()
         .ifPresentOrElse(
@@ -70,6 +64,5 @@ public class PingService {
                       esthesisMessage.getPayload().toString(),
                       DflUtils.MESSAGE_LOG_ABBREVIATION_LENGTH));
             });
-    System.out.println("DONE");
   }
 }
