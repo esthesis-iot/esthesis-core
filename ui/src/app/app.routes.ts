@@ -82,26 +82,6 @@ export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: "readers",
-      loadChildren: () => import("./nifisinks/nifisink.module").then(m => m.NifisinkModule),
-      canActivate: [AutoLoginAllRoutesGuard]
-    },
-    {
-      path: "producers",
-      loadChildren: () => import("./nifisinks/nifisink.module").then(m => m.NifisinkModule),
-      canActivate: [AutoLoginAllRoutesGuard]
-    },
-    {
-      path: "writers",
-      loadChildren: () => import("./nifisinks/nifisink.module").then(m => m.NifisinkModule),
-      canActivate: [AutoLoginAllRoutesGuard]
-    },
-    {
-      path: "loggers",
-      loadChildren: () => import("./nifisinks/nifisink.module").then(m => m.NifisinkModule),
-      canActivate: [AutoLoginAllRoutesGuard]
-    },
-    {
       path: "command",
       loadChildren: () => import("./command/command.module").then(m => m.CommandModule),
       canActivate: [AutoLoginAllRoutesGuard]
