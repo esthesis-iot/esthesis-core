@@ -1,19 +1,22 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {Component, OnInit} from "@angular/core";
+import {ActivatedRoute} from "@angular/router";
+import {BaseComponent} from "../../shared/component/base-component";
 
 @Component({
-  selector: 'app-application-edit',
-  templateUrl: './application-edit.component.html',
+  selector: "app-application-edit",
+  templateUrl: "./application-edit.component.html",
   styleUrls: []
 })
-export class ApplicationEditComponent implements OnInit {
-  id!: number;
+export class ApplicationEditComponent extends BaseComponent implements OnInit {
+  id!: string | null;
 
   constructor(private route: ActivatedRoute) {
+    super();
   }
 
   ngOnInit() {
-    this.id = Number(this.route.snapshot.paramMap.get('id'));
+    this.id = this.route.snapshot.paramMap.get("id");
+    console.log("id: " + this.id);
   }
 
 }

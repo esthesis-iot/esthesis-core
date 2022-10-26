@@ -12,7 +12,7 @@
 
       <table mat-table #table [dataSource]="dataSource" class="mat-elevation-z0" fxFlex="grow"
              matSort
-             matSortActive="id"
+             matSortActive="name"
              matSortDirection="asc"
              matSortStart="asc"
              matSortDisableClear aria-describedby="List of applications">
@@ -43,6 +43,6 @@
     </div>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button routerLink="0">CREATE</button>
+    <button mat-button [routerLink]="appConstants.NEW_RECORD_ID">CREATE</button>
   </mat-card-actions>
 </mat-card>

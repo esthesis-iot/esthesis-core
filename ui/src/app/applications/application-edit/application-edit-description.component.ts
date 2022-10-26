@@ -10,6 +10,7 @@ import {
 import {UtilityService} from "../../shared/service/utility.service";
 import {QFormsService} from "@qlack/forms";
 import {v4 as uuidv4} from "uuid";
+import {ApplicationDto} from "../../dto/application-dto";
 
 @Component({
   selector: "app-application-edit-description",
@@ -17,8 +18,7 @@ import {v4 as uuidv4} from "uuid";
   styleUrls: []
 })
 export class ApplicationEditDescriptionComponent extends BaseComponent implements OnInit {
-  //TODO is @Input() needed?
-  @Input() id: number | undefined;
+  @Input() id: string | null | undefined;
   form!: FormGroup;
 
   constructor(private fb: FormBuilder, private applicationService: ApplicationService,
@@ -37,7 +37,7 @@ export class ApplicationEditDescriptionComponent extends BaseComponent implement
       state: ["", [Validators.required]]
     });
 
-    if (this.id && this.id !== 0) {
+    if (this.id && this.id !== this.appConstants.NEW_RECORD_ID) {
       // Fill-in the form with data if editing an existing item.
       this.applicationService.findById(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
@@ -46,11 +46,12 @@ export class ApplicationEditDescriptionComponent extends BaseComponent implement
   }
 
   generateToken() {
-    this.form.controls["token"].setValue(uuidv4());
+    this.form.controls.token.setValue(uuidv4());
   }
 
   save() {
-    this.applicationService.save(this.form.getRawValue()).subscribe(onNext => {
+    this.applicationService.save(this.qForms.cleanupData(this.form.getRawValue()) as ApplicationDto)
+    .subscribe(onNext => {
       this.utilityService.popupSuccess(this.form.value.id ? "Application was successfully edited."
         : "Application was successfully created.");
       this.router.navigate(["applications"]);

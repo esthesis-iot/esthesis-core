@@ -21,6 +21,8 @@
 
 <div>
   <button mat-button routerLink="/applications">CANCEL</button>
-  <button mat-button color="accent" (click)="delete()" [disabled]="id === 0">DELETE</button>
+  <button mat-button color="accent" (click)="delete()"
+          [disabled]="id === appConstants.NEW_RECORD_ID">DELETE
+  </button>
   <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
 </div>

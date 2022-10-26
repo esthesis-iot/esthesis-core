@@ -6,8 +6,8 @@ quarkus:
     category:
       esthesis:
         level: DEBUG
-      "io.quarkus.oidc.token.propagation.reactive":
-        level: DEBUG
+    #      "io.quarkus.oidc.token.propagation.reactive":
+    #        level: DEBUG
     handler:
       gelf:
         enabled: true
@@ -28,9 +28,9 @@ quarkus:
           endpoint: http://esthesis-dev-jaeger-collector:4317
 
   rest-client:
-    logging:
-      scope: request-response
-      body-limit: 65536
+    #    logging:
+    #      scope: request-response
+    #      body-limit: 65536
     RegistryResource:
       url: http://localhost:59030
       scope: Singleton

@@ -1,6 +1,6 @@
 <mat-card>
   <mat-card-title>Application
-    <span *ngIf="id !== 0">: {{id}}</span>
+    <span *ngIf="id !== appConstants.NEW_RECORD_ID">: {{id}}</span>
   </mat-card-title>
   <mat-card-content>
     <mat-tab-group animationDuration="0ms">
@@ -15,7 +15,7 @@
         </ng-template>
       </mat-tab>
       <!-- Permissions Tab -->
-      <mat-tab *ngIf="id !== 0">
+      <mat-tab *ngIf="id !== appConstants.NEW_RECORD_ID">
         <ng-template mat-tab-label>
           <mat-icon>vpn_key</mat-icon>
           Permissions

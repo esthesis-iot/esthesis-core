@@ -1,23 +1,23 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {Router} from '@angular/router';
-import {ApplicationDto} from '../dto/application-dto';
-import {ApplicationService} from './application.service';
-import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
-import {BaseComponent} from '../shared/component/base-component';
-import {QFormsService} from '@qlack/forms';
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
+import {MatTableDataSource} from "@angular/material/table";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {Router} from "@angular/router";
+import {ApplicationDto} from "../dto/application-dto";
+import {ApplicationService} from "./application.service";
+import {debounceTime, distinctUntilChanged} from "rxjs/operators";
+import {BaseComponent} from "../shared/component/base-component";
+import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../app.constants";
 
 @Component({
-  selector: 'app-applications',
-  templateUrl: './applications.component.html',
-  styleUrls: ['./applications.component.scss']
+  selector: "app-applications",
+  templateUrl: "./applications.component.html",
+  styleUrls: ["./applications.component.scss"]
 })
 export class ApplicationsComponent extends BaseComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['name', 'state', 'createdOn'];
+  displayedColumns = ["name", "state", "createdOn"];
   dataSource: MatTableDataSource<ApplicationDto> = new MatTableDataSource<ApplicationDto>();
   filterForm: FormGroup;
   // Expose application constants.
@@ -28,12 +28,12 @@ export class ApplicationsComponent extends BaseComponent implements OnInit, Afte
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router,
-              private applicationsService: ApplicationService,
-              private qForms: QFormsService) {
+    private applicationsService: ApplicationService,
+    private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
-      name: ['', null],
-      state: ['', null],
+      name: ["", null],
+      state: ["", null],
     });
   }
 

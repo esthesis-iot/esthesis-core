@@ -91,5 +91,6 @@
     <module>srv-kubernetes</module>
     <module>srv-dataflow</module>
     <module>srv-agent</module>
+    <module>srv-application</module>
   </modules>
 </project>
