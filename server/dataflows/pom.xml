@@ -64,6 +64,7 @@
     <module>dfl-ping-updater</module>
     <module>dfl-influxdb-writer</module>
     <module>dfl-rdbms-writer</module>
+    <module>dfl-redis-cache</module>
   </modules>
 
 </project>

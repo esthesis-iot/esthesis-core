@@ -1,0 +1,8 @@
+global:
+  devEnv:
+    enabled: true
+
+redis:
+  master:
+    service:
+      type: LoadBalancer

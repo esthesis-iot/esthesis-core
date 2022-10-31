@@ -1,0 +1,9 @@
+global:
+  devEnv:
+    enabled: false
+
+redis:
+  fullnameOverride: esthesis-redis
+  architecture: standalone
+  auth:
+    password: esthesis

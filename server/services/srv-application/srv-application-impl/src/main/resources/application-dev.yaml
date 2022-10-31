@@ -26,6 +26,20 @@ quarkus:
     logging:
       scope: request-response
       body-limit: 65536
+    DataflowSystemResource:
+      url: http://localhost:59060
+      scope: Singleton
+
+  oidc:
+  oidc-client:
+    auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
+    client-id: esthesis
+    grant:
+      type: PASSWORD
+    grant-options:
+      password:
+        username: esthesis-system
+        password: esthesis-system
 
   opentelemetry:
     enabled: true
