@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,6 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -31,6 +33,13 @@ public class DTService {
   @RestClient
   DataflowSystemResource dataflowSystemResource;
 
+  // Redis server URL is taken from the configuration of Dataflows, so the
+  // resulting URL is pointing to the internal Kubernetes cluster IP. To
+  // facilitate development, you can set the following property which will
+  // override whatever value is discovered in runtime.
+  @ConfigProperty(name = "redis.url")
+  Optional<String> redisUrl;
+
   @PostConstruct
   void init() {
     // Find which Redis server is being used.
@@ -43,7 +52,9 @@ public class DTService {
       String password = ((Map<String, String>) redis.getConfig()
           .get("redis")).get("password");
 
-      url = "redis://esthesis-dev-redis:6379/0";
+      if (redisUrl.isPresent()) {
+        url = redisUrl.get();
+      }
 
       Pattern p = Pattern.compile("(redis{1,2})://(.*):(.*)/(\\d*)",
           Pattern.CASE_INSENSITIVE);
