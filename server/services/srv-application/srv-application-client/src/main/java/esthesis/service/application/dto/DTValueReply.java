@@ -16,7 +16,7 @@ public class DTValueReply {
 
   String hardwareId;
   String category;
-  String measruement;
+  String measurement;
   Object value;
   Instant recordedAt;
   String valueType;

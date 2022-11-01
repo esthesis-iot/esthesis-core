@@ -39,7 +39,7 @@ public class DataflowService extends BaseService<Dataflow> {
   private static final String KUBERNETES_CPU_LIMIT = "cpu-limit";
 
   // As defined in `redis.ts` under `dataflow-definitions`.
-  public static final String REDIS_DATAFLOW_TYPE = "redis";
+  public static final String REDIS_DATAFLOW_TYPE = "redis-cache";
 
   @Inject
   @RestClient

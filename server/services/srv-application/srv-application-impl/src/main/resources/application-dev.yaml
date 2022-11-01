@@ -4,8 +4,8 @@ quarkus:
     cors: false
   log:
     category:
-      "org.jboss.resteasy.reactive.client.logging":
-        level: DEBUG
+      #      "org.jboss.resteasy.reactive.client.logging":
+      #        level: DEBUG
       esthesis:
         level: DEBUG
     #      "org.jboss.resteasy.reactive.client.logging":
@@ -23,9 +23,9 @@ quarkus:
     connection-string: mongodb://esthesis-dev-mongodb:27017
 
   rest-client:
-    logging:
-      scope: request-response
-      body-limit: 65536
+    #    logging:
+    #      scope: request-response
+    #      body-limit: 65536
     DataflowSystemResource:
       url: http://localhost:59060
       scope: Singleton
