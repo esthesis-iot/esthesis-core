@@ -71,9 +71,9 @@ spec:
                 }
               }
               }' && \
-              curl -s http://esthesis-apisix-admin:9180/apisix/admin/routes/dev-srv-application-route -H "X-API-KEY: esthesis-admin" -X PUT -i -d '
+              curl -s http://esthesis-apisix-admin:9180/apisix/admin/routes/dev-srv-dt-route -H "X-API-KEY: esthesis-admin" -X PUT -i -d '
               {
-              "name": "dev-srv-application-route",
+              "name": "dev-srv-dt-route",
               "uris": ["/dev/api/v1/dt", "/dev/api/v1/dt/*"],
               "upstream": {
                 "type": "roundrobin",

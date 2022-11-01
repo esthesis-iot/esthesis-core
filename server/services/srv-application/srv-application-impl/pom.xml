@@ -32,5 +32,9 @@
       <artifactId>jedis</artifactId>
       <version>${jedis.version}</version>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-cache</artifactId>
+    </dependency>
   </dependencies>
 </project>
