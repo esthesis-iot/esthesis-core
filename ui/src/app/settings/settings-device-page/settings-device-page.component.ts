@@ -1,37 +1,40 @@
 import {Component, OnInit} from "@angular/core";
 import {DevicePageFieldDto} from "../../dto/device-page-field-dto";
-import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
 import {DevicesService} from "../../devices/devices.service";
 import {SettingsService} from "../settings.service";
 import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";
+import {MatDialog} from "@angular/material/dialog";
+import {
+  MatIconPickerComponent
+} from "../../shared/component/display/mat-icon-picker/mat-icon-picker.component";
 
 @Component({
   selector: "app-settings-device-page",
   templateUrl: "./settings-device-page.component.html",
-  styleUrls: []
+  styleUrls: ["./settings-device-page.component.scss"]
 })
 export class SettingsDevicePageComponent extends BaseComponent implements OnInit {
   // Expose application constants.
   constants = AppConstants;
-  form!: FormGroup;
+  profileDataForm!: FormGroup;
   settingsForm!: FormGroup;
-  // allFields!: DevicePageFieldDto[];
   allUniqueMeasurements?: string[];
   fetchingGeoAttributes = true;
 
   constructor(private devicesService: DevicesService, private fb: FormBuilder,
     private utilityService: UtilityService, private qForms: QFormsService,
-    private settingsService: SettingsService) {
+    private settingsService: SettingsService, private dialog: MatDialog) {
     super();
   }
 
   ngOnInit() {
     // Setup forms.
     // Device page data fields.
-    this.form = this.fb.group({
+    this.profileDataForm = this.fb.group({
       fields: this.fb.array([])
     });
 
@@ -43,12 +46,11 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
       this.constants.DEVICE.SETTING.DEVICE_GEO_LON, new FormControl(""));
 
     // Fetch device page fields.
-    this.settingsService.getDevicePageFields().subscribe(onNext => {
+    this.settingsService.getDevicePageFields().subscribe(fields => {
       // this.allFields = onNext;
-      onNext
-      .forEach(field => {
+      fields.forEach(field => {
         // @ts-ignore
-        this.form.controls.fields.push(this.createFieldElement(field));
+        this.profileDataForm.controls.fields.push(this.createFieldElement(field));
       });
     });
 
@@ -80,21 +82,13 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
       shown: [fieldDto?.shown],
       label: [fieldDto?.label],
       formatter: [fieldDto?.formatter],
+      icon: [fieldDto?.icon],
     });
   }
 
   save() {
-    // this.settingsService.save(
-    //   _.map(Object.keys(this.settingsForm.controls), (fc) => {
-    //     return new SettingDto(fc, this.settingsForm.get(fc)!.value);
-    //   })).subscribe(onNext => {
-    //   this.utilityService.popupSuccess("Settings saved successfully.");
-    // });
-
-    console.log(this.form);
-
     this.settingsService.saveDevicePageFields(
-      this.qForms.cleanupData(this.form.getRawValue()).fields).subscribe(
+      this.qForms.cleanupData(this.profileDataForm.getRawValue()).fields).subscribe(
       onNext => {
         this.utilityService.popupSuccess("Settings saved successfully.");
       });
@@ -102,22 +96,30 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
 
   newMeasurement() {
     // @ts-ignore
-    this.form.controls.fields.push(this.createFieldElement({
+    this.profileDataForm.controls.fields.push(this.createFieldElement({
       measurement: "",
       shown: true,
       label: "",
       formatter: "",
+      icon: ""
     }));
   }
 
   getFormFields() {
     // @ts-ignore
-    return this.form.get("fields").controls;
+    return this.profileDataForm.get("fields").controls;
   }
 
   deleteField(fieldIndex: number) {
     // @ts-ignore
-    this.form.controls.fields.controls.splice(fieldIndex, 1);
+    this.profileDataForm.controls.fields.controls.splice(fieldIndex, 1);
   }
 
+  selectIcon(i: number) {
+    this.dialog.open(MatIconPickerComponent).afterClosed().subscribe(result => {
+      const field = (this.profileDataForm.controls.fields as FormArray).controls[i].value as DevicePageFieldDto;
+      field.icon = result;
+      (this.profileDataForm.controls.fields as FormArray).controls[i].patchValue(field);
+    });
+  }
 }

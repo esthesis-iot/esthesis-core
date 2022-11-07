@@ -5,4 +5,5 @@ export interface DevicePageFieldDto extends BaseDto {
   shown: boolean;
   label: string;
   formatter: string;
+  icon: string;
 }

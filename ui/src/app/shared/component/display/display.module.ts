@@ -12,13 +12,15 @@ import {FlexLayoutModule} from "@angular/flex-layout";
 import {ReactiveFormsModule} from "@angular/forms";
 import {InputModalComponent} from "./input-modal/input-modal.component";
 import {MatInputModule} from "@angular/material/input";
+import {MatIconPickerComponent} from "./mat-icon-picker/mat-icon-picker.component";
 
 @NgModule({
   declarations: [
     OkCancelModalComponent,
     BooleanCheckboxComponent,
     TextModalComponent,
-    InputModalComponent
+    InputModalComponent,
+    MatIconPickerComponent
   ],
   imports: [
     CommonModule,

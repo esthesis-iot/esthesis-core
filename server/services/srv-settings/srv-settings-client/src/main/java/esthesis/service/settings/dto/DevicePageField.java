@@ -24,4 +24,5 @@ public class DevicePageField extends BaseDTO {
   private boolean shown;
   private String label;
   private String formatter;
+  private String icon;
 }

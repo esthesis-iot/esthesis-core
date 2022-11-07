@@ -18,4 +18,5 @@ public class DeviceProfileFieldData {
   private String value;
   private String valueType;
   private Instant lastUpdate;
+  private String icon;
 }

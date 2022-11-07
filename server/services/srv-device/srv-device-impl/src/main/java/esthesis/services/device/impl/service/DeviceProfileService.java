@@ -71,16 +71,13 @@ public class DeviceProfileService extends BaseService<DeviceProfileNote> {
     // Get configured device profile fields data.
     List<DevicePageField> devicePageFields = settingsResource.getDevicePageFields();
 
-    System.out.println(
-        Qute.fmt("{str:format('%.2f', val, 1)}").data("val", 45.0f).render()
-    );
-
     // Find the value of each field.
     Device device = deviceService.findById(deviceId);
     devicePageFields.forEach(field -> {
       DeviceProfileFieldData deviceProfileFieldData = new DeviceProfileFieldData();
       deviceProfileFieldData
           .setLabel(field.getLabel())
+          .setIcon(field.getIcon())
           .setValueType(redis.getValueType(device.getHardwareId(),
               field.getMeasurement()))
           .setLastUpdate(

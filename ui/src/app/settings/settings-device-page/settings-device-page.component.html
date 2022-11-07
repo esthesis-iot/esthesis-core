@@ -31,7 +31,7 @@
   </div>
 </form>
 
-<form novalidate [formGroup]="form" fxLayout="column">
+<form novalidate [formGroup]="profileDataForm" fxLayout="column">
   <div class="inline-header">Device profile data</div>
   <div class="mt1 mb2">
     Select which device data will be visible on device profile page. Custom formatting is
@@ -58,6 +58,13 @@
         <input matInput placeholder="UI label" formControlName="label">
       </mat-form-field>
 
+      <button mat-button (click)="selectIcon(i)">
+        <mat-icon *ngIf="profileDataForm.value['fields'][i].icon">
+          {{profileDataForm.value["fields"][i].icon}}
+        </mat-icon>
+        <span *ngIf="!profileDataForm.value['fields'][i].icon">...</span>
+      </button>
+
       <mat-form-field fxFlex="grow">
         <input matInput placeholder="Formatter" formControlName="formatter">
       </mat-form-field>
@@ -72,5 +79,6 @@
 </form>
 
 <div>
-  <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
+  <button mat-button color="primary" (click)="save()" [disabled]="profileDataForm.invalid">SAVE
+  </button>
 </div>

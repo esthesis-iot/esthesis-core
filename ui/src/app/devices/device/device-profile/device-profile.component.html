@@ -1,9 +1,10 @@
 <div fxLayout="column">
   <div fxLayout="row wrap" fxLayoutGap="1rem">
-    <div *ngFor="let dataField of dataFields" class="field-box">
+    <div *ngFor="let dataField of dataFields" class="field-box"
+         [matTooltip]="dataField.lastUpdate | amFromUtc | amLocal | amTimeAgo">
       <div fxLayout="row" fxLayoutGap="0.5rem">
         <div fxLayoutAlign="center center" *ngIf="dataField.icon">
-          <mat-icon [fontIcon]="dataField.icon"></mat-icon>
+          <mat-icon>{{dataField.icon}}</mat-icon>
         </div>
         <div>
           <div fxLayoutAlign="space-around center" class="title">{{dataField.label}}</div>
