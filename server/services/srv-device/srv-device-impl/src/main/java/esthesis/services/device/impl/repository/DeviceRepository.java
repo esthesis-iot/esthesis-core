@@ -12,17 +12,5 @@ public class DeviceRepository implements PanacheMongoRepository<Device> {
     return find("hardwareId", hardwareId).firstResultOptional();
   }
 
-//  public List<Device> findByHardwareIdContainsOrderByHardwareId(String hardwareId) {
-//
-//  }
-
-//  public List<Device> findByTagsIdIn(List<Long> tags) {
-//
-//  }
-
-//  public List<Device> findAllByCreatedOnAfter(Instant date) {
-//
-//  }
-
 
 }

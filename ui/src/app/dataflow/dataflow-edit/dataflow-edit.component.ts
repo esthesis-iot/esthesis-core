@@ -120,18 +120,6 @@ export class DataflowEditComponent extends BaseComponent implements OnInit {
     });
   }
 
-  private findInvalidControls() {
-    const invalid = [];
-    const controls = this.form.controls;
-    for (const name in controls) {
-      // @ts-ignore
-      if (controls[name].invalid) {
-        invalid.push(name);
-      }
-    }
-    return invalid;
-  }
-
   save() {
     if (!this.form.valid) {
       this.utilityService.popupError("Mandatory dataflow configuration is missing.");

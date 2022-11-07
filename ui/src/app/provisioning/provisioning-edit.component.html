@@ -4,7 +4,7 @@
     <form novalidate [formGroup]="form">
       <input type="hidden" formControlName="id">
       <div fxLayout="column">
-        <mat-form-field class="xs-pt2">
+        <mat-form-field>
           <input matInput placeholder="File" (click)="this.id == 0 ? file.click() : null"
                  formControlName="fileName"
                  readonly>
@@ -13,7 +13,7 @@
           </div>
         </mat-form-field>
 
-        <mat-form-field class="xs-pt1">
+        <mat-form-field>
           <input matInput placeholder="Name" formControlName="name">
         </mat-form-field>
 

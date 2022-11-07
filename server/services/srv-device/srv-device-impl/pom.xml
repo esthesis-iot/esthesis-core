@@ -23,7 +23,7 @@
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-registry-client</artifactId>
+      <artifactId>srv-settings-client</artifactId>
       <version>3.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>

@@ -1,16 +1,22 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>dataflows</artifactId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>dfl-iredis-cache</artifactId>
+
+  <artifactId>dfl-redis-cache</artifactId>
+
   <properties>
     <influxdb-client-java.version>6.6.0</influxdb-client-java.version>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>esthesis</groupId>

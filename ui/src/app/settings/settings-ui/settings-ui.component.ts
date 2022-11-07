@@ -4,7 +4,7 @@ import {SettingsService} from "../settings.service";
 import {UtilityService} from "../../shared/service/utility.service";
 import {BaseComponent} from "../../shared/component/base-component";
 import * as _ from "lodash";
-import {RegistryEntryDto} from "../../dto/registry-entry-dto";
+import {SettingDto} from "../../dto/setting-dto";
 
 @Component({
   selector: "app-settings-ui",
@@ -25,9 +25,9 @@ export class SettingsUiComponent extends BaseComponent implements OnInit {
 
     // Fetch settings.
     this.settingsService.findByNames("").subscribe(onNext => {
-      onNext.forEach(registryEntryDto => {
-        if (registryEntryDto != null) {
-          this.form.controls[registryEntryDto.name].patchValue(registryEntryDto.value);
+      onNext.forEach(setting => {
+        if (setting != null) {
+          this.form.controls[setting.name].patchValue(setting.value);
         }
       });
     });
@@ -36,7 +36,7 @@ export class SettingsUiComponent extends BaseComponent implements OnInit {
   save() {
     this.settingsService.save(
       _.map(Object.keys(this.form.controls), (fc) => {
-        return new RegistryEntryDto(fc, this.form.get(fc)!.value);
+        return new SettingDto(fc, this.form.get(fc)!.value);
       })).subscribe(onNext => {
       this.utilityService.popupSuccess("Settings saved successfully.");
     });

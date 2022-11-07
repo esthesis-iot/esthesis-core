@@ -56,7 +56,7 @@ export class DevicePreregisterComponent extends BaseComponent implements OnInit 
       },
       error: (err) => {
         if (err.status == 400) {
-          let validationErrors = err.error;
+          const validationErrors = err.error;
           if (validationErrors) {
             this.qFormValidation.validateForm(this.form, validationErrors.violations);
           }
@@ -73,12 +73,12 @@ export class DevicePreregisterComponent extends BaseComponent implements OnInit 
       height: "70%",
       width: "80%",
       data: {
-        wsId: wsId
+        wsId
       }
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.form.controls["ids"].patchValue(result);
+        this.form.controls.ids.patchValue(result);
       }
     });
   }

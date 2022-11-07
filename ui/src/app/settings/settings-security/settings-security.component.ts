@@ -6,7 +6,7 @@ import {CertificateDto} from "../../dto/certificate-dto";
 import * as _ from "lodash";
 import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
-import {RegistryEntryDto} from "../../dto/registry-entry-dto";
+import {SettingDto} from "../../dto/setting-dto";
 
 @Component({
   selector: "app-settings-security",
@@ -30,9 +30,9 @@ export class SettingsSecurityComponent extends BaseComponent implements OnInit {
 
     // Fetch settings.
     this.settingsService.findByNames("PLATFORM_CERTIFICATE").subscribe(onNext => {
-      onNext.forEach(registryEntryDTO => {
-        if (registryEntryDTO != null) {
-          this.form.controls[registryEntryDTO.name].patchValue(registryEntryDTO.value);
+      onNext.forEach(setting => {
+        if (setting != null) {
+          this.form.controls[setting.name].patchValue(setting.value);
         }
       });
     });
@@ -49,7 +49,7 @@ export class SettingsSecurityComponent extends BaseComponent implements OnInit {
   save() {
     this.settingsService.save(
       _.map(Object.keys(this.form.controls), (fc) => {
-        return new RegistryEntryDto(fc, this.form.get(fc)!.value);
+        return new SettingDto(fc, this.form.get(fc)!.value);
       })).subscribe(onNext => {
       this.utilityService.popupSuccess("Settings saved successfully.");
     });

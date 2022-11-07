@@ -4,10 +4,14 @@ quarkus:
     cors: false
   log:
     category:
+      #      "org.jboss.resteasy.reactive.client.logging":
+      #        level: DEBUG
+      #        "io.quarkus.oidc.token.propagation.reactive":
+      #          level: DEBUG
+      "io.quarkus.mongodb.panache.common.runtime":
+        level: DEBUG
       esthesis:
         level: DEBUG
-    #      "io.quarkus.oidc.token.propagation.reactive":
-    #        level: DEBUG
     handler:
       gelf:
         enabled: true
@@ -28,10 +32,10 @@ quarkus:
           endpoint: http://esthesis-dev-jaeger-collector:4317
 
   rest-client:
-    #    logging:
-    #      scope: request-response
-    #      body-limit: 65536
-    RegistryResource:
+    logging:
+      scope: request-response
+      body-limit: 65536
+    SettingsResource:
       url: http://localhost:59030
       scope: Singleton
     CAResource:

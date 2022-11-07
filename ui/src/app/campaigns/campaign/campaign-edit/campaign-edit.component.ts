@@ -1,32 +1,32 @@
-import {Component, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
-import {BaseComponent} from '../../../shared/component/base-component';
-import {QFormsService} from '@qlack/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {UtilityService} from '../../../shared/service/utility.service';
-import {ProvisioningService} from '../../../provisioning/provisioning.service';
-import {ProvisioningDto} from '../../../dto/provisioning-dto';
-import {CampaignMemberDto} from '../../../dto/campaign-member-dto';
-import {DevicesService} from '../../../devices/devices.service';
-import {DeviceDto} from '../../../dto/device-dto';
-import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
-import {TagDto} from '../../../dto/tag-dto';
-import {TagService} from '../../../tags/tag.service';
-import {CampaignsService} from '../../campaigns.service';
-import {CampaignDto} from '../../../dto/campaign-dto';
-import {CampaignConditionDto} from '../../../dto/campaign-condition-dto';
-import * as _ from "lodash"
-import {AppConstants} from '../../../app.constants';
+import {Component, OnInit} from "@angular/core";
+import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
+import {BaseComponent} from "../../../shared/component/base-component";
+import {QFormsService} from "@qlack/forms";
+import {ActivatedRoute, Router} from "@angular/router";
+import {UtilityService} from "../../../shared/service/utility.service";
+import {ProvisioningService} from "../../../provisioning/provisioning.service";
+import {ProvisioningDto} from "../../../dto/provisioning-dto";
+import {CampaignMemberDto} from "../../../dto/campaign-member-dto";
+import {DevicesService} from "../../../devices/devices.service";
+import {DeviceDto} from "../../../dto/device-dto";
+import {debounceTime, distinctUntilChanged} from "rxjs/operators";
+import {TagDto} from "../../../dto/tag-dto";
+import {TagService} from "../../../tags/tag.service";
+import {CampaignsService} from "../../campaigns.service";
+import {CampaignDto} from "../../../dto/campaign-dto";
+import {CampaignConditionDto} from "../../../dto/campaign-condition-dto";
+import * as _ from "lodash";
+import {AppConstants} from "../../../app.constants";
 import {
   OkCancelModalComponent
-} from '../../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component';
-import {MatDialog} from '@angular/material/dialog';
+} from "../../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+import {MatDialog} from "@angular/material/dialog";
 import {CampaignStatsDto} from "../../../dto/campaign-stats-dto";
 
 @Component({
-  selector: 'app-campaign-edit',
-  templateUrl: './campaign-edit.component.html',
-  styleUrls: ['./campaign-edit.component.scss']
+  selector: "app-campaign-edit",
+  templateUrl: "./campaign-edit.component.html",
+  styleUrls: ["./campaign-edit.component.scss"]
 })
 export class CampaignEditComponent extends BaseComponent implements OnInit {
   // Expose application constants.
@@ -69,15 +69,15 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     this.campaignService.stats(this.id).subscribe(
       onNext => {
         // Save campaign stats to an object.
-        this.campaignStats = onNext
+        this.campaignStats = onNext;
 
         // Extract group members for the chart.
         this.campaignChart =
           onNext.groupMembersReplied?.map((value, index, array) => {
             return {
-              "name": "Group " + (index + 1),
-              "value": value
-            }
+              name: "Group " + (index + 1),
+              value
+            };
           });
       });
   }
@@ -92,11 +92,11 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
         this.form.patchValue(onNext);
         // Update device membership into this campaign.
         this.memberGroups = this.getMemberGroups();
-        this.form.patchValue({"conditions": []});
+        this.form.patchValue({conditions: []});
         if (onNext.conditions) {
           onNext.conditions.forEach(c => {
             // @ts-ignore
-            this.form.controls['conditions'].push(this.createCondition(c));
+            this.form.controls.conditions.push(this.createCondition(c));
           });
         }
 
@@ -111,26 +111,26 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     // Check if an edit is performed and fetch data.
-    this.id = Number(this.route.snapshot.paramMap.get('id'));
+    this.id = Number(this.route.snapshot.paramMap.get("id"));
 
     // Setup the form.
     this.form = this.fb.group({
-      id: ['', []],
-      state: ['', []],
-      name: ['', []],
-      description: ['', []],
-      scheduleDate: ['', []],
-      scheduleHour: ['', []],
-      scheduleMinute: ['', []],
-      type: ['', []],
-      commandName: ['', []],
-      commandArguments: ['', []],
-      provisioningPackageId: ['', []],
+      id: ["", []],
+      state: ["", []],
+      name: ["", []],
+      description: ["", []],
+      scheduleDate: ["", []],
+      scheduleHour: ["", []],
+      scheduleMinute: ["", []],
+      type: ["", []],
+      commandName: ["", []],
+      commandArguments: ["", []],
+      provisioningPackageId: ["", []],
       conditions: this.fb.array([]),
       members: [[]],
 
-      searchByHardwareId: ['', []],
-      searchByTags: ['', []],
+      searchByHardwareId: ["", []],
+      searchByTags: ["", []],
     });
 
     // Monitor campaign type to fetch provisioning packages.
@@ -190,13 +190,13 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
 
   addCondition(type: number) {
     // @ts-ignore
-    this.form.controls['conditions'].push(
+    this.form.controls.conditions.push(
       this.createCondition(new CampaignConditionDto(type)));
   }
 
   getConditions() {
     // @ts-ignore
-    return this.form.get('conditions')['controls'];
+    return this.form.get("conditions").controls;
   }
 
   getIcon(type: number): string | undefined {
@@ -224,10 +224,10 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
 
   currentGroup(): number {
     let groupNo;
-    if (this.form.get('members')?.value.length == 0) {
+    if (this.form.get("members")?.value.length == 0) {
       groupNo = 1;
     } else {
-      groupNo = (_.maxBy(this.form.get('members')?.value, function (o: CampaignMemberDto) {
+      groupNo = (_.maxBy(this.form.get("members")?.value, function(o: CampaignMemberDto) {
         return o.groupOrder;
       }) as CampaignMemberDto).groupOrder;
     }
@@ -236,7 +236,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   }
 
   getMemberGroups() {
-    return _(this.form.get('members')?.value).groupBy('groupOrder').values().value();
+    return _(this.form.get("members")?.value).groupBy("groupOrder").values().value();
   }
 
   /**
@@ -285,8 +285,8 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   }
 
   removeMember(identifier: string) {
-    _.remove(this.form.get("members")!.value, function (o: CampaignMemberDto) {
-      return o.identifier === identifier
+    _.remove(this.form.get("members")!.value, function(o: CampaignMemberDto) {
+      return o.identifier === identifier;
     });
     this.memberGroups = this.getMemberGroups();
   }
@@ -294,17 +294,17 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   removeGroup(groupOrder: number) {
     groupOrder++;
     // Remove group members.
-    _.remove(this.form.get("members")!.value, function (o: CampaignMemberDto) {
-      return o.groupOrder === groupOrder
+    _.remove(this.form.get("members")!.value, function(o: CampaignMemberDto) {
+      return o.groupOrder === groupOrder;
     });
 
     // Rearrange groups.
-    _.map(this.form.get("members")!.value, function (o: CampaignMemberDto) {
+    _.map(this.form.get("members")!.value, function(o: CampaignMemberDto) {
       if (o.groupOrder > groupOrder) {
         o.groupOrder = o.groupOrder - 1;
       }
       return o;
-    })
+    });
 
     this.memberGroups = this.getMemberGroups();
   }
@@ -340,15 +340,15 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
         if (startCampaign) {
           this.campaignService.startCampaign(Number(onNext)).subscribe(
             onNext => {
-              this.utilityService.popupSuccess('Campaign successfully started.');
-              this.router.navigate(['campaigns']);
+              this.utilityService.popupSuccess("Campaign successfully started.");
+              this.router.navigate(["campaigns"]);
             }, onError => {
               this.utilityService.popupError("Campaign could not be started.");
             }
           );
         } else {
-          this.utilityService.popupSuccess('Campaign successfully saved.');
-          this.router.navigate(['campaigns']);
+          this.utilityService.popupSuccess("Campaign successfully saved.");
+          this.router.navigate(["campaigns"]);
         }
       },
       onError => {
@@ -364,14 +364,14 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   }
 
   removeCondition(i: number) {
-    (this.form.controls['conditions'] as FormArray).removeAt(i);
+    (this.form.controls.conditions as FormArray).removeAt(i);
   }
 
   delete() {
     this.dialog.open(OkCancelModalComponent, {
       data: {
-        title: 'Delete campaign',
-        question: 'Do you really want to delete this campaign?',
+        title: "Delete campaign",
+        question: "Do you really want to delete this campaign?",
         buttons: {
           ok: true, cancel: true, reload: false
         }
@@ -379,8 +379,8 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     }).afterClosed().subscribe(result => {
       if (result) {
         this.campaignService.delete(this.id).subscribe(onNext => {
-          this.utilityService.popupSuccess('Campaign successfully deleted.');
-          this.router.navigate(['campaigns']);
+          this.utilityService.popupSuccess("Campaign successfully deleted.");
+          this.router.navigate(["campaigns"]);
         });
       }
     });
@@ -399,8 +399,8 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     }).afterClosed().subscribe(result => {
       if (result) {
         this.campaignService.stopCampaign(this.id!).subscribe(onNext => {
-          this.utilityService.popupSuccess('Campaign successfully terminated.');
-          this.router.navigate(['campaigns']);
+          this.utilityService.popupSuccess("Campaign successfully terminated.");
+          this.router.navigate(["campaigns"]);
         });
       }
     });
@@ -418,7 +418,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     }).afterClosed().subscribe(result => {
       if (result) {
         this.campaignService.pauseCampaign(this.id!).subscribe(onNext => {
-          this.utilityService.popupSuccess('Campaign successfully paused.');
+          this.utilityService.popupSuccess("Campaign successfully paused.");
           this.ngOnInit();
         });
       }
@@ -437,7 +437,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     }).afterClosed().subscribe(result => {
       if (result) {
         this.campaignService.resumeCampaign(this.id!).subscribe(onNext => {
-          this.utilityService.popupSuccess('Campaign successfully resumed.');
+          this.utilityService.popupSuccess("Campaign successfully resumed.");
           this.ngOnInit();
         });
       }

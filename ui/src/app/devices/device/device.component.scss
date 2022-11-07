@@ -1,3 +1,15 @@
+.device-info {
+  line-height: 1.3rem;
+
+  .label-text {
+    font-weight: bold;
+  }
+
+  .value-text {
+
+  }
+}
+
 .label {
   font-weight: 500;
   width: 200px;
@@ -27,7 +39,7 @@
 
 mat-error {
   text-align: center;
-  background-color:  #8b0101;
+  background-color: #8b0101;
   color: white;
   padding: 0.15rem;
   border-radius: 3px;

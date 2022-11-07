@@ -1,6 +1,6 @@
 package esthesis.service.agent.impl.service;
 
-import esthesis.common.AppConstants.Registry;
+import esthesis.common.AppConstants.NamedSetting;
 import esthesis.service.agent.dto.AgentRegistrationRequest;
 import esthesis.service.agent.dto.AgentRegistrationResponse;
 import esthesis.service.crypto.resource.CASystemResource;
@@ -9,8 +9,8 @@ import esthesis.service.dataflow.resource.DataflowSystemResource;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DeviceRegistration;
 import esthesis.service.device.resource.DeviceSystemResource;
-import esthesis.service.registry.dto.RegistryEntry;
-import esthesis.service.registry.resource.RegistrySystemResource;
+import esthesis.service.settings.dto.Setting;
+import esthesis.service.settings.resource.SettingsSystemResource;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -34,7 +34,7 @@ public class AgentService {
 
   @Inject
   @RestClient
-  RegistrySystemResource registrySystemResource;
+  SettingsSystemResource settingsSystemResource;
 
   @Inject
   @RestClient
@@ -71,7 +71,8 @@ public class AgentService {
 
     // Find the root CA to be pushed to the device.
     ObjectId rootCaId =
-        registrySystemResource.findByName(Registry.DEVICE_ROOT_CA).asObjectId();
+        settingsSystemResource.findByName(NamedSetting.DEVICE_ROOT_CA)
+            .asObjectId();
     if (rootCaId == null) {
       log.warn("Root CA is not set.");
     } else {
@@ -92,8 +93,8 @@ public class AgentService {
     }
 
     // Set provisioning URL.
-    RegistryEntry provisioningUrl =
-        registrySystemResource.findByName(Registry.DEVICE_PROVISIONING_URL);
+    Setting provisioningUrl =
+        settingsSystemResource.findByName(NamedSetting.DEVICE_PROVISIONING_URL);
     if (provisioningUrl != null) {
       agentRegistrationResponse.setProvisioningUrl(provisioningUrl.getValue());
     } else {

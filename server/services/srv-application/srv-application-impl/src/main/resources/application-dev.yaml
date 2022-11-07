@@ -8,8 +8,6 @@ quarkus:
       #        level: DEBUG
       esthesis:
         level: DEBUG
-    #      "org.jboss.resteasy.reactive.client.logging":
-    #        level: DEBUG
     #      "io.quarkus.oidc.token.propagation.reactive":
     #        level: DEBUG
     handler:

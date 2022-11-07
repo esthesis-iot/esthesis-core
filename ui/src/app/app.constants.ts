@@ -14,12 +14,18 @@ export const AppConstants = {
 
   // Device settings.
   DEVICE: {
-    STATE: {
+    STATUS: {
       DISABLED: "DISABLED",
       PREREGISTERED: "PREREGISTERED",
       REGISTERED: "REGISTERED",
       APPROVAL: "APPROVAL"
     },
+
+    SETTING: {
+      DEVICE_GEO_LAT: "DEVICE_GEO_LAT",
+      DEVICE_GEO_LON: "DEVICE_GEO_LON"
+    },
+
     COMMANDS: {
       EXECUTE: "EXECUTE",
       HEALTH: "HEALTH",
@@ -34,37 +40,6 @@ export const AppConstants = {
   USER_STATUS: {
     DISABLED: 0,
     ENABLED: 1
-  },
-
-  // Available formatters for field values.
-  FIELD_VALUE_FORMATTER: {
-    DATE_SHORT: "DATE_SHORT",
-    DATE_MEDIUM: "DATE_MEDIUM",
-    DATE_LONG: "DATE_LONG",
-    DATETIME_SHORT: "DATETIME_SHORT",
-    DATETIME_MEDIUM: "DATETIME_MEDIUM",
-    DATETIME_LONG: "DATETIME_LONG",
-    DURATION_MSEC: "DURATION_MSEC",
-    BYTES_TO_MB: "BYTES_TO_MB",
-    BYTES_TO_GB: "BYTES_TO_GB",
-    FAHRENHEIT_TO_CELCIUS: "FAHRENHEIT_TO_CELCIUS",
-    CELCIUS_TO_FAHRENHEIT: "CELCIUS_TO_FAHRENHEIT"
-  },
-
-  // Measurement types.
-  MEASUREMENT_TYPE: {
-    TELEMETRY: "TELEMETRY",
-    METADATA: "METADATA"
-  },
-
-  // The different types of NiFiSinks handlers.
-  HANDLER: {
-    PING: 1,
-    METADATA: 2,
-    TELEMETRY: 3,
-    SYSLOG: 4,
-    FILESYSTEM: 5,
-    COMMAND: 6
   },
 
   // Campaign constants.
@@ -113,20 +88,12 @@ export const AppConstants = {
     }
   },
 
-  DASHBOARD: {
-    WIDGETS: {
-      SENSOR_VALUE: "sensorValue",
-      SENSOR_GAUGE: "sensorGauge",
-      MAP: "map"
-    }
-  },
-
   DIALOG_RESULT: {
     CANCEL: 0,
     SAVE: 1,
     DELETE: 2,
     OK: 3
   },
-  
+
 };
 

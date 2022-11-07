@@ -1,17 +1,17 @@
 <form novalidate [formGroup]="form" fxLayout="column">
   <div class="inline-header">Registration mode</div>
-  <mat-radio-group formControlName="DEVICE_REGISTRATION_MODE" class="xs-mt2">
+  <mat-radio-group formControlName="DEVICE_REGISTRATION_MODE">
     <h4>
       <mat-radio-button value="DISABLED">Disabled</mat-radio-button>
     </h4>
     <div>No devices can be registered with the platform.</div>
 
-    <h4 class="xs-mt1">
+    <h4>
       <mat-radio-button value="OPEN">Open registration</mat-radio-button>
     </h4>
     <div>Allow any device to be registered with the platform.</div>
 
-    <h4 class="xs-mt1">
+    <h4>
       <mat-radio-button value="OPEN_WITH_APPROVAL">Open registration with approval
       </mat-radio-button>
     </h4>
@@ -21,7 +21,7 @@
       platform.
     </div>
 
-    <h4 class="xs-mt1">
+    <h4>
       <mat-radio-button value="ID">Preregistered ID</mat-radio-button>
     </h4>
     <div>Devices can only register using a unique
@@ -29,7 +29,7 @@
     </div>
   </mat-radio-group>
 
-  <div class="inline-header xs-mt2">Tag selection algorithm</div>
+  <div class="inline-header">Tag selection algorithm</div>
   <mat-form-field>
     <mat-select formControlName="DEVICE_TAGS_ALGORITHM"
                 required>
@@ -38,7 +38,7 @@
     </mat-select>
   </mat-form-field>
 
-  <div class="inline-header xs-mt1">Root Certificate Authority</div>
+  <div class="inline-header">Root Certificate Authority</div>
   <mat-form-field>
     <mat-select formControlName="DEVICE_ROOT_CA">
       <mat-option *ngFor="let o of cas" [value]="o.id">
@@ -48,6 +48,6 @@
   </mat-form-field>
 </form>
 
-<div class="xs-pt2">
+<div>
   <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
 </div>

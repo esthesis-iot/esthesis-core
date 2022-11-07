@@ -1,22 +1,22 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {BaseComponent} from '../shared/component/base-component';
-import {MatTableDataSource} from '@angular/material/table';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {MatSort} from '@angular/material/sort';
-import {MatPaginator} from '@angular/material/paginator';
-import {Router} from '@angular/router';
-import {StoreDto} from '../dto/store-dto';
-import {StoresService} from './stores.service';
-import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
-import {QFormsService} from '@qlack/forms';
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {BaseComponent} from "../shared/component/base-component";
+import {MatTableDataSource} from "@angular/material/table";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {MatSort} from "@angular/material/sort";
+import {MatPaginator} from "@angular/material/paginator";
+import {Router} from "@angular/router";
+import {StoreDto} from "../dto/store-dto";
+import {StoresService} from "./stores.service";
+import {debounceTime, distinctUntilChanged} from "rxjs/operators";
+import {QFormsService} from "@qlack/forms";
 
 @Component({
-  selector: 'app-stores',
-  templateUrl: './stores.component.html',
-  styleUrls: ['./stores.component.scss']
+  selector: "app-stores",
+  templateUrl: "./stores.component.html",
+  styleUrls: ["./stores.component.scss"]
 })
 export class StoresComponent extends BaseComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['name', 'createdOn'];
+  displayedColumns = ["name", "createdOn"];
   datasource: MatTableDataSource<StoreDto> = new MatTableDataSource<StoreDto>();
   filterForm: FormGroup;
 
@@ -29,7 +29,7 @@ export class StoresComponent extends BaseComponent implements OnInit, AfterViewI
               private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
-      name: ['', null]
+      name: ["", null]
     });
   }
 

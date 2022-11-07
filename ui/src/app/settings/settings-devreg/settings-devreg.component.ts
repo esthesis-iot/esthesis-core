@@ -6,7 +6,7 @@ import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
 import {CasService} from "../../cas/cas.service";
 import {CaDto} from "../../dto/ca-dto";
-import {RegistryEntryDto} from "../../dto/registry-entry-dto";
+import {SettingDto} from "../../dto/setting-dto";
 
 @Component({
   selector: "app-settings-devreg",
@@ -34,9 +34,9 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
     this.settingsService.findByNames(
       "DEVICE_REGISTRATION_MODE,DEVICE_TAGS_ALGORITHM,DEVICE_ROOT_CA"
     ).subscribe(onNext => {
-      onNext.forEach(registryEntryDto => {
-        if (registryEntryDto != null) {
-          this.form.controls[registryEntryDto.name].patchValue(registryEntryDto.value);
+      onNext.forEach(setting => {
+        if (setting != null) {
+          this.form.controls[setting.name].patchValue(setting.value);
         }
       });
     });
@@ -53,7 +53,7 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
   save() {
     this.settingsService.save(
       _.map(Object.keys(this.form.controls), (fc) => {
-        return new RegistryEntryDto(fc, this.form.get(fc)!.value);
+        return new SettingDto(fc, this.form.get(fc)!.value);
       })).subscribe(onNext => {
       this.utilityService.popupSuccess("Settings saved successfully.");
     });

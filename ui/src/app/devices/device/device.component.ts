@@ -10,14 +10,11 @@ import {UtilityService} from "../../shared/service/utility.service";
 import {
   OkCancelModalComponent
 } from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
-import {sprintf} from "sprintf-js";
-import {FieldDto} from "../../dto/field-dto";
-import {FormatterService} from "../../shared/service/formatter.service";
 import {SettingsService} from "../../settings/settings.service";
 import {QFormsService} from "@qlack/forms";
 import {DeviceDto} from "../../dto/device-dto";
 import {AppConstants} from "../../app.constants";
-import {NiFiService} from "../../infrastructure/infrastructure-nifi/nifi.service";
+import {DevicePageFieldDataDto} from "../../dto/device-page-field-data-dto";
 
 @Component({
   selector: "app-device",
@@ -25,63 +22,52 @@ import {NiFiService} from "../../infrastructure/infrastructure-nifi/nifi.service
   styleUrls: ["./device.component.scss"]
 })
 export class DeviceComponent extends BaseComponent implements OnInit, AfterViewInit {
+  id!: string | null;
+  deviceInfoForm!: FormGroup;
+
+  device: DeviceDto | undefined;
+
   availableTags: TagDto[] | undefined;
-  form!: FormGroup;
-  id!: number;
-  fields!: FieldDto[];
+  fields!: DevicePageFieldDataDto[];
   fieldsValues!: Map<string, any>;
-  fetchingDeviceData = true;
-  deviceHasGeolocation = false;
   hardwareId = "";
   // Expose application constants.
   constants = AppConstants;
-  isNiFiConfigured = false;
-  hasActiveNiFi = false;
-  hasDTUrl = false;
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
     private qForms: QFormsService, private tagService: TagService,
     private devicesService: DevicesService, private route: ActivatedRoute,
     private router: Router, private utilityService: UtilityService,
-    private formatterService: FormatterService,
-    private settingsService: SettingsService, private nifiService: NiFiService) {
+    private settingsService: SettingsService) {
     super();
   }
 
   ngAfterViewInit(): void {
     // If viewing an existing device, fetch data for it.
-    if (this.id && this.id !== 0) {
-      let latSetting: string;
-      let lonSetting: string;
-      this.settingsService.findByNames("DEVICE_GEO_LAT,DEVICE_GEO_LON").subscribe(onNext => {
-        onNext.forEach(registryEntryDTO => {
-          if (registryEntryDTO.name === "DEVICE_GEO_LAT") {
-            latSetting = registryEntryDTO.value;
-          }
-          if (registryEntryDTO.name === "DEVICE_GEO_LON") {
-            lonSetting = registryEntryDTO.value;
-          }
-        });
-      });
-    }
+    // if (this.id && this.id !== this.constants.NEW_RECORD_ID) {
+    //   let latSetting: string;
+    //   let lonSetting: string;
+    //   this.settingsService.findByNames("DEVICE_GEO_LAT,DEVICE_GEO_LON").subscribe(onNext => {
+    //     onNext.forEach(registryEntryDTO => {
+    //       if (registryEntryDTO.name === "DEVICE_GEO_LAT") {
+    //         latSetting = registryEntryDTO.value;
+    //       }
+    //       if (registryEntryDTO.name === "DEVICE_GEO_LON") {
+    //         lonSetting = registryEntryDTO.value;
+    //       }
+    //     });
+    //   });
+    // }
   }
 
   ngOnInit() {
+    this.id = this.route.snapshot.paramMap.get("id");
 
-    this.nifiService.getActive().subscribe(value => {
-      this.hasActiveNiFi = value?.id != null;
-      this.hasDTUrl = value?.dtUrl != null;
-      this.isNiFiConfigured = this.hasActiveNiFi && this.hasDTUrl;
-    });
-
-    // Check if an edit is performed and fetch data.
-    this.id = Number(this.route.snapshot.paramMap.get("id"));
-
-    // Setup the form.
-    this.form = this.fb.group({
+    // Set up the Device Info form.
+    this.deviceInfoForm = this.fb.group({
       id: [""],
       tags: [[]],
-      state: ["", [Validators.required, Validators.maxLength(32)]],
+      status: ["", [Validators.required, Validators.maxLength(32)]],
       hardwareId: ["", [Validators.required, Validators.maxLength(512)]]
     });
 
@@ -90,9 +76,11 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
       this.availableTags = onNext.content;
     });
 
-    if (this.id && this.id !== 0) {
+    // Check if an edit is performed and fetch the data for this device.
+    if (this.id && this.id !== this.constants.NEW_RECORD_ID) {
       this.devicesService.findById(this.id).subscribe(onNext => {
-        this.form.patchValue(onNext);
+        this.device = onNext;
+        this.deviceInfoForm.patchValue(onNext);
         this.hardwareId = onNext.hardwareId;
       });
     }
@@ -102,31 +90,31 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
 
   private updateTelemetryMetadata() {
     this.fieldsValues = new Map<string, any>();
-    this.devicesService.getDevicePageData(this.id!).subscribe(fieldsValues => {
-      this.fields = fieldsValues;
-      // Update field values formatting.
-      this.fields!.forEach(field => {
-        let formatter;
-        if (!field.formatter) {
-          formatter = "%s";
-        } else {
-          formatter = field.formatter;
-        }
-        let value;
-        if (field.valueHandler) {
-          value = this.formatterService.format(field.valueHandler, field.value);
-        } else {
-          value = field.value;
-        }
-        this.fieldsValues!.set(field.measurement + "." + field.field, sprintf(formatter, value));
-      });
-      this.fetchingDeviceData = false;
-    });
+    // this.devicesService.getDevicePageData(this.id!).subscribe(fieldsValues => {
+    //   this.fields = fieldsValues;
+    //   // Update field values formatting.
+    //   this.fields!.forEach(field => {
+    //     let formatter;
+    //     if (!field.formatter) {
+    //       formatter = "%s";
+    //     } else {
+    //       formatter = field.formatter;
+    //     }
+    //     let value;
+    //     if (field.valueHandler) {
+    //       value = this.formatterService.format(field.valueHandler, field.value);
+    //     } else {
+    //       value = field.value;
+    //     }
+    //     this.fieldsValues!.set(field.measurement + "." + field.field, sprintf(formatter, value));
+    //   });
+    //   this.fetchingDeviceData = false;
+    // });
   }
 
-  save() {
+  saveDeviceInfo() {
     this.devicesService.save(
-      this.qForms.cleanupData(this.form.getRawValue()) as DeviceDto).subscribe(
+      this.qForms.cleanupData(this.deviceInfoForm.getRawValue()) as DeviceDto).subscribe(
       onNext => {
         this.utilityService.popupSuccess("Device successfully saved.");
         this.router.navigate(["devices"]);

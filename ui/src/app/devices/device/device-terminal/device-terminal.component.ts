@@ -1,17 +1,17 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
-import {NgTerminal} from 'ng-terminal';
-import {DeviceTerminalService} from './device-terminal.service';
-import {CommandExecuteOrderDto} from '../../../dto/command-execute-order-dto';
+import {AfterViewInit, Component, Input, OnInit, ViewChild} from "@angular/core";
+import {NgTerminal} from "ng-terminal";
+import {DeviceTerminalService} from "./device-terminal.service";
+import {CommandExecuteOrderDto} from "../../../dto/command-execute-order-dto";
 
 @Component({
-  selector: 'app-device-terminal',
-  templateUrl: './device-terminal.component.html',
+  selector: "app-device-terminal",
+  templateUrl: "./device-terminal.component.html",
   styleUrls: []
 })
 export class DeviceTerminalComponent implements AfterViewInit {
   @Input() hardwareId!: string;
-  @ViewChild('term', {static: true}) terminal!: NgTerminal;
-  private command = '';
+  @ViewChild("term", {static: true}) terminal!: NgTerminal;
+  private command = "";
   private blockInput = false;
 
   constructor(private deviceTerminalService: DeviceTerminalService) {
@@ -25,13 +25,13 @@ export class DeviceTerminalComponent implements AfterViewInit {
   private getReply(requestId: number) {
     this.deviceTerminalService.getReply(requestId).subscribe(
       onNext => {
-        let output = '';
+        let output = "";
         if (onNext && onNext.payload) {
-          output = onNext.payload.replace(/\n/g, '\n\r');
+          output = onNext.payload.replace(/\n/g, "\n\r");
           this.terminal.write(output);
         }
         this.blockInput = false;
-        this.terminal.write('$ ');
+        this.terminal.write("$ ");
       },
       onError => {
         this.terminal.write(this.termColorRed("ERROR: Timeout waiting for device to reply.\n"));
@@ -46,12 +46,12 @@ export class DeviceTerminalComponent implements AfterViewInit {
       const cmd: CommandExecuteOrderDto = {
         arguments: this.command,
         hardwareIds: this.hardwareId,
-        command: '',
-        description: '',
-        tags: ''
+        command: "",
+        description: "",
+        tags: ""
       };
       this.blockInput = true;
-      this.command = '';
+      this.command = "";
       this.deviceTerminalService.executeCommand(cmd).subscribe(
         onNext => {
           this.getReply(Object.values(onNext)[0]);
@@ -63,7 +63,7 @@ export class DeviceTerminalComponent implements AfterViewInit {
         }
       );
     } else {
-      this.terminal.write('$ ');
+      this.terminal.write("$ ");
     }
   }
 
@@ -74,12 +74,12 @@ export class DeviceTerminalComponent implements AfterViewInit {
         const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey;
 
         if (ev.keyCode === 13) {  // ENTER
-          this.terminal.write('\r\n');
+          this.terminal.write("\r\n");
           this.executeCommand();
         } else if (ev.keyCode === 8) { // BACKSPACE
           // Do not delete the prompt
           if (this.terminal.underlying.buffer.active.cursorX > 2) {
-            this.terminal.write('\b \b');
+            this.terminal.write("\b \b");
           }
           if (this.command.length > 0) {
             this.command = this.command.substr(0, this.command.length - 1);
@@ -91,7 +91,7 @@ export class DeviceTerminalComponent implements AfterViewInit {
       }
     });
 
-    this.terminal.write('$ ');
+    this.terminal.write("$ ");
   }
 
 }

@@ -1,20 +1,20 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {BaseComponent} from '../shared/component/base-component';
-import {MatTableDataSource} from '@angular/material/table';
-import {MatPaginator} from '@angular/material/paginator';
-import {QFormsService} from '@qlack/forms';
-import {CampaignsService} from './campaigns.service';
-import {CampaignDto} from '../dto/campaign-dto';
-import {MatSort} from '@angular/material/sort';
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {BaseComponent} from "../shared/component/base-component";
+import {MatTableDataSource} from "@angular/material/table";
+import {MatPaginator} from "@angular/material/paginator";
+import {QFormsService} from "@qlack/forms";
+import {CampaignsService} from "./campaigns.service";
+import {CampaignDto} from "../dto/campaign-dto";
+import {MatSort} from "@angular/material/sort";
 import {AppConstants} from "../app.constants";
 
 @Component({
-  selector: 'app-campaigns',
-  templateUrl: './campaigns.component.html',
-  styleUrls: ['./campaigns.component.scss']
+  selector: "app-campaigns",
+  templateUrl: "./campaigns.component.html",
+  styleUrls: ["./campaigns.component.scss"]
 })
 export class CampaignsComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['name', 'type', 'state', 'startedOn', 'terminatedOn'];
+  columns = ["name", "type", "state", "startedOn", "terminatedOn"];
   datasource = new MatTableDataSource<CampaignDto>();
   // Expose application constants.
   constants = AppConstants;

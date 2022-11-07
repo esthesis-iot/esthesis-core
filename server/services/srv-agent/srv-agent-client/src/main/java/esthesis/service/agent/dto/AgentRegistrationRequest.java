@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class AgentRegistrationRequest {
 
+  // The hardware ID of the device.
   private String hardwareId;
 
   // Comma-separated list of tags.

@@ -37,7 +37,7 @@
               <div class="header">DEVICES</div>
               <div class="nowrap">{{campaignStats?.allMembers | number}}</div>
             </div>
-            <div class="info xs-ml6">
+            <div>
               <div class="header">SUCCESS</div>
               <div class="nowrap">{{campaignStats?.successRate | number}}%</div>
             </div>
@@ -155,7 +155,7 @@
             </mat-form-field>
           </div>
 
-          <div fxLayout="row" class="xs-mt2" *ngIf="!formDisabled">
+          <div fxLayout="row" *ngIf="!formDisabled">
             <button mat-button (click)="addDeviceOrTag()">ADD</button>
             <button matSuffix mat-button [matMenuTriggerFor]="groupMenu">ADD IN GROUP</button>
             <mat-menu #groupMenu="matMenu" yPosition="below">
@@ -173,7 +173,7 @@
             </mat-menu>
           </div>
 
-          <div class="xs-mt1 devices-list">
+          <div class="devices-list">
             <div *ngFor="let group of memberGroups; index as i" class="device-group"
                  fxLayout="column">
               <div fxLayout="row" class="group" fxLayoutAlign="space-between center">

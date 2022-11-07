@@ -11,7 +11,6 @@ import {MatTableModule} from "@angular/material/table";
 import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {GridsterModule} from "angular-gridster2";
 import {MatButtonModule} from "@angular/material/button";
-import {DashboardAddWidgetComponent} from "./dashboard-add-widget.component";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
@@ -24,7 +23,6 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
 @NgModule({
   declarations: [
     DashboardComponent,
-    DashboardAddWidgetComponent,
   ],
   imports: [
     CommonModule,

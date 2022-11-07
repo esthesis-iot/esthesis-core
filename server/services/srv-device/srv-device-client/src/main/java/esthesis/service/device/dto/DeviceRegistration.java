@@ -18,6 +18,8 @@ public class DeviceRegistration {
 
   @NotNull
   private String ids;
+
+  // The list of tag names this device supports.
   @Singular
   private List<String> tags;
 }

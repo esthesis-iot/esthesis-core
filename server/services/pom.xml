@@ -81,12 +81,11 @@
     </dependency>
   </dependencies>
 
-
   <modules>
     <module>srv-common</module>
     <module>srv-device</module>
     <module>srv-tag</module>
-    <module>srv-registry</module>
+    <module>srv-settings</module>
     <module>srv-crypto</module>
     <module>srv-kubernetes</module>
     <module>srv-dataflow</module>

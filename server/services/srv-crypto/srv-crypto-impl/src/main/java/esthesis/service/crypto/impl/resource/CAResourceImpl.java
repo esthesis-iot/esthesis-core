@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.slugify.Slugify;
 import esthesis.common.exception.QMismatchException;
+import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
-import esthesis.service.common.paging.PageReplyFilter;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.dto.Ca;
 import esthesis.service.crypto.dto.form.ImportCaForm;
@@ -33,7 +33,7 @@ public class CAResourceImpl implements CAResource {
   @GET
   @Override
   @Path("/v1/ca/find")
-  @PageReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,content.parentCaId,content.type,content.validity")
+  @JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,content.parentCaId,content.type,content.validity")
   public Page<Ca> find(@BeanParam Pageable pageable) {
     return caService.find(pageable);
   }
@@ -41,7 +41,7 @@ public class CAResourceImpl implements CAResource {
   @GET
   @Override
   @Path("/v1/ca/{id}")
-  @PageReplyFilter(filter = "id,cn,issued,parentCa,type,validity,parentCaId")
+  @JSONReplyFilter(filter = "id,cn,issued,parentCa,type,validity,parentCaId")
   public Ca findById(ObjectId id) {
     return caService.findById(id);
   }
@@ -49,7 +49,7 @@ public class CAResourceImpl implements CAResource {
   @GET
   @Override
   @Path("/v1/ca/eligible-for-signing")
-  @PageReplyFilter(filter = "id,cn")
+  @JSONReplyFilter(filter = "id,cn")
   public List<Ca> getEligbleForSigning() {
     return caService.getEligibleForSigning();
   }

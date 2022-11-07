@@ -3,7 +3,7 @@ package esthesis.service.device.resource;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.Device;
-import esthesis.service.device.dto.DevicePage;
+import esthesis.service.device.dto.DeviceProfileField;
 import esthesis.service.device.dto.DeviceRegistration;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.io.IOException;
@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
+import java.util.Map;
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.DELETE;
@@ -38,21 +39,21 @@ public interface DeviceResource {
          InvalidKeySpecException, NoSuchProviderException;
 
   @PUT
-  @Path("/v1/device/activate/{id}")
+  @Path("/v1/device/activate/{hardwareId}")
   Device activatePreregisteredDevice(
-      @PathParam(value = "id") String hardwareId);
+      @PathParam(value = "hardwareId") String hardwareId);
 
   @GET
   @Path("/v1/device/find")
   Page<Device> find(@BeanParam Pageable pageable);
 
   @GET
-  @Path("/v1/device/{id}")
-  Device get(@PathParam("id") ObjectId id);
+  @Path("/v1/device/{deviceId}")
+  Device get(@PathParam("deviceId") ObjectId id);
 
   @DELETE
-  @Path("/v1/device/{id}")
-  void delete(@PathParam("id") ObjectId id);
+  @Path("/v1/device/{deviceId}")
+  void delete(@PathParam("deviceId") ObjectId id);
 
   @POST
   @Path("/v1/device")
@@ -62,26 +63,6 @@ public interface DeviceResource {
   @Path("/v1/device/{deviceId}/keys")
   @SuppressWarnings("java:S1192")
   Response downloadKeys(@PathParam("deviceId") ObjectId deviceId);
-
-  @GET
-  @Path("/v1/device/device-page-data/{deviceId}")
-  List<DevicePage> getDevicePageData(@PathParam("deviceId") long deviceId);
-
-  /**
-   * Returns the last value of a specific telemetry or metadata field for a
-   * device.
-   *
-   * @param deviceId The Id of the device to fetch the field value for.
-   * @param fields   The name of the telemetry or metadata field to fetch. The
-   *                 field needs to follow the following format:
-   *                 TYPE.MEASUREMENT.FIELD For example,
-   *                 TELEMETRY.geolocation.latitude. Multiple fields can be
-   *                 requested separated by comma.
-   */
-  @GET
-  @Path("/v1/device/device-data-field/{deviceId}")
-  List<DevicePage> getDeviceDataFields(@PathParam("deviceId") long deviceId,
-      @QueryParam("fields") String fields);
 
   @GET
   @Path("/v1/device/count/by-hardware-id")
@@ -96,4 +77,22 @@ public interface DeviceResource {
   List<Device> findByPartialHardwareId(
       @PathParam("hardwareId") String hardwareId);
 
+  @GET
+  @Path("/v1/device/{deviceId}/device-profile/")
+  List<DeviceProfileField> getDeviceProfile(
+      @PathParam("deviceId") String deviceId);
+
+  @POST
+  @Path("/v1/device/{deviceId}/device-profile")
+  List<DeviceProfileField> saveDeviceProfile(Map<String, String> fields,
+      @PathParam("deviceId") String deviceId);
+
+  @POST
+  @Path("/v1/device/device-profile/add-field")
+  DeviceProfileField addDeviceProfileField(DeviceProfileField field);
+
+  @DELETE
+  @Path("/v1/device/{deviceId}/device-profile/delete-field")
+  void deleteDeviceProfileField(@PathParam("deviceId") String deviceId,
+      @QueryParam("keyName") String keyName);
 }

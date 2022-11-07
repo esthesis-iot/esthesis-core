@@ -2,25 +2,29 @@ package esthesis.services.device.impl.resource;
 
 import com.github.slugify.Slugify;
 import esthesis.common.exception.QAlreadyExistsException;
+import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.common.validation.CVException;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DeviceKey;
-import esthesis.service.device.dto.DevicePage;
+import esthesis.service.device.dto.DeviceProfileField;
 import esthesis.service.device.dto.DeviceRegistration;
 import esthesis.service.device.resource.DeviceResource;
+import esthesis.services.device.impl.service.DeviceProfileService;
 import esthesis.services.device.impl.service.DeviceService;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.HttpHeaders;
@@ -35,6 +39,9 @@ public class DeviceResourceImpl implements DeviceResource {
 
   @Inject
   DeviceService deviceService;
+
+  @Inject
+  DeviceProfileService deviceProfileService;
 
   @Inject
   JsonWebToken jwt;
@@ -64,7 +71,10 @@ public class DeviceResourceImpl implements DeviceResource {
     return deviceService.find(pageable, true);
   }
 
+  @GET
   @Override
+  @Path("/v1/device/{id}")
+  @JSONReplyFilter(filter = "hardwareId,id,status,tags,lastSeen")
   public Device get(@PathParam("id") ObjectId id) {
     return deviceService.findById(id, true);
   }
@@ -119,45 +129,6 @@ public class DeviceResourceImpl implements DeviceResource {
   }
 
   @Override
-//  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
-//      logMessage = "Could not fetch device page fields.")
-//  @ReplyFilter("-shown,-createdBy,-createdOn,-modifiedBy,-modifiedOn")
-  public List<DevicePage> getDevicePageData(
-      @PathParam("deviceId") long deviceId) {
-    return deviceService.getDevicePageData(deviceId);
-  }
-
-  /**
-   * Returns the last value of a specific telemetry or metadata field for a
-   * device.
-   *
-   * @param deviceId The Id of the device to fetch the field value for.
-   * @param fields   The name of the telemetry or metadata field to fetch. The
-   *                 field needs to follow the following format:
-   *                 TYPE.MEASUREMENT.FIELD For example,
-   *                 TELEMETRY.geolocation.latitude. Multiple fields can be
-   *                 requested separated by comma.
-   */
-  @Override
-//  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
-//      logMessage = "Could not fetch device page field.")
-//  @ReplyFilter("-shown,-createdBy,-createdOn,-modifiedBy,-modifiedOn")
-  public List<DevicePage> getDeviceDataFields(
-      @PathParam("deviceId") long deviceId,
-      @QueryParam("fields") String fields) {
-    List<DevicePage> results = new ArrayList<>();
-    for (String field : fields.split(",")) {
-      if (field.split("\\.").length < 3) {
-        throw new esthesis.common.exception.QMismatchException(
-            "Unsupported field name format.");
-      }
-      results.add(deviceService.getDeviceDataField(deviceId, field));
-    }
-
-    return results;
-  }
-
-  @Override
   public int countByHardwareId(@QueryParam("hardwareIds") String hardwareIds) {
     if (StringUtils.isBlank(hardwareIds)) {
       return 0;
@@ -176,6 +147,28 @@ public class DeviceResourceImpl implements DeviceResource {
   public List<Device> findByPartialHardwareId(
       @PathParam("hardwareId") String hardwareId) {
     return deviceService.findByPartialHardwareId(hardwareId);
+  }
+
+  @Override
+  public List<DeviceProfileField> getDeviceProfile(String deviceId) {
+    return deviceProfileService.getProfile(deviceId);
+  }
+
+  @Override
+  public List<DeviceProfileField> saveDeviceProfile(Map<String, String> fields,
+      String deviceId) {
+    return deviceProfileService.saveProfile(deviceId, fields);
+  }
+
+  @Override
+  public DeviceProfileField addDeviceProfileField(
+      DeviceProfileField field) {
+    return deviceProfileService.createProfileField(field);
+  }
+
+  @Override
+  public void deleteDeviceProfileField(String deviceId, String keyName) {
+    deviceProfileService.deleteProfileField(deviceId, keyName);
   }
 
 }

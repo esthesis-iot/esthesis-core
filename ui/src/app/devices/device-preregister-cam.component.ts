@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {MatDialogRef} from '@angular/material/dialog';
-import {BehaviorSubject} from 'rxjs';
-import {BarcodeFormat} from '@zxing/library';
+import {Component, OnInit} from "@angular/core";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {MatDialogRef} from "@angular/material/dialog";
+import {BehaviorSubject} from "rxjs";
+import {BarcodeFormat} from "@zxing/library";
 
 @Component({
-  selector: 'app-device-preregister-cam',
-  templateUrl: './device-preregister-cam.component.html',
+  selector: "app-device-preregister-cam",
+  templateUrl: "./device-preregister-cam.component.html",
   styleUrls: []
 })
 export class DevicePreregisterCamComponent implements OnInit {
@@ -33,7 +33,7 @@ export class DevicePreregisterCamComponent implements OnInit {
   ngOnInit() {
     // Setup the form.
     this.form = this.fb.group({
-      ids: ['', []],
+      ids: ["", []],
     });
   }
 
@@ -43,14 +43,14 @@ export class DevicePreregisterCamComponent implements OnInit {
   }
 
   onCodeResult(resultString: string) {
-    const existingIds: string = this.form.controls['ids'].value;
+    const existingIds: string = this.form.controls.ids.value;
     if (!existingIds) {
       this.beepOK();
-      this.form.controls['ids'].setValue(resultString);
+      this.form.controls.ids.setValue(resultString);
     } else {
       if (existingIds.indexOf(resultString) === -1) {
         this.beepOK();
-        this.form.controls['ids'].setValue(resultString + '\n' + existingIds);
+        this.form.controls.ids.setValue(resultString + "\n" + existingIds);
       } else {
         this.beepExists();
       }
@@ -79,12 +79,12 @@ export class DevicePreregisterCamComponent implements OnInit {
   }
 
   save() {
-    this.selfDialogRef.close(this.form.controls['ids'].value);
+    this.selfDialogRef.close(this.form.controls.ids.value);
   }
 
   private beep(frequency: number) {
-    let v = this.audioContext.createOscillator();
-    let u = this.audioContext.createGain();
+    const v = this.audioContext.createOscillator();
+    const u = this.audioContext.createGain();
     v.connect(u);
     v.frequency.value = frequency;
     v.type = "square";

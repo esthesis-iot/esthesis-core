@@ -1,7 +1,7 @@
 package esthesis.service.dataflow.impl.resource;
 
+import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
-import esthesis.service.common.paging.PageReplyFilter;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.dataflow.dto.Dataflow;
 import esthesis.service.dataflow.dto.DockerTags;
@@ -24,7 +24,7 @@ public class DataflowResourceImpl implements DataflowResource {
   @GET
   @Override
   @Path("/v1/dataflow/find")
-  @PageReplyFilter(filter = "content,content.id,content.name,content.type,"
+  @JSONReplyFilter(filter = "content,content.id,content.name,content.type,"
       + "content.status,content.description")
   public Page<Dataflow> find(@BeanParam Pageable pageable) {
     return dataflowService.find(pageable, true);

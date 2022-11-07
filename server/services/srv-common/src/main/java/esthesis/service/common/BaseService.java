@@ -1,14 +1,11 @@
 package esthesis.service.common;
 
-//import esthesis.common.dto.BaseDTO;
-//import esthesis.common.rest.Page;
-//import esthesis.common.rest.Pageable;
-//import io.quarkus.mongodb.panache.PanacheMongoRepository;
-
 import esthesis.common.dto.BaseDTO;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
+import io.quarkus.panache.common.Sort;
+import java.util.List;
 import javax.inject.Inject;
 import org.bson.types.ObjectId;
 
@@ -20,6 +17,14 @@ public abstract class BaseService<D extends BaseDTO> {
 
   public PanacheMongoRepository<D> getRepository() {
     return repository;
+  }
+
+  public List<D> getAll(String sortField, Sort.Direction sortDirection) {
+    return repository.listAll(Sort.by(sortField, sortDirection));
+  }
+
+  public List<D> getAll() {
+    return repository.listAll();
   }
 
   public D findByColumn(String column, String value,
@@ -103,5 +108,9 @@ public abstract class BaseService<D extends BaseDTO> {
 
   public void deleteById(ObjectId id) {
     repository.deleteById(id);
+  }
+
+  public void deleteAll() {
+    repository.deleteAll();
   }
 }

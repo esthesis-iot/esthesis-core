@@ -1,6 +1,6 @@
 package esthesis.service.crypto.impl.resource;
 
-import esthesis.common.AppConstants.Registry;
+import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.crypto.dto.Ca;
 import esthesis.service.crypto.dto.request.CertificateSignRequest;
@@ -11,8 +11,8 @@ import esthesis.service.crypto.impl.repository.CaRepository;
 import esthesis.service.crypto.impl.service.CertificateService;
 import esthesis.service.crypto.impl.service.KeyService;
 import esthesis.service.crypto.resource.KeyResource;
-import esthesis.service.registry.dto.RegistryEntry;
-import esthesis.service.registry.resource.RegistryResource;
+import esthesis.service.settings.dto.Setting;
+import esthesis.service.settings.resource.SettingsResource;
 import io.quarkus.security.Authenticated;
 import java.io.IOException;
 import java.security.KeyFactory;
@@ -37,7 +37,7 @@ public class KeyResourceImpl implements KeyResource {
 
   @Inject
   @RestClient
-  RegistryResource registryResource;
+  SettingsResource settingsResource;
 
   @Inject
   KeyService keyService;
@@ -53,12 +53,12 @@ public class KeyResourceImpl implements KeyResource {
   throws NoSuchAlgorithmException, NoSuchProviderException {
     CreateKeyPairRequest createKeyPairRequestDTO = new CreateKeyPairRequest();
     createKeyPairRequestDTO.setKeySize(
-        registryResource.findByName(Registry.SECURITY_ASYMMETRIC_KEY_SIZE)
+        settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_SIZE)
             .asInt());
     createKeyPairRequestDTO
         .setKeyPairGeneratorAlgorithm(
-            registryResource.findByName(
-                Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString());
+            settingsResource.findByName(
+                NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString());
 
     KeyPair keyPair = keyService.createKeyPair(createKeyPairRequestDTO);
 
@@ -83,8 +83,8 @@ public class KeyResourceImpl implements KeyResource {
   throws NoSuchAlgorithmException, InvalidKeySpecException,
          OperatorCreationException, IOException {
     // Find the CA defined in the registry.
-    RegistryEntry caRegistryEntry = registryResource.findByName(
-        Registry.DEVICE_ROOT_CA);
+    Setting caRegistryEntry = settingsResource.findByName(
+        NamedSetting.DEVICE_ROOT_CA);
     if (caRegistryEntry == null || StringUtils.isBlank(
         caRegistryEntry.getValue())) {
       throw new QDoesNotExistException(
@@ -93,14 +93,14 @@ public class KeyResourceImpl implements KeyResource {
     final Ca ca = caRepository.findById(caRegistryEntry.asObjectId());
 
     // Generate a certificate sign request.
-    PublicKey publicKey = KeyFactory.getInstance(registryResource.findByName(
-            Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
+    PublicKey publicKey = KeyFactory.getInstance(settingsResource.findByName(
+            NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
         .generatePublic(new X509EncodedKeySpec(
             createCertificateRequest.getCreateKeyPairResponse()
                 .getPublicKey()));
     PrivateKey privateKey = KeyFactory.getInstance(
-            registryResource.findByName(
-                Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
+            settingsResource.findByName(
+                NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
         .generatePrivate(
             new PKCS8EncodedKeySpec(
                 createCertificateRequest.getCreateKeyPairResponse()
@@ -110,16 +110,18 @@ public class KeyResourceImpl implements KeyResource {
         .setPrivateKey(privateKey)
         .setPublicKey(publicKey)
         .setSignatureAlgorithm(
-            registryResource.findByName(
-                Registry.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM).asString())
+            settingsResource.findByName(
+                    NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM)
+                .asString())
         .setSubjectCN(createCertificateRequest.getCn())
         .setValidForm(Instant.now())
         .setValidTo(ca.getValidity())
         .setIssuerCN(ca.getCn())
         .setIssuerPrivateKey(
             keyService.pemToPrivateKey(ca.getPrivateKey(),
-                registryResource.findByName(
-                    Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString()));
+                settingsResource.findByName(
+                        NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM)
+                    .asString()));
 
     // Sign the certificate.
     X509CertificateHolder x509CertificateHolder = certificateService.generateCertificate(

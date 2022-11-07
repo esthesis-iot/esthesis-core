@@ -179,6 +179,7 @@
     <module>common</module>
     <module>services</module>
     <module>dataflows</module>
+    <module>util</module>
   </modules>
 
 </project>

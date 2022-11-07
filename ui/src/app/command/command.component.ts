@@ -1,28 +1,27 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {Router} from '@angular/router';
-import {BaseComponent} from '../shared/component/base-component';
-import {CommandRequestDto} from '../dto/command-request-dto';
-import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
-import {TextModalComponent} from '../shared/component/display/text-modal/text-modal.component';
-import {CommandService} from './command.service';
-import {CommandReplyDto} from '../dto/command-reply-dto';
-import {CommandCreateComponent} from './command-create.component';
-import {QFormsService} from '@qlack/forms';
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {MatDialog} from "@angular/material/dialog";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
+import {MatTableDataSource} from "@angular/material/table";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {Router} from "@angular/router";
+import {BaseComponent} from "../shared/component/base-component";
+import {CommandRequestDto} from "../dto/command-request-dto";
+import {debounceTime, distinctUntilChanged} from "rxjs/operators";
+import {TextModalComponent} from "../shared/component/display/text-modal/text-modal.component";
+import {CommandService} from "./command.service";
+import {CommandReplyDto} from "../dto/command-reply-dto";
+import {CommandCreateComponent} from "./command-create.component";
+import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../app.constants";
-import {NiFiService} from '../infrastructure/infrastructure-nifi/nifi.service';
 
 @Component({
-  selector: 'app-command',
-  templateUrl: './command.component.html',
-  styleUrls: ['./command.component.scss']
+  selector: "app-command",
+  templateUrl: "./command.component.html",
+  styleUrls: ["./command.component.scss"]
 })
 export class CommandComponent extends BaseComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['command', 'description', 'hardwareId', 'createdOn', 'actions'];
+  displayedColumns = ["command", "description", "hardwareId", "createdOn", "actions"];
   dataSource: MatTableDataSource<CommandRequestDto> = new MatTableDataSource<CommandRequestDto>();
   filterForm: FormGroup;
   // Expose application constants.
@@ -37,17 +36,17 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router,
-              private commandService: CommandService, private dialog: MatDialog,
-              private qForms: QFormsService, private nifiService: NiFiService) {
+    private commandService: CommandService, private dialog: MatDialog,
+    private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
-      operation: ['', null],
+      operation: ["", null],
     });
   }
 
   private formatPayload(commandReply: CommandReplyDto): string {
     let retVal = commandReply.payload;
-    if (commandReply.payloadEncoding === 'base64') {
+    if (commandReply.payloadEncoding === "base64") {
       retVal = atob(commandReply.payload);
     }
 
@@ -55,13 +54,11 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   }
 
   ngOnInit() {
-    this.fetchActiveNifi();
     // Listen for filter changes to fetch new data.
     this.filterForm.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged()
     ).subscribe(onNext => {
-      this.fetchActiveNifi();
       this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
         this.sort.start);
     });
@@ -89,14 +86,6 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
     });
   }
 
-  fetchActiveNifi() {
-    this.nifiService.getActive().subscribe(value => {
-      this.hasActiveNifi = value?.id != null;
-      this.hasDTUrl = value?.dtUrl != null;
-      this.isNiFiConfigured = this.hasActiveNifi && this.hasDTUrl;
-    });
-  }
-
   changePage() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
       this.sort.start);
@@ -108,7 +97,7 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
 
   create() {
     this.dialog.open(CommandCreateComponent, {
-      width: '40%',
+      width: "40%",
     });
   }
 
@@ -120,7 +109,7 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
     this.commandService.getReply(requestId).subscribe(onNext => {
       this.dialog.open(TextModalComponent, {
         data: {
-          title: 'Command output',
+          title: "Command output",
           text: this.formatPayload(onNext)
         }
       });
@@ -128,7 +117,6 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   }
 
   refreshCurrentData() {
-    this.fetchActiveNifi();
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
       this.sort.direction);
   }

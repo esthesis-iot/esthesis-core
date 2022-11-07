@@ -28,7 +28,7 @@ stringData:
       static_configs:
         - targets: ["{{ .Values.global.devEnv.ip}}:59050"]
       metrics_path: "/q/metrics"
-    - job_name: "srv-registry"
+    - job_name: "srv-settings"
       static_configs:
         - targets: ["{{ .Values.global.devEnv.ip}}:59030"]
       metrics_path: "/q/metrics"

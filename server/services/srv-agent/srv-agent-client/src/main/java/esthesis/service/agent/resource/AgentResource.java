@@ -16,7 +16,8 @@ public interface AgentResource {
 
   @POST
   @Path(value = "/v1/agent/register")
-  AgentRegistrationResponse register(@Valid AgentRegistrationRequest agentRegistrationRequest)
+  AgentRegistrationResponse register(
+      @Valid AgentRegistrationRequest agentRegistrationRequest)
   throws NoSuchAlgorithmException, IOException, InvalidKeySpecException,
          OperatorCreationException, NoSuchProviderException;
 

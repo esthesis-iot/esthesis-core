@@ -37,14 +37,13 @@ export class UtilityService {
   }
 
   popupErrorWithTraceId(message: string, error: any): void {
-    console.log(error);
-    let traceId;
+    let traceId = "";
     try {
-      traceId = "(trace id: " + error.error.traceId + ")";
+      traceId = "\n\n(trace id: " + error.error.traceId + ")";
     } catch (e) {
       this.log.error("Could not parse error message to extract trace id.", e, error);
     }
-    this.snackBar.open(message + "\n\n" + traceId, "CLOSE", {
+    this.snackBar.open(message + traceId, "CLOSE", {
       duration: 10000,
       verticalPosition: "top",
       panelClass: "snackbar-red"
@@ -52,7 +51,6 @@ export class UtilityService {
   }
 
   popupParsableError(error: any): void {
-    console.log(error);
     let errorMessage = error;
     try {
       errorMessage = error.error.errorMessage + "\n\n" +

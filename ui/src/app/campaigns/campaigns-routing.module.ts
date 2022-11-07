@@ -1,11 +1,11 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {CampaignsComponent} from './campaigns.component';
-import {CampaignEditComponent} from './campaign/campaign-edit/campaign-edit.component';
+import {NgModule} from "@angular/core";
+import {RouterModule, Routes} from "@angular/router";
+import {CampaignsComponent} from "./campaigns.component";
+import {CampaignEditComponent} from "./campaign/campaign-edit/campaign-edit.component";
 
 const routes: Routes = [
-  {path: '', component: CampaignsComponent},
-  {path: ':id', component: CampaignEditComponent},
+  {path: "", component: CampaignsComponent},
+  {path: ":id", component: CampaignEditComponent},
 ];
 
 @NgModule({

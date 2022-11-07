@@ -1,7 +1,7 @@
 package esthesis.service.crypto.impl.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.common.AppConstants.Registry;
+import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QCouldNotSaveException;
 import esthesis.common.exception.QMismatchException;
@@ -12,7 +12,7 @@ import esthesis.service.crypto.dto.Certificate;
 import esthesis.service.crypto.dto.form.ImportCertificateForm;
 import esthesis.service.crypto.dto.request.CertificateSignRequest;
 import esthesis.service.crypto.dto.request.CreateKeyPairRequest;
-import esthesis.service.registry.resource.RegistryResource;
+import esthesis.service.settings.resource.SettingsResource;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -77,7 +77,7 @@ public class CertificateService extends BaseService<Certificate> {
 
   @Inject
   @RestClient
-  RegistryResource registryResource;
+  SettingsResource settingsResource;
 
   private boolean isValidIPV4Address(final String email) {
     Matcher matcher = ipv4Pattern.matcher(email);
@@ -228,11 +228,12 @@ public class CertificateService extends BaseService<Certificate> {
       // Generate a keypair.
       final KeyPair keyPair = keyService.createKeyPair(
           CreateKeyPairRequest.builder()
-              .keySize(registryResource.findByName(
-                  Registry.SECURITY_ASYMMETRIC_KEY_SIZE).asInt())
+              .keySize(settingsResource.findByName(
+                  NamedSetting.SECURITY_ASYMMETRIC_KEY_SIZE).asInt())
               .keyPairGeneratorAlgorithm(
-                  registryResource.findByName(
-                      Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
+                  settingsResource.findByName(
+                          NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM)
+                      .asString())
               .build()
       );
 
@@ -242,8 +243,8 @@ public class CertificateService extends BaseService<Certificate> {
           .setLocale(Locale.US)
           .setPrivateKey(keyPair.getPrivate())
           .setPublicKey(keyPair.getPublic())
-          .setSignatureAlgorithm(registryResource.findByName(
-              Registry.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM).asString())
+          .setSignatureAlgorithm(settingsResource.findByName(
+              NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM).asString())
           .setSubjectCN(certificate.getCn())
           .setValidForm(Instant.now())
           .setValidTo(certificate.getValidity());
@@ -260,8 +261,9 @@ public class CertificateService extends BaseService<Certificate> {
         certificateSignRequest.setIssuerPrivateKey(
             keyService.pemToPrivateKey(
                 ca.getPrivateKey(),
-                registryResource.findByName(
-                    Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString()));
+                settingsResource.findByName(
+                        NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM)
+                    .asString()));
       } else {
         certificateSignRequest.setIssuerCN(certificate.getCn());
         certificateSignRequest.setIssuerPrivateKey(keyPair.getPrivate());

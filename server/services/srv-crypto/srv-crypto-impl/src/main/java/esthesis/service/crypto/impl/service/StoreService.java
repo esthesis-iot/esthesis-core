@@ -1,13 +1,12 @@
 package esthesis.service.crypto.impl.service;
 
 import com.google.common.collect.ImmutableSet;
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Registry;
+import esthesis.common.AppConstants.NamedSetting;
 import esthesis.service.common.BaseService;
 import esthesis.service.crypto.dto.Ca;
 import esthesis.service.crypto.dto.Certificate;
 import esthesis.service.crypto.dto.Store;
-import esthesis.service.registry.resource.RegistryResource;
+import esthesis.service.settings.resource.SettingsResource;
 import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -42,7 +41,7 @@ public class StoreService extends BaseService<Store> {
 
   @Inject
   @RestClient
-  RegistryResource registryResource;
+  SettingsResource settingsResource;
 
   public byte[] download(ObjectId id)
   throws CertificateException, KeyStoreException, NoSuchAlgorithmException,
@@ -80,15 +79,15 @@ public class StoreService extends BaseService<Store> {
       Certificate certificate = certificateService.findById(certId);
       final PrivateKey privateKey = keyService
           .pemToPrivateKey(certificate.getPrivateKey(),
-              registryResource.findByName(
-                  Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString());
+              settingsResource.findByName(
+                  NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString());
 
       keystore = keystoreService
           .savePrivateKey(keystore, KEYSTORE_TYPE, KEYSTORE_PROVIDER,
               store.getPassword(),
               certificate.getCn(), privateKey.getEncoded(),
-              registryResource.findByName(
-                      AppConstants.Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM)
+              settingsResource.findByName(
+                      NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM)
                   .asString(),
               null, store.isPasswordForKeys() ? store.getPassword() : null,
               ImmutableSet.of(

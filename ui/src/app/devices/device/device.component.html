@@ -1,54 +1,57 @@
-<mat-card>
-  <div *ngIf="!isNiFiConfigured">
-    <mat-error>
-      {{!hasActiveNiFi ? 'No active NiFi instance found.' : 'No NiFi Digital Twin url found.'}}
-      Pseudo-terminal is disabled.
-    </mat-error>
-  </div>
-  <mat-card-title>Device <span class="hardware-id">{{hardwareId}}</span></mat-card-title>
-  <mat-card-content>
-    <form novalidate [formGroup]="form" fxLayout="column">
-      <mat-form-field style="max-width: 15rem">
-        <mat-select formControlName="state" placeholder="Status">
-          <mat-option *ngFor="let o of constants.DEVICE.STATE | keyvalue" [value]="o.value">
-            {{ lookupByValue(constants.DEVICE.STATE, o.value) }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <div fxLayout="column">
-        <div fxLayout="row" *ngIf="!fetchingDeviceData">
-          <div fxLayout="row wrap" fxFlex="80%" fxFlexAlign="start" *ngIf="!isArrayEmpty(fields)">
-            <div class="xs-mb05" fxLayout="row" fxFlex="40%"
-                 *ngFor="let field of fields; let i = index">
-              <div class="label">{{field.label ? field.label : field.field}}:</div>
-              <div [matTooltip]="getLastUpdatedDate(field.lastUpdatedOn)"
-                   class="value">{{fieldsValues.get(field.measurement + "." + field.field)}}</div>
-            </div>
+<div fxLayout="row" fxLayoutGap="1rem">
+  <div fxFlex="20rem" class="device-info">
+    <mat-card>
+      <form novalidate [formGroup]="deviceInfoForm" fxLayout="column">
+        <mat-card-title>Device</mat-card-title>
+        <mat-card-content>
+          <div class="label-text">Hardware ID</div>
+          <div class="value-text">{{device?.hardwareId}}</div>
+
+          <div class="label-text mt1">Last seen</div>
+          <div class="value-text" *ngIf="device?.lastSeen">
+            {{device?.lastSeen | amFromUtc | amLocal}}<br>
+            {{device?.lastSeen | amFromUtc | amLocal | amTimeAgo}}
           </div>
-        </div>
-        <div fxLayout="row" *ngIf="fetchingDeviceData">
-          <mat-spinner [diameter]="15" [strokeWidth]="1"></mat-spinner>
-        </div>
+          <div class="value-text" *ngIf="!device?.lastSeen">
+            Never
+          </div>
 
-        <mat-form-field class="xs-mt1" style="max-width: 15rem">
-          <mat-select placeholder="Tags" multiple formControlName="tags">
-            <mat-option *ngFor="let tag of availableTags" [value]="tag.id">{{tag.name}}</mat-option>
+          <div class="label-text mt1">Registration Status</div>
+          <mat-select formControlName="status">
+            <mat-option *ngFor="let o of constants.DEVICE.STATUS | keyvalue" [value]="o.value">
+              {{ lookupByValue(constants.DEVICE.STATUS, o.value) }}
+            </mat-option>
           </mat-select>
-        </mat-form-field>
 
-        <mat-card-actions>
-          <button mat-button [matMenuTriggerFor]="menu">DOWNLOAD
-            <mat-menu #menu="matMenu" xPosition="before">
-              <button mat-menu-item (click)="downloadKeys()">Cryptographic keys</button>
-            </mat-menu>
-          </button>
-          <button mat-button routerLink="/devices" fragment="mqtt">CANCEL</button>
-          <button mat-button color="accent" (click)="delete()" [disabled]="this.id == 0">DELETE
-          </button>
-          <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE
-          </button>
-        </mat-card-actions>
+          <div class="label-text mt1">Tags</div>
+          <mat-select multiple formControlName="tags">
+            <mat-option *ngFor="let tag of availableTags"
+                        [value]="tag.id">{{tag.name}}</mat-option>
+          </mat-select>
 
+          <div class="label-text mt1">Location</div>
+          <iframe src="https://maps.google.com/maps?q=35.856737,10.606619&z=15&output=embed"
+                  width="280" height="200" style="border:0" class="mt1"></iframe>
+        </mat-card-content>
+      </form>
+      <mat-card-actions>
+        <button mat-button [matMenuTriggerFor]="menu">DOWNLOAD
+          <mat-menu #menu="matMenu" xPosition="before">
+            <button mat-menu-item (click)="downloadKeys()">Cryptographic keys</button>
+          </mat-menu>
+        </button>
+        <button mat-button color="accent" (click)="delete()"
+                [disabled]="this.id == constants.NEW_RECORD_ID">DELETE
+        </button>
+        <button mat-button color="primary" (click)="saveDeviceInfo()"
+                [disabled]="deviceInfoForm.invalid">SAVE
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <div fxFlex>
+    <mat-card>
+      <mat-card-content>
         <mat-tab-group animationDuration="0ms">
           <mat-tab>
             <ng-template mat-tab-label>
@@ -59,7 +62,16 @@
               <app-device-profile></app-device-profile>
             </ng-template>
           </mat-tab>
-          <mat-tab [disabled]="!isNiFiConfigured">
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon>developer_board</mat-icon>
+              Data
+            </ng-template>
+            <ng-template matTabContent>
+              <app-device-data></app-device-data>
+            </ng-template>
+          </mat-tab>
+          <mat-tab>
             <ng-template mat-tab-label>
               <mat-icon>keyboard</mat-icon>
               Pseudo-terminal
@@ -69,7 +81,9 @@
             </ng-template>
           </mat-tab>
         </mat-tab-group>
-      </div>
-    </form>
-  </mat-card-content>
-</mat-card>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+</div>
+

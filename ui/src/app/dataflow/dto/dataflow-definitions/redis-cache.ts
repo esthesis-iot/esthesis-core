@@ -26,6 +26,10 @@ export const DATAFLOW_DEFINITION_REDIS_CACHE = {
         {
           key: "password", type: "input",
           props: {label: "The password to connect to Redis store", required: true, type: "password"}
+        },
+        {
+          key: "max-size", type: "input", defaultValue: "1024",
+          props: {label: "The maximum value size (in bytes) eligible for caching", required: true}
         }
       ]
     }, {

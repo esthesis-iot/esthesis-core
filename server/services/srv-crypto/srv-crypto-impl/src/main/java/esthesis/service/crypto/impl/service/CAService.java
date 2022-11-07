@@ -1,7 +1,7 @@
 package esthesis.service.crypto.impl.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.common.AppConstants.Registry;
+import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QCouldNotSaveException;
 import esthesis.common.exception.QMismatchException;
@@ -15,7 +15,7 @@ import esthesis.service.crypto.dto.request.CertificateSignRequest;
 import esthesis.service.crypto.dto.request.CreateCARequest;
 import esthesis.service.crypto.dto.request.CreateCARequest.CreateCARequestBuilder;
 import esthesis.service.crypto.dto.request.CreateKeyPairRequest;
-import esthesis.service.registry.resource.RegistryResource;
+import esthesis.service.settings.resource.SettingsResource;
 import io.quarkus.panache.common.Sort;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -43,7 +43,7 @@ public class CAService extends BaseService<Ca> {
 
   @Inject
   @RestClient
-  RegistryResource registryResource;
+  SettingsResource settingsResource;
 
   @Inject
   KeyService keyService;
@@ -74,17 +74,18 @@ public class CAService extends BaseService<Ca> {
     try {
       CreateCARequestBuilder createCARequestBuilder = CreateCARequest.builder()
           .createKeyPairRequest(CreateKeyPairRequest.builder()
-              .keySize(registryResource.findByName(
-                  Registry.SECURITY_ASYMMETRIC_KEY_SIZE).asInt())
-              .keyPairGeneratorAlgorithm(registryResource.findByName(
-                  Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
+              .keySize(settingsResource.findByName(
+                  NamedSetting.SECURITY_ASYMMETRIC_KEY_SIZE).asInt())
+              .keyPairGeneratorAlgorithm(settingsResource.findByName(
+                  NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
               .build())
           .subjectCN(ca.getCn())
           .locale(Locale.US)
           .serial(BigInteger.valueOf(1))
           .signatureAlgorithm(
-              registryResource.findByName(
-                  Registry.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM).asString())
+              settingsResource.findByName(
+                      NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM)
+                  .asString())
           .validFrom(Instant.now())
           .validTo(ca.getValidity());
 
@@ -93,8 +94,8 @@ public class CAService extends BaseService<Ca> {
         Ca parentCa = findById(ca.getParentCaId());
         createCARequestBuilder
             .issuerCN(parentCa.getCn())
-            .issuerPrivateKeyAlgorithm(registryResource.findByName(
-                Registry.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
+            .issuerPrivateKeyAlgorithm(settingsResource.findByName(
+                NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
             .issuerPrivateKey(parentCa.getPrivateKey());
         ca.setParentCa(parentCa.getCn());
       }

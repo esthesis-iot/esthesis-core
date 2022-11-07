@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.slugify.Slugify;
 import esthesis.common.exception.QMismatchException;
+import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
-import esthesis.service.common.paging.PageReplyFilter;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.dto.Certificate;
 import esthesis.service.crypto.dto.form.ImportCertificateForm;
@@ -13,7 +13,7 @@ import esthesis.service.crypto.impl.repository.CertificateRepository;
 import esthesis.service.crypto.impl.service.CertificateService;
 import esthesis.service.crypto.impl.service.KeyService;
 import esthesis.service.crypto.resource.CertificateResource;
-import esthesis.service.registry.resource.RegistryResource;
+import esthesis.service.settings.resource.SettingsResource;
 import io.quarkus.security.Authenticated;
 import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
@@ -33,7 +33,7 @@ public class CertificateResourceImpl implements CertificateResource {
 
   @Inject
   @RestClient
-  RegistryResource registryResource;
+  SettingsResource settingsResource;
 
   @Inject
   KeyService keyService;
@@ -50,7 +50,7 @@ public class CertificateResourceImpl implements CertificateResource {
   @GET
   @Override
   @Path("/v1/certificate/find")
-  @PageReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,content.parentCaId,content.type,content.validity")
+  @JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,content.parentCaId,content.type,content.validity")
   public Page<Certificate> find(@BeanParam Pageable pageable) {
     return certificateService.find(pageable);
   }
@@ -58,7 +58,7 @@ public class CertificateResourceImpl implements CertificateResource {
   @GET
   @Override
   @Path("/v1/certificate/{id}")
-  @PageReplyFilter(filter = "id,cn,issued,parentCa,type,validity,parentCaId")
+  @JSONReplyFilter(filter = "id,cn,issued,parentCa,type,validity,parentCaId")
   public Certificate findById(ObjectId id) {
     return certificateService.findById(id);
   }

@@ -28,10 +28,13 @@ import {DevicePreregisterCamComponent} from "./device-preregister-cam.component"
 import {MatListModule} from "@angular/material/list";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {DeviceProfileComponent} from "./device/device-profile/device-profile.component";
 import {DeviceTerminalComponent} from "./device/device-terminal/device-terminal.component";
 import {NgTerminalModule} from "ng-terminal";
 import {A11yModule} from "@angular/cdk/a11y";
+import {DeviceDataComponent} from "./device/device-data/device-data.component";
+import {DeviceProfileComponent} from "./device/device-profile/device-profile.component";
+import {FormlyModule} from "@ngx-formly/core";
+import {FormlyMaterialModule} from "@ngx-formly/material";
 
 @NgModule({
   declarations: [
@@ -39,8 +42,9 @@ import {A11yModule} from "@angular/cdk/a11y";
     DevicesComponent,
     DevicePreregisterComponent,
     DevicePreregisterCamComponent,
-    DeviceProfileComponent,
     DeviceTerminalComponent,
+    DeviceDataComponent,
+    DeviceProfileComponent,
   ],
   imports: [
     CommonModule,
@@ -69,7 +73,9 @@ import {A11yModule} from "@angular/cdk/a11y";
     MatProgressSpinnerModule,
     MatTooltipModule,
     NgTerminalModule,
-    A11yModule
+    A11yModule,
+    FormlyModule.forChild(),
+    FormlyMaterialModule
   ]
 })
 export class DevicesModule {

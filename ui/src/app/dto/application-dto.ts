@@ -1,4 +1,4 @@
-import {BaseDto} from './base-dto';
+import {BaseDto} from "./base-dto";
 
 export interface ApplicationDto extends BaseDto {
   name: string;

@@ -1,8 +1,10 @@
 package esthesis.service.dataflow.impl.service;
 
+import static esthesis.common.AppConstants.DFL_MQTT_CLIENT_NAME;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.slugify.Slugify;
-import esthesis.common.AppConstants.Registry;
+import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.AppConstants.TagsAlgorithm;
 import esthesis.common.data.MapUtils;
 import esthesis.service.common.BaseService;
@@ -13,7 +15,7 @@ import esthesis.service.dataflow.impl.docker.DockerClient;
 import esthesis.service.dataflow.impl.repository.DataflowRepository;
 import esthesis.service.kubernetes.dto.PodInfo;
 import esthesis.service.kubernetes.resource.KubernetesResource;
-import esthesis.service.registry.resource.RegistryResource;
+import esthesis.service.settings.resource.SettingsResource;
 import esthesis.service.tag.resource.TagResource;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +45,7 @@ public class DataflowService extends BaseService<Dataflow> {
 
   @Inject
   @RestClient
-  RegistryResource registryResource;
+  SettingsResource settingsResource;
 
   @Inject
   @RestClient
@@ -73,7 +75,6 @@ public class DataflowService extends BaseService<Dataflow> {
     MatchedMqttServer matchedMqttServer = new MatchedMqttServer();
 
     // The dataflow type representing an MQTT client.
-    final String MQTT_CLIENT_TYPE = "mqtt-client";
     final String MQTT_BROKER = "mqtt-broker";
     final String TAGS = "tags";
     final String MQTT_BROKER_ADVERTISED_URL = "advertised-url";
@@ -85,12 +86,13 @@ public class DataflowService extends BaseService<Dataflow> {
         .toList();
 
     // Find all dataflows of type MQTT client.
-    List<Dataflow> dataflows = dataflowRepository.findByType(MQTT_CLIENT_TYPE);
+    List<Dataflow> dataflows = dataflowRepository.findByType(
+        DFL_MQTT_CLIENT_NAME);
 
     // Find the matching algorithm to use.
     TagsAlgorithm deviceTagsAlgorithm = TagsAlgorithm.valueOf(
-        registryResource.findByName(
-            Registry.DEVICE_TAGS_ALGORITHM).asString());
+        settingsResource.findByName(
+            NamedSetting.DEVICE_TAGS_ALGORITHM).asString());
 
     Optional<Dataflow> match = Optional.empty();
     if (tagNames.isEmpty()) {

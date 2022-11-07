@@ -1,10 +1,9 @@
 package esthesis.services.device.impl.service;
 
-
 import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.DeviceRegistrationMode;
 import esthesis.common.AppConstants.DeviceStatus;
-import esthesis.common.AppConstants.Registry;
+import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QDisabledException;
 import esthesis.common.exception.QDoesNotExistException;
@@ -15,10 +14,9 @@ import esthesis.service.crypto.dto.response.CreateKeyPairResponse;
 import esthesis.service.crypto.resource.KeyResource;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DeviceKey;
-import esthesis.service.device.dto.DevicePage;
 import esthesis.service.device.dto.DeviceRegistration;
-import esthesis.service.registry.dto.RegistryEntry;
-import esthesis.service.registry.resource.RegistryResource;
+import esthesis.service.settings.dto.Setting;
+import esthesis.service.settings.resource.SettingsResource;
 import esthesis.service.tag.resource.TagResource;
 import esthesis.services.device.impl.repository.DeviceRepository;
 import java.io.IOException;
@@ -29,6 +27,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +56,7 @@ public class DeviceService extends BaseService<Device> {
 
   @Inject
   @RestClient
-  RegistryResource registryResource;
+  SettingsResource settingsResource;
 
   /**
    * Populates the cryptographic keys of a device.
@@ -79,7 +78,7 @@ public class DeviceService extends BaseService<Device> {
    * Check if device-pushed tags exist in the system and report the ones that do
    * not exist.
    *
-   * @param tags the list of tags to check.
+   * @param tags the list of tag names to check.
    */
   private void checkTags(String hardwareId, List<String> tags) {
     for (String tag : tags) {
@@ -162,7 +161,7 @@ public class DeviceService extends BaseService<Device> {
 
     DeviceRegistrationMode deviceRegistrationMode =
         DeviceRegistrationMode.valueOf(
-            registryResource.findByName(Registry.DEVICE_REGISTRATION_MODE)
+            settingsResource.findByName(NamedSetting.DEVICE_REGISTRATION_MODE)
                 .asString());
 
     if (deviceRegistrationMode == DeviceRegistrationMode.DISABLED) {
@@ -191,8 +190,8 @@ public class DeviceService extends BaseService<Device> {
    * The internal registration handler.
    *
    * @param hardwareId The hardware id of the device to be registered.
-   * @param tags       The tags associated with this device as a comma-separated
-   *                   list.
+   * @param tags       The tag names associated with this device as a
+   *                   comma-separated list.
    */
   private Device register(String hardwareId, List<String> tags,
       AppConstants.DeviceStatus status)
@@ -221,15 +220,15 @@ public class DeviceService extends BaseService<Device> {
         .setRolledAccepted(true);
 
     // Create a certificate for this device if the root CA is set.
-    RegistryEntry deviceRootCA = registryResource.findByName(
-        Registry.DEVICE_ROOT_CA);
+    Setting deviceRootCA = settingsResource.findByName(
+        NamedSetting.DEVICE_ROOT_CA);
     if (deviceRootCA != null) {
       deviceKey.setCertificate(
           keyResource.generateCertificateAsPEM(
               new CreateCertificateRequest().setCn(hardwareId)
                   .setCreateKeyPairResponse(createKeyPairResponse)));
       deviceKey.setCertificateCaId(
-          registryResource.findByName(Registry.DEVICE_ROOT_CA).asString());
+          settingsResource.findByName(NamedSetting.DEVICE_ROOT_CA).asString());
 
     }
 
@@ -239,10 +238,12 @@ public class DeviceService extends BaseService<Device> {
         .setStatus(status)
         .setDeviceKey(deviceKey);
 
-    // Set device-pushed tags.
+    // Set device-pushed tags by converting the tag names to tag ids.
     if (!tags.isEmpty()) {
       checkTags(hardwareId, tags);
-      device.setTags(tags);
+      device.setTags(tags.stream().map(tag ->
+              tagResource.findByName(tag).getId().toString())
+          .collect(Collectors.toList()));
     }
 
     deviceRepository.persist(device);
@@ -401,108 +402,6 @@ public class DeviceService extends BaseService<Device> {
 //  }
 
   /**
-   * Returns all non-hidden telemetry and metadata fields to be displayed on the
-   * device page.
-   *
-   * @param deviceId The device Id to fetch fata for.
-   * @return A list of device page data.
-   */
-  public List<DevicePage> getDevicePageData(long deviceId) {
-//    final Device Device = findById(deviceId);
-//
-//    // Iterate over the available data types to find which fields to fetch.
-//    return devicePageService.findAll()
-//        .stream()
-//        .filter(DevicePageDTO::isShown)
-//        .map(field -> {
-//          final String fieldValue = dtService
-//              .executeMetadataOrTelemetry(
-//                  DigitalTwins.Type.valueOf(field.getDatatype().toLowerCase()),
-//                  Device.getHardwareId(), DTOperations.QUERY,
-//                  field.getMeasurement(), field.getField(),
-//                  null, null, 1, 1);
-//          try {
-//            @SuppressWarnings("unchecked") Map<String, List<Map<String, Object>>> jsonFields =
-//                mapper.readValue(fieldValue, HashMap.class);
-//            field.setMeasurement(jsonFields.keySet().iterator().next());
-//            final List<Map<String, Object>> fields = jsonFields.get(
-//                field.getMeasurement());
-//            if (!fields.isEmpty()) {
-//              String valueField = jsonFields.get(field.getMeasurement()).get(0)
-//                  .keySet().stream()
-//                  .filter(
-//                      f -> !(f.equals(QueryResults.TIMESTAMP) || f.equals(
-//                          QueryResults.TYPE)))
-//                  .collect(Collectors.joining());
-//              field.setField(valueField);
-//              field.setValue(jsonFields.get(field.getMeasurement()).get(0)
-//                  .get(valueField));
-//              field.setLastUpdatedOn(Instant.ofEpochMilli(
-//                  Long.parseLong(
-//                      jsonFields.get(field.getMeasurement()).get(0)
-//                          .get(QueryResults.TIMESTAMP)
-//                          .toString())));
-//            }
-//          } catch (JsonProcessingException e) {
-//            log.log(Level.SEVERE,
-//                MessageFormat.format(
-//                    "Could not obtain field values for device {0}.", deviceId),
-//                e);
-//          }
-//          return field;
-//        })
-//        .collect(Collectors.toList());
-    return null;
-  }
-
-  /**
-   * Returns the last value of a specific telemetry or metadata field for a
-   * device.
-   *
-   * @param deviceId The Id of the device to fetch the field value for.
-   * @param field    The name of the telemetry or metadata field to fetch. The
-   *                 field needs to follow the following format:
-   *                 TYPE.MEASUREMENT.FIELD For example,
-   *                 TELEMETRY.geolocation.latitude
-   * @return The details of the device page.
-   */
-  public DevicePage getDeviceDataField(long deviceId, String field) {
-//    final DevicePage devicePageDTO = new DevicePage();
-//
-//    // Split the field to each individual identifying components.
-//    final String[] splitField = field.split("\\.");
-//    String dataType = splitField[0];
-//    String measurement = splitField[1];
-//    String fieldName = splitField[2];
-//    devicePageDTO.setField(fieldName).setMeasurement(measurement);
-//
-//    // Find the hardware Id of the device.
-//    String hardwareId = findById(deviceId).getHardwareId();
-//
-//    // Fetch field value.
-//    final String fieldValue = dtService
-//        .executeMetadataOrTelemetry(
-//            DigitalTwins.Type.valueOf(dataType.toLowerCase()), hardwareId,
-//            DTOperations.QUERY, measurement, fieldName, null, null, 1, 1);
-//    if (StringUtils.isNotBlank(fieldValue) && !fieldValue.trim().equals("{}")) {
-//      try {
-//        @SuppressWarnings("unchecked")
-//        Map<String, List<Map<String, Object>>> jsonFields = mapper
-//            .readValue(fieldValue, HashMap.class);
-//        devicePageDTO.setValue(
-//            jsonFields.get(measurement).get(0).get(fieldName).toString());
-//        devicePageDTO.setLastUpdatedOn(Instant.ofEpochMilli(
-//            (long) jsonFields.get(measurement).get(0).get("timestamp")));
-//      } catch (JsonProcessingException e) {
-//        throw new QMismatchException("Could not process field value.", e);
-//      }
-//    }
-//
-//    return devicePageDTO;
-    return null;
-  }
-
-  /**
    * Removes a tag from all devices having it assigned to them.
    *
    * @param tagName the name of the tag to be removed.
@@ -517,5 +416,4 @@ public class DeviceService extends BaseService<Device> {
               device.getId());
         });
   }
-
 }

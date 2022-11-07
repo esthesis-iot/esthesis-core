@@ -2,13 +2,19 @@ package esthesis.common;
 
 public class AppConstants {
 
+  // The topic prefix to use when a Kafka topic needs to be created.
   public static final String KAFKA_TOPIC_PREFIX = "esthesis-";
 
-//  public enum DataflowType {
-//    MQTT_CLIENT;
-//  }
+  // Certain DFL implementations need to be looked up in various places in
+  // esthesis. For example, to be able to send a Control Request to a device,
+  // you need to have the MQTT Client DFL configured. Since DFLs are defined
+  // dynamically in Angular, we need to have a way to identify them in the
+  // backend too. Not all DFLs need to be identified, but the ones that do
+  // are next.
+  public static final String DFL_MQTT_CLIENT_NAME = "mqtt-client";
 
-  public enum Registry {
+  // Settings keys.
+  public enum NamedSetting {
     SECURITY_ASYMMETRIC_KEY_SIZE, SECURITY_ASYMMETRIC_KEY_ALGORITHM,
     SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM,
 
@@ -18,185 +24,21 @@ public class AppConstants {
     DEVICE_TAGS_ALGORITHM, DEVICE_GEO_LAT, DEVICE_GEO_LON;
   }
 
+  // The tag algorithms available when matching objects against tags.
   public enum TagsAlgorithm {
     ALL, ANY
   }
 
+  // The status a device can have.
   public enum DeviceStatus {
     DISABLED, PREREGISTERED, REGISTERED, APPROVAL;
   }
 
+  // The available registration modes of the platform.
   public enum DeviceRegistrationMode {
     DISABLED, OPEN, OPEN_WITH_APPROVAL, ID
   }
 
-//  public static class Registry {
-//
-//    private Registry() {
-//    }
-//
-//    public static final String SECURITY_ASYMMETRIC_KEY_SIZE = "securityAsymmetricKeySize";
-//    public static final String SECURITY_ASYMMETRIC_KEY_ALGORITHM = "securityAsymmetricKeyAlgorithm";
-//    public static final String SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM = "securityAsymmetricSignatureAlgorithm";
-//    public static final String DEVICE_ROOT_CA = "deviceRootCA";
-//    public static final String PROVISIONING_URL = "provisioningURL";
-//    public static final String REGISTRATION_MODE = "registrationMode";
-//    public static final String DEVICE_TAGS_ALGORITHM = "deviceTagsAlgorithm";
-//  }
-
-//  public static class Audit {
-//
-//    private Audit() {
-//    }
-//
-//    public static class Event {
-//
-//      private Event() {
-//      }
-//
-//      public static final String CA = "Certificate Authority";
-//      public static final String CERTIFICATE = "Certificate";
-//      public static final String AUTHENTICATION = "Authentication";
-//      public static final String APPLICATION = "Application";
-//      public static final String USER = "User";
-//    }
-//
-//    public static class Level {
-//
-//      private Level() {
-//      }
-//
-//      public static final String UPDATE = "Update";
-//      public static final String DELETE = "Delete";
-//      public static final String INFO = "Info";
-//      public static final String SECURITY = "Security";
-//      public static final String CREATE = "Create";
-//    }
-//  }
-
-//  public static class Application {
-//
-//    private Application() {
-//    }
-//
-//    public static class Status {
-//
-//      private Status() {
-//      }
-//
-//      public static final String INACTIVE = "0";
-//      public static final String ACTIVE = "1";
-//    }
-//  }
-
-//  public static class User {
-//
-//    private User() {
-//    }
-//
-//    // Status is, exceptionally, byte as it is fetched to qlack-fuse-aaa.
-//    public class Status {
-//
-//      private Status() {
-//      }
-//
-//      public static final byte INACTIVE = 0;
-//      public static final byte ACTIVE = 1;
-//      public static final byte APP_USER = 2;
-//    }
-//  }
-
-//
-//  public static class Cryptography {
-//
-//    private Cryptography() {
-//    }
-//
-//    public static class KeyType {
-//
-//      private KeyType() {
-//      }
-//
-//      public static final int PRIVATE_KEY = 0;
-//      public static final int PUBLIC_KEY = 1;
-//      public static final int CERTIFICATE = 2;
-//    }
-//
-//    public static class Type {
-//      private Type() {}
-//
-//      public static final int CA = 0;
-//      public static final int CERTIFICATE = 1;
-//    }
-//  }
-//
-//  public static class Jwt {
-//
-//    private Jwt() {
-//    }
-//
-//    // The unique JWT id.
-//    public static final String CLAIM_EMAIL = "email";
-//  }
-//
-//  public static class ExitCodes {
-//
-//    private ExitCodes() {
-//    }
-//
-//    public static final int CANT_GENERATE_PLATFORM_AES_KEY = 1;
-//    public static final int CANT_GENERATE_PROVISIONING_AES_KEY = 2;
-//  }
-//
-//  @AllArgsConstructor
-//  @Getter
-//  public enum NIFI_SINK_HANDLER {
-//
-//    PING(1),
-//    METADATA(2),
-//    TELEMETRY(3),
-//    SYSLOG(4),
-//    FILESYSTEM(5),
-//    COMMAND(6);
-//
-//    private final int type;
-//    private static final Map<Integer, NIFI_SINK_HANDLER> map = new HashMap<>();
-//
-//    static {
-//      for (NIFI_SINK_HANDLER nifi_sink_handler : NIFI_SINK_HANDLER.values()) {
-//        map.put(nifi_sink_handler.type, nifi_sink_handler);
-//      }
-//    }
-//
-//    public static NIFI_SINK_HANDLER valueOf(int type) {
-//      return map.get(type);
-//    }
-//  }
-//
-//  public static class DigitalTwins {
-//    public enum Type {
-//      telemetry, metadata, command
-//    }
-//    public enum DTOperations {
-//      QUERY, MIN, MAX, COUNT, MEAN, SUM
-//    }
-//  }
-//
-//  public static class Dashboard {
-//    public static class WidgetType {
-//      // Keep these inline with the beans under esthesis.platform.backend.server.service.widgets.
-//      public static final String SENSOR_VALUE = "sensorValue";
-//    }
-//  }
-//
-//  public static class NiFi {
-//    public static final String SINKS_PACKAGE = "esthesis.platform.backend.server.nifi.sinks.";
-//    public static class QueryResults {
-//      public static final String TIMESTAMP = "timestamp";
-//      public static final String TYPE = "type";
-//    }
-//  }
-//
 //  public static class Campaign {
 //    public static class Member {
 //      public static class Type {
