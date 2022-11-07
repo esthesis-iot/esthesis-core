@@ -94,6 +94,10 @@ public abstract class BaseService<D extends BaseDTO> {
     return repository.findById(id);
   }
 
+  public D findById(String id) {
+    return repository.findById(new ObjectId(id));
+  }
+
   public D save(D dto) {
     if (dto.getId() != null) {
       repository.update(dto);

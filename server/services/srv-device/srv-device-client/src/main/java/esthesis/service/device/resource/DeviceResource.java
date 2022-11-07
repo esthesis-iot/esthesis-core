@@ -3,6 +3,7 @@ package esthesis.service.device.resource;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.Device;
+import esthesis.service.device.dto.DeviceProfileFieldData;
 import esthesis.service.device.dto.DeviceProfileNote;
 import esthesis.service.device.dto.DeviceRegistration;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
@@ -95,4 +96,8 @@ public interface DeviceResource {
   @Path("/v1/device/{deviceId}/device-profile/delete-note")
   void deleteDeviceProfileNote(@PathParam("deviceId") String deviceId,
       @QueryParam("keyName") String keyName);
+
+  @GET
+  @Path("/v1/device/{deviceId}/device-profile/fields-data")
+  List<DeviceProfileFieldData> getFieldsData(String deviceId);
 }

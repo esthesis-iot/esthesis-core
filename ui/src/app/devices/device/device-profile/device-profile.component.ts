@@ -14,6 +14,7 @@ import {
 import {
   OkCancelModalComponent
 } from "../../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+import {DevicePageFieldDataDto} from "../../../dto/device-page-field-data-dto";
 
 @Component({
   selector: "app-device-profile",
@@ -25,6 +26,8 @@ export class DeviceProfileComponent extends BaseComponent implements OnInit {
   deviceProfileForm!: FormGroup;
   deviceProfileFormFields: FormlyFieldConfig[] = [];
   deviceProfileFormModel = {};
+
+  dataFields: DevicePageFieldDataDto[] = [];
 
   constructor(private fb: FormBuilder, private qForms: QFormsService,
     private devicesService: DevicesService, private route: ActivatedRoute,
@@ -40,6 +43,19 @@ export class DeviceProfileComponent extends BaseComponent implements OnInit {
 
     // Get Device profile notes.
     this.fetchNotes();
+
+    // Get Device profile fields.
+    this.fetchFields();
+  }
+
+  private fetchFields(): void {
+    this.devicesService.getProfileFieldsData(this.id!).subscribe({
+      next: (fields) => {
+        this.dataFields = fields;
+      }, error: (err) => {
+        this.utilityService.popupErrorWithTraceId("Could not fetch device profile fields.", err);
+      }
+    });
   }
 
   private fetchNotes(): void {
@@ -62,10 +78,6 @@ export class DeviceProfileComponent extends BaseComponent implements OnInit {
         this.utilityService.popupErrorWithTraceId("Could not fetch device profile.", error);
       }
     });
-  }
-
-  private fetchDeviceProfileMeasurements(): void {
-
   }
 
   save() {

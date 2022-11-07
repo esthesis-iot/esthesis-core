@@ -14,6 +14,10 @@
 
   <dependencies>
     <!-- QUARKUS -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-qute</artifactId>
+    </dependency>
 
     <!-- ESTHESIS -->
     <dependency>
@@ -39,6 +43,11 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-dataflow-client</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>utl-redis-client</artifactId>
       <version>3.0.0-SNAPSHOT</version>
     </dependency>
 

@@ -8,6 +8,7 @@ import esthesis.service.common.paging.Pageable;
 import esthesis.service.common.validation.CVException;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DeviceKey;
+import esthesis.service.device.dto.DeviceProfileFieldData;
 import esthesis.service.device.dto.DeviceProfileNote;
 import esthesis.service.device.dto.DeviceRegistration;
 import esthesis.service.device.resource.DeviceResource;
@@ -170,6 +171,11 @@ public class DeviceResourceImpl implements DeviceResource {
   @Override
   public void deleteDeviceProfileNote(String deviceId, String keyName) {
     deviceProfileService.deleteProfileField(deviceId, keyName);
+  }
+
+  @Override
+  public List<DeviceProfileFieldData> getFieldsData(String deviceId) {
+    return deviceProfileService.getProfileFields(deviceId);
   }
 
 }

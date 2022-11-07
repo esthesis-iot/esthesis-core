@@ -36,7 +36,8 @@
   <div class="mt1 mb2">
     Select which device data will be visible on device profile page. Custom formatting is
     supported via
-    <a href="https://github.com/alexei/sprintf.js#readme" target="_blank" rel="noopener noreferrer">sprintf-js</a>.
+    <a href="https://quarkus.io/guides/qute-reference" target="_blank" rel="noopener noreferrer">Qute</a>.
+    The value can be referenced as &#123;val&#125;.
   </div>
   <div formArrayName="fields" *ngFor="let field of getFormFields(); let i = index">
     <div [formGroupName]="i" fxLayout="row" fxLayoutGap="1rem">

@@ -1,5 +1,9 @@
 package esthesis.util.redis;
 
+import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
+import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
+
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -87,4 +91,45 @@ public class EsthesisRedis {
     }
   }
 
+  public List<String> getValue(String key, List<String> field) {
+    try (Jedis jedis = getJedisPool().getResource()) {
+      jedis.select(getDbIndex());
+      return jedis.hmget(key, field.toArray(new String[0]));
+    }
+  }
+
+  public String getValue(String key, String field) {
+    try (Jedis jedis = getJedisPool().getResource()) {
+      jedis.select(getDbIndex());
+      return jedis.hget(key, field);
+    }
+  }
+
+  public Instant getLastUpdate(String key, String field) {
+    try (Jedis jedis = getJedisPool().getResource()) {
+      jedis.select(getDbIndex());
+      String val = jedis.hget(key, field + "." + REDIS_KEY_SUFFIX_TIMESTAMP);
+      if (val == null) {
+        log.warn("Could not find timestamp for key '{}' field '{}'.", key,
+            field);
+        return null;
+      } else {
+        return Instant.parse(val);
+      }
+    }
+  }
+
+  public String getValueType(String key, String field) {
+    try (Jedis jedis = getJedisPool().getResource()) {
+      jedis.select(getDbIndex());
+      String val = jedis.hget(key, field + "." + REDIS_KEY_SUFFIX_VALUE_TYPE);
+      if (val == null) {
+        log.warn("Could not find value type for key '{}' field '{}'.", key,
+            field);
+        return null;
+      } else {
+        return val;
+      }
+    }
+  }
 }

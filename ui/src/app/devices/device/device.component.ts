@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {TagDto} from "../../dto/tag-dto";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -10,26 +10,20 @@ import {UtilityService} from "../../shared/service/utility.service";
 import {
   OkCancelModalComponent
 } from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
-import {SettingsService} from "../../settings/settings.service";
 import {QFormsService} from "@qlack/forms";
 import {DeviceDto} from "../../dto/device-dto";
 import {AppConstants} from "../../app.constants";
-import {DevicePageFieldDataDto} from "../../dto/device-page-field-data-dto";
 
 @Component({
   selector: "app-device",
   templateUrl: "./device.component.html",
   styleUrls: ["./device.component.scss"]
 })
-export class DeviceComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class DeviceComponent extends BaseComponent implements OnInit {
   id!: string | null;
   deviceInfoForm!: FormGroup;
-
   device: DeviceDto | undefined;
-
   availableTags: TagDto[] | undefined;
-  fields!: DevicePageFieldDataDto[];
-  fieldsValues!: Map<string, any>;
   hardwareId = "";
   // Expose application constants.
   constants = AppConstants;
@@ -37,27 +31,8 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
   constructor(private fb: FormBuilder, private dialog: MatDialog,
     private qForms: QFormsService, private tagService: TagService,
     private devicesService: DevicesService, private route: ActivatedRoute,
-    private router: Router, private utilityService: UtilityService,
-    private settingsService: SettingsService) {
+    private router: Router, private utilityService: UtilityService) {
     super();
-  }
-
-  ngAfterViewInit(): void {
-    // If viewing an existing device, fetch data for it.
-    // if (this.id && this.id !== this.constants.NEW_RECORD_ID) {
-    //   let latSetting: string;
-    //   let lonSetting: string;
-    //   this.settingsService.findByNames("DEVICE_GEO_LAT,DEVICE_GEO_LON").subscribe(onNext => {
-    //     onNext.forEach(registryEntryDTO => {
-    //       if (registryEntryDTO.name === "DEVICE_GEO_LAT") {
-    //         latSetting = registryEntryDTO.value;
-    //       }
-    //       if (registryEntryDTO.name === "DEVICE_GEO_LON") {
-    //         lonSetting = registryEntryDTO.value;
-    //       }
-    //     });
-    //   });
-    // }
   }
 
   ngOnInit() {
@@ -84,32 +59,6 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
         this.hardwareId = onNext.hardwareId;
       });
     }
-
-    this.updateTelemetryMetadata();
-  }
-
-  private updateTelemetryMetadata() {
-    this.fieldsValues = new Map<string, any>();
-    // this.devicesService.getDevicePageData(this.id!).subscribe(fieldsValues => {
-    //   this.fields = fieldsValues;
-    //   // Update field values formatting.
-    //   this.fields!.forEach(field => {
-    //     let formatter;
-    //     if (!field.formatter) {
-    //       formatter = "%s";
-    //     } else {
-    //       formatter = field.formatter;
-    //     }
-    //     let value;
-    //     if (field.valueHandler) {
-    //       value = this.formatterService.format(field.valueHandler, field.value);
-    //     } else {
-    //       value = field.value;
-    //     }
-    //     this.fieldsValues!.set(field.measurement + "." + field.field, sprintf(formatter, value));
-    //   });
-    //   this.fetchingDeviceData = false;
-    // });
   }
 
   saveDeviceInfo() {
@@ -140,14 +89,6 @@ export class DeviceComponent extends BaseComponent implements OnInit, AfterViewI
         });
       }
     });
-  }
-
-  getLastUpdatedDate(date: Date): string {
-    if (!(date instanceof Date)) {
-      date = new Date(date);
-    }
-
-    return new Date(date).toLocaleString();
   }
 
   downloadKeys() {

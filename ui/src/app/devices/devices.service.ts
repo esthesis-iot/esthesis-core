@@ -6,6 +6,7 @@ import {DeviceRegisterDto} from "../dto/device-register-dto";
 import {DeviceDto} from "../dto/device-dto";
 import {environment} from "../../environments/environment";
 import {DeviceProfileNoteDto} from "../dto/device-profile-note-dto";
+import {DevicePageFieldDataDto} from "../dto/device-page-field-data-dto";
 
 @Injectable({
   providedIn: "root"
@@ -19,11 +20,6 @@ export class DevicesService extends CrudService<DeviceDto> {
   preregister(devices: DeviceRegisterDto): Observable<any> {
     return this.http.post(`${environment.apiPrefix}/v1/device/preregister`, devices);
   }
-
-  // getDevices(queryString: string): Observable<QPageableReply<DeviceDto>> {
-  //   return this.http.get<QPageableReply<DeviceDto>>(
-  //     environment.apiPrefix + `/device/${queryString}`);
-  // }
 
   downloadKeys(hardwareId: string) {
     this.http.get(`${environment.apiPrefix}/device/${hardwareId}/keys`, {
@@ -60,5 +56,10 @@ export class DevicesService extends CrudService<DeviceDto> {
   removeDeviceProfileNote(deviceId: string, keyName: string) {
     return this.http.delete(
       `${environment.apiPrefix}/v1/device/${deviceId}/device-profile/delete-note?keyName=${keyName}`);
+  }
+
+  getProfileFieldsData(deviceId: string): Observable<DevicePageFieldDataDto[]> {
+    return this.http.get<DevicePageFieldDataDto[]>(
+      environment.apiPrefix + `/v1/device/${deviceId}/device-profile/fields-data`);
   }
 }

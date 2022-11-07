@@ -1,5 +1,8 @@
 package esthesis.services.application.impl.service;
 
+import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
+import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
+
 import esthesis.service.application.dto.DTValueReply;
 import esthesis.util.redis.EsthesisRedis;
 import esthesis.util.redis.RedisLocationDTO;
@@ -17,8 +20,6 @@ import redis.clients.jedis.JedisPool;
 @ApplicationScoped
 public class DTService {
 
-  private final static String VALUE_TYPE_SUFFIX = "valueType";
-  private final static String TIMESTAMP_SUFFIX = "timestamp";
   private JedisPool jedisPool;
   private RedisLocationDTO redisLocationDTO;
 
@@ -32,9 +33,9 @@ public class DTService {
       String value = jedis.hget(hardwareId,
           String.join(".", category, measurement));
       String valueType = jedis.hget(hardwareId,
-          String.join(".", category, measurement, VALUE_TYPE_SUFFIX));
+          String.join(".", category, measurement, REDIS_KEY_SUFFIX_VALUE_TYPE));
       Instant valueTimestamp = Instant.parse(jedis.hget(hardwareId,
-          String.join(".", category, measurement, TIMESTAMP_SUFFIX)));
+          String.join(".", category, measurement, REDIS_KEY_SUFFIX_TIMESTAMP)));
 
       return new DTValueReply()
           .setHardwareId(hardwareId)
@@ -61,9 +62,11 @@ public class DTService {
                 .setCategory(category)
                 .setMeasurement(parts[1])
                 .setValueType(jedis.hget(hardwareId,
-                    String.join(".", category, parts[1], VALUE_TYPE_SUFFIX)))
+                    String.join(".", category, parts[1],
+                        REDIS_KEY_SUFFIX_VALUE_TYPE)))
                 .setRecordedAt(Instant.parse(jedis.hget(hardwareId,
-                    String.join(".", category, parts[1], TIMESTAMP_SUFFIX))))
+                    String.join(".", category, parts[1],
+                        REDIS_KEY_SUFFIX_TIMESTAMP))))
                 .setValue(value));
           }
         }

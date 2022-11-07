@@ -13,6 +13,10 @@ public class AppConstants {
   // are next.
   public static final String DFL_MQTT_CLIENT_NAME = "mqtt-client";
 
+  // Redis key suffixes.
+  public static final String REDIS_KEY_SUFFIX_VALUE_TYPE = "valueType";
+  public static final String REDIS_KEY_SUFFIX_TIMESTAMP = "timestamp";
+  
   // Settings keys.
   public enum NamedSetting {
     SECURITY_ASYMMETRIC_KEY_SIZE, SECURITY_ASYMMETRIC_KEY_ALGORITHM,
