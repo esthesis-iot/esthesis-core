@@ -5,7 +5,7 @@ import {Observable} from "rxjs";
 import {DeviceRegisterDto} from "../dto/device-register-dto";
 import {DeviceDto} from "../dto/device-dto";
 import {environment} from "../../environments/environment";
-import {DeviceProfileFieldDto} from "../dto/device-profile-field-dto";
+import {DeviceProfileNoteDto} from "../dto/device-profile-note-dto";
 
 @Injectable({
   providedIn: "root"
@@ -33,12 +33,12 @@ export class DevicesService extends CrudService<DeviceDto> {
     });
   }
 
-  saveDeviceProfile(deviceId: string, profile: any) {
+  saveDeviceProfileNote(deviceId: string, profile: any) {
     return this.http.post(`${environment.apiPrefix}/v1/device/${deviceId}/device-profile`, profile);
   }
 
-  getDeviceProfile(deviceId: string): Observable<DeviceProfileFieldDto[]> {
-    return this.http.get<DeviceProfileFieldDto[]>(
+  getDeviceProfileNotes(deviceId: string): Observable<DeviceProfileNoteDto[]> {
+    return this.http.get<DeviceProfileNoteDto[]>(
       environment.apiPrefix + `/v1/device/${deviceId}/device-profile`);
   }
 
@@ -47,18 +47,18 @@ export class DevicesService extends CrudService<DeviceDto> {
       environment.apiPrefix + `/device/by-partial-hardware-id/${hardwareId}`);
   }
 
-  addDeviceProfileField(targetDeviceId: string, newFieldName: string, newFieldLabel: string) {
-    const deviceProfileFieldDto: DeviceProfileFieldDto = {
+  addDeviceProfileNote(targetDeviceId: string, newFieldName: string, newFieldLabel: string) {
+    const deviceProfileNoteDto: DeviceProfileNoteDto = {
       deviceId: targetDeviceId,
       fieldName: newFieldName,
       label: newFieldLabel
     };
     return this.http.post(
-      `${environment.apiPrefix}/v1/device/device-profile/add-field`, deviceProfileFieldDto);
+      `${environment.apiPrefix}/v1/device/device-profile/add-note`, deviceProfileNoteDto);
   }
 
-  removeDeviceProfileField(deviceId: string, keyName: string) {
+  removeDeviceProfileNote(deviceId: string, keyName: string) {
     return this.http.delete(
-      `${environment.apiPrefix}/v1/device/${deviceId}/device-profile/delete-field?keyName=${keyName}`);
+      `${environment.apiPrefix}/v1/device/${deviceId}/device-profile/delete-note?keyName=${keyName}`);
   }
 }

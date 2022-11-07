@@ -3,7 +3,7 @@ package esthesis.service.device.resource;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.Device;
-import esthesis.service.device.dto.DeviceProfileField;
+import esthesis.service.device.dto.DeviceProfileNote;
 import esthesis.service.device.dto.DeviceRegistration;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.io.IOException;
@@ -79,20 +79,20 @@ public interface DeviceResource {
 
   @GET
   @Path("/v1/device/{deviceId}/device-profile/")
-  List<DeviceProfileField> getDeviceProfile(
+  List<DeviceProfileNote> getDeviceProfileNotes(
       @PathParam("deviceId") String deviceId);
 
   @POST
   @Path("/v1/device/{deviceId}/device-profile")
-  List<DeviceProfileField> saveDeviceProfile(Map<String, String> fields,
+  List<DeviceProfileNote> saveDeviceProfileNotes(Map<String, String> fields,
       @PathParam("deviceId") String deviceId);
 
   @POST
-  @Path("/v1/device/device-profile/add-field")
-  DeviceProfileField addDeviceProfileField(DeviceProfileField field);
+  @Path("/v1/device/device-profile/add-note")
+  DeviceProfileNote addDeviceProfileNote(DeviceProfileNote field);
 
   @DELETE
-  @Path("/v1/device/{deviceId}/device-profile/delete-field")
-  void deleteDeviceProfileField(@PathParam("deviceId") String deviceId,
+  @Path("/v1/device/{deviceId}/device-profile/delete-note")
+  void deleteDeviceProfileNote(@PathParam("deviceId") String deviceId,
       @QueryParam("keyName") String keyName);
 }

@@ -1,7 +1,7 @@
 package esthesis.services.device.impl.service;
 
 import esthesis.service.common.BaseService;
-import esthesis.service.device.dto.DeviceProfileField;
+import esthesis.service.device.dto.DeviceProfileNote;
 import esthesis.services.device.impl.repository.DeviceProfileFieldRepository;
 import java.util.List;
 import java.util.Map;
@@ -11,12 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ApplicationScoped
-public class DeviceProfileService extends BaseService<DeviceProfileField> {
+public class DeviceProfileService extends BaseService<DeviceProfileNote> {
 
   @Inject
   DeviceProfileFieldRepository deviceProfileFieldRepository;
 
-  public List<DeviceProfileField> saveProfile(String deviceId,
+  public List<DeviceProfileNote> saveProfile(String deviceId,
       Map<String, String> profile) {
     // Remove fields no longer present.
     deviceProfileFieldRepository.deleteFieldsNotIn(deviceId,
@@ -24,22 +24,22 @@ public class DeviceProfileService extends BaseService<DeviceProfileField> {
 
     // Save the field.
     profile.forEach((key, value) -> {
-      DeviceProfileField deviceProfileField = deviceProfileFieldRepository.findByDeviceIdAndName(
+      DeviceProfileNote deviceProfileNote = deviceProfileFieldRepository.findByDeviceIdAndName(
           deviceId, key).orElseThrow();
-      deviceProfileField.setFieldValue(value);
-      save(deviceProfileField);
+      deviceProfileNote.setFieldValue(value);
+      save(deviceProfileNote);
     });
 
     return getProfile(deviceId);
   }
 
-  public List<DeviceProfileField> getProfile(String deviceId) {
+  public List<DeviceProfileNote> getProfile(String deviceId) {
     return deviceProfileFieldRepository.findByDeviceId(deviceId);
   }
 
-  public DeviceProfileField createProfileField(
-      DeviceProfileField deviceProfileField) {
-    return save(deviceProfileField);
+  public DeviceProfileNote createProfileField(
+      DeviceProfileNote deviceProfileNote) {
+    return save(deviceProfileNote);
   }
 
   public void deleteProfileField(String deviceId, String fieldName) {

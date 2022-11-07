@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 @RegisterForReflection
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-public class DeviceProfileField extends BaseDTO {
+public class DeviceProfileNote extends BaseDTO {
 
   private String deviceId;
   private String label;
