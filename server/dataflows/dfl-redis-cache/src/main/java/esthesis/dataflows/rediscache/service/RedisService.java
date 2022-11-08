@@ -5,6 +5,7 @@ import esthesis.dataflow.common.parser.EsthesisMessage;
 import esthesis.dataflows.rediscache.config.AppConfig;
 import io.quarkus.redis.datasource.RedisDataSource;
 import io.quarkus.redis.datasource.hash.HashCommands;
+import io.quarkus.redis.datasource.keys.KeyCommands;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -26,6 +27,7 @@ public class RedisService {
   public static final String VALUE_TYPE_FIELD_NAME = "valueType";
 
   private HashCommands<String, String, String> hashCommand;
+  private KeyCommands<String> keyCommand;
 
   @PostConstruct
   void init() {
@@ -57,6 +59,11 @@ public class RedisService {
             StringUtils.abbreviate(fieldValue,
                 DflUtils.MESSAGE_LOG_ABBREVIATION_LENGTH), key,
             conf.redisMaxSize());
+      }
+
+      // Expire hash, if requested.
+      if (conf.redisTtl() > 0) {
+        keyCommand.expire(key, conf.redisTtl() * 60);
       }
     });
   }

@@ -64,6 +64,9 @@ public class RedisRoute extends RouteBuilder {
         .isEmpty()) {
       log.warn("No Kafka topics are configured.");
     } else {
+      if (config.redisTtl() > 0) {
+        log.info("Setting Redis TTL to '{}' minutes.", config.redisTtl());
+      }
       log.info("All routes configured successfully, maximum value size for "
           + "caching is '{}' bytes.", config.redisMaxSize());
     }

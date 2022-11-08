@@ -30,6 +30,13 @@ export const DATAFLOW_DEFINITION_REDIS_CACHE = {
         {
           key: "max-size", type: "input", defaultValue: "1024",
           props: {label: "The maximum value size (in bytes) eligible for caching", required: true}
+        },
+        {
+          key: "ttl", type: "input", defaultValue: "0",
+          props: {
+            label: "Time to live (in minutes), set to 0 to never automatically expire cached entries.",
+            required: true, hintStart: "Note, this TTL refers to all cached entries associated with a device."
+          }
         }
       ]
     }, {

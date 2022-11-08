@@ -4,6 +4,7 @@ import esthesis.service.dataflow.dto.DockerTags;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 @Path("/v2")
@@ -11,6 +12,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface DockerClient {
 
   @GET
+  @Retry(maxRetries = 3)
   @Path("/repositories/{image}/tags")
   DockerTags getTags(@PathParam("image") String image);
 }

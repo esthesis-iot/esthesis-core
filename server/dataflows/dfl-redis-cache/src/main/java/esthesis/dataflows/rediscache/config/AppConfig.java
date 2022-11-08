@@ -18,6 +18,9 @@ public interface AppConfig {
   // The maximum value size (in bytes) eligible for caching.
   int redisMaxSize();
 
+  // TTL (in minutes)
+  long redisTtl();
+
   // The number of seconds after which a Redis entry expires. Leave empty for
   // entries that never expire.
   Optional<Integer> redisExpiration();
