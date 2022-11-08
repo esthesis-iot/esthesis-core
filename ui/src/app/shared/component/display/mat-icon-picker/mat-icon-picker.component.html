@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Select an icon</h2>
+<mat-dialog-content>
+  <div fxLayout="column">
+    <div [formGroup]="filterForm" fxFlex="row">
+      <mat-form-field>
+        <input formControlName="icon" matInput placeholder="Find icon by name">
+      </mat-form-field>
+      <button (click)="clearFilter()" mat-button>CLEAR</button>
+    </div>
+    <div fxLayout="row wrap" fxLayoutGap="1rem" class="icons mt3 mb3">
+      <div *ngFor="let icon of filteredIcons">
+        <mat-icon (click)="select(icon.id)">{{icon.id}}</mat-icon>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button tabindex="-1" (click)="dialogRef.close(null)">CANCEL</button>
+</mat-dialog-actions>

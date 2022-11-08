@@ -1,0 +1,12 @@
+.icons {
+  mat-icon {
+  }
+
+  mat-icon:hover {
+    cursor: pointer;
+    transform: scale(2);
+    background-color: #004085;
+    color: #ffffff;
+  }
+}
+
