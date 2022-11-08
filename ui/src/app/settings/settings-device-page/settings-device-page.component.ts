@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {DevicePageFieldDto} from "../../dto/device-page-field-dto";
 import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
-import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
 import {DevicesService} from "../../devices/devices.service";
 import {SettingsService} from "../settings.service";
@@ -11,13 +10,16 @@ import {MatDialog} from "@angular/material/dialog";
 import {
   MatIconPickerComponent
 } from "../../shared/component/display/mat-icon-picker/mat-icon-picker.component";
+import {SettingDto} from "../../dto/setting-dto";
+import * as _ from "lodash-es";
+import {forkJoin} from "rxjs";
 
 @Component({
   selector: "app-settings-device-page",
   templateUrl: "./settings-device-page.component.html",
   styleUrls: ["./settings-device-page.component.scss"]
 })
-export class SettingsDevicePageComponent extends BaseComponent implements OnInit {
+export class SettingsDevicePageComponent implements OnInit {
   // Expose application constants.
   constants = AppConstants;
   profileDataForm!: FormGroup;
@@ -28,7 +30,6 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
   constructor(private devicesService: DevicesService, private fb: FormBuilder,
     private utilityService: UtilityService, private qForms: QFormsService,
     private settingsService: SettingsService, private dialog: MatDialog) {
-    super();
   }
 
   ngOnInit() {
@@ -87,11 +88,20 @@ export class SettingsDevicePageComponent extends BaseComponent implements OnInit
   }
 
   save() {
-    this.settingsService.saveDevicePageFields(
-      this.qForms.cleanupData(this.profileDataForm.getRawValue()).fields).subscribe(
-      onNext => {
+    forkJoin([
+      this.settingsService.save(
+        _.map(Object.keys(this.settingsForm.controls), (fc) => {
+          return new SettingDto(fc, this.settingsForm.get(fc)!.value);
+        })),
+      this.settingsService.saveDevicePageFields(
+        this.qForms.cleanupData(this.profileDataForm.getRawValue()).fields)
+    ]).subscribe({
+      next: next => {
         this.utilityService.popupSuccess("Settings saved successfully.");
-      });
+      }, error: err => {
+        this.utilityService.popupErrorWithTraceId("Error saving settings.", err);
+      }
+    });
   }
 
   newMeasurement() {

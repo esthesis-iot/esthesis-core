@@ -50,6 +50,7 @@
     "ngx-moment": "6.0.2",
     "ngx-progressbar": "8.0.0",
     "rxjs": "7.5.5",
+    "safe-pipe": "^2.0.4",
     "slugify": "1.6.5",
     "sprintf-js": "1.1.2",
     "tslib": "2.3.1",

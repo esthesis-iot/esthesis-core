@@ -6,6 +6,7 @@ import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -14,11 +15,16 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Triple;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.params.ScanParams;
 import redis.clients.jedis.resps.ScanResult;
 
+/**
+ * A wrapper around the Jedis client.
+ */
 @Slf4j
 @ApplicationScoped
 public class EsthesisRedis {
@@ -45,10 +51,18 @@ public class EsthesisRedis {
     jedisPool.close();
   }
 
+  /**
+   * Returns the pool associated with this client. This is useful when you need
+   * to perform a Redis operation not supported by this client.
+   */
   public JedisPool getJedisPool() {
     return jedisPool;
   }
 
+  /**
+   * Retusn the database index associated with the underlying connection of this
+   * client.
+   */
   public int getDbIndex() {
     return redisLocationDTO.map(RedisLocationDTO::getDbIndex).orElseThrow();
   }
@@ -91,6 +105,12 @@ public class EsthesisRedis {
     }
   }
 
+  /**
+   * Returns the value of the specified fields for the specified key.
+   *
+   * @param key   The key (hash) to look for.
+   * @param field The list of fields to look for.
+   */
   public List<String> getValue(String key, List<String> field) {
     try (Jedis jedis = getJedisPool().getResource()) {
       jedis.select(getDbIndex());
@@ -98,6 +118,12 @@ public class EsthesisRedis {
     }
   }
 
+  /**
+   * Returns the value of the specified field for the specified key.
+   *
+   * @param key   The key (hash) to look for.
+   * @param field The field to look for.
+   */
   public String getValue(String key, String field) {
     try (Jedis jedis = getJedisPool().getResource()) {
       jedis.select(getDbIndex());
@@ -105,6 +131,15 @@ public class EsthesisRedis {
     }
   }
 
+  /**
+   * Returns the last updated timestamp of the specified field for the specified
+   * key.
+   *
+   * @param key   The key (hash) to look for.
+   * @param field The field to look for.
+   * @return Returns the last updated timestamp or null if the field does not
+   * have a timestamp entry associated with.
+   */
   public Instant getLastUpdate(String key, String field) {
     try (Jedis jedis = getJedisPool().getResource()) {
       jedis.select(getDbIndex());
@@ -119,6 +154,14 @@ public class EsthesisRedis {
     }
   }
 
+  /**
+   * Returns the value type of the specified field for the specified key.
+   *
+   * @param key   The key (hash) to look for.
+   * @param field The field to look for.
+   * @return Returns the value type or null if the field does not have a value
+   * type entry associated with.
+   */
   public String getValueType(String key, String field) {
     try (Jedis jedis = getJedisPool().getResource()) {
       jedis.select(getDbIndex());
@@ -130,6 +173,35 @@ public class EsthesisRedis {
       } else {
         return val;
       }
+    }
+  }
+
+  /**
+   * Returns all fields and their values for the specified key.
+   *
+   * @param key The key (hash) to look for.
+   */
+  public List<Triple<String, String, Instant>> getAllForKey(String key) {
+    try (Jedis jedis = getJedisPool().getResource()) {
+      jedis.select(getDbIndex());
+
+      // Get all fields for the given key.
+      Map<String, String> keyValMap = jedis.hgetAll(key);
+
+      // Prepare a list holding the keys, values, and last updated values.
+      List<Triple<String, String, Instant>> triples =
+          new ArrayList<>(keyValMap.size());
+
+      // Add the key, value, and last updated values to the list.
+      keyValMap.entrySet().stream()
+          .filter(entry -> !entry.getKey().endsWith(REDIS_KEY_SUFFIX_VALUE_TYPE)
+              && !entry.getKey().endsWith(REDIS_KEY_SUFFIX_TIMESTAMP))
+          .forEach(entry -> {
+            triples.add(new ImmutableTriple(entry.getKey(), entry.getValue(),
+                getLastUpdate(key, entry.getKey())));
+          });
+
+      return triples;
     }
   }
 }

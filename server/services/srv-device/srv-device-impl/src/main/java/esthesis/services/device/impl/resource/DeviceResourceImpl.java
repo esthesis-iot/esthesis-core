@@ -11,6 +11,7 @@ import esthesis.service.device.dto.DeviceKey;
 import esthesis.service.device.dto.DeviceProfileFieldData;
 import esthesis.service.device.dto.DeviceProfileNote;
 import esthesis.service.device.dto.DeviceRegistration;
+import esthesis.service.device.dto.GeolocationDTO;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.services.device.impl.service.DeviceProfileService;
 import esthesis.services.device.impl.service.DeviceService;
@@ -176,6 +177,16 @@ public class DeviceResourceImpl implements DeviceResource {
   @Override
   public List<DeviceProfileFieldData> getFieldsData(String deviceId) {
     return deviceProfileService.getProfileFields(deviceId);
+  }
+
+  @Override
+  public List<DeviceProfileFieldData> getAllDeviceData(String deviceId) {
+    return deviceProfileService.getAllDeviceData(deviceId);
+  }
+
+  @Override
+  public GeolocationDTO getDeviceGeolocation(String deviceId) {
+    return deviceService.getGeolocation(deviceId);
   }
 
 }

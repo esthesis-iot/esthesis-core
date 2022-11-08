@@ -15,11 +15,14 @@ import esthesis.service.crypto.resource.KeyResource;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DeviceKey;
 import esthesis.service.device.dto.DeviceRegistration;
+import esthesis.service.device.dto.GeolocationDTO;
 import esthesis.service.settings.dto.Setting;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.service.tag.resource.TagResource;
 import esthesis.services.device.impl.repository.DeviceRepository;
+import esthesis.util.redis.EsthesisRedis;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
@@ -57,6 +60,9 @@ public class DeviceService extends BaseService<Device> {
   @Inject
   @RestClient
   SettingsResource settingsResource;
+
+  @Inject
+  EsthesisRedis redis;
 
   /**
    * Populates the cryptographic keys of a device.
@@ -415,5 +421,33 @@ public class DeviceService extends BaseService<Device> {
           log.trace("Removed tag '{}' from device '{}'.", tagName,
               device.getId());
         });
+  }
+
+  public GeolocationDTO getGeolocation(String deviceId) {
+    Setting settingLon = settingsResource.findByName(
+        NamedSetting.DEVICE_GEO_LON);
+    Setting settingLat = settingsResource.findByName(
+        NamedSetting.DEVICE_GEO_LAT);
+
+    if (settingLon != null && settingLat != null) {
+      String hardwareId = findById(deviceId).getHardwareId();
+      String redisLat = redis.getValue(hardwareId, settingLat.getValue());
+      String redisLon = redis.getValue(hardwareId, settingLon.getValue());
+      Instant lastUpdateLat = redis.getLastUpdate(hardwareId,
+          settingLat.getValue());
+      Instant lastUpdateLon = redis.getLastUpdate(hardwareId,
+          settingLon.getValue());
+      if (redisLat != null && redisLon != null && lastUpdateLat != null
+          && lastUpdateLon != null) {
+        return new GeolocationDTO(new BigDecimal(redisLat),
+            new BigDecimal(redisLon),
+            lastUpdateLat.isAfter(lastUpdateLon) ? lastUpdateLat
+                : lastUpdateLon);
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
   }
 }

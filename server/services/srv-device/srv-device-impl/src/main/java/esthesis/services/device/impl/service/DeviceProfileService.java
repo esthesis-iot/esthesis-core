@@ -73,26 +73,43 @@ public class DeviceProfileService extends BaseService<DeviceProfileNote> {
 
     // Find the value of each field.
     Device device = deviceService.findById(deviceId);
-    devicePageFields.forEach(field -> {
+    devicePageFields.stream().filter(DevicePageField::isShown)
+        .forEach(field -> {
+          DeviceProfileFieldData deviceProfileFieldData = new DeviceProfileFieldData();
+          deviceProfileFieldData
+              .setLabel(field.getLabel())
+              .setIcon(field.getIcon())
+              .setValueType(redis.getValueType(device.getHardwareId(),
+                  field.getMeasurement()))
+              .setLastUpdate(
+                  redis.getLastUpdate(device.getHardwareId(),
+                      field.getMeasurement()));
+
+          String value = redis.getValue(device.getHardwareId(),
+              field.getMeasurement());
+          if (StringUtils.isNotEmpty(field.getFormatter())) {
+            deviceProfileFieldData.setValue(Qute.fmt(field.getFormatter()).data(
+                "val", value).render());
+          } else {
+            deviceProfileFieldData.setValue(value);
+          }
+
+          fields.add(deviceProfileFieldData);
+        });
+
+    return fields;
+  }
+
+  public List<DeviceProfileFieldData> getAllDeviceData(String deviceId) {
+    List<DeviceProfileFieldData> fields = new ArrayList<>();
+    Device device = deviceService.findById(deviceId);
+
+    redis.getAllForKey(device.getHardwareId()).forEach((triple) -> {
       DeviceProfileFieldData deviceProfileFieldData = new DeviceProfileFieldData();
       deviceProfileFieldData
-          .setLabel(field.getLabel())
-          .setIcon(field.getIcon())
-          .setValueType(redis.getValueType(device.getHardwareId(),
-              field.getMeasurement()))
-          .setLastUpdate(
-              redis.getLastUpdate(device.getHardwareId(),
-                  field.getMeasurement()));
-
-      String value = redis.getValue(device.getHardwareId(),
-          field.getMeasurement());
-      if (StringUtils.isNotEmpty(field.getFormatter())) {
-        deviceProfileFieldData.setValue(Qute.fmt(field.getFormatter()).data(
-            "val", value).render());
-      } else {
-        deviceProfileFieldData.setValue(value);
-      }
-
+          .setLabel(triple.getLeft())
+          .setValue(triple.getMiddle())
+          .setLastUpdate(triple.getRight());
       fields.add(deviceProfileFieldData);
     });
 

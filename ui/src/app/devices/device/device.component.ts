@@ -13,6 +13,7 @@ import {
 import {QFormsService} from "@qlack/forms";
 import {DeviceDto} from "../../dto/device-dto";
 import {AppConstants} from "../../app.constants";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
   selector: "app-device",
@@ -27,11 +28,15 @@ export class DeviceComponent extends BaseComponent implements OnInit {
   hardwareId = "";
   // Expose application constants.
   constants = AppConstants;
+  // Geolocation URL for embedded Goggle Maps.
+  geoUrl?: string;
+  geoLastUpdated?: Date;
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
     private qForms: QFormsService, private tagService: TagService,
     private devicesService: DevicesService, private route: ActivatedRoute,
-    private router: Router, private utilityService: UtilityService) {
+    private router: Router, private utilityService: UtilityService,
+    public sanitizer: DomSanitizer) {
     super();
   }
 
@@ -51,14 +56,22 @@ export class DeviceComponent extends BaseComponent implements OnInit {
       this.availableTags = onNext.content;
     });
 
-    // Check if an edit is performed and fetch the data for this device.
-    if (this.id && this.id !== this.constants.NEW_RECORD_ID) {
-      this.devicesService.findById(this.id).subscribe(onNext => {
-        this.device = onNext;
-        this.deviceInfoForm.patchValue(onNext);
-        this.hardwareId = onNext.hardwareId;
-      });
-    }
+    // Fetch the data for this device.
+    this.devicesService.findById(this.id).subscribe(onNext => {
+      this.device = onNext;
+      this.deviceInfoForm.patchValue(onNext);
+      this.hardwareId = onNext.hardwareId;
+    });
+
+    // Get geolocation if available.
+    this.devicesService.getGeolocation(this.id!).subscribe({
+      next: (geolocation) => {
+        this.geoUrl = `https://maps.google.com/maps?q=${geolocation.longitude},${geolocation.latitude}&z=13&output=embed`;
+        this.geoLastUpdated = geolocation.lastUpdated;
+      }, error: (err) => {
+        this.utilityService.popupErrorWithTraceId("Could not fetch the gelocation for this device.", err);
+      }
+    });
   }
 
   saveDeviceInfo() {

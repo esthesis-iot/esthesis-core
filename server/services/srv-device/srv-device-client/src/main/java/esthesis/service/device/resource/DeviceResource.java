@@ -6,6 +6,7 @@ import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DeviceProfileFieldData;
 import esthesis.service.device.dto.DeviceProfileNote;
 import esthesis.service.device.dto.DeviceRegistration;
+import esthesis.service.device.dto.GeolocationDTO;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -100,4 +101,12 @@ public interface DeviceResource {
   @GET
   @Path("/v1/device/{deviceId}/device-profile/fields-data")
   List<DeviceProfileFieldData> getFieldsData(String deviceId);
+
+  @GET
+  @Path("/v1/device/{deviceId}/device-data")
+  List<DeviceProfileFieldData> getAllDeviceData(String deviceId);
+
+  @GET
+  @Path("/v1/device/{deviceId}/geolocation")
+  GeolocationDTO getDeviceGeolocation(String deviceId);
 }

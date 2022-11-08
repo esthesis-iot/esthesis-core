@@ -35,6 +35,8 @@ import {DeviceDataComponent} from "./device/device-data/device-data.component";
 import {DeviceProfileComponent} from "./device/device-profile/device-profile.component";
 import {FormlyModule} from "@ngx-formly/core";
 import {FormlyMaterialModule} from "@ngx-formly/material";
+import {ClipboardModule} from "@angular/cdk/clipboard";
+import {SafePipeModule} from "safe-pipe";
 
 @NgModule({
   declarations: [
@@ -75,7 +77,9 @@ import {FormlyMaterialModule} from "@ngx-formly/material";
     NgTerminalModule,
     A11yModule,
     FormlyModule.forChild(),
-    FormlyMaterialModule
+    FormlyMaterialModule,
+    ClipboardModule,
+    SafePipeModule
   ]
 })
 export class DevicesModule {

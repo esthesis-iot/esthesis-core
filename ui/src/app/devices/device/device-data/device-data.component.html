@@ -1,1 +1,27 @@
-<p>device-data works!</p>
+<div fxLayout="row">
+  <table [dataSource]="datasource" mat-table fxFlexFill
+         matSort matSortActive="measurement"
+         matSortDirection="asc" matSortDisableClear matSortStart="asc">
+    <ng-container matColumnDef="measurement">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Measurement</th>
+      <td *matCellDef="let element" mat-cell> {{element.label}}</td>
+    </ng-container>
+    <ng-container matColumnDef="value">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Value</th>
+      <td *matCellDef="let element" mat-cell> {{element.value}}</td>
+    </ng-container>
+    <ng-container matColumnDef="lastUpdatedOn">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Last updated on</th>
+      <td *matCellDef="let element"
+          mat-cell> {{element.lastUpdate | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</td>
+    </ng-container>
+    <ng-container matColumnDef="lastUpdatedOnAgo">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td *matCellDef="let element"
+          mat-cell> {{element.lastUpdate | amFromUtc | amLocal | amTimeAgo}}</td>
+    </ng-container>
+    <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+    <tr *matRowDef="let row; columns: displayedColumns; let element;" mat-row
+        (click)="copyValue(row)"></tr>
+  </table>
+</div>

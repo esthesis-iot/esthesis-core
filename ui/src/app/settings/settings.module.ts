@@ -30,7 +30,6 @@ import {SettingsUiComponent} from "./settings-ui/settings-ui.component";
 import {SettingsKubernetesComponent} from "./settings-kubernetes/settings-kubernetes.component";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
-import {IconPickerModule} from "ngx-icon-picker";
 
 @NgModule({
   declarations: [
@@ -63,8 +62,7 @@ import {IconPickerModule} from "ngx-icon-picker";
     MatCheckboxModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    MatAutocompleteModule,
-    IconPickerModule
+    MatAutocompleteModule
   ]
 })
 export class SettingsModule {

@@ -29,9 +29,14 @@
                         [value]="tag.id">{{tag.name}}</mat-option>
           </mat-select>
 
-          <div class="label-text mt1">Location</div>
-          <iframe src="https://maps.google.com/maps?q=35.856737,10.606619&z=15&output=embed"
-                  width="280" height="200" style="border:0" class="mt1"></iframe>
+          <div *ngIf="geoUrl">
+            <div class="label-text mt1">Location</div>
+            <!-- q=lon/lat -->
+            <iframe [src]="geoUrl | safe: 'resourceUrl'"
+                    width="100%" height="200" style="border:0"
+                    class="mt1"></iframe>
+            <div class="geoAgo">{{geoLastUpdated | amFromUtc | amLocal | amTimeAgo}}</div>
+          </div>
         </mat-card-content>
       </form>
       <mat-card-actions>
@@ -84,6 +89,5 @@
       </mat-card-content>
     </mat-card>
   </div>
-
 </div>
 

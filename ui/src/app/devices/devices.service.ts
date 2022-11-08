@@ -7,6 +7,7 @@ import {DeviceDto} from "../dto/device-dto";
 import {environment} from "../../environments/environment";
 import {DeviceProfileNoteDto} from "../dto/device-profile-note-dto";
 import {DevicePageFieldDataDto} from "../dto/device-page-field-data-dto";
+import {GeolocationDto} from "../dto/geolocation-dto";
 
 @Injectable({
   providedIn: "root"
@@ -61,5 +62,15 @@ export class DevicesService extends CrudService<DeviceDto> {
   getProfileFieldsData(deviceId: string): Observable<DevicePageFieldDataDto[]> {
     return this.http.get<DevicePageFieldDataDto[]>(
       environment.apiPrefix + `/v1/device/${deviceId}/device-profile/fields-data`);
+  }
+
+  getAllDeviceData(deviceId: string): Observable<DevicePageFieldDataDto[]> {
+    return this.http.get<DevicePageFieldDataDto[]>(
+      environment.apiPrefix + `/v1/device/${deviceId}/device-data`);
+  }
+
+  getGeolocation(deviceId: string): Observable<GeolocationDto> {
+    return this.http.get<GeolocationDto>(
+      environment.apiPrefix + `/v1/device/${deviceId}/geolocation`);
   }
 }
