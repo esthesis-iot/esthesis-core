@@ -1,9 +1,11 @@
-import {RouterModule, Routes} from '@angular/router';
-import {NgModule} from '@angular/core';
-import {CommandComponent} from './command.component';
+import {RouterModule, Routes} from "@angular/router";
+import {NgModule} from "@angular/core";
+import {CommandComponent} from "./command.component";
+import {CommandCreateComponent} from "./command-create.component";
 
 const routes: Routes = [
-  {path: '', component: CommandComponent},
+  {path: "", component: CommandComponent},
+  {path: "create", component: CommandCreateComponent},
 ];
 
 @NgModule({

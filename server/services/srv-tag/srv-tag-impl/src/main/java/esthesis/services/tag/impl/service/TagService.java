@@ -6,8 +6,11 @@ import esthesis.service.common.paging.Pageable;
 import esthesis.service.common.validation.CVException;
 import esthesis.service.tag.dto.Tag;
 import esthesis.service.tag.messaging.TagServiceMessaging;
+import esthesis.services.tag.impl.repository.TagRepository;
 import io.opentelemetry.context.Context;
 import io.smallrye.reactive.messaging.TracingMetadata;
+import java.util.Collections;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +31,9 @@ public class TagService extends BaseService<Tag> {
   @Channel(TagServiceMessaging.TOPIC_TAG_DELETE)
   Emitter<Tag> tagDeletedEmitter;
 
+  @Inject
+  TagRepository tagRepository;
+
   @Override
   public Page<Tag> find(Pageable pageable) {
     log.debug("Finding all tags with '{}'.", pageable);
@@ -44,7 +50,7 @@ public class TagService extends BaseService<Tag> {
   public Tag save(Tag dto) {
     log.debug("Saving tag '{}'.", dto);
     // Ensure no other tag has the same name.
-    Tag existingTag = findByColumn("name", dto.getName());
+    Tag existingTag = findFirstByColumn("name", dto.getName());
     if (existingTag != null && (dto.getId() == null || !existingTag.getId()
         .equals(dto.getId()))) {
       new CVException<Tag>()
@@ -67,6 +73,18 @@ public class TagService extends BaseService<Tag> {
           TracingMetadata.withCurrent(Context.current())));
     } else {
       log.warn("Tag with id '{}' not found to be deleted.", id);
+    }
+  }
+
+  public List<Tag> findByName(String name, boolean partialMatch) {
+    return findByName(Collections.singletonList(name), partialMatch);
+  }
+
+  public List<Tag> findByName(List<String> names, boolean partialMatch) {
+    if (partialMatch) {
+      return tagRepository.findByNamePartial(names);
+    } else {
+      return tagRepository.findByName(names);
     }
   }
 }

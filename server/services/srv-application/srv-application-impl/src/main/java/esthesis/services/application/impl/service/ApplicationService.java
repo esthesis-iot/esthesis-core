@@ -42,7 +42,7 @@ public class ApplicationService extends BaseService<Application> {
   public Application save(Application dto) {
     log.debug("Saving application '{}'.", dto);
     // Ensure no other application has the same name.
-    Application existingApplication = findByColumn("name", dto.getName());
+    Application existingApplication = findFirstByColumn("name", dto.getName());
     if (existingApplication != null && (dto.getId() == null
         || !existingApplication.getId().equals(dto.getId()))) {
       new CVException<Application>()

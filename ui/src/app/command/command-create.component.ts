@@ -3,13 +3,12 @@ import {BaseComponent} from "../shared/component/base-component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UtilityService} from "../shared/service/utility.service";
 import {Router} from "@angular/router";
-import {MatDialogRef} from "@angular/material/dialog";
-import {CommandCreateService} from "./command-create.service";
 import {forkJoin} from "rxjs";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {ProvisioningDto} from "../dto/provisioning-dto";
 import {ProvisioningService} from "../provisioning/provisioning.service";
 import {AppConstants} from "../app.constants";
+import {CommandService} from "./command.service";
 
 @Component({
   selector: "app-command-create",
@@ -24,10 +23,9 @@ export class CommandCreateComponent extends BaseComponent implements OnInit, OnD
   // Expose application constants.
   constants = AppConstants;
 
-  constructor(private formBuilder: FormBuilder, private commandCreateService: CommandCreateService,
-              private utilityService: UtilityService, private router: Router,
-              public selfDialogRef: MatDialogRef<CommandCreateComponent>,
-              private provisioningService: ProvisioningService) {
+  constructor(private formBuilder: FormBuilder, private commandService: CommandService,
+    private utilityService: UtilityService, private router: Router,
+    private provisioningService: ProvisioningService) {
     super();
   }
 
@@ -54,8 +52,8 @@ export class CommandCreateComponent extends BaseComponent implements OnInit, OnD
       distinctUntilChanged()
     ).subscribe(onNext => {
       forkJoin([
-        this.commandCreateService.findDevicesByHardwareIds(onNext.hardwareIds),
-        this.commandCreateService.findDevicesByTags(onNext.tags)]).subscribe(results => {
+        this.commandService.findDevicesByHardwareIds(onNext.hardwareIds),
+        this.commandService.findDevicesByTags(onNext.tags)]).subscribe(results => {
         this.searchDevicesForm!.patchValue({
           devicesMatchedByHardwareIds: results[0],
           devicesMatchedByTags: results[1],
@@ -71,7 +69,7 @@ export class CommandCreateComponent extends BaseComponent implements OnInit, OnD
   }
 
   execute() {
-    this.commandCreateService.execute(
+    this.commandService.execute(
       {...this.searchDevicesForm!.value, ...this.commandForm!.value}).subscribe(
       () => {
         this.utilityService.popupSuccess("Command dispatched successfully.");
@@ -84,7 +82,7 @@ export class CommandCreateComponent extends BaseComponent implements OnInit, OnD
   }
 
   close() {
-    this.selfDialogRef.close();
+    // this.selfDialogRef.close();
   }
 
   canDispatch(): boolean {

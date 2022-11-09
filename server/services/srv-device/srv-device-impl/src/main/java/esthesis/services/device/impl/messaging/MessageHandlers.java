@@ -2,7 +2,7 @@ package esthesis.services.device.impl.messaging;
 
 import esthesis.service.tag.dto.Tag;
 import esthesis.service.tag.messaging.TagServiceMessaging;
-import esthesis.services.device.impl.service.DeviceService;
+import esthesis.services.device.impl.service.DeviceTagService;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.smallrye.common.annotation.Blocking;
@@ -20,7 +20,7 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 public class MessageHandlers {
 
   @Inject
-  DeviceService deviceService;
+  DeviceTagService deviceTagService;
 
   @Blocking
   @Incoming(TagServiceMessaging.TOPIC_TAG_DELETE)
@@ -34,7 +34,7 @@ public class MessageHandlers {
         scope = tracingMetadata.get().getCurrentContext().makeCurrent();
       }
       log.debug("Got a tag deleted message '{}'", msg.getPayload());
-      deviceService.removeTag(msg.getPayload().getName());
+      deviceTagService.removeTag(msg.getPayload().getName());
     } finally {
       scope.close();
     }

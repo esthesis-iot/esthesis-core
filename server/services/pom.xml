@@ -95,5 +95,6 @@
     <module>srv-dataflow</module>
     <module>srv-agent</module>
     <module>srv-application</module>
+    <module>srv-command</module>
   </modules>
 </project>

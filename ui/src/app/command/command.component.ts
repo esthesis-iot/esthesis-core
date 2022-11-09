@@ -27,10 +27,6 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   // Expose application constants.
   constants = AppConstants;
 
-  isNiFiConfigured = false;
-  hasActiveNifi = false;
-  hasDTUrl = false;
-
   // References to sorting and pagination.
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;

@@ -198,7 +198,7 @@ public class CertificateService extends BaseService<Certificate> {
           importCertificateForm.getBackup().uploadedFile().toFile(),
           Certificate.class);
       if (findById(certificate.getId()) != null
-          || findByColumn("cn", certificate.getCn()) != null) {
+          || findFirstByColumn("cn", certificate.getCn()) != null) {
         throw new QAlreadyExistsException(
             "A certificate with this CN or id already exists.");
       }
@@ -222,7 +222,7 @@ public class CertificateService extends BaseService<Certificate> {
       // Get the issuer CA.
       Ca ca = null;
       if (StringUtils.isNotBlank(certificate.getIssuer())) {
-        ca = caService.findByColumn("cn", certificate.getIssuer());
+        ca = caService.findFirstByColumn("cn", certificate.getIssuer());
       }
 
       // Generate a keypair.

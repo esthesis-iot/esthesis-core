@@ -3,7 +3,7 @@ package esthesis.services.device.impl.resource;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.DeviceRegistration;
 import esthesis.service.device.resource.DeviceSystemResource;
-import esthesis.services.device.impl.service.DeviceService;
+import esthesis.services.device.impl.service.DeviceRegistrationService;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -14,12 +14,12 @@ import org.bouncycastle.operator.OperatorCreationException;
 public class DeviceSystemResourceImpl implements DeviceSystemResource {
 
   @Inject
-  DeviceService deviceService;
+  DeviceRegistrationService deviceRegistrationService;
 
   @Override
   public Device register(DeviceRegistration deviceRegistration)
   throws IOException, InvalidKeySpecException, NoSuchAlgorithmException,
          OperatorCreationException, NoSuchProviderException {
-    return deviceService.register(deviceRegistration);
+    return deviceRegistrationService.register(deviceRegistration);
   }
 }

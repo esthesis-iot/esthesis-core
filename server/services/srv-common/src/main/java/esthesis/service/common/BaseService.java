@@ -27,7 +27,7 @@ public abstract class BaseService<D extends BaseDTO> {
     return repository.listAll();
   }
 
-  public D findByColumn(String column, String value,
+  public D findFirstByColumn(String column, String value,
       boolean partialMatch) {
     if (partialMatch) {
       return repository.find(column + " like ?1", value).firstResult();
@@ -36,7 +36,30 @@ public abstract class BaseService<D extends BaseDTO> {
     }
   }
 
-  public D findByColumn(String column, String value) {
+  public D findFirstByColumn(String column, String value) {
+    return findFirstByColumn(column, value, false);
+  }
+
+  public List<D> findByColumn(String column, String value,
+      boolean partialMatch) {
+    if (partialMatch) {
+      return repository.find(column + " like ?1", value).list();
+    } else {
+      return repository.find(column + " = ?1", value).list();
+    }
+  }
+
+  public List<D> findByColumnIn(String column, List<String> values,
+      boolean partialMatch) {
+    if (partialMatch) {
+      return repository.find(column + " like ?1", String.join("|", values))
+          .list();
+    } else {
+      return repository.find(column + " in ?1", values).list();
+    }
+  }
+
+  public List<D> findByColumn(String column, String value) {
     return findByColumn(column, value, false);
   }
 

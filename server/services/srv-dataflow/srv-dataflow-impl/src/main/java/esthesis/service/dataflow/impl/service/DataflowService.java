@@ -82,7 +82,8 @@ public class DataflowService extends BaseService<Dataflow> {
     // Convert the names of the tags to their IDs.
     log.debug("Looking for a matching MQTT server for tags '{}'.", tagNames);
     final List<String> tagIds = tagNames.stream()
-        .map(tagName -> tagResource.findByName(tagName).getId().toString())
+        .map(tagName -> tagResource.findByName(tagName, false).getId()
+            .toString())
         .toList();
 
     // Find all dataflows of type MQTT client.

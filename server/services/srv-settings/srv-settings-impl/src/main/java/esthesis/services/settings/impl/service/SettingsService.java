@@ -18,7 +18,7 @@ public class SettingsService extends BaseService<Setting> {
 
   public Setting findByName(NamedSetting name) {
     log.debug("Looking up key '{}'.", name);
-    Setting setting = findByColumn("name", name.toString());
+    Setting setting = findFirstByColumn("name", name.toString());
     log.debug("Found value '{}'.", setting);
 
     return setting;
@@ -26,7 +26,7 @@ public class SettingsService extends BaseService<Setting> {
 
   public Setting findByTextName(String name) {
     log.debug("Looking up key '{}'.", name);
-    Setting setting = findByColumn("name", name);
+    Setting setting = findFirstByColumn("name", name);
     log.debug("Found value '{}'.", setting);
 
     return setting;

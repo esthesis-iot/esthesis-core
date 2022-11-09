@@ -62,7 +62,7 @@ public class CAService extends BaseService<Ca> {
     }
 
     // Check a CA with the same name doesn't already exist.
-    if (findByColumn("cn", ca.getCn()) != null) {
+    if (findFirstByColumn("cn", ca.getCn()) != null) {
       new CVException<Ca>()
           .addViolation("cn",
               "A Certificate Authority with CN '{}' already exists.",
@@ -187,7 +187,7 @@ public class CAService extends BaseService<Ca> {
       Ca ca = mapper.readValue(importCaForm.getBackup().uploadedFile().toFile(),
           Ca.class);
       if (findById(ca.getId()) != null
-          || findByColumn("cn", ca.getCn()) != null) {
+          || findFirstByColumn("cn", ca.getCn()) != null) {
         throw new QAlreadyExistsException(
             "A CA with this CN or id already exists.");
       }
