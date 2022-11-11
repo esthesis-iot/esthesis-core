@@ -12,6 +12,16 @@ export const AppConstants = {
     CERTIFICATE: 2
   },
 
+  // A list of application-wide settings (see also the counterpart Java class AppConstants.java).
+  NAMED_SETTING: {
+    DEVICE_PROVISIONING_URL: "DEVICE_PROVISIONING_URL",
+    DEVICE_REGISTRATION_MODE: "DEVICE_REGISTRATION_MODE",
+    DEVICE_TAGS_ALGORITHM: "DEVICE_TAGS_ALGORITHM",
+    DEVICE_ROOT_CA: "DEVICE_ROOT_CA",
+    PLATFORM_CERTIFICATE: "PLATFORM_CERTIFICATE",
+    KAFKA_CONTROL_REQUEST_TOPIC_NAME: "KAFKA_CONTROL_REQUEST_TOPIC_NAME"
+  },
+
   // Device settings.
   DEVICE: {
     STATUS: {

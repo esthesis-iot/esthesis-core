@@ -19,6 +19,7 @@ import {CommandComponent} from "./command.component";
 import {CommandCreateComponent} from "./command-create.component";
 import {MatStepperModule} from "@angular/material/stepper";
 import {DateSupportModule} from "../shared/module/date-support.module";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
   declarations: [CommandComponent, CommandCreateComponent],
@@ -40,7 +41,8 @@ import {DateSupportModule} from "../shared/module/date-support.module";
     MomentModule,
     MatTooltipModule,
     MatStepperModule,
-    DateSupportModule
+    DateSupportModule,
+    MatProgressSpinnerModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

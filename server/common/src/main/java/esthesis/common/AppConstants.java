@@ -16,7 +16,22 @@ public class AppConstants {
   // Redis key suffixes.
   public static final String REDIS_KEY_SUFFIX_VALUE_TYPE = "valueType";
   public static final String REDIS_KEY_SUFFIX_TIMESTAMP = "timestamp";
-  
+
+  // Specifies whether this command should be executed synchronously or
+  // asynchronously. Asynchronous commands are executed in the background and
+  // can not be tracked (i.e. return any output). Synchronous commands are
+  // executed in the foreground and can return output.
+  public static final String COMMAND_EXECUTION_TYPE_SYNCHRONOUS = "s";
+  public static final String COMMAND_EXECUTION_TYPE_ASYNCHRONOUS = "a";
+
+  // Specifies the type of the command.
+  public static final String COMMAND_TYPE_EXEC = "e";
+  public static final String COMMAND_TYPE_FIRMWARE = "f";
+  public static final String COMMAND_TYPE_REBOOT = "r";
+  public static final String COMMAND_TYPE_SHUTDOWN = "s";
+  public static final String COMMAND_TYPE_PING = "p";
+  public static final String COMMAND_TYPE_HEALTH = "h";
+
   // Settings keys.
   public enum NamedSetting {
     SECURITY_ASYMMETRIC_KEY_SIZE, SECURITY_ASYMMETRIC_KEY_ALGORITHM,
@@ -25,7 +40,9 @@ public class AppConstants {
     PLATFORM_CERTIFICATE,
 
     DEVICE_ROOT_CA, DEVICE_PROVISIONING_URL, DEVICE_REGISTRATION_MODE,
-    DEVICE_TAGS_ALGORITHM, DEVICE_GEO_LAT, DEVICE_GEO_LON;
+    DEVICE_TAGS_ALGORITHM, DEVICE_GEO_LAT, DEVICE_GEO_LON,
+
+    KAFKA_CONTROL_REQUEST_TOPIC_NAME
   }
 
   // The tag algorithms available when matching objects against tags.

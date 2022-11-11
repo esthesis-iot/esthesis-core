@@ -27,9 +27,9 @@ import {
 import {SettingsDevicePageComponent} from "./settings-device-page/settings-device-page.component";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {SettingsUiComponent} from "./settings-ui/settings-ui.component";
-import {SettingsKubernetesComponent} from "./settings-kubernetes/settings-kubernetes.component";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import { SettingsMessagingComponent } from './settings-messaging/settings-messaging.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +39,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
     SettingsDevregComponent,
     SettingsSecurityComponent,
     SettingsUiComponent,
-    SettingsKubernetesComponent,
+    SettingsMessagingComponent,
   ],
   imports: [
     CommonModule,

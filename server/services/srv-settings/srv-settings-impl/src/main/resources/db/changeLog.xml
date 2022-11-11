@@ -30,4 +30,12 @@
     </ext:insertOne>
   </changeSet>
 
+  <changeSet id="3" author="European Dynamics SA">
+    <ext:insertOne collectionName="Setting">
+      <ext:document>
+        {"name":"KAFKA_CONTROL_REQUEST_TOPIC_NAME", "value": "esthesis-control-request"}
+      </ext:document>
+    </ext:insertOne>
+  </changeSet>
+
 </databaseChangeLog>

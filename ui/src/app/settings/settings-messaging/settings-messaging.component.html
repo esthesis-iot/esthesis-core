@@ -1,0 +1,13 @@
+<form novalidate [formGroup]="form" fxLayout="column">
+  <div class="inline-header">Kafka control request topic</div>
+  <mat-form-field>
+    <input matInput [formControlName]="appConstants.NAMED_SETTING.KAFKA_CONTROL_REQUEST_TOPIC_NAME">
+    <mat-hint>The name of the Kafka topic where control request messages should be posted to, e.g.
+      esthesis-control-request.
+    </mat-hint>
+  </mat-form-field>
+</form>
+
+<div class="mt2">
+  <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
+</div>

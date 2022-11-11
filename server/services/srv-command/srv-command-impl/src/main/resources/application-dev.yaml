@@ -40,6 +40,11 @@ quarkus:
         username: esthesis-system
         password: esthesis-system
 
+  kafka:
+    bootstrap:
+      servers:
+        - esthesis-dev-kafka:9094
+        -
 mp:
   jwt:
     verify:

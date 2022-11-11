@@ -19,5 +19,9 @@
       <artifactId>quarkus-mongodb-panache-common</artifactId>
       <groupId>io.quarkus</groupId>
     </dependency>
+    <dependency>
+      <artifactId>quarkus-hibernate-validator</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
   </dependencies>
 </project>

@@ -1,18 +1,18 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {SettingsService} from "../settings.service";
-import * as _ from "lodash";
-import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
+import * as _ from "lodash";
 import {SettingDto} from "../../dto/setting-dto";
 import {AppConstants} from "../../app.constants";
+import {BaseComponent} from "../../shared/component/base-component";
 
 @Component({
-  selector: "app-settings-provisioning",
-  templateUrl: "./settings-provisioning.component.html",
-  styleUrls: []
+  selector: "app-settings-messaging",
+  templateUrl: "./settings-messaging.component.html",
+  styleUrls: ["./settings-messaging.component.scss"]
 })
-export class SettingsProvisioningComponent extends BaseComponent implements OnInit {
+export class SettingsMessagingComponent extends BaseComponent implements OnInit {
 
   form!: FormGroup;
 
@@ -23,16 +23,13 @@ export class SettingsProvisioningComponent extends BaseComponent implements OnIn
 
   ngOnInit() {
     // Define the form.
-    // TODO to be fully dynamic, the name of the form control should be derived from the name
-    //  of the respective setting. Create an empty form group and then add the form controls
-    //  programmatically.
     this.form = this.fb.group({
-      DEVICE_PROVISIONING_URL: ["", []]
+      KAFKA_CONTROL_REQUEST_TOPIC_NAME: ["", []]
     });
 
 
     // Fetch settings.
-    this.settingsService.findByNames(AppConstants.NAMED_SETTING.DEVICE_PROVISIONING_URL).subscribe(onNext => {
+    this.settingsService.findByNames(AppConstants.NAMED_SETTING.KAFKA_CONTROL_REQUEST_TOPIC_NAME).subscribe(onNext => {
       onNext.forEach(setting => {
         this.form.controls[setting.name].patchValue(setting.value);
       });
@@ -47,5 +44,6 @@ export class SettingsProvisioningComponent extends BaseComponent implements OnIn
       this.utilityService.popupSuccess("Settings saved successfully.");
     });
   }
+
 
 }

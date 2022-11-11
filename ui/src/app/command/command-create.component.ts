@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {BaseComponent} from "../shared/component/base-component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UtilityService} from "../shared/service/utility.service";
@@ -15,13 +15,12 @@ import {CommandService} from "./command.service";
   templateUrl: "./command-create.component.html",
   styleUrls: ["./command-create.component.scss"]
 })
-export class CommandCreateComponent extends BaseComponent implements OnInit, OnDestroy {
+export class CommandCreateComponent extends BaseComponent implements OnInit {
   searchDevicesForm!: FormGroup;
   commandForm!: FormGroup;
   // The list of currently active provisioning packages.
   provisioningPackages?: ProvisioningDto[];
-  // Expose application constants.
-  constants = AppConstants;
+  isSearching = false;
 
   constructor(private formBuilder: FormBuilder, private commandService: CommandService,
     private utilityService: UtilityService, private router: Router,
@@ -51,21 +50,28 @@ export class CommandCreateComponent extends BaseComponent implements OnInit, OnD
       debounceTime(500),
       distinctUntilChanged()
     ).subscribe(onNext => {
+      this.isSearching = true;
       forkJoin([
         this.commandService.findDevicesByHardwareIds(onNext.hardwareIds),
-        this.commandService.findDevicesByTags(onNext.tags)]).subscribe(results => {
-        this.searchDevicesForm!.patchValue({
-          devicesMatchedByHardwareIds: results[0],
-          devicesMatchedByTags: results[1],
-          matches: (results[0] + results[1])
-        }, {emitEvent: false});
+        this.commandService.findDevicesByTags(onNext.tags)]).subscribe({
+        next: ([ids, tags]) => {
+          this.searchDevicesForm!.patchValue({
+            devicesMatchedByHardwareIds: ids,
+            devicesMatchedByTags: tags,
+            matches: (ids + tags)
+          }, {emitEvent: false});
+        }, error: (err) => {
+          this.utilityService.popupErrorWithTraceId("Could not find matching devices.", err);
+        }, complete: () => {
+          this.isSearching = false;
+        }
       });
     });
 
     // Get provisioning packages.
-    this.provisioningService.find("state=1&sort=name,packageVersion").subscribe(onNext => {
-      this.provisioningPackages = onNext.content;
-    });
+    // this.provisioningService.find("state=1&sort=name,packageVersion").subscribe(onNext => {
+    //   this.provisioningPackages = onNext.content;
+    // });
   }
 
   execute() {
@@ -73,16 +79,8 @@ export class CommandCreateComponent extends BaseComponent implements OnInit, OnD
       {...this.searchDevicesForm!.value, ...this.commandForm!.value}).subscribe(
       () => {
         this.utilityService.popupSuccess("Command dispatched successfully.");
-        this.close();
         this.router.navigate(["command"]);
       });
-  }
-
-  ngOnDestroy(): void {
-  }
-
-  close() {
-    // this.selfDialogRef.close();
   }
 
   canDispatch(): boolean {

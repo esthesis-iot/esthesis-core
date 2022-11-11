@@ -5,20 +5,20 @@
     <mat-tab-group animationDuration="0ms">
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon>domain</mat-icon>
-          Device page
-        </ng-template>
-        <ng-template matTabContent>
-          <app-settings-device-page></app-settings-device-page>
-        </ng-template>
-      </mat-tab>
-      <mat-tab>
-        <ng-template mat-tab-label>
           <mat-icon>track_changes</mat-icon>
           Device registration
         </ng-template>
         <ng-template matTabContent>
           <app-settings-devreg></app-settings-devreg>
+        </ng-template>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>domain</mat-icon>
+          Device page
+        </ng-template>
+        <ng-template matTabContent>
+          <app-settings-device-page></app-settings-device-page>
         </ng-template>
       </mat-tab>
       <mat-tab>
@@ -50,11 +50,11 @@
       </mat-tab>
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon>attractions</mat-icon>
-          Kubernetes
+          <mat-icon>forward_to_inbox</mat-icon>
+          Messaging
         </ng-template>
         <ng-template matTabContent>
-          <app-settings-kubernetes></app-settings-kubernetes>
+          <app-settings-messaging></app-settings-messaging>
         </ng-template>
       </mat-tab>
     </mat-tab-group>
