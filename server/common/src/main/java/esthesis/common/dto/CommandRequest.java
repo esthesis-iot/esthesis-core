@@ -2,7 +2,6 @@ package esthesis.common.dto;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.time.Instant;
-import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,21 +32,37 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 public class CommandRequest extends BaseDTO {
 
-  // The command to be executed.
-  private String command;
+  // A comma-separated list of hardware IDs to which the command should be sent.
+  // Note, these can be partial IDs that need to be matched again actual IDs.
+  private String hardwareIds;
 
-  // The arguments for the commands.
-  private List<String> arguments;
-
-  // The type of execution for the command (see AppConstants.COMMAND_EXECUTION_TYPE_*).
-  @NotEmpty
-  private String executionType;
+  // A comma-separated list of tag names to which the command should be sent.
+  // Note, these can be partial names that need to be matched again actual
+  // names.
+  private String tags;
 
   // The type of execution for the command (see AppConstant.COMMAND_FAMILY_TYPE_*).
   @NotEmpty
   private String commandType;
 
+  // The type of execution for the command (see AppConstants.COMMAND_EXECUTION_TYPE_*).
+  @NotEmpty
+  private String executionType;
+
+  // The command to be executed.
+  private String command;
+
+  // The arguments for the commands.
+  private String arguments;
+
+  // The command to be executed.
+  private String description;
+
   // The time when the command was created.
   @NotEmpty
-  private Instant createdOn;
+  private Instant createdOn = Instant.now();
+  
+  // The time when the command was executed.
+  private Instant executedOn;
 }
+

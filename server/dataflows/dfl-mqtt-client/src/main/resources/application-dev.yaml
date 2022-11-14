@@ -3,8 +3,6 @@ quarkus:
     category:
       esthesis:
         level: DEBUG
-    #      "org.apache.camel":
-    #        level: DEBUG
     handler:
       gelf:
         enabled: true
@@ -12,3 +10,9 @@ quarkus:
         port: 12201
         include-full-mdc: true
 
+"%debug-camel":
+  quarkus:
+    log:
+      category:
+        "org.apache.camel":
+          level: DEBUG

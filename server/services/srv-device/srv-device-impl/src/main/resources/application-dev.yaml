@@ -4,12 +4,6 @@ quarkus:
     cors: false
   log:
     category:
-      #      "org.jboss.resteasy.reactive.client.logging":
-      #        level: DEBUG
-      #        "io.quarkus.oidc.token.propagation.reactive":
-      #          level: DEBUG
-      #      "io.quarkus.mongodb.panache.common.runtime":
-      #        level: DEBUG
       esthesis:
         level: DEBUG
     handler:

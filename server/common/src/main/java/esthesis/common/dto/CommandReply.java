@@ -35,6 +35,11 @@ public class CommandReply extends BaseDTO {
   // The CommandRequest to which this reply is related.
   private String correlationId;
 
+  // The hardware ID to which this command was executed. This information can
+  // already be extracted from the correlated CommandRequest, however it is
+  // also included here for convenience.
+  private String hardwareId;
+
   // Whether the command was executed successfully or execution resulted in
   // an error.
   private boolean success;

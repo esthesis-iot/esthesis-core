@@ -9,6 +9,7 @@ import esthesis.service.device.resource.DeviceResource;
 import esthesis.services.device.impl.service.DeviceService;
 import esthesis.services.device.impl.service.DeviceTagService;
 import java.util.Arrays;
+import java.util.List;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
@@ -64,6 +65,23 @@ public class DeviceResourceImpl implements DeviceResource {
       return deviceService.countByHardwareId(
           Arrays.asList(hardwareIds.split(",")), partialMatch);
     }
+  }
+
+  @Override
+  public List<Device> findByHardwareIds(String hardwareIds,
+      boolean partialMatch) {
+    return deviceService.findByHardwareId(
+        Arrays.asList(hardwareIds.split(",")), partialMatch);
+  }
+
+  @Override
+  public List<Device> findByTagName(String tag) {
+    return deviceTagService.findByTagName(tag, false);
+  }
+
+  @Override
+  public List<Device> findByTagId(String tagId) {
+    return deviceTagService.findByTagId(tagId);
   }
 
   @Override

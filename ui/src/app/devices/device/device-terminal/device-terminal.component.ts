@@ -1,7 +1,6 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, Input, ViewChild} from "@angular/core";
 import {NgTerminal} from "ng-terminal";
 import {DeviceTerminalService} from "./device-terminal.service";
-import {CommandExecuteOrderDto} from "../../../dto/command-execute-order-dto";
 
 @Component({
   selector: "app-device-terminal",
@@ -43,25 +42,23 @@ export class DeviceTerminalComponent implements AfterViewInit {
 
   private executeCommand() {
     if (this.command.trim().length > 0) {
-      const cmd: CommandExecuteOrderDto = {
-        arguments: this.command,
-        hardwareIds: this.hardwareId,
-        command: "",
-        description: "",
-        tags: ""
-      };
+      const cmd = null;
+      // const cmd: CommandExecuteRequestDto = {
+      //   // arguments: this.command,
+      //   // hardwareIds: this.hardwareId,
+      //   // command: "",
+      //   // description: "",
+      //   // tags: ""
+      // };
       this.blockInput = true;
       this.command = "";
-      this.deviceTerminalService.executeCommand(cmd).subscribe(
-        onNext => {
-          this.getReply(Object.values(onNext)[0]);
-        },
-        onError => {
-          this.terminal.write(this.termColorRed("ERROR: Could not dispatch command to device.\n"));
-          this.terminal.write("\r$ ");
-          this.blockInput = false;
-        }
-      );
+      // this.deviceTerminalService.executeCommand(cmd).subscribe(
+      //   onNext => {
+      //     this.getReply(Object.values(onNext)[0]);
+      //   },
+      //   onError => {
+      //     this.terminal.write(this.termColorRed("ERROR: Could not dispatch command to
+      // device.\n")); this.terminal.write("\r$ "); this.blockInput = false; } );
     } else {
       this.terminal.write("$ ");
     }

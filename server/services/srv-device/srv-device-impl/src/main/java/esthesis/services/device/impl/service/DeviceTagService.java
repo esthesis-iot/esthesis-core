@@ -28,26 +28,39 @@ public class DeviceTagService {
   /**
    * Finds the devices matched by the specific list of tags.
    *
-   * @param tags         The list of tag names to search by.
+   * @param tagNames     The list of tag names to search by.
    * @param partialMatch Whether the search for the tag name will be partial or
    *                     not.
    * @return Returns the devices matched.
    */
-  public List<Device> findByTag(List<String> tags, boolean partialMatch) {
-    if (tags.isEmpty()) {
+  public List<Device> findByTagName(List<String> tagNames,
+      boolean partialMatch) {
+    if (tagNames.isEmpty()) {
       return new ArrayList<>();
     } else {
       List<Tag> tagsByName = Lists.newArrayList(
-          tagResource.findByNames(String.join(",", tags), partialMatch));
-      return deviceRepository.findByTag(tagsByName.stream()
+          tagResource.findByNames(String.join(",", tagNames), partialMatch));
+      return deviceRepository.findByTagId(tagsByName.stream()
           .map(Tag::getId)
           .map(Object::toString)
           .collect(Collectors.toList()));
     }
   }
 
-  public List<Device> findByTag(String tag, boolean partialMatch) {
-    return findByTag(Collections.singletonList(tag), partialMatch);
+  /**
+   * Finds the devices matched by the specific list of tags.
+   *
+   * @param tagName      The tag name to search by.
+   * @param partialMatch Whether the search for the tag name will be partial or
+   *                     not.
+   * @return Returns the devices matched.
+   */
+  public List<Device> findByTagName(String tagName, boolean partialMatch) {
+    return findByTagName(Collections.singletonList(tagName), partialMatch);
+  }
+
+  public List<Device> findByTagId(String tagId) {
+    return deviceRepository.findByTagId(tagId);
   }
 
   /**

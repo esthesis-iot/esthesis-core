@@ -2,48 +2,30 @@ package esthesis.service.command.impl.resource;
 
 import esthesis.common.dto.CommandReply;
 import esthesis.common.dto.CommandRequest;
-import esthesis.service.command.impl.service.CommandReplyService;
-import esthesis.service.command.impl.service.CommandRequestService;
 import esthesis.service.command.impl.service.CommandService;
 import esthesis.service.command.resource.CommandResource;
-import esthesis.service.dataflow.resource.DataflowResource;
+import java.util.List;
 import javax.inject.Inject;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.bson.types.ObjectId;
 
 public class CommandResourceImpl implements CommandResource {
 
   @Inject
-  CommandRequestService commandRequestService;
-
-  @Inject
-  CommandReplyService commandReplyService;
-
-  @Inject
   CommandService commandService;
 
-  @Inject
-  @RestClient
-  DataflowResource dataflowResource;
-
   @Override
-  public String dispatch(CommandRequest request) {
-    String correlationID = commandRequestService.save(request).getId()
-        .toString();
+  public String save(CommandRequest request) {
+    ObjectId correlationID = commandService.saveRequest(request);
+    commandService.executeRequest(correlationID.toString());
 
-    return correlationID;
+    return correlationID.toString();
   }
 
   @Override
-  public CommandReply dispatchAndWait(CommandRequest request) {
-    String correlationID = commandRequestService.save(request).getId()
-        .toString();
-    try {
-      Thread.sleep(5000);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
+  public List<CommandReply> saveAndWait(CommandRequest request) {
+    ObjectId correlationID = commandService.saveRequest(request);
 
-    return new CommandReply();
+    return null;
   }
 
   @Override

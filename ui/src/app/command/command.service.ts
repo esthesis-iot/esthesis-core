@@ -5,7 +5,7 @@ import {CrudService} from "../services/crud.service";
 import {CommandRequestDto} from "../dto/command-request-dto";
 import {CommandReplyDto} from "../dto/command-reply-dto";
 import {environment} from "../../environments/environment";
-import {CommandExecuteOrderDto} from "../dto/command-execute-order-dto";
+import {CommandExecuteRequestDto} from "../dto/command-execute-request-dto";
 
 @Injectable({
   providedIn: "root"
@@ -30,13 +30,15 @@ export class CommandService extends CrudService<CommandRequestDto> {
       {params: new HttpParams().set("tags", tags)});
   }
 
-  execute(data: CommandExecuteOrderDto): Observable<any> {
-    return this.http.post<string[]>(`${environment.apiPrefix}/command/execute`, {
+  execute(data: CommandExecuteRequestDto): Observable<any> {
+    return this.http.post<string>(`${environment.apiPrefix}/v1/command`, {
+      hardwareIds: data.hardwareIds,
+      tags: data.tags,
+      commandType: data.commandType,
+      executionType: data.executionType,
       command: data.command,
       arguments: data.arguments,
       description: data.description,
-      tags: data.tags,
-      hardwareIds: data.hardwareIds
     });
   }
 }

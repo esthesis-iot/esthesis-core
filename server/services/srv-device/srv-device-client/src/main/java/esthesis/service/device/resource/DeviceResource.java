@@ -5,6 +5,7 @@ import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.GeolocationDTO;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
+import java.util.List;
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.DELETE;
@@ -46,6 +47,31 @@ public interface DeviceResource {
   @Path("/v1/device/count/by-hardware-id")
   Long countByHardwareIds(@QueryParam("hardwareIds") String hardwareIds,
       @QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
+
+  /**
+   * Finds the devices matching a comma-separated list of hardware IDs.
+   *
+   * @param hardwareIds  The hardware IDs to search by.
+   * @param partialMatch Whether to perform a partial match on the hardware
+   *                     IDs.
+   */
+  @GET
+  @Path("/v1/device/find/by-hardware-id")
+  List<Device> findByHardwareIds(@QueryParam("hardwareIds") String hardwareIds,
+      @QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
+
+  /**
+   * Finds the devices matching the given tag names.
+   *
+   * @param tag The tag name to search by.
+   */
+  @GET
+  @Path("/v1/device/find/by-tag-name")
+  List<Device> findByTagName(@QueryParam("tag") String tag);
+
+  @GET
+  @Path("/v1/device/find/by-tag-id")
+  List<Device> findByTagId(@QueryParam("tag") String tagId);
 
   @GET
   @Path("/v1/device/find")

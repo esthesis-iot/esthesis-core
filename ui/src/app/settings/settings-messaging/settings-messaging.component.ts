@@ -24,12 +24,12 @@ export class SettingsMessagingComponent extends BaseComponent implements OnInit 
   ngOnInit() {
     // Define the form.
     this.form = this.fb.group({
-      KAFKA_CONTROL_REQUEST_TOPIC_NAME: ["", []]
+      KAFKA_TOPIC_CONTROL_REQUEST: ["", []]
     });
 
 
     // Fetch settings.
-    this.settingsService.findByNames(AppConstants.NAMED_SETTING.KAFKA_CONTROL_REQUEST_TOPIC_NAME).subscribe(onNext => {
+    this.settingsService.findByNames(AppConstants.NAMED_SETTING.KAFKA_TOPIC_CONTROL_REQUEST).subscribe(onNext => {
       onNext.forEach(setting => {
         this.form.controls[setting.name].patchValue(setting.value);
       });

@@ -7,6 +7,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.kafka.KafkaConstants;
+import org.apache.camel.component.paho.PahoConstants;
 import org.apache.camel.model.dataformat.AvroDataFormat;
 
 @Slf4j
@@ -66,22 +68,19 @@ public class MqttRoute extends RouteBuilder {
       log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
           mqttTopic, kafkaTopic);
       from("paho:" + mqttTopic + "/#" + "?brokerUrl=" + config.mqttBrokerClusterUrl())
-          .bean(dflMqttClientService, "process")
-          .split(body())
-          .marshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+          .bean(dflMqttClientService, "setCommandReplyKafkaKey")
           .toD("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl());
     }
 
     if (config.mqttTopicControlRequest().isPresent() && config.kafkaTopicControlRequest().isPresent()) {
       String mqttTopic = config.mqttTopicControlRequest().get();
       String kafkaTopic = config.kafkaTopicControlRequest().get();
-      log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
-          mqttTopic, kafkaTopic);
-      from("paho:" + mqttTopic + "/#" + "?brokerUrl=" + config.mqttBrokerClusterUrl())
-          .bean(dflMqttClientService, "process")
-          .split(body())
-          .marshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
-          .toD("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl());
+      log.info("Creating route from Kafka topic '{}' to MQTT topic '{}'.",
+          kafkaTopic, mqttTopic);
+      from("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl())
+          .setHeader(PahoConstants.CAMEL_PAHO_OVERRIDE_TOPIC,
+              constant(mqttTopic).append("/").append(header(KafkaConstants.KEY)))
+          .to("paho:dynamic?brokerUrl=" + config.mqttBrokerClusterUrl());
       }
     // @formatter:on
 

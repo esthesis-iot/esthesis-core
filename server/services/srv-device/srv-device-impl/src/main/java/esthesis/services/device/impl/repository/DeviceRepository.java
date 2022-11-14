@@ -33,8 +33,12 @@ public class DeviceRepository implements PanacheMongoRepository<Device> {
     return count("hardwareId like ?1", String.join("|", hardwareIds));
   }
 
-  public List<Device> findByTag(List<String> tags) {
-    return find("tags in ?1", tags).list();
+  public List<Device> findByTagId(List<String> tagIds) {
+    return find("tags in ?1", tagIds).list();
+  }
+
+  public List<Device> findByTagId(String tagId) {
+    return find("tags", tagId).list();
   }
 
   /**

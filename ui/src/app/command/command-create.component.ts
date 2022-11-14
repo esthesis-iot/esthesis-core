@@ -40,7 +40,9 @@ export class CommandCreateComponent extends BaseComponent implements OnInit {
 
     // Step 2 form.
     this.commandForm = this.formBuilder.group({
-      command: ["", [Validators.required]],
+      commandType: ["", [Validators.required]],
+      executionType: ["", [Validators.required]],
+      command: [""],
       arguments: [""],
       description: [""]
     });
@@ -74,7 +76,7 @@ export class CommandCreateComponent extends BaseComponent implements OnInit {
     // });
   }
 
-  execute() {
+  save() {
     this.commandService.execute(
       {...this.searchDevicesForm!.value, ...this.commandForm!.value}).subscribe(
       () => {
@@ -89,9 +91,9 @@ export class CommandCreateComponent extends BaseComponent implements OnInit {
     dispatchOK = dispatchOK && this.searchDevicesForm.controls.devicesMatchedByHardwareIds.value > 0;
     dispatchOK = dispatchOK && this.commandForm.valid;
 
-    if ([AppConstants.DEVICE.COMMANDS.PROVISIONING, AppConstants.DEVICE.COMMANDS.EXECUTE]
-    .includes(this.commandForm.value.command)) {
-      dispatchOK = dispatchOK && this.commandForm.value.arguments;
+    if ([AppConstants.DEVICE.COMMAND.TYPE.FIRMWARE, AppConstants.DEVICE.COMMAND.TYPE.EXECUTE]
+    .includes(this.commandForm.value.commandType)) {
+      dispatchOK = dispatchOK && this.commandForm.value.command;
     }
 
     return dispatchOK;

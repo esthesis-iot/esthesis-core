@@ -19,7 +19,7 @@ export const AppConstants = {
     DEVICE_TAGS_ALGORITHM: "DEVICE_TAGS_ALGORITHM",
     DEVICE_ROOT_CA: "DEVICE_ROOT_CA",
     PLATFORM_CERTIFICATE: "PLATFORM_CERTIFICATE",
-    KAFKA_CONTROL_REQUEST_TOPIC_NAME: "KAFKA_CONTROL_REQUEST_TOPIC_NAME"
+    KAFKA_TOPIC_CONTROL_REQUEST: "KAFKA_TOPIC_CONTROL_REQUEST"
   },
 
   // Device settings.
@@ -36,13 +36,19 @@ export const AppConstants = {
       DEVICE_GEO_LON: "DEVICE_GEO_LON"
     },
 
-    COMMANDS: {
-      EXECUTE: "EXECUTE",
-      HEALTH: "HEALTH",
-      PING: "PING",
-      PROVISIONING: "PROVISIONING",
-      REBOOT: "REBOOT",
-      SHUTDOWN: "SHUTDOWN"
+    COMMAND: {
+      TYPE: {
+        EXECUTE: "e",
+        HEALTH: "h",
+        PING: "p",
+        FIRMWARE: "f",
+        REBOOT: "r",
+        SHUTDOWN: "s"
+      },
+      EXECUTION: {
+        SYNCHRONOUS: "s",
+        ASYNCHRONOUS: "a"
+      }
     }
   },
 

@@ -3,9 +3,9 @@ package esthesis.service.command.resource;
 import esthesis.common.dto.CommandReply;
 import esthesis.common.dto.CommandRequest;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
+import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
@@ -17,12 +17,12 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface CommandResource {
 
   @POST
-  @Path("/v1/command/request")
-  String dispatch(CommandRequest request);
+  @Path("/v1/command")
+  String save(CommandRequest request);
 
-  @PUT
-  @Path("/v1/command/request")
-  CommandReply dispatchAndWait(CommandRequest request);
+  @POST
+  @Path("/v1/command/wait-for-reply")
+  List<CommandReply> saveAndWait(CommandRequest request);
 
   /**
    * Counts the number of devices with the given hardware IDs. The matching

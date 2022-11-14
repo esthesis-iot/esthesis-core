@@ -13,3 +13,4 @@ kafka:
     create: true
   rbac:
     create: true
+  deleteTopicEnable: true

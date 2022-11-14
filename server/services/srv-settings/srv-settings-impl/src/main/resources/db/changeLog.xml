@@ -15,27 +15,15 @@
 
     <ext:insertMany collectionName="Setting">
       <ext:documents>
-        [{"name":"SECURITY_ASYMMETRIC_KEY_SIZE", "value": "2048"},
+        [
+        {"name":"SECURITY_ASYMMETRIC_KEY_SIZE", "value": "2048"},
         {"name":"SECURITY_ASYMMETRIC_KEY_ALGORITHM", "value": "RSA"},
-        {"name":"SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM", "value": "SHA256WITHRSA"}]
+        {"name":"SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM", "value": "SHA256WITHRSA"},
+        {"name":"DEVICE_REGISTRATION_MODE", "value": "DISABLED"},
+        {"name":"KAFKA_TOPIC_EVENT_TAG_DELETE", "value": "esthesis-event-tag-delete"},
+        {"name":"KAFKA_TOPIC_CONTROL_REQUEST", "value": "esthesis-control-request"}
+        ]
       </ext:documents>
     </ext:insertMany>
   </changeSet>
-
-  <changeSet id="2" author="European Dynamics SA">
-    <ext:insertOne collectionName="Setting">
-      <ext:document>
-        {"name":"DEVICE_REGISTRATION_MODE", "value": "DISABLED"}
-      </ext:document>
-    </ext:insertOne>
-  </changeSet>
-
-  <changeSet id="3" author="European Dynamics SA">
-    <ext:insertOne collectionName="Setting">
-      <ext:document>
-        {"name":"KAFKA_CONTROL_REQUEST_TOPIC_NAME", "value": "esthesis-control-request"}
-      </ext:document>
-    </ext:insertOne>
-  </changeSet>
-
 </databaseChangeLog>

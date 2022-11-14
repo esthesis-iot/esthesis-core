@@ -15,13 +15,12 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.kafka.KafkaConstants;
+import org.apache.camel.component.paho.PahoConstants;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
 @ApplicationScoped
 public class DflMqttClientService {
-
-  private static final String CAMEL_HEADER_TOPIC = "CamelMqttTopic";
 
   @Inject
   AppConfig config;
@@ -33,7 +32,8 @@ public class DflMqttClientService {
   String appName;
 
   private MessageType getMessageType(Exchange exchange) {
-    String topic = exchange.getIn().getHeader(CAMEL_HEADER_TOPIC, String.class);
+    String topic = exchange.getIn()
+        .getHeader(PahoConstants.MQTT_TOPIC, String.class);
     if (config.mqttTopicPing().isPresent() && topic.startsWith(
         config.mqttTopicPing().get())) {
       return MessageType.P;
@@ -60,16 +60,21 @@ public class DflMqttClientService {
     MessageType messageType = getMessageType(exchange);
 
     return switch (messageType) {
-      case P -> exchange.getIn().getHeader(CAMEL_HEADER_TOPIC, String.class)
-          .substring(config.mqttTopicPing().get().length() + 1);
-      case T -> exchange.getIn().getHeader(CAMEL_HEADER_TOPIC, String.class)
-          .substring(config.mqttTopicTelemetry().get().length() + 1);
-      case M -> exchange.getIn().getHeader(CAMEL_HEADER_TOPIC, String.class)
-          .substring(config.mqttTopicMetadata().get().length() + 1);
-      case CQ -> exchange.getIn().getHeader(CAMEL_HEADER_TOPIC, String.class)
-          .substring(config.mqttTopicControlRequest().get().length() + 1);
-      case CA -> exchange.getIn().getHeader(CAMEL_HEADER_TOPIC, String.class)
-          .substring(config.mqttTopicControlReply().get().length() + 1);
+      case P ->
+          exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC, String.class)
+              .substring(config.mqttTopicPing().get().length() + 1);
+      case T ->
+          exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC, String.class)
+              .substring(config.mqttTopicTelemetry().get().length() + 1);
+      case M ->
+          exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC, String.class)
+              .substring(config.mqttTopicMetadata().get().length() + 1);
+      case CQ ->
+          exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC, String.class)
+              .substring(config.mqttTopicControlRequest().get().length() + 1);
+      case CA ->
+          exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC, String.class)
+              .substring(config.mqttTopicControlReply().get().length() + 1);
     };
   }
 
@@ -81,7 +86,7 @@ public class DflMqttClientService {
   public void process(Exchange exchange) {
     log.debug("Received message '{}' on topic '{}'.",
         exchange.getIn().getBody(String.class),
-        exchange.getIn().getHeader(CAMEL_HEADER_TOPIC));
+        exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC));
 
     // Extract the message type and the hardware id of this message based on
     // the topic that the message was posted on.
@@ -102,7 +107,8 @@ public class DflMqttClientService {
                   .setType(messageType)
                   .setSeenAt(Instant.now().toString())
                   .setChannel(
-                      exchange.getIn().getHeader(CAMEL_HEADER_TOPIC, String.class))
+                      exchange.getIn()
+                          .getHeader(PahoConstants.MQTT_TOPIC, String.class))
                   .setSeenBy(appName);
           try {
             esthesisMessageBuilder.setPayload(dflUtils.parsePayload(line));
@@ -115,5 +121,12 @@ public class DflMqttClientService {
         });
 
     exchange.getIn().setBody(messages);
+  }
+
+  public void setCommandReplyKafkaKey(Exchange exchange) {
+    String topic = exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC)
+        .toString();
+    exchange.getIn().setHeader(KafkaConstants.KEY,
+        topic.substring(topic.lastIndexOf("/") + 1));
   }
 }
