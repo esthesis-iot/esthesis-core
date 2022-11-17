@@ -1,7 +1,7 @@
 package esthesis.dataflows.rediscache.service;
 
+import esthesis.avro.EsthesisDataMessage;
 import esthesis.dataflow.common.DflUtils;
-import esthesis.dataflow.common.parser.EsthesisMessage;
 import esthesis.dataflows.rediscache.config.AppConfig;
 import io.quarkus.redis.datasource.RedisDataSource;
 import io.quarkus.redis.datasource.hash.HashCommands;
@@ -36,8 +36,8 @@ public class RedisService {
 
   public void process(Exchange exchange) {
     // Get the message from the exchange.
-    EsthesisMessage esthesisMessage = exchange.getIn()
-        .getBody(EsthesisMessage.class);
+    EsthesisDataMessage esthesisMessage = exchange.getIn()
+        .getBody(EsthesisDataMessage.class);
 
     // Write the key to Redis.
     esthesisMessage.getPayload().getValues().forEach((keyValue) -> {

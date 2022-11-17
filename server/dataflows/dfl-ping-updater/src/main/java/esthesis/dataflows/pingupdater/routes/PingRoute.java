@@ -1,7 +1,7 @@
 package esthesis.dataflows.pingupdater.routes;
 
 import esthesis.common.banner.BannerUtil;
-import esthesis.dataflow.common.DflUtils;
+import esthesis.dataflow.common.AvroUtils;
 import esthesis.dataflows.pingupdater.config.AppConfig;
 import esthesis.dataflows.pingupdater.service.PingService;
 import javax.enterprise.context.ApplicationScoped;
@@ -20,10 +20,10 @@ public class PingRoute extends RouteBuilder {
   PingService pingService;
 
   @Inject
-  DflUtils dflUtils;
+  AppConfig config;
 
   @Inject
-  AppConfig config;
+  AvroUtils avroUtils;
 
   @ConfigProperty(name = "quarkus.mongodb.connection-string")
   String mongoUrl;
@@ -48,7 +48,7 @@ public class PingRoute extends RouteBuilder {
         "?brokers=" + config.kafkaClusterUrl() +
         (config.kafkaGroup().isPresent() ?
         "&groupId=" + config.kafkaGroup().get() : ""))
-        .unmarshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+        .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
         .to("seda:ping");
 
     from("seda:ping")

@@ -23,10 +23,18 @@ quarkus:
     enabled: false
   opentelemetry:
     enabled: false
+  index-dependency:
+    avro:
+      group-id: org.apache.avro
+      artifact-id: avro
 
 mp:
   jwt:
     verify:
       publickey:
         location: "http://esthesis-keycloak/realms/esthesis/protocol/openid-connect/certs"
-
+  messaging:
+    outgoing:
+      esthesis-command-request:
+        value:
+          serializer: esthesis.service.command.impl.serialization.EsthesisCommandRequestMessageSerializer

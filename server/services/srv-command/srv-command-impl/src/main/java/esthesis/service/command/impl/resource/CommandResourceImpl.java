@@ -1,7 +1,7 @@
 package esthesis.service.command.impl.resource;
 
-import esthesis.common.dto.CommandReply;
-import esthesis.common.dto.CommandRequest;
+import esthesis.service.command.dto.CommandReply;
+import esthesis.service.command.dto.CommandRequest;
 import esthesis.service.command.impl.service.CommandService;
 import esthesis.service.command.resource.CommandResource;
 import java.util.List;

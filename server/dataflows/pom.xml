@@ -65,6 +65,7 @@
     <module>dfl-influxdb-writer</module>
     <module>dfl-rdbms-writer</module>
     <module>dfl-redis-cache</module>
+    <module>dfl-command-reply-updater</module>
   </modules>
 
 </project>

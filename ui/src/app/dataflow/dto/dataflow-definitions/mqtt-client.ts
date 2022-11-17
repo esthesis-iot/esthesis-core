@@ -61,17 +61,17 @@ export const DATAFLOW_DEFINITION_MQTT_CLIENT = {
           },
         },
         {
-          key: "control-request", type: "input",
-          defaultValue: "esthesis/control/request",
+          key: "command-request", type: "input",
+          defaultValue: "esthesis/command/request",
           props: {
-            type: "text", label: "The topic in which control requests are submitted by the platform to be executed by the devices",
+            type: "text", label: "The topic in which command requests are submitted by the platform to be executed by the devices",
           },
         },
         {
-          key: "control-reply", type: "input",
-          defaultValue: "esthesis/control/reply",
+          key: "command-reply", type: "input",
+          defaultValue: "esthesis/command/reply",
           props: {
-            type: "text", label: "The topic in which control replies are submitted back from devices",
+            type: "text", label: "The topic in which command replies are submitted back from devices",
           },
         },
       ],
@@ -112,17 +112,17 @@ export const DATAFLOW_DEFINITION_MQTT_CLIENT = {
           },
         },
         {
-          key: "control-request", type: "input",
-          defaultValue: "esthesis-control-request",
+          key: "command-request", type: "input",
+          defaultValue: "esthesis-command-request",
           props: {
-            required: true, type: "text", label: "The topic in which control requests are submitted by the platform to be executed by the devices",
+            required: true, type: "text", label: "The topic in which command requests are submitted by the platform to be executed by the devices",
           },
         },
         {
-          key: "control-reply", type: "input",
-          defaultValue: "esthesis-control-reply",
+          key: "command-reply", type: "input",
+          defaultValue: "esthesis-command-reply",
           props: {
-            required: true, type: "text", label: "The topic in which control replies are submitted back from devices",
+            required: true, type: "text", label: "The topic in which command replies are submitted back from devices",
           },
         },
       ],

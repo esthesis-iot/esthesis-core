@@ -20,11 +20,11 @@ public interface AppConfig {
   // The prefix of the MQTT Metadata topic.
   Optional<String> mqttTopicMetadata();
 
-  // The prefix of the MQTT Control Request topic.
-  Optional<String> mqttTopicControlRequest();
+  // The prefix of the MQTT Command Request topic.
+  Optional<String> mqttTopicCommandRequest();
 
-  // The prefix of the MQTT Control Reply topic.
-  Optional<String> mqttTopicControlReply();
+  // The prefix of the MQTT Command Reply topic.
+  Optional<String> mqttTopicCommandReply();
 
   // The URLs of the Kafka brokers.
   String kafkaClusterUrl();
@@ -38,10 +38,10 @@ public interface AppConfig {
   // The prefix of the Kafka Metadata topic.
   Optional<String> kafkaTopicMetadata();
 
-  // The prefix of the Kafka Control Request topic.
-  Optional<String> kafkaTopicControlRequest();
+  // The prefix of the Kafka Command Request topic.
+  Optional<String> kafkaTopicCommandRequest();
 
-  // The prefix of the Kafka Control Reply topic.
-  Optional<String> kafkaTopicControlReply();
+  // The prefix of the Kafka Command Reply topic.
+  Optional<String> kafkaTopicCommandReply();
 
 }

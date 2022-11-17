@@ -1,8 +1,9 @@
 package esthesis.service.command.impl.service;
 
+import esthesis.avro.EsthesisCommandRequestMessage;
 import esthesis.common.AppConstants.NamedSetting;
-import esthesis.common.dto.CommandRequest;
 import esthesis.common.exception.QDoesNotExistException;
+import esthesis.service.command.dto.CommandRequest;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.service.settings.resource.SettingsResource;
@@ -20,6 +21,7 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Message;
@@ -47,9 +49,12 @@ public class CommandService {
   @Inject
   CommandReplyService commandReplyService;
 
+  @ConfigProperty(name = "quarkus.application.name")
+  String appName;
+
   @Inject
-  @Channel("esthesis-control-request")
-  Emitter<String> controlRequestEmitter;
+  @Channel("esthesis-command-request")
+  Emitter<EsthesisCommandRequestMessage> commandRequestEmitter;
 
   private String KAFKA_CONTROL_REQUEST_TOPIC;
 
@@ -57,7 +62,27 @@ public class CommandService {
   void init() {
     //TODO we need to setup a Kafka event for when this configuration changes
     KAFKA_CONTROL_REQUEST_TOPIC = settingsResource.findByName(
-        NamedSetting.KAFKA_TOPIC_CONTROL_REQUEST).asString();
+        NamedSetting.KAFKA_TOPIC_COMMAND_REQUEST).asString();
+  }
+
+  /**
+   * Converts a {@link CommandRequest} into a
+   * {@link EsthesisCommandRequestMessage} AVRO message.
+   *
+   * @param request    The command request to convert.
+   * @param hardwareId The hardware ID of the device to send the command to.
+   */
+  private EsthesisCommandRequestMessage avroCommandRequest(
+      CommandRequest request, String hardwareId) {
+    return EsthesisCommandRequestMessage.newBuilder()
+        .setId(request.getId().toString())
+        .setHardwareId(hardwareId)
+        .setCommandType(request.getCommandType())
+        .setExecutionType(request.getExecutionType())
+        .setCommand(request.getCommand())
+        .setArguments(request.getArguments())
+        .setCreatedAt(Instant.now().toString())
+        .build();
   }
 
   /**
@@ -115,23 +140,21 @@ public class CommandService {
     log.debug("Found '{}' devices to send command request '{}'.",
         hardwareIds.size(), requestId);
 
-    // Send the command to the devices.
+    // Send the command to the devices by queuing an Avro
+    // EsthesisControlMessage message in Kafka.
     for (String hardwareId : hardwareIds) {
-      String command = requestId +
-          " " + request.getCommandType() + request.getExecutionType()
-          + " " + request.getCommand()
-          + " " + request.getArguments();
-      log.trace("Sending command request '{}' to device '{}' as command '{}' "
-              + "via Kafka topic '{}'.", requestId, hardwareId, command,
+      EsthesisCommandRequestMessage esthesisCommandRequestMessage =
+          avroCommandRequest(request, hardwareId);
+      log.trace("Sending command '{}' to device '{}' via Kafka topic '{}'.",
+          esthesisCommandRequestMessage, hardwareId,
           KAFKA_CONTROL_REQUEST_TOPIC);
-
-      controlRequestEmitter.send(Message.of(command.trim())
-          .addMetadata(OutgoingKafkaRecordMetadata.<String>builder()
-              .withTopic(KAFKA_CONTROL_REQUEST_TOPIC)
-              .withKey(hardwareId)
-              .build())
-          .addMetadata(TracingMetadata.withCurrent(Context.current())));
-
+      commandRequestEmitter.send(
+          Message.of(esthesisCommandRequestMessage)
+              .addMetadata(OutgoingKafkaRecordMetadata.<String>builder()
+                  .withTopic(KAFKA_CONTROL_REQUEST_TOPIC)
+                  .withKey(hardwareId)
+                  .build())
+              .addMetadata(TracingMetadata.withCurrent(Context.current())));
       request.setExecutedOn(Instant.now());
       commandRequestService.save(request);
     }

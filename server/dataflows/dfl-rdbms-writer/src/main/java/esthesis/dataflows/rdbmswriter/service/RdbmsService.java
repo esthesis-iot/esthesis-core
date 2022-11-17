@@ -1,8 +1,8 @@
 package esthesis.dataflows.rdbmswriter.service;
 
+import esthesis.avro.EsthesisDataMessage;
+import esthesis.avro.ValueData;
 import esthesis.dataflow.common.DflUtils.VALUE_TYPE;
-import esthesis.dataflow.common.parser.EsthesisMessage;
-import esthesis.dataflow.common.parser.ValueData;
 import esthesis.dataflows.rdbmswriter.config.AppConfig;
 import io.agroal.api.AgroalDataSource;
 import java.sql.Connection;
@@ -29,7 +29,7 @@ public class RdbmsService {
   AgroalDataSource dataSource;
 
   private String getColumnsForMultiTableStrategy(
-      EsthesisMessage esthesisMessage) {
+      EsthesisDataMessage esthesisMessage) {
     return
         config.dbStorageStrategyMultiHardwareIdName() + ", " +
             config.dbStorageStrategyMultiTimestampName() + ", " +
@@ -38,7 +38,7 @@ public class RdbmsService {
   }
 
   private String getValuesForMultiTableStrategy(
-      EsthesisMessage esthesisMessage) {
+      EsthesisDataMessage esthesisMessage) {
     StringBuilder vals = new StringBuilder("?, ?, ");
     for (int i = 0; i < esthesisMessage.getPayload().getValues().size(); i++) {
       vals.append("?");
@@ -50,7 +50,7 @@ public class RdbmsService {
     return vals.toString();
   }
 
-  private void multi(EsthesisMessage esthesisMessage)
+  private void multi(EsthesisDataMessage esthesisMessage)
   throws SQLException {
     String statement =
         "INSERT INTO " + esthesisMessage.getPayload().getCategory() +
@@ -94,7 +94,7 @@ public class RdbmsService {
     }
   }
 
-  private void single(EsthesisMessage esthesisMessage)
+  private void single(EsthesisDataMessage esthesisMessage)
   throws SQLException {
     try (Connection connection = dataSource.getConnection()) {
       try (PreparedStatement statement = connection.prepareStatement(
@@ -125,8 +125,8 @@ public class RdbmsService {
 
   public void process(Exchange exchange) throws SQLException {
     // Get the message from the exchange.
-    EsthesisMessage esthesisMessage = exchange.getIn()
-        .getBody(EsthesisMessage.class);
+    EsthesisDataMessage esthesisMessage = exchange.getIn()
+        .getBody(EsthesisDataMessage.class);
     log.debug("Processing '{}' with '{}' storage strategy.", esthesisMessage,
         config.dbStorageStrategy());
 

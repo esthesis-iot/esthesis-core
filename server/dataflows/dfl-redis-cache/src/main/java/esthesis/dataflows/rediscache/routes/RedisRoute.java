@@ -39,7 +39,7 @@ public class RedisRoute extends RouteBuilder {
      from("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl() +
           (config.kafkaGroup().isPresent() ?
           "&groupId=" + config.kafkaGroup().get() : ""))
-         .unmarshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+         .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
          .to("seda:telemetry");
       from("seda:telemetry")
          .bean(redisService, "process");
@@ -52,7 +52,7 @@ public class RedisRoute extends RouteBuilder {
       from("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl() +
           (config.kafkaGroup().isPresent() ?
               "&groupId=" + config.kafkaGroup().get() : ""))
-          .unmarshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+          .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
           .to("seda:metadata");
       from("seda:metadata")
           .bean(redisService, "process");

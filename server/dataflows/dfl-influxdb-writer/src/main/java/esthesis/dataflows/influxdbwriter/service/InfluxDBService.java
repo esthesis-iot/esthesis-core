@@ -5,8 +5,8 @@ import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
+import esthesis.avro.EsthesisDataMessage;
 import esthesis.dataflow.common.DflUtils.VALUE_TYPE;
-import esthesis.dataflow.common.parser.EsthesisMessage;
 import esthesis.dataflows.influxdbwriter.config.AppConfig;
 import java.time.Instant;
 import javax.annotation.PostConstruct;
@@ -57,8 +57,8 @@ public class InfluxDBService {
 
   public void process(Exchange exchange) {
     // Get the message from the exchange.
-    EsthesisMessage esthesisMessage = exchange.getIn()
-        .getBody(EsthesisMessage.class);
+    EsthesisDataMessage esthesisMessage = exchange.getIn()
+        .getBody(EsthesisDataMessage.class);
 
     // Create an InfluxDB point for the message.
     Point point = new Point(esthesisMessage.getPayload().getCategory());

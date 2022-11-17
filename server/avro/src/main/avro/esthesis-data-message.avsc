@@ -1,7 +1,7 @@
 {
   "type": "record",
-  "name": "EsthesisMessage",
-  "namespace": "esthesis.dataflow.common.parser",
+  "name": "EsthesisDataMessage",
+  "namespace": "esthesis.avro",
   "fields": [
     {
       "name": "id",
@@ -44,11 +44,9 @@
         "symbols": [
           "P",
           "T",
-          "M",
-          "CQ",
-          "CA"
+          "M"
         ],
-        "doc": "P = Ping, T = Telemetry, M = Message, CQ = Command Request, CA = Command Reply"
+        "doc": "P = Ping, T = Telemetry, M = Metadata"
       }
     },
     {

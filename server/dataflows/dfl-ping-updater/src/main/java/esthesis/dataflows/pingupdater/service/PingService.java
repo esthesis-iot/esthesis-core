@@ -1,9 +1,9 @@
 package esthesis.dataflows.pingupdater.service;
 
 import com.mongodb.client.model.Filters;
+import esthesis.avro.EsthesisDataMessage;
 import esthesis.common.exception.QMismatchException;
 import esthesis.dataflow.common.DflUtils;
-import esthesis.dataflow.common.parser.EsthesisMessage;
 import java.time.Instant;
 import javax.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +27,8 @@ public class PingService {
 
   public void searchForExistingDevice(Exchange exchange) {
     // Get the message from the exchange.
-    EsthesisMessage esthesisMessage = exchange.getIn()
-        .getBody(EsthesisMessage.class);
+    EsthesisDataMessage esthesisMessage = exchange.getIn()
+        .getBody(EsthesisDataMessage.class);
 
     // Create search criteria for the MongoDB query.
     Bson equalsClause = Filters.eq("hardwareId",
@@ -42,8 +42,8 @@ public class PingService {
     log.debug("Updating ping timestamp for hardware ID '{}'.",
         exchange.getIn().getHeader(KafkaConstants.KEY));
     // Get the message from the exchange.
-    EsthesisMessage esthesisMessage = exchange.getIn()
-        .getBody(EsthesisMessage.class);
+    EsthesisDataMessage esthesisMessage = exchange.getIn()
+        .getBody(EsthesisDataMessage.class);
 
     // Update.
     esthesisMessage.getPayload().getValues().stream().filter(

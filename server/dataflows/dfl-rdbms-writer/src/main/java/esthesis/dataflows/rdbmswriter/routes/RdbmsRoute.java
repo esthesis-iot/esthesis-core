@@ -48,7 +48,7 @@ public class RdbmsRoute extends RouteBuilder {
           "?brokers=" + config.kafkaClusterUrl() +
           (config.kafkaGroup().isPresent() ?
               "&groupId=" + config.kafkaGroup().get() : ""))
-          .unmarshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+          .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
           .to("seda:telemetry");
       from("seda:telemetry")
           .bean(rdbmsService, "process");
@@ -60,7 +60,7 @@ public class RdbmsRoute extends RouteBuilder {
         "?brokers=" + config.kafkaClusterUrl() +
         (config.kafkaGroup().isPresent() ?
         "&groupId=" + config.kafkaGroup().get() : ""))
-          .unmarshal(new AvroDataFormat("esthesis.dataflow.common.parser.EsthesisMessage"))
+          .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
           .to("seda:metadata");
       from("seda:metadata")
          .bean(rdbmsService, "process");

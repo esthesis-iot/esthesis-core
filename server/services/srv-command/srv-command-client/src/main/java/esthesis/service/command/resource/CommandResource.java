@@ -1,7 +1,7 @@
 package esthesis.service.command.resource;
 
-import esthesis.common.dto.CommandReply;
-import esthesis.common.dto.CommandRequest;
+import esthesis.service.command.dto.CommandReply;
+import esthesis.service.command.dto.CommandRequest;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.util.List;
 import javax.ws.rs.GET;

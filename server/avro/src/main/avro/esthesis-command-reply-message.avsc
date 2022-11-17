@@ -1,0 +1,68 @@
+{
+  "type": "record",
+  "name": "EsthesisCommandReplyMessage",
+  "namespace": "esthesis.avro",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string",
+      "doc": "The unique identifier for this message"
+    },
+    {
+      "name": "correlationId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "The id of the message that this message is a response to"
+    },
+    {
+      "name": "hardwareId",
+      "type": "string",
+      "doc": "The hardware id of the device that sent the message"
+    },
+    {
+      "name": "seenBy",
+      "type": "string",
+      "doc": "A text describing the component that originally constructed this message"
+    },
+    {
+      "name": "seenAt",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "A timestamp in ISO-8601 format, created by the first component that received this message"
+    },
+    {
+      "name": "type",
+      "type": {
+        "name": "ReplyType",
+        "type": "enum",
+        "symbols": [
+          // Success
+          "s",
+          // Failure
+          "f"
+        ],
+        "doc": "s = Success reply, f = Failure reply"
+      }
+    },
+    {
+      "name": "channel",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "The channel that the message was received on."
+    },
+    {
+      "name": "payload",
+      "type": "string",
+      "doc": "The payload of the message"
+    }
+  ]
+}

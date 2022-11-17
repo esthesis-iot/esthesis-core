@@ -3,6 +3,7 @@ package esthesis.common;
 public class AppConstants {
 
   // The topic prefix to use when a Kafka topic needs to be created.
+  //TODO to be removed with Settings preferences
   public static final String KAFKA_TOPIC_PREFIX = "esthesis-";
 
   // Certain DFL implementations need to be looked up in various places in
@@ -17,21 +18,6 @@ public class AppConstants {
   public static final String REDIS_KEY_SUFFIX_VALUE_TYPE = "valueType";
   public static final String REDIS_KEY_SUFFIX_TIMESTAMP = "timestamp";
 
-  // Specifies whether this command should be executed synchronously or
-  // asynchronously. Asynchronous commands are executed in the background and
-  // can not be tracked (i.e. return any output). Synchronous commands are
-  // executed in the foreground and can return output.
-  public static final String COMMAND_EXECUTION_TYPE_SYNCHRONOUS = "s";
-  public static final String COMMAND_EXECUTION_TYPE_ASYNCHRONOUS = "a";
-
-  // Specifies the type of the command.
-  public static final String COMMAND_TYPE_EXEC = "e";
-  public static final String COMMAND_TYPE_FIRMWARE = "f";
-  public static final String COMMAND_TYPE_REBOOT = "r";
-  public static final String COMMAND_TYPE_SHUTDOWN = "s";
-  public static final String COMMAND_TYPE_PING = "p";
-  public static final String COMMAND_TYPE_HEALTH = "h";
-
   // Settings keys.
   public enum NamedSetting {
     SECURITY_ASYMMETRIC_KEY_SIZE, SECURITY_ASYMMETRIC_KEY_ALGORITHM,
@@ -42,7 +28,7 @@ public class AppConstants {
     DEVICE_ROOT_CA, DEVICE_PROVISIONING_URL, DEVICE_REGISTRATION_MODE,
     DEVICE_TAGS_ALGORITHM, DEVICE_GEO_LAT, DEVICE_GEO_LON,
 
-    KAFKA_TOPIC_CONTROL_REQUEST, KAFKA_TOPIC_EVENT_TAG_DELETE
+    KAFKA_TOPIC_COMMAND_REQUEST, KAFKA_TOPIC_EVENT_TAG_DELETE
   }
 
   // The tag algorithms available when matching objects against tags.

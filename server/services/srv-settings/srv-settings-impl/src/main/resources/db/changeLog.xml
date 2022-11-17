@@ -21,7 +21,7 @@
         {"name":"SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM", "value": "SHA256WITHRSA"},
         {"name":"DEVICE_REGISTRATION_MODE", "value": "DISABLED"},
         {"name":"KAFKA_TOPIC_EVENT_TAG_DELETE", "value": "esthesis-event-tag-delete"},
-        {"name":"KAFKA_TOPIC_CONTROL_REQUEST", "value": "esthesis-control-request"}
+        {"name":"KAFKA_TOPIC_COMMAND_REQUEST", "value": "esthesis-command-request"}
         ]
       </ext:documents>
     </ext:insertMany>

@@ -1,5 +1,8 @@
-package esthesis.common.dto;
+package esthesis.service.command.dto;
 
+import esthesis.avro.CommandType;
+import esthesis.avro.ExecutionType;
+import esthesis.common.dto.BaseDTO;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.time.Instant;
 import javax.validation.constraints.NotEmpty;
@@ -41,13 +44,13 @@ public class CommandRequest extends BaseDTO {
   // names.
   private String tags;
 
-  // The type of execution for the command (see AppConstant.COMMAND_FAMILY_TYPE_*).
+  // The type of execution for the command.
   @NotEmpty
-  private String commandType;
+  private CommandType commandType;
 
-  // The type of execution for the command (see AppConstants.COMMAND_EXECUTION_TYPE_*).
+  // The type of execution for the command.
   @NotEmpty
-  private String executionType;
+  private ExecutionType executionType;
 
   // The command to be executed.
   private String command;
@@ -61,7 +64,7 @@ public class CommandRequest extends BaseDTO {
   // The time when the command was created.
   @NotEmpty
   private Instant createdOn = Instant.now();
-  
+
   // The time when the command was executed.
   private Instant executedOn;
 }

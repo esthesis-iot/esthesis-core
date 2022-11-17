@@ -1,8 +1,22 @@
-# Build and run instructions
+#!/usr/bin/env sh
 
-## Run in dev mode
+randomPort() {
+    echo netstat -aln | awk '
+      $6 == "LISTEN" {
+        if ($4 ~ "[.:][0-9]+$") {
+          split($4, a, /[:.]/);
+          port = a[length(a)];
+          p[port] = 1
+        }
+      }
+      END {
+        for (i = 3000; i < 65000 && p[i]; i++){};
+        if (i == 65000) {exit 1};
+        print i
+      }
+    '
+}
 
-```
 env \
     ESTHESIS_DFL_DB_KIND=mysql \
     ESTHESIS_DFL_DB_USERNAME=esthesis \
@@ -13,5 +27,4 @@ env \
     ESTHESIS_DFL_KAFKA_METADATA_TOPIC=esthesis-metadata \
     ESTHESIS_DFL_KAFKA_GROUP=dfl-rdbms-writer \
     ESTHESIS_DFL_DB_STORAGE_STRATEGY=SINGLE \
-./mvnw quarkus:dev
-```
+./mvnw quarkus:dev -Ddebug="$(randomPort)" -Dquarkus.profile=dev

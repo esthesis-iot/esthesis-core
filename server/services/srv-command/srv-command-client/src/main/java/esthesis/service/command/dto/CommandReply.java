@@ -1,5 +1,6 @@
-package esthesis.common.dto;
+package esthesis.service.command.dto;
 
+import esthesis.common.dto.BaseDTO;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.time.Instant;
 import lombok.AllArgsConstructor;
@@ -13,11 +14,11 @@ import lombok.experimental.Accessors;
  * <p>
  * The serialised format of a command reply is:
  * <pre>
- *  [correlationId] [success] [output]
+ *  [correlationId] [success/failure] [output]
  * </pre>
  * for example:
  * <pre>
- *  abc1234 t Hello from the command
+ *  abc1234 s Hello from the command
  * </pre>
  * or
  * <pre>

@@ -1,7 +1,7 @@
 <form novalidate [formGroup]="form" fxLayout="column">
   <div class="inline-header">Kafka control request topic</div>
   <mat-form-field>
-    <input matInput [formControlName]="appConstants.NAMED_SETTING.KAFKA_TOPIC_CONTROL_REQUEST">
+    <input matInput [formControlName]="appConstants.NAMED_SETTING.KAFKA_TOPIC_COMMAND_REQUEST">
     <mat-hint>The name of the Kafka topic where control request messages should be posted to, e.g.
       esthesis-control-request.
     </mat-hint>
