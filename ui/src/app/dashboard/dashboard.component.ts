@@ -61,26 +61,26 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     // this.refreshSubscription.unsubscribe();
   }
 
-  getDashboardWidgets() {
-    this.dashboardService.getWidgets().subscribe(
-      onNext => {
-        this.dashboardWidgets = onNext.map(widget => {
-          return {
-            id: widget.id,
-            type: widget.type,
-            grid: {
-              cols: widget.gridCols,
-              rows: widget.gridRows,
-              y: widget.gridY,
-              x: widget.gridX,
-              dragEnabled: true,
-              resizeEnabled: true
-            },
-            dashboardId: widget.dashboard
-          } as DashboardWidgetForGridDto;
-        });
-      }
-    );
-  }
+  // getDashboardWidgets() {
+  //   this.dashboardService.getWidgets().subscribe(
+  //     onNext => {
+  //       this.dashboardWidgets = onNext.map(widget => {
+  //         return {
+  //           id: widget.id,
+  //           type: widget.type,
+  //           grid: {
+  //             cols: widget.gridCols,
+  //             rows: widget.gridRows,
+  //             y: widget.gridY,
+  //             x: widget.gridX,
+  //             dragEnabled: true,
+  //             resizeEnabled: true
+  //           },
+  //           dashboardId: widget.dashboard
+  //         } as DashboardWidgetForGridDto;
+  //       });
+  //     }
+  //   );
+  // }
 
 }

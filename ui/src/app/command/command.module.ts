@@ -16,13 +16,16 @@ import {QFormsModule} from "@qlack/forms";
 import {MomentModule} from "ngx-moment";
 import {CommandRoutingModule} from "./command-routing.module";
 import {CommandComponent} from "./command.component";
-import {CommandCreateComponent} from "./command-create.component";
+import {CommandCreateComponent} from "./command-create/command-create.component";
+import {CommandReplyComponent} from "./command-reply/command-reply.component";
 import {MatStepperModule} from "@angular/material/stepper";
 import {DateSupportModule} from "../shared/module/date-support.module";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {TruncateModule} from "@yellowspot/ng-truncate";
+import {MatChipsModule} from "@angular/material/chips";
 
 @NgModule({
-  declarations: [CommandComponent, CommandCreateComponent],
+  declarations: [CommandComponent, CommandCreateComponent, CommandReplyComponent],
   imports: [
     CommonModule,
     CommandRoutingModule,
@@ -42,7 +45,9 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     MatTooltipModule,
     MatStepperModule,
     DateSupportModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TruncateModule,
+    MatChipsModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

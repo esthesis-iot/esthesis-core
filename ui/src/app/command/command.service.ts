@@ -12,12 +12,12 @@ import {CommandExecuteRequestDto} from "../dto/command-execute-request-dto";
 })
 export class CommandService extends CrudService<CommandRequestDto> {
   constructor(http: HttpClient) {
-    super(http, "command");
+    super(http, "v1/command");
   }
 
-  getReply(requestId: number): Observable<CommandReplyDto> {
+  getReply(requestId: string): Observable<CommandReplyDto> {
     return this.http.get<CommandReplyDto>(
-      `${environment.apiPrefix}/v1/command/reply?requestId=${requestId}`);
+      `${environment.apiPrefix}/v1/command/reply/${requestId}`);
   }
 
   findDevicesByHardwareIds(hardwareIds: string): Observable<number> {
@@ -40,5 +40,13 @@ export class CommandService extends CrudService<CommandRequestDto> {
       arguments: data.arguments,
       description: data.description,
     });
+  }
+
+  deleteCommand(commandId: string): Observable<any> {
+    return this.http.delete(`${environment.apiPrefix}/v1/command/${commandId}`);
+  }
+
+  deleteReply(replyId: string): Observable<any> {
+    return this.http.delete(`${environment.apiPrefix}/v1/command/reply/${replyId}`);
   }
 }

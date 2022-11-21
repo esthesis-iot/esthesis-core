@@ -209,8 +209,7 @@ public class AvroUtils {
           .setSeenBy(appName)
           .setChannel(topic)
           .setType(ReplyType.valueOf(success))
-//          .setPayload(payload)
-          .setPayload(StringUtils.repeat("X", 64))
+          .setPayload(payload)
           .build();
 
       log.debug(

@@ -137,6 +137,10 @@ public abstract class BaseService<D extends BaseDTO> {
     repository.deleteById(id);
   }
 
+  public void deleteById(String id) {
+    repository.deleteById(new ObjectId(id));
+  }
+
   public void deleteAll() {
     repository.deleteAll();
   }

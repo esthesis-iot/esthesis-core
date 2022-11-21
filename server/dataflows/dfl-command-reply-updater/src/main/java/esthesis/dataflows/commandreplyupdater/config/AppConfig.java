@@ -16,7 +16,7 @@ public interface AppConfig {
   Optional<String> kafkaGroup();
 
   // The Kafka topic to consume command reply messages from.
-  String kafkaPingTopic();
+  String kafkaCommandReplyTopic();
 
   // The URL of the Kafka cluster to connect to.
   String kafkaClusterUrl();

@@ -1,6 +1,5 @@
-package esthesis.service.command.dto;
+package esthesis.common.dto;
 
-import esthesis.common.dto.BaseDTO;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.time.Instant;
 import lombok.AllArgsConstructor;
@@ -8,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.bson.Document;
 
 /**
  * Represents a command reply sent from a device.
@@ -50,4 +50,18 @@ public class CommandReply extends BaseDTO {
 
   // The time when the reply was created.
   private Instant createdOn;
+
+  /**
+   * Returns a representation of this object as a BSON document. This is useful
+   * in case Quarkus Panache is not available where this object is being used
+   * (for example, in Dataflows).
+   */
+  public Document asDocument() {
+    return new Document()
+        .append("correlationId", correlationId)
+        .append("hardwareId", hardwareId)
+        .append("success", success)
+        .append("output", output)
+        .append("createdOn", createdOn);
+  }
 }

@@ -23,5 +23,5 @@ env \
     ESTHESIS_DFL_ESTHESIS_DB_USERNAME=esthesis \
     ESTHESIS_DFL_ESTHESIS_DB_PASSWORD=esthesis \
     ESTHESIS_DFL_KAFKA_CLUSTER_URL=esthesis-dev-kafka:9094 \
-    ESTHESIS_DFL_KAFKA_PING_TOPIC=esthesis-command-reply \
+    ESTHESIS_DFL_KAFKA_COMMAND_REPLY_TOPIC=esthesis-command-reply \
 ./mvnw quarkus:dev -Ddebug="$(randomPort)" -Dquarkus.profile=dev

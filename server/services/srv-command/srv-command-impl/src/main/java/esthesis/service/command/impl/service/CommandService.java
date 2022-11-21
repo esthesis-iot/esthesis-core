@@ -2,8 +2,11 @@ package esthesis.service.command.impl.service;
 
 import esthesis.avro.EsthesisCommandRequestMessage;
 import esthesis.common.AppConstants.NamedSetting;
+import esthesis.common.dto.CommandReply;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.command.dto.CommandRequest;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.Device;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.service.settings.resource.SettingsResource;
@@ -160,5 +163,25 @@ public class CommandService {
     }
 
     return null;
+  }
+
+  public Page<CommandRequest> findCommandRequest(Pageable pageable) {
+    return commandRequestService.find(pageable);
+  }
+
+  public CommandRequest getCommand(String commandId) {
+    return commandRequestService.findById(commandId);
+  }
+
+  public CommandReply getReply(String correlationId) {
+    return commandReplyService.findByCorrelationId(correlationId);
+  }
+
+  public void deleteCommand(String commandId) {
+    commandRequestService.deleteById(commandId);
+  }
+
+  public void deleteReply(String replyId) {
+    commandReplyService.deleteById(replyId);
   }
 }

@@ -10,7 +10,7 @@
       <!-- Filter -->
       <div [formGroup]="filterForm" fxFlex="row" fxLayoutGap="10px">
         <mat-form-field>
-          <input matInput placeholder="Command" formControlName="operation">
+          <input matInput placeholder="Command" formControlName="command">
         </mat-form-field>
         <button mat-button (click)="clearFilter()">CLEAR</button>
       </div>
@@ -21,36 +21,62 @@
 
         <ng-container matColumnDef="command">
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col">Command</th>
-          <td mat-cell *matCellDef="let element">{{element.operation}}</td>
+          <td mat-cell *matCellDef="let element">{{element.command | truncate: 100 : "…"}}</td>
         </ng-container>
         <ng-container matColumnDef="description">
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Description</th>
-          <td mat-cell *matCellDef="let element">{{element.description}}</td>
-        </ng-container>
-        <ng-container matColumnDef="hardwareId">
-          <th mat-header-cell *matHeaderCellDef scope="col"> Hardware Id</th>
-          <td mat-cell *matCellDef="let element">{{element.deviceHardwareId}}</td>
+          <td mat-cell *matCellDef="let element">{{element.description | truncate: 100 : "…"}}</td>
         </ng-container>
         <ng-container matColumnDef="createdOn">
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Sent On</th>
           <td mat-cell
               *matCellDef="let element">{{element.createdOn | date: constants.DATE_FORMAT}}</td>
         </ng-container>
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef scope="col"> Actions</th>
+        <ng-container matColumnDef="executedOn">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Executed On</th>
+          <td mat-cell
+              *matCellDef="let element">{{element.executedOn | date: constants.DATE_FORMAT}}</td>
+        </ng-container>
+        <ng-container matColumnDef="pills">
+          <th mat-header-cell *matHeaderCellDef scope="col">Type</th>
           <td mat-cell *matCellDef="let element">
-            <!--            <button mat-button (click)="$event.stopPropagation();download(element.id)" matTooltip="Download content">-->
-            <!--              <mat-icon>cloud_download</mat-icon>-->
-            <!--            </button>-->
-            <button mat-button (click)="$event.stopPropagation();view(element.id)"
-                    matTooltip="View content">
-              <mat-icon>remove_red_eye</mat-icon>
-            </button>
+            <div fxLayout="row" fxLayoutGap="0.5rem">
+              <mat-chip-list class="pill-command-type">
+                <mat-chip *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.EXECUTE">
+                  EXECUTE
+                </mat-chip>
+                <mat-chip *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.HEALTH">
+                  HEALTH
+                </mat-chip>
+                <mat-chip *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.PING">
+                  PING
+                </mat-chip>
+                <mat-chip *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.FIRMWARE">
+                  FIRMWARE
+                </mat-chip>
+                <mat-chip *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.REBOOT">
+                  REBOOT
+                </mat-chip>
+                <mat-chip *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.SHUTDOWN">
+                  SHUTDOWN
+                </mat-chip>
+              </mat-chip-list>
+              <mat-chip-list class="pill-execution-type">
+                <mat-chip
+                  *ngIf="element.executionType === appConstants.DEVICE.COMMAND.EXECUTION.ASYNCHRONOUS">
+                  ASYNC
+                </mat-chip>
+                <mat-chip
+                  *ngIf="element.executionType === appConstants.DEVICE.COMMAND.EXECUTION.SYNCHRONOUS">
+                  SYNC
+                </mat-chip>
+              </mat-chip-list>
+            </div>
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; let element; columns: displayedColumns;"
-            [routerLink]="element.id"></tr>
+            [routerLink]="'/command/reply/' + element.id"></tr>
       </table>
       <mat-paginator #paginator (page)="changePage()"
                      [pageSize]="10"

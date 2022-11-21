@@ -31,6 +31,7 @@
     "@qlack/forms": "2.10.0",
     "@swimlane/ngx-charts": "20.1.0",
     "@types/js-yaml": "3.12.5",
+    "@yellowspot/ng-truncate": "^2.0.2",
     "@zxing/browser": "0.1.1",
     "@zxing/library": "0.19.1",
     "@zxing/ngx-scanner": "3.6.2",

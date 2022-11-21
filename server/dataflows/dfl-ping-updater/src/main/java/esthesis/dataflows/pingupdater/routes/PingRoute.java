@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
+import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
 import org.apache.camel.model.dataformat.AvroDataFormat;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -39,15 +40,23 @@ public class PingRoute extends RouteBuilder {
         .concurrentConsumers(config.consumers())
         .register(getContext(), "seda");
 
+    // Configure Kafka.
+    KafkaComponentBuilder kafkaComponentBuilder =
+        ComponentsBuilderFactory.kafka()
+            .valueDeserializer(
+                "org.apache.kafka.common.serialization.ByteArrayDeserializer")
+            .brokers(config.kafkaClusterUrl());
+    if (config.kafkaGroup().isPresent()) {
+      kafkaComponentBuilder.groupId(config.kafkaGroup().get());
+    }
+    kafkaComponentBuilder.register(getContext(), "kafka");
+
     // @formatter:off
     log.info("Creating route from Kafka topic '{}' to MongoDB '{}' database "
             + "'{}'.",
         config.kafkaPingTopic(), mongoUrl, config.esthesisDbName());
 
-    from("kafka:" + config.kafkaPingTopic() +
-        "?brokers=" + config.kafkaClusterUrl() +
-        (config.kafkaGroup().isPresent() ?
-        "&groupId=" + config.kafkaGroup().get() : ""))
+    from("kafka:" + config.kafkaPingTopic())
         .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
         .to("seda:ping");
 

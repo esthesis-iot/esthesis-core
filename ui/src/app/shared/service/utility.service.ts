@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
-import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Log} from "ng2-logger/browser";
+import {Clipboard} from "@angular/cdk/clipboard";
 
 @Injectable({
   providedIn: "root"
@@ -9,7 +9,8 @@ import {Log} from "ng2-logger/browser";
 export class UtilityService {
   private log = Log.create("UtilityService");
 
-  constructor(private snackBar: MatSnackBar, private dialog: MatDialog) {
+  constructor(private snackBar: MatSnackBar,
+    private clipboard: Clipboard) {
   }
 
   /**
@@ -99,5 +100,10 @@ export class UtilityService {
     });
 
     return out;
+  }
+
+  copyToClipboard(value: any) {
+    this.clipboard.copy(value);
+    this.popupSuccess("Value copied to clipboard.");
   }
 }

@@ -8,6 +8,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.camel.component.paho.PahoConstants;
 import org.apache.camel.model.dataformat.AvroDataFormat;
@@ -29,6 +30,15 @@ public class MqttRoute extends RouteBuilder {
   public void configure() {
     BannerUtil.showBanner("dfl-mqtt-client");
 
+    // Configure Kafka.
+    ComponentsBuilderFactory.kafka()
+        .brokers(config.kafkaClusterUrl())
+        .valueDeserializer(
+            "org.apache.kafka.common.serialization.ByteArrayDeserializer")
+        .valueSerializer(
+            "org.apache.kafka.common.serialization.ByteArraySerializer")
+        .register(getContext(), "kafka");
+
     // @formatter:off
     if (config.mqttTopicTelemetry().isPresent() && config.kafkaTopicTelemetry().isPresent()) {
       String mqttTopic = config.mqttTopicTelemetry().get();
@@ -39,7 +49,7 @@ public class MqttRoute extends RouteBuilder {
           .bean(dflMqttClientService, "toEsthesisDataMessages")
           .split(body())
           .marshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-          .toD("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl());
+          .toD("kafka:" + kafkaTopic);
     }
 
     if (config.mqttTopicMetadata().isPresent() && config.kafkaTopicMetadata().isPresent()) {
@@ -51,7 +61,7 @@ public class MqttRoute extends RouteBuilder {
           .bean(dflMqttClientService, "toEsthesisDataMessages")
           .split(body())
           .marshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-          .toD("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl());
+          .toD("kafka:" + kafkaTopic);
     }
 
     if (config.mqttTopicPing().isPresent() && config.kafkaTopicPing().isPresent()) {
@@ -63,7 +73,7 @@ public class MqttRoute extends RouteBuilder {
           .bean(dflMqttClientService, "toEsthesisDataMessages")
           .split(body())
           .marshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-          .to("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl());
+          .to("kafka:" + kafkaTopic);
     }
 
     if (config.mqttTopicCommandReply().isPresent() && config.kafkaTopicCommandReply().isPresent()) {
@@ -73,9 +83,8 @@ public class MqttRoute extends RouteBuilder {
           mqttTopic, kafkaTopic);
       from("paho:" + mqttTopic + "/#" + "?brokerUrl=" + config.mqttBrokerClusterUrl())
           .bean(dflMqttClientService, "processCommandReplyMessage")
-//          .marshal(new AvroDataFormat("esthesis.avro.EsthesisCommandReplyMessage"))
-          .bean(dflMqttClientService, "test")
-          .toD("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl());
+          .marshal(new AvroDataFormat("esthesis.avro.EsthesisCommandReplyMessage"))
+          .toD("kafka:" + kafkaTopic);
     }
 
     if (config.mqttTopicCommandRequest().isPresent() && config.kafkaTopicCommandRequest().isPresent()) {
@@ -83,7 +92,7 @@ public class MqttRoute extends RouteBuilder {
       String kafkaTopic = config.kafkaTopicCommandRequest().get();
       log.info("Creating route from Kafka topic '{}' to MQTT topic '{}'.",
           kafkaTopic, mqttTopic);
-      from("kafka:" + kafkaTopic + "?brokers=" + config.kafkaClusterUrl())
+      from("kafka:" + kafkaTopic)
           .setHeader(PahoConstants.CAMEL_PAHO_OVERRIDE_TOPIC,
               constant(mqttTopic).append("/").append(header(KafkaConstants.KEY)))
           .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisCommandRequestMessage"))

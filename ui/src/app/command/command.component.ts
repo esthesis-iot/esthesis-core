@@ -8,12 +8,10 @@ import {Router} from "@angular/router";
 import {BaseComponent} from "../shared/component/base-component";
 import {CommandRequestDto} from "../dto/command-request-dto";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import {TextModalComponent} from "../shared/component/display/text-modal/text-modal.component";
 import {CommandService} from "./command.service";
-import {CommandReplyDto} from "../dto/command-reply-dto";
-import {CommandCreateComponent} from "./command-create.component";
 import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../app.constants";
+import {CommandCreateComponent} from "./command-create/command-create.component";
 
 @Component({
   selector: "app-command",
@@ -21,7 +19,7 @@ import {AppConstants} from "../app.constants";
   styleUrls: ["./command.component.scss"]
 })
 export class CommandComponent extends BaseComponent implements OnInit, AfterViewInit {
-  displayedColumns = ["command", "description", "hardwareId", "createdOn", "actions"];
+  displayedColumns = ["command", "description", "createdOn", "executedOn", "pills"];
   dataSource: MatTableDataSource<CommandRequestDto> = new MatTableDataSource<CommandRequestDto>();
   filterForm: FormGroup;
   // Expose application constants.
@@ -36,17 +34,8 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
     private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
-      operation: ["", null],
+      command: ["", null],
     });
-  }
-
-  private formatPayload(commandReply: CommandReplyDto): string {
-    let retVal = commandReply.payload;
-    if (commandReply.payloadEncoding === "base64") {
-      retVal = atob(commandReply.payload);
-    }
-
-    return retVal;
   }
 
   ngOnInit() {
@@ -94,21 +83,6 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   create() {
     this.dialog.open(CommandCreateComponent, {
       width: "40%",
-    });
-  }
-
-  download(replyId: number) {
-    // TODO #62
-  }
-
-  view(requestId: number) {
-    this.commandService.getReply(requestId).subscribe(onNext => {
-      this.dialog.open(TextModalComponent, {
-        data: {
-          title: "Command output",
-          text: this.formatPayload(onNext)
-        }
-      });
     });
   }
 

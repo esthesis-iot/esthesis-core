@@ -25,10 +25,10 @@ export class DeviceTerminalComponent implements AfterViewInit {
     this.deviceTerminalService.getReply(requestId).subscribe(
       onNext => {
         let output = "";
-        if (onNext && onNext.payload) {
-          output = onNext.payload.replace(/\n/g, "\n\r");
-          this.terminal.write(output);
-        }
+        // if (onNext && onNext.payload) {
+        //   output = onNext.payload.replace(/\n/g, "\n\r");
+        //   this.terminal.write(output);
+        // }
         this.blockInput = false;
         this.terminal.write("$ ");
       },

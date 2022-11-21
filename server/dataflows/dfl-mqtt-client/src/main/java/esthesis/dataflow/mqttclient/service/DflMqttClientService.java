@@ -10,8 +10,6 @@ import esthesis.avro.MessageType;
 import esthesis.common.exception.QMismatchException;
 import esthesis.dataflow.common.AvroUtils;
 import esthesis.dataflow.mqttclient.config.AppConfig;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +17,6 @@ import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.avro.io.BinaryEncoder;
-import org.apache.avro.io.DatumWriter;
-import org.apache.avro.io.EncoderFactory;
-import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.camel.component.paho.PahoConstants;
@@ -145,28 +139,5 @@ public class DflMqttClientService {
         .getBody(EsthesisCommandRequestMessage.class);
 
     exchange.getIn().setBody(avroUtils.commandRequestToLineProtocol(msg));
-  }
-
-  public void test(Exchange exchange) {
-    System.out.println("****************** CUSTOM");
-    EsthesisCommandReplyMessage msg = exchange.getIn()
-        .getBody(EsthesisCommandReplyMessage.class);
-
-    DatumWriter<EsthesisCommandReplyMessage> datumWriter =
-        new SpecificDatumWriter<>(EsthesisCommandReplyMessage.class);
-    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-      BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(outputStream,
-          null);
-      datumWriter.write(msg, encoder);
-      encoder.flush();
-
-      byte[] bytes = outputStream.toByteArray();
-      System.out.println(new String(bytes));
-      exchange.getIn().setBody(bytes);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-
-
   }
 }

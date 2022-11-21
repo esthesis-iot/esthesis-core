@@ -1,12 +1,19 @@
 package esthesis.service.command.resource;
 
-import esthesis.service.command.dto.CommandReply;
+import esthesis.common.dto.CommandReply;
 import esthesis.service.command.dto.CommandRequest;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.util.List;
+import java.util.Optional;
+import javax.ws.rs.BeanParam;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -16,13 +23,46 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 @RegisterProvider(AccessTokenRequestReactiveFilter.class)
 public interface CommandResource {
 
+  @GET
+  @Path("/v1/command/find")
+  Page<CommandRequest> find(@BeanParam Pageable pageable);
+
+  @GET
+  @Path("/v1/command/{commandId}")
+  CommandRequest getCommand(@PathParam("commandId") String commandId);
+
+  @GET
+  @Path("/v1/command/reply/{correlationId}")
+  CommandReply getReply(@PathParam("correlationId") String correlationId);
+
+  /**
+   * Saves and executed a command request and directly returns the correlation
+   * ID, so the results of this command can be obtained later.
+   *
+   * @param request The command request to save and execute.
+   * @return The correlation ID of the command request.
+   */
   @POST
   @Path("/v1/command")
   String save(CommandRequest request);
 
+  /**
+   * Saves and executed a command request and waits until the reply for that
+   * command is available to return it. Since a command may target multiple
+   * devices, the result is a list of replies. The amount of time to wait before
+   * declaring a timeout is configurable.
+   *
+   * @param request The command request to save and execute.
+   * @param timeout The amount of time to wait to obtain the results before
+   *                declaring a timeout (in milliseconds). By default, the
+   *                timeout is set at 3 seconds.
+   * @return The correlation ID of the command request.
+   */
+
   @POST
   @Path("/v1/command/wait-for-reply")
-  List<CommandReply> saveAndWait(CommandRequest request);
+  List<CommandReply> saveAndWait(CommandRequest request,
+      @QueryParam("timeout") @DefaultValue("3000") Optional<Long> timeout);
 
   /**
    * Counts the number of devices with the given hardware IDs. The matching
@@ -45,4 +85,11 @@ public interface CommandResource {
   @Path("/v1/command/count-devices/by-tags")
   Long countDevicesByTags(@QueryParam("tags") String tags);
 
+  @DELETE
+  @Path("/v1/command/{commandId}")
+  void deleteCommand(@PathParam("commandId") String commandId);
+
+  @DELETE
+  @Path("/v1/command/reply/{replyId}")
+  void deleteReply(@PathParam("replyId") String replyId);
 }

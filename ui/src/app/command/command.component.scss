@@ -5,6 +5,7 @@
   .mat-icon {
     color: $e-color-grey;
   }
+
   .mat-button {
     min-width: 0;
     padding-left: 0.5rem;
@@ -20,4 +21,26 @@ mat-error {
   padding: 0.15rem;
   border-radius: 3px;
   margin-bottom: 0.5rem;
+}
+
+.pill-command-type {
+  mat-chip {
+    border-radius: 5px;
+    padding: 0.1rem 0.25rem;
+    background-color: inherit;
+    border: 1px solid $e-color-blue-light;
+    color: $e-color-blue-light;
+    font-size: 0.6rem;
+  }
+}
+
+.pill-execution-type {
+  mat-chip {
+    border-radius: 5px;
+    padding: 0.1rem 0.25rem;
+    background-color: inherit;
+    border: 1px solid #249926;
+    color: #249926;
+    font-size: 0.6rem;
+  }
 }

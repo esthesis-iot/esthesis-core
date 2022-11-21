@@ -4,7 +4,6 @@ import {UtilityService} from "../../../shared/service/utility.service";
 import {ActivatedRoute} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 import {DevicePageFieldDataDto} from "../../../dto/device-page-field-data-dto";
-import {Clipboard} from "@angular/cdk/clipboard";
 import {MatSort} from "@angular/material/sort";
 import * as _ from "lodash-es";
 
@@ -23,7 +22,7 @@ export class DeviceDataComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
 
   constructor(private devicesService: DevicesService, private utilityService: UtilityService,
-    private route: ActivatedRoute, private clipboard: Clipboard) {
+    private route: ActivatedRoute) {
     this.id = this.route.snapshot.paramMap.get("id");
   }
 
@@ -62,7 +61,6 @@ export class DeviceDataComponent implements OnInit, AfterViewInit {
   }
 
   copyValue(row: any) {
-    this.clipboard.copy(row.value);
-    this.utilityService.popupSuccess("Value copied to clipboard.");
+    this.utilityService.copyToClipboard(row.value);
   }
 }

@@ -1,14 +1,14 @@
 import {Component, OnInit} from "@angular/core";
-import {BaseComponent} from "../shared/component/base-component";
+import {BaseComponent} from "../../shared/component/base-component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {UtilityService} from "../shared/service/utility.service";
+import {UtilityService} from "../../shared/service/utility.service";
 import {Router} from "@angular/router";
 import {forkJoin} from "rxjs";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import {ProvisioningDto} from "../dto/provisioning-dto";
-import {ProvisioningService} from "../provisioning/provisioning.service";
-import {AppConstants} from "../app.constants";
-import {CommandService} from "./command.service";
+import {ProvisioningDto} from "../../dto/provisioning-dto";
+import {ProvisioningService} from "../../provisioning/provisioning.service";
+import {AppConstants} from "../../app.constants";
+import {CommandService} from "../command.service";
 
 @Component({
   selector: "app-command-create",
