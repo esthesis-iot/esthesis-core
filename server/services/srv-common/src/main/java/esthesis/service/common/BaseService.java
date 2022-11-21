@@ -63,6 +63,10 @@ public abstract class BaseService<D extends BaseDTO> {
     return findByColumn(column, value, false);
   }
 
+  public long countByColumn(String column, String value) {
+    return repository.count(column + " = ?1", value);
+  }
+
   public Page<D> find(Pageable pageable) {
     return find(pageable, false);
   }

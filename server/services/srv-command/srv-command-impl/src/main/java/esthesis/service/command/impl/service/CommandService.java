@@ -5,6 +5,7 @@ import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.dto.CommandReply;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.command.dto.CommandRequest;
+import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.Device;
@@ -109,11 +110,22 @@ public class CommandService {
     return deviceResource.countByTags(tags, false);
   }
 
+  /**
+   * Saves a command to be scheduled for execution. Note that this method does
+   * not send the command to the device, see {@link #executeRequest(String)}.
+   *
+   * @param commandRequest The command request to save.
+   */
   public ObjectId saveRequest(CommandRequest commandRequest) {
     return commandRequestService.save(commandRequest).getId();
   }
 
-  public String executeRequest(String requestId) {
+  /**
+   * Executes (i.e. sends to the device) a previously saved command.
+   *
+   * @param requestId The previously saved command request ID.
+   */
+  public ExecuteRequestScheduleInfoDTO executeRequest(String requestId) {
     // Find the command to execute or produce an error if the command can not
     // be found.
     CommandRequest request = commandRequestService.findById(requestId);
@@ -121,6 +133,8 @@ public class CommandService {
       throw new QDoesNotExistException("Command request '{}' does not exist.",
           requestId);
     }
+
+    ExecuteRequestScheduleInfoDTO scheduleInfo = new ExecuteRequestScheduleInfoDTO();
 
     // Find the devices to which the command should be sent.
     Set<String> hardwareIds = new HashSet<>();
@@ -141,6 +155,7 @@ public class CommandService {
               .toList());
     }
 
+    scheduleInfo.setDevicesMatched(hardwareIds.size());
     log.debug("Found '{}' devices to send command request '{}'.",
         hardwareIds.size(), requestId);
 
@@ -161,9 +176,10 @@ public class CommandService {
               .addMetadata(TracingMetadata.withCurrent(Context.current())));
       request.setExecutedOn(Instant.now());
       commandRequestService.save(request);
+      scheduleInfo.incrementDevicesMatched();
     }
 
-    return null;
+    return scheduleInfo;
   }
 
   public Page<CommandRequest> findCommandRequest(Pageable pageable) {
@@ -174,7 +190,7 @@ public class CommandService {
     return commandRequestService.findById(commandId);
   }
 
-  public CommandReply getReply(String correlationId) {
+  public List<CommandReply> getReplies(String correlationId) {
     return commandReplyService.findByCorrelationId(correlationId);
   }
 
@@ -189,5 +205,9 @@ public class CommandService {
   public void purge(Optional<Integer> durationInDays) {
     commandReplyService.purge(durationInDays);
     commandRequestService.purge(durationInDays);
+  }
+
+  public long countCollectedReplies(String correlationId) {
+    return commandReplyService.countByColumn("corellationId", correlationId);
   }
 }

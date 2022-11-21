@@ -2,17 +2,19 @@ package esthesis.service.command.impl.resource;
 
 import esthesis.common.dto.CommandReply;
 import esthesis.service.command.dto.CommandRequest;
+import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
 import esthesis.service.command.impl.service.CommandService;
 import esthesis.service.command.resource.CommandResource;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import org.bson.types.ObjectId;
+import org.awaitility.Awaitility;
 
 public class CommandResourceImpl implements CommandResource {
 
@@ -32,24 +34,40 @@ public class CommandResourceImpl implements CommandResource {
   }
 
   @Override
-  public CommandReply getReply(String correlationId) {
-    return commandService.getReply(correlationId);
+  public List<CommandReply> getReply(String correlationId) {
+    return commandService.getReplies(correlationId);
   }
 
   @Override
   public String save(CommandRequest request) {
-    ObjectId correlationID = commandService.saveRequest(request);
-    commandService.executeRequest(correlationID.toString());
+    String correlationID = commandService.saveRequest(request).toString();
+    commandService.executeRequest(correlationID);
 
-    return correlationID.toString();
+    return correlationID;
   }
 
   @Override
-  public List<CommandReply> saveAndWait(CommandRequest request,
-      Optional<Long> timeout) {
-    ObjectId correlationID = commandService.saveRequest(request);
+  public List<CommandReply> saveAndWait(CommandRequest request, long timeout,
+      long pollInterval) {
+    // Save the request and schedule its execution.
+    String correlationID = commandService.saveRequest(request).toString();
+    ExecuteRequestScheduleInfoDTO scheduleInfo = commandService.executeRequest(
+        correlationID);
 
-    return null;
+    // Wait for replies to be collected.
+    System.out.println(timeout);
+    Awaitility.await()
+        .atMost(timeout, TimeUnit.MILLISECONDS)
+        .pollInterval(pollInterval, TimeUnit.MILLISECONDS)
+        .until(() -> {
+          System.out.println(
+              commandService.countCollectedReplies(correlationID));
+          return commandService.countCollectedReplies(correlationID)
+              == scheduleInfo.getDevicesScheduled();
+        });
+
+    // Collect and return the replies.
+    return commandService.getReplies(correlationID);
   }
 
   @Override

@@ -32,9 +32,11 @@ export class CommandReplyComponent extends BaseComponent implements OnInit {
         this.commandRequest = command;
         this.commandService.getReply(command.id!).subscribe({
           next: (reply) => {
-            this.commandReply = reply;
+            if (reply !== null && reply.length > 0) {
+              this.commandReply = reply[0];
+            }
           }, error: (error) => {
-            console.log(error);
+            this.utilityService.popupErrorWithTraceId("Could not fetch command reply.", error);
           }
         });
       }, error: (error) => {

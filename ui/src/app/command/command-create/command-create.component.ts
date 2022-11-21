@@ -78,11 +78,14 @@ export class CommandCreateComponent extends BaseComponent implements OnInit {
 
   save() {
     this.commandService.execute(
-      {...this.searchDevicesForm!.value, ...this.commandForm!.value}).subscribe(
-      () => {
+      {...this.searchDevicesForm!.value, ...this.commandForm!.value}).subscribe({
+      next: (next) => {
         this.utilityService.popupSuccess("Command dispatched successfully.");
         this.router.navigate(["command"]);
-      });
+      }, error: (error) => {
+        this.utilityService.popupErrorWithTraceId("Could not dispatch command.", error);
+      }
+    });
   }
 
   canDispatch(): boolean {

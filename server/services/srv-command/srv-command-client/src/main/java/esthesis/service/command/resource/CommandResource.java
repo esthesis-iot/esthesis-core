@@ -33,7 +33,7 @@ public interface CommandResource {
 
   @GET
   @Path("/v1/command/reply/{correlationId}")
-  CommandReply getReply(@PathParam("correlationId") String correlationId);
+  List<CommandReply> getReply(@PathParam("correlationId") String correlationId);
 
   /**
    * Saves and executed a command request and directly returns the correlation
@@ -52,17 +52,23 @@ public interface CommandResource {
    * devices, the result is a list of replies. The amount of time to wait before
    * declaring a timeout is configurable.
    *
-   * @param request The command request to save and execute.
-   * @param timeout The amount of time to wait to obtain the results before
-   *                declaring a timeout (in milliseconds). By default, the
-   *                timeout is set at 3 seconds.
+   * @param request      The command request to save and execute.
+   * @param timeout      The amount of time (in milliseconds) to wait for
+   *                     obtaining the results before declaring a timeout. By
+   *                     default, the timeout is set at 3 seconds.
+   * @param pollInterval The amount of time (in milliseconds) to wait before
+   *                     checking if the results are available. By default, the
+   *                     poll interval is set at 500 milliseconds. A smaller
+   *                     pollInterval makes the device seem more responsive,
+   *                     however it may introduce extra load to the database.
    * @return The correlation ID of the command request.
    */
 
   @POST
   @Path("/v1/command/wait-for-reply")
   List<CommandReply> saveAndWait(CommandRequest request,
-      @QueryParam("timeout") @DefaultValue("3000") Optional<Long> timeout);
+      @QueryParam("timeout") @DefaultValue("3000") long timeout,
+      @QueryParam("pollInterval") @DefaultValue("500") long pollInterval);
 
   /**
    * Counts the number of devices with the given hardware IDs. The matching

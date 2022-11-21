@@ -15,8 +15,8 @@ export class CommandService extends CrudService<CommandRequestDto> {
     super(http, "v1/command");
   }
 
-  getReply(requestId: string): Observable<CommandReplyDto> {
-    return this.http.get<CommandReplyDto>(
+  getReply(requestId: string): Observable<CommandReplyDto[]> {
+    return this.http.get<CommandReplyDto[]>(
       `${environment.apiPrefix}/v1/command/reply/${requestId}`);
   }
 
@@ -31,14 +31,8 @@ export class CommandService extends CrudService<CommandRequestDto> {
   }
 
   execute(data: CommandExecuteRequestDto): Observable<any> {
-    return this.http.post<string>(`${environment.apiPrefix}/v1/command`, {
-      hardwareIds: data.hardwareIds,
-      tags: data.tags,
-      commandType: data.commandType,
-      executionType: data.executionType,
-      command: data.command,
-      arguments: data.arguments,
-      description: data.description,
+    return this.http.post<string>(`${environment.apiPrefix}/v1/command`, data, {
+      responseType: "text" as "json"
     });
   }
 

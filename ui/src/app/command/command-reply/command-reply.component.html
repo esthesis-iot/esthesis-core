@@ -5,7 +5,7 @@
   <mat-card-content>
     <mat-card>
       <mat-card-title>Command details</mat-card-title>
-      <mat-card-content>
+      <mat-card-content *ngIf="commandRequest">
         <div fxLayout="column" class="mt1 command-request">
           <div fxLayout="row">
             <div class="label-text">Id:</div>
