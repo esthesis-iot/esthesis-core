@@ -43,7 +43,7 @@
     "js-yaml": "4.1.0",
     "lodash-es": "4.17.21",
     "moment": "2.29.2",
-    "ng-terminal": "3.2.0",
+    "ng-terminal": "5.2.0",
     "ng2-logger": "13.0.9",
     "ngx-chips": "3.0.0",
     "ngx-filesize": "2.0.16",

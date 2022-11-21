@@ -7,7 +7,7 @@ import {CommandExecuteRequestDto} from "../../../dto/command-execute-request-dto
 @Component({
   selector: "app-device-terminal",
   templateUrl: "./device-terminal.component.html",
-  styleUrls: []
+  styleUrls: ["./device-terminal.component.scss"]
 })
 export class DeviceTerminalComponent extends BaseComponent implements AfterViewInit {
   @Input() hardwareId!: string;
@@ -77,7 +77,7 @@ export class DeviceTerminalComponent extends BaseComponent implements AfterViewI
   }
 
   ngAfterViewInit(): void {
-    this.terminal.keyEventInput.subscribe(e => {
+    this.terminal.onKey().subscribe(e => {
       if (!this.blockInput) {
         const ev = e.domEvent;
         const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey;
@@ -113,6 +113,11 @@ export class DeviceTerminalComponent extends BaseComponent implements AfterViewI
           this.command += e.key;
         }
       }
+    });
+
+    this.terminal.setXtermOptions({
+      fontFamily: "\"Cascadia Code\", Menlo, monospace",
+      cursorBlink: true
     });
 
     this.terminal.write("$ ");
