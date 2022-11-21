@@ -71,4 +71,14 @@ public class CommandResourceImpl implements CommandResource {
   public void deleteReply(String replyId) {
     commandService.deleteReply(replyId);
   }
+
+  @Override
+  public void purge(Optional<Integer> durationInDays) {
+    commandService.purge(durationInDays);
+  }
+
+  @Override
+  public void purgeAll() {
+    commandService.purge(Optional.empty());
+  }
 }

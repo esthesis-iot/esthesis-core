@@ -12,6 +12,10 @@ import {CommandService} from "./command.service";
 import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../app.constants";
 import {CommandCreateComponent} from "./command-create/command-create.component";
+import {UtilityService} from "../shared/service/utility.service";
+import {
+  OkCancelModalComponent
+} from "../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
 
 @Component({
   selector: "app-command",
@@ -30,6 +34,7 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router,
+    private utilityService: UtilityService,
     private commandService: CommandService, private dialog: MatDialog,
     private qForms: QFormsService) {
     super();
@@ -89,5 +94,97 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
   refreshCurrentData() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
       this.sort.direction);
+  }
+
+  purgeAll() {
+    this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: "Purge",
+        question: "Do you really want to purge all commands and replies?",
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.commandService.purgeAll().subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("All commands and replies have been purged.");
+            this.refreshCurrentData();
+          }, error: (error) => {
+            this.utilityService.popupErrorWithTraceId("Could not purge.", error);
+          }
+        });
+      }
+    });
+  }
+
+  purgeKeppLastDay() {
+    this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: "Purge",
+        question: "Do you really want to purge all commands and replies older than 1 day?",
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.commandService.purge(1).subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("All commands and replies older than 1 day have been purged.");
+            this.refreshCurrentData();
+          }, error: (error) => {
+            this.utilityService.popupErrorWithTraceId("Could not purge.", error);
+          }
+        });
+      }
+    });
+  }
+
+  purgeKeppLastWeek() {
+    this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: "Purge",
+        question: "Do you really want to purge all commands and replies older than 1 week?",
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.commandService.purge(7).subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("All commands and replies older than 1 week have been purged.");
+            this.refreshCurrentData();
+          }, error: (error) => {
+            this.utilityService.popupErrorWithTraceId("Could not purge.", error);
+          }
+        });
+      }
+    });
+  }
+
+  purgeKeppLastMonth() {
+    this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: "Purge",
+        question: "Do you really want to purge all commands and replies older than 1 month?",
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.commandService.purge(30).subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("All commands and replies older than 1 month have been purged.");
+            this.refreshCurrentData();
+          }, error: (error) => {
+            this.utilityService.popupErrorWithTraceId("Could not purge.", error);
+          }
+        });
+      }
+    });
   }
 }

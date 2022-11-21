@@ -23,6 +23,7 @@ import {DateSupportModule} from "../shared/module/date-support.module";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {TruncateModule} from "@yellowspot/ng-truncate";
 import {MatChipsModule} from "@angular/material/chips";
+import {MatMenuModule} from "@angular/material/menu";
 
 @NgModule({
   declarations: [CommandComponent, CommandCreateComponent, CommandReplyComponent],
@@ -47,7 +48,8 @@ import {MatChipsModule} from "@angular/material/chips";
     DateSupportModule,
     MatProgressSpinnerModule,
     TruncateModule,
-    MatChipsModule
+    MatChipsModule,
+    MatMenuModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

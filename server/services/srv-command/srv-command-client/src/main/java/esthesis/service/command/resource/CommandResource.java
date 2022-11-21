@@ -92,4 +92,13 @@ public interface CommandResource {
   @DELETE
   @Path("/v1/command/reply/{replyId}")
   void deleteReply(@PathParam("replyId") String replyId);
+
+  @DELETE
+  @Path("/v1/command/purge/{durationInDays}")
+  void purge(
+      @PathParam("durationInDays") @DefaultValue("0") Optional<Integer> durationInDays);
+
+  @DELETE
+  @Path("/v1/command/purge")
+  void purgeAll();
 }

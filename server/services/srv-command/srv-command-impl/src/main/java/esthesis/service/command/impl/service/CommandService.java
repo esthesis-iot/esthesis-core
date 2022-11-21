@@ -17,6 +17,7 @@ import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -183,5 +184,10 @@ public class CommandService {
 
   public void deleteReply(String replyId) {
     commandReplyService.deleteById(replyId);
+  }
+
+  public void purge(Optional<Integer> durationInDays) {
+    commandReplyService.purge(durationInDays);
+    commandRequestService.purge(durationInDays);
   }
 }

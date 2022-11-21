@@ -49,4 +49,16 @@ export class CommandService extends CrudService<CommandRequestDto> {
   deleteReply(replyId: string): Observable<any> {
     return this.http.delete(`${environment.apiPrefix}/v1/command/reply/${replyId}`);
   }
+
+  /**
+   * Purges command and replies older than the specified duration.
+   * @param keepDuration The number of days to prior to which command and replies are deleted.
+   */
+  purge(keepDuration: number): Observable<any> {
+    return this.http.delete(`${environment.apiPrefix}/v1/command/purge/${keepDuration}`);
+  }
+
+  purgeAll(): Observable<any> {
+    return this.http.delete(`${environment.apiPrefix}/v1/command/purge`);
+  }
 }
