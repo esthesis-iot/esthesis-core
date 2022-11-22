@@ -7,6 +7,7 @@ import esthesis.service.command.impl.service.CommandService;
 import esthesis.service.command.resource.CommandResource;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
+import esthesis.service.device.dto.Device;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -71,13 +72,8 @@ public class CommandResourceImpl implements CommandResource {
   }
 
   @Override
-  public Long countDevicesByHardwareIds(String hardwareIds) {
-    return commandService.countDevicesByHardwareIds(hardwareIds);
-  }
-
-  @Override
-  public Long countDevicesByTags(String hardwareIds) {
-    return commandService.countDevicesByTags(hardwareIds);
+  public List<Device> findDevicesByHardwareId(String hardwareId) {
+    return commandService.findDevicesByHardwareId(hardwareId);
   }
 
   @Override
@@ -88,6 +84,11 @@ public class CommandResourceImpl implements CommandResource {
   @Override
   public void deleteReply(String replyId) {
     commandService.deleteReply(replyId);
+  }
+
+  @Override
+  public void deleteReplies(String correlationId) {
+    commandService.deleteReplies(correlationId);
   }
 
   @Override

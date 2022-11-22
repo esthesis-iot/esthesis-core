@@ -16,6 +16,7 @@ import io.opentelemetry.context.Context;
 import io.smallrye.reactive.messaging.TracingMetadata;
 import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -71,8 +72,7 @@ public class CommandService {
   }
 
   /**
-   * Converts a {@link CommandRequest} into a
-   * {@link EsthesisCommandRequestMessage} AVRO message.
+   * Converts a {@link CommandRequest} into a {@link EsthesisCommandRequestMessage} AVRO message.
    *
    * @param request    The command request to convert.
    * @param hardwareId The hardware ID of the device to send the command to.
@@ -91,28 +91,17 @@ public class CommandService {
   }
 
   /**
-   * Counts the number of devices with the given hardware IDs. The matching
-   * algorithm is partial.
+   * Finds devices with the given (partial) hardware Id. The matching algorithm is partial.
    *
-   * @param hardwareIds A comma-separated list of hardware IDs.
+   * @param hardwareId The hardware ID to search for.
    */
-  public Long countDevicesByHardwareIds(String hardwareIds) {
-    return deviceResource.countByHardwareIds(hardwareIds, true);
+  public List<Device> findDevicesByHardwareId(String hardwareId) {
+    return deviceResource.findByHardwareIds(hardwareId, true);
   }
 
   /**
-   * Counts the number of devices with the given tags. The matching algorithm is
-   * exact.
-   *
-   * @param tags A comma-separated list of tag names.
-   */
-  public Long countDevicesByTags(String tags) {
-    return deviceResource.countByTags(tags, false);
-  }
-
-  /**
-   * Saves a command to be scheduled for execution. Note that this method does
-   * not send the command to the device, see {@link #executeRequest(String)}.
+   * Saves a command to be scheduled for execution. Note that this method does not send the command
+   * to the device, see {@link #executeRequest(String)}.
    *
    * @param commandRequest The command request to save.
    */
@@ -134,6 +123,7 @@ public class CommandService {
           requestId);
     }
 
+    // Provide information regarding the scheduling of the execution.
     ExecuteRequestScheduleInfoDTO scheduleInfo = new ExecuteRequestScheduleInfoDTO();
 
     // Find the devices to which the command should be sent.
@@ -141,15 +131,13 @@ public class CommandService {
 
     // Add devices by their hardware IDs.
     if (StringUtils.isNotBlank(request.getHardwareIds())) {
-      hardwareIds.addAll(
-          deviceResource.findByHardwareIds(request.getHardwareIds(), true)
-              .stream().map(Device::getHardwareId).toList());
+      hardwareIds.addAll(Arrays.asList(request.getHardwareIds().split(",")));
     }
 
     // Add devices by their tags.
     if (StringUtils.isNotBlank(request.getTags())) {
       hardwareIds.addAll(
-          tagResource.findByNames(request.getTags(), true).stream()
+          tagResource.findByNames(request.getTags(), false).stream()
               .map(tag -> deviceResource.findByTagId(tag.getId().toString()))
               .flatMap(List::stream).map(Device::getHardwareId)
               .toList());
@@ -209,5 +197,9 @@ public class CommandService {
 
   public long countCollectedReplies(String correlationId) {
     return commandReplyService.countByColumn("corellationId", correlationId);
+  }
+
+  public void deleteReplies(String correlationId) {
+    commandReplyService.deleteByColumn("correlationId", correlationId);
   }
 }

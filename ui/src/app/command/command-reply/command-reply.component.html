@@ -69,35 +69,45 @@
 
     <mat-card class="mt1">
       <mat-card-title>Reply details</mat-card-title>
-      <mat-card-content *ngIf="commandReply">
-        <div fxLayout="column" class="mt1 command-request" *ngIf="commandReply">
+
+      <mat-card-content *ngIf="commandReplies">
+        <div fxLayout="column" class="mt1 mb2 command-request"
+             *ngFor="let reply of commandReplies; let i = index">
           <div fxLayout="row">
             <div class="label-text">Hardware Id:</div>
-            <div>{{commandReply.hardwareId}}</div>
+            <div>{{reply.hardwareId}}</div>
           </div>
           <div fxLayout="row">
             <div class="label-text">Reply type:</div>
-            <div *ngIf="commandReply.success">Successful execution</div>
-            <div *ngIf="!commandReply.success">Failed execution</div>
+            <div *ngIf="reply.success">Successful execution</div>
+            <div *ngIf="!reply.success">Failed execution</div>
+          </div>
+          <div fxLayout="row">
+            <div class="label-text">Replied on:</div>
+            <div>{{reply.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
           </div>
           <div fxLayout="row" class="mt1">
             <div class="label-text">Output:<br>
-              <button mat-button (click)="copyOutputToClipboard()" matTooltip="Copy to clipboard">
+              <button mat-button (click)="copyOutputToClipboard(i)" matTooltip="Copy to clipboard">
                 <mat-icon>content_paste</mat-icon>
               </button>
+              <button mat-button (click)="deleteReply(reply.id!, i)" matTooltip="Delete reply">
+                <mat-icon>delete_forever</mat-icon>
+              </button>
             </div>
-            <pre class="command-output">{{commandReply.output}}</pre>
+            <pre class="command-output">{{reply.output}}</pre>
           </div>
         </div>
       </mat-card-content>
-      <mat-card-content *ngIf="!commandReply">
+
+      <mat-card-content *ngIf="!commandReplies">
         No reply was found for this command.
       </mat-card-content>
     </mat-card>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button color="warn" (click)="deleteReply()" *ngIf="commandReply">
-      DELETE REPLY
+    <button mat-button color="warn" (click)="deleteReplies()" *ngIf="commandReplies">
+      DELETE REPLIES
     </button>
     <button mat-button color="warn" (click)="deleteCommand()">
       DELETE COMMAND

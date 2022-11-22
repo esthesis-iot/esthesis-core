@@ -36,12 +36,9 @@ import lombok.experimental.Accessors;
 public class CommandRequest extends BaseDTO {
 
   // A comma-separated list of hardware IDs to which the command should be sent.
-  // Note, these can be partial IDs that need to be matched again actual IDs.
   private String hardwareIds;
 
   // A comma-separated list of tag names to which the command should be sent.
-  // Note, these can be partial names that need to be matched again actual
-  // names.
   private String tags;
 
   // The type of execution for the command.

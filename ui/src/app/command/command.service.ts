@@ -6,6 +6,7 @@ import {CommandRequestDto} from "../dto/command-request-dto";
 import {CommandReplyDto} from "../dto/command-reply-dto";
 import {environment} from "../../environments/environment";
 import {CommandExecuteRequestDto} from "../dto/command-execute-request-dto";
+import {DeviceDto} from "../dto/device-dto";
 
 @Injectable({
   providedIn: "root"
@@ -20,16 +21,16 @@ export class CommandService extends CrudService<CommandRequestDto> {
       `${environment.apiPrefix}/v1/command/reply/${requestId}`);
   }
 
-  findDevicesByHardwareIds(hardwareIds: string): Observable<number> {
-    return this.http.get<number>(`${environment.apiPrefix}/v1/command/count-devices/by-hardware-id`,
-      {params: new HttpParams().set("hardwareIds", hardwareIds)});
+  findDevicesByHardwareId(hardwareId: string): Observable<DeviceDto[]> {
+    return this.http.get<DeviceDto[]>(`${environment.apiPrefix}/v1/command/find-devices/by-hardware-id`,
+      {params: new HttpParams().set("hardwareId", hardwareId)});
   }
 
-  findDevicesByTags(tags: string): Observable<number> {
-    return this.http.get<number>(`${environment.apiPrefix}/v1/command/count-devices/by-tags`,
-      {params: new HttpParams().set("tags", tags)});
-  }
-
+  /**
+   * Executes a command. Returns the correlation id of this command, so that results can be queried
+   * later on.
+   * @param data The command data for this command.
+   */
   execute(data: CommandExecuteRequestDto): Observable<any> {
     return this.http.post<string>(`${environment.apiPrefix}/v1/command`, data, {
       responseType: "text" as "json"
@@ -42,6 +43,10 @@ export class CommandService extends CrudService<CommandRequestDto> {
 
   deleteReply(replyId: string): Observable<any> {
     return this.http.delete(`${environment.apiPrefix}/v1/command/reply/${replyId}`);
+  }
+
+  deleteReplies(correlationId: string): Observable<any> {
+    return this.http.delete(`${environment.apiPrefix}/v1/command/reply/all/${correlationId}`);
   }
 
   /**

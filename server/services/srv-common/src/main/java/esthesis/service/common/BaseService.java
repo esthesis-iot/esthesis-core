@@ -137,15 +137,19 @@ public abstract class BaseService<D extends BaseDTO> {
     return repository.findById(dto.getId());
   }
 
-  public void deleteById(ObjectId id) {
-    repository.deleteById(id);
+  public boolean deleteById(ObjectId id) {
+    return repository.deleteById(id);
   }
 
-  public void deleteById(String id) {
-    repository.deleteById(new ObjectId(id));
+  public boolean deleteById(String id) {
+    return repository.deleteById(new ObjectId(id));
   }
 
-  public void deleteAll() {
-    repository.deleteAll();
+  public long deleteAll() {
+    return repository.deleteAll();
+  }
+
+  public long deleteByColumn(String columnName, Object value) {
+    return repository.delete(columnName + " = ?1", value);
   }
 }

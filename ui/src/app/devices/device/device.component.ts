@@ -13,7 +13,7 @@ import {
 import {QFormsService} from "@qlack/forms";
 import {DeviceDto} from "../../dto/device-dto";
 import {AppConstants} from "../../app.constants";
-import {DomSanitizer} from "@angular/platform-browser";
+import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 
 @Component({
   selector: "app-device",
@@ -29,7 +29,7 @@ export class DeviceComponent extends BaseComponent implements OnInit {
   // Expose application constants.
   constants = AppConstants;
   // Geolocation URL for embedded Goggle Maps.
-  geoUrl?: string;
+  geoUrl?: SafeResourceUrl;
   geoLastUpdated?: Date;
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
@@ -66,8 +66,10 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     // Get geolocation if available.
     this.devicesService.getGeolocation(this.id!).subscribe({
       next: (geolocation) => {
-        this.geoUrl = `https://maps.google.com/maps?q=${geolocation.longitude},${geolocation.latitude}&z=13&output=embed`;
-        this.geoLastUpdated = geolocation.lastUpdated;
+        if (geolocation) {
+          this.geoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`https://maps.google.com/maps?q=${geolocation.longitude},${geolocation.latitude}&z=13&output=embed`);
+          this.geoLastUpdated = geolocation.lastUpdated;
+        }
       }, error: (err) => {
         this.utilityService.popupErrorWithTraceId("Could not fetch the gelocation for this device.", err);
       }

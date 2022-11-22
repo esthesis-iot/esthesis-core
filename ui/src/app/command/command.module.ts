@@ -24,6 +24,8 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {TruncateModule} from "@yellowspot/ng-truncate";
 import {MatChipsModule} from "@angular/material/chips";
 import {MatMenuModule} from "@angular/material/menu";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
   declarations: [CommandComponent, CommandCreateComponent, CommandReplyComponent],
@@ -49,7 +51,9 @@ import {MatMenuModule} from "@angular/material/menu";
     MatProgressSpinnerModule,
     TruncateModule,
     MatChipsModule,
-    MatMenuModule
+    MatMenuModule,
+    MatAutocompleteModule,
+    MatCheckboxModule,
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

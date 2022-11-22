@@ -1,30 +1,43 @@
 <mat-card>
   <mat-card-title>Send a command to devices</mat-card-title>
   <mat-card-content fxLayout="column">
-    <div class="inline-header" fxLayout="row" fxLayoutGap="1rem">
-      <div>Devices</div>
-      <div *ngIf="isSearching">
-        <mat-spinner [diameter]="15" [strokeWidth]="1"></mat-spinner>
-      </div>
-    </div>
-
     <form [formGroup]="searchDevicesForm">
-      <div fxLayout="row" fxLayoutGap="1rem">
-        <mat-form-field fxFill>
-          <input matInput placeholder="Hardware IDs" formControlName="hardwareIds">
-          <div matSuffix class="matches">
-            {{searchDevicesForm.controls['devicesMatchedByHardwareIds'].value}} devices
-          </div>
+      <div class="inline-header" fxLayout="row">
+        <div>Devices</div>
+        <div *ngIf="isSearching">
+          <mat-spinner [diameter]="15" [strokeWidth]="1"></mat-spinner>
+        </div>
+      </div>
+      <div class="mt1 mb1">
+        <mat-chip-list>
+          <ng-container *ngFor="let id of selectedHardwareIds">
+            <mat-chip (click)="removeChip(id)">
+              {{ id }}
+              <mat-icon class="mat-chip-remove">cancel</mat-icon>
+            </mat-chip>
+          </ng-container>
+        </mat-chip-list>
+      </div>
+      <div fxLayout="row">
+        <mat-form-field fxFlex>
+          <input matInput placeholder="Search by hardware Id" [matAutocomplete]="auto"
+                 formControlName="hardwareId">
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let device of searchDevices" [value]="device.hardwareId"
+                        (click)="selectHardwareId(device.hardwareId)">
+              <span>{{device.hardwareId}}</span>
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
       </div>
-      <div fxLayout="row" fxLayoutGap="1rem">
-        <mat-form-field fxFill>
-          <input matInput placeholder="Tag" formControlName="tags">
-          <div matSuffix class="matches">
-            {{searchDevicesForm.controls['devicesMatchedByTags'].value}} devices
-          </div>
-        </mat-form-field>
+
+      <div class="inline-header" fxLayout="row" style="margin-top:0 !important">
+        <div>Tags</div>
       </div>
+      <mat-select multiple formControlName="tags" class="mt1" placeholder="Select a tag">
+        <mat-option *ngFor="let tag of availableTags"
+                    [value]="tag.name">{{tag.name}}</mat-option>
+      </mat-select>
     </form>
 
     <div class="inline-header">Command</div>

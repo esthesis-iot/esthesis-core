@@ -18,7 +18,7 @@ import {MatDialog} from "@angular/material/dialog";
 export class CommandReplyComponent extends BaseComponent implements OnInit {
   id!: string;
   commandRequest!: CommandRequestDto;
-  commandReply?: CommandReplyDto;
+  commandReplies?: CommandReplyDto[];
 
   constructor(private route: ActivatedRoute, private commandService: CommandService,
     private utilityService: UtilityService, private dialog: MatDialog, private router: Router) {
@@ -31,12 +31,12 @@ export class CommandReplyComponent extends BaseComponent implements OnInit {
       next: (command) => {
         this.commandRequest = command;
         this.commandService.getReply(command.id!).subscribe({
-          next: (reply) => {
-            if (reply !== null && reply.length > 0) {
-              this.commandReply = reply[0];
+          next: (replies) => {
+            if (replies !== null && replies.length > 0) {
+              this.commandReplies = replies;
             }
           }, error: (error) => {
-            this.utilityService.popupErrorWithTraceId("Could not fetch command reply.", error);
+            this.utilityService.popupErrorWithTraceId("Could not fetch command replies.", error);
           }
         });
       }, error: (error) => {
@@ -45,8 +45,8 @@ export class CommandReplyComponent extends BaseComponent implements OnInit {
     });
   }
 
-  copyOutputToClipboard() {
-    this.utilityService.copyToClipboard(this.commandReply?.output);
+  copyOutputToClipboard(index: number) {
+    this.utilityService.copyToClipboard(this.commandReplies?.[index].output);
   }
 
   deleteCommand() {
@@ -72,21 +72,47 @@ export class CommandReplyComponent extends BaseComponent implements OnInit {
     });
   }
 
-  deleteReply() {
+  deleteReplies() {
     this.dialog.open(OkCancelModalComponent, {
       data: {
-        title: "Delete Reply",
-        question: "Do you really want to delete this command reply?",
+        title: "Delete Replies",
+        question: "Do you really want to delete all replies for this command?",
         buttons: {
           ok: true, cancel: true, reload: false
         }
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.commandService.deleteReply(this.commandReply?.id!).subscribe({
+        this.commandService.deleteReplies(this.commandRequest.id!).subscribe({
           next: (next) => {
             this.utilityService.popupSuccess("Command reply successfully deleted.");
-            this.commandReply = undefined;
+            this.commandReplies = [];
+          }, error: (error) => {
+            this.utilityService.popupErrorWithTraceId("Could not delete command reply.", error);
+          }
+        });
+      }
+    });
+  }
+
+  deleteReply(replyId: string, index: number) {
+    this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: "Delete Reply",
+        question: "Do you really want to delete this reply?",
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.commandService.deleteReply(replyId).subscribe({
+          next: (next) => {
+            this.utilityService.popupSuccess("Command reply successfully deleted.");
+            this.commandReplies?.splice(index, 1);
+            if (this.commandReplies?.length === 0) {
+              this.commandReplies = undefined;
+            }
           }, error: (error) => {
             this.utilityService.popupErrorWithTraceId("Could not delete command reply.", error);
           }
