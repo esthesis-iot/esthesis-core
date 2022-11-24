@@ -16,12 +16,16 @@
   <dependencies>
     <!-- QUARKUS -->
     <dependency>
-      <artifactId>quarkus-mongodb-panache-common</artifactId>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-mongodb-panache-common</artifactId>
     </dependency>
     <dependency>
-      <artifactId>quarkus-hibernate-validator</artifactId>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-validator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-reactive-common</artifactId>
     </dependency>
   </dependencies>
 </project>

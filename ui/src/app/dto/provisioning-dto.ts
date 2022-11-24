@@ -2,9 +2,14 @@ export interface ProvisioningDto {
   id: string;
   name: string;
   description: string;
-  state: boolean;
-  tags: number[];
-  file: string;
-  fileSize: number;
-  packageVersion: string;
+  available: boolean;
+  version: string;
+  prerequisiteVersion: string;
+  size: number;
+  filename: string;
+  contentType: string;
+  attributes: string;
+  hash: string;
+  type: string;
+  typeSpecificConfiguration: string;
 }

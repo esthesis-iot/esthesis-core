@@ -29,8 +29,7 @@ public class DeviceTagService {
    * Finds the devices matched by the specific list of tags.
    *
    * @param tagNames     The list of tag names to search by.
-   * @param partialMatch Whether the search for the tag name will be partial or
-   *                     not.
+   * @param partialMatch Whether the search for the tag name will be partial or not.
    * @return Returns the devices matched.
    */
   public List<Device> findByTagName(List<String> tagNames,
@@ -51,8 +50,7 @@ public class DeviceTagService {
    * Finds the devices matched by the specific list of tags.
    *
    * @param tagName      The tag name to search by.
-   * @param partialMatch Whether the search for the tag name will be partial or
-   *                     not.
+   * @param partialMatch Whether the search for the tag name will be partial or not.
    * @return Returns the devices matched.
    */
   public List<Device> findByTagName(String tagName, boolean partialMatch) {
@@ -67,8 +65,7 @@ public class DeviceTagService {
    * Counts the number of devices having at least one ofe the tags specified.
    *
    * @param tags         The list of tag names to search by.
-   * @param partialMatch Whether the search for the tag name should be partial
-   *                     or not.
+   * @param partialMatch Whether the search for the tag name should be partial or not.
    */
   public Long countByTag(List<String> tags, boolean partialMatch) {
     List<Tag> tagsByName = Lists.newArrayList(

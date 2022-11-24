@@ -118,7 +118,7 @@
               <mat-select placeholder="Provisioning package"
                           formControlName="provisioningPackageId">
                 <mat-option *ngFor="let pp of provisioningPackages"
-                            [value]="pp.id">{{pp.name}} - {{pp.packageVersion}}</mat-option>
+                            [value]="pp.id">{{pp.name}} - {{pp.version}}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>

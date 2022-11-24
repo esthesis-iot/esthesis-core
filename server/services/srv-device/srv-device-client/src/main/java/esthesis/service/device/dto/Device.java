@@ -27,6 +27,7 @@ public class Device extends BaseDTO {
 
   private DeviceStatus status;
 
+  // List of tag ids.
   private List<String> tags;
   
   private Instant lastSeen;

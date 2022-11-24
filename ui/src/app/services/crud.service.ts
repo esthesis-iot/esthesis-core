@@ -50,7 +50,7 @@ export class CrudService<T> {
       "POST",
       url ? url : `${environment.apiPrefix}/${this.endpoint}`,
       formData, {
-        reportProgress: reportProgress,
+        reportProgress: reportProgress
       }
     );
 

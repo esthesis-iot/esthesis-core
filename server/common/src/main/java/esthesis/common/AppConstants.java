@@ -46,6 +46,10 @@ public class AppConstants {
     DISABLED, OPEN, OPEN_WITH_APPROVAL, ID
   }
 
+  public enum ProvisioningPackageType {
+    ESTHESIS, WEB, FTP, S3, MINIO
+  }
+
 //  public static class Campaign {
 //    public static class Member {
 //      public static class Type {

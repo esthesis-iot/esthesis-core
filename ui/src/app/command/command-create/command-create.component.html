@@ -71,7 +71,7 @@
         *ngIf="commandForm.value['commandType'] == appConstants.DEVICE.COMMAND.TYPE.FIRMWARE">
         <mat-select placeholder="Provisioning package" formControlName="arguments">
           <mat-option *ngFor="let pp of provisioningPackages"
-                      [value]="pp.id">{{pp.name}} - {{pp.packageVersion}}</mat-option>
+                      [value]="pp.id">{{pp.name}} - {{pp.version}}</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field>

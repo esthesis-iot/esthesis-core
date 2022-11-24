@@ -58,6 +58,17 @@ export const AppConstants = {
     ENABLED: 1
   },
 
+  // Provisioning.
+  PROVISIONING: {
+    TYPE: {
+      ESTHESIS: "ESTHESIS",
+      WEB: "WEB",
+      FTP: "FTP",
+      S3: "S3",
+      MINIO: "MINIO"
+    }
+  },
+
   // Campaign constants.
   CAMPAIGN: {
     STATE: {

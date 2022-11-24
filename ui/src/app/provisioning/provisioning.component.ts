@@ -1,23 +1,23 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
-import {QFormsService} from '@qlack/forms';
-import {ProvisioningService} from './provisioning.service';
-import {ProvisioningDto} from '../dto/provisioning-dto';
-import {TagService} from '../tags/tag.service';
-import {TagDto} from '../dto/tag-dto';
-import * as _ from 'lodash';
-import {BaseComponent} from '../shared/component/base-component';
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
+import {MatTableDataSource} from "@angular/material/table";
+import {QFormsService} from "@qlack/forms";
+import {ProvisioningService} from "./provisioning.service";
+import {ProvisioningDto} from "../dto/provisioning-dto";
+import {TagService} from "../tags/tag.service";
+import {TagDto} from "../dto/tag-dto";
+import * as _ from "lodash";
+import {BaseComponent} from "../shared/component/base-component";
 import {AppConstants} from "../app.constants";
 
 @Component({
-  selector: 'app-provisioning',
-  templateUrl: './provisioning.component.html',
-  styleUrls: ['./provisioning.component.scss']
+  selector: "app-provisioning",
+  templateUrl: "./provisioning.component.html",
+  styleUrls: ["./provisioning.component.scss"]
 })
 export class ProvisioningComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ['name', 'version', 'description', 'state', 'size', 'tags', 'createdOn'];
+  columns = ["name", "version", "prerequisiteVersion", "state", "size", "tags", "createdOn"];
   datasource = new MatTableDataSource<ProvisioningDto>();
   availableTags: TagDto[] | undefined;
   // Expose application constants.
@@ -27,7 +27,7 @@ export class ProvisioningComponent extends BaseComponent implements OnInit, Afte
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private provisioningService: ProvisioningService, private qForms: QFormsService,
-              private tagService: TagService) {
+    private tagService: TagService) {
     super();
   }
 
@@ -68,9 +68,9 @@ export class ProvisioningComponent extends BaseComponent implements OnInit, Afte
     return _.map(
       _.filter(this.availableTags, i => _.includes(ids, i.id)),
       (j) => {
-        return j.name
+        return j.name;
       }
-    ).join(', ');
+    ).join(", ");
   }
 
 }

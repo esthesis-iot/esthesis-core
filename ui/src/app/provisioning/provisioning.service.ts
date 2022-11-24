@@ -10,7 +10,7 @@ import {environment} from "../../environments/environment";
 export class ProvisioningService extends CrudService<ProvisioningDto> {
 
   constructor(http: HttpClient) {
-    super(http, "provisioning");
+    super(http, "v1/provisioning");
   }
 
   download(id: number) {

@@ -20,35 +20,37 @@ import {
 })
 export class ProvisioningEditComponent extends BaseComponent implements OnInit {
   form!: FormGroup;
-  id: number | undefined;
+  id!: string;
   availableTags: TagDto[] | undefined;
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
-              private qForms: QFormsService, private tagService: TagService,
-              private provisioningService: ProvisioningService, private route: ActivatedRoute,
-              private router: Router, private http: HttpClient, private utilityService: UtilityService) {
+    private qForms: QFormsService, private tagService: TagService,
+    private provisioningService: ProvisioningService, private route: ActivatedRoute,
+    private router: Router, private http: HttpClient, private utilityService: UtilityService) {
     super();
   }
 
   ngOnInit() {
     // Check if an edit is performed and fetch data.
-    this.id = Number(this.route.snapshot.paramMap.get("id"));
+    this.id = this.route.snapshot.paramMap.get("id")!;
 
     // // Setup the form.
     this.form = this.fb.group({
-      id: [""],
+      id: [{value: ""}],
       name: ["", [Validators.required, Validators.maxLength(256)]],
       description: ["", [Validators.maxLength(2048)]],
-      file: [{value: "", disabled: this.id !== 0}, [Validators.required]],
-      state: [false, [Validators.required]],
-      tags: [[]],
-      packageVersion: ["", [Validators.required]],
+      version: ["", [Validators.required]],
+      prerequisiteVersion: ["", []],
       fileName: [""],
-      encrypted: [false]
+      tags: [[]],
+      attributes: [""],
+      type: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}, [Validators.required]],
+      available: [true, [Validators.required]],
+      file: []
     });
 
     // Fill-in the form with data if editing an existing item.
-    if (this.id && this.id !== 0) {
+    if (this.id && this.id !== this.appConstants.NEW_RECORD_ID) {
       this.provisioningService.findById(this.id).subscribe(onNext => {
         this.form.patchValue(onNext);
       });
@@ -74,21 +76,6 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
       this.utilityService.popupError("There was a problem uploading the provisioning package.");
     });
   }
-
-  // // save() {
-  //   this.provisioningService.save(this.form).subscribe(onEvent => {
-  //     if (onEvent.type === HttpEventType.Response) {
-  //       if (onEvent.status === 200) {
-  //         this.utilityService.popupSuccess('Provisioning package successfully saved.');
-  //         this.router.navigate(['provisioning']);
-  //       } else {
-  //         this.utilityService.popupError('There was a problem uploading the provisioning package.');
-  //       }
-  //     }
-  //   }, onError => {
-  //     this.utilityService.popupError('There was a problem uploading the provisioning package.');
-  //   });
-  // }
 
   delete() {
     const dialogRef = this.dialog.open(OkCancelModalComponent, {
@@ -116,6 +103,6 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
   }
 
   download() {
-    this.provisioningService.download(this.id!);
+    // this.provisioningService.download(this.id!);
   }
 }

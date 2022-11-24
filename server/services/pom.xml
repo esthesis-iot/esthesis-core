@@ -96,5 +96,6 @@
     <module>srv-agent</module>
     <module>srv-application</module>
     <module>srv-command</module>
+    <module>srv-provisioning</module>
   </modules>
 </project>
