@@ -5,7 +5,6 @@ import {QFormsService} from "@qlack/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {UtilityService} from "../../../shared/service/utility.service";
 import {ProvisioningService} from "../../../provisioning/provisioning.service";
-import {ProvisioningDto} from "../../../dto/provisioning-dto";
 import {CampaignMemberDto} from "../../../dto/campaign-member-dto";
 import {DevicesService} from "../../../devices/devices.service";
 import {DeviceDto} from "../../../dto/device-dto";
@@ -22,6 +21,7 @@ import {
 } from "../../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {CampaignStatsDto} from "../../../dto/campaign-stats-dto";
+import {ProvisioningDto} from "../../../provisioning/dto/provisioning-dto";
 
 @Component({
   selector: "app-campaign-edit",
@@ -48,20 +48,21 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   errorsConditions?: string[];
   // A flag to indicate whether the form is disabled.
   formDisabled = false;
-  // An object containing the full details of the campaign as returned by the back-end. This is to facilitate displaying
-  // information on the UI that might not necessarily be part of the underlying form object representing the campaign.
-  // For example, the date a campaign started (needs to be displayed but is not exchanged with the campaign form object).
+  // An object containing the full details of the campaign as returned by the back-end. This is to
+  // facilitate displaying information on the UI that might not necessarily be part of the
+  // underlying form object representing the campaign. For example, the date a campaign started
+  // (needs to be displayed but is not exchanged with the campaign form object).
   campaign?: CampaignDto;
   now = new Date();
   campaignStats?: CampaignStatsDto;
   campaignChart?: any;
 
   constructor(private fb: FormBuilder, public utilityService: UtilityService,
-              private qForms: QFormsService, private provisioningService: ProvisioningService,
-              private route: ActivatedRoute, private router: Router,
-              private utilService: UtilityService, private deviceService: DevicesService,
-              private tagService: TagService, private campaignService: CampaignsService,
-              private dialog: MatDialog) {
+    private qForms: QFormsService, private provisioningService: ProvisioningService,
+    private route: ActivatedRoute, private router: Router,
+    private utilService: UtilityService, private deviceService: DevicesService,
+    private tagService: TagService, private campaignService: CampaignsService,
+    private dialog: MatDialog) {
     super();
   }
 
@@ -227,7 +228,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     if (this.form.get("members")?.value.length == 0) {
       groupNo = 1;
     } else {
-      groupNo = (_.maxBy(this.form.get("members")?.value, function(o: CampaignMemberDto) {
+      groupNo = (_.maxBy(this.form.get("members")?.value, function (o: CampaignMemberDto) {
         return o.groupOrder;
       }) as CampaignMemberDto).groupOrder;
     }
@@ -285,7 +286,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   }
 
   removeMember(identifier: string) {
-    _.remove(this.form.get("members")!.value, function(o: CampaignMemberDto) {
+    _.remove(this.form.get("members")!.value, function (o: CampaignMemberDto) {
       return o.identifier === identifier;
     });
     this.memberGroups = this.getMemberGroups();
@@ -294,12 +295,12 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   removeGroup(groupOrder: number) {
     groupOrder++;
     // Remove group members.
-    _.remove(this.form.get("members")!.value, function(o: CampaignMemberDto) {
+    _.remove(this.form.get("members")!.value, function (o: CampaignMemberDto) {
       return o.groupOrder === groupOrder;
     });
 
     // Rearrange groups.
-    _.map(this.form.get("members")!.value, function(o: CampaignMemberDto) {
+    _.map(this.form.get("members")!.value, function (o: CampaignMemberDto) {
       if (o.groupOrder > groupOrder) {
         o.groupOrder = o.groupOrder - 1;
       }

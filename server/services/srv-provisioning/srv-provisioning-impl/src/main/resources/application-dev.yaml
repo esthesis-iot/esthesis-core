@@ -4,6 +4,8 @@ quarkus:
     cors: false
   log:
     category:
+      "org.apache.camel":
+        level: DEBUG
       esthesis:
         level: DEBUG
     handler:
@@ -13,15 +15,9 @@ quarkus:
         port: 12201
         include-full-mdc: true
   rest-client:
-  #    DeviceResource:
-  #      url: http://localhost:59010
-  #      scope: Singleton
-  #    TagResource:
-  #      url: http://localhost:59020
-  #      scope: Singleton
-  #    SettingsResource:
-  #      url: http://localhost:59030
-  #      scope: Singleton
+    DataflowResource:
+      url: http://localhost:59060
+      scope: Singleton
   mongodb:
     connection-string: mongodb://esthesis-dev-mongodb:27017
   opentelemetry:
@@ -30,7 +26,6 @@ quarkus:
       exporter:
         otlp:
           endpoint: http://esthesis-dev-jaeger-collector:4317
-
   oidc-client:
     auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
     client-id: esthesis
@@ -40,6 +35,8 @@ quarkus:
       password:
         username: esthesis-system
         password: esthesis-system
+  redis:
+    hosts: esthesis-dev-redis:6379
 
 mp:
   jwt:
@@ -48,13 +45,13 @@ mp:
         location: http://esthesis-dev-keycloak/realms/esthesis/protocol/openid-connect/certs
 
 ###############################################################################
-# PROFILES
+# DEBUG PROFILES
 ###############################################################################
 "%debug-rest":
   quarkus:
     log:
       category:
-        "org.jboss.resteasy.reactive.client.logging":
+        "org.jboss.resteasy":
           level: DEBUG
     rest-client:
       logging:

@@ -61,4 +61,9 @@ public class DataflowResourceImpl implements DataflowResource {
     return dataflowService.getNamespaces();
   }
 
+  @Override
+  public List<Dataflow> getRedisSetup() {
+    return dataflowService.getRedisSetup();
+  }
+
 }

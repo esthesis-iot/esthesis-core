@@ -1,11 +1,11 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {ProvisioningComponent} from './provisioning.component';
-import {ProvisioningEditComponent} from './provisioning-edit.component';
+import {NgModule} from "@angular/core";
+import {RouterModule, Routes} from "@angular/router";
+import {ProvisioningEditComponent} from "./provisioning-edit/provisioning-edit.component";
+import {ProvisioningListComponent} from "./provisioning-list/provisioning-list.component";
 
 const routes: Routes = [
-  {path: '', component: ProvisioningComponent},
-  {path: ':id', component: ProvisioningEditComponent},
+  {path: "", component: ProvisioningListComponent},
+  {path: ":id", component: ProvisioningEditComponent},
 ];
 
 @NgModule({

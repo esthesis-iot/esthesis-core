@@ -2,8 +2,6 @@ import {NgModule, NO_ERRORS_SCHEMA} from "@angular/core";
 import {CommonModule} from "@angular/common";
 
 import {ProvisioningRoutingModule} from "./provisioning-routing.module";
-import {ProvisioningComponent} from "./provisioning.component";
-import {ProvisioningEditComponent} from "./provisioning-edit.component";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
@@ -19,10 +17,13 @@ import {QFormsModule} from "@qlack/forms";
 import {ReactiveFormsModule} from "@angular/forms";
 import {NgxFilesizeModule} from "ngx-filesize";
 import {DisplayModule} from "../shared/component/display/display.module";
+import {ProvisioningEditComponent} from "./provisioning-edit/provisioning-edit.component";
+import {ProvisioningListComponent} from "./provisioning-list/provisioning-list.component";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 @NgModule({
   declarations: [
-    ProvisioningComponent,
+    ProvisioningListComponent,
     ProvisioningEditComponent,
   ],
   imports: [
@@ -42,7 +43,8 @@ import {DisplayModule} from "../shared/component/display/display.module";
     MatIconModule,
     NgxFilesizeModule,
     MatCheckboxModule,
-    DisplayModule
+    DisplayModule,
+    MatProgressBarModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
 })

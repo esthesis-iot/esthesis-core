@@ -26,7 +26,7 @@ export class UsersComponent extends BaseComponent implements OnInit, AfterViewIn
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router, private userService: UserService,
-              private qForms: QFormsService) {
+    private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
       username: ["", null],
@@ -63,7 +63,6 @@ export class UsersComponent extends BaseComponent implements OnInit, AfterViewIn
     .subscribe(onNext => {
       this.dataSource.data = onNext.content;
       this.paginator!.length = onNext.totalElements;
-      console.log(onNext); // TODO REMOVE before commit
     });
   }
 

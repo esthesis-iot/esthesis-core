@@ -1,10 +1,15 @@
 package esthesis.service.provisioning.dto;
 
-import esthesis.common.AppConstants.ProvisioningPackageType;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import esthesis.common.AppConstants.Provisioning.OptionsFtp;
+import esthesis.common.AppConstants.Provisioning.Type;
 import esthesis.common.dto.BaseDTO;
+import esthesis.common.jackson.MongoInstantDeserializer;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -66,11 +71,35 @@ public class ProvisioningPackage extends BaseDTO {
 
   // The type of this package indicating where the binary payload resides.
   @RestForm
-  private ProvisioningPackageType type;
+  private Type type;
 
   // A comma-separated list of key=value pairs with package type specific configuration.
   @RestForm
   private String typeSpecificConfiguration;
 
+  // A 0-100 indicator of how much of this package's content has been cached. Setting this to 0
+  // for an existing package, will force esthesis to re-cache the package's content.
+  private int cacheStatus;
+
+  // A log output of the caching result.
+  private String log;
+
+  @JsonDeserialize(using = MongoInstantDeserializer.class)
   private Instant createdOn;
+
+  /**
+   * Find Config (fc), is a convenience method to return a value from typeSpecificConfiguration.
+   *
+   * @param key The key to look for.
+   */
+  private Optional<String> fc(String key) {
+    return Arrays.stream(getTypeSpecificConfiguration().split(","))
+        .filter(s -> s.startsWith(key + "="))
+        .findFirst()
+        .map(s -> s.substring(s.indexOf("=") + 1));
+  }
+
+  public Optional<String> fc(OptionsFtp key) {
+    return fc(key.toString());
+  }
 }

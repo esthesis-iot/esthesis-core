@@ -66,6 +66,16 @@ export const AppConstants = {
       FTP: "FTP",
       S3: "S3",
       MINIO: "MINIO"
+    },
+    CONFIG: {
+      FTP: {
+        HOST: "HOST",
+        PORT: "PORT",
+        USERNAME: "USERNAME",
+        PASSWORD: "PASSWORD",
+        PATH: "PATH",
+        PASSIVE: "PASSIVE"
+      }
     }
   },
 

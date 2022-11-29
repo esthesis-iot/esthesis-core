@@ -46,8 +46,15 @@ public class AppConstants {
     DISABLED, OPEN, OPEN_WITH_APPROVAL, ID
   }
 
-  public enum ProvisioningPackageType {
-    ESTHESIS, WEB, FTP, S3, MINIO
+  public static class Provisioning {
+
+    public enum Type {
+      ESTHESIS, WEB, FTP, S3, MINIO
+    }
+
+    public enum OptionsFtp {
+      FTP_HOST, FTP_PORT, FTP_USERNAME, FTP_PASSWORD, FTP_PATH, FTP_PASSIVE
+    }
   }
 
 //  public static class Campaign {

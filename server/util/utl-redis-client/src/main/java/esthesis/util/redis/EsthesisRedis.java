@@ -52,16 +52,15 @@ public class EsthesisRedis {
   }
 
   /**
-   * Returns the pool associated with this client. This is useful when you need
-   * to perform a Redis operation not supported by this client.
+   * Returns the pool associated with this client. This is useful when you need to perform a Redis
+   * operation not supported by this client.
    */
   public JedisPool getJedisPool() {
     return jedisPool;
   }
 
   /**
-   * Retusn the database index associated with the underlying connection of this
-   * client.
+   * Returns the database index associated with the underlying connection of this client.
    */
   public int getDbIndex() {
     return redisLocationDTO.map(RedisLocationDTO::getDbIndex).orElseThrow();
@@ -106,7 +105,7 @@ public class EsthesisRedis {
   }
 
   /**
-   * Returns the value of the specified fields for the specified key.
+   * Returns the values of the specified fields for the specified key.
    *
    * @param key   The key (hash) to look for.
    * @param field The list of fields to look for.
@@ -132,13 +131,12 @@ public class EsthesisRedis {
   }
 
   /**
-   * Returns the last updated timestamp of the specified field for the specified
-   * key.
+   * Returns the last updated timestamp of the specified field for the specified key.
    *
    * @param key   The key (hash) to look for.
    * @param field The field to look for.
-   * @return Returns the last updated timestamp or null if the field does not
-   * have a timestamp entry associated with.
+   * @return Returns the last updated timestamp or null if the field does not have a timestamp entry
+   * associated with.
    */
   public Instant getLastUpdate(String key, String field) {
     try (Jedis jedis = getJedisPool().getResource()) {
@@ -159,8 +157,8 @@ public class EsthesisRedis {
    *
    * @param key   The key (hash) to look for.
    * @param field The field to look for.
-   * @return Returns the value type or null if the field does not have a value
-   * type entry associated with.
+   * @return Returns the value type or null if the field does not have a value type entry associated
+   * with.
    */
   public String getValueType(String key, String field) {
     try (Jedis jedis = getJedisPool().getResource()) {

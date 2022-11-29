@@ -13,7 +13,7 @@ quarkus:
   devservices:
     enabled: false
   log:
-    level: warn
+    level: WARN
     category:
       esthesis:
         level: INFO

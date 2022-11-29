@@ -30,6 +30,11 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
   }
 
   @Override
+  public long recache(ObjectId provisioningPackageId) {
+    return provisioningService.recache(provisioningPackageId);
+  }
+
+  @Override
   public ProvisioningPackage save(ProvisioningPackageForm pf) {
     return provisioningService.save(pf);
   }

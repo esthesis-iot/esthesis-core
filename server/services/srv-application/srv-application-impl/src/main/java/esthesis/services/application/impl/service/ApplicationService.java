@@ -62,13 +62,14 @@ public class ApplicationService extends BaseService<Application> {
   }
 
   @Override
-  public void deleteById(ObjectId id) {
+  public boolean deleteById(ObjectId id) {
     log.debug("Deleting application with id '{}'.", id);
     Application application = findById(id);
     if (application != null) {
-      super.deleteById(id);
+      return super.deleteById(id);
     } else {
       log.warn("Application with id '{}' not found to be deleted.", id);
+      return false;
     }
   }
 

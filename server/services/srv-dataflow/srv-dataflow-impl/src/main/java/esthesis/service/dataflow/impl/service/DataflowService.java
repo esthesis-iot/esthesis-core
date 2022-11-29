@@ -151,9 +151,8 @@ public class DataflowService extends BaseService<Dataflow> {
   }
 
   /**
-   * Converts the configuration options of a dataflow to environmental variables
-   * for Kubernetes. Key names are uppercased, and dots and dashes are replaced
-   * with underscores.
+   * Converts the configuration options of a dataflow to environmental variables for Kubernetes. Key
+   * names are uppercased, and dots and dashes are replaced with underscores.
    *
    * @param map       The configuration options to convert.
    * @param keyPrefix The prefix to add to the keys.

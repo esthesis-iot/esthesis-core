@@ -4,7 +4,6 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UtilityService} from "../../shared/service/utility.service";
 import {Router} from "@angular/router";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import {ProvisioningDto} from "../../dto/provisioning-dto";
 import {ProvisioningService} from "../../provisioning/provisioning.service";
 import {CommandService} from "../command.service";
 import {TagDto} from "../../dto/tag-dto";
@@ -12,6 +11,7 @@ import {TagService} from "../../tags/tag.service";
 import {DeviceDto} from "../../dto/device-dto";
 import {DevicesService} from "../../devices/devices.service";
 import {AppConstants} from "../../app.constants";
+import {ProvisioningDto} from "../../provisioning/dto/provisioning-dto";
 
 @Component({
   selector: "app-command-create",

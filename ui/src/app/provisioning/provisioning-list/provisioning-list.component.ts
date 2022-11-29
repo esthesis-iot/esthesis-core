@@ -3,21 +3,21 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {MatTableDataSource} from "@angular/material/table";
 import {QFormsService} from "@qlack/forms";
-import {ProvisioningService} from "./provisioning.service";
-import {ProvisioningDto} from "../dto/provisioning-dto";
-import {TagService} from "../tags/tag.service";
-import {TagDto} from "../dto/tag-dto";
+import {ProvisioningService} from "../provisioning.service";
+import {TagService} from "../../tags/tag.service";
+import {TagDto} from "../../dto/tag-dto";
 import * as _ from "lodash";
-import {BaseComponent} from "../shared/component/base-component";
-import {AppConstants} from "../app.constants";
+import {BaseComponent} from "../../shared/component/base-component";
+import {AppConstants} from "../../app.constants";
+import {ProvisioningDto} from "../dto/provisioning-dto";
 
 @Component({
-  selector: "app-provisioning",
-  templateUrl: "./provisioning.component.html",
-  styleUrls: ["./provisioning.component.scss"]
+  selector: "app-provisioning-list",
+  templateUrl: "./provisioning-list.component.html",
+  styleUrls: ["./provisioning-list.component.scss"]
 })
-export class ProvisioningComponent extends BaseComponent implements OnInit, AfterViewInit {
-  columns = ["name", "version", "prerequisiteVersion", "state", "size", "tags", "createdOn"];
+export class ProvisioningListComponent extends BaseComponent implements OnInit, AfterViewInit {
+  columns = ["name", "version", "prerequisiteVersion", "state", "size", "tags", "createdOn", "type", "cacheStatus"];
   datasource = new MatTableDataSource<ProvisioningDto>();
   availableTags: TagDto[] | undefined;
   // Expose application constants.

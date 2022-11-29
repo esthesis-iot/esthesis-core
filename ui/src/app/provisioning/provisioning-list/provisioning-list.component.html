@@ -25,11 +25,6 @@
             <app-boolean-checkbox [value]="element.available"></app-boolean-checkbox>
           </td>
         </ng-container>
-        <ng-container matColumnDef="createdOn">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Created</th>
-          <td mat-cell *matCellDef="let element">{{element.createdOn | date:
-            constants.DATE_FORMAT}}</td>
-        </ng-container>
         <ng-container matColumnDef="size">
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Size</th>
           <td mat-cell *matCellDef="let element">{{element["size"] | filesize}}</td>
@@ -38,6 +33,23 @@
           <th mat-header-cell *matHeaderCellDef scope="col"> Tags</th>
           <td mat-cell *matCellDef="let element">
             {{resolveTag(element.tags)}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="createdOn">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Created</th>
+          <td mat-cell *matCellDef="let element">{{element.createdOn | date:
+            constants.DATE_FORMAT}}</td>
+        </ng-container>
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Type</th>
+          <td mat-cell *matCellDef="let element">{{element.type}}</td>
+        </ng-container>
+        <ng-container matColumnDef="cacheStatus">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Cache</th>
+          <td mat-cell *matCellDef="let element">
+            <mat-progress-bar *ngIf="element.cacheStatus < 100" mode="determinate"
+                              [value]="element.cacheStatus"></mat-progress-bar>
+            <span *ngIf="element.cacheStatus === 100">Cached</span>
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="columns"></tr>

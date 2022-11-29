@@ -12,4 +12,5 @@ export interface ProvisioningDto {
   hash: string;
   type: string;
   typeSpecificConfiguration: string;
+  cacheStatus: number;
 }

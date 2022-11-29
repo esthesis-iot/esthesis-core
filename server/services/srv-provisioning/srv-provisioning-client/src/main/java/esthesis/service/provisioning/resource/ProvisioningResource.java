@@ -28,7 +28,17 @@ public interface ProvisioningResource {
 
   @GET
   @Path("/v1/provisioning/{id}")
-  ProvisioningPackage findById(@PathParam("id") ObjectId id);
+  ProvisioningPackage findById(@PathParam("id") ObjectId provisioningPackageId);
+
+  /**
+   * Recaches a previously uploaded provisioning package.
+   *
+   * @param provisioningPackageId The id of the provisioning package to recache.
+   * @return Returns the expected number of bytes to be cached, if known.
+   */
+  @GET
+  @Path("/v1/provisioning/{id}/recache")
+  long recache(@PathParam("id") ObjectId provisioningPackageId);
 
   @POST
   @Path("/v1/provisioning")

@@ -47,8 +47,7 @@ export class CrudService<T> {
       formData.append(formField, form.value[formField]);
     }
     const req = new HttpRequest(
-      "POST",
-      url ? url : `${environment.apiPrefix}/${this.endpoint}`,
+      "POST", url ? url : `${environment.apiPrefix}/${this.endpoint}`,
       formData, {
         reportProgress: reportProgress
       }
@@ -57,7 +56,7 @@ export class CrudService<T> {
     return this.http.request(req);
 
     // @ts-ignore
-    return null;
+    // return null;
   }
 
   saveAs(onNext: HttpResponse<Blob>) {
