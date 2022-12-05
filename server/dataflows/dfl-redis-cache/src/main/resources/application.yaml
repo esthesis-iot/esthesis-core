@@ -17,4 +17,3 @@ quarkus:
     enabled: false
   redis:
     hosts: ${ESTHESIS_DFL_REDIS_URL:}
-    password: ${ESTHESIS_DFL_REDIS_PASSWORD:}

@@ -27,12 +27,10 @@ public class PingService {
 
   public void searchForExistingDevice(Exchange exchange) {
     // Get the message from the exchange.
-    EsthesisDataMessage esthesisMessage = exchange.getIn()
-        .getBody(EsthesisDataMessage.class);
+    EsthesisDataMessage esthesisMessage = exchange.getIn().getBody(EsthesisDataMessage.class);
 
     // Create search criteria for the MongoDB query.
-    Bson equalsClause = Filters.eq("hardwareId",
-        esthesisMessage.getHardwareId());
+    Bson equalsClause = Filters.eq("hardwareId", esthesisMessage.getHardwareId());
 
     // Set search criteria as a header in the exchange.
     exchange.getIn().setHeader(MongoDbConstants.CRITERIA, equalsClause);
@@ -42,27 +40,21 @@ public class PingService {
     log.debug("Updating ping timestamp for hardware ID '{}'.",
         exchange.getIn().getHeader(KafkaConstants.KEY));
     // Get the message from the exchange.
-    EsthesisDataMessage esthesisMessage = exchange.getIn()
-        .getBody(EsthesisDataMessage.class);
+    EsthesisDataMessage esthesisMessage = exchange.getIn().getBody(EsthesisDataMessage.class);
 
     // Update.
-    esthesisMessage.getPayload().getValues().stream().filter(
-            value -> value.getName().equals(PING_MEASUREMENT)).findFirst()
-        .ifPresentOrElse(
-            value -> {
-              BsonDocument updateObj = new BsonDocument().append("$set",
-                  new BsonDocument(PING_ATTRIBUTE_NAME,
-                      new BsonDateTime(
-                          Instant.parse(value.getValue()).toEpochMilli())));
-              exchange.getIn().setBody(updateObj);
-              log.debug("Ping timestamp updated to '{}'.", value.getValue());
-            },
-            () -> {
-              throw new QMismatchException(
-                  "No ping timestamp found in payload '{}'.",
-                  StringUtils.abbreviate(
-                      esthesisMessage.getPayload().toString(),
-                      DflUtils.MESSAGE_LOG_ABBREVIATION_LENGTH));
-            });
+    esthesisMessage.getPayload().getValues().stream()
+        .filter(value -> value.getName().equals(PING_MEASUREMENT)).findFirst()
+        .ifPresentOrElse(value -> {
+          BsonDocument updateObj = new BsonDocument().append("$set",
+              new BsonDocument(PING_ATTRIBUTE_NAME,
+                  new BsonDateTime(Instant.parse(value.getValue()).toEpochMilli())));
+          exchange.getIn().setBody(updateObj);
+          log.debug("Ping timestamp updated to '{}'.", value.getValue());
+        }, () -> {
+          throw new QMismatchException("No ping timestamp found in payload '{}'.",
+              StringUtils.abbreviate(esthesisMessage.getPayload().toString(),
+                  DflUtils.MESSAGE_LOG_ABBREVIATION_LENGTH));
+        });
   }
 }

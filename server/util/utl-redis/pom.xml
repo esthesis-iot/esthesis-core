@@ -16,10 +16,23 @@
   </properties>
 
   <dependencies>
+    <!-- ESTHESIS -->
+    <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>common</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+    </dependency>
 
+    <!-- QUARKUS -->
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-redis-client</artifactId>
+    </dependency>
+
+    <!-- OTHER -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
   </dependencies>
 

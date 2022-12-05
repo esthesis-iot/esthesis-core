@@ -24,4 +24,9 @@ export class ProvisioningService extends CrudService<ProvisioningDto> {
   recache(id: string) {
     return this.http.get(`${environment.apiPrefix}/v1/provisioning/${id}/recache`);
   }
+
+  recacheAll() {
+    return this.http.get(`${environment.apiPrefix}/v1/provisioning/recache`);
+  }
+
 }

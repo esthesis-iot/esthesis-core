@@ -14,7 +14,7 @@ public class AppConstants {
   // are next.
   public static final String DFL_MQTT_CLIENT_NAME = "mqtt-client";
 
-  // Redis key suffixes.
+  // Redis key suffixes for measurements.
   public static final String REDIS_KEY_SUFFIX_VALUE_TYPE = "valueType";
   public static final String REDIS_KEY_SUFFIX_TIMESTAMP = "timestamp";
 
@@ -48,12 +48,19 @@ public class AppConstants {
 
   public static class Provisioning {
 
+    public static class ConfigOptions {
+
+      public enum Ftp {
+        FTP_HOST, FTP_PORT, FTP_USERNAME, FTP_PASSWORD, FTP_PATH, FTP_PASSIVE
+      }
+    }
+
     public enum Type {
       ESTHESIS, WEB, FTP, S3, MINIO
     }
 
-    public enum OptionsFtp {
-      FTP_HOST, FTP_PORT, FTP_USERNAME, FTP_PASSWORD, FTP_PATH, FTP_PASSIVE
+    public enum CacheStatus {
+      NOT_STARTED, IN_PROGRESS, COMPLETED, FAILED
     }
   }
 

@@ -10,6 +10,11 @@ import * as _ from "lodash";
 import {BaseComponent} from "../../shared/component/base-component";
 import {AppConstants} from "../../app.constants";
 import {ProvisioningDto} from "../dto/provisioning-dto";
+import {UtilityService} from "../../shared/service/utility.service";
+import {
+  OkCancelModalComponent
+} from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: "app-provisioning-list",
@@ -27,7 +32,8 @@ export class ProvisioningListComponent extends BaseComponent implements OnInit, 
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private provisioningService: ProvisioningService, private qForms: QFormsService,
-    private tagService: TagService) {
+    private tagService: TagService, private utilityService: UtilityService,
+    private dialog: MatDialog) {
     super();
   }
 
@@ -73,5 +79,31 @@ export class ProvisioningListComponent extends BaseComponent implements OnInit, 
     ).join(", ");
   }
 
+  refreshData() {
+    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+      this.sort.direction);
+  }
+
+  cacheAll() {
+    this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: "Recache all packages",
+        question: "Are you sure you want to download all packages and update them in Redis?",
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.provisioningService.recacheAll().subscribe({
+          next: (next) => {
+            this.utilityService.popupSuccess("Started caching provisioning packages..");
+          }, error: (error) => {
+            this.utilityService.popupErrorWithTraceId("Could not start caching provisioning packages.", error);
+          }
+        });
+      }
+    });
+  }
 }
 

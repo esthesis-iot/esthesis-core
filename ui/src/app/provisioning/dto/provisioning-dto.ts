@@ -8,9 +8,10 @@ export interface ProvisioningDto {
   size: number;
   filename: string;
   contentType: string;
+  log: string;
   attributes: string;
-  hash: string;
+  sha256: string;
   type: string;
   typeSpecificConfiguration: string;
-  cacheStatus: number;
+  cacheStatus: string;
 }

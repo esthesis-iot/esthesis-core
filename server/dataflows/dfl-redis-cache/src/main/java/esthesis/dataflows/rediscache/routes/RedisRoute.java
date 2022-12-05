@@ -46,6 +46,7 @@ public class RedisRoute extends RouteBuilder {
     // @formatter:off
     if (config.kafkaTelemetryTopic().isPresent()) {
       String kafkaTopic = config.kafkaTelemetryTopic().get();
+      //TODO redact password
       log.info("Setting up route from Kafka topic '{}' to Redis '{}'.",
           kafkaTopic, config.redisUrl());
      from("kafka:" + kafkaTopic)

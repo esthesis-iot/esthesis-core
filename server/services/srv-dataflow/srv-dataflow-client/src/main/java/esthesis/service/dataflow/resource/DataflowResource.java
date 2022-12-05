@@ -52,5 +52,4 @@ public interface DataflowResource {
   @Path("/v1/dataflow/namespaces")
   List<String> getNamespaces();
 
-  List<Dataflow> getRedisSetup();
 }

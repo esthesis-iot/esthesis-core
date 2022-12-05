@@ -3,9 +3,8 @@ package esthesis.common.exception;
 import java.io.Serializable;
 
 /**
- * The QException class can be extended by the custom exceptions of the Qlack
- * modules in order to throw error messages on the runtime and rollback the
- * transactions.
+ * The QException class can be extended by the custom exceptions of the Qlack modules in order to
+ * throw error messages on the runtime and rollback the transactions.
  *
  * @author European Dynamics SA
  */
@@ -23,7 +22,7 @@ public abstract class QException extends RuntimeException implements
 
   protected QException(String message, Object... args) {
     super(
-        org.slf4j.helpers.MessageFormatter.format(message, args).getMessage());
+        org.slf4j.helpers.MessageFormatter.arrayFormat(message, args).getMessage());
   }
 
   protected QException(String message, Throwable cause) {

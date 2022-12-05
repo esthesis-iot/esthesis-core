@@ -4,30 +4,20 @@ quarkus:
     cors: false
   log:
     category:
-      #      "org.jboss.resteasy.reactive.client.logging":
-      #        level: DEBUG
       esthesis:
         level: DEBUG
-    #      "io.quarkus.oidc.token.propagation.reactive":
-    #        level: DEBUG
     handler:
       gelf:
         enabled: true
         host: esthesis-dev-loki-gelf-udp
         port: 12201
         include-full-mdc: true
-
   mongodb:
     connection-string: mongodb://esthesis-dev-mongodb:27017
-
   rest-client:
-    #    logging:
-    #      scope: request-response
-    #      body-limit: 65536
     DataflowSystemResource:
       url: http://localhost:59060
       scope: Singleton
-
   oidc:
   oidc-client:
     auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
@@ -38,13 +28,14 @@ quarkus:
       password:
         username: esthesis-system
         password: esthesis-system
-
   opentelemetry:
     enabled: true
     tracer:
       exporter:
         otlp:
           endpoint: http://esthesis-dev-jaeger-collector:4317
+  redis:
+    hosts: redis://:esthesis@esthesis-dev-redis:6379/0
 
 mp:
   jwt:

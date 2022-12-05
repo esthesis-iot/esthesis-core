@@ -40,9 +40,6 @@ public class DataflowService extends BaseService<Dataflow> {
   private static final String KUBERNETES_CPU_REQUEST = "cpu-request";
   private static final String KUBERNETES_CPU_LIMIT = "cpu-limit";
 
-  // As defined in `redis.ts` under `dataflow-definitions`.
-  public static final String REDIS_DATAFLOW_TYPE = "redis-cache";
-
   @Inject
   @RestClient
   SettingsResource settingsResource;
@@ -214,8 +211,5 @@ public class DataflowService extends BaseService<Dataflow> {
   public List<String> getNamespaces() {
     return kubernetesResource.getNamespaces();
   }
-
-  public List<Dataflow> getRedisSetup() {
-    return dataflowRepository.findByType(REDIS_DATAFLOW_TYPE);
-  }
+  
 }

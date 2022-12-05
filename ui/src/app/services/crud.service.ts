@@ -29,10 +29,6 @@ export class CrudService<T> {
     return this.http.get<T>(`${environment.apiPrefix}/${this.endpoint}/${id}`);
   }
 
-  // getAny(): Observable<T> {
-  //   return this.http.get<T>(`${environment.apiPrefix}/${this.endpoint}`);
-  // }
-
   delete(id: any): Observable<any> {
     return this.http.delete(`${environment.apiPrefix}/${this.endpoint}/${id}`);
   }
@@ -44,19 +40,17 @@ export class CrudService<T> {
   upload(form: FormGroup, url?: string, reportProgress?: boolean): Observable<HttpEvent<{}>> {
     const formData = new FormData();
     for (const formField in form.value) {
-      formData.append(formField, form.value[formField]);
+      if (form.value[formField]) {
+        formData.append(formField, form.value[formField]);
+      }
     }
-    const req = new HttpRequest(
-      "POST", url ? url : `${environment.apiPrefix}/${this.endpoint}`,
+    const req = new HttpRequest("POST", url ? url : `${environment.apiPrefix}/${this.endpoint}`,
       formData, {
         reportProgress: reportProgress
       }
     );
 
     return this.http.request(req);
-
-    // @ts-ignore
-    // return null;
   }
 
   saveAs(onNext: HttpResponse<Blob>) {

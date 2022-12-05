@@ -4,8 +4,8 @@ quarkus:
     cors: false
   log:
     category:
-      "org.apache.camel":
-        level: DEBUG
+      #      "org.apache.camel":
+      #        level: DEBUG
       esthesis:
         level: DEBUG
     handler:
@@ -36,7 +36,7 @@ quarkus:
         username: esthesis-system
         password: esthesis-system
   redis:
-    hosts: esthesis-dev-redis:6379
+    hosts: redis://:esthesis@esthesis-dev-redis:6379/0
 
 mp:
   jwt:

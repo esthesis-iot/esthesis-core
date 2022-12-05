@@ -47,21 +47,28 @@ export class SettingsDevicePageComponent implements OnInit {
       this.constants.DEVICE.SETTING.DEVICE_GEO_LON, new FormControl(""));
 
     // Fetch device page fields.
-    this.settingsService.getDevicePageFields().subscribe(fields => {
-      // this.allFields = onNext;
-      fields.forEach(field => {
-        // @ts-ignore
-        this.profileDataForm.controls.fields.push(this.createFieldElement(field));
-      });
+    this.settingsService.getDevicePageFields().subscribe({
+      next: (fields: DevicePageFieldDto[]) => {
+        fields.forEach(field => {
+          // @ts-ignore
+          this.profileDataForm.controls.fields.push(this.createFieldElement(field));
+        });
+      }, error: err => {
+        this.utilityService.popupErrorWithTraceId("Error fetching device page fields.", err);
+      }
     });
 
     // Fetch Lat/Lon settings.
     this.settingsService.findByNames(
       this.constants.DEVICE.SETTING.DEVICE_GEO_LAT + ","
-      + this.constants.DEVICE.SETTING.DEVICE_GEO_LON).subscribe(onNext => {
-      onNext.forEach(setting => {
-        this.settingsForm.controls[setting.name].patchValue(setting.value);
-      });
+      + this.constants.DEVICE.SETTING.DEVICE_GEO_LON).subscribe({
+      next: (settings: SettingDto[]) => {
+        settings.forEach(setting => {
+          this.settingsForm.controls[setting.name].patchValue(setting.value);
+        });
+      }, error: err => {
+        this.utilityService.popupErrorWithTraceId("Error fetching settings for geolocation fields.", err);
+      }
     });
 
     // Fetch possible device measurements to be used in Lat/Lon settings.
@@ -70,9 +77,9 @@ export class SettingsDevicePageComponent implements OnInit {
         this.allUniqueMeasurements = next;
       }, error: err => {
         this.utilityService.popupErrorWithTraceId("Error fetching device measurements.", err);
-      }, complete: () => {
-        this.fetchingGeoAttributes = false;
       }
+    }).add(() => {
+      this.fetchingGeoAttributes = false;
     });
   }
 

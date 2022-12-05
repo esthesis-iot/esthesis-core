@@ -181,7 +181,6 @@
     <module>dataflows</module>
     <module>util</module>
     <module>avro</module>
-    <module>util/utl-redis</module>
   </modules>
 
 </project>

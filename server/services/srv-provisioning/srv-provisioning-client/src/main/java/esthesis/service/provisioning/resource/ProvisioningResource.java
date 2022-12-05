@@ -7,11 +7,14 @@ import esthesis.service.provisioning.form.ProvisioningPackageForm;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -27,6 +30,10 @@ public interface ProvisioningResource {
   Page<ProvisioningPackage> find(@BeanParam Pageable provisioningPackage);
 
   @GET
+  @Path("/v1/provisioning/recache")
+  void recacheAll();
+
+  @GET
   @Path("/v1/provisioning/{id}")
   ProvisioningPackage findById(@PathParam("id") ObjectId provisioningPackageId);
 
@@ -38,11 +45,19 @@ public interface ProvisioningResource {
    */
   @GET
   @Path("/v1/provisioning/{id}/recache")
-  long recache(@PathParam("id") ObjectId provisioningPackageId);
+  void recache(@PathParam("id") ObjectId provisioningPackageId);
 
   @POST
   @Path("/v1/provisioning")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   ProvisioningPackage save(@MultipartForm ProvisioningPackageForm provisioningPackageForm);
 
+  @DELETE
+  @Path("/v1/provisioning/{id}")
+  void delete(@PathParam("id") ObjectId provisioningPackageId);
+
+  @GET
+  @Path("/v1/provisioning/{id}/download")
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  Response download(@PathParam("id") ObjectId provisioning);
 }

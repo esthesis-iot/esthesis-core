@@ -19,7 +19,7 @@
   </dependencies>
 
   <modules>
-    <module>utl-redis-client</module>
+    <module>utl-redis</module>
   </modules>
 
 </project>

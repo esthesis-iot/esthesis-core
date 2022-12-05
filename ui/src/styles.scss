@@ -2,6 +2,7 @@
 @import "styles-material.scss";
 @import "basscss-padding/css/padding.css";
 @import "basscss-margin/css/margin.css";
+@import "basscss-typography/css/typography.css";
 
 html, body {
   margin: 0;
@@ -93,4 +94,21 @@ html, body {
   border-left: 4px solid #adc1cc;
   padding-left: 1rem;
   margin-left: 5px;
+}
+
+.status-completed {
+  color: #155724;
+}
+
+.status-failed {
+  color: #721c24;
+}
+
+.status-notstarted {
+  color: #856404;
+  font-weight: bold;
+}
+
+.status-inprogress {
+  color: #0c5460;
 }

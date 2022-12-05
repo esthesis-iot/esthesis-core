@@ -1,6 +1,48 @@
 <mat-card>
   <mat-card-title>Provisioning package</mat-card-title>
   <mat-card-content>
+    <div class="infobox" fxLayout="row" fxLayoutAlign="space-between"
+         *ngIf="id != appConstants.NEW_RECORD_ID">
+      <div fxLayout="column" fxLayoutGap="0.5rem">
+        <div fxLayout="row">
+          <div class="bold">Cache status:</div>
+          <div class="ml1" [ngSwitch]="provisioningPackage?.cacheStatus">
+            <div *ngSwitchCase="appConstants.PROVISIONING.CACHE_STATUS.COMPLETED"
+                 class="status-completed">Completed
+            </div>
+            <div *ngSwitchCase="appConstants.PROVISIONING.CACHE_STATUS.FAILED"
+                 class="status-failed">Failed
+            </div>
+            <div *ngSwitchCase="appConstants.PROVISIONING.CACHE_STATUS.IN_PROGRESS"
+                 class="status-inprogress">In progress
+            </div>
+            <div *ngSwitchCase="appConstants.PROVISIONING.CACHE_STATUS.NOT_STARTED"
+                 class="status-notstarted">Not started
+            </div>
+          </div>
+        </div>
+        <div fxLayout="row">
+          <div class="bold">Size:</div>
+          <div class="ml1">{{provisioningPackage!.size | filesize}}</div>
+        </div>
+        <div fxLayout="row">
+          <div class="bold">Hash (SHA256):</div>
+          <div class="ml1">{{provisioningPackage?.sha256}}</div>
+        </div>
+        <div class="status-failed" fxLayout="row" *ngIf="provisioningPackage?.log">
+          <div class="monospace">{{provisioningPackage?.log}}</div>
+        </div>
+      </div>
+      <div>
+        <button mat-button
+                [disabled]="!(this.id !== appConstants.NEW_RECORD_ID
+                       && this.provisioningPackage?.available
+                       && !this.form.dirty)"
+                (click)="recache()">
+          RECACHE
+        </button>
+      </div>
+    </div>
     <form novalidate [formGroup]="form">
       <div fxLayout="column">
         <!-- Package type -->
@@ -56,6 +98,12 @@
           <input matInput placeholder="Attributes" formControlName="attributes">
           <mat-hint>Attributes will be provided as-is as input to device's firmware upgrade script
           </mat-hint>
+        </mat-form-field>
+
+        <div class="inline-subheader">Binary validation</div>
+        <mat-form-field>
+          <input matInput placeholder="Binary hash" formControlName="sha256">
+          <mat-hint>An optional SHA256 hash of the binary file</mat-hint>
         </mat-form-field>
 
         <!-- Esthesis package type -->
@@ -121,8 +169,8 @@
           </mat-form-field>
           <mat-form-field fxFlexFill>
             <mat-select placeholder="Passive mode" formControlName="FTP_PASSIVE">
-              <mat-option [value]="true">True</mat-option>
-              <mat-option [value]="false">False</mat-option>
+              <mat-option value="true">True</mat-option>
+              <mat-option value="false">False</mat-option>
             </mat-select>
             <mat-hint>Indicates whether this package can be made available to devices or not
             </mat-hint>
@@ -161,7 +209,10 @@
 
   <mat-card-actions>
     <button mat-button routerLink="/provisioning">CANCEL</button>
-    <button mat-button *ngIf="this.id !== appConstants.NEW_RECORD_ID" (click)="recache()">
+    <button mat-button
+            [disabled]="!(this.id !== appConstants.NEW_RECORD_ID
+                       && this.provisioningPackage?.available
+                       && !this.form.dirty)" (click)="recache()">
       RECACHE
     </button>
     <button mat-button *ngIf="this.id !== appConstants.NEW_RECORD_ID" (click)="download()">

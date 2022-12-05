@@ -1,6 +1,12 @@
 package esthesis.service.provisioning.impl.service;
 
-import esthesis.common.AppConstants.Provisioning.OptionsFtp;
+import static esthesis.common.AppConstants.Provisioning.ConfigOptions.Ftp.FTP_HOST;
+import static esthesis.common.AppConstants.Provisioning.ConfigOptions.Ftp.FTP_PASSIVE;
+import static esthesis.common.AppConstants.Provisioning.ConfigOptions.Ftp.FTP_PASSWORD;
+import static esthesis.common.AppConstants.Provisioning.ConfigOptions.Ftp.FTP_PATH;
+import static esthesis.common.AppConstants.Provisioning.ConfigOptions.Ftp.FTP_PORT;
+import static esthesis.common.AppConstants.Provisioning.ConfigOptions.Ftp.FTP_USERNAME;
+
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.service.provisioning.dto.ProvisioningPackage;
@@ -27,36 +33,29 @@ public class ConfigService {
     }
 
     // Set Camel FTP configuration.
-    if (pp.fc(OptionsFtp.FTP_PORT).isPresent()) {
-      String host =
-          pp.fc(OptionsFtp.FTP_HOST).orElseThrow() + ":" + pp.fc(OptionsFtp.FTP_PORT).get();
+    if (pp.fc(FTP_PORT).isPresent()) {
+      String host = pp.fc(FTP_HOST).orElseThrow() + ":" + pp.fc(FTP_PORT).get();
       log.debug("Setting FTP host to '{}'.", host);
       exchange.getIn().setHeader("host", host);
     } else {
-      String host = pp.fc(OptionsFtp.FTP_HOST).orElseThrow();
+      String host = pp.fc(FTP_HOST).orElseThrow();
       exchange.getIn().setHeader("host", host);
     }
 
-    if (pp.fc(OptionsFtp.FTP_USERNAME).isPresent() && pp.fc(OptionsFtp.FTP_PASSWORD).isPresent()) {
-      String username = pp.fc(OptionsFtp.FTP_USERNAME).orElseThrow();
+    if (pp.fc(FTP_USERNAME).isPresent() && pp.fc(FTP_PASSWORD).isPresent()) {
+      String username = pp.fc(FTP_USERNAME).orElseThrow();
       exchange.getIn().setHeader("username", username);
       log.debug("Setting FTP username to '{}'.", username);
 
-      String password = pp.fc(OptionsFtp.FTP_PASSWORD).orElseThrow();
+      String password = pp.fc(FTP_PASSWORD).orElseThrow();
       exchange.getIn().setHeader("password", password);
       log.debug("Setting FTP password to '{}'.", password);
     }
 
-    if (pp.fc(OptionsFtp.FTP_PASSIVE).isPresent()) {
-      String passive = pp.fc(OptionsFtp.FTP_PASSIVE).get();
-      exchange.getIn().setHeader("passive", passive);
-      log.debug("Setting FTP passive mode to '{}'.", passive);
-    } else {
-      exchange.getIn().setHeader("passive", "false");
-    }
+    exchange.getIn().setHeader("passive", pp.fc(FTP_PASSIVE).orElse("false"));
 
-    if (pp.fc(OptionsFtp.FTP_PATH).isPresent()) {
-      Path path = Path.of(pp.fc(OptionsFtp.FTP_PATH).get());
+    if (pp.fc(FTP_PATH).isPresent()) {
+      Path path = Path.of(pp.fc(FTP_PATH).get());
       String directory = path.getParent().toString();
       if (directory.startsWith("/")) {
         directory = directory.substring(1);

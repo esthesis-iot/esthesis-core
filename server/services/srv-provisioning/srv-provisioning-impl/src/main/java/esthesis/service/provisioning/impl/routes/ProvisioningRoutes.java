@@ -1,7 +1,8 @@
 package esthesis.service.provisioning.impl.routes;
 
+import esthesis.common.AppConstants.Provisioning.Type;
 import esthesis.service.provisioning.impl.service.ConfigService;
-import esthesis.service.provisioning.impl.service.ProvisioningService;
+import esthesis.service.provisioning.impl.service.ProvisioningRoutingService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 public class ProvisioningRoutes extends RouteBuilder {
 
   @Inject
-  ProvisioningService provisioningService;
+  ProvisioningRoutingService provisioningRoutingService;
 
   @Inject
   ConfigService configService;
@@ -24,48 +25,68 @@ public class ProvisioningRoutes extends RouteBuilder {
   String database;
 
   public static final String PROPERTY_PROVISIONING_PACKAGE_ID = "X-ProvisioningPackageId";
+  public static final String PROPERTY_PROVISIONING_PACKAGE_SIZE = "X-ProvisioningPackageSize";
+  public static final String PROPERTY_PROVISIONING_PACKAGE_HASH = "X-ProvisioningPackageHash";
+  public static final String PROPERTY_PROVISIONING_PACKAGE_TYPE = "X-ProvisioningPackageType";
+  public static final String PROPERTY_EXCEPTION_MESSAGE = "X-ProvisioningPackageExceptionMessage";
 
   @Override
-  public void configure() throws Exception {
-    // @formatter:off
-    // Timer route.
-//    from("timer:provisioning?period=10000")
-//        .to("direct:cache");
+  public void configure() {
 
+    // A generic exception handler.
+    onException(Exception.class)
+        .setProperty(PROPERTY_EXCEPTION_MESSAGE, simple("${exception.message}"))
+        .to("direct:fail");
+
+    // @formatter:off
 
     // Caches a specific provisioning package.
     // The body of the incoming message to this route should contain the provisioning package id.
-    // Caching takes place irrespectively of the packages 'active' status.
+    // Caching takes place irrespectively of the package's 'active' status.
     from("direct:cacheOne")
-        .convertBodyTo(ObjectId.class)
-        .setProperty(PROPERTY_PROVISIONING_PACKAGE_ID, simple("${body}"))
-        .to("mongodb:camelMongoClient?"
-            + "database=" + database
-            + "&collection=ProvisioningPackage"
-            + "&operation=findById")
-        .to("direct:packageTypeRouting");
+      .convertBodyTo(ObjectId.class)
+      .to("mongodb:camelMongoClient?"
+          + "database=" + database
+          + "&collection=ProvisioningPackage"
+          + "&operation=findById")
+      .to("direct:packageTypeRouting");
 
-    // Find all provisioning packages requiring caching.
-    // Caching takes place only for packages with 'active' status and 'cacheStatus = 0'.
+    // Attempts to recache all active packages, irrespectively of cache status.
     from("direct:cacheAll")
-        .bean(provisioningService, "searchForPackagesToCache")
-        .to("mongodb:camelMongoClient?"
-            + "database=" + database
-            + "&collection=ProvisioningPackage"
-            + "&operation=findAll")
-        .log(LoggingLevel.DEBUG, log, "Found '${body.size()}' provisioning packages to cache.")
-        .split(body())
-        .bean(provisioningService, "saveProvisioningPackageId")
-        .to("direct:packageTypeRouting");
+      .bean(provisioningRoutingService, "searchAllActive")
+      .to("mongodb:camelMongoClient?"
+          + "database=" + database
+          + "&collection=ProvisioningPackage"
+          + "&operation=findAll")
+      .split(body())
+      .to("direct:packageTypeRouting");
 
     // Route provisioning packages to the appropriate cache route based on the package type.
     from("direct:packageTypeRouting")
         .log(LoggingLevel.DEBUG, log, "Caching provisioning package '${body}'.")
+        .bean(provisioningRoutingService, "extractProvisioningPackageInfo")
+        .log(LoggingLevel.DEBUG, log, "Setting cache status to 'In progress'.")
+        .bean(provisioningRoutingService, "setCacheStatusToInProgress")
+        .to("mongodb:camelMongoClient?"
+            + "database=" + database
+            + "&collection=ProvisioningPackage"
+            + "&operation=update")
+        .setBody(simple("${exchangeProperty." + PROPERTY_PROVISIONING_PACKAGE_ID + "}"))
+        .to("mongodb:camelMongoClient?"
+            + "database=" + database
+            + "&collection=ProvisioningPackage"
+            + "&operation=findById")
+        .log(LoggingLevel.DEBUG, log, "Deciding package type route.")
         .choice()
-          .when(simple("${body} contains 'type=FTP'"))
+          .when(exchangeProperty(PROPERTY_PROVISIONING_PACKAGE_TYPE).isEqualTo(Type.FTP))
+            .log(LoggingLevel.DEBUG, log, "FTP package type.")
             .to("direct:ftp")
-          .when(simple("${body} contains 'type=WEB'"))
-            .to("direct:web");
+          .when(exchangeProperty(PROPERTY_PROVISIONING_PACKAGE_TYPE).isEqualTo(Type.WEB))
+            .log(LoggingLevel.DEBUG, log, "WEB package type.")
+            .to("direct:web")
+          .otherwise()
+            .log(LoggingLevel.ERROR, log, "Could not determine package type for package ''${body}''.")
+            .to("direct:fail");
 
     // FTP route.
     from("direct:ftp")
@@ -75,14 +96,13 @@ public class ProvisioningRoutes extends RouteBuilder {
             .pollEnrich().simple(
                 "ftp://${header.host}/${header.directory}?binary=true&username=${header.username}"
                     + "&password=${header.password}&fileName=${header.filename}&disconnect=true"
-                    + "&passiveMode=${header.passive}")
+                    + "&passiveMode=${header.passive}&throwExceptionOnConnectFailed=true")
         .endChoice()
         .otherwise()
           .pollEnrich().simple("ftp://${header.host}/${header.directory}?binary=true"
-          + "&fileName=${header.filename}&disconnect=true&passiveMode=${header.passive}"
-          )
+            + "&fileName=${header.filename}&disconnect=true&passiveMode=${header.passive}"
+            + "&throwExceptionOnConnectFailed=true")
         .endChoice().end()
-//        .to("file:///Users/nassos/tmp/camel")
         .log(LoggingLevel.DEBUG, log, "Finished downloading provisioning package.")
         .to("direct:redis");
 
@@ -93,8 +113,32 @@ public class ProvisioningRoutes extends RouteBuilder {
     // Redis upload.
     from("direct:redis")
         .log(LoggingLevel.DEBUG, log, "Caching provisioning package to Redis.")
-        .bean(provisioningService, "cacheInRedis")
-        .log(LoggingLevel.DEBUG, log, "Finished caching provisioning package to Redis.");
+        .bean(provisioningRoutingService, "checkHash")
+        .bean(provisioningRoutingService, "cacheInRedis")
+        .log(LoggingLevel.DEBUG, log, "Finished caching provisioning package to Redis.")
+        .to("direct:success");
+
+    // Generic exception handler:
+    // - It updates the package as CacheStatus.FAILED.
+    // - Sets the package logging to the underlying exception.
+    from("direct:fail")
+        .bean(provisioningRoutingService, "setFailureConditions")
+        .to("mongodb:camelMongoClient?"
+            + "database=" + database
+            + "&collection=ProvisioningPackage"
+            + "&operation=update")
+        .log(LoggingLevel.DEBUG, log, "Caching finished with error.");
+
+    // The final route when a caching operation was successful:
+    // - It updates the package with CacheStatus.SUCCESS.
+    // - Clears any previous log for that package.
+    from("direct:success")
+        .bean(provisioningRoutingService, "setSuccessConditions")
+        .to("mongodb:camelMongoClient?"
+            + "database=" + database
+            + "&collection=ProvisioningPackage"
+            + "&operation=update")
+        .log(LoggingLevel.DEBUG, log, "Caching finished successfully.");
 
   // @formatter:on
   }

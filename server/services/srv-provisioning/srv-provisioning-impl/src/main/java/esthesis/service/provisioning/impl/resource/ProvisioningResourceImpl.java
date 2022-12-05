@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
 import org.bson.types.ObjectId;
 
 public class ProvisioningResourceImpl implements ProvisioningResource {
@@ -25,18 +26,33 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
   }
 
   @Override
+  public void recacheAll() {
+    provisioningService.cacheAll();
+  }
+
+  @Override
   public ProvisioningPackage findById(ObjectId id) {
     return provisioningService.findById(id);
   }
 
   @Override
-  public long recache(ObjectId provisioningPackageId) {
-    return provisioningService.recache(provisioningPackageId);
+  public void recache(ObjectId provisioningPackageId) {
+    provisioningService.recache(provisioningPackageId);
   }
 
   @Override
   public ProvisioningPackage save(ProvisioningPackageForm pf) {
     return provisioningService.save(pf);
+  }
+
+  @Override
+  public void delete(ObjectId provisioningPackageId) {
+    provisioningService.delete(provisioningPackageId);
+  }
+
+  @Override
+  public Response download(ObjectId provisioning) {
+    return null;
   }
 
 }

@@ -7,6 +7,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.time.Instant;
 
+/**
+ * A custom Jackson deserializer for MongoDB $date attributes to be parsed to {@link Instant}
+ * objects.
+ */
 public class MongoInstantDeserializer extends JsonDeserializer<Instant> {
 
   @Override

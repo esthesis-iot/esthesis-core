@@ -38,7 +38,6 @@ export class DeviceTerminalComponent extends BaseComponent implements AfterViewI
     this.command = "";
     this.deviceTerminalService.executeCommand(cmd).subscribe({
       next: (next) => {
-        console.log(next);
         if (next != null && next.length === 1) {
           const output = next[0].output.replace(/\n/g, "\n\r");
           this.terminal.write(output + "\n\r");

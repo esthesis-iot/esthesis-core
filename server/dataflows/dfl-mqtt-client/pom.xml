@@ -11,21 +11,19 @@
     <groupId>esthesis</groupId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
-  
+
   <dependencies>
+    <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>dfl-common</artifactId>
       <version>3.0.0-SNAPSHOT</version>
     </dependency>
+
+    <!-- CAMEL -->
     <dependency>
       <groupId>org.apache.camel.quarkus</groupId>
       <artifactId>camel-quarkus-paho</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-redis-client</artifactId>
-      <version>2.14.1.Final</version>
     </dependency>
   </dependencies>
 

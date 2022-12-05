@@ -1,7 +1,8 @@
 package esthesis.service.provisioning.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import esthesis.common.AppConstants.Provisioning.OptionsFtp;
+import esthesis.common.AppConstants;
+import esthesis.common.AppConstants.Provisioning.CacheStatus;
 import esthesis.common.AppConstants.Provisioning.Type;
 import esthesis.common.dto.BaseDTO;
 import esthesis.common.jackson.MongoInstantDeserializer;
@@ -15,12 +16,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.jboss.resteasy.reactive.RestForm;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @RegisterForReflection
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class ProvisioningPackage extends BaseDTO {
 
@@ -67,7 +70,8 @@ public class ProvisioningPackage extends BaseDTO {
   private String attributes;
 
   // A hash (SHA256) for the binary content of this package.
-  private String hash;
+  @RestForm
+  private String sha256;
 
   // The type of this package indicating where the binary payload resides.
   @RestForm
@@ -77,9 +81,8 @@ public class ProvisioningPackage extends BaseDTO {
   @RestForm
   private String typeSpecificConfiguration;
 
-  // A 0-100 indicator of how much of this package's content has been cached. Setting this to 0
-  // for an existing package, will force esthesis to re-cache the package's content.
-  private int cacheStatus;
+  // Indicates what's the current status of a provisioning package's cache.
+  private CacheStatus cacheStatus;
 
   // A log output of the caching result.
   private String log;
@@ -99,7 +102,7 @@ public class ProvisioningPackage extends BaseDTO {
         .map(s -> s.substring(s.indexOf("=") + 1));
   }
 
-  public Optional<String> fc(OptionsFtp key) {
+  public Optional<String> fc(AppConstants.Provisioning.ConfigOptions.Ftp key) {
     return fc(key.toString());
   }
 }

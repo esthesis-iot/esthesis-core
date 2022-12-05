@@ -13,16 +13,21 @@ import {
   OkCancelModalComponent
 } from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
 import * as _ from "lodash";
+import {ProvisioningDto} from "../dto/provisioning-dto";
 
 @Component({
   selector: "app-provisioning-edit",
   templateUrl: "./provisioning-edit.component.html",
-  styleUrls: []
+  styleUrls: ["./provisioning-edit.component.scss"]
 })
 export class ProvisioningEditComponent extends BaseComponent implements OnInit {
   form!: FormGroup;
   id!: string;
   availableTags: TagDto[] | undefined;
+  provisioningPackage?: ProvisioningDto;
+  // cacheStatus = "";
+  // size = 0;
+  // log = "";
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
     private qForms: QFormsService, private tagService: TagService,
@@ -46,6 +51,7 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
       attributes: [""],
       type: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}, [Validators.required]],
       available: [true, [Validators.required]],
+      sha256: [],
 
       // ESTHESIS type
       fileName: [""],
@@ -74,15 +80,19 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
     // Fill-in the form with data if editing an existing item.
     if (this.id && this.id !== this.appConstants.NEW_RECORD_ID) {
       this.provisioningService.findById(this.id).subscribe({
-        next: (next: any) => {
+        next: (next: ProvisioningDto) => {
+          // Set a reference to the loaded provisioning package.
+          this.provisioningPackage = next;
+
           // Patch common fields.
           this.form.patchValue(next);
 
           // Patch type-specific fields.
-          switch (next.type) {
-            case this.appConstants.PROVISIONING.TYPE.FTP:
-
-              break;
+          if (next.typeSpecificConfiguration) {
+            next.typeSpecificConfiguration.split(",").forEach((value: string) => {
+              const keyValuePair = value.split("=");
+              this.form.controls[keyValuePair[0]].setValue(keyValuePair[1]);
+            });
           }
         }, error: (error: any) => {
           this.utilityService.popupErrorWithTraceId("Could not fetch provisioning package.", error);
@@ -101,8 +111,8 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
   }
 
   save() {
-    // Create a custom form to submit to the backend as the front-end form can not match what the
-    // backend is expecting to receive.
+    // Create a custom form to submit to the backend combining type-specific configuration into a
+    // single field.
     // Add common fields.
     const patchedForm = new FormGroup({});
     if (this.form.controls.id.value) {
@@ -118,6 +128,7 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
     patchedForm.addControl("available", this.form.controls.available);
     patchedForm.addControl("file", this.form.controls.file);
     patchedForm.addControl("fileName", this.form.controls.fileName);
+    patchedForm.addControl("sha256", this.form.controls.sha256);
 
     // Add type-specific fields.
     let typeSpecificConfiguration = "";
@@ -180,7 +191,7 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
   recache() {
     this.provisioningService.recache(this.id).subscribe(onNext => {
       this.utilityService.popupSuccess("Provisioning package is being recached.");
-      // this.router.navigate(["provisioning"]);
+      this.router.navigate(["provisioning"]);
     });
   }
 }

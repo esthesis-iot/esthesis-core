@@ -20,22 +20,21 @@ export const DATAFLOW_DEFINITION_REDIS_CACHE = {
       props: {label: "Redis"},
       fieldGroup: [
         {
-          key: "url", type: "input", defaultValue: "redis://esthesis-redis-master:6379/0",
-          props: {label: "The url of the Redis store", required: true}
-        },
-        {
-          key: "password", type: "input",
-          props: {label: "The password to connect to Redis store", required: true, type: "password"}
+          key: "url", type: "input", defaultValue: "redis://:esthesis@esthesis-redis-master:6379/0",
+          props: {label: "The url of the Redis store", required: true, hintStart: "e.g. redis://username:password@server:port/database"}
         },
         {
           key: "max-size", type: "input", defaultValue: "1024",
-          props: {label: "The maximum value size (in bytes) eligible for caching", required: true}
+          props: {
+            label: "The maximum value size (in bytes) eligible for caching", required: true,
+            hintStart: "This value pertains to device measurements caching, provisioning packages will be cached regardless of size."
+          }
         },
         {
           key: "ttl", type: "input", defaultValue: "0",
           props: {
             label: "Time to live (in minutes), set to 0 to never automatically expire cached entries.",
-            required: true, hintStart: "Note, this TTL refers to all cached entries associated with a device."
+            required: true, hintStart: "This value pertains to device measurements caching, provisioning packages will be cached forever."
           }
         }
       ]

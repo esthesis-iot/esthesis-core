@@ -22,10 +22,11 @@ public class ProvisioningRepository implements PanacheMongoRepository<Provisioni
    * @param doc The document to convert.
    */
   public ProvisioningPackage parse(Document doc) {
-    String json = doc.toBsonDocument().toJson();
-
+    String json = doc.toJson();
     try {
-      return mapper.readValue(json, ProvisioningPackage.class);
+      ProvisioningPackage provisioningPackage = mapper.readValue(json, ProvisioningPackage.class);
+      provisioningPackage.setId(doc.getObjectId("_id"));
+      return provisioningPackage;
     } catch (JsonProcessingException e) {
       throw new QMismatchException("Could not convert ProvisioningPackage Document to "
           + "ProvisioningPackage class.", e);
