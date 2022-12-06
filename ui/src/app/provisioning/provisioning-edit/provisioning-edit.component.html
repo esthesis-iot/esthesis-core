@@ -37,9 +37,9 @@
         *ngIf="provisioningPackage?.cacheStatus == appConstants.PROVISIONING.CACHE_STATUS.FAILED
                || provisioningPackage?.cacheStatus == appConstants.PROVISIONING.CACHE_STATUS.NOT_STARTED">
         <button mat-button
-                [disabled]="!(this.id !== appConstants.NEW_RECORD_ID
-                       && this.provisioningPackage.available
-                       && !this.form.dirty)"
+                [disabled]="this.id == appConstants.NEW_RECORD_ID
+                       || !this.provisioningPackage.available
+                       || this.form.dirty"
                 (click)="recache()">
           RECACHE
         </button>
@@ -128,17 +128,17 @@
             && id === appConstants.NEW_RECORD_ID">
           <div class="inline-subheader">Web package type</div>
           <mat-form-field fxFlexFill>
-            <input matInput placeholder="URL" formControlName="webUrl">
+            <input matInput placeholder="URL" formControlName="WEB_URL">
             <mat-hint>An HTTP/HTTPS URL of the location of the package, e.g.
               http://package-server/fw100.zip
             </mat-hint>
           </mat-form-field>
           <mat-form-field fxFlexFill>
-            <input matInput placeholder="Username" formControlName="webUsername">
+            <input matInput placeholder="Username" formControlName="WEB_USERNAME">
             <mat-hint>Optional, basic authentication username</mat-hint>
           </mat-form-field>
           <mat-form-field fxFlexFill>
-            <input matInput placeholder="Password" formControlName="webPassword">
+            <input matInput placeholder="Password" formControlName="WEB_PASSWORD">
             <mat-hint>Optional, basic authentication password</mat-hint>
           </mat-form-field>
         </div>
@@ -212,12 +212,17 @@
   <mat-card-actions>
     <button mat-button routerLink="/provisioning">CANCEL</button>
     <button mat-button
-            [disabled]="!(this.id !== appConstants.NEW_RECORD_ID
-                       && this.provisioningPackage?.available
-                       && !this.form.dirty)" (click)="recache()">
+            [disabled]="this.id === appConstants.NEW_RECORD_ID
+                       || !this.provisioningPackage?.available
+                       || this.provisioningPackage?.cacheStatus === appConstants.PROVISIONING.CACHE_STATUS.IN_PROGRESS
+                       || this.form.dirty" (click)="recache()">
       RECACHE
     </button>
-    <button mat-button *ngIf="this.id !== appConstants.NEW_RECORD_ID" (click)="download()">
+    <button mat-button
+            *ngIf="this.id !== appConstants.NEW_RECORD_ID"
+            [disabled]="this.provisioningPackage?.cacheStatus === appConstants.PROVISIONING.CACHE_STATUS.IN_PROGRESS
+                       || this.form.dirty"
+            (click)="download()">
       DOWNLOAD
     </button>
     <button mat-button color="accent" (click)="delete()"

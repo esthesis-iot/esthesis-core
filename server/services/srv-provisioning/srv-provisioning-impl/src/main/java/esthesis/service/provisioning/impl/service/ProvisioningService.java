@@ -2,6 +2,7 @@ package esthesis.service.provisioning.impl.service;
 
 import esthesis.common.AppConstants.Provisioning.CacheStatus;
 import esthesis.common.AppConstants.Provisioning.ConfigOptions.Ftp;
+import esthesis.common.AppConstants.Provisioning.ConfigOptions.Web;
 import esthesis.common.AppConstants.Provisioning.Type;
 import esthesis.common.exception.QMismatchException;
 import esthesis.service.common.BaseService;
@@ -12,6 +13,8 @@ import esthesis.service.provisioning.impl.repository.ProvisioningBinaryRepositor
 import esthesis.util.redis.RedisUtils;
 import io.smallrye.mutiny.Uni;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -71,6 +74,13 @@ public class ProvisioningService extends BaseService<ProvisioningPackage> {
         }
         case FTP ->
             p.setFilename(Path.of(pf.fc(Ftp.FTP_PATH).orElseThrow()).getFileName().toString());
+        case WEB -> {
+          try {
+            p.setFilename(new URL(pf.fc(Web.WEB_URL).orElseThrow()).getFile().substring(1));
+          } catch (MalformedURLException e) {
+            throw new QMismatchException("Could not parse Web URL.", e);
+          }
+        }
         default ->
             throw new QMismatchException("Unsupported provisioning package type: " + p.getType());
       }

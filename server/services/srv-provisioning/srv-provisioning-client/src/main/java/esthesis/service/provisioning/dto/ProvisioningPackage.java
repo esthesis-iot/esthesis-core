@@ -105,4 +105,8 @@ public class ProvisioningPackage extends BaseDTO {
   public Optional<String> fc(AppConstants.Provisioning.ConfigOptions.Ftp key) {
     return fc(key.toString());
   }
+
+  public Optional<String> fc(AppConstants.Provisioning.ConfigOptions.Web key) {
+    return fc(key.toString());
+  }
 }

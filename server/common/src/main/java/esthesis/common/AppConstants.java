@@ -54,6 +54,10 @@ public class AppConstants {
       public enum Ftp {
         FTP_HOST, FTP_PORT, FTP_USERNAME, FTP_PASSWORD, FTP_PATH, FTP_PASSIVE
       }
+
+      public enum Web {
+        WEB_URL, WEB_USERNAME, WEB_PASSWORD
+      }
     }
 
     public enum Type {

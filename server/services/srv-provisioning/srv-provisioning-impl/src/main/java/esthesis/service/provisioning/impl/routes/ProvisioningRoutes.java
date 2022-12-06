@@ -30,6 +30,16 @@ public class ProvisioningRoutes extends RouteBuilder {
   public static final String PROPERTY_PROVISIONING_PACKAGE_TYPE = "X-ProvisioningPackageType";
   public static final String PROPERTY_EXCEPTION_MESSAGE = "X-ProvisioningPackageExceptionMessage";
 
+  public static final String HEADER_FTP_HOST = "X-FtpHost";
+  public static final String HEADER_FTP_USERNAME = "X-FtpUsername";
+  public static final String HEADER_FTP_PASSWORD = "X-FtpPassword";
+  public static final String HEADER_FTP_PASSIVE = "X-FtpPassive";
+  public static final String HEADER_FTP_DIRECTORY = "X-FtpDirectory";
+  public static final String HEADER_FTP_FILENAME = "X-FtpFilename";
+
+  public static final String HEADER_WEB_CONFIG = "X-WebConfig";
+
+
   @Override
   public void configure() {
 
@@ -92,15 +102,23 @@ public class ProvisioningRoutes extends RouteBuilder {
     from("direct:ftp")
         .bean(configService, "setupFtpConfig")
         .choice()
-          .when(simple("${header.username} != null"))
+          .when(simple("${header." + HEADER_FTP_USERNAME+ "} != null"))
             .pollEnrich().simple(
-                "ftp://${header.host}/${header.directory}?binary=true&username=${header.username}"
-                    + "&password=${header.password}&fileName=${header.filename}&disconnect=true"
-                    + "&passiveMode=${header.passive}&throwExceptionOnConnectFailed=true")
+                "ftp://${header." + HEADER_FTP_HOST+ "}/${header." + HEADER_FTP_DIRECTORY  + "}"
+                    + "?binary=true"
+                    + "&username=${header." + HEADER_FTP_USERNAME + "}"
+                    + "&password=${header." + HEADER_FTP_PASSWORD+ "}"
+                    + "&fileName=${header." + HEADER_FTP_FILENAME + "}"
+                    + "&disconnect=true"
+                    + "&passiveMode=${header." + HEADER_FTP_PASSIVE+ "}"
+                    + "&throwExceptionOnConnectFailed=true")
         .endChoice()
         .otherwise()
-          .pollEnrich().simple("ftp://${header.host}/${header.directory}?binary=true"
-            + "&fileName=${header.filename}&disconnect=true&passiveMode=${header.passive}"
+          .pollEnrich().simple("ftp://${header." + HEADER_FTP_HOST + "}/${header." + HEADER_FTP_DIRECTORY+ "}"
+            + "?binary=true"
+            + "&fileName=${header." + HEADER_FTP_FILENAME + "}"
+            + "&disconnect=true"
+            + "&passiveMode=${header." + HEADER_FTP_PASSIVE + "}"
             + "&throwExceptionOnConnectFailed=true")
         .endChoice().end()
         .log(LoggingLevel.DEBUG, log, "Finished downloading provisioning package.")
@@ -108,7 +126,12 @@ public class ProvisioningRoutes extends RouteBuilder {
 
     // Web route.
     from("direct:web")
-        .log(LoggingLevel.DEBUG, log, "WEB.");
+        .bean(configService, "setupWebConfig")
+        .log(LoggingLevel.DEBUG, log, "Downloading provisioning package.")
+        .setBody().simple("${null}")
+        .toD("${header." + HEADER_WEB_CONFIG +"}")
+        .log(LoggingLevel.DEBUG, log, "Finished downloading provisioning package.")
+        .to("direct:redis");
 
     // Redis upload.
     from("direct:redis")

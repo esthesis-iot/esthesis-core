@@ -55,9 +55,9 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
       file: [],
 
       // WEB type
-      webUrl: [""],
-      webUsername: [""],
-      webPassword: [""],
+      WEB_URL: [""],
+      WEB_USERNAME: [""],
+      WEB_PASSWORD: [""],
 
       // FTP type
       FTP_HOST: [],
