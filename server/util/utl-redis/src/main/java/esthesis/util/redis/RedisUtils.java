@@ -1,13 +1,13 @@
 package esthesis.util.redis;
 
+import static esthesis.common.AppConstants.REDIS_KEY_PROVISIONING_PACKAGE_FILE;
 import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
 import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
 
 import io.quarkus.redis.datasource.RedisDataSource;
 import io.quarkus.redis.datasource.hash.HashCommands;
 import io.quarkus.redis.datasource.keys.KeyCommands;
-import java.io.IOException;
-import java.io.OutputStream;
+import io.smallrye.mutiny.Uni;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,6 @@ public class RedisUtils {
   @Inject
   RedisDataSource redis;
 
-  private final static String KEY_PREFIX = "esthesis.";
   private HashCommands<String, String, String> hashCommandText;
   private HashCommands<String, String, byte[]> hashCommandBinary;
   private KeyCommands<String> keyCommand;
@@ -161,9 +160,11 @@ public class RedisUtils {
 
   public boolean cacheProvisioningPackage(String packageId, byte[] file) {
     return
-        hashCommandBinary.hset(KeyType.ESTHESIS_PP + "." + packageId, "file", file) &&
+        hashCommandBinary.hset(KeyType.ESTHESIS_PP + "." + packageId,
+            REDIS_KEY_PROVISIONING_PACKAGE_FILE, file) &&
             hashCommandText.hset(KeyType.ESTHESIS_PP + "." + packageId,
-                "file." + REDIS_KEY_SUFFIX_TIMESTAMP, Instant.now().toString());
+                REDIS_KEY_PROVISIONING_PACKAGE_FILE + "." + REDIS_KEY_SUFFIX_TIMESTAMP,
+                Instant.now().toString());
   }
 
   public void deleteProvisioningPackage(ObjectId provisioningPackageId) {
@@ -174,13 +175,9 @@ public class RedisUtils {
     return keyCommand.exists(keyType + "." + key);
   }
 
-  public void downloadProvisioningPackage(ObjectId provisioningPackageId, OutputStream outputStream) {
-    hashCommandBinary.
-    byte[] file = hashCommandBinary.hget(KeyType.ESTHESIS_PP + "." + provisioningPackageId.toString(), "file");
-    try {
-      outputStream.write(file);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  public Uni<byte[]> downloadProvisioningPackage(ObjectId provisioningPackageId) {
+    return redis.getReactive().hash(byte[].class)
+        .hget(KeyType.ESTHESIS_PP + "." + provisioningPackageId.toString(),
+            REDIS_KEY_PROVISIONING_PACKAGE_FILE);
   }
 }

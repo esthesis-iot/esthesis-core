@@ -33,6 +33,7 @@ public class ConfigService {
     }
 
     // Set Camel FTP configuration.
+    // FTP host + port.
     if (pp.fc(FTP_PORT).isPresent()) {
       String host = pp.fc(FTP_HOST).orElseThrow() + ":" + pp.fc(FTP_PORT).get();
       log.debug("Setting FTP host to '{}'.", host);
@@ -42,6 +43,7 @@ public class ConfigService {
       exchange.getIn().setHeader("host", host);
     }
 
+    // FTP username + password.
     if (pp.fc(FTP_USERNAME).isPresent() && pp.fc(FTP_PASSWORD).isPresent()) {
       String username = pp.fc(FTP_USERNAME).orElseThrow();
       exchange.getIn().setHeader("username", username);
@@ -52,8 +54,10 @@ public class ConfigService {
       log.debug("Setting FTP password to '{}'.", password);
     }
 
+    // FTP passive.
     exchange.getIn().setHeader("passive", pp.fc(FTP_PASSIVE).orElse("false"));
 
+    // FTP path.
     if (pp.fc(FTP_PATH).isPresent()) {
       Path path = Path.of(pp.fc(FTP_PATH).get());
       String directory = path.getParent().toString();

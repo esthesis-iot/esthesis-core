@@ -25,9 +25,6 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
   id!: string;
   availableTags: TagDto[] | undefined;
   provisioningPackage?: ProvisioningDto;
-  // cacheStatus = "";
-  // size = 0;
-  // log = "";
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
     private qForms: QFormsService, private tagService: TagService,
@@ -185,7 +182,7 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
   }
 
   download() {
-    // this.provisioningService.download(this.id!);
+    this.provisioningService.download(this!.id);
   }
 
   recache() {

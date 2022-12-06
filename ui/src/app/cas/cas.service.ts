@@ -2,18 +2,19 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {CaDto} from "../dto/ca-dto";
 import {FormGroup} from "@angular/forms";
-import {CrudService} from "../services/crud.service";
 import {Observable} from "rxjs";
 import {environment} from "../../environments/environment";
 import {UtilityService} from "../shared/service/utility.service";
+import {CrudDownloadService} from "../services/crud-download.service";
+import {FileSaverService} from "ngx-filesaver";
 
 @Injectable({
   providedIn: "root"
 })
-export class CasService extends CrudService<CaDto> {
+export class CasService extends CrudDownloadService<CaDto> {
 
-  constructor(http: HttpClient, private utilityService: UtilityService) {
-    super(http, "v1/ca");
+  constructor(http: HttpClient, private utilityService: UtilityService, fs: FileSaverService) {
+    super(http, "v1/ca", fs);
   }
 
   /**

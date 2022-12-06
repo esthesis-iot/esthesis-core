@@ -2,11 +2,11 @@
   <mat-card-title>Provisioning package</mat-card-title>
   <mat-card-content>
     <div class="infobox" fxLayout="row" fxLayoutAlign="space-between"
-         *ngIf="id != appConstants.NEW_RECORD_ID">
+         *ngIf="id != appConstants.NEW_RECORD_ID && provisioningPackage">
       <div fxLayout="column" fxLayoutGap="0.5rem">
         <div fxLayout="row">
           <div class="bold">Cache status:</div>
-          <div class="ml1" [ngSwitch]="provisioningPackage?.cacheStatus">
+          <div class="ml1" [ngSwitch]="provisioningPackage.cacheStatus">
             <div *ngSwitchCase="appConstants.PROVISIONING.CACHE_STATUS.COMPLETED"
                  class="status-completed">Completed
             </div>
@@ -23,20 +23,22 @@
         </div>
         <div fxLayout="row">
           <div class="bold">Size:</div>
-          <div class="ml1">{{provisioningPackage!.size | filesize}}</div>
+          <div class="ml1">{{provisioningPackage.size | filesize}}</div>
         </div>
         <div fxLayout="row">
           <div class="bold">Hash (SHA256):</div>
-          <div class="ml1">{{provisioningPackage?.sha256}}</div>
+          <div class="ml1">{{provisioningPackage.sha256}}</div>
         </div>
-        <div class="status-failed" fxLayout="row" *ngIf="provisioningPackage?.log">
-          <div class="monospace">{{provisioningPackage?.log}}</div>
+        <div class="status-failed" fxLayout="row" *ngIf="provisioningPackage.log">
+          <div class="monospace">{{provisioningPackage.log}}</div>
         </div>
       </div>
-      <div>
+      <div
+        *ngIf="provisioningPackage?.cacheStatus == appConstants.PROVISIONING.CACHE_STATUS.FAILED
+               || provisioningPackage?.cacheStatus == appConstants.PROVISIONING.CACHE_STATUS.NOT_STARTED">
         <button mat-button
                 [disabled]="!(this.id !== appConstants.NEW_RECORD_ID
-                       && this.provisioningPackage?.available
+                       && this.provisioningPackage.available
                        && !this.form.dirty)"
                 (click)="recache()">
           RECACHE

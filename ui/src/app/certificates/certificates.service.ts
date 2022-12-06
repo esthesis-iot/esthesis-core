@@ -1,17 +1,18 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {FormGroup} from "@angular/forms";
-import {CrudService} from "../services/crud.service";
 import {CertificateDto} from "../dto/certificate-dto";
 import {environment} from "../../environments/environment";
+import {CrudDownloadService} from "../services/crud-download.service";
+import {FileSaverService} from "ngx-filesaver";
 
 @Injectable({
   providedIn: "root"
 })
-export class CertificatesService extends CrudService<CertificateDto> {
+export class CertificatesService extends CrudDownloadService<CertificateDto> {
 
-  constructor(http: HttpClient) {
-    super(http, "v1/certificate");
+  constructor(http: HttpClient, fs: FileSaverService) {
+    super(http, "v1/certificate", fs);
   }
 
   /**

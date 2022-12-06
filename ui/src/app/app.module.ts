@@ -31,6 +31,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {AuthInterceptor} from "angular-auth-oidc-client";
 import {AuthConfigModule} from "./auth/auth-config.module";
+import {FileSaverModule} from "ngx-filesaver";
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -74,7 +75,8 @@ import {AuthConfigModule} from "./auth/auth-config.module";
     }),
     NgProgressHttpModule,
     MatAutocompleteModule,
-    AuthConfigModule
+    AuthConfigModule,
+    FileSaverModule
   ],
   providers: [
     QFormsModule,

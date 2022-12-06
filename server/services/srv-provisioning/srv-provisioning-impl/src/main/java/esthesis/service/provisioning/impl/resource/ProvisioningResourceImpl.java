@@ -6,12 +6,15 @@ import esthesis.service.provisioning.dto.ProvisioningPackage;
 import esthesis.service.provisioning.form.ProvisioningPackageForm;
 import esthesis.service.provisioning.impl.service.ProvisioningService;
 import esthesis.service.provisioning.resource.ProvisioningResource;
+import io.smallrye.mutiny.Uni;
 import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.HttpHeaders;
 import org.bson.types.ObjectId;
+import org.jboss.resteasy.reactive.RestResponse;
+import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
 public class ProvisioningResourceImpl implements ProvisioningResource {
 
@@ -51,8 +54,15 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
   }
 
   @Override
-  public Response download(ObjectId provisioning) {
-    return null;
+  public Uni<RestResponse<byte[]>> download(ObjectId provisioningPackageId) {
+    ProvisioningPackage pp = provisioningService.findById(provisioningPackageId);
+    Uni<byte[]> binary = provisioningService.download(provisioningPackageId);
+
+    return binary.onItem().transform(b -> ResponseBuilder.ok(b)
+        .header(HttpHeaders.CONTENT_DISPOSITION,
+            "attachment; filename=\"" + pp.getFilename() + "\"")
+        .header(HttpHeaders.CONTENT_LENGTH, pp.getSize())
+        .build());
   }
 
 }

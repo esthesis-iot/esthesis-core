@@ -5,6 +5,7 @@ import esthesis.service.common.paging.Pageable;
 import esthesis.service.provisioning.dto.ProvisioningPackage;
 import esthesis.service.provisioning.form.ProvisioningPackageForm;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
+import io.smallrye.mutiny.Uni;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -14,11 +15,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.resteasy.reactive.MultipartForm;
+import org.jboss.resteasy.reactive.RestResponse;
 
 @Path("/api")
 @RegisterRestClient(configKey = "ProvisioningResource")
@@ -59,5 +60,5 @@ public interface ProvisioningResource {
   @GET
   @Path("/v1/provisioning/{id}/download")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  Response download(@PathParam("id") ObjectId provisioning);
+  Uni<RestResponse<byte[]>> download(@PathParam("id") ObjectId provisioning);
 }

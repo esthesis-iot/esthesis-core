@@ -17,6 +17,7 @@ public class AppConstants {
   // Redis key suffixes for measurements.
   public static final String REDIS_KEY_SUFFIX_VALUE_TYPE = "valueType";
   public static final String REDIS_KEY_SUFFIX_TIMESTAMP = "timestamp";
+  public static final String REDIS_KEY_PROVISIONING_PACKAGE_FILE = "file";
 
   // Settings keys.
   public enum NamedSetting {

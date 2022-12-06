@@ -1,5 +1,4 @@
 import {Injectable} from "@angular/core";
-import {CrudService} from "../services/crud.service";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {DeviceRegisterDto} from "../dto/device-register-dto";
@@ -8,14 +7,16 @@ import {environment} from "../../environments/environment";
 import {DeviceProfileNoteDto} from "../dto/device-profile-note-dto";
 import {DevicePageFieldDataDto} from "../dto/device-page-field-data-dto";
 import {GeolocationDto} from "../dto/geolocation-dto";
+import {CrudDownloadService} from "../services/crud-download.service";
+import {FileSaverService} from "ngx-filesaver";
 
 @Injectable({
   providedIn: "root"
 })
-export class DevicesService extends CrudService<DeviceDto> {
+export class DevicesService extends CrudDownloadService<DeviceDto> {
 
-  constructor(http: HttpClient) {
-    super(http, "v1/device");
+  constructor(http: HttpClient, fs: FileSaverService) {
+    super(http, "v1/device", fs);
   }
 
   preregister(devices: DeviceRegisterDto): Observable<any> {
