@@ -1,6 +1,7 @@
 package esthesis.service.provisioning.impl.routes;
 
 import esthesis.common.AppConstants.Provisioning.Type;
+import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.provisioning.impl.service.ConfigService;
 import esthesis.service.provisioning.impl.service.ProvisioningRoutingService;
 import javax.enterprise.context.ApplicationScoped;
@@ -38,7 +39,7 @@ public class ProvisioningRoutes extends RouteBuilder {
   public static final String HEADER_FTP_FILENAME = "X-FtpFilename";
 
   public static final String HEADER_WEB_CONFIG = "X-WebConfig";
-
+  public static final String HEADER_MINIO_CONFIG = "X-MinioConfig";
 
   @Override
   public void configure() {
@@ -88,15 +89,32 @@ public class ProvisioningRoutes extends RouteBuilder {
             + "&operation=findById")
         .log(LoggingLevel.DEBUG, log, "Deciding package type route.")
         .choice()
-          .when(exchangeProperty(PROPERTY_PROVISIONING_PACKAGE_TYPE).isEqualTo(Type.FTP))
+          .when(exchangeProperty(PROPERTY_PROVISIONING_PACKAGE_TYPE).isEqualTo(Type.ESTHESIS))
+            .log(LoggingLevel.DEBUG, log, "ESTHESIS package type.")
+            .to("direct:esthesis")
+        .when(exchangeProperty(PROPERTY_PROVISIONING_PACKAGE_TYPE).isEqualTo(Type.FTP))
             .log(LoggingLevel.DEBUG, log, "FTP package type.")
             .to("direct:ftp")
           .when(exchangeProperty(PROPERTY_PROVISIONING_PACKAGE_TYPE).isEqualTo(Type.WEB))
             .log(LoggingLevel.DEBUG, log, "WEB package type.")
             .to("direct:web")
+          .when(exchangeProperty(PROPERTY_PROVISIONING_PACKAGE_TYPE).isEqualTo(Type.MINIO))
+            .log(LoggingLevel.DEBUG, log, "MINIO package type.")
+            .to("direct:minio")
           .otherwise()
-            .log(LoggingLevel.ERROR, log, "Could not determine package type for package ''${body}''.")
+            .throwException(QDoesNotExistException.class, "Could not determine package type "
+                + "for package '${body}'.")
             .to("direct:fail");
+
+    // ESTHESIS Route.
+    from("direct:esthesis")
+      .bean(provisioningRoutingService, "searchForBinaryPackage")
+      .to("mongodb:camelMongoClient?"
+          + "database=" + database
+          + "&collection=ProvisioningPackageBinary"
+          + "&operation=findOneByQuery")
+      .bean(provisioningRoutingService, "setBinaryContentToBody")
+      .to("direct:redis");
 
     // FTP route.
     from("direct:ftp")
@@ -132,6 +150,14 @@ public class ProvisioningRoutes extends RouteBuilder {
         .toD("${header." + HEADER_WEB_CONFIG +"}")
         .log(LoggingLevel.DEBUG, log, "Finished downloading provisioning package.")
         .to("direct:redis");
+
+    // MinIO route.
+    from("direct:minio")
+      .bean(configService, "setupMinioConfig")
+      .log(LoggingLevel.DEBUG, log, "Downloading provisioning package.")
+      .toD("${header." + HEADER_MINIO_CONFIG +"}")
+      .log(LoggingLevel.DEBUG, log, "Finished downloading provisioning package.")
+      .to("direct:redis");
 
     // Redis upload.
     from("direct:redis")

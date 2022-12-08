@@ -1,0 +1,18 @@
+global:
+  devEnv:
+    enabled: false
+
+minio:
+  fullnameOverride: esthesis-minio
+  auth:
+    rootUser: esthesis
+    rootPassword: esthesis
+  defaultBuckets: esthesis
+  #  volumePermissions:
+  #    enabled: true
+  #  provisioning:
+  #    containerSecurityContext:
+  #      runAsUser: 0
+#  containerSecurityContext:
+#    runAsNonRoot: false
+#    runAsUser: 0

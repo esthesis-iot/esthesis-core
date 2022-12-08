@@ -1,15 +1,13 @@
 package esthesis.service.provisioning.impl.service;
 
 import esthesis.common.AppConstants.Provisioning.CacheStatus;
-import esthesis.common.AppConstants.Provisioning.ConfigOptions.Ftp;
-import esthesis.common.AppConstants.Provisioning.ConfigOptions.Web;
+import esthesis.common.AppConstants.Provisioning.ConfigOption;
 import esthesis.common.AppConstants.Provisioning.Type;
 import esthesis.common.exception.QMismatchException;
 import esthesis.service.common.BaseService;
 import esthesis.service.provisioning.dto.ProvisioningPackage;
 import esthesis.service.provisioning.dto.ProvisioningPackageBinary;
 import esthesis.service.provisioning.form.ProvisioningPackageForm;
-import esthesis.service.provisioning.impl.repository.ProvisioningBinaryRepository;
 import esthesis.util.redis.RedisUtils;
 import io.smallrye.mutiny.Uni;
 import java.io.IOException;
@@ -30,7 +28,7 @@ import org.bson.types.ObjectId;
 public class ProvisioningService extends BaseService<ProvisioningPackage> {
 
   @Inject
-  ProvisioningBinaryRepository provisioningBinaryRepository;
+  ProvisioningBinaryService provisioningBinaryService;
 
   @Produce("direct:cacheAll")
   FluentProducerTemplate cacheAll;
@@ -72,11 +70,14 @@ public class ProvisioningService extends BaseService<ProvisioningPackage> {
           p.setSize(pf.getFile().size());
           p.setContentType(pf.getFile().contentType());
         }
-        case FTP ->
-            p.setFilename(Path.of(pf.fc(Ftp.FTP_PATH).orElseThrow()).getFileName().toString());
+        case FTP -> p.setFilename(
+            Path.of(pf.fc(ConfigOption.FTP_PATH).orElseThrow()).getFileName().toString());
+        case MINIO -> p.setFilename(
+            Path.of(pf.fc(ConfigOption.MINIO_OBJECT).orElseThrow()).getFileName().toString());
         case WEB -> {
           try {
-            p.setFilename(new URL(pf.fc(Web.WEB_URL).orElseThrow()).getFile().substring(1));
+            p.setFilename(
+                new URL(pf.fc(ConfigOption.WEB_URL).orElseThrow()).getFile().substring(1));
           } catch (MalformedURLException e) {
             throw new QMismatchException("Could not parse Web URL.", e);
           }
@@ -96,7 +97,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackage> {
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
-      provisioningBinaryRepository.persist(pb);
+      provisioningBinaryService.save(pb);
     }
 
     // If this is a new record, try to cache it.
@@ -134,6 +135,10 @@ public class ProvisioningService extends BaseService<ProvisioningPackage> {
     redisUtils.deleteProvisioningPackage(provisioningPackageId);
 
     // Delete the provisioning package from the database.
+    Type type = findById(provisioningPackageId).getType();
+    if (type.equals(Type.ESTHESIS)) {
+      provisioningBinaryService.deleteByColumn("provisioningPackage", provisioningPackageId);
+    }
     super.deleteById(provisioningPackageId);
   }
 

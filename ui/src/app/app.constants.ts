@@ -64,7 +64,6 @@ export const AppConstants = {
       ESTHESIS: "ESTHESIS",
       WEB: "WEB",
       FTP: "FTP",
-      S3: "S3",
       MINIO: "MINIO"
     },
     CONFIG: {

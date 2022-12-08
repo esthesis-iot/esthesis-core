@@ -21,11 +21,11 @@
             </div>
           </div>
         </div>
-        <div fxLayout="row">
+        <div fxLayout="row" *ngIf="provisioningPackage.size">
           <div class="bold">Size:</div>
           <div class="ml1">{{provisioningPackage.size | filesize}}</div>
         </div>
-        <div fxLayout="row">
+        <div fxLayout="row" *ngIf="provisioningPackage.sha256">
           <div class="bold">Hash (SHA256):</div>
           <div class="ml1">{{provisioningPackage.sha256}}</div>
         </div>
@@ -53,7 +53,6 @@
             <mat-option [value]="appConstants.PROVISIONING.TYPE.ESTHESIS">Esthesis</mat-option>
             <mat-option [value]="appConstants.PROVISIONING.TYPE.FTP">FTP</mat-option>
             <mat-option [value]="appConstants.PROVISIONING.TYPE.MINIO">Minio</mat-option>
-            <mat-option [value]="appConstants.PROVISIONING.TYPE.S3">S3</mat-option>
             <mat-option [value]="appConstants.PROVISIONING.TYPE.WEB">Web</mat-option>
           </mat-select>
         </mat-form-field>
@@ -124,8 +123,7 @@
 
         <!-- Web package type -->
         <div
-          *ngIf="form.getRawValue().type === appConstants.PROVISIONING.TYPE.WEB
-            && id === appConstants.NEW_RECORD_ID">
+          *ngIf="form.getRawValue().type === appConstants.PROVISIONING.TYPE.WEB">
           <div class="inline-subheader">Web package type</div>
           <mat-form-field fxFlexFill>
             <input matInput placeholder="URL" formControlName="WEB_URL">
@@ -179,32 +177,27 @@
           </mat-form-field>
         </div>
 
-        <!-- S3 package type -->
-        <div
-          *ngIf="form.getRawValue().type === appConstants.PROVISIONING.TYPE.S3
-            && id === appConstants.NEW_RECORD_ID">
-          <div class="inline-subheader">S3 package type</div>
-          <mat-form-field fxFlexFill>
-            <input matInput placeholder="URL" formControlName="s3Url">
-            <mat-hint>The URL of the location of the package, e.g.
-              http://package-server/fw100.zip
-            </mat-hint>
-          </mat-form-field>
-        </div>
-
         <!-- Minio package type -->
         <div
-          *ngIf="form.getRawValue().type === appConstants.PROVISIONING.TYPE.MINIO
-            && id === appConstants.NEW_RECORD_ID">
+          *ngIf="form.getRawValue().type === appConstants.PROVISIONING.TYPE.MINIO">
           <div class="inline-subheader">Minio package type</div>
           <mat-form-field fxFlexFill>
-            <input matInput placeholder="URL" formControlName="minioUrl">
-            <mat-hint>The URL of the location of the package, e.g.
-              http://package-server/fw100.zip
-            </mat-hint>
+            <input matInput placeholder="URL" formControlName="MINIO_URL">
+            <mat-hint>The URL of the MinIO API server, e.g. http://minio-server:9000</mat-hint>
+          </mat-form-field>
+          <mat-form-field fxFlexFill>
+            <input matInput placeholder="Bucket" formControlName="MINIO_BUCKET">
+          </mat-form-field>
+          <mat-form-field fxFlexFill>
+            <input matInput placeholder="Object" formControlName="MINIO_OBJECT">
+          </mat-form-field>
+          <mat-form-field fxFlexFill>
+            <input matInput placeholder="Access key" formControlName="MINIO_ACCESS_KEY">
+          </mat-form-field>
+          <mat-form-field fxFlexFill>
+            <input matInput placeholder="Secret key" formControlName="MINIO_SECRET_KEY">
           </mat-form-field>
         </div>
-
       </div>
     </form>
   </mat-card-content>

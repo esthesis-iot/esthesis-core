@@ -25,6 +25,7 @@ import org.bson.BsonNull;
 import org.bson.BsonString;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 
 @Slf4j
@@ -39,6 +40,22 @@ public class ProvisioningRoutingService {
 
   public void searchAllActive(Exchange exchange) {
     Bson equalsClause = Filters.eq("available", true);
+    exchange.getIn().setHeader(MongoDbConstants.CRITERIA, equalsClause);
+  }
+
+  public void setBinaryContentToBody(Exchange exchange) {
+    exchange.getIn().setBody(
+        exchange.getIn()
+            .getBody(Document.class)
+            .get("payload", Binary.class).getData()
+    );
+  }
+
+  public void searchForBinaryPackage(Exchange exchange) {
+    // Parse the incoming package.
+    ProvisioningPackage pp = provisioningRepository.parse(
+        exchange.getIn().getBody(Document.class));
+    Bson equalsClause = Filters.eq("provisioningPackage", pp.getId());
     exchange.getIn().setHeader(MongoDbConstants.CRITERIA, equalsClause);
   }
 

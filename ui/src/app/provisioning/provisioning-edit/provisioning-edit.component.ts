@@ -55,17 +55,24 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
       file: [],
 
       // WEB type
-      WEB_URL: [""],
+      WEB_URL: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
       WEB_USERNAME: [""],
       WEB_PASSWORD: [""],
 
       // FTP type
-      FTP_HOST: [],
+      FTP_HOST: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
       FTP_USERNAME: [],
       FTP_PASSWORD: [],
-      FTP_PORT: [],
-      FTP_PATH: [],
+      FTP_PORT: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
+      FTP_PATH: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
       FTP_PASSIVE: [],
+
+      // MINIO type
+      MINIO_URL: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
+      MINIO_BUCKET: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
+      MINIO_OBJECT: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
+      MINIO_ACCESS_KEY: [],
+      MINIO_SECRET_KEY: [],
 
       // S3
       s3Url: [""],

@@ -1,0 +1,7 @@
+global:
+  devEnv:
+    enabled: true
+
+minio:
+  service:
+    type: LoadBalancer

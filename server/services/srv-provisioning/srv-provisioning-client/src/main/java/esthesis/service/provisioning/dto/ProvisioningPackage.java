@@ -1,8 +1,8 @@
 package esthesis.service.provisioning.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Provisioning.CacheStatus;
+import esthesis.common.AppConstants.Provisioning.ConfigOption;
 import esthesis.common.AppConstants.Provisioning.Type;
 import esthesis.common.dto.BaseDTO;
 import esthesis.common.jackson.MongoInstantDeserializer;
@@ -95,18 +95,11 @@ public class ProvisioningPackage extends BaseDTO {
    *
    * @param key The key to look for.
    */
-  private Optional<String> fc(String key) {
+  public Optional<String> fc(ConfigOption key) {
     return Arrays.stream(getTypeSpecificConfiguration().split(","))
         .filter(s -> s.startsWith(key + "="))
         .findFirst()
         .map(s -> s.substring(s.indexOf("=") + 1));
   }
 
-  public Optional<String> fc(AppConstants.Provisioning.ConfigOptions.Ftp key) {
-    return fc(key.toString());
-  }
-
-  public Optional<String> fc(AppConstants.Provisioning.ConfigOptions.Web key) {
-    return fc(key.toString());
-  }
 }
