@@ -7,11 +7,10 @@ import esthesis.common.exception.QMismatchException;
 import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.crypto.dto.Certificate;
-import esthesis.service.crypto.dto.form.ImportCertificateForm;
-import esthesis.service.crypto.impl.repository.CertificateRepository;
+import esthesis.service.crypto.entity.CertificateEntity;
+import esthesis.service.crypto.form.ImportCertificateForm;
+import esthesis.service.crypto.impl.repository.CertificateEntityRepository;
 import esthesis.service.crypto.impl.service.CertificateService;
-import esthesis.service.crypto.impl.service.KeyService;
 import esthesis.service.crypto.resource.CertificateResource;
 import esthesis.service.settings.resource.SettingsResource;
 import io.quarkus.security.Authenticated;
@@ -36,13 +35,10 @@ public class CertificateResourceImpl implements CertificateResource {
   SettingsResource settingsResource;
 
   @Inject
-  KeyService keyService;
-
-  @Inject
   CertificateService certificateService;
 
   @Inject
-  CertificateRepository certificateRepository;
+  CertificateEntityRepository certificateEntityRepository;
 
   @Inject
   ObjectMapper mapper;
@@ -51,7 +47,7 @@ public class CertificateResourceImpl implements CertificateResource {
   @Override
   @Path("/v1/certificate/find")
   @JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,content.parentCaId,content.type,content.validity")
-  public Page<Certificate> find(@BeanParam Pageable pageable) {
+  public Page<CertificateEntity> find(@BeanParam Pageable pageable) {
     return certificateService.find(pageable);
   }
 
@@ -59,14 +55,14 @@ public class CertificateResourceImpl implements CertificateResource {
   @Override
   @Path("/v1/certificate/{id}")
   @JSONReplyFilter(filter = "id,cn,issued,parentCa,type,validity,parentCaId")
-  public Certificate findById(ObjectId id) {
+  public CertificateEntity findById(ObjectId id) {
     return certificateService.findById(id);
   }
 
   @Override
   public Response download(ObjectId caId) {
     try {
-      Certificate ca = certificateService.findById(caId);
+      CertificateEntity ca = certificateService.findById(caId);
       String filename = Slugify.builder().underscoreSeparator(true).build()
           .slugify(ca.getCn());
       return ResponseBuilder.ok(mapper.writeValueAsString(findById(caId)))
@@ -79,7 +75,7 @@ public class CertificateResourceImpl implements CertificateResource {
   }
 
   @Override
-  public Certificate importCertificate(
+  public CertificateEntity importCertificate(
       ImportCertificateForm importCertificateForm) {
     return certificateService.importCertificate(importCertificateForm);
   }
@@ -90,7 +86,7 @@ public class CertificateResourceImpl implements CertificateResource {
   }
 
   @Override
-  public Certificate save(Certificate certificate) {
-    return certificateService.save(certificate);
+  public CertificateEntity save(CertificateEntity certificateEntity) {
+    return certificateService.save(certificateEntity);
   }
 }

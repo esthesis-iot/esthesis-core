@@ -119,11 +119,12 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
     });
   }
 
-  purgeKeppLastDay() {
+  purgeKeep(keepDays: number) {
     this.dialog.open(OkCancelModalComponent, {
       data: {
         title: "Purge",
-        question: "Do you really want to purge all commands and replies older than 1 day?",
+        question: "Do you really want to purge all commands and replies older than " + keepDays +
+          (keepDays === 1 ? "day?" : "days?"),
         buttons: {
           ok: true, cancel: true, reload: false
         }
@@ -132,56 +133,13 @@ export class CommandComponent extends BaseComponent implements OnInit, AfterView
       if (result) {
         this.commandService.purge(1).subscribe({
           next: () => {
-            this.utilityService.popupSuccess("All commands and replies older than 1 day have been purged.");
+            this.utilityService.popupSuccess(
+              "All commands and replies older than " + keepDays +
+              (keepDays === 1 ? "day" : "days") + " have been purged.");
             this.refreshCurrentData();
           }, error: (error) => {
-            this.utilityService.popupErrorWithTraceId("Could not purge.", error);
-          }
-        });
-      }
-    });
-  }
-
-  purgeKeppLastWeek() {
-    this.dialog.open(OkCancelModalComponent, {
-      data: {
-        title: "Purge",
-        question: "Do you really want to purge all commands and replies older than 1 week?",
-        buttons: {
-          ok: true, cancel: true, reload: false
-        }
-      }
-    }).afterClosed().subscribe(result => {
-      if (result) {
-        this.commandService.purge(7).subscribe({
-          next: () => {
-            this.utilityService.popupSuccess("All commands and replies older than 1 week have been purged.");
-            this.refreshCurrentData();
-          }, error: (error) => {
-            this.utilityService.popupErrorWithTraceId("Could not purge.", error);
-          }
-        });
-      }
-    });
-  }
-
-  purgeKeppLastMonth() {
-    this.dialog.open(OkCancelModalComponent, {
-      data: {
-        title: "Purge",
-        question: "Do you really want to purge all commands and replies older than 1 month?",
-        buttons: {
-          ok: true, cancel: true, reload: false
-        }
-      }
-    }).afterClosed().subscribe(result => {
-      if (result) {
-        this.commandService.purge(30).subscribe({
-          next: () => {
-            this.utilityService.popupSuccess("All commands and replies older than 1 month have been purged.");
-            this.refreshCurrentData();
-          }, error: (error) => {
-            this.utilityService.popupErrorWithTraceId("Could not purge.", error);
+            this.utilityService.popupErrorWithTraceId(
+              "There was an error trying to purge, please try again later.", error);
           }
         });
       }

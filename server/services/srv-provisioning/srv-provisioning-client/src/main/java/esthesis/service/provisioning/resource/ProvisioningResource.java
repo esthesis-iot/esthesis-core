@@ -2,7 +2,7 @@ package esthesis.service.provisioning.resource;
 
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.provisioning.dto.ProvisioningPackage;
+import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.form.ProvisioningPackageForm;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import io.smallrye.mutiny.Uni;
@@ -28,7 +28,7 @@ public interface ProvisioningResource {
 
   @GET
   @Path("/v1/provisioning/find")
-  Page<ProvisioningPackage> find(@BeanParam Pageable provisioningPackage);
+  Page<ProvisioningPackageEntity> find(@BeanParam Pageable provisioningPackage);
 
   @GET
   @Path("/v1/provisioning/recache")
@@ -36,7 +36,7 @@ public interface ProvisioningResource {
 
   @GET
   @Path("/v1/provisioning/{id}")
-  ProvisioningPackage findById(@PathParam("id") ObjectId provisioningPackageId);
+  ProvisioningPackageEntity findById(@PathParam("id") ObjectId provisioningPackageId);
 
   /**
    * Recaches a previously uploaded provisioning package.
@@ -51,7 +51,7 @@ public interface ProvisioningResource {
   @POST
   @Path("/v1/provisioning")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  ProvisioningPackage save(@MultipartForm ProvisioningPackageForm provisioningPackageForm);
+  ProvisioningPackageEntity save(@MultipartForm ProvisioningPackageForm provisioningPackageForm);
 
   @DELETE
   @Path("/v1/provisioning/{id}")

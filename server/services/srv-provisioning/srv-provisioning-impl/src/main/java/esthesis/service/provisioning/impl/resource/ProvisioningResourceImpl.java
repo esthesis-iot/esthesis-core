@@ -2,7 +2,7 @@ package esthesis.service.provisioning.impl.resource;
 
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.provisioning.dto.ProvisioningPackage;
+import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.form.ProvisioningPackageForm;
 import esthesis.service.provisioning.impl.service.ProvisioningService;
 import esthesis.service.provisioning.resource.ProvisioningResource;
@@ -24,7 +24,7 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
   @GET
   @Override
   @Path("/v1/provisioning/find")
-  public Page<ProvisioningPackage> find(@BeanParam Pageable pageable) {
+  public Page<ProvisioningPackageEntity> find(@BeanParam Pageable pageable) {
     return provisioningService.find(pageable);
   }
 
@@ -34,7 +34,7 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
   }
 
   @Override
-  public ProvisioningPackage findById(ObjectId id) {
+  public ProvisioningPackageEntity findById(ObjectId id) {
     return provisioningService.findById(id);
   }
 
@@ -44,7 +44,7 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
   }
 
   @Override
-  public ProvisioningPackage save(ProvisioningPackageForm pf) {
+  public ProvisioningPackageEntity save(ProvisioningPackageForm pf) {
     return provisioningService.save(pf);
   }
 
@@ -55,7 +55,7 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
 
   @Override
   public Uni<RestResponse<byte[]>> download(ObjectId provisioningPackageId) {
-    ProvisioningPackage pp = provisioningService.findById(provisioningPackageId);
+    ProvisioningPackageEntity pp = provisioningService.findById(provisioningPackageId);
     Uni<byte[]> binary = provisioningService.download(provisioningPackageId);
 
     return binary.onItem().transform(b -> ResponseBuilder.ok(b)

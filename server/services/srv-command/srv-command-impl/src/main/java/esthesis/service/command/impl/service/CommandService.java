@@ -2,13 +2,13 @@ package esthesis.service.command.impl.service;
 
 import esthesis.avro.EsthesisCommandRequestMessage;
 import esthesis.common.AppConstants.NamedSetting;
-import esthesis.common.dto.CommandReply;
+import esthesis.common.entity.CommandReplyEntity;
 import esthesis.common.exception.QDoesNotExistException;
-import esthesis.service.command.dto.CommandRequest;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
+import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.device.dto.Device;
+import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.service.tag.resource.TagResource;
@@ -72,13 +72,14 @@ public class CommandService {
   }
 
   /**
-   * Converts a {@link CommandRequest} into a {@link EsthesisCommandRequestMessage} AVRO message.
+   * Converts a {@link CommandRequestEntity} into a {@link EsthesisCommandRequestMessage} AVRO
+   * message.
    *
    * @param request    The command request to convert.
    * @param hardwareId The hardware ID of the device to send the command to.
    */
   private EsthesisCommandRequestMessage avroCommandRequest(
-      CommandRequest request, String hardwareId) {
+      CommandRequestEntity request, String hardwareId) {
     return EsthesisCommandRequestMessage.newBuilder()
         .setId(request.getId().toString())
         .setHardwareId(hardwareId)
@@ -95,7 +96,7 @@ public class CommandService {
    *
    * @param hardwareId The hardware ID to search for.
    */
-  public List<Device> findDevicesByHardwareId(String hardwareId) {
+  public List<DeviceEntity> findDevicesByHardwareId(String hardwareId) {
     return deviceResource.findByHardwareIds(hardwareId, true);
   }
 
@@ -103,10 +104,10 @@ public class CommandService {
    * Saves a command to be scheduled for execution. Note that this method does not send the command
    * to the device, see {@link #executeRequest(String)}.
    *
-   * @param commandRequest The command request to save.
+   * @param commandRequestEntity The command request to save.
    */
-  public ObjectId saveRequest(CommandRequest commandRequest) {
-    return commandRequestService.save(commandRequest).getId();
+  public ObjectId saveRequest(CommandRequestEntity commandRequestEntity) {
+    return commandRequestService.save(commandRequestEntity).getId();
   }
 
   /**
@@ -117,7 +118,7 @@ public class CommandService {
   public ExecuteRequestScheduleInfoDTO executeRequest(String requestId) {
     // Find the command to execute or produce an error if the command can not
     // be found.
-    CommandRequest request = commandRequestService.findById(requestId);
+    CommandRequestEntity request = commandRequestService.findById(requestId);
     if (request == null) {
       throw new QDoesNotExistException("Command request '{}' does not exist.",
           requestId);
@@ -139,7 +140,7 @@ public class CommandService {
       hardwareIds.addAll(
           tagResource.findByNames(request.getTags(), false).stream()
               .map(tag -> deviceResource.findByTagId(tag.getId().toString()))
-              .flatMap(List::stream).map(Device::getHardwareId)
+              .flatMap(List::stream).map(DeviceEntity::getHardwareId)
               .toList());
     }
 
@@ -152,7 +153,7 @@ public class CommandService {
     for (String hardwareId : hardwareIds) {
       EsthesisCommandRequestMessage esthesisCommandRequestMessage =
           avroCommandRequest(request, hardwareId);
-      log.trace("Sending command '{}' to device '{}' via Kafka topic '{}'.",
+      log.debug("Sending command '{}' to device '{}' via Kafka topic '{}'.",
           esthesisCommandRequestMessage, hardwareId,
           KAFKA_CONTROL_REQUEST_TOPIC);
       commandRequestEmitter.send(
@@ -170,15 +171,15 @@ public class CommandService {
     return scheduleInfo;
   }
 
-  public Page<CommandRequest> findCommandRequest(Pageable pageable) {
+  public Page<CommandRequestEntity> findCommandRequest(Pageable pageable) {
     return commandRequestService.find(pageable);
   }
 
-  public CommandRequest getCommand(String commandId) {
+  public CommandRequestEntity getCommand(String commandId) {
     return commandRequestService.findById(commandId);
   }
 
-  public List<CommandReply> getReplies(String correlationId) {
+  public List<CommandReplyEntity> getReplies(String correlationId) {
     return commandReplyService.findByCorrelationId(correlationId);
   }
 

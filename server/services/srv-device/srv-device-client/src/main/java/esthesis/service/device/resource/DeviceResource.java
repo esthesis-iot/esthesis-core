@@ -2,7 +2,7 @@ package esthesis.service.device.resource;
 
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.device.dto.Device;
+import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.dto.GeolocationDTO;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.util.List;
@@ -14,7 +14,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -28,8 +31,7 @@ public interface DeviceResource {
    * Counts the number of devices having one or more of the given tag names.
    *
    * @param tags         A comma-separated list of tag names to search by.
-   * @param partialMatch If true, the search will be performed using partial
-   *                     matching.
+   * @param partialMatch If true, the search will be performed using partial matching.
    */
   @GET
   @Path("/v1/device/count/by-tag")
@@ -40,8 +42,7 @@ public interface DeviceResource {
    * Counts the number of devices having one or more of the given hardware IDs.
    *
    * @param hardwareIds  A comma-separated list of hardware IDs to search by.
-   * @param partialMatch Whether to perform a partial match on the hardware
-   *                     IDs.
+   * @param partialMatch Whether to perform a partial match on the hardware IDs.
    */
   @GET
   @Path("/v1/device/count/by-hardware-id")
@@ -52,12 +53,11 @@ public interface DeviceResource {
    * Finds the devices matching a comma-separated list of hardware IDs.
    *
    * @param hardwareIds  The hardware IDs to search by.
-   * @param partialMatch Whether to perform a partial match on the hardware
-   *                     IDs.
+   * @param partialMatch Whether to perform a partial match on the hardware IDs.
    */
   @GET
   @Path("/v1/device/find/by-hardware-id")
-  List<Device> findByHardwareIds(@QueryParam("hardwareIds") String hardwareIds,
+  List<DeviceEntity> findByHardwareIds(@QueryParam("hardwareIds") String hardwareIds,
       @QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
 
   /**
@@ -67,19 +67,19 @@ public interface DeviceResource {
    */
   @GET
   @Path("/v1/device/find/by-tag-name")
-  List<Device> findByTagName(@QueryParam("tag") String tag);
+  List<DeviceEntity> findByTagName(@QueryParam("tag") String tag);
 
   @GET
   @Path("/v1/device/find/by-tag-id")
-  List<Device> findByTagId(@QueryParam("tag") String tagId);
+  List<DeviceEntity> findByTagId(@QueryParam("tag") String tagId);
 
   @GET
   @Path("/v1/device/find")
-  Page<Device> find(@BeanParam Pageable pageable);
+  Page<DeviceEntity> find(@BeanParam Pageable pageable);
 
   @GET
   @Path("/v1/device/{deviceId}")
-  Device get(@PathParam("deviceId") ObjectId id);
+  DeviceEntity get(@PathParam("deviceId") ObjectId id);
 
   @DELETE
   @Path("/v1/device/{deviceId}")
@@ -87,9 +87,25 @@ public interface DeviceResource {
 
   @POST
   @Path("/v1/device")
-  Device save(@Valid Device object);
+  DeviceEntity save(@Valid DeviceEntity object);
 
   @GET
   @Path("/v1/device/{deviceId}/geolocation")
   GeolocationDTO getDeviceGeolocation(String deviceId);
+
+  @GET
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("/v1/device/{deviceId}/download/public-key")
+  Response downloadPublicKey(@PathParam("deviceId") ObjectId id);
+
+  @GET
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("/v1/device/{deviceId}/download/private-key")
+  Response downloadPrivateKey(@PathParam("deviceId") ObjectId id);
+
+  @GET
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("/v1/device/{deviceId}/download/certificate")
+  Response downloadCertificate(@PathParam("deviceId") ObjectId id);
+
 }

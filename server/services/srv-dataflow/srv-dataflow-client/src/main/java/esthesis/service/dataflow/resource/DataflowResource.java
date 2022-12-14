@@ -2,9 +2,9 @@ package esthesis.service.dataflow.resource;
 
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.dataflow.dto.Dataflow;
-import esthesis.service.dataflow.dto.DockerTags;
-import esthesis.service.dataflow.dto.MatchedMqttServer;
+import esthesis.service.dataflow.dto.DockerTagsDTO;
+import esthesis.service.dataflow.dto.MatchedMqttServerDTO;
+import esthesis.service.dataflow.entity.DataflowEntity;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.util.List;
 import javax.validation.Valid;
@@ -27,11 +27,11 @@ public interface DataflowResource {
 
   @GET
   @Path("/v1/dataflow/find")
-  Page<Dataflow> find(@BeanParam Pageable pageable);
+  Page<DataflowEntity> find(@BeanParam Pageable pageable);
 
   @GET
   @Path("/v1/dataflow/{id}")
-  Dataflow findById(@PathParam("id") ObjectId id);
+  DataflowEntity findById(@PathParam("id") ObjectId id);
 
   @DELETE
   @Path("/v1/dataflow/{id}")
@@ -40,13 +40,13 @@ public interface DataflowResource {
   @POST
   @Path("/v1/dataflow")
   @Produces("application/json")
-  Dataflow save(@Valid Dataflow dataflow);
+  DataflowEntity save(@Valid DataflowEntity dataflowEntity);
 
-  MatchedMqttServer matchMqttServerByTags(List<String> tags);
+  MatchedMqttServerDTO matchMqttServerByTags(List<String> tags);
 
   @GET
   @Path("/v1/dataflow/docker-tags/{dflType}")
-  DockerTags getImageTags(@PathParam("dflType") String dflType);
+  DockerTagsDTO getImageTags(@PathParam("dflType") String dflType);
 
   @GET
   @Path("/v1/dataflow/namespaces")

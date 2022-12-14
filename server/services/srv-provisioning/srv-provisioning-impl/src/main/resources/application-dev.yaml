@@ -4,8 +4,6 @@ quarkus:
     cors: false
   log:
     category:
-      #      "org.apache.camel":
-      #        level: DEBUG
       esthesis:
         level: DEBUG
     handler:
@@ -15,8 +13,8 @@ quarkus:
         port: 12201
         include-full-mdc: true
   rest-client:
-    DataflowResource:
-      url: http://localhost:59060
+    DeviceSystemResource:
+      url: http://localhost:59010
       scope: Singleton
   mongodb:
     connection-string: mongodb://esthesis-dev-mongodb:27017
@@ -51,7 +49,7 @@ mp:
   quarkus:
     log:
       category:
-        "org.jboss.resteasy":
+        "org.jboss.resteasy.reactive":
           level: DEBUG
     rest-client:
       logging:
@@ -63,6 +61,8 @@ mp:
     log:
       category:
         "io.quarkus.mongodb.panache.common.runtime":
+          level: DEBUG
+        "org.mongodb.driver.protocol.command":
           level: DEBUG
 
 "%debug-token":

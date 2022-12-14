@@ -9,7 +9,7 @@ import static esthesis.service.provisioning.impl.routes.ProvisioningRoutes.PROPE
 import com.mongodb.client.model.Filters;
 import esthesis.common.AppConstants.Provisioning.CacheStatus;
 import esthesis.common.exception.QMismatchException;
-import esthesis.service.provisioning.dto.ProvisioningPackage;
+import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.impl.repository.ProvisioningRepository;
 import esthesis.util.redis.RedisUtils;
 import javax.enterprise.context.ApplicationScoped;
@@ -53,21 +53,21 @@ public class ProvisioningRoutingService {
 
   public void searchForBinaryPackage(Exchange exchange) {
     // Parse the incoming package.
-    ProvisioningPackage pp = provisioningRepository.parse(
+    ProvisioningPackageEntity pp = provisioningRepository.parse(
         exchange.getIn().getBody(Document.class));
     Bson equalsClause = Filters.eq("provisioningPackage", pp.getId());
     exchange.getIn().setHeader(MongoDbConstants.CRITERIA, equalsClause);
   }
 
   /**
-   * Parses an incoming {@link ProvisioningPackage} and extracts as exchange properties: - The ID -
-   * The type of the package (FTP, Web, etc.). - The hash.
+   * Parses an incoming {@link ProvisioningPackageEntity} and extracts as exchange properties: - The
+   * ID - The type of the package (FTP, Web, etc.). - The hash.
    *
    * @param exchange The Camel Exchange.
    */
   public void extractProvisioningPackageInfo(Exchange exchange) {
     // Parse the incoming package.
-    ProvisioningPackage pp = provisioningRepository.parse(
+    ProvisioningPackageEntity pp = provisioningRepository.parse(
         exchange.getIn().getBody(Document.class));
 
     // Extract the id.

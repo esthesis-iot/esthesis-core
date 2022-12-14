@@ -1,6 +1,6 @@
 package esthesis.services.device.impl.messaging;
 
-import esthesis.service.tag.dto.Tag;
+import esthesis.service.tag.entity.TagEntity;
 import esthesis.service.tag.messaging.TagServiceMessaging;
 import esthesis.services.device.impl.service.DeviceTagService;
 import io.opentelemetry.context.Context;
@@ -24,7 +24,7 @@ public class MessageHandlers {
 
   @Blocking
   @Incoming(TagServiceMessaging.TOPIC_TAG_DELETE)
-  public CompletionStage<Void> tagDeleted(Message<Tag> msg) {
+  public CompletionStage<Void> tagDeleted(Message<TagEntity> msg) {
     Scope scope = Context.current().makeCurrent();
 
     try {

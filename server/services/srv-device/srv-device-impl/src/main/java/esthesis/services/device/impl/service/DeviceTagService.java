@@ -1,8 +1,8 @@
 package esthesis.services.device.impl.service;
 
 import com.google.common.collect.Lists;
-import esthesis.service.device.dto.Device;
-import esthesis.service.tag.dto.Tag;
+import esthesis.service.device.entity.DeviceEntity;
+import esthesis.service.tag.entity.TagEntity;
 import esthesis.service.tag.resource.TagResource;
 import esthesis.services.device.impl.repository.DeviceRepository;
 import java.util.ArrayList;
@@ -32,15 +32,15 @@ public class DeviceTagService {
    * @param partialMatch Whether the search for the tag name will be partial or not.
    * @return Returns the devices matched.
    */
-  public List<Device> findByTagName(List<String> tagNames,
+  public List<DeviceEntity> findByTagName(List<String> tagNames,
       boolean partialMatch) {
     if (tagNames.isEmpty()) {
       return new ArrayList<>();
     } else {
-      List<Tag> tagsByName = Lists.newArrayList(
+      List<TagEntity> tagsByName = Lists.newArrayList(
           tagResource.findByNames(String.join(",", tagNames), partialMatch));
       return deviceRepository.findByTagId(tagsByName.stream()
-          .map(Tag::getId)
+          .map(TagEntity::getId)
           .map(Object::toString)
           .collect(Collectors.toList()));
     }
@@ -53,11 +53,11 @@ public class DeviceTagService {
    * @param partialMatch Whether the search for the tag name will be partial or not.
    * @return Returns the devices matched.
    */
-  public List<Device> findByTagName(String tagName, boolean partialMatch) {
+  public List<DeviceEntity> findByTagName(String tagName, boolean partialMatch) {
     return findByTagName(Collections.singletonList(tagName), partialMatch);
   }
 
-  public List<Device> findByTagId(String tagId) {
+  public List<DeviceEntity> findByTagId(String tagId) {
     return deviceRepository.findByTagId(tagId);
   }
 
@@ -68,11 +68,11 @@ public class DeviceTagService {
    * @param partialMatch Whether the search for the tag name should be partial or not.
    */
   public Long countByTag(List<String> tags, boolean partialMatch) {
-    List<Tag> tagsByName = Lists.newArrayList(
+    List<TagEntity> tagsByName = Lists.newArrayList(
         tagResource.findByNames(String.join(",", tags), partialMatch));
     if (tagsByName.size() > 0) {
       return deviceRepository.countByTag(tagsByName.stream()
-          .map(Tag::getId)
+          .map(TagEntity::getId)
           .map(Object::toString)
           .collect(Collectors.toList()));
     } else {
@@ -91,7 +91,7 @@ public class DeviceTagService {
         .forEach(device -> {
           device.getTags().removeIf(s -> s.equals(tagName));
           deviceRepository.update(device);
-          log.trace("Removed tag '{}' from device '{}'.", tagName,
+          log.debug("Removed tag '{}' from device '{}'.", tagName,
               device.getId());
         });
   }

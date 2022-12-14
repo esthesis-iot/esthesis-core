@@ -1,8 +1,8 @@
 package esthesis.services.settings.impl.resource;
 
 import esthesis.common.AppConstants.NamedSetting;
-import esthesis.service.settings.dto.DevicePageField;
-import esthesis.service.settings.dto.Setting;
+import esthesis.service.settings.entity.DevicePageFieldEntity;
+import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.services.settings.impl.service.DevicePageFieldService;
 import esthesis.services.settings.impl.service.SettingsService;
@@ -27,29 +27,29 @@ public class SettingsResourceImpl implements SettingsResource {
   DevicePageFieldService devicePageFieldService;
 
   @Override
-  public Setting findByName(NamedSetting name) {
+  public SettingEntity findByName(NamedSetting name) {
     return settingsService.findByName(name);
   }
 
   @Override
-  public List<Setting> findByNames(String names) {
+  public List<SettingEntity> findByNames(String names) {
     return Arrays.stream(names.split(",")).map(
             name -> settingsService.findByName(NamedSetting.valueOf(name)))
         .filter(Objects::nonNull).toList();
   }
 
   @Override
-  public void save(Setting... settings) {
+  public void save(SettingEntity... settingEntities) {
     // Saving a setting entry is a special case as the caller might want to
     // overwrite the value of a setting entry by name (i.e. without knowing
     // the setting entry id).
-    for (Setting entry : settings) {
+    for (SettingEntity entry : settingEntities) {
       if (entry.getId() != null) {
         log.debug("Updating an existing setting entry by id with '{}'.",
             entry);
         settingsService.save(entry);
       } else {
-        Setting existingEntry = settingsService.findByTextName(
+        SettingEntity existingEntry = settingsService.findByTextName(
             entry.getName());
         if (existingEntry != null) {
           log.debug("Updating an existing setting entry with '{}'.", entry);
@@ -69,12 +69,12 @@ public class SettingsResourceImpl implements SettingsResource {
   }
 
   @Override
-  public List<DevicePageField> getDevicePageFields() {
+  public List<DevicePageFieldEntity> getDevicePageFields() {
     return devicePageFieldService.getFields();
   }
 
   @Override
-  public void saveDevicePageFields(@Valid List<DevicePageField> fields) {
+  public void saveDevicePageFields(@Valid List<DevicePageFieldEntity> fields) {
     devicePageFieldService.saveFields(fields);
   }
 }

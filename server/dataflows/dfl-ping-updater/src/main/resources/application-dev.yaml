@@ -3,11 +3,43 @@ quarkus:
     category:
       esthesis:
         level: DEBUG
-    #      "org.apache.camel":
-    #        level: DEBUG
     handler:
       gelf:
         enabled: true
         host: esthesis-dev-loki-gelf-udp
         port: 12201
         include-full-mdc: true
+
+###############################################################################
+# DEBUG PROFILES
+###############################################################################
+"%debug-rest":
+  quarkus:
+    log:
+      category:
+        "org.jboss.resteasy.reactive":
+          level: DEBUG
+    rest-client:
+      logging:
+        scope: request-response
+        body-limit: 65536
+"%debug-mongo":
+  quarkus:
+    log:
+      category:
+        "io.quarkus.mongodb.panache.common.runtime":
+          level: DEBUG
+        "org.mongodb.driver.protocol.command":
+          level: DEBUG
+"%debug-token":
+  quarkus:
+    log:
+      category:
+        "io.quarkus.oidc.token.propagation.reactive":
+          level: DEBUG
+"%debug-camel":
+  quarkus:
+    log:
+      category:
+        "org.apache.camel":
+          level: DEBUG

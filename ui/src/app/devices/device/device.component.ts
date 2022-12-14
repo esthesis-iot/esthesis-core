@@ -106,8 +106,15 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     });
   }
 
-  downloadKeys() {
-    this.devicesService.downloadKeys(this.id!);
+  downloadPublicKey() {
+    this.devicesService.downloadPublicKey(this.id!);
   }
 
+  downloadPrivateKey() {
+    this.devicesService.downloadPrivateKey(this.id!);
+  }
+
+  downloadCertificate() {
+    this.devicesService.downloadCertificate(this.id!);
+  }
 }

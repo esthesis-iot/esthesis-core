@@ -1,6 +1,6 @@
 package esthesis.service.command.impl.service;
 
-import esthesis.service.command.dto.CommandRequest;
+import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.common.BaseService;
 import java.time.Duration;
 import java.time.Instant;
@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ApplicationScoped
-class CommandRequestService extends BaseService<CommandRequest> {
+class CommandRequestService extends BaseService<CommandRequestEntity> {
 
   /**
    * Purges all commands older than the given duration.

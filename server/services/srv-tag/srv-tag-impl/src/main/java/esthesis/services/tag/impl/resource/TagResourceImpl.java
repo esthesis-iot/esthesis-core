@@ -2,7 +2,7 @@ package esthesis.services.tag.impl.resource;
 
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.tag.dto.Tag;
+import esthesis.service.tag.entity.TagEntity;
 import esthesis.service.tag.resource.TagResource;
 import esthesis.services.tag.impl.service.TagService;
 import java.util.Arrays;
@@ -29,22 +29,22 @@ public class TagResourceImpl implements TagResource {
   @GET
   @Override
   @Path("/v1/tag/find")
-  public Page<Tag> find(@BeanParam Pageable pageable) {
+  public Page<TagEntity> find(@BeanParam Pageable pageable) {
     return tagService.find(pageable, true);
   }
 
   @Override
-  public Tag findById(@PathParam("id") ObjectId id) {
+  public TagEntity findById(@PathParam("id") ObjectId id) {
     return tagService.findById(id);
   }
 
   @Override
-  public Tag findByName(@PathParam("name") String name, boolean partialMatch) {
+  public TagEntity findByName(@PathParam("name") String name, boolean partialMatch) {
     return tagService.findFirstByColumn("name", name, partialMatch);
   }
 
   @Override
-  public List<Tag> findByNames(@QueryParam("names") String names,
+  public List<TagEntity> findByNames(@QueryParam("names") String names,
       boolean partialMatch) {
     return tagService.findByColumnIn("name", Arrays.asList(names.split(",")),
         partialMatch);
@@ -58,7 +58,7 @@ public class TagResourceImpl implements TagResource {
   }
 
   @Override
-  public Tag save(@Valid Tag tag) {
-    return tagService.save(tag);
+  public TagEntity save(@Valid TagEntity tagEntity) {
+    return tagService.save(tagEntity);
   }
 }

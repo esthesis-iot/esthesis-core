@@ -2,9 +2,9 @@ package esthesis.services.device.impl.service;
 
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.service.common.BaseService;
-import esthesis.service.device.dto.Device;
 import esthesis.service.device.dto.GeolocationDTO;
-import esthesis.service.settings.dto.Setting;
+import esthesis.service.device.entity.DeviceEntity;
+import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.services.device.impl.repository.DeviceRepository;
 import esthesis.util.redis.RedisUtils;
@@ -16,12 +16,13 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @ApplicationScoped
-public class DeviceService extends BaseService<Device> {
+public class DeviceService extends BaseService<DeviceEntity> {
 
   @Inject
   JsonWebToken jwt;
@@ -42,7 +43,7 @@ public class DeviceService extends BaseService<Device> {
    * @param hardwareId   The hardware ID to search by.
    * @param partialMatch Whether the search for the hardware ID should be partial or not.
    */
-  public Optional<Device> findByHardwareId(String hardwareId, boolean partialMatch) {
+  public Optional<DeviceEntity> findByHardwareId(String hardwareId, boolean partialMatch) {
     if (partialMatch) {
       return deviceRepository.findByHardwareIdPartial(hardwareId);
     } else {
@@ -57,7 +58,7 @@ public class DeviceService extends BaseService<Device> {
    * @param partialMatch Whether the search for the hardware ID will be partial or not.
    * @return Returns the list of devices matched.
    */
-  public List<Device> findByHardwareId(List<String> hardwareIds, boolean partialMatch) {
+  public List<DeviceEntity> findByHardwareId(List<String> hardwareIds, boolean partialMatch) {
     if (partialMatch) {
       return deviceRepository.findByHardwareIdPartial(hardwareIds);
     } else {
@@ -86,19 +87,19 @@ public class DeviceService extends BaseService<Device> {
    * @param deviceId The device ID to search by.
    */
   public GeolocationDTO getGeolocation(String deviceId) {
-    Setting settingLon = settingsResource.findByName(NamedSetting.DEVICE_GEO_LON);
-    Setting settingLat = settingsResource.findByName(NamedSetting.DEVICE_GEO_LAT);
+    SettingEntity settingEntityLon = settingsResource.findByName(NamedSetting.DEVICE_GEO_LON);
+    SettingEntity settingEntityLat = settingsResource.findByName(NamedSetting.DEVICE_GEO_LAT);
 
-    if (settingLon != null && settingLat != null) {
+    if (settingEntityLon != null && settingEntityLat != null) {
       String hardwareId = findById(deviceId).getHardwareId();
       String redisLat = redisUtils.getFromHash(KeyType.ESTHESIS_DM, hardwareId,
-          settingLat.getValue());
+          settingEntityLat.getValue());
       String redisLon = redisUtils.getFromHash(KeyType.ESTHESIS_DM, hardwareId,
-          settingLon.getValue());
+          settingEntityLon.getValue());
       Instant lastUpdateLat = redisUtils.getLastUpdate(KeyType.ESTHESIS_DM, hardwareId,
-          settingLat.getValue());
+          settingEntityLat.getValue());
       Instant lastUpdateLon = redisUtils.getLastUpdate(KeyType.ESTHESIS_DM, hardwareId,
-          settingLon.getValue());
+          settingEntityLon.getValue());
       if (redisLat != null && redisLon != null && lastUpdateLat != null && lastUpdateLon != null) {
         return new GeolocationDTO(new BigDecimal(redisLat), new BigDecimal(redisLon),
             lastUpdateLat.isAfter(lastUpdateLon) ? lastUpdateLat : lastUpdateLon);
@@ -108,5 +109,17 @@ public class DeviceService extends BaseService<Device> {
     } else {
       return null;
     }
+  }
+
+  public String downloadPublicKey(ObjectId id) {
+    return findById(id).getDeviceKey().getPublicKey();
+  }
+
+  public String downloadPrivateKey(ObjectId id) {
+    return findById(id).getDeviceKey().getPrivateKey();
+  }
+
+  public String downloadCertificate(ObjectId id) {
+    return findById(id).getDeviceKey().getCertificate();
   }
 }

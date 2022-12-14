@@ -1,6 +1,6 @@
 package esthesis.service.kubernetes.impl.service;
 
-import esthesis.service.kubernetes.dto.PodInfo;
+import esthesis.service.kubernetes.dto.PodInfoDTO;
 import io.fabric8.kubernetes.api.model.EnvVar;
 import io.fabric8.kubernetes.api.model.EnvVarBuilder;
 import io.fabric8.kubernetes.api.model.Quantity;
@@ -25,9 +25,9 @@ public class KubernetesService {
   @Inject
   private KubernetesClient kc;
 
-  private List<EnvVar> getEnvVar(PodInfo podInfo) {
+  private List<EnvVar> getEnvVar(PodInfoDTO podInfoDTO) {
     List<EnvVar> envVars = new ArrayList<>();
-    podInfo.getConfiguration().forEach((k, v) -> {
+    podInfoDTO.getConfiguration().forEach((k, v) -> {
       envVars.add(
           new EnvVarBuilder().withName(k).withValue((String) v).build());
     });
@@ -35,32 +35,32 @@ public class KubernetesService {
     return envVars;
   }
 
-  public boolean schedulePod(PodInfo podInfo) {
-    log.debug("Scheduling pod '{}'.", podInfo);
+  public boolean schedulePod(PodInfoDTO podInfoDTO) {
+    log.debug("Scheduling pod '{}'.", podInfoDTO);
 
     //@formatter:off
     Deployment deploymentInfo = new DeploymentBuilder()
         .withNewMetadata()
-          .withName(podInfo.getName())
+          .withName(podInfoDTO.getName())
         .endMetadata()
         .withNewSpec()
           .withNewSelector()
-            .addToMatchLabels("app", podInfo.getName())
+            .addToMatchLabels("app", podInfoDTO.getName())
           .endSelector()
           .withNewTemplate()
             .withNewMetadata()
-              .addToLabels("app", podInfo.getName())
+              .addToLabels("app", podInfoDTO.getName())
             .endMetadata()
             .withNewSpec()
               .addNewContainer()
-                .withName(podInfo.getName())
-                .withImage(podInfo.getImage())
+                .withName(podInfoDTO.getName())
+                .withImage(podInfoDTO.getImage())
                 .withImagePullPolicy("Always")
-                .withEnv(getEnvVar(podInfo))
+                .withEnv(getEnvVar(podInfoDTO))
                 .withResources(
                     new ResourceRequirementsBuilder()
-                        .addToRequests("cpu", Quantity.parse(podInfo.getCpuRequest()))
-                        .addToLimits("cpu", Quantity.parse(podInfo.getCpuLimit()))
+                        .addToRequests("cpu", Quantity.parse(podInfoDTO.getCpuRequest()))
+                        .addToLimits("cpu", Quantity.parse(podInfoDTO.getCpuLimit()))
                         .build()
                 )
               .endContainer()
@@ -70,26 +70,26 @@ public class KubernetesService {
         .build();
     // @formatter:on
 
-    if (podInfo.isStatus()) {
-      kc.apps().deployments().inNamespace(podInfo.getNamespace())
+    if (podInfoDTO.isStatus()) {
+      kc.apps().deployments().inNamespace(podInfoDTO.getNamespace())
           .createOrReplace(deploymentInfo);
     } else {
-      kc.apps().deployments().inNamespace(podInfo.getNamespace())
+      kc.apps().deployments().inNamespace(podInfoDTO.getNamespace())
           .delete(deploymentInfo);
     }
 
     //@formatter:off
     HorizontalPodAutoscaler horizontalPodAutoscaler = new HorizontalPodAutoscalerBuilder()
-        .withNewMetadata().withName("hpa-" + podInfo.getName())
+        .withNewMetadata().withName("hpa-" + podInfoDTO.getName())
         .endMetadata()
         .withNewSpec()
         .withNewScaleTargetRef()
         .withApiVersion("apps/v1")
         .withKind("Deployment")
-        .withName(podInfo.getName())
+        .withName(podInfoDTO.getName())
         .endScaleTargetRef()
-        .withMinReplicas(podInfo.getMinInstances())
-        .withMaxReplicas(podInfo.getMaxInstances())
+        .withMinReplicas(podInfoDTO.getMinInstances())
+        .withMaxReplicas(podInfoDTO.getMaxInstances())
         .addToMetrics(new MetricSpecBuilder()
             .withType("Resource")
             .withNewResource()
@@ -118,12 +118,12 @@ public class KubernetesService {
         .build();
     //@formatter:on
 
-    if (podInfo.isStatus()) {
+    if (podInfoDTO.isStatus()) {
       kc.autoscaling().v2beta2().horizontalPodAutoscalers().inNamespace(
-          podInfo.getNamespace()).createOrReplace(horizontalPodAutoscaler);
+          podInfoDTO.getNamespace()).createOrReplace(horizontalPodAutoscaler);
     } else {
       kc.autoscaling().v2beta2().horizontalPodAutoscalers().inNamespace(
-          podInfo.getNamespace()).delete(horizontalPodAutoscaler);
+          podInfoDTO.getNamespace()).delete(horizontalPodAutoscaler);
     }
 
     return true;

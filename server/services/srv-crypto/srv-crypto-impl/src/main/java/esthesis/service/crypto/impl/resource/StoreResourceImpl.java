@@ -3,7 +3,7 @@ package esthesis.service.crypto.impl.resource;
 import com.github.slugify.Slugify;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.crypto.dto.Store;
+import esthesis.service.crypto.entity.StoreEntity;
 import esthesis.service.crypto.impl.service.StoreService;
 import esthesis.service.crypto.resource.StoreResource;
 import io.quarkus.security.Authenticated;
@@ -29,18 +29,18 @@ public class StoreResourceImpl implements StoreResource {
   StoreService storeService;
 
   @Override
-  public Page<Store> find(Pageable pageable) {
+  public Page<StoreEntity> find(Pageable pageable) {
     return storeService.find(pageable);
   }
 
   @Override
-  public Store findById(ObjectId id) {
+  public StoreEntity findById(ObjectId id) {
     return storeService.findById(id);
   }
 
   @Override
-  public Store save(Store store) {
-    return storeService.save(store);
+  public StoreEntity save(StoreEntity storeEntity) {
+    return storeService.save(storeEntity);
   }
 
   @Override
@@ -51,9 +51,9 @@ public class StoreResourceImpl implements StoreResource {
   @Override
   public Response download(ObjectId id) {
     try {
-      Store store = storeService.findById(id);
+      StoreEntity storeEntity = storeService.findById(id);
       String filename = Slugify.builder().underscoreSeparator(true).build()
-          .slugify(store.getName());
+          .slugify(storeEntity.getName());
       byte[] keystore = storeService.download(id);
 
       return ResponseBuilder.ok(keystore)

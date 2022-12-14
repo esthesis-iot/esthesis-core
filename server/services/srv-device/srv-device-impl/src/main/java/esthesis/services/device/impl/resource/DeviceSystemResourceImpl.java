@@ -1,9 +1,10 @@
 package esthesis.services.device.impl.resource;
 
-import esthesis.service.device.dto.Device;
-import esthesis.service.device.dto.DeviceRegistration;
+import esthesis.service.device.dto.DeviceRegistrationDTO;
+import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
 import esthesis.services.device.impl.service.DeviceRegistrationService;
+import esthesis.services.device.impl.service.DeviceService;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -16,10 +17,26 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
   @Inject
   DeviceRegistrationService deviceRegistrationService;
 
+  @Inject
+  DeviceService deviceService;
+
   @Override
-  public Device register(DeviceRegistration deviceRegistration)
+  public DeviceEntity register(DeviceRegistrationDTO deviceRegistration)
   throws IOException, InvalidKeySpecException, NoSuchAlgorithmException,
          OperatorCreationException, NoSuchProviderException {
     return deviceRegistrationService.register(deviceRegistration);
+  }
+
+  @Override
+  public DeviceEntity findByHardwareId(String hardwareId) {
+    return deviceService.findByHardwareId(hardwareId, false).orElseThrow();
+  }
+
+  @Override
+  public String findPublicKey(String hardwareId) {
+    System.out.println(
+        deviceService.findByHardwareId(hardwareId, false));
+    return deviceService.findByHardwareId(hardwareId, false).orElseThrow()
+        .getDeviceKey().getPublicKey();
   }
 }

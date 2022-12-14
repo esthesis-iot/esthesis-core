@@ -7,8 +7,8 @@ import esthesis.common.exception.QMismatchException;
 import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.crypto.dto.Ca;
-import esthesis.service.crypto.dto.form.ImportCaForm;
+import esthesis.service.crypto.entity.CaEntity;
+import esthesis.service.crypto.form.ImportCaForm;
 import esthesis.service.crypto.impl.service.CAService;
 import esthesis.service.crypto.resource.CAResource;
 import io.quarkus.security.Authenticated;
@@ -34,7 +34,7 @@ public class CAResourceImpl implements CAResource {
   @Override
   @Path("/v1/ca/find")
   @JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,content.parentCaId,content.type,content.validity")
-  public Page<Ca> find(@BeanParam Pageable pageable) {
+  public Page<CaEntity> find(@BeanParam Pageable pageable) {
     return caService.find(pageable);
   }
 
@@ -42,7 +42,7 @@ public class CAResourceImpl implements CAResource {
   @Override
   @Path("/v1/ca/{id}")
   @JSONReplyFilter(filter = "id,cn,issued,parentCa,type,validity,parentCaId")
-  public Ca findById(ObjectId id) {
+  public CaEntity findById(ObjectId id) {
     return caService.findById(id);
   }
 
@@ -50,16 +50,16 @@ public class CAResourceImpl implements CAResource {
   @Override
   @Path("/v1/ca/eligible-for-signing")
   @JSONReplyFilter(filter = "id,cn")
-  public List<Ca> getEligbleForSigning() {
+  public List<CaEntity> getEligbleForSigning() {
     return caService.getEligibleForSigning();
   }
 
   @Override
   public Response download(ObjectId caId) {
     try {
-      Ca ca = caService.findById(caId);
+      CaEntity caEntity = caService.findById(caId);
       String filename = Slugify.builder().underscoreSeparator(true).build()
-          .slugify(ca.getCn());
+          .slugify(caEntity.getCn());
       return ResponseBuilder.ok(mapper.writeValueAsString(findById(caId)))
           .header("Content-Disposition",
               "attachment; filename=" + filename + ".yaml").build()
@@ -70,7 +70,7 @@ public class CAResourceImpl implements CAResource {
   }
 
   @Override
-  public Ca importCa(ImportCaForm importCaForm) {
+  public CaEntity importCa(ImportCaForm importCaForm) {
     return caService.importCa(importCaForm);
   }
 
@@ -80,8 +80,8 @@ public class CAResourceImpl implements CAResource {
   }
 
   @Override
-  public Ca save(Ca ca) {
-    return caService.save(ca);
+  public CaEntity save(CaEntity caEntity) {
+    return caService.save(caEntity);
   }
 
   @Override

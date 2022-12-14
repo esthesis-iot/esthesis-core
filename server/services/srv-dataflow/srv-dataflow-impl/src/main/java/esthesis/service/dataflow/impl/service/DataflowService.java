@@ -8,12 +8,12 @@ import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.AppConstants.TagsAlgorithm;
 import esthesis.common.data.MapUtils;
 import esthesis.service.common.BaseService;
-import esthesis.service.dataflow.dto.Dataflow;
-import esthesis.service.dataflow.dto.DockerTags;
-import esthesis.service.dataflow.dto.MatchedMqttServer;
+import esthesis.service.dataflow.dto.DockerTagsDTO;
+import esthesis.service.dataflow.dto.MatchedMqttServerDTO;
+import esthesis.service.dataflow.entity.DataflowEntity;
 import esthesis.service.dataflow.impl.docker.DockerClient;
 import esthesis.service.dataflow.impl.repository.DataflowRepository;
-import esthesis.service.kubernetes.dto.PodInfo;
+import esthesis.service.kubernetes.dto.PodInfoDTO;
 import esthesis.service.kubernetes.resource.KubernetesResource;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.service.tag.resource.TagResource;
@@ -30,7 +30,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @ApplicationScoped
-public class DataflowService extends BaseService<Dataflow> {
+public class DataflowService extends BaseService<DataflowEntity> {
 
   private static final String DOCKER_IMAGE_PREFIX = "esthesisiot/esthesis-dfl-";
   private static final String KUBERNETES_CONTAINER_IMAGE_VERSION = "docker";
@@ -68,8 +68,8 @@ public class DataflowService extends BaseService<Dataflow> {
    * @param tagNames the tag names to search by.
    * @return Returns the MQTT server registered with all given tags matched.
    */
-  public MatchedMqttServer matchMqttServerByTags(List<String> tagNames) {
-    MatchedMqttServer matchedMqttServer = new MatchedMqttServer();
+  public MatchedMqttServerDTO matchMqttServerByTags(List<String> tagNames) {
+    MatchedMqttServerDTO matchedMqttServerDTO = new MatchedMqttServerDTO();
 
     // The dataflow type representing an MQTT client.
     final String MQTT_BROKER = "mqtt-broker";
@@ -84,7 +84,7 @@ public class DataflowService extends BaseService<Dataflow> {
         .toList();
 
     // Find all dataflows of type MQTT client.
-    List<Dataflow> dataflows = dataflowRepository.findByType(
+    List<DataflowEntity> dataflowEntities = dataflowRepository.findByType(
         DFL_MQTT_CLIENT_NAME);
 
     // Find the matching algorithm to use.
@@ -92,31 +92,31 @@ public class DataflowService extends BaseService<Dataflow> {
         settingsResource.findByName(
             NamedSetting.DEVICE_TAGS_ALGORITHM).asString());
 
-    Optional<Dataflow> match = Optional.empty();
+    Optional<DataflowEntity> match = Optional.empty();
     if (tagNames.isEmpty()) {
-      match = dataflows.stream().filter(Dataflow::isStatus)
-          .filter(dataflow -> {
+      match = dataflowEntities.stream().filter(DataflowEntity::isStatus)
+          .filter(dataflowEntity -> {
             return
-                ((Document) dataflows.get(0).getConfig().get(MQTT_BROKER)).get(
+                ((Document) dataflowEntities.get(0).getConfig().get(MQTT_BROKER)).get(
                     TAGS) == null;
           })
           .findAny();
     } else {
       switch (deviceTagsAlgorithm) {
         case ALL -> {
-          match = dataflows.stream().filter(Dataflow::isStatus)
-              .filter(dataflow -> {
-                return ((Document) dataflows.get(0).getConfig()
+          match = dataflowEntities.stream().filter(DataflowEntity::isStatus)
+              .filter(dataflowEntity -> {
+                return ((Document) dataflowEntities.get(0).getConfig()
                     .get(MQTT_BROKER)).getList(
                     TAGS, String.class).containsAll(tagIds);
               })
               .findAny();
         }
         case ANY -> {
-          match = dataflows.stream().filter(Dataflow::isStatus)
-              .filter(dataflow -> {
+          match = dataflowEntities.stream().filter(DataflowEntity::isStatus)
+              .filter(dataflowEntity -> {
                 return ListUtils.intersection(
-                        ((Document) dataflows.get(0).getConfig()
+                        ((Document) dataflowEntities.get(0).getConfig()
                             .get(MQTT_BROKER)).getList(
                             TAGS, String.class), tagIds)
                     .size() > 0;
@@ -127,17 +127,17 @@ public class DataflowService extends BaseService<Dataflow> {
     }
 
     if (match.isPresent()) {
-      matchedMqttServer.setUrl(
+      matchedMqttServerDTO.setUrl(
           ((Document) match.get().getConfig().get(MQTT_BROKER)).get(
               MQTT_BROKER_ADVERTISED_URL).toString());
-      matchedMqttServer.setMatchingAlgorithm(deviceTagsAlgorithm);
-      matchedMqttServer.setTagsUsed(tagNames);
-      log.debug("Found match for MQTT server '{}'.", matchedMqttServer);
+      matchedMqttServerDTO.setMatchingAlgorithm(deviceTagsAlgorithm);
+      matchedMqttServerDTO.setTagsUsed(tagNames);
+      log.debug("Found match for MQTT server '{}'.", matchedMqttServerDTO);
     } else {
       log.debug("No match found for MQTT server.");
     }
 
-    return matchedMqttServer;
+    return matchedMqttServerDTO;
   }
 
   private Map<String, String> flattenMap(Map<String, Object> map) {
@@ -164,52 +164,52 @@ public class DataflowService extends BaseService<Dataflow> {
   }
 
   @Override
-  public Dataflow save(Dataflow dataflow) {
+  public DataflowEntity save(DataflowEntity dataflowEntity) {
     // Get the current state of this dataflow, if it exists.
-    if (dataflow.getId() != null) {
-      Dataflow existingDataflow = findById(dataflow.getId());
+    if (dataflowEntity.getId() != null) {
+      DataflowEntity existingDataflowEntity = findById(dataflowEntity.getId());
     }
 
     // Save the dataflow.
-    dataflow = super.save(dataflow);
+    dataflowEntity = super.save(dataflowEntity);
 
     // Get Kubernetes configuration.
-    Map<String, String> kubernetesConfig = flattenMap(dataflow.getKubernetes());
+    Map<String, String> kubernetesConfig = flattenMap(dataflowEntity.getKubernetes());
 
     // Schedule dataflow in Kubernetes.
-    PodInfo podInfo = new PodInfo();
-    podInfo.setName(Slugify.builder().build().slugify(dataflow.getName()));
-    podInfo.setImage(DOCKER_IMAGE_PREFIX + dataflow.getType());
-    podInfo.setVersion((String) dataflow.getKubernetes()
+    PodInfoDTO podInfoDTO = new PodInfoDTO();
+    podInfoDTO.setName(Slugify.builder().build().slugify(dataflowEntity.getName()));
+    podInfoDTO.setImage(DOCKER_IMAGE_PREFIX + dataflowEntity.getType());
+    podInfoDTO.setVersion((String) dataflowEntity.getKubernetes()
         .get(KUBERNETES_CONTAINER_IMAGE_VERSION));
-    podInfo.setNamespace(
-        (String) dataflow.getKubernetes().get(KUBERNETES_NAMESPACE));
-    podInfo.setMinInstances(
+    podInfoDTO.setNamespace(
+        (String) dataflowEntity.getKubernetes().get(KUBERNETES_NAMESPACE));
+    podInfoDTO.setMinInstances(
         Integer.parseInt(
-            (String) dataflow.getKubernetes().get(KUBERNETES_MIN_PODS)));
-    podInfo.setMaxInstances(
+            (String) dataflowEntity.getKubernetes().get(KUBERNETES_MIN_PODS)));
+    podInfoDTO.setMaxInstances(
         Integer.parseInt(
-            (String) dataflow.getKubernetes().get(KUBERNETES_MAX_PODS)));
-    podInfo.setCpuRequest(
-        (String) dataflow.getKubernetes().get(KUBERNETES_CPU_REQUEST));
-    podInfo.setCpuLimit(
-        (String) dataflow.getKubernetes().get(KUBERNETES_CPU_LIMIT));
-    podInfo.setConfiguration(
-        makeEnvironmentVariables(flattenMap(dataflow.getConfig()),
+            (String) dataflowEntity.getKubernetes().get(KUBERNETES_MAX_PODS)));
+    podInfoDTO.setCpuRequest(
+        (String) dataflowEntity.getKubernetes().get(KUBERNETES_CPU_REQUEST));
+    podInfoDTO.setCpuLimit(
+        (String) dataflowEntity.getKubernetes().get(KUBERNETES_CPU_LIMIT));
+    podInfoDTO.setConfiguration(
+        makeEnvironmentVariables(flattenMap(dataflowEntity.getConfig()),
             "ESTHESIS_DFL_"));
-    podInfo.setStatus(dataflow.isStatus());
+    podInfoDTO.setStatus(dataflowEntity.isStatus());
 
-    kubernetesResource.schedulePod(podInfo);
+    kubernetesResource.schedulePod(podInfoDTO);
 
-    return dataflow;
+    return dataflowEntity;
   }
 
-  public DockerTags getImageTags(String dflType) {
+  public DockerTagsDTO getImageTags(String dflType) {
     return dockerClient.getTags(DOCKER_IMAGE_PREFIX + dflType);
   }
 
   public List<String> getNamespaces() {
     return kubernetesResource.getNamespaces();
   }
-  
+
 }

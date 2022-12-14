@@ -3,9 +3,9 @@ package esthesis.service.dataflow.impl.resource;
 import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.dataflow.dto.Dataflow;
-import esthesis.service.dataflow.dto.DockerTags;
-import esthesis.service.dataflow.dto.MatchedMqttServer;
+import esthesis.service.dataflow.dto.DockerTagsDTO;
+import esthesis.service.dataflow.dto.MatchedMqttServerDTO;
+import esthesis.service.dataflow.entity.DataflowEntity;
 import esthesis.service.dataflow.impl.service.DataflowService;
 import esthesis.service.dataflow.resource.DataflowResource;
 import java.util.List;
@@ -26,12 +26,12 @@ public class DataflowResourceImpl implements DataflowResource {
   @Path("/v1/dataflow/find")
   @JSONReplyFilter(filter = "content,content.id,content.name,content.type,"
       + "content.status,content.description")
-  public Page<Dataflow> find(@BeanParam Pageable pageable) {
+  public Page<DataflowEntity> find(@BeanParam Pageable pageable) {
     return dataflowService.find(pageable, true);
   }
 
   @Override
-  public Dataflow findById(ObjectId id) {
+  public DataflowEntity findById(ObjectId id) {
     return dataflowService.findById(id);
   }
 
@@ -42,17 +42,17 @@ public class DataflowResourceImpl implements DataflowResource {
   }
 
   @Override
-  public Dataflow save(Dataflow dataflow) {
-    return dataflowService.save(dataflow);
+  public DataflowEntity save(DataflowEntity dataflowEntity) {
+    return dataflowService.save(dataflowEntity);
   }
 
   @Override
-  public MatchedMqttServer matchMqttServerByTags(List<String> tags) {
+  public MatchedMqttServerDTO matchMqttServerByTags(List<String> tags) {
     return dataflowService.matchMqttServerByTags(tags);
   }
 
   @Override
-  public DockerTags getImageTags(String dflType) {
+  public DockerTagsDTO getImageTags(String dflType) {
     return dataflowService.getImageTags(dflType);
   }
 

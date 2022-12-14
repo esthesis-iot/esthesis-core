@@ -1,21 +1,35 @@
 package esthesis.service.agent.impl.service;
 
 import esthesis.common.AppConstants.NamedSetting;
+import esthesis.common.AppConstants.Provisioning.Redis;
+import esthesis.common.exception.QLimitException;
+import esthesis.common.exception.QSecurityException;
+import esthesis.service.agent.dto.AgentProvisioningInfoResponse;
 import esthesis.service.agent.dto.AgentRegistrationRequest;
 import esthesis.service.agent.dto.AgentRegistrationResponse;
+import esthesis.service.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.service.crypto.resource.CASystemResource;
-import esthesis.service.dataflow.dto.MatchedMqttServer;
+import esthesis.service.crypto.resource.SigningSystemResource;
+import esthesis.service.dataflow.dto.MatchedMqttServerDTO;
 import esthesis.service.dataflow.resource.DataflowSystemResource;
-import esthesis.service.device.dto.Device;
-import esthesis.service.device.dto.DeviceRegistration;
+import esthesis.service.device.dto.DeviceRegistrationDTO;
+import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
-import esthesis.service.settings.dto.Setting;
+import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
+import esthesis.service.provisioning.resource.ProvisioningAgentResource;
+import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsSystemResource;
+import esthesis.util.redis.RedisUtils;
+import esthesis.util.redis.RedisUtils.KeyType;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
+import java.time.Instant;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +58,23 @@ public class AgentService {
   @RestClient
   DeviceSystemResource deviceSystemResource;
 
+  @Inject
+  @RestClient
+  ProvisioningAgentResource provisioningAgentResource;
+
+  @Inject
+  @RestClient
+  SigningSystemResource signingSystemResource;
+
+  @Inject
+  RedisUtils redisUtils;
+
+  // The number of seconds after which the counter for provisioning requests is reset.
+  private int requestCounterTimeout = 300;
+
+  // The number of provisioning requests that can be made within the timeout period.
+  private int requestsPerTimeslot = 5;
+
   /**
    * Registers a new device into the system.
    */
@@ -51,7 +82,7 @@ public class AgentService {
       AgentRegistrationRequest agentRegistrationRequest)
   throws NoSuchAlgorithmException, IOException, InvalidKeySpecException,
          NoSuchProviderException, OperatorCreationException {
-    DeviceRegistration deviceRegistration = new DeviceRegistration();
+    DeviceRegistrationDTO deviceRegistration = new DeviceRegistrationDTO();
     deviceRegistration.setIds(agentRegistrationRequest.getHardwareId());
     if (StringUtils.isNotBlank(agentRegistrationRequest.getTags())) {
       deviceRegistration.setTags(
@@ -59,15 +90,15 @@ public class AgentService {
               .toList());
     }
     log.debug("Requesting device registration with: '{}'", deviceRegistration);
-    Device device = deviceSystemResource.register(deviceRegistration);
+    DeviceEntity deviceEntity = deviceSystemResource.register(deviceRegistration);
 
     AgentRegistrationResponse agentRegistrationResponse = new AgentRegistrationResponse();
     agentRegistrationResponse.setCertificate(
-        device.getDeviceKey().getCertificate());
+        deviceEntity.getDeviceKey().getCertificate());
     agentRegistrationResponse.setPublicKey(
-        device.getDeviceKey().getPublicKey());
+        deviceEntity.getDeviceKey().getPublicKey());
     agentRegistrationResponse.setPrivateKey(
-        device.getDeviceKey().getPrivateKey());
+        deviceEntity.getDeviceKey().getPrivateKey());
 
     // Find the root CA to be pushed to the device.
     ObjectId rootCaId =
@@ -81,7 +112,7 @@ public class AgentService {
     }
 
     // Find the MQTT server to send back to the device.
-    MatchedMqttServer mqttServer = dataflowSystemResource.matchMqttServerByTags(
+    MatchedMqttServerDTO mqttServer = dataflowSystemResource.matchMqttServerByTags(
         Arrays.asList(agentRegistrationRequest.getTags().split(",")));
     if (mqttServer != null) {
       agentRegistrationResponse.setMqttServer(mqttServer.getUrl());
@@ -93,7 +124,7 @@ public class AgentService {
     }
 
     // Set provisioning URL.
-    Setting provisioningUrl =
+    SettingEntity provisioningUrl =
         settingsSystemResource.findByName(NamedSetting.DEVICE_PROVISIONING_URL);
     if (provisioningUrl != null) {
       agentRegistrationResponse.setProvisioningUrl(provisioningUrl.getValue());
@@ -104,75 +135,123 @@ public class AgentService {
     return agentRegistrationResponse;
   }
 
-  /*
-   *//**
-   * Checks for available downloads for device's provisioning.
-   *//*
-  public DeviceMessage<ProvisioningInfoResponse> provisioningInfo(
-      Optional<Long> id,
-      DeviceMessage<ProvisioningInfoRequest> provisioningInfoRequest) {
-    // Find device information.
-    final DeviceDTO deviceDTO = deviceService
-        .findByHardwareId(provisioningInfoRequest.getHardwareId());
+  /**
+   * Attempts to validate a request token sent by a device while requesting information on available
+   * provisioning packages. The token is an RSA/SHA256 digital signature of the hardware id of the
+   * device requesting the information.
+   *
+   * @param hardwareId
+   * @param token
+   * @return
+   */
+  private boolean validateRequestToken(String hardwareId, String token) {
+    log.debug("Validating find provisioning package request token '{}' for hardware id '{}'.",
+        token, hardwareId);
 
-    // Case 1: If a specific ID is requested, obtain information for that specific provisioning
-    // package. For information to be returned, the package must be active and matching the tags of
-    // the device.
-    // Case 2: When an ID is not specified, an active, tags-matching provisioning package is
-    // returned. In there are multiple provisioning package candidates the one with the
-    // latest packageVersion (based on String.compareTo) is returned.
-    DeviceMessage<ProvisioningInfoResponse> provisioningInfoResponse = new DeviceMessage<>(
-        appProperties.getNodeId());
-    ProvisioningDTO provisioningDTO;
-    if (!id.isPresent()) {
-      Optional<ProvisioningDTO> optionalProvisioningDTO = provisioningService.matchByTag(
-          deviceDTO);
-      if (!optionalProvisioningDTO.isPresent()) {
-        log.log(Level.FINE, "Could not find a matching provisioning "
-                + "package for device {0}.",
-            provisioningInfoRequest.getHardwareId());
-        return provisioningInfoResponse;
-      } else {
-        provisioningDTO = optionalProvisioningDTO.get();
-      }
-    } else {
-      provisioningDTO = provisioningService.findById(id.get());
-      //TODO checks active + tags (read comment above).
+    // Obtain the necessary information to verify the signature.
+    String publicKey = deviceSystemResource.findPublicKey(hardwareId);
+    String keyAlgorithm = settingsSystemResource.findByName(
+        NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString();
+    String signatureAlgorithm = settingsSystemResource.findByName(
+        NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM).asString();
+
+    // Set up the signature verification request.
+    SignatureVerificationRequestDTO request = new SignatureVerificationRequestDTO();
+    request.setPublicKey(publicKey);
+    request.setKeyAlgorithm(keyAlgorithm);
+    request.setPayload(hardwareId.getBytes(StandardCharsets.UTF_8));
+    request.setSignature(token);
+    request.setSignatureAlgorithm(signatureAlgorithm);
+
+    // Verify the signature.
+    try {
+      return signingSystemResource.verifySignature(request);
+    } catch (Exception e) {
+      log.error("Could not validate request token.", e);
+      return false;
     }
-
-    // If not provisioning package found, return empty, otherwise return the details of the
-    // available provisioning package.
-    if (provisioningDTO == null) {
-      log.log(Level.FINEST,
-          "Device {0} requested provisioning package but no package matched.",
-          provisioningInfoRequest.getHardwareId());
-      return provisioningInfoResponse;
-    } else {
-      // Prepare and return the details of the provisioning package found.
-      provisioningInfoResponse
-          .setPayload(new ProvisioningInfoResponse()
-              .setId(provisioningDTO.getId())
-              .setDescription(provisioningDTO.getDescription())
-              .setName(provisioningDTO.getName())
-              .setPackageVersion(provisioningDTO.getPackageVersion())
-              .setSha256(provisioningDTO.getSha256())
-              .setFileSize(provisioningDTO.getFileSize())
-              .setFileName(provisioningDTO.getFileName()));
-    }
-
-    return provisioningInfoResponse;
   }
 
-  *//**
-   * Returns a stream with a provisioning package.
-   *//*
-  public InputStreamResource provisioningDownload(@PathVariable long id,
-      @Valid @RequestBody DeviceMessage<ProvisioningRequest> provisioningRequest)
-  throws IOException {
-    // Find device information.
-    final DeviceDTO deviceDTO = deviceService
-        .findByHardwareId(provisioningRequest.getHardwareId());
+  /**
+   * Returns information of a provisioning package that can be downloaded by this device.
+   * <p>
+   * This method maintains a counter of provisioning requests for each device and denies additional
+   * requests for the same device if more than a certain number of failed requests are made within a
+   * certain time period. The counter functionality only works when the platform is running in
+   * secure provisioning mode, and it is reset once a successful request is made.
+   *
+   * @param hardwareId
+   * @param token
+   * @return
+   */
+  public AgentProvisioningInfoResponse findProvisioningPackage(String hardwareId,
+      Optional<String> token) {
+    // If the platform is configured to only allow secure provisioning requests check the
+    // requestToken provided by the device.
+    if (settingsSystemResource.findByName(NamedSetting.DEVICE_PROVISIONING_SECURE).asBoolean()) {
+      long counter = redisUtils.incrCounter(KeyType.ESTHESIS_PRT, hardwareId,
+          requestCounterTimeout);
+      if (counter > requestsPerTimeslot) {
+        throw new QLimitException(
+            "Device with hardware id '{}' has exceeded the number of allowed provisioning "
+                + "requests, '{}' requests per '{}' seconds).", hardwareId, requestsPerTimeslot,
+            requestCounterTimeout);
+      }
 
-    return new InputStreamResource(provisioningService.download(id));
-  }*/
+      // Attempt to validate the request token.
+      if (token.isEmpty()) {
+        throw new QSecurityException(
+            "Requesting provisioning package information for hardware id '{}' requires a token.",
+            hardwareId);
+      } else {
+        if (!validateRequestToken(hardwareId, token.get())) {
+          throw new QSecurityException("Invalid request token '{}' for hardware id '{}'.",
+              token.get(), hardwareId);
+        } else {
+          log.debug("Request token '{}' for hardware id '{}' is valid.",
+              token.get(), hardwareId);
+        }
+      }
+
+      // If the token was validated, reset the caching counter.
+      redisUtils.resetCounter(KeyType.ESTHESIS_PRT, hardwareId);
+    }
+
+    // Find a candidate provisioning package.
+    log.debug("Requesting provisioning info for device with hardware ID '{}'.",
+        hardwareId);
+    ProvisioningPackageEntity pp = provisioningAgentResource.find(hardwareId);
+
+    // If a provisioning package was not found terminate here.
+    if (pp == null) {
+      log.warn("Could not find a provisioning package for device with hardware ID '{}'.",
+          hardwareId);
+      return null;
+    }
+
+    // If a provisioning package was found, create a download token for it.
+    log.debug("Found provisioning package '{}'.", pp);
+    String randomToken = UUID.randomUUID().toString().replace("-", "");
+    redisUtils.setToHash(KeyType.ESTHESIS_PPDT, randomToken,
+        Redis.DOWNLOAD_TOKEN_PACKAGE_ID, pp.getId().toString());
+    redisUtils.setToHash(KeyType.ESTHESIS_PPDT, randomToken,
+        Redis.DOWNLOAD_TOKEN_CREATED_ON, Instant.now().toString());
+    redisUtils.setExpirationForHash(KeyType.ESTHESIS_PPDT, randomToken,
+        settingsSystemResource.findByName(NamedSetting.DEVICE_PROVISIONING_CACHE_TIME).asLong()
+            * 60);
+
+    // Prepare the reply with the provisioning package details and the download token.
+    AgentProvisioningInfoResponse apir = new AgentProvisioningInfoResponse();
+    apir.setId(pp.getId().toString());
+    apir.setName(pp.getName());
+    apir.setVersion(pp.getVersion());
+    apir.setSize(pp.getSize());
+    apir.setSha256(pp.getSha256());
+    apir.setDownloadUrl(
+        settingsSystemResource.findByName(NamedSetting.DEVICE_PROVISIONING_URL).asString());
+    apir.setDownloadToken(randomToken);
+
+    return apir;
+  }
+
 }

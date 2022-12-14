@@ -35,11 +35,11 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
     });
 
     // Fetch settings.
-    this.settingsService.findByNames(
-      [AppConstants.NAMED_SETTING.DEVICE_REGISTRATION_MODE,
-        AppConstants.NAMED_SETTING.DEVICE_TAGS_ALGORITHM,
-        AppConstants.NAMED_SETTING.DEVICE_ROOT_CA].join(",")
-    ).subscribe(onNext => {
+    this.settingsService.findByNames([
+      AppConstants.NAMED_SETTING.DEVICE_REGISTRATION_MODE,
+      AppConstants.NAMED_SETTING.DEVICE_TAGS_ALGORITHM,
+      AppConstants.NAMED_SETTING.DEVICE_ROOT_CA
+    ]).subscribe(onNext => {
       onNext.forEach(setting => {
         if (setting != null) {
           this.form.controls[setting.name].patchValue(setting.value);

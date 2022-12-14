@@ -2,7 +2,7 @@ package esthesis.service.crypto.resource;
 
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.crypto.dto.Store;
+import esthesis.service.crypto.entity.StoreEntity;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
@@ -25,15 +25,15 @@ public interface StoreResource {
 
   @GET
   @Path("/v1/store/find")
-  Page<Store> find(@BeanParam Pageable pageable);
+  Page<StoreEntity> find(@BeanParam Pageable pageable);
 
   @GET
   @Path("/v1/store/{id}")
-  Store findById(@PathParam("id") ObjectId id);
+  StoreEntity findById(@PathParam("id") ObjectId id);
 
   @POST
   @Path("/v1/store")
-  Store save(@Valid Store store);
+  StoreEntity save(@Valid StoreEntity storeEntity);
 
   @DELETE
   @Path("/v1/store/{id}")

@@ -14,7 +14,7 @@ import static org.apache.camel.component.minio.MinioConstants.OBJECT_NAME;
 import esthesis.common.AppConstants.Provisioning.ConfigOption;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.exception.QMismatchException;
-import esthesis.service.provisioning.dto.ProvisioningPackage;
+import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.impl.repository.ProvisioningRepository;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,7 +36,8 @@ public class ConfigService {
 
   public void setupWebConfig(Exchange exchange) {
     // Get the provisioning package info.
-    ProvisioningPackage pp = provisioningRepository.parse(exchange.getIn().getBody(Document.class));
+    ProvisioningPackageEntity pp = provisioningRepository.parse(
+        exchange.getIn().getBody(Document.class));
     if (pp == null) {
       throw new QDoesNotExistException("Could not find a provisioning package in this Exchange.");
     }
@@ -68,7 +69,8 @@ public class ConfigService {
 
   public void setupFtpConfig(Exchange exchange) {
     // Get the provisioning package info.
-    ProvisioningPackage pp = provisioningRepository.parse(exchange.getIn().getBody(Document.class));
+    ProvisioningPackageEntity pp = provisioningRepository.parse(
+        exchange.getIn().getBody(Document.class));
     if (pp == null) {
       throw new QDoesNotExistException("Could not find a provisioning package in this Exchange.");
     }
@@ -119,7 +121,8 @@ public class ConfigService {
 
   public void setupMinioConfig(Exchange exchange) {
     // Get the provisioning package info.
-    ProvisioningPackage pp = provisioningRepository.parse(exchange.getIn().getBody(Document.class));
+    ProvisioningPackageEntity pp = provisioningRepository.parse(
+        exchange.getIn().getBody(Document.class));
     if (pp == null) {
       throw new QDoesNotExistException("Could not find a provisioning package in this Exchange.");
     }

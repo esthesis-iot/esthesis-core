@@ -1,6 +1,6 @@
 package esthesis.services.application.impl.resource;
 
-import esthesis.service.application.dto.DTValueReply;
+import esthesis.service.application.dto.DTValueReplyDTO;
 import esthesis.service.application.resource.DTResource;
 import esthesis.services.application.impl.service.DTService;
 import java.util.List;
@@ -13,7 +13,7 @@ public class DTResourceImpl implements DTResource {
   DTService dtService;
 
   @Override
-  public DTValueReply findJSON(String hardwareId, String category,
+  public DTValueReplyDTO findJSON(String hardwareId, String category,
       String measurement) {
     return dtService.find(hardwareId, category, measurement);
   }
@@ -26,7 +26,7 @@ public class DTResourceImpl implements DTResource {
   }
 
   @Override
-  public List<DTValueReply> findAllJSON(String hardwareId, String category) {
+  public List<DTValueReplyDTO> findAllJSON(String hardwareId, String category) {
     return dtService.findAll(hardwareId, category);
   }
 
@@ -40,7 +40,7 @@ public class DTResourceImpl implements DTResource {
   @Override
   public String findMeasurements(String hardwareId, String category) {
     return dtService.findAll(hardwareId, category).stream().map(
-        DTValueReply::getMeasurement).collect(Collectors.joining("\n"));
+        DTValueReplyDTO::getMeasurement).collect(Collectors.joining("\n"));
   }
 
 }

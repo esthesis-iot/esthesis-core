@@ -1,5 +1,7 @@
 package esthesis.service.agent.impl.resource;
 
+import esthesis.common.exception.QLimitException;
+import esthesis.common.exception.QSecurityException;
 import esthesis.service.agent.dto.AgentRegistrationRequest;
 import esthesis.service.agent.dto.AgentRegistrationResponse;
 import esthesis.service.agent.impl.service.AgentService;
@@ -8,7 +10,10 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Optional;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.operator.OperatorCreationException;
 
@@ -24,25 +29,21 @@ public class AgentResourceImpl implements AgentResource {
          OperatorCreationException, NoSuchProviderException {
     log.debug("Received agent registration request '{}'.",
         agentRegistrationRequest);
-    
+
     return agentService.register(agentRegistrationRequest);
   }
 
-  /*
-  public DeviceMessage<ProvisioningInfoResponse> provisioningInfo(
-      @PathParam(value = "id") String id,
-      @Valid DeviceMessage<ProvisioningInfoRequest> provisioningInfoRequest) {
-    return Response.ok(
-        agentService.provisioningInfo(id, provisioningInfoRequest));
+  @Override
+  public Response findProvisioningPackage(String hardwareId, Optional<String> token) {
+    try {
+      return Response.ok(agentService.findProvisioningPackage(hardwareId, token)).build();
+    } catch (QLimitException e) {
+      log.warn(e.getMessage());
+      return Response.status(Status.TOO_MANY_REQUESTS).build();
+    } catch (QSecurityException e) {
+      log.warn(e.getMessage());
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
   }
 
-  public Response provisioningDownload(@PathParam(value = "id") String id,
-      @Valid DeviceMessage<ProvisioningRequest> provisioningRequest) {
-    return Response.ok()
-        .header(HttpHeaders.CONTENT_DISPOSITION,
-            "attachment; filename=" + provisioningService.findById(id)
-                .getFileName())
-        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-        .body(agentService.provisioningDownload(id, provisioningRequest));
-  }*/
 }

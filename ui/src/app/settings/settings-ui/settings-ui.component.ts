@@ -24,13 +24,13 @@ export class SettingsUiComponent extends BaseComponent implements OnInit {
     this.form = this.fb.group({});
 
     // Fetch settings.
-    this.settingsService.findByNames("").subscribe(onNext => {
-      onNext.forEach(setting => {
-        if (setting != null) {
-          this.form.controls[setting.name].patchValue(setting.value);
-        }
-      });
-    });
+    // this.settingsService.findByNames([]).subscribe(onNext => {
+    //   onNext.forEach(setting => {
+    //     if (setting != null) {
+    //       this.form.controls[setting.name].patchValue(setting.value);
+    //     }
+    //   });
+    // });
   }
 
   save() {

@@ -21,7 +21,6 @@ quarkus:
       exporter:
         otlp:
           endpoint: http://esthesis-dev-jaeger-collector:4317
-
 mp:
   jwt:
     verify:
@@ -52,6 +51,8 @@ kafka:
     log:
       category:
         "io.quarkus.mongodb.panache.common.runtime":
+          level: DEBUG
+        "org.mongodb.driver.protocol.command":
           level: DEBUG
 
 "%debug-token":

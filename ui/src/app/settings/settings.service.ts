@@ -21,9 +21,9 @@ export class SettingsService extends CrudService<SettingDto> {
     super(http, SettingsService.serviceContext);
   }
 
-  findByNames(names: string): Observable<SettingDto[]> {
+  findByNames(names: string[]): Observable<SettingDto[]> {
     return this.http.get<SettingDto[]>(
-      `${environment.apiPrefix}/${SettingsService.serviceContext}/find/by-names/${names}`);
+      `${environment.apiPrefix}/${SettingsService.serviceContext}/find/by-names/${names.join(",")}`);
   }
 
   getDevicePageFields(): Observable<DevicePageFieldDto[]> {

@@ -6,9 +6,14 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Optional;
 import javax.validation.Valid;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
 import org.bouncycastle.operator.OperatorCreationException;
 
 @Path("/api")
@@ -21,14 +26,15 @@ public interface AgentResource {
   throws NoSuchAlgorithmException, IOException, InvalidKeySpecException,
          OperatorCreationException, NoSuchProviderException;
 
-//  @POST
-//  @Path(value = "/provisioning/info/{id}")
-//  DeviceMessage<ProvisioningInfoResponse> provisioningInfo(
-//      @PathParam(value = "id") String id,
-//      @Valid DeviceMessage<ProvisioningInfoRequest> provisioningInfoRequest);
-//
-//  @POST
-//  @Path(value = "/provisioning/download/{id}")
-//  Response provisioningDownload(@PathParam(value = "id") String id,
-//      @Valid DeviceMessage<ProvisioningRequest> provisioningRequest);
+  /**
+   * Attempts to find a candidate provisioning package for the given hardware id.
+   *
+   * @param hardwareId The hardware id to find a provisioning package for.
+   * @param token      TODO define
+   */
+  @GET
+  @Path(value = "/v1/agent/provisioning/{hardwareId}/find")
+  Response findProvisioningPackage(@PathParam("hardwareId") String hardwareId,
+      @QueryParam("token") Optional<String> token);
+
 }

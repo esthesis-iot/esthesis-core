@@ -1,27 +1,27 @@
 package esthesis.services.device.impl.repository;
 
-import esthesis.service.device.dto.Device;
+import esthesis.service.device.entity.DeviceEntity;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import java.util.List;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class DeviceRepository implements PanacheMongoRepository<Device> {
+public class DeviceRepository implements PanacheMongoRepository<DeviceEntity> {
 
-  public Optional<Device> findByHardwareId(String hardwareId) {
+  public Optional<DeviceEntity> findByHardwareId(String hardwareId) {
     return find("hardwareId", hardwareId).firstResultOptional();
   }
 
-  public List<Device> findByHardwareId(List<String> hardwareIds) {
+  public List<DeviceEntity> findByHardwareId(List<String> hardwareIds) {
     return find("hardwareId in ?1", hardwareIds).list();
   }
 
-  public Optional<Device> findByHardwareIdPartial(String hardwareId) {
+  public Optional<DeviceEntity> findByHardwareIdPartial(String hardwareId) {
     return find("hardwareId like ?1", hardwareId).firstResultOptional();
   }
 
-  public List<Device> findByHardwareIdPartial(List<String> hardwareIds) {
+  public List<DeviceEntity> findByHardwareIdPartial(List<String> hardwareIds) {
     return find("hardwareId like ?1", String.join("|", hardwareIds)).list();
   }
 
@@ -33,11 +33,11 @@ public class DeviceRepository implements PanacheMongoRepository<Device> {
     return count("hardwareId like ?1", String.join("|", hardwareIds));
   }
 
-  public List<Device> findByTagId(List<String> tagIds) {
+  public List<DeviceEntity> findByTagId(List<String> tagIds) {
     return find("tags in ?1", tagIds).list();
   }
 
-  public List<Device> findByTagId(String tagId) {
+  public List<DeviceEntity> findByTagId(String tagId) {
     return find("tags", tagId).list();
   }
 

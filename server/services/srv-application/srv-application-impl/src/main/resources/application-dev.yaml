@@ -18,7 +18,6 @@ quarkus:
     DataflowSystemResource:
       url: http://localhost:59060
       scope: Singleton
-  oidc:
   oidc-client:
     auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
     client-id: esthesis
@@ -42,3 +41,37 @@ mp:
     verify:
       publickey:
         location: http://esthesis-dev-keycloak/realms/esthesis/protocol/openid-connect/certs
+
+###############################################################################
+# DEBUG PROFILES
+###############################################################################
+"%debug-rest":
+  quarkus:
+    log:
+      category:
+        "org.jboss.resteasy.reactive":
+          level: DEBUG
+    rest-client:
+      logging:
+        scope: request-response
+        body-limit: 65536
+"%debug-mongo":
+  quarkus:
+    log:
+      category:
+        "io.quarkus.mongodb.panache.common.runtime":
+          level: DEBUG
+        "org.mongodb.driver.protocol.command":
+          level: DEBUG
+"%debug-token":
+  quarkus:
+    log:
+      category:
+        "io.quarkus.oidc.token.propagation.reactive":
+          level: DEBUG
+"%debug-camel":
+  quarkus:
+    log:
+      category:
+        "org.apache.camel":
+          level: DEBUG

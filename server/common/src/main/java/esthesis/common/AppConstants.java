@@ -28,6 +28,7 @@ public class AppConstants {
 
     DEVICE_ROOT_CA, DEVICE_PROVISIONING_URL, DEVICE_REGISTRATION_MODE,
     DEVICE_TAGS_ALGORITHM, DEVICE_GEO_LAT, DEVICE_GEO_LON,
+    DEVICE_PROVISIONING_SECURE, DEVICE_PROVISIONING_CACHE_TIME,
 
     KAFKA_TOPIC_COMMAND_REQUEST, KAFKA_TOPIC_EVENT_TAG_DELETE
   }
@@ -62,6 +63,12 @@ public class AppConstants {
 
     public enum CacheStatus {
       NOT_STARTED, IN_PROGRESS, COMPLETED, FAILED
+    }
+
+    public static class Redis {
+
+      public static final String DOWNLOAD_TOKEN_PACKAGE_ID = "DTPI";
+      public static final String DOWNLOAD_TOKEN_CREATED_ON = "DTCO";
     }
   }
 

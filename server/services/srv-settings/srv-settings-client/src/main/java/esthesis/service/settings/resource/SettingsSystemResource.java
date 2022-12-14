@@ -1,7 +1,7 @@
 package esthesis.service.settings.resource;
 
 import esthesis.common.AppConstants.NamedSetting;
-import esthesis.service.settings.dto.Setting;
+import esthesis.service.settings.entity.SettingEntity;
 import io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -16,6 +16,6 @@ public interface SettingsSystemResource {
 
   @GET
   @Path("/v1/settings-system/find/by-name/{name}")
-  Setting findByName(@PathParam("name") NamedSetting name);
+  SettingEntity findByName(@PathParam("name") NamedSetting name);
 
 }

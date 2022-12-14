@@ -1,13 +1,13 @@
 package esthesis.service.command.impl.resource;
 
-import esthesis.common.dto.CommandReply;
-import esthesis.service.command.dto.CommandRequest;
+import esthesis.common.entity.CommandReplyEntity;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
+import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.command.impl.service.CommandService;
 import esthesis.service.command.resource.CommandResource;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.device.dto.Device;
+import esthesis.service.device.entity.DeviceEntity;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -25,22 +25,22 @@ public class CommandResourceImpl implements CommandResource {
   @GET
   @Override
   @Path("/v1/command/find")
-  public Page<CommandRequest> find(@BeanParam Pageable pageable) {
+  public Page<CommandRequestEntity> find(@BeanParam Pageable pageable) {
     return commandService.findCommandRequest(pageable);
   }
 
   @Override
-  public CommandRequest getCommand(String commandId) {
+  public CommandRequestEntity getCommand(String commandId) {
     return commandService.getCommand(commandId);
   }
 
   @Override
-  public List<CommandReply> getReply(String correlationId) {
+  public List<CommandReplyEntity> getReply(String correlationId) {
     return commandService.getReplies(correlationId);
   }
 
   @Override
-  public String save(CommandRequest request) {
+  public String save(CommandRequestEntity request) {
     String correlationID = commandService.saveRequest(request).toString();
     commandService.executeRequest(correlationID);
 
@@ -48,7 +48,7 @@ public class CommandResourceImpl implements CommandResource {
   }
 
   @Override
-  public List<CommandReply> saveAndWait(CommandRequest request, long timeout,
+  public List<CommandReplyEntity> saveAndWait(CommandRequestEntity request, long timeout,
       long pollInterval) {
     // Save the request and schedule its execution.
     String correlationID = commandService.saveRequest(request).toString();
@@ -72,7 +72,7 @@ public class CommandResourceImpl implements CommandResource {
   }
 
   @Override
-  public List<Device> findDevicesByHardwareId(String hardwareId) {
+  public List<DeviceEntity> findDevicesByHardwareId(String hardwareId) {
     return commandService.findDevicesByHardwareId(hardwareId);
   }
 

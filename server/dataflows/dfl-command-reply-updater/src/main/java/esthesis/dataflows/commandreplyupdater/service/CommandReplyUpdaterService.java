@@ -2,7 +2,7 @@ package esthesis.dataflows.commandreplyupdater.service;
 
 import esthesis.avro.EsthesisCommandReplyMessage;
 import esthesis.avro.ReplyType;
-import esthesis.common.dto.CommandReply;
+import esthesis.common.entity.CommandReplyEntity;
 import java.time.Instant;
 import javax.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
@@ -17,14 +17,14 @@ public class CommandReplyUpdaterService {
         .getBody(EsthesisCommandReplyMessage.class);
     log.debug("Received EsthesisCommandReplyMessage '{}'.", msg);
 
-    CommandReply commandReply = new CommandReply();
-    commandReply.setCorrelationId(msg.getCorrelationId());
-    commandReply.setCreatedOn(Instant.parse(msg.getSeenAt()));
-    commandReply.setHardwareId(msg.getHardwareId());
-    commandReply.setOutput(msg.getPayload());
-    commandReply.setSuccess(msg.getType() == ReplyType.s);
-    log.debug("Parsed CommandReply reply '{}'.", commandReply);
+    CommandReplyEntity commandReplyEntity = new CommandReplyEntity();
+    commandReplyEntity.setCorrelationId(msg.getCorrelationId());
+    commandReplyEntity.setCreatedOn(Instant.parse(msg.getSeenAt()));
+    commandReplyEntity.setHardwareId(msg.getHardwareId());
+    commandReplyEntity.setOutput(msg.getPayload());
+    commandReplyEntity.setSuccess(msg.getType() == ReplyType.s);
+    log.debug("Parsed CommandReply reply '{}'.", commandReplyEntity);
 
-    exchange.getIn().setBody(commandReply.asDocument());
+    exchange.getIn().setBody(commandReplyEntity.asDocument());
   }
 }

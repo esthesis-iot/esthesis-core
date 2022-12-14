@@ -5,8 +5,8 @@ import esthesis.common.AppConstants.Provisioning.ConfigOption;
 import esthesis.common.AppConstants.Provisioning.Type;
 import esthesis.common.exception.QMismatchException;
 import esthesis.service.common.BaseService;
-import esthesis.service.provisioning.dto.ProvisioningPackage;
-import esthesis.service.provisioning.dto.ProvisioningPackageBinary;
+import esthesis.service.provisioning.entity.ProvisioningPackageBinaryEntity;
+import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.form.ProvisioningPackageForm;
 import esthesis.util.redis.RedisUtils;
 import io.smallrye.mutiny.Uni;
@@ -25,7 +25,7 @@ import org.bson.types.ObjectId;
 
 @Slf4j
 @ApplicationScoped
-public class ProvisioningService extends BaseService<ProvisioningPackage> {
+public class ProvisioningService extends BaseService<ProvisioningPackageEntity> {
 
   @Inject
   ProvisioningBinaryService provisioningBinaryService;
@@ -39,13 +39,13 @@ public class ProvisioningService extends BaseService<ProvisioningPackage> {
   @Inject
   RedisUtils redisUtils;
 
-  public ProvisioningPackage save(ProvisioningPackageForm pf) {
+  public ProvisioningPackageEntity save(ProvisioningPackageForm pf) {
     // Convert the uploaded form to a ProvisioningPackage.
-    ProvisioningPackage p;
+    ProvisioningPackageEntity p;
     if (pf.getId() != null) {
       p = findById(pf.getId());
     } else {
-      p = new ProvisioningPackage();
+      p = new ProvisioningPackageEntity();
     }
     p.setName(pf.getName());
     p.setDescription(pf.getDescription());
@@ -90,7 +90,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackage> {
 
     // Update the binary package only for new records of ESTHESIS type.
     if (pf.getId() == null && pf.getType() == Type.ESTHESIS) {
-      ProvisioningPackageBinary pb = new ProvisioningPackageBinary();
+      ProvisioningPackageBinaryEntity pb = new ProvisioningPackageBinaryEntity();
       pb.setProvisioningPackage(p.getId());
       try {
         pb.setPayload(Files.readAllBytes(pf.getFile().uploadedFile()));
@@ -119,7 +119,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackage> {
    * @return
    */
   public void recache(ObjectId provisioningPackageId) {
-    ProvisioningPackage pp = findById(provisioningPackageId);
+    ProvisioningPackageEntity pp = findById(provisioningPackageId);
     pp.setCacheStatus(CacheStatus.NOT_STARTED);
     save(pp);
 

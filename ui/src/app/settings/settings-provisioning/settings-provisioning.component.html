@@ -6,8 +6,30 @@
       http://esthesis.server:46000
     </mat-hint>
   </mat-form-field>
+
+  <div class="inline-header">Provisioning request mode</div>
+  <mat-form-field>
+    <mat-select placeholder="Provisioning type"
+                [formControlName]="appConstants.NAMED_SETTING.DEVICE_PROVISIONING_SECURE">
+      <mat-option value="true">Secure provisioning, using tokens</mat-option>
+      <mat-option value="false">Insecure provisioning, anyone can query for provisioning
+        packages
+      </mat-option>
+    </mat-select>
+    <mat-hint>Specifies whether devices need to provide a signed token to request information on
+      available provisioning packages.
+    </mat-hint>
+  </mat-form-field>
+
+  <div class="inline-header">Provisioning caching timer</div>
+  <mat-form-field>
+    <input matInput placeholder="Tokens caching duration"
+           formControlName="DEVICE_PROVISIONING_CACHE_TIME">
+    <mat-hint>The time for which a provisioning package download token remains valid (in minutes)
+    </mat-hint>
+  </mat-form-field>
 </form>
 
-<div>
+<div class="mt2">
   <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
 </div>

@@ -1,7 +1,7 @@
 package esthesis.services.device.impl.resource;
 
-import esthesis.service.device.dto.DeviceProfileFieldData;
-import esthesis.service.device.dto.DeviceProfileNote;
+import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
+import esthesis.service.device.entity.DeviceProfileNoteEntity;
 import esthesis.service.device.resource.DeviceProfileResource;
 import esthesis.services.device.impl.service.DeviceProfileService;
 import java.util.List;
@@ -18,20 +18,20 @@ public class DeviceProfileResourceImpl implements DeviceProfileResource {
   DeviceProfileService deviceProfileService;
 
   @Override
-  public List<DeviceProfileNote> getDeviceProfileNotes(String deviceId) {
+  public List<DeviceProfileNoteEntity> getDeviceProfileNotes(String deviceId) {
     return deviceProfileService.getProfile(deviceId);
   }
 
   @Override
-  public List<DeviceProfileNote> saveDeviceProfileNotes(
+  public List<DeviceProfileNoteEntity> saveDeviceProfileNotes(
       Map<String, String> fields,
       String deviceId) {
     return deviceProfileService.saveProfile(deviceId, fields);
   }
 
   @Override
-  public DeviceProfileNote addDeviceProfileNote(
-      DeviceProfileNote field) {
+  public DeviceProfileNoteEntity addDeviceProfileNote(
+      DeviceProfileNoteEntity field) {
     return deviceProfileService.createProfileField(field);
   }
 
@@ -41,12 +41,12 @@ public class DeviceProfileResourceImpl implements DeviceProfileResource {
   }
 
   @Override
-  public List<DeviceProfileFieldData> getFieldsData(String deviceId) {
+  public List<DeviceProfileFieldDataDTO> getFieldsData(String deviceId) {
     return deviceProfileService.getProfileFields(deviceId);
   }
 
   @Override
-  public List<DeviceProfileFieldData> getAllDeviceData(String deviceId) {
+  public List<DeviceProfileFieldDataDTO> getAllDeviceData(String deviceId) {
     return deviceProfileService.getAllDeviceData(deviceId);
   }
 }

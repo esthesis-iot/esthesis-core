@@ -89,9 +89,9 @@
     <button mat-button color="accent" [matMenuTriggerFor]="menu">PURGE
       <mat-menu #menu="matMenu" xPosition="before">
         <button mat-menu-item (click)="purgeAll()">All</button>
-        <button mat-menu-item (click)="purgeKeppLastDay()">Keep last 24h</button>
-        <button mat-menu-item (click)="purgeKeppLastWeek()">Keep last week</button>
-        <button mat-menu-item (click)="purgeKeppLastMonth()">Keep last month</button>
+        <button mat-menu-item (click)="purgeKeep(1)">Keep last 24h</button>
+        <button mat-menu-item (click)="purgeKeep(7)">Keep last week</button>
+        <button mat-menu-item (click)="purgeKeep(30)">Keep last month</button>
       </mat-menu>
     </button>
     <button mat-button routerLink="create">CREATE</button>

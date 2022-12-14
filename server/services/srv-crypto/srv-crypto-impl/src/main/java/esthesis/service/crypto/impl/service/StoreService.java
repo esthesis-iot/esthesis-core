@@ -3,9 +3,9 @@ package esthesis.service.crypto.impl.service;
 import com.google.common.collect.ImmutableSet;
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.service.common.BaseService;
-import esthesis.service.crypto.dto.Ca;
-import esthesis.service.crypto.dto.Certificate;
-import esthesis.service.crypto.dto.Store;
+import esthesis.service.crypto.entity.CaEntity;
+import esthesis.service.crypto.entity.CertificateEntity;
+import esthesis.service.crypto.entity.StoreEntity;
 import esthesis.service.settings.resource.SettingsResource;
 import java.io.IOException;
 import java.security.KeyStoreException;
@@ -22,19 +22,16 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @ApplicationScoped
-public class StoreService extends BaseService<Store> {
+public class StoreService extends BaseService<StoreEntity> {
 
   public static final String KEYSTORE_TYPE = "PKCS12";
   private static final String KEYSTORE_PROVIDER = "SunJSSE";
 
   @Inject
-  KeystoreService keystoreService;
-
-  @Inject
   CAService caService;
 
   @Inject
-  KeyService keyService;
+  CryptoService cryptoService;
 
   @Inject
   CertificateService certificateService;
@@ -47,53 +44,48 @@ public class StoreService extends BaseService<Store> {
   throws CertificateException, KeyStoreException, NoSuchAlgorithmException,
          IOException, NoSuchProviderException, InvalidKeySpecException {
     // Get the store to download.
-    final Store store = findById(id);
+    final StoreEntity storeEntity = findById(id);
 
     // Create an empty keystore.
-    byte[] keystore = keystoreService
-        .createKeystore(KEYSTORE_TYPE, KEYSTORE_PROVIDER, store.getPassword());
+    byte[] keystore = cryptoService
+        .createKeystore(KEYSTORE_TYPE, KEYSTORE_PROVIDER, storeEntity.getPassword());
 
     // Collect certificates.
-    for (ObjectId certId : store.getCertCertificates()) {
-      Certificate certificate = certificateService.findById(certId);
-      keystore = keystoreService
-          .saveCertificate(keystore, KEYSTORE_TYPE, KEYSTORE_PROVIDER,
-              store.getPassword(),
-              certificate.getCn(),
-              certificateService.pemToCertificate(certificate.getCertificate())
+    for (ObjectId certId : storeEntity.getCertCertificates()) {
+      CertificateEntity certificateEntity = certificateService.findById(certId);
+      keystore = cryptoService
+          .saveCertificateToKeystore(keystore, KEYSTORE_TYPE, KEYSTORE_PROVIDER,
+              storeEntity.getPassword(),
+              certificateEntity.getCn(),
+              cryptoService.pemToCertificate(certificateEntity.getCertificate())
                   .getEncoded());
     }
 
-    for (ObjectId caId : store.getCertCas()) {
-      Ca ca = caService.findById(caId);
-      keystore = keystoreService
-          .saveCertificate(keystore, KEYSTORE_TYPE, KEYSTORE_PROVIDER,
-              store.getPassword(),
-              ca.getCn(),
-              certificateService.pemToCertificate(ca.getCertificate())
+    for (ObjectId caId : storeEntity.getCertCas()) {
+      CaEntity caEntity = caService.findById(caId);
+      keystore = cryptoService
+          .saveCertificateToKeystore(keystore, KEYSTORE_TYPE, KEYSTORE_PROVIDER,
+              storeEntity.getPassword(),
+              caEntity.getCn(), cryptoService.pemToCertificate(caEntity.getCertificate())
                   .getEncoded());
     }
 
     // Collect private keys.
-    for (ObjectId certId : store.getPkCertificates()) {
-      Certificate certificate = certificateService.findById(certId);
-      final PrivateKey privateKey = keyService
-          .pemToPrivateKey(certificate.getPrivateKey(),
+    for (ObjectId certId : storeEntity.getPkCertificates()) {
+      CertificateEntity certificateEntity = certificateService.findById(certId);
+      final PrivateKey privateKey = cryptoService
+          .pemToPrivateKey(certificateEntity.getPrivateKey(),
               settingsResource.findByName(
                   NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString());
 
-      keystore = keystoreService
-          .savePrivateKey(keystore, KEYSTORE_TYPE, KEYSTORE_PROVIDER,
-              store.getPassword(),
-              certificate.getCn(), privateKey.getEncoded(),
-              settingsResource.findByName(
-                      NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM)
-                  .asString(),
-              null, store.isPasswordForKeys() ? store.getPassword() : null,
-              ImmutableSet.of(
-                  certificateService.pemToCertificate(
-                          certificate.getCertificate())
-                      .getEncoded()));
+      keystore = cryptoService
+          .savePrivateKeyToKeystore(keystore, KEYSTORE_TYPE, KEYSTORE_PROVIDER,
+              storeEntity.getPassword(),
+              certificateEntity.getCn(), privateKey,
+              storeEntity.isPasswordForKeys() ? storeEntity.getPassword() : null,
+              ImmutableSet.of(cryptoService.pemToCertificate(
+                      certificateEntity.getCertificate())
+                  .getEncoded()));
     }
 
     return keystore;

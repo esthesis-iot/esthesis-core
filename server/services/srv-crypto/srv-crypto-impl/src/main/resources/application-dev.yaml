@@ -3,9 +3,6 @@ quarkus:
     host: 0.0.0.0
     cors: false
   rest-client:
-    #    logging:
-    #      scope: request-response
-    #      body-limit: 16384
     SettingsResource:
       url: http://localhost:59030
       scope: Singleton
@@ -13,8 +10,6 @@ quarkus:
     connection-string: mongodb://esthesis-dev-mongodb:27017
   log:
     category:
-      #      "org.jboss.resteasy.reactive.client.logging":
-      #        level: DEBUG
       esthesis:
         level: DEBUG
     handler:
@@ -29,9 +24,38 @@ quarkus:
       exporter:
         otlp:
           endpoint: http://esthesis-dev-jaeger-collector:4317
-
 mp:
   jwt:
     verify:
       publickey:
         location: http://esthesis-dev-keycloak/realms/esthesis/protocol/openid-connect/certs
+
+###############################################################################
+# DEBUG PROFILES
+###############################################################################
+"%debug-rest":
+  quarkus:
+    log:
+      category:
+        "org.jboss.resteasy.reactive":
+          level: DEBUG
+    rest-client:
+      logging:
+        scope: request-response
+        body-limit: 65536
+
+"%debug-mongo":
+  quarkus:
+    log:
+      category:
+        "io.quarkus.mongodb.panache.common.runtime":
+          level: DEBUG
+        "org.mongodb.driver.protocol.command":
+          level: DEBUG
+
+"%debug-token":
+  quarkus:
+    log:
+      category:
+        "io.quarkus.oidc.token.propagation.reactive":
+          level: DEBUG

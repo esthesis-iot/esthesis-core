@@ -59,9 +59,10 @@ export class SettingsDevicePageComponent implements OnInit {
     });
 
     // Fetch Lat/Lon settings.
-    this.settingsService.findByNames(
-      this.constants.DEVICE.SETTING.DEVICE_GEO_LAT + ","
-      + this.constants.DEVICE.SETTING.DEVICE_GEO_LON).subscribe({
+    this.settingsService.findByNames([
+      this.constants.DEVICE.SETTING.DEVICE_GEO_LAT,
+      this.constants.DEVICE.SETTING.DEVICE_GEO_LON
+    ]).subscribe({
       next: (settings: SettingDto[]) => {
         settings.forEach(setting => {
           this.settingsForm.controls[setting.name].patchValue(setting.value);

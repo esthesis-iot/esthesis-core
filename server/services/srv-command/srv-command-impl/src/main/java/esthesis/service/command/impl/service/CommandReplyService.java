@@ -1,6 +1,6 @@
 package esthesis.service.command.impl.service;
 
-import esthesis.common.dto.CommandReply;
+import esthesis.common.entity.CommandReplyEntity;
 import esthesis.service.common.BaseService;
 import java.time.Duration;
 import java.time.Instant;
@@ -11,9 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ApplicationScoped
-class CommandReplyService extends BaseService<CommandReply> {
+class CommandReplyService extends BaseService<CommandReplyEntity> {
 
-  public List<CommandReply> findByCorrelationId(String correlationId) {
+  public List<CommandReplyEntity> findByCorrelationId(String correlationId) {
     return findByColumn("correlationId", correlationId);
   }
 

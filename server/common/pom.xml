@@ -31,5 +31,11 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jackson</artifactId>
     </dependency>
+
+    <!-- THIRD PARTY -->
+    <dependency>
+      <artifactId>bcpkix-jdk15on</artifactId>
+      <groupId>org.bouncycastle</groupId>
+    </dependency>
   </dependencies>
 </project>

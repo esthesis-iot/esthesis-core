@@ -2,7 +2,7 @@ package esthesis.service.tag.resource;
 
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.tag.dto.Tag;
+import esthesis.service.tag.entity.TagEntity;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.util.List;
 import javax.validation.Valid;
@@ -27,35 +27,33 @@ public interface TagResource {
 
   @GET
   @Path("/v1/tag/find")
-  Page<Tag> find(@BeanParam Pageable pageable);
+  Page<TagEntity> find(@BeanParam Pageable pageable);
 
   /**
    * Finds a tag by its name.
    *
    * @param name         The name of the tag to search.
-   * @param partialMatch If true, the search will be performed using a partial
-   *                     match.
+   * @param partialMatch If true, the search will be performed using a partial match.
    */
   @GET
   @Path("/v1/tag/find/by-name/{name}")
-  Tag findByName(@PathParam("name") String name,
+  TagEntity findByName(@PathParam("name") String name,
       @QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
 
   /**
    * Finds multiple tags by their names.
    *
    * @param name         A comma-separated list of names.
-   * @param partialMatch If true, the search will be performed using a partial
-   *                     match.
+   * @param partialMatch If true, the search will be performed using a partial match.
    */
   @GET
   @Path("/v1/tag/find/by-names")
-  List<Tag> findByNames(@QueryParam("names") String name,
+  List<TagEntity> findByNames(@QueryParam("names") String name,
       @QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
 
   @GET
   @Path("/v1/tag/{id}")
-  Tag findById(@PathParam("id") ObjectId id);
+  TagEntity findById(@PathParam("id") ObjectId id);
 
   @DELETE
   @Path("/v1/tag/{id}")
@@ -64,5 +62,5 @@ public interface TagResource {
   @POST
   @Path("/v1/tag")
   @Produces("application/json")
-  Tag save(@Valid Tag tag);
+  TagEntity save(@Valid TagEntity tagEntity);
 }

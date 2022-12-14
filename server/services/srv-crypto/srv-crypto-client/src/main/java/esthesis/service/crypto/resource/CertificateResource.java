@@ -2,8 +2,8 @@ package esthesis.service.crypto.resource;
 
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.crypto.dto.Certificate;
-import esthesis.service.crypto.dto.form.ImportCertificateForm;
+import esthesis.service.crypto.entity.CertificateEntity;
+import esthesis.service.crypto.form.ImportCertificateForm;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
@@ -28,11 +28,11 @@ public interface CertificateResource {
 
   @GET
   @Path("/v1/certificate/find")
-  Page<Certificate> find(@BeanParam Pageable pageable);
+  Page<CertificateEntity> find(@BeanParam Pageable pageable);
 
   @GET
   @Path("/v1/certificate/{id}")
-  Certificate findById(@PathParam("id") ObjectId id);
+  CertificateEntity findById(@PathParam("id") ObjectId id);
 
   @GET
   @Path("/v1/certificate/{id}/download")
@@ -42,7 +42,7 @@ public interface CertificateResource {
   @POST
   @Path("/v1/certificate/import")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  Certificate importCertificate(@MultipartForm ImportCertificateForm input);
+  CertificateEntity importCertificate(@MultipartForm ImportCertificateForm input);
 
   @DELETE
   @Path("/v1/certificate/{id}")
@@ -50,7 +50,7 @@ public interface CertificateResource {
 
   @POST
   @Path("/v1/certificate")
-  Certificate save(@Valid Certificate object);
+  CertificateEntity save(@Valid CertificateEntity object);
 
 //  @EmptyPredicateCheck
 //  @ReplyPageableFilter("-certificate,-privateKey,-publicKey")

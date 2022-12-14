@@ -40,9 +40,11 @@
         </mat-card-content>
       </form>
       <mat-card-actions>
-        <button mat-button [matMenuTriggerFor]="menu">DOWNLOAD
+        <button mat-button [matMenuTriggerFor]="menu">DOWNLOADS
           <mat-menu #menu="matMenu" xPosition="before">
-            <button mat-menu-item (click)="downloadKeys()">Cryptographic keys</button>
+            <button mat-menu-item (click)="downloadPublicKey()">Public key</button>
+            <button mat-menu-item (click)="downloadPrivateKey()">Private key</button>
+            <button mat-menu-item (click)="downloadCertificate()">Certificate</button>
           </mat-menu>
         </button>
         <button mat-button color="accent" (click)="delete()"

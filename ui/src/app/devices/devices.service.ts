@@ -9,13 +9,14 @@ import {DevicePageFieldDataDto} from "../dto/device-page-field-data-dto";
 import {GeolocationDto} from "../dto/geolocation-dto";
 import {CrudDownloadService} from "../services/crud-download.service";
 import {FileSaverService} from "ngx-filesaver";
+import {UtilityService} from "../shared/service/utility.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class DevicesService extends CrudDownloadService<DeviceDto> {
 
-  constructor(http: HttpClient, fs: FileSaverService) {
+  constructor(http: HttpClient, fs: FileSaverService, private utilityService: UtilityService) {
     super(http, "v1/device", fs);
   }
 
@@ -23,11 +24,42 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
     return this.http.post(`${environment.apiPrefix}/v1/device/preregister`, devices);
   }
 
-  downloadKeys(hardwareId: string) {
-    this.http.get(`${environment.apiPrefix}/device/${hardwareId}/keys`, {
+  downloadPublicKey(hardwareId: string) {
+    this.http.get(`${environment.apiPrefix}/v1/device/${hardwareId}/download/public-key`, {
       responseType: "blob", observe: "response"
-    }).subscribe(onNext => {
-      this.saveAs(onNext);
+    }).subscribe({
+      next: (response) => {
+        this.saveAs(response);
+      }, error: (error) => {
+        this.utilityService.popupErrorWithTraceId(
+          "There was an error downloading the public key, please try again later.", error);
+      }
+    });
+  }
+
+  downloadPrivateKey(hardwareId: string) {
+    this.http.get(`${environment.apiPrefix}/v1/device/${hardwareId}/download/private-key`, {
+      responseType: "blob", observe: "response"
+    }).subscribe({
+      next: (response) => {
+        this.saveAs(response);
+      }, error: (error) => {
+        this.utilityService.popupErrorWithTraceId(
+          "There was an error downloading the private key, please try again later.", error);
+      }
+    });
+  }
+
+  downloadCertificate(hardwareId: string) {
+    this.http.get(`${environment.apiPrefix}/v1/device/${hardwareId}/download/certificate`, {
+      responseType: "blob", observe: "response"
+    }).subscribe({
+      next: (response) => {
+        this.saveAs(response);
+      }, error: (error) => {
+        this.utilityService.popupErrorWithTraceId(
+          "There was an error downloading the certificate, please try again later.", error);
+      }
     });
   }
 

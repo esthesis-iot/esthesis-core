@@ -29,7 +29,7 @@ export class SettingsMessagingComponent extends BaseComponent implements OnInit 
 
 
     // Fetch settings.
-    this.settingsService.findByNames(AppConstants.NAMED_SETTING.KAFKA_TOPIC_COMMAND_REQUEST).subscribe(onNext => {
+    this.settingsService.findByNames([AppConstants.NAMED_SETTING.KAFKA_TOPIC_COMMAND_REQUEST]).subscribe(onNext => {
       onNext.forEach(setting => {
         this.form.controls[setting.name].patchValue(setting.value);
       });

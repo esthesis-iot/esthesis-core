@@ -1,15 +1,17 @@
 package esthesis.service.common;
 
-import esthesis.common.dto.BaseDTO;
+import esthesis.common.entity.BaseEntity;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import io.quarkus.panache.common.Sort;
 import java.util.List;
 import javax.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 
-public abstract class BaseService<D extends BaseDTO> {
+@Slf4j
+public abstract class BaseService<D extends BaseEntity> {
 
   @Inject
   @SuppressWarnings("CdiInjectionPointsInspection")
@@ -27,8 +29,7 @@ public abstract class BaseService<D extends BaseDTO> {
     return repository.listAll();
   }
 
-  public D findFirstByColumn(String column, String value,
-      boolean partialMatch) {
+  public D findFirstByColumn(String column, String value, boolean partialMatch) {
     if (partialMatch) {
       return repository.find(column + " like ?1", value).firstResult();
     } else {
@@ -40,8 +41,7 @@ public abstract class BaseService<D extends BaseDTO> {
     return findFirstByColumn(column, value, false);
   }
 
-  public List<D> findByColumn(String column, String value,
-      boolean partialMatch) {
+  public List<D> findByColumn(String column, String value, boolean partialMatch) {
     if (partialMatch) {
       return repository.find(column + " like ?1", value).list();
     } else {
@@ -49,11 +49,9 @@ public abstract class BaseService<D extends BaseDTO> {
     }
   }
 
-  public List<D> findByColumnIn(String column, List<String> values,
-      boolean partialMatch) {
+  public List<D> findByColumnIn(String column, List<String> values, boolean partialMatch) {
     if (partialMatch) {
-      return repository.find(column + " like ?1", String.join("|", values))
-          .list();
+      return repository.find(column + " like ?1", String.join("|", values)).list();
     } else {
       return repository.find(column + " in ?1", values).list();
     }
@@ -78,29 +76,25 @@ public abstract class BaseService<D extends BaseDTO> {
     // Execute the query to get count and results.
     if (pageable.hasQuery()) {
       quarkusPage.setTotalElements(
-          repository.find(pageable.getQueryKeys(partialMatch),
-              pageable.getQueryValues()).list().size());
+          repository.count(pageable.getQueryKeys(partialMatch), pageable.getQueryValues()));
       if (pageable.getPageObject().isPresent()) {
         quarkusPage.setContent(
-            repository.find(pageable.getQueryKeys(partialMatch),
-                    pageable.getSortObject(),
-                    pageable.getQueryValues()).page(pageable.getPageObject().get())
-                .list());
+            repository.find(pageable.getQueryKeys(partialMatch), pageable.getSortObject(),
+                pageable.getQueryValues()).page(pageable.getPageObject().get()).list());
       } else {
         quarkusPage.setContent(
-            repository.find(pageable.getQueryKeys(partialMatch),
-                pageable.getSortObject(), pageable.getQueryValues()).list());
+            repository.find(pageable.getQueryKeys(partialMatch), pageable.getSortObject(),
+                pageable.getQueryValues()).list());
       }
     } else {
       if (pageable.getPageObject().isPresent()) {
         quarkusPage.setTotalElements(repository.count());
         quarkusPage.setContent(
-            repository.findAll(pageable.getSortObject())
-                .page(pageable.getPageObject().get()).list());
+            repository.findAll(pageable.getSortObject()).page(pageable.getPageObject().get())
+                .list());
       } else {
         quarkusPage.setTotalElements(repository.count());
-        quarkusPage.setContent(
-            repository.findAll(pageable.getSortObject()).list());
+        quarkusPage.setContent(repository.findAll(pageable.getSortObject()).list());
       }
 
     }

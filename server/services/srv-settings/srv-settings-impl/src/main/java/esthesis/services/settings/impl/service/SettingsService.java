@@ -3,7 +3,7 @@ package esthesis.services.settings.impl.service;
 import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.service.common.BaseService;
-import esthesis.service.settings.dto.Setting;
+import esthesis.service.settings.entity.SettingEntity;
 import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;
 import java.util.List;
@@ -16,25 +16,25 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ApplicationScoped
-public class SettingsService extends BaseService<Setting> {
+public class SettingsService extends BaseService<SettingEntity> {
 
   @Inject
   RedisUtils redisUtils;
 
-  public Setting findByName(NamedSetting name) {
+  public SettingEntity findByName(NamedSetting name) {
     log.debug("Looking up key '{}'.", name);
-    Setting setting = findFirstByColumn("name", name.toString());
-    log.debug("Found value '{}'.", setting);
+    SettingEntity settingEntity = findFirstByColumn("name", name.toString());
+    log.debug("Found value '{}'.", settingEntity);
 
-    return setting;
+    return settingEntity;
   }
 
-  public Setting findByTextName(String name) {
+  public SettingEntity findByTextName(String name) {
     log.debug("Looking up key '{}'.", name);
-    Setting setting = findFirstByColumn("name", name);
-    log.debug("Found value '{}'.", setting);
+    SettingEntity settingEntity = findFirstByColumn("name", name);
+    log.debug("Found value '{}'.", settingEntity);
 
-    return setting;
+    return settingEntity;
   }
 
   /**

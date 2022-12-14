@@ -2,8 +2,8 @@ package esthesis.service.crypto.resource;
 
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.crypto.dto.Ca;
-import esthesis.service.crypto.dto.form.ImportCaForm;
+import esthesis.service.crypto.entity.CaEntity;
+import esthesis.service.crypto.form.ImportCaForm;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.util.List;
 import javax.validation.Valid;
@@ -29,15 +29,15 @@ public interface CAResource {
 
   @GET
   @Path("/v1/ca/find")
-  Page<Ca> find(@BeanParam Pageable pageable);
+  Page<CaEntity> find(@BeanParam Pageable pageable);
 
   @GET
   @Path("/v1/ca/{id}")
-  Ca findById(@PathParam("id") ObjectId id);
+  CaEntity findById(@PathParam("id") ObjectId id);
 
   @GET
   @Path("/v1/ca/eligible-for-signing")
-  List<Ca> getEligbleForSigning();
+  List<CaEntity> getEligbleForSigning();
 
   @GET
   @Path("/v1/ca/{id}/download")
@@ -47,7 +47,7 @@ public interface CAResource {
   @POST
   @Path("/v1/ca/import")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  Ca importCa(@MultipartForm ImportCaForm input);
+  CaEntity importCa(@MultipartForm ImportCaForm input);
 
   @DELETE
   @Path("/v1/ca/{id}")
@@ -55,7 +55,7 @@ public interface CAResource {
 
   @POST
   @Path("/v1/ca")
-  Ca save(@Valid Ca object);
+  CaEntity save(@Valid CaEntity object);
 
   @GET
   @Path("/v1/ca/{caId}/certificate")

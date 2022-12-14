@@ -73,10 +73,16 @@ export class CommandCreateComponent extends BaseComponent implements OnInit {
       this.availableTags = onNext.content;
     });
 
+
     // Get provisioning packages.
-    // this.provisioningService.find("state=1&sort=name,packageVersion").subscribe(onNext => {
-    //   this.provisioningPackages = onNext.content;
-    // });
+    this.provisioningService.find("available=&sort=version,desc")
+    .subscribe({
+      next: (next) => {
+        this.provisioningPackages = next.content;
+      }, error: (error) => {
+        this.utilityService.popupErrorWithTraceId("Could not load provisioning packages.", error);
+      }
+    });
   }
 
   save() {

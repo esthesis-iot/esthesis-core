@@ -1,7 +1,7 @@
 package esthesis.service.device.resource;
 
-import esthesis.service.device.dto.DeviceProfileFieldData;
-import esthesis.service.device.dto.DeviceProfileNote;
+import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
+import esthesis.service.device.entity.DeviceProfileNoteEntity;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.util.List;
 import java.util.Map;
@@ -21,17 +21,17 @@ public interface DeviceProfileResource {
 
   @GET
   @Path("/v1/device/{deviceId}/device-profile/")
-  List<DeviceProfileNote> getDeviceProfileNotes(
+  List<DeviceProfileNoteEntity> getDeviceProfileNotes(
       @PathParam("deviceId") String deviceId);
 
   @POST
   @Path("/v1/device/{deviceId}/device-profile")
-  List<DeviceProfileNote> saveDeviceProfileNotes(Map<String, String> fields,
+  List<DeviceProfileNoteEntity> saveDeviceProfileNotes(Map<String, String> fields,
       @PathParam("deviceId") String deviceId);
 
   @POST
   @Path("/v1/device/device-profile/add-note")
-  DeviceProfileNote addDeviceProfileNote(DeviceProfileNote field);
+  DeviceProfileNoteEntity addDeviceProfileNote(DeviceProfileNoteEntity field);
 
   @DELETE
   @Path("/v1/device/{deviceId}/device-profile/delete-note")
@@ -40,10 +40,10 @@ public interface DeviceProfileResource {
 
   @GET
   @Path("/v1/device/{deviceId}/device-profile/fields-data")
-  List<DeviceProfileFieldData> getFieldsData(String deviceId);
+  List<DeviceProfileFieldDataDTO> getFieldsData(String deviceId);
 
   @GET
   @Path("/v1/device/{deviceId}/device-data")
-  List<DeviceProfileFieldData> getAllDeviceData(String deviceId);
+  List<DeviceProfileFieldDataDTO> getAllDeviceData(String deviceId);
 
 }

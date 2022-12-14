@@ -1,6 +1,6 @@
 package esthesis.services.application.impl.service;
 
-import esthesis.service.application.dto.Application;
+import esthesis.service.application.entity.ApplicationEntity;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
@@ -16,7 +16,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @Slf4j
 @ApplicationScoped
-public class ApplicationService extends BaseService<Application> {
+public class ApplicationService extends BaseService<ApplicationEntity> {
 
   @Inject
   JsonWebToken jwt;
@@ -26,34 +26,34 @@ public class ApplicationService extends BaseService<Application> {
   Cache dtTokenIsValidCache;
 
   @Override
-  public Page<Application> find(Pageable pageable) {
+  public Page<ApplicationEntity> find(Pageable pageable) {
     log.debug("Finding all applications with '{}'.", pageable);
     return super.find(pageable);
   }
 
   @Override
-  public Page<Application> find(Pageable pageable, boolean partialMatch) {
+  public Page<ApplicationEntity> find(Pageable pageable, boolean partialMatch) {
     log.debug("Finding all applications with partial match with '{}'.",
         pageable);
     return super.find(pageable, partialMatch);
   }
 
   @Override
-  public Application save(Application dto) {
+  public ApplicationEntity save(ApplicationEntity dto) {
     log.debug("Saving application '{}'.", dto);
     // Ensure no other application has the same name.
-    Application existingApplication = findFirstByColumn("name", dto.getName());
-    if (existingApplication != null && (dto.getId() == null
-        || !existingApplication.getId().equals(dto.getId()))) {
-      new CVException<Application>()
+    ApplicationEntity existingApplicationEntity = findFirstByColumn("name", dto.getName());
+    if (existingApplicationEntity != null && (dto.getId() == null
+        || !existingApplicationEntity.getId().equals(dto.getId()))) {
+      new CVException<ApplicationEntity>()
           .addViolation("name", "An application with name '{}' already "
               + "exists.", dto.getName())
           .throwCVE();
     }
 
     // Invalidate cache.
-    if (existingApplication != null) {
-      dtTokenIsValidCache.invalidate(existingApplication.getToken()).await()
+    if (existingApplicationEntity != null) {
+      dtTokenIsValidCache.invalidate(existingApplicationEntity.getToken()).await()
           .indefinitely();
     }
     dtTokenIsValidCache.invalidate(dto.getToken()).await().indefinitely();
@@ -64,8 +64,8 @@ public class ApplicationService extends BaseService<Application> {
   @Override
   public boolean deleteById(ObjectId id) {
     log.debug("Deleting application with id '{}'.", id);
-    Application application = findById(id);
-    if (application != null) {
+    ApplicationEntity applicationEntity = findById(id);
+    if (applicationEntity != null) {
       return super.deleteById(id);
     } else {
       log.warn("Application with id '{}' not found to be deleted.", id);

@@ -1,11 +1,11 @@
 package esthesis.service.provisioning.impl.repository;
 
-import esthesis.service.provisioning.dto.ProvisioningPackageBinary;
+import esthesis.service.provisioning.entity.ProvisioningPackageBinaryEntity;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ProvisioningBinaryRepository implements
-    PanacheMongoRepository<ProvisioningPackageBinary> {
+    PanacheMongoRepository<ProvisioningPackageBinaryEntity> {
 
 }

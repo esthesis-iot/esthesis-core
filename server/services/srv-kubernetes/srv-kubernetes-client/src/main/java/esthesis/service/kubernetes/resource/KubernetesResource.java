@@ -1,6 +1,6 @@
 package esthesis.service.kubernetes.resource;
 
-import esthesis.service.kubernetes.dto.PodInfo;
+import esthesis.service.kubernetes.dto.PodInfoDTO;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.util.List;
 import javax.ws.rs.GET;
@@ -16,7 +16,7 @@ public interface KubernetesResource {
 
   @POST
   @Path("/v1/kubernetes/pod/start")
-  Boolean schedulePod(PodInfo podInfo);
+  Boolean schedulePod(PodInfoDTO podInfoDTO);
 
   @GET
   @Path("/v1/kubernetes/namespaces")

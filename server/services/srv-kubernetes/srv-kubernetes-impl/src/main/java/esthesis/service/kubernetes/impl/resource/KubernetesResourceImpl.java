@@ -1,6 +1,6 @@
 package esthesis.service.kubernetes.impl.resource;
 
-import esthesis.service.kubernetes.dto.PodInfo;
+import esthesis.service.kubernetes.dto.PodInfoDTO;
 import esthesis.service.kubernetes.impl.service.KubernetesService;
 import esthesis.service.kubernetes.resource.KubernetesResource;
 import java.util.List;
@@ -12,8 +12,8 @@ public class KubernetesResourceImpl implements KubernetesResource {
   KubernetesService kubernetesService;
 
   @Override
-  public Boolean schedulePod(PodInfo podInfo) {
-    return kubernetesService.schedulePod(podInfo);
+  public Boolean schedulePod(PodInfoDTO podInfoDTO) {
+    return kubernetesService.schedulePod(podInfoDTO);
   }
 
   @Override

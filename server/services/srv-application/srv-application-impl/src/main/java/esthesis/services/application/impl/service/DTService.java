@@ -3,7 +3,7 @@ package esthesis.services.application.impl.service;
 import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
 import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
 
-import esthesis.service.application.dto.DTValueReply;
+import esthesis.service.application.dto.DTValueReplyDTO;
 import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;
 import java.time.Instant;
@@ -28,7 +28,7 @@ public class DTService {
    * @param category    The category of the measurement.
    * @param measurement The measurement to find.
    */
-  public DTValueReply find(String hardwareId, String category, String measurement) {
+  public DTValueReplyDTO find(String hardwareId, String category, String measurement) {
     String value = redisUtils.getFromHash(
         KeyType.ESTHESIS_DM, hardwareId, String.join(".", category, measurement));
     String valueType = redisUtils.getFromHash(KeyType.ESTHESIS_DM, hardwareId,
@@ -36,7 +36,7 @@ public class DTService {
     Instant valueTimestamp = Instant.parse(redisUtils.getFromHash(KeyType.ESTHESIS_DM, hardwareId,
         String.join(".", category, measurement, REDIS_KEY_SUFFIX_TIMESTAMP)));
 
-    return new DTValueReply().setHardwareId(hardwareId).setCategory(category)
+    return new DTValueReplyDTO().setHardwareId(hardwareId).setCategory(category)
         .setMeasurement(measurement).setValueType(valueType).setRecordedAt(valueTimestamp)
         .setValue(value);
   }
@@ -47,15 +47,15 @@ public class DTService {
    * @param hardwareId The hardware id to target.
    * @param category   The category of the measurements to return.
    */
-  public List<DTValueReply> findAll(String hardwareId, String category) {
-    List<DTValueReply> values = new ArrayList<>();
+  public List<DTValueReplyDTO> findAll(String hardwareId, String category) {
+    List<DTValueReplyDTO> values = new ArrayList<>();
     Map<String, String> keys = redisUtils.getHash(KeyType.ESTHESIS_DM, hardwareId);
     keys.forEach((key, value) -> {
       if (key.startsWith(category)) {
         String[] parts = key.split("\\.");
         if (parts.length == 2) {
           values.add(
-              new DTValueReply()
+              new DTValueReplyDTO()
                   .setHardwareId(hardwareId)
                   .setCategory(category)
                   .setMeasurement(parts[1])

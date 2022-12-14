@@ -1,6 +1,6 @@
 package esthesis.service.application.resource;
 
-import esthesis.service.application.dto.DTValueReply;
+import esthesis.service.application.dto.DTValueReplyDTO;
 import esthesis.service.application.security.DTSecurityFilter;
 import java.util.List;
 import javax.ws.rs.GET;
@@ -14,7 +14,7 @@ public interface DTResource {
   @DTSecurityFilter
   @Path("/v1/dt/get/{hardwareId}/{category}/{measurement}")
   @Produces("application/json")
-  DTValueReply findJSON(String hardwareId, String category, String measurement);
+  DTValueReplyDTO findJSON(String hardwareId, String category, String measurement);
 
   @GET
   @DTSecurityFilter
@@ -27,7 +27,7 @@ public interface DTResource {
   @DTSecurityFilter
   @Path("/v1/dt/get/{hardwareId}/{category}")
   @Produces("application/json")
-  List<DTValueReply> findAllJSON(String hardwareId, String category);
+  List<DTValueReplyDTO> findAllJSON(String hardwareId, String category);
 
   @GET
   @DTSecurityFilter

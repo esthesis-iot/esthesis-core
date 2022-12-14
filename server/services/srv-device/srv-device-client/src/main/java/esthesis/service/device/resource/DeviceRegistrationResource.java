@@ -1,7 +1,7 @@
 package esthesis.service.device.resource;
 
-import esthesis.service.device.dto.Device;
-import esthesis.service.device.dto.DeviceRegistration;
+import esthesis.service.device.dto.DeviceRegistrationDTO;
+import esthesis.service.device.entity.DeviceEntity;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -24,13 +24,13 @@ public interface DeviceRegistrationResource {
 
   @POST
   @Path("/v1/device/preregister")
-  Response preregister(@Valid DeviceRegistration deviceRegistration)
+  Response preregister(@Valid DeviceRegistrationDTO deviceRegistration)
   throws NoSuchAlgorithmException, IOException, OperatorCreationException,
          InvalidKeySpecException, NoSuchProviderException;
 
   @PUT
   @Path("/v1/device/activate/{hardwareId}")
-  Device activatePreregisteredDevice(
+  DeviceEntity activatePreregisteredDevice(
       @PathParam(value = "hardwareId") String hardwareId);
 
 }

@@ -26,4 +26,23 @@
       </ext:documents>
     </ext:insertMany>
   </changeSet>
+
+  <changeSet id="2" author="European Dynamics SA">
+    <ext:insertMany collectionName="Setting">
+      <ext:documents>
+        [
+        {"name":"DEVICE_PROVISIONING_URL", "value": ""},
+        {"name":"DEVICE_PROVISIONING_SECURE", "value": "true"}
+        ]
+      </ext:documents>
+    </ext:insertMany>
+  </changeSet>
+
+  <changeSet id="3" author="European Dynamics SA">
+    <ext:insertOne collectionName="Setting">
+      <ext:document>
+        {"name":"DEVICE_PROVISIONING_CACHE_TIME", "value": "60"}
+      </ext:document>
+    </ext:insertOne>
+  </changeSet>
 </databaseChangeLog>

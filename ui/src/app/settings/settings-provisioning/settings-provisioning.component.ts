@@ -27,12 +27,18 @@ export class SettingsProvisioningComponent extends BaseComponent implements OnIn
     //  of the respective setting. Create an empty form group and then add the form controls
     //  programmatically.
     this.form = this.fb.group({
-      DEVICE_PROVISIONING_URL: ["", []]
+      DEVICE_PROVISIONING_URL: ["", []],
+      DEVICE_PROVISIONING_SECURE: ["", []],
+      DEVICE_PROVISIONING_CACHE_TIME: ["", []],
     });
 
 
     // Fetch settings.
-    this.settingsService.findByNames(AppConstants.NAMED_SETTING.DEVICE_PROVISIONING_URL).subscribe(onNext => {
+    this.settingsService.findByNames([
+      AppConstants.NAMED_SETTING.DEVICE_PROVISIONING_URL,
+      AppConstants.NAMED_SETTING.DEVICE_PROVISIONING_SECURE,
+      AppConstants.NAMED_SETTING.DEVICE_PROVISIONING_CACHE_TIME,
+    ]).subscribe(onNext => {
       onNext.forEach(setting => {
         this.form.controls[setting.name].patchValue(setting.value);
       });

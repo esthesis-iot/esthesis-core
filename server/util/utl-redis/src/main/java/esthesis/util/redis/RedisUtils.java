@@ -7,7 +7,9 @@ import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
 import io.quarkus.redis.datasource.RedisDataSource;
 import io.quarkus.redis.datasource.hash.HashCommands;
 import io.quarkus.redis.datasource.keys.KeyCommands;
+import io.quarkus.redis.datasource.value.ValueCommands;
 import io.smallrye.mutiny.Uni;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +33,13 @@ public class RedisUtils {
   private HashCommands<String, String, String> hashCommandText;
   private HashCommands<String, String, byte[]> hashCommandBinary;
   private KeyCommands<String> keyCommand;
+  private ValueCommands<String, Long> countCommands;
 
   public enum KeyType {
-    ESTHESIS_DM,  // Esthesis Device Measurement
-    ESTHESIS_PP   // Esthesis Provisioning Package
+    ESTHESIS_DM,    // Esthesis Device Measurement
+    ESTHESIS_PP,    // Esthesis Provisioning Package (binary content)
+    ESTHESIS_PPDT,  // Esthesis Provisioning Package (download token)
+    ESTHESIS_PRT    // Provisioning Request Timer
   }
 
   @PostConstruct
@@ -42,6 +47,7 @@ public class RedisUtils {
     hashCommandText = redis.hash(String.class);
     hashCommandBinary = redis.hash(byte[].class);
     keyCommand = redis.key();
+    countCommands = redis.value(Long.class);
   }
 
   /**
@@ -180,4 +186,18 @@ public class RedisUtils {
         .hget(KeyType.ESTHESIS_PP + "." + provisioningPackageId.toString(),
             REDIS_KEY_PROVISIONING_PACKAGE_FILE);
   }
+
+  public long incrCounter(KeyType keyType, String key, long expireInSeconds) {
+    long val = countCommands.incrby(keyType + "." + key, 1);
+    if (expireInSeconds > 0) {
+      keyCommand.expire(keyType + "." + key, Duration.ofSeconds(expireInSeconds));
+    }
+
+    return val;
+  }
+
+  public void resetCounter(KeyType keyType, String key) {
+    countCommands.set(keyType + "." + key, 0l);
+  }
+
 }

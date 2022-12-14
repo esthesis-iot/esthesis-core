@@ -15,17 +15,24 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class AgentProvisioningInfoResponse {
 
-  private long id;
-  private String description;
-  private long fileSize;
-  private String fileName;
+  // The id of the provisioning package.
+  private String id;
+
+  // The name of the provisioning package.
   private String name;
-  private String packageVersion;
 
-  // The signature is either the one of the plain or the encrypted file based on the value of
-  // Setting.Provisioning.ENCRYPTION.
-  private String signature;
+  // The version of the provisioning package.
+  private String version;
 
-  // The SHA256 digest of the unencrypted version of this provisioning package.
+  // The size (in bytes) of the provisioning package.
+  private long size;
+
+  // The SHA256 digest of the provisioning package.
   private String sha256;
+
+  // The URL to download this provisioning package from.
+  private String downloadUrl;
+
+  // The download token to provide when downloading this provisioning package.
+  private String downloadToken;
 }

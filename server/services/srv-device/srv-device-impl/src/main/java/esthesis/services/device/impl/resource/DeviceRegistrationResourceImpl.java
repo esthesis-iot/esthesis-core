@@ -2,8 +2,8 @@ package esthesis.services.device.impl.resource;
 
 import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.service.common.validation.CVException;
-import esthesis.service.device.dto.Device;
-import esthesis.service.device.dto.DeviceRegistration;
+import esthesis.service.device.dto.DeviceRegistrationDTO;
+import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceRegistrationResource;
 import esthesis.services.device.impl.service.DeviceRegistrationService;
 import java.io.IOException;
@@ -22,13 +22,13 @@ public class DeviceRegistrationResourceImpl implements
   DeviceRegistrationService deviceRegistrationService;
 
   @Override
-  public Response preregister(@Valid DeviceRegistration deviceRegistration)
+  public Response preregister(@Valid DeviceRegistrationDTO deviceRegistration)
   throws NoSuchAlgorithmException, IOException, OperatorCreationException,
          InvalidKeySpecException, NoSuchProviderException {
     try {
       deviceRegistrationService.preregister(deviceRegistration);
     } catch (QAlreadyExistsException e) {
-      new CVException<DeviceRegistration>()
+      new CVException<DeviceRegistrationDTO>()
           .addViolation("ids", "One or more IDs are already registered.")
           .throwCVE();
     }
@@ -37,7 +37,7 @@ public class DeviceRegistrationResourceImpl implements
   }
 
   @Override
-  public Device activatePreregisteredDevice(String hardwareId) {
+  public DeviceEntity activatePreregisteredDevice(String hardwareId) {
     return deviceRegistrationService.activatePreregisteredDevice(hardwareId);
   }
 }

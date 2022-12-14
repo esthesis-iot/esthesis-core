@@ -1,10 +1,10 @@
 package esthesis.services.device.impl.service;
 
 import esthesis.service.common.BaseService;
-import esthesis.service.device.dto.Device;
-import esthesis.service.device.dto.DeviceProfileFieldData;
-import esthesis.service.device.dto.DeviceProfileNote;
-import esthesis.service.settings.dto.DevicePageField;
+import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
+import esthesis.service.device.entity.DeviceEntity;
+import esthesis.service.device.entity.DeviceProfileNoteEntity;
+import esthesis.service.settings.entity.DevicePageFieldEntity;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.services.device.impl.repository.DeviceProfileFieldRepository;
 import esthesis.util.redis.RedisUtils;
@@ -21,7 +21,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @ApplicationScoped
-public class DeviceProfileService extends BaseService<DeviceProfileNote> {
+public class DeviceProfileService extends BaseService<DeviceProfileNoteEntity> {
 
   @Inject
   DeviceProfileFieldRepository deviceProfileFieldRepository;
@@ -36,73 +36,76 @@ public class DeviceProfileService extends BaseService<DeviceProfileNote> {
   @Inject
   RedisUtils redisUtils;
 
-  public List<DeviceProfileNote> saveProfile(String deviceId, Map<String, String> profile) {
+  public List<DeviceProfileNoteEntity> saveProfile(String deviceId, Map<String, String> profile) {
     // Remove fields no longer present.
     deviceProfileFieldRepository.deleteFieldsNotIn(deviceId, profile.keySet().stream().toList());
 
     // Save the field.
     profile.forEach((key, value) -> {
-      DeviceProfileNote deviceProfileNote = deviceProfileFieldRepository.findByDeviceIdAndName(
+      DeviceProfileNoteEntity deviceProfileNoteEntity = deviceProfileFieldRepository.findByDeviceIdAndName(
           deviceId, key).orElseThrow();
-      deviceProfileNote.setFieldValue(value);
-      save(deviceProfileNote);
+      deviceProfileNoteEntity.setFieldValue(value);
+      save(deviceProfileNoteEntity);
     });
 
     return getProfile(deviceId);
   }
 
-  public List<DeviceProfileNote> getProfile(String deviceId) {
+  public List<DeviceProfileNoteEntity> getProfile(String deviceId) {
     return deviceProfileFieldRepository.findByDeviceId(deviceId);
   }
 
-  public DeviceProfileNote createProfileField(DeviceProfileNote deviceProfileNote) {
-    return save(deviceProfileNote);
+  public DeviceProfileNoteEntity createProfileField(
+      DeviceProfileNoteEntity deviceProfileNoteEntity) {
+    return save(deviceProfileNoteEntity);
   }
 
   public void deleteProfileField(String deviceId, String fieldName) {
     deviceProfileFieldRepository.deleteByDeviceIdAndName(deviceId, fieldName);
   }
 
-  public List<DeviceProfileFieldData> getProfileFields(String deviceId) {
-    List<DeviceProfileFieldData> fields = new ArrayList<>();
+  public List<DeviceProfileFieldDataDTO> getProfileFields(String deviceId) {
+    List<DeviceProfileFieldDataDTO> fields = new ArrayList<>();
 
     // Get configured device profile fields data.
-    List<DevicePageField> devicePageFields = settingsResource.getDevicePageFields();
+    List<DevicePageFieldEntity> devicePageFieldEntities = settingsResource.getDevicePageFields();
 
     // Find the value of each field.
-    Device device = deviceService.findById(deviceId);
-    devicePageFields.stream().filter(DevicePageField::isShown).forEach(field -> {
-      DeviceProfileFieldData deviceProfileFieldData = new DeviceProfileFieldData();
-      deviceProfileFieldData.setLabel(field.getLabel()).setIcon(field.getIcon())
-          .setValueType(redisUtils.getFromHash(KeyType.ESTHESIS_DM, device.getHardwareId(),
+    DeviceEntity deviceEntity = deviceService.findById(deviceId);
+    devicePageFieldEntities.stream().filter(DevicePageFieldEntity::isShown).forEach(field -> {
+      DeviceProfileFieldDataDTO deviceProfileFieldDataDTO = new DeviceProfileFieldDataDTO();
+      deviceProfileFieldDataDTO.setLabel(field.getLabel()).setIcon(field.getIcon())
+          .setValueType(redisUtils.getFromHash(KeyType.ESTHESIS_DM, deviceEntity.getHardwareId(),
               field.getMeasurement()))
-          .setLastUpdate(redisUtils.getLastUpdate(KeyType.ESTHESIS_DM, device.getHardwareId(),
+          .setLastUpdate(redisUtils.getLastUpdate(KeyType.ESTHESIS_DM, deviceEntity.getHardwareId(),
               field.getMeasurement()));
 
-      String value = redisUtils.getFromHash(KeyType.ESTHESIS_DM, device.getHardwareId(),
+      String value = redisUtils.getFromHash(KeyType.ESTHESIS_DM, deviceEntity.getHardwareId(),
           field.getMeasurement());
       if (StringUtils.isNotEmpty(field.getFormatter())) {
-        deviceProfileFieldData.setValue(Qute.fmt(field.getFormatter()).data("val", value).render());
+        deviceProfileFieldDataDTO.setValue(
+            Qute.fmt(field.getFormatter()).data("val", value).render());
       } else {
-        deviceProfileFieldData.setValue(value);
+        deviceProfileFieldDataDTO.setValue(value);
       }
 
-      fields.add(deviceProfileFieldData);
+      fields.add(deviceProfileFieldDataDTO);
     });
 
     return fields;
   }
 
-  public List<DeviceProfileFieldData> getAllDeviceData(String deviceId) {
-    List<DeviceProfileFieldData> fields = new ArrayList<>();
-    Device device = deviceService.findById(deviceId);
+  public List<DeviceProfileFieldDataDTO> getAllDeviceData(String deviceId) {
+    List<DeviceProfileFieldDataDTO> fields = new ArrayList<>();
+    DeviceEntity deviceEntity = deviceService.findById(deviceId);
 
-    redisUtils.getHashTriplets(KeyType.ESTHESIS_DM, device.getHardwareId()).forEach((triple) -> {
-      DeviceProfileFieldData deviceProfileFieldData = new DeviceProfileFieldData();
-      deviceProfileFieldData.setLabel(triple.getLeft()).setValue(triple.getMiddle())
-          .setLastUpdate(triple.getRight());
-      fields.add(deviceProfileFieldData);
-    });
+    redisUtils.getHashTriplets(KeyType.ESTHESIS_DM, deviceEntity.getHardwareId())
+        .forEach((triple) -> {
+          DeviceProfileFieldDataDTO deviceProfileFieldDataDTO = new DeviceProfileFieldDataDTO();
+          deviceProfileFieldDataDTO.setLabel(triple.getLeft()).setValue(triple.getMiddle())
+              .setLastUpdate(triple.getRight());
+          fields.add(deviceProfileFieldDataDTO);
+        });
 
     return fields;
   }

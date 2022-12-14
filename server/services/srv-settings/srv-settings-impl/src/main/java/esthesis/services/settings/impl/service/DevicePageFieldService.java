@@ -1,7 +1,7 @@
 package esthesis.services.settings.impl.service;
 
 import esthesis.service.common.BaseService;
-import esthesis.service.settings.dto.DevicePageField;
+import esthesis.service.settings.entity.DevicePageFieldEntity;
 import io.quarkus.panache.common.Sort.Direction;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -9,19 +9,19 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ApplicationScoped
-public class DevicePageFieldService extends BaseService<DevicePageField> {
+public class DevicePageFieldService extends BaseService<DevicePageFieldEntity> {
 
-  public void saveFields(List<DevicePageField> fields) {
-    getAll().stream().map(DevicePageField::getId)
+  public void saveFields(List<DevicePageFieldEntity> fields) {
+    getAll().stream().map(DevicePageFieldEntity::getId)
         .filter(
-            f -> !fields.stream().map(DevicePageField::getId).toList()
+            f -> !fields.stream().map(DevicePageFieldEntity::getId).toList()
                 .contains(f)).toList()
         .forEach(this::deleteById);
 
     fields.forEach(this::save);
   }
 
-  public List<DevicePageField> getFields() {
+  public List<DevicePageFieldEntity> getFields() {
     return getAll("measurement", Direction.Ascending);
   }
 }

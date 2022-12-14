@@ -33,7 +33,7 @@ export class SettingsSecurityComponent extends BaseComponent implements OnInit {
     });
 
     // Fetch settings.
-    this.settingsService.findByNames(AppConstants.NAMED_SETTING.PLATFORM_CERTIFICATE).subscribe(onNext => {
+    this.settingsService.findByNames([AppConstants.NAMED_SETTING.PLATFORM_CERTIFICATE]).subscribe(onNext => {
       onNext.forEach(setting => {
         if (setting != null) {
           this.form.controls[setting.name].patchValue(setting.value);

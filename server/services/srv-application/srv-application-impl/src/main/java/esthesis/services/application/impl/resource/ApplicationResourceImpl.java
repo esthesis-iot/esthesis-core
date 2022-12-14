@@ -1,6 +1,6 @@
 package esthesis.services.application.impl.resource;
 
-import esthesis.service.application.dto.Application;
+import esthesis.service.application.entity.ApplicationEntity;
 import esthesis.service.application.resource.ApplicationResource;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
@@ -26,12 +26,12 @@ public class ApplicationResourceImpl implements ApplicationResource {
   @GET
   @Override
   @Path("/v1/application/find")
-  public Page<Application> find(@BeanParam Pageable pageable) {
+  public Page<ApplicationEntity> find(@BeanParam Pageable pageable) {
     return applicationService.find(pageable, true);
   }
 
   @Override
-  public Application findById(@PathParam("id") ObjectId id) {
+  public ApplicationEntity findById(@PathParam("id") ObjectId id) {
     return applicationService.findById(id);
   }
 
@@ -43,7 +43,7 @@ public class ApplicationResourceImpl implements ApplicationResource {
   }
 
   @Override
-  public Application save(@Valid Application tag) {
+  public ApplicationEntity save(@Valid ApplicationEntity tag) {
     return applicationService.save(tag);
   }
 }

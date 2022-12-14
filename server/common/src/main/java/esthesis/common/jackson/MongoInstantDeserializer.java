@@ -17,6 +17,13 @@ public class MongoInstantDeserializer extends JsonDeserializer<Instant> {
   public Instant deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
   throws IOException {
     JsonNode node = jsonParser.readValueAsTree();
-    return Instant.parse(node.get("$date").asText());
+
+    // The node might be coming directly from a Mongo serialization or an object serialization. We
+    // need to differentiate between the two.
+    if (node.get("$date") != null) {
+      return Instant.parse(node.get("$date").asText());
+    } else {
+      return Instant.parse(node.asText());
+    }
   }
 }

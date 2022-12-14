@@ -1,6 +1,6 @@
 package esthesis.service.application.resource;
 
-import esthesis.service.application.dto.Application;
+import esthesis.service.application.entity.ApplicationEntity;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
@@ -24,11 +24,11 @@ public interface ApplicationResource {
 
   @GET
   @Path("/v1/application/find")
-  Page<Application> find(@BeanParam Pageable pageable);
+  Page<ApplicationEntity> find(@BeanParam Pageable pageable);
 
   @GET
   @Path("/v1/application/{id}")
-  Application findById(@PathParam("id") ObjectId id);
+  ApplicationEntity findById(@PathParam("id") ObjectId id);
 
   @DELETE
   @Path("/v1/application/{id}")
@@ -37,5 +37,5 @@ public interface ApplicationResource {
   @POST
   @Path("/v1/application")
   @Produces("application/json")
-  Application save(@Valid Application application);
+  ApplicationEntity save(@Valid ApplicationEntity applicationEntity);
 }
