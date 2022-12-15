@@ -23,8 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 public class AvroUtils {
 
   /**
-   * Sets the value and the value type of the given value data. See
-   * {@link #parsePayload(String)}.
+   * Sets the value and the value type of the given value data. See {@link #parsePayload(String)}.
    *
    * @param val     The value to introspect.
    * @param builder The builder to set the resulting values to
@@ -68,29 +67,26 @@ public class AvroUtils {
   }
 
   /**
-   * Parses a line representing esthesis line protocol into a payload data
-   * object for {@link EsthesisDataMessage}. The format of the line protocol
-   * is:
+   * Parses a line representing esthesis line protocol into a payload data object for
+   * {@link EsthesisDataMessage}. The format of the line protocol is:
    * <pre>
    *   category measurement1=value1[,measurement2=value2...] [timestamp]
    * </pre>
    * <p>
-   * The two spaces above indicate the split positions between the category and
-   * the measurements, and the measurements and the timestamp. Category and
-   * measurement names can not contain spaces. Measurement values can contain
-   * spaces if they are included in double quotes.
+   * The two spaces above indicate the split positions between the category and the measurements,
+   * and the measurements and the timestamp. Category and measurement names can not contain spaces.
+   * Measurement values can contain spaces if they are included in double quotes.
    * <p>
    * The timestamp component should be expressed as a string, following
    * <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601</a>.
    * <p>
-   * All measurement values will be set as Strings in {@link PayloadData}, it is
-   * up to the component receiving the resulting  message to convert them to the
-   * correct format for its supported data storage implementation.
+   * All measurement values will be set as Strings in {@link PayloadData}, it is up to the component
+   * receiving the resulting  message to convert them to the correct format for its supported data
+   * storage implementation.
    * <p>
-   * To facilitate downstream data processors, this method will try to detect
-   * the type of the value and set it in the `valueType` attribute of the
-   * resulting message. You can enforce a specific data type using the following
-   * conventions:
+   * To facilitate downstream data processors, this method will try to detect the type of the value
+   * and set it in the `valueType` attribute of the resulting message. You can enforce a specific
+   * data type using the following conventions:
    * <ul>
    *   <li>Integer: append a 'i' to the value, e.g. 123i</li>
    *   <li>Float: append a 'f' to the value, e.g. 123.456f</li>
@@ -227,22 +223,23 @@ public class AvroUtils {
   }
 
   /**
-   * Converts an {@link EsthesisCommandRequestMessage} to the line protocol
-   * format.
+   * Converts an {@link EsthesisCommandRequestMessage} to the line protocol format.
    *
    * @param msg The Command Request message to convert.
    */
   public String commandRequestToLineProtocol(
       EsthesisCommandRequestMessage msg) {
     StringBuilder lineProtocol = new StringBuilder();
-    lineProtocol.append(msg.getId());
 
+    // Add the id of this request message.
+    lineProtocol.append(msg.getId());
     lineProtocol.append(" ");
+
+    // Add the type of the command.
     lineProtocol.append(msg.getCommandType().toString());
 
-    if (msg.getExecutionType() != null) {
-      lineProtocol.append(msg.getExecutionType().toString());
-    }
+    // Add the execution type of the command.
+    lineProtocol.append(msg.getExecutionType().toString());
 
     if (StringUtils.isNotBlank(msg.getCommand())) {
       lineProtocol.append(" ");

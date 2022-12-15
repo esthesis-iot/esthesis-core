@@ -165,16 +165,8 @@ public class DataflowService extends BaseService<DataflowEntity> {
 
   @Override
   public DataflowEntity save(DataflowEntity dataflowEntity) {
-    // Get the current state of this dataflow, if it exists.
-    if (dataflowEntity.getId() != null) {
-      DataflowEntity existingDataflowEntity = findById(dataflowEntity.getId());
-    }
-
     // Save the dataflow.
     dataflowEntity = super.save(dataflowEntity);
-
-    // Get Kubernetes configuration.
-    Map<String, String> kubernetesConfig = flattenMap(dataflowEntity.getKubernetes());
 
     // Schedule dataflow in Kubernetes.
     PodInfoDTO podInfoDTO = new PodInfoDTO();

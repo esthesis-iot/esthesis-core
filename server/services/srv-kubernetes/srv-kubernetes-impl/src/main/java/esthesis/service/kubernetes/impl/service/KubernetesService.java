@@ -29,7 +29,7 @@ public class KubernetesService {
     List<EnvVar> envVars = new ArrayList<>();
     podInfoDTO.getConfiguration().forEach((k, v) -> {
       envVars.add(
-          new EnvVarBuilder().withName(k).withValue((String) v).build());
+          new EnvVarBuilder().withName(k).withValue(v).build());
     });
 
     return envVars;
@@ -39,35 +39,35 @@ public class KubernetesService {
     log.debug("Scheduling pod '{}'.", podInfoDTO);
 
     //@formatter:off
+    // Create a deployment for the pod.
     Deployment deploymentInfo = new DeploymentBuilder()
-        .withNewMetadata()
-          .withName(podInfoDTO.getName())
-        .endMetadata()
-        .withNewSpec()
-          .withNewSelector()
-            .addToMatchLabels("app", podInfoDTO.getName())
-          .endSelector()
-          .withNewTemplate()
-            .withNewMetadata()
-              .addToLabels("app", podInfoDTO.getName())
-            .endMetadata()
-            .withNewSpec()
-              .addNewContainer()
-                .withName(podInfoDTO.getName())
-                .withImage(podInfoDTO.getImage())
-                .withImagePullPolicy("Always")
-                .withEnv(getEnvVar(podInfoDTO))
-                .withResources(
-                    new ResourceRequirementsBuilder()
-                        .addToRequests("cpu", Quantity.parse(podInfoDTO.getCpuRequest()))
-                        .addToLimits("cpu", Quantity.parse(podInfoDTO.getCpuLimit()))
-                        .build()
-                )
-              .endContainer()
-            .endSpec()
-          .endTemplate()
-        .endSpec()
-        .build();
+      .withNewMetadata()
+        .withName(podInfoDTO.getName())
+      .endMetadata()
+      .withNewSpec()
+        .withNewSelector()
+          .addToMatchLabels("app", podInfoDTO.getName())
+        .endSelector()
+        .withNewTemplate()
+          .withNewMetadata()
+            .addToLabels("app", podInfoDTO.getName())
+          .endMetadata()
+          .withNewSpec()
+            .addNewContainer()
+              .withName(podInfoDTO.getName())
+              .withImage(podInfoDTO.getImage())
+              .withImagePullPolicy("Always")
+              .withEnv(getEnvVar(podInfoDTO))
+              .withResources(
+                  new ResourceRequirementsBuilder()
+                      .addToRequests("cpu", Quantity.parse(podInfoDTO.getCpuRequest()))
+                      .addToLimits("cpu", Quantity.parse(podInfoDTO.getCpuLimit()))
+                      .build())
+            .endContainer()
+          .endSpec()
+        .endTemplate()
+      .endSpec()
+    .build();
     // @formatter:on
 
     if (podInfoDTO.isStatus()) {
@@ -79,14 +79,15 @@ public class KubernetesService {
     }
 
     //@formatter:off
+    // Create a horizontal pod autoscaler for the pod.
     HorizontalPodAutoscaler horizontalPodAutoscaler = new HorizontalPodAutoscalerBuilder()
-        .withNewMetadata().withName("hpa-" + podInfoDTO.getName())
+      .withNewMetadata().withName("hpa-" + podInfoDTO.getName())
         .endMetadata()
-        .withNewSpec()
+      .withNewSpec()
         .withNewScaleTargetRef()
-        .withApiVersion("apps/v1")
-        .withKind("Deployment")
-        .withName(podInfoDTO.getName())
+          .withApiVersion("apps/v1")
+          .withKind("Deployment")
+          .withName(podInfoDTO.getName())
         .endScaleTargetRef()
         .withMinReplicas(podInfoDTO.getMinInstances())
         .withMaxReplicas(podInfoDTO.getMaxInstances())
@@ -101,23 +102,24 @@ public class KubernetesService {
             .endResource()
             .build())
         .withNewBehavior()
-        .withNewScaleDown()
-        .addNewPolicy()
-        .withType("Pods")
-        .withValue(4)
-        .withPeriodSeconds(60)
-        .endPolicy()
-        .addNewPolicy()
-        .withType("Percent")
-        .withValue(10)
-        .withPeriodSeconds(60)
-        .endPolicy()
-        .endScaleDown()
+          .withNewScaleDown()
+            .addNewPolicy()
+              .withType("Pods")
+              .withValue(4)
+              .withPeriodSeconds(60)
+            .endPolicy()
+            .addNewPolicy()
+              .withType("Percent")
+              .withValue(10)
+              .withPeriodSeconds(60)
+            .endPolicy()
+          .endScaleDown()
         .endBehavior()
-        .endSpec()
-        .build();
+      .endSpec()
+    .build();
     //@formatter:on
 
+    // Create or remove the pod, according to the requested pod status.
     if (podInfoDTO.isStatus()) {
       kc.autoscaling().v2beta2().horizontalPodAutoscalers().inNamespace(
           podInfoDTO.getNamespace()).createOrReplace(horizontalPodAutoscaler);

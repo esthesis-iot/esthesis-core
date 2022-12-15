@@ -15,7 +15,7 @@ import {FlexLayoutModule} from "@angular/flex-layout";
 import {QFormsModule} from "@qlack/forms";
 import {MomentModule} from "ngx-moment";
 import {CommandRoutingModule} from "./command-routing.module";
-import {CommandComponent} from "./command.component";
+import {CommandListComponent} from "./command-list/command-list.component";
 import {CommandCreateComponent} from "./command-create/command-create.component";
 import {CommandReplyComponent} from "./command-reply/command-reply.component";
 import {MatStepperModule} from "@angular/material/stepper";
@@ -28,7 +28,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
-  declarations: [CommandComponent, CommandCreateComponent, CommandReplyComponent],
+  declarations: [CommandListComponent, CommandCreateComponent, CommandReplyComponent],
   imports: [
     CommonModule,
     CommandRoutingModule,

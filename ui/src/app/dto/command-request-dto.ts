@@ -4,6 +4,6 @@ export interface CommandRequestDto extends BaseDto {
   command: string;
   commandType: string;
   arguments: string;
-  executedOn: Date;
+  dispatchedOn: Date;
   executionType: string;
 }

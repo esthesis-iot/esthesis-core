@@ -13,7 +13,7 @@ public interface AppConfig {
   String esthesisDbName();
 
   // The Kafka consumer group id.
-  Optional<String> kafkaGroup();
+  Optional<String> kafkaConsumerGroup();
 
   // The Kafka topic to consume command reply messages from.
   String kafkaCommandReplyTopic();

@@ -43,16 +43,12 @@ mp:
       logging:
         scope: request-response
         body-limit: 65536
-
 "%debug-mongo":
   quarkus:
     log:
       category:
         "io.quarkus.mongodb.panache.common.runtime":
           level: DEBUG
-        "org.mongodb.driver.protocol.command":
-          level: DEBUG
-
 "%debug-token":
   quarkus:
     log:

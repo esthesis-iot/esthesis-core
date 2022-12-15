@@ -7,10 +7,11 @@ quarkus:
   devservices:
     enabled: false
   log:
-    level: warn
+    min-level: TRACE
+    level: ${ESTHESIS_DFL_LOGGING_COMMON:INFO}
     category:
       esthesis:
-        level: INFO
+        level: ${ESTHESIS_DFL_LOGGING_ESTHESIS:INFO}
     console:
       format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%-30.30c{1.}] %s%e%n"
   banner:

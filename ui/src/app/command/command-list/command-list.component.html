@@ -32,10 +32,10 @@
           <td mat-cell
               *matCellDef="let element">{{element.createdOn | date: constants.DATE_FORMAT}}</td>
         </ng-container>
-        <ng-container matColumnDef="executedOn">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Executed On</th>
+        <ng-container matColumnDef="dispatchedOn">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Dispatched On</th>
           <td mat-cell
-              *matCellDef="let element">{{element.executedOn | date: constants.DATE_FORMAT}}</td>
+              *matCellDef="let element">{{element.dispatchedOn | date: constants.DATE_FORMAT}}</td>
         </ng-container>
         <ng-container matColumnDef="pills">
           <th mat-header-cell *matHeaderCellDef scope="col">Type</th>

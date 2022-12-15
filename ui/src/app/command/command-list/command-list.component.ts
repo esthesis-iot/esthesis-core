@@ -5,25 +5,25 @@ import {MatSort} from "@angular/material/sort";
 import {MatTableDataSource} from "@angular/material/table";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
-import {BaseComponent} from "../shared/component/base-component";
-import {CommandRequestDto} from "../dto/command-request-dto";
+import {BaseComponent} from "../../shared/component/base-component";
+import {CommandRequestDto} from "../../dto/command-request-dto";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import {CommandService} from "./command.service";
+import {CommandService} from "../command.service";
 import {QFormsService} from "@qlack/forms";
-import {AppConstants} from "../app.constants";
-import {CommandCreateComponent} from "./command-create/command-create.component";
-import {UtilityService} from "../shared/service/utility.service";
+import {AppConstants} from "../../app.constants";
+import {CommandCreateComponent} from "../command-create/command-create.component";
+import {UtilityService} from "../../shared/service/utility.service";
 import {
   OkCancelModalComponent
-} from "../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+} from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
 
 @Component({
-  selector: "app-command",
-  templateUrl: "./command.component.html",
-  styleUrls: ["./command.component.scss"]
+  selector: "app-command-list",
+  templateUrl: "./command-list.component.html",
+  styleUrls: ["./command-list.component.scss"]
 })
-export class CommandComponent extends BaseComponent implements OnInit, AfterViewInit {
-  displayedColumns = ["command", "description", "createdOn", "executedOn", "pills"];
+export class CommandListComponent extends BaseComponent implements OnInit, AfterViewInit {
+  displayedColumns = ["command", "description", "createdOn", "dispatchedOn", "pills"];
   dataSource: MatTableDataSource<CommandRequestDto> = new MatTableDataSource<CommandRequestDto>();
   filterForm: FormGroup;
   // Expose application constants.

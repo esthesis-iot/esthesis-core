@@ -5,10 +5,4 @@ export class DataflowDto {
   status!: boolean;
   type!: string;
   typeText!: string;
-  // minPods!: number;
-  // maxPods!: number;
-  // namespace!: string;
-  // version!: string;
-
-  // configuration?: string;
 }

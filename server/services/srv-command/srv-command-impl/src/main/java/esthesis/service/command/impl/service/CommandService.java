@@ -163,7 +163,7 @@ public class CommandService {
                   .withKey(hardwareId)
                   .build())
               .addMetadata(TracingMetadata.withCurrent(Context.current())));
-      request.setExecutedOn(Instant.now());
+      request.setDispatchedOn(Instant.now());
       commandRequestService.save(request);
       scheduleInfo.incrementDevicesMatched();
     }

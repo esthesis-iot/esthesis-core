@@ -64,7 +64,8 @@ public class CommandRequestEntity extends BaseEntity {
   @NotEmpty
   private Instant createdOn = Instant.now();
 
-  // The time when the command was executed.
-  private Instant executedOn;
+  // The time when the command was dispatched. This indicates the time this command was queued in
+  // Kafka.
+  private Instant dispatchedOn;
 }
 

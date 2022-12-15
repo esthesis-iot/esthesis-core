@@ -60,8 +60,6 @@ kafka:
       category:
         "io.quarkus.mongodb.panache.common.runtime":
           level: DEBUG
-        "org.mongodb.driver.protocol.command":
-          level: DEBUG
 
 "%debug-token":
   quarkus:

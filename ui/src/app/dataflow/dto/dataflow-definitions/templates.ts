@@ -40,7 +40,7 @@ export const DATAFLOW_TEMPLATE_KAFKA = [
     key: "cluster-url", type: "input", defaultValue: "esthesis-kafka:9092",
     props: {required: true, type: "text", label: "Cluster URL"}
   }, {
-    key: "kafka-group", type: "input",
+    key: "consumer-group", type: "input",
     props: {label: "Kafka consumer group"}
   }
 ];
@@ -73,3 +73,42 @@ export const DATAFLOW_TEMPLATE_WRAPPED_KUBERNETES = [{
 export const DATAFLOW_TEMPLATE_STATUS = [
   {key: "status", type: "toggle", defaultValue: true, props: {label: "Active"}},
 ];
+
+export const DATAFLOW_TEMPLATE_LOGGING = [{
+  key: "config.logging", wrappers: ["section"],
+  props: {label: "Logging configuration"},
+  fieldGroup: [
+    {
+      key: "common", type: "select", defaultValue: "INFO",
+      props: {
+        label: "Select the global logging level for this dataflow", required: true, multiple: false,
+        options: [
+          {value: "OFF", label: "Off"},
+          {value: "FATAL", label: "Fatal"},
+          {value: "ERROR", label: "Error"},
+          {value: "WARN", label: "Warn"},
+          {value: "INFO", label: "Info"},
+          {value: "DEBUG", label: "Debug"},
+          {value: "TRACE", label: "Trace"},
+          {value: "ALL", label: "All"},
+        ]
+      }
+    },
+    {
+      key: "esthesis", type: "select", defaultValue: "INFO",
+      props: {
+        label: "Select the esthesis logging level for this dataflow", required: true, multiple: false,
+        options: [
+          {value: "OFF", label: "Off"},
+          {value: "FATAL", label: "Fatal"},
+          {value: "ERROR", label: "Error"},
+          {value: "WARN", label: "Warn"},
+          {value: "INFO", label: "Info"},
+          {value: "DEBUG", label: "Debug"},
+          {value: "TRACE", label: "Trace"},
+          {value: "ALL", label: "All"},
+        ]
+      }
+    }
+  ]
+}];

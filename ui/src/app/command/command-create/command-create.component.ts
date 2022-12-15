@@ -44,27 +44,31 @@ export class CommandCreateComponent extends BaseComponent implements OnInit {
     // Step 2 form.
     this.commandForm = this.formBuilder.group({
       commandType: ["", [Validators.required]],
-      executionType: ["", [Validators.required]],
+      executionType: [this.appConstants.DEVICE.COMMAND.EXECUTION.ASYNCHRONOUS],
       command: [""],
       arguments: [""],
       description: [""]
     });
 
-    // Watch changes on the hardware / tags.
+    // Watch changes on the hardware id to find matching devices.
     this.searchDevicesForm.valueChanges.pipe(debounceTime(500), distinctUntilChanged()
-    ).subscribe(onNext => {
-      if (onNext && onNext.hardwareId) {
-        this.commandService.findDevicesByHardwareId(onNext.hardwareId).subscribe(
-          onNext => {
-            if (onNext && onNext.length > 0) {
-              this.searchDevices = onNext;
-            } else {
-              this.searchDevices = [];
+    ).subscribe({
+      next: (next) => {
+        if (next && next.hardwareId) {
+          this.commandService.findDevicesByHardwareId(next.hardwareId).subscribe({
+            next: (hardwareIds) => {
+              if (hardwareIds && hardwareIds.length > 0) {
+                this.searchDevices = hardwareIds;
+              } else {
+                this.searchDevices = [];
+              }
+            }, error: (error) => {
+              this.utilityService.popupErrorWithTraceId("Could not search for devices.", error);
             }
-          }
-        );
-      } else {
-        this.searchDevices = [];
+          });
+        } else {
+          this.searchDevices = [];
+        }
       }
     });
 
@@ -73,19 +77,19 @@ export class CommandCreateComponent extends BaseComponent implements OnInit {
       this.availableTags = onNext.content;
     });
 
-
     // Get provisioning packages.
-    this.provisioningService.find("available=&sort=version,desc")
-    .subscribe({
-      next: (next) => {
-        this.provisioningPackages = next.content;
+    this.provisioningService.find("available=true&cacheStatus="
+      + this.appConstants.PROVISIONING.CACHE_STATUS.COMPLETED + "&sort=version,desc").subscribe({
+      next: (provisioningPackages) => {
+        this.provisioningPackages = provisioningPackages.content;
       }, error: (error) => {
-        this.utilityService.popupErrorWithTraceId("Could not load provisioning packages.", error);
+        this.utilityService.popupErrorWithTraceId("Could not search for provisioning packages.", error);
       }
     });
   }
 
   save() {
+    // Save the command.
     this.commandService.execute(
       {
         ...{
@@ -111,10 +115,12 @@ export class CommandCreateComponent extends BaseComponent implements OnInit {
     let dispatchOK = (this.selectedHardwareIds.length > 0 || this.searchDevicesForm.value.tags)
       && this.commandForm.valid;
 
-    // Check that for Firmware and Execute type of comamnds, there is a command provided.
-    if ([AppConstants.DEVICE.COMMAND.TYPE.FIRMWARE, AppConstants.DEVICE.COMMAND.TYPE.EXECUTE]
+    // Check that for Execute & Firmware type of commands, there is a command and execution mode
+    // provided.
+    if ([AppConstants.DEVICE.COMMAND.TYPE.EXECUTE, AppConstants.DEVICE.COMMAND.TYPE.FIRMWARE]
     .includes(this.commandForm.value.commandType)) {
-      dispatchOK = dispatchOK && this.commandForm.value.command;
+      dispatchOK = dispatchOK && this.commandForm.value.command
+        && this.commandForm.value.executionType;
     }
 
     return dispatchOK;

@@ -61,7 +61,7 @@
           </div>
           <div fxLayout="row">
             <div class="label-text">Executed On:</div>
-            <div>{{commandRequest.executedOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
+            <div>{{commandRequest.dispatchedOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
           </div>
         </div>
       </mat-card-content>

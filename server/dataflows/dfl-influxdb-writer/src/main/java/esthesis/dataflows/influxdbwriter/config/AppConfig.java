@@ -22,7 +22,7 @@ public interface AppConfig {
   String influxBucket();
 
   // The Kafka consumer group id.
-  Optional<String> kafkaGroup();
+  Optional<String> kafkaConsumerGroup();
 
   // The Kafka topic to consume telemetry messages from.
   Optional<String> kafkaTelemetryTopic();
