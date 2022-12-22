@@ -16,12 +16,17 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.FluentProducerTemplate;
 import org.apache.camel.Produce;
 import org.bson.types.ObjectId;
+import org.semver4j.Semver;
 
 @Slf4j
 @ApplicationScoped
@@ -53,6 +58,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
     p.setVersion((pf.getVersion()));
     p.setTags(pf.getTags());
     p.setAttributes(pf.getAttributes());
+    p.setPrerequisiteVersion(pf.getPrerequisiteVersion());
     p.setTypeSpecificConfiguration(pf.getTypeSpecificConfiguration());
     p.setSha256(pf.getSha256());
     // Only for new records.
@@ -146,9 +152,21 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
     cacheAll.asyncSend();
   }
 
-  //  public RestResponse<Uni<byte[]>> download(ObjectId provisioningPackageId) {
   public Uni<byte[]> download(ObjectId provisioningPackageId) {
     // Get the binary content of the provisioning package.
     return redisUtils.downloadProvisioningPackage(provisioningPackageId);
+  }
+
+  public List<ProvisioningPackageEntity> findByTags(String tags) {
+    if (!tags.isBlank()) {
+      return
+          findByColumnIn("tags", Arrays.asList(tags.split(",")), false).stream()
+              .sorted(Comparator.comparing(ppe -> new Semver(ppe.getVersion())))
+              .collect(Collectors.toList());
+    } else {
+      return getAll().stream()
+          .sorted(Comparator.comparing(ppe -> new Semver(ppe.getVersion())))
+          .collect(Collectors.toList());
+    }
   }
 }

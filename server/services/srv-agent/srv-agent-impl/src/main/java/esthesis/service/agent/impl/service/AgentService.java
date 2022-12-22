@@ -2,6 +2,7 @@ package esthesis.service.agent.impl.service;
 
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.AppConstants.Provisioning.Redis;
+import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.exception.QLimitException;
 import esthesis.common.exception.QSecurityException;
 import esthesis.service.agent.dto.AgentProvisioningInfoResponse;
@@ -21,6 +22,8 @@ import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsSystemResource;
 import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;
+import io.quarkus.runtime.util.HashUtil;
+import io.smallrye.mutiny.Uni;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
@@ -137,16 +140,18 @@ public class AgentService {
 
   /**
    * Attempts to validate a request token sent by a device while requesting information on available
-   * provisioning packages. The token is an RSA/SHA256 digital signature of the hardware id of the
-   * device requesting the information.
+   * provisioning packages. The token is an RSA/SHA256 digital signature of a SHA256 hashed version
+   * of the hardware id of the device requesting the information.
    *
    * @param hardwareId
    * @param token
-   * @return
    */
-  private boolean validateRequestToken(String hardwareId, String token) {
-    log.debug("Validating find provisioning package request token '{}' for hardware id '{}'.",
-        token, hardwareId);
+  private void validateRequestToken(String hardwareId, Optional<String> token) {
+    if (token.isEmpty()) {
+      throw new QSecurityException(
+          "Requesting provisioning package information for hardware id '{}' requires a token.",
+          hardwareId);
+    }
 
     // Obtain the necessary information to verify the signature.
     String publicKey = deviceSystemResource.findPublicKey(hardwareId);
@@ -159,35 +164,24 @@ public class AgentService {
     SignatureVerificationRequestDTO request = new SignatureVerificationRequestDTO();
     request.setPublicKey(publicKey);
     request.setKeyAlgorithm(keyAlgorithm);
+    request.setPayload(HashUtil.sha256(hardwareId).getBytes(StandardCharsets.UTF_8));
     request.setPayload(hardwareId.getBytes(StandardCharsets.UTF_8));
-    request.setSignature(token);
+    request.setSignature(token.get());
     request.setSignatureAlgorithm(signatureAlgorithm);
 
     // Verify the signature.
     try {
-      return signingSystemResource.verifySignature(request);
+      signingSystemResource.verifySignature(request);
     } catch (Exception e) {
-      log.error("Could not validate request token.", e);
-      return false;
+      throw new QSecurityException("Invalid request token '{}' for hardware id '{}'.",
+          token.get(), hardwareId);
     }
+
+    log.debug("Validating find provisioning package request token '{}' for hardware id '{}'.",
+        token, hardwareId);
   }
 
-  /**
-   * Returns information of a provisioning package that can be downloaded by this device.
-   * <p>
-   * This method maintains a counter of provisioning requests for each device and denies additional
-   * requests for the same device if more than a certain number of failed requests are made within a
-   * certain time period. The counter functionality only works when the platform is running in
-   * secure provisioning mode, and it is reset once a successful request is made.
-   *
-   * @param hardwareId
-   * @param token
-   * @return
-   */
-  public AgentProvisioningInfoResponse findProvisioningPackage(String hardwareId,
-      Optional<String> token) {
-    // If the platform is configured to only allow secure provisioning requests check the
-    // requestToken provided by the device.
+  private void validateRequestsLimit(String hardwareId) {
     if (settingsSystemResource.findByName(NamedSetting.DEVICE_PROVISIONING_SECURE).asBoolean()) {
       long counter = redisUtils.incrCounter(KeyType.ESTHESIS_PRT, hardwareId,
           requestCounterTimeout);
@@ -198,39 +192,17 @@ public class AgentService {
             requestCounterTimeout);
       }
 
-      // Attempt to validate the request token.
-      if (token.isEmpty()) {
-        throw new QSecurityException(
-            "Requesting provisioning package information for hardware id '{}' requires a token.",
-            hardwareId);
-      } else {
-        if (!validateRequestToken(hardwareId, token.get())) {
-          throw new QSecurityException("Invalid request token '{}' for hardware id '{}'.",
-              token.get(), hardwareId);
-        } else {
-          log.debug("Request token '{}' for hardware id '{}' is valid.",
-              token.get(), hardwareId);
-        }
-      }
-
       // If the token was validated, reset the caching counter.
       redisUtils.resetCounter(KeyType.ESTHESIS_PRT, hardwareId);
     }
+  }
 
-    // Find a candidate provisioning package.
-    log.debug("Requesting provisioning info for device with hardware ID '{}'.",
-        hardwareId);
-    ProvisioningPackageEntity pp = provisioningAgentResource.find(hardwareId);
-
-    // If a provisioning package was not found terminate here.
-    if (pp == null) {
-      log.warn("Could not find a provisioning package for device with hardware ID '{}'.",
-          hardwareId);
-      return null;
-    }
-
-    // If a provisioning package was found, create a download token for it.
+  private AgentProvisioningInfoResponse prepareAgentProvisioningInfoResponse(
+      ProvisioningPackageEntity pp) {
+    // If a provisioning package was found and it is a later version than the one currently
+    // installed on the device, create a download token for it.
     log.debug("Found provisioning package '{}'.", pp);
+
     String randomToken = UUID.randomUUID().toString().replace("-", "");
     redisUtils.setToHash(KeyType.ESTHESIS_PPDT, randomToken,
         Redis.DOWNLOAD_TOKEN_PACKAGE_ID, pp.getId().toString());
@@ -246,6 +218,7 @@ public class AgentService {
     apir.setName(pp.getName());
     apir.setVersion(pp.getVersion());
     apir.setSize(pp.getSize());
+    apir.setFilename(pp.getFilename());
     apir.setSha256(pp.getSha256());
     apir.setDownloadUrl(
         settingsSystemResource.findByName(NamedSetting.DEVICE_PROVISIONING_URL).asString());
@@ -254,4 +227,68 @@ public class AgentService {
     return apir;
   }
 
+  public AgentProvisioningInfoResponse findProvisioningPackageById(String hardwareId,
+      String packageId, Optional<String> token) {
+    // Check that requests for this hardware id are not being made too often.
+    validateRequestsLimit(hardwareId);
+
+    // Check that the provided token (if provisioning is running in secure mode) is valid.
+    validateRequestToken(hardwareId, token);
+
+    ProvisioningPackageEntity pp = provisioningAgentResource.findById(packageId);
+
+    // If a provisioning package was not found, return an empty response.
+    if (pp == null) {
+      return new AgentProvisioningInfoResponse();
+    } else {
+      return prepareAgentProvisioningInfoResponse(pp);
+    }
+  }
+
+  /**
+   * Returns information of a provisioning package that can be downloaded by this device.
+   * <p>
+   * This method maintains a counter of provisioning requests for each device and denies additional
+   * requests for the same device if more than a certain number of failed requests are made within a
+   * certain time period. The counter functionality only works when the platform is running in
+   * secure provisioning mode, and it is reset once a successful request is made.
+   *
+   * @param hardwareId
+   * @param version    The current version of the firmware installed on the device.
+   * @param token
+   * @return
+   */
+  public AgentProvisioningInfoResponse findProvisioningPackage(String hardwareId,
+      String version, Optional<String> token) {
+    // Check that requests for this hardware id are not being made too often.
+    validateRequestsLimit(hardwareId);
+
+    // Check that the provided token (if provisioning is running in secure mode) is valid.
+    validateRequestToken(hardwareId, token);
+
+    // Find a candidate provisioning package.
+    log.debug("Requesting provisioning info for device with hardware ID '{}'.",
+        hardwareId);
+    ProvisioningPackageEntity pp = provisioningAgentResource.find(hardwareId, version);
+
+    // If a provisioning package was not found, return an empty response.
+    if (pp == null) {
+      return new AgentProvisioningInfoResponse();
+    } else {
+      return prepareAgentProvisioningInfoResponse(pp);
+    }
+  }
+
+  public Uni<byte[]> downloadProvisioningPackage(String token) {
+    // Find the provisioning package id associated with the download token.
+    return redisUtils.getFromHashReactive(KeyType.ESTHESIS_PPDT, token,
+            Redis.DOWNLOAD_TOKEN_PACKAGE_ID)
+        .onItem()
+        .ifNull().failWith(
+            () -> new QDoesNotExistException(
+                "Invalid download token '{}' for provisioning package.",
+                token))
+        .onItem()
+        .transformToUni(id -> redisUtils.downloadProvisioningPackage(new ObjectId(id)));
+  }
 }

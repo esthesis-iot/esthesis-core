@@ -68,7 +68,10 @@
         </mat-form-field>
 
         <mat-form-field>
-          <input matInput placeholder="Depends on version" formControlName="prerequisiteVersion">
+          <mat-select placeholder="Depends on version" formControlName="prerequisiteVersion">
+            <mat-option *ngFor="let version of baseVersions" [value]="version.id">{{version.name}}
+              - {{version.version}}</mat-option>
+          </mat-select>
           <mat-hint>A previous version required to be installed before this package can be
             installed
           </mat-hint>

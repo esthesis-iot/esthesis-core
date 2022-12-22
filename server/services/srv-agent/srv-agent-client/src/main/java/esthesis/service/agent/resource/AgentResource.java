@@ -2,6 +2,7 @@ package esthesis.service.agent.resource;
 
 import esthesis.service.agent.dto.AgentRegistrationRequest;
 import esthesis.service.agent.dto.AgentRegistrationResponse;
+import io.smallrye.mutiny.Uni;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -11,10 +12,12 @@ import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.bouncycastle.operator.OperatorCreationException;
+import org.jboss.resteasy.reactive.RestResponse;
 
 @Path("/api")
 public interface AgentResource {
@@ -33,8 +36,21 @@ public interface AgentResource {
    * @param token      TODO define
    */
   @GET
-  @Path(value = "/v1/agent/provisioning/{hardwareId}/find")
-  Response findProvisioningPackage(@PathParam("hardwareId") String hardwareId,
+  @Path(value = "/v1/agent/provisioning/find")
+  Response findProvisioningPackage(
+      @QueryParam("hardwareId") String hardwareId,
+      @QueryParam("version") String version,
       @QueryParam("token") Optional<String> token);
 
+  @GET
+  @Path(value = "/v1/agent/provisioning/find/by-id")
+  Response findProvisioningPackageById(
+      @QueryParam("hardwareId") String hardwareId,
+      @QueryParam("packageId") String packageId,
+      @QueryParam("token") Optional<String> token);
+
+  @GET
+  @Path("/v1/agent/provisioning/download")
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  Uni<RestResponse<byte[]>> downloadProvisioningPackage(@QueryParam("token") String token);
 }

@@ -8,7 +8,7 @@
   <mat-card-content>
     <div fxLayout="column">
       <table mat-table [dataSource]="datasource" class="mat-elevation-z0" fxFlex="grow" matSort
-             matSortActive="name" matSortDirection="asc" matSortStart="asc" matSortDisableClear
+             matSortActive="version" matSortDirection="desc" matSortStart="desc" matSortDisableClear
              aria-describedby="List of provisioning packages">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Name</th>
@@ -20,7 +20,8 @@
         </ng-container>
         <ng-container matColumnDef="prerequisiteVersion">
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Base Version</th>
-          <td mat-cell *matCellDef="let element">{{element.prerequisiteVersion}}</td>
+          <td mat-cell *matCellDef="let element">
+            {{resolveBaseVersion(element.prerequisiteVersion)}}</td>
         </ng-container>
         <ng-container matColumnDef="state">
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> State</th>

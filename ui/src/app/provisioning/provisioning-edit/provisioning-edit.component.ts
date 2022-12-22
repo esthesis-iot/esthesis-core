@@ -14,6 +14,7 @@ import {
 } from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
 import * as _ from "lodash";
 import {ProvisioningDto} from "../dto/provisioning-dto";
+import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 
 @Component({
   selector: "app-provisioning-edit",
@@ -25,6 +26,7 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
   id!: string;
   availableTags: TagDto[] | undefined;
   provisioningPackage?: ProvisioningDto;
+  baseVersions?: ProvisioningDto[];
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
     private qForms: QFormsService, private tagService: TagService,
@@ -112,6 +114,16 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
         this.utilityService.popupErrorWithTraceId("There was a problem fetching available tags.", err);
       }
     });
+
+    // Get available base versions.
+    this.findBaseVersions();
+
+    // If tags change, update base versions.
+    this.form.controls.tags.valueChanges.pipe(
+      debounceTime(100), distinctUntilChanged()
+    ).subscribe(() => {
+      this.findBaseVersions();
+    });
   }
 
   save() {
@@ -196,6 +208,22 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
     this.provisioningService.recache(this.id).subscribe(onNext => {
       this.utilityService.popupSuccess("Provisioning package is being recached.");
       this.router.navigate(["provisioning"]);
+    });
+  }
+
+  /**
+   * Finds other candidate versions to be a prerequisite for this version. Candidate versions are
+   * filtered to match at least one of the tags of this version.
+   */
+  findBaseVersions() {
+    const tags = this.form.controls.tags.value.join(",");
+    this.provisioningService.findBaseVersions(tags).subscribe({
+      next: (next: any) => {
+        this.baseVersions =
+          next.filter((value: any) => value.version !== this.form.controls.version.value);
+      }, error: (err: any) => {
+        this.utilityService.popupErrorWithTraceId("There was a problem fetching available base versions.", err);
+      }
     });
   }
 }

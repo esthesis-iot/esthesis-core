@@ -76,6 +76,18 @@ public class RedisUtils {
   }
 
   /**
+   * Finds the value of a field inside a hash. Reactive version.
+   *
+   * @param keyType The type of this key (the key name will be prefixed with this value).
+   * @param key     The key (name) of the hash.
+   * @param field   The name of the field to find inside the hash.
+   * @return Returns The value of the field.
+   */
+  public Uni<String> getFromHashReactive(KeyType keyType, String key, String field) {
+    return redis.getReactive().hash(String.class).hget(keyType + "." + key, field);
+  }
+
+  /**
    * Returns all fields and their values for a given hash.
    *
    * @param keyType The type of this key (the key name will be prefixed with this value).

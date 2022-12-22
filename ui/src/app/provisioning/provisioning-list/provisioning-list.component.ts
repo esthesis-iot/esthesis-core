@@ -25,6 +25,8 @@ export class ProvisioningListComponent extends BaseComponent implements OnInit, 
   columns = ["name", "version", "prerequisiteVersion", "state", "size", "tags", "createdOn", "type", "cacheStatus"];
   datasource = new MatTableDataSource<ProvisioningDto>();
   availableTags: TagDto[] | undefined;
+  // The list of all packages, so that base-version references can be resolved.
+  availableProvisioningPackages: ProvisioningDto[] | undefined;
   // Expose application constants.
   constants = AppConstants;
 
@@ -45,8 +47,23 @@ export class ProvisioningListComponent extends BaseComponent implements OnInit, 
     this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
     // Get available tags.
-    this.tagService.find("sort=name,asc").subscribe(onNext => {
-      this.availableTags = onNext.content;
+    this.tagService.find("sort=name,asc").subscribe({
+      next: (next) => {
+        this.availableTags = next.content;
+      }, error: (error) => {
+        this.utilityService.popupErrorWithTraceId(
+          "Could not fetch tags, please try again later.", error);
+      }
+    });
+
+    // Get available provisioning packages.
+    this.provisioningService.find("sort=name,asc").subscribe({
+      next: (next) => {
+        this.availableProvisioningPackages = next.content;
+      }, error: (error) => {
+        this.utilityService.popupErrorWithTraceId(
+          "Could not fetch provisioning packages, please try again later.", error);
+      }
     });
 
     // Each time the sorting changes, reset the page number.
@@ -70,11 +87,20 @@ export class ProvisioningListComponent extends BaseComponent implements OnInit, 
       this.sort!.start);
   }
 
-  resolveTag(ids: number[]): string {
+  resolveTag(ids: string[]): string {
     return _.map(
       _.filter(this.availableTags, i => _.includes(ids, i.id)),
       (j) => {
         return j.name;
+      }
+    ).join(", ");
+  }
+
+  resolveBaseVersion(ids: string[]): string {
+    return _.map(
+      _.filter(this.availableProvisioningPackages, i => _.includes(ids, i.id)),
+      (j) => {
+        return j.name + " - " + j.version;
       }
     ).join(", ");
   }

@@ -7,6 +7,7 @@ import esthesis.service.provisioning.form.ProvisioningPackageForm;
 import esthesis.service.provisioning.impl.service.ProvisioningService;
 import esthesis.service.provisioning.resource.ProvisioningResource;
 import io.smallrye.mutiny.Uni;
+import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
@@ -63,6 +64,11 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
             "attachment; filename=\"" + pp.getFilename() + "\"")
         .header(HttpHeaders.CONTENT_LENGTH, pp.getSize())
         .build());
+  }
+
+  @Override
+  public List<ProvisioningPackageEntity> findByTags(String tags) {
+    return provisioningService.findByTags(tags);
   }
 
 }

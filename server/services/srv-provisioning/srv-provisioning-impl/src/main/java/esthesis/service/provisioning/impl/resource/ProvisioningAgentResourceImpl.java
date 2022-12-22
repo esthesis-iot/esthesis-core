@@ -11,7 +11,12 @@ public class ProvisioningAgentResourceImpl implements ProvisioningAgentResource 
   ProvisioningAgentService provisioningAgentService;
 
   @Override
-  public ProvisioningPackageEntity find(String hardwareId) {
-    return provisioningAgentService.find(hardwareId);
+  public ProvisioningPackageEntity find(String hardwareId, String version) {
+    return provisioningAgentService.find(hardwareId, version);
+  }
+
+  @Override
+  public ProvisioningPackageEntity findById(String provisioningPackageId) {
+    return provisioningAgentService.findById(provisioningPackageId);
   }
 }

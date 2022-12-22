@@ -369,12 +369,15 @@ public class CryptoService extends CryptoConverters {
          SignatureException {
     log.debug("Received signature verification request '{}'.", request);
     if (StringUtils.isBlank(request.getSignature())) {
-      throw new QDoesNotExistException("The signature provided to validate is empty.");
+      throw new QDoesNotExistException("The provided signature to validate is empty.");
     }
     final Signature signature = Signature.getInstance(request.getSignatureAlgorithm());
     signature.initVerify(pemToPublicKey(request.getPublicKey(), request.getKeyAlgorithm()));
     signature.update(request.getPayload());
 
-    return signature.verify(Base64.getDecoder().decode(request.getSignature()));
+    boolean verification = signature.verify(Base64.getDecoder().decode(request.getSignature()));
+    log.debug("Signature verification result is '{}'.", verification);
+
+    return verification;
   }
 }

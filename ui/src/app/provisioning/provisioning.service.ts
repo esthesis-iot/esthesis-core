@@ -30,4 +30,7 @@ export class ProvisioningService extends CrudDownloadService<ProvisioningDto> {
     return this.http.get(`${environment.apiPrefix}/v1/provisioning/recache`);
   }
 
+  findBaseVersions(tags: string) {
+    return this.http.get(`${environment.apiPrefix}/v1/provisioning/find/by-tags?tags=${tags}`);
+  }
 }

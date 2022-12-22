@@ -6,6 +6,7 @@ import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.form.ProvisioningPackageForm;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import io.smallrye.mutiny.Uni;
+import java.util.List;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -14,6 +15,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
@@ -61,4 +63,8 @@ public interface ProvisioningResource {
   @Path("/v1/provisioning/{id}/download")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   Uni<RestResponse<byte[]>> download(@PathParam("id") ObjectId provisioning);
+
+  @GET
+  @Path("/v1/provisioning/find/by-tags")
+  List<ProvisioningPackageEntity> findByTags(@QueryParam("tags") String tags);
 }

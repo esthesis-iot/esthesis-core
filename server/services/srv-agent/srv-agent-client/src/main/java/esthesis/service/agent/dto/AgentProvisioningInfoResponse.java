@@ -35,4 +35,7 @@ public class AgentProvisioningInfoResponse {
 
   // The download token to provide when downloading this provisioning package.
   private String downloadToken;
+
+  // The filename of the provisioning package.
+  private String filename;
 }
