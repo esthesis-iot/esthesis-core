@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from "@angular/core";
+import {Component, Inject} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
@@ -6,13 +6,10 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
   templateUrl: "./input-modal.component.html",
   styleUrls: []
 })
-export class InputModalComponent implements OnInit {
+export class InputModalComponent {
 
   constructor(public dialogRef: MatDialogRef<InputModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-  }
-
-  ngOnInit() {
   }
 
   public reload(): void {

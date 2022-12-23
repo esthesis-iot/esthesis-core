@@ -4,10 +4,7 @@ import {AppConstants} from "../../app.constants";
 export class BaseComponent {
 
   readonly appConstants = AppConstants;
-
-  constructor() {
-  }
-
+  
   /**
    * Utility method to lookup within an object by the value of its keys and return the key name.
    * This is particularly useful when looking up constants.

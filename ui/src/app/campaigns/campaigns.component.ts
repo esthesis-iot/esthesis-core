@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {BaseComponent} from "../shared/component/base-component";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
@@ -13,7 +13,7 @@ import {AppConstants} from "../app.constants";
   templateUrl: "./campaigns.component.html",
   styleUrls: ["./campaigns.component.scss"]
 })
-export class CampaignsComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class CampaignsComponent extends BaseComponent implements AfterViewInit {
   columns = ["name", "type", "state", "startedOn", "terminatedOn"];
   datasource = new MatTableDataSource<CampaignDto>();
   // Expose application constants.
@@ -24,10 +24,6 @@ export class CampaignsComponent extends BaseComponent implements OnInit, AfterVi
 
   constructor(private campaignsService: CampaignsService, private qForms: QFormsService) {
     super();
-  }
-
-  ngOnInit() {
-
   }
 
   ngAfterViewInit(): void {

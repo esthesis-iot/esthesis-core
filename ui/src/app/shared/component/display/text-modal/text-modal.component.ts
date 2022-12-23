@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from "@angular/core";
+import {Component, Inject} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
@@ -6,13 +6,10 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
   templateUrl: "./text-modal.component.html",
   styleUrls: ["./text-modal.component.scss"]
 })
-export class TextModalComponent implements OnInit {
+export class TextModalComponent {
 
   constructor(public dialogRef: MatDialogRef<TextModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-  }
-
-  ngOnInit() {
   }
 
   public reload(): void {

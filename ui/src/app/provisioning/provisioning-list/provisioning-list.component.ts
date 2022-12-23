@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {MatTableDataSource} from "@angular/material/table";
@@ -21,7 +21,7 @@ import {MatDialog} from "@angular/material/dialog";
   templateUrl: "./provisioning-list.component.html",
   styleUrls: ["./provisioning-list.component.scss"]
 })
-export class ProvisioningListComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class ProvisioningListComponent extends BaseComponent implements AfterViewInit {
   columns = ["name", "version", "prerequisiteVersion", "state", "size", "tags", "createdOn", "type", "cacheStatus"];
   datasource = new MatTableDataSource<ProvisioningDto>();
   availableTags: TagDto[] | undefined;
@@ -37,9 +37,6 @@ export class ProvisioningListComponent extends BaseComponent implements OnInit, 
     private tagService: TagsService, private utilityService: UtilityService,
     private dialog: MatDialog) {
     super();
-  }
-
-  ngOnInit() {
   }
 
   ngAfterViewInit(): void {

@@ -114,7 +114,7 @@ public class CryptoConverters {
     }
   }
 
-  public static String publicKeyToPEM(final PublicKey key) throws IOException {
+  public String publicKeyToPEM(final PublicKey key) throws IOException {
     try (StringWriter pemStrWriter = new StringWriter()) {
       try (JcaPEMWriter pemWriter = new JcaPEMWriter(pemStrWriter)) {
         pemWriter.writeObject(key);

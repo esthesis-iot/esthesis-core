@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
+@SuppressWarnings("java:S1192")
 public class DeviceRepository implements PanacheMongoRepository<DeviceEntity> {
 
   public Optional<DeviceEntity> findByHardwareId(String hardwareId) {

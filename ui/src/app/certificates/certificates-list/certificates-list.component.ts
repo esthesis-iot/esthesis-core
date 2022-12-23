@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {MatTableDataSource} from "@angular/material/table";
@@ -13,7 +13,7 @@ import {AppConstants} from "../../app.constants";
   templateUrl: "./certificates-list.component.html",
   styleUrls: ["./certificates-list.component.scss"]
 })
-export class CertificatesListComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class CertificatesListComponent extends BaseComponent implements AfterViewInit {
   columns = ["cn", "issued", "validity", "issuer"];
   datasource = new MatTableDataSource<CertificateDto>();
   // Expose application constants.
@@ -24,9 +24,6 @@ export class CertificatesListComponent extends BaseComponent implements OnInit, 
 
   constructor(private certificateService: CertificatesService, private qForms: QFormsService) {
     super();
-  }
-
-  ngOnInit() {
   }
 
   ngAfterViewInit(): void {

@@ -14,6 +14,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
 @ApplicationScoped
+@SuppressWarnings("java:S1192")
 public class ProvisioningRoutes extends RouteBuilder {
 
   @Inject

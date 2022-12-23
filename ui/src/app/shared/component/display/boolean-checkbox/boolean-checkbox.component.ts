@@ -7,8 +7,5 @@ import {Component, Input} from "@angular/core";
 })
 export class BooleanCheckboxComponent {
   @Input() public value!: boolean;
-
-  constructor() {
-  }
-
+  
 }

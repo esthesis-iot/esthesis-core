@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {CaDto} from "../dto/ca-dto";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
@@ -13,7 +13,7 @@ import {AppConstants} from "../../app.constants";
   templateUrl: "./cas-list.component.html",
   styleUrls: ["./cas-list.component.scss"]
 })
-export class CasListComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class CasListComponent extends BaseComponent implements AfterViewInit {
   columns = ["cn", "parent", "issued", "validity"];
   datasource = new MatTableDataSource<CaDto>();
   // Expose application constants.
@@ -24,9 +24,6 @@ export class CasListComponent extends BaseComponent implements OnInit, AfterView
 
   constructor(private caService: CasService, private qForms: QFormsService) {
     super();
-  }
-
-  ngOnInit() {
   }
 
   ngAfterViewInit(): void {

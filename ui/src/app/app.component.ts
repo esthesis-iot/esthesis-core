@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component} from "@angular/core";
 import {Log} from "ng2-logger/browser";
 import {BaseComponent} from "./shared/component/base-component";
 import {AppConstants} from "./app.constants";
@@ -10,7 +10,7 @@ import {Observable} from "rxjs";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"]
 })
-export class AppComponent extends BaseComponent implements OnInit {
+export class AppComponent extends BaseComponent {
   // Logger.
   private log = Log.create("AppComponent");
   // Expose application constants.
@@ -21,9 +21,6 @@ export class AppComponent extends BaseComponent implements OnInit {
 
   constructor(private oidcService: OidcSecurityService) {
     super();
-  }
-
-  ngOnInit() {
   }
 
   toggleSidebar() {

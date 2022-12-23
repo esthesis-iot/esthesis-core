@@ -48,7 +48,7 @@ export class DeviceTerminalComponent extends BaseComponent implements AfterViewI
           this.terminal.write("\r$ ");
           this.blockInput = false;
         }
-      }, error: (error) => {
+      }, error: () => {
         this.terminal.write(this.termColorRed("ERROR: Could not dispatch command to device.\n"));
         this.terminal.write("\r$ ");
         this.blockInput = false;

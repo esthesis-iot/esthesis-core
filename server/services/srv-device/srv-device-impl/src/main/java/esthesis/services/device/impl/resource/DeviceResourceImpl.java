@@ -3,8 +3,8 @@ package esthesis.services.device.impl.resource;
 import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.dto.GeolocationDTO;
+import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.services.device.impl.service.DeviceService;
 import esthesis.services.device.impl.service.DeviceTagService;
@@ -99,6 +99,7 @@ public class DeviceResourceImpl implements DeviceResource {
   }
 
   @Override
+  @SuppressWarnings("java:S1192")
   public Response downloadPublicKey(ObjectId id) {
     return ResponseBuilder.ok(deviceService.downloadPublicKey(id))
         .header("Content-Disposition",
@@ -107,6 +108,7 @@ public class DeviceResourceImpl implements DeviceResource {
   }
 
   @Override
+  @SuppressWarnings("java:S1192")
   public Response downloadPrivateKey(ObjectId id) {
     return ResponseBuilder.ok(deviceService.downloadPrivateKey(id))
         .header("Content-Disposition",
@@ -115,6 +117,7 @@ public class DeviceResourceImpl implements DeviceResource {
   }
 
   @Override
+  @SuppressWarnings("java:S1192")
   public Response downloadCertificate(ObjectId id) {
     return ResponseBuilder.ok(deviceService.downloadCertificate(id))
         .header("Content-Disposition",

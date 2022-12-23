@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component} from "@angular/core";
 import {BaseComponent} from "../../shared/component/base-component";
 import {dataflows} from "../dto/dataflow-definition";
 
@@ -7,14 +7,11 @@ import {dataflows} from "../dto/dataflow-definition";
   templateUrl: "./dataflow-new.component.html",
   styleUrls: ["./dataflow-new.component.scss"]
 })
-export class DataflowNewComponent extends BaseComponent implements OnInit {
+export class DataflowNewComponent extends BaseComponent {
   dataflows = dataflows;
 
   constructor() {
     super();
-  }
-
-  ngOnInit(): void {
   }
 
 }

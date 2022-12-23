@@ -40,32 +40,33 @@ public class Pageable {
   }
 
   public io.quarkus.panache.common.Sort getSortObject() {
-    if (StringUtils.isNotBlank(sort)) {
-      String[] items = sort.split(",");
-      if (items.length % 2 != 0) {
-        throw new IllegalArgumentException("Invalid sort parameters.");
-      }
-
-      io.quarkus.panache.common.Sort sorting = io.quarkus.panache.common.Sort.empty();
-      for (int i = 0; i < items.length; i += 2) {
-        String field = items[i];
-        String direction = items[i + 1];
-        if (StringUtils.isNotBlank(field) && StringUtils.isNotBlank(direction)) {
-          if (direction.equalsIgnoreCase("asc")) {
-            sorting.and(field, Sort.Direction.Ascending);
-          } else if (direction.equalsIgnoreCase("desc")) {
-            sorting.and(field, Sort.Direction.Descending);
-          } else {
-            throw new IllegalArgumentException("Invalid sort direction.");
-          }
-        }
-      }
-      return sorting;
-    } else {
+    if (StringUtils.isBlank(sort)) {
       return Sort.empty();
     }
+
+    String[] items = sort.split(",");
+    if (items.length % 2 != 0) {
+      throw new IllegalArgumentException("Invalid sort parameters.");
+    }
+
+    io.quarkus.panache.common.Sort sorting = io.quarkus.panache.common.Sort.empty();
+    for (int i = 0; i < items.length; i += 2) {
+      String field = items[i];
+      String direction = items[i + 1];
+      if (StringUtils.isNotBlank(field) && StringUtils.isNotBlank(direction)) {
+        if (direction.equalsIgnoreCase("asc")) {
+          sorting.and(field, Sort.Direction.Ascending);
+        } else if (direction.equalsIgnoreCase("desc")) {
+          sorting.and(field, Sort.Direction.Descending);
+        } else {
+          throw new IllegalArgumentException("Invalid sort direction.");
+        }
+      }
+    }
+    return sorting;
   }
 
+  @SuppressWarnings("java:S1192")
   public String getQueryKeys(boolean partialMatch) {
     MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
     StringBuilder queryKeys = new StringBuilder();
@@ -90,6 +91,7 @@ public class Pageable {
     return queryKeys.toString();
   }
 
+  @SuppressWarnings("java:S3776")
   public Map<String, Object> getQueryValues() {
     MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
     Map<String, Object> queryValues = new HashMap<>();

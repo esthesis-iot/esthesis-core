@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GitUtil {
 
-  private static final String gitPropertiesName = "git.properties";
+  private static final String GIT_PROPERTIES_NAME = "git.properties";
 
   private boolean initialised = false;
   private final Properties properties = new Properties();
@@ -19,10 +19,10 @@ public class GitUtil {
   public GitUtil() {
     try {
       properties.load(GitUtil.class.getClassLoader()
-          .getResourceAsStream(gitPropertiesName));
+          .getResourceAsStream(GIT_PROPERTIES_NAME));
       initialised = true;
     } catch (Exception e) {
-      log.warn("Could not read {} file.", gitPropertiesName);
+      log.warn("Could not read {} file.", GIT_PROPERTIES_NAME);
     }
   }
 

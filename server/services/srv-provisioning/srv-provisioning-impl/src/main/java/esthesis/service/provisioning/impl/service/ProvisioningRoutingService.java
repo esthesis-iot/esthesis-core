@@ -99,6 +99,7 @@ public class ProvisioningRoutingService {
    *
    * @param exchange The Camel Exchange.
    */
+  @SuppressWarnings("java:S1192")
   public void setFailureConditions(Exchange exchange) {
     Bson equalsClause = Filters.eq("_id",
         exchange.getProperty(PROPERTY_PROVISIONING_PACKAGE_ID, ObjectId.class));
@@ -117,6 +118,7 @@ public class ProvisioningRoutingService {
    *
    * @param exchange The Camel Exchange.
    */
+  @SuppressWarnings("java:S1192")
   public void setSuccessConditions(Exchange exchange) {
     Bson equalsClause = Filters.eq("_id",
         exchange.getProperty(PROPERTY_PROVISIONING_PACKAGE_ID, ObjectId.class));
@@ -131,6 +133,7 @@ public class ProvisioningRoutingService {
     exchange.getIn().setBody(updateObj);
   }
 
+  @SuppressWarnings("java:S1192")
   public void setCacheStatusToInProgress(Exchange exchange) {
     Bson equalsClause = Filters.eq("_id",
         exchange.getProperty(PROPERTY_PROVISIONING_PACKAGE_ID, ObjectId.class));

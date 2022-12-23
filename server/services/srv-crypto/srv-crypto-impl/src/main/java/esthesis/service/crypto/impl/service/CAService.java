@@ -46,6 +46,7 @@ public class CAService extends BaseService<CaEntity> {
   @Inject
   ObjectMapper mapper;
 
+  @Override
   public CaEntity save(CaEntity caEntity) {
     // CAs can not be edited, so throw an exception in that case.
     if (caEntity.getId() != null) {

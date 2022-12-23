@@ -3,6 +3,7 @@ package esthesis.service.provisioning.impl.service;
 import esthesis.common.AppConstants.Provisioning.CacheStatus;
 import esthesis.common.AppConstants.Provisioning.ConfigOption;
 import esthesis.common.AppConstants.Provisioning.Type;
+import esthesis.common.exception.QExceptionWrapper;
 import esthesis.common.exception.QMismatchException;
 import esthesis.service.common.BaseService;
 import esthesis.service.provisioning.entity.ProvisioningPackageBinaryEntity;
@@ -19,7 +20,6 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -44,14 +44,12 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
   @Inject
   RedisUtils redisUtils;
 
+  @SuppressWarnings("java:S6205")
   public ProvisioningPackageEntity save(ProvisioningPackageForm pf) {
     // Convert the uploaded form to a ProvisioningPackage.
-    ProvisioningPackageEntity p;
-    if (pf.getId() != null) {
-      p = findById(pf.getId());
-    } else {
-      p = new ProvisioningPackageEntity();
-    }
+    ProvisioningPackageEntity p =
+        pf.getId() != null ? findById(pf.getId()) : new ProvisioningPackageEntity();
+
     p.setName(pf.getName());
     p.setDescription(pf.getDescription());
     p.setAvailable(pf.isAvailable());
@@ -101,7 +99,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
       try {
         pb.setPayload(Files.readAllBytes(pf.getFile().uploadedFile()));
       } catch (IOException e) {
-        throw new RuntimeException(e);
+        throw new QExceptionWrapper("Could not read uploaded file.", e);
       }
       provisioningBinaryService.save(pb);
     }
@@ -162,11 +160,11 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
       return
           findByColumnIn("tags", Arrays.asList(tags.split(",")), false).stream()
               .sorted(Comparator.comparing(ppe -> new Semver(ppe.getVersion())))
-              .collect(Collectors.toList());
+              .toList();
     } else {
       return getAll().stream()
           .sorted(Comparator.comparing(ppe -> new Semver(ppe.getVersion())))
-          .collect(Collectors.toList());
+          .toList();
     }
   }
 }

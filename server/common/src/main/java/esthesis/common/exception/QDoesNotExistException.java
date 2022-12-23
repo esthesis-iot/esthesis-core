@@ -1,8 +1,7 @@
 package esthesis.common.exception;
 
 /**
- * A generic exception representing a "entity does not exist in the system"
- * condition.
+ * A generic exception representing an "entity does not exist in the system" condition.
  *
  * @author European Dynamics SA
  */
