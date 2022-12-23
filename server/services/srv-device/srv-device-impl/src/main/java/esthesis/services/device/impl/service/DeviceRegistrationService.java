@@ -167,7 +167,11 @@ public class DeviceRegistrationService {
     final DeviceEntity deviceEntity = new DeviceEntity()
         .setHardwareId(hardwareId)
         .setStatus(status)
+        .setCreatedOn(Instant.now())
         .setDeviceKey(deviceKeyDTO);
+    if (status != DeviceStatus.PREREGISTERED) {
+      deviceEntity.setRegisteredOn(Instant.now());
+    }
 
     // Set device-pushed tags by converting the tag names to tag ids.
     if (!tags.isEmpty()) {
@@ -186,7 +190,7 @@ public class DeviceRegistrationService {
    * Activate a preregistered device. There is no actual device registration taking place here as
    * the device already exists in system's database.
    *
-   * @param hardwareId The hardware Id of the device to activate.
+   * @param hardwareId The hardware id of the device to activate.
    */
   public DeviceEntity activatePreregisteredDevice(String hardwareId) {
     Optional<DeviceEntity> optionalDevice = deviceRepository.findByHardwareId(hardwareId);
@@ -204,6 +208,7 @@ public class DeviceRegistrationService {
     // Find the device and set its status to registered.
     DeviceEntity deviceEntity = optionalDevice.get();
     deviceEntity.setStatus(DeviceStatus.REGISTERED);
+    deviceEntity.setRegisteredOn(Instant.now());
     deviceRepository.update(deviceEntity);
 
     return deviceEntity;

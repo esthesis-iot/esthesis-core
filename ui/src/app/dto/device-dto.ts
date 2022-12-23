@@ -7,4 +7,6 @@ export interface DeviceDto {
   connection?: string;
   firmware?: string;
   hardwareId: string;
+  createdOn?: Date;
+  registeredOn?: Date;
 }

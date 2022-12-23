@@ -17,7 +17,7 @@ import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 })
 export class DevicesComponent extends BaseComponent implements OnInit, AfterViewInit {
   // Columns to display.
-  displayedColumns = ["hardwareId", "lastSeen", "createdOn", "status"];
+  displayedColumns = ["hardwareId", "lastSeen", "createdOn", "registeredOn", "status"];
 
   // Datasource definition.
   datasource: MatTableDataSource<DeviceDto> = new MatTableDataSource<DeviceDto>();

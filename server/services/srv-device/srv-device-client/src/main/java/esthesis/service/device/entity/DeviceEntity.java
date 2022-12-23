@@ -35,5 +35,14 @@ public class DeviceEntity extends BaseEntity {
 
   private Instant lastSeen;
 
+  // The date the actual registration of a device took place. A device can be pre-created in
+  // the system by an administrator, but the actual registration of the real device to the
+  // platform may take place at any time in the future.
+  private Instant registeredOn;
+
+  // The date this device was first created in the system. For self-registering devices, this
+  // date will be (almost) identical to the registeredOn date.
+  private Instant createdOn;
+
   private DeviceKeyDTO deviceKey;
 }

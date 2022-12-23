@@ -17,8 +17,8 @@
 
       <!-- Table -->
       <table #table [dataSource]="datasource" aria-describedby="List of devices"
-             mat-table matSort matSortActive="hardwareId"
-             matSortDirection="asc" matSortDisableClear matSortStart="asc">
+             mat-table matSort matSortActive="createdOn"
+             matSortDirection="desc" matSortDisableClear matSortStart="desc">
         <ng-container matColumnDef="hardwareId">
           <th *matHeaderCellDef mat-header-cell mat-sort-header scope="col"> Hardware ID</th>
           <td *matCellDef="let element" mat-cell> {{element.hardwareId}}</td>
@@ -36,9 +36,17 @@
           <td *matCellDef="let element" mat-cell> {{element.status | titlecase}}</td>
         </ng-container>
         <ng-container matColumnDef="createdOn">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header scope="col"> Registration</th>
+          <th *matHeaderCellDef mat-header-cell mat-sort-header scope="col"> Creation</th>
           <td *matCellDef="let element" mat-cell>
             {{element.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="registeredOn">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header scope="col"> Registration</th>
+          <td *matCellDef="let element" mat-cell>
+            <span *ngIf="element.registeredOn">
+              {{element.registeredOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}
+            </span>
           </td>
         </ng-container>
         <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
