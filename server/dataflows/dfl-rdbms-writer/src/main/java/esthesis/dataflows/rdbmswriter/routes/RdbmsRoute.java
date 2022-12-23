@@ -21,6 +21,7 @@ public class RdbmsRoute extends RouteBuilder {
   @Inject
   AppConfig config;
 
+  @SuppressWarnings("java:S2629")
   private void printRouteInfo(String topic) {
     log.info("Setting up route from Kafka topic '{}' to '{}', storage "
             + "strategy '{}'.",
@@ -48,33 +49,34 @@ public class RdbmsRoute extends RouteBuilder {
             .valueDeserializer(
                 "org.apache.kafka.common.serialization.ByteArrayDeserializer")
             .brokers(config.kafkaClusterUrl());
-    if (config.kafkaConsumerGroup().isPresent()) {
-      log.info("Using Kafka consumer group '{}'.", config.kafkaConsumerGroup().get());
-      kafkaComponentBuilder.groupId(config.kafkaConsumerGroup().get());
-    } else {
-      log.warn("Kafka consumer group is not set, having more than one pods running in parallel "
-          + "may have unexpected results.");
-    }
+    config.kafkaConsumerGroup().ifPresentOrElse(val -> {
+          log.info("Using Kafka consumer group '{}'.", val);
+          kafkaComponentBuilder.groupId(val);
+        },
+        () -> log.warn(
+            "Kafka consumer group is not set, having more than one pods running in parallel "
+                + "may have unexpected results."));
     kafkaComponentBuilder.register(getContext(), "kafka");
 
     // @formatter:off
-    if (config.kafkaTelemetryTopic().isPresent()) {
-      printRouteInfo(config.kafkaTelemetryTopic().get());
-      from("kafka:" + config.kafkaTelemetryTopic().get())
-          .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-          .to("seda:telemetry");
+    config.kafkaTelemetryTopic().ifPresentOrElse(val -> {
+      printRouteInfo(val);
+      from("kafka:" + val)
+        .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
+        .to("seda:telemetry");
       from("seda:telemetry")
-          .bean(rdbmsService, "process");
-     }
+        .bean(rdbmsService, "process");
+    }, () -> log.debug("Kafka telemetry topic is not set, skipping route."));
 
-    if (config.kafkaMetadataTopic().isPresent()) {
-      printRouteInfo(config.kafkaTelemetryTopic().get());
-      from("kafka:" + config.kafkaMetadataTopic().get())
+    config.kafkaMetadataTopic().ifPresentOrElse(val -> {
+      printRouteInfo(val);
+      from("kafka:" + val)
           .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
           .to("seda:metadata");
       from("seda:metadata")
-         .bean(rdbmsService, "process");
-     }
+          .bean(rdbmsService, "process");
+    }, () -> log.debug("Kafka metadata topic is not set, skipping route."));
+
     // @formatter:on
 
     // Display a warning if no Kafka topics are configured.

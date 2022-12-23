@@ -29,6 +29,7 @@ public abstract class BaseService<D extends BaseEntity> {
     return repository.listAll();
   }
 
+  @SuppressWarnings("java:S1192")
   public D findFirstByColumn(String column, String value, boolean partialMatch) {
     if (partialMatch) {
       return repository.find(column + " like ?1", value).firstResult();
@@ -41,6 +42,7 @@ public abstract class BaseService<D extends BaseEntity> {
     return findFirstByColumn(column, value, false);
   }
 
+  @SuppressWarnings("java:S1192")
   public List<D> findByColumn(String column, String value, boolean partialMatch) {
     if (partialMatch) {
       return repository.find(column + " like ?1", value).list();
@@ -73,13 +75,14 @@ public abstract class BaseService<D extends BaseEntity> {
     // Create a wrapper for the results.
     Page<D> quarkusPage = new Page<>();
 
-    log.debug("Generating query with: \n"
-            + "Keys: {}\n"
-            + "Values: {}\n"
-            + "Page: {}\n"
-            + "Size: {}\n"
-            + "Sort: {}\n"
-            + "PartialMatch: {}", pageable.getQueryKeys(partialMatch),
+    log.debug("""
+            Generating query with:
+            Keys: {}"
+            Values: {}"
+            Page: {}"
+            Size: {}"
+            Sort: {}"
+            PartialMatch: {}""", pageable.getQueryKeys(partialMatch),
         pageable.getQueryValues(), pageable.getPage(), pageable.getSize(), pageable.getSort(),
         partialMatch);
 
@@ -87,26 +90,22 @@ public abstract class BaseService<D extends BaseEntity> {
     if (pageable.hasQuery()) {
       quarkusPage.setTotalElements(
           repository.count(pageable.getQueryKeys(partialMatch), pageable.getQueryValues()));
-      if (pageable.getPageObject().isPresent()) {
-        quarkusPage.setContent(
-            repository.find(pageable.getQueryKeys(partialMatch), pageable.getSortObject(),
-                pageable.getQueryValues()).page(pageable.getPageObject().get()).list());
-      } else {
-        quarkusPage.setContent(
-            repository.find(pageable.getQueryKeys(partialMatch), pageable.getSortObject(),
-                pageable.getQueryValues()).list());
-      }
+      pageable.getPageObject().ifPresentOrElse(val ->
+              quarkusPage.setContent(
+                  repository.find(pageable.getQueryKeys(partialMatch), pageable.getSortObject(),
+                      pageable.getQueryValues()).page(val).list())
+          , () ->
+              quarkusPage.setContent(
+                  repository.find(pageable.getQueryKeys(partialMatch), pageable.getSortObject(),
+                      pageable.getQueryValues()).list()));
     } else {
-      if (pageable.getPageObject().isPresent()) {
+      pageable.getPageObject().ifPresentOrElse(val -> {
         quarkusPage.setTotalElements(repository.count());
-        quarkusPage.setContent(
-            repository.findAll(pageable.getSortObject()).page(pageable.getPageObject().get())
-                .list());
-      } else {
+        quarkusPage.setContent(repository.findAll(pageable.getSortObject()).page(val).list());
+      }, () -> {
         quarkusPage.setTotalElements(repository.count());
         quarkusPage.setContent(repository.findAll(pageable.getSortObject()).list());
-      }
-
+      });
     }
 
     // Set query metadata.

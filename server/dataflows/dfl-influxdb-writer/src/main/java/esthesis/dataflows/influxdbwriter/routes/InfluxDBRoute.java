@@ -38,37 +38,39 @@ public class InfluxDBRoute extends RouteBuilder {
             .valueDeserializer(
                 "org.apache.kafka.common.serialization.ByteArrayDeserializer")
             .brokers(config.kafkaClusterUrl());
-    if (config.kafkaConsumerGroup().isPresent()) {
-      log.info("Using Kafka consumer group '{}'.", config.kafkaConsumerGroup().get());
-      kafkaComponentBuilder.groupId(config.kafkaConsumerGroup().get());
-    } else {
-      log.warn("Kafka consumer group is not set, having more than one pods running in parallel "
-          + "may have unexpected results.");
-    }
+    config.kafkaConsumerGroup().ifPresentOrElse(val -> {
+          log.info("Using Kafka consumer group '{}'.", val);
+          kafkaComponentBuilder.groupId(val);
+        },
+        () -> log.warn(
+            "Kafka consumer group is not set, having more than one pods running in parallel "
+                + "may have unexpected results."));
+
     kafkaComponentBuilder.register(getContext(), "kafka");
 
     // @formatter:off
-    if (config.kafkaTelemetryTopic().isPresent()) {
-      String kafkaTopic = config.kafkaTelemetryTopic().get();
+    config.kafkaTelemetryTopic().ifPresentOrElse(val -> {
+      String kafkaTopic = val;
       log.info("Setting up route from Kafka topic '{}' to InfluxDB '{}' "
-              + "bucket '{}'.", kafkaTopic, config.influxUrl(), config.influxBucket());
+          + "bucket '{}'.", kafkaTopic, config.influxUrl(), config.influxBucket());
       from("kafka:" + kafkaTopic)
-         .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-         .to("seda:telemetry");
+          .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
+          .to("seda:telemetry");
       from("seda:telemetry")
-         .bean(influxDBService, "process");
-     }
+          .bean(influxDBService, "process");
+    }, () -> log.debug("Kafka telemetry topic is not set, skipping route."));
 
-    if (config.kafkaMetadataTopic().isPresent()) {
-      String kafkaTopic = config.kafkaMetadataTopic().get();
+
+    config.kafkaMetadataTopic().ifPresentOrElse(val -> {
+      String kafkaTopic = val;
       log.info("Setting up route from Kafka topic '{}' to InfluxDB '{}' "
-              + "bucket '{}'.", kafkaTopic, config.influxUrl(), config.influxBucket());
+          + "bucket '{}'.", kafkaTopic, config.influxUrl(), config.influxBucket());
       from("kafka:" + kafkaTopic)
           .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
           .to("seda:metadata");
       from("seda:metadata")
           .bean(influxDBService, "process");
-     }
+    }, () -> log.debug("Kafka metadata topic is not set, skipping route."));
     // @formatter:on
 
     // Display a warning if no Kafka topics are configured.

@@ -6,7 +6,6 @@ import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.impl.repository.ProvisioningRepository;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +58,7 @@ public class ProvisioningAgentService {
     List<ProvisioningPackageEntity> greaterVersions = matchedPackages.stream()
         .filter(p -> new Semver(p.getVersion()).isGreaterThan(version))
         .sorted(Comparator.comparing(p -> new Semver(p.getVersion())))
-        .collect(Collectors.toList());
+        .toList();
     log.debug("Found '{}' greater versions '{}'.", greaterVersions.size(), greaterVersions);
 
     String candidateVersion = version;
@@ -82,7 +81,7 @@ public class ProvisioningAgentService {
     } else {
       String finalCandidateVersion = candidateVersion;
       return greaterVersions.stream().filter(
-          p -> p.getVersion().equals(finalCandidateVersion)).findFirst().get();
+          p -> p.getVersion().equals(finalCandidateVersion)).findFirst().orElseThrow();
     }
   }
 

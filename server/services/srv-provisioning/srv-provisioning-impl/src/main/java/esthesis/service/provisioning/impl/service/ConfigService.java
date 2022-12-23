@@ -34,6 +34,7 @@ public class ConfigService {
   @Inject
   ProvisioningRepository provisioningRepository;
 
+  @SuppressWarnings("java:S1192")
   public void setupWebConfig(Exchange exchange) {
     // Get the provisioning package info.
     ProvisioningPackageEntity pp = provisioningRepository.parse(
@@ -79,7 +80,8 @@ public class ConfigService {
     // FTP host + port.
     if (pp.fc(ConfigOption.FTP_PORT).isPresent()) {
       String host =
-          pp.fc(ConfigOption.FTP_HOST).orElseThrow() + ":" + pp.fc(ConfigOption.FTP_PORT).get();
+          pp.fc(ConfigOption.FTP_HOST).orElseThrow() + ":" + pp.fc(ConfigOption.FTP_PORT)
+              .orElseThrow();
       log.debug("Setting FTP host to '{}'.", host);
       exchange.getIn().setHeader(HEADER_FTP_HOST, host);
     } else {
@@ -104,7 +106,7 @@ public class ConfigService {
 
     // FTP path.
     if (pp.fc(ConfigOption.FTP_PATH).isPresent()) {
-      Path path = Path.of(pp.fc(ConfigOption.FTP_PATH).get());
+      Path path = Path.of(pp.fc(ConfigOption.FTP_PATH).orElseThrow());
       String directory = path.getParent().toString();
       if (directory.startsWith("/")) {
         directory = directory.substring(1);

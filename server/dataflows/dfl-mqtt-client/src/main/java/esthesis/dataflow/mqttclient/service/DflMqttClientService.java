@@ -35,11 +35,11 @@ public class DflMqttClientService {
   @ConfigProperty(name = "quarkus.application.name")
   String appName;
 
+  @SuppressWarnings("java:S3655")
   private MessageType getMessageType(Exchange exchange) {
-    String topic = exchange.getIn()
-        .getHeader(PahoConstants.MQTT_TOPIC, String.class);
-    if (config.mqttTopicPing().isPresent() && topic.startsWith(
-        config.mqttTopicPing().get())) {
+    String topic = exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC, String.class);
+
+    if (config.mqttTopicPing().isPresent() && topic.startsWith(config.mqttTopicPing().get())) {
       return MessageType.P;
     } else if (config.mqttTopicTelemetry().isPresent() && topic.startsWith(
         config.mqttTopicTelemetry().get())) {
@@ -48,20 +48,19 @@ public class DflMqttClientService {
         config.mqttTopicMetadata().get())) {
       return MessageType.M;
     } else {
-      throw new UnsupportedOperationException("Received a data message "
-          + "on an unsupported topic '" + topic + "'.");
+      throw new UnsupportedOperationException(
+          "Received a data message " + "on an unsupported topic '" + topic + "'.");
     }
   }
 
   /**
-   * Extracts the hardware ID of the device sending this messages based on the
-   * name of the MQTT topic this message was received on.
+   * Extracts the hardware ID of the device sending this messages based on the name of the MQTT
+   * topic this message was received on.
    *
    * @param exchange The Camel exchange.
    */
   private String getHardwareId(Exchange exchange) {
-    String topic = exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC,
-        String.class);
+    String topic = exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC, String.class);
     return topic.substring(topic.lastIndexOf("/") + 1);
   }
 
@@ -86,28 +85,21 @@ public class DflMqttClientService {
 
     // Create an EsthesisMessage out of each line of the message content.
     List<EsthesisDataMessage> messages = new ArrayList<>();
-    body.lines()
-        .filter(line -> !line.startsWith("#")).forEach(line -> {
-          Builder esthesisMessageBuilder =
-              EsthesisDataMessage.newBuilder()
-                  .setId(UUID.randomUUID().toString())
-                  .setHardwareId(hardwareId)
-                  .setType(messageType)
-                  .setSeenAt(Instant.now().toString())
-                  .setChannel(
-                      exchange.getIn()
-                          .getHeader(PahoConstants.MQTT_TOPIC, String.class))
-                  .setSeenBy(appName);
-          try {
-            esthesisMessageBuilder.setPayload(avroUtils.parsePayload(line));
-            EsthesisDataMessage msg = esthesisMessageBuilder.build();
-            log.debug("Parsed message to Avro message '{}'.",
-                abbr(msg.toString()));
-            messages.add(msg);
-          } catch (QMismatchException e) {
-            log.warn(e.getMessage());
-          }
-        });
+    body.lines().filter(line -> !line.startsWith("#")).forEach(line -> {
+      Builder esthesisMessageBuilder = EsthesisDataMessage.newBuilder()
+          .setId(UUID.randomUUID().toString()).setHardwareId(hardwareId).setType(messageType)
+          .setSeenAt(Instant.now().toString())
+          .setChannel(exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC, String.class))
+          .setSeenBy(appName);
+      try {
+        esthesisMessageBuilder.setPayload(avroUtils.parsePayload(line));
+        EsthesisDataMessage msg = esthesisMessageBuilder.build();
+        log.debug("Parsed message to Avro message '{}'.", abbr(msg.toString()));
+        messages.add(msg);
+      } catch (QMismatchException e) {
+        log.warn(e.getMessage());
+      }
+    });
 
     exchange.getIn().setBody(messages);
   }
@@ -121,17 +113,15 @@ public class DflMqttClientService {
   public void processCommandReplyMessage(Exchange exchange) {
     // Set the Kafka key for this message based on the topic name this
     // message was received in.
-    String topic = exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC)
-        .toString();
-    exchange.getIn().setHeader(KafkaConstants.KEY,
-        topic.substring(topic.lastIndexOf("/") + 1));
+    String topic = exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC).toString();
+    exchange.getIn().setHeader(KafkaConstants.KEY, topic.substring(topic.lastIndexOf("/") + 1));
 
     String commandReply = exchange.getIn().getBody(String.class);
     log.debug("Received Command Reply '{}'.", abbr(commandReply));
 
     // Parse the command reply message.
-    exchange.getIn().setBody(avroUtils.parseCommandReplyLP(commandReply,
-        getHardwareId(exchange), appName, topic));
+    exchange.getIn().setBody(
+        avroUtils.parseCommandReplyLP(commandReply, getHardwareId(exchange), appName, topic));
   }
 
   public void commandRequestToLineProtocol(Exchange exchange) {

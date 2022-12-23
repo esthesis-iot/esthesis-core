@@ -13,7 +13,6 @@ import esthesis.dataflow.common.DflUtils.VALUE_TYPE;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -161,7 +160,7 @@ public class AvroUtils {
           return setValue(measurementParts[1], ValueData.newBuilder()
               .setName(measurementParts[0])).build();
         })
-        .collect(Collectors.toList()));
+        .toList());
 
     // Set the timestamp, if available.
     if (parts.length == 3) {

@@ -38,7 +38,7 @@ export class DataflowsListComponent extends BaseComponent implements OnInit, Aft
     this.filterForm.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged()
-    ).subscribe(onNext => {
+    ).subscribe(() => {
       this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
         this.sort.start);
     });

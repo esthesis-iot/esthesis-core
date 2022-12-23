@@ -30,6 +30,7 @@ public class PingRoute extends RouteBuilder {
   String mongoUrl;
 
   @Override
+  @SuppressWarnings("java:S2629")
   public void configure() {
     BannerUtil.showBanner("dfl-ping-updater");
 
@@ -46,13 +47,13 @@ public class PingRoute extends RouteBuilder {
             .valueDeserializer(
                 "org.apache.kafka.common.serialization.ByteArrayDeserializer")
             .brokers(config.kafkaClusterUrl());
-    if (config.kafkaConsumerGroup().isPresent()) {
-      log.info("Using Kafka consumer group '{}'.", config.kafkaConsumerGroup().get());
-      kafkaComponentBuilder.groupId(config.kafkaConsumerGroup().get());
-    } else {
-      log.warn("Kafka consumer group is not set, having more than one pods running in parallel "
-          + "may have unexpected results.");
-    }
+    config.kafkaConsumerGroup().ifPresentOrElse(val -> {
+          log.info("Using Kafka consumer group '{}'.", val);
+          kafkaComponentBuilder.groupId(val);
+        },
+        () -> log.warn(
+            "Kafka consumer group is not set, having more than one pods running in parallel "
+                + "may have unexpected results."));
     kafkaComponentBuilder.register(getContext(), "kafka");
 
     // @formatter:off
