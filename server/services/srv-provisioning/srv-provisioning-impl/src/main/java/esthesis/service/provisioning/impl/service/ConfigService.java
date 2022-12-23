@@ -58,7 +58,7 @@ public class ConfigService {
     String port = url.getPort() > -1 ? ":" + url.getPort() : "";
     String filename = url.getFile();
     String auth = "";
-    if (username != null & password != null) {
+    if (username != null && password != null) {
       auth = username + ":" + password + "@";
     }
 

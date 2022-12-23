@@ -50,6 +50,7 @@ public class RdbmsService {
     return vals.toString();
   }
 
+  @SuppressWarnings("java:S2695")
   private void multi(EsthesisDataMessage esthesisMessage)
   throws SQLException {
     String statement =

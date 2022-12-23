@@ -33,7 +33,7 @@ public class Pageable {
   public String sort;
 
   public Optional<io.quarkus.panache.common.Page> getPageObject() {
-    if (page != null & size != null) {
+    if (page != null && size != null) {
       return Optional.of(io.quarkus.panache.common.Page.of(page, size));
     }
     return Optional.empty();
