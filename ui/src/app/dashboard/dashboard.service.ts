@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable, Subject} from "rxjs";
-import {DashboardWidgetDto} from "../dto/dashboard-widget-dto";
-import {environment} from 'src/environments/environment';
+import {DashboardWidgetDto} from "./dto/dashboard-widget-dto";
+import {environment} from "src/environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class DashboardService {
   private static resource = `dashboard`;
@@ -56,7 +56,8 @@ export class DashboardService {
     return this.http.get<DashboardWidgetDto>(`${environment.apiPrefix}/dashboard/widget/${widgetId}`);
   }
 
-  updateWidgetCoordinates(widgetId: number, x: number, y: number, columns: number, rows: number): Observable<any> {
+  updateWidgetCoordinates(widgetId: number, x: number, y: number, columns: number,
+    rows: number): Observable<any> {
     return this.http.put(`${environment.apiPrefix}/dashboard/widget/${widgetId}/${x},${y}/${columns},${rows}`, {});
   }
 

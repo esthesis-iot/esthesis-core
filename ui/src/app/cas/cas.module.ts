@@ -2,9 +2,9 @@ import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
 
 import {CasRoutingModule} from "./cas-routing.module";
-import {CasComponent} from "./cas.component";
-import {CasEditComponent} from "./cas-edit.component";
-import {CasImportComponent} from "./cas-import.component";
+import {CasListComponent} from "./cas-list/cas-list.component";
+import {CasEditComponent} from "./cas-edit/cas-edit.component";
+import {CasImportComponent} from "./cas-import/cas-import.component";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
@@ -25,7 +25,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
-    CasComponent,
+    CasListComponent,
     CasEditComponent,
     CasImportComponent
   ],

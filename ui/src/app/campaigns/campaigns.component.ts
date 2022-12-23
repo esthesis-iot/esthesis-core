@@ -4,7 +4,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {QFormsService} from "@qlack/forms";
 import {CampaignsService} from "./campaigns.service";
-import {CampaignDto} from "../dto/campaign-dto";
+import {CampaignDto} from "./dto/campaign-dto";
 import {MatSort} from "@angular/material/sort";
 import {AppConstants} from "../app.constants";
 

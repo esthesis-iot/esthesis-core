@@ -1,10 +1,10 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {LoginInfoDto} from '../dto/login-info-dto';
-import {UserDto} from '../dto/user-dto';
-import {CrudService} from '../services/crud.service';
-import {JwtDto} from '../dto/jwt-dto';
+import {HttpClient} from "@angular/common/http";
+import {Injectable} from "@angular/core";
+import {Observable} from "rxjs";
+import {LoginInfoDto} from "./dto/login-info-dto";
+import {UserDto} from "./dto/user-dto";
+import {CrudService} from "../services/crud.service";
+import {JwtDto} from "./dto/jwt-dto";
 import {environment} from "../../environments/environment";
 
 /**
@@ -12,13 +12,13 @@ import {environment} from "../../environments/environment";
  * authorisation and session management.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class UserService extends CrudService<UserDto> {
   private resource = `users`;
 
   constructor(http: HttpClient) {
-    super(http, 'users');
+    super(http, "users");
   }
 
   // Returns the JWT.
@@ -31,7 +31,7 @@ export class UserService extends CrudService<UserDto> {
   login(loginInfoDTO: LoginInfoDto): Observable<JwtDto> {
     return this.http.post<JwtDto>(environment.apiPrefix + `/${this.resource}/auth`,
       JSON.stringify(loginInfoDTO),
-      {headers: {'Content-Type': 'application/json'}});
+      {headers: {"Content-Type": "application/json"}});
   }
 
   // Return a claim from JWT.
@@ -53,7 +53,7 @@ export class UserService extends CrudService<UserDto> {
   // Save user
   save(user: UserDto) {
     return this.http.post(environment.apiPrefix + `/${this.resource}`, JSON.stringify(user),
-      {headers: {'Content-Type': 'application/json'}});
+      {headers: {"Content-Type": "application/json"}});
   }
 
 }

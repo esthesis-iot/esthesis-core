@@ -5,8 +5,8 @@ import * as _ from "lodash";
 import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
 import {CasService} from "../../cas/cas.service";
-import {CaDto} from "../../dto/ca-dto";
-import {SettingDto} from "../../dto/setting-dto";
+import {CaDto} from "../../cas/dto/ca-dto";
+import {SettingDto} from "../dto/setting-dto";
 import {AppConstants} from "../../app.constants";
 
 @Component({

@@ -1,8 +1,8 @@
 import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
-import {CertificatesComponent} from "./certificates.component";
-import {CertificateEditComponent} from "./certificate-edit.component";
-import {CertificateImportComponent} from "./certificate-import.component";
+import {CertificatesListComponent} from "./certificates-list/certificates-list.component";
+import {CertificateEditComponent} from "./certificate-edit/certificate-edit.component";
+import {CertificateImportComponent} from "./certificate-import/certificate-import.component";
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -21,7 +21,7 @@ import {DateSupportModule} from "../shared/module/date-support.module";
 
 @NgModule({
   declarations: [
-    CertificatesComponent,
+    CertificatesListComponent,
     CertificateEditComponent,
     CertificateImportComponent,
   ],

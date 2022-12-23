@@ -4,7 +4,7 @@ import {SettingsService} from "../settings.service";
 import * as _ from "lodash";
 import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
-import {SettingDto} from "../../dto/setting-dto";
+import {SettingDto} from "../dto/setting-dto";
 import {AppConstants} from "../../app.constants";
 
 @Component({

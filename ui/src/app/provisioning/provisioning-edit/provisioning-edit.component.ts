@@ -5,8 +5,8 @@ import {QFormsService} from "@qlack/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient, HttpEventType} from "@angular/common/http";
 import {BaseComponent} from "../../shared/component/base-component";
-import {TagDto} from "../../dto/tag-dto";
-import {TagService} from "../../tags/tag.service";
+import {TagDto} from "../../tags/dto/tag-dto";
+import {TagsService} from "../../tags/tags.service";
 import {ProvisioningService} from "../provisioning.service";
 import {UtilityService} from "../../shared/service/utility.service";
 import {
@@ -29,7 +29,7 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
   baseVersions?: ProvisioningDto[];
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
-    private qForms: QFormsService, private tagService: TagService,
+    private qForms: QFormsService, private tagService: TagsService,
     private provisioningService: ProvisioningService, private route: ActivatedRoute,
     private router: Router, private http: HttpClient, private utilityService: UtilityService) {
     super();

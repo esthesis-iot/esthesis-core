@@ -4,7 +4,7 @@ import {SettingsService} from "../settings.service";
 import {UtilityService} from "../../shared/service/utility.service";
 import {BaseComponent} from "../../shared/component/base-component";
 import * as _ from "lodash";
-import {SettingDto} from "../../dto/setting-dto";
+import {SettingDto} from "../dto/setting-dto";
 
 @Component({
   selector: "app-settings-ui",

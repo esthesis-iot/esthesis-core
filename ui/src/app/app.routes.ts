@@ -83,7 +83,7 @@ export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
     },
     {
       path: "command",
-      loadChildren: () => import("./command/command.module").then(m => m.CommandModule),
+      loadChildren: () => import("./commands/commands.module").then(m => m.CommandsModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
@@ -103,7 +103,7 @@ export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
     },
     {
       path: "dataflow",
-      loadChildren: () => import("./dataflow/dataflow.module").then(m => m.DataflowModule),
+      loadChildren: () => import("./dataflows/dataflows.module").then(m => m.DataflowsModule),
       canActivate: [AutoLoginAllRoutesGuard]
     },
 

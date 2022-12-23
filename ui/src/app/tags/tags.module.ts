@@ -2,8 +2,8 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 
 import {TagsRoutingModule} from './tags-routing.module';
-import {TagsComponent} from './tags.component';
-import {TagEditComponent} from './tag-edit.component';
+import {TagsListComponent} from './tags-list/tags-list.component';
+import {TagEditComponent} from './tag-edit/tag-edit.component';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -22,7 +22,7 @@ import {A11yModule} from "@angular/cdk/a11y";
 
 @NgModule({
   declarations: [
-    TagsComponent,
+    TagsListComponent,
     TagEditComponent
   ],
   imports: [

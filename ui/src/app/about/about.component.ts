@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {AboutService} from "./about.service";
-import {AboutDto} from "../dto/about-dto";
+import {AboutDto} from "./dto/about-dto";
 
 @Component({
   selector: "app-about",

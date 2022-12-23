@@ -1,11 +1,11 @@
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
-import {CasComponent} from "./cas.component";
-import {CasImportComponent} from "./cas-import.component";
-import {CasEditComponent} from "./cas-edit.component";
+import {CasListComponent} from "./cas-list/cas-list.component";
+import {CasImportComponent} from "./cas-import/cas-import.component";
+import {CasEditComponent} from "./cas-edit/cas-edit.component";
 
 const routes: Routes = [
-  {path: "", component: CasComponent},
+  {path: "", component: CasListComponent},
   {path: "import", component: CasImportComponent},
   {path: ":id", component: CasEditComponent},
 ];

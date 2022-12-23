@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core';
-import {CrudService} from '../services/crud.service';
-import {CampaignDto} from '../dto/campaign-dto';
-import {HttpClient} from '@angular/common/http';
+import {Injectable} from "@angular/core";
+import {CrudService} from "../services/crud.service";
+import {CampaignDto} from "./dto/campaign-dto";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {CampaignStatsDto} from "../dto/campaign-stats-dto";
+import {CampaignStatsDto} from "./dto/campaign-stats-dto";
 import {environment} from "../../environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class CampaignsService extends CrudService<CampaignDto> {
   private static resource = `campaign`;

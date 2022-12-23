@@ -14,17 +14,21 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {ReactiveFormsModule} from "@angular/forms";
 import {QFormsModule} from "@qlack/forms";
 import {FlexLayoutModule} from "@angular/flex-layout";
-import {ApplicationsComponent} from "./applications.component";
+import {ApplicationsListComponent} from "./applications-list/applications-list.component";
 import {ApplicationEditComponent} from "./application-edit/application-edit.component";
-import {ApplicationEditDescriptionComponent} from "./application-edit/application-edit-description.component";
-import {ApplicationEditPermissionsComponent} from "./application-edit/application-edit-permissions.component";
+import {
+  ApplicationEditDescriptionComponent
+} from "./application-edit/application-edit-description.component";
+import {
+  ApplicationEditPermissionsComponent
+} from "./application-edit/application-edit-permissions.component";
 import {ApplicationsRoutingModule} from "./applications-routing.module";
 import {DisplayModule} from "../shared/component/display/display.module";
 import {DateSupportModule} from "../shared/module/date-support.module";
 
 @NgModule({
   declarations: [
-    ApplicationsComponent,
+    ApplicationsListComponent,
     ApplicationEditComponent,
     ApplicationEditDescriptionComponent,
     ApplicationEditPermissionsComponent,

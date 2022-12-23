@@ -1,10 +1,10 @@
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
-import {UsersComponent} from "./users.component";
-import {UserEditComponent} from "./user-edit.component";
+import {UsersListComponent} from "./users-list/users-list.component";
+import {UserEditComponent} from "./user-edit/user-edit.component";
 
 const routes: Routes = [
-  {path: "", component: UsersComponent},
+  {path: "", component: UsersListComponent},
   {path: ":id", component: UserEditComponent}
 ];
 

@@ -12,13 +12,13 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatSortModule} from "@angular/material/sort";
 import {MatTableModule} from "@angular/material/table";
 import {ReactiveFormsModule} from "@angular/forms";
-import {AuditComponent} from "./audit.component";
+import {AuditListComponent} from "./audit-list/audit-list.component";
 import {QFormsModule} from "@qlack/forms";
 import {DateSupportModule} from "../shared/module/date-support.module";
 
 @NgModule({
   declarations: [
-    AuditComponent
+    AuditListComponent
   ],
   imports: [
     CommonModule,

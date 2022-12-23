@@ -2,11 +2,11 @@ import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SettingsService} from "../settings.service";
 import {CertificatesService} from "../../certificates/certificates.service";
-import {CertificateDto} from "../../dto/certificate-dto";
+import {CertificateDto} from "../../certificates/dto/certificate-dto";
 import * as _ from "lodash";
 import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
-import {SettingDto} from "../../dto/setting-dto";
+import {SettingDto} from "../dto/setting-dto";
 import {AppConstants} from "../../app.constants";
 
 @Component({

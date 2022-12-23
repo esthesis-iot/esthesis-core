@@ -1,10 +1,10 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {TagsComponent} from './tags.component';
-import {TagEditComponent} from './tag-edit.component';
+import {TagsListComponent} from './tags-list/tags-list.component';
+import {TagEditComponent} from './tag-edit/tag-edit.component';
 
 const routes: Routes = [
-  {path: '', component: TagsComponent},
+  {path: '', component: TagsListComponent},
   {path: ':id', component: TagEditComponent}
 ];
 

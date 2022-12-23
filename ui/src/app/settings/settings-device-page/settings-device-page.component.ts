@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {DevicePageFieldDto} from "../../dto/device-page-field-dto";
+import {DevicePageFieldDto} from "../../devices/dto/device-page-field-dto";
 import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {UtilityService} from "../../shared/service/utility.service";
 import {DevicesService} from "../../devices/devices.service";
@@ -10,7 +10,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {
   MatIconPickerComponent
 } from "../../shared/component/display/mat-icon-picker/mat-icon-picker.component";
-import {SettingDto} from "../../dto/setting-dto";
+import {SettingDto} from "../dto/setting-dto";
 import * as _ from "lodash-es";
 import {forkJoin} from "rxjs";
 

@@ -1,10 +1,10 @@
 import {RouterModule, Routes} from "@angular/router";
 import {NgModule} from "@angular/core";
-import {ApplicationsComponent} from "./applications.component";
+import {ApplicationsListComponent} from "./applications-list/applications-list.component";
 import {ApplicationEditComponent} from "./application-edit/application-edit.component";
 
 const routes: Routes = [
-  {path: "", component: ApplicationsComponent},
+  {path: "", component: ApplicationsListComponent},
   {path: ":id", component: ApplicationEditComponent},
 ];
 

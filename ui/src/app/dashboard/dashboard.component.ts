@@ -4,7 +4,7 @@ import {GridsterComponent, GridsterConfig} from "angular-gridster2";
 import {MatDialog} from "@angular/material/dialog";
 import {AppConstants} from "../app.constants";
 import {DashboardService} from "./dashboard.service";
-import {DashboardWidgetForGridDto} from "../dto/dashboard-widget-for-grid-dto";
+import {DashboardWidgetForGridDto} from "./dto/dashboard-widget-for-grid-dto";
 
 
 @Component({

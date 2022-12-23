@@ -1,9 +1,9 @@
 import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
-import {CommandExecuteRequestDto} from "../../../dto/command-execute-request-dto";
+import {CommandExecuteRequestDto} from "../../../commands/dto/command-execute-request-dto";
 import {environment} from "src/environments/environment";
-import {CommandReplyDto} from "../../../dto/command-reply-dto";
+import {CommandReplyDto} from "../../../commands/dto/command-reply-dto";
 
 @Injectable({
   providedIn: "root"

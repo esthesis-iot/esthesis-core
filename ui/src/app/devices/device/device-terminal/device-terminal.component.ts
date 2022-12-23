@@ -2,7 +2,7 @@ import {AfterViewInit, Component, Input, ViewChild} from "@angular/core";
 import {NgTerminal} from "ng-terminal";
 import {DeviceTerminalService} from "./device-terminal.service";
 import {BaseComponent} from "../../../shared/component/base-component";
-import {CommandExecuteRequestDto} from "../../../dto/command-execute-request-dto";
+import {CommandExecuteRequestDto} from "../../../commands/dto/command-execute-request-dto";
 
 @Component({
   selector: "app-device-terminal",

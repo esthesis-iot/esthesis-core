@@ -1,9 +1,9 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
-import {TagDto} from "../../dto/tag-dto";
+import {TagDto} from "../../tags/dto/tag-dto";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
-import {TagService} from "../../tags/tag.service";
+import {TagsService} from "../../tags/tags.service";
 import {DevicesService} from "../devices.service";
 import {BaseComponent} from "src/app/shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
@@ -11,7 +11,7 @@ import {
   OkCancelModalComponent
 } from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
 import {QFormsService} from "@qlack/forms";
-import {DeviceDto} from "../../dto/device-dto";
+import {DeviceDto} from "../dto/device-dto";
 import {AppConstants} from "../../app.constants";
 import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 
@@ -33,7 +33,7 @@ export class DeviceComponent extends BaseComponent implements OnInit {
   geoLastUpdated?: Date;
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
-    private qForms: QFormsService, private tagService: TagService,
+    private qForms: QFormsService, private tagService: TagsService,
     private devicesService: DevicesService, private route: ActivatedRoute,
     private router: Router, private utilityService: UtilityService,
     public sanitizer: DomSanitizer) {

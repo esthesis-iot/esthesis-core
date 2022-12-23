@@ -1,9 +1,9 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {AuditComponent} from './audit.component';
+import {NgModule} from "@angular/core";
+import {RouterModule, Routes} from "@angular/router";
+import {AuditListComponent} from "./audit-list/audit-list.component";
 
 const routes: Routes = [
-  {path: '', component: AuditComponent},
+  {path: "", component: AuditListComponent},
 ];
 
 @NgModule({

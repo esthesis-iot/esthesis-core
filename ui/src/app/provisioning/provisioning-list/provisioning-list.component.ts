@@ -4,8 +4,8 @@ import {MatSort} from "@angular/material/sort";
 import {MatTableDataSource} from "@angular/material/table";
 import {QFormsService} from "@qlack/forms";
 import {ProvisioningService} from "../provisioning.service";
-import {TagService} from "../../tags/tag.service";
-import {TagDto} from "../../dto/tag-dto";
+import {TagsService} from "../../tags/tags.service";
+import {TagDto} from "../../tags/dto/tag-dto";
 import * as _ from "lodash";
 import {BaseComponent} from "../../shared/component/base-component";
 import {AppConstants} from "../../app.constants";
@@ -34,7 +34,7 @@ export class ProvisioningListComponent extends BaseComponent implements OnInit, 
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private provisioningService: ProvisioningService, private qForms: QFormsService,
-    private tagService: TagService, private utilityService: UtilityService,
+    private tagService: TagsService, private utilityService: UtilityService,
     private dialog: MatDialog) {
     super();
   }

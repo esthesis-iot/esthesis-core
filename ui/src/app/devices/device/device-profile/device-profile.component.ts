@@ -14,7 +14,7 @@ import {
 import {
   OkCancelModalComponent
 } from "../../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
-import {DevicePageFieldDataDto} from "../../../dto/device-page-field-data-dto";
+import {DevicePageFieldDataDto} from "../../dto/device-page-field-data-dto";
 
 @Component({
   selector: "app-device-profile",

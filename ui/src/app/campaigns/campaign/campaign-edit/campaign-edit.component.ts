@@ -5,22 +5,22 @@ import {QFormsService} from "@qlack/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {UtilityService} from "../../../shared/service/utility.service";
 import {ProvisioningService} from "../../../provisioning/provisioning.service";
-import {CampaignMemberDto} from "../../../dto/campaign-member-dto";
+import {CampaignMemberDto} from "../../dto/campaign-member-dto";
 import {DevicesService} from "../../../devices/devices.service";
-import {DeviceDto} from "../../../dto/device-dto";
+import {DeviceDto} from "../../../devices/dto/device-dto";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import {TagDto} from "../../../dto/tag-dto";
-import {TagService} from "../../../tags/tag.service";
+import {TagDto} from "../../../tags/dto/tag-dto";
+import {TagsService} from "../../../tags/tags.service";
 import {CampaignsService} from "../../campaigns.service";
-import {CampaignDto} from "../../../dto/campaign-dto";
-import {CampaignConditionDto} from "../../../dto/campaign-condition-dto";
+import {CampaignDto} from "../../dto/campaign-dto";
+import {CampaignConditionDto} from "../../dto/campaign-condition-dto";
 import * as _ from "lodash";
 import {AppConstants} from "../../../app.constants";
 import {
   OkCancelModalComponent
 } from "../../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
 import {MatDialog} from "@angular/material/dialog";
-import {CampaignStatsDto} from "../../../dto/campaign-stats-dto";
+import {CampaignStatsDto} from "../../dto/campaign-stats-dto";
 import {ProvisioningDto} from "../../../provisioning/dto/provisioning-dto";
 
 @Component({
@@ -61,7 +61,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     private qForms: QFormsService, private provisioningService: ProvisioningService,
     private route: ActivatedRoute, private router: Router,
     private utilService: UtilityService, private deviceService: DevicesService,
-    private tagService: TagService, private campaignService: CampaignsService,
+    private tagService: TagsService, private campaignService: CampaignsService,
     private dialog: MatDialog) {
     super();
   }

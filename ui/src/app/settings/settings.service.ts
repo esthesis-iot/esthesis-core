@@ -3,9 +3,9 @@ import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {CrudService} from "../services/crud.service";
 import {Observable} from "rxjs";
-import {DevicePageFieldDto} from "../dto/device-page-field-dto";
+import {DevicePageFieldDto} from "../devices/dto/device-page-field-dto";
 import {environment} from "src/environments/environment";
-import {SettingDto} from "../dto/setting-dto";
+import {SettingDto} from "./dto/setting-dto";
 
 /**
  * A service providing functionality to manage settings.

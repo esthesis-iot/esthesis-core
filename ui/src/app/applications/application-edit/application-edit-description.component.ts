@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
-import {ApplicationService} from "../application.service";
+import {ApplicationsService} from "../applications.service";
 import {BaseComponent} from "../../shared/component/base-component";
 import {
   OkCancelModalComponent
@@ -10,7 +10,7 @@ import {
 import {UtilityService} from "../../shared/service/utility.service";
 import {QFormsService} from "@qlack/forms";
 import {v4 as uuidv4} from "uuid";
-import {ApplicationDto} from "../../dto/application-dto";
+import {ApplicationDto} from "../dto/application-dto";
 
 @Component({
   selector: "app-application-edit-description",
@@ -21,7 +21,7 @@ export class ApplicationEditDescriptionComponent extends BaseComponent implement
   @Input() id: string | null | undefined;
   form!: FormGroup;
 
-  constructor(private fb: FormBuilder, private applicationService: ApplicationService,
+  constructor(private fb: FormBuilder, private applicationService: ApplicationsService,
     private qForms: QFormsService,
     private route: ActivatedRoute, private router: Router, private dialog: MatDialog,
     private utilityService: UtilityService) {

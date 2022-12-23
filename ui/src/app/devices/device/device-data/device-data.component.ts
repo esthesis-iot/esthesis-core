@@ -3,7 +3,7 @@ import {DevicesService} from "../../devices.service";
 import {UtilityService} from "../../../shared/service/utility.service";
 import {ActivatedRoute} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
-import {DevicePageFieldDataDto} from "../../../dto/device-page-field-data-dto";
+import {DevicePageFieldDataDto} from "../../dto/device-page-field-data-dto";
 import {MatSort} from "@angular/material/sort";
 import * as _ from "lodash-es";
 
