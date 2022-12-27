@@ -95,31 +95,22 @@ public class DataflowService extends BaseService<DataflowEntity> {
     Optional<DataflowEntity> match = Optional.empty();
     if (tagNames.isEmpty()) {
       match = dataflowEntities.stream().filter(DataflowEntity::isStatus)
-          .filter(dataflowEntity -> {
-            return
-                ((Document) dataflowEntities.get(0).getConfig().get(MQTT_BROKER)).get(
-                    TAGS) == null;
-          })
+          .filter(dataflowEntity ->
+              ((Document) dataflowEntities.get(0).getConfig().get(MQTT_BROKER)).get(TAGS) == null)
           .findAny();
     } else {
       switch (deviceTagsAlgorithm) {
-        case ALL -> {
-          match = dataflowEntities.stream().filter(DataflowEntity::isStatus)
-              .filter(dataflowEntity -> {
-                return ((Document) dataflowEntities.get(0).getConfig()
+        case ALL -> match = dataflowEntities.stream().filter(DataflowEntity::isStatus)
+            .filter(dataflowEntity -> ((Document) dataflowEntities.get(0).getConfig()
+                .get(MQTT_BROKER)).getList(
+                TAGS, String.class).containsAll(tagIds))
+            .findAny();
+        case ANY -> match = dataflowEntities.stream().filter(DataflowEntity::isStatus)
+            .filter(dataflowEntity -> !ListUtils.intersection(
+                ((Document) dataflowEntities.get(0).getConfig()
                     .get(MQTT_BROKER)).getList(
-                    TAGS, String.class).containsAll(tagIds);
-              })
-              .findAny();
-        }
-        case ANY -> {
-          match = dataflowEntities.stream().filter(DataflowEntity::isStatus)
-              .filter(dataflowEntity -> !ListUtils.intersection(
-                  ((Document) dataflowEntities.get(0).getConfig()
-                      .get(MQTT_BROKER)).getList(
-                      TAGS, String.class), tagIds).isEmpty())
-              .findAny();
-        }
+                    TAGS, String.class), tagIds).isEmpty())
+            .findAny();
       }
     }
 

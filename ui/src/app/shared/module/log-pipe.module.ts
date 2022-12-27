@@ -4,7 +4,6 @@ import {NgModule, Pipe, PipeTransform} from "@angular/core";
 export class LogPipe implements PipeTransform {
   public transform(value: object): void {
     console.log(value);
-    return;
   }
 }
 

@@ -124,7 +124,7 @@ export class DataflowEditComponent extends BaseComponent implements OnInit {
       this.utilityService.popupError("Mandatory dataflow configuration is missing.");
     } else {
       this.dataflowService.save(JSON.stringify(this.model)).subscribe({
-        next: (reply) => {
+        next: () => {
           this.router.navigate(["dataflow"]);
         }, error: (err) => {
           this.utilityService.popupErrorWithTraceId("There was an error saving this dataflow.", err);

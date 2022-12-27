@@ -62,7 +62,7 @@ export class DataflowsListComponent extends BaseComponent implements OnInit, Aft
       [], false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       // Convert keys to text.
-      onNext.content.map((dataflowDto: DataflowDto) => {
+      onNext.content.forEach((dataflowDto: DataflowDto) => {
         // @ts-ignore
         dataflowDto.typeText = dataflows.find((dataflow) => {
           return dataflow.type === dataflowDto.type;

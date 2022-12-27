@@ -84,7 +84,7 @@ export class CommandReplyComponent extends BaseComponent implements OnInit {
     }).afterClosed().subscribe(result => {
       if (result) {
         this.commandService.deleteReplies(this.commandRequest.id!).subscribe({
-          next: (next) => {
+          next: () => {
             this.utilityService.popupSuccess("Command reply successfully deleted.");
             this.commandReplies = [];
           }, error: (error) => {

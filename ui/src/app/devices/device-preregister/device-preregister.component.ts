@@ -41,7 +41,7 @@ export class DevicePreregisterComponent extends BaseComponent implements OnInit 
       next: (next) => {
         this.availableTags = next.content;
       },
-      error: (err) => {
+      error: () => {
         this.utilityService.popupError("There was an error while getting available tags, please try again later.");
       }
     });

@@ -8,8 +8,7 @@ import {SettingDto} from "../dto/setting-dto";
 
 @Component({
   selector: "app-settings-ui",
-  templateUrl: "./settings-ui.component.html",
-  styleUrls: ["./settings-ui.component.scss"]
+  templateUrl: "./settings-ui.component.html"
 })
 export class SettingsUiComponent extends BaseComponent implements OnInit {
   form!: FormGroup;

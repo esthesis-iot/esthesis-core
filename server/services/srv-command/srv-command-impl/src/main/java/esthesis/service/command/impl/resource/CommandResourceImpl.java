@@ -59,10 +59,8 @@ public class CommandResourceImpl implements CommandResource {
     Awaitility.await()
         .atMost(timeout, TimeUnit.MILLISECONDS)
         .pollInterval(pollInterval, TimeUnit.MILLISECONDS)
-        .until(() -> {
-          return commandService.countCollectedReplies(correlationID)
-              == scheduleInfo.getDevicesScheduled();
-        });
+        .until(() -> commandService.countCollectedReplies(correlationID)
+            == scheduleInfo.getDevicesScheduled());
 
     // Collect and return the replies.
     return commandService.getReplies(correlationID);
