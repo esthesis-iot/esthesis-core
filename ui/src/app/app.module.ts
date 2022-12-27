@@ -1,7 +1,6 @@
 /* tslint:disable:max-line-length */
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {NgModule} from "@angular/core";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {AppComponent} from "./app.component";
@@ -14,6 +13,9 @@ import {AuthInterceptor, AuthModule, LogLevel} from "angular-auth-oidc-client";
 import {LayoutModule} from "./layout/layout.module";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
+import {FlexLayoutModule} from "@angular/flex-layout";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatButtonModule} from "@angular/material/button";
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -22,12 +24,12 @@ import {MatIconModule} from "@angular/material/icon";
   ],
   imports: [
     BrowserModule,
-    FlexLayoutModule,
     BrowserAnimationsModule,
     routing,
     HttpClientModule,
     DisplayModule,
     LayoutModule,
+    FlexLayoutModule,
     HttpClientModule,
     NgProgressModule.withConfig({
       color: "#50A7D7",
@@ -57,7 +59,9 @@ import {MatIconModule} from "@angular/material/icon";
       }
     }),
     MatToolbarModule,
-    MatIconModule
+    MatIconModule,
+    MatSnackBarModule,
+    MatButtonModule
   ],
   providers: [
     QFormsModule,

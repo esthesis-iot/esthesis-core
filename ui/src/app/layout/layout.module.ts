@@ -6,7 +6,9 @@ import {SidenavComponent} from "./sidenav.component";
 import {MatIconModule} from "@angular/material/icon";
 import {MatListModule} from "@angular/material/list";
 import {MatMenuModule} from "@angular/material/menu";
-import {RouterLink} from "@angular/router";
+import {RouterLink, RouterModule} from "@angular/router";
+import {FlexLayoutModule} from "@angular/flex-layout";
+import {MatButtonModule} from "@angular/material/button";
 
 
 @NgModule({
@@ -25,7 +27,10 @@ import {RouterLink} from "@angular/router";
     MatIconModule,
     MatListModule,
     MatMenuModule,
-    RouterLink
+    RouterLink,
+    FlexLayoutModule,
+    MatButtonModule,
+    RouterModule
   ]
 })
 export class LayoutModule {
