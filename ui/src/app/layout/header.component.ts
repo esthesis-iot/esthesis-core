@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
-import {BaseComponent} from "../component/base-component";
-import {UserService} from "../../users/user.service";
+import {BaseComponent} from "../shared/component/base-component";
+import {UserService} from "../users/user.service";
 import {Observable} from "rxjs";
 import {AuthenticatedResult, OidcSecurityService} from "angular-auth-oidc-client";
 

@@ -1,8 +1,5 @@
 import {RouterModule} from "@angular/router";
 import {ModuleWithProviders} from "@angular/core";
-import {NewPasswordComponent} from "./auth/new-password.component";
-import {LogoutComponent} from "./auth/logout.component";
-import {ForgotPasswordComponent} from "./auth/forgot-password.component";
 import {AppModule} from "./app.module";
 import {AutoLoginAllRoutesGuard} from "angular-auth-oidc-client";
 
@@ -10,13 +7,6 @@ import {AutoLoginAllRoutesGuard} from "angular-auth-oidc-client";
 export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
     // Redirect for empty path.
     {path: "", redirectTo: "dashboard", pathMatch: "full"},
-
-    // Generic routes.
-    {path: "new-password", component: NewPasswordComponent},
-    {path: "logout", component: LogoutComponent},
-    {path: "forgot-password", component: ForgotPasswordComponent},
-
-    // Features routes.
     {
       path: "dashboard",
       loadChildren: () => import("./dashboard/dashboard.module").then(m => m.DashboardModule),

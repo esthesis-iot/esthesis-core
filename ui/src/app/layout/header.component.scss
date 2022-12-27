@@ -1,4 +1,4 @@
-@import "../../../styles-variables.scss";
+@import "src/styles-variables";
 
 .top-line {
   padding: 10px 10px 5px 10px;
@@ -19,20 +19,24 @@
       font-size: 1.8rem;
       letter-spacing: 0.1rem;
     }
+
     .sub {
       position: relative;
       top: -0.2rem;
       padding-left: 0.6rem;
     }
   }
-  
+
 }
+
 .mode-selection {
   padding: 10px;
   min-height: 25px;
+
   > * {
     float: left !important;
   }
+
   mat-icon {
     color: #333333;
   }

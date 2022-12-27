@@ -1,14 +1,16 @@
-@import "../../../styles-variables.scss";
+@import "src/styles-variables";
 
 .footer {
   background-color: $e-color-grey-light !important;
   padding: 10px 20px;
   color: #666666;
   font-size: 0.9rem;
+
   a {
     color: #666666;
     text-decoration: none;
   }
+
   a:hover {
     color: #72295F;
   }
