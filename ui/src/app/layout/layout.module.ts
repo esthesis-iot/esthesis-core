@@ -15,6 +15,11 @@ import {RouterLink} from "@angular/router";
     HeaderComponent,
     SidenavComponent
   ],
+  exports: [
+    HeaderComponent,
+    SidenavComponent,
+    FooterComponent
+  ],
   imports: [
     CommonModule,
     MatIconModule,
