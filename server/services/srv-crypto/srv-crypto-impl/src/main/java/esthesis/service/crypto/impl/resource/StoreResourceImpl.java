@@ -1,6 +1,7 @@
 package esthesis.service.crypto.impl.resource;
 
 import com.github.slugify.Slugify;
+import esthesis.common.exception.QExceptionWrapper;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.entity.StoreEntity;
@@ -64,7 +65,7 @@ public class StoreResourceImpl implements StoreResource {
     } catch (CertificateException | KeyStoreException |
              NoSuchAlgorithmException | IOException | NoSuchProviderException |
              InvalidKeySpecException e) {
-      throw new RuntimeException("Could not download keystore.", e);
+      throw new QExceptionWrapper("Could not download keystore.", e);
     }
   }
 }

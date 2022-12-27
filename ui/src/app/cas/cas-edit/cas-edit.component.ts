@@ -67,7 +67,7 @@ export class CasEditComponent extends BaseComponent implements OnInit {
   save(): void {
     this.caService.save(this.qForms.cleanupData(this.form.getRawValue()) as CaDto).subscribe(
       {
-        next: ca => {
+        next: () => {
           this.utilityService.popupSuccess(
             this.form.value.id ? "Certificate Authority was successfully edited."
               : "Certificate Authority was successfully created.");

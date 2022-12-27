@@ -7,9 +7,11 @@ import java.util.stream.Stream;
 
 public class MapUtils {
 
+  private MapUtils() {
+  }
+
   /**
-   * A utility method to convert a map to a stream of entries while flattening
-   * the keys of the map.
+   * A utility method to convert a map to a stream of entries while flattening the keys of the map.
    * <p>
    * Example:
    * <pre>

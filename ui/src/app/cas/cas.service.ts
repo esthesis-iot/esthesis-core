@@ -28,7 +28,7 @@ export class CasService extends CrudDownloadService<CaDto> {
     }).subscribe({
       next: (response) => {
         this.saveAs(response);
-      }, error: (error) => {
+      }, error: () => {
         this.utilityService.popupError("There was an error downloading this CA, please try again later.");
       }
     });

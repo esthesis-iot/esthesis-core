@@ -23,7 +23,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 public class InfluxDBService {
 
   // The name of the InfluxDB tag to use to for the hardware id of each device.
-  private final static String INFLUXDB_TAG_HARDWARE_ID = "hardwareId";
+  private static final String INFLUXDB_TAG_HARDWARE_ID = "hardwareId";
 
   @Inject
   AppConfig config;
@@ -76,7 +76,7 @@ public class InfluxDBService {
     }
 
     // Set the values of the point.
-    esthesisMessage.getPayload().getValues().forEach((keyValue) -> {
+    esthesisMessage.getPayload().getValues().forEach(keyValue -> {
       String name = keyValue.getName();
       String value = keyValue.getValue();
 

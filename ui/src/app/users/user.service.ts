@@ -23,6 +23,7 @@ export class UserService extends CrudService<UserDto> {
 
   // Returns the JWT.
   private static getJwt(): string | null {
+    // TODO
     // return localStorage.getItem(AppConstants.JWT_STORAGE_NAME);
     return null;
   }

@@ -14,6 +14,9 @@ import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 public class SerDerUtils {
 
+  private SerDerUtils() {
+  }
+
   /**
    * @param publicKey DER Base64 encoded public key.
    */
@@ -32,8 +35,8 @@ public class SerDerUtils {
    */
   public static PrivateKey getPrivateKey(String privateKey) throws PEMException {
     byte[] privateKeyBytes = Base64.getDecoder().decode(privateKey);
-    final ASN1Sequence ASN1 = ASN1Sequence.getInstance(privateKeyBytes);
-    final PrivateKeyInfo privateKeyInfo = PrivateKeyInfo.getInstance(ASN1);
+    final ASN1Sequence asn1 = ASN1Sequence.getInstance(privateKeyBytes);
+    final PrivateKeyInfo privateKeyInfo = PrivateKeyInfo.getInstance(asn1);
     final JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
 
     return converter.getPrivateKey(privateKeyInfo);

@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {QFormsService} from "@qlack/forms";
 import {MatDialog} from "@angular/material/dialog";
 import {ActivatedRoute, Router} from "@angular/router";
-import {HttpResponse} from "@angular/common/http";
+import {HttpEvent, HttpResponse} from "@angular/common/http";
 import {CasService} from "../cas.service";
 import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
@@ -36,18 +36,19 @@ export class CasImportComponent extends BaseComponent implements OnInit {
   }
 
   import() {
-    this.casService.import(this.form).subscribe(event => {
-      console.log(event);
-      if (event instanceof HttpResponse) {
-        if (event.status === 200) {
-          this.utilityService.popupSuccess("Certificate authority restored successfully.");
-          this.router.navigate(["cas"]);
-        } else {
-          this.utilityService.popupError("Something went wrong, please try again.");
+    this.casService.import(this.form).subscribe({
+      next: (event: HttpEvent<any>) => {
+        if (event instanceof HttpResponse) {
+          if (event.status === 200) {
+            this.utilityService.popupSuccess("Certificate authority restored successfully.");
+            this.router.navigate(["cas"]);
+          } else {
+            this.utilityService.popupError("Something went wrong, please try again.");
+          }
         }
+      }, error: (error: any) => {
+        this.utilityService.popupError(error.error);
       }
-    }, error => {
-      this.utilityService.popupError(error.error);
     });
   }
 }

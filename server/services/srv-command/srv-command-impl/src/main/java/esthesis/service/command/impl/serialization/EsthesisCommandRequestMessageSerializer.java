@@ -1,6 +1,7 @@
 package esthesis.service.command.impl.serialization;
 
 import esthesis.avro.EsthesisCommandRequestMessage;
+import esthesis.common.exception.QExceptionWrapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.avro.io.BinaryEncoder;
@@ -27,7 +28,7 @@ public class EsthesisCommandRequestMessageSerializer implements
       encoder.flush();
       return outputStream.toByteArray();
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new QExceptionWrapper(e.getMessage(), e);
     }
   }
 }

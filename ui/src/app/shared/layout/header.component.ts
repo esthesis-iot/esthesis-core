@@ -1,13 +1,13 @@
-import {Component} from '@angular/core';
-import {BaseComponent} from '../component/base-component';
-import {UserService} from '../../users/user.service';
+import {Component} from "@angular/core";
+import {BaseComponent} from "../component/base-component";
+import {UserService} from "../../users/user.service";
 import {Observable} from "rxjs";
 import {AuthenticatedResult, OidcSecurityService} from "angular-auth-oidc-client";
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  selector: "app-header",
+  templateUrl: "./header.component.html",
+  styleUrls: ["./header.component.scss"]
 })
 export class HeaderComponent extends BaseComponent {
   // The user email extracted from JWT.
@@ -18,7 +18,8 @@ export class HeaderComponent extends BaseComponent {
   }
 
   getUserEmail(): string | null {
-    //return this.userService.getJWTClaim(AppConstants.jwt.claims.EMAIL);
+    // TODO fix
+    // return this.userService.getJWTClaim(AppConstants.jwt.claims.EMAIL);
     return "TEST123";
   }
 

@@ -6,8 +6,7 @@ import {CommandExecuteRequestDto} from "../../../commands/dto/command-execute-re
 
 @Component({
   selector: "app-device-terminal",
-  templateUrl: "./device-terminal.component.html",
-  styleUrls: ["./device-terminal.component.scss"]
+  templateUrl: "./device-terminal.component.html"
 })
 export class DeviceTerminalComponent extends BaseComponent implements AfterViewInit {
   @Input() hardwareId!: string;

@@ -3,7 +3,7 @@ package esthesis.services.tag.impl.service;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.common.validation.CVException;
+import esthesis.service.common.validation.CVExceptionContainer;
 import esthesis.service.tag.entity.TagEntity;
 import esthesis.service.tag.messaging.TagServiceMessaging;
 import esthesis.services.tag.impl.repository.TagRepository;
@@ -53,7 +53,7 @@ public class TagService extends BaseService<TagEntity> {
     TagEntity existingTagEntity = findFirstByColumn("name", dto.getName());
     if (existingTagEntity != null && (dto.getId() == null || !existingTagEntity.getId()
         .equals(dto.getId()))) {
-      new CVException<TagEntity>()
+      new CVExceptionContainer<TagEntity>()
           .addViolation("name", "A tag with name '{}' already exists.",
               dto.getName())
           .throwCVE();

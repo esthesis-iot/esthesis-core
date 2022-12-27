@@ -51,7 +51,7 @@ export class ApplicationEditDescriptionComponent extends BaseComponent implement
 
   save() {
     this.applicationService.save(this.qForms.cleanupData(this.form.getRawValue()) as ApplicationDto)
-    .subscribe(onNext => {
+    .subscribe(() => {
       this.utilityService.popupSuccess(this.form.value.id ? "Application was successfully edited."
         : "Application was successfully created.");
       this.router.navigate(["applications"]);
@@ -69,7 +69,7 @@ export class ApplicationEditDescriptionComponent extends BaseComponent implement
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.applicationService.delete(this.id).subscribe(onNext => {
+        this.applicationService.delete(this.id).subscribe(() => {
           this.utilityService.popupSuccess("Application successfully deleted.");
           this.router.navigate(["applications"]);
         });

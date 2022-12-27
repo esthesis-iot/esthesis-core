@@ -2,6 +2,7 @@ package esthesis.dataflows.rdbmswriter.service;
 
 import esthesis.avro.EsthesisDataMessage;
 import esthesis.avro.ValueData;
+import esthesis.common.exception.QExceptionWrapper;
 import esthesis.dataflow.common.DflUtils.VALUE_TYPE;
 import esthesis.dataflows.rdbmswriter.config.AppConfig;
 import io.agroal.api.AgroalDataSource;
@@ -119,7 +120,7 @@ public class RdbmsService {
           }
         });
       } catch (SQLException e) {
-        throw new RuntimeException(e);
+        throw new QExceptionWrapper(e.getMessage(), e);
       }
     }
   }

@@ -114,13 +114,10 @@ public class DataflowService extends BaseService<DataflowEntity> {
         }
         case ANY -> {
           match = dataflowEntities.stream().filter(DataflowEntity::isStatus)
-              .filter(dataflowEntity -> {
-                return ListUtils.intersection(
-                        ((Document) dataflowEntities.get(0).getConfig()
-                            .get(MQTT_BROKER)).getList(
-                            TAGS, String.class), tagIds)
-                    .size() > 0;
-              })
+              .filter(dataflowEntity -> !ListUtils.intersection(
+                  ((Document) dataflowEntities.get(0).getConfig()
+                      .get(MQTT_BROKER)).getList(
+                      TAGS, String.class), tagIds).isEmpty())
               .findAny();
         }
       }

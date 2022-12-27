@@ -63,20 +63,21 @@ export class CertificateEditComponent extends BaseComponent implements OnInit {
     // Fill-in the form with data if editing an existing item.
     if (this.id && this.id !== AppConstants.NEW_RECORD_ID) {
       this.certificatesService.findById(this.id).subscribe(onNext => {
-        this.form!.patchValue(onNext);
+        this.form.patchValue(onNext);
       });
     }
   }
 
   save() {
     this.certificatesService.save(
-      this.qForms.cleanupData(this.form.getRawValue()) as CertificateDto).subscribe(
-      onNext => {
+      this.qForms.cleanupData(this.form.getRawValue()) as CertificateDto).subscribe({
+      next: () => {
         this.utilityService.popupSuccess(
-          this.form!.value.id ? "Certificate was successfully edited."
+          this.form.value.id ? "Certificate was successfully edited."
             : "Certificate was successfully created.");
         this.router.navigate(["certificates"]);
-      });
+      }
+    });
   }
 
   delete() {
@@ -90,9 +91,11 @@ export class CertificateEditComponent extends BaseComponent implements OnInit {
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.certificatesService.delete(this.id).subscribe(onNext => {
-          this.utilityService.popupSuccess("Certificate successfully deleted.");
-          this.router.navigate(["certificates"]);
+        this.certificatesService.delete(this.id).subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("Certificate successfully deleted.");
+            this.router.navigate(["certificates"]);
+          }
         });
       }
     });

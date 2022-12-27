@@ -1,7 +1,7 @@
 package esthesis.services.device.impl.resource;
 
 import esthesis.common.exception.QAlreadyExistsException;
-import esthesis.service.common.validation.CVException;
+import esthesis.service.common.validation.CVExceptionContainer;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceRegistrationResource;
@@ -28,7 +28,7 @@ public class DeviceRegistrationResourceImpl implements
     try {
       deviceRegistrationService.preregister(deviceRegistration);
     } catch (QAlreadyExistsException e) {
-      new CVException<DeviceRegistrationDTO>()
+      new CVExceptionContainer<DeviceRegistrationDTO>()
           .addViolation("ids", "One or more IDs are already registered.")
           .throwCVE();
     }

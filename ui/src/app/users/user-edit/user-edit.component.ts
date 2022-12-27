@@ -61,12 +61,13 @@ export class UserEditComponent extends BaseComponent implements OnInit {
       this.form.controls.newPassword1.setValue(null);
       this.form.controls.newPassword2.setValue(null);
     }
-    this.userService.save(this.qForms.cleanupData(this.form.getRawValue()) as UserDto).subscribe(
-      onNext => {
+    this.userService.save(this.qForms.cleanupData(this.form.getRawValue()) as UserDto).subscribe({
+      next: () => {
         this.utilityService.popupSuccess(this.isEdit ? "User was successfully edited."
           : "User was successfully created.");
         this.router.navigate(["users"]);
-      });
+      }
+    });
   }
 
   delete() {
@@ -80,9 +81,11 @@ export class UserEditComponent extends BaseComponent implements OnInit {
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.userService.delete(this.id).subscribe(onNext => {
-          this.utilityService.popupSuccess("User successfully deleted.");
-          this.router.navigate(["users"]);
+        this.userService.delete(this.id).subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("User successfully deleted.");
+            this.router.navigate(["users"]);
+          }
         });
       }
     });

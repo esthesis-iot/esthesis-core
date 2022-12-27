@@ -125,10 +125,10 @@ public class RedisUtils {
     // Add the key, value, and last updated values to the list.
     keyValMap.entrySet().stream().filter(
         entry -> !entry.getKey().endsWith(REDIS_KEY_SUFFIX_VALUE_TYPE) && !entry.getKey()
-            .endsWith(REDIS_KEY_SUFFIX_TIMESTAMP)).forEach(entry -> {
-      triplets.add(new ImmutableTriple<>(entry.getKey(), entry.getValue(),
-          getLastUpdate(keyType, key, entry.getKey())));
-    });
+            .endsWith(REDIS_KEY_SUFFIX_TIMESTAMP)).forEach(entry ->
+        triplets.add(new ImmutableTriple<>(entry.getKey(), entry.getValue(),
+            getLastUpdate(keyType, key, entry.getKey())))
+    );
 
     return triplets;
   }

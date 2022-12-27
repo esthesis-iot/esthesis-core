@@ -78,11 +78,12 @@ export class DeviceComponent extends BaseComponent implements OnInit {
 
   saveDeviceInfo() {
     this.devicesService.save(
-      this.qForms.cleanupData(this.deviceInfoForm.getRawValue()) as DeviceDto).subscribe(
-      onNext => {
+      this.qForms.cleanupData(this.deviceInfoForm.getRawValue()) as DeviceDto).subscribe({
+      next: () => {
         this.utilityService.popupSuccess("Device successfully saved.");
         this.router.navigate(["devices"]);
-      });
+      }
+    });
   }
 
   delete() {
@@ -97,10 +98,12 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.devicesService.delete(this.id).subscribe(onNext => {
-          this.utilityService.popupSuccess("Device deletion request successfully submitted and" +
-            " is ongoing.");
-          this.router.navigate(["devices"]);
+        this.devicesService.delete(this.id).subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("Device deletion request successfully submitted and" +
+              " is ongoing.");
+            this.router.navigate(["devices"]);
+          }
         });
       }
     });

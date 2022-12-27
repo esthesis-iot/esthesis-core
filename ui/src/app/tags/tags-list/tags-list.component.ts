@@ -37,9 +37,11 @@ export class TagsListComponent extends BaseComponent implements OnInit, AfterVie
     this.filterForm.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged()
-    ).subscribe(onNext => {
-      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-        this.sort.start);
+    ).subscribe({
+      next: () => {
+        this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+          this.sort.start);
+      }
     });
   }
 

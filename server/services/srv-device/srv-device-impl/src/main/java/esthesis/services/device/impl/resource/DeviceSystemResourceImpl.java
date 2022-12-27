@@ -34,8 +34,6 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 
   @Override
   public String findPublicKey(String hardwareId) {
-    System.out.println(
-        deviceService.findByHardwareId(hardwareId, false));
     return deviceService.findByHardwareId(hardwareId, false).orElseThrow()
         .getDeviceKey().getPublicKey();
   }

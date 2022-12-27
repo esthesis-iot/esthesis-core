@@ -4,7 +4,7 @@ import esthesis.service.application.entity.ApplicationEntity;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.common.validation.CVException;
+import esthesis.service.common.validation.CVExceptionContainer;
 import io.quarkus.cache.Cache;
 import io.quarkus.cache.CacheName;
 import io.quarkus.cache.CacheResult;
@@ -45,7 +45,7 @@ public class ApplicationService extends BaseService<ApplicationEntity> {
     ApplicationEntity existingApplicationEntity = findFirstByColumn("name", dto.getName());
     if (existingApplicationEntity != null && (dto.getId() == null
         || !existingApplicationEntity.getId().equals(dto.getId()))) {
-      new CVException<ApplicationEntity>()
+      new CVExceptionContainer<ApplicationEntity>()
           .addViolation("name", "An application with name '{}' already "
               + "exists.", dto.getName())
           .throwCVE();

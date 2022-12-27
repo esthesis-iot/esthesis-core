@@ -67,6 +67,9 @@ public class AppConstants {
 
     public static class Redis {
 
+      private Redis() {
+      }
+
       public static final String DOWNLOAD_TOKEN_PACKAGE_ID = "DTPI";
       public static final String DOWNLOAD_TOKEN_CREATED_ON = "DTCO";
     }

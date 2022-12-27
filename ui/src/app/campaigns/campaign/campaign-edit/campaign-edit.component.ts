@@ -67,44 +67,47 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   }
 
   private getCampaignStats() {
-    this.campaignService.stats(this.id).subscribe(
-      onNext => {
+    this.campaignService.stats(this.id).subscribe({
+      next: onNext => {
         // Save campaign stats to an object.
         this.campaignStats = onNext;
 
         // Extract group members for the chart.
         this.campaignChart =
-          onNext.groupMembersReplied?.map((value, index, array) => {
+          onNext.groupMembersReplied?.map((value, index) => {
             return {
               name: "Group " + (index + 1),
               value
             };
           });
-      });
+      }
+    });
   }
 
   private initData(): void {
     // Fill-in the form with data if editing an existing item.
     if (this.id && this.id !== 0) {
-      this.campaignService.findById(this.id).subscribe(onNext => {
-        // Keep a copy of the complete campaign data for UI references.
-        this.campaign = onNext;
-        // Fill-in the campaign form object.
-        this.form.patchValue(onNext);
-        // Update device membership into this campaign.
-        this.memberGroups = this.getMemberGroups();
-        this.form.patchValue({conditions: []});
-        if (onNext.conditions) {
-          onNext.conditions.forEach(c => {
-            // @ts-ignore
-            this.form.controls.conditions.push(this.createCondition(c));
-          });
-        }
+      this.campaignService.findById(this.id).subscribe({
+        next: onNext => {
+          // Keep a copy of the complete campaign data for UI references.
+          this.campaign = onNext;
+          // Fill-in the campaign form object.
+          this.form.patchValue(onNext);
+          // Update device membership into this campaign.
+          this.memberGroups = this.getMemberGroups();
+          this.form.patchValue({conditions: []});
+          if (onNext.conditions) {
+            onNext.conditions.forEach(c => {
+              // @ts-ignore
+              this.form.controls.conditions.push(this.createCondition(c));
+            });
+          }
 
-        // Disable the form if the campaign is already running.
-        if (this.form.value.state !== AppConstants.CAMPAIGN.STATE.CREATED) {
-          this.disableForm();
-          this.getCampaignStats();
+          // Disable the form if the campaign is already running.
+          if (this.form.value.state !== AppConstants.CAMPAIGN.STATE.CREATED) {
+            this.disableForm();
+            this.getCampaignStats();
+          }
         }
       });
     }
@@ -145,19 +148,21 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     this.form.get("searchByHardwareId")!.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged()
-    ).subscribe(onNext => {
-      if (onNext && onNext.trim() !== "") {
-        this.deviceService.findDeviceByPartialHardwareId(onNext).subscribe(
-          onNext => {
-            if (onNext && onNext.length > 0) {
-              this.searchDevices = onNext;
-            } else {
-              this.searchDevices = [];
+    ).subscribe({
+      next: (searchVal: string) => {
+        if (searchVal && searchVal.trim() !== "") {
+          this.deviceService.findDeviceByPartialHardwareId(searchVal).subscribe({
+            next: (devices: DeviceDto[]) => {
+              if (devices && devices.length > 0) {
+                this.searchDevices = devices;
+              } else {
+                this.searchDevices = [];
+              }
             }
-          }
-        );
-      } else {
-        this.searchDevices = [];
+          });
+        } else {
+          this.searchDevices = [];
+        }
       }
     });
 
@@ -333,35 +338,35 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     this.form.get("searchByTags")?.setValue(undefined);
 
     this.campaignService.save(
-      this.qForms.cleanupData(this.form.getRawValue()) as CampaignDto).subscribe(
-      onNext => {
+      this.qForms.cleanupData(this.form.getRawValue()) as CampaignDto).subscribe({
+      next: (formData) => {
         this.errorsMain = undefined;
         this.errorsDevices = undefined;
         this.errorsConditions = undefined;
         if (startCampaign) {
-          this.campaignService.startCampaign(Number(onNext)).subscribe(
-            onNext => {
+          this.campaignService.startCampaign(Number(formData)).subscribe({
+            next: () => {
               this.utilityService.popupSuccess("Campaign successfully started.");
               this.router.navigate(["campaigns"]);
-            }, onError => {
+            }, error: () => {
               this.utilityService.popupError("Campaign could not be started.");
             }
-          );
+          });
         } else {
           this.utilityService.popupSuccess("Campaign successfully saved.");
           this.router.navigate(["campaigns"]);
         }
-      },
-      onError => {
-        this.errorsMain = onError.error.main;
-        this.errorsDevices = onError.error.devices;
-        this.errorsConditions = onError.error.conditions;
+      }, error: (error) => {
+        this.errorsMain = error.error.main;
+        this.errorsDevices = error.error.devices;
+        this.errorsConditions = error.error.conditions;
         if (startCampaign) {
           this.utilityService.popupError("Campaign could not be started.");
         } else {
           this.utilityService.popupError("Campaign can not be saved.");
         }
-      });
+      }
+    });
   }
 
   removeCondition(i: number) {
@@ -379,9 +384,11 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.campaignService.delete(this.id).subscribe(onNext => {
-          this.utilityService.popupSuccess("Campaign successfully deleted.");
-          this.router.navigate(["campaigns"]);
+        this.campaignService.delete(this.id).subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("Campaign successfully deleted.");
+            this.router.navigate(["campaigns"]);
+          }
         });
       }
     });
@@ -399,9 +406,11 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.campaignService.stopCampaign(this.id!).subscribe(onNext => {
-          this.utilityService.popupSuccess("Campaign successfully terminated.");
-          this.router.navigate(["campaigns"]);
+        this.campaignService.stopCampaign(this.id!).subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("Campaign successfully terminated.");
+            this.router.navigate(["campaigns"]);
+          }
         });
       }
     });
@@ -418,9 +427,11 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.campaignService.pauseCampaign(this.id!).subscribe(onNext => {
-          this.utilityService.popupSuccess("Campaign successfully paused.");
-          this.ngOnInit();
+        this.campaignService.pauseCampaign(this.id!).subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("Campaign successfully paused.");
+            this.ngOnInit();
+          }
         });
       }
     });
@@ -437,9 +448,11 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.campaignService.resumeCampaign(this.id!).subscribe(onNext => {
-          this.utilityService.popupSuccess("Campaign successfully resumed.");
-          this.ngOnInit();
+        this.campaignService.resumeCampaign(this.id!).subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("Campaign successfully resumed.");
+            this.ngOnInit();
+          }
         });
       }
     });

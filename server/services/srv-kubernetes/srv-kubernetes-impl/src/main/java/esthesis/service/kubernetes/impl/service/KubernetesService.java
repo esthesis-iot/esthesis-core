@@ -13,7 +13,6 @@ import io.fabric8.kubernetes.api.model.autoscaling.v2beta2.MetricSpecBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +26,9 @@ public class KubernetesService {
 
   private List<EnvVar> getEnvVar(PodInfoDTO podInfoDTO) {
     List<EnvVar> envVars = new ArrayList<>();
-    podInfoDTO.getConfiguration().forEach((k, v) -> {
-      envVars.add(
-          new EnvVarBuilder().withName(k).withValue(v).build());
-    });
+    podInfoDTO.getConfiguration().forEach((k, v) ->
+        envVars.add(new EnvVarBuilder().withName(k).withValue(v).build())
+    );
 
     return envVars;
   }
@@ -134,6 +132,6 @@ public class KubernetesService {
   public List<String> getNamespaces() {
     return kc.namespaces().list().getItems().stream().map(
             n -> n.getMetadata().getName()).toList().stream()
-        .sorted().collect(Collectors.toList());
+        .sorted().toList();
   }
 }

@@ -9,8 +9,7 @@ import {BaseComponent} from "../../shared/component/base-component";
 
 @Component({
   selector: "app-settings-messaging",
-  templateUrl: "./settings-messaging.component.html",
-  styleUrls: ["./settings-messaging.component.scss"]
+  templateUrl: "./settings-messaging.component.html"
 })
 export class SettingsMessagingComponent extends BaseComponent implements OnInit {
 
@@ -40,7 +39,7 @@ export class SettingsMessagingComponent extends BaseComponent implements OnInit 
     this.settingsService.save(
       _.map(Object.keys(this.form.controls), (fc) => {
         return new SettingDto(fc, this.form.get(fc)!.value);
-      })).subscribe(onNext => {
+      })).subscribe(() => {
       this.utilityService.popupSuccess("Settings saved successfully.");
     });
   }

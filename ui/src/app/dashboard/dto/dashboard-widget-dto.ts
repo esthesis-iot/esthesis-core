@@ -1,7 +1,7 @@
 import {BaseDto} from "../../dto/base-dto";
 
 export interface DashboardWidgetDto extends BaseDto {
-  type: String;
+  type: string;
   gridCols: number;
   gridRows: number;
   gridX: number;

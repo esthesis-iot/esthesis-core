@@ -56,13 +56,10 @@ public class CommandResourceImpl implements CommandResource {
         correlationID);
 
     // Wait for replies to be collected.
-    System.out.println(timeout);
     Awaitility.await()
         .atMost(timeout, TimeUnit.MILLISECONDS)
         .pollInterval(pollInterval, TimeUnit.MILLISECONDS)
         .until(() -> {
-          System.out.println(
-              commandService.countCollectedReplies(correlationID));
           return commandService.countCollectedReplies(correlationID)
               == scheduleInfo.getDevicesScheduled();
         });

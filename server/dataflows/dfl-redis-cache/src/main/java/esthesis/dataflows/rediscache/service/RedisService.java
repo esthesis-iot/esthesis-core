@@ -30,7 +30,7 @@ public class RedisService {
         .getBody(EsthesisDataMessage.class);
 
     // Write the key to Redis.
-    esthesisMessage.getPayload().getValues().forEach((keyValue) -> {
+    esthesisMessage.getPayload().getValues().forEach(keyValue -> {
       String key = esthesisMessage.getHardwareId();
       String fieldName = String.join(".",
           esthesisMessage.getPayload().getCategory(), keyValue.getName());

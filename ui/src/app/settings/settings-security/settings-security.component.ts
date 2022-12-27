@@ -54,8 +54,10 @@ export class SettingsSecurityComponent extends BaseComponent implements OnInit {
     this.settingsService.save(
       _.map(Object.keys(this.form.controls), (fc) => {
         return new SettingDto(fc, this.form.get(fc)!.value);
-      })).subscribe(onNext => {
-      this.utilityService.popupSuccess("Settings saved successfully.");
+      })).subscribe({
+      next: () => {
+        this.utilityService.popupSuccess("Settings saved successfully.");
+      }
     });
   }
 }

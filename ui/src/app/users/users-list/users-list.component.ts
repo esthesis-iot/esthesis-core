@@ -39,9 +39,9 @@ export class UsersListComponent extends BaseComponent implements OnInit, AfterVi
     this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
     // Each time the sorting changes, reset the page number.
-    this.sort!.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
-      this.paginator!.pageIndex = 0;
-      this.fetchData(0, this.paginator!.pageSize, onNext.active, onNext.direction);
+    this.sort.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
+      this.paginator.pageIndex = 0;
+      this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
     });
   }
 
@@ -50,9 +50,11 @@ export class UsersListComponent extends BaseComponent implements OnInit, AfterVi
     this.filterForm.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged()
-    ).subscribe(onNext => {
-      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-        this.sort.start);
+    ).subscribe({
+      next: () => {
+        this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
+          this.sort.start);
+      }
     });
   }
 
@@ -62,7 +64,7 @@ export class UsersListComponent extends BaseComponent implements OnInit, AfterVi
       [new QFilterAlias("type", "userType")], false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.dataSource.data = onNext.content;
-      this.paginator!.length = onNext.totalElements;
+      this.paginator.length = onNext.totalElements;
     });
   }
 

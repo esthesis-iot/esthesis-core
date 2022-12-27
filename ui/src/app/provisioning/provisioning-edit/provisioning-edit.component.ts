@@ -187,9 +187,11 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.provisioningService.delete(this.id).subscribe(onNext => {
-          this.utilityService.popupSuccess("Provisioning package successfully deleted.");
-          this.router.navigate(["provisioning"]);
+        this.provisioningService.delete(this.id).subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("Provisioning package successfully deleted.");
+            this.router.navigate(["provisioning"]);
+          }
         });
       }
     });
@@ -201,13 +203,15 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
   }
 
   download() {
-    this.provisioningService.download(this!.id);
+    this.provisioningService.download(this.id);
   }
 
   recache() {
-    this.provisioningService.recache(this.id).subscribe(onNext => {
-      this.utilityService.popupSuccess("Provisioning package is being recached.");
-      this.router.navigate(["provisioning"]);
+    this.provisioningService.recache(this.id).subscribe({
+      next: () => {
+        this.utilityService.popupSuccess("Provisioning package is being recached.");
+        this.router.navigate(["provisioning"]);
+      }
     });
   }
 

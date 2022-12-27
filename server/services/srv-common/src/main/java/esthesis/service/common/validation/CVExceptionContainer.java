@@ -5,17 +5,17 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
-public class CVException<D> {
+public class CVExceptionContainer<D> {
 
   private final Set<ConstraintViolation<D>> violations = new HashSet<>();
 
-  public CVException<D> addViolation(String path, String message) {
+  public CVExceptionContainer<D> addViolation(String path, String message) {
     violations.add(
         new CVBuilder<D>().path(path).message(message).build());
     return this;
   }
 
-  public CVException<D> addViolation(String path, String message,
+  public CVExceptionContainer<D> addViolation(String path, String message,
       Object... args) {
 
     violations.add(

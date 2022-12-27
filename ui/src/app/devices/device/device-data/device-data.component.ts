@@ -55,7 +55,7 @@ export class DeviceDataComponent implements OnInit, AfterViewInit {
       });
 
       if (onNext.direction === "desc") {
-        this.datasource.data = this.datasource.data.reverse();
+        this.datasource.data.reverse();
       }
     });
   }

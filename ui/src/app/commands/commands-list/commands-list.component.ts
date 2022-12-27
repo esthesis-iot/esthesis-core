@@ -48,7 +48,7 @@ export class CommandsListComponent extends BaseComponent implements OnInit, Afte
     this.filterForm.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged()
-    ).subscribe(onNext => {
+    ).subscribe(() => {
       this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
         this.sort.start);
     });

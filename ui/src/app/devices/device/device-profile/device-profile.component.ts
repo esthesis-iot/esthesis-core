@@ -124,7 +124,7 @@ export class DeviceProfileComponent extends BaseComponent implements OnInit {
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.devicesService.removeDeviceProfileNote(this.id!, keyName).subscribe(onNext => {
+        this.devicesService.removeDeviceProfileNote(this.id!, keyName).subscribe(() => {
           this.utilityService.popupSuccess("Device note successfully deleted.");
           this.fetchNotes();
         });

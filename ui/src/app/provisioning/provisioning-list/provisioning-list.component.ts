@@ -64,8 +64,8 @@ export class ProvisioningListComponent extends BaseComponent implements AfterVie
     });
 
     // Each time the sorting changes, reset the page number.
-    this.sort!.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
-      this.paginator!.pageIndex = 0;
+    this.sort.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
+      this.paginator.pageIndex = 0;
       this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
     });
   }
@@ -75,13 +75,13 @@ export class ProvisioningListComponent extends BaseComponent implements AfterVie
       this.qForms.appendPagingToFilter(null!, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;
-      this.paginator!.length = onNext.totalElements;
+      this.paginator.length = onNext.totalElements;
     });
   }
 
   changePage() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-      this.sort!.start);
+      this.sort.start);
   }
 
   resolveTag(ids: string[]): string {
@@ -119,7 +119,7 @@ export class ProvisioningListComponent extends BaseComponent implements AfterVie
     }).afterClosed().subscribe(result => {
       if (result) {
         this.provisioningService.recacheAll().subscribe({
-          next: (next) => {
+          next: () => {
             this.utilityService.popupSuccess("Started caching provisioning packages..");
           }, error: (error) => {
             this.utilityService.popupErrorWithTraceId("Could not start caching provisioning packages.", error);

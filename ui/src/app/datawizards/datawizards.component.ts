@@ -18,7 +18,7 @@ export class DatawizardsComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Setup the form.
+    // Set up the form.
     this.form = this.fb.group({
       wizard: [this.WIZARD_STANDARD, [Validators.required]]
     });
@@ -26,6 +26,6 @@ export class DatawizardsComponent extends BaseComponent implements OnInit {
   }
 
   executeWizard() {
-    this.router.navigate(["data-wizards", this.form!.get("wizard")!.value]);
+    this.router.navigate(["data-wizards", this.form.get("wizard")!.value]);
   }
 }

@@ -96,9 +96,9 @@ export class CommandCreateComponent extends BaseComponent implements OnInit {
           hardwareIds: this.selectedHardwareIds.join(","),
           tags: this.searchDevicesForm.value.tags ? this.searchDevicesForm.value.tags.join(",") : ""
         },
-        ...this.commandForm!.value
+        ...this.commandForm.value
       }).subscribe({
-      next: (next) => {
+      next: () => {
         this.utilityService.popupSuccess("Command dispatched successfully.");
         this.router.navigate(["command"]);
       }, error: (error) => {

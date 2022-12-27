@@ -66,12 +66,13 @@ export class StoreEditComponent extends BaseComponent implements OnInit {
   }
 
   save() {
-    this.storesService.save(this.qForms.cleanupData(this.form.getRawValue()) as StoreDto).subscribe(
-      onNext => {
+    this.storesService.save(this.qForms.cleanupData(this.form.getRawValue()) as StoreDto).subscribe({
+      next: () => {
         this.utilityService.popupSuccess(this.form.value.id ? "Store was successfully edited."
           : "Store was successfully created.");
         this.router.navigate(["stores"]);
-      });
+      }
+    });
   }
 
   delete() {
@@ -85,9 +86,11 @@ export class StoreEditComponent extends BaseComponent implements OnInit {
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.storesService.delete(this.id).subscribe(onNext => {
-          this.utilityService.popupSuccess("Stores successfully deleted.");
-          this.router.navigate(["stores"]);
+        this.storesService.delete(this.id).subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("Store was successfully deleted.");
+            this.router.navigate(["stores"]);
+          }
         });
       }
     });

@@ -20,10 +20,10 @@ import org.bson.conversions.Bson;
 public class PingService {
 
   // The name of the field in the message data that contains the ping value.
-  private final static String PING_MEASUREMENT = "ping";
+  private static final String PING_MEASUREMENT = "ping";
 
   // The MongoDB field name for the ping value.
-  private final static String PING_ATTRIBUTE_NAME = "lastSeen";
+  private static final String PING_ATTRIBUTE_NAME = "lastSeen";
 
   public void searchForExistingDevice(Exchange exchange) {
     // Get the message from the exchange.

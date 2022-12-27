@@ -61,7 +61,7 @@ export class CommandReplyComponent extends BaseComponent implements OnInit {
     }).afterClosed().subscribe(result => {
       if (result) {
         this.commandService.deleteCommand(this.id).subscribe({
-          next: (next) => {
+          next: () => {
             this.utilityService.popupSuccess("Command successfully deleted.");
             this.router.navigate(["command"]);
           }, error: (error) => {
@@ -107,7 +107,7 @@ export class CommandReplyComponent extends BaseComponent implements OnInit {
     }).afterClosed().subscribe(result => {
       if (result) {
         this.commandService.deleteReply(replyId).subscribe({
-          next: (next) => {
+          next: () => {
             this.utilityService.popupSuccess("Command reply successfully deleted.");
             this.commandReplies?.splice(index, 1);
             if (this.commandReplies?.length === 0) {

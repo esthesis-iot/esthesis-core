@@ -100,7 +100,7 @@ public class DeviceProfileService extends BaseService<DeviceProfileNoteEntity> {
     DeviceEntity deviceEntity = deviceService.findById(deviceId);
 
     redisUtils.getHashTriplets(KeyType.ESTHESIS_DM, deviceEntity.getHardwareId())
-        .forEach((triple) -> {
+        .forEach(triple -> {
           DeviceProfileFieldDataDTO deviceProfileFieldDataDTO = new DeviceProfileFieldDataDTO();
           deviceProfileFieldDataDTO.setLabel(triple.getLeft()).setValue(triple.getMiddle())
               .setLastUpdate(triple.getRight());

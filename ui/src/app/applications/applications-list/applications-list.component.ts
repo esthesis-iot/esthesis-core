@@ -42,7 +42,7 @@ export class ApplicationsListComponent extends BaseComponent implements OnInit, 
     this.filterForm.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged()
-    ).subscribe(onNext => {
+    ).subscribe(() => {
       this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
         this.sort.start);
     });

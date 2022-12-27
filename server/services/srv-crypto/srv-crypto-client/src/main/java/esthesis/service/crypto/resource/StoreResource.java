@@ -43,23 +43,5 @@ public interface StoreResource {
   @Path("/v1/store/{id}/download")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   Response download(@PathParam("id") ObjectId id);
-
-//  @GetMapping(value = {"{id}/download"})
-//  @ExceptionWrapper(wrapper = QExceptionWrapper.class,
-//      logMessage = "Could not download keystore.")
-//  public ResponseEntity download(@PathVariable long id)
-//  throws IOException, CertificateException, NoSuchAlgorithmException,
-//         KeyStoreException,
-//         NoSuchProviderException, InvalidKeySpecException,
-//         NoSuchPaddingException,
-//         InvalidAlgorithmParameterException, InvalidKeyException {
-//    DownloadReply keyDownloadReply = storeService.download(id);
-//    return ResponseEntity
-//        .ok()
-//        .header(HttpHeaders.CONTENT_DISPOSITION,
-//            "attachment; filename=" + keyDownloadReply.getFilename())
-//        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-//        .body(keyDownloadReply.getBinaryPayload());
-//  }
-
+  
 }

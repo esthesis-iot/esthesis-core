@@ -8,7 +8,4 @@ import {Component, Input} from "@angular/core";
 export class ApplicationEditPermissionsComponent {
   @Input() id!: string | null | undefined;
 
-  constructor() {
-  }
-
 }

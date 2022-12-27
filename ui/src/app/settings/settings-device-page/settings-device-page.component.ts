@@ -104,7 +104,7 @@ export class SettingsDevicePageComponent implements OnInit {
       this.settingsService.saveDevicePageFields(
         this.qForms.cleanupData(this.profileDataForm.getRawValue()).fields)
     ]).subscribe({
-      next: next => {
+      next: () => {
         this.utilityService.popupSuccess("Settings saved successfully.");
       }, error: err => {
         this.utilityService.popupErrorWithTraceId("Error saving settings.", err);

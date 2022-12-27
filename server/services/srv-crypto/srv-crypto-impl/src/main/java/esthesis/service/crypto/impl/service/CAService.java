@@ -7,7 +7,7 @@ import esthesis.common.exception.QCouldNotSaveException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QMutationNotPermittedException;
 import esthesis.service.common.BaseService;
-import esthesis.service.common.validation.CVException;
+import esthesis.service.common.validation.CVExceptionContainer;
 import esthesis.service.crypto.dto.CAHolderDTO;
 import esthesis.service.crypto.dto.CreateCARequestDTO;
 import esthesis.service.crypto.dto.CreateKeyPairRequestDTO;
@@ -55,7 +55,7 @@ public class CAService extends BaseService<CaEntity> {
 
     // Check a CA with the same name doesn't already exist.
     if (findFirstByColumn("cn", caEntity.getCn()) != null) {
-      new CVException<CaEntity>().addViolation("cn",
+      new CVExceptionContainer<CaEntity>().addViolation("cn",
           "A Certificate Authority with CN '{}' already exists.", caEntity.getCn()).throwCVE();
     }
 

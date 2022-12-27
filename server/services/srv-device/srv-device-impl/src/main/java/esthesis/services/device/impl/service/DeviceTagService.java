@@ -8,7 +8,6 @@ import esthesis.services.device.impl.repository.DeviceRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +41,7 @@ public class DeviceTagService {
       return deviceRepository.findByTagId(tagsByName.stream()
           .map(TagEntity::getId)
           .map(Object::toString)
-          .collect(Collectors.toList()));
+          .toList());
     }
   }
 
@@ -62,7 +61,7 @@ public class DeviceTagService {
   }
 
   /**
-   * Counts the number of devices having at least one ofe the tags specified.
+   * Counts the number of devices having at least one of the tags specified.
    *
    * @param tags         The list of tag names to search by.
    * @param partialMatch Whether the search for the tag name should be partial or not.
@@ -70,11 +69,11 @@ public class DeviceTagService {
   public Long countByTag(List<String> tags, boolean partialMatch) {
     List<TagEntity> tagsByName = Lists.newArrayList(
         tagResource.findByNames(String.join(",", tags), partialMatch));
-    if (tagsByName.size() > 0) {
+    if (!tagsByName.isEmpty()) {
       return deviceRepository.countByTag(tagsByName.stream()
           .map(TagEntity::getId)
           .map(Object::toString)
-          .collect(Collectors.toList()));
+          .toList());
     } else {
       return 0L;
     }

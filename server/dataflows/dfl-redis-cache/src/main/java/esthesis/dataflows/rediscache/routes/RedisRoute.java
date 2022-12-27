@@ -38,38 +38,35 @@ public class RedisRoute extends RouteBuilder {
             .valueDeserializer(
                 "org.apache.kafka.common.serialization.ByteArrayDeserializer")
             .brokers(config.kafkaClusterUrl());
-    if (config.kafkaConsumerGroup().isPresent()) {
-      log.info("Using Kafka consumer group '{}'.", config.kafkaConsumerGroup().get());
-      kafkaComponentBuilder.groupId(config.kafkaConsumerGroup().get());
-    } else {
-      log.warn("Kafka consumer group is not set, having more than one pods running in parallel "
-          + "may have unexpected results.");
-    }
+    config.kafkaConsumerGroup().ifPresentOrElse(val -> {
+          log.info("Using Kafka consumer group '{}'.", val);
+          kafkaComponentBuilder.groupId(val);
+        },
+        () -> log.warn(
+            "Kafka consumer group is not set, having more than one pods running in parallel "
+                + "may have unexpected results."));
     kafkaComponentBuilder.register(getContext(), "kafka");
 
     // @formatter:off
-    if (config.kafkaTelemetryTopic().isPresent()) {
-      String kafkaTopic = config.kafkaTelemetryTopic().get();
+    config.kafkaTelemetryTopic().ifPresent(val -> {
       //TODO redact password
-      log.info("Setting up route from Kafka topic '{}' to Redis '{}'.",
-          kafkaTopic, config.redisUrl());
-     from("kafka:" + kafkaTopic)
-         .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-         .to("seda:telemetry");
+      log.info("Setting up route from Kafka topic '{}' to Redis '{}'.", val, config.redisUrl());
+      from("kafka:" + val)
+          .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
+          .to("seda:telemetry");
       from("seda:telemetry")
-         .bean(redisService, "process");
-     }
+          .bean(redisService, "process");
+    });
 
-    if (config.kafkaMetadataTopic().isPresent()) {
-      String kafkaTopic = config.kafkaMetadataTopic().get();
+    config.kafkaMetadataTopic().ifPresent(val -> {
       log.info("Setting up route from Kafka topic '{}' to Redis '{}'.",
-          kafkaTopic, config.redisUrl());
-      from("kafka:" + kafkaTopic)
+          val, config.redisUrl());
+      from("kafka:" + val)
           .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
           .to("seda:metadata");
       from("seda:metadata")
           .bean(redisService, "process");
-     }
+    });
     // @formatter:on
 
     // Display a warning if no Kafka topics are configured.

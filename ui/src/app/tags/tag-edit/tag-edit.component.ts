@@ -53,25 +53,25 @@ export class TagEditComponent extends BaseComponent implements OnInit {
   }
 
   save() {
-    this.tagService.save(this.qForms.cleanupData(this.form.getRawValue()) as TagDto).subscribe(
-      onSuccess => {
+    this.tagService.save(this.qForms.cleanupData(this.form.getRawValue()) as TagDto).subscribe({
+      next: () => {
         if (this.id === this.appConstants.NEW_RECORD_ID) {
           this.utilityService.popupSuccess("Tag was successfully created.");
         } else {
           this.utilityService.popupSuccess("Tag was successfully edited.");
         }
         this.router.navigate(["tags"]);
-      }, onError => {
-        if (onError.status === 400) {
-          const validationErrors = onError.error;
+      }, error: (err) => {
+        if (err.status === 400) {
+          const validationErrors = err.error;
           if (validationErrors) {
-            // @ts-ignore
             this.qFormValidation.validateForm(this.form, validationErrors.violations);
           }
         } else {
           this.utilityService.popupError("There was an error trying to save this tag.");
         }
-      });
+      }
+    });
   }
 
   delete() {
@@ -85,9 +85,11 @@ export class TagEditComponent extends BaseComponent implements OnInit {
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.tagService.delete(this.id).subscribe(onNext => {
-          this.utilityService.popupSuccess("Tag successfully deleted.");
-          this.router.navigate(["tags"]);
+        this.tagService.delete(this.id).subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("Tag successfully deleted.");
+            this.router.navigate(["tags"]);
+          }
         });
       }
     });

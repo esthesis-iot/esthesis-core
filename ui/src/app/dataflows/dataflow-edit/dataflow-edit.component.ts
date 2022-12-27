@@ -15,8 +15,7 @@ import {QFormsService} from "@qlack/forms";
 
 @Component({
   selector: "app-dataflow-edit",
-  templateUrl: "./dataflow-edit.component.html",
-  styleUrls: ["./dataflow-edit.component.scss"]
+  templateUrl: "./dataflow-edit.component.html"
 })
 export class DataflowEditComponent extends BaseComponent implements OnInit {
   id!: string;
@@ -112,7 +111,7 @@ export class DataflowEditComponent extends BaseComponent implements OnInit {
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.dataflowService.delete(this.id).subscribe(onNext => {
+        this.dataflowService.delete(this.id).subscribe(() => {
           this.utilityService.popupSuccess("Dataflow component successfully deleted.");
           this.router.navigate(["dataflow"]);
         });
