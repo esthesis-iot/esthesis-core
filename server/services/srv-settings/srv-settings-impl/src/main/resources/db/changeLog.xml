@@ -2,8 +2,8 @@
 <databaseChangeLog
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.13.xsd">
+  xmlns:ext="https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.16.xsd">
 
   <changeSet id="1" author="European Dynamics SA">
     <ext:createCollection collectionName="Setting"/>
@@ -44,5 +44,16 @@
         {"name":"DEVICE_PROVISIONING_CACHE_TIME", "value": "60"}
       </ext:document>
     </ext:insertOne>
+  </changeSet>
+
+  <changeSet id="4" author="European Dynamics SA">
+    <ext:runCommand>
+      <ext:command>
+        {
+        delete: "Setting",
+        deletes: [{q: {name: "DEVICE_TAGS_ALGORITHM"}, limit: 0}]
+        }
+      </ext:command>
+    </ext:runCommand>
   </changeSet>
 </databaseChangeLog>

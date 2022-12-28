@@ -29,6 +29,10 @@ public interface TagResource {
   @Path("/v1/tag/find")
   Page<TagEntity> find(@BeanParam Pageable pageable);
 
+  @GET
+  @Path("/v1/tag/get-all")
+  List<TagEntity> getAll();
+
   /**
    * Finds a tag by its name.
    *

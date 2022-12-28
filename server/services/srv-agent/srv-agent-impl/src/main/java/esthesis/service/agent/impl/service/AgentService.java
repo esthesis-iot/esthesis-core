@@ -11,11 +11,11 @@ import esthesis.service.agent.dto.AgentRegistrationResponse;
 import esthesis.service.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.service.crypto.resource.CASystemResource;
 import esthesis.service.crypto.resource.SigningSystemResource;
-import esthesis.service.dataflow.dto.MatchedMqttServerDTO;
-import esthesis.service.dataflow.resource.DataflowSystemResource;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
+import esthesis.service.infrastructure.entity.InfrastructureMqttEntity;
+import esthesis.service.infrastructure.resource.InfrastructureSystemResource;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.resource.ProvisioningAgentResource;
 import esthesis.service.settings.entity.SettingEntity;
@@ -55,7 +55,7 @@ public class AgentService {
 
   @Inject
   @RestClient
-  DataflowSystemResource dataflowSystemResource;
+  InfrastructureSystemResource infrastructureSystemResource;
 
   @Inject
   @RestClient
@@ -115,10 +115,11 @@ public class AgentService {
     }
 
     // Find the MQTT server to send back to the device.
-    MatchedMqttServerDTO mqttServer = dataflowSystemResource.matchMqttServerByTags(
-        Arrays.asList(agentRegistrationRequest.getTags().split(",")));
-    if (mqttServer != null) {
-      agentRegistrationResponse.setMqttServer(mqttServer.getUrl());
+    Optional<InfrastructureMqttEntity> mqttServer =
+        infrastructureSystemResource.matchMqttServerByTags(
+            agentRegistrationRequest.getTags());
+    if (mqttServer.isPresent()) {
+      agentRegistrationResponse.setMqttServer(mqttServer.get().getUrl());
     } else {
       log.warn("Could not find a matching MQTT server for device {} with "
               + "tags {} during registration.",

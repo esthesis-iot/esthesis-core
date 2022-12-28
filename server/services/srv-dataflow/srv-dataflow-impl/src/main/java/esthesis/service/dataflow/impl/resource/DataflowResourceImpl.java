@@ -4,7 +4,6 @@ import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.dataflow.dto.DockerTagsDTO;
-import esthesis.service.dataflow.dto.MatchedMqttServerDTO;
 import esthesis.service.dataflow.entity.DataflowEntity;
 import esthesis.service.dataflow.impl.service.DataflowService;
 import esthesis.service.dataflow.resource.DataflowResource;
@@ -45,12 +44,7 @@ public class DataflowResourceImpl implements DataflowResource {
   public DataflowEntity save(DataflowEntity dataflowEntity) {
     return dataflowService.save(dataflowEntity);
   }
-
-  @Override
-  public MatchedMqttServerDTO matchMqttServerByTags(List<String> tags) {
-    return dataflowService.matchMqttServerByTags(tags);
-  }
-
+  
   @Override
   public DockerTagsDTO getImageTags(String dflType) {
     return dataflowService.getImageTags(dflType);

@@ -51,6 +51,10 @@ public abstract class BaseService<D extends BaseEntity> {
     }
   }
 
+  public List<D> findByColumnNull(String column) {
+    return repository.find(column + " is null").list();
+  }
+
   public List<D> findByColumnIn(String column, List<String> values, boolean partialMatch) {
     if (partialMatch) {
       return repository.find(column + " like ?1", String.join("|", values)).list();
@@ -74,7 +78,7 @@ public abstract class BaseService<D extends BaseEntity> {
   public Page<D> find(Pageable pageable, boolean partialMatch) {
     // Create a wrapper for the results.
     Page<D> quarkusPage = new Page<>();
-    
+
     // Execute the query to get count and results.
     if (pageable.hasQuery()) {
       quarkusPage.setTotalElements(

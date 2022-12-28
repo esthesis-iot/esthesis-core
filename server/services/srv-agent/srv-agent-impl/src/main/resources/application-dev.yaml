@@ -39,6 +39,9 @@ quarkus:
     SigningSystemResource:
       url: http://localhost:59040
       scope: Singleton
+    InfrastructureSystemResource:
+      url: http://localhost:59110
+      scope: Singleton
   oidc:
     auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
     client-id: esthesis

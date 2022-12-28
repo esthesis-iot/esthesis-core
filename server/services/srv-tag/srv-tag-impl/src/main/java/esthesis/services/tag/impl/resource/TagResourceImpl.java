@@ -34,6 +34,11 @@ public class TagResourceImpl implements TagResource {
   }
 
   @Override
+  public List<TagEntity> getAll() {
+    return tagService.getAll();
+  }
+
+  @Override
   public TagEntity findById(@PathParam("id") ObjectId id) {
     return tagService.findById(id);
   }

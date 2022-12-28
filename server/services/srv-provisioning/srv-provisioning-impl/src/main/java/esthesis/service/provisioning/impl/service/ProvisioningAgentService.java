@@ -26,7 +26,7 @@ public class ProvisioningAgentService {
 
   /**
    * Finds the candidate provisioning package for the given hardware id and current device firmware
-   * version. Versions are checked using semver using https://github .com/vdurmont/semver4j lb.
+   * version. Versions are checked using semver using https://github.com/vdurmont/semver4j.
    * <p>
    * The selection algorithm goes as follows:
    * <ul>

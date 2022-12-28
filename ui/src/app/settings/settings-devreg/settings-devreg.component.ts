@@ -30,14 +30,12 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
     //  programmatically.
     this.form = this.fb.group({
       DEVICE_REGISTRATION_MODE: ["", [Validators.required]],
-      DEVICE_TAGS_ALGORITHM: ["", [Validators.required]],
       DEVICE_ROOT_CA: ["", []]
     });
 
     // Fetch settings.
     this.settingsService.findByNames([
       AppConstants.NAMED_SETTING.DEVICE_REGISTRATION_MODE,
-      AppConstants.NAMED_SETTING.DEVICE_TAGS_ALGORITHM,
       AppConstants.NAMED_SETTING.DEVICE_ROOT_CA
     ]).subscribe(onNext => {
       onNext.forEach(setting => {

@@ -32,12 +32,7 @@ public class AppConstants {
 
     KAFKA_TOPIC_COMMAND_REQUEST, KAFKA_TOPIC_EVENT_TAG_DELETE
   }
-
-  // The tag algorithms available when matching objects against tags.
-  public enum TagsAlgorithm {
-    ALL, ANY
-  }
-
+  
   // The status a device can have.
   public enum DeviceStatus {
     DISABLED, PREREGISTERED, REGISTERED, APPROVAL;

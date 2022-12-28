@@ -26,13 +26,6 @@ export const DATAFLOW_DEFINITION_MQTT_CLIENT = {
             hintStart: "ex: tcp://esthesis-rabbitmq:1883, ssl://esthesis-rabbitmq:8883",
           }
         },
-        {
-          key: "advertised-url", type: "input", defaultValue: "tcp://esthesis-rabbitmq:1883",
-          props: {
-            required: true, type: "text", label: "Advertised URL", placeholder: "Protocol, IP address, port",
-            hintStart: "ex: tcp://mqtt.project.com:1883, ssl://mqtt.project.com:8883",
-          }
-        },
         ...DATAFLOW_TEMPLATE_TAGS
       ],
     },
