@@ -7,9 +7,9 @@ export const AppConstants = {
 
   // The different types of security keys and CERTIFICATE.
   KEY_TYPE: {
-    PRIVATE_KEY: 0,
-    PUBLIC_KEY: 1,
-    CERTIFICATE: 2
+    PRIVATE_KEY: "PRIVATE",
+    PUBLIC_KEY: "PUBLIC",
+    CERTIFICATE: "CERTIFICATE"
   },
 
   // A list of application-wide settings (see also the counterpart Java class AppConstants.java).

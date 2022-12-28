@@ -2,7 +2,6 @@ package esthesis.service.crypto.impl.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.common.AppConstants.NamedSetting;
-import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QCouldNotSaveException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QMutationNotPermittedException;
@@ -14,9 +13,12 @@ import esthesis.service.crypto.entity.CertificateEntity;
 import esthesis.service.crypto.form.ImportCertificateForm;
 import esthesis.service.settings.resource.SettingsResource;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
 import java.util.Arrays;
@@ -50,20 +52,37 @@ public class CertificateService extends BaseService<CertificateEntity> {
 
   public CertificateEntity importCertificate(
       ImportCertificateForm importCertificateForm) {
+    CertificateEntity certificateEntity = new CertificateEntity();
+
     try {
-      CertificateEntity certificateEntity = mapper.readValue(
-          importCertificateForm.getBackup().uploadedFile().toFile(),
-          CertificateEntity.class);
-      if (findById(certificateEntity.getId()) != null
-          || findFirstByColumn("cn", certificateEntity.getCn()) != null) {
-        throw new QAlreadyExistsException(
-            "A certificate with this CN or id already exists.");
+      // Set the keys into the certificate entity.
+      certificateEntity.setCertificate(
+          Files.readString(importCertificateForm.getCertificate().uploadedFile().toAbsolutePath()));
+      certificateEntity.setPublicKey(
+          Files.readString(importCertificateForm.getPublicKey().uploadedFile().toAbsolutePath()));
+      certificateEntity.setPrivateKey(
+          Files.readString(importCertificateForm.getPrivateKey().uploadedFile().toAbsolutePath()));
+
+      // Extract additional certificate information.
+      X509Certificate x509Certificate = cryptoService.pemToCertificate(
+          certificateEntity.getCertificate());
+      certificateEntity.setCn(
+          cryptoService.cleanUpCn(x509Certificate.getSubjectX500Principal().getName()));
+      certificateEntity.setIssued(x509Certificate.getNotBefore().toInstant());
+      certificateEntity.setValidity(x509Certificate.getNotAfter().toInstant());
+      certificateEntity.setIssuer(
+          cryptoService.cleanUpCn(x509Certificate.getIssuerX500Principal().getName()));
+      certificateEntity.setName(importCertificateForm.getName());
+      if (x509Certificate.getSubjectAlternativeNames() != null) {
+        certificateEntity.setSan(x509Certificate.getSubjectAlternativeNames().stream()
+            .map(san -> san.get(1).toString())
+            .collect(Collectors.joining(",")));
       }
 
       super.getRepository().persistOrUpdate(certificateEntity);
 
       return certificateEntity;
-    } catch (IOException e) {
+    } catch (IOException | CertificateException e) {
       throw new QMismatchException("Could not import certificate.", e);
     }
   }
@@ -140,6 +159,7 @@ public class CertificateService extends BaseService<CertificateEntity> {
       certificateEntity
           .setCertificate(cryptoService.certificateToPEM(x509CertificateHolder.toASN1Structure()));
       certificateEntity.setSan(certificateSignRequestDTO.getSan());
+      certificateEntity.setName(certificateEntity.getName());
 
       return super.save(certificateEntity);
     } catch (NoSuchAlgorithmException | IOException |

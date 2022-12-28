@@ -1,9 +1,9 @@
 package esthesis.service.crypto.impl.resource;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.slugify.Slugify;
-import esthesis.common.exception.QMismatchException;
+import esthesis.common.AppConstants;
+import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
@@ -46,7 +46,8 @@ public class CertificateResourceImpl implements CertificateResource {
   @GET
   @Override
   @Path("/v1/certificate/find")
-  @JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,content.parentCaId,content.type,content.validity")
+  @JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.issuer,content"
+      + ".validity,content.name")
   public Page<CertificateEntity> find(@BeanParam Pageable pageable) {
     return certificateService.find(pageable);
   }
@@ -54,29 +55,38 @@ public class CertificateResourceImpl implements CertificateResource {
   @GET
   @Override
   @Path("/v1/certificate/{id}")
-  @JSONReplyFilter(filter = "id,cn,issued,parentCa,type,validity,parentCaId")
+  @JSONReplyFilter(filter = "id,cn,issued,validity,issuer,san,name")
   public CertificateEntity findById(ObjectId id) {
     return certificateService.findById(id);
   }
 
   @Override
-  public Response download(ObjectId caId) {
-    try {
-      CertificateEntity ca = certificateService.findById(caId);
-      String filename = Slugify.builder().underscoreSeparator(true).build()
-          .slugify(ca.getCn());
-      return ResponseBuilder.ok(mapper.writeValueAsString(findById(caId)))
-          .header("Content-Disposition",
-              "attachment; filename=" + filename + ".yaml").build()
-          .toResponse();
-    } catch (JsonProcessingException e) {
-      throw new QMismatchException("Could not fetch CA with id '{}'.", caId);
+  public Response download(ObjectId caId, AppConstants.KeyType type) {
+    CertificateEntity ca = certificateService.findById(caId);
+
+    String content;
+    String filename = Slugify.builder().underscoreSeparator(true).build().slugify(ca.getCn());
+    switch (type) {
+      case PRIVATE -> {
+        filename += ".key";
+        content = ca.getPrivateKey();
+      }
+      case PUBLIC -> {
+        filename += ".pub";
+        content = ca.getPublicKey();
+      }
+      case CERTIFICATE -> {
+        filename += ".crt";
+        content = ca.getCertificate();
+      }
+      default -> throw new QDoesNotExistException("Key type {} is not valid.", type);
     }
+    return ResponseBuilder.ok(content)
+        .header("Content-Disposition", "attachment; filename=" + filename).build().toResponse();
   }
 
   @Override
-  public CertificateEntity importCertificate(
-      ImportCertificateForm importCertificateForm) {
+  public CertificateEntity importCertificate(ImportCertificateForm importCertificateForm) {
     return certificateService.importCertificate(importCertificateForm);
   }
 

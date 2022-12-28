@@ -32,7 +32,11 @@ public class AppConstants {
 
     KAFKA_TOPIC_COMMAND_REQUEST, KAFKA_TOPIC_EVENT_TAG_DELETE
   }
-  
+
+  public enum KeyType {
+    PUBLIC, PRIVATE, CERTIFICATE
+  }
+
   // The status a device can have.
   public enum DeviceStatus {
     DISABLED, PREREGISTERED, REGISTERED, APPROVAL;

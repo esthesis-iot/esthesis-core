@@ -1,5 +1,6 @@
 package esthesis.service.crypto.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.entity.CertificateEntity;
@@ -14,6 +15,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.bson.types.ObjectId;
@@ -37,7 +39,7 @@ public interface CertificateResource {
   @GET
   @Path("/v1/certificate/{id}/download")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  Response download(@PathParam("id") ObjectId id);
+  Response download(@PathParam("id") ObjectId id, @QueryParam("type") AppConstants.KeyType type);
 
   @POST
   @Path("/v1/certificate/import")
@@ -51,5 +53,5 @@ public interface CertificateResource {
   @POST
   @Path("/v1/certificate")
   CertificateEntity save(@Valid CertificateEntity object);
-  
+
 }

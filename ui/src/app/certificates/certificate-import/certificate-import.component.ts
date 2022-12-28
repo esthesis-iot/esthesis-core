@@ -22,14 +22,25 @@ export class CertificateImportComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Setup the form.
+    // Set up the form.
     this.form = this.fb.group({
-      backup: ["", [Validators.required]],
+      name: ["", [Validators.required]],
+      publicKey: ["", [Validators.required]],
+      privateKey: ["", [Validators.required]],
+      certificate: ["", [Validators.required]],
     });
   }
 
-  selectFile(event: any) {
-    this.form.controls["backup"].patchValue(event.target.files[0]);
+  selectPublicKey(event: any) {
+    this.form.controls.publicKey.patchValue(event.target.files[0]);
+  }
+
+  selectPrivateKey(event: any) {
+    this.form.controls.privateKey.patchValue(event.target.files[0]);
+  }
+
+  selectCertificate(event: any) {
+    this.form.controls.certificate.patchValue(event.target.files[0]);
   }
 
   import() {

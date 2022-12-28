@@ -57,7 +57,6 @@ public class CryptoService extends CryptoConverters {
       "^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$");
   private static final String CN = "CN";
 
-
   private boolean isValidIPV4Address(final String email) {
     Matcher matcher = ipv4Pattern.matcher(email);
     return matcher.matches();
@@ -81,6 +80,13 @@ public class CryptoService extends CryptoConverters {
     }
   }
 
+  public String cleanUpCn(String cn) {
+    if (cn.startsWith(CN + "=")) {
+      return cn.substring(CN.length() + 1);
+    } else {
+      return cn;
+    }
+  }
 
   /**
    * Create a new Certificate Authority. This method also supports creating a sub-CA by providing

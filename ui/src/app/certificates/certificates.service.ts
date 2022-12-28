@@ -18,10 +18,11 @@ export class CertificatesService extends CrudDownloadService<CertificateDto> {
   /**
    * Downloads details about a certificate.
    * @param {number} certificateId The id of the certificate to download the details of.
+   * @param {string} type The type of the key to download as per AppConstants.KEY_TYPE.
    */
-  download(certificateId: string) {
+  download(certificateId: string, type: string) {
     this.http.get(
-      `${environment.apiPrefix}/v1/certificate/${certificateId}/download`, {
+      `${environment.apiPrefix}/v1/certificate/${certificateId}/download?type=${type}`, {
         responseType: "blob", observe: "response"
       }).subscribe(onNext => {
       this.saveAs(onNext);
@@ -32,12 +33,4 @@ export class CertificatesService extends CrudDownloadService<CertificateDto> {
     return this.upload(form, `${environment.apiPrefix}/v1/certificate/import`, false);
   }
 
-
-  // getAll(params?: string): Observable<QPageableReply<CertificateDto>> {
-  //   if (!params) {
-  //     return super.find('order=cn,asc');
-  //   } else {
-  //     return super.find(params);
-  //   }
-  // }
 }

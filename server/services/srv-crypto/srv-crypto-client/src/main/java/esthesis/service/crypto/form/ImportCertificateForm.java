@@ -11,6 +11,17 @@ public class ImportCertificateForm {
 
   @RestForm
   @PartType(MediaType.APPLICATION_OCTET_STREAM)
-  public FileUpload backup;
+  public FileUpload publicKey;
+
+  @RestForm
+  @PartType(MediaType.APPLICATION_OCTET_STREAM)
+  public FileUpload privateKey;
+
+  @RestForm
+  @PartType(MediaType.APPLICATION_OCTET_STREAM)
+  public FileUpload certificate;
+
+  @RestForm
+  public String name;
 
 }

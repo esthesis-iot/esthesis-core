@@ -14,7 +14,7 @@ import {AppConstants} from "../../app.constants";
   styleUrls: ["./certificates-list.component.scss"]
 })
 export class CertificatesListComponent extends BaseComponent implements AfterViewInit {
-  columns = ["cn", "issued", "validity", "issuer"];
+  columns = ["name", "cn", "issued", "validity", "issuer"];
   datasource = new MatTableDataSource<CertificateDto>();
   // Expose application constants.
   constants = AppConstants;

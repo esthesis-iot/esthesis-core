@@ -37,10 +37,14 @@ export class CertificateEditComponent extends BaseComponent implements OnInit {
     // Check if an edit is performed and fetch data.
     this.id = this.route.snapshot.paramMap.get("id");
 
-    // Setup the form.
+    // Set up the form.
     this.form = this.fb.group({
       id: [""],
       cn: [{
+        value: "",
+        disabled: this.id !== AppConstants.NEW_RECORD_ID
+      }, [Validators.required, Validators.maxLength(256)]],
+      name: [{
         value: "",
         disabled: this.id !== AppConstants.NEW_RECORD_ID
       }, [Validators.required, Validators.maxLength(256)]],
@@ -101,8 +105,15 @@ export class CertificateEditComponent extends BaseComponent implements OnInit {
     });
   }
 
-  download() {
-    this.certificatesService.download(this.id!);
+  downloadCertificate() {
+    this.certificatesService.download(this.id!, AppConstants.KEY_TYPE.CERTIFICATE);
   }
 
+  downloadPublicKey() {
+    this.certificatesService.download(this.id!, AppConstants.KEY_TYPE.PUBLIC_KEY);
+  }
+
+  downloadPrivateKey() {
+    this.certificatesService.download(this.id!, AppConstants.KEY_TYPE.PRIVATE_KEY);
+  }
 }

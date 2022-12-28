@@ -1,12 +1,40 @@
 <mat-card>
   <mat-card-title>Import a Certificate</mat-card-title>
   <mat-card-content>
-    <form novalidate [formGroup]="form">
-      <div fxLayout="row">
-        <button mat-button (click)="backup.click()">SELECT BACKUP</button>
-        <div fxFlex="row" fxLayoutAlign="start center">
-          <input type="file" (change)="selectFile($event)" #backup hidden>
-          <div *ngIf="form.controls['backup'].value">{{form.controls['backup'].value.name}}</div>
+    <form novalidate [formGroup]="form" fxLayout="column">
+      <div>
+        <mat-form-field fxFill>
+          <input matInput placeholder="Name" formControlName="name">
+          <mat-hint>A name to easily identify this certificate by. This value is not stored inside
+            the
+            generated certificate.
+          </mat-hint>
+        </mat-form-field>
+      </div>
+      <div class="mt2">
+        <div fxLayout="column" fxLayoutAlign="start start">
+          <button mat-button (click)="publicKey.click()">SELECT PUBLIC KEY</button>
+          <div>
+            <input type="file" (change)="selectPublicKey($event)" #publicKey hidden>
+            <div
+              *ngIf="form.controls['publicKey'].value">{{form.controls['publicKey'].value.name}}</div>
+          </div>
+        </div>
+        <div fxLayout="column" class="mt1" fxLayoutAlign="start start">
+          <button mat-button (click)="privateKey.click()">SELECT PRIVATE KEY</button>
+          <div fxFlex="row" fxLayoutAlign="start center">
+            <input type="file" (change)="selectPrivateKey($event)" #privateKey hidden>
+            <div
+              *ngIf="form.controls['privateKey'].value">{{form.controls['privateKey'].value.name}}</div>
+          </div>
+        </div>
+        <div fxLayout="column" class="mt1" fxLayoutAlign="start start">
+          <button mat-button (click)="certificate.click()">SELECT CERTIFICATE</button>
+          <div fxFlex="row" fxLayoutAlign="start center">
+            <input type="file" (change)="selectCertificate($event)" #certificate hidden>
+            <div
+              *ngIf="form.controls['certificate'].value">{{form.controls['certificate'].value.name}}</div>
+          </div>
         </div>
       </div>
     </form>

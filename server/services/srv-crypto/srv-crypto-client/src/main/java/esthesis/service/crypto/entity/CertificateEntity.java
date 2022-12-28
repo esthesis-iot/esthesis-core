@@ -38,6 +38,8 @@ public class CertificateEntity extends BaseEntity {
 
   private String issuer;
 
-  private int type;
+  // A name to identify this certificate by. This information is not part of the information
+  // stored inside the certificate.
+  private String name;
 
 }
