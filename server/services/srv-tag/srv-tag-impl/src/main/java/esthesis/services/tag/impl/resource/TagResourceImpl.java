@@ -52,9 +52,7 @@ public class TagResourceImpl implements TagResource {
 
   @Override
   public Response delete(@PathParam("id") ObjectId id) {
-    tagService.deleteById(id);
-
-    return Response.ok().build();
+    return tagService.deleteById(id) ? Response.ok().build() : Response.notModified().build();
   }
 
   @Override

@@ -74,18 +74,7 @@ public abstract class BaseService<D extends BaseEntity> {
   public Page<D> find(Pageable pageable, boolean partialMatch) {
     // Create a wrapper for the results.
     Page<D> quarkusPage = new Page<>();
-
-    log.debug("""
-            Generating query with:
-            Keys: {}"
-            Values: {}"
-            Page: {}"
-            Size: {}"
-            Sort: {}"
-            PartialMatch: {}""", pageable.getQueryKeys(partialMatch),
-        pageable.getQueryValues(), pageable.getPage(), pageable.getSize(), pageable.getSort(),
-        partialMatch);
-
+    
     // Execute the query to get count and results.
     if (pageable.hasQuery()) {
       quarkusPage.setTotalElements(

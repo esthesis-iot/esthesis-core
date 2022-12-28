@@ -19,10 +19,16 @@ import {QFormsModule} from "@qlack/forms";
 import {ReactiveFormsModule} from "@angular/forms";
 import {DisplayModule} from "../shared/component/display/display.module";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {InfrastructureMqttComponent} from "./infrastructure-mqtt/infrastructure-mqtt.component";
+import {
+  InfrastructureMqttEditComponent
+} from "./infrastructure-mqtt/infrastructure-mqtt-edit.component";
 
 @NgModule({
   declarations: [
     InfrastructureComponent,
+    InfrastructureMqttComponent,
+    InfrastructureMqttEditComponent
   ],
   imports: [
     CommonModule,

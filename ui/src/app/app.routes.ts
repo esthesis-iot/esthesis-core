@@ -39,7 +39,7 @@ export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: "infra",
+      path: "infrastructure",
       loadChildren: () => import("./infrastructure/infrastructure.module").then(
         m => m.InfrastructureModule),
       canActivate: [AutoLoginAllRoutesGuard]

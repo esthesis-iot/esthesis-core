@@ -97,5 +97,6 @@
     <module>srv-application</module>
     <module>srv-command</module>
     <module>srv-provisioning</module>
+    <module>srv-infrastructure</module>
   </modules>
 </project>
