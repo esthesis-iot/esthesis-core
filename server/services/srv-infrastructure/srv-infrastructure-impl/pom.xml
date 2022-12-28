@@ -7,14 +7,19 @@
 
   <parent>
     <groupId>esthesis</groupId>
-    <artifactId>srv-tag</artifactId>
+    <artifactId>srv-infrastructure</artifactId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>srv-tag-impl</artifactId>
+  <artifactId>srv-infrastructure-impl</artifactId>
 
   <dependencies>
     <!-- ESTHESIS -->
+    <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>srv-infrastructure-client</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-tag-client</artifactId>
