@@ -45,7 +45,7 @@ public class CertificateResourceImpl implements CertificateResource {
 
   @GET
   @Override
-  @Path("/v1/certificate/find")
+  @Path("/v1/find")
   @JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.issuer,content"
       + ".validity,content.name")
   public Page<CertificateEntity> find(@BeanParam Pageable pageable) {
@@ -54,7 +54,7 @@ public class CertificateResourceImpl implements CertificateResource {
 
   @GET
   @Override
-  @Path("/v1/certificate/{id}")
+  @Path("/v1/{id}")
   @JSONReplyFilter(filter = "id,cn,issued,validity,issuer,san,name")
   public CertificateEntity findById(ObjectId id) {
     return certificateService.findById(id);

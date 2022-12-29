@@ -15,26 +15,26 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-@Path("/api")
+@Path("/api/key")
 @RegisterRestClient(configKey = "KeyResource")
 @RegisterProvider(AccessTokenRequestReactiveFilter.class)
 public interface KeyResource {
 
   @GET
-  @Path("/v1/key/keypair")
+  @Path("/v1/keypair")
   KeyPair generateKeyPair()
   throws NoSuchAlgorithmException, NoSuchProviderException;
 
   @GET
-  @Path("/v1/key/publicKeyToPEM")
+  @Path("/v1/publicKeyToPEM")
   String publicKeyToPEM(PublicKey publicKey) throws IOException;
 
   @GET
-  @Path("/v1/key/privateKeyToPEM")
+  @Path("/v1/privateKeyToPEM")
   String privateKeyToPEM(PrivateKey keyPair) throws IOException;
 
   @GET
-  @Path("/v1/key/certificate")
+  @Path("/v1/certificate")
   String generateCertificateAsPEM(
       CreateCertificateRequestDTO createCertificateRequestDTO)
   throws NoSuchAlgorithmException, InvalidKeySpecException,

@@ -8,10 +8,12 @@ import {environment} from "../../environments/environment";
   providedIn: "root"
 })
 export class AboutService {
+  private prefix = environment.apiPrefix + "/about/v1";
+
   constructor(private http: HttpClient) {
   }
 
   getAbout(): Observable<AboutDto> {
-    return this.http.get<AboutDto>(environment.apiPrefix + "/v1/about/general");
+    return this.http.get<AboutDto>(`${this.prefix}/general`);
   }
 }

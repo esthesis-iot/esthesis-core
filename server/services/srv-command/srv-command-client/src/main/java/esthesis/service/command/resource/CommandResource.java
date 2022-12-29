@@ -25,15 +25,15 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface CommandResource {
 
   @GET
-  @Path("/v1/command/find")
+  @Path("/v1/find")
   Page<CommandRequestEntity> find(@BeanParam Pageable pageable);
 
   @GET
-  @Path("/v1/command/{commandId}")
+  @Path("/v1/{commandId}")
   CommandRequestEntity getCommand(@PathParam("commandId") String commandId);
 
   @GET
-  @Path("/v1/command/reply/{correlationId}")
+  @Path("/v1/reply/{correlationId}")
   List<CommandReplyEntity> getReply(@PathParam("correlationId") String correlationId);
 
   /**
@@ -44,7 +44,7 @@ public interface CommandResource {
    * @return The correlation ID of the command request.
    */
   @POST
-  @Path("/v1/command")
+  @Path("/v1")
   String save(CommandRequestEntity request);
 
   /**
@@ -63,7 +63,7 @@ public interface CommandResource {
    */
 
   @POST
-  @Path("/v1/command/wait-for-reply")
+  @Path("/v1/wait-for-reply")
   List<CommandReplyEntity> saveAndWait(CommandRequestEntity request,
       @QueryParam("timeout") @DefaultValue("3000") long timeout,
       @QueryParam("pollInterval") @DefaultValue("500") long pollInterval);
@@ -74,28 +74,28 @@ public interface CommandResource {
    * @param hardwareId The (partial) hardware Id to search by.
    */
   @GET
-  @Path("/v1/command/find-devices/by-hardware-id")
+  @Path("/v1/find-devices/by-hardware-id")
   List<DeviceEntity> findDevicesByHardwareId(
       @QueryParam("hardwareId") String hardwareId);
 
   @DELETE
-  @Path("/v1/command/{commandId}")
+  @Path("/v1/{commandId}")
   void deleteCommand(@PathParam("commandId") String commandId);
 
   @DELETE
-  @Path("/v1/command/reply/{replyId}")
+  @Path("/v1/reply/{replyId}")
   void deleteReply(@PathParam("replyId") String replyId);
 
   @DELETE
-  @Path("/v1/command/reply/all/{correlationId}")
+  @Path("/v1/reply/all/{correlationId}")
   void deleteReplies(@PathParam("correlationId") String correlationId);
 
   @DELETE
-  @Path("/v1/command/purge/{durationInDays}")
+  @Path("/v1/purge/{durationInDays}")
   void purge(
       @PathParam("durationInDays") @DefaultValue("0") Optional<Integer> durationInDays);
 
   @DELETE
-  @Path("/v1/command/purge")
+  @Path("/v1/purge")
   void purgeAll();
 }

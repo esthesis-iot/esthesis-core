@@ -24,42 +24,42 @@ import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.resteasy.reactive.MultipartForm;
 
-@Path("/api")
+@Path("/api/ca")
 @RegisterRestClient(configKey = "CAResource")
 @RegisterProvider(AccessTokenRequestReactiveFilter.class)
 public interface CAResource {
 
   @GET
-  @Path("/v1/ca/find")
+  @Path("/v1/find")
   Page<CaEntity> find(@BeanParam Pageable pageable);
 
   @GET
-  @Path("/v1/ca/{id}")
+  @Path("/v1/{id}")
   CaEntity findById(@PathParam("id") ObjectId id);
 
   @GET
-  @Path("/v1/ca/eligible-for-signing")
+  @Path("/v1/eligible-for-signing")
   List<CaEntity> getEligbleForSigning();
 
   @GET
-  @Path("/v1/ca/{id}/download")
+  @Path("/v1/{id}/download")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   Response download(@PathParam("id") ObjectId caId, @QueryParam("type") AppConstants.KeyType type);
 
   @POST
-  @Path("/v1/ca/import")
+  @Path("/v1/import")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   CaEntity importCa(@MultipartForm ImportCaForm input);
 
   @DELETE
-  @Path("/v1/ca/{id}")
+  @Path("/v1/{id}")
   void delete(@PathParam("id") ObjectId id);
 
   @POST
-  @Path("/v1/ca")
+  @Path("/v1")
   CaEntity save(@Valid CaEntity object);
 
   @GET
-  @Path("/v1/ca/{caId}/certificate")
+  @Path("/v1/{caId}/certificate")
   String getCACertificate(@PathParam("caId") ObjectId caId);
 }

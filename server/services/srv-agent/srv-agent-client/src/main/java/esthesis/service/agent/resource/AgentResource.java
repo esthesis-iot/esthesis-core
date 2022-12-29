@@ -23,7 +23,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 public interface AgentResource {
 
   @POST
-  @Path(value = "/v1/agent/register")
+  @Path(value = "/v1/register")
   AgentRegistrationResponse register(
       @Valid AgentRegistrationRequest agentRegistrationRequest)
   throws NoSuchAlgorithmException, IOException, InvalidKeySpecException,
@@ -36,21 +36,21 @@ public interface AgentResource {
    * @param token      TODO define
    */
   @GET
-  @Path(value = "/v1/agent/provisioning/find")
+  @Path(value = "/v1/provisioning/find")
   Response findProvisioningPackage(
       @QueryParam("hardwareId") String hardwareId,
       @QueryParam("version") String version,
       @QueryParam("token") Optional<String> token);
 
   @GET
-  @Path(value = "/v1/agent/provisioning/find/by-id")
+  @Path(value = "/v1/provisioning/find/by-id")
   Response findProvisioningPackageById(
       @QueryParam("hardwareId") String hardwareId,
       @QueryParam("packageId") String packageId,
       @QueryParam("token") Optional<String> token);
 
   @GET
-  @Path("/v1/agent/provisioning/download")
+  @Path("/v1/provisioning/download")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   Uni<RestResponse<byte[]>> downloadProvisioningPackage(@QueryParam("token") String token);
 }

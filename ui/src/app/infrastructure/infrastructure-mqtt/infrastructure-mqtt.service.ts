@@ -12,7 +12,7 @@ import {InfrastructureMqttDto} from "./dto/Infrastructure-mqtt-dto";
 })
 export class InfrastructureMqttService extends CrudService<InfrastructureMqttDto> {
   constructor(http: HttpClient) {
-    super(http, "v1/infrastructure/mqtt");
+    super(http, "infrastructure/mqtt/v1");
   }
 
 }

@@ -10,25 +10,25 @@ import {DockerTagsDto} from "./dto/docker-tags";
   providedIn: "root"
 })
 export class DataflowsService extends CrudService<DataflowDto> {
-  private static serviceContext = "v1/dataflow";
+  private prefix = environment.apiPrefix + "/dataflow/v1";
 
   constructor(http: HttpClient) {
-    super(http, DataflowsService.serviceContext);
+    super(http, "dataflow/v1");
   }
 
   getAvailableTags(dflType: string): Observable<DockerTagsDto> {
     return this.http.get<DockerTagsDto>(
-      `${environment.apiPrefix}/${DataflowsService.serviceContext}/docker-tags/${dflType}`);
+      `${this.prefix}/docker-tags/${dflType}`);
   }
 
   getNamespaces(): Observable<string[]> {
     return this.http.get<string[]>(
-      `${environment.apiPrefix}/${DataflowsService.serviceContext}/namespaces`);
+      `${this.prefix}/namespaces`);
   }
 
   save(data: any): Observable<any> {
     return this.http.post(
-      `${environment.apiPrefix}/${DataflowsService.serviceContext}`, data, {
+      `${this.prefix}`, data, {
         headers: {
           "Content-Type": "application/json"
         }

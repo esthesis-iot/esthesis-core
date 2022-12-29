@@ -66,6 +66,8 @@ public class ApplicationService extends BaseService<ApplicationEntity> {
     log.debug("Deleting application with id '{}'.", id);
     ApplicationEntity applicationEntity = findById(id);
     if (applicationEntity != null) {
+      dtTokenIsValidCache.invalidate(applicationEntity.getToken()).await()
+          .indefinitely();
       return super.deleteById(id);
     } else {
       log.warn("Application with id '{}' not found to be deleted.", id);

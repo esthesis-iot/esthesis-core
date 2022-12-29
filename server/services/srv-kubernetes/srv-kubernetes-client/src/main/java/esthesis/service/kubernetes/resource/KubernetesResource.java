@@ -15,10 +15,10 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface KubernetesResource {
 
   @POST
-  @Path("/v1/kubernetes/pod/start")
+  @Path("/v1/pod/start")
   Boolean schedulePod(PodInfoDTO podInfoDTO);
 
   @GET
-  @Path("/v1/kubernetes/namespaces")
+  @Path("/v1/namespaces")
   List<String> getNamespaces();
 }

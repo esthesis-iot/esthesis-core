@@ -34,7 +34,7 @@ spec:
               curl -s http://esthesis-apisix-admin:9180/apisix/admin/routes/dev-srv-crypto-route -H "X-API-KEY: esthesis-admin" -X PUT -i -d '
               {
               "name": "dev-srv-crypto-route",
-              "uris": ["/dev/api/v1/ca", "/dev/api/v1/ca/*", "/dev/api/v1/certificate", "/dev/api/v1/certificate/*", "/dev/api/v1/store", "/dev/api/v1/store/*"],
+              "uris": ["/api/ca", "/api/ca/*", "/api/certificate", "/api/certificate/*", "/api/store", "/api/store/*"],
               "upstream": {
                 "type": "roundrobin",
                 "nodes": {
@@ -47,12 +47,6 @@ spec:
                     "name": "always_on"
                   }
                 },
-                "proxy-rewrite": {
-                    "regex_uri": [
-                      "/dev/(.*)",
-                      "/$1"
-                    ]
-                },
                 "cors": {
                     "origin": "*"
                 },
@@ -64,7 +58,7 @@ spec:
                   "use_jwks": true,
                   "bearer_only": true,
                   "realm": "esthesis",
-                  "redirect_uri": "/dev/api/v1/crypto/callback",
+                  "redirect_uri": "/api/crypto/callback",
                   "set_access_token_header": false,
                   "set_id_token_header": false,
                   "set_userinfo_header": false

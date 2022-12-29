@@ -34,7 +34,7 @@ spec:
               curl -s http://esthesis-apisix-admin:9180/apisix/admin/routes/dev-srv-device-route -H "X-API-KEY: esthesis-admin" -X PUT -i -d '
               {
               "name": "dev-srv-device-route",
-              "uris": ["/dev/api/v1/device", "/dev/api/v1/device/*"],
+              "uris": ["/api/device", "/api/device/*"],
               "upstream": {
                 "type": "roundrobin",
                 "nodes": {
@@ -49,8 +49,8 @@ spec:
                 },
                 "proxy-rewrite": {
                     "regex_uri": [
-                      "/dev/(.*)",
-                      "/$1"
+                      "/api/device/(.*)",
+                      "/api/$1"
                     ]
                 },
                 "cors": {
@@ -64,7 +64,7 @@ spec:
                   "use_jwks": true,
                   "bearer_only": true,
                   "realm": "esthesis",
-                  "redirect_uri": "/dev/api/v1/device/callback",
+                  "redirect_uri": "/api/device/callback",
                   "set_access_token_header": false,
                   "set_id_token_header": false,
                   "set_userinfo_header": false

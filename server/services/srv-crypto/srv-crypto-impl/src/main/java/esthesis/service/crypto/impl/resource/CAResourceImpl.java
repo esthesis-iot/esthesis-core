@@ -32,7 +32,7 @@ public class CAResourceImpl implements CAResource {
 
   @GET
   @Override
-  @Path("/v1/ca/find")
+  @Path("/v1/find")
   @JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,"
       + "content.parentCaId,content.validity,content.name")
   public Page<CaEntity> find(@BeanParam Pageable pageable) {
@@ -41,7 +41,7 @@ public class CAResourceImpl implements CAResource {
 
   @GET
   @Override
-  @Path("/v1/ca/{id}")
+  @Path("/v1/{id}")
   @JSONReplyFilter(filter = "id,cn,issued,parentCa,validity,parentCaId,name")
   public CaEntity findById(ObjectId id) {
     return caService.findById(id);
@@ -49,7 +49,7 @@ public class CAResourceImpl implements CAResource {
 
   @GET
   @Override
-  @Path("/v1/ca/eligible-for-signing")
+  @Path("/v1/eligible-for-signing")
   @JSONReplyFilter(filter = "id,cn,name")
   public List<CaEntity> getEligbleForSigning() {
     return caService.getEligibleForSigning();

@@ -21,16 +21,16 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface DeviceSystemResource {
 
   @POST
-  @Path("/v1/device-system/register")
+  @Path("/v1/system/register")
   DeviceEntity register(DeviceRegistrationDTO deviceRegistration)
   throws IOException, InvalidKeySpecException, NoSuchAlgorithmException,
          OperatorCreationException, NoSuchProviderException;
 
   @GET
-  @Path("/v1/device-system/find/by-hardware-id")
+  @Path("/v1/system/find/by-hardware-id")
   DeviceEntity findByHardwareId(@QueryParam("hardwareId") String hardwareId);
 
   @GET
-  @Path("/v1/device-system/public-key")
+  @Path("/v1/system/public-key")
   String findPublicKey(@QueryParam("hardwareId") String hardwareId);
 }

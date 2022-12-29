@@ -29,15 +29,15 @@ import org.jboss.resteasy.reactive.RestResponse;
 public interface ProvisioningResource {
 
   @GET
-  @Path("/v1/provisioning/find")
+  @Path("/v1/find")
   Page<ProvisioningPackageEntity> find(@BeanParam Pageable provisioningPackage);
 
   @GET
-  @Path("/v1/provisioning/recache")
+  @Path("/v1/recache")
   void recacheAll();
 
   @GET
-  @Path("/v1/provisioning/{id}")
+  @Path("/v1/{id}")
   ProvisioningPackageEntity findById(@PathParam("id") ObjectId provisioningPackageId);
 
   /**
@@ -47,24 +47,24 @@ public interface ProvisioningResource {
    * @return Returns the expected number of bytes to be cached, if known.
    */
   @GET
-  @Path("/v1/provisioning/{id}/recache")
+  @Path("/v1/{id}/recache")
   void recache(@PathParam("id") ObjectId provisioningPackageId);
 
   @POST
-  @Path("/v1/provisioning")
+  @Path("/v1")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   ProvisioningPackageEntity save(@MultipartForm ProvisioningPackageForm provisioningPackageForm);
 
   @DELETE
-  @Path("/v1/provisioning/{id}")
+  @Path("/v1/{id}")
   void delete(@PathParam("id") ObjectId provisioningPackageId);
 
   @GET
-  @Path("/v1/provisioning/{id}/download")
+  @Path("/v1/{id}/download")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   Uni<RestResponse<byte[]>> download(@PathParam("id") ObjectId provisioning);
 
   @GET
-  @Path("/v1/provisioning/find/by-tags")
+  @Path("/v1/find/by-tags")
   List<ProvisioningPackageEntity> findByTags(@QueryParam("tags") String tags);
 }

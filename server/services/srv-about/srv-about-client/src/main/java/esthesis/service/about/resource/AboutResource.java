@@ -13,7 +13,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface AboutResource {
 
   @GET
-  @Path("/v1/about/general")
+  @Path("/v1/general")
   AboutGeneralDTO getGeneralInfo();
 
 }

@@ -25,7 +25,7 @@ public class ApplicationResourceImpl implements ApplicationResource {
 
   @GET
   @Override
-  @Path("/v1/application/find")
+  @Path("/v1/find")
   public Page<ApplicationEntity> find(@BeanParam Pageable pageable) {
     return applicationService.find(pageable, true);
   }

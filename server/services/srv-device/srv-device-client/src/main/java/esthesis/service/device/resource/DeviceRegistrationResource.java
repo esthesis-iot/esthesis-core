@@ -23,13 +23,13 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface DeviceRegistrationResource {
 
   @POST
-  @Path("/v1/device/preregister")
+  @Path("/v1/preregister")
   Response preregister(@Valid DeviceRegistrationDTO deviceRegistration)
   throws NoSuchAlgorithmException, IOException, OperatorCreationException,
          InvalidKeySpecException, NoSuchProviderException;
 
   @PUT
-  @Path("/v1/device/activate/{hardwareId}")
+  @Path("/v1/activate/{hardwareId}")
   DeviceEntity activatePreregisteredDevice(
       @PathParam(value = "hardwareId") String hardwareId);
 

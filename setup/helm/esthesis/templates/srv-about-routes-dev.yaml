@@ -34,7 +34,7 @@ spec:
               curl -s http://esthesis-apisix-admin:9180/apisix/admin/routes/dev-srv-about-route -H "X-API-KEY: esthesis-admin" -X PUT -i -d '
               {
               "name": "dev-srv-about-route",
-              "uris": ["/dev/api/v1/about", "/dev/api/v1/about/*"],
+              "uris": ["/api/about", "/api/about/*"],
               "upstream": {
                 "type": "roundrobin",
                 "nodes": {
@@ -49,8 +49,8 @@ spec:
                 },
                 "proxy-rewrite": {
                     "regex_uri": [
-                      "/dev/(.*)",
-                      "/$1"
+                      "/api/about/(.*)",
+                      "/api/$1"
                     ]
                 },
                 "cors": {
@@ -64,7 +64,7 @@ spec:
                   "use_jwks": true,
                   "bearer_only": true,
                   "realm": "esthesis",
-                  "redirect_uri": "/dev/api/v1/about/callback",
+                  "redirect_uri": "/api/about/callback",
                   "set_access_token_header": false,
                   "set_id_token_header": false,
                   "set_userinfo_header": false

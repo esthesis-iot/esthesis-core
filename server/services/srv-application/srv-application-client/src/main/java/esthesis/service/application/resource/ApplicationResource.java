@@ -23,19 +23,19 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface ApplicationResource {
 
   @GET
-  @Path("/v1/application/find")
+  @Path("/v1/find")
   Page<ApplicationEntity> find(@BeanParam Pageable pageable);
 
   @GET
-  @Path("/v1/application/{id}")
+  @Path("/v1/{id}")
   ApplicationEntity findById(@PathParam("id") ObjectId id);
 
   @DELETE
-  @Path("/v1/application/{id}")
+  @Path("/v1/{id}")
   Response delete(@PathParam("id") ObjectId id);
 
   @POST
-  @Path("/v1/application")
+  @Path("/v1")
   @Produces("application/json")
   ApplicationEntity save(@Valid ApplicationEntity applicationEntity);
 }

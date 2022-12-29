@@ -12,6 +12,6 @@ import {CrudService} from "../services/crud.service";
 })
 export class ApplicationsService extends CrudService<ApplicationDto> {
   constructor(http: HttpClient) {
-    super(http, "v1/application");
+    super(http, "application/v1");
   }
 }

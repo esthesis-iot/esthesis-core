@@ -28,7 +28,7 @@ public class TagResourceImpl implements TagResource {
 
   @GET
   @Override
-  @Path("/v1/tag/find")
+  @Path("/v1/find")
   public Page<TagEntity> find(@BeanParam Pageable pageable) {
     return tagService.find(pageable, true);
   }

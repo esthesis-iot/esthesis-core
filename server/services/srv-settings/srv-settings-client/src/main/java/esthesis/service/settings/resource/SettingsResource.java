@@ -25,7 +25,7 @@ public interface SettingsResource {
    * @param name The name of the setting to find.
    */
   @GET
-  @Path("/v1/settings/find/by-name/{name}")
+  @Path("/v1/find/by-name/{name}")
   SettingEntity findByName(@PathParam("name") NamedSetting name);
 
   /**
@@ -34,7 +34,7 @@ public interface SettingsResource {
    * @param names A comma-separated list of names.
    */
   @GET
-  @Path("/v1/settings/find/by-names/{names}")
+  @Path("/v1/find/by-names/{names}")
   List<SettingEntity> findByNames(@PathParam("names") String names);
 
   /**
@@ -43,7 +43,7 @@ public interface SettingsResource {
    * @param settings The settings to save.
    */
   @POST
-  @Path("/v1/settings")
+  @Path("/v1")
   void save(@Valid SettingEntity... settingEntities);
 
   /**
@@ -52,7 +52,7 @@ public interface SettingsResource {
    * @return
    */
   @GET
-  @Path("/v1/settings/find-measurement-names")
+  @Path("/v1/find-measurement-names")
   List<String> findAllUniqueMeasurementNames();
 
   /**
@@ -62,7 +62,7 @@ public interface SettingsResource {
    * @return
    */
   @GET
-  @Path("/v1/settings/device-page-fields")
+  @Path("/v1/device-page-fields")
   List<DevicePageFieldEntity> getDevicePageFields();
 
   /**
@@ -72,6 +72,6 @@ public interface SettingsResource {
    * @param fields The fields to save.
    */
   @POST
-  @Path("/v1/settings/device-page-fields")
+  @Path("/v1/device-page-fields")
   void saveDevicePageFields(@Valid List<DevicePageFieldEntity> fields);
 }

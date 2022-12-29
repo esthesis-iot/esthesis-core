@@ -16,25 +16,25 @@ import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-@Path("/api")
+@Path("/api/mqtt")
 @RegisterRestClient(configKey = "InfrastructureResource")
 @RegisterProvider(AccessTokenRequestReactiveFilter.class)
-public interface InfrastructureResource {
+public interface InfrastructureMqttResource {
 
   @GET
-  @Path("/v1/infrastructure/mqtt/find")
+  @Path("/v1/find")
   Page<InfrastructureMqttEntity> find(@BeanParam Pageable pageable);
 
   @POST
-  @Path("/v1/infrastructure/mqtt")
+  @Path("/v1")
   InfrastructureMqttEntity save(@Valid InfrastructureMqttEntity mqttEntity);
 
   @GET
-  @Path("/v1/infrastructure/mqtt/{id}")
+  @Path("/v1/{id}")
   InfrastructureMqttEntity findById(@PathParam("id") ObjectId id);
 
   @DELETE
-  @Path("/v1/infrastructure/{id}")
+  @Path("/v1/{id}")
   Response delete(@PathParam("id") ObjectId id);
 
 }

@@ -9,14 +9,15 @@ import {FileSaverService} from "ngx-filesaver";
   providedIn: "root"
 })
 export class StoresService extends CrudDownloadService<StoreDto> {
+  private prefix = environment.apiPrefix + "/store/v1";
 
   constructor(http: HttpClient, fs: FileSaverService) {
-    super(http, "v1/store", fs);
+    super(http, "store/v1", fs);
   }
 
   download(storeId: string) {
     this.http.get(
-      `${environment.apiPrefix}/v1/store/${storeId}/download`, {
+      `${this.prefix}/${storeId}/download`, {
         responseType: "blob", observe: "response"
       }).subscribe(onNext => {
       this.saveAs(onNext);

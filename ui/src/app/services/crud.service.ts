@@ -32,10 +32,6 @@ export class CrudService<T> {
     return this.http.delete(`${environment.apiPrefix}/${this.endpoint}/${id}`);
   }
 
-  // deleteAll(): Observable<any> {
-  //   return this.http.delete(`${environment.apiPrefix}/${this.endpoint}`);
-  // }
-
   upload(form: FormGroup, url?: string, reportProgress?: boolean): Observable<HttpEvent<{}>> {
     const formData = new FormData();
     for (const formField in form.value) {

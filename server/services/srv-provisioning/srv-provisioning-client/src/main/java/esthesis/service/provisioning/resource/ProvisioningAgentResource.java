@@ -12,12 +12,12 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface ProvisioningAgentResource {
 
   @GET
-  @Path("/v1/provisioning-agent/find/{hardwareId}")
+  @Path("/v1/agent/find/{hardwareId}")
   ProvisioningPackageEntity find(@PathParam("hardwareId") String hardwareId,
       @QueryParam("version") String version);
 
   @GET
-  @Path("/v1/provisioning-agent/find/by-id/{provisioningPackageId}")
+  @Path("/v1/agent/find/by-id/{provisioningPackageId}")
   ProvisioningPackageEntity findById(
       @PathParam("provisioningPackageId") String provisioningPackageId);
 }

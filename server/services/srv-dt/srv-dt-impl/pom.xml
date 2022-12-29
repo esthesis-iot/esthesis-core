@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>esthesis</groupId>
+    <artifactId>srv-dt</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>srv-dt-impl</artifactId>
+
+  <dependencies>
+    <!-- QUARKUS -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-cache</artifactId>
+    </dependency>
+
+    <!-- ESTHESIS -->
+    <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>srv-dt-client</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>srv-application-client</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>utl-redis</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+    </dependency>
+
+  </dependencies>
+</project>

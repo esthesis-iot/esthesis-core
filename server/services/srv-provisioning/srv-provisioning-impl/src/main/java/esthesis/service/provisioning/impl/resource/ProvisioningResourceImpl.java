@@ -24,7 +24,7 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
 
   @GET
   @Override
-  @Path("/v1/provisioning/find")
+  @Path("/v1/find")
   public Page<ProvisioningPackageEntity> find(@BeanParam Pageable pageable) {
     return provisioningService.find(pageable);
   }

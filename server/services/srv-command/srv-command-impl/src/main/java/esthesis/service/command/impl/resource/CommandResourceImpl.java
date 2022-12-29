@@ -24,7 +24,7 @@ public class CommandResourceImpl implements CommandResource {
 
   @GET
   @Override
-  @Path("/v1/command/find")
+  @Path("/v1/find")
   public Page<CommandRequestEntity> find(@BeanParam Pageable pageable) {
     return commandService.findCommandRequest(pageable);
   }

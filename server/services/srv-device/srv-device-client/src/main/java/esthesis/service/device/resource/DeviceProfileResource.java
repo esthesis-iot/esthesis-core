@@ -20,30 +20,30 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface DeviceProfileResource {
 
   @GET
-  @Path("/v1/device/{deviceId}/device-profile/")
+  @Path("/v1/{deviceId}/device-profile/")
   List<DeviceProfileNoteEntity> getDeviceProfileNotes(
       @PathParam("deviceId") String deviceId);
 
   @POST
-  @Path("/v1/device/{deviceId}/device-profile")
+  @Path("/v1/{deviceId}/device-profile")
   List<DeviceProfileNoteEntity> saveDeviceProfileNotes(Map<String, String> fields,
       @PathParam("deviceId") String deviceId);
 
   @POST
-  @Path("/v1/device/device-profile/add-note")
+  @Path("/v1/device-profile/add-note")
   DeviceProfileNoteEntity addDeviceProfileNote(DeviceProfileNoteEntity field);
 
   @DELETE
-  @Path("/v1/device/{deviceId}/device-profile/delete-note")
+  @Path("/v1/{deviceId}/device-profile/delete-note")
   void deleteDeviceProfileNote(@PathParam("deviceId") String deviceId,
       @QueryParam("keyName") String keyName);
 
   @GET
-  @Path("/v1/device/{deviceId}/device-profile/fields-data")
+  @Path("/v1/{deviceId}/device-profile/fields-data")
   List<DeviceProfileFieldDataDTO> getFieldsData(String deviceId);
 
   @GET
-  @Path("/v1/device/{deviceId}/device-data")
+  @Path("/v1/{deviceId}/device-data")
   List<DeviceProfileFieldDataDTO> getAllDeviceData(String deviceId);
 
 }

@@ -12,32 +12,32 @@ public interface DTResource {
 
   @GET
   @DTSecurityFilter
-  @Path("/v1/dt/get/{hardwareId}/{category}/{measurement}")
+  @Path("/v1/get/{hardwareId}/{category}/{measurement}")
   @Produces("application/json")
   DTValueReplyDTO findJSON(String hardwareId, String category, String measurement);
 
   @GET
   @DTSecurityFilter
-  @Path("/v1/dt/get/{hardwareId}/{category}/{measurement}")
+  @Path("/v1/get/{hardwareId}/{category}/{measurement}")
   @Produces("text/plain")
   String findPlain(String hardwareId, String category,
       String measurement);
 
   @GET
   @DTSecurityFilter
-  @Path("/v1/dt/get/{hardwareId}/{category}")
+  @Path("/v1/get/{hardwareId}/{category}")
   @Produces("application/json")
   List<DTValueReplyDTO> findAllJSON(String hardwareId, String category);
 
   @GET
   @DTSecurityFilter
-  @Path("/v1/dt/get/{hardwareId}/{category}")
+  @Path("/v1/get/{hardwareId}/{category}")
   @Produces("text/plain")
   String findAllPlain(String hardwareId, String category);
 
   @GET
   @DTSecurityFilter
-  @Path("/v1/dt/measurements/{hardwareId}/{category}")
+  @Path("/v1/measurements/{hardwareId}/{category}")
   String findMeasurements(String hardwareId, String category);
 
 }

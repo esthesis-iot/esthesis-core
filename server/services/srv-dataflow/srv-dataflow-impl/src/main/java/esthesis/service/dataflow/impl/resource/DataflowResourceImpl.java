@@ -22,7 +22,7 @@ public class DataflowResourceImpl implements DataflowResource {
 
   @GET
   @Override
-  @Path("/v1/dataflow/find")
+  @Path("/v1/find")
   @JSONReplyFilter(filter = "content,content.id,content.name,content.type,"
       + "content.status,content.description")
   public Page<DataflowEntity> find(@BeanParam Pageable pageable) {
@@ -44,7 +44,7 @@ public class DataflowResourceImpl implements DataflowResource {
   public DataflowEntity save(DataflowEntity dataflowEntity) {
     return dataflowService.save(dataflowEntity);
   }
-  
+
   @Override
   public DockerTagsDTO getImageTags(String dflType) {
     return dataflowService.getImageTags(dflType);

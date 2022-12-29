@@ -41,7 +41,7 @@ public class DeviceResourceImpl implements DeviceResource {
 
   @GET
   @Override
-  @Path("/v1/device/{id}")
+  @Path("/v1/{id}")
   @JSONReplyFilter(filter = "hardwareId,id,status,tags,lastSeen")
   public DeviceEntity get(@PathParam("id") ObjectId id) {
     return deviceService.findById(id);

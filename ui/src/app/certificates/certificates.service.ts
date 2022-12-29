@@ -10,9 +10,10 @@ import {FileSaverService} from "ngx-filesaver";
   providedIn: "root"
 })
 export class CertificatesService extends CrudDownloadService<CertificateDto> {
+  private prefix = environment.apiPrefix + "/certificate/v1";
 
   constructor(http: HttpClient, fs: FileSaverService) {
-    super(http, "v1/certificate", fs);
+    super(http, "certificate/v1", fs);
   }
 
   /**
@@ -22,7 +23,7 @@ export class CertificatesService extends CrudDownloadService<CertificateDto> {
    */
   download(certificateId: string, type: string) {
     this.http.get(
-      `${environment.apiPrefix}/v1/certificate/${certificateId}/download?type=${type}`, {
+      `${this.prefix}/${certificateId}/download?type=${type}`, {
         responseType: "blob", observe: "response"
       }).subscribe(onNext => {
       this.saveAs(onNext);
@@ -30,7 +31,7 @@ export class CertificatesService extends CrudDownloadService<CertificateDto> {
   }
 
   import(form: FormGroup) {
-    return this.upload(form, `${environment.apiPrefix}/v1/certificate/import`, false);
+    return this.upload(form, `${this.prefix}/import`, false);
   }
 
 }

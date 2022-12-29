@@ -1,9 +1,9 @@
 quarkus:
   application:
-    name: esthesis-srv-registry
+    name: esthesis-srv-application
   container-image:
     group: esthesisiot
-    name: esthesis-srv-registry
+    name: esthesis-srv-application
   mongodb:
     database: esthesis
     credentials:
@@ -22,3 +22,5 @@ quarkus:
     enabled: false
   opentelemetry:
     enabled: false
+  smallrye-openapi:
+    path: /api/openapi

@@ -23,36 +23,36 @@ import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.resteasy.reactive.MultipartForm;
 
-@Path("/api")
+@Path("/api/certificate")
 @RegisterRestClient(configKey = "CertificateResource")
 @RegisterProvider(AccessTokenRequestReactiveFilter.class)
 public interface CertificateResource {
 
   @GET
-  @Path("/v1/certificate/find")
+  @Path("/v1/find")
   Page<CertificateEntity> find(@BeanParam Pageable pageable);
 
   @GET
-  @Path("/v1/certificate/{id}")
+  @Path("/v1/{id}")
   CertificateEntity findById(@PathParam("id") ObjectId id);
 
   @GET
-  @Path("/v1/certificate/{id}/download")
+  @Path("/v1/{id}/download")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   Response download(@PathParam("id") ObjectId certId,
       @QueryParam("type") AppConstants.KeyType type);
 
   @POST
-  @Path("/v1/certificate/import")
+  @Path("/v1/import")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   CertificateEntity importCertificate(@MultipartForm ImportCertificateForm input);
 
   @DELETE
-  @Path("/v1/certificate/{id}")
+  @Path("/v1/{id}")
   void delete(@PathParam("id") ObjectId id);
 
   @POST
-  @Path("/v1/certificate")
+  @Path("/v1")
   CertificateEntity save(@Valid CertificateEntity object);
 
 }

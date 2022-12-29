@@ -9,10 +9,10 @@ import javax.ws.rs.QueryParam;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-@Path("/api")
+@Path("/api/system-mqtt")
 @RegisterRestClient(configKey = "InfrastructureSystemResource")
 @RegisterProvider(OidcClientRequestReactiveFilter.class)
-public interface InfrastructureSystemResource {
+public interface InfrastructureMqttSystemResource {
 
   /**
    * Finds an MQTT server having at least one of the provided tags.
@@ -20,7 +20,7 @@ public interface InfrastructureSystemResource {
    * @param tags The list of tag names to search by, comma separated.
    */
   @GET
-  @Path("/v1/infrastructure-system/mqtt/match-by-tag")
+  @Path("/v1/match-by-tag")
   Optional<InfrastructureMqttEntity> matchMqttServerByTags(@QueryParam("tags") String tags);
 
 }

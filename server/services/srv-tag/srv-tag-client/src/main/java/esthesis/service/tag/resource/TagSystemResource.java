@@ -15,7 +15,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface TagSystemResource {
 
   @GET
-  @Path("/v1/tag-system/get-all")
+  @Path("/v1/system/get-all")
   List<TagEntity> getAll();
 
   /**
@@ -24,7 +24,7 @@ public interface TagSystemResource {
    * @param name The name of the tag to search.
    */
   @GET
-  @Path("/v1/tag-system/find/by-name/{name}")
+  @Path("/v1/system/find/by-name/{name}")
   TagEntity findByName(@PathParam("name") String name);
 
 }

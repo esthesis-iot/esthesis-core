@@ -25,28 +25,28 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface DataflowResource {
 
   @GET
-  @Path("/v1/dataflow/find")
+  @Path("/v1/find")
   Page<DataflowEntity> find(@BeanParam Pageable pageable);
 
   @GET
-  @Path("/v1/dataflow/{id}")
+  @Path("/v1/{id}")
   DataflowEntity findById(@PathParam("id") ObjectId id);
 
   @DELETE
-  @Path("/v1/dataflow/{id}")
+  @Path("/v1/{id}")
   Response delete(@PathParam("id") ObjectId id);
 
   @POST
-  @Path("/v1/dataflow")
+  @Path("/v1")
   @Produces("application/json")
   DataflowEntity save(@Valid DataflowEntity dataflowEntity);
 
   @GET
-  @Path("/v1/dataflow/docker-tags/{dflType}")
+  @Path("/v1/docker-tags/{dflType}")
   DockerTagsDTO getImageTags(@PathParam("dflType") String dflType);
 
   @GET
-  @Path("/v1/dataflow/namespaces")
+  @Path("/v1/namespaces")
   List<String> getNamespaces();
 
 }

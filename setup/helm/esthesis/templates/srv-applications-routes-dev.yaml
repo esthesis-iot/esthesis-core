@@ -34,7 +34,7 @@ spec:
               curl -s http://esthesis-apisix-admin:9180/apisix/admin/routes/dev-srv-application-route -H "X-API-KEY: esthesis-admin" -X PUT -i -d '
               {
               "name": "dev-srv-application-route",
-              "uris": ["/dev/api/v1/application", "/dev/api/v1/application/*"],
+              "uris": ["/api/application", "/api/application/*"],
               "upstream": {
                 "type": "roundrobin",
                 "nodes": {
@@ -47,11 +47,11 @@ spec:
                     "name": "always_on"
                   }
                 },
-                "proxy-rewrite": {
-                    "regex_uri": [
-                      "/dev/(.*)",
-                      "/$1"
-                    ]
+              "proxy-rewrite": {
+                  "regex_uri": [
+                    "/api/application/(.*)",
+                    "/api/$1"
+                  ]
                 },
                 "cors": {
                     "origin": "*"
@@ -64,47 +64,7 @@ spec:
                   "use_jwks": true,
                   "bearer_only": true,
                   "realm": "esthesis",
-                  "redirect_uri": "/dev/api/v1/application/callback",
-                  "set_access_token_header": false,
-                  "set_id_token_header": false,
-                  "set_userinfo_header": false
-                }
-              }
-              }' && \
-              curl -s http://esthesis-apisix-admin:9180/apisix/admin/routes/dev-srv-dt-route -H "X-API-KEY: esthesis-admin" -X PUT -i -d '
-              {
-              "name": "dev-srv-dt-route",
-              "uris": ["/dev/api/v1/dt", "/dev/api/v1/dt/*"],
-              "upstream": {
-                "type": "roundrobin",
-                "nodes": {
-                    "{{ .Values.global.devEnv.ip }}:59090": 1
-                }
-              },
-              "plugins": {
-                "opentelemetry": {
-                  "sampler": {
-                    "name": "always_on"
-                  }
-                },
-                "proxy-rewrite": {
-                    "regex_uri": [
-                      "/dev/(.*)",
-                      "/$1"
-                    ]
-                },
-                "cors": {
-                    "origin": "*"
-                },
-                "openid-connect": {
-                  "client_id": "esthesis",
-                  "client_secret": "",
-                  "discovery": "http://esthesis-keycloak/realms/esthesis/.well-known/openid-configuration",
-                  "scope": "openid profile",
-                  "use_jwks": true,
-                  "bearer_only": true,
-                  "realm": "esthesis",
-                  "redirect_uri": "/dev/api/v1/dt/callback",
+                  "redirect_uri": "/api/application/callback",
                   "set_access_token_header": false,
                   "set_id_token_header": false,
                   "set_userinfo_header": false

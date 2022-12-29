@@ -26,11 +26,11 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface TagResource {
 
   @GET
-  @Path("/v1/tag/find")
+  @Path("/v1/find")
   Page<TagEntity> find(@BeanParam Pageable pageable);
 
   @GET
-  @Path("/v1/tag/get-all")
+  @Path("/v1/get-all")
   List<TagEntity> getAll();
 
   /**
@@ -40,7 +40,7 @@ public interface TagResource {
    * @param partialMatch If true, the search will be performed using a partial match.
    */
   @GET
-  @Path("/v1/tag/find/by-name/{name}")
+  @Path("/v1/find/by-name/{name}")
   TagEntity findByName(@PathParam("name") String name,
       @QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
 
@@ -51,20 +51,20 @@ public interface TagResource {
    * @param partialMatch If true, the search will be performed using a partial match.
    */
   @GET
-  @Path("/v1/tag/find/by-names")
+  @Path("/v1/find/by-names")
   List<TagEntity> findByNames(@QueryParam("names") String name,
       @QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
 
   @GET
-  @Path("/v1/tag/{id}")
+  @Path("/v1/{id}")
   TagEntity findById(@PathParam("id") ObjectId id);
 
   @DELETE
-  @Path("/v1/tag/{id}")
+  @Path("/v1/{id}")
   Response delete(@PathParam("id") ObjectId id);
 
   @POST
-  @Path("/v1/tag")
+  @Path("/v1")
   @Produces("application/json")
   TagEntity save(@Valid TagEntity tagEntity);
 }

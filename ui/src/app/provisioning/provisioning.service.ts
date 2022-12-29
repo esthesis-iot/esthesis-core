@@ -9,13 +9,14 @@ import {FileSaverService} from "ngx-filesaver";
   providedIn: "root"
 })
 export class ProvisioningService extends CrudDownloadService<ProvisioningDto> {
+  private prefix = environment.apiPrefix + "/provisioning/v1";
 
   constructor(http: HttpClient, fs: FileSaverService) {
-    super(http, "v1/provisioning", fs);
+    super(http, "provisioning/v1", fs);
   }
 
   download(id: string) {
-    this.http.get(`${environment.apiPrefix}/v1/provisioning/${id}/download`, {
+    this.http.get(`${this.prefix}/${id}/download`, {
       responseType: "blob", observe: "response"
     }).subscribe(onNext => {
       this.saveAs(onNext);
@@ -23,14 +24,14 @@ export class ProvisioningService extends CrudDownloadService<ProvisioningDto> {
   }
 
   recache(id: string) {
-    return this.http.get(`${environment.apiPrefix}/v1/provisioning/${id}/recache`);
+    return this.http.get(`${this.prefix}/${id}/recache`);
   }
 
   recacheAll() {
-    return this.http.get(`${environment.apiPrefix}/v1/provisioning/recache`);
+    return this.http.get(`${this.prefix}/recache`);
   }
 
   findBaseVersions(tags: string) {
-    return this.http.get(`${environment.apiPrefix}/v1/provisioning/find/by-tags?tags=${tags}`);
+    return this.http.get(`${this.prefix}/find/by-tags?tags=${tags}`);
   }
 }

@@ -15,7 +15,7 @@ import esthesis.service.device.dto.DeviceRegistrationDTO;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
 import esthesis.service.infrastructure.entity.InfrastructureMqttEntity;
-import esthesis.service.infrastructure.resource.InfrastructureSystemResource;
+import esthesis.service.infrastructure.resource.InfrastructureMqttSystemResource;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.resource.ProvisioningAgentResource;
 import esthesis.service.settings.entity.SettingEntity;
@@ -55,7 +55,7 @@ public class AgentService {
 
   @Inject
   @RestClient
-  InfrastructureSystemResource infrastructureSystemResource;
+  InfrastructureMqttSystemResource infrastructureMqttSystemResource;
 
   @Inject
   @RestClient
@@ -116,7 +116,7 @@ public class AgentService {
 
     // Find the MQTT server to send back to the device.
     Optional<InfrastructureMqttEntity> mqttServer =
-        infrastructureSystemResource.matchMqttServerByTags(
+        infrastructureMqttSystemResource.matchMqttServerByTags(
             agentRegistrationRequest.getTags());
     if (mqttServer.isPresent()) {
       agentRegistrationResponse.setMqttServer(mqttServer.get().getUrl());

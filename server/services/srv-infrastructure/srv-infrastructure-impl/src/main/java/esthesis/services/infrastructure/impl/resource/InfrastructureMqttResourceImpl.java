@@ -3,7 +3,7 @@ package esthesis.services.infrastructure.impl.resource;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.infrastructure.entity.InfrastructureMqttEntity;
-import esthesis.service.infrastructure.resource.InfrastructureResource;
+import esthesis.service.infrastructure.resource.InfrastructureMqttResource;
 import esthesis.services.infrastructure.impl.service.InfrastructureMqttService;
 import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
-public class InfrastructureResourceImpl implements InfrastructureResource {
+public class InfrastructureMqttResourceImpl implements InfrastructureMqttResource {
 
   @Inject
   JsonWebToken jwt;

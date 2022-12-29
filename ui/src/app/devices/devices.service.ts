@@ -15,17 +15,18 @@ import {UtilityService} from "../shared/service/utility.service";
   providedIn: "root"
 })
 export class DevicesService extends CrudDownloadService<DeviceDto> {
+  private prefix = environment.apiPrefix + "/device/v1";
 
   constructor(http: HttpClient, fs: FileSaverService, private utilityService: UtilityService) {
-    super(http, "v1/device", fs);
+    super(http, "device/v1", fs);
   }
 
   preregister(devices: DeviceRegisterDto): Observable<any> {
-    return this.http.post(`${environment.apiPrefix}/v1/device/preregister`, devices);
+    return this.http.post(`${this.prefix}/preregister`, devices);
   }
 
   downloadPublicKey(hardwareId: string) {
-    this.http.get(`${environment.apiPrefix}/v1/device/${hardwareId}/download/public-key`, {
+    this.http.get(`${this.prefix}/${hardwareId}/download/public-key`, {
       responseType: "blob", observe: "response"
     }).subscribe({
       next: (response) => {
@@ -38,7 +39,7 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
   }
 
   downloadPrivateKey(hardwareId: string) {
-    this.http.get(`${environment.apiPrefix}/v1/device/${hardwareId}/download/private-key`, {
+    this.http.get(`${this.prefix}/${hardwareId}/download/private-key`, {
       responseType: "blob", observe: "response"
     }).subscribe({
       next: (response) => {
@@ -51,7 +52,7 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
   }
 
   downloadCertificate(hardwareId: string) {
-    this.http.get(`${environment.apiPrefix}/v1/device/${hardwareId}/download/certificate`, {
+    this.http.get(`${this.prefix}/${hardwareId}/download/certificate`, {
       responseType: "blob", observe: "response"
     }).subscribe({
       next: (response) => {
@@ -64,17 +65,16 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
   }
 
   saveDeviceProfileNote(deviceId: string, profile: any) {
-    return this.http.post(`${environment.apiPrefix}/v1/device/${deviceId}/device-profile`, profile);
+    return this.http.post(`${this.prefix}/${deviceId}/device-profile`, profile);
   }
 
   getDeviceProfileNotes(deviceId: string): Observable<DeviceProfileNoteDto[]> {
-    return this.http.get<DeviceProfileNoteDto[]>(
-      environment.apiPrefix + `/v1/device/${deviceId}/device-profile`);
+    return this.http.get<DeviceProfileNoteDto[]>(`${this.prefix}/${deviceId}/device-profile`);
   }
 
   findDeviceByPartialHardwareId(hardwareId: string): Observable<DeviceDto[]> {
     return this.http.get<DeviceDto[]>(
-      environment.apiPrefix + `/device/by-partial-hardware-id/${hardwareId}`);
+      `${this.prefix}/by-partial-hardware-id/${hardwareId}`);
   }
 
   addDeviceProfileNote(targetDeviceId: string, newFieldName: string, newFieldLabel: string) {
@@ -84,26 +84,26 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
       label: newFieldLabel
     };
     return this.http.post(
-      `${environment.apiPrefix}/v1/device/device-profile/add-note`, deviceProfileNoteDto);
+      `${this.prefix}/device-profile/add-note`, deviceProfileNoteDto);
   }
 
   removeDeviceProfileNote(deviceId: string, keyName: string) {
     return this.http.delete(
-      `${environment.apiPrefix}/v1/device/${deviceId}/device-profile/delete-note?keyName=${keyName}`);
+      `${this.prefix}/${deviceId}/device-profile/delete-note?keyName=${keyName}`);
   }
 
   getProfileFieldsData(deviceId: string): Observable<DevicePageFieldDataDto[]> {
     return this.http.get<DevicePageFieldDataDto[]>(
-      environment.apiPrefix + `/v1/device/${deviceId}/device-profile/fields-data`);
+      `${this.prefix}/${deviceId}/device-profile/fields-data`);
   }
 
   getAllDeviceData(deviceId: string): Observable<DevicePageFieldDataDto[]> {
     return this.http.get<DevicePageFieldDataDto[]>(
-      environment.apiPrefix + `/v1/device/${deviceId}/device-data`);
+      `${this.prefix}/${deviceId}/device-data`);
   }
 
   getGeolocation(deviceId: string): Observable<GeolocationDto> {
     return this.http.get<GeolocationDto>(
-      environment.apiPrefix + `/v1/device/${deviceId}/geolocation`);
+      `${this.prefix}/${deviceId}/geolocation`);
   }
 }

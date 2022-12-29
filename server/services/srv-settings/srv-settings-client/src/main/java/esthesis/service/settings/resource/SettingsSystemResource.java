@@ -15,7 +15,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface SettingsSystemResource {
 
   @GET
-  @Path("/v1/settings-system/find/by-name/{name}")
+  @Path("/v1/system/find/by-name/{name}")
   SettingEntity findByName(@PathParam("name") NamedSetting name);
 
 }

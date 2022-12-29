@@ -8,12 +8,12 @@ import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-@Path("/api")
+@Path("/api/system-ca")
 @RegisterRestClient(configKey = "CASystemResource")
 @RegisterProvider(OidcClientRequestReactiveFilter.class)
 public interface CASystemResource {
 
   @GET
-  @Path("/v1/ca-system/{caId}/certificate")
+  @Path("/v1/{caId}/certificate")
   String getCACertificate(@PathParam("caId") ObjectId caId);
 }

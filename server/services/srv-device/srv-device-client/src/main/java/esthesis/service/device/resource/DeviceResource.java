@@ -2,8 +2,8 @@ package esthesis.service.device.resource;
 
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.dto.GeolocationDTO;
+import esthesis.service.device.entity.DeviceEntity;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.util.List;
 import javax.validation.Valid;
@@ -34,7 +34,7 @@ public interface DeviceResource {
    * @param partialMatch If true, the search will be performed using partial matching.
    */
   @GET
-  @Path("/v1/device/count/by-tag")
+  @Path("/v1/count/by-tag")
   Long countByTags(@QueryParam("tag") String tags,
       @QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
 
@@ -45,7 +45,7 @@ public interface DeviceResource {
    * @param partialMatch Whether to perform a partial match on the hardware IDs.
    */
   @GET
-  @Path("/v1/device/count/by-hardware-id")
+  @Path("/v1/count/by-hardware-id")
   Long countByHardwareIds(@QueryParam("hardwareIds") String hardwareIds,
       @QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
 
@@ -56,7 +56,7 @@ public interface DeviceResource {
    * @param partialMatch Whether to perform a partial match on the hardware IDs.
    */
   @GET
-  @Path("/v1/device/find/by-hardware-id")
+  @Path("/v1/find/by-hardware-id")
   List<DeviceEntity> findByHardwareIds(@QueryParam("hardwareIds") String hardwareIds,
       @QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
 
@@ -66,46 +66,46 @@ public interface DeviceResource {
    * @param tag The tag name to search by.
    */
   @GET
-  @Path("/v1/device/find/by-tag-name")
+  @Path("/v1/find/by-tag-name")
   List<DeviceEntity> findByTagName(@QueryParam("tag") String tag);
 
   @GET
-  @Path("/v1/device/find/by-tag-id")
+  @Path("/v1/find/by-tag-id")
   List<DeviceEntity> findByTagId(@QueryParam("tag") String tagId);
 
   @GET
-  @Path("/v1/device/find")
+  @Path("/v1/find")
   Page<DeviceEntity> find(@BeanParam Pageable pageable);
 
   @GET
-  @Path("/v1/device/{deviceId}")
+  @Path("/v1/{deviceId}")
   DeviceEntity get(@PathParam("deviceId") ObjectId id);
 
   @DELETE
-  @Path("/v1/device/{deviceId}")
+  @Path("/v1/{deviceId}")
   void delete(@PathParam("deviceId") ObjectId id);
 
   @POST
-  @Path("/v1/device")
+  @Path("/v1")
   DeviceEntity save(@Valid DeviceEntity object);
 
   @GET
-  @Path("/v1/device/{deviceId}/geolocation")
+  @Path("/v1/{deviceId}/geolocation")
   GeolocationDTO getDeviceGeolocation(String deviceId);
 
   @GET
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  @Path("/v1/device/{deviceId}/download/public-key")
+  @Path("/v1/{deviceId}/download/public-key")
   Response downloadPublicKey(@PathParam("deviceId") ObjectId id);
 
   @GET
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  @Path("/v1/device/{deviceId}/download/private-key")
+  @Path("/v1/{deviceId}/download/private-key")
   Response downloadPrivateKey(@PathParam("deviceId") ObjectId id);
 
   @GET
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  @Path("/v1/device/{deviceId}/download/certificate")
+  @Path("/v1/{deviceId}/download/certificate")
   Response downloadCertificate(@PathParam("deviceId") ObjectId id);
 
 }

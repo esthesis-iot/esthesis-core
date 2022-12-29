@@ -12,17 +12,19 @@ import {DeviceDto} from "../devices/dto/device-dto";
   providedIn: "root"
 })
 export class CommandsService extends CrudService<CommandRequestDto> {
+  private prefix = environment.apiPrefix + "/command/v1";
+
   constructor(http: HttpClient) {
-    super(http, "v1/command");
+    super(http, "command/v1");
   }
 
   getReply(requestId: string): Observable<CommandReplyDto[]> {
     return this.http.get<CommandReplyDto[]>(
-      `${environment.apiPrefix}/v1/command/reply/${requestId}`);
+      `${this.prefix}/reply/${requestId}`);
   }
 
   findDevicesByHardwareId(hardwareId: string): Observable<DeviceDto[]> {
-    return this.http.get<DeviceDto[]>(`${environment.apiPrefix}/v1/command/find-devices/by-hardware-id`,
+    return this.http.get<DeviceDto[]>(`${this.prefix}/find-devices/by-hardware-id`,
       {params: new HttpParams().set("hardwareId", hardwareId)});
   }
 
@@ -32,21 +34,21 @@ export class CommandsService extends CrudService<CommandRequestDto> {
    * @param data The command data for this command.
    */
   execute(data: CommandExecuteRequestDto): Observable<any> {
-    return this.http.post<string>(`${environment.apiPrefix}/v1/command`, data, {
+    return this.http.post<string>(`${this.prefix}`, data, {
       responseType: "text" as "json"
     });
   }
 
   deleteCommand(commandId: string): Observable<any> {
-    return this.http.delete(`${environment.apiPrefix}/v1/command/${commandId}`);
+    return this.http.delete(`${this.prefix}/${commandId}`);
   }
 
   deleteReply(replyId: string): Observable<any> {
-    return this.http.delete(`${environment.apiPrefix}/v1/command/reply/${replyId}`);
+    return this.http.delete(`${this.prefix}/reply/${replyId}`);
   }
 
   deleteReplies(correlationId: string): Observable<any> {
-    return this.http.delete(`${environment.apiPrefix}/v1/command/reply/all/${correlationId}`);
+    return this.http.delete(`${this.prefix}/reply/all/${correlationId}`);
   }
 
   /**
@@ -54,10 +56,10 @@ export class CommandsService extends CrudService<CommandRequestDto> {
    * @param keepDuration The number of days to prior to which command and replies are deleted.
    */
   purge(keepDuration: number): Observable<any> {
-    return this.http.delete(`${environment.apiPrefix}/v1/command/purge/${keepDuration}`);
+    return this.http.delete(`${this.prefix}/purge/${keepDuration}`);
   }
 
   purgeAll(): Observable<any> {
-    return this.http.delete(`${environment.apiPrefix}/v1/command/purge`);
+    return this.http.delete(`${this.prefix}/command/purge`);
   }
 }

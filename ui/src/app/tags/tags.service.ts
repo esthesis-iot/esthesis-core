@@ -12,6 +12,6 @@ import {CrudService} from "../services/crud.service";
 })
 export class TagsService extends CrudService<TagDto> {
   constructor(http: HttpClient) {
-    super(http, "v1/tag");
+    super(http, "tag/v1");
   }
 }

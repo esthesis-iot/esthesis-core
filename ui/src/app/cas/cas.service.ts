@@ -12,9 +12,10 @@ import {FileSaverService} from "ngx-filesaver";
   providedIn: "root"
 })
 export class CasService extends CrudDownloadService<CaDto> {
+  private prefix = environment.apiPrefix + "/ca/v1";
 
   constructor(http: HttpClient, private utilityService: UtilityService, fs: FileSaverService) {
-    super(http, "v1/ca", fs);
+    super(http, "ca/v1", fs);
   }
 
   /**
@@ -24,7 +25,7 @@ export class CasService extends CrudDownloadService<CaDto> {
    */
   download(caId: string, type: string) {
     this.http.get(
-      `${environment.apiPrefix}/v1/ca/${caId}/download?type=${type}`, {
+      `${this.prefix}/${caId}/download?type=${type}`, {
         responseType: "blob", observe: "response"
       }).subscribe(onNext => {
       this.saveAs(onNext);
@@ -32,11 +33,11 @@ export class CasService extends CrudDownloadService<CaDto> {
   }
 
   import(form: FormGroup) {
-    return this.upload(form, `${environment.apiPrefix}/v1/ca/import`, false);
+    return this.upload(form, `${this.prefix}/import`, false);
   }
 
   getEligibleForSigning(): Observable<CaDto[]> {
-    return this.http.get<CaDto[]>(`${environment.apiPrefix}/v1/ca/eligible-for-signing`);
+    return this.http.get<CaDto[]>(`${this.prefix}/eligible-for-signing`);
   }
 
 }
