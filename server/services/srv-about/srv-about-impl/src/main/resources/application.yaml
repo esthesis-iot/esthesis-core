@@ -1,15 +1,9 @@
 quarkus:
   application:
-    name: esthesis-srv-infrastructure
+    name: esthesis-srv-about
   container-image:
     group: esthesisiot
-    name: esthesis-srv-infrastructure
-  mongodb:
-    connection-string: mongodb://mongodb:27017
-    database: esthesis
-    credentials:
-      username: esthesis
-      password: esthesis
+    name: esthesis-srv-about
   devservices:
     enabled: false
   log:

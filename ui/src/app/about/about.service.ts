@@ -8,12 +8,10 @@ import {environment} from "../../environments/environment";
   providedIn: "root"
 })
 export class AboutService {
-  private resource = `about`;
-
   constructor(private http: HttpClient) {
   }
 
   getAbout(): Observable<AboutDto> {
-    return this.http.get<AboutDto>(environment.apiPrefix + `/${this.resource}`);
+    return this.http.get<AboutDto>(environment.apiPrefix + "/v1/about/general");
   }
 }

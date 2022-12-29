@@ -11,11 +11,15 @@
           <div fxLayout="column" fxLayoutGap="1rem">
             <div>
               <div class="about-label">Version</div>
-              <div>{{about.buildVersion}}-{{about.commitIdAbbrev}}</div>
+              <div>{{about.gitVersion}}</div>
             </div>
             <div>
-              <div class="about-label">Node name</div>
-              <div>{{about.nodeId}}</div>
+              <div class="about-label">Git commit id</div>
+              <div>{{about.gitCommitId}}</div>
+            </div>
+            <div>
+              <div class="about-label">Git build date</div>
+              <div>{{about.gitBuildTime | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
             </div>
             <div>
               <div class="about-label">Digital Twin OpenAPI specification</div>
@@ -32,96 +36,6 @@
               </div>
             </div>
           </div>
-        </ng-template>
-      </mat-tab>
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <mat-icon>code</mat-icon>
-          Versioning
-        </ng-template>
-        <ng-template matTabContent>
-          <div fxLayout="column">
-            <div fxLayout="row">
-              <div class="about-label">Branch:</div>
-              <div>{{about.branch}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Build host:</div>
-              <div>{{about.buildHost}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Build time:</div>
-              <div>{{about.buildTime}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Build user email:</div>
-              <div>{{about.buildUserEmail}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Build user name:</div>
-              <div>{{about.buildUserName}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Build version:</div>
-              <div>{{about.buildVersion}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Closest tag commit count:</div>
-              <div>{{about.closestTagCommitCount}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Commit Id:</div>
-              <div>{{about.commitId}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Commit description:</div>
-              <div>{{about.commitIdAbbrev}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Commit message:</div>
-              <div>{{about.commitMessageFull}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Commit time:</div>
-              <div>{{about.commitTime}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Commit user email:</div>
-              <div>{{about.commitUserEmail}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Commit user name:</div>
-              <div>{{about.commitUserName}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Dirty:</div>
-              <div>{{about.dirty}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Local branch ahead:</div>
-              <div>{{about.localBranchAhead}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Local branch behind:</div>
-              <div>{{about.localBranchBehind}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Remote origin url:</div>
-              <div>{{about.remoteOriginUrl}}</div>
-            </div>
-            <div fxLayout="row">
-              <div class="about-label">Total commit count:</div>
-              <div>{{about.totalCommitCount}}</div>
-            </div>
-          </div>
-        </ng-template>
-      </mat-tab>
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <mat-icon>language</mat-icon>
-          Environment
-        </ng-template>
-        <ng-template matTabContent>
         </ng-template>
       </mat-tab>
     </mat-tab-group>
