@@ -40,6 +40,8 @@ public class CertificateEntity extends BaseEntity {
 
   // A name to identify this certificate by. This information is not part of the information
   // stored inside the certificate.
+  @NotNull
+  @Size(max = 256)
   private String name;
 
 }

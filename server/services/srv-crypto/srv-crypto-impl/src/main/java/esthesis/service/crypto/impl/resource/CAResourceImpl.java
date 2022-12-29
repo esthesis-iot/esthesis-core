@@ -1,9 +1,9 @@
 package esthesis.service.crypto.impl.resource;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.slugify.Slugify;
-import esthesis.common.exception.QMismatchException;
+import esthesis.common.AppConstants;
+import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
@@ -33,7 +33,8 @@ public class CAResourceImpl implements CAResource {
   @GET
   @Override
   @Path("/v1/ca/find")
-  @JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,content.parentCaId,content.type,content.validity")
+  @JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,"
+      + "content.parentCaId,content.validity,content.name")
   public Page<CaEntity> find(@BeanParam Pageable pageable) {
     return caService.find(pageable);
   }
@@ -41,7 +42,7 @@ public class CAResourceImpl implements CAResource {
   @GET
   @Override
   @Path("/v1/ca/{id}")
-  @JSONReplyFilter(filter = "id,cn,issued,parentCa,type,validity,parentCaId")
+  @JSONReplyFilter(filter = "id,cn,issued,parentCa,validity,parentCaId,name")
   public CaEntity findById(ObjectId id) {
     return caService.findById(id);
   }
@@ -49,24 +50,35 @@ public class CAResourceImpl implements CAResource {
   @GET
   @Override
   @Path("/v1/ca/eligible-for-signing")
-  @JSONReplyFilter(filter = "id,cn")
+  @JSONReplyFilter(filter = "id,cn,name")
   public List<CaEntity> getEligbleForSigning() {
     return caService.getEligibleForSigning();
   }
 
   @Override
-  public Response download(ObjectId caId) {
-    try {
-      CaEntity caEntity = caService.findById(caId);
-      String filename = Slugify.builder().underscoreSeparator(true).build()
-          .slugify(caEntity.getCn());
-      return ResponseBuilder.ok(mapper.writeValueAsString(findById(caId)))
-          .header("Content-Disposition",
-              "attachment; filename=" + filename + ".yaml").build()
-          .toResponse();
-    } catch (JsonProcessingException e) {
-      throw new QMismatchException("Could not fetch CA with id '{}'.", caId);
+  public Response download(ObjectId caId, AppConstants.KeyType type) {
+    CaEntity caEntity = caService.findById(caId);
+
+    String content;
+    String filename = Slugify.builder().underscoreSeparator(true).build()
+        .slugify(caEntity.getCn());
+    switch (type) {
+      case PRIVATE -> {
+        filename += ".key";
+        content = caEntity.getPrivateKey();
+      }
+      case PUBLIC -> {
+        filename += ".pub";
+        content = caEntity.getPublicKey();
+      }
+      case CERTIFICATE -> {
+        filename += ".crt";
+        content = caEntity.getCertificate();
+      }
+      default -> throw new QDoesNotExistException("Key type {} is not valid.", type);
     }
+    return ResponseBuilder.ok(content)
+        .header("Content-Disposition", "attachment; filename=" + filename).build().toResponse();
   }
 
   @Override

@@ -39,7 +39,8 @@ public interface CertificateResource {
   @GET
   @Path("/v1/certificate/{id}/download")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  Response download(@PathParam("id") ObjectId id, @QueryParam("type") AppConstants.KeyType type);
+  Response download(@PathParam("id") ObjectId certId,
+      @QueryParam("type") AppConstants.KeyType type);
 
   @POST
   @Path("/v1/certificate/import")

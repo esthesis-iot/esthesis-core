@@ -1,5 +1,6 @@
 package esthesis.service.crypto.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.entity.CaEntity;
@@ -15,6 +16,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.bson.types.ObjectId;
@@ -42,7 +44,7 @@ public interface CAResource {
   @GET
   @Path("/v1/ca/{id}/download")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  Response download(@PathParam("id") ObjectId id);
+  Response download(@PathParam("id") ObjectId caId, @QueryParam("type") AppConstants.KeyType type);
 
   @POST
   @Path("/v1/ca/import")

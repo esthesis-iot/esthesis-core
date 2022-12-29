@@ -2,7 +2,6 @@ package esthesis.service.crypto.impl.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.common.AppConstants.NamedSetting;
-import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QCouldNotSaveException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QMutationNotPermittedException;
@@ -17,8 +16,11 @@ import esthesis.service.settings.resource.SettingsResource;
 import io.quarkus.panache.common.Sort;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
 import java.util.List;
@@ -101,17 +103,34 @@ public class CAService extends BaseService<CaEntity> {
   }
 
   public CaEntity importCa(ImportCaForm importCaForm) {
+    CaEntity caEntity = new CaEntity();
     try {
-      CaEntity caEntity = mapper.readValue(importCaForm.getBackup().uploadedFile().toFile(),
-          CaEntity.class);
-      if (findById(caEntity.getId()) != null || findFirstByColumn("cn", caEntity.getCn()) != null) {
-        throw new QAlreadyExistsException("A CA with this CN or id already exists.");
+      // Set the keys into the certificate entity.
+      caEntity.setCertificate(
+          Files.readString(importCaForm.getCertificate().uploadedFile().toAbsolutePath()));
+      caEntity.setPrivateKey(
+          Files.readString(importCaForm.getPrivateKey().uploadedFile().toAbsolutePath()));
+      caEntity.setPublicKey(
+          Files.readString(importCaForm.getPublicKey().uploadedFile().toAbsolutePath()));
+
+      // Extract additional certificate information.
+      X509Certificate x509Certificate = cryptoService.pemToCertificate(caEntity.getCertificate());
+      caEntity.setName(importCaForm.getName());
+      caEntity.setIssued(x509Certificate.getNotBefore().toInstant());
+      caEntity.setValidity(x509Certificate.getNotAfter().toInstant());
+
+      //Set CN and parent CA.
+      String cn = cryptoService.cleanUpCn(x509Certificate.getSubjectX500Principal().getName());
+      String issuer = cryptoService.cleanUpCn(x509Certificate.getIssuerX500Principal().getName());
+      caEntity.setCn(cn);
+      if (!cn.equalsIgnoreCase(issuer)) {
+        caEntity.setParentCa(issuer);
       }
 
       super.getRepository().persistOrUpdate(caEntity);
       return caEntity;
-    } catch (IOException e) {
-      throw new QMismatchException("Could not import CA.", e);
+    } catch (IOException | CertificateException e) {
+      throw new QMismatchException("Could not import certificate.", e);
     }
   }
 }

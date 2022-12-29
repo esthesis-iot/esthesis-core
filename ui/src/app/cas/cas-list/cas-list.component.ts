@@ -14,7 +14,7 @@ import {AppConstants} from "../../app.constants";
   styleUrls: ["./cas-list.component.scss"]
 })
 export class CasListComponent extends BaseComponent implements AfterViewInit {
-  columns = ["cn", "parent", "issued", "validity"];
+  columns = ["name", "cn", "parent", "issued", "validity"];
   datasource = new MatTableDataSource<CaDto>();
   // Expose application constants.
   constants = AppConstants;

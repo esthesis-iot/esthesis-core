@@ -61,23 +61,23 @@ public class CertificateResourceImpl implements CertificateResource {
   }
 
   @Override
-  public Response download(ObjectId caId, AppConstants.KeyType type) {
-    CertificateEntity ca = certificateService.findById(caId);
+  public Response download(ObjectId certId, AppConstants.KeyType type) {
+    CertificateEntity cert = certificateService.findById(certId);
 
     String content;
-    String filename = Slugify.builder().underscoreSeparator(true).build().slugify(ca.getCn());
+    String filename = Slugify.builder().underscoreSeparator(true).build().slugify(cert.getCn());
     switch (type) {
       case PRIVATE -> {
         filename += ".key";
-        content = ca.getPrivateKey();
+        content = cert.getPrivateKey();
       }
       case PUBLIC -> {
         filename += ".pub";
-        content = ca.getPublicKey();
+        content = cert.getPublicKey();
       }
       case CERTIFICATE -> {
         filename += ".crt";
-        content = ca.getCertificate();
+        content = cert.getCertificate();
       }
       default -> throw new QDoesNotExistException("Key type {} is not valid.", type);
     }

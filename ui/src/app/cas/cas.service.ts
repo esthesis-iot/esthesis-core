@@ -18,19 +18,16 @@ export class CasService extends CrudDownloadService<CaDto> {
   }
 
   /**
-   * Downloads details about the CA, such its keys and CERTIFICATE.
-   * @param {number} caId The id of the CA to download the details of.
-   * @param {number} keyType The type of the key to download as per AppConstants.KEY_TYPE.
+   * Downloads the keys of a CA.
+   * @param caId The id of the CA to download the keys of.
+   * @param type The type of the key to download as per AppConstants.KEY_TYPE.
    */
-  download(caId: string) {
-    this.http.get(`${environment.apiPrefix}/v1/ca/${caId}/download`, {
-      responseType: "blob", observe: "response"
-    }).subscribe({
-      next: (response) => {
-        this.saveAs(response);
-      }, error: () => {
-        this.utilityService.popupError("There was an error downloading this CA, please try again later.");
-      }
+  download(caId: string, type: string) {
+    this.http.get(
+      `${environment.apiPrefix}/v1/ca/${caId}/download?type=${type}`, {
+        responseType: "blob", observe: "response"
+      }).subscribe(onNext => {
+      this.saveAs(onNext);
     });
   }
 

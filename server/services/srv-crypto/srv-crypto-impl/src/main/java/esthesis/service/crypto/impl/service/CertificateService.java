@@ -79,7 +79,7 @@ public class CertificateService extends BaseService<CertificateEntity> {
             .collect(Collectors.joining(",")));
       }
 
-      super.getRepository().persistOrUpdate(certificateEntity);
+      super.getRepository().persist(certificateEntity);
 
       return certificateEntity;
     } catch (IOException | CertificateException e) {

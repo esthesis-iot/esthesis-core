@@ -25,14 +25,25 @@ export class CasImportComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Setup the form.
+    // Set up the form.
     this.form = this.fb.group({
-      backup: ["", [Validators.required]],
+      name: ["", [Validators.required]],
+      publicKey: ["", [Validators.required]],
+      privateKey: ["", [Validators.required]],
+      certificate: ["", [Validators.required]],
     });
   }
 
-  selectFile(event: any) {
-    this.form.controls["backup"].patchValue(event.target.files[0]);
+  selectPublicKey(event: any) {
+    this.form.controls.publicKey.patchValue(event.target.files[0]);
+  }
+
+  selectPrivateKey(event: any) {
+    this.form.controls.privateKey.patchValue(event.target.files[0]);
+  }
+
+  selectCertificate(event: any) {
+    this.form.controls.certificate.patchValue(event.target.files[0]);
   }
 
   import() {
@@ -40,14 +51,14 @@ export class CasImportComponent extends BaseComponent implements OnInit {
       next: (event: HttpEvent<any>) => {
         if (event instanceof HttpResponse) {
           if (event.status === 200) {
-            this.utilityService.popupSuccess("Certificate authority restored successfully.");
+            this.utilityService.popupSuccess("Certificate Authority restored successfully.");
             this.router.navigate(["cas"]);
           } else {
-            this.utilityService.popupError("Something went wrong, please try again.");
+            this.utilityService.popupError("Could not import Certificate Authority, please try again.");
           }
         }
       }, error: (error: any) => {
-        this.utilityService.popupError(error.error);
+        this.utilityService.popupErrorWithTraceId("Could not import Certificate Authority, please try again.", error.error);
       }
     });
   }

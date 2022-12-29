@@ -26,6 +26,10 @@ public class CaEntity extends BaseEntity {
   @Size(max = 256)
   private String cn;
 
+  @NotNull
+  @Size(max = 256)
+  private String name;
+
   @JsonProperty(access = Access.READ_ONLY)
   private Instant issued;
 
@@ -46,7 +50,5 @@ public class CaEntity extends BaseEntity {
 
   // The parent CA id.
   private ObjectId parentCaId;
-
-  private int type;
 
 }

@@ -16,9 +16,9 @@ export class CertificatesService extends CrudDownloadService<CertificateDto> {
   }
 
   /**
-   * Downloads details about a certificate.
-   * @param {number} certificateId The id of the certificate to download the details of.
-   * @param {string} type The type of the key to download as per AppConstants.KEY_TYPE.
+   * Downloads they keys of a certificate.
+   * @param certificateId The id of the certificate to download the keys of.
+   * @param type The type of the key to download as per AppConstants.KEY_TYPE.
    */
   download(certificateId: string, type: string) {
     this.http.get(

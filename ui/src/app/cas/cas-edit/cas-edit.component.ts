@@ -33,10 +33,14 @@ export class CasEditComponent extends BaseComponent implements OnInit {
     // Check if an edit is performed and fetch data.
     this.id = this.route.snapshot.paramMap.get("id");
 
-    // Setup the form.
+    // Set up the form.
     this.form = this.fb.group({
       id: [""],
       cn: [{
+        value: "",
+        disabled: this.id !== AppConstants.NEW_RECORD_ID
+      }, [Validators.maxLength(256)]],
+      name: [{
         value: "",
         disabled: this.id !== AppConstants.NEW_RECORD_ID
       }, [Validators.maxLength(256)]],
@@ -110,7 +114,15 @@ export class CasEditComponent extends BaseComponent implements OnInit {
     });
   }
 
-  download(): void {
-    this.caService.download(this.id!);
+  downloadCertificate() {
+    this.caService.download(this.id!, AppConstants.KEY_TYPE.CERTIFICATE);
+  }
+
+  downloadPublicKey() {
+    this.caService.download(this.id!, AppConstants.KEY_TYPE.PUBLIC_KEY);
+  }
+
+  downloadPrivateKey() {
+    this.caService.download(this.id!, AppConstants.KEY_TYPE.PRIVATE_KEY);
   }
 }
