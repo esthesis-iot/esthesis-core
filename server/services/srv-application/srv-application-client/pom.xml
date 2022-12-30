@@ -14,12 +14,6 @@
   <artifactId>srv-application-client</artifactId>
 
   <dependencies>
-    <!-- QUARKUS -->
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-openapi</artifactId>
-    </dependency>
-    
     <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
