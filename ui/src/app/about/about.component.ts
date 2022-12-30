@@ -17,8 +17,9 @@ export class AboutComponent implements OnInit {
     // Find the location of this page, so that the Swagger URL can be constructed.
     let href = window.location.toString();
     href = href.substring(0, href.length - this.pageRouteName.length);
-    this.dtJsonUrl = href + "/api/v3/api-docs";
-    this.dtSwaggerUrl = href + "/api/swagger-ui.html";
+
+    this.dtJsonUrl = href + "/api/dt/openapi";
+    this.dtSwaggerUrl = href + "/api/dt/openapi-ui/";
   }
 
   ngOnInit() {

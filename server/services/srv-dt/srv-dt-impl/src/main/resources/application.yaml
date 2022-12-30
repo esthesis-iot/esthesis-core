@@ -22,5 +22,11 @@ quarkus:
     enabled: false
   opentelemetry:
     enabled: false
+  swagger-ui:
+    always-include: true
+    path: /api/openapi-ui
+    theme: feeling-blue
+    urls:
+      default: /api/dt/openapi
   smallrye-openapi:
     path: /api/openapi
