@@ -1,4 +1,4 @@
-package esthesis.service.application.dto;
+package esthesis.service.dt.dto;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.time.Instant;

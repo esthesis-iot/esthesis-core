@@ -22,5 +22,3 @@ quarkus:
     enabled: false
   opentelemetry:
     enabled: false
-  smallrye-openapi:
-    path: /api/openapi

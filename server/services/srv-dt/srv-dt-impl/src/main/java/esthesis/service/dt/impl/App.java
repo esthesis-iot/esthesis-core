@@ -1,4 +1,4 @@
-package esthesis.services.application.impl;
+package esthesis.service.dt.impl;
 
 import esthesis.common.banner.BannerUtil;
 import io.quarkus.runtime.StartupEvent;
@@ -9,6 +9,6 @@ import javax.enterprise.event.Observes;
 public class App {
 
   void onStart(@Observes StartupEvent ev) {
-    BannerUtil.showBanner("srv-application");
+    BannerUtil.showBanner("srv-dt");
   }
 }

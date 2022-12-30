@@ -1,11 +1,10 @@
-package esthesis.service.application.resource;
+package esthesis.service.dt.resource;
 
-import esthesis.service.application.dto.DTValueReplyDTO;
-import esthesis.service.application.security.DTSecurityFilter;
-import java.util.List;
+import esthesis.service.dt.security.DTSecurityFilter;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 @Path("/api")
 public interface DTResource {
@@ -14,30 +13,30 @@ public interface DTResource {
   @DTSecurityFilter
   @Path("/v1/get/{hardwareId}/{category}/{measurement}")
   @Produces("application/json")
-  DTValueReplyDTO findJSON(String hardwareId, String category, String measurement);
+  Response findJSON(String hardwareId, String category, String measurement);
 
   @GET
   @DTSecurityFilter
   @Path("/v1/get/{hardwareId}/{category}/{measurement}")
   @Produces("text/plain")
-  String findPlain(String hardwareId, String category,
+  Response findPlain(String hardwareId, String category,
       String measurement);
 
   @GET
   @DTSecurityFilter
   @Path("/v1/get/{hardwareId}/{category}")
   @Produces("application/json")
-  List<DTValueReplyDTO> findAllJSON(String hardwareId, String category);
+  Response findAllJSON(String hardwareId, String category);
 
   @GET
   @DTSecurityFilter
   @Path("/v1/get/{hardwareId}/{category}")
   @Produces("text/plain")
-  String findAllPlain(String hardwareId, String category);
+  Response findAllPlain(String hardwareId, String category);
 
   @GET
   @DTSecurityFilter
   @Path("/v1/measurements/{hardwareId}/{category}")
-  String findMeasurements(String hardwareId, String category);
+  Response findMeasurements(String hardwareId, String category);
 
 }

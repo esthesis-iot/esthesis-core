@@ -1,8 +1,9 @@
-package esthesis.services.application.impl.security;
+package esthesis.service.dt.impl.security;
 
 import esthesis.service.application.resource.ApplicationSystemResource;
-import esthesis.service.application.security.DTSecurityFilter;
+import esthesis.service.dt.security.DTSecurityFilter;
 import java.util.Optional;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -15,6 +16,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 @Slf4j
 @Provider
 @DTSecurityFilter
+@ApplicationScoped
 public class DTSecurityFilterProvider implements ContainerRequestFilter {
 
   private static final String ESTHESIS_TOKEN = "X-ESTHESIS-DT-APP";
