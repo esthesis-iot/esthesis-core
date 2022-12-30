@@ -8,6 +8,7 @@ import esthesis.service.common.validation.CVExceptionContainer;
 import io.quarkus.cache.Cache;
 import io.quarkus.cache.CacheName;
 import io.quarkus.cache.CacheResult;
+import java.time.Instant;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -39,15 +40,16 @@ public class ApplicationService extends BaseService<ApplicationEntity> {
   }
 
   @Override
-  public ApplicationEntity save(ApplicationEntity dto) {
-    log.debug("Saving application '{}'.", dto);
+  public ApplicationEntity save(ApplicationEntity applicationEntity) {
+    log.debug("Saving application '{}'.", applicationEntity);
     // Ensure no other application has the same name.
-    ApplicationEntity existingApplicationEntity = findFirstByColumn("name", dto.getName());
-    if (existingApplicationEntity != null && (dto.getId() == null
-        || !existingApplicationEntity.getId().equals(dto.getId()))) {
+    ApplicationEntity existingApplicationEntity = findFirstByColumn("name",
+        applicationEntity.getName());
+    if (existingApplicationEntity != null && (applicationEntity.getId() == null
+        || !existingApplicationEntity.getId().equals(applicationEntity.getId()))) {
       new CVExceptionContainer<ApplicationEntity>()
           .addViolation("name", "An application with name '{}' already "
-              + "exists.", dto.getName())
+              + "exists.", applicationEntity.getName())
           .throwCVE();
     }
 
@@ -56,9 +58,10 @@ public class ApplicationService extends BaseService<ApplicationEntity> {
       dtTokenIsValidCache.invalidate(existingApplicationEntity.getToken()).await()
           .indefinitely();
     }
-    dtTokenIsValidCache.invalidate(dto.getToken()).await().indefinitely();
+    dtTokenIsValidCache.invalidate(applicationEntity.getToken()).await().indefinitely();
 
-    return super.save(dto);
+    applicationEntity.setCreatedOn(Instant.now());
+    return super.save(applicationEntity);
   }
 
   @Override

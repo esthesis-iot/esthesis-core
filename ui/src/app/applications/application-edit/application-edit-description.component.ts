@@ -29,7 +29,7 @@ export class ApplicationEditDescriptionComponent extends BaseComponent implement
   }
 
   ngOnInit() {
-    // Setup the form.
+    // Set up the form.
     this.form = this.fb.group({
       id: [""],
       name: ["", [Validators.maxLength(256)]],
@@ -51,10 +51,14 @@ export class ApplicationEditDescriptionComponent extends BaseComponent implement
 
   save() {
     this.applicationService.save(this.qForms.cleanupData(this.form.getRawValue()) as ApplicationDto)
-    .subscribe(() => {
-      this.utilityService.popupSuccess(this.form.value.id ? "Application was successfully edited."
-        : "Application was successfully created.");
-      this.router.navigate(["applications"]);
+    .subscribe({
+      next: () => {
+        this.utilityService.popupSuccess(this.form.value.id ? "Application was successfully edited."
+          : "Application was successfully created.");
+        this.router.navigate(["applications"]);
+      }, error: (err) => {
+        this.utilityService.popupErrorWithTraceId("Could not save application, please try again later.", err);
+      }
     });
   }
 

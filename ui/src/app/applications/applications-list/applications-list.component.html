@@ -29,7 +29,7 @@
         <ng-container matColumnDef="createdOn">
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Created On</th>
           <td mat-cell
-              *matCellDef="let element">{{element.createdOn | date: constants.DATE_FORMAT}}</td>
+              *matCellDef="let element">{{element.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; let element; columns: displayedColumns;"
