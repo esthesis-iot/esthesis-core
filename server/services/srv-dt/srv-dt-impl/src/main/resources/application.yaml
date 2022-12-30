@@ -25,7 +25,6 @@ quarkus:
   swagger-ui:
     always-include: true
     path: /api/openapi-ui
-    theme: feeling-blue
     urls:
       default: /api/dt/openapi
   smallrye-openapi:
