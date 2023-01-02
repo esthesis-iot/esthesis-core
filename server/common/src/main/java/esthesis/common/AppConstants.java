@@ -74,6 +74,17 @@ public class AppConstants {
     }
   }
 
+  public static class Audit {
+
+    public enum Category {
+      OTHER, DEVICE
+    }
+
+    public enum Operation {
+      READ, WRITE, DELETE, OTHER
+    }
+  }
+
 //  public static class Campaign {
 //    public static class Member {
 //      public static class Type {

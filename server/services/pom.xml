@@ -100,5 +100,6 @@
     <module>srv-infrastructure</module>
     <module>srv-about</module>
     <module>srv-dt</module>
+    <module>srv-audit</module>
   </modules>
 </project>

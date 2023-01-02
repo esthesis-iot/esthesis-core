@@ -13,5 +13,5 @@ version: 3.0.0-SNAPSHOT
 
 dependencies:
   - name: mongodb
-    version: 13.6.0
+    version: 13.6.2
     repository: https://charts.bitnami.com/bitnami

@@ -28,7 +28,7 @@
     "@ngx-formly/core": "6.0.0",
     "@ngx-formly/material": "6.0.0",
     "@qlack/form-validation": "1.5.0",
-    "@qlack/forms": "2.10.0",
+    "@qlack/forms": "2.10.1",
     "@swimlane/ngx-charts": "20.1.0",
     "@types/js-yaml": "3.12.5",
     "@yellowspot/ng-truncate": "2.0.2",

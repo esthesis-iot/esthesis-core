@@ -4,13 +4,14 @@ import {MatSort} from "@angular/material/sort";
 import {MatTableDataSource} from "@angular/material/table";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import * as moment from "moment";
 import {AuditDto} from "../dto/audit-dto";
 import {AuditService} from "../audit.service";
 import {UserService} from "../../users/user.service";
-import {KeyValueDto} from "../../dto/key-value-dto";
 import {BaseComponent} from "../../shared/component/base-component";
 import {QFilterAlias, QFormsService} from "@qlack/forms";
+import {UtilityService} from "../../shared/service/utility.service";
+import * as _ from "lodash";
+import * as moment from "moment";
 
 @Component({
   selector: "app-audit-list",
@@ -19,38 +20,47 @@ import {QFilterAlias, QFormsService} from "@qlack/forms";
 })
 export class AuditListComponent extends BaseComponent implements OnInit, AfterViewInit {
   // Columns to display.
-  displayedColumns = ["createdOn", "level", "event", "description"];
+  displayedColumns = ["createdOn", "createdBy", "category", "operation", "message"];
 
   // Datasource definition.
   datasource: MatTableDataSource<AuditDto> = new MatTableDataSource<AuditDto>();
 
   // Search filter.
   filterForm: FormGroup;
-  auditEvents: KeyValueDto[] | undefined;
-  auditLevels: KeyValueDto[] | undefined;
+  auditCategories: string[] | undefined;
+  auditOperations: string[] | undefined;
 
   // References to sorting and pagination.
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private auditService: AuditService, private fb: FormBuilder,
-    private userService: UserService, private qForms: QFormsService) {
+    private userService: UserService, private qForms: QFormsService,
+    private utilityService: UtilityService) {
     super();
     this.filterForm = this.fb.group({
       dateFrom: ["", null],
       dateTo: ["", null],
-      level: ["", null],
-      event: ["", null],
+      operation: ["", null],
+      category: ["", null],
       user_id: ["", null]
     });
   }
 
   ngOnInit() {
-    this.auditService.getEvents().subscribe(onNext => {
-      this.auditEvents = onNext;
+    this.auditService.getCategories().subscribe({
+      next: (categories: string[]) => {
+        this.auditCategories = _.sortBy(categories);
+      }, error: (onError: any) => {
+        this.utilityService.popupErrorWithTraceId("Could not fetch audit categories.", onError);
+      }
     });
-    this.auditService.getLevels().subscribe(onNext => {
-      this.auditLevels = onNext;
+    this.auditService.getOperations().subscribe({
+      next: (operations: string[]) => {
+        this.auditOperations = _.sortBy(operations);
+      }, error: (onError: any) => {
+        this.utilityService.popupErrorWithTraceId("Could not fetch audit operations.", onError);
+      }
     });
 
     // Listen for filter changes to fetch new data.
@@ -87,12 +97,16 @@ export class AuditListComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     // Convert FormGroup to a query string to pass as a filter.
-    this.auditService.getLogs(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(), [
-      new QFilterAlias("dateFrom", "createdOn"),
-      new QFilterAlias("dateTo", "createdOn")], false, page, size, sort, sortDirection))
-    .subscribe(onNext => {
-      this.datasource.data = onNext.content;
-      this.paginator.length = onNext.totalElements;
+    this.auditService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(), [
+      new QFilterAlias("dateFrom", "createdOn>="),
+      new QFilterAlias("dateTo", "createdOn<=")], false, page, size, sort, sortDirection))
+    .subscribe({
+      next: (reply: any) => {
+        this.datasource.data = reply.content;
+        this.paginator.length = reply.totalElements;
+      }, error: (onError: any) => {
+        this.utilityService.popupErrorWithTraceId("Could not fetch audit logs.", onError);
+      }
     });
   }
 

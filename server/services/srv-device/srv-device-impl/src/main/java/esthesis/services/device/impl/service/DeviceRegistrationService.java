@@ -1,6 +1,7 @@
 package esthesis.services.device.impl.service;
 
 import esthesis.common.AppConstants;
+import esthesis.common.AppConstants.Audit.Operation;
 import esthesis.common.AppConstants.DeviceRegistrationMode;
 import esthesis.common.AppConstants.DeviceStatus;
 import esthesis.common.AppConstants.NamedSetting;
@@ -8,6 +9,8 @@ import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QDisabledException;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.exception.QSecurityException;
+import esthesis.service.audit.entity.AuditEntity;
+import esthesis.service.audit.resource.AuditResource;
 import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.service.crypto.resource.KeyResource;
 import esthesis.service.device.dto.DeviceKeyDTO;
@@ -30,6 +33,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.operator.OperatorCreationException;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
@@ -50,6 +54,13 @@ public class DeviceRegistrationService {
   @Inject
   @RestClient
   SettingsResource settingsResource;
+
+  @Inject
+  @RestClient
+  AuditResource auditResource;
+
+  @Inject
+  JsonWebToken jwt;
 
   /**
    * Checks if device-pushed tags exist in the system and report the ones that do not exist.
@@ -92,6 +103,14 @@ public class DeviceRegistrationService {
     for (String hardwareId : idList) {
       log.debug("Requested to preregister a device with hardware id '{}'.", hardwareId);
       register(hardwareId, deviceRegistration.getTags(), DeviceStatus.PREREGISTERED);
+      System.out.println(jwt);
+      auditResource.save(
+          new AuditEntity()
+              .setCreatedOn(Instant.now())
+              .setCreatedBy(jwt.getName())
+              .setMessage("Preregistering device with hardware id '" + hardwareId + "'.")
+              .setOperation(Operation.WRITE)
+              .setCategory(AppConstants.Audit.Category.DEVICE));
     }
   }
 

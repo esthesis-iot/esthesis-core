@@ -17,16 +17,16 @@
           <mat-datepicker #dateToPicker disabled="false"></mat-datepicker>
         </mat-form-field>
         <mat-form-field>
-          <mat-select placeholder="Level" formControlName="level">
-            <mat-option *ngFor="let i of auditLevels" [value]="i.key">
-              {{ i.value }}
+          <mat-select placeholder="Category" formControlName="category">
+            <mat-option *ngFor="let i of auditCategories" [value]="i">
+              {{ i }}
             </mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
-          <mat-select placeholder="Event" formControlName="event">
-            <mat-option *ngFor="let i of auditEvents" [value]="i.key">
-              {{ i.value }}
+          <mat-select placeholder="Operation" formControlName="operation">
+            <mat-option *ngFor="let i of auditOperations" [value]="i">
+              {{ i}}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -44,18 +44,23 @@
             {{element.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="level">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Level</th>
-          <td mat-cell *matCellDef="let element"> {{element.level}}</td>
+        <ng-container matColumnDef="createdBy">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> User</th>
+          <td mat-cell *matCellDef="let element"> {{element.createdBy}}</td>
         </ng-container>
-        <ng-container matColumnDef="event">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Event</th>
-          <td mat-cell *matCellDef="let element"> {{element.event}}</td>
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Category</th>
+          <td mat-cell *matCellDef="let element"> {{element.category}}</td>
         </ng-container>
-        <ng-container matColumnDef="description">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Description</th>
-          <td mat-cell *matCellDef="let element"> {{element.shortDescription}}</td>
+        <ng-container matColumnDef="operation">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Operation</th>
+          <td mat-cell *matCellDef="let element"> {{element.operation}}</td>
         </ng-container>
+        <ng-container matColumnDef="message">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Message</th>
+          <td mat-cell *matCellDef="let element"> {{element.message}}</td>
+        </ng-container>
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; let element; columns: displayedColumns;"
             [routerLink]="element.id"></tr>
