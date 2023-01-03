@@ -37,11 +37,11 @@ pipeline {
         }
         stage('Produce bom.xml'){
             parallel {
-                stage('Produce bom.xml for server') {
+               /* stage('Produce bom.xml for server') {
                     steps{
                         sh 'mvn -f server/pom.xml org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom'
                     }
-                }
+                }*/
                 stage('Produce bom.xml for ui') {
                     steps{
                         sh '''
@@ -59,7 +59,7 @@ pipeline {
                 sh '''
                     cat > payload.json <<__HERE__
                     {
-                      "project": "b2baacfa-12b5-44b2-972d-d7ef1a8a995e",
+                      "project": "5baeb351-c096-4576-b102-357d2850eba3",
                       "bom": "$(cat server/target/bom.xml |base64 -w 0 -)"
                     }
                     __HERE__
