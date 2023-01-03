@@ -125,6 +125,7 @@ public class AvroUtils {
     }
 
     // Split the line into category, measurements, and optional timestamp.
+    @SuppressWarnings("java:S5998")
     String[] parts = line.split(" +(?=((.*?(?<!\\\\)\"){2})*[^\"]*$)");
 
     if (parts.length < 2) {
