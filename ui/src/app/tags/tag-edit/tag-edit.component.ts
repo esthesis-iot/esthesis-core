@@ -42,8 +42,12 @@ export class TagEditComponent extends BaseComponent implements OnInit {
     });
     // Fill-in the form with data if editing an existing item.
     if (this.id !== this.appConstants.NEW_RECORD_ID) {
-      this.tagService.findById(this.id).subscribe(onNext => {
-        this.form.patchValue(onNext);
+      this.tagService.findById(this.id).subscribe({
+        next: (tag) => {
+          this.form.patchValue(tag);
+        }, error: (err) => {
+          this.utilityService.popupErrorWithTraceId("There was an error trying to retrieve this tag.", err);
+        }
       });
     } else {
       this.form.patchValue({

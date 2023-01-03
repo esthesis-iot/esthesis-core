@@ -38,10 +38,17 @@ public class AuditedInterceptor {
     Audited audited = method.getAnnotation(Audited.class);
 
     // Capture before data.
-    String beforeValue = "";
+    StringBuilder beforeValue = new StringBuilder("{");
+    int i = 0;
     for (Object parameter : ctx.getParameters()) {
-      beforeValue += mapper.writeValueAsString(parameter) + "\n";
+      beforeValue.append("\"arg" + i + "\":");
+      beforeValue.append(mapper.writeValueAsString(parameter) + ",");
+      i++;
     }
+    if (beforeValue.length() > 0) {
+      beforeValue.deleteCharAt(beforeValue.length() - 1);
+    }
+    beforeValue.append("}");
 
     // Execute the method.
     Object reply = ctx.proceed();
@@ -54,7 +61,7 @@ public class AuditedInterceptor {
         .setCreatedOn(Instant.now())
         .setCreatedBy(jwt.getName());
     if (StringUtils.isNotBlank(beforeValue)) {
-      auditEntity.setValueIn(beforeValue);
+      auditEntity.setValueIn(beforeValue.toString());
     }
     if (reply != null) {
       auditEntity.setValueOut(mapper.writeValueAsString(reply));

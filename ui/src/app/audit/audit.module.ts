@@ -15,10 +15,13 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {AuditListComponent} from "./audit-list/audit-list.component";
 import {QFormsModule} from "@qlack/forms";
 import {DateSupportModule} from "../shared/module/date-support.module";
+import {AuditViewComponent} from "./audit-view/audit-view.component";
+import {NgxJsonViewerModule} from "ngx-json-viewer";
 
 @NgModule({
   declarations: [
-    AuditListComponent
+    AuditListComponent,
+    AuditViewComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +38,8 @@ import {DateSupportModule} from "../shared/module/date-support.module";
     ReactiveFormsModule,
     MatSortModule,
     MatIconModule,
-    DateSupportModule
+    DateSupportModule,
+    NgxJsonViewerModule
   ]
 })
 export class AuditModule {

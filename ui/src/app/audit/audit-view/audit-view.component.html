@@ -1,0 +1,74 @@
+<mat-card>
+  <mat-card-title>Audit event</mat-card-title>
+  <mat-card-content class="mt2" *ngIf="(auditEvent| json) != '{}'">
+    <div fxLayout="column" fxLayoutGap="0.5rem">
+      <div fxLayout="row">
+        <div class="label-text">
+          User:
+        </div>
+        <div>
+          {{auditEvent.createdBy}}
+        </div>
+      </div>
+      <div fxLayout="row">
+        <div class="label-text">
+          Date:
+        </div>
+        <div>
+          {{auditEvent.createdOn | amFromUtc | amLocal }}
+        </div>
+      </div>
+      <div fxLayout="row">
+        <div class="label-text">
+          Category:
+        </div>
+        <div>
+          {{auditEvent.category}}
+        </div>
+      </div>
+      <div fxLayout="row">
+        <div class="label-text">
+          Operation:
+        </div>
+        <div>
+          {{auditEvent.operation}}
+        </div>
+      </div>
+      <div fxLayout="row">
+        <div class="label-text">
+          Message:
+        </div>
+        <div>
+          {{auditEvent.message}}
+        </div>
+      </div>
+    </div>
+
+    <div fxLayout="row" class="mt3"></div>
+    <div fxLayout="row">
+      <div class="label-text" fxFlex="50%">
+        Data input
+      </div>
+      <div class="label-text" fxFlex="50%" fxLayoutAlign="end">
+        Data output
+      </div>
+    </div>
+    <div fxLayout="row" fxLayoutGap="1rem">
+      <div class="json-view" fxFlex="50%">
+        <ngx-json-viewer *ngIf="auditEvent.valueIn"
+                         [expanded]="false" [json]="auditEvent.valueIn"></ngx-json-viewer>
+      </div>
+      <div class="json-view" fxFlex="50%">
+        <ngx-json-viewer *ngIf="auditEvent.valueOut"
+                         [expanded]="false" [json]="auditEvent.valueOut"></ngx-json-viewer>
+      </div>
+    </div>
+
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button routerLink="/tags">CANCEL</button>
+    <button mat-button color="warn" (click)="delete()" *ngIf="id !== appConstants.NEW_RECORD_ID">
+      DELETE
+    </button>
+  </mat-card-actions>
+</mat-card>

@@ -47,6 +47,7 @@
     "ngx-chips": "3.0.0",
     "ngx-filesaver": "^14.0.0",
     "ngx-filesize": "3.0.1",
+    "ngx-json-viewer": "^3.2.1",
     "ngx-mask": "14.2.3",
     "ngx-moment": "6.0.2",
     "ngx-progressbar": "8.0.0",

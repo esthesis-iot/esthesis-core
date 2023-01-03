@@ -5,4 +5,6 @@ export interface AuditDto {
   category: string;
   operation: string;
   message: string;
+  valueIn: string;
+  valueOut: string;
 }
