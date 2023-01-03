@@ -58,7 +58,7 @@ public class StoreResourceImpl implements StoreResource {
   }
 
   @Override
-  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Download store")
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Download store", log = AuditLogType.DATA_IN)
   public Response download(ObjectId id) {
     try {
       StoreEntity storeEntity = storeService.findById(id);

@@ -10,6 +10,7 @@ import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.form.ProvisioningPackageForm;
 import esthesis.service.provisioning.impl.service.ProvisioningService;
 import esthesis.service.provisioning.resource.ProvisioningResource;
+import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Uni;
 import java.util.List;
 import javax.inject.Inject;
@@ -67,7 +68,9 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
   }
 
   @Override
-  @Audited(cat = Category.PROVISIONING, op = Operation.READ, msg = "Download provisioning package")
+  @Blocking
+  @Audited(cat = Category.PROVISIONING, op = Operation.READ, msg = "Download provisioning "
+      + "package", log = AuditLogType.DATA_IN)
   public Uni<RestResponse<byte[]>> download(ObjectId provisioningPackageId) {
     ProvisioningPackageEntity pp = provisioningService.findById(provisioningPackageId);
     Uni<byte[]> binary = provisioningService.download(provisioningPackageId);

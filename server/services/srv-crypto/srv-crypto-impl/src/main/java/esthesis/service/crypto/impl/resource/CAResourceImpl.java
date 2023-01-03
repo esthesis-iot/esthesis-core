@@ -63,7 +63,7 @@ public class CAResourceImpl implements CAResource {
   }
 
   @Override
-  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Download certificate authority")
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Download certificate authority", log = AuditLogType.DATA_IN)
   public Response download(ObjectId caId, AppConstants.KeyType type) {
     CaEntity caEntity = caService.findById(caId);
 

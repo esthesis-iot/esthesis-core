@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {MatTableDataSource} from "@angular/material/table";
@@ -16,7 +16,7 @@ import {TagsService} from "../../tags/tags.service";
   templateUrl: "./infrastructure-mqtt.component.html",
   styleUrls: ["./infrastructure-mqtt.component.scss"]
 })
-export class InfrastructureMqttComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class InfrastructureMqttComponent extends BaseComponent implements AfterViewInit {
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
@@ -30,17 +30,14 @@ export class InfrastructureMqttComponent extends BaseComponent implements OnInit
     super();
   }
 
-  ngOnInit() {
-  }
-
   ngAfterViewInit(): void {
     // Initial fetch of data.
     this.fetchData(0, this.paginator.pageSize, this.sort.active, this.sort.start);
 
     // Each time the sorting changes, reset the page number.
-    this.sort!.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
-      this.paginator!.pageIndex = 0;
-      this.fetchData(0, this.paginator!.pageSize, onNext.active, onNext.direction);
+    this.sort.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
+      this.paginator.pageIndex = 0;
+      this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
     });
 
     // Get available tags.
@@ -60,7 +57,7 @@ export class InfrastructureMqttComponent extends BaseComponent implements OnInit
     .subscribe({
       next: (mqttServers: QPageableReply<InfrastructureMqttDto>) => {
         this.datasource.data = mqttServers.content;
-        this.paginator!.length = mqttServers.totalElements;
+        this.paginator.length = mqttServers.totalElements;
       }, error: (error: any) => {
         this.utilityService.popupErrorWithTraceId("Could not fetch MQTT servers.", error);
       }
@@ -69,7 +66,7 @@ export class InfrastructureMqttComponent extends BaseComponent implements OnInit
 
   changePage() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-      this.sort!.start);
+      this.sort.start);
   }
 
   resolveTag(ids: string[]): string {

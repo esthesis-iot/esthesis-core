@@ -1,5 +1,6 @@
 package esthesis.service.provisioning.form;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import javax.ws.rs.core.MediaType;
 import lombok.Data;
@@ -13,6 +14,7 @@ import org.jboss.resteasy.reactive.multipart.FileUpload;
 public class ProvisioningPackageForm extends ProvisioningPackageEntity {
 
   @RestForm
+  @JsonIgnore
   @PartType(MediaType.APPLICATION_OCTET_STREAM)
-  public FileUpload file;
+  public transient FileUpload file;
 }

@@ -76,11 +76,15 @@ export class DeviceTerminalComponent extends BaseComponent implements AfterViewI
 
   ngAfterViewInit(): void {
     this.terminal.onKey().subscribe(e => {
-      if (!this.blockInput) {
-        const ev = e.domEvent;
-        const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey;
+      if (this.blockInput) {
+        return;
+      }
 
-        if (ev.key === "Enter") {
+      const ev = e.domEvent;
+      const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey;
+
+      switch (ev.key) {
+        case "Enter":
           this.terminal.write("\r\n");
           if (this.command.trim().length > 0) {
             this.addToHistory(this.command);
@@ -89,13 +93,16 @@ export class DeviceTerminalComponent extends BaseComponent implements AfterViewI
             this.terminal.write("$ ");
           }
           this.historyPointer = this.history.length;
-        } else if (ev.key === "ArrowDown") {
+          break;
+        case "ArrowDown":
           this.historyPointer++;
           this.replaceFromHistory();
-        } else if (ev.key === "ArrowUp") {
+          break;
+        case "ArrowUp":
           this.historyPointer--;
           this.replaceFromHistory();
-        } else if (ev.key === "Backspace") { // BACKSPACE
+          break;
+        case "Backspace":
           // Do not delete the prompt
           if (this.terminal.underlying.buffer.active.cursorX > 2) {
             this.terminal.write("\b \b");
@@ -103,13 +110,15 @@ export class DeviceTerminalComponent extends BaseComponent implements AfterViewI
           if (this.command.length > 0) {
             this.command = this.command.substring(0, this.command.length - 1);
           }
-        } else if (ev.ctrlKey && (ev.key === "c" || ev.key === "C")) {
-          this.command = "";
-          this.terminal.write("\r\n$ ");
-        } else if (printable) {
-          this.terminal.write(e.key);
-          this.command += e.key;
-        }
+          break;
+        default:
+          if (ev.ctrlKey && (ev.key === "c" || ev.key === "C")) {
+            this.command = "";
+            this.terminal.write("\r\n$ ");
+          } else if (printable) {
+            this.terminal.write(e.key);
+            this.command += e.key;
+          }
       }
     });
 
