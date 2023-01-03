@@ -43,7 +43,7 @@ export class AuditListComponent extends BaseComponent implements OnInit, AfterVi
       dateTo: ["", null],
       operation: ["", null],
       category: ["", null],
-      user_id: ["", null]
+      createdBy: ["", null]
     });
   }
 
