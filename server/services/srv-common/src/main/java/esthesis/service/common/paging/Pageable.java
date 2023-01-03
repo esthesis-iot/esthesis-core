@@ -1,5 +1,6 @@
 package esthesis.service.common.paging;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.panache.common.Sort;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
@@ -23,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 public class Pageable {
 
   @Context
+  @JsonIgnore // Do not serialize this field, especially when auditing.
   private UriInfo uriInfo;
 
   @QueryParam("page")

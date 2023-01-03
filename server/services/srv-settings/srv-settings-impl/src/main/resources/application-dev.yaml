@@ -18,6 +18,9 @@ quarkus:
     DataflowSystemResource:
       url: http://localhost:59060
       scope: Singleton
+    AuditResource:
+      url: http://localhost:59140
+      scope: Singleton
   redis:
     hosts: redis://:esthesis@esthesis-dev-redis:6379/0
   opentelemetry:

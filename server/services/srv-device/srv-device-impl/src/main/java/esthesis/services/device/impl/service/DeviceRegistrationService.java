@@ -1,7 +1,6 @@
 package esthesis.services.device.impl.service;
 
 import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Audit.Operation;
 import esthesis.common.AppConstants.DeviceRegistrationMode;
 import esthesis.common.AppConstants.DeviceStatus;
 import esthesis.common.AppConstants.NamedSetting;
@@ -9,7 +8,6 @@ import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QDisabledException;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.exception.QSecurityException;
-import esthesis.service.audit.ccc.Audited;
 import esthesis.service.audit.resource.AuditResource;
 import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.service.crypto.resource.KeyResource;
@@ -81,8 +79,6 @@ public class DeviceRegistrationService {
    *
    * @param deviceRegistration The preregistration details of the device.
    */
-  @Audited(cat = AppConstants.Audit.Category.DEVICE, op = Operation.WRITE,
-      msg = "Device preregistration.")
   public void preregister(DeviceRegistrationDTO deviceRegistration)
   throws NoSuchAlgorithmException, OperatorCreationException, InvalidKeySpecException,
          NoSuchProviderException, IOException {

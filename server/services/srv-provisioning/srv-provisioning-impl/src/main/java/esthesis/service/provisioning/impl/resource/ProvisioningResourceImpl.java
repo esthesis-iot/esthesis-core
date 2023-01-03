@@ -1,5 +1,9 @@
 package esthesis.service.provisioning.impl.resource;
 
+import esthesis.common.AppConstants.Audit.Category;
+import esthesis.common.AppConstants.Audit.Operation;
+import esthesis.service.audit.ccc.Audited;
+import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
@@ -25,36 +29,45 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
   @GET
   @Override
   @Path("/v1/find")
+  @Audited(cat = Category.PROVISIONING, op = Operation.READ, msg = "Search provisioning packages"
+      , log = AuditLogType.DATA_IN)
   public Page<ProvisioningPackageEntity> find(@BeanParam Pageable pageable) {
     return provisioningService.find(pageable);
   }
 
   @Override
+  @Audited(cat = Category.PROVISIONING, op = Operation.WRITE, msg = "Recache all provisioning "
+      + "packages")
   public void recacheAll() {
     provisioningService.cacheAll();
   }
 
   @Override
+  @Audited(cat = Category.PROVISIONING, op = Operation.READ, msg = "View provisioning package")
   public ProvisioningPackageEntity findById(ObjectId id) {
     return provisioningService.findById(id);
   }
 
   @Override
+  @Audited(cat = Category.PROVISIONING, op = Operation.WRITE, msg = "Recache provisioning package")
   public void recache(ObjectId provisioningPackageId) {
     provisioningService.recache(provisioningPackageId);
   }
 
   @Override
+  @Audited(cat = Category.PROVISIONING, op = Operation.WRITE, msg = "Save provisioning package")
   public ProvisioningPackageEntity save(ProvisioningPackageForm pf) {
     return provisioningService.save(pf);
   }
 
   @Override
+  @Audited(cat = Category.PROVISIONING, op = Operation.DELETE, msg = "Delete provisioning package")
   public void delete(ObjectId provisioningPackageId) {
     provisioningService.delete(provisioningPackageId);
   }
 
   @Override
+  @Audited(cat = Category.PROVISIONING, op = Operation.READ, msg = "Download provisioning package")
   public Uni<RestResponse<byte[]>> download(ObjectId provisioningPackageId) {
     ProvisioningPackageEntity pp = provisioningService.findById(provisioningPackageId);
     Uni<byte[]> binary = provisioningService.download(provisioningPackageId);

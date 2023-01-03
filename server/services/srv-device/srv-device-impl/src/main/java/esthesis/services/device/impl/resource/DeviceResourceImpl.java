@@ -1,5 +1,9 @@
 package esthesis.services.device.impl.resource;
 
+import esthesis.common.AppConstants.Audit.Category;
+import esthesis.common.AppConstants.Audit.Operation;
+import esthesis.service.audit.ccc.Audited;
+import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
@@ -35,6 +39,8 @@ public class DeviceResourceImpl implements DeviceResource {
   JsonWebToken jwt;
 
   @Override
+  @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "Search devices", log =
+      AuditLogType.DATA_IN)
   public Page<DeviceEntity> find(@BeanParam Pageable pageable) {
     return deviceService.find(pageable, true);
   }
@@ -43,16 +49,19 @@ public class DeviceResourceImpl implements DeviceResource {
   @Override
   @Path("/v1/{id}")
   @JSONReplyFilter(filter = "hardwareId,id,status,tags,lastSeen")
+  @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "View device")
   public DeviceEntity get(@PathParam("id") ObjectId id) {
     return deviceService.findById(id);
   }
 
   @Override
+  @Audited(cat = Category.DEVICE, op = Operation.DELETE, msg = "Delete device")
   public void delete(@PathParam("id") ObjectId id) {
     deviceService.deleteById(id);
   }
 
   @Override
+  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Save device")
   public DeviceEntity save(@Valid DeviceEntity object) {
     return deviceService.save(object);
   }
@@ -100,6 +109,7 @@ public class DeviceResourceImpl implements DeviceResource {
 
   @Override
   @SuppressWarnings("java:S1192")
+  @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "Download device public key")
   public Response downloadPublicKey(ObjectId id) {
     return ResponseBuilder.ok(deviceService.downloadPublicKey(id))
         .header("Content-Disposition",
@@ -109,6 +119,7 @@ public class DeviceResourceImpl implements DeviceResource {
 
   @Override
   @SuppressWarnings("java:S1192")
+  @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "Download device private key")
   public Response downloadPrivateKey(ObjectId id) {
     return ResponseBuilder.ok(deviceService.downloadPrivateKey(id))
         .header("Content-Disposition",
@@ -118,6 +129,7 @@ public class DeviceResourceImpl implements DeviceResource {
 
   @Override
   @SuppressWarnings("java:S1192")
+  @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "Download device certificate")
   public Response downloadCertificate(ObjectId id) {
     return ResponseBuilder.ok(deviceService.downloadCertificate(id))
         .header("Content-Disposition",

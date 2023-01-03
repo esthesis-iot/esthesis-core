@@ -1,6 +1,9 @@
 package esthesis.services.device.impl.resource;
 
+import esthesis.common.AppConstants.Audit.Category;
+import esthesis.common.AppConstants.Audit.Operation;
 import esthesis.common.exception.QAlreadyExistsException;
+import esthesis.service.audit.ccc.Audited;
 import esthesis.service.common.validation.CVExceptionContainer;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
 import esthesis.service.device.entity.DeviceEntity;
@@ -22,6 +25,7 @@ public class DeviceRegistrationResourceImpl implements
   DeviceRegistrationService deviceRegistrationService;
 
   @Override
+  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Preregistering device")
   public Response preregister(@Valid DeviceRegistrationDTO deviceRegistration)
   throws NoSuchAlgorithmException, IOException, OperatorCreationException,
          InvalidKeySpecException, NoSuchProviderException {
@@ -37,6 +41,7 @@ public class DeviceRegistrationResourceImpl implements
   }
 
   @Override
+  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Activating preregistered device")
   public DeviceEntity activatePreregisteredDevice(String hardwareId) {
     return deviceRegistrationService.activatePreregisteredDevice(hardwareId);
   }

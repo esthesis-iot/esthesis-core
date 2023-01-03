@@ -3,7 +3,11 @@ package esthesis.service.crypto.impl.resource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.slugify.Slugify;
 import esthesis.common.AppConstants;
+import esthesis.common.AppConstants.Audit.Category;
+import esthesis.common.AppConstants.Audit.Operation;
 import esthesis.common.exception.QDoesNotExistException;
+import esthesis.service.audit.ccc.Audited;
+import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
@@ -35,6 +39,8 @@ public class CAResourceImpl implements CAResource {
   @Path("/v1/find")
   @JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,"
       + "content.parentCaId,content.validity,content.name")
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Search certificate authorities",
+      log = AuditLogType.DATA_IN)
   public Page<CaEntity> find(@BeanParam Pageable pageable) {
     return caService.find(pageable);
   }
@@ -43,6 +49,7 @@ public class CAResourceImpl implements CAResource {
   @Override
   @Path("/v1/{id}")
   @JSONReplyFilter(filter = "id,cn,issued,parentCa,validity,parentCaId,name")
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "View certificate authority")
   public CaEntity findById(ObjectId id) {
     return caService.findById(id);
   }
@@ -56,6 +63,7 @@ public class CAResourceImpl implements CAResource {
   }
 
   @Override
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Download certificate authority")
   public Response download(ObjectId caId, AppConstants.KeyType type) {
     CaEntity caEntity = caService.findById(caId);
 
@@ -82,16 +90,19 @@ public class CAResourceImpl implements CAResource {
   }
 
   @Override
+  @Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Import certificate authority")
   public CaEntity importCa(ImportCaForm importCaForm) {
     return caService.importCa(importCaForm);
   }
 
   @Override
+  @Audited(cat = Category.CRYPTO, op = Operation.DELETE, msg = "Delete certificate authority")
   public void delete(ObjectId id) {
     caService.deleteById(id);
   }
 
   @Override
+  @Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Save certificate authority")
   public CaEntity save(CaEntity caEntity) {
     return caService.save(caEntity);
   }

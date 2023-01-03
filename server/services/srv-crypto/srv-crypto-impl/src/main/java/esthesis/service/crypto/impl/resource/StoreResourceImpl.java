@@ -1,7 +1,11 @@
 package esthesis.service.crypto.impl.resource;
 
 import com.github.slugify.Slugify;
+import esthesis.common.AppConstants.Audit.Category;
+import esthesis.common.AppConstants.Audit.Operation;
 import esthesis.common.exception.QExceptionWrapper;
+import esthesis.service.audit.ccc.Audited;
+import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.entity.StoreEntity;
@@ -30,26 +34,31 @@ public class StoreResourceImpl implements StoreResource {
   StoreService storeService;
 
   @Override
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Search stores", log = AuditLogType.DATA_IN)
   public Page<StoreEntity> find(Pageable pageable) {
     return storeService.find(pageable);
   }
 
   @Override
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "View store")
   public StoreEntity findById(ObjectId id) {
     return storeService.findById(id);
   }
 
   @Override
+  @Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Save store")
   public StoreEntity save(StoreEntity storeEntity) {
     return storeService.save(storeEntity);
   }
 
   @Override
+  @Audited(cat = Category.CRYPTO, op = Operation.DELETE, msg = "Delete store")
   public void delete(ObjectId id) {
     storeService.deleteById(id);
   }
 
   @Override
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Download store")
   public Response download(ObjectId id) {
     try {
       StoreEntity storeEntity = storeService.findById(id);

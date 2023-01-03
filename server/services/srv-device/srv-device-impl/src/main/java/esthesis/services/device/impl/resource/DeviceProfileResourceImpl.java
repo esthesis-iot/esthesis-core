@@ -1,5 +1,8 @@
 package esthesis.services.device.impl.resource;
 
+import esthesis.common.AppConstants.Audit.Category;
+import esthesis.common.AppConstants.Audit.Operation;
+import esthesis.service.audit.ccc.Audited;
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
 import esthesis.service.device.entity.DeviceProfileNoteEntity;
 import esthesis.service.device.resource.DeviceProfileResource;
@@ -23,6 +26,7 @@ public class DeviceProfileResourceImpl implements DeviceProfileResource {
   }
 
   @Override
+  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Save device profile note")
   public List<DeviceProfileNoteEntity> saveDeviceProfileNotes(
       Map<String, String> fields,
       String deviceId) {
@@ -30,12 +34,14 @@ public class DeviceProfileResourceImpl implements DeviceProfileResource {
   }
 
   @Override
+  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Create device profile note")
   public DeviceProfileNoteEntity addDeviceProfileNote(
       DeviceProfileNoteEntity field) {
     return deviceProfileService.createProfileField(field);
   }
 
   @Override
+  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Delete device profile note")
   public void deleteDeviceProfileNote(String deviceId, String keyName) {
     deviceProfileService.deleteProfileField(deviceId, keyName);
   }

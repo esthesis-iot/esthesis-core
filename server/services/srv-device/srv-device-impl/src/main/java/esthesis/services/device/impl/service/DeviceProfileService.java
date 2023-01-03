@@ -1,8 +1,5 @@
 package esthesis.services.device.impl.service;
 
-import esthesis.common.AppConstants.Audit.Category;
-import esthesis.common.AppConstants.Audit.Operation;
-import esthesis.service.audit.ccc.Audited;
 import esthesis.service.common.BaseService;
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
 import esthesis.service.device.entity.DeviceEntity;
@@ -39,7 +36,6 @@ public class DeviceProfileService extends BaseService<DeviceProfileNoteEntity> {
   @Inject
   RedisUtils redisUtils;
 
-  @Audited(op = Operation.WRITE, cat = Category.DEVICE, msg = "Save device profile")
   public List<DeviceProfileNoteEntity> saveProfile(String deviceId, Map<String, String> profile) {
     // Remove fields no longer present.
     deviceProfileFieldRepository.deleteFieldsNotIn(deviceId, profile.keySet().stream().toList());

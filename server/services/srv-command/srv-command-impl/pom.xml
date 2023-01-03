@@ -14,6 +14,7 @@
   <artifactId>srv-command-impl</artifactId>
 
   <dependencies>
+    <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-command-client</artifactId>
@@ -34,11 +35,17 @@
       <artifactId>srv-dataflow-client</artifactId>
       <version>3.0.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>srv-audit-client</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+    </dependency>
 
+    <!-- OTHER -->
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
-      <version>4.2.0</version>
+      <version>${awaitility.version}</version>
     </dependency>
   </dependencies>
 

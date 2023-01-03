@@ -1,5 +1,9 @@
 package esthesis.service.dataflow.impl.resource;
 
+import esthesis.common.AppConstants.Audit.Category;
+import esthesis.common.AppConstants.Audit.Operation;
+import esthesis.service.audit.ccc.Audited;
+import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
@@ -25,22 +29,27 @@ public class DataflowResourceImpl implements DataflowResource {
   @Path("/v1/find")
   @JSONReplyFilter(filter = "content,content.id,content.name,content.type,"
       + "content.status,content.description")
+  @Audited(cat = Category.DATAFLOW, op = Operation.READ, msg = "Search dataflows",
+      log = AuditLogType.DATA_IN)
   public Page<DataflowEntity> find(@BeanParam Pageable pageable) {
     return dataflowService.find(pageable, true);
   }
 
   @Override
+  @Audited(cat = Category.DATAFLOW, op = Operation.READ, msg = "View dataflow")
   public DataflowEntity findById(ObjectId id) {
     return dataflowService.findById(id);
   }
 
   @Override
+  @Audited(cat = Category.DATAFLOW, op = Operation.DELETE, msg = "Delete dataflow")
   public Response delete(ObjectId id) {
     dataflowService.deleteById(id);
     return Response.ok().build();
   }
 
   @Override
+  @Audited(cat = Category.DATAFLOW, op = Operation.WRITE, msg = "Save dataflow")
   public DataflowEntity save(DataflowEntity dataflowEntity) {
     return dataflowService.save(dataflowEntity);
   }

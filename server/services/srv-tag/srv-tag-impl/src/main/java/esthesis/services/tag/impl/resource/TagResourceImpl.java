@@ -1,5 +1,9 @@
 package esthesis.services.tag.impl.resource;
 
+import esthesis.common.AppConstants.Audit.Category;
+import esthesis.common.AppConstants.Audit.Operation;
+import esthesis.service.audit.ccc.Audited;
+import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.tag.entity.TagEntity;
@@ -29,6 +33,7 @@ public class TagResourceImpl implements TagResource {
   @GET
   @Override
   @Path("/v1/find")
+  @Audited(cat = Category.TAG, op = Operation.READ, msg = "Search tags", log = AuditLogType.DATA_IN)
   public Page<TagEntity> find(@BeanParam Pageable pageable) {
     return tagService.find(pageable, true);
   }
@@ -39,6 +44,7 @@ public class TagResourceImpl implements TagResource {
   }
 
   @Override
+  @Audited(cat = Category.TAG, op = Operation.READ, msg = "View tag")
   public TagEntity findById(@PathParam("id") ObjectId id) {
     return tagService.findById(id);
   }
@@ -56,11 +62,13 @@ public class TagResourceImpl implements TagResource {
   }
 
   @Override
+  @Audited(cat = Category.TAG, op = Operation.DELETE, msg = "Delete tag")
   public Response delete(@PathParam("id") ObjectId id) {
     return tagService.deleteById(id) ? Response.ok().build() : Response.notModified().build();
   }
 
   @Override
+  @Audited(cat = Category.TAG, op = Operation.WRITE, msg = "Save tag")
   public TagEntity save(@Valid TagEntity tagEntity) {
     return tagService.save(tagEntity);
   }

@@ -22,6 +22,9 @@ quarkus:
     SettingsResource:
       url: http://localhost:59030
       scope: Singleton
+    AuditResource:
+      url: http://localhost:59140
+      scope: Singleton
   mongodb:
     connection-string: mongodb://esthesis-dev-mongodb:27017
   opentelemetry:

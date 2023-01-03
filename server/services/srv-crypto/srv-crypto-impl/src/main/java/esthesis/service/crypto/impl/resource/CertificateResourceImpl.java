@@ -3,7 +3,11 @@ package esthesis.service.crypto.impl.resource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.slugify.Slugify;
 import esthesis.common.AppConstants;
+import esthesis.common.AppConstants.Audit.Category;
+import esthesis.common.AppConstants.Audit.Operation;
 import esthesis.common.exception.QDoesNotExistException;
+import esthesis.service.audit.ccc.Audited;
+import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
@@ -48,6 +52,7 @@ public class CertificateResourceImpl implements CertificateResource {
   @Path("/v1/find")
   @JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.issuer,content"
       + ".validity,content.name")
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Search certificates", log = AuditLogType.DATA_IN)
   public Page<CertificateEntity> find(@BeanParam Pageable pageable) {
     return certificateService.find(pageable);
   }
@@ -56,11 +61,13 @@ public class CertificateResourceImpl implements CertificateResource {
   @Override
   @Path("/v1/{id}")
   @JSONReplyFilter(filter = "id,cn,issued,validity,issuer,san,name")
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "View certificate")
   public CertificateEntity findById(ObjectId id) {
     return certificateService.findById(id);
   }
 
   @Override
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Download certificate")
   public Response download(ObjectId certId, AppConstants.KeyType type) {
     CertificateEntity cert = certificateService.findById(certId);
 
@@ -86,16 +93,19 @@ public class CertificateResourceImpl implements CertificateResource {
   }
 
   @Override
+  @Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Import certificate")
   public CertificateEntity importCertificate(ImportCertificateForm importCertificateForm) {
     return certificateService.importCertificate(importCertificateForm);
   }
 
   @Override
+  @Audited(cat = Category.CRYPTO, op = Operation.DELETE, msg = "Delete certificate")
   public void delete(ObjectId id) {
     certificateService.deleteById(id);
   }
 
   @Override
+  @Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Save certificate")
   public CertificateEntity save(CertificateEntity certificateEntity) {
     return certificateService.save(certificateEntity);
   }

@@ -1,8 +1,12 @@
 package esthesis.service.application.impl.resource;
 
+import esthesis.common.AppConstants.Audit.Category;
+import esthesis.common.AppConstants.Audit.Operation;
 import esthesis.service.application.entity.ApplicationEntity;
 import esthesis.service.application.impl.service.ApplicationService;
 import esthesis.service.application.resource.ApplicationResource;
+import esthesis.service.audit.ccc.Audited;
+import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import javax.inject.Inject;
@@ -26,16 +30,20 @@ public class ApplicationResourceImpl implements ApplicationResource {
   @GET
   @Override
   @Path("/v1/find")
+  @Audited(cat = Category.APPLICATION, op = Operation.READ, msg = "Search applications",
+      log = AuditLogType.DATA_IN)
   public Page<ApplicationEntity> find(@BeanParam Pageable pageable) {
     return applicationService.find(pageable, true);
   }
 
   @Override
+  @Audited(cat = Category.APPLICATION, op = Operation.READ, msg = "View application")
   public ApplicationEntity findById(@PathParam("id") ObjectId id) {
     return applicationService.findById(id);
   }
 
   @Override
+  @Audited(cat = Category.APPLICATION, op = Operation.DELETE, msg = "Delete applications")
   public Response delete(@PathParam("id") ObjectId id) {
     applicationService.deleteById(id);
 
@@ -43,6 +51,7 @@ public class ApplicationResourceImpl implements ApplicationResource {
   }
 
   @Override
+  @Audited(cat = Category.APPLICATION, op = Operation.WRITE, msg = "Save application")
   public ApplicationEntity save(@Valid ApplicationEntity tag) {
     return applicationService.save(tag);
   }

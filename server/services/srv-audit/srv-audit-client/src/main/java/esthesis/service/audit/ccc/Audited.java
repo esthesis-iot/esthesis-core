@@ -14,6 +14,12 @@ import javax.interceptor.InterceptorBinding;
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface Audited {
 
+  enum AuditLogType {
+    DATA_IN,
+    DATA_OUT,
+    DATA_ALL
+  }
+
   @Nonbinding
   Operation op();
 
@@ -22,4 +28,7 @@ public @interface Audited {
 
   @Nonbinding
   String msg();
+
+  @Nonbinding
+  AuditLogType log() default AuditLogType.DATA_ALL;
 }

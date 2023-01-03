@@ -25,8 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 @JSONReplyFilter
 public class JSONReplyFilterImpl implements ContainerResponseFilter {
 
-  private static final String[] DEFAULT_PAGE_FILTER = new String[]
-      {"page", "size", "totalElements"};
+  private static final String[] DEFAULT_PAGE_FILTER = new String[]{"page", "size", "totalElements"};
   private static final String[] DEFAULT_OBJECT_FILTER = new String[]{};
   @Inject
   ObjectMapper injectedMapper;
@@ -34,8 +33,8 @@ public class JSONReplyFilterImpl implements ContainerResponseFilter {
   private ResourceInfo info;
 
   @Override
-  public void filter(ContainerRequestContext req,
-      ContainerResponseContext res) throws JsonProcessingException {
+  public void filter(ContainerRequestContext req, ContainerResponseContext res)
+  throws JsonProcessingException {
     // If an exception occurred while processing the results that are about
     // to be filtered, skip the filtering mechanism.
     if (res.getStatus() == HttpResponseStatus.INTERNAL_SERVER_ERROR.code()) {
@@ -48,8 +47,8 @@ public class JSONReplyFilterImpl implements ContainerResponseFilter {
 
     // Get filter elements provided in the annotation and construct the basis
     // of the filter.
-    String annotationFilter = info.getResourceMethod()
-        .getAnnotation(JSONReplyFilter.class).filter();
+    String annotationFilter = info.getResourceMethod().getAnnotation(JSONReplyFilter.class)
+        .filter();
     String[] finalFilter;
 
     if (res.getEntity().getClass() == Page.class) {
@@ -62,13 +61,12 @@ public class JSONReplyFilterImpl implements ContainerResponseFilter {
     if (StringUtils.isNotBlank(annotationFilter)) {
       finalFilter = ArrayUtils.addAll(finalFilter, annotationFilter.split(","));
     }
-    log.trace("Filtering '{}' with '{}'.", res.getEntity().getClass(),
-        finalFilter);
+    log.trace("Filtering '{}' with '{}'.", res.getEntity().getClass(), finalFilter);
 
     // Perform the filtering and mapping.
     clonedMapper.addMixIn(Object.class, AntPathFilterMixin.class);
-    clonedMapper.setFilterProvider(new SimpleFilterProvider().addFilter(
-        "antPathFilter", new AntPathPropertyFilter(finalFilter)));
+    clonedMapper.setFilterProvider(new SimpleFilterProvider().addFilter("antPathFilter",
+        new AntPathPropertyFilter(finalFilter)));
     String result = clonedMapper.writeValueAsString(res.getEntity());
 
     log.trace("Filtering result is '{}'.", result);

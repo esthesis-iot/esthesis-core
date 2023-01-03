@@ -70,9 +70,13 @@ export class CommandsListComponent extends BaseComponent implements OnInit, Afte
     // Convert FormGroup to a query string to pass as a filter.
     this.commandService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
       null!, false, page, size, sort, sortDirection))
-    .subscribe(onNext => {
-      this.dataSource.data = onNext.content;
-      this.paginator.length = onNext.totalElements;
+    .subscribe({
+      next: (response) => {
+        this.dataSource.data = response.content;
+        this.paginator.length = response.totalElements;
+      }, error: (error) => {
+        this.utilityService.popupErrorWithTraceId("Could not fetch commands.", error);
+      }
     });
   }
 

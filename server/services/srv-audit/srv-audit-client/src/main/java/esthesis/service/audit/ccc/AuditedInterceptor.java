@@ -5,21 +5,22 @@ import esthesis.common.AppConstants.Audit.Category;
 import esthesis.common.AppConstants.Audit.Operation;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.audit.resource.AuditResource;
-import io.quarkus.arc.Priority;
 import java.lang.reflect.Method;
 import java.time.Instant;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import org.apache.commons.lang3.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-@Audited(op = Operation.NULL, cat = Category.NULL, msg = "")
-@Priority(1)
+@Slf4j
 @Interceptor
+@Audited(op = Operation.NULL, cat = Category.NULL, msg = "")
 public class AuditedInterceptor {
+
+  private int maxRequestSize = 16 * 1024 * 1000;
 
   @Inject
   JsonWebToken jwt;
@@ -37,22 +38,6 @@ public class AuditedInterceptor {
     Method method = ctx.getMethod();
     Audited audited = method.getAnnotation(Audited.class);
 
-    // Capture before data.
-    StringBuilder beforeValue = new StringBuilder("{");
-    int i = 0;
-    for (Object parameter : ctx.getParameters()) {
-      beforeValue.append("\"arg" + i + "\":");
-      beforeValue.append(mapper.writeValueAsString(parameter) + ",");
-      i++;
-    }
-    if (beforeValue.length() > 0) {
-      beforeValue.deleteCharAt(beforeValue.length() - 1);
-    }
-    beforeValue.append("}");
-
-    // Execute the method.
-    Object reply = ctx.proceed();
-
     // Create audit entry.
     AuditEntity auditEntity = new AuditEntity()
         .setCategory(audited.cat())
@@ -60,12 +45,58 @@ public class AuditedInterceptor {
         .setMessage(audited.msg())
         .setCreatedOn(Instant.now())
         .setCreatedBy(jwt.getName());
-    if (StringUtils.isNotBlank(beforeValue)) {
-      auditEntity.setValueIn(beforeValue.toString());
+
+    // Capture before data.
+    if (audited.log() == Audited.AuditLogType.DATA_IN
+        || audited.log() == Audited.AuditLogType.DATA_ALL) {
+      StringBuilder beforeValue = new StringBuilder();
+      int i = 0;
+      for (Object parameter : ctx.getParameters()) {
+        beforeValue
+            .append("\"arg")
+            .append(i)
+            .append("\":")
+            .append(mapper.writeValueAsString(parameter))
+            .append(",");
+        i++;
+      }
+      if (beforeValue.length() > 0) {
+        beforeValue.deleteCharAt(beforeValue.length() - 1);
+        beforeValue.insert(0, "{");
+        beforeValue.append("}");
+        if (beforeValue.length() > maxRequestSize) {
+          beforeValue = new StringBuilder(beforeValue.substring(0, maxRequestSize));
+        }
+        auditEntity.setValueIn(beforeValue.toString());
+      }
     }
-    if (reply != null) {
-      auditEntity.setValueOut(mapper.writeValueAsString(reply));
+
+    // Execute the method.
+    Object reply = ctx.proceed();
+
+    // Capture after data.
+    if (reply != null && (audited.log() == Audited.AuditLogType.DATA_OUT
+        || audited.log() == Audited.AuditLogType.DATA_ALL)) {
+      String replyJson = mapper.writeValueAsString(reply);
+      if (replyJson.length() > maxRequestSize) {
+        replyJson = replyJson.substring(0, maxRequestSize);
+      }
+      auditEntity.setValueOut(replyJson);
     }
+
+    if (auditEntity.getValueIn() != null) {
+      log.trace("Data in size: {}", auditEntity.getValueIn().length());
+      log.trace("Data in : {}", auditEntity.getValueIn());
+    } else {
+      log.trace("Data in is null");
+    }
+    if (auditEntity.getValueOut() != null) {
+      log.trace("Data out size: {}", auditEntity.getValueOut().length());
+      log.trace("Data out : {}", auditEntity.getValueOut());
+    } else {
+      log.trace("Data out is null");
+    }
+
     auditResource.save(auditEntity);
 
     return reply;

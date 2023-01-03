@@ -1,6 +1,9 @@
 package esthesis.services.settings.impl.resource;
 
+import esthesis.common.AppConstants.Audit.Category;
+import esthesis.common.AppConstants.Audit.Operation;
 import esthesis.common.AppConstants.NamedSetting;
+import esthesis.service.audit.ccc.Audited;
 import esthesis.service.settings.entity.DevicePageFieldEntity;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
@@ -27,11 +30,13 @@ public class SettingsResourceImpl implements SettingsResource {
   DevicePageFieldService devicePageFieldService;
 
   @Override
+  @Audited(cat = Category.SETTINGS, op = Operation.READ, msg = "Get setting")
   public SettingEntity findByName(NamedSetting name) {
     return settingsService.findByName(name);
   }
 
   @Override
+  @Audited(cat = Category.SETTINGS, op = Operation.READ, msg = "Get settings")
   public List<SettingEntity> findByNames(String names) {
     return Arrays.stream(names.split(",")).map(
             name -> settingsService.findByName(NamedSetting.valueOf(name)))
@@ -39,6 +44,7 @@ public class SettingsResourceImpl implements SettingsResource {
   }
 
   @Override
+  @Audited(cat = Category.SETTINGS, op = Operation.WRITE, msg = "Save settings")
   public void save(SettingEntity... settingEntities) {
     // Saving a setting entry is a special case as the caller might want to
     // overwrite the value of a setting entry by name (i.e. without knowing
@@ -74,6 +80,7 @@ public class SettingsResourceImpl implements SettingsResource {
   }
 
   @Override
+  @Audited(cat = Category.SETTINGS, op = Operation.WRITE, msg = "Save device page fields")
   public void saveDevicePageFields(@Valid List<DevicePageFieldEntity> fields) {
     devicePageFieldService.saveFields(fields);
   }

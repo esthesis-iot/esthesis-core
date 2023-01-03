@@ -3,8 +3,11 @@ package esthesis.services.audit.impl.resource;
 import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Audit.Category;
 import esthesis.common.AppConstants.Audit.Operation;
+import esthesis.service.audit.ccc.Audited;
+import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.audit.resource.AuditResource;
+import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.services.audit.impl.service.AuditService;
@@ -27,6 +30,10 @@ public class AuditResourceImpl implements AuditResource {
   @GET
   @Override
   @Path("/v1/find")
+  @Audited(cat = Category.AUDIT, op = Operation.READ, msg = "Search audit",
+      log = AuditLogType.DATA_IN)
+  @JSONReplyFilter(filter = "content,content.id,content.createdOn,content.createdBy,"
+      + "content.operation,content.category,content.message")
   public Page<AuditEntity> find(@BeanParam Pageable pageable) {
     return auditService.find(pageable);
   }
@@ -42,11 +49,13 @@ public class AuditResourceImpl implements AuditResource {
   }
 
   @Override
+  @Audited(cat = Category.AUDIT, op = Operation.READ, msg = "View audit entry")
   public AuditEntity findById(ObjectId id) {
     return auditService.findById(id);
   }
 
   @Override
+  @Audited(cat = Category.AUDIT, op = Operation.READ, msg = "Delete audit entry")
   public Response delete(ObjectId id) {
     if (auditService.deleteById(id)) {
       return Response.ok().build();

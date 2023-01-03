@@ -21,6 +21,11 @@ quarkus:
       exporter:
         otlp:
           endpoint: http://esthesis-dev-jaeger-collector:4317
+  rest-client:
+    # A self-reference to be able to use the Audited annotation.
+    AuditResource:
+      url: http://localhost:59140
+      scope: Singleton
 mp:
   jwt:
     verify:

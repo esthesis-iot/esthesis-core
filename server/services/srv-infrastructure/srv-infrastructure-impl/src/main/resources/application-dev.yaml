@@ -25,6 +25,9 @@ quarkus:
     TagSystemResource:
       url: http://localhost:59020
       scope: Singleton
+    AuditResource:
+      url: http://localhost:59140
+      scope: Singleton
   oidc-client:
     auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
     client-id: esthesis

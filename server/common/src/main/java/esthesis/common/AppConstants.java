@@ -77,7 +77,21 @@ public class AppConstants {
   public static class Audit {
 
     public enum Category {
-      OTHER, DEVICE, ABOUT, NULL
+      ABOUT,
+      APPLICATION,
+      AUDIT,
+      COMMAND,
+      CRYPTO,
+      DATAFLOW,
+      DEVICE,
+      DIGITAL_TWIN,
+      INFRASTRUCTURE,
+      KUBERNETES,
+      PROVISIONING,
+      SETTINGS,
+      TAG,
+      OTHER,
+      NULL
     }
 
     public enum Operation {

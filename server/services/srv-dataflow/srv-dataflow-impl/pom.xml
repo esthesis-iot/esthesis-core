@@ -4,7 +4,17 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>esthesis</groupId>
+    <artifactId>srv-dataflow</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>srv-dataflow-impl</artifactId>
+
   <dependencies>
+    <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-dataflow-client</artifactId>
@@ -26,18 +36,17 @@
       <version>3.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>srv-audit-client</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <!-- OTHERS -->
+    <dependency>
       <groupId>com.github.slugify</groupId>
       <artifactId>slugify</artifactId>
       <version>${slugify.version}</version>
     </dependency>
   </dependencies>
-
-  <parent>
-    <groupId>esthesis</groupId>
-    <artifactId>srv-dataflow</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>srv-dataflow-impl</artifactId>
 
 </project>

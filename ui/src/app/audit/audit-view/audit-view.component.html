@@ -57,16 +57,18 @@
       <div class="json-view" fxFlex="50%">
         <ngx-json-viewer *ngIf="auditEvent.valueIn"
                          [expanded]="false" [json]="auditEvent.valueIn"></ngx-json-viewer>
+        <div class="no-value" *ngIf="!auditEvent.valueIn">No value recorded in audit</div>
       </div>
       <div class="json-view" fxFlex="50%">
         <ngx-json-viewer *ngIf="auditEvent.valueOut"
                          [expanded]="false" [json]="auditEvent.valueOut"></ngx-json-viewer>
+        <div class="no-value" *ngIf="!auditEvent.valueOut">No value recorded in audit</div>
       </div>
     </div>
 
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button routerLink="/tags">CANCEL</button>
+    <button mat-button routerLink="/audit">CANCEL</button>
     <button mat-button color="warn" (click)="delete()" *ngIf="id !== appConstants.NEW_RECORD_ID">
       DELETE
     </button>

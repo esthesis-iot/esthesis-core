@@ -16,8 +16,7 @@ public class DTResourceImpl implements DTResource {
   DTService dtService;
 
   @Override
-  public Response findJSON(String hardwareId, String category,
-      String measurement) {
+  public Response findJSON(String hardwareId, String category, String measurement) {
     DTValueReplyDTO dtValueReplyDTO = dtService.find(hardwareId, category, measurement);
     if (dtValueReplyDTO != null) {
       return Response.ok(dtValueReplyDTO).build();
@@ -27,8 +26,7 @@ public class DTResourceImpl implements DTResource {
   }
 
   @Override
-  public Response findPlain(String hardwareId, String category,
-      String measurement) {
+  public Response findPlain(String hardwareId, String category, String measurement) {
     DTValueReplyDTO dtValueReplyDTO = dtService.find(hardwareId, category, measurement);
     if (dtValueReplyDTO != null) {
       return Response.ok(dtValueReplyDTO.getValue().toString()).build();
@@ -69,5 +67,4 @@ public class DTResourceImpl implements DTResource {
       return Response.status(Status.NO_CONTENT).build();
     }
   }
-
 }
