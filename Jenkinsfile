@@ -59,7 +59,7 @@ pipeline {
                 sh '''
                     cat > payload.json <<__HERE__
                     {
-                      "project": "5baeb351-c096-4576-b102-357d2850eba3",
+                      "project": "b2baacfa-12b5-44b2-972d-d7ef1a8a995e",
                       "bom": "$(cat server/target/bom.xml |base64 -w 0 -)"
                     }
                     __HERE__
