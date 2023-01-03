@@ -1,7 +1,10 @@
 package esthesis.services.about.impl.service;
 
+import esthesis.common.AppConstants.Audit.Category;
+import esthesis.common.AppConstants.Audit.Operation;
 import esthesis.common.git.GitUtil;
 import esthesis.service.about.dto.AboutGeneralDTO;
+import esthesis.service.audit.ccc.Audited;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +17,7 @@ public class AboutService {
   @Inject
   JsonWebToken jwt;
 
+  @Audited(cat = Category.ABOUT, op = Operation.READ, msg = "About/General page")
   public AboutGeneralDTO getGeneralInfo() {
     AboutGeneralDTO about = new AboutGeneralDTO();
 

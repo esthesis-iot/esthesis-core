@@ -35,6 +35,6 @@ public class AuditEntity extends BaseEntity {
   @NotNull
   @Length(max = 4096)
   private String message;
-  private String valueBefore;
-  private String valueAfter;
+  private String valueIn;
+  private String valueOut;
 }

@@ -77,11 +77,11 @@ public class AppConstants {
   public static class Audit {
 
     public enum Category {
-      OTHER, DEVICE
+      OTHER, DEVICE, ABOUT, NULL
     }
 
     public enum Operation {
-      READ, WRITE, DELETE, OTHER
+      READ, WRITE, DELETE, OTHER, NULL
     }
   }
 

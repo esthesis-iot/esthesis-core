@@ -60,8 +60,4 @@ public class AuditResourceImpl implements AuditResource {
     return auditService.save(auditEntity);
   }
 
-  @Override
-  public AuditEntity add(String name) {
-    return null;
-  }
 }

@@ -9,7 +9,7 @@ import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QDisabledException;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.exception.QSecurityException;
-import esthesis.service.audit.entity.AuditEntity;
+import esthesis.service.audit.ccc.Audited;
 import esthesis.service.audit.resource.AuditResource;
 import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.service.crypto.resource.KeyResource;
@@ -81,6 +81,8 @@ public class DeviceRegistrationService {
    *
    * @param deviceRegistration The preregistration details of the device.
    */
+  @Audited(cat = AppConstants.Audit.Category.DEVICE, op = Operation.WRITE,
+      msg = "Device preregistration.")
   public void preregister(DeviceRegistrationDTO deviceRegistration)
   throws NoSuchAlgorithmException, OperatorCreationException, InvalidKeySpecException,
          NoSuchProviderException, IOException {
@@ -103,14 +105,13 @@ public class DeviceRegistrationService {
     for (String hardwareId : idList) {
       log.debug("Requested to preregister a device with hardware id '{}'.", hardwareId);
       register(hardwareId, deviceRegistration.getTags(), DeviceStatus.PREREGISTERED);
-      System.out.println(jwt);
-      auditResource.save(
-          new AuditEntity()
-              .setCreatedOn(Instant.now())
-              .setCreatedBy(jwt.getName())
-              .setMessage("Preregistering device with hardware id '" + hardwareId + "'.")
-              .setOperation(Operation.WRITE)
-              .setCategory(AppConstants.Audit.Category.DEVICE));
+//      auditResource.save(
+//          new AuditEntity()
+//              .setCreatedOn(Instant.now())
+//              .setCreatedBy(jwt.getName())
+//              .setMessage("Preregistering device with hardware id '" + hardwareId + "'.")
+//              .setOperation(Operation.WRITE)
+//              .setCategory(AppConstants.Audit.Category.DEVICE));
     }
   }
 

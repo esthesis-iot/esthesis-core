@@ -14,7 +14,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
@@ -50,9 +49,5 @@ public interface AuditResource {
   @Produces("application/json")
   AuditEntity save(@Valid AuditEntity tagEntity);
 
-  @POST
-  @Path("/v1/add")
-  @Produces("application/json")
-  AuditEntity add(@QueryParam("name") String name);
 
 }
