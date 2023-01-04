@@ -2,7 +2,6 @@ import {
   DATAFLOW_TEMPLATE_LOGGING,
   DATAFLOW_TEMPLATE_MAIN,
   DATAFLOW_TEMPLATE_STATUS,
-  DATAFLOW_TEMPLATE_TAGS,
   DATAFLOW_TEMPLATE_WRAPPED_KUBERNETES
 } from "./templates";
 
@@ -20,13 +19,12 @@ export const DATAFLOW_DEFINITION_MQTT_CLIENT = {
       props: {label: "MQTT Broker"},
       fieldGroup: [
         {
-          key: "cluster-url", type: "input", defaultValue: "tcp://esthesis-rabbitmq:1883",
+          key: "cluster-url", type: "input", defaultValue: "tcp://rabbitmq:1883",
           props: {
             required: true, type: "text", label: "Cluster URL", placeholder: "Protocol, IP address, port",
-            hintStart: "ex: tcp://esthesis-rabbitmq:1883, ssl://esthesis-rabbitmq:8883",
+            hintStart: "ex: tcp://rabbitmq:1883, ssl://rabbitmq:8883",
           }
-        },
-        ...DATAFLOW_TEMPLATE_TAGS
+        }
       ],
     },
     {
@@ -75,8 +73,13 @@ export const DATAFLOW_DEFINITION_MQTT_CLIENT = {
       props: {label: "Kafka Broker"},
       fieldGroup: [
         {
-          key: "cluster-url", type: "input", defaultValue: "esthesis-kafka:9092",
-          props: {required: true, type: "text", label: "Cluster URL"}
+          key: "cluster-url", type: "input", defaultValue: "kafka:9092",
+          props: {
+            required: true,
+            type: "text",
+            label: "Cluster URL",
+            hintStart: "e.g. kafka:9092"
+          }
         }
       ]
     },

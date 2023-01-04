@@ -4,6 +4,6 @@
 *************************
 Update your hosts file with the result of the following command:
 
-echo $(kubectl get services esthesis-redis-master --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-redis
+echo $(kubectl get services redis-master --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-redis
 
 {{ end }}

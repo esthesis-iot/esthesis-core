@@ -4,6 +4,6 @@
 *************************
 Update your hosts file with the result of the following command:
 
-echo $(kubectl get services esthesis-mongodb --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-mongodb
+echo $(kubectl get services mongodb --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-mongodb
 
 {{ end }}

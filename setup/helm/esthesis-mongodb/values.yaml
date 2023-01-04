@@ -3,7 +3,6 @@ global:
     enabled: false
 
 mongodb:
-  fullnameOverride: esthesis-mongodb
   auth:
     rootUser: root
     rootPassword: root

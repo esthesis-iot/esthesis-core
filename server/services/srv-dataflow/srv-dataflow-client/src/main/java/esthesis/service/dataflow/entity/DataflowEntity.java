@@ -36,7 +36,7 @@ public class DataflowEntity extends BaseEntity {
   @Length(max = 4096)
   private String description;
 
-  private transient Map<String, Object> config;
-  private transient Map<String, Object> kubernetes;
+  private Map<String, Object> config;
+  private Map<String, Object> kubernetes;
 
 }

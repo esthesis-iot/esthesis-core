@@ -2,7 +2,6 @@
   <table [dataSource]="datasource" mat-table fxFlexFill
          matSort matSortActive="measurement"
          matSortDirection="asc" matSortDisableClear matSortStart="asc">
-    <caption>List of device data</caption>
     <ng-container matColumnDef="measurement">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Measurement</th>
       <td *matCellDef="let element" mat-cell> {{element.label}}</td>

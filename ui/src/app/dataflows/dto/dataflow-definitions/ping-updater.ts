@@ -22,6 +22,10 @@ export const DATAFLOW_DEFINITION_PING_UPDATER = {
       fieldGroup: [
         ...DATAFLOW_TEMPLATE_KAFKA,
         {
+          key: "consumer-group", type: "input", defaultValue: "dfl-ping-updater",
+          props: {label: "Kafka consumer group"}
+        },
+        {
           key: "ping-topic", type: "input", defaultValue: "esthesis-ping",
           props: {label: "Kafka topic to read ping messages from", required: true}
         }
@@ -32,7 +36,7 @@ export const DATAFLOW_DEFINITION_PING_UPDATER = {
       props: {label: "Esthesis database"},
       fieldGroup: [
         {
-          key: "esthesis-db-url", type: "input", defaultValue: "mongodb://esthesis-mongodb:27017",
+          key: "esthesis-db-url", type: "input", defaultValue: "mongodb://mongodb:27017",
           props: {label: "URL"}
         }, {
           key: "esthesis-db-name", type: "input", defaultValue: "esthesis",

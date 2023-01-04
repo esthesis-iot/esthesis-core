@@ -1,10 +1,11 @@
+{{/*TODO Augment scrapers with all services*/}}
 {{ if .Values.global.devEnv.enabled }}
 {{- $name := .Values.global.devEnv.ip | required ".Values.global.devEnv.ip is required." -}}
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: esthesis-prometheus-scrapers-config
+  name: prometheus-scrapers-config
 type: Opaque
 stringData:
   config.yaml: |-

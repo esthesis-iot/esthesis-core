@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: esthesis-jaeger
+  name: jaeger
 spec:
   selector:
     matchLabels:
-      app: esthesis-jaeger
+      app: jaeger
   replicas: 1
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: esthesis-jaeger
+        app: jaeger
     spec:
       containers:
         - name: jaeger
@@ -33,10 +33,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: esthesis-jaeger-ui
+  name: jaeger-ui
 spec:
   selector:
-    app: esthesis-jaeger
+    app: jaeger
   ports:
     - port: 80
       targetPort: frontend
@@ -47,10 +47,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: esthesis-jaeger-collector-otlp-grpc
+  name: jaeger-collector-otlp-grpc
 spec:
   selector:
-    app: esthesis-jaeger
+    app: jaeger
   ports:
     - port: 4317
       targetPort: otlp-grpc
@@ -61,10 +61,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: esthesis-jaeger-collector-otlp-http
+  name: jaeger-collector-otlp-http
 spec:
   selector:
-    app: esthesis-jaeger
+    app: jaeger
   ports:
     - port: 4318
       targetPort: otlp-http

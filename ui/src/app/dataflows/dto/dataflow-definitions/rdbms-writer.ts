@@ -80,6 +80,10 @@ export const DATAFLOW_DEFINITION_RDBMS_WRITER = {
       fieldGroup: [
         ...DATAFLOW_TEMPLATE_KAFKA,
         {
+          key: "consumer-group", type: "input", defaultValue: "dfl-rdbms-writer",
+          props: {label: "Kafka consumer group"}
+        },
+        {
           key: "telemetry-topic", type: "input", defaultValue: "esthesis-telemetry",
           props: {label: "Kafka topic to read telemetry messages from"}
         },

@@ -4,6 +4,6 @@
 *************************
 Update your hosts file with the result of the following command:
 
-echo $(kubectl get services esthesis-influxdb --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-influxdb
+echo $(kubectl get services influxdb --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-influxdb
 
 {{ end }}

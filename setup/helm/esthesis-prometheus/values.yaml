@@ -3,7 +3,6 @@ global:
     enabled: false
 
 prometheus:
-  fullnameOverride: esthesis-prometheus
   alertmanager:
     enabled: false
   exporters:
@@ -28,5 +27,5 @@ prometheus:
       enabled: true
       type: external
       external:
-        name: esthesis-prometheus-scrapers-config
+        name: prometheus-scrapers-config
         key: config.yaml

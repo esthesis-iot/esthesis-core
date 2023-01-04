@@ -30,8 +30,8 @@ spec:
             - /bin/sh
             - -c
             - |
-              while ! nc -z esthesis-apisix-admin 9180; do sleep 1; done && \
-              curl -s http://esthesis-apisix-admin:9180/apisix/admin/routes/dev-srv-device-route -H "X-API-KEY: esthesis-admin" -X PUT -i -d '
+              while ! nc -z apisix-admin 9180; do sleep 1; done && \
+              curl -s http://apisix-admin:9180/apisix/admin/routes/dev-srv-device-route -H "X-API-KEY: esthesis-admin" -X PUT -i -d '
               {
               "name": "dev-srv-device-route",
               "uris": ["/api/device", "/api/device/*"],
@@ -59,7 +59,7 @@ spec:
                 "openid-connect": {
                   "client_id": "esthesis",
                   "client_secret": "",
-                  "discovery": "http://esthesis-keycloak/realms/esthesis/.well-known/openid-configuration",
+                  "discovery": "http://keycloak/realms/esthesis/.well-known/openid-configuration",
                   "scope": "openid profile",
                   "use_jwks": true,
                   "bearer_only": true,

@@ -75,6 +75,8 @@ public class DataflowService extends BaseService<DataflowEntity> {
 
   @Override
   public DataflowEntity save(DataflowEntity dataflowEntity) {
+    log.debug("Saving dataflow '{}'.", dataflowEntity);
+
     // Save the dataflow.
     dataflowEntity = super.save(dataflowEntity);
 

@@ -3,7 +3,7 @@ global:
     enabled: false
 
 influxdb:
-  fullnameOverride: esthesis-influxdb
+  fullnameOverride: influxdb
   auth:
     admin:
       password: esthesis

@@ -3,12 +3,11 @@ global:
     enabled: false
 
 apisix-dashboard:
-  fullnameOverride: esthesis-apisix-dashboard
   config:
     conf:
       etcd:
         endpoints:
-          - esthesis-apisix-etcd:2379
+          - apisix-etcd:2379
     authentication:
       secret: esthesis
       users:

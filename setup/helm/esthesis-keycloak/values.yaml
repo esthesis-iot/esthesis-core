@@ -3,17 +3,15 @@ global:
     enabled: false
 
 keycloak:
-  fullnameOverride: esthesis-keycloak
   auth:
     adminUser: esthesis
     adminPassword: esthesis
     managementUser: esthesis
     managementPassword: esthesis
   postgresql:
-    fullnameOverride: esthesis-keycloak-postgresql
     auth:
       postgresPassword: esthesis
       password: esthesis
   keycloakConfigCli:
     enabled: true
-    existingConfigmap: esthesis-keycloak-config
+    existingConfigmap: keycloak-config

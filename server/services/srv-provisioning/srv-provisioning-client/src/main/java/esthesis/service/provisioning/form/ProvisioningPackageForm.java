@@ -16,5 +16,5 @@ public class ProvisioningPackageForm extends ProvisioningPackageEntity {
   @RestForm
   @JsonIgnore
   @PartType(MediaType.APPLICATION_OCTET_STREAM)
-  public transient FileUpload file;
+  public FileUpload file;
 }

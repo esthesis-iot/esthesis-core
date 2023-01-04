@@ -7,6 +7,6 @@ Thank you for installing esthesis IoT platform.
 *************************
 Update your hosts file with the result of the following command:
 
-echo $(kubectl get services esthesis-rabbitmq --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-rabbitmq
+echo $(kubectl get services rabbitmq --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-rabbitmq
 
 {{ end }}

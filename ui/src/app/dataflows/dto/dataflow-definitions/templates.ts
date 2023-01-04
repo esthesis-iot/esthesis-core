@@ -37,12 +37,9 @@ export const DATAFLOW_TEMPLATE_WRAPPED_CONCURRENCY = [{
 
 export const DATAFLOW_TEMPLATE_KAFKA = [
   {
-    key: "cluster-url", type: "input", defaultValue: "esthesis-kafka:9092",
+    key: "cluster-url", type: "input", defaultValue: "kafka:9092",
     props: {required: true, type: "text", label: "Cluster URL"}
-  }, {
-    key: "consumer-group", type: "input",
-    props: {label: "Kafka consumer group"}
-  }
+  },
 ];
 
 export const DATAFLOW_TEMPLATE_WRAPPED_KUBERNETES = [{

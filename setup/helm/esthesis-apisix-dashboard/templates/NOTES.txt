@@ -4,6 +4,6 @@
 *************************
 Update your hosts file with the result of the following command:
 
-echo $(kubectl get services esthesis-apisix-dashboard --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-apisix-dashboard
+echo $(kubectl get services apisix-dashboard --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-apisix-dashboard
 
 {{ end }}

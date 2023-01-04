@@ -3,9 +3,8 @@ global:
     enabled: false
 
 loki:
-  fullnameOverride: esthesis-loki
   promtail:
-    existingSecret: esthesis-loki-config
+    existingSecret: loki-config
   memcachedchunks:
     enabled: false
   memcachedfrontend:
@@ -18,6 +17,5 @@ grafana:
     user: esthesis
     password: esthesis
   datasources:
-    secretName: esthesis-grafana-config
-  fullnameOverride: esthesis-grafana-loki
+    secretName: grafana-config
 

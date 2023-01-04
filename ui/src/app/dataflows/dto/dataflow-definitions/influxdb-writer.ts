@@ -21,7 +21,7 @@ export const DATAFLOW_DEFINITION_INFLUXDB_WRITER = {
       props: {label: "InfluxDB database"},
       fieldGroup: [
         {
-          key: "influx-url", type: "input", defaultValue: "http://esthesis-influxdb:8086",
+          key: "influx-url", type: "input", defaultValue: "http://influxdb:8086",
           props: {label: "URL"}
         }, {
           key: "influx-token", type: "input",
@@ -40,6 +40,10 @@ export const DATAFLOW_DEFINITION_INFLUXDB_WRITER = {
       props: {label: "Kafka Broker"},
       fieldGroup: [
         ...DATAFLOW_TEMPLATE_KAFKA,
+        {
+          key: "consumer-group", type: "input", defaultValue: "dfl-influxdb-writer",
+          props: {label: "Kafka consumer group"}
+        },
         {
           key: "telemetry-topic", type: "input", defaultValue: "esthesis-telemetry",
           props: {label: "Kafka topic to read telemetry messages from"}

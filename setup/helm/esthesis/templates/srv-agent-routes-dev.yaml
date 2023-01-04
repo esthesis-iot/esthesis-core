@@ -30,8 +30,8 @@ spec:
             - /bin/sh
             - -c
             - |
-              while ! nc -z esthesis-apisix-admin 9180; do sleep 1; done && \
-              curl -s http://esthesis-apisix-admin:9180/apisix/admin/routes/dev-srv-agent-route -H "X-API-KEY: esthesis-admin" -X PUT -i -d '
+              while ! nc -z apisix-admin 9180; do sleep 1; done && \
+              curl -s http://apisix-admin:9180/apisix/admin/routes/dev-srv-agent-route -H "X-API-KEY: esthesis-admin" -X PUT -i -d '
               {
               "name": "dev-srv-agent-route",
               "uris": ["/api/agent", "/api/agent/*"],

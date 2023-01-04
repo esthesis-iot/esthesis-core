@@ -3,7 +3,6 @@ global:
     enabled: false
 
 rabbitmq:
-  fullnameOverride: esthesis-rabbitmq
   auth:
     username: esthesis
     password: esthesis

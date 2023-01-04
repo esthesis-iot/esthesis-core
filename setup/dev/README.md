@@ -6,8 +6,10 @@ This document describes how to set up a dev environment for esthesis. You need t
 to the following resources:
 
 - A Kubernetes cluster. This can be something
-  like [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/)
-  that can run on your development machine, or any other Kubernetes cluster that you have access to.
+  like [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/),
+  or [Rancher Desktop](https://rancherdesktop.io),
+  or [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+  with Kubernetes enabled.
 - A Load Balancer capable of handing IP addresses to services of type LoadBalancer. This
   can be something like [MetalLB](https://metallb.universe.tf/). This little addition to your
   dev cluster will allow you to quickly expose services for remote access (i.e. from your
@@ -17,13 +19,29 @@ to the following resources:
 
   ```bash
   helm repo add metallb https://metallb.github.io/metallb
-  helm install metallb metallb/metallb \
-    --set "configInline.address-pools[0].name"=default \
-    --set "configInline.address-pools[0].protocol"=layer2 \
-    --set "configInline.address-pools[0].addresses[0]"=192.168.21.1-192.168.21.254
+  
+  helm install metallb metallb/metallb
+  
+  cat <<EOF | kubectl apply -f -
+  apiVersion: metallb.io/v1beta1
+  kind: IPAddressPool
+  metadata:
+    name: esthesis-pool      
+  spec:
+    addresses:
+    - 192.168.21.1-192.168.21.254
+  ---
+  apiVersion: metallb.io/v1beta1
+  kind: L2Advertisement
+  metadata:
+    name: esthesis-layer2-advertisement
+  spec:
+    ipAddressPools:
+    - esthesis-pool
+  EOF
   ```
 
-  Please note, you need to provide an IP range compatible with your local network.
+Please note, you need to provide an IP range compatible with your local network.
 
 ## Tools
 
@@ -65,7 +83,12 @@ changes and reloading the code.
 The esthesis Angular frontend communicates with the services (running on your local development
 machine) via APISIX. This is necessary, so that OAuth2 is enforced in order for your services to
 have a valid caller/principal. That effectively means that you need to create routes in APISIX that
-point back to your develpoment machine for each of esthesis services.
+point back to your development machine for each of esthesis services.
+
+In essence, you implement the following calling sequence:
+
+(Development machine) Angular front-end > (Kubernetes) APISIX > (Development machine) Quarkus
+service
 
 APISIX dev routes are automatically created for you as part of the `esthesis` Helm chart
 installation in dev mode.
@@ -73,47 +96,49 @@ installation in dev mode.
 ### Service to service communication
 
 Service to service communication takes place directly between the services running on your local
-development machine; there is no need to go through APISIX in this case. Quarkus rest client will
-automatically include the principal on every request, so the target service you're calling can have
+development machine; there is no need to go through APISIX in this case. Quarkus Rest client will
+automatically include the JWT token on every request, so the target service you're calling can have
 access to it.
 
 ## Setup process
 
 Esthesis provides a variety of Helm Charts to cater to the needs of different installation
-environments. As a developer, you need access to all possible services. Services can be installed
-using the provided Helm charts as presented below. Please note that some of the Helm charts will
-instruct you to update your local `hosts` file.
+environments. As a developer, you need access to all possible services to be able to develop and
+test
+across all possible deployment scenarios. Services can be installed
+using the provided Helm charts as presented below.
+
+Please note that some Helm charts will instruct you to update your local `hosts` file. This is to
+allow you having easy names when trying to access the remote Kubernetes services on your local
+environment. Throughout our development documentation we refer to such services using the
+above-suggested friendly names.
 
 ### APISIX
 
 ```bash 
 cd esthesis-platform/setup/helm/esthesis-apisix
-helm upgrade --install apisix . \
-  -f values.yaml -f values-dev.yaml
+helm upgrade --install apisix . -f values.yaml -f values-dev.yaml
 ```
 
 ### APISIX Dashboard
 
 ```bash
 cd esthesis-platform/setup/helm/esthesis-apisix-dashboard
-helm upgrade --install apisix-dashboard . \
-  -f values.yaml -f values-dev.yaml
+helm upgrade --install apisix-dashboard . -f values.yaml -f values-dev.yaml
 ```
 
 ### Kafka
 
 ```bash
 cd esthesis-platform/setup/helm/esthesis-kafka
-helm upgrade --install kafka . \
-  -f values.yaml -f values-dev.yaml
+helm upgrade --install kafka . -f values.yaml -f values-dev.yaml
 ```
 
 ### Keycloak
 
 ```bash
 cd esthesis-platform/setup/helm/esthesis-keycloak
-helm upgrade --install keycloak . \
-  -f values.yaml -f values-dev.yaml
+helm upgrade --install keycloak . -f values.yaml -f values-dev.yaml
 ```
 
 Notes:
@@ -122,20 +147,20 @@ Notes:
   be used exclusively by Keycloak.
 - Once Keycloak is up and running, you need to create a user in `esthesis` realm, via Manage users >
   Add user. Once the user is created, navigate to the user's Credentials tab and set a password.
-  This is the user you can login with in the frontend.
-- You also need to setup a "system" user in Keycloak, used when communication between services needs
-  to take place without having a principal established (for example, when an external device is
+  This is the user you can authenticate with in the frontend.
+- You also need to set up a "system" user in Keycloak. This user is used for inter-service
+  communication
+  when a principal is not established (for example, when an external device is
   registering with esthesis). Similarly to the above step, create a user `esthesis-system` with
   password `esthesis-system`.
 - During development, you can set access tokens to expire far in the future, via configuring
-  Clients > Settings > Advanced Settings > Access Token Lifespan.
+  Clients > (esthesis) > Settings > Advanced Settings > Access Token Lifespan.
 
 ### MongoDB
 
 ```bash
 cd esthesis-platform/setup/helm/esthesis-mongodb
-helm upgrade --install mongodb . \
-  -f values.yaml -f values-dev.yaml
+helm upgrade --install mongodb . -f values.yaml -f values-dev.yaml
 ```
 
 Notes:
@@ -163,16 +188,14 @@ Notes:
 
 ```bash 
 cd esthesis-platform/setup/helm/esthesis-rabbitmq
-helm upgrade --install rabbitmq . \
-  -f values.yaml -f values-dev.yaml
+helm upgrade --install rabbitmq . -f values.yaml -f values-dev.yaml
 ```
 
 ### Grafana Loki
 
 ```bash
 cd esthesis-platform/setup/helm/esthesis-grafana-loki
-helm upgrade --install loki . \
-  -f values.yaml -f values-dev.yaml
+helm upgrade --install loki . -f values.yaml -f values-dev.yaml
 ````
 
 Notes: The above chart will create an instance of Grafana Loki configured with promtail
@@ -183,8 +206,7 @@ logs via UDP.
 
 ```bash
 cd esthesis-platform/setup/helm/esthesis-jaeger
-helm upgrade --install jaeger . \
-  -f values.yaml -f values-dev.yaml
+helm upgrade --install jaeger . -f values.yaml -f values-dev.yaml
 ````
 
 Notes: The above chart will create an instance of Jaeger UI, as well as a Jaeger collector which you
@@ -194,17 +216,29 @@ can use from your applications to push your traces to.
 
 ```bash
 cd esthesis-platform/setup/helm/esthesis-influxdb
-helm upgrade --install influxdb . \
-  -f values.yaml -f values-dev.yaml
+helm upgrade --install influxdb . -f values.yaml -f values-dev.yaml
 ````
+
+Notes: To connect a dataflow to InfluxDB you need to create an access token:
+
+- Login to InfluxDB UI (http://esthesis-dev-influxdb:8086) as 'admin/esthesis'.
+- Switch organisation to 'esthesis'.
+- Navigate to Load Data > API Tokens.
+- Click on 'Generate API Token' and select Read/Write.
+- Select the 'esthesis' bucket for both read and write and click 'Save'.
+- Click on the generated API token entry to obtain the token.
 
 ### MySQL
 
 ```bash
 cd esthesis-platform/setup/helm/esthesis-mysql
-helm upgrade --install mysql . \
-  -f values.yaml -f values-dev.yaml
+helm upgrade --install mysql . -f values.yaml -f values-dev.yaml
 ````
+
+### Redis
+
+cd esthesis-platform/setup/helm/esthesis-redis
+helm upgrade --install redis . -f values.yaml -f values-dev.yaml
 
 ### esthesis
 
@@ -279,13 +313,12 @@ Notes:
 
 ## Logging, Tracing, and Metrics
 
-esthesis is instrumented throughout to support distributed logging, global tracing, and metrics.
+esthesis is instrumented to support distributed logging, global tracing, and metrics.
 
 ### Logging
 
 Distributed logging is supported via a Graylog Extended Log Format (GELF) logging appender. The
-appender
-comes from `quarkus-logging-gelf` module and is configured as part of Quarkus' logger
+appender comes from `quarkus-logging-gelf` module and is configured as part of Quarkus' logger
 configuration `quarkus.log.handler.gelf.*`. The GELF appender is automatically enabled in dev mode
 but needs to be manually enabled for prod. In esthesis' default stack, logs aggregation and
 visualisation is provided by [Grafana Loki](https://grafana.com/oss/loki/).

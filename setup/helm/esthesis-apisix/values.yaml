@@ -3,13 +3,11 @@ global:
     enabled: false
 
 apisix:
-  fullnameOverride: esthesis-apisix
   gateway:
     type: LoadBalancer
     externalTrafficPolicy: Local
 
   etcd:
-    fullnameOverride: esthesis-apisix-etcd
     replicaCount: 1
     auth:
       token:
@@ -76,11 +74,11 @@ apisix:
         service:
           name: APISIX
       collector:
-        address: esthesis-jaeger-collector-otlp-http:4318
+        address: jaeger-collector-otlp-http:4318
 
 apisix-ingress-controller:
-  fullnameOverride: esthesis-apisix-ingress-controller
+  fullnameOverride: apisix-ingress-controller
   config:
     apisix:
       adminKey: esthesis-admin
-      serviceFullname: esthesis-apisix-admin
+      serviceFullname: apisix-admin

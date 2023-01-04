@@ -15,4 +15,3 @@ dependencies:
   - name: keycloak
     version: 9.2.10  # Check https://github.com/bitnami/charts/issues/10796 before upgrading.
     repository: https://charts.bitnami.com/bitnami
-    condition: keycloak.enabled

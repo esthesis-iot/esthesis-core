@@ -22,6 +22,10 @@ export const DATAFLOW_DEFINITION_COMMAND_REPLY_UPDATER = {
       fieldGroup: [
         ...DATAFLOW_TEMPLATE_KAFKA,
         {
+          key: "consumer-group", type: "input", defaultValue: "dfl-command-reply-updater",
+          props: {label: "Kafka consumer group"}
+        },
+        {
           key: "command-reply-topic", type: "input", defaultValue: "esthesis-command-reply",
           props: {label: "Kafka topic to read command reply messages from", required: true}
         }
@@ -32,7 +36,7 @@ export const DATAFLOW_DEFINITION_COMMAND_REPLY_UPDATER = {
       props: {label: "Esthesis database"},
       fieldGroup: [
         {
-          key: "esthesis-db-url", type: "input", defaultValue: "mongodb://esthesis-mongodb:27017",
+          key: "esthesis-db-url", type: "input", defaultValue: "mongodb://mongodb:27017",
           props: {label: "URL"}
         }, {
           key: "esthesis-db-name", type: "input", defaultValue: "esthesis",

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: esthesis-grafana-config
+  name: grafana-config
 type: Opaque
 stringData:
   datasource.yaml: |-
@@ -10,4 +10,4 @@ stringData:
       - name: Loki
         type: loki
         isDefault: true
-        url: http://esthesis-loki-gateway:80
+        url: http://loki-gateway:80
