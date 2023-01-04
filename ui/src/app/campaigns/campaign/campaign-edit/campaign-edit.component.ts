@@ -60,7 +60,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   constructor(private fb: FormBuilder, public utilityService: UtilityService,
     private qForms: QFormsService, private provisioningService: ProvisioningService,
     private route: ActivatedRoute, private router: Router,
-    private utilService: UtilityService, private deviceService: DevicesService,
+    private deviceService: DevicesService,
     private tagService: TagsService, private campaignService: CampaignsService,
     private dialog: MatDialog) {
     super();

@@ -8,7 +8,6 @@ import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QDisabledException;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.exception.QSecurityException;
-import esthesis.service.audit.resource.AuditResource;
 import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.service.crypto.resource.KeyResource;
 import esthesis.service.device.dto.DeviceKeyDTO;
@@ -54,10 +53,6 @@ public class DeviceRegistrationService {
   SettingsResource settingsResource;
 
   @Inject
-  @RestClient
-  AuditResource auditResource;
-
-  @Inject
   JsonWebToken jwt;
 
   /**
@@ -101,13 +96,6 @@ public class DeviceRegistrationService {
     for (String hardwareId : idList) {
       log.debug("Requested to preregister a device with hardware id '{}'.", hardwareId);
       register(hardwareId, deviceRegistration.getTags(), DeviceStatus.PREREGISTERED);
-//      auditResource.save(
-//          new AuditEntity()
-//              .setCreatedOn(Instant.now())
-//              .setCreatedBy(jwt.getName())
-//              .setMessage("Preregistering device with hardware id '" + hardwareId + "'.")
-//              .setOperation(Operation.WRITE)
-//              .setCategory(AppConstants.Audit.Category.DEVICE));
     }
   }
 
