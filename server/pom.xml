@@ -158,42 +158,7 @@
           <commitIdGenerationMode>full</commitIdGenerationMode>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.cyclonedx</groupId>
-        <artifactId>cyclonedx-maven-plugin</artifactId>
-        <inherited>false</inherited>
-      </plugin>
     </plugins>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.cyclonedx</groupId>
-          <artifactId>cyclonedx-maven-plugin</artifactId>
-          <version>2.7.3</version>
-          <executions>
-            <execution>
-              <phase>package</phase>
-              <goals>
-                <goal>makeAggregateBom</goal>
-              </goals>
-            </execution>
-          </executions>
-          <configuration>
-            <schemaVersion>1.4</schemaVersion>
-            <includeBomSerialNumber>true</includeBomSerialNumber>
-            <includeCompileScope>true</includeCompileScope>
-            <includeProvidedScope>true</includeProvidedScope>
-            <includeRuntimeScope>true</includeRuntimeScope>
-            <includeSystemScope>true</includeSystemScope>
-            <includeTestScope>false</includeTestScope>
-            <includeLicenseText>false</includeLicenseText>
-            <outputReactorProjects>false</outputReactorProjects>
-            <outputFormat>xml</outputFormat>
-            <outputName>bom</outputName>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
   <profiles>
@@ -209,8 +174,54 @@
         <quarkus.package.type>native</quarkus.package.type>
       </properties>
     </profile>
+    <profile>
+      <id>cyclonedx-bom</id>
+      <activation>
+        <property>
+          <name>cyclonedx-bom</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.cyclonedx</groupId>
+            <artifactId>cyclonedx-maven-plugin</artifactId>
+            <inherited>false</inherited>
+          </plugin>
+        </plugins>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.cyclonedx</groupId>
+              <artifactId>cyclonedx-maven-plugin</artifactId>
+              <version>2.7.3</version>
+              <executions>
+                <execution>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>makeAggregateBom</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                <schemaVersion>1.4</schemaVersion>
+                <includeBomSerialNumber>true</includeBomSerialNumber>
+                <includeCompileScope>true</includeCompileScope>
+                <includeProvidedScope>true</includeProvidedScope>
+                <includeRuntimeScope>true</includeRuntimeScope>
+                <includeSystemScope>true</includeSystemScope>
+                <includeTestScope>false</includeTestScope>
+                <includeLicenseText>false</includeLicenseText>
+                <outputReactorProjects>false</outputReactorProjects>
+                <outputFormat>xml</outputFormat>
+                <outputName>bom</outputName>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
   </profiles>
-
   <modules>
     <module>common</module>
     <module>services</module>

@@ -14,7 +14,7 @@ pipeline {
             parallel {
                 stage('Build server') {
                     steps {
-                       sh 'mvn -f server/pom.xml clean install -DskipTests'
+                       sh 'mvn -f server/pom.xml clean install -DskipTests -Pcyclonedx-bom'
                     }
                 }
                 stage('Build ui') {
@@ -37,11 +37,6 @@ pipeline {
         }
         stage('Produce bom.xml'){
             parallel {
-               /* stage('Produce bom.xml for server') {
-                    steps{
-                        sh 'mvn -f server/pom.xml org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom'
-                    }
-                }*/
                 stage('Produce bom.xml for ui') {
                     steps{
                         sh '''
