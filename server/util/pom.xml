@@ -20,6 +20,7 @@
 
   <modules>
     <module>utl-redis</module>
+    <module>utl-kogito</module>
   </modules>
 
 </project>

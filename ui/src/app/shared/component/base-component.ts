@@ -15,4 +15,11 @@ export class BaseComponent {
     return _.startCase((_.invert(obj))[val].replace("_", " ").toLowerCase());
   }
 
+  /**
+   * Converts a string by replacing all underscores with spaces and capitalizing the first letter.
+   * @param str The string to convert.
+   */
+  normaliseString(str: string): string {
+    return _.capitalize(str.replace("_", " "));
+  }
 }

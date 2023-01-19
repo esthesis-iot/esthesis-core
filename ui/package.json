@@ -38,6 +38,7 @@
     "angular-auth-oidc-client": "14.1.5",
     "angular-gridster2": "14.1.1",
     "basscss": "8.1.0",
+    "bson": "^4.7.2",
     "human-duration": "1.0.1",
     "js-yaml": "4.1.0",
     "lodash-es": "4.17.21",

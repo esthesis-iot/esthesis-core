@@ -1,4 +1,0 @@
-kafka:
-  fullnameOverride: esthesis-kafka
-  zookeeper:
-    fullnameOverride: esthesis-kafka-zookeeper

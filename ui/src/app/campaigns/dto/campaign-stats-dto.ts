@@ -9,4 +9,5 @@ export interface CampaignStatsDto {
   progress?: number;
   duration?: string;
   eta?: string;
+  stateDescription: string;
 }

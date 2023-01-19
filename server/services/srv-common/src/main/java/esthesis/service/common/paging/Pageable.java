@@ -151,42 +151,49 @@ public class Pageable {
    */
   @SuppressWarnings("java:S3776")
   public Map<String, Object> getQueryValues() {
-    MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
-    Map<String, Object> queryValues = new HashMap<>();
-    queryParams.keySet().stream().sorted().forEach(key -> {
-      String keyHash = String.valueOf(key.hashCode()).replace("-", "");
-      if (!"page".equals(key) && !"size".equals(key) && !"sort".equals(key)) {
-        String val = queryParams.getFirst(key);
-        if (val.startsWith("'") && val.endsWith("'")) {
-          val = val.substring(1, val.length() - 1);
-          queryValues.put("v_" + keyHash, val);
-        } else if (val.equalsIgnoreCase("true") || val.equalsIgnoreCase("false")) {
-          queryValues.put("v_" + keyHash, Boolean.valueOf(val));
-        } else if (val.startsWith("[") && val.endsWith("]") && key.endsWith("[]")) {
-          val = val.substring(1, val.length() - 1);
-          queryValues.put("v_" + keyHash, String.join(",", val.split("\\|")));
-        } else {
-          try {
-            queryValues.put("v_" + keyHash, Integer.parseInt(val));
-          } catch (NumberFormatException e1) {
+    if (uriInfo != null) {
+      MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
+      Map<String, Object> queryValues = new HashMap<>();
+      queryParams.keySet().stream().sorted().forEach(key -> {
+        String keyHash = String.valueOf(key.hashCode()).replace("-", "");
+        if (!"page".equals(key) && !"size".equals(key) && !"sort".equals(key)) {
+          String val = queryParams.getFirst(key);
+          if (val.startsWith("'") && val.endsWith("'")) {
+            val = val.substring(1, val.length() - 1);
+            queryValues.put("v_" + keyHash, val);
+          } else if (val.equalsIgnoreCase("true") || val.equalsIgnoreCase("false")) {
+            queryValues.put("v_" + keyHash, Boolean.valueOf(val));
+          } else if (val.startsWith("[") && val.endsWith("]") && key.endsWith("[]")) {
+            val = val.substring(1, val.length() - 1);
+            queryValues.put("v_" + keyHash, String.join(",", val.split("\\|")));
+          } else {
             try {
-              queryValues.put("v_" + keyHash, Instant.parse(val));
-            } catch (DateTimeParseException e2) {
-              queryValues.put("v_" + keyHash, val);
+              queryValues.put("v_" + keyHash, Integer.parseInt(val));
+            } catch (NumberFormatException e1) {
+              try {
+                queryValues.put("v_" + keyHash, Instant.parse(val));
+              } catch (DateTimeParseException e2) {
+                queryValues.put("v_" + keyHash, val);
+              }
             }
           }
         }
-      }
-    });
+      });
 
-    log.trace("Query values: {}", queryValues);
-
-    return queryValues;
+      log.trace("Query values: {}", queryValues);
+      return queryValues;
+    } else {
+      return new HashMap<>();
+    }
   }
 
   public boolean hasQuery() {
-    return uriInfo.getQueryParameters().keySet().stream()
-        .anyMatch(key -> !"page".equals(key) && !"size".equals(key) && !"sort".equals(key));
+    if (uriInfo != null) {
+      return uriInfo.getQueryParameters().keySet().stream()
+          .anyMatch(key -> !"page".equals(key) && !"size".equals(key) && !"sort".equals(key));
+    } else {
+      return false;
+    }
   }
 
   @Override

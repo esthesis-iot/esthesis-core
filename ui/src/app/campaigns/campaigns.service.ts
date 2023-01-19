@@ -10,34 +10,32 @@ import {environment} from "../../environments/environment";
   providedIn: "root"
 })
 export class CampaignsService extends CrudService<CampaignDto> {
-  private static resource = `campaign`;
-
   constructor(http: HttpClient) {
-    super(http, CampaignsService.resource);
+    super(http, "campaign/v1");
   }
 
-  public startCampaign(campaignId: number) {
+  public startCampaign(campaignId: string) {
     return this.http.get(
-      `${environment.apiPrefix}/${CampaignsService.resource}/${campaignId}/start`);
+      `${environment.apiPrefix}/campaign/v1/${campaignId}/start`);
   }
 
-  public stopCampaign(campaignId: number) {
+  public stopCampaign(campaignId: string) {
     return this.http.get(
-      `${environment.apiPrefix}/${CampaignsService.resource}/${campaignId}/terminate`);
+      `${environment.apiPrefix}/campaign/v1/${campaignId}/terminate`);
   }
 
-  pauseCampaign(campaignId: number) {
+  pauseCampaign(campaignId: string) {
     return this.http.get(
-      `${environment.apiPrefix}/${CampaignsService.resource}/${campaignId}/pause`);
+      `${environment.apiPrefix}/campaign/v1/${campaignId}/pause`);
   }
 
-  resumeCampaign(campaignId: number) {
+  resumeCampaign(campaignId: string) {
     return this.http.get(
-      `${environment.apiPrefix}/${CampaignsService.resource}/${campaignId}/resume`);
+      `${environment.apiPrefix}/campaign/v1/${campaignId}/resume`);
   }
 
   stats(campaignId: any): Observable<CampaignStatsDto> {
     return this.http.get<CampaignStatsDto>(
-      `${environment.apiPrefix}/${CampaignsService.resource}/${campaignId}/stats`);
+      `${environment.apiPrefix}/campaign/v1/${campaignId}/stats`);
   }
 }

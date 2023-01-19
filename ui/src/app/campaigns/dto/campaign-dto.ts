@@ -2,7 +2,7 @@ import {CampaignConditionDto} from "./campaign-condition-dto";
 import {CampaignMemberDto} from "./campaign-member-dto";
 
 export interface CampaignDto {
-  id: number;
+  id: string;
   name: string;
   description: string;
   scheduleDate: string;

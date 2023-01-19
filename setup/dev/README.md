@@ -19,14 +19,14 @@ to the following resources:
 
   ```bash
   helm repo add metallb https://metallb.github.io/metallb
-  
+
   helm install metallb metallb/metallb
-  
+
   cat <<EOF | kubectl apply -f -
   apiVersion: metallb.io/v1beta1
   kind: IPAddressPool
   metadata:
-    name: esthesis-pool      
+    name: esthesis-pool
   spec:
     addresses:
     - 192.168.21.1-192.168.21.254
@@ -115,7 +115,7 @@ above-suggested friendly names.
 
 ### APISIX
 
-```bash 
+```bash
 cd esthesis-platform/setup/helm/esthesis-apisix
 helm upgrade --install apisix . -f values.yaml -f values-dev.yaml
 ```
@@ -170,7 +170,7 @@ Notes:
 
 ### Prometheus
 
-```bash 
+```bash
 cd esthesis-platform/setup/helm/esthesis-prometheus
 helm upgrade --install prometheus . \
   -f values.yaml -f values-dev.yaml \
@@ -186,7 +186,7 @@ Notes:
 
 ### RabbitMQ
 
-```bash 
+```bash
 cd esthesis-platform/setup/helm/esthesis-rabbitmq
 helm upgrade --install rabbitmq . -f values.yaml -f values-dev.yaml
 ```
@@ -237,8 +237,22 @@ helm upgrade --install mysql . -f values.yaml -f values-dev.yaml
 
 ### Redis
 
+```bash
 cd esthesis-platform/setup/helm/esthesis-redis
 helm upgrade --install redis . -f values.yaml -f values-dev.yaml
+```
+
+### Kogito
+
+```bash
+kubectl apply -f "https://github.com/kiegroup/kogito-operator/releases/download/v1.32.0/kogito-operator.yaml"
+cd esthesis-platform/setup/helm/esthesis-redis
+helm upgrade --install redis . -f values.yaml -f values-dev.yaml
+```
+
+Notes:
+
+- Kogito operator will be installed in `kogito-operator-system` namespace.
 
 ### esthesis
 
@@ -260,7 +274,7 @@ Notes:
 ## Access to services from your development machine
 
 - [APISIX dashboard](http://esthesis-dev-apisix-dashboard)
-  ``` 
+  ```
   Username: esthesis
   Passowrd: esthesis
   ```
@@ -271,13 +285,13 @@ Notes:
   ```
 
 - [Keycloak](http://esthesis-dev-keycloak/admin)
-  ``` 
+  ```
   Username: esthesis
   Passowrd: esthesis
   ```
 
 - MongoDB
-  ``` 
+  ```
   mongodb://esthesis-dev-mongodb-0:27017,esthesis-dev-mongodb-1:27017/esthesis
   Username: esthesis
   Passowrd: esthesis
@@ -289,7 +303,7 @@ Notes:
   ```
 
 - [Grafana Loki](http://esthesis-dev-grafana-loki:3000)
-  ``` 
+  ```
   Username: esthesis
   Passowrd: esthesis
   ```
@@ -301,7 +315,7 @@ Notes:
     - Admin Interface:
 
       [InfluxDB](http://esthesis-dev-influxdb:8086)
-      ``` 
+      ```
       Username: esthesis
       Passowrd: esthesis
       ```

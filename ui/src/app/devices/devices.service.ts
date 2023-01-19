@@ -74,7 +74,7 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
 
   findDeviceByPartialHardwareId(hardwareId: string): Observable<DeviceDto[]> {
     return this.http.get<DeviceDto[]>(
-      `${this.prefix}/by-partial-hardware-id/${hardwareId}`);
+      `${this.prefix}/find/by-hardware-id?hardwareIds=${hardwareId}&partialMatch=true`);
   }
 
   addDeviceProfileNote(targetDeviceId: string, newFieldName: string, newFieldLabel: string) {

@@ -1,3 +1,4 @@
+// export const AppConstants = {
 export const AppConstants = {
   // An id designating a new record is to be created.
   NEW_RECORD_ID: "new",
@@ -88,46 +89,46 @@ export const AppConstants = {
   // Campaign constants.
   CAMPAIGN: {
     STATE: {
-      CREATED: 10,
-      RUNNING: 20,
-      PAUSED_BY_USER: 30,
-      PAUSED_BY_WORKFLOW: 40,
-      TERMINATED_BY_WORKFLOW: 50,
-      TERMINATED_BY_USER: 60,
+      CREATED: "CREATED",
+      RUNNING: "RUNNING",
+      PAUSED_BY_USER: "PAUSED_BY_USER",
+      PAUSED_BY_WORKFLOW: "PAUSED_BY_WORKFLOW",
+      TERMINATED_BY_WORKFLOW: "TERMINATED_BY_WORKFLOW",
+      TERMINATED_BY_USER: "TERMINATED_BY_USER",
     },
     TYPE: {
-      PROVISIONING: 1,
-      COMMAND: 2,
-      REBOOT: 3,
-      SHUTDOWN: 4
+      PROVISIONING: "PROVISIONING",
+      EXECUTE_COMMAND: "EXECUTE_COMMAND",
+      REBOOT: "REBOOT",
+      SHUTDOWN: "SHUTDOWN",
     },
     CONDITION: {
       TYPE: {
-        DATETIME: 1,
-        SUCCESS: 2,
-        PROPERTY: 4,
-        PAUSE: 5,
-        BATCH: 6
+        DATETIME: "DATETIME",
+        SUCCESS: "SUCCESS",
+        PROPERTY: "PROPERTY",
+        PAUSE: "PAUSE",
+        BATCH: "BATCH",
       },
       STAGE: {
-        ENTRY: 1,
-        EXIT: 2
+        ENTRY: "ENTRY",
+        EXIT: "EXIT",
       },
       OP: {
-        BEFORE: 1,
-        AFTER: 2,
-        FOREVER: 5,
-        TIMER_MINUTES: 6,
-        EQUAL: 7,
-        GT: 8,
-        LT: 9,
-        GTE: 10,
-        LTE: 11
+        BEFORE: "BEFORE",
+        AFTER: "AFTER",
+        FOREVER: "FOREVER",
+        TIMER_MINUTES: "TIMER_MINUTES",
+        EQUAL: "EQUAL",
+        GT: "GT",
+        LT: "LT",
+        GTE: "GTE",
+        LTE: "LTE",
       }
     },
     MEMBER_TYPE: {
-      DEVICE: 1,
-      TAG: 2
+      DEVICE: "DEVICE",
+      TAG: "TAG",
     }
   },
 

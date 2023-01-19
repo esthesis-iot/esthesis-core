@@ -106,4 +106,5 @@ export class UtilityService {
     this.clipboard.copy(value);
     this.popupSuccess("Value copied to clipboard.");
   }
+
 }

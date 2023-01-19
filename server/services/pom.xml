@@ -57,8 +57,8 @@
       <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
-      <artifactId>quarkus-opentelemetry-exporter-otlp</artifactId>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-opentelemetry</artifactId>
     </dependency>
     <dependency>
       <artifactId>quarkus-logging-gelf</artifactId>
@@ -101,5 +101,6 @@
     <module>srv-about</module>
     <module>srv-dt</module>
     <module>srv-audit</module>
+    <module>srv-campaign</module>
   </modules>
 </project>

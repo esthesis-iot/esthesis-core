@@ -80,6 +80,7 @@ public class AppConstants {
       ABOUT,
       APPLICATION,
       AUDIT,
+      CAMPAIGN,
       COMMAND,
       CRYPTO,
       DATAFLOW,
@@ -99,59 +100,41 @@ public class AppConstants {
     }
   }
 
-//  public static class Campaign {
-//    public static class Member {
-//      public static class Type {
-//        public static final int DEVICE = 1;
-//        public static final int TAG = 2;
-//      }
-//    }
-//    public static class State {
-//      public static final int CREATED = 10;
-//      public static final int RUNNING = 20;
-//      public static final int PAUSED_BY_USER = 30;
-//      public static final int PAUSED_BY_WORKFLOW = 40;
-//      public static final int TERMINATED_BY_WORKFLOW = 50;
-//      public static final int TERMINATED_BY_USER = 60;
-//    }
-//    public static class Type {
-//      public static final int PROVISIONING = 1;
-//      public static final int COMMAND = 2;
-//      public static final int REBOOT = 3;
-//      public static final int SHUTDOWN = 4;
-//    }
-//    public static  class Condition {
-//      public static class Type {
-//        public static final int DATETIME = 1;
-//        public static final int SUCCESS = 2;
-//        public static final int PROPERTY = 4;
-//        public static final int PAUSE = 5;
-//        public static final int BATCH = 6;
-//      }
-//      public static  class Stage {
-//        public static final int ENTRY = 1;
-//        public static final int EXIT = 2;
-//        public static String of(int stage) {
-//          return switch (stage) {
-//            case ENTRY -> "Entry";
-//            case EXIT -> "Exit";
-//            default -> "Global";
-//          };
-//        }
-//      }
-//      public static  class Op {
-//        public static final int BEFORE = 1;
-//        public static final int AFTER = 2;
-//        public static final int ABOVE = 3;
-//        public static final int BELOW = 4;
-//        public static final int FOREVER = 5;
-//        public static final int TIMER_MINUTES = 6;
-//        public static final int EQUAL = 7;
-//        public static final int GT = 8;
-//        public static final int LT = 9;
-//        public static final int GTE = 10;
-//        public static final int LTE = 11;
-//      }
-//    }
-//  }
+  public static class Campaign {
+
+    public static class Member {
+
+      public enum Type {
+        DEVICE, TAG;
+      }
+    }
+
+    public enum State {
+
+      CREATED, RUNNING, PAUSED_BY_USER, PAUSED_BY_WORKFLOW,
+      TERMINATED_BY_WORKFLOW, TERMINATED_BY_USER;
+    }
+
+    public enum Type {
+
+      PROVISIONING, EXECUTE_COMMAND, REBOOT, SHUTDOWN;
+    }
+
+    public static class Condition {
+
+      public enum Type {
+        DATETIME, SUCCESS, PROPERTY, PAUSE, BATCH;
+      }
+
+      public enum Stage {
+        ENTRY, EXIT;
+      }
+
+      public enum Op {
+
+        BEFORE, AFTER, ABOVE, BELOW, FOREVER, TIMER_MINUTES, EQUAL,
+        GT, LT, GTE, LTE;
+      }
+    }
+  }
 }

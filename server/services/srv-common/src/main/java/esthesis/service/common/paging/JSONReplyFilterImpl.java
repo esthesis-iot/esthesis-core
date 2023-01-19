@@ -41,6 +41,11 @@ public class JSONReplyFilterImpl implements ContainerResponseFilter {
       return;
     }
 
+    // If no entity is present, skip the filtering mechanism.
+    if (res.getEntity() == null) {
+      return;
+    }
+
     // Clone Quarkus ObjectMapper to get a fully-configured mapper, also to avoid
     // mutating the global mapper.
     ObjectMapper clonedMapper = injectedMapper.copy();
