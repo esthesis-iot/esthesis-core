@@ -14,7 +14,7 @@ pipeline {
             parallel {
                 stage('Build server') {
                     steps {
-                       sh 'mvn -f server/pom.xml clean install -DskipTests -Pcyclonedx-bom'
+                       sh 'mvn -f server/pom.xml clean install -DskipTests -Pcyclonedx-bom -s /root/.m2/settings.xml'
                     }
                 }
                 stage('Build ui') {
@@ -83,7 +83,7 @@ pipeline {
             }
         }
     }
-    post {
+    /*post {
         changed {
             script {
                if (currentBuild.result == 'SUCCESS') {
@@ -93,10 +93,10 @@ pipeline {
                }
            }
        }
-    }
+    }*/
 }
 
-@NonCPS
+/*@NonCPS
 def getChangeString(maxMessages) {
      MAX_MSG_LEN = 100
      def changeString = ""
@@ -118,3 +118,4 @@ def getChangeString(maxMessages) {
 
      return changeString
 }
+*/
