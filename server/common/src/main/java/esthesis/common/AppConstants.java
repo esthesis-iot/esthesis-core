@@ -127,7 +127,7 @@ public class AppConstants {
       }
 
       public enum Stage {
-        ENTRY, EXIT;
+        ENTRY, EXIT, INSIDE;
       }
 
       public enum Op {

@@ -13,7 +13,6 @@ import esthesis.service.campaign.exception.CampaignDeviceDoesNotExist;
 import esthesis.service.common.BaseService;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
-import esthesis.services.campaign.impl.repository.CampaignRepository;
 import esthesis.services.campaign.impl.worker.CampaignDeviceWorkflow;
 import esthesis.util.kogito.client.KogitoClient;
 import esthesis.util.kogito.dto.InstanceDTO;
@@ -40,9 +39,6 @@ public class CampaignService extends BaseService<CampaignEntity> {
   JsonWebToken jwt;
 
   @Inject
-  CampaignRepository campaignRepository;
-
-  @Inject
   CampaignDeviceMonitorService campaignDeviceMonitorService;
 
   @Inject
@@ -64,7 +60,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
     return super.save(campaignEntity);
   }
 
-  public void resume(ObjectId campaignId) {
+  public void resume(String campaignId) {
     // Get campaign to resume.
     log.debug("Resuming campaign with id '{}'.", campaignId);
     CampaignEntity campaignEntity = findById(campaignId);
@@ -129,14 +125,14 @@ public class CampaignService extends BaseService<CampaignEntity> {
     return groups;
   }
 
-  public CampaignStatsDTO getCampaignStats(ObjectId campaignId) {
+  public CampaignStatsDTO getCampaignStats(String campaignId) {
     CampaignStatsDTO campaignStatsDTO = new CampaignStatsDTO();
     CampaignEntity campaignEntity = findById(campaignId);
 
     campaignStatsDTO.setStateDescription(campaignEntity.getStateDescription());
 
     // Find the group members of each campaign group.
-    int campaignGroups = findGroups(campaignId.toHexString()).size();
+    int campaignGroups = findGroups(campaignId).size();
     List<Integer> groupMembers = new ArrayList<>();
     for (int i = 1; i <= campaignGroups; i++) {
       groupMembers.add(campaignDeviceMonitorService.findByColumn("group", i).size());
@@ -194,7 +190,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
     return campaignStatsDTO;
   }
 
-  public void start(ObjectId campaignId) {
+  public void start(String campaignId) {
     // Get the campaign about to start.
     log.debug("Starting campaign with id '{}'.", campaignId);
     CampaignEntity campaignEntity = findById(campaignId);
@@ -225,7 +221,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
         CampaignDeviceMonitorEntity cdm = new CampaignDeviceMonitorEntity();
         cdm.setDeviceId(device.get(0).getId());
         cdm.setHardwareId(device.get(0).getHardwareId());
-        cdm.setCampaignId(campaignId);
+        cdm.setCampaignId(new ObjectId(campaignId));
         cdm.setGroup(member.getGroup());
         campaignDeviceMonitorService.save(cdm);
       } else {
@@ -236,7 +232,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
               device.getHardwareId(), campaignId);
           CampaignDeviceMonitorEntity cdm = new CampaignDeviceMonitorEntity();
           cdm.setDeviceId(device.getId());
-          cdm.setCampaignId(campaignId);
+          cdm.setCampaignId(new ObjectId(campaignId));
           cdm.setGroup(member.getGroup());
           campaignDeviceMonitorService.save(cdm);
         });
@@ -247,7 +243,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
     log.debug("Starting campaign workflow for campaign id '{}'.", campaignId);
     try {
       CampaignDeviceWorkflow campaignDeviceWorkflow = new CampaignDeviceWorkflow();
-      campaignDeviceWorkflow.setCampaignId(campaignId.toHexString());
+      campaignDeviceWorkflow.setCampaignId(campaignId);
       InstanceDTO instanceDTO = kogitoClient.startInstance(CAMPAIGN_PROCESS_ID,
           campaignDeviceWorkflow);
       campaignEntity.setState(State.RUNNING);
@@ -263,7 +259,4 @@ public class CampaignService extends BaseService<CampaignEntity> {
     }
   }
 
-  public CampaignEntity findById(String campaignId) {
-    return findById(campaignId);
-  }
 }

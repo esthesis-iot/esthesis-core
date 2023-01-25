@@ -40,7 +40,7 @@ public class StoreService extends BaseService<StoreEntity> {
   @RestClient
   SettingsResource settingsResource;
 
-  public byte[] download(ObjectId id)
+  public byte[] download(String id)
   throws CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException,
          NoSuchProviderException, InvalidKeySpecException {
     // Get the store to download.
@@ -52,14 +52,14 @@ public class StoreService extends BaseService<StoreEntity> {
 
     // Collect certificates.
     for (ObjectId certId : storeEntity.getCertCertificates()) {
-      CertificateEntity certificateEntity = certificateService.findById(certId);
+      CertificateEntity certificateEntity = certificateService.findById(certId.toHexString());
       keystore = cryptoService.saveCertificateToKeystore(keystore, KEYSTORE_TYPE, KEYSTORE_PROVIDER,
           storeEntity.getPassword(), certificateEntity.getCn(),
           cryptoService.pemToCertificate(certificateEntity.getCertificate()).getEncoded());
     }
 
     for (ObjectId caId : storeEntity.getCertCas()) {
-      CaEntity caEntity = caService.findById(caId);
+      CaEntity caEntity = caService.findById(caId.toHexString());
       keystore = cryptoService.saveCertificateToKeystore(keystore, KEYSTORE_TYPE, KEYSTORE_PROVIDER,
           storeEntity.getPassword(), caEntity.getCn(),
           cryptoService.pemToCertificate(caEntity.getCertificate()).getEncoded());
@@ -67,7 +67,7 @@ public class StoreService extends BaseService<StoreEntity> {
 
     // Collect private keys.
     for (ObjectId certId : storeEntity.getPkCertificates()) {
-      CertificateEntity certificateEntity = certificateService.findById(certId);
+      CertificateEntity certificateEntity = certificateService.findById(certId.toHexString());
       final PrivateKey privateKey = cryptoService.pemToPrivateKey(certificateEntity.getPrivateKey(),
           settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString());
 

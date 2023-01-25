@@ -76,7 +76,7 @@ public class CAService extends BaseService<CaEntity> {
 
       // If this CA has a parent CA (i.e. it is a sub-CA) fetch the details of the parent.
       if (caEntity.getParentCaId() != null) {
-        CaEntity parentCaEntity = findById(caEntity.getParentCaId());
+        CaEntity parentCaEntity = findById(caEntity.getParentCaId().toHexString());
         createCARequestBuilder.issuerCN(parentCaEntity.getCn())
             .issuerPrivateKeyAlgorithm(asymmetricKeyAlgorithm)
             .issuerPrivateKey(

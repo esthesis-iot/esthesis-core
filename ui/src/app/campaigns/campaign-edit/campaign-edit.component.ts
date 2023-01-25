@@ -55,6 +55,8 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   now = new Date();
   campaignStats?: CampaignStatsDto;
   campaignChart?: any;
+  // A tracker for available groups;
+  // currentGroup = 1;
 
   constructor(private fb: FormBuilder, public utilityService: UtilityService,
     private qForms: QFormsService, private provisioningService: ProvisioningService,
@@ -183,7 +185,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     return this.fb.group({
       id: campaignConditionDto.id,
       type: campaignConditionDto.type,
-      target: campaignConditionDto.group,
+      group: campaignConditionDto.group,
       stage: campaignConditionDto.stage,
       scheduleDate: campaignConditionDto.scheduleDate,
       scheduleHour: campaignConditionDto.scheduleHour,
@@ -199,6 +201,14 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   addCondition(type: AppConstants.CAMPAIGN.CONDITION.TYPE) {
     const condition = new CampaignConditionDto(type);
     condition.id = new ObjectID().toHexString();
+
+    if (type === this.appConstants.CAMPAIGN.CONDITION.TYPE.SUCCESS) {
+      condition.stage = this.appConstants.CAMPAIGN.CONDITION.STAGE.EXIT;
+    }
+    if (type === this.appConstants.CAMPAIGN.CONDITION.TYPE.BATCH) {
+      condition.stage = this.appConstants.CAMPAIGN.CONDITION.STAGE.INSIDE;
+    }
+
     // @ts-ignore
     this.form.controls.conditions.push(
       this.createCondition(condition));
@@ -236,9 +246,11 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   currentGroup(): number {
     let groupNo;
     if (this.form.get("members")?.value.length === 0) {
+      console.log("No members yet, group=1");
       groupNo = 1;
     } else {
       groupNo = (_.maxBy(this.form.get("members")?.value, (o: CampaignMemberDto) => o.group) as CampaignMemberDto).group;
+      console.log("Current group: " + groupNo);
     }
 
     return groupNo;
@@ -257,6 +269,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
    *                  0: The entry is added in a new group.
    */
   addDeviceOrTag(groupNumber?: number) {
+    console.log("Adding to group: " + groupNumber);
     let groupNo: number;
     if (groupNumber === undefined) {
       groupNo = this.currentGroup();

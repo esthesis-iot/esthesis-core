@@ -110,14 +110,19 @@ public class CommandService {
     return commandRequestService.save(commandRequestEntity).getId();
   }
 
+  public ExecuteRequestScheduleInfoDTO saveRequestAndExecute(
+      CommandRequestEntity commandRequestEntity) {
+    ObjectId requestId = saveRequest(commandRequestEntity);
+    return executeRequest(requestId.toString());
+  }
+
   /**
    * Executes (i.e. sends to the device) a previously saved command.
    *
    * @param requestId The previously saved command request ID.
    */
   public ExecuteRequestScheduleInfoDTO executeRequest(String requestId) {
-    // Find the command to execute or produce an error if the command can not
-    // be found.
+    // Find the command to execute or produce an error if the command can not be found.
     CommandRequestEntity request = commandRequestService.findById(requestId);
     if (request == null) {
       throw new QDoesNotExistException("Command request '{}' does not exist.",

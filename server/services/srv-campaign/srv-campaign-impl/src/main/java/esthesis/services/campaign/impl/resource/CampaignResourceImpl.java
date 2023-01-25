@@ -13,7 +13,6 @@ import esthesis.util.kogito.client.KogitoClient;
 import javax.inject.Inject;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
-import org.bson.types.ObjectId;
 
 public class CampaignResourceImpl implements CampaignResource {
 
@@ -35,60 +34,29 @@ public class CampaignResourceImpl implements CampaignResource {
   }
 
   @Override
-  public CampaignEntity findById(ObjectId campaignId) {
+  public CampaignEntity findById(String campaignId) {
     return campaignService.findById(campaignId);
   }
 
   @Override
-  public void start(ObjectId campaignId) {
+  public void start(String campaignId) {
     campaignService.start(campaignId);
   }
 
   @Override
-  public void resume(ObjectId campaignId) {
+  public void resume(String campaignId) {
     campaignService.resume(campaignId);
   }
 
   @Override
-  public CampaignStatsDTO getCampaignStats(ObjectId campaignId) {
+  public CampaignStatsDTO getCampaignStats(String campaignId) {
     return campaignService.getCampaignStats(campaignId);
   }
 
   @Audited(cat = Category.CAMPAIGN, op = Operation.DELETE, msg = "Delete campaign")
-  public Response delete(@PathParam("id") ObjectId campaignId) {
+  public Response delete(@PathParam("id") String campaignId) {
     return campaignService.deleteById(campaignId)
         ? Response.ok().build() : Response.notModified().build();
   }
 
-  @Override
-  public void test() {
-    try {
-      kogitoClient.startInstance("test1", "{}");
-
-//    StartCampaignDTO startCampaignDTO = new StartCampaignDTO();
-//    startCampaignDTO.setNameArg("nassos");
-//    InstanceDTO instanceDTO = null;
-//    try {
-//      instanceDTO = kogitoClient.startInstance("DeviceCampaign", startCampaignDTO);
-//      System.out.println(instanceDTO);
-//
-//      List<InstanceDTO> campaigns = kogitoClient.getInstances("DeviceCampaign");
-//      System.out.println(campaigns);
-//
-//      List<TaskDTO> tasks = kogitoClient.getTasks("DeviceCampaign",
-//          campaigns.get(0).getId());
-//      System.out.println(tasks);
-//
-//      InstanceDTO instanceDTO1 = kogitoClient.completeTask("DeviceCampaign",
-//          campaigns.get(0).getId(),
-//          "Task1", tasks.get(0).getId());
-//      System.out.println(instanceDTO1);
-//
-////      System.out.println(
-////          kogitoClient.deleteInstance("DeviceCampaign", instanceDTO.getId())
-////      );
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
 }

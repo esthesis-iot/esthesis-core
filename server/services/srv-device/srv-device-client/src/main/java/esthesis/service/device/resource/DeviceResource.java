@@ -18,7 +18,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
@@ -79,11 +78,11 @@ public interface DeviceResource {
 
   @GET
   @Path("/v1/{deviceId}")
-  DeviceEntity get(@PathParam("deviceId") ObjectId id);
+  DeviceEntity get(@PathParam("deviceId") String id);
 
   @DELETE
   @Path("/v1/{deviceId}")
-  void delete(@PathParam("deviceId") ObjectId id);
+  void delete(@PathParam("deviceId") String id);
 
   @POST
   @Path("/v1")
@@ -96,16 +95,16 @@ public interface DeviceResource {
   @GET
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("/v1/{deviceId}/download/public-key")
-  Response downloadPublicKey(@PathParam("deviceId") ObjectId id);
+  Response downloadPublicKey(@PathParam("deviceId") String id);
 
   @GET
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("/v1/{deviceId}/download/private-key")
-  Response downloadPrivateKey(@PathParam("deviceId") ObjectId id);
+  Response downloadPrivateKey(@PathParam("deviceId") String id);
 
   @GET
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("/v1/{deviceId}/download/certificate")
-  Response downloadCertificate(@PathParam("deviceId") ObjectId id);
+  Response downloadCertificate(@PathParam("deviceId") String id);
 
 }

@@ -16,7 +16,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 public class ApplicationResourceImpl implements ApplicationResource {
@@ -38,13 +37,13 @@ public class ApplicationResourceImpl implements ApplicationResource {
 
   @Override
   @Audited(cat = Category.APPLICATION, op = Operation.READ, msg = "View application")
-  public ApplicationEntity findById(@PathParam("id") ObjectId id) {
+  public ApplicationEntity findById(@PathParam("id") String id) {
     return applicationService.findById(id);
   }
 
   @Override
   @Audited(cat = Category.APPLICATION, op = Operation.DELETE, msg = "Delete applications")
-  public Response delete(@PathParam("id") ObjectId id) {
+  public Response delete(@PathParam("id") String id) {
     applicationService.deleteById(id);
 
     return Response.ok().build();

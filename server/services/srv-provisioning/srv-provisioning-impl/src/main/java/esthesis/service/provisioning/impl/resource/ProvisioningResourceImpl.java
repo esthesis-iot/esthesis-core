@@ -18,7 +18,6 @@ import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.HttpHeaders;
-import org.bson.types.ObjectId;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
@@ -45,13 +44,13 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
 
   @Override
   @Audited(cat = Category.PROVISIONING, op = Operation.READ, msg = "View provisioning package")
-  public ProvisioningPackageEntity findById(ObjectId id) {
+  public ProvisioningPackageEntity findById(String id) {
     return provisioningService.findById(id);
   }
 
   @Override
   @Audited(cat = Category.PROVISIONING, op = Operation.WRITE, msg = "Recache provisioning package")
-  public void recache(ObjectId provisioningPackageId) {
+  public void recache(String provisioningPackageId) {
     provisioningService.recache(provisioningPackageId);
   }
 
@@ -63,7 +62,7 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
 
   @Override
   @Audited(cat = Category.PROVISIONING, op = Operation.DELETE, msg = "Delete provisioning package")
-  public void delete(ObjectId provisioningPackageId) {
+  public void delete(String provisioningPackageId) {
     provisioningService.delete(provisioningPackageId);
   }
 
@@ -71,7 +70,7 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
   @Blocking
   @Audited(cat = Category.PROVISIONING, op = Operation.READ, msg = "Download provisioning "
       + "package", log = AuditLogType.DATA_IN)
-  public Uni<RestResponse<byte[]>> download(ObjectId provisioningPackageId) {
+  public Uni<RestResponse<byte[]>> download(String provisioningPackageId) {
     ProvisioningPackageEntity pp = provisioningService.findById(provisioningPackageId);
     Uni<byte[]> binary = provisioningService.download(provisioningPackageId);
 

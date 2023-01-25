@@ -22,7 +22,6 @@ import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-import org.bson.types.ObjectId;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
 @Authenticated
@@ -50,7 +49,7 @@ public class CAResourceImpl implements CAResource {
   @Path("/v1/{id}")
   @JSONReplyFilter(filter = "id,cn,issued,parentCa,validity,parentCaId,name")
   @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "View certificate authority")
-  public CaEntity findById(ObjectId id) {
+  public CaEntity findById(String id) {
     return caService.findById(id);
   }
 
@@ -64,7 +63,7 @@ public class CAResourceImpl implements CAResource {
 
   @Override
   @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Download certificate authority", log = AuditLogType.DATA_IN)
-  public Response download(ObjectId caId, AppConstants.KeyType type) {
+  public Response download(String caId, AppConstants.KeyType type) {
     CaEntity caEntity = caService.findById(caId);
 
     String content;
@@ -97,7 +96,7 @@ public class CAResourceImpl implements CAResource {
 
   @Override
   @Audited(cat = Category.CRYPTO, op = Operation.DELETE, msg = "Delete certificate authority")
-  public void delete(ObjectId id) {
+  public void delete(String id) {
     caService.deleteById(id);
   }
 
@@ -108,7 +107,7 @@ public class CAResourceImpl implements CAResource {
   }
 
   @Override
-  public String getCACertificate(ObjectId caId) {
+  public String getCACertificate(String caId) {
     return findById(caId).getCertificate();
   }
 }

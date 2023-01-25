@@ -16,7 +16,6 @@ import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 public class AuditResourceImpl implements AuditResource {
@@ -50,13 +49,13 @@ public class AuditResourceImpl implements AuditResource {
 
   @Override
   @Audited(cat = Category.AUDIT, op = Operation.READ, msg = "View audit entry")
-  public AuditEntity findById(ObjectId id) {
+  public AuditEntity findById(String id) {
     return auditService.findById(id);
   }
 
   @Override
   @Audited(cat = Category.AUDIT, op = Operation.READ, msg = "Delete audit entry")
-  public Response delete(ObjectId id) {
+  public Response delete(String id) {
     if (auditService.deleteById(id)) {
       return Response.ok().build();
     } else {

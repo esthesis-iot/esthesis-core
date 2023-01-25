@@ -12,7 +12,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 @Path("/api")
@@ -30,27 +29,22 @@ public interface CampaignResource {
 
   @GET
   @Path("/v1/{id}")
-  CampaignEntity findById(@PathParam("id") ObjectId campaignId);
+  CampaignEntity findById(@PathParam("id") String campaignId);
 
   @GET
   @Path("/v1/{id}/resume")
-  void resume(@PathParam("id") ObjectId campaignId);
+  void resume(@PathParam("id") String campaignId);
 
   @GET
   @Path("/v1/{id}/start")
-  void start(@PathParam("id") ObjectId campaignId);
+  void start(@PathParam("id") String campaignId);
 
   @GET
   @Path("/v1/{id}/stats")
-  CampaignStatsDTO getCampaignStats(@PathParam("id") ObjectId campaignId);
+  CampaignStatsDTO getCampaignStats(@PathParam("id") String campaignId);
 
   @DELETE
   @Path("/v1/{id}")
-  Response delete(@PathParam("id") ObjectId campaignId);
-
-
-  @GET
-  @Path("/v1/test")
-  void test();
+  Response delete(@PathParam("id") String campaignId);
 
 }

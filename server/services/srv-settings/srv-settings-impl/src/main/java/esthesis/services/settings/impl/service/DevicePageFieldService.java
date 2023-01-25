@@ -16,7 +16,7 @@ public class DevicePageFieldService extends BaseService<DevicePageFieldEntity> {
         .filter(
             f -> !fields.stream().map(DevicePageFieldEntity::getId).toList()
                 .contains(f)).toList()
-        .forEach(this::deleteById);
+        .forEach(objectId -> super.deleteById(objectId.toHexString()));
 
     fields.forEach(this::save);
   }

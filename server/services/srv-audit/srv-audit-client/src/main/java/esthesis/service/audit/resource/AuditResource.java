@@ -15,7 +15,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
@@ -38,11 +37,11 @@ public interface AuditResource {
 
   @GET
   @Path("/v1/{id}")
-  AuditEntity findById(@PathParam("id") ObjectId id);
+  AuditEntity findById(@PathParam("id") String id);
 
   @DELETE
   @Path("/v1/{id}")
-  Response delete(@PathParam("id") ObjectId id);
+  Response delete(@PathParam("id") String id);
 
   @POST
   @Path("/v1")

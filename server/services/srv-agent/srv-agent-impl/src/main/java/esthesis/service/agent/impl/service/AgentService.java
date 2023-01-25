@@ -111,7 +111,7 @@ public class AgentService {
       log.warn("Root CA is not set.");
     } else {
       agentRegistrationResponse.setRootCaCertificate(
-          caSystemResource.getCACertificate(rootCaId));
+          caSystemResource.getCACertificate(rootCaId.toHexString()));
     }
 
     // Find the MQTT server to send back to the device.
@@ -290,6 +290,6 @@ public class AgentService {
                 "Invalid download token '{}' for provisioning package.",
                 token))
         .onItem()
-        .transformToUni(id -> redisUtils.downloadProvisioningPackage(new ObjectId(id)));
+        .transformToUni(id -> redisUtils.downloadProvisioningPackage(id));
   }
 }

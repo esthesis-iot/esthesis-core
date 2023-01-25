@@ -12,7 +12,6 @@ import java.time.Instant;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @Slf4j
@@ -65,7 +64,7 @@ public class ApplicationService extends BaseService<ApplicationEntity> {
   }
 
   @Override
-  public boolean deleteById(ObjectId id) {
+  public boolean deleteById(String id) {
     log.debug("Deleting application with id '{}'.", id);
     ApplicationEntity applicationEntity = findById(id);
     if (applicationEntity != null) {

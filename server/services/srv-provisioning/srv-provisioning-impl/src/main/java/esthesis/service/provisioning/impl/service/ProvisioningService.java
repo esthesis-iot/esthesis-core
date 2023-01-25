@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.FluentProducerTemplate;
 import org.apache.camel.Produce;
-import org.bson.types.ObjectId;
 import org.semver4j.Semver;
 
 @Slf4j
@@ -48,7 +47,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
   public ProvisioningPackageEntity save(ProvisioningPackageForm pf) {
     // Convert the uploaded form to a ProvisioningPackage.
     ProvisioningPackageEntity p =
-        pf.getId() != null ? findById(pf.getId()) : new ProvisioningPackageEntity();
+        pf.getId() != null ? findById(pf.getId().toHexString()) : new ProvisioningPackageEntity();
 
     p.setName(pf.getName());
     p.setDescription(pf.getDescription());
@@ -122,7 +121,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
    * @param provisioningPackageId
    * @return
    */
-  public void recache(ObjectId provisioningPackageId) {
+  public void recache(String provisioningPackageId) {
     ProvisioningPackageEntity pp = findById(provisioningPackageId);
     pp.setCacheStatus(CacheStatus.NOT_STARTED);
     save(pp);
@@ -134,7 +133,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
     }
   }
 
-  public void delete(ObjectId provisioningPackageId) {
+  public void delete(String provisioningPackageId) {
     // Delete the provisioning package from cache.
     redisUtils.deleteProvisioningPackage(provisioningPackageId);
 
@@ -150,7 +149,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
     cacheAll.asyncSend();
   }
 
-  public Uni<byte[]> download(ObjectId provisioningPackageId) {
+  public Uni<byte[]> download(String provisioningPackageId) {
     // Get the binary content of the provisioning package.
     return redisUtils.downloadProvisioningPackage(provisioningPackageId);
   }

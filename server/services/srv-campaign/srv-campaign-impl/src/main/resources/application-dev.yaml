@@ -30,6 +30,22 @@ quarkus:
     DeviceResource:
       url: http://localhost:59010
       scope: Singleton
+    CommandSystemResource:
+      url: http://localhost:59080
+      scope: Singleton
+  oidc:
+    auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
+    client-id: esthesis
+  oidc-client:
+    auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
+    client-id: esthesis
+    grant:
+      type: PASSWORD
+    grant-options:
+      password:
+        username: esthesis-system
+        password: esthesis-system
+
 mp:
   jwt:
     verify:

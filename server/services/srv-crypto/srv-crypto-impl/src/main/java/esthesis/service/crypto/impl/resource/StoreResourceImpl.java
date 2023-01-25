@@ -20,7 +20,6 @@ import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
@@ -41,7 +40,7 @@ public class StoreResourceImpl implements StoreResource {
 
   @Override
   @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "View store")
-  public StoreEntity findById(ObjectId id) {
+  public StoreEntity findById(String id) {
     return storeService.findById(id);
   }
 
@@ -53,13 +52,13 @@ public class StoreResourceImpl implements StoreResource {
 
   @Override
   @Audited(cat = Category.CRYPTO, op = Operation.DELETE, msg = "Delete store")
-  public void delete(ObjectId id) {
+  public void delete(String id) {
     storeService.deleteById(id);
   }
 
   @Override
   @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Download store", log = AuditLogType.DATA_IN)
-  public Response download(ObjectId id) {
+  public Response download(String id) {
     try {
       StoreEntity storeEntity = storeService.findById(id);
       String filename = Slugify.builder().underscoreSeparator(true).build()

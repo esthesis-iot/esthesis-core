@@ -17,7 +17,6 @@ import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-import org.bson.types.ObjectId;
 
 public class DataflowResourceImpl implements DataflowResource {
 
@@ -37,13 +36,13 @@ public class DataflowResourceImpl implements DataflowResource {
 
   @Override
   @Audited(cat = Category.DATAFLOW, op = Operation.READ, msg = "View dataflow")
-  public DataflowEntity findById(ObjectId id) {
+  public DataflowEntity findById(String id) {
     return dataflowService.findById(id);
   }
 
   @Override
   @Audited(cat = Category.DATAFLOW, op = Operation.DELETE, msg = "Delete dataflow")
-  public Response delete(ObjectId id) {
+  public Response delete(String id) {
     dataflowService.deleteById(id);
     return Response.ok().build();
   }

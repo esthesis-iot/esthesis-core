@@ -16,7 +16,6 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -111,15 +110,16 @@ public class DeviceService extends BaseService<DeviceEntity> {
     }
   }
 
-  public String downloadPublicKey(ObjectId id) {
+  public String downloadPublicKey(String id) {
     return findById(id).getDeviceKey().getPublicKey();
   }
 
-  public String downloadPrivateKey(ObjectId id) {
+  public String downloadPrivateKey(String id) {
     return findById(id).getDeviceKey().getPrivateKey();
   }
 
-  public String downloadCertificate(ObjectId id) {
+  public String downloadCertificate(String id) {
     return findById(id).getDeviceKey().getCertificate();
   }
+
 }

@@ -14,7 +14,6 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
@@ -63,7 +62,7 @@ public class TagService extends BaseService<TagEntity> {
   }
 
   @Override
-  public boolean deleteById(ObjectId id) {
+  public boolean deleteById(String id) {
     log.debug("Deleting tag with id '{}'.", id);
     TagEntity tagEntity = findById(id);
     if (tagEntity != null) {

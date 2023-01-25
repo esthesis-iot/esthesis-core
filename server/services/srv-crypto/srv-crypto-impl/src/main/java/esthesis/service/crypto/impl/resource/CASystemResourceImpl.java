@@ -4,7 +4,6 @@ import esthesis.service.crypto.impl.service.CAService;
 import esthesis.service.crypto.resource.CASystemResource;
 import io.quarkus.security.Authenticated;
 import javax.inject.Inject;
-import org.bson.types.ObjectId;
 
 @Authenticated
 public class CASystemResourceImpl implements CASystemResource {
@@ -13,7 +12,7 @@ public class CASystemResourceImpl implements CASystemResource {
   CAService caService;
 
   @Override
-  public String getCACertificate(ObjectId caId) {
+  public String getCACertificate(String caId) {
     return caService.findById(caId).getCertificate();
   }
 }

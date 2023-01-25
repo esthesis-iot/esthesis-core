@@ -23,8 +23,10 @@ public class GroupDTO {
       stage = stage.ENTRY;
     } else if (split[2].equalsIgnoreCase("exit")) {
       stage = stage.EXIT;
+    } else if (split[2].equalsIgnoreCase("inside")) {
+      stage = stage.INSIDE;
     } else {
-      throw new QMismatchException("Invalid group phase '{}'.", split[1]);
+      throw new QMismatchException("Invalid group phase for group '{}'.", groupInfo);
     }
   }
 }

@@ -23,7 +23,6 @@ import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
@@ -62,13 +61,13 @@ public class CertificateResourceImpl implements CertificateResource {
   @Path("/v1/{id}")
   @JSONReplyFilter(filter = "id,cn,issued,validity,issuer,san,name")
   @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "View certificate")
-  public CertificateEntity findById(ObjectId id) {
+  public CertificateEntity findById(String id) {
     return certificateService.findById(id);
   }
 
   @Override
   @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Download certificate", log = AuditLogType.DATA_IN)
-  public Response download(ObjectId certId, AppConstants.KeyType type) {
+  public Response download(String certId, AppConstants.KeyType type) {
     CertificateEntity cert = certificateService.findById(certId);
 
     String content;
@@ -100,7 +99,7 @@ public class CertificateResourceImpl implements CertificateResource {
 
   @Override
   @Audited(cat = Category.CRYPTO, op = Operation.DELETE, msg = "Delete certificate")
-  public void delete(ObjectId id) {
+  public void delete(String id) {
     certificateService.deleteById(id);
   }
 

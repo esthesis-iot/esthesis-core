@@ -23,7 +23,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
@@ -50,13 +49,13 @@ public class DeviceResourceImpl implements DeviceResource {
   @Path("/v1/{id}")
   @JSONReplyFilter(filter = "hardwareId,id,status,tags,lastSeen")
   @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "View device")
-  public DeviceEntity get(@PathParam("id") ObjectId id) {
+  public DeviceEntity get(@PathParam("id") String id) {
     return deviceService.findById(id);
   }
 
   @Override
   @Audited(cat = Category.DEVICE, op = Operation.DELETE, msg = "Delete device")
-  public void delete(@PathParam("id") ObjectId id) {
+  public void delete(@PathParam("id") String id) {
     deviceService.deleteById(id);
   }
 
@@ -110,7 +109,7 @@ public class DeviceResourceImpl implements DeviceResource {
   @Override
   @SuppressWarnings("java:S1192")
   @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "Download device public key")
-  public Response downloadPublicKey(ObjectId id) {
+  public Response downloadPublicKey(String id) {
     return ResponseBuilder.ok(deviceService.downloadPublicKey(id))
         .header("Content-Disposition",
             "attachment; filename=" + id + "-public-key.pem").build()
@@ -120,7 +119,7 @@ public class DeviceResourceImpl implements DeviceResource {
   @Override
   @SuppressWarnings("java:S1192")
   @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "Download device private key")
-  public Response downloadPrivateKey(ObjectId id) {
+  public Response downloadPrivateKey(String id) {
     return ResponseBuilder.ok(deviceService.downloadPrivateKey(id))
         .header("Content-Disposition",
             "attachment; filename=" + id + "-private-key.pem").build()
@@ -130,7 +129,7 @@ public class DeviceResourceImpl implements DeviceResource {
   @Override
   @SuppressWarnings("java:S1192")
   @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "Download device certificate")
-  public Response downloadCertificate(ObjectId id) {
+  public Response downloadCertificate(String id) {
     return ResponseBuilder.ok(deviceService.downloadCertificate(id))
         .header("Content-Disposition",
             "attachment; filename=" + id + "-certificate.pem").build()

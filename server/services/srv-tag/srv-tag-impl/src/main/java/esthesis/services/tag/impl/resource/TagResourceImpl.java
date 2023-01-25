@@ -19,7 +19,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 public class TagResourceImpl implements TagResource {
@@ -45,7 +44,7 @@ public class TagResourceImpl implements TagResource {
 
   @Override
   @Audited(cat = Category.TAG, op = Operation.READ, msg = "View tag")
-  public TagEntity findById(@PathParam("id") ObjectId id) {
+  public TagEntity findById(@PathParam("id") String id) {
     return tagService.findById(id);
   }
 
@@ -63,7 +62,7 @@ public class TagResourceImpl implements TagResource {
 
   @Override
   @Audited(cat = Category.TAG, op = Operation.DELETE, msg = "Delete tag")
-  public Response delete(@PathParam("id") ObjectId id) {
+  public Response delete(@PathParam("id") String id) {
     return tagService.deleteById(id) ? Response.ok().build() : Response.notModified().build();
   }
 

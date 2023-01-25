@@ -17,20 +17,20 @@ public abstract class BaseService<D extends BaseEntity> {
   @SuppressWarnings("CdiInjectionPointsInspection")
   PanacheMongoRepository<D> repository;
 
-  protected PanacheMongoRepository<D> getRepository() {
+  public PanacheMongoRepository<D> getRepository() {
     return repository;
   }
 
-  protected List<D> getAll(String sortField, Sort.Direction sortDirection) {
+  public List<D> getAll(String sortField, Sort.Direction sortDirection) {
     return repository.listAll(Sort.by(sortField, sortDirection));
   }
 
-  protected List<D> getAll() {
+  public List<D> getAll() {
     return repository.listAll();
   }
 
   @SuppressWarnings("java:S1192")
-  protected D findFirstByColumn(String column, String value, boolean partialMatch) {
+  public D findFirstByColumn(String column, Object value, boolean partialMatch) {
     if (partialMatch) {
       return repository.find(column + " like ?1", value).firstResult();
     } else {
@@ -38,12 +38,12 @@ public abstract class BaseService<D extends BaseEntity> {
     }
   }
 
-  protected D findFirstByColumn(String column, String value) {
+  public D findFirstByColumn(String column, Object value) {
     return findFirstByColumn(column, value, false);
   }
 
   @SuppressWarnings("java:S1192")
-  protected List<D> findByColumn(String column, String value, boolean partialMatch) {
+  public List<D> findByColumn(String column, Object value, boolean partialMatch) {
     if (partialMatch) {
       return repository.find(column + " like ?1", value).list();
     } else {
@@ -51,11 +51,11 @@ public abstract class BaseService<D extends BaseEntity> {
     }
   }
 
-  protected List<D> findByColumnNull(String column) {
+  public List<D> findByColumnNull(String column) {
     return repository.find(column + " is null").list();
   }
 
-  protected List<D> findByColumnIn(String column, List<String> values, boolean partialMatch) {
+  public List<D> findByColumnIn(String column, List<String> values, boolean partialMatch) {
     if (partialMatch) {
       return repository.find(column + " like ?1", String.join("|", values)).list();
     } else {
@@ -63,23 +63,19 @@ public abstract class BaseService<D extends BaseEntity> {
     }
   }
 
-  protected List<D> findByColumn(String column, String value) {
+  public List<D> findByColumn(String column, Object value) {
     return findByColumn(column, value, false);
   }
 
-  protected List<D> findByColumn(String column, int value) {
-    return repository.find(column + " = ?1", value).list();
-  }
-
-  protected long countByColumn(String column, String value) {
+  public long countByColumn(String column, Object value) {
     return repository.count(column + " = ?1", value);
   }
 
-  protected Page<D> find(Pageable pageable) {
+  public Page<D> find(Pageable pageable) {
     return find(pageable, false);
   }
 
-  protected Page<D> find(Pageable pageable, boolean partialMatch) {
+  public Page<D> find(Pageable pageable, boolean partialMatch) {
     // Create a wrapper for the results.
     Page<D> quarkusPage = new Page<>();
 
@@ -117,15 +113,7 @@ public abstract class BaseService<D extends BaseEntity> {
     return quarkusPage;
   }
 
-  protected D findById(ObjectId id) {
-    return repository.findById(id);
-  }
-
-  protected D findById(String id) {
-    return repository.findById(new ObjectId(id));
-  }
-
-  protected D save(D dto) {
+  public D save(D dto) {
     if (dto.getId() != null) {
       repository.update(dto);
     } else {
@@ -136,20 +124,20 @@ public abstract class BaseService<D extends BaseEntity> {
 
     return repository.findById(dto.getId());
   }
-
-  protected boolean deleteById(ObjectId id) {
-    return repository.deleteById(id);
+  
+  public D findById(String id) {
+    return repository.findById(new ObjectId(id));
   }
 
-  protected boolean deleteById(String id) {
+  public boolean deleteById(String id) {
     return repository.deleteById(new ObjectId(id));
   }
 
-  protected long deleteAll() {
+  public long deleteAll() {
     return repository.deleteAll();
   }
 
-  protected long deleteByColumn(String columnName, Object value) {
+  public long deleteByColumn(String columnName, Object value) {
     return repository.delete(columnName + " = ?1", value);
   }
 }

@@ -18,7 +18,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.resteasy.reactive.MultipartForm;
@@ -34,12 +33,12 @@ public interface CertificateResource {
 
   @GET
   @Path("/v1/{id}")
-  CertificateEntity findById(@PathParam("id") ObjectId id);
+  CertificateEntity findById(@PathParam("id") String id);
 
   @GET
   @Path("/v1/{id}/download")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  Response download(@PathParam("id") ObjectId certId,
+  Response download(@PathParam("id") String certId,
       @QueryParam("type") AppConstants.KeyType type);
 
   @POST
@@ -49,7 +48,7 @@ public interface CertificateResource {
 
   @DELETE
   @Path("/v1/{id}")
-  void delete(@PathParam("id") ObjectId id);
+  void delete(@PathParam("id") String id);
 
   @POST
   @Path("/v1")

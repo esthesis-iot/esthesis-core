@@ -37,7 +37,7 @@ public interface CommandResource {
   List<CommandReplyEntity> getReply(@PathParam("correlationId") String correlationId);
 
   /**
-   * Saves and executed a command request and directly returns the correlation ID, so the results of
+   * Saves and executes a command request and directly returns the correlation ID, so the results of
    * this command can be obtained later.
    *
    * @param request The command request to save and execute.
@@ -48,7 +48,7 @@ public interface CommandResource {
   String save(CommandRequestEntity request);
 
   /**
-   * Saves and executed a command request and waits until the reply for that command is available to
+   * Saves and executes a command request and waits until the reply for that command is available to
    * return it. Since a command may target multiple devices, the result is a list of replies. The
    * amount of time to wait before declaring a timeout is configurable.
    *

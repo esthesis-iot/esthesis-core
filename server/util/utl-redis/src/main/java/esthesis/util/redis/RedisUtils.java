@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
-import org.bson.types.ObjectId;
 
 @Slf4j
 @ApplicationScoped
@@ -185,7 +184,7 @@ public class RedisUtils {
                 Instant.now().toString());
   }
 
-  public void deleteProvisioningPackage(ObjectId provisioningPackageId) {
+  public void deleteProvisioningPackage(String provisioningPackageId) {
     keyCommand.del(KeyType.ESTHESIS_PP + "." + provisioningPackageId.toString());
   }
 
@@ -193,7 +192,7 @@ public class RedisUtils {
     return keyCommand.exists(keyType + "." + key);
   }
 
-  public Uni<byte[]> downloadProvisioningPackage(ObjectId provisioningPackageId) {
+  public Uni<byte[]> downloadProvisioningPackage(String provisioningPackageId) {
     return redis.getReactive().hash(byte[].class)
         .hget(KeyType.ESTHESIS_PP + "." + provisioningPackageId.toString(),
             REDIS_KEY_PROVISIONING_PACKAGE_FILE);

@@ -17,7 +17,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.resteasy.reactive.MultipartForm;
@@ -38,7 +37,7 @@ public interface ProvisioningResource {
 
   @GET
   @Path("/v1/{id}")
-  ProvisioningPackageEntity findById(@PathParam("id") ObjectId provisioningPackageId);
+  ProvisioningPackageEntity findById(@PathParam("id") String provisioningPackageId);
 
   /**
    * Recaches a previously uploaded provisioning package.
@@ -48,7 +47,7 @@ public interface ProvisioningResource {
    */
   @GET
   @Path("/v1/{id}/recache")
-  void recache(@PathParam("id") ObjectId provisioningPackageId);
+  void recache(@PathParam("id") String provisioningPackageId);
 
   @POST
   @Path("/v1")
@@ -57,12 +56,12 @@ public interface ProvisioningResource {
 
   @DELETE
   @Path("/v1/{id}")
-  void delete(@PathParam("id") ObjectId provisioningPackageId);
+  void delete(@PathParam("id") String provisioningPackageId);
 
   @GET
   @Path("/v1/{id}/download")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  Uni<RestResponse<byte[]>> download(@PathParam("id") ObjectId provisioning);
+  Uni<RestResponse<byte[]>> download(@PathParam("id") String provisioning);
 
   @GET
   @Path("/v1/find/by-tags")

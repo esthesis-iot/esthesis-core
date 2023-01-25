@@ -113,6 +113,7 @@ export const AppConstants = {
       STAGE: {
         ENTRY: "ENTRY",
         EXIT: "EXIT",
+        INSIDE: "INSIDE"
       },
       OP: {
         BEFORE: "BEFORE",

@@ -12,7 +12,6 @@ import esthesis.services.infrastructure.impl.service.InfrastructureMqttService;
 import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.core.Response;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 public class InfrastructureMqttResourceImpl implements InfrastructureMqttResource {
@@ -38,14 +37,14 @@ public class InfrastructureMqttResourceImpl implements InfrastructureMqttResourc
 
   @Override
   @Audited(op = Operation.READ, cat = Category.INFRASTRUCTURE, msg = "View infrastructure / MQTT")
-  public InfrastructureMqttEntity findById(ObjectId id) {
+  public InfrastructureMqttEntity findById(String id) {
     return infrastructureMqttService.findById(id);
   }
 
   @Override
   @Audited(op = Operation.DELETE, cat = Category.INFRASTRUCTURE,
       msg = "Delete infrastructure / MQTT")
-  public Response delete(ObjectId id) {
+  public Response delete(String id) {
     return infrastructureMqttService.deleteById(id) ? Response.ok().build()
         : Response.notModified().build();
   }

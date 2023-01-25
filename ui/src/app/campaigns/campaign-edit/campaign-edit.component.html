@@ -283,15 +283,12 @@
                   <mat-icon>{{getIcon(condition.value.type)}}</mat-icon>
                 </div>
                 <mat-form-field>
-                  <mat-select placeholder="Target" formControlName="target">
+                  <mat-select placeholder="Target" formControlName="group">
                     <mat-option *ngFor="let item of [].constructor(currentGroup()); let i = index"
                                 [value]="i+1">
                       Group {{i + 1}}</mat-option>
-                    <mat-divider
-                      *ngIf="condition.value.type !== appConstants.CAMPAIGN.CONDITION.TYPE.SUCCESS"></mat-divider>
-                    <mat-option
-                      *ngIf="condition.value.type !== appConstants.CAMPAIGN.CONDITION.TYPE.SUCCESS"
-                      [value]="0">Global
+                    <mat-divider></mat-divider>
+                    <mat-option [value]="0">Global
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
