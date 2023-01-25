@@ -8,7 +8,6 @@ import {MatCardModule} from "@angular/material/card";
 import {MAT_DATE_FORMATS} from "@angular/material/core";
 import {MatIconModule} from "@angular/material/icon";
 import {MatTableModule} from "@angular/material/table";
-import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {GridsterModule} from "angular-gridster2";
 import {MatButtonModule} from "@angular/material/button";
 import {ReactiveFormsModule} from "@angular/forms";
@@ -31,7 +30,6 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     MatCardModule,
     MatTableModule,
     MatIconModule,
-    NgxChartsModule,
     GridsterModule,
     MatButtonModule,
     ReactiveFormsModule,

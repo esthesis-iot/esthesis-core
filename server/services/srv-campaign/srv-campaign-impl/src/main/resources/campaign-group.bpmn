@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_ppR2UH7VEDu5TY2jSEQVfw" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_7dqjUH7oEDu5TY2jSEQVfw" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
   <bpmn2:itemDefinition id="_campaignIdItem" structureRef="String"/>
   <bpmn2:itemDefinition id="_groupItem" structureRef="String"/>
   <bpmn2:itemDefinition id="_rateConditionItem" structureRef="Boolean"/>
@@ -31,15 +31,16 @@
   <bpmn2:interface id="_B1BA8F90-F9A2-4C8D-8B6B-2F8FF8889A7A_ServiceInterface" name="esthesis.services.campaign.impl.worker.CampaignWorker" implementationRef="esthesis.services.campaign.impl.worker.CampaignWorker">
     <bpmn2:operation id="_B1BA8F90-F9A2-4C8D-8B6B-2F8FF8889A7A_ServiceOperation" name="updateReplies" implementationRef="updateReplies"/>
   </bpmn2:interface>
-  <bpmn2:collaboration id="_9C05A00A-A4AE-4BE2-AC2E-065E465C7227" name="Default Collaboration">
-    <bpmn2:participant id="_38445C23-7886-4A63-8DBB-D52A0D95869F" name="Pool Participant" processRef="DeviceCampaignGroup"/>
+  <bpmn2:collaboration id="_8C1DBFD6-F9CF-4828-829F-40BA524B0C4E" name="Default Collaboration">
+    <bpmn2:participant id="_D0547520-0931-4CF0-AA6F-2AE54D4E4BA7" name="Pool Participant" processRef="DeviceCampaignGroup"/>
   </bpmn2:collaboration>
   <bpmn2:process id="DeviceCampaignGroup" drools:packageName="esthesis.services.campaign.workflow" drools:version="1.0.0" drools:adHoc="false" name="Campaign group - execution" isExecutable="true" processType="Public">
     <bpmn2:property id="campaignId" itemSubjectRef="_campaignIdItem" name="campaignId"/>
     <bpmn2:property id="group" itemSubjectRef="_groupItem" name="group"/>
     <bpmn2:property id="rateCondition" itemSubjectRef="_rateConditionItem" name="rateCondition"/>
     <bpmn2:property id="remainingDevicesCondition" itemSubjectRef="_remainingDevicesConditionItem" name="remainingDevicesCondition"/>
-    <bpmn2:sequenceFlow id="_BB6F71EF-6364-4F3B-87F0-4A979DE9B824" name="All devices contacted" sourceRef="_7E7EC8D3-1B9E-4D90-BD10-E94C647FCD09" targetRef="_B1BA8F90-F9A2-4C8D-8B6B-2F8FF8889A7A">
+    <bpmn2:sequenceFlow id="_0160A8DB-C6B8-4513-B7AF-38882D0E8772" sourceRef="_EAD3E45E-7CFD-4857-8B69-C492FDA80B83" targetRef="_B1BA8F90-F9A2-4C8D-8B6B-2F8FF8889A7A"/>
+    <bpmn2:sequenceFlow id="_BB6F71EF-6364-4F3B-87F0-4A979DE9B824" name="All devices contacted" sourceRef="_7E7EC8D3-1B9E-4D90-BD10-E94C647FCD09" targetRef="_EAD3E45E-7CFD-4857-8B69-C492FDA80B83">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[All devices contacted]]></drools:metaValue>
@@ -92,13 +93,25 @@
     <bpmn2:sequenceFlow id="_3A9A47BF-A746-4015-A17D-FFD3D237199E" sourceRef="_DC9C1E6A-E6FB-461F-A01D-69178D9B4114" targetRef="_662E6A2B-B8FC-44DC-995A-B39175D51FC0"/>
     <bpmn2:sequenceFlow id="_DDCC3BA3-5A4E-47E4-B146-08CDBE16619F" sourceRef="_B1BA8F90-F9A2-4C8D-8B6B-2F8FF8889A7A" targetRef="_C6468D3E-EDFB-43F2-AC04-65441F009CA5"/>
     <bpmn2:sequenceFlow id="_00520C45-A07E-45E5-8969-AD9B4C69170A" sourceRef="_5559E23B-571E-4239-BC50-F919F3FA3D5A" targetRef="_DC9C1E6A-E6FB-461F-A01D-69178D9B4114"/>
+    <bpmn2:intermediateCatchEvent id="_EAD3E45E-7CFD-4857-8B69-C492FDA80B83" name="Delay to allow devices to reply">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Delay to allow devices to reply]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_BB6F71EF-6364-4F3B-87F0-4A979DE9B824</bpmn2:incoming>
+      <bpmn2:outgoing>_0160A8DB-C6B8-4513-B7AF-38882D0E8772</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition>
+        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression">PT5S</bpmn2:timeDuration>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:intermediateCatchEvent>
     <bpmn2:serviceTask id="_B1BA8F90-F9A2-4C8D-8B6B-2F8FF8889A7A" drools:serviceimplementation="Java" drools:serviceinterface="esthesis.services.campaign.impl.worker.CampaignWorker" drools:serviceoperation="updateReplies" name="Update replies" implementation="Java" operationRef="_B1BA8F90-F9A2-4C8D-8B6B-2F8FF8889A7A_ServiceOperation">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[Update replies]]></drools:metaValue>
         </drools:metaData>
       </bpmn2:extensionElements>
-      <bpmn2:incoming>_BB6F71EF-6364-4F3B-87F0-4A979DE9B824</bpmn2:incoming>
+      <bpmn2:incoming>_0160A8DB-C6B8-4513-B7AF-38882D0E8772</bpmn2:incoming>
       <bpmn2:outgoing>_DDCC3BA3-5A4E-47E4-B146-08CDBE16619F</bpmn2:outgoing>
       <bpmn2:ioSpecification>
         <bpmn2:dataInput id="_B1BA8F90-F9A2-4C8D-8B6B-2F8FF8889A7A_campaignIdInputX" drools:dtype="String" itemSubjectRef="__B1BA8F90-F9A2-4C8D-8B6B-2F8FF8889A7A_campaignIdInputXItem" name="campaignId"/>
@@ -273,7 +286,7 @@
         <dc:Bounds height="56" width="56" x="70" y="23"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape__C6468D3E-EDFB-43F2-AC04-65441F009CA5" bpmnElement="_C6468D3E-EDFB-43F2-AC04-65441F009CA5">
-        <dc:Bounds height="56" width="56" x="610" y="564"/>
+        <dc:Bounds height="56" width="56" x="645" y="564"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape__662E6A2B-B8FC-44DC-995A-B39175D51FC0" bpmnElement="_662E6A2B-B8FC-44DC-995A-B39175D51FC0">
         <dc:Bounds height="102.00000000000006" width="154" x="179" y="217.99999999999994"/>
@@ -303,7 +316,10 @@
         <dc:Bounds height="102" width="154" x="385" y="540.75"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape__B1BA8F90-F9A2-4C8D-8B6B-2F8FF8889A7A" bpmnElement="_B1BA8F90-F9A2-4C8D-8B6B-2F8FF8889A7A">
-        <dc:Bounds height="102" width="154" x="561" y="366"/>
+        <dc:Bounds height="102" width="154" x="596" y="366"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__EAD3E45E-7CFD-4857-8B69-C492FDA80B83" bpmnElement="_EAD3E45E-7CFD-4857-8B69-C492FDA80B83">
+        <dc:Bounds height="56" width="56" x="645" y="237"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="edge_shape__5559E23B-571E-4239-BC50-F919F3FA3D5A_to_shape__DC9C1E6A-E6FB-461F-A01D-69178D9B4114" bpmnElement="_00520C45-A07E-45E5-8969-AD9B4C69170A">
         <di:waypoint x="98" y="51"/>
@@ -311,8 +327,8 @@
         <di:waypoint x="228" y="149"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="edge_shape__B1BA8F90-F9A2-4C8D-8B6B-2F8FF8889A7A_to_shape__C6468D3E-EDFB-43F2-AC04-65441F009CA5" bpmnElement="_DDCC3BA3-5A4E-47E4-B146-08CDBE16619F">
-        <di:waypoint x="638" y="417"/>
-        <di:waypoint x="638" y="564"/>
+        <di:waypoint x="673" y="417"/>
+        <di:waypoint x="673" y="564"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="edge_shape__DC9C1E6A-E6FB-461F-A01D-69178D9B4114_to_shape__662E6A2B-B8FC-44DC-995A-B39175D51FC0" bpmnElement="_3A9A47BF-A746-4015-A17D-FFD3D237199E">
         <di:waypoint x="256" y="149"/>
@@ -358,10 +374,14 @@
         <di:waypoint x="462" y="268.75"/>
         <di:waypoint x="461.75" y="177"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="edge_shape__7E7EC8D3-1B9E-4D90-BD10-E94C647FCD09_to_shape__B1BA8F90-F9A2-4C8D-8B6B-2F8FF8889A7A" bpmnElement="_BB6F71EF-6364-4F3B-87F0-4A979DE9B824">
+      <bpmndi:BPMNEdge id="edge_shape__7E7EC8D3-1B9E-4D90-BD10-E94C647FCD09_to_shape__EAD3E45E-7CFD-4857-8B69-C492FDA80B83" bpmnElement="_BB6F71EF-6364-4F3B-87F0-4A979DE9B824">
         <di:waypoint x="489.75" y="149"/>
-        <di:waypoint x="643" y="149"/>
-        <di:waypoint x="638" y="366"/>
+        <di:waypoint x="678" y="149"/>
+        <di:waypoint x="673" y="237"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge_shape__EAD3E45E-7CFD-4857-8B69-C492FDA80B83_to_shape__B1BA8F90-F9A2-4C8D-8B6B-2F8FF8889A7A" bpmnElement="_0160A8DB-C6B8-4513-B7AF-38882D0E8772">
+        <di:waypoint x="673" y="265"/>
+        <di:waypoint x="673" y="366"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
@@ -480,7 +500,7 @@
         </bpsim:Scenario>
       </bpsim:BPSimData>
     </bpmn2:extensionElements>
-    <bpmn2:source>_ppR2UH7VEDu5TY2jSEQVfw</bpmn2:source>
-    <bpmn2:target>_ppR2UH7VEDu5TY2jSEQVfw</bpmn2:target>
+    <bpmn2:source>_7dqjUH7oEDu5TY2jSEQVfw</bpmn2:source>
+    <bpmn2:target>_7dqjUH7oEDu5TY2jSEQVfw</bpmn2:target>
   </bpmn2:relationship>
 </bpmn2:definitions>

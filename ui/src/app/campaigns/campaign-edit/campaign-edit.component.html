@@ -3,13 +3,13 @@
   <mat-card-content>
     <div class="workflow-controls" fxLayout="column" fxLayoutGap="2rem"
          *ngIf="form.value.state && form.value.state != appConstants.CAMPAIGN.STATE.CREATED">
-      <div class="state">
+      <div class="state alert-blue">
         {{campaignStats?.stateDescription}}
       </div>
       <mat-progress-bar mode="determinate" value="{{campaignStats?.progress}}"
                         *ngIf="![appConstants.CAMPAIGN.STATE.TERMINATED_BY_WORKFLOW,
                  appConstants.CAMPAIGN.STATE.TERMINATED_BY_USER].includes(form.value.state)"></mat-progress-bar>
-      <div fxLayout="row" fxLayoutGap="1rem">
+      <div fxLayout="column" fxLayoutGap="1rem">
         <div fxLayout="column" fxLayoutGap="4rem">
           <div class="status-info" fxLayout="row" fxLayoutGap="3rem" fxFlexAlign="center">
             <div class="info">
@@ -41,8 +41,8 @@
               <div class="header">DEVICES</div>
               <div class="nowrap">{{campaignStats?.allMembers | number}}</div>
             </div>
-            <div>
-              <div class="header">SUCCESS</div>
+            <div class="info">
+              <div class="header">REPLIES</div>
               <div class="nowrap">{{campaignStats?.successRate | number}}%</div>
             </div>
           </div>
@@ -67,16 +67,22 @@
             </button>
           </div>
         </div>
-        <div fxFlex="1 1" class="pbar" fxLayout="column" fxLayoutGap="2rem" fxLayoutAlign="start">
-          <div>
-            <ngx-charts-advanced-pie-chart
-              [view]="[550, 150]"
-              [results]="campaignChart">
-            </ngx-charts-advanced-pie-chart>
-          </div>
+        <div class="pbar" fxLayoutGap="1rem" fxLayoutAlign="center">
+          <circle-progress *ngFor="let group of groupProgress"
+                           [percent]="group.progress"
+                           [radius]="50"
+                           [subtitle]="group.name"
+                           [outerStrokeWidth]="4"
+                           [innerStrokeWidth]="2"
+                           [outerStrokeColor]="'#78C000'"
+                           [innerStrokeColor]="'#C7E596'"
+                           [animation]="true"
+                           [animationDuration]="300"
+          ></circle-progress>
         </div>
       </div>
     </div>
+
     <form novalidate [formGroup]="form" fxLayout="row" fxLayoutGap="1rem" fxLayout.lt-lg="column">
       <div fxLayout="column" fxFlex="30" fxLayoutGap="1rem">
         <div class="validation-errors" *ngIf="errorsMain" fxLayout="row">

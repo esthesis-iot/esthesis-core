@@ -24,7 +24,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {MatSortModule} from "@angular/material/sort";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
-import {PieChartModule} from "@swimlane/ngx-charts";
+import {NgCircleProgressModule} from "ng-circle-progress";
 
 @NgModule({
   schemas: [NO_ERRORS_SCHEMA],
@@ -52,7 +52,7 @@ import {PieChartModule} from "@swimlane/ngx-charts";
     MatAutocompleteModule,
     DragDropModule,
     MatProgressBarModule,
-    PieChartModule,
+    NgCircleProgressModule.forRoot({})
   ]
 })
 export class CampaignsModule {

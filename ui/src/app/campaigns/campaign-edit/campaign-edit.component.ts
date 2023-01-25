@@ -23,6 +23,7 @@ import {CampaignStatsDto} from "../dto/campaign-stats-dto";
 import {ProvisioningDto} from "../../provisioning/dto/provisioning-dto";
 import {AppConstants} from "../../app.constants";
 import {ObjectID} from "bson";
+import {GroupProgressDto} from "../dto/group-progress-dto";
 
 @Component({
   selector: "app-campaign-edit",
@@ -53,10 +54,10 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   // (needs to be displayed but is not exchanged with the campaign form object).
   campaign?: CampaignDto;
   now = new Date();
+  // The statistics of this campaign.
   campaignStats?: CampaignStatsDto;
-  campaignChart?: any;
-  // A tracker for available groups;
-  // currentGroup = 1;
+  // Group progress.
+  groupProgress = [] as GroupProgressDto[];
 
   constructor(private fb: FormBuilder, public utilityService: UtilityService,
     private qForms: QFormsService, private provisioningService: ProvisioningService,
@@ -74,13 +75,10 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
         this.campaignStats = onNext;
 
         // Extract group members for the chart.
-        this.campaignChart =
-          onNext.groupMembersReplied?.map((value, index) => {
-            return {
-              name: "Group " + (index + 1),
-              value
-            };
-          });
+        onNext.groupMembersReplied?.forEach((value, index) => {
+          this.groupProgress?.push(
+            new GroupProgressDto("Group " + (index + 1), value * 100 / onNext.groupMembers![index]));
+        });
       }
     });
   }
@@ -246,18 +244,16 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   currentGroup(): number {
     let groupNo;
     if (this.form.get("members")?.value.length === 0) {
-      console.log("No members yet, group=1");
       groupNo = 1;
     } else {
       groupNo = (_.maxBy(this.form.get("members")?.value, (o: CampaignMemberDto) => o.group) as CampaignMemberDto).group;
-      console.log("Current group: " + groupNo);
     }
 
     return groupNo;
   }
 
   getMemberGroups() {
-    return _(this.form.get("members")?.value).groupBy("groupOrder").values().value();
+    return _(this.form.get("members")?.value).groupBy("group").values().value();
   }
 
   /**

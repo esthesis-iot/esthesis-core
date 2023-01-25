@@ -112,3 +112,12 @@ html, body {
 .status-inprogress {
   color: #0c5460;
 }
+
+.alert-blue {
+  color: #004085;
+  background-color: #cce5ff;
+  border: 1px solid #b8daff;
+  border-radius: 2px;
+  padding: 0.5rem;
+  white-space: pre-wrap;
+}
