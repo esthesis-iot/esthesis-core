@@ -24,4 +24,7 @@ public class TagEntity extends BaseEntity {
   @Length(min = 3, max = 255)
   private String name;
 
+  @Length(max = 2048)
+  private String description;
+
 }

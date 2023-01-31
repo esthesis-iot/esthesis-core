@@ -4,13 +4,15 @@
     <form novalidate [formGroup]="form">
       <div fxLayout="column">
         <mat-form-field>
-          <input matInput placeholder="Name" formControlName="name"
-                 cdkTrapFocus cdkTrapFocusAutoCapture (keyup.enter)="save()">
+          <input matInput placeholder="Name" formControlName="name">
           <mat-icon matSuffix color="warn"
                     *ngIf="form.controls['name'].invalid"
                     matTooltip="{{form.controls['name'].getError('message')}}"
                     matTooltipPosition="above" style="cursor: help">warning
           </mat-icon>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Description" formControlName="description">
         </mat-form-field>
       </div>
     </form>

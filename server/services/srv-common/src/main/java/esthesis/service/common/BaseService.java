@@ -1,5 +1,7 @@
 package esthesis.service.common;
 
+import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.ReturnDocument;
 import esthesis.common.entity.BaseEntity;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
@@ -8,6 +10,7 @@ import io.quarkus.panache.common.Sort;
 import java.util.List;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 
 @Slf4j
@@ -113,18 +116,23 @@ public abstract class BaseService<D extends BaseEntity> {
     return quarkusPage;
   }
 
-  public D save(D dto) {
-    if (dto.getId() != null) {
-      repository.update(dto);
+  public D save(D entity) {
+    if (entity.getId() != null) {
+      repository
+          .mongoCollection()
+          .findOneAndUpdate(new Document("_id", entity.getId()),
+              new Document("$set", entity),
+              new FindOneAndUpdateOptions()
+                  .returnDocument(ReturnDocument.AFTER));
     } else {
       ObjectId id = new ObjectId();
-      dto.setId(id);
-      repository.persist(dto);
+      entity.setId(id);
+      repository.persist(entity);
     }
 
-    return repository.findById(dto.getId());
+    return repository.findById(entity.getId());
   }
-  
+
   public D findById(String id) {
     return repository.findById(new ObjectId(id));
   }

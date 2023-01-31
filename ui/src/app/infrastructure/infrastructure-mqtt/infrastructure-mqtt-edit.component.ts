@@ -63,8 +63,7 @@ export class InfrastructureMqttEditComponent extends BaseComponent implements On
   }
 
   save() {
-    this.infrastructureMqttService.save(
-      this.qForms.cleanupData(this.form.getRawValue()) as InfrastructureMqttDto).subscribe({
+    this.infrastructureMqttService.save(this.form.getRawValue() as InfrastructureMqttDto).subscribe({
       next: () => {
         this.utilityService.popupSuccess("MQTT server successfully saved.");
         this.router.navigate(["infrastructure"], {fragment: "mqtt"});

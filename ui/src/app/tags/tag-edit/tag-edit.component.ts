@@ -32,13 +32,11 @@ export class TagEditComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get("id")!;
 
-    // Setup the form.
+    // Set up the form.
     this.form = this.fb.group({
       id: [{value: "", disabled: true}],
-      name: [{
-        value: "",
-        disabled: false
-      }, [Validators.maxLength(1024)]],
+      name: [{value: "", disabled: false}, [Validators.maxLength(1024)]],
+      description: [[]]
     });
     // Fill-in the form with data if editing an existing item.
     if (this.id !== this.appConstants.NEW_RECORD_ID) {
@@ -57,7 +55,7 @@ export class TagEditComponent extends BaseComponent implements OnInit {
   }
 
   save() {
-    this.tagService.save(this.qForms.cleanupData(this.form.getRawValue()) as TagDto).subscribe({
+    this.tagService.save(this.form.getRawValue() as TagDto).subscribe({
       next: () => {
         if (this.id === this.appConstants.NEW_RECORD_ID) {
           this.utilityService.popupSuccess("Tag was successfully created.");

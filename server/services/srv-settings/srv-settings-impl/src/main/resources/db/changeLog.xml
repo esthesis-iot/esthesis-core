@@ -56,4 +56,12 @@
       </ext:command>
     </ext:runCommand>
   </changeSet>
+
+  <changeSet id="5" author="European Dynamics SA">
+    <ext:insertOne collectionName="Setting">
+      <ext:document>
+        {"name":"DEVICE_PUSHED_TAGS", "value": "false"}
+      </ext:document>
+    </ext:insertOne>
+  </changeSet>
 </databaseChangeLog>

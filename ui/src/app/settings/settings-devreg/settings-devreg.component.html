@@ -37,6 +37,17 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+
+  <div class="inline-header">Device tags</div>
+  <mat-form-field>
+    <mat-select formControlName="DEVICE_PUSHED_TAGS">
+      <mat-option value="true">Allowed</mat-option>
+      <mat-option value="false">Ignored</mat-option>
+    </mat-select>
+    <mat-hint>Allow devices to push tags which do not exist. Such tags will be automatically created
+      in the platform.
+    </mat-hint>
+  </mat-form-field>
 </form>
 
 <div>

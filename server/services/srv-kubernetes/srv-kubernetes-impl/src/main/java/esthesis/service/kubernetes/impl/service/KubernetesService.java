@@ -70,10 +70,10 @@ public class KubernetesService {
 
     if (podInfoDTO.isStatus()) {
       kc.apps().deployments().inNamespace(podInfoDTO.getNamespace())
-          .createOrReplace(deploymentInfo);
+          .resource(deploymentInfo).createOrReplace();
     } else {
       kc.apps().deployments().inNamespace(podInfoDTO.getNamespace())
-          .delete(deploymentInfo);
+          .resource(deploymentInfo).delete();
     }
 
     //@formatter:off
@@ -92,11 +92,11 @@ public class KubernetesService {
         .addToMetrics(new MetricSpecBuilder()
             .withType("Resource")
             .withNewResource()
-            .withName("cpu")
-            .withNewTarget()
-            .withType("Utilization")
-            .withAverageUtilization(80)
-            .endTarget()
+              .withName("cpu")
+              .withNewTarget()
+              .withType("Utilization")
+              .withAverageUtilization(80)
+              .endTarget()
             .endResource()
             .build())
         .withNewBehavior()
@@ -120,10 +120,10 @@ public class KubernetesService {
     // Create or remove the pod, according to the requested pod status.
     if (podInfoDTO.isStatus()) {
       kc.autoscaling().v2beta2().horizontalPodAutoscalers().inNamespace(
-          podInfoDTO.getNamespace()).createOrReplace(horizontalPodAutoscaler);
+          podInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).createOrReplace();
     } else {
       kc.autoscaling().v2beta2().horizontalPodAutoscalers().inNamespace(
-          podInfoDTO.getNamespace()).delete(horizontalPodAutoscaler);
+          podInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).delete();
     }
 
     return true;

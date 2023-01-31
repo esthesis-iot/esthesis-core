@@ -61,7 +61,7 @@ export class UserEditComponent extends BaseComponent implements OnInit {
       this.form.controls.newPassword1.setValue(null);
       this.form.controls.newPassword2.setValue(null);
     }
-    this.userService.save(this.qForms.cleanupData(this.form.getRawValue()) as UserDto).subscribe({
+    this.userService.save(this.form.getRawValue() as UserDto).subscribe({
       next: () => {
         this.utilityService.popupSuccess(this.isEdit ? "User was successfully edited."
           : "User was successfully created.");

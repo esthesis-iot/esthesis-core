@@ -42,8 +42,8 @@ public class DataflowResourceImpl implements DataflowResource {
 
   @Override
   @Audited(cat = Category.DATAFLOW, op = Operation.DELETE, msg = "Delete dataflow")
-  public Response delete(String id) {
-    dataflowService.deleteById(id);
+  public Response delete(String dataflowId) {
+    dataflowService.delete(dataflowId);
     return Response.ok().build();
   }
 

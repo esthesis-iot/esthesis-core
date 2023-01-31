@@ -354,8 +354,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     this.form.get("searchByHardwareId")?.setValue("");
     this.form.get("searchByTags")?.setValue("");
 
-    this.campaignService.save(
-      this.qForms.cleanupData(this.form.getRawValue()) as CampaignDto).subscribe({
+    this.campaignService.save(this.form.getRawValue() as CampaignDto).subscribe({
       next: (formData) => {
         this.errorsMain = undefined;
         this.errorsDevices = undefined;

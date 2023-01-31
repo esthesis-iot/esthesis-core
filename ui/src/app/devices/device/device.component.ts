@@ -77,8 +77,7 @@ export class DeviceComponent extends BaseComponent implements OnInit {
   }
 
   saveDeviceInfo() {
-    this.devicesService.save(
-      this.qForms.cleanupData(this.deviceInfoForm.getRawValue()) as DeviceDto).subscribe({
+    this.devicesService.save(this.deviceInfoForm.getRawValue() as DeviceDto).subscribe({
       next: () => {
         this.utilityService.popupSuccess("Device successfully saved.");
         this.router.navigate(["devices"]);

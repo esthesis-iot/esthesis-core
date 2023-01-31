@@ -73,8 +73,7 @@ export class CertificateEditComponent extends BaseComponent implements OnInit {
   }
 
   save() {
-    this.certificatesService.save(
-      this.qForms.cleanupData(this.form.getRawValue()) as CertificateDto).subscribe({
+    this.certificatesService.save(this.form.getRawValue() as CertificateDto).subscribe({
       next: () => {
         this.utilityService.popupSuccess(
           this.form.value.id ? "Certificate was successfully edited."

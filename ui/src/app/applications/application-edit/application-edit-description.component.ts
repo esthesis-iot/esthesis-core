@@ -50,7 +50,7 @@ export class ApplicationEditDescriptionComponent extends BaseComponent implement
   }
 
   save() {
-    this.applicationService.save(this.qForms.cleanupData(this.form.getRawValue()) as ApplicationDto)
+    this.applicationService.save(this.form.getRawValue() as ApplicationDto)
     .subscribe({
       next: () => {
         this.utilityService.popupSuccess(this.form.value.id ? "Application was successfully edited."

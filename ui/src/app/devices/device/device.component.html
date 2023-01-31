@@ -16,6 +16,22 @@
             Never
           </div>
 
+          <div class="label-text mt1">Created on</div>
+          <div class="value-text" *ngIf="device?.createdOn">
+            {{device?.createdOn | amFromUtc | amLocal}}
+          </div>
+          <div class="value-text" *ngIf="!device?.createdOn">
+            Never
+          </div>
+
+          <div class="label-text mt1">Registered on</div>
+          <div class="value-text" *ngIf="device?.registeredOn">
+            {{device?.registeredOn | amFromUtc | amLocal}}
+          </div>
+          <div class="value-text" *ngIf="!device?.registeredOn">
+            Never
+          </div>
+
           <div class="label-text mt1">Registration Status</div>
           <mat-select formControlName="status">
             <mat-option *ngFor="let o of constants.DEVICE.STATUS | keyvalue" [value]="o.value">

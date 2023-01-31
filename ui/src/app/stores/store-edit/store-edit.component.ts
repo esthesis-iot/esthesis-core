@@ -66,7 +66,7 @@ export class StoreEditComponent extends BaseComponent implements OnInit {
   }
 
   save() {
-    this.storesService.save(this.qForms.cleanupData(this.form.getRawValue()) as StoreDto).subscribe({
+    this.storesService.save(this.form.getRawValue() as StoreDto).subscribe({
       next: () => {
         this.utilityService.popupSuccess(this.form.value.id ? "Store was successfully edited."
           : "Store was successfully created.");

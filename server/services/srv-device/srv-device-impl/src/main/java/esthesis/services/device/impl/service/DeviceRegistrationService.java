@@ -15,6 +15,7 @@ import esthesis.service.device.dto.DeviceRegistrationDTO;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
+import esthesis.service.tag.entity.TagEntity;
 import esthesis.service.tag.resource.TagResource;
 import esthesis.services.device.impl.repository.DeviceRepository;
 import java.io.IOException;
@@ -23,9 +24,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -56,17 +57,35 @@ public class DeviceRegistrationService {
   JsonWebToken jwt;
 
   /**
-   * Checks if device-pushed tags exist in the system and report the ones that do not exist.
+   * Checks if device-pushed tags exist in the system and report the ones that do not exist,
+   * optionally creating missing tag.s
    *
-   * @param tags the list of tag names to check.
+   * @param hardwareId    The hardware id of the device sending the tags.
+   * @param tags          The list of tag names to check.
+   * @param createMissing Whether to create missing tags or not.
+   * @return Returns the list of tags that can be assigned to the device, comprising of either
+   * existing tags or newly created tags.
    */
-  private void checkTags(String hardwareId, List<String> tags) {
+  private List<String> checkTags(String hardwareId, List<String> tags, boolean createMissing) {
+    List<String> validTags = new ArrayList<>();
+
     for (String tag : tags) {
       if (tagResource.findByName(tag, false) == null) {
         log.warn("Device-pushed tag '{}' for device with hardware id '{}' does not exist.", tag,
             hardwareId);
+        if (createMissing) {
+          log.debug("Creating missing tag '{}' for device with hardware id '{}'.", tag, hardwareId);
+          TagEntity tagEntity = new TagEntity();
+          tagEntity.setName(tag);
+          tagResource.save(tagEntity);
+          validTags.add(tag);
+        }
+      } else {
+        validTags.add(tag);
       }
     }
+
+    return validTags;
   }
 
   /**
@@ -102,7 +121,7 @@ public class DeviceRegistrationService {
   public DeviceEntity register(DeviceRegistrationDTO deviceRegistration)
   throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, OperatorCreationException,
          NoSuchProviderException {
-    log.debug("Attempting to register device with hardwareId ''{}'' and tags ''{}''.",
+    log.debug("Attempting to register device with hardwareId '{}' and tags '{}'.",
         deviceRegistration.getIds(), deviceRegistration.getTags());
 
     DeviceRegistrationMode deviceRegistrationMode = DeviceRegistrationMode.valueOf(
@@ -113,7 +132,7 @@ public class DeviceRegistrationService {
           deviceRegistration.getIds());
     } else {
       // Check registration preconditions and register device.
-      log.debug("Platform running on '{}' registration mode.", deviceRegistrationMode);
+      log.debug("Platform running in '{}' registration mode.", deviceRegistrationMode);
       return switch (deviceRegistrationMode) {
         case OPEN -> register(deviceRegistration.getIds(), deviceRegistration.getTags(),
             DeviceStatus.REGISTERED);
@@ -179,10 +198,11 @@ public class DeviceRegistrationService {
 
     // Set device-pushed tags by converting the tag names to tag ids.
     if (!tags.isEmpty()) {
-      checkTags(hardwareId, tags);
+      List<String> validTags = checkTags(hardwareId, tags,
+          settingsResource.findByName(NamedSetting.DEVICE_PUSHED_TAGS).asBoolean());
       deviceEntity.setTags(
-          tags.stream().map(tag -> tagResource.findByName(tag, false).getId().toString())
-              .collect(Collectors.toList()));
+          validTags.stream().map(tag -> tagResource.findByName(tag, false).getId().toString())
+              .toList());
     }
 
     deviceRepository.persist(deviceEntity);

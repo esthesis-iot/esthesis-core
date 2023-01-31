@@ -22,6 +22,7 @@ import org.hibernate.validator.constraints.Length;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @MongoEntity(collection = "Device")
+//@JsonIgnoreProperties(value = {"registeredOn", "lastSeen", "createdOn"}, allowGetters = true)
 public class DeviceEntity extends BaseEntity {
 
   @NotBlank

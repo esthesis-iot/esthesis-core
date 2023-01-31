@@ -101,8 +101,7 @@ export class SettingsDevicePageComponent implements OnInit {
         _.map(Object.keys(this.settingsForm.controls), (fc) => {
           return new SettingDto(fc, this.settingsForm.get(fc)!.value);
         })),
-      this.settingsService.saveDevicePageFields(
-        this.qForms.cleanupData(this.profileDataForm.getRawValue()).fields)
+      this.settingsService.saveDevicePageFields(this.profileDataForm.getRawValue().fields)
     ]).subscribe({
       next: () => {
         this.utilityService.popupSuccess("Settings saved successfully.");

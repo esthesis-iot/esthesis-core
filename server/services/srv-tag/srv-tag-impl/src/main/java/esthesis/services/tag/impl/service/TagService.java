@@ -46,19 +46,19 @@ public class TagService extends BaseService<TagEntity> {
   }
 
   @Override
-  public TagEntity save(TagEntity dto) {
-    log.debug("Saving tag '{}'.", dto);
+  public TagEntity save(TagEntity tagEntity) {
+    log.debug("Saving tag '{}'.", tagEntity);
     // Ensure no other tag has the same name.
-    TagEntity existingTagEntity = findFirstByColumn("name", dto.getName());
-    if (existingTagEntity != null && (dto.getId() == null || !existingTagEntity.getId()
-        .equals(dto.getId()))) {
+    TagEntity existingTagEntity = findFirstByColumn("name", tagEntity.getName());
+    if (existingTagEntity != null && (tagEntity.getId() == null || !existingTagEntity.getId()
+        .equals(tagEntity.getId()))) {
       new CVExceptionContainer<TagEntity>()
           .addViolation("name", "A tag with name '{}' already exists.",
-              dto.getName())
+              tagEntity.getName())
           .throwCVE();
     }
 
-    return super.save(dto);
+    return super.save(tagEntity);
   }
 
   @Override

@@ -110,4 +110,14 @@ public class DataflowService extends BaseService<DataflowEntity> {
     return kubernetesResource.getNamespaces();
   }
 
+  public void delete(String dataflowId) {
+    // Remove the dataflow from Kubernetes.
+    DataflowEntity dataflow = findById(dataflowId);
+    dataflow.setStatus(false);
+    save(dataflow);
+
+    // Remove the dataflow from the database.
+    deleteById(dataflowId);
+  }
+
 }

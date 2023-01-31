@@ -69,7 +69,7 @@ export class CasEditComponent extends BaseComponent implements OnInit {
   }
 
   save(): void {
-    this.caService.save(this.qForms.cleanupData(this.form.getRawValue()) as CaDto).subscribe(
+    this.caService.save(this.form.getRawValue() as CaDto).subscribe(
       {
         next: () => {
           this.utilityService.popupSuccess(

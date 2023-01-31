@@ -23,3 +23,5 @@ mongodb:
     addColMod.js: |
       use esthesis
       db.grantRolesToUser('esthesis', ["dbAdmin"])
+  readinessProbe:
+    timeoutSeconds: 10
