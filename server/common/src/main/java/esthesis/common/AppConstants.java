@@ -118,7 +118,7 @@ public class AppConstants {
 
     public enum Type {
 
-      PROVISIONING, EXECUTE_COMMAND, REBOOT, SHUTDOWN;
+      PROVISIONING, EXECUTE_COMMAND, REBOOT, SHUTDOWN, PING;
     }
 
     public static class Condition {

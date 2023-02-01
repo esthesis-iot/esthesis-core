@@ -78,10 +78,8 @@ public class DeviceResourceImpl implements DeviceResource {
   }
 
   @Override
-  public List<DeviceEntity> findByHardwareIds(String hardwareIds,
-      boolean partialMatch) {
-    return deviceService.findByHardwareId(
-        Arrays.asList(hardwareIds.split(",")), partialMatch);
+  public List<DeviceEntity> findByHardwareIds(String hardwareIds, boolean partialMatch) {
+    return deviceService.findByHardwareId(Arrays.asList(hardwareIds.split(",")), partialMatch);
   }
 
   @Override

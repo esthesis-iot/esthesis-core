@@ -233,6 +233,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
               device.getHardwareId(), campaignId);
           CampaignDeviceMonitorEntity cdm = new CampaignDeviceMonitorEntity();
           cdm.setDeviceId(device.getId());
+          cdm.setHardwareId(device.getHardwareId());
           cdm.setCampaignId(new ObjectId(campaignId));
           cdm.setGroup(member.getGroup());
           campaignDeviceMonitorService.save(cdm);
@@ -258,6 +259,11 @@ public class CampaignService extends BaseService<CampaignEntity> {
     } catch (JsonProcessingException e) {
       throw new QExceptionWrapper("Could not parse Kogito reply.", e);
     }
+  }
+
+  public void delete(String campaignId) {
+    deleteById(campaignId);
+    campaignDeviceMonitorService.deleteByColumn("campaignId", campaignId);
   }
 
 }

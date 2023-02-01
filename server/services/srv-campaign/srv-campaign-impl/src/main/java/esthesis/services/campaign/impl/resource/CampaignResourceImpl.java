@@ -55,8 +55,8 @@ public class CampaignResourceImpl implements CampaignResource {
 
   @Audited(cat = Category.CAMPAIGN, op = Operation.DELETE, msg = "Delete campaign")
   public Response delete(@PathParam("id") String campaignId) {
-    return campaignService.deleteById(campaignId)
-        ? Response.ok().build() : Response.notModified().build();
+    campaignService.delete(campaignId);
+    return Response.ok().build();
   }
 
 }

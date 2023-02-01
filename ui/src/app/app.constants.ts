@@ -102,6 +102,7 @@ export const AppConstants = {
       EXECUTE_COMMAND: "EXECUTE_COMMAND",
       REBOOT: "REBOOT",
       SHUTDOWN: "SHUTDOWN",
+      PING: "PING",
     },
     CONDITION: {
       TYPE: {

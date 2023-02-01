@@ -366,19 +366,17 @@ public class CampaignWorker {
       cmd.setDescription("Campaign " + campaignEntity.getName());
       switch (campaignEntity.getType()) {
         case PROVISIONING -> {
-          cmd.setCommandType(CommandType.p);
+          cmd.setCommandType(CommandType.f);
+          cmd.setCommand(campaignEntity.getProvisioningPackageId());
         }
         case EXECUTE_COMMAND -> {
           cmd.setCommandType(CommandType.e);
           cmd.setCommand(campaignEntity.getCommandName());
           cmd.setArguments(campaignEntity.getCommandArguments());
         }
-        case REBOOT -> {
-          cmd.setCommandType(CommandType.r);
-        }
-        case SHUTDOWN -> {
-          cmd.setCommandType(CommandType.s);
-        }
+        case REBOOT -> cmd.setCommandType(CommandType.r);
+        case SHUTDOWN -> cmd.setCommandType(CommandType.s);
+        case PING -> cmd.setCommandType(CommandType.p);
         default ->
             throw new QMismatchException("Unknown campaign type '{}'.", campaignEntity.getType());
       }

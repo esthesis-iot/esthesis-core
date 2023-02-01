@@ -431,8 +431,8 @@
   <mat-card-actions>
     <button mat-button routerLink="/campaigns">CANCEL</button>
     <button mat-button color="warn"
-            [disabled]="this.id == appConstants.NEW_RECORD_ID
-                        || [appConstants.CAMPAIGN.STATE.RUNNING,
+            *ngIf="this.id !== appConstants.NEW_RECORD_ID
+                        && ![appConstants.CAMPAIGN.STATE.RUNNING,
                         appConstants.CAMPAIGN.STATE.PAUSED_BY_USER,
                         appConstants.CAMPAIGN.STATE.PAUSED_BY_WORKFLOW].includes(form.value.state)"
             (click)="delete()">DELETE
@@ -442,16 +442,14 @@
             [disabled]="!(this.id == appConstants.NEW_RECORD_ID || form.value.state == appConstants.CAMPAIGN.STATE.CREATED)"
             (click)="save(false)">SAVE
     </button>
-    <!--    <button mat-button-->
-    <!--            *ngIf="![appConstants.CAMPAIGN.STATE.RUNNING,-->
-    <!--                appConstants.CAMPAIGN.STATE.PAUSED_BY_USER,-->
-    <!--                appConstants.CAMPAIGN.STATE.PAUSED_BY_WORKFLOW,-->
-    <!--                appConstants.CAMPAIGN.STATE.TERMINATED_BY_USER,-->
-    <!--                appConstants.CAMPAIGN.STATE.TERMINATED_BY_WORKFLOW].includes(form.value.state)"-->
-    <!--            [disabled]="!form.value.members || form.value.members.length == 0"-->
-    <!--            (click)="start()">START-->
-    <!--    </button>-->
-    <button mat-button (click)="start()">START
+    <button mat-button
+            *ngIf="this.id !== appConstants.NEW_RECORD_ID && ![appConstants.CAMPAIGN.STATE.RUNNING,
+                    appConstants.CAMPAIGN.STATE.PAUSED_BY_USER,
+                    appConstants.CAMPAIGN.STATE.PAUSED_BY_WORKFLOW,
+                    appConstants.CAMPAIGN.STATE.TERMINATED_BY_USER,
+                    appConstants.CAMPAIGN.STATE.TERMINATED_BY_WORKFLOW].includes(form.value.state)"
+            [disabled]="!form.value.members || form.value.members.length == 0"
+            (click)="start()">START
     </button>
   </mat-card-actions>
 </mat-card>
