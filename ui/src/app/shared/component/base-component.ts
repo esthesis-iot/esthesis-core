@@ -1,5 +1,6 @@
 import * as _ from "lodash-es";
 import {AppConstants} from "../../app.constants";
+import {FormGroup} from "@angular/forms";
 
 export class BaseComponent {
 
@@ -21,5 +22,14 @@ export class BaseComponent {
    */
   normaliseString(str: string): string {
     return _.capitalize(str.replace("_", " "));
+  }
+
+  /**
+   * Checks if a field in a FormGroup is valid
+   * @param form The FormGroup to check.
+   * @param field The name of the field to check.
+   */
+  isFieldValid(form: FormGroup, field: string): boolean {
+    return !form.get(field)?.valid && form.get(field)?.touched || false;
   }
 }

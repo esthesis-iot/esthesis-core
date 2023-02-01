@@ -5,20 +5,18 @@
       <div fxLayout="column">
         <mat-form-field>
           <input matInput placeholder="Name" formControlName="name">
-          <mat-icon matSuffix color="warn"
-                    *ngIf="form.controls['name'].invalid"
-                    matTooltip="{{form.controls['name'].getError('message')}}"
-                    matTooltipPosition="above" style="cursor: help">warning
-          </mat-icon>
           <mat-hint>A friendly name to identify this CA.</mat-hint>
+          <app-field-error matSuffix
+                           [displayError]="isFieldValid(form, 'name')"
+                           [errorMessage]="form.controls['name'].getError('message')"
+          ></app-field-error>
         </mat-form-field>
         <mat-form-field>
           <input matInput placeholder="Common name" formControlName="cn">
-          <mat-icon matSuffix color="warn"
-                    *ngIf="form.controls['cn'].invalid"
-                    matTooltip="{{form.controls['cn'].getError('message')}}"
-                    matTooltipPosition="above" style="cursor: help">warning
-          </mat-icon>
+          <app-field-error matSuffix
+                           [displayError]="isFieldValid(form, 'cn')"
+                           [errorMessage]="form.controls['cn'].getError('message')"
+          ></app-field-error>
         </mat-form-field>
         <mat-form-field>
           <input matInput placeholder="Expires at" formControlName="validity"

@@ -35,20 +35,17 @@ export class CasEditComponent extends BaseComponent implements OnInit {
 
     // Set up the form.
     this.form = this.fb.group({
-      id: [""],
+      id: [],
       cn: [{
-        value: "",
-        disabled: this.id !== AppConstants.NEW_RECORD_ID
-      }, [Validators.maxLength(256)]],
+        value: null, disabled: this.id !== AppConstants.NEW_RECORD_ID
+      }, [Validators.required, Validators.maxLength(256)]],
       name: [{
-        value: "",
-        disabled: this.id !== AppConstants.NEW_RECORD_ID
-      }, [Validators.maxLength(256)]],
+        value: null, disabled: this.id !== AppConstants.NEW_RECORD_ID
+      }, [Validators.required, Validators.maxLength(256)]],
       validity: [{
-        value: "",
-        disabled: this.id !== AppConstants.NEW_RECORD_ID
+        value: null, disabled: this.id !== AppConstants.NEW_RECORD_ID
       }, [Validators.required]],
-      parentCaId: [{value: "", disabled: this.id !== AppConstants.NEW_RECORD_ID}],
+      parentCaId: [{value: null, disabled: this.id !== AppConstants.NEW_RECORD_ID}],
     });
 
     // Fill-in the form with data if editing an existing item.
@@ -80,8 +77,7 @@ export class CasEditComponent extends BaseComponent implements OnInit {
           if (error.status === 400) {
             const validationErrors = error.error;
             if (validationErrors) {
-              // @ts-ignore
-              this.qFormValidation.validateForm(this.form, validationErrors.violations);
+              this.qFormValidation.applyValidationErrors(this.form, validationErrors.violations);
             }
           } else {
             this.utilityService.popupErrorWithTraceId("Could not save Certificate Authority.", error);

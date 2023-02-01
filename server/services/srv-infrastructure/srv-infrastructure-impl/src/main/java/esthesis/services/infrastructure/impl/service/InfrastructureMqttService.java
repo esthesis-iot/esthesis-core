@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
@@ -30,7 +31,7 @@ public class InfrastructureMqttService extends BaseService<InfrastructureMqttEnt
         .toList();
 
     Optional<InfrastructureMqttEntity> match;
-    if (tagsList.isEmpty()) {
+    if (CollectionUtils.isEmpty(tagsList)) {
       match = findByColumnNull("tags").stream().findAny();
     } else {
       match = findByColumnIn("tags", tagIds, false).stream().findAny();

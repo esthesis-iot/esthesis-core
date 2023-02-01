@@ -11,6 +11,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
@@ -33,7 +34,7 @@ public class DeviceTagService {
    */
   public List<DeviceEntity> findByTagName(List<String> tagNames,
       boolean partialMatch) {
-    if (tagNames.isEmpty()) {
+    if (CollectionUtils.isEmpty(tagNames)) {
       return new ArrayList<>();
     } else {
       List<TagEntity> tagsByName = Lists.newArrayList(
@@ -69,7 +70,7 @@ public class DeviceTagService {
   public Long countByTag(List<String> tags, boolean partialMatch) {
     List<TagEntity> tagsByName = Lists.newArrayList(
         tagResource.findByNames(String.join(",", tags), partialMatch));
-    if (!tagsByName.isEmpty()) {
+    if (!CollectionUtils.isEmpty(tagsByName)) {
       return deviceRepository.countByTag(tagsByName.stream()
           .map(TagEntity::getId)
           .map(Object::toString)

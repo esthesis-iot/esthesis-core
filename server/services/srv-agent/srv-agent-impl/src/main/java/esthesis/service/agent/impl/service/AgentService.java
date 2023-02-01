@@ -234,12 +234,15 @@ public class AgentService {
     validateRequestsLimit(hardwareId);
 
     // Check that the provided token (if provisioning is running in secure mode) is valid.
-    validateRequestToken(hardwareId, token);
+    if (settingsSystemResource.findByName(NamedSetting.DEVICE_PROVISIONING_SECURE).asBoolean()) {
+      validateRequestToken(hardwareId, token);
+    }
 
     ProvisioningPackageEntity pp = provisioningAgentResource.findById(packageId);
 
     // If a provisioning package was not found, return an empty response.
     if (pp == null) {
+      log.warn("Provisioning package with id '{}' not found.", packageId);
       return new AgentProvisioningInfoResponse();
     } else {
       return prepareAgentProvisioningInfoResponse(pp);

@@ -26,6 +26,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -120,7 +121,7 @@ public class CampaignWorker {
     CampaignEntity campaignEntity = campaignService.findById(campaignId);
     GroupDTO groupDTO = new GroupDTO(groupExpression);
     List<CampaignConditionDTO> conditions = getCondition(campaignEntity, groupDTO, Type.DATETIME);
-    if (conditions.isEmpty()) {
+    if (CollectionUtils.isEmpty(conditions)) {
       log.debug("No date/time condition found for campaign id '{}', group '{}'.", campaignId,
           groupExpression);
       return true;
@@ -164,7 +165,7 @@ public class CampaignWorker {
     CampaignEntity campaignEntity = campaignService.findById(campaignId);
     GroupDTO groupDTO = new GroupDTO(groupExpression);
     List<CampaignConditionDTO> conditions = getCondition(campaignEntity, groupDTO, Type.PROPERTY);
-    if (conditions.isEmpty()) {
+    if (CollectionUtils.isEmpty(conditions)) {
       log.debug("No property condition found for campaign id '{}', group '{}'.", campaignId,
           groupExpression);
       return true;
@@ -330,7 +331,7 @@ public class CampaignWorker {
     contactedDevices.forEach(device -> {
       List<CommandReplyEntity> replies = commandSystemResource.getReplies(
           device.getCommandRequestId().toString());
-      if (!replies.isEmpty()) {
+      if (!CollectionUtils.isEmpty(replies)) {
         device.setCommandReplyId(replies.get(0).getId());
         campaignDeviceMonitorService.save(device);
         log.debug("Updating reply '{}' for device '{}'.", replies.get(0), device.getHardwareId());
@@ -400,7 +401,7 @@ public class CampaignWorker {
     // Get the requested rate number.
     List<CampaignConditionDTO> conditions = getCondition(campaignEntity, groupDTO, Type.SUCCESS);
     BigDecimal requestedRate;
-    if (conditions.isEmpty()) {
+    if (CollectionUtils.isEmpty(conditions)) {
       log.debug("No rate condition found for campaign id '{}', group '{}'.", campaignId,
           groupExpression);
       return true;

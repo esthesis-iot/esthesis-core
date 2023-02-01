@@ -4,6 +4,7 @@ import esthesis.service.campaign.dto.CampaignStatsDTO;
 import esthesis.service.campaign.entity.CampaignEntity;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
+import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.DELETE;
@@ -12,11 +13,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
+import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 @Path("/api")
 @RegisterRestClient(configKey = "CampaignResource")
-//@RegisterProvider(AccessTokenRequestReactiveFilter.class)
+@RegisterProvider(AccessTokenRequestReactiveFilter.class)
 public interface CampaignResource {
 
   @GET

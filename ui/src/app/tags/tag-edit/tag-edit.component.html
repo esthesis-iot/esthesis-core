@@ -5,11 +5,10 @@
       <div fxLayout="column">
         <mat-form-field>
           <input matInput placeholder="Name" formControlName="name">
-          <mat-icon matSuffix color="warn"
-                    *ngIf="form.controls['name'].invalid"
-                    matTooltip="{{form.controls['name'].getError('message')}}"
-                    matTooltipPosition="above" style="cursor: help">warning
-          </mat-icon>
+          <app-field-error matSuffix
+                           [displayError]="isFieldValid(form, 'name')"
+                           [errorMessage]="form.controls['name'].getError('message')">
+          </app-field-error>
         </mat-form-field>
         <mat-form-field>
           <input matInput placeholder="Description" formControlName="description">
@@ -19,7 +18,7 @@
   </mat-card-content>
   <mat-card-actions>
     <button mat-button routerLink="/tags">CANCEL</button>
-    <button mat-button color="primary" (click)="save()">SAVE</button>
+    <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
     <button mat-button color="warn" (click)="delete()" *ngIf="id !== appConstants.NEW_RECORD_ID">
       DELETE
     </button>

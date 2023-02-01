@@ -23,7 +23,7 @@ import {
   styleUrls: ["./commands-list.component.scss"]
 })
 export class CommandsListComponent extends BaseComponent implements OnInit, AfterViewInit {
-  displayedColumns = ["command", "description", "createdOn", "dispatchedOn", "pills"];
+  displayedColumns = ["command", "createdOn", "dispatchedOn", "pills"];
   dataSource: MatTableDataSource<CommandRequestDto> = new MatTableDataSource<CommandRequestDto>();
   filterForm: FormGroup;
   // Expose application constants.
@@ -39,7 +39,7 @@ export class CommandsListComponent extends BaseComponent implements OnInit, Afte
     private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
-      command: ["", null],
+      command: [],
     });
   }
 

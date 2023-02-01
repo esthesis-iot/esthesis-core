@@ -23,7 +23,7 @@ export class SettingsMessagingComponent extends BaseComponent implements OnInit 
   ngOnInit() {
     // Define the form.
     this.form = this.fb.group({
-      KAFKA_TOPIC_COMMAND_REQUEST: ["", []]
+      KAFKA_TOPIC_COMMAND_REQUEST: [null, []]
     });
 
 

@@ -30,10 +30,10 @@ export class DevicePreregisterComponent extends BaseComponent implements OnInit 
   }
 
   ngOnInit() {
-    // Setup the form.
+    // Set up the form.
     this.form = this.fb.group({
-      ids: ["", [Validators.required]],
-      tags: [[]]
+      ids: [null, [Validators.required]],
+      tags: []
     });
 
     // Get available tags.
@@ -57,7 +57,7 @@ export class DevicePreregisterComponent extends BaseComponent implements OnInit 
         if (err.status === 400) {
           const validationErrors = err.error;
           if (validationErrors) {
-            this.qFormValidation.validateForm(this.form, validationErrors.violations);
+            this.qFormValidation.applyValidationErrors(this.form, validationErrors.violations);
           }
         } else {
           this.utilityService.popupError("There was an error while preregistering devices, please try again later.");

@@ -20,12 +20,15 @@
              matSortDisableClear id="results" aria-describedby="List of commands issued">
 
         <ng-container matColumnDef="command">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col">Command</th>
-          <td mat-cell *matCellDef="let element">{{element.command | truncate: 100 : "…"}}</td>
-        </ng-container>
-        <ng-container matColumnDef="description">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Description</th>
-          <td mat-cell *matCellDef="let element">{{element.description | truncate: 100 : "…"}}</td>
+          <th mat-header-cell *matHeaderCellDef scope="col">Description/Command</th>
+          <td mat-cell *matCellDef="let element">
+            <span *ngIf="element.description">
+              {{element.description | truncate: 100 : "…"}}
+            </span>
+            <span *ngIf="!element.description">
+              {{element.command | truncate: 100 : "…"}}
+            </span>
+          </td>
         </ng-container>
         <ng-container matColumnDef="createdOn">
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Sent On</th>

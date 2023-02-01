@@ -32,8 +32,8 @@ export class ApplicationsListComponent extends BaseComponent implements OnInit, 
     private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
-      name: ["", null],
-      state: ["", null],
+      name: [],
+      state: [],
     });
   }
 

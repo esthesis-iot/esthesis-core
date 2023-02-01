@@ -29,7 +29,7 @@ export class StoresListComponent extends BaseComponent implements OnInit, AfterV
     private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
-      name: ["", null]
+      name: []
     });
   }
 

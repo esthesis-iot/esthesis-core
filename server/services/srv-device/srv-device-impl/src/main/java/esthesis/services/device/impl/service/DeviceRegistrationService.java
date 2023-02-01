@@ -30,6 +30,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -197,7 +198,7 @@ public class DeviceRegistrationService {
     }
 
     // Set device-pushed tags by converting the tag names to tag ids.
-    if (!tags.isEmpty()) {
+    if (!CollectionUtils.isEmpty(tags)) {
       List<String> validTags = checkTags(hardwareId, tags,
           settingsResource.findByName(NamedSetting.DEVICE_PUSHED_TAGS).asBoolean());
       deviceEntity.setTags(

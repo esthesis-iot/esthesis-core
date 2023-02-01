@@ -33,7 +33,8 @@ public interface AgentResource {
    * Attempts to find a candidate provisioning package for the given hardware id.
    *
    * @param hardwareId The hardware id to find a provisioning package for.
-   * @param token      TODO define
+   * @param token      An RSA/SHA256 digital signature of a SHA256 hashed version of the hardware id
+   *                   of the device requesting the information.
    */
   @GET
   @Path(value = "/v1/provisioning/find")

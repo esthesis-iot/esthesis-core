@@ -27,9 +27,9 @@ export class SettingsProvisioningComponent extends BaseComponent implements OnIn
     //  of the respective setting. Create an empty form group and then add the form controls
     //  programmatically.
     this.form = this.fb.group({
-      DEVICE_PROVISIONING_URL: ["", []],
-      DEVICE_PROVISIONING_SECURE: ["", []],
-      DEVICE_PROVISIONING_CACHE_TIME: ["", []],
+      DEVICE_PROVISIONING_URL: [],
+      DEVICE_PROVISIONING_SECURE: [],
+      DEVICE_PROVISIONING_CACHE_TIME: [],
     });
 
 

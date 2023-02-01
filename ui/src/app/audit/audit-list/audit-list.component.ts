@@ -39,11 +39,11 @@ export class AuditListComponent extends BaseComponent implements OnInit, AfterVi
     private utilityService: UtilityService) {
     super();
     this.filterForm = this.fb.group({
-      dateFrom: ["", null],
-      dateTo: ["", null],
-      operation: ["", null],
-      category: ["", null],
-      createdBy: ["", null]
+      dateFrom: [],
+      dateTo: [],
+      operation: [],
+      category: [],
+      createdBy: []
     });
   }
 

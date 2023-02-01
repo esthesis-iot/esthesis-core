@@ -6,11 +6,10 @@
           <textarea cdkTextareaAutosize [cdkAutosizeMinRows]=1 [cdkAutosizeMaxRows]=30
                     matInput placeholder="Hardware IDs" formControlName="ids"
                     cdkTrapFocus cdkTrapFocusAutoCapture></textarea>
-        <mat-icon matSuffix color="warn"
-                  *ngIf="form.controls['ids'].invalid && form.dirty"
-                  matTooltip="{{form.controls['ids'].getError('message')}}"
-                  matTooltipPosition="above" style="cursor: help">warning
-        </mat-icon>
+        <app-field-error matSuffix
+                         [displayError]="isFieldValid(form, 'ids')"
+                         [errorMessage]="form.controls['ids'].getError('message')">
+        </app-field-error>
         <mat-hint>You can preregister multiple devices, adding each hardware ID on a separate line
         </mat-hint>
       </mat-form-field>

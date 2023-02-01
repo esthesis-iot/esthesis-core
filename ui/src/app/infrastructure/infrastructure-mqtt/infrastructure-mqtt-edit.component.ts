@@ -36,10 +36,10 @@ export class InfrastructureMqttEditComponent extends BaseComponent implements On
 
     // Set up the form.
     this.form = this.fb.group({
-      id: [""],
-      name: ["", [Validators.required, Validators.maxLength(1024)]],
-      url: ["", [Validators.required, Validators.maxLength(1024)]],
-      active: ["", [Validators.required, Validators.maxLength(1)]],
+      id: [],
+      name: [null, [Validators.required, Validators.maxLength(1024)]],
+      url: [null, [Validators.required, Validators.maxLength(1024)]],
+      active: [null, [Validators.required, Validators.maxLength(1)]],
       tags: [[]]
     });
 

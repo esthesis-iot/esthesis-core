@@ -17,6 +17,7 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -51,30 +52,41 @@ public class StoreService extends BaseService<StoreEntity> {
         storeEntity.getPassword());
 
     // Collect certificates.
-    for (ObjectId certId : storeEntity.getCertCertificates()) {
-      CertificateEntity certificateEntity = certificateService.findById(certId.toHexString());
-      keystore = cryptoService.saveCertificateToKeystore(keystore, KEYSTORE_TYPE, KEYSTORE_PROVIDER,
-          storeEntity.getPassword(), certificateEntity.getCn(),
-          cryptoService.pemToCertificate(certificateEntity.getCertificate()).getEncoded());
+    if (CollectionUtils.isNotEmpty(storeEntity.getCertCertificates())) {
+      for (ObjectId certId : storeEntity.getCertCertificates()) {
+        CertificateEntity certificateEntity = certificateService.findById(certId.toHexString());
+        keystore = cryptoService.saveCertificateToKeystore(keystore, KEYSTORE_TYPE,
+            KEYSTORE_PROVIDER,
+            storeEntity.getPassword(), certificateEntity.getCn(),
+            cryptoService.pemToCertificate(certificateEntity.getCertificate()).getEncoded());
+      }
     }
 
-    for (ObjectId caId : storeEntity.getCertCas()) {
-      CaEntity caEntity = caService.findById(caId.toHexString());
-      keystore = cryptoService.saveCertificateToKeystore(keystore, KEYSTORE_TYPE, KEYSTORE_PROVIDER,
-          storeEntity.getPassword(), caEntity.getCn(),
-          cryptoService.pemToCertificate(caEntity.getCertificate()).getEncoded());
+    if (CollectionUtils.isNotEmpty(storeEntity.getCertCas())) {
+      for (ObjectId caId : storeEntity.getCertCas()) {
+        CaEntity caEntity = caService.findById(caId.toHexString());
+        keystore = cryptoService.saveCertificateToKeystore(keystore, KEYSTORE_TYPE,
+            KEYSTORE_PROVIDER,
+            storeEntity.getPassword(), caEntity.getCn(),
+            cryptoService.pemToCertificate(caEntity.getCertificate()).getEncoded());
+      }
     }
 
     // Collect private keys.
-    for (ObjectId certId : storeEntity.getPkCertificates()) {
-      CertificateEntity certificateEntity = certificateService.findById(certId.toHexString());
-      final PrivateKey privateKey = cryptoService.pemToPrivateKey(certificateEntity.getPrivateKey(),
-          settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString());
+    if (CollectionUtils.isNotEmpty(storeEntity.getPkCertificates())) {
+      for (ObjectId certId : storeEntity.getPkCertificates()) {
+        CertificateEntity certificateEntity = certificateService.findById(certId.toHexString());
+        final PrivateKey privateKey = cryptoService.pemToPrivateKey(
+            certificateEntity.getPrivateKey(),
+            settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString());
 
-      keystore = cryptoService.savePrivateKeyToKeystore(keystore, KEYSTORE_TYPE, KEYSTORE_PROVIDER,
-          storeEntity.getPassword(), certificateEntity.getCn(), privateKey,
-          storeEntity.isPasswordForKeys() ? storeEntity.getPassword() : null,
-          Set.of(cryptoService.pemToCertificate(certificateEntity.getCertificate()).getEncoded()));
+        keystore = cryptoService.savePrivateKeyToKeystore(keystore, KEYSTORE_TYPE,
+            KEYSTORE_PROVIDER,
+            storeEntity.getPassword(), certificateEntity.getCn(), privateKey,
+            storeEntity.isPasswordForKeys() ? storeEntity.getPassword() : null,
+            Set.of(
+                cryptoService.pemToCertificate(certificateEntity.getCertificate()).getEncoded()));
+      }
     }
 
     return keystore;

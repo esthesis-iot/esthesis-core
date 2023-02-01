@@ -40,3 +40,8 @@
 .mat-tab-body-content {
   padding-left: 1rem;
 }
+
+// Mandatory field asterisk.
+.mat-placeholder-required {
+  color: $e-color-error;
+}

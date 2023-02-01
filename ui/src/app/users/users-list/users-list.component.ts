@@ -29,8 +29,8 @@ export class UsersListComponent extends BaseComponent implements OnInit, AfterVi
     private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
-      username: ["", null],
-      status: ["", null],
+      username: [],
+      status: [],
     });
   }
 

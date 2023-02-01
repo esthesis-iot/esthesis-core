@@ -13,6 +13,8 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {InputModalComponent} from "./input-modal/input-modal.component";
 import {MatInputModule} from "@angular/material/input";
 import {MatIconPickerComponent} from "./mat-icon-picker/mat-icon-picker.component";
+import {FieldErrorComponent} from "./field-error/field-error.component";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
@@ -20,7 +22,8 @@ import {MatIconPickerComponent} from "./mat-icon-picker/mat-icon-picker.componen
     BooleanCheckboxComponent,
     TextModalComponent,
     InputModalComponent,
-    MatIconPickerComponent
+    MatIconPickerComponent,
+    FieldErrorComponent
   ],
   imports: [
     CommonModule,
@@ -31,10 +34,12 @@ import {MatIconPickerComponent} from "./mat-icon-picker/mat-icon-picker.componen
     MatSelectModule,
     FlexLayoutModule,
     ReactiveFormsModule,
-    MatInputModule
+    MatInputModule,
+    MatTooltipModule
   ],
   exports: [
-    BooleanCheckboxComponent
+    BooleanCheckboxComponent,
+    FieldErrorComponent
   ]
 })
 export class DisplayModule {

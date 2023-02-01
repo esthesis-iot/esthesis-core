@@ -27,13 +27,13 @@ export class DevicePreregisterCamComponent implements OnInit {
   tryHarder = false;
 
   constructor(private fb: FormBuilder,
-              public selfDialogRef: MatDialogRef<DevicePreregisterCamComponent>) {
+    public selfDialogRef: MatDialogRef<DevicePreregisterCamComponent>) {
   }
 
   ngOnInit() {
-    // Setup the form.
+    // Set up the form.
     this.form = this.fb.group({
-      ids: ["", []],
+      ids: [],
     });
   }
 

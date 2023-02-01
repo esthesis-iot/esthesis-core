@@ -23,7 +23,7 @@ export class MatIconPickerComponent implements OnInit {
 
   constructor(private fb: FormBuilder, public dialogRef: MatDialogRef<MatIconPickerComponent>) {
     this.filterForm = this.fb.group({
-      icon: ["", null],
+      icon: [],
     });
   }
 

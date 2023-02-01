@@ -42,7 +42,9 @@ public class ProvisioningPackageEntity extends BaseEntity {
 
   // The version of this package, following semantic versioning principles. This allows esthesis
   // to automatically determine which package is "next" to be downloaded given a specific package
-  // version, helpful during device firmware updates.
+  // version, helpful during device firmware updates. If semantic versioning is not followed,
+  // automatic updates should not be used as the next-version package to be downloaded cannot be
+  // determined reliably.
   @RestForm
   private String version;
 

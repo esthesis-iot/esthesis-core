@@ -2,16 +2,15 @@ import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
-import {v4 as uuidv4} from "uuid";
 import {TagsService} from "../tags.service";
 import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
 import {
   OkCancelModalComponent
 } from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
-import {TagDto} from "../dto/tag-dto";
 import {QFormsService} from "@qlack/forms";
 import {QFormValidationEEService} from "../../shared/service/form-validation.service";
+import {TagDto} from "../dto/tag-dto";
 
 @Component({
   selector: "app-tag-edit",
@@ -34,9 +33,10 @@ export class TagEditComponent extends BaseComponent implements OnInit {
 
     // Set up the form.
     this.form = this.fb.group({
-      id: [{value: "", disabled: true}],
-      name: [{value: "", disabled: false}, [Validators.maxLength(1024)]],
-      description: [[]]
+      id: [],
+      name: [{value: null, disabled: false},
+        [Validators.minLength(3), Validators.maxLength(255), Validators.required]],
+      description: [null, [Validators.maxLength(2048)]]
     });
     // Fill-in the form with data if editing an existing item.
     if (this.id !== this.appConstants.NEW_RECORD_ID) {
@@ -46,10 +46,6 @@ export class TagEditComponent extends BaseComponent implements OnInit {
         }, error: (err) => {
           this.utilityService.popupErrorWithTraceId("There was an error trying to retrieve this tag.", err);
         }
-      });
-    } else {
-      this.form.patchValue({
-        salt: uuidv4()
       });
     }
   }
@@ -67,7 +63,7 @@ export class TagEditComponent extends BaseComponent implements OnInit {
         if (err.status === 400) {
           const validationErrors = err.error;
           if (validationErrors) {
-            this.qFormValidation.validateForm(this.form, validationErrors.violations);
+            this.qFormValidation.applyValidationErrors(this.form, validationErrors.violations);
           }
         } else {
           this.utilityService.popupError("There was an error trying to save this tag.");

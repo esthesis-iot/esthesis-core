@@ -37,16 +37,16 @@ export class StoreEditComponent extends BaseComponent implements OnInit {
     // Check if an edit is performed and fetch data.
     this.id = this.route.snapshot.paramMap.get("id");
 
-    // Setup the form.
+    // Set up the form.
     this.form = this.fb.group({
-      id: [""],
-      name: ["", [Validators.required, Validators.maxLength(256)]],
-      password: ["", [Validators.required, Validators.maxLength(256)]],
-      passwordForKeys: [""],
-      certCertificates: [""],
-      certCas: [""],
-      pkCertificates: [""],
-      pkCas: [""],
+      id: [],
+      name: [null, [Validators.required, Validators.maxLength(256)]],
+      password: [null, [Validators.required, Validators.maxLength(256)]],
+      passwordForKeys: [],
+      certCertificates: [],
+      certCas: [],
+      pkCertificates: [],
+      pkCas: [],
     });
 
     // Fill form.

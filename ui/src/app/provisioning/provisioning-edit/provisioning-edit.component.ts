@@ -42,45 +42,45 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
     // // Setup the form.
     this.form = this.fb.group({
       id: [],
-      name: ["", [Validators.required, Validators.maxLength(256)]],
-      description: ["", [Validators.maxLength(2048)]],
-      version: ["", [Validators.required]],
-      prerequisiteVersion: ["", []],
+      name: [null, [Validators.required, Validators.maxLength(256)]],
+      description: [null, [Validators.maxLength(2048)]],
+      version: [null, [Validators.required]],
+      prerequisiteVersion: [null, []],
       tags: [[]],
-      attributes: [""],
-      type: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}, [Validators.required]],
+      attributes: [],
+      type: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}, [Validators.required]],
       available: [true, [Validators.required]],
       sha256: [],
 
       // ESTHESIS type
-      fileName: [""],
+      fileName: [],
       file: [],
 
       // WEB type
-      WEB_URL: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
-      WEB_USERNAME: [""],
-      WEB_PASSWORD: [""],
+      WEB_URL: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
+      WEB_USERNAME: [],
+      WEB_PASSWORD: [],
 
       // FTP type
-      FTP_HOST: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
+      FTP_HOST: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
       FTP_USERNAME: [],
       FTP_PASSWORD: [],
-      FTP_PORT: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
-      FTP_PATH: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
+      FTP_PORT: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
+      FTP_PATH: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
       FTP_PASSIVE: [],
 
       // MINIO type
-      MINIO_URL: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
-      MINIO_BUCKET: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
-      MINIO_OBJECT: [{value: "", disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
+      MINIO_URL: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
+      MINIO_BUCKET: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
+      MINIO_OBJECT: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
       MINIO_ACCESS_KEY: [],
       MINIO_SECRET_KEY: [],
 
       // S3
-      s3Url: [""],
+      s3Url: [],
 
       // Minio
-      minioUrl: [""],
+      minioUrl: [],
     });
 
     // Fill-in the form with data if editing an existing item.

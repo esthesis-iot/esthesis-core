@@ -31,10 +31,10 @@ export class ApplicationEditDescriptionComponent extends BaseComponent implement
   ngOnInit() {
     // Set up the form.
     this.form = this.fb.group({
-      id: [""],
-      name: ["", [Validators.maxLength(256)]],
-      token: ["", [Validators.required, Validators.maxLength(256)]],
-      state: ["", [Validators.required]]
+      id: [],
+      name: [null, [Validators.maxLength(256)]],
+      token: [null, [Validators.required, Validators.maxLength(256)]],
+      state: [null, [Validators.required]]
     });
 
     if (this.id && this.id !== this.appConstants.NEW_RECORD_ID) {

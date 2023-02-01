@@ -28,7 +28,7 @@ export class TagsListComponent extends BaseComponent implements OnInit, AfterVie
     private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
-      name: ["", null],
+      name: [],
     });
   }
 

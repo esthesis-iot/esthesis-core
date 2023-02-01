@@ -27,10 +27,10 @@ export class CasImportComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     // Set up the form.
     this.form = this.fb.group({
-      name: ["", [Validators.required]],
-      publicKey: ["", [Validators.required]],
-      privateKey: ["", [Validators.required]],
-      certificate: ["", [Validators.required]],
+      name: [null, [Validators.required]],
+      publicKey: [null, [Validators.required]],
+      privateKey: [null, [Validators.required]],
+      certificate: [null, [Validators.required]],
     });
   }
 

@@ -53,6 +53,9 @@ public class AgentResourceImpl implements AgentResource {
   @Override
   public Response findProvisioningPackageById(String hardwareId, String packageId,
       Optional<String> token) {
+    log.debug("Received find provisioning package by id request for hardware id '{}' and package "
+            + "id '{}' with token '{}'.",
+        hardwareId, packageId, token);
     try {
       return Response.ok(agentService.findProvisioningPackageById(hardwareId, packageId, token))
           .build();

@@ -29,9 +29,9 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
     //  of the respective setting. Create an empty form group and then add the form controls
     //  programmatically.
     this.form = this.fb.group({
-      DEVICE_REGISTRATION_MODE: ["", [Validators.required]],
-      DEVICE_ROOT_CA: ["", []],
-      DEVICE_PUSHED_TAGS: ["", []]
+      DEVICE_REGISTRATION_MODE: [null, [Validators.required]],
+      DEVICE_ROOT_CA: [null, []],
+      DEVICE_PUSHED_TAGS: [null, []]
     });
 
     // Fetch settings.

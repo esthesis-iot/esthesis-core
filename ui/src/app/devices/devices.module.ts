@@ -36,6 +36,7 @@ import {DeviceProfileComponent} from "./device/device-profile/device-profile.com
 import {FormlyModule} from "@ngx-formly/core";
 import {FormlyMaterialModule} from "@ngx-formly/material";
 import {ClipboardModule} from "@angular/cdk/clipboard";
+import {DisplayModule} from "../shared/component/display/display.module";
 
 @NgModule({
   declarations: [
@@ -77,7 +78,8 @@ import {ClipboardModule} from "@angular/cdk/clipboard";
     A11yModule,
     FormlyModule.forChild(),
     FormlyMaterialModule,
-    ClipboardModule
+    ClipboardModule,
+    DisplayModule
   ]
 })
 export class DevicesModule {

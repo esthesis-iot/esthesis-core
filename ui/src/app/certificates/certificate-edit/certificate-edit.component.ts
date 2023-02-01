@@ -39,24 +39,24 @@ export class CertificateEditComponent extends BaseComponent implements OnInit {
 
     // Set up the form.
     this.form = this.fb.group({
-      id: [""],
+      id: [],
       cn: [{
-        value: "",
+        value: null,
         disabled: this.id !== AppConstants.NEW_RECORD_ID
       }, [Validators.required, Validators.maxLength(256)]],
       name: [{
-        value: "",
+        value: null,
         disabled: this.id !== AppConstants.NEW_RECORD_ID
       }, [Validators.required, Validators.maxLength(256)]],
       san: [{
-        value: "",
+        value: null,
         disabled: this.id !== AppConstants.NEW_RECORD_ID
       }, [Validators.maxLength(1024)]],
       validity: [{
-        value: "",
+        value: null,
         disabled: this.id !== AppConstants.NEW_RECORD_ID
       }, [Validators.required]],
-      issuer: [{value: "", disabled: this.id !== AppConstants.NEW_RECORD_ID}, []]
+      issuer: [{value: null, disabled: this.id !== AppConstants.NEW_RECORD_ID}, []]
     });
 
     // Fill dropdowns.

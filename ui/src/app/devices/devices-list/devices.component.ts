@@ -33,7 +33,7 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
     private deviceService: DevicesService, private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
-      hardwareId: ["", null],
+      hardwareId: [],
     });
   }
 

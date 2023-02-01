@@ -118,23 +118,22 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
 
     // Set up the form.
     this.form = this.fb.group({
-      id: ["", []],
-      state: ["", []],
-      name: ["", [Validators.required]],
-      description: ["", []],
-      scheduleDate: ["", []],
-      scheduleHour: ["", []],
-      scheduleMinute: ["", []],
-      type: ["", [Validators.required]],
-      commandName: ["", []],
-      commandArguments: ["", []],
-      commandExecutionType: ["", []],
-      provisioningPackageId: ["", []],
+      id: [],
+      state: [],
+      name: [null, [Validators.required]],
+      description: [],
+      scheduleDate: [],
+      scheduleHour: [],
+      scheduleMinute: [],
+      type: [null, [Validators.required]],
+      commandName: [],
+      commandArguments: [],
+      commandExecutionType: [],
+      provisioningPackageId: [],
       conditions: this.fb.array([]),
       members: [[]],
-
-      searchByHardwareId: ["", []],
-      searchByTags: ["", []],
+      searchByHardwareId: [],
+      searchByTags: [],
     });
 
     // Monitor campaign type to fetch provisioning packages.
@@ -329,20 +328,20 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   }
 
   start() {
-    // this.dialog.open(OkCancelModalComponent, {
-    //   data: {
-    //     title: "Starting campaign",
-    //     question: "Once a campaign is started it can not be further edited. Are you sure you" +
-    //       " want to proceed?",
-    //     buttons: {
-    //       ok: true, cancel: true, reload: false
-    //     }
-    //   }
-    // }).afterClosed().subscribe(result => {
-    //   if (result) {
-    this.save(true);
-    //   }
-    // });
+    this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: "Starting campaign",
+        question: "Once a campaign is started it can not be further edited. Are you sure you" +
+          " want to proceed?",
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.save(true);
+      }
+    });
   }
 
   validate() {
@@ -355,7 +354,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     this.form.get("searchByTags")?.setValue("");
 
     this.campaignService.save(this.form.getRawValue() as CampaignDto).subscribe({
-      next: (formData) => {
+      next: () => {
         this.errorsMain = undefined;
         this.errorsDevices = undefined;
         this.errorsConditions = undefined;
@@ -363,14 +362,14 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
           this.campaignService.startCampaign(this.id!).subscribe({
             next: () => {
               this.utilityService.popupSuccess("Campaign successfully started.");
-              // this.router.navigate(["campaigns"]);
+              this.router.navigate(["campaigns"]);
             }, error: () => {
               this.utilityService.popupError("Campaign could not be started.");
             }
           });
         } else {
           this.utilityService.popupSuccess("Campaign successfully saved.");
-          // this.router.navigate(["campaigns"]);
+          this.router.navigate(["campaigns"]);
         }
       }, error: (error) => {
         this.errorsMain = error.error.main;

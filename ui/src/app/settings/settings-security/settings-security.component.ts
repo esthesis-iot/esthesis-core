@@ -29,7 +29,7 @@ export class SettingsSecurityComponent extends BaseComponent implements OnInit {
     //  of the respective setting. Create an empty form group and then add the form controls
     //  programmatically.
     this.form = this.fb.group({
-      PLATFORM_CERTIFICATE: ["", [Validators.required]],
+      PLATFORM_CERTIFICATE: [null, [Validators.required]],
     });
 
     // Fetch settings.

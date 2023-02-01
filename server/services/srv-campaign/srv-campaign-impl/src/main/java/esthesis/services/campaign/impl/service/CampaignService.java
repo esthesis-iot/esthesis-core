@@ -26,6 +26,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -71,7 +72,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
       List<InstanceDTO> entryExitInstances = resources.stream()
           .filter(resource -> resource.getData().get("campaignId").equals(campaignId.toString()))
           .toList();
-      if (entryExitInstances.isEmpty()) {
+      if (CollectionUtils.isEmpty(entryExitInstances)) {
         log.warn("No entry/exit process instances found for campaign id '{}'", campaignId);
       } else if (entryExitInstances.size() > 1) {
         log.warn("More than one entry/exit process instances found for campaign id '{}'",

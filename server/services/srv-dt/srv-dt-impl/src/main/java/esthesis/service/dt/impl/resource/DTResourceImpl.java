@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class DTResourceImpl implements DTResource {
@@ -38,7 +39,7 @@ public class DTResourceImpl implements DTResource {
   @Override
   public Response findAllJSON(String hardwareId, String category) {
     List<DTValueReplyDTO> values = dtService.findAll(hardwareId, category);
-    if (values != null && !values.isEmpty()) {
+    if (values != null && !CollectionUtils.isEmpty(values)) {
       return Response.ok(values).build();
     } else {
       return Response.status(Status.NO_CONTENT).build();

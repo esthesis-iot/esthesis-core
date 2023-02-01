@@ -45,10 +45,10 @@ export class DeviceComponent extends BaseComponent implements OnInit {
 
     // Set up the Device Info form.
     this.deviceInfoForm = this.fb.group({
-      id: [""],
+      id: [],
       tags: [[]],
-      status: ["", [Validators.required, Validators.maxLength(32)]],
-      hardwareId: ["", [Validators.required, Validators.maxLength(512)]]
+      status: [null, [Validators.required, Validators.maxLength(32)]],
+      hardwareId: [null, [Validators.required, Validators.maxLength(512)]]
     });
 
     // Get available tags.

@@ -29,7 +29,7 @@ export class DataflowsListComponent extends BaseComponent implements OnInit, Aft
     private dataflowService: DataflowsService, private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({
-      name: ["", null],
+      name: [],
     });
   }
 

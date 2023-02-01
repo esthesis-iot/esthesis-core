@@ -6,21 +6,27 @@ import {AbstractControl, FormGroup} from "@angular/forms";
 })
 export class QFormValidationEEService {
 
-  public validateForm(theForm: FormGroup, validationErrors: any) {
-    validationErrors.forEach((validationError: any) => {
-      this.invalidateFormControl(theForm, validationError);
-    });
-  }
-
-  private invalidateFormControl(theForm: FormGroup, validationError: any) {
+  private invalidateFormControl(form: FormGroup, validationError: ValidationError) {
     let erroneousField = validationError.field;
     let fieldFormControl: AbstractControl;
     erroneousField = erroneousField.substring(erroneousField.lastIndexOf(".") + 1);
-    fieldFormControl = theForm.controls[erroneousField];
+    fieldFormControl = form.controls[erroneousField];
     fieldFormControl.setErrors({
       incorrect: true,
       message: validationError.message,
     });
   }
 
+  public applyValidationErrors(form: FormGroup, validationErrors: ValidationError[]) {
+    validationErrors.forEach((validationError: ValidationError) => {
+      this.invalidateFormControl(form, validationError);
+    });
+
+    form.markAllAsTouched();
+  }
+}
+
+export interface ValidationError {
+  field: string;
+  message: string;
 }
