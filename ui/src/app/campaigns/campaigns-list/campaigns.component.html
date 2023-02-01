@@ -20,14 +20,17 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col">State</th>
           <td mat-cell *matCellDef="let element" [ngSwitch]="element.state"
               [ngStyle]="element.state == appConstants.CAMPAIGN.STATE.RUNNING ? {'color': 'green'} : {}">
-            <span *ngSwitchCase="10"><mat-icon>adjust</mat-icon>Created</span>
-            <span *ngSwitchCase="20"><mat-icon
+            <span *ngSwitchCase="appConstants.CAMPAIGN.STATE.CREATED"><mat-icon style="color: blue">adjust</mat-icon>Created</span>
+            <span *ngSwitchCase="appConstants.CAMPAIGN.STATE.RUNNING"><mat-icon
               style="color: green">play_circle</mat-icon>Running</span>
-            <span *ngSwitchCase="30"><mat-icon style="color: blue">pause_cirle</mat-icon>Paused by user</span>
-            <span *ngSwitchCase="40"><mat-icon
+            <span *ngSwitchCase="appConstants.CAMPAIGN.STATE.PAUSED_BY_USER"><mat-icon
+              style="color: blue">pause_cirle</mat-icon>Paused by user</span>
+            <span *ngSwitchCase="appConstants.CAMPAIGN.STATE.PAUSED_BY_WORKFLOW"><mat-icon
               style="color: blue">pause_cirle</mat-icon> Waiting</span>
-            <span *ngSwitchCase="50"><mat-icon>stop_circle</mat-icon> Terminated</span>
-            <span *ngSwitchCase="60"><mat-icon style="color: #777777">stop_circle</mat-icon> Terminated by user</span>
+            <span *ngSwitchCase="appConstants.CAMPAIGN.STATE.TERMINATED_BY_WORKFLOW"><mat-icon
+              style="color: #666666">stop_circle</mat-icon> Terminated</span>
+            <span *ngSwitchCase="appConstants.CAMPAIGN.STATE.TERMINATED_BY_USER"><mat-icon
+              style="color: #777777">stop_circle</mat-icon> Terminated by user</span>
           </td>
         </ng-container>
         <ng-container matColumnDef="startedOn">
