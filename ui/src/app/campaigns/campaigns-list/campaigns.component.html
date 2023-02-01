@@ -12,11 +12,8 @@
         </ng-container>
         <ng-container matColumnDef="type">
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col">Type</th>
-          <td mat-cell *matCellDef="let element" [ngSwitch]="element.type">
-            <span *ngSwitchCase="1">Provisioning</span>
-            <span *ngSwitchCase="2">Command</span>
-            <span *ngSwitchCase="3">Reboot</span>
-            <span *ngSwitchCase="4">Shutdown</span>
+          <td mat-cell *matCellDef="let element">
+            {{element.type | titlecase}}
           </td>
         </ng-container>
         <ng-container matColumnDef="state">
