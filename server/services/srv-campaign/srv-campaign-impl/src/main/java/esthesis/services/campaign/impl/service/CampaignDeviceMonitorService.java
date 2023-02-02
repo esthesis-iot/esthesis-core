@@ -64,6 +64,11 @@ public class CampaignDeviceMonitorService extends BaseService<CampaignDeviceMoni
         new ObjectId(campaignId));
   }
 
+  public long countInGroup(String campaignId, int group) {
+    return getRepository().count("campaignId = ?1 and group = ?2",
+        new ObjectId(campaignId), group);
+  }
+
   /**
    * Count the devices that have been contacted for a specific campaign group.
    *

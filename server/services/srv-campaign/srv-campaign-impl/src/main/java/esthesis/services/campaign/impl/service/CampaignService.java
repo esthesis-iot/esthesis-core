@@ -130,13 +130,14 @@ public class CampaignService extends BaseService<CampaignEntity> {
     CampaignStatsDTO campaignStatsDTO = new CampaignStatsDTO();
     CampaignEntity campaignEntity = findById(campaignId);
 
+    // Set the state of this campaign.
     campaignStatsDTO.setStateDescription(campaignEntity.getStateDescription());
 
     // Find the group members of each campaign group.
     int campaignGroups = findGroups(campaignId).size();
-    List<Integer> groupMembers = new ArrayList<>();
+    List<Long> groupMembers = new ArrayList<>();
     for (int i = 1; i <= campaignGroups; i++) {
-      groupMembers.add(campaignDeviceMonitorService.findByColumn("group", i).size());
+      groupMembers.add(campaignDeviceMonitorService.countInGroup(campaignId, i));
     }
     campaignStatsDTO.setGroupMembers(groupMembers);
 

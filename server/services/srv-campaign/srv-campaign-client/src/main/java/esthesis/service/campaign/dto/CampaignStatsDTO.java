@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class CampaignStatsDTO {
 
-  private List<Integer> groupMembers;
+  private List<Long> groupMembers;
   private List<Long> groupMembersReplied;
   private long allMembers;
   private long membersContacted;
