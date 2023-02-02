@@ -56,11 +56,11 @@
             <div>{{commandRequest.arguments}}</div>
           </div>
           <div fxLayout="row">
-            <div class="label-text">Created On:</div>
+            <div class="label-text">Created at:</div>
             <div>{{commandRequest.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
           </div>
           <div fxLayout="row">
-            <div class="label-text">Executed On:</div>
+            <div class="label-text">Dispatched at:</div>
             <div
               *ngIf="commandRequest.dispatchedOn">{{commandRequest.dispatchedOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
           </div>

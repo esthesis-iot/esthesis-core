@@ -36,7 +36,7 @@
           <td *matCellDef="let element" mat-cell> {{element.status | titlecase}}</td>
         </ng-container>
         <ng-container matColumnDef="createdOn">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header scope="col"> Creation</th>
+          <th *matHeaderCellDef mat-header-cell mat-sort-header scope="col"> Created at</th>
           <td *matCellDef="let element" mat-cell>
             {{element.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}
           </td>

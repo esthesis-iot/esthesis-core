@@ -1,5 +1,10 @@
 <mat-card>
-  <mat-card-title>Campains</mat-card-title>
+  <mat-card-title>
+    Campaigns
+    <button (click)="refreshCurrentData()" class="refresh-button" mat-mini-fab>
+      <mat-icon inline="true">refresh</mat-icon>
+    </button>
+  </mat-card-title>
   <mat-card-content>
     <div fxLayout="column">
       <table mat-table [dataSource]="datasource" class="mat-elevation-z0" fxFlex="grow" matSort
@@ -13,7 +18,7 @@
         <ng-container matColumnDef="type">
           <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col">Type</th>
           <td mat-cell *matCellDef="let element">
-            {{element.type | titlecase}}
+            {{element.type | titlelise}}
           </td>
         </ng-container>
         <ng-container matColumnDef="state">

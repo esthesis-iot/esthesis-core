@@ -15,6 +15,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatIconPickerComponent} from "./mat-icon-picker/mat-icon-picker.component";
 import {FieldErrorComponent} from "./field-error/field-error.component";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {TitlelisePipe} from "./titlelise/titlelise.pipe";
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     TextModalComponent,
     InputModalComponent,
     MatIconPickerComponent,
-    FieldErrorComponent
+    FieldErrorComponent,
+    TitlelisePipe
   ],
   imports: [
     CommonModule,
@@ -39,7 +41,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
   ],
   exports: [
     BooleanCheckboxComponent,
-    FieldErrorComponent
+    FieldErrorComponent,
+    TitlelisePipe
   ]
 })
 export class DisplayModule {

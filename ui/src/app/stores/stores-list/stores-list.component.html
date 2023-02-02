@@ -14,7 +14,7 @@
           <td mat-cell *matCellDef="let element"> {{element.name}}</td>
         </ng-container>
         <ng-container matColumnDef="createdOn">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Created on</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Created at</th>
           <td mat-cell *matCellDef="let element">
             {{element.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}
           </td>
