@@ -29,26 +29,31 @@ public class CampaignResourceImpl implements CampaignResource {
   }
 
   @Override
+  @Audited(cat = Category.CAMPAIGN, op = Operation.WRITE, msg = "Save campaign")
   public void save(CampaignEntity campaignEntity) {
     campaignService.save(campaignEntity);
   }
 
   @Override
+  @Audited(cat = Category.CAMPAIGN, op = Operation.READ, msg = "View campaign")
   public CampaignEntity findById(String campaignId) {
     return campaignService.findById(campaignId);
   }
 
   @Override
+  @Audited(cat = Category.CAMPAIGN, op = Operation.WRITE, msg = "Start campaign")
   public void start(String campaignId) {
     campaignService.start(campaignId);
   }
 
   @Override
+  @Audited(cat = Category.CAMPAIGN, op = Operation.WRITE, msg = "Resume campaign")
   public void resume(String campaignId) {
     campaignService.resume(campaignId);
   }
 
   @Override
+  @Audited(cat = Category.CAMPAIGN, op = Operation.WRITE, msg = "Terminate campaign")
   public void terminate(String campaignId) {
     campaignService.terminate(campaignId);
   }
