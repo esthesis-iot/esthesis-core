@@ -64,7 +64,6 @@ public class CampaignService extends BaseService<CampaignEntity> {
   public void resume(String campaignId) {
     // Get campaign to resume.
     log.debug("Resuming campaign with id '{}'.", campaignId);
-    CampaignEntity campaignEntity = findById(campaignId);
 
     // Find instances of the entry/exit workflow for this campaign.
     try {
@@ -263,8 +262,32 @@ public class CampaignService extends BaseService<CampaignEntity> {
   }
 
   public void delete(String campaignId) {
+    terminate(campaignId);
     deleteById(campaignId);
     campaignDeviceMonitorService.deleteByColumn("campaignId", campaignId);
   }
 
+  public void terminate(String campaignId) {
+    // Terminate the workflow for this campaign.
+    try {
+      kogitoClient.getInstances(CAMPAIGN_PROCESS_ID).forEach(instance -> {
+        if (instance.getData().get("campaignId").equals(campaignId)) {
+          try {
+            kogitoClient.deleteInstance(CAMPAIGN_PROCESS_ID, instance.getId());
+          } catch (JsonProcessingException e) {
+            throw new QExceptionWrapper("Could not delete campaign instance.", e);
+          }
+        }
+      });
+    } catch (JsonProcessingException e) {
+      throw new QExceptionWrapper("Could not get process instances to terminate campaign.", e);
+    }
+
+    // Update the campaign state.
+    CampaignEntity campaignEntity = findById(campaignId);
+    campaignEntity.setState(State.TERMINATED_BY_USER);
+    campaignEntity.setTerminatedOn(Instant.now());
+    campaignEntity.setStateDescription("Campaign terminated by user at " + Instant.now() + ".");
+    super.save(campaignEntity);
+  }
 }

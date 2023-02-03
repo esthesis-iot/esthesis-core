@@ -45,6 +45,15 @@ quarkus:
       password:
         username: esthesis-system
         password: esthesis-system
+#  infinispan-client:
+#    hosts: localhost:11222
+#    username: esthesis
+#    password: esthesis
+
+#kafka:
+#  bootstrap:
+#    servers:
+#      - esthesis-dev-kafka:9094
 
 mp:
   jwt:

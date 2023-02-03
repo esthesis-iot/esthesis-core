@@ -3,12 +3,29 @@
   <mat-card-content>
     <div class="workflow-controls" fxLayout="column" fxLayoutGap="2rem"
          *ngIf="form.value.state && form.value.state != appConstants.CAMPAIGN.STATE.CREATED">
-      <div class="state alert-blue">
-        {{campaignStats?.stateDescription}}
+      <div fxLayout="row" fxLayoutGap="1rem">
+        <div fxLayout="row"
+             *ngIf="![appConstants.CAMPAIGN.STATE.TERMINATED_BY_WORKFLOW,
+                        appConstants.CAMPAIGN.STATE.TERMINATED_BY_USER].includes(form.value.state)">
+          <button mat-button (click)="stop()">
+            <mat-icon>stop</mat-icon>
+            <div>TERMINATE</div>
+          </button>
+          <button mat-button (click)="resume()"
+                  [disabled]="![appConstants.CAMPAIGN.STATE.PAUSED_BY_USER,
+                            appConstants.CAMPAIGN.STATE.PAUSED_BY_WORKFLOW].includes(form.value.state)">
+            <mat-icon>skip_next</mat-icon>
+            <div>RESUME</div>
+          </button>
+        </div>
+        <div class="alert-blue" fxFlex fxLayoutAlign="start center">
+          <mat-icon>info_outline</mat-icon>
+          {{campaignStats?.stateDescription}}
+        </div>
       </div>
       <mat-progress-bar mode="determinate" value="{{campaignStats?.progress}}"
                         *ngIf="![appConstants.CAMPAIGN.STATE.TERMINATED_BY_WORKFLOW,
-                 appConstants.CAMPAIGN.STATE.TERMINATED_BY_USER].includes(form.value.state)"></mat-progress-bar>
+                       appConstants.CAMPAIGN.STATE.TERMINATED_BY_USER].includes(form.value.state)"></mat-progress-bar>
       <div fxLayout="column" fxLayoutGap="1rem">
         <div fxLayout="column" fxLayoutGap="4rem">
           <div class="status-info" fxLayout="row" fxLayoutGap="3rem" fxFlexAlign="center">
@@ -45,26 +62,6 @@
               <div class="header">REPLIES</div>
               <div class="nowrap">{{campaignStats?.successRate | number}}%</div>
             </div>
-          </div>
-          <div class="control-buttons" fxLayout="row"
-               *ngIf="![appConstants.CAMPAIGN.STATE.TERMINATED_BY_WORKFLOW,
-                appConstants.CAMPAIGN.STATE.TERMINATED_BY_USER].includes(form.value.state)">
-            <button mat-button class="control-button" (click)="pause()"
-                    [disabled]="[appConstants.CAMPAIGN.STATE.PAUSED_BY_USER,
-                    appConstants.CAMPAIGN.STATE.PAUSED_BY_WORKFLOW].includes(form.value.state)">
-              <mat-icon>pause</mat-icon>
-              <div>PAUSE</div>
-            </button>
-            <button mat-button class="control-button" (click)="stop()">
-              <mat-icon>stop</mat-icon>
-              <div>TERMINATE</div>
-            </button>
-            <button mat-button class="control-button" (click)="resume()"
-                    [disabled]="![appConstants.CAMPAIGN.STATE.PAUSED_BY_USER,
-                    appConstants.CAMPAIGN.STATE.PAUSED_BY_WORKFLOW].includes(form.value.state)">
-              <mat-icon>skip_next</mat-icon>
-              <div>RESUME</div>
-            </button>
           </div>
         </div>
         <div class="pbar" fxLayoutGap="1rem" fxLayoutAlign="center">
@@ -431,10 +428,7 @@
   <mat-card-actions>
     <button mat-button routerLink="/campaigns">CANCEL</button>
     <button mat-button color="warn"
-            *ngIf="this.id !== appConstants.NEW_RECORD_ID
-                        && ![appConstants.CAMPAIGN.STATE.RUNNING,
-                        appConstants.CAMPAIGN.STATE.PAUSED_BY_USER,
-                        appConstants.CAMPAIGN.STATE.PAUSED_BY_WORKFLOW].includes(form.value.state)"
+            *ngIf="this.id !== appConstants.NEW_RECORD_ID"
             (click)="delete()">DELETE
     </button>
 

@@ -38,6 +38,10 @@ public interface CampaignResource {
   void resume(@PathParam("id") String campaignId);
 
   @GET
+  @Path("/v1/{id}/terminate")
+  void terminate(@PathParam("id") String campaignId);
+
+  @GET
   @Path("/v1/{id}/start")
   void start(@PathParam("id") String campaignId);
 

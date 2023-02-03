@@ -49,6 +49,11 @@ public class CampaignResourceImpl implements CampaignResource {
   }
 
   @Override
+  public void terminate(String campaignId) {
+    campaignService.terminate(campaignId);
+  }
+
+  @Override
   public CampaignStatsDTO getCampaignStats(String campaignId) {
     return campaignService.getCampaignStats(campaignId);
   }

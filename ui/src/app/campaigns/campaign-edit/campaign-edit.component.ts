@@ -403,6 +403,8 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
           next: () => {
             this.utilityService.popupSuccess("Campaign successfully deleted.");
             this.router.navigate(["campaigns"]);
+          }, error: err => {
+            this.utilityService.popupErrorWithTraceId("Could not delete campaign.", err);
           }
         });
       }
@@ -425,27 +427,8 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
           next: () => {
             this.utilityService.popupSuccess("Campaign successfully terminated.");
             this.router.navigate(["campaigns"]);
-          }
-        });
-      }
-    });
-  }
-
-  pause() {
-    this.dialog.open(OkCancelModalComponent, {
-      data: {
-        title: "Pause campaign",
-        question: "Do you really want to pause this campaign?",
-        buttons: {
-          ok: true, cancel: true, reload: false
-        }
-      }
-    }).afterClosed().subscribe(result => {
-      if (result) {
-        this.campaignService.pauseCampaign(this.id!).subscribe({
-          next: () => {
-            this.utilityService.popupSuccess("Campaign successfully paused.");
-            this.ngOnInit();
+          }, error: err => {
+            this.utilityService.popupErrorWithTraceId("Could not terminate campaign.", err);
           }
         });
       }
@@ -466,7 +449,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
         this.campaignService.resumeCampaign(this.id!).subscribe({
           next: () => {
             this.utilityService.popupSuccess("Campaign successfully resumed.");
-            this.ngOnInit();
+            this.router.navigate(["campaigns"]);
           }, error: err => {
             this.utilityService.popupErrorWithTraceId("Could not resume campaign.", err);
           }

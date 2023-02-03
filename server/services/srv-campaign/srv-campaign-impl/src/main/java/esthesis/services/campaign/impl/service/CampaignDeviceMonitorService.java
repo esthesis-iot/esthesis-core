@@ -24,6 +24,18 @@ public class CampaignDeviceMonitorService extends BaseService<CampaignDeviceMoni
   }
 
   /**
+   * Finds the devices of a campaign group.
+   *
+   * @param campaignId The campaign id to find the devices for.
+   * @param group      The group to find the devices for.
+   */
+  public List<CampaignDeviceMonitorEntity> findByCampaignIdAndGroup(String campaignId, int group) {
+    return getRepository().find("campaignId = ?1 and group = ?2", new ObjectId(campaignId), group)
+        .list();
+  }
+
+
+  /**
    * Count all devices for the whole campaign.
    *
    * @param campaignId The campaign id to count the devices for.

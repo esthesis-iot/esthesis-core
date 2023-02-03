@@ -24,10 +24,6 @@ quarkus:
   opentelemetry:
     enabled: false
 
-#kogito:
-#  generate:
-#    rest: false
-
 mp:
   jwt:
     verify:
