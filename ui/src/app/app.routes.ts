@@ -82,11 +82,6 @@ export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
       canActivate: [AutoLoginAllRoutesGuard]
     },
     {
-      path: "data-wizards",
-      loadChildren: () => import("./datawizards/datawizards.module").then(m => m.DatawizardsModule),
-      canActivate: [AutoLoginAllRoutesGuard]
-    },
-    {
       path: "campaigns",
       loadChildren: () => import("./campaigns/campaigns.module").then(m => m.CampaignsModule),
       canActivate: [AutoLoginAllRoutesGuard]
