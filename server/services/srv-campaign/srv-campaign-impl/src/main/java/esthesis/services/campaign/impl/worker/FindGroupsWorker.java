@@ -1,17 +1,19 @@
 package esthesis.services.campaign.impl.worker;
 
-import esthesis.services.campaign.impl.service.CampaignService;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ApplicationScoped
 public class FindGroupsWorker extends BaseWorker {
 
-  @Inject
-  CampaignService campaignService;
+//  @Inject
+//  CampaignService campaignService;
+
+//  public String findGroups(String campaignId) {
+//    return "aaa";
+//  }
 
   public List<Integer> findGroups(String campaignId) {
     log.debug("Finding groups for campaign id '{}'.", campaignId);
@@ -20,5 +22,9 @@ public class FindGroupsWorker extends BaseWorker {
     log.debug("Found groups '{}'.", groups);
 
     return groups;
+  }
+
+  public void test(String campaignId) {
+    System.out.println(">>>>>>>>>>>>> TEST");
   }
 }

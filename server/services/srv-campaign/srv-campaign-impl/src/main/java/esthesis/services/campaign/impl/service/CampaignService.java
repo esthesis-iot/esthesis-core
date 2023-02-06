@@ -246,16 +246,13 @@ public class CampaignService extends BaseService<CampaignEntity> {
     try {
       CampaignDeviceWorkflow campaignDeviceWorkflow = new CampaignDeviceWorkflow();
       campaignDeviceWorkflow.setCampaignId(campaignId);
-      InstanceDTO instanceDTO = kogitoClient.startInstance(CAMPAIGN_PROCESS_ID,
-          campaignDeviceWorkflow);
       campaignEntity.setState(State.RUNNING);
       campaignEntity.setStartedOn(Instant.now());
+      InstanceDTO instanceDTO = kogitoClient.startInstance(CAMPAIGN_PROCESS_ID,
+          campaignDeviceWorkflow);
       campaignEntity.setProcessInstanceId(instanceDTO.getId());
       campaignEntity.setStateDescription("Campaign started at " + Instant.now() + ".");
       super.save(campaignEntity);
-
-      log.info("Started workflow instance '{}' for campaign id '{}'.",
-          instanceDTO.getId(), campaignId);
     } catch (JsonProcessingException e) {
       throw new QExceptionWrapper("Could not parse Kogito reply.", e);
     }
@@ -289,5 +286,28 @@ public class CampaignService extends BaseService<CampaignEntity> {
     campaignEntity.setTerminatedOn(Instant.now());
     campaignEntity.setStateDescription("Campaign terminated by user at " + Instant.now() + ".");
     super.save(campaignEntity);
+  }
+
+  /**
+   * Replicate a campaign.
+   *
+   * @param campaignId The id of the campaign to replicate.
+   * @return The id of the new campaign.
+   */
+  public CampaignEntity replicate(String campaignId) {
+    CampaignEntity campaignEntity = findById(campaignId);
+
+    // Create a new campaign.
+    return save(new CampaignEntity()
+        .setName(campaignEntity.getName() + " (replicated)")
+        .setDescription(campaignEntity.getDescription())
+        .setType(campaignEntity.getType())
+        .setState(State.CREATED)
+        .setConditions(campaignEntity.getConditions())
+        .setMembers(campaignEntity.getMembers())
+        .setCommandName(campaignEntity.getCommandName())
+        .setCommandArguments(campaignEntity.getCommandArguments())
+        .setCommandExecutionType(campaignEntity.getCommandExecutionType())
+        .setProvisioningPackageId(campaignEntity.getProvisioningPackageId()));
   }
 }

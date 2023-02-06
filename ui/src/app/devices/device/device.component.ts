@@ -67,7 +67,7 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     this.devicesService.getGeolocation(this.id!).subscribe({
       next: (geolocation) => {
         if (geolocation) {
-          this.geoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`https://maps.google.com/maps?q=${geolocation.longitude},${geolocation.latitude}&z=13&output=embed`);
+          this.geoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`https://maps.google.com/maps?q=${geolocation.latitude},${geolocation.longitude}&z=13&output=embed`);
           this.geoLastUpdated = geolocation.lastUpdated;
         }
       }, error: (err) => {
@@ -118,5 +118,16 @@ export class DeviceComponent extends BaseComponent implements OnInit {
 
   downloadCertificate() {
     this.devicesService.downloadCertificate(this.id!);
+  }
+
+  /**
+   * Display a bigger version of the map in a dialog.
+   */
+  showMap() {
+    // this.dialog.open(MapDialogComponent, {
+    //   data: {
+    //     geoUrl: this.geoUrl
+    //   }
+    // });
   }
 }

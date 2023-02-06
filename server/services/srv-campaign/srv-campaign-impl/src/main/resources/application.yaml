@@ -4,8 +4,8 @@ quarkus:
   container-image:
     group: esthesisiot
     name: esthesis-srv-campaign
-  devservices:
-    enabled: false
+  #  devservices:
+  #    enabled: false
   mongodb:
     connection-string: mongodb://mongodb:27017
     database: esthesis
@@ -23,6 +23,9 @@ quarkus:
     enabled: false
   opentelemetry:
     enabled: false
+
+kogito:
+  persistence: mongodb
 
 mp:
   jwt:

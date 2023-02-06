@@ -45,6 +45,11 @@ quarkus:
       password:
         username: esthesis-system
         password: esthesis-system
+  kogito:
+    devservices:
+      # remove once 1.33 becomes available
+      image-name: quay.io/kiegroup/kogito-data-index-ephemeral
+      image-version: 1.32
 #  infinispan-client:
 #    hosts: localhost:11222
 #    username: esthesis

@@ -23,6 +23,7 @@ public class SetGroupWorker extends BaseWorker {
     log.trace("setGroup, campaignId: {}, groupPosition: {}, groupPhase: {}", campaignId,
         groupPosition, groupPhase);
     String group = "group:" + groupPosition + ":" + groupPhase;
+    log.debug("Setting group to '{}'.", group);
     setStateDescription(campaignId, "Settings group.");
 
     return group;

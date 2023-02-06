@@ -427,6 +427,10 @@
   </mat-card-content>
   <mat-card-actions>
     <button mat-button routerLink="/campaigns">CANCEL</button>
+    <button mat-button
+            *ngIf="this.id !== appConstants.NEW_RECORD_ID"
+            (click)="replicate()">REPLICATE
+    </button>
     <button mat-button color="warn"
             *ngIf="this.id !== appConstants.NEW_RECORD_ID"
             (click)="delete()">DELETE

@@ -42,6 +42,10 @@ public interface CampaignResource {
   void terminate(@PathParam("id") String campaignId);
 
   @GET
+  @Path("/v1/{id}/replicate")
+  CampaignEntity replicate(@PathParam("id") String campaignId);
+
+  @GET
   @Path("/v1/{id}/start")
   void start(@PathParam("id") String campaignId);
 

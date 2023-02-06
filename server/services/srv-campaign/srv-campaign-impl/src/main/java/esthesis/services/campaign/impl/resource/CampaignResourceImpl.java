@@ -53,6 +53,12 @@ public class CampaignResourceImpl implements CampaignResource {
   }
 
   @Override
+  @Audited(cat = Category.CAMPAIGN, op = Operation.WRITE, msg = "Replicate campaign")
+  public CampaignEntity replicate(String campaignId) {
+    return campaignService.replicate(campaignId);
+  }
+
+  @Override
   @Audited(cat = Category.CAMPAIGN, op = Operation.WRITE, msg = "Terminate campaign")
   public void terminate(String campaignId) {
     campaignService.terminate(campaignId);

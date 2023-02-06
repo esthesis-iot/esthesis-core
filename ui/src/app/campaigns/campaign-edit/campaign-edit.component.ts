@@ -457,4 +457,30 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
       }
     });
   }
+
+  replicate() {
+    this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: "Replicate campaign",
+        question: "Do you really want to replicate this campaign?",
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.campaignService.replicateCampaign(this.id!).subscribe({
+          next: (campaign) => {
+            this.utilityService.popupSuccess("Campaign successfully replicated.");
+            console.log(campaign);
+            this.router.navigate(["campaigns", campaign.id]).then(() => {
+              this.ngOnInit();
+            });
+          }, error: err => {
+            this.utilityService.popupErrorWithTraceId("Could not replicate campaign.", err);
+          }
+        });
+      }
+    });
+  }
 }
