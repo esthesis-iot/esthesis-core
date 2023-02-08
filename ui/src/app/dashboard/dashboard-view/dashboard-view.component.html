@@ -1,10 +1,12 @@
 <mat-card fxFlexFill>
-  <mat-card-title>
-    Dashboard
-    <button mat-mini-fab class="refresh-button">
-      <mat-icon inline="true">add</mat-icon>
-    </button>
-  </mat-card-title>
+  <mat-card-header>
+    <mat-card-title>
+      Dashboard
+      <button mat-mini-fab class="refresh-button">
+        <mat-icon inline="true">add</mat-icon>
+      </button>
+    </mat-card-title>
+  </mat-card-header>
   <mat-card-content>
     <gridster [options]="dashboardOptions" class="gridster" #gridsterComponent>
       <gridster-item [id]="item.id" [item]="item.grid" *ngFor="let item of dashboardWidgets">

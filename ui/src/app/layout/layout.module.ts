@@ -4,12 +4,11 @@ import {FooterComponent} from "./footer.component";
 import {HeaderComponent} from "./header.component";
 import {SidenavComponent} from "./sidenav.component";
 import {MatIconModule} from "@angular/material/icon";
-import {MatListModule} from "@angular/material/list";
-import {MatMenuModule} from "@angular/material/menu";
 import {RouterLink, RouterModule} from "@angular/router";
 import {FlexLayoutModule} from "@angular/flex-layout";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatListModule} from "@angular/material/list";
 import {MatButtonModule} from "@angular/material/button";
-
 
 @NgModule({
   declarations: [

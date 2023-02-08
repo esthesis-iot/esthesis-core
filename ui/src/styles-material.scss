@@ -2,7 +2,7 @@
 @import 'styles-variables.scss';
 
 // Card type's style.
-.mat-card-title {
+.mat-mdc-card-title {
   font-weight: 300 !important;
   font-size: 22px !important;
 }
@@ -24,7 +24,7 @@
 }
 
 // Tab's icons.
-.mat-tab-group {
+.mat-mdc-tab-group {
   .mat-icon {
     margin-right: 0.3rem;
     color: $e-color-blue-light;
@@ -32,16 +32,24 @@
 }
 
 // Allow some space below tabs (before tab's content starts).
-.mat-tab-header {
+.mat-mdc-tab-header {
   margin-bottom: 1rem;
 }
 
 // Pad tab's content, so that material elements with animations (e.g. radio button) do not clip the animation.
-.mat-tab-body-content {
+.mat-mdc-tab-body-content {
   padding-left: 1rem;
 }
 
 // Mandatory field asterisk.
-.mat-placeholder-required {
+.mat-mdcplaceholder-required {
   color: $e-color-error;
+}
+
+.mat-icon {
+  vertical-align: middle;
+}
+
+.mat-mdc-tab-header {
+  margin-bottom: 2rem;
 }

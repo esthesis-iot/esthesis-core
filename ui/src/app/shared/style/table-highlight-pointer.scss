@@ -1,6 +1,7 @@
 @import "../../../styles-variables";
 @import "table-highlight";
 
-.mat-row:hover {
+.mat-mdc-row:hover {
   cursor: pointer;
+  background-color: $e-table-row-highlight !important;
 }

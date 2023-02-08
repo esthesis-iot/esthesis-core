@@ -1,15 +1,15 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {BaseComponent} from "../../shared/component/base-component";
-import {MatTableDataSource} from "@angular/material/table";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatSort} from "@angular/material/sort";
-import {MatPaginator} from "@angular/material/paginator";
 import {Router} from "@angular/router";
 import {QFormsService} from "@qlack/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {DataflowsService} from "../dataflows.service";
 import {DataflowDto} from "../dto/dataflow-dto";
 import {dataflows} from "../dto/dataflow-definition";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: "app-dataflows-list",

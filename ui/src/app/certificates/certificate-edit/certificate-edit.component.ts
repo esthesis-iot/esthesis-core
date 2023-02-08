@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
 import {CertificatesService} from "../certificates.service";
 import {AppConstants} from "../../app.constants";
 import {CaDto} from "../../cas/dto/ca-dto";
@@ -13,6 +12,7 @@ import {
 } from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
 import {QFormsService} from "@qlack/forms";
 import {CertificateDto} from "../dto/certificate-dto";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: "app-certificate-edit",

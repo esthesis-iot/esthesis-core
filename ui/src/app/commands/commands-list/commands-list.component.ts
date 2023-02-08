@@ -1,8 +1,5 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
-import {MatDialog} from "@angular/material/dialog";
-import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
-import {MatTableDataSource} from "@angular/material/table";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
 import {BaseComponent} from "../../shared/component/base-component";
@@ -16,6 +13,9 @@ import {UtilityService} from "../../shared/service/utility.service";
 import {
   OkCancelModalComponent
 } from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+import {MatDialog} from "@angular/material/dialog";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: "app-commands-list",

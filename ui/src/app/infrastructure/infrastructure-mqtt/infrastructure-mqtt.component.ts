@@ -1,7 +1,5 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
-import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
-import {MatTableDataSource} from "@angular/material/table";
 import {QFormsService, QPageableReply} from "@qlack/forms";
 import {InfrastructureMqttService} from "./infrastructure-mqtt.service";
 import {BaseComponent} from "../../shared/component/base-component";
@@ -10,6 +8,8 @@ import {UtilityService} from "../../shared/service/utility.service";
 import * as _ from "lodash";
 import {TagDto} from "../../tags/dto/tag-dto";
 import {TagsService} from "../../tags/tags.service";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: "app-infrastructure-mqtt",

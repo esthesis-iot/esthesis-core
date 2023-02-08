@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
 import {ApplicationsService} from "../applications.service";
 import {BaseComponent} from "../../shared/component/base-component";
 import {
@@ -11,6 +10,7 @@ import {UtilityService} from "../../shared/service/utility.service";
 import {QFormsService} from "@qlack/forms";
 import {v4 as uuidv4} from "uuid";
 import {ApplicationDto} from "../dto/application-dto";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: "app-application-edit-description",

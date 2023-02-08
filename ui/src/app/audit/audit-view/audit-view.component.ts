@@ -4,12 +4,12 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {QFormsService} from "@qlack/forms";
 import {UtilityService} from "../../shared/service/utility.service";
-import {MatDialog} from "@angular/material/dialog";
 import {
   OkCancelModalComponent
 } from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
 import {AuditService} from "../audit.service";
 import {AuditDto} from "../dto/audit-dto";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: "app-audit-view",

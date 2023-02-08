@@ -2,9 +2,9 @@ import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpEvent, HttpResponse} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/service/utility.service";
 import {CertificatesService} from "../certificates.service";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: "app-certificate-import",

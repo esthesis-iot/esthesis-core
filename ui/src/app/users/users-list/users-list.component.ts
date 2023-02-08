@@ -1,14 +1,14 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
-import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
-import {MatTableDataSource} from "@angular/material/table";
 import {UserDto} from "../dto/user-dto";
 import {UserService} from "../user.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {BaseComponent} from "../../shared/component/base-component";
 import {QFilterAlias, QFormsService} from "@qlack/forms";
+import {MatTableDataSource} from "@angular/material/table";
+import {MatPaginator} from "@angular/material/paginator";
 
 @Component({
   selector: "app-users-list",

@@ -6,7 +6,6 @@ import {BaseComponent} from "../../../shared/component/base-component";
 import {ActivatedRoute} from "@angular/router";
 import {UtilityService} from "../../../shared/service/utility.service";
 import {FormlyFieldConfig} from "@ngx-formly/core";
-import {MatDialog} from "@angular/material/dialog";
 import slugify from "slugify";
 import {
   InputModalComponent
@@ -15,6 +14,7 @@ import {
   OkCancelModalComponent
 } from "../../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
 import {DevicePageFieldDataDto} from "../../dto/device-page-field-data-dto";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: "app-device-profile",

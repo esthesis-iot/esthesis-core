@@ -4,7 +4,6 @@ mat-sidenav {
   width: $sidenav-width;
 }
 
-
 .sidenav {
   button {
     line-height: 2.5rem !important;
@@ -27,6 +26,7 @@ mat-sidenav {
       background-color: #dddddd !important;
     }
   }
+
   mat-icon {
     color: #555555;
     min-width: 2rem;
@@ -38,4 +38,3 @@ mat-sidenav {
 mat-divider {
   margin: 0.3rem 0 0.3rem 0.8rem !important
 }
-

@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {BaseComponent} from "../../shared/component/base-component";
 import {GridsterComponent, GridsterConfig} from "angular-gridster2";
-import {MatDialog} from "@angular/material/dialog";
 import {AppConstants} from "../../app.constants";
 import {DashboardService} from "../dashboard.service";
 import {DashboardWidgetForGridDto} from "../dto/dashboard-widget-for-grid-dto";
+import {MatDialog} from "@angular/material/dialog";
 
 
 @Component({

@@ -18,12 +18,12 @@ import * as _ from "lodash";
 import {
   OkCancelModalComponent
 } from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
-import {MatDialog} from "@angular/material/dialog";
 import {CampaignStatsDto} from "../dto/campaign-stats-dto";
 import {ProvisioningDto} from "../../provisioning/dto/provisioning-dto";
 import {AppConstants} from "../../app.constants";
-import {ObjectID} from "bson";
 import {GroupProgressDto} from "../dto/group-progress-dto";
+import {v4 as uuidv4} from "uuid";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: "app-campaign-edit",
@@ -203,7 +203,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   // @ts-ignore
   addCondition(type: AppConstants.CAMPAIGN.CONDITION.TYPE) {
     const condition = new CampaignConditionDto(type);
-    condition.id = new ObjectID().toHexString();
+    condition.id = uuidv4();
 
     if (type === this.appConstants.CAMPAIGN.CONDITION.TYPE.SUCCESS) {
       condition.stage = this.appConstants.CAMPAIGN.CONDITION.STAGE.EXIT;
@@ -288,7 +288,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
       hardwareId = hardwareId.trim();
       this.form.get("members")?.value.push(
         new CampaignMemberDto(
-          new ObjectID().toHexString(),
+          uuidv4(),
           this.appConstants.CAMPAIGN.MEMBER_TYPE.DEVICE,
           hardwareId, groupNo));
     }
@@ -298,7 +298,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     if (tags && tags.length > 0) {
       const tagString = tags.join(", ");
       this.form.get("members")?.value.push(
-        new CampaignMemberDto(new ObjectID().toHexString(),
+        new CampaignMemberDto(uuidv4(),
           this.appConstants.CAMPAIGN.MEMBER_TYPE.TAG,
           tagString, groupNo));
     }

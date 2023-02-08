@@ -1,7 +1,5 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
-import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
-import {MatTableDataSource} from "@angular/material/table";
 import {QFormsService} from "@qlack/forms";
 import {ProvisioningService} from "../provisioning.service";
 import {TagsService} from "../../tags/tags.service";
@@ -14,6 +12,8 @@ import {UtilityService} from "../../shared/service/utility.service";
 import {
   OkCancelModalComponent
 } from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatTableDataSource} from "@angular/material/table";
 import {MatDialog} from "@angular/material/dialog";
 
 @Component({

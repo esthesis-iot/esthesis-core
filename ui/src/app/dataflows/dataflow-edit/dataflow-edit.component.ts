@@ -10,8 +10,8 @@ import {UtilityService} from "../../shared/service/utility.service";
 import {
   OkCancelModalComponent
 } from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
-import {MatDialog} from "@angular/material/dialog";
 import {QFormsService} from "@qlack/forms";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: "app-dataflow-edit",

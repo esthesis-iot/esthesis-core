@@ -1,7 +1,5 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
-import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
-import {MatTableDataSource} from "@angular/material/table";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
 import {ApplicationDto} from "../dto/application-dto";
@@ -10,6 +8,8 @@ import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {BaseComponent} from "../../shared/component/base-component";
 import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: "app-applications-list",

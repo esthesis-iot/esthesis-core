@@ -1,5 +1,7 @@
 <mat-card>
-  <mat-card-title>Campaign</mat-card-title>
+  <mat-card-header>
+    <mat-card-title>Campaign</mat-card-title>
+  </mat-card-header>
   <mat-card-content>
     <div class="workflow-controls" fxLayout="column" fxLayoutGap="2rem"
          *ngIf="form.value.state && form.value.state != appConstants.CAMPAIGN.STATE.CREATED">

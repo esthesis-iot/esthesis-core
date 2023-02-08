@@ -1,10 +1,12 @@
 <mat-card>
-  <mat-card-title>
-    Campaigns
-    <button (click)="refreshCurrentData()" class="refresh-button" mat-mini-fab>
-      <mat-icon inline="true">refresh</mat-icon>
-    </button>
-  </mat-card-title>
+  <mat-card-header>
+    <mat-card-title>
+      Campaigns
+      <button (click)="refreshCurrentData()" class="refresh-button" mat-mini-fab>
+        <mat-icon inline="true">refresh</mat-icon>
+      </button>
+    </mat-card-title>
+  </mat-card-header>
   <mat-card-content>
     <div fxLayout="column">
       <table mat-table [dataSource]="datasource" class="mat-elevation-z0" fxFlex="grow" matSort

@@ -1,7 +1,5 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
-import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
-import {MatTableDataSource} from "@angular/material/table";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {AuditDto} from "../dto/audit-dto";
@@ -12,6 +10,8 @@ import {QFilterAlias, QFormsService} from "@qlack/forms";
 import {UtilityService} from "../../shared/service/utility.service";
 import * as _ from "lodash";
 import * as moment from "moment";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: "app-audit-list",

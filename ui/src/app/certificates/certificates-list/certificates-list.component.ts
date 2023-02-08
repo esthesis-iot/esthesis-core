@@ -1,12 +1,12 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
-import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
-import {MatTableDataSource} from "@angular/material/table";
 import {CertificatesService} from "../certificates.service";
 import {CertificateDto} from "../dto/certificate-dto";
 import {BaseComponent} from "../../shared/component/base-component";
 import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: "app-certificates-list",

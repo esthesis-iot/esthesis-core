@@ -1,6 +1,5 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MatDialog} from "@angular/material/dialog";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
@@ -12,6 +11,7 @@ import {TagDto} from "../../tags/dto/tag-dto";
 import {TagsService} from "../../tags/tags.service";
 import {InfrastructureMqttService} from "./infrastructure-mqtt.service";
 import {InfrastructureMqttDto} from "./dto/Infrastructure-mqtt-dto";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: "app-infrastructure-mqtt-edit",

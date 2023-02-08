@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
 import {TagsService} from "../tags.service";
 import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
@@ -11,6 +10,7 @@ import {
 import {QFormsService} from "@qlack/forms";
 import {QFormValidationEEService} from "../../shared/service/form-validation.service";
 import {TagDto} from "../dto/tag-dto";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: "app-tag-edit",

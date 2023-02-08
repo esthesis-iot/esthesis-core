@@ -1,8 +1,8 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {MatDialogRef} from "@angular/material/dialog";
 import {BehaviorSubject} from "rxjs";
 import {BarcodeFormat} from "@zxing/library";
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: "app-device-preregister-cam",

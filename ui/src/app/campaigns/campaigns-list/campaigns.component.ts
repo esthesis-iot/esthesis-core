@@ -1,11 +1,11 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {BaseComponent} from "../../shared/component/base-component";
-import {MatTableDataSource} from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
 import {QFormsService} from "@qlack/forms";
 import {CampaignsService} from "../campaigns.service";
 import {CampaignDto} from "../dto/campaign-dto";
 import {MatSort} from "@angular/material/sort";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: "app-campaigns",

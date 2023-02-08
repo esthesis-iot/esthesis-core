@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
-import {MatSnackBar} from "@angular/material/snack-bar";
 import {Log} from "ng2-logger/browser";
 import {Clipboard} from "@angular/cdk/clipboard";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Injectable({
   providedIn: "root"

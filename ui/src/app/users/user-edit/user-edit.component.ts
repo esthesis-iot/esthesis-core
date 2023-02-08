@@ -2,7 +2,6 @@ import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../user.service";
-import {MatDialog} from "@angular/material/dialog";
 import {BaseComponent} from "../../shared/component/base-component";
 import {UtilityService} from "../../shared/service/utility.service";
 import {
@@ -11,6 +10,7 @@ import {
 import {QFormsService} from "@qlack/forms";
 import {UserDto} from "../dto/user-dto";
 import {AppConstants} from "../../app.constants";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: "app-user",

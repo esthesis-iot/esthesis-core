@@ -2,7 +2,6 @@ import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {TagDto} from "../../tags/dto/tag-dto";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MatDialog} from "@angular/material/dialog";
 import {TagsService} from "../../tags/tags.service";
 import {DevicesService} from "../devices.service";
 import {BaseComponent} from "src/app/shared/component/base-component";
@@ -14,6 +13,7 @@ import {QFormsService} from "@qlack/forms";
 import {DeviceDto} from "../dto/device-dto";
 import {AppConstants} from "../../app.constants";
 import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: "app-device",

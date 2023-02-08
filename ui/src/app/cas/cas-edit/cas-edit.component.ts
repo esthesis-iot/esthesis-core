@@ -1,6 +1,5 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MatDialog} from "@angular/material/dialog";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CaDto} from "../dto/ca-dto";
 import {AppConstants} from "../../app.constants";
@@ -12,6 +11,7 @@ import {
 } from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
 import {QFormsService} from "@qlack/forms";
 import {QFormValidationEEService} from "../../shared/service/form-validation.service";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: "app-cas-edit",
