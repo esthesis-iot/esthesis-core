@@ -35,7 +35,7 @@
     "@zxing/library": "0.19.1",
     "@zxing/ngx-scanner": "3.6.2",
     "angular-auth-oidc-client": "14.1.5",
-    "angular-gridster2": "14.1.1",
+    "angular-gridster2": "15.0.3",
     "basscss": "8.1.0",
     "bson": "^4.7.2",
     "human-duration": "1.0.1",

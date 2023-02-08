@@ -2,7 +2,7 @@ import {NgModule, NO_ERRORS_SCHEMA} from "@angular/core";
 import {CommonModule} from "@angular/common";
 
 import {DashboardRoutingModule} from "./dashboard-routing.module";
-import {DashboardComponent} from "./dashboard.component";
+import {DashboardViewComponent} from "./dashboard-view/dashboard-view.component";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatCardModule} from "@angular/material/card";
 import {MAT_DATE_FORMATS} from "@angular/material/core";
@@ -21,7 +21,7 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
 // @ts-ignore
 @NgModule({
   declarations: [
-    DashboardComponent,
+    DashboardViewComponent,
   ],
   imports: [
     CommonModule,

@@ -1,18 +1,18 @@
 import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
-import {BaseComponent} from "../shared/component/base-component";
+import {BaseComponent} from "../../shared/component/base-component";
 import {GridsterComponent, GridsterConfig} from "angular-gridster2";
 import {MatDialog} from "@angular/material/dialog";
-import {AppConstants} from "../app.constants";
-import {DashboardService} from "./dashboard.service";
-import {DashboardWidgetForGridDto} from "./dto/dashboard-widget-for-grid-dto";
+import {AppConstants} from "../../app.constants";
+import {DashboardService} from "../dashboard.service";
+import {DashboardWidgetForGridDto} from "../dto/dashboard-widget-for-grid-dto";
 
 
 @Component({
-  selector: "app-dashboard",
-  templateUrl: "./dashboard.component.html",
-  styleUrls: ["./dashboard.component.scss"]
+  selector: "app-dashboard-view",
+  templateUrl: "./dashboard-view.component.html",
+  styleUrls: ["./dashboard-view.component.scss"]
 })
-export class DashboardComponent extends BaseComponent implements OnInit, OnDestroy {
+export class DashboardViewComponent extends BaseComponent implements OnInit, OnDestroy {
   dashboardOptions!: GridsterConfig;
   dashboardWidgets!: Array<DashboardWidgetForGridDto>;
   // private refreshSubscription: Subscription;
