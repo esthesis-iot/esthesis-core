@@ -1,17 +1,22 @@
-package esthesis.services.campaign.impl.worker;
+package esthesis.services.campaign.impl.job;
 
 import esthesis.avro.CommandType;
 import esthesis.avro.ExecutionType;
+import esthesis.common.AppConstants.Campaign.Condition.Stage;
 import esthesis.common.AppConstants.Campaign.Condition.Type;
 import esthesis.common.exception.QMismatchException;
 import esthesis.service.campaign.dto.CampaignConditionDTO;
-import esthesis.service.campaign.dto.GroupDTO;
 import esthesis.service.campaign.entity.CampaignDeviceMonitorEntity;
 import esthesis.service.campaign.entity.CampaignEntity;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.command.resource.CommandSystemResource;
+import esthesis.services.campaign.impl.dto.GroupDTO;
 import esthesis.services.campaign.impl.service.CampaignDeviceMonitorService;
 import esthesis.services.campaign.impl.service.CampaignService;
+import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.zeebe.client.api.worker.JobClient;
+import io.camunda.zeebe.client.api.worker.JobHandler;
+import io.quarkiverse.zeebe.ZeebeWorker;
 import java.time.Instant;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -22,7 +27,8 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @ApplicationScoped
-public class ContactDevicesWorker extends BaseWorker {
+@ZeebeWorker(type = "ContactDevicesJob")
+public class ContactDevicesJob implements JobHandler {
 
   @Inject
   CampaignService campaignService;
@@ -47,11 +53,13 @@ public class ContactDevicesWorker extends BaseWorker {
    * @param groupDTO       The group to check for.
    */
   private int findBatchSize(CampaignEntity campaignEntity, GroupDTO groupDTO) {
-    setStateDescription(campaignEntity.getId().toHexString(), "Finding batch size.");
+    campaignService.setStateDescription(campaignEntity.getId().toHexString(), "Finding batch size"
+        + ".");
     Integer batchSize = null;
 
     // Find group-specific batch size.
-    List<CampaignConditionDTO> conditions = getCondition(campaignEntity, groupDTO, Type.BATCH);
+    List<CampaignConditionDTO> conditions = campaignService.getCondition(campaignEntity, groupDTO
+        , Type.BATCH);
     if (conditions.size() == 1) {
       batchSize = Integer.parseInt(conditions.get(0).getValue());
     } else if (conditions.size() > 1) {
@@ -65,8 +73,8 @@ public class ContactDevicesWorker extends BaseWorker {
     }
 
     // Find global-group batch size.
-    GroupDTO globalGroup = new GroupDTO("group:0:inside");
-    conditions = getCondition(campaignEntity, globalGroup, Type.BATCH);
+    GroupDTO globalGroup = new GroupDTO(Stage.INSIDE, 0);
+    conditions = campaignService.getCondition(campaignEntity, globalGroup, Type.BATCH);
     if (conditions.size() == 1) {
       batchSize = Integer.parseInt(conditions.get(0).getValue());
     } else if (conditions.size() > 1) {
@@ -83,12 +91,13 @@ public class ContactDevicesWorker extends BaseWorker {
     return Integer.MAX_VALUE;
   }
 
-  public void contactDevices(String campaignId, String groupExpression) {
-    log.debug("contactDevices, campaignId: '{}', groupExpression: '{}'", campaignId,
-        groupExpression);
+  public void handle(JobClient client, ActivatedJob job) throws Exception {
+    WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);
+    GroupDTO groupDTO = new GroupDTO(job);
+    log.debug("contactDevices, campaignId: '{}', groupExpression: '{}'", p.getCampaignId(),
+        groupDTO);
     // Get the campaign details and parse the group expression.
-    CampaignEntity campaignEntity = campaignService.findById(campaignId);
-    GroupDTO groupDTO = new GroupDTO(groupExpression);
+    CampaignEntity campaignEntity = campaignService.findById(p.getCampaignId());
 
     // Find the batch size for this group.
     int batchSize = findBatchSize(campaignEntity, groupDTO);
@@ -96,7 +105,7 @@ public class ContactDevicesWorker extends BaseWorker {
 
     // Find the devices to contact.
     List<CampaignDeviceMonitorEntity> devices = campaignDeviceMonitorService.findNotContacted(
-        campaignId, groupDTO.getGroup(), batchSize);
+        p.getCampaignId(), groupDTO.getGroup(), batchSize);
     log.debug("Found '{}' devices to contact.", devices.size());
 
     // Send the command to each device.
@@ -130,6 +139,8 @@ public class ContactDevicesWorker extends BaseWorker {
 
       log.debug("Created command request '{}' for device '{}'.", commandRequestId,
           device.getHardwareId());
+      client.newCompleteCommand(job.getKey()).send().join();
     }
   }
+
 }

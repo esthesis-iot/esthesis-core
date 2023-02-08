@@ -1,10 +1,15 @@
-package esthesis.services.campaign.impl.worker;
+package esthesis.services.campaign.impl.job;
 
 import esthesis.common.entity.CommandReplyEntity;
-import esthesis.service.campaign.dto.GroupDTO;
 import esthesis.service.campaign.entity.CampaignDeviceMonitorEntity;
 import esthesis.service.command.resource.CommandSystemResource;
+import esthesis.services.campaign.impl.dto.GroupDTO;
 import esthesis.services.campaign.impl.service.CampaignDeviceMonitorService;
+import esthesis.services.campaign.impl.service.CampaignService;
+import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.zeebe.client.api.worker.JobClient;
+import io.camunda.zeebe.client.api.worker.JobHandler;
+import io.quarkiverse.zeebe.ZeebeWorker;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,21 +19,27 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @ApplicationScoped
-public class UpdateRepliesWorker extends BaseWorker {
+@ZeebeWorker(type = "UpdateRepliesJob")
+public class UpdateRepliesJob implements JobHandler {
 
   @Inject
   CampaignDeviceMonitorService campaignDeviceMonitorService;
 
   @Inject
+  CampaignService campaignService;
+
+  @Inject
   @RestClient
   CommandSystemResource commandSystemResource;
 
-  public void updateReplies(String campaignId, String groupExpression) {
-    setStateDescription(campaignId, "Updating replies.");
-    GroupDTO groupDTO = new GroupDTO(groupExpression);
+  public void handle(JobClient client, ActivatedJob job) {
+    WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);
+    campaignService.setStateDescription(p.getCampaignId(), "Updating replies.");
+    GroupDTO groupDTO = new GroupDTO(job);
     // Before checking the rate, update any possible replies received.
     List<CampaignDeviceMonitorEntity> contactedDevices =
-        campaignDeviceMonitorService.findContactedNotReplied(campaignId, groupDTO.getGroup());
+        campaignDeviceMonitorService.findContactedNotReplied(p.getCampaignId(),
+            groupDTO.getGroup());
     contactedDevices.forEach(device -> {
       List<CommandReplyEntity> replies = commandSystemResource.getReplies(
           device.getCommandRequestId().toString());
@@ -38,5 +49,7 @@ public class UpdateRepliesWorker extends BaseWorker {
         log.debug("Updating reply '{}' for device '{}'.", replies.get(0), device.getHardwareId());
       }
     });
+
+    client.newCompleteCommand(job.getKey()).send().join();
   }
 }

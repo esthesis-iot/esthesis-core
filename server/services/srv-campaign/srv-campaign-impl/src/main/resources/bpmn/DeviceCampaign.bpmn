@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ps5jvr" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.6.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0">
+  <bpmn:process id="DeviceCampaignProcess" name="Device Campaign" isExecutable="true">
+    <bpmn:startEvent id="Event_Start" name="Start">
+      <bpmn:outgoing>Flow_19wsqzd</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Service_FindGroups" name="Find groups">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="FindGroupsJob" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0xhqh6x</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gx5prw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:callActivity id="Activity_GlobalEntry" name="Global entry">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="EntryExitProcess" propagateAllChildVariables="false" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ut6yiy</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xhqh6x</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:subProcess id="Activity_GroupProcessing" name="Group processing">
+      <bpmn:incoming>Flow_1gx5prw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qyq9qq</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics isSequential="true">
+        <bpmn:extensionElements>
+          <zeebe:loopCharacteristics inputCollection="=groups" inputElement="group" />
+        </bpmn:extensionElements>
+      </bpmn:multiInstanceLoopCharacteristics>
+      <bpmn:startEvent id="Event_Group_Start" name="Start">
+        <bpmn:outgoing>Flow_1dm99hs</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:endEvent id="Event_Group_End" name="End">
+        <bpmn:incoming>Flow_0fv6bpu</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:callActivity id="Activity_GroupEntry" name="Group entry">
+        <bpmn:extensionElements>
+          <zeebe:calledElement processId="EntryExitProcess" propagateAllChildVariables="false" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0vxhp0o</bpmn:incoming>
+        <bpmn:outgoing>Flow_0wlmrw6</bpmn:outgoing>
+      </bpmn:callActivity>
+      <bpmn:callActivity id="Activity_GroupProcess" name="Group process">
+        <bpmn:extensionElements>
+          <zeebe:calledElement processId="CampaignGroupProcess" propagateAllChildVariables="false" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_05ho63m</bpmn:incoming>
+        <bpmn:outgoing>Flow_1kwoiin</bpmn:outgoing>
+      </bpmn:callActivity>
+      <bpmn:callActivity id="Activity_GroupExit" name="Group exit">
+        <bpmn:extensionElements>
+          <zeebe:calledElement processId="EntryExitProcess" propagateAllChildVariables="false" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0za7emi</bpmn:incoming>
+        <bpmn:outgoing>Flow_0fv6bpu</bpmn:outgoing>
+      </bpmn:callActivity>
+      <bpmn:sequenceFlow id="Flow_1dm99hs" sourceRef="Event_Group_Start" targetRef="Event_GroupEntryProcessing" />
+      <bpmn:sequenceFlow id="Flow_0wlmrw6" sourceRef="Activity_GroupEntry" targetRef="Event_GroupInsideProcessing" />
+      <bpmn:sequenceFlow id="Flow_1kwoiin" sourceRef="Activity_GroupProcess" targetRef="Event_GroupExitProcessing" />
+      <bpmn:sequenceFlow id="Flow_0fv6bpu" sourceRef="Activity_GroupExit" targetRef="Event_Group_End" />
+      <bpmn:intermediateThrowEvent id="Event_GroupEntryProcessing" name="Group entry processing">
+        <bpmn:extensionElements>
+          <zeebe:ioMapping>
+            <zeebe:output source="=&#34;ENTRY&#34;" target="stage" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1dm99hs</bpmn:incoming>
+        <bpmn:outgoing>Flow_0vxhp0o</bpmn:outgoing>
+      </bpmn:intermediateThrowEvent>
+      <bpmn:sequenceFlow id="Flow_0vxhp0o" sourceRef="Event_GroupEntryProcessing" targetRef="Activity_GroupEntry" />
+      <bpmn:intermediateThrowEvent id="Event_GroupInsideProcessing" name="Group inside processing">
+        <bpmn:extensionElements>
+          <zeebe:ioMapping>
+            <zeebe:output source="=&#34;INSIDE&#34;" target="stage" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0wlmrw6</bpmn:incoming>
+        <bpmn:outgoing>Flow_05ho63m</bpmn:outgoing>
+      </bpmn:intermediateThrowEvent>
+      <bpmn:sequenceFlow id="Flow_05ho63m" sourceRef="Event_GroupInsideProcessing" targetRef="Activity_GroupProcess" />
+      <bpmn:intermediateThrowEvent id="Event_GroupExitProcessing" name="Group exit processing">
+        <bpmn:extensionElements>
+          <zeebe:ioMapping>
+            <zeebe:output source="=&#34;EXIT&#34;" target="stage" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1kwoiin</bpmn:incoming>
+        <bpmn:outgoing>Flow_0za7emi</bpmn:outgoing>
+      </bpmn:intermediateThrowEvent>
+      <bpmn:sequenceFlow id="Flow_0za7emi" sourceRef="Event_GroupExitProcessing" targetRef="Activity_GroupExit" />
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_0xhqh6x" sourceRef="Activity_GlobalEntry" targetRef="Service_FindGroups" />
+    <bpmn:sequenceFlow id="Flow_1gx5prw" sourceRef="Service_FindGroups" targetRef="Activity_GroupProcessing" />
+    <bpmn:callActivity id="Activity_GlobalExit" name="Global exit">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="EntryExitProcess" propagateAllChildVariables="false" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0yesxer</bpmn:incoming>
+      <bpmn:outgoing>Flow_02os0ck</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="Service_TerminateCampaign" name="Terminate campaign">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="TerminateCampaignJob" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_02os0ck</bpmn:incoming>
+      <bpmn:outgoing>Flow_05wuvfy</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1qyq9qq" sourceRef="Activity_GroupProcessing" targetRef="Event_GlobalExitProcessing" />
+    <bpmn:sequenceFlow id="Flow_02os0ck" sourceRef="Activity_GlobalExit" targetRef="Service_TerminateCampaign" />
+    <bpmn:endEvent id="Event_End" name="End">
+      <bpmn:incoming>Flow_05wuvfy</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_05wuvfy" sourceRef="Service_TerminateCampaign" targetRef="Event_End" />
+    <bpmn:intermediateThrowEvent id="Event_GlobalEntryProcessing" name="Global entry processing">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=&#34;ENTRY&#34;" target="stage" />
+          <zeebe:output source="=0" target="group" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1k8kr2l</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ut6yiy</bpmn:outgoing>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="Flow_0ut6yiy" sourceRef="Event_GlobalEntryProcessing" targetRef="Activity_GlobalEntry" />
+    <bpmn:intermediateThrowEvent id="Event_GlobalExitProcessing" name="Global exit processing">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=&#34;EXIT&#34;" target="stage" />
+          <zeebe:output source="=0" target="group" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1qyq9qq</bpmn:incoming>
+      <bpmn:outgoing>Flow_0yesxer</bpmn:outgoing>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="Flow_0yesxer" sourceRef="Event_GlobalExitProcessing" targetRef="Activity_GlobalExit" />
+    <bpmn:serviceTask id="Service_GetAdvancedSettings" name="Get advanced settings">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="GetAdvancedSettingsJob" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_19wsqzd</bpmn:incoming>
+      <bpmn:outgoing>Flow_1k8kr2l</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_19wsqzd" sourceRef="Event_Start" targetRef="Service_GetAdvancedSettings" />
+    <bpmn:sequenceFlow id="Flow_1k8kr2l" sourceRef="Service_GetAdvancedSettings" targetRef="Event_GlobalEntryProcessing" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="DeviceCampaignProcess">
+      <bpmndi:BPMNShape id="Event_1muqfy5_di" bpmnElement="Event_End">
+        <dc:Bounds x="1459" y="462" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1467" y="505" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1kj9pfu" bpmnElement="Event_GlobalExitProcessing">
+        <dc:Bounds x="1319" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1311" y="202" width="54" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0650tr0_di" bpmnElement="Event_GlobalEntryProcessing">
+        <dc:Bounds x="399" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="388" y="182" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0cwqa0q_di" bpmnElement="Activity_GlobalEntry">
+        <dc:Bounds x="367" y="320" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ccsdsk_di" bpmnElement="Service_FindGroups">
+        <dc:Bounds x="530" y="320" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_00v751w" bpmnElement="Activity_GlobalExit">
+        <dc:Bounds x="1287" y="320" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0j1xjig_di" bpmnElement="Service_TerminateCampaign">
+        <dc:Bounds x="1287" y="440" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1w6tz30_di" bpmnElement="Service_GetAdvancedSettings">
+        <dc:Bounds x="220" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0rhsv0h_di" bpmnElement="Event_Start">
+        <dc:Bounds x="142" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="148" y="78" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_00ee2b8_di" bpmnElement="Activity_GroupProcessing" isExpanded="true">
+        <dc:Bounds x="697" y="190" width="520" height="340" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_06lif38_di" bpmnElement="Event_Group_Start">
+        <dc:Bounds x="759" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="765" y="193" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1dwxy9z_di" bpmnElement="Event_Group_End">
+        <dc:Bounds x="1159" y="432" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1167" y="475" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1w2mhj6" bpmnElement="Activity_GroupEntry">
+        <dc:Bounds x="727" y="410" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1yl2pxx" bpmnElement="Activity_GroupProcess">
+        <dc:Bounds x="867" y="410" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1kzl544" bpmnElement="Activity_GroupExit">
+        <dc:Bounds x="1007" y="410" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1uskh13_di" bpmnElement="Event_GroupEntryProcessing">
+        <dc:Bounds x="759" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="703" y="275" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1l5kchk" bpmnElement="Event_GroupInsideProcessing">
+        <dc:Bounds x="899" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="887" y="262" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_120pmcp" bpmnElement="Event_GroupExitProcessing">
+        <dc:Bounds x="1039" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1032" y="262" width="54" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1dm99hs_di" bpmnElement="Flow_1dm99hs">
+        <di:waypoint x="777" y="248" />
+        <di:waypoint x="777" y="292" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fv6bpu_di" bpmnElement="Flow_0fv6bpu">
+        <di:waypoint x="1107" y="450" />
+        <di:waypoint x="1159" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vxhp0o_di" bpmnElement="Flow_0vxhp0o">
+        <di:waypoint x="777" y="328" />
+        <di:waypoint x="777" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wlmrw6_di" bpmnElement="Flow_0wlmrw6">
+        <di:waypoint x="827" y="450" />
+        <di:waypoint x="847" y="450" />
+        <di:waypoint x="847" y="310" />
+        <di:waypoint x="899" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05ho63m_di" bpmnElement="Flow_05ho63m">
+        <di:waypoint x="917" y="328" />
+        <di:waypoint x="917" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kwoiin_di" bpmnElement="Flow_1kwoiin">
+        <di:waypoint x="967" y="450" />
+        <di:waypoint x="987" y="450" />
+        <di:waypoint x="987" y="310" />
+        <di:waypoint x="1039" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0za7emi_di" bpmnElement="Flow_0za7emi">
+        <di:waypoint x="1057" y="328" />
+        <di:waypoint x="1057" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05wuvfy_di" bpmnElement="Flow_05wuvfy">
+        <di:waypoint x="1387" y="480" />
+        <di:waypoint x="1459" y="480" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qyq9qq_di" bpmnElement="Flow_1qyq9qq">
+        <di:waypoint x="1217" y="250" />
+        <di:waypoint x="1319" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yesxer_di" bpmnElement="Flow_0yesxer">
+        <di:waypoint x="1337" y="268" />
+        <di:waypoint x="1337" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1k8kr2l_di" bpmnElement="Flow_1k8kr2l">
+        <di:waypoint x="320" y="230" />
+        <di:waypoint x="399" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ut6yiy_di" bpmnElement="Flow_0ut6yiy">
+        <di:waypoint x="417" y="248" />
+        <di:waypoint x="417" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xhqh6x_di" bpmnElement="Flow_0xhqh6x">
+        <di:waypoint x="467" y="360" />
+        <di:waypoint x="530" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gx5prw_di" bpmnElement="Flow_1gx5prw">
+        <di:waypoint x="630" y="360" />
+        <di:waypoint x="697" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02os0ck_di" bpmnElement="Flow_02os0ck">
+        <di:waypoint x="1337" y="400" />
+        <di:waypoint x="1337" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19wsqzd_di" bpmnElement="Flow_19wsqzd">
+        <di:waypoint x="160" y="138" />
+        <di:waypoint x="160" y="230" />
+        <di:waypoint x="220" y="230" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

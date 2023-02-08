@@ -1,0 +1,22 @@
+global:
+  devEnv:
+    enabled: false
+
+  identity:
+    auth:
+      enabled: false
+
+camunda:
+  operate:
+    enabled: false
+  optimize:
+    enabled: false
+  tasklist:
+    enabled: false
+  identity:
+    enabled: false
+    firstUser:
+      username: esthesis
+      password: esthesis
+  web-modeler:
+    enabled: false

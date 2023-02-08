@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1j7f028" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.6.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0">
+  <bpmn:process id="EntryExitProcess" name="Entry/Exit" isExecutable="true">
+    <bpmn:startEvent id="Event_Start" name="Start">
+      <bpmn:outgoing>Flow_1vmfdfq</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Service_Pause" name="Pause">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="PauseJob" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1vmfdfq</bpmn:incoming>
+      <bpmn:outgoing>Flow_1f1adcb</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_TimerEvaluation" name="Timer evaluation">
+      <bpmn:incoming>Flow_1f1adcb</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hf1hzc</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1i262hn</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1mzhoj8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1vmfdfq" sourceRef="Event_Start" targetRef="Service_Pause" />
+    <bpmn:sequenceFlow id="Flow_1f1adcb" sourceRef="Service_Pause" targetRef="Gateway_TimerEvaluation" />
+    <bpmn:sequenceFlow id="Flow_0hf1hzc" name="Timer &#62; 0" sourceRef="Gateway_TimerEvaluation" targetRef="Service_CreateTimerExpression">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=pauseCondition &gt; 0</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1i262hn" name="Timer = 0" sourceRef="Gateway_TimerEvaluation" targetRef="Service_SetWorkflowStatusToPaused">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=pauseCondition = 0</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:intermediateCatchEvent id="Timer_Wait" name="Wait">
+      <bpmn:incoming>Flow_1qmvsqi</bpmn:incoming>
+      <bpmn:outgoing>Flow_07sujba</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_19ktiu5">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">=pauseConditionTimer</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1qmvsqi" sourceRef="Service_CreateTimerExpression" targetRef="Timer_Wait" />
+    <bpmn:sequenceFlow id="Flow_04l17ei" sourceRef="Service_SetWorkflowStatusToPaused" targetRef="Task_ConditionalPause" />
+    <bpmn:exclusiveGateway id="Gateway_PropertyLoopCheck" name="Property loop check">
+      <bpmn:incoming>Flow_0w9l2y8</bpmn:incoming>
+      <bpmn:outgoing>Flow_1e9eigt</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ybzxfn</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0w9l2y8" sourceRef="Service_Property" targetRef="Gateway_PropertyLoopCheck" />
+    <bpmn:intermediateCatchEvent id="Timer_PropertyRecheckTimer" name="Property recheck timer">
+      <bpmn:incoming>Flow_1e9eigt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vr19np</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0zqe7e6">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">=advancedPropertyRecheckTimer</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1e9eigt" sourceRef="Gateway_PropertyLoopCheck" targetRef="Timer_PropertyRecheckTimer">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= propertyCondition = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0vr19np" sourceRef="Timer_PropertyRecheckTimer" targetRef="Service_Property" />
+    <bpmn:exclusiveGateway id="Gateway_DateTimeLoopCheck" name="Date/Time loop check">
+      <bpmn:incoming>Flow_0upjh4o</bpmn:incoming>
+      <bpmn:outgoing>Flow_17ct1xg</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1yce47h</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0upjh4o" sourceRef="Service_DateTime" targetRef="Gateway_DateTimeLoopCheck" />
+    <bpmn:intermediateCatchEvent id="Timer_DateTimeRecheckTimer" name="Date/Time recheck timer">
+      <bpmn:incoming>Flow_17ct1xg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hotcut</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0fsrayg">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">=advancedDateTimeRecheckTimer</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_17ct1xg" sourceRef="Gateway_DateTimeLoopCheck" targetRef="Timer_DateTimeRecheckTimer">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= dateTimeCondition = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0hotcut" sourceRef="Timer_DateTimeRecheckTimer" targetRef="Service_DateTime" />
+    <bpmn:sequenceFlow id="Flow_1yce47h" sourceRef="Gateway_DateTimeLoopCheck" targetRef="Service_Property">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= dateTimeCondition = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_End" name="End">
+      <bpmn:incoming>Flow_1ybzxfn</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Service_CreateTimerExpression" name="Create timer expression">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="CreateTimerExpressionJob" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0hf1hzc</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qmvsqi</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Service_SetWorkflowStatusToPaused" name="Set workflow status to paused">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="SetWorkflowStatusToPausedJob" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1i262hn</bpmn:incoming>
+      <bpmn:outgoing>Flow_04l17ei</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Service_Property" name="Property">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="PropertyJob" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0vr19np</bpmn:incoming>
+      <bpmn:incoming>Flow_1yce47h</bpmn:incoming>
+      <bpmn:outgoing>Flow_0w9l2y8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Service_DateTime" name="Date/time">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="DateTimeJob" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0hotcut</bpmn:incoming>
+      <bpmn:incoming>Flow_1mzhoj8</bpmn:incoming>
+      <bpmn:incoming>Flow_09h4rfv</bpmn:incoming>
+      <bpmn:incoming>Flow_07sujba</bpmn:incoming>
+      <bpmn:outgoing>Flow_0upjh4o</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1mzhoj8" name="Timer = -1" sourceRef="Gateway_TimerEvaluation" targetRef="Service_DateTime">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=pauseCondition = -1</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_09h4rfv" sourceRef="Task_ConditionalPause" targetRef="Service_DateTime" />
+    <bpmn:sequenceFlow id="Flow_07sujba" sourceRef="Timer_Wait" targetRef="Service_DateTime" />
+    <bpmn:sequenceFlow id="Flow_1ybzxfn" sourceRef="Gateway_PropertyLoopCheck" targetRef="Event_End">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= propertyCondition = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:receiveTask id="Task_ConditionalPause" name="Conditional Pause" messageRef="Message_2gim8tm">
+      <bpmn:incoming>Flow_04l17ei</bpmn:incoming>
+      <bpmn:outgoing>Flow_09h4rfv</bpmn:outgoing>
+    </bpmn:receiveTask>
+  </bpmn:process>
+  <bpmn:message id="Message_2gim8tm" name="Message_ConditionalPause">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=campaignId" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="EntryExitProcess">
+      <bpmndi:BPMNShape id="Activity_1x57s25_di" bpmnElement="Service_Pause">
+        <dc:Bounds x="250" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_113tdta_di" bpmnElement="Gateway_TimerEvaluation" isMarkerVisible="true">
+        <dc:Bounds x="445" y="205" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="430" y="262" width="81" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="Event_Start">
+        <dc:Bounds x="152" y="92" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="135" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1d6clel_di" bpmnElement="Timer_Wait">
+        <dc:Bounds x="732" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="739" y="72" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11n42cm_di" bpmnElement="Service_CreateTimerExpression">
+        <dc:Bounds x="560" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_10q3i1z_di" bpmnElement="Service_SetWorkflowStatusToPaused">
+        <dc:Bounds x="560" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0e19v2t" bpmnElement="Gateway_DateTimeLoopCheck" isMarkerVisible="true">
+        <dc:Bounds x="445" y="515" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="490" y="506" width="75" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1x23y30" bpmnElement="Timer_DateTimeRecheckTimer">
+        <dc:Bounds x="272" y="572" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="257" y="615" width="67" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_094xcbg_di" bpmnElement="Service_DateTime">
+        <dc:Bounds x="240" y="450" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1w0yk5a_di" bpmnElement="Gateway_PropertyLoopCheck" isMarkerVisible="true">
+        <dc:Bounds x="445" y="701" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="495" y="696" width="66" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1gvra54_di" bpmnElement="Event_End">
+        <dc:Bounds x="722" y="800" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="730" y="843" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0v99jc7_di" bpmnElement="Service_Property">
+        <dc:Bounds x="240" y="686" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_18u7eys" bpmnElement="Timer_PropertyRecheckTimer">
+        <dc:Bounds x="272" y="800" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="249" y="843" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1m9wpge_di" bpmnElement="Task_ConditionalPause">
+        <dc:Bounds x="560" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1vmfdfq_di" bpmnElement="Flow_1vmfdfq">
+        <di:waypoint x="188" y="110" />
+        <di:waypoint x="229" y="110" />
+        <di:waypoint x="229" y="230" />
+        <di:waypoint x="250" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1f1adcb_di" bpmnElement="Flow_1f1adcb">
+        <di:waypoint x="350" y="230" />
+        <di:waypoint x="445" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hf1hzc_di" bpmnElement="Flow_0hf1hzc">
+        <di:waypoint x="470" y="205" />
+        <di:waypoint x="470" y="120" />
+        <di:waypoint x="560" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="476" y="160" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1i262hn_di" bpmnElement="Flow_1i262hn">
+        <di:waypoint x="495" y="230" />
+        <di:waypoint x="560" y="230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="504" y="212" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mzhoj8_di" bpmnElement="Flow_1mzhoj8">
+        <di:waypoint x="470" y="255" />
+        <di:waypoint x="470" y="340" />
+        <di:waypoint x="270" y="340" />
+        <di:waypoint x="270" y="450" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="339" y="304" width="51" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qmvsqi_di" bpmnElement="Flow_1qmvsqi">
+        <di:waypoint x="660" y="120" />
+        <di:waypoint x="732" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04l17ei_di" bpmnElement="Flow_04l17ei">
+        <di:waypoint x="610" y="270" />
+        <di:waypoint x="610" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09h4rfv_di" bpmnElement="Flow_09h4rfv">
+        <di:waypoint x="610" y="380" />
+        <di:waypoint x="610" y="400" />
+        <di:waypoint x="290" y="400" />
+        <di:waypoint x="290" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07sujba_di" bpmnElement="Flow_07sujba">
+        <di:waypoint x="750" y="138" />
+        <di:waypoint x="750" y="430" />
+        <di:waypoint x="310" y="430" />
+        <di:waypoint x="310" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0upjh4o_di" bpmnElement="Flow_0upjh4o">
+        <di:waypoint x="340" y="490" />
+        <di:waypoint x="470" y="490" />
+        <di:waypoint x="470" y="515" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17ct1xg_di" bpmnElement="Flow_17ct1xg">
+        <di:waypoint x="470" y="565" />
+        <di:waypoint x="470" y="590" />
+        <di:waypoint x="308" y="590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yce47h_di" bpmnElement="Flow_1yce47h">
+        <di:waypoint x="495" y="540" />
+        <di:waypoint x="600" y="540" />
+        <di:waypoint x="600" y="660" />
+        <di:waypoint x="290" y="660" />
+        <di:waypoint x="290" y="686" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hotcut_di" bpmnElement="Flow_0hotcut">
+        <di:waypoint x="290" y="572" />
+        <di:waypoint x="290" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0w9l2y8_di" bpmnElement="Flow_0w9l2y8">
+        <di:waypoint x="340" y="726" />
+        <di:waypoint x="445" y="726" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1e9eigt_di" bpmnElement="Flow_1e9eigt">
+        <di:waypoint x="470" y="751" />
+        <di:waypoint x="470" y="818" />
+        <di:waypoint x="308" y="818" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ybzxfn_di" bpmnElement="Flow_1ybzxfn">
+        <di:waypoint x="495" y="726" />
+        <di:waypoint x="740" y="726" />
+        <di:waypoint x="740" y="800" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="608" y="692" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vr19np_di" bpmnElement="Flow_0vr19np">
+        <di:waypoint x="290" y="800" />
+        <di:waypoint x="290" y="766" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,9 +1,9 @@
 package esthesis.services.campaign.impl.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import esthesis.common.AppConstants.Campaign.Condition;
 import esthesis.common.AppConstants.Campaign.Member.Type;
 import esthesis.common.AppConstants.Campaign.State;
-import esthesis.common.exception.QExceptionWrapper;
+import esthesis.service.campaign.dto.CampaignConditionDTO;
 import esthesis.service.campaign.dto.CampaignMemberDTO;
 import esthesis.service.campaign.dto.CampaignStatsDTO;
 import esthesis.service.campaign.entity.CampaignDeviceMonitorEntity;
@@ -13,10 +13,11 @@ import esthesis.service.campaign.exception.CampaignDeviceDoesNotExist;
 import esthesis.service.common.BaseService;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
-import esthesis.services.campaign.impl.worker.CampaignDeviceWorkflow;
-import esthesis.util.kogito.client.KogitoClient;
-import esthesis.util.kogito.dto.InstanceDTO;
-import esthesis.util.kogito.dto.TaskDTO;
+import esthesis.services.campaign.impl.dto.GroupDTO;
+import esthesis.services.campaign.impl.job.WorkflowParameters;
+import io.camunda.zeebe.client.ZeebeClient;
+import io.camunda.zeebe.client.api.command.ClientStatusException;
+import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
@@ -26,7 +27,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -40,18 +41,16 @@ public class CampaignService extends BaseService<CampaignEntity> {
   JsonWebToken jwt;
 
   @Inject
-  CampaignDeviceMonitorService campaignDeviceMonitorService;
+  ZeebeClient zeebeClient;
 
   @Inject
-  KogitoClient kogitoClient;
+  CampaignDeviceMonitorService campaignDeviceMonitorService;
 
   @Inject
   @RestClient
   DeviceResource deviceResource;
 
-  public static final String CAMPAIGN_PROCESS_ID = "DeviceCampaign";
-  public static final String CAMPAIGN_ENTRY_EXIT_PROCESS_ID = "DeviceCampaignEntryExit";
-  public static final String CAMPAIGN_ENTRY_EXIT_PAUSE_TASK = "ConditionalPause";
+  public static final String CAMPAIGN_PROCESS_ID = "DeviceCampaignProcess";
 
   @Override
   public CampaignEntity save(CampaignEntity campaignEntity) {
@@ -65,50 +64,11 @@ public class CampaignService extends BaseService<CampaignEntity> {
     // Get campaign to resume.
     log.debug("Resuming campaign with id '{}'.", campaignId);
 
-    // Find instances of the entry/exit workflow for this campaign.
-    try {
-      List<InstanceDTO> resources = kogitoClient.getInstances(CAMPAIGN_ENTRY_EXIT_PROCESS_ID);
-      List<InstanceDTO> entryExitInstances = resources.stream()
-          .filter(resource -> resource.getData().get("campaignId").equals(campaignId.toString()))
-          .toList();
-      if (CollectionUtils.isEmpty(entryExitInstances)) {
-        log.warn("No entry/exit process instances found for campaign id '{}'", campaignId);
-      } else if (entryExitInstances.size() > 1) {
-        log.warn("More than one entry/exit process instances found for campaign id '{}'",
-            campaignId);
-      } else {
-        entryExitInstances
-            .forEach(resource -> {
-              // Get the instance id.
-              String entryExitInstanceId = resource.getId();
-
-              // Get the tasks for this entry/exit process instance.
-              List<TaskDTO> tasks = kogitoClient.getTasks(CAMPAIGN_ENTRY_EXIT_PROCESS_ID,
-                  entryExitInstanceId);
-              if (tasks.size() > 1) {
-                log.warn("More than one tasks found for campaign id '{}', entry/exit process "
-                        + "instance id '{}'",
-                    campaignId, entryExitInstanceId);
-              }
-
-              tasks.forEach(task -> {
-                // Get the task id.
-                String taskId = task.getId();
-
-                // Complete the task.
-                try {
-                  kogitoClient.completeTask(CAMPAIGN_ENTRY_EXIT_PROCESS_ID, entryExitInstanceId,
-                      CAMPAIGN_ENTRY_EXIT_PAUSE_TASK, taskId);
-                } catch (JsonProcessingException e) {
-                  throw new QExceptionWrapper("Could not resume campaign with id '" +
-                      campaignId + "'.", e);
-                }
-              });
-            });
-      }
-    } catch (JsonProcessingException e) {
-      throw new QExceptionWrapper("Could not resume campaign.", e);
-    }
+    zeebeClient.newPublishMessageCommand()
+        .messageName(WorkflowParameters.MESSAGE_CONDITIONAL_PAUSE)
+        .correlationKey(campaignId)
+        .send()
+        .join();
   }
 
   public List<Integer> findGroups(String campaignId) {
@@ -243,45 +203,46 @@ public class CampaignService extends BaseService<CampaignEntity> {
 
     // Start the workflow for this campaign.
     log.debug("Starting campaign workflow for campaign id '{}'.", campaignId);
-    try {
-      CampaignDeviceWorkflow campaignDeviceWorkflow = new CampaignDeviceWorkflow();
-      campaignDeviceWorkflow.setCampaignId(campaignId);
-      campaignEntity.setState(State.RUNNING);
-      campaignEntity.setStartedOn(Instant.now());
-      InstanceDTO instanceDTO = kogitoClient.startInstance(CAMPAIGN_PROCESS_ID,
-          campaignDeviceWorkflow);
-      campaignEntity.setProcessInstanceId(instanceDTO.getId());
-      campaignEntity.setStateDescription("Campaign started at " + Instant.now() + ".");
-      super.save(campaignEntity);
-    } catch (JsonProcessingException e) {
-      throw new QExceptionWrapper("Could not parse Kogito reply.", e);
-    }
+    WorkflowParameters p = new WorkflowParameters();
+    p.setCampaignId(campaignId);
+    ProcessInstanceEvent processInstanceEvent = zeebeClient.newCreateInstanceCommand()
+        .bpmnProcessId(CAMPAIGN_PROCESS_ID)
+        .latestVersion()
+        .variables(p)
+        .send()
+        .join();
+
+    // Update the campaign in the database.
+    campaignEntity.setState(State.RUNNING);
+    campaignEntity.setStartedOn(Instant.now());
+    campaignEntity.setProcessInstanceId(
+        String.valueOf(processInstanceEvent.getProcessInstanceKey()));
+    campaignEntity.setStateDescription("Campaign started at " + Instant.now() + ".");
+    super.save(campaignEntity);
   }
 
   public void delete(String campaignId) {
-    terminate(campaignId);
+    try {
+      terminate(campaignId);
+    } catch (ClientStatusException e) {
+      log.warn("Could not delete campaign instance in workflow engine.", e);
+    }
     deleteById(campaignId);
     campaignDeviceMonitorService.deleteByColumn("campaignId", campaignId);
   }
 
   public void terminate(String campaignId) {
+    CampaignEntity campaignEntity = findById(campaignId);
+
     // Terminate the workflow for this campaign.
-    try {
-      kogitoClient.getInstances(CAMPAIGN_PROCESS_ID).forEach(instance -> {
-        if (instance.getData().get("campaignId").equals(campaignId)) {
-          try {
-            kogitoClient.deleteInstance(CAMPAIGN_PROCESS_ID, instance.getId());
-          } catch (JsonProcessingException e) {
-            throw new QExceptionWrapper("Could not delete campaign instance.", e);
-          }
-        }
-      });
-    } catch (JsonProcessingException e) {
-      throw new QExceptionWrapper("Could not get process instances to terminate campaign.", e);
+    if (StringUtils.isNotEmpty(campaignEntity.getProcessInstanceId())) {
+      zeebeClient
+          .newCancelInstanceCommand(Long.parseLong(campaignEntity.getProcessInstanceId()))
+          .send()
+          .join();
     }
 
     // Update the campaign state.
-    CampaignEntity campaignEntity = findById(campaignId);
     campaignEntity.setState(State.TERMINATED_BY_USER);
     campaignEntity.setTerminatedOn(Instant.now());
     campaignEntity.setStateDescription("Campaign terminated by user at " + Instant.now() + ".");
@@ -308,6 +269,27 @@ public class CampaignService extends BaseService<CampaignEntity> {
         .setCommandName(campaignEntity.getCommandName())
         .setCommandArguments(campaignEntity.getCommandArguments())
         .setCommandExecutionType(campaignEntity.getCommandExecutionType())
-        .setProvisioningPackageId(campaignEntity.getProvisioningPackageId()));
+        .setProvisioningPackageId(campaignEntity.getProvisioningPackageId())
+        .setAdvancedDateTimeRecheckTimer(campaignEntity.getAdvancedDateTimeRecheckTimer())
+        .setAdvancedPropertyRecheckTimer(campaignEntity.getAdvancedPropertyRecheckTimer())
+        .setAdvancedUpdateRepliesFinalTimer(campaignEntity.getAdvancedUpdateRepliesFinalTimer())
+        .setAdvancedUpdateRepliesTimer(campaignEntity.getAdvancedUpdateRepliesTimer()));
+  }
+
+  public List<CampaignConditionDTO> getCondition(CampaignEntity campaignEntity,
+      GroupDTO groupDTO, Condition.Type type) {
+    return campaignEntity.getConditions().stream()
+        .filter(condition -> condition.getType() == type)
+        .filter(condition -> condition.getGroup() == groupDTO.getGroup())
+        .filter(condition -> condition.getStage() == groupDTO.getStage())
+        .toList();
+  }
+
+  public CampaignEntity setStateDescription(String campaignId, String stateDescription) {
+    log.debug("Setting state description for campaign id '{}' to '{}'.", campaignId,
+        stateDescription);
+    CampaignEntity campaignEntity = findById(campaignId);
+    campaignEntity.setStateDescription(stateDescription);
+    return save(campaignEntity);
   }
 }

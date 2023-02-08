@@ -121,3 +121,7 @@ html, body {
   padding: 0.5rem;
   white-space: pre-wrap;
 }
+
+.remove-mat-expansion-panel-padding .mat-expansion-panel-content .mat-expansion-panel-body {
+  padding: 0.25rem !important;
+}

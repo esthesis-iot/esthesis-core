@@ -7,8 +7,8 @@ Thank you for installing esthesis IoT platform.
 *************************
 Update your hosts file with the result of the following command:
 
-echo $(kubectl get services camunda-optimize --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-camunda-optimize
-echo $(kubectl get services camunda-identity --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-camunda-identity
 echo $(kubectl get services camunda-operate --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-camunda-operate
+echo $(kubectl get services camunda-tasklist --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-camunda-tasklist
+echo $(kubectl get services camunda-zeebe-gateway --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-camunda-zeebe-gateway
 
 {{ end }}

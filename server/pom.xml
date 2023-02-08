@@ -33,6 +33,7 @@
     <slugify.version>3.0.2</slugify.version>
     <jackson-antpathfilter.version>1.0.2</jackson-antpathfilter.version>
     <awaitility.version>4.2.0</awaitility.version>
+    <zeebe.version>0.7.2</zeebe.version>
   </properties>
 
   <dependencyManagement>

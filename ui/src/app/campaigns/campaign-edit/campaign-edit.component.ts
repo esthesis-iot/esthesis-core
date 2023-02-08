@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, isDevMode, OnInit} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {BaseComponent} from "../../shared/component/base-component";
 import {QFormsService} from "@qlack/forms";
@@ -106,6 +106,8 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
           if (this.form.value.state !== AppConstants.CAMPAIGN.STATE.CREATED) {
             this.disableForm();
             this.getCampaignStats();
+          } else {
+            this.formDisabled = false;
           }
         }
       });
@@ -134,6 +136,10 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
       members: [[]],
       searchByHardwareId: [],
       searchByTags: [],
+      advancedDateTimeRecheckTimer: [isDevMode() ? "PT1S" : "PT1M", [Validators.required]],
+      advancedPropertyRecheckTimer: [isDevMode() ? "PT1S" : "PT1M", [Validators.required]],
+      advancedUpdateRepliesTimer: [isDevMode() ? "PT1S" : "PT1M", [Validators.required]],
+      advancedUpdateRepliesFinalTimer: [isDevMode() ? "PT1S" : "PT1M", [Validators.required]],
     });
 
     // Monitor campaign type to fetch provisioning packages.
@@ -472,7 +478,6 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
         this.campaignService.replicateCampaign(this.id!).subscribe({
           next: (campaign) => {
             this.utilityService.popupSuccess("Campaign successfully replicated.");
-            console.log(campaign);
             this.router.navigate(["campaigns", campaign.id]).then(() => {
               this.ngOnInit();
             });

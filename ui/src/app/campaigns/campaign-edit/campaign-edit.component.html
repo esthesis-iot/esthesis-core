@@ -138,6 +138,31 @@
             </mat-form-field>
           </div>
         </div>
+        <mat-expansion-panel class="mat-elevation-z0 remove-mat-expansion-panel-padding">
+          <mat-expansion-panel-header style="padding:0 0.5rem 0 0.25rem !important">
+            <mat-panel-title>
+              <div class="inline-header" style="margin:0 !important;">Advanced settings</div>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div fxLayout="column">
+            <mat-form-field>
+              <input matInput placeholder="Date/Time condition recheck"
+                     formControlName="advancedDateTimeRecheckTimer">
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput placeholder="Property condition recheck"
+                     formControlName="advancedPropertyRecheckTimer">
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput placeholder="Update device replies, in group"
+                     formControlName="advancedUpdateRepliesTimer">
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput placeholder="Update device replies, final"
+                     formControlName="advancedUpdateRepliesFinalTimer">
+            </mat-form-field>
+          </div>
+        </mat-expansion-panel>
         <div fxLayout="column">
           <div class="inline-header">Devices</div>
           <div class="validation-errors" *ngIf="errorsDevices" fxLayout="row">

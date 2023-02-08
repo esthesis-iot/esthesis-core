@@ -23,9 +23,14 @@ quarkus:
     enabled: false
   opentelemetry:
     enabled: false
-
-kogito:
-  persistence: mongodb
+  zeebe:
+    opentelemetry:
+      enabled: false
+    devservices:
+      enabled: false
+    client:
+      security:
+        plaintext: true
 
 mp:
   jwt:

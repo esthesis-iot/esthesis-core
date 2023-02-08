@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0398un8" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.6.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0">
+  <bpmn:process id="CampaignGroupProcess" name="Campaign Group" isExecutable="true">
+    <bpmn:startEvent id="Event_Start" name="Start">
+      <bpmn:outgoing>Flow_1pgodqh</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1pgodqh" sourceRef="Event_Start" targetRef="Service_ContactDevices" />
+    <bpmn:serviceTask id="Service_ContactDevices" name="Contact devices">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="ContactDevicesJob" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>MoreDevices</bpmn:incoming>
+      <bpmn:incoming>Flow_1pgodqh</bpmn:incoming>
+      <bpmn:outgoing>Flow_0aqniyf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Service_CheckRate" name="Check rate">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="CheckRateJob" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>CheckRateAgain</bpmn:incoming>
+      <bpmn:incoming>Flow_0aqniyf</bpmn:incoming>
+      <bpmn:outgoing>Flow_1b3kjqi</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Service_CheckRemainingDevices" name="Check remaining devices">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="CheckRemainingDevicesJob" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>RateOK</bpmn:incoming>
+      <bpmn:outgoing>Flow_06p0ha4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Service_UpdateRepliesLoop" name="Update replies">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="UpdateRepliesJob" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>RateNOK</bpmn:incoming>
+      <bpmn:outgoing>Flow_09p3uba</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Service_UpdateRepliesFinal" name="Update replies">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="UpdateRepliesJob" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_18zz64t</bpmn:incoming>
+      <bpmn:outgoing>Flow_1vjkvbr</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0aqniyf" sourceRef="Service_ContactDevices" targetRef="Service_CheckRate" />
+    <bpmn:exclusiveGateway id="Gateway_RateCheck">
+      <bpmn:incoming>Flow_1b3kjqi</bpmn:incoming>
+      <bpmn:outgoing>RateOK</bpmn:outgoing>
+      <bpmn:outgoing>RateNOK</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1b3kjqi" sourceRef="Service_CheckRate" targetRef="Gateway_RateCheck" />
+    <bpmn:sequenceFlow id="RateOK" name="Rate OK" sourceRef="Gateway_RateCheck" targetRef="Service_CheckRemainingDevices">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=rateCondition = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="RateNOK" name="Rate NOK" sourceRef="Gateway_RateCheck" targetRef="Service_UpdateRepliesLoop">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=rateCondition = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:intermediateCatchEvent id="Timer_RetryCheckRateDelay" name="Retry check rate delay">
+      <bpmn:incoming>Flow_09p3uba</bpmn:incoming>
+      <bpmn:outgoing>CheckRateAgain</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0y5ww03">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">=advancedUpdateRepliesTimer</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_09p3uba" sourceRef="Service_UpdateRepliesLoop" targetRef="Timer_RetryCheckRateDelay" />
+    <bpmn:sequenceFlow id="CheckRateAgain" name="Check rate again" sourceRef="Timer_RetryCheckRateDelay" targetRef="Service_CheckRate" />
+    <bpmn:exclusiveGateway id="Gateway_MoreDevices">
+      <bpmn:incoming>Flow_06p0ha4</bpmn:incoming>
+      <bpmn:outgoing>MoreDevices</bpmn:outgoing>
+      <bpmn:outgoing>AllDevicesContacted</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_06p0ha4" sourceRef="Service_CheckRemainingDevices" targetRef="Gateway_MoreDevices" />
+    <bpmn:sequenceFlow id="MoreDevices" name="More devices" sourceRef="Gateway_MoreDevices" targetRef="Service_ContactDevices">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=remainingDevicesCondition = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:intermediateCatchEvent id="Timer_DelayToAllowDevicesToReply" name="Delay to allow devices to reply">
+      <bpmn:incoming>AllDevicesContacted</bpmn:incoming>
+      <bpmn:outgoing>Flow_18zz64t</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1ghc9ob">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">=advancedUpdateRepliesFinalTimer</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="AllDevicesContacted" name="All devices contacted" sourceRef="Gateway_MoreDevices" targetRef="Timer_DelayToAllowDevicesToReply">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=remainingDevicesCondition = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_18zz64t" sourceRef="Timer_DelayToAllowDevicesToReply" targetRef="Service_UpdateRepliesFinal" />
+    <bpmn:endEvent id="Event_End" name="End">
+      <bpmn:incoming>Flow_1vjkvbr</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1vjkvbr" sourceRef="Service_UpdateRepliesFinal" targetRef="Event_End" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CampaignGroupProcess">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="Event_Start">
+        <dc:Bounds x="152" y="82" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="52" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1athxeq_di" bpmnElement="Service_CheckRate">
+        <dc:Bounds x="310" y="440" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11hmjj1_di" bpmnElement="Service_CheckRemainingDevices">
+        <dc:Bounds x="490" y="320" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ykaqcs_di" bpmnElement="Service_UpdateRepliesLoop">
+        <dc:Bounds x="490" y="570" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_08xz6dz" bpmnElement="Service_UpdateRepliesFinal">
+        <dc:Bounds x="680" y="320" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_03bwq3m_di" bpmnElement="Gateway_RateCheck" isMarkerVisible="true">
+        <dc:Bounds x="515" y="455" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0thiqc8_di" bpmnElement="Gateway_MoreDevices" isMarkerVisible="true">
+        <dc:Bounds x="515" y="225" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_09mimgi_di" bpmnElement="Event_End">
+        <dc:Bounds x="712" y="592" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="720" y="635" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1sthzl8" bpmnElement="Timer_DelayToAllowDevicesToReply">
+        <dc:Bounds x="712" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="692" y="202" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0m4yzxx_di" bpmnElement="Service_ContactDevices">
+        <dc:Bounds x="310" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1xz9sfg_di" bpmnElement="Timer_RetryCheckRateDelay">
+        <dc:Bounds x="202" y="592" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="183" y="635" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1pgodqh_di" bpmnElement="Flow_1pgodqh">
+        <di:waypoint x="170" y="118" />
+        <di:waypoint x="170" y="250" />
+        <di:waypoint x="310" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y5w2o2_di" bpmnElement="CheckRateAgain">
+        <di:waypoint x="220" y="592" />
+        <di:waypoint x="220" y="480" />
+        <di:waypoint x="310" y="480" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="128" y="531" width="84" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0aqniyf_di" bpmnElement="Flow_0aqniyf">
+        <di:waypoint x="360" y="290" />
+        <di:waypoint x="360" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1b3kjqi_di" bpmnElement="Flow_1b3kjqi">
+        <di:waypoint x="410" y="480" />
+        <di:waypoint x="515" y="480" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07u1nob_di" bpmnElement="RateOK">
+        <di:waypoint x="540" y="455" />
+        <di:waypoint x="540" y="400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="548" y="425" width="43" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06p0ha4_di" bpmnElement="Flow_06p0ha4">
+        <di:waypoint x="540" y="320" />
+        <di:waypoint x="540" y="275" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qh62eu_di" bpmnElement="RateNOK">
+        <di:waypoint x="540" y="505" />
+        <di:waypoint x="540" y="570" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="544" y="523" width="51" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09p3uba_di" bpmnElement="Flow_09p3uba">
+        <di:waypoint x="490" y="610" />
+        <di:waypoint x="238" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18zz64t_di" bpmnElement="Flow_18zz64t">
+        <di:waypoint x="730" y="268" />
+        <di:waypoint x="730" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vjkvbr_di" bpmnElement="Flow_1vjkvbr">
+        <di:waypoint x="730" y="400" />
+        <di:waypoint x="730" y="592" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1u5n9mc_di" bpmnElement="MoreDevices">
+        <di:waypoint x="540" y="225" />
+        <di:waypoint x="540" y="170" />
+        <di:waypoint x="360" y="170" />
+        <di:waypoint x="360" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="407" y="143" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01s92ai_di" bpmnElement="AllDevicesContacted">
+        <di:waypoint x="565" y="250" />
+        <di:waypoint x="712" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="604" y="219" width="53" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

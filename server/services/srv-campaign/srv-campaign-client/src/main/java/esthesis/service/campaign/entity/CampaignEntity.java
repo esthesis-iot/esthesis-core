@@ -38,4 +38,10 @@ public class CampaignEntity extends BaseEntity {
   private String commandArguments;
   private String commandExecutionType;
   private String provisioningPackageId;
+
+  // Advanced settings.
+  private String advancedDateTimeRecheckTimer;
+  private String advancedPropertyRecheckTimer;
+  private String advancedUpdateRepliesTimer;
+  private String advancedUpdateRepliesFinalTimer;
 }

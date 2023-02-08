@@ -1,0 +1,6 @@
+dependencies:
+- name: camunda-platform
+  repository: https://helm.camunda.io
+  version: 8.1.5
+digest: sha256:49996560d9d25dbd9f3796c1c7e99d4ba8996728221d2211fa14d2aaf8b0eaee
+generated: "2023-02-06T14:34:48.321123+02:00"

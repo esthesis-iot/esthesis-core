@@ -9,7 +9,6 @@ import esthesis.service.campaign.resource.CampaignResource;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.services.campaign.impl.service.CampaignService;
-import esthesis.util.kogito.client.KogitoClient;
 import javax.inject.Inject;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
@@ -18,9 +17,6 @@ public class CampaignResourceImpl implements CampaignResource {
 
   @Inject
   CampaignService campaignService;
-
-  @Inject
-  KogitoClient kogitoClient;
 
   @Override
   @Audited(cat = Category.CAMPAIGN, op = Operation.READ, msg = "Find campaigns")

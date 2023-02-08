@@ -45,20 +45,12 @@ quarkus:
       password:
         username: esthesis-system
         password: esthesis-system
-  kogito:
-    devservices:
-      # remove once 1.33 becomes available
-      image-name: quay.io/kiegroup/kogito-data-index-ephemeral
-      image-version: 1.32
-#  infinispan-client:
-#    hosts: localhost:11222
-#    username: esthesis
-#    password: esthesis
-
-#kafka:
-#  bootstrap:
-#    servers:
-#      - esthesis-dev-kafka:9094
+  zeebe:
+    opentelemetry:
+      enabled: true
+    client:
+      broker:
+        gateway-address: esthesis-dev-camunda-zeebe-gateway:26500
 
 mp:
   jwt:

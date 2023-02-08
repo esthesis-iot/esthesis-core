@@ -25,6 +25,7 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
 import {MatSortModule} from "@angular/material/sort";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {NgCircleProgressModule} from "ng-circle-progress";
+import {MatExpansionModule} from "@angular/material/expansion";
 
 @NgModule({
   schemas: [NO_ERRORS_SCHEMA],
@@ -52,7 +53,8 @@ import {NgCircleProgressModule} from "ng-circle-progress";
     MatAutocompleteModule,
     DragDropModule,
     MatProgressBarModule,
-    NgCircleProgressModule.forRoot({})
+    NgCircleProgressModule.forRoot({}),
+    MatExpansionModule
   ]
 })
 export class CampaignsModule {
