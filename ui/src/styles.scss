@@ -15,6 +15,14 @@ html, body {
   letter-spacing: 0.14px;
 }
 
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 // Inline (inside mat-cards) headers, subheaders, etc.
 .inline-header {
   font-size: 1.1rem;
@@ -50,12 +58,11 @@ html, body {
   background-color: #f8d7da;
   border-color: #f5c6cb;
   white-space: pre-wrap;
-
+  /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
   .mat-button-wrapper {
     color: #721c24;
     font-weight: bold;
   }
-
 }
 
 .snackbar-blue {
@@ -63,7 +70,7 @@ html, body {
   background-color: #cce5ff;
   border-color: #b8daff;
   white-space: pre-wrap;
-
+  /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
   .mat-button-wrapper {
     color: #004085;
     font-weight: bold;
@@ -75,7 +82,7 @@ html, body {
   background-color: #d4edda;
   border-color: #c3e6cb;
   white-space: pre-wrap;
-
+  /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
   .mat-button-wrapper {
     color: #155724;
     font-weight: bold;

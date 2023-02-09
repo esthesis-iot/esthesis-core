@@ -1,6 +1,6 @@
 <ng-progress></ng-progress>
 <div fxLayout="column" fxFlexFill>
-  <!-- Header -->  
+  <!-- Header -->
   <div>
     <app-header></app-header>
   </div>
@@ -16,10 +16,10 @@
   </div>
 
   <div fxFlex="grow" fxLayout="row" [class]="isLoggedIn() ? 'main' : ''" fxLayoutGap="1rem">
-    <div fxFlex="200px" *ngIf="isLoggedIn() && sidebarVisibility" class="sidebar">
+    <div *ngIf="isLoggedIn() && sidebarVisibility" class="sidebar">
       <app-sidenav></app-sidenav>
     </div>
-    <div fxFlex="grow" class="content">
+    <div fxFlex="grow" class="content ml1">
       <router-outlet></router-outlet>
     </div>
   </div>

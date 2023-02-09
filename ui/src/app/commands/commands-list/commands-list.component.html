@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card appearance="outlined">
   <mat-card-header>
     <mat-card-title>
       Command
@@ -46,36 +46,36 @@
           <th mat-header-cell *matHeaderCellDef scope="col">Type</th>
           <td mat-cell *matCellDef="let element">
             <div fxLayout="row" fxLayoutGap="0.5rem">
-              <mat-chip-list class="pill-command-type">
-                <mat-chip *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.EXECUTE">
+              <mat-chip-listbox class="pill-command-type">
+                <mat-chip-option *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.EXECUTE">
                   EXECUTE
-                </mat-chip>
-                <mat-chip *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.HEALTH">
+                </mat-chip-option>
+                <mat-chip-option *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.HEALTH">
                   HEALTH
-                </mat-chip>
-                <mat-chip *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.PING">
+                </mat-chip-option>
+                <mat-chip-option *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.PING">
                   PING
-                </mat-chip>
-                <mat-chip *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.FIRMWARE">
+                </mat-chip-option>
+                <mat-chip-option *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.FIRMWARE">
                   FIRMWARE
-                </mat-chip>
-                <mat-chip *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.REBOOT">
+                </mat-chip-option>
+                <mat-chip-option *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.REBOOT">
                   REBOOT
-                </mat-chip>
-                <mat-chip *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.SHUTDOWN">
+                </mat-chip-option>
+                <mat-chip-option *ngIf="element.commandType === appConstants.DEVICE.COMMAND.TYPE.SHUTDOWN">
                   SHUTDOWN
-                </mat-chip>
-              </mat-chip-list>
-              <mat-chip-list class="pill-execution-type">
-                <mat-chip
+                </mat-chip-option>
+              </mat-chip-listbox>
+              <mat-chip-listbox class="pill-execution-type">
+                <mat-chip-option
                   *ngIf="element.executionType === appConstants.DEVICE.COMMAND.EXECUTION.ASYNCHRONOUS">
                   ASYNC
-                </mat-chip>
-                <mat-chip
+                </mat-chip-option>
+                <mat-chip-option
                   *ngIf="element.executionType === appConstants.DEVICE.COMMAND.EXECUTION.SYNCHRONOUS">
                   SYNC
-                </mat-chip>
-              </mat-chip-list>
+                </mat-chip-option>
+              </mat-chip-listbox>
             </div>
           </td>
         </ng-container>

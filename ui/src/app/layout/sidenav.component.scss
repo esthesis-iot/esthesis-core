@@ -1,30 +1,12 @@
-$sidenav-width: 200px;
-
-mat-sidenav {
-  width: $sidenav-width;
-}
-
 .sidenav {
-  button {
-    line-height: 2.5rem !important;
-    letter-spacing: .035em !important;
-    width: $sidenav-width;
-    text-align: left !important;
+  .mat-mdc-button {
+    border-radius: 0;
     font-size: 1rem;
-  }
-
-  p {
-    margin-top: 0;
-  }
-
-  a {
-    color: inherit;
+    letter-spacing: 0.05rem;
   }
 
   .active {
-    button {
-      background-color: #dddddd !important;
-    }
+    background-color: #dddddd !important;
   }
 
   mat-icon {
@@ -33,8 +15,7 @@ mat-sidenav {
     margin-bottom: 2px;
   }
 
-}
-
-mat-divider {
-  margin: 0.3rem 0 0.3rem 0.8rem !important
+  mat-divider {
+    margin: 0.3rem 0 0.3rem 0.8rem !important
+  }
 }

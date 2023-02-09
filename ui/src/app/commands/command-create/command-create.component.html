@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card appearance="outlined">
   <mat-card-header>
     <mat-card-title>Send a command to devices</mat-card-title>
   </mat-card-header>
@@ -11,14 +11,14 @@
         </div>
       </div>
       <div class="mt1 mb1">
-        <mat-chip-list>
+        <mat-chip-listbox>
           <ng-container *ngFor="let id of selectedHardwareIds">
-            <mat-chip (click)="removeChip(id)">
+            <mat-chip-option (click)="removeChip(id)">
               {{ id }}
               <mat-icon class="mat-chip-remove">cancel</mat-icon>
-            </mat-chip>
+            </mat-chip-option>
           </ng-container>
-        </mat-chip-list>
+        </mat-chip-listbox>
       </div>
       <div fxLayout="row">
         <mat-form-field fxFlex>

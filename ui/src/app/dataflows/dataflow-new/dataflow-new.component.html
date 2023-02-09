@@ -1,9 +1,9 @@
-<mat-card>
+<mat-card appearance="outlined">
   <mat-card-header>
     <mat-card-title>New dataflow component</mat-card-title>
   </mat-card-header>
   <mat-card-content class="dataflows" fxLayout="row wrap" fxLayoutGap="1rem">
-    <mat-card *ngFor="let d of dataflows">
+    <mat-card appearance="outlined" *ngFor="let d of dataflows">
       <mat-card-title-group>
         <mat-card-title>{{d.title}}</mat-card-title>
         <mat-card-subtitle>{{d.category}}</mat-card-subtitle>

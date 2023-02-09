@@ -8,12 +8,12 @@
 }
 
 // Add some bottom margin in inline tabs.
-.mat-tab-nav-bar {
+.mat-mdc-tab-nav-bar {
   margin-bottom: 1rem;
 }
 
 // No styling for href inside tables.
-.mat-table {
+.mat-mdc-table {
   a {
     text-decoration: none;
   }

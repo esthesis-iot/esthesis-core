@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card appearance="outlined">
   <mat-card-header>
     <mat-card-title>Tag edit</mat-card-title>
   </mat-card-header>
@@ -6,6 +6,7 @@
     <form novalidate [formGroup]="form">
       <div fxLayout="column">
         <mat-form-field>
+          <label>Name</label>
           <input matInput placeholder="Name" formControlName="name">
           <app-field-error matSuffix
                            [displayError]="isFieldValid(form, 'name')"
@@ -13,6 +14,7 @@
           </app-field-error>
         </mat-form-field>
         <mat-form-field>
+          <mat-label>Description</mat-label>
           <input matInput placeholder="Description" formControlName="description">
         </mat-form-field>
       </div>

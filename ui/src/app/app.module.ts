@@ -16,6 +16,17 @@ import {MatIconModule} from "@angular/material/icon";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatButtonModule} from "@angular/material/button";
+import {
+  MAT_FORM_FIELD_DEFAULT_OPTIONS,
+  MatFormFieldDefaultOptions
+} from "@angular/material/form-field";
+
+const appearance: MatFormFieldDefaultOptions = {
+  appearance: "outline",
+  // hideRequiredMarker: false,
+  // floatLabel: "always",
+  // subscriptSizing: "fixed"
+};
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -64,6 +75,7 @@ import {MatButtonModule} from "@angular/material/button";
     MatButtonModule
   ],
   providers: [
+    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: appearance},
     QFormsModule,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ]
