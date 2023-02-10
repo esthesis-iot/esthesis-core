@@ -5,7 +5,6 @@ import {CasRoutingModule} from "./cas-routing.module";
 import {CasListComponent} from "./cas-list/cas-list.component";
 import {CasEditComponent} from "./cas-edit/cas-edit.component";
 import {CasImportComponent} from "./cas-import/cas-import.component";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatIconModule} from "@angular/material/icon";
 import {MatSortModule} from "@angular/material/sort";
 import {QFormsModule} from "@qlack/forms";
@@ -32,7 +31,6 @@ import {MatTooltipModule} from "@angular/material/tooltip";
   imports: [
     CommonModule,
     CasRoutingModule,
-    FlexLayoutModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,

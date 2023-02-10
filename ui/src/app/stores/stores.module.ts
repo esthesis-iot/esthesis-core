@@ -6,7 +6,6 @@ import {StoresListComponent} from "./stores-list/stores-list.component";
 import {MatSortModule} from "@angular/material/sort";
 import {StoreEditComponent} from "./store-edit/store-edit.component";
 import {ReactiveFormsModule} from "@angular/forms";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {QFormsModule} from "@qlack/forms";
 import {DisplayModule} from "../shared/component/display/display.module";
 import {DateSupportModule} from "../shared/module/date-support.module";
@@ -33,7 +32,6 @@ import {MatButtonModule} from "@angular/material/button";
     MatButtonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    FlexLayoutModule,
     MatInputModule,
     QFormsModule,
     DisplayModule,

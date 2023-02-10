@@ -3,7 +3,6 @@ import {CommonModule} from "@angular/common";
 import {MatIconModule} from "@angular/material/icon";
 import {MatSortModule} from "@angular/material/sort";
 import {ReactiveFormsModule} from "@angular/forms";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {QFormsModule} from "@qlack/forms";
 import {MomentModule} from "ngx-moment";
 import {CommandsRoutingModule} from "./commands-routing.module";
@@ -32,7 +31,6 @@ import {MatChipsModule} from "@angular/material/chips";
   imports: [
     CommonModule,
     CommandsRoutingModule,
-    FlexLayoutModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,

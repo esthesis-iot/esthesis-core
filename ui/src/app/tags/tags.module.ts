@@ -7,7 +7,6 @@ import {TagEditComponent} from "./tag-edit/tag-edit.component";
 import {MatSortModule} from "@angular/material/sort";
 import {QFormsModule} from "@qlack/forms";
 import {ReactiveFormsModule} from "@angular/forms";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {DisplayModule} from "../shared/component/display/display.module";
 import {MatIconModule} from "@angular/material/icon";
 import {A11yModule} from "@angular/cdk/a11y";
@@ -28,7 +27,6 @@ import {MatSelectModule} from "@angular/material/select";
   imports: [
     CommonModule,
     TagsRoutingModule,
-    FlexLayoutModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,

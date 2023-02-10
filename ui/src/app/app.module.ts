@@ -13,7 +13,6 @@ import {AuthInterceptor, AuthModule, LogLevel} from "angular-auth-oidc-client";
 import {LayoutModule} from "./layout/layout.module";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatButtonModule} from "@angular/material/button";
 import {
@@ -40,7 +39,6 @@ const appearance: MatFormFieldDefaultOptions = {
     HttpClientModule,
     DisplayModule,
     LayoutModule,
-    FlexLayoutModule,
     HttpClientModule,
     NgProgressModule.withConfig({
       color: "#50A7D7",

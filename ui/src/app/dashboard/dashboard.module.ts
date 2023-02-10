@@ -3,7 +3,6 @@ import {CommonModule} from "@angular/common";
 
 import {DashboardRoutingModule} from "./dashboard-routing.module";
 import {DashboardViewComponent} from "./dashboard-view/dashboard-view.component";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {MAT_DATE_FORMATS} from "@angular/material/core";
 import {MatIconModule} from "@angular/material/icon";
 import {GridsterModule} from "angular-gridster2";
@@ -26,7 +25,6 @@ import {MatSliderModule} from "@angular/material/slider";
   imports: [
     CommonModule,
     DashboardRoutingModule,
-    FlexLayoutModule,
     MatCardModule,
     MatTableModule,
     MatIconModule,

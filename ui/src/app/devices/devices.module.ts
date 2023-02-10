@@ -1,7 +1,6 @@
 import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {DevicesRoutingModule} from "./devices-routing.module";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatIconModule} from "@angular/material/icon";
 import {MatSortModule} from "@angular/material/sort";
 import {QFormsModule} from "@qlack/forms";
@@ -51,7 +50,6 @@ import {MatButtonModule} from "@angular/material/button";
   imports: [
     CommonModule,
     DevicesRoutingModule,
-    FlexLayoutModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,

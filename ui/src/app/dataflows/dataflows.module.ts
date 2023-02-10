@@ -3,7 +3,6 @@ import {CommonModule} from "@angular/common";
 
 import {DataflowsRoutingModule} from "./dataflows-routing.module";
 import {DataflowsListComponent} from "./dataflows-list/dataflows-list.component";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatSortModule} from "@angular/material/sort";
 import {ReactiveFormsModule} from "@angular/forms";
 import {A11yModule} from "@angular/cdk/a11y";
@@ -38,7 +37,6 @@ import {MatButtonModule} from "@angular/material/button";
     CommonModule,
     DataflowsRoutingModule,
     MatCardModule,
-    FlexLayoutModule,
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,

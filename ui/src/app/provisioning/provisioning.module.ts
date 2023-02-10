@@ -2,7 +2,6 @@ import {NgModule, NO_ERRORS_SCHEMA} from "@angular/core";
 import {CommonModule} from "@angular/common";
 
 import {ProvisioningRoutingModule} from "./provisioning-routing.module";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatIconModule} from "@angular/material/icon";
 import {MatSortModule} from "@angular/material/sort";
 import {QFormsModule} from "@qlack/forms";
@@ -29,7 +28,6 @@ import {MatButtonModule} from "@angular/material/button";
   imports: [
     CommonModule,
     ProvisioningRoutingModule,
-    FlexLayoutModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,

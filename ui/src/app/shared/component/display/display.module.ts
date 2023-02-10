@@ -4,7 +4,6 @@ import {OkCancelModalComponent} from "./ok-cancel-modal/ok-cancel-modal.componen
 import {MatIconModule} from "@angular/material/icon";
 import {BooleanCheckboxComponent} from "./boolean-checkbox/boolean-checkbox.component";
 import {TextModalComponent} from "./text-modal/text-modal.component";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {ReactiveFormsModule} from "@angular/forms";
 import {InputModalComponent} from "./input-modal/input-modal.component";
 import {MatIconPickerComponent} from "./mat-icon-picker/mat-icon-picker.component";
@@ -34,7 +33,6 @@ import {MatButtonModule} from "@angular/material/button";
     MatCheckboxModule,
     MatIconModule,
     MatSelectModule,
-    FlexLayoutModule,
     ReactiveFormsModule,
     MatInputModule,
     MatTooltipModule

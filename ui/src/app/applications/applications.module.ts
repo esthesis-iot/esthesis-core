@@ -4,7 +4,6 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatSortModule} from "@angular/material/sort";
 import {ReactiveFormsModule} from "@angular/forms";
 import {QFormsModule} from "@qlack/forms";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {ApplicationsListComponent} from "./applications-list/applications-list.component";
 import {ApplicationEditComponent} from "./application-edit/application-edit.component";
 import {
@@ -36,7 +35,6 @@ import {MatButtonModule} from "@angular/material/button";
   imports: [
     ApplicationsRoutingModule,
     CommonModule,
-    FlexLayoutModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,

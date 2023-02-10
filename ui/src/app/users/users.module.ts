@@ -4,7 +4,6 @@ import {CommonModule} from "@angular/common";
 import {UsersRoutingModule} from "./users-routing.module";
 import {UsersListComponent} from "./users-list/users-list.component";
 import {UserEditComponent} from "./user-edit/user-edit.component";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatIconModule} from "@angular/material/icon";
 import {MatSortModule} from "@angular/material/sort";
 import {QFormsModule} from "@qlack/forms";
@@ -26,7 +25,6 @@ import {MatButtonModule} from "@angular/material/button";
   imports: [
     CommonModule,
     UsersRoutingModule,
-    FlexLayoutModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,

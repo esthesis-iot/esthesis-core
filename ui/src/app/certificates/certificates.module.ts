@@ -7,7 +7,6 @@ import {MatSortModule} from "@angular/material/sort";
 import {ReactiveFormsModule} from "@angular/forms";
 import {QFormsModule} from "@qlack/forms";
 import {CertificatesRoutingModule} from "./certificates-routing.module";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {DisplayModule} from "../shared/component/display/display.module";
 import {DateSupportModule} from "../shared/module/date-support.module";
 import {MatMenuModule} from "@angular/material/menu";
@@ -28,7 +27,6 @@ import {MatButtonModule} from "@angular/material/button";
   imports: [
     CertificatesRoutingModule,
     CommonModule,
-    FlexLayoutModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,

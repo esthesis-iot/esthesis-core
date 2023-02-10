@@ -3,7 +3,6 @@ import {CommonModule} from "@angular/common";
 
 import {CampaignsRoutingModule} from "./campaigns-routing.module";
 import {CampaignsComponent} from "./campaigns-list/campaigns.component";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {ReactiveFormsModule} from "@angular/forms";
 import {QFormsModule} from "@qlack/forms";
 import {DisplayModule} from "../shared/component/display/display.module";
@@ -36,7 +35,6 @@ import {MatButtonModule} from "@angular/material/button";
     MatCardModule,
     MatTableModule,
     MatButtonModule,
-    FlexLayoutModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
