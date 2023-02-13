@@ -36,6 +36,8 @@ import {MatCardModule} from "@angular/material/card";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatButtonModule} from "@angular/material/button";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {CdkTableModule} from "@angular/cdk/table";
 
 @NgModule({
   declarations: [
@@ -77,7 +79,9 @@ import {MatButtonModule} from "@angular/material/button";
     FormlyModule.forChild(),
     FormlyMaterialModule,
     ClipboardModule,
-    DisplayModule
+    DisplayModule,
+    FontAwesomeModule,
+    CdkTableModule
   ]
 })
 export class DevicesModule {

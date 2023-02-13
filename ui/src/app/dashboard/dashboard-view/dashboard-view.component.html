@@ -8,6 +8,15 @@
     </mat-card-title>
   </mat-card-header>
   <mat-card-content>
+
+    <mat-form-field>
+      <mat-label>Telephone</mat-label>
+      <span matPrefix>
+        <fa-icon icon="search"></fa-icon>
+      </span>
+      <input type="tel" matInput placeholder="555-555-1234">
+    </mat-form-field>
+
     <gridster [options]="dashboardOptions" class="gridster" #gridsterComponent>
       <gridster-item [id]="item.id" [item]="item.grid" *ngFor="let item of dashboardWidgets">
       </gridster-item>

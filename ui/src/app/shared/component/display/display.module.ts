@@ -24,7 +24,7 @@ import {MatButtonModule} from "@angular/material/button";
     InputModalComponent,
     MatIconPickerComponent,
     FieldErrorComponent,
-    TitlelisePipe
+    TitlelisePipe,
   ],
   imports: [
     CommonModule,
@@ -40,7 +40,7 @@ import {MatButtonModule} from "@angular/material/button";
   exports: [
     BooleanCheckboxComponent,
     FieldErrorComponent,
-    TitlelisePipe
+    TitlelisePipe,
   ]
 })
 export class DisplayModule {

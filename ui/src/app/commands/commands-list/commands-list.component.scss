@@ -1,9 +1,6 @@
-@import "src/styles-variables";
-@import "src/app/shared/style/table-highlight-pointer";
-
 #results {
   .mat-icon {
-    color: $e-color-grey;
+    //color: $e-color-grey;
   }
 
   .mat-mdc-button {
@@ -16,7 +13,7 @@
 
 mat-error {
   text-align: center;
-  background-color: $e-color-error;
+  //background-color: $e-color-error;
   color: white;
   padding: 0.15rem;
   border-radius: 3px;
@@ -29,8 +26,8 @@ mat-error {
     border-radius: 5px;
     padding: 0.1rem 0.25rem;
     background-color: inherit;
-    border: 1px solid $e-color-blue-light;
-    color: $e-color-blue-light;
+    //border: 1px solid $e-color-blue-light;
+    //color: $e-color-blue-light;
     font-size: 0.6rem;
   }
 }

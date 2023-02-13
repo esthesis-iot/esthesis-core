@@ -1,13 +1,26 @@
 import {NgModule} from "@angular/core";
-import {RouterModule, Routes} from "@angular/router";
+import {ActivatedRouteSnapshot, RouterModule, Routes} from "@angular/router";
 import {DevicesComponent} from "./devices-list/devices.component";
 import {DevicePreregisterComponent} from "./device-preregister/device-preregister.component";
 import {DeviceComponent} from "./device/device.component";
 
 const routes: Routes = [
-  {path: "", component: DevicesComponent},
-  {path: "preregister", component: DevicePreregisterComponent},
-  {path: ":id", component: DeviceComponent},
+  {
+    path: "", component: DevicesComponent,
+    data: {breadcrumb: ""}
+  },
+  {
+    path: "preregister", component: DevicePreregisterComponent,
+    data: {breadcrumb: "Preregister device"}
+  },
+  {
+    path: ":id", component: DeviceComponent,
+    data: {
+      breadcrumb: (route: ActivatedRouteSnapshot) => {
+        return "Device " + route.params.id;
+      }
+    }
+  },
 ];
 
 @NgModule({

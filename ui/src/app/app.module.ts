@@ -19,6 +19,18 @@ import {
   MAT_FORM_FIELD_DEFAULT_OPTIONS,
   MatFormFieldDefaultOptions
 } from "@angular/material/form-field";
+import {FaConfig, FaIconLibrary, FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {
+  faBars,
+  faBell,
+  faHome,
+  faMicrochip,
+  faRefresh,
+  faSearch,
+  faSun,
+  faUser
+} from "@fortawesome/free-solid-svg-icons";
+import {BreadcrumbComponent} from "./shared/component/breadcrumb/breadcrumb.component";
 
 const appearance: MatFormFieldDefaultOptions = {
   appearance: "outline",
@@ -30,7 +42,8 @@ const appearance: MatFormFieldDefaultOptions = {
 @NgModule({
   bootstrap: [AppComponent],
   declarations: [
-    AppComponent
+    AppComponent,
+    BreadcrumbComponent
   ],
   imports: [
     BrowserModule,
@@ -70,7 +83,8 @@ const appearance: MatFormFieldDefaultOptions = {
     MatToolbarModule,
     MatIconModule,
     MatSnackBarModule,
-    MatButtonModule
+    MatButtonModule,
+    FontAwesomeModule
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: appearance},
@@ -80,4 +94,8 @@ const appearance: MatFormFieldDefaultOptions = {
 })
 
 export class AppModule {
+  constructor(library: FaIconLibrary, faConfig: FaConfig) {
+    library.addIcons(faSearch, faBell, faUser, faRefresh, faSun, faMicrochip, faHome, faBars);
+    faConfig.fixedWidth = true;
+  }
 }

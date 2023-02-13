@@ -21,10 +21,10 @@ export class AppComponent extends BaseComponent {
 
   constructor(private oidcService: OidcSecurityService) {
     super();
-  }
 
-  toggleSidebar() {
-    this.sidebarVisibility = !this.sidebarVisibility;
+    // Check if a specific theme has already been saved for this user.
+    // tslint:disable-next-line:no-unused-expression
+    localStorage.getItem("theme") && document.querySelector("html")!.setAttribute("data-theme", localStorage.getItem("theme")!);
   }
 
   isLoggedIn(): Observable<AuthenticatedResult> {

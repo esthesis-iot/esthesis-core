@@ -16,6 +16,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatInputModule} from "@angular/material/input";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatSliderModule} from "@angular/material/slider";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 // @ts-ignore
 @NgModule({
@@ -36,7 +37,8 @@ import {MatSliderModule} from "@angular/material/slider";
     MatInputModule,
     MatAutocompleteModule,
     MatSliderModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    FontAwesomeModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [

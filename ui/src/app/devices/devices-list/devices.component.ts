@@ -28,6 +28,7 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
   // References to sorting and pagination.
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator2!: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router,
     private deviceService: DevicesService, private qForms: QFormsService) {
@@ -82,5 +83,4 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
   clearFilter() {
     this.filterForm.reset();
   }
-
 }

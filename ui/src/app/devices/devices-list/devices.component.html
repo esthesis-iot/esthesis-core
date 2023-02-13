@@ -1,59 +1,57 @@
-<mat-card appearance="outlined">
-  <mat-card-header>
-    <mat-card-title>
+<div class="card w-full bg-base-200 rounded-b-none">
+  <div class="card-body">
+    <h2 class="card-title text-2xl">
+      <fa-icon icon="microchip"></fa-icon>
       Devices
-      <button (click)="refreshCurrentData()" class="refresh-button" mat-mini-fab>
-        <mat-icon inline="true">refresh</mat-icon>
-      </button>
-    </mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <div fxLayout="column">
+    </h2>
+    <div>
       <!-- Filters -->
-      <div [formGroup]="filterForm" fxFlex="row" fxLayoutGap="10px">
-        <mat-form-field>
-          <input formControlName="hardwareId" matInput placeholder=" Hardware Id">
-        </mat-form-field>
-        <button (click)="clearFilter()" mat-button>CLEAR</button>
+      <div [formGroup]="filterForm" class="mb-10 mt-5">
+        <fa-icon icon="search" class="mr-5 ml-1"></fa-icon>
+        <input type="text" placeholder="Hardware id"
+               class="input w-full max-w-xs placeholder-primary-content/30"
+               formControlName="hardwareId"/>
+        <button (click)="clearFilter()" class="btn btn-secondary btn-ghost ml-2">CLEAR</button>
       </div>
 
       <!-- Table -->
       <table #table [dataSource]="datasource" aria-describedby="List of devices"
-             mat-table matSort matSortActive="createdOn"
-             matSortDirection="desc" matSortDisableClear matSortStart="desc">
-        <ng-container matColumnDef="hardwareId">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header scope="col"> Hardware ID</th>
-          <td *matCellDef="let element" mat-cell> {{element.hardwareId}}</td>
+             cdk-table matSort matSortActive="createdOn"
+             matSortDirection="desc" matSortDisableClear matSortStart="desc"
+             class="table w-full">
+        <ng-container cdkColumnDef="hardwareId">
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Hardware ID</th>
+          <td *cdkCellDef="let element" cdk-cell> {{element.hardwareId}}</td>
         </ng-container>
-        <ng-container matColumnDef="lastSeen">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header scope="col"> Last seen</th>
-          <td *matCellDef="let element" mat-cell>
+        <ng-container cdkColumnDef="lastSeen">
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Last seen</th>
+          <td *cdkCellDef="let element" cdk-cell>
             <div *ngIf="element.lastSeen">
               {{element.lastSeen | amFromUtc | amLocal | amTimeAgo}}
             </div>
           </td>
         </ng-container>
-        <ng-container matColumnDef="status">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header scope="col"> Status</th>
-          <td *matCellDef="let element" mat-cell> {{element.status | titlecase}}</td>
+        <ng-container cdkColumnDef="status">
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Status</th>
+          <td *cdkCellDef="let element" cdk-cell> {{element.status | titlecase}}</td>
         </ng-container>
-        <ng-container matColumnDef="createdOn">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header scope="col"> Created at</th>
-          <td *matCellDef="let element" mat-cell>
+        <ng-container cdkColumnDef="createdOn">
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Created at</th>
+          <td *cdkCellDef="let element" cdk-cell>
             {{element.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="registeredOn">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header scope="col"> Registration</th>
-          <td *matCellDef="let element" mat-cell>
+        <ng-container cdkColumnDef="registeredOn">
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Registration</th>
+          <td *cdkCellDef="let element" cdk-cell>
             <span *ngIf="element.registeredOn">
               {{element.registeredOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}
             </span>
           </td>
         </ng-container>
-        <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
-        <tr *matRowDef="let row; columns: displayedColumns; let element;" [routerLink]="element.id"
-            mat-row></tr>
+        <tr *cdkHeaderRowDef="displayedColumns" cdk-header-row></tr>
+        <tr *cdkRowDef="let row; columns: displayedColumns; let element;" [routerLink]="element.id"
+            cdk-row class="hover hover:cursor-pointer"></tr>
       </table>
       <mat-paginator #paginator (page)="changePage()"
                      [pageSizeOptions]="[10, 30, 50]"
@@ -61,8 +59,9 @@
                      [showFirstLastButtons]="true">
       </mat-paginator>
     </div>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button routerLink="preregister">PREREGISTER</button>
-  </mat-card-actions>
-</mat-card>
+    <div class="card-actions justify-start">
+      <button class="btn btn-primary" routerLink="preregister">PREREGISTER</button>
+    </div>
+  </div>
+</div>
+

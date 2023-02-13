@@ -1,24 +1,26 @@
 import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
-import {FooterComponent} from "./footer.component";
-import {HeaderComponent} from "./header.component";
-import {SidenavComponent} from "./sidenav.component";
 import {MatIconModule} from "@angular/material/icon";
 import {RouterLink, RouterModule} from "@angular/router";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatListModule} from "@angular/material/list";
 import {MatButtonModule} from "@angular/material/button";
+import {SidebarComponent} from "./sidebar/sidebar.component";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {TopbarComponent} from "./topbar/topbar.component";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {ReactiveFormsModule} from "@angular/forms";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
-    FooterComponent,
-    HeaderComponent,
-    SidenavComponent
+    SidebarComponent,
+    TopbarComponent
   ],
   exports: [
-    HeaderComponent,
-    SidenavComponent,
-    FooterComponent
+    SidebarComponent,
+    TopbarComponent
   ],
   imports: [
     CommonModule,
@@ -27,7 +29,12 @@ import {MatButtonModule} from "@angular/material/button";
     MatMenuModule,
     RouterLink,
     MatButtonModule,
-    RouterModule
+    RouterModule,
+    FontAwesomeModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatTooltipModule
   ]
 })
 export class LayoutModule {
