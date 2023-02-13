@@ -50,6 +50,7 @@
     "ng-terminal": "5.4.0",
     "ng2-logger": "13.1.9",
     "ngx-chips": "3.0.0",
+    "ngx-countdown": "^15.0.0",
     "ngx-filesaver": "^15.0.0",
     "ngx-filesize": "3.0.1",
     "ngx-json-viewer": "^3.2.1",

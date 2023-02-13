@@ -1,8 +1,24 @@
 <div class="card w-full bg-base-200 rounded-b-none">
   <div class="card-body">
-    <h2 class="card-title text-2xl">
-      <fa-icon icon="microchip"></fa-icon>
-      Devices
+    <h2 class="card-title text-2xl flex flex-row justify-between">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="microchip"></fa-icon>
+        <div>Devices</div>
+      </div>
+      <div class="flex flex-row">
+        <label class="label cursor-pointer">
+          <div
+            class="mr-1.5 radial-progress bg-primary text-primary-content border-4 border-primary"
+            *ngIf="live"
+            style="--size:1.25rem;--thickness: 4px;"
+            [ngStyle]="{'--value': countdown.left/(liveCounter*10)}"></div>
+          <span class="label-text">Live</span>
+          <input type="checkbox" class="toggle toggle-success ml-2"
+                 [checked]="live" (change)="toggleLive()"/>
+        </label>
+        <countdown #countdown [config]="countdownConfig"
+                   (event)="countDownEvent($event)" class="hidden"></countdown>
+      </div>
     </h2>
     <div>
       <!-- Filters -->

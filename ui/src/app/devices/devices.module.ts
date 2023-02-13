@@ -38,6 +38,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatButtonModule} from "@angular/material/button";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {CdkTableModule} from "@angular/cdk/table";
+import {CountdownComponent} from "ngx-countdown";
 
 @NgModule({
   declarations: [
@@ -81,7 +82,8 @@ import {CdkTableModule} from "@angular/cdk/table";
     ClipboardModule,
     DisplayModule,
     FontAwesomeModule,
-    CdkTableModule
+    CdkTableModule,
+    CountdownComponent
   ]
 })
 export class DevicesModule {

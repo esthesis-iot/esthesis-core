@@ -9,6 +9,7 @@ import {QFormsService} from "@qlack/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
+import {CountdownComponent, CountdownConfig, CountdownEvent} from "ngx-countdown";
 
 @Component({
   selector: "app-devices",
@@ -16,19 +17,21 @@ import {MatTableDataSource} from "@angular/material/table";
   styleUrls: ["./devices.component.scss"]
 })
 export class DevicesComponent extends BaseComponent implements OnInit, AfterViewInit {
-  // Columns to display.
-  displayedColumns = ["hardwareId", "lastSeen", "createdOn", "registeredOn", "status"];
-
-  // Datasource definition.
-  datasource: MatTableDataSource<DeviceDto> = new MatTableDataSource<DeviceDto>();
-
-  // Search filter.
-  filterForm: FormGroup;
-
   // References to sorting and pagination.
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
-  @ViewChild(MatPaginator, {static: true}) paginator2!: MatPaginator;
+  @ViewChild("countdown", {static: false}) private countdown!: CountdownComponent;
+
+  // Columns to display.
+  displayedColumns = ["hardwareId", "lastSeen", "createdOn", "registeredOn", "status"];
+  // Datasource definition.
+  datasource: MatTableDataSource<DeviceDto> = new MatTableDataSource<DeviceDto>();
+  // Search filter.
+  filterForm: FormGroup;
+  // Whether data should be automatically refreshed.
+  live = false;
+  liveCounter = 30;
+  countdownConfig: CountdownConfig = {demand: true, leftTime: this.liveCounter};
 
   constructor(private fb: FormBuilder, private router: Router,
     private deviceService: DevicesService, private qForms: QFormsService) {
@@ -82,5 +85,23 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
 
   clearFilter() {
     this.filterForm.reset();
+  }
+
+  countDownEvent(event: CountdownEvent) {
+    if (event.action === "done") {
+      this.refreshCurrentData();
+      this.countdown.restart();
+      this.countdown.begin();
+    }
+  }
+
+  toggleLive() {
+    this.live = !this.live;
+    if (this.live) {
+      this.countdown.begin();
+    } else {
+      this.countdown.stop();
+      this.countdown.restart();
+    }
   }
 }
