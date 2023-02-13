@@ -12,15 +12,18 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {FooterComponent} from "./footer/footer.component";
 
 @NgModule({
   declarations: [
     SidebarComponent,
-    TopbarComponent
+    TopbarComponent,
+    FooterComponent
   ],
   exports: [
     SidebarComponent,
-    TopbarComponent
+    TopbarComponent,
+    FooterComponent
   ],
   imports: [
     CommonModule,

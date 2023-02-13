@@ -1,16 +1,10 @@
 <ng-progress></ng-progress>
-<div class="flex h-screen flex-row gap-6 pt-2">
+<div class="flex flex-row gap-6 pt-2">
   <app-sidebar></app-sidebar>
-  <div class="flex-col grow mr-4">
-    <div class="flex-column">
-      <app-topbar></app-topbar>
-      <app-breadcrumb></app-breadcrumb>
-      <router-outlet></router-outlet>
-    </div>
-
-    <div class="fixed bottom-0 mb-2">
-      Footer
-    </div>
+  <div class="flex-col w-full mr-4">
+    <app-topbar></app-topbar>
+    <app-breadcrumb></app-breadcrumb>
+    <router-outlet></router-outlet>
+    <app-footer></app-footer>
   </div>
 </div>
-

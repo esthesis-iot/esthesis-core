@@ -23,6 +23,7 @@ import {FaConfig, FaIconLibrary, FontAwesomeModule} from "@fortawesome/angular-f
 import {
   faBars,
   faBell,
+  faHeart,
   faHome,
   faMicrochip,
   faRefresh,
@@ -95,7 +96,7 @@ const appearance: MatFormFieldDefaultOptions = {
 
 export class AppModule {
   constructor(library: FaIconLibrary, faConfig: FaConfig) {
-    library.addIcons(faSearch, faBell, faUser, faRefresh, faSun, faMicrochip, faHome, faBars);
+    library.addIcons(faSearch, faBell, faUser, faRefresh, faSun, faMicrochip, faHome, faBars, faHeart);
     faConfig.fixedWidth = true;
   }
 }
