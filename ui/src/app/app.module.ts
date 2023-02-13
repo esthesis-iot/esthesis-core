@@ -32,6 +32,7 @@ import {
   faUser
 } from "@fortawesome/free-solid-svg-icons";
 import {BreadcrumbComponent} from "./shared/component/breadcrumb/breadcrumb.component";
+import {faGithub, faInstagram, faTwitter} from "@fortawesome/free-brands-svg-icons";
 
 const appearance: MatFormFieldDefaultOptions = {
   appearance: "outline",
@@ -96,7 +97,8 @@ const appearance: MatFormFieldDefaultOptions = {
 
 export class AppModule {
   constructor(library: FaIconLibrary, faConfig: FaConfig) {
-    library.addIcons(faSearch, faBell, faUser, faRefresh, faSun, faMicrochip, faHome, faBars, faHeart);
+    library.addIcons(faSearch, faBell, faUser, faRefresh, faSun, faMicrochip, faHome, faBars,
+      faHeart, faInstagram, faTwitter, faGithub);
     faConfig.fixedWidth = true;
   }
 }
