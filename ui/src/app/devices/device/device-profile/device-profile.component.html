@@ -1,15 +1,10 @@
-<div fxLayout="column">
-  <div fxLayout="row wrap" fxLayoutGap="1rem">
-    <div *ngFor="let dataField of dataFields" class="field-box"
-         [matTooltip]="dataField.lastUpdate | amFromUtc | amLocal | amTimeAgo">
-      <div fxLayout="row" fxLayoutGap="0.5rem">
-        <div fxLayoutAlign="center center" *ngIf="dataField.icon">
-          <mat-icon>{{dataField.icon}}</mat-icon>
-        </div>
-        <div>
-          <div fxLayoutAlign="space-around center" class="title">{{dataField.label}}</div>
-          <div fxLayoutAlign="space-around center" class="value">{{dataField.value}}</div>
-        </div>
+<div class="flex flex-col">
+  <div class="flex flex-row flex-wrap gap-2">
+    <div class="stats shadow" *ngFor="let dataField of dataFields">
+      <div class="stat">
+        <div class="stat-title">{{dataField.label}}</div>
+        <div class="stat-value">{{dataField.value}}</div>
+        <div class="stat-desc">{{dataField.lastUpdate | amFromUtc | amLocal | amTimeAgo}}</div>
       </div>
     </div>
   </div>
@@ -21,8 +16,8 @@
                    [model]="deviceProfileFormModel">
       </formly-form>
 
-      <mat-card-actions>
-        <button mat-button color="accent" [matMenuTriggerFor]="menu">DELETE NOTE
+      <div class="card-actions justify-start">
+        <button class="btn btn-accent" [matMenuTriggerFor]="menu">DELETE NOTE
           <mat-menu #menu="matMenu" xPosition="before">
             <button *ngFor="let field of deviceProfileFormFields"
                     mat-menu-item
@@ -30,11 +25,11 @@
             </button>
           </mat-menu>
         </button>
-        <button mat-button (click)="add()">ADD NOTE</button>
-        <button mat-button color="primary" (click)="save()"
+        <button class="btn btn-secondary" (click)="add()">ADD NOTE</button>
+        <button class="btn btn-primary" (click)="save()"
                 [disabled]="!deviceProfileForm.dirty">SAVE
         </button>
-      </mat-card-actions>
+      </div>
     </form>
   </div>
 </div>

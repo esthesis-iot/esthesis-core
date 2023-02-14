@@ -23,12 +23,15 @@ import {FaConfig, FaIconLibrary, FontAwesomeModule} from "@fortawesome/angular-f
 import {
   faBars,
   faBell,
+  faDatabase,
   faHeart,
   faHome,
+  faMemory,
   faMicrochip,
   faRefresh,
   faSearch,
   faSun,
+  faTerminal,
   faUser
 } from "@fortawesome/free-solid-svg-icons";
 import {BreadcrumbComponent} from "./shared/component/breadcrumb/breadcrumb.component";
@@ -98,7 +101,7 @@ const appearance: MatFormFieldDefaultOptions = {
 export class AppModule {
   constructor(library: FaIconLibrary, faConfig: FaConfig) {
     library.addIcons(faSearch, faBell, faUser, faRefresh, faSun, faMicrochip, faHome, faBars,
-      faHeart, faInstagram, faTwitter, faGithub);
+      faHeart, faInstagram, faTwitter, faGithub, faMemory, faDatabase, faTerminal);
     faConfig.fixedWidth = true;
   }
 }

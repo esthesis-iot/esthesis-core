@@ -32,7 +32,25 @@ mat-paginator {
   @apply text-base-content #{!important};
 }
 
-.cdk-row:hover {
-  //cursor: pointer;
-  //background-color: red !important;
+// TABS
+mat-tab-body {
+  @apply mt-5;
+}
+
+mat-tab-group {
+  @apply bg-inherit font-inter #{!important};
+  font-size: inherit #{!important};
+  color: inherit #{!important};
+
+  .mdc-tab {
+    .mdc-tab__text-label {
+      @apply text-base-content #{!important};
+    }
+  }
+
+  .mdc-tab--active {
+    .mdc-tab__text-label {
+      @apply text-base-content #{!important};
+    }
+  }
 }
