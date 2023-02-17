@@ -141,6 +141,13 @@
         </property>
       </activation>
       <build>
+        <plugins>
+          <plugin>
+            <groupId>org.cyclonedx</groupId>
+            <artifactId>cyclonedx-maven-plugin</artifactId>
+            <inherited>false</inherited>
+          </plugin>
+        </plugins>
         <pluginManagement>
           <plugins>
             <plugin>
