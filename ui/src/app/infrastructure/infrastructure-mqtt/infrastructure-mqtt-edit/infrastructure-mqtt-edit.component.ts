@@ -1,22 +1,22 @@
 import {Component, OnInit} from "@angular/core";
+import {BaseComponent} from "../../../shared/components/base-component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {TagDto} from "../../../tags/dto/tag-dto";
+import {MatDialog} from "@angular/material/dialog";
+import {QFormsService} from "@qlack/forms";
+import {TagsService} from "../../../tags/tags.service";
+import {InfrastructureMqttService} from "../infrastructure-mqtt.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {BaseComponent} from "../../shared/components/base-component";
+import {UtilityService} from "../../../shared/services/utility.service";
+import {InfrastructureMqttDto} from "../dto/Infrastructure-mqtt-dto";
 import {
   OkCancelModalComponent
-} from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
-import {QFormsService} from "@qlack/forms";
-import {TagDto} from "../../tags/dto/tag-dto";
-import {TagsService} from "../../tags/tags.service";
-import {InfrastructureMqttService} from "./infrastructure-mqtt.service";
-import {InfrastructureMqttDto} from "./dto/Infrastructure-mqtt-dto";
-import {MatDialog} from "@angular/material/dialog";
-import {UtilityService} from "../../shared/services/utility.service";
+} from "../../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 
 @Component({
   selector: "app-infrastructure-mqtt-edit",
   templateUrl: "./infrastructure-mqtt-edit.component.html",
-  styleUrls: []
+  styleUrls: ["./infrastructure-mqtt-edit.component.scss"]
 })
 export class InfrastructureMqttEditComponent extends BaseComponent implements OnInit {
   form!: FormGroup;
@@ -97,3 +97,4 @@ export class InfrastructureMqttEditComponent extends BaseComponent implements On
     });
   }
 }
+

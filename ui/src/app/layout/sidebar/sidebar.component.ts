@@ -38,7 +38,7 @@ export class SidebarComponent {
     {type: SidebarItemType.CATEGORY, title: "Security"},
     {icon: faCertificate, title: "Certificates", route: "certificates", type: SidebarItemType.ITEM},
     {icon: faStamp, title: "CAs", route: "cas", type: SidebarItemType.ITEM},
-    {icon: faShieldHalved, title: "Stores", route: "stores", type: SidebarItemType.ITEM},
+    {icon: faShieldHalved, title: "Keystores", route: "keystores", type: SidebarItemType.ITEM},
     {type: SidebarItemType.CATEGORY, title: "Integrations"},
     {icon: faDiagramProject, title: "Dataflows", route: "dataflow", type: SidebarItemType.ITEM},
     {icon: faNetworkWired, title: "Infrastructure", route: "infrastructure", type: SidebarItemType.ITEM},

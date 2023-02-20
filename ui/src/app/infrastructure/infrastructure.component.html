@@ -1,18 +1,23 @@
-<mat-card appearance="outlined">
-  <mat-card-header>
-    <mat-card-title>Infrastructure</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <mat-tab-group #tabs animationDuration="0ms">
-      <mat-tab label="MQTT">
-        <ng-template mat-tab-label>
-          <mat-icon>settings_remote</mat-icon>
-          MQTT
-        </ng-template>
-        <ng-template matTabContent>
-          <app-infrastructure-mqtt></app-infrastructure-mqtt>
-        </ng-template>
-      </mat-tab>
-    </mat-tab-group>
-  </mat-card-content>
-</mat-card>
+<div class="card w-full bg-base-200 rounded-b-none">
+  <div class="card-body">
+    <h2 class="card-title text-2xl flex flex-row justify-between mb-10">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="network-wired"></fa-icon>
+        <div>Infrastructure</div>
+      </div>
+    </h2>
+    <div>
+      <mat-tab-group #tabs animationDuration="0ms">
+        <mat-tab label="MQTT">
+          <ng-template mat-tab-label>
+            <fa-icon icon="envelope-open" class="mr-2"></fa-icon>
+            MQTT
+          </ng-template>
+          <ng-template matTabContent>
+            <app-infrastructure-mqtt-list></app-infrastructure-mqtt-list>
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</div>

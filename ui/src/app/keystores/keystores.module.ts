@@ -1,10 +1,8 @@
 import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
 
-import {StoresRoutingModule} from "./stores-routing.module";
-import {StoresListComponent} from "./stores-list/stores-list.component";
+import {KeystoresRoutingModule} from "./keystores-routing.module";
 import {MatSortModule} from "@angular/material/sort";
-import {StoreEditComponent} from "./store-edit/store-edit.component";
 import {ReactiveFormsModule} from "@angular/forms";
 import {QFormsModule} from "@qlack/forms";
 import {MatCardModule} from "@angular/material/card";
@@ -18,13 +16,17 @@ import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {DateSupportModule} from "../shared/modules/date-support.module";
 import {ComponentsModule} from "../shared/components/components.module";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {CdkTableModule} from "@angular/cdk/table";
+import {KeystoresListComponent} from "./keystores-list/keystores-list.component";
+import {KeystoreEditComponent} from "./keystore-edit/keystore-edit.component";
 
 
 @NgModule({
-  declarations: [StoresListComponent, StoreEditComponent],
+  declarations: [KeystoresListComponent, KeystoreEditComponent],
   imports: [
     CommonModule,
-    StoresRoutingModule,
+    KeystoresRoutingModule,
     MatCardModule,
     MatPaginatorModule,
     MatTableModule,
@@ -38,8 +40,10 @@ import {ComponentsModule} from "../shared/components/components.module";
     MatListModule,
     MatCheckboxModule,
     MatSelectModule,
-    DateSupportModule
+    DateSupportModule,
+    FontAwesomeModule,
+    CdkTableModule
   ]
 })
-export class StoresModule {
+export class KeystoresModule {
 }

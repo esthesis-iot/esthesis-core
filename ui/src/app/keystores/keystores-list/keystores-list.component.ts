@@ -4,18 +4,18 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatSort} from "@angular/material/sort";
 import {Router} from "@angular/router";
 import {StoreDto} from "../dto/store-dto";
-import {StoresService} from "../stores.service";
+import {KeystoresService} from "../keystores.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {QFormsService} from "@qlack/forms";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
-  selector: "app-stores-list",
-  templateUrl: "./stores-list.component.html",
-  styleUrls: ["./stores-list.component.scss"]
+  selector: "app-keystores-list",
+  templateUrl: "./keystores-list.component.html",
+  styleUrls: ["./keystores-list.component.scss"]
 })
-export class StoresListComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class KeystoresListComponent extends BaseComponent implements OnInit, AfterViewInit {
   displayedColumns = ["name", "createdOn"];
   datasource: MatTableDataSource<StoreDto> = new MatTableDataSource<StoreDto>();
   filterForm: FormGroup;
@@ -25,7 +25,7 @@ export class StoresListComponent extends BaseComponent implements OnInit, AfterV
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private fb: FormBuilder, private router: Router,
-    private storesService: StoresService,
+    private storesService: KeystoresService,
     private qForms: QFormsService) {
     super();
     this.filterForm = this.fb.group({

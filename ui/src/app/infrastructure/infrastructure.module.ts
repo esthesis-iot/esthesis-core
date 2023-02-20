@@ -7,10 +7,6 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatSortModule} from "@angular/material/sort";
 import {QFormsModule} from "@qlack/forms";
 import {ReactiveFormsModule} from "@angular/forms";
-import {InfrastructureMqttComponent} from "./infrastructure-mqtt/infrastructure-mqtt.component";
-import {
-  InfrastructureMqttEditComponent
-} from "./infrastructure-mqtt/infrastructure-mqtt-edit.component";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
@@ -22,12 +18,20 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatButtonModule} from "@angular/material/button";
 import {ComponentsModule} from "../shared/components/components.module";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {
+  InfrastructureMqttListComponent
+} from "./infrastructure-mqtt/infrastructure-mqtt-list/infrastructure-mqtt-list.component";
+import {
+  InfrastructureMqttEditComponent
+} from "./infrastructure-mqtt/infrastructure-mqtt-edit/infrastructure-mqtt-edit.component";
+import {CdkTableModule} from "@angular/cdk/table";
 
 @NgModule({
   declarations: [
     InfrastructureComponent,
-    InfrastructureMqttComponent,
-    InfrastructureMqttEditComponent
+    InfrastructureMqttEditComponent,
+    InfrastructureMqttListComponent
   ],
   imports: [
     CommonModule,
@@ -47,6 +51,8 @@ import {ComponentsModule} from "../shared/components/components.module";
     MatTabsModule,
     ComponentsModule,
     MatProgressSpinnerModule,
+    FontAwesomeModule,
+    CdkTableModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],
 })

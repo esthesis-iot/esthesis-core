@@ -1,22 +1,22 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
+import {BaseComponent} from "../../../shared/components/base-component";
 import {MatSort} from "@angular/material/sort";
-import {QFormsService, QPageableReply} from "@qlack/forms";
-import {InfrastructureMqttService} from "./infrastructure-mqtt.service";
-import {BaseComponent} from "../../shared/components/base-component";
-import {InfrastructureMqttDto} from "./dto/Infrastructure-mqtt-dto";
-import * as _ from "lodash";
-import {TagDto} from "../../tags/dto/tag-dto";
-import {TagsService} from "../../tags/tags.service";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
-import {UtilityService} from "../../shared/services/utility.service";
+import {InfrastructureMqttDto} from "../dto/Infrastructure-mqtt-dto";
+import {TagDto} from "../../../tags/dto/tag-dto";
+import {InfrastructureMqttService} from "../infrastructure-mqtt.service";
+import {QFormsService, QPageableReply} from "@qlack/forms";
+import {UtilityService} from "../../../shared/services/utility.service";
+import {TagsService} from "../../../tags/tags.service";
+import * as _ from "lodash";
 
 @Component({
-  selector: "app-infrastructure-mqtt",
-  templateUrl: "./infrastructure-mqtt.component.html",
-  styleUrls: ["./infrastructure-mqtt.component.scss"]
+  selector: "app-infrastructure-mqtt-list",
+  templateUrl: "./infrastructure-mqtt-list.component.html",
+  styleUrls: ["./infrastructure-mqtt-list.component.scss"]
 })
-export class InfrastructureMqttComponent extends BaseComponent implements AfterViewInit {
+export class InfrastructureMqttListComponent extends BaseComponent implements AfterViewInit {
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 

@@ -8,7 +8,7 @@ import {FileSaverService} from "ngx-filesaver";
 @Injectable({
   providedIn: "root"
 })
-export class StoresService extends CrudDownloadService<StoreDto> {
+export class KeystoresService extends CrudDownloadService<StoreDto> {
   private prefix = environment.apiPrefix + "/store/v1";
 
   constructor(http: HttpClient, fs: FileSaverService) {

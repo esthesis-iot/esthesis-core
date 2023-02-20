@@ -25,6 +25,8 @@ import {MatSliderModule} from "@angular/material/slider";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatButtonModule} from "@angular/material/button";
 import {ComponentsModule} from "../shared/components/components.module";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {CdkTableModule} from "@angular/cdk/table";
 
 @NgModule({
   declarations: [
@@ -56,7 +58,9 @@ import {ComponentsModule} from "../shared/components/components.module";
     FormlyMaterialModule,
     FormlyMatSliderModule,
     FormlyMatToggleModule,
-    ComponentsModule
+    ComponentsModule,
+    FontAwesomeModule,
+    CdkTableModule
   ]
 })
 export class DataflowsModule {

@@ -22,6 +22,7 @@ import {
   faBroadcastTower,
   faCalendar,
   faCertificate,
+  faCheck,
   faChevronDown,
   faCircle,
   faCircleInfo,
@@ -30,8 +31,10 @@ import {
   faCubes,
   faDashboard,
   faDatabase,
+  faDiagramProject,
   faDownload,
   faEnvelope,
+  faEnvelopeOpen,
   faFlag,
   faForward,
   faGlobe,
@@ -42,12 +45,16 @@ import {
   faListCheck,
   faMemory,
   faMicrochip,
+  faNetworkWired,
   faPause,
   faPercent,
   faPlay,
   faPlus,
   faRefresh,
   faSearch,
+  faShieldHalved,
+  faSquare,
+  faSquareCheck,
   faStamp,
   faStop,
   faStopwatch,
@@ -126,7 +133,8 @@ export class AppModule {
       faXmark, faCubes, faTriangleExclamation, faGlobe, faCircleUp, faCircle, faPlay, faPause,
       faUserClock, faPlus, faLayerGroup, faTag, faCalendar, faListCheck, faFlag, faStop, faForward,
       faCircleInfo, faHeartCircleBolt, faEnvelope, faStopwatch, faBarsProgress, faDashboard,
-      faPercent, faCertificate, faStamp);
+      faPercent, faCertificate, faStamp, faShieldHalved, faDiagramProject, faCheck, faSquareCheck,
+      faSquare, faNetworkWired, faEnvelopeOpen);
     faConfig.fixedWidth = true;
   }
 }

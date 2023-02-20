@@ -34,9 +34,9 @@ export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
       canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Certificates"}
     },
     {
-      path: "stores",
-      loadChildren: () => import("./stores/stores.module").then(m => m.StoresModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Stores"}
+      path: "keystores",
+      loadChildren: () => import("./keystores/keystores.module").then(m => m.KeystoresModule),
+      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Keystores"}
     },
     {
       path: "infrastructure",

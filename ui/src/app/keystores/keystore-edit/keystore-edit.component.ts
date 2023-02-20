@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {BaseComponent} from "../../shared/components/base-component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {StoresService} from "../stores.service";
+import {KeystoresService} from "../keystores.service";
 import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
@@ -16,17 +16,17 @@ import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
-  selector: "app-store-edit",
-  templateUrl: "./store-edit.component.html",
+  selector: "app-keystore-edit",
+  templateUrl: "./keystore-edit.component.html",
   styleUrls: []
 })
-export class StoreEditComponent extends BaseComponent implements OnInit {
+export class KeystoreEditComponent extends BaseComponent implements OnInit {
   form!: FormGroup;
   id!: string | null;
   cas: CaDto[] | undefined;
   certs: CertificateDto[] | undefined;
 
-  constructor(private fb: FormBuilder, private storesService: StoresService,
+  constructor(private fb: FormBuilder, private storesService: KeystoresService,
     private qForms: QFormsService, private route: ActivatedRoute, private router: Router,
     private dialog: MatDialog, private utilityService: UtilityService,
     private casService: CasService, private certificatesService: CertificatesService) {

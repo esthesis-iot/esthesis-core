@@ -1,26 +1,32 @@
-<mat-card appearance="outlined">
-  <mat-card-header>
-    <mat-card-title>New dataflow component</mat-card-title>
-  </mat-card-header>
-  <mat-card-content class="dataflows" fxLayout="row wrap" fxLayoutGap="1rem">
-    <mat-card appearance="outlined" *ngFor="let d of dataflows">
-      <mat-card-title-group>
-        <mat-card-title>{{d.title}}</mat-card-title>
-        <mat-card-subtitle>{{d.category}}</mat-card-subtitle>
-        <img alt="" mat-card-sm-image src="{{d.icon}}">
-      </mat-card-title-group>
-      <mat-card-content>
-        {{d.description}}
-      </mat-card-content>
-      <mat-card-actions>
-        <button [routerLink]="'/dataflow/edit/' + d.type + '/' + appConstants.NEW_RECORD_ID"
-                mat-button>
-          CREATE
-        </button>
-      </mat-card-actions>
-    </mat-card>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button routerLink="/dataflow">CANCEL</button>
-  </mat-card-actions>
-</mat-card>
+<div class="card w-full bg-base-200 rounded-b-none">
+  <div class="card-body">
+    <h2 class="card-title text-2xl flex flex-row justify-between mb-10">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="diagram-project"></fa-icon>
+        <div>Dataflows</div>
+      </div>
+    </h2>
+    <div class="flex flex-row flex-wrap gap-5">
+
+      <div class="card w-96 bg-base-100 shadow-xl" *ngFor="let d of dataflows">
+        <figure class="px-10 pt-10">
+          <img src="{{d.icon}}" class="rounded-xl max-h-16"/>
+        </figure>
+        <div class="card-body items-center text-center">
+          <h2 class="card-title">{{d.title}}</h2>
+          <p>{{d.description}}</p>
+          <div class="card-actions">
+            <button class="btn btn-primary btn-sm mt-5"
+                    [routerLink]="'/dataflow/edit/' + d.type + '/' + appConstants.NEW_RECORD_ID">
+              DEPLOY
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="card-actions justify-start mt-10">
+      <button class="btn btn-sm btn-secondary" routerLink="/dataflow">CANCEL</button>
+    </div>
+  </div>
+</div>

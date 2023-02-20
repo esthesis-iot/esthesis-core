@@ -3,7 +3,7 @@ import {RouterModule, Routes} from "@angular/router";
 import {InfrastructureComponent} from "./infrastructure.component";
 import {
   InfrastructureMqttEditComponent
-} from "./infrastructure-mqtt/infrastructure-mqtt-edit.component";
+} from "./infrastructure-mqtt/infrastructure-mqtt-edit/infrastructure-mqtt-edit.component";
 
 const routes: Routes = [
   {path: "", component: InfrastructureComponent},
