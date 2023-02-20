@@ -26,6 +26,10 @@
           <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Hardware ID</th>
           <td *cdkCellDef="let element" cdk-cell> {{element.hardwareId}}</td>
         </ng-container>
+        <ng-container cdkColumnDef="type">
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Type</th>
+          <td *cdkCellDef="let element" cdk-cell> {{element.type}}</td>
+        </ng-container>
         <ng-container cdkColumnDef="lastSeen">
           <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Last seen</th>
           <td *cdkCellDef="let element" cdk-cell>

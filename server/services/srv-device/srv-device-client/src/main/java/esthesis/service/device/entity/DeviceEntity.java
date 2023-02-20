@@ -1,6 +1,7 @@
 package esthesis.service.device.entity;
 
 import esthesis.common.AppConstants.DeviceStatus;
+import esthesis.common.AppConstants.DeviceType;
 import esthesis.common.entity.BaseEntity;
 import esthesis.service.device.dto.DeviceKeyDTO;
 import io.quarkus.mongodb.panache.common.MongoEntity;
@@ -45,5 +46,10 @@ public class DeviceEntity extends BaseEntity {
   // date will be (almost) identical to the registeredOn date.
   private Instant createdOn;
 
+  // The public, private, and certificate for the device.
   private DeviceKeyDTO deviceKey;
+
+  // The type of the device.
+  private DeviceType type;
+  
 }

@@ -3,10 +3,12 @@ package esthesis.services.device.impl.service;
 import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.DeviceRegistrationMode;
 import esthesis.common.AppConstants.DeviceStatus;
+import esthesis.common.AppConstants.DeviceType;
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QDisabledException;
 import esthesis.common.exception.QDoesNotExistException;
+import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QSecurityException;
 import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.service.crypto.resource.KeyResource;
@@ -98,7 +100,8 @@ public class DeviceRegistrationService {
   throws NoSuchAlgorithmException, OperatorCreationException, InvalidKeySpecException,
          NoSuchProviderException, IOException {
     // Split IDs.
-    String ids = deviceRegistration.getIds();
+    //TODO ********************************************* CHECK HOW TO SPLIT
+    String ids = deviceRegistration.getHardwareId();
     ids = ids.replace("\n", ",");
     String[] idList = ids.split(",");
 
@@ -115,32 +118,32 @@ public class DeviceRegistrationService {
     // Register IDs.
     for (String hardwareId : idList) {
       log.debug("Requested to preregister a device with hardware id '{}'.", hardwareId);
-      register(hardwareId, deviceRegistration.getTags(), DeviceStatus.PREREGISTERED);
+      register(hardwareId, deviceRegistration.getTags(), DeviceStatus.PREREGISTERED,
+          deviceRegistration.getType());
     }
   }
 
   public DeviceEntity register(DeviceRegistrationDTO deviceRegistration)
   throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, OperatorCreationException,
          NoSuchProviderException {
-    log.debug("Attempting to register device with hardwareId '{}' and tags '{}'.",
-        deviceRegistration.getIds(), deviceRegistration.getTags());
+    log.debug("Attempting to register device with '{}'.", deviceRegistration);
 
     DeviceRegistrationMode deviceRegistrationMode = DeviceRegistrationMode.valueOf(
         settingsResource.findByName(NamedSetting.DEVICE_REGISTRATION_MODE).asString());
 
     if (deviceRegistrationMode == DeviceRegistrationMode.DISABLED) {
       throw new QDisabledException("Registration of new devices is disabled.",
-          deviceRegistration.getIds());
+          deviceRegistration.getHardwareId());
     } else {
       // Check registration preconditions and register device.
       log.debug("Platform running in '{}' registration mode.", deviceRegistrationMode);
       return switch (deviceRegistrationMode) {
-        case OPEN -> register(deviceRegistration.getIds(), deviceRegistration.getTags(),
-            DeviceStatus.REGISTERED);
+        case OPEN -> register(deviceRegistration.getHardwareId(), deviceRegistration.getTags(),
+            DeviceStatus.REGISTERED, deviceRegistration.getType());
         case OPEN_WITH_APPROVAL ->
-            register(deviceRegistration.getIds(), deviceRegistration.getTags(),
-                DeviceStatus.APPROVAL);
-        case ID -> activatePreregisteredDevice(deviceRegistration.getIds());
+            register(deviceRegistration.getHardwareId(), deviceRegistration.getTags(),
+                DeviceStatus.APPROVAL, deviceRegistration.getType());
+        case ID -> activatePreregisteredDevice(deviceRegistration.getHardwareId());
         default ->
             throw new QDoesNotExistException("The requested registration mode does not exist.");
       };
@@ -154,10 +157,17 @@ public class DeviceRegistrationService {
    * @param tags       The tag names associated with this device as a comma-separated list.
    */
   private DeviceEntity register(String hardwareId, List<String> tags,
-      AppConstants.DeviceStatus status)
+      AppConstants.DeviceStatus status, DeviceType deviceType)
   throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, OperatorCreationException,
          NoSuchProviderException {
     log.debug("Registering device with hardware id '{}'.", hardwareId);
+
+    // Check the proposed hardware id conforms to the naming convention.
+    if (!hardwareId.matches(AppConstants.HARDWARE_ID_REGEX)) {
+      throw new QMismatchException(
+          "Hardware id '{}' does not conform to the naming convention '{}'.", hardwareId,
+          AppConstants.HARDWARE_ID_REGEX);
+    }
 
     // Check that a device with the same hardware ID does not already exist.
     if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
@@ -191,7 +201,9 @@ public class DeviceRegistrationService {
     final DeviceEntity deviceEntity = new DeviceEntity()
         .setHardwareId(hardwareId)
         .setStatus(status)
+        .setType(deviceType)
         .setCreatedOn(Instant.now())
+
         .setDeviceKey(deviceKeyDTO);
     if (status != DeviceStatus.PREREGISTERED) {
       deviceEntity.setRegisteredOn(Instant.now());

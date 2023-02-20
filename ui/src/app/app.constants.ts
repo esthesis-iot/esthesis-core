@@ -27,6 +27,9 @@ export const AppConstants = {
 
   // Device settings.
   DEVICE: {
+    TYPE: {
+      ESTHESIS: "ESTHESIS"
+    },
     STATUS: {
       DISABLED: "DISABLED",
       PREREGISTERED: "PREREGISTERED",

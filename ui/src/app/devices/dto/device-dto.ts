@@ -1,6 +1,6 @@
 export interface DeviceDto {
   id: string;
-  device: string;
+  // device: string;
   lastSeen?: Date;
   owner?: string;
   status?: string;
@@ -9,4 +9,5 @@ export interface DeviceDto {
   hardwareId: string;
   createdOn?: Date;
   registeredOn?: Date;
+  type: string;
 }

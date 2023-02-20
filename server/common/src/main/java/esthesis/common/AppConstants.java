@@ -19,6 +19,9 @@ public class AppConstants {
   public static final String REDIS_KEY_SUFFIX_TIMESTAMP = "timestamp";
   public static final String REDIS_KEY_PROVISIONING_PACKAGE_FILE = "file";
 
+  // Naming convention for hardware ids.
+  public static final String HARDWARE_ID_REGEX = "^[a-zA-Z0-9_-]*$";
+
   // Settings keys.
   public enum NamedSetting {
     SECURITY_ASYMMETRIC_KEY_SIZE, SECURITY_ASYMMETRIC_KEY_ALGORITHM,
@@ -36,6 +39,10 @@ public class AppConstants {
 
   public enum KeyType {
     PUBLIC, PRIVATE, CERTIFICATE
+  }
+
+  public enum DeviceType {
+    ESTHESIS
   }
 
   // The status a device can have.

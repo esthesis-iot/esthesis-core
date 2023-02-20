@@ -1,9 +1,11 @@
 package esthesis.service.agent.impl.service;
 
+import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.AppConstants.Provisioning.Redis;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.exception.QLimitException;
+import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QSecurityException;
 import esthesis.service.agent.dto.AgentProvisioningInfoResponse;
 import esthesis.service.agent.dto.AgentRegistrationRequest;
@@ -73,10 +75,10 @@ public class AgentService {
   RedisUtils redisUtils;
 
   // The number of seconds after which the counter for provisioning requests is reset.
-  private int requestCounterTimeout = 300;
+  private final int requestCounterTimeout = 300;
 
   // The number of provisioning requests that can be made within the timeout period.
-  private int requestsPerTimeslot = 5;
+  private final int requestsPerTimeslot = 5;
 
   /**
    * Registers a new device into the system.
@@ -85,13 +87,22 @@ public class AgentService {
       AgentRegistrationRequest agentRegistrationRequest)
   throws NoSuchAlgorithmException, IOException, InvalidKeySpecException,
          NoSuchProviderException, OperatorCreationException {
+    // Check the proposed hardware id conforms to the naming convention.
+    if (!agentRegistrationRequest.getHardwareId().matches(
+        AppConstants.HARDWARE_ID_REGEX)) {
+      throw new QMismatchException(
+          "Hardware ID does not conform to the naming convention.");
+    }
+
+    // Prepare a registration request.
     DeviceRegistrationDTO deviceRegistration = new DeviceRegistrationDTO();
-    deviceRegistration.setIds(agentRegistrationRequest.getHardwareId());
+    deviceRegistration.setHardwareId(agentRegistrationRequest.getHardwareId());
     if (StringUtils.isNotBlank(agentRegistrationRequest.getTags())) {
       deviceRegistration.setTags(
           Arrays.stream(agentRegistrationRequest.getTags().split(","))
               .toList());
     }
+    deviceRegistration.setType(agentRegistrationRequest.getType());
     log.debug("Requesting device registration with: '{}'", deviceRegistration);
     DeviceEntity deviceEntity = deviceSystemResource.register(deviceRegistration);
 
@@ -200,7 +211,7 @@ public class AgentService {
 
   private AgentProvisioningInfoResponse prepareAgentProvisioningInfoResponse(
       ProvisioningPackageEntity pp) {
-    // If a provisioning package was found and it is a later version than the one currently
+    // If a provisioning package was found, and it is a later version than the one currently
     // installed on the device, create a download token for it.
     log.debug("Found provisioning package '{}'.", pp);
 
