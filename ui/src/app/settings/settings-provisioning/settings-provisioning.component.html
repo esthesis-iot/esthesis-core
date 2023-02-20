@@ -1,5 +1,5 @@
 <form novalidate [formGroup]="form" fxLayout="column">
-  <div class="inline-header">Provisioning URL</div>
+  <div class="font-bold text-xl mt-5">Provisioning URL</div>
   <mat-form-field>
     <input matInput formControlName="DEVICE_PROVISIONING_URL">
     <mat-hint>The URL devices contact to inquiry and download firmware updates, e.g.
@@ -7,7 +7,7 @@
     </mat-hint>
   </mat-form-field>
 
-  <div class="inline-header">Provisioning request mode</div>
+  <div class="font-bold text-xl mt-5">Provisioning request mode</div>
   <mat-form-field>
     <mat-select placeholder="Provisioning type"
                 [formControlName]="appConstants.NAMED_SETTING.DEVICE_PROVISIONING_SECURE">
@@ -21,7 +21,7 @@
     </mat-hint>
   </mat-form-field>
 
-  <div class="inline-header">Provisioning caching timer</div>
+  <div class="font-bold text-xl mt-5">Provisioning caching timer</div>
   <mat-form-field>
     <input matInput placeholder="Tokens caching duration"
            formControlName="DEVICE_PROVISIONING_CACHE_TIME">
@@ -30,6 +30,5 @@
   </mat-form-field>
 </form>
 
-<div class="mt2">
-  <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
-</div>
+<button class="btn btn-sm btn-primary mt-10" (click)="save()" [disabled]="form.invalid">SAVE
+</button>

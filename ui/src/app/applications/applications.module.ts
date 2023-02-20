@@ -6,12 +6,6 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {QFormsModule} from "@qlack/forms";
 import {ApplicationsListComponent} from "./applications-list/applications-list.component";
 import {ApplicationEditComponent} from "./application-edit/application-edit.component";
-import {
-  ApplicationEditDescriptionComponent
-} from "./application-edit/application-edit-description.component";
-import {
-  ApplicationEditPermissionsComponent
-} from "./application-edit/application-edit-permissions.component";
 import {ApplicationsRoutingModule} from "./applications-routing.module";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -24,13 +18,15 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {MatButtonModule} from "@angular/material/button";
 import {ComponentsModule} from "../shared/components/components.module";
 import {DateSupportModule} from "../shared/modules/date-support.module";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {CdkTableModule} from "@angular/cdk/table";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
     ApplicationsListComponent,
     ApplicationEditComponent,
-    ApplicationEditDescriptionComponent,
-    ApplicationEditPermissionsComponent,
+    ApplicationEditComponent,
   ],
   imports: [
     ApplicationsRoutingModule,
@@ -49,7 +45,10 @@ import {DateSupportModule} from "../shared/modules/date-support.module";
     MatIconModule,
     MatTabsModule,
     ComponentsModule,
-    DateSupportModule
+    DateSupportModule,
+    FontAwesomeModule,
+    CdkTableModule,
+    MatTooltipModule
   ]
 })
 export class ApplicationsModule {

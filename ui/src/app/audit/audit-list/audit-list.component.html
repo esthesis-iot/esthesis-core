@@ -1,11 +1,16 @@
-<mat-card appearance="outlined">
-  <mat-card-header>
-    <mat-card-title>Audit</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <div fxLayout="column">
-      <!-- Filter -->
-      <div [formGroup]="filterForm" fxFlex="row" fxLayoutGap="10px">
+<div class="card w-full bg-base-200 rounded-b-none">
+  <div class="card-body">
+    <h2 class="card-title text-2xl flex flex-row justify-between mb-10">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="box-archive"></fa-icon>
+        <div>Audit</div>
+      </div>
+    </h2>
+    <div>
+      <!-- Filters -->
+      <div [formGroup]="filterForm" class="mb-10 mt-5 flex gap-2">
+        <fa-icon icon="search" class="mr-5 ml-1"></fa-icon>
+
         <mat-form-field>
           <input matInput placeholder="Date from" formControlName="dateFrom"
                  [matDatepicker]="dateFromPicker">
@@ -35,40 +40,40 @@
         <mat-form-field>
           <input matInput placeholder="User" formControlName="createdBy"/>
         </mat-form-field>
-        <button mat-button (click)="clearFilter()">CLEAR</button>
+        <button (click)="clearFilter()" class="btn btn-secondary btn-ghost ml-2">CLEAR</button>
       </div>
 
       <!-- Table -->
-      <table mat-table #table [dataSource]="datasource"
-             matSort matSortActive="createdOn"
-             matSortDirection="desc"
-             matSortStart="desc" matSortDisableClear aria-describedby="List of audit events">
-        <ng-container matColumnDef="createdOn">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Date</th>
-          <td mat-cell *matCellDef="let element">
+      <table cdk-table #table [dataSource]="datasource"
+             matSort matSortActive="createdOn" matSortDirection="desc"
+             matSortStart="desc" matSortDisableClear aria-describedby="List of audit events"
+             class="table w-full">
+        <ng-container cdkColumnDef="createdOn">
+          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Date</th>
+          <td cdk-cell *cdkCellDef="let element">
             {{element.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="createdBy">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> User</th>
-          <td mat-cell *matCellDef="let element"> {{element.createdBy}}</td>
+        <ng-container cdkColumnDef="createdBy">
+          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> User</th>
+          <td cdk-cell *cdkCellDef="let element"> {{element.createdBy}}</td>
         </ng-container>
-        <ng-container matColumnDef="category">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Category</th>
-          <td mat-cell *matCellDef="let element"> {{element.category}}</td>
+        <ng-container cdkColumnDef="category">
+          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Category</th>
+          <td cdk-cell *cdkCellDef="let element"> {{element.category}}</td>
         </ng-container>
-        <ng-container matColumnDef="operation">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Operation</th>
-          <td mat-cell *matCellDef="let element"> {{element.operation}}</td>
+        <ng-container cdkColumnDef="operation">
+          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Operation</th>
+          <td cdk-cell *cdkCellDef="let element"> {{element.operation}}</td>
         </ng-container>
-        <ng-container matColumnDef="message">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Message</th>
-          <td mat-cell *matCellDef="let element"> {{element.message}}</td>
+        <ng-container cdkColumnDef="message">
+          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Message</th>
+          <td cdk-cell *cdkCellDef="let element"> {{element.message}}</td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; let element; columns: displayedColumns;"
-            [routerLink]="element.id"></tr>
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr cdk-row *cdkRowDef="let row; let element; columns: displayedColumns;"
+            [routerLink]="element.id" class="hover hover:cursor-pointer"></tr>
       </table>
       <mat-paginator #paginator (page)="changePage()"
                      [pageSize]="10"
@@ -76,6 +81,5 @@
                      [showFirstLastButtons]="true">
       </mat-paginator>
     </div>
-  </mat-card-content>
-</mat-card>
-
+  </div>
+</div>

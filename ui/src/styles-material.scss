@@ -114,7 +114,6 @@ mat-form-field {
 
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // SELECT
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -244,6 +243,42 @@ mat-datepicker-content {
 
   .mat-calendar-body-today {
     @apply border-secondary #{!important};
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// CHECKBOX
+////////////////////////////////////////////////////////////////////////////////////////////////////
+mat-checkbox {
+  .mdc-checkbox__background {
+    @apply border-base-content #{!important};
+  }
+
+  .mdc-checkbox:has(.mdc-checkbox--selected) {
+    .mdc-checkbox__background {
+      @apply bg-accent border-accent text-base-content #{!important};
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// RADIO
+////////////////////////////////////////////////////////////////////////////////////////////////////
+mat-radio-group {
+  @apply font-normal;
+  //@apply bg-inherit font-inter #{!important};
+  .mdc-form-field {
+    @apply font-bold text-base text-base-content #{!important};
+  }
+
+  .mdc-radio__outer-circle, .mdc-radio__inner-circle {
+    @apply border-base-content #{!important};
+  }
+
+  .mdc-radio:has(.mdc-radio__native-control[tabindex="0"]) {
+    .mdc-radio__inner-circle {
+      @apply border-accent #{!important};
+    }
   }
 }
 

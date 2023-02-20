@@ -39,7 +39,7 @@
           <td *cdkCellDef="let element" cdk-cell> {{element.status | titlecase}}</td>
         </ng-container>
         <ng-container cdkColumnDef="createdOn">
-          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Created at</th>
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Created</th>
           <td *cdkCellDef="let element" cdk-cell>
             {{element.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}
           </td>

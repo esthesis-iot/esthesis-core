@@ -1,19 +1,20 @@
 <h2 mat-dialog-title>Select an icon</h2>
 <mat-dialog-content>
-  <div fxLayout="column">
-    <div [formGroup]="filterForm" fxFlex="row">
+  <div class="flex flex-col">
+    <div [formGroup]="filterForm" class="flex flex-row">
       <mat-form-field>
         <input formControlName="icon" matInput placeholder="Find icon by name">
       </mat-form-field>
       <button (click)="clearFilter()" mat-button>CLEAR</button>
     </div>
-    <div fxLayout="row wrap" fxLayoutGap="1rem" class="icons mt3 mb3">
+    <div class="flex flex-row flex-wrap gap-2">
       <div *ngFor="let icon of filteredIcons">
-        <mat-icon (click)="select(icon.id)">{{icon.id}}</mat-icon>
+        <mat-icon (click)="select(icon.id)" [fontIcon]="icon.id"></mat-icon>
       </div>
     </div>
   </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button tabindex="-1" (click)="dialogRef.close(null)">CANCEL</button>
+  <button class="btn btn-sm btn-secondary" tabindex="-1" (click)="dialogRef.close(null)">CANCEL
+  </button>
 </mat-dialog-actions>

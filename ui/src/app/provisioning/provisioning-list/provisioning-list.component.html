@@ -42,7 +42,7 @@
           </td>
         </ng-container>
         <ng-container matColumnDef="createdOn">
-          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Created at</th>
+          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Created</th>
           <td cdk-cell *cdkCellDef="let element">{{element.createdOn | date:
             constants.DATE_FORMAT}}</td>
         </ng-container>

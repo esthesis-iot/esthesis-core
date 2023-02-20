@@ -1,8 +1,7 @@
-<form novalidate [formGroup]="form" fxLayout="column" fxLayoutGap="0.5rem">
-  <div class="inline-header">Platform certificate</div>
+<form novalidate [formGroup]="form" class="flex flex-col">
+  <div class="font-bold text-xl mt-5">Platform certificate</div>
   <mat-form-field>
-    <mat-select
-      formControlName="PLATFORM_CERTIFICATE">
+    <mat-select formControlName="PLATFORM_CERTIFICATE">
       <mat-option *ngFor="let o of certificates" [value]="o.id">
         {{ o.cn }}
       </mat-option>
@@ -11,5 +10,6 @@
 </form>
 
 <div>
-  <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
+  <button class="btn btn-sm btn-primary mt-10" (click)="save()" [disabled]="form.invalid">SAVE
+  </button>
 </div>

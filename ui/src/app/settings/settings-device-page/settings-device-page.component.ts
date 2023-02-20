@@ -1,13 +1,10 @@
 import {Component, OnInit} from "@angular/core";
 import {DevicePageFieldDto} from "../../devices/dto/device-page-field-dto";
-import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {DevicesService} from "../../devices/devices.service";
 import {SettingsService} from "../settings.service";
 import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";
-import {
-  MatIconPickerComponent
-} from "../../shared/components/mat-icon-picker/mat-icon-picker.component";
 import {SettingDto} from "../dto/setting-dto";
 import * as _ from "lodash-es";
 import {forkJoin} from "rxjs";
@@ -90,8 +87,7 @@ export class SettingsDevicePageComponent implements OnInit {
       measurement: [fieldDto?.measurement],
       shown: [fieldDto?.shown],
       label: [fieldDto?.label],
-      formatter: [fieldDto?.formatter],
-      icon: [fieldDto?.icon],
+      formatter: [fieldDto?.formatter]
     });
   }
 
@@ -117,8 +113,7 @@ export class SettingsDevicePageComponent implements OnInit {
       measurement: "",
       shown: true,
       label: "",
-      formatter: "",
-      icon: ""
+      formatter: ""
     }));
   }
 
@@ -130,13 +125,5 @@ export class SettingsDevicePageComponent implements OnInit {
   deleteField(fieldIndex: number) {
     // @ts-ignore
     this.profileDataForm.controls.fields.controls.splice(fieldIndex, 1);
-  }
-
-  selectIcon(i: number) {
-    this.dialog.open(MatIconPickerComponent).afterClosed().subscribe(result => {
-      const field = (this.profileDataForm.controls.fields as FormArray).controls[i].value as DevicePageFieldDto;
-      field.icon = result;
-      (this.profileDataForm.controls.fields as FormArray).controls[i].patchValue(field);
-    });
   }
 }

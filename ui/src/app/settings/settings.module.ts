@@ -14,7 +14,6 @@ import {
   SettingsProvisioningComponent
 } from "./settings-provisioning/settings-provisioning.component";
 import {SettingsDevicePageComponent} from "./settings-device-page/settings-device-page.component";
-import {SettingsUiComponent} from "./settings-ui/settings-ui.component";
 import {SettingsMessagingComponent} from "./settings-messaging/settings-messaging.component";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -30,6 +29,7 @@ import {MatRadioModule} from "@angular/material/radio";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 @NgModule({
   declarations: [
@@ -38,7 +38,6 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     SettingsDevicePageComponent,
     SettingsDevregComponent,
     SettingsSecurityComponent,
-    SettingsUiComponent,
     SettingsMessagingComponent,
   ],
   imports: [
@@ -62,7 +61,8 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     MatCheckboxModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    FontAwesomeModule
   ]
 })
 export class SettingsModule {

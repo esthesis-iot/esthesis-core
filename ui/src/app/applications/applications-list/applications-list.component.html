@@ -1,41 +1,44 @@
-<mat-card appearance="outlined">
-  <mat-card-header>
-    <mat-card-title>Applications</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <div fxLayout="column">
-      <!-- Filter -->
-      <div [formGroup]="filterForm" fxFlex="row" fxLayoutGap="10px">
-        <mat-form-field>
-          <input matInput placeholder="Name" formControlName="name">
-        </mat-form-field>
-        <button mat-button (click)="clearFilter()">CLEAR</button>
+<div class="card w-full bg-base-200 rounded-b-none">
+  <div class="card-body">
+    <h2 class="card-title text-2xl flex flex-row justify-between">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="desktop"></fa-icon>
+        <div>Applications</div>
+      </div>
+    </h2>
+    <div>
+      <!-- Filters -->
+      <div [formGroup]="filterForm" class="mb-10 mt-5">
+        <fa-icon icon="search" class="mr-5 ml-1"></fa-icon>
+        <input type="text" placeholder="Name"
+               class="input w-full max-w-xs placeholder-primary-content/30"
+               formControlName="name"/>
+        <button (click)="clearFilter()" class="btn btn-secondary btn-ghost ml-2">CLEAR</button>
       </div>
 
-      <table mat-table #table [dataSource]="dataSource" class="mat-elevation-z0" fxFlex="grow"
-             matSort
-             matSortActive="name"
-             matSortDirection="asc"
-             matSortStart="asc"
-             matSortDisableClear aria-describedby="List of applications">
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col">Name</th>
-          <td mat-cell *matCellDef="let element">{{element.name}}</td>
+      <!-- Table -->
+      <table cdk-table #table [dataSource]="dataSource"
+             matSort matSortActive="name" matSortDirection="asc" matSortStart="asc"
+             matSortDisableClear aria-describedby="List of applications"
+             class="table w-full">
+        <ng-container cdkColumnDef="name">
+          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col">Name</th>
+          <td cdk-cell *cdkCellDef="let element">{{element.name}}</td>
         </ng-container>
-        <ng-container matColumnDef="state">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> State</th>
-          <td mat-cell *matCellDef="let element">
+        <ng-container cdkColumnDef="state">
+          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> State</th>
+          <td cdk-cell *cdkCellDef="let element">
             <app-boolean-checkbox [value]="element.state"></app-boolean-checkbox>
           </td>
         </ng-container>
-        <ng-container matColumnDef="createdOn">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header scope="col"> Created at</th>
-          <td mat-cell
-              *matCellDef="let element">{{element.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</td>
+        <ng-container cdkColumnDef="createdOn">
+          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Created</th>
+          <td cdk-cell
+              *cdkCellDef="let element">{{element.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</td>
         </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; let element; columns: displayedColumns;"
-            [routerLink]="element.id"></tr>
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr cdk-row *cdkRowDef="let row; let element; columns: displayedColumns;"
+            [routerLink]="element.id" class="hover hover:cursor-pointer"></tr>
       </table>
       <mat-paginator #paginator (page)="changePage()"
                      [pageSize]="10"
@@ -43,8 +46,9 @@
                      [showFirstLastButtons]="true">
       </mat-paginator>
     </div>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button [routerLink]="appConstants.NEW_RECORD_ID">CREATE</button>
-  </mat-card-actions>
-</mat-card>
+    <div class="card-actions justify-start mt-10">
+      <button class="btn btn-sm btn-primary" [routerLink]="appConstants.NEW_RECORD_ID">CREATE
+      </button>
+    </div>
+  </div>
+</div>

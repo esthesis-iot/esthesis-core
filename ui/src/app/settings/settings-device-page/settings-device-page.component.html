@@ -1,84 +1,86 @@
-<form novalidate [formGroup]="settingsForm" fxLayout="column">
-  <div class="inline-header">Geolocation telemetry attributes</div>
-  <div class="mt1 mb2">
+<form novalidate [formGroup]="settingsForm" class="flex flex-col">
+  <div class="font-bold text-xl mt-5">Geolocation telemetry attributes</div>
+  <div class="mb-2">
     If your devices transmit geolocation coordinates you can choose which telemetry data
     corresponds to the latitude and the longitude. If these values are set, you can see your
     device's location on the device page on a map.
   </div>
   <mat-form-field>
-    <mat-select placeholder="Longitude"
-                [formControlName]="this.constants.DEVICE.SETTING.DEVICE_GEO_LON">
-      <mat-option value=""></mat-option>
+    <mat-label>Longitude</mat-label>
+    <input matInput [formControlName]="this.constants.DEVICE.SETTING.DEVICE_GEO_LON"
+           [matAutocomplete]="autoLon">
+    <mat-autocomplete #autoLon="matAutocomplete">
       <mat-option
         *ngFor="let measurement of allUniqueMeasurements" [value]="measurement">
         {{measurement}}
       </mat-option>
-    </mat-select>
+    </mat-autocomplete>
   </mat-form-field>
+
   <mat-form-field>
-    <mat-select placeholder="Latitude"
-                [formControlName]="this.constants.DEVICE.SETTING.DEVICE_GEO_LAT">
-      <mat-option value=""></mat-option>
+    <mat-label>Latitude</mat-label>
+    <input matInput [formControlName]="this.constants.DEVICE.SETTING.DEVICE_GEO_LAT"
+           [matAutocomplete]="autoLat">
+    <mat-autocomplete #autoLat="matAutocomplete">
       <mat-option
         *ngFor="let measurement of allUniqueMeasurements" [value]="measurement">
         {{measurement}}
       </mat-option>
-    </mat-select>
+    </mat-autocomplete>
   </mat-form-field>
-  <div fxLayout="row" *ngIf="fetchingGeoAttributes">
-    <mat-spinner [diameter]="15" [strokeWidth]="1"></mat-spinner>
-    <div class="ml1" style="color:#999999;font-style: italic">fetching device measurements...</div>
+
+  <div class="flex flex-row" *ngIf="fetchingGeoAttributes">
+    <fa-icon [spin]="true" icon="spinner" class="text-accent"></fa-icon>
+    <div class="ml-2">fetching device measurements...</div>
   </div>
+
+
 </form>
 
-<form novalidate [formGroup]="profileDataForm" fxLayout="column">
-  <div class="inline-header">Device profile data</div>
-  <div class="mt1 mb2">
+<form novalidate [formGroup]="profileDataForm" class="flex flex-col">
+  <div class="font-bold text-xl mt-5">Device profile data</div>
+  <div>
     Select which device data will be visible on device profile page. Custom formatting is
     supported via
     <a href="https://quarkus.io/guides/qute-reference" target="_blank" rel="noopener noreferrer">Qute</a>.
-    The value can be referenced as &#123;val&#125;.
+    The value can be referenced as <span class="font-mono">&#123;val&#125;</span>.
   </div>
-  <div formArrayName="fields" *ngFor="let field of getFormFields(); let i = index">
-    <div [formGroupName]="i" fxLayout="row" fxLayoutGap="1rem">
-      <input type="hidden" name="id" value="{{field.controls.id.value}}">
-      <mat-checkbox formControlName="shown" color="primary"></mat-checkbox>
-      <mat-form-field>
-        <input matInput placeholder="Measurement" formControlName="measurement"
-               [matAutocomplete]="auto">
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option
-            *ngFor="let measurement of allUniqueMeasurements" [value]="measurement">
-            {{measurement}}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
 
-      <mat-form-field>
-        <input matInput placeholder="UI label" formControlName="label">
-      </mat-form-field>
+  <div class="mt-2 flex flex-col grow">
+    <div formArrayName="fields" *ngFor="let field of getFormFields(); let i = index" class="grow">
+      <div [formGroupName]="i" class="flex flex-row mr-4">
+        <input type="hidden" name="id" value="{{field.controls.id.value}}">
+        <mat-checkbox formControlName="shown" class="mt-3"></mat-checkbox>
+        <mat-form-field class="grow">
+          <mat-label>Measurement</mat-label>
+          <input matInput formControlName="measurement"
+                 [matAutocomplete]="auto">
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option
+              *ngFor="let measurement of allUniqueMeasurements" [value]="measurement">
+              {{measurement}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
 
-      <button mat-button (click)="selectIcon(i)">
-        <mat-icon *ngIf="profileDataForm.value['fields'][i].icon">
-          {{profileDataForm.value["fields"][i].icon}}
-        </mat-icon>
-        <span *ngIf="!profileDataForm.value['fields'][i].icon">...</span>
-      </button>
+        <mat-form-field class="grow">
+          <mat-label>UI label</mat-label>
+          <input matInput formControlName="label">
+        </mat-form-field>
 
-      <mat-form-field fxFlex="grow">
-        <input matInput placeholder="Formatter" formControlName="formatter">
-      </mat-form-field>
+        <mat-form-field class="grow">
+          <mat-label>Formatter</mat-label>
+          <input matInput formControlName="formatter">
+        </mat-form-field>
 
-      <button type="button" mat-icon-button (click)="deleteField(i)"
-              matTooltip="Remove field">
-        <mat-icon>delete</mat-icon>
-      </button>
+        <fa-icon icon="trash-can" (click)="deleteField(i)" matTooltip="Remove field"
+                 class="cursor-pointer mt-2"></fa-icon>
+      </div>
     </div>
   </div>
-  <button mat-button (click)="newMeasurement()">Add measurement</button>
+  <button class="btn btn-sm btm-secondary" (click)="newMeasurement()">Add measurement</button>
 </form>
 
-<div>
-  <button mat-button color="primary" (click)="save()" [disabled]="profileDataForm.invalid">SAVE
-  </button>
-</div>
+<button class="btn btn-sm btn-primary mt-10" (click)="save()" [disabled]="profileDataForm.invalid">
+  SAVE
+</button>
