@@ -25,6 +25,8 @@ import {MatMenuModule} from "@angular/material/menu";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatChipsModule} from "@angular/material/chips";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {CdkTableModule} from "@angular/cdk/table";
 
 @NgModule({
   declarations: [CommandsListComponent, CommandCreateComponent, CommandReplyComponent],
@@ -52,6 +54,8 @@ import {MatChipsModule} from "@angular/material/chips";
     MatMenuModule,
     MatAutocompleteModule,
     MatCheckboxModule,
+    FontAwesomeModule,
+    CdkTableModule,
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

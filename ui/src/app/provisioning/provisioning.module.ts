@@ -19,6 +19,8 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatCardModule} from "@angular/material/card";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {CdkTableModule} from "@angular/cdk/table";
 
 @NgModule({
   declarations: [
@@ -42,7 +44,9 @@ import {MatButtonModule} from "@angular/material/button";
     NgxFilesizeModule,
     MatCheckboxModule,
     DisplayModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    FontAwesomeModule,
+    CdkTableModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
 })

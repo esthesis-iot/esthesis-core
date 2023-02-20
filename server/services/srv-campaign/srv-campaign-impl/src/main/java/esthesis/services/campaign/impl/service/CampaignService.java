@@ -56,6 +56,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
   public CampaignEntity save(CampaignEntity campaignEntity) {
     if (campaignEntity.getState() == null) {
       campaignEntity.setState(State.CREATED);
+      campaignEntity.setCreatedOn(Instant.now());
     }
     return super.save(campaignEntity);
   }
@@ -137,16 +138,6 @@ public class CampaignService extends BaseService<CampaignEntity> {
               .toEpochMilli();
     }
     campaignStatsDTO.setDuration(DurationFormatUtils.formatDurationWords(diff, true, true));
-
-    BigDecimal eta = new BigDecimal(campaignStatsDTO.getMembersReplied())
-        .divide(new BigDecimal(campaignStatsDTO.getAllMembers()), 1, RoundingMode.DOWN)
-        .multiply(new BigDecimal(100));
-
-    if (eta.compareTo(new BigDecimal(0)) > 0) {
-      campaignStatsDTO.setEta(DurationFormatUtils.formatDurationWords(eta.longValue(), true, true));
-    } else {
-      campaignStatsDTO.setEta("-");
-    }
 
     return campaignStatsDTO;
   }

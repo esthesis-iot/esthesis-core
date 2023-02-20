@@ -74,7 +74,7 @@ export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
     {
       path: "command",
       loadChildren: () => import("./commands/commands.module").then(m => m.CommandsModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Commands"}
+      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Command"}
     },
     {
       path: "about",

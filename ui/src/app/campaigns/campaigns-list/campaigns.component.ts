@@ -15,7 +15,7 @@ import {MatTableDataSource} from "@angular/material/table";
 export class CampaignsComponent extends BaseComponent implements AfterViewInit {
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
-  columns = ["name", "type", "state", "startedOn", "terminatedOn"];
+  columns = ["name", "state", "createdOn", "startedOn", "terminatedOn"];
   datasource = new MatTableDataSource<CampaignDto>();
 
   constructor(private campaignsService: CampaignsService, private qForms: QFormsService) {

@@ -1,43 +1,57 @@
-<form novalidate [formGroup]="form" fxLayout="row" fxLayoutGap="2rem">
-  <div fxLayout="column" fxFlex="300px">
-    <mat-form-field>
-      <select matNativeControl matInput #deviceSelector
-              (change)="onDeviceSelectChange(deviceSelector.value)">
-        <option value="" [selected]="!currentDevice">No Device Selected</option>
-        <option *ngFor="let device of availableDevices" [value]="device.deviceId"
-                [selected]="currentDevice && device.deviceId === currentDevice.deviceId">{{device.label}}
-        </option>
-      </select>
-    </mat-form-field>
-    <mat-selection-list>
-      <mat-list-option (click)="toggleTryHarder()" [selected]="tryHarder">
-        Advanced matching
-      </mat-list-option>
-      <mat-list-option (click)="toggleTorch()" [selected]="torchEnabled"
-                       *ngIf="torchAvailable$ | async">
-        Torch
-      </mat-list-option>
-    </mat-selection-list>
+<div class="flex flex-col">
+  <div class="text-2xl mb-10">Register device by camera</div>
 
-    <div class="cam-viewer">
-      <zxing-scanner [torch]="torchEnabled" [(device)]="currentDevice"
-                     (scanSuccess)="onCodeResult($event)"
-                     [formats]="formatsEnabled"
-                     [tryHarder]="tryHarder" (permissionResponse)="onHasPermission($event)"
-                     (camerasFound)="onCamerasFound($event)"
-                     (torchCompatible)="onTorchCompatible($event)"></zxing-scanner>
-    </div>
-
-    <div fxLayout="row">
-      <button mat-button (click)="close()">CANCEL</button>
-      <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
-    </div>
-  </div>
   <div>
-    <mat-form-field>
-          <textarea cdkTextareaAutosize [cdkAutosizeMinRows]=1 [cdkAutosizeMaxRows]=30 matInput
-                    placeholder="Device id(s)"
-                    formControlName="ids"></textarea>
-    </mat-form-field>
+    <form novalidate [formGroup]="form">
+      <div class="flex flex-row gap-5">
+        <div class="basis-96 flex-row">
+          <div class="flex flex-col">
+            <mat-label class="text-accent">Camera device</mat-label>
+            <mat-form-field class="">
+              <select matNativeControl matInput #deviceSelector
+                      (change)="onDeviceSelectChange(deviceSelector.value)">
+                <option value="" [selected]="!currentDevice">No Device Selected</option>
+                <option *ngFor="let device of availableDevices" [value]="device.deviceId"
+                        [selected]="currentDevice && device.deviceId === currentDevice.deviceId">{{device.label}}
+                </option>
+              </select>
+            </mat-form-field>
+          </div>
+          <div class="flex flex-col">
+            <mat-label class="text-accent">Options</mat-label>
+            <mat-selection-list>
+              <mat-list-option (click)="toggleTryHarder()" [selected]="tryHarder">
+                Advanced matching
+              </mat-list-option>
+              <mat-list-option (click)="toggleTorch()" [selected]="torchEnabled"
+                               *ngIf="torchAvailable$ | async">
+                Torch
+              </mat-list-option>
+            </mat-selection-list>
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <div>
+            <zxing-scanner [torch]="torchEnabled" [(device)]="currentDevice"
+                           (scanSuccess)="onCodeResult($event)"
+                           [formats]="formatsEnabled"
+                           [tryHarder]="tryHarder" (permissionResponse)="onHasPermission($event)"
+                           (camerasFound)="onCamerasFound($event)"
+                           (torchCompatible)="onTorchCompatible($event)"></zxing-scanner>
+          </div>
+          <mat-form-field class="grow mt-5">
+            <mat-label>Device id(s)</mat-label>
+            <textarea cdkTextareaAutosize [cdkAutosizeMinRows]=1 [cdkAutosizeMaxRows]=3 matInput
+                      formControlName="ids"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
   </div>
-</form>
+
+  <div class="flex justify-end gap-2">
+    <button class="btn btn-sm btn-secondary" (click)="close()">CANCEL</button>
+    <button class="btn btn-sm btn-primary" (click)="save()" [disabled]="form.invalid">SAVE
+    </button>
+  </div>
+</div>

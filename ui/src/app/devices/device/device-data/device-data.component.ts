@@ -41,7 +41,7 @@ export class DeviceDataComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     // Each time the sorting changes, reset the page number.
     this.sort.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
-      this.datasource.data = _.sortBy(this.datasource.data, (item) => {
+      this.datasource.data = _.orderBy(this.datasource.data, (item) => {
         switch (onNext.active) {
           case "measurement":
             return item.label;
@@ -52,11 +52,7 @@ export class DeviceDataComponent implements OnInit, AfterViewInit {
           default:
             return item.label;
         }
-      });
-
-      if (onNext.direction === "desc") {
-        this.datasource.data.reverse();
-      }
+      }, onNext.direction === "asc" ? "asc" : "desc");
     });
   }
 

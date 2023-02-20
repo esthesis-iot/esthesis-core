@@ -22,23 +22,54 @@ import {
 import {FaConfig, FaIconLibrary, FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {
   faBars,
+  faBarsProgress,
   faBell,
+  faBroadcastTower,
+  faCalendar,
+  faChevronDown,
+  faCircle,
+  faCircleInfo,
+  faCircleUp,
+  faClipboard,
+  faCubes,
+  faDashboard,
   faDatabase,
+  faDownload,
+  faEnvelope,
+  faFlag,
+  faForward,
+  faGlobe,
   faHeart,
+  faHeartCircleBolt,
   faHome,
+  faLayerGroup,
+  faListCheck,
   faMemory,
   faMicrochip,
+  faPause,
+  faPercent,
+  faPlay,
+  faPlus,
   faRefresh,
   faSearch,
+  faStop,
+  faStopwatch,
   faSun,
+  faSwatchbook,
+  faTag,
   faTerminal,
-  faUser
+  faTrashCan,
+  faTriangleExclamation,
+  faUpRightFromSquare,
+  faUser,
+  faUserClock,
+  faXmark
 } from "@fortawesome/free-solid-svg-icons";
 import {BreadcrumbComponent} from "./shared/component/breadcrumb/breadcrumb.component";
 import {faGithub, faInstagram, faTwitter} from "@fortawesome/free-brands-svg-icons";
 
 const appearance: MatFormFieldDefaultOptions = {
-  appearance: "outline",
+  // appearance: "outline",
   // hideRequiredMarker: false,
   // floatLabel: "always",
   // subscriptSizing: "fixed"
@@ -89,7 +120,7 @@ const appearance: MatFormFieldDefaultOptions = {
     MatIconModule,
     MatSnackBarModule,
     MatButtonModule,
-    FontAwesomeModule
+    FontAwesomeModule,
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: appearance},
@@ -101,7 +132,12 @@ const appearance: MatFormFieldDefaultOptions = {
 export class AppModule {
   constructor(library: FaIconLibrary, faConfig: FaConfig) {
     library.addIcons(faSearch, faBell, faUser, faRefresh, faSun, faMicrochip, faHome, faBars,
-      faHeart, faInstagram, faTwitter, faGithub, faMemory, faDatabase, faTerminal);
+      faHeart, faInstagram, faTwitter, faGithub, faMemory, faDatabase, faTerminal, faChevronDown,
+      faSwatchbook, faUpRightFromSquare, faBroadcastTower, faClipboard, faDownload, faTrashCan,
+      faXmark, faCubes, faTriangleExclamation, faGlobe, faCircleUp, faCircle, faPlay, faPause,
+      faUserClock, faPlus, faLayerGroup, faTag, faCalendar, faListCheck, faFlag, faStop, faForward,
+      faCircleInfo, faHeartCircleBolt, faEnvelope, faStopwatch, faBarsProgress, faDashboard,
+      faPercent);
     faConfig.fixedWidth = true;
   }
 }

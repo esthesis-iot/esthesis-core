@@ -17,4 +17,9 @@ export class DeviceTerminalService {
   executeCommand(cmd: CommandExecuteRequestDto): Observable<CommandReplyDto[]> {
     return this.http.post<CommandReplyDto[]>(`${this.prefix}/wait-for-reply`, cmd);
   }
+
+  executeCommandWithParams(cmd: CommandExecuteRequestDto, polling: number,
+    timeout: number): Observable<CommandReplyDto[]> {
+    return this.http.post<CommandReplyDto[]>(`${this.prefix}/wait-for-reply?timeout=${timeout}&pollInterval=${polling}`, cmd);
+  }
 }

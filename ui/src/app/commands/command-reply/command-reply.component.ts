@@ -53,7 +53,7 @@ export class CommandReplyComponent extends BaseComponent implements OnInit {
     this.dialog.open(OkCancelModalComponent, {
       data: {
         title: "Delete Command",
-        question: "Do you really want to delete this command together with any potential reply?",
+        question: "Do you really want to delete this command and replies?",
         buttons: {
           ok: true, cancel: true, reload: false
         }

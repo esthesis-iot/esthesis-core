@@ -12,6 +12,7 @@ import esthesis.service.command.resource.CommandResource;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.entity.DeviceEntity;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -19,8 +20,10 @@ import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
 
+@Slf4j
 public class CommandResourceImpl implements CommandResource {
 
   @Inject
@@ -60,17 +63,26 @@ public class CommandResourceImpl implements CommandResource {
   @Audited(cat = Category.COMMAND, op = Operation.WRITE, msg = "Save command")
   public List<CommandReplyEntity> saveAndWait(CommandRequestEntity request, long timeout,
       long pollInterval) {
+    log.debug("saveAndWait: request={}, timeout={}, pollInterval={}", request, timeout,
+        pollInterval);
     // Save the request and schedule its execution.
     String correlationID = commandService.saveRequest(request).toString();
-    ExecuteRequestScheduleInfoDTO scheduleInfo = commandService.executeRequest(
-        correlationID);
+    ExecuteRequestScheduleInfoDTO scheduleInfo = commandService.executeRequest(correlationID);
+    log.debug("saveAndWait: scheduleInfo={}", scheduleInfo);
 
     // Wait for replies to be collected.
-    Awaitility.await()
-        .atMost(timeout, TimeUnit.MILLISECONDS)
-        .pollInterval(pollInterval, TimeUnit.MILLISECONDS)
-        .until(() -> commandService.countCollectedReplies(correlationID)
-            == scheduleInfo.getDevicesScheduled());
+    Instant startTime = Instant.now();
+    try {
+      Awaitility.await()
+          .atMost(timeout, TimeUnit.MILLISECONDS)
+          .pollInterval(pollInterval, TimeUnit.MILLISECONDS)
+          .until(() -> commandService.countCollectedReplies(correlationID)
+              == scheduleInfo.getDevicesScheduled());
+    } catch (org.awaitility.core.ConditionTimeoutException e) {
+      // Ignore Awaitility timeout exception.
+    }
+    log.debug("Exiting, total wait time was {} ms,", Instant.now().toEpochMilli()
+        - startTime.toEpochMilli());
 
     // Collect and return the replies.
     return commandService.getReplies(correlationID);

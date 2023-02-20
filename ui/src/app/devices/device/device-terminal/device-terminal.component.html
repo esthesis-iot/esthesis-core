@@ -1,1 +1,40 @@
-<ng-terminal #term></ng-terminal>
+<div class="mb-5">
+  <div class="flex flex-row gap-5">
+    <div class="stats shadow">
+      <div class="stat">
+        <div class="stat-title">Latency</div>
+        <div class="stat-value" *ngIf="counters.latency > 0">{{counters.latency}} msec</div>
+        <div class="stat-value" *ngIf="counters.latency === 0">---</div>
+      </div>
+      <div class="stat">
+        <div class="stat-title">Bytes sent</div>
+        <div class="stat-value" *ngIf="counters.bytesSent > 0">{{counters.bytesSent}}</div>
+        <div class="stat-value" *ngIf="counters.bytesSent === 0">---</div>
+      </div>
+      <div class="stat">
+        <div class="stat-title">Bytes received</div>
+        <div class="stat-value" *ngIf="counters.bytesReceived > 0">{{counters.bytesReceived}}</div>
+        <div class="stat-value" *ngIf="counters.bytesReceived === 0">---</div>
+      </div>
+    </div>
+    <div class="flex flex-col grow">
+      <div>
+        <mat-label>Timeout</mat-label>
+        <div class="flex flex-row gap-5">
+          <input type="range" min="1000" max="30000" [(ngModel)]="timeout" class="range"/>
+          <div class="whitespace-nowrap">{{timeout}} msec</div>
+        </div>
+      </div>
+      <div>
+        <mat-label>Polling</mat-label>
+        <div class="flex flex-row gap-5">
+          <input type="range" min="100" max="5000" [(ngModel)]="polling" class="range"/>
+          <div class="whitespace-nowrap">{{polling}} msec</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="flex grow bg-black">
+  <ng-terminal #term [cols]="80" [rows]="25"></ng-terminal>
+</div>

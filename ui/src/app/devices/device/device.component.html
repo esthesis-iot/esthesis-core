@@ -1,6 +1,6 @@
 <div class="card w-full bg-base-200 rounded-b-none">
   <div class="card-body">
-    <h2 class="card-title text-2xl flex flex-row justify-between">
+    <h2 class="card-title text-2xl flex flex-row justify-between mb-10">
       <div class="flex flex-row gap-2">
         <fa-icon icon="microchip"></fa-icon>
         <div>Device</div>
@@ -8,11 +8,85 @@
     </h2>
 
     <div class="flex row">
-      <div class="w-96">
-        device
+      <!-- Device info -->
+      <div class="w-96 pr-10">
+        <form novalidate [formGroup]="deviceInfoForm" class="flex flex-col gap-3">
+
+          <div>
+            <div class="font-bold">Hardware ID</div>
+            <div>{{device?.hardwareId}}</div>
+          </div>
+
+          <div>
+            <div class="font-bold">Last seen</div>
+            <div *ngIf="device?.lastSeen">
+              {{device?.lastSeen | amFromUtc | amLocal}}<br>
+              {{device?.lastSeen | amFromUtc | amLocal | amTimeAgo}}
+            </div>
+            <div class="value-text" *ngIf="!device?.lastSeen">
+              Never
+            </div>
+          </div>
+
+          <div>
+            <div class="font-bold">Created at</div>
+            <div *ngIf="device?.createdOn">
+              {{device?.createdOn | amFromUtc | amLocal}}
+            </div>
+            <div class="value-text" *ngIf="!device?.createdOn">
+              Never
+            </div>
+          </div>
+
+          <div>
+            <div class="font-bold">Registered on</div>
+            <div *ngIf="device?.registeredOn">
+              {{device?.registeredOn | amFromUtc | amLocal}}
+            </div>
+            <div class="value-text" *ngIf="!device?.registeredOn">
+              Never
+            </div>
+          </div>
+
+          <div>
+            <mat-form-field class="w-full -mt-5">
+              <label class="font-bold">Registration Status</label>
+              <mat-select formControlName="status">
+                <mat-option *ngFor="let o of constants.DEVICE.STATUS | keyvalue" [value]="o.value">
+                  {{ lookupByValue(constants.DEVICE.STATUS, o.value) }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="-mt-8">
+            <mat-form-field class="w-full">
+              <label class="font-bold">Tags</label>
+              <mat-select multiple formControlName="tags">
+                <mat-option *ngFor="let tag of availableTags"
+                            [value]="tag.id">{{tag.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <div *ngIf="geoUrl">
+              <div class="flex flex-row">
+                <div class="font-bold">Location</div>
+                <fa-icon icon="up-right-from-square" class="ml-1" (click)="showMap()"></fa-icon>
+              </div>
+              <iframe [src]="geoUrl"
+                      width="100%" height="200"
+                      title="map" class="mt-2 border-0"></iframe>
+              <div class="geoAgo">{{geoLastUpdated | amFromUtc | amLocal | amTimeAgo}}</div>
+            </div>
+          </div>
+        </form>
       </div>
+
+      <!-- Tabs -->
       <div class="grow">
-        <mat-tab-group animationDuration="0ms">
+        <mat-tab-group animationDuration="0ms" [disableRipple]="true">
           <mat-tab>
             <ng-template mat-tab-label>
               <fa-icon icon="memory" class="mr-1"></fa-icon>
@@ -44,125 +118,20 @@
       </div>
     </div>
 
-    <div class="card-actions justify-start">
-      <button class="btn btn-primary" routerLink="preregister">DOWNLOADS</button>
+    <div class="card-actions justify-start mt-10">
+      <button class="btn btn-sm btn-accent" (click)="delete()"
+              [disabled]="this.id == constants.NEW_RECORD_ID">DELETE
+      </button>
+      <button class="btn btn-sm btn-secondary" [matMenuTriggerFor]="menu">DOWNLOADS
+        <mat-menu #menu="matMenu" xPosition="before">
+          <button mat-menu-item (click)="downloadPublicKey()">Public key</button>
+          <button mat-menu-item (click)="downloadPrivateKey()">Private key</button>
+          <button mat-menu-item (click)="downloadCertificate()">Certificate</button>
+        </mat-menu>
+      </button>
+      <button class="btn btn-sm btn-primary" (click)="saveDeviceInfo()"
+              [disabled]="deviceInfoForm.invalid || deviceInfoForm.pristine">SAVE
+      </button>
     </div>
   </div>
 </div>
-
-
-<div fxLayout="row" fxLayoutGap="1rem">
-  <div fxFlex="20rem" class="device-info">
-    <mat-card appearance="outlined">
-      <form novalidate [formGroup]="deviceInfoForm" fxLayout="column">
-        <mat-card-title>Device</mat-card-title>
-        <mat-card-content>
-          <div class="label-text">Hardware ID</div>
-          <div class="value-text">{{device?.hardwareId}}</div>
-
-          <div class="label-text mt1">Last seen</div>
-          <div class="value-text" *ngIf="device?.lastSeen">
-            {{device?.lastSeen | amFromUtc | amLocal}}<br>
-            {{device?.lastSeen | amFromUtc | amLocal | amTimeAgo}}
-          </div>
-          <div class="value-text" *ngIf="!device?.lastSeen">
-            Never
-          </div>
-
-          <div class="label-text mt1">Created at</div>
-          <div class="value-text" *ngIf="device?.createdOn">
-            {{device?.createdOn | amFromUtc | amLocal}}
-          </div>
-          <div class="value-text" *ngIf="!device?.createdOn">
-            Never
-          </div>
-
-          <div class="label-text mt1">Registered on</div>
-          <div class="value-text" *ngIf="device?.registeredOn">
-            {{device?.registeredOn | amFromUtc | amLocal}}
-          </div>
-          <div class="value-text" *ngIf="!device?.registeredOn">
-            Never
-          </div>
-
-          <div class="label-text mt1">Registration Status</div>
-          <mat-select formControlName="status">
-            <mat-option *ngFor="let o of constants.DEVICE.STATUS | keyvalue" [value]="o.value">
-              {{ lookupByValue(constants.DEVICE.STATUS, o.value) }}
-            </mat-option>
-          </mat-select>
-
-          <div class="label-text mt1">Tags</div>
-          <mat-select multiple formControlName="tags">
-            <mat-option *ngFor="let tag of availableTags"
-                        [value]="tag.id">{{tag.name}}</mat-option>
-          </mat-select>
-
-          <div *ngIf="geoUrl">
-            <div fxLayout="row" class="mt1">
-              <div class="label-text">Location</div>
-              <mat-icon (click)="showMap()" style="font-size:1rem;margin-left:4px;margin-top:2px">
-                open_in_new
-              </mat-icon>
-            </div>
-            <iframe [src]="geoUrl"
-                    width="100%" height="200" style="border:0"
-                    class="mt1" title="map"></iframe>
-            <div class="geoAgo">{{geoLastUpdated | amFromUtc | amLocal | amTimeAgo}}</div>
-          </div>
-        </mat-card-content>
-      </form>
-      <mat-card-actions>
-        <button mat-button [matMenuTriggerFor]="menu">DOWNLOADS
-          <mat-menu #menu="matMenu" xPosition="before">
-            <button mat-menu-item (click)="downloadPublicKey()">Public key</button>
-            <button mat-menu-item (click)="downloadPrivateKey()">Private key</button>
-            <button mat-menu-item (click)="downloadCertificate()">Certificate</button>
-          </mat-menu>
-        </button>
-        <button mat-button color="accent" (click)="delete()"
-                [disabled]="this.id == constants.NEW_RECORD_ID">DELETE
-        </button>
-        <button mat-button color="primary" (click)="saveDeviceInfo()"
-                [disabled]="deviceInfoForm.invalid">SAVE
-        </button>
-      </mat-card-actions>
-    </mat-card>
-  </div>
-  <div fxFlex>
-    <mat-card appearance="outlined">
-      <mat-card-content>
-        <mat-tab-group animationDuration="0ms">
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <mat-icon>developer_board</mat-icon>
-              Profile
-            </ng-template>
-            <ng-template matTabContent>
-              <app-device-profile></app-device-profile>
-            </ng-template>
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <mat-icon>bar_chart</mat-icon>
-              Data
-            </ng-template>
-            <ng-template matTabContent>
-              <app-device-data></app-device-data>
-            </ng-template>
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <mat-icon>keyboard</mat-icon>
-              Pseudo-terminal
-            </ng-template>
-            <ng-template matTabContent>
-              <app-device-terminal [hardwareId]="hardwareId"></app-device-terminal>
-            </ng-template>
-          </mat-tab>
-        </mat-tab-group>
-      </mat-card-content>
-    </mat-card>
-  </div>
-</div>
-

@@ -170,7 +170,7 @@ public class CommandService {
               .addMetadata(TracingMetadata.withCurrent(Context.current())));
       request.setDispatchedOn(Instant.now());
       commandRequestService.save(request);
-      scheduleInfo.incrementDevicesMatched();
+      scheduleInfo.setDevicesScheduled(scheduleInfo.getDevicesScheduled() + 1);
     }
 
     return scheduleInfo;

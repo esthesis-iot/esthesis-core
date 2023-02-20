@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {BehaviorSubject} from "rxjs";
 import {BarcodeFormat} from "@zxing/library";
-import {MatDialogRef} from "@angular/material/dialog";
+import {DialogRef} from "@angular/cdk/dialog";
 
 @Component({
   selector: "app-device-preregister-cam",
@@ -27,7 +27,7 @@ export class DevicePreregisterCamComponent implements OnInit {
   tryHarder = false;
 
   constructor(private fb: FormBuilder,
-    public selfDialogRef: MatDialogRef<DevicePreregisterCamComponent>) {
+    public selfDialogRef: DialogRef<DevicePreregisterCamComponent>) {
   }
 
   ngOnInit() {

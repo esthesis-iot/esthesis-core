@@ -1,7 +1,9 @@
 /** Material Design elements customization */
 @import 'styles-variables.scss';
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // PAGINATOR
+////////////////////////////////////////////////////////////////////////////////////////////////////
 mat-paginator {
   @apply bg-inherit font-inter #{!important};
   font-size: inherit #{!important};
@@ -9,6 +11,10 @@ mat-paginator {
 
   .mat-mdc-icon-button[disabled] .mat-mdc-paginator-icon {
     @apply fill-base-content/30 #{!important};
+  }
+
+  .mat-mdc-icon-button[ng-reflect-disabled=false] .mat-mdc-paginator-icon {
+    @apply fill-base-content #{!important};
   }
 
   .mdc-notched-outline__leading, .mdc-notched-outline__trailing {
@@ -23,16 +29,11 @@ mat-paginator {
   .mat-mdc-select-arrow svg {
     @apply fill-base-content;
   }
-
 }
 
-.mat-mdc-select-panel {
-  @apply bg-neutral-content #{!important};
-  @apply shadow-none #{!important};
-  @apply text-base-content #{!important};
-}
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // TABS
+////////////////////////////////////////////////////////////////////////////////////////////////////
 mat-tab-body {
   @apply mt-5;
 }
@@ -53,4 +54,171 @@ mat-tab-group {
       @apply text-base-content #{!important};
     }
   }
+
+  .mdc-tab-indicator__content--underline {
+    @apply border-accent #{!important};
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// FORM FIELDS
+////////////////////////////////////////////////////////////////////////////////////////////////////
+mat-form-field {
+  * {
+    @apply bg-inherit font-inter #{!important};
+    @apply text-inherit #{!important};
+  }
+
+  .mdc-line-ripple::before, .mdc-line-ripple::after {
+    @apply border-b-base-content/20 #{!important};
+  }
+
+  .mat-mdc-input-element {
+    @apply text-base-content #{!important};
+  }
+
+  mat-label {
+    @apply text-accent #{!important};
+  }
+
+  ::placeholder {
+    @apply text-base-content/50  #{!important};
+  }
+
+  .mat-mdc-form-field-subscript-wrapper:has(mat-hint) {
+    @apply text-sm #{!important};
+    @apply text-base-content/70 #{!important};
+    @apply mb-8 #{!important};
+    @apply ml-0 #{!important};
+  }
+
+  .mat-mdc-form-field-required-marker {
+    @apply text-secondary #{!important};
+    @apply ml-1;
+  }
+
+  //.mat-mdc-form-field-hint-wrapper {
+  //  @apply pl-0 #{!important};
+  //  @apply mt-2 #{!important};
+  //  @apply text-sm #{!important};
+  //  @apply text-base-content/70 #{!important};
+  //}
+  .mat-mdc-text-field-wrapper {
+    @apply pl-0 #{!important};
+  }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// SELECT
+////////////////////////////////////////////////////////////////////////////////////////////////////
+.mat-mdc-select-panel {
+  @apply bg-base-300 #{!important};
+  @apply shadow-none #{!important};
+  @apply text-base-content #{!important};
+
+  .mat-mdc-option.mdc-list-item .mdc-list-item__primary-text {
+    @apply text-base-content #{!important};
+  }
+
+  .mat-mdc-option.mdc-list-item:hover {
+    @apply bg-base-100 #{!important};
+  }
+
+  .mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text {
+    @apply text-accent #{!important};
+  }
+
+  mat-pseudo-checkbox {
+    @apply text-base-content #{!important};
+  }
+
+  mat-pseudo-checkbox.mat-pseudo-checkbox-checked {
+    @apply bg-accent #{!important};
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// LIST
+////////////////////////////////////////////////////////////////////////////////////////////////////
+mat-selection-list {
+  .mat-mdc-list-item .mdc-list-item__primary-text {
+    @apply text-base-content;
+  }
+
+  .mdc-checkbox__background {
+    @apply border-base-content #{!important};
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// MENU
+////////////////////////////////////////////////////////////////////////////////////////////////////
+.mat-mdc-menu-panel {
+  @apply bg-base-300 #{!important};
+  .mdc-list-item__primary-text {
+    @apply text-base-content #{!important};
+  }
+
+  .mat-mdc-menu-item:hover {
+    @apply bg-base-100 #{!important};
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// AUTOCOMPLETE
+////////////////////////////////////////////////////////////////////////////////////////////////////
+.mat-mdc-autocomplete-panel {
+  @apply bg-base-300 #{!important};
+  .mdc-list-item__primary-text {
+    @apply text-base-content #{!important};
+  }
+
+  .mat-mdc-option:hover {
+    @apply bg-base-100 #{!important};
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// DIALOG
+////////////////////////////////////////////////////////////////////////////////////////////////////
+mat-dialog-container {
+  //@apply bg-base-300 #{!important};
+
+  .mat-mdc-dialog-surface {
+    @apply bg-inherit #{!important};
+    @apply shadow-none #{!important};
+
+    .mat-mdc-dialog-title {
+      @apply text-base-content font-bold p-0 m-0;
+    }
+
+    .mat-mdc-dialog-content {
+      @apply text-base-content pt-5;
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// EXPANSION PANEL
+////////////////////////////////////////////////////////////////////////////////////////////////////
+mat-expansion-panel {
+  @apply bg-inherit #{!important};
+  @apply shadow-none #{!important};
+
+  .mat-expansion-panel-header {
+    @apply pl-0;
+    .mat-expansion-panel-header-title {
+      @apply text-base-content;
+      @apply text-base;
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// OTHER
+////////////////////////////////////////////////////////////////////////////////////////////////////
+.cdk-dialog-container {
+  @apply bg-base-300 py-5 px-10 shadow-2xl;
+  border-radius: 8px;
 }

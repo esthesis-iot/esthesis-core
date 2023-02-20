@@ -20,6 +20,5 @@ public class CampaignStatsDTO {
   private BigDecimal successRate;
   private BigDecimal progress;
   private String duration;
-  private String eta;
   private String stateDescription;
 }

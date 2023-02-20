@@ -15,9 +15,20 @@ export class DeviceTerminalComponent extends BaseComponent implements AfterViewI
   private blockInput = false;
   private history: string[] = [];
   private historyPointer = 0;
+  private winX: number;
+  counters = {
+    latency: 0,
+    latestCommand: new Date(),
+    latestReply: new Date(),
+    bytesSent: 0,
+    bytesReceived: 0
+  };
+  timeout = 3000;
+  polling = 500;
 
   constructor(private deviceTerminalService: DeviceTerminalService) {
     super();
+    this.winX = window.innerWidth;
   }
 
   private termColorRed(message: string) {
@@ -35,9 +46,14 @@ export class DeviceTerminalComponent extends BaseComponent implements AfterViewI
     };
     this.blockInput = true;
     this.command = "";
-    this.deviceTerminalService.executeCommand(cmd).subscribe({
+    this.counters.latestCommand = new Date();
+    this.counters.bytesSent += cmd.command.length + cmd.arguments.length;
+    this.deviceTerminalService.executeCommandWithParams(cmd, this.polling, this.timeout).subscribe({
       next: (next) => {
+        this.counters.latestReply = new Date();
+        this.counters.latency = this.counters.latestReply.getTime() - this.counters.latestCommand.getTime();
         if (next != null && next.length === 1) {
+          this.counters.bytesReceived += next[0].output.length;
           const output = next[0].output.replace(/\n/g, "\n\r");
           this.terminal.write(output + "\n\r");
           this.blockInput = false;
@@ -75,11 +91,16 @@ export class DeviceTerminalComponent extends BaseComponent implements AfterViewI
   }
 
   ngAfterViewInit(): void {
+    // Configuration options.
+    this.terminal.setXtermOptions({
+      cursorBlink: true,
+    });
+
+    // Keypress handling.
     this.terminal.onKey().subscribe(e => {
       if (this.blockInput) {
         return;
       }
-
       const ev = e.domEvent;
       const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey;
 
@@ -122,12 +143,6 @@ export class DeviceTerminalComponent extends BaseComponent implements AfterViewI
       }
     });
 
-    this.terminal.setXtermOptions({
-      fontFamily: "\"Cascadia Code\", Menlo, monospace",
-      cursorBlink: true
-    });
-
     this.terminal.write("$ ");
   }
-
 }

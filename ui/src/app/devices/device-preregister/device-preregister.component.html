@@ -1,31 +1,40 @@
-<mat-card appearance="outlined">
-  <mat-card-header>
-    <mat-card-title>Preregister devices</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <form novalidate [formGroup]="form" fxLayout="column">
-      <mat-form-field>
+<div class="card w-full bg-base-200 rounded-b-none">
+  <div class="card-body">
+    <h2 class="card-title text-2xl flex flex-row justify-between">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="microchip"></fa-icon>
+        <div>Preregister device</div>
+      </div>
+    </h2>
+    <div>
+      <form novalidate [formGroup]="form" class="flex flex-col">
+        <mat-form-field>
+          <mat-label>Hardware IDs</mat-label>
           <textarea cdkTextareaAutosize [cdkAutosizeMinRows]=1 [cdkAutosizeMaxRows]=30
-                    matInput placeholder="Hardware IDs" formControlName="ids"
+                    matInput formControlName="ids"
                     cdkTrapFocus cdkTrapFocusAutoCapture></textarea>
-        <app-field-error matSuffix
-                         [displayError]="isFieldValid(form, 'ids')"
-                         [errorMessage]="form.controls['ids'].getError('message')">
-        </app-field-error>
-        <mat-hint>You can preregister multiple devices, adding each hardware ID on a separate line
-        </mat-hint>
-      </mat-form-field>
+          <app-field-error matSuffix
+                           [displayError]="isFieldValid(form, 'ids')"
+                           [errorMessage]="form.controls['ids'].getError('message')">
+          </app-field-error>
+          <mat-hint>You can preregister multiple devices, adding each hardware ID on a separate line
+          </mat-hint>
+        </mat-form-field>
 
-      <mat-form-field>
-        <mat-select placeholder="Tags" multiple formControlName="tags">
-          <mat-option *ngFor="let tag of availableTags" [value]="tag.name">{{tag.name}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </form>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button (click)="useCam()">USE CAMERA</button>
-    <button mat-button routerLink="/devices">CANCEL</button>
-    <button mat-button color="primary" (click)="save()" [disabled]="form.invalid">SAVE</button>
-  </mat-card-actions>
-</mat-card>
+        <mat-form-field class="mt-5">
+          <mat-label>Tags</mat-label>
+          <mat-select multiple formControlName="tags">
+            <mat-option *ngFor="let tag of availableTags"
+                        [value]="tag.name">{{tag.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </div>
+    <div class="card-actions justify-start mt-10">
+      <button class="btn btn-sm btn-secondary" (click)="useCam()">USE CAMERA</button>
+      <button class="btn btn-sm btn-secondary" routerLink="/devices">CANCEL</button>
+      <button class="btn btn-sm btn-primary" (click)="save()" [disabled]="form.invalid">SAVE
+      </button>
+    </div>
+  </div>
+</div>

@@ -59,7 +59,8 @@ public interface CommandResource {
    *                     are available. By default, the poll interval is set at 500 milliseconds. A
    *                     smaller pollInterval makes the device seem more responsive, however it may
    *                     introduce extra load to the database.
-   * @return The correlation ID of the command request.
+   * @return Returns the reply to the command. If the command timed out, an empty reply will be
+   * returned
    */
 
   @POST

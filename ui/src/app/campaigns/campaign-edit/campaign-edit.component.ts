@@ -24,6 +24,15 @@ import {AppConstants} from "../../app.constants";
 import {GroupProgressDto} from "../dto/group-progress-dto";
 import {v4 as uuidv4} from "uuid";
 import {MatDialog} from "@angular/material/dialog";
+import {
+  faCalendar,
+  faFlag,
+  faLayerGroup,
+  faListCheck,
+  faPause,
+  faQuestion
+} from "@fortawesome/free-solid-svg-icons";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 @Component({
   selector: "app-campaign-edit",
@@ -56,8 +65,16 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   now = new Date();
   // The statistics of this campaign.
   campaignStats?: CampaignStatsDto;
-  // Group progress.
-  groupProgress = [] as GroupProgressDto[];
+  // Flags for the various buttons of this component. The status of each button is calculated when
+  // the component is initialized.
+  isButtonStartEnabled = false;
+  isButtonStopEnabled = false;
+  isButtonResumeEnabled = false;
+  isButtonCancelEnabled = false;
+  isButtonSaveEnabled = false;
+  isButtonDeleteEnabled = false;
+  isButtonReplicateEnabled = false;
+  isStatisticsEnabled = false;
 
   constructor(private fb: FormBuilder, public utilityService: UtilityService,
     private qForms: QFormsService, private provisioningService: ProvisioningService,
@@ -73,10 +90,11 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
       next: onNext => {
         // Save campaign stats to an object.
         this.campaignStats = onNext;
+        this.campaignStats.groupProgress = [];
 
         // Extract group members for the chart.
         onNext.groupMembersReplied?.forEach((value, index) => {
-          this.groupProgress?.push(
+          this.campaignStats!.groupProgress.push(
             new GroupProgressDto("Group " + (index + 1), value * 100 / onNext.groupMembers![index]));
         });
       }
@@ -103,14 +121,50 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
           }
 
           // Disable the form if the campaign is already running.
-          if (this.form.value.state !== AppConstants.CAMPAIGN.STATE.CREATED) {
+          if (this.campaign.state !== AppConstants.CAMPAIGN.STATE.CREATED) {
             this.disableForm();
             this.getCampaignStats();
           } else {
             this.formDisabled = false;
           }
+
+          // Calculate the state of the various buttons.
+          this.isButtonStartEnabled =
+            this.id !== AppConstants.NEW_RECORD_ID &&
+            this.campaign.state === AppConstants.CAMPAIGN.STATE.CREATED;
+
+          this.isButtonStopEnabled =
+            ![AppConstants.CAMPAIGN.STATE.TERMINATED_BY_WORKFLOW,
+              AppConstants.CAMPAIGN.STATE.TERMINATED_BY_USER,
+              AppConstants.CAMPAIGN.STATE.CREATED].includes(this.campaign.state);
+
+          this.isButtonResumeEnabled =
+            [AppConstants.CAMPAIGN.STATE.PAUSED_BY_WORKFLOW,
+              AppConstants.CAMPAIGN.STATE.PAUSED_BY_USER].includes(this.campaign.state);
+
+          this.isButtonCancelEnabled = true;
+
+          this.isButtonSaveEnabled =
+            this.id === AppConstants.NEW_RECORD_ID ||
+            this.campaign.state === AppConstants.CAMPAIGN.STATE.CREATED;
+
+          this.isButtonDeleteEnabled =
+            this.id !== AppConstants.NEW_RECORD_ID;
+
+          this.isButtonReplicateEnabled =
+            this.id !== AppConstants.NEW_RECORD_ID;
+
+          this.isStatisticsEnabled =
+            AppConstants.CAMPAIGN.STATE.CREATED !== this.campaign.state;
         }
       });
+    } else {
+      // Calculate the state of the various buttons when creating/editing a new campaign.
+      this.isButtonCancelEnabled = true;
+      this.isButtonSaveEnabled = true;
+      this.isButtonDeleteEnabled = true;
+      this.isButtonReplicateEnabled = false;
+      this.isStatisticsEnabled = false;
     }
   }
 
@@ -121,7 +175,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     // Set up the form.
     this.form = this.fb.group({
       id: [],
-      state: [],
+      // state: [],
       name: [null, [Validators.required]],
       description: [],
       scheduleDate: [],
@@ -222,21 +276,37 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     return this.form.get("conditions").controls;
   }
 
-  // @ts-ignore
-  getIcon(type: AppConstants.CAMPAIGN.CONDITION.TYPE): string | undefined {
+  getIcon(type: string): IconProp {
     switch (type) {
       case this.appConstants.CAMPAIGN.CONDITION.TYPE.DATETIME:
-        return "alarm";
+        return faCalendar;
       case this.appConstants.CAMPAIGN.CONDITION.TYPE.PAUSE:
-        return "pause";
+        return faPause;
       case this.appConstants.CAMPAIGN.CONDITION.TYPE.PROPERTY:
-        return "tune";
+        return faListCheck;
       case this.appConstants.CAMPAIGN.CONDITION.TYPE.SUCCESS:
-        return "outlined_flag";
+        return faFlag;
       case this.appConstants.CAMPAIGN.CONDITION.TYPE.BATCH:
-        return "layers";
+        return faLayerGroup;
       default:
-        return undefined;
+        return faQuestion;
+    }
+  }
+
+  getDescription(type: string): string {
+    switch (type) {
+      case this.appConstants.CAMPAIGN.CONDITION.TYPE.DATETIME:
+        return "Date/Time";
+      case this.appConstants.CAMPAIGN.CONDITION.TYPE.PAUSE:
+        return "Pause";
+      case this.appConstants.CAMPAIGN.CONDITION.TYPE.PROPERTY:
+        return "Property check";
+      case this.appConstants.CAMPAIGN.CONDITION.TYPE.SUCCESS:
+        return "Success rate";
+      case this.appConstants.CAMPAIGN.CONDITION.TYPE.BATCH:
+        return "Batch size";
+      default:
+        return "Unknown condition";
     }
   }
 

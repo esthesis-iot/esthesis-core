@@ -1,27 +1,28 @@
-<div fxLayout="row">
-  <table [dataSource]="datasource" mat-table fxFlexFill
+<div class="flex">
+  <table [dataSource]="datasource" cdk-table
          matSort matSortActive="measurement"
-         matSortDirection="asc" matSortDisableClear matSortStart="asc">
-    <ng-container matColumnDef="measurement">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Measurement</th>
-      <td *matCellDef="let element" mat-cell> {{element.label}}</td>
+         matSortDirection="asc" matSortDisableClear matSortStart="asc"
+         class="grow table">
+    <ng-container cdkColumnDef="measurement">
+      <th cdk-header-cell *matHeaderCellDef mat-sort-header>Measurement</th>
+      <td *matCellDef="let element" cdk-cell> {{element.label}}</td>
     </ng-container>
-    <ng-container matColumnDef="value">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Value</th>
-      <td *matCellDef="let element" mat-cell> {{element.value}}</td>
+    <ng-container cdkColumnDef="value">
+      <th cdk-header-cell *matHeaderCellDef mat-sort-header>Value</th>
+      <td *matCellDef="let element" cdk-cell> {{element.value}}</td>
     </ng-container>
-    <ng-container matColumnDef="lastUpdatedOn">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Last updated on</th>
+    <ng-container cdkColumnDef="lastUpdatedOn">
+      <th cdk-header-cell *matHeaderCellDef mat-sort-header>Last updated on</th>
       <td *matCellDef="let element"
-          mat-cell> {{element.lastUpdate | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</td>
+          cdk-cell> {{element.lastUpdate | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</td>
     </ng-container>
-    <ng-container matColumnDef="lastUpdatedOnAgo">
-      <th mat-header-cell *matHeaderCellDef></th>
+    <ng-container cdkColumnDef="lastUpdatedOnAgo">
+      <th cdk-header-cell *matHeaderCellDef></th>
       <td *matCellDef="let element"
-          mat-cell> {{element.lastUpdate | amFromUtc | amLocal | amTimeAgo}}</td>
+          cdk-cell> {{element.lastUpdate | amFromUtc | amLocal | amTimeAgo}}</td>
     </ng-container>
-    <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
-    <tr *matRowDef="let row; columns: displayedColumns; let element;" mat-row
-        (click)="copyValue(row)"></tr>
+    <tr *matHeaderRowDef="displayedColumns" cdk-header-row></tr>
+    <tr *matRowDef="let row; columns: displayedColumns; let element;" cdk-row
+        (click)="copyValue(row)" class="hover hover:cursor-pointer"></tr>
   </table>
 </div>

@@ -1,18 +1,23 @@
-<mat-card appearance="outlined">
-  <mat-card-header>
-    <mat-card-title>Command</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <mat-card appearance="outlined">
-      <mat-card-title>Command details</mat-card-title>
-      <mat-card-content *ngIf="commandRequest">
-        <div fxLayout="column" class="mt1 command-request">
-          <div fxLayout="row">
-            <div class="label-text">Id:</div>
+<div class="card w-full bg-base-200 rounded-b-none">
+  <div class="card-body">
+    <h2 class="card-title text-2xl flex flex-row justify-between mb-10">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="broadcast-tower"></fa-icon>
+        <div>Command & Replies</div>
+      </div>
+    </h2>
+
+    <div class="flex flex-row gap-10">
+      <!-- Command -->
+      <div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-5">
+          <div class="text-accent font-bold">Command details</div>
+          <div>
+            <div class="font-bold">Id</div>
             <div>{{commandRequest.id}}</div>
           </div>
-          <div fxLayout="row">
-            <div class="label-text">Type:</div>
+          <div>
+            <div class="font-bold">Type</div>
             <div>
               <div *ngIf="commandRequest.commandType === appConstants.DEVICE.COMMAND.TYPE.EXECUTE">
                 Execute
@@ -34,8 +39,8 @@
               </div>
             </div>
           </div>
-          <div fxLayout="row">
-            <div class="label-text">Execution:</div>
+          <div>
+            <div class="font-bold">Execution</div>
             <div>
               <div
                 *ngIf="commandRequest.executionType === appConstants.DEVICE.COMMAND.EXECUTION.ASYNCHRONOUS">
@@ -47,71 +52,67 @@
               </div>
             </div>
           </div>
-          <div fxLayout="row">
-            <div class="label-text">Command:</div>
+          <div>
+            <div class="font-bold">Command</div>
             <div>{{commandRequest.command}}</div>
           </div>
-          <div fxLayout="row">
-            <div class="label-text">Arguments:</div>
+          <div *ngIf="commandRequest.arguments">
+            <div class="font-bold">Arguments</div>
             <div>{{commandRequest.arguments}}</div>
           </div>
-          <div fxLayout="row">
-            <div class="label-text">Created at:</div>
+          <div>
+            <div class="font-bold">Created</div>
             <div>{{commandRequest.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
           </div>
-          <div fxLayout="row">
-            <div class="label-text">Dispatched at:</div>
+          <div>
+            <div class="font-bold">Dispatched</div>
             <div
               *ngIf="commandRequest.dispatchedOn">{{commandRequest.dispatchedOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
           </div>
         </div>
-      </mat-card-content>
-    </mat-card>
+        <div class="card-actions justify-start">
+          <button class="btn btn-accent btn-sm" (click)="deleteReplies()" *ngIf="commandReplies">
+            DELETE REPLIES
+          </button>
+          <button class="btn btn-accent btn-sm" (click)="deleteCommand()">
+            DELETE COMMAND
+          </button>
+        </div>
+      </div>
 
-    <mat-card appearance="outlined" class="mt1">
-      <mat-card-title>Reply details</mat-card-title>
-
-      <mat-card-content *ngIf="commandReplies">
-        <div fxLayout="column" class="mt1 mb2 command-request"
-             *ngFor="let reply of commandReplies; let i = index">
-          <div fxLayout="row">
-            <div class="label-text">Hardware Id:</div>
-            <div>{{reply.hardwareId}}</div>
-          </div>
-          <div fxLayout="row">
-            <div class="label-text">Reply type:</div>
-            <div *ngIf="reply.success">Successful execution</div>
-            <div *ngIf="!reply.success">Failed execution</div>
-          </div>
-          <div fxLayout="row">
-            <div class="label-text">Replied on:</div>
-            <div>{{reply.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
-          </div>
-          <div fxLayout="row" class="mt1">
-            <div class="label-text">Output:<br>
-              <button mat-button (click)="copyOutputToClipboard(i)" matTooltip="Copy to clipboard">
-                <mat-icon>content_paste</mat-icon>
-              </button>
-              <button mat-button (click)="deleteReply(reply.id!, i)" matTooltip="Delete reply">
-                <mat-icon>delete_forever</mat-icon>
-              </button>
-            </div>
-            <pre class="command-output">{{reply.output}}</pre>
+      <!-- Replies -->
+      <div class="flex flex-col gap-5">
+        <div class="text-accent font-bold">Replies</div>
+        <div *ngIf="!commandReplies">
+          <div class="mockup-code w-full">
+            <pre><code>No replies received for this command.</code></pre>
           </div>
         </div>
-      </mat-card-content>
-
-      <mat-card-content *ngIf="!commandReplies">
-        No reply was found for this command.
-      </mat-card-content>
-    </mat-card>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button color="warn" (click)="deleteReplies()" *ngIf="commandReplies">
-      DELETE REPLIES
-    </button>
-    <button mat-button color="warn" (click)="deleteCommand()">
-      DELETE COMMAND
-    </button>
-  </mat-card-actions>
-</mat-card>
+        <div *ngFor="let reply of commandReplies; let i = index" class="flex flex-col gap-5">
+          <div class="flex flex-row gap-2 items-baseline">
+            <div class="badge badge-primary">{{reply.hardwareId}}</div>
+            <div class="badge badge-success" *ngIf="reply.success">Successful execution</div>
+            <div class="badge badge-error" *ngIf="!reply.success">Failed execution</div>
+            <div
+              class="badge">{{reply.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
+            <div>
+              <button class="btn btn-sm btn-ghost" (click)="copyOutputToClipboard(i)"
+                      matTooltip="Copy to clipboard">
+                <fa-icon icon="clipboard"></fa-icon>
+              </button>
+              <button class="btn btn-sm btn-ghost" (click)="deleteReply(reply.id!, i)"
+                      matTooltip="Delete reply">
+                <fa-icon icon="trash-can"></fa-icon>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div class="mockup-code w-full">
+              <pre><code>{{reply.output}}</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

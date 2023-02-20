@@ -4,7 +4,7 @@ import {DevicesRoutingModule} from "./devices-routing.module";
 import {MatIconModule} from "@angular/material/icon";
 import {MatSortModule} from "@angular/material/sort";
 import {QFormsModule} from "@qlack/forms";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DeviceComponent} from "./device/device.component";
 import {DevicesComponent} from "./devices-list/devices.component";
 import {DevicePreregisterComponent} from "./device-preregister/device-preregister.component";
@@ -83,7 +83,8 @@ import {CountdownComponent} from "ngx-countdown";
     DisplayModule,
     FontAwesomeModule,
     CdkTableModule,
-    CountdownComponent
+    CountdownComponent,
+    FormsModule
   ]
 })
 export class DevicesModule {

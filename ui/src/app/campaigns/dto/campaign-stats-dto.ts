@@ -1,3 +1,5 @@
+import {GroupProgressDto} from "./group-progress-dto";
+
 export interface CampaignStatsDto {
   groupMembers?: [number];
   groupMembersReplied?: [number];
@@ -8,6 +10,9 @@ export interface CampaignStatsDto {
   allMembers?: number;
   progress?: number;
   duration?: string;
-  eta?: string;
   stateDescription: string;
+
+  // This is a placeholder to be calculated by the frontend component.
+  // It is not filled-in by the backend.
+  groupProgress: GroupProgressDto[];
 }

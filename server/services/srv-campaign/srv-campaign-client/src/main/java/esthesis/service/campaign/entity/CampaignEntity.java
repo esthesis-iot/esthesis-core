@@ -26,6 +26,7 @@ public class CampaignEntity extends BaseEntity {
   private String description;
   private AppConstants.Campaign.Type type;
   private AppConstants.Campaign.State state;
+  private Instant createdOn;
   private Instant startedOn;
   private Instant terminatedOn;
   private List<CampaignConditionDTO> conditions;

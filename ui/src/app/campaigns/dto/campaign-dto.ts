@@ -15,5 +15,7 @@ export interface CampaignDto {
   conditions: CampaignConditionDto[];
   members: CampaignMemberDto[];
   startedOn: Date;
+  createdOn: Date;
   terminatedOn: Date;
+  state: string;
 }

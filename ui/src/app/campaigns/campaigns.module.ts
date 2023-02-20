@@ -25,6 +25,9 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatCardModule} from "@angular/material/card";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {CdkTableModule} from "@angular/cdk/table";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @NgModule({
   schemas: [NO_ERRORS_SCHEMA],
@@ -52,7 +55,10 @@ import {MatButtonModule} from "@angular/material/button";
     DragDropModule,
     MatProgressBarModule,
     NgCircleProgressModule.forRoot({}),
-    MatExpansionModule
+    MatExpansionModule,
+    FontAwesomeModule,
+    CdkTableModule,
+    MatTooltipModule
   ]
 })
 export class CampaignsModule {

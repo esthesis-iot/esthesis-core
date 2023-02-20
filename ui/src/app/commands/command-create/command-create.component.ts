@@ -139,4 +139,5 @@ export class CommandCreateComponent extends BaseComponent implements OnInit {
       this.searchDevices = [];
     }
   }
+
 }

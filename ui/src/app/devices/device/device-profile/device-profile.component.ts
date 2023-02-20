@@ -84,6 +84,7 @@ export class DeviceProfileComponent extends BaseComponent implements OnInit {
     this.devicesService.saveDeviceProfileNote(this.id!, this.deviceProfileFormModel).subscribe({
       next: () => {
         this.utilityService.popupSuccess("Device profile saved successfully.");
+        this.deviceProfileForm.markAsPristine();
       }, error: (err) => {
         this.utilityService.popupErrorWithTraceId("Could not save device profile.", err);
       }

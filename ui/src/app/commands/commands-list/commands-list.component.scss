@@ -1,45 +1,21 @@
-#results {
-  .mat-icon {
-    //color: $e-color-grey;
-  }
-
-  .mat-mdc-button {
-    min-width: 0;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    min-height: 0;
-  }
-}
-
-mat-error {
-  text-align: center;
-  //background-color: $e-color-error;
-  color: white;
-  padding: 0.15rem;
-  border-radius: 3px;
-  margin-bottom: 0.5rem;
-}
-
-.pill-command-type {
-  /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version. */
-  mat-chip {
-    border-radius: 5px;
-    padding: 0.1rem 0.25rem;
-    background-color: inherit;
-    //border: 1px solid $e-color-blue-light;
-    //color: $e-color-blue-light;
-    font-size: 0.6rem;
-  }
-}
-
-.pill-execution-type {
-  /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version. */
-  mat-chip {
-    border-radius: 5px;
-    padding: 0.1rem 0.25rem;
-    background-color: inherit;
-    border: 1px solid #249926;
-    color: #249926;
-    font-size: 0.6rem;
-  }
-}
+//#results {
+//  .mat-icon {
+//    //color: $e-color-grey;
+//  }
+//
+//  .mat-mdc-button {
+//    min-width: 0;
+//    padding-left: 0.5rem;
+//    padding-right: 0.5rem;
+//    min-height: 0;
+//  }
+//}
+//
+//mat-error {
+//  text-align: center;
+//  //background-color: $e-color-error;
+//  color: white;
+//  padding: 0.15rem;
+//  border-radius: 3px;
+//  margin-bottom: 0.5rem;
+//}
