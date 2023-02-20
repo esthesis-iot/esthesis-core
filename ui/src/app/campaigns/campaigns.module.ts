@@ -10,7 +10,6 @@ import {DateSupportModule} from "../shared/module/date-support.module";
 import {MatIconModule} from "@angular/material/icon";
 import {MatDividerModule} from "@angular/material/divider";
 import {CampaignEditComponent} from "./campaign-edit/campaign-edit.component";
-import {LogPipeModule} from "../shared/module/log-pipe.module";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {MatSortModule} from "@angular/material/sort";
 import {NgCircleProgressModule} from "ng-circle-progress";
@@ -28,6 +27,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {CdkTableModule} from "@angular/cdk/table";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {CountdownComponent} from "ngx-countdown";
 
 @NgModule({
   schemas: [NO_ERRORS_SCHEMA],
@@ -50,7 +50,6 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     DateSupportModule,
     MatIconModule,
     MatDividerModule,
-    LogPipeModule,
     MatAutocompleteModule,
     DragDropModule,
     MatProgressBarModule,
@@ -58,7 +57,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     MatExpansionModule,
     FontAwesomeModule,
     CdkTableModule,
-    MatTooltipModule
+    MatTooltipModule,
+    CountdownComponent
   ]
 })
 export class CampaignsModule {

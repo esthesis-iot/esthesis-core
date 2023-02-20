@@ -15,10 +15,6 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatButtonModule} from "@angular/material/button";
-import {
-  MAT_FORM_FIELD_DEFAULT_OPTIONS,
-  MatFormFieldDefaultOptions
-} from "@angular/material/form-field";
 import {FaConfig, FaIconLibrary, FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {
   faBars,
@@ -67,19 +63,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {BreadcrumbComponent} from "./shared/component/breadcrumb/breadcrumb.component";
 import {faGithub, faInstagram, faTwitter} from "@fortawesome/free-brands-svg-icons";
-
-const appearance: MatFormFieldDefaultOptions = {
-  // appearance: "outline",
-  // hideRequiredMarker: false,
-  // floatLabel: "always",
-  // subscriptSizing: "fixed"
-};
+import {CountdownComponent} from "./shared/component/countdown/countdown.component";
 
 @NgModule({
   bootstrap: [AppComponent],
   declarations: [
     AppComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    CountdownComponent
   ],
   imports: [
     BrowserModule,
@@ -122,8 +113,10 @@ const appearance: MatFormFieldDefaultOptions = {
     MatButtonModule,
     FontAwesomeModule,
   ],
+  exports: [
+    CountdownComponent
+  ],
   providers: [
-    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: appearance},
     QFormsModule,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ]

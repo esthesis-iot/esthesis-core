@@ -33,6 +33,7 @@ import {
   faQuestion
 } from "@fortawesome/free-solid-svg-icons";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
+import {CountdownEvent} from "ngx-countdown";
 
 @Component({
   selector: "app-campaign-edit",
@@ -55,8 +56,6 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   errorsMain?: string[];
   errorsDevices?: string[];
   errorsConditions?: string[];
-  // A flag to indicate whether the form is disabled.
-  formDisabled = false;
   // An object containing the full details of the campaign as returned by the back-end. This is to
   // facilitate displaying information on the UI that might not necessarily be part of the
   // underlying form object representing the campaign. For example, the date a campaign started
@@ -120,12 +119,10 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
             });
           }
 
-          // Disable the form if the campaign is already running.
+          // If the campaign is already running, disable the form and get campaign statistics.
           if (this.campaign.state !== AppConstants.CAMPAIGN.STATE.CREATED) {
-            this.disableForm();
+            this.form.disable();
             this.getCampaignStats();
-          } else {
-            this.formDisabled = false;
           }
 
           // Calculate the state of the various buttons.
@@ -231,11 +228,6 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     });
 
     this.initData();
-  }
-
-  private disableForm() {
-    this.form.disable();
-    this.formDisabled = true;
   }
 
   private createCondition(campaignConditionDto: CampaignConditionDto) {
@@ -557,5 +549,13 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
         });
       }
     });
+  }
+
+  countDownEvent(event: CountdownEvent) {
+    if (event.action === "done") {
+      this.initData();
+      // this.countdown.restart();
+      // this.countdown.begin();
+    }
   }
 }

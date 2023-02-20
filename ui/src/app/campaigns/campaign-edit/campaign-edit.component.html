@@ -204,7 +204,7 @@
                   </li>
                 </ul>
               </div>
-              <div class="flex flex-row gap-5" *ngIf="!formDisabled">
+              <div class="flex flex-row gap-5" *ngIf="!this.form.disabled">
                 <mat-form-field class="grow">
                   <mat-label>Search by hardware id</mat-label>
                   <input matInput [matAutocomplete]="auto"
@@ -224,7 +224,7 @@
                 </mat-form-field>
               </div>
 
-              <div class="flex flex-row gap-2" *ngIf="!formDisabled">
+              <div class="flex flex-row gap-2" *ngIf="!this.form.disabled">
                 <button class="btn btn-sm" (click)="addDeviceOrTag()"
                         [disabled]="form.controls.searchByHardwareId.value == ''
                     && form.controls.searchByTags.value == ''">
@@ -258,7 +258,7 @@
                   <div
                     class="flex flex-row justify-between align-middle border-b-2 border-b-base-100 mt-5">
                     <div class="font-bold">Group {{i + 1}}</div>
-                    <button color="primary" (click)="removeGroup(i)" *ngIf="!formDisabled">
+                    <button color="primary" (click)="removeGroup(i)" *ngIf="!this.form.disabled">
                       <fa-icon icon="trash-can" matTooltip="Delete group"
                                class="text-base-content/50 hover:text-base-content"></fa-icon>
                     </button>
@@ -274,7 +274,7 @@
                       </div>
                       <div>{{item.identifier}}</div>
                       <div class="ml-2">
-                        <button (click)="removeMember(item.identifier)" *ngIf="!formDisabled">
+                        <button (click)="removeMember(item.identifier)" *ngIf="!this.form.disabled">
                           <fa-icon icon="trash-can" matTooltip="Remove"
                                    class="text-base-content/50 hover:text-base-content"></fa-icon>
                         </button>
@@ -293,8 +293,8 @@
               <div class="grow">Conditions</div>
               <div>
                 <button class="btn btn-xs ml-2" [matMenuTriggerFor]="menu"
-                        [disabled]="form.get('members')!.value.length == 0 || formDisabled"
-                        *ngIf="!formDisabled">
+                        [disabled]="form.get('members')!.value.length == 0 || this.form.disabled"
+                        *ngIf="!this.form.disabled">
                   <fa-icon icon="plus"></fa-icon>
                 </button>
                 <mat-menu #menu="matMenu">
@@ -347,7 +347,7 @@
                   <div>{{getDescription(condition.value.type)}}</div>
                   <fa-icon icon="trash-can" (click)="removeCondition(i)"
                            class="text-base-content/50 hover:text-base-content"
-                           *ngIf="!formDisabled" matTooltip="Remove condition"></fa-icon>
+                           *ngIf="!this.form.disabled" matTooltip="Remove condition"></fa-icon>
                 </div>
                 <div class="flex flex-row gap-2">
                   <div class="flex flex-row gap-2">

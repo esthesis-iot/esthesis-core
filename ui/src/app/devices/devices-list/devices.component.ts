@@ -30,7 +30,7 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
   filterForm: FormGroup;
   // Whether data should be automatically refreshed.
   live = false;
-  liveCounter = 30;
+  liveCounter = 10;
   countdownConfig: CountdownConfig = {demand: true, leftTime: this.liveCounter};
 
   constructor(private fb: FormBuilder, private router: Router,
