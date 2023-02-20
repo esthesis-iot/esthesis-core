@@ -1,48 +1,50 @@
-<mat-card appearance="outlined">
-  <mat-card-header>
-    <mat-card-title>Import a Certificate</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <form novalidate [formGroup]="form" fxLayout="column">
-      <div>
-        <mat-form-field fxFill>
-          <input matInput placeholder="Name" formControlName="name">
+<div class="card w-full bg-base-200 rounded-b-none">
+  <div class="card-body">
+    <h2 class="card-title text-2xl flex flex-row justify-between mb-10">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="certificate"></fa-icon>
+        <div>Import a Certificate</div>
+      </div>
+    </h2>
+    <div>
+      <form novalidate [formGroup]="form" class="flex flex-col">
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name">
           <mat-hint>A name to easily identify this certificate by. This value is not stored inside
-            the
-            generated certificate.
+            the generated certificate.
           </mat-hint>
         </mat-form-field>
-      </div>
-      <div class="mt2">
-        <div fxLayout="column" fxLayoutAlign="start start">
-          <button mat-button (click)="publicKey.click()">SELECT PUBLIC KEY</button>
-          <div>
-            <input type="file" (change)="selectPublicKey($event)" #publicKey hidden>
-            <div
-              *ngIf="form.controls['publicKey'].value">{{form.controls['publicKey'].value.name}}</div>
-          </div>
+
+        <div class="form-control w-full max-w-xs ">
+          <label class="label pl-0">
+            <span class="text-accent">Select Public Key</span>
+          </label>
+          <input type="file" class="file-input file-input-ghost w-full max-w-xs"
+                 (change)="selectPublicKey($event)"/>
         </div>
-        <div fxLayout="column" class="mt1" fxLayoutAlign="start start">
-          <button mat-button (click)="privateKey.click()">SELECT PRIVATE KEY</button>
-          <div fxFlex="row" fxLayoutAlign="start center">
-            <input type="file" (change)="selectPrivateKey($event)" #privateKey hidden>
-            <div
-              *ngIf="form.controls['privateKey'].value">{{form.controls['privateKey'].value.name}}</div>
-          </div>
+
+        <div class="form-control w-full max-w-xs ">
+          <label class="label pl-0">
+            <span class="text-accent">Select Private Key</span>
+          </label>
+          <input type="file" class="file-input file-input-ghost w-full max-w-xs"
+                 (change)="selectPrivateKey($event)"/>
         </div>
-        <div fxLayout="column" class="mt1" fxLayoutAlign="start start">
-          <button mat-button (click)="certificate.click()">SELECT CERTIFICATE</button>
-          <div fxFlex="row" fxLayoutAlign="start center">
-            <input type="file" (change)="selectCertificate($event)" #certificate hidden>
-            <div
-              *ngIf="form.controls['certificate'].value">{{form.controls['certificate'].value.name}}</div>
-          </div>
+
+        <div class="form-control w-full max-w-xs ">
+          <label class="label pl-0">
+            <span class="text-accent">Select Certificate</span>
+          </label>
+          <input type="file" class="file-input file-input-ghost w-full max-w-xs"
+                 (change)="selectCertificate($event)"/>
         </div>
-      </div>
-    </form>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button routerLink="/cas">CANCEL</button>
-    <button mat-button color="primary" (click)="import()" [disabled]="form.invalid">IMPORT</button>
-  </mat-card-actions>
-</mat-card>
+      </form>
+    </div>
+    <div class="card-actions justify-start mt-10">
+      <button class="btn btn-sm btn-secondary" routerLink="/certificates">CANCEL</button>
+      <button class="btn btn-sm btn-primary" (click)="import()" [disabled]="form.invalid">IMPORT
+      </button>
+    </div>
+  </div>
+</div>

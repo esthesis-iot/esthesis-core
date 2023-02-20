@@ -17,6 +17,8 @@ import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {ComponentsModule} from "../shared/components/components.module";
 import {DateSupportModule} from "../shared/modules/date-support.module";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {CdkTableModule} from "@angular/cdk/table";
 
 @NgModule({
   declarations: [
@@ -39,7 +41,9 @@ import {DateSupportModule} from "../shared/modules/date-support.module";
     ReactiveFormsModule,
     MatSortModule,
     ComponentsModule,
-    DateSupportModule
+    DateSupportModule,
+    FontAwesomeModule,
+    CdkTableModule
   ]
 })
 export class CertificatesModule {

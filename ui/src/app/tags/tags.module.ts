@@ -18,6 +18,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from "@angular/material/select";
 import {ComponentsModule} from "../shared/components/components.module";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {CdkTableModule} from "@angular/cdk/table";
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import {ComponentsModule} from "../shared/components/components.module";
     ComponentsModule,
     MatIconModule,
     MatTooltipModule,
-    A11yModule
+    A11yModule,
+    FontAwesomeModule,
+    CdkTableModule
   ]
 })
 export class TagsModule {

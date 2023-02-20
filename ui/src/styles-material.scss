@@ -69,6 +69,10 @@ mat-form-field {
     @apply text-inherit #{!important};
   }
 
+  :has(mat-hint) {
+    @apply mb-5 #{!important};
+  }
+
   .mdc-line-ripple::before, .mdc-line-ripple::after {
     @apply border-b-base-content/20 #{!important};
   }
@@ -85,11 +89,12 @@ mat-form-field {
     @apply text-base-content/50  #{!important};
   }
 
-  .mat-mdc-form-field-subscript-wrapper:has(mat-hint) {
+  .mat-mdc-form-field-hint-wrapper:has(mat-hint) {
     @apply text-sm #{!important};
     @apply text-base-content/70 #{!important};
     @apply mb-8 #{!important};
     @apply ml-0 #{!important};
+    @apply pl-0 #{!important};
   }
 
   .mat-mdc-form-field-required-marker {
@@ -97,15 +102,16 @@ mat-form-field {
     @apply ml-1;
   }
 
-  //.mat-mdc-form-field-hint-wrapper {
-  //  @apply pl-0 #{!important};
-  //  @apply mt-2 #{!important};
-  //  @apply text-sm #{!important};
-  //  @apply text-base-content/70 #{!important};
-  //}
   .mat-mdc-text-field-wrapper {
     @apply pl-0 #{!important};
   }
+
+  :has(app-field-error[ng-reflect-display-error="true"]) {
+    .mat-mdc-form-field-flex {
+      @apply border-b-secondary border-b-2 #{!important};
+    }
+  }
+
 }
 
 
@@ -212,6 +218,32 @@ mat-expansion-panel {
       @apply text-base-content;
       @apply text-base;
     }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// DATEPICKER
+////////////////////////////////////////////////////////////////////////////////////////////////////
+mat-datepicker-content {
+  @apply bg-base-300 #{!important};
+  .mat-calendar-body-cell-content, .mat-calendar-table-header {
+    @apply text-base-content #{!important};
+  }
+
+  .mat-calendar-body-label, .mdc-button__label {
+    @apply text-base-content font-bold #{!important};
+  }
+
+  svg {
+    @apply fill-primary #{!important};
+  }
+
+  .mat-mdc-icon-button {
+    @apply text-primary #{!important};
+  }
+
+  .mat-calendar-body-today {
+    @apply border-secondary #{!important};
   }
 }
 

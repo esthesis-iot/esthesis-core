@@ -21,6 +21,8 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {ComponentsModule} from "../shared/components/components.module";
 import {DateSupportModule} from "../shared/modules/date-support.module";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {CdkTableModule} from "@angular/cdk/table";
 
 @NgModule({
   declarations: [
@@ -46,7 +48,9 @@ import {DateSupportModule} from "../shared/modules/date-support.module";
     MatTabsModule,
     ComponentsModule,
     DateSupportModule,
-    MatTooltipModule
+    MatTooltipModule,
+    FontAwesomeModule,
+    CdkTableModule
   ]
 })
 export class CasModule {

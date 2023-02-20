@@ -21,6 +21,7 @@ import {
   faBell,
   faBroadcastTower,
   faCalendar,
+  faCertificate,
   faChevronDown,
   faCircle,
   faCircleInfo,
@@ -47,6 +48,7 @@ import {
   faPlus,
   faRefresh,
   faSearch,
+  faStamp,
   faStop,
   faStopwatch,
   faSun,
@@ -124,7 +126,7 @@ export class AppModule {
       faXmark, faCubes, faTriangleExclamation, faGlobe, faCircleUp, faCircle, faPlay, faPause,
       faUserClock, faPlus, faLayerGroup, faTag, faCalendar, faListCheck, faFlag, faStop, faForward,
       faCircleInfo, faHeartCircleBolt, faEnvelope, faStopwatch, faBarsProgress, faDashboard,
-      faPercent);
+      faPercent, faCertificate, faStamp);
     faConfig.fixedWidth = true;
   }
 }
