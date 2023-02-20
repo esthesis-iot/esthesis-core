@@ -5,7 +5,7 @@ import {Router} from "@angular/router";
 import {ApplicationDto} from "../dto/application-dto";
 import {ApplicationsService} from "../applications.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";
 import {MatPaginator} from "@angular/material/paginator";

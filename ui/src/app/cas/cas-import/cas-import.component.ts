@@ -4,9 +4,9 @@ import {QFormsService} from "@qlack/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpEvent, HttpResponse} from "@angular/common/http";
 import {CasService} from "../cas.service";
-import {BaseComponent} from "../../shared/component/base-component";
-import {UtilityService} from "../../shared/service/utility.service";
+import {BaseComponent} from "../../shared/components/base-component";
 import {MatDialog} from "@angular/material/dialog";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-cas-import",

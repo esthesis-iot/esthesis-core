@@ -7,8 +7,6 @@ import {MatSortModule} from "@angular/material/sort";
 import {StoreEditComponent} from "./store-edit/store-edit.component";
 import {ReactiveFormsModule} from "@angular/forms";
 import {QFormsModule} from "@qlack/forms";
-import {DisplayModule} from "../shared/component/display/display.module";
-import {DateSupportModule} from "../shared/module/date-support.module";
 import {MatCardModule} from "@angular/material/card";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatTableModule} from "@angular/material/table";
@@ -18,6 +16,8 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatListModule} from "@angular/material/list";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
+import {DateSupportModule} from "../shared/modules/date-support.module";
+import {ComponentsModule} from "../shared/components/components.module";
 
 
 @NgModule({
@@ -34,7 +34,7 @@ import {MatButtonModule} from "@angular/material/button";
     MatFormFieldModule,
     MatInputModule,
     QFormsModule,
-    DisplayModule,
+    ComponentsModule,
     MatListModule,
     MatCheckboxModule,
     MatSelectModule,

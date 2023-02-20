@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {Log} from "ng2-logger/browser";
-import {BaseComponent} from "./shared/component/base-component";
+import {BaseComponent} from "./shared/components/base-component";
 import {AppConstants} from "./app.constants";
 import {AuthenticatedResult, OidcSecurityService} from "angular-auth-oidc-client";
 import {Observable} from "rxjs";

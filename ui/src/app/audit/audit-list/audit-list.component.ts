@@ -5,13 +5,13 @@ import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {AuditDto} from "../dto/audit-dto";
 import {AuditService} from "../audit.service";
 import {UserService} from "../../users/user.service";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {QFilterAlias, QFormsService} from "@qlack/forms";
-import {UtilityService} from "../../shared/service/utility.service";
 import * as _ from "lodash";
 import * as moment from "moment";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-audit-list",

@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {UtilityService} from "../../shared/service/utility.service";
 import {Router} from "@angular/router";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {ProvisioningService} from "../../provisioning/provisioning.service";
@@ -12,6 +11,7 @@ import {DeviceDto} from "../../devices/dto/device-dto";
 import {DevicesService} from "../../devices/devices.service";
 import {AppConstants} from "../../app.constants";
 import {ProvisioningDto} from "../../provisioning/dto/provisioning-dto";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-command-create",

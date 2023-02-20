@@ -19,7 +19,6 @@ import {DeviceProfileComponent} from "./device/device-profile/device-profile.com
 import {FormlyModule} from "@ngx-formly/core";
 import {FormlyMaterialModule} from "@ngx-formly/material";
 import {ClipboardModule} from "@angular/cdk/clipboard";
-import {DisplayModule} from "../shared/component/display/display.module";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
@@ -39,6 +38,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {CdkTableModule} from "@angular/cdk/table";
 import {CountdownComponent} from "ngx-countdown";
+import {ComponentsModule} from "../shared/components/components.module";
 
 @NgModule({
   declarations: [
@@ -80,7 +80,7 @@ import {CountdownComponent} from "ngx-countdown";
     FormlyModule.forChild(),
     FormlyMaterialModule,
     ClipboardModule,
-    DisplayModule,
+    ComponentsModule,
     FontAwesomeModule,
     CdkTableModule,
     CountdownComponent,

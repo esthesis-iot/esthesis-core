@@ -10,7 +10,6 @@ import {CommandsListComponent} from "./commands-list/commands-list.component";
 import {CommandCreateComponent} from "./command-create/command-create.component";
 import {CommandReplyComponent} from "./command-reply/command-reply.component";
 import {MatStepperModule} from "@angular/material/stepper";
-import {DateSupportModule} from "../shared/module/date-support.module";
 import {TruncateModule} from "@yellowspot/ng-truncate";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
@@ -27,6 +26,8 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatChipsModule} from "@angular/material/chips";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {CdkTableModule} from "@angular/cdk/table";
+import {DateSupportModule} from "../shared/modules/date-support.module";
+import {ComponentsModule} from "../shared/components/components.module";
 
 @NgModule({
   declarations: [CommandsListComponent, CommandCreateComponent, CommandReplyComponent],
@@ -56,6 +57,7 @@ import {CdkTableModule} from "@angular/cdk/table";
     MatCheckboxModule,
     FontAwesomeModule,
     CdkTableModule,
+    ComponentsModule,
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

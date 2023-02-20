@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, Input, ViewChild} from "@angular/core";
 import {NgTerminal} from "ng-terminal";
 import {DeviceTerminalService} from "./device-terminal.service";
-import {BaseComponent} from "../../../shared/component/base-component";
+import {BaseComponent} from "../../../shared/components/base-component";
 import {CommandExecuteRequestDto} from "../../../commands/dto/command-execute-request-dto";
 
 @Component({

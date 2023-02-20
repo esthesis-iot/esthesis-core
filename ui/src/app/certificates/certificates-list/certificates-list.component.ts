@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {MatSort} from "@angular/material/sort";
 import {CertificatesService} from "../certificates.service";
 import {CertificateDto} from "../dto/certificate-dto";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";
 import {MatPaginator} from "@angular/material/paginator";

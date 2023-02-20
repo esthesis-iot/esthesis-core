@@ -1,11 +1,11 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {SettingsService} from "../settings.service";
-import {UtilityService} from "../../shared/service/utility.service";
 import * as _ from "lodash";
 import {SettingDto} from "../dto/setting-dto";
 import {AppConstants} from "../../app.constants";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-settings-messaging",

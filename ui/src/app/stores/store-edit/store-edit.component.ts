@@ -1,19 +1,19 @@
 import {Component, OnInit} from "@angular/core";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {StoresService} from "../stores.service";
 import {
   OkCancelModalComponent
-} from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+} from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {CaDto} from "../../cas/dto/ca-dto";
-import {UtilityService} from "../../shared/service/utility.service";
 import {CasService} from "../../cas/cas.service";
 import {CertificatesService} from "../../certificates/certificates.service";
 import {CertificateDto} from "../../certificates/dto/certificate-dto";
 import {QFormsService} from "@qlack/forms";
 import {StoreDto} from "../dto/store-dto";
 import {MatDialog} from "@angular/material/dialog";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-store-edit",

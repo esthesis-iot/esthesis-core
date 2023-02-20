@@ -3,7 +3,7 @@ import {CaDto} from "../dto/ca-dto";
 import {MatSort} from "@angular/material/sort";
 import {QFormsService} from "@qlack/forms";
 import {CasService} from "../cas.service";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {AppConstants} from "../../app.constants";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";

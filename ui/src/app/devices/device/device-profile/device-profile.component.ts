@@ -2,19 +2,17 @@ import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {QFormsService} from "@qlack/forms";
 import {DevicesService} from "../../devices.service";
-import {BaseComponent} from "../../../shared/component/base-component";
+import {BaseComponent} from "../../../shared/components/base-component";
 import {ActivatedRoute} from "@angular/router";
-import {UtilityService} from "../../../shared/service/utility.service";
 import {FormlyFieldConfig} from "@ngx-formly/core";
 import slugify from "slugify";
-import {
-  InputModalComponent
-} from "../../../shared/component/display/input-modal/input-modal.component";
+import {InputModalComponent} from "../../../shared/components/input-modal/input-modal.component";
 import {
   OkCancelModalComponent
-} from "../../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+} from "../../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {DevicePageFieldDataDto} from "../../dto/device-page-field-data-dto";
 import {MatDialog} from "@angular/material/dialog";
+import {UtilityService} from "../../../shared/services/utility.service";
 
 @Component({
   selector: "app-device-profile",

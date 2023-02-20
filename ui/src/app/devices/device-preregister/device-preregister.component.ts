@@ -5,13 +5,13 @@ import {Router} from "@angular/router";
 import {TagDto} from "../../tags/dto/tag-dto";
 import {TagsService} from "../../tags/tags.service";
 import {DevicePreregisterCamComponent} from "./device-preregister-cam.component";
-import {BaseComponent} from "../../shared/component/base-component";
-import {UtilityService} from "../../shared/service/utility.service";
+import {BaseComponent} from "../../shared/components/base-component";
 import {QFormsService} from "@qlack/forms";
 import {DeviceRegisterDto} from "../dto/device-register-dto";
-import {QFormValidationEEService} from "../../shared/service/form-validation.service";
 import {v4 as uuidv4} from "uuid";
 import {Dialog} from "@angular/cdk/dialog";
+import {UtilityService} from "../../shared/services/utility.service";
+import {QFormValidationEEService} from "../../shared/services/form-validation.service";
 
 @Component({
   selector: "app-device-preregister",

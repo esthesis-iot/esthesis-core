@@ -7,7 +7,6 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatSortModule} from "@angular/material/sort";
 import {QFormsModule} from "@qlack/forms";
 import {ReactiveFormsModule} from "@angular/forms";
-import {DisplayModule} from "../shared/component/display/display.module";
 import {InfrastructureMqttComponent} from "./infrastructure-mqtt/infrastructure-mqtt.component";
 import {
   InfrastructureMqttEditComponent
@@ -22,6 +21,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatButtonModule} from "@angular/material/button";
+import {ComponentsModule} from "../shared/components/components.module";
 
 @NgModule({
   declarations: [
@@ -45,7 +45,7 @@ import {MatButtonModule} from "@angular/material/button";
     MatSortModule,
     MatIconModule,
     MatTabsModule,
-    DisplayModule,
+    ComponentsModule,
     MatProgressSpinnerModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],

@@ -9,8 +9,6 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatSortModule} from "@angular/material/sort";
 import {QFormsModule} from "@qlack/forms";
 import {ReactiveFormsModule} from "@angular/forms";
-import {DisplayModule} from "../shared/component/display/display.module";
-import {DateSupportModule} from "../shared/module/date-support.module";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
@@ -21,6 +19,8 @@ import {MatInputModule} from "@angular/material/input";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatButtonModule} from "@angular/material/button";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {ComponentsModule} from "../shared/components/components.module";
+import {DateSupportModule} from "../shared/modules/date-support.module";
 
 @NgModule({
   declarations: [
@@ -44,7 +44,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     MatSortModule,
     MatIconModule,
     MatTabsModule,
-    DisplayModule,
+    ComponentsModule,
     DateSupportModule,
     MatTooltipModule
   ]

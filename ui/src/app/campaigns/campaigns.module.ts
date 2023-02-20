@@ -5,8 +5,6 @@ import {CampaignsRoutingModule} from "./campaigns-routing.module";
 import {CampaignsComponent} from "./campaigns-list/campaigns.component";
 import {ReactiveFormsModule} from "@angular/forms";
 import {QFormsModule} from "@qlack/forms";
-import {DisplayModule} from "../shared/component/display/display.module";
-import {DateSupportModule} from "../shared/module/date-support.module";
 import {MatIconModule} from "@angular/material/icon";
 import {MatDividerModule} from "@angular/material/divider";
 import {CampaignEditComponent} from "./campaign-edit/campaign-edit.component";
@@ -28,6 +26,8 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {CdkTableModule} from "@angular/cdk/table";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {CountdownComponent} from "ngx-countdown";
+import {ComponentsModule} from "../shared/components/components.module";
+import {DateSupportModule} from "../shared/modules/date-support.module";
 
 @NgModule({
   schemas: [NO_ERRORS_SCHEMA],
@@ -46,7 +46,7 @@ import {CountdownComponent} from "ngx-countdown";
     MatSelectModule,
     QFormsModule,
     MatSortModule,
-    DisplayModule,
+    ComponentsModule,
     DateSupportModule,
     MatIconModule,
     MatDividerModule,

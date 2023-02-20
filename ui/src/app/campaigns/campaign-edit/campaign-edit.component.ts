@@ -1,9 +1,8 @@
 import {Component, isDevMode, OnInit} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {QFormsService} from "@qlack/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {UtilityService} from "../../shared/service/utility.service";
 import {ProvisioningService} from "../../provisioning/provisioning.service";
 import {CampaignMemberDto} from "../dto/campaign-member-dto";
 import {DevicesService} from "../../devices/devices.service";
@@ -17,7 +16,7 @@ import {CampaignConditionDto} from "../dto/campaign-condition-dto";
 import * as _ from "lodash";
 import {
   OkCancelModalComponent
-} from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+} from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {CampaignStatsDto} from "../dto/campaign-stats-dto";
 import {ProvisioningDto} from "../../provisioning/dto/provisioning-dto";
 import {AppConstants} from "../../app.constants";
@@ -34,6 +33,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import {CountdownEvent} from "ngx-countdown";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-campaign-edit",
@@ -74,6 +74,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
   isButtonDeleteEnabled = false;
   isButtonReplicateEnabled = false;
   isStatisticsEnabled = false;
+  isLiveEnabled = false;
 
   constructor(private fb: FormBuilder, public utilityService: UtilityService,
     private qForms: QFormsService, private provisioningService: ProvisioningService,
@@ -100,7 +101,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     });
   }
 
-  private initData(): void {
+  initData(): void {
     // Fill-in the form with data if editing an existing item.
     if (this.id && this.id !== this.appConstants.NEW_RECORD_ID) {
       this.campaignService.findById(this.id).subscribe({
@@ -153,6 +154,8 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
 
           this.isStatisticsEnabled =
             AppConstants.CAMPAIGN.STATE.CREATED !== this.campaign.state;
+
+          this.isLiveEnabled = AppConstants.CAMPAIGN.STATE.RUNNING === this.campaign.state;
         }
       });
     } else {

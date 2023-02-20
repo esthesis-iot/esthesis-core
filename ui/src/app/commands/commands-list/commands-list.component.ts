@@ -2,20 +2,20 @@ import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {MatSort} from "@angular/material/sort";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {CommandRequestDto} from "../dto/command-request-dto";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {CommandsService} from "../commands.service";
 import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";
 import {CommandCreateComponent} from "../command-create/command-create.component";
-import {UtilityService} from "../../shared/service/utility.service";
 import {
   OkCancelModalComponent
-} from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+} from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-commands-list",

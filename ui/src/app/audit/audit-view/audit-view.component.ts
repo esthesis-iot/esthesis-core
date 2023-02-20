@@ -1,15 +1,15 @@
 import {Component, OnInit} from "@angular/core";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {QFormsService} from "@qlack/forms";
-import {UtilityService} from "../../shared/service/utility.service";
 import {
   OkCancelModalComponent
-} from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+} from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {AuditService} from "../audit.service";
 import {AuditDto} from "../dto/audit-dto";
 import {MatDialog} from "@angular/material/dialog";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-audit-view",

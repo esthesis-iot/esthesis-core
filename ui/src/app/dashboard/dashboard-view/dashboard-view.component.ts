@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {GridsterComponent, GridsterConfig} from "angular-gridster2";
 import {AppConstants} from "../../app.constants";
 import {DashboardService} from "../dashboard.service";

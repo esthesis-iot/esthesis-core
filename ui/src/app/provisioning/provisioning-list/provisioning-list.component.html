@@ -5,6 +5,7 @@
         <fa-icon icon="cubes"></fa-icon>
         <div>Provisioning</div>
       </div>
+      <app-live-toggle (tick)="changePage()"></app-live-toggle>
     </h2>
     <div>
       <table cdk-table [dataSource]="datasource" matSort

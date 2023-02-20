@@ -10,7 +10,8 @@ import {
   NgxMatTimepickerModule
 } from "@angular-material-components/datetime-picker";
 import {
-  NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, NgxMatMomentAdapter,
+  NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS,
+  NgxMatMomentAdapter,
   NgxMatMomentModule
 } from "@angular-material-components/moment-adapter";
 

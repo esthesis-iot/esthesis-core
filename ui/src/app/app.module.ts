@@ -5,7 +5,6 @@ import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {AppComponent} from "./app.component";
 import {routing} from "./app.routes";
-import {DisplayModule} from "./shared/component/display/display.module";
 import {QFormsModule} from "@qlack/forms";
 import {NgProgressModule} from "ngx-progressbar";
 import {NgProgressHttpModule} from "ngx-progressbar/http";
@@ -61,23 +60,19 @@ import {
   faUserClock,
   faXmark
 } from "@fortawesome/free-solid-svg-icons";
-import {BreadcrumbComponent} from "./shared/component/breadcrumb/breadcrumb.component";
 import {faGithub, faInstagram, faTwitter} from "@fortawesome/free-brands-svg-icons";
-import {CountdownComponent} from "./shared/component/countdown/countdown.component";
+import {ComponentsModule} from "./shared/components/components.module";
 
 @NgModule({
   bootstrap: [AppComponent],
   declarations: [
-    AppComponent,
-    BreadcrumbComponent,
-    CountdownComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     routing,
     HttpClientModule,
-    DisplayModule,
     LayoutModule,
     HttpClientModule,
     NgProgressModule.withConfig({
@@ -112,10 +107,9 @@ import {CountdownComponent} from "./shared/component/countdown/countdown.compone
     MatSnackBarModule,
     MatButtonModule,
     FontAwesomeModule,
+    ComponentsModule,
   ],
-  exports: [
-    CountdownComponent
-  ],
+  exports: [],
   providers: [
     QFormsModule,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}

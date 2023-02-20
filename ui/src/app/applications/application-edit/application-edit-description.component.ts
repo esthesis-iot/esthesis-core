@@ -2,15 +2,15 @@ import {Component, Input, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApplicationsService} from "../applications.service";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {
   OkCancelModalComponent
-} from "src/app/shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
-import {UtilityService} from "../../shared/service/utility.service";
+} from "src/app/shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {QFormsService} from "@qlack/forms";
 import {v4 as uuidv4} from "uuid";
 import {ApplicationDto} from "../dto/application-dto";
 import {MatDialog} from "@angular/material/dialog";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-application-edit-description",

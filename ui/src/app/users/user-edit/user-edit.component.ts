@@ -2,15 +2,15 @@ import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../user.service";
-import {BaseComponent} from "../../shared/component/base-component";
-import {UtilityService} from "../../shared/service/utility.service";
+import {BaseComponent} from "../../shared/components/base-component";
 import {
   OkCancelModalComponent
-} from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+} from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {QFormsService} from "@qlack/forms";
 import {UserDto} from "../dto/user-dto";
 import {AppConstants} from "../../app.constants";
 import {MatDialog} from "@angular/material/dialog";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-user",

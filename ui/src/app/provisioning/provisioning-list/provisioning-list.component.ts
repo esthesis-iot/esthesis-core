@@ -5,16 +5,16 @@ import {ProvisioningService} from "../provisioning.service";
 import {TagsService} from "../../tags/tags.service";
 import {TagDto} from "../../tags/dto/tag-dto";
 import * as _ from "lodash";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {AppConstants} from "../../app.constants";
 import {ProvisioningDto} from "../dto/provisioning-dto";
-import {UtilityService} from "../../shared/service/utility.service";
 import {
   OkCancelModalComponent
-} from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+} from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatDialog} from "@angular/material/dialog";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-provisioning-list",

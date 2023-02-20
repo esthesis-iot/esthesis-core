@@ -4,10 +4,10 @@ import {SettingsService} from "../settings.service";
 import {CertificatesService} from "../../certificates/certificates.service";
 import {CertificateDto} from "../../certificates/dto/certificate-dto";
 import * as _ from "lodash";
-import {BaseComponent} from "../../shared/component/base-component";
-import {UtilityService} from "../../shared/service/utility.service";
+import {BaseComponent} from "../../shared/components/base-component";
 import {SettingDto} from "../dto/setting-dto";
 import {AppConstants} from "../../app.constants";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-settings-security",

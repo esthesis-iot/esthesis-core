@@ -13,8 +13,6 @@ import {
   ApplicationEditPermissionsComponent
 } from "./application-edit/application-edit-permissions.component";
 import {ApplicationsRoutingModule} from "./applications-routing.module";
-import {DisplayModule} from "../shared/component/display/display.module";
-import {DateSupportModule} from "../shared/module/date-support.module";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
@@ -24,6 +22,8 @@ import {MatCardModule} from "@angular/material/card";
 import {MatInputModule} from "@angular/material/input";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatButtonModule} from "@angular/material/button";
+import {ComponentsModule} from "../shared/components/components.module";
+import {DateSupportModule} from "../shared/modules/date-support.module";
 
 @NgModule({
   declarations: [
@@ -48,7 +48,7 @@ import {MatButtonModule} from "@angular/material/button";
     MatSortModule,
     MatIconModule,
     MatTabsModule,
-    DisplayModule,
+    ComponentsModule,
     DateSupportModule
   ]
 })

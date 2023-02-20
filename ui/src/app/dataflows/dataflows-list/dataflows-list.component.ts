@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatSort} from "@angular/material/sort";
 import {Router} from "@angular/router";

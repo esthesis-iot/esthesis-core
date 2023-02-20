@@ -14,7 +14,6 @@ import {DataflowEditSectionComponent} from "./dataflow-edit/dataflow-edit-sectio
 import {DataflowNewComponent} from "./dataflow-new/dataflow-new.component";
 import {FormlyMatSliderModule} from "@ngx-formly/material/slider";
 import {FormlyMatToggleModule} from "@ngx-formly/material/toggle";
-import {DisplayModule} from "../shared/component/display/display.module";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatTableModule} from "@angular/material/table";
 import {MatSelectModule} from "@angular/material/select";
@@ -25,6 +24,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatButtonModule} from "@angular/material/button";
+import {ComponentsModule} from "../shared/components/components.module";
 
 @NgModule({
   declarations: [
@@ -56,7 +56,7 @@ import {MatButtonModule} from "@angular/material/button";
     FormlyMaterialModule,
     FormlyMatSliderModule,
     FormlyMatToggleModule,
-    DisplayModule
+    ComponentsModule
   ]
 })
 export class DataflowsModule {

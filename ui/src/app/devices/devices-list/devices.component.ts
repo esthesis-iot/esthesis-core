@@ -4,12 +4,12 @@ import {Router} from "@angular/router";
 import {MatSort} from "@angular/material/sort";
 import {DeviceDto} from "../dto/device-dto";
 import {DevicesService} from "../devices.service";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {QFormsService} from "@qlack/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
-import {CountdownComponent, CountdownConfig, CountdownEvent} from "ngx-countdown";
+import {CountdownComponent} from "ngx-countdown";
 
 @Component({
   selector: "app-devices",
@@ -28,10 +28,6 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
   datasource: MatTableDataSource<DeviceDto> = new MatTableDataSource<DeviceDto>();
   // Search filter.
   filterForm: FormGroup;
-  // Whether data should be automatically refreshed.
-  live = false;
-  liveCounter = 10;
-  countdownConfig: CountdownConfig = {demand: true, leftTime: this.liveCounter};
 
   constructor(private fb: FormBuilder, private router: Router,
     private deviceService: DevicesService, private qForms: QFormsService) {
@@ -73,11 +69,6 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
     });
   }
 
-  refreshCurrentData() {
-    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-      this.sort.direction);
-  }
-
   changePage() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
       this.sort.start);
@@ -85,23 +76,5 @@ export class DevicesComponent extends BaseComponent implements OnInit, AfterView
 
   clearFilter() {
     this.filterForm.reset();
-  }
-
-  countDownEvent(event: CountdownEvent) {
-    if (event.action === "done") {
-      this.refreshCurrentData();
-      this.countdown.restart();
-      this.countdown.begin();
-    }
-  }
-
-  toggleLive() {
-    this.live = !this.live;
-    if (this.live) {
-      this.countdown.begin();
-    } else {
-      this.countdown.stop();
-      this.countdown.restart();
-    }
   }
 }

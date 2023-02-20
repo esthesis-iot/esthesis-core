@@ -1,17 +1,17 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {BaseComponent} from "../../shared/component/base-component";
-import {UtilityService} from "../../shared/service/utility.service";
+import {BaseComponent} from "../../shared/components/base-component";
 import {
   OkCancelModalComponent
-} from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+} from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {QFormsService} from "@qlack/forms";
 import {TagDto} from "../../tags/dto/tag-dto";
 import {TagsService} from "../../tags/tags.service";
 import {InfrastructureMqttService} from "./infrastructure-mqtt.service";
 import {InfrastructureMqttDto} from "./dto/Infrastructure-mqtt-dto";
 import {MatDialog} from "@angular/material/dialog";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-infrastructure-mqtt-edit",

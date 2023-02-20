@@ -7,7 +7,6 @@ import {TagEditComponent} from "./tag-edit/tag-edit.component";
 import {MatSortModule} from "@angular/material/sort";
 import {QFormsModule} from "@qlack/forms";
 import {ReactiveFormsModule} from "@angular/forms";
-import {DisplayModule} from "../shared/component/display/display.module";
 import {MatIconModule} from "@angular/material/icon";
 import {A11yModule} from "@angular/cdk/a11y";
 import {MatButtonModule} from "@angular/material/button";
@@ -18,6 +17,7 @@ import {MatTableModule} from "@angular/material/table";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from "@angular/material/select";
+import {ComponentsModule} from "../shared/components/components.module";
 
 @NgModule({
   declarations: [
@@ -37,7 +37,7 @@ import {MatSelectModule} from "@angular/material/select";
     QFormsModule,
     ReactiveFormsModule,
     MatSortModule,
-    DisplayModule,
+    ComponentsModule,
     MatIconModule,
     MatTooltipModule,
     A11yModule

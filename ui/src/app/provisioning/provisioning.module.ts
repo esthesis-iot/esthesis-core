@@ -7,7 +7,6 @@ import {MatSortModule} from "@angular/material/sort";
 import {QFormsModule} from "@qlack/forms";
 import {ReactiveFormsModule} from "@angular/forms";
 import {NgxFilesizeModule} from "ngx-filesize";
-import {DisplayModule} from "../shared/component/display/display.module";
 import {ProvisioningEditComponent} from "./provisioning-edit/provisioning-edit.component";
 import {ProvisioningListComponent} from "./provisioning-list/provisioning-list.component";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -21,6 +20,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {CdkTableModule} from "@angular/cdk/table";
+import {ComponentsModule} from "../shared/components/components.module";
 
 @NgModule({
   declarations: [
@@ -43,7 +43,7 @@ import {CdkTableModule} from "@angular/cdk/table";
     MatIconModule,
     NgxFilesizeModule,
     MatCheckboxModule,
-    DisplayModule,
+    ComponentsModule,
     MatProgressBarModule,
     FontAwesomeModule,
     CdkTableModule

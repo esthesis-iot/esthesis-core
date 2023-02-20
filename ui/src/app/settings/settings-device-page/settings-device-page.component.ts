@@ -1,18 +1,18 @@
 import {Component, OnInit} from "@angular/core";
 import {DevicePageFieldDto} from "../../devices/dto/device-page-field-dto";
 import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
-import {UtilityService} from "../../shared/service/utility.service";
 import {DevicesService} from "../../devices/devices.service";
 import {SettingsService} from "../settings.service";
 import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";
 import {
   MatIconPickerComponent
-} from "../../shared/component/display/mat-icon-picker/mat-icon-picker.component";
+} from "../../shared/components/mat-icon-picker/mat-icon-picker.component";
 import {SettingDto} from "../dto/setting-dto";
 import * as _ from "lodash-es";
 import {forkJoin} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-settings-device-page",

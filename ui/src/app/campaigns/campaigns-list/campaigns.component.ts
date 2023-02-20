@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {QFormsService} from "@qlack/forms";
 import {CampaignsService} from "../campaigns.service";
 import {CampaignDto} from "../dto/campaign-dto";
@@ -43,11 +43,6 @@ export class CampaignsComponent extends BaseComponent implements AfterViewInit {
   }
 
   changePage() {
-    this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
-      this.sort.start);
-  }
-
-  refreshCurrentData() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
       this.sort.start);
   }

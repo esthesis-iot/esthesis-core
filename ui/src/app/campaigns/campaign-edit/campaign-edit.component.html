@@ -1,5 +1,14 @@
 <div class="card w-full bg-base-200 rounded-b-none">
   <div class="card-body">
+    <!-- PAGE TITLE -->
+    <h2 class="card-title text-2xl flex flex-row justify-between mb-10">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="globe"></fa-icon>
+        <div>Campaign</div>
+      </div>
+      <app-live-toggle (tick)="initData()" *ngIf="isLiveEnabled"></app-live-toggle>
+    </h2>
+
     <!-- REAL-TIME STATS -->
     <div class="flex flex-row flex-wrap gap-5 mb-10" *ngIf="isStatisticsEnabled">
       <div class="stats shadow">
@@ -82,14 +91,6 @@
         </div>
       </div>
     </div>
-
-    <!-- PAGE TITLE -->
-    <h2 class="card-title text-2xl flex flex-row justify-between mb-10">
-      <div class="flex flex-row gap-2">
-        <fa-icon icon="globe"></fa-icon>
-        <div>Campaign</div>
-      </div>
-    </h2>
 
     <!-- CAMPAIGN ELEMENTS -->
     <form novalidate [formGroup]="form">

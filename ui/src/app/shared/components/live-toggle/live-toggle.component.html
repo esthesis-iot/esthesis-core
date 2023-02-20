@@ -1,0 +1,14 @@
+<div class="flex flex-row">
+  <label class="label cursor-pointer">
+    <div
+      class="mr-1.5 radial-progress bg-primary text-primary-content border-4 border-primary"
+      *ngIf="live"
+      style="--size:1.25rem;--thickness: 4px;"
+      [ngStyle]="{'--value': countdown.left/(counter*10)}"></div>
+    <span class="label-text">Live</span>
+    <input type="checkbox" class="toggle toggle-success ml-2"
+           [checked]="live" (change)="toggleLive()"/>
+  </label>
+  <countdown #countdown [config]="countdownConfig"
+             (event)="countDownEvent($event)" class="hidden"></countdown>
+</div>

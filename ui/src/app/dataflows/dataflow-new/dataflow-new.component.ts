@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {dataflows} from "../dto/dataflow-definition";
 
 @Component({

@@ -3,18 +3,18 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {QFormsService} from "@qlack/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient, HttpEventType} from "@angular/common/http";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {TagDto} from "../../tags/dto/tag-dto";
 import {TagsService} from "../../tags/tags.service";
 import {ProvisioningService} from "../provisioning.service";
-import {UtilityService} from "../../shared/service/utility.service";
 import {
   OkCancelModalComponent
-} from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+} from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import * as _ from "lodash";
 import {ProvisioningDto} from "../dto/provisioning-dto";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {MatDialog} from "@angular/material/dialog";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-provisioning-edit",

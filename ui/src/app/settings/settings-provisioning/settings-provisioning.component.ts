@@ -2,10 +2,10 @@ import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {SettingsService} from "../settings.service";
 import * as _ from "lodash";
-import {BaseComponent} from "../../shared/component/base-component";
-import {UtilityService} from "../../shared/service/utility.service";
+import {BaseComponent} from "../../shared/components/base-component";
 import {SettingDto} from "../dto/setting-dto";
 import {AppConstants} from "../../app.constants";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-settings-provisioning",

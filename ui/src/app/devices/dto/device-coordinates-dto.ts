@@ -3,6 +3,6 @@ export interface DeviceCoordinatesDto {
   hardwareId: string;
   lon: number;
   lat: number;
-  coordinatesUpdatedOn: Date
+  coordinatesUpdatedOn: Date;
 
 }

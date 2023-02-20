@@ -4,14 +4,14 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {CaDto} from "../dto/ca-dto";
 import {AppConstants} from "../../app.constants";
 import {CasService} from "../cas.service";
-import {BaseComponent} from "../../shared/component/base-component";
-import {UtilityService} from "../../shared/service/utility.service";
+import {BaseComponent} from "../../shared/components/base-component";
 import {
   OkCancelModalComponent
-} from "../../shared/component/display/ok-cancel-modal/ok-cancel-modal.component";
+} from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {QFormsService} from "@qlack/forms";
-import {QFormValidationEEService} from "../../shared/service/form-validation.service";
 import {MatDialog} from "@angular/material/dialog";
+import {UtilityService} from "../../shared/services/utility.service";
+import {QFormValidationEEService} from "../../shared/services/form-validation.service";
 
 @Component({
   selector: "app-cas-edit",

@@ -5,7 +5,7 @@ import {MatSort} from "@angular/material/sort";
 import {UserDto} from "../dto/user-dto";
 import {UserService} from "../user.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import {BaseComponent} from "../../shared/component/base-component";
+import {BaseComponent} from "../../shared/components/base-component";
 import {QFilterAlias, QFormsService} from "@qlack/forms";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
