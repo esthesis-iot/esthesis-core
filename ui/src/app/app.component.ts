@@ -1,23 +1,21 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {Log} from "ng2-logger/browser";
 import {BaseComponent} from "./shared/components/base-component";
 import {AppConstants} from "./app.constants";
-import {AuthenticatedResult, OidcSecurityService} from "angular-auth-oidc-client";
-import {Observable} from "rxjs";
+import {OidcSecurityService} from "angular-auth-oidc-client";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"]
 })
-export class AppComponent extends BaseComponent {
+export class AppComponent extends BaseComponent implements OnInit {
   // Logger.
   private log = Log.create("AppComponent");
   // Expose application constants.
   constants = AppConstants;
-
-  // Controller for sidebar's visibility.
-  sidebarVisibility = true;
+  // tslint:disable-next-line:variable-name
+  private _isLoggedIn = false;
 
   constructor(private oidcService: OidcSecurityService) {
     super();
@@ -27,7 +25,15 @@ export class AppComponent extends BaseComponent {
     localStorage.getItem("theme") && document.querySelector("html")!.setAttribute("data-theme", localStorage.getItem("theme")!);
   }
 
-  isLoggedIn(): Observable<AuthenticatedResult> {
-    return this.oidcService.isAuthenticated$;
+  isLoggedIn(): boolean {
+    return this._isLoggedIn;
+  }
+
+  ngOnInit() {
+    // This is a necessary call as per
+    // https://angular-auth-oidc-client.com/docs/documentation/auto-login
+    this.oidcService.checkAuth().subscribe(({isAuthenticated, userData, accessToken}) => {
+      this._isLoggedIn = isAuthenticated;
+    });
   }
 }

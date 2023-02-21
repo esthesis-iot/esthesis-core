@@ -75,11 +75,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {faGithub, faInstagram, faTwitter} from "@fortawesome/free-brands-svg-icons";
 import {ComponentsModule} from "./shared/components/components.module";
+import {CallbackComponent} from "./callback.component";
 
 @NgModule({
   bootstrap: [AppComponent],
   declarations: [
-    AppComponent
+    AppComponent,
+    CallbackComponent
   ],
   imports: [
     BrowserModule,
@@ -101,8 +103,8 @@ import {ComponentsModule} from "./shared/components/components.module";
       config: {
         // TODO make this configurable
         authority: "http://esthesis-dev-keycloak/realms/esthesis",
-        redirectUrl: window.location.origin,
-        postLogoutRedirectUri: window.location.origin,
+        redirectUrl: window.location.origin + "/callback",
+        postLogoutRedirectUri: window.location.origin + "/callback",
         clientId: "esthesis",
         scope: "openid profile offline_access",
         responseType: "code",

@@ -1,99 +1,99 @@
 import {RouterModule} from "@angular/router";
 import {ModuleWithProviders} from "@angular/core";
 import {AppModule} from "./app.module";
-import {AutoLoginAllRoutesGuard} from "angular-auth-oidc-client";
+import {AutoLoginPartialRoutesGuard} from "angular-auth-oidc-client";
+import {CallbackComponent} from "./callback.component";
 
 // Configuration of Router with all available AppConstants.Routes.
 export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
     // Redirect for empty path.
     {path: "", redirectTo: "dashboard", pathMatch: "full"},
+    // {path: "**", redirectTo: "dashboard"},
+    {path: "callback", component: CallbackComponent},
     {
       path: "dashboard",
       loadChildren: () => import("./dashboard/dashboard.module").then(m => m.DashboardModule),
-      canActivate: [AutoLoginAllRoutesGuard]
+      canActivate: [AutoLoginPartialRoutesGuard]
     },
     {
       path: "audit",
       loadChildren: () => import("./audit/audit.module").then(m => m.AuditModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Audit"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Audit"}
     },
     {
       path: "devices",
       loadChildren: () => import("./devices/devices.module").then(m => m.DevicesModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Devices"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Devices"}
     },
     {
       path: "cas",
       loadChildren: () => import("./cas/cas.module").then(m => m.CasModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Certificate Authorities"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Certificate Authorities"}
     },
     {
       path: "certificates",
       loadChildren: () => import("./certificates/certificates.module").then(
         m => m.CertificatesModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Certificates"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Certificates"}
     },
     {
       path: "keystores",
       loadChildren: () => import("./keystores/keystores.module").then(m => m.KeystoresModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Keystores"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Keystores"}
     },
     {
       path: "infrastructure",
       loadChildren: () => import("./infrastructure/infrastructure.module").then(
         m => m.InfrastructureModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Infrastructure"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Infrastructure"}
     },
     {
       path: "provisioning",
       loadChildren: () => import("./provisioning/provisioning.module").then(
         m => m.ProvisioningModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Provisioning"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Provisioning"}
     },
     {
       path: "users",
       loadChildren: () => import("./users/users.module").then(m => m.UsersModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Users"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Users"}
     },
     {
       path: "settings",
       loadChildren: () => import("./settings/settings.module").then(m => m.SettingsModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Settings"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Settings"}
     },
     {
       path: "tags",
       loadChildren: () => import("./tags/tags.module").then(m => m.TagsModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Tags"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Tags"}
     },
     {
       path: "applications",
       loadChildren: () => import("./applications/applications.module").then(
         m => m.ApplicationsModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Applications"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Applications"}
     },
     {
       path: "command",
       loadChildren: () => import("./commands/commands.module").then(m => m.CommandsModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Command"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Command"}
     },
     {
       path: "about",
       loadChildren: () => import("./about/about.module").then(m => m.AboutModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "About"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "About"}
     },
     {
       path: "campaigns",
       loadChildren: () => import("./campaigns/campaigns.module").then(m => m.CampaignsModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Campaigns"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Campaigns"}
     },
     {
       path: "dataflow",
       loadChildren: () => import("./dataflows/dataflows.module").then(m => m.DataflowsModule),
-      canActivate: [AutoLoginAllRoutesGuard], data: {breadcrumb: "Dataflows"}
-    },
-
-    // Redirect all other urls to Dashboard.
-    {path: "**", redirectTo: "dashboard"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Dataflows"}
+    }
   ],
   {
     enableTracing: false,
