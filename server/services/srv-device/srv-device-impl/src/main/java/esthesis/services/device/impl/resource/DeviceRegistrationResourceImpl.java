@@ -24,6 +24,10 @@ public class DeviceRegistrationResourceImpl implements
   @Inject
   DeviceRegistrationService deviceRegistrationService;
 
+  /**
+   * Preregister devices in the platform. DeviceRegistrationDTO.hardwareId may content multiple
+   * devices in this case, separated by new lines.
+   */
   @Override
   @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Preregistering device")
   public Response preregister(@Valid DeviceRegistrationDTO deviceRegistration)

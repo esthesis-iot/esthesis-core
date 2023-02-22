@@ -22,6 +22,18 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 @RegisterProvider(AccessTokenRequestReactiveFilter.class)
 public interface DeviceRegistrationResource {
 
+  /**
+   * Preregister devices in the platform. DeviceRegistrationDTO.hardwareId may content multiple
+   * devices in this case, separated by new lines.
+   *
+   * @param deviceRegistration
+   * @return
+   * @throws NoSuchAlgorithmException
+   * @throws IOException
+   * @throws OperatorCreationException
+   * @throws InvalidKeySpecException
+   * @throws NoSuchProviderException
+   */
   @POST
   @Path("/v1/preregister")
   Response preregister(@Valid DeviceRegistrationDTO deviceRegistration)

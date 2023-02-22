@@ -11,11 +11,11 @@
         <mat-form-field>
           <mat-label>Hardware IDs</mat-label>
           <textarea cdkTextareaAutosize [cdkAutosizeMinRows]=1 [cdkAutosizeMaxRows]=30
-                    matInput formControlName="ids"
+                    matInput formControlName="hardwareId"
                     cdkTrapFocus cdkTrapFocusAutoCapture></textarea>
           <app-field-error matSuffix
-                           [displayError]="isFieldValid(form, 'ids')"
-                           [errorMessage]="form.controls['ids'].getError('message')">
+                           [displayError]="isFieldValid(form, 'hardwareId')"
+                           [errorMessage]="form.controls['hardwareId'].getError('message')">
           </app-field-error>
           <mat-hint>You can preregister multiple devices, adding each hardware ID on a separate line
           </mat-hint>

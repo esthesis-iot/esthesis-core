@@ -32,8 +32,9 @@ export class DevicePreregisterComponent extends BaseComponent implements OnInit 
   ngOnInit() {
     // Set up the form.
     this.form = this.fb.group({
-      ids: [null, [Validators.required]],
-      tags: []
+      hardwareId: [null, [Validators.required]],
+      tags: [],
+      type: this.appConstants.DEVICE.TYPE.ESTHESIS
     });
 
     // Get available tags.
@@ -77,7 +78,7 @@ export class DevicePreregisterComponent extends BaseComponent implements OnInit 
     });
     dialogRef.closed.subscribe(result => {
       if (result) {
-        this.form.controls.ids.patchValue(result);
+        this.form.controls.hardwareId.patchValue(result);
       }
     });
   }

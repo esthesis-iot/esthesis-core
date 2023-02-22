@@ -94,7 +94,8 @@ public class DeviceRegistrationService {
   }
 
   /**
-   * Preregisters a device, so that it can self-register later on.
+   * Preregisters a device, so that it can self-register later on. DeviceRegistrationDTO.hardwareId
+   * may content multiple devices in this case, separated by new lines. *
    *
    * @param deviceRegistration The preregistration details of the device.
    */
@@ -102,7 +103,6 @@ public class DeviceRegistrationService {
   throws NoSuchAlgorithmException, OperatorCreationException, InvalidKeySpecException,
          NoSuchProviderException, IOException {
     // Split IDs.
-    //TODO ********************************************* CHECK HOW TO SPLIT
     String ids = deviceRegistration.getHardwareId();
     ids = ids.replace("\n", ",");
     String[] idList = ids.split(",");
