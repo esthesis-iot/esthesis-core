@@ -77,7 +77,7 @@ import {
 import {faGithub, faInstagram, faTwitter} from "@fortawesome/free-brands-svg-icons";
 import {ComponentsModule} from "./shared/components/components.module";
 import {CallbackComponent} from "./callback.component";
-import {httpLoaderFactory} from "./services/auth.service";
+import {httpLoaderFactory} from "./shared/services/auth.service";
 
 @NgModule({
   bootstrap: [AppComponent],

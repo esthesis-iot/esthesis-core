@@ -1,6 +1,6 @@
 import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
-import {CrudService} from "../../services/crud.service";
+import {CrudService} from "../../shared/services/crud.service";
 import {InfrastructureMqttDto} from "./dto/Infrastructure-mqtt-dto";
 
 /**

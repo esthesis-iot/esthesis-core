@@ -1,6 +1,6 @@
 import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
-import {CrudService} from "../services/crud.service";
+import {CrudService} from "../shared/services/crud.service";
 import {Observable} from "rxjs";
 import {DevicePageFieldDto} from "../devices/dto/device-page-field-dto";
 import {environment} from "src/environments/environment";

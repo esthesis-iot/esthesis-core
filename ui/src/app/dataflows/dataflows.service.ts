@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {CrudService} from "../services/crud.service";
+import {CrudService} from "../shared/services/crud.service";
 import {Observable} from "rxjs";
 import {environment} from "../../environments/environment";
 import {DataflowDto} from "./dto/dataflow-dto";

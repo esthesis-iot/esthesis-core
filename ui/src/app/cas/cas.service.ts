@@ -4,7 +4,7 @@ import {CaDto} from "./dto/ca-dto";
 import {FormGroup} from "@angular/forms";
 import {Observable} from "rxjs";
 import {environment} from "../../environments/environment";
-import {CrudDownloadService} from "../services/crud-download.service";
+import {CrudDownloadService} from "../shared/services/crud-download.service";
 import {FileSaverService} from "ngx-filesaver";
 import {UtilityService} from "../shared/services/utility.service";
 

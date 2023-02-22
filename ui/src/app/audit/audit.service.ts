@@ -3,7 +3,7 @@ import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {AuditDto} from "./dto/audit-dto";
 import {environment} from "../../environments/environment";
-import {CrudService} from "../services/crud.service";
+import {CrudService} from "../shared/services/crud.service";
 
 /**
  * A service providing functionality to view and manage the audit log.

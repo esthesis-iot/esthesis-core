@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {FormGroup} from "@angular/forms";
 import {CertificateDto} from "./dto/certificate-dto";
 import {environment} from "../../environments/environment";
-import {CrudDownloadService} from "../services/crud-download.service";
+import {CrudDownloadService} from "../shared/services/crud-download.service";
 import {FileSaverService} from "ngx-filesaver";
 
 @Injectable({

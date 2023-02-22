@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {CrudService} from "../services/crud.service";
+import {CrudService} from "../shared/services/crud.service";
 import {CampaignDto} from "./dto/campaign-dto";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";

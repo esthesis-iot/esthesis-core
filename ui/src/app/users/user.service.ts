@@ -3,7 +3,7 @@ import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {LoginInfoDto} from "./dto/login-info-dto";
 import {UserDto} from "./dto/user-dto";
-import {CrudService} from "../services/crud.service";
+import {CrudService} from "../shared/services/crud.service";
 import {JwtDto} from "./dto/jwt-dto";
 import {environment} from "../../environments/environment";
 

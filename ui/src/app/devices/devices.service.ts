@@ -7,7 +7,7 @@ import {environment} from "../../environments/environment";
 import {DeviceProfileNoteDto} from "./dto/device-profile-note-dto";
 import {DevicePageFieldDataDto} from "./dto/device-page-field-data-dto";
 import {GeolocationDto} from "./dto/geolocation-dto";
-import {CrudDownloadService} from "../services/crud-download.service";
+import {CrudDownloadService} from "../shared/services/crud-download.service";
 import {FileSaverService} from "ngx-filesaver";
 import {UtilityService} from "../shared/services/utility.service";
 
