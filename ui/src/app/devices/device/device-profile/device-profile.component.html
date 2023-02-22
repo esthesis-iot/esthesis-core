@@ -3,8 +3,13 @@
     <div class="stats shadow" *ngFor="let dataField of dataFields">
       <div class="stat">
         <div class="stat-title">{{dataField.label}}</div>
-        <div class="stat-value">{{dataField.value}}</div>
-        <div class="stat-desc">{{dataField.lastUpdate | amFromUtc | amLocal | amTimeAgo}}</div>
+        <div class="stat-value" *ngIf="dataField.value">{{dataField.value}}</div>
+        <div class="stat-value" *ngIf="!dataField.value">---</div>
+        <div class="stat-desc"
+             *ngIf="dataField.value">{{dataField.lastUpdate | amFromUtc | amLocal | amTimeAgo}}</div>
+        <div class="stat-desc"
+             *ngIf="!dataField.value">value not received
+        </div>
       </div>
     </div>
   </div>
