@@ -1,4 +1,4 @@
 apiVersion: v2
 name: esthesis-ui
 description: A Helm chart to deploy esthesis frontend.
-version: 2.0.20
+version: 2.0.21-SNAPSHOT
