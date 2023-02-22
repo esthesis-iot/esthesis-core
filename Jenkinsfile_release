@@ -2,7 +2,7 @@ pipeline{
     agent {
         docker {
             image 'eddevopsd2/ubuntu-dind:dind-mvn3.6.3-jdk15-node16.14.2-buildx-helm'
-            args '--privileged -v /root/.m2/Esthesis:/root/.m2'
+            args '--privileged -v /root/.m2/Esthesis:/root/.m2 -v /root/.docker/config.json:/root/.docker/config.json'
         }
     }
     options {
