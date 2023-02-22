@@ -19,6 +19,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {CountdownComponent} from "ngx-countdown";
+import {FramedMapComponent} from "./framed-map/framed-map.component";
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import {CountdownComponent} from "ngx-countdown";
     InputModalComponent,
     MatIconPickerComponent,
     FieldErrorComponent,
-    TitlelisePipe
+    TitlelisePipe,
+    FramedMapComponent
   ],
   imports: [
     CommonModule,
@@ -50,7 +52,8 @@ import {CountdownComponent} from "ngx-countdown";
     FieldErrorComponent,
     TitlelisePipe,
     BreadcrumbComponent,
-    LiveToggleComponent
+    LiveToggleComponent,
+    FramedMapComponent
   ]
 })
 export class ComponentsModule {

@@ -10,10 +10,11 @@ import {
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {QFormsService} from "@qlack/forms";
 import {DeviceDto} from "../dto/device-dto";
-import {AppConstants} from "../../app.constants";
-import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
+import {GeolocationDto} from "../dto/geolocation-dto";
+import {Observable} from "rxjs";
+import {FramedMapComponent} from "../../shared/components/framed-map/framed-map.component";
 
 @Component({
   selector: "app-device",
@@ -26,17 +27,13 @@ export class DeviceComponent extends BaseComponent implements OnInit {
   device: DeviceDto | undefined;
   availableTags: TagDto[] | undefined;
   hardwareId = "";
-  // Expose application constants.
-  constants = AppConstants;
-  // Geolocation URL for embedded Goggle Maps.
-  geoUrl?: SafeResourceUrl;
-  geoLastUpdated?: Date;
+  // Geolocation details for this device.
+  geolocation?: Observable<GeolocationDto>;
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
     private qForms: QFormsService, private tagService: TagsService,
     private devicesService: DevicesService, private route: ActivatedRoute,
-    private router: Router, private utilityService: UtilityService,
-    public sanitizer: DomSanitizer) {
+    private router: Router, private utilityService: UtilityService) {
     super();
   }
 
@@ -64,16 +61,7 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     });
 
     // Get geolocation if available.
-    this.devicesService.getGeolocation(this.id!).subscribe({
-      next: (geolocation) => {
-        if (geolocation) {
-          this.geoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`https://maps.google.com/maps?q=${geolocation.latitude},${geolocation.longitude}&z=13&output=embed`);
-          this.geoLastUpdated = geolocation.lastUpdated;
-        }
-      }, error: (err) => {
-        this.utilityService.popupErrorWithTraceId("Could not fetch the gelocation for this device.", err);
-      }
-    });
+    this.geolocation = this.devicesService.getGeolocation(this.id!);
   }
 
   saveDeviceInfo() {
@@ -124,10 +112,23 @@ export class DeviceComponent extends BaseComponent implements OnInit {
    * Display a bigger version of the map in a dialog.
    */
   showMap() {
-    // this.dialog.open(MapDialogComponent, {
-    //   data: {
-    //     geoUrl: this.geoUrl
-    //   }
-    // });
+    this.devicesService.getGeolocation(this.id!).subscribe({
+      next: (geolocation) => {
+        const mapInstance = this.dialog.open(FramedMapComponent, {
+          maxWidth: "100vw",
+          maxHeight: "100vh",
+          height: "100%",
+          width: "100%"
+        }).componentInstance;
+        mapInstance.longitude = geolocation.longitude;
+        mapInstance.latitude = geolocation.latitude;
+        mapInstance.zoom = 13;
+        mapInstance.height = "100%";
+        mapInstance.width = "100%";
+        mapInstance.title = "Device " + this.hardwareId;
+      }, error: (error) => {
+        this.utilityService.popupErrorWithTraceId(error, "Error while retrieving geolocation.");
+      }
+    });
   }
 }

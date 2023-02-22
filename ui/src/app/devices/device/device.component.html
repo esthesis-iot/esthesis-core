@@ -52,8 +52,9 @@
             <mat-form-field class="w-full -mt-5">
               <label class="font-bold">Registration Status</label>
               <mat-select formControlName="status">
-                <mat-option *ngFor="let o of constants.DEVICE.STATUS | keyvalue" [value]="o.value">
-                  {{ lookupByValue(constants.DEVICE.STATUS, o.value) }}
+                <mat-option *ngFor="let o of appConstants.DEVICE.STATUS | keyvalue"
+                            [value]="o.value">
+                  {{ lookupByValue(appConstants.DEVICE.STATUS, o.value) }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
@@ -69,16 +70,20 @@
             </mat-form-field>
           </div>
 
-          <div>
-            <div *ngIf="geoUrl">
+          <div *ngIf="geolocation | async as geolocation$">
+            <div>
               <div class="flex flex-row">
                 <div class="font-bold">Location</div>
-                <fa-icon icon="up-right-from-square" class="ml-1" (click)="showMap()"></fa-icon>
+                <fa-icon icon="up-right-from-square" class="ml-1 cursor-pointer"
+                         (click)="showMap()"></fa-icon>
               </div>
-              <iframe [src]="geoUrl"
-                      width="100%" height="200"
-                      title="map" class="mt-2 border-0"></iframe>
-              <div class="geoAgo">{{geoLastUpdated | amFromUtc | amLocal | amTimeAgo}}</div>
+              <app-framed-map
+                [latitude]="geolocation$.latitude"
+                [longitude]="geolocation$.longitude"
+                width="100%" height="200" [zoom]="13">
+              </app-framed-map>
+              <div
+                class="geoAgo">{{geolocation$.lastUpdated | amFromUtc | amLocal | amTimeAgo}}</div>
             </div>
           </div>
         </form>
@@ -120,7 +125,7 @@
 
     <div class="card-actions justify-start mt-10">
       <button class="btn btn-sm btn-accent" (click)="delete()"
-              [disabled]="this.id == constants.NEW_RECORD_ID">DELETE
+              [disabled]="this.id == appConstants.NEW_RECORD_ID">DELETE
       </button>
       <button class="btn btn-sm btn-secondary" [matMenuTriggerFor]="menu">DOWNLOADS
         <mat-menu #menu="matMenu" xPosition="before">
