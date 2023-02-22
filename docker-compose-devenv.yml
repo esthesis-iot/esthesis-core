@@ -32,8 +32,13 @@ services:
       resources:
         limits:
           memory: "1G"
-#    healthcheck:
-#      test: curl -sI 127.0.0.1:8088 | grep -q "200 OK"
-#      start_period: 2m
-    # networks:
-    #   - esthesis
+  esthesis-ui:    
+    ports:
+      - "4200:80"
+    healthcheck:
+      test: curl -sI http://127.0.0.1:4200 | grep -q "HTTP/1.1 200"
+  esthesis-server:    
+    ports:
+      - "46000:46000"
+    healthcheck:
+      test: curl -sI http://127.0.0.1:46000 | grep -q "HTTP/1.1 200"
