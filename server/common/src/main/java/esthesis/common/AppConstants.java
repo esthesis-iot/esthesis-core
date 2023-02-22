@@ -6,14 +6,6 @@ public class AppConstants {
   //TODO to be removed with Settings preferences
   public static final String KAFKA_TOPIC_PREFIX = "esthesis-";
 
-  // Certain DFL implementations need to be looked up in various places in
-  // esthesis. For example, to be able to send a Control Request to a device,
-  // you need to have the MQTT Client DFL configured. Since DFLs are defined
-  // dynamically in Angular, we need to have a way to identify them in the
-  // backend too. Not all DFLs need to be identified, but the ones that do
-  // are next.
-  public static final String DFL_MQTT_CLIENT_NAME = "mqtt-client";
-
   // Redis key suffixes for measurements.
   public static final String REDIS_KEY_SUFFIX_VALUE_TYPE = "valueType";
   public static final String REDIS_KEY_SUFFIX_TIMESTAMP = "timestamp";
@@ -21,6 +13,10 @@ public class AppConstants {
 
   // Naming convention for hardware ids.
   public static final String HARDWARE_ID_REGEX = "^[a-zA-Z0-9_-]*$";
+
+  // The header containing the shared secret for device registration (when the platform operates
+  // in that mode).
+  public static final String REGISTRATION_SECRET_HEADER_NAME = "X-ESTHESIS-REGISTRATION-SECRET";
 
   // Settings keys.
   public enum NamedSetting {
@@ -30,6 +26,7 @@ public class AppConstants {
     PLATFORM_CERTIFICATE,
 
     DEVICE_ROOT_CA, DEVICE_PROVISIONING_URL, DEVICE_REGISTRATION_MODE,
+    DEVICE_REGISTRATION_SECRET,
     DEVICE_TAGS_ALGORITHM, DEVICE_GEO_LAT, DEVICE_GEO_LON,
     DEVICE_PROVISIONING_SECURE, DEVICE_PROVISIONING_CACHE_TIME,
     DEVICE_PUSHED_TAGS,
@@ -47,12 +44,12 @@ public class AppConstants {
 
   // The status a device can have.
   public enum DeviceStatus {
-    DISABLED, PREREGISTERED, REGISTERED, APPROVAL;
+    DISABLED, PREREGISTERED, REGISTERED
   }
 
   // The available registration modes of the platform.
   public enum DeviceRegistrationMode {
-    DISABLED, OPEN, OPEN_WITH_APPROVAL, ID
+    DISABLED, OPEN, OPEN_WITH_SECRET, ID
   }
 
   public static class Provisioning {

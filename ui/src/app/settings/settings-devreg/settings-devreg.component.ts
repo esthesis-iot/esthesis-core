@@ -12,7 +12,7 @@ import {UtilityService} from "../../shared/services/utility.service";
 @Component({
   selector: "app-settings-devreg",
   templateUrl: "./settings-devreg.component.html",
-  styleUrls: []
+  styleUrls: ["./settings-devreg.component.scss"]
 })
 export class SettingsDevregComponent extends BaseComponent implements OnInit {
   form!: FormGroup;
@@ -30,6 +30,7 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
     //  programmatically.
     this.form = this.fb.group({
       DEVICE_REGISTRATION_MODE: [null, [Validators.required]],
+      DEVICE_REGISTRATION_SECRET: [null, []],
       DEVICE_ROOT_CA: [null, []],
       DEVICE_PUSHED_TAGS: [null, []]
     });
@@ -37,6 +38,7 @@ export class SettingsDevregComponent extends BaseComponent implements OnInit {
     // Fetch settings.
     this.settingsService.findByNames([
       AppConstants.NAMED_SETTING.DEVICE_REGISTRATION_MODE,
+      AppConstants.NAMED_SETTING.DEVICE_REGISTRATION_SECRET,
       AppConstants.NAMED_SETTING.DEVICE_ROOT_CA,
       AppConstants.NAMED_SETTING.DEVICE_PUSHED_TAGS
     ]).subscribe(onNext => {

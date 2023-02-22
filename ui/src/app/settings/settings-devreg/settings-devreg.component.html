@@ -10,22 +10,21 @@
       <mat-radio-button value="OPEN">Open registration</mat-radio-button>
       <div class="ml-11">Allow any device to be registered with the platform.</div>
     </div>
+
     <div>
-      <mat-radio-button value="OPEN_WITH_APPROVAL">Open registration with approval
+      <mat-radio-button value="OPEN_WITH_SECRET">Open registration with shared secret
       </mat-radio-button>
-      <div class="ml-11">Similar to the the Open Registration, however a successful device
-        registration needs to be manually approved
-        by an administrator of the system before the device is allowed to further communicate with
-        the
-        platform.
-      </div>
+      <div class="ml-11">Devices can register with the platform using a shared secret.</div>
+      <mat-form-field class="ml-11 mt-2 no-wrap"
+                      *ngIf="form.controls['DEVICE_REGISTRATION_MODE'].value === 'OPEN_WITH_SECRET'">
+        <mat-label>Registration secret</mat-label>
+        <input matInput formControlName="DEVICE_REGISTRATION_SECRET">
+      </mat-form-field>
     </div>
 
     <div>
       <mat-radio-button value="ID">Preregistered ID</mat-radio-button>
-      <div class="ml-11">Devices can only register using a unique
-        device-specific identification provisioned to the device prior to the registration.
-      </div>
+      <div class="ml-11">Only devices whose IDs are known to the platform can be registered.</div>
     </div>
   </mat-radio-group>
 

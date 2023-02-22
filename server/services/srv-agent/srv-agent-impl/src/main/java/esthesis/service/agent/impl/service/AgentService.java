@@ -1,6 +1,7 @@
 package esthesis.service.agent.impl.service;
 
-import esthesis.common.AppConstants;
+import static esthesis.common.AppConstants.HARDWARE_ID_REGEX;
+
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.AppConstants.Provisioning.Redis;
 import esthesis.common.exception.QDoesNotExistException;
@@ -88,10 +89,9 @@ public class AgentService {
   throws NoSuchAlgorithmException, IOException, InvalidKeySpecException,
          NoSuchProviderException, OperatorCreationException {
     // Check the proposed hardware id conforms to the naming convention.
-    if (!agentRegistrationRequest.getHardwareId().matches(
-        AppConstants.HARDWARE_ID_REGEX)) {
+    if (!agentRegistrationRequest.getHardwareId().matches(HARDWARE_ID_REGEX)) {
       throw new QMismatchException(
-          "Hardware ID does not conform to the naming convention.");
+          "Hardware ID does not conform to the naming convention '{}'.", HARDWARE_ID_REGEX);
     }
 
     // Prepare a registration request.
@@ -103,6 +103,10 @@ public class AgentService {
               .toList());
     }
     deviceRegistration.setType(agentRegistrationRequest.getType());
+    if (StringUtils.isNotBlank(agentRegistrationRequest.getRegistrationSecret())) {
+      deviceRegistration.setRegistrationSecret(
+          agentRegistrationRequest.getRegistrationSecret());
+    }
     log.debug("Requesting device registration with: '{}'", deviceRegistration);
     DeviceEntity deviceEntity = deviceSystemResource.register(deviceRegistration);
 
