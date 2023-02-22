@@ -1,5 +1,5 @@
 /* tslint:disable:max-line-length */
-import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/http";
 import {NgModule} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
@@ -8,7 +8,7 @@ import {routing} from "./app.routes";
 import {QFormsModule} from "@qlack/forms";
 import {NgProgressModule} from "ngx-progressbar";
 import {NgProgressHttpModule} from "ngx-progressbar/http";
-import {AuthInterceptor, AuthModule, LogLevel} from "angular-auth-oidc-client";
+import {AuthInterceptor, AuthModule, StsConfigLoader} from "angular-auth-oidc-client";
 import {LayoutModule} from "./layout/layout.module";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
@@ -76,6 +76,7 @@ import {
 import {faGithub, faInstagram, faTwitter} from "@fortawesome/free-brands-svg-icons";
 import {ComponentsModule} from "./shared/components/components.module";
 import {CallbackComponent} from "./callback.component";
+import {httpLoaderFactory} from "./services/auth.service";
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -99,23 +100,30 @@ import {CallbackComponent} from "./callback.component";
       trickleSpeed: 500
     }),
     NgProgressHttpModule,
+    // AuthModule.forRoot({
+    //   config: {
+    //     // TODO make this configurable
+    //     authority: "http://esthesis-dev-keycloak/realms/esthesis",
+    //     redirectUrl: window.location.origin + "/callback",
+    //     postLogoutRedirectUri: window.location.origin + "/callback",
+    //     clientId: "esthesis",
+    //     scope: "openid profile offline_access",
+    //     responseType: "code",
+    //     silentRenew: true,
+    //     useRefreshToken: true,
+    //     renewTimeBeforeTokenExpiresInSeconds: 30,
+    //     maxIdTokenIatOffsetAllowedInSeconds: 10,
+    //     ignoreNonceAfterRefresh: true,
+    //     secureRoutes: ["/dev", "/api"],
+    //     logLevel: LogLevel.Warn
+    //   }
+    // }),
     AuthModule.forRoot({
-      config: {
-        // TODO make this configurable
-        authority: "http://esthesis-dev-keycloak/realms/esthesis",
-        redirectUrl: window.location.origin + "/callback",
-        postLogoutRedirectUri: window.location.origin + "/callback",
-        clientId: "esthesis",
-        scope: "openid profile offline_access",
-        responseType: "code",
-        silentRenew: true,
-        useRefreshToken: true,
-        renewTimeBeforeTokenExpiresInSeconds: 30,
-        maxIdTokenIatOffsetAllowedInSeconds: 10,
-        ignoreNonceAfterRefresh: true,
-        secureRoutes: ["/dev", "/api"],
-        logLevel: LogLevel.Warn
-      }
+      loader: {
+        provide: StsConfigLoader,
+        useFactory: httpLoaderFactory,
+        deps: [HttpClient],
+      },
     }),
     MatToolbarModule,
     MatIconModule,

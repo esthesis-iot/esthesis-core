@@ -98,5 +98,6 @@
     <module>srv-dt</module>
     <module>srv-audit</module>
     <module>srv-campaign</module>
+    <module>srv-public-access</module>
   </modules>
 </project>
