@@ -8,6 +8,7 @@ import {MomentModule} from "ngx-moment";
 import {MatCardModule} from "@angular/material/card";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatChipsModule} from "@angular/material/chips";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 @NgModule({
   declarations: [AboutComponent],
@@ -19,7 +20,8 @@ import {MatChipsModule} from "@angular/material/chips";
     MatIconModule,
     FlexModule,
     MatChipsModule,
-    MomentModule
+    MomentModule,
+    FontAwesomeModule
   ]
 })
 export class AboutModule {
