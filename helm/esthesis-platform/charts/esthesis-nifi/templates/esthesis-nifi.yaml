@@ -66,6 +66,13 @@ spec:
         - name: esthesis-nifi
           image: esthesisiot/esthesis-nifi:2.0.4
           imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 250m
+              memory: 512Mi
           ports:
             - containerPort: 8080
               name: web

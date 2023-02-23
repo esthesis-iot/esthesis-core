@@ -57,6 +57,13 @@ spec:
         - name: esthesis-server
           image: esthesisiot/esthesis-server:2.0.21-SNAPSHOT
           imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 512Mi
           ports:
             - containerPort: 46000
           env:
