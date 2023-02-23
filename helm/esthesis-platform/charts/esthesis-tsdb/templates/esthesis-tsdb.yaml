@@ -60,6 +60,13 @@ spec:
       containers:
         - name: esthesis-ds-influxdb
           image: influxdb:1.7.9
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 512Mi
           ports:
             - containerPort: 8086
             - containerPort: 8088
