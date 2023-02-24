@@ -15,6 +15,7 @@ import {UtilityService} from "../../shared/services/utility.service";
 import {GeolocationDto} from "../dto/geolocation-dto";
 import {Observable} from "rxjs";
 import {FramedMapComponent} from "../../shared/components/framed-map/framed-map.component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-device",
@@ -96,16 +97,16 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     });
   }
 
+  downloadCertificate() {
+    this.devicesService.download(this.id!, AppConstants.KEY_TYPE.CERTIFICATE);
+  }
+
   downloadPublicKey() {
-    this.devicesService.downloadPublicKey(this.id!);
+    this.devicesService.download(this.id!, AppConstants.KEY_TYPE.PUBLIC_KEY);
   }
 
   downloadPrivateKey() {
-    this.devicesService.downloadPrivateKey(this.id!);
-  }
-
-  downloadCertificate() {
-    this.devicesService.downloadCertificate(this.id!);
+    this.devicesService.download(this.id!, AppConstants.KEY_TYPE.PRIVATE_KEY);
   }
 
   /**

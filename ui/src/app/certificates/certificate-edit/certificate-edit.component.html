@@ -52,6 +52,7 @@
       <button class="btn btn-sm btn-secondary" [matMenuTriggerFor]="menu"
               *ngIf="this.id !== constants.NEW_RECORD_ID">
         DOWNLOAD
+        <fa-icon icon="caret-down" class="ml-2"></fa-icon>
         <mat-menu #menu="matMenu" xPosition="before">
           <button mat-menu-item (click)="downloadCertificate()">Certificate</button>
           <button mat-menu-item (click)="downloadPublicKey()">Public key</button>

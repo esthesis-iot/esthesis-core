@@ -250,6 +250,10 @@ mat-datepicker-content {
 // CHECKBOX
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 mat-checkbox {
+  .mdc-form-field label {
+    @apply text-base-content #{!important};
+  }
+
   .mdc-checkbox__background {
     @apply border-base-content #{!important};
   }

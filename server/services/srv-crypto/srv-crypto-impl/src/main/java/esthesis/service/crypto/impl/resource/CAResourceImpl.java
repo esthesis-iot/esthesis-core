@@ -72,17 +72,17 @@ public class CAResourceImpl implements CAResource {
     switch (type) {
       case PRIVATE -> {
         filename += ".key";
-        content = caEntity.getPrivateKey();
+        content = caService.getPrivateKey(caId);
       }
       case PUBLIC -> {
         filename += ".pub";
-        content = caEntity.getPublicKey();
+        content = caService.getPublicKey(caId);
       }
       case CERTIFICATE -> {
         filename += ".crt";
-        content = caEntity.getCertificate();
+        content = String.join("", caService.getCertificate(caId));
       }
-      default -> throw new QDoesNotExistException("Key type {} is not valid.", type);
+      default -> throw new QDoesNotExistException("Key type '{}' is not valid.", type);
     }
     return ResponseBuilder.ok(content)
         .header("Content-Disposition", "attachment; filename=" + filename).build().toResponse();

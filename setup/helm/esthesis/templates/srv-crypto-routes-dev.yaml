@@ -34,7 +34,7 @@ spec:
               curl -s http://apisix-admin:9180/apisix/admin/routes/dev-srv-crypto-route -H "X-API-KEY: esthesis-admin" -X PUT -i -d '
               {
               "name": "dev-srv-crypto-route",
-              "uris": ["/api/ca", "/api/ca/*", "/api/certificate", "/api/certificate/*", "/api/store", "/api/store/*"],
+              "uris": ["/api/ca", "/api/ca/*", "/api/certificate", "/api/certificate/*", "/api/keystore", "/api/keystore/*", "/api/crypto-info", "/api/crypto-info/*"],
               "upstream": {
                 "type": "roundrobin",
                 "nodes": {

@@ -94,6 +94,95 @@ public class DeviceRegistrationService {
   }
 
   /**
+   * The internal registration handler.
+   *
+   * @param hardwareId The hardware id of the device to be registered.
+   * @param tags       The tag names associated with this device as a comma-separated list.
+   */
+  private DeviceEntity register(String hardwareId, List<String> tags,
+      AppConstants.DeviceStatus status, DeviceType deviceType, String registrationSecret)
+  throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, OperatorCreationException,
+         NoSuchProviderException {
+    log.debug("Registering device with hardware id '{}'.", hardwareId);
+
+    // Check if a registration secret is needed.
+    if (settingsResource.findByName(NamedSetting.DEVICE_REGISTRATION_MODE).asString().equals(
+        DeviceRegistrationMode.OPEN_WITH_SECRET.toString())) {
+      String platformRegistrationSecret =
+          settingsResource.findByName(NamedSetting.DEVICE_REGISTRATION_SECRET).asString();
+      if (!platformRegistrationSecret.equals(registrationSecret)) {
+        throw new QSecurityException("The provided registration secret '{}' is incorrect.",
+            registrationSecret);
+      }
+    }
+
+    // Check the proposed hardware ID conforms to the naming convention.
+    if (!hardwareId.matches(HARDWARE_ID_REGEX)) {
+      throw new QMismatchException(
+          "Hardware id '{}' does not conform to the naming convention '{}'.", hardwareId,
+          HARDWARE_ID_REGEX);
+    }
+
+    // Check that a device with the same hardware ID does not already exist.
+    if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
+      throw new QAlreadyExistsException(
+          "A device with hardware id '{}' is already registered with the platform.", hardwareId);
+    }
+
+    // Create a keypair for the device to be registered.
+    KeyPair keyPair = keyResource.generateKeyPair();
+
+    // Set the security keys for the new device.
+    final DeviceKeyDTO deviceKeyDTO = new DeviceKeyDTO()
+        .setPublicKey(keyResource.publicKeyToPEM(keyPair.getPublic()))
+        .setPrivateKey(keyResource.privateKeyToPEM(keyPair.getPrivate())).setRolledOn(Instant.now())
+        .setRolledOn(Instant.now())
+        .setRolledAccepted(true);
+
+    // Create a certificate for this device if the root CA is set.
+    SettingEntity deviceRootCA = settingsResource.findByName(NamedSetting.DEVICE_ROOT_CA);
+    if (deviceRootCA != null) {
+      // Generate a certificate for this device.
+      deviceKeyDTO.setCertificate(keyResource.generateCertificateAsPEM(
+          new CreateCertificateRequestDTO()
+              .setCn(hardwareId)
+              .setKeyPair(keyPair)
+              .setIncludeCertificateChain(true)));
+      // Add a reference to the root CA.
+      deviceKeyDTO.setCertificateCaId(
+          settingsResource.findByName(NamedSetting.DEVICE_ROOT_CA).asString());
+    } else {
+      log.warn("No root CA is set to create a device certificates for device with hardware id "
+          + "'{}'.", hardwareId);
+    }
+
+    // Create the new device.
+    final DeviceEntity deviceEntity = new DeviceEntity()
+        .setHardwareId(hardwareId)
+        .setStatus(status)
+        .setType(deviceType)
+        .setCreatedOn(Instant.now())
+
+        .setDeviceKey(deviceKeyDTO);
+    if (status != DeviceStatus.PREREGISTERED) {
+      deviceEntity.setRegisteredOn(Instant.now());
+    }
+
+    // Set device-pushed tags by converting the tag names to tag ids.
+    if (!CollectionUtils.isEmpty(tags)) {
+      List<String> validTags = checkTags(hardwareId, tags,
+          settingsResource.findByName(NamedSetting.DEVICE_PUSHED_TAGS).asBoolean());
+      deviceEntity.setTags(
+          validTags.stream().map(tag -> tagResource.findByName(tag, false).getId().toString())
+              .toList());
+    }
+
+    deviceRepository.persist(deviceEntity);
+
+    return deviceEntity;
+  }
+
+  /**
    * Preregisters a device, so that it can self-register later on. DeviceRegistrationDTO.hardwareId
    * may content multiple devices in this case, separated by new lines. *
    *
@@ -148,90 +237,6 @@ public class DeviceRegistrationService {
             throw new QDoesNotExistException("The requested registration mode does not exist.");
       };
     }
-  }
-
-  /**
-   * The internal registration handler.
-   *
-   * @param hardwareId The hardware id of the device to be registered.
-   * @param tags       The tag names associated with this device as a comma-separated list.
-   */
-  private DeviceEntity register(String hardwareId, List<String> tags,
-      AppConstants.DeviceStatus status, DeviceType deviceType, String registrationSecret)
-  throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, OperatorCreationException,
-         NoSuchProviderException {
-    log.debug("Registering device with hardware id '{}'.", hardwareId);
-
-    // Check if a registration secret is needed.
-    if (settingsResource.findByName(NamedSetting.DEVICE_REGISTRATION_MODE).asString().equals(
-        DeviceRegistrationMode.OPEN_WITH_SECRET.toString())) {
-      String platformRegistrationSecret =
-          settingsResource.findByName(NamedSetting.DEVICE_REGISTRATION_SECRET).asString();
-      if (!platformRegistrationSecret.equals(registrationSecret)) {
-        throw new QSecurityException("The provided registration secret '{}' is incorrect.",
-            registrationSecret);
-      }
-    }
-
-    // Check the proposed hardware id conforms to the naming convention.
-    if (!hardwareId.matches(HARDWARE_ID_REGEX)) {
-      throw new QMismatchException(
-          "Hardware id '{}' does not conform to the naming convention '{}'.", hardwareId,
-          HARDWARE_ID_REGEX);
-    }
-
-    // Check that a device with the same hardware ID does not already exist.
-    if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
-      throw new QAlreadyExistsException(
-          "A device with hardware id '{}' is already registered with the platform.", hardwareId);
-    }
-
-    // Create a keypair for the device to be registered.
-    KeyPair keyPair = keyResource.generateKeyPair();
-
-    // Set the security keys for the new device.
-    final DeviceKeyDTO deviceKeyDTO = new DeviceKeyDTO()
-        .setPublicKey(keyResource.publicKeyToPEM(keyPair.getPublic()))
-        .setPrivateKey(keyResource.privateKeyToPEM(keyPair.getPrivate())).setRolledOn(Instant.now())
-        .setRolledOn(Instant.now())
-        .setRolledAccepted(true);
-
-    // Create a certificate for this device if the root CA is set.
-    SettingEntity deviceRootCA = settingsResource.findByName(NamedSetting.DEVICE_ROOT_CA);
-    if (deviceRootCA != null) {
-      deviceKeyDTO.setCertificate(keyResource.generateCertificateAsPEM(
-          new CreateCertificateRequestDTO().setCn(hardwareId).setKeyPair(keyPair)));
-      deviceKeyDTO.setCertificateCaId(
-          settingsResource.findByName(NamedSetting.DEVICE_ROOT_CA).asString());
-    } else {
-      log.warn("No root CA is set to create a device certificates for device with hardware id "
-          + "'{}'.", hardwareId);
-    }
-
-    // Create the new device.
-    final DeviceEntity deviceEntity = new DeviceEntity()
-        .setHardwareId(hardwareId)
-        .setStatus(status)
-        .setType(deviceType)
-        .setCreatedOn(Instant.now())
-
-        .setDeviceKey(deviceKeyDTO);
-    if (status != DeviceStatus.PREREGISTERED) {
-      deviceEntity.setRegisteredOn(Instant.now());
-    }
-
-    // Set device-pushed tags by converting the tag names to tag ids.
-    if (!CollectionUtils.isEmpty(tags)) {
-      List<String> validTags = checkTags(hardwareId, tags,
-          settingsResource.findByName(NamedSetting.DEVICE_PUSHED_TAGS).asBoolean());
-      deviceEntity.setTags(
-          validTags.stream().map(tag -> tagResource.findByName(tag, false).getId().toString())
-              .toList());
-    }
-
-    deviceRepository.persist(deviceEntity);
-
-    return deviceEntity;
   }
 
   /**

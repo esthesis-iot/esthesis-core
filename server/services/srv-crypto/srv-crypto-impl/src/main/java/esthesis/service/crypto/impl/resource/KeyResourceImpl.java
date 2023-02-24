@@ -7,7 +7,7 @@ import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.service.crypto.dto.CreateKeyPairRequestDTO;
 import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.impl.repository.CaEntityRepository;
-import esthesis.service.crypto.impl.service.CertificateService;
+import esthesis.service.crypto.impl.service.CAService;
 import esthesis.service.crypto.impl.service.CryptoService;
 import esthesis.service.crypto.resource.KeyResource;
 import esthesis.service.settings.entity.SettingEntity;
@@ -42,7 +42,7 @@ public class KeyResourceImpl implements KeyResource {
   CryptoService cryptoService;
 
   @Inject
-  CertificateService certificateService;
+  CAService caService;
 
   @Inject
   CaEntityRepository caEntityRepository;
@@ -102,8 +102,16 @@ public class KeyResourceImpl implements KeyResource {
     X509CertificateHolder x509CertificateHolder = cryptoService.generateCertificate(
         certificateSignRequestDTO);
 
-    // Convert the certificate to PEM and return it.
-    return cryptoService.certificateToPEM(x509CertificateHolder.toASN1Structure());
+    // Convert the certificate to PEM.
+    String cert = cryptoService.certificateToPEM(x509CertificateHolder.toASN1Structure());
+
+    // Add certificate chain, if requested.
+    if (createCertificateRequestDTO.isIncludeCertificateChain()) {
+      cert = String.join("", cert,
+          String.join("", caService.getCertificate(caEntity.getId().toHexString())));
+    }
+
+    return cert;
   }
 
 }

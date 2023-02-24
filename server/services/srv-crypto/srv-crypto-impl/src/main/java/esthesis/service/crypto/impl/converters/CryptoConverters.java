@@ -52,7 +52,7 @@ public class CryptoConverters {
    */
   public String certificateToPEM(final Certificate certificate)
   throws IOException {
-    log.debug("Converting '{}' certificate to PEM.", certificate);
+    log.trace("Converting '{}' certificate to PEM.", certificate);
     try (StringWriter pemStrWriter = new StringWriter()) {
       try (PemWriter writer = new PemWriter(pemStrWriter)) {
         writer.writeObject(
@@ -73,7 +73,7 @@ public class CryptoConverters {
    */
   public X509Certificate pemToCertificate(final String cert)
   throws CertificateException {
-    log.debug("Parsing '{}' PEM certificate.", cert);
+    log.trace("Parsing '{}' PEM certificate.", cert);
     CertificateFactory fact = CertificateFactory.getInstance("X.509");
 
     return (X509Certificate) fact.generateCertificate(
@@ -91,7 +91,7 @@ public class CryptoConverters {
    */
   public PrivateKey pemToPrivateKey(String privateKey, final String algorithm)
   throws NoSuchAlgorithmException, InvalidKeySpecException {
-    log.debug("Converting PEM private key '{}' to PrivateKey.", privateKey);
+    log.trace("Converting PEM private key '{}' to PrivateKey.", privateKey);
 
     // Cleanup the PEM from unwanted text.
     privateKey = removeHeaderFooter(privateKey).trim();
@@ -161,7 +161,12 @@ public class CryptoConverters {
          KeyStoreException {
     try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
         BufferedOutputStream bos = new BufferedOutputStream(baos)) {
-      keystore.store(bos, keystorePassword.toCharArray());
+      if (StringUtils.isNotBlank(keystorePassword)) {
+        keystore.store(bos, keystorePassword.toCharArray());
+      } else {
+        keystore.store(bos, null);
+      }
+
       return baos.toByteArray();
     }
   }

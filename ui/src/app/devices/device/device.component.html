@@ -127,7 +127,8 @@
       <button class="btn btn-sm btn-accent" (click)="delete()"
               [disabled]="this.id == appConstants.NEW_RECORD_ID">DELETE
       </button>
-      <button class="btn btn-sm btn-secondary" [matMenuTriggerFor]="menu">DOWNLOADS
+      <button class="btn btn-sm btn-secondary" [matMenuTriggerFor]="menu">DOWNLOAD
+        <fa-icon icon="caret-down" class="ml-2"></fa-icon>
         <mat-menu #menu="matMenu" xPosition="before">
           <button mat-menu-item (click)="downloadPublicKey()">Public key</button>
           <button mat-menu-item (click)="downloadPrivateKey()">Private key</button>

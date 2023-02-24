@@ -1,29 +1,35 @@
-import {AfterViewInit, Component, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, Input, OnInit, Optional, ViewChild} from "@angular/core";
 import {CaDto} from "../dto/ca-dto";
 import {MatSort} from "@angular/material/sort";
 import {QFormsService} from "@qlack/forms";
 import {CasService} from "../cas.service";
 import {BaseComponent} from "../../shared/components/base-component";
-import {AppConstants} from "../../app.constants";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: "app-cas-list",
   templateUrl: "./cas-list.component.html",
   styleUrls: ["./cas-list.component.scss"]
 })
-export class CasListComponent extends BaseComponent implements AfterViewInit {
-  columns = ["name", "cn", "parent", "issued", "validity"];
-  datasource = new MatTableDataSource<CaDto>();
-  // Expose application constants.
-  constants = AppConstants;
-
+export class CasListComponent extends BaseComponent implements OnInit, AfterViewInit {
+  @Input() embedded = false;
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
-  constructor(private caService: CasService, private qForms: QFormsService) {
+  columns: string[] = [];
+  datasource = new MatTableDataSource<CaDto>();
+
+  constructor(private caService: CasService, private qForms: QFormsService,
+    @Optional() private dialogRef: MatDialogRef<CasListComponent>) {
     super();
+  }
+
+  ngOnInit() {
+    this.columns = this.embedded
+      ? ["name", "cn", "parent", "issued", "validity"]
+      : ["name", "cn", "parent", "issued", "validity"];
   }
 
   ngAfterViewInit(): void {
@@ -50,4 +56,7 @@ export class CasListComponent extends BaseComponent implements AfterViewInit {
       this.sort.start);
   }
 
+  embeddedClick(ca: CaDto) {
+    this.dialogRef.close(ca);
+  }
 }

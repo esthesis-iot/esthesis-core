@@ -24,11 +24,15 @@ export class CasService extends CrudDownloadService<CaDto> {
    * @param type The type of the key to download as per AppConstants.KEY_TYPE.
    */
   download(caId: string, type: string) {
-    this.http.get(
-      `${this.prefix}/${caId}/download?type=${type}`, {
-        responseType: "blob", observe: "response"
-      }).subscribe(onNext => {
-      this.saveAs(onNext);
+    this.http.get(`${this.prefix}/${caId}/download?type=${type}`, {
+      responseType: "blob", observe: "response"
+    }).subscribe({
+      next: (response) => {
+        this.saveAs(response);
+      }, error: (error) => {
+        this.utilityService.popupErrorWithTraceId(
+          "There was an error downloading this key, please try again later.", error);
+      }
     });
   }
 

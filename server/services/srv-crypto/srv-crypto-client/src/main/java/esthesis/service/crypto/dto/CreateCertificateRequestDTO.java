@@ -16,4 +16,5 @@ public class CreateCertificateRequestDTO {
 
   private KeyPair keyPair;
   private String cn;
+  private boolean includeCertificateChain;
 }

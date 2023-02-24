@@ -25,41 +25,15 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
     return this.http.post(`${this.prefix}/preregister`, devices);
   }
 
-  downloadPublicKey(hardwareId: string) {
-    this.http.get(`${this.prefix}/${hardwareId}/download/public-key`, {
+  download(deviceId: string, type: string) {
+    this.http.get(`${this.prefix}/${deviceId}/download?type=${type}`, {
       responseType: "blob", observe: "response"
     }).subscribe({
       next: (response) => {
         this.saveAs(response);
       }, error: (error) => {
         this.utilityService.popupErrorWithTraceId(
-          "There was an error downloading the public key, please try again later.", error);
-      }
-    });
-  }
-
-  downloadPrivateKey(hardwareId: string) {
-    this.http.get(`${this.prefix}/${hardwareId}/download/private-key`, {
-      responseType: "blob", observe: "response"
-    }).subscribe({
-      next: (response) => {
-        this.saveAs(response);
-      }, error: (error) => {
-        this.utilityService.popupErrorWithTraceId(
-          "There was an error downloading the private key, please try again later.", error);
-      }
-    });
-  }
-
-  downloadCertificate(hardwareId: string) {
-    this.http.get(`${this.prefix}/${hardwareId}/download/certificate`, {
-      responseType: "blob", observe: "response"
-    }).subscribe({
-      next: (response) => {
-        this.saveAs(response);
-      }, error: (error) => {
-        this.utilityService.popupErrorWithTraceId(
-          "There was an error downloading the certificate, please try again later.", error);
+          "There was an error downloading this key, please try again later.", error);
       }
     });
   }

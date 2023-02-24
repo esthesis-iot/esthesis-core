@@ -150,14 +150,22 @@ public class CertificateService extends BaseService<CertificateEntity> {
       final X509CertificateHolder x509CertificateHolder =
           cryptoService.generateCertificate(certificateSignRequestDTO);
 
+      // Generate the PEM version of the certificate.
+      String certPEM = cryptoService.certificateToPEM(x509CertificateHolder.toASN1Structure());
+
+      // Add the certificate chain.
+      if (caEntity != null) {
+        certPEM = certPEM + String.join("",
+            caService.getCertificate(caEntity.getId().toHexString()));
+      }
+
       // Populate the certificate DTO to persist it.
       certificateEntity.setIssued(certificateSignRequestDTO.getValidForm());
       certificateEntity
           .setPrivateKey(cryptoService.privateKeyToPEM(keyPair.getPrivate()));
       certificateEntity.setPublicKey(cryptoService.publicKeyToPEM(keyPair.getPublic()));
       certificateEntity.setIssuer(certificateSignRequestDTO.getIssuerCN());
-      certificateEntity
-          .setCertificate(cryptoService.certificateToPEM(x509CertificateHolder.toASN1Structure()));
+      certificateEntity.setCertificate(certPEM);
       certificateEntity.setSan(certificateSignRequestDTO.getSan());
       certificateEntity.setName(certificateEntity.getName());
 
@@ -169,4 +177,21 @@ public class CertificateService extends BaseService<CertificateEntity> {
     }
   }
 
+  public String getPrivateKey(String certId) {
+    CertificateEntity certificateEntity = findById(certId);
+
+    return certificateEntity.getPrivateKey();
+  }
+
+  public String getPublicKey(String certId) {
+    CertificateEntity certificateEntity = findById(certId);
+
+    return certificateEntity.getPublicKey();
+  }
+
+  public String getCertificate(String certId) {
+    CertificateEntity certificateEntity = findById(certId);
+
+    return certificateEntity.getCertificate();
+  }
 }

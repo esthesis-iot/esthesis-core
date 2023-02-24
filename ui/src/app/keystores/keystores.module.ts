@@ -3,7 +3,7 @@ import {CommonModule} from "@angular/common";
 
 import {KeystoresRoutingModule} from "./keystores-routing.module";
 import {MatSortModule} from "@angular/material/sort";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {QFormsModule} from "@qlack/forms";
 import {MatCardModule} from "@angular/material/card";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -20,6 +20,9 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {CdkTableModule} from "@angular/cdk/table";
 import {KeystoresListComponent} from "./keystores-list/keystores-list.component";
 import {KeystoreEditComponent} from "./keystore-edit/keystore-edit.component";
+import {MatTabsModule} from "@angular/material/tabs";
+import {MatMenuModule} from "@angular/material/menu";
+import {TruncateModule} from "@yellowspot/ng-truncate";
 
 
 @NgModule({
@@ -42,7 +45,11 @@ import {KeystoreEditComponent} from "./keystore-edit/keystore-edit.component";
     MatSelectModule,
     DateSupportModule,
     FontAwesomeModule,
-    CdkTableModule
+    CdkTableModule,
+    MatTabsModule,
+    FormsModule,
+    MatMenuModule,
+    TruncateModule
   ]
 })
 export class KeystoresModule {

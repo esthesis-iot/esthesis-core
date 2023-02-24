@@ -75,15 +75,15 @@ public class CertificateResourceImpl implements CertificateResource {
     switch (type) {
       case PRIVATE -> {
         filename += ".key";
-        content = cert.getPrivateKey();
+        content = certificateService.getPrivateKey(certId);
       }
       case PUBLIC -> {
         filename += ".pub";
-        content = cert.getPublicKey();
+        content = certificateService.getPublicKey(certId);
       }
       case CERTIFICATE -> {
         filename += ".crt";
-        content = cert.getCertificate();
+        content = certificateService.getCertificate(certId);
       }
       default -> throw new QDoesNotExistException("Key type {} is not valid.", type);
     }

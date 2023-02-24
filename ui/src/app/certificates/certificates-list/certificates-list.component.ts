@@ -1,29 +1,35 @@
-import {AfterViewInit, Component, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, Input, OnInit, Optional, ViewChild} from "@angular/core";
 import {MatSort} from "@angular/material/sort";
 import {CertificatesService} from "../certificates.service";
 import {CertificateDto} from "../dto/certificate-dto";
 import {BaseComponent} from "../../shared/components/base-component";
 import {QFormsService} from "@qlack/forms";
-import {AppConstants} from "../../app.constants";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: "app-certificates-list",
   templateUrl: "./certificates-list.component.html",
   styleUrls: ["./certificates-list.component.scss"]
 })
-export class CertificatesListComponent extends BaseComponent implements AfterViewInit {
-  columns = ["name", "cn", "issued", "validity", "issuer"];
-  datasource = new MatTableDataSource<CertificateDto>();
-  // Expose application constants.
-  constants = AppConstants;
-
+export class CertificatesListComponent extends BaseComponent implements OnInit, AfterViewInit {
+  @Input() embedded = false;
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
-  constructor(private certificateService: CertificatesService, private qForms: QFormsService) {
+  columns: string[] = [];
+  datasource = new MatTableDataSource<CertificateDto>();
+
+  constructor(private certificateService: CertificatesService, private qForms: QFormsService,
+    @Optional() private dialogRef: MatDialogRef<CertificatesListComponent>) {
     super();
+  }
+
+  ngOnInit(): void {
+    this.columns = this.embedded
+      ? ["name", "issued", "validity", "issuer"]
+      : ["name", "cn", "issued", "validity", "issuer"];
   }
 
   ngAfterViewInit(): void {
@@ -51,4 +57,7 @@ export class CertificatesListComponent extends BaseComponent implements AfterVie
       this.sort.start);
   }
 
+  embeddedClick(cert: CertificateDto) {
+    this.dialogRef.close(cert);
+  }
 }

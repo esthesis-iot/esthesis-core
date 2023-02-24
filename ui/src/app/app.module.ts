@@ -22,6 +22,7 @@ import {
   faBell,
   faBroadcastTower,
   faCalendar,
+  faCaretDown,
   faCertificate,
   faCheck,
   faChevronDown,
@@ -150,7 +151,7 @@ export class AppModule {
       faCircleInfo, faHeartCircleBolt, faEnvelope, faStopwatch, faBarsProgress, faDashboard,
       faPercent, faCertificate, faStamp, faShieldHalved, faDiagramProject, faCheck, faSquareCheck,
       faSquare, faNetworkWired, faEnvelopeOpen, faDesktop, faIdBadge, faCog, faSpinner,
-      faArrowUpRightFromSquare);
+      faArrowUpRightFromSquare, faCaretDown);
     faConfig.fixedWidth = true;
   }
 }

@@ -3,12 +3,12 @@ import {BaseComponent} from "../../shared/components/base-component";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatSort} from "@angular/material/sort";
 import {Router} from "@angular/router";
-import {StoreDto} from "../dto/store-dto";
 import {KeystoresService} from "../keystores.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {QFormsService} from "@qlack/forms";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
+import {KeystoreDto} from "../dto/keystore-dto";
 
 @Component({
   selector: "app-keystores-list",
@@ -16,17 +16,17 @@ import {MatTableDataSource} from "@angular/material/table";
   styleUrls: ["./keystores-list.component.scss"]
 })
 export class KeystoresListComponent extends BaseComponent implements OnInit, AfterViewInit {
-  displayedColumns = ["name", "createdOn"];
-  datasource: MatTableDataSource<StoreDto> = new MatTableDataSource<StoreDto>();
-  filterForm: FormGroup;
-
   // References to sorting and pagination.
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
+  displayedColumns = ["name", "description", "createdOn"];
+  datasource: MatTableDataSource<KeystoreDto> = new MatTableDataSource<KeystoreDto>();
+  filterForm: FormGroup;
+
   constructor(private fb: FormBuilder, private router: Router,
-    private storesService: KeystoresService,
-    private qForms: QFormsService) {
+    private storesService: KeystoresService, private qForms: QFormsService,
+    private keystoresServices: KeystoresService) {
     super();
     this.filterForm = this.fb.group({
       name: []
@@ -58,8 +58,7 @@ export class KeystoresListComponent extends BaseComponent implements OnInit, Aft
   }
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
-    // Convert FormGroup to a query string to pass as a filter.
-    this.storesService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
+    this.keystoresServices.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
       null!, false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.datasource.data = onNext.content;

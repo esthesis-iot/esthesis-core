@@ -1,5 +1,6 @@
 package esthesis.service.device.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.GeolocationDTO;
@@ -93,18 +94,9 @@ public interface DeviceResource {
   GeolocationDTO getDeviceGeolocation(String deviceId);
 
   @GET
+  @Path("/v1/{deviceId}/download")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  @Path("/v1/{deviceId}/download/public-key")
-  Response downloadPublicKey(@PathParam("deviceId") String id);
-
-  @GET
-  @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  @Path("/v1/{deviceId}/download/private-key")
-  Response downloadPrivateKey(@PathParam("deviceId") String id);
-
-  @GET
-  @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  @Path("/v1/{deviceId}/download/certificate")
-  Response downloadCertificate(@PathParam("deviceId") String id);
+  Response download(@PathParam("deviceId") String deviceId,
+      @QueryParam("type") AppConstants.KeyType type);
 
 }

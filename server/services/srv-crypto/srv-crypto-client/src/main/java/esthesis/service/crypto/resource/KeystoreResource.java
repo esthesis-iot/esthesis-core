@@ -2,7 +2,7 @@ package esthesis.service.crypto.resource;
 
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.crypto.entity.StoreEntity;
+import esthesis.service.crypto.entity.KeystoreEntity;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
@@ -17,22 +17,22 @@ import javax.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-@Path("/api/store")
-@RegisterRestClient(configKey = "StoreResource")
+@Path("/api/keystore")
+@RegisterRestClient(configKey = "KeystoreResource")
 @RegisterProvider(AccessTokenRequestReactiveFilter.class)
-public interface StoreResource {
+public interface KeystoreResource {
 
   @GET
   @Path("/v1/find")
-  Page<StoreEntity> find(@BeanParam Pageable pageable);
+  Page<KeystoreEntity> find(@BeanParam Pageable pageable);
 
   @GET
   @Path("/v1/{id}")
-  StoreEntity findById(@PathParam("id") String id);
+  KeystoreEntity findById(@PathParam("id") String id);
 
   @POST
   @Path("/v1")
-  StoreEntity save(@Valid StoreEntity storeEntity);
+  KeystoreEntity save(@Valid KeystoreEntity keystoreEntity);
 
   @DELETE
   @Path("/v1/{id}")

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, Input, OnInit, Optional, ViewChild} from "@angular/core";
 import {MatSort} from "@angular/material/sort";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
@@ -9,6 +9,7 @@ import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {BaseComponent} from "../../shared/components/base-component";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: "app-tags-list",
@@ -16,16 +17,17 @@ import {MatTableDataSource} from "@angular/material/table";
   styleUrls: ["./tags-list.component.scss"]
 })
 export class TagsListComponent extends BaseComponent implements OnInit, AfterViewInit {
+  // References to sorting and pagination.
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
+  @Input() embedded = false;
+
   displayedColumns = ["name"];
   dataSource: MatTableDataSource<TagDto> = new MatTableDataSource<TagDto>();
   filterForm: FormGroup;
 
-  // References to sorting and pagination.
-  @ViewChild(MatSort, {static: true}) sort!: MatSort;
-  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
-
   constructor(private fb: FormBuilder, private router: Router, private tagService: TagsService,
-    private qForms: QFormsService) {
+    private qForms: QFormsService, @Optional() private dialogRef: MatDialogRef<TagsListComponent>) {
     super();
     this.filterForm = this.fb.group({
       name: [],
@@ -73,5 +75,9 @@ export class TagsListComponent extends BaseComponent implements OnInit, AfterVie
   changePage() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
       this.sort.start);
+  }
+
+  embeddedClick(tag: TagDto) {
+    this.dialogRef.close(tag);
   }
 }

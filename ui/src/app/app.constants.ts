@@ -26,6 +26,22 @@ export const AppConstants = {
     DEVICE_PUSHED_TAGS: "DEVICE_PUSHED_TAGS"
   },
 
+  // Keystore items.
+  KEYSTORE: {
+    ITEM: {
+      RESOURCE_TYPE: {
+        DEVICE: "DEVICE",
+        CERTIFICATE: "CERT",
+        CA: "CA",
+        TAG: "TAG"
+      },
+      KEY_TYPE: {
+        PRIVATE_KEY: "PRIVATE",
+        CERTIFICATE: "CERT"
+      }
+    }
+  },
+
   // Device settings.
   DEVICE: {
     TYPE: {

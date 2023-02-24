@@ -1,10 +1,12 @@
 package esthesis.services.device.impl.resource;
 
+import com.github.slugify.Slugify;
+import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Audit.Category;
 import esthesis.common.AppConstants.Audit.Operation;
+import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.service.audit.ccc.Audited.AuditLogType;
-import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.GeolocationDTO;
@@ -47,7 +49,6 @@ public class DeviceResourceImpl implements DeviceResource {
   @GET
   @Override
   @Path("/v1/{id}")
-  @JSONReplyFilter(filter = "hardwareId,id,status,tags,lastSeen,registeredOn")
   @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "View device")
   public DeviceEntity get(@PathParam("id") String id) {
     return deviceService.findById(id);
@@ -105,33 +106,30 @@ public class DeviceResourceImpl implements DeviceResource {
   }
 
   @Override
-  @SuppressWarnings("java:S1192")
-  @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "Download device public key")
-  public Response downloadPublicKey(String id) {
-    return ResponseBuilder.ok(deviceService.downloadPublicKey(id))
-        .header("Content-Disposition",
-            "attachment; filename=" + id + "-public-key.pem").build()
-        .toResponse();
-  }
+  @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "Download device", log =
+      AuditLogType.DATA_IN)
+  public Response download(String deviceId, AppConstants.KeyType type) {
+    DeviceEntity deviceEntity = deviceService.findById(deviceId);
 
-  @Override
-  @SuppressWarnings("java:S1192")
-  @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "Download device private key")
-  public Response downloadPrivateKey(String id) {
-    return ResponseBuilder.ok(deviceService.downloadPrivateKey(id))
-        .header("Content-Disposition",
-            "attachment; filename=" + id + "-private-key.pem").build()
-        .toResponse();
+    String content;
+    String filename = Slugify.builder().underscoreSeparator(true).build()
+        .slugify(deviceEntity.getHardwareId());
+    switch (type) {
+      case PRIVATE -> {
+        filename += ".key";
+        content = deviceEntity.getDeviceKey().getPrivateKey();
+      }
+      case PUBLIC -> {
+        filename += ".pub";
+        content = deviceEntity.getDeviceKey().getPublicKey();
+      }
+      case CERTIFICATE -> {
+        filename += ".crt";
+        content = deviceEntity.getDeviceKey().getCertificate();
+      }
+      default -> throw new QDoesNotExistException("Key type '{}' is not valid.", type);
+    }
+    return ResponseBuilder.ok(content)
+        .header("Content-Disposition", "attachment; filename=" + filename).build().toResponse();
   }
-
-  @Override
-  @SuppressWarnings("java:S1192")
-  @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "Download device certificate")
-  public Response downloadCertificate(String id) {
-    return ResponseBuilder.ok(deviceService.downloadCertificate(id))
-        .header("Content-Disposition",
-            "attachment; filename=" + id + "-certificate.pem").build()
-        .toResponse();
-  }
-
 }

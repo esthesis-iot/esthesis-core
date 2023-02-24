@@ -1,6 +1,5 @@
 package esthesis.service.crypto.impl.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.exception.QCouldNotSaveException;
 import esthesis.common.exception.QMismatchException;
@@ -23,6 +22,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.enterprise.context.ApplicationScoped;
@@ -44,9 +44,6 @@ public class CAService extends BaseService<CaEntity> {
 
   @Inject
   CryptoService cryptoService;
-
-  @Inject
-  ObjectMapper mapper;
 
   @Override
   public CaEntity save(CaEntity caEntity) {
@@ -132,5 +129,35 @@ public class CAService extends BaseService<CaEntity> {
     } catch (IOException | CertificateException e) {
       throw new QMismatchException("Could not import certificate.", e);
     }
+  }
+
+  public String getPrivateKey(String caId) {
+    CaEntity caEntity = findById(caId);
+
+    return caEntity.getPrivateKey();
+  }
+
+  public String getPublicKey(String caId) {
+    CaEntity caEntity = findById(caId);
+
+    return caEntity.getPublicKey();
+  }
+
+  private List<String> getCertificate(String caId, List<String> certificteChain) {
+    CaEntity caEntity = findById(caId);
+    certificteChain.add(caEntity.getCertificate());
+
+    if (caEntity.getParentCaId() != null) {
+      getCertificate(caEntity.getParentCaId().toHexString(), certificteChain);
+    }
+
+    return certificteChain;
+  }
+
+  public List<String> getCertificate(String caId) {
+    List<String> certificateChain = new ArrayList<>();
+    getCertificate(caId, certificateChain);
+
+    return certificateChain;
   }
 }

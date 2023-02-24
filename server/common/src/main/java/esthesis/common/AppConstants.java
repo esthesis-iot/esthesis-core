@@ -52,6 +52,20 @@ public class AppConstants {
     DISABLED, OPEN, OPEN_WITH_SECRET, ID
   }
 
+  public static class Keystore {
+
+    public static class Item {
+
+      public enum ResourceType {
+        DEVICE, CERT, CA, TAG
+      }
+
+      public enum KeyType {
+        PRIVATE, CERT
+      }
+    }
+  }
+
   public static class Provisioning {
 
     public enum ConfigOption {
