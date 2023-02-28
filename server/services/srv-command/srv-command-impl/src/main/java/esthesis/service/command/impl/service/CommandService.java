@@ -58,8 +58,10 @@ public class CommandService {
   @ConfigProperty(name = "quarkus.application.name")
   String appName;
 
+  // The emitter for sending command requests to Kafka. The name of the topic is dynamically set
+  // based on application settings.
   @Inject
-  @Channel("esthesis-command-request")
+  @Channel("")
   Emitter<EsthesisCommandRequestMessage> commandRequestEmitter;
 
   private String KAFKA_CONTROL_REQUEST_TOPIC;

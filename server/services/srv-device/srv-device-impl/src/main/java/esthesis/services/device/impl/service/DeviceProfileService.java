@@ -1,6 +1,10 @@
 package esthesis.services.device.impl.service;
 
+import esthesis.common.AppConstants.MessagingKafka.Action;
+import esthesis.common.AppConstants.MessagingKafka.Component;
+import esthesis.common.AppConstants.MessagingKafka.Subject;
 import esthesis.service.common.BaseService;
+import esthesis.service.common.notifications.KafkaNotification;
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
@@ -36,6 +40,8 @@ public class DeviceProfileService extends BaseService<DeviceAttributeEntity> {
   @Inject
   RedisUtils redisUtils;
 
+  @KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE, action = Action.UPDATE,
+      idParamOrder = 0)
   public List<DeviceAttributeEntity> saveProfile(String deviceId, Map<String, String> profile) {
     // Remove fields no longer present.
     deviceProfileFieldRepository.deleteFieldsNotIn(deviceId, profile.keySet().stream().toList());
@@ -55,8 +61,7 @@ public class DeviceProfileService extends BaseService<DeviceAttributeEntity> {
     return deviceProfileFieldRepository.findByDeviceId(deviceId);
   }
 
-  public DeviceAttributeEntity createProfileField(
-      DeviceAttributeEntity deviceAttributeEntity) {
+  public DeviceAttributeEntity createProfileField(DeviceAttributeEntity deviceAttributeEntity) {
     return save(deviceAttributeEntity);
   }
 
@@ -74,10 +79,10 @@ public class DeviceProfileService extends BaseService<DeviceAttributeEntity> {
     DeviceEntity deviceEntity = deviceService.findById(deviceId);
     devicePageFieldEntities.stream().filter(DevicePageFieldEntity::isShown).forEach(field -> {
       DeviceProfileFieldDataDTO deviceProfileFieldDataDTO = new DeviceProfileFieldDataDTO();
-      deviceProfileFieldDataDTO.setLabel(field.getLabel()).setIcon(field.getIcon())
-          .setValueType(redisUtils.getFromHash(KeyType.ESTHESIS_DM, deviceEntity.getHardwareId(),
-              field.getMeasurement()))
-          .setLastUpdate(redisUtils.getLastUpdate(KeyType.ESTHESIS_DM, deviceEntity.getHardwareId(),
+      deviceProfileFieldDataDTO.setLabel(field.getLabel()).setIcon(field.getIcon()).setValueType(
+          redisUtils.getFromHash(KeyType.ESTHESIS_DM, deviceEntity.getHardwareId(),
+              field.getMeasurement())).setLastUpdate(
+          redisUtils.getLastUpdate(KeyType.ESTHESIS_DM, deviceEntity.getHardwareId(),
               field.getMeasurement()));
 
       String value = redisUtils.getFromHash(KeyType.ESTHESIS_DM, deviceEntity.getHardwareId(),

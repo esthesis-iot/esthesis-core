@@ -110,16 +110,25 @@ public class DeviceService extends BaseService<DeviceEntity> {
     }
   }
 
-  public String downloadPublicKey(String id) {
+  public String getPublicKey(String id) {
     return findById(id).getDeviceKey().getPublicKey();
   }
 
-  public String downloadPrivateKey(String id) {
+  public String getPrivateKey(String id) {
     return findById(id).getDeviceKey().getPrivateKey();
   }
 
-  public String downloadCertificate(String id) {
+  public String getCertificate(String id) {
     return findById(id).getDeviceKey().getCertificate();
+  }
+
+  /**
+   * Remove a tag from all devices.
+   *
+   * @param tagId
+   */
+  public void removeTag(String tagId) {
+    //TODO to be implemented
   }
 
 }

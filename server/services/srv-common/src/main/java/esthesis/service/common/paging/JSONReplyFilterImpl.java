@@ -30,7 +30,7 @@ public class JSONReplyFilterImpl implements ContainerResponseFilter {
   @Inject
   ObjectMapper injectedMapper;
   @Context
-  private ResourceInfo info;
+  ResourceInfo info;
 
   @Override
   public void filter(ContainerRequestContext req, ContainerResponseContext res)

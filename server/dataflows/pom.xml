@@ -66,6 +66,7 @@
     <module>dfl-rdbms-writer</module>
     <module>dfl-redis-cache</module>
     <module>dfl-command-reply-updater</module>
+    <module>dfl-orion-gateway</module>
   </modules>
 
 </project>

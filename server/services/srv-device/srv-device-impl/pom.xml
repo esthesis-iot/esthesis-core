@@ -18,10 +18,6 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-qute</artifactId>
     </dependency>
-    <dependency>
-      <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
-      <groupId>io.quarkus</groupId>
-    </dependency>
 
     <!-- ESTHESIS -->
     <dependency>

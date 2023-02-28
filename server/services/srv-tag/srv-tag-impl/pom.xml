@@ -14,12 +14,6 @@
   <artifactId>srv-tag-impl</artifactId>
 
   <dependencies>
-    <!-- QUARKUS -->
-    <dependency>
-      <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
-      <groupId>io.quarkus</groupId>
-    </dependency>
-
     <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>

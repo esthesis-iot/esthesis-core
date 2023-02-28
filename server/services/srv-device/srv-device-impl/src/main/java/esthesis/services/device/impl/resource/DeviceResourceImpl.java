@@ -117,15 +117,15 @@ public class DeviceResourceImpl implements DeviceResource {
     switch (type) {
       case PRIVATE -> {
         filename += ".key";
-        content = deviceEntity.getDeviceKey().getPrivateKey();
+        content = deviceService.getPrivateKey(deviceId);
       }
       case PUBLIC -> {
         filename += ".pub";
-        content = deviceEntity.getDeviceKey().getPublicKey();
+        content = deviceService.getPublicKey(deviceId);
       }
       case CERTIFICATE -> {
         filename += ".crt";
-        content = deviceEntity.getDeviceKey().getCertificate();
+        content = deviceService.getCertificate(deviceId);
       }
       default -> throw new QDoesNotExistException("Key type '{}' is not valid.", type);
     }

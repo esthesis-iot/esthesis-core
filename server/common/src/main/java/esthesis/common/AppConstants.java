@@ -156,4 +156,28 @@ public class AppConstants {
       }
     }
   }
+
+  public static class MessagingKafka {
+
+    //TODO this should become a dynamic parameter in settings
+    public static final String KAFKA_TOPIC = "esthesis-app";
+
+    public enum Component {
+      UNSPECIFIED,
+      DEVICE, TAG
+    }
+
+    public enum Subject {
+      UNSPECIFIED,
+      DEVICE, DEVICE_ATTRIBUTE, TAG
+    }
+
+    public enum Action {
+      UNSPECIFIED,
+      CREATE,
+      DELETE,
+      UPDATE
+    }
+
+  }
 }

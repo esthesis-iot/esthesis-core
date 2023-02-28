@@ -148,4 +148,5 @@ public abstract class BaseService<D extends BaseEntity> {
   public long deleteByColumn(String columnName, Object value) {
     return repository.delete(columnName + " = ?1", value);
   }
+
 }
