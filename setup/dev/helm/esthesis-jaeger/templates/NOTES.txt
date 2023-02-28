@@ -4,6 +4,6 @@
 *************************
 Update your hosts file with the result of the following command:
 
-echo $(kubectl get services jaeger-collector-otlp-grpc --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-jaeger-collector && \
+echo $(kubectl get services jaeger-collector-otlp-grpc --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-jaeger-collector-grpc && \
 echo $(kubectl get services jaeger-ui --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-jaeger-ui
 {{ end }}
