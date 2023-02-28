@@ -59,9 +59,10 @@ public class CommandService {
   String appName;
 
   // The emitter for sending command requests to Kafka. The name of the topic is dynamically set
-  // based on application settings.
+  // based on application settings, however we need to provide a default value here to be able to
+  // set the custom serializer in application.yaml.
   @Inject
-  @Channel("")
+  @Channel("esthesis-command-request")
   Emitter<EsthesisCommandRequestMessage> commandRequestEmitter;
 
   private String KAFKA_CONTROL_REQUEST_TOPIC;
