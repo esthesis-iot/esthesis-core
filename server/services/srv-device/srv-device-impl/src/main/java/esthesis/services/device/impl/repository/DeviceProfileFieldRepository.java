@@ -1,6 +1,6 @@
 package esthesis.services.device.impl.repository;
 
-import esthesis.service.device.entity.DeviceProfileNoteEntity;
+import esthesis.service.device.entity.DeviceAttributeEntity;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import io.quarkus.panache.common.Sort;
 import java.util.List;
@@ -9,13 +9,13 @@ import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class DeviceProfileFieldRepository implements
-    PanacheMongoRepository<DeviceProfileNoteEntity> {
+    PanacheMongoRepository<DeviceAttributeEntity> {
 
-  public List<DeviceProfileNoteEntity> findByDeviceId(String deviceId) {
+  public List<DeviceAttributeEntity> findByDeviceId(String deviceId) {
     return find("deviceId", Sort.ascending("label"), deviceId).list();
   }
 
-  public Optional<DeviceProfileNoteEntity> findByDeviceIdAndName(String deviceId,
+  public Optional<DeviceAttributeEntity> findByDeviceIdAndName(String deviceId,
       String fieldName) {
     return find("deviceId = ?1 and fieldName = ?2",
         deviceId, fieldName).firstResultOptional();

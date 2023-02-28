@@ -4,7 +4,7 @@ import {Observable} from "rxjs";
 import {DeviceRegisterDto} from "./dto/device-register-dto";
 import {DeviceDto} from "./dto/device-dto";
 import {environment} from "../../environments/environment";
-import {DeviceProfileNoteDto} from "./dto/device-profile-note-dto";
+import {DeviceAttributeDto} from "./dto/device-attribute-dto";
 import {DevicePageFieldDataDto} from "./dto/device-page-field-data-dto";
 import {GeolocationDto} from "./dto/geolocation-dto";
 import {CrudDownloadService} from "../shared/services/crud-download.service";
@@ -38,12 +38,12 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
     });
   }
 
-  saveDeviceProfileNote(deviceId: string, profile: any) {
+  saveDeviceAttributes(deviceId: string, profile: any) {
     return this.http.post(`${this.prefix}/${deviceId}/device-profile`, profile);
   }
 
-  getDeviceProfileNotes(deviceId: string): Observable<DeviceProfileNoteDto[]> {
-    return this.http.get<DeviceProfileNoteDto[]>(`${this.prefix}/${deviceId}/device-profile`);
+  getDeviceAttributes(deviceId: string): Observable<DeviceAttributeDto[]> {
+    return this.http.get<DeviceAttributeDto[]>(`${this.prefix}/${deviceId}/device-profile`);
   }
 
   findDeviceByPartialHardwareId(hardwareId: string): Observable<DeviceDto[]> {
@@ -51,19 +51,19 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
       `${this.prefix}/find/by-hardware-id?hardwareIds=${hardwareId}&partialMatch=true`);
   }
 
-  addDeviceProfileNote(targetDeviceId: string, newFieldName: string, newFieldLabel: string) {
-    const deviceProfileNoteDto: DeviceProfileNoteDto = {
+  addDeviceAttribute(targetDeviceId: string, newFieldName: string, newFieldLabel: string) {
+    const deviceAttributeDto: DeviceAttributeDto = {
       deviceId: targetDeviceId,
       fieldName: newFieldName,
       label: newFieldLabel
     };
     return this.http.post(
-      `${this.prefix}/device-profile/add-note`, deviceProfileNoteDto);
+      `${this.prefix}/device-profile/add-attribute`, deviceAttributeDto);
   }
 
-  removeDeviceProfileNote(deviceId: string, keyName: string) {
+  removeDeviceAttribute(deviceId: string, keyName: string) {
     return this.http.delete(
-      `${this.prefix}/${deviceId}/device-profile/delete-note?keyName=${keyName}`);
+      `${this.prefix}/${deviceId}/device-profile/delete-attribute?keyName=${keyName}`);
   }
 
   getProfileFieldsData(deviceId: string): Observable<DevicePageFieldDataDto[]> {

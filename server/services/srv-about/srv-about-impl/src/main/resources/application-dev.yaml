@@ -18,7 +18,7 @@ quarkus:
     tracer:
       exporter:
         otlp:
-          endpoint: http://esthesis-dev-jaeger-collector:4317
+          endpoint: http://esthesis-dev-jaeger-collector-grpc:4317
   rest-client:
     AuditResource:
       url: http://localhost:59140

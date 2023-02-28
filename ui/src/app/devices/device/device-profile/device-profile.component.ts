@@ -21,10 +21,17 @@ import {UtilityService} from "../../../shared/services/utility.service";
 })
 export class DeviceProfileComponent extends BaseComponent implements OnInit {
   id!: string | null;
+  // The form representing all device profile attributes.
   deviceProfileForm!: FormGroup;
-  deviceProfileFormFields: FormlyFieldConfig[] = [];
-  deviceProfileFormModel = {};
 
+  // The list of Formly entries representing device attributes.
+  deviceAttributesFormFields: FormlyFieldConfig[] = [];
+
+  // The model representation of all device profile attributes.
+  deviceAttributesModel = {};
+
+  // The list of device profile fields (i.e. user-defined list of device attributes to be
+  // displayed).
   dataFields: DevicePageFieldDataDto[] = [];
 
   constructor(private fb: FormBuilder, private qForms: QFormsService,
@@ -39,13 +46,16 @@ export class DeviceProfileComponent extends BaseComponent implements OnInit {
     // Set up the Device Profile form.
     this.deviceProfileForm = new FormGroup({});
 
-    // Get Device profile notes.
-    this.fetchNotes();
+    // Get Device profile attributes.
+    this.fetchAttributes();
 
     // Get Device profile fields.
     this.fetchFields();
   }
 
+  /**
+   * Fetch the list of user-defined fields to be displayed on the device profile page.
+   */
   private fetchFields(): void {
     this.devicesService.getProfileFieldsData(this.id!).subscribe({
       next: (fields) => {
@@ -56,13 +66,17 @@ export class DeviceProfileComponent extends BaseComponent implements OnInit {
     });
   }
 
-  private fetchNotes(): void {
-    this.deviceProfileFormModel = {};
-    this.deviceProfileFormFields = [];
-    this.devicesService.getDeviceProfileNotes(this.id!).subscribe({
+  /**
+   * Fetch the list of device profile attributes.
+   * @private
+   */
+  private fetchAttributes(): void {
+    this.deviceAttributesModel = {};
+    this.deviceAttributesFormFields = [];
+    this.devicesService.getDeviceAttributes(this.id!).subscribe({
       next: (deviceProfile) => {
         deviceProfile.forEach((field) => {
-          this.deviceProfileFormFields = [...this.deviceProfileFormFields,
+          this.deviceAttributesFormFields = [...this.deviceAttributesFormFields,
             {
               key: field.fieldName,
               defaultValue: field.fieldValue,
@@ -78,8 +92,11 @@ export class DeviceProfileComponent extends BaseComponent implements OnInit {
     });
   }
 
+  /**
+   * Save the device profile attributes.
+   */
   save() {
-    this.devicesService.saveDeviceProfileNote(this.id!, this.deviceProfileFormModel).subscribe({
+    this.devicesService.saveDeviceAttributes(this.id!, this.deviceAttributesModel).subscribe({
       next: () => {
         this.utilityService.popupSuccess("Device profile saved successfully.");
         this.deviceProfileForm.markAsPristine();
@@ -89,43 +106,51 @@ export class DeviceProfileComponent extends BaseComponent implements OnInit {
     });
   }
 
+  /**
+   * Add a new device profile attribute.
+   */
   add() {
     this.dialog.open(InputModalComponent, {
       data: {
-        title: "Add new device note",
-        question: "Enter the name of the new note to be added for this device:",
+        title: "Add new device attribute",
+        question: "Enter the name of the new attribute to be added for this device:",
         buttons: {
           ok: true, cancel: true, reload: false
         }
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.devicesService.addDeviceProfileNote(
+        this.devicesService.addDeviceAttribute(
           this.id!, slugify(result).toLowerCase(), result).subscribe({
           next: () => {
-            this.fetchNotes();
+            this.fetchAttributes();
           }, error: (err) => {
-            this.utilityService.popupErrorWithTraceId("Could not add device profile note.", err);
+            this.utilityService.popupErrorWithTraceId("Could not add device profile attribute.", err);
           }
         });
       }
     });
   }
 
+  /**
+   * Remove a device profile attribute.
+   * @param keyName The key-name of the attribute to be removed.
+   * @param label The label of the attribute to be removed.
+   */
   remove(keyName: any, label: string) {
     this.dialog.open(OkCancelModalComponent, {
       data: {
-        title: "Delete Note",
-        question: "Do you really want to delete '''" + label + "''' note?",
+        title: "Delete Attribute",
+        question: "Do you really want to delete '''" + label + "''' attribute?",
         buttons: {
           ok: true, cancel: true, reload: false
         }
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.devicesService.removeDeviceProfileNote(this.id!, keyName).subscribe(() => {
-          this.utilityService.popupSuccess("Device note successfully deleted.");
-          this.fetchNotes();
+        this.devicesService.removeDeviceAttribute(this.id!, keyName).subscribe(() => {
+          this.utilityService.popupSuccess("Device attribute successfully deleted.");
+          this.fetchAttributes();
         });
       }
     });

@@ -1,6 +1,6 @@
 import {BaseDto} from "../../dto/base-dto";
 
-export interface DeviceProfileNoteDto extends BaseDto {
+export interface DeviceAttributeDto extends BaseDto {
   deviceId: string;
   fieldName: string;
   fieldValue?: string;

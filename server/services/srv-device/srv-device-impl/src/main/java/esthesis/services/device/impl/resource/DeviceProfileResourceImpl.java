@@ -4,7 +4,7 @@ import esthesis.common.AppConstants.Audit.Category;
 import esthesis.common.AppConstants.Audit.Operation;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
-import esthesis.service.device.entity.DeviceProfileNoteEntity;
+import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.resource.DeviceProfileResource;
 import esthesis.services.device.impl.service.DeviceProfileService;
 import java.util.List;
@@ -21,28 +21,28 @@ public class DeviceProfileResourceImpl implements DeviceProfileResource {
   DeviceProfileService deviceProfileService;
 
   @Override
-  public List<DeviceProfileNoteEntity> getDeviceProfileNotes(String deviceId) {
+  public List<DeviceAttributeEntity> getDeviceProfileAttributes(String deviceId) {
     return deviceProfileService.getProfile(deviceId);
   }
 
   @Override
-  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Save device profile note")
-  public List<DeviceProfileNoteEntity> saveDeviceProfileNotes(
+  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Save device profile attribute")
+  public List<DeviceAttributeEntity> saveDeviceProfileAttributes(
       Map<String, String> fields,
       String deviceId) {
     return deviceProfileService.saveProfile(deviceId, fields);
   }
 
   @Override
-  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Create device profile note")
-  public DeviceProfileNoteEntity addDeviceProfileNote(
-      DeviceProfileNoteEntity field) {
+  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Create device profile attribute")
+  public DeviceAttributeEntity addDeviceProfileAttribute(
+      DeviceAttributeEntity field) {
     return deviceProfileService.createProfileField(field);
   }
 
   @Override
-  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Delete device profile note")
-  public void deleteDeviceProfileNote(String deviceId, String keyName) {
+  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Delete device profile attribute")
+  public void deleteDeviceAttribute(String deviceId, String keyName) {
     deviceProfileService.deleteProfileField(deviceId, keyName);
   }
 

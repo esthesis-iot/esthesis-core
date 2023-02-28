@@ -2,8 +2,8 @@ package esthesis.services.device.impl.service;
 
 import esthesis.service.common.BaseService;
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
+import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
-import esthesis.service.device.entity.DeviceProfileNoteEntity;
 import esthesis.service.settings.entity.DevicePageFieldEntity;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.services.device.impl.repository.DeviceProfileFieldRepository;
@@ -21,7 +21,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @ApplicationScoped
-public class DeviceProfileService extends BaseService<DeviceProfileNoteEntity> {
+public class DeviceProfileService extends BaseService<DeviceAttributeEntity> {
 
   @Inject
   DeviceProfileFieldRepository deviceProfileFieldRepository;
@@ -36,28 +36,28 @@ public class DeviceProfileService extends BaseService<DeviceProfileNoteEntity> {
   @Inject
   RedisUtils redisUtils;
 
-  public List<DeviceProfileNoteEntity> saveProfile(String deviceId, Map<String, String> profile) {
+  public List<DeviceAttributeEntity> saveProfile(String deviceId, Map<String, String> profile) {
     // Remove fields no longer present.
     deviceProfileFieldRepository.deleteFieldsNotIn(deviceId, profile.keySet().stream().toList());
 
     // Save the field.
     profile.forEach((key, value) -> {
-      DeviceProfileNoteEntity deviceProfileNoteEntity = deviceProfileFieldRepository.findByDeviceIdAndName(
+      DeviceAttributeEntity deviceAttributeEntity = deviceProfileFieldRepository.findByDeviceIdAndName(
           deviceId, key).orElseThrow();
-      deviceProfileNoteEntity.setFieldValue(value);
-      save(deviceProfileNoteEntity);
+      deviceAttributeEntity.setFieldValue(value);
+      save(deviceAttributeEntity);
     });
 
     return getProfile(deviceId);
   }
 
-  public List<DeviceProfileNoteEntity> getProfile(String deviceId) {
+  public List<DeviceAttributeEntity> getProfile(String deviceId) {
     return deviceProfileFieldRepository.findByDeviceId(deviceId);
   }
 
-  public DeviceProfileNoteEntity createProfileField(
-      DeviceProfileNoteEntity deviceProfileNoteEntity) {
-    return save(deviceProfileNoteEntity);
+  public DeviceAttributeEntity createProfileField(
+      DeviceAttributeEntity deviceAttributeEntity) {
+    return save(deviceAttributeEntity);
   }
 
   public void deleteProfileField(String deviceId, String fieldName) {

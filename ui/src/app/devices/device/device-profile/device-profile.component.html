@@ -15,25 +15,26 @@
   </div>
 
   <div class="mt-3">
-    <form [formGroup]="deviceProfileForm">
+    <form [formGroup]="deviceProfileForm" class="mt-5">
       <formly-form [form]="deviceProfileForm"
-                   [fields]="deviceProfileFormFields"
-                   [model]="deviceProfileFormModel">
+                   [fields]="deviceAttributesFormFields"
+                   [model]="deviceAttributesModel">
       </formly-form>
 
       <div class="card-actions justify-start mt-10">
-        <button *ngIf="deviceProfileFormFields.length > 0" class="btn btn-accent btn-sm"
-                [matMenuTriggerFor]="menu">DELETE NOTE
+        <button *ngIf="deviceAttributesFormFields.length > 0" class="btn btn-accent btn-sm"
+                [matMenuTriggerFor]="menu">DELETE ATTRIBUTE
+          <fa-icon icon="caret-down" class="ml-1"></fa-icon>
           <mat-menu #menu="matMenu" xPosition="before">
-            <button *ngFor="let field of deviceProfileFormFields"
+            <button *ngFor="let field of deviceAttributesFormFields"
                     mat-menu-item
                     (click)="remove(field.key, field.props!.label!)">{{field.props?.label}}
             </button>
           </mat-menu>
         </button>
-        <button class="btn btn-secondary btn-sm" (click)="add()">ADD NOTE</button>
+        <button class="btn btn-secondary btn-sm" (click)="add()">ADD ATTRIBUTE</button>
         <button class="btn btn-primary btn-sm" (click)="save()"
-                [disabled]="!deviceProfileForm.dirty">SAVE
+                [disabled]="!deviceProfileForm.dirty">SAVE ATTRIBUTES
         </button>
       </div>
     </form>

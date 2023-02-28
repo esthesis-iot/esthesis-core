@@ -1,7 +1,7 @@
 package esthesis.service.device.resource;
 
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
-import esthesis.service.device.entity.DeviceProfileNoteEntity;
+import esthesis.service.device.entity.DeviceAttributeEntity;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.util.List;
 import java.util.Map;
@@ -21,21 +21,21 @@ public interface DeviceProfileResource {
 
   @GET
   @Path("/v1/{deviceId}/device-profile/")
-  List<DeviceProfileNoteEntity> getDeviceProfileNotes(
+  List<DeviceAttributeEntity> getDeviceProfileAttributes(
       @PathParam("deviceId") String deviceId);
 
   @POST
   @Path("/v1/{deviceId}/device-profile")
-  List<DeviceProfileNoteEntity> saveDeviceProfileNotes(Map<String, String> fields,
+  List<DeviceAttributeEntity> saveDeviceProfileAttributes(Map<String, String> fields,
       @PathParam("deviceId") String deviceId);
 
   @POST
-  @Path("/v1/device-profile/add-note")
-  DeviceProfileNoteEntity addDeviceProfileNote(DeviceProfileNoteEntity field);
+  @Path("/v1/device-profile/add-attribute")
+  DeviceAttributeEntity addDeviceProfileAttribute(DeviceAttributeEntity field);
 
   @DELETE
-  @Path("/v1/{deviceId}/device-profile/delete-note")
-  void deleteDeviceProfileNote(@PathParam("deviceId") String deviceId,
+  @Path("/v1/{deviceId}/device-profile/delete-attribute")
+  void deleteDeviceAttribute(@PathParam("deviceId") String deviceId,
       @QueryParam("keyName") String keyName);
 
   @GET

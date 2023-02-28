@@ -15,8 +15,8 @@ import lombok.experimental.Accessors;
 @RegisterForReflection
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-@MongoEntity(collection = "DeviceProfileNote")
-public class DeviceProfileNoteEntity extends BaseEntity {
+@MongoEntity(collection = "DeviceAttribute")
+public class DeviceAttributeEntity extends BaseEntity {
 
   private String deviceId;
   private String label;

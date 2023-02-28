@@ -30,7 +30,7 @@ quarkus:
     tracer:
       exporter:
         otlp:
-          endpoint: http://esthesis-dev-jaeger-collector:4317
+          endpoint: http://esthesis-dev-jaeger-collector-grpc:4317
   redis:
     hosts: redis://:esthesis@esthesis-dev-redis:6379/0
 
