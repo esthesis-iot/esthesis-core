@@ -10,6 +10,7 @@ import {BaseComponent} from "../../shared/components/base-component";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatDialogRef} from "@angular/material/dialog";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-tags-list",
@@ -27,7 +28,8 @@ export class TagsListComponent extends BaseComponent implements OnInit, AfterVie
   filterForm: FormGroup;
 
   constructor(private fb: FormBuilder, private router: Router, private tagService: TagsService,
-    private qForms: QFormsService, @Optional() private dialogRef: MatDialogRef<TagsListComponent>) {
+    private qForms: QFormsService, @Optional() private dialogRef: MatDialogRef<TagsListComponent>,
+    private utilityService: UtilityService) {
     super();
     this.filterForm = this.fb.group({
       name: [],
@@ -61,10 +63,13 @@ export class TagsListComponent extends BaseComponent implements OnInit, AfterVie
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
     this.tagService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
-      [], false, page, size, sort, sortDirection))
-    .subscribe(onNext => {
-      this.dataSource.data = onNext.content;
-      this.paginator.length = onNext.totalElements;
+      [], false, page, size, sort, sortDirection)).subscribe({
+      next: (onNext) => {
+        this.dataSource.data = onNext.content;
+        this.paginator.length = onNext.totalElements;
+      }, error: (onError: any) => {
+        this.utilityService.popupErrorWithTraceId("Could not fetch tags.", onError);
+      }
     });
   }
 

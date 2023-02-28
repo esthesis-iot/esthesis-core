@@ -22,11 +22,11 @@ public class DeviceProfileResourceImpl implements DeviceProfileResource {
 
   @Override
   public List<DeviceAttributeEntity> getDeviceProfileAttributes(String deviceId) {
-    return deviceProfileService.getProfile(deviceId);
+    return deviceProfileService.getAttributes(deviceId);
   }
 
   @Override
-  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Save device profile attribute")
+  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Save a device profile attribute")
   public List<DeviceAttributeEntity> saveDeviceProfileAttributes(
       Map<String, String> fields,
       String deviceId) {
@@ -34,16 +34,16 @@ public class DeviceProfileResourceImpl implements DeviceProfileResource {
   }
 
   @Override
-  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Create device profile attribute")
+  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Create a device profile attribute")
   public DeviceAttributeEntity addDeviceProfileAttribute(
-      DeviceAttributeEntity field) {
-    return deviceProfileService.createProfileField(field);
+      String deviceId, DeviceAttributeEntity deviceAttributeEntity) {
+    return deviceProfileService.createAttribute(deviceId, deviceAttributeEntity);
   }
 
   @Override
-  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Delete device profile attribute")
+  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Delete a device profile attribute")
   public void deleteDeviceAttribute(String deviceId, String keyName) {
-    deviceProfileService.deleteProfileField(deviceId, keyName);
+    deviceProfileService.deleteAttribute(deviceId, keyName);
   }
 
   @Override

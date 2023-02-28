@@ -30,8 +30,9 @@ public interface DeviceProfileResource {
       @PathParam("deviceId") String deviceId);
 
   @POST
-  @Path("/v1/device-profile/add-attribute")
-  DeviceAttributeEntity addDeviceProfileAttribute(DeviceAttributeEntity field);
+  @Path("/v1/{deviceId}/device-profile/add-attribute")
+  DeviceAttributeEntity addDeviceProfileAttribute(@PathParam("deviceId") String deviceId,
+      DeviceAttributeEntity field);
 
   @DELETE
   @Path("/v1/{deviceId}/device-profile/delete-attribute")

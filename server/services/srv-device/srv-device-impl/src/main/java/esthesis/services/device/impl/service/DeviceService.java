@@ -121,14 +121,5 @@ public class DeviceService extends BaseService<DeviceEntity> {
   public String getCertificate(String id) {
     return findById(id).getDeviceKey().getCertificate();
   }
-
-  /**
-   * Remove a tag from all devices.
-   *
-   * @param tagId
-   */
-  public void removeTag(String tagId) {
-    //TODO to be implemented
-  }
-
+  
 }

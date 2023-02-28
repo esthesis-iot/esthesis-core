@@ -58,7 +58,7 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
       label: newFieldLabel
     };
     return this.http.post(
-      `${this.prefix}/device-profile/add-attribute`, deviceAttributeDto);
+      `${this.prefix}/${targetDeviceId}/device-profile/add-attribute`, deviceAttributeDto);
   }
 
   removeDeviceAttribute(deviceId: string, keyName: string) {

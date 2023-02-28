@@ -10,7 +10,7 @@ import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.settings.entity.DevicePageFieldEntity;
 import esthesis.service.settings.resource.SettingsResource;
-import esthesis.services.device.impl.repository.DeviceProfileFieldRepository;
+import esthesis.services.device.impl.repository.DeviceAttributeRepository;
 import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;
 import io.quarkus.qute.Qute;
@@ -28,7 +28,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 public class DeviceProfileService extends BaseService<DeviceAttributeEntity> {
 
   @Inject
-  DeviceProfileFieldRepository deviceProfileFieldRepository;
+  DeviceAttributeRepository deviceAttributeRepository;
 
   @Inject
   @RestClient
@@ -40,33 +40,39 @@ public class DeviceProfileService extends BaseService<DeviceAttributeEntity> {
   @Inject
   RedisUtils redisUtils;
 
-  @KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE, action = Action.UPDATE,
-      idParamOrder = 0)
+  @KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE_ATTRIBUTE,
+      action = Action.UPDATE, idParamOrder = 0)
   public List<DeviceAttributeEntity> saveProfile(String deviceId, Map<String, String> profile) {
     // Remove fields no longer present.
-    deviceProfileFieldRepository.deleteFieldsNotIn(deviceId, profile.keySet().stream().toList());
+    deviceAttributeRepository.deleteAttributesNotIn(deviceId, profile.keySet().stream().toList());
 
     // Save the field.
     profile.forEach((key, value) -> {
-      DeviceAttributeEntity deviceAttributeEntity = deviceProfileFieldRepository.findByDeviceIdAndName(
+      DeviceAttributeEntity deviceAttributeEntity = deviceAttributeRepository.findByDeviceIdAndName(
           deviceId, key).orElseThrow();
       deviceAttributeEntity.setFieldValue(value);
       save(deviceAttributeEntity);
     });
 
-    return getProfile(deviceId);
+    return getAttributes(deviceId);
   }
 
-  public List<DeviceAttributeEntity> getProfile(String deviceId) {
-    return deviceProfileFieldRepository.findByDeviceId(deviceId);
+  public List<DeviceAttributeEntity> getAttributes(String deviceId) {
+    return deviceAttributeRepository.findByDeviceId(deviceId);
   }
 
-  public DeviceAttributeEntity createProfileField(DeviceAttributeEntity deviceAttributeEntity) {
+  @KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE_ATTRIBUTE,
+      action = Action.CREATE, idParamOrder = 0)
+  public DeviceAttributeEntity createAttribute(String deviceId,
+      DeviceAttributeEntity deviceAttributeEntity) {
+    deviceAttributeEntity.setDeviceId(deviceId);
     return save(deviceAttributeEntity);
   }
 
-  public void deleteProfileField(String deviceId, String fieldName) {
-    deviceProfileFieldRepository.deleteByDeviceIdAndName(deviceId, fieldName);
+  @KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE_ATTRIBUTE,
+      action = Action.DELETE, idParamOrder = 0)
+  public void deleteAttribute(String deviceId, String fieldName) {
+    deviceAttributeRepository.deleteByDeviceIdAndName(deviceId, fieldName);
   }
 
   public List<DeviceProfileFieldDataDTO> getProfileFields(String deviceId) {

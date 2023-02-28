@@ -30,6 +30,10 @@ quarkus:
       exporter:
         otlp:
           endpoint: http://esthesis-dev-jaeger-collector-grpc:4317
+kafka:
+  bootstrap:
+    servers:
+      - esthesis-dev-kafka:9094
 
 mp:
   jwt:

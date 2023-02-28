@@ -5,6 +5,7 @@ quarkus:
     group: esthesisiot
     name: esthesis-srv-device
   mongodb:
+    connection-string: mongodb://mongodb:27017
     database: esthesis
     credentials:
       username: esthesis
@@ -12,7 +13,7 @@ quarkus:
   devservices:
     enabled: false
   log:
-    level: warn
+    level: WARN
     category:
       esthesis:
         level: INFO
@@ -22,3 +23,12 @@ quarkus:
     enabled: false
   opentelemetry:
     enabled: false
+
+mp:
+  messaging:
+    outgoing:
+      esthesis-app-out:
+        topic: esthesis-app
+    incoming:
+      esthesis-app-in:
+        topic: esthesis-app

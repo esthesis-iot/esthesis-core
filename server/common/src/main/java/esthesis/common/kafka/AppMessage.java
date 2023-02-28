@@ -21,7 +21,6 @@ public class AppMessage {
   @NotNull
   private Action action;
 
-  @NotNull
   private String id;
 
   private String payload;

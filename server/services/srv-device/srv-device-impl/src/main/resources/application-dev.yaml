@@ -3,7 +3,10 @@ quarkus:
     host: 0.0.0.0
     cors: false
   log:
+    min-level: TRACE
     category:
+      "org.apache.kafka":
+        level: TRACE
       esthesis:
         level: DEBUG
     handler:
@@ -14,10 +17,6 @@ quarkus:
         include-full-mdc: true
   mongodb:
     connection-string: mongodb://esthesis-dev-mongodb:27017
-    database: esthesis
-    credentials:
-      username: esthesis
-      password: esthesis
   opentelemetry:
     enabled: true
     tracer:

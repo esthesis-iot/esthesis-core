@@ -54,18 +54,11 @@ public class TagService extends BaseService<TagEntity> {
   }
 
   @Override
-  @KafkaNotification(component = Component.TAG, subject = Subject.TAG, action = Action.DELETE, idParamOrder = 0)
+  @KafkaNotification(component = Component.TAG, subject = Subject.TAG, action = Action.DELETE,
+      idParamOrder = 0)
   public boolean deleteById(String id) {
     log.debug("Deleting tag with id '{}'.", id);
-    TagEntity tagEntity = findById(id);
-    if (tagEntity != null) {
-      boolean isDeleted = super.deleteById(id);
-      log.debug("Emitting tag deleted message for tag '{}'.", tagEntity);
-      return isDeleted;
-    } else {
-      log.warn("Tag with id '{}' not found to be deleted.", id);
-      return false;
-    }
+    return super.deleteById(id);
   }
 
   public List<TagEntity> findByName(String name, boolean partialMatch) {

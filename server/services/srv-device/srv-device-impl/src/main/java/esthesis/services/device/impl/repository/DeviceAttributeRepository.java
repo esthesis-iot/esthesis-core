@@ -8,20 +8,17 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class DeviceProfileFieldRepository implements
-    PanacheMongoRepository<DeviceAttributeEntity> {
+public class DeviceAttributeRepository implements PanacheMongoRepository<DeviceAttributeEntity> {
 
   public List<DeviceAttributeEntity> findByDeviceId(String deviceId) {
     return find("deviceId", Sort.ascending("label"), deviceId).list();
   }
 
-  public Optional<DeviceAttributeEntity> findByDeviceIdAndName(String deviceId,
-      String fieldName) {
-    return find("deviceId = ?1 and fieldName = ?2",
-        deviceId, fieldName).firstResultOptional();
+  public Optional<DeviceAttributeEntity> findByDeviceIdAndName(String deviceId, String fieldName) {
+    return find("deviceId = ?1 and fieldName = ?2", deviceId, fieldName).firstResultOptional();
   }
 
-  public void deleteFieldsNotIn(String deviceId, List<String> fieldNames) {
+  public void deleteAttributesNotIn(String deviceId, List<String> fieldNames) {
     delete("{'deviceId': ?1, 'fieldName':{'$nin':[?2]}}", deviceId, fieldNames);
   }
 

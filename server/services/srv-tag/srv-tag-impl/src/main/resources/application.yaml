@@ -25,8 +25,7 @@ quarkus:
     enabled: false
 
 mp:
-  jwt:
-    verify:
-      publickey:
-        location: "http://esthesis-keycloak/realms/esthesis/protocol/openid-connect/certs"
-
+  messaging:
+    outgoing:
+      esthesis-app-out:
+        topic: esthesis-app

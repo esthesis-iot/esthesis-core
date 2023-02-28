@@ -1,11 +1,15 @@
 package esthesis.service.crypto.impl.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import esthesis.common.AppConstants.MessagingKafka.Action;
+import esthesis.common.AppConstants.MessagingKafka.Component;
+import esthesis.common.AppConstants.MessagingKafka.Subject;
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.exception.QCouldNotSaveException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QMutationNotPermittedException;
 import esthesis.service.common.BaseService;
+import esthesis.service.common.notifications.KafkaNotification;
 import esthesis.service.crypto.dto.CertificateSignRequestDTO;
 import esthesis.service.crypto.dto.CreateKeyPairRequestDTO;
 import esthesis.service.crypto.entity.CaEntity;
@@ -48,7 +52,6 @@ public class CertificateService extends BaseService<CertificateEntity> {
   @Inject
   @RestClient
   SettingsResource settingsResource;
-
 
   public CertificateEntity importCertificate(
       ImportCertificateForm importCertificateForm) {
@@ -193,5 +196,12 @@ public class CertificateService extends BaseService<CertificateEntity> {
     CertificateEntity certificateEntity = findById(certId);
 
     return certificateEntity.getCertificate();
+  }
+
+  @Override
+  @KafkaNotification(component = Component.CERTIFICATE, subject = Subject.CERTIFICATE,
+      action = Action.DELETE, idParamOrder = 0)
+  public boolean deleteById(String id) {
+    return super.deleteById(id);
   }
 }

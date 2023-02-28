@@ -83,16 +83,15 @@ public class DeviceTagService {
   /**
    * Removes a tag from all devices having it assigned to them.
    *
-   * @param tagName the name of the tag to be removed.
+   * @param tagId the ID of the tag to be removed.
    */
-  public void removeTag(String tagName) {
-    log.debug("Removing tag '{}' from all devices.", tagName);
-    deviceRepository.find("tags", tagName).stream()
+  public void removeTagById(String tagId) {
+    log.debug("Removing tag id '{}' from all devices.", tagId);
+    deviceRepository.find("tags", tagId).stream()
         .forEach(device -> {
-          device.getTags().removeIf(s -> s.equals(tagName));
+          device.getTags().removeIf(s -> s.equals(tagId));
           deviceRepository.update(device);
-          log.debug("Removed tag '{}' from device '{}'.", tagName,
-              device.getId());
+          log.debug("Removed tag id '{}' from device '{}'.", tagId, device.getId());
         });
   }
 }

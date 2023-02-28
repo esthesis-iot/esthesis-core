@@ -2,7 +2,7 @@ package esthesis.services.device.impl.notifications;
 
 import esthesis.common.AppConstants.MessagingKafka;
 import esthesis.common.kafka.AppMessage;
-import esthesis.services.device.impl.service.DeviceService;
+import esthesis.services.device.impl.service.DeviceTagService;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.smallrye.common.annotation.Blocking;
@@ -20,14 +20,14 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 public class NotificationsHandler {
 
   @Inject
-  DeviceService deviceService;
+  DeviceTagService deviceTagService;
 
   private void handleTagDeleted(String tagId) {
-    deviceService.removeTag(tagId);
+    deviceTagService.removeTagById(tagId);
   }
 
   @Blocking
-  @Incoming(MessagingKafka.KAFKA_TOPIC)
+  @Incoming(MessagingKafka.SMALLRYE_KAFKA_CHANNEL + "-in")
   public CompletionStage<Void> onMessage(Message<AppMessage> msg) {
     log.trace("Processing Kafka application message '{}'", msg);
     Scope scope = Context.current().makeCurrent();
@@ -40,7 +40,7 @@ public class NotificationsHandler {
       switch (msg.getPayload().getComponent()) {
         case TAG -> {
           switch (msg.getPayload().getAction()) {
-            case DELETE -> handleTagDeleted(msg.getPayload().getPayload());
+            case DELETE -> handleTagDeleted(msg.getPayload().getId());
           }
         }
       }
