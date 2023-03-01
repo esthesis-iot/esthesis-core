@@ -1,12 +1,14 @@
-package esthesis.service.common.notifications;
+package esthesis.util.kafka.notifications.outgoing;
 
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.MessagingKafka.Action;
-import esthesis.common.AppConstants.MessagingKafka.Component;
-import esthesis.common.AppConstants.MessagingKafka.Subject;
-import esthesis.common.kafka.AppMessage;
-import esthesis.common.kafka.AppMessage.AppMessageBuilder;
+import static esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.SMALLRYE_KAFKA_CHANNEL_OUT;
+
+import esthesis.util.kafka.notifications.common.AppMessage;
+import esthesis.util.kafka.notifications.common.AppMessage.AppMessageBuilder;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subject;
 import io.opentelemetry.context.Context;
+import io.quarkus.arc.Priority;
 import io.smallrye.reactive.messaging.TracingMetadata;
 import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
 import java.lang.reflect.Method;
@@ -22,11 +24,12 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 
 @Slf4j
 @Interceptor
+@Priority(Interceptor.Priority.APPLICATION)
 @KafkaNotification(component = Component.UNSPECIFIED, subject = Subject.UNSPECIFIED, action = Action.UNSPECIFIED)
 public class KafkaNotificationInterceptor {
 
   @Inject
-  @Channel(AppConstants.MessagingKafka.SMALLRYE_KAFKA_CHANNEL + "-out")
+  @Channel(SMALLRYE_KAFKA_CHANNEL_OUT)
   Emitter<AppMessage> emitter;
 
   @AroundInvoke
@@ -35,7 +38,6 @@ public class KafkaNotificationInterceptor {
     Method method = ctx.getMethod();
     KafkaNotification kafkaNotification = method.getAnnotation(KafkaNotification.class);
     String id = null;
-
     if (kafkaNotification.idParamOrder() > -1) {
       id = (String) ctx.getParameters()[kafkaNotification.idParamOrder()];
     }
@@ -51,7 +53,6 @@ public class KafkaNotificationInterceptor {
     }
     Message<AppMessage> msg = Message.of(msgBuilder.build())
         .addMetadata(OutgoingKafkaRecordMetadata.<String>builder()
-//            .withTopic(MessagingKafka.SMALLRYE_KAFKA_CHANNEL)
             .withKey(kafkaNotification.subject().toString()).build())
         .addMetadata(TracingMetadata.withCurrent(Context.current()));
     log.debug("Sending Kafka notification '{}'.", msg.getPayload());

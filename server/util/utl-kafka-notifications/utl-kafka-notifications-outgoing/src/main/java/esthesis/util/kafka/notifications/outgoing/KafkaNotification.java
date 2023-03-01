@@ -1,8 +1,8 @@
-package esthesis.service.common.notifications;
+package esthesis.util.kafka.notifications.outgoing;
 
-import esthesis.common.AppConstants.MessagingKafka.Action;
-import esthesis.common.AppConstants.MessagingKafka.Component;
-import esthesis.common.AppConstants.MessagingKafka.Subject;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subject;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

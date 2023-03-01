@@ -1,16 +1,16 @@
 package esthesis.services.device.impl.service;
 
-import esthesis.common.AppConstants.MessagingKafka.Action;
-import esthesis.common.AppConstants.MessagingKafka.Component;
-import esthesis.common.AppConstants.MessagingKafka.Subject;
 import esthesis.service.common.BaseService;
-import esthesis.service.common.notifications.KafkaNotification;
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.settings.entity.DevicePageFieldEntity;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.services.device.impl.repository.DeviceAttributeRepository;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subject;
+import esthesis.util.kafka.notifications.outgoing.KafkaNotification;
 import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;
 import io.quarkus.qute.Qute;

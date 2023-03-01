@@ -21,6 +21,7 @@
   <modules>
     <module>utl-redis</module>
     <module>utl-kogito</module>
+    <module>utl-kafka-notifications</module>
   </modules>
 
 </project>

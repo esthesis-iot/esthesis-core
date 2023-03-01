@@ -1,21 +1,21 @@
 package esthesis.service.crypto.impl.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.common.AppConstants.MessagingKafka.Action;
-import esthesis.common.AppConstants.MessagingKafka.Component;
-import esthesis.common.AppConstants.MessagingKafka.Subject;
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.exception.QCouldNotSaveException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QMutationNotPermittedException;
 import esthesis.service.common.BaseService;
-import esthesis.service.common.notifications.KafkaNotification;
 import esthesis.service.crypto.dto.CertificateSignRequestDTO;
 import esthesis.service.crypto.dto.CreateKeyPairRequestDTO;
 import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.entity.CertificateEntity;
 import esthesis.service.crypto.form.ImportCertificateForm;
 import esthesis.service.settings.resource.SettingsResource;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subject;
+import esthesis.util.kafka.notifications.outgoing.KafkaNotification;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.security.KeyPair;

@@ -43,6 +43,7 @@
       <groupId>org.apache.camel.quarkus</groupId>
       <artifactId>camel-quarkus-seda</artifactId>
     </dependency>
+
     <!-- THIRD-PARTY -->
   </dependencies>
 

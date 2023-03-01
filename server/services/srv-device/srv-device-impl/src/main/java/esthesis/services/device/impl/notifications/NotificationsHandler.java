@@ -1,8 +1,9 @@
 package esthesis.services.device.impl.notifications;
 
-import esthesis.common.AppConstants.MessagingKafka;
-import esthesis.common.kafka.AppMessage;
+import static esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.SMALLRYE_KAFKA_CHANNEL_IN;
+
 import esthesis.services.device.impl.service.DeviceTagService;
+import esthesis.util.kafka.notifications.common.AppMessage;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.smallrye.common.annotation.Blocking;
@@ -27,7 +28,7 @@ public class NotificationsHandler {
   }
 
   @Blocking
-  @Incoming(MessagingKafka.SMALLRYE_KAFKA_CHANNEL + "-in")
+  @Incoming(SMALLRYE_KAFKA_CHANNEL_IN)
   public CompletionStage<Void> onMessage(Message<AppMessage> msg) {
     log.trace("Processing Kafka application message '{}'", msg);
     Scope scope = Context.current().makeCurrent();

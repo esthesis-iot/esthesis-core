@@ -21,10 +21,10 @@
       <artifactId>quarkus-hibernate-validator</artifactId>
       <groupId>io.quarkus</groupId>
     </dependency>
-    <dependency>
-      <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
-      <groupId>io.quarkus</groupId>
-    </dependency>
+    <!--    <dependency>-->
+    <!--      <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>-->
+    <!--      <groupId>io.quarkus</groupId>-->
+    <!--    </dependency>-->
 
     <!-- THIRD-PARTY -->
     <dependency>

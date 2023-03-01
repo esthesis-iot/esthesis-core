@@ -1,15 +1,15 @@
 package esthesis.services.tag.impl.service;
 
-import esthesis.common.AppConstants.MessagingKafka.Action;
-import esthesis.common.AppConstants.MessagingKafka.Component;
-import esthesis.common.AppConstants.MessagingKafka.Subject;
 import esthesis.service.common.BaseService;
-import esthesis.service.common.notifications.KafkaNotification;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.common.validation.CVExceptionContainer;
 import esthesis.service.tag.entity.TagEntity;
 import esthesis.services.tag.impl.repository.TagRepository;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subject;
+import esthesis.util.kafka.notifications.outgoing.KafkaNotification;
 import java.util.Collections;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;

@@ -5,6 +5,7 @@ import esthesis.common.AppConstants.Audit.Category;
 import esthesis.common.AppConstants.Audit.Operation;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.audit.resource.AuditResource;
+import io.quarkus.arc.Priority;
 import java.lang.reflect.Method;
 import java.time.Instant;
 import javax.inject.Inject;
@@ -17,6 +18,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @Interceptor
+@Priority(Interceptor.Priority.APPLICATION)
 @Audited(op = Operation.NULL, cat = Category.NULL, msg = "")
 public class AuditedInterceptor {
 
