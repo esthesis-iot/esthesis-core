@@ -2,20 +2,33 @@ package esthesis.services.device.impl.service;
 
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.service.common.BaseService;
+import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
 import esthesis.service.device.dto.GeolocationDTO;
+import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
+import esthesis.service.settings.entity.DevicePageFieldEntity;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
+import esthesis.services.device.impl.repository.DeviceAttributeRepository;
 import esthesis.services.device.impl.repository.DeviceRepository;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subject;
+import esthesis.util.kafka.notifications.outgoing.KafkaNotification;
 import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;
+import io.quarkus.qute.Qute;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -28,6 +41,9 @@ public class DeviceService extends BaseService<DeviceEntity> {
 
   @Inject
   DeviceRepository deviceRepository;
+
+  @Inject
+  DeviceAttributeRepository deviceAttributeRepository;
 
   @Inject
   @RestClient
@@ -121,5 +137,88 @@ public class DeviceService extends BaseService<DeviceEntity> {
   public String getCertificate(String id) {
     return findById(id).getDeviceKey().getCertificate();
   }
-  
+
+  @KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE_ATTRIBUTE,
+      action = Action.UPDATE, idParamOrder = 0, payload = "device id")
+  public List<DeviceAttributeEntity> saveAttributes(String deviceId, Map<String, String> profile) {
+    // Remove fields no longer present.
+    deviceAttributeRepository.deleteAttributesNotIn(deviceId, profile.keySet().stream().toList());
+
+    // Save the field.
+    profile.forEach((key, value) -> {
+      DeviceAttributeEntity deviceAttributeEntity = deviceAttributeRepository.findByDeviceIdAndName(
+          deviceId, key).orElseThrow();
+      deviceAttributeEntity.setAttributeValue(value);
+      deviceAttributeRepository.update(deviceAttributeEntity);
+    });
+
+    return getAttributes(deviceId);
+  }
+
+  public List<DeviceAttributeEntity> getAttributes(String deviceId) {
+    return deviceAttributeRepository.findByDeviceId(deviceId);
+  }
+
+  @KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE_ATTRIBUTE,
+      action = Action.CREATE, idParamOrder = 0, payload = "device id")
+  public DeviceAttributeEntity createAttribute(String deviceId,
+      DeviceAttributeEntity deviceAttributeEntity) {
+    deviceAttributeEntity.setDeviceId(deviceId);
+    deviceAttributeEntity.setId(new ObjectId());
+    deviceAttributeRepository.persist(deviceAttributeEntity);
+
+    return deviceAttributeEntity;
+  }
+
+  @KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE_ATTRIBUTE,
+      action = Action.DELETE, idParamOrder = 0, payload = "device id")
+  public void deleteAttribute(String deviceId, String fieldName) {
+    deviceAttributeRepository.deleteByDeviceIdAndName(deviceId, fieldName);
+  }
+
+  public List<DeviceProfileFieldDataDTO> getProfileFields(String deviceId) {
+    List<DeviceProfileFieldDataDTO> fields = new ArrayList<>();
+
+    // Get configured device profile fields data.
+    List<DevicePageFieldEntity> devicePageFieldEntities = settingsResource.getDevicePageFields();
+
+    // Find the value of each field.
+    DeviceEntity deviceEntity = findById(deviceId);
+    devicePageFieldEntities.stream().filter(DevicePageFieldEntity::isShown).forEach(field -> {
+      DeviceProfileFieldDataDTO deviceProfileFieldDataDTO = new DeviceProfileFieldDataDTO();
+      deviceProfileFieldDataDTO.setLabel(field.getLabel()).setIcon(field.getIcon()).setValueType(
+          redisUtils.getFromHash(KeyType.ESTHESIS_DM, deviceEntity.getHardwareId(),
+              field.getMeasurement())).setLastUpdate(
+          redisUtils.getLastUpdate(KeyType.ESTHESIS_DM, deviceEntity.getHardwareId(),
+              field.getMeasurement()));
+
+      String value = redisUtils.getFromHash(KeyType.ESTHESIS_DM, deviceEntity.getHardwareId(),
+          field.getMeasurement());
+      if (StringUtils.isNotEmpty(field.getFormatter())) {
+        deviceProfileFieldDataDTO.setValue(
+            Qute.fmt(field.getFormatter()).data("val", value).render());
+      } else {
+        deviceProfileFieldDataDTO.setValue(value);
+      }
+
+      fields.add(deviceProfileFieldDataDTO);
+    });
+
+    return fields;
+  }
+
+  public List<DeviceProfileFieldDataDTO> getAllDeviceData(String deviceId) {
+    List<DeviceProfileFieldDataDTO> fields = new ArrayList<>();
+    DeviceEntity deviceEntity = findById(deviceId);
+
+    redisUtils.getHashTriplets(KeyType.ESTHESIS_DM, deviceEntity.getHardwareId())
+        .forEach(triple -> {
+          DeviceProfileFieldDataDTO deviceProfileFieldDataDTO = new DeviceProfileFieldDataDTO();
+          deviceProfileFieldDataDTO.setLabel(triple.getLeft()).setValue(triple.getMiddle())
+              .setLastUpdate(triple.getRight());
+          fields.add(deviceProfileFieldDataDTO);
+        });
+
+    return fields;
+  }
 }

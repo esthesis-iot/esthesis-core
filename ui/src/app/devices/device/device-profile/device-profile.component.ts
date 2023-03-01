@@ -31,7 +31,7 @@ export class DeviceProfileComponent extends BaseComponent implements OnInit {
   deviceAttributesModel = {};
 
   // The list of device profile fields (i.e. user-defined list of device attributes to be
-  // displayed).
+  // displayed in boxes on ton of the screen).
   dataFields: DevicePageFieldDataDto[] = [];
 
   constructor(private fb: FormBuilder, private qForms: QFormsService,
@@ -78,11 +78,11 @@ export class DeviceProfileComponent extends BaseComponent implements OnInit {
         deviceProfile.forEach((field) => {
           this.deviceAttributesFormFields = [...this.deviceAttributesFormFields,
             {
-              key: field.fieldName,
-              defaultValue: field.fieldValue,
+              key: field.attributeName,
+              defaultValue: field.attributeValue,
               type: "input",
               props: {
-                label: field.label
+                label: field.attributeName
               }
             }];
         });

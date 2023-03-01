@@ -9,13 +9,16 @@ import esthesis.service.audit.ccc.Audited;
 import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
+import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
 import esthesis.service.device.dto.GeolocationDTO;
+import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.services.device.impl.service.DeviceService;
 import esthesis.services.device.impl.service.DeviceTagService;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
@@ -131,5 +134,40 @@ public class DeviceResourceImpl implements DeviceResource {
     }
     return ResponseBuilder.ok(content)
         .header("Content-Disposition", "attachment; filename=" + filename).build().toResponse();
+  }
+
+  @Override
+  public List<DeviceAttributeEntity> getDeviceAttributes(String deviceId) {
+    return deviceService.getAttributes(deviceId);
+  }
+
+  @Override
+  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Save a device attribute")
+  public List<DeviceAttributeEntity> saveDeviceAttributes(
+      Map<String, String> fields, String deviceId) {
+    return deviceService.saveAttributes(deviceId, fields);
+  }
+
+  @Override
+  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Create a device attribute")
+  public DeviceAttributeEntity addDeviceAttribute(
+      String deviceId, DeviceAttributeEntity deviceAttributeEntity) {
+    return deviceService.createAttribute(deviceId, deviceAttributeEntity);
+  }
+
+  @Override
+  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Delete a device attribute")
+  public void deleteDeviceAttribute(String deviceId, String keyName) {
+    deviceService.deleteAttribute(deviceId, keyName);
+  }
+
+  @Override
+  public List<DeviceProfileFieldDataDTO> getDeviceFields(String deviceId) {
+    return deviceService.getProfileFields(deviceId);
+  }
+
+  @Override
+  public List<DeviceProfileFieldDataDTO> getAllDeviceData(String deviceId) {
+    return deviceService.getAllDeviceData(deviceId);
   }
 }

@@ -14,16 +14,18 @@ public class DeviceAttributeRepository implements PanacheMongoRepository<DeviceA
     return find("deviceId", Sort.ascending("label"), deviceId).list();
   }
 
-  public Optional<DeviceAttributeEntity> findByDeviceIdAndName(String deviceId, String fieldName) {
-    return find("deviceId = ?1 and fieldName = ?2", deviceId, fieldName).firstResultOptional();
+  public Optional<DeviceAttributeEntity> findByDeviceIdAndName(String deviceId,
+      String attributeName) {
+    return find("deviceId = ?1 and attributeName = ?2", deviceId,
+        attributeName).firstResultOptional();
   }
 
-  public void deleteAttributesNotIn(String deviceId, List<String> fieldNames) {
-    delete("{'deviceId': ?1, 'fieldName':{'$nin':[?2]}}", deviceId, fieldNames);
+  public void deleteAttributesNotIn(String deviceId, List<String> attributeName) {
+    delete("{'deviceId': ?1, 'attributeName':{'$nin':[?2]}}", deviceId, attributeName);
   }
 
-  public void deleteByDeviceIdAndName(String deviceId, String fieldName) {
-    delete("deviceId = ?1 and fieldName = ?2", deviceId, fieldName);
+  public void deleteByDeviceIdAndName(String deviceId, String attributeName) {
+    delete("deviceId = ?1 and attributeName = ?2", deviceId, attributeName);
   }
 
 }

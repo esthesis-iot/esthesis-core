@@ -3,10 +3,13 @@ package esthesis.service.device.resource;
 import esthesis.common.AppConstants;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
+import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
 import esthesis.service.device.dto.GeolocationDTO;
+import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.util.List;
+import java.util.Map;
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.DELETE;
@@ -98,5 +101,45 @@ public interface DeviceResource {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   Response download(@PathParam("deviceId") String deviceId,
       @QueryParam("type") AppConstants.KeyType type);
+
+  @GET
+  @Path("/v1/{deviceId}/attributes")
+  List<DeviceAttributeEntity> getDeviceAttributes(
+      @PathParam("deviceId") String deviceId);
+
+  @POST
+  @Path("/v1/{deviceId}/attributes")
+  List<DeviceAttributeEntity> saveDeviceAttributes(Map<String, String> fields,
+      @PathParam("deviceId") String deviceId);
+
+  @POST
+  @Path("/v1/{deviceId}/attribute")
+  DeviceAttributeEntity addDeviceAttribute(@PathParam("deviceId") String deviceId,
+      DeviceAttributeEntity field);
+
+  @DELETE
+  @Path("/v1/{deviceId}/attribute")
+  void deleteDeviceAttribute(@PathParam("deviceId") String deviceId,
+      @QueryParam("keyName") String keyName);
+
+  /**
+   * Returns the user-defined (in settings) fields for this device.
+   *
+   * @param deviceId
+   * @return
+   */
+  @GET
+  @Path("/v1/{deviceId}/fields")
+  List<DeviceProfileFieldDataDTO> getDeviceFields(String deviceId);
+
+  /**
+   * Returns all the data (i.e. metrics) available in cache for this device.
+   *
+   * @param deviceId
+   * @return
+   */
+  @GET
+  @Path("/v1/{deviceId}/device-data")
+  List<DeviceProfileFieldDataDTO> getAllDeviceData(String deviceId);
 
 }

@@ -31,4 +31,7 @@ public class DeviceRegistrationDTO {
 
   // The optional registration secret, when the platform operates in that mode.
   private String registrationSecret;
+
+  // A comma-separated list of attributes, e.g. "attr1=val1,attr2=val2".
+  private String attributes;
 }

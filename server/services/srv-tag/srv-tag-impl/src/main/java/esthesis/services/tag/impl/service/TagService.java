@@ -55,7 +55,7 @@ public class TagService extends BaseService<TagEntity> {
 
   @Override
   @KafkaNotification(component = Component.TAG, subject = Subject.TAG, action = Action.DELETE,
-      idParamOrder = 0)
+      idParamOrder = 0, payload = "tag id")
   public boolean deleteById(String id) {
     log.debug("Deleting tag with id '{}'.", id);
     return super.deleteById(id);

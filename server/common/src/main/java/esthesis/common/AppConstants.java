@@ -39,7 +39,7 @@ public class AppConstants {
   }
 
   public enum DeviceType {
-    ESTHESIS
+    ESTHESIS, OTHER
   }
 
   // The status a device can have.

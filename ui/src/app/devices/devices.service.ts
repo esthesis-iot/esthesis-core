@@ -39,11 +39,11 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
   }
 
   saveDeviceAttributes(deviceId: string, profile: any) {
-    return this.http.post(`${this.prefix}/${deviceId}/device-profile`, profile);
+    return this.http.post(`${this.prefix}/${deviceId}/attributes`, profile);
   }
 
   getDeviceAttributes(deviceId: string): Observable<DeviceAttributeDto[]> {
-    return this.http.get<DeviceAttributeDto[]>(`${this.prefix}/${deviceId}/device-profile`);
+    return this.http.get<DeviceAttributeDto[]>(`${this.prefix}/${deviceId}/attributes`);
   }
 
   findDeviceByPartialHardwareId(hardwareId: string): Observable<DeviceDto[]> {
@@ -54,21 +54,21 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
   addDeviceAttribute(targetDeviceId: string, newFieldName: string, newFieldLabel: string) {
     const deviceAttributeDto: DeviceAttributeDto = {
       deviceId: targetDeviceId,
-      fieldName: newFieldName,
-      label: newFieldLabel
+      attributeName: newFieldName,
+      attributeValue: ""
     };
     return this.http.post(
-      `${this.prefix}/${targetDeviceId}/device-profile/add-attribute`, deviceAttributeDto);
+      `${this.prefix}/${targetDeviceId}/attribute`, deviceAttributeDto);
   }
 
   removeDeviceAttribute(deviceId: string, keyName: string) {
     return this.http.delete(
-      `${this.prefix}/${deviceId}/device-profile/delete-attribute?keyName=${keyName}`);
+      `${this.prefix}/${deviceId}/attribute?keyName=${keyName}`);
   }
 
   getProfileFieldsData(deviceId: string): Observable<DevicePageFieldDataDto[]> {
     return this.http.get<DevicePageFieldDataDto[]>(
-      `${this.prefix}/${deviceId}/device-profile/fields-data`);
+      `${this.prefix}/${deviceId}/fields`);
   }
 
   getAllDeviceData(deviceId: string): Observable<DevicePageFieldDataDto[]> {

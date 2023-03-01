@@ -5,8 +5,6 @@ quarkus:
   log:
     min-level: TRACE
     category:
-      "org.apache.kafka":
-        level: TRACE
       esthesis:
         level: DEBUG
     handler:

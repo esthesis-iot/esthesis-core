@@ -97,6 +97,7 @@ public class AgentService {
     // Prepare a registration request.
     DeviceRegistrationDTO deviceRegistration = new DeviceRegistrationDTO();
     deviceRegistration.setHardwareId(agentRegistrationRequest.getHardwareId());
+    deviceRegistration.setAttributes(agentRegistrationRequest.getAttributes());
     if (StringUtils.isNotBlank(agentRegistrationRequest.getTags())) {
       deviceRegistration.setTags(
           Arrays.stream(agentRegistrationRequest.getTags().split(","))

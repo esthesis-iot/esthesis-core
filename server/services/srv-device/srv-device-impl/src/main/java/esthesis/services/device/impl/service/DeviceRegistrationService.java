@@ -16,12 +16,17 @@ import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.service.crypto.resource.KeyResource;
 import esthesis.service.device.dto.DeviceKeyDTO;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
+import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.service.tag.entity.TagEntity;
 import esthesis.service.tag.resource.TagResource;
 import esthesis.services.device.impl.repository.DeviceRepository;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subject;
+import esthesis.util.kafka.notifications.outgoing.KafkaNotification;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -35,7 +40,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.operator.OperatorCreationException;
+import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -45,6 +52,9 @@ public class DeviceRegistrationService {
 
   @Inject
   DeviceRepository deviceRepository;
+
+  @Inject
+  DeviceService deviceService;
 
   @Inject
   @RestClient
@@ -99,11 +109,15 @@ public class DeviceRegistrationService {
    * @param hardwareId The hardware id of the device to be registered.
    * @param tags       The tag names associated with this device as a comma-separated list.
    */
-  private DeviceEntity register(String hardwareId, List<String> tags,
-      AppConstants.DeviceStatus status, DeviceType deviceType, String registrationSecret)
+  @KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE,
+      action = Action.CREATE, idParamOrder = 0, payload = "hardwareId")
+  DeviceEntity register(String hardwareId, List<String> tags,
+      AppConstants.DeviceStatus status, DeviceType deviceType, String registrationSecret,
+      String attributes)
   throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, OperatorCreationException,
          NoSuchProviderException {
-    log.debug("Registering device with hardware id '{}'.", hardwareId);
+    log.debug("Registering device with hardware id '{}', tags '{}, status '{}, "
+        + "secret '{}, attributes '{}.", hardwareId, tags, status, registrationSecret, attributes);
 
     // Check if a registration secret is needed.
     if (settingsResource.findByName(NamedSetting.DEVICE_REGISTRATION_MODE).asString().equals(
@@ -157,13 +171,14 @@ public class DeviceRegistrationService {
     }
 
     // Create the new device.
+    ObjectId newDeviceId = new ObjectId();
     final DeviceEntity deviceEntity = new DeviceEntity()
         .setHardwareId(hardwareId)
         .setStatus(status)
         .setType(deviceType)
         .setCreatedOn(Instant.now())
-
         .setDeviceKey(deviceKeyDTO);
+    deviceEntity.setId(newDeviceId);
     if (status != DeviceStatus.PREREGISTERED) {
       deviceEntity.setRegisteredOn(Instant.now());
     }
@@ -177,6 +192,21 @@ public class DeviceRegistrationService {
               .toList());
     }
 
+    // Create device attributes.
+    if (StringUtils.isNotBlank(attributes)) {
+      String[] attributeList = attributes.split(",");
+      for (String attribute : attributeList) {
+        String[] attributeParts = attribute.split("=");
+        if (attributeParts.length != 2) {
+          throw new QMismatchException("Invalid attribute '{}'.", attribute);
+        }
+        deviceService.createAttribute(newDeviceId.toHexString(),
+            DeviceAttributeEntity.builder().attributeName(attributeParts[0])
+                .attributeValue(attributeParts[1]).build());
+      }
+    }
+
+    // Create device.
     deviceRepository.persist(deviceEntity);
 
     return deviceEntity;
@@ -210,10 +240,21 @@ public class DeviceRegistrationService {
     for (String hardwareId : idList) {
       log.debug("Requested to preregister a device with hardware id '{}'.", hardwareId);
       register(hardwareId, deviceRegistration.getTags(), DeviceStatus.PREREGISTERED,
-          deviceRegistration.getType(), deviceRegistration.getRegistrationSecret());
+          deviceRegistration.getType(), deviceRegistration.getRegistrationSecret(), null);
     }
   }
 
+  /**
+   * The public entrypoint to register a device.
+   *
+   * @param deviceRegistration
+   * @return
+   * @throws IOException
+   * @throws InvalidKeySpecException
+   * @throws NoSuchAlgorithmException
+   * @throws OperatorCreationException
+   * @throws NoSuchProviderException
+   */
   public DeviceEntity register(DeviceRegistrationDTO deviceRegistration)
   throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, OperatorCreationException,
          NoSuchProviderException {
@@ -231,7 +272,7 @@ public class DeviceRegistrationService {
       return switch (deviceRegistrationMode) {
         case OPEN, OPEN_WITH_SECRET -> register(deviceRegistration.getHardwareId(),
             deviceRegistration.getTags(), DeviceStatus.REGISTERED, deviceRegistration.getType(),
-            deviceRegistration.getRegistrationSecret());
+            deviceRegistration.getRegistrationSecret(), deviceRegistration.getAttributes());
         case ID -> activatePreregisteredDevice(deviceRegistration.getHardwareId());
         default ->
             throw new QDoesNotExistException("The requested registration mode does not exist.");

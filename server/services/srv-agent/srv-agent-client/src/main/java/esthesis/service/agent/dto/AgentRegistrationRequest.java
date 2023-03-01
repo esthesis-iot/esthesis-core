@@ -28,4 +28,7 @@ public class AgentRegistrationRequest {
   // The optional registration secret, when the platform operates in that mode.
   private String registrationSecret;
 
+  // A comma-separated list of key-value pairs, where the key is the attribute name and the value
+  // is the attribute value.
+  private String attributes;
 }

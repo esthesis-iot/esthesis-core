@@ -164,7 +164,7 @@ public class RedisUtils {
     String val = hashCommandText.hget(keyType + "." + key,
         field + "." + REDIS_KEY_SUFFIX_TIMESTAMP);
     if (StringUtils.isEmpty(val)) {
-      log.debug("Could not find last update for key '{}' field '{}'.", key, field);
+      log.trace("Could not find last update for key '{}' field '{}'.", key, field);
       return null;
     } else {
       return Instant.parse(val);
