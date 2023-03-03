@@ -27,7 +27,7 @@ export class DeviceDataComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.devicesService.getAllDeviceData(this.id!).subscribe({
+    this.devicesService.getDeviceData(this.id!).subscribe({
       next: (data) => {
         this.datasource.data = _.sortBy(data, (item) => {
           return item.label;

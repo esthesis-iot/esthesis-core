@@ -137,8 +137,8 @@ public abstract class BaseService<D extends BaseEntity> {
     return repository.findById(new ObjectId(id));
   }
 
-  public boolean deleteById(String id) {
-    return repository.deleteById(new ObjectId(id));
+  public boolean deleteById(String deviceId) {
+    return repository.deleteById(new ObjectId(deviceId));
   }
 
   public long deleteAll() {

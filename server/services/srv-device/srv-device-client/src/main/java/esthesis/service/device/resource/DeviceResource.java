@@ -3,13 +3,12 @@ package esthesis.service.device.resource;
 import esthesis.common.AppConstants;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
+import esthesis.service.device.dto.DeviceProfileDTO;
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
 import esthesis.service.device.dto.GeolocationDTO;
-import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
 import java.util.List;
-import java.util.Map;
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.DELETE;
@@ -102,44 +101,44 @@ public interface DeviceResource {
   Response download(@PathParam("deviceId") String deviceId,
       @QueryParam("type") AppConstants.KeyType type);
 
+
   @GET
-  @Path("/v1/{deviceId}/attributes")
-  List<DeviceAttributeEntity> getDeviceAttributes(
-      @PathParam("deviceId") String deviceId);
+  @Path("/v1/{deviceId}/profile")
+  DeviceProfileDTO getProfile(@PathParam("deviceId") String deviceId);
 
   @POST
-  @Path("/v1/{deviceId}/attributes")
-  List<DeviceAttributeEntity> saveDeviceAttributes(Map<String, String> fields,
-      @PathParam("deviceId") String deviceId);
+  @Path("/v1/{deviceId}/profile")
+  void saveProfile(@PathParam("deviceId") String deviceId,
+      DeviceProfileDTO deviceProfileDTO);
 
-  @POST
-  @Path("/v1/{deviceId}/attribute")
-  DeviceAttributeEntity addDeviceAttribute(@PathParam("deviceId") String deviceId,
-      DeviceAttributeEntity field);
+//  @POST
+//  @Path("/v1/{deviceId}/attribute")
+//  DeviceAttributeEntity addDeviceAttribute(@PathParam("deviceId") String deviceId,
+//      DeviceAttributeEntity field);
 
-  @DELETE
-  @Path("/v1/{deviceId}/attribute")
-  void deleteDeviceAttribute(@PathParam("deviceId") String deviceId,
-      @QueryParam("keyName") String keyName);
+//  @DELETE
+//  @Path("/v1/{deviceId}/attribute")
+//  void deleteDeviceAttribute(@PathParam("deviceId") String deviceId,
+//      @QueryParam("keyName") String keyName);
 
   /**
-   * Returns the user-defined (in settings) fields for this device.
+   * Returns the user-defined (in settings) fields (i.e. metrics) for this device.
    *
    * @param deviceId
    * @return
    */
-  @GET
-  @Path("/v1/{deviceId}/fields")
-  List<DeviceProfileFieldDataDTO> getDeviceFields(String deviceId);
+//  @GET
+//  @Path("/v1/{deviceId}/fields")
+//  List<DeviceProfileFieldDataDTO> getDeviceFields(String deviceId);
 
   /**
-   * Returns all the data (i.e. metrics) available in cache for this device.
+   * Returns all data (i.e. metrics) available in cache for this device.
    *
    * @param deviceId
    * @return
    */
   @GET
   @Path("/v1/{deviceId}/device-data")
-  List<DeviceProfileFieldDataDTO> getAllDeviceData(String deviceId);
+  List<DeviceProfileFieldDataDTO> getDeviceData(String deviceId);
 
 }

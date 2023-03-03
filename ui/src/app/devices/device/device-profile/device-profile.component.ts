@@ -1,18 +1,15 @@
 import {Component, OnInit} from "@angular/core";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
 import {QFormsService} from "@qlack/forms";
 import {DevicesService} from "../../devices.service";
 import {BaseComponent} from "../../../shared/components/base-component";
 import {ActivatedRoute} from "@angular/router";
-import {FormlyFieldConfig} from "@ngx-formly/core";
-import slugify from "slugify";
-import {InputModalComponent} from "../../../shared/components/input-modal/input-modal.component";
-import {
-  OkCancelModalComponent
-} from "../../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
-import {DevicePageFieldDataDto} from "../../dto/device-page-field-data-dto";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../../shared/services/utility.service";
+import {DeviceAttributeDto} from "../../dto/device-attribute-dto";
+import {DevicePageFieldDataDto} from "../../dto/device-page-field-data-dto";
+import {InputModalComponent} from "../../../shared/components/input-modal/input-modal.component";
+import slugify from "slugify";
 
 @Component({
   selector: "app-device-profile",
@@ -21,18 +18,11 @@ import {UtilityService} from "../../../shared/services/utility.service";
 })
 export class DeviceProfileComponent extends BaseComponent implements OnInit {
   id!: string | null;
-  // The form representing all device profile attributes.
+  // The device profile form.
   deviceProfileForm!: FormGroup;
 
-  // The list of Formly entries representing device attributes.
-  deviceAttributesFormFields: FormlyFieldConfig[] = [];
-
-  // The model representation of all device profile attributes.
-  deviceAttributesModel = {};
-
-  // The list of device profile fields (i.e. user-defined list of device attributes to be
-  // displayed in boxes on ton of the screen).
-  dataFields: DevicePageFieldDataDto[] = [];
+  // The device profile fields.
+  deviceProfileFields?: DevicePageFieldDataDto[];
 
   constructor(private fb: FormBuilder, private qForms: QFormsService,
     private devicesService: DevicesService, private route: ActivatedRoute,
@@ -43,60 +33,49 @@ export class DeviceProfileComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get("id");
 
-    // Set up the Device Profile form.
-    this.deviceProfileForm = new FormGroup({});
+    // Set up the Device profile form.
+    this.deviceProfileForm = this.fb.group({
+      attributes: this.fb.array<DeviceAttributeDto>([])
+    });
 
-    // Get Device profile attributes.
-    this.fetchAttributes();
-
-    // Get Device profile fields.
-    this.fetchFields();
+    // Get Device profile.
+    this.getProfile();
   }
 
-  /**
-   * Fetch the list of user-defined fields to be displayed on the device profile page.
-   */
-  private fetchFields(): void {
-    this.devicesService.getProfileFieldsData(this.id!).subscribe({
-      next: (fields) => {
-        this.dataFields = fields;
-      }, error: (err) => {
-        this.utilityService.popupErrorWithTraceId("Could not fetch device profile fields.", err);
-      }
+  public getAttributeFormGroup() {
+    // @ts-ignore
+    return this.deviceProfileForm.get("attributes").controls;
+  }
+
+  private generateAttributeFormGroup(attribute: DeviceAttributeDto): FormGroup {
+    return this.fb.group({
+      deviceId: attribute.deviceId,
+      attributeName: attribute.attributeName,
+      attributeValue: attribute.attributeValue,
+      attributeType: attribute.attributeType
     });
   }
 
-  /**
-   * Fetch the list of device profile attributes.
-   * @private
-   */
-  private fetchAttributes(): void {
-    this.deviceAttributesModel = {};
-    this.deviceAttributesFormFields = [];
-    this.devicesService.getDeviceAttributes(this.id!).subscribe({
-      next: (deviceProfile) => {
-        deviceProfile.forEach((field) => {
-          this.deviceAttributesFormFields = [...this.deviceAttributesFormFields,
-            {
-              key: field.attributeName,
-              defaultValue: field.attributeValue,
-              type: "input",
-              props: {
-                label: field.attributeName
-              }
-            }];
+  private getProfile() {
+    this.devicesService.getProfile(this.id!).subscribe({
+      next: (profile) => {
+        this.deviceProfileForm.controls.attributes = this.fb.array<DeviceAttributeDto>([]);
+        profile.attributes.forEach((attribute) => {
+          // @ts-ignore
+          this.deviceProfileForm.controls.attributes.push(this.generateAttributeFormGroup(attribute));
         });
+        this.deviceProfileFields = profile.fields;
       }, error: (error) => {
-        this.utilityService.popupErrorWithTraceId("Could not fetch device profile.", error);
+        this.utilityService.popupErrorWithTraceId("Could not fetch device attributes.", error);
       }
     });
   }
 
   /**
-   * Save the device profile attributes.
+   * Save the device profile.
    */
   save() {
-    this.devicesService.saveDeviceAttributes(this.id!, this.deviceAttributesModel).subscribe({
+    this.devicesService.saveProfile(this.id!, this.deviceProfileForm.getRawValue()).subscribe({
       next: () => {
         this.utilityService.popupSuccess("Device profile saved successfully.");
         this.deviceProfileForm.markAsPristine();
@@ -109,7 +88,7 @@ export class DeviceProfileComponent extends BaseComponent implements OnInit {
   /**
    * Add a new device profile attribute.
    */
-  add() {
+  addAttribute() {
     this.dialog.open(InputModalComponent, {
       data: {
         title: "Add new device attribute",
@@ -120,40 +99,19 @@ export class DeviceProfileComponent extends BaseComponent implements OnInit {
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.devicesService.addDeviceAttribute(
-          this.id!, slugify(result).toLowerCase(), result).subscribe({
-          next: () => {
-            this.fetchAttributes();
-          }, error: (err) => {
-            this.utilityService.popupErrorWithTraceId("Could not add device profile attribute.", err);
-          }
-        });
+        // @ts-ignore
+        this.deviceProfileForm.controls.attributes.push(
+          this.generateAttributeFormGroup({
+            attributeName: slugify(result).toLowerCase(),
+            attributeValue: "",
+            attributeType: this.appConstants.DEVICE.ATTRIBUTE.TYPE.UNKNOWN
+          })
+        );
       }
     });
   }
 
-  /**
-   * Remove a device profile attribute.
-   * @param keyName The key-name of the attribute to be removed.
-   * @param label The label of the attribute to be removed.
-   */
-  remove(keyName: any, label: string) {
-    this.dialog.open(OkCancelModalComponent, {
-      data: {
-        title: "Delete Attribute",
-        question: "Do you really want to delete '''" + label + "''' attribute?",
-        buttons: {
-          ok: true, cancel: true, reload: false
-        }
-      }
-    }).afterClosed().subscribe(result => {
-      if (result) {
-        this.devicesService.removeDeviceAttribute(this.id!, keyName).subscribe(() => {
-          this.utilityService.popupSuccess("Device attribute successfully deleted.");
-          this.fetchAttributes();
-        });
-      }
-    });
-
+  deleteAttribute(i: number) {
+    (this.deviceProfileForm.controls.attributes as FormArray).removeAt(i);
   }
 }

@@ -28,4 +28,8 @@ public class DeviceAttributeRepository implements PanacheMongoRepository<DeviceA
     delete("deviceId = ?1 and attributeName = ?2", deviceId, attributeName);
   }
 
+  public void deleteByDeviceId(String deviceId) {
+    delete("deviceId = ?1", deviceId);
+  }
+
 }

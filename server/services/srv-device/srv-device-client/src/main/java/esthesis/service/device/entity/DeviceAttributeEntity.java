@@ -1,5 +1,6 @@
 package esthesis.service.device.entity;
 
+import esthesis.common.data.ValueUtils.ValueType;
 import esthesis.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
@@ -10,6 +11,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.bson.types.ObjectId;
 
 @Data
 @Builder
@@ -21,6 +23,7 @@ import lombok.experimental.Accessors;
 @MongoEntity(collection = "DeviceAttribute")
 public class DeviceAttributeEntity extends BaseEntity {
 
+  @NotNull
   private String deviceId;
 
   @NotNull
@@ -28,4 +31,12 @@ public class DeviceAttributeEntity extends BaseEntity {
 
   @NotNull
   private String attributeValue;
+
+  @NotNull
+  private ValueType attributeType;
+
+  public DeviceAttributeEntity(ObjectId id, String deviceId) {
+    this.setId(id);
+    this.deviceId = deviceId;
+  }
 }

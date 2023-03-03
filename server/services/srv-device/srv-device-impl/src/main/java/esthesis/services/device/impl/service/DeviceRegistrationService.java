@@ -22,6 +22,7 @@ import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.service.tag.entity.TagEntity;
 import esthesis.service.tag.resource.TagResource;
+import esthesis.services.device.impl.repository.DeviceAttributeRepository;
 import esthesis.services.device.impl.repository.DeviceRepository;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
@@ -52,6 +53,9 @@ public class DeviceRegistrationService {
 
   @Inject
   DeviceRepository deviceRepository;
+
+  @Inject
+  DeviceAttributeRepository deviceAttributeRepository;
 
   @Inject
   DeviceService deviceService;
@@ -200,8 +204,13 @@ public class DeviceRegistrationService {
         if (attributeParts.length != 2) {
           throw new QMismatchException("Invalid attribute '{}'.", attribute);
         }
-        deviceService.createAttribute(newDeviceId.toHexString(),
-            DeviceAttributeEntity.builder().attributeName(attributeParts[0])
+        // Register the attributes using the repository (instead of the service) to avoid issuing
+        // notifications for new attributes registration before the new device is registered into
+        // the platform.
+        deviceAttributeRepository.persist(
+            DeviceAttributeEntity.builder()
+                .deviceId(newDeviceId.toHexString())
+                .attributeName(attributeParts[0])
                 .attributeValue(attributeParts[1]).build());
       }
     }

@@ -2,7 +2,7 @@ import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {CrudService} from "../shared/services/crud.service";
 import {Observable} from "rxjs";
-import {DevicePageFieldDto} from "../devices/dto/device-page-field-dto";
+import {DevicePageFieldDefinitionDto} from "./dto/device-page-field-definition-dto";
 import {environment} from "src/environments/environment";
 import {SettingDto} from "./dto/setting-dto";
 
@@ -24,8 +24,8 @@ export class SettingsService extends CrudService<SettingDto> {
       `${this.prefix}/find/by-names/${names.join(",")}`);
   }
 
-  getDevicePageFields(): Observable<DevicePageFieldDto[]> {
-    return this.http.get<DevicePageFieldDto[]>(`${this.prefix}/device-page-fields`);
+  getDevicePageFields(): Observable<DevicePageFieldDefinitionDto[]> {
+    return this.http.get<DevicePageFieldDefinitionDto[]>(`${this.prefix}/device-page-fields`);
   }
 
   saveDevicePageFields(form: any): Observable<any> {

@@ -1,4 +1,3 @@
-// export const AppConstants = {
 export const AppConstants = {
   // An id designating a new record is to be created.
   NEW_RECORD_ID: "new",
@@ -44,6 +43,18 @@ export const AppConstants = {
 
   // Device settings.
   DEVICE: {
+    ATTRIBUTE: {
+      TYPE: {
+        STRING: "STRING",
+        BOOLEAN: "BOOLEAN",
+        BYTE: "BYTE",
+        SHORT: "SHORT",
+        INTEGER: "INTEGER",
+        LONG: "LONG",
+        BIGDECIMAL: "BIGDECIMAL",
+        UNKNOWN: "UNKNOWN"
+      }
+    },
     TYPE: {
       ESTHESIS: "ESTHESIS"
     },

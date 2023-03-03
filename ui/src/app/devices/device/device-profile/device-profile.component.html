@@ -1,41 +1,50 @@
 <div class="flex flex-col">
+  <!-- DEVICE FIELDS -->
   <div class="flex flex-row flex-wrap gap-2">
-    <div class="stats shadow" *ngFor="let dataField of dataFields">
+    <div class="stats shadow" *ngFor="let field of deviceProfileFields">
       <div class="stat">
-        <div class="stat-title">{{dataField.label}}</div>
-        <div class="stat-value" *ngIf="dataField.value">{{dataField.value}}</div>
-        <div class="stat-value" *ngIf="!dataField.value">---</div>
+        <div class="stat-title">{{field.label}}</div>
+        <div class="stat-value" *ngIf="field.value">{{field.value}}</div>
+        <div class="stat-value" *ngIf="!field.value">---</div>
         <div class="stat-desc"
-             *ngIf="dataField.value">{{dataField.lastUpdate | amFromUtc | amLocal | amTimeAgo}}</div>
+             *ngIf="field.value">{{field.lastUpdate | amFromUtc | amLocal | amTimeAgo}}</div>
         <div class="stat-desc"
-             *ngIf="!dataField.value">value not received
+             *ngIf="!field.value">value not received
         </div>
       </div>
     </div>
   </div>
 
-  <div class="mt-3">
-    <form [formGroup]="deviceProfileForm" class="mt-5">
-      <formly-form [form]="deviceProfileForm"
-                   [fields]="deviceAttributesFormFields"
-                   [model]="deviceAttributesModel">
-      </formly-form>
+  <!-- DEVICE ATTRIBUTES -->
+  <div class="flex flex-col mt-3">
+    <div class="mt-5 font-bold text-xl">Attributes</div>
+    <form [formGroup]="deviceProfileForm">
+      <div formArrayName="attributes"
+           *ngFor="let attribute of getAttributeFormGroup(); let i = index">
+        <div [formGroupName]="i" class="flex flex-row gap-2">
+          <mat-form-field class="flex grow">
+            <mat-label>{{attribute.value.attributeName}}</mat-label>
+            <input matInput type="text" formControlName="attributeValue"
+                   [value]="attribute.value.attributeValue">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="attributeType">
+              <mat-option *ngFor="let o of appConstants.DEVICE.ATTRIBUTE.TYPE| keyvalue"
+                          [value]="o.value">{{normaliseString(o.key)}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button class="btn btn-sm btn-ghost mt-4" (click)="deleteAttribute(i)"
+                  matTooltip="Delete attribute">
+            <fa-icon icon="trash-can"></fa-icon>
+          </button>
+        </div>
+      </div>
 
       <div class="card-actions justify-start mt-10">
-        <button *ngIf="deviceAttributesFormFields.length > 0" class="btn btn-accent btn-sm"
-                [matMenuTriggerFor]="menu">DELETE ATTRIBUTE
-          <fa-icon icon="caret-down" class="ml-1"></fa-icon>
-          <mat-menu #menu="matMenu" xPosition="before">
-            <button *ngFor="let field of deviceAttributesFormFields"
-                    mat-menu-item
-                    (click)="remove(field.key, field.props!.label!)">{{field.props?.label}}
-            </button>
-          </mat-menu>
-        </button>
-        <button class="btn btn-secondary btn-sm" (click)="add()">ADD ATTRIBUTE</button>
-        <button class="btn btn-primary btn-sm" (click)="save()"
-                [disabled]="!deviceProfileForm.dirty">SAVE ATTRIBUTES
-        </button>
+        <button class="btn btn-secondary btn-sm" (click)="addAttribute()">ADD ATTRIBUTE</button>
+        <button class="btn btn-primary btn-sm" (click)="save()">SAVE ATTRIBUTES</button>
       </div>
     </form>
   </div>

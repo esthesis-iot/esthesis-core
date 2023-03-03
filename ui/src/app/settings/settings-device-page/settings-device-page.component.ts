@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {DevicePageFieldDto} from "../../devices/dto/device-page-field-dto";
+import {DevicePageFieldDefinitionDto} from "../dto/device-page-field-definition-dto";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {DevicesService} from "../../devices/devices.service";
 import {SettingsService} from "../settings.service";
@@ -45,7 +45,7 @@ export class SettingsDevicePageComponent implements OnInit {
 
     // Fetch device page fields.
     this.settingsService.getDevicePageFields().subscribe({
-      next: (fields: DevicePageFieldDto[]) => {
+      next: (fields: DevicePageFieldDefinitionDto[]) => {
         fields.forEach(field => {
           // @ts-ignore
           this.profileDataForm.controls.fields.push(this.createFieldElement(field));
@@ -81,7 +81,7 @@ export class SettingsDevicePageComponent implements OnInit {
     });
   }
 
-  createFieldElement(fieldDto: DevicePageFieldDto) {
+  createFieldElement(fieldDto: DevicePageFieldDefinitionDto) {
     return this.fb.group({
       id: [fieldDto.id],
       measurement: [fieldDto?.measurement],

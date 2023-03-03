@@ -38,15 +38,28 @@ public class AppConstants {
     PUBLIC, PRIVATE, CERTIFICATE
   }
 
+  public static class Device {
+
+    public static class Attribute {
+
+      public enum Type {
+        STRING, BOOLEAN, BYTE, SHORT, INTEGER, LONG, BIGDECIMAL, UNKNOWN
+      }
+    }
+  }
+
+  //TODO Move into Device
   public enum DeviceType {
     ESTHESIS, OTHER
   }
 
+  //TODO Move into Device
   // The status a device can have.
   public enum DeviceStatus {
     DISABLED, PREREGISTERED, REGISTERED
   }
 
+  //TODO Move into Device
   // The available registration modes of the platform.
   public enum DeviceRegistrationMode {
     DISABLED, OPEN, OPEN_WITH_SECRET, ID
