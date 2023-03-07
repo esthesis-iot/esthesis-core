@@ -44,7 +44,10 @@
 
       <div class="card-actions justify-start mt-10">
         <button class="btn btn-secondary btn-sm" (click)="addAttribute()">ADD ATTRIBUTE</button>
-        <button class="btn btn-primary btn-sm" (click)="save()">SAVE ATTRIBUTES</button>
+        <button class="btn btn-primary btn-sm"
+                *ngIf="deviceProfileForm.controls.attributes.value != ''" (click)="save()">SAVE
+          ATTRIBUTES
+        </button>
       </div>
     </form>
   </div>

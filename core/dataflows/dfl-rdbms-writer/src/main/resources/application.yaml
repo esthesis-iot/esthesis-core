@@ -1,0 +1,29 @@
+quarkus:
+  application:
+    name: esthesis-dfl-rdbms-writer
+  container-image:
+    group: esthesisiot
+    name: esthesis-dfl-rdbms-writer
+  devservices:
+    enabled: false
+  log:
+    min-level: TRACE
+    level: ${ESTHESIS_DFL_LOGGING_COMMON:INFO}
+    category:
+      esthesis:
+        level: ${ESTHESIS_DFL_LOGGING_ESTHESIS:INFO}
+    console:
+      format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%-30.30c{1.}] %s%e%n"
+  banner:
+    enabled: false
+  datasource:
+    # "mysql" should not be needed below, however leaving this parameter empty results in
+    # "The Agroal dependency is present but no JDBC datasources have been defined.". To be
+    # rechecked in future Quarkus versions.
+    db-kind: ${ESTHESIS_DFL_DB_KIND:mysql}
+    username: ${ESTHESIS_DFL_DB_USERNAME:}
+    password: ${ESTHESIS_DFL_DB_PASSWORD:}
+    jdbc:
+      url: ${ESTHESIS_DFL_DB_JDBC_URL:}
+  opentelemetry:
+    enabled: false

@@ -51,7 +51,7 @@ export const AppConstants = {
         SHORT: "SHORT",
         INTEGER: "INTEGER",
         LONG: "LONG",
-        BIGDECIMAL: "BIGDECIMAL",
+        BIG_DECIMAL: "BIG_DECIMAL",
         UNKNOWN: "UNKNOWN"
       }
     },

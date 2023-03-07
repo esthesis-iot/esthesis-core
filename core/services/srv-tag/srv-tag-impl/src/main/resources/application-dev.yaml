@@ -1,0 +1,67 @@
+quarkus:
+  live-reload:
+    instrumentation: true
+  http:
+    host: 0.0.0.0
+    cors: false
+  log:
+    min-level: TRACE
+    category:
+      esthesis:
+        level: DEBUG
+    handler:
+      gelf:
+        enabled: true
+        host: esthesis-dev-loki-gelf-udp
+        port: 12201
+        include-full-mdc: true
+  mongodb:
+    connection-string: mongodb://esthesis-dev-mongodb:27017
+  opentelemetry:
+    enabled: true
+    tracer:
+      exporter:
+        otlp:
+          endpoint: http://esthesis-dev-jaeger-collector-grpc:4317
+  rest-client:
+    AuditResource:
+      url: http://localhost:59140
+      scope: Singleton
+mp:
+  jwt:
+    verify:
+      publickey:
+        location: http://esthesis-dev-keycloak/realms/esthesis/protocol/openid-connect/certs
+
+kafka:
+  bootstrap:
+    servers:
+      - esthesis-dev-kafka:9094
+
+###############################################################################
+# DEBUG PROFILES
+###############################################################################
+"%debug-rest":
+  quarkus:
+    log:
+      category:
+        "org.jboss.resteasy.reactive":
+          level: DEBUG
+    rest-client:
+      logging:
+        scope: request-response
+        body-limit: 65536
+
+"%debug-mongo":
+  quarkus:
+    log:
+      category:
+        "io.quarkus.mongodb.panache.common.runtime":
+          level: DEBUG
+
+"%debug-token":
+  quarkus:
+    log:
+      category:
+        "io.quarkus.oidc.token.propagation.reactive":
+          level: DEBUG
