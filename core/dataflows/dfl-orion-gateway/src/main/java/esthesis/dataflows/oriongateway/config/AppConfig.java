@@ -108,7 +108,4 @@ public interface AppConfig {
   // The value of the metadata attribute to indicate an attribute is maintained by esthesis.
   @WithDefault("esthesis")
   String esthesisOrionMetadataValue();
-
-  @WithDefault("10S")
-  String cacheIsDataUpdateAllowedExpiration();
 }

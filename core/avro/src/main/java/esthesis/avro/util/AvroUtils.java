@@ -31,6 +31,7 @@ public class AvroUtils {
   private ValueData.Builder setValue(String val, ValueData.Builder builder) {
     ValueType valueType = ValueUtils.detectWithHints(val);
     String extractedVal;
+    log.trace("Detected value type '{}' for value '{}'.", valueType, val);
     switch (valueType) {
       case STRING:
         if (val.startsWith("'") && val.endsWith("'")) {
@@ -39,11 +40,20 @@ public class AvroUtils {
           extractedVal = val;
         }
         break;
-      case  BYTE, SHORT, INTEGER, LONG, FLOAT, DOUBLE:
-        extractedVal = val.substring(0, val.length() - 1);
+      case BYTE, SHORT, INTEGER, LONG, FLOAT, DOUBLE:
+        if (val.endsWith("b") || val.endsWith("s") || val.endsWith("i") || val.endsWith("l")
+            || val.endsWith("f") || val.endsWith("d")) {
+          extractedVal = val.substring(0, val.length() - 1);
+        } else {
+          extractedVal = val;
+        }
         break;
       case BIG_INTEGER, BIG_DECIMAL:
-        extractedVal = val.substring(0, val.length() - 2);
+        if (val.endsWith("bi") || val.endsWith("bd")) {
+          extractedVal = val.substring(0, val.length() - 2);
+        } else {
+          extractedVal = val;
+        }
         break;
       case BOOLEAN, UNKNOWN:
         extractedVal = val;
@@ -51,6 +61,7 @@ public class AvroUtils {
       default:
         throw new QMismatchException("Unknown value type '{}'.", valueType);
     }
+    log.trace("Extracted value '{}' from value '{}'.", extractedVal, val);
     return builder.setValue(extractedVal).setValueType(ValueTypeEnum.valueOf(valueType.name()));
   }
 
@@ -108,7 +119,7 @@ public class AvroUtils {
     // Skip comment lines.
     if (line.startsWith("#")) {
       throw new QMismatchException("Requested to parse a comment line '{}', skipping it.",
-          StringUtils.abbreviate(line,  AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH));
+          StringUtils.abbreviate(line, AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH));
     }
 
     // Split the line into category, measurements, and optional timestamp.
@@ -137,7 +148,8 @@ public class AvroUtils {
       if (measurementParts.length != 2) {
         throw new QMismatchException("Invalid measurement data in line '{}', expected a key-value "
             + "pair separated by '=', but got '{}'.",
-            StringUtils.abbreviate(line, AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH), measurement);
+            StringUtils.abbreviate(line, AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH),
+            measurement);
       }
       return setValue(measurementParts[1],
           ValueData.newBuilder().setName(measurementParts[0])).build();
@@ -186,7 +198,8 @@ public class AvroUtils {
     } catch (Exception e) {
       throw new QMismatchException("Failed to parse Command Reply message '{}' due to '{}'. "
           + "Check that Command Reply message are formatted as [correlationId] "
-          + "[success] [output].", StringUtils.abbreviate(body, AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH), e);
+          + "[success] [output].",
+          StringUtils.abbreviate(body, AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH), e);
     }
   }
 
@@ -219,7 +232,8 @@ public class AvroUtils {
 
     log.debug("Converted Avro Command Request message '{}' to line protocol " + "message '{}'.",
         StringUtils.abbreviate(msg.toString(), AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH),
-        StringUtils.abbreviate(lineProtocol.toString(), AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH));
+        StringUtils.abbreviate(lineProtocol.toString(),
+            AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH));
 
     return lineProtocol.toString();
   }

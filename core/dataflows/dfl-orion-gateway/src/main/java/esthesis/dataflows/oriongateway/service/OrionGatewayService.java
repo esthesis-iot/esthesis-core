@@ -76,7 +76,6 @@ public class OrionGatewayService {
    */
   @CacheResult(cacheName = "is-data-update-allowed")
   boolean isDataUpdateAllowed(String esthesisHardwareId) {
-    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     // Check if the service is configured to perform data updates.
     if (!appConfig.orionUpdateData()) {
       log.trace("Data updates are disabled for this service.");

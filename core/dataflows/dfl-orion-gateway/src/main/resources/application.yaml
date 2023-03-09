@@ -21,7 +21,7 @@ quarkus:
   cache:
     caffeine:
       "is-data-update-allowed":
-        expire-after-write: ${ESTHESIS_DFL_CACHE_IS_DATA_UPDATE_ALLOWED_EXPIRATION}
+        expire-after-write: ${ESTHESIS_DFL_CACHE_IS_DATA_UPDATE_ALLOWED_EXPIRATION:10S}
 
 #esthesis:
 #  dfl:
