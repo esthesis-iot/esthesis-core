@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
@@ -51,7 +52,7 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
   /**
    * Returns the list of attributes for a device.
    *
-   * @param hardwareId The hardware ID of the device.
+   * @param esthesisId The esthesis ID of the device.
    */
   @Override
   public List<DeviceAttributeEntity> getDeviceAttributesByEsthesisId(String esthesisId) {
@@ -60,6 +61,22 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
       return deviceService.getProfile(deviceEntity.getId().toHexString()).getAttributes();
     } else {
       throw new QDoesNotExistException("Device with esthesis ID '{}'does not exist.", esthesisId);
+    }
+  }
+
+  /**
+   * Returns the list of attributes for a device.
+   * @param esthesisHardwareId The esthesis hardware ID of the device.
+   * @return
+   */
+  @Override
+  public List<DeviceAttributeEntity> getDeviceAttributesByEsthesisHardwareId(
+      String esthesisHardwareId) {
+    Optional<DeviceEntity> byHardwareId = deviceService.findByHardwareId(esthesisHardwareId, false);
+    if (byHardwareId.isPresent()) {
+      return deviceService.getProfile(byHardwareId.get().getId().toHexString()).getAttributes();
+    } else {
+      return new ArrayList<>();
     }
   }
 

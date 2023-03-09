@@ -1,22 +1,21 @@
 package esthesis.dataflows.oriongateway.service;
 
+import esthesis.avro.EsthesisDataMessage;
 import esthesis.common.AppConstants.Device.Status;
 import esthesis.common.data.ValueUtils.ValueType;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.dataflows.oriongateway.config.AppConfig;
 import esthesis.dataflows.oriongateway.dto.OrionAttributeDTO;
 import esthesis.dataflows.oriongateway.dto.OrionEntityDTO;
-import esthesis.dataflows.oriongateway.util.OrionAttributesBuilder;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
-import io.quarkus.scheduler.Scheduled;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import liquibase.Scope.Attr;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.Exchange;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
@@ -41,13 +40,76 @@ public class OrionGatewayService {
    */
   private boolean isRegistrationAllowed(List<DeviceAttributeEntity> esthesisDeviceAttributes) {
     if (appConfig.orionRegistrationEnabledAttribute().isEmpty()) {
+      log.debug("No registration enabled attribute configured, so registration will proceed.");
       return true;
     } else {
-      String orionRegistrationEnabledAttribute = appConfig.orionRegistrationEnabledAttribute().get();
+      log.debug("Registration enabled attribute configured, so checking whether registration "
+          + "should proceed.");
+      Optional<String> orionRegistrationEnabledAttribute = appConfig.orionRegistrationEnabledAttribute();
+      boolean shouldRegistrationProceed =
+          orionRegistrationEnabledAttribute.map(s -> esthesisDeviceAttributes.stream()
+                  .filter(attribute -> attribute.getAttributeName().equals(s))
+                  .anyMatch(attribute -> attribute.getAttributeValue().equalsIgnoreCase("true")))
+              .orElse(true);
+      if (shouldRegistrationProceed) {
+        log.debug("Registration enabled attribute is set to true, so registration will proceed.");
+        return true;
+      } else {
+        log.debug(
+            "Registration enabled attribute is set to false, so registration will not proceed.");
+        return false;
+      }
+    }
+  }
 
-      return esthesisDeviceAttributes.stream()
-          .filter(attribute -> attribute.getAttributeName().equals(orionRegistrationEnabledAttribute))
-          .anyMatch(attribute -> attribute.getAttributeValue().equalsIgnoreCase("true"));
+  /**
+   * Returns whether a/ the service is configured to perform data updates (i.e. update the metrics
+   * received by esthesis in Orion), b/ the specific device is already registered in Orion, and c/
+   * the specific device has an attribute allowing/disallowing data updates.
+   * <p>
+   * The result of this method remains cached for a short period of time (configured in application
+   * properties via the XXXXXXXXXX). This is to avoid unnecessary calls to Orion for every single
+   * piece of data received (which can be multiple per second).
+   *
+   * @param esthesisHardwareId The esthesis hardware ID of the device.
+   */
+  private boolean isDataUpdateAllowed(String esthesisHardwareId) {
+    // Check if the service is configured to perform data updates.
+    if (!appConfig.orionUpdateData()) {
+      log.trace("Data updates are disabled for this service.");
+      return false;
+    }
+
+    // Check whether this device is registered in Orion.
+    String orionId = orionClientService.getOrionIdByEsthesisHardwareId(esthesisHardwareId);
+    if (orionId == null) {
+      log.trace("Device with esthesis hardware ID '{}' is not registered in Orion.",
+          esthesisHardwareId);
+      return false;
+    }
+
+    // Check whether this device allows data updates based on device attributes.
+    if (appConfig.orionUpdateDataAttribute().isEmpty()) {
+      log.trace("No attribute configured to allow or prevent data updates, so data update will "
+          + "proceed.");
+      return true;
+    }
+
+    List<DeviceAttributeEntity> esthesisDeviceAttributes =
+        deviceSystemResource.getDeviceAttributesByEsthesisHardwareId(esthesisHardwareId);
+    @SuppressWarnings("java:S3655")
+    String orionUpdateDataAttribute = appConfig.orionUpdateDataAttribute().get();
+    boolean isUpdateAllowedByAttribute = esthesisDeviceAttributes.stream()
+        .filter(attribute -> attribute.getAttributeName().equals(orionUpdateDataAttribute))
+        .anyMatch(attribute -> attribute.getAttributeValue().equalsIgnoreCase("true"));
+    if (isUpdateAllowedByAttribute) {
+      log.trace("Device with esthesis hardware ID '{}' has attribute '{}' allowing data updates, "
+          + "so data update will proceed.", esthesisHardwareId, orionUpdateDataAttribute);
+      return true;
+    } else {
+      log.trace("Device with esthesis hardware ID '{}' has attribute '{}' preventing data updates, "
+          + "so data update will not proceed.", esthesisHardwareId, orionUpdateDataAttribute);
+      return false;
     }
   }
 
@@ -109,8 +171,8 @@ public class OrionGatewayService {
     // Pre-registration checks
     // *********************************************************************************************
     // Find the esthesis attributes of this device.
-    List<DeviceAttributeEntity> esthesisDeviceAttributes =
-        deviceSystemResource.getDeviceAttributesByEsthesisId(esthesisId);
+    List<DeviceAttributeEntity> esthesisDeviceAttributes = deviceSystemResource.getDeviceAttributesByEsthesisId(
+        esthesisId);
 
     // Check whether this device should be registered.
     if (!isRegistrationAllowed(esthesisDeviceAttributes)) {
@@ -127,9 +189,8 @@ public class OrionGatewayService {
       return;
     }
     if (esthesisDevice.getStatus() != Status.REGISTERED) {
-      log.debug(
-          "Device has status '{}', only devices with status '{}' can be registered in Orion. "
-              + "Registration skipped.", esthesisDevice.getStatus(), Status.REGISTERED);
+      log.debug("Device has status '{}', only devices with status '{}' can be registered in Orion. "
+          + "Registration skipped.", esthesisDevice.getStatus(), Status.REGISTERED);
       return;
     }
 
@@ -154,10 +215,13 @@ public class OrionGatewayService {
     orionEntity.setType(orionDeviceType);
     // Add a custom attribute with the esthesis ID.
     esthesisDeviceAttributes.add(
-        DeviceAttributeEntity.builder()
-            .attributeName(appConfig.metadataEsthesisId())
-            .attributeValue(esthesisDevice.getId().toHexString())
-            .attributeType(ValueType.STRING)
+        DeviceAttributeEntity.builder().attributeName(appConfig.metadataEsthesisId())
+            .attributeValue(esthesisDevice.getId().toHexString()).attributeType(ValueType.STRING)
+            .build());
+    // Add a custom attribute with the esthesis hardware ID.
+    esthesisDeviceAttributes.add(
+        DeviceAttributeEntity.builder().attributeName(appConfig.metadataEsthesisHardwareId())
+            .attributeValue(esthesisDevice.getHardwareId()).attributeType(ValueType.STRING)
             .build());
     orionEntity.setAttributes(
         OrionEntityDTO.attributesFromEsthesisDeviceAttributes(esthesisDeviceAttributes));
@@ -181,16 +245,14 @@ public class OrionGatewayService {
     OrionEntityDTO orionEntity = orionClientService.getEntityByEsthesisId(esthesisId);
 
     // Find all Orion attributes managed by esthesis.
-    List<DeviceAttributeEntity> esthesisManagedAttributes = esthesisAttributes.stream()
-        .filter(deviceAttribute -> !deviceAttribute.getAttributeName()
-            .equals(appConfig.metadataEsthesisId()))
-        .toList();
+    List<DeviceAttributeEntity> esthesisManagedAttributes = esthesisAttributes.stream().filter(
+        deviceAttribute -> !deviceAttribute.getAttributeName()
+            .equals(appConfig.metadataEsthesisId())).toList();
 
     // Add all esthesis attributes in Orion.
     for (DeviceAttributeEntity esthesisAttribute : esthesisManagedAttributes) {
       log.debug("Setting attribute '{}' to value '{}' in Orion.",
-          esthesisAttribute.getAttributeName(),
-          esthesisAttribute.getAttributeValue());
+          esthesisAttribute.getAttributeName(), esthesisAttribute.getAttributeValue());
       orionClientService.setAttribute(orionEntity.getId(), esthesisAttribute.getAttributeName(),
           esthesisAttribute.getAttributeValue(), esthesisAttribute.getAttributeType());
     }
@@ -211,8 +273,7 @@ public class OrionGatewayService {
     // Find the device in Orion.
     OrionEntityDTO orionEntity = orionClientService.getEntityByEsthesisId(esthesisId);
     if (orionEntity == null) {
-      log.warn("Device with esthesis ID '{}' not found in Orion, skipping deletion.",
-          esthesisId);
+      log.warn("Device with esthesis ID '{}' not found in Orion, skipping deletion.", esthesisId);
       return;
     }
 
@@ -224,6 +285,24 @@ public class OrionGatewayService {
     } catch (QDoesNotExistException e) {
       log.info("Device with Orion ID '{}' not found in Orion, skipping deletion.",
           orionEntity.getId());
+    }
+  }
+
+  public void processData(Exchange exchange) {
+    // Get the message from the exchange.
+    EsthesisDataMessage esthesisMessage = exchange.getIn().getBody(EsthesisDataMessage.class);
+    log.debug("Processing '{}'.", esthesisMessage);
+
+    // Extract the esthesis hardware ID from the message.
+    String esthesisHardwareId = esthesisMessage.getHardwareId();
+
+    // Check if this device's data should be updated in Orion.
+    if (isDataUpdateAllowed(esthesisHardwareId)) {
+      String category = esthesisMessage.getPayload().getCategory();
+      esthesisMessage.getPayload().getValues().forEach((valueData) -> {
+        orionClientService.setAttribute(esthesisHardwareId, category + "." + valueData.getName(),
+            valueData.getValue(), ValueType.valueOf(valueData.getValueType().name()));
+      });
     }
   }
 }

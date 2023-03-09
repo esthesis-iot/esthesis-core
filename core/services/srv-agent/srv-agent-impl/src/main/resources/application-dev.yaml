@@ -56,40 +56,11 @@ quarkus:
         password: esthesis-system
   redis:
     hosts: redis://:esthesis@esthesis-dev-redis:6379/0
+  config:
+    locations: "../../../setup/dev/profiles/application-dev-profiles.yaml"
 
 kafka:
   bootstrap:
     servers:
       - esthesis-dev-kafka:9094
 
-###############################################################################
-# DEBUG PROFILES
-###############################################################################
-"%debug-rest":
-  quarkus:
-    log:
-      category:
-        "org.jboss.resteasy ":
-          level: DEBUG
-    rest-client:
-      logging:
-        scope: request-response
-        body-limit: 65536
-"%debug-mongo":
-  quarkus:
-    log:
-      category:
-        "io.quarkus.mongodb.panache.common.runtime":
-          level: DEBUG
-"%debug-token":
-  quarkus:
-    log:
-      category:
-        "io.quarkus.oidc.token.propagation.reactive":
-          level: DEBUG
-"%debug-camel":
-  quarkus:
-    log:
-      category:
-        "org.apache.camel":
-          level: DEBUG

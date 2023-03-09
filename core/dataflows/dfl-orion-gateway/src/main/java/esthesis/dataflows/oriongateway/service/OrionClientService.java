@@ -1,7 +1,6 @@
 package esthesis.dataflows.oriongateway.service;
 
 import esthesis.common.data.ValueUtils.ValueType;
-import esthesis.common.exception.QDoesNotExistException;
 import esthesis.dataflows.oriongateway.client.OrionClient;
 import esthesis.dataflows.oriongateway.config.AppConfig;
 import esthesis.dataflows.oriongateway.dto.OrionAttributeDTO;
@@ -75,7 +74,7 @@ public class OrionClientService {
                 .add("value", Long.parseLong(attributeValue))
                 .add("metadata", maintendByEsthesisMetadata)
                 .build(); }
-        case BIGDECIMAL -> { return
+        case BIG_DECIMAL -> { return
             Json.createObjectBuilder()
                 .add("value", new BigDecimal(attributeValue))
                 .add("metadata", maintendByEsthesisMetadata)
@@ -125,6 +124,27 @@ public class OrionClientService {
     });
 
     orionClient.createEntity(jsonBuilder.build().toString());
+  }
+
+  /**
+   * Returns the Orion ID of the device with the given esthesis hardware ID.
+   * @param esthesisHardwareId The esthesis hardware ID of the device.
+   */
+  public String getOrionIdByEsthesisHardwareId(String esthesisHardwareId) {
+    List<Map<String, Object>> entitiesMatched = orionClient.query(
+        OrionQueryDTO.builder().expression(
+                Expression.builder().q(appConfig.metadataEsthesisHardwareId() + "==" + esthesisHardwareId).build())
+            .build());
+    if (CollectionUtils.isEmpty(entitiesMatched)) {
+      return null;
+    } else {
+      if (entitiesMatched.size() > 1) {
+        log.warn("Multiple devices found in Orion with esthesis hardware ID '{}'. Returning the first one.",
+            esthesisHardwareId);
+      }
+      Map<String, Object> entity = entitiesMatched.get(0);
+      return entity.get("id").toString();
+    }
   }
 
   public OrionEntityDTO getEntityByEsthesisId(String esthesisId) {

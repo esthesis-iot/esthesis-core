@@ -2,8 +2,8 @@ package esthesis.dataflows.pingupdater.service;
 
 import com.mongodb.client.model.Filters;
 import esthesis.avro.EsthesisDataMessage;
+import esthesis.common.AppConstants;
 import esthesis.common.exception.QMismatchException;
-import esthesis.dataflow.common.DflUtils;
 import java.time.Instant;
 import javax.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +41,9 @@ public class PingService {
         exchange.getIn().getHeader(KafkaConstants.KEY));
     // Get the message from the exchange.
     EsthesisDataMessage esthesisMessage = exchange.getIn().getBody(EsthesisDataMessage.class);
+    log.debug("Esthesis message: '{}'.",
+        StringUtils.abbreviate(esthesisMessage.toString(),
+            AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH));
 
     // Update.
     esthesisMessage.getPayload().getValues().stream()
@@ -54,7 +57,7 @@ public class PingService {
         }, () -> {
           throw new QMismatchException("No ping timestamp found in payload '{}'.",
               StringUtils.abbreviate(esthesisMessage.getPayload().toString(),
-                  DflUtils.MESSAGE_LOG_ABBREVIATION_LENGTH));
+                  AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH));
         });
   }
 }

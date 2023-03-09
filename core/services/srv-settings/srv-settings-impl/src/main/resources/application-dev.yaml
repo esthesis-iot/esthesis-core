@@ -40,6 +40,9 @@ quarkus:
       password:
         username: esthesis-system
         password: esthesis-system
+  config:
+    locations: "../../../setup/dev/profiles/application-dev-profiles.yaml"
+
 mp:
   jwt:
     verify:
@@ -51,31 +54,3 @@ esthesis:
     authority: "http://esthesis-dev-keycloak/realms/esthesis"
     redirect-url: "http://localhost:4200/callback"
     post-logout-redirect-uri: "http://localhost:4200/logged-out"
-
-###############################################################################
-# DEBUG PROFILES
-###############################################################################
-"%debug-rest":
-  quarkus:
-    log:
-      category:
-        "org.jboss.resteasy.reactive":
-          level: DEBUG
-    rest-client:
-      logging:
-        scope: request-response
-        body-limit: 65536
-
-"%debug-mongo":
-  quarkus:
-    log:
-      category:
-        "io.quarkus.mongodb.panache.common.runtime":
-          level: DEBUG
-
-"%debug-token":
-  quarkus:
-    log:
-      category:
-        "io.quarkus.oidc.token.propagation.reactive":
-          level: DEBUG

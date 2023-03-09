@@ -13,4 +13,5 @@ env \
     ESTHESIS_DFL_ESTHESIS_DB_PASSWORD=esthesis \
     ESTHESIS_DFL_KAFKA_CLUSTER_URL=esthesis-dev-kafka:9094 \
     ESTHESIS_DFL_KAFKA_PING_TOPIC=esthesis-ping \
+    ESTHESIS_DFL_KAFKA_CONSUMER_GROUP=dfl-ping-updater \
 ./mvnw quarkus:dev -Ddebug=39154 -Dquarkus.profile="$PROFILES"

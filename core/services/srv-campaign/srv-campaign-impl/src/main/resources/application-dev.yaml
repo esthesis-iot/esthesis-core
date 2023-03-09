@@ -51,6 +51,8 @@ quarkus:
     client:
       broker:
         gateway-address: esthesis-dev-camunda-zeebe-gateway:26500
+  config:
+    locations: "../../../setup/dev/profiles/application-dev-profiles.yaml"
 
 mp:
   jwt:
@@ -62,39 +64,3 @@ esthesis:
   kogito:
     client:
       url: http://localhost:59150
-
-
-###############################################################################
-# DEBUG PROFILES
-###############################################################################
-"%debug-rest":
-  quarkus:
-    log:
-      category:
-        "org.jboss.resteasy.reactive":
-          level: DEBUG
-    rest-client:
-      logging:
-        scope: request-response
-        body-limit: 65536
-
-"%debug-mongo":
-  quarkus:
-    log:
-      category:
-        "io.quarkus.mongodb.panache.common.runtime":
-          level: DEBUG
-
-"%debug-token":
-  quarkus:
-    log:
-      category:
-        "io.quarkus.oidc.token.propagation.reactive":
-          level: DEBUG
-
-"%debug-kie":
-  quarkus:
-    log:
-      category:
-        "org.kie":
-          level: DEBUG

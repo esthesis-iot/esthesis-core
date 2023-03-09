@@ -2,10 +2,12 @@ package esthesis.dataflows.rdbmswriter.service;
 
 import esthesis.avro.EsthesisDataMessage;
 import esthesis.avro.ValueData;
+import esthesis.common.data.ValueUtils.ValueType;
 import esthesis.common.exception.QExceptionWrapper;
-import esthesis.dataflow.common.DflUtils.VALUE_TYPE;
 import esthesis.dataflows.rdbmswriter.config.AppConfig;
 import io.agroal.api.AgroalDataSource;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -69,25 +71,22 @@ public class RdbmsService {
         for (int i = 0; i < esthesisMessage.getPayload().getValues().size();
             i++) {
           ValueData valueData = esthesisMessage.getPayload().getValues().get(i);
-          switch (VALUE_TYPE.valueOf(valueData.getValueType())) {
-            case STRING -> preparedStatement.setString(i + 3,
-                valueData.getValue());
-            case BOOLEAN -> preparedStatement.setBoolean(i + 3,
-                BooleanUtils.toBoolean(valueData.getValue()));
-            case BYTE -> preparedStatement.setByte(i + 3,
-                NumberUtils.toByte(valueData.getValue()));
-            case SHORT -> preparedStatement.setShort(i + 3,
-                NumberUtils.toShort(valueData.getValue()));
-            case INTEGER -> preparedStatement.setInt(i + 3,
-                NumberUtils.toInt(valueData.getValue()));
-            case LONG -> preparedStatement.setLong(i + 3,
-                NumberUtils.toLong(valueData.getValue()));
-            case FLOAT -> preparedStatement.setFloat(i + 3,
-                NumberUtils.toFloat(valueData.getValue()));
-            case DOUBLE -> preparedStatement.setDouble(i + 3,
-                NumberUtils.toDouble(valueData.getValue()));
-            default -> log.warn("Unknown value type '{}', ignoring value '{}'.",
-                valueData.getValueType(), valueData.getValue());
+
+          switch (ValueType.valueOf(valueData.getValueType().name())) {
+            case STRING -> preparedStatement.setString(i + 3, valueData.getValue());
+            case BOOLEAN -> preparedStatement.setBoolean(i + 3, BooleanUtils.toBoolean(valueData.getValue()));
+            case BYTE -> preparedStatement.setByte(i + 3, NumberUtils.toByte(valueData.getValue()));
+            case SHORT -> preparedStatement.setShort(i + 3, NumberUtils.toShort(valueData.getValue()));
+            case INTEGER -> preparedStatement.setInt(i + 3, NumberUtils.toInt(valueData.getValue()));
+            case LONG -> preparedStatement.setLong(i + 3, NumberUtils.toLong(valueData.getValue()));
+            case FLOAT -> preparedStatement.setFloat(i + 3, NumberUtils.toFloat(valueData.getValue()));
+            case DOUBLE -> preparedStatement.setDouble(i + 3, NumberUtils.toDouble(valueData.getValue()));
+            case BIG_INTEGER,  BIG_DECIMAL ->
+                preparedStatement.setBigDecimal(i + 3, new BigDecimal(valueData.getValue()));
+            case UNKNOWN -> {
+              log.warn("Unknown value type '{}', settings value as String.", valueData.getValueType());
+              preparedStatement.setString(i + 3, valueData.getValue());
+            }
           }
         }
         log.debug("Executing statement '{}'.", preparedStatement);
@@ -127,8 +126,7 @@ public class RdbmsService {
 
   public void process(Exchange exchange) throws SQLException {
     // Get the message from the exchange.
-    EsthesisDataMessage esthesisMessage = exchange.getIn()
-        .getBody(EsthesisDataMessage.class);
+    EsthesisDataMessage esthesisMessage = exchange.getIn().getBody(EsthesisDataMessage.class);
     log.debug("Processing '{}' with '{}' storage strategy.", esthesisMessage,
         config.dbStorageStrategy());
 

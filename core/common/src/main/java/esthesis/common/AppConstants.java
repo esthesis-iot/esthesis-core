@@ -14,8 +14,12 @@ public class AppConstants {
   // Naming convention for hardware ids.
   public static final String HARDWARE_ID_REGEX = "^[a-zA-Z0-9_-]*$";
 
+  // The size limit when displaying possibly large content in the logs.
+  public static final int MESSAGE_LOG_ABBREVIATION_LENGTH = 4096;
+
   // The header containing the shared secret for device registration (when the platform operates
   // in that mode).
+  //TODO where/how is this used?
   public static final String REGISTRATION_SECRET_HEADER_NAME = "X-ESTHESIS-REGISTRATION-SECRET";
 
   // Settings keys.

@@ -3,7 +3,6 @@ package esthesis.dataflows.oriongateway.util;
 import esthesis.common.data.ValueUtils.ValueType;
 import esthesis.dataflows.oriongateway.config.AppConfig;
 import esthesis.service.device.entity.DeviceAttributeEntity;
-import io.quarkus.logging.Log;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -70,7 +69,7 @@ public class OrionAttributesBuilder {
                   .add(valueAttributeName, Long.parseLong(attributeValue))
                   .add(metadataAttributeName, maintendByEsthesisMetadata)
                   .build());
-          case BIGDECIMAL -> jsonObjectBuilder.add(attributeName,
+          case BIG_DECIMAL -> jsonObjectBuilder.add(attributeName,
               Json.createObjectBuilder()
                   .add(valueAttributeName, new BigDecimal(attributeValue))
                   .add(metadataAttributeName, maintendByEsthesisMetadata)

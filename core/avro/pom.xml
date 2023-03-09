@@ -13,9 +13,19 @@
   <artifactId>avro</artifactId>
 
   <dependencies>
+
+    <!-- QUARKUS -->
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-avro</artifactId>
     </dependency>
+
+    <!-- ESTHSIS -->
+    <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>common</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+    </dependency>
+
   </dependencies>
 </project>

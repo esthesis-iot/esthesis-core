@@ -1,7 +1,7 @@
 package esthesis.dataflow.mqttclient.routes;
 
+import esthesis.avro.util.AvroUtils;
 import esthesis.common.banner.BannerUtil;
-import esthesis.dataflow.common.AvroUtils;
 import esthesis.dataflow.mqttclient.config.AppConfig;
 import esthesis.dataflow.mqttclient.service.DflMqttClientService;
 import javax.enterprise.context.ApplicationScoped;

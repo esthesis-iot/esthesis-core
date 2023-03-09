@@ -39,11 +39,14 @@
     {
       "name": "type",
       "type": {
-        "name": "MessageType",
+        "name": "MessageTypeEnum",
         "type": "enum",
         "symbols": [
+          // PING
           "P",
+          // TELEMETRY
           "T",
+          // METADATA
           "M"
         ],
         "doc": "P = Ping, T = Telemetry, M = Metadata"
@@ -94,8 +97,24 @@
                   },
                   {
                     "name": "valueType",
-                    "type": "string",
-                    "doc": "An automatic detection of the type of the value"
+                    "type": {
+                      "name": "ValueTypeEnum",
+                      "type": "enum",
+                      "symbols": [
+                        "STRING",
+                        "BOOLEAN",
+                        "BYTE",
+                        "SHORT",
+                        "INTEGER",
+                        "LONG",
+                        "BIG_INTEGER",
+                        "FLOAT",
+                        "DOUBLE",
+                        "BIG_DECIMAL",
+                        "UNKNOWN"
+                      ],
+                    "doc": "You can provide hints in the esthesis Line Protocol regarding the type of this value, otherwise a best-effort automatic detection will take place"
+                    }
                   }
                 ]
               }

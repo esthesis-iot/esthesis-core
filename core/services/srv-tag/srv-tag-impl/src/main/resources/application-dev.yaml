@@ -27,6 +27,9 @@ quarkus:
     AuditResource:
       url: http://localhost:59140
       scope: Singleton
+  config:
+    locations: "../../../setup/dev/profiles/application-dev-profiles.yaml"
+
 mp:
   jwt:
     verify:
@@ -37,31 +40,3 @@ kafka:
   bootstrap:
     servers:
       - esthesis-dev-kafka:9094
-
-###############################################################################
-# DEBUG PROFILES
-###############################################################################
-"%debug-rest":
-  quarkus:
-    log:
-      category:
-        "org.jboss.resteasy.reactive":
-          level: DEBUG
-    rest-client:
-      logging:
-        scope: request-response
-        body-limit: 65536
-
-"%debug-mongo":
-  quarkus:
-    log:
-      category:
-        "io.quarkus.mongodb.panache.common.runtime":
-          level: DEBUG
-
-"%debug-token":
-  quarkus:
-    log:
-      category:
-        "io.quarkus.oidc.token.propagation.reactive":
-          level: DEBUG

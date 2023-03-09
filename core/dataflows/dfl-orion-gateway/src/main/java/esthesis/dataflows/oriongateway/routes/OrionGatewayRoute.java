@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
+import org.apache.camel.model.dataformat.AvroDataFormat;
 
 @Slf4j
 @ApplicationScoped
@@ -69,8 +70,8 @@ public class OrionGatewayRoute extends RouteBuilder {
     log.info("Connecting to Orion server at '{}', version '{}'.", appConfig.orionUrl(),
         orionClientService.getVersion());
 
+    // Listen for application messages.
     // @formatter:off
-    //TODO set Kafka topic from settings
     if (appConfig.kafkaApplicationTopic().isPresent()) {
       log.info("Listening for application messages on Kafka topic '{}'.",
           appConfig.kafkaApplicationTopic().get());
@@ -86,16 +87,20 @@ public class OrionGatewayRoute extends RouteBuilder {
     }
     // @formatter:on
 
+    // Listen for telemetry messages.
     // @formatter:off
-//    log.info("Creating route from Kafka topic '{}' to Fiware Orion '{}'.",
-//        config.kafkaTelemetryTopic(), config.orionUrl());
-//
-//    from("kafka:" + config.kafkaTelemetryTopic())
-//        .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-//        .to("seda:ping");
-//
-//    from("seda:ping")
-//        .bean(pingService, "searchForExistingDevice");
+    if (appConfig.kafkaTelemetryTopic().isPresent()) {
+      log.info("Creating route from Kafka topic '{}'.", appConfig.kafkaTelemetryTopic().get());
+
+      from("kafka:" + appConfig.kafkaTelemetryTopic().get())
+          .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
+          .to("seda:telemetry");
+
+      from("seda:telemetry")
+          .bean(orionGatewayService, "processData");
+      } else {
+        log.warn("No Kafka topic for telemetry messages is set.");
+    }
     // @formatter:on
 
     log.info("Routes created successfully.");

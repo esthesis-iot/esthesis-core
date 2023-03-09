@@ -43,9 +43,14 @@ public interface DeviceSystemResource {
   String findPublicKey(@QueryParam("hardwareId") String hardwareId);
 
   @GET
-  @Path("/v1/system/{esthesisId}/attributes")
+  @Path("/v1/system/{esthesisId}/attributes-by-esthesis-id")
   List<DeviceAttributeEntity> getDeviceAttributesByEsthesisId(
       @PathParam("esthesisId") String esthesisId);
+
+  @GET
+  @Path("/v1/system/{esthesisHardwareId}/attributes-by-esthesis-hardware-id")
+  List<DeviceAttributeEntity> getDeviceAttributesByEsthesisHardwareId(
+      @PathParam("esthesisHardwareId") String esthesisHardwareId);
 
   @GET
   @Path("/v1/system/device-ids")

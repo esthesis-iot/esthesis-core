@@ -1,7 +1,8 @@
 package esthesis.dataflows.rediscache.service;
 
 import esthesis.avro.EsthesisDataMessage;
-import esthesis.dataflow.common.DflUtils;
+import esthesis.common.AppConstants;
+import esthesis.common.data.ValueUtils.ValueType;
 import esthesis.dataflows.rediscache.config.AppConfig;
 import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;
@@ -35,7 +36,7 @@ public class RedisService {
       String fieldName = String.join(".",
           esthesisMessage.getPayload().getCategory(), keyValue.getName());
       String fieldValue = keyValue.getValue();
-      String fieldType = keyValue.getValueType();
+      ValueType fieldType = ValueType.valueOf(keyValue.getValueType().name());
 
       if (fieldValue.length() <= conf.redisMaxSize()) {
         redisUtils.setToHash(KeyType.ESTHESIS_DM, key, fieldName, fieldValue);
@@ -43,12 +44,11 @@ public class RedisService {
                 TIMESTAMP_FIELD_NAME),
             esthesisMessage.getPayload().getTimestamp());
         redisUtils.setToHash(KeyType.ESTHESIS_DM, key, String.join(".", fieldName,
-            VALUE_TYPE_FIELD_NAME), fieldType);
+            VALUE_TYPE_FIELD_NAME), fieldType.name());
       } else {
-        log.debug("Value '{}' for '{}' too long, skipping. Current maximum"
+        log.debug("Value '{}' for '{}' is too long, skipping caching. Current maximum"
                 + " value size is '{}' bytes.",
-            StringUtils.abbreviate(fieldValue,
-                DflUtils.MESSAGE_LOG_ABBREVIATION_LENGTH), key,
+            StringUtils.abbreviate(fieldValue, AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH), key,
             conf.redisMaxSize());
       }
 

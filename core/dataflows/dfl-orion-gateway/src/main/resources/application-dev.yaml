@@ -30,35 +30,6 @@ quarkus:
       exporter:
         otlp:
           endpoint: http://esthesis-dev-jaeger-collector-grpc:4317
+  config:
+    locations: "../../../setup/dev/profiles/application-dev-profiles.yaml"
 
-###############################################################################
-# DEBUG PROFILES
-###############################################################################
-"%debug-rest":
-  quarkus:
-    log:
-      category:
-        "org.jboss.resteasy.reactive":
-          level: DEBUG
-    rest-client:
-      logging:
-        scope: request-response
-        body-limit: 65536
-"%debug-mongo":
-  quarkus:
-    log:
-      category:
-        "io.quarkus.mongodb.panache.common.runtime":
-          level: DEBUG
-"%debug-token":
-  quarkus:
-    log:
-      category:
-        "io.quarkus.oidc.token.propagation.reactive":
-          level: DEBUG
-"%debug-camel":
-  quarkus:
-    log:
-      category:
-        "org.apache.camel":
-          level: DEBUG

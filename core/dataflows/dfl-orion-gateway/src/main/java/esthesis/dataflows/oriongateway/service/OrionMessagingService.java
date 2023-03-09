@@ -31,14 +31,14 @@ public class OrionMessagingService {
                 if (appConfig.orionCreateDevice()) {
                   onCreateDeviceMessage(appMessage);
                 } else {
-                  log.debug("Creating new devices is disabled.");
+                  log.trace("Creating new devices is disabled.");
                 }
               }
               case DELETE -> {
                 if (appConfig.orionDeleteDevice()) {
                   onDeleteDeviceMessage(appMessage);
                 } else {
-                  log.debug("Deleting devices is disabled.");
+                  log.trace("Deleting devices is disabled.");
                 }
               }
             }
@@ -46,10 +46,10 @@ public class OrionMessagingService {
           case DEVICE_ATTRIBUTE -> {
             switch (appMessage.getAction()) {
               case UPDATE -> {
-                if (appConfig.orionUpdateAttribute()) {
+                if (appConfig.orionUpdateData()) {
                   onUpdateDeviceAtrributeMessage(appMessage);
                 } else {
-                  log.debug("Updating device attributes is disabled.");
+                  log.trace("Updating device attributes is disabled.");
                 }
               }
             }

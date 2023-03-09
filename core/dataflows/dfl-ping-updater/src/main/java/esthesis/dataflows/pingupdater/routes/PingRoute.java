@@ -1,7 +1,7 @@
 package esthesis.dataflows.pingupdater.routes;
 
+import esthesis.avro.util.AvroUtils;
 import esthesis.common.banner.BannerUtil;
-import esthesis.dataflow.common.AvroUtils;
 import esthesis.dataflows.pingupdater.config.AppConfig;
 import esthesis.dataflows.pingupdater.service.PingService;
 import javax.enterprise.context.ApplicationScoped;

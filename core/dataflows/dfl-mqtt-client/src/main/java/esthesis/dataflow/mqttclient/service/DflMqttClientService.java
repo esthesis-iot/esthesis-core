@@ -1,14 +1,13 @@
 package esthesis.dataflow.mqttclient.service;
 
-import static esthesis.dataflow.common.DflUtils.abbr;
-
 import esthesis.avro.EsthesisCommandReplyMessage;
 import esthesis.avro.EsthesisCommandRequestMessage;
 import esthesis.avro.EsthesisDataMessage;
 import esthesis.avro.EsthesisDataMessage.Builder;
-import esthesis.avro.MessageType;
+import esthesis.avro.MessageTypeEnum;
+import esthesis.avro.util.AvroUtils;
+import esthesis.common.AppConstants;
 import esthesis.common.exception.QMismatchException;
-import esthesis.dataflow.common.AvroUtils;
 import esthesis.dataflow.mqttclient.config.AppConfig;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -20,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.camel.component.paho.PahoConstants;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
@@ -36,17 +36,17 @@ public class DflMqttClientService {
   String appName;
 
   @SuppressWarnings("java:S3655")
-  private MessageType getMessageType(Exchange exchange) {
+  private MessageTypeEnum getMessageType(Exchange exchange) {
     String topic = exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC, String.class);
 
     if (config.mqttTopicPing().isPresent() && topic.startsWith(config.mqttTopicPing().get())) {
-      return MessageType.P;
+      return MessageTypeEnum.P;
     } else if (config.mqttTopicTelemetry().isPresent() && topic.startsWith(
         config.mqttTopicTelemetry().get())) {
-      return MessageType.T;
+      return MessageTypeEnum.T;
     } else if (config.mqttTopicMetadata().isPresent() && topic.startsWith(
         config.mqttTopicMetadata().get())) {
-      return MessageType.M;
+      return MessageTypeEnum.M;
     } else {
       throw new UnsupportedOperationException(
           "Received a data message " + "on an unsupported topic '" + topic + "'.");
@@ -72,12 +72,13 @@ public class DflMqttClientService {
    */
   public void toEsthesisDataMessages(Exchange exchange) {
     String body = exchange.getIn().getBody(String.class);
-    log.debug("Received message '{}' on topic '{}'.", abbr(body),
+    log.debug("Received message '{}' on topic '{}'.",
+        StringUtils.abbreviate(body, AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH),
         exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC));
 
     // Extract the message type and the hardware id of this message based on
     // the topic that the message was posted on.
-    MessageType messageType = getMessageType(exchange);
+    MessageTypeEnum messageType = getMessageType(exchange);
     String hardwareId = getHardwareId(exchange);
 
     // Add the hardware id as the Kafka key.
@@ -94,7 +95,8 @@ public class DflMqttClientService {
       try {
         esthesisMessageBuilder.setPayload(avroUtils.parsePayload(line));
         EsthesisDataMessage msg = esthesisMessageBuilder.build();
-        log.debug("Parsed message to Avro message '{}'.", abbr(msg.toString()));
+        log.debug("Parsed message to Avro message '{}'.",
+            StringUtils.abbreviate(msg.toString(), AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH));
         messages.add(msg);
       } catch (QMismatchException e) {
         log.warn(e.getMessage());
@@ -117,7 +119,8 @@ public class DflMqttClientService {
     exchange.getIn().setHeader(KafkaConstants.KEY, topic.substring(topic.lastIndexOf("/") + 1));
 
     String commandReply = exchange.getIn().getBody(String.class);
-    log.debug("Received Command Reply '{}'.", abbr(commandReply));
+    log.debug("Received Command Reply '{}'.",
+        StringUtils.abbreviate(commandReply, AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH));
 
     // Parse the command reply message.
     exchange.getIn().setBody(

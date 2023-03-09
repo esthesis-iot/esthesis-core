@@ -13,6 +13,10 @@ public interface AppConfig {
   @WithDefault("esthesisId")
   String metadataEsthesisId();
 
+  // The name of an attribute to hold the esthesis Hardware ID for this device.
+  @WithDefault("esthesisHardwareId")
+  String metadataEsthesisHardwareId();
+
   // The URL of the Orion Context Broker.
   String orionUrl();
 
@@ -28,8 +32,11 @@ public interface AppConfig {
   @WithDefault("true")
   boolean orionUpdateData();
 
-  @WithDefault("true")
-  boolean orionUpdateAttribute();
+  // A device attribute indicating whether date for this device (i.e. device metrics) should be
+  // updated in Orion or not. If this attribute is not specified, data is updated in Orion. If
+  // this attribute is specified, a value of "true" indicates that the device should be registered,
+  // any other value indicates that the device should not be registered.
+  Optional<String> orionUpdateDataAttribute();
 
   @WithDefault("true")
   boolean orionUpdateGeolocation();
@@ -66,9 +73,6 @@ public interface AppConfig {
   // a value of "true" indicates that the device should be registered, any other value
   // indicates that the device should not be registered.
   Optional<String> orionRegistrationEnabledAttribute();
-
-  // A flag indicating whether a device should be deleted from Orion when it is deleted from esthesis.
-  Boolean orionDeleteDevices();
 
   // The Kafka consumer group id.
   Optional<String> kafkaConsumerGroup();

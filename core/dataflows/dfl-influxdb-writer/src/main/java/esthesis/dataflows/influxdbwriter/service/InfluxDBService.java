@@ -6,7 +6,7 @@ import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
 import esthesis.avro.EsthesisDataMessage;
-import esthesis.dataflow.common.DflUtils.VALUE_TYPE;
+import esthesis.common.data.ValueUtils.ValueType;
 import esthesis.dataflows.influxdbwriter.config.AppConfig;
 import java.time.Instant;
 import javax.annotation.PostConstruct;
@@ -79,9 +79,9 @@ public class InfluxDBService {
     esthesisMessage.getPayload().getValues().forEach(keyValue -> {
       String name = keyValue.getName();
       String value = keyValue.getValue();
-
-      switch (VALUE_TYPE.valueOf(keyValue.getValueType())) {
-        case STRING -> point.addField(name, value);
+      ValueType valueType = ValueType.valueOf(keyValue.getValueType().name());
+      switch (valueType) {
+        case STRING, BIG_INTEGER, BIG_DECIMAL -> point.addField(name, value);
         case BOOLEAN -> point.addField(name, BooleanUtils.toBoolean(value));
         case BYTE -> point.addField(name, NumberUtils.toByte(value));
         case SHORT -> point.addField(name, NumberUtils.toShort(value));
@@ -89,8 +89,10 @@ public class InfluxDBService {
         case LONG -> point.addField(name, NumberUtils.toLong(value));
         case FLOAT -> point.addField(name, NumberUtils.toFloat(value));
         case DOUBLE -> point.addField(name, NumberUtils.toDouble(value));
-        default -> log.warn("Unknown value type '{}', ignoring value '{}'.",
-            keyValue.getValueType(), value);
+        default -> {
+          log.warn("Unknown value type '{}', reverting to String type.", valueType);
+          point.addField(name, value);
+        }
       }
     });
 
