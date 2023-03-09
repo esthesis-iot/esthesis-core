@@ -42,6 +42,6 @@ public interface AppConfig {
   int pollTimeout();
 
   // The maximum number of concurrent consumers.
-  @WithDefault("10")
+  @WithDefault("4")
   int consumers();
 }

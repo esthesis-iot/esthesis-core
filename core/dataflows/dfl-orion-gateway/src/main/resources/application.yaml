@@ -18,6 +18,10 @@ quarkus:
     enabled: false
   banner:
     enabled: false
+  cache:
+    caffeine:
+      "is-data-update-allowed":
+        expire-after-write: ${ESTHESIS_DFL_CACHE_IS_DATA_UPDATE_ALLOWED_EXPIRATION}
 
 #esthesis:
 #  dfl:

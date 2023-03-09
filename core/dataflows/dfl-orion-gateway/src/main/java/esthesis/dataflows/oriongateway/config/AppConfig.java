@@ -98,7 +98,7 @@ public interface AppConfig {
   int pollTimeout();
 
   // The maximum number of concurrent consumers.
-  @WithDefault("10")
+  @WithDefault("4")
   int consumers();
 
   // The name of the metadata attribute to indicate an attribute is maintained by esthesis.
@@ -108,4 +108,7 @@ public interface AppConfig {
   // The value of the metadata attribute to indicate an attribute is maintained by esthesis.
   @WithDefault("esthesis")
   String esthesisOrionMetadataValue();
+
+  @WithDefault("10S")
+  String cacheIsDataUpdateAllowedExpiration();
 }

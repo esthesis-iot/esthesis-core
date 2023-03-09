@@ -10,6 +10,7 @@ import esthesis.dataflows.oriongateway.dto.OrionEntityDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
+import io.quarkus.cache.CacheResult;
 import java.util.List;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
@@ -73,7 +74,9 @@ public class OrionGatewayService {
    *
    * @param esthesisHardwareId The esthesis hardware ID of the device.
    */
-  private boolean isDataUpdateAllowed(String esthesisHardwareId) {
+  @CacheResult(cacheName = "is-data-update-allowed")
+  boolean isDataUpdateAllowed(String esthesisHardwareId) {
+    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     // Check if the service is configured to perform data updates.
     if (!appConfig.orionUpdateData()) {
       log.trace("Data updates are disabled for this service.");
