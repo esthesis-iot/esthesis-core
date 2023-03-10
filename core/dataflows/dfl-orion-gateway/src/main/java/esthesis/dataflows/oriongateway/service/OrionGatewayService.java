@@ -1,12 +1,14 @@
 package esthesis.dataflows.oriongateway.service;
 
 import esthesis.avro.EsthesisDataMessage;
+import esthesis.avro.MessageTypeEnum;
 import esthesis.common.AppConstants.Device.Status;
 import esthesis.common.data.ValueUtils.ValueType;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.dataflows.oriongateway.config.AppConfig;
 import esthesis.dataflows.oriongateway.dto.OrionAttributeDTO;
 import esthesis.dataflows.oriongateway.dto.OrionEntityDTO;
+import esthesis.dataflows.oriongateway.service.OrionClientService.ATTRIBUTE_TYPE;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
@@ -256,7 +258,8 @@ public class OrionGatewayService {
       log.debug("Setting attribute '{}' to value '{}' in Orion.",
           esthesisAttribute.getAttributeName(), esthesisAttribute.getAttributeValue());
       orionClientService.setAttribute(orionEntity.getId(), esthesisAttribute.getAttributeName(),
-          esthesisAttribute.getAttributeValue(), esthesisAttribute.getAttributeType());
+          esthesisAttribute.getAttributeValue(), esthesisAttribute.getAttributeType(),
+          ATTRIBUTE_TYPE.ATTRIBUTE);
     }
 
     // For every esthesis managed attribute in Orion, if it does not exist in esthesis, delete it.
@@ -300,10 +303,21 @@ public class OrionGatewayService {
 
     // Check if this device's data should be updated in Orion.
     if (isDataUpdateAllowed(esthesisHardwareId)) {
+      ATTRIBUTE_TYPE attributeType;
+      if (esthesisMessage.getType() == MessageTypeEnum.T) {
+        attributeType = ATTRIBUTE_TYPE.TELEMETRY;
+      } else if (esthesisMessage.getType() == MessageTypeEnum.M) {
+        attributeType = ATTRIBUTE_TYPE.METADATA;
+      } else {
+        log.warn("Message type '{}' not supported, skipping.", esthesisMessage.getType());
+        return;
+      }
+
       String category = esthesisMessage.getPayload().getCategory();
       esthesisMessage.getPayload().getValues().forEach((valueData) -> {
         orionClientService.setAttribute(esthesisHardwareId, category + "." + valueData.getName(),
-            valueData.getValue(), ValueType.valueOf(valueData.getValueType().name()));
+            valueData.getValue(), ValueType.valueOf(valueData.getValueType().name()),
+            attributeType);
       });
     }
   }

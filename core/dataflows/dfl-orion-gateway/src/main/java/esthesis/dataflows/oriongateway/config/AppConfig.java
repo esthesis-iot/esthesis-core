@@ -105,6 +105,12 @@ public interface AppConfig {
   @WithDefault("maintainedBy")
   String esthesisOrionMetadataName();
 
+  // The name of the metadata property to indicate what was the source of an attribute in
+  // Orion maintained by esthesis (i.e. an esthesis device attribute, an esthesis telemetry value,
+  // or an esthesis metadata value).
+  @WithDefault("attributeSource")
+  String esthesisAttributeSourceMetadataName();
+
   // The value of the metadata attribute to indicate an attribute is maintained by esthesis.
   @WithDefault("esthesis")
   String esthesisOrionMetadataValue();

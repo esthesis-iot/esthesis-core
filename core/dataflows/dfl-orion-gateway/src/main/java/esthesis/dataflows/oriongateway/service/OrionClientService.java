@@ -8,6 +8,7 @@ import esthesis.dataflows.oriongateway.dto.OrionEntityDTO;
 import esthesis.dataflows.oriongateway.dto.OrionQueryDTO;
 import esthesis.dataflows.oriongateway.dto.OrionQueryDTO.Expression;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -24,12 +25,17 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 @Slf4j
 @ApplicationScoped
 public class OrionClientService {
+
   // The Orion client isn't automatically injected, as we need to configure its URL dynamically
   // at runtime.
   OrionClient orionClient;
 
   @Inject
   AppConfig appConfig;
+
+  public enum ATTRIBUTE_TYPE {
+    ATTRIBUTE, TELEMETRY, METADATA
+  }
 
   @PostConstruct
   void init() {
@@ -39,67 +45,49 @@ public class OrionClientService {
     orionClient = RestClientBuilder.newBuilder().baseUri(orionUrl).build(OrionClient.class);
   }
 
-  private JsonObject toOrionAttributeJson(String attributeValue, ValueType attributeValueType) {
-    JsonObject maintendByEsthesisMetadata = Json.createObjectBuilder()
-        .add(appConfig.esthesisOrionMetadataName(),
+  private JsonObject toOrionAttributeJson(String attributeValue, ValueType attributeValueType,
+      ATTRIBUTE_TYPE attributeType) {
+    // Create metadata for this attribute.
+    JsonObjectBuilder builder = Json.createObjectBuilder()
+        .add("metadata",
             Json.createObjectBuilder()
-                .add("value", appConfig.esthesisOrionMetadataValue())
-                .add("type", "Text")
-                .build())
-        .build();
+                .add(appConfig.esthesisOrionMetadataName(),
+                    Json.createObjectBuilder()
+                        .add("value", appConfig.esthesisOrionMetadataValue())
+                        .add("type", "Text"))
+                .add(appConfig.esthesisAttributeSourceMetadataName(),
+                    Json.createObjectBuilder()
+                        .add("value", attributeType.name())
+                        .add("type", "Text"))
+        );
+
+    // Set the value of the attribute.
     try {
       switch (attributeValueType) {
-        case BOOLEAN -> { return
-            Json.createObjectBuilder()
-                .add("value", Boolean.parseBoolean(attributeValue))
-                .add("metadata", maintendByEsthesisMetadata)
-                .build(); }
-        case BYTE -> { return
-            Json.createObjectBuilder()
-                .add("value", Byte.parseByte(attributeValue))
-                .add("metadata", maintendByEsthesisMetadata)
-                .build(); }
-        case SHORT -> { return
-            Json.createObjectBuilder()
-                .add("value", Short.parseShort(attributeValue))
-                .add("metadata", maintendByEsthesisMetadata)
-                .build(); }
-        case INTEGER -> { return
-            Json.createObjectBuilder()
-                .add("value", Integer.parseInt(attributeValue))
-                .add("metadata", maintendByEsthesisMetadata)
-                .build();}
-        case LONG -> { return
-            Json.createObjectBuilder()
-                .add("value", Long.parseLong(attributeValue))
-                .add("metadata", maintendByEsthesisMetadata)
-                .build(); }
-        case BIG_DECIMAL -> { return
-            Json.createObjectBuilder()
-                .add("value", new BigDecimal(attributeValue))
-                .add("metadata", maintendByEsthesisMetadata)
-                .build(); }
-        default -> { return
-            Json.createObjectBuilder()
-                .add("value", attributeValue)
-                .add("metadata", maintendByEsthesisMetadata)
-                .build(); }
+        case BOOLEAN -> builder.add("value", Boolean.parseBoolean(attributeValue));
+        case BYTE -> builder.add("value", Byte.parseByte(attributeValue));
+        case SHORT -> builder.add("value", Short.parseShort(attributeValue));
+        case INTEGER -> builder.add("value", Integer.parseInt(attributeValue));
+        case LONG -> builder.add("value", Long.parseLong(attributeValue));
+        case BIG_INTEGER -> builder.add("value", new BigInteger(attributeValue));
+        case FLOAT, DOUBLE -> builder.add("value", Double.parseDouble(attributeValue));
+        case BIG_DECIMAL -> builder.add("value", new BigDecimal(attributeValue));
+        default -> builder.add("value", attributeValue);
       }
     } catch (Exception e) {
       log.warn("Failed to parse attribute value '{}' as type '{}'. Will default to a string "
           + "representation.", attributeValue, attributeValueType);
-      return
-          Json.createObjectBuilder()
-              .add("value", attributeValue)
-              .add("metadata", maintendByEsthesisMetadata)
-              .build();
+      builder.add("value", attributeValue);
     }
+
+    return builder.build();
   }
 
   public void setAttribute(String entityId, String attributeName, String attributeValue,
-      ValueType attributeValueType) {
+      ValueType attributeValueType, ATTRIBUTE_TYPE attributeType) {
     JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
-    jsonBuilder.add(attributeName, toOrionAttributeJson(attributeValue, attributeValueType));
+    jsonBuilder.add(attributeName,
+        toOrionAttributeJson(attributeValue, attributeValueType, attributeType));
     orionClient.setAttribute(entityId, jsonBuilder.build().toString());
   }
 
@@ -120,7 +108,8 @@ public class OrionClientService {
       String attributeName = entry.getName();
       String attributeValue = entry.getValue();
       ValueType attributeValueType = entry.getType();
-      jsonBuilder.add(attributeName, toOrionAttributeJson(attributeValue, attributeValueType));
+      jsonBuilder.add(attributeName, toOrionAttributeJson(attributeValue, attributeValueType,
+          ATTRIBUTE_TYPE.ATTRIBUTE));
     });
 
     orionClient.createEntity(jsonBuilder.build().toString());
@@ -128,18 +117,21 @@ public class OrionClientService {
 
   /**
    * Returns the Orion ID of the device with the given esthesis hardware ID.
+   *
    * @param esthesisHardwareId The esthesis hardware ID of the device.
    */
   public String getOrionIdByEsthesisHardwareId(String esthesisHardwareId) {
     List<Map<String, Object>> entitiesMatched = orionClient.query(
         OrionQueryDTO.builder().expression(
-                Expression.builder().q(appConfig.metadataEsthesisHardwareId() + "==" + esthesisHardwareId).build())
+                Expression.builder()
+                    .q(appConfig.metadataEsthesisHardwareId() + "==" + esthesisHardwareId).build())
             .build());
     if (CollectionUtils.isEmpty(entitiesMatched)) {
       return null;
     } else {
       if (entitiesMatched.size() > 1) {
-        log.warn("Multiple devices found in Orion with esthesis hardware ID '{}'. Returning the first one.",
+        log.warn(
+            "Multiple devices found in Orion with esthesis hardware ID '{}'. Returning the first one.",
             esthesisHardwareId);
       }
       Map<String, Object> entity = entitiesMatched.get(0);
