@@ -11,11 +11,11 @@ public interface AppConfig {
 
   // The name of an attribute to hold the esthesis ID for this device.
   @WithDefault("esthesisId")
-  String metadataEsthesisId();
+  String attributeEsthesisId();
 
   // The name of an attribute to hold the esthesis Hardware ID for this device.
   @WithDefault("esthesisHardwareId")
-  String metadataEsthesisHardwareId();
+  String attributeEsthesisHardwareId();
 
   // The URL of the Orion Context Broker.
   String orionUrl();
@@ -32,7 +32,7 @@ public interface AppConfig {
   @WithDefault("true")
   boolean orionUpdateData();
 
-  // A device attribute indicating whether date for this device (i.e. device metrics) should be
+  // A device attribute indicating whether data for this device (i.e. device metrics) should be
   // updated in Orion or not. If this attribute is not specified, data is updated in Orion. If
   // this attribute is specified, a value of "true" indicates that the device should be registered,
   // any other value indicates that the device should not be registered.
@@ -105,7 +105,7 @@ public interface AppConfig {
   @WithDefault("maintainedBy")
   String esthesisOrionMetadataName();
 
-  // The name of the metadata property to indicate what was the source of an attribute in
+  // The name of the metadata attribute to indicate what was the source of an attribute in
   // Orion maintained by esthesis (i.e. an esthesis device attribute, an esthesis telemetry value,
   // or an esthesis metadata value).
   @WithDefault("attributeSource")

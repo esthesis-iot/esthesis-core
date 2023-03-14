@@ -1,0 +1,10 @@
+{{ if .Values.global.devEnv.enabled }}
+*************************
+* DEV ENVIRONMENT SETUP *
+*************************
+Update your hosts file with the result of the following command:
+
+echo $(kubectl get services orion-ld --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-orion-ld
+echo $(kubectl get services orion-ld-mongo --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-orion-ld-mongo
+
+{{ end }}

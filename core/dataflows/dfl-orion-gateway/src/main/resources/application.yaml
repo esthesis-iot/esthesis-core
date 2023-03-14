@@ -22,7 +22,3 @@ quarkus:
     caffeine:
       "is-data-update-allowed":
         expire-after-write: ${ESTHESIS_DFL_CACHE_IS_DATA_UPDATE_ALLOWED_EXPIRATION:10S}
-
-#esthesis:
-#  dfl:
-#    orion-retro-create-devices-schedule: "0 0 4/24 ? * * *"

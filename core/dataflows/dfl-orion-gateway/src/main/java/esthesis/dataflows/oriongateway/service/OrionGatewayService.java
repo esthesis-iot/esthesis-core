@@ -219,12 +219,12 @@ public class OrionGatewayService {
     orionEntity.setType(orionDeviceType);
     // Add a custom attribute with the esthesis ID.
     esthesisDeviceAttributes.add(
-        DeviceAttributeEntity.builder().attributeName(appConfig.metadataEsthesisId())
+        DeviceAttributeEntity.builder().attributeName(appConfig.attributeEsthesisId())
             .attributeValue(esthesisDevice.getId().toHexString()).attributeType(ValueType.STRING)
             .build());
     // Add a custom attribute with the esthesis hardware ID.
     esthesisDeviceAttributes.add(
-        DeviceAttributeEntity.builder().attributeName(appConfig.metadataEsthesisHardwareId())
+        DeviceAttributeEntity.builder().attributeName(appConfig.attributeEsthesisHardwareId())
             .attributeValue(esthesisDevice.getHardwareId()).attributeType(ValueType.STRING)
             .build());
     orionEntity.setAttributes(
@@ -251,7 +251,7 @@ public class OrionGatewayService {
     // Find all Orion attributes managed by esthesis.
     List<DeviceAttributeEntity> esthesisManagedAttributes = esthesisAttributes.stream().filter(
         deviceAttribute -> !deviceAttribute.getAttributeName()
-            .equals(appConfig.metadataEsthesisId())).toList();
+            .equals(appConfig.attributeEsthesisId())).toList();
 
     // Add all esthesis attributes in Orion.
     for (DeviceAttributeEntity esthesisAttribute : esthesisManagedAttributes) {
@@ -264,7 +264,7 @@ public class OrionGatewayService {
 
     // For every esthesis managed attribute in Orion, if it does not exist in esthesis, delete it.
     for (OrionAttributeDTO orionAttribute : orionEntity.getAttributes()) {
-      if (!orionAttribute.getName().equals(appConfig.metadataEsthesisId())
+      if (!orionAttribute.getName().equals(appConfig.attributeEsthesisId())
           && esthesisManagedAttributes.stream()
           .noneMatch(attribute -> attribute.getAttributeName().equals(orionAttribute.getName()))) {
         log.debug("Deleting attribute '{}' from Orion.", orionAttribute.getName());

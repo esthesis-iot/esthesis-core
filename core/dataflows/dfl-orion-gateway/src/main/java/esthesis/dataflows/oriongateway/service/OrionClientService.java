@@ -124,7 +124,7 @@ public class OrionClientService {
     List<Map<String, Object>> entitiesMatched = orionClient.query(
         OrionQueryDTO.builder().expression(
                 Expression.builder()
-                    .q(appConfig.metadataEsthesisHardwareId() + "==" + esthesisHardwareId).build())
+                    .q(appConfig.attributeEsthesisHardwareId() + "==" + esthesisHardwareId).build())
             .build());
     if (CollectionUtils.isEmpty(entitiesMatched)) {
       return null;
@@ -143,7 +143,7 @@ public class OrionClientService {
     // Find the Orion Entity for this device.
     List<Map<String, Object>> entitiesMatched = orionClient.query(
         OrionQueryDTO.builder().expression(
-                Expression.builder().q(appConfig.metadataEsthesisId() + "==" + esthesisId).build())
+                Expression.builder().q(appConfig.attributeEsthesisId() + "==" + esthesisId).build())
             .build());
 
     if (CollectionUtils.isEmpty(entitiesMatched)) {

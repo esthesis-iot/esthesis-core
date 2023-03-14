@@ -39,18 +39,18 @@ spec:
           ports:
             - containerPort: 1026
           args:
-            - "-dbhost"
+            - -dbhost
             - mongodb
-            - "-logLevel"
+            - -logLevel
             - DEBUG
-            - "-noCache"
-            - "-dbAuthDb"
+            - -noCache
+            - -dbAuthDb
             - orion
-            - "-dbuser"
+            - -dbuser
             - orion
-            - "-dbpwd"
+            - -dbpwd
             - orion
-            - "-db"
+            - -db
             - orion
           startupProbe:
             httpGet:

@@ -32,4 +32,4 @@ spec:
             - -p
             - root
             - --eval
-            - "if(db.getUser('orion')) { print('User already exists.'); } else { db.getSiblingDB('orion').createUser({ user: 'orion', pwd: 'orion', roles: [{ role: 'readWrite', db: 'orion' }]}) }"
+            - "if(db.getSiblingDB('orion').getUser('orion')) { print('User already exists.'); } else { db.getSiblingDB('orion').createUser({ user: 'orion', pwd: 'orion', roles: [{ role: 'readWrite', db: 'orion' }]}) }"
