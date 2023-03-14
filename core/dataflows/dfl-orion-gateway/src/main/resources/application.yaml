@@ -21,4 +21,16 @@ quarkus:
   cache:
     caffeine:
       "is-data-update-allowed":
-        expire-after-write: ${ESTHESIS_DFL_CACHE_IS_DATA_UPDATE_ALLOWED_EXPIRATION:10S}
+        expire-after-write: ${ESTHESIS_DFL_CACHE_IS_DATA_UPDATE_ALLOWED_EXPIRATION:24H}
+  rest-client:
+    DeviceSystemResource:
+      scope: Singleton
+  oidc-client:
+    auth-server-url: http://keycloak/realms/esthesis
+    client-id: esthesis
+    grant:
+      type: PASSWORD
+    grant-options:
+      password:
+        username: esthesis-system
+        password: esthesis-system

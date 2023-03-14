@@ -103,6 +103,22 @@ public class OrionGatewayRoute extends RouteBuilder {
     }
     // @formatter:on
 
+    // Listen for metadata messages.
+    // @formatter:off
+    if (appConfig.kafkaMetadataTopic().isPresent()) {
+      log.info("Creating route from Kafka topic '{}'.", appConfig.kafkaMetadataTopic().get());
+
+      from("kafka:" + appConfig.kafkaMetadataTopic().get())
+          .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
+          .to("seda:metadata");
+
+      from("seda:metadata")
+          .bean(orionGatewayService, "processData");
+      } else {
+        log.warn("No Kafka topic for metadata messages is set.");
+    }
+    // @formatter:on
+
     log.info("Routes created successfully.");
   }
 }

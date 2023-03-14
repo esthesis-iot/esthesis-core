@@ -25,11 +25,6 @@ public interface OrionClient {
   @Retry(maxRetries = 3)
   String getVersion();
 
-//  @GET
-//  @Path("/v2/entities/{entityId}")
-//  @Retry(maxRetries = 3)
-//  List<Map<String, Object>> getEntity(@PathParam("entityId") String entityId);
-
   @POST
   @Path("/v2/entities")
   @Retry(maxRetries = 3)
