@@ -1,17 +1,14 @@
 package esthesis.service.dataflow.impl.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.slugify.Slugify;
 import esthesis.common.data.MapUtils;
 import esthesis.service.common.BaseService;
 import esthesis.service.dataflow.dto.DockerTagsDTO;
 import esthesis.service.dataflow.entity.DataflowEntity;
 import esthesis.service.dataflow.impl.docker.DockerClient;
-import esthesis.service.dataflow.impl.repository.DataflowRepository;
 import esthesis.service.kubernetes.dto.PodInfoDTO;
 import esthesis.service.kubernetes.resource.KubernetesResource;
-import esthesis.service.settings.resource.SettingsResource;
-import esthesis.service.tag.resource.TagResource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,10 +28,9 @@ public class DataflowService extends BaseService<DataflowEntity> {
   private static final String KUBERNETES_MAX_PODS = "pods-max";
   private static final String KUBERNETES_CPU_REQUEST = "cpu-request";
   private static final String KUBERNETES_CPU_LIMIT = "cpu-limit";
-
-  @Inject
-  @RestClient
-  SettingsResource settingsResource;
+  private final static String CUSTOM_ENV_VARS_KEY_NAME = "env";
+  private final static String CUSTOM_ENV_VARS_SEPARATOR = "\n";
+  private final static String CUSTOM_ENV_VARS_KEY_VALUE_SEPARATOR = "=";
 
   @Inject
   @RestClient
@@ -42,17 +38,7 @@ public class DataflowService extends BaseService<DataflowEntity> {
 
   @Inject
   @RestClient
-  TagResource tagResource;
-
-  @Inject
-  @RestClient
   KubernetesResource kubernetesResource;
-
-  @Inject
-  DataflowRepository dataflowRepository;
-
-  @Inject
-  ObjectMapper objectMapper;
 
   private Map<String, String> flattenMap(Map<String, Object> map) {
     return map.entrySet().stream().flatMap(MapUtils::flatten)
@@ -61,16 +47,38 @@ public class DataflowService extends BaseService<DataflowEntity> {
   }
 
   /**
-   * Converts the configuration options of a dataflow to environmental variables for Kubernetes. Key
-   * names are uppercased, and dots and dashes are replaced with underscores.
+   * Converts the configuration options of a dataflow to environmental variables for Kubernetes.
    *
    * @param map       The configuration options to convert.
    * @param keyPrefix The prefix to add to the keys.
    */
   private Map<String, String> makeEnvironmentVariables(Map<String, String> map, String keyPrefix) {
-    return map.entrySet().stream().map(entry -> Map.entry(
-        keyPrefix + entry.getKey().toUpperCase().replace(".", "_").replace("-", "_"),
-        entry.getValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    Map<String, String> env = new HashMap<>();
+    map.forEach((key, value) -> {
+      String newKey = keyPrefix + key.toUpperCase().replace(".", "_").replace("-", "_");
+      env.put(newKey, value);
+      log.debug("Adding key '{}' with value '{}' to environment variables.", newKey, value);
+    });
+
+    return env;
+  }
+
+  /**
+   * Converts free-form environmental variables to environmental variables for Kubernetes.
+   *
+   * @param envString A string containing the environmental variables.
+   */
+  private Map<String, String> addCustomEnvVariables(String envString) {
+    Map<String, String> env = new HashMap<>();
+    String[] envVarsArray = envString.split(CUSTOM_ENV_VARS_SEPARATOR);
+    for (String envVar : envVarsArray) {
+      String[] envVarArray = envVar.split(CUSTOM_ENV_VARS_KEY_VALUE_SEPARATOR);
+      env.put(envVarArray[0], envVarArray[1]);
+      log.debug("Adding key '{}' with value '{}' to environment variables.", envVarArray[0],
+          envVarArray[1]);
+    }
+
+    return env;
   }
 
   @Override
@@ -95,6 +103,8 @@ public class DataflowService extends BaseService<DataflowEntity> {
     podInfoDTO.setCpuLimit((String) dataflowEntity.getKubernetes().get(KUBERNETES_CPU_LIMIT));
     podInfoDTO.setConfiguration(
         makeEnvironmentVariables(flattenMap(dataflowEntity.getConfig()), "ESTHESIS_DFL_"));
+    podInfoDTO.getConfiguration().putAll(addCustomEnvVariables(
+        dataflowEntity.getKubernetes().get(CUSTOM_ENV_VARS_KEY_NAME).toString()));
     podInfoDTO.setStatus(dataflowEntity.isStatus());
 
     kubernetesResource.schedulePod(podInfoDTO);

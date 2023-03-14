@@ -23,6 +23,7 @@ public class PodInfoDTO {
   private String cpuRequest;
   private String cpuLimit;
   private boolean status;
+  private String env;
 
   private Map<String, String> configuration;
 }

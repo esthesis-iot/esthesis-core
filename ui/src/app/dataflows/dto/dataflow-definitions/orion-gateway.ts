@@ -25,7 +25,7 @@ export const DATAFLOW_DEFINITION_FIWARE_ORION = {
           props: {label: "The URL of the Orion Context Broker, accessible from Kubernetes", required: true}
         },
         {
-          key: "orion-default-type", type: "input",
+          key: "orion-default-type", type: "input", defaultValue: "Device",
           props: {label: "The Device Type to use when registering devices in Orion", required: true}
         },
         {
@@ -34,19 +34,16 @@ export const DATAFLOW_DEFINITION_FIWARE_ORION = {
         },
         {
           key: "orion-id-attribute", type: "input",
-          props: {label: "The name of a true/false device attribute indicating the ID to use when registering devices in Orion"}
+          props: {label: "The name of a device attribute indicating the ID to use when registering devices in Orion"}
         },
         {
           key: "orion-id-prefix", type: "input",
           props: {label: "A prefix to add to the device ID when registering devices in Orion, when not using an attribute-defined ID"}
         },
         {
-          key: "orion-registration-enabled-attribute", type: "select", defaultValue: "true",
+          key: "orion-registration-enabled-attribute", type: "input",
           props: {
-            label: "A device attribute indicating whether the device should be registered in Orion or not", options: [
-              {value: "true", label: "Yes"},
-              {value: "false", label: "No"}
-            ],
+            label: "A true/false device attribute indicating whether the device should be registered in Orion or not"
           }
         },
         {
@@ -100,7 +97,7 @@ export const DATAFLOW_DEFINITION_FIWARE_ORION = {
         },
         {
           key: "orion-update-data-attribute", type: "input",
-          props: {label: "A device attribute indicating whether data for this device should be updated in Orion or not"}
+          props: {label: "A true/false device attribute indicating whether data for this device should be updated in Orion or not"}
         },
 
         {
@@ -135,9 +132,26 @@ export const DATAFLOW_DEFINITION_FIWARE_ORION = {
           props: {label: "Kafka consumer group"}
         },
         {
-          key: "command-reply-topic", type: "input", defaultValue: "esthesis-command-reply",
-          props: {label: "Kafka topic to read command reply messages from", required: true}
-        }
+          key: "telemetry-topic", type: "input",
+          defaultValue: "esthesis-telemetry",
+          props: {
+            label: "The topic to read telemetry data from devices",
+          },
+        },
+        {
+          key: "metadata-topic", type: "input",
+          defaultValue: "esthesis-metadata",
+          props: {
+            label: "The topic to read metadata data from devices",
+          },
+        },
+        {
+          key: "application-topic", type: "input",
+          defaultValue: "esthesis-app",
+          props: {
+            label: "The topic to read platform notification data",
+          },
+        },
       ]
     },
     ...DATAFLOW_TEMPLATE_WRAPPED_KUBERNETES,

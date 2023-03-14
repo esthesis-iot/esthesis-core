@@ -1,6 +1,6 @@
 export const DATAFLOW_TEMPLATE_MAIN = [
-  {key: "name", type: "input", props: {required: true, type: "text", label: "Name"}},
-  {key: "description", type: "input", props: {required: false, type: "text", label: "Description"}}
+  {key: "name", type: "input", props: {required: true, label: "Name"}},
+  {key: "description", type: "input", props: {required: false, label: "Description"}}
 ];
 
 export const DATAFLOW_TEMPLATE_TAGS = [
@@ -21,15 +21,15 @@ export const DATAFLOW_TEMPLATE_WRAPPED_CONCURRENCY = [{
   fieldGroup: [
     {
       key: "queue-size", type: "input", defaultValue: "1000", props: {
-        required: true, type: "text", label: "Number of messages in the processing queue",
+        required: true, label: "Number of messages in the processing queue",
       }
     }, {
       key: "poll-timeout", type: "input", defaultValue: "500", props: {
-        required: true, type: "text", label: "How often to poll the queue for new messages (in msec)",
+        required: true, label: "How often to poll the queue for new messages (in msec)",
       }
     }, {
       key: "consumers", type: "input", defaultValue: "10", props: {
-        required: true, type: "text", label: "Number of concurrent message consumers",
+        required: true, label: "Number of concurrent message consumers",
       }
     },
   ]
@@ -38,7 +38,7 @@ export const DATAFLOW_TEMPLATE_WRAPPED_CONCURRENCY = [{
 export const DATAFLOW_TEMPLATE_KAFKA = [
   {
     key: "cluster-url", type: "input", defaultValue: "kafka:9092",
-    props: {required: true, type: "text", label: "Cluster URL"}
+    props: {required: true, label: "Cluster URL"}
   },
 ];
 
@@ -46,9 +46,9 @@ export const DATAFLOW_TEMPLATE_WRAPPED_KUBERNETES = [{
   key: "kubernetes", wrappers: ["section"],
   props: {label: "Kubernetes Scheduling"},
   fieldGroup: [
-    {key: "namespace", type: "select", props: {required: true, type: "text", label: "Namespace"}},
-    {key: "cpu-request", type: "input", defaultValue: "250m", props: {required: true, type: "text", label: "CPU Request"}},
-    {key: "cpu-limit", type: "input", defaultValue: "1", props: {required: true, type: "text", label: "CPU Limit"}},
+    {key: "namespace", type: "select", props: {required: true, label: "Namespace"}},
+    {key: "cpu-request", type: "input", defaultValue: "250m", props: {required: true, label: "CPU Request"}},
+    {key: "cpu-limit", type: "input", defaultValue: "1", props: {required: true, label: "CPU Limit"}},
     {
       key: "docker", type: "select",
       props: {
@@ -64,6 +64,7 @@ export const DATAFLOW_TEMPLATE_WRAPPED_KUBERNETES = [{
       key: "pods-max", type: "input", defaultValue: "10",
       props: {label: "Maximum pods", required: true},
     },
+    {key: "env", type: "textarea", props: {label: "Environment variables", rows: 3}},
   ]
 }];
 
