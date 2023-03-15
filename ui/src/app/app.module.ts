@@ -16,11 +16,12 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatButtonModule} from "@angular/material/button";
 import {FaConfig, FaIconLibrary, FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {
+  faAddressCard,
   faArrowUpRightFromSquare,
   faBars,
   faBarsProgress,
   faBell,
-  faBroadcastTower,
+  faBroadcastTower, faBuildingShield,
   faCalendar,
   faCaretDown,
   faCertificate,
@@ -40,7 +41,7 @@ import {
   faEnvelope,
   faEnvelopeOpen,
   faFlag,
-  faForward,
+  faForward, faGear,
   faGlobe,
   faHeart,
   faHeartCircleBolt,
@@ -72,8 +73,8 @@ import {
   faTriangleExclamation,
   faUpRightFromSquare,
   faUser,
-  faUserClock,
-  faXmark
+  faUserClock, faUsers, faUsersBetweenLines,
+  faXmark, faXmarksLines
 } from "@fortawesome/free-solid-svg-icons";
 import {faGithub, faInstagram, faTwitter} from "@fortawesome/free-brands-svg-icons";
 import {ComponentsModule} from "./shared/components/components.module";
@@ -84,7 +85,7 @@ import {httpLoaderFactory} from "./shared/services/auth.service";
   bootstrap: [AppComponent],
   declarations: [
     AppComponent,
-    CallbackComponent
+    CallbackComponent,
   ],
   imports: [
     BrowserModule,
@@ -102,24 +103,6 @@ import {httpLoaderFactory} from "./shared/services/auth.service";
       trickleSpeed: 500
     }),
     NgProgressHttpModule,
-    // AuthModule.forRoot({
-    //   config: {
-    //     // TODO make this configurable
-    //     authority: "http://esthesis-dev-keycloak/realms/esthesis",
-    //     redirectUrl: window.location.origin + "/callback",
-    //     postLogoutRedirectUri: window.location.origin + "/callback",
-    //     clientId: "esthesis",
-    //     scope: "openid profile offline_access",
-    //     responseType: "code",
-    //     silentRenew: true,
-    //     useRefreshToken: true,
-    //     renewTimeBeforeTokenExpiresInSeconds: 30,
-    //     maxIdTokenIatOffsetAllowedInSeconds: 10,
-    //     ignoreNonceAfterRefresh: true,
-    //     secureRoutes: ["/dev", "/api"],
-    //     logLevel: LogLevel.Warn
-    //   }
-    // }),
     AuthModule.forRoot({
       loader: {
         provide: StsConfigLoader,
@@ -151,7 +134,10 @@ export class AppModule {
       faCircleInfo, faHeartCircleBolt, faEnvelope, faStopwatch, faBarsProgress, faDashboard,
       faPercent, faCertificate, faStamp, faShieldHalved, faDiagramProject, faCheck, faSquareCheck,
       faSquare, faNetworkWired, faEnvelopeOpen, faDesktop, faIdBadge, faCog, faSpinner,
-      faArrowUpRightFromSquare, faCaretDown);
+      faArrowUpRightFromSquare, faCaretDown, faAddressCard, faBroadcastTower, faBuildingShield,
+      faCertificate, faCubes, faDashboard, faDesktop, faDiagramProject, faGear, faGlobe,
+      faMicrochip, faNetworkWired, faShieldHalved, faStamp, faTag, faUser, faUsers,
+      faUsersBetweenLines, faXmarksLines);
     faConfig.fixedWidth = true;
   }
 }

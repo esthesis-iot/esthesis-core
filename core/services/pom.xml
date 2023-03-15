@@ -99,5 +99,6 @@
     <module>srv-audit</module>
     <module>srv-campaign</module>
     <module>srv-public-access</module>
+    <module>srv-security</module>
   </modules>
 </project>

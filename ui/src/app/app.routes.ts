@@ -93,6 +93,11 @@ export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
       path: "dataflow",
       loadChildren: () => import("./dataflows/dataflows.module").then(m => m.DataflowsModule),
       canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Dataflows"}
+    },
+    {
+      path: "security",
+      loadChildren: () => import("./security/security.module").then(m => m.SecurityModule),
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Security"}
     }
   ],
   {
