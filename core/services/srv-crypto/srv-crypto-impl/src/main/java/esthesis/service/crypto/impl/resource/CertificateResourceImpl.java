@@ -51,7 +51,8 @@ public class CertificateResourceImpl implements CertificateResource {
   @Path("/v1/find")
   @JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.issuer,content"
       + ".validity,content.name")
-  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Search certificates", log = AuditLogType.DATA_IN)
+  @Audited(cat = Category.CRYPTO, op = Operation.RETRIEVE, msg = "Search certificates", log =
+      AuditLogType.DATA_IN)
   public Page<CertificateEntity> find(@BeanParam Pageable pageable) {
     return certificateService.find(pageable);
   }
@@ -60,13 +61,14 @@ public class CertificateResourceImpl implements CertificateResource {
   @Override
   @Path("/v1/{id}")
   @JSONReplyFilter(filter = "id,cn,issued,validity,issuer,san,name")
-  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "View certificate")
+  @Audited(cat = Category.CRYPTO, op = Operation.RETRIEVE, msg = "View certificate")
   public CertificateEntity findById(String id) {
     return certificateService.findById(id);
   }
 
   @Override
-  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Download certificate", log = AuditLogType.DATA_IN)
+  @Audited(cat = Category.CRYPTO, op = Operation.RETRIEVE, msg = "Download certificate", log =
+      AuditLogType.DATA_IN)
   public Response download(String certId, AppConstants.KeyType type) {
     CertificateEntity cert = certificateService.findById(certId);
 
@@ -92,7 +94,7 @@ public class CertificateResourceImpl implements CertificateResource {
   }
 
   @Override
-  @Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Import certificate")
+  @Audited(cat = Category.CRYPTO, op = Operation.UPDATE, msg = "Import certificate")
   public CertificateEntity importCertificate(ImportCertificateForm importCertificateForm) {
     return certificateService.importCertificate(importCertificateForm);
   }
@@ -104,7 +106,7 @@ public class CertificateResourceImpl implements CertificateResource {
   }
 
   @Override
-  @Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Save certificate")
+  @Audited(cat = Category.CRYPTO, op = Operation.UPDATE, msg = "Save certificate")
   public CertificateEntity save(CertificateEntity certificateEntity) {
     return certificateService.save(certificateEntity);
   }

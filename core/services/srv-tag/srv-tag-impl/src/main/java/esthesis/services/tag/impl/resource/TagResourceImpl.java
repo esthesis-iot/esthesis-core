@@ -32,7 +32,7 @@ public class TagResourceImpl implements TagResource {
   @GET
   @Override
   @Path("/v1/find")
-  @Audited(cat = Category.TAG, op = Operation.READ, msg = "Search tags", log = AuditLogType.DATA_IN)
+  @Audited(cat = Category.TAG, op = Operation.RETRIEVE, msg = "Search tags", log = AuditLogType.DATA_IN)
   public Page<TagEntity> find(@BeanParam Pageable pageable) {
     return tagService.find(pageable, true);
   }
@@ -43,7 +43,7 @@ public class TagResourceImpl implements TagResource {
   }
 
   @Override
-  @Audited(cat = Category.TAG, op = Operation.READ, msg = "View tag")
+  @Audited(cat = Category.TAG, op = Operation.RETRIEVE, msg = "View tag")
   public TagEntity findById(@PathParam("id") String id) {
     return tagService.findById(id);
   }
@@ -67,7 +67,7 @@ public class TagResourceImpl implements TagResource {
   }
 
   @Override
-  @Audited(cat = Category.TAG, op = Operation.WRITE, msg = "Save tag")
+  @Audited(cat = Category.TAG, op = Operation.UPDATE, msg = "Save tag")
   public TagEntity save(@Valid TagEntity tagEntity) {
     return tagService.save(tagEntity);
   }

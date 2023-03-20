@@ -173,5 +173,40 @@ export const AppConstants = {
     OK: 3
   },
 
+  SECURITY: {
+    // Equivalent to AppConstants.Audit.Category
+    OBJECT_TYPE: {
+      ABOUT: "ABOUT",
+      APPLICATION: "APPLICATION",
+      AUDIT: "AUDIT",
+      CAMPAIGN: "CAMPAIGN",
+      COMMAND: "COMMAND",
+      CRYPTO: "CRYPTO",
+      DATAFLOW: "DATAFLOW",
+      DEVICE: "DEVICE",
+      DIGITAL_TWIN: "DIGITAL_TWIN",
+      INFRASTRUCTURE: "INFRASTRUCTURE",
+      KUBERNETES: "KUBERNETES",
+      PROVISIONING: "PROVISIONING",
+      SETTINGS: "SETTINGS",
+      TAG: "TAG",
+      USERS: "USERS",
+      GROUPS: "GROUPS",
+      ROLES: "ROLES",
+      POLICIES: "POLICIES"
+    },
+    // Equivalent to AppConstants.Audit.Operation
+    OPERATION: {
+      READ: "READ",
+      WRITE: "WRITE",
+      DELETE: "DELETE",
+      CREATE: "CREATE"
+    },
+    PERMISSION: {
+      ALLOW: "ALLOW",
+      DENY: "DENY"
+    }
+  }
+
 };
 

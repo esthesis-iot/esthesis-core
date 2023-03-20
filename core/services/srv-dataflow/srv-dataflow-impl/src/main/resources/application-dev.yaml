@@ -34,7 +34,7 @@ quarkus:
         otlp:
           endpoint: http://esthesis-dev-jaeger-collector-grpc:4317
   config:
-    locations: "../../../setup/dev/profiles/application-dev-profiles.yaml"
+    locations: "../../../../setup/dev/profiles"
 
 mp:
   jwt:

@@ -29,7 +29,7 @@ public class AuditResourceImpl implements AuditResource {
   @GET
   @Override
   @Path("/v1/find")
-  @Audited(cat = Category.AUDIT, op = Operation.READ, msg = "Search audit",
+  @Audited(cat = Category.AUDIT, op = Operation.RETRIEVE, msg = "Search audit",
       log = AuditLogType.DATA_IN)
   @JSONReplyFilter(filter = "content,content.id,content.createdOn,content.createdBy,"
       + "content.operation,content.category,content.message")
@@ -48,13 +48,13 @@ public class AuditResourceImpl implements AuditResource {
   }
 
   @Override
-  @Audited(cat = Category.AUDIT, op = Operation.READ, msg = "View audit entry")
+  @Audited(cat = Category.AUDIT, op = Operation.RETRIEVE, msg = "View audit entry")
   public AuditEntity findById(String id) {
     return auditService.findById(id);
   }
 
   @Override
-  @Audited(cat = Category.AUDIT, op = Operation.READ, msg = "Delete audit entry")
+  @Audited(cat = Category.AUDIT, op = Operation.RETRIEVE, msg = "Delete audit entry")
   public Response delete(String id) {
     if (auditService.deleteById(id)) {
       return Response.ok().build();

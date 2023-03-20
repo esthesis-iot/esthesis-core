@@ -29,7 +29,7 @@ public class DeviceRegistrationResourceImpl implements
    * devices in this case, separated by new lines.
    */
   @Override
-  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Preregistering device")
+  @Audited(cat = Category.DEVICE, op = Operation.UPDATE, msg = "Preregistering device")
   public Response preregister(@Valid DeviceRegistrationDTO deviceRegistration)
   throws NoSuchAlgorithmException, IOException, OperatorCreationException,
          InvalidKeySpecException, NoSuchProviderException {
@@ -45,7 +45,7 @@ public class DeviceRegistrationResourceImpl implements
   }
 
   @Override
-  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Activating preregistered device")
+  @Audited(cat = Category.DEVICE, op = Operation.UPDATE, msg = "Activating preregistered device")
   public DeviceEntity activatePreregisteredDevice(String hardwareId) {
     return deviceRegistrationService.activatePreregisteredDevice(hardwareId);
   }

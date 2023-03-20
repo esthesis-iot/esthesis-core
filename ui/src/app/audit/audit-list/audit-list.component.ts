@@ -4,7 +4,6 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {AuditDto} from "../dto/audit-dto";
 import {AuditService} from "../audit.service";
-import {UserService} from "../../users/user.service";
 import {BaseComponent} from "../../shared/components/base-component";
 import {QFilterAlias, QFormsService} from "@qlack/forms";
 import * as _ from "lodash";
@@ -12,6 +11,7 @@ import * as moment from "moment";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityUsersService} from "../../security/security-users.service";
 
 @Component({
   selector: "app-audit-list",
@@ -35,7 +35,7 @@ export class AuditListComponent extends BaseComponent implements OnInit, AfterVi
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private auditService: AuditService, private fb: FormBuilder,
-    private userService: UserService, private qForms: QFormsService,
+    private userService: SecurityUsersService, private qForms: QFormsService,
     private utilityService: UtilityService) {
     super();
     this.filterForm = this.fb.group({

@@ -52,7 +52,7 @@ quarkus:
       broker:
         gateway-address: esthesis-dev-camunda-zeebe-gateway:26500
   config:
-    locations: "../../../setup/dev/profiles/application-dev-profiles.yaml"
+    locations: "../../../../setup/dev/profiles"
 
 mp:
   jwt:

@@ -42,7 +42,7 @@ public class DeviceResourceImpl implements DeviceResource {
   JsonWebToken jwt;
 
   @Override
-  @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "Search devices", log =
+  @Audited(cat = Category.DEVICE, op = Operation.RETRIEVE, msg = "Search devices", log =
       AuditLogType.DATA_IN)
   public Page<DeviceEntity> find(@BeanParam Pageable pageable) {
     return deviceService.find(pageable, true);
@@ -51,7 +51,7 @@ public class DeviceResourceImpl implements DeviceResource {
   @GET
   @Override
   @Path("/v1/{id}")
-  @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "View device")
+  @Audited(cat = Category.DEVICE, op = Operation.RETRIEVE, msg = "View device")
   public DeviceEntity get(@PathParam("id") String id) {
     return deviceService.findById(id);
   }
@@ -63,7 +63,7 @@ public class DeviceResourceImpl implements DeviceResource {
   }
 
   @Override
-  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Save device")
+  @Audited(cat = Category.DEVICE, op = Operation.UPDATE, msg = "Save device")
   public DeviceEntity save(@Valid DeviceEntity object) {
     return deviceService.save(object);
   }
@@ -108,7 +108,7 @@ public class DeviceResourceImpl implements DeviceResource {
   }
 
   @Override
-  @Audited(cat = Category.DEVICE, op = Operation.READ, msg = "Download device", log =
+  @Audited(cat = Category.DEVICE, op = Operation.RETRIEVE, msg = "Download device", log =
       AuditLogType.DATA_IN)
   public Response download(String deviceId, AppConstants.KeyType type) {
     DeviceEntity deviceEntity = deviceService.findById(deviceId);
@@ -142,7 +142,7 @@ public class DeviceResourceImpl implements DeviceResource {
   }
 
   @Override
-  @Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Save a device profile")
+  @Audited(cat = Category.DEVICE, op = Operation.UPDATE, msg = "Save a device profile")
   public void saveProfile(String deviceId, DeviceProfileDTO deviceProfileDTO) {
     deviceService.saveProfile(deviceId, deviceProfileDTO);
   }

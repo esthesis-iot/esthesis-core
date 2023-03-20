@@ -42,7 +42,12 @@ public class AppConstants {
     PUBLIC, PRIVATE, CERTIFICATE
   }
 
+  public enum DeviceRegistrationMode {
+    DISABLED, OPEN, OPEN_WITH_SECRET, ID
+  }
+
   public static class Device {
+
     public enum Type {
       ESTHESIS, OTHER
     }
@@ -58,10 +63,6 @@ public class AppConstants {
       }
     }
 
-  }
-
-  public enum DeviceRegistrationMode {
-    DISABLED, OPEN, OPEN_WITH_SECRET, ID
   }
 
   public static class Keystore {
@@ -97,17 +98,21 @@ public class AppConstants {
 
     public static class Redis {
 
-      private Redis() {
-      }
-
       public static final String DOWNLOAD_TOKEN_PACKAGE_ID = "DTPI";
       public static final String DOWNLOAD_TOKEN_CREATED_ON = "DTCO";
+
+      private Redis() {
+      }
     }
   }
 
   public static class Audit {
 
     public enum Category {
+      CERTIFICATES,
+      CA,
+      KEYSTORE,
+
       ABOUT,
       APPLICATION,
       AUDIT,
@@ -123,22 +128,19 @@ public class AppConstants {
       SETTINGS,
       TAG,
       OTHER,
+      USERS,
+      GROUPS,
+      ROLES,
+      POLICIES,
       NULL
     }
 
     public enum Operation {
-      READ, WRITE, DELETE, OTHER, NULL
+      CREATE, RETRIEVE, UPDATE, DELETE, OTHER
     }
   }
 
   public static class Campaign {
-
-    public static class Member {
-
-      public enum Type {
-        DEVICE, TAG;
-      }
-    }
 
     public enum State {
 
@@ -149,6 +151,13 @@ public class AppConstants {
     public enum Type {
 
       PROVISIONING, EXECUTE_COMMAND, REBOOT, SHUTDOWN, PING;
+    }
+
+    public static class Member {
+
+      public enum Type {
+        DEVICE, TAG;
+      }
     }
 
     public static class Condition {

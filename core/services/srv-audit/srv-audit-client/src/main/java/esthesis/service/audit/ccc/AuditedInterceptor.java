@@ -19,20 +19,17 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 @Slf4j
 @Interceptor
 @Priority(Interceptor.Priority.APPLICATION)
-@Audited(op = Operation.NULL, cat = Category.NULL, msg = "")
+@Audited(op = Operation.OTHER, cat = Category.NULL, msg = "")
 public class AuditedInterceptor {
-
-  private int maxRequestSize = 16 * 1024 * 1000;
 
   @Inject
   JsonWebToken jwt;
-
   @Inject
   @RestClient
   AuditResource auditResource;
-
   @Inject
   ObjectMapper mapper;
+  private int maxRequestSize = 16 * 1024 * 1000;
 
   @AroundInvoke
   Object audit(InvocationContext ctx) throws Exception {

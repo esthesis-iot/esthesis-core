@@ -1,0 +1,56 @@
+<div class="card w-full rounded-b-none bg-base-200">
+  <div class="card-body">
+    <h2 class="card-title text-2xl flex flex-row justify-between">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="user"></fa-icon>
+        <div>Users</div>
+      </div>
+    </h2>
+    <div>
+      <!-- Filters -->
+      <div [formGroup]="filterForm" class="mb-10 mt-5 gap-2 flex flex-row">
+        <fa-icon icon="search" class="mt-2.5"></fa-icon>
+        <input type="text" placeholder="Username"
+               class="input w-full max-w-xs placeholder-primary-content/30"
+               formControlName="username"/>
+        <input type="text" placeholder="First name"
+               class="input w-full max-w-xs placeholder-primary-content/30"
+               formControlName="firstName"/>
+        <input type="text" placeholder="Last name"
+               class="input w-full max-w-xs placeholder-primary-content/30"
+               formControlName="lastName"/>
+        <button (click)="clearFilter()" class="btn btn-secondary btn-ghost ml-2">CLEAR</button>
+      </div>
+
+      <!-- Table -->
+      <table cdk-table [dataSource]="dataSource"
+             matSort matSortActive="username" matSortDirection="asc" matSortStart="asc"
+             matSortDisableClear aria-describedby="List of users" class="table w-full">
+        <ng-container cdkColumnDef="username">
+          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Username</th>
+          <td cdk-cell *cdkCellDef="let element">{{element.username}}</td>
+        </ng-container>
+        <ng-container cdkColumnDef="firstName">
+          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> First name</th>
+          <td cdk-cell *cdkCellDef="let element">{{element.firstName}}</td>
+        </ng-container>
+        <ng-container cdkColumnDef="lastName">
+          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Last name</th>
+          <td cdk-cell *cdkCellDef="let element">{{element.lastName}}</td>
+        </ng-container>
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr cdk-row *cdkRowDef="let element; columns: displayedColumns;"
+            [routerLink]="element.id" class="hover hover:cursor-pointer"></tr>
+      </table>
+      <mat-paginator #paginator (page)="changePage()"
+                     [pageSize]="10"
+                     [pageSizeOptions]="[10, 30, 50]"
+                     [showFirstLastButtons]="true">
+      </mat-paginator>
+    </div>
+    <div class="card-actions justify-start mt-10">
+      <button class="btn btn-sm btn-primary" [routerLink]="appConstants.NEW_RECORD_ID">CREATE
+      </button>
+    </div>
+  </div>
+</div>

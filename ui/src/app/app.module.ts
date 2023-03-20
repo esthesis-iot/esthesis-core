@@ -39,7 +39,7 @@ import {
   faDiagramProject,
   faDownload,
   faEnvelope,
-  faEnvelopeOpen,
+  faEnvelopeOpen, faFileCirclePlus,
   faFlag,
   faForward, faGear,
   faGlobe,
@@ -137,7 +137,7 @@ export class AppModule {
       faArrowUpRightFromSquare, faCaretDown, faAddressCard, faBroadcastTower, faBuildingShield,
       faCertificate, faCubes, faDashboard, faDesktop, faDiagramProject, faGear, faGlobe,
       faMicrochip, faNetworkWired, faShieldHalved, faStamp, faTag, faUser, faUsers,
-      faUsersBetweenLines, faXmarksLines);
+      faUsersBetweenLines, faXmarksLines, faFileCirclePlus);
     faConfig.fixedWidth = true;
   }
 }

@@ -17,6 +17,8 @@
       category:
         "io.quarkus.mongodb.panache.common.runtime":
           level: DEBUG
+        "org.mongodb":
+          level: DEBUG
 "%debug-token":
   quarkus:
     log:

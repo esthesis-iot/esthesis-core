@@ -1,0 +1,67 @@
+<div class="card w-full bg-base-200 rounded-b-none">
+  <div class="card-body">
+    <h2 class="card-title text-2xl flex flex-row justify-between mb-10">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="users"></fa-icon>
+        <div>Edit group</div>
+      </div>
+    </h2>
+    <div>
+      <form [formGroup]="form" novalidate>
+        <div class="flex flex-col">
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input formControlName="name" matInput>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Description</mat-label>
+            <input formControlName="description" matInput>
+          </mat-form-field>
+
+          <!-- Display all roles in a table -->
+          <div class="mt-10 text-xl">Roles</div>
+          <mat-form-field>
+            <input [formControl]="rolesFilterCtrl" [matAutocomplete]="auto"
+                   matInput placeholder="Search for a role to add...">
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option (click)="addRole()" *ngFor="let role of filteredRoles" [value]="role.id">
+                <span class="font-bold">{{role.name}}</span><br>
+                <span class="font-thin">{{role.description}}</span>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <table class="table w-full">
+            <thead>
+            <tr>
+              <th class="text-left">Name</th>
+              <th class="text-left">Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let roleId of form.controls.roles.value as string">
+              <td>{{getRoleName(roleId)}}</td>
+              <td>{{getRoleDescription(roleId)}}</td>
+              <td>
+                <button (click)="removeRole(roleId)"
+                        class="btn btn-sm btn-ghost" matTooltip="Remove role">
+                  <fa-icon icon="trash-can"></fa-icon>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </form>
+    </div>
+    <div class="card-actions justify-start mt-10">
+      <button class="btn btn-sm btn-secondary" routerLink="/security/groups">CANCEL</button>
+      <button (click)="delete()" *ngIf="id !== appConstants.NEW_RECORD_ID"
+              class="btn btn-sm btn-accent">DELETE
+      </button>
+      <button (click)="save()" [disabled]="form.invalid"
+              class="btn btn-sm btn-primary">SAVE
+      </button>
+    </div>
+  </div>
+</div>

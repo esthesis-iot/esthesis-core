@@ -1,0 +1,41 @@
+<div class="card w-full bg-base-200 rounded-b-none">
+  <div class="card-body">
+    <h2 class="card-title text-2xl flex flex-row justify-between mb-10">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="building-shield"></fa-icon>
+        <div>Edit policy</div>
+      </div>
+    </h2>
+    <div>
+      <form novalidate [formGroup]="form">
+        <div class="flex flex-col">
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Description</mat-label>
+            <input matInput formControlName="description">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Rule</mat-label>
+            <input matInput formControlName="rule">
+            <fa-icon icon="file-circle-plus" matSuffix class="mr-3 cursor-pointer"
+                     (click)="policyEditor()" matTooltip="Rule editor"></fa-icon>
+          </mat-form-field>
+        </div>
+      </form>
+    </div>
+    <div class="card-actions justify-start mt-10">
+      <button class="btn btn-sm btn-secondary" routerLink="/security/policies">CANCEL</button>
+      <button class="btn btn-sm btn-accent" (click)="delete()"
+              *ngIf="id !== appConstants.NEW_RECORD_ID">DELETE
+      </button>
+      <button class="btn btn-sm btn-primary" (click)="save()"
+              [disabled]="form.invalid">SAVE
+      </button>
+    </div>
+  </div>
+</div>

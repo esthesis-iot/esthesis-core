@@ -41,7 +41,7 @@ quarkus:
         username: esthesis-system
         password: esthesis-system
   config:
-    locations: "../../../setup/dev/profiles/application-dev-profiles.yaml"
+    locations: "../../../../setup/dev/profiles"
 
 mp:
   jwt:

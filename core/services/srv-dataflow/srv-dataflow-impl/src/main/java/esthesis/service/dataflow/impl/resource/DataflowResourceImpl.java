@@ -28,14 +28,14 @@ public class DataflowResourceImpl implements DataflowResource {
   @Path("/v1/find")
   @JSONReplyFilter(filter = "content,content.id,content.name,content.type,"
       + "content.status,content.description")
-  @Audited(cat = Category.DATAFLOW, op = Operation.READ, msg = "Search dataflows",
+  @Audited(cat = Category.DATAFLOW, op = Operation.RETRIEVE, msg = "Search dataflows",
       log = AuditLogType.DATA_IN)
   public Page<DataflowEntity> find(@BeanParam Pageable pageable) {
     return dataflowService.find(pageable, true);
   }
 
   @Override
-  @Audited(cat = Category.DATAFLOW, op = Operation.READ, msg = "View dataflow")
+  @Audited(cat = Category.DATAFLOW, op = Operation.RETRIEVE, msg = "View dataflow")
   public DataflowEntity findById(String id) {
     return dataflowService.findById(id);
   }
@@ -48,7 +48,7 @@ public class DataflowResourceImpl implements DataflowResource {
   }
 
   @Override
-  @Audited(cat = Category.DATAFLOW, op = Operation.WRITE, msg = "Save dataflow")
+  @Audited(cat = Category.DATAFLOW, op = Operation.UPDATE, msg = "Save dataflow")
   public DataflowEntity save(DataflowEntity dataflowEntity) {
     return dataflowService.save(dataflowEntity);
   }

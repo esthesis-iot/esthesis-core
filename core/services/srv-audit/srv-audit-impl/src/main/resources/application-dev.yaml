@@ -27,7 +27,7 @@ quarkus:
       url: http://localhost:59140
       scope: Singleton
   config:
-    locations: "../../../setup/dev/profiles/application-dev-profiles.yaml"
+    locations: "../../../../setup/dev/profiles"
 
 mp:
   jwt:

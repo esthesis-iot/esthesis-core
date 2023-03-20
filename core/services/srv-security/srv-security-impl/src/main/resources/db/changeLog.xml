@@ -1,0 +1,281 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+  xmlns:ext="https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.18.xsd">
+
+  <changeSet author="European Dynamics SA" id="srv-security-1">
+    <ext:createCollection collectionName="User" />
+    <ext:createCollection collectionName="Group" />
+    <ext:createCollection collectionName="Role" />
+    <ext:createCollection collectionName="Policy" />
+
+    <ext:insertMany collectionName="Policy">
+      <ext:documents>
+        [
+        {"_id": ObjectId("64180aacd7edc1e1200903d6"), "name": "Allow all", "description": "Allow all types of access to everything", "rule": "ern:esthesis:core:*:*:*:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903d7"), "name": "Deny all", "description": "Deny all types of access to everything", "rule": "ern:esthesis:core:*:*:*:deny"},
+
+        {"_id": ObjectId("64180aacd7edc1e1200903d8"), "name": "Allow device preregistration", "description": "Allow preregistration of devices", "rule": "ern:esthesis:core:device:*:create:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903d9"), "name": "Deny device preregistration", "description": "Deny preregistration of devices", "rule": "ern:esthesis:core:device:*:create:deny"},
+        {"_id": ObjectId("64180aacd7edc1e1200903da"), "name": "Allow devices view", "description": "Allow viewing devices", "rule": "ern:esthesis:core:device:*:retrieve:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903db"), "name": "Deny devices view", "description": "Deny viewing devices", "rule": "ern:esthesis:core:device:*:retrieve:deny"},
+        {"_id": ObjectId("64180aacd7edc1e1200903dc"), "name": "Allow devices updates", "description": "Allow updating devices", "rule": "ern:esthesis:core:device:*:update:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903dd"), "name": "Deny devices updates", "description": "Deny updating devices", "rule": "ern:esthesis:core:device:*:update:deny"},
+        {"_id": ObjectId("64180aacd7edc1e1200903de"), "name": "Allow devices delete", "description": "Allow deleting devices", "rule": "ern:esthesis:core:device:*:delete:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903df"), "name": "Deny devices delete", "description": "Deny deleting devices", "rule": "ern:esthesis:core:device:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e12009045a"), "name": "Allow all device functionality", "description": "Allow viewing and modifying all devices", "rule": "ern:esthesis:core:device:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e12009045b"), "name": "Deny all device functionality", "description": "Deny viewing and modifying all devices", "rule": "ern:esthesis:core:device:*:*:deny"},
+
+        {"_id": ObjectId("64180aacd7edc1e1200903e0"), "name": "Allow command execution", "description": "Allow executing commands to devices", "rule": "ern:esthesis:core:command:*:create:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903e1"), "name": "Deny command execution", "description": "Deny executing command to devices", "rule": "ern:esthesis:core:command:*:create:deny"},
+        {"_id": ObjectId("64180aacd7edc1e1200903e2"), "name": "Allow commands view", "description": "Allow viewing commands", "rule": "ern:esthesis:core:command:*:retrieve:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903e3"), "name": "Deny commands view", "description": "Deny viewing commands", "rule": "ern:esthesis:core:command:*:retrieve:deny"},
+        {"_id": ObjectId("64180aacd7edc1e1200903e4"), "name": "Allow commands delete", "description": "Allow deleting commands and replies", "rule": "ern:esthesis:core:command:*:delete:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903e5"), "name": "Deny commands delete", "description": "Deny deleting commands and replies", "rule": "ern:esthesis:core:command:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e12009045d"), "name": "Allow all commands functionality", "description": "Allow viewing and modifying all commands", "rule": "ern:esthesis:core:command:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e12009045e"), "name": "Deny all commands functionality", "description": "Deny viewing and modifying all commands", "rule": "ern:esthesis:core:command:*:*:deny"},
+
+        {"_id": ObjectId("64180aacd7edc1e1200903e6"), "name": "Allow provisioning create", "description": "Allow executing provisioning requests to devices", "rule": "ern:esthesis:core:provisioning:*:create:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903e7"), "name": "Deny provisioning create", "description": "Deny executing provisioning requests to devices", "rule": "ern:esthesis:core:provisioning:*:create:deny"},
+        {"_id": ObjectId("64180aacd7edc1e1200903e8"), "name": "Allow provisioning view", "description": "Allow viewing provisioning commands", "rule": "ern:esthesis:core:provisioning:*:retrieve:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903ea"), "name": "Deny provisioning view", "description": "Deny viewing provisioning", "rule": "ern:esthesis:core:provisioning:*:retrieve:deny"},
+        {"_id": ObjectId("64180aacd7edc1e1200903eb"), "name": "Allow provisioning delete", "description": "Allow deleting provisioning requests", "rule": "ern:esthesis:core:provisioning:*:delete:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903ec"), "name": "Deny provisioning delete", "description": "Deny deleting provisioning requests", "rule": "ern:esthesis:core:provisioning:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e120090461"), "name": "Allow all provisioning functionality", "description": "Allow viewing and modifying all commands", "rule": "ern:esthesis:core:provisioning:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090462"), "name": "Deny all provisioning functionality", "description": "Deny viewing and modifying all commands", "rule": "ern:esthesis:core:provisioning:*:*:deny"},
+
+        {"_id": ObjectId("64180aacd7edc1e1200903ed"), "name": "Allow campaigns create", "description": "Allow creating device campaigns", "rule": "ern:esthesis:core:campaign:*:create:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903ee"), "name": "Deny campaigns create", "description": "Deny creating device campaigns", "rule": "ern:esthesis:core:campaign:*:create:deny"},
+        {"_id": ObjectId("64180aacd7edc1e1200903ef"), "name": "Allow campaigns view", "description": "Allow viewing campaigns", "rule": "ern:esthesis:core:campaign:*:retrieve:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903f0"), "name": "Deny campaigns view", "description": "Deny viewing campaigns", "rule": "ern:esthesis:core:campaign:*:retrieve:deny"},
+        {"_id": ObjectId("64180aacd7edc1e1200903f1"), "name": "Allow campaign updates", "description": "Allow updating and interacting with campaigns", "rule": "ern:esthesis:core:campaign:*:update:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903f2"), "name": "Deny campaign updates", "description": "Deny updating and interacting with campaigns", "rule": "ern:esthesis:core:campaign:*:update:deny"},
+        {"_id": ObjectId("64180aacd7edc1e1200903f3"), "name": "Allow campaign delete", "description": "Allow deleting campaigns", "rule": "ern:esthesis:core:campaign:*:delete:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903f4"), "name": "Deny campaign delete", "description": "Deny deleting campaigns", "rule": "ern:esthesis:core:campaign:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e120090465"), "name": "Allow all campaigns functionality", "description": "Allow viewing and modifying all campaigns", "rule": "ern:esthesis:core:campaigns:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090466"), "name": "Deny all campaigns functionality", "description": "Deny viewing and modifying all campaigns", "rule": "ern:esthesis:core:campaigns:*:*:deny"},
+
+        {"_id": ObjectId("64180aacd7edc1e1200903f5"), "name": "Allow certificates create", "description": "Allow creating certificates", "rule": "ern:esthesis:core:certificates:*:create:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903f6"), "name": "Deny certificates create", "description": "Deny creating device campaigns", "rule": "ern:esthesis:core:certificates:*:create:deny"},
+        {"_id": ObjectId("64180aacd7edc1e1200903f7"), "name": "Allow certificates view", "description": "Allow viewing and downloading certificates", "rule": "ern:esthesis:core:certificates:*:retrieve:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903f8"), "name": "Deny certificates view", "description": "Deny viewing and downloading certificates", "rule": "ern:esthesis:core:certificates:*:retrieve:deny"},
+        {"_id": ObjectId("64180aacd7edc1e1200903f9"), "name": "Allow certificates updates", "description": "Allow updating certificates", "rule": "ern:esthesis:core:certificates:*:update:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903fa"), "name": "Deny certificates updates", "description": "Deny updating certificates", "rule": "ern:esthesis:core:certificates:*:update:deny"},
+        {"_id": ObjectId("64180aacd7edc1e1200903fb"), "name": "Allow certificates delete", "description": "Allow deleting certificates", "rule": "ern:esthesis:core:certificates:*:delete:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903fc"), "name": "Deny certificates delete", "description": "Deny deleting certificates", "rule": "ern:esthesis:core:certificates:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e12009046d"), "name": "Allow all certificates functionality", "description": "Allow viewing and modifying all certificates", "rule": "ern:esthesis:core:certificates:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e12009046e"), "name": "Deny all certificates functionality", "description": "Deny viewing and modifying all certificates", "rule": "ern:esthesis:core:certificates:*:*:deny"},
+
+        {"_id": ObjectId("64180aacd7edc1e1200903fd"), "name": "Allow CAs create", "description": "Allow creating certificate authorities", "rule": "ern:esthesis:core:ca:*:create:allow"},
+        {"_id": ObjectId("64180aacd7edc1e1200903fe"), "name": "Deny CAs create", "description": "Deny creating certificate authorities", "rule": "ern:esthesis:core:ca:*:create:deny"},
+        {"_id": ObjectId("64180aacd7edc1e1200903ff"), "name": "Allow CAs view", "description": "Allow viewing and downloading certificate authorities", "rule": "ern:esthesis:core:ca:*:retrieve:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090400"), "name": "Deny CAs view", "description": "Deny viewing and downloading certificate authorities", "rule": "ern:esthesis:core:ca:*:retrieve:deny"},
+        {"_id": ObjectId("64180aacd7edc1e120090401"), "name": "Allow CAs updates", "description": "Allow updating certificate authorities", "rule": "ern:esthesis:core:ca:*:update:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090402"), "name": "Deny CAs updates", "description": "Deny updating certificate authorities", "rule": "ern:esthesis:core:ca:*:update:deny"},
+        {"_id": ObjectId("64180aacd7edc1e120090403"), "name": "Allow CAs delete", "description": "Allow deleting certificate authorities", "rule": "ern:esthesis:core:ca:*:delete:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090404"), "name": "Deny CAs delete", "description": "Deny deleting certificate authorities", "rule": "ern:esthesis:core:ca:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e12009046f"), "name": "Allow all CAs functionality", "description": "Allow viewing and modifying all certificate authorities", "rule": "ern:esthesis:core:ca:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090470"), "name": "Deny all CAs functionality", "description": "Deny viewing and modifying all certificate authorities", "rule": "ern:esthesis:core:ca:*:*:deny"},
+
+        {"_id": ObjectId("64180aacd7edc1e120090405"), "name": "Allow keystores create", "description": "Allow creating keystores", "rule": "ern:esthesis:core:keystore:*:create:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090406"), "name": "Deny keystores create", "description": "Deny creating keystores", "rule": "ern:esthesis:core:keystore:*:create:deny"},
+        {"_id": ObjectId("64180aacd7edc1e120090407"), "name": "Allow keystores view", "description": "Allow viewing and downloading keystores", "rule": "ern:esthesis:core:keystore:*:retrieve:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090408"), "name": "Deny keystores view", "description": "Deny viewing and downloading keystores", "rule": "ern:esthesis:core:keystore:*:retrieve:deny"},
+        {"_id": ObjectId("64180aacd7edc1e120090409"), "name": "Allow keystores updates", "description": "Allow updating keystores", "rule": "ern:esthesis:core:keystore:*:update:allow"},
+        {"_id": ObjectId("64180aacd7edc1e12009040a"), "name": "Deny keystores updates", "description": "Deny updating keystores", "rule": "ern:esthesis:core:keystore:*:update:deny"},
+        {"_id": ObjectId("64180aacd7edc1e12009040b"), "name": "Allow keystores delete", "description": "Allow deleting keystores", "rule": "ern:esthesis:core:keystore:*:delete:allow"},
+        {"_id": ObjectId("64180aacd7edc1e12009040c"), "name": "Deny keystores delete", "description": "Deny deleting keystores", "rule": "ern:esthesis:core:keystore:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e120090473"), "name": "Allow all keystores functionality", "description": "Allow viewing and modifying all keystores", "rule": "ern:esthesis:core:keystore:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090474"), "name": "Deny all keystores functionality", "description": "Deny viewing and modifying all keystores", "rule": "ern:esthesis:core:keystore:*:*:deny"},
+
+        {"_id": ObjectId("64180aacd7edc1e12009040d"), "name": "Allow dataflows deployment", "description": "Allow deploying new dataflows", "rule": "ern:esthesis:core:dataflow:*:create:allow"},
+        {"_id": ObjectId("64180aacd7edc1e12009040e"), "name": "Deny dataflows deployment", "description": "Deny deploying new dataflows", "rule": "ern:esthesis:core:dataflow:*:create:deny"},
+        {"_id": ObjectId("64180aacd7edc1e12009040f"), "name": "Allow dataflows view", "description": "Allow viewing dataflows", "rule": "ern:esthesis:core:dataflow:*:retrieve:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090410"), "name": "Deny dataflows view", "description": "Deny viewing dataflows", "rule": "ern:esthesis:core:dataflow:*:retrieve:deny"},
+        {"_id": ObjectId("64180aacd7edc1e120090411"), "name": "Allow dataflows updates", "description": "Allow updating dataflows", "rule": "ern:esthesis:core:dataflow:*:update:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090412"), "name": "Deny dataflows updates", "description": "Deny updating dataflows", "rule": "ern:esthesis:core:dataflow:*:update:deny"},
+        {"_id": ObjectId("64180aacd7edc1e120090413"), "name": "Allow dataflows delete", "description": "Allow deleting dataflows", "rule": "ern:esthesis:core:dataflow:*:delete:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090414"), "name": "Deny dataflows delete", "description": "Deny deleting dataflows", "rule": "ern:esthesis:core:dataflow:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e120090477"), "name": "Allow all dataflow functionality", "description": "Allow viewing and modifying all dataflows", "rule": "ern:esthesis:core:dataflow:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090478"), "name": "Deny all dataflow functionality", "description": "Deny viewing and modifying all dataflows", "rule": "ern:esthesis:core:dataflow:*:*:deny"},
+
+        {"_id": ObjectId("64180aacd7edc1e120090415"), "name": "Allow infrastructure create", "description": "Allow registering infrastructure resources", "rule": "ern:esthesis:core:infrastructure:*:create:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090416"), "name": "Deny infrastructure create", "description": "Deny registering infrastructure resources", "rule": "ern:esthesis:core:infrastructure:*:create:deny"},
+        {"_id": ObjectId("64180aacd7edc1e120090417"), "name": "Allow infrastructure view", "description": "Allow viewing infrastructure resources", "rule": "ern:esthesis:core:infrastructure:*:retrieve:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090418"), "name": "Deny infrastructure view", "description": "Deny viewing infrastructure resources", "rule": "ern:esthesis:core:infrastructure:*:retrieve:deny"},
+        {"_id": ObjectId("64180aacd7edc1e120090419"), "name": "Allow infrastructure updates", "description": "Allow updating infrastructure resources", "rule": "ern:esthesis:core:infrastructure:*:update:allow"},
+        {"_id": ObjectId("64180aacd7edc1e12009041a"), "name": "Deny infrastructure updates", "description": "Deny updating infrastructure resources", "rule": "ern:esthesis:core:infrastructure:*:update:deny"},
+        {"_id": ObjectId("64180aacd7edc1e12009041b"), "name": "Allow infrastructure delete", "description": "Allow deleting infrastructure resources", "rule": "ern:esthesis:core:infrastructure:*:delete:allow"},
+        {"_id": ObjectId("64180aacd7edc1e12009041c"), "name": "Deny infrastructure delete", "description": "Deny deleting infrastructure resources", "rule": "ern:esthesis:core:infrastructure:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e12009047b"), "name": "Allow all infrastructure functionality", "description": "Allow viewing and modifying all infrastructure", "rule": "ern:esthesis:core:infrastructure:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e12009047c"), "name": "Deny all infrastructure functionality", "description": "Deny viewing and modifying all infrastructure", "rule": "ern:esthesis:core:infrastructure:*:*:deny"},
+
+        {"_id": ObjectId("64180aacd7edc1e12009041d"), "name": "Allow application create", "description": "Allow creating application", "rule": "ern:esthesis:core:application:*:create:allow"},
+        {"_id": ObjectId("64180aacd7edc1e12009041e"), "name": "Deny application create", "description": "Deny creating application", "rule": "ern:esthesis:core:application:*:create:deny"},
+        {"_id": ObjectId("64180aacd7edc1e12009041f"), "name": "Allow application view", "description": "Allow viewing applications", "rule": "ern:esthesis:core:application:*:retrieve:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090420"), "name": "Deny application view", "description": "Deny viewing applications", "rule": "ern:esthesis:core:application:*:retrieve:deny"},
+        {"_id": ObjectId("64180aacd7edc1e120090421"), "name": "Allow application updates", "description": "Allow updating applications", "rule": "ern:esthesis:core:application:*:update:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090422"), "name": "Deny application updates", "description": "Deny updating applications", "rule": "ern:esthesis:core:application:*:update:deny"},
+        {"_id": ObjectId("64180aacd7edc1e120090423"), "name": "Allow application delete", "description": "Allow deleting applications", "rule": "ern:esthesis:core:application:*:delete:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090424"), "name": "Deny application delete", "description": "Deny deleting applications", "rule": "ern:esthesis:core:application:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e12009047f"), "name": "Allow all applications functionality", "description": "Allow viewing and modifying all applications", "rule": "ern:esthesis:core:application:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090480"), "name": "Deny all applications functionality", "description": "Deny viewing and modifying all applications", "rule": "ern:esthesis:core:application:*:*:deny"},
+
+        {"_id": ObjectId("64180aacd7edc1e120090425"), "name": "Allow tag create", "description": "Allow creating tags", "rule": "ern:esthesis:core:tags:*:create:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090426"), "name": "Deny tag create", "description": "Deny creating tags", "rule": "ern:esthesis:core:tags:*:create:deny"},
+        {"_id": ObjectId("64180aacd7edc1e120090427"), "name": "Allow tag view", "description": "Allow viewing tags", "rule": "ern:esthesis:core:tags:*:retrieve:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090428"), "name": "Deny tag view", "description": "Deny viewing tags", "rule": "ern:esthesis:core:tags:*:retrieve:deny"},
+        {"_id": ObjectId("64180aacd7edc1e120090429"), "name": "Allow tag updates", "description": "Allow updating tags", "rule": "ern:esthesis:core:tags:*:update:allow"},
+        {"_id": ObjectId("64180aacd7edc1e12009042a"), "name": "Deny tag updates", "description": "Deny updating tags", "rule": "ern:esthesis:core:tags:*:update:deny"},
+        {"_id": ObjectId("64180aacd7edc1e12009042b"), "name": "Allow tag delete", "description": "Allow deleting tags", "rule": "ern:esthesis:core:tags:*:delete:allow"},
+        {"_id": ObjectId("64180aacd7edc1e12009042c"), "name": "Deny tag delete", "description": "Deny deleting tags", "rule": "ern:esthesis:core:tags:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e120090483"), "name": "Allow all tags functionality", "description": "Allow viewing and modifying all tags", "rule": "ern:esthesis:core:tags:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090484"), "name": "Deny all tags functionality", "description": "Deny viewing and modifying all tags", "rule": "ern:esthesis:core:tags:*:*:deny"},
+
+        {"_id": ObjectId("64180aacd7edc1e12009042d"), "name": "Allow settings view", "description": "Allow viewing tags", "rule": "ern:esthesis:core:settings:*:retrieve:allow"},
+        {"_id": ObjectId("64180aacd7edc1e12009042e"), "name": "Deny settings view", "description": "Deny viewing tags", "rule": "ern:esthesis:core:settings:*:retrieve:deny"},
+        {"_id": ObjectId("64180aacd7edc1e12009042f"), "name": "Allow settings updates", "description": "Allow updating tags", "rule": "ern:esthesis:core:settings:*:update:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090430"), "name": "Deny settings updates", "description": "Deny updating tags", "rule": "ern:esthesis:core:settings:*:update:deny"},
+        {"_id": ObjectId("64180cded7edc1e120090487"), "name": "Allow all settings functionality", "description": "Allow viewing and modifying all settings", "rule": "ern:esthesis:core:settings:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090488"), "name": "Deny all settings functionality", "description": "Deny viewing and modifying all settings", "rule": "ern:esthesis:core:settings:*:*:deny"},
+
+        {"_id": ObjectId("64180aacd7edc1e120090431"), "name": "Allow user create", "description": "Allow creating users", "rule": "ern:esthesis:core:users:*:create:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090432"), "name": "Deny user create", "description": "Deny creating users", "rule": "ern:esthesis:core:users:*:create:deny"},
+        {"_id": ObjectId("64180aacd7edc1e120090433"), "name": "Allow user view", "description": "Allow viewing users", "rule": "ern:esthesis:core:users:*:retrieve:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090434"), "name": "Deny user view", "description": "Deny viewing users", "rule": "ern:esthesis:core:users:*:retrieve:deny"},
+        {"_id": ObjectId("64180aacd7edc1e120090435"), "name": "Allow user updates", "description": "Allow updating users", "rule": "ern:esthesis:core:users:*:update:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090436"), "name": "Deny user updates", "description": "Deny updating users", "rule": "ern:esthesis:core:users:*:update:deny"},
+        {"_id": ObjectId("64180aacd7edc1e120090437"), "name": "Allow user delete", "description": "Allow deleting users", "rule": "ern:esthesis:core:users:*:delete:allow"},
+        {"_id": ObjectId("64180aacd7edc1e120090438"), "name": "Deny user delete", "description": "Deny deleting users", "rule": "ern:esthesis:core:users:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e12009048b"), "name": "Allow all users functionality", "description": "Allow viewing and modifying all users", "rule": "ern:esthesis:core:users:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e12009048c"), "name": "Deny all users functionality", "description": "Deny viewing and modifying all users", "rule": "ern:esthesis:core:users:*:*:deny"},
+
+        {"_id": ObjectId("64180aacd7edc1e120090439"), "name": "Allow groups create", "description": "Allow creating user groups", "rule": "ern:esthesis:core:groups:*:create:allow"},
+        {"_id": ObjectId("64180cded7edc1e12009043a"), "name": "Deny groups create", "description": "Deny creating user groups", "rule": "ern:esthesis:core:groups:*:create:deny"},
+        {"_id": ObjectId("64180cded7edc1e12009043b"), "name": "Allow groups view", "description": "Allow viewing user groups", "rule": "ern:esthesis:core:groups:*:retrieve:allow"},
+        {"_id": ObjectId("64180cded7edc1e12009043c"), "name": "Deny groups view", "description": "Deny viewing user groups", "rule": "ern:esthesis:core:groups:*:retrieve:deny"},
+        {"_id": ObjectId("64180cded7edc1e12009043d"), "name": "Allow groups updates", "description": "Allow updating user groups", "rule": "ern:esthesis:core:groups:*:update:allow"},
+        {"_id": ObjectId("64180cded7edc1e12009043e"), "name": "Deny groups updates", "description": "Deny updating user groups", "rule": "ern:esthesis:core:groups:*:update:deny"},
+        {"_id": ObjectId("64180cded7edc1e12009043f"), "name": "Allow groups delete", "description": "Allow deleting user groups", "rule": "ern:esthesis:core:groups:*:delete:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090440"), "name": "Deny groups delete", "description": "Deny deleting user groups", "rule": "ern:esthesis:core:groups:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e12009048f"), "name": "Allow all groups functionality", "description": "Allow viewing and modifying all groups", "rule": "ern:esthesis:core:groups:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090490"), "name": "Deny all groups functionality", "description": "Deny viewing and modifying all groups", "rule": "ern:esthesis:core:groups:*:*:deny"},
+
+        {"_id": ObjectId("64180cded7edc1e120090441"), "name": "Allow roles create", "description": "Allow creating user roles", "rule": "ern:esthesis:core:roles:*:create:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090442"), "name": "Deny roles create", "description": "Deny creating user roles", "rule": "ern:esthesis:core:roles:*:create:deny"},
+        {"_id": ObjectId("64180cded7edc1e120090443"), "name": "Allow roles view", "description": "Allow viewing user roles", "rule": "ern:esthesis:core:roles:*:retrieve:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090444"), "name": "Deny roles view", "description": "Deny viewing user roles", "rule": "ern:esthesis:core:roles:*:retrieve:deny"},
+        {"_id": ObjectId("64180cded7edc1e120090445"), "name": "Allow roles updates", "description": "Allow updating user roles", "rule": "ern:esthesis:core:roles:*:update:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090446"), "name": "Deny roles updates", "description": "Deny updating user roles", "rule": "ern:esthesis:core:roles:*:update:deny"},
+        {"_id": ObjectId("64180cded7edc1e120090447"), "name": "Allow roles delete", "description": "Allow deleting user roles", "rule": "ern:esthesis:core:roles:*:delete:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090448"), "name": "Deny roles delete", "description": "Deny deleting user roles", "rule": "ern:esthesis:core:roles:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e120090493"), "name": "Allow all roles functionality", "description": "Allow viewing and modifying all roles", "rule": "ern:esthesis:core:roles:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090494"), "name": "Deny all roles functionality", "description": "Deny viewing and modifying all roles", "rule": "ern:esthesis:core:roles:*:*:deny"},
+
+        {"_id": ObjectId("64180cded7edc1e120090449"), "name": "Allow policies create", "description": "Allow creating security policies", "rule": "ern:esthesis:core:policies:*:create:allow"},
+        {"_id": ObjectId("64180cded7edc1e12009044a"), "name": "Deny policies create", "description": "Deny creating security policies", "rule": "ern:esthesis:core:policies:*:create:deny"},
+        {"_id": ObjectId("64180cded7edc1e12009044b"), "name": "Allow policies view", "description": "Allow viewing security policies", "rule": "ern:esthesis:core:policies:*:retrieve:allow"},
+        {"_id": ObjectId("64180cded7edc1e12009044c"), "name": "Deny policies view", "description": "Deny viewing security policies", "rule": "ern:esthesis:core:policies:*:retrieve:deny"},
+        {"_id": ObjectId("64180cded7edc1e12009044d"), "name": "Allow policies updates", "description": "Allow updating security policies", "rule": "ern:esthesis:core:policies:*:update:allow"},
+        {"_id": ObjectId("64180cded7edc1e12009044e"), "name": "Deny policies updates", "description": "Deny updating security policies", "rule": "ern:esthesis:core:policies:*:update:deny"},
+        {"_id": ObjectId("64180cded7edc1e12009044f"), "name": "Allow policies delete", "description": "Allow deleting security policies", "rule": "ern:esthesis:core:policies:*:delete:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090450"), "name": "Deny policies delete", "description": "Deny deleting security policies", "rule": "ern:esthesis:core:policies:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e120090497"), "name": "Allow all policies functionality", "description": "Allow viewing and modifying all policies", "rule": "ern:esthesis:core:policies:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090498"), "name": "Deny all policies functionality", "description": "Deny viewing and modifying all policies", "rule": "ern:esthesis:core:policies:*:*:deny"},
+
+        {"_id": ObjectId("64180cded7edc1e120090451"), "name": "Allow audit view", "description": "Allow viewing system audit log", "rule": "ern:esthesis:core:audit:*:retrieve:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090453"), "name": "Deny audit view", "description": "Deny viewing system audit log", "rule": "ern:esthesis:core:audit:*:retrieve:deny"},
+        {"_id": ObjectId("64180cded7edc1e120090454"), "name": "Allow audit delete", "description": "Allow deleting entries from system audit log", "rule": "ern:esthesis:core:audit:*:delete:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090455"), "name": "Deny audit delete", "description": "Deny deleting entries from system audit log", "rule": "ern:esthesis:core:audit:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e12009049b"), "name": "Allow all audit functionality", "description": "Allow viewing and modifying all audit", "rule": "ern:esthesis:core:audit:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e12009049c"), "name": "Deny all audit functionality", "description": "Deny viewing and modifying all audit", "rule": "ern:esthesis:core:audit:*:*:deny"},
+
+        {"_id": ObjectId("64180cded7edc1e120090456"), "name": "Allow about view", "description": "Allow viewing system about screen", "rule": "ern:esthesis:core:about:*:retrieve:allow"},
+        {"_id": ObjectId("64180cded7edc1e120090457"), "name": "Deny about view", "description": "Deny viewing system about screen", "rule": "ern:esthesis:core:about:*:retrieve:deny"},
+        ]
+      </ext:documents>
+    </ext:insertMany>
+
+    <ext:insertMany collectionName="Role">
+      <ext:documents>[
+        {"_id": ObjectId("64180cded7edc1e120090458"), "name": "Administrator", "description": "A role providing full access to all functionality of the system", "policies": ["64180aacd7edc1e1200903d6"]},
+        {"_id": ObjectId("64180cded7edc1e1200904a2"), "name": "Viewer", "description": "A role providing full read-only access to all functionality of the system",
+        "policies": ["64180aacd7edc1e1200903da", "64180aacd7edc1e1200903e2", "64180aacd7edc1e1200903e8", "64180aacd7edc1e1200903ef", "64180aacd7edc1e1200903f7", "64180aacd7edc1e1200903ff",
+        "64180aacd7edc1e120090407", "64180aacd7edc1e12009040f", "64180aacd7edc1e120090417", "64180aacd7edc1e12009041f", "64180aacd7edc1e120090427", "64180aacd7edc1e12009042e", "64180aacd7edc1e120090433",
+        "64180cded7edc1e12009043b", "64180cded7edc1e120090443", "64180cded7edc1e12009044b", "64180cded7edc1e120090453", "64180cded7edc1e120090456"]},
+
+        {"_id": ObjectId("64180cded7edc1e120090459"), "name": "Devices administrator", "description": "A role providing full access to the devices functionality", "policies": ["64180cded7edc1e12009045a"]},
+        {"_id": ObjectId("64180cded7edc1e12009045c"), "name": "Devices viewer", "description": "A role providing read-only access to the devices functionality", "policies": ["64180aacd7edc1e1200903da"]},
+
+        {"_id": ObjectId("64180cded7edc1e12009045f"), "name": "Commands administrator", "description": "A role providing full access to the commands functionality", "policies": ["64180cded7edc1e12009045d"]},
+        {"_id": ObjectId("64180cded7edc1e120090460"), "name": "Commands viewer", "description": "A role providing read-only access to the commands functionality", "policies": ["64180aacd7edc1e1200903e2"]},
+
+        {"_id": ObjectId("64180cded7edc1e120090463"), "name": "Commands administrator", "description": "A role providing full access to the provisioning functionality", "policies": ["64180cded7edc1e120090461"]},
+        {"_id": ObjectId("64180cded7edc1e120090464"), "name": "Commands viewer", "description": "A role providing read-only access to the provisioning functionality", "policies": ["64180aacd7edc1e1200903e8"]},
+
+        {"_id": ObjectId("64180cded7edc1e120090467"), "name": "Campaigns administrator", "description": "A role providing full access to the campaigns functionality", "policies": ["64180cded7edc1e120090465"]},
+        {"_id": ObjectId("64180cded7edc1e120090468"), "name": "Campaigns viewer", "description": "A role providing read-only access to the campaigns functionality", "policies": ["64180aacd7edc1e1200903ef"]},
+
+        {"_id": ObjectId("64180cded7edc1e12009046b"), "name": "Certificates administrator", "description": "A role providing full access to the certificates functionality", "policies": ["64180cded7edc1e12009046d"]},
+        {"_id": ObjectId("64180cded7edc1e12009046c"), "name": "Certificates viewer", "description": "A role providing read-only access to the certificates functionality", "policies": ["64180aacd7edc1e1200903f7"]},
+
+        {"_id": ObjectId("64180cded7edc1e120090471"), "name": "CAs administrator", "description": "A role providing full access to the certificate authorities functionality", "policies": ["64180cded7edc1e12009046f"]},
+        {"_id": ObjectId("64180cded7edc1e120090472"), "name": "CAs viewer", "description": "A role providing read-only access to the certificate authorities functionality", "policies": ["64180aacd7edc1e1200903ff"]},
+
+        {"_id": ObjectId("64180cded7edc1e120090475"), "name": "Keystores administrator", "description": "A role providing full access to the keystores functionality", "policies": ["64180cded7edc1e120090473"]},
+        {"_id": ObjectId("64180cded7edc1e120090476"), "name": "Keystores viewer", "description": "A role providing read-only access to the keystores functionality", "policies": ["64180aacd7edc1e120090407"]},
+
+        {"_id": ObjectId("64180cded7edc1e120090479"), "name": "Dataflows administrator", "description": "A role providing full access to the dataflows functionality", "policies": ["64180cded7edc1e120090477"]},
+        {"_id": ObjectId("64180cded7edc1e12009047a"), "name": "Dataflows viewer", "description": "A role providing read-only access to the dataflows functionality", "policies": ["64180aacd7edc1e12009040f"]},
+
+        {"_id": ObjectId("64180cded7edc1e12009047d"), "name": "Infrastructure administrator", "description": "A role providing full access to the infrastructure functionality", "policies": ["64180cded7edc1e12009047b"]},
+        {"_id": ObjectId("64180cded7edc1e12009047e"), "name": "Infrastructure viewer", "description": "A role providing read-only access to the infrastructure functionality", "policies": ["64180aacd7edc1e120090417"]},
+
+        {"_id": ObjectId("64180cded7edc1e120090481"), "name": "Applications administrator", "description": "A role providing full access to the application functionality", "policies": ["64180cded7edc1e12009047f"]},
+        {"_id": ObjectId("64180cded7edc1e120090482"), "name": "Applications viewer", "description": "A role providing read-only access to the application functionality", "policies": ["64180aacd7edc1e12009041f"]},
+
+        {"_id": ObjectId("64180cded7edc1e120090485"), "name": "Tags administrator", "description": "A role providing full access to the tags functionality", "policies": ["64180cded7edc1e120090483"]},
+        {"_id": ObjectId("64180cded7edc1e120090486"), "name": "Tags viewer", "description": "A role providing read-only access to the tags functionality", "policies": ["64180aacd7edc1e120090427"]},
+
+        {"_id": ObjectId("64180cded7edc1e120090489"), "name": "Settings administrator", "description": "A role providing full access to the settings functionality", "policies": ["64180cded7edc1e120090487"]},
+        {"_id": ObjectId("64180cded7edc1e12009048a"), "name": "Settings viewer", "description": "A role providing read-only access to the settings functionality", "policies": ["64180aacd7edc1e12009042d"]},
+
+        {"_id": ObjectId("64180cded7edc1e12009048d"), "name": "Users administrator", "description": "A role providing full access to the users functionality", "policies": ["64180cded7edc1e12009048b"]},
+        {"_id": ObjectId("64180cded7edc1e12009048e"), "name": "Users viewer", "description": "A role providing read-only access to the users functionality", "policies": ["64180aacd7edc1e120090433"]},
+
+        {"_id": ObjectId("64180cded7edc1e120090491"), "name": "Groups administrator", "description": "A role providing full access to the groups functionality", "policies": ["64180cded7edc1e12009048f"]},
+        {"_id": ObjectId("64180cded7edc1e120090492"), "name": "Groups viewer", "description": "A role providing read-only access to the groups functionality", "policies": ["64180cded7edc1e12009043b"]},
+
+        {"_id": ObjectId("64180cded7edc1e120090495"), "name": "Roles administrator", "description": "A role providing full access to the roles functionality", "policies": ["64180cded7edc1e120090493"]},
+        {"_id": ObjectId("64180cded7edc1e120090496"), "name": "Roles viewer", "description": "A role providing read-only access to the roles functionality", "policies": ["64180cded7edc1e120090443"]},
+
+        {"_id": ObjectId("64180cded7edc1e120090499"), "name": "Policies administrator", "description": "A role providing full access to the policies functionality", "policies": ["64180cded7edc1e120090497"]},
+        {"_id": ObjectId("64180cded7edc1e12009049a"), "name": "Policies viewer", "description": "A role providing read-only access to the policies functionality", "policies": ["64180cded7edc1e12009044b"]},
+
+        {"_id": ObjectId("64180cded7edc1e12009049d"), "name": "Audit administrator", "description": "A role providing full access to the audit functionality", "policies": ["64180cded7edc1e12009049b"]},
+        {"_id": ObjectId("64180cded7edc1e12009049e"), "name": "Audit viewer", "description": "A role providing read-only access to the audit functionality", "policies": ["64180cded7edc1e120090451"]},
+
+        {"_id": ObjectId("64180cded7edc1e12009049f"), "name": "About viewer", "description": "A role providing read-only access to the about functionality", "policies": ["64180cded7edc1e120090456"]},
+        ]
+      </ext:documents>
+    </ext:insertMany>
+
+    <ext:insertMany collectionName="Group">
+      <ext:documents>[
+        {"_id": ObjectId("64180cded7edc1e1200904a0"), "name": "Administrators", "description": "Administrators of the system, with full access to all functionality", "roles": ["64180cded7edc1e120090458"]},
+        {"_id": ObjectId("64180cded7edc1e1200904a1"), "name": "Viewers", "description": "Viewers of the system, with read-only access to all functionality", "roles": ["64180cded7edc1e1200904a2"]},
+        ]
+      </ext:documents>
+    </ext:insertMany>
+
+    <ext:insertMany collectionName="User">
+      <ext:documents>[
+        {"_id": ObjectId("64180cded7edc1e1200904a0"), "username": "esthesis-admin", "description": "Default administrator of the system", "groups": ["64180cded7edc1e1200904a0"]}
+        ]
+      </ext:documents>
+    </ext:insertMany>
+  </changeSet>
+
+</databaseChangeLog>

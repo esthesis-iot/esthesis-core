@@ -39,7 +39,7 @@ quarkus:
   redis:
     hosts: redis://:esthesis@esthesis-dev-redis:6379/0
   config:
-    locations: "../../../setup/dev/profiles/application-dev-profiles.yaml"
+    locations: "../../../../setup/dev/profiles"
 
 mp:
   jwt:

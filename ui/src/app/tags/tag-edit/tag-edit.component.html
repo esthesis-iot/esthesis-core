@@ -11,7 +11,7 @@
         <div class="flex flex-col">
           <mat-form-field>
             <mat-label>Name</mat-label>
-            <input matInput placeholder="Name" formControlName="name">
+            <input matInput formControlName="name">
             <app-field-error matSuffix
                              [displayError]="isFieldValid(form, 'name')"
                              [errorMessage]="form.controls['name'].getError('message')">
@@ -19,17 +19,17 @@
           </mat-form-field>
           <mat-form-field>
             <mat-label>Description</mat-label>
-            <input matInput placeholder="Description" formControlName="description">
+            <input matInput formControlName="description">
           </mat-form-field>
         </div>
       </form>
     </div>
     <div class="card-actions justify-start mt-10">
       <button class="btn btn-sm btn-secondary" routerLink="/tags">CANCEL</button>
-      <button class="btn btn-sm btn-accent" color="warn" (click)="delete()"
+      <button class="btn btn-sm btn-accent" (click)="delete()"
               *ngIf="id !== appConstants.NEW_RECORD_ID">DELETE
       </button>
-      <button class="btn btn-sm btn-primary" color="primary" (click)="save()"
+      <button class="btn btn-sm btn-primary" (click)="save()"
               [disabled]="form.invalid">SAVE
       </button>
     </div>

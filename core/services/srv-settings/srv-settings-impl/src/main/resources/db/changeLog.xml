@@ -1,11 +1,11 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog
-  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:ext="https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.16.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.18.xsd">
 
-  <changeSet id="1" author="European Dynamics SA">
+  <changeSet author="European Dynamics SA" id="1">
     <ext:createCollection collectionName="Setting"/>
 
     <ext:createIndex collectionName="Setting">
@@ -27,7 +27,7 @@
     </ext:insertMany>
   </changeSet>
 
-  <changeSet id="2" author="European Dynamics SA">
+  <changeSet author="European Dynamics SA" id="2">
     <ext:insertMany collectionName="Setting">
       <ext:documents>
         [
@@ -38,7 +38,7 @@
     </ext:insertMany>
   </changeSet>
 
-  <changeSet id="3" author="European Dynamics SA">
+  <changeSet author="European Dynamics SA" id="3">
     <ext:insertOne collectionName="Setting">
       <ext:document>
         {"name":"DEVICE_PROVISIONING_CACHE_TIME", "value": "60"}
@@ -46,7 +46,7 @@
     </ext:insertOne>
   </changeSet>
 
-  <changeSet id="4" author="European Dynamics SA">
+  <changeSet author="European Dynamics SA" id="4">
     <ext:runCommand>
       <ext:command>
         {
@@ -57,7 +57,7 @@
     </ext:runCommand>
   </changeSet>
 
-  <changeSet id="5" author="European Dynamics SA">
+  <changeSet author="European Dynamics SA" id="5">
     <ext:insertOne collectionName="Setting">
       <ext:document>
         {"name":"DEVICE_PUSHED_TAGS", "value": "false"}

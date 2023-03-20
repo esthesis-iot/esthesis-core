@@ -29,33 +29,33 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
   @GET
   @Override
   @Path("/v1/find")
-  @Audited(cat = Category.PROVISIONING, op = Operation.READ, msg = "Search provisioning packages"
+  @Audited(cat = Category.PROVISIONING, op = Operation.RETRIEVE, msg = "Search provisioning packages"
       , log = AuditLogType.DATA_IN)
   public Page<ProvisioningPackageEntity> find(@BeanParam Pageable pageable) {
     return provisioningService.find(pageable);
   }
 
   @Override
-  @Audited(cat = Category.PROVISIONING, op = Operation.WRITE, msg = "Recache all provisioning "
+  @Audited(cat = Category.PROVISIONING, op = Operation.UPDATE, msg = "Recache all provisioning "
       + "packages")
   public void recacheAll() {
     provisioningService.cacheAll();
   }
 
   @Override
-  @Audited(cat = Category.PROVISIONING, op = Operation.READ, msg = "View provisioning package")
+  @Audited(cat = Category.PROVISIONING, op = Operation.RETRIEVE, msg = "View provisioning package")
   public ProvisioningPackageEntity findById(String id) {
     return provisioningService.findById(id);
   }
 
   @Override
-  @Audited(cat = Category.PROVISIONING, op = Operation.WRITE, msg = "Recache provisioning package")
+  @Audited(cat = Category.PROVISIONING, op = Operation.UPDATE, msg = "Recache provisioning package")
   public void recache(String provisioningPackageId) {
     provisioningService.recache(provisioningPackageId);
   }
 
   @Override
-  @Audited(cat = Category.PROVISIONING, op = Operation.WRITE, msg = "Save provisioning package")
+  @Audited(cat = Category.PROVISIONING, op = Operation.UPDATE, msg = "Save provisioning package")
   public ProvisioningPackageEntity save(ProvisioningPackageForm pf) {
     return provisioningService.save(pf);
   }
@@ -68,7 +68,7 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
 
   @Override
   @Blocking
-  @Audited(cat = Category.PROVISIONING, op = Operation.READ, msg = "Download provisioning "
+  @Audited(cat = Category.PROVISIONING, op = Operation.RETRIEVE, msg = "Download provisioning "
       + "package", log = AuditLogType.DATA_IN)
   public Uni<RestResponse<byte[]>> download(String provisioningPackageId) {
     ProvisioningPackageEntity pp = provisioningService.findById(provisioningPackageId);

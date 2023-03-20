@@ -19,43 +19,43 @@ public class CampaignResourceImpl implements CampaignResource {
   CampaignService campaignService;
 
   @Override
-  @Audited(cat = Category.CAMPAIGN, op = Operation.READ, msg = "Find campaigns")
+  @Audited(cat = Category.CAMPAIGN, op = Operation.RETRIEVE, msg = "Find campaigns")
   public Page<CampaignEntity> find(Pageable pageable) {
     return campaignService.find(pageable);
   }
 
   @Override
-  @Audited(cat = Category.CAMPAIGN, op = Operation.WRITE, msg = "Save campaign")
+  @Audited(cat = Category.CAMPAIGN, op = Operation.UPDATE, msg = "Save campaign")
   public void save(CampaignEntity campaignEntity) {
     campaignService.save(campaignEntity);
   }
 
   @Override
-  @Audited(cat = Category.CAMPAIGN, op = Operation.READ, msg = "View campaign")
+  @Audited(cat = Category.CAMPAIGN, op = Operation.RETRIEVE, msg = "View campaign")
   public CampaignEntity findById(String campaignId) {
     return campaignService.findById(campaignId);
   }
 
   @Override
-  @Audited(cat = Category.CAMPAIGN, op = Operation.WRITE, msg = "Start campaign")
+  @Audited(cat = Category.CAMPAIGN, op = Operation.UPDATE, msg = "Start campaign")
   public void start(String campaignId) {
     campaignService.start(campaignId);
   }
 
   @Override
-  @Audited(cat = Category.CAMPAIGN, op = Operation.WRITE, msg = "Resume campaign")
+  @Audited(cat = Category.CAMPAIGN, op = Operation.UPDATE, msg = "Resume campaign")
   public void resume(String campaignId) {
     campaignService.resume(campaignId);
   }
 
   @Override
-  @Audited(cat = Category.CAMPAIGN, op = Operation.WRITE, msg = "Replicate campaign")
+  @Audited(cat = Category.CAMPAIGN, op = Operation.UPDATE, msg = "Replicate campaign")
   public CampaignEntity replicate(String campaignId) {
     return campaignService.replicate(campaignId);
   }
 
   @Override
-  @Audited(cat = Category.CAMPAIGN, op = Operation.WRITE, msg = "Terminate campaign")
+  @Audited(cat = Category.CAMPAIGN, op = Operation.UPDATE, msg = "Terminate campaign")
   public void terminate(String campaignId) {
     campaignService.terminate(campaignId);
   }

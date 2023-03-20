@@ -14,7 +14,7 @@ public class AboutResourceImpl implements AboutResource {
   AboutService aboutService;
 
   @Override
-  @Audited(cat = Category.ABOUT, op = Operation.READ, msg = "About/General page")
+  @Audited(cat = Category.ABOUT, op = Operation.RETRIEVE, msg = "About/General page")
   public AboutGeneralDTO getGeneralInfo() {
     return aboutService.getGeneralInfo();
   }
