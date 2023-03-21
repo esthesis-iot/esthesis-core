@@ -2,8 +2,8 @@ package esthesis.services.device.impl.resource;
 
 import com.github.slugify.Slugify;
 import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Audit.Category;
-import esthesis.common.AppConstants.Audit.Operation;
+import esthesis.common.AppConstants.Security.Category;
+import esthesis.common.AppConstants.Security.Operation;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.service.audit.ccc.Audited.AuditLogType;

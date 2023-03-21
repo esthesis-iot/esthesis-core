@@ -15,6 +15,10 @@ import {GroupDto} from "../../dto/group-dto";
 import {SecurityRolesService} from "../../security-roles.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import * as _ from "lodash";
+import {PolicyDto} from "../../dto/policy-dto";
+import {
+  SecurityPoliciesEditorComponent
+} from "../../security-policies/security-policies-editor/security-policies-editor.component";
 
 @Component({
   selector: "app-security-groups-edit",
@@ -42,7 +46,8 @@ export class SecurityGroupsEditComponent extends BaseComponent implements OnInit
       id: [],
       name: [],
       description: [],
-      roles: [[]]
+      roles: [[]],
+      policies: [[]]
     });
 
     // Fill-in the form with data if editing an existing item.
@@ -146,6 +151,23 @@ export class SecurityGroupsEditComponent extends BaseComponent implements OnInit
     if (index >= 0) {
       roles.splice(index, 1);
     }
+  }
+
+  removePolicy(policy: any) {
+    this.form.patchValue({
+      policies: _.remove(this.form.controls.policies.value, policy)
+    });
+  }
+
+  policyEditor() {
+    const editorDialogRef = this.dialog.open(SecurityPoliciesEditorComponent, {
+      width: "40rem",
+    });
+    editorDialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.form.controls.policies.value.push(result);
+      }
+    });
   }
 }
 

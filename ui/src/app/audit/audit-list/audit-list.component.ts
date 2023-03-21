@@ -11,7 +11,7 @@ import * as moment from "moment";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {UtilityService} from "../../shared/services/utility.service";
-import {SecurityUsersService} from "../../security/security-users.service";
+import {SecurityService} from "../../security/security.service";
 
 @Component({
   selector: "app-audit-list",
@@ -35,7 +35,7 @@ export class AuditListComponent extends BaseComponent implements OnInit, AfterVi
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
   constructor(private auditService: AuditService, private fb: FormBuilder,
-    private userService: SecurityUsersService, private qForms: QFormsService,
+    private userService: SecurityService, private qForms: QFormsService,
     private utilityService: UtilityService) {
     super();
     this.filterForm = this.fb.group({

@@ -20,6 +20,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {CountdownComponent} from "ngx-countdown";
 import {FramedMapComponent} from "./framed-map/framed-map.component";
+import {AcDirective} from "./ac/ac.directive";
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import {FramedMapComponent} from "./framed-map/framed-map.component";
     MatIconPickerComponent,
     FieldErrorComponent,
     TitlelisePipe,
-    FramedMapComponent
+    FramedMapComponent,
+    AcDirective,
   ],
   imports: [
     CommonModule,
@@ -53,7 +55,8 @@ import {FramedMapComponent} from "./framed-map/framed-map.component";
     TitlelisePipe,
     BreadcrumbComponent,
     LiveToggleComponent,
-    FramedMapComponent
+    FramedMapComponent,
+    AcDirective
   ]
 })
 export class ComponentsModule {

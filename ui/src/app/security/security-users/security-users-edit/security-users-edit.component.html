@@ -66,6 +66,31 @@
             </tr>
             </tbody>
           </table>
+
+          <!-- Display all custom policies in a table -->
+          <div class="mt-10 text-xl flex flex-row gap-5">
+            <div>Custom policies</div>
+            <fa-icon (click)="policyEditor()" class="cursor-pointer" icon="file-circle-plus"
+                     matSuffix matTooltip="Add policy"></fa-icon>
+          </div>
+          <table class="table w-full">
+            <thead>
+            <tr>
+              <th class="text-left">Policy</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let policy of form.controls.policies.value as string">
+              <td>{{policy}}</td>
+              <td>
+                <button (click)="removePolicy(policy)"
+                        class="btn btn-sm btn-ghost" matTooltip="Remove policy">
+                  <fa-icon icon="trash-can"></fa-icon>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </form>
     </div>

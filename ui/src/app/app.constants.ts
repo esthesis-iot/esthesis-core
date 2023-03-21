@@ -174,37 +174,54 @@ export const AppConstants = {
   },
 
   SECURITY: {
-    // Equivalent to AppConstants.Audit.Category
-    OBJECT_TYPE: {
-      ABOUT: "ABOUT",
-      APPLICATION: "APPLICATION",
-      AUDIT: "AUDIT",
-      CAMPAIGN: "CAMPAIGN",
-      COMMAND: "COMMAND",
-      CRYPTO: "CRYPTO",
-      DATAFLOW: "DATAFLOW",
-      DEVICE: "DEVICE",
-      DIGITAL_TWIN: "DIGITAL_TWIN",
-      INFRASTRUCTURE: "INFRASTRUCTURE",
-      KUBERNETES: "KUBERNETES",
-      PROVISIONING: "PROVISIONING",
-      SETTINGS: "SETTINGS",
-      TAG: "TAG",
-      USERS: "USERS",
-      GROUPS: "GROUPS",
-      ROLES: "ROLES",
-      POLICIES: "POLICIES"
+    // The name of session keys where user data is saved.
+    SESSION_STORAGE: {
+      USERDATA: "X-ESTHESIS-USERDATA",
+      PERMISSIONS: "X-ESTHESIS-PERMISSIONS"
+    },
+    // The name of fields in user data.
+    USERDATA: {
+      USERNAME: "preferred_username",
+      FIRST_NAME: "given_name",
+      LAST_NAME: "family_name"
+    },
+    // ERN
+    ERN: {
+      ROOT: "ern",
+      SYSTEM: "esthesis",
+      SUBSYSTEM: "core"
+    },
+    // Equivalent to AppConstants.Security.Category
+    CATEGORY: {
+      ABOUT: "about",
+      APPLICATION: "application",
+      AUDIT: "audit",
+      CAMPAIGN: "campaign",
+      COMMAND: "command",
+      CRYPTO: "crypto",
+      DATAFLOW: "dataflow",
+      DEVICE: "device",
+      DIGITAL_TWIN: "digital_twin",
+      INFRASTRUCTURE: "infrastructure",
+      KUBERNETES: "kubernetes",
+      PROVISIONING: "provisioning",
+      SETTINGS: "settings",
+      TAG: "tag",
+      USERS: "users",
+      GROUPS: "groups",
+      ROLES: "roles",
+      POLICIES: "policies"
     },
     // Equivalent to AppConstants.Audit.Operation
     OPERATION: {
-      READ: "READ",
-      WRITE: "WRITE",
-      DELETE: "DELETE",
-      CREATE: "CREATE"
+      READ: "read",
+      WRITE: "write",
+      DELETE: "delete",
+      CREATE: "create"
     },
     PERMISSION: {
-      ALLOW: "ALLOW",
-      DENY: "DENY"
+      ALLOW: "allow",
+      DENY: "deny"
     }
   }
 

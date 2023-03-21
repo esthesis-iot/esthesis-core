@@ -6,7 +6,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {UserDto} from "../../dto/user-dto";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
-import {SecurityUsersService} from "../../security-users.service";
+import {SecurityService} from "../../security.service";
 import {QFormsService} from "@qlack/forms";
 import {MatDialogRef} from "@angular/material/dialog";
 import {UtilityService} from "../../../shared/services/utility.service";

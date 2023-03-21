@@ -1,8 +1,8 @@
 package esthesis.service.audit.ccc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.common.AppConstants.Audit.Category;
-import esthesis.common.AppConstants.Audit.Operation;
+import esthesis.common.AppConstants.Security.Category;
+import esthesis.common.AppConstants.Security.Operation;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.audit.resource.AuditResource;
 import io.quarkus.arc.Priority;

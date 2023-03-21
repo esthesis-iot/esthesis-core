@@ -106,7 +106,7 @@ public class AppConstants {
     }
   }
 
-  public static class Audit {
+  public static class Security {
 
     public enum Category {
       CERTIFICATES,

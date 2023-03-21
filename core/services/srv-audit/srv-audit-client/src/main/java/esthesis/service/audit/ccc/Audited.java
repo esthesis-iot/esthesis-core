@@ -1,7 +1,7 @@
 package esthesis.service.audit.ccc;
 
-import esthesis.common.AppConstants.Audit.Category;
-import esthesis.common.AppConstants.Audit.Operation;
+import esthesis.common.AppConstants.Security.Category;
+import esthesis.common.AppConstants.Security.Operation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -14,12 +14,6 @@ import javax.interceptor.InterceptorBinding;
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface Audited {
 
-  enum AuditLogType {
-    DATA_IN,
-    DATA_OUT,
-    DATA_ALL
-  }
-
   @Nonbinding
   Operation op();
 
@@ -31,4 +25,10 @@ public @interface Audited {
 
   @Nonbinding
   AuditLogType log() default AuditLogType.DATA_ALL;
+
+  enum AuditLogType {
+    DATA_IN,
+    DATA_OUT,
+    DATA_ALL
+  }
 }

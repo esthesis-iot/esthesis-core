@@ -7,6 +7,7 @@ import esthesis.service.security.entity.PolicyEntity;
 import esthesis.service.security.entity.RoleEntity;
 import esthesis.service.security.entity.UserEntity;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
+import java.util.List;
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.DELETE;
@@ -46,6 +47,11 @@ public interface SecurityResource {
   @Path("/v1/users")
   @Produces("application/json")
   UserEntity saveUser(@Valid UserEntity userEntity);
+
+  @GET
+  @Path("/v1/users/{username}/permissions")
+  @Produces("application/json")
+  List<String> getUserPermissions(@PathParam("username") String username);
 
   // ***********************************************************************************************
   // * Policies

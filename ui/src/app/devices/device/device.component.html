@@ -10,7 +10,7 @@
     <div class="flex row">
       <!-- Device info -->
       <div class="w-96 pr-10">
-        <form novalidate [formGroup]="deviceInfoForm" class="flex flex-col gap-3">
+        <form [formGroup]="deviceInfoForm" class="flex flex-col gap-3" novalidate>
 
           <div>
             <div class="font-bold">Hardware ID</div>
@@ -23,7 +23,7 @@
               {{device?.lastSeen | amFromUtc | amLocal}}<br>
               {{device?.lastSeen | amFromUtc | amLocal | amTimeAgo}}
             </div>
-            <div class="value-text" *ngIf="!device?.lastSeen">
+            <div *ngIf="!device?.lastSeen" class="value-text">
               Never
             </div>
           </div>
@@ -33,7 +33,7 @@
             <div *ngIf="device?.createdOn">
               {{device?.createdOn | amFromUtc | amLocal}}
             </div>
-            <div class="value-text" *ngIf="!device?.createdOn">
+            <div *ngIf="!device?.createdOn" class="value-text">
               Never
             </div>
           </div>
@@ -43,7 +43,7 @@
             <div *ngIf="device?.registeredOn">
               {{device?.registeredOn | amFromUtc | amLocal}}
             </div>
-            <div class="value-text" *ngIf="!device?.registeredOn">
+            <div *ngIf="!device?.registeredOn" class="value-text">
               Never
             </div>
           </div>
@@ -63,7 +63,7 @@
           <div class="-mt-8">
             <mat-form-field class="w-full">
               <label class="font-bold">Tags</label>
-              <mat-select multiple formControlName="tags">
+              <mat-select formControlName="tags" multiple>
                 <mat-option *ngFor="let tag of availableTags"
                             [value]="tag.id">{{tag.name}}</mat-option>
               </mat-select>
@@ -74,13 +74,13 @@
             <div>
               <div class="flex flex-row">
                 <div class="font-bold">Location</div>
-                <fa-icon icon="up-right-from-square" class="ml-1 cursor-pointer"
-                         (click)="showMap()"></fa-icon>
+                <fa-icon (click)="showMap()" class="ml-1 cursor-pointer"
+                         icon="up-right-from-square"></fa-icon>
               </div>
               <app-framed-map
                 [latitude]="geolocation$.latitude"
                 [longitude]="geolocation$.longitude"
-                width="100%" height="200" [zoom]="13">
+                [zoom]="13" height="200" width="100%">
               </app-framed-map>
               <div
                 class="geoAgo">{{geolocation$.lastUpdated | amFromUtc | amLocal | amTimeAgo}}</div>
@@ -91,10 +91,10 @@
 
       <!-- Tabs -->
       <div class="grow">
-        <mat-tab-group animationDuration="0ms" [disableRipple]="true">
+        <mat-tab-group [disableRipple]="true" animationDuration="0ms">
           <mat-tab>
             <ng-template mat-tab-label>
-              <fa-icon icon="memory" class="mr-1"></fa-icon>
+              <fa-icon class="mr-1" icon="memory"></fa-icon>
               Profile
             </ng-template>
             <ng-template matTabContent>
@@ -103,7 +103,7 @@
           </mat-tab>
           <mat-tab>
             <ng-template mat-tab-label>
-              <fa-icon icon="database" class="mr-1"></fa-icon>
+              <fa-icon class="mr-1" icon="database"></fa-icon>
               Data
             </ng-template>
             <ng-template matTabContent>
@@ -112,7 +112,7 @@
           </mat-tab>
           <mat-tab>
             <ng-template mat-tab-label>
-              <fa-icon icon="terminal" class="mr-1"></fa-icon>
+              <fa-icon class="mr-1" icon="terminal"></fa-icon>
               Pseudo-terminal
             </ng-template>
             <ng-template matTabContent>
@@ -124,19 +124,23 @@
     </div>
 
     <div class="card-actions justify-start mt-10">
-      <button class="btn btn-sm btn-accent" (click)="delete()"
-              [disabled]="this.id == appConstants.NEW_RECORD_ID">DELETE
+      <button (click)="delete()"
+              *ac="[appConstants.SECURITY.CATEGORY.DEVICE, appConstants.SECURITY.OPERATION.DELETE, id!]"
+              [disabled]="this.id == appConstants.NEW_RECORD_ID"
+              class="btn btn-sm btn-accent">
+        DELETE
       </button>
-      <button class="btn btn-sm btn-secondary" [matMenuTriggerFor]="menu">DOWNLOAD
-        <fa-icon icon="caret-down" class="ml-2"></fa-icon>
+      <button [matMenuTriggerFor]="menu" class="btn btn-sm btn-secondary">DOWNLOAD
+        <fa-icon class="ml-2" icon="caret-down"></fa-icon>
         <mat-menu #menu="matMenu" xPosition="before">
-          <button mat-menu-item (click)="downloadPublicKey()">Public key</button>
-          <button mat-menu-item (click)="downloadPrivateKey()">Private key</button>
-          <button mat-menu-item (click)="downloadCertificate()">Certificate</button>
+          <button (click)="downloadPublicKey()" mat-menu-item>Public key</button>
+          <button (click)="downloadPrivateKey()" mat-menu-item>Private key</button>
+          <button (click)="downloadCertificate()" mat-menu-item>Certificate</button>
         </mat-menu>
       </button>
-      <button class="btn btn-sm btn-primary" (click)="saveDeviceInfo()"
-              [disabled]="deviceInfoForm.invalid || deviceInfoForm.pristine">SAVE
+      <button (click)="saveDeviceInfo()"
+              [disabled]="deviceInfoForm.invalid || deviceInfoForm.pristine"
+              class="btn btn-sm btn-primary">SAVE
       </button>
     </div>
   </div>

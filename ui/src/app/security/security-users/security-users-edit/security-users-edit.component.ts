@@ -9,12 +9,15 @@ import {QFormValidationEEService} from "../../../shared/services/form-validation
 import {
   OkCancelModalComponent
 } from "../../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
-import {SecurityUsersService} from "../../security-users.service";
+import {SecurityService} from "../../security.service";
 import {UserDto} from "../../dto/user-dto";
 import {GroupDto} from "../../dto/group-dto";
 import {SecurityGroupsService} from "../../security-groups.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import * as _ from "lodash";
+import {
+  SecurityPoliciesEditorComponent
+} from "../../security-policies/security-policies-editor/security-policies-editor.component";
 
 @Component({
   selector: "app-security-users-edit",
@@ -28,7 +31,7 @@ export class SecurityUsersEditComponent extends BaseComponent implements OnInit 
   filteredGroups: GroupDto[] = [];
   groupsFilterCtrl = new FormControl();
 
-  constructor(private fb: FormBuilder, private securityUsersService: SecurityUsersService,
+  constructor(private fb: FormBuilder, private securityUsersService: SecurityService,
     private route: ActivatedRoute, private qForms: QFormsService, private router: Router,
     private utilityService: UtilityService, private dialog: MatDialog,
     private qFormValidation: QFormValidationEEService, private securityGroupsService: SecurityGroupsService) {
@@ -46,7 +49,8 @@ export class SecurityUsersEditComponent extends BaseComponent implements OnInit 
       lastName: [],
       email: [],
       description: [null, [Validators.maxLength(2048)]],
-      groups: [[]]
+      groups: [[]],
+      policies: [[]]
     });
 
     // Fill-in the form with data if editing an existing item.
@@ -155,5 +159,22 @@ export class SecurityUsersEditComponent extends BaseComponent implements OnInit 
     if (index >= 0) {
       groups.splice(index, 1);
     }
+  }
+
+  removePolicy(policy: any) {
+    this.form.patchValue({
+      policies: _.remove(this.form.controls.policies.value, policy)
+    });
+  }
+
+  policyEditor() {
+    const editorDialogRef = this.dialog.open(SecurityPoliciesEditorComponent, {
+      width: "40rem",
+    });
+    editorDialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.form.controls.policies.value.push(result);
+      }
+    });
   }
 }

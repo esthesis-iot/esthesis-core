@@ -7,34 +7,34 @@
       </div>
     </h2>
     <div>
-      <form novalidate [formGroup]="form">
+      <form [formGroup]="form" novalidate>
         <div class="flex flex-col">
           <mat-form-field>
             <mat-label>Name</mat-label>
-            <input matInput formControlName="name">
+            <input formControlName="name" matInput>
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>Description</mat-label>
-            <input matInput formControlName="description">
+            <input formControlName="description" matInput>
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>Rule</mat-label>
-            <input matInput formControlName="rule">
-            <fa-icon icon="file-circle-plus" matSuffix class="mr-3 cursor-pointer"
-                     (click)="policyEditor()" matTooltip="Rule editor"></fa-icon>
+            <input formControlName="rule" matInput>
+            <fa-icon (click)="policyEditor()" class="mr-3 cursor-pointer" icon="file-circle-plus"
+                     matSuffix matTooltip="Open policy editor"></fa-icon>
           </mat-form-field>
         </div>
       </form>
     </div>
     <div class="card-actions justify-start mt-10">
       <button class="btn btn-sm btn-secondary" routerLink="/security/policies">CANCEL</button>
-      <button class="btn btn-sm btn-accent" (click)="delete()"
-              *ngIf="id !== appConstants.NEW_RECORD_ID">DELETE
+      <button (click)="delete()" *ngIf="id !== appConstants.NEW_RECORD_ID"
+              class="btn btn-sm btn-accent">DELETE
       </button>
-      <button class="btn btn-sm btn-primary" (click)="save()"
-              [disabled]="form.invalid">SAVE
+      <button (click)="save()" [disabled]="form.invalid"
+              class="btn btn-sm btn-primary">SAVE
       </button>
     </div>
   </div>

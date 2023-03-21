@@ -104,9 +104,8 @@ access to it.
 
 Esthesis provides a variety of Helm Charts to cater to the needs of different installation
 environments. As a developer, you need access to all possible services to be able to develop and
-test
-across all possible deployment scenarios. Services can be installed
-using the provided Helm charts as presented below.
+test across all possible deployment scenarios. Services can be installed using the provided Helm 
+charts as presented below.
 
 Please note that some Helm charts will instruct you to update your local `hosts` file. This is to
 allow you having easy names when trying to access the remote Kubernetes services on your local
@@ -145,9 +144,9 @@ Notes:
 
 - This chart will also create an `esthesis` Keycloak realm and install a PostgreSQL database to
   be used exclusively by Keycloak.
-- Once Keycloak is up and running, you need to create a user in `esthesis` realm, via Manage users >
+- Once Keycloak is up and running, you need to create a user in `esthesis` realm, via Manage > Users >
   Add user. Once the user is created, navigate to the user's Credentials tab and set a password.
-  This is the user you can authenticate with in the frontend.
+  This is the user you can authenticate with in the frontend. The default administrator user is "esthesis-admin", so it is suggested you start by creating a user with this username.
 - You also need to set up a "system" user in Keycloak. This user is used for inter-service
   communication
   when a principal is not established (for example, when an external device is

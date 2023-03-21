@@ -26,5 +26,8 @@ public class UserEntity extends BaseEntity {
   private String firstName;
   private String lastName;
   private String description;
+  // References to group IDs.
   private List<String> groups;
+  // Custom policies expressed as string.
+  private List<String> policies;
 }

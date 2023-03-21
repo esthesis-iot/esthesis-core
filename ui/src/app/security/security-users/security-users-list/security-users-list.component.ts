@@ -9,7 +9,7 @@ import {QFormsService} from "@qlack/forms";
 import {MatDialogRef} from "@angular/material/dialog";
 import {UtilityService} from "../../../shared/services/utility.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import {SecurityUsersService} from "../../security-users.service";
+import {SecurityService} from "../../security.service";
 import {UserDto} from "../../dto/user-dto";
 
 @Component({
@@ -26,7 +26,7 @@ export class SecurityUsersListComponent extends BaseComponent implements OnInit,
   dataSource: MatTableDataSource<UserDto> = new MatTableDataSource<UserDto>();
   filterForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router, private securityUsersService: SecurityUsersService,
+  constructor(private fb: FormBuilder, private router: Router, private securityUsersService: SecurityService,
     private qForms: QFormsService, private utilityService: UtilityService) {
     super();
     this.filterForm = this.fb.group({

@@ -194,6 +194,17 @@
 
         {"_id": ObjectId("64180cded7edc1e120090456"), "name": "Allow about view", "description": "Allow viewing system about screen", "rule": "ern:esthesis:core:about:*:retrieve:allow"},
         {"_id": ObjectId("64180cded7edc1e120090457"), "name": "Deny about view", "description": "Deny viewing system about screen", "rule": "ern:esthesis:core:about:*:retrieve:deny"},
+
+        {"_id": ObjectId("64180cded7edc1e1200904a3"), "name": "Allow dashboard create", "description": "Allow creating dashboard elements", "rule": "ern:esthesis:core:dashboard:*:create:allow"},
+        {"_id": ObjectId("64180cded7edc1e1200904a4"), "name": "Deny dashboard create", "description": "Deny creating dashboard elements", "rule": "ern:esthesis:core:dashboard:*:create:deny"},
+        {"_id": ObjectId("64180cded7edc1e1200904a5"), "name": "Allow dashboard view", "description": "Allow viewing dashboards", "rule": "ern:esthesis:core:dashboard:*:retrieve:allow"},
+        {"_id": ObjectId("64180cded7edc1e1200904a6"), "name": "Deny dashboard view", "description": "Deny viewing dashboards", "rule": "ern:esthesis:core:dashboard:*:retrieve:deny"},
+        {"_id": ObjectId("64180cded7edc1e1200904a7"), "name": "Allow dashboard updates", "description": "Allow updating the dashboard", "rule": "ern:esthesis:core:dashboard:*:update:allow"},
+        {"_id": ObjectId("64180cded7edc1e1200904a8"), "name": "Deny dashboard updates", "description": "Deny updating the dashboard", "rule": "ern:esthesis:core:dashboard:*:update:deny"},
+        {"_id": ObjectId("64180cded7edc1e1200904a9"), "name": "Allow dashboard delete", "description": "Allow deleting dashboard elements", "rule": "ern:esthesis:core:dashboard:*:delete:allow"},
+        {"_id": ObjectId("64180cded7edc1e1200904aa"), "name": "Deny dashboard delete", "description": "Deny deleting dashboard elements", "rule": "ern:esthesis:core:dashboard:*:delete:deny"},
+        {"_id": ObjectId("64180cded7edc1e1200904ab"), "name": "Allow all dashboard functionality", "description": "Allow viewing and modifying dashboards", "rule": "ern:esthesis:core:dashboard:*:*:allow"},
+        {"_id": ObjectId("64180cded7edc1e1200904ac"), "name": "Deny all dashboard functionality", "description": "Deny viewing and modifying dashboards", "rule": "ern:esthesis:core:dashboard:*:*:deny"},
         ]
       </ext:documents>
     </ext:insertMany>
@@ -258,6 +269,9 @@
         {"_id": ObjectId("64180cded7edc1e12009049e"), "name": "Audit viewer", "description": "A role providing read-only access to the audit functionality", "policies": ["64180cded7edc1e120090451"]},
 
         {"_id": ObjectId("64180cded7edc1e12009049f"), "name": "About viewer", "description": "A role providing read-only access to the about functionality", "policies": ["64180cded7edc1e120090456"]},
+
+        {"_id": ObjectId("64180cded7edc1e1200904ae"), "name": "Dashboard administrator", "description": "A role providing full access to the audit functionality", "policies": ["64180cded7edc1e1200904ab"]},
+        {"_id": ObjectId("64180cded7edc1e1200904af"), "name": "Dashboard viewer", "description": "A role providing read-only access to the audit functionality", "policies": ["64180cded7edc1e1200904ac"]},
         ]
       </ext:documents>
     </ext:insertMany>

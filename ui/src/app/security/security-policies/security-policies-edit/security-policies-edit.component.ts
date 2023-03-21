@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {BaseComponent} from "../../../shared/components/base-component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {SecurityUsersService} from "../../security-users.service";
+import {SecurityService} from "../../security.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {QFormsService} from "@qlack/forms";
 import {UtilityService} from "../../../shared/services/utility.service";

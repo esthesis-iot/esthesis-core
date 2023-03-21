@@ -9,4 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public class SecurityUserService extends BaseService<UserEntity> {
 
+  public UserEntity findByUsername(String username) {
+    return findFirstByColumn("username", username);
+  }
 }

@@ -1,7 +1,7 @@
 package esthesis.services.security.impl.resource;
 
-import esthesis.common.AppConstants.Audit.Category;
-import esthesis.common.AppConstants.Audit.Operation;
+import esthesis.common.AppConstants.Security.Category;
+import esthesis.common.AppConstants.Security.Operation;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.Page;
@@ -12,9 +12,11 @@ import esthesis.service.security.entity.RoleEntity;
 import esthesis.service.security.entity.UserEntity;
 import esthesis.service.security.resource.SecurityResource;
 import esthesis.services.security.impl.service.SecurityGroupService;
+import esthesis.services.security.impl.service.SecurityPermissionsService;
 import esthesis.services.security.impl.service.SecurityPolicyService;
 import esthesis.services.security.impl.service.SecurityRoleService;
 import esthesis.services.security.impl.service.SecurityUserService;
+import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.core.Response;
@@ -32,6 +34,9 @@ public class SecurityResourceImpl implements SecurityResource {
 
   @Inject
   SecurityRoleService securityRoleService;
+
+  @Inject
+  SecurityPermissionsService securityPermissionsService;
 
   // ***********************************************************************************************
   // * Users
@@ -61,6 +66,12 @@ public class SecurityResourceImpl implements SecurityResource {
   @Audited(cat = Category.USERS, op = Operation.RETRIEVE, msg = "Save user")
   public UserEntity saveUser(UserEntity userEntity) {
     return securityUserService.save(userEntity);
+  }
+
+  @Override
+  @Audited(cat = Category.USERS, op = Operation.RETRIEVE, msg = "Get use permissions")
+  public List<String> getUserPermissions(String username) {
+    return securityPermissionsService.getPermissionsForUser(username);
   }
 
   // ***********************************************************************************************

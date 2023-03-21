@@ -1,7 +1,6 @@
 package esthesis.service.audit.entity;
 
 import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Audit;
 import esthesis.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
@@ -29,9 +28,9 @@ public class AuditEntity extends BaseEntity {
   @Length(max = 255)
   private String createdBy;
   @NotNull
-  private Audit.Category category;
+  private AppConstants.Security.Category category;
   @NotNull
-  private AppConstants.Audit.Operation operation;
+  private AppConstants.Security.Operation operation;
   @NotNull
   @Length(max = 4096)
   private String message;
