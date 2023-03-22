@@ -196,13 +196,16 @@ export const AppConstants = {
       ABOUT: "about",
       APPLICATION: "application",
       AUDIT: "audit",
+      CA: "ca",
       CAMPAIGN: "campaign",
+      CERTIFICATES: "certificates",
       COMMAND: "command",
       CRYPTO: "crypto",
+      DASHBOARD: "dashboard",
       DATAFLOW: "dataflow",
       DEVICE: "device",
-      DIGITAL_TWIN: "digital_twin",
       INFRASTRUCTURE: "infrastructure",
+      KEYSTORE: "keystore",
       KUBERNETES: "kubernetes",
       PROVISIONING: "provisioning",
       SETTINGS: "settings",
@@ -210,7 +213,8 @@ export const AppConstants = {
       USERS: "users",
       GROUPS: "groups",
       ROLES: "roles",
-      POLICIES: "policies"
+      POLICIES: "policies",
+      NULL: "null"
     },
     // Equivalent to AppConstants.Audit.Operation
     OPERATION: {

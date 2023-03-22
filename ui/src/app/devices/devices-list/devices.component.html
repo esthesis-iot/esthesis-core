@@ -1,4 +1,4 @@
-<div class="card w-full rounded-b-none" [ngClass]="embedded ? '' : 'bg-base-200'">
+<div [ngClass]="embedded ? '' : 'bg-base-200'" class="card w-full rounded-b-none">
   <div class="card-body">
     <h2 class="card-title text-2xl flex flex-row justify-between">
       <div class="flex flex-row gap-2">
@@ -10,18 +10,18 @@
     <div>
       <!-- Filters -->
       <div [formGroup]="filterForm" class="mb-10 mt-5">
-        <fa-icon icon="search" class="mr-5 ml-1"></fa-icon>
-        <input type="text" placeholder="Hardware id"
-               class="input w-full max-w-xs placeholder-primary-content/30"
-               formControlName="hardwareId"/>
+        <fa-icon class="mr-5 ml-1" icon="search"></fa-icon>
+        <input class="input w-full max-w-xs placeholder-primary-content/30" formControlName="hardwareId"
+               placeholder="Hardware id"
+               type="text"/>
         <button (click)="clearFilter()" class="btn btn-secondary btn-ghost ml-2">CLEAR</button>
       </div>
 
       <!-- Table -->
       <table #table [dataSource]="datasource" aria-describedby="List of devices"
-             cdk-table matSort matSortActive="createdOn"
-             matSortDirection="desc" matSortDisableClear matSortStart="desc"
-             class="table w-full">
+             cdk-table class="table w-full" matSort
+             matSortActive="createdOn" matSortDirection="desc" matSortDisableClear
+             matSortStart="desc">
         <ng-container cdkColumnDef="hardwareId">
           <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Hardware ID</th>
           <td *cdkCellDef="let element" cdk-cell> {{element.hardwareId}}</td>
@@ -63,8 +63,8 @@
               cdk-row class="hover hover:cursor-pointer"></tr>
         </ng-template>
         <ng-template [ngIf]="embedded">
-          <tr *cdkRowDef="let row; columns: displayedColumns; let element;"
-              (click)="embeddedClick(element)"
+          <tr (click)="embeddedClick(element)"
+              *cdkRowDef="let row; columns: displayedColumns; let element;"
               cdk-row class="hover hover:cursor-pointer"></tr>
         </ng-template>
 
@@ -75,8 +75,10 @@
                      [showFirstLastButtons]="true">
       </mat-paginator>
     </div>
-    <div class="card-actions justify-start" *ngIf="!embedded">
-      <button class="btn btn-sm btn-primary" routerLink="preregister">PREREGISTER</button>
+    <div *ngIf="!embedded" class="card-actions justify-start">
+      <button *ac="[appConstants.SECURITY.CATEGORY.DEVICE, appConstants.SECURITY.OPERATION.CREATE]" class="btn btn-sm btn-primary"
+              routerLink="preregister">
+        PREREGISTER</button>
     </div>
   </div>
 </div>

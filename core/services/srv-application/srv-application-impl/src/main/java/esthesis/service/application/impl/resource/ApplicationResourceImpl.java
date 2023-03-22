@@ -29,14 +29,14 @@ public class ApplicationResourceImpl implements ApplicationResource {
   @GET
   @Override
   @Path("/v1/find")
-  @Audited(cat = Category.APPLICATION, op = Operation.RETRIEVE, msg = "Search applications",
+  @Audited(cat = Category.APPLICATION, op = Operation.READ, msg = "Search applications",
       log = AuditLogType.DATA_IN)
   public Page<ApplicationEntity> find(@BeanParam Pageable pageable) {
     return applicationService.find(pageable, true);
   }
 
   @Override
-  @Audited(cat = Category.APPLICATION, op = Operation.RETRIEVE, msg = "View application")
+  @Audited(cat = Category.APPLICATION, op = Operation.READ, msg = "View application")
   public ApplicationEntity findById(@PathParam("id") String id) {
     return applicationService.findById(id);
   }
@@ -50,7 +50,7 @@ public class ApplicationResourceImpl implements ApplicationResource {
   }
 
   @Override
-  @Audited(cat = Category.APPLICATION, op = Operation.UPDATE, msg = "Save application")
+  @Audited(cat = Category.APPLICATION, op = Operation.WRITE, msg = "Save application")
   public ApplicationEntity save(@Valid ApplicationEntity tag) {
     return applicationService.save(tag);
   }

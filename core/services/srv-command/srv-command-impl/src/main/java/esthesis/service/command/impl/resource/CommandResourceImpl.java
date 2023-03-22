@@ -32,26 +32,26 @@ public class CommandResourceImpl implements CommandResource {
   @GET
   @Override
   @Path("/v1/find")
-  @Audited(cat = Category.COMMAND, op = Operation.RETRIEVE, msg = "Search commands",
+  @Audited(cat = Category.COMMAND, op = Operation.READ, msg = "Search commands",
       log = AuditLogType.DATA_IN)
   public Page<CommandRequestEntity> find(@BeanParam Pageable pageable) {
     return commandService.findCommandRequest(pageable);
   }
 
   @Override
-  @Audited(cat = Category.COMMAND, op = Operation.RETRIEVE, msg = "Get command")
+  @Audited(cat = Category.COMMAND, op = Operation.READ, msg = "Get command")
   public CommandRequestEntity getCommand(String commandId) {
     return commandService.getCommand(commandId);
   }
 
   @Override
-  @Audited(cat = Category.COMMAND, op = Operation.RETRIEVE, msg = "Get reply")
+  @Audited(cat = Category.COMMAND, op = Operation.READ, msg = "Get reply")
   public List<CommandReplyEntity> getReply(String correlationId) {
     return commandService.getReplies(correlationId);
   }
 
   @Override
-  @Audited(cat = Category.COMMAND, op = Operation.UPDATE, msg = "Save command")
+  @Audited(cat = Category.COMMAND, op = Operation.WRITE, msg = "Save command")
   public String save(CommandRequestEntity request) {
     String correlationID = commandService.saveRequest(request).toString();
     commandService.executeRequest(correlationID);
@@ -60,7 +60,7 @@ public class CommandResourceImpl implements CommandResource {
   }
 
   @Override
-  @Audited(cat = Category.COMMAND, op = Operation.UPDATE, msg = "Save command")
+  @Audited(cat = Category.COMMAND, op = Operation.WRITE, msg = "Save command")
   public List<CommandReplyEntity> saveAndWait(CommandRequestEntity request, long timeout,
       long pollInterval) {
     log.debug("saveAndWait: request={}, timeout={}, pollInterval={}", request, timeout,

@@ -26,14 +26,14 @@ public class KeystoreResourceImpl implements KeystoreResource {
   @Override
   @Path("/v1/find")
   @JSONReplyFilter(filter = "content,content.id,content.name,content.description,content.createdAt")
-  @Audited(cat = Category.CRYPTO, op = Operation.RETRIEVE, msg = "Search keystores",
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Search keystores",
       log = AuditLogType.DATA_IN)
   public Page<KeystoreEntity> find(Pageable pageable) {
     return keystoreService.find(pageable);
   }
 
   @Override
-  @Audited(cat = Category.CRYPTO, op = Operation.RETRIEVE, msg = "View keystore")
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "View keystore")
   public KeystoreEntity findById(String id) {
     return keystoreService.findById(id);
   }

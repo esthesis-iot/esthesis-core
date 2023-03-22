@@ -109,25 +109,23 @@ public class AppConstants {
   public static class Security {
 
     public enum Category {
-      CERTIFICATES,
-      CA,
-      KEYSTORE,
-
       ABOUT,
       APPLICATION,
       AUDIT,
+      CA,
       CAMPAIGN,
+      CERTIFICATES,
       COMMAND,
       CRYPTO,
+      DASHBOARD,
       DATAFLOW,
       DEVICE,
-      DIGITAL_TWIN,
       INFRASTRUCTURE,
+      KEYSTORE,
       KUBERNETES,
       PROVISIONING,
       SETTINGS,
       TAG,
-      OTHER,
       USERS,
       GROUPS,
       ROLES,
@@ -136,7 +134,7 @@ public class AppConstants {
     }
 
     public enum Operation {
-      CREATE, RETRIEVE, UPDATE, DELETE, OTHER
+      CREATE, READ, WRITE, DELETE, OTHER
     }
   }
 

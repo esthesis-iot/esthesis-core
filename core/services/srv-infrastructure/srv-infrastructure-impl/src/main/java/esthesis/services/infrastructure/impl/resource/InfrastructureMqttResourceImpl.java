@@ -23,20 +23,20 @@ public class InfrastructureMqttResourceImpl implements InfrastructureMqttResourc
   InfrastructureMqttService infrastructureMqttService;
 
   @Override
-  @Audited(op = Operation.RETRIEVE, cat = Category.INFRASTRUCTURE, msg = "Search infrastructure / "
+  @Audited(op = Operation.READ, cat = Category.INFRASTRUCTURE, msg = "Search infrastructure / "
       + "MQTT", log = AuditLogType.DATA_IN)
   public Page<InfrastructureMqttEntity> find(@BeanParam Pageable pageable) {
     return infrastructureMqttService.find(pageable);
   }
 
   @Override
-  @Audited(op = Operation.UPDATE, cat = Category.INFRASTRUCTURE, msg = "Save infrastructure / MQTT")
+  @Audited(op = Operation.WRITE, cat = Category.INFRASTRUCTURE, msg = "Save infrastructure / MQTT")
   public InfrastructureMqttEntity save(InfrastructureMqttEntity mqttEntity) {
     return infrastructureMqttService.save(mqttEntity);
   }
 
   @Override
-  @Audited(op = Operation.RETRIEVE, cat = Category.INFRASTRUCTURE, msg = "View infrastructure / MQTT")
+  @Audited(op = Operation.READ, cat = Category.INFRASTRUCTURE, msg = "View infrastructure / MQTT")
   public InfrastructureMqttEntity findById(String id) {
     return infrastructureMqttService.findById(id);
   }

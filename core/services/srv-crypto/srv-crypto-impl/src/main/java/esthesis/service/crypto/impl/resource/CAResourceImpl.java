@@ -38,7 +38,7 @@ public class CAResourceImpl implements CAResource {
   @Path("/v1/find")
   @JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,"
       + "content.parentCaId,content.validity,content.name")
-  @Audited(cat = Category.CRYPTO, op = Operation.RETRIEVE, msg = "Search certificate authorities",
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Search certificate authorities",
       log = AuditLogType.DATA_IN)
   public Page<CaEntity> find(@BeanParam Pageable pageable) {
     return caService.find(pageable);
@@ -48,7 +48,7 @@ public class CAResourceImpl implements CAResource {
   @Override
   @Path("/v1/{id}")
   @JSONReplyFilter(filter = "id,cn,issued,parentCa,validity,parentCaId,name")
-  @Audited(cat = Category.CRYPTO, op = Operation.RETRIEVE, msg = "View certificate authority")
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "View certificate authority")
   public CaEntity findById(String id) {
     return caService.findById(id);
   }
@@ -62,7 +62,7 @@ public class CAResourceImpl implements CAResource {
   }
 
   @Override
-  @Audited(cat = Category.CRYPTO, op = Operation.RETRIEVE, msg = "Download certificate authority", log =
+  @Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Download certificate authority", log =
       AuditLogType.DATA_IN)
   public Response download(String caId, AppConstants.KeyType type) {
     CaEntity caEntity = caService.findById(caId);
@@ -90,7 +90,7 @@ public class CAResourceImpl implements CAResource {
   }
 
   @Override
-  @Audited(cat = Category.CRYPTO, op = Operation.UPDATE, msg = "Import certificate authority")
+  @Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Import certificate authority")
   public CaEntity importCa(ImportCaForm importCaForm) {
     return caService.importCa(importCaForm);
   }
@@ -102,7 +102,7 @@ public class CAResourceImpl implements CAResource {
   }
 
   @Override
-  @Audited(cat = Category.CRYPTO, op = Operation.UPDATE, msg = "Save certificate authority")
+  @Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Save certificate authority")
   public CaEntity save(CaEntity caEntity) {
     return caService.save(caEntity);
   }

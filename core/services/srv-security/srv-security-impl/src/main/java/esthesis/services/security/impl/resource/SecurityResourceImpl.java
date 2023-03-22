@@ -42,14 +42,14 @@ public class SecurityResourceImpl implements SecurityResource {
   // * Users
   // ***********************************************************************************************
   @Override
-  @Audited(cat = Category.USERS, op = Operation.RETRIEVE, msg = "Search users", log =
+  @Audited(cat = Category.USERS, op = Operation.READ, msg = "Search users", log =
       AuditLogType.DATA_IN)
   public Page<UserEntity> findUsers(@BeanParam Pageable pageable) {
     return securityUserService.find(pageable, true);
   }
 
   @Override
-  @Audited(cat = Category.USERS, op = Operation.RETRIEVE, msg = "View user")
+  @Audited(cat = Category.USERS, op = Operation.READ, msg = "View user")
   public UserEntity getUser(String userId) {
     return securityUserService.findById(userId);
   }
@@ -63,13 +63,13 @@ public class SecurityResourceImpl implements SecurityResource {
   }
 
   @Override
-  @Audited(cat = Category.USERS, op = Operation.RETRIEVE, msg = "Save user")
+  @Audited(cat = Category.USERS, op = Operation.READ, msg = "Save user")
   public UserEntity saveUser(UserEntity userEntity) {
     return securityUserService.save(userEntity);
   }
 
   @Override
-  @Audited(cat = Category.USERS, op = Operation.RETRIEVE, msg = "Get use permissions")
+  @Audited(cat = Category.USERS, op = Operation.READ, msg = "Get use permissions")
   public List<String> getUserPermissions(String username) {
     return securityPermissionsService.getPermissionsForUser(username);
   }
@@ -78,14 +78,14 @@ public class SecurityResourceImpl implements SecurityResource {
   // * Policies
   // ***********************************************************************************************
   @Override
-  @Audited(cat = Category.POLICIES, op = Operation.RETRIEVE, msg = "Search policies", log =
+  @Audited(cat = Category.POLICIES, op = Operation.READ, msg = "Search policies", log =
       AuditLogType.DATA_IN)
   public Page<PolicyEntity> findPolicies(@BeanParam Pageable pageable) {
     return securityPolicyService.find(pageable, true);
   }
 
   @Override
-  @Audited(cat = Category.POLICIES, op = Operation.RETRIEVE, msg = "View policy")
+  @Audited(cat = Category.POLICIES, op = Operation.READ, msg = "View policy")
   public PolicyEntity getPolicy(String policyId) {
     return securityPolicyService.findById(policyId);
   }
@@ -99,7 +99,7 @@ public class SecurityResourceImpl implements SecurityResource {
   }
 
   @Override
-  @Audited(cat = Category.POLICIES, op = Operation.RETRIEVE, msg = "Save policy")
+  @Audited(cat = Category.POLICIES, op = Operation.READ, msg = "Save policy")
   public PolicyEntity savePolicy(PolicyEntity policyEntity) {
     return securityPolicyService.save(policyEntity);
   }
@@ -108,14 +108,14 @@ public class SecurityResourceImpl implements SecurityResource {
   // * Roles
   // ***********************************************************************************************
   @Override
-  @Audited(cat = Category.ROLES, op = Operation.RETRIEVE, msg = "Search roles", log =
+  @Audited(cat = Category.ROLES, op = Operation.READ, msg = "Search roles", log =
       AuditLogType.DATA_IN)
   public Page<RoleEntity> findRoles(Pageable pageable) {
     return securityRoleService.find(pageable, true);
   }
 
   @Override
-  @Audited(cat = Category.ROLES, op = Operation.RETRIEVE, msg = "View role")
+  @Audited(cat = Category.ROLES, op = Operation.READ, msg = "View role")
   public RoleEntity getRole(String roleId) {
     return securityRoleService.findById(roleId);
   }
@@ -129,7 +129,7 @@ public class SecurityResourceImpl implements SecurityResource {
   }
 
   @Override
-  @Audited(cat = Category.ROLES, op = Operation.UPDATE, msg = "Save role")
+  @Audited(cat = Category.ROLES, op = Operation.WRITE, msg = "Save role")
   public RoleEntity saveRole(RoleEntity roleEntity) {
     return securityRoleService.save(roleEntity);
   }
@@ -138,14 +138,14 @@ public class SecurityResourceImpl implements SecurityResource {
   // * Groups
   // ***********************************************************************************************
   @Override
-  @Audited(cat = Category.GROUPS, op = Operation.RETRIEVE, msg = "Search groups", log =
+  @Audited(cat = Category.GROUPS, op = Operation.READ, msg = "Search groups", log =
       AuditLogType.DATA_IN)
   public Page<GroupEntity> findGroups(Pageable pageable) {
     return securityGroupService.find(pageable, true);
   }
 
   @Override
-  @Audited(cat = Category.GROUPS, op = Operation.RETRIEVE, msg = "View group")
+  @Audited(cat = Category.GROUPS, op = Operation.READ, msg = "View group")
   public GroupEntity getGroup(String groupId) {
     return securityGroupService.findById(groupId);
   }
@@ -159,7 +159,7 @@ public class SecurityResourceImpl implements SecurityResource {
   }
 
   @Override
-  @Audited(cat = Category.GROUPS, op = Operation.UPDATE, msg = "Save group")
+  @Audited(cat = Category.GROUPS, op = Operation.WRITE, msg = "Save group")
   public GroupEntity saveGroup(GroupEntity groupEntity) {
     return securityGroupService.save(groupEntity);
   }

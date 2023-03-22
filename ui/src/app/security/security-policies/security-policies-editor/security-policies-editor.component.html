@@ -40,11 +40,6 @@
           </mat-form-field>
 
           <mat-form-field>
-            <mat-label>Object ID (use * for everything)</mat-label>
-            <input formControlName="objectId" matInput>
-          </mat-form-field>
-
-          <mat-form-field>
             <mat-label>Operation</mat-label>
             <mat-select formControlName="operation">
               <mat-option *ngFor="let o of appConstants.SECURITY.OPERATION| keyvalue"
@@ -60,6 +55,12 @@
                           [value]="o.value">{{normaliseString(o.key)}}
               </mat-option>
             </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Object ID (use * for everything)</mat-label>
+            <input formControlName="objectId" matInput>
+            <mat-hint>Read operation only supports *</mat-hint>
           </mat-form-field>
         </div>
       </form>

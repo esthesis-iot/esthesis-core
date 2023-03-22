@@ -6,6 +6,7 @@ import {QFormsService} from "@qlack/forms";
 import {MatDialogRef} from "@angular/material/dialog";
 import * as _ from "lodash";
 import {RuleDto} from "../../dto/rule-dto";
+import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 
 @Component({
   selector: "app-security-policies-editor",
@@ -37,6 +38,19 @@ export class SecurityPoliciesEditorComponent extends BaseComponent implements On
       const ern = RuleDto.deserialize(this.existingErn);
       this.form.patchValue(ern);
     }
+
+    // When a "READ" operation is selected, only "*" is a valid option for Object ID.
+    this.form.controls.operation.valueChanges.pipe(distinctUntilChanged()).subscribe(
+      (operation) => {
+        if (operation === this.appConstants.SECURITY.OPERATION.READ) {
+          this.form.patchValue({
+            objectId: "*"
+          });
+          this.form.controls.objectId.disable();
+        } else {
+          this.form.controls.objectId.enable();
+        }
+    });
   }
 
   save() {
@@ -48,7 +62,7 @@ export class SecurityPoliciesEditorComponent extends BaseComponent implements On
   }
 
   getErn(): RuleDto {
-    return _.cloneDeep(this.form.value) as RuleDto;
+    return this.form.getRawValue() as RuleDto;
   }
 
   close() {
