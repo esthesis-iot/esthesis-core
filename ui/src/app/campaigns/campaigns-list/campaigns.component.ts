@@ -6,20 +6,22 @@ import {CampaignDto} from "../dto/campaign-dto";
 import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-campaigns",
   templateUrl: "./campaigns.component.html",
   styleUrls: ["./campaigns.component.scss"]
 })
-export class CampaignsComponent extends BaseComponent implements AfterViewInit {
+export class CampaignsComponent extends SecurityBaseComponent implements AfterViewInit {
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
   columns = ["name", "state", "createdOn", "startedOn", "terminatedOn"];
   datasource = new MatTableDataSource<CampaignDto>();
 
   constructor(private campaignsService: CampaignsService, private qForms: QFormsService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.CAMPAIGN);
   }
 
   ngAfterViewInit(): void {

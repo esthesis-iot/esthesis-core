@@ -6,13 +6,15 @@ import {MatSort} from "@angular/material/sort";
 import * as _ from "lodash-es";
 import {MatTableDataSource} from "@angular/material/table";
 import {UtilityService} from "../../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
+import {AppConstants} from "../../../app.constants";
 
 @Component({
   selector: "app-device-data",
   templateUrl: "./device-data.component.html",
   styleUrls: ["./device-data.component.scss"]
 })
-export class DeviceDataComponent implements OnInit, AfterViewInit {
+export class DeviceDataComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   id: string | null;
   // Columns to display.
   displayedColumns = ["measurement", "value", "lastUpdatedOn", "lastUpdatedOnAgo"];
@@ -23,6 +25,7 @@ export class DeviceDataComponent implements OnInit, AfterViewInit {
 
   constructor(private devicesService: DevicesService, private utilityService: UtilityService,
     private route: ActivatedRoute) {
+    super(AppConstants.SECURITY.CATEGORY.DEVICE, route.snapshot.paramMap.get("id"));
     this.id = this.route.snapshot.paramMap.get("id");
   }
 

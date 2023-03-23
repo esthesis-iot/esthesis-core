@@ -10,11 +10,11 @@
     </h2>
 
     <!-- REAL-TIME STATS -->
-    <div class="flex flex-row flex-wrap gap-5 mb-10" *ngIf="isStatisticsEnabled">
+    <div *ngIf="isStatisticsEnabled" class="flex flex-row flex-wrap gap-5 mb-10">
       <div class="stats shadow">
         <div class="stat">
           <div class="stat-figure">
-            <fa-icon size="2xl" icon="heart-circle-bolt"></fa-icon>
+            <fa-icon icon="heart-circle-bolt" size="2xl"></fa-icon>
           </div>
           <div class="stat-title">Status</div>
           <div class="stat-value">
@@ -25,10 +25,10 @@
                 *ngSwitchCase="appConstants.CAMPAIGN.STATE.PAUSED_BY_WORKFLOW"
                 class="flex flex-row">
                 <div>Waiting</div>
-                <button class="btn btn-sm bg-primary ml-5 mt-1"
-                        *ngIf="isButtonResumeEnabled"
-                        (click)="resume()" matTooltip="Resume campaign">
-                  <fa-icon icon="forward" class="mr-2"></fa-icon>Resume
+                <button (click)="resume()"
+                        *ngIf="isButtonResumeEnabled && allowWrite"
+                        class="btn btn-sm bg-primary ml-5 mt-1" matTooltip="Resume campaign">
+                  <fa-icon class="mr-2" icon="forward"></fa-icon>Resume
                 </button>
               </span>
               <span
@@ -42,7 +42,7 @@
       <div class="stats shadow">
         <div class="stat">
           <div class="stat-figure">
-            <fa-icon size="2xl" icon="percent"></fa-icon>
+            <fa-icon icon="percent" size="2xl"></fa-icon>
           </div>
           <div class="stat-title">Progress</div>
           <div class="stat-value">{{campaignStats?.progress}}</div>
@@ -52,7 +52,7 @@
       <div class="stats shadow">
         <div class="stat">
           <div class="stat-figure">
-            <fa-icon size="2xl" icon="percent"></fa-icon>
+            <fa-icon icon="percent" size="2xl"></fa-icon>
           </div>
           <div class="stat-title">Replies</div>
           <div class="stat-value">{{campaignStats?.successRate | number}}</div>
@@ -62,7 +62,7 @@
       <div class="stats shadow">
         <div class="stat">
           <div class="stat-figure">
-            <fa-icon size="2xl" icon="microchip"></fa-icon>
+            <fa-icon icon="microchip" size="2xl"></fa-icon>
           </div>
           <div class="stat-title">Devices</div>
           <div class="stat-value">{{campaignStats?.allMembers | number}}</div>
@@ -72,7 +72,7 @@
       <div class="stats shadow">
         <div class="stat">
           <div class="stat-figure">
-            <fa-icon size="2xl" icon="stopwatch"></fa-icon>
+            <fa-icon icon="stopwatch" size="2xl"></fa-icon>
           </div>
           <div class="stat-title">Duration</div>
           <div class="stat-value">{{campaignStats?.duration}}</div>
@@ -80,10 +80,10 @@
             Started {{campaign?.startedOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
         </div>
       </div>
-      <div class="stats shadow" *ngFor="let group of campaignStats?.groupProgress">
+      <div *ngFor="let group of campaignStats?.groupProgress" class="stats shadow">
         <div class="stat">
           <div class="stat-figure">
-            <fa-icon size="2xl" icon="percent"></fa-icon>
+            <fa-icon icon="percent" size="2xl"></fa-icon>
           </div>
           <div class="stat-title font-bold">{{group.name}}</div>
           <div class="stat-value">{{group.progress}}</div>
@@ -93,7 +93,7 @@
     </div>
 
     <!-- CAMPAIGN ELEMENTS -->
-    <form novalidate [formGroup]="form">
+    <form [formGroup]="form" novalidate>
       <div class="flex flex-col xl:flex-row gap-5">
         <div class="flex flex-col 2xl:flex-row gap-5">
           <!-- CAMPAIGN DETAILS -->
@@ -101,7 +101,7 @@
             <div class="flex flex-col">
               <div class="section-title">Campaign details
               </div>
-              <div class="validation-errors flex flex-row" *ngIf="errorsMain">
+              <div *ngIf="errorsMain" class="validation-errors flex flex-row">
                 <div>
                   <mat-icon>rule</mat-icon>
                 </div>
@@ -114,13 +114,13 @@
               <div class="flex flex-col">
                 <mat-form-field>
                   <mat-label>Name</mat-label>
-                  <input matInput formControlName="name">
+                  <input formControlName="name" matInput>
                 </mat-form-field>
 
                 <mat-form-field>
                   <mat-label>Description</mat-label>
-                  <textarea cdkTextareaAutosize matInput placeholder="Description"
-                            formControlName="description"></textarea>
+                  <textarea cdkTextareaAutosize formControlName="description" matInput
+                            placeholder="Description"></textarea>
                 </mat-form-field>
 
                 <mat-form-field>
@@ -132,15 +132,15 @@
                   </mat-select>
                 </mat-form-field>
 
-                <div class="flex flex-col ml-5"
-                     *ngIf="form.value['type']===appConstants.CAMPAIGN.TYPE.EXECUTE_COMMAND">
+                <div *ngIf="form.value['type']===appConstants.CAMPAIGN.TYPE.EXECUTE_COMMAND"
+                     class="flex flex-col ml-5">
                   <mat-form-field>
                     <mat-label>Command</mat-label>
-                    <input matInput formControlName="commandName">
+                    <input formControlName="commandName" matInput>
                   </mat-form-field>
                   <mat-form-field>
                     <mat-label>Command arguments</mat-label>
-                    <input matInput formControlName="commandArguments">
+                    <input formControlName="commandArguments" matInput>
                   </mat-form-field>
                   <mat-form-field>
                     <mat-label>Command execution type</mat-label>
@@ -173,19 +173,19 @@
                 <div class="flex flex-col">
                   <mat-form-field>
                     <mat-label>Date/Time condition recheck</mat-label>
-                    <input matInput formControlName="advancedDateTimeRecheckTimer">
+                    <input formControlName="advancedDateTimeRecheckTimer" matInput>
                   </mat-form-field>
                   <mat-form-field>
                     <mat-label>Property condition recheck</mat-label>
-                    <input matInput formControlName="advancedPropertyRecheckTimer">
+                    <input formControlName="advancedPropertyRecheckTimer" matInput>
                   </mat-form-field>
                   <mat-form-field>
                     <mat-label>Update device replies, in group</mat-label>
-                    <input matInput formControlName="advancedUpdateRepliesTimer">
+                    <input formControlName="advancedUpdateRepliesTimer" matInput>
                   </mat-form-field>
                   <mat-form-field>
                     <mat-label>Update device replies, final</mat-label>
-                    <input matInput formControlName="advancedUpdateRepliesFinalTimer">
+                    <input formControlName="advancedUpdateRepliesFinalTimer" matInput>
                   </mat-form-field>
                 </div>
               </mat-expansion-panel>
@@ -195,7 +195,7 @@
           <div class="min-w-[24rem]">
             <div class="flex flex-col 2xl:mt-0">
               <div class="section-title">Devices</div>
-              <div class="validation-errors flex flex-row" *ngIf="errorsDevices">
+              <div *ngIf="errorsDevices" class="validation-errors flex flex-row">
                 <div>
                   <mat-icon>rule</mat-icon>
                 </div>
@@ -205,11 +205,11 @@
                   </li>
                 </ul>
               </div>
-              <div class="flex flex-row gap-5" *ngIf="!this.form.disabled">
+              <div *ngIf="!this.form.disabled" class="flex flex-row gap-5">
                 <mat-form-field class="grow">
                   <mat-label>Search by hardware id</mat-label>
-                  <input matInput [matAutocomplete]="auto"
-                         formControlName="searchByHardwareId">
+                  <input [matAutocomplete]="auto" formControlName="searchByHardwareId"
+                         matInput>
                   <mat-autocomplete #auto="matAutocomplete">
                     <mat-option *ngFor="let device of searchDevices" [value]="device.hardwareId">
                       <span>{{device.hardwareId}}</span>
@@ -218,36 +218,34 @@
                 </mat-form-field>
                 <mat-form-field class="grow">
                   <mat-label>Add by tags</mat-label>
-                  <mat-select multiple formControlName="searchByTags">
+                  <mat-select formControlName="searchByTags" multiple>
                     <mat-option *ngFor="let tag of availableTags"
                                 [value]="tag.name">{{tag.name}}</mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
 
-              <div class="flex flex-row gap-2" *ngIf="!this.form.disabled">
-                <button class="btn btn-sm" (click)="addDeviceOrTag()"
-                        [disabled]="form.controls.searchByHardwareId.value == ''
-                    && form.controls.searchByTags.value == ''">
-                  <fa-icon icon="plus" class="mr-1"></fa-icon>
+              <div *ngIf="!this.form.disabled" class="flex flex-row gap-2">
+                <button (click)="addDeviceOrTag()" [disabled]="!allowWrite || (form.controls.searchByHardwareId.value == ''&& form.controls.searchByTags.value == '')"
+                        class="btn btn-sm">
+                  <fa-icon class="mr-1" icon="plus"></fa-icon>
                   ADD
                 </button>
-                <button class="btn btn-sm" [matMenuTriggerFor]="groupMenu"
-                        [disabled]="(form.controls.searchByHardwareId.value == '')
-                    && (form.controls.searchByTags.value == '')">
-                  <fa-icon icon="layer-group" class="mr-1"></fa-icon>
+                <button [disabled]="!allowWrite || (form.controls.searchByHardwareId.value == '' && form.controls.searchByTags.value == '')" [matMenuTriggerFor]="groupMenu"
+                        class="btn btn-sm">
+                  <fa-icon class="mr-1" icon="layer-group"></fa-icon>
                   ADD IN GROUP
                 </button>
                 <mat-menu #groupMenu="matMenu" yPosition="below">
                   <div *ngIf="currentGroup() > 1">
-                    <button mat-menu-item
+                    <button (click)="addDeviceOrTag(i+1)"
                             *ngFor="let item of [].constructor(currentGroup()); let i = index"
-                            (click)="addDeviceOrTag(i+1)">
+                            mat-menu-item>
                       <span>Group {{i + 1}}</span>
                     </button>
                     <mat-divider></mat-divider>
                   </div>
-                  <button mat-menu-item (click)="addDeviceOrTag(0)">
+                  <button (click)="addDeviceOrTag(0)" mat-menu-item>
                     <span>New group</span>
                   </button>
                 </mat-menu>
@@ -259,25 +257,25 @@
                   <div
                     class="flex flex-row justify-between align-middle border-b-2 border-b-base-100 mt-5">
                     <div class="font-bold">Group {{i + 1}}</div>
-                    <button color="primary" (click)="removeGroup(i)" *ngIf="!this.form.disabled">
-                      <fa-icon icon="trash-can" matTooltip="Delete group"
-                               class="text-base-content/50 hover:text-base-content"></fa-icon>
+                    <button (click)="removeGroup(i)" *ngIf="!this.form.disabled && allowDelete">
+                      <fa-icon class="text-base-content/50 hover:text-base-content" icon="trash-can"
+                               matTooltip="Delete group"></fa-icon>
                     </button>
                   </div>
                   <div class="mt-2">
-                    <div class="device flex flex-row justify-start align-middle"
-                         *ngFor="let item of group">
+                    <div *ngFor="let item of group"
+                         class="device flex flex-row justify-start align-middle">
                       <div [ngSwitch]="item.type" class="mr-2">
-                        <fa-icon icon="microchip"
-                                 *ngSwitchCase="appConstants.CAMPAIGN.MEMBER_TYPE.DEVICE"></fa-icon>
-                        <fa-icon icon="tag"
-                                 *ngSwitchCase="appConstants.CAMPAIGN.MEMBER_TYPE.TAG"></fa-icon>
+                        <fa-icon *ngSwitchCase="appConstants.CAMPAIGN.MEMBER_TYPE.DEVICE"
+                                 icon="microchip"></fa-icon>
+                        <fa-icon *ngSwitchCase="appConstants.CAMPAIGN.MEMBER_TYPE.TAG"
+                                 icon="tag"></fa-icon>
                       </div>
                       <div>{{item.identifier}}</div>
                       <div class="ml-2">
-                        <button (click)="removeMember(item.identifier)" *ngIf="!this.form.disabled">
-                          <fa-icon icon="trash-can" matTooltip="Remove"
-                                   class="text-base-content/50 hover:text-base-content"></fa-icon>
+                        <button (click)="removeMember(item.identifier)" *ngIf="!this.form.disabled && allowDelete">
+                          <fa-icon class="text-base-content/50 hover:text-base-content" icon="trash-can"
+                                   matTooltip="Remove"></fa-icon>
                         </button>
                       </div>
                     </div>
@@ -293,41 +291,41 @@
             <div class="flex flex-row mb-5 section-title">
               <div class="grow">Conditions</div>
               <div>
-                <button class="btn btn-xs ml-2" [matMenuTriggerFor]="menu"
-                        [disabled]="form.get('members')!.value.length == 0 || this.form.disabled"
-                        *ngIf="!this.form.disabled">
+                <button *ngIf="!this.form.disabled && allowWrite" [disabled]="form.get('members')!.value.length == 0 || this.form.disabled"
+                        [matMenuTriggerFor]="menu"
+                        class="btn btn-xs ml-2">
                   <fa-icon icon="plus"></fa-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                  <button mat-menu-item
-                          (click)="addCondition(appConstants.CAMPAIGN.CONDITION.TYPE.BATCH)">
-                    <fa-icon icon="layer-group" class="mr-2"></fa-icon>
+                  <button (click)="addCondition(appConstants.CAMPAIGN.CONDITION.TYPE.BATCH)" *ngIf="allowWrite"
+                          mat-menu-item>
+                    <fa-icon class="mr-2" icon="layer-group"></fa-icon>
                     <span>Batch</span>
                   </button>
-                  <button mat-menu-item
-                          (click)="addCondition(appConstants.CAMPAIGN.CONDITION.TYPE.DATETIME)">
-                    <fa-icon icon="calendar" class="mr-2"></fa-icon>
+                  <button (click)="addCondition(appConstants.CAMPAIGN.CONDITION.TYPE.DATETIME)" *ngIf="allowWrite"
+                          mat-menu-item>
+                    <fa-icon class="mr-2" icon="calendar"></fa-icon>
                     <span>Date & Time</span>
                   </button>
-                  <button mat-menu-item
-                          (click)="addCondition(appConstants.CAMPAIGN.CONDITION.TYPE.PAUSE)">
-                    <fa-icon icon="pause" class="mr-2"></fa-icon>
+                  <button (click)="addCondition(appConstants.CAMPAIGN.CONDITION.TYPE.PAUSE)" *ngIf="allowWrite"
+                          mat-menu-item>
+                    <fa-icon class="mr-2" icon="pause"></fa-icon>
                     <span>Pause</span>
                   </button>
-                  <button mat-menu-item
-                          (click)="addCondition(appConstants.CAMPAIGN.CONDITION.TYPE.PROPERTY)">
-                    <fa-icon icon="list-check" class="mr-2"></fa-icon>
+                  <button (click)="addCondition(appConstants.CAMPAIGN.CONDITION.TYPE.PROPERTY)" *ngIf="allowWrite"
+                          mat-menu-item>
+                    <fa-icon class="mr-2" icon="list-check"></fa-icon>
                     <span>Property</span>
                   </button>
-                  <button mat-menu-item
-                          (click)="addCondition(appConstants.CAMPAIGN.CONDITION.TYPE.SUCCESS)">
-                    <fa-icon icon="flag" class="mr-2"></fa-icon>
+                  <button (click)="addCondition(appConstants.CAMPAIGN.CONDITION.TYPE.SUCCESS)" *ngIf="allowWrite"
+                          mat-menu-item>
+                    <fa-icon class="mr-2" icon="flag"></fa-icon>
                     <span>Success</span>
                   </button>
                 </mat-menu>
               </div>
             </div>
-            <div class="validation-errors flex flex-row" *ngIf="errorsConditions">
+            <div *ngIf="errorsConditions" class="validation-errors flex flex-row">
               <div>
                 <mat-icon>rule</mat-icon>
               </div>
@@ -337,8 +335,8 @@
                 </li>
               </ul>
             </div>
-            <div formArrayName="conditions"
-                 *ngFor="let condition of getConditions(); let i = index">
+            <div *ngFor="let condition of getConditions(); let i = index"
+                 formArrayName="conditions">
               <div [formGroupName]="i">
                 <div class="flex flex-row gap-2 font-bold">
                   <div>{{i + 1}}</div>
@@ -346,14 +344,14 @@
                     <fa-icon [icon]="getIcon(condition.value.type)" class="mr-2"></fa-icon>
                   </div>
                   <div>{{getDescription(condition.value.type)}}</div>
-                  <fa-icon icon="trash-can" (click)="removeCondition(i)"
+                  <fa-icon (click)="removeCondition(i)" *ngIf="!this.form.disabled"
                            class="text-base-content/50 hover:text-base-content"
-                           *ngIf="!this.form.disabled" matTooltip="Remove condition"></fa-icon>
+                           icon="trash-can" matTooltip="Remove condition"></fa-icon>
                 </div>
                 <div class="flex flex-row gap-2">
                   <div class="flex flex-row gap-2">
                     <mat-form-field>
-                      <mat-select placeholder="Target" formControlName="group">
+                      <mat-select formControlName="group" placeholder="Target">
                         <mat-option
                           *ngFor="let item of [].constructor(currentGroup()); let i = index"
                           [value]="i+1">
@@ -366,7 +364,7 @@
                     <mat-form-field
                       *ngIf="condition.value.type !== appConstants.CAMPAIGN.CONDITION.TYPE.BATCH
                          && condition.value.type !== appConstants.CAMPAIGN.CONDITION.TYPE.SUCCESS">
-                      <mat-select placeholder="Stage" formControlName="stage">
+                      <mat-select formControlName="stage" placeholder="Stage">
                         <mat-option [value]="appConstants.CAMPAIGN.CONDITION.STAGE.ENTRY">Entry
                         </mat-option>
                         <mat-option [value]="appConstants.CAMPAIGN.CONDITION.STAGE.EXIT">Exit
@@ -374,11 +372,11 @@
                       </mat-select>
                     </mat-form-field>
                   </div>
-                  <div class="flex flex-row" [ngSwitch]="condition.value.type">
+                  <div [ngSwitch]="condition.value.type" class="flex flex-row">
                     <!-- DATE TIME -->
                     <div *ngSwitchCase="appConstants.CAMPAIGN.CONDITION.TYPE.DATETIME">
                       <mat-form-field>
-                        <mat-select placeholder="Operation" formControlName="operation">
+                        <mat-select formControlName="operation" placeholder="Operation">
                           <mat-option [value]="appConstants.CAMPAIGN.CONDITION.OP.BEFORE">
                             Before
                           </mat-option>
@@ -388,13 +386,13 @@
                         </mat-select>
                       </mat-form-field>
                       <mat-form-field>
-                        <input matInput [ngxMatDatetimePicker]="picker"
-                               placeholder="Choose a date"
-                               formControlName="scheduleDate">
-                        <mat-datepicker-toggle matSuffix
-                                               [for]="$any(picker)"></mat-datepicker-toggle>
-                        <ngx-mat-datetime-picker #picker [showSeconds]="false"
-                                                 [enableMeridian]="false">
+                        <input [ngxMatDatetimePicker]="picker" formControlName="scheduleDate"
+                               matInput
+                               placeholder="Choose a date">
+                        <mat-datepicker-toggle [for]="$any(picker)"
+                                               matSuffix></mat-datepicker-toggle>
+                        <ngx-mat-datetime-picker #picker [enableMeridian]="false"
+                                                 [showSeconds]="false">
                           <!-- Custom icon or text of Apply icon -->
                           <ng-template>
                             <span>SELECT</span>
@@ -406,7 +404,7 @@
                     <!-- PAUSE -->
                     <div *ngSwitchCase="appConstants.CAMPAIGN.CONDITION.TYPE.PAUSE">
                       <mat-form-field>
-                        <mat-select placeholder="Operation" formControlName="operation">
+                        <mat-select formControlName="operation" placeholder="Operation">
                           <mat-option [value]="appConstants.CAMPAIGN.CONDITION.OP.FOREVER">
                             Forever
                           </mat-option>
@@ -418,18 +416,18 @@
                       </mat-form-field>
                       <mat-form-field
                         *ngIf="condition.value.operation==appConstants.CAMPAIGN.CONDITION.OP.TIMER_MINUTES">
-                        <input matInput placeholder="Value" formControlName="value">
+                        <input formControlName="value" matInput placeholder="Value">
                       </mat-form-field>
                     </div>
 
                     <!-- PROPERTY -->
                     <div *ngSwitchCase="appConstants.CAMPAIGN.CONDITION.TYPE.PROPERTY">
                       <mat-form-field>
-                        <input matInput placeholder="Property name"
-                               formControlName="propertyName">
+                        <input formControlName="propertyName" matInput
+                               placeholder="Property name">
                       </mat-form-field>
                       <mat-form-field>
-                        <mat-select placeholder="Operation" formControlName="operation">
+                        <mat-select formControlName="operation" placeholder="Operation">
                           <mat-option [value]="appConstants.CAMPAIGN.CONDITION.OP.EQUAL">=
                           </mat-option>
                           <mat-option [value]="appConstants.CAMPAIGN.CONDITION.OP.GT">&gt;
@@ -443,10 +441,10 @@
                         </mat-select>
                       </mat-form-field>
                       <mat-form-field>
-                        <input matInput placeholder="Value" formControlName="value">
+                        <input formControlName="value" matInput placeholder="Value">
                       </mat-form-field>
                       <mat-form-field>
-                        <mat-select placeholder="Ignorable" formControlName="propertyIgnorable">
+                        <mat-select formControlName="propertyIgnorable" placeholder="Ignorable">
                           <mat-option [value]="true">Yes</mat-option>
                           <mat-option [value]="false">No</mat-option>
                         </mat-select>
@@ -456,14 +454,14 @@
                     <!-- SUCCESS -->
                     <div *ngSwitchCase="appConstants.CAMPAIGN.CONDITION.TYPE.SUCCESS">
                       <mat-form-field>
-                        <input matInput placeholder="Value" formControlName="value">
+                        <input formControlName="value" matInput placeholder="Value">
                       </mat-form-field>
                     </div>
 
                     <!-- BATCH -->
                     <div *ngSwitchCase="appConstants.CAMPAIGN.CONDITION.TYPE.BATCH">
                       <mat-form-field>
-                        <input matInput placeholder="Value" formControlName="value">
+                        <input formControlName="value" matInput placeholder="Value">
                       </mat-form-field>
                     </div>
                   </div>
@@ -476,30 +474,29 @@
     </form>
 
     <div class="card-actions justify-start mt-10">
-      <button class="btn btn-sm btn-secondary" *ngIf="isButtonCancelEnabled"
+      <button *ngIf="isButtonCancelEnabled" class="btn btn-sm btn-secondary"
               routerLink="/campaigns">CANCEL
       </button>
-      <button class="btn btn-sm btn-secondary"
-              *ngIf="isButtonReplicateEnabled"
-              (click)="replicate()">REPLICATE
+      <button (click)="replicate()"
+              *ngIf="isButtonReplicateEnabled && allowCreate"
+              class="btn btn-sm btn-secondary">REPLICATE
       </button>
-      <button class="btn btn-sm btn-accent"
-              [disabled]="!isButtonDeleteEnabled"
-              (click)="delete()">DELETE
+      <button (click)="delete()"
+              [disabled]="!isButtonDeleteEnabled && allowDelete"
+              class="btn btn-sm btn-accent">DELETE
       </button>
 
-      <button class="btn btn-sm btn-primary"
-              *ngIf="isButtonStartEnabled"
+      <button (click)="start()"
+              *ngIf="isButtonStartEnabled && allowWrite"
               [disabled]="!form.value.members || form.value.members.length == 0"
-              (click)="start()">START
+              class="btn btn-sm btn-primary">START
       </button>
-      <button *ngIf="isButtonStopEnabled"
-              class="btn btn-sm btn-primary" (click)="stop()" matTooltip="Stop campaign">
+      <button (click)="stop()"
+              *ngIf="isButtonStopEnabled && allowWrite" class="btn btn-sm btn-primary" matTooltip="Stop campaign">
         STOP
       </button>
-      <button class="btn btn-sm btn-primary"
-              *ngIf="isButtonSaveEnabled"
-              (click)="save(false)">SAVE
+      <button (click)="save(false)"
+              *ngIf="isButtonSaveEnabled && allowWrite" class="btn btn-sm btn-primary">SAVE
       </button>
     </div>
   </div>

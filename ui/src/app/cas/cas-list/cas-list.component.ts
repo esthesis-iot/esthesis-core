@@ -7,13 +7,14 @@ import {BaseComponent} from "../../shared/components/base-component";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatDialogRef} from "@angular/material/dialog";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-cas-list",
-  templateUrl: "./cas-list.component.html",
-  styleUrls: ["./cas-list.component.scss"]
+  templateUrl: "./cas-list.component.html"
 })
-export class CasListComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class CasListComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   @Input() embedded = false;
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
@@ -23,7 +24,7 @@ export class CasListComponent extends BaseComponent implements OnInit, AfterView
 
   constructor(private caService: CasService, private qForms: QFormsService,
     @Optional() private dialogRef: MatDialogRef<CasListComponent>) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.CA);
   }
 
   ngOnInit() {

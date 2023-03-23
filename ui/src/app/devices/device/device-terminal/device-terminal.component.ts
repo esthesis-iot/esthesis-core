@@ -3,19 +3,17 @@ import {NgTerminal} from "ng-terminal";
 import {DeviceTerminalService} from "./device-terminal.service";
 import {BaseComponent} from "../../../shared/components/base-component";
 import {CommandExecuteRequestDto} from "../../../commands/dto/command-execute-request-dto";
+import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
+import {AppConstants} from "../../../app.constants";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: "app-device-terminal",
   templateUrl: "./device-terminal.component.html"
 })
-export class DeviceTerminalComponent extends BaseComponent implements AfterViewInit {
+export class DeviceTerminalComponent extends SecurityBaseComponent implements AfterViewInit {
   @Input() hardwareId!: string;
   @ViewChild("term", {static: true}) terminal!: NgTerminal;
-  private command = "";
-  private blockInput = false;
-  private history: string[] = [];
-  private historyPointer = 0;
-  private winX: number;
   counters = {
     latency: 0,
     latestCommand: new Date(),
@@ -25,10 +23,71 @@ export class DeviceTerminalComponent extends BaseComponent implements AfterViewI
   };
   timeout = 3000;
   polling = 500;
+  private command = "";
+  private blockInput = false;
+  private history: string[] = [];
+  private historyPointer = 0;
+  private winX: number;
 
-  constructor(private deviceTerminalService: DeviceTerminalService) {
-    super();
+  constructor(private deviceTerminalService: DeviceTerminalService, private route: ActivatedRoute) {
+    super(AppConstants.SECURITY.CATEGORY.DEVICE, route.snapshot.paramMap.get("id"));
     this.winX = window.innerWidth;
+  }
+
+  ngAfterViewInit(): void {
+    // Configuration options.
+    this.terminal.setXtermOptions({
+      cursorBlink: true,
+    });
+
+    // Keypress handling.
+    this.terminal.onKey().subscribe(e => {
+      if (this.blockInput) {
+        return;
+      }
+      const ev = e.domEvent;
+      const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey;
+
+      switch (ev.key) {
+        case "Enter":
+          this.terminal.write("\r\n");
+          if (this.command.trim().length > 0) {
+            this.addToHistory(this.command);
+            this.executeCommand();
+          } else {
+            this.terminal.write("$ ");
+          }
+          this.historyPointer = this.history.length;
+          break;
+        case "ArrowDown":
+          this.historyPointer++;
+          this.replaceFromHistory();
+          break;
+        case "ArrowUp":
+          this.historyPointer--;
+          this.replaceFromHistory();
+          break;
+        case "Backspace":
+          // Do not delete the prompt
+          if (this.terminal.underlying.buffer.active.cursorX > 2) {
+            this.terminal.write("\b \b");
+          }
+          if (this.command.length > 0) {
+            this.command = this.command.substring(0, this.command.length - 1);
+          }
+          break;
+        default:
+          if (ev.ctrlKey && (ev.key === "c" || ev.key === "C")) {
+            this.command = "";
+            this.terminal.write("\r\n$ ");
+          } else if (printable) {
+            this.terminal.write(e.key);
+            this.command += e.key;
+          }
+      }
+    });
+
+    this.terminal.write("$ ");
   }
 
   private termColorRed(message: string) {
@@ -88,61 +147,5 @@ export class DeviceTerminalComponent extends BaseComponent implements AfterViewI
     const historyCommand = this.history[this.historyPointer];
     this.terminal.write(historyCommand);
     this.command = historyCommand;
-  }
-
-  ngAfterViewInit(): void {
-    // Configuration options.
-    this.terminal.setXtermOptions({
-      cursorBlink: true,
-    });
-
-    // Keypress handling.
-    this.terminal.onKey().subscribe(e => {
-      if (this.blockInput) {
-        return;
-      }
-      const ev = e.domEvent;
-      const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey;
-
-      switch (ev.key) {
-        case "Enter":
-          this.terminal.write("\r\n");
-          if (this.command.trim().length > 0) {
-            this.addToHistory(this.command);
-            this.executeCommand();
-          } else {
-            this.terminal.write("$ ");
-          }
-          this.historyPointer = this.history.length;
-          break;
-        case "ArrowDown":
-          this.historyPointer++;
-          this.replaceFromHistory();
-          break;
-        case "ArrowUp":
-          this.historyPointer--;
-          this.replaceFromHistory();
-          break;
-        case "Backspace":
-          // Do not delete the prompt
-          if (this.terminal.underlying.buffer.active.cursorX > 2) {
-            this.terminal.write("\b \b");
-          }
-          if (this.command.length > 0) {
-            this.command = this.command.substring(0, this.command.length - 1);
-          }
-          break;
-        default:
-          if (ev.ctrlKey && (ev.key === "c" || ev.key === "C")) {
-            this.command = "";
-            this.terminal.write("\r\n$ ");
-          } else if (printable) {
-            this.terminal.write(e.key);
-            this.command += e.key;
-          }
-      }
-    });
-
-    this.terminal.write("$ ");
   }
 }

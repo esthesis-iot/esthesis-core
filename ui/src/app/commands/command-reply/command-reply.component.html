@@ -14,27 +14,27 @@
           <div class="text-accent font-bold">Command details</div>
           <div>
             <div class="font-bold">Id</div>
-            <div>{{commandRequest.id}}</div>
+            <div>{{commandRequest?.id}}</div>
           </div>
           <div>
             <div class="font-bold">Type</div>
             <div>
-              <div *ngIf="commandRequest.commandType === appConstants.DEVICE.COMMAND.TYPE.EXECUTE">
+              <div *ngIf="commandRequest?.commandType === appConstants.DEVICE.COMMAND.TYPE.EXECUTE">
                 Execute
               </div>
-              <div *ngIf="commandRequest.commandType === appConstants.DEVICE.COMMAND.TYPE.HEALTH">
+              <div *ngIf="commandRequest?.commandType === appConstants.DEVICE.COMMAND.TYPE.HEALTH">
                 Health
               </div>
-              <div *ngIf="commandRequest.commandType === appConstants.DEVICE.COMMAND.TYPE.PING">
+              <div *ngIf="commandRequest?.commandType === appConstants.DEVICE.COMMAND.TYPE.PING">
                 Ping
               </div>
-              <div *ngIf="commandRequest.commandType === appConstants.DEVICE.COMMAND.TYPE.FIRMWARE">
+              <div *ngIf="commandRequest?.commandType === appConstants.DEVICE.COMMAND.TYPE.FIRMWARE">
                 Firmware
               </div>
-              <div *ngIf="commandRequest.commandType === appConstants.DEVICE.COMMAND.TYPE.REBOOT">
+              <div *ngIf="commandRequest?.commandType === appConstants.DEVICE.COMMAND.TYPE.REBOOT">
                 Reboot
               </div>
-              <div *ngIf="commandRequest.commandType === appConstants.DEVICE.COMMAND.TYPE.SHUTDOWN">
+              <div *ngIf="commandRequest?.commandType === appConstants.DEVICE.COMMAND.TYPE.SHUTDOWN">
                 Shutdown
               </div>
             </div>
@@ -43,38 +43,38 @@
             <div class="font-bold">Execution</div>
             <div>
               <div
-                *ngIf="commandRequest.executionType === appConstants.DEVICE.COMMAND.EXECUTION.ASYNCHRONOUS">
+                *ngIf="commandRequest?.executionType === appConstants.DEVICE.COMMAND.EXECUTION.ASYNCHRONOUS">
                 Asynchronous
               </div>
               <div
-                *ngIf="commandRequest.executionType === appConstants.DEVICE.COMMAND.EXECUTION.SYNCHRONOUS">
+                *ngIf="commandRequest?.executionType === appConstants.DEVICE.COMMAND.EXECUTION.SYNCHRONOUS">
                 Synchronous
               </div>
             </div>
           </div>
           <div>
             <div class="font-bold">Command</div>
-            <div>{{commandRequest.command}}</div>
+            <div>{{commandRequest?.command}}</div>
           </div>
-          <div *ngIf="commandRequest.arguments">
+          <div *ngIf="commandRequest?.arguments">
             <div class="font-bold">Arguments</div>
-            <div>{{commandRequest.arguments}}</div>
+            <div>{{commandRequest?.arguments}}</div>
           </div>
           <div>
             <div class="font-bold">Created</div>
-            <div>{{commandRequest.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
+            <div>{{commandRequest?.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
           </div>
           <div>
             <div class="font-bold">Dispatched</div>
             <div
-              *ngIf="commandRequest.dispatchedOn">{{commandRequest.dispatchedOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
+              *ngIf="commandRequest?.dispatchedOn">{{commandRequest?.dispatchedOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
           </div>
         </div>
         <div class="card-actions justify-start">
-          <button class="btn btn-accent btn-sm" (click)="deleteReplies()" *ngIf="commandReplies">
+          <button (click)="deleteReplies()" *ngIf="commandReplies && allowDelete" class="btn btn-accent btn-sm">
             DELETE REPLIES
           </button>
-          <button class="btn btn-accent btn-sm" (click)="deleteCommand()">
+          <button (click)="deleteCommand()" *ngIf="allowDelete" class="btn btn-accent btn-sm">
             DELETE COMMAND
           </button>
         </div>
@@ -91,17 +91,17 @@
         <div *ngFor="let reply of commandReplies; let i = index" class="flex flex-col gap-5">
           <div class="flex flex-row gap-2 items-baseline">
             <div class="badge badge-primary">{{reply.hardwareId}}</div>
-            <div class="badge badge-success" *ngIf="reply.success">Successful execution</div>
-            <div class="badge badge-error" *ngIf="!reply.success">Failed execution</div>
+            <div *ngIf="reply.success" class="badge badge-success">Successful execution</div>
+            <div *ngIf="!reply.success" class="badge badge-error">Failed execution</div>
             <div
               class="badge">{{reply.createdOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
             <div>
-              <button class="btn btn-sm btn-ghost" (click)="copyOutputToClipboard(i)"
+              <button (click)="copyOutputToClipboard(i)" class="btn btn-sm btn-ghost"
                       matTooltip="Copy to clipboard">
                 <fa-icon icon="clipboard"></fa-icon>
               </button>
-              <button class="btn btn-sm btn-ghost" (click)="deleteReply(reply.id!, i)"
-                      matTooltip="Delete reply">
+              <button (click)="deleteReply(reply.id!, i)" *ngIf="allowDelete"
+                      class="btn btn-sm btn-ghost" matTooltip="Delete reply">
                 <fa-icon icon="trash-can"></fa-icon>
               </button>
             </div>

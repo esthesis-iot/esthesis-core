@@ -1,34 +1,34 @@
-<table cdk-table [dataSource]="datasource" class="mat-elevation-z0" matSort
-       matSortActive="name" matSortDirection="asc"
-       matSortStart="asc" matSortDisableClear aria-describedby="List of MQTT servers"
-       class="table w-full">
+<table [dataSource]="datasource" aria-describedby="List of MQTT servers" cdk-table
+       class="table w-full" matSort
+       matSortActive="name" matSortDirection="asc" matSortDisableClear
+       matSortStart="asc">
   <ng-container cdkColumnDef="name">
-    <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Name</th>
-    <td cdk-cell *cdkCellDef="let element">{{element.name}}</td>
+    <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Name</th>
+    <td *cdkCellDef="let element" cdk-cell>{{element.name}}</td>
   </ng-container>
   <ng-container cdkColumnDef="url">
-    <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> URL</th>
-    <td cdk-cell *cdkCellDef="let element">{{element.url}}</td>
+    <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> URL</th>
+    <td *cdkCellDef="let element" cdk-cell>{{element.url}}</td>
   </ng-container>
   <ng-container cdkColumnDef="active">
-    <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Status</th>
-    <td cdk-cell *cdkCellDef="let element"> {{element.active ? 'Active' : 'Inactive'}}</td>
+    <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Status</th>
+    <td *cdkCellDef="let element" cdk-cell> {{element.active ? 'Active' : 'Inactive'}}</td>
   </ng-container>
   <ng-container cdkColumnDef="tags">
-    <th cdk-header-cell *cdkHeaderCellDef scope="col"> Tags</th>
-    <td cdk-cell *cdkCellDef="let element">
+    <th *cdkHeaderCellDef cdk-header-cell scope="col"> Tags</th>
+    <td *cdkCellDef="let element" cdk-cell>
       {{resolveTag(element.tags)}}
     </td>
   </ng-container>
-  <tr cdk-header-row *cdkHeaderRowDef="columns"></tr>
-  <tr cdk-row *cdkRowDef="let row; columns: columns; let element;"
-      [routerLink]="'mqtt/' + element.id" class="hover hover:cursor-pointer"></tr>
+  <tr *cdkHeaderRowDef="columns" cdk-header-row></tr>
+  <tr *cdkRowDef="let row; columns: columns; let element;" [routerLink]="'mqtt/' + element.id"
+      cdk-row class="hover hover:cursor-pointer"></tr>
 </table>
 <mat-paginator (page)="changePage()"
-               [pageSize]="10"
                [pageSizeOptions]="[10, 30, 50]"
+               [pageSize]="10"
                [showFirstLastButtons]="true">
 </mat-paginator>
-<button class="btn btn-sm btn-primary" [routerLink]="['mqtt', appConstants.NEW_RECORD_ID]">
+<button *ngIf="allowCreate" [routerLink]="['mqtt', appConstants.NEW_RECORD_ID]" class="btn btn-sm btn-primary">
   REGISTER
 </button>

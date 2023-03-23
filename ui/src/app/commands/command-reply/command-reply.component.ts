@@ -3,26 +3,27 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {CommandsService} from "../commands.service";
 import {CommandRequestDto} from "../dto/command-request-dto";
 import {CommandReplyDto} from "../dto/command-reply-dto";
-import {BaseComponent} from "../../shared/components/base-component";
 import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-command-reply",
   templateUrl: "./command-reply.component.html",
   styleUrls: ["./command-reply.component.scss"]
 })
-export class CommandReplyComponent extends BaseComponent implements OnInit {
+export class CommandReplyComponent extends SecurityBaseComponent implements OnInit {
   id!: string;
-  commandRequest!: CommandRequestDto;
+  commandRequest?: CommandRequestDto;
   commandReplies?: CommandReplyDto[];
 
   constructor(private route: ActivatedRoute, private commandService: CommandsService,
     private utilityService: UtilityService, private dialog: MatDialog, private router: Router) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.COMMAND, route.snapshot.paramMap.get("id"));
   }
 
   ngOnInit(): void {
@@ -83,7 +84,7 @@ export class CommandReplyComponent extends BaseComponent implements OnInit {
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.commandService.deleteReplies(this.commandRequest.id!).subscribe({
+        this.commandService.deleteReplies(this.commandRequest?.id!).subscribe({
           next: () => {
             this.utilityService.popupSuccess("Command reply successfully deleted.");
             this.commandReplies = [];

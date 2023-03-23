@@ -11,13 +11,14 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatDialogRef} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-tags-list",
-  templateUrl: "./tags-list.component.html",
-  styleUrls: ["./tags-list.component.scss"]
+  templateUrl: "./tags-list.component.html"
 })
-export class TagsListComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class TagsListComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   // References to sorting and pagination.
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
@@ -30,7 +31,7 @@ export class TagsListComponent extends BaseComponent implements OnInit, AfterVie
   constructor(private fb: FormBuilder, private router: Router, private tagService: TagsService,
     private qForms: QFormsService, @Optional() private dialogRef: MatDialogRef<TagsListComponent>,
     private utilityService: UtilityService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.TAG);
     this.filterForm = this.fb.group({
       name: [],
     });

@@ -1,31 +1,27 @@
 import {Component, OnInit} from "@angular/core";
-import {BaseComponent} from "../../../shared/components/base-component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {SecurityService} from "../../security.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {QFormsService} from "@qlack/forms";
 import {UtilityService} from "../../../shared/services/utility.service";
 import {MatDialog} from "@angular/material/dialog";
 import {QFormValidationEEService} from "../../../shared/services/form-validation.service";
-import {UserDto} from "../../dto/user-dto";
 import {
   OkCancelModalComponent
 } from "../../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {SecurityPoliciesService} from "../../security-policies.service";
 import {PolicyDto} from "../../dto/policy-dto";
-import {DevicesComponent} from "../../../devices/devices-list/devices.component";
-import {MatTableDataSource} from "@angular/material/table";
-import {KeystoreEntryDto} from "../../../keystores/dto/keystore-entry-dto";
 import {
   SecurityPoliciesEditorComponent
 } from "../security-policies-editor/security-policies-editor.component";
+import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
+import {AppConstants} from "../../../app.constants";
 
 @Component({
   selector: "app-security-policies-edit",
   templateUrl: "./security-policies-edit.component.html",
   styleUrls: []
 })
-export class SecurityPoliciesEditComponent extends BaseComponent implements OnInit {
+export class SecurityPoliciesEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   id!: string;
 
@@ -33,7 +29,7 @@ export class SecurityPoliciesEditComponent extends BaseComponent implements OnIn
     private route: ActivatedRoute, private qForms: QFormsService, private router: Router,
     private utilityService: UtilityService, private dialog: MatDialog,
     private qFormValidation: QFormValidationEEService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.POLICIES, route.snapshot.paramMap.get("id"));
   }
 
   ngOnInit() {

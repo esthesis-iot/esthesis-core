@@ -40,7 +40,7 @@
       </mat-paginator>
     </div>
     <div class="card-actions justify-start mt-10">
-      <button [routerLink]="appConstants.NEW_RECORD_ID" class="btn btn-sm btn-primary">CREATE
+      <button *ngIf="allowCreate" [routerLink]="appConstants.NEW_RECORD_ID" class="btn btn-sm btn-primary">CREATE
       </button>
     </div>
   </div>

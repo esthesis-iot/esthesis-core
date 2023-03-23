@@ -15,13 +15,15 @@ import {ProvisioningDto} from "../dto/provisioning-dto";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-provisioning-edit",
   templateUrl: "./provisioning-edit.component.html",
   styleUrls: ["./provisioning-edit.component.scss"]
 })
-export class ProvisioningEditComponent extends BaseComponent implements OnInit {
+export class ProvisioningEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   id!: string;
   availableTags: TagDto[] | undefined;
@@ -32,7 +34,7 @@ export class ProvisioningEditComponent extends BaseComponent implements OnInit {
     private qForms: QFormsService, private tagService: TagsService,
     private provisioningService: ProvisioningService, private route: ActivatedRoute,
     private router: Router, private http: HttpClient, private utilityService: UtilityService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.PROVISIONING, route.snapshot.paramMap.get("id"));
   }
 
   ngOnInit() {

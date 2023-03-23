@@ -16,13 +16,14 @@ import {GeolocationDto} from "../dto/geolocation-dto";
 import {Observable} from "rxjs";
 import {FramedMapComponent} from "../../shared/components/framed-map/framed-map.component";
 import {AppConstants} from "../../app.constants";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 
 @Component({
   selector: "app-device",
   templateUrl: "./device.component.html",
   styleUrls: ["./device.component.scss"]
 })
-export class DeviceComponent extends BaseComponent implements OnInit {
+export class DeviceComponent extends SecurityBaseComponent implements OnInit {
   id!: string | null;
   deviceInfoForm!: FormGroup;
   device: DeviceDto | undefined;
@@ -35,7 +36,7 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     private qForms: QFormsService, private tagService: TagsService,
     private devicesService: DevicesService, private route: ActivatedRoute,
     private router: Router, private utilityService: UtilityService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.DEVICE, route.snapshot.paramMap.get("id"));
   }
 
   ngOnInit() {
@@ -63,6 +64,9 @@ export class DeviceComponent extends BaseComponent implements OnInit {
 
     // Get geolocation if available.
     this.geolocation = this.devicesService.getGeolocation(this.id!);
+
+    // Set security.
+
   }
 
   saveDeviceInfo() {

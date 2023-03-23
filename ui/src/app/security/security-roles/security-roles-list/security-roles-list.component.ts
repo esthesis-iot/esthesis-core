@@ -1,5 +1,4 @@
-import {AfterViewInit, Component, OnInit, Optional, ViewChild} from "@angular/core";
-import {BaseComponent} from "../../../shared/components/base-component";
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
@@ -10,12 +9,14 @@ import {UtilityService} from "../../../shared/services/utility.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {RoleDto} from "../../dto/role-dto";
 import {SecurityRolesService} from "../../security-roles.service";
+import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
+import {AppConstants} from "../../../app.constants";
 
 @Component({
   selector: "app-security-roles-list",
   templateUrl: "./security-roles-list.component.html"
 })
-export class SecurityRolesListComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class SecurityRolesListComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   // References to sorting and pagination.
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
@@ -27,7 +28,7 @@ export class SecurityRolesListComponent extends BaseComponent implements OnInit,
   constructor(private fb: FormBuilder, private router: Router,
     private securityRolesService: SecurityRolesService, private qForms: QFormsService,
     private utilityService: UtilityService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.ROLES);
     this.filterForm = this.fb.group({
       name: [],
       description: []

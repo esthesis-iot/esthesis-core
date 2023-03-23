@@ -4,23 +4,23 @@ import {SettingsService} from "../settings.service";
 import {CertificatesService} from "../../certificates/certificates.service";
 import {CertificateDto} from "../../certificates/dto/certificate-dto";
 import * as _ from "lodash";
-import {BaseComponent} from "../../shared/components/base-component";
 import {SettingDto} from "../dto/setting-dto";
 import {AppConstants} from "../../app.constants";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 
 @Component({
   selector: "app-settings-security",
   templateUrl: "./settings-security.component.html",
   styleUrls: []
 })
-export class SettingsSecurityComponent extends BaseComponent implements OnInit {
+export class SettingsSecurityComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   certificates: CertificateDto[] | undefined;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
     private certificatesService: CertificatesService, private utilityService: UtilityService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.SETTINGS);
   }
 
   ngOnInit() {

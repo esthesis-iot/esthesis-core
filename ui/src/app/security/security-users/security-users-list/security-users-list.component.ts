@@ -11,13 +11,15 @@ import {UtilityService} from "../../../shared/services/utility.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {SecurityService} from "../../security.service";
 import {UserDto} from "../../dto/user-dto";
+import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
+import {AppConstants} from "../../../app.constants";
 
 @Component({
   selector: "app-security-users-list",
   templateUrl: "./security-users-list.component.html",
   styleUrls: []
 })
-export class SecurityUsersListComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class SecurityUsersListComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   // References to sorting and pagination.
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
@@ -28,7 +30,7 @@ export class SecurityUsersListComponent extends BaseComponent implements OnInit,
 
   constructor(private fb: FormBuilder, private router: Router, private securityUsersService: SecurityService,
     private qForms: QFormsService, private utilityService: UtilityService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.USERS);
     this.filterForm = this.fb.group({
       username: [],
       firstName: [],

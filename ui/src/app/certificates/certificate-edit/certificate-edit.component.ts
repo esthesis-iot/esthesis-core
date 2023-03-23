@@ -13,13 +13,14 @@ import {QFormsService} from "@qlack/forms";
 import {CertificateDto} from "../dto/certificate-dto";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 
 @Component({
   selector: "app-certificate-edit",
   templateUrl: "./certificate-edit.component.html",
   styleUrls: []
 })
-export class CertificateEditComponent extends BaseComponent implements OnInit {
+export class CertificateEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   id!: string | null;
   issuers: CaDto[] | undefined;
@@ -30,7 +31,7 @@ export class CertificateEditComponent extends BaseComponent implements OnInit {
     private qForms: QFormsService,
     private route: ActivatedRoute, private router: Router, private caService: CasService,
     private utilityService: UtilityService, private dialog: MatDialog) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.CERTIFICATES, route.snapshot.paramMap.get("id"));
   }
 
   ngOnInit() {

@@ -7,30 +7,30 @@
       </div>
     </h2>
     <div>
-      <form novalidate [formGroup]="form">
+      <form [formGroup]="form" novalidate>
         <div class="flex flex-col">
           <mat-form-field>
             <mat-label>Name</mat-label>
-            <input matInput formControlName="name">
-            <app-field-error matSuffix
-                             [displayError]="isFieldValid(form, 'name')"
-                             [errorMessage]="form.controls['name'].getError('message')">
+            <input formControlName="name" matInput>
+            <app-field-error [displayError]="isFieldValid(form, 'name')"
+                             [errorMessage]="form.controls['name'].getError('message')"
+                             matSuffix>
             </app-field-error>
           </mat-form-field>
           <mat-form-field>
             <mat-label>Description</mat-label>
-            <input matInput formControlName="description">
+            <input formControlName="description" matInput>
           </mat-form-field>
         </div>
       </form>
     </div>
     <div class="card-actions justify-start mt-10">
       <button class="btn btn-sm btn-secondary" routerLink="/tags">CANCEL</button>
-      <button class="btn btn-sm btn-accent" (click)="delete()"
-              *ngIf="id !== appConstants.NEW_RECORD_ID">DELETE
+      <button (click)="delete()" *ngIf="allowDelete && id !== appConstants.NEW_RECORD_ID"
+              class="btn btn-sm btn-accent">DELETE
       </button>
-      <button class="btn btn-sm btn-primary" (click)="save()"
-              [disabled]="form.invalid">SAVE
+      <button (click)="save()" *ngIf="allowCreate || allowWrite" [disabled]="form.invalid"
+              class="btn btn-sm btn-primary">SAVE
       </button>
     </div>
   </div>

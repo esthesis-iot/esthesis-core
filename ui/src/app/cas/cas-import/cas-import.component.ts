@@ -4,16 +4,17 @@ import {QFormsService} from "@qlack/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpEvent, HttpResponse} from "@angular/common/http";
 import {CasService} from "../cas.service";
-import {BaseComponent} from "../../shared/components/base-component";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-cas-import",
   templateUrl: "./cas-import.component.html",
   styleUrls: []
 })
-export class CasImportComponent extends BaseComponent implements OnInit {
+export class CasImportComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
 
   constructor(private fb: FormBuilder, private casService: CasService,
@@ -21,7 +22,7 @@ export class CasImportComponent extends BaseComponent implements OnInit {
     private route: ActivatedRoute, private router: Router,
     private dialog: MatDialog,
     private utilityService: UtilityService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.CA);
   }
 
   ngOnInit() {

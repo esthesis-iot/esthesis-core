@@ -12,13 +12,15 @@ import {InfrastructureMqttDto} from "../dto/Infrastructure-mqtt-dto";
 import {
   OkCancelModalComponent
 } from "../../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
+import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
+import {AppConstants} from "../../../app.constants";
 
 @Component({
   selector: "app-infrastructure-mqtt-edit",
   templateUrl: "./infrastructure-mqtt-edit.component.html",
   styleUrls: ["./infrastructure-mqtt-edit.component.scss"]
 })
-export class InfrastructureMqttEditComponent extends BaseComponent implements OnInit {
+export class InfrastructureMqttEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   id!: string | null;
   availableTags: TagDto[] | undefined;
@@ -27,7 +29,7 @@ export class InfrastructureMqttEditComponent extends BaseComponent implements On
     private qForms: QFormsService, private tagsService: TagsService,
     private infrastructureMqttService: InfrastructureMqttService, private route: ActivatedRoute,
     private router: Router, private utilityService: UtilityService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.INFRASTRUCTURE, route.snapshot.paramMap.get("id"));
   }
 
   ngOnInit() {

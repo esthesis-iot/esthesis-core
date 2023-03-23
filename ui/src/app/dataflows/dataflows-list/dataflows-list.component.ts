@@ -10,13 +10,14 @@ import {DataflowDto} from "../dto/dataflow-dto";
 import {dataflows} from "../dto/dataflow-definition";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-dataflows-list",
-  templateUrl: "./dataflows-list.component.html",
-  styleUrls: ["./dataflows-list.component.scss"]
+  templateUrl: "./dataflows-list.component.html"
 })
-export class DataflowsListComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class DataflowsListComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   displayedColumns = ["name", "description", "type", "status"];
   dataSource: MatTableDataSource<DataflowDto> = new MatTableDataSource<DataflowDto>();
   filterForm: FormGroup;
@@ -27,7 +28,7 @@ export class DataflowsListComponent extends BaseComponent implements OnInit, Aft
 
   constructor(private fb: FormBuilder, private router: Router,
     private dataflowService: DataflowsService, private qForms: QFormsService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.DATAFLOW);
     this.filterForm = this.fb.group({
       name: [],
     });

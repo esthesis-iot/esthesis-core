@@ -1,5 +1,4 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
-import {BaseComponent} from "../../../shared/components/base-component";
 import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
@@ -10,13 +9,14 @@ import {QFormsService, QPageableReply} from "@qlack/forms";
 import {UtilityService} from "../../../shared/services/utility.service";
 import {TagsService} from "../../../tags/tags.service";
 import * as _ from "lodash";
+import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
+import {AppConstants} from "../../../app.constants";
 
 @Component({
   selector: "app-infrastructure-mqtt-list",
-  templateUrl: "./infrastructure-mqtt-list.component.html",
-  styleUrls: ["./infrastructure-mqtt-list.component.scss"]
+  templateUrl: "./infrastructure-mqtt-list.component.html"
 })
-export class InfrastructureMqttListComponent extends BaseComponent implements AfterViewInit {
+export class InfrastructureMqttListComponent extends SecurityBaseComponent implements AfterViewInit {
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
@@ -27,7 +27,7 @@ export class InfrastructureMqttListComponent extends BaseComponent implements Af
   constructor(private infrastructureService: InfrastructureMqttService,
     private qForms: QFormsService, private utilityService: UtilityService,
     private tagService: TagsService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.INFRASTRUCTURE);
   }
 
   ngAfterViewInit(): void {

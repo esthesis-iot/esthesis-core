@@ -9,48 +9,48 @@
     <div>
       <!-- Filters -->
       <div [formGroup]="filterForm" class="mb-10 mt-5">
-        <fa-icon icon="search" class="mr-5 ml-1"></fa-icon>
-        <input type="text" placeholder="Name"
-               class="input w-full max-w-xs placeholder-primary-content/30"
-               formControlName="name"/>
+        <fa-icon class="mr-5 ml-1" icon="search"></fa-icon>
+        <input class="input w-full max-w-xs placeholder-primary-content/30" formControlName="name"
+               placeholder="Name"
+               type="text"/>
         <button (click)="clearFilter()" class="btn btn-secondary btn-ghost ml-2">CLEAR</button>
       </div>
 
       <!-- Table -->
-      <table cdk-table [dataSource]="dataSource"
-             matSort matSortActive="name" matSortDirection="asc" matSortStart="asc"
-             matSortDisableClear aria-describedby="List of tags" class="table w-full">
+      <table [dataSource]="dataSource" aria-describedby="List of tags"
+             cdk-table class="table w-full" matSort matSortActive="name"
+             matSortDirection="asc" matSortDisableClear matSortStart="asc">
         <ng-container matColumnDef="name">
-          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Name</th>
-          <td cdk-cell *cdkCellDef="let element">{{element.name}}</td>
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Name</th>
+          <td *cdkCellDef="let element" cdk-cell>{{element.name}}</td>
         </ng-container>
         <ng-container matColumnDef="description">
-          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Description</th>
-          <td cdk-cell *cdkCellDef="let element">{{element.description}}</td>
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Description</th>
+          <td *cdkCellDef="let element" cdk-cell>{{element.description}}</td>
         </ng-container>
         <ng-container matColumnDef="type">
-          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Type</th>
-          <td cdk-cell *cdkCellDef="let element">{{element.typeText}}</td>
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Type</th>
+          <td *cdkCellDef="let element" cdk-cell>{{element.typeText}}</td>
         </ng-container>
         <ng-container matColumnDef="status">
-          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Status</th>
-          <td cdk-cell *cdkCellDef="let element">
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Status</th>
+          <td *cdkCellDef="let element" cdk-cell>
             <app-boolean-checkbox [value]="element.status"></app-boolean-checkbox>
           </td>
         </ng-container>
-        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-        <tr cdk-row *cdkRowDef="let element; columns: displayedColumns;"
-            [routerLink]="'/dataflow/edit/' + element.type + '/' + element.id"
+        <tr *cdkHeaderRowDef="displayedColumns" cdk-header-row></tr>
+        <tr *cdkRowDef="let element; columns: displayedColumns;" [routerLink]="'/dataflow/edit/' + element.type + '/' + element.id"
+            cdk-row
             class="hover hover:cursor-pointer"></tr>
       </table>
       <mat-paginator #paginator (page)="changePage()"
-                     [pageSize]="10"
                      [pageSizeOptions]="[10, 30, 50]"
+                     [pageSize]="10"
                      [showFirstLastButtons]="true">
       </mat-paginator>
     </div>
     <div class="card-actions justify-start mt-10">
-      <button class="btn btn-sm btn-primary" [routerLink]="appConstants.NEW_RECORD_ID">CREATE
+      <button *ngIf="allowCreate" [routerLink]="appConstants.NEW_RECORD_ID" class="btn btn-sm btn-primary">CREATE
       </button>
     </div>
   </div>

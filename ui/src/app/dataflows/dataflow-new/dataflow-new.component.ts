@@ -1,17 +1,17 @@
 import {Component} from "@angular/core";
-import {BaseComponent} from "../../shared/components/base-component";
 import {dataflows} from "../dto/dataflow-definition";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-dataflow-new",
-  templateUrl: "./dataflow-new.component.html",
-  styleUrls: ["./dataflow-new.component.scss"]
+  templateUrl: "./dataflow-new.component.html"
 })
-export class DataflowNewComponent extends BaseComponent {
+export class DataflowNewComponent extends SecurityBaseComponent {
   dataflows = dataflows;
 
   constructor() {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.DATAFLOW);
   }
 
 }

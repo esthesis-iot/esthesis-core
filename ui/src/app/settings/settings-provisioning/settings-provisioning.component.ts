@@ -6,19 +6,20 @@ import {BaseComponent} from "../../shared/components/base-component";
 import {SettingDto} from "../dto/setting-dto";
 import {AppConstants} from "../../app.constants";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 
 @Component({
   selector: "app-settings-provisioning",
   templateUrl: "./settings-provisioning.component.html",
   styleUrls: []
 })
-export class SettingsProvisioningComponent extends BaseComponent implements OnInit {
+export class SettingsProvisioningComponent extends SecurityBaseComponent implements OnInit {
 
   form!: FormGroup;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
     private utilityService: UtilityService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.SETTINGS);
   }
 
   ngOnInit() {

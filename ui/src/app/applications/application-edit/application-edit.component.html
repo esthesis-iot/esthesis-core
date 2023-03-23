@@ -7,17 +7,17 @@
       </div>
     </h2>
     <div>
-      <form novalidate [formGroup]="form" class="flex w-full flex-col">
+      <form [formGroup]="form" class="flex w-full flex-col" novalidate>
         <mat-form-field>
           <mat-label>Name</mat-label>
-          <input matInput formControlName="name">
+          <input formControlName="name" matInput>
         </mat-form-field>
         <div class="flex flex-row">
           <mat-form-field class="grow">
             <mat-label>Security token</mat-label>
-            <input matInput formControlName="token">
-            <fa-icon icon="id-badge" matSuffix class="mr-3 cursor-pointer"
-                     (click)="generateToken()" matTooltip="Generate token"></fa-icon>
+            <input formControlName="token" matInput>
+            <fa-icon (click)="generateToken()" class="mr-3 cursor-pointer" icon="id-badge"
+                     matSuffix matTooltip="Generate token"></fa-icon>
           </mat-form-field>
         </div>
         <mat-form-field>
@@ -31,10 +31,10 @@
     </div>
     <div class="card-actions justify-start mt-10">
       <button class="btn btn-sm btn-secondary" routerLink="/applications">CANCEL</button>
-      <button class="btn btn-sm btn-accent" (click)="delete()"
-              [disabled]="id === appConstants.NEW_RECORD_ID">DELETE
+      <button (click)="delete()" *ngIf="allowDelete" [disabled]="id === appConstants.NEW_RECORD_ID"
+              class="btn btn-sm btn-accent">DELETE
       </button>
-      <button class="btn btn-sm btn-primary" (click)="save()" [disabled]="form.invalid">SAVE
+      <button (click)="save()" *ngIf="allowCreate || allowWrite" [disabled]="form.invalid" class="btn btn-sm btn-primary">SAVE
       </button>
     </div>
   </div>

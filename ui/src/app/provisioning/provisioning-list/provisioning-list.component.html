@@ -8,51 +8,51 @@
       <app-live-toggle (tick)="changePage()"></app-live-toggle>
     </h2>
     <div>
-      <table cdk-table [dataSource]="datasource" matSort
-             matSortActive="version" matSortDirection="desc" matSortStart="desc" matSortDisableClear
-             aria-describedby="List of provisioning packages"
-             class="table w-full">
+      <table [dataSource]="datasource" aria-describedby="List of provisioning packages"
+             cdk-table class="table w-full" matSort matSortActive="version"
+             matSortDirection="desc"
+             matSortDisableClear matSortStart="desc">
         <ng-container matColumnDef="name">
-          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Name</th>
-          <td cdk-cell *cdkCellDef="let element">{{element.name}}</td>
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Name</th>
+          <td *cdkCellDef="let element" cdk-cell>{{element.name}}</td>
         </ng-container>
         <ng-container matColumnDef="version">
-          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Version</th>
-          <td cdk-cell *cdkCellDef="let element">{{element.version}}</td>
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Version</th>
+          <td *cdkCellDef="let element" cdk-cell>{{element.version}}</td>
         </ng-container>
         <ng-container matColumnDef="prerequisiteVersion">
-          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Base Version</th>
-          <td cdk-cell *cdkCellDef="let element">
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Base Version</th>
+          <td *cdkCellDef="let element" cdk-cell>
             {{resolveBaseVersion(element.prerequisiteVersion)}}</td>
         </ng-container>
         <ng-container matColumnDef="state">
-          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> State</th>
-          <td cdk-cell *cdkCellDef="let element">
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> State</th>
+          <td *cdkCellDef="let element" cdk-cell>
             <app-boolean-checkbox [value]="element.available"></app-boolean-checkbox>
           </td>
         </ng-container>
         <ng-container matColumnDef="size">
-          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Size</th>
-          <td cdk-cell *cdkCellDef="let element">{{element["size"] | filesize}}</td>
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Size</th>
+          <td *cdkCellDef="let element" cdk-cell>{{element["size"] | filesize}}</td>
         </ng-container>
         <ng-container matColumnDef="tags">
-          <th cdk-header-cell *cdkHeaderCellDef scope="col"> Tags</th>
-          <td cdk-cell *cdkCellDef="let element">
+          <th *cdkHeaderCellDef cdk-header-cell scope="col"> Tags</th>
+          <td *cdkCellDef="let element" cdk-cell>
             {{resolveTag(element.tags)}}
           </td>
         </ng-container>
         <ng-container matColumnDef="createdOn">
-          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Created</th>
-          <td cdk-cell *cdkCellDef="let element">{{element.createdOn | date:
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Created</th>
+          <td *cdkCellDef="let element" cdk-cell>{{element.createdOn | date:
             constants.DATE_FORMAT}}</td>
         </ng-container>
         <ng-container matColumnDef="type">
-          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Type</th>
-          <td cdk-cell *cdkCellDef="let element">{{element.type}}</td>
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Type</th>
+          <td *cdkCellDef="let element" cdk-cell>{{element.type}}</td>
         </ng-container>
         <ng-container matColumnDef="cacheStatus">
-          <th cdk-header-cell *cdkHeaderCellDef mat-sort-header scope="col"> Cache</th>
-          <td cdk-cell *cdkCellDef="let element" [ngSwitch]="element.cacheStatus">
+          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Cache</th>
+          <td *cdkCellDef="let element" [ngSwitch]="element.cacheStatus" cdk-cell>
             <div *ngSwitchCase="appConstants.PROVISIONING.CACHE_STATUS.COMPLETED"
                  class="status-completed">Completed
             </div>
@@ -67,20 +67,20 @@
             </div>
           </td>
         </ng-container>
-        <tr cdk-header-row *cdkHeaderRowDef="columns"></tr>
-        <tr cdk-row *cdkRowDef="let row; columns: columns; let element;"
-            [routerLink]="element.id" class="hover hover:cursor-pointer"></tr>
+        <tr *cdkHeaderRowDef="columns" cdk-header-row></tr>
+        <tr *cdkRowDef="let row; columns: columns; let element;" [routerLink]="element.id"
+            cdk-row class="hover hover:cursor-pointer"></tr>
       </table>
 
       <mat-paginator #paginator (page)="changePage()"
-                     [pageSize]="10"
                      [pageSizeOptions]="[10, 30, 50]"
+                     [pageSize]="10"
                      [showFirstLastButtons]="true">
       </mat-paginator>
     </div>
     <div class="card-actions justify-start mt-10">
-      <button class="btn btn-sm btn-secondary" (click)="cacheAll()">CACHE ALL</button>
-      <button class="btn btn-sm btn-primary" [routerLink]="appConstants.NEW_RECORD_ID">CREATE
+      <button (click)="cacheAll()" *ngIf="allowWrite" class="btn btn-sm btn-secondary">CACHE ALL</button>
+      <button *ngIf="allowCreate" [routerLink]="appConstants.NEW_RECORD_ID" class="btn btn-sm btn-primary">CREATE
       </button>
     </div>
   </div>

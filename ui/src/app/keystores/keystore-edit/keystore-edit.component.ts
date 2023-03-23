@@ -19,13 +19,15 @@ import {
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {TagsListComponent} from "../../tags/tags-list/tags-list.component";
 import * as _ from "lodash-es";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-keystore-edit",
   templateUrl: "./keystore-edit.component.html",
   styleUrls: []
 })
-export class KeystoreEditComponent extends BaseComponent implements OnInit {
+export class KeystoreEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   id!: string | null;
   displayedColumns = ["name", "resourceType", "keyType", "password", "actions"];
@@ -38,7 +40,7 @@ export class KeystoreEditComponent extends BaseComponent implements OnInit {
     private qForms: QFormsService, private dialog: MatDialog,
     private keystoresService: KeystoresService, private utilityService: UtilityService,
     private route: ActivatedRoute) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.KEYSTORE, route.snapshot.paramMap.get("id"));
   }
 
   ngOnInit(): void {

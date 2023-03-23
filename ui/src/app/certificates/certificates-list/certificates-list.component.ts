@@ -7,13 +7,15 @@ import {QFormsService} from "@qlack/forms";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatDialogRef} from "@angular/material/dialog";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-certificates-list",
   templateUrl: "./certificates-list.component.html",
   styleUrls: ["./certificates-list.component.scss"]
 })
-export class CertificatesListComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class CertificatesListComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   @Input() embedded = false;
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
@@ -23,7 +25,7 @@ export class CertificatesListComponent extends BaseComponent implements OnInit, 
 
   constructor(private certificateService: CertificatesService, private qForms: QFormsService,
     @Optional() private dialogRef: MatDialogRef<CertificatesListComponent>) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.CERTIFICATES);
   }
 
   ngOnInit(): void {

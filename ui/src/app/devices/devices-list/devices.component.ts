@@ -11,31 +11,31 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {CountdownComponent} from "ngx-countdown";
 import {MatDialogRef} from "@angular/material/dialog";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-devices",
   templateUrl: "./devices.component.html",
   styleUrls: ["./devices.component.scss"]
 })
-export class DevicesComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class DevicesComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   // References to sorting and pagination.
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
-  @ViewChild("countdown", {static: false}) private countdown!: CountdownComponent;
   @Input() embedded = false;
-
   // Columns to display.
   displayedColumns: string[] = [];
-
   // Datasource definition.
   datasource: MatTableDataSource<DeviceDto> = new MatTableDataSource<DeviceDto>();
   // Search filter.
   filterForm: FormGroup;
+  @ViewChild("countdown", {static: false}) private countdown!: CountdownComponent;
 
   constructor(private fb: FormBuilder, private router: Router,
     private deviceService: DevicesService, private qForms: QFormsService,
     @Optional() private dialogRef: MatDialogRef<DevicesComponent>) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.DEVICE);
     this.filterForm = this.fb.group({
       hardwareId: [],
     });

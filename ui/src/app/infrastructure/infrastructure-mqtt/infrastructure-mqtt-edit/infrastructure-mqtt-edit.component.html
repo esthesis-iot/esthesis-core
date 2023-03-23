@@ -7,16 +7,16 @@
       </div>
     </h2>
     <div>
-      <form novalidate [formGroup]="form">
-        <input type="hidden" formControlName="id">
+      <form [formGroup]="form" novalidate>
+        <input formControlName="id" type="hidden">
         <div class="flex flex-col">
           <mat-form-field>
             <mat-label>Name</mat-label>
-            <input matInput formControlName="name" required>
+            <input formControlName="name" matInput required>
           </mat-form-field>
           <mat-form-field>
             <mat-label>URL</mat-label>
-            <input matInput formControlName="url"
+            <input formControlName="url" matInput
                    required>
             <mat-hint align="start">This URL of the MQTT server to be forwarded to devices during
               registration, ex: tcp://mqtt.server:1883, ssl://mqtt.server:8883
@@ -31,7 +31,7 @@
           </mat-form-field>
           <mat-form-field>
             <mat-label>Tags</mat-label>
-            <mat-select multiple formControlName="tags">
+            <mat-select formControlName="tags" multiple>
               <mat-option *ngFor="let tag of availableTags"
                           [value]="tag.id">{{tag.name}}</mat-option>
             </mat-select>
@@ -40,10 +40,10 @@
       </form>
     </div>
     <div class="card-actions justify-start mt-10">
-      <button class="btn btn-sm btn-accent" (click)="delete()"
-              *ngIf="this.id !== appConstants.NEW_RECORD_ID">DELETE
+      <button (click)="delete()" *ngIf="allowDelete && this.id !== appConstants.NEW_RECORD_ID"
+              class="btn btn-sm btn-accent">DELETE
       </button>
-      <button class="btn btn-sm btn-primary" (click)="save()" [disabled]="form.invalid">SAVE
+      <button (click)="save()" *ngIf="allowCreate || allowWrite" [disabled]="form.invalid" class="btn btn-sm btn-primary">SAVE
       </button>
     </div>
   </div>

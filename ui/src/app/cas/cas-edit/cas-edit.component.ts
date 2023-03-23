@@ -4,7 +4,6 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {CaDto} from "../dto/ca-dto";
 import {AppConstants} from "../../app.constants";
 import {CasService} from "../cas.service";
-import {BaseComponent} from "../../shared/components/base-component";
 import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
@@ -12,13 +11,14 @@ import {QFormsService} from "@qlack/forms";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 import {QFormValidationEEService} from "../../shared/services/form-validation.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 
 @Component({
   selector: "app-cas-edit",
   templateUrl: "./cas-edit.component.html",
   styleUrls: []
 })
-export class CasEditComponent extends BaseComponent implements OnInit {
+export class CasEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   id!: string | null;
   parents: CaDto[] | undefined;
@@ -26,7 +26,7 @@ export class CasEditComponent extends BaseComponent implements OnInit {
   constructor(private fb: FormBuilder, private caService: CasService, private qForms: QFormsService,
     private route: ActivatedRoute, private router: Router, private dialog: MatDialog,
     private utilityService: UtilityService, private qFormValidation: QFormValidationEEService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.CA, route.snapshot.paramMap.get("id"));
   }
 
   ngOnInit() {

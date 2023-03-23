@@ -5,7 +5,6 @@ import {ProvisioningService} from "../provisioning.service";
 import {TagsService} from "../../tags/tags.service";
 import {TagDto} from "../../tags/dto/tag-dto";
 import * as _ from "lodash";
-import {BaseComponent} from "../../shared/components/base-component";
 import {AppConstants} from "../../app.constants";
 import {ProvisioningDto} from "../dto/provisioning-dto";
 import {
@@ -15,13 +14,14 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 
 @Component({
   selector: "app-provisioning-list",
   templateUrl: "./provisioning-list.component.html",
   styleUrls: ["./provisioning-list.component.scss"]
 })
-export class ProvisioningListComponent extends BaseComponent implements AfterViewInit {
+export class ProvisioningListComponent extends SecurityBaseComponent implements AfterViewInit {
   columns = ["name", "version", "prerequisiteVersion", "state", "size", "tags", "createdOn", "type", "cacheStatus"];
   datasource = new MatTableDataSource<ProvisioningDto>();
   availableTags: TagDto[] | undefined;
@@ -36,7 +36,7 @@ export class ProvisioningListComponent extends BaseComponent implements AfterVie
   constructor(private provisioningService: ProvisioningService, private qForms: QFormsService,
     private tagService: TagsService, private utilityService: UtilityService,
     private dialog: MatDialog) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.PROVISIONING);
   }
 
   ngAfterViewInit(): void {

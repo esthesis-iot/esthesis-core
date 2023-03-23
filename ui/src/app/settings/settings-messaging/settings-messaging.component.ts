@@ -6,18 +6,19 @@ import {SettingDto} from "../dto/setting-dto";
 import {AppConstants} from "../../app.constants";
 import {BaseComponent} from "../../shared/components/base-component";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 
 @Component({
   selector: "app-settings-messaging",
   templateUrl: "./settings-messaging.component.html"
 })
-export class SettingsMessagingComponent extends BaseComponent implements OnInit {
+export class SettingsMessagingComponent extends SecurityBaseComponent implements OnInit {
 
   form!: FormGroup;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
     private utilityService: UtilityService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.SETTINGS);
   }
 
   ngOnInit() {

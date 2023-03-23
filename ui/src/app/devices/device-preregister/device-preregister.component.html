@@ -7,15 +7,15 @@
       </div>
     </h2>
     <div>
-      <form novalidate [formGroup]="form" class="flex flex-col">
+      <form [formGroup]="form" class="flex flex-col" novalidate>
         <mat-form-field>
           <mat-label>Hardware IDs</mat-label>
-          <textarea cdkTextareaAutosize [cdkAutosizeMinRows]=1 [cdkAutosizeMaxRows]=30
-                    matInput formControlName="hardwareId"
-                    cdkTrapFocus cdkTrapFocusAutoCapture></textarea>
-          <app-field-error matSuffix
-                           [displayError]="isFieldValid(form, 'hardwareId')"
-                           [errorMessage]="form.controls['hardwareId'].getError('message')">
+          <textarea [cdkAutosizeMaxRows]=30 [cdkAutosizeMinRows]=1 cdkTextareaAutosize
+                    cdkTrapFocus cdkTrapFocusAutoCapture
+                    formControlName="hardwareId" matInput></textarea>
+          <app-field-error [displayError]="isFieldValid(form, 'hardwareId')"
+                           [errorMessage]="form.controls['hardwareId'].getError('message')"
+                           matSuffix>
           </app-field-error>
           <mat-hint>You can preregister multiple devices, adding each hardware ID on a separate line
           </mat-hint>
@@ -23,7 +23,7 @@
 
         <mat-form-field class="mt-5">
           <mat-label>Tags</mat-label>
-          <mat-select multiple formControlName="tags">
+          <mat-select formControlName="tags" multiple>
             <mat-option *ngFor="let tag of availableTags"
                         [value]="tag.name">{{tag.name}}</mat-option>
           </mat-select>
@@ -31,9 +31,9 @@
       </form>
     </div>
     <div class="card-actions justify-start mt-10">
-      <button class="btn btn-sm btn-secondary" (click)="useCam()">USE CAMERA</button>
+      <button (click)="useCam()" class="btn btn-sm btn-secondary">USE CAMERA</button>
       <button class="btn btn-sm btn-secondary" routerLink="/devices">CANCEL</button>
-      <button class="btn btn-sm btn-primary" (click)="save()" [disabled]="form.invalid">SAVE
+      <button (click)="save()" *ngIf="allowCreate" [disabled]="form.invalid" class="btn btn-sm btn-primary">SAVE
       </button>
     </div>
   </div>

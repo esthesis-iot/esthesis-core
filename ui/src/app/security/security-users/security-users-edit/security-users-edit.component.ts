@@ -18,13 +18,15 @@ import * as _ from "lodash";
 import {
   SecurityPoliciesEditorComponent
 } from "../../security-policies/security-policies-editor/security-policies-editor.component";
+import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
+import {AppConstants} from "../../../app.constants";
 
 @Component({
   selector: "app-security-users-edit",
   templateUrl: "./security-users-edit.component.html",
   styleUrls: []
 })
-export class SecurityUsersEditComponent extends BaseComponent implements OnInit {
+export class SecurityUsersEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   id!: string;
   allGroups: GroupDto[] = [];
@@ -35,7 +37,7 @@ export class SecurityUsersEditComponent extends BaseComponent implements OnInit 
     private route: ActivatedRoute, private qForms: QFormsService, private router: Router,
     private utilityService: UtilityService, private dialog: MatDialog,
     private qFormValidation: QFormValidationEEService, private securityGroupsService: SecurityGroupsService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.USERS, route.snapshot.paramMap.get("id"));
   }
 
   ngOnInit() {

@@ -23,9 +23,10 @@
           <div class="mt-10 text-xl">Policies</div>
           <mat-form-field>
             <input [formControl]="policiesFilterCtrl" [matAutocomplete]="auto"
-            matInput placeholder="Search for a policy to add...">
+                   matInput placeholder="Search for a policy to add...">
             <mat-autocomplete #auto="matAutocomplete">
-              <mat-option (click)="addPolicy()" *ngFor="let policy of filteredPolicies" [value]="policy.id">
+              <mat-option (click)="addPolicy()" *ngFor="let policy of filteredPolicies"
+                          [value]="policy.id">
                 <span class="font-bold">{{policy.name}}</span><br>
                 <span class="font-thin">{{policy.rule}}</span>
               </mat-option>
@@ -33,24 +34,24 @@
           </mat-form-field>
           <table class="table w-full">
             <thead>
-              <tr>
-                <th class="text-left">Name</th>
-                <th class="text-left">Description</th>
-                <th class="text-left">Rule</th>
-              </tr>
+            <tr>
+              <th class="text-left">Name</th>
+              <th class="text-left">Description</th>
+              <th class="text-left">Rule</th>
+            </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let policyId of form.controls.policies.value as string">
-                <td>{{getPolicyName(policyId)}}</td>
-                <td>{{getPolicyDescription(policyId)}}</td>
-                <td>{{getPolicyRule(policyId)}}</td>
-                <td>
-                  <button (click)="removePolicy(policyId)"
-                          class="btn btn-sm btn-ghost" matTooltip="Remove policy">
-                    <fa-icon icon="trash-can"></fa-icon>
-                  </button>
-                </td>
-              </tr>
+            <tr *ngFor="let policyId of form.controls.policies.value as string">
+              <td>{{getPolicyName(policyId)}}</td>
+              <td>{{getPolicyDescription(policyId)}}</td>
+              <td>{{getPolicyRule(policyId)}}</td>
+              <td>
+                <button (click)="removePolicy(policyId)"
+                        class="btn btn-sm btn-ghost" matTooltip="Remove policy">
+                  <fa-icon icon="trash-can"></fa-icon>
+                </button>
+              </td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -58,10 +59,10 @@
     </div>
     <div class="card-actions justify-start mt-10">
       <button class="btn btn-sm btn-secondary" routerLink="/security/roles">CANCEL</button>
-      <button (click)="delete()" *ngIf="id !== appConstants.NEW_RECORD_ID"
+      <button (click)="delete()" *ngIf="allowDelete && id !== appConstants.NEW_RECORD_ID"
               class="btn btn-sm btn-accent">DELETE
       </button>
-      <button (click)="save()" [disabled]="form.invalid"
+      <button (click)="save()" *ngIf="allowWrite" [disabled]="form.invalid"
               class="btn btn-sm btn-primary">SAVE
       </button>
     </div>

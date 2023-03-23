@@ -76,7 +76,7 @@
       </mat-paginator>
     </div>
     <div *ngIf="!embedded" class="card-actions justify-start">
-      <button *ac="[appConstants.SECURITY.CATEGORY.DEVICE, appConstants.SECURITY.OPERATION.CREATE]" class="btn btn-sm btn-primary"
+      <button *ngIf="allowCreate" class="btn btn-sm btn-primary"
               routerLink="preregister">
         PREREGISTER</button>
     </div>

@@ -16,11 +16,11 @@
         <div>
           <mat-form-field class="w-full">
             <mat-label>Devices</mat-label>
-            <input matInput placeholder="Search by hardware Id" [matAutocomplete]="auto"
-                   formControlName="hardwareId">
+            <input [matAutocomplete]="auto" formControlName="hardwareId" matInput
+                   placeholder="Search by hardware Id">
             <mat-autocomplete #auto="matAutocomplete">
-              <mat-option *ngFor="let device of searchDevices" [value]="device.hardwareId"
-                          (click)="selectHardwareId(device.hardwareId)">
+              <mat-option (click)="selectHardwareId(device.hardwareId)" *ngFor="let device of searchDevices"
+                          [value]="device.hardwareId">
                 <span>{{device.hardwareId}}</span>
               </mat-option>
             </mat-autocomplete>
@@ -28,15 +28,15 @@
         </div>
 
         <div *ngIf="selectedHardwareIds.length > 0" class="flex flex-row gap-2 flex-wrap mb-5">
-          <span class="badge badge-md badge-primary" *ngFor="let id of selectedHardwareIds">
+          <span *ngFor="let id of selectedHardwareIds" class="badge badge-md badge-primary">
             {{ id }}
-            <fa-icon icon="xmark" (click)="removeChip(id)" class="cursor-pointer"></fa-icon>
+            <fa-icon (click)="removeChip(id)" class="cursor-pointer" icon="xmark"></fa-icon>
           </span>
         </div>
 
         <mat-form-field class="w-full">
           <mat-label>Tags</mat-label>
-          <mat-select multiple formControlName="tags" class="mt1">
+          <mat-select class="mt1" formControlName="tags" multiple>
             <mat-option *ngFor="let tag of availableTags"
                         [value]="tag.name">{{tag.name}}</mat-option>
           </mat-select>
@@ -46,8 +46,8 @@
       <form [formGroup]="commandForm" class="flex flex-col">
         <mat-form-field>
           <mat-label>Description</mat-label>
-          <textarea cdkTextareaAutosize [cdkAutosizeMinRows]=1 [cdkAutosizeMaxRows]=10
-                    matInput formControlName="description"></textarea>
+          <textarea [cdkAutosizeMaxRows]=10 [cdkAutosizeMinRows]=1 cdkTextareaAutosize
+                    formControlName="description" matInput></textarea>
         </mat-form-field>
         <mat-form-field>
           <mat-label>Command type</mat-label>
@@ -60,8 +60,8 @@
         </mat-form-field>
 
         <!-- Execute -->
-        <div class="flex flex-col ml-5"
-             *ngIf="commandForm.value['commandType'] == appConstants.DEVICE.COMMAND.TYPE.EXECUTE">
+        <div *ngIf="commandForm.value['commandType'] == appConstants.DEVICE.COMMAND.TYPE.EXECUTE"
+             class="flex flex-col ml-5">
           <mat-form-field>
             <mat-label>Execution type</mat-label>
             <mat-select formControlName="executionType">
@@ -73,17 +73,17 @@
           </mat-form-field>
           <mat-form-field>
             <mat-label>Command</mat-label>
-            <input matInput formControlName="command">
+            <input formControlName="command" matInput>
           </mat-form-field>
           <mat-form-field>
             <mat-label>Command arguments</mat-label>
-            <input matInput formControlName="arguments">
+            <input formControlName="arguments" matInput>
           </mat-form-field>
         </div>
 
         <!-- Firmware -->
-        <div class="flex flex-col ml-5"
-             *ngIf="commandForm.value['commandType'] == appConstants.DEVICE.COMMAND.TYPE.FIRMWARE">
+        <div *ngIf="commandForm.value['commandType'] == appConstants.DEVICE.COMMAND.TYPE.FIRMWARE"
+             class="flex flex-col ml-5">
           <mat-form-field>
             <mat-label>Provisioning package</mat-label>
             <mat-select formControlName="command">
@@ -96,7 +96,7 @@
     </div>
     <div class="card-actions justify-start mt-10">
       <button class="btn btn-sm btn-secondary" routerLink="/command">CANCEL</button>
-      <button class="btn btn-sm btn-primary" [disabled]="!canDispatch()" (click)="save()">DISPATCH
+      <button (click)="save()" *ngIf="allowCreate" [disabled]="!canDispatch()" class="btn btn-sm btn-primary">DISPATCH
       </button>
     </div>
   </div>

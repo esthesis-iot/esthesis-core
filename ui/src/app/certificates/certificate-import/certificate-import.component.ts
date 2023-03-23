@@ -5,13 +5,15 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {CertificatesService} from "../certificates.service";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-certificate-import",
   templateUrl: "./certificate-import.component.html",
   styleUrls: []
 })
-export class CertificateImportComponent implements OnInit {
+export class CertificateImportComponent extends SecurityBaseComponent implements OnInit {
 
   form!: FormGroup;
 
@@ -19,6 +21,7 @@ export class CertificateImportComponent implements OnInit {
     private route: ActivatedRoute, private router: Router,
     private dialog: MatDialog,
     private utilityService: UtilityService) {
+    super(AppConstants.SECURITY.CATEGORY.CERTIFICATES);
   }
 
   ngOnInit() {

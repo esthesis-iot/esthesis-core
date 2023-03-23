@@ -4,7 +4,6 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {AuditDto} from "../dto/audit-dto";
 import {AuditService} from "../audit.service";
-import {BaseComponent} from "../../shared/components/base-component";
 import {QFilterAlias, QFormsService} from "@qlack/forms";
 import * as _ from "lodash";
 import * as moment from "moment";
@@ -12,13 +11,14 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityService} from "../../security/security.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-audit-list",
-  templateUrl: "./audit-list.component.html",
-  styleUrls: ["./audit-list.component.scss"]
+  templateUrl: "./audit-list.component.html"
 })
-export class AuditListComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class AuditListComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   // Columns to display.
   displayedColumns = ["createdOn", "createdBy", "category", "operation", "message"];
 
@@ -37,7 +37,7 @@ export class AuditListComponent extends BaseComponent implements OnInit, AfterVi
   constructor(private auditService: AuditService, private fb: FormBuilder,
     private userService: SecurityService, private qForms: QFormsService,
     private utilityService: UtilityService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.AUDIT);
     this.filterForm = this.fb.group({
       dateFrom: [],
       dateTo: [],

@@ -8,16 +8,16 @@
     </h2>
     <div class="flex flex-row flex-wrap gap-5">
 
-      <div class="card w-96 bg-base-100 shadow-xl" *ngFor="let d of dataflows">
+      <div *ngFor="let d of dataflows" class="card w-96 bg-base-100 shadow-xl">
         <figure class="px-10 pt-10">
-          <img src="{{d.icon}}" class="rounded-xl max-h-16"/>
+          <img class="rounded-xl max-h-16" src="{{d.icon}}"/>
         </figure>
         <div class="card-body items-center text-center">
           <h2 class="card-title">{{d.title}}</h2>
           <p>{{d.description}}</p>
           <div class="card-actions">
-            <button class="btn btn-primary btn-sm mt-5"
-                    [routerLink]="'/dataflow/edit/' + d.type + '/' + appConstants.NEW_RECORD_ID">
+            <button *ngIf="allowCreate" [routerLink]="'/dataflow/edit/' + d.type + '/' + appConstants.NEW_RECORD_ID"
+                    class="btn btn-primary btn-sm mt-5">
               DEPLOY
             </button>
           </div>

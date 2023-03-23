@@ -1,28 +1,23 @@
-import {AfterViewInit, Component, OnInit, Optional, ViewChild} from "@angular/core";
-import {BaseComponent} from "../../../shared/components/base-component";
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
-import {UserDto} from "../../dto/user-dto";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
-import {SecurityService} from "../../security.service";
 import {QFormsService} from "@qlack/forms";
-import {MatDialogRef} from "@angular/material/dialog";
 import {UtilityService} from "../../../shared/services/utility.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import {
-  SecurityUsersListComponent
-} from "../../security-users/security-users-list/security-users-list.component";
 import {SecurityPoliciesService} from "../../security-policies.service";
 import {PolicyDto} from "../../dto/policy-dto";
+import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
+import {AppConstants} from "../../../app.constants";
 
 @Component({
   selector: "app-security-policies-list",
   templateUrl: "./security-policies-list.component.html",
   styleUrls: []
 })
-export class SecurityPoliciesListComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class SecurityPoliciesListComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   // References to sorting and pagination.
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
@@ -34,7 +29,7 @@ export class SecurityPoliciesListComponent extends BaseComponent implements OnIn
   constructor(private fb: FormBuilder, private router: Router,
     private securityPoliciesService: SecurityPoliciesService,
     private qForms: QFormsService, private utilityService: UtilityService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.POLICIES);
     this.filterForm = this.fb.group({
       name: [],
       description: [],

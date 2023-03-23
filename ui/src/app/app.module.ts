@@ -21,7 +21,9 @@ import {
   faBars,
   faBarsProgress,
   faBell,
-  faBroadcastTower, faBuildingShield,
+  faBoxArchive,
+  faBroadcastTower,
+  faBuildingShield,
   faCalendar,
   faCaretDown,
   faCertificate,
@@ -39,9 +41,11 @@ import {
   faDiagramProject,
   faDownload,
   faEnvelope,
-  faEnvelopeOpen, faFileCirclePlus,
+  faEnvelopeOpen,
+  faFileCirclePlus,
   faFlag,
-  faForward, faGear,
+  faForward,
+  faGear,
   faGlobe,
   faHeart,
   faHeartCircleBolt,
@@ -73,8 +77,11 @@ import {
   faTriangleExclamation,
   faUpRightFromSquare,
   faUser,
-  faUserClock, faUsers, faUsersBetweenLines,
-  faXmark, faXmarksLines
+  faUserClock,
+  faUsers,
+  faUsersBetweenLines,
+  faXmark,
+  faXmarksLines
 } from "@fortawesome/free-solid-svg-icons";
 import {faGithub, faInstagram, faTwitter} from "@fortawesome/free-brands-svg-icons";
 import {ComponentsModule} from "./shared/components/components.module";
@@ -137,7 +144,7 @@ export class AppModule {
       faArrowUpRightFromSquare, faCaretDown, faAddressCard, faBroadcastTower, faBuildingShield,
       faCertificate, faCubes, faDashboard, faDesktop, faDiagramProject, faGear, faGlobe,
       faMicrochip, faNetworkWired, faShieldHalved, faStamp, faTag, faUser, faUsers,
-      faUsersBetweenLines, faXmarksLines, faFileCirclePlus);
+      faUsersBetweenLines, faXmarksLines, faFileCirclePlus, faBoxArchive);
     faConfig.fixedWidth = true;
   }
 }

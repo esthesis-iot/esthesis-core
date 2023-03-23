@@ -7,27 +7,27 @@
       </div>
     </h2>
     <div>
-      <form novalidate [formGroup]="form" class="flex flex-col">
+      <form [formGroup]="form" class="flex flex-col" novalidate>
         <mat-form-field>
           <mat-label>Name</mat-label>
-          <input matInput formControlName="name">
+          <input formControlName="name" matInput>
           <mat-hint>A name to easily identify this certificate by. This value is not stored inside
             the generated certificate.
           </mat-hint>
         </mat-form-field>
         <mat-form-field>
           <mat-label>Common name</mat-label>
-          <input matInput formControlName="cn">
+          <input formControlName="cn" matInput>
         </mat-form-field>
         <mat-form-field>
           <mat-label>Subject Alternative Names</mat-label>
-          <input matInput formControlName="san">
+          <input formControlName="san" matInput>
           <mat-hint>You can add multiple SANs separated by comma.</mat-hint>
         </mat-form-field>
         <mat-form-field>
           <mat-label>Expires at</mat-label>
-          <input matInput formControlName="validity" [matDatepicker]="validityPicker">
-          <mat-datepicker-toggle matSuffix [for]="validityPicker"></mat-datepicker-toggle>
+          <input [matDatepicker]="validityPicker" formControlName="validity" matInput>
+          <mat-datepicker-toggle [for]="validityPicker" matSuffix></mat-datepicker-toggle>
           <mat-datepicker #validityPicker disabled="false"></mat-datepicker>
         </mat-form-field>
         <mat-form-field *ngIf="!form.controls['id'].value">
@@ -40,27 +40,27 @@
         </mat-form-field>
         <mat-form-field *ngIf="form.controls['id'].value">
           <mat-label>Signed by</mat-label>
-          <input matInput formControlName="issuer">
+          <input formControlName="issuer" matInput>
         </mat-form-field>
       </form>
     </div>
     <div class="card-actions justify-start mt-10">
       <button class="btn btn-sm btn-secondary" routerLink="/certificates">CANCEL</button>
-      <button class="btn btn-sm btn-accent" (click)="delete()"
-              [disabled]="this.id == constants.NEW_RECORD_ID">DELETE
+      <button (click)="delete()" *ngIf="allowDelete" [disabled]="this.id == constants.NEW_RECORD_ID"
+              class="btn btn-sm btn-accent">DELETE
       </button>
-      <button class="btn btn-sm btn-secondary" [matMenuTriggerFor]="menu"
-              *ngIf="this.id !== constants.NEW_RECORD_ID">
+      <button *ngIf="allowRead && this.id !== constants.NEW_RECORD_ID" [matMenuTriggerFor]="menu"
+              class="btn btn-sm btn-secondary">
         DOWNLOAD
-        <fa-icon icon="caret-down" class="ml-2"></fa-icon>
+        <fa-icon class="ml-2" icon="caret-down"></fa-icon>
         <mat-menu #menu="matMenu" xPosition="before">
-          <button mat-menu-item (click)="downloadCertificate()">Certificate</button>
-          <button mat-menu-item (click)="downloadPublicKey()">Public key</button>
-          <button mat-menu-item (click)="downloadPrivateKey()">Private key</button>
+          <button (click)="downloadCertificate()" mat-menu-item>Certificate</button>
+          <button (click)="downloadPublicKey()" mat-menu-item>Public key</button>
+          <button (click)="downloadPrivateKey()" mat-menu-item>Private key</button>
         </mat-menu>
       </button>
-      <button class="btn btn-sm btn-primary" (click)="save()"
-              [disabled]="form.invalid || id !== constants.NEW_RECORD_ID">SAVE
+      <button (click)="save()" *ngIf="allowCreate" [disabled]="form.invalid || id !== constants.NEW_RECORD_ID"
+              class="btn btn-sm btn-primary">SAVE
       </button>
     </div>
   </div>

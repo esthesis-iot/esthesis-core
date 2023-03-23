@@ -7,30 +7,30 @@
       </div>
     </h2>
     <div>
-      <form novalidate [formGroup]="form">
+      <form [formGroup]="form" novalidate>
         <div class="flex flex-col">
           <mat-form-field>
             <mat-label>Name</mat-label>
-            <input matInput formControlName="name">
+            <input formControlName="name" matInput>
             <mat-hint>A friendly name to identify this CA.</mat-hint>
-            <app-field-error matSuffix
-                             [displayError]="isFieldValid(form, 'name')"
+            <app-field-error [displayError]="isFieldValid(form, 'name')"
                              [errorMessage]="form.controls['name'].getError('message')"
+                             matSuffix
             ></app-field-error>
           </mat-form-field>
           <mat-form-field>
             <mat-label>Common name</mat-label>
-            <input matInput formControlName="cn">
-            <app-field-error matSuffix
-                             [displayError]="isFieldValid(form, 'cn')"
+            <input formControlName="cn" matInput>
+            <app-field-error [displayError]="isFieldValid(form, 'cn')"
                              [errorMessage]="form.controls['cn'].getError('message')"
+                             matSuffix
             ></app-field-error>
           </mat-form-field>
           <mat-form-field>
             <mat-label>Expires at</mat-label>
-            <input matInput formControlName="validity"
-                   [matDatepicker]="validityPicker">
-            <mat-datepicker-toggle matSuffix [for]="validityPicker"></mat-datepicker-toggle>
+            <input [matDatepicker]="validityPicker" formControlName="validity"
+                   matInput>
+            <mat-datepicker-toggle [for]="validityPicker" matSuffix></mat-datepicker-toggle>
             <mat-datepicker #validityPicker disabled="false"></mat-datepicker>
           </mat-form-field>
           <mat-form-field>
@@ -46,21 +46,21 @@
     </div>
     <div class="card-actions justify-start mt-10">
       <button class="btn btn-sm btn-secondary" routerLink="/cas">CANCEL</button>
-      <button class="btn btn-sm btn-accent" (click)="delete()"
-              [disabled]="this.id === appConstants.NEW_RECORD_ID">DELETE
+      <button (click)="delete()" *ngIf="allowDelete" [disabled]="this.id === appConstants.NEW_RECORD_ID"
+              class="btn btn-sm btn-accent">DELETE
       </button>
-      <button class="btn btn-sm btn-secondary" [matMenuTriggerFor]="menu"
-              *ngIf="this.id !== appConstants.NEW_RECORD_ID">
+      <button *ngIf="allowRead && this.id !== appConstants.NEW_RECORD_ID" [matMenuTriggerFor]="menu"
+              class="btn btn-sm btn-secondary">
         DOWNLOAD
-        <fa-icon icon="caret-down" class="ml-2"></fa-icon>
+        <fa-icon class="ml-2" icon="caret-down"></fa-icon>
         <mat-menu #menu="matMenu" xPosition="before">
-          <button mat-menu-item (click)="downloadCertificate()">Certificate</button>
-          <button mat-menu-item (click)="downloadPublicKey()">Public key</button>
-          <button mat-menu-item (click)="downloadPrivateKey()">Private key</button>
+          <button (click)="downloadCertificate()" mat-menu-item>Certificate</button>
+          <button (click)="downloadPublicKey()" mat-menu-item>Public key</button>
+          <button (click)="downloadPrivateKey()" mat-menu-item>Private key</button>
         </mat-menu>
       </button>
-      <button class="btn btn-sm btn-primary" color="primary" (click)="save()"
-              [disabled]="form.invalid || id !== appConstants.NEW_RECORD_ID">SAVE
+      <button (click)="save()" *ngIf="allowCreate" [disabled]="form.invalid || id !== appConstants.NEW_RECORD_ID"
+              class="btn btn-sm btn-primary">SAVE
       </button>
     </div>
   </div>

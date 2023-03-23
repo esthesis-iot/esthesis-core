@@ -11,13 +11,15 @@ import {TagDto} from "../dto/tag-dto";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 import {QFormValidationEEService} from "../../shared/services/form-validation.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-tag-edit",
   templateUrl: "./tag-edit.component.html",
   styleUrls: []
 })
-export class TagEditComponent extends BaseComponent implements OnInit {
+export class TagEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   id!: string;
 
@@ -25,7 +27,7 @@ export class TagEditComponent extends BaseComponent implements OnInit {
     private route: ActivatedRoute, private qForms: QFormsService, private router: Router,
     private utilityService: UtilityService, private dialog: MatDialog,
     private qFormValidation: QFormValidationEEService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.TAG, route.snapshot.paramMap.get("id"));
   }
 
   ngOnInit() {

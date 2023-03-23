@@ -1,6 +1,6 @@
-<form novalidate [formGroup]="form" class="flex flex-col">
+<form [formGroup]="form" class="flex flex-col" novalidate>
   <div class="font-bold text-xl mt-5">Registration mode</div>
-  <mat-radio-group formControlName="DEVICE_REGISTRATION_MODE" class="flex flex-col gap-5 mt-2">
+  <mat-radio-group class="flex flex-col gap-5 mt-2" formControlName="DEVICE_REGISTRATION_MODE">
     <div>
       <mat-radio-button value="DISABLED">Disabled</mat-radio-button>
       <div class="ml-11">No devices can be registered with the platform.</div>
@@ -15,10 +15,10 @@
       <mat-radio-button value="OPEN_WITH_SECRET">Open registration with shared secret
       </mat-radio-button>
       <div class="ml-11">Devices can register with the platform using a shared secret.</div>
-      <mat-form-field class="ml-11 mt-2 no-wrap"
-                      *ngIf="form.controls['DEVICE_REGISTRATION_MODE'].value === 'OPEN_WITH_SECRET'">
+      <mat-form-field *ngIf="form.controls['DEVICE_REGISTRATION_MODE'].value === 'OPEN_WITH_SECRET'"
+                      class="ml-11 mt-2 no-wrap">
         <mat-label>Registration secret</mat-label>
-        <input matInput formControlName="DEVICE_REGISTRATION_SECRET">
+        <input formControlName="DEVICE_REGISTRATION_SECRET" matInput>
       </mat-form-field>
     </div>
 
@@ -49,5 +49,5 @@
   </mat-form-field>
 </form>
 
-<button class="btn btn-sm btn-primary mt-10" (click)="save()" [disabled]="form.invalid">SAVE
+<button (click)="save()" *ngIf="allowWrite" [disabled]="form.invalid" class="btn btn-sm btn-primary mt-10">SAVE
 </button>

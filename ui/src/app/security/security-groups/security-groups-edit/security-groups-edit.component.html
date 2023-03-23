@@ -81,10 +81,10 @@
     </div>
     <div class="card-actions justify-start mt-10">
       <button class="btn btn-sm btn-secondary" routerLink="/security/groups">CANCEL</button>
-      <button (click)="delete()" *ngIf="id !== appConstants.NEW_RECORD_ID"
+      <button (click)="delete()" *ngIf="allowDelete && id !== appConstants.NEW_RECORD_ID"
               class="btn btn-sm btn-accent">DELETE
       </button>
-      <button (click)="save()" [disabled]="form.invalid"
+      <button (click)="save()" *ngIf="allowWrite" [disabled]="form.invalid"
               class="btn btn-sm btn-primary">SAVE
       </button>
     </div>

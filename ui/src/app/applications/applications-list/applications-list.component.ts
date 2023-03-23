@@ -10,13 +10,14 @@ import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 
 @Component({
   selector: "app-applications-list",
   templateUrl: "./applications-list.component.html",
   styleUrls: ["./applications-list.component.scss"]
 })
-export class ApplicationsListComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class ApplicationsListComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   displayedColumns = ["name", "state", "createdOn"];
   dataSource: MatTableDataSource<ApplicationDto> = new MatTableDataSource<ApplicationDto>();
   filterForm: FormGroup;
@@ -30,7 +31,7 @@ export class ApplicationsListComponent extends BaseComponent implements OnInit, 
   constructor(private fb: FormBuilder, private router: Router,
     private applicationsService: ApplicationsService,
     private qForms: QFormsService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.APPLICATION);
     this.filterForm = this.fb.group({
       name: [],
       state: [],

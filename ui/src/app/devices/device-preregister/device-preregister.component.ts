@@ -12,13 +12,15 @@ import {v4 as uuidv4} from "uuid";
 import {Dialog} from "@angular/cdk/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 import {QFormValidationEEService} from "../../shared/services/form-validation.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-device-preregister",
   templateUrl: "./device-preregister.component.html",
   styleUrls: []
 })
-export class DevicePreregisterComponent extends BaseComponent implements OnInit {
+export class DevicePreregisterComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   availableTags: TagDto[] | undefined;
 
@@ -26,7 +28,7 @@ export class DevicePreregisterComponent extends BaseComponent implements OnInit 
     private devicesService: DevicesService, private router: Router,
     private utilityService: UtilityService, private tagService: TagsService,
     private dialog: Dialog, private qFormValidation: QFormValidationEEService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.DEVICE);
   }
 
   ngOnInit() {

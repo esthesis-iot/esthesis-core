@@ -1,4 +1,4 @@
-<form novalidate [formGroup]="form" class="flex flex-col">
+<form [formGroup]="form" class="flex flex-col" novalidate>
   <div class="font-bold text-xl mt-5">Platform certificate</div>
   <mat-form-field>
     <mat-select formControlName="PLATFORM_CERTIFICATE">
@@ -10,6 +10,6 @@
 </form>
 
 <div>
-  <button class="btn btn-sm btn-primary mt-10" (click)="save()" [disabled]="form.invalid">SAVE
+  <button (click)="save()" *ngIf="allowWrite" [disabled]="form.invalid" class="btn btn-sm btn-primary mt-10">SAVE
   </button>
 </div>

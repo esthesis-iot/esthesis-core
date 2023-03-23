@@ -12,7 +12,8 @@
         <fa-icon class="mt-2.5" icon="search"></fa-icon>
         <input class="input w-full max-w-xs placeholder-primary-content/30" formControlName="name"
                placeholder="Name" type="text"/>
-        <input class="input w-full max-w-xs placeholder-primary-content/30" formControlName="description"
+        <input class="input w-full max-w-xs placeholder-primary-content/30"
+               formControlName="description"
                placeholder="Description" type="text"/>
         <button (click)="clearFilter()" class="btn btn-secondary btn-ghost ml-2">CLEAR</button>
       </div>
@@ -40,7 +41,8 @@
       </mat-paginator>
     </div>
     <div class="card-actions justify-start mt-10">
-      <button [routerLink]="appConstants.NEW_RECORD_ID" class="btn btn-sm btn-primary">CREATE
+      <button *ngIf="allowWrite" [routerLink]="appConstants.NEW_RECORD_ID"
+              class="btn btn-sm btn-primary">CREATE
       </button>
     </div>
   </div>

@@ -1,5 +1,4 @@
 import {Component, OnInit} from "@angular/core";
-import {BaseComponent} from "../../shared/components/base-component";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {QFormsService} from "@qlack/forms";
@@ -10,13 +9,14 @@ import {AuditService} from "../audit.service";
 import {AuditDto} from "../dto/audit-dto";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-audit-view",
-  templateUrl: "./audit-view.component.html",
-  styleUrls: ["./audit-view.component.scss"]
+  templateUrl: "./audit-view.component.html"
 })
-export class AuditViewComponent extends BaseComponent implements OnInit {
+export class AuditViewComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   id!: string;
   auditEvent = {} as AuditDto;
@@ -24,7 +24,7 @@ export class AuditViewComponent extends BaseComponent implements OnInit {
   constructor(private fb: FormBuilder, private auditService: AuditService,
     private route: ActivatedRoute, private qForms: QFormsService, private router: Router,
     private utilityService: UtilityService, private dialog: MatDialog) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.AUDIT, route.snapshot.paramMap.get("id"));
   }
 
   ngOnInit() {

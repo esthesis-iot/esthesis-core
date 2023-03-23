@@ -10,13 +10,13 @@ import * as _ from "lodash-es";
 import {forkJoin} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 
 @Component({
   selector: "app-settings-device-page",
-  templateUrl: "./settings-device-page.component.html",
-  styleUrls: ["./settings-device-page.component.scss"]
+  templateUrl: "./settings-device-page.component.html"
 })
-export class SettingsDevicePageComponent implements OnInit {
+export class SettingsDevicePageComponent extends SecurityBaseComponent implements OnInit {
   // Expose application constants.
   constants = AppConstants;
   profileDataForm!: FormGroup;
@@ -27,6 +27,7 @@ export class SettingsDevicePageComponent implements OnInit {
   constructor(private devicesService: DevicesService, private fb: FormBuilder,
     private utilityService: UtilityService, private qForms: QFormsService,
     private settingsService: SettingsService, private dialog: MatDialog) {
+    super(AppConstants.SECURITY.CATEGORY.SETTINGS)
   }
 
   ngOnInit() {

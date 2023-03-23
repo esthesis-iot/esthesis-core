@@ -1,5 +1,4 @@
 import {Component, OnInit} from "@angular/core";
-import {BaseComponent} from "../../../shared/components/base-component";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {QFormsService} from "@qlack/forms";
@@ -15,16 +14,17 @@ import {GroupDto} from "../../dto/group-dto";
 import {SecurityRolesService} from "../../security-roles.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import * as _ from "lodash";
-import {PolicyDto} from "../../dto/policy-dto";
 import {
   SecurityPoliciesEditorComponent
 } from "../../security-policies/security-policies-editor/security-policies-editor.component";
+import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
+import {AppConstants} from "../../../app.constants";
 
 @Component({
   selector: "app-security-groups-edit",
   templateUrl: "./security-groups-edit.component.html"
 })
-export class SecurityGroupsEditComponent extends BaseComponent implements OnInit {
+export class SecurityGroupsEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   id!: string;
   allRoles: RoleDto[] = [];
@@ -35,7 +35,7 @@ export class SecurityGroupsEditComponent extends BaseComponent implements OnInit
     private route: ActivatedRoute, private qForms: QFormsService, private router: Router,
     private utilityService: UtilityService, private dialog: MatDialog,
     private qFormValidation: QFormValidationEEService, private securityRolesService: SecurityRolesService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.GROUPS, route.snapshot.paramMap.get("id"));
   }
 
   ngOnInit() {

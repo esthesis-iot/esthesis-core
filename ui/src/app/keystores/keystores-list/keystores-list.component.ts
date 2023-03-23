@@ -9,13 +9,15 @@ import {QFormsService} from "@qlack/forms";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {KeystoreDto} from "../dto/keystore-dto";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-keystores-list",
   templateUrl: "./keystores-list.component.html",
   styleUrls: ["./keystores-list.component.scss"]
 })
-export class KeystoresListComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class KeystoresListComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   // References to sorting and pagination.
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
@@ -27,7 +29,7 @@ export class KeystoresListComponent extends BaseComponent implements OnInit, Aft
   constructor(private fb: FormBuilder, private router: Router,
     private storesService: KeystoresService, private qForms: QFormsService,
     private keystoresServices: KeystoresService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.KEYSTORE);
     this.filterForm = this.fb.group({
       name: []
     });

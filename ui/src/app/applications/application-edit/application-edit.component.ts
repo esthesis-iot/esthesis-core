@@ -2,7 +2,6 @@ import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApplicationsService} from "../applications.service";
-import {BaseComponent} from "../../shared/components/base-component";
 import {
   OkCancelModalComponent
 } from "src/app/shared/components/ok-cancel-modal/ok-cancel-modal.component";
@@ -11,13 +10,15 @@ import {v4 as uuidv4} from "uuid";
 import {ApplicationDto} from "../dto/application-dto";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-application-edit",
   templateUrl: "./application-edit.component.html",
   styleUrls: []
 })
-export class ApplicationEditComponent extends BaseComponent implements OnInit {
+export class ApplicationEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   id?: string;
 
@@ -25,7 +26,7 @@ export class ApplicationEditComponent extends BaseComponent implements OnInit {
     private qForms: QFormsService,
     private route: ActivatedRoute, private router: Router, private dialog: MatDialog,
     private utilityService: UtilityService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.APPLICATION, route.snapshot.paramMap.get("id"));
   }
 
   ngOnInit() {

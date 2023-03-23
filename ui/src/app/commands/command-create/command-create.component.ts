@@ -12,13 +12,14 @@ import {DevicesService} from "../../devices/devices.service";
 import {AppConstants} from "../../app.constants";
 import {ProvisioningDto} from "../../provisioning/dto/provisioning-dto";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 
 @Component({
   selector: "app-command-create",
   templateUrl: "./command-create.component.html",
   styleUrls: ["./command-create.component.scss"]
 })
-export class CommandCreateComponent extends BaseComponent implements OnInit {
+export class CommandCreateComponent extends SecurityBaseComponent implements OnInit {
   searchDevicesForm!: FormGroup;
   commandForm!: FormGroup;
   // The list of currently active provisioning packages.
@@ -31,7 +32,7 @@ export class CommandCreateComponent extends BaseComponent implements OnInit {
   constructor(private formBuilder: FormBuilder, private commandService: CommandsService,
     private utilityService: UtilityService, private router: Router, private tagService: TagsService,
     private provisioningService: ProvisioningService, private deviceService: DevicesService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.COMMAND);
   }
 
   ngOnInit() {

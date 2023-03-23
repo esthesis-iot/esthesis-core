@@ -4,9 +4,8 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {QFormsService} from "@qlack/forms";
 import {MatDialogRef} from "@angular/material/dialog";
-import * as _ from "lodash";
 import {RuleDto} from "../../dto/rule-dto";
-import {debounceTime, distinctUntilChanged} from "rxjs/operators";
+import {distinctUntilChanged} from "rxjs/operators";
 
 @Component({
   selector: "app-security-policies-editor",

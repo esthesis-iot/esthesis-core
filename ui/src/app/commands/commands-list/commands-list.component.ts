@@ -16,13 +16,14 @@ import {MatDialog} from "@angular/material/dialog";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 
 @Component({
   selector: "app-commands-list",
   templateUrl: "./commands-list.component.html",
   styleUrls: ["./commands-list.component.scss"]
 })
-export class CommandsListComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class CommandsListComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   displayedColumns = ["command", "createdOn", "dispatchedOn", "pills"];
   dataSource: MatTableDataSource<CommandRequestDto> = new MatTableDataSource<CommandRequestDto>();
   filterForm: FormGroup;
@@ -37,7 +38,7 @@ export class CommandsListComponent extends BaseComponent implements OnInit, Afte
     private utilityService: UtilityService,
     private commandService: CommandsService, private dialog: MatDialog,
     private qForms: QFormsService) {
-    super();
+    super(AppConstants.SECURITY.CATEGORY.COMMAND);
     this.filterForm = this.fb.group({
       command: [],
     });

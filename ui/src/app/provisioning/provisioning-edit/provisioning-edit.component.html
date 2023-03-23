@@ -5,8 +5,8 @@
         <fa-icon icon="cubes"></fa-icon>
         <div>Provisioning package</div>
       </div>
-      <div class="flex flex-row gap-2"
-           *ngIf="id != appConstants.NEW_RECORD_ID && provisioningPackage">
+      <div *ngIf="id != appConstants.NEW_RECORD_ID && provisioningPackage"
+           class="flex flex-row gap-2">
         <div [ngSwitch]="provisioningPackage.cacheStatus">
           <span *ngSwitchCase="appConstants.PROVISIONING.CACHE_STATUS.COMPLETED"
                 class="badge badge-success">Caching completed
@@ -41,7 +41,7 @@
       </div>
 
       <!-- PACKAGE DETAILS -->
-      <form novalidate [formGroup]="form">
+      <form [formGroup]="form" novalidate>
         <div class="flex flex-col">
           <!-- Package type -->
           <mat-form-field>
@@ -57,12 +57,12 @@
           <!-- Common elements for all package types -->
           <mat-form-field>
             <mat-label>Name</mat-label>
-            <input matInput formControlName="name">
+            <input formControlName="name" matInput>
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>Version</mat-label>
-            <input matInput formControlName="version">
+            <input formControlName="version" matInput>
             <mat-hint>The version of this package, following semantic versioning rules</mat-hint>
           </mat-form-field>
 
@@ -89,13 +89,13 @@
 
           <mat-form-field>
             <mat-label>Description</mat-label>
-            <textarea cdkTextareaAutosize [cdkAutosizeMinRows]=1 matInput
-                      formControlName="description"></textarea>
+            <textarea [cdkAutosizeMinRows]=1 cdkTextareaAutosize formControlName="description"
+                      matInput></textarea>
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>Tags</mat-label>
-            <mat-select multiple formControlName="tags">
+            <mat-select formControlName="tags" multiple>
               <mat-option *ngFor="let tag of availableTags"
                           [value]="tag.id">{{tag.name}}</mat-option>
             </mat-select>
@@ -103,14 +103,14 @@
 
           <mat-form-field>
             <mat-label>Attributes</mat-label>
-            <input matInput formControlName="attributes">
+            <input formControlName="attributes" matInput>
             <mat-hint>Attributes will be provided as-is as input to device's firmware upgrade script
             </mat-hint>
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>Binary hash</mat-label>
-            <input matInput formControlName="sha256">
+            <input formControlName="sha256" matInput>
             <mat-hint>An optional SHA256 hash of the binary file</mat-hint>
           </mat-form-field>
 
@@ -119,11 +119,11 @@
                     && id === appConstants.NEW_RECORD_ID">
             <div class="inline-subheader">Esthesis package type</div>
             <mat-form-field fxFlexFill>
-              <input matInput placeholder="Select a file to upload"
-                     (click)="this.id === appConstants.NEW_RECORD_ID ? file.click() : null"
-                     formControlName="fileName" readonly>
+              <input (click)="this.id === appConstants.NEW_RECORD_ID ? file.click() : null" formControlName="fileName"
+                     matInput
+                     placeholder="Select a file to upload" readonly>
               <div fxFlex="row" fxLayoutAlign="start center">
-                <input type="file" (change)="selectFile($event)" #file hidden>
+                <input #file (change)="selectFile($event)" hidden type="file">
               </div>
             </mat-form-field>
           </div>
@@ -133,17 +133,17 @@
             *ngIf="form.getRawValue().type === appConstants.PROVISIONING.TYPE.WEB">
             <div class="inline-subheader">Web package type</div>
             <mat-form-field fxFlexFill>
-              <input matInput placeholder="URL" formControlName="WEB_URL">
+              <input formControlName="WEB_URL" matInput placeholder="URL">
               <mat-hint>An HTTP/HTTPS URL of the location of the package, e.g.
                 http://package-server/fw100.zip
               </mat-hint>
             </mat-form-field>
             <mat-form-field fxFlexFill>
-              <input matInput placeholder="Username" formControlName="WEB_USERNAME">
+              <input formControlName="WEB_USERNAME" matInput placeholder="Username">
               <mat-hint>Optional, basic authentication username</mat-hint>
             </mat-form-field>
             <mat-form-field fxFlexFill>
-              <input matInput placeholder="Password" formControlName="WEB_PASSWORD">
+              <input formControlName="WEB_PASSWORD" matInput placeholder="Password">
               <mat-hint>Optional, basic authentication password</mat-hint>
             </mat-form-field>
           </div>
@@ -153,29 +153,29 @@
             *ngIf="form.getRawValue().type === appConstants.PROVISIONING.TYPE.FTP">
             <div class="inline-subheader">FTP package type</div>
             <mat-form-field fxFlexFill>
-              <input matInput placeholder="URL" formControlName="FTP_HOST">
+              <input formControlName="FTP_HOST" matInput placeholder="URL">
               <mat-hint>The FTP server to download from, e.g. ftp.myserver.com</mat-hint>
             </mat-form-field>
             <mat-form-field fxFlexFill>
-              <input matInput placeholder="Port" formControlName="FTP_PORT">
+              <input formControlName="FTP_PORT" matInput placeholder="Port">
               <mat-hint>The port to connect on the FTP server</mat-hint>
             </mat-form-field>
             <mat-form-field fxFlexFill>
-              <input matInput placeholder="File location" formControlName="FTP_PATH">
+              <input formControlName="FTP_PATH" matInput placeholder="File location">
               <mat-hint>The location and name of the package on this FTP server, e.g.
                 /path1/package.gz
               </mat-hint>
             </mat-form-field>
             <mat-form-field fxFlexFill>
-              <input matInput placeholder="Username" formControlName="FTP_USERNAME">
+              <input formControlName="FTP_USERNAME" matInput placeholder="Username">
               <mat-hint>Optional, authentication username</mat-hint>
             </mat-form-field>
             <mat-form-field fxFlexFill>
-              <input matInput placeholder="Password" formControlName="FTP_PASSWORD">
+              <input formControlName="FTP_PASSWORD" matInput placeholder="Password">
               <mat-hint>Optional, authentication password</mat-hint>
             </mat-form-field>
             <mat-form-field fxFlexFill>
-              <mat-select placeholder="Passive mode" formControlName="FTP_PASSIVE">
+              <mat-select formControlName="FTP_PASSIVE" placeholder="Passive mode">
                 <mat-option value="true">True</mat-option>
                 <mat-option value="false">False</mat-option>
               </mat-select>
@@ -189,20 +189,20 @@
             *ngIf="form.getRawValue().type === appConstants.PROVISIONING.TYPE.MINIO">
             <div class="inline-subheader">Minio package type</div>
             <mat-form-field fxFlexFill>
-              <input matInput placeholder="URL" formControlName="MINIO_URL">
+              <input formControlName="MINIO_URL" matInput placeholder="URL">
               <mat-hint>The URL of the MinIO API server, e.g. http://minio-server:9000</mat-hint>
             </mat-form-field>
             <mat-form-field fxFlexFill>
-              <input matInput placeholder="Bucket" formControlName="MINIO_BUCKET">
+              <input formControlName="MINIO_BUCKET" matInput placeholder="Bucket">
             </mat-form-field>
             <mat-form-field fxFlexFill>
-              <input matInput placeholder="Object" formControlName="MINIO_OBJECT">
+              <input formControlName="MINIO_OBJECT" matInput placeholder="Object">
             </mat-form-field>
             <mat-form-field fxFlexFill>
-              <input matInput placeholder="Access key" formControlName="MINIO_ACCESS_KEY">
+              <input formControlName="MINIO_ACCESS_KEY" matInput placeholder="Access key">
             </mat-form-field>
             <mat-form-field fxFlexFill>
-              <input matInput placeholder="Secret key" formControlName="MINIO_SECRET_KEY">
+              <input formControlName="MINIO_SECRET_KEY" matInput placeholder="Secret key">
             </mat-form-field>
           </div>
         </div>
@@ -210,24 +210,24 @@
     </div>
     <div class="card-actions justify-start mt-10">
       <button class="btn btn-sm btn-secondary" routerLink="/provisioning">CANCEL</button>
-      <button class="btn btn-sm btn-secondary"
+      <button (click)="recache()" *ngIf="allowWrite"
               [disabled]="this.id === appConstants.NEW_RECORD_ID
                        || !this.provisioningPackage?.available
                        || this.provisioningPackage?.cacheStatus === appConstants.PROVISIONING.CACHE_STATUS.IN_PROGRESS
-                       || this.form.dirty" (click)="recache()">
+                       || this.form.dirty" class="btn btn-sm btn-secondary">
         RECACHE
       </button>
-      <button class="btn btn-sm btn-secondary"
-              *ngIf="this.id !== appConstants.NEW_RECORD_ID"
+      <button (click)="download()"
+              *ngIf="allowRead && this.id !== appConstants.NEW_RECORD_ID"
               [disabled]="this.provisioningPackage?.cacheStatus === appConstants.PROVISIONING.CACHE_STATUS.IN_PROGRESS
                        || this.form.dirty"
-              (click)="download()">
+              class="btn btn-sm btn-secondary">
         DOWNLOAD
       </button>
-      <button class="btn btn-sm btn-accent" (click)="delete()"
-              [disabled]="id === appConstants.NEW_RECORD_ID">DELETE
+      <button (click)="delete()" *ngIf="allowDelete" [disabled]="id === appConstants.NEW_RECORD_ID"
+              class="btn btn-sm btn-accent">DELETE
       </button>
-      <button class="btn btn-sm btn-primary" (click)="save()" [disabled]="form.invalid">SAVE
+      <button (click)="save()" *ngIf="allowWrite || allowCreate" [disabled]="form.invalid" class="btn btn-sm btn-primary">SAVE
       </button>
     </div>
   </div>

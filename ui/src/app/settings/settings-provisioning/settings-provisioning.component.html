@@ -1,7 +1,7 @@
-<form novalidate [formGroup]="form" fxLayout="column">
+<form [formGroup]="form" fxLayout="column" novalidate>
   <div class="font-bold text-xl mt-5">Provisioning URL</div>
   <mat-form-field>
-    <input matInput formControlName="DEVICE_PROVISIONING_URL">
+    <input formControlName="DEVICE_PROVISIONING_URL" matInput>
     <mat-hint>The URL devices contact to inquiry and download firmware updates, e.g.
       http://esthesis.server:46000
     </mat-hint>
@@ -9,8 +9,8 @@
 
   <div class="font-bold text-xl mt-5">Provisioning request mode</div>
   <mat-form-field>
-    <mat-select placeholder="Provisioning type"
-                [formControlName]="appConstants.NAMED_SETTING.DEVICE_PROVISIONING_SECURE">
+    <mat-select [formControlName]="appConstants.NAMED_SETTING.DEVICE_PROVISIONING_SECURE"
+                placeholder="Provisioning type">
       <mat-option value="true">Secure provisioning, using tokens</mat-option>
       <mat-option value="false">Insecure provisioning, anyone can query for provisioning
         packages
@@ -23,12 +23,12 @@
 
   <div class="font-bold text-xl mt-5">Provisioning caching timer</div>
   <mat-form-field>
-    <input matInput placeholder="Tokens caching duration"
-           formControlName="DEVICE_PROVISIONING_CACHE_TIME">
+    <input formControlName="DEVICE_PROVISIONING_CACHE_TIME" matInput
+           placeholder="Tokens caching duration">
     <mat-hint>The time for which a provisioning package download token remains valid (in minutes)
     </mat-hint>
   </mat-form-field>
 </form>
 
-<button class="btn btn-sm btn-primary mt-10" (click)="save()" [disabled]="form.invalid">SAVE
+<button (click)="save()" *ngIf="allowWrite" [disabled]="form.invalid" class="btn btn-sm btn-primary mt-10">SAVE
 </button>

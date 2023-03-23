@@ -125,12 +125,14 @@
 
     <div class="card-actions justify-start mt-10">
       <button (click)="delete()"
-              *ac="[appConstants.SECURITY.CATEGORY.DEVICE, appConstants.SECURITY.OPERATION.DELETE, id!]"
+              *ngIf="allowDelete"
               [disabled]="this.id == appConstants.NEW_RECORD_ID"
               class="btn btn-sm btn-accent">
         DELETE
       </button>
-      <button [matMenuTriggerFor]="menu" class="btn btn-sm btn-secondary">DOWNLOAD
+      <button *ngIf="allowRead" [matMenuTriggerFor]="menu"
+              class="btn btn-sm btn-secondary">
+        DOWNLOAD
         <fa-icon class="ml-2" icon="caret-down"></fa-icon>
         <mat-menu #menu="matMenu" xPosition="before">
           <button (click)="downloadPublicKey()" mat-menu-item>Public key</button>
@@ -139,6 +141,7 @@
         </mat-menu>
       </button>
       <button (click)="saveDeviceInfo()"
+              *ngIf="allowWrite"
               [disabled]="deviceInfoForm.invalid || deviceInfoForm.pristine"
               class="btn btn-sm btn-primary">SAVE
       </button>

@@ -1,12 +1,12 @@
-<form novalidate [formGroup]="form" class="flex flex-col">
+<form [formGroup]="form" class="flex flex-col" novalidate>
   <div class="font-bold text-xl mt-5">Kafka control request topic</div>
   <mat-form-field>
-    <input matInput [formControlName]="appConstants.NAMED_SETTING.KAFKA_TOPIC_COMMAND_REQUEST">
+    <input [formControlName]="appConstants.NAMED_SETTING.KAFKA_TOPIC_COMMAND_REQUEST" matInput>
     <mat-hint>The name of the Kafka topic where control request messages should be posted to, e.g.
       esthesis-control-request.
     </mat-hint>
   </mat-form-field>
 </form>
 
-<button class="btn btn-sm btn-primary mt-10" (click)="save()" [disabled]="form.invalid">SAVE
+<button (click)="save()" *ngIf="allowWrite" [disabled]="form.invalid" class="btn btn-sm btn-primary mt-10">SAVE
 </button>

@@ -34,13 +34,14 @@ import {
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import {CountdownEvent} from "ngx-countdown";
 import {UtilityService} from "../../shared/services/utility.service";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 
 @Component({
   selector: "app-campaign-edit",
   templateUrl: "./campaign-edit.component.html",
   styleUrls: ["./campaign-edit.component.scss"]
 })
-export class CampaignEditComponent extends BaseComponent implements OnInit {
+export class CampaignEditComponent extends SecurityBaseComponent implements OnInit {
   // Campaign details form.
   form!: FormGroup;
   // The id of the form currently being processed.
@@ -82,23 +83,7 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     private deviceService: DevicesService,
     private tagService: TagsService, private campaignService: CampaignsService,
     private dialog: MatDialog) {
-    super();
-  }
-
-  private getCampaignStats() {
-    this.campaignService.stats(this.id).subscribe({
-      next: onNext => {
-        // Save campaign stats to an object.
-        this.campaignStats = onNext;
-        this.campaignStats.groupProgress = [];
-
-        // Extract group members for the chart.
-        onNext.groupMembersReplied?.forEach((value, index) => {
-          this.campaignStats!.groupProgress.push(
-            new GroupProgressDto("Group " + (index + 1), value * 100 / onNext.groupMembers![index]));
-        });
-      }
-    });
+    super(AppConstants.SECURITY.CATEGORY.CAMPAIGN, route.snapshot.paramMap.get("id"));
   }
 
   initData(): void {
@@ -231,22 +216,6 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
     });
 
     this.initData();
-  }
-
-  private createCondition(campaignConditionDto: CampaignConditionDto) {
-    return this.fb.group({
-      id: campaignConditionDto.id,
-      type: campaignConditionDto.type,
-      group: campaignConditionDto.group,
-      stage: campaignConditionDto.stage,
-      scheduleDate: campaignConditionDto.scheduleDate,
-      scheduleHour: campaignConditionDto.scheduleHour,
-      scheduleMinute: campaignConditionDto.scheduleMinute,
-      operation: campaignConditionDto.operation,
-      value: campaignConditionDto.value,
-      propertyName: campaignConditionDto.propertyName,
-      propertyIgnorable: campaignConditionDto.propertyIgnorable,
-    });
   }
 
   // @ts-ignore
@@ -560,5 +529,37 @@ export class CampaignEditComponent extends BaseComponent implements OnInit {
       // this.countdown.restart();
       // this.countdown.begin();
     }
+  }
+
+  private getCampaignStats() {
+    this.campaignService.stats(this.id).subscribe({
+      next: onNext => {
+        // Save campaign stats to an object.
+        this.campaignStats = onNext;
+        this.campaignStats.groupProgress = [];
+
+        // Extract group members for the chart.
+        onNext.groupMembersReplied?.forEach((value, index) => {
+          this.campaignStats!.groupProgress.push(
+            new GroupProgressDto("Group " + (index + 1), value * 100 / onNext.groupMembers![index]));
+        });
+      }
+    });
+  }
+
+  private createCondition(campaignConditionDto: CampaignConditionDto) {
+    return this.fb.group({
+      id: campaignConditionDto.id,
+      type: campaignConditionDto.type,
+      group: campaignConditionDto.group,
+      stage: campaignConditionDto.stage,
+      scheduleDate: campaignConditionDto.scheduleDate,
+      scheduleHour: campaignConditionDto.scheduleHour,
+      scheduleMinute: campaignConditionDto.scheduleMinute,
+      operation: campaignConditionDto.operation,
+      value: campaignConditionDto.value,
+      propertyName: campaignConditionDto.propertyName,
+      propertyIgnorable: campaignConditionDto.propertyIgnorable,
+    });
   }
 }
