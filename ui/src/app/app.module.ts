@@ -92,7 +92,7 @@ import {httpLoaderFactory} from "./shared/services/auth.service";
   bootstrap: [AppComponent],
   declarations: [
     AppComponent,
-    CallbackComponent,
+    CallbackComponent
   ],
   imports: [
     BrowserModule,

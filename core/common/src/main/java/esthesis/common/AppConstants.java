@@ -136,6 +136,19 @@ public class AppConstants {
     public enum Operation {
       CREATE, READ, WRITE, DELETE, OTHER
     }
+
+    public static class Ern {
+
+      public static final String ROOT = "ern";
+      public static final String SYSTEM = "esthesis";
+      public static final String SUBSYSTEM = "core";
+    }
+
+    public static class Permission {
+
+      public static final String ALLOW = "allow";
+      public static final String DENY = "deny";
+    }
   }
 
   public static class Campaign {

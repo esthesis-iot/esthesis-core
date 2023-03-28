@@ -2,7 +2,7 @@ import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {CrudService} from "../shared/services/crud.service";
 import {UserDto} from "./dto/user-dto";
-import {Observable} from "rxjs";
+import {BehaviorSubject, Observable, tap} from "rxjs";
 import {environment} from "../../environments/environment";
 import {AppConstants} from "../app.constants";
 import * as _ from "lodash";
@@ -16,32 +16,48 @@ import {Log} from "ng2-logger/browser";
   providedIn: "root"
 })
 export class SecurityService extends CrudService<UserDto> {
+  permissionsFetched = false;
+  // An event emitter for components that need to be notified when authentication is done.
+  // @Output() public authDoneEvent: EventEmitter<any> = new EventEmitter<any>();
+  // tslint:disable-next-line:variable-name
+  private _authDone = new BehaviorSubject<boolean>(false);
+  // tslint:disable-next-line:variable-name
+  private _authDone$ = this._authDone.asObservable();
   // Logger.
-  private log = Log.create("SecurityUsersService");
+  private log = Log.create("SecurityService");
 
   constructor(http: HttpClient) {
     super(http, "security/v1/users");
   }
 
-  fetchPermissions(): Observable<string[]> {
-    const username = this.getUsername();
-    return this.http.get<string[]>(`${environment.apiPrefix}/security/v1/users/${username}/permissions`);
+  authDone(authResult: boolean) {
+    return this._authDone.next(authResult);
   }
 
-  savePermissions(permissions: string[]) {
-    sessionStorage.setItem(AppConstants.SECURITY.SESSION_STORAGE.PERMISSIONS, JSON.stringify(permissions));
+  isAuthDone(): Observable<boolean> {
+    return this._authDone$;
   }
 
-  getPermissions() {
-    const permissions = sessionStorage.getItem(AppConstants.SECURITY.SESSION_STORAGE.PERMISSIONS);
-    if (permissions) {
-      return JSON.parse(permissions);
+  getPermissions(): Observable<string[]> {
+    this.permissionsFetched = false;
+    if (!this.permissionsFetched) {
+      return this.http.get<string[]>(`${environment.apiPrefix}/security/v1/users/user-permissions`)
+      .pipe(tap((permissions) => {
+        sessionStorage.setItem(AppConstants.SECURITY.SESSION_STORAGE.PERMISSIONS, JSON.stringify(permissions));
+        this.permissionsFetched = true;
+        // this.log.data("User permissions fetched from remote service:", permissions);
+      }));
     } else {
-      return null;
+      return new Observable<string[]>(observer => {
+        const permissions = JSON.parse(sessionStorage.getItem(AppConstants.SECURITY.SESSION_STORAGE.PERMISSIONS)!)
+        // this.log.data("User permissions fetched from session storage:", permissions);
+        observer.next(permissions);
+        observer.complete();
+      });
     }
   }
 
-  isPermitted(category: string,  operation: string, resourceId?: string | null): boolean {
+  isPermitted(category: string, operation: string, resourceId?: string | null): Observable<boolean> {
     const ernPrefix = AppConstants.SECURITY.ERN.ROOT + ":" + AppConstants.SECURITY.ERN.SYSTEM
       + ":" + AppConstants.SECURITY.ERN.SUBSYSTEM;
     const allow = AppConstants.SECURITY.PERMISSION.ALLOW;
@@ -49,24 +65,30 @@ export class SecurityService extends CrudService<UserDto> {
     if (!resourceId) {
       resourceId = "*";
     }
+    let permissionEvaluation = false;
 
-    const permissionToCheck = `${ernPrefix}:${category}:${resourceId}:${operation}`;
-    this.log.data(`Evaluating ${permissionToCheck}`);
-
-    const isPermitted = (
-      _.includes(this.getPermissions(), `${ernPrefix}:${category}:${resourceId}:${operation}:${allow}`) ||
-      _.includes(this.getPermissions(), `${ernPrefix}:${category}:${resourceId}:*:${allow}`) ||
-      _.includes(this.getPermissions(), `${ernPrefix}:${category}:*:*:${allow}`) ||
-      _.includes(this.getPermissions(), `${ernPrefix}:*:*:*:${allow}`)) &&
-      !(
-      _.includes(this.getPermissions(), `${ernPrefix}:${category}:${resourceId}:${operation}:${deny}`) ||
-      _.includes(this.getPermissions(), `${ernPrefix}:${category}:${resourceId}:*:${deny}`) ||
-      _.includes(this.getPermissions(), `${ernPrefix}:${category}:*:*:${deny}`) ||
-      _.includes(this.getPermissions(), `${ernPrefix}:*:*:*:${deny}`)
-      );
-    this.log.data(`${permissionToCheck} evaluated to ${isPermitted}`);
-
-    return isPermitted;
+    return new Observable<boolean>(observer => {
+      this.getPermissions().subscribe({
+        next: permissions => {
+          permissionEvaluation = (
+              _.includes(permissions, `${ernPrefix}:${category}:${resourceId}:${operation}:${allow}`) ||
+              _.includes(permissions, `${ernPrefix}:${category}:${resourceId}:*:${allow}`) ||
+              _.includes(permissions, `${ernPrefix}:${category}:*:*:${allow}`) ||
+              _.includes(permissions, `${ernPrefix}:*:*:*:${allow}`)) &&
+            !(
+              _.includes(permissions, `${ernPrefix}:${category}:${resourceId}:${operation}:${deny}`) ||
+              _.includes(permissions, `${ernPrefix}:${category}:${resourceId}:*:${deny}`) ||
+              _.includes(permissions, `${ernPrefix}:${category}:*:*:${deny}`) ||
+              _.includes(permissions, `${ernPrefix}:*:*:*:${deny}`)
+            );
+          observer.next(permissionEvaluation);
+          observer.complete();
+        }, error: err => {
+          this.log.error("Could not evaluate user permission.", err);
+          observer.error(err);
+        }
+      });
+    });
   }
 
   getUsername(): string | null {
@@ -82,7 +104,7 @@ export class SecurityService extends CrudService<UserDto> {
     const userData = this.getUserData();
     if (userData) {
       return userData[AppConstants.SECURITY.USERDATA.FIRST_NAME] + " "
-        + userData[AppConstants.SECURITY.USERDATA.LAST_NAME] as string;
+      + userData[AppConstants.SECURITY.USERDATA.LAST_NAME] as string;
     } else {
       return null;
     }

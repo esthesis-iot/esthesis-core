@@ -35,16 +35,14 @@ export class AppComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     // This is a necessary call as per
     // https://angular-auth-oidc-client.com/docs/documentation/auto-login
-    this.oidcService.checkAuth().subscribe(({isAuthenticated, userData, accessToken}) => {
-      this._isLoggedIn = isAuthenticated;
+    this.oidcService.checkAuth().subscribe((loginResponse) => {
+      this._isLoggedIn = loginResponse.isAuthenticated;
       // If the user is authenticated, get user permissions.
-      if (isAuthenticated) {
-        this.log.data(userData);
-        this.securityUsersService.saveUserData(userData);
-        this.securityUsersService.fetchPermissions().subscribe({
+      if (loginResponse.isAuthenticated) {
+        this.securityUsersService.saveUserData(loginResponse.userData);
+        this.securityUsersService.authDone(true);
+        this.securityUsersService.getPermissions().subscribe({
           next: permissions => {
-            this.log.data(JSON.stringify(permissions));
-            this.securityUsersService.savePermissions(permissions);
           }, error: err => {
             this.utilityService.popupErrorWithTraceId("Could not get user permissions.", err);
           }

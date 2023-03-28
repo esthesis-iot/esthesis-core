@@ -21,13 +21,29 @@ export class SecurityBaseComponent extends BaseComponent {
     this.category = category;
     this.objectId = objectId;
 
-    this.log.data(`Initialising security for category '${this.category}' and objectId '${this.objectId}'.`);
-    console.log("SECURITY INIT", this.securityService);
+    this.securityService.isPermitted(category, this.appConstants.SECURITY.OPERATION.CREATE, objectId).subscribe({
+      next: (result) => {
+        this.allowCreate = result;
+      }
+    });
 
-    this.allowCreate = this.securityService.isPermitted(category, this.appConstants.SECURITY.OPERATION.CREATE, objectId);
-    this.allowRead = this.securityService.isPermitted(category, this.appConstants.SECURITY.OPERATION.READ, objectId);
-    this.allowWrite = this.securityService.isPermitted(category, this.appConstants.SECURITY.OPERATION.WRITE, objectId);
-    this.allowDelete = this.securityService.isPermitted(category, this.appConstants.SECURITY.OPERATION.DELETE, objectId);
+    this.securityService.isPermitted(category, this.appConstants.SECURITY.OPERATION.READ, objectId).subscribe({
+      next: (result) => {
+        this.allowRead = result;
+      }
+    });
+
+    this.securityService.isPermitted(category, this.appConstants.SECURITY.OPERATION.WRITE, objectId).subscribe({
+      next: (result) => {
+        this.allowWrite = result;
+      }
+    });
+
+    this.securityService.isPermitted(category, this.appConstants.SECURITY.OPERATION.DELETE, objectId).subscribe({
+      next: (result) => {
+        this.allowDelete = result;
+      }
+    });
   }
 
 }

@@ -1,5 +1,6 @@
 package esthesis.service.security.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.security.entity.GroupEntity;
@@ -49,9 +50,9 @@ public interface SecurityResource {
   UserEntity saveUser(@Valid UserEntity userEntity);
 
   @GET
-  @Path("/v1/users/{username}/permissions")
+  @Path("/v1/users/user-permissions")
   @Produces("application/json")
-  List<String> getUserPermissions(@PathParam("username") String username);
+  List<String> getUserPermissions();
 
   // ***********************************************************************************************
   // * Policies
@@ -112,4 +113,13 @@ public interface SecurityResource {
   @Path("/v1/groups")
   @Produces("application/json")
   GroupEntity saveGroup(@Valid GroupEntity groupEntity);
+
+  // ***********************************************************************************************
+  // * Permission check
+  // ***********************************************************************************************
+  @GET
+  @Path("/v1/users/is-permitted/{category}/{operation}/{resourceId}")
+  boolean isPermitted(@PathParam("category") AppConstants.Security.Category category,
+      @PathParam("operation") AppConstants.Security.Operation operation,
+      @PathParam("resourceId") String resourceId);
 }

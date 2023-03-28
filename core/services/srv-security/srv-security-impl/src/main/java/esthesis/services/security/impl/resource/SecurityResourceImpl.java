@@ -69,9 +69,10 @@ public class SecurityResourceImpl implements SecurityResource {
   }
 
   @Override
-  @Audited(cat = Category.USERS, op = Operation.READ, msg = "Get use permissions")
-  public List<String> getUserPermissions(String username) {
-    return securityPermissionsService.getPermissionsForUser(username);
+  @Audited(cat = Category.USERS, op = Operation.READ, msg = "Get currently logged-in user "
+      + "permissions")
+  public List<String> getUserPermissions() {
+    return securityPermissionsService.getPermissionsForUser();
   }
 
   // ***********************************************************************************************
@@ -164,4 +165,11 @@ public class SecurityResourceImpl implements SecurityResource {
     return securityGroupService.save(groupEntity);
   }
 
+  // ***********************************************************************************************
+  // * Permission check
+  // ***********************************************************************************************
+  @Override
+  public boolean isPermitted(Category category, Operation operation, String resourceId) {
+    return securityPermissionsService.isPermitted(category, operation, resourceId);
+  }
 }
