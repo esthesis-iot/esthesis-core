@@ -40,9 +40,9 @@ export class AppComponent extends BaseComponent implements OnInit {
       // If the user is authenticated, get user permissions.
       if (loginResponse.isAuthenticated) {
         this.securityUsersService.saveUserData(loginResponse.userData);
-        this.securityUsersService.authDone(true);
         this.securityUsersService.getPermissions().subscribe({
           next: permissions => {
+            this.securityUsersService.authDone(true);
           }, error: err => {
             this.utilityService.popupErrorWithTraceId("Could not get user permissions.", err);
           }

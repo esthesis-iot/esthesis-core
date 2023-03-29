@@ -74,7 +74,8 @@ export class SecurityService extends CrudService<UserDto> {
     });
   }
 
-  isPermitted(category: string, operation: string, resourceId?: string | null): Observable<boolean> {
+  isPermitted(category: string, operation: string,
+    resourceId?: string | null): Observable<boolean> {
     const ernPrefix = AppConstants.SECURITY.ERN.ROOT + ":" + AppConstants.SECURITY.ERN.SYSTEM
       + ":" + AppConstants.SECURITY.ERN.SUBSYSTEM;
     const allow = AppConstants.SECURITY.PERMISSION.ALLOW;

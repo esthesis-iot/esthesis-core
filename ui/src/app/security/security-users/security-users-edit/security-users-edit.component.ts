@@ -167,7 +167,7 @@ export class SecurityUsersEditComponent extends SecurityBaseComponent implements
 
   removePolicy(policy: any) {
     this.form.patchValue({
-      policies: _.remove(this.form.controls.policies.value, policy)
+      policies: _.without(this.form.controls.policies.value, policy)
     });
   }
 

@@ -36,7 +36,8 @@
         <div *ngIf="!sidebar" [ngSwitch]="menuItem.type">
           <div *ngSwitchCase="menuItemType.ITEM"
                [attr.data-tip]="menuItem.title">
-            <a [routerLink]="menuItem.route" class="flex flex-row items-center hover:bg-primary/20 rounded-r-2xl my-2"
+            <a [routerLink]="menuItem.route"
+               class="flex flex-row items-center hover:bg-primary/20 rounded-r-2xl my-2"
                matTooltip="{{menuItem.title}}"
                matTooltipPosition="after"
                routerLinkActive="bg-primary hover:!bg-primary hover:!cursor-default text-white">
