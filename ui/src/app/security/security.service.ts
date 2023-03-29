@@ -39,7 +39,7 @@ export class SecurityService extends CrudService<UserDto> {
   }
 
   getPermissions(): Observable<string[]> {
-    this.permissionsFetched = false;
+    // this.permissionsFetched = false;
     if (!this.permissionsFetched) {
       return this.http.get<string[]>(`${environment.apiPrefix}/security/v1/users/user-permissions`)
       .pipe(tap((permissions) => {
@@ -49,12 +49,29 @@ export class SecurityService extends CrudService<UserDto> {
       }));
     } else {
       return new Observable<string[]>(observer => {
-        const permissions = JSON.parse(sessionStorage.getItem(AppConstants.SECURITY.SESSION_STORAGE.PERMISSIONS)!)
+        const permissions = JSON.parse(sessionStorage.getItem(AppConstants.SECURITY.SESSION_STORAGE.PERMISSIONS)!);
         // this.log.data("User permissions fetched from session storage:", permissions);
         observer.next(permissions);
         observer.complete();
       });
     }
+  }
+
+  isIncluded(policy: string): Observable<boolean> {
+    let permissionEvaluation = false;
+
+    return new Observable<boolean>(observer => {
+      this.getPermissions().subscribe({
+        next: permissions => {
+          permissionEvaluation = _.includes(permissions, policy);
+          observer.next(permissionEvaluation);
+          observer.complete();
+        }, error: err => {
+          this.log.error("Could not evaluate user permission.", err);
+          observer.error(err);
+        }
+      });
+    });
   }
 
   isPermitted(category: string, operation: string, resourceId?: string | null): Observable<boolean> {
@@ -73,11 +90,13 @@ export class SecurityService extends CrudService<UserDto> {
           permissionEvaluation = (
               _.includes(permissions, `${ernPrefix}:${category}:${resourceId}:${operation}:${allow}`) ||
               _.includes(permissions, `${ernPrefix}:${category}:${resourceId}:*:${allow}`) ||
+              _.includes(permissions, `${ernPrefix}:${category}:*:${operation}:${allow}`) ||
               _.includes(permissions, `${ernPrefix}:${category}:*:*:${allow}`) ||
               _.includes(permissions, `${ernPrefix}:*:*:*:${allow}`)) &&
             !(
               _.includes(permissions, `${ernPrefix}:${category}:${resourceId}:${operation}:${deny}`) ||
               _.includes(permissions, `${ernPrefix}:${category}:${resourceId}:*:${deny}`) ||
+              _.includes(permissions, `${ernPrefix}:${category}:*:${operation}:${deny}`) ||
               _.includes(permissions, `${ernPrefix}:${category}:*:*:${deny}`) ||
               _.includes(permissions, `${ernPrefix}:*:*:*:${deny}`)
             );

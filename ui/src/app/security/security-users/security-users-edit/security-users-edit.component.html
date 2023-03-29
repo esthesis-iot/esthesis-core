@@ -40,7 +40,8 @@
             <input [formControl]="groupsFilterCtrl" [matAutocomplete]="auto"
                    matInput placeholder="Search for a group to add...">
             <mat-autocomplete #auto="matAutocomplete">
-              <mat-option (click)="addGroup()" *ngFor="let group of filteredGroups" [value]="group.id">
+              <mat-option (click)="addGroup()" *ngFor="let group of filteredGroups"
+                          [value]="group.id">
                 <span class="font-bold">{{group.name}}</span><br>
                 <span class="font-thin">{{group.description}}</span>
               </mat-option>
@@ -72,6 +73,8 @@
             <div>Custom policies</div>
             <fa-icon (click)="policyEditor()" class="cursor-pointer" icon="file-circle-plus"
                      matSuffix matTooltip="Add policy"></fa-icon>
+            <fa-icon (click)="policyTester()" class="cursor-pointer" icon="file-circle-check"
+                     matSuffix matTooltip="Test policy"></fa-icon>
           </div>
           <table class="table w-full">
             <thead>

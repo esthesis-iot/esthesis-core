@@ -41,7 +41,7 @@ import {
   faDiagramProject,
   faDownload,
   faEnvelope,
-  faEnvelopeOpen,
+  faEnvelopeOpen, faFileCircleCheck,
   faFileCirclePlus,
   faFlag,
   faForward,
@@ -144,7 +144,7 @@ export class AppModule {
       faArrowUpRightFromSquare, faCaretDown, faAddressCard, faBroadcastTower, faBuildingShield,
       faCertificate, faCubes, faDashboard, faDesktop, faDiagramProject, faGear, faGlobe,
       faMicrochip, faNetworkWired, faShieldHalved, faStamp, faTag, faUser, faUsers,
-      faUsersBetweenLines, faXmarksLines, faFileCirclePlus, faBoxArchive);
+      faUsersBetweenLines, faXmarksLines, faFileCirclePlus, faBoxArchive, faFileCircleCheck);
     faConfig.fixedWidth = true;
   }
 }

@@ -37,6 +37,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import { SecurityPoliciesEditorComponent } from './security-policies/security-policies-editor/security-policies-editor.component';
 import {MatSelectModule} from "@angular/material/select";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import { SecurityPolicyTesterComponent } from './security-policies/security-policy-tester/security-policy-tester.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
     SecurityRolesEditComponent,
     SecurityPoliciesEditComponent,
     SecurityPoliciesListComponent,
-    SecurityPoliciesEditorComponent
+    SecurityPoliciesEditorComponent,
+    SecurityPolicyTesterComponent
   ],
   imports: [
     CommonModule,

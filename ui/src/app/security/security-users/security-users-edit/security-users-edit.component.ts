@@ -1,5 +1,4 @@
 import {Component, OnInit} from "@angular/core";
-import {BaseComponent} from "../../../shared/components/base-component";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {QFormsService} from "@qlack/forms";
@@ -20,6 +19,9 @@ import {
 } from "../../security-policies/security-policies-editor/security-policies-editor.component";
 import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
 import {AppConstants} from "../../../app.constants";
+import {
+  SecurityPolicyTesterComponent
+} from "../../security-policies/security-policy-tester/security-policy-tester.component";
 
 @Component({
   selector: "app-security-users-edit",
@@ -177,6 +179,12 @@ export class SecurityUsersEditComponent extends SecurityBaseComponent implements
       if (result) {
         this.form.controls.policies.value.push(result);
       }
+    });
+  }
+
+  policyTester() {
+    this.dialog.open(SecurityPolicyTesterComponent, {
+      width: "40rem",
     });
   }
 }

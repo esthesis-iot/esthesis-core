@@ -13,7 +13,6 @@ import {distinctUntilChanged} from "rxjs/operators";
 })
 export class SecurityPoliciesEditorComponent extends BaseComponent implements OnInit {
   @Input() existingErn?: string;
-  // Search filter.
   form: FormGroup;
 
   constructor(private fb: FormBuilder, private router: Router,
