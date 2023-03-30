@@ -6,6 +6,8 @@ public class AppConstants {
   //TODO to be removed with Settings preferences
   public static final String KAFKA_TOPIC_PREFIX = "esthesis-";
 
+  public static final String NEW_RECORD_ID = "new";
+
   // Redis key suffixes for measurements.
   public static final String REDIS_KEY_SUFFIX_VALUE_TYPE = "valueType";
   public static final String REDIS_KEY_SUFFIX_TIMESTAMP = "timestamp";
@@ -137,17 +139,16 @@ public class AppConstants {
       CREATE, READ, WRITE, DELETE, OTHER
     }
 
+    public enum Permission {
+
+      ALLOW, DENY;
+    }
+
     public static class Ern {
 
       public static final String ROOT = "ern";
       public static final String SYSTEM = "esthesis";
       public static final String SUBSYSTEM = "core";
-    }
-
-    public static class Permission {
-
-      public static final String ALLOW = "allow";
-      public static final String DENY = "deny";
     }
   }
 

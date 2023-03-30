@@ -122,4 +122,9 @@ public interface SecurityResource {
   boolean isPermitted(@PathParam("category") AppConstants.Security.Category category,
       @PathParam("operation") AppConstants.Security.Operation operation,
       @PathParam("resourceId") String resourceId);
+
+  @GET
+  @Path("/v1/users/is-permitted/{category}/{operation}")
+  boolean isPermitted(@PathParam("category") AppConstants.Security.Category category,
+      @PathParam("operation") AppConstants.Security.Operation operation);
 }

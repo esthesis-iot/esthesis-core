@@ -27,6 +27,9 @@ quarkus:
     AuditResource:
       url: http://localhost:59140
       scope: Singleton
+    SecurityResource:
+      url: http://localhost:59170
+      scope: Singleton
   config:
     locations: "../../../../setup/dev/profiles"
 

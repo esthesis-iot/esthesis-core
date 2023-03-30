@@ -25,7 +25,7 @@
           <td *cdkCellDef="let element" cdk-cell>{{element.name}}</td>
         </ng-container>
         <tr *cdkHeaderRowDef="displayedColumns" cdk-header-row></tr>
-        <ng-template [ngIf]="!embedded">
+        <ng-template [ngIf]="!embedded && allowWrite">
           <tr *cdkRowDef="let element; columns: displayedColumns;" [routerLink]="element.id"
               cdk-row class="hover hover:cursor-pointer"></tr>
         </ng-template>
@@ -41,7 +41,8 @@
       </mat-paginator>
     </div>
     <div *ngIf="!embedded" class="card-actions justify-start mt-10">
-      <button *ngIf="allowCreate" [routerLink]="appConstants.NEW_RECORD_ID" class="btn btn-sm btn-primary">CREATE
+      <button *ngIf="allowCreate" [routerLink]="appConstants.NEW_RECORD_ID"
+              class="btn btn-sm btn-primary">CREATE
       </button>
     </div>
   </div>

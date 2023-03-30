@@ -2,7 +2,6 @@ import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {TagsService} from "../tags.service";
-import {BaseComponent} from "../../shared/components/base-component";
 import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
@@ -67,6 +66,9 @@ export class TagEditComponent extends SecurityBaseComponent implements OnInit {
           if (validationErrors) {
             this.qFormValidation.applyValidationErrors(this.form, validationErrors.violations);
           }
+        } else if (err.status === 401) {
+          console.log(err);
+          this.utilityService.popupErrorWithTraceId(err.error.errorMessage, err);
         } else {
           this.utilityService.popupError("There was an error trying to save this tag.");
         }

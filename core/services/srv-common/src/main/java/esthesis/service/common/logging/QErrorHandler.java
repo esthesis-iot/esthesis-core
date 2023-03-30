@@ -1,9 +1,11 @@
 package esthesis.service.common.logging;
 
+import esthesis.common.exception.QSecurityException;
 import io.opentelemetry.api.trace.Span;
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -28,23 +30,28 @@ public class QErrorHandler implements ExceptionMapper<Throwable> {
   private Response mapExceptionToResponse(Throwable throwable) {
     String errorMessage = "";
     if (throwable.getMessage() != null) {
-      errorMessage = throwable.getMessage() + " ";
+      errorMessage = throwable.getMessage();
     }
 
     // Log the error, so the full details are available on the server-side.
     if (uriInfo != null && StringUtils.isNotBlank(uriInfo.getPath())) {
       log.error(
-          "Error %swhile processing request to '%s'.".formatted(errorMessage,
+          "Error '%s' while processing request to '%s'.".formatted(errorMessage,
               uriInfo.getPath()), throwable);
     } else {
-      log.error("Error %s.".formatted(errorMessage), throwable);
+      log.error("Error '%s'.".formatted(errorMessage), throwable);
     }
 
-    // Prepare a custom response for the client, hiding the underlying error.
+    // Prepare a custom response for the client, hiding the underlying error details.
     QErrorReply errorReply = new QErrorReply();
-    errorReply.setErrorMessage("There was an error processing this request.");
+    errorReply.setErrorMessage(errorMessage);
     errorReply.setTraceId(Span.current().getSpanContext().getTraceId());
 
-    return Response.serverError().entity(errorReply).build();
+    // Handle response status code.
+    if (throwable instanceof QSecurityException) {
+      return Response.status(Status.UNAUTHORIZED).entity(errorReply).build();
+    } else {
+      return Response.serverError().entity(errorReply).build();
+    }
   }
 }
