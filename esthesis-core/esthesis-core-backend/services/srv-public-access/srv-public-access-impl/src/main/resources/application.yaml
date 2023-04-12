@@ -1,0 +1,38 @@
+quarkus:
+  application:
+    name: esthesis-core-srv-public-access
+  container-image:
+    group: esthesisiot
+    name: esthesis-core-srv-public-access
+  devservices:
+    enabled: false
+  log:
+    level: WARN
+    category:
+      esthesis:
+        level: INFO
+    console:
+      format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+  banner:
+    enabled: false
+  opentelemetry:
+    enabled: false
+
+esthesis:
+  oidc:
+    client-id: "esthesis"
+    scope: "openid profile offline_access"
+    response-type: "code"
+    silent-renew: true
+    use-refresh-token: true
+    renew-time-before-token-expires-in-seconds: 30
+    max-id-token-iat-offset-allowed-in-seconds: 10
+    ignore-nonce-after-refresh: true
+    secure-routes: [ "/api" ]
+#    authority: "http://esthesis-dev-keycloak/realms/esthesis"
+    authority: "/keycloak/realms/esthesis"
+#    redirect-url: "http://localhost:4200/callback"
+    redirect-url: "/callback"
+#    post-logout-redirect-uri: "http://localhost:4200/logged-out"
+    post-logout-redirect-uri: "/logout"
+#    post-logout-redirect-uri: "window.location.origin"

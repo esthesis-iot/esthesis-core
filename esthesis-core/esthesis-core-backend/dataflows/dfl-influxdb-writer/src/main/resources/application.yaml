@@ -1,0 +1,20 @@
+quarkus:
+  application:
+    name: esthesis-core-dfl-influxdb-writer
+  container-image:
+    group: esthesisiot
+    name: esthesis-core-dfl-influxdb-writer
+  devservices:
+    enabled: false
+  log:
+    min-level: TRACE
+    level: ${ESTHESIS_DFL_LOGGING_COMMON:INFO}
+    category:
+      esthesis:
+        level: ${ESTHESIS_DFL_LOGGING_ESTHESIS:INFO}
+    console:
+      format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%-30.30c{1.}] %s%e%n"
+  banner:
+    enabled: false
+  opentelemetry:
+    enabled: false

@@ -2,3 +2,4 @@
 !/.idea/runConfigurations
 **/*.iml
 **/target
+/esthesis-core/itomate.yml

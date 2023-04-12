@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>esthesis-core-backend</artifactId>
+		<groupId>esthesis</groupId>
+		<version>3.0.0-SNAPSHOT</version>
+	</parent>
+
+  <artifactId>common</artifactId>
+
+  <dependencies>
+    <!-- QUARKUS -->
+    <dependency>
+      <artifactId>quarkus-mongodb-panache-common</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-hibernate-validator</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-resteasy-reactive-common</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-jackson</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+
+    <!-- THIRD PARTY -->
+    <dependency>
+      <artifactId>bcpkix-jdk15on</artifactId>
+      <groupId>org.bouncycastle</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>commons-lang3</artifactId>
+      <groupId>org.apache.commons</groupId>
+    </dependency>
+  </dependencies>
+</project>

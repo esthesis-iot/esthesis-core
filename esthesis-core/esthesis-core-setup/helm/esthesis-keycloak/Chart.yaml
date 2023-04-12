@@ -1,0 +1,17 @@
+apiVersion: v2
+name: esthesis-keycloak
+description: esthesis IoT platform - Keycloak
+home: https://esthes.is
+sources:
+  - https://github.com/esthesis-iot
+maintainers:
+  - name: European Dynamics SA
+    email: esthesis@eurodyn.com
+    url: https://www.eurodyn.com
+icon: https://esthes.is/media/logo.png
+version: 3.0.0-SNAPSHOT
+
+dependencies:
+  - name: keycloak
+    version: 9.2.10  # Check https://github.com/bitnami/charts/issues/10796 before upgrading.
+    repository: https://charts.bitnami.com/bitnami

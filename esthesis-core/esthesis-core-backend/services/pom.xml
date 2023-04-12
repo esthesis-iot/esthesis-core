@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>esthesis</groupId>
+		<artifactId>esthesis-core-backend</artifactId>
+		<version>3.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>services</artifactId>
+	<packaging>pom</packaging>
+
+  <dependencies>
+    <!-- QUARKUS -->
+    <dependency>
+      <artifactId>quarkus-liquibase-mongodb</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-container-image-docker</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-resteasy-reactive</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-rest-client-reactive-jackson</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-smallrye-jwt</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-smallrye-jwt-build</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-oidc-token-propagation-reactive</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-oidc-client-reactive-filter</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-opentelemetry</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-logging-gelf</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-smallrye-fault-tolerance</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+
+    <!-- THIRD-PARTY -->
+    <dependency>
+      <artifactId>bcpkix-jdk15on</artifactId>
+      <groupId>org.bouncycastle</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>common</artifactId>
+      <groupId>esthesis</groupId>
+      <version>3.0.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
+  <modules>
+    <module>srv-common</module>
+    <module>srv-device</module>
+    <module>srv-tag</module>
+    <module>srv-settings</module>
+    <module>srv-crypto</module>
+    <module>srv-kubernetes</module>
+    <module>srv-dataflow</module>
+    <module>srv-agent</module>
+    <module>srv-application</module>
+    <module>srv-command</module>
+    <module>srv-provisioning</module>
+    <module>srv-infrastructure</module>
+    <module>srv-about</module>
+    <module>srv-dt</module>
+    <module>srv-audit</module>
+    <module>srv-campaign</module>
+    <module>srv-public-access</module>
+    <module>srv-security</module>
+  </modules>
+</project>

@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>esthesis</groupId>
+		<artifactId>esthesis-core-backend</artifactId>
+		<version>3.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>dataflows</artifactId>
+	<version>3.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<dependencies>
+    <!-- QUARKUS -->
+    <dependency>
+      <artifactId>quarkus-container-image-docker</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>quarkus-logging-gelf</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+
+    <!-- CAMEL -->
+    <dependency>
+      <artifactId>camel-quarkus-kafka</artifactId>
+      <groupId>org.apache.camel.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>camel-quarkus-bean</artifactId>
+      <groupId>org.apache.camel.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>camel-quarkus-log</artifactId>
+      <groupId>org.apache.camel.quarkus</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>camel-quarkus-seda</artifactId>
+      <groupId>org.apache.camel.quarkus</groupId>
+    </dependency>
+
+    <!-- THIRD-PARTY -->
+  </dependencies>
+	<dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>quarkus-camel-bom</artifactId>
+        <groupId>io.quarkus.platform</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>${quarkus.platform.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <modules>
+    <module>dfl-common</module>
+    <module>dfl-mqtt-client</module>
+    <module>dfl-ping-updater</module>
+    <module>dfl-influxdb-writer</module>
+    <module>dfl-rdbms-writer</module>
+    <module>dfl-redis-cache</module>
+    <module>dfl-command-reply-updater</module>
+    <module>dfl-orion-gateway</module>
+  </modules>
+</project>

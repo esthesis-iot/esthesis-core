@@ -1,0 +1,31 @@
+quarkus:
+  application:
+    name: esthesis-core-srv-dt
+  container-image:
+    group: esthesisiot
+    name: esthesis-core-srv-dt
+  mongodb:
+    database: esthesis
+    credentials:
+      username: esthesis
+      password: esthesis
+  devservices:
+    enabled: false
+  log:
+    level: warn
+    category:
+      esthesis:
+        level: INFO
+    console:
+      format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+  banner:
+    enabled: false
+  opentelemetry:
+    enabled: false
+  swagger-ui:
+    always-include: true
+    path: /api/openapi-ui
+    urls:
+      default: /api/dt/openapi
+  smallrye-openapi:
+    path: /api/openapi
