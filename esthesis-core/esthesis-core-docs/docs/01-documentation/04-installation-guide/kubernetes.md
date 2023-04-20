@@ -14,6 +14,11 @@ ones provided by the Helm charts.
 Please note that the default Helm charts come with reasonable defaults; we strongly advise to
 review them, so you can customize them to your needs.
 
+## Requirements
+- A Kubernetes cluster with a minimum of 3 nodes. [TBC]
+- An Ingress controller available in your Kubernetes cluster. [TBC]
+- A terminating TLS Load Balancer. [TBC]
+
 ## Installation
 
 You can install esthesis CORE using the `esthesis-core` Helm chart as:
@@ -29,8 +34,9 @@ helm install esthesis-core esthesis/esthesis-core
 > the following value:\
 > `--set keycloak.keycloakConfigCli.existingConfigMap={YOUR-RELEASE-NAME}-keycloak-config`
 
+[TBC] - Can we catch this in Helm an abort the deployment with a message?
 
-> ⚠️ **Change passwords**
+> ⚠️ **Changing passwords**
 >
 > The above chart will install all required components for esthesis CORE using default values
 > that you should modify before allowing external access to your installation, especially account
@@ -40,44 +46,62 @@ helm install esthesis-core esthesis/esthesis-core
 > convenience here is the list of all possible account names and passwords you can (should) change:
 >
 > ```shell
+> NAMESPACE=esthesis-prod && \
+> RELEASE_NAME=esthesis-core && \
 > THIRD_PARTY_ADMIN_USERNAME=kostas && \
 > THIRD_PARTY_ADMIN_PASSWORD=kostas && \
+> ESTHESIS_ADMIN_USERNAME=kostas-admin && \
 > ESTHESIS_ADMIN_PASSWORD=kostas && \
+> ESTHESIS_SYSTEM_USERNAME=kostas-system && \
 > ESTHESIS_SYSTEM_PASSWORD=kostas && \
-> DOMAIN=esthesis-prod.local && \
-> helm upgrade --install esthesis-core . \
+> DOMAIN=$RELEASE_NAME.local && \
+> helm -n $NAMESPACE upgrade --install $RELEASE_NAME . \
+> 	--set esthesis.auth.adminUsername="$ESTHESIS_ADMIN_USERNAME" \
 > 	--set esthesis.auth.adminPassword="$ESTHESIS_ADMIN_PASSWORD" \
+> 	--set esthesis.auth.systemUsername="$ESTHESIS_SYSTEM_USERNAME" \
 > 	--set esthesis.auth.systemPassword="$ESTHESIS_SYSTEM_PASSWORD" \
+> 	--set esthesis.auth.thirdParty.adminUsername="$THIRD_PARTY_ADMIN_USERNAME" \
+> 	--set esthesis.auth.thirdParty.adminPassword="$THIRD_PARTY_ADMIN_PASSWORD" \
+> 	--set esthesis.ui.ingress.hostname="ui.$DOMAIN" \
 > 	--set keycloak.auth.adminUser="$THIRD_PARTY_ADMIN_USERNAME" \
 > 	--set keycloak.auth.adminPassword="$THIRD_PARTY_ADMIN_PASSWORD" \
 > 	--set keycloak.auth.managementPassword="$THIRD_PARTY_ADMIN_PASSWORD" \
 > 	--set keycloak.postgresql.auth.postgresPassword="$THIRD_PARTY_ADMIN_PASSWORD" \
 > 	--set keycloak.postgresql.auth.password="$THIRD_PARTY_ADMIN_PASSWORD" \
->		--set keycloak.ingress.hostname="$DOMAIN"
+>		--set keycloak.ingress.hostname="keycloak.$DOMAIN" \
+> 	--set mongodb.auth.rootUser="$THIRD_PARTY_ADMIN_USERNAME" \
+> 	--set mongodb.auth.rootPassword="$THIRD_PARTY_ADMIN_PASSWORD" \
+> 	--set "mongodb.auth.usernames[0]"="$ESTHESIS_SYSTEM_USERNAME" \
+> 	--set "mongodb.auth.passwords[0]"="$ESTHESIS_SYSTEM_PASSWORD" \
+> 	--set mongodb.initdbScriptsConfigMap="$RELEASE_NAME-mongodb-init-cm" \
+> 	--set apisix.admin.credentials.admin="$THIRD_PARTY_ADMIN_PASSWORD" \
+> 	--set apisix.admin.credentials.viewer="$THIRD_PARTY_ADMIN_USERNAME" \
+>		--set apisix.ingress-controller.config.apisix.serviceFullname="$RELEASE_NAME-apisix-admin" \
+> 	--set apisix.ingress-controller.config.apisix.adminKey="$THIRD_PARTY_ADMIN_PASSWORD" \
+> 	--set "apisix.dashboard.config.conf.etc.endpoints[0]"="$RELEASE_NAME-etc:2379" \
+> 	--set apisix.dashboard.config.conf.authentication.secret="$THIRD_PARTY_ADMIN_PASSWORD" \
+> 	--set "apisix.dashboard.config.authentication.users[0].username"="$THIRD_PARTY_ADMIN_USERNAME" \
+> 	--set "apisix.dashboard.config.authentication.users[0].password"="$THIRD_PARTY_ADMIN_PASSWORD"
 > ```
-
-[TBC] Allow esthesis-admin/system username to be specified too
 
 > ⚠️ **Exposing the service**
 >
 > The entrypoint of the application is the `esthesis-core-ui-service` service which is an NGINX
 > container. This container hosts the frontend of the application but also reverse proxies to the
-> API Gateway as well as to Keycloak (if you use the embedded one). The service exposes two endpoints:
->
->- An HTTP endpoint which you should reverse proxy in your TLS-terminating Load Balancer under HTTPS.
->- An HTTPS endpoint with a self-signed certificate for domain `esthesis.test`.
->	- You can use this endpoint to smoke-test the application before you decide to publicly expose it.
->   To do so, you need to set up an entry in your `hosts` file that points `esthesis.test` to the
->   actual IP address of  `esthesis-core-ui-service`.
->
-> Please note you **need** to access the application via HTTPS as the application will not work otherwise.
+> API Gateway of the application. You need to expose the HTTP endpoint of this service  in your
+> TLS-terminating Load Balancer under HTTPS. Please note the application **will not** work under
+> HTTP.
 
 > ℹ️ **Accessing the application**
 >
-> If you have installed the embedded Keycloak instance, and you have not modified the passwords
+> - If you have installed the embedded Keycloak instance, and you have not modified the passwords
 > above, you can access esthesis CORE with:\
 `Username: esthesis-admin`\
 `Password: esthesis`
+> - If you are using self-signed certificates, you first need to access your Keycloak URL and trust
+> it in your browser (or trust the self-signed certificate in your system's keystore). You can then
+> open the application URL. This is only useful to quickly smoke test the installation and proper
+> certificates need to be installed before opening the application to the public.
 
 ### Keycloak
 

@@ -29,10 +29,9 @@ esthesis:
     max-id-token-iat-offset-allowed-in-seconds: 10
     ignore-nonce-after-refresh: true
     secure-routes: [ "/api" ]
-#    authority: "http://esthesis-dev-keycloak/realms/esthesis"
-    authority: "/keycloak/realms/esthesis"
-#    redirect-url: "http://localhost:4200/callback"
-    redirect-url: "/callback"
-#    post-logout-redirect-uri: "http://localhost:4200/logged-out"
-    post-logout-redirect-uri: "/logout"
-#    post-logout-redirect-uri: "window.location.origin"
+    authority: "http://esthesis-dev-keycloak/realms/esthesis"
+#    authority: "/keycloak/realms/esthesis"
+    redirect-url: "http://localhost:4200/callback"
+#    redirect-url: "/callback"
+    post-logout-redirect-uri: "http://localhost:4200/logout"
+#    post-logout-redirect-uri: "/logout"

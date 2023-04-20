@@ -1,0 +1,84 @@
+global:
+  devEnv:
+    enabled: false
+
+apisix:
+  gateway:
+    type: LoadBalancer
+    externalTrafficPolicy: Local
+
+  etcd:
+    replicaCount: 1
+    auth:
+      token:
+        type: simple
+  admin:
+    cors: false
+    credentials:
+      admin: esthesis-admin
+      viewer: esthesis-viewer
+    allow:
+      ipList:
+        - 0.0.0.0/0
+  plugins:
+    - opentelemetry
+    - api-breaker
+    - authz-keycloak
+    - basic-auth
+    - batch-requests
+    - consumer-restriction
+    - cors
+    - echo
+    - fault-injection
+    - grpc-transcode
+    - hmac-auth
+    - http-logger
+    - ip-restriction
+    - ua-restriction
+    - jwt-auth
+    - kafka-logger
+    - key-auth
+    - limit-conn
+    - limit-count
+    - limit-req
+    - node-status
+    - openid-connect
+    - authz-casbin
+    - prometheus
+    - proxy-cache
+    - proxy-mirror
+    - proxy-rewrite
+    - redirect
+    - referer-restriction
+    - request-id
+    - request-validation
+    - response-rewrite
+    - serverless-post-function
+    - serverless-pre-function
+    - sls-logger
+    - syslog
+    - tcp-logger
+    - udp-logger
+    - uri-blocker
+    - wolf-rbac
+    - zipkin
+    - traffic-split
+    - gzip
+    - real-ip
+    - ext-plugin-pre-req
+    - ext-plugin-post-req
+    - server-info
+  pluginAttrs:
+    opentelemetry:
+      resource:
+        service:
+          name: APISIX
+      collector:
+        address: jaeger-collector-otlp-http:4318
+
+apisix-ingress-controller:
+  fullnameOverride: apisix-ingress-controller
+  config:
+    apisix:
+      adminKey: esthesis-admin
+      serviceFullname: apisix-admin
