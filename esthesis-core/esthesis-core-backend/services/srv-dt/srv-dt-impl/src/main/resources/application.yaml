@@ -4,18 +4,9 @@ quarkus:
   container-image:
     group: esthesisiot
     name: esthesis-core-srv-dt
-  mongodb:
-    database: esthesis
-    credentials:
-      username: esthesis
-      password: esthesis
   devservices:
     enabled: false
   log:
-    level: warn
-    category:
-      esthesis:
-        level: INFO
     console:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
   banner:
@@ -29,3 +20,11 @@ quarkus:
       default: /api/dt/openapi
   smallrye-openapi:
     path: /api/openapi
+  oidc-client:
+    client-id: esthesis
+    grant:
+      type: PASSWORD
+  rest-client:
+    ApplicationSystemResource:
+      url: http://esthesis-core-srv-application-system:8080
+      scope: Singleton

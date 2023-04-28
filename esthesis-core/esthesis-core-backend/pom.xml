@@ -194,7 +194,7 @@
     <skipITs>true</skipITs>
     <slugify.version>3.0.2</slugify.version>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
-    <zeebe.version>0.7.2</zeebe.version>
+    <zeebe.version>0.9.0</zeebe.version>
   </properties>
 
 </project>

@@ -6,7 +6,7 @@ import esthesis.services.campaign.impl.service.CampaignService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
-import io.quarkiverse.zeebe.ZeebeWorker;
+import io.quarkiverse.zeebe.JobWorker;
 import java.time.Instant;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,24 +14,24 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ApplicationScoped
-@ZeebeWorker(type = "TerminateCampaignJob")
 public class TerminateCampaignJob implements JobHandler {
 
-  @Inject
-  CampaignService campaignService;
+	@Inject
+	CampaignService campaignService;
 
-  public void handle(JobClient client, ActivatedJob job) {
-    WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);
-    log.debug("terminateCampaign, campaignId: {}", p.getCampaignId());
-    CampaignEntity campaignEntity = campaignService.setStateDescription(p.getCampaignId(),
-        "Terminating campaign.");
-    campaignEntity.setState(State.TERMINATED_BY_WORKFLOW);
-    campaignEntity.setTerminatedOn(Instant.now());
-    campaignEntity.setStateDescription("Campaign terminated at " + Instant.now() + ".");
-    campaignService.save(campaignEntity);
-    log.debug("Campaign with id '{}' terminated.", p.getCampaignId());
+	@JobWorker(type = "TerminateCampaignJob")
+	public void handle(JobClient client, ActivatedJob job) {
+		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);
+		log.debug("terminateCampaign, campaignId: {}", p.getCampaignId());
+		CampaignEntity campaignEntity = campaignService.setStateDescription(p.getCampaignId(),
+			"Terminating campaign.");
+		campaignEntity.setState(State.TERMINATED_BY_WORKFLOW);
+		campaignEntity.setTerminatedOn(Instant.now());
+		campaignEntity.setStateDescription("Campaign terminated at " + Instant.now() + ".");
+		campaignService.save(campaignEntity);
+		log.debug("Campaign with id '{}' terminated.", p.getCampaignId());
 
-    client.newCompleteCommand(job.getKey()).send().join();
-  }
+		client.newCompleteCommand(job.getKey()).send().join();
+	}
 
 }

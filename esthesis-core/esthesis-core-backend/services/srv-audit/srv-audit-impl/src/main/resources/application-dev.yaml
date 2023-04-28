@@ -1,9 +1,9 @@
 quarkus:
+  live-reload:
+    instrumentation: true
   http:
     host: 0.0.0.0
     cors: false
-  mongodb:
-    connection-string: mongodb://esthesis-dev-mongodb:27017
   log:
     min-level: TRACE
     category:
@@ -15,19 +15,21 @@ quarkus:
         host: esthesis-dev-loki-gelf-udp
         port: 12201
         include-full-mdc: true
+  mongodb:
+    connection-string: mongodb://esthesis-dev-mongodb:27017
   opentelemetry:
     enabled: true
     tracer:
       exporter:
         otlp:
           endpoint: http://esthesis-dev-jaeger-collector-grpc:4317
+  config:
+    locations: "../../../../setup/dev/profiles"
   rest-client:
     # A self-reference to be able to use the Audited annotation.
     AuditResource:
       url: http://localhost:59140
       scope: Singleton
-  config:
-    locations: "../../../../setup/dev/profiles"
 
 mp:
   jwt:

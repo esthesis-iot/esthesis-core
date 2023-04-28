@@ -4,29 +4,23 @@ quarkus:
   container-image:
     group: esthesisiot
     name: esthesis-core-srv-infrastructure
-  mongodb:
-    connection-string: mongodb://mongodb:27017
-    database: esthesis
-    credentials:
-      username: esthesis
-      password: esthesis
   devservices:
     enabled: false
   log:
-    level: WARN
-    category:
-      esthesis:
-        level: INFO
     console:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
   banner:
     enabled: false
   opentelemetry:
     enabled: false
-
-mp:
-  jwt:
-    verify:
-      publickey:
-        location: "http://esthesis-keycloak/realms/esthesis/protocol/openid-connect/certs"
-
+  oidc-client:
+    client-id: esthesis
+    grant:
+      type: PASSWORD
+  rest-client:
+    TagSystemResource:
+      url: http://esthesis-core-srv-tag-system:8080
+      scope: Singleton
+    AuditResource:
+      url: http://esthesis-core-srv-audit-service:8080
+      scope: Singleton

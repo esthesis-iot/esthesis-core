@@ -47,11 +47,6 @@
       <artifactId>srv-command-client</artifactId>
       <version>3.0.0-SNAPSHOT</version>
     </dependency>
-    <!--    <dependency>-->
-    <!--      <groupId>esthesis</groupId>-->
-    <!--      <artifactId>utl-kogito</artifactId>-->
-    <!--      <version>3.0.0-SNAPSHOT</version>-->
-    <!--    </dependency>-->
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>utl-redis</artifactId>
@@ -64,21 +59,5 @@
       <artifactId>quarkus-zeebe</artifactId>
       <version>${zeebe.version}</version>
     </dependency>
-    <!--    <dependency>-->
-    <!--      <groupId>org.kie.kogito</groupId>-->
-    <!--      <artifactId>kogito-quarkus</artifactId>-->
-    <!--    </dependency>-->
-    <!--    <dependency>-->
-    <!--      <groupId>org.kie.kogito</groupId>-->
-    <!--      <artifactId>kogito-addons-quarkus-persistence-mongodb</artifactId>-->
-    <!--    </dependency>-->
-    <!--    <dependency>-->
-    <!--      <groupId>org.kie.kogito</groupId>-->
-    <!--      <artifactId>kogito-addons-quarkus-persistence-kafka</artifactId>-->
-    <!--    </dependency>-->
-    <!--    <dependency>-->
-    <!--      <groupId>org.kie.kogito</groupId>-->
-    <!--      <artifactId>kogito-addons-quarkus-persistence-infinispan</artifactId>-->
-    <!--    </dependency>-->
   </dependencies>
 </project>

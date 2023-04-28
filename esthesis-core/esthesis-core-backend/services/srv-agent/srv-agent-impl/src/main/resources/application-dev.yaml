@@ -1,8 +1,11 @@
 quarkus:
+  live-reload:
+    instrumentation: true
   http:
     host: 0.0.0.0
     cors: false
   log:
+    min-level: TRACE
     category:
       esthesis:
         level: DEBUG
@@ -42,14 +45,11 @@ quarkus:
     InfrastructureSystemResource:
       url: http://localhost:59110
       scope: Singleton
-  oidc:
-    auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
-    client-id: esthesis
+#  oidc:
+#    auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
+#    client-id: esthesis
   oidc-client:
     auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
-    client-id: esthesis
-    grant:
-      type: PASSWORD
     grant-options:
       password:
         username: esthesis-system

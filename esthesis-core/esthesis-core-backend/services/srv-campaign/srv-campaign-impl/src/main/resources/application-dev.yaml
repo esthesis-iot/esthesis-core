@@ -1,9 +1,12 @@
 quarkus:
+  live-reload:
+    instrumentation: true
   http:
     host: 0.0.0.0
     cors: false
   log:
     min-level: TRACE
+    level: TRACE
     category:
       esthesis:
         level: DEBUG
@@ -13,16 +16,25 @@ quarkus:
         host: esthesis-dev-loki-gelf-udp
         port: 12201
         include-full-mdc: true
-  redis:
-    hosts: redis://:esthesis@esthesis-dev-redis:6379/0
   mongodb:
     connection-string: mongodb://esthesis-dev-mongodb:27017
+  redis:
+    hosts: redis://:esthesis@esthesis-dev-redis:6379/0
   opentelemetry:
     enabled: true
     tracer:
       exporter:
         otlp:
           endpoint: http://esthesis-dev-jaeger-collector-grpc:4317
+#  oidc:
+#    auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
+#    client-id: esthesis
+  oidc-client:
+    auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
+    grant-options:
+      password:
+        username: esthesis-system
+        password: esthesis-system
   rest-client:
     AuditResource:
       url: http://localhost:59140
@@ -33,18 +45,6 @@ quarkus:
     CommandSystemResource:
       url: http://localhost:59080
       scope: Singleton
-  oidc:
-    auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
-    client-id: esthesis
-  oidc-client:
-    auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
-    client-id: esthesis
-    grant:
-      type: PASSWORD
-    grant-options:
-      password:
-        username: esthesis-system
-        password: esthesis-system
   zeebe:
     opentelemetry:
       enabled: true
@@ -59,8 +59,3 @@ mp:
     verify:
       publickey:
         location: http://esthesis-dev-keycloak/realms/esthesis/protocol/openid-connect/certs
-
-esthesis:
-  kogito:
-    client:
-      url: http://localhost:59150

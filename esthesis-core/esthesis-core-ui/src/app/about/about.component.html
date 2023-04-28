@@ -22,7 +22,8 @@
               </div>
               <div>
                 <div class="font-bold">Git build date</div>
-                <div>{{about.gitBuildTime | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
+                <div
+                  *ngIf="about.gitBuildTime">{{about.gitBuildTime | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
               </div>
               <div>
                 <div class="font-bold">Digital Twin OpenAPI specification</div>

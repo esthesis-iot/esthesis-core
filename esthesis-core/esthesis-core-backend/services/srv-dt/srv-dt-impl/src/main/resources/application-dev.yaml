@@ -3,6 +3,7 @@ quarkus:
     host: 0.0.0.0
     cors: false
   log:
+    min-level: TRACE
     category:
       esthesis:
         level: DEBUG
@@ -18,9 +19,6 @@ quarkus:
       scope: Singleton
   oidc-client:
     auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
-    client-id: esthesis
-    grant:
-      type: PASSWORD
     grant-options:
       password:
         username: esthesis-system

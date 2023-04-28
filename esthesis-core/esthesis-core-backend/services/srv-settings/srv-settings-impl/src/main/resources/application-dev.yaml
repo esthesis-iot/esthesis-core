@@ -19,10 +19,8 @@ quarkus:
   rest-client:
     DataflowSystemResource:
       url: http://localhost:59060
-      scope: Singleton
     AuditResource:
       url: http://localhost:59140
-      scope: Singleton
   redis:
     hosts: redis://:esthesis@esthesis-dev-redis:6379/0
   opentelemetry:
@@ -33,9 +31,6 @@ quarkus:
           endpoint: http://esthesis-dev-jaeger-collector-grpc:4317
   oidc-client:
     auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
-    client-id: esthesis
-    grant:
-      type: PASSWORD
     grant-options:
       password:
         username: esthesis-system

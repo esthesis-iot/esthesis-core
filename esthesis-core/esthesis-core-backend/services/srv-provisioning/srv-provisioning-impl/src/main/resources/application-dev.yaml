@@ -1,8 +1,11 @@
 quarkus:
+  live-reload:
+    instrumentation: true
   http:
     host: 0.0.0.0
     cors: false
   log:
+    min-level: TRACE
     category:
       esthesis:
         level: DEBUG
@@ -29,9 +32,6 @@ quarkus:
           endpoint: http://esthesis-dev-jaeger-collector-grpc:4317
   oidc-client:
     auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
-    client-id: esthesis
-    grant:
-      type: PASSWORD
     grant-options:
       password:
         username: esthesis-system

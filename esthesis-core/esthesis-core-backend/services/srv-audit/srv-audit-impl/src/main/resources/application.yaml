@@ -6,17 +6,7 @@ quarkus:
     name: esthesis-core-srv-audit
   devservices:
     enabled: false
-  mongodb:
-    connection-string: mongodb://mongodb:27017
-    database: esthesis
-    credentials:
-      username: esthesis
-      password: esthesis
   log:
-    level: WARN
-    category:
-      esthesis:
-        level: INFO
     console:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
   banner:
@@ -27,10 +17,8 @@ quarkus:
     limits:
       max-body-size: 16m
       max-form-attribute-size: 16m
-
-mp:
-  jwt:
-    verify:
-      publickey:
-        location: "http://esthesis-keycloak/realms/esthesis/protocol/openid-connect/certs"
-
+  rest-client:
+    # A self-reference to be able to use the Audited annotation.
+    AuditResource:
+      url: http://esthesis-core-srv-audit:8080
+      scope: Singleton

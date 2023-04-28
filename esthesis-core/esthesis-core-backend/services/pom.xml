@@ -68,6 +68,10 @@
       <artifactId>quarkus-smallrye-fault-tolerance</artifactId>
       <groupId>io.quarkus</groupId>
     </dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-smallrye-health</artifactId>
+		</dependency>
 
     <!-- THIRD-PARTY -->
     <dependency>

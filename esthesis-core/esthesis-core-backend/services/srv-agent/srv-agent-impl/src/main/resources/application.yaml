@@ -4,21 +4,38 @@ quarkus:
   container-image:
     group: esthesisiot
     name: esthesis-core-srv-agent
-  mongodb:
-    database: esthesis
-    credentials:
-      username: esthesis
-      password: esthesis
   devservices:
     enabled: false
   log:
-    level: warn
-    category:
-      esthesis:
-        level: INFO
     console:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
   banner:
     enabled: false
   opentelemetry:
     enabled: false
+  oidc-client:
+    client-id: esthesis
+    grant:
+      type: PASSWORD
+  rest-client:
+    SettingsSystemResource:
+      url: http://esthesis-core-settings-service:8080
+      scope: Singleton
+    CASystemResource:
+      url: http://esthesis-core-security-service:8080
+      scope: Singleton
+    DataflowSystemResource:
+      url: http://esthesis-core-dataflow-service:8080
+      scope: Singleton
+    DeviceSystemResource:
+      url: http://esthesis-core-device-service:8080
+      scope: Singleton
+    ProvisioningAgentResource:
+      url: http://esthesis-core-provisioning-service:8080
+      scope: Singleton
+    SigningSystemResource:
+      url: http://esthesis-core-security-service:8080
+      scope: Singleton
+    InfrastructureSystemResource:
+      url: http://esthesis-core-infrastructure-service:8080
+      scope: Singleton

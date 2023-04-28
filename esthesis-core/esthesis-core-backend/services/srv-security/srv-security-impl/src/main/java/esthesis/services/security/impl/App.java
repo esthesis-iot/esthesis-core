@@ -8,7 +8,7 @@ import javax.enterprise.event.Observes;
 @ApplicationScoped
 public class App {
 
-  void onStart(@Observes StartupEvent ev) {
-    BannerUtil.showBanner("srv-security");
-  }
+	void onStart(@Observes StartupEvent ev) {
+		BannerUtil.showBanner("srv-security");
+	}
 }

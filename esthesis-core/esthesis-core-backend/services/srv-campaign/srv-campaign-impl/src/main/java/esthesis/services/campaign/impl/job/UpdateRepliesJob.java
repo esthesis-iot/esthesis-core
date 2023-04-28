@@ -9,7 +9,7 @@ import esthesis.services.campaign.impl.service.CampaignService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
-import io.quarkiverse.zeebe.ZeebeWorker;
+import io.quarkiverse.zeebe.JobWorker;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -19,37 +19,37 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @ApplicationScoped
-@ZeebeWorker(type = "UpdateRepliesJob")
 public class UpdateRepliesJob implements JobHandler {
 
-  @Inject
-  CampaignDeviceMonitorService campaignDeviceMonitorService;
+	@Inject
+	CampaignDeviceMonitorService campaignDeviceMonitorService;
 
-  @Inject
-  CampaignService campaignService;
+	@Inject
+	CampaignService campaignService;
 
-  @Inject
-  @RestClient
-  CommandSystemResource commandSystemResource;
+	@Inject
+	@RestClient
+	CommandSystemResource commandSystemResource;
 
-  public void handle(JobClient client, ActivatedJob job) {
-    WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);
-    campaignService.setStateDescription(p.getCampaignId(), "Updating replies.");
-    GroupDTO groupDTO = new GroupDTO(job);
-    // Before checking the rate, update any possible replies received.
-    List<CampaignDeviceMonitorEntity> contactedDevices =
-        campaignDeviceMonitorService.findContactedNotReplied(p.getCampaignId(),
-            groupDTO.getGroup());
-    contactedDevices.forEach(device -> {
-      List<CommandReplyEntity> replies = commandSystemResource.getReplies(
-          device.getCommandRequestId().toString());
-      if (!CollectionUtils.isEmpty(replies)) {
-        device.setCommandReplyId(replies.get(0).getId());
-        campaignDeviceMonitorService.save(device);
-        log.debug("Updating reply '{}' for device '{}'.", replies.get(0), device.getHardwareId());
-      }
-    });
+	@JobWorker(type = "UpdateRepliesJob")
+	public void handle(JobClient client, ActivatedJob job) {
+		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);
+		campaignService.setStateDescription(p.getCampaignId(), "Updating replies.");
+		GroupDTO groupDTO = new GroupDTO(job);
+		// Before checking the rate, update any possible replies received.
+		List<CampaignDeviceMonitorEntity> contactedDevices =
+			campaignDeviceMonitorService.findContactedNotReplied(p.getCampaignId(),
+				groupDTO.getGroup());
+		contactedDevices.forEach(device -> {
+			List<CommandReplyEntity> replies = commandSystemResource.getReplies(
+				device.getCommandRequestId().toString());
+			if (!CollectionUtils.isEmpty(replies)) {
+				device.setCommandReplyId(replies.get(0).getId());
+				campaignDeviceMonitorService.save(device);
+				log.debug("Updating reply '{}' for device '{}'.", replies.get(0), device.getHardwareId());
+			}
+		});
 
-    client.newCompleteCommand(job.getKey()).send().join();
-  }
+		client.newCompleteCommand(job.getKey()).send().join();
+	}
 }

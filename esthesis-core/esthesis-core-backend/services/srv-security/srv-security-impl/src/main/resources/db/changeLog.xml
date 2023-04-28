@@ -6,11 +6,6 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.18.xsd">
 
   <changeSet author="European Dynamics SA" id="srv-security-1">
-    <ext:createCollection collectionName="User" />
-    <ext:createCollection collectionName="Group" />
-    <ext:createCollection collectionName="Role" />
-    <ext:createCollection collectionName="Policy" />
-
     <ext:insertMany collectionName="Policy">
       <ext:documents>
         [
@@ -284,12 +279,6 @@
       </ext:documents>
     </ext:insertMany>
 
-    <ext:insertMany collectionName="User">
-      <ext:documents>[
-        {"_id": ObjectId("64180cded7edc1e1200904a0"), "username": "esthesis-admin", "description": "Default administrator of the system", "groups": ["64180cded7edc1e1200904a0"]}
-        ]
-      </ext:documents>
-    </ext:insertMany>
   </changeSet>
 
 </databaseChangeLog>

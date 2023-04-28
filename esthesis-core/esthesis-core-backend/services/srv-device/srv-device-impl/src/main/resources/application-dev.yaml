@@ -52,9 +52,6 @@ quarkus:
       scope: Singleton
   oidc-client:
     auth-server-url: http://esthesis-dev-keycloak/realms/esthesis
-    client-id: esthesis
-    grant:
-      type: PASSWORD
     grant-options:
       password:
         username: esthesis-system

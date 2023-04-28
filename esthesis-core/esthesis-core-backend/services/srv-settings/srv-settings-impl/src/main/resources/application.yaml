@@ -4,23 +4,25 @@ quarkus:
   container-image:
     group: esthesisiot
     name: esthesis-core-srv-settings
-  mongodb:
-    database: esthesis
-    credentials:
-      username: esthesis
-      password: esthesis
   liquibase-mongodb:
     migrate-at-start: true
   devservices:
     enabled: false
   log:
-    level: warn
-    category:
-      esthesis:
-        level: INFO
     console:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
   banner:
     enabled: false
   opentelemetry:
     enabled: false
+  oidc-client:
+    client-id: esthesis
+    grant:
+      type: PASSWORD
+  rest-client:
+    DataflowSystemResource:
+      url: http://esthesis-core-srv-dataflow-service:8080
+      scope: Singleton
+    AuditResource:
+      url: http://esthesis-core-srv-audit-service:8080
+      scope: Singleton
