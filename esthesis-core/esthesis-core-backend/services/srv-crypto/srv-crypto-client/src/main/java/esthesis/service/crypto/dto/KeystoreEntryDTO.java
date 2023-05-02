@@ -2,9 +2,9 @@ package esthesis.service.crypto.dto;
 
 import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Keystore.Item.KeyType;
+import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.List;
-import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,17 +18,17 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class KeystoreEntryDTO implements Serializable {
 
-  @NotBlank
-  private String id;
+	@NotBlank
+	private String id;
 
-  @NotBlank
-  private AppConstants.Keystore.Item.ResourceType resourceType;
+	@NotBlank
+	private AppConstants.Keystore.Item.ResourceType resourceType;
 
-  @NotBlank
-  private List<KeyType> keyType;
+	@NotBlank
+	private List<KeyType> keyType;
 
-  @NotBlank
-  private String name;
+	@NotBlank
+	private String name;
 
-  private String password;
+	private String password;
 }

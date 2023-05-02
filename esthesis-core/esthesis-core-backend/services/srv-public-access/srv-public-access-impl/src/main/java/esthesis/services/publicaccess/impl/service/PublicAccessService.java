@@ -1,7 +1,7 @@
 package esthesis.services.publicaccess.impl.service;
 
 import esthesis.service.publicaccess.dto.OidcConfigDTO;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 

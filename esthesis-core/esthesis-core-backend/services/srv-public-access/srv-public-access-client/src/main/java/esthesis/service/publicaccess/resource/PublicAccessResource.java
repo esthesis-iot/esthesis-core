@@ -1,8 +1,8 @@
 package esthesis.service.publicaccess.resource;
 
 import esthesis.service.publicaccess.dto.OidcConfigDTO;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 
 /**
  * Settings which can be accessed by unauthenticated users.
@@ -10,7 +10,7 @@ import javax.ws.rs.Path;
 @Path("/api")
 public interface PublicAccessResource {
 
-  @GET
-  @Path("/oidc-config")
-  OidcConfigDTO getOidcConfig();
+	@GET
+	@Path("/oidc-config")
+	OidcConfigDTO getOidcConfig();
 }

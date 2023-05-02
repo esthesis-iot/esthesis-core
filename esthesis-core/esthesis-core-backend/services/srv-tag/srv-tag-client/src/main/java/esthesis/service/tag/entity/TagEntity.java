@@ -3,7 +3,7 @@ package esthesis.service.tag.entity;
 import esthesis.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,11 +20,11 @@ import org.hibernate.validator.constraints.Length;
 @MongoEntity(collection = "Tag")
 public class TagEntity extends BaseEntity {
 
-  @NotBlank
-  @Length(min = 3, max = 255)
-  private String name;
+	@NotBlank
+	@Length(min = 3, max = 255)
+	private String name;
 
-  @Length(max = 2048)
-  private String description;
+	@Length(max = 2048)
+	private String description;
 
 }

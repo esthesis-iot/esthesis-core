@@ -4,8 +4,8 @@ import esthesis.avro.util.AvroUtils;
 import esthesis.common.banner.BannerUtil;
 import esthesis.dataflow.mqttclient.config.AppConfig;
 import esthesis.dataflow.mqttclient.service.DflMqttClientService;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
@@ -18,30 +18,30 @@ import org.apache.camel.model.dataformat.AvroDataFormat;
 @ApplicationScoped
 public class MqttRoute extends RouteBuilder {
 
-  @Inject
-  DflMqttClientService dflMqttClientService;
+	@Inject
+	DflMqttClientService dflMqttClientService;
 
-  @Inject
-  AvroUtils avroUtils;
+	@Inject
+	AvroUtils avroUtils;
 
-  @Inject
-  AppConfig config;
+	@Inject
+	AppConfig config;
 
-  @Override
-  @SuppressWarnings({"java:S1192", "java:S1602"})
-  public void configure() {
-    BannerUtil.showBanner("dfl-mqtt-client");
+	@Override
+	@SuppressWarnings({"java:S1192", "java:S1602" })
+	public void configure() {
+		BannerUtil.showBanner("dfl-mqtt-client");
 
-    // Configure Kafka.
-    ComponentsBuilderFactory.kafka()
-        .brokers(config.kafkaClusterUrl())
-        .valueDeserializer(
-            "org.apache.kafka.common.serialization.ByteArrayDeserializer")
-        .valueSerializer(
-            "org.apache.kafka.common.serialization.ByteArraySerializer")
-        .register(getContext(), "kafka");
+		// Configure Kafka.
+		ComponentsBuilderFactory.kafka()
+			.brokers(config.kafkaClusterUrl())
+			.valueDeserializer(
+				"org.apache.kafka.common.serialization.ByteArrayDeserializer")
+			.valueSerializer(
+				"org.apache.kafka.common.serialization.ByteArraySerializer")
+			.register(getContext(), "kafka");
 
-    // @formatter:off
+		// @formatter:off
     config.mqttTopicTelemetry().ifPresentOrElse(mqttTopic -> {
       config.kafkaTopicTelemetry().ifPresentOrElse(kafkaTopic -> {
         log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
@@ -105,6 +105,6 @@ public class MqttRoute extends RouteBuilder {
     }, () -> log.debug("MQTT command request topic is not set."));
     // @formatter:on
 
-    log.info("Routes created successfully.");
-  }
+		log.info("Routes created successfully.");
+	}
 }

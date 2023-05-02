@@ -4,10 +4,10 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import jakarta.ws.rs.NameBinding;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import javax.ws.rs.NameBinding;
 
 /**
  * Dynamics filtering of JSON results in REST as per
@@ -24,5 +24,5 @@ import javax.ws.rs.NameBinding;
 @Target({METHOD, TYPE})
 public @interface JSONReplyFilter {
 
-  String filter() default "*";
+	String filter() default "*";
 }

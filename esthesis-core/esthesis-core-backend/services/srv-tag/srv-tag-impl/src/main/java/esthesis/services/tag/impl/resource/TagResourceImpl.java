@@ -9,66 +9,66 @@ import esthesis.service.common.paging.Pageable;
 import esthesis.service.tag.entity.TagEntity;
 import esthesis.service.tag.resource.TagResource;
 import esthesis.services.tag.impl.service.TagService;
+import jakarta.inject.Inject;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.BeanParam;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
-import javax.inject.Inject;
-import javax.validation.Valid;
-import javax.ws.rs.BeanParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 public class TagResourceImpl implements TagResource {
 
-  @Inject
-  JsonWebToken jwt;
+	@Inject
+	JsonWebToken jwt;
 
-  @Inject
-  TagService tagService;
+	@Inject
+	TagService tagService;
 
-  @GET
-  @Override
-  @Path("/v1/find")
-  @Audited(cat = Category.TAG, op = Operation.READ, msg = "Search tags", log = AuditLogType.DATA_IN)
-  public Page<TagEntity> find(@BeanParam Pageable pageable) {
-    return tagService.find(pageable, true);
-  }
+	@GET
+	@Override
+	@Path("/v1/find")
+	@Audited(cat = Category.TAG, op = Operation.READ, msg = "Search tags", log = AuditLogType.DATA_IN)
+	public Page<TagEntity> find(@BeanParam Pageable pageable) {
+		return tagService.find(pageable, true);
+	}
 
-  @Override
-  public List<TagEntity> getAll() {
-    return tagService.getAll();
-  }
+	@Override
+	public List<TagEntity> getAll() {
+		return tagService.getAll();
+	}
 
-  @Override
-  @Audited(cat = Category.TAG, op = Operation.READ, msg = "View tag")
-  public TagEntity findById(@PathParam("id") String id) {
-    return tagService.findById(id);
-  }
+	@Override
+	@Audited(cat = Category.TAG, op = Operation.READ, msg = "View tag")
+	public TagEntity findById(@PathParam("id") String id) {
+		return tagService.findById(id);
+	}
 
-  @Override
-  public TagEntity findByName(@PathParam("name") String name, boolean partialMatch) {
-    return tagService.findFirstByColumn("name", name, partialMatch);
-  }
+	@Override
+	public TagEntity findByName(@PathParam("name") String name, boolean partialMatch) {
+		return tagService.findFirstByColumn("name", name, partialMatch);
+	}
 
-  @Override
-  public List<TagEntity> findByNames(@QueryParam("names") String names,
-      boolean partialMatch) {
-    return tagService.findByColumnIn("name", Arrays.asList(names.split(",")),
-        partialMatch);
-  }
+	@Override
+	public List<TagEntity> findByNames(@QueryParam("names") String names,
+		boolean partialMatch) {
+		return tagService.findByColumnIn("name", Arrays.asList(names.split(",")),
+			partialMatch);
+	}
 
-  @Override
-  @Audited(cat = Category.TAG, op = Operation.DELETE, msg = "Delete tag")
-  public Response delete(@PathParam("id") String id) {
-    return tagService.deleteById(id) ? Response.ok().build() : Response.notModified().build();
-  }
+	@Override
+	@Audited(cat = Category.TAG, op = Operation.DELETE, msg = "Delete tag")
+	public Response delete(@PathParam("id") String id) {
+		return tagService.deleteById(id) ? Response.ok().build() : Response.notModified().build();
+	}
 
-  @Override
-  @Audited(cat = Category.TAG, op = Operation.WRITE, msg = "Save tag")
-  public TagEntity save(@Valid TagEntity tagEntity) {
-    return tagService.save(tagEntity);
-  }
+	@Override
+	@Audited(cat = Category.TAG, op = Operation.WRITE, msg = "Save tag")
+	public TagEntity save(@Valid TagEntity tagEntity) {
+		return tagService.save(tagEntity);
+	}
 }

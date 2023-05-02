@@ -11,32 +11,32 @@ import io.fabric8.kubernetes.api.model.autoscaling.v2beta2.HorizontalPodAutoscal
 import io.fabric8.kubernetes.api.model.autoscaling.v2beta2.HorizontalPodAutoscalerBuilder;
 import io.fabric8.kubernetes.api.model.autoscaling.v2beta2.MetricSpecBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ApplicationScoped
 public class KubernetesService {
 
-  @Inject
-  private KubernetesClient kc;
+	@Inject
+	private KubernetesClient kc;
 
-  private List<EnvVar> getEnvVar(PodInfoDTO podInfoDTO) {
-    List<EnvVar> envVars = new ArrayList<>();
-    podInfoDTO.getConfiguration().forEach((k, v) ->
-        envVars.add(new EnvVarBuilder().withName(k).withValue(v).build())
-    );
+	private List<EnvVar> getEnvVar(PodInfoDTO podInfoDTO) {
+		List<EnvVar> envVars = new ArrayList<>();
+		podInfoDTO.getConfiguration().forEach((k, v) ->
+			envVars.add(new EnvVarBuilder().withName(k).withValue(v).build())
+		);
 
-    return envVars;
-  }
+		return envVars;
+	}
 
-  public boolean schedulePod(PodInfoDTO podInfoDTO) {
-    log.debug("Scheduling pod '{}'.", podInfoDTO);
+	public boolean schedulePod(PodInfoDTO podInfoDTO) {
+		log.debug("Scheduling pod '{}'.", podInfoDTO);
 
-    //@formatter:off
+		//@formatter:off
     // Create a deployment for the pod.
     Deployment deploymentInfo = new DeploymentBuilder()
       .withNewMetadata()
@@ -68,15 +68,15 @@ public class KubernetesService {
     .build();
     // @formatter:on
 
-    if (podInfoDTO.isStatus()) {
-      kc.apps().deployments().inNamespace(podInfoDTO.getNamespace())
-          .resource(deploymentInfo).createOrReplace();
-    } else {
-      kc.apps().deployments().inNamespace(podInfoDTO.getNamespace())
-          .resource(deploymentInfo).delete();
-    }
+		if (podInfoDTO.isStatus()) {
+			kc.apps().deployments().inNamespace(podInfoDTO.getNamespace())
+				.resource(deploymentInfo).createOrReplace();
+		} else {
+			kc.apps().deployments().inNamespace(podInfoDTO.getNamespace())
+				.resource(deploymentInfo).delete();
+		}
 
-    //@formatter:off
+		//@formatter:off
     // Create a horizontal pod autoscaler for the pod.
     HorizontalPodAutoscaler horizontalPodAutoscaler = new HorizontalPodAutoscalerBuilder()
       .withNewMetadata().withName("hpa-" + podInfoDTO.getName())
@@ -117,21 +117,21 @@ public class KubernetesService {
     .build();
     //@formatter:on
 
-    // Create or remove the pod, according to the requested pod status.
-    if (podInfoDTO.isStatus()) {
-      kc.autoscaling().v2beta2().horizontalPodAutoscalers().inNamespace(
-          podInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).createOrReplace();
-    } else {
-      kc.autoscaling().v2beta2().horizontalPodAutoscalers().inNamespace(
-          podInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).delete();
-    }
+		// Create or remove the pod, according to the requested pod status.
+		if (podInfoDTO.isStatus()) {
+			kc.autoscaling().v2beta2().horizontalPodAutoscalers().inNamespace(
+				podInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).createOrReplace();
+		} else {
+			kc.autoscaling().v2beta2().horizontalPodAutoscalers().inNamespace(
+				podInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).delete();
+		}
 
-    return true;
-  }
+		return true;
+	}
 
-  public List<String> getNamespaces() {
-    return kc.namespaces().list().getItems().stream().map(
-            n -> n.getMetadata().getName()).toList().stream()
-        .sorted().toList();
-  }
+	public List<String> getNamespaces() {
+		return kc.namespaces().list().getItems().stream().map(
+				n -> n.getMetadata().getName()).toList().stream()
+			.sorted().toList();
+	}
 }

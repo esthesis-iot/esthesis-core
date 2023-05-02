@@ -3,9 +3,9 @@ package esthesis.service.dataflow.entity;
 import esthesis.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.Map;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,21 +22,21 @@ import org.hibernate.validator.constraints.Length;
 @MongoEntity(collection = "Dataflow")
 public class DataflowEntity extends BaseEntity {
 
-  @NotBlank
-  @Length(max = 256)
-  private String type;
+	@NotBlank
+	@Length(max = 256)
+	private String type;
 
-  @NotNull
-  private boolean status;
+	@NotNull
+	private boolean status;
 
-  @NotBlank
-  @Length(max = 1024)
-  private String name;
+	@NotBlank
+	@Length(max = 1024)
+	private String name;
 
-  @Length(max = 4096)
-  private String description;
+	@Length(max = 4096)
+	private String description;
 
-  private Map<String, Object> config;
-  private Map<String, Object> kubernetes;
+	private Map<String, Object> config;
+	private Map<String, Object> kubernetes;
 
 }

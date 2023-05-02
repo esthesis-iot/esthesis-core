@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import esthesis.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.time.Instant;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -22,33 +22,33 @@ import org.bson.types.ObjectId;
 @MongoEntity(collection = "Ca")
 public class CaEntity extends BaseEntity {
 
-  @NotNull
-  @Size(max = 256)
-  private String cn;
+	@NotNull
+	@Size(max = 256)
+	private String cn;
 
-  @NotNull
-  @Size(max = 256)
-  private String name;
+	@NotNull
+	@Size(max = 256)
+	private String name;
 
-  @JsonProperty(access = Access.READ_ONLY)
-  private Instant issued;
+	@JsonProperty(access = Access.READ_ONLY)
+	private Instant issued;
 
-  @NotNull
-  private Instant validity;
+	@NotNull
+	private Instant validity;
 
-  @JsonProperty(access = Access.READ_ONLY)
-  private String publicKey;
+	@JsonProperty(access = Access.READ_ONLY)
+	private String publicKey;
 
-  @JsonProperty(access = Access.READ_ONLY)
-  private String privateKey;
+	@JsonProperty(access = Access.READ_ONLY)
+	private String privateKey;
 
-  @JsonProperty(access = Access.READ_ONLY)
-  private String certificate;
+	@JsonProperty(access = Access.READ_ONLY)
+	private String certificate;
 
-  // The parent CA CN.
-  private String parentCa;
+	// The parent CA CN.
+	private String parentCa;
 
-  // The parent CA id.
-  private ObjectId parentCaId;
+	// The parent CA id.
+	private ObjectId parentCaId;
 
 }

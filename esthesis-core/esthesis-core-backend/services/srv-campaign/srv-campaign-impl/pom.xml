@@ -13,18 +13,6 @@
 
   <artifactId>srv-campaign-impl</artifactId>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.quarkus.platform</groupId>
-        <artifactId>quarkus-kogito-bom</artifactId>
-        <version>${quarkus.platform.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <!-- ESTHESIS -->
     <dependency>
@@ -58,6 +46,6 @@
       <groupId>io.quarkiverse.zeebe</groupId>
       <artifactId>quarkus-zeebe</artifactId>
       <version>${zeebe.version}</version>
-    </dependency>
+		</dependency>
   </dependencies>
 </project>

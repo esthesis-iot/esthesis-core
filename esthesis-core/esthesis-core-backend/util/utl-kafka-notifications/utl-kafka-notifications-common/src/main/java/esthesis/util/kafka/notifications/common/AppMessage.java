@@ -4,7 +4,7 @@ import static esthesis.util.kafka.notifications.common.KafkaNotificationsConstan
 import static esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
 import static esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subject;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,17 +16,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AppMessage {
 
-  @NotNull
-  private Component component;
+	@NotNull
+	private Component component;
 
-  @NotNull
-  private Subject subject;
+	@NotNull
+	private Subject subject;
 
-  @NotNull
-  private Action action;
+	@NotNull
+	private Action action;
 
-  private String id;
+	private String id;
 
-  private String payload;
+	private String payload;
 
 }

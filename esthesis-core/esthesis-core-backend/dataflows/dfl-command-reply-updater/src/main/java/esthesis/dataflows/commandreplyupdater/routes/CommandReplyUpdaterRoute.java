@@ -3,8 +3,8 @@ package esthesis.dataflows.commandreplyupdater.routes;
 import esthesis.common.banner.BannerUtil;
 import esthesis.dataflows.commandreplyupdater.config.AppConfig;
 import esthesis.dataflows.commandreplyupdater.service.CommandReplyUpdaterService;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
@@ -16,44 +16,44 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @ApplicationScoped
 public class CommandReplyUpdaterRoute extends RouteBuilder {
 
-  @Inject
-  CommandReplyUpdaterService commandReplyUpdaterService;
+	@Inject
+	CommandReplyUpdaterService commandReplyUpdaterService;
 
-  @Inject
-  AppConfig config;
+	@Inject
+	AppConfig config;
 
-  @ConfigProperty(name = "quarkus.mongodb.connection-string")
-  String mongoUrl;
+	@ConfigProperty(name = "quarkus.mongodb.connection-string")
+	String mongoUrl;
 
-  @Override
-  @SuppressWarnings("java:S2629")
-  public void configure() {
-    BannerUtil.showBanner("dfl-command-reply-updater");
+	@Override
+	@SuppressWarnings("java:S2629")
+	public void configure() {
+		BannerUtil.showBanner("dfl-command-reply-updater");
 
-    // Configure concurrency.
-    ComponentsBuilderFactory.seda()
-        .queueSize(config.queueSize())
-        .defaultPollTimeout(config.pollTimeout())
-        .concurrentConsumers(config.consumers())
-        .register(getContext(), "seda");
+		// Configure concurrency.
+		ComponentsBuilderFactory.seda()
+			.queueSize(config.queueSize())
+			.defaultPollTimeout(config.pollTimeout())
+			.concurrentConsumers(config.consumers())
+			.register(getContext(), "seda");
 
-    // Configure Kafka.
-    KafkaComponentBuilder kafkaComponentBuilder =
-        ComponentsBuilderFactory.kafka()
-            .valueDeserializer(
-                "org.apache.kafka.common.serialization.ByteArrayDeserializer")
-            .brokers(config.kafkaClusterUrl());
-    config.kafkaConsumerGroup().ifPresentOrElse(val -> {
-          log.info("Using Kafka consumer group '{}'.", val);
-          kafkaComponentBuilder.groupId(val);
-        },
-        () -> log.warn(
-            "Kafka consumer group is not set, having more than one pods running in parallel "
-                + "may have unexpected results."));
+		// Configure Kafka.
+		KafkaComponentBuilder kafkaComponentBuilder =
+			ComponentsBuilderFactory.kafka()
+				.valueDeserializer(
+					"org.apache.kafka.common.serialization.ByteArrayDeserializer")
+				.brokers(config.kafkaClusterUrl());
+		config.kafkaConsumerGroup().ifPresentOrElse(val -> {
+				log.info("Using Kafka consumer group '{}'.", val);
+				kafkaComponentBuilder.groupId(val);
+			},
+			() -> log.warn(
+				"Kafka consumer group is not set, having more than one pods running in parallel "
+					+ "may have unexpected results."));
 
-    kafkaComponentBuilder.register(getContext(), "kafka");
+		kafkaComponentBuilder.register(getContext(), "kafka");
 
-    // @formatter:off
+		// @formatter:off
     log.info("Creating route from Kafka topic '{}' to MongoDB '{}' database "
             + "'{}'.", config.kafkaCommandReplyTopic(), mongoUrl, config.esthesisDbName());
 
@@ -69,6 +69,6 @@ public class CommandReplyUpdaterRoute extends RouteBuilder {
             + "&operation=insert");
     // @formatter:on
 
-    log.info("Routes created successfully.");
-  }
+		log.info("Routes created successfully.");
+	}
 }

@@ -6,8 +6,8 @@ import esthesis.dataflows.oriongateway.service.OrionClientService;
 import esthesis.dataflows.oriongateway.service.OrionGatewayService;
 import esthesis.dataflows.oriongateway.service.OrionMessagingService;
 import esthesis.util.kafka.notifications.common.AppMessage;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
@@ -18,60 +18,60 @@ import org.apache.camel.model.dataformat.AvroDataFormat;
 @ApplicationScoped
 public class OrionGatewayRoute extends RouteBuilder {
 
-  @Inject
-  OrionMessagingService orionMessagingService;
+	@Inject
+	OrionMessagingService orionMessagingService;
 
-  @Inject
-  OrionGatewayService orionGatewayService;
+	@Inject
+	OrionGatewayService orionGatewayService;
 
-  @Inject
-  OrionClientService orionClientService;
+	@Inject
+	OrionClientService orionClientService;
 
-  @Inject
-  AppConfig appConfig;
+	@Inject
+	AppConfig appConfig;
 
-  @Override
-  @SuppressWarnings("java:S2629")
-  public void configure() {
-    BannerUtil.showBanner("dfl-orion-gateway");
+	@Override
+	@SuppressWarnings("java:S2629")
+	public void configure() {
+		BannerUtil.showBanner("dfl-orion-gateway");
 
-    // Check if existing devices should be registered in Orion.
-    if (appConfig.orionRetroCreateDevicesOnSchedule()) {
-      log.info("Will be adding existing devices to Orion on schedule '{}'.",
-          appConfig.orionRetroCreateDevicesSchedule());
-    }
+		// Check if existing devices should be registered in Orion.
+		if (appConfig.orionRetroCreateDevicesOnSchedule()) {
+			log.info("Will be adding existing devices to Orion on schedule '{}'.",
+				appConfig.orionRetroCreateDevicesSchedule());
+		}
 
-    if (appConfig.orionRetroCreateDevicesOnBoot()) {
-      log.info("Adding existing devices to Orion on boot.");
-      orionGatewayService.addExistingEsthesisDevicesToOrion();
-    }
+		if (appConfig.orionRetroCreateDevicesOnBoot()) {
+			log.info("Adding existing devices to Orion on boot.");
+			orionGatewayService.addExistingEsthesisDevicesToOrion();
+		}
 
-    // Configure concurrency.
-    ComponentsBuilderFactory.seda()
-        .queueSize(appConfig.queueSize())
-        .defaultPollTimeout(appConfig.pollTimeout())
-        .concurrentConsumers(appConfig.consumers())
-        .register(getContext(), "seda");
+		// Configure concurrency.
+		ComponentsBuilderFactory.seda()
+			.queueSize(appConfig.queueSize())
+			.defaultPollTimeout(appConfig.pollTimeout())
+			.concurrentConsumers(appConfig.consumers())
+			.register(getContext(), "seda");
 
-    // Configure Kafka.
-    log.info("Configuring Kafka component for '{}'.", appConfig.kafkaClusterUrl());
-    KafkaComponentBuilder kafkaComponentBuilder =
-        ComponentsBuilderFactory.kafka().brokers(appConfig.kafkaClusterUrl());
-    appConfig.kafkaConsumerGroup().ifPresentOrElse(val -> {
-          log.info("Using Kafka consumer group '{}'.", val);
-          kafkaComponentBuilder.groupId(val);
-        },
-        () -> log.warn(
-            "Kafka consumer group is not set, having more than one pods running in parallel "
-                + "may have unexpected results."));
-    kafkaComponentBuilder.register(getContext(), "kafka");
+		// Configure Kafka.
+		log.info("Configuring Kafka component for '{}'.", appConfig.kafkaClusterUrl());
+		KafkaComponentBuilder kafkaComponentBuilder =
+			ComponentsBuilderFactory.kafka().brokers(appConfig.kafkaClusterUrl());
+		appConfig.kafkaConsumerGroup().ifPresentOrElse(val -> {
+				log.info("Using Kafka consumer group '{}'.", val);
+				kafkaComponentBuilder.groupId(val);
+			},
+			() -> log.warn(
+				"Kafka consumer group is not set, having more than one pods running in parallel "
+					+ "may have unexpected results."));
+		kafkaComponentBuilder.register(getContext(), "kafka");
 
-    // Try to establish a connection to the Orion server.
-    log.info("Connecting to Orion server at '{}', version '{}'.", appConfig.orionUrl(),
-        orionClientService.getVersion());
+		// Try to establish a connection to the Orion server.
+		log.info("Connecting to Orion server at '{}', version '{}'.", appConfig.orionUrl(),
+			orionClientService.getVersion());
 
-    // Listen for application messages.
-    // @formatter:off
+		// Listen for application messages.
+		// @formatter:off
     if (appConfig.kafkaApplicationTopic().isPresent()) {
       log.info("Listening for application messages on Kafka topic '{}'.",
           appConfig.kafkaApplicationTopic().get());
@@ -87,8 +87,8 @@ public class OrionGatewayRoute extends RouteBuilder {
     }
     // @formatter:on
 
-    // Listen for telemetry messages.
-    // @formatter:off
+		// Listen for telemetry messages.
+		// @formatter:off
     if (appConfig.kafkaTelemetryTopic().isPresent()) {
       log.info("Creating route from Kafka topic '{}'.", appConfig.kafkaTelemetryTopic().get());
 
@@ -103,8 +103,8 @@ public class OrionGatewayRoute extends RouteBuilder {
     }
     // @formatter:on
 
-    // Listen for metadata messages.
-    // @formatter:off
+		// Listen for metadata messages.
+		// @formatter:off
     if (appConfig.kafkaMetadataTopic().isPresent()) {
       log.info("Creating route from Kafka topic '{}'.", appConfig.kafkaMetadataTopic().get());
 
@@ -119,6 +119,6 @@ public class OrionGatewayRoute extends RouteBuilder {
     }
     // @formatter:on
 
-    log.info("Routes created successfully.");
-  }
+		log.info("Routes created successfully.");
+	}
 }

@@ -2,13 +2,13 @@ package esthesis.services.tag.impl;
 
 import esthesis.common.banner.BannerUtil;
 import io.quarkus.runtime.StartupEvent;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
 
 @ApplicationScoped
 public class App {
 
-  void onStart(@Observes StartupEvent ev) {
-    BannerUtil.showBanner("srv-tag");
-  }
+	void onStart(@Observes StartupEvent ev) {
+		BannerUtil.showBanner("srv-tag");
+	}
 }

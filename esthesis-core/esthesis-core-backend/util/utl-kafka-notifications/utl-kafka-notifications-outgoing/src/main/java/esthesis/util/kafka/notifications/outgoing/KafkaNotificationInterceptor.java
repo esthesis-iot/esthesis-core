@@ -11,13 +11,13 @@ import io.opentelemetry.context.Context;
 import io.quarkus.arc.Priority;
 import io.smallrye.reactive.messaging.TracingMetadata;
 import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
+import jakarta.inject.Inject;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 import java.lang.reflect.Method;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -30,46 +30,46 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 @KafkaNotification(component = Component.UNSPECIFIED, subject = Subject.UNSPECIFIED, action = Action.UNSPECIFIED)
 public class KafkaNotificationInterceptor {
 
-  @Inject
-  @Channel(SMALLRYE_KAFKA_CHANNEL_OUT)
-  Emitter<AppMessage> emitter;
+	@Inject
+	@Channel(SMALLRYE_KAFKA_CHANNEL_OUT)
+	Emitter<AppMessage> emitter;
 
-  @AroundInvoke
-  Object notify(InvocationContext ctx) throws Exception {
-    // Proceed with the invocation.
-    Object proceed = ctx.proceed();
+	@AroundInvoke
+	Object notify(InvocationContext ctx) throws Exception {
+		// Proceed with the invocation.
+		Object proceed = ctx.proceed();
 
-    // Get a reference to the annotation to inspect parameters.
-    Method method = ctx.getMethod();
-    KafkaNotification kafkaNotification = method.getAnnotation(KafkaNotification.class);
-    String id = null;
+		// Get a reference to the annotation to inspect parameters.
+		Method method = ctx.getMethod();
+		KafkaNotification kafkaNotification = method.getAnnotation(KafkaNotification.class);
+		String id = null;
 
-    if (StringUtils.isNotEmpty(kafkaNotification.idParamRegEx())) {
-      Pattern pattern = Pattern.compile(kafkaNotification.idParamRegEx(), Pattern.CASE_INSENSITIVE);
-      Matcher matcher = pattern.matcher(proceed.toString());
-      if(matcher.find()) {
-        id = matcher.group(1);
-      }
-    } else if (kafkaNotification.idParamOrder() > -1) {
-      id = (String) ctx.getParameters()[kafkaNotification.idParamOrder()];
-    }
+		if (StringUtils.isNotEmpty(kafkaNotification.idParamRegEx())) {
+			Pattern pattern = Pattern.compile(kafkaNotification.idParamRegEx(), Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(proceed.toString());
+			if (matcher.find()) {
+				id = matcher.group(1);
+			}
+		} else if (kafkaNotification.idParamOrder() > -1) {
+			id = (String) ctx.getParameters()[kafkaNotification.idParamOrder()];
+		}
 
-    // Construct the message to emit.
-    AppMessageBuilder msgBuilder = AppMessage.builder().component(kafkaNotification.component())
-        .subject(kafkaNotification.subject()).action(kafkaNotification.action());
-    if (StringUtils.isNotBlank(id)) {
-      msgBuilder.id(id);
-    }
-    if (StringUtils.isNotBlank(kafkaNotification.payload())) {
-      msgBuilder.payload(kafkaNotification.payload());
-    }
-    Message<AppMessage> msg = Message.of(msgBuilder.build())
-        .addMetadata(OutgoingKafkaRecordMetadata.<String>builder()
-            .withKey(kafkaNotification.subject().toString()).build())
-        .addMetadata(TracingMetadata.withCurrent(Context.current()));
-    log.debug("Sending Kafka notification '{}'.", msg.getPayload());
-    emitter.send(msg);
+		// Construct the message to emit.
+		AppMessageBuilder msgBuilder = AppMessage.builder().component(kafkaNotification.component())
+			.subject(kafkaNotification.subject()).action(kafkaNotification.action());
+		if (StringUtils.isNotBlank(id)) {
+			msgBuilder.id(id);
+		}
+		if (StringUtils.isNotBlank(kafkaNotification.payload())) {
+			msgBuilder.payload(kafkaNotification.payload());
+		}
+		Message<AppMessage> msg = Message.of(msgBuilder.build())
+			.addMetadata(OutgoingKafkaRecordMetadata.<String>builder()
+				.withKey(kafkaNotification.subject().toString()).build())
+			.addMetadata(TracingMetadata.withCurrent(Context.current()));
+		log.debug("Sending Kafka notification '{}'.", msg.getPayload());
+		emitter.send(msg);
 
-    return proceed;
-  }
+		return proceed;
+	}
 }

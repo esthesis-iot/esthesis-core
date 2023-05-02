@@ -75,7 +75,7 @@
 
     <!-- THIRD-PARTY -->
     <dependency>
-      <artifactId>bcpkix-jdk15on</artifactId>
+      <artifactId>bcpkix-jdk18on</artifactId>
       <groupId>org.bouncycastle</groupId>
     </dependency>
     <dependency>

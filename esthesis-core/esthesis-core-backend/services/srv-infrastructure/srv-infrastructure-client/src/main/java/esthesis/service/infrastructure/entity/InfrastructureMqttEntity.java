@@ -3,8 +3,8 @@ package esthesis.service.infrastructure.entity;
 import esthesis.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
-import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,16 +21,16 @@ import org.hibernate.validator.constraints.Length;
 @MongoEntity(collection = "InfrastructureMqtt")
 public class InfrastructureMqttEntity extends BaseEntity {
 
-  @NotBlank
-  @Length(max = 1024)
-  private String name;
+	@NotBlank
+	@Length(max = 1024)
+	private String name;
 
-  @NotBlank
-  @Length(min = 3, max = 1024)
-  private String url;
+	@NotBlank
+	@Length(min = 3, max = 1024)
+	private String url;
 
-  private boolean active;
+	private boolean active;
 
-  // List of tag ids.
-  private List<String> tags;
+	// List of tag ids.
+	private List<String> tags;
 }

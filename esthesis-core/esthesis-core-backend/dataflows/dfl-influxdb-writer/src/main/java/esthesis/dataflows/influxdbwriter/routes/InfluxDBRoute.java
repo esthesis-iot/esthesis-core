@@ -3,8 +3,8 @@ package esthesis.dataflows.influxdbwriter.routes;
 import esthesis.common.banner.BannerUtil;
 import esthesis.dataflows.influxdbwriter.config.AppConfig;
 import esthesis.dataflows.influxdbwriter.service.InfluxDBService;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
@@ -15,40 +15,40 @@ import org.apache.camel.model.dataformat.AvroDataFormat;
 @ApplicationScoped
 public class InfluxDBRoute extends RouteBuilder {
 
-  @Inject
-  InfluxDBService influxDBService;
+	@Inject
+	InfluxDBService influxDBService;
 
-  @Inject
-  AppConfig config;
+	@Inject
+	AppConfig config;
 
-  @Override
-  public void configure() {
-    BannerUtil.showBanner("dfl-influxdb-writer");
+	@Override
+	public void configure() {
+		BannerUtil.showBanner("dfl-influxdb-writer");
 
-    // Configure concurrency.
-    ComponentsBuilderFactory.seda()
-        .queueSize(config.queueSize())
-        .defaultPollTimeout(config.pollTimeout())
-        .concurrentConsumers(config.consumers())
-        .register(getContext(), "seda");
+		// Configure concurrency.
+		ComponentsBuilderFactory.seda()
+			.queueSize(config.queueSize())
+			.defaultPollTimeout(config.pollTimeout())
+			.concurrentConsumers(config.consumers())
+			.register(getContext(), "seda");
 
-    // Configure Kafka.
-    KafkaComponentBuilder kafkaComponentBuilder =
-        ComponentsBuilderFactory.kafka()
-            .valueDeserializer(
-                "org.apache.kafka.common.serialization.ByteArrayDeserializer")
-            .brokers(config.kafkaClusterUrl());
-    config.kafkaConsumerGroup().ifPresentOrElse(val -> {
-          log.info("Using Kafka consumer group '{}'.", val);
-          kafkaComponentBuilder.groupId(val);
-        },
-        () -> log.warn(
-            "Kafka consumer group is not set, having more than one pods running in parallel "
-                + "may have unexpected results."));
+		// Configure Kafka.
+		KafkaComponentBuilder kafkaComponentBuilder =
+			ComponentsBuilderFactory.kafka()
+				.valueDeserializer(
+					"org.apache.kafka.common.serialization.ByteArrayDeserializer")
+				.brokers(config.kafkaClusterUrl());
+		config.kafkaConsumerGroup().ifPresentOrElse(val -> {
+				log.info("Using Kafka consumer group '{}'.", val);
+				kafkaComponentBuilder.groupId(val);
+			},
+			() -> log.warn(
+				"Kafka consumer group is not set, having more than one pods running in parallel "
+					+ "may have unexpected results."));
 
-    kafkaComponentBuilder.register(getContext(), "kafka");
+		kafkaComponentBuilder.register(getContext(), "kafka");
 
-    // @formatter:off
+		// @formatter:off
     config.kafkaTelemetryTopic().ifPresentOrElse(val -> {
       String kafkaTopic = val;
       log.info("Setting up route from Kafka topic '{}' to InfluxDB '{}' "
@@ -73,10 +73,10 @@ public class InfluxDBRoute extends RouteBuilder {
     }, () -> log.debug("Kafka metadata topic is not set, skipping route."));
     // @formatter:on
 
-    // Display a warning if no Kafka topics are configured.
-    if (config.kafkaTelemetryTopic().isEmpty() && config.kafkaMetadataTopic()
-        .isEmpty()) {
-      log.warn("No Kafka topics are configured.");
-    }
-  }
+		// Display a warning if no Kafka topics are configured.
+		if (config.kafkaTelemetryTopic().isEmpty() && config.kafkaMetadataTopic()
+			.isEmpty()) {
+			log.warn("No Kafka topics are configured.");
+		}
+	}
 }

@@ -2,8 +2,8 @@ package esthesis.services.about.impl.service;
 
 import esthesis.common.git.GitUtil;
 import esthesis.service.about.dto.AboutGeneralDTO;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 

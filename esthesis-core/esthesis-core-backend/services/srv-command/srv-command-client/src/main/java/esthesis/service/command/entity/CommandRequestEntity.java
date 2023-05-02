@@ -5,8 +5,8 @@ import esthesis.avro.ExecutionType;
 import esthesis.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import jakarta.validation.constraints.NotEmpty;
 import java.time.Instant;
-import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,35 +37,35 @@ import lombok.experimental.Accessors;
 @MongoEntity(collection = "CommandRequest")
 public class CommandRequestEntity extends BaseEntity {
 
-  // A comma-separated list of hardware IDs to which the command should be sent.
-  private String hardwareIds;
+	// A comma-separated list of hardware IDs to which the command should be sent.
+	private String hardwareIds;
 
-  // A comma-separated list of tag names to which the command should be sent.
-  private String tags;
+	// A comma-separated list of tag names to which the command should be sent.
+	private String tags;
 
-  // The type of execution for the command.
-  @NotEmpty
-  private CommandType commandType;
+	// The type of execution for the command.
+	@NotEmpty
+	private CommandType commandType;
 
-  // The type of execution for the command.
-  @NotEmpty
-  private ExecutionType executionType;
+	// The type of execution for the command.
+	@NotEmpty
+	private ExecutionType executionType;
 
-  // The command to be executed.
-  private String command;
+	// The command to be executed.
+	private String command;
 
-  // The arguments for the commands.
-  private String arguments;
+	// The arguments for the commands.
+	private String arguments;
 
-  // The command to be executed.
-  private String description;
+	// The command to be executed.
+	private String description;
 
-  // The time when the command was created.
-  @NotEmpty
-  private Instant createdOn = Instant.now();
+	// The time when the command was created.
+	@NotEmpty
+	private Instant createdOn = Instant.now();
 
-  // The time when the command was dispatched. This indicates the time this command was queued in
-  // Kafka.
-  private Instant dispatchedOn;
+	// The time when the command was dispatched. This indicates the time this command was queued in
+	// Kafka.
+	private Instant dispatchedOn;
 }
 

@@ -2,13 +2,13 @@ package esthesis.service.crypto.resource;
 
 import esthesis.service.crypto.dto.SignatureVerificationRequestDTO;
 import io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
-import javax.validation.Valid;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
@@ -17,9 +17,9 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 @RegisterProvider(OidcClientRequestReactiveFilter.class)
 public interface SigningSystemResource {
 
-  @POST
-  @Path("/v1/verify-signature")
-  boolean verifySignature(@Valid SignatureVerificationRequestDTO request)
-  throws NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, InvalidKeyException;
+	@POST
+	@Path("/v1/verify-signature")
+	boolean verifySignature(@Valid SignatureVerificationRequestDTO request)
+	throws NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, InvalidKeyException;
 
 }

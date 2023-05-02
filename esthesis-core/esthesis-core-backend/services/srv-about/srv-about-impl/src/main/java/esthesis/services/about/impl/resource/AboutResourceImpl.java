@@ -6,16 +6,16 @@ import esthesis.service.about.dto.AboutGeneralDTO;
 import esthesis.service.about.resource.AboutResource;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.services.about.impl.service.AboutService;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AboutResourceImpl implements AboutResource {
 
-  @Inject
-  AboutService aboutService;
+	@Inject
+	AboutService aboutService;
 
-  @Override
-  @Audited(cat = Category.ABOUT, op = Operation.READ, msg = "About/General page")
-  public AboutGeneralDTO getGeneralInfo() {
-    return aboutService.getGeneralInfo();
-  }
+	@Override
+	@Audited(cat = Category.ABOUT, op = Operation.READ, msg = "About/General page")
+	public AboutGeneralDTO getGeneralInfo() {
+		return aboutService.getGeneralInfo();
+	}
 }

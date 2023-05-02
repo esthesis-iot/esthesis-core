@@ -4,9 +4,9 @@ import esthesis.common.entity.BaseEntity;
 import esthesis.service.crypto.dto.KeystoreEntryDTO;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -20,18 +20,18 @@ import lombok.experimental.Accessors;
 @MongoEntity(collection = "Keystore")
 public class KeystoreEntity extends BaseEntity {
 
-  @NotBlank
-  private String name;
+	@NotBlank
+	private String name;
 
-  private String description;
+	private String description;
 
-  private String password;
+	private String password;
 
-  private List<KeystoreEntryDTO> entries;
+	private List<KeystoreEntryDTO> entries;
 
-  @NotNull
-  private Integer version;
+	@NotNull
+	private Integer version;
 
-  @NotNull
-  private String type;
+	@NotNull
+	private String type;
 }

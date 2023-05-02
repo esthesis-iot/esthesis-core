@@ -4,8 +4,8 @@ import esthesis.common.AppConstants.Provisioning.Type;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.provisioning.impl.service.ConfigService;
 import esthesis.service.provisioning.impl.service.ProvisioningRoutingService;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
@@ -17,40 +17,40 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @SuppressWarnings("java:S1192")
 public class ProvisioningRoutes extends RouteBuilder {
 
-  @Inject
-  ProvisioningRoutingService provisioningRoutingService;
+	@Inject
+	ProvisioningRoutingService provisioningRoutingService;
 
-  @Inject
-  ConfigService configService;
+	@Inject
+	ConfigService configService;
 
-  @ConfigProperty(name = "quarkus.mongodb.database")
-  String database;
+	@ConfigProperty(name = "quarkus.mongodb.database")
+	String database;
 
-  public static final String PROPERTY_PROVISIONING_PACKAGE_ID = "X-ProvisioningPackageId";
-  public static final String PROPERTY_PROVISIONING_PACKAGE_SIZE = "X-ProvisioningPackageSize";
-  public static final String PROPERTY_PROVISIONING_PACKAGE_HASH = "X-ProvisioningPackageHash";
-  public static final String PROPERTY_PROVISIONING_PACKAGE_TYPE = "X-ProvisioningPackageType";
-  public static final String PROPERTY_EXCEPTION_MESSAGE = "X-ProvisioningPackageExceptionMessage";
+	public static final String PROPERTY_PROVISIONING_PACKAGE_ID = "X-ProvisioningPackageId";
+	public static final String PROPERTY_PROVISIONING_PACKAGE_SIZE = "X-ProvisioningPackageSize";
+	public static final String PROPERTY_PROVISIONING_PACKAGE_HASH = "X-ProvisioningPackageHash";
+	public static final String PROPERTY_PROVISIONING_PACKAGE_TYPE = "X-ProvisioningPackageType";
+	public static final String PROPERTY_EXCEPTION_MESSAGE = "X-ProvisioningPackageExceptionMessage";
 
-  public static final String HEADER_FTP_HOST = "X-FtpHost";
-  public static final String HEADER_FTP_USERNAME = "X-FtpUsername";
-  public static final String HEADER_FTP_PASSWORD = "X-FtpPassword";
-  public static final String HEADER_FTP_PASSIVE = "X-FtpPassive";
-  public static final String HEADER_FTP_DIRECTORY = "X-FtpDirectory";
-  public static final String HEADER_FTP_FILENAME = "X-FtpFilename";
+	public static final String HEADER_FTP_HOST = "X-FtpHost";
+	public static final String HEADER_FTP_USERNAME = "X-FtpUsername";
+	public static final String HEADER_FTP_PASSWORD = "X-FtpPassword";
+	public static final String HEADER_FTP_PASSIVE = "X-FtpPassive";
+	public static final String HEADER_FTP_DIRECTORY = "X-FtpDirectory";
+	public static final String HEADER_FTP_FILENAME = "X-FtpFilename";
 
-  public static final String HEADER_WEB_CONFIG = "X-WebConfig";
-  public static final String HEADER_MINIO_CONFIG = "X-MinioConfig";
+	public static final String HEADER_WEB_CONFIG = "X-WebConfig";
+	public static final String HEADER_MINIO_CONFIG = "X-MinioConfig";
 
-  @Override
-  public void configure() {
+	@Override
+	public void configure() {
 
-    // A generic exception handler.
-    onException(Exception.class)
-        .setProperty(PROPERTY_EXCEPTION_MESSAGE, simple("${exception.message}"))
-        .to("direct:fail");
+		// A generic exception handler.
+		onException(Exception.class)
+			.setProperty(PROPERTY_EXCEPTION_MESSAGE, simple("${exception.message}"))
+			.to("direct:fail");
 
-    // @formatter:off
+		// @formatter:off
 
     // Caches a specific provisioning package.
     // The body of the incoming message to this route should contain the provisioning package id.
@@ -191,6 +191,6 @@ public class ProvisioningRoutes extends RouteBuilder {
         .log(LoggingLevel.DEBUG, log, "Caching finished successfully.");
 
   // @formatter:on
-  }
+	}
 }
 

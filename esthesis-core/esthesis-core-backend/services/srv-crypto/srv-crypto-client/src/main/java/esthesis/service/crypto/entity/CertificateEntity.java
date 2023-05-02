@@ -3,9 +3,9 @@ package esthesis.service.crypto.entity;
 import esthesis.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.time.Instant;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,29 +19,29 @@ import lombok.experimental.Accessors;
 @MongoEntity(collection = "Certificate")
 public class CertificateEntity extends BaseEntity {
 
-  @NotNull
-  @Size(max = 256)
-  private String cn;
+	@NotNull
+	@Size(max = 256)
+	private String cn;
 
-  private Instant issued;
+	private Instant issued;
 
-  @NotNull
-  private Instant validity;
+	@NotNull
+	private Instant validity;
 
-  private String publicKey;
+	private String publicKey;
 
-  private String privateKey;
+	private String privateKey;
 
-  private String certificate;
+	private String certificate;
 
-  private String san;
+	private String san;
 
-  private String issuer;
+	private String issuer;
 
-  // A name to identify this certificate by. This information is not part of the information
-  // stored inside the certificate.
-  @NotNull
-  @Size(max = 256)
-  private String name;
+	// A name to identify this certificate by. This information is not part of the information
+	// stored inside the certificate.
+	@NotNull
+	@Size(max = 256)
+	private String name;
 
 }

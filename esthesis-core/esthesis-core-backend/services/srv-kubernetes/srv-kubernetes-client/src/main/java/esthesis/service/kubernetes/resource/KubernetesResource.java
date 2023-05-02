@@ -2,10 +2,10 @@ package esthesis.service.kubernetes.resource;
 
 import esthesis.service.kubernetes.dto.PodInfoDTO;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
 import java.util.List;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
@@ -14,11 +14,11 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 @RegisterProvider(AccessTokenRequestReactiveFilter.class)
 public interface KubernetesResource {
 
-  @POST
-  @Path("/v1/pod/start")
-  Boolean schedulePod(PodInfoDTO podInfoDTO);
+	@POST
+	@Path("/v1/pod/start")
+	Boolean schedulePod(PodInfoDTO podInfoDTO);
 
-  @GET
-  @Path("/v1/namespaces")
-  List<String> getNamespaces();
+	@GET
+	@Path("/v1/namespaces")
+	List<String> getNamespaces();
 }

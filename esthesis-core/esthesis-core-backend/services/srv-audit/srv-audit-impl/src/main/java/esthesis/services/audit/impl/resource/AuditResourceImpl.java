@@ -11,61 +11,61 @@ import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.services.audit.impl.service.AuditService;
-import javax.inject.Inject;
-import javax.ws.rs.BeanParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.BeanParam;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 public class AuditResourceImpl implements AuditResource {
 
-  @Inject
-  JsonWebToken jwt;
+	@Inject
+	JsonWebToken jwt;
 
-  @Inject
-  AuditService auditService;
+	@Inject
+	AuditService auditService;
 
-  @GET
-  @Override
-  @Path("/v1/find")
-  @Audited(cat = Category.AUDIT, op = Operation.READ, msg = "Search audit",
-      log = AuditLogType.DATA_IN)
-  @JSONReplyFilter(filter = "content,content.id,content.createdOn,content.createdBy,"
-      + "content.operation,content.category,content.message")
-  public Page<AuditEntity> find(@BeanParam Pageable pageable) {
-    return auditService.find(pageable);
-  }
+	@GET
+	@Override
+	@Path("/v1/find")
+	@Audited(cat = Category.AUDIT, op = Operation.READ, msg = "Search audit",
+		log = AuditLogType.DATA_IN)
+	@JSONReplyFilter(filter = "content,content.id,content.createdOn,content.createdBy,"
+		+ "content.operation,content.category,content.message")
+	public Page<AuditEntity> find(@BeanParam Pageable pageable) {
+		return auditService.find(pageable);
+	}
 
-  @Override
-  public Category[] getCategories() {
-    return Security.Category.values();
-  }
+	@Override
+	public Category[] getCategories() {
+		return Security.Category.values();
+	}
 
-  @Override
-  public Operation[] getOperations() {
-    return Operation.values();
-  }
+	@Override
+	public Operation[] getOperations() {
+		return Operation.values();
+	}
 
-  @Override
-  @Audited(cat = Category.AUDIT, op = Operation.READ, msg = "View audit entry")
-  public AuditEntity findById(String id) {
-    return auditService.findById(id);
-  }
+	@Override
+	@Audited(cat = Category.AUDIT, op = Operation.READ, msg = "View audit entry")
+	public AuditEntity findById(String id) {
+		return auditService.findById(id);
+	}
 
-  @Override
-  @Audited(cat = Category.AUDIT, op = Operation.READ, msg = "Delete audit entry")
-  public Response delete(String id) {
-    if (auditService.deleteById(id)) {
-      return Response.ok().build();
-    } else {
-      return Response.status(Response.Status.NOT_FOUND).build();
-    }
-  }
+	@Override
+	@Audited(cat = Category.AUDIT, op = Operation.READ, msg = "Delete audit entry")
+	public Response delete(String id) {
+		if (auditService.deleteById(id)) {
+			return Response.ok().build();
+		} else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
 
-  @Override
-  public AuditEntity save(AuditEntity auditEntity) {
-    return auditService.save(auditEntity);
-  }
+	@Override
+	public AuditEntity save(AuditEntity auditEntity) {
+		return auditService.save(auditEntity);
+	}
 
 }
