@@ -1,88 +1,184 @@
 # Kubernetes
 
 esthesis CORE can be deployed on Kubernetes using the publicly available Helm charts. The Helm
-charts
-are available on the [TBC].
+charts are available on the [TBC].
 
 esthesis CORE comes with a variety of different Helm charts. Some of the provided Helm charts
-pertain
-to mandatory components, while others are optional. During the installation you can choose which
+pertain to mandatory components, while others are optional. During the installation you can choose which
 components you want to install by enabling the relevant configuration options. You can also choose
 to use already existing resources, such as a database or a message broker, instead of the
-ones provided by the Helm charts.
+ones provided in the Helm charts.
 
-Please note that the default Helm charts come with reasonable defaults; we strongly advise to
+Please note that Helm charts come with reasonable defaults; we strongly advise to
 review them, so you can customize them to your needs.
 
 ## Requirements
-- A Kubernetes cluster with a minimum of 3 nodes. [TBC]
-- An Ingress controller available in your Kubernetes cluster. [TBC]
-- A terminating TLS Load Balancer. [TBC]
+- A Kubernetes cluster with a minimum of 3 nodes.
+- [Helm 3](https://helm.sh)
+- [Helmfile](https://github.com/helmfile/helmfile)
 
-## Installation
+## Configuration parameters
+The following parameters can be defined as environmental variables during installation:
 
-You can install esthesis CORE using the `esthesis-core` Helm chart as:
+### General
+🔹 `TIMEZONE`\
+The containers timezone to set (note, some containers do not respect this setting).\
+Default: `Europe/Athens`
 
-```shell
-helm repo add esthesis https://charts.esthes.is
-helm install esthesis-core esthesis/esthesis-core
+🔹 `ESTHESIS_LOG_LEVEL`\
+The log level to be used for the esthesis components (i.e. does not affect third-party components
+installed by the Helm chart).\
+Default: `WARN`
+
+### Accounts
+🔹 `ESTHESIS_ADMIN_USERNAME`\
+The username of the esthesis administrator user. Use this account to connect to esthesis UI after installation is done.\
+Default: `esthesis-admin`
+
+🔹 `ESTHESIS_ADMIN_PASSWORD`\
+The password of the esthesis administrator user.\
+Default: `esthesis-admin`
+
+🔹 `ESTHESIS_SYSTEM_USERNAME`\
+The username of the esthesis system user. This is the user being used for esthesis inter-component
+communication, as well as the default username for all other third-party products installed by the
+Helm charts.\
+Default: `esthesis-system`
+
+🔹 `ESTHESIS_SYSTEM_PASSWORD`\
+The password of the esthesis system user.\
+Default: `esthesis-system`
+
+### Keycloak
+🔹 `KEYCLOAK_ENABLED`\
+Whether Keycloak should be installed by this chart or not.\
+Default: `true`
+
+🔹 `KEYCLOAK_INGRESS_HOSTNAME`\
+The hostname of the ingress rule that will be created for Keycloak\
+Default: `keycloak.esthesis.local`
+
+### MongoDB
+🔹 `MONGODB_ENABLED`\
+Whether MongoDB should be installed by this chart or not.\
+Default: `true`
+
+🔹 `MONGODB_URL_CLUSTER`\
+The internal URL cluster components should use to connect to MongoDB.\
+Default: `mongodb://mongodb:27017`
+
+🔹 `MONGODB_DATABASE`\
+The database name to use.\
+Default: `esthesiscore`
+
+🔹 `MONGODB_USERNAME`\
+The username to authenticate with.\
+Default: As specified in `ESTHESIS_SYSTEM_USERNAME`
+
+🔹 `MONGODB_PASSWORD`\
+The password to authenticate with.\
+Default: As specified in `ESTHESIS_SYSTEM_PASSWORD`
+
+### APISIX
+🔹 `APISIX_ENABLED`\
+Whether APISIX should be installed by this chart or not.\
+Default: `true`
+
+APISIX_INGRESS_NAMESPACE
+
+### OpenID Connect
+🔹 `OIDC_AUTHORITY_URL_EXTERNAL`\
+The URL of the OpenID Connect authority to use for external connections. This URL should be accessible
+from the end-user's Internet browser using esthesis UI.\
+Default: `https://keycloak.esthesis.local/realms/esthesis`
+
+🔹 `OIDC_AUTHORITY_URL_CLUSTER`\
+The URL of the OpenID Connect authority to use for internal connections. This URL should be accessible
+from components running inside the Kubernetes cluster.\
+Default: `http://keycloak/realms/esthesis`
+
+🔹 `OIDC_DISCOVERY_URL_CLUSTER`\
+The URL of the OpenID Connect discovery endpoint to use for internal connections. This URL should be
+accessible from components running inside the Kubernetes cluster.\
+Default: `http://keycloak/realms/esthesis/.well-known/openid-configuration`
+
+🔹 `OIDC_JWT_VERIFY_LOCATION_CLUSTER`\
+The URL of the OpenID Connect JWT verification endpoint to use for internal connections. This URL
+should be accessible from components running inside the Kubernetes cluster.\
+Default: `http://keycloak/realms/esthesis/protocol/openid-connect/certs`
+
+### esthesis UI
+🔹 `ESTHESIS_UI_INGRESS_HOSTNAME`\
+The hostname of the ingress rule that will be created for esthesis UI.\
+Default: `esthesiscore.esthesis.local`
+
+🔹 `ESTHESIS_UI_LOGOUT_URL`\
+The URL to redirect to after logging out from esthesis UI.\
+Default: `/logout`
+
+### Redis
+🔹 `REDIS_ENABLED`\
+Whether Redis should be installed by this chart or not.\
+Default: `true`
+
+🔹 `REDIS_HOSTS`\
+The list of Redis hosts to use. This URL should be accessible from components running inside the
+Kubernetes cluster.\
+Default: `redis-master:6379/0`
+
+### RabbitMQ
+🔹 `RABBITMQ_ENABLED`\
+Whether RabbitMQ should be installed by this chart or not.\
+Default: `true`
+
+🔹 `rabbitmqErlangCookie`\
+The Erlang cookie to use for RabbitMQ.\
+Default: `esthesis`
+
+### Kafka
+🔹 `KAFKA_ENABLED`\
+Whether Kafka should be installed by this chart or not.\
+Default: `true`
+
+🔹 `KAFKA_BOOTSTRAP_SERVERS`\
+The list of Kafka bootstrap servers to use. This URL should be accessible from components running
+inside the Kubernetes cluster.\
+Default: `kafka:9092`
+
+### Camunda
+🔹 `CAMUNDA_ENABLED`\
+Whether Camunda should be installed by this chart or not.\
+Default: `true`
+
+🔹 `CAMUNDA_GATEWAY_URL_CLUSTER`\
+The URL of the Camunda gateway to use for internal connections. This URL should be accessible from
+components running inside the Kubernetes cluster.\
+Default: `camunda-zeebe-gateway:26500`
+
+## Examples
+### Microk8s
+#### Additional configuration parameters
+🔹 `MK8S_EXPOSE_INGRESS`\
+Exposes the default ingress (NGINX) by creating a LoadBalancer type service.\
+Default: `false`
+
+🔹 `MK8S_INGRESS_NAMESPACE`\
+The namespace to use for the default ingress (NGINX).\
+Default: `ingress`
+
+#### Installation example
 ```
-
-> ⚠️ **Keycloak config**
->
-> Due to technical limitations, if you opt to use a different release name, you need to specify
-> the following value:\
-> `--set keycloak.keycloakConfigCli.existingConfigMap={YOUR-RELEASE-NAME}-keycloak-config`
-
-[TBC] - Can we catch this in Helm an abort the deployment with a message?
-
-> ⚠️ **Changing passwords**
->
-> The above chart will install all required components for esthesis CORE using default values
-> that you should modify before allowing external access to your installation, especially account
-> passwords. Unfortunately, there is no easy way to define a global username/password pair and
-> have that propagate to the third-party Helm subcharts we use (unless using tools external to
-> Helm), so for
-> convenience here is the list of all possible account names and passwords you can (should) change:
->
-> ```shell
-> NAMESPACE=esthesis-prod && \
-> RELEASE_NAME=esthesis-core && \
-> THIRD_PARTY_ADMIN_USERNAME=kostas && \
-> THIRD_PARTY_ADMIN_PASSWORD=kostas && \
-> ESTHESIS_ADMIN_USERNAME=kostas-admin && \
-> ESTHESIS_ADMIN_PASSWORD=kostas && \
-> ESTHESIS_SYSTEM_USERNAME=kostas-system && \
-> ESTHESIS_SYSTEM_PASSWORD=kostas && \
-> DOMAIN=$RELEASE_NAME.local && \
-> helm -n $NAMESPACE upgrade --install $RELEASE_NAME . \
-> 	--set esthesis.auth.adminUsername="$ESTHESIS_ADMIN_USERNAME" \
-> 	--set esthesis.auth.adminPassword="$ESTHESIS_ADMIN_PASSWORD" \
-> 	--set esthesis.auth.systemUsername="$ESTHESIS_SYSTEM_USERNAME" \
-> 	--set esthesis.auth.systemPassword="$ESTHESIS_SYSTEM_PASSWORD" \
-> 	--set esthesis.auth.thirdParty.adminUsername="$THIRD_PARTY_ADMIN_USERNAME" \
-> 	--set esthesis.auth.thirdParty.adminPassword="$THIRD_PARTY_ADMIN_PASSWORD" \
-> 	--set esthesis.ui.ingress.hostname="ui.$DOMAIN" \
-> 	--set keycloak.auth.adminUser="$THIRD_PARTY_ADMIN_USERNAME" \
-> 	--set keycloak.auth.adminPassword="$THIRD_PARTY_ADMIN_PASSWORD" \
-> 	--set keycloak.auth.managementPassword="$THIRD_PARTY_ADMIN_PASSWORD" \
-> 	--set keycloak.postgresql.auth.postgresPassword="$THIRD_PARTY_ADMIN_PASSWORD" \
-> 	--set keycloak.postgresql.auth.password="$THIRD_PARTY_ADMIN_PASSWORD" \
->		--set keycloak.ingress.hostname="keycloak.$DOMAIN" \
-> 	--set mongodb.auth.rootUser="$THIRD_PARTY_ADMIN_USERNAME" \
-> 	--set mongodb.auth.rootPassword="$THIRD_PARTY_ADMIN_PASSWORD" \
-> 	--set "mongodb.auth.usernames[0]"="$ESTHESIS_SYSTEM_USERNAME" \
-> 	--set "mongodb.auth.passwords[0]"="$ESTHESIS_SYSTEM_PASSWORD" \
-> 	--set mongodb.initdbScriptsConfigMap="$RELEASE_NAME-mongodb-init-cm" \
-> 	--set apisix.admin.credentials.admin="$THIRD_PARTY_ADMIN_PASSWORD" \
-> 	--set apisix.admin.credentials.viewer="$THIRD_PARTY_ADMIN_USERNAME" \
->		--set apisix.ingress-controller.config.apisix.serviceFullname="$RELEASE_NAME-apisix-admin" \
-> 	--set apisix.ingress-controller.config.apisix.adminKey="$THIRD_PARTY_ADMIN_PASSWORD" \
-> 	--set "apisix.dashboard.config.conf.etc.endpoints[0]"="$RELEASE_NAME-etc:2379" \
-> 	--set apisix.dashboard.config.conf.authentication.secret="$THIRD_PARTY_ADMIN_PASSWORD" \
-> 	--set "apisix.dashboard.config.authentication.users[0].username"="$THIRD_PARTY_ADMIN_USERNAME" \
-> 	--set "apisix.dashboard.config.authentication.users[0].password"="$THIRD_PARTY_ADMIN_PASSWORD"
-> ```
+DOMAIN=esthesis-prod.mydomain.com \
+HELMFILE_DEV_MODE=true \
+KEYCLOAK_INGRESS_HOSTNAME=keycloak.$DOMAIN  \
+ESTHESIS_UI_INGRESS_HOSTNAME=esthesis-core.$DOMAIN  \
+OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_HOSTNAME/realms/esthesis"  \
+OIDC_AUTHORITY_URL_CLUSTER="http://keycloak/realms/esthesis"  \
+OIDC_DISCOVERY_URL_CLUSTER="http://keycloak/realms/esthesis/.well-known/openid-configuration"  \
+OIDC_JWT_VERIFY_LOCATION_CLUSTER="http://keycloak/realms/esthesis/protocol/openid-connect/certs" \
+MK8S_EXPOSE_INGRESS=true \
+helmfile apply
+```
 
 > ⚠️ **Exposing the service**
 >
