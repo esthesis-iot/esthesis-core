@@ -1,0 +1,203 @@
+# Kubernetes
+
+esthesis CORE can be deployed on Kubernetes using the publicly available Helm charts. The Helm
+charts are available on the [TBC].
+
+esthesis CORE comes with a variety of different Helm charts. Some of the provided Helm charts
+pertain to mandatory components, while others are optional. During the installation you can choose which
+components you want to install by enabling the relevant configuration options. You can also choose
+to use already existing resources, such as a database or a message broker, instead of the
+ones provided in the Helm charts.
+
+Please note that Helm charts come with reasonable defaults; we strongly advise to
+review them, so you can customize them to your needs.
+
+## Requirements
+- A Kubernetes cluster with a minimum of 3 nodes.
+- [Helm 3](https://helm.sh)
+- [Helmfile](https://github.com/helmfile/helmfile)
+
+## Configuration parameters
+The following parameters can be defined as environmental variables during installation:
+
+### General
+🔹 `TIMEZONE`<br/>
+The containers timezone to set (note, some containers do not respect this setting).<br/>
+Default: `Europe/Athens`
+
+🔹 `ESTHESIS_LOG_LEVEL`<br/>
+The log level to be used for the esthesis components (i.e. does not affect third-party components
+installed by the Helm chart).<br/>
+Default: `WARN`
+
+### Accounts
+🔹 `ESTHESIS_ADMIN_USERNAME`<br/>
+The username of the esthesis administrator user. Use this account to connect to esthesis UI after installation is done.<br/>
+Default: `esthesis-admin`
+
+🔹 `ESTHESIS_ADMIN_PASSWORD`<br/>
+The password of the esthesis administrator user.<br/>
+Default: `esthesis-admin`
+
+🔹 `ESTHESIS_SYSTEM_USERNAME`<br/>
+The username of the esthesis system user. This is the user being used for esthesis inter-component
+communication, as well as the default username for all other third-party products installed by the
+Helm charts.<br/>
+Default: `esthesis-system`
+
+🔹 `ESTHESIS_SYSTEM_PASSWORD`<br/>
+The password of the esthesis system user.<br/>
+Default: `esthesis-system`
+
+### Keycloak
+🔹 `KEYCLOAK_ENABLED`<br/>
+Whether Keycloak should be installed by this chart or not.<br/>
+Default: `true`
+
+🔹 `KEYCLOAK_INGRESS_HOSTNAME`<br/>
+The hostname of the ingress rule that will be created for Keycloak\
+Default: `keycloak.esthesis.local`
+
+### MongoDB
+🔹 `MONGODB_ENABLED`<br/>
+Whether MongoDB should be installed by this chart or not.<br/>
+Default: `true`
+
+🔹 `MONGODB_URL_CLUSTER`<br/>
+The internal URL cluster components should use to connect to MongoDB.<br/>
+Default: `mongodb://mongodb:27017`
+
+🔹 `MONGODB_DATABASE`<br/>
+The database name to use.<br/>
+Default: `esthesiscore`
+
+🔹 `MONGODB_USERNAME`<br/>
+The username to authenticate with.<br/>
+Default: As specified in `ESTHESIS_SYSTEM_USERNAME`
+
+🔹 `MONGODB_PASSWORD`<br/>
+The password to authenticate with.<br/>
+Default: As specified in `ESTHESIS_SYSTEM_PASSWORD`
+
+### APISIX
+🔹 `APISIX_ENABLED`<br/>
+Whether APISIX should be installed by this chart or not.<br/>
+Default: `true`
+
+🔹 `APISIX_INGRESS_NAMESPACE`<br/>
+The namespace to monitor for ingress rules.<br/>
+Default: (empty, all namespaces are monitored)
+
+### OpenID Connect
+🔹 `OIDC_AUTHORITY_URL_EXTERNAL`<br/>
+The URL of the OpenID Connect authority to use for external connections. This URL should be accessible
+from the end-user's Internet browser using esthesis UI.<br/>
+Default: `https://keycloak.esthesis.local/realms/esthesis`
+
+🔹 `OIDC_AUTHORITY_URL_CLUSTER`<br/>
+The URL of the OpenID Connect authority to use for internal connections. This URL should be accessible
+from components running inside the Kubernetes cluster.<br/>
+Default: `http://keycloak/realms/esthesis`
+
+🔹 `OIDC_DISCOVERY_URL_CLUSTER`<br/>
+The URL of the OpenID Connect discovery endpoint to use for internal connections. This URL should be
+accessible from components running inside the Kubernetes cluster.<br/>
+Default: `http://keycloak/realms/esthesis/.well-known/openid-configuration`
+
+🔹 `OIDC_JWT_VERIFY_LOCATION_CLUSTER`<br/>
+The URL of the OpenID Connect JWT verification endpoint to use for internal connections. This URL
+should be accessible from components running inside the Kubernetes cluster.<br/>
+Default: `http://keycloak/realms/esthesis/protocol/openid-connect/certs`
+
+### esthesis UI
+🔹 `ESTHESIS_UI_INGRESS_HOSTNAME`<br/>
+The hostname of the ingress rule that will be created for esthesis UI.<br/>
+Default: `esthesiscore.esthesis.local`
+
+🔹 `ESTHESIS_UI_LOGOUT_URL`<br/>
+The URL to redirect to after logging out from esthesis UI.<br/>
+Default: `/logout`
+
+### Redis
+🔹 `REDIS_ENABLED`<br/>
+Whether Redis should be installed by this chart or not.<br/>
+Default: `true`
+
+🔹 `REDIS_HOSTS`<br/>
+The list of Redis hosts to use. This URL should be accessible from components running inside the
+Kubernetes cluster.<br/>
+Default: `redis-master:6379/0`
+
+### RabbitMQ
+🔹 `RABBITMQ_ENABLED`<br/>
+Whether RabbitMQ should be installed by this chart or not.<br/>
+Default: `true`
+
+🔹 `rabbitmqErlangCookie`<br/>
+The Erlang cookie to use for RabbitMQ.<br/>
+Default: `esthesis`
+
+### Kafka
+🔹 `KAFKA_ENABLED`<br/>
+Whether Kafka should be installed by this chart or not.<br/>
+Default: `true`
+
+🔹 `KAFKA_BOOTSTRAP_SERVERS`<br/>
+The list of Kafka bootstrap servers to use. This URL should be accessible from components running
+inside the Kubernetes cluster.<br/>
+Default: `kafka:9092`
+
+### Camunda
+🔹 `CAMUNDA_ENABLED`<br/>
+Whether Camunda should be installed by this chart or not.<br/>
+Default: `true`
+
+🔹 `CAMUNDA_GATEWAY_URL_CLUSTER`<br/>
+The URL of the Camunda gateway to use for internal connections. This URL should be accessible from
+components running inside the Kubernetes cluster.<br/>
+Default: `camunda-zeebe-gateway:26500`
+
+## Examples
+To execute the following examples in your Kubernetes cluster you first need to obtain the Helmfile corresponding to the esthesis version you want to install. For example:
+```shell
+curl -L https://esthesis.is/helm/esthesis-core-helmfile-3.0.0.yaml -o helmfile.yaml
+```
+
+### Microk8s
+#### Additional configuration parameters
+🔹 `MK8S_EXPOSE_INGRESS`<br/>
+Exposes the default ingress (NGINX) by creating a LoadBalancer type service.<br/>
+Default: `false`
+
+🔹 `MK8S_INGRESS_NAMESPACE`<br/>
+The namespace to use for the default ingress (NGINX).<br/>
+Default: `ingress`
+
+#### Installation example
+Using the built-in NGINX ingress:
+```
+DOMAIN=esthesis-prod.mydomain.com \
+KEYCLOAK_INGRESS_HOSTNAME=keycloak.$DOMAIN  \
+ESTHESIS_UI_INGRESS_HOSTNAME=esthesis-core.$DOMAIN  \
+OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_HOSTNAME/realms/esthesis"  \
+OIDC_AUTHORITY_URL_CLUSTER="http://keycloak/realms/esthesis"  \
+OIDC_DISCOVERY_URL_CLUSTER="http://keycloak/realms/esthesis/.well-known/openid-configuration"  \
+OIDC_JWT_VERIFY_LOCATION_CLUSTER="http://keycloak/realms/esthesis/protocol/openid-connect/certs" \
+MK8S_EXPOSE_INGRESS=true \
+helmfile sync
+```
+
+### K3s
+
+#### Installation example
+Using the built-in Traefik ingress:
+```
+DOMAIN=esthesis-prod.mydomain.com \
+KEYCLOAK_INGRESS_HOSTNAME=keycloak.$DOMAIN  \
+ESTHESIS_UI_INGRESS_HOSTNAME=esthesis-core.$DOMAIN  \
+OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_HOSTNAME/realms/esthesis"  \
+OIDC_AUTHORITY_URL_CLUSTER="http://keycloak/realms/esthesis"  \
+OIDC_DISCOVERY_URL_CLUSTER="http://keycloak/realms/esthesis/.well-known/openid-configuration"  \
+OIDC_JWT_VERIFY_LOCATION_CLUSTER="http://keycloak/realms/esthesis/protocol/openid-connect/certs" \
+helmfile sync
+```

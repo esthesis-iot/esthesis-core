@@ -8,14 +8,16 @@ quarkus:
     handler:
       gelf:
         enabled: true
-        host: esthesis-dev-loki-gelf-udp
+        host: grafana-loki-gelf
         port: 12201
         include-full-mdc: true
-  opentelemetry:
-    enabled: true
-    tracer:
-      exporter:
-        otlp:
-          endpoint: http://esthesis-dev-jaeger-collector-grpc:4317
+        skip-hostname-resolution: true
+  otel:
+    traces:
+      sampler: always_on
+    exporter:
+      otlp:
+        traces:
+          endpoint: http://grafana-tempo-distributor:4317
   config:
     locations: "../../../../setup/dev/profiles"

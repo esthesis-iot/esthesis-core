@@ -6,6 +6,7 @@ if [ "$1" != "" ]; then
   echo "Activating profiles: $PROFILES"
 fi
 
+cd srv-application-impl || exit
 ./mvnw quarkus:dev \
   -Dquarkus.http.port=59090 \
   -Ddebug=59091 \

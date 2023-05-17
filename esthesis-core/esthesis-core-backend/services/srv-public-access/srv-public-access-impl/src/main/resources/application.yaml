@@ -11,8 +11,6 @@ quarkus:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
   banner:
     enabled: false
-  opentelemetry:
-    enabled: false
 
 esthesis:
   oidc:
@@ -25,6 +23,6 @@ esthesis:
     max-id-token-iat-offset-allowed-in-seconds: 10
     ignore-nonce-after-refresh: true
     secure-routes: [ "/api" ]
-    authority: "http://esthesis-dev-keycloak/realms/esthesis"
-    redirect-url: "http://localhost:4200/callback"
-    post-logout-redirect-uri: "http://localhost:4200/logout"
+#    authority: "http://esthesis-dev-keycloak/realms/esthesis"
+#    redirect-url: "http://localhost:4200/callback"
+#    post-logout-redirect-uri: "http://localhost:4200/logout"

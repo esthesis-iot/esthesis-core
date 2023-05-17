@@ -6,8 +6,8 @@ if [ "$1" != "" ]; then
   echo "Activating profiles: $PROFILES"
 fi
 
+cd srv-agent-impl || exit
 ./mvnw quarkus:dev \
-  -Dquarkus.http.port=59030 \
-  -Ddebug=59031 \
-  -Dredis.url=redis://esthesis-dev-redis:6379/0 \
+  -Dquarkus.http.port=59070 \
+  -Ddebug=59071 \
   -Dquarkus.profile="$PROFILES"

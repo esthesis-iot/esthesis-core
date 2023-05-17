@@ -53,7 +53,6 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
         title: 'esthesis CORE',
@@ -104,8 +103,6 @@ const config = {
             position: 'left',
             label: 'UNS',
           },
-
-
           {
             href: 'https://esthes.is',
             label: 'Website',
@@ -122,46 +119,54 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Docs',
+            title: 'Products',
             items: [
-              {
-                label: 'Tutorial',
-                to: '/docs/intro',
-              },
+              { label: 'esthesis Core', to: 'https://esthes.is' },
+              { label: 'esthesis Edge', to: 'https://esthes.is' },
+              { label: 'esthesis Gateway', to: 'https://esthes.is' },
+              { label: 'esthesis UNS', to: 'https://esthes.is' },
+            ],
+          },
+					{
+            title: 'Documentation',
+            items: [
+              { label: 'esthesis Core', to: 'https://esthes.is' },
+              { label: 'esthesis Edge', to: 'https://esthes.is' },
+              { label: 'esthesis Gateway', to: 'https://esthes.is' },
+              { label: 'esthesis UNS', to: 'https://esthes.is' },
+            ],
+          },
+					{
+            title: 'Tutorials',
+            items: [
+              { label: 'esthesis YouTube', to: 'https://esthes.is' },
             ],
           },
           {
-            title: 'Community',
-            items: [
-              {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-              },
-              {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
-              },
-              {
-                label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
-              },
-            ],
-          },
-          {
-            title: 'More',
+            title: 'Social',
             items: [
               {
                 label: 'Blog',
                 to: '/blog',
               },
               {
-                label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                label: 'Twitter',
+                to: 'https://twitter.com',
+              },
+							{
+                label: 'YouTube',
+                to: 'https://youtube.com',
               },
             ],
           },
+					{
+						title: 'Contact',
+						items: [
+							{ label: 'Contact page', to: 'https://www.eurodyn.com/contact' },
+						],
+					},
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} European Dynamics SA`,
+        copyright: `<div><a href="https://www.eurodyn.com" target="_blank">European Dynamics</a> &copy; ${new Date().getFullYear()}</div>`,
       },
       prism: {
         theme: lightCodeTheme,

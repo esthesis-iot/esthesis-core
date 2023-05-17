@@ -29,7 +29,7 @@ to the following resources:
     name: esthesis-pool
   spec:
     addresses:
-    - 192.168.21.1-192.168.21.254
+    - 192.168.50.1-192.168.51.254
   ---
   apiVersion: metallb.io/v1beta1
   kind: L2Advertisement
@@ -104,7 +104,7 @@ access to it.
 
 Esthesis provides a variety of Helm Charts to cater to the needs of different installation
 environments. As a developer, you need access to all possible services to be able to develop and
-test across all possible deployment scenarios. Services can be installed using the provided Helm 
+test across all possible deployment scenarios. Services can be installed using the provided Helm
 charts as presented below.
 
 Please note that some Helm charts will instruct you to update your local `hosts` file. This is to

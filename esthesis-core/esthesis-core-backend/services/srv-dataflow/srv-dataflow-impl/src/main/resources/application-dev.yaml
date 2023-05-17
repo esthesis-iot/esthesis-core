@@ -12,19 +12,25 @@ quarkus:
     handler:
       gelf:
         enabled: true
-        host: esthesis-dev-loki-gelf-udp
+        host: "gelf-ingester.esthesis.localdev"
         port: 12201
         include-full-mdc: true
+        skip-hostname-resolution: true
   mongodb:
-    connection-string: mongodb://esthesis-dev-mongodb:27017
-  opentelemetry:
-    enabled: true
-    tracer:
-      exporter:
-        otlp:
-          endpoint: http://esthesis-dev-jaeger-collector-grpc:4317
+    connection-string: mongodb://mongodb.esthesis.localdev:27017
+    database: esthesiscore
+    credentials:
+      username: esthesis-system
+      password: esthesis-system
+  otel:
+    traces:
+      sampler: always_on
+    exporter:
+      otlp:
+        traces:
+          endpoint: http://otel-ingester.esthesis.localdev:4317
   config:
-    locations: "../../../../setup/dev/profiles"
+    locations: "../../../../_dev/profiles"
   rest-client:
     SettingsResource:
       url: http://localhost:59030
@@ -47,4 +53,4 @@ mp:
 kafka:
   bootstrap:
     servers:
-      - esthesis-dev-kafka:9094
+      - kafka.esthesis.localdev:9094
