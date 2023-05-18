@@ -47,8 +47,6 @@ quarkus:
       url: http://localhost:59080
       scope: Singleton
   zeebe:
-    opentelemetry:
-      enabled: true
     client:
       broker:
         gateway-address: camunda-zeebe-gateway.esthesis.localdev:26500

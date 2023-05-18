@@ -23,8 +23,6 @@ quarkus:
   banner:
     enabled: false
   zeebe:
-    opentelemetry:
-      enabled: false
     devservices:
       enabled: false
     client:

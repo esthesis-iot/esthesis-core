@@ -24,8 +24,6 @@ quarkus:
             value: ${quarkus.application.name}
   banner:
     enabled: false
-  opentelemetry:
-    enabled: false
   oidc-client:
     client-id: esthesis
     grant:
