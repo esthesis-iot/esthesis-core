@@ -13,12 +13,12 @@ Please note that Helm charts come with reasonable defaults; we strongly advise t
 review them, so you can customize them to your needs.
 
 ## Requirements
-- A Kubernetes cluster with a minimum of 3 nodes.
+- A Kubernetes cluster with a minimum of 3 nodes and support for Load Balancer service types.
 - [Helm 3](https://helm.sh)
 - [Helmfile](https://github.com/helmfile/helmfile)
 
 ## Configuration parameters
-The following parameters can be defined as environmental variables during installation:
+<details><summary>The following parameters can be defined as environmental variables during installation:</summary>
 
 ### General
 🔹 `TIMEZONE`<br/>
@@ -128,14 +128,10 @@ The list of Redis hosts to use. This URL should be accessible from components ru
 Kubernetes cluster.<br/>
 Default: `redis-master:6379/0`
 
-### RabbitMQ
-🔹 `RABBITMQ_ENABLED`<br/>
-Whether RabbitMQ should be installed by this chart or not.<br/>
+### Mosquitto
+🔹 `MOSQUITTO_ENABLED`<br/>
+Whether Mosquitto should be installed by this chart or not.<br/>
 Default: `true`
-
-🔹 `rabbitmqErlangCookie`<br/>
-The Erlang cookie to use for RabbitMQ.<br/>
-Default: `esthesis`
 
 ### Kafka
 🔹 `KAFKA_ENABLED`<br/>
@@ -157,14 +153,7 @@ The URL of the Camunda gateway to use for internal connections. This URL should 
 components running inside the Kubernetes cluster.<br/>
 Default: `camunda-zeebe-gateway:26500`
 
-## Examples
-To execute the following examples in your Kubernetes cluster you first need to obtain the Helmfile corresponding to the esthesis version you want to install. For example:
-```shell
-curl -L https://esthesis.is/helm/esthesis-core-helmfile-3.0.0.yaml -o helmfile.yaml
-```
-
 ### Microk8s
-#### Additional configuration parameters
 🔹 `MK8S_EXPOSE_INGRESS`<br/>
 Exposes the default ingress (NGINX) by creating a LoadBalancer type service.<br/>
 Default: `false`
@@ -172,6 +161,33 @@ Default: `false`
 🔹 `MK8S_INGRESS_NAMESPACE`<br/>
 The namespace to use for the default ingress (NGINX).<br/>
 Default: `ingress`
+</details>
+
+## Installation
+esthesis Core comes in two Helm charts, one installing all the required dependencies and another one
+installing the application components. You can enable/disable which specific dependencies you want
+to install by setting the corresponding `*_ENABLED` parameter to `true` or `false`. Do note that
+although the provided dependencies are adequate to have esthesis Core running, you might want to
+tune their properties or replace them altogether with your own resources to support your specific
+production use case.
+
+### Supporting infrastructure
+- Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
+	```shell
+	curl -L https://esthesis.is/helm/helmfile-esthesis-core-deps-3.0.0.yaml -o helmfile-esthesis-core-deps.yaml
+	```
+- Install the Helmfile:
+	```shell
+	helmfile -f helmfile-esthesis-core-deps.yaml sync
+	```
+
+### Application
+
+
+
+### Microk8s
+#### Additional configuration parameters
+
 
 #### Installation example
 Using the built-in NGINX ingress:

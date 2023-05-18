@@ -47,8 +47,8 @@ located in a corporate network, please check with your network administrators fi
 - Update your `hosts` file by executing `hosts-file-entries.sh`.
 
 Note that you need to specify the IP address of your development machine in the `DEV_HOST` environment
-variable. This is needed so that APISIX knows where to forward the requests to (since in `dev` setup
-the services run on your own machine, not in Kubernetes).
+variable. This is needed so that the API gateway (APISIX) knows where to forward the requests to
+(since in `dev` setup the services run on your own machine, not in Kubernetes).
 
 ## Running the services
 The above installation will prepare all the necessary components to support esthesis Core. The actual
@@ -88,6 +88,6 @@ Provided you have successfully updated your `hosts` file, you can access the fol
 
 ## Notes
 
-1. There is a convenience script `destroy` in the root of each helm package. You can use it to fully
+1. There is a convenience script `destroy.sh` in the root of each helm package. You can use it to fully
 erase all installations performed for that particular package together with any additional Kubernetes
 resources that do not get automatically deleted by uninstalling the Helm chart (for example, PVCs).
