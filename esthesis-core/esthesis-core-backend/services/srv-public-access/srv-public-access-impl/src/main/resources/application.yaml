@@ -9,6 +9,17 @@ quarkus:
   log:
     console:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+    handler:
+      gelf:
+        additional-field:
+          "platform":
+            value: "esthesis"
+          "module":
+            value: esthesis-core
+          "type":
+            value: "API"
+          "service":
+            value: ${quarkus.application.name}
   banner:
     enabled: false
 
@@ -23,6 +34,3 @@ esthesis:
     max-id-token-iat-offset-allowed-in-seconds: 10
     ignore-nonce-after-refresh: true
     secure-routes: [ "/api" ]
-#    authority: "http://esthesis-dev-keycloak/realms/esthesis"
-#    redirect-url: "http://localhost:4200/callback"
-#    post-logout-redirect-uri: "http://localhost:4200/logout"

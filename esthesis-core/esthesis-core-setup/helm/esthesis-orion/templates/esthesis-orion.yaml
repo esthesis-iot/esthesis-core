@@ -1,0 +1,67 @@
+####################################################################################################
+# Service
+####################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: orion-service
+spec:
+  selector:
+    app: orion
+  ports:
+    - port: 1026
+  type: LoadBalancer
+
+####################################################################################################
+# Deployment
+####################################################################################################
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orion-deployment
+spec:
+  selector:
+    matchLabels:
+      app: orion
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: orion
+    spec:
+      containers:
+        - name: orion
+          image: fiware/orion:3.8.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 1026
+          args:
+            - -dbhost
+            - mongodb
+            - -logLevel
+            - DEBUG
+            - -noCache
+            - -dbAuthDb
+            - orion
+            - -dbuser
+            - orion
+            - -dbpwd
+            - orion
+            - -db
+            - orion
+          startupProbe:
+            httpGet:
+              path: /version
+              port: 1026
+            periodSeconds: 10
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /version
+              port: 1026
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 2

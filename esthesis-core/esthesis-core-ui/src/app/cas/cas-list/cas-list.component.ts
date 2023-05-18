@@ -3,12 +3,12 @@ import {CaDto} from "../dto/ca-dto";
 import {MatSort} from "@angular/material/sort";
 import {QFormsService} from "@qlack/forms";
 import {CasService} from "../cas.service";
-import {BaseComponent} from "../../shared/components/base-component";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatDialogRef} from "@angular/material/dialog";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-cas-list",
@@ -23,7 +23,8 @@ export class CasListComponent extends SecurityBaseComponent implements OnInit, A
   datasource = new MatTableDataSource<CaDto>();
 
   constructor(private caService: CasService, private qForms: QFormsService,
-    @Optional() private dialogRef: MatDialogRef<CasListComponent>) {
+    @Optional() private dialogRef: MatDialogRef<CasListComponent>,
+    private utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.CA);
   }
 
@@ -46,9 +47,13 @@ export class CasListComponent extends SecurityBaseComponent implements OnInit, A
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     this.caService.find(this.qForms.appendPagingToFilter(null!, page, size, sort, sortDirection))
-    .subscribe(onNext => {
-      this.datasource.data = onNext.content;
-      this.paginator.length = onNext.totalElements;
+    .subscribe({
+      next: onNext => {
+        this.datasource.data = onNext.content;
+        this.paginator.length = onNext.totalElements;
+      }, error: onError => {
+        this.utilityService.popupErrorWithTraceId("Could not fetch CAs.", onError);
+      }
     });
   }
 

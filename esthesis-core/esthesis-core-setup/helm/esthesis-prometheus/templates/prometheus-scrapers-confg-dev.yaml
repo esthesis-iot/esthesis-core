@@ -1,0 +1,40 @@
+{{/*TODO Augment scrapers with all services*/}}
+{{ if .Values.global.devEnv.enabled }}
+{{- $name := .Values.global.devEnv.ip | required ".Values.global.devEnv.ip is required." -}}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: prometheus-scrapers-config
+type: Opaque
+stringData:
+  config.yaml: |-
+    - job_name: "srv-agent"
+      static_configs:
+        - targets: ["{{ .Values.global.devEnv.ip}}:59070"]
+      metrics_path: "/q/metrics"
+    - job_name: "srv-crypto"
+      static_configs:
+        - targets: ["{{ .Values.global.devEnv.ip}}:59040"]
+      metrics_path: "/q/metrics"
+    - job_name: "srv-dataflow"
+      static_configs:
+        - targets: ["{{ .Values.global.devEnv.ip}}:59060"]
+      metrics_path: "/q/metrics"
+    - job_name: "srv-device"
+      static_configs:
+        - targets: ["{{ .Values.global.devEnv.ip}}:59010"]
+      metrics_path: "/q/metrics"
+    - job_name: "srv-kubernetes"
+      static_configs:
+        - targets: ["{{ .Values.global.devEnv.ip}}:59050"]
+      metrics_path: "/q/metrics"
+    - job_name: "srv-settings"
+      static_configs:
+        - targets: ["{{ .Values.global.devEnv.ip}}:59030"]
+      metrics_path: "/q/metrics"
+    - job_name: "srv-tags"
+      static_configs:
+        - targets: ["{{ .Values.global.devEnv.ip}}:59020"]
+      metrics_path: "/q/metrics"
+{{ end }}

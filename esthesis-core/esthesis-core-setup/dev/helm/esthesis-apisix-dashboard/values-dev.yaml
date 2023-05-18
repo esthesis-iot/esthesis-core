@@ -1,9 +1,0 @@
-global:
-  devEnv:
-    enabled: true
-
-apisix-dashboard:
-  service:
-    type: LoadBalancer
-  authentication:
-    expireTime: 86400

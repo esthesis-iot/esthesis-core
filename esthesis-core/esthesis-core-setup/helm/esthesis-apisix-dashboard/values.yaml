@@ -1,0 +1,15 @@
+global:
+  devEnv:
+    enabled: false
+
+apisix-dashboard:
+  config:
+    conf:
+      etcd:
+        endpoints:
+          - apisix-etcd:2379
+    authentication:
+      secret: esthesis
+      users:
+        - username: esthesis
+          password: esthesis

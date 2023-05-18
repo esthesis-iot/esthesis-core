@@ -2,13 +2,13 @@ import {AfterViewInit, Component, Input, OnInit, Optional, ViewChild} from "@ang
 import {MatSort} from "@angular/material/sort";
 import {CertificatesService} from "../certificates.service";
 import {CertificateDto} from "../dto/certificate-dto";
-import {BaseComponent} from "../../shared/components/base-component";
 import {QFormsService} from "@qlack/forms";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatDialogRef} from "@angular/material/dialog";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-certificates-list",
@@ -24,7 +24,8 @@ export class CertificatesListComponent extends SecurityBaseComponent implements 
   datasource = new MatTableDataSource<CertificateDto>();
 
   constructor(private certificateService: CertificatesService, private qForms: QFormsService,
-    @Optional() private dialogRef: MatDialogRef<CertificatesListComponent>) {
+    @Optional() private dialogRef: MatDialogRef<CertificatesListComponent>,
+    private utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.CERTIFICATES);
   }
 
@@ -48,9 +49,13 @@ export class CertificatesListComponent extends SecurityBaseComponent implements 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     this.certificateService.find(
       this.qForms.appendPagingToFilter(null!, page, size, sort, sortDirection))
-    .subscribe(onNext => {
-      this.datasource.data = onNext.content;
-      this.paginator.length = onNext.totalElements;
+    .subscribe({
+      next: onNext => {
+        this.datasource.data = onNext.content;
+        this.paginator.length = onNext.totalElements;
+      }, error: onError => {
+        this.utilityService.popupErrorWithTraceId("Could not fetch certificates.", onError);
+      }
     });
   }
 

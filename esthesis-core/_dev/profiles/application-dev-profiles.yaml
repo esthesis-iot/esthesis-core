@@ -11,7 +11,7 @@
       logging:
         scope: request-response
         body-limit: 65536
-"%debug-mongo":
+"%debug-mongodb":
   quarkus:
     log:
       category:
@@ -37,3 +37,7 @@
       category:
         esthesis:
           level: TRACE
+"%trace-all":
+  quarkus:
+    log:
+      level: TRACE

@@ -11,6 +11,17 @@ quarkus:
   log:
     console:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+    handler:
+      gelf:
+        additional-field:
+          "platform":
+            value: "esthesis"
+          "module":
+            value: esthesis-core
+          "type":
+            value: "API"
+          "service":
+            value: ${quarkus.application.name}
   banner:
     enabled: false
   oidc-client:
@@ -21,3 +32,9 @@ quarkus:
     AuditResource:
       url: http://esthesis-core-srv-audit-service:8080
       scope: Singleton
+
+esthesis:
+  security:
+    admin:
+      username: "esthesis-admin"
+    defaultAdminGroupId: "64180cded7edc1e1200904a0"

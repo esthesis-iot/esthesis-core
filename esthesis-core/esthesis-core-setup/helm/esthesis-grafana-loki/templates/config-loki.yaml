@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: loki-config
+type: Opaque
+stringData:
+  promtail.yaml: |-
+    server:
+      log_level: warn
+      http_listen_port: 8080
+    clients:
+      - url: http://loki-gateway:80/loki/api/v1/push
+    positions:
+      filename: /run/promtail/positions.yaml
+    scrape_configs:
+      - job_name: gelf
+        gelf:
+          listen_address: "0.0.0.0:12201"
+          use_incoming_timestamp: true
+          labels:
+            job: esthesis
+        relabel_configs:
+          - action: replace
+            source_labels:
+              - __gelf_message_host
+            target_label: host
+          - action: replace
+            source_labels:
+              - __gelf_message_level
+            target_label: level
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki-gelf-udp
+spec:
+  {{ if .Values.global.devEnv.enabled }}
+  type: LoadBalancer
+  {{ else }}
+  type: ClusterIP
+  {{ end }}
+  sessionAffinity: None
+  externalTrafficPolicy: "Cluster"
+  loadBalancerSourceRanges: [ ]
+  ports:
+    - name: gelf
+      port: 12201
+      targetPort: 12201
+      protocol: UDP
+  selector:
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: promtail

@@ -1,0 +1,10 @@
+global:
+  devEnv:
+    enabled: false
+
+mysql:
+  auth:
+    rootPassword: esthesis
+    database: esthesis
+    username: esthesis
+    password: esthesis

@@ -12,10 +12,10 @@ import {UtilityService} from "../shared/services/utility.service";
   providedIn: "root"
 })
 export class CasService extends CrudDownloadService<CaDto> {
-  private prefix = environment.apiPrefix + "/ca/v1";
+  private prefix = environment.apiPrefix + "/crypto/ca/v1";
 
   constructor(http: HttpClient, private utilityService: UtilityService, fs: FileSaverService) {
-    super(http, "ca/v1", fs);
+    super(http, "crypto/ca/v1", fs);
   }
 
   /**

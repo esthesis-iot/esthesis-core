@@ -10,10 +10,10 @@ import {FileSaverService} from "ngx-filesaver";
   providedIn: "root"
 })
 export class CertificatesService extends CrudDownloadService<CertificateDto> {
-  private prefix = environment.apiPrefix + "/certificate/v1";
+  private prefix = environment.apiPrefix + "/crypto/certificate/v1";
 
   constructor(http: HttpClient, fs: FileSaverService) {
-    super(http, "certificate/v1", fs);
+    super(http, "crypto/certificate/v1", fs);
   }
 
   /**

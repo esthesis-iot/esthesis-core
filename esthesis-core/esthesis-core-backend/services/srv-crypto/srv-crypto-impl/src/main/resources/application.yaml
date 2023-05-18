@@ -9,5 +9,16 @@ quarkus:
   log:
     console:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+    handler:
+      gelf:
+        additional-field:
+          "platform":
+            value: "esthesis"
+          "module":
+            value: esthesis-core
+          "type":
+            value: "API"
+          "service":
+            value: ${quarkus.application.name}
   banner:
     enabled: false

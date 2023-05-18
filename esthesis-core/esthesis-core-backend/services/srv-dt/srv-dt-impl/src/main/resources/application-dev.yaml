@@ -12,7 +12,6 @@ quarkus:
         enabled: true
         host: "gelf-ingester.esthesis.localdev"
         port: 12201
-        include-full-mdc: true
         skip-hostname-resolution: true
   rest-client:
     ApplicationSystemResource:
@@ -40,5 +39,5 @@ mp:
   jwt:
     verify:
       publickey:
-        location: http://esthesis-dev-keycloak/realms/esthesis/protocol/openid-connect/certs
+        location: http://keycloak.esthesis.localdev/realms/esthesis/protocol/openid-connect/certs
 

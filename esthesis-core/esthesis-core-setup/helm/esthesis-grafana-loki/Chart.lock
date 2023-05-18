@@ -1,0 +1,9 @@
+dependencies:
+- name: grafana-loki
+  repository: https://charts.bitnami.com/bitnami
+  version: 2.2.3
+- name: grafana
+  repository: https://charts.bitnami.com/bitnami
+  version: 8.0.2
+digest: sha256:93051c7709dc8a4877d014aff5e9a880218d1d7bce98c30d2f4da58453d983da
+generated: "2022-07-25T13:45:13.244455+03:00"

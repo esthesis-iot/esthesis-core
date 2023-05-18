@@ -1,0 +1,12 @@
+apiVersion: v2
+name: esthesis
+description: esthesis IoT platform - Jaeger
+home: https://esthes.is
+sources:
+  - https://github.com/esthesis-iot
+maintainers:
+  - name: European Dynamics SA
+    email: esthesis@eurodyn.com
+    url: https://www.eurodyn.com
+icon: https://esthes.is/media/logo.png
+version: 3.0.0-SNAPSHOT

@@ -1,0 +1,8 @@
+global:
+  devEnv:
+    enabled: true
+  jaeger:
+    ui:
+      serviceType: LoadBalancer
+    collector:
+      serviceType: LoadBalancer

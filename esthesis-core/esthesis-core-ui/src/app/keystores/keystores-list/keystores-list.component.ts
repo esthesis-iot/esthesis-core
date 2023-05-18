@@ -1,5 +1,4 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
-import {BaseComponent} from "../../shared/components/base-component";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatSort} from "@angular/material/sort";
 import {Router} from "@angular/router";
@@ -11,6 +10,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {KeystoreDto} from "../dto/keystore-dto";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-keystores-list",
@@ -28,7 +28,7 @@ export class KeystoresListComponent extends SecurityBaseComponent implements OnI
 
   constructor(private fb: FormBuilder, private router: Router,
     private storesService: KeystoresService, private qForms: QFormsService,
-    private keystoresServices: KeystoresService) {
+    private keystoresServices: KeystoresService, private utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.KEYSTORE);
     this.filterForm = this.fb.group({
       name: []
@@ -62,9 +62,13 @@ export class KeystoresListComponent extends SecurityBaseComponent implements OnI
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     this.keystoresServices.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
       null!, false, page, size, sort, sortDirection))
-    .subscribe(onNext => {
-      this.datasource.data = onNext.content;
-      this.paginator.length = onNext.totalElements;
+    .subscribe({
+      next: onNext => {
+        this.datasource.data = onNext.content;
+        this.paginator.length = onNext.totalElements;
+      }, error: onError => {
+        this.utilityService.popupErrorWithTraceId("Could not fetch keystores.", onError);
+      }
     });
   }
 

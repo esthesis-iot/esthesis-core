@@ -1,0 +1,10 @@
+{{ if .Values.global.devEnv.enabled }}
+*************************
+* DEV ENVIRONMENT SETUP *
+*************************
+Update your hosts file with the result of the following command:
+
+echo $(kubectl get services loki-grafana --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-grafana-loki
+echo $(kubectl get services loki-gelf-udp --output jsonpath='{.status.loadBalancer.ingress[0].ip}') esthesis-dev-loki-gelf-udp
+
+{{ end }}

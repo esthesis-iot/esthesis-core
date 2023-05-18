@@ -1,0 +1,13 @@
+global:
+  devEnv:
+    enabled: true
+
+orion:
+  broker:
+    db:
+      hosts:
+        - mongodb:27017
+  mongo:
+    enabled: false
+  service:
+    type: LoadBalancer

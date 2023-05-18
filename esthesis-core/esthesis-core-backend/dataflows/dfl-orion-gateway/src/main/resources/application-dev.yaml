@@ -8,9 +8,8 @@ quarkus:
     handler:
       gelf:
         enabled: true
-        host: grafana-loki-gelf
+        host: "gelf-ingester.esthesis.localdev"
         port: 12201
-        include-full-mdc: true
         skip-hostname-resolution: true
   rest-client:
     DeviceSystemResource:
