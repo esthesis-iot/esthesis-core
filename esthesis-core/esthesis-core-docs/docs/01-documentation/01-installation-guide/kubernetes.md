@@ -13,8 +13,9 @@ Please note that Helm charts come with reasonable defaults; we strongly advise t
 review them, so you can customize them to your needs.
 
 ## Requirements
-- A Kubernetes cluster with a minimum of 3 nodes and support for Load Balancer service types.
-- [Helm 3](https://helm.sh)
+- A Kubernetes cluster with a minimum of 3 nodes and support for Load Balancer service types as well
+as Ingress support.
+- [Helm](https://helm.sh)
 - [Helmfile](https://github.com/helmfile/helmfile)
 
 ## Configuration parameters
@@ -167,14 +168,30 @@ Default: `ingress`
 esthesis Core comes in two Helm charts, one installing all the required dependencies and another one
 installing the application components. You can enable/disable which specific dependencies you want
 to install by setting the corresponding `*_ENABLED` parameter to `true` or `false`. Do note that
-although the provided dependencies are adequate to have esthesis Core running, you might want to
+although the provided dependencies are adequate to have esthesis Core up and running, you might want to
 tune their properties or replace them altogether with your own resources to support your specific
 production use case.
+
+### Environment variables
+The following environment variables are used by the Helm charts to configure the installation, you
+may change them to suit your needs:
+```
+export DOMAIN=esthesis-prod.home.nassosmichas.com
+export TIMEZONE=Europe/Athens
+export ESTHESIS_ADMIN_USERNAME=admin
+export ESTHESIS_ADMIN_PASSWORD=admin
+export ESTHESIS_SYSTEM_USERNAME=system
+export ESTHESIS_SYSTEM_PASSWORD=system
+export KEYCLOAK_INGRESS_HOSTNAME=keycloak.$DOMAIN
+export ESTHESIS_UI_INGRESS_HOSTNAME=esthesis-core.$DOMAIN
+export ESTHESIS_API_INGRESS_HOSTNAME=esthesis-core.$DOMAIN
+export OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_HOSTNAME/realms/esthesis"
+```
 
 ### Supporting infrastructure
 - Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
 	```shell
-	curl -L https://esthesis.is/helm/helmfile-esthesis-core-deps-3.0.0.yaml -o helmfile-esthesis-core-deps.yaml
+	curl -L https://esthes.is/helm/helmfile-esthesis-core-deps-3.0.0.yaml -o helmfile-esthesis-core-deps.yaml
 	```
 - Install the Helmfile:
 	```shell
@@ -182,38 +199,18 @@ production use case.
 	```
 
 ### Application
+- Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
+	```shell
+	curl -L https://esthes.is/helm/helmfile-esthesis-core-3.0.0.yaml -o helmfile-esthesis-core.yaml
+	```
+- Install the Helmfile:
+	```shell
+	helmfile -f helmfile-esthesis-core.yaml sync
+	```
 
-
-
-### Microk8s
-#### Additional configuration parameters
-
-
-#### Installation example
-Using the built-in NGINX ingress:
-```
-DOMAIN=esthesis-prod.mydomain.com \
-KEYCLOAK_INGRESS_HOSTNAME=keycloak.$DOMAIN  \
-ESTHESIS_UI_INGRESS_HOSTNAME=esthesis-core.$DOMAIN  \
-OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_HOSTNAME/realms/esthesis"  \
-OIDC_AUTHORITY_URL_CLUSTER="http://keycloak/realms/esthesis"  \
-OIDC_DISCOVERY_URL_CLUSTER="http://keycloak/realms/esthesis/.well-known/openid-configuration"  \
-OIDC_JWT_VERIFY_LOCATION_CLUSTER="http://keycloak/realms/esthesis/protocol/openid-connect/certs" \
-MK8S_EXPOSE_INGRESS=true \
-helmfile sync
-```
-
-### K3s
-
-#### Installation example
-Using the built-in Traefik ingress:
-```
-DOMAIN=esthesis-prod.mydomain.com \
-KEYCLOAK_INGRESS_HOSTNAME=keycloak.$DOMAIN  \
-ESTHESIS_UI_INGRESS_HOSTNAME=esthesis-core.$DOMAIN  \
-OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_HOSTNAME/realms/esthesis"  \
-OIDC_AUTHORITY_URL_CLUSTER="http://keycloak/realms/esthesis"  \
-OIDC_DISCOVERY_URL_CLUSTER="http://keycloak/realms/esthesis/.well-known/openid-configuration"  \
-OIDC_JWT_VERIFY_LOCATION_CLUSTER="http://keycloak/realms/esthesis/protocol/openid-connect/certs" \
-helmfile sync
-```
+## Notes
+1. You need to access the UI via HTTPS, accessing it via HTTP will not work.
+2. The UI is exposed under the domain you specified in the environmental variable `ESTHESIS_UI_INGRESS_HOSTNAME`.
+3. If you are using a self-signed certificate which is not imported into your local system, before
+trying to log in into the application you need to visit the Keycloak URL first and accept the
+certificate. Otherwise, the login will fail.

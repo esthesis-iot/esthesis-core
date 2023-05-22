@@ -31,22 +31,18 @@ SSH to your Microk8s VM and enable the following addons:
 located in a corporate network, please check with your network administrators first.
 
 ## Installation
-### Supporting infrastructure
 
-- Install the dependencies in `esthesis-helm/esthesis-core-deps`:
+- Install the supporting dependencies in `esthesis-helm/esthesis-core-deps`:
 	```shell
 	helmfile -e dev sync --skip-deps
 	```
-- Update your `hosts` file by executing `hosts-file-entries.sh`.
-
-### Application
 - Install the application components in `esthesis-helm/esthesis-core`:
 	```shell
 	DEV_HOST=192.168.100.102 helmfile -e dev sync --skip-deps
 	```
 - Update your `hosts` file by executing `hosts-file-entries.sh`.
 
-Note that you need to specify the IP address of your development machine in the `DEV_HOST` environment
+⚠️ Note that you need to specify the IP address of your development machine in the `DEV_HOST` environment
 variable. This is needed so that the API gateway (APISIX) knows where to forward the requests to
 (since in `dev` setup the services run on your own machine, not in Kubernetes).
 
@@ -77,17 +73,17 @@ Provided you have successfully updated your `hosts` file, you can access the fol
 |------------------|-------------------------------------------|-----------------------------------|
 | esthesis Core UI | http://localhost:4200                     | esthesis-admin / esthesis-admin   |
 | MongoDB          | mongodb.esthesis.localdev:27017           | esthesis-system / esthesis-system |
-| Kafka            | kafka.esthesis.localdev:9094              |
+| Kafka            | kafka.esthesis.localdev:9094              |                                   |
 | Keycloak         | http://keycloak.esthesis.localdev         | esthesis-system / esthesis-system |
 | APISIX Dashboard | http://apisix-dashboard.esthesis.localdev | esthesis-system / esthesis-system |
 | Redis            | redis.esthesis.localdev:6379/0            | (empty) / esthesis-system         |
-| MQTT             | mqtt.esthesis.localdev:1883               |
-| Grafana          | http://grafana.esthesis.localdev:3000			| esthesis-system / esthesis-system |
-
-
+| MQTT             | mqtt.esthesis.localdev:1883               |                                   |
+| Grafana          | http://grafana.esthesis.localdev          | esthesis-system / esthesis-system |
 
 ## Notes
-
-1. There is a convenience script `destroy.sh` in the root of each helm package. You can use it to fully
-erase all installations performed for that particular package together with any additional Kubernetes
-resources that do not get automatically deleted by uninstalling the Helm chart (for example, PVCs).
+1. Before trying to log in to the application open the Keycloak URL into your browser in order to
+	 accept the self-signed certificate. Otherwise, the first redirect from the application's UI to
+	 Keycloak will fail.
+2. There is a convenience script `destroy.sh` in the root of each helm package. You can use it to fully
+	 erase all installations performed for that particular package together with any additional Kubernetes
+	 resources that do not get automatically deleted by uninstalling the Helm chart (for example, PVCs).
