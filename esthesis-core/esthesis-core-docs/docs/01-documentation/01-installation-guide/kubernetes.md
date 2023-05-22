@@ -191,7 +191,7 @@ export OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_HOSTNAME/realms/es
 ### Supporting infrastructure
 - Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
 	```shell
-	curl -L https://esthes.is/helm/helmfile-esthesis-core-deps-3.0.0.yaml -o helmfile-esthesis-core-deps.yaml
+	wget https://esthes.is/helm/helmfile-esthesis-core-deps-3.0.0.tgz | tar xcfz
 	```
 - Install the Helmfile:
 	```shell
@@ -201,7 +201,7 @@ export OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_HOSTNAME/realms/es
 ### Application
 - Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
 	```shell
-	curl -L https://esthes.is/helm/helmfile-esthesis-core-3.0.0.yaml -o helmfile-esthesis-core.yaml
+	wget https://esthes.is/helm/helmfile-esthesis-core-3.0.0.tgz
 	```
 - Install the Helmfile:
 	```shell
