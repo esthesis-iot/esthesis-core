@@ -32,5 +32,5 @@ quarkus:
   rest-client:
     # A self-reference to be able to use the Audited annotation.
     AuditResource:
-      url: http://esthesis-core-srv-audit:8080
+      url: http://esthesis-core-srv-audit-service:8080
       scope: Singleton
