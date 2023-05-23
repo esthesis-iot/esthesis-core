@@ -32,14 +32,14 @@ modules=(
 	"services/srv-tag/srv-tag-impl"
 )
 
-# If the user has provided a specific module to be published, replace the modules.
+# If the user has provided a specific module to be published, only publish that one.
 if [ $# -eq 1 ]; then
 	modules=("$1")
+else
+	# Clean and build the project.
+	mvn clean
+	mvn -T 1C install
 fi
-
-# Clean and build the project.
-mvn clean
-mvn -T 1C install
 
 # Iterate over all modules and publish them.
 for module in "${modules[@]}"; do

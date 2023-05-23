@@ -25,3 +25,13 @@ quarkus:
   otel:
     sdk:
       disabled: true
+  rest-client:
+    SettingsResource:
+      url: http://esthesis-core-srv-settings-service:8080
+      scope: Singleton
+    AuditResource:
+      url: http://esthesis-core-srv-audit-service:8080
+      scope: Singleton
+    DeviceResource:
+      url: http://esthesis-core-srv-device-service:8080
+      scope: Singleton
