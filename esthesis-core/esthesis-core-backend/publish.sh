@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Architectures to build
+#ARCHS="linux/amd64,linux/arm64/v8"
+ARCHS="linux/amd64"
+
 # Array with all modules to be published.
 modules=(
 	"dataflows/dfl-command-reply-updater"
@@ -46,6 +50,6 @@ for module in "${modules[@]}"; do
     -Dquarkus.container-image.build=true \
     -Dquarkus.container-image.push=true \
     -Dquarkus.container-image.additional-tags=latest \
-    -Dquarkus.jib.platforms=linux/amd64,linux/arm64/v8
+    -Dquarkus.jib.platforms=$ARCHS
   popd || exit
 done
