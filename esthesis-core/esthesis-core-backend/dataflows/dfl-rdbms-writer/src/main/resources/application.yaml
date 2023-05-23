@@ -36,5 +36,6 @@ quarkus:
     password: ${ESTHESIS_DFL_DB_PASSWORD:}
     jdbc:
       url: ${ESTHESIS_DFL_DB_JDBC_URL:}
-  opentelemetry:
-    enabled: false
+  otel:
+    sdk:
+      disabled: true

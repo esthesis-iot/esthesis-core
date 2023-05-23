@@ -25,10 +25,11 @@ quarkus:
             value: "API"
           "service":
             value: ${quarkus.application.name}
-  opentelemetry:
-    enabled: false
   banner:
     enabled: false
+  otel:
+    sdk:
+      disabled: true
   cache:
     caffeine:
       "is-data-update-allowed":

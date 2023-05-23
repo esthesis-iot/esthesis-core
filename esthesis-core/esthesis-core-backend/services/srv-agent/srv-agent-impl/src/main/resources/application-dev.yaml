@@ -18,6 +18,8 @@ quarkus:
   mongodb:
     connection-string: mongodb://mongodb.esthesis.localdev:27017
   otel:
+    sdk:
+      disabled: false
     traces:
       sampler: always_on
     exporter:

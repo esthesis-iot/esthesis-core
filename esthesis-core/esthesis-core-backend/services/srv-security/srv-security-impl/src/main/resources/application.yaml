@@ -24,6 +24,9 @@ quarkus:
             value: ${quarkus.application.name}
   banner:
     enabled: false
+  otel:
+    sdk:
+      disabled: true
   oidc-client:
     client-id: esthesis
     grant:

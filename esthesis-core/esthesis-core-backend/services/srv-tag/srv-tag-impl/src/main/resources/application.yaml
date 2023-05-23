@@ -15,13 +15,16 @@ quarkus:
           "platform":
             value: "esthesis"
           "module":
-            value: esthesis-core
+            value: "esthesis-core"
           "type":
             value: "API"
           "service":
             value: ${quarkus.application.name}
   banner:
     enabled: false
+  otel:
+    sdk:
+      disabled: true
   rest-client:
     AuditResource:
       url: http://esthesis-core-srv-audit-service:8080

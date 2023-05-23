@@ -27,5 +27,6 @@ quarkus:
             value: ${quarkus.application.name}
   banner:
     enabled: false
-  opentelemetry:
-    enabled: false
+  otel:
+    sdk:
+      disabled: true

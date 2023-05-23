@@ -24,6 +24,8 @@ quarkus:
         username: esthesis-system
         password: esthesis-system
   otel:
+    sdk:
+      disabled: false
     traces:
       sampler: always_on
     exporter:

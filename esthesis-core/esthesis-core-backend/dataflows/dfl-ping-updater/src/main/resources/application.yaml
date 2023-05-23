@@ -33,5 +33,6 @@ quarkus:
     credentials:
       username: ${ESTHESIS_DFL_ESTHESIS_DB_USERNAME:}
       password: ${ESTHESIS_DFL_ESTHESIS_DB_PASSWORD:}
-  opentelemetry:
-    enabled: false
+  otel:
+    sdk:
+      disabled: true

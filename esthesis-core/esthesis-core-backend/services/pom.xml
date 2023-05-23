@@ -20,8 +20,8 @@
       <artifactId>quarkus-liquibase-mongodb</artifactId>
       <groupId>io.quarkus</groupId>
     </dependency>
-    <dependency>
-      <artifactId>quarkus-container-image-docker</artifactId>
+		<dependency>
+      <artifactId>quarkus-container-image-jib</artifactId>
       <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>

@@ -17,14 +17,18 @@
 
 	<dependencies>
     <!-- QUARKUS -->
-    <dependency>
-      <artifactId>quarkus-container-image-docker</artifactId>
-      <groupId>io.quarkus</groupId>
-    </dependency>
+		<dependency>
+			<artifactId>quarkus-container-image-jib</artifactId>
+			<groupId>io.quarkus</groupId>
+		</dependency>
     <dependency>
       <artifactId>quarkus-logging-gelf</artifactId>
       <groupId>io.quarkus</groupId>
     </dependency>
+		<dependency>
+			<artifactId>quarkus-opentelemetry</artifactId>
+			<groupId>io.quarkus</groupId>
+		</dependency>
 
     <!-- CAMEL -->
     <dependency>

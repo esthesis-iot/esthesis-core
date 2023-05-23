@@ -29,5 +29,6 @@ quarkus:
     enabled: false
   redis:
     hosts: ${ESTHESIS_DFL_REDIS_URL:}
-  opentelemetry:
-    enabled: false
+  otel:
+    sdk:
+      disabled: true

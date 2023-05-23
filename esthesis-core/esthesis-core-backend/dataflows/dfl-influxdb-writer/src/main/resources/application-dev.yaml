@@ -12,6 +12,8 @@ quarkus:
         port: 12201
         skip-hostname-resolution: true
   otel:
+    sdk:
+      disabled: false
     traces:
       sampler: always_on
     exporter:

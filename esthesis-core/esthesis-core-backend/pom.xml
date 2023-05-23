@@ -172,25 +172,24 @@
 
   <properties>
     <!-- QUARKUS -->
-    <awaitility.version>4.2.0</awaitility.version>
+		<quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
+		<quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
+		<quarkus.platform.version>3.0.3.Final</quarkus.platform.version>
 
     <!-- ESTHESIS -->
-    <bson.version>4.6.1</bson.version>
-
-    <!-- COMPILE & TESTING -->
-    <commons-codec.version>1.15</commons-codec.version>
-    <compiler-plugin.version>3.10.1</compiler-plugin.version>
-    <esthesis.version>3.0.0-SNAPSHOT</esthesis.version>
-    <jackson-antpathfilter.version>1.0.2</jackson-antpathfilter.version>
-    <maven.compiler.release>17</maven.compiler.release>
-    <org.projectlombok.version>1.18.24</org.projectlombok.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+<!--		<esthesis.version>3.0.0-SNAPSHOT</esthesis.version>-->
 
     <!-- THIRD-PARTY -->
-    <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-    <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>3.0.1.Final</quarkus.platform.version>
+		<awaitility.version>4.2.0</awaitility.version>
+		<bson.version>4.6.1</bson.version>
+		<commons-codec.version>1.15</commons-codec.version>
+		<compiler-plugin.version>3.10.1</compiler-plugin.version>
+		<jackson-antpathfilter.version>1.0.2</jackson-antpathfilter.version>
+		<maven.compiler.release>17</maven.compiler.release>
+		<org.projectlombok.version>1.18.24</org.projectlombok.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
     <skipITs>true</skipITs>
     <slugify.version>3.0.2</slugify.version>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>

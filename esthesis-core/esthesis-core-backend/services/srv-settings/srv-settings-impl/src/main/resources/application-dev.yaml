@@ -28,6 +28,8 @@ quarkus:
   redis:
     hosts: redis://:esthesis-system@redis.esthesis.localdev:6379/0
   otel:
+    sdk:
+      disabled: false
     traces:
       sampler: always_on
     exporter:
