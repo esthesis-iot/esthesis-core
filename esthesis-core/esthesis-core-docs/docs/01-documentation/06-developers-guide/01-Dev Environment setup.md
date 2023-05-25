@@ -93,3 +93,6 @@ Provided you have successfully updated your `hosts` file, you can access the fol
 2. There is a convenience script `destroy.sh` in the root of each helm package. You can use it to fully
 	 erase all installations performed for that particular package together with any additional Kubernetes
 	 resources that do not get automatically deleted by uninstalling the Helm chart (for example, PVCs).
+
+## Follow up
+Continue with the Startup Guide to learn how to start using esthesis Core.

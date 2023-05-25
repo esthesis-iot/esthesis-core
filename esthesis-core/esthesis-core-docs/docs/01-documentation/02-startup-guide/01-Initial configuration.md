@@ -28,5 +28,11 @@ The following sections describe how to configure the esthesis Core platform afte
 - Under "Security", choose the platform certificate you created before.
 
 ## Set up the Dataflows
-### Ping updater
-- Navigate to "Dataflows > Create" and choose "Ping updater".
+Without any dataflows configured, esthesis Core is just a nice UI. You can set up individual
+dataflows for your use case, or you can use one of the provided wizards. Once the dataflows are
+configured, you can start to register devices and send data to the platform.
+- Navigate to "Dataflows".
+- Click on the "Create" button.
+- Click on the "Wizards" button.
+- Select the wizard you want to use and click on the "Configure" button.
+- Fill in the details of the wizard and click on the "Execute" button.
