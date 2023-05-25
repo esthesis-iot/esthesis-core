@@ -16,7 +16,8 @@
           <h2 class="card-title">{{d.title}}</h2>
           <p>{{d.description}}</p>
           <div class="card-actions">
-            <button *ngIf="allowCreate" [routerLink]="'/dataflow/edit/' + d.type + '/' + appConstants.NEW_RECORD_ID"
+            <button *ngIf="allowCreate"
+                    [routerLink]="'/dataflow/edit/' + d.type + '/' + appConstants.NEW_RECORD_ID"
                     class="btn btn-primary btn-sm mt-5">
               DEPLOY
             </button>
@@ -27,6 +28,7 @@
     </div>
     <div class="card-actions justify-start mt-10">
       <button class="btn btn-sm btn-secondary" routerLink="/dataflow">CANCEL</button>
+      <button class="btn btn-sm btn-primary" routerLink="/dataflow/wizards">WIZARDS</button>
     </div>
   </div>
 </div>

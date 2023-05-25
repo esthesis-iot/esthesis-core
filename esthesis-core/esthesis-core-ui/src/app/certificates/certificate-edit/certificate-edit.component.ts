@@ -5,7 +5,6 @@ import {CertificatesService} from "../certificates.service";
 import {AppConstants} from "../../app.constants";
 import {CaDto} from "../../cas/dto/ca-dto";
 import {CasService} from "../../cas/cas.service";
-import {BaseComponent} from "../../shared/components/base-component";
 import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";

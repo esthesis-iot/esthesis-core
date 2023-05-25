@@ -34,13 +34,13 @@ located in a corporate network, please check with your network administrators fi
 
 - Install the supporting dependencies in `esthesis-helm/esthesis-core-deps`:
 	```shell
-	helmfile -e dev sync --skip-deps
+	helmfile -e dev sync
 	```
 - Install the application components in `esthesis-helm/esthesis-core`:
 	```shell
-	DEV_HOST=192.168.100.102 helmfile -e dev sync --skip-deps
+	DEV_HOST=192.168.100.102 helmfile -e dev sync
 	```
-- Update your `hosts` file by executing `hosts-file-entries.sh`.
+- Update your `hosts` file by executing `hosts-file-update.sh`.
 
 ⚠️ Note that you need to specify the IP address of your development machine in the `DEV_HOST` environment
 variable. This is needed so that the API gateway (APISIX) knows where to forward the requests to
@@ -50,7 +50,7 @@ variable. This is needed so that the API gateway (APISIX) knows where to forward
 The above installation will prepare all the necessary components to support esthesis Core. The actual
 backend services as well as the UI, however, will not be installed in Kubernetes. You need to run
 these in your local machine. Note that we did try Quarkus' remote development mode, but it was a bit
-finicky, and we ended up losing time when it was not working or not picking up changes correctly).
+finicky, and we ended up losing time when it was not working or not picking up changes correctly.
 
 ### Frontend
 You can start the Angular frontend by running `npm start` in `esthesis-core-ui` directory.
@@ -58,6 +58,10 @@ You can start the Angular frontend by running `npm start` in `esthesis-core-ui` 
 ### Backend
 Each backend service comes with its own `dev-{service-name}.sh` script that you can use to start the
 service in development mode. You need to run each of the services in a separate terminal window.
+
+Before launching the services in your local machine, make sure that your local Kubernetes configuration
+points to the development cluster. You can do this by running `microk8s config` and copying the
+output to `~/.kube/config`. This is needed as some of the services need to access the Kubernetes API.
 
 ### Automation
 Do yourself a favour and prepare some automation to perform all the above steps for you. Depending
@@ -69,7 +73,7 @@ e.g.:
 ## Resources
 Provided you have successfully updated your `hosts` file, you can access the following resources:
 
-| Resource         | URL/host                                  | Credentias                        |
+| Resource         | URL/host                                  | Credentials                       |
 |------------------|-------------------------------------------|-----------------------------------|
 | esthesis Core UI | http://localhost:4200                     | esthesis-admin / esthesis-admin   |
 | MongoDB          | mongodb.esthesis.localdev:27017           | esthesis-system / esthesis-system |
@@ -79,6 +83,8 @@ Provided you have successfully updated your `hosts` file, you can access the fol
 | Redis            | redis.esthesis.localdev:6379/0            | (empty) / esthesis-system         |
 | MQTT             | mqtt.esthesis.localdev:1883               |                                   |
 | Grafana          | http://grafana.esthesis.localdev          | esthesis-system / esthesis-system |
+| InfluxDB HTTP    | http://influxdb.esthesis.localdev    	    | esthesis-system / esthesis-system |
+| InfluxDB         | influxdb.esthesis.localdev:8088    	      | -                                 |
 
 ## Notes
 1. Before trying to log in to the application open the Keycloak URL into your browser in order to

@@ -7,9 +7,9 @@ import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
-import io.fabric8.kubernetes.api.model.autoscaling.v2beta2.HorizontalPodAutoscaler;
-import io.fabric8.kubernetes.api.model.autoscaling.v2beta2.HorizontalPodAutoscalerBuilder;
-import io.fabric8.kubernetes.api.model.autoscaling.v2beta2.MetricSpecBuilder;
+import io.fabric8.kubernetes.api.model.autoscaling.v2.HorizontalPodAutoscaler;
+import io.fabric8.kubernetes.api.model.autoscaling.v2.HorizontalPodAutoscalerBuilder;
+import io.fabric8.kubernetes.api.model.autoscaling.v2.MetricSpecBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class KubernetesService {
 
 	@Inject
-	private KubernetesClient kc;
+	KubernetesClient kc;
 
 	private List<EnvVar> getEnvVar(PodInfoDTO podInfoDTO) {
 		List<EnvVar> envVars = new ArrayList<>();
@@ -119,10 +119,10 @@ public class KubernetesService {
 
 		// Create or remove the pod, according to the requested pod status.
 		if (podInfoDTO.isStatus()) {
-			kc.autoscaling().v2beta2().horizontalPodAutoscalers().inNamespace(
+			kc.autoscaling().v2().horizontalPodAutoscalers().inNamespace(
 				podInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).createOrReplace();
 		} else {
-			kc.autoscaling().v2beta2().horizontalPodAutoscalers().inNamespace(
+			kc.autoscaling().v2().horizontalPodAutoscalers().inNamespace(
 				podInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).delete();
 		}
 

@@ -21,7 +21,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 @ApplicationScoped
 public class DataflowService extends BaseService<DataflowEntity> {
 
-	private static final String DOCKER_IMAGE_PREFIX = "esthesisiot/esthesis-dfl-";
+	private static final String DOCKER_IMAGE_PREFIX = "esthesisiot/esthesis-core-dfl-";
 	private static final String KUBERNETES_CONTAINER_IMAGE_VERSION = "docker";
 	private static final String KUBERNETES_NAMESPACE = "namespace";
 	private static final String KUBERNETES_MIN_PODS = "pods-min";
@@ -96,15 +96,17 @@ public class DataflowService extends BaseService<DataflowEntity> {
 			(String) dataflowEntity.getKubernetes().get(KUBERNETES_CONTAINER_IMAGE_VERSION));
 		podInfoDTO.setNamespace((String) dataflowEntity.getKubernetes().get(KUBERNETES_NAMESPACE));
 		podInfoDTO.setMinInstances(
-			Integer.parseInt((String) dataflowEntity.getKubernetes().get(KUBERNETES_MIN_PODS)));
+			Integer.parseInt(dataflowEntity.getKubernetes().get(KUBERNETES_MIN_PODS).toString()));
 		podInfoDTO.setMaxInstances(
-			Integer.parseInt((String) dataflowEntity.getKubernetes().get(KUBERNETES_MAX_PODS)));
+			Integer.parseInt(dataflowEntity.getKubernetes().get(KUBERNETES_MAX_PODS).toString()));
 		podInfoDTO.setCpuRequest((String) dataflowEntity.getKubernetes().get(KUBERNETES_CPU_REQUEST));
 		podInfoDTO.setCpuLimit((String) dataflowEntity.getKubernetes().get(KUBERNETES_CPU_LIMIT));
 		podInfoDTO.setConfiguration(
 			makeEnvironmentVariables(flattenMap(dataflowEntity.getConfig()), "ESTHESIS_DFL_"));
-		podInfoDTO.getConfiguration().putAll(addCustomEnvVariables(
-			dataflowEntity.getKubernetes().get(CUSTOM_ENV_VARS_KEY_NAME).toString()));
+		if (dataflowEntity.getKubernetes().get(CUSTOM_ENV_VARS_KEY_NAME) != null) {
+			podInfoDTO.getConfiguration().putAll(addCustomEnvVariables(
+				dataflowEntity.getKubernetes().get(CUSTOM_ENV_VARS_KEY_NAME).toString()));
+		}
 		podInfoDTO.setStatus(dataflowEntity.isStatus());
 
 		kubernetesResource.schedulePod(podInfoDTO);

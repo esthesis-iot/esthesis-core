@@ -50,6 +50,10 @@ Default: `esthesis-system`
 The password of the esthesis system user.<br/>
 Default: `esthesis-system`
 
+🔹 `ESTHESIS_SYSTEM_PASSWORD`<br/>
+The password of the esthesis system user.<br/>
+Default: `esthesis-system`
+
 ### Keycloak
 🔹 `KEYCLOAK_ENABLED`<br/>
 Whether Keycloak should be installed by this chart or not.<br/>
@@ -134,6 +138,11 @@ Default: `redis-master:6379/0`
 Whether Mosquitto should be installed by this chart or not.<br/>
 Default: `true`
 
+### InfluxDB
+🔹 `INFLUXDB_ENABLED`<br/>
+Whether InfluxDB should be installed by this chart or not.<br/>
+Default: `true`
+
 ### Kafka
 🔹 `KAFKA_ENABLED`<br/>
 Whether Kafka should be installed by this chart or not.<br/>
@@ -214,3 +223,8 @@ export OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_HOSTNAME/realms/es
 3. If you are using a self-signed certificate which is not imported into your local system, before
 trying to log in into the application you need to visit the Keycloak URL first and accept the
 certificate. Otherwise, the login will fail.
+4. `esthesis-core-srv-kubernetes` needs to be able to list all namespaces as well as schedule pods
+via deployments, configure HPA, etc. A Service Account `esthesis-core-srv-kubernetes` is automatically
+created with no additional permissions other than the ones of the `default` service account. Depending
+on how security is implemented in your Kubernetes cluster, you may need to provide the necessary
+roles/permissions to this service account.

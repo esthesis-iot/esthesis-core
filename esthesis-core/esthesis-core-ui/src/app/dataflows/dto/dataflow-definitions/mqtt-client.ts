@@ -19,10 +19,10 @@ export const DATAFLOW_DEFINITION_MQTT_CLIENT = {
       props: {label: "MQTT Broker"},
       fieldGroup: [
         {
-          key: "cluster-url", type: "input", defaultValue: "tcp://rabbitmq:1883",
+          key: "cluster-url", type: "input", defaultValue: "tcp://mosquitto:1883",
           props: {
             required: true, label: "Cluster URL", placeholder: "Protocol, IP address, port",
-            hintStart: "ex: tcp://rabbitmq:1883, ssl://rabbitmq:8883",
+            hintStart: "ex: tcp://mosquitto:1883, ssl://mosquitto:8883",
           }
         }
       ],
@@ -73,12 +73,12 @@ export const DATAFLOW_DEFINITION_MQTT_CLIENT = {
       props: {label: "Kafka Broker"},
       fieldGroup: [
         {
-          key: "cluster-url", type: "input", defaultValue: "kafka:9092",
+          key: "cluster-url", type: "input", defaultValue: "kafka-headless:9094",
           props: {
             required: true,
             type: "text",
             label: "Cluster URL",
-            hintStart: "e.g. kafka:9092"
+            hintStart: "e.g. kafka-headless:9094"
           }
         }
       ]

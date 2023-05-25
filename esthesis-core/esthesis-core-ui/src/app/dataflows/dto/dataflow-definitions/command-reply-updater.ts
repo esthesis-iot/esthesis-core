@@ -39,13 +39,13 @@ export const DATAFLOW_DEFINITION_COMMAND_REPLY_UPDATER = {
           key: "esthesis-db-url", type: "input", defaultValue: "mongodb://mongodb:27017",
           props: {label: "URL"}
         }, {
-          key: "esthesis-db-name", type: "input", defaultValue: "esthesis",
+          key: "esthesis-db-name", type: "input", defaultValue: "esthesiscore",
           props: {label: "Database name"}
         }, {
-          key: "esthesis-db-username", type: "input", defaultValue: "esthesis",
+          key: "esthesis-db-username", type: "input", defaultValue: "esthesis-system",
           props: {label: "Username"}
         }, {
-          key: "esthesis-db-password", type: "input", defaultValue: "esthesis",
+          key: "esthesis-db-password", type: "input", defaultValue: "esthesis-system",
           props: {label: "Password", type: "password"},
         },
       ]

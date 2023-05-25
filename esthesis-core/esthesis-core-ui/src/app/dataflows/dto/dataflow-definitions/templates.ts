@@ -24,7 +24,7 @@ export const DATAFLOW_TEMPLATE_WRAPPED_CONCURRENCY = [{
         required: true, label: "Number of messages in the processing queue",
       }
     }, {
-      key: "poll-timeout", type: "input", defaultValue: "500", props: {
+      key: "poll-timeout", type: "input", defaultValue: "1000", props: {
         required: true, label: "How often to poll the queue for new messages (in msec)",
       }
     }, {
@@ -37,7 +37,7 @@ export const DATAFLOW_TEMPLATE_WRAPPED_CONCURRENCY = [{
 
 export const DATAFLOW_TEMPLATE_KAFKA = [
   {
-    key: "cluster-url", type: "input", defaultValue: "kafka:9092",
+    key: "cluster-url", type: "input", defaultValue: "kafka-headless:9094",
     props: {required: true, label: "Cluster URL"}
   },
 ];
