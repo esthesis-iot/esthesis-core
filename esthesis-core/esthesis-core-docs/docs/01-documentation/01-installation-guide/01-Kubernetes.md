@@ -188,9 +188,9 @@ may change them to suit your needs:
 export DOMAIN=esthesis-prod.home.nassosmichas.com
 export TIMEZONE=Europe/Athens
 export ESTHESIS_ADMIN_USERNAME=admin
-export ESTHESIS_ADMIN_PASSWORD=admin
+export ESTHESIS_ADMIN_PASSWORD=esthesis
 export ESTHESIS_SYSTEM_USERNAME=system
-export ESTHESIS_SYSTEM_PASSWORD=system
+export ESTHESIS_SYSTEM_PASSWORD=esthesis
 export KEYCLOAK_INGRESS_HOSTNAME=keycloak.$DOMAIN
 export ESTHESIS_UI_INGRESS_HOSTNAME=esthesis-core.$DOMAIN
 export ESTHESIS_API_INGRESS_HOSTNAME=esthesis-core.$DOMAIN

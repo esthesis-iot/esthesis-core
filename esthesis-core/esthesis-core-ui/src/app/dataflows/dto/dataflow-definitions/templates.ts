@@ -1,6 +1,7 @@
 export const DATAFLOW_TEMPLATE_MAIN = [
   {key: "name", type: "input", props: {required: true, label: "Name"}},
-  {key: "description", type: "input", props: {required: false, label: "Description"}}
+  {key: "description", type: "input", props: {required: false, label: "Description"}},
+  {key: "customDockerRegistry", type: "input", props: {required: false, label: "Custom Docker registry"}},
 ];
 
 export const DATAFLOW_TEMPLATE_TAGS = [

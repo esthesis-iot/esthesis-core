@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
@@ -91,7 +92,12 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		// Schedule dataflow in Kubernetes.
 		PodInfoDTO podInfoDTO = new PodInfoDTO();
 		podInfoDTO.setName(Slugify.builder().build().slugify(dataflowEntity.getName()));
-		podInfoDTO.setImage(DOCKER_IMAGE_PREFIX + dataflowEntity.getType());
+		if (StringUtils.isEmpty(dataflowEntity.getCustomDockerRegistry())) {
+			podInfoDTO.setImage(DOCKER_IMAGE_PREFIX + dataflowEntity.getType());
+		} else {
+			podInfoDTO.setImage(dataflowEntity.getCustomDockerRegistry() + "/"
+				+ DOCKER_IMAGE_PREFIX + dataflowEntity.getType());
+		}
 		podInfoDTO.setVersion(
 			(String) dataflowEntity.getKubernetes().get(KUBERNETES_CONTAINER_IMAGE_VERSION));
 		podInfoDTO.setNamespace((String) dataflowEntity.getKubernetes().get(KUBERNETES_NAMESPACE));

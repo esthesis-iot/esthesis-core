@@ -27,6 +27,7 @@ SSH to your Microk8s VM and enable the following addons:
 - `microk8s enable dns`
 - `microk8s enable hostpath-storage`
 - `microk8s enable ingress`
+- `microk8s enable registry`
 - `microk8s enable metallb`: Use an IP range routable from your development machine. If you are
 located in a corporate network, please check with your network administrators first.
 
@@ -85,6 +86,7 @@ Provided you have successfully updated your `hosts` file, you can access the fol
 | Grafana          | http://grafana.esthesis.localdev          | esthesis-system / esthesis-system |
 | InfluxDB HTTP    | http://influxdb.esthesis.localdev    	    | esthesis-system / esthesis-system |
 | InfluxDB         | influxdb.esthesis.localdev:8088    	      | -                                 |
+| Docker Registry  | registry.esthesis.localdev                | -                                 |
 
 ## Notes
 1. Before trying to log in to the application open the Keycloak URL into your browser in order to
@@ -93,6 +95,12 @@ Provided you have successfully updated your `hosts` file, you can access the fol
 2. There is a convenience script `destroy.sh` in the root of each helm package. You can use it to fully
 	 erase all installations performed for that particular package together with any additional Kubernetes
 	 resources that do not get automatically deleted by uninstalling the Helm chart (for example, PVCs).
+3. Having everything in one single node may require you to increase certain OS limits, here are the
+   ones we have found to be relevant:
+	```shell
+	sudo sysctl fs.inotify.max_user_instances=1280
+	sudo sysctl fs.inotify.max_user_watches=655360
+	```
 
 ## Follow up
 Continue with the Startup Guide to learn how to start using esthesis Core.

@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-# Architectures to build
-#ARCHS="linux/amd64,linux/arm64/v8"
-ARCHS="linux/amd64"
+# Architectures to build, i.e. "linux/amd64,linux/arm64"
+if [ -z "$ESTHESIS_ARCHITECTURES" ]; then
+	ESTHESIS_ARCHITECTURES="linux/amd64"
+fi
 
 # Array with all modules to be published.
 modules=(
@@ -38,18 +39,30 @@ if [ $# -eq 1 ]; then
 else
 	# Clean and build the project.
 	mvn clean
-	mvn -T 1C install
+	mvn install
 fi
 
 # Iterate over all modules and publish them.
 for module in "${modules[@]}"; do
-	pushd . && \
-	cd "$module" && \
-	./mvnw -T 1C package \
-  	-Dquarkus.bootstrap.workspace-discovery=true \
-    -Dquarkus.container-image.build=true \
-    -Dquarkus.container-image.push=true \
-    -Dquarkus.container-image.additional-tags=latest \
-    -Dquarkus.jib.platforms=$ARCHS
+	pushd .
+	cd "$module" || exit
+	# Check if an environmental variable is set for a custom registry.
+	if [ -z "$ESTHESIS_REGISTRY" ]; then
+		./mvnw package \
+      	-Dquarkus.bootstrap.workspace-discovery=true \
+        -Dquarkus.container-image.build=true \
+        -Dquarkus.container-image.push=true \
+        -Dquarkus.container-image.additional-tags=latest \
+        -Dquarkus.jib.platforms=$ARCHS
+	else
+		./mvnw package \
+      	-Dquarkus.bootstrap.workspace-discovery=true \
+        -Dquarkus.container-image.build=true \
+        -Dquarkus.container-image.push=true \
+        -Dquarkus.container-image.additional-tags=latest \
+        -Dquarkus.container-image.registry="$ESTHESIS_REGISTRY" \
+        -Dquarkus.container-image.insecure=true \
+        -Dquarkus.jib.platforms=$ARCHS
+	fi
   popd || exit
 done

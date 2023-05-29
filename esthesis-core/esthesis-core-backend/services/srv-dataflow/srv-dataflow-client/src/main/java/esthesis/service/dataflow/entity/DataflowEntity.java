@@ -36,6 +36,9 @@ public class DataflowEntity extends BaseEntity {
 	@Length(max = 4096)
 	private String description;
 
+	@Length(max = 1024)
+	private String customDockerRegistry;
+
 	private Map<String, Object> config;
 	private Map<String, Object> kubernetes;
 
