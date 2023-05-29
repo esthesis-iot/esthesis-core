@@ -17,7 +17,7 @@ docker buildx create --name "$RANDOM_NAME" --platform "$ESTHESIS_ARCHITECTURES" 
 if [ -z "$ESTHESIS_REGISTRY" ]; then
   docker buildx build -t esthesisiot/esthesis-core-ui:latest -t esthesisiot/esthesis-core-ui:"$PACKAGE_VERSION" --platform $ESTHESIS_ARCHITECTURES --push .
 else
-  docker buildx build -t "$ESTHESIS_REGISTRY"/esthesis-core-ui:latest -t "$ESTHESIS_REGISTRY"/esthesis-core-ui:"$PACKAGE_VERSION" --platform $ESTHESIS_ARCHITECTURES --push .
+  docker buildx build -t "$ESTHESIS_REGISTRY"/esthesisiot/esthesis-core-ui:latest -t "$ESTHESIS_REGISTRY"/esthesisiot/esthesis-core-ui:"$PACKAGE_VERSION" --platform $ESTHESIS_ARCHITECTURES --push .
 fi
 } || {
   echo "Failed to build esthesisiot/esthesis-core-ui:$PACKAGE_VERSION"
