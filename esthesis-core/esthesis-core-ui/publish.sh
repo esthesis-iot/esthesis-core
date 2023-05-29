@@ -13,7 +13,7 @@ fi
 RANDOM_NAME=$(uuidgen | tr '[:upper:]' '[:lower:]' | tr -d '-' | awk '{if($0~/^[0-9]/)sub(/^[0-9]/,sprintf("%c", 97+rand()*26)); print}')
 echo "Creating temporary buildx: $RANDOM_NAME"
 {
-docker buildx create --name "$RANDOM_NAME" --platform "$ESTHESIS_ARCHITECTURES" --use
+docker buildx create --name "$RANDOM_NAME" --platform "$ESTHESIS_ARCHITECTURES" --config buildkit-config.tom --use
 if [ -z "$ESTHESIS_REGISTRY" ]; then
   docker buildx build -t esthesisiot/esthesis-core-ui:latest -t esthesisiot/esthesis-core-ui:"$PACKAGE_VERSION" --platform $ESTHESIS_ARCHITECTURES --push .
 else
