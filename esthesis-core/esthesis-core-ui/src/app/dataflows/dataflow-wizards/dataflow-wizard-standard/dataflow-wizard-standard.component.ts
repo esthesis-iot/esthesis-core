@@ -44,8 +44,12 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
       redisClusterUrl: ["redis://:esthesis-system@redis-headless:6379/0", [Validators.required]],
     });
 
-    this.dataflowService.getNamespaces().subscribe(onNext => {
-      this.namespaces = onNext;
+    this.dataflowService.getNamespaces().subscribe({
+      next: onNext => {
+        this.namespaces = onNext;
+      }, error: err => {
+        this.utilityService.popupErrorWithTraceId("Could not get available namespaces", err);
+      }
     });
   }
 
