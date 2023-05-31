@@ -1,4 +1,5 @@
 import {
+  DATAFLOW_TEMPLATE_IMAGE_REGISTRY,
   DATAFLOW_TEMPLATE_KAFKA,
   DATAFLOW_TEMPLATE_LOGGING,
   DATAFLOW_TEMPLATE_MAIN,
@@ -16,6 +17,7 @@ export const DATAFLOW_DEFINITION_COMMAND_REPLY_UPDATER = {
   fields: [
     ...DATAFLOW_TEMPLATE_STATUS,
     ...DATAFLOW_TEMPLATE_MAIN,
+    ...DATAFLOW_TEMPLATE_IMAGE_REGISTRY,
     {
       key: "config.kafka", wrappers: ["section"],
       props: {label: "Kafka"},

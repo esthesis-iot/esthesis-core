@@ -3,6 +3,9 @@ export interface WizardDataflowDto {
   name: string;
   description?: string;
   status: boolean;
+  image?: {
+    registry: string;
+  };
   config: {
     "mqtt-broker"?: {
       "cluster-url": string;

@@ -1,4 +1,5 @@
 import {
+  DATAFLOW_TEMPLATE_IMAGE_REGISTRY,
   DATAFLOW_TEMPLATE_KAFKA,
   DATAFLOW_TEMPLATE_LOGGING,
   DATAFLOW_TEMPLATE_MAIN,
@@ -16,6 +17,7 @@ export const DATAFLOW_DEFINITION_INFLUXDB_WRITER = {
   fields: [
     ...DATAFLOW_TEMPLATE_STATUS,
     ...DATAFLOW_TEMPLATE_MAIN,
+    ...DATAFLOW_TEMPLATE_IMAGE_REGISTRY,
     {
       key: "config", wrappers: ["section"],
       props: {label: "InfluxDB database"},

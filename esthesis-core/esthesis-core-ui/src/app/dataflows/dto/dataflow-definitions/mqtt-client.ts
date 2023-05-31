@@ -1,4 +1,5 @@
 import {
+  DATAFLOW_TEMPLATE_IMAGE_REGISTRY,
   DATAFLOW_TEMPLATE_LOGGING,
   DATAFLOW_TEMPLATE_MAIN,
   DATAFLOW_TEMPLATE_STATUS,
@@ -14,6 +15,7 @@ export const DATAFLOW_DEFINITION_MQTT_CLIENT = {
   fields: [
     ...DATAFLOW_TEMPLATE_STATUS,
     ...DATAFLOW_TEMPLATE_MAIN,
+    ...DATAFLOW_TEMPLATE_IMAGE_REGISTRY,
     {
       key: "config.mqtt-broker", wrappers: ["section"],
       props: {label: "MQTT Broker"},

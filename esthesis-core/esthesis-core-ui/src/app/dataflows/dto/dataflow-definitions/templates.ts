@@ -46,7 +46,7 @@ export const DATAFLOW_TEMPLATE_IMAGE_REGISTRY = [{
   key: "image", wrappers: ["section"],
   props: {label: "Image registry"},
   fieldGroup: [
-    {key: "registry", type: "input", defaultValue: "250m", props: {required: false, label: "Custom image registry"}}
+    {key: "registry", type: "input", defaultValue: "", props: {required: false, label: "Custom image registry"}}
   ]
 }];
 

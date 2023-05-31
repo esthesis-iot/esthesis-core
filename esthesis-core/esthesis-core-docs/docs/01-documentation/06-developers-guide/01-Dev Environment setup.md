@@ -96,7 +96,7 @@ Provided you have successfully updated your `hosts` file, you can access the fol
 	 erase all installations performed for that particular package together with any additional Kubernetes
 	 resources that do not get automatically deleted by uninstalling the Helm chart (for example, PVCs).
 3. Having everything in one single node may require you to increase certain OS limits, here are the
-   ones we have found to be relevant:
+   ones we have found to be relevant in Ubuntu server 23.04:
 	```shell
 	sudo sysctl fs.inotify.max_user_instances=1280
 	sudo sysctl fs.inotify.max_user_watches=655360

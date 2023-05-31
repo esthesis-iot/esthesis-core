@@ -88,6 +88,11 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
         "pods-max": "10",
       }
     };
+    if (this.form.get("dockerRegistry")?.value) {
+        pingDfl.image = {
+          registry: this.form.get("dockerRegistry")?.value
+        };
+    }
     const pingDflServiceCall = this.dataflowService.save(pingDfl);
 
     // Command Reply Updater DFL.
@@ -123,6 +128,11 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
         "pods-max": "10",
       }
     };
+    if (this.form.get("dockerRegistry")?.value) {
+      commandReplyUpdatedDfl.image = {
+        registry: this.form.get("dockerRegistry")?.value
+      };
+    }
     const commandReplyUpdatedServiceCall = this.dataflowService.save(commandReplyUpdatedDfl);
 
     // MQTT Client DFL.
@@ -166,10 +176,15 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
         "pods-max": "10",
       }
     };
+    if (this.form.get("dockerRegistry")?.value) {
+      mqttClientDfl.image = {
+        registry: this.form.get("dockerRegistry")?.value
+      };
+    }
     const mqttClientServiceCall = this.dataflowService.save(mqttClientDfl);
 
     // InfluxDB Writer DFL.
-    const influxDbWriterdDfl: WizardDataflowDto = {
+    const influxDbWriterDfl: WizardDataflowDto = {
       type: "influxdb-writer",
       name: "dfl-influxdb-writer",
       description: "InfluxDB writer, created by wizard",
@@ -206,7 +221,12 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
         "pods-max": "10",
       }
     };
-    const influxDbWriterServiceCall = this.dataflowService.save(influxDbWriterdDfl);
+    if (this.form.get("dockerRegistry")?.value) {
+      influxDbWriterDfl.image = {
+        registry: this.form.get("dockerRegistry")?.value
+      };
+    }
+    const influxDbWriterServiceCall = this.dataflowService.save(influxDbWriterDfl);
 
     // Redis Cache DFL.
     const redisCacheDfl: WizardDataflowDto = {
@@ -243,6 +263,11 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
         "pods-max": "10",
       }
     };
+    if (this.form.get("dockerRegistry")?.value) {
+      redisCacheDfl.image = {
+        registry: this.form.get("dockerRegistry")?.value
+      };
+    }
     const redisCacheServiceCall = this.dataflowService.save(redisCacheDfl);
 
     if (!this.form.valid) {
