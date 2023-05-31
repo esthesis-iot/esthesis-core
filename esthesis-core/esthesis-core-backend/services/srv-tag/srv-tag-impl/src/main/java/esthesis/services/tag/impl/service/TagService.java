@@ -75,13 +75,7 @@ public class TagService extends BaseService<TagEntity> {
 				"A tag with name '{}' already exists.", tagEntity.getName()).throwCVE();
 		}
 
-//		return super.save(tagEntity);
-
-		TagEntity tag = super.save(tagEntity);
-
-		System.out.println(1 / (5 - 5));
-
-		return tag;
+		return super.save(tagEntity);
 	}
 
 	@Override
