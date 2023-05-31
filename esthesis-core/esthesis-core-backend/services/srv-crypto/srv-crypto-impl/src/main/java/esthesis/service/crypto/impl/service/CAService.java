@@ -15,6 +15,7 @@ import esthesis.service.settings.resource.SettingsResource;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -35,6 +36,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
  * Certificate Authority management.
  */
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class CAService extends BaseService<CaEntity> {
 

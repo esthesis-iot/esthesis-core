@@ -16,18 +16,16 @@ import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subj
 import esthesis.util.kafka.notifications.outgoing.KafkaNotification;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class TagService extends BaseService<TagEntity> {
-
-	@Inject
-	JsonWebToken jwt;
 
 	@Inject
 	TagRepository tagRepository;
@@ -77,7 +75,13 @@ public class TagService extends BaseService<TagEntity> {
 				"A tag with name '{}' already exists.", tagEntity.getName()).throwCVE();
 		}
 
-		return super.save(tagEntity);
+//		return super.save(tagEntity);
+
+		TagEntity tag = super.save(tagEntity);
+
+		System.out.println(1 / (5 - 5));
+
+		return tag;
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import esthesis.service.tag.resource.TagResource;
 import esthesis.services.device.impl.repository.DeviceRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class DeviceTagService {
 

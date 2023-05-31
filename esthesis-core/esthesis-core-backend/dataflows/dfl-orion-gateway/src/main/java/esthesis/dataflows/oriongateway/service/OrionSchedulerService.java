@@ -4,9 +4,11 @@ import esthesis.dataflows.oriongateway.config.AppConfig;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class OrionSchedulerService {
 

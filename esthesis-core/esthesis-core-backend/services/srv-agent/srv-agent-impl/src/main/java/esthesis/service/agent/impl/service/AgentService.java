@@ -29,6 +29,7 @@ import io.quarkus.runtime.util.HashUtil;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
@@ -45,6 +46,7 @@ import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class AgentService {
 

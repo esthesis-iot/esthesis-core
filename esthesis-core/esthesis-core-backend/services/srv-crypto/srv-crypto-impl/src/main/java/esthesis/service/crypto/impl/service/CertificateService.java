@@ -18,6 +18,7 @@ import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subj
 import esthesis.util.kafka.notifications.outgoing.KafkaNotification;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.security.KeyPair;
@@ -37,6 +38,7 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class CertificateService extends BaseService<CertificateEntity> {
 

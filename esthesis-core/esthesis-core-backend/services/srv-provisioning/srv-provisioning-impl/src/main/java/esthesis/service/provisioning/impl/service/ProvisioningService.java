@@ -13,6 +13,7 @@ import esthesis.util.redis.RedisUtils;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,6 +29,7 @@ import org.apache.camel.Produce;
 import org.semver4j.Semver;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class ProvisioningService extends BaseService<ProvisioningPackageEntity> {
 

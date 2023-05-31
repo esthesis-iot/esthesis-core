@@ -5,6 +5,7 @@ import esthesis.avro.EsthesisDataMessage;
 import esthesis.common.AppConstants;
 import esthesis.common.exception.QMismatchException;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -16,6 +17,7 @@ import org.bson.BsonDocument;
 import org.bson.conversions.Bson;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class PingService {
 

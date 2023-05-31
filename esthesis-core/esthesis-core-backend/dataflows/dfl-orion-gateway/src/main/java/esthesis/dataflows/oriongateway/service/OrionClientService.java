@@ -13,6 +13,7 @@ import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -23,6 +24,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class OrionClientService {
 

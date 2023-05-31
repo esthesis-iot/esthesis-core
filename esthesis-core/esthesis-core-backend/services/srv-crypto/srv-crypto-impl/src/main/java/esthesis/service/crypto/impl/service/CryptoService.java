@@ -8,6 +8,7 @@ import esthesis.service.crypto.dto.CreateKeyPairRequestDTO;
 import esthesis.service.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.service.crypto.impl.converters.CryptoConverters;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -58,6 +59,7 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class CryptoService extends CryptoConverters {
 
@@ -158,7 +160,7 @@ public class CryptoService extends CryptoConverters {
 	 * @throws CertIOException           thrown when something unexpected happens while generating the
 	 *                                   certificate
 	 */
-	@SuppressWarnings({"squid:S2274", "squid:S2142" })
+	@SuppressWarnings({"squid:S2274", "squid:S2142"})
 	public X509CertificateHolder generateCertificate(
 		final CertificateSignRequestDTO certificateSignRequestDTO)
 	throws OperatorCreationException, CertIOException {

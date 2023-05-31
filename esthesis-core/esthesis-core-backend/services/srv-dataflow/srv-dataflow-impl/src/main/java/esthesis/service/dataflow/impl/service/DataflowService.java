@@ -10,6 +10,7 @@ import esthesis.service.kubernetes.dto.PodInfoDTO;
 import esthesis.service.kubernetes.resource.KubernetesResource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class DataflowService extends BaseService<DataflowEntity> {
 
@@ -32,6 +34,7 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	private final static String CUSTOM_ENV_VARS_KEY_NAME = "env";
 	private final static String CUSTOM_ENV_VARS_SEPARATOR = "\n";
 	private final static String CUSTOM_ENV_VARS_KEY_VALUE_SEPARATOR = "=";
+	private final static String IMAGE_REGISTRY_URL = "registry";
 
 	@Inject
 	@RestClient
@@ -71,12 +74,15 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	 */
 	private Map<String, String> addCustomEnvVariables(String envString) {
 		Map<String, String> env = new HashMap<>();
-		String[] envVarsArray = envString.split(CUSTOM_ENV_VARS_SEPARATOR);
-		for (String envVar : envVarsArray) {
-			String[] envVarArray = envVar.split(CUSTOM_ENV_VARS_KEY_VALUE_SEPARATOR);
-			env.put(envVarArray[0], envVarArray[1]);
-			log.debug("Adding key '{}' with value '{}' to environment variables.", envVarArray[0],
-				envVarArray[1]);
+
+		if (StringUtils.isNotEmpty(envString)) {
+			String[] envVarsArray = envString.split(CUSTOM_ENV_VARS_SEPARATOR);
+			for (String envVar : envVarsArray) {
+				String[] envVarArray = envVar.split(CUSTOM_ENV_VARS_KEY_VALUE_SEPARATOR);
+				env.put(envVarArray[0], envVarArray[1]);
+				log.debug("Adding key '{}' with value '{}' to environment variables.", envVarArray[0],
+					envVarArray[1]);
+			}
 		}
 
 		return env;
@@ -92,10 +98,10 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		// Schedule dataflow in Kubernetes.
 		PodInfoDTO podInfoDTO = new PodInfoDTO();
 		podInfoDTO.setName(Slugify.builder().build().slugify(dataflowEntity.getName()));
-		if (StringUtils.isEmpty(dataflowEntity.getCustomDockerRegistry())) {
+		if (StringUtils.isEmpty(dataflowEntity.getImage().get(IMAGE_REGISTRY_URL).toString())) {
 			podInfoDTO.setImage(DOCKER_IMAGE_PREFIX + dataflowEntity.getType());
 		} else {
-			podInfoDTO.setImage(dataflowEntity.getCustomDockerRegistry() + "/"
+			podInfoDTO.setImage(dataflowEntity.getImage().get(IMAGE_REGISTRY_URL).toString() + "/"
 				+ DOCKER_IMAGE_PREFIX + dataflowEntity.getType());
 		}
 		podInfoDTO.setVersion(

@@ -4,10 +4,12 @@ import esthesis.service.common.BaseService;
 import esthesis.service.settings.entity.DevicePageFieldEntity;
 import io.quarkus.panache.common.Sort.Direction;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class DevicePageFieldService extends BaseService<DevicePageFieldEntity> {
 

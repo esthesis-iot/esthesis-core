@@ -11,6 +11,7 @@ import esthesis.common.exception.QMismatchException;
 import esthesis.dataflow.mqttclient.config.AppConfig;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class DflMqttClientService {
 

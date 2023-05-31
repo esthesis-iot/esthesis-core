@@ -14,6 +14,7 @@ import esthesis.service.provisioning.impl.repository.ProvisioningRepository;
 import esthesis.util.redis.RedisUtils;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.mongodb.MongoDbConstants;
@@ -29,6 +30,7 @@ import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class ProvisioningRoutingService {
 

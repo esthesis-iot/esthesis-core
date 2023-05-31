@@ -42,6 +42,7 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
       influxDbBucket: ["esthesis", [Validators.required]],
       influxDbToken: ["", [Validators.required]],
       redisClusterUrl: ["redis://:esthesis-system@redis-headless:6379/0", [Validators.required]],
+      dockerRegistry: ["", []],
     });
 
     this.dataflowService.getNamespaces().subscribe({

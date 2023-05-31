@@ -8,7 +8,8 @@
     </h2>
     <div class="mt-3">
       <fa-icon icon="info-circle"></fa-icon>
-      This datafalow deploys a
+      Creates a dataflow will all basic services included, ping, command reply updater,
+      MQTT client, Redis cache, and InfluxDB writer.
     </div>
     <div class="mt-5">
       <form [formGroup]="form" class="flex flex-col" novalidate>
@@ -27,6 +28,11 @@
               </mat-option>
             </mat-select>
             <mat-hint>The Kubernetes namespace where dataflows will be deployed</mat-hint>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Custom Docker registry</mat-label>
+            <input formControlName="dockerRegistry" matInput>
+            <mat-hint>A custom Docker registry to pull images from</mat-hint>
           </mat-form-field>
         </div>
 

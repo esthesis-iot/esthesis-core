@@ -2,10 +2,12 @@ package esthesis.services.publicaccess.impl.service;
 
 import esthesis.service.publicaccess.dto.OidcConfigDTO;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class PublicAccessService {
 
@@ -61,7 +63,7 @@ public class PublicAccessService {
 		oidcConfigDTO.setSecureRoutes(secureRoutes);
 
 		log.debug("oidcConfigDTO: {}", oidcConfigDTO);
-		
+
 		return oidcConfigDTO;
 	}
 

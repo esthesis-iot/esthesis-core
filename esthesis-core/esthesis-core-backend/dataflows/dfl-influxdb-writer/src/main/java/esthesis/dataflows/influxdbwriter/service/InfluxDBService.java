@@ -12,6 +12,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -19,6 +20,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class InfluxDBService {
 

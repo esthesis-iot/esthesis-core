@@ -18,6 +18,7 @@ import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.impl.repository.ProvisioningRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -27,6 +28,7 @@ import org.apache.camel.component.minio.MinioOperations;
 import org.bson.Document;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class ConfigService {
 

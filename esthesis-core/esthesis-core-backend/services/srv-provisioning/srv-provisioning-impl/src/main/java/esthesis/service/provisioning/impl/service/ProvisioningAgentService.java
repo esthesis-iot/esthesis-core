@@ -6,6 +6,7 @@ import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.impl.repository.ProvisioningRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.semver4j.Semver;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class ProvisioningAgentService {
 

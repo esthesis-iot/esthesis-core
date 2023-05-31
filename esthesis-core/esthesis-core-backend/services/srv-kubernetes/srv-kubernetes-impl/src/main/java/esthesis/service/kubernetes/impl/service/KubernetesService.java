@@ -13,11 +13,13 @@ import io.fabric8.kubernetes.api.model.autoscaling.v2.MetricSpecBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class KubernetesService {
 

@@ -4,10 +4,12 @@ import esthesis.common.git.GitUtil;
 import esthesis.service.about.dto.AboutGeneralDTO;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class AboutService {
 

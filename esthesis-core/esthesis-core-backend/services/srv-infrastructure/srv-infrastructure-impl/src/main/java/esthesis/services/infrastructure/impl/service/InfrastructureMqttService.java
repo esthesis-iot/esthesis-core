@@ -5,6 +5,7 @@ import esthesis.service.infrastructure.entity.InfrastructureMqttEntity;
 import esthesis.service.tag.resource.TagSystemResource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class InfrastructureMqttService extends BaseService<InfrastructureMqttEntity> {
 

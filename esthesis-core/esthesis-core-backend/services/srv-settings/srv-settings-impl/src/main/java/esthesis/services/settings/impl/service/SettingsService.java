@@ -8,6 +8,7 @@ import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,6 +16,7 @@ import java.util.TreeSet;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class SettingsService extends BaseService<SettingEntity> {
 

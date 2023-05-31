@@ -4,11 +4,13 @@ import esthesis.avro.EsthesisCommandReplyMessage;
 import esthesis.avro.ReplyType;
 import esthesis.common.entity.CommandReplyEntity;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class CommandReplyUpdaterService {
 

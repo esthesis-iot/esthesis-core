@@ -1,7 +1,6 @@
 export const DATAFLOW_TEMPLATE_MAIN = [
   {key: "name", type: "input", props: {required: true, label: "Name"}},
-  {key: "description", type: "input", props: {required: false, label: "Description"}},
-  {key: "customDockerRegistry", type: "input", props: {required: false, label: "Custom Docker registry"}},
+  {key: "description", type: "input", props: {required: false, label: "Description"}}
 ];
 
 export const DATAFLOW_TEMPLATE_TAGS = [
@@ -42,6 +41,14 @@ export const DATAFLOW_TEMPLATE_KAFKA = [
     props: {required: true, label: "Cluster URL"}
   },
 ];
+
+export const DATAFLOW_TEMPLATE_IMAGE_REGISTRY = [{
+  key: "image", wrappers: ["section"],
+  props: {label: "Image registry"},
+  fieldGroup: [
+    {key: "registry", type: "input", defaultValue: "250m", props: {required: false, label: "Custom image registry"}}
+  ]
+}];
 
 export const DATAFLOW_TEMPLATE_WRAPPED_KUBERNETES = [{
   key: "kubernetes", wrappers: ["section"],

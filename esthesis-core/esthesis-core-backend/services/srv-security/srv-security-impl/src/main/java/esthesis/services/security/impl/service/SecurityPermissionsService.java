@@ -9,6 +9,7 @@ import esthesis.service.security.entity.RoleEntity;
 import esthesis.service.security.entity.UserEntity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class SecurityPermissionsService {
 

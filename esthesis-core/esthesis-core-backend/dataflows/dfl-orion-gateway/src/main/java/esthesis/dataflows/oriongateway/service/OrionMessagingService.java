@@ -4,10 +4,12 @@ import esthesis.dataflows.oriongateway.config.AppConfig;
 import esthesis.util.kafka.notifications.common.AppMessage;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class OrionMessagingService {
 
@@ -17,7 +19,7 @@ public class OrionMessagingService {
 	@Inject
 	AppConfig appConfig;
 
-	@SuppressWarnings({"java:S1301", "java:S108", "java:S131", "java:S6205" })
+	@SuppressWarnings({"java:S1301", "java:S108", "java:S131", "java:S6205"})
 	public void onAppMessage(Exchange exchange) {
 		AppMessage appMessage = exchange.getIn().getBody(AppMessage.class);
 		log.debug("Received message '{}'", appMessage);

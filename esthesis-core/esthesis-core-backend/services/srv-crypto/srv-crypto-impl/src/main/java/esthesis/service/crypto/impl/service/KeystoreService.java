@@ -15,6 +15,7 @@ import esthesis.service.device.resource.DeviceResource;
 import esthesis.service.settings.resource.SettingsResource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -24,6 +25,7 @@ import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+@Transactional
 @ApplicationScoped
 public class KeystoreService extends BaseService<KeystoreEntity> {
 

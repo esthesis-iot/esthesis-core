@@ -4,7 +4,6 @@ import esthesis.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +25,6 @@ public class DataflowEntity extends BaseEntity {
 	@Length(max = 256)
 	private String type;
 
-	@NotNull
 	private boolean status;
 
 	@NotBlank
@@ -36,10 +34,8 @@ public class DataflowEntity extends BaseEntity {
 	@Length(max = 4096)
 	private String description;
 
-	@Length(max = 1024)
-	private String customDockerRegistry;
-
 	private Map<String, Object> config;
 	private Map<String, Object> kubernetes;
+	private Map<String, Object> image;
 
 }

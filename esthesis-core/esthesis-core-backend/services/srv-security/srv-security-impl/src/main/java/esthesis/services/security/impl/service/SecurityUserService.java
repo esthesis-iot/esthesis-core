@@ -3,11 +3,13 @@ package esthesis.services.security.impl.service;
 import esthesis.service.common.BaseService;
 import esthesis.service.security.entity.UserEntity;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
+@Transactional
 @ApplicationScoped
 public class SecurityUserService extends BaseService<UserEntity> {
 
