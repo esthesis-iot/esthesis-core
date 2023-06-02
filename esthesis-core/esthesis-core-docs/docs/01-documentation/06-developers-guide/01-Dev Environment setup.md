@@ -20,6 +20,9 @@ machine, instead of being deployed to the Kubernetes cluster.
 	development environment using your favourite VM manager for your OS.
 - [Helm](https://helm.sh)
 - [Helmfile](https://github.com/helmfile/helmfile)
+- Many of the build and helper scripts are written in Bash, so you need a Bash shell. If you are on
+	Windows, you can use [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) or
+	[Cygwin](https://www.cygwin.com/).
 
 ## Kubernetes initialisation
 
@@ -69,7 +72,7 @@ Do yourself a favour and prepare some automation to perform all the above steps 
 on your OS, you might have different options. For macOS, we use [itomate](https://github.com/kamranahmedse/itomate),
 e.g.:
 
-![itomate](/img/docs/itomate.gif)
+![itomate](/img/docs/dev-guide/itomate.gif)
 
 ## Resources
 Provided you have successfully updated your `hosts` file, you can access the following resources:
