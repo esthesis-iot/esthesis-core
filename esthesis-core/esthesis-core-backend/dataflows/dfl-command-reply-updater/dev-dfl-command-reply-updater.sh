@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 PROFILES="dev"
 if [ "$1" != "" ]; then
@@ -7,11 +7,11 @@ if [ "$1" != "" ]; then
 fi
 
 env \
-    ESTHESIS_DFL_ESTHESIS_DB_URL=mongodb://esthesis-dev-mongodb:27017 \
-    ESTHESIS_DFL_ESTHESIS_DB_NAME=esthesis \
-    ESTHESIS_DFL_ESTHESIS_DB_USERNAME=esthesis \
-    ESTHESIS_DFL_ESTHESIS_DB_PASSWORD=esthesis \
-    ESTHESIS_DFL_KAFKA_CLUSTER_URL=esthesis-dev-kafka:9094 \
+    ESTHESIS_DFL_ESTHESIS_DB_URL=mongodb://mongodb.esthesis.localdev:27017 \
+		ESTHESIS_DFL_ESTHESIS_DB_NAME=esthesiscore \
+		ESTHESIS_DFL_ESTHESIS_DB_USERNAME=esthesis-system \
+		ESTHESIS_DFL_ESTHESIS_DB_PASSWORD=esthesis-system \
+		ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.esthesis.localdev:9094 \
     ESTHESIS_DFL_KAFKA_COMMAND_REPLY_TOPIC=esthesis-command-reply \
     ESTHESIS_DFL_KAFKA_CONSUMER_GROUP=dfl-command-reply-updater \
 ./mvnw quarkus:dev -Ddebug=39150 -Dquarkus.profile="$PROFILES"

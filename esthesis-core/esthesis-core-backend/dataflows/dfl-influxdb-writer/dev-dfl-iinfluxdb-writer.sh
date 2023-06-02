@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 PROFILES="dev"
 if [ "$1" != "" ]; then
@@ -6,12 +6,15 @@ if [ "$1" != "" ]; then
   echo "Activating profiles: $PROFILES"
 fi
 
+echo Enter influxdb token:
+read TOKEN
+
 env \
-    ESTHESIS_DFL_INFLUX_URL=http://esthesis-dev-influxdb:8086 \
-    ESTHESIS_DFL_INFLUX_TOKEN=Orlx1ELFS6_cBucJKVq4reftpB9_maMJMGKSAKOAIj2sVkF8ysowQLGUMhzj7yuhTuhMqhBzPXmU1xh9o60dKA== \
+    ESTHESIS_DFL_INFLUX_URL=http://influxdb.esthesis.localdev:8086 \
+    ESTHESIS_DFL_INFLUX_TOKEN= $TOKEN \
     ESTHESIS_DFL_INFLUX_ORG=esthesis \
     ESTHESIS_DFL_INFLUX_BUCKET=esthesis \
-    ESTHESIS_DFL_KAFKA_CLUSTER_URL=esthesis-dev-kafka:9094 \
+    ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.esthesis.localdev:9094 \
     ESTHESIS_DFL_KAFKA_TELEMETRY_TOPIC=esthesis-telemetry \
     ESTHESIS_DFL_KAFKA_METADATA_TOPIC=esthesis-metadata \
     ESTHESIS_DFL_KAFKA_CONSUMER_GROUP=dfl-influxdb-writer \
