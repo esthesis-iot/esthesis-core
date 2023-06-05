@@ -1,0 +1,59 @@
+# github.com/DavidGamba/go-getoptions v0.26.0
+## explicit; go 1.14
+github.com/DavidGamba/go-getoptions
+github.com/DavidGamba/go-getoptions/internal/help
+github.com/DavidGamba/go-getoptions/internal/option
+github.com/DavidGamba/go-getoptions/internal/sliceiterator
+github.com/DavidGamba/go-getoptions/text
+# github.com/eclipse/paho.mqtt.golang v1.4.2-0.20220810043731-079a117b4614
+## explicit; go 1.14
+github.com/eclipse/paho.mqtt.golang
+github.com/eclipse/paho.mqtt.golang/packets
+# github.com/go-resty/resty/v2 v2.7.0
+## explicit; go 1.11
+github.com/go-resty/resty/v2
+# github.com/gorilla/websocket v1.5.0
+## explicit; go 1.12
+github.com/gorilla/websocket
+# github.com/julienschmidt/httprouter v1.3.0
+## explicit; go 1.7
+github.com/julienschmidt/httprouter
+# github.com/mackerelio/go-osstat v0.2.3
+## explicit; go 1.18
+github.com/mackerelio/go-osstat/loadavg
+github.com/mackerelio/go-osstat/memory
+# github.com/magiconair/properties v1.8.7
+## explicit; go 1.19
+github.com/magiconair/properties
+# github.com/mochi-co/mqtt v1.3.2
+## explicit; go 1.18
+github.com/mochi-co/mqtt/server
+github.com/mochi-co/mqtt/server/events
+github.com/mochi-co/mqtt/server/internal/circ
+github.com/mochi-co/mqtt/server/internal/clients
+github.com/mochi-co/mqtt/server/internal/packets
+github.com/mochi-co/mqtt/server/internal/topics
+github.com/mochi-co/mqtt/server/internal/utils
+github.com/mochi-co/mqtt/server/listeners
+github.com/mochi-co/mqtt/server/listeners/auth
+github.com/mochi-co/mqtt/server/persistence
+github.com/mochi-co/mqtt/server/system
+# github.com/rs/xid v1.4.0
+## explicit; go 1.12
+github.com/rs/xid
+# github.com/sirupsen/logrus v1.9.0
+## explicit; go 1.13
+github.com/sirupsen/logrus
+# golang.org/x/net v0.0.0-20211029224645-99673261e6eb
+## explicit; go 1.17
+golang.org/x/net/internal/socks
+golang.org/x/net/proxy
+golang.org/x/net/publicsuffix
+# golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
+## explicit
+golang.org/x/sync/semaphore
+# golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8
+## explicit; go 1.17
+golang.org/x/sys/internal/unsafeheader
+golang.org/x/sys/unix
+golang.org/x/sys/windows

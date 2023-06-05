@@ -1,0 +1,679 @@
+= Changelog
+:toc:
+
+== v0.26.0: New ErrorParsing and minor fixes
+
+As the releases before, this release has 100% test coverage.
+Tested with Go 1.14, 1.15, 1.16, 1.17, 1.18 and 1.19.
+
+* Expose ErrorParsing as a generic error
+
+The ErrorParsing error indicates there was a problem parsing the cli args.
+
+This can be used for example, to print the help only in cases where the user didn't enter valid cli args.
+
+* Refactor dag package tests to remove most sleeps.
+
+* Bug fix: Don't check for required options when the help option is passed
+
+== v0.25.3: Minor Fixes
+
+As the releases before, this release has 100% test coverage.
+Tested with Go 1.14, 1.15, 1.16 and Go 1.17.
+
+=== Fixes
+
+* When using `opt.Self`, if name is empty, use `filepath.Base(os.Args[0])`.
+
+== v0.25.2: Minor Fixes
+
+As the releases before, this release has 100% test coverage.
+Tested with Go 1.14, 1.15, 1.16 and Go 1.17.
+
+=== Fixes
+
+* Fix bug when running in `SingleDash` mode, if calling a single letter option with a single dash, and the option expects a value and the value wasn't provided with `=` or as a bundle then the option value wouldn't get registered.
+
+== v0.25.1: Minor Fixes
+
+As the releases before, this release has 100% test coverage.
+Tested with Go 1.14, 1.15, 1.16 and Go 1.17.
+
+=== Minor changes
+
+* When `HelpCommand` is declared, inject a `help` subcommand to all commands, not just the ones that have children.
+This really simplifies discoverabilty for new users.
+
+=== Fixes
+
+* Maintain order of unknown options intermingled with arguments.
+When using getoptions.Pass ensure that unknown options are passthrough in the same order they were given.
+This is useful when doing wrappers.
+
+== v0.25.0: Major Refactor
+
+As the releases before, this release has 100% test coverage.
+Tested with Go 1.14, 1.15, 1.16 and Go 1.17.
+
+=== Goal
+
+This refactor brings major benefits in both parsing and autocompletion.
+In the initial implementation, completion was added as side logic to the existing parser code.
+In this implementation, completions are a first class citizen and share the same parsing tree structure that the rest of the library is using.
+
+The parsing tree was refactored from the ground up to better accommodate commands and subcommands and also the extra use cases that have been popping up ever since autocompletion support was added.
+
+The major user facing change is that instead of providing building blocks to build a command and subcommand experience, a single `opt.Parse` and `opt.Dispatch` call is required to handle options for commands and subcommands at all levels.
+
+=== Breaking changes
+
+* The HelpCommand signature has changed.
+The name of the "help" command is configurable.
+Additionally, when defining `opt.HelpCommand` there is no need to define a help option as it also declares one.
++
+----
+- opt.Bool("help", false, opt.Alias("?"))
+- opt.HelpCommand("")
++ opt.HelpCommand("help", opt.Alias("?"))
+----
+
+* The Dispatch signature has changed.
+There is no need to define the name of the help command at this level anymore since it has been moved to the `HelpCommand` declaration.
++
+[source,diff]
+----
+- err = opt.Dispatch(ctx, "help", remaining)
++ err = opt.Dispatch(ctx, remaining)
+----
+
+* Move `InterruptContext` into a package level function and not a method of GetOpt.
++
+[source,diff]
+----
+- ctx, cancel, done := opt.InterruptContext()
++ ctx, cancel, done := getoptions.InterruptContext()
+----
+
+* `Write` io.Writer used to write warnings and errors (which defaults to os.Stderr) has been made into a package level variable and not a method of GetOpt.
+
+* `CommandFn` is no longer an exported field of `GetOpt`.
+If this was ever used, now the canonical way to execute a command function is through `opt.Dispatch`.
+
+* Remove `opt.Option`, this was used in test code to return the internal representation of an option and shouldn't be accessed directly by an end user.
+
+* Remove `opt.Stringer`, this was used to print a text representation of the parsed structure but other than in test code there is little value for it.
+
+* Moved exported packages that this library uses into the `internal` directory so they can't be imported by other projects by mistake.
+
+* Change `opt.CustomCompletion` signature:
++
+[source,diff]
+----
+- func (gopt *GetOpt) CustomCompletion(list []string) *GetOpt
++ func (gopt *GetOpt) CustomCompletion(list ...string) *GetOpt
+----
+
+=== New Features
+
+* Autocompletion is super useful now.
+
+* New setting: `opt.UnsetOptions`
++
+Since options are automatically inherited to commands and subcommands, in cases where you want to override that inheritance and delete the inherited options use this.
+This is useful for wrapper commands.
+
+* When a command doesn't have a defined command fn but that command has children, a help landing page is displayed automatically.
+
+== v0.24.0: New Features
+
+As the releases before, this release has 100% test coverage.
+Tested with Go 1.14, 1.15, 1.16 and Go 1.17.
+
+=== New Features
+
+* Add `SetMaxParallel` method to DAG graph to limit concurrency.
+
+* Add `SetOutputBuffer` method to DAG graph to allow buffering task output in memory and printing it at the end of the task execution for easier debugging.
+
+* Enable completion results after options that require arguments.
+
+=== Fixes
+
+* Fix spelling mistake in package `dag`: `DephFirstSort()` -> `DepthFirstSort()`
+
+== v0.23.0: Feature Updates
+
+As the releases before, this release has 100% test coverage.
+Tested with Go 1.14 and Go 1.15.
+
+=== Feature Updates
+
+* Introduce `Float64Optional` and `Float64VarOptional` to have complete method parity for String, Int and Float64 types.
+
+* Support multi-line command descriptions.
+
+* Add `GetEnv` support for missing single option types:
+	- Int, IntVar, IntOptional, IntVarOptional
+  - StringOptional, StringVarOptional
+  - Float64, Float64Var, Float64Optional, Float64VarOptional
+
+== v0.22.0: Breaking Change
+
+As the releases before, this release has 100% test coverage.
+Tested with Go 1.14 and Go 1.15.
+
+=== Bug fix
+
+Fix completion issues where a completion that works when starting to complete from scratch fails when some args are deleted.
+
+Fixed by changing the exit status when generating completions from 1 to 124.
+link:https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion.html[Exit 124] means programmable completion restarts from the beginning, with an attempt to find a new compspec for that command.
+
+=== Feature Removal
+
+Removing negatable flags `NBool` and `NBoolVar`.
+A feature that adds a bunch of complexity for very little value and prevents reading environment variables into booleans.
+
+=== New Features
+
+* `opt.GetEnv` Is now supported when using `opt.Bool` and `opt.BoolVar`.
+Previously only `opt.String` and `opt.StringVar` were supported.
++
+When using `opt.GetEnv` with `opt.Bool` or `opt.BoolVar`, only the words "true" or "false" are valid.
+They can be provided in any casing, for example: "true", "True" or "TRUE".
+
+* `opt.Dispatch` now automatically handles the help flag.
+The help flag needs to be defined at the top level.
+When the help flag is called and handled by a command `opt.Dispatch` now returns an error of type `getoptions.ErrorHelpCalled`.
++
+For example:
++
+[source,go]
+----
+func main() {
+	os.Exit(program())
+}
+
+func program() int {
+	opt := getoptions.New()
+	opt.Bool("help", false, opt.Alias("?"))    // Define the help flag as "--help" with alias "-?"
+	list := opt.NewCommand("list", "list stuff").SetCommandFn(listRun)
+	list.Bool("list-opt", false)
+	opt.HelpCommand("")
+	remaining, err := opt.Parse(os.Args[1:])
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "ERROR: %s\n", err)
+		os.Exit(1)
+	}
+
+	ctx, cancel, done := opt.InterruptContext()
+	defer func() { cancel(); <-done }()
+
+	err = opt.Dispatch(ctx, "help", remaining) // Use the same help flag "help".
+	if err != nil {
+		if errors.Is(err, getoptions.ErrorHelpCalled) {
+			return 1
+		}
+		fmt.Fprintf(os.Stderr, "ERROR: %s\n", err)
+		return 1
+	}
+	return 0
+}
+----
++
+Now, calling `program list --help` or `program list -?` prints the help for the `list` command as well as calling `program help list`.
+
+== v0.21.0: Breaking Change
+
+As the releases before, this release has 100% test coverage.
+
+=== Drop support for Go versions before 1.14
+
+Dropping support for Go 1.10, 1.11, 1.12 and 1.13 to leverage new errors and testing features.
+
+In particular The `errors.Is` and `errors.As` features greatly simplify error testing and handling and are used in the new DAG build system.
+
+=== New Feature
+
+Introduces a new Directed Acyclic Graph Build System.
+
+The build system is a separate import package: `import "github.com/DavidGamba/go-getoptions/dag"`
+
+Documentation can be found in its own link:./dag/README.adoc[README].
+
+== v0.20.2: Feature Update
+
+As the releases before, this release has 100% test coverage.
+
+=== Deprecration WARNING
+
+Support for Go 1.10, 1.11 and 1.12 will be dropped in a future release.
+The `errors.Is` and `errors.As` features greatly simplify error testing and handling and will likely be introduced in the near future.
+
+=== Improve autocompletion behaviour.
+
+* Pass autocompletion entries to children.
++
+From v0.20.0 all options starting being passed to children commands.
+Their completion entries were missing.
+
+* Separate internal option completion between flags that don't expect and argument and options that do.
+When an option that expects an argument is found, the given argument won't break the completion chain.
+Only one argument is supported per option.
+
+* Don't break autocompletion chain when there is an option in the chain that accepts an argument with `=`.
+For example: `program --profile=dev <tab><tab>` will show completions for program.
+
+== v0.20.1: Feature Update
+
+As the releases before, this release has 100% test coverage.
+
+* Improve autocompletion behaviour.
++
+Break words in COMP_LINE by matching against multiple spaces `\s+` instead of a single one.
+
+== v0.20.0: Breaking Change
+
+As the releases before, this release has 100% test coverage.
+
+=== Method Deprecation
+
+* Deprecate `opt.SetOption`
++
+Since the introduction of `opt.NewCommand(name, description string)` there is a proper parent child relationship between commands.
+There is no need to hack passing desired options to the child command, instead, now all options are automatically propagated to the child.
++
+This has the side benefit to make the automated help clearer by listing all options that previously where only listed in one of the parent levels.
++
+To update, remove calls to `opt.SetOption`, for example:
++
+[source,diff]
+----
+ 	opt := getoptions.New()
+ 	opt.Bool("help", false, opt.Alias("?"))
+ 	opt.Bool("debug", false)
+ 	opt.SetRequireOrder()
+ 	opt.SetUnknownMode(getoptions.Pass)
+ 	list := opt.NewCommand("list", "list stuff")
+-	list.SetOption(opt.Option("help"), opt.Option("debug")).SetCommandFn(listRun)
++	list.SetCommandFn(listRun)
+ 	list.Bool("list-opt", false)
+ 	opt.HelpCommand("")
+ 	remaining, err := opt.Parse([]string{"list"})
+----
+
+=== Feature Update
+
+* Automatically run `opt.Parse` when calling `opt.Dispatch`.
++
+When defining a new command, we define the function that the command will run with `command.SetCommandFn(commandFunction)`.
+If the command is passed in the command line, `opt.Dispatch` calls the command function.
+Previously, `opt.Dispatch` wasn't automatically calling `opt.Parse` in the command function so the first thing that every command function had to do was a call to parse.
++
+For example:
++
+[source,go]
+----
+func main() {
+	opt := getoptions.New()
+	list := opt.NewCommand("list", "list stuff")
+	list.SetCommandFn(listRun)
+	opt.HelpCommand("")
+	remaining, err := opt.Parse(os.Args[1:])
+	if err != nil {
+		...
+	}
+
+	err = opt.Dispatch(context.Background(), "help", remaining)
+	if err != nil {
+		...
+	}
+}
+
+func listRun(ctx context.Context, opt *getoptions.GetOpt, args []string) error {
+	remaining, err := opt.Parse(args)
+	if err != nil {
+		...
+	}
+	// Function code here
+}
+----
++
+Now, the call `opt.Parse` is automated by `opt.Dispatch` so the command function is simplified to:
++
+[source,go]
+----
+func listRun(ctx context.Context, opt *getoptions.GetOpt, args []string) error {
+	// Function code here
+}
+----
++
+Where the received `opt` has the arguments already parsed and the received `args` is the remaining arguments that didn't match any option.
+
+== v0.19.0: Feature update
+
+As the releases before, this release has 100% test coverage.
+
+=== Update
+
+* `opt.GetEnv` now satisfies `opt.Required`:
++
+When an environment variable that matches the variable from `opt.GetEnv` is set, `opt.GetEnv` will set `opt.Called` to true and will set `opt.CalledAs` to the name of the environment variable used.
+In other words, when an option is required, `opt.Required` is set, `opt.GetEnv` satisfies that requirement.
+
+* `opt.GetEnv` environment variable now shows in help output.
++
+Example:
++
+----
+REQUIRED PARAMETERS:
+    --access-key-id <string>        AWS Access Key ID. (env: AWS_ACCESS_KEY_ID)
+
+    --role-arn <string>             Role ARN. (env: AWS_ROLE_ARN)
+
+    --secret-access-key <string>    AWS Secret Access Key. (env: AWS_SECRET_ACCESS_KEY)
+
+OPTIONS:
+    --region <string>               Default Region. (default: "us-west-2", env: AWS_DEFAULT_REGION)
+----
+
+== v0.18.0: Feature release
+
+As the releases before, this release has 100% test coverage.
+
+This release adds initial support for Environment Variables and adds lots of GoDoc examples.
+
+=== New Features
+
+* Initial support for environment variables has been added.
++
+Currently, only `opt.String` and `opt.StringVar` are supported.
++
+To use it, set the option modify function to opt.GetEnv.
+For example:
++
+[source, go]
+----
+var profile string
+opt.StringVar(&profile, "profile", "default", opt.GetEnv("AWS_PROFILE"))
+----
++
+Or:
++
+[source, go]
+----
+profile := opt.String("profile", "default", opt.GetEnv("AWS_PROFILE"))
+----
++
+NOTE: Non supported option types behave with a No-Op when `opt.GetEnv` is defined.
+
+=== Minor changes
+
+* Change opt.Dispatch signature to clarify the actual use of the variable.
+Additionally, actually use the variable, before it was hardcoded to "help".
++
+[source, diff]
+----
+-func (gopt *GetOpt) Dispatch(ctx context.Context, helpOptionName string, args []string) error
++func (gopt *GetOpt) Dispatch(ctx context.Context, helpCommandName string, args []string) error
+----
+
+== v0.17.0: Breaking Changes
+
+As the releases before, this release has 100% test coverage.
+
+This release keeps on the work of removing the kinks around subcommands.
+An example showing subcommands can be found in https://github.com/DavidGamba/go-getoptions/tree/master/examples/mygit[./examples/mygit].
+
+It also introduces the use of context to propagate cancelation signals, etc. to the child commands.
+
+Finally, it introduces a new helper that captures interrupts (for example Ctrl-C) and returns a top level context.
+
+=== Breaking changes
+
+* Refactor `NewCommmand` as a method.
+This will allow the built-in help to have information about the parent.
+It might also help with autocompletion.
+
+* Change sigature to `opt.NewCommand(name, description string)`.
+It takes a name and description now.
+
+* Change signature of `CommandFn` to have a `context` as the first argument.
+It will allow the parent to propagate cancelation signals, etc. to the child commands.
+This change goes along a change to the helper `opt.Dispatch` to also have a `context` as the first argument.
+
+Updating:
+
+[source, diff]
+----
+-   list := getoptions.NewCommand().Self("list", "list instances").
++   list := opt.NewCommand("list", "list instances").
+        SetOption(parent.Option("help"), parent.Option("debug")).
+        SetCommandFn(runInstanceList)
+    list.StringSlice("tag", 1, 99, opt.Alias("t"),
+        opt.Description("Any AWS tags you want to list"))
+-   opt.Command(list)
+
+ ...
+
+-   err = opt.Dispatch("help", remaining)
++   err = opt.Dispatch(context.Background(), "help", remaining)
+
+ ...
+
+-func runInstanceList(opt *getoptions.GetOpt, args []string) error {
++func runInstanceList(ctx context.Context, opt *getoptions.GetOpt, args []string) error {
+----
+
+=== New Features
+
+* Introduce `opt.InterruptContext()`, a helper that returns a top level context that captures interrupt signals (`os.Interrupt`, `syscall.SIGHUP`, `syscall.SIGTERM`).
+An example can be found in https://github.com/DavidGamba/go-getoptions/tree/master/examples/mygit[./examples/mygit].
+
+== v0.16.0 Feature release
+
+As the releases before, this release has 100% test coverage.
+
+=== Fixes
+
+* Bug Fix: Update `opt.Dispatch` not to handle `--help` option.
+It was preventing the help option to reach the commands.
+
+=== New Features
+
+* Introduce `opt.HelpSynopsisArgs(string)` method to allow overriding the default args description.
+The current default description is `[<args>]`.
+
+=== Minor changes
+
+* Make `SetMode`, `SetUnknownMode`, `SetRequireOrder` and `SetMapKeysToLower` chainable.
+
+== v0.15.0 Feature release
+
+As the releases before, this release has 100% test coverage.
+
+Change workflow to deal with ambiguities between parent and child.
+
+For example, the root may have option `--profile` and the command the option `--password` with alias `-p`. If `-p` is passed, the parent would uncorrectly be matched.
+
+For the parent to properly handle ambiguities with its children, it needs to have knowledge of them. A new `getoptions.NewCommand` has been introduced.
+
+To help with the verbosity of handling all the commands, a new `Dispatch` method is introduced, it will call a command's function defined with the new `SetCommandFn` method.
+
+=== New Features
+
+• Introduce `getoptions.NewCommand()` to declare commands and clearly separate their role from the main `getoptions.New()`.
+
+• Introduce `command.SetCommandFn(fn CommandFn)` to declare a commands function callback.
+
+• Introduce `opt.Dispatch(helpOptionName string, args []string)` to automatically handle dispatching to the `CommandFn` based on the cli input.
+
+• Make options unambiguous with commands.
+For example, the root may have option `--profile` and the command the option `--password` with alias `-p`. If `-p` is passed, the parent would uncorrectly be matched.
+
+• Introduce new error indicating which options are getting matched with ambiguous options.
+
+• Add `getoptions.HelpCommand()` to have an automated help command.
+It adds completions for all other commands automatically.
+
+=== Minor changes
+
+• Fix unknown option warning formatting.
+Each warning has its own line and it is preceded by `WARNING: `.
+
+• Minor README updates... New features need proper documentation.
+
+• Minor automated help changes.
+
+== v0.14.1 Golang Bug fix: module install error
+
+Bypass double dot golang modules error:
+https://github.com/golang/go/issues/27299
+
+== v0.14.0 Breaking Changes
+
+As the releases before, this release has 100% test coverage.
+
+This release introduces bash completion by default and works out many kinks around subcommands.
+An example showing subcommands can be found in https://github.com/DavidGamba/go-getoptions/tree/master/examples/mygit[./examples/mygit].
+
+=== Breaking changes
+
+• Remove support for Go < v1.10 (v1.5 - v1.9).
+• Rename `getoptions.Option` to `getoptions.Value`.
++
+WARNING: A new `getoptions.Option` method is has been introduced, but the new one returns `*option.Option` instead.
+
+• Change the argument of `opt.SetMode` and `opt.SetUnknownMode` from a string to a `getoptions.Mode` and `getoptions.UnknownMode` type.
+Makes it easier to autodiscover valid arguments for the method.
+
+• Refactor section help methods into the main `opt.Help` one.
++
+[source, diff]
+----
+- opt.HelpName()
++ opt.Help(getoptions.HelpName)
+
+- opt.HelpSynopsis()
++ opt.Help(getoptions.HelpSynopsis)
+
+- opt.HelpCommandList()
++ opt.Help(getoptions.HelpCommandList)
+
+- opt.HelpOptionList()
++ opt.Help(getoptions.HelpOptionList)
+----
++
+To print all the sections of the automated help, continue to use `opt.Help()`.
+
+=== New Features
+
+• Implement bash completion by default.
++
+Add the following to your `.bashrc`: +
+`complete -o default -C "/binary/location/myscript" myscript`
+
+• New `getoptions.Option` method that returns `*option.Option`.
+In combination with the new `getoptions.SetOption` it allows to pass options from parent to subcommand.
+
+• Add `getoptions.CustomCompletion` method.
+Given a list, it will add the elements of the list to the completion alternatives.
+
+• Add `getoptions.StringMapVar` method.
+
+=== Minor changes
+
+• Pad SYNOPSIS content with 4 spaces.
+• Add `Self` method to populate help NAME section.
+
+=== Backend changes
+
+• Refactor the code into more modular pieces.
+
+
+== v0.13.0 Feature release
+
+As the releases before, this release has 100% test coverage.
+
+=== New Features
+
+• Experimental implementation of help messages.
+• Show used alias in errors for single options (not slice or maps).
+• Add opt.CalledAs method to know how the option was called.
+
+=== Minor changes
+
+• Add example script.
+• Add golang 1.12 to test suite.
+
+
+== v0.12.0 Breaking Changes
+
+As the releases before, this release has 100% test coverage.
+
+=== Breaking change: Update function signatures
+
+Change all function signatures from:
+
+	XVar(p *bool, name string, def bool, aliases ...string)
+
+To:
+
+	XVar(p *bool, name string, def bool, fns ...ModifyFn)
+
+This change allows to pass different functions to the option that will
+modify single option behaviour and will allow for multiple features
+without future breaking changes in the function signature.
+
+As part as this change, a new function, `opt.Alias` is added to support
+previous functionality.
+
+To update, change the aliases from a list of aliases as the variadic
+last argument to a list of aliases passed to the `opt.Alias` function.
+For example:
+
+[source, diff]
+----
+- opt.BoolVar(&flag, "flag", false, "f", "alias2")
++ opt.BoolVar(&flag, "flag", false, opt.Alias("f", "alias2"))
+----
+
+=== New Features
+
+• Add `opt.Alias` option modifier to assign option aliases.
+• Add `opt.Required` option modifier to indicate if an option is required.
+
+
+== v0.11.0 Breaking Changes
+
+As the releases before, this release has 100% test coverage.
+
+=== Fix `go tip` case sensitive import path
+
+	davidgamba -> DavidGamba
+
+=== Deprecate and rename redundant methods
+
+• `StringSlice` is redundant with `StringSliceMulti`.  +
+Calling: +
+`StringSlice(name, aliases...)` +
+Is the same as Calling: +
+`StringSliceMulti(name, 1, 1, aliases...)` +
+Consolidate API to: +
+`StringSlice(name, min, max, aliases...)`
+
+• `StringMap` is redundant with `StringMapMulti`. +
+Calling: +
+`StringMap(name, aliases...)` +
+Is the same as Calling: +
+`StringMapMulti(name, 1, 1, aliases...)` +
+Consolidate API to: +
+`StringMap(name, min, max, aliases...)` +
+
+• Rename `IntSliceMulti` to `IntSlice`.
+
+=== New features
+
+• Add `StringSliceVar` and `IntSliceVar` methods.
+• Add option to `SetMapKeysToLower`.
+

@@ -1,0 +1,86 @@
+pipeline {
+    agent {
+        docker {
+            image 'golang:1.18'
+            args '-v /root/sonar-scanner:/root/sonar-scanner'
+            }
+        }
+    options {
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh '''
+                    cd go
+                    go build
+                '''
+            }
+        }
+        stage('Sonar Analysis') {
+            steps {
+                withSonarQubeEnv('sonar'){
+                    sh '/root/sonar-scanner/bin/sonar-scanner -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_KEY_ESTHESIS_DEVICE_V3}'
+                }
+            }
+        }
+        stage('Produce bom.xml') {
+            steps {
+                sh '''
+                go install github.com/CycloneDX/cyclonedx-gomod/cmd/cyclonedx-gomod@v1.3.0
+                cyclonedx-gomod app go > go/bom.xml
+                '''
+            }
+        }
+        stage('Dependency-Track Analysis') {
+            steps{
+                sh '''
+                    cat > payload.json <<__HERE__
+                    {
+                        "project": "9bbb88b1-ac8b-4657-a9e5-ecdf536a8f67",
+                        "bom": "$(cat go/bom.xml |base64 -w 0 -)"
+                    }
+                    __HERE__
+                '''
+                sh '''
+                    curl -X "PUT" ${DEPENDENCY_TRACK_URL} -H 'Content-Type: application/json' -H 'X-API-Key: '${DEPENDENCY_TRACK_API_KEY} -d @payload.json
+                '''
+            }
+        }
+    } 
+    post {
+        changed {
+            script {
+                if (currentBuild.result == 'SUCCESS') {
+                        rocketSend avatar: "http://d2-np.eurodyn.com/jenkins/jenkins.png", channel: 'esthesis-iot', message: ":white_check_mark: | ${BUILD_URL} \n\nBuild succeeded on branch *${env.BRANCH_NAME}* \nChangelog: ${getChangeString(10)}", rawMessage: true
+                } else {
+                        rocketSend avatar: "http://d2-np.eurodyn.com/jenkins/jenkins.png", channel: 'esthesis-iot', message: ":x: | ${BUILD_URL} \n\nBuild failed on branch *${env.BRANCH_NAME}* \nChangelog: ${getChangeString(10)}", rawMessage: true
+                }
+            }
+        }
+    }
+}
+
+@NonCPS
+def getChangeString(maxMessages) {
+    MAX_MSG_LEN = 100
+    def changeString = ""
+
+    def changeLogSets = currentBuild.changeSets
+
+    for (int i = 0; i < changeLogSets.size(); i++) {
+        def entries = changeLogSets[i].items
+        for (int j = 0; j < entries.length && i + j < maxMessages; j++) {
+            def entry = entries[j]
+            truncated_msg = entry.msg.take(MAX_MSG_LEN)
+            changeString += "*${truncated_msg}* _by author ${entry.author}_\n"
+        }
+    }
+
+    if (!changeString) {
+        changeString = " There have not been any changes since the last build"
+    }
+
+    return changeString
+}
