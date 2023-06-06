@@ -46,8 +46,8 @@ pipeline {
                     steps{
                         sh '''
                             cd esthesis-ui
-                            npm install -g @cyclonedx/bom
-                            cyclonedx-bom -o bom.xml
+                            npm install --global @cyclonedx/cyclonedx-npm
+                            cyclonedx-npm --ignore-npm-errors --output-format xml --output-file bom.xml
                         '''
                     }
                 }
