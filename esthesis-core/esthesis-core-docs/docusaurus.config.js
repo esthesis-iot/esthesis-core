@@ -16,6 +16,11 @@ const config = {
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
 
+	markdown: {
+		mermaid: true
+	},
+	themes: ['@docusaurus/theme-mermaid'],
+
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'esthesis-iot', // Usually your GitHub org/user name.
@@ -171,7 +176,7 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-      },
+      }
     }),
 };
 
