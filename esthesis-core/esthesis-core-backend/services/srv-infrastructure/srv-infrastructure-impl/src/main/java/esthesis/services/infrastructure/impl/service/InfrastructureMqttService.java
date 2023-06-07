@@ -27,17 +27,32 @@ public class InfrastructureMqttService extends BaseService<InfrastructureMqttEnt
 
 		// Convert the names of the tags to their IDs.
 		List<String> tagsList = List.of(tags.split(","));
-		final List<String> tagIds = tagsList.stream()
-			.map(tagName -> tagSystemResource.findByName(tagName).getId()
-				.toString())
-			.toList();
 
+		// Find the MQTT server matching the tags. In no tags are provided, return a random MQTT server.
 		Optional<InfrastructureMqttEntity> match;
 		if (CollectionUtils.isEmpty(tagsList)) {
-			match = findByColumnNull("tags").stream().findAny();
+			match = findRandom();
 		} else {
+			final List<String> tagIds = tagsList.stream()
+				.map(tagName -> tagSystemResource.findByName(tagName).getId()
+					.toString())
+				.toList();
 			match = findByColumnIn("tags", tagIds, false).stream().findAny();
 		}
+
+		log.debug("Returning MQTT server '{}'.", match);
+
+		return match;
+	}
+
+	public Optional<InfrastructureMqttEntity> matchRandom() {
+
+		log.debug("Looking for a random MQTT server.");
+
+		// Find a random MQTT server.
+		Optional<InfrastructureMqttEntity> match = findRandom();
+
+		log.debug("Returning MQTT server '{}'.", match);
 
 		return match;
 	}

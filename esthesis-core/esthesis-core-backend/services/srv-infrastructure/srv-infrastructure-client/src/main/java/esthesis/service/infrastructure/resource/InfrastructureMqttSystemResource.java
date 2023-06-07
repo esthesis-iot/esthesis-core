@@ -23,4 +23,11 @@ public interface InfrastructureMqttSystemResource {
 	@Path("/v1/match-by-tag")
 	Optional<InfrastructureMqttEntity> matchMqttServerByTags(@QueryParam("tags") String tags);
 
+	/**
+	 * Finds a random MQTT server, this is useful when devices try to register but provide no specific
+	 * tags.
+	 */
+	@GET
+	@Path("/v1/match-random")
+	Optional<InfrastructureMqttEntity> matchRandomMqttServer();
 }

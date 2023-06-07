@@ -46,7 +46,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bson.types.ObjectId;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
@@ -61,9 +60,6 @@ public class DeviceRegistrationService {
 	DeviceAttributeRepository deviceAttributeRepository;
 
 	@Inject
-	DeviceService deviceService;
-
-	@Inject
 	@RestClient
 	KeyResource keyResource;
 
@@ -74,9 +70,6 @@ public class DeviceRegistrationService {
 	@Inject
 	@RestClient
 	SettingsResource settingsResource;
-
-	@Inject
-	JsonWebToken jwt;
 
 	/**
 	 * Checks if device-pushed tags exist in the system and report the ones that do not exist,
@@ -122,8 +115,9 @@ public class DeviceRegistrationService {
 		AppConstants.Device.Type deviceType, String registrationSecret, String attributes)
 	throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, OperatorCreationException,
 				 NoSuchProviderException {
-		log.debug("Registering device with hardware id '{}', tags '{}, status '{}, "
-			+ "secret '{}', attributes '{}.", hardwareId, tags, status, registrationSecret, attributes);
+		log.debug("Registering device with hardware id '{}', tags '{}', status '{}', "
+				+ "secret '{}', and attributes '{}'.", hardwareId, tags, status, registrationSecret,
+			attributes);
 
 		// Check if a registration secret is needed.
 		if (settingsResource.findByName(NamedSetting.DEVICE_REGISTRATION_MODE).asString()

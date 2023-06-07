@@ -22,4 +22,10 @@ public class InfrastructureMqttSystemResourceImpl implements InfrastructureMqttS
 		return infrastructureMqttService.matchByTags(tags)
 			.filter(InfrastructureMqttEntity::isActive);
 	}
+
+	@Override
+	public Optional<InfrastructureMqttEntity> matchRandomMqttServer() {
+		return infrastructureMqttService.matchRandom()
+			.filter(InfrastructureMqttEntity::isActive);
+	}
 }

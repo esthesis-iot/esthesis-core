@@ -130,13 +130,18 @@ public class AgentService {
 		}
 
 		// Find the MQTT server to send back to the device.
-		Optional<InfrastructureMqttEntity> mqttServer = infrastructureMqttSystemResource.matchMqttServerByTags(
-			agentRegistrationRequest.getTags());
+		Optional<InfrastructureMqttEntity> mqttServer;
+		if (StringUtils.isNotEmpty(agentRegistrationRequest.getTags())) {
+			mqttServer =
+				infrastructureMqttSystemResource.matchMqttServerByTags(agentRegistrationRequest.getTags());
+		} else {
+			mqttServer = infrastructureMqttSystemResource.matchRandomMqttServer();
+		}
 		if (mqttServer.isPresent()) {
 			agentRegistrationResponse.setMqttServer(mqttServer.get().getUrl());
 		} else {
-			log.warn("Could not find a matching MQTT server for device {} with "
-					+ "tags {} during registration.", agentRegistrationRequest.getHardwareId(),
+			log.warn("Could not find a matching MQTT server for device '{}' with "
+					+ "tags '{}' during registration.", agentRegistrationRequest.getHardwareId(),
 				agentRegistrationRequest.getTags());
 		}
 
