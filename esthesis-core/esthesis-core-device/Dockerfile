@@ -4,7 +4,6 @@ WORKDIR /app
 COPY go/. .
 RUN go mod download
 RUN go build -o esthesis-core-device -ldflags '-linkmode external -w -extldflags "-static"' cmd/main.go
-#RUN go build -o esthesis-agent cmd/main.go
 
 FROM alpine:3.18.0
 COPY --from=build /app/esthesis-core-device /app/esthesis-core-device
