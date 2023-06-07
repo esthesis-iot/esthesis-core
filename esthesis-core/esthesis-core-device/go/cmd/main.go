@@ -93,10 +93,10 @@ func main() {
 	log.Debugf("Using temporary directory '%s'.", config.Flags.TempDir)
 
 	// Connect to MQTT broker.
-	mqttClient.Connect()
+	mqttServerConnected := mqttClient.Connect()
 
 	// Check if device firmware version should be reported.
-	if config.Flags.VersionReport && config.Flags.VersionFile != "" {
+	if config.Flags.VersionReport && config.Flags.VersionFile != "" && mqttServerConnected {
 		if !util.IsFirmwareVersionFilePresent() {
 			log.Warnf("Version file '%s' not found. "+
 				"Device firmware version will not be reported.", config.Flags.VersionFile)
@@ -110,14 +110,14 @@ func main() {
 	}
 
 	// Startup ping and health reporters.
-	if config.Flags.PingInterval > 0 {
+	if config.Flags.PingInterval > 0 && mqttServerConnected {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
 			mqttPing.Start(channels.GetPingChan())
 		}()
 	}
-	if config.Flags.HealthReportInterval > 0 {
+	if config.Flags.HealthReportInterval > 0 && mqttServerConnected {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -126,7 +126,7 @@ func main() {
 	}
 
 	// Startup embedded HTTP server.
-	if config.Flags.EndpointHttp {
+	if config.Flags.EndpointHttp && mqttServerConnected {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -135,7 +135,7 @@ func main() {
 	}
 
 	// Startup embedded MQTT server.
-	if config.Flags.EndpointMqtt {
+	if config.Flags.EndpointMqtt && mqttServerConnected {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -144,7 +144,7 @@ func main() {
 	}
 
 	// Startup auto update.
-	if config.Flags.AutoUpdate {
+	if config.Flags.AutoUpdate && mqttServerConnected {
 		if !util.IsFileExists(config.Flags.VersionFile) {
 			log.Warnf("Version file '%s' not found. "+
 				"Automatic firmware update will not be enabled.", config.Flags.VersionFile)
@@ -162,7 +162,7 @@ func main() {
 	}
 
 	// Startup demo mode.
-	if config.Flags.DemoInterval > 0 {
+	if config.Flags.DemoInterval > 0 && mqttServerConnected {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()

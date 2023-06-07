@@ -6,7 +6,7 @@ echo "Building esthesisiot/esthesis-core-device:$VERSION"
 
 # Architectures to build, i.e. "linux/amd64,linux/arm64"
 if [ -z "$ESTHESIS_ARCHITECTURES" ]; then
-	ESTHESIS_ARCHITECTURES="linux/amd64"
+	ESTHESIS_ARCHITECTURES="linux/amd64,linux/arm64"
 fi
 
 # Build using a random buildx.

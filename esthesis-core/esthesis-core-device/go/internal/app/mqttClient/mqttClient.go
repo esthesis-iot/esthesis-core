@@ -29,9 +29,14 @@ func Disconnect() {
 	}
 }
 
-func Connect() {
-	mqttServer := config.GetRegistrationProperty(
-		config.RegistrationPropertyMqttServer)
+func Connect() bool {
+	mqttServer := config.GetRegistrationProperty(config.RegistrationPropertyMqttServer)
+	// If no MQTT server is configured, do nothing.
+	if mqttServer == "" {
+		log.Warn("No MQTT server configured.")
+		return false
+	}
+
 	log.Debugf("Connecting to MQTT server '%s'.", mqttServer)
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(mqttServer)
@@ -53,9 +58,15 @@ func Connect() {
 		fmt.Println(token.Error())
 		os.Exit(1)
 	}
+
+	return true
 }
 
 func Publish(topic string, payload []byte) mqtt.Token {
-	log.Debugf("Publishing '%s' to topic '%s'.", util.AbbrBA(payload), topic)
-	return client.Publish(topic, 0, false, payload)
+	if client != nil {
+		log.Debugf("Publishing '%s' to topic '%s'.", util.AbbrBA(payload), topic)
+		return client.Publish(topic, 0, false, payload)
+	} else {
+		return nil
+	}
 }
