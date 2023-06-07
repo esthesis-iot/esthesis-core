@@ -14,13 +14,15 @@ environment variable to point to the private registry. This variable should poin
 of your Microk8s VM using port 32000.
 For example:
 ```shell
-ESTHESIS_REGISTRY=192.168.20.23:32000 publish.sh
+ESTHESIS_REGISTRY=192.168.20.23:32000 ./publish.sh
 ```
 
-⚠️ Note: Backend services are built using JIB, so it is possible to push to a private Docker registry
+:::tip
+Backend services are built using JIB, so it is possible to push to a private Docker registry
 with no additional configuration. Hoerver, the UI is built using Docker Buildx, so you need to
 configure Buildx accordingly to use a private Docker registry. There is a sample configuration file
 `buildkit-config.tom` you can use as a starting point.
+:::
 
 ## Using the private registry in testing a production installation
 When testing a production installation, you can configure the Helm charts to use the images from
@@ -32,9 +34,11 @@ For example:
 ESTHESIS_REGISTRY=localhost:32000 helmfile sync
 ```
 
-⚠️ Note: When using the Helm charts without the `-env dev` flag, the charts will automatically
+:::tip
+When using the Helm charts without the `-env dev` flag, the charts will automatically
 use multi-node deployments. If you are testing in a single-node Kubernetes cluster, you need to also
 define `ESTHESIS_SINGLE_NODE=true` environmental variable.
+:::
 
 ## Deploying Dataflows
 To use your private Docker Registry when deploying a Dataflow, you can use the

@@ -169,7 +169,7 @@ func InitCmdFlags(osArgs []string) {
 	opt.IntVar(&Flags.EndpointHttpListeningPort, "endpointHttpListeningPort",
 		8080, opt.GetEnv("ENDPOINT_HTTP_LISTENING_PORT"),
 		opt.Description("The port in which the embedded HTTP server listens to"))
-	opt.IntVar(&Flags.MqttTimeout, "mqttTimeout}",
+	opt.IntVar(&Flags.MqttTimeout, "mqttTimeout",
 		60, opt.GetEnv("MQTT_TIMEOUT"),
 		opt.Description("The number of seconds to wait before failing an outgoing MQTT message"))
 	opt.BoolVar(&Flags.EndpointMqtt, "endpointMqtt",

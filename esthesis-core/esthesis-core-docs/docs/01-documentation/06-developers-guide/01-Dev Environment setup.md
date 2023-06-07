@@ -46,9 +46,11 @@ located in a corporate network, please check with your network administrators fi
 	```
 - Update your `hosts` file by executing `hosts-file-update.sh`.
 
-⚠️ Note that you need to specify the IP address of your development machine in the `DEV_HOST` environment
+:::tip
+You need to specify the IP address of your development machine in the `DEV_HOST` environment
 variable. This is needed so that the API gateway (APISIX) knows where to forward the requests to
 (since in `dev` setup the services run on your own machine, not in Kubernetes).
+:::
 
 ## Running the services
 The above installation will prepare all the necessary components to support esthesis Core. The actual
