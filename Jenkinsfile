@@ -13,7 +13,7 @@ pipeline {
         stage('Go Build Device') {
           steps {
             sh '''
-                cd estesis-core/estesis-core-device/go
+                cd esthesis-core/esthesis-core-device/go
                 go mod download
                 go build -o esthesis-agent -ldflags '-linkmode external -w -extldflags "-static"' cmd/main.go
             '''
