@@ -66,7 +66,7 @@ pipeline {
                 sh '''
                     cat > payload.json <<__HERE__
                     {
-                        "project": "9bbb88b1-ac8b-4657-a9e5-ecdf536a8f67",
+                        "project": "7b2bd0e6-6b00-4d20-8147-b102a23ac56f",
                         "bom": "$(cat esthesis-core/esthesis-core-device/go/bom.xml |base64 -w 0 -)"
                     }
                     __HERE__
@@ -82,7 +82,7 @@ pipeline {
                 sh '''
                       cat > payload.json <<__HERE__
                       {
-                        "project": "b2baacfa-12b5-44b2-972d-d7ef1a8a995e",
+                        "project": "cd0e48ff-6cbc-490f-82d5-927414a3bda5",
                         "bom": "$(cat esthesis-core/esthesis-core-backend/target/bom.xml |base64 -w 0 -)"
                       }
                       __HERE__
@@ -99,7 +99,7 @@ pipeline {
                 sh '''
                     cat > payload.json <<__HERE__
                     {
-                      "project": "0cfd9e59-15b8-44ff-9b86-290c88efbcb4",
+                      "project": "e55de6df-15be-47d5-8692-0dee163d6865",
                       "bom": "$(cat esthesis-core/esthesis-core-ui/bom.xml |base64 -w 0 -)"
                     }
                     __HERE__
