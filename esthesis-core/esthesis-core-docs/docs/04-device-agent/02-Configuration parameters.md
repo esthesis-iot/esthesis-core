@@ -128,6 +128,26 @@ command line arguments. The following tables lists all available configuration p
 			<td>Alphanumeric</td>
 		</tr>
 		<tr>
+			<td><code>LUA_HTTP_TELEMETRY_SCRIPT, luaHttpTelemetryScript</code></td>
+			<td>The filesystem location of a Lua script to transform incoming payloads for telemetry data pushed via the HTTP endpoint</td>
+			<td>Alphanumeric</td>
+		</tr>
+		<tr>
+			<td><code>LUA_HTTP_METADATA_SCRIPT, luaHttpMetadataScript</code></td>
+			<td>The filesystem location of a Lua script to transform incoming payloads for metadata data pushed via the HTTP endpoint</td>
+			<td>Alphanumeric</td>
+		</tr>
+		<tr>
+			<td><code>LUA_MQTT_TELEMETRY_SCRIPT, luaMqttTelemetryScript</code></td>
+			<td>The filesystem location of a Lua script to transform incoming payloads for telemetry data pushed via the MQTT endpoint</td>
+			<td>Alphanumeric</td>
+		</tr>
+		<tr>
+			<td><code>LUA_MQTT_METADATA_SCRIPT, luaMqttMetadataScript</code></td>
+			<td>The filesystem location of a Lua script to transform incoming payloads for metadata data pushed via the MQTT endpoint</td>
+			<td>Alphanumeric</td>
+		</tr>
+		<tr>
 			<td><code>MQTT_TIMEOUT, mqttTimeout</code></td>
 			<td>The number of seconds to wait before failing an outgoing MQTT message.<br/><br/>
 					Default: 60</td>

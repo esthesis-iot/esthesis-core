@@ -73,6 +73,10 @@ type flagsStruct struct {
 	DemoInterval              int // in seconds
 	RegistrationSecret        string
 	Attributes                string
+	LuaHttpTelemetryScript    string
+	LuaHttpMetadataScript     string
+	LuaMqttTelemetryScript    string
+	LuaMqttMetadataScript     string
 }
 
 var Flags = flagsStruct{}
@@ -145,6 +149,20 @@ func InitCmdFlags(osArgs []string) {
 	opt.StringVar(&Flags.TopicCommandReply, "topicCommandReply", "esthesis/command/reply",
 		opt.GetEnv("TOPIC_COMMAND_REPLY"),
 		opt.Description("The topic to use for command reply messages"))
+
+	// LUA scripts
+	opt.StringVar(&Flags.LuaHttpTelemetryScript, "luaHttpTelemetryScript", "",
+		opt.GetEnv("LUA_HTTP_TELEMETRY_SCRIPT"),
+		opt.Description("The Lua script to transform telemetry messages for HTTP endpoint"))
+	opt.StringVar(&Flags.LuaHttpMetadataScript, "luaHttpMetadataScript", "",
+		opt.GetEnv("LUA_HTTP_METADATA_SCRIPT"),
+		opt.Description("The Lua script to transform metadata messages for HTTP endpoint"))
+	opt.StringVar(&Flags.LuaMqttTelemetryScript, "luaMqttTelemetryScript", "",
+		opt.GetEnv("LUA_MQTT_TELEMETRY_SCRIPT"),
+		opt.Description("The Lua script to transform telemetry messages for MQTT endpoint"))
+	opt.StringVar(&Flags.LuaMqttMetadataScript, "luaMqttMetadataScript", "",
+		opt.GetEnv("LUA_MQTT_METADATA_SCRIPT"),
+		opt.Description("The Lua script to transform metadata messages for MQTT endpoint"))
 
 	opt.IntVar(&Flags.HealthReportInterval, "healthReportInterval", 300,
 		opt.GetEnv("HEALTH_REPORT_INTERVAL"),

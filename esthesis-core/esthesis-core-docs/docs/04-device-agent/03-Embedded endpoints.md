@@ -2,7 +2,7 @@
 
 esthesis device agent comes with two embedded endpoints:
 - An MQTT endpoint, allowing external applications to communicate with the device agent using MQTT, and
-- A REST endpoint, allowing external applications to communicate with the device agent using REST.
+- An HTTP/REST endpoint, allowing external applications to communicate with the device agent using HTTP.
 
 :::tip
 Both endpoints are off by default, so you need to enable them in the
@@ -47,13 +47,13 @@ device agent, you can have the embedded endpoints only listen to `127.0.0.1` (wh
 value).
 :::
 
-## REST endpoints
-esthesis device agent exposes two REST endpoints:
+## HTTP endpoints
+esthesis device agent exposes two HTTP endpoints:
 - `/telemetry` - for sending telemetry data to the esthesis platform, and
 - `/metadata` - for sending metadata to the esthesis platform.
 
 :::info
-The REST endpoints are off by default, so you need to enable them first using the `ENDPOINT_HTTP`
+The HTTP endpoints are off by default, so you need to enable them first using the `ENDPOINT_HTTP`
 environment variable, or the `endpointHttp` command line argument.
 :::
 

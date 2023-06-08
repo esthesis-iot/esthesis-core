@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/esthesis-iot/esthesis-device/internal/app/mqttClient"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
+	"github.com/esthesis-iot/esthesis-device/internal/pkg/luaExecutor"
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 	"io"
@@ -23,21 +24,36 @@ func getBody(r *http.Request) []byte {
 	return body
 }
 
-func telemetryEndpoint(w http.ResponseWriter, r *http.Request,
-	_ httprouter.Params) {
-	log.Infof("Received telemetry data: '%s'.", getBody(r))
-	// var topic = config.Flags.TopicTelemetry + "/" + config.Flags.HardwareId
-	// mqttClient.Publish(topic,
-	// 	getBody(r)).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.
-	// 	Second)
+func telemetryEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	// Get body.
+	body := getBody(r)
+	log.Debugf("Received telemetry data: '%s'.", body)
+
+	// Check if payload should be transformed.
+	if config.Flags.LuaHttpTelemetryScript != "" {
+		body = []byte(luaExecutor.ExecuteLuaScript(string(body[:]),
+			config.Flags.LuaHttpTelemetryScript))
+	}
+
+	// Send payload to MQTT broker.
+	var topic = config.Flags.TopicTelemetry + "/" + config.Flags.HardwareId
+	mqttClient.Publish(topic, body).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
 }
 
-func metadataEndpoint(w http.ResponseWriter, r *http.Request,
-	ps httprouter.Params) {
+func metadataEndpoint(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	// Get body.
+	body := getBody(r)
+	log.Debugf("Received telemetry data: '%s'.", body)
+
+	// Check if payload should be transformed.
+	if config.Flags.LuaHttpMetadataScript != "" {
+		body = []byte(luaExecutor.ExecuteLuaScript(string(body[:]),
+			config.Flags.LuaHttpMetadataScript))
+	}
+
+	// Send payload to MQTT broker.
 	var topic = config.Flags.TopicMetadata + "/" + config.Flags.HardwareId
-	mqttClient.Publish(topic,
-		getBody(r)).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.
-		Second)
+	mqttClient.Publish(topic, body).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
 }
 
 func startHTTPServer(r http.Handler, listeningAddress string) *http.Server {

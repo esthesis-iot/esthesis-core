@@ -11,6 +11,7 @@ require (
 	github.com/magiconair/properties v1.8.7
 	github.com/mochi-co/mqtt v1.3.2
 	github.com/sirupsen/logrus v1.9.0
+	github.com/yuin/gopher-lua v1.1.0
 )
 
 require (
