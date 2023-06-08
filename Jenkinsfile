@@ -34,18 +34,18 @@ pipeline {
           }
         }
         stage('Sonar Analysis') {
-          steps {
-            withSonarQubeEnv('sonar') {
-              sh 'cd estesis-core && /root/sonar-scanner/bin/sonar-scanner -Dsonar.projectVersion="$(mvn -f server/pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_KEY_ESTHESIS_PLATFORM_V3}'
+            steps {
+                withSonarQubeEnv('sonar') {
+                  sh 'cd esthesis-core && /root/sonar-scanner/bin/sonar-scanner -Dsonar.projectVersion="$(mvn -f server/pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_KEY_ESTHESIS_PLATFORM_V3}'
+                }
             }
-          }
         }
         stage('Produce bom.xml for Device module') {
             steps {
                 sh '''
-                cd esthesis-core/esthesis-core-device/go
-                go install github.com/CycloneDX/cyclonedx-gomod/cmd/cyclonedx-gomod@v1.3.0
-                cyclonedx-gomod app go > go/bom.xml
+                    cd esthesis-core/esthesis-core-device/go
+                    go install github.com/CycloneDX/cyclonedx-gomod/cmd/cyclonedx-gomod@v1.3.0
+                    cyclonedx-gomod app go > go/bom.xml
                 '''
             }
         }
