@@ -10,6 +10,15 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
     stages {
+        stage('Go Build Device') {
+          steps {
+            sh '''
+                cd estesis-core/estesis-core-device/go
+                go mod download
+                go build -o esthesis-agent -ldflags '-linkmode external -w -extldflags "-static"' cmd/main.go
+            '''
+          }
+        }
         stage('Build Server') {
           steps {
             sh 'mvn -f esthesis-core/esthesis-core-backend/pom.xml clean install -DskipTests -Pcyclonedx-bom'
@@ -21,15 +30,6 @@ pipeline {
                 cd esthesis-core/esthesis-core-ui
                 npm install
                 npx ng build --configuration production --output-path=dist
-            '''
-          }
-        }
-        stage('Go Build Device') {
-          steps {
-            sh '''
-                cd estesis-core/estesis-core-device/go
-                go mod download
-                go build -o esthesis-agent -ldflags '-linkmode external -w -extldflags "-static"' cmd/main.go
             '''
           }
         }
