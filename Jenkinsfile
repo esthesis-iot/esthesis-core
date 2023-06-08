@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-          image 'eddevopsd2/maven-java-npm-docker:mvn3.8.5-jdk17-npm8.5.0-docker'
+          image 'eddevopsd2/maven-java-npm-docker:mvn3.8.5-jdk17-node14.21.3-go1.20-docker'
           args '-v /root/.m2/Esthesis:/root/.m2 -v /root/sonar-scanner:/root/sonar-scanner'
         }
     }
@@ -10,11 +10,6 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
     stages {
-        stage('Install Dependencies') {
-          steps {
-            sh 'sudo apt install golang -y'
-          }
-        }
         stage('Build Server') {
           steps {
             sh 'mvn -f esthesis-core/esthesis-core-backend/pom.xml clean install -DskipTests -Pcyclonedx-bom'
@@ -117,37 +112,4 @@ pipeline {
           }
         }
     }
-    post {
-        changed {
-          script {
-            if (currentBuild.result == 'SUCCESS') {
-              rocketSend avatar: 'http://d2-np.eurodyn.com/jenkins/jenkins.png', channel: 'esthesis-iot', message: ":white_check_mark: | ${BUILD_URL} \n\nBuild succeeded on branch *${env.BRANCH_NAME}* \nChangelog: ${getChangeString(10)}", rawMessage: true
-                  } else {
-              rocketSend avatar: 'http://d2-np.eurodyn.com/jenkins/jenkins.png', channel: 'esthesis-iot', message: ":x: | ${BUILD_URL} \n\nBuild failed on branch *${env.BRANCH_NAME}* \nChangelog: ${getChangeString(10)}", rawMessage: true
-            }
-          }
-        }
-    }
-}
-@NonCPS
-def getChangeString(maxMessages) {
-  MAX_MSG_LEN = 100
-  def changeString = ''
-
-  def changeLogSets = currentBuild.changeSets
-
-  for (int i = 0; i < changeLogSets.size(); i++) {
-    def entries = changeLogSets[i].items
-    for (int j = 0; j < entries.length && i + j < maxMessages; j++) {
-      def entry = entries[j]
-      truncated_msg = entry.msg.take(MAX_MSG_LEN)
-      changeString += "*${truncated_msg}* _by author ${entry.author}_\n"
-    }
-  }
-
-  if (!changeString) {
-    changeString = ' There have not been any changes since the last build'
-  }
-
-  return changeString
 }
