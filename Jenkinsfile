@@ -59,7 +59,7 @@ pipeline {
                 sh '''
                     cat > payload.json <<__HERE__
                     {
-                      "project": "cd0e48ff-6cbc-490f-82d5-927414a3bda5",
+                      "project": "e33f672c-41d2-4e4b-a278-e807fd6e46d2",
                       "bom": "$(cat esthesis-server/target/bom.xml |base64 -w 0 -)"
                     }
                     __HERE__
@@ -76,7 +76,7 @@ pipeline {
                 sh '''
                     cat > payload.json <<__HERE__
                     {
-                      "project": "e55de6df-15be-47d5-8692-0dee163d6865",
+                      "project": "199beddb-f50b-4b55-9f09-15ee8a0a6961",
                       "bom": "$(cat esthesis-ui/bom.xml |base64 -w 0 -)"
                     }
                     __HERE__
