@@ -76,4 +76,6 @@ net ip1="primary 192.168.1.1"
 cpu load=1
 cpu load=1 2022-01-01T01:02:03Z
 cpu temperature=20 2022-01-01T03:02:03Z
+cpu threads=102,temperature=29
+cpu threads=102,temperature=29 2022-01-01T01:02:03Z
 ```
