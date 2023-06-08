@@ -11,6 +11,9 @@ import (
 	"time"
 )
 
+const telemetryEndpoint = "telemetry"
+const metadataEndpoint = "metadata"
+
 func Start(done chan bool) {
 	mqttListeningAddress := config.Flags.
 		EndpointMqttListeningIP + ":" + strconv.Itoa(config.Flags.EndpointMqttListeningPort)
@@ -18,7 +21,7 @@ func Start(done chan bool) {
 	// Create the  MQTT Server.
 	server := mqtt.NewServer(nil)
 
-	// Create a TCP listener on a standard port.
+	// Create a TCP listener.
 	tcp := listeners.NewTCP("t1", mqttListeningAddress)
 
 	// Add the listener to the server with default options (nil).
@@ -27,15 +30,16 @@ func Start(done chan bool) {
 		log.Fatal(err)
 	}
 
-	server.Events.OnMessage = func(cl events.Client,
-		pk events.Packet) (pkx events.Packet, err error) {
+	// Specify message handlers.
+	server.Events.OnMessage = func(cl events.Client, pk events.Packet) (pkx events.Packet,
+		err error) {
 		topic := pk.TopicName
-		if topic == config.Flags.TopicTelemetry {
+		if topic == telemetryEndpoint {
 			mqttClient.Publish(config.Flags.
 				TopicTelemetry+"/"+config.Flags.HardwareId,
 				pk.Payload).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.
 				Second)
-		} else if topic == config.Flags.TopicMetadata {
+		} else if topic == metadataEndpoint {
 			mqttClient.Publish(config.Flags.
 				TopicMetadata+"/"+config.Flags.HardwareId,
 				pk.Payload).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.

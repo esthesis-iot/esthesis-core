@@ -128,21 +128,24 @@ func InitCmdFlags(osArgs []string) {
 	opt.IntVar(&Flags.RetryHttpRequest, "httpRetry", 60,
 		opt.GetEnv("HTTP_RETRY"),
 		opt.Description("The number of seconds to wait before retrying a failed HTTP request"))
+
+	// MQTT topics
 	opt.StringVar(&Flags.TopicPing, "topicPing", "esthesis/ping",
 		opt.GetEnv("TOPIC_PING"),
-		opt.Description("The topic to use for ping messages"))
+		opt.Description("The topic to use to send ping messages"))
 	opt.StringVar(&Flags.TopicTelemetry, "topicTelemetry", "esthesis/telemetry",
 		opt.GetEnv("TOPIC_TELEMETRY"),
-		opt.Description("The topic to use for telemetry messages"))
+		opt.Description("The topic to use to send telemetry messages"))
 	opt.StringVar(&Flags.TopicMetadata, "topicMetadata", "esthesis/metadata",
 		opt.GetEnv("TOPIC_METADATA"),
-		opt.Description("The topic to use for metadata messages"))
+		opt.Description("The topic to use to send metadata messages"))
 	opt.StringVar(&Flags.TopicCommandRequest, "topicCommandRequest", "esthesis/command/request",
 		opt.GetEnv("TOPIC_COMMAND_REQUEST"),
-		opt.Description("The topic to use for command request messages"))
+		opt.Description("The topic to use to receive command request messages"))
 	opt.StringVar(&Flags.TopicCommandReply, "topicCommandReply", "esthesis/command/reply",
 		opt.GetEnv("TOPIC_COMMAND_REPLY"),
 		opt.Description("The topic to use for command reply messages"))
+
 	opt.IntVar(&Flags.HealthReportInterval, "healthReportInterval", 300,
 		opt.GetEnv("HEALTH_REPORT_INTERVAL"),
 		opt.Description("The frequency in which to send health reports ("+

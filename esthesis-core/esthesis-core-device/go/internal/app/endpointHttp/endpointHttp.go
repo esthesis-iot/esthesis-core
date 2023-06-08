@@ -25,8 +25,7 @@ func getBody(r *http.Request) []byte {
 
 func telemetryEndpoint(w http.ResponseWriter, r *http.Request,
 	_ httprouter.Params) {
-	// var topic = config.Flags.TopicTelemetry + "/" + config.Flags.HardwareId
-	var topic = config.Flags.TopicTelemetry + "/" + "esthesis-device-1"
+	var topic = config.Flags.TopicTelemetry + "/" + config.Flags.HardwareId
 	mqttClient.Publish(topic,
 		getBody(r)).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.
 		Second)
@@ -34,8 +33,7 @@ func telemetryEndpoint(w http.ResponseWriter, r *http.Request,
 
 func metadataEndpoint(w http.ResponseWriter, r *http.Request,
 	ps httprouter.Params) {
-	// var topic = config.Flags.TopicMetadata + "/" + config.Flags.HardwareId
-	var topic = config.Flags.TopicMetadata + "/" + "esthesis-device-1"
+	var topic = config.Flags.TopicMetadata + "/" + config.Flags.HardwareId
 	mqttClient.Publish(topic,
 		getBody(r)).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.
 		Second)
