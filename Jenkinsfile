@@ -43,7 +43,7 @@ pipeline {
                 }
             }
         }
-        stage('Produce bom.xml for Device module') {
+        stage('Produce bom.xml for device module') {
             steps {
                 sh '''
                     cd esthesis-core/esthesis-core-device
@@ -53,14 +53,12 @@ pipeline {
             }
         }
         stage('Produce bom.xml for frontend module') {
-            stage('Produce bom.xml for ui') {
-                steps {
-                    sh '''
-                        cd esthesis-core/esthesis-core-ui
-                        npm install --global @cyclonedx/cyclonedx-npm
-                        cyclonedx-npm --ignore-npm-errors --output-format xml --output-file bom.xml
-                    '''
-                }
+            steps {
+                sh '''
+                    cd esthesis-core/esthesis-core-ui
+                    npm install --global @cyclonedx/cyclonedx-npm
+                    cyclonedx-npm --ignore-npm-errors --output-format xml --output-file bom.xml
+                '''
             }
         }
         stage('Post Dependency-Track Analysis for device') {
