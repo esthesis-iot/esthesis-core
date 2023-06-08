@@ -13,20 +13,23 @@ from your device, you must have also defined the appropriate dataflows under Int
 ### Docker
 The esthesis device agent can be found in Docker hub as the
 [esthesis core device](https://hub.docker.com/repository/docker/esthesisiot/esthesis-core-device/general)
-image. The esthesis device agent supports a plethora of configuration options (see below), however
-the minimum configuration required to successfully start it up and have it connect to esthesis Core
-is the following:
+image. The esthesis device agent supports a plethora of configuration options (see
+[Configuration parameters](02-Configuration%20parameters.md)), however the minimum configuration
+required to successfully start it up and have it connect to esthesis Core is the following:
 
 ```shell
-docker run --rm \
+docker run \
 	-e HARDWARE_ID=test-device-1 \
 	-e REGISTRATION_URL=http://esthesis-core.domain/api/agent/v1/register \
 	esthesisiot/esthesis-core-device
 ```
 
 :::caution
-You must replace the `REGISTRATION_URL` environment variable with the hostname matching your
-APISIX API Gateway installation.
+1. You must replace the `REGISTRATION_URL` environment variable with the hostname matching your installation.
+2. You must create/mount a data volume to the container, so that the device agent can persist
+its state. If you do not do so, the device agent will not be able to reconnect to esthesis Core
+after a restart, instead it will create to re-register (and probably fail if you have kept the
+`HARDWARE_ID` unchanged).
 :::
 
 ### Standalone executable
@@ -40,5 +43,7 @@ page. Start the device agent with the following command:
 ```
 
 :::tip
-Choose the correct esthesis device agent that matches your operating system and architecture.
+1. Choose the correct esthesis device agent that matches your operating system and architecture.
+2. Using the above configuration, the esthesis device agent will persist data under
+`$HOME/.esthesis/device`.
 :::

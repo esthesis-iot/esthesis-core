@@ -104,6 +104,10 @@ const config = {
 						      href: 'https://esthes.is',
 						      position: 'right',
 						      label: 'UNS',
+						    },						    {
+						      href: 'https://esthes.is',
+						      position: 'right',
+						      label: 'Historian',
 						    },
 						    {
 						      href: 'https://esthes.is',
@@ -127,6 +131,7 @@ const config = {
 								{label: 'esthesis Edge', to: 'https://esthes.is'},
 								{label: 'esthesis Gateway', to: 'https://esthes.is'},
 								{label: 'esthesis UNS', to: 'https://esthes.is'},
+								{label: 'esthesis Historian', to: 'https://esthes.is'},
 							],
 						},
 						{
@@ -136,6 +141,7 @@ const config = {
 								{label: 'esthesis Edge', to: 'https://esthes.is'},
 								{label: 'esthesis Gateway', to: 'https://esthes.is'},
 								{label: 'esthesis UNS', to: 'https://esthes.is'},
+								{label: 'esthesis Historian', to: 'https://esthes.is'},
 							],
 						},
 						{

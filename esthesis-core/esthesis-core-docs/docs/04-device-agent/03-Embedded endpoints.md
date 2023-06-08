@@ -30,13 +30,14 @@ graph LR
 ```mermaid
 graph LR
 	subgraph device
-		A[External source] -->|MQTT / localhost:1883| B[esthesis device agent]
-		A -->|REST / localhost:8080| B
+		A[External source] -->|MQTT / 127.0.0.1:1883| B[esthesis device agent]
+		A -->|REST / 127.0.0.1:8080| B
 	end
 		B -->|MQTT| C[esthesis platform]
 ```
 
-As depicted above, in the case where the external source is running on the same device as the esthesis device agent, the external source can just be configured to use `localhost`.
+As depicted above, in the case where the external source is running on the same device as the
+esthesis device agent, the external source can be configured to use `127.0.0.1`.
 
 :::caution
 The embedded endpoints do not support security, i.e. they do not support authentication. If you
@@ -46,4 +47,61 @@ device agent, you can have the embedded endpoints only listen to `127.0.0.1` (wh
 value).
 :::
 
-## REST endpoint
+## REST endpoints
+esthesis device agent exposes two REST endpoints:
+- `/telemetry` - for sending telemetry data to the esthesis platform, and
+- `/metadata` - for sending metadata to the esthesis platform.
+
+:::info
+The REST endpoints are off by default, so you need to enable them first using the `ENDPOINT_HTTP`
+environment variable, or the `endpointHttp` command line argument.
+:::
+
+### Sending data example
+```shell
+curl -X POST 127.0.0.1:8080/telemetry -d "cpu temperature=30"
+```
+```shell
+curl -X POST 127.0.0.1:8080/metadata -d "net ip='192.168.1.1'"
+```
+
+
+:::tip
+The above example considers the esthesis device agent being accessible at 127.0.0.1 IP address.
+This is fine if you execute the `curl` command on the same device as the esthesis device agent. If
+you execute the `curl` command from a different device, you need to replace the IP address with the
+IP address of the device where the esthesis device agent is running and configure the esthesis device
+agent to listen to that IP address via the `ENDPOINT_HTTP_LISTENING_IP` environment variable, or the
+`endpointHttpListeningIP` command line argument.
+:::
+
+## MQTT endpoint
+esthesis device agent exposes two MQTT endpoints:
+- `telemetry` - for sending telemetry data to the esthesis platform, and
+- `metadata` - for sending metadata to the esthesis platform.
+
+:::info
+The MQTT endpoints are off by default, so you need to enable them first using the `ENDPOINT_MQTT`
+environment variable, or the `endpointMqtt` command line argument.
+:::
+
+### Sending data example
+To send data to the MQTT endpoints you need to use an MQTT client. The following examples use the
+[Mosquitto MQTT client](https://mosquitto.org), which is available for most operating systems.
+
+```shell
+mosquitto_pub -h 127.0.0.1 -t telemetry -m "cpu temperature=20"
+```
+
+```shell
+mosquitto_pub -h 127.0.0.1 -t metadata -m "net ip='192.168.1.2'"
+```
+
+:::tip
+The above example considers the esthesis device agent being accessible at 127.0.0.1 IP address.
+This is fine if you execute the `mosquitto_pub` command on the same device as the esthesis device agent. If
+you execute the `mosquitto_pub` command from a different device, you need to replace the IP address with the
+IP address of the device where the esthesis device agent is running and configure the esthesis device
+agent to listen to that IP address via the `ENDPOINT_MQTT_LISTENING_IP` environment variable, or the
+`endpointMqttListeningIP` command line argument.
+:::
