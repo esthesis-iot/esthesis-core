@@ -25,10 +25,11 @@ func getBody(r *http.Request) []byte {
 
 func telemetryEndpoint(w http.ResponseWriter, r *http.Request,
 	_ httprouter.Params) {
-	var topic = config.Flags.TopicTelemetry + "/" + config.Flags.HardwareId
-	mqttClient.Publish(topic,
-		getBody(r)).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.
-		Second)
+	log.Infof("Received telemetry data: '%s'.", getBody(r))
+	// var topic = config.Flags.TopicTelemetry + "/" + config.Flags.HardwareId
+	// mqttClient.Publish(topic,
+	// 	getBody(r)).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.
+	// 	Second)
 }
 
 func metadataEndpoint(w http.ResponseWriter, r *http.Request,

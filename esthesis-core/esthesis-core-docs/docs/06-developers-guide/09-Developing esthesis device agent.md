@@ -33,11 +33,11 @@ go run cmd/main.go \
 
 ### Run locally, automatically recompile on changes
 If you want your agent to automatically recompile and restart on changes, you can use
-[air](https://github.com/cosmtrek/air). To run the agent locally go inside `go` directory and
+[air](https://github.com/cosmtrek/air). To run the agent locally go inside `go/cmd` directory and
 execute:
 ```shell
 HID=abc123 && \
-REGISTRATION_URL=http://esthesis-dev-apisix-gateway/api/agent/v1/register && \
+REGISTRATION_URL=http://apisix-gateway.esthesis.localdev/api/agent/v1/register && \
 air -- \
 	--hardwareId=$HID \
 	--registrationUrl=$REGISTRATION_URL \
