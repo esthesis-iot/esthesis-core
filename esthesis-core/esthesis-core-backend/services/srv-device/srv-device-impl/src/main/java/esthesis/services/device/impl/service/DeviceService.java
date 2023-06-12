@@ -173,7 +173,7 @@ public class DeviceService extends BaseService<DeviceEntity> {
 
 
 	@KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE_ATTRIBUTE,
-		action = Action.UPDATE, idParamOrder = 0, payload = "Device ID")
+		action = Action.UPDATE, idParamOrder = 0)
 	public void saveProfile(String deviceId, DeviceProfileDTO deviceProfileDTO) {
 		// Remove attributes no longer present.
 		deviceAttributeRepository.deleteAttributesNotIn(deviceId,
@@ -217,7 +217,7 @@ public class DeviceService extends BaseService<DeviceEntity> {
 
 	@Override
 	@KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE,
-		action = Action.DELETE, idParamOrder = 0, payload = "Device ID")
+		action = Action.DELETE, idParamOrder = 0)
 	public boolean deleteById(String deviceId) {
 		// Delete all the attributes for this device.
 		deviceAttributeRepository.deleteByDeviceId(deviceId);

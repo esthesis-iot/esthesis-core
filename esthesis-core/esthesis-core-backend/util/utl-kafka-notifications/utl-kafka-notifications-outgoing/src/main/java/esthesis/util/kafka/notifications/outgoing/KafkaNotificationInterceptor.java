@@ -8,9 +8,9 @@ import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Acti
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subject;
 import io.opentelemetry.context.Context;
-import io.quarkus.arc.Priority;
 import io.smallrye.reactive.messaging.TracingMetadata;
 import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
+import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
@@ -42,26 +42,26 @@ public class KafkaNotificationInterceptor {
 		// Get a reference to the annotation to inspect parameters.
 		Method method = ctx.getMethod();
 		KafkaNotification kafkaNotification = method.getAnnotation(KafkaNotification.class);
-		String id = null;
+		String targetId = null;
 
 		if (StringUtils.isNotEmpty(kafkaNotification.idParamRegEx())) {
 			Pattern pattern = Pattern.compile(kafkaNotification.idParamRegEx(), Pattern.CASE_INSENSITIVE);
 			Matcher matcher = pattern.matcher(proceed.toString());
 			if (matcher.find()) {
-				id = matcher.group(1);
+				targetId = matcher.group(1);
 			}
 		} else if (kafkaNotification.idParamOrder() > -1) {
-			id = (String) ctx.getParameters()[kafkaNotification.idParamOrder()];
+			targetId = (String) ctx.getParameters()[kafkaNotification.idParamOrder()];
 		}
 
 		// Construct the message to emit.
 		AppMessageBuilder msgBuilder = AppMessage.builder().component(kafkaNotification.component())
 			.subject(kafkaNotification.subject()).action(kafkaNotification.action());
-		if (StringUtils.isNotBlank(id)) {
-			msgBuilder.id(id);
+		if (StringUtils.isNotBlank(targetId)) {
+			msgBuilder.targetId(targetId);
 		}
-		if (StringUtils.isNotBlank(kafkaNotification.payload())) {
-			msgBuilder.payload(kafkaNotification.payload());
+		if (StringUtils.isNotBlank(kafkaNotification.comment())) {
+			msgBuilder.comment(kafkaNotification.comment());
 		}
 		Message<AppMessage> msg = Message.of(msgBuilder.build())
 			.addMetadata(OutgoingKafkaRecordMetadata.<String>builder()

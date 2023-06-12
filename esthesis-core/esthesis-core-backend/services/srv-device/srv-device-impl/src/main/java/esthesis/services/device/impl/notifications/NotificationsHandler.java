@@ -41,7 +41,7 @@ public class NotificationsHandler {
 			switch (msg.getPayload().getComponent()) {
 				case TAG -> {
 					switch (msg.getPayload().getAction()) {
-						case DELETE -> handleTagDeleted(msg.getPayload().getId());
+						case DELETE -> handleTagDeleted(msg.getPayload().getTargetId());
 					}
 				}
 			}

@@ -202,7 +202,7 @@ public class CertificateService extends BaseService<CertificateEntity> {
 
 	@Override
 	@KafkaNotification(component = Component.CERTIFICATE, subject = Subject.CERTIFICATE,
-		action = Action.DELETE, idParamOrder = 0, payload = "Certificate ID")
+		action = Action.DELETE, idParamOrder = 0)
 	public boolean deleteById(String id) {
 		return super.deleteById(id);
 	}

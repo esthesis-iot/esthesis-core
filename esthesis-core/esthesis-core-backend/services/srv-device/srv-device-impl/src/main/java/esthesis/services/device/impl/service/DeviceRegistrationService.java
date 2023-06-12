@@ -110,7 +110,7 @@ public class DeviceRegistrationService {
 	 * @param tags       The tag names associated with this device as a comma-separated list.
 	 */
 	@KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE, action = Action.CREATE,
-		idParamRegEx = "BaseEntity\\(id=(.*?)\\)", payload = "Device ID")
+		idParamRegEx = "BaseEntity\\(id=(.*?)\\)")
 	DeviceEntity register(String hardwareId, List<String> tags, AppConstants.Device.Status status,
 		AppConstants.Device.Type deviceType, String registrationSecret, String attributes)
 	throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, OperatorCreationException,
