@@ -2,20 +2,38 @@
 
 The following sections describe how to configure the esthesis Core platform after installation.
 
-## Create a Certificate Authority
+## Create a Certificate Authority (CA)
 - Navigate to "Key Management > CAs".
 - Click on the "Create" button.
 - Fill in all information except "Parent CA".
+
+:::tip
+esthesis Core can work without creating a CA. However, if in the future you want to enable
+certificate-based authentication for your devices, you will need to create one then. Devices that
+have already been registered with the platform prior to the creation of the CA will need to have
+their certificates reissued. To avoid this hassle, we suggest you create a CA early on.
+:::
 
 ## Create a platform Certificate
 - Navigate to "Key Management > Certificates".
 - Click on the "Create" button.
 - Fill in all information by selecting the CA created in the previous step in the "Signed By" field.
 
+:::tip
+esthesis Core can work without creating a platform certificate. However, if in the future you want to
+switch to a more secure configuration, for example using TLS for your MQTT dataflow, you will need
+to create one then.
+:::
+
 ## Create a tag
 - Navigate to "Settings > Tags".
 - Click on the "Create" button.
 - Fill in all information.
+
+:::tip
+Tags in esthesis Core play an important role allowing components to be optimally grouped together.
+It is not necessary to create a tag, but it is highly recommended.
+:::
 
 ## Connect your MQTT server
 - Navigate to "Integrations > Infrastructure".
@@ -28,9 +46,9 @@ The following sections describe how to configure the esthesis Core platform afte
 - Under "Security", choose the platform certificate you created before.
 
 ## Set up the Dataflows
-Without any dataflows configured, esthesis Core is just a nice UI. You can set up individual
+Without any dataflow configured, esthesis Core can not do much. You can set up individual
 dataflows for your use case, or you can use one of the provided wizards. Once the dataflows are
-configured, you can start to register devices and send data to the platform.
+configured, you can start registering devices and send data to the platform.
 - Navigate to "Dataflows".
 - Click on the "Create" button.
 - Click on the "Wizards" button.
