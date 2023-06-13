@@ -38,3 +38,8 @@ quarkus:
     AuditResource:
       url: http://esthesis-core-srv-audit-service:8080
       scope: Singleton
+mp:
+  messaging:
+    incoming:
+      esthesis-app-in:
+        topic: esthesis-app

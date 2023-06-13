@@ -42,7 +42,6 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.operator.OperatorCreationException;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
@@ -121,12 +120,12 @@ public class AgentService {
 		agentRegistrationResponse.setPrivateKey(deviceEntity.getDeviceKey().getPrivateKey());
 
 		// Find the root CA to be pushed to the device.
-		ObjectId rootCaId = settingsSystemResource.findByName(NamedSetting.DEVICE_ROOT_CA).asObjectId();
-		if (rootCaId == null) {
-			log.warn("Root CA is not set.");
+		String rootCaId = settingsSystemResource.findByName(NamedSetting.DEVICE_ROOT_CA).asString();
+		if (StringUtils.isBlank(rootCaId)) {
+			log.warn("Root CA is not set, device will not be pushed a root CA.");
 		} else {
 			agentRegistrationResponse.setRootCaCertificate(
-				caSystemResource.getCACertificate(rootCaId.toHexString()));
+				caSystemResource.getCACertificate(rootCaId));
 		}
 
 		// Find the MQTT server to send back to the device.

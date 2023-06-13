@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 import {SettingsService} from "../settings.service";
 import {CertificatesService} from "../../certificates/certificates.service";
 import {CertificateDto} from "../../certificates/dto/certificate-dto";
@@ -8,6 +8,8 @@ import {SettingDto} from "../dto/setting-dto";
 import {AppConstants} from "../../app.constants";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {CaDto} from "../../cas/dto/ca-dto";
+import {CasService} from "../../cas/cas.service";
 
 @Component({
   selector: "app-settings-security",
@@ -17,9 +19,11 @@ import {SecurityBaseComponent} from "../../shared/components/security-base-compo
 export class SettingsSecurityComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   certificates: CertificateDto[] | undefined;
+  cas: CaDto[] | undefined;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
-    private certificatesService: CertificatesService, private utilityService: UtilityService) {
+    private certificatesService: CertificatesService, private utilityService: UtilityService,
+    private casService: CasService) {
     super(AppConstants.SECURITY.CATEGORY.SETTINGS);
   }
 
@@ -29,11 +33,15 @@ export class SettingsSecurityComponent extends SecurityBaseComponent implements 
     //  of the respective setting. Create an empty form group and then add the form controls
     //  programmatically.
     this.form = this.fb.group({
-      PLATFORM_CERTIFICATE: [null, [Validators.required]],
+      PLATFORM_CERTIFICATE: ["", []],
+      DEVICE_ROOT_CA: ["", []]
     });
 
     // Fetch settings.
-    this.settingsService.findByNames([AppConstants.NAMED_SETTING.PLATFORM_CERTIFICATE]).subscribe(onNext => {
+    this.settingsService.findByNames([
+      AppConstants.NAMED_SETTING.PLATFORM_CERTIFICATE,
+      AppConstants.NAMED_SETTING.DEVICE_ROOT_CA,
+    ]).subscribe(onNext => {
       onNext.forEach(setting => {
         if (setting != null) {
           this.form.controls[setting.name].patchValue(setting.value);
@@ -44,8 +52,14 @@ export class SettingsSecurityComponent extends SecurityBaseComponent implements 
     // Fetch lookup values.
     this.certificatesService.find("sort=cn,asc").subscribe(onNext => {
       if (onNext.content && onNext.content.length > 0) {
-        onNext.content.unshift(new CertificateDto(null!, ""));
+        onNext.content.unshift(new CertificateDto("", ""));
         this.certificates = onNext.content;
+      }
+    });
+    this.casService.find("sort=cn,asc").subscribe(onNext => {
+      if (onNext.content && onNext.content.length > 0) {
+        onNext.content.unshift(new CaDto("", "", ""));
+        this.cas = onNext.content;
       }
     });
   }

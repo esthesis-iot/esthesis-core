@@ -93,6 +93,8 @@ public class CertificateService extends BaseService<CertificateEntity> {
 	}
 
 	@Override
+	@KafkaNotification(component = Component.CERTIFICATE, subject = Subject.CERTIFICATE,
+		action = Action.CREATEORUPDATE, idParamRegEx = "BaseEntity\\(id=(.*?)\\)")
 	public CertificateEntity save(CertificateEntity certificateEntity) {
 		// Certificates can not be edited, so throw an exception in that case.
 		if (certificateEntity.getId() != null) {

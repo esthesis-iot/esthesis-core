@@ -55,8 +55,7 @@ public class SettingsResourceImpl implements SettingsResource {
 					entry);
 				settingsService.save(entry);
 			} else {
-				SettingEntity existingEntry = settingsService.findByTextName(
-					entry.getName());
+				SettingEntity existingEntry = settingsService.findByTextName(entry.getName());
 				if (existingEntry != null) {
 					log.debug("Updating an existing setting entry with '{}'.", entry);
 					entry.setId(existingEntry.getId());

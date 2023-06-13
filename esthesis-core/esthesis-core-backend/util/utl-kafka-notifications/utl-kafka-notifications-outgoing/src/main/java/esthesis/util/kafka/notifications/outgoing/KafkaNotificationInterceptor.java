@@ -16,6 +16,7 @@ import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
 import java.lang.reflect.Method;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +58,7 @@ public class KafkaNotificationInterceptor {
 		// Construct the message to emit.
 		AppMessageBuilder msgBuilder = AppMessage.builder().component(kafkaNotification.component())
 			.subject(kafkaNotification.subject()).action(kafkaNotification.action());
+		msgBuilder.msgId(UUID.randomUUID().toString());
 		if (StringUtils.isNotBlank(targetId)) {
 			msgBuilder.targetId(targetId);
 		}

@@ -64,7 +64,7 @@ public class OrionMessagingService {
 	public void onCreateDeviceMessage(AppMessage appMessage) {
 		log.debug("Received device creation message '{}'.", appMessage);
 		// Extract the device esthesis ID.
-		String esthesisId = appMessage.getId();
+		String esthesisId = appMessage.getTargetId();
 
 		// Register the device in Orion.
 		orionGatewayService.registerDeviceOnOrion(esthesisId);
@@ -72,7 +72,7 @@ public class OrionMessagingService {
 
 	public void onUpdateDeviceAtrributeMessage(AppMessage appMessage) {
 		// Find the device in Orion.
-		String esthesisId = appMessage.getId();
+		String esthesisId = appMessage.getTargetId();
 
 		// Sync attributes.
 		orionGatewayService.syncAttributes(esthesisId);
@@ -81,7 +81,7 @@ public class OrionMessagingService {
 	public void onDeleteDeviceMessage(AppMessage appMessage) {
 		log.debug("Received device removal message '{}'.", appMessage);
 		// Extract the device esthesis ID.
-		String esthesisId = appMessage.getId();
+		String esthesisId = appMessage.getTargetId();
 
 		// Delete the Orion entity.
 		orionGatewayService.deleteEntityByEsthesisId(esthesisId);

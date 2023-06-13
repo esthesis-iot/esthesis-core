@@ -8,7 +8,6 @@ import {AppConstants} from "../../app.constants";
 import {SettingDto} from "../dto/setting-dto";
 import * as _ from "lodash-es";
 import {forkJoin} from "rxjs";
-import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 
@@ -26,8 +25,8 @@ export class SettingsDevicePageComponent extends SecurityBaseComponent implement
 
   constructor(private devicesService: DevicesService, private fb: FormBuilder,
     private utilityService: UtilityService, private qForms: QFormsService,
-    private settingsService: SettingsService, private dialog: MatDialog) {
-    super(AppConstants.SECURITY.CATEGORY.SETTINGS)
+    private settingsService: SettingsService) {
+    super(AppConstants.SECURITY.CATEGORY.SETTINGS);
   }
 
   ngOnInit() {

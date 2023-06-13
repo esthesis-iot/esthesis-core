@@ -28,16 +28,7 @@
     </div>
   </mat-radio-group>
 
-  <div class="font-bold text-xl mt-10">Root Certificate Authority</div>
-  <mat-form-field>
-    <mat-select formControlName="DEVICE_ROOT_CA">
-      <mat-option *ngFor="let o of cas" [value]="o.id">
-        {{ o.cn }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <div class="font-bold text-xl mt-5">Device tags</div>
+  <div class="font-bold text-xl mt-10">Device tags</div>
   <mat-form-field>
     <mat-select formControlName="DEVICE_PUSHED_TAGS">
       <mat-option [value]="'true'">Allowed</mat-option>
@@ -49,5 +40,6 @@
   </mat-form-field>
 </form>
 
-<button (click)="save()" *ngIf="allowWrite" [disabled]="form.invalid" class="btn btn-sm btn-primary mt-10">SAVE
+<button (click)="save()" *ngIf="allowWrite" [disabled]="form.invalid"
+        class="btn btn-sm btn-primary mt-10">SAVE
 </button>

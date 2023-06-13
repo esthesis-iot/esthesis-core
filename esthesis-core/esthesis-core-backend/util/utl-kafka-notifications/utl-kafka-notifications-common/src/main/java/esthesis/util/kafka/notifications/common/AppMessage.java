@@ -33,7 +33,7 @@ public class AppMessage {
 
 	// A unique ID for this message.
 	@NotNull
-	private String msgId = java.util.UUID.randomUUID().toString();
+	private String msgId;
 
 	// If this messages targets a specific object, the ID of that object can be specified here.
 	private String targetId;

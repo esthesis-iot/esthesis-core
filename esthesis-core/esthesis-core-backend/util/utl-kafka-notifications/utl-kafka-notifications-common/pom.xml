@@ -18,9 +18,5 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-hibernate-validator</artifactId>
     </dependency>
-
-    <!-- THIRD-PARTY -->
-
   </dependencies>
-
 </project>

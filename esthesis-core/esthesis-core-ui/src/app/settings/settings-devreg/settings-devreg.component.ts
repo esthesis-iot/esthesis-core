@@ -2,9 +2,6 @@ import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SettingsService} from "../settings.service";
 import * as _ from "lodash";
-import {BaseComponent} from "../../shared/components/base-component";
-import {CasService} from "../../cas/cas.service";
-import {CaDto} from "../../cas/dto/ca-dto";
 import {SettingDto} from "../dto/setting-dto";
 import {AppConstants} from "../../app.constants";
 import {UtilityService} from "../../shared/services/utility.service";
@@ -16,10 +13,9 @@ import {SecurityBaseComponent} from "../../shared/components/security-base-compo
 })
 export class SettingsDevregComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
-  cas: CaDto[] | undefined;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
-    private utilityService: UtilityService, private casService: CasService) {
+    private utilityService: UtilityService, ) {
     super(AppConstants.SECURITY.CATEGORY.SETTINGS);
   }
 
@@ -31,7 +27,6 @@ export class SettingsDevregComponent extends SecurityBaseComponent implements On
     this.form = this.fb.group({
       DEVICE_REGISTRATION_MODE: [null, [Validators.required]],
       DEVICE_REGISTRATION_SECRET: [null, []],
-      DEVICE_ROOT_CA: [null, []],
       DEVICE_PUSHED_TAGS: [null, []]
     });
 
@@ -39,7 +34,6 @@ export class SettingsDevregComponent extends SecurityBaseComponent implements On
     this.settingsService.findByNames([
       AppConstants.NAMED_SETTING.DEVICE_REGISTRATION_MODE,
       AppConstants.NAMED_SETTING.DEVICE_REGISTRATION_SECRET,
-      AppConstants.NAMED_SETTING.DEVICE_ROOT_CA,
       AppConstants.NAMED_SETTING.DEVICE_PUSHED_TAGS
     ]).subscribe(onNext => {
       onNext.forEach(setting => {
@@ -47,14 +41,6 @@ export class SettingsDevregComponent extends SecurityBaseComponent implements On
           this.form.controls[setting.name].patchValue(setting.value);
         }
       });
-    });
-
-    // Fetch lookup values.
-    this.casService.find("sort=cn,asc").subscribe(onNext => {
-      if (onNext.content && onNext.content.length > 0) {
-        onNext.content.unshift(new CaDto(null!, "", ""));
-        this.cas = onNext.content;
-      }
     });
   }
 

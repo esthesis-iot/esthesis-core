@@ -51,6 +51,11 @@ mp:
       publickey:
         location: http://keycloak.esthesis.localdev/realms/esthesis/protocol/openid-connect/certs
 
+kafka:
+  bootstrap:
+    servers:
+      - kafka.esthesis.localdev:9094
+
 esthesis:
   oidc:
     authority: "http://esthesis-dev-keycloak/realms/esthesis"

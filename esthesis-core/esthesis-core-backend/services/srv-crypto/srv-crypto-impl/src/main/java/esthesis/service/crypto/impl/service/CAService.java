@@ -12,6 +12,10 @@ import esthesis.service.crypto.dto.CreateKeyPairRequestDTO;
 import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.form.ImportCaForm;
 import esthesis.service.settings.resource.SettingsResource;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subject;
+import esthesis.util.kafka.notifications.outgoing.KafkaNotification;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -48,6 +52,8 @@ public class CAService extends BaseService<CaEntity> {
 	CryptoService cryptoService;
 
 	@Override
+	@KafkaNotification(component = Component.CA, subject = Subject.CA,
+		action = Action.CREATEORUPDATE, idParamRegEx = "BaseEntity\\(id=(.*?)\\)")
 	public CaEntity save(CaEntity caEntity) {
 		// CAs can not be edited, so throw an exception in that case.
 		if (caEntity.getId() != null) {
@@ -161,5 +167,12 @@ public class CAService extends BaseService<CaEntity> {
 		getCertificate(caId, certificateChain);
 
 		return certificateChain;
+	}
+
+	@Override
+	@KafkaNotification(component = Component.CA, subject = Subject.CA,
+		action = Action.DELETE, idParamOrder = 0)
+	public boolean deleteById(String caId) {
+		return super.deleteById(caId);
 	}
 }

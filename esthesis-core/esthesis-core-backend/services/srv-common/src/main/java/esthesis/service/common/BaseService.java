@@ -127,8 +127,7 @@ public abstract class BaseService<D extends BaseEntity> {
 				.mongoCollection()
 				.findOneAndUpdate(new Document("_id", entity.getId()),
 					new Document("$set", entity),
-					new FindOneAndUpdateOptions()
-						.returnDocument(ReturnDocument.AFTER));
+					new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
 		} else {
 			ObjectId id = new ObjectId();
 			entity.setId(id);

@@ -1,15 +1,28 @@
 <form [formGroup]="form" class="flex flex-col" novalidate>
-  <div class="font-bold text-xl mt-5">Platform certificate</div>
+  <div class="font-bold text-xl mt-5">Cryptography settings</div>
+
+  <mat-form-field>
+    <mat-select formControlName="DEVICE_ROOT_CA" placeholder="">
+      <mat-option *ngFor="let o of cas" [value]="o.id">
+        {{ o.cn }}
+      </mat-option>
+    </mat-select>
+    <mat-hint>Root Certificate Authority</mat-hint>
+  </mat-form-field>
+
   <mat-form-field>
     <mat-select formControlName="PLATFORM_CERTIFICATE">
       <mat-option *ngFor="let o of certificates" [value]="o.id">
         {{ o.cn }}
       </mat-option>
     </mat-select>
+    <mat-hint>Platform certificate</mat-hint>
   </mat-form-field>
+
 </form>
 
 <div>
-  <button (click)="save()" *ngIf="allowWrite" [disabled]="form.invalid" class="btn btn-sm btn-primary mt-10">SAVE
+  <button (click)="save()" *ngIf="allowWrite" [disabled]="form.invalid"
+          class="btn btn-sm btn-primary mt-10">SAVE
   </button>
 </div>
