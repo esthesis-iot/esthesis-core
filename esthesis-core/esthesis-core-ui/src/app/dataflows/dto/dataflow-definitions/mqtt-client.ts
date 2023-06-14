@@ -26,7 +26,8 @@ export const DATAFLOW_DEFINITION_MQTT_CLIENT = {
             required: true, label: "Cluster URL", placeholder: "Protocol, IP address, port",
             hintStart: "ex: tcp://mosquitto:1883, ssl://mosquitto:8883",
           }
-        }
+        },
+        {key: "certificate", type: "select", props: {required: false, label: "Certificate"}},
       ],
     },
     {

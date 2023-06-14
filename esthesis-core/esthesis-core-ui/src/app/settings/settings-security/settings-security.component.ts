@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {SettingsService} from "../settings.service";
-import {CertificatesService} from "../../certificates/certificates.service";
 import {CertificateDto} from "../../certificates/dto/certificate-dto";
 import * as _ from "lodash";
 import {SettingDto} from "../dto/setting-dto";
@@ -22,8 +21,7 @@ export class SettingsSecurityComponent extends SecurityBaseComponent implements 
   cas: CaDto[] | undefined;
 
   constructor(private fb: FormBuilder, private settingsService: SettingsService,
-    private certificatesService: CertificatesService, private utilityService: UtilityService,
-    private casService: CasService) {
+    private utilityService: UtilityService, private casService: CasService) {
     super(AppConstants.SECURITY.CATEGORY.SETTINGS);
   }
 
@@ -39,7 +37,6 @@ export class SettingsSecurityComponent extends SecurityBaseComponent implements 
 
     // Fetch settings.
     this.settingsService.findByNames([
-      AppConstants.NAMED_SETTING.PLATFORM_CERTIFICATE,
       AppConstants.NAMED_SETTING.DEVICE_ROOT_CA,
     ]).subscribe(onNext => {
       onNext.forEach(setting => {
@@ -50,12 +47,6 @@ export class SettingsSecurityComponent extends SecurityBaseComponent implements 
     });
 
     // Fetch lookup values.
-    this.certificatesService.find("sort=cn,asc").subscribe(onNext => {
-      if (onNext.content && onNext.content.length > 0) {
-        onNext.content.unshift(new CertificateDto("", ""));
-        this.certificates = onNext.content;
-      }
-    });
     this.casService.find("sort=cn,asc").subscribe(onNext => {
       if (onNext.content && onNext.content.length > 0) {
         onNext.content.unshift(new CaDto("", "", ""));

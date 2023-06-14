@@ -1,6 +1,7 @@
 export class CertificateDto {
   id: string;
   cn: string;
+  name?: string;
   issued: Date | undefined;
   validity: Date | undefined;
   certificate: string | undefined;

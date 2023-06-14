@@ -4,6 +4,7 @@ import static esthesis.common.AppConstants.Keystore.Item.KeyType.CERT;
 import static esthesis.common.AppConstants.Keystore.Item.KeyType.PRIVATE;
 
 import esthesis.common.AppConstants.NamedSetting;
+import esthesis.common.crypto.CryptoService;
 import esthesis.common.exception.QSecurityException;
 import esthesis.service.common.BaseService;
 import esthesis.service.crypto.dto.KeystoreEntryDTO;

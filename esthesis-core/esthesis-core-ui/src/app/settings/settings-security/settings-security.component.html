@@ -7,18 +7,8 @@
         {{ o.cn }}
       </mat-option>
     </mat-select>
-    <mat-hint>Root Certificate Authority</mat-hint>
+    <mat-hint>Root Certificate Authority, this is also pushed to devices.</mat-hint>
   </mat-form-field>
-
-  <mat-form-field>
-    <mat-select formControlName="PLATFORM_CERTIFICATE">
-      <mat-option *ngFor="let o of certificates" [value]="o.id">
-        {{ o.cn }}
-      </mat-option>
-    </mat-select>
-    <mat-hint>Platform certificate</mat-hint>
-  </mat-form-field>
-
 </form>
 
 <div>

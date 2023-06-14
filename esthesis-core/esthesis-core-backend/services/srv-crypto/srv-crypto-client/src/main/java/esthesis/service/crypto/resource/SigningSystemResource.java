@@ -1,6 +1,6 @@
 package esthesis.service.crypto.resource;
 
-import esthesis.service.crypto.dto.SignatureVerificationRequestDTO;
+import esthesis.common.crypto.dto.SignatureVerificationRequestDTO;
 import io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.POST;

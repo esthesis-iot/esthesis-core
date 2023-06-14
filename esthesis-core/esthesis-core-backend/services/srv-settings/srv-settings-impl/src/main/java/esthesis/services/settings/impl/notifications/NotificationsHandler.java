@@ -42,11 +42,6 @@ public class NotificationsHandler {
 						case DELETE -> handleCaDeleted(msg.getPayload().getTargetId());
 					}
 				}
-				case CERTIFICATE -> {
-					switch (msg.getPayload().getAction()) {
-						case DELETE -> handleCertificateDeleted(msg.getPayload().getTargetId());
-					}
-				}
 			}
 		} catch (Exception e) {
 			log.warn("Could not handle Kafka message '{}'.", msg, e);
@@ -55,22 +50,6 @@ public class NotificationsHandler {
 		}
 
 		return msg.ack();
-	}
-
-	/**
-	 * Check if the deleted certificate is used as the platform certificate. If so, set the platform
-	 * certificate to null.
-	 *
-	 * @param certificateId the certificate id that was deleted.
-	 */
-	private void handleCertificateDeleted(String certificateId) {
-		SettingEntity platformCertificate = settingsService.findByName(
-			NamedSetting.PLATFORM_CERTIFICATE);
-		if (platformCertificate != null && platformCertificate.getValue().equals(certificateId)) {
-			platformCertificate.setValue(null);
-			settingsService.save(platformCertificate);
-			log.debug("Setting platform certificate to null.");
-		}
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package esthesis.service.crypto.dto;
+package esthesis.common.crypto.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

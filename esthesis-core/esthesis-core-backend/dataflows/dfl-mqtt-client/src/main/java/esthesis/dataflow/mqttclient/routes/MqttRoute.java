@@ -1,6 +1,5 @@
 package esthesis.dataflow.mqttclient.routes;
 
-import esthesis.avro.util.AvroUtils;
 import esthesis.common.banner.BannerUtil;
 import esthesis.dataflow.mqttclient.config.AppConfig;
 import esthesis.dataflow.mqttclient.service.DflMqttClientService;
@@ -22,30 +21,26 @@ public class MqttRoute extends RouteBuilder {
 	DflMqttClientService dflMqttClientService;
 
 	@Inject
-	AvroUtils avroUtils;
-
-	@Inject
 	AppConfig config;
 
 	@Override
-	@SuppressWarnings({"java:S1192", "java:S1602" })
+	@SuppressWarnings({"java:S1192", "java:S1602"})
 	public void configure() {
 		BannerUtil.showBanner("dfl-mqtt-client");
 
 		// Configure Kafka.
 		ComponentsBuilderFactory.kafka()
 			.brokers(config.kafkaClusterUrl())
-			.valueDeserializer(
-				"org.apache.kafka.common.serialization.ByteArrayDeserializer")
-			.valueSerializer(
-				"org.apache.kafka.common.serialization.ByteArraySerializer")
+			.valueDeserializer("org.apache.kafka.common.serialization.ByteArrayDeserializer")
+			.valueSerializer("org.apache.kafka.common.serialization.ByteArraySerializer")
 			.register(getContext(), "kafka");
+
+
 
 		// @formatter:off
     config.mqttTopicTelemetry().ifPresentOrElse(mqttTopic -> {
       config.kafkaTopicTelemetry().ifPresentOrElse(kafkaTopic -> {
-        log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
-            mqttTopic, kafkaTopic);
+        log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.", mqttTopic, kafkaTopic);
         from("paho:" + mqttTopic + "/#" + "?brokerUrl=" + config.mqttBrokerClusterUrl())
             .bean(dflMqttClientService, "toEsthesisDataMessages")
             .split(body())
@@ -56,8 +51,7 @@ public class MqttRoute extends RouteBuilder {
 
     config.mqttTopicMetadata().ifPresentOrElse(mqttTopic -> {
       config.kafkaTopicMetadata().ifPresentOrElse(kafkaTopic -> {
-        log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
-            mqttTopic, kafkaTopic);
+        log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.", mqttTopic, kafkaTopic);
         from("paho:" + mqttTopic + "/#" + "?brokerUrl=" + config.mqttBrokerClusterUrl())
             .bean(dflMqttClientService, "toEsthesisDataMessages")
             .split(body())
@@ -68,8 +62,7 @@ public class MqttRoute extends RouteBuilder {
 
     config.mqttTopicPing().ifPresentOrElse(mqttTopic -> {
       config.kafkaTopicPing().ifPresentOrElse(kafkaTopic -> {
-        log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
-            mqttTopic, kafkaTopic);
+        log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.", mqttTopic, kafkaTopic);
         from("paho:" + mqttTopic + "/#" + "?brokerUrl=" + config.mqttBrokerClusterUrl())
             .bean(dflMqttClientService, "toEsthesisDataMessages")
             .split(body())
@@ -80,8 +73,7 @@ public class MqttRoute extends RouteBuilder {
 
     config.mqttTopicCommandReply().ifPresentOrElse(mqttTopic -> {
       config.kafkaTopicCommandReply().ifPresentOrElse(kafkaTopic -> {
-        log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.",
-            mqttTopic, kafkaTopic);
+        log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.", mqttTopic, kafkaTopic);
         from("paho:" + mqttTopic + "/#" + "?brokerUrl=" + config.mqttBrokerClusterUrl())
             .bean(dflMqttClientService, "processCommandReplyMessage")
             .marshal(new AvroDataFormat("esthesis.avro.EsthesisCommandReplyMessage"))
@@ -91,8 +83,7 @@ public class MqttRoute extends RouteBuilder {
 
     config.mqttTopicCommandRequest().ifPresentOrElse(mqttTopic -> {
       config.kafkaTopicCommandRequest().ifPresentOrElse(kafkaTopic -> {
-        log.info("Creating route from Kafka topic '{}' to MQTT topic '{}'.",
-            kafkaTopic, mqttTopic);
+        log.info("Creating route from Kafka topic '{}' to MQTT topic '{}'.", kafkaTopic, mqttTopic);
         from("kafka:" + kafkaTopic)
             .setHeader(PahoConstants.CAMEL_PAHO_OVERRIDE_TOPIC,
                 constant(mqttTopic).append("/").append(header(KafkaConstants.KEY)))

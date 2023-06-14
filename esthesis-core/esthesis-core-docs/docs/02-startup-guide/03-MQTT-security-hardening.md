@@ -11,8 +11,6 @@ Eclipse Mosquitto, which is the MQTT broker being used when you set up esthesis 
 Helm charts.
 
 ## Create a Certificate Authority and a Certificate
-Create a Certificate Authority that will be signing all certificates to be used
-by esthesis Core itself, including the certificates that are pushed to devices during registration.
 
 ### Create a Certificate Authority
 To create a Certificate Authority, go to Key Management > CAs and click on the "Create" button.
@@ -49,8 +47,9 @@ topic esthesis/#
 EOF
 ```
 :::caution
-1. The username you specify in `user` parameter, should match the common name of the certificate
-you created above.
+1. The username you specify in `user` parameter is the "superuser" for the MQTT broker. This user
+is allowed to subscribe and publish to/from any topic. Create a separate certificate for this user,
+with `CN=esthesis-platform`.
 2. If you have used different topic names than the default ones, change the topic names accordingly.
 :::
 
@@ -59,13 +58,13 @@ Create a text file using the following command:
 ```shell
 cat > mosquitto.conf << EOF
 port 8883
-cafile /mosquitto/config/ca.crt
-certfile /mosquitto/config/cert.crt
-keyfile /mosquitto/config/cert.key
+cafile /mosquitto/secret/ca.crt
+certfile /mosquitto/secret/cert.crt
+keyfile /mosquitto/secret/cert.key
 allow_anonymous false
 require_certificate true
 use_identity_as_username true
-acl_file /mosquitto/config/aclfile.conf
+acl_file /mosquitto/secret/aclfile.conf
 EOF
 ```
 
@@ -76,11 +75,11 @@ kubectl create secret generic esthesis-mqtt-secret \
     --from-file=ca.crt=ca.crt \
     --from-file=cert.crt=cert.crt \
     --from-file=cert.key=cert.key \
-    --from-file=aclfile.conf=aclfile.conf \
-    --from-file=mosquitto.conf=mosquitto.conf
+    --from-file=aclfile.conf=aclfile.conf
 ```
 :::caution
-Change the `.crt` and `.key` filenames to match those you downloaded above.
+Change the `--from-file=ca.crt=ca.crt` and `.key` filenames to match those you downloaded above, for example:
+`--from-file=ca.crt=my-root-ca.crt`.
 :::
 
 ## Prepare a patch for the Mosquitto deployment
@@ -94,7 +93,7 @@ spec:
         - name: mosquitto
           volumeMounts:
             - name: esthesis-mqtt-secret
-              mountPath: "/mosquitto/config"
+              mountPath: /mosquitto/secret
           startupProbe:
             tcpSocket:
               port: 8883
@@ -105,32 +104,53 @@ spec:
         - name: esthesis-mqtt-secret
           secret:
             secretName: esthesis-mqtt-secret
-            items:
-              - key: ca.crt
-                path: ca.crt
-              - key: cert.crt
-                path: cert.crt
-              - key: cert.key
-                path: cert.key
-              - key: mosquitto.conf
-                path: mosquitto.conf
-              - key: aclfile.conf
-                path: aclfile.conf
+          items:
+            - key: ca.crt
+              path: ca.crt
+            - key: cert.crt
+              path: cert.crt
+            - key: cert.key
+              path: cert.key
+            - key: aclfile.conf
+              path: aclfile.conf
 EOF
 ```
 
-## Patch the Mosquitto deployment
-Apply the patch using the following command:
-```shell
+## Patch the existing Mosquitto deployment
+Once all configuration changes are prepared, it is time to patch the existing Mosquitto deployment.
+
+### Patch the configuration
+Apply the configmap patch using the following command:
+```kubectl
+kubectl create configmap mosquitto-config --from-file=mosquitto.conf --dry-run=client -o yaml | kubectl apply -f -
+
+```
+
+### Patch the Mosquitto deployment
+Apply the deployment patch using the following command:
+```kubernetes helm
 kubectl patch deployment mosquitto --patch "$(cat patch-mosquitto.yaml)"
 ```
 
-## Warning - Losing connectivity
-:::warning
+## Warnings
+:::warning Losing connectivity with your devices
 Before you apply the above procedure, make sure devices already provisioned to esthesis Core have
 been issued with a certificate signed by the CA used above. Otherwise, they will lose connectivity
 to the MQTT broker.
 
 In addition, since the MQTT broker will no longer accept non-TLS connections, you need to update
 the URL of the MQTT broker used by the devices to start with `ssl://` instead of `tcp://`.
+:::
+
+:::warning Dataflows failing to connect
+If you have configured a dataflow that access the MQTT broker, you need to update it to point
+to the TLS URL of the MQTT broker. In addition, you need to update the dataflow to use a certificate
+to identify itself to the MQTT broker.
+
+Be careful which certificate you will use. Dataflows accessing the MQTT broker, usually, require
+full-access, that means to be able to subscribe and publish to/from any topic. If you have used the
+provided Mosquitto configuration, you need to use the certificate of the "superuser" you created
+while hardening the security of the MQTT broker (i.e. enabling TLS and certificate-based authentication).
+By default, this user is `esthesis-platform`, and this should be the CN of the certificate you should
+create and use.
 :::

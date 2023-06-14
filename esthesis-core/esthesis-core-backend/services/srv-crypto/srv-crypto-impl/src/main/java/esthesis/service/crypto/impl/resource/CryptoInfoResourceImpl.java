@@ -1,6 +1,6 @@
 package esthesis.service.crypto.impl.resource;
 
-import esthesis.service.crypto.impl.service.CryptoService;
+import esthesis.common.crypto.CryptoService;
 import esthesis.service.crypto.resource.CryptoInfoResource;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;

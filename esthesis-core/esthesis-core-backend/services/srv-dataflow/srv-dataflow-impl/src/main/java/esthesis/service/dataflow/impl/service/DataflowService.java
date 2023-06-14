@@ -36,6 +36,8 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	private final static String CUSTOM_ENV_VARS_KEY_VALUE_SEPARATOR = "=";
 	private final static String IMAGE_REGISTRY_URL = "registry";
 
+	private final static String DATAFLOW_SPECIAL_HANDLING_MQTT_CLIENT_TYPE = "mqtt-client";
+
 	@Inject
 	@RestClient
 	DockerClient dockerClient;
@@ -88,12 +90,26 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		return env;
 	}
 
+	/**
+	 * Some type of dataflows require special handling, such as creating config maps, secrets, etc.
+	 * These cases are handled here.
+	 *
+	 * @param dataflowEntity
+	 */
+	private void handleSpecialCases(DataflowEntity dataflowEntity) {
+		if (dataflowEntity.getType().equals(DATAFLOW_SPECIAL_HANDLING_MQTT_CLIENT_TYPE)) {
+
+		}
+	}
+
 	@Override
 	public DataflowEntity save(DataflowEntity dataflowEntity) {
 		log.debug("Saving dataflow '{}'.", dataflowEntity);
 
 		// Save the dataflow.
 		dataflowEntity = super.save(dataflowEntity);
+
+		// Handle special cases.
 
 		// Schedule dataflow in Kubernetes.
 		PodInfoDTO podInfoDTO = new PodInfoDTO();

@@ -1,4 +1,4 @@
-package esthesis.service.crypto.dto;
+package esthesis.common.crypto.dto;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -19,13 +19,13 @@ import org.bouncycastle.asn1.x509.Certificate;
 @Accessors(chain = true)
 public class CAHolderDTO {
 
-  // The certificate of the key.
-  private Certificate certificate;
+	// The certificate of the key.
+	private Certificate certificate;
 
-  // The public key of the key.
-  private PublicKey publicKey;
+	// The public key of the key.
+	private PublicKey publicKey;
 
-  // The private key of the key.
-  private PrivateKey privateKey;
+	// The private key of the key.
+	private PrivateKey privateKey;
 
 }

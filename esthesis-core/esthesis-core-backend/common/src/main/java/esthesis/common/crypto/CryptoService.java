@@ -1,20 +1,21 @@
-package esthesis.service.crypto.impl.service;
+package esthesis.common.crypto;
 
+import esthesis.common.crypto.dto.CAHolderDTO;
+import esthesis.common.crypto.dto.CertificateSignRequestDTO;
+import esthesis.common.crypto.dto.CreateCARequestDTO;
+import esthesis.common.crypto.dto.CreateKeyPairRequestDTO;
+import esthesis.common.crypto.dto.SSLSocketFactoryCertificateDTO;
+import esthesis.common.crypto.dto.SSLSocketFactoryDTO;
+import esthesis.common.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.common.exception.QDoesNotExistException;
-import esthesis.service.crypto.dto.CAHolderDTO;
-import esthesis.service.crypto.dto.CertificateSignRequestDTO;
-import esthesis.service.crypto.dto.CreateCARequestDTO;
-import esthesis.service.crypto.dto.CreateKeyPairRequestDTO;
-import esthesis.service.crypto.dto.SignatureVerificationRequestDTO;
-import esthesis.service.crypto.impl.converters.CryptoConverters;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.transaction.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
+import java.security.KeyManagementException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
@@ -27,6 +28,7 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -40,8 +42,13 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -59,13 +66,13 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
 @Slf4j
-@Transactional
 @ApplicationScoped
 public class CryptoService extends CryptoConverters {
 
 	private final Pattern ipv4Pattern = Pattern.compile(
 		"^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$");
 	private static final String CN = "CN";
+	public static final String CERT_TYPE = "X509";
 
 	private boolean isValidIPV4Address(final String email) {
 		Matcher matcher = ipv4Pattern.matcher(email);
@@ -342,7 +349,7 @@ public class CryptoService extends CryptoConverters {
 		// Add the key.
 		ks.setKeyEntry(keyAlias, key,
 			keyPassword != null ? keyPassword.toCharArray() : "".toCharArray(),
-			certificates.toArray(new java.security.cert.Certificate[0]));
+			certificates.toArray(new Certificate[0]));
 
 		return keystoreSerialize(ks, keystorePassword);
 	}
@@ -463,5 +470,59 @@ public class CryptoService extends CryptoConverters {
 		}
 		return algorithms;
 
+	}
+
+	/**
+	 * Creates an SSL socket factory to be used in clients requiring certificate-based
+	 * authentication.
+	 *
+	 * @param sslSocketFactoryDTO the details of the SSL socket factory to create
+	 * @return the generated SSL socker factory
+	 * @throws CertificateException      thrown when the certificate cannot be generated
+	 * @throws IOException               thrown when something unexpected happens
+	 * @throws KeyStoreException         thrown when the required keystore is not available
+	 * @throws NoSuchAlgorithmException  thrown when no algorithm is found for encryption
+	 * @throws UnrecoverableKeyException thrown when the provided key is invalid
+	 * @throws KeyManagementException    thrown when the provided key is invalid
+	 * @throws InvalidKeySpecException   thrown when the provided key is invalid
+	 */
+	public SSLSocketFactory getSocketFactory2(SSLSocketFactoryDTO sslSocketFactoryDTO)
+	throws CertificateException, IOException, KeyStoreException, NoSuchAlgorithmException,
+				 UnrecoverableKeyException, KeyManagementException, InvalidKeySpecException {
+
+		// Certificates to trust.
+		KeyStore caKs = KeyStore.getInstance(KeyStore.getDefaultType());
+		caKs.load(null, null);
+		for (SSLSocketFactoryCertificateDTO certificate : sslSocketFactoryDTO.getTrustedCertificates()) {
+			caKs.setCertificateEntry(certificate.getName(),
+				pemToCertificate(certificate.getPemCertificate()));
+		}
+		TrustManagerFactory tmf = TrustManagerFactory.getInstance(CERT_TYPE);
+		tmf.init(caKs);
+
+		// Client key and certificate.
+		String randomPassword = UUID.randomUUID().toString();
+		KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+		ks.load(null, null);
+		ks.setCertificateEntry(sslSocketFactoryDTO.getClientCertificate().getName(),
+			pemToCertificate(
+				sslSocketFactoryDTO.getClientCertificate().getPemCertificate()));
+		ks.setKeyEntry(sslSocketFactoryDTO.getClientPrivateKey().getName(),
+			pemToPrivateKey(
+				sslSocketFactoryDTO.getClientPrivateKey().getPemPrivateKey(),
+				sslSocketFactoryDTO.getClientPrivateKey().getAlgorithm()),
+			randomPassword.toCharArray(),
+			new java.security.cert.Certificate[]{pemToCertificate(
+				sslSocketFactoryDTO.getClientCertificate().getPemCertificate())});
+		KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory
+			.getDefaultAlgorithm());
+		kmf.init(ks, randomPassword.toCharArray());
+
+		// Create SSL socket factory
+		SSLContext context = SSLContext
+			.getInstance(sslSocketFactoryDTO.getTlsVersion());
+		context.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+
+		return context.getSocketFactory();
 	}
 }

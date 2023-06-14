@@ -1,7 +1,7 @@
 package esthesis.service.crypto.impl.resource;
 
-import esthesis.service.crypto.dto.SignatureVerificationRequestDTO;
-import esthesis.service.crypto.impl.service.CryptoService;
+import esthesis.common.crypto.CryptoService;
+import esthesis.common.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.service.crypto.resource.SigningSystemResource;
 import jakarta.inject.Inject;
 import java.security.InvalidKeyException;

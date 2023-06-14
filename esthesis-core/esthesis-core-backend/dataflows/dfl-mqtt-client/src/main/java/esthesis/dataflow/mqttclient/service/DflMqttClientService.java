@@ -135,4 +135,8 @@ public class DflMqttClientService {
 
 		exchange.getIn().setBody(avroUtils.commandRequestToLineProtocol(msg));
 	}
+
+	public void createSSLContext() {
+
+	}
 }
