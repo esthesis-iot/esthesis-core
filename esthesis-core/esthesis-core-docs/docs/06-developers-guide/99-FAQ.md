@@ -39,8 +39,8 @@ first manually delete it and `helmfile sync` again.
 	```
 	sudo nano 00-installer-config-yaml 
 	```
-9. Enter the addresses, routes and nameservers. Check Use space and not tab.
-	```                                                                          /etc/netplan/00-installer-config.yaml
+9. Enter the addresses, routes and nameservers. Check Use space and not tab
+	```
 	# This is the network config written by 'subiquity'
 	network:
 	 ethernets:
@@ -54,18 +54,18 @@ first manually delete it and `helmfile sync` again.
 		   addresses: [8.8.8.8,8.8.4.4]
 	 version: 2
 	```
-Mind that, the addresses you see in the file do not match any environment, replace them with the ones on your environment:
-For addresses, you can type anything like 192.168.2.x
-For gateway, you need the IP of your modem (it can be something like 192.168.2.1 - check your environment).
-For nameservers, use the ones in the file
+	Mind that, the addresses you see in the file do not match any environment, replace them with the ones on your environment:
+	For addresses, you can type anything like 192.168.x.x
+	For gateway, you need the IP of your modem (it can be something like 192.168.2.1 - check your environment).
+	For nameservers, use the ones in the file
 10. Apply the changes with CTRL + O and exit the editor with CTRL + X
 11. Update the configuration
-```
-sudo netplan apply
-```
-If any error exists in the configuration file the errors will be displayed here. Correct them and run again the command.
+	```
+	sudo netplan apply
+	```
+	If any error exists in the configuration file the errors will be displayed here. Correct them and run again the command.
 12. See the current IP
-```
-ip addr
-```
+	```
+	ip addr
+	```
 13. Connect to vm by using the IP address from command line or any ssh client tool.
