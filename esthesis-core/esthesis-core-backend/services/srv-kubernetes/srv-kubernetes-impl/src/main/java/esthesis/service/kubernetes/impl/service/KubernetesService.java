@@ -1,11 +1,17 @@
 package esthesis.service.kubernetes.impl.service;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import esthesis.service.kubernetes.dto.PodInfoDTO;
+import esthesis.service.kubernetes.dto.SecretDTO;
 import io.fabric8.kubernetes.api.model.EnvVar;
 import io.fabric8.kubernetes.api.model.EnvVarBuilder;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder;
-import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.SecretBuilder;
+import io.fabric8.kubernetes.api.model.SecretVolumeSourceBuilder;
+import io.fabric8.kubernetes.api.model.VolumeBuilder;
+import io.fabric8.kubernetes.api.model.VolumeMountBuilder;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import io.fabric8.kubernetes.api.model.autoscaling.v2.HorizontalPodAutoscaler;
 import io.fabric8.kubernetes.api.model.autoscaling.v2.HorizontalPodAutoscalerBuilder;
@@ -15,6 +21,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,9 +30,17 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public class KubernetesService {
 
+	private final String SECRET_MOUNT_LOCATION = "/etc/esthesis/secrets";
+	private final String SECRET_VOLUME_SUFFIX = "-secret-volume";
+
 	@Inject
 	KubernetesClient kc;
 
+	/**
+	 * Generates a list of environmental variables out of a pod definition.
+	 *
+	 * @param podInfoDTO The pod definition.
+	 */
 	private List<EnvVar> getEnvVar(PodInfoDTO podInfoDTO) {
 		List<EnvVar> envVars = new ArrayList<>();
 		podInfoDTO.getConfiguration().forEach((k, v) ->
@@ -35,12 +50,38 @@ public class KubernetesService {
 		return envVars;
 	}
 
+	/**
+	 * Creates or updates a secret.
+	 *
+	 * @param secretDTO The secret to create or update.
+	 * @return The name of the secret.
+	 */
+	public void createSecret(SecretDTO secretDTO) {
+		if (secretDTO == null) {
+			return;
+		}
+
+		SecretBuilder secretBuilder = new SecretBuilder();
+		secretBuilder.withNewMetadata().withName(secretDTO.getName()).endMetadata();
+		secretDTO.getEntries().forEach((secret) -> {
+			secretBuilder.addToData(secret.getName(),
+				Base64.getEncoder().encodeToString(secret.getContent().getBytes(UTF_8)));
+		});
+		log.debug("Creating secret '{}'.", secretBuilder.build());
+		kc.secrets().resource(secretBuilder.build()).createOrReplace();
+	}
+
+	/**
+	 * Schedules a pod.
+	 *
+	 * @param podInfoDTO The pod to schedule.
+	 */
 	public boolean schedulePod(PodInfoDTO podInfoDTO) {
 		log.debug("Scheduling pod '{}'.", podInfoDTO);
 
 		//@formatter:off
     // Create a deployment for the pod.
-    Deployment deploymentInfo = new DeploymentBuilder()
+    DeploymentBuilder deploymentBuilder = new DeploymentBuilder()
       .withNewMetadata()
         .withName(podInfoDTO.getName())
       .endMetadata()
@@ -66,16 +107,37 @@ public class KubernetesService {
             .endContainer()
           .endSpec()
         .endTemplate()
-      .endSpec()
-    .build();
-    // @formatter:on
+      .endSpec();
+
+		// Add secret.
+		if (podInfoDTO.getSecret() != null) {
+			createSecret(podInfoDTO.getSecret());
+
+			String volumeName = podInfoDTO.getName() + SECRET_VOLUME_SUFFIX;
+				deploymentBuilder.editSpec().editTemplate()
+				.editSpec()
+					.addNewVolumeLike(
+						new VolumeBuilder().withName(volumeName)
+							.withSecret(new SecretVolumeSourceBuilder()
+								.withSecretName(podInfoDTO.getSecret().getName())
+								.build())
+							.build())
+					.endVolume()
+				.editContainer(0).addNewVolumeMountLike(
+					new VolumeMountBuilder()
+						.withName(volumeName)
+						.withMountPath(SECRET_MOUNT_LOCATION).build()
+				).endVolumeMount().endContainer()
+				.endSpec().endTemplate().endSpec();
+		}
+		// @formatter:on
 
 		if (podInfoDTO.isStatus()) {
 			kc.apps().deployments().inNamespace(podInfoDTO.getNamespace())
-				.resource(deploymentInfo).createOrReplace();
+				.resource(deploymentBuilder.build()).createOrReplace();
 		} else {
 			kc.apps().deployments().inNamespace(podInfoDTO.getNamespace())
-				.resource(deploymentInfo).delete();
+				.resource(deploymentBuilder.build()).delete();
 		}
 
 		//@formatter:off
@@ -131,6 +193,9 @@ public class KubernetesService {
 		return true;
 	}
 
+	/**
+	 * Returns the list of namespaces.
+	 */
 	public List<String> getNamespaces() {
 		return kc.namespaces().list().getItems().stream().map(
 				n -> n.getMetadata().getName()).toList().stream()

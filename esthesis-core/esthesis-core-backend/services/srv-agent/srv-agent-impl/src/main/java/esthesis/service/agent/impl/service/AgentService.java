@@ -4,6 +4,7 @@ import static esthesis.common.AppConstants.HARDWARE_ID_REGEX;
 
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.AppConstants.Provisioning.Redis;
+import esthesis.common.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.exception.QLimitException;
 import esthesis.common.exception.QMismatchException;
@@ -11,7 +12,6 @@ import esthesis.common.exception.QSecurityException;
 import esthesis.service.agent.dto.AgentProvisioningInfoResponse;
 import esthesis.service.agent.dto.AgentRegistrationRequest;
 import esthesis.service.agent.dto.AgentRegistrationResponse;
-import esthesis.service.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.service.crypto.resource.CASystemResource;
 import esthesis.service.crypto.resource.SigningSystemResource;
 import esthesis.service.device.dto.DeviceRegistrationDTO;

@@ -1,7 +1,5 @@
 package esthesis.service.crypto.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import esthesis.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
@@ -30,19 +28,15 @@ public class CaEntity extends BaseEntity {
 	@Size(max = 256)
 	private String name;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private Instant issued;
 
 	@NotNull
 	private Instant validity;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private String publicKey;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private String privateKey;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private String certificate;
 
 	// The parent CA CN.

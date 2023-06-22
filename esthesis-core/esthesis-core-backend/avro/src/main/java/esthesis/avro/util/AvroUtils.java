@@ -128,7 +128,7 @@ public class AvroUtils {
 
 		if (parts.length < 2) {
 			throw new QMismatchException(
-				"Invalid line protocol data in line '{}', at least two parts are "
+				"Invalid eLP data in line '{}', at least two parts are "
 					+ "required, the category and one or more measurements.",
 				StringUtils.abbreviate(line, AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH));
 		}

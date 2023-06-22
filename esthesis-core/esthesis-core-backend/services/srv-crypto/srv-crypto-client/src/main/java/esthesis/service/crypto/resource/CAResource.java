@@ -37,6 +37,10 @@ public interface CAResource {
 	CaEntity findById(@PathParam("id") String id);
 
 	@GET
+	@Path("/v1/{id}/complete")
+	CaEntity findByIdComplete(@PathParam("id") String id);
+
+	@GET
 	@Path("/v1/eligible-for-signing")
 	List<CaEntity> getEligbleForSigning();
 

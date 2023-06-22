@@ -27,7 +27,12 @@ export const DATAFLOW_DEFINITION_MQTT_CLIENT = {
             hintStart: "ex: tcp://mosquitto:1883, ssl://mosquitto:8883",
           }
         },
-        {key: "certificate", type: "select", props: {required: false, label: "Certificate"}},
+        {key: "cert", type: "input", props: {required: false, label: "Client certificate",
+            hintStart: "Specify a filesystem location, e.g. /mosquitto/secret/client.crt"}},
+        {key: "key", type: "input", props: {required: false, label: "Client private key",
+            hintStart: "Specify a filesystem location, e.g. /mosquitto/secret/client.key"}},
+        {key: "ca", type: "input", props: {required: false, label: "Certificate Authority certificate",
+            hintStart: "Specify a filesystem location, e.g. /mosquitto/secret/ca.cert"}},
       ],
     },
     {

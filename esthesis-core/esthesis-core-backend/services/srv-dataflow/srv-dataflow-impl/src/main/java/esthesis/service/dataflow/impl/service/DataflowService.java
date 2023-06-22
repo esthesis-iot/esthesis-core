@@ -3,10 +3,15 @@ package esthesis.service.dataflow.impl.service;
 import com.github.slugify.Slugify;
 import esthesis.common.data.MapUtils;
 import esthesis.service.common.BaseService;
+import esthesis.service.crypto.resource.CAResource;
+import esthesis.service.crypto.resource.CertificateResource;
 import esthesis.service.dataflow.dto.DockerTagsDTO;
 import esthesis.service.dataflow.entity.DataflowEntity;
 import esthesis.service.dataflow.impl.docker.DockerClient;
 import esthesis.service.kubernetes.dto.PodInfoDTO;
+import esthesis.service.kubernetes.dto.SecretDTO;
+import esthesis.service.kubernetes.dto.SecretDTO.SecretDTOBuilder;
+import esthesis.service.kubernetes.dto.SecretEntryDTO;
 import esthesis.service.kubernetes.resource.KubernetesResource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -35,6 +40,9 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	private final static String CUSTOM_ENV_VARS_SEPARATOR = "\n";
 	private final static String CUSTOM_ENV_VARS_KEY_VALUE_SEPARATOR = "=";
 	private final static String IMAGE_REGISTRY_URL = "registry";
+	private final static String SECRET_NAME = "name";
+	private final static String SECRET_PATH = "path";
+	private final static String SECRET_CONTENT = "content";
 
 	private final static String DATAFLOW_SPECIAL_HANDLING_MQTT_CLIENT_TYPE = "mqtt-client";
 
@@ -46,6 +54,23 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	@RestClient
 	KubernetesResource kubernetesResource;
 
+	@Inject
+	@RestClient
+	CAResource caResource;
+
+	@Inject
+	@RestClient
+	CertificateResource certificateResource;
+
+	/**
+	 * Flattens the nested keys of a map producing a flat map.
+	 *
+	 * <pre>
+	 *   flattenMap({a={b=1, c=2}, d=3}) = {a.b=1, a.c=2, d=3}
+	 * </pre>
+	 *
+	 * @param map The map to flatten.
+	 */
 	private Map<String, String> flattenMap(Map<String, Object> map) {
 		return map.entrySet().stream().flatMap(MapUtils::flatten)
 			.map(entry -> Map.entry(entry.getKey(), entry.getValue().toString()))
@@ -63,7 +88,7 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		map.forEach((key, value) -> {
 			String newKey = keyPrefix + key.toUpperCase().replace(".", "_").replace("-", "_");
 			env.put(newKey, value);
-			log.debug("Adding key '{}' with value '{}' to environment variables.", newKey, value);
+			log.trace("Adding key '{}' with value '{}' to environment variables.", newKey, value);
 		});
 
 		return env;
@@ -90,16 +115,26 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		return env;
 	}
 
-	/**
-	 * Some type of dataflows require special handling, such as creating config maps, secrets, etc.
-	 * These cases are handled here.
-	 *
-	 * @param dataflowEntity
-	 */
-	private void handleSpecialCases(DataflowEntity dataflowEntity) {
-		if (dataflowEntity.getType().equals(DATAFLOW_SPECIAL_HANDLING_MQTT_CLIENT_TYPE)) {
+	private SecretDTO getSecretSpec(DataflowEntity dataflowEntity) {
+		// Create a builder for the secret.
+		SecretDTOBuilder builder = SecretDTO.builder().name(dataflowEntity.getName());
 
-		}
+		// Get the secrets.
+		Map<String, String> flatMap = flattenMap(dataflowEntity.getConfig());
+		List<Map<String, String>> secrets =
+			(List<Map<String, String>>) dataflowEntity.getKubernetes().get("secrets");
+
+		// Iterate over the secrets and add them to the builder.
+		secrets.forEach(secret -> {
+			builder.entry(
+				SecretEntryDTO.builder()
+					.name(secret.get(SECRET_NAME))
+					.path(flatMap.get(SECRET_PATH))
+					.content(secret.get(SECRET_CONTENT)).build()
+			);
+		});
+
+		return builder.build();
 	}
 
 	@Override
@@ -108,8 +143,6 @@ public class DataflowService extends BaseService<DataflowEntity> {
 
 		// Save the dataflow.
 		dataflowEntity = super.save(dataflowEntity);
-
-		// Handle special cases.
 
 		// Schedule dataflow in Kubernetes.
 		PodInfoDTO podInfoDTO = new PodInfoDTO();
@@ -136,7 +169,9 @@ public class DataflowService extends BaseService<DataflowEntity> {
 				dataflowEntity.getKubernetes().get(CUSTOM_ENV_VARS_KEY_NAME).toString()));
 		}
 		podInfoDTO.setStatus(dataflowEntity.isStatus());
+		podInfoDTO.setSecret(getSecretSpec(dataflowEntity));
 
+		log.debug("Scheduling pod '{}' in Kubernetes.", podInfoDTO);
 		kubernetesResource.schedulePod(podInfoDTO);
 
 		return dataflowEntity;

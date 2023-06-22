@@ -27,8 +27,13 @@ import {MatButtonModule} from "@angular/material/button";
 import {ComponentsModule} from "../shared/components/components.module";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {CdkTableModule} from "@angular/cdk/table";
-import { DataflowWizardsListComponent } from './dataflow-wizards/dataflow-wizards-list/dataflow-wizards-list.component';
-import { DataflowWizardStandardComponent } from './dataflow-wizards/dataflow-wizard-standard/dataflow-wizard-standard.component';
+import {
+  DataflowWizardsListComponent
+} from "./dataflow-wizards/dataflow-wizards-list/dataflow-wizards-list.component";
+import {
+  DataflowWizardStandardComponent
+} from "./dataflow-wizards/dataflow-wizard-standard/dataflow-wizard-standard.component";
+import {RepeatSecretTypeComponent} from "./_custom-types/formly-secrets-section";
 
 @NgModule({
   declarations: [
@@ -37,7 +42,8 @@ import { DataflowWizardStandardComponent } from './dataflow-wizards/dataflow-wiz
     DataflowEditComponent,
     DataflowEditSectionComponent,
     DataflowWizardsListComponent,
-    DataflowWizardStandardComponent
+    DataflowWizardStandardComponent,
+    RepeatSecretTypeComponent
   ],
   imports: [
     CommonModule,
@@ -58,6 +64,7 @@ import { DataflowWizardStandardComponent } from './dataflow-wizards/dataflow-wiz
     MatSlideToggleModule,
     FormlyModule.forChild({
       wrappers: [{name: "section", component: DataflowEditSectionComponent}],
+      types: [{name: "repeat-secret", component: RepeatSecretTypeComponent}]
     }),
     FormlyMaterialModule,
     FormlyMatSliderModule,

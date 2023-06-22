@@ -41,3 +41,9 @@ quarkus:
     AuditResource:
       url: http://esthesis-core-srv-audit-service:8080
       scope: Singleton
+    CAResource:
+      url: http://esthesis-core-srv-crypto-service:8080
+      scope: Singleton
+    CertificateResource:
+      url: http://esthesis-core-srv-crypto-service:8080
+      scope: Singleton

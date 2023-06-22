@@ -1,6 +1,6 @@
 # MQTT security hardening
 
-The default Helm scripts for esthesis dependencies deploy an MQTT broker with no security
+The default Helm charts for esthesis dependencies deploy an MQTT broker with no security
 configured. This may be convenient to make sure everything works in your environment, however by no
 means this is a production-ready setup. As esthesis uses the topic names to connect device IDs with
 the actual devices managed in the system, it is of paramount importance to enable security in MQTT
@@ -11,12 +11,19 @@ Eclipse Mosquitto, which is the MQTT broker being used when you set up esthesis 
 Helm charts.
 
 ## Create a Certificate Authority and a Certificate
+To enable certificate-based authentication and mutual TLS, you need to create a Certificate Authority (CA) and a server certificate.
+
+The CA will be responsible to sign the server certificate, and should be the same CA that signs
+the certificates used by the devices to connect to the MQTT broker.
+
+The server certificate will be used by the MQTT broker to establish a TLS connections with the devices.
 
 ### Create a Certificate Authority
 To create a Certificate Authority, go to Key Management > CAs and click on the "Create" button.
-If you have already configured a CA before, you can skip this part.
+If you have already configured a CA before, you can skip this part. Make sure the CA you create
+here is the one set as the Root CA under Settings > Security.
 
-### Create a Certificate
+### Create a server Certificate
 You need to create a certificate to be used by the MQTT server to establish TLS. To create a
 Certificate, go to Key Management > Certificates and click on the "Create" button. Pay attention to
 the following points:
@@ -25,112 +32,34 @@ the following points:
 devices' perspective. You can add additional domains as SANs (for example, the domain name of the
 service under which the MQTT server is accessible from within the cluster, i.e. mosquitto).
 
-## Download the CA and the Certificate
-Download the private key and the certificate for the certificate you created above and the
+### Download the CA and the Server Certificate
+Download the private key and the certificate for the server certificate you created above and the
 certificate for the CA.
 
-## Assign the CA and the certificate as defaults
-Navigate to Settings > Security and assign the CA and the certificate as defaults.
+## Redeploy the Helm chart enabling TLS
+Go to the location where you deployed the esthesis dependencies via executing `helmfile sync`
+and add the following environment variables:
 
-## Create an ACL file
-Create a text file using the following command:
 ```shell
-cat > aclfile.conf << EOF
-pattern write $SYS/broker/connection/%c/state
-pattern write esthesis/ping/%u
-pattern write esthesis/telemetry/%u
-pattern write esthesis/metadata/%u
-pattern read esthesis/control/request/%u
-pattern write esthesis/control/reply/%u
-user esthesis-platform
-topic esthesis/#
-EOF
+export MOSQUITTO_MUTUAL_TLS=true
+export MOSQUITTO_SUPER_USER=esthesis-platform
+export MOSQUITTO_TLS_CA_CERT=$(cat ca.crt | base64)
+export MOSQUITTO_TLS_CERT=$(cat cert.crt | base64)
+export MOSQUITTO_TLS_KEY=$(cat cert.key | base64)
 ```
-:::caution
-1. The username you specify in `user` parameter is the "superuser" for the MQTT broker. This user
-is allowed to subscribe and publish to/from any topic. Create a separate certificate for this user,
-with `CN=esthesis-platform`.
-2. If you have used different topic names than the default ones, change the topic names accordingly.
+
+:::info
+1. Replace the names of ca.crt, cert.crt and cert.key with the files you downloaded above.
+2. The name of the user specified in `MOSQUITTO_SUPER_USER` will be the "superuser" for the MQTT, i.e.
+a user that can subscribe and publish to/from any topic. This user should be used by the esthesis
+platform to communicate with the MQTT broker. Create a separate certificate for this user, having
+the Common Name set to the same name as the one you specified here (for the given example
+above, `esthesis-platform`).
+3. During the deployment of the supporting infrastructure you, probably, had to define an array of
+environment variables to be used by the Helm charts. Do not forget to re-specify these variables
+before you re-run the `helmfile sync` command here, otherwise the deployment might fail or have
+unexpected results.
 :::
-
-## Create a Mosquitto configuration file
-Create a text file using the following command:
-```shell
-cat > mosquitto.conf << EOF
-port 8883
-cafile /mosquitto/secret/ca.crt
-certfile /mosquitto/secret/cert.crt
-keyfile /mosquitto/secret/cert.key
-allow_anonymous false
-require_certificate true
-use_identity_as_username true
-acl_file /mosquitto/secret/aclfile.conf
-EOF
-```
-
-## Create a Kubernetes secret
-Create a Kubernetes secret to store the files you downloaded above:
-```shell
-kubectl create secret generic esthesis-mqtt-secret \
-    --from-file=ca.crt=ca.crt \
-    --from-file=cert.crt=cert.crt \
-    --from-file=cert.key=cert.key \
-    --from-file=aclfile.conf=aclfile.conf
-```
-:::caution
-Change the `--from-file=ca.crt=ca.crt` and `.key` filenames to match those you downloaded above, for example:
-`--from-file=ca.crt=my-root-ca.crt`.
-:::
-
-## Prepare a patch for the Mosquitto deployment
-Create a patch file using the following command:
-```shell
-cat > patch-mosquitto.yaml << EOF
-spec:
-  template:
-    spec:
-      containers:
-        - name: mosquitto
-          volumeMounts:
-            - name: esthesis-mqtt-secret
-              mountPath: /mosquitto/secret
-          startupProbe:
-            tcpSocket:
-              port: 8883
-          livenessProbe:
-            tcpSocket:
-              port: 8883
-      volumes:
-        - name: esthesis-mqtt-secret
-          secret:
-            secretName: esthesis-mqtt-secret
-          items:
-            - key: ca.crt
-              path: ca.crt
-            - key: cert.crt
-              path: cert.crt
-            - key: cert.key
-              path: cert.key
-            - key: aclfile.conf
-              path: aclfile.conf
-EOF
-```
-
-## Patch the existing Mosquitto deployment
-Once all configuration changes are prepared, it is time to patch the existing Mosquitto deployment.
-
-### Patch the configuration
-Apply the configmap patch using the following command:
-```kubectl
-kubectl create configmap mosquitto-config --from-file=mosquitto.conf --dry-run=client -o yaml | kubectl apply -f -
-
-```
-
-### Patch the Mosquitto deployment
-Apply the deployment patch using the following command:
-```kubernetes helm
-kubectl patch deployment mosquitto --patch "$(cat patch-mosquitto.yaml)"
-```
 
 ## Warnings
 :::warning Losing connectivity with your devices

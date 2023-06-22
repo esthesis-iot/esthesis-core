@@ -1,5 +1,6 @@
 package esthesis.common.crypto.dto;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,9 +22,11 @@ public class SSLSocketFactoryDTO {
 	private List<SSLSocketFactoryCertificateDTO> trustedCertificates;
 
 	// The client certificate to present during client authenticate.
+	@NotNull
 	private SSLSocketFactoryCertificateDTO clientCertificate;
 
 	// The client private key to sign during client authenticate.
+	@NotNull
 	private SSLSocketFactoryPrivateKeyDTO clientPrivateKey;
 
 	// TLS version to use.

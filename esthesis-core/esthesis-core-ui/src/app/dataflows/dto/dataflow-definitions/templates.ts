@@ -72,7 +72,22 @@ export const DATAFLOW_TEMPLATE_WRAPPED_KUBERNETES = [{
       key: "pods-max", type: "input", defaultValue: "10",
       props: {label: "Maximum pods", required: true},
     },
-    {key: "env", type: "textarea", props: {label: "Environment variables", rows: 3}},
+    {key: "env", type: "textarea", props: {label: "Environment variables", autosize: true, autosizeMinRows: 1}
+    },
+    {
+      key: "secrets",
+      type: "repeat-secret",
+      props: {
+        addText: "Add secret"
+      },
+      fieldArray: {
+        fieldGroup: [
+          { key: "name", type: "input", props: {label: "Secret key name", required: true, className: "flex-row"}},
+          { key: "content", type: "textarea", props: {label: "Content", required: true,
+              className: "flex-row", autosize: true, autosizeMinRows: 1, autosizeMaxRows: 10}}
+        ]
+      }
+    }
   ]
 }];
 

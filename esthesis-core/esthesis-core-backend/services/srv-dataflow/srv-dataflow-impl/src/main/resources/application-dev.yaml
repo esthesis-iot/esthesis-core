@@ -45,6 +45,12 @@ quarkus:
     AuditResource:
       url: http://localhost:59140
       scope: Singleton
+    CAResource:
+      url: http://localhost:59040
+      scope: Singleton
+    CertificateResource:
+      url: http://localhost:59040
+      scope: Singleton
 
 mp:
   jwt:

@@ -13,7 +13,6 @@ import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
-import {CertificatesService} from "../../certificates/certificates.service";
 
 @Component({
   selector: "app-dataflow-edit",
@@ -29,8 +28,7 @@ export class DataflowEditComponent extends SecurityBaseComponent implements OnIn
 
   constructor(private route: ActivatedRoute, private dataflowService: DataflowsService,
     private tagService: TagsService, private utilityService: UtilityService,
-    private dialog: MatDialog, private qForms: QFormsService, private router: Router,
-    private certificatesService: CertificatesService) {
+    private dialog: MatDialog, private qForms: QFormsService, private router: Router) {
     super(AppConstants.SECURITY.CATEGORY.DATAFLOW, route.snapshot.paramMap.get("id"));
   }
 
@@ -72,14 +70,6 @@ export class DataflowEditComponent extends SecurityBaseComponent implements OnIn
       this.replaceSelectValues(this.fields, "namespace",
         onNext.map(t => {
           return {label: t, value: t};
-        }));
-    });
-
-    // Replace the certificate field with the actual certificates.
-    this.certificatesService.find("sort=name,asc").subscribe(onNext => {
-      this.replaceSelectValues(this.fields, "certificate",
-        onNext.content.map(t => {
-          return {label: `${t.name} (${t.cn})`, value: t.id};
         }));
     });
 

@@ -19,4 +19,10 @@ env \
     ESTHESIS_DFL_KAFKA_TOPIC_COMMAND_REPLY=esthesis-command-reply \
     ESTHESIS_DFL_MQTT_BROKER_CLUSTER_URL=ssl://mqtt.esthesis.localdev:8883 \
     ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.esthesis.localdev:9094 \
-./mvnw quarkus:dev -Djavax.net.debug=ssl -Ddebug=39152 -Dquarkus.profile="$PROFILES"
+    ESTHESIS_DFL_MQTT_BROKER_CA=certs/esthesis-core-root-ca.crt \
+    ESTHESIS_DFL_MQTT_BROKER_CERT=certs/esthesis-platform.crt \
+    ESTHESIS_DFL_MQTT_BROKER_KEY=certs/esthesis-platform.key \
+./mvnw quarkus:dev -Ddebug=39152 -Dquarkus.profile="$PROFILES"
+
+# Trying to debug TLS related issues? Try this:
+# ./mvnw quarkus:dev -Djavax.net.debug=ssl,handshake -Ddebug=39152 -Dquarkus.profile="$PROFILES"

@@ -36,6 +36,10 @@ public interface CertificateResource {
 	CertificateEntity findById(@PathParam("id") String id);
 
 	@GET
+	@Path("/v1/{id}/complete")
+	CertificateEntity findByIdComplete(@PathParam("id") String id);
+
+	@GET
 	@Path("/v1/{id}/download")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	Response download(@PathParam("id") String certId,

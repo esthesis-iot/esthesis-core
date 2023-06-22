@@ -4,8 +4,6 @@ import esthesis.common.crypto.dto.CAHolderDTO;
 import esthesis.common.crypto.dto.CertificateSignRequestDTO;
 import esthesis.common.crypto.dto.CreateCARequestDTO;
 import esthesis.common.crypto.dto.CreateKeyPairRequestDTO;
-import esthesis.common.crypto.dto.SSLSocketFactoryCertificateDTO;
-import esthesis.common.crypto.dto.SSLSocketFactoryDTO;
 import esthesis.common.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.common.exception.QDoesNotExistException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -15,7 +13,6 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
-import java.security.KeyManagementException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
@@ -28,7 +25,6 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -42,13 +38,8 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -80,21 +71,29 @@ public class CryptoService extends CryptoConverters {
 	}
 
 	/**
+	 * Returns the default provider for secure random.
+	 */
+	private SecureRandom getSecureRandomAlgorithm() throws NoSuchAlgorithmException {
+		return getSecureRandomAlgorithm(null);
+	}
+
+	/**
 	 * Finds the requested secure random algorithm or returns the default one.
 	 *
 	 * @param secureRandomAlgorithm the secure random algorithm to find.
 	 */
-	private String getSecureRandomAlgorithm(final String secureRandomAlgorithm) {
+
+	private SecureRandom getSecureRandomAlgorithm(final String secureRandomAlgorithm)
+	throws NoSuchAlgorithmException {
+		SecureRandom selectedAlgorithm;
 		if (StringUtils.isBlank(secureRandomAlgorithm)) {
-			try {
-				return SecureRandom.getInstanceStrong().getAlgorithm();
-			} catch (NoSuchAlgorithmException e) {
-				log.error(e.getMessage(), e);
-				return secureRandomAlgorithm;
-			}
+			selectedAlgorithm = SecureRandom.getInstanceStrong();
 		} else {
-			return secureRandomAlgorithm;
+			selectedAlgorithm = SecureRandom.getInstance(secureRandomAlgorithm);
 		}
+
+		log.debug("Returning secure random algorithm '{}'.", selectedAlgorithm);
+		return selectedAlgorithm;
 	}
 
 	public String cleanUpCn(String cn) {
@@ -241,8 +240,8 @@ public class CryptoService extends CryptoConverters {
 		}
 
 		// Set the secret provider and generator.
-		keyPairGenerator.initialize(createKeyPairRequestDTO.getKeySize(), SecureRandom.getInstance(
-			getSecureRandomAlgorithm(createKeyPairRequestDTO.getSecureRandomAlgorithm())));
+		keyPairGenerator.initialize(createKeyPairRequestDTO.getKeySize(),
+			getSecureRandomAlgorithm(createKeyPairRequestDTO.getSecureRandomAlgorithm()));
 
 		return keyPairGenerator.generateKeyPair();
 	}
@@ -470,59 +469,5 @@ public class CryptoService extends CryptoConverters {
 		}
 		return algorithms;
 
-	}
-
-	/**
-	 * Creates an SSL socket factory to be used in clients requiring certificate-based
-	 * authentication.
-	 *
-	 * @param sslSocketFactoryDTO the details of the SSL socket factory to create
-	 * @return the generated SSL socker factory
-	 * @throws CertificateException      thrown when the certificate cannot be generated
-	 * @throws IOException               thrown when something unexpected happens
-	 * @throws KeyStoreException         thrown when the required keystore is not available
-	 * @throws NoSuchAlgorithmException  thrown when no algorithm is found for encryption
-	 * @throws UnrecoverableKeyException thrown when the provided key is invalid
-	 * @throws KeyManagementException    thrown when the provided key is invalid
-	 * @throws InvalidKeySpecException   thrown when the provided key is invalid
-	 */
-	public SSLSocketFactory getSocketFactory2(SSLSocketFactoryDTO sslSocketFactoryDTO)
-	throws CertificateException, IOException, KeyStoreException, NoSuchAlgorithmException,
-				 UnrecoverableKeyException, KeyManagementException, InvalidKeySpecException {
-
-		// Certificates to trust.
-		KeyStore caKs = KeyStore.getInstance(KeyStore.getDefaultType());
-		caKs.load(null, null);
-		for (SSLSocketFactoryCertificateDTO certificate : sslSocketFactoryDTO.getTrustedCertificates()) {
-			caKs.setCertificateEntry(certificate.getName(),
-				pemToCertificate(certificate.getPemCertificate()));
-		}
-		TrustManagerFactory tmf = TrustManagerFactory.getInstance(CERT_TYPE);
-		tmf.init(caKs);
-
-		// Client key and certificate.
-		String randomPassword = UUID.randomUUID().toString();
-		KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-		ks.load(null, null);
-		ks.setCertificateEntry(sslSocketFactoryDTO.getClientCertificate().getName(),
-			pemToCertificate(
-				sslSocketFactoryDTO.getClientCertificate().getPemCertificate()));
-		ks.setKeyEntry(sslSocketFactoryDTO.getClientPrivateKey().getName(),
-			pemToPrivateKey(
-				sslSocketFactoryDTO.getClientPrivateKey().getPemPrivateKey(),
-				sslSocketFactoryDTO.getClientPrivateKey().getAlgorithm()),
-			randomPassword.toCharArray(),
-			new java.security.cert.Certificate[]{pemToCertificate(
-				sslSocketFactoryDTO.getClientCertificate().getPemCertificate())});
-		KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory
-			.getDefaultAlgorithm());
-		kmf.init(ks, randomPassword.toCharArray());
-
-		// Create SSL socket factory
-		SSLContext context = SSLContext
-			.getInstance(sslSocketFactoryDTO.getTlsVersion());
-		context.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
-
-		return context.getSocketFactory();
 	}
 }

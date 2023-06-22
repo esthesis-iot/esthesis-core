@@ -67,6 +67,11 @@ public class CertificateResourceImpl implements CertificateResource {
 	}
 
 	@Override
+	public CertificateEntity findByIdComplete(String id) {
+		return findById(id);
+	}
+
+	@Override
 	@Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Download certificate", log =
 		AuditLogType.DATA_IN)
 	public Response download(String certId, AppConstants.KeyType type) {

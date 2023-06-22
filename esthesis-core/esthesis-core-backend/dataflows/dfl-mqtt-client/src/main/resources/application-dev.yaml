@@ -21,4 +21,4 @@ quarkus:
         traces:
           endpoint: http://grafana-tempo-distributor:4317
   config:
-    locations: "../../../../setup/dev/profiles"
+    locations: "../../../_dev/profiles"

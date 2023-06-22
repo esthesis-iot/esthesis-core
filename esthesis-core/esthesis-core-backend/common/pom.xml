@@ -37,6 +37,14 @@
       <artifactId>bcpkix-jdk18on</artifactId>
       <groupId>org.bouncycastle</groupId>
     </dependency>
+		<dependency>
+			<artifactId>bcprov-jdk18on</artifactId>
+			<groupId>org.bouncycastle</groupId>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bctls-jdk18on</artifactId>
+		</dependency>
     <dependency>
       <artifactId>commons-lang3</artifactId>
       <groupId>org.apache.commons</groupId>

@@ -113,12 +113,9 @@ public class CertificateService extends BaseService<CertificateEntity> {
 			// Generate a keypair.
 			final KeyPair keyPair = cryptoService.createKeyPair(
 				CreateKeyPairRequestDTO.builder()
-					.keySize(settingsResource.findByName(
-						NamedSetting.SECURITY_ASYMMETRIC_KEY_SIZE).asInt())
+					.keySize(settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_SIZE).asInt())
 					.keyPairGeneratorAlgorithm(
-						settingsResource.findByName(
-								NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM)
-							.asString())
+						settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
 					.build()
 			);
 
@@ -176,6 +173,11 @@ public class CertificateService extends BaseService<CertificateEntity> {
 			certificateEntity.setCertificate(certPEM);
 			certificateEntity.setSan(certificateSignRequestDTO.getSan());
 			certificateEntity.setName(certificateEntity.getName());
+			certificateEntity.setKeyAlgorithm(
+				settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString());
+			certificateEntity.setSignatureAlgorithm(
+				settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM)
+					.asString());
 
 			return super.save(certificateEntity);
 		} catch (NoSuchAlgorithmException | IOException |

@@ -53,6 +53,11 @@ public class CAResourceImpl implements CAResource {
 		return caService.findById(id);
 	}
 
+	@Override
+	public CaEntity findByIdComplete(String id) {
+		return findById(id);
+	}
+
 	@GET
 	@Override
 	@Path("/v1/eligible-for-signing")

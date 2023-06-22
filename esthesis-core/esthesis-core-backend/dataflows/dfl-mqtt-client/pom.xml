@@ -25,6 +25,18 @@
       <groupId>org.apache.camel.quarkus</groupId>
       <artifactId>camel-quarkus-paho</artifactId>
     </dependency>
+
+		<!-- THIRD PARTY -->
+		<dependency>
+			<groupId>io.github.hakky54</groupId>
+			<artifactId>sslcontext-kickstart</artifactId>
+			<version>8.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.hakky54</groupId>
+			<artifactId>sslcontext-kickstart-for-pem</artifactId>
+			<version>8.1.2</version>
+		</dependency>
   </dependencies>
 
 </project>
