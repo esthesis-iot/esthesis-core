@@ -1,6 +1,8 @@
 package mqttClient
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/esthesis-iot/esthesis-device/internal/app/mqttCommandRequestReceiver"
@@ -12,6 +14,32 @@ import (
 )
 
 var client mqtt.Client
+
+func getTlsConfig() *tls.Config {
+	// Import CA.
+	certPool := x509.NewCertPool()
+	rootCa := config.GetRegistrationProperty(config.RegistrationPropertyRootCaCertificate)
+	log.Debugf("Loaded CA certificate '%s'.", rootCa)
+	certPool.AppendCertsFromPEM([]byte(rootCa))
+
+	// Import client certificate and private key.
+	clientCert := config.GetRegistrationProperty(config.RegistrationPropertyCertificate)
+	log.Debugf("Loaded client certificate '%s'.", clientCert)
+	clientKey := config.GetRegistrationProperty(config.RegistrationPropertyPrivateKey)
+	log.Debugf("Loaded client private key '%s'.", clientKey)
+	// cert, err := tls.LoadX509KeyPair(clientCert, clientKey)
+	cert, err := tls.X509KeyPair([]byte(clientCert), []byte(clientKey))
+	if err != nil {
+		log.Error(err)
+	}
+
+	// Create tls.Config with desired tls properties
+	return &tls.Config{
+		RootCAs:            certPool,
+		InsecureSkipVerify: config.Flags.IgnoreMqttInsecure,
+		Certificates:       []tls.Certificate{cert},
+	}
+}
 
 func Disconnect() {
 	if client != nil {
@@ -42,6 +70,11 @@ func Connect() bool {
 	opts.AddBroker(mqttServer)
 	opts.SetClientID(config.Flags.HardwareId)
 	opts.SetKeepAlive(60 * time.Second)
+	// Set TLS configuration, if MQTT broker URL starts with "ssl://".
+	if mqttServer[0:6] == "ssl://" {
+		tlsConfig := getTlsConfig()
+		opts.SetTLSConfig(tlsConfig)
+	}
 
 	client = mqtt.NewClient(opts)
 	token := client.Connect()
@@ -50,13 +83,14 @@ func Connect() bool {
 	}
 
 	// Subscribe to command request topic.
-	commandRequestTopic := config.Flags.
-		TopicCommandRequest + "/" + config.Flags.HardwareId
+	commandRequestTopic := config.Flags.TopicCommandRequest + "/" + config.Flags.HardwareId
 	log.Debugf("Subscribing to topic '%s'.", commandRequestTopic)
 	if token := client.Subscribe(commandRequestTopic, 0,
 		mqttCommandRequestReceiver.OnMessage); token.Wait() && token.Error() != nil {
 		fmt.Println(token.Error())
 		os.Exit(1)
+	} else {
+		log.Debugf("Subscribed to topic '%s'.", commandRequestTopic)
 	}
 
 	return true

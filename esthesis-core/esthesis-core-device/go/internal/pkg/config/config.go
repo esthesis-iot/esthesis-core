@@ -77,6 +77,8 @@ type flagsStruct struct {
 	LuaHttpMetadataScript     string
 	LuaMqttTelemetryScript    string
 	LuaMqttMetadataScript     string
+	IgnoreHttpsInsecure       bool
+	IgnoreMqttInsecure        bool
 }
 
 var Flags = flagsStruct{}
@@ -261,6 +263,12 @@ func InitCmdFlags(osArgs []string) {
 	opt.StringVar(&Flags.Attributes, "attributes", "",
 		opt.GetEnv("ATTRIBUTES"),
 		opt.Description("A comma-separated list of key-value pairs to be sent as attributes"))
+	opt.BoolVar(&Flags.IgnoreHttpsInsecure, "ignoreHttpsInsecure", false,
+		opt.GetEnv("IGNORE_HTTPS_INSECURE"),
+		opt.Description("A flag to ignore HTTPS certificate errors"))
+	opt.BoolVar(&Flags.IgnoreMqttInsecure, "ignoreMqttInsecure", false,
+		opt.GetEnv("IGNORE_MQTT_INSECURE"),
+		opt.Description("A flag to ignore MQTT certificate errors"))
 
 	// Parse CLI arguments.
 	_, err := opt.Parse(osArgs)

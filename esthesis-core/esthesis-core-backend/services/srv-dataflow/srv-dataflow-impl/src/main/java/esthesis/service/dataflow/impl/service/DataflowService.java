@@ -125,14 +125,16 @@ public class DataflowService extends BaseService<DataflowEntity> {
 			(List<Map<String, String>>) dataflowEntity.getKubernetes().get("secrets");
 
 		// Iterate over the secrets and add them to the builder.
-		secrets.forEach(secret -> {
-			builder.entry(
-				SecretEntryDTO.builder()
-					.name(secret.get(SECRET_NAME))
-					.path(flatMap.get(SECRET_PATH))
-					.content(secret.get(SECRET_CONTENT)).build()
-			);
-		});
+		if (secrets != null && !secrets.isEmpty()) {
+			secrets.forEach(secret -> {
+				builder.entry(
+					SecretEntryDTO.builder()
+						.name(secret.get(SECRET_NAME))
+						.path(flatMap.get(SECRET_PATH))
+						.content(secret.get(SECRET_CONTENT)).build()
+				);
+			});
+		}
 
 		return builder.build();
 	}

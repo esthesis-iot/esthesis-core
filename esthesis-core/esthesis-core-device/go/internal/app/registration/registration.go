@@ -2,6 +2,7 @@ package registration
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/appConstants"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/channels"
@@ -56,6 +57,7 @@ func Register() bool {
 			}
 		},
 	)
+
 	requestBody := dto.RegistrationRequest{
 		HardwareId: config.Flags.HardwareId,
 		Type:       appConstants.DeviceType,
@@ -63,6 +65,9 @@ func Register() bool {
 		Tags:       config.Flags.Tags}
 	if config.Flags.RegistrationSecret != "" {
 		requestBody.RegistrationSecret = config.Flags.RegistrationSecret
+	}
+	if config.Flags.IgnoreHttpsInsecure {
+		client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 	}
 	request := client.R().
 		SetBody(requestBody).

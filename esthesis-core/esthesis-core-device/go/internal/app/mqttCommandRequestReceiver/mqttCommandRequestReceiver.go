@@ -145,8 +145,7 @@ func shutdownCommand() {
 }
 
 func OnMessage(client mqtt.Client, msg mqtt.Message) {
-	log.Debugf("Received command request message '%s'.",
-		util.AbbrBA(msg.Payload()))
+	log.Debugf("Received command request message '%s'.", util.AbbrBA(msg.Payload()))
 
 	// Attempt to parse the message.
 	commandRequest, err := parseCommandRequest(msg.Payload())

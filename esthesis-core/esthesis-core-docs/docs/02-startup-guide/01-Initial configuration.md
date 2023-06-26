@@ -24,14 +24,13 @@ Tags in esthesis Core play an important role allowing components to be optimally
 It is not necessary to create a tag, but it is highly recommended.
 :::
 
-## Connect your MQTT server
+## Define your MQTT server
 - Navigate to "Integrations > Infrastructure".
 - Click on the "Register" button.
 - Fill in all information, choosing the tag you created before and setting the "State" to "Active".
 
 ## Tune the settings
-- Navigate to "Settings > Settings".
-- Under "Device Registration", choose the registration mode you want to use.
+- Navigate to "Settings > Device Registration" and choose the registration mode you want to use.
 - Under "Security", choose as root CA the CA you created before.
 
 ## Set up the Dataflows
