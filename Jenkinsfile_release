@@ -93,7 +93,7 @@ pipeline {
                     find . -name helmfile.yaml | xargs sed -i "s|esthesisVersion:.*$|esthesisVersion: $RELEASE_VERSION|"
                     find . -name deployment.yaml | xargs sed -i "s|esthesisiot/esthesis-core-ui:.*$|esthesisiot/esthesis-core-ui: $RELEASE_VERSION|"
                     find . -name _helpers.tpl | xargs sed -i "s|esthesisiot/{{ .podName }}:.*$|esthesisiot/{{ .podName }}: $RELEASE_VERSION|"
-                    ./package.sh
+                    bash package.sh
                 '''
             }
         }
@@ -144,17 +144,17 @@ pipeline {
         }
         stage ("Run esthesis-core-backend publish script"){
             steps{
-                sh 'sh esthesis-platform/esthesis-core/esthesis-core-backend/publish.sh'
+                sh 'bash esthesis-platform/esthesis-core/esthesis-core-backend/publish.sh'
             }
         }
         stage ("Run esthesis-core-ui publish script"){
             steps{
-                sh 'sh esthesis-platform/esthesis-core/esthesis-core-ui/publish.sh'
+                sh 'bash esthesis-platform/esthesis-core/esthesis-core-ui/publish.sh'
             }
         }
         stage ("Run esthesis-core-device publish script"){
             steps{
-                sh 'sh esthesis-platform/esthesis-core/esthesis-core-device/publish.sh'
+                sh 'bash esthesis-platform/esthesis-core/esthesis-core-device/publish.sh'
             }
         }
         stage ("esthesis-device: Attach device assets"){
