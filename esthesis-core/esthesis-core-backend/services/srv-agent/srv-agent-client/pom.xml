@@ -8,14 +8,14 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-device-client</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>3.0.0</version>
     </dependency>
   </dependencies>
 
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-agent</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.0</version>
   </parent>
 
   <artifactId>srv-agent-client</artifactId>

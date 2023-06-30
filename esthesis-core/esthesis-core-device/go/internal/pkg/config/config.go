@@ -10,7 +10,7 @@ import (
 )
 
 // Version The application version
-const Version = "v3.0.0-SNAPSHOT"
+const Version = "3.0.0"
 
 const ExitGeneric = 1
 const ExitCodeCouldNotRegister = 2
