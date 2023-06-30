@@ -79,7 +79,7 @@ pipeline {
                     npx docusaurus docs:version $RELEASE_VERSION
                     npm run build
 
-                    mkdir ../../esthesis-docs/docs
+                    mkdir -p ../../esthesis-docs/docs
                     rm -rf ../../esthesis-docs/docs/*
                     cp -r build/* ../../esthesis-docs/docs
                 '''
