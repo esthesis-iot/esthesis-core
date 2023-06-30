@@ -79,9 +79,8 @@ pipeline {
                     npx docusaurus docs:version $RELEASE_VERSION
                     npm run build
 
-                    mkdir -p ../../esthesis-docs/docs
-                    rm -rf ../../esthesis-docs/docs/*
-                    cp -r build/* ../../esthesis-docs/docs
+                    rm -rf ../../../esthesis-docs/docs/*
+                    cp -r build/* ../../../esthesis-docs/docs
                 '''
             }
         }
@@ -105,6 +104,9 @@ pipeline {
                     sh '''
                         cd esthesis-platform
                         git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-platform.git
+                        git add esthesis-core/esthesis-core-docs/versioned_docs
+                        git add esthesis-core/esthesis-core-docs/versioned_sidebar
+                        git add esthesis-core/esthesis-core-docs/versions.json
                         git commit -a -m "release: prepare release $RELEASE_VERSION"
                         git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
                         git push https://$Username:$Password@github.com/esthesis-iot/esthesis-platform HEAD:main --tags
@@ -120,9 +122,10 @@ pipeline {
                     sh '''
                         cd esthesis-docs
                         git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-docs.git
+                        git add .
                         git commit -a -m "release: prepare release $RELEASE_VERSION"
                         git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
-                        git push https://$Username:$Password@github.com/esthesis-iot/esthesis-docs HEAD:main --tags
+                        git push https://$Username:$Password@github.com/esthesis-iot/esthesis-docs HEAD:master --tags
                     '''
                 }
             }
@@ -144,17 +147,26 @@ pipeline {
         }
         stage ("Run esthesis-core-backend publish script"){
             steps{
-                sh 'bash esthesis-platform/esthesis-core/esthesis-core-backend/publish.sh'
+                sh '''
+                    cd esthesis-platform/esthesis-core/esthesis-core-backend
+                    bash publish.sh
+                '''
             }
         }
         stage ("Run esthesis-core-ui publish script"){
             steps{
-                sh 'bash esthesis-platform/esthesis-core/esthesis-core-ui/publish.sh'
+                sh '''
+                    cd esthesis-platform/esthesis-core/esthesis-core-ui
+                    bash publish.sh
+                '''
             }
         }
         stage ("Run esthesis-core-device publish script"){
             steps{
-                sh 'bash esthesis-platform/esthesis-core/esthesis-core-device/publish.sh'
+                sh '''
+                    cd esthesis-platform/esthesis-core/esthesis-core-device
+                    bash publish.sh
+                '''
             }
         }
         stage ("esthesis-device: Attach device assets"){
