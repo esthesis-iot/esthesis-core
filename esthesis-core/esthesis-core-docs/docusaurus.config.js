@@ -66,12 +66,12 @@ const config = {
 						src: 'img/logo.png',
 					},
 					items: [
-						// {
-						// 	type: 'docsVersionDropdown',
-						// 	position: 'right',
-						// 	dropdownItemsAfter: [{to: '/versions', label: 'All versions'}],
-						// 	dropdownActiveClassDisabled: true,
-						// },
+						{
+							type: 'docsVersionDropdown',
+							position: 'right',
+							dropdownItemsAfter: [{to: '/versions', label: 'All versions'}],
+							dropdownActiveClassDisabled: true,
+						},
 						{
 							type: 'doc',
 							docId: 'index',
