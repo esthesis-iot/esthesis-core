@@ -66,6 +66,12 @@ const config = {
 						src: 'img/logo.png',
 					},
 					items: [
+						// {
+						// 	type: 'docsVersionDropdown',
+						// 	position: 'right',
+						// 	dropdownItemsAfter: [{to: '/versions', label: 'All versions'}],
+						// 	dropdownActiveClassDisabled: true,
+						// },
 						{
 							type: 'doc',
 							docId: 'index',
@@ -153,10 +159,6 @@ const config = {
 						{
 							title: 'Social',
 							items: [
-								{
-									label: 'Blog',
-									to: '/blog',
-								},
 								{
 									label: 'Twitter',
 									to: 'https://twitter.com',
