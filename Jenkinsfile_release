@@ -63,7 +63,7 @@ pipeline {
 
                     cd ../esthesis-core-ui
                     sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package.json
-                    awk -v sb='  \"name\": \"esthesis-core-ui\",\n  \"version\": \"'$RELEASE_VERSION'\",' '/"name": "esthesis-core-ui",/,/"version":.*/ { if ( $0 ~ /"version":.*/ ) print sb; next } 1' package-lock.json > temp.json && cp -f temp.json package-lock.json && rm temp.json
+                    awk -v sb='  \"name\": \"esthesis-ui\",\n  \"version\": \"'$RELEASE_VERSION'\",' '/"name": "esthesis-ui",/,/"version":.*/ { if ( $0 ~ /"version":.*/ ) print sb; next } 1' package-lock.json > temp.json && cp -f temp.json package-lock.json && rm temp.json
 
                     cd ../esthesis-core-device/go/internal/pkg/config/
                     sed -i 's/const Version = .*$/const Version = \"'$RELEASE_VERSION'\"/' config.go
@@ -76,9 +76,10 @@ pipeline {
                     cd esthesis-platform/esthesis-core/esthesis-core-docs
                     sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package.json
                     npm install
-                    docusaurus docs:version $RELEASE_VERSION
+                    npx docusaurus docs:version $RELEASE_VERSION
                     npm run build
 
+                    mkdir ../../esthesis-docs/docs
                     rm -rf ../../esthesis-docs/docs/*
                     cp -r build/* ../../esthesis-docs/docs
                 '''
@@ -195,7 +196,7 @@ pipeline {
 
                     cd ../esthesis-core-ui
                     sed -i 's|\"version\":.*$|\"version\": \"'$NEXT_DEV_VERSION'\",|' package.json
-                    awk -v sb='  \"name\": \"esthesis-core-ui\",\n  \"version\": \"'$NEXT_DEV_VERSION'\",' '/"name": "esthesis-core-ui",/,/"version":.*/ { if ( $0 ~ /"version":.*/ ) print sb; next } 1' package-lock.json > temp.json && cp -f temp.json package-lock.json && rm temp.json
+                    awk -v sb='  \"name\": \"esthesis-ui\",\n  \"version\": \"'$NEXT_DEV_VERSION'\",' '/"name": "esthesis-ui",/,/"version":.*/ { if ( $0 ~ /"version":.*/ ) print sb; next } 1' package-lock.json > temp.json && cp -f temp.json package-lock.json && rm temp.json
 
                     cd ../esthesis-core-device/go/internal/pkg/config/
                     sed -i 's/const Version = .*$/const Version = \"'$NEXT_DEV_VERSION'\"/' config.go
