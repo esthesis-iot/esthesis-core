@@ -148,6 +148,34 @@ command line arguments. The following tables lists all available configuration p
 			<td>Alphanumeric</td>
 		</tr>
 		<tr>
+			<td><code>-, luaExtraMqttTelemetryTopic</code></td>
+			<td>A custom MQTT telemetry endpoint to be handled by a user-defined Lua script. The first argument of this
+			parameter is the name of the topic, and the second argument is the Lua script to be executed. This
+			parameter can be repeated to define additional topics.</td>
+			<td>Alphanumeric Alphanumeric </td>
+		</tr>
+		<tr>
+			<td><code>-, luaExtraMqttMetadataTopic</code></td>
+			<td>A custom MQTT metadata endpoint to be handled by a user-defined Lua script. The first argument of this
+			parameter is the name of the topic, and the second argument is the Lua script to be executed. This
+			parameter can be repeated to define additional topics.</td>
+			<td>Alphanumeric Alphanumeric </td>
+		</tr>
+		<tr>
+			<td><code>-, luaExtraHttpTelemetryEndpoint</code></td>
+			<td>A custom HTTP telemetry endpoint to be handled by a user-defined Lua script. The first argument of this
+			parameter is the name of the endpoint, and the second argument is the Lua script to be executed. This
+			parameter can be repeated to define additional topics.</td>
+			<td>Alphanumeric Alphanumeric </td>
+		</tr>
+		<tr>
+			<td><code>-, luaExtraHttpMetadataEndpoint</code></td>
+			<td>A custom HTTP metadata endpoint to be handled by a user-defined Lua script. The first argument of this
+			parameter is the name of the endpoint, and the second argument is the Lua script to be executed. This
+			parameter can be repeated to define additional topics.</td>
+			<td>Alphanumeric Alphanumeric </td>
+		</tr>
+		<tr>
 			<td><code>MQTT_TIMEOUT, mqttTimeout</code></td>
 			<td>The number of seconds to wait before failing an outgoing MQTT message.<br/><br/>
 					Default: 60</td>

@@ -32,7 +32,6 @@ func getCustomTelemetryTopicLuaHandler(topicName string) string {
 			return config.Flags.LuaExtraMqttTelemetryTopic[i+1]
 		}
 	}
-	log.Errorf("No custom LUA handler found for custom telemetry topic '%s'.", topicName)
 	return ""
 }
 
@@ -53,7 +52,6 @@ func getCustomMetadataTopicLuaHandler(topicName string) string {
 			return config.Flags.LuaExtraMqttMetadataTopic[i+1]
 		}
 	}
-	log.Errorf("No custom LUA handler found for custom metadata topic '%s'.", topicName)
 	return ""
 }
 
@@ -78,6 +76,7 @@ func Start(done chan bool) {
 		err error) {
 		topic := pk.TopicName
 		payload := pk.Payload
+		log.Debugf("Received a message on topic '%s' with payload '%s'.", topic, payload)
 
 		// Process the incoming message according to the topic it was sent to.
 		if topic == telemetryEndpoint || isCustomTelemetryTopic(topic) {
@@ -112,7 +111,7 @@ func Start(done chan bool) {
 	}
 
 	go func() {
-		log.Infof("Starting embedded MQTT server started at '%s'.",
+		log.Infof("Starting embedded MQTT server at '%s'.",
 			mqttListeningAddress)
 		err := server.Serve()
 		if err != nil {
@@ -122,5 +121,8 @@ func Start(done chan bool) {
 
 	<-done
 	log.Debug("Stopping embedded MQTT server.")
-	server.Close()
+	err = server.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 }

@@ -12,8 +12,7 @@ for more details).
 
 ## Lua incoming payload variable
 In your Lua script, you have access to the original payload in the `payload` variable; the variable
-is a string. You can modify the payload as you wish, and simply
-`return` it at the end.
+is a string. You can modify the payload as you wish, and simply `return` it at the end.
 
 ## Example Lua script
 Let us consider an external data source that pushes data in the following format:
