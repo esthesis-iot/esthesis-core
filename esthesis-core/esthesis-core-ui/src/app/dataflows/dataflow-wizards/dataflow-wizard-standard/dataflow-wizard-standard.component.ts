@@ -272,15 +272,14 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
 
     if (!this.form.valid) {
       this.utilityService.popupError("You need to fill in all required fields");
-      return;
     } else {
       // Execute all service calls with a forkJoin.
       forkJoin({ping: pingDflServiceCall, commandReply: commandReplyUpdatedServiceCall, mqtt: mqttClientServiceCall,
         influx: influxDbWriterServiceCall, redis: redisCacheServiceCall}).subscribe({
-        next: onNext => {
+        next: () => {
           this.utilityService.popupSuccess("Wizard was executed successfully");
           this.router.navigate(["/dataflow"]);
-        }, error: onError => {
+        }, error: () => {
           this.utilityService.popupError("Failed to execute the wizard, check which dataflows have already been created");
         }
       });

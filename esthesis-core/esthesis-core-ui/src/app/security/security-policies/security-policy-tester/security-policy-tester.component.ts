@@ -29,7 +29,7 @@ export class SecurityPolicyTesterComponent implements OnInit {
       this.securityService.isIncluded(this.form.controls.policy.value).subscribe({
         next: (result) => {
           this.checkStatus = result;
-        }, error: (error) => {
+        }, error: () => {
           this.utilityService.popupError("Could not evaluate policy");
         }
       });

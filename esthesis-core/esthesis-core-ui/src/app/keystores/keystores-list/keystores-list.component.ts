@@ -14,8 +14,7 @@ import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-keystores-list",
-  templateUrl: "./keystores-list.component.html",
-  styleUrls: ["./keystores-list.component.scss"]
+  templateUrl: "./keystores-list.component.html"
 })
 export class KeystoresListComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   // References to sorting and pagination.

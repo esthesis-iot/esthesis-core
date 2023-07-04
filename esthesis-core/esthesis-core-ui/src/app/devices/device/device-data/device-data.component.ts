@@ -11,8 +11,7 @@ import {AppConstants} from "../../../app.constants";
 
 @Component({
   selector: "app-device-data",
-  templateUrl: "./device-data.component.html",
-  styleUrls: ["./device-data.component.scss"]
+  templateUrl: "./device-data.component.html"
 })
 export class DeviceDataComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   id: string | null;

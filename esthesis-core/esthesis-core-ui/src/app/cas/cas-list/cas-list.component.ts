@@ -29,9 +29,7 @@ export class CasListComponent extends SecurityBaseComponent implements OnInit, A
   }
 
   ngOnInit() {
-    this.columns = this.embedded
-      ? ["name", "cn", "parent", "issued", "validity"]
-      : ["name", "cn", "parent", "issued", "validity"];
+    this.columns = ["name", "cn", "parent", "issued", "validity"];
   }
 
   ngAfterViewInit(): void {

@@ -18,8 +18,7 @@ import {SecurityBaseComponent} from "../../shared/components/security-base-compo
 
 @Component({
   selector: "app-provisioning-list",
-  templateUrl: "./provisioning-list.component.html",
-  styleUrls: ["./provisioning-list.component.scss"]
+  templateUrl: "./provisioning-list.component.html"
 })
 export class ProvisioningListComponent extends SecurityBaseComponent implements AfterViewInit {
   columns = ["name", "version", "prerequisiteVersion", "state", "size", "tags", "createdOn", "type", "cacheStatus"];

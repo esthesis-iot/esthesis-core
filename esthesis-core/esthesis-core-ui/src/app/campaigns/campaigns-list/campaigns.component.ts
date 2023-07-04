@@ -1,5 +1,4 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
-import {BaseComponent} from "../../shared/components/base-component";
 import {QFormsService} from "@qlack/forms";
 import {CampaignsService} from "../campaigns.service";
 import {CampaignDto} from "../dto/campaign-dto";
@@ -11,8 +10,7 @@ import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-campaigns",
-  templateUrl: "./campaigns.component.html",
-  styleUrls: ["./campaigns.component.scss"]
+  templateUrl: "./campaigns.component.html"
 })
 export class CampaignsComponent extends SecurityBaseComponent implements AfterViewInit {
   @ViewChild(MatSort, {static: true}) sort!: MatSort;

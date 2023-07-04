@@ -16,8 +16,7 @@ import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-devices",
-  templateUrl: "./devices.component.html",
-  styleUrls: ["./devices.component.scss"]
+  templateUrl: "./devices.component.html"
 })
 export class DevicesComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   // References to sorting and pagination.
