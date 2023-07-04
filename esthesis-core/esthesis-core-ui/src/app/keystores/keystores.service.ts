@@ -13,7 +13,7 @@ export class KeystoresService extends CrudDownloadService<KeystoreDto> {
   private prefix = environment.apiPrefix + "/crypto/keystore/v1";
 
   constructor(http: HttpClient, fs: FileSaverService) {
-    super(http, "/crypto/keystore/v1", fs);
+    super(http, "crypto/keystore/v1", fs);
   }
 
   download(keystoreId: string) {
