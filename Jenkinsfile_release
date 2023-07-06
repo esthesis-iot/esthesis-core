@@ -74,6 +74,11 @@ pipeline {
         stage ("esthesis-docs: Changes for RELEASE version"){
             steps{
                 sh '''
+                    filePath="esthesis-platform/esthesis-core/esthesis-core-docs/src/css/custom.css"
+                    cssCode=".dropdown__menu > li:nth-child(1) { display: none\!important; }"
+                    sed -i -e "\$a\\$cssCode" "$filePath"
+                '''
+                sh '''
                     cd esthesis-platform/esthesis-core/esthesis-core-docs
                     sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package.json
                     npm install
@@ -82,6 +87,10 @@ pipeline {
 
                     rm -rf ../../../esthesis-docs/docs/*
                     cp -r build/* ../../../esthesis-docs/docs
+                '''
+                sh '''
+                    filePath="esthesis-platform/esthesis-core/esthesis-core-docs/src/css/custom.css"
+                    sed -i '$d' "$filePath"
                 '''
             }
         }
