@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-          image 'eddevopsd2/maven-java-npm-docker:mvn3.8.5-jdk17-node18.16-go1.20-docker'
-          args '-v /root/.m2/Esthesis:/root/.m2 -v /root/sonar-scanner:/root/sonar-scanner -v /root/.docker/config.json:/root/.docker/config.json -v /var/run/docker.sock:/var/run/docker.sock'
+          image 'eddevopsd2/ubuntu-dind:dind-mvn3.8.5-jdk17-node18.16-go1.20-buildx-helm'
+          args '--privileged -v /root/.m2/Esthesis:/root/.m2 -v /root/sonar-scanner:/root/sonar-scanner -v /root/.docker/config.json:/root/.docker/config.json'
         }
     }
     options {
@@ -10,11 +10,18 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
     stages {
+    	stage ('Dockerd') {
+            steps {
+                sh 'dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock &> dockerd-logfile &'
+            }
+        }
         stage ('Builds') {
             parallel {
                 stage('Go Build Device') {
                     steps {
                         sh '''
+                            apt-get install -y build-essential
+                            export PATH=$PATH:/usr/bin/gcc
                             cd esthesis-core/esthesis-core-device/go
                             go mod download
                             go build -o esthesis-agent -ldflags '-linkmode external -w -extldflags "-static"' cmd/main.go
@@ -52,7 +59,7 @@ pipeline {
                 sh '''
                     cd esthesis-core/esthesis-core-device
                     go install github.com/CycloneDX/cyclonedx-gomod/cmd/cyclonedx-gomod@v1.4.0
-                    cyclonedx-gomod mod go > go/bom.xml
+                    /go/bin/cyclonedx-gomod mod go > go/bom.xml
                 '''
             }
         }
