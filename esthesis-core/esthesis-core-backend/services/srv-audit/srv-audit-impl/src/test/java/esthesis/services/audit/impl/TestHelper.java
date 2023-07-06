@@ -16,10 +16,24 @@ public class TestHelper {
 	@Inject
 	AuditRepository auditRepository;
 
-	public AuditEntity createAuditEntity() {
+	public AuditEntity makeAuditEntity() {
+		return Instancio.of(AuditEntity.class)
+			.ignore(all(field(BaseEntity.class, "id")))
+			.create();
+	}
+
+	public AuditEntity persistAuditEntity() {
+		AuditEntity auditEntity = makeAuditEntity();
+		auditRepository.persist(auditEntity);
+
+		return auditEntity;
+	}
+
+	public AuditEntity persistAuditEntityForUser(String username) {
 		AuditEntity auditEntity =
 			Instancio.of(AuditEntity.class)
 				.ignore(all(field(BaseEntity.class, "id")))
+				.set(field(AuditEntity.class, "createdBy"), username)
 				.create();
 		auditRepository.persist(auditEntity);
 

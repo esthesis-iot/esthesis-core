@@ -13,7 +13,6 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -45,7 +44,6 @@ public interface AuditResource {
 
 	@POST
 	@Path("/v1")
-	@Produces("application/json")
 	AuditEntity save(@Valid AuditEntity auditEntity);
 
 }
