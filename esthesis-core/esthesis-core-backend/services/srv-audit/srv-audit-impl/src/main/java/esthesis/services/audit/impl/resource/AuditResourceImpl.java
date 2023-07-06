@@ -16,12 +16,8 @@ import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 public class AuditResourceImpl implements AuditResource {
-
-	@Inject
-	JsonWebToken jwt;
 
 	@Inject
 	AuditService auditService;

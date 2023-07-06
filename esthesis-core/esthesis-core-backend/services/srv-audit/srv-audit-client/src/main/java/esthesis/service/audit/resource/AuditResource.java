@@ -46,7 +46,6 @@ public interface AuditResource {
 	@POST
 	@Path("/v1")
 	@Produces("application/json")
-	AuditEntity save(@Valid AuditEntity tagEntity);
-
+	AuditEntity save(@Valid AuditEntity auditEntity);
 
 }
