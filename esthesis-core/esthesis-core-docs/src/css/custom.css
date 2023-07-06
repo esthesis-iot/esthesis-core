@@ -29,9 +29,9 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 /*For versions dropdown next button*/
-.dropdown__menu > li:nth-child(1) {
+/* .dropdown__menu > li:nth-child(1) {
   display: none!important;
-}
+} */
 
 .flex-center {
   display: flex;
