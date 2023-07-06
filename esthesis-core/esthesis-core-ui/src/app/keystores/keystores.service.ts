@@ -13,7 +13,7 @@ export class KeystoresService extends CrudDownloadService<KeystoreDto> {
   private prefix = environment.apiPrefix + "/crypto/keystore/v1";
 
   constructor(http: HttpClient, fs: FileSaverService) {
-    super(http, "/crypto/keystore/v1", fs);
+    super(http, "crypto/keystore/v1", fs);
   }
 
   download(keystoreId: string) {
@@ -26,6 +26,6 @@ export class KeystoresService extends CrudDownloadService<KeystoreDto> {
   }
 
   getSupportedKeystoreTypes(): Observable<string[]> {
-    return this.http.get<string[]>(`${environment.apiPrefix}/crypto-info/v1/keystore-types`);
+    return this.http.get<string[]>(`${environment.apiPrefix}/crypto/crypto-info/v1/keystore-types`);
   }
 }

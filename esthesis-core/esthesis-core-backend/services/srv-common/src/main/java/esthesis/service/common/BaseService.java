@@ -8,6 +8,7 @@ import esthesis.service.common.paging.Pageable;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import io.quarkus.panache.common.Sort;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 @Slf4j
+@Transactional
 public abstract class BaseService<D extends BaseEntity> {
 
 	@Inject

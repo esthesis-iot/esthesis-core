@@ -123,8 +123,8 @@ public class KeyResourceImpl implements KeyResource {
 		String cert = cryptoService.certificateToPEM(x509CertificateHolder.toASN1Structure());
 
 		// Add certificate chain, if requested.
-		if (createCertificateRequestDTO.isIncludeCertificateChain() && !((caRegistryEntry == null
-			|| StringUtils.isBlank(caRegistryEntry.getValue())))) {
+		if (createCertificateRequestDTO.isIncludeCertificateChain() && !(caRegistryEntry == null
+			|| StringUtils.isBlank(caRegistryEntry.getValue()))) {
 			final CaEntity caEntity = caEntityRepository.findById(caRegistryEntry.asObjectId());
 			cert = String.join("", cert,
 				String.join("", caService.getCertificate(caEntity.getId().toHexString())));

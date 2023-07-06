@@ -1,6 +1,7 @@
 package esthesis.service.device.dto;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import java.io.Serializable;
 import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @RegisterForReflection
 @Accessors(chain = true)
-public class DeviceProfileFieldDataDTO {
+public class DeviceProfileFieldDataDTO implements Serializable {
 
   private String label;
   private String value;

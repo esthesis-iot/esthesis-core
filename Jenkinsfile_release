@@ -64,6 +64,7 @@ pipeline {
                     cd ../esthesis-core-ui
                     sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package.json
                     awk -v sb='  \"name\": \"esthesis-ui\",\n  \"version\": \"'$RELEASE_VERSION'\",' '/"name": "esthesis-ui",/,/"version":.*/ { if ( $0 ~ /"version":.*/ ) print sb; next } 1' package-lock.json > temp.json && cp -f temp.json package-lock.json && rm temp.json
+                    sed -i "s/\([\"']\)\([0-9]\+\.[0-9]\+\.[0-9]\+\(-[A-Za-z0-9]\+\)\?\([\"']\)\)/\1$release_version\4/" src/app/dataflows/dataflow-wizards/dataflow-wizard-standard/dataflow-wizard-standard.component.ts
 
                     cd ../esthesis-core-device/go/internal/pkg/config/
                     sed -i 's/const Version = .*$/const Version = \"'$RELEASE_VERSION'\"/' config.go
@@ -255,4 +256,37 @@ pipeline {
             }
         }
     }
+    post {
+        changed {
+            script {
+                if (currentBuild.result == 'SUCCESS') {
+                        rocketSend avatar: "http://d2-np.eurodyn.com/jenkins/jenkins.png", channel: 'esthesis-iot', message: ":white_check_mark: | ${BUILD_URL} \n\nRelease succeeded on branch *${env.BRANCH_NAME}* \nChangelog: ${getChangeString(10)}", rawMessage: true
+                } else {
+                        rocketSend avatar: "http://d2-np.eurodyn.com/jenkins/jenkins.png", channel: 'esthesis-iot', message: ":x: | ${BUILD_URL} \n\nRelease failed on branch *${env.BRANCH_NAME}* \nChangelog: ${getChangeString(10)}", rawMessage: true
+                }
+            }
+        }
+    }
+}
+@NonCPS
+def getChangeString(maxMessages) {
+    MAX_MSG_LEN = 100
+    def changeString = ""
+
+    def changeLogSets = currentBuild.changeSets
+
+    for (int i = 0; i < changeLogSets.size(); i++) {
+        def entries = changeLogSets[i].items
+        for (int j = 0; j < entries.length && i + j < maxMessages; j++) {
+            def entry = entries[j]
+            truncated_msg = entry.msg.take(MAX_MSG_LEN)
+            changeString += "*${truncated_msg}* _by author ${entry.author}_\n"
+        }
+    }
+
+    if (!changeString) {
+        changeString = " There have not been any changes since the last build"
+    }
+
+    return changeString
 }

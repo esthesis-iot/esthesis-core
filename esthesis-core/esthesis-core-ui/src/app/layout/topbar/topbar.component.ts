@@ -3,8 +3,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
   selector: "app-topbar",
-  templateUrl: "./topbar.component.html",
-  styleUrls: ["./topbar.component.scss"]
+  templateUrl: "./topbar.component.html"
 })
 export class TopbarComponent implements OnInit {
   form!: FormGroup;

@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
           image 'eddevopsd2/maven-java-npm-docker:mvn3.8.5-jdk17-node18.16-go1.20-docker'
-          args '-v /root/.m2/Esthesis:/root/.m2 -v /root/sonar-scanner:/root/sonar-scanner'
+          args '-v /root/.m2/Esthesis:/root/.m2 -v /root/sonar-scanner:/root/sonar-scanner -v /root/.docker/config.json:/root/.docker/config.json -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
     options {
@@ -10,27 +10,31 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
     stages {
-        stage('Go Build Device') {
-            steps {
-                sh '''
-                    cd esthesis-core/esthesis-core-device/go
-                    go mod download
-                    go build -o esthesis-agent -ldflags '-linkmode external -w -extldflags "-static"' cmd/main.go
-                '''
-            }
-        }
-        stage('Build Server') {
-            steps {
-                sh 'mvn -f esthesis-core/esthesis-core-backend/pom.xml clean install -DskipTests -Pcyclonedx-bom'
-            }
-        }
-        stage('Build Ui') {
-            steps {
-                sh '''
-                    cd esthesis-core/esthesis-core-ui
-                    npm install
-                    npx ng build --configuration production --output-path=dist
-                '''
+        stage ('Builds') {
+            parallel {
+                stage('Go Build Device') {
+                    steps {
+                        sh '''
+                            cd esthesis-core/esthesis-core-device/go
+                            go mod download
+                            go build -o esthesis-agent -ldflags '-linkmode external -w -extldflags "-static"' cmd/main.go
+                        '''
+                    }
+                }
+                stage('Build Server') {
+                    steps {
+                        sh 'mvn -f esthesis-core/esthesis-core-backend/pom.xml clean install -Pcyclonedx-bom'
+                    }
+                }
+                stage('Build Ui') {
+                    steps {
+                        sh '''
+                            cd esthesis-core/esthesis-core-ui
+                            npm install
+                            npx ng build --configuration production --output-path=dist
+                        '''
+                    }
+                }
             }
         }
         stage('Sonar Analysis') {

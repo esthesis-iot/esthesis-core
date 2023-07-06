@@ -104,6 +104,42 @@ public class DeviceRegistrationService {
 	}
 
 	/**
+	 * Check if a registration secret is needed.
+	 * @param registrationSecret The registration secret to check.
+	 */
+	private void checkRegistrationSecret(String registrationSecret) {
+		if (settingsResource.findByName(NamedSetting.DEVICE_REGISTRATION_MODE).asString()
+			.equals(DeviceRegistrationMode.OPEN_WITH_SECRET.toString())) {
+			String platformRegistrationSecret = settingsResource.findByName(
+				NamedSetting.DEVICE_REGISTRATION_SECRET).asString();
+			if (!platformRegistrationSecret.equals(registrationSecret)) {
+				throw new QSecurityException("The provided registration secret '{}' is incorrect.",
+					registrationSecret);
+			}
+		}
+	}
+
+	/**
+	 * Check if the given hardware id is valid.
+	 * @param hardwareId The hardware id to check.
+	 */
+	private void checkHardwareId(String hardwareId) {
+		if (!hardwareId.matches(HARDWARE_ID_REGEX)) {
+			throw new QMismatchException(
+				"Hardware id '{}' does not conform to the naming convention '{}'.", hardwareId,
+				HARDWARE_ID_REGEX);
+		}
+	}
+
+	private void checkIfDeviceExists(String hardwareId) {
+		// Check that a device with the same hardware ID does not already exist.
+		if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
+			throw new QAlreadyExistsException(
+				"A device with hardware id '{}' is already registered with the platform.", hardwareId);
+		}
+	}
+
+	/**
 	 * The internal registration handler.
 	 *
 	 * @param hardwareId The hardware id of the device to be registered.
@@ -120,28 +156,13 @@ public class DeviceRegistrationService {
 			attributes);
 
 		// Check if a registration secret is needed.
-		if (settingsResource.findByName(NamedSetting.DEVICE_REGISTRATION_MODE).asString()
-			.equals(DeviceRegistrationMode.OPEN_WITH_SECRET.toString())) {
-			String platformRegistrationSecret = settingsResource.findByName(
-				NamedSetting.DEVICE_REGISTRATION_SECRET).asString();
-			if (!platformRegistrationSecret.equals(registrationSecret)) {
-				throw new QSecurityException("The provided registration secret '{}' is incorrect.",
-					registrationSecret);
-			}
-		}
+		checkRegistrationSecret(registrationSecret);
 
 		// Check the proposed hardware ID conforms to the naming convention.
-		if (!hardwareId.matches(HARDWARE_ID_REGEX)) {
-			throw new QMismatchException(
-				"Hardware id '{}' does not conform to the naming convention '{}'.", hardwareId,
-				HARDWARE_ID_REGEX);
-		}
+		checkHardwareId(hardwareId);
 
 		// Check that a device with the same hardware ID does not already exist.
-		if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
-			throw new QAlreadyExistsException(
-				"A device with hardware id '{}' is already registered with the platform.", hardwareId);
-		}
+		checkIfDeviceExists(hardwareId);
 
 		// Create a keypair for the device to be registered.
 		KeyPair keyPair = keyResource.generateKeyPair();

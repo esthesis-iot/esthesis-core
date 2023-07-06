@@ -12,8 +12,7 @@ import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-certificates-list",
-  templateUrl: "./certificates-list.component.html",
-  styleUrls: ["./certificates-list.component.scss"]
+  templateUrl: "./certificates-list.component.html"
 })
 export class CertificatesListComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   @Input() embedded = false;

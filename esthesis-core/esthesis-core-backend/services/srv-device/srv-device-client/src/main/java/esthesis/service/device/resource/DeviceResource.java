@@ -110,27 +110,7 @@ public interface DeviceResource {
 	@Path("/v1/{deviceId}/profile")
 	void saveProfile(@PathParam("deviceId") String deviceId,
 		DeviceProfileDTO deviceProfileDTO);
-
-//  @POST
-//  @Path("/v1/{deviceId}/attribute")
-//  DeviceAttributeEntity addDeviceAttribute(@PathParam("deviceId") String deviceId,
-//      DeviceAttributeEntity field);
-
-//  @DELETE
-//  @Path("/v1/{deviceId}/attribute")
-//  void deleteDeviceAttribute(@PathParam("deviceId") String deviceId,
-//      @QueryParam("keyName") String keyName);
-
-	/**
-	 * Returns the user-defined (in settings) fields (i.e. metrics) for this device.
-	 *
-	 * @param deviceId
-	 * @return
-	 */
-//  @GET
-//  @Path("/v1/{deviceId}/fields")
-//  List<DeviceProfileFieldDataDTO> getDeviceFields(String deviceId);
-
+	
 	/**
 	 * Returns all data (i.e. metrics) available in cache for this device.
 	 *
