@@ -134,9 +134,6 @@ public abstract class BaseService<D extends BaseEntity> {
 			ObjectId id = new ObjectId();
 			entity.setId(id);
 			repository.persist(entity);
-			System.out.println("************************************************************");
-			System.out.println(id);
-			System.out.println("*s***********************************************************");
 		}
 
 		return repository.findById(entity.getId());
