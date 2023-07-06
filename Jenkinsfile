@@ -20,6 +20,8 @@ pipeline {
                 stage('Go Build Device') {
                     steps {
                         sh '''
+                            apt-get install -y build-essential
+                            export PATH=$PATH:/usr/bin/gcc
                             cd esthesis-core/esthesis-core-device/go
                             go mod download
                             go build -o esthesis-agent -ldflags '-linkmode external -w -extldflags "-static"' cmd/main.go
@@ -57,7 +59,7 @@ pipeline {
                 sh '''
                     cd esthesis-core/esthesis-core-device
                     go install github.com/CycloneDX/cyclonedx-gomod/cmd/cyclonedx-gomod@v1.4.0
-                    cyclonedx-gomod mod go > go/bom.xml
+                    /go/bin/cyclonedx-gomod mod go > go/bom.xml
                 '''
             }
         }
