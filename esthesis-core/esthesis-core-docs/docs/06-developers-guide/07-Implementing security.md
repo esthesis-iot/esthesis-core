@@ -1,3 +1,0 @@
-# Implementing security
-
-[TBC]
