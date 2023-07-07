@@ -27,7 +27,6 @@ import jakarta.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
 public class DeviceResourceImpl implements DeviceResource {
@@ -37,9 +36,6 @@ public class DeviceResourceImpl implements DeviceResource {
 
 	@Inject
 	DeviceTagService deviceTagService;
-
-	@Inject
-	JsonWebToken jwt;
 
 	@Override
 	@Audited(cat = Category.DEVICE, op = Operation.READ, msg = "Search devices", log =

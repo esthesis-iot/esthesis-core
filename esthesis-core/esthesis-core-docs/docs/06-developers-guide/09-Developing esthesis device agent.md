@@ -1,19 +1,25 @@
 # Developing esthesis Device Agent
+
 The esthesis Device Agent is a software component that runs on the device and connects it to the
 esthesis Core. The agent is created in Go and can be compiled for any platform supported by Go.
 
 ## Run and compile
 
 ### Compile locally
+
 To compile the agent locally go inside `go` directory and execute:
+
 ```shell
 go build -o esthesis-agent cmd/main.go
 ```
+
 The above will create an `esthesis-agent` executable for your platform. This is useful to check
 that the agent compiles and runs on your machine, but not very useful for development.
 
 ### Run locally
+
 To run the agent locally go inside `go` directory and execute:
+
 ```shell
 HID=abc123 && \
 REGISTRATION_URL=http://apisix-gateway.esthesis.localdev/api/agent/v1/register && \
@@ -32,9 +38,11 @@ go run cmd/main.go \
 ```
 
 ### Run locally, automatically recompile on changes
+
 If you want your agent to automatically recompile and restart on changes, you can use
 [air](https://github.com/cosmtrek/air). To run the agent locally go inside `go` directory and
 execute:
+
 ```shell
 HID=abc123 && \
 REGISTRATION_URL=http://apisix-gateway.esthesis.localdev/api/agent/v1/register && \
@@ -55,11 +63,13 @@ air --build.cmd "go build -o /tmp/esthesis-core-device cmd/main.go" --build.bin 
 ## Testing multiple agents
 
 ### Using Docker
+
 ```shell
 HID=$(uuidgen | cut -f1 -d"-" | awk '{print tolower($0)}') && \
+APISIX_IP=$(dig +short apisix-gateway.esthesis.localdev) && \
 docker run --rm esthesisiot/esthesis-agent:3.0.0-SNAPSHOT /app/esthesis-agent \
 --hardwareId=$HID \
---registrationUrl=http://192.168.21.2/api/agent/v1/register \
+--registrationUrl=http://$APISIX_IP/api/agent/v1/register \
 --tags=tag1 \
 --propertiesFile=/app/.esthesis/esthesis.properties \
 --securePropertiesFile=/app/.esthesis/secure/esthesis.properties \
@@ -70,9 +80,8 @@ docker run --rm esthesisiot/esthesis-agent:3.0.0-SNAPSHOT /app/esthesis-agent \
 --autoUpdate=false --secureProvisioning=true
 ```
 
-Note: You need to change the IP address of `registrationUrl` to the IP address of APISIX Gateway.
-
 ### Using Kubernetes
+
 ```shell
 RND_PREFIX=test-$(uuidgen | cut -f1 -d"-" | awk '{print tolower($0)}') && \
 for ((i=1; i<=3; i++)); do

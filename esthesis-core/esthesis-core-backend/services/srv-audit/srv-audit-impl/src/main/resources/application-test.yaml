@@ -1,0 +1,12 @@
+quarkus:
+  log:
+    level: ERROR
+  devservices:
+    enabled: true
+  mongodb:
+    database: esthesiscore-test
+    devservices:
+      image-name: "mongo:4.4.6"
+  http:
+    test-port: 0
+

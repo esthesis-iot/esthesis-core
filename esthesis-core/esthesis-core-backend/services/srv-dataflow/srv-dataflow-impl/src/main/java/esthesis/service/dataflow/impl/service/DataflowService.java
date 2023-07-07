@@ -44,8 +44,6 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	private final static String SECRET_PATH = "path";
 	private final static String SECRET_CONTENT = "content";
 
-	private final static String DATAFLOW_SPECIAL_HANDLING_MQTT_CLIENT_TYPE = "mqtt-client";
-
 	@Inject
 	@RestClient
 	DockerClient dockerClient;
@@ -53,14 +51,6 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	@Inject
 	@RestClient
 	KubernetesResource kubernetesResource;
-
-	@Inject
-	@RestClient
-	CAResource caResource;
-
-	@Inject
-	@RestClient
-	CertificateResource certificateResource;
 
 	/**
 	 * Flattens the nested keys of a map producing a flat map.

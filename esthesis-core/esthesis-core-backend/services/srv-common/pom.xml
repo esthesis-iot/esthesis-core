@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <groupId>esthesis</groupId>
-    <artifactId>services</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>esthesis</groupId>
+		<artifactId>services</artifactId>
+		<version>3.0.1-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
 
-  <artifactId>srv-common</artifactId>
+	<artifactId>srv-common</artifactId>
 
-  <dependencies>
-    <!-- QUARKUS -->
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-mongodb-panache</artifactId>
-    </dependency>
-    <dependency>
-      <artifactId>quarkus-hibernate-validator</artifactId>
-      <groupId>io.quarkus</groupId>
-    </dependency>
+	<dependencies>
+		<!-- QUARKUS -->
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-mongodb-panache</artifactId>
+		</dependency>
+		<dependency>
+			<artifactId>quarkus-hibernate-validator</artifactId>
+			<groupId>io.quarkus</groupId>
+		</dependency>
 
-    <!-- THIRD-PARTY -->
-    <dependency>
-      <artifactId>jackson-antpathfilter</artifactId>
-      <groupId>ch.mfrey.jackson</groupId>
-      <version>${jackson-antpathfilter.version}</version>
-    </dependency>
-  </dependencies>
+		<!-- THIRD-PARTY -->
+		<dependency>
+			<artifactId>jackson-antpathfilter</artifactId>
+			<groupId>ch.mfrey.jackson</groupId>
+			<version>${jackson-antpathfilter.version}</version>
+		</dependency>
+	</dependencies>
 
 </project>

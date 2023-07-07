@@ -47,6 +47,7 @@ public class KeystoreService extends BaseService<KeystoreEntity> {
 	@RestClient
 	SettingsResource settingsResource;
 
+	@SuppressWarnings("java:S107")
 	private byte[] addPrivateKeyToKeystore(byte[] keystore, final String keystorePassword,
 		final String privateKey, final String keyAlias, final String keyPassword,
 		final String certificateChain, final String keystoreType, final String keystoreProvider)
@@ -72,6 +73,7 @@ public class KeystoreService extends BaseService<KeystoreEntity> {
 		return keystore;
 	}
 
+	@SuppressWarnings("java:S3776")
 	public byte[] download(String keystoreId) {
 		try {
 			KeystoreEntity keystoreEntity = findById(keystoreId);

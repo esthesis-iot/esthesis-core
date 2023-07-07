@@ -14,7 +14,7 @@ const config = {
 	url: 'https://esthes.is',
 	// Set the /<baseUrl>/ pathname under which your site is served
 	// For GitHub pages deployment, it is often '/<projectName>/'
-	baseUrl: '/',
+	baseUrl: '/docs/',
 
 	markdown: {
 		mermaid: true
@@ -66,6 +66,11 @@ const config = {
 						src: 'img/logo.png',
 					},
 					items: [
+						{
+							type: 'docsVersionDropdown',
+							position: 'right',
+							dropdownActiveClassDisabled: true,
+						},
 						{
 							type: 'doc',
 							docId: 'index',
@@ -153,10 +158,6 @@ const config = {
 						{
 							title: 'Social',
 							items: [
-								{
-									label: 'Blog',
-									to: '/blog',
-								},
 								{
 									label: 'Twitter',
 									to: 'https://twitter.com',

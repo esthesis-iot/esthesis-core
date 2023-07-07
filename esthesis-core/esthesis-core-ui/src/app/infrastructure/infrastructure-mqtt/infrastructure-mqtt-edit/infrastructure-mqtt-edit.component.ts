@@ -1,5 +1,4 @@
 import {Component, OnInit} from "@angular/core";
-import {BaseComponent} from "../../../shared/components/base-component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TagDto} from "../../../tags/dto/tag-dto";
 import {MatDialog} from "@angular/material/dialog";
@@ -17,8 +16,7 @@ import {AppConstants} from "../../../app.constants";
 
 @Component({
   selector: "app-infrastructure-mqtt-edit",
-  templateUrl: "./infrastructure-mqtt-edit.component.html",
-  styleUrls: ["./infrastructure-mqtt-edit.component.scss"]
+  templateUrl: "./infrastructure-mqtt-edit.component.html"
 })
 export class InfrastructureMqttEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;

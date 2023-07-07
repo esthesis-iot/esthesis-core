@@ -10,7 +10,7 @@ import (
 )
 
 // Version The application version
-const Version = "v3.0.0-SNAPSHOT"
+const Version = "3.0.1-SNAPSHOT"
 
 const ExitGeneric = 1
 const ExitCodeCouldNotRegister = 2
@@ -33,52 +33,56 @@ const (
 
 // FlagsStruct represents the command line flags.
 type flagsStruct struct {
-	RegistrationURL           string
-	HardwareId                string
-	PauseStartup              bool
-	PropertiesFile            string
-	SecurePropertiesFile      string
-	TempDir                   string
-	HttpTimeout               int // in seconds
-	MqttTimeout               int // in seconds
-	RetryHttpRequest          int // in seconds
-	TopicPing                 string
-	TopicTelemetry            string
-	TopicMetadata             string
-	TopicCommandRequest       string
-	TopicCommandReply         string
-	HealthReportInterval      int // in seconds
-	PingInterval              int // in seconds
-	LogLevel                  string
-	LogAbbreviation           int // abbreviate log messages to this length
-	Tags                      string
-	EndpointHttp              bool
-	EndpointHttpListeningIP   string
-	EndpointHttpListeningPort int
-	EndpointMqtt              bool
-	EndpointMqttListeningIP   string
-	EndpointMqttListeningPort int
-	AutoUpdate                bool
-	SecureProvisioning        bool
-	SignatureAlgorithm        string
-	VersionFile               string
-	VersionReport             bool
-	VersionReportTopic        string
-	ProvisioningScript        string
-	RebootScript              string
-	ShutdownScript            string
-	SupportedCommands         string
-	TopicDemo                 string
-	DemoCategory              string
-	DemoInterval              int // in seconds
-	RegistrationSecret        string
-	Attributes                string
-	LuaHttpTelemetryScript    string
-	LuaHttpMetadataScript     string
-	LuaMqttTelemetryScript    string
-	LuaMqttMetadataScript     string
-	IgnoreHttpsInsecure       bool
-	IgnoreMqttInsecure        bool
+	RegistrationURL               string
+	HardwareId                    string
+	PauseStartup                  bool
+	PropertiesFile                string
+	SecurePropertiesFile          string
+	TempDir                       string
+	HttpTimeout                   int // in seconds
+	MqttTimeout                   int // in seconds
+	RetryHttpRequest              int // in seconds
+	TopicPing                     string
+	TopicTelemetry                string
+	TopicMetadata                 string
+	TopicCommandRequest           string
+	TopicCommandReply             string
+	HealthReportInterval          int // in seconds
+	PingInterval                  int // in seconds
+	LogLevel                      string
+	LogAbbreviation               int // abbreviate log messages to this length
+	Tags                          string
+	EndpointHttp                  bool
+	EndpointHttpListeningIP       string
+	EndpointHttpListeningPort     int
+	EndpointMqtt                  bool
+	EndpointMqttListeningIP       string
+	EndpointMqttListeningPort     int
+	AutoUpdate                    bool
+	SecureProvisioning            bool
+	SignatureAlgorithm            string
+	VersionFile                   string
+	VersionReport                 bool
+	VersionReportTopic            string
+	ProvisioningScript            string
+	RebootScript                  string
+	ShutdownScript                string
+	SupportedCommands             string
+	TopicDemo                     string
+	DemoCategory                  string
+	DemoInterval                  int // in seconds
+	RegistrationSecret            string
+	Attributes                    string
+	LuaHttpTelemetryScript        string
+	LuaHttpMetadataScript         string
+	LuaMqttTelemetryScript        string
+	LuaMqttMetadataScript         string
+	IgnoreHttpsInsecure           bool
+	IgnoreMqttInsecure            bool
+	LuaExtraMqttTelemetryTopic    []string
+	LuaExtraMqttMetadataTopic     []string
+	LuaExtraHttpTelemetryEndpoint []string
+	LuaExtraHttpMetadataEndpoint  []string
 }
 
 var Flags = flagsStruct{}
@@ -165,6 +169,19 @@ func InitCmdFlags(osArgs []string) {
 	opt.StringVar(&Flags.LuaMqttMetadataScript, "luaMqttMetadataScript", "",
 		opt.GetEnv("LUA_MQTT_METADATA_SCRIPT"),
 		opt.Description("The Lua script to transform metadata messages for MQTT endpoint"))
+
+	opt.StringSliceVar(&Flags.LuaExtraMqttTelemetryTopic, "luaExtraMqttTelemetryTopic", 2, 2,
+		opt.Description("A custom MQTT telemetry topic (arg 1) to listen to, "+
+			"being processed by a custom Lua script (arg 2)"))
+	opt.StringSliceVar(&Flags.LuaExtraMqttMetadataTopic, "luaExtraMqttMetadataTopic", 2, 2,
+		opt.Description("A custom MQTT metadata topic (arg 1) to listen to, "+
+			"being processed by a custom Lua script (arg 2)"))
+	opt.StringSliceVar(&Flags.LuaExtraHttpTelemetryEndpoint, "luaExtraHttpTelemetryEndpoint", 2, 2,
+		opt.Description("A custom HTTP telemetry endpoint (arg 1) to listen to, "+
+			"being processed by a custom Lua script (arg 2)"))
+	opt.StringSliceVar(&Flags.LuaExtraHttpMetadataEndpoint, "luaExtraHttpMetadataEndpoint", 2, 2,
+		opt.Description("A custom HTTP metadata endpoint (arg 1) to listen to, "+
+			"being processed by a custom Lua script (arg 2)"))
 
 	opt.IntVar(&Flags.HealthReportInterval, "healthReportInterval", 300,
 		opt.GetEnv("HEALTH_REPORT_INTERVAL"),

@@ -17,15 +17,11 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+@Slf4j
 @Getter
 @Setter
-@Slf4j
 @NoArgsConstructor
 public class Pageable {
-
-	@Context
-	@JsonIgnore // Do not serialize this field, especially when auditing.
-	private UriInfo uriInfo;
 
 	@QueryParam("page")
 	public Integer page;
@@ -36,6 +32,21 @@ public class Pageable {
 	@QueryParam("sort")
 	public String sort;
 
+	@Context
+	@JsonIgnore // Do not serialize this field, especially when auditing.
+	private UriInfo uriInfo;
+
+	/**
+	 * Helper method to create an empty Pageable object.
+	 */
+	public static Pageable empty() {
+		Pageable pageable = new Pageable();
+		pageable.setPage(0);
+		pageable.setSize(Integer.MAX_VALUE);
+		pageable.setSort("");
+		return pageable;
+	}
+	
 	public Optional<io.quarkus.panache.common.Page> getPageObject() {
 		if (page != null && size != null) {
 			return Optional.of(io.quarkus.panache.common.Page.of(page, size));

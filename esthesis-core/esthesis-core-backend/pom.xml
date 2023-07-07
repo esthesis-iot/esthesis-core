@@ -1,185 +1,219 @@
 <?xml version="1.0"?>
 <project
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>esthesis</groupId>
-  <artifactId>esthesis-core-backend</artifactId>
-	<version>3.0.0-SNAPSHOT</version>
+	<artifactId>esthesis-core-backend</artifactId>
+	<version>3.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>quarkus-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>build</goal>
-              <goal>generate-code</goal>
-              <goal>generate-code-tests</goal>
-            </goals>
-          </execution>
-        </executions>
-        <extensions>true</extensions>
-        <groupId>${quarkus.platform.group-id}</groupId>
-        <version>${quarkus.platform.version}</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <compilerArgs>
-            <arg>-parameters</arg>
-          </compilerArgs>
-        </configuration>
-        <version>${compiler-plugin.version}</version>
-      </plugin>
-      <plugin>
-        <artifactId>git-commit-id-maven-plugin</artifactId>
-        <configuration>
-          <commitIdGenerationMode>full</commitIdGenerationMode>
-          <generateGitPropertiesFile>true</generateGitPropertiesFile>
-          <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties
-          </generateGitPropertiesFilename>
-          <includeOnlyProperties>
-            <includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
-            <includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
-          </includeOnlyProperties>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>revision</goal>
-            </goals>
-            <id>get-git-info</id>
-            <phase>initialize</phase>
-          </execution>
-        </executions>
-        <groupId>io.github.git-commit-id</groupId>
-        <version>5.0.0</version>
-      </plugin>
-    </plugins>
-  </build>
-  <dependencies>
-    <!-- QUARKUS -->
-    <dependency>
-      <artifactId>quarkus-config-yaml</artifactId>
-      <groupId>io.quarkus</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>quarkus-arc</artifactId>
-      <groupId>io.quarkus</groupId>
-    </dependency>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>quarkus-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>build</goal>
+							<goal>generate-code</goal>
+							<goal>generate-code-tests</goal>
+						</goals>
+					</execution>
+				</executions>
+				<extensions>true</extensions>
+				<groupId>${quarkus.platform.group-id}</groupId>
+				<version>${quarkus.platform.version}</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<compilerArgs>
+						<arg>-parameters</arg>
+					</compilerArgs>
+				</configuration>
+				<version>${compiler-plugin.version}</version>
+			</plugin>
+			<plugin>
+				<artifactId>git-commit-id-maven-plugin</artifactId>
+				<configuration>
+					<commitIdGenerationMode>full</commitIdGenerationMode>
+					<generateGitPropertiesFile>true</generateGitPropertiesFile>
+					<generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties
+					</generateGitPropertiesFilename>
+					<includeOnlyProperties>
+						<includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
+						<includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
+					</includeOnlyProperties>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+						<id>get-git-info</id>
+						<phase>initialize</phase>
+					</execution>
+				</executions>
+				<groupId>io.github.git-commit-id</groupId>
+				<version>5.0.0</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${surefire-plugin.version}</version>
+				<configuration>
+					<systemPropertyVariables>
+						<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+						<maven.home>${maven.home}</maven.home>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-    <!-- THIRD-PARTY -->
-    <dependency>
-      <artifactId>lombok</artifactId>
-      <groupId>org.projectlombok</groupId>
-      <version>${org.projectlombok.version}</version>
-    </dependency>
+	<dependencies>
+		<!-- QUARKUS -->
+		<dependency>
+			<artifactId>quarkus-config-yaml</artifactId>
+			<groupId>io.quarkus</groupId>
+		</dependency>
+		<dependency>
+			<artifactId>quarkus-arc</artifactId>
+			<groupId>io.quarkus</groupId>
+		</dependency>
 
-    <!-- TESTING -->
-    <dependency>
-      <artifactId>quarkus-junit5</artifactId>
-      <groupId>io.quarkus</groupId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <artifactId>${quarkus.platform.artifact-id}</artifactId>
-        <groupId>${quarkus.platform.group-id}</groupId>
-        <scope>import</scope>
-        <type>pom</type>
-        <version>${quarkus.platform.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+		<!-- THIRD-PARTY -->
+		<dependency>
+			<artifactId>lombok</artifactId>
+			<groupId>org.projectlombok</groupId>
+			<version>${org.projectlombok.version}</version>
+		</dependency>
 
-  <modules>
-    <module>common</module>
-    <module>services</module>
-    <module>dataflows</module>
-    <module>util</module>
-    <module>avro</module>
-  </modules>
+		<!-- TESTING -->
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<artifactId>quarkus-junit5</artifactId>
+			<groupId>io.quarkus</groupId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-junit5-mockito</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.instancio</groupId>
+			<artifactId>instancio-junit</artifactId>
+			<version>${instancio-junit}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-jacoco</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
-  <profiles>
-    <profile>
-      <activation>
-        <property>
-          <name>native</name>
-        </property>
-      </activation>
-      <id>native</id>
-      <properties>
-        <quarkus.package.type>native</quarkus.package.type>
-        <skipITs>false</skipITs>
-      </properties>
-    </profile>
-    <profile>
-      <activation>
-        <property>
-          <name>cyclonedx-bom</name>
-        </property>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <artifactId>cyclonedx-maven-plugin</artifactId>
-              <configuration>
-                <includeBomSerialNumber>true</includeBomSerialNumber>
-                <includeCompileScope>true</includeCompileScope>
-                <includeLicenseText>false</includeLicenseText>
-                <includeProvidedScope>true</includeProvidedScope>
-                <includeRuntimeScope>true</includeRuntimeScope>
-                <includeSystemScope>true</includeSystemScope>
-                <includeTestScope>false</includeTestScope>
-                <outputFormat>xml</outputFormat>
-                <outputName>bom</outputName>
-                <outputReactorProjects>false</outputReactorProjects>
-                <projectType>application</projectType>
-                <schemaVersion>1.4</schemaVersion>
-              </configuration>
-              <executions>
-                <execution>
-                  <goals>
-                    <goal>makeAggregateBom</goal>
-                  </goals>
-                  <phase>package</phase>
-                </execution>
-              </executions>
-              <groupId>org.cyclonedx</groupId>
-              <inherited>false</inherited>
-              <version>2.7.9</version>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-        <plugins>
-          <plugin>
-            <artifactId>cyclonedx-maven-plugin</artifactId>
-            <groupId>org.cyclonedx</groupId>
-            <inherited>false</inherited>
-          </plugin>
-        </plugins>
-      </build>
-      <id>cyclonedx-bom</id>
-    </profile>
-  </profiles>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<artifactId>${quarkus.platform.artifact-id}</artifactId>
+				<groupId>${quarkus.platform.group-id}</groupId>
+				<scope>import</scope>
+				<type>pom</type>
+				<version>${quarkus.platform.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
-  <properties>
-    <!-- QUARKUS -->
+	<modules>
+		<module>common</module>
+		<module>services</module>
+		<module>dataflows</module>
+		<module>util</module>
+		<module>avro</module>
+	</modules>
+
+	<profiles>
+		<profile>
+			<activation>
+				<property>
+					<name>native</name>
+				</property>
+			</activation>
+			<id>native</id>
+			<properties>
+				<quarkus.package.type>native</quarkus.package.type>
+				<skipITs>false</skipITs>
+			</properties>
+		</profile>
+		<profile>
+			<activation>
+				<property>
+					<name>cyclonedx-bom</name>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<artifactId>cyclonedx-maven-plugin</artifactId>
+							<configuration>
+								<includeBomSerialNumber>true</includeBomSerialNumber>
+								<includeCompileScope>true</includeCompileScope>
+								<includeLicenseText>false</includeLicenseText>
+								<includeProvidedScope>true</includeProvidedScope>
+								<includeRuntimeScope>true</includeRuntimeScope>
+								<includeSystemScope>true</includeSystemScope>
+								<includeTestScope>false</includeTestScope>
+								<outputFormat>xml</outputFormat>
+								<outputName>bom</outputName>
+								<outputReactorProjects>false</outputReactorProjects>
+								<projectType>application</projectType>
+								<schemaVersion>1.4</schemaVersion>
+							</configuration>
+							<executions>
+								<execution>
+									<goals>
+										<goal>makeAggregateBom</goal>
+									</goals>
+									<phase>package</phase>
+								</execution>
+							</executions>
+							<groupId>org.cyclonedx</groupId>
+							<inherited>false</inherited>
+							<version>2.7.9</version>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+				<plugins>
+					<plugin>
+						<artifactId>cyclonedx-maven-plugin</artifactId>
+						<groupId>org.cyclonedx</groupId>
+						<inherited>false</inherited>
+					</plugin>
+				</plugins>
+			</build>
+			<id>cyclonedx-bom</id>
+		</profile>
+	</profiles>
+
+	<properties>
+		<!-- QUARKUS -->
 		<quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
 		<quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
 		<quarkus.platform.version>3.0.3.Final</quarkus.platform.version>
 
-    <!-- ESTHESIS -->
-<!--		<esthesis.version>3.0.0-SNAPSHOT</esthesis.version>-->
+		<!-- ESTHESIS -->
+		<!--		<esthesis.version>3.0.0-SNAPSHOT</esthesis.version>-->
 
-    <!-- THIRD-PARTY -->
+		<!-- THIRD-PARTY -->
 		<awaitility.version>4.2.0</awaitility.version>
 		<bson.version>4.6.1</bson.version>
 		<commons-codec.version>1.15</commons-codec.version>
@@ -189,11 +223,12 @@
 		<org.projectlombok.version>1.18.24</org.projectlombok.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<instancio-junit>2.16.1</instancio-junit>
 
-    <skipITs>true</skipITs>
-    <slugify.version>3.0.2</slugify.version>
-    <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
-    <zeebe.version>1.0.1</zeebe.version>
-  </properties>
+		<!--		<skipITs>true</skipITs>-->
+		<slugify.version>3.0.2</slugify.version>
+		<surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
+		<zeebe.version>1.0.1</zeebe.version>
+	</properties>
 
 </project>

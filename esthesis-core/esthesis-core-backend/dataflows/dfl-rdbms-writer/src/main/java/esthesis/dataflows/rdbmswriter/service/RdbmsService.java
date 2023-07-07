@@ -94,6 +94,11 @@ public class RdbmsService {
 								valueData.getValueType());
 							preparedStatement.setString(i + 3, valueData.getValue());
 						}
+						default -> {
+							log.warn("'{}' value type is not supported , settings value as String.",
+								valueData.getValueType());
+							preparedStatement.setString(i + 3, valueData.getValue());
+						}
 					}
 				}
 				log.debug("Executing statement '{}'.", preparedStatement);

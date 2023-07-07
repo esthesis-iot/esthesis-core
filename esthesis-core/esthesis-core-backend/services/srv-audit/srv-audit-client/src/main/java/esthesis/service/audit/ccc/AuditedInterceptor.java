@@ -5,6 +5,7 @@ import esthesis.common.AppConstants.Security.Category;
 import esthesis.common.AppConstants.Security.Operation;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.audit.resource.AuditResource;
+import io.quarkus.arc.profile.UnlessBuildProfile;
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
@@ -20,6 +21,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 @Interceptor
 @Priority(Interceptor.Priority.APPLICATION)
 @Audited(op = Operation.OTHER, cat = Category.NULL, msg = "")
+@UnlessBuildProfile("test")
 public class AuditedInterceptor {
 
 	@Inject

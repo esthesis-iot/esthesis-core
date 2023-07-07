@@ -48,12 +48,17 @@ located in a corporate network, please check with your network administrators fi
 	```shell
 	DEV_HOST=192.168.100.102 helmfile -e dev sync
 	```
+ 	or for Windows 
+	```shell
+	set "DEV_HOST=192.168.100.102" & helmfile -e dev sync
+	```
+
 	:::caution
 	You need to specify the IP address of your development machine in the `DEV_HOST` environment
 	variable. This is needed so that the API gateway (APISIX) knows where to forward the requests to
 	(since in `dev` setup the services run on your own machine, not in Kubernetes).
 	:::
-- Update your `hosts` file by executing `hosts-file-update.sh`.
+- Update your `hosts` file by executing `hosts-file-update.sh` or `hosts-file-update.bat` for Windows.
 
 
 ## Running the services
@@ -93,7 +98,7 @@ Provided you have successfully updated your `hosts` file, you can access the fol
 | Redis            | redis.esthesis.localdev:6379/0            | (empty) / esthesis-system         |
 | MQTT             | mqtt.esthesis.localdev:1883               |                                   |
 | Grafana          | http://grafana.esthesis.localdev          | esthesis-system / esthesis-system |
-| InfluxDB HTTP    | http://influxdb.esthesis.localdev    	    | esthesis-system / esthesis-system |
+| InfluxDB HTTP    | http://influxdb-ui.esthesis.localdev       | esthesis-system / esthesis-system |
 | InfluxDB         | influxdb.esthesis.localdev:8088    	      | -                                 |
 | Docker Registry  | registry.esthesis.localdev                | -                                 |
 

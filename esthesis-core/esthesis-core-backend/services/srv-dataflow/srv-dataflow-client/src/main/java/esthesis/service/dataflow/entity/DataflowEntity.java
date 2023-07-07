@@ -37,5 +37,4 @@ public class DataflowEntity extends BaseEntity {
 	private Map<String, Object> config;
 	private Map<String, Object> kubernetes;
 	private Map<String, Object> image;
-
 }

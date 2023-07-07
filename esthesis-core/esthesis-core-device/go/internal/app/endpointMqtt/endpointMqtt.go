@@ -15,6 +15,46 @@ import (
 const telemetryEndpoint = "telemetry"
 const metadataEndpoint = "metadata"
 
+// Check if the provided topic name is one of the custom telemetry topics.
+func isCustomTelemetryTopic(topicName string) bool {
+	for i := 0; i < len(config.Flags.LuaExtraMqttTelemetryTopic); i += 2 {
+		if topicName == config.Flags.LuaExtraMqttTelemetryTopic[i] {
+			return true
+		}
+	}
+	return false
+}
+
+// Find the LUA handler for the provided custom telemetry topic name.
+func getCustomTelemetryTopicLuaHandler(topicName string) string {
+	for i := 0; i < len(config.Flags.LuaExtraMqttTelemetryTopic); i += 2 {
+		if topicName == config.Flags.LuaExtraMqttTelemetryTopic[i] {
+			return config.Flags.LuaExtraMqttTelemetryTopic[i+1]
+		}
+	}
+	return ""
+}
+
+// Check if the provided topic name is one of the custom metadata topics.
+func isCustomMetadataTopic(topicName string) bool {
+	for i := 0; i < len(config.Flags.LuaExtraMqttMetadataTopic); i += 2 {
+		if topicName == config.Flags.LuaExtraMqttMetadataTopic[i] {
+			return true
+		}
+	}
+	return false
+}
+
+// Find the LUA handler for the provided custom metadata topic name.
+func getCustomMetadataTopicLuaHandler(topicName string) string {
+	for i := 0; i < len(config.Flags.LuaExtraMqttMetadataTopic); i += 2 {
+		if topicName == config.Flags.LuaExtraMqttMetadataTopic[i] {
+			return config.Flags.LuaExtraMqttMetadataTopic[i+1]
+		}
+	}
+	return ""
+}
+
 func Start(done chan bool) {
 	mqttListeningAddress := config.Flags.
 		EndpointMqttListeningIP + ":" + strconv.Itoa(config.Flags.EndpointMqttListeningPort)
@@ -36,19 +76,27 @@ func Start(done chan bool) {
 		err error) {
 		topic := pk.TopicName
 		payload := pk.Payload
+		log.Debugf("Received a message on topic '%s' with payload '%s'.", topic, payload)
 
-		if topic == telemetryEndpoint {
+		// Process the incoming message according to the topic it was sent to.
+		if topic == telemetryEndpoint || isCustomTelemetryTopic(topic) {
 			// Check if payload should be transformed.
-			if config.Flags.LuaMqttTelemetryScript != "" {
+			if isCustomTelemetryTopic(topic) && getCustomTelemetryTopicLuaHandler(topic) != "" {
+				payload = []byte(luaExecutor.ExecuteLuaScript(string(payload[:]),
+					getCustomTelemetryTopicLuaHandler(topic)))
+			} else if !isCustomTelemetryTopic(topic) && config.Flags.LuaMqttTelemetryScript != "" {
 				payload = []byte(luaExecutor.ExecuteLuaScript(string(payload[:]),
 					config.Flags.LuaMqttTelemetryScript))
 			}
 			mqttClient.Publish(config.Flags.
 				TopicTelemetry+"/"+config.Flags.HardwareId,
 				payload).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
-		} else if topic == metadataEndpoint {
+		} else if topic == metadataEndpoint || isCustomMetadataTopic(topic) {
 			// Check if payload should be transformed.
-			if config.Flags.LuaMqttMetadataScript != "" {
+			if isCustomMetadataTopic(topic) && getCustomMetadataTopicLuaHandler(topic) != "" {
+				payload = []byte(luaExecutor.ExecuteLuaScript(string(payload[:]),
+					getCustomMetadataTopicLuaHandler(topic)))
+			} else if !isCustomMetadataTopic(topic) && config.Flags.LuaMqttMetadataScript != "" {
 				payload = []byte(luaExecutor.ExecuteLuaScript(string(payload[:]),
 					config.Flags.LuaMqttMetadataScript))
 			}
@@ -63,7 +111,7 @@ func Start(done chan bool) {
 	}
 
 	go func() {
-		log.Infof("Starting embedded MQTT server started at '%s'.",
+		log.Infof("Starting embedded MQTT server at '%s'.",
 			mqttListeningAddress)
 		err := server.Serve()
 		if err != nil {
@@ -73,5 +121,8 @@ func Start(done chan bool) {
 
 	<-done
 	log.Debug("Stopping embedded MQTT server.")
-	server.Close()
+	err = server.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 }

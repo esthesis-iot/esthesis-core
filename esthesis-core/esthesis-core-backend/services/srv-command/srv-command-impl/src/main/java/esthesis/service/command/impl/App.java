@@ -8,6 +8,7 @@ import jakarta.enterprise.event.Observes;
 @ApplicationScoped
 public class App {
 
+	@SuppressWarnings("unused")
 	void onStart(@Observes StartupEvent ev) {
 		BannerUtil.showBanner("srv-command");
 	}

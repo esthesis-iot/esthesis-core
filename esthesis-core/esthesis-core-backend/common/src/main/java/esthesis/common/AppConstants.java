@@ -6,6 +6,7 @@ public class AppConstants {
 	//TODO to be removed with Settings preferences
 	public static final String KAFKA_TOPIC_PREFIX = "esthesis-";
 
+	// A keyword used to indicate a new record being created.
 	public static final String NEW_RECORD_ID = "new";
 
 	// Redis key suffixes for measurements.

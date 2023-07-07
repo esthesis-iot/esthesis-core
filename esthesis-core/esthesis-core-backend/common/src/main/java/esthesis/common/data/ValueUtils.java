@@ -24,6 +24,7 @@ public class ValueUtils {
    *
    * @param val The value to detect its type.
    */
+	@SuppressWarnings("java:S3776")
   public static ValueType detect(String val) {
     if (NumberUtils.isCreatable(val)) {
       try {

@@ -28,6 +28,7 @@ public class NotificationsHandler {
 	}
 
 	@Blocking
+	@SuppressWarnings("java:S1301")
 	@Incoming(SMALLRYE_KAFKA_CHANNEL_IN)
 	public CompletionStage<Void> onMessage(Message<AppMessage> msg) {
 		log.trace("Processing Kafka application message '{}'", msg);
@@ -42,8 +43,10 @@ public class NotificationsHandler {
 				case TAG -> {
 					switch (msg.getPayload().getAction()) {
 						case DELETE -> handleTagDeleted(msg.getPayload().getTargetId());
+						default -> log.trace("Ignoring Kafka message '{}'.", msg);
 					}
 				}
+				default -> log.trace("Ignoring Kafka message '{}'.", msg);
 			}
 		} catch (Exception e) {
 			log.warn("Could not handle Kafka message '{}'.", msg, e);

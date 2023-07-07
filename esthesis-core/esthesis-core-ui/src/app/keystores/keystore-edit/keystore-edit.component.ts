@@ -1,5 +1,4 @@
 import {Component, OnInit} from "@angular/core";
-import {BaseComponent} from "../../shared/components/base-component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {QFormsService} from "@qlack/forms";
@@ -159,11 +158,7 @@ export class KeystoreEditComponent extends SecurityBaseComponent implements OnIn
   }
 
   removeItem(array: KeystoreEntryDto[], element: KeystoreEntryDto) {
-    array.filter((item, index) => {
-      if (item.id === element.id) {
-        array.splice(index, 1);
-      }
-    });
+    array.forEach((item, index) => item.id === element.id && array.splice(index, 1));
     this.dataSource = new MatTableDataSource<KeystoreEntryDto>(this.form.controls.entries.value);
   }
 

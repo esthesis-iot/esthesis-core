@@ -5,7 +5,6 @@ import {Router} from "@angular/router";
 import {ApplicationDto} from "../dto/application-dto";
 import {ApplicationsService} from "../applications.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import {BaseComponent} from "../../shared/components/base-component";
 import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";
 import {MatPaginator} from "@angular/material/paginator";
@@ -14,8 +13,7 @@ import {SecurityBaseComponent} from "../../shared/components/security-base-compo
 
 @Component({
   selector: "app-applications-list",
-  templateUrl: "./applications-list.component.html",
-  styleUrls: ["./applications-list.component.scss"]
+  templateUrl: "./applications-list.component.html"
 })
 export class ApplicationsListComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   displayedColumns = ["name", "state", "createdOn"];
