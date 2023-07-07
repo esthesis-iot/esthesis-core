@@ -3,3 +3,4 @@
 **/*.iml
 **/target
 /esthesis-core/itomate.yml
+.idea/
