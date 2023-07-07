@@ -28,7 +28,7 @@ first manually delete it and `helmfile sync` again.
 	# This is the network config written by 'subiquity'
 	network:
 	 ethernets:
-		enp0s3:
+		eth0:
 		  dhcp4: false
 		  addresses: [192.168.2.12/24]
 		  routes:
