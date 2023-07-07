@@ -34,7 +34,8 @@ export class SecurityGroupsEditComponent extends SecurityBaseComponent implement
   constructor(private fb: FormBuilder, private securityGroupsService: SecurityGroupsService,
     private route: ActivatedRoute, private qForms: QFormsService, private router: Router,
     private utilityService: UtilityService, private dialog: MatDialog,
-    private qFormValidation: QFormValidationEEService, private securityRolesService: SecurityRolesService) {
+    private qFormValidation: QFormValidationEEService,
+    private securityRolesService: SecurityRolesService) {
     super(AppConstants.SECURITY.CATEGORY.GROUPS, route.snapshot.paramMap.get("id"));
   }
 
@@ -154,18 +155,24 @@ export class SecurityGroupsEditComponent extends SecurityBaseComponent implement
   }
 
   removePolicy(policy: any) {
-    this.form.patchValue({
-      policies: _.remove(this.form.controls.policies.value, policy)
-    });
+    const policies = this.form.controls.policies.value;
+    const index = policies.indexOf(policy);
+    if (index >= 0) {
+      policies.splice(index, 1);
+    }
   }
 
   policyEditor() {
-    const editorDialogRef = this.dialog.open(SecurityPoliciesEditorComponent, {
-      width: "40rem",
-    });
+    const editorDialogRef = this.dialog.open(SecurityPoliciesEditorComponent, {width: "40rem"});
     editorDialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.form.controls.policies.value.push(result);
+        if (this.form.controls.policies.value) {
+          this.form.controls.policies.value.push(result);
+        } else {
+          this.form.patchValue({
+            policies: [result]
+          });
+        }
       }
     });
   }
