@@ -25,13 +25,15 @@ pipeline {
                   runAsGroup: 0
                 containers:
                 - name: esthesis-platform-builder
-                  image: eddevopsd2/maven-java-npm-docker:mvn3.6.3-jdk8-npm6.14.4-docker
+                  image: eddevopsd2/ubuntu-dind:dind-mvn3.8.5-jdk17-node18.16-go1.20-buildx-helm
                   volumeMounts:
                   - name: maven
                     mountPath: /root/.m2/
                     subPath: esthesis
                   - name: sonar-scanner
                     mountPath: /root/sonar-scanner
+                  - name: docker
+                    mountPath: /root/.docker
                   tty: true
                   securityContext:
                     privileged: true
@@ -46,6 +48,9 @@ pipeline {
                 - name: sonar-scanner
                   persistentVolumeClaim:
                     claimName: sonar-scanner-nfs-pvc
+                - name: docker
+                  persistentVolumeClaim:
+                    claimName: docker-nfs-pvc
             '''
             workspaceVolume persistentVolumeClaimWorkspaceVolume(claimName: 'workspace-nfs-pvc', readOnly: false)
         }
