@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-          image 'eddevopsd2/ubuntu-dind:dind-mvn3.8.5-jdk17-node18.16-go1.20-buildx-helm'
+          image 'eddevopsd2/ubuntu-dind:dind-mvn3.8.5-jdk17-node18.16-go1.20-buildx-helm3.12.1'
           args '--privileged -v /root/.m2/Esthesis:/root/.m2 -v /root/sonar-scanner:/root/sonar-scanner -v /root/.docker/config.json:/root/.docker/config.json'
         }
     }
@@ -20,7 +20,6 @@ pipeline {
                 stage('Go Build Device') {
                     steps {
                         sh '''
-                            apt-get install -y build-essential
                             export PATH=$PATH:/usr/bin/gcc
                             cd esthesis-core/esthesis-core-device/go
                             go mod download
