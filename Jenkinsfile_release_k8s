@@ -1,0 +1,381 @@
+pipeline {
+    agent {
+        kubernetes {
+            yaml '''
+              apiVersion: v1
+              kind: Pod
+              metadata:
+                name: esthesis-release
+                namespace: jenkins
+              spec:
+                affinity:
+                  podAntiAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                    - weight: 50
+                      podAffinityTerm:
+                        labelSelector:
+                          matchExpressions:
+                          - key: jenkins/jenkins-jenkins-agent
+                            operator: In
+                            values:
+                            - "true"
+                        topologyKey: kubernetes.io/hostname
+                securityContext:
+                  runAsUser: 0
+                  runAsGroup: 0
+                containers:
+                - name: esthesis-release-builder
+                  image: eddevopsd2/ubuntu-dind:dind-mvn3.8.5-jdk17-node18.16-go1.20-buildx-helm
+                  volumeMounts:
+                  - name: maven
+                    mountPath: /root/.m2/
+                    subPath: esthesis
+                  - name: docker
+                    mountPath: /root/.docker
+                  tty: true
+                  securityContext:
+                    privileged: true
+                    runAsUser: 0
+                    fsGroup: 0
+                imagePullSecrets:
+                - name: regcred
+                volumes:
+                - name: maven
+                  persistentVolumeClaim:
+                    claimName: maven-nfs-pvc
+                - name: docker
+                  persistentVolumeClaim:
+                    claimName: docker-nfs-pvc
+            '''
+            workspaceVolume persistentVolumeClaimWorkspaceVolume(claimName: 'workspace-nfs-pvc', readOnly: false)
+        }
+    }
+    options {
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        timeout(time: 3, unit: 'HOURS')
+    }
+    stages {
+    	stage ('Prerequisites') {
+            steps {
+                container (name: 'esthesis-release-builder') {
+                    sh 'dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock &> dockerd-logfile &'
+                    sh '''
+                        apt -y install uuid-runtime
+                        apt -y install jq
+                    '''
+                }
+            }
+        }
+        stage ("Prompt for Input") {
+            steps {
+                container (name: 'esthesis-release-builder') {
+                    script {
+                        env.RELEASE_VERSION = input message: 'Release version:',
+                                         parameters: [string(defaultValue: '',
+                                                      description: 'Attention: To avoid Git conflicts, please do not push to esthesis-iot git repositories before this job finishes.',
+                                                      name: 'Release version')]
+                        env.NEXT_DEV_VERSION = input message: 'Snapshot version:',
+                                         parameters: [string(defaultValue: '',
+                                                      description: '',
+                                                      name: 'Next development version')]
+                    }
+                }
+            }
+        }
+        stage ("Clone esthesis-iot projects") {
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        sh '''
+                            git config --global user.email "devops-d2@eurodyn.com"
+                            git config --global user.name "$Username"
+                            git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-platform
+
+                            git config --global user.email "devops-d2@eurodyn.com"
+                            git config --global user.name "$Username"
+                            git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-helm
+
+                            git config --global user.email "devops-d2@eurodyn.com"
+                            git config --global user.name "$Username"
+                            git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-docs
+                        '''
+                    }
+                }
+            }
+        }
+        stage ("esthesis-platform: Changes for RELEASE version"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    sh '''
+                        cd esthesis-platform/esthesis-core/esthesis-core-backend
+                        mvn versions:set -DnewVersion=$RELEASE_VERSION
+                        mvn versions:commit
+
+                        cd ../esthesis-core-ui
+                        sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package.json
+                        awk -v sb='  \"name\": \"esthesis-ui\",\n  \"version\": \"'$RELEASE_VERSION'\",' '/"name": "esthesis-ui",/,/"version":.*/ { if ( $0 ~ /"version":.*/ ) print sb; next } 1' package-lock.json > temp.json && cp -f temp.json package-lock.json && rm temp.json
+                        sed -i "s/\([\"']\)\([0-9]\+\.[0-9]\+\.[0-9]\+\(-[A-Za-z0-9]\+\)\?\([\"']\)\)/\1$release_version\4/" src/app/dataflows/dataflow-wizards/dataflow-wizard-standard/dataflow-wizard-standard.component.ts
+
+                        cd ../esthesis-core-device/go/internal/pkg/config/
+                        sed -i 's/const Version = .*$/const Version = \"'$RELEASE_VERSION'\"/' config.go
+                    '''
+                }
+            }
+        }
+        stage ("esthesis-docs: Changes for RELEASE version"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    sh '''
+                        filePath="esthesis-platform/esthesis-core/esthesis-core-docs/src/css/custom.css"
+                        cssCode=".dropdown__menu > li:nth-child(1) { display: none\!important; }"
+                        sed -i -e "\$a\\$cssCode" "$filePath"
+                    '''
+                    sh '''
+                        cd esthesis-platform/esthesis-core/esthesis-core-docs
+                        sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package.json
+                        npm install
+                        npx docusaurus docs:version $RELEASE_VERSION
+                        npm run build
+
+                        rm -rf ../../../esthesis-docs/docs/*
+                        cp -r build/* ../../../esthesis-docs/docs
+                    '''
+                    sh '''
+                        filePath="esthesis-platform/esthesis-core/esthesis-core-docs/src/css/custom.css"
+                        sed -i '$d' "$filePath"
+                    '''
+                }
+            }
+        }
+        stage ("esthesis-helm: Changes for RELEASE version"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    sh '''
+                        cd esthesis-helm
+                        find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: $RELEASE_VERSION|"
+                        find . -name helmfile.yaml | xargs sed -i "s|esthesisVersion:.*$|esthesisVersion: $RELEASE_VERSION|"
+                        find . -name deployment.yaml | xargs sed -i "s|esthesisiot/esthesis-core-ui:.*$|esthesisiot/esthesis-core-ui: $RELEASE_VERSION|"
+                        find . -name _helpers.tpl | xargs sed -i "s|esthesisiot/{{ .podName }}:.*$|esthesisiot/{{ .podName }}: $RELEASE_VERSION|"
+                        bash package.sh
+                    '''
+                }
+            }
+        }
+        stage ("esthesis-platform: Git push RELEASE version"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        sh '''
+                            cd esthesis-platform
+                            git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-platform.git
+                            git add esthesis-core/esthesis-core-docs/versioned_docs
+                            git add esthesis-core/esthesis-core-docs/versioned_sidebar
+                            git add esthesis-core/esthesis-core-docs/versions.json
+                            git commit -a -m "release: prepare release $RELEASE_VERSION"
+                            git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
+                            git push https://$Username:$Password@github.com/esthesis-iot/esthesis-platform HEAD:main --tags
+                        '''
+                    }
+                }
+            }
+        }
+        stage ("esthesis-docs: Git push RELEASE version"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        sh '''
+                            cd esthesis-docs
+                            git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-docs.git
+                            git add .
+                            git commit -a -m "release: prepare release $RELEASE_VERSION"
+                            git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
+                            git push https://$Username:$Password@github.com/esthesis-iot/esthesis-docs HEAD:master --tags
+                        '''
+                    }
+                }
+            }
+        }
+        stage ("esthesis-helm: Git push RELEASE version"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        sh '''
+                            cd esthesis-helm
+                            git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-helm.git
+                            git commit -a -m "release: prepare release $RELEASE_VERSION"
+                            git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
+                            git push https://$Username:$Password@github.com/esthesis-iot/esthesis-helm HEAD:main --tags
+                        '''
+                    }
+                }
+            }
+        }
+        stage ("Run esthesis-core-backend publish script"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    sh '''
+                        cd esthesis-platform/esthesis-core/esthesis-core-backend
+                        bash publish.sh
+                    '''
+                }
+            }
+        }
+        stage ("Run esthesis-core-ui publish script"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    sh '''
+                        cd esthesis-platform/esthesis-core/esthesis-core-ui
+                        bash publish.sh
+                    '''
+                }
+            }
+        }
+        stage ("Run esthesis-core-device publish script"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    sh '''
+                        cd esthesis-platform/esthesis-core/esthesis-core-device
+                        bash publish.sh
+                    '''
+                }
+            }
+        }
+        stage ("esthesis-device: Attach device assets"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        script{
+                            def id = sh(script:'''#!/bin/bash
+                                ID=$(curl -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $Password" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/esthesis-iot/esthesis-platform/releases/tags/$RELEASE_VERSION | jq -r '.id')
+                                echo $ID''',returnStdout: true
+                            ).trim()
+                            if (id != "null") {
+                                sh '''
+                                    release_id=$(curl -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $Password" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/esthesis-iot/esthesis-platform/releases/tags/$RELEASE_VERSION | jq -r '.id')
+
+                                    cd esthesis-platform/esthesis-core/esthesis-core-device/native/*/
+                                    curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $Password" -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: application/octet-stream" https://uploads.github.com/repos/esthesis-iot/esthesis-platform/releases/$release_id/assets?name=esthesis-agent_darwin-amd64 --data-binary "@esthesis-agent_darwin-amd64"
+                                    curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $Password" -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: application/octet-stream" https://uploads.github.com/repos/esthesis-iot/esthesis-platform/releases/$release_id/assets?name=esthesis-agent_darwin-arm64 --data-binary "@esthesis-agent_darwin-arm64"
+                                    curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $Password" -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: application/octet-stream" https://uploads.github.com/repos/esthesis-iot/esthesis-platform/releases/$release_id/assets?name=esthesis-agent_linux-amd64 --data-binary "@esthesis-agent_linux-amd64"
+                                    curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $Password" -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: application/octet-stream" https://uploads.github.com/repos/esthesis-iot/esthesis-platform/releases/$release_id/assets?name=esthesis-agent_linux-arm64 --data-binary "@esthesis-agent_linux-arm64"
+                                    curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $Password" -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: application/octet-stream" https://uploads.github.com/repos/esthesis-iot/esthesis-platform/releases/$release_id/assets?name=esthesis-agent_linux-arm --data-binary "@esthesis-agent_linux-arm"
+                                    curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $Password" -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: application/octet-stream" https://uploads.github.com/repos/esthesis-iot/esthesis-platform/releases/$release_id/assets?name=esthesis-agent_win-386.exe --data-binary "@esthesis-agent_win-386.exe"
+                                    curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $Password" -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: application/octet-stream" https://uploads.github.com/repos/esthesis-iot/esthesis-platform/releases/$release_id/assets?name=esthesis-agent_win-amd64.exe --data-binary "@esthesis-agent_win-amd64.exe"
+                                '''
+                            } else {
+                                echo "Release ID is empty. Cannot attach assets."
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        stage ("esthesis-platform: Changes for NEXT_DEV_VERSION version"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    sh '''
+                        cd esthesis-platform/esthesis-core/esthesis-core-backend
+                        mvn versions:set -DnewVersion=$NEXT_DEV_VERSION
+                        mvn versions:commit
+
+                        cd ../esthesis-core-ui
+                        sed -i 's|\"version\":.*$|\"version\": \"'$NEXT_DEV_VERSION'\",|' package.json
+                        awk -v sb='  \"name\": \"esthesis-ui\",\n  \"version\": \"'$NEXT_DEV_VERSION'\",' '/"name": "esthesis-ui",/,/"version":.*/ { if ( $0 ~ /"version":.*/ ) print sb; next } 1' package-lock.json > temp.json && cp -f temp.json package-lock.json && rm temp.json
+
+                        cd ../esthesis-core-device/go/internal/pkg/config/
+                        sed -i 's/const Version = .*$/const Version = \"'$NEXT_DEV_VERSION'\"/' config.go
+                    '''
+                }
+            }
+        }
+        stage ("esthesis-helm: Changes for NEXT_DEV_VERSION version"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    sh '''
+                        cd esthesis-helm
+                        find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: $NEXT_DEV_VERSION|"
+                        find . -name helmfile.yaml | xargs sed -i "s|esthesisVersion:.*$|esthesisVersion: $NEXT_DEV_VERSION|"
+                        find . -name deployment.yaml | xargs sed -i "s|esthesisiot/esthesis-core-ui:.*$|esthesisiot/esthesis-core-ui: $NEXT_DEV_VERSION|"
+                        find . -name _helpers.tpl | xargs sed -i "s|esthesisiot/{{ .podName }}:.*$|esthesisiot/{{ .podName }}: $NEXT_DEV_VERSION|"
+                    '''
+                }
+            }
+        }
+        stage ("esthesis-platform: Git push NEXT_DEV_VERSION version"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        sh '''
+                            cd esthesis-platform
+                            git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-platform.git
+                            git commit -a -m "release: prepare next development $NEXT_DEV_VERSION"
+                            git push https://$Username:$Password@github.com/esthesis-iot/esthesis-platform HEAD:main
+                        '''
+                    }
+                }
+            }
+        }
+        stage ("esthesis-helm: Git push NEXT_DEV_VERSION version"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        sh '''
+                            cd esthesis-helm
+                            git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-helm.git
+                            git commit -a -m "release: prepare next development $NEXT_DEV_VERSION"
+                            git push https://$Username:$Password@github.com/esthesis-iot/esthesis-helm HEAD:main
+                        '''
+                    }
+                }
+            }
+        }
+    }
+    post {
+        changed {
+            script {
+                if (currentBuild.result == 'SUCCESS') {
+                        rocketSend avatar: "http://d2-np.eurodyn.com/jenkins/jenkins.png", channel: 'esthesis-iot', message: ":white_check_mark: | ${BUILD_URL} \n\nRelease succeeded on branch *${env.BRANCH_NAME}* \nChangelog: ${getChangeString(10)}", rawMessage: true
+                } else {
+                        rocketSend avatar: "http://d2-np.eurodyn.com/jenkins/jenkins.png", channel: 'esthesis-iot', message: ":x: | ${BUILD_URL} \n\nRelease failed on branch *${env.BRANCH_NAME}* \nChangelog: ${getChangeString(10)}", rawMessage: true
+                }
+            }
+        }
+    }
+}
+@NonCPS
+def getChangeString(maxMessages) {
+    MAX_MSG_LEN = 100
+    def changeString = ""
+
+    def changeLogSets = currentBuild.changeSets
+
+    for (int i = 0; i < changeLogSets.size(); i++) {
+        def entries = changeLogSets[i].items
+        for (int j = 0; j < entries.length && i + j < maxMessages; j++) {
+            def entry = entries[j]
+            truncated_msg = entry.msg.take(MAX_MSG_LEN)
+            changeString += "*${truncated_msg}* _by author ${entry.author}_\n"
+        }
+    }
+
+    if (!changeString) {
+        changeString = " There have not been any changes since the last build"
+    }
+
+    return changeString
+}
