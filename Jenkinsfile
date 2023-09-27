@@ -1,37 +1,89 @@
 pipeline {
     agent {
-        docker {
-            image 'eddevopsd2/maven-java-npm-docker:mvn3.6.3-jdk15-node16.14.2-docker'
-            args '-v /root/.m2/Esthesis:/root/.m2 -v /root/sonar-scanner:/root/sonar-scanner'
+        kubernetes {
+            yaml '''
+              apiVersion: v1
+              kind: Pod
+              metadata:
+                name: esthesis-platform
+                namespace: jenkins
+              spec:
+                affinity:
+                  podAntiAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                    - weight: 50
+                      podAffinityTerm:
+                        labelSelector:
+                          matchExpressions:
+                          - key: jenkins/jenkins-jenkins-agent
+                            operator: In
+                            values:
+                            - "true"
+                        topologyKey: kubernetes.io/hostname
+                securityContext:
+                  runAsUser: 0
+                  runAsGroup: 0
+                containers:
+                - name: esthesis-platform-builder
+                  image: eddevopsd2/maven-java-npm-docker:mvn3.6.3-jdk15-node16.14.2-docker
+                  volumeMounts:
+                  - name: maven
+                    mountPath: /root/.m2/
+                    subPath: esthesis
+                  - name: sonar-scanner
+                    mountPath: /root/sonar-scanner
+                  tty: true
+                  securityContext:
+                    privileged: true
+                    runAsUser: 0
+                    fsGroup: 0
+                imagePullSecrets:
+                - name: regcred
+                volumes:
+                - name: maven
+                  persistentVolumeClaim:
+                    claimName: maven-nfs-pvc
+                - name: sonar-scanner
+                  persistentVolumeClaim:
+                    claimName: sonar-scanner-nfs-pvc
+            '''
+            workspaceVolume persistentVolumeClaimWorkspaceVolume(claimName: 'workspace-nfs-pvc', readOnly: false)
         }
     }
     options {
         disableConcurrentBuilds()
         buildDiscarder(logRotator(numToKeepStr: '10'))
+        timeout(time: 3, unit: 'HOURS')
     }
     stages {
         stage('Build') {
             parallel {
                 stage('Build esthesis-server') {
                     steps {
-                       sh 'mvn -f esthesis-server/pom.xml clean install'
+                        container (name: 'esthesis-platform-builder') {
+                            sh 'mvn -f esthesis-server/pom.xml clean install'
+                        }
                     }
                 }
                 stage('Build esthesis-ui') {
                     steps {
-                        sh '''
-                            cd esthesis-ui
-                            npm install
-                            npx ng build --configuration production --output-path=dist
-                        '''
+                        container (name: 'esthesis-platform-builder') {
+                            sh '''
+                                cd esthesis-ui
+                                npm install
+                                npx ng build --configuration production --output-path=dist
+                            '''
+                        }
                     }
                 }
             }
         }
         stage('Sonar Analysis') {
             steps {
-                withSonarQubeEnv('sonar'){
-                    sh '/root/sonar-scanner/bin/sonar-scanner -Dsonar.projectVersion="$(mvn -f esthesis-server/pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_KEY_ESTHESIS_UI}'
+                container (name: 'esthesis-platform-builder') {
+                    withSonarQubeEnv('sonar'){
+                        sh ' /root/sonar-scanner/sonar-scanner/bin/sonar-scanner -Dsonar.projectVersion="$(mvn -f esthesis-server/pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.token=${SONAR_GLOBAL_KEY} -Dsonar.working.directory="/tmp"'
+                    }
                 }
             }
         }
@@ -39,52 +91,58 @@ pipeline {
             parallel {
                 stage('Produce bom.xml for esthesis-server') {
                     steps{
-                        sh 'mvn -f esthesis-server/pom.xml org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom'
+                        container (name: 'esthesis-platform-builder') {
+                            sh 'mvn -f esthesis-server/pom.xml org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom'
+                        }
                     }
                 }
                 stage('Produce bom.xml for esthesis-ui') {
                     steps{
-                        sh '''
-                            cd esthesis-ui
-                            npm install --global @cyclonedx/cyclonedx-npm
-                            cyclonedx-npm --ignore-npm-errors --output-format xml --output-file bom.xml
-                        '''
+                        container (name: 'esthesis-platform-builder') {
+                            sh '''
+                                cd esthesis-ui
+                                npm install --global @cyclonedx/cyclonedx-npm
+                                cyclonedx-npm --ignore-npm-errors --output-format xml --output-file bom.xml
+                            '''
+                        }
                     }
                 }
             }
         }
-        stage('Dependency-Track Analysis for esthesis-server')
-        {
+        stage('Dependency-Track Analysis for esthesis-server') {
             steps{
-                sh '''
-                    cat > payload.json <<__HERE__
-                    {
-                      "project": "e33f672c-41d2-4e4b-a278-e807fd6e46d2",
-                      "bom": "$(cat esthesis-server/target/bom.xml |base64 -w 0 -)"
-                    }
-                    __HERE__
+                container (name: 'esthesis-platform-builder') {
+                    sh '''
+                        cat > payload.json <<__HERE__
+                        {
+                          "project": "bebe91b0-5878-44a0-95c9-26b0b225a4ad",
+                          "bom": "$(cat esthesis-server/target/bom.xml |base64 -w 0 -)"
+                        }
+                        __HERE__
                     '''
 
-                sh '''
-                    curl -X "PUT" ${DEPENDENCY_TRACK_URL} -H 'Content-Type: application/json' -H 'X-API-Key: '${DEPENDENCY_TRACK_API_KEY} -d @payload.json
-                   '''
+                    sh '''
+                        curl -X "PUT" ${DEPENDENCY_TRACK_URL} -H 'Content-Type: application/json' -H 'X-API-Key: '${DEPENDENCY_TRACK_API_KEY} -d @payload.json
+                    '''
+                }
             }
         }
-        stage('Dependency-Track Analysis for esthesis-ui')
-        {
+        stage('Dependency-Track Analysis for esthesis-ui') {
             steps{
-                sh '''
-                    cat > payload.json <<__HERE__
-                    {
-                      "project": "199beddb-f50b-4b55-9f09-15ee8a0a6961",
-                      "bom": "$(cat esthesis-ui/bom.xml |base64 -w 0 -)"
-                    }
-                    __HERE__
+                container (name: 'esthesis-platform-builder') {
+                    sh '''
+                        cat > payload.json <<__HERE__
+                        {
+                          "project": "647c1466-5d7b-4953-8220-758dc3c70739",
+                          "bom": "$(cat esthesis-ui/bom.xml |base64 -w 0 -)"
+                        }
+                        __HERE__
                     '''
 
-                sh '''
-                    curl -X "PUT" ${DEPENDENCY_TRACK_URL} -H 'Content-Type: application/json' -H 'X-API-Key: '${DEPENDENCY_TRACK_API_KEY} -d @payload.json
-                   '''
+                    sh '''
+                        curl -X "PUT" ${DEPENDENCY_TRACK_URL} -H 'Content-Type: application/json' -H 'X-API-Key: '${DEPENDENCY_TRACK_API_KEY} -d @payload.json
+                    '''
+                }
             }
         }
     }
@@ -123,4 +181,3 @@ def getChangeString(maxMessages) {
 
     return changeString
 }
-
