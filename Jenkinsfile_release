@@ -116,7 +116,7 @@ pipeline {
 
                         cd ../esthesis-core-ui
                         sed -i "s|\"version\":.*\$|\"version\": \"$RELEASE_VERSION\",|" package.json
-                        sed -i '/"name": "esthesis-ui",/{n;s/"version": "[^"]*"/"version": "'$RELEASE_VERSION'"/;}' package-lock.json
+                        sed -i '/"name": "esthesis-ui",/{n;s/"version": "[^"]*"/"version": "'"${RELEASE_VERSION}"'"/;}' package-lock.json
                         sed -i "s/\\([\"']\\)\\([0-9]\\+\\.[0-9]\\+\\.[0-9]\\+\\(-[A-Za-z0-9]\\+\\)\\?\\)\\([\"']\\)/\\1"$RELEASE_VERSION"\\4/" src/app/dataflows/dataflow-wizards/dataflow-wizard-standard/dataflow-wizard-standard.component.ts
 
                         cd ../esthesis-core-device/go/internal/pkg/config/
