@@ -115,7 +115,7 @@ pipeline {
                         mvn versions:commit
 
                         cd ../esthesis-core-ui
-                        sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package.json
+                        sed -i "s|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|" package.json
                         awk -v sb='  \"name\": \"esthesis-ui\",\n  \"version\": \"'$RELEASE_VERSION'\",' '/"name": "esthesis-ui",/,/"version":.*/ { if ( $0 ~ /"version":.*/ ) print sb; next } 1' package-lock.json > temp.json && cp -f temp.json package-lock.json && rm temp.json
                         sed -i "s/\([\"']\)\([0-9]\+\.[0-9]\+\.[0-9]\+\(-[A-Za-z0-9]\+\)\?\([\"']\)\)/\1$release_version\4/" src/app/dataflows/dataflow-wizards/dataflow-wizard-standard/dataflow-wizard-standard.component.ts
 
