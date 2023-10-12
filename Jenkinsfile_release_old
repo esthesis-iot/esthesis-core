@@ -56,7 +56,7 @@ pipeline {
         }
         stage ("esthesis-platform: Changes for RELEASE version"){
             steps{
-                sh '''
+                sh """
                     cd esthesis-platform/esthesis-core/esthesis-core-backend
                     mvn versions:set -DnewVersion=$RELEASE_VERSION
                     mvn versions:commit
@@ -68,7 +68,7 @@ pipeline {
 
                     cd ../esthesis-core-device/go/internal/pkg/config/
                     sed -i 's/const Version = .*$/const Version = \"'$RELEASE_VERSION'\"/' config.go
-                '''
+                """
             }
         }
         stage ("esthesis-docs: Changes for RELEASE version"){
