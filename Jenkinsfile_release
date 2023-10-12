@@ -115,12 +115,12 @@ pipeline {
                         mvn versions:commit
 
                         cd ../esthesis-core-ui
-                        sed -i "s|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|" package.json
-                        awk -v sb='  \"name\": \"esthesis-ui\",\n  \"version\": \"'$RELEASE_VERSION'\",' '/"name": "esthesis-ui",/,/"version":.*/ { if ( $0 ~ /"version":.*/ ) print sb; next } 1' package-lock.json > temp.json && cp -f temp.json package-lock.json && rm temp.json
-                        sed -i "s/\([\"']\)\([0-9]\+\.[0-9]\+\.[0-9]\+\(-[A-Za-z0-9]\+\)\?\([\"']\)\)/\1$release_version\4/" src/app/dataflows/dataflow-wizards/dataflow-wizard-standard/dataflow-wizard-standard.component.ts
+                        sed -i "s|\"version\":.*\$|\"version\": \"$RELEASE_VERSION\",|" package.json
+                        sed -i '/"name": "esthesis-ui",/{n;s/"version": "[^"]*"/"version": "'$RELEASE_VERSION'"/;}' package-lock.json
+                        sed -i "s/\\([\"']\\)\\([0-9]\\+\\.[0-9]\\+\\.[0-9]\\+\\(-[A-Za-z0-9]\\+\\)\\?\\)\\([\"']\\)/\\1"$RELEASE_VERSION"\\4/" src/app/dataflows/dataflow-wizards/dataflow-wizard-standard/dataflow-wizard-standard.component.ts
 
                         cd ../esthesis-core-device/go/internal/pkg/config/
-                        sed -i 's/const Version = .*$/const Version = \"'$RELEASE_VERSION'\"/' config.go
+                        sed -i "s/const Version = .*\$/const Version = \"$RELEASE_VERSION\"/" config.go
                     """
                 }
             }
@@ -130,7 +130,7 @@ pipeline {
                 container (name: 'esthesis-release-builder') {
                     sh '''
                         filePath="esthesis-platform/esthesis-core/esthesis-core-docs/src/css/custom.css"
-                        cssCode=".dropdown__menu > li:nth-child(1) { display: none\!important; }"
+                        cssCode=".dropdown__menu > li:nth-child(1) { display: none\\!important; }"
                         sed -i -e "\$a\\$cssCode" "$filePath"
                     '''
                     sh '''
