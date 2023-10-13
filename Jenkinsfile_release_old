@@ -1,0 +1,157 @@
+pipeline{
+    agent {
+        docker {
+            image 'eddevopsd2/ubuntu-dind:dind-mvn3.6.3-jdk15-node16.14.2-buildx-helm'
+            args '--privileged -v /root/.m2/Esthesis:/root/.m2'
+        }
+    }
+    options {
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+    stages{
+    	stage ('Dockerd') {
+            steps {
+                sh 'dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock &> dockerd-logfile &'
+            }
+        }
+        stage ("Prompt for Input") {
+            steps {
+                script {
+                    env.RELEASE_VERSION = input message: 'Release version:',
+                                     parameters: [string(defaultValue: '',
+                                                  description: 'Attention: To avoid Git conflicts, please do not push to esthesis-iot git repositories or build esthesis-device release job before this one finishes.',
+                                                  name: 'Release version')]
+                    env.NEXT_DEV_VERSION = input message: 'Snapshot version:',
+                                     parameters: [string(defaultValue: '',
+                                                  description: '',
+                                                  name: 'Next development version')]
+                }
+            }
+        }
+        stage ("Clone projects") {
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                usernameVariable: 'Username',
+                passwordVariable: 'Password')]){
+                    sh '''
+                        git config --global user.email "devops-d2@eurodyn.com"
+                        git config --global user.name "$Username"
+                        git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-platform.git
+                        git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-docs.git
+                    '''
+                }
+            }
+        }
+        stage ("esthesis-platform: Changes for RELEASE version"){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                usernameVariable: 'Username',
+                passwordVariable: 'Password')]){
+                    sh '''
+                        git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-platform.git
+                        cd esthesis-platform/esthesis-server
+                        mvn versions:set -DnewVersion=$RELEASE_VERSION
+                        mvn versions:commit
+
+                        cd ../esthesis-ui
+                        sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package.json
+                        awk -v sb='  \"name\": \"esthesis-ui\",\n  \"version\": \"'$RELEASE_VERSION'\",' '/"name": "esthesis-ui",/,/"version":.*/ { if ( $0 ~ /"version":.*/ ) print sb; next } 1' package-lock.json > temp.json && cp -f temp.json package-lock.json && rm temp.json
+
+                        cd ..
+                        sed -i "s|esthesisiot/esthesis-server:.*$|esthesisiot/esthesis-server:$RELEASE_VERSION|" docker-compose.yml
+                        sed -i "s|esthesisiot/esthesis-ui:.*$|esthesisiot/esthesis-ui:$RELEASE_VERSION|" docker-compose.yml
+                    '''
+                }
+            }
+        }
+        stage ("Helm Package for RELEASE version"){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                usernameVariable: 'Username',
+                passwordVariable: 'Password')]){
+                    sh '''#!/bin/bash
+                        cd esthesis-platform/helm/esthesis-platform
+                        find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: $RELEASE_VERSION|"
+                        cd charts
+                        find . -name *.yaml | xargs sed -i "s|esthesisiot/esthesis-ui:.*$|esthesisiot/esthesis-ui:$RELEASE_VERSION|"
+                        find . -name *.yaml | xargs sed -i "s|esthesisiot/esthesis-server:.*$|esthesisiot/esthesis-server:$RELEASE_VERSION|"
+
+                        git commit -a -m "release: prepare release $RELEASE_VERSION"
+                        git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
+                        git push https://$Username:$Password@github.com/esthesis-iot/esthesis-platform  HEAD:master --tags
+
+                        cd ../..
+
+                        pushd . && \
+                        helm package esthesis-platform -d ../../esthesis-docs/helm && \
+                        cd ../../esthesis-docs/helm && \
+                        helm repo index . && \
+                        popd
+
+                        cd ../../esthesis-docs
+                        git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-docs.git
+                        git add .
+                        git commit -m "package esthesis-platform charts for release version: $RELEASE_VERSION"
+                        git push https://$Username:$Password@github.com/esthesis-iot/esthesis-docs HEAD:master
+                    '''
+                }
+            }
+        }
+        stage ("esthesis-platform: Build & Push Docker images"){
+            environment {
+		         DOCKERHUB_CREDENTIALS=credentials('devops_d2_dockerhub')
+	        }
+            steps{
+                sh '''
+                    cd esthesis-platform
+                    echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                    docker compose -f docker-compose.yml build esthesis-ui
+                    docker push esthesisiot/esthesis-ui:$RELEASE_VERSION
+                    docker compose -f docker-compose.yml build esthesis-server
+                    docker push esthesisiot/esthesis-server:$RELEASE_VERSION
+                 '''
+            }
+        }
+        stage ("esthesis-platform: Changes for next development version"){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                usernameVariable: 'Username',
+                passwordVariable: 'Password')]){
+                    sh '''
+                        cd esthesis-platform/esthesis-server
+                        mvn versions:set -DnewVersion=$NEXT_DEV_VERSION
+                        mvn versions:commit
+
+                        cd ../esthesis-ui
+                        sed -i 's|\"version\":.*$|\"version\": \"'$NEXT_DEV_VERSION'\",|' package.json
+                        awk -v sb='  \"name\": \"esthesis-ui\",\n  \"version\": \"'$NEXT_DEV_VERSION'\",' '/"name": "esthesis-ui",/,/"version":.*/ { if ( $0 ~ /"version":.*/ ) print sb; next } 1' package-lock.json > temp.json && cp -f temp.json package-lock.json && rm temp.json
+
+                        cd ..
+                        sed -i "s|esthesisiot/esthesis-server:.*$|esthesisiot/esthesis-server:$NEXT_DEV_VERSION|" docker-compose.yml
+                        sed -i "s|esthesisiot/esthesis-ui:.*$|esthesisiot/esthesis-ui:$NEXT_DEV_VERSION|" docker-compose.yml
+                    '''
+                }
+            }
+        }
+        stage ("Helm Charts for next development version"){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                usernameVariable: 'Username',
+                passwordVariable: 'Password')]){
+                    sh '''
+                        cd esthesis-platform/helm/esthesis-platform
+                        find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: $NEXT_DEV_VERSION|"
+                        cd charts
+                        find . -name *.yaml | xargs sed -i "s|esthesisiot/esthesis-ui:.*$|esthesisiot/esthesis-ui:$NEXT_DEV_VERSION|"
+                        find . -name *.yaml | xargs sed -i "s|esthesisiot/esthesis-server:.*$|esthesisiot/esthesis-server:$NEXT_DEV_VERSION|"
+
+                        git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-platform.git
+                        git commit -a -m "release: prepare for next development iteration: $NEXT_DEV_VERSION"
+                        git push https://$Username:$Password@github.com/esthesis-iot/esthesis-platform HEAD:master
+                    '''
+                }
+            }
+        }
+    }
+}
