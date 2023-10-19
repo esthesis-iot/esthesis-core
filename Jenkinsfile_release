@@ -125,6 +125,8 @@ pipeline {
                         cd ../esthesis-core-device/go/internal/pkg/config/
                         sed -i 's/const Version = .*$/const Version = \"'$RELEASE_VERSION'\"/' config.go
 
+                        cd ../../../../../esthesis-core-ui/src/app/dataflows/dataflow-wizards/dataflow-wizard-standard/
+                        sed -i "s/version: \\[\\"[^\\"]*-SNAPSHOT\\", \\[Validators.required\\]\\]/version: [\\"$RELEASE_VERSION\\", [Validators.required]]/g" dataflow-wizard-standard.component.ts
                     '''
                 }
             }
@@ -134,6 +136,7 @@ pipeline {
                 container (name: 'esthesis-release-builder') {
                     sh '''
                         cd esthesis-platform/esthesis-core/esthesis-core-docs
+                        sed -i \"s|esthesisiot/esthesis-agent:[^\\ ]*|esthesisiot/esthesis-agent:${RELEASE_VERSION}|g\" docs/06-developers-guide/09-Developing\\ esthesis\\ device\\ agent.md
                         sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package.json
                         npm install
                         npx docusaurus docs:version $RELEASE_VERSION
@@ -294,6 +297,9 @@ pipeline {
 
                         cd ../esthesis-core-device/go/internal/pkg/config/
                         sed -i 's/const Version = .*$/const Version = \"'$NEXT_DEV_VERSION'\"/' config.go
+
+                        cd ../../../../../esthesis-core-ui/src/app/dataflows/dataflow-wizards/dataflow-wizard-standard/
+                        sed -i "s/version: \\[\\"[^\\"]*-SNAPSHOT\\", \\[Validators.required\\]\\]/version: [\\"$RELEASE_VERSION\\", [Validators.required]]/g" dataflow-wizard-standard.component.ts
                     '''
                 }
             }
