@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+# Check if Podman is installed.
+if [ -x "$(command -v podman)" ]; then
+    # Check if TESTCONTAINERS_RYUK_DISABLED is set
+    if [ -z "$TESTCONTAINERS_RYUK_DISABLED" ]; then
+        echo "Note: Setting TESTCONTAINERS_RYUK_DISABLED=true due to Podman being detected."
+        export TESTCONTAINERS_RYUK_DISABLED=true
+    fi
+fi
+
+#PACKAGE_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | sed -n -e '/^\[.*\]/ !{ /^[0-9]/ { p; q } }'`
+#echo $PACKAGE_VERSION
+#exit
 # Architectures to build, i.e. "linux/amd64,linux/arm64"
 if [ -z "$ESTHESIS_ARCHITECTURES" ]; then
 	ESTHESIS_ARCHITECTURES="linux/amd64"

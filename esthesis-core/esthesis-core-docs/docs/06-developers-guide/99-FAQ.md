@@ -49,3 +49,7 @@ first manually delete it and `helmfile sync` again.
 
 ## How to connect IntelliJ to MongoDB
 ![](/img/docs/dev-guide/Data_Sources_and_Drivers.png)
+
+## How to connect to MongoDB from MongoDB Compass
+![](/img/docs/dev-guide/compass1.png)
+![](/img/docs/dev-guide/compass2.png)

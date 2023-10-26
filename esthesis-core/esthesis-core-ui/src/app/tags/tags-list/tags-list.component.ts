@@ -6,7 +6,6 @@ import {TagDto} from "../dto/tag-dto";
 import {TagsService} from "../tags.service";
 import {QFormsService} from "@qlack/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import {BaseComponent} from "../../shared/components/base-component";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatDialogRef} from "@angular/material/dialog";
@@ -25,7 +24,7 @@ export class TagsListComponent extends SecurityBaseComponent implements OnInit, 
   @Input() embedded = false;
 
   displayedColumns = ["name"];
-  dataSource: MatTableDataSource<TagDto> = new MatTableDataSource<TagDto>();
+  dataSource = new MatTableDataSource<TagDto>();
   filterForm: FormGroup;
 
   constructor(private fb: FormBuilder, private router: Router, private tagService: TagsService,

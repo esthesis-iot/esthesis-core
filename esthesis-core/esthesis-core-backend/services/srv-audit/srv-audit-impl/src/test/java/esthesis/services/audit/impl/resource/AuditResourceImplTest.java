@@ -35,7 +35,6 @@ class AuditResourceImplTest {
 			.statusCode(200)
 			.contentType(ContentType.JSON)
 			.body("content.size()", org.hamcrest.Matchers.equalTo(10));
-
 	}
 
 	@Test

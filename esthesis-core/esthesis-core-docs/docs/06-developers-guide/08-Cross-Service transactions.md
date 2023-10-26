@@ -1,3 +1,3 @@
 # Cross-Service transactions
 
-[TBC] Talk about kafka
+[TBC] Talk about kafka + KafkaNotificationInterceptor
