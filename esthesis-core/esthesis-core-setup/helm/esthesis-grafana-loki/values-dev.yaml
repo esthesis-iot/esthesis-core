@@ -1,7 +1,0 @@
-global:
-  devEnv:
-    enabled: true
-
-grafana:
-  service:
-    type: LoadBalancer

@@ -1,9 +1,0 @@
-dependencies:
-- name: apisix
-  repository: https://charts.apiseven.com
-  version: 0.11.1
-- name: apisix-ingress-controller
-  repository: https://charts.apiseven.com
-  version: 0.10.1
-digest: sha256:d5da09808171616798755d04785b7987791dbcc56b4784770c6d9b9cad2571f5
-generated: "2022-10-14T11:39:59.332864+03:00"

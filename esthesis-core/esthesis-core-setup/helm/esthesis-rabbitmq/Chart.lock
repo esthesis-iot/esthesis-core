@@ -1,6 +1,0 @@
-dependencies:
-- name: rabbitmq
-  repository: https://charts.bitnami.com/bitnami
-  version: 10.2.0
-digest: sha256:839474abbd974dc408865b61e29c136c39a080160ede79af06a7edf0a7e8fea1
-generated: "2022-08-10T19:22:56.984451+03:00"
