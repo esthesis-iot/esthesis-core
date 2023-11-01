@@ -20,10 +20,6 @@
       <artifactId>quarkus-liquibase-mongodb</artifactId>
       <groupId>io.quarkus</groupId>
     </dependency>
-		<dependency>
-      <artifactId>quarkus-container-image-jib</artifactId>
-      <groupId>io.quarkus</groupId>
-    </dependency>
     <dependency>
       <artifactId>quarkus-resteasy-reactive</artifactId>
       <groupId>io.quarkus</groupId>
