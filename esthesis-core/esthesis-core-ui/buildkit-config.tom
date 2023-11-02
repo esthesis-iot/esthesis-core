@@ -1,3 +1,0 @@
-[registry."192.168.9.16:32000"]
-  http = true
-  insecure = true
