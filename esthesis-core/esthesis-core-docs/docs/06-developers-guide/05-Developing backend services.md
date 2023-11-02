@@ -7,3 +7,5 @@
 [TBC]
 
 note: mention dev profiles and how to use dev-.sh scripts
+
+note: mention TESTCONTAINERS_RYUK_DISABLED=true
