@@ -1,9 +1,6 @@
 quarkus:
   application:
     name: esthesis-core-dfl-redis-cache
-  container-image:
-    group: esthesisiot
-    name: esthesis-core-dfl-redis-cache
   devservices:
     enabled: false
   log:

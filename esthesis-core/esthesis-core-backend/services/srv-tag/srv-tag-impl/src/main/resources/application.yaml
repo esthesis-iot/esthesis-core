@@ -1,9 +1,6 @@
 quarkus:
   application:
     name: esthesis-core-srv-tag
-  container-image:
-    group: esthesisiot
-    name: esthesis-core-srv-tag
   devservices:
     enabled: false
   log:

@@ -1,9 +1,6 @@
 quarkus:
   application:
     name: esthesis-core-dfl-command-reply-updater
-  container-image:
-    group: esthesisiot
-    name: esthesis-core-dfl-command-reply-updater
   devservices:
     enabled: false
   log:

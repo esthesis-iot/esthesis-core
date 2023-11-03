@@ -1,9 +1,6 @@
 quarkus:
   application:
     name: esthesis-core-dfl-mqtt-client
-  container-image:
-    group: esthesisiot
-    name: esthesis-core-dfl-mqtt-client
   devservices:
     enabled: false
   log:

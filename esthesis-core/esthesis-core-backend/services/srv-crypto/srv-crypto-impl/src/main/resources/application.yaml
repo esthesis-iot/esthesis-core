@@ -1,9 +1,6 @@
 quarkus:
   application:
     name: esthesis-core-srv-crypto
-  container-image:
-    group: esthesisiot
-    name: esthesis-core-srv-crypto
   devservices:
     enabled: false
   log:

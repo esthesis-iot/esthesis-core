@@ -1,9 +1,6 @@
 quarkus:
   application:
     name: esthesis-core-srv-security
-  container-image:
-    group: esthesisiot
-    name: esthesis-core-srv-security
   devservices:
     enabled: false
   liquibase-mongodb:

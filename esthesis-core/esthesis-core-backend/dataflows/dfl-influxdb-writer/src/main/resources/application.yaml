@@ -1,9 +1,6 @@
 quarkus:
   application:
     name: esthesis-core-dfl-influxdb-writer
-  container-image:
-    group: esthesisiot
-    name: esthesis-core-dfl-influxdb-writer
   devservices:
     enabled: false
   log:

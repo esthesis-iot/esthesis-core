@@ -1,9 +1,6 @@
 quarkus:
   application:
     name: esthesis-core-srv-settings
-  container-image:
-    group: esthesisiot
-    name: esthesis-core-srv-settings
   liquibase-mongodb:
     migrate-at-start: true
   devservices:

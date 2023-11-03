@@ -1,9 +1,6 @@
 quarkus:
   application:
     name: esthesis-core-srv-dataflow
-  container-image:
-    group: esthesisiot
-    name: esthesis-core-srv-dataflow
   devservices:
     enabled: false
   log:

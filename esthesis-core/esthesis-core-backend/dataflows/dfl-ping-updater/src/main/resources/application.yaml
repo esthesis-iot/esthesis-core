@@ -1,9 +1,6 @@
 quarkus:
   application:
     name: esthesis-core-dfl-ping-updater
-  container-image:
-    group: esthesisiot
-    name: esthesis-core-dfl-ping-updater
   devservices:
     enabled: false
   log:

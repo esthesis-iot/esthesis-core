@@ -1,9 +1,6 @@
 quarkus:
   application:
     name: esthesis-core-dfl-orion-gateway
-  container-image:
-    group: esthesisiot
-    name: esthesis-core-dfl-orion-gateway
   devservices:
     enabled: false
   log:

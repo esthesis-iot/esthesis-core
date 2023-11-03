@@ -1,9 +1,6 @@
 quarkus:
   application:
     name: esthesis-core-dfl-rdbms-writer
-  container-image:
-    group: esthesisiot
-    name: esthesis-core-dfl-rdbms-writer
   devservices:
     enabled: false
   log:

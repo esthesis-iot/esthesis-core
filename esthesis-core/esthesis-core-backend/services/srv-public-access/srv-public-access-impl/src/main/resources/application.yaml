@@ -1,9 +1,6 @@
 quarkus:
   application:
     name: esthesis-core-srv-public-access
-  container-image:
-    group: esthesisiot
-    name: esthesis-core-srv-public-access
   devservices:
     enabled: false
   log:
