@@ -48,9 +48,7 @@ public class MqttRoute extends RouteBuilder {
 	@Override
 	@SuppressWarnings({"java:S1192", "java:S1602"})
 	public void configure()
-	throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException,
-				 NoSuchAlgorithmException, InvalidKeySpecException, KeyManagementException,
-				 NoSuchProviderException {
+	throws IOException {
 		Security.insertProviderAt(new BouncyCastleProvider(), 1);
 		Security.insertProviderAt(new BouncyCastleJsseProvider(), 2);
 		BannerUtil.showBanner("dfl-mqtt-client");
@@ -72,22 +70,22 @@ public class MqttRoute extends RouteBuilder {
 			String caCert = null;
 			String clientCert = null;
 			String clientKey = null;
-			if (StringUtils.isEmpty(config.mqttBrokerCert())) {
+			if (config.mqttBrokerCert().isEmpty()) {
 				log.warn("SSL is enabled but no client certificate is provided.");
 			} else {
-				clientCert = new String(Files.readAllBytes(Paths.get(config.mqttBrokerCert())));
+				clientCert = Files.readString(Paths.get(config.mqttBrokerCert().get()));
 				log.debug("Using client certificate '{}'.", clientCert);
 			}
-			if (StringUtils.isEmpty(config.mqttBrokerKey())) {
+			if (config.mqttBrokerKey().isEmpty()) {
 				log.warn("SSL is enabled but no client private key is provided.");
 			} else {
-				clientKey = new String(Files.readAllBytes(Paths.get(config.mqttBrokerKey())));
+				clientKey = Files.readString(Paths.get(config.mqttBrokerKey().get()));
 				log.debug("Using client private key '{}'.", clientKey);
 			}
-			if (StringUtils.isEmpty(config.mqttBrokerCa())) {
+			if (config.mqttBrokerCa().isEmpty()) {
 				log.warn("SSL is enabled but no CA certificate is provided.");
 			} else {
-				caCert = new String(Files.readAllBytes(Paths.get(config.mqttBrokerCa())));
+				caCert = Files.readString(Paths.get(config.mqttBrokerCa().get()));
 				log.debug("Using CA certificate '{}'.", caCert);
 			}
 
@@ -158,7 +156,8 @@ public class MqttRoute extends RouteBuilder {
             .log(LoggingLevel.DEBUG, log, "Received command request message '${body}'.")
             .bean(dflMqttClientService, "commandRequestToLineProtocol")
             .log(LoggingLevel.DEBUG, log, "Sending command request message '${body}' via MQTT.")
-            .to("paho:dynamic?brokerUrl=" + config.mqttBrokerClusterUrl() + "&" + socketFactory);
+            .to("paho:dynamic?brokerUrl=" + config.mqttBrokerClusterUrl() +
+							(StringUtils.isEmpty(socketFactory) ? "" : "&" + socketFactory));
       }, () -> log.debug("Kafka command request topic is not set."));
     }, () -> log.debug("MQTT command request topic is not set."));
     // @formatter:on

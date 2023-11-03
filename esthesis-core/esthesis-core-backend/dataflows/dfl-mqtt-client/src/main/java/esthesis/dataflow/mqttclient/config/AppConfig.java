@@ -12,13 +12,13 @@ public interface AppConfig {
 	String mqttBrokerClusterUrl();
 
 	// The filesystem path to the client certificate.
-	String mqttBrokerCert();
+	Optional<String> mqttBrokerCert();
 
 	// The filesystem path to the client key.
-	String mqttBrokerKey();
+	Optional<String> mqttBrokerKey();
 
 	// The filesystem path to the CA certificate.
-	String mqttBrokerCa();
+	Optional<String> mqttBrokerCa();
 
 	// The prefix of the MQTT Ping topic.
 	Optional<String> mqttTopicPing();
