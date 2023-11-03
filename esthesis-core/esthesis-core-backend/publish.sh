@@ -3,11 +3,9 @@
 ####################################################################################################
 # Publishes the esthesis-core-backend modules to a container registry.
 #
-# Required environment variables:
+# Environment variables:
 #   ESTHESIS_REGISTRY_USERNAME: The username to use when authenticating with the registry.
 #   ESTHESIS_REGISTRY_PASSWORD: The password to use when authenticating with the registry.
-#
-# Optional environment variables:
 #   ESTHESIS_REGISTRY_URL (default: docker.io): The URL of the registry to push to.
 #   ESTHESIS_ARCHITECTURES (default: linux/amd64): The architectures to build.
 #
@@ -18,16 +16,6 @@
 # Example:
 #   ./publish.sh services/srv-about/srv-about-impl srv-about
 ####################################################################################################
-
-# Check registry credentials are defined.
-if [ -z "$ESTHESIS_REGISTRY_USERNAME" ]; then
-  echo "***ERROR ESTHESIS_REGISTRY_USERNAME is not defined."
-  exit 3
-fi
-if [ -z "$ESTHESIS_REGISTRY_PASSWORD" ]; then
-  echo "***ERROR ESTHESIS_REGISTRY_PASSWORD is not defined."
-  exit 4
-fi
 
 # Check if Podman is installed.
 if [ -x "$(command -v podman)" ]; then
@@ -106,6 +94,10 @@ if [ $# -eq 2 ]; then
 fi
 
 # Iterate over all modules and publish them.
+unset CREDS
+if [ -n "$ESTHESIS_REGISTRY_USERNAME" ] && [ -n "$ESTHESIS_REGISTRY_PASSWORD" ]; then
+	CREDS="--creds $ESTHESIS_REGISTRY_USERNAME:$ESTHESIS_REGISTRY_PASSWORD"
+fi
 for ((i = 0; i < ${#modules[@]}; i += 2)); do
 	MODULE_PATH="${modules[$i]}"
 	MODULE_NAME="${modules[$i+1]}"
@@ -130,14 +122,9 @@ for ((i = 0; i < ${#modules[@]}; i += 2)); do
 					 --manifest "$IMAGE_NAME:$TAG" .
 		echo "***INFO: Pushing container $IMAGE_NAME:$TAG."
 		if [ "$PUBLIC_REGISTRY" = true ]; then
-			podman manifest push "$IMAGE_NAME:$TAG" \
-				--creds "$ESTHESIS_REGISTRY_USERNAME:$ESTHESIS_REGISTRY_PASSWORD" \
-				--rm
+			podman manifest push "$IMAGE_NAME:$TAG" $CREDS --rm
 		else
-			podman manifest push "$IMAGE_NAME:$TAG" \
-				--creds "$ESTHESIS_REGISTRY_USERNAME:$ESTHESIS_REGISTRY_PASSWORD" \
-				--rm \
-				--tls-verify=false
+			podman manifest push "$IMAGE_NAME:$TAG" $CREDS --rm --tls-verify=false
 		fi
 	done
 

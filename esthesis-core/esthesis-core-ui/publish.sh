@@ -6,24 +6,12 @@
 # Required environment variables:
 #   ESTHESIS_REGISTRY_USERNAME: The username to use when authenticating with the registry.
 #   ESTHESIS_REGISTRY_PASSWORD: The password to use when authenticating with the registry.
-#
-# Optional environment variables:
 #   ESTHESIS_REGISTRY_URL (default: docker.io): The URL of the registry to push to.
 #   ESTHESIS_ARCHITECTURES (default: linux/amd64): The architectures to build.
 #
 # Usage:
 #   ./publish.sh
 ####################################################################################################
-
-# Check registry credentials are defined.
-if [ -z "$ESTHESIS_REGISTRY_USERNAME" ]; then
-  echo "***ERROR ESTHESIS_REGISTRY_USERNAME is not defined."
-  exit 3
-fi
-if [ -z "$ESTHESIS_REGISTRY_PASSWORD" ]; then
-  echo "***ERROR ESTHESIS_REGISTRY_PASSWORD is not defined."
-  exit 4
-fi
 
 # Check if Podman is installed.
 if [ -x "$(command -v podman)" ]; then
@@ -63,6 +51,10 @@ JOBS=$(echo "$ESTHESIS_ARCHITECTURES" | tr ',' '\n' | wc -l | sed -e 's/^[[:spac
 # Build & Push
 IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesisiot/esthesis-core-ui"
 echo "***INFO: Building $ESTHESIS_ARCHITECTURES for $IMAGE_NAME."
+unset CREDS
+if [ -n "$ESTHESIS_REGISTRY_USERNAME" ] && [ -n "$ESTHESIS_REGISTRY_PASSWORD" ]; then
+  CREDS="--creds $ESTHESIS_REGISTRY_USERNAME:$ESTHESIS_REGISTRY_PASSWORD"
+fi
 TAGS=("latest" "$PACKAGE_VERSION")
 for TAG in "${TAGS[@]}"; do
   if podman manifest exists "$IMAGE_NAME:$TAG"; then
@@ -76,13 +68,8 @@ for TAG in "${TAGS[@]}"; do
          --manifest "$IMAGE_NAME:$TAG" .
   echo "***INFO: Pushing container $IMAGE_NAME:$TAG."
   if [ "$PUBLIC_REGISTRY" = true ]; then
-    podman manifest push "$IMAGE_NAME:$TAG" \
-      --creds "$ESTHESIS_REGISTRY_USERNAME:$ESTHESIS_REGISTRY_PASSWORD" \
-      --rm
+    podman manifest push "$IMAGE_NAME:$TAG" $CREDS --rm
   else
-    podman manifest push "$IMAGE_NAME:$TAG" \
-      --creds "$ESTHESIS_REGISTRY_USERNAME:$ESTHESIS_REGISTRY_PASSWORD" \
-      --rm \
-      --tls-verify=false
+    podman manifest push "$IMAGE_NAME:$TAG" $CREDS --rm --tls-verify=false
   fi
 done

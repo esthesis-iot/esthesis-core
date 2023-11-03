@@ -53,3 +53,11 @@ first manually delete it and `helmfile sync` again.
 ## How to connect to MongoDB from MongoDB Compass
 ![](/img/docs/dev-guide/compass1.png)
 ![](/img/docs/dev-guide/compass2.png)
+
+## How to create a token in InfluxDB
+1. Open the InfluxDB UI, e.g. http://influxdb-ui.esthesis.localdev.
+2. Hover on the sidebar icon depicting an arrow pointing up.
+3. Select 'API Tokens'.
+4. Click on 'Generate API Token' button and choose "All Access API Token".
+5. Give a description.
+6. Copy the token and save it somewhere safe.

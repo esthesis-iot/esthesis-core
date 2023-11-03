@@ -116,5 +116,5 @@ Provided you have successfully updated your `hosts` file, you can access the fol
 	```
 
 ## Committing code
-Please note we are using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+We are using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 There are plugins for all major IDEs, so you can easily follow the convention.
