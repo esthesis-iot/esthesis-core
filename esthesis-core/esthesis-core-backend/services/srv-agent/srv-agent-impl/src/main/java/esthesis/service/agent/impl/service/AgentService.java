@@ -120,12 +120,12 @@ public class AgentService {
 		agentRegistrationResponse.setPrivateKey(deviceEntity.getDeviceKey().getPrivateKey());
 
 		// Find the root CA to be pushed to the device.
-		String rootCaId = settingsSystemResource.findByName(NamedSetting.DEVICE_ROOT_CA).asString();
-		if (StringUtils.isBlank(rootCaId)) {
-			log.warn("Root CA is not set, device will not be pushed a root CA.");
+		SettingEntity rootCa = settingsSystemResource.findByName(NamedSetting.DEVICE_ROOT_CA);
+		if (rootCa == null) {
+			log.warn("Root CA is not set, the device will not receive a root CA.");
 		} else {
 			agentRegistrationResponse.setRootCaCertificate(
-				caSystemResource.getCACertificate(rootCaId));
+				caSystemResource.getCACertificate(rootCa.asString()));
 		}
 
 		// Find the MQTT server to send back to the device.
