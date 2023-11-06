@@ -11,7 +11,8 @@ Eclipse Mosquitto, which is the MQTT broker being used when you set up esthesis 
 Helm charts.
 
 ## Create a Certificate Authority and a Certificate
-To enable certificate-based authentication and mutual TLS, you need to create a Certificate Authority (CA) and a server certificate.
+To enable certificate-based authentication and mutual TLS, you need to create a Certificate
+Authority (CA) and a server certificate.
 
 The CA will be responsible to sign the server certificate, and should be the same CA that signs
 the certificates used by the devices to connect to the MQTT broker.

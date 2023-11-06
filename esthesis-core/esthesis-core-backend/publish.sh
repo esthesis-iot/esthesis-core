@@ -6,8 +6,8 @@
 # Environment variables:
 #   ESTHESIS_REGISTRY_USERNAME: The username to use when authenticating with the registry.
 #   ESTHESIS_REGISTRY_PASSWORD: The password to use when authenticating with the registry.
-#   ESTHESIS_REGISTRY_URL (default: docker.io): The URL of the registry to push to.
-#   ESTHESIS_ARCHITECTURES (default: linux/amd64): The architectures to build.
+#   ESTHESIS_REGISTRY_URL: The URL of the registry to push to (default: docker.io).
+#   ESTHESIS_ARCHITECTURES: The architectures to build (default: linux/amd64).
 #
 # Usage:
 #   ./publish.sh
@@ -17,21 +17,33 @@
 #   ./publish.sh services/srv-about/srv-about-impl srv-about
 ####################################################################################################
 
+# Helper functions to print messages.
+printError() {
+	printf "\e[31m***ERROR: "
+  	for i in "$@"; do printf "%s" "$i"; done;
+  	printf "\e[0m\n"
+}
+printInfo() {
+	printf "\e[32m***INFO: "
+	for i in "$@"; do printf "%s " "$i"; done;
+	printf "\e[0m\n"
+}
+
 # Check if Podman is installed.
 if [ -x "$(command -v podman)" ]; then
     # Check if TESTCONTAINERS_RYUK_DISABLED is set
     if [ -z "$TESTCONTAINERS_RYUK_DISABLED" ]; then
-        echo "***INFO: Setting TESTCONTAINERS_RYUK_DISABLED=true due to Podman being detected."
+        printInfo "Setting TESTCONTAINERS_RYUK_DISABLED=true due to Podman being detected."
         export TESTCONTAINERS_RYUK_DISABLED=true
     fi
 
     # Check if Podman machine is running.
       if ! podman machine inspect &> /dev/null; then
-        echo "***ERROR Podman machine is not running."
+        printInfo "Podman machine is not running."
         exit 6
       fi
 else
-		echo "***ERROR Podman is not installed."
+		printError "Podman is not installed."
 		exit 5
 fi
 
@@ -46,9 +58,9 @@ fi
 
 # Find the version of the package.
 PACKAGE_VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.4.0:evaluate -Dexpression=project.version | fgrep -v "[INFO]")
-echo "***INFO: Package version: $PACKAGE_VERSION."
+printInfo "Package version: $PACKAGE_VERSION."
 if [[ "${PACKAGE_VERSION}" == *SNAPSHOT && $ESTHESIS_REGISTRY_URL == "docker.io" ]]; then
-    echo "***ERROR Cannot push a snapshot version to docker.io."
+    printError "Cannot push a snapshot version to docker.io."
     exit 1
 fi
 
@@ -102,7 +114,7 @@ for ((i = 0; i < ${#modules[@]}; i += 2)); do
 	MODULE_PATH="${modules[$i]}"
 	MODULE_NAME="${modules[$i+1]}"
 	IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesisiot/esthesis-core-$MODULE_NAME"
-	echo "***INFO: Building $ESTHESIS_ARCHITECTURES for $IMAGE_NAME."
+	printInfo "Building $ESTHESIS_ARCHITECTURES for $IMAGE_NAME."
 	pushd .
 
 	cd "$MODULE_PATH" || exit
@@ -111,16 +123,16 @@ for ((i = 0; i < ${#modules[@]}; i += 2)); do
 	TAGS=("latest" "$PACKAGE_VERSION")
 	for TAG in "${TAGS[@]}"; do
 		if podman manifest exists "$IMAGE_NAME:$TAG"; then
-			echo "***INFO: Removing existing manifest $IMAGE_NAME:$TAG."
+			printInfo "Removing existing manifest $IMAGE_NAME:$TAG."
 			podman manifest rm "$IMAGE_NAME:$TAG"
 		fi
-		echo "***INFO: Building container $IMAGE_NAME:$TAG."
+		printInfo "Building container $IMAGE_NAME:$TAG."
 		podman build \
 					 --jobs "$JOBS" \
 					 -f src/main/docker/Dockerfile.jvm \
 					 --platform "$ESTHESIS_ARCHITECTURES" \
 					 --manifest "$IMAGE_NAME:$TAG" .
-		echo "***INFO: Pushing container $IMAGE_NAME:$TAG."
+		printInfo "Pushing container $IMAGE_NAME:$TAG."
 		if [ "$PUBLIC_REGISTRY" = true ]; then
 			podman manifest push "$IMAGE_NAME:$TAG" $CREDS --rm
 		else
