@@ -21,7 +21,7 @@ their certificates reissued. To avoid this hassle, we suggest you create a CA ea
 
 :::tip
 Tags in esthesis Core play an important role allowing components to be optimally grouped together.
-It is not necessary to create a tag, but it is highly recommended.
+It is not necessary to create a tag, however it is highly recommended.
 :::
 
 ## Define your MQTT server
