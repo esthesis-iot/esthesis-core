@@ -102,7 +102,7 @@ func getHomeDir() string {
 func InitCmdFlags(osArgs []string) {
 	opt := getoptions.New()
 	opt.SetUnknownMode(getoptions.Warn)
-	opt.Self("esthesis-core-device", "The esthesis device agent, "+
+	opt.Self("esthesis-agent", "The esthesis device agent, "+
 		"allowing a device to connect to the esthesis platform")
 	opt.HelpSynopsisArgs(" ")
 	opt.Bool("help", false, opt.Alias("h", "?"), opt.Description("Show this help"))
