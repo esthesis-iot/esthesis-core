@@ -46,6 +46,7 @@ execute:
 ```shell
 HID=abc123 && \
 REGISTRATION_URL=http://apisix-gateway.esthesis.localdev/api/agent/v1/register && \
+mkdir -p /tmp/esthesis-core-device && \
 air --build.cmd "go build -o /tmp/esthesis-core-device cmd/main.go" --build.bin "/tmp/esthesis-core-device" -- \
 	--hardwareId=$HID \
 	--registrationUrl=$REGISTRATION_URL \

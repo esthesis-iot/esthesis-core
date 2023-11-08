@@ -6,8 +6,14 @@ if [ "$1" != "" ]; then
   echo "Activating profiles: $PROFILES"
 fi
 
+CONSOLE=true
+if [ "$TERM_PROGRAM" = tmux ]; then
+  CONSOLE=false
+fi
+
 cd srv-security-impl || exit
 ./mvnw quarkus:dev \
   -Dquarkus.http.port=59170 \
   -Ddebug=59171 \
-  -Dquarkus.profile="$PROFILES"
+  -Dquarkus.profile="$PROFILES" \
+	-Dquarkus.console.enabled="$CONSOLE"

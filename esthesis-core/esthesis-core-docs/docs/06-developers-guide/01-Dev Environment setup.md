@@ -78,11 +78,16 @@ points to the development cluster. You can do this by running `microk8s config` 
 output to `~/.kube/config`. This is needed as some of the services need to access the Kubernetes API.
 
 ### Automation
-Do yourself a favour and prepare some automation to perform all the above steps for you. Depending
-on your OS, you might have different options. For macOS, we use [itomate](https://github.com/kamranahmedse/itomate),
-e.g.:
+Starting up (and restarting) all those services manually can be a tedious task. We have prepared a
+tmux script that you can use to start all services in a single terminal window in multiple panes,
+while merging all log output into another pane. You can find the script in `_dev/tmux-dev.sh`. We
+also provide a `.tmux.conf` file, in case you want to replicate our own tmux setup.
 
-![itomate](/img/docs/dev-guide/itomate.gif)
+![tmux](/img/docs/dev-guide/tmux.gif)
+
+:::tip
+You can quickly terminate all services by issuing `tmux kill-session -t esthesis-dev`.
+:::
 
 ## Resources
 Provided you have successfully updated your `hosts` file, you can access the following resources:
