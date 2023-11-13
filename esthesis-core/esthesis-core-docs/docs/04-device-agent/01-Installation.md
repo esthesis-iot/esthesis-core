@@ -18,7 +18,7 @@ image. The esthesis device agent supports a plethora of configuration options (s
 required to successfully start it up and have it connect to esthesis Core is the following:
 
 ```shell
-docker run \
+podman run \
 	-e HARDWARE_ID=test-device-1 \
 	-e REGISTRATION_URL=http://esthesis-core.domain/api/agent/v1/register \
 	esthesisiot/esthesis-core-device
@@ -37,7 +37,7 @@ Download the standalone executable matching your operating system and architectu
 page. Start the device agent with the following command:
 
 ```shell
-./esthesis-agent_darwin-arm64 \
+./esthesis-core-device \
 	--hardwareId=test-device-1 \
 	--registrationUrl=http://192.168.22.10/api/agent/v1/register
 ```

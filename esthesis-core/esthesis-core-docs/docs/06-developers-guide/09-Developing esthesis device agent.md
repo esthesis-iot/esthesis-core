@@ -5,6 +5,12 @@ esthesis Core. The agent is created in Go and can be compiled for any platform s
 
 ## Run and compile
 
+:::tip
+When running the agent for the first time for a specific hardware Id, make sure that the tag you
+specify via `--tags` exists in esthesis CORE and it is assigned to the registered MQTT server in
+infrastructure page.
+:::
+
 ### Compile locally
 
 To compile the agent locally go inside `go` directory and execute:
@@ -26,7 +32,6 @@ REGISTRATION_URL=http://apisix-gateway.esthesis.localdev/api/agent/v1/register &
 go run cmd/main.go \
     --hardwareId=$HID \
     --registrationUrl=$REGISTRATION_URL \
-    --tags=tag1 \
     --propertiesFile=$HOME/.esthesis/device/$HID/esthesis.properties \
     --securePropertiesFile=$HOME/.esthesis/device/$HID/secure/esthesis.properties \
     --tempDir=$HOME/.esthesis/device/$HID/temp \
@@ -37,20 +42,18 @@ go run cmd/main.go \
     --logLevel=debug
 ```
 
-### Run locally, automatically recompile on changes
+### Run locally, automatically recompiling on changes
 
 If you want your agent to automatically recompile and restart on changes, you can use
 [air](https://github.com/cosmtrek/air). To run the agent locally go inside `go` directory and
 execute:
 
 ```shell
-HID=abc123 && \
+HID=abc125 && \
 REGISTRATION_URL=http://apisix-gateway.esthesis.localdev/api/agent/v1/register && \
-mkdir -p /tmp/esthesis-core-device && \
 air --build.cmd "go build -o /tmp/esthesis-core-device cmd/main.go" --build.bin "/tmp/esthesis-core-device" -- \
 	--hardwareId=$HID \
 	--registrationUrl=$REGISTRATION_URL \
-	--tags=tag1 \
 	--propertiesFile=$HOME/.esthesis/device/$HID/esthesis.properties \
 	--securePropertiesFile=$HOME/.esthesis/device/$HID/secure/esthesis.properties \
 	--tempDir=$HOME/.esthesis/device/$HID/temp \
@@ -63,41 +66,48 @@ air --build.cmd "go build -o /tmp/esthesis-core-device cmd/main.go" --build.bin 
 
 ## Testing multiple agents
 
-### Using Docker
+### Using containers
 
 ```shell
-HID=$(uuidgen | cut -f1 -d"-" | awk '{print tolower($0)}') && \
 APISIX_IP=$(dig +short apisix-gateway.esthesis.localdev) && \
-docker run --rm esthesisiot/esthesis-agent:3.0.0-SNAPSHOT /app/esthesis-agent \
---hardwareId=$HID \
---registrationUrl=http://$APISIX_IP/api/agent/v1/register \
---tags=tag1 \
---propertiesFile=/app/.esthesis/esthesis.properties \
---securePropertiesFile=/app/.esthesis/secure/esthesis.properties \
---tempDir=/app/.esthesis/temp \
---versionFile=/app/.esthesis/version \
---provisioningScript=/app/.esthesis/firmware.sh \
---logLevel=debug \
---autoUpdate=false --secureProvisioning=true
+RND_PREFIX=esthesis-test-device-$(uuidgen | cut -f1 -d"-" | awk '{print tolower($0)}') && \
+for ((i=1; i<=3; i++)); do
+	HID=$RND_PREFIX-$i && \
+	podman run -d --tls-verify=false --name $HID \
+		-e HARDWARE_ID=$HID \
+		-e REGISTRATION_URL=http://apisix-gateway.esthesis.localdev/api/agent/v1/register \
+		-e PROPERTIES_FILE=/app/.esthesis/esthesis.properties \
+		-e SECURE_PROPERTIES_FILE=/app/.esthesis/secure/esthesis.properties \
+		-e TEMP_DIR=/app/.esthesis/temp \
+		-e VERSION_FILE=/app/version \
+		-e PROVISIONING_SCRIPT=/app/firmware-update.sh \
+		-e LOG_LEVEL=debug \
+		-e AUTO_UPDATE=false \
+		-e SECURE_PROVISIONING=true \
+		--add-host apisix-gateway.esthesis.localdev:$APISIX_IP \
+		$REGISTRY_URL/esthesisiot/esthesis-core-device:latest-debug
+done
 ```
 
 ### Using Kubernetes
 
 ```shell
-RND_PREFIX=test-$(uuidgen | cut -f1 -d"-" | awk '{print tolower($0)}') && \
+RND_PREFIX=esthesis-test-device-$(uuidgen | cut -f1 -d"-" | awk '{print tolower($0)}') && \
 for ((i=1; i<=3; i++)); do
-HID=$RND_PREFIX-$i && \
-kubectl run $HID --image esthesisiot/esthesis-agent:3.0.0-SNAPSHOT --image-pull-policy='Always' -- \
-/app/esthesis-agent \
---hardwareId=$HID \
---registrationUrl=http://apisix-gateway/api/agent/v1/register \
---tags=tag1 \
---propertiesFile=/app/.esthesis/esthesis.properties \
---securePropertiesFile=/app/.esthesis/secure/esthesis.properties \
---tempDir=/app/.esthesis/temp \
---versionFile=/app/.esthesis/version \
---provisioningScript=/app/.esthesis/firmware.sh \
---logLevel=debug \
---autoUpdate=false --secureProvisioning=true
+	HID=$RND_PREFIX-$i && \
+	kubectl run $HID \
+		--image $REGISTRY_URL/esthesisiot/esthesis-core-device:latest-debug \
+		--image-pull-policy=Always \
+		--env="HARDWARE_ID=$HID" \
+		--env="REGISTRATION_URL=http://apisix-gateway/api/agent/v1/register" \
+		--env="PROPERTIES_FILE=/app/.esthesis/esthesis.properties" \
+		--env="SECURE_PROPERTIES_FILE=/app/.esthesis/secure/esthesis.properties" \
+		--env="TEMP_DIR=/app/.esthesis/temp" \
+		--env="VERSION_FILE=/app/.esthesis/version" \
+		--env="PROVISIONING_SCRIPT=/app/.esthesis/firmware.sh" \
+		--env="LOG_LEVEL=debug" \
+		--env="AUTO_UPDATE=false" \
+		--env="TAGS=k8s" \
+		--env="SECURE_PROVISIONING=true"
 done
 ```

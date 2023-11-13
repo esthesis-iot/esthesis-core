@@ -17,7 +17,7 @@ their certificates reissued. To avoid this hassle, we suggest you create a CA ea
 ## Create a tag
 - Navigate to "Settings > Tags".
 - Click on the "Create" button.
-- Fill in all information.
+- Fill in all necessary information.
 
 :::tip
 Tags in esthesis Core play an important role allowing components to be optimally grouped together.
