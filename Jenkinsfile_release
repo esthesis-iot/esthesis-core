@@ -62,6 +62,8 @@ pipeline {
                     sh '''
                         apt -y install uuid-runtime
                         apt -y install jq
+                        podman machine init
+                        podman machine start
                     '''
                 }
             }
