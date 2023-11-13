@@ -10,7 +10,7 @@ func ExecuteLuaScript(payload string, luaScriptFileLocation string) string {
 	L.SetGlobal("payload", lua.LString(payload))
 	defer L.Close()
 	if err := L.DoFile(luaScriptFileLocation); err != nil {
-		log.Error("Error executing lua script: ", err)
+		log.WithError(err).Error("Error executing lua script.")
 		return payload
 	}
 

@@ -7,12 +7,13 @@
 #   ESTHESIS_REGISTRY_USERNAME: The username to use when authenticating with the registry.
 #   ESTHESIS_REGISTRY_PASSWORD: The password to use when authenticating with the registry.
 #   ESTHESIS_REGISTRY_URL: The URL of the registry to push to (default: docker.io).
-#   ESTHESIS_ARCHITECTURES: The architectures to build (default: linux/amd64).
-#		ESTHESIS_BUILD_DOCKER: Whether to build the Docker image (default: true).
-#		ESTHESIS_BUILD_NATIVE: Whether to build the native executables (default: true).
+#		ESTHESIS_BUILD_PROD: If set to true, production images will be built (default: true).
+#		ESTHESIS_BUILD_DEBUG: If set to true, debug images will be built (default: true).
 #
-# Usage:
+# Usage examples:
 #   ./publish.sh
+# 	ESTHESIS_REGISTRY_URL=192.168.10.21:32000 ./publish.sh
+# 	ESTHESIS_REGISTRY_URL=192.168.10.21:32000 ESTHESIS_BUILD_PROD=false ./publish.sh
 ####################################################################################################
 
 # Helper functions to print messages.
@@ -27,24 +28,28 @@ printInfo() {
 	printf "\e[0m\n"
 }
 
-# Set default build targets.
-if [ -z "$ESTHESIS_BUILD_DOCKER" ]; then
-	ESTHESIS_BUILD_DOCKER=true
-fi
-if [ -z "$ESTHESIS_BUILD_NATIVE" ]; then
-	ESTHESIS_BUILD_NATIVE=true
-fi
+rfc3339Date() {
+  input=$(date +"%Y-%m-%dT%H:%M:%S%z")
+  length=${#input}
+  if [ "$length" -ge 2 ]; then
+      last_two="${input: -2}"
+      rest="${input:0:((length-2))}"
+      echo "$rest:$last_two"
+  else
+      echo "$input"
+  fi
+}
 
 # Check if Podman is installed.
 if [ -x "$(command -v podman)" ]; then
   # Check if Podman machine is running.
   if ! podman machine inspect &> /dev/null; then
   	printError "Podman machine is not running."
-    exit 6
+    exit 1
   fi
 else
 		printError "Podman is not installed."
-		exit 5
+		exit 2
 fi
 
 # Registry to push to.
@@ -56,68 +61,174 @@ if [[ "$ESTHESIS_REGISTRY_URL" == "docker.io" ]]; then
     PUBLIC_REGISTRY=1
 fi
 
+# Builds to execute.
+if [ -z "$ESTHESIS_BUILD_PROD" ]; then
+	ESTHESIS_BUILD_PROD=true
+fi
+if [ -z "$ESTHESIS_BUILD_DEBUG" ]; then
+	ESTHESIS_BUILD_DEBUG=true
+fi
+
 # Find the version of the package.
 PACKAGE_VERSION=$(cat go/internal/pkg/config/config.go | grep "const Version" | cut -d'"' -f2)
 printInfo "Package version: $PACKAGE_VERSION."
 if [[ "${PACKAGE_VERSION}" == *SNAPSHOT && $ESTHESIS_REGISTRY_URL == "docker.io" ]]; then
     printError "Cannot push a snapshot version to docker.io."
-    exit 1
+    exit 3
 fi
 
-# Architectures to build, i.e. "linux/amd64,linux/arm64"
-if [ -z "$ESTHESIS_ARCHITECTURES" ]; then
-	ESTHESIS_ARCHITECTURES="linux/amd64,linux/arm64"
+# Native executables build
+printInfo "Building native executables."
+mkdir -p native/"$VERSION"
+pushd .
+cd go || exit 4
+
+LDFLAGS="-X github.com/esthesis-iot/esthesis-device/internal/pkg/banner.Commit=$(git rev-parse HEAD) -X github.com/esthesis-iot/esthesis-device/internal/pkg/banner.BuildTime=$(rfc3339Date)"
+
+CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags "$LDFLAGS" -o ../native/$VERSION/esthesis-core-device-darwin-amd64 cmd/main.go
+if [ $? -ne 0 ]; then
+	printError "Failed to build native executable for darwin/amd64."
+	exit 5
 fi
 
-# **************************************************************************************************
-# Containers builds
-# **************************************************************************************************
-if [ "$ESTHESIS_BUILD_DOCKER" = true ]; then
-	# Build & Push
+CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -ldflags "$LDFLAGS" -o ../native/$VERSION/esthesis-core-device-darwin-arm64 cmd/main.go
+if [ $? -ne 0 ]; then
+	printError "Failed to build native executable for darwin/arm64."
+	exit 6
+fi
+
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "$LDFLAGS" -o ../native/$VERSION/esthesis-core-device-linux-amd64 cmd/main.go
+if [ $? -ne 0 ]; then
+	printError "Failed to build native executable for linux/amd64."
+	exit 7
+fi
+
+CGO_ENABLED=0 GOOS=linux GOARCH=arm go build -ldflags "$LDFLAGS" -o ../native/$VERSION/esthesis-core-device-linux-arm cmd/main.go
+if [ $? -ne 0 ]; then
+	printError "Failed to build native executable for linux/arm."
+	exit 8
+fi
+
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags "$LDFLAGS" -o ../native/$VERSION/esthesis-core-device-linux-arm64 cmd/main.go
+if [ $? -ne 0 ]; then
+	printError "Failed to build native executable for linux/arm64."
+	exit 9
+fi
+
+CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -ldflags "$LDFLAGS" -o ../native/$VERSION/esthesis-core-device-win-386.exe cmd/main.go
+if [ $? -ne 0 ]; then
+	printError "Failed to build native executable for windows/386."
+	exit 10
+fi
+
+CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags "$LDFLAGS" -o ../native/$VERSION/esthesis-core-device-win-amd64.exe cmd/main.go
+if [ $? -ne 0 ]; then
+	printError "Failed to build native executable for windows/amd64."
+	exit 11
+fi
+
+popd || exit 12
+
+IMAGE_TYPES=()
+if [ "$ESTHESIS_BUILD_PROD" = true ]; then
+	IMAGE_TYPES+=("")
+fi
+if [ "$ESTHESIS_BUILD_DEBUG" = true ]; then
+	IMAGE_TYPES+=("-debug")
+fi
+for IMAGE_TYPE in "${IMAGE_TYPES[@]}"; do
+	# Remove existing manifests and images matching the name of the image we are building.
 	IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesisiot/esthesis-core-device"
-	printInfo "Building $ESTHESIS_ARCHITECTURES for $IMAGE_NAME."
-	unset CREDS
-	if [ -n "$ESTHESIS_REGISTRY_USERNAME" ] && [ -n "$ESTHESIS_REGISTRY_PASSWORD" ]; then
-		CREDS="--creds $ESTHESIS_REGISTRY_USERNAME:$ESTHESIS_REGISTRY_PASSWORD"
-	fi
-	TAGS=("latest" "$PACKAGE_VERSION")
-	for TAG in "${TAGS[@]}"; do
-		if podman manifest exists "$IMAGE_NAME:$TAG"; then
-			printInfo "Removing existing manifest $IMAGE_NAME:$TAG."
-			podman manifest rm "$IMAGE_NAME:$TAG"
+	for TAG in "latest" "$PACKAGE_VERSION"; do
+		if podman manifest exists "$IMAGE_NAME:$TAG$IMAGE_TYPE"; then
+			printInfo "Removing existing manifest $IMAGE_NAME:$TAG$IMAGE_TYPE."
+			podman manifest rm "$IMAGE_NAME:$TAG$IMAGE_TYPE"
+			if [ $? -ne 0 ]; then
+					printError "Failed to remove existing manifest $IMAGE_NAME:$TAG$IMAGE_TYPE."
+					exit 13
+			fi
 		fi
-		printInfo "Building container $IMAGE_NAME:$TAG."
-		podman build \
-					 --jobs 1 \
-					 --platform "$ESTHESIS_ARCHITECTURES" \
-					 --manifest "$IMAGE_NAME:$TAG" .
-		printInfo "Pushing container $IMAGE_NAME:$TAG."
-		if [ "$PUBLIC_REGISTRY" = true ]; then
-			podman manifest push "$IMAGE_NAME:$TAG" $CREDS --rm
-		else
-			podman manifest push "$IMAGE_NAME:$TAG" $CREDS --rm --tls-verify=false
+		if podman image exists "$IMAGE_NAME:$TAG$IMAGE_TYPE"; then
+			printInfo "Removing existing image $IMAGE_NAME:$TAG$IMAGE_TYPE."
+			podman rmi "$IMAGE_NAME:$TAG$IMAGE_TYPE"
+			if [ $? -ne 0 ]; then
+					printError "Failed to remove existing image $IMAGE_NAME:$TAG$IMAGE_TYPE."
+					exit 14
+			fi
 		fi
 	done
-fi
 
-# **************************************************************************************************
-# Native executables build
-# **************************************************************************************************
-if [ "$ESTHESIS_BUILD_NATIVE" = true ]; then
-	printInfo "Building native executables (will be git-ignored)"
-	mkdir -p native/"$VERSION"
-	pushd .
-	cd go || exit
-	{
-	GOOS=darwin GOARCH=amd64 go build -o ../native/$VERSION/esthesis-agent_darwin-amd64 cmd/main.go
-	GOOS=darwin GOARCH=arm64 go build -o ../native/$VERSION/esthesis-agent_darwin-arm64 cmd/main.go
-	GOOS=linux GOARCH=amd64 go build -o ../native/$VERSION/esthesis-agent_linux-amd64 cmd/main.go
-	GOOS=linux GOARCH=arm go build -o ../native/$VERSION/esthesis-agent_linux-arm cmd/main.go
-	GOOS=linux GOARCH=arm64 go build -o ../native/$VERSION/esthesis-agent_linux-arm64 cmd/main.go
-	GOOS=windows GOARCH=386 go build -o ../native/$VERSION/esthesis-agent_win-386.exe cmd/main.go
-	GOOS=windows GOARCH=amd64 go build -o ../native/$VERSION/esthesis-agent_win-amd64.exe cmd/main.go
-	} || {
-		printInfo "Failed to build native executables"
-	}
-	popd || exit
-fi
+	# Build containers.
+	printInfo "Building container $IMAGE_NAME for linux/amd64$IMAGE_TYPE."
+	podman build \
+				 --platform "linux/amd64" \
+				 -t $IMAGE_NAME:linux-amd64-latest$IMAGE_TYPE \
+				 -t $IMAGE_NAME:linux-amd64-$PACKAGE_VERSION$IMAGE_TYPE \
+				 -f Containerfile-linux-amd64$IMAGE_TYPE .
+	if [ $? -ne 0 ]; then
+		printError "Failed to build container $IMAGE_NAME for linux/amd64$IMAGE_TYPE."
+		exit 15
+	fi
+
+	printInfo "Building container $IMAGE_NAME for linux/arm64$IMAGE_TYPE."
+	podman build \
+				 --platform "linux/arm64" \
+				 -t $IMAGE_NAME:linux-arm64-latest$IMAGE_TYPE \
+				 -t $IMAGE_NAME:linux-arm64-$PACKAGE_VERSION$IMAGE_TYPE \
+				 -f Containerfile-linux-arm64$IMAGE_TYPE .
+	if [ $? -ne 0 ]; then
+		printError "Failed to build container $IMAGE_NAME for linux/arm64$IMAGE_TYPE."
+		exit 16
+	fi
+
+	printInfo "Building container $IMAGE_NAME for linux/arm$IMAGE_TYPE."
+	podman build \
+				 --platform "linux/arm" \
+				 -t $IMAGE_NAME:linux-arm-latest$IMAGE_TYPE \
+				 -t $IMAGE_NAME:linux-arm-$PACKAGE_VERSION$IMAGE_TYPE \
+				 -f Containerfile-linux-arm$IMAGE_TYPE .
+	if [ $? -ne 0 ]; then
+		printError "Failed to build container $IMAGE_NAME for linux/arm$IMAGE_TYPE."
+		exit 17
+	fi
+
+	# Create manifests.
+	printInfo "Creating manifest for $IMAGE_NAME:latest$IMAGE_TYPE."
+	podman manifest create $IMAGE_NAME:latest$IMAGE_TYPE \
+		"docker-daemon:$IMAGE_NAME:linux-amd64-latest$IMAGE_TYPE" \
+		"docker-daemon:$IMAGE_NAME:linux-arm64-latest$IMAGE_TYPE" \
+		"docker-daemon:$IMAGE_NAME:linux-arm-latest$IMAGE_TYPE"
+	if [ $? -ne 0 ]; then
+		printError "Failed to create manifest for $IMAGE_NAME:latest$IMAGE_TYPE."
+		exit 18
+	fi
+	printInfo "Creating manifest for $IMAGE_NAME:$PACKAGE_VERSION$IMAGE_TYPE."
+	podman manifest create "$IMAGE_NAME:$PACKAGE_VERSION$IMAGE_TYPE" \
+		"docker-daemon:$IMAGE_NAME:linux-amd64-$PACKAGE_VERSION$IMAGE_TYPE" \
+		"docker-daemon:$IMAGE_NAME:linux-arm64-$PACKAGE_VERSION$IMAGE_TYPE" \
+		"docker-daemon:$IMAGE_NAME:linux-arm-$PACKAGE_VERSION$IMAGE_TYPE"
+	 if [ $? -ne 0 ]; then
+		printError "Failed to create manifest for $IMAGE_NAME:$PACKAGE_VERSION$IMAGE_TYPE."
+		exit 19
+	 fi
+
+	# Push manifests.
+	printInfo "Pushing container manifests."
+	CREDS=""
+	TLS_VERIFY=""
+	if [ "$PUBLIC_REGISTRY" = true ]; then
+		CREDS="--creds $ESTHESIS_REGISTRY_USERNAME:$ESTHESIS_REGISTRY_PASSWORD"
+	else
+		TLS_VERIFY="--tls-verify=false"
+	fi
+	podman manifest push --all "$IMAGE_NAME:latest$IMAGE_TYPE" $CREDS $TLS_VERIFY --rm
+	if [ $? -ne 0 ]; then
+		printError "Failed to push manifest for $IMAGE_NAME:latest$IMAGE_TYPE."
+		exit 20
+	fi
+	podman manifest push --all "$IMAGE_NAME:$PACKAGE_VERSION$IMAGE_TYPE" $CREDS $TLS_VERIFY --rm
+	if [ $? -ne 0 ]; then
+		printError "Failed to push manifest for $IMAGE_NAME:$PACKAGE_VERSION$IMAGE_TYPE."
+		exit 21
+	fi
+done

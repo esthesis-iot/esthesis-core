@@ -10,7 +10,7 @@ func Shutdown() {
 	cmd := exec.Command(config.Flags.ShutdownScript)
 	err := cmd.Start()
 	if err != nil {
-		log.Errorf("Could not execute shutdown script due to '%s'.", err)
+		log.WithError(err).Errorf("Could not execute shutdown script.")
 	} else {
 		log.Info("Shutting down...")
 	}

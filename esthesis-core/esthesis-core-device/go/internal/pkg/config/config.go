@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/DavidGamba/go-getoptions"
+	"github.com/esthesis-iot/esthesis-device/internal/pkg/exitCodes"
 	"github.com/magiconair/properties"
 	log "github.com/sirupsen/logrus"
 	"os"
@@ -11,15 +12,6 @@ import (
 
 // Version The application version
 const Version = "3.0.2-SNAPSHOT"
-
-const ExitGeneric = 1
-const ExitCodeCouldNotRegister = 2
-const ExitCodeCouldNotLoadRegistrationProperties = 3
-const ExitCodeRegistrationInterrupted = 4
-const ExitHelp = 5
-const ExitVersion = 6
-const ExitCliParse = 7
-const ExitUnsupportedSignatureAlgorithm = 8
 
 // Properties received when this device was registered with the esthesis platform.
 const (
@@ -102,9 +94,8 @@ func getHomeDir() string {
 func InitCmdFlags(osArgs []string) {
 	opt := getoptions.New()
 	opt.SetUnknownMode(getoptions.Warn)
-	opt.Self("esthesis-agent", "The esthesis device agent, "+
-		"allowing a device to connect to the esthesis platform")
-	opt.HelpSynopsisArgs(" ")
+	opt.Self("esthesis-core-device", "The esthesis device agent, "+
+		"allowing a device to connect to the esthesis CORE platform")
 	opt.Bool("help", false, opt.Alias("h", "?"), opt.Description("Show this help"))
 	opt.Bool("version", false, opt.Alias("v"), opt.Description("Show the version"))
 
@@ -291,21 +282,21 @@ func InitCmdFlags(osArgs []string) {
 	_, err := opt.Parse(osArgs)
 	if opt.Called("help") {
 		fmt.Fprintf(os.Stderr, opt.Help())
-		os.Exit(ExitHelp)
+		os.Exit(exitCodes.ExitHelp)
 	}
 	if opt.Called("version") {
 		fmt.Println(Version)
-		os.Exit(ExitVersion)
+		os.Exit(exitCodes.ExitVersion)
 	}
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: %s\n\n", err)
 		fmt.Fprintf(os.Stderr, opt.Help(getoptions.HelpSynopsis))
-		os.Exit(ExitCliParse)
+		os.Exit(exitCodes.ExitCliParse)
 	}
 	// Currently, only SHA256WITHRSA is supported.
 	if Flags.SignatureAlgorithm != "SHA256WITHRSA" {
 		log.Error("Only SHA256WITHRSA is supported for signatureAlgorithm.")
-		os.Exit(ExitUnsupportedSignatureAlgorithm)
+		os.Exit(exitCodes.ExitUnsupportedSignatureAlgorithm)
 	}
 }
 
@@ -315,9 +306,8 @@ func InitRegistrationProperties() {
 	registrationProperties, err = properties.LoadAll(
 		[]string{Flags.PropertiesFile, Flags.SecurePropertiesFile}, properties.UTF8, false)
 	if err != nil {
-		log.Errorf("Could not load agent registration properties due to '%s'.",
-			err)
-		os.Exit(ExitCodeCouldNotLoadRegistrationProperties)
+		log.WithError(err).Errorf("Could not load agent registration properties")
+		os.Exit(exitCodes.ExitCodeCouldNotLoadRegistrationProperties)
 	}
 }
 

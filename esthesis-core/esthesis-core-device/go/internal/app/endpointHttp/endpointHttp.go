@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/esthesis-iot/esthesis-device/internal/app/mqttClient"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
+	"github.com/esthesis-iot/esthesis-device/internal/pkg/exitCodes"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/luaExecutor"
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
@@ -38,7 +39,7 @@ func getCustomMetadataEndpointLuaHandler(endpointName string) string {
 func getBody(r *http.Request) []byte {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Errorf("Could not process request body due to '%s'.", err)
+		log.WithError(err).Errorf("Could not process request body.")
 	}
 
 	return body
@@ -153,7 +154,7 @@ func Start(done chan bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Error(err)
-		os.Exit(config.ExitGeneric)
+		log.WithError(err).Error("Could not shutdown embedded HTTP server.")
+		os.Exit(exitCodes.ExitGeneric)
 	}
 }

@@ -39,7 +39,7 @@ func executeCommand(command *dto.CommandRequest, client mqtt.Client) {
 	if command.ExecutionType == appConstants.CommandExecutionTypeAsynchronous {
 		err := cmd.Start()
 		if err != nil {
-			log.Errorf("Could not execute asynchronous command due to '%s'.", err)
+			log.WithError(err).Errorf("Could not execute asynchronous command.")
 		}
 	} else if command.ExecutionType == appConstants.CommandExecutionTypeSynchronous {
 		out, err := cmd.Output()
@@ -47,8 +47,7 @@ func executeCommand(command *dto.CommandRequest, client mqtt.Client) {
 		var commandReply dto.CommandReply
 		commandReply.CorrelationId = command.Id
 		if err != nil {
-			log.Errorf("Could not execute synchronous command due to '%s'.",
-				err)
+			log.WithError(err).Errorf("Could not execute synchronous command.")
 			commandReply.Success = false
 			commandReply.Output = err.Error()
 		} else {
@@ -150,7 +149,7 @@ func OnMessage(client mqtt.Client, msg mqtt.Message) {
 	// Attempt to parse the message.
 	commandRequest, err := parseCommandRequest(msg.Payload())
 	if err != nil {
-		log.Errorf("Could not parse command request due to '%s'.", err)
+		log.WithError(err).Errorf("Could not parse command request.")
 		return
 	}
 	debugPrintCommand(&commandRequest)

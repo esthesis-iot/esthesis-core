@@ -68,7 +68,7 @@ func Update(packageId string) {
 			config.GetRegistrationProperty(config.RegistrationPropertyPrivateKey),
 			config.Flags.HardwareId)
 		if err != nil {
-			log.Errorf("Could not sign hardware ID due to '%s'.", err)
+			log.WithError(err).Errorf("Could not sign hardware ID.")
 			terminateUpdate()
 			return
 		} else {
@@ -93,7 +93,7 @@ func Update(packageId string) {
 		url, err = url.Parse(finalProvisioningUrl)
 	}
 	if err != nil {
-		log.Errorf("Could not parse provisioning URL '%s' due to '%s'.", provisioningUrl, err)
+		log.WithError(err).Errorf("Could not parse provisioning URL '%s'.", provisioningUrl)
 		terminateUpdate()
 	}
 
@@ -116,7 +116,7 @@ func Update(packageId string) {
 		SetResult(&agentProvisioningInfoResponse).
 		Get(url.String())
 	if err != nil {
-		log.Errorf("Could not get provisioning info due to '%s'.", err)
+		log.WithError(err).Errorf("Could not get provisioning info.")
 		terminateUpdate()
 		return
 	}
@@ -139,7 +139,7 @@ func Update(packageId string) {
 		SetQueryParam("token", agentProvisioningInfoResponse.DownloadToken).
 		Get(provisioningUrl + "/api/v1/provisioning/download")
 	if err != nil {
-		log.Errorf("Could not download provisioning package due to '%s'.", err)
+		log.WithError(err).Errorf("Could not download provisioning package.")
 		terminateUpdate()
 		return
 	}
@@ -155,7 +155,7 @@ func Update(packageId string) {
 	if agentProvisioningInfoResponse.Sha256 != "" {
 		encoded, err := cryptoUtil.HashFileEncoded(downloadFilename)
 		if err != nil {
-			log.Errorf("Could not hash downloaded file due to '%s'.", err)
+			log.WithError(err).Errorf("Could not hash downloaded file.")
 			terminateUpdate()
 			return
 		}
@@ -192,7 +192,7 @@ func Update(packageId string) {
 	cmd.Args = append(cmd.Args, downloadFilename)
 	err = cmd.Start()
 	if err != nil {
-		log.Errorf("Could not execute firmware update due to '%s'.", err)
+		log.WithError(err).Errorf("Could not execute firmware update.")
 	}
 	log.Info("Firmware update initiated.")
 	terminateUpdate()

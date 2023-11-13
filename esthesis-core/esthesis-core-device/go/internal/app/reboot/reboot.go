@@ -10,7 +10,7 @@ func Reboot() {
 	cmd := exec.Command(config.Flags.RebootScript)
 	err := cmd.Start()
 	if err != nil {
-		log.Errorf("Could not execute reboot script due to '%s'.", err)
+		log.WithError(err).Errorf("Could not execute reboot script.")
 	} else {
 		log.Info("Rebooting...")
 	}

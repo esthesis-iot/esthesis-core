@@ -31,7 +31,7 @@ func AbbrS(str string) string {
 func ReadTextFile(filename string) (string, error) {
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
-		log.Errorf("Could not read the file due to  '%s'.", err)
+		log.WithError(err).Errorf("Could not read file'%s'.", filename)
 	}
 	return string(file), err
 }

@@ -23,7 +23,7 @@ func appendLoadHealth(healthInfo *string) {
 	loadavg, err := loadavg.Get()
 
 	if err != nil {
-		log.Errorf("%s", err)
+		log.WithError(err).Errorf("Could not get load average.")
 	} else {
 		*healthInfo += "loadAverage1=" + fmt.Sprintf("%v",
 			loadavg.Loadavg1) + "d,"
@@ -38,7 +38,7 @@ func appendMemoryHealth(healthInfo *string) {
 	memoryStats, err := memory.Get()
 
 	if err != nil {
-		log.Errorf("%s", err)
+		log.WithError(err).Errorf("Could not get memory stats.")
 	} else {
 		*healthInfo += "memoryTotal=" + strconv.FormatUint(memoryStats.Total,
 			10) + "l,"

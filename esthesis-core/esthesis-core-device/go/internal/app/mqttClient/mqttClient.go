@@ -30,7 +30,7 @@ func getTlsConfig() *tls.Config {
 	// cert, err := tls.LoadX509KeyPair(clientCert, clientKey)
 	cert, err := tls.X509KeyPair([]byte(clientCert), []byte(clientKey))
 	if err != nil {
-		log.Error(err)
+		log.WithError(err).Error("Could not load X509 keypair.")
 	}
 
 	// Create tls.Config with desired tls properties

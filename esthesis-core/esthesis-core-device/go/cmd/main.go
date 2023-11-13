@@ -25,21 +25,23 @@ import (
 var wg sync.WaitGroup
 
 func main() {
-	// Read CLI flags and display an error if mandatory arguments are missing.
-	config.InitCmdFlags(os.Args[1:])
-
 	// Print application banner.
 	banner.Print(config.Version)
+
+	// Read CLI flags and display an error if mandatory arguments are missing.
+	config.InitCmdFlags(os.Args[1:])
 
 	// Setup logger.
 	log.SetOutput(os.Stdout)
 	switch config.Flags.LogLevel {
 	case "debug":
 		log.SetLevel(log.DebugLevel)
+		log.SetReportCaller(true)
 	case "info":
 		log.SetLevel(log.InfoLevel)
 	case "trace":
 		log.SetLevel(log.TraceLevel)
+		log.SetReportCaller(true)
 	default:
 		log.SetLevel(log.InfoLevel)
 	}

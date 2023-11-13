@@ -8,6 +8,7 @@ import (
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/channels"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/dto"
+	"github.com/esthesis-iot/esthesis-device/internal/pkg/exitCodes"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/util"
 	"github.com/go-resty/resty/v2"
 	"github.com/magiconair/properties"
@@ -76,14 +77,14 @@ func Register() bool {
 	response, err := request.Post(config.Flags.RegistrationURL)
 	// Check if registration was successful.
 	if err != nil {
-		log.Errorf("Unhandled error '%s'.", err)
-		os.Exit(config.ExitCodeCouldNotRegister)
+		log.WithError(err).Errorf("Unhandled error.")
+		os.Exit(exitCodes.ExitCodeCouldNotRegister)
 	} else if response.IsError() {
 		log.Errorf("Could not register device due to '%s'.", response.Status())
-		os.Exit(config.ExitCodeCouldNotRegister)
+		os.Exit(exitCodes.ExitCodeCouldNotRegister)
 	} else if channels.GetIsShutdown() {
 		log.Errorf("Client shutdown detected during registration.")
-		os.Exit(config.ExitCodeRegistrationInterrupted)
+		os.Exit(exitCodes.ExitCodeRegistrationInterrupted)
 	}
 
 	// Handle a successful registration.
@@ -106,24 +107,27 @@ func Register() bool {
 		filepath.Dir(propertiesFileLocation))
 	errHnd := os.MkdirAll(filepath.Dir(propertiesFileLocation), 0755)
 	if errHnd != nil {
-		log.Errorf("Could not create directory %s for insecure"+
+		log.WithError(errHnd).Errorf("Could not create directory %s for insecure"+
 			" properties.", filepath.Dir(propertiesFileLocation))
-		os.Exit(config.ExitGeneric)
+		os.Exit(exitCodes.ExitCodeCouldNotRegister)
 	}
 	log.Infof("Creating file '%s' for insecure properties.",
 		propertiesFileLocation)
 	esthesisPropertiesFile, errHnd := os.Create(propertiesFileLocation)
 	if errHnd != nil {
-		log.Errorf("Could not create file '%s'.", propertiesFileLocation)
+		log.WithError(errHnd).Errorf("Could not create file '%s'.", propertiesFileLocation)
+		os.Exit(exitCodes.ExitCodeCouldNotRegister)
 	}
 	defer esthesisPropertiesFile.Close()
 	_, errHnd = esthesisProperties.Write(esthesisPropertiesFile, properties.UTF8)
 	if errHnd != nil {
-		log.Errorf("Could not write to file '%s'.", propertiesFileLocation)
+		log.WithError(errHnd).Errorf("Could not write to file '%s'.")
+		os.Exit(exitCodes.ExitCodeCouldNotRegister)
 	}
 	errHnd = esthesisPropertiesFile.Sync()
 	if errHnd != nil {
-		log.Errorf("Could not sync file '%s'.", propertiesFileLocation)
+		log.WithError(errHnd).Errorf("Could not sync file '%s'.", propertiesFileLocation)
+		os.Exit(exitCodes.ExitCodeCouldNotRegister)
 	}
 
 	// Create secure properties file.
@@ -134,20 +138,23 @@ func Register() bool {
 		filepath.Dir(securePropertiesFileLocation))
 	errHnd = os.MkdirAll(filepath.Dir(securePropertiesFileLocation), 0755)
 	if errHnd != nil {
-		log.Errorf("Could not created directory '%s'.",
+		log.WithError(errHnd).Errorf("Could not create directory '%s'.",
 			filepath.Dir(securePropertiesFileLocation))
+		os.Exit(exitCodes.ExitCodeCouldNotRegister)
 	}
 	log.Infof("Creating file '%s' for secure properties.",
 		securePropertiesFileLocation)
 	esthesisSecurePropertiesFile, errHnd := os.Create(securePropertiesFileLocation)
 	if errHnd != nil {
-		log.Errorf("Could not created file '%s'.", securePropertiesFileLocation)
+		log.WithError(errHnd).Errorf("Could not create file '%s'.", securePropertiesFileLocation)
+		os.Exit(exitCodes.ExitCodeCouldNotRegister)
 	}
 	defer esthesisSecurePropertiesFile.Close()
 	_, errHnd = esthesisSecureProperties.Write(esthesisSecurePropertiesFile,
 		properties.UTF8)
 	if errHnd != nil {
-		log.Errorf("Could not write to file '%s'.", esthesisSecurePropertiesFile)
+		log.WithError(errHnd).Errorf("Could not write to file '%s'.", securePropertiesFileLocation)
+		os.Exit(exitCodes.ExitCodeCouldNotRegister)
 	}
 	esthesisSecurePropertiesFile.Sync()
 
