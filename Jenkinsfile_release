@@ -63,8 +63,8 @@ pipeline {
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
-                            apt -y install uuid-runtime
-                            apt -y install jq
+                            dnf -y install util-linux
+                            dnf -y install jq
                             podman login -u $Username -p $Password docker.io
                         '''
                     }
