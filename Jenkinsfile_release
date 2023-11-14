@@ -25,7 +25,7 @@ pipeline {
                   runAsGroup: 0
                 containers:
                 - name: esthesis-release-builder
-                  image: eddevopsd2/ubuntu-pind:podman-mvn3.8.5-jdk17-node18.16-go1.20-buildx-helm
+                  image: harbor.devops-d2.eurodyn.com/test/pind-test:2.0
                   volumeMounts:
                   - name: maven
                     mountPath: /root/.m2/
@@ -59,12 +59,15 @@ pipeline {
     	stage ('Prerequisites') {
             steps {
                 container (name: 'esthesis-release-builder') {
-                    sh '''
-                        apt -y install uuid-runtime
-                        apt -y install jq
-                        podman machine init
-                        podman machine start
-                    '''
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        sh '''
+                            apt -y install uuid-runtime
+                            apt -y install jq
+                            podman login -u $Username -p $Password docker.io
+                        '''
+                    }
                 }
             }
         }
