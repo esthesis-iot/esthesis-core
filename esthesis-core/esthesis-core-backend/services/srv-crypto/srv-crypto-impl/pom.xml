@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-crypto</artifactId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.0.2</version>
   </parent>
   <artifactId>srv-crypto-impl</artifactId>
 
@@ -17,27 +17,27 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-crypto-client</artifactId>
-      <version>3.0.2-SNAPSHOT</version>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-settings-client</artifactId>
-      <version>3.0.2-SNAPSHOT</version>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-audit-client</artifactId>
-      <version>3.0.2-SNAPSHOT</version>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-device-client</artifactId>
-      <version>3.0.2-SNAPSHOT</version>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>utl-kafka-notifications-outgoing</artifactId>
-      <version>3.0.2-SNAPSHOT</version>
+      <version>3.0.2</version>
     </dependency>
 
     <!-- OTHERS -->
