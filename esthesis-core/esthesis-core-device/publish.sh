@@ -43,9 +43,13 @@ rfc3339Date() {
 # Check if Podman is installed.
 if [ -x "$(command -v podman)" ]; then
   # Check if Podman machine is running.
-  if ! podman machine inspect &> /dev/null; then
-  	printError "Podman machine is not running."
-    exit 1
+  if [ "$(uname)" != "Linux" ]; then
+    if ! podman machine inspect &> /dev/null; then
+      printError "Podman machine is not running."
+      exit 6
+    fi
+  else
+    printInfo "Host is not macOS. Skipping 'podman machine inspect' command."
   fi
 else
 		printError "Podman is not installed."

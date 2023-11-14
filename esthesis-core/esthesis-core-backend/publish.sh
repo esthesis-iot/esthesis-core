@@ -37,14 +37,19 @@ if [ -x "$(command -v podman)" ]; then
         export TESTCONTAINERS_RYUK_DISABLED=true
     fi
 
-    # Check if Podman machine is running.
-      if ! podman machine inspect &> /dev/null; then
-        printInfo "Podman machine is not running."
-        exit 6
-      fi
+    # Check if the host is macOS.
+    if [ "$(uname)" != "Linux" ]; then
+        # Check if Podman machine is running.
+        if ! podman machine inspect &> /dev/null; then
+            printInfo "Podman machine is not running."
+            exit 6
+        fi
+    else
+        printInfo "Host is not macOS. Skipping 'podman machine inspect' command."
+    fi
 else
-		printError "Podman is not installed."
-		exit 5
+    printError "Podman is not installed."
+    exit 5
 fi
 
 # Registry to push to.
