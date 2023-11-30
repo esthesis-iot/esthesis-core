@@ -5,37 +5,28 @@ development environment varies drastically from the production setup, as its pur
 developers to quickly implement and test new features.
 
 Setting up your development environment is relatively easy, as you can use the production
-environment
-Helm charts; with a tweak. The major difference between using Helm to deploy on production and
-creating
-a development environment in your machine is that all esthesis services should run locally on your
+environment Helm charts; with a tweak. The major difference between using Helm to deploy on production and
+creating a development environment in your machine is that all esthesis services should run locally on your
 machine, instead of being deployed to the Kubernetes cluster.
 
 ## Requirements
 
-- A dev Kubernetes cluster with at least 16GB of RAM. For local development, we have spent more hours
-	that we would like to remember trying to make TCP/UDP port forwarding and ingresses in Minikube,
-	Kind, Rancher Desktop, etc. work across Linux, Windows, and macOS Intel/Apple with various degrees
-	of success. Therefore, we suggest firing up an [Ubuntu server](https://ubuntu.com/download/server)
+- A dev Kubernetes cluster with at least 16GB of RAM. We suggest firing up an [Ubuntu server](https://ubuntu.com/download/server)
 	in the virtualisation platform of your choice, while preselecting Microk8s in the installed packages
-	choice-screen. This way you can have a "real" Kubernetes, single-node cluster, using the same
+	screen. This way you can have a "real" Kubernetes, single-node cluster, using the same
 	Kubernetes distribution the rest of us are also using, so we can provide appropriate guidance and
 	setup instructions that work across the board.
 - [Helm](https://helm.sh)
 - [Helmfile](https://github.com/helmfile/helmfile)
 - Many of the build and helper scripts are written for a Unix shell. If you are on
-	Windows, you can use [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) or
-	[Cygwin](https://www.cygwin.com/).
+	Windows, you can use [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) or [Cygwin](https://www.cygwin.com/).
 
 ## Kubernetes initialisation
 
 SSH to your Microk8s VM and enable the following addons:
 - `microk8s enable dns`
 - `microk8s enable hostpath-storage`
-- `microk8s enable ingress`
 - `microk8s enable registry`
-- `microk8s enable metallb`: Use an IP range routable from your development machine. If you are
-located in a corporate network, please check with your network administrators first.
 
 ## Installation
 
@@ -45,8 +36,10 @@ located in a corporate network, please check with your network administrators fi
 	```
 
 	:::tip
-	Once you have performed the initial installation, you can use the `--skip-deps` flag to skip the skip dependencies check, therefore speeding up your deployment.
+	Once you have performed the initial installation, you can use the `--skip-deps` flag to skip the
+  dependencies check, therefore speeding up your deployment.
 	:::
+
 - Install the application components in `esthesis-helm/esthesis-core`:
 	```shell
 	DEV_HOST=192.168.100.102 helmfile -e dev sync
@@ -57,8 +50,30 @@ located in a corporate network, please check with your network administrators fi
 	variable. This is needed so that the API gateway (APISIX) knows where to forward the requests to
 	(since in `dev` setup the services run on your own machine, not in Kubernetes).
 	:::
-- Update your `hosts` file by executing `sudo ./hosts-file-update.sh`.
 
+## Access to resources
+To proxy the Kubernetes services of the project to your local machine for development purposes, you
+can use [kubefwd](https://kubefwd.com) and execute:
+```shell
+sudo -E kubefwd svc -n esthesis
+```
+kubefwd will proxy all services to your localhost and create local DNS entries for them. The table
+below summarises the resources you can access after running the above command. Note that if you have
+deployed the services in a different namespace than `esthesis`, you need to adjust the namespace
+element in the table below:
+
+| Resource         | URL/host                                         | Credentials                       |
+|------------------|--------------------------------------------------|-----------------------------------|
+| APISIX Dashboard | http://apisix-dashboard.esthesis                 | esthesis-system / esthesis-system |
+| Redis            | redis-master.esthesis:6379/0                     | (empty) / esthesis-system         |
+| MQTT             | mosquitto.esthesis:1883                          |                                   |
+| Grafana          | http://grafana.esthesis:3000                     | esthesis-system / esthesis-system |
+| InfluxDB Admin UI| http://influxdb.esthesis:8086                    | esthesis-system / esthesis-system |
+| InfluxDB         | influxdb.esthesis:8088                           | -                                 |
+| MongoDB          | esthesis-mongodb-esthesiscore-svc.esthesis:27017 | esthesis-system / esthesis-system |
+| esthesis Core UI | http://localhost:4200                            | esthesis-admin / esthesis-admin   |
+| Keycloak         | http://keycloak-headless.esthesis                | esthesis-system / esthesis-system |
+| Kafka            | kafka.esthesis:9095                              |                                   |
 
 ## Running the services
 The above installation will prepare all the necessary components to support esthesis Core. The actual
@@ -73,38 +88,17 @@ You can start the Angular frontend by running `npm start` in `esthesis-core-ui` 
 Each backend service comes with its own `dev-{service-name}.sh` script that you can use to start the
 service in development mode. You need to run each of the services in a separate terminal window.
 
-Before launching the services in your local machine, make sure that your local Kubernetes configuration
-points to the development cluster. You can do this by running `microk8s config` and copying the
-output to `~/.kube/config`. This is needed as some of the services need to access the Kubernetes API.
-
 ### Automation
 Starting up (and restarting) all those services manually can be a tedious task. We have prepared a
 tmux script that you can use to start all services in a single terminal window in multiple panes,
 while merging all log output into another pane. You can find the script in `_dev/tmux-dev.sh`. We
-also provide a `.tmux.conf` file, in case you want to replicate our own tmux setup.
+also provide a `.tmux.conf` file, in case you want to replicate our own tmux look and feel.
 
 ![tmux](/img/docs/dev-guide/tmux.gif)
 
 :::tip
 You can quickly terminate all services by issuing `tmux kill-session -t esthesis-dev`.
 :::
-
-## Resources
-Provided you have successfully updated your `hosts` file, you can access the following resources:
-
-| Resource         | URL/host                                  | Credentials                       |
-|------------------|-------------------------------------------|-----------------------------------|
-| esthesis Core UI | http://localhost:4200                     | esthesis-admin / esthesis-admin   |
-| MongoDB          | mongodb.esthesis.localdev:27017           | esthesis-system / esthesis-system |
-| Kafka            | kafka.esthesis.localdev:9094              |                                   |
-| Keycloak         | http://keycloak.esthesis.localdev         | esthesis-system / esthesis-system |
-| APISIX Dashboard | http://apisix-dashboard.esthesis.localdev | esthesis-system / esthesis-system |
-| Redis            | redis.esthesis.localdev:6379/0            | (empty) / esthesis-system         |
-| MQTT             | mqtt.esthesis.localdev:1883               |                                   |
-| Grafana          | http://grafana.esthesis.localdev          | esthesis-system / esthesis-system |
-| InfluxDB HTTP    | http://influxdb-ui.esthesis.localdev       | esthesis-system / esthesis-system |
-| InfluxDB         | influxdb.esthesis.localdev:8088    	      | -                                 |
-| Docker Registry  | registry.esthesis.localdev                | -                                 |
 
 ## Notes
 1. Before trying to log in to the application open the (https) Keycloak URL into your browser in order to
