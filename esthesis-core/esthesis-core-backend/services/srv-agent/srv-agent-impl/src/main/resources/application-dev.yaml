@@ -16,7 +16,7 @@ quarkus:
         port: 12201
         skip-hostname-resolution: true
   mongodb:
-    connection-string: mongodb://mongodb.esthesis.localdev:27017
+    connection-string: mongodb://mongodb.esthesis:27017
   otel:
     sdk:
       disabled: false
@@ -49,21 +49,21 @@ quarkus:
       url: http://localhost:59110
       scope: Singleton
 #  oidc:
-#    auth-server-url: http://keycloak.esthesis.localdev/realms/esthesis
+#    auth-server-url: http://keycloak.esthesis/realms/esthesis
 #    client-id: esthesis
   oidc-client:
-    auth-server-url: http://keycloak.esthesis.localdev/realms/esthesis
+    auth-server-url: http://keycloak.esthesis/realms/esthesis
     grant-options:
       password:
         username: esthesis-system
         password: esthesis-system
   redis:
-    hosts: redis://:esthesis-system@redis.esthesis.localdev:6379/0
+    hosts: redis://:esthesis-system@redis-master.esthesis:6379/0
   config:
     locations: "../../../../_dev/profiles"
 
 kafka:
   bootstrap:
     servers:
-      - kafka.esthesis.localdev:9094
+      - kafka.esthesis:9095
 

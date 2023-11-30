@@ -34,4 +34,4 @@ mp:
   jwt:
     verify:
       publickey:
-        location: http://keycloak.esthesis.localdev/realms/esthesis/protocol/openid-connect/certs
+        location: http://keycloak.esthesis/realms/esthesis/protocol/openid-connect/certs

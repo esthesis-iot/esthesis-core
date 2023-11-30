@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "http://apisix-gateway.esthesis.localdev",
+    "target": "http://apisix-gateway.esthesis",
     "secure": false,
     "ws": true,
     "changeOrigin": true

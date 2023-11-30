@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
+
+# The name of this tmux session.
 SESSION=esthesis-dev
+
+# The path to the aggregated logs file.
 LOGS=/tmp/esthesis-dev.log
 
 # Delete previous logs file, if it exists.
@@ -119,11 +123,17 @@ tmux pipe-pane -o -t 0.17 "sed -u 's/^/\[SRV-TAG     \] /' | cat >> $LOGS"
 tmux send-keys "cd .. && cd esthesis-core-backend/services/srv-tag && ./dev-tag.sh" C-m
 tmux select-layout tiled
 
+# Start Docusaurus
+tmux split-window -v
+tmux select-pane -t 0.18 -T "Docusaurus"
+tmux pipe-pane -o -t 0.18 "sed -u 's/^/\[Docusaurus  \] /' | cat >> $LOGS"
+tmux send-keys "cd .. && cd esthesis-core-docs && npm start" C-m
+tmux select-layout tiled
+
 # Start log monitoring
 tmux split-window -f
-tmux select-pane -t 0.18 -T "Log monitoring"
+tmux select-pane -t 0.19 -T "Log monitoring"
 tmux send-keys "tail -f $LOGS" C-m
 
 # Attach to session
 tmux a
-

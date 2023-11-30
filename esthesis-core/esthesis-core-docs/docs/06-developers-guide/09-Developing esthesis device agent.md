@@ -28,7 +28,7 @@ To run the agent locally go inside `go` directory and execute:
 
 ```shell
 HID=abc123 && \
-REGISTRATION_URL=http://apisix-gateway.esthesis.localdev/api/agent/v1/register && \
+REGISTRATION_URL=http://apisix-gateway.esthesis/api/agent/v1/register && \
 go run cmd/main.go \
     --hardwareId=$HID \
     --registrationUrl=$REGISTRATION_URL \
@@ -50,7 +50,7 @@ execute:
 
 ```shell
 HID=abc125 && \
-REGISTRATION_URL=http://apisix-gateway.esthesis.localdev/api/agent/v1/register && \
+REGISTRATION_URL=http://apisix-gateway.esthesis/api/agent/v1/register && \
 air --build.cmd "go build -o /tmp/esthesis-core-device cmd/main.go" --build.bin "/tmp/esthesis-core-device" -- \
 	--hardwareId=$HID \
 	--registrationUrl=$REGISTRATION_URL \
@@ -69,13 +69,13 @@ air --build.cmd "go build -o /tmp/esthesis-core-device cmd/main.go" --build.bin 
 ### Using containers
 
 ```shell
-APISIX_IP=$(dig +short apisix-gateway.esthesis.localdev) && \
+APISIX_IP=$(dig +short apisix-gateway.esthesis) && \
 RND_PREFIX=esthesis-test-device-$(uuidgen | cut -f1 -d"-" | awk '{print tolower($0)}') && \
 for ((i=1; i<=3; i++)); do
 	HID=$RND_PREFIX-$i && \
 	podman run -d --tls-verify=false --name $HID \
 		-e HARDWARE_ID=$HID \
-		-e REGISTRATION_URL=http://apisix-gateway.esthesis.localdev/api/agent/v1/register \
+		-e REGISTRATION_URL=http://apisix-gateway.esthesis/api/agent/v1/register \
 		-e PROPERTIES_FILE=/app/.esthesis/esthesis.properties \
 		-e SECURE_PROPERTIES_FILE=/app/.esthesis/secure/esthesis.properties \
 		-e TEMP_DIR=/app/.esthesis/temp \
@@ -84,7 +84,7 @@ for ((i=1; i<=3; i++)); do
 		-e LOG_LEVEL=debug \
 		-e AUTO_UPDATE=false \
 		-e SECURE_PROVISIONING=true \
-		--add-host apisix-gateway.esthesis.localdev:$APISIX_IP \
+		--add-host apisix-gateway.esthesis:$APISIX_IP \
 		$REGISTRY_URL/esthesisiot/esthesis-core-device:latest-debug
 done
 ```

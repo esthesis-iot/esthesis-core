@@ -13,7 +13,7 @@ quarkus:
       url: http://localhost:59010
       scope: Singleton
   mongodb:
-    connection-string: mongodb://mongodb.esthesis.localdev:27017
+    connection-string: mongodb://mongodb.esthesis:27017
     database: esthesiscore
     credentials:
       username: esthesis-system
@@ -43,10 +43,10 @@ quarkus:
 kafka:
   bootstrap:
     servers:
-      - kafka.esthesis.localdev:9094
+      - kafka.esthesis:9095
 
 mp:
   jwt:
     verify:
       publickey:
-        location: http://keycloak.esthesis.localdev/realms/esthesis/protocol/openid-connect/certs
+        location: http://keycloak.esthesis/realms/esthesis/protocol/openid-connect/certs

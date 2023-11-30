@@ -16,7 +16,7 @@ quarkus:
         port: 12201
         skip-hostname-resolution: true
   mongodb:
-    connection-string: mongodb://mongodb.esthesis.localdev:27017
+    connection-string: mongodb://mongodb.esthesis:27017
     database: esthesiscore
     credentials:
       username: esthesis-system
@@ -31,7 +31,7 @@ quarkus:
         traces:
           endpoint: http://otel-ingester.esthesis.localdev:4317
   redis:
-    hosts: redis://:esthesis-system@redis.esthesis.localdev:6379/0
+    hosts: redis://:esthesis-system@redis-master.esthesis:6379/0
   rest-client:
     logging:
       scope: request-response
@@ -58,7 +58,7 @@ quarkus:
       url: http://localhost:59140
       scope: Singleton
   oidc-client:
-    auth-server-url: http://keycloak.esthesis.localdev/realms/esthesis
+    auth-server-url: http://keycloak.esthesis/realms/esthesis
     grant-options:
       password:
         username: esthesis-system
@@ -70,9 +70,9 @@ mp:
   jwt:
     verify:
       publickey:
-        location: http://keycloak.esthesis.localdev/realms/esthesis/protocol/openid-connect/certs
+        location: http://keycloak.esthesis/realms/esthesis/protocol/openid-connect/certs
 
 kafka:
   bootstrap:
     servers:
-      - kafka.esthesis.localdev:9094
+      - kafka.esthesis:9095
