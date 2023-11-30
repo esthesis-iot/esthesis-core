@@ -4,3 +4,4 @@
 **/target
 /esthesis-core/itomate.yml
 .idea/
+**/pom.xml.versionsBackup
