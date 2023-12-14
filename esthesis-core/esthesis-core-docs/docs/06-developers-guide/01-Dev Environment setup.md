@@ -79,6 +79,7 @@ element in the table below:
 | esthesis Core UI  | http://localhost:4200            | esthesis-admin / esthesis-admin   |
 | Keycloak          | http://keycloak.esthesis         | esthesis-system / esthesis-system |
 | Kafka             | kafka.esthesis:9095              |                                   |
+| Kafka UI          | http://kafka-ui.esthesis    			|                                   |
 
 ## Running the services
 The above installation will prepare all the necessary components to support esthesis Core. The actual
