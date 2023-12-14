@@ -67,19 +67,20 @@ below summarises the resources you can access after running the above command. N
 deployed the services in a different namespace than `esthesis`, you need to adjust the namespace
 element in the table below:
 
-| Resource          | URL/host                         | Credentials                       |
-|-------------------|----------------------------------|-----------------------------------|
-| APISIX Dashboard  | http://apisix-dashboard.esthesis | esthesis-system / esthesis-system |
-| Redis             | redis-master.esthesis:6379/0     | (empty) / esthesis-system         |
-| Mosquitto         | mosquitto.esthesis:1883          |                                   |
-| Grafana           | http://grafana.esthesis:3000     | esthesis-system / esthesis-system |
-| InfluxDB Admin UI | http://influxdb.esthesis:8086    | esthesis-system / esthesis-system |
-| InfluxDB          | influxdb.esthesis:8088           | -                                 |
-| MongoDB           | mongodb.esthesis:27017           | esthesis-system / esthesis-system |
-| esthesis Core UI  | http://localhost:4200            | esthesis-admin / esthesis-admin   |
-| Keycloak          | http://keycloak.esthesis         | esthesis-system / esthesis-system |
-| Kafka             | kafka.esthesis:9095              |                                   |
-| Kafka UI          | http://kafka-ui.esthesis    			|                                   |
+| Resource | URL/host | Credentials |
+|-|-|-|
+| APISIX Dashboard   | http://apisix-dashboard.esthesis | esthesis-system / esthesis-system |
+| Redis              | redis-master.esthesis:6379/0 | (empty) / esthesis-system |
+| Mosquitto          | mosquitto.esthesis:1883 ||
+| Grafana            | http://grafana.esthesis:3000 | esthesis-system / esthesis-system |
+| InfluxDB Admin UI  | http://influxdb.esthesis:8086 | esthesis-system / esthesis-system |
+| InfluxDB           | influxdb.esthesis:8088 ||
+| MongoDB            | mongodb.esthesis:27017 | esthesis-system / esthesis-system |
+| esthesis Core UI   | http://localhost:4200 | esthesis-admin / esthesis-admin |
+| Keycloak           | http://keycloak.esthesis | esthesis-system / esthesis-system |
+| Kafka              | kafka.esthesis:9095 ||
+| Kafka UI           | http://kafka-ui.esthesis ||
+| Docker Registry UI | http://docker-registry-ui-docker-registry-ui-user-interface.esthesis ||
 
 ## Running the services
 The above installation will prepare all the necessary components to support esthesis Core. The actual
