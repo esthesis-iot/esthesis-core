@@ -10,9 +10,8 @@ quarkus:
     handler:
       gelf:
         enabled: true
-        host: "gelf-ingester.esthesis.localdev"
+        host: "localhost"
         port: 12201
-        skip-hostname-resolution: true
   otel:
     sdk:
       disabled: false
@@ -21,7 +20,7 @@ quarkus:
     exporter:
       otlp:
         traces:
-          endpoint: http://otel-ingester.esthesis.localdev:4317
+          endpoint: http://grafana-tempo-distributor.esthesis:4317
   # TODO document how to get these
 #  kubernetes-client:
 #    ca-cert-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJlRENDQVIyZ0F3SUJBZ0lCQURBS0JnZ3Foa2pPUFFRREFqQWpNU0V3SHdZRFZRUUREQmhyTTNNdGMyVnkKZG1WeUxXTmhRREUyTlRVeU9EYzNPVEV3SGhjTk1qSXdOakUxTVRBd09UVXhXaGNOTXpJd05qRXlNVEF3T1RVeApXakFqTVNFd0h3WURWUVFEREJock0zTXRjMlZ5ZG1WeUxXTmhRREUyTlRVeU9EYzNPVEV3V1RBVEJnY3Foa2pPClBRSUJCZ2dxaGtqT1BRTUJCd05DQUFTbklXbUw2YjdXenlyR0xmNGt1RjBralRaTGhRSUV0ZzljYzZQclFudngKVkM1MGQ4VVhwRDkxOFdvNjN5K09BMWVqVys0QnhUaG12dTY1UjBHMmJZVVZvMEl3UURBT0JnTlZIUThCQWY4RQpCQU1DQXFRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBZEJnTlZIUTRFRmdRVWlJUHpqem9qaGoxVnUra2N2YkJJCm8vTDliM0F3Q2dZSUtvWkl6ajBFQXdJRFNRQXdSZ0loQU9qaFpieEI0VlVSait1ZWNXbk9mMFl4d2c4MkpGZEEKVU9jZjhGSlhvdytWQWlFQTEyc016ejZ2OXJkSDNTVjNyWHN2R3FyVGtoMjJoMjBvYlRCTWp0bzZ2dzA9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K

@@ -67,7 +67,7 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
 	}
 
 	@Override
-	@Blocking
+//	@Blocking
 	@Audited(cat = Category.PROVISIONING, op = Operation.READ, msg = "Download provisioning "
 		+ "package", log = AuditLogType.DATA_IN)
 	public Uni<RestResponse<byte[]>> download(String provisioningPackageId) {

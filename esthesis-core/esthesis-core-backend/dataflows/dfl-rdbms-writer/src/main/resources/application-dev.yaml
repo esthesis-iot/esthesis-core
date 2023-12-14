@@ -8,9 +8,8 @@ quarkus:
     handler:
       gelf:
         enabled: true
-        host: "gelf-ingester.esthesis.localdev"
+        host: "localhost"
         port: 12201
-        skip-hostname-resolution: true
   otel:
     sdk:
       disabled: false

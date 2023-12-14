@@ -11,7 +11,7 @@ env \
     ESTHESIS_DFL_ESTHESIS_DB_NAME=esthesiscore \
     ESTHESIS_DFL_ESTHESIS_DB_USERNAME=esthesis-system \
     ESTHESIS_DFL_ESTHESIS_DB_PASSWORD=esthesis-system \
-    ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.esthesis:9095 \
+    ESTHESIS_DFL_KAFKA_CLUSTER_URL=esthesis-core-kafka-kafka-external-bootstrap.esthesis:9095 \
     ESTHESIS_DFL_KAFKA_PING_TOPIC=esthesis-ping \
     ESTHESIS_DFL_KAFKA_CONSUMER_GROUP=dfl-ping-updater \
 ./mvnw quarkus:dev -Ddebug=39154 -Dquarkus.profile="$PROFILES"

@@ -10,9 +10,8 @@ quarkus:
     handler:
       gelf:
         enabled: true
-        host: "gelf-ingester.esthesis.localdev"
+        host: "localhost"
         port: 12201
-        skip-hostname-resolution: true
   rest-client:
     ApplicationSystemResource:
       url: http://localhost:59090
@@ -31,7 +30,7 @@ quarkus:
     exporter:
       otlp:
         traces:
-          endpoint: http://otel-ingester.esthesis.localdev:4317
+          endpoint: http://grafana-tempo-distributor.esthesis:4317
   redis:
     hosts: redis://:esthesis-system@redis-master.esthesis:6379/0
   config:

@@ -13,14 +13,16 @@ quarkus:
       format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%-30.30c{1.}] %s%e%n"
     handler:
       gelf:
+        include-full-mdc: true
+        skip-hostname-resolution: false
         additional-field:
-          "platform":
-            value: "esthesis"
-          "module":
+          platform:
+            value: esthesis
+          module:
             value: esthesis-core
-          "type":
-            value: "API"
-          "service":
+          type:
+            value: Dataflow
+          service:
             value: ${quarkus.application.name}
   banner:
     enabled: false

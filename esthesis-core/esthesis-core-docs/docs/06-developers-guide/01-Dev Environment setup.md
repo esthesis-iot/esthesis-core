@@ -13,13 +13,17 @@ machine, instead of being deployed to the Kubernetes cluster.
 
 - A dev Kubernetes cluster with at least 16GB of RAM. We suggest firing up an [Ubuntu server](https://ubuntu.com/download/server)
 	in the virtualisation platform of your choice, while preselecting Microk8s in the installed packages
-	screen. This way you can have a "real" Kubernetes, single-node cluster, using the same
-	Kubernetes distribution the rest of us are also using, so we can provide appropriate guidance and
-	setup instructions that work across the board.
+	screen. This way you can have a single-node cluster, using the same Kubernetes distribution the
+	rest of us are also using, so we can provide appropriate guidance and setup instructions that work
+	across the board.
 - [Helm](https://helm.sh)
 - [Helmfile](https://github.com/helmfile/helmfile)
-- Many of the build and helper scripts are written for a Unix shell. If you are on
+- Many of the build and helper scripts are written for a Unix/Linux shell. If you are on
 	Windows, you can use [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) or [Cygwin](https://www.cygwin.com/).
+- [Promtail](https://github.com/grafana/loki/releases). Promtail is used to provide a local UDP GELF
+	endpoint to collect logs and forward them to Loki. If you want to develop and test Loki functionality
+	you need to be running Promtail with the configuration file in `_dev/promtail/config.yaml`, e.g.
+	`promtail --config.file=config.yaml`.
 
 ## Kubernetes initialisation
 
@@ -27,6 +31,7 @@ SSH to your Microk8s VM and enable the following addons:
 - `microk8s enable dns`
 - `microk8s enable hostpath-storage`
 - `microk8s enable registry`
+- `microk8s enable ingress`
 
 ## Installation
 
@@ -42,7 +47,7 @@ SSH to your Microk8s VM and enable the following addons:
 
 - Install the application components in `esthesis-helm/esthesis-core`:
 	```shell
-	DEV_HOST=192.168.100.102 helmfile -e dev sync
+	DEV_HOST=192.168.40.236 helmfile -e dev sync
 	```
 
 	:::caution
@@ -90,9 +95,10 @@ service in development mode. You need to run each of the services in a separate 
 
 ### Automation
 Starting up (and restarting) all those services manually can be a tedious task. We have prepared a
-tmux script that you can use to start all services in a single terminal window in multiple panes,
-while merging all log output into another pane. You can find the script in `_dev/tmux-dev.sh`. We
-also provide a `.tmux.conf` file, in case you want to replicate our own tmux look and feel.
+[tmux](https://github.com/tmux/tmux/wiki) script that you can use to start all services in a single
+terminal window in multiple panes, while merging all log output into another pane. You can find the
+script in `_dev/tmux-dev.sh`. We also provide a `.tmux.conf` file, in case you want to replicate our
+own tmux look and feel.
 
 ![tmux](/img/docs/dev-guide/tmux.gif)
 

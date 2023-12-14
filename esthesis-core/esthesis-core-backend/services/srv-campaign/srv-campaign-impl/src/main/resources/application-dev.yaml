@@ -12,9 +12,8 @@ quarkus:
     handler:
       gelf:
         enabled: true
-        host: "gelf-ingester.esthesis.localdev"
+        host: "localhost"
         port: 12201
-        skip-hostname-resolution: true
   mongodb:
     connection-string: mongodb://mongodb.esthesis:27017
     database: esthesiscore
@@ -31,7 +30,7 @@ quarkus:
     exporter:
       otlp:
         traces:
-          endpoint: http://otel-ingester.esthesis.localdev:4317
+          endpoint: http://grafana-tempo-distributor.esthesis:4317
   oidc-client:
     auth-server-url: http://keycloak.esthesis/realms/esthesis
     grant-options:
