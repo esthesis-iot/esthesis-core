@@ -13,7 +13,7 @@ When using the `publish.sh` script to prepare your images, you can define the `E
 environment variable to point to a private registry. This variable should point to the IP address
 of your Microk8s VM using port 32000. For example:
 ```shell
-ESTHESIS_REGISTRY=192.168.20.23:32000 ./publish.sh
+ESTHESIS_REGISTRY_URL=192.168.10.47:32000 ./publish.sh
 ```
 
 ## Using the private registry in testing a production-like installation
@@ -22,7 +22,7 @@ your private registry instead of e.g. Docker Hub. To do so, you can define the `
 environment variable to point to the private registry. This variable should point to the IP address
 of your Microk8s VM using port 32000. For example:
 ```shell
-ESTHESIS_REGISTRY=192.168.20.23:32000 helmfile sync
+ESTHESIS_REGISTRY_URL=192.168.10.47:32000 helmfile sync
 ```
 
 :::tip
