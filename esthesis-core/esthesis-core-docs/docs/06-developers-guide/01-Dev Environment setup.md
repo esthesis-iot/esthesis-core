@@ -108,6 +108,10 @@ own tmux look and feel.
 You can quickly terminate all services by issuing `tmux kill-session -t esthesis-dev`.
 :::
 
+## Committing code
+We are using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+There are plugins for all major IDEs, so you can easily follow the convention.
+
 ## Notes
 1. Before trying to log in to the application open the (https) Keycloak URL into your browser in order to
 	 accept the self-signed certificate. Otherwise, the first redirect from the application's UI to
@@ -117,11 +121,15 @@ You can quickly terminate all services by issuing `tmux kill-session -t esthesis
 	 resources that do not get automatically deleted by uninstalling the Helm chart (for example, PVCs).
 3. Installing all components for development under a single Kubernetes node may require you to
 	 increase certain OS limits, here are the ones we have found to be relevant in Ubuntu server 23.04:
-	```shell
-	sudo sysctl fs.inotify.max_user_instances=1280
-	sudo sysctl fs.inotify.max_user_watches=655360
-	```
+	 ```shell
+	 sudo sysctl fs.inotify.max_user_instances=1280
+	 sudo sysctl fs.inotify.max_user_watches=655360
+	 ```
+4. You can create a `local-env.sh` script alongside the `dev-{service}.sh` scripts to customise your
+	 local development environment. If such a file exist, it will be sourced by the `dev-{service}.sh`.
+5. `srv-kubernetes` service needs to be able to create new pods in your Kubernetes environment. This
+	 requires a valid `~/.kube/config` file in your home directory. In case you are splitting your
+	 Kubernetes config into multiple files, you can use the `KUBECONFIG` environment variable to point
+	 to the config file you want to use. You can specify this variable in your `local-env.sh` file as
+	 explained above.
 
-## Committing code
-We are using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
-There are plugins for all major IDEs, so you can easily follow the convention.

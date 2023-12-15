@@ -6,6 +6,7 @@ if [ "$1" != "" ]; then
   echo "Activating profiles: $PROFILES"
 fi
 
+[ -e "local-env.sh" ] && source "local-env.sh"
 env \
     ESTHESIS_DFL_REDIS_URL=redis://redis-master.esthesis:6379/0 \
     ESTHESIS_DFL_REDIS_PASSWORD=esthesis-system \

@@ -6,6 +6,7 @@ if [ "$1" != "" ]; then
   echo "Activating profiles: $PROFILES"
 fi
 
+[ -e "local-env.sh" ] && source "local-env.sh"
 env \
     ESTHESIS_DFL_ESTHESIS_DB_URL=mongodb://mongodb.esthesis:27017 \
 		ESTHESIS_DFL_ESTHESIS_DB_NAME=esthesiscore \

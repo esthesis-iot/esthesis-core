@@ -6,6 +6,7 @@ if [ "$1" != "" ]; then
   echo "Activating profiles: $PROFILES"
 fi
 
+[ -e "local-env.sh" ] && source "local-env.sh"
 env \
     ESTHESIS_DFL_MQTT_TOPIC_PING=esthesis/ping \
     ESTHESIS_DFL_MQTT_TOPIC_TELEMETRY=esthesis/telemetry \

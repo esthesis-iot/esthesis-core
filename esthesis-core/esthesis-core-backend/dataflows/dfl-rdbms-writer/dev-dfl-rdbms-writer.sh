@@ -6,6 +6,7 @@ if [ "$1" != "" ]; then
   echo "Activating profiles: $PROFILES"
 fi
 
+[ -e "local-env.sh" ] && source "local-env.sh"
 env \
     ESTHESIS_DFL_DB_KIND=mysql \
     ESTHESIS_DFL_DB_USERNAME=esthesis-system \

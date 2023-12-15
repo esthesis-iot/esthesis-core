@@ -9,6 +9,7 @@ fi
 echo Enter influxdb token:
 read TOKEN
 
+[ -e "local-env.sh" ] && source "local-env.sh"
 env \
     ESTHESIS_DFL_INFLUX_URL=http://influxdb.esthesis:8086 \
     ESTHESIS_DFL_INFLUX_TOKEN= $TOKEN \

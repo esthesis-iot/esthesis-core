@@ -11,6 +11,7 @@ if [ "$TERM_PROGRAM" = tmux ]; then
   CONSOLE=false
 fi
 
+[ -e "local-env.sh" ] && source "local-env.sh"
 cd srv-audit-impl || exit
 ./mvnw quarkus:dev \
   -Dquarkus.http.port=59140 \
