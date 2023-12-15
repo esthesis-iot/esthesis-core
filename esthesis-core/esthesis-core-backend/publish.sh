@@ -88,9 +88,8 @@ printInfo "Creating Docker buildx $BUILDX_NAME."
 docker buildx create --name "$BUILDX_NAME" --use --config buildkitd.toml
 
 # Iterate over all modules and publish them.
-unset CREDS
 if [ -n "$ESTHESIS_REGISTRY_USERNAME" ] && [ -n "$ESTHESIS_REGISTRY_PASSWORD" ]; then
-	CREDS="--creds $ESTHESIS_REGISTRY_USERNAME:$ESTHESIS_REGISTRY_PASSWORD"
+	docker login "$ESTHESIS_REGISTRY_URL" --username "$ESTHESIS_REGISTRY_USERNAME" --password "$ESTHESIS_REGISTRY_PASSWORD"
 fi
 
 for ((i = 0; i < ${#modules[@]}; i += 2)); do
