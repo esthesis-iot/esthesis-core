@@ -96,8 +96,6 @@ fi
 for ((i = 0; i < ${#modules[@]}; i += 2)); do
 	MODULE_PATH="${modules[$i]}"
 	MODULE_NAME="${modules[$i+1]}"
-	echo $MODULE_PATH
-	echo $MODULE_NAME
 	IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesisiot/esthesis-core-$MODULE_NAME"
 	printInfo "Building $ESTHESIS_ARCHITECTURES for $IMAGE_NAME."
 	pushd .
