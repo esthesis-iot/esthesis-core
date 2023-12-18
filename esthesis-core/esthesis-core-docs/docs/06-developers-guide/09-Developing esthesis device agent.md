@@ -73,7 +73,7 @@ APISIX_IP=$(dig +short apisix-gateway.esthesis) && \
 RND_PREFIX=esthesis-test-device-$(uuidgen | cut -f1 -d"-" | awk '{print tolower($0)}') && \
 for ((i=1; i<=3; i++)); do
 	HID=$RND_PREFIX-$i && \
-	podman run -d --tls-verify=false --name $HID \
+	docker run -d --name $HID \
 		-e HARDWARE_ID=$HID \
 		-e REGISTRATION_URL=http://apisix-gateway.esthesis/api/agent/v1/register \
 		-e PROPERTIES_FILE=/app/.esthesis/esthesis.properties \

@@ -46,7 +46,7 @@ The container client is available on Docker Hub and is built for multiple platfo
 For a typical demo installation, you can run the device agent as:
 
 ```bash
-podman run -d \
+docker run -d \
 	--name test-device-2 \
 	--restart unless-stopped \
 	-e HARDWARE_ID=test-device-2 \

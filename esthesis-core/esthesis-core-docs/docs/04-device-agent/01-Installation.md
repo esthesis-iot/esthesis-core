@@ -18,7 +18,7 @@ image. The esthesis device agent supports a plethora of configuration options (s
 required to successfully start it up and have it connect to esthesis Core is the following:
 
 ```shell
-podman run \
+docker run \
 	-e HARDWARE_ID=test-device-1 \
 	-e REGISTRATION_URL=http://esthesis-core.domain/api/agent/v1/register \
 	esthesisiot/esthesis-core-device
