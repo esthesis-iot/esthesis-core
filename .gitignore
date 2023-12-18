@@ -5,3 +5,4 @@
 /esthesis-core/itomate.yml
 .idea/
 **/pom.xml.versionsBackup
+**/local-env.sh

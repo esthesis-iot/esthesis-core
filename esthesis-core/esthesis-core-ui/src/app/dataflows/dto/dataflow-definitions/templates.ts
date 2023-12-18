@@ -37,7 +37,7 @@ export const DATAFLOW_TEMPLATE_WRAPPED_CONCURRENCY = [{
 
 export const DATAFLOW_TEMPLATE_KAFKA = [
   {
-    key: "cluster-url", type: "input", defaultValue: "kafka-headless:9094",
+    key: "cluster-url", type: "input", defaultValue: "esthesis-core-kafka-kafka-bootstrap:9092",
     props: {required: true, label: "Cluster URL"}
   },
 ];

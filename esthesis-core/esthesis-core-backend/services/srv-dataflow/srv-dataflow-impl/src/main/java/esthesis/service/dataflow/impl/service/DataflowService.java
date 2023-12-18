@@ -184,7 +184,7 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		save(dataflow);
 
 		// Remove the dataflow from the database.
-		deleteById(dataflowId);
+		delete(findById(dataflowId));
 	}
 
 }

@@ -147,6 +147,10 @@ public abstract class BaseService<D extends BaseEntity> {
 		return repository.deleteById(new ObjectId(deviceId));
 	}
 
+	public void delete(D entity) {
+		repository.delete(entity);
+	}
+
 	public long deleteAll() {
 		return repository.deleteAll();
 	}

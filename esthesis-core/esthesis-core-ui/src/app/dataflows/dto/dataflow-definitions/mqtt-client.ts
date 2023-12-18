@@ -81,12 +81,12 @@ export const DATAFLOW_DEFINITION_MQTT_CLIENT = {
       props: {label: "Kafka Broker"},
       fieldGroup: [
         {
-          key: "cluster-url", type: "input", defaultValue: "kafka-headless:9094",
+          key: "cluster-url", type: "input", defaultValue: "esthesis-core-kafka-kafka-bootstrap:9092",
           props: {
             required: true,
             type: "text",
             label: "Cluster URL",
-            hintStart: "e.g. kafka-headless:9094"
+            hintStart: "e.g. kafka:9092"
           }
         }
       ]
