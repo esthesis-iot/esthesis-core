@@ -33,6 +33,11 @@ printInfo() {
 	printf "\e[32m***INFO: $1\e[0m\n"
 }
 
+# If $ESTHESIS_REGISTRY_URL is empty, set it to docker.io.
+if [ -z "$ESTHESIS_REGISTRY_URL" ]; then
+  ESTHESIS_REGISTRY_URL="docker.io"
+fi
+
 # Find the version of the package.
 PACKAGE_VERSION=$(npm pkg get version --workspaces=false | tr -d \")
 printInfo "Package version: $PACKAGE_VERSION."

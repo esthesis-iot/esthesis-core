@@ -46,6 +46,11 @@ if [ -x "$(command -v podman)" ]; then
     fi
 fi
 
+# If $ESTHESIS_REGISTRY_URL is empty, set it to docker.io.
+if [ -z "$ESTHESIS_REGISTRY_URL" ]; then
+  ESTHESIS_REGISTRY_URL="docker.io"
+fi
+
 # Find the version of the package.
 PACKAGE_VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.4.0:evaluate -Dexpression=project.version | fgrep -v "[INFO]")
 printInfo "Package version: $PACKAGE_VERSION."
