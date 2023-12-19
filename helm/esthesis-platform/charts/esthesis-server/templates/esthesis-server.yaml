@@ -31,7 +31,7 @@ spec:
     app: esthesis-server
   ports:
     - port: 46000
-  type: LoadBalancer
+  type: {{ .Values.serviceType }}
 
 ####################################################################################################
 # Deployment

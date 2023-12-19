@@ -34,7 +34,7 @@ spec:
       name: tcp
     - port: 8883
       name: ssl
-  type: LoadBalancer
+  type: {{ .Values.serviceType }}
 
 ####################################################################################################
 # Deployment
