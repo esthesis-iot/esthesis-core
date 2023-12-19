@@ -13,42 +13,25 @@
 #   ./publish.sh
 ####################################################################################################
 
+# Trap exit.
+set -e
+exit_handler() {
+    echo "*** ERROR: Build failed with exit code $?"
+    if [ -n "$BUILDX_NAME" ]; then
+				echo "*** INFO: Deleting Docker buildx $BUILDX_NAME."
+				docker buildx rm "$BUILDX_NAME"
+		fi
+    exit 1
+}
+trap exit_handler ERR
+
 # Helper functions to print messages.
 printError() {
-	printf "\e[31m***ERROR: "
-  	for i in "$@"; do printf "%s" "$i"; done;
-  	printf "\e[0m\n"
+	printf "\e[31m***ERROR: $1\e[0m\n"
 }
 printInfo() {
-	printf "\e[32m***INFO: "
-	for i in "$@"; do printf "%s " "$i"; done;
-	printf "\e[0m\n"
+	printf "\e[32m***INFO: $1\e[0m\n"
 }
-
-# Check if Podman is installed.
-if [ -x "$(command -v podman)" ]; then
-  # Check if Podman machine is running.
-  if [ "$(uname)" != "Linux" ]; then
-    if ! podman machine inspect &> /dev/null; then
-      printError "Podman machine is not running."
-      exit 6
-    fi
-  else
-    printInfo "Host is not macOS. Skipping 'podman machine inspect' command."
-  fi
-else
-		printError "Podman is not installed."
-		exit 5
-fi
-
-# Registry to push to.
-PUBLIC_REGISTRY=0
-if [ -z "$ESTHESIS_REGISTRY_URL" ]; then
-	ESTHESIS_REGISTRY_URL="docker.io"
-fi
-if [[ "$ESTHESIS_REGISTRY_URL" == "docker.io" ]]; then
-    PUBLIC_REGISTRY=1
-fi
 
 # Find the version of the package.
 PACKAGE_VERSION=$(npm pkg get version --workspaces=false | tr -d \")
@@ -62,30 +45,29 @@ fi
 if [ -z "$ESTHESIS_ARCHITECTURES" ]; then
 	ESTHESIS_ARCHITECTURES="linux/amd64"
 fi
-JOBS=$(echo "$ESTHESIS_ARCHITECTURES" | tr ',' '\n' | wc -l | sed -e 's/^[[:space:]]*//')
+
+# Create a Docker buildx.
+BUILDX_NAME=$(LC_CTYPE=C tr -dc 'a-zA-Z' < /dev/urandom | head -c 1)$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 11)
+printInfo "Creating Docker buildx $BUILDX_NAME."
+docker buildx create --name "$BUILDX_NAME" --use --config buildkitd.toml
+
+# Login to remote registry.
+if [ -n "$ESTHESIS_REGISTRY_USERNAME" ] && [ -n "$ESTHESIS_REGISTRY_PASSWORD" ]; then
+	docker login "$ESTHESIS_REGISTRY_URL" --username "$ESTHESIS_REGISTRY_USERNAME" --password "$ESTHESIS_REGISTRY_PASSWORD"
+fi
 
 # Build & Push
 IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesisiot/esthesis-core-ui"
 printInfo "Building $ESTHESIS_ARCHITECTURES for $IMAGE_NAME."
-unset CREDS
-if [ -n "$ESTHESIS_REGISTRY_USERNAME" ] && [ -n "$ESTHESIS_REGISTRY_PASSWORD" ]; then
-  CREDS="--creds $ESTHESIS_REGISTRY_USERNAME:$ESTHESIS_REGISTRY_PASSWORD"
-fi
 TAGS=("latest" "$PACKAGE_VERSION")
 for TAG in "${TAGS[@]}"; do
-  if podman manifest exists "$IMAGE_NAME:$TAG"; then
-    printInfo "Removing existing manifest $IMAGE_NAME:$TAG."
-    podman manifest rm "$IMAGE_NAME:$TAG"
-  fi
   printInfo "Building container $IMAGE_NAME:$TAG."
-  podman build \
-         --jobs "$JOBS" \
+  docker buildx build \
          --platform "$ESTHESIS_ARCHITECTURES" \
-         --manifest "$IMAGE_NAME:$TAG" .
-  printInfo "Pushing container $IMAGE_NAME:$TAG."
-  if [ "$PUBLIC_REGISTRY" = true ]; then
-    podman manifest push "$IMAGE_NAME:$TAG" $CREDS --rm
-  else
-    podman manifest push "$IMAGE_NAME:$TAG" $CREDS --rm --tls-verify=false
-  fi
+         -t "$IMAGE_NAME:$TAG" \
+         --push .
 done
+
+# Delete the buildx.
+printInfo "Deleting Docker buildx $BUILDX_NAME."
+docker buildx rm "$BUILDX_NAME"

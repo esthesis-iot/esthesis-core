@@ -1,7 +1,8 @@
 ####################################################################################################
 # Cache NPM modules.
 ####################################################################################################
-FROM node:18.14.0-alpine as npm
+# node:lts-bookworm-slim
+FROM node@sha256:18aacc7993a16f1d766c21e3bff922e830bcdc7b549bbb789ceb7374a6138480 as npm
 LABEL maintainer="esthesis@eurodyn.com"
 
 # Set working directory
@@ -14,7 +15,8 @@ RUN npm install
 #####################################################################################################
 ## Build application.
 #####################################################################################################
-FROM node:18.14.0-alpine as build
+# node:lts-bookworm-slim
+FROM node@sha256:18aacc7993a16f1d766c21e3bff922e830bcdc7b549bbb789ceb7374a6138480 as build
 LABEL maintainer="esthesis@eurodyn.com"
 
 # Set working directory
@@ -34,7 +36,8 @@ RUN ng build --configuration production --output-path=dist
 #####################################################################################################
 ## Create runtime container.
 #####################################################################################################
-FROM nginx:1.23.4
+# nginx:stable
+FROM nginx@sha256:9007fdd404f9b8128362e8dbe1e358690490f8432e01ce124e1c815071d26af3
 LABEL maintainer="esthesis@eurodyn.com"
 
 # Copy artifact build from the 'build environment'.

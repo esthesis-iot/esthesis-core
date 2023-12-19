@@ -17,6 +17,18 @@
 #   ./publish.sh services/srv-about/srv-about-impl srv-about
 ####################################################################################################
 
+# Trap exit.
+set -e
+exit_handler() {
+    echo "*** ERROR: Build failed with exit code $?"
+    if [ -n "$BUILDX_NAME" ]; then
+				echo "*** INFO: Deleting Docker buildx $BUILDX_NAME."
+				docker buildx rm "$BUILDX_NAME"
+		fi
+    exit 1
+}
+trap exit_handler ERR
+
 # Helper functions to print messages.
 printError() {
 	printf "\e[31m***ERROR: $1\e[0m\n"
@@ -87,11 +99,12 @@ BUILDX_NAME=$(LC_CTYPE=C tr -dc 'a-zA-Z' < /dev/urandom | head -c 1)$(LC_CTYPE=C
 printInfo "Creating Docker buildx $BUILDX_NAME."
 docker buildx create --name "$BUILDX_NAME" --use --config buildkitd.toml
 
-# Iterate over all modules and publish them.
+# Login to remote registry.
 if [ -n "$ESTHESIS_REGISTRY_USERNAME" ] && [ -n "$ESTHESIS_REGISTRY_PASSWORD" ]; then
 	docker login "$ESTHESIS_REGISTRY_URL" --username "$ESTHESIS_REGISTRY_USERNAME" --password "$ESTHESIS_REGISTRY_PASSWORD"
 fi
 
+# Iterate over all modules and publish them.
 for ((i = 0; i < ${#modules[@]}; i += 2)); do
 	MODULE_PATH="${modules[$i]}"
 	MODULE_NAME="${modules[$i+1]}"
