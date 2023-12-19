@@ -56,8 +56,10 @@ first manually delete it and `helmfile sync` again.
 
 ## How to create a token in InfluxDB
 1. Open the InfluxDB UI, e.g. http://influxdb.esthesis:8086.
-2. Hover on the sidebar icon depicting an arrow pointing up.
-3. Select 'API Tokens'.
-4. Click on 'Generate API Token' button and choose "All Access API Token".
-5. Give a description.
-6. Copy the token and save it somewhere safe.
+2. Switch to the organisiation you want to create the token for by clicking on the organisation name
+in the top left corner.
+3. Hover on the sidebar icon depicting an arrow pointing up.
+4. Select 'API Tokens'.
+5. Click on 'Generate API Token' button and choose "All Access API Token".
+6. Give a description.
+7. Copy the token and save it somewhere safe.
