@@ -224,7 +224,7 @@
 
 		<slugify.version>3.0.2</slugify.version>
 		<surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
-		<zeebe.version>1.0.1</zeebe.version>
+		<zeebe.version>1.3.0</zeebe.version>
 	</properties>
 
 </project>
