@@ -31,7 +31,7 @@ spec:
     app: esthesis-server
   ports:
     - port: 46000
-  type: {{ .Values.serviceType }}
+  type: {{ .Values.global.serviceType }}
 
 ####################################################################################################
 # Deployment
@@ -98,6 +98,13 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 30
             failureThreshold: 2
+          resources:  
+            limits: 
+              cpu: 500m 
+              memory: 512Mi 
+            requests: 
+              cpu: 250m 
+              memory: 512Mi
       volumes:
         - name: esthesis-server-pv
           persistentVolumeClaim:

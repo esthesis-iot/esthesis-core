@@ -91,6 +91,13 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 30
             failureThreshold: 2
+          resources:  
+            limits: 
+              cpu: 500m 
+              memory: 512Mi 
+            requests: 
+              cpu: 250m 
+              memory: 512Mi
       volumes:
         - name: esthesis-tsdb-pv
           persistentVolumeClaim:

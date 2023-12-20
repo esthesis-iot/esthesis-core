@@ -54,7 +54,7 @@ spec:
     spec:
       containers:
         - name: esthesis-db
-          image: mysql:8.0.16
+          image: mysql:8.0.32-debian
           imagePullPolicy: "Always"
           ports:
             - containerPort: 3306
@@ -74,7 +74,7 @@ spec:
                   name: esthesis-secret
                   key: db_user_password
           volumeMounts:
-            - mountPath: "/var/opt/mssql"
+            - mountPath: "/var/lib/mysql"
               name: esthesis-db-pv
           startupProbe:
             tcpSocket:
@@ -87,6 +87,13 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 30
             failureThreshold: 2
+          resources:  
+            limits: 
+              cpu: 500m 
+              memory: 512Mi 
+            requests: 
+              cpu: 250m 
+              memory: 256Mi
       volumes:
         - name: esthesis-db-pv
           persistentVolumeClaim:

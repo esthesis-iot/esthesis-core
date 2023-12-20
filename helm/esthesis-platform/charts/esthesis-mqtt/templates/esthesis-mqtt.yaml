@@ -34,7 +34,7 @@ spec:
       name: tcp
     - port: 8883
       name: ssl
-  type: {{ .Values.serviceType }}
+  type: {{ .Values.global.serviceType }}
 
 ####################################################################################################
 # Deployment
@@ -83,6 +83,13 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 30
             failureThreshold: 2
+          resources:  
+            limits: 
+              cpu: 500m 
+              memory: 256Mi 
+            requests: 
+              cpu: 250m 
+              memory: 256Mi
       volumes:
         - name: esthesis-mqtt-pv
           persistentVolumeClaim:
