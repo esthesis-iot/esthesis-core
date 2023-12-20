@@ -55,7 +55,7 @@ spec:
     spec:
       containers:
         - name: esthesis-server
-          image: esthesisiot/esthesis-server:2.0.19
+          image: esthesisiot/esthesis-server:2.0.20-SNAPSHOT
           imagePullPolicy: Always
           ports:
             - containerPort: 46000
