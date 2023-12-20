@@ -90,14 +90,13 @@ pipeline{
         stage ("Clone projects") {
             steps{
                 container (name: 'esthesis-release-builder') {
-                    withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
                             git config --global user.email "devops-d2@eurodyn.com"
                             git config --global user.name "$Username"
                             git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-platform.git
-                            git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-docs.git
                         '''
                     }
                 }
@@ -106,12 +105,15 @@ pipeline{
         stage ("esthesis-platform: Changes for RELEASE version"){
             steps{
                 container (name: 'esthesis-release-builder') {
-                    withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
                             git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-platform.git
-                            cd esthesis-platform/esthesis-server
+                            cd esthesis-platform
+                            git checkout v2
+
+                            cd esthesis-server
                             mvn versions:set -DnewVersion=$RELEASE_VERSION
                             mvn versions:commit
 
@@ -130,7 +132,7 @@ pipeline{
         stage ("Helm Package for RELEASE version"){
             steps{
                 container (name: 'esthesis-release-builder') {
-                    withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''#!/bin/bash
@@ -142,21 +144,7 @@ pipeline{
 
                             git commit -a -m "release: prepare release $RELEASE_VERSION"
                             git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
-                            git push https://$Username:$Password@github.com/esthesis-iot/esthesis-platform  HEAD:master --tags
-
-                            cd ../..
-
-                            pushd . && \
-                            helm package esthesis-platform -d ../../esthesis-docs/helm && \
-                            cd ../../esthesis-docs/helm && \
-                            helm repo index . && \
-                            popd
-
-                            cd ../../esthesis-docs
-                            git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-docs.git
-                            git add .
-                            git commit -m "package esthesis-platform charts for release version: $RELEASE_VERSION"
-                            git push https://$Username:$Password@github.com/esthesis-iot/esthesis-docs HEAD:master
+                            git push https://$Username:$Password@github.com/esthesis-iot/esthesis-platform HEAD:v2 --tags
                         '''
                     }
                 }
@@ -164,7 +152,7 @@ pipeline{
         }
         stage ("esthesis-platform: Build & Push Docker images"){
             environment {
-		         DOCKERHUB_CREDENTIALS=credentials('devops_d2_dockerhub')
+		         DOCKERHUB_CREDENTIALS=credentials('dockerhub-credentials')
 	        }
             steps{
                 container (name: 'esthesis-release-builder') {
@@ -182,7 +170,7 @@ pipeline{
         stage ("esthesis-platform: Changes for next development version"){
             steps{
                 container (name: 'esthesis-release-builder') {
-                    withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
@@ -205,7 +193,7 @@ pipeline{
         stage ("Helm Charts for next development version"){
             steps{
                 container (name: 'esthesis-release-builder') {
-                    withCredentials([usernamePassword(credentialsId: 'Jenkins Github token',
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
@@ -217,7 +205,7 @@ pipeline{
 
                             git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-platform.git
                             git commit -a -m "release: prepare for next development iteration: $NEXT_DEV_VERSION"
-                            git push https://$Username:$Password@github.com/esthesis-iot/esthesis-platform HEAD:master
+                            git push https://$Username:$Password@github.com/esthesis-iot/esthesis-platform HEAD:v2
                         '''
                     }
                 }
