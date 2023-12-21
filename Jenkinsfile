@@ -5,7 +5,7 @@ pipeline {
               apiVersion: v1
               kind: Pod
               metadata:
-                name: esthesis-platform
+                name: esthesis-core
                 namespace: jenkins
               spec:
                 affinity:
@@ -24,7 +24,7 @@ pipeline {
                   runAsUser: 0
                   runAsGroup: 0
                 containers:
-                - name: esthesis-platform-builder
+                - name: esthesis-core-builder
                   image: eddevopsd2/ubuntu-dind:dind-mvn3.8.5-jdk17-node18.16-go1.20-buildx-helm3.12.1
                   volumeMounts:
                   - name: maven
@@ -63,7 +63,7 @@ pipeline {
     stages {
     	stage ('Dockerd') {
             steps {
-                container (name: 'esthesis-platform-builder') {
+                container (name: 'esthesis-core-builder') {
                     sh 'dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock &> dockerd-logfile &'
                 }
             }
@@ -72,32 +72,32 @@ pipeline {
             parallel {
                 stage('Go Build Device') {
                     steps {
-                        container (name: 'esthesis-platform-builder') {
+                        container (name: 'esthesis-core-builder') {
                             sh '''
                                 export PATH=$PATH:/usr/bin/gcc
-                                cd esthesis-core/esthesis-core-device/go
+                                cd esthesis-core-device/go
                                 go mod download
-                                go build -o esthesis-agent -ldflags '-linkmode external -w -extldflags "-static"' cmd/main.go
+                                go build -o esthesis-core-device -ldflags '-linkmode external -w -extldflags "-static"' cmd/main.go
                             '''
                         }
                     }
                 }
                 stage('Build Server') {
                     steps {
-                        container (name: 'esthesis-platform-builder') {
+                        container (name: 'esthesis-core-builder') {
                             sh '''
                                 [ -d /sys/fs/cgroup/systemd ] || mkdir /sys/fs/cgroup/systemd
                                 mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
-                                mvn -f esthesis-core/esthesis-core-backend/pom.xml clean install -Pcyclonedx-bom
+                                mvn -f esthesis-core-backend/pom.xml clean install -Pcyclonedx-bom
                             '''
                         }
                     }
                 }
                 stage('Build Ui') {
                     steps {
-                        container (name: 'esthesis-platform-builder') {
+                        container (name: 'esthesis-core-builder') {
                             sh '''
-                                cd esthesis-core/esthesis-core-ui
+                                cd esthesis-core-ui
                                 npm install
                                 npx ng build --configuration production --output-path=dist
                             '''
@@ -108,7 +108,7 @@ pipeline {
         }
         stage('Sonar Analysis') {
             steps {
-                container (name: 'esthesis-platform-builder') {
+                container (name: 'esthesis-core-builder') {
                     withSonarQubeEnv('sonar') {
                         sh '''
                             cd esthesis-core
@@ -120,9 +120,9 @@ pipeline {
         }
         stage('Produce bom.xml for device module') {
             steps {
-                container (name: 'esthesis-platform-builder') {
+                container (name: 'esthesis-core-builder') {
                     sh '''
-                        cd esthesis-core/esthesis-core-device
+                        cd esthesis-core-device
                         go install github.com/CycloneDX/cyclonedx-gomod/cmd/cyclonedx-gomod@v1.4.0
                         /go/bin/cyclonedx-gomod mod go > go/bom.xml
                     '''
@@ -131,9 +131,9 @@ pipeline {
         }
         stage('Produce bom.xml for frontend module') {
             steps {
-                container (name: 'esthesis-platform-builder') {
+                container (name: 'esthesis-core-builder') {
                     sh '''
-                        cd esthesis-core/esthesis-core-ui
+                        cd esthesis-core-ui
                         npm install --global @cyclonedx/cyclonedx-npm
                         cyclonedx-npm --ignore-npm-errors --output-format xml --output-file bom.xml
                     '''
@@ -142,12 +142,12 @@ pipeline {
         }
         stage('Post Dependency-Track Analysis for device') {
             steps{
-                container (name: 'esthesis-platform-builder') {
+                container (name: 'esthesis-core-builder') {
                     sh '''
                         cat > payload.json <<__HERE__
                         {
                             "project": "415e6ce0-42b1-44be-b7ba-3b58dbb32b10",
-                            "bom": "$(cat esthesis-core/esthesis-core-device/go/bom.xml |base64 -w 0 -)"
+                            "bom": "$(cat esthesis-core-device/go/bom.xml |base64 -w 0 -)"
                         }
                         __HERE__
                     '''
@@ -159,12 +159,12 @@ pipeline {
         }
         stage('Post Dependency-Track Analysis for server') {
             steps {
-                container (name: 'esthesis-platform-builder') {
+                container (name: 'esthesis-core-builder') {
                     sh '''
                           cat > payload.json <<__HERE__
                           {
                             "project": "39a4839b-4da4-41be-b576-22d7686e9101",
-                            "bom": "$(cat esthesis-core/esthesis-core-backend/target/bom.xml |base64 -w 0 -)"
+                            "bom": "$(cat esthesis-core-backend/target/bom.xml |base64 -w 0 -)"
                           }
                           __HERE__
                     '''
@@ -177,12 +177,12 @@ pipeline {
         }
         stage('Post Dependency-Track Analysis for ui') {
             steps {
-                container (name: 'esthesis-platform-builder') {
+                container (name: 'esthesis-core-builder') {
                     sh '''
                         cat > payload.json <<__HERE__
                         {
                           "project": "229ec483-35c9-4a98-b904-bc8c5b1d6544",
-                          "bom": "$(cat esthesis-core/esthesis-core-ui/bom.xml |base64 -w 0 -)"
+                          "bom": "$(cat esthesis-core-ui/bom.xml |base64 -w 0 -)"
                         }
                         __HERE__
                     '''
