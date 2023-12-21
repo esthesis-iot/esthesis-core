@@ -8,6 +8,7 @@
 #   ESTHESIS_REGISTRY_URL: The URL of the registry to push to (default: docker.io).
 #   ESTHESIS_BUILD_NATIVE: If set to true, native executables will be built (default: true).
 #   ESTHESIS_BUILD_CONTAINERS: If set to true, containers will be built and pushed (default: true).
+#   ESTHESIS_BUILDX_KUBERNETES: If set to true, a builder will be created in Kubernetes (default: false).
 #
 # Usage examples:
 #   ./publish.sh
@@ -61,12 +62,17 @@ if [ -z "$ESTHESIS_REGISTRY_URL" ]; then
   ESTHESIS_REGISTRY_URL="docker.io"
 fi
 
+# Set buildx driver options.
+if [ -z "$ESTHESIS_BUILDX_KUBERNETES" ]; then
+  ESTHESIS_BUILDX_KUBERNETES="false"
+fi
+
 # Builds to execute.
 if [ -z "$ESTHESIS_BUILD_NATIVE" ]; then
-	ESTHESIS_BUILD_NATIVE=true
+	ESTHESIS_BUILD_NATIVE="true"
 fi
 if [ -z "$ESTHESIS_BUILD_CONTAINERS" ]; then
-	ESTHESIS_BUILD_CONTAINERS=true
+	ESTHESIS_BUILD_CONTAINERS="true"
 fi
 
 printInfo "Package version: $PACKAGE_VERSION."
@@ -75,7 +81,7 @@ printInfo "Build date: $BUILD_DATE."
 LDFLAGS="-X github.com/esthesis-iot/esthesis-device/internal/pkg/banner.Commit=$(git rev-parse HEAD) -X github.com/esthesis-iot/esthesis-device/internal/pkg/banner.BuildTime=$(rfc3339Date)"
 
 # Build native images.
-if [ "$ESTHESIS_BUILD_NATIVE" = true ]; then
+if [ "$ESTHESIS_BUILD_NATIVE" = "true" ]; then
 	printInfo "Building native images."
 	# OS, Architecture, ARM version, extension
 	IMAGES=(
@@ -118,11 +124,15 @@ if [ "$ESTHESIS_BUILD_NATIVE" = true ]; then
 	done
 fi
 
-if [ "$ESTHESIS_BUILD_CONTAINERS" = true ]; then
+if [ "$ESTHESIS_BUILD_CONTAINERS" = "true" ]; then
 	# Create a Docker buildx.
   BUILDX_NAME=$(LC_CTYPE=C tr -dc 'a-zA-Z' < /dev/urandom | head -c 1)$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 11)
   printInfo "Creating Docker buildx $BUILDX_NAME."
-  docker buildx create --name "$BUILDX_NAME" --use --config buildkitd.toml
+  if [ "$ESTHESIS_BUILDX_KUBERNETES" = "true" ]; then
+  	docker buildx create --driver kubernetes --name "$BUILDX_NAME" --use --config buildkitd.toml
+  else
+  	docker buildx create --name "$BUILDX_NAME" --use --config buildkitd.toml
+	fi
 
   # Login to remote registry.
   if [ -n "$ESTHESIS_REGISTRY_USERNAME" ] && [ -n "$ESTHESIS_REGISTRY_PASSWORD" ]; then

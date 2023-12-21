@@ -8,6 +8,7 @@
 #   ESTHESIS_REGISTRY_PASSWORD: The password to use when authenticating with the registry.
 #   ESTHESIS_REGISTRY_URL: The URL of the registry to push to (default: docker.io).
 #   ESTHESIS_ARCHITECTURES: The architectures to build (default: linux/amd64).
+#   ESTHESIS_BUILDX_KUBERNETES: If set to true, a builder will be created in Kubernetes (default: false).
 #
 # Usage:
 #   ./publish.sh
@@ -49,6 +50,11 @@ fi
 # If $ESTHESIS_REGISTRY_URL is empty, set it to docker.io.
 if [ -z "$ESTHESIS_REGISTRY_URL" ]; then
   ESTHESIS_REGISTRY_URL="docker.io"
+fi
+
+# Set buildx driver options.
+if [ -z "$ESTHESIS_BUILDX_KUBERNETES" ]; then
+  ESTHESIS_BUILDX_KUBERNETES="false"
 fi
 
 # Find the version of the package.
@@ -102,7 +108,11 @@ fi
 # Create a Docker buildx.
 BUILDX_NAME=$(LC_CTYPE=C tr -dc 'a-zA-Z' < /dev/urandom | head -c 1)$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 11)
 printInfo "Creating Docker buildx $BUILDX_NAME."
-docker buildx create --name "$BUILDX_NAME" --use --config buildkitd.toml
+if [ "$ESTHESIS_BUILDX_KUBERNETES" = "true" ]; then
+	docker buildx create --driver kubernetes --name "$BUILDX_NAME" --use --config buildkitd.toml
+else
+	docker buildx create --name "$BUILDX_NAME" --use --config buildkitd.toml
+fi
 
 # Login to remote registry.
 if [ -n "$ESTHESIS_REGISTRY_USERNAME" ] && [ -n "$ESTHESIS_REGISTRY_PASSWORD" ]; then
