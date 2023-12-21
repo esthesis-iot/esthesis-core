@@ -83,6 +83,7 @@ LDFLAGS="-X github.com/esthesis-iot/esthesis-device/internal/pkg/banner.Commit=$
 # Build native images.
 if [ "$ESTHESIS_BUILD_NATIVE" = "true" ]; then
 	printInfo "Building native images."
+	mkdir -p native
 	# OS, Architecture, ARM version, extension
 	IMAGES=(
 		"darwin" 	"amd64" 	"" 	""
