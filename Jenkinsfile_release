@@ -145,7 +145,7 @@ pipeline {
                         npm run build
 
                         rm -rf ../../../esthesis-docs/docs/*
-                        cp -r build/* ../../../esthesis-docs/docs
+                        cp -r build/* ../../esthesis-docs/docs
                     '''
                     sh '''
                         filePath="esthesis-core/esthesis-core-docs/src/css/custom.css"
