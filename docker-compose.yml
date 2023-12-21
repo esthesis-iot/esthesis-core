@@ -80,7 +80,7 @@ services:
     build:
       context: .
       dockerfile: esthesis-server/Dockerfile
-    image: esthesisiot/esthesis-server:2.0.24
+    image: esthesisiot/esthesis-server:2.0.25-SNAPSHOT
     hostname: esthesis-server
     container_name: esthesis-server
     restart: unless-stopped
@@ -103,7 +103,7 @@ services:
   esthesis-ui:
     build:
       context: ./esthesis-ui
-    image: esthesisiot/esthesis-ui:2.0.24
+    image: esthesisiot/esthesis-ui:2.0.25-SNAPSHOT
     hostname: esthesis-ui
     container_name: esthesis-ui
     restart: unless-stopped
