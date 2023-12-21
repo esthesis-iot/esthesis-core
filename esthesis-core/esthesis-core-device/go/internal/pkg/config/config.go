@@ -11,7 +11,7 @@ import (
 )
 
 // Version The application version
-const Version = "3.0.2"
+const Version = "3.0.3-SNAPSHOT"
 
 // Properties received when this device was registered with the esthesis platform.
 const (
@@ -285,7 +285,6 @@ func InitCmdFlags(osArgs []string) {
 		os.Exit(exitCodes.ExitHelp)
 	}
 	if opt.Called("version") {
-		fmt.Println(Version)
 		os.Exit(exitCodes.ExitVersion)
 	}
 	if err != nil {

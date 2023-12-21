@@ -20,9 +20,9 @@
 # Trap exit.
 set -e
 exit_handler() {
-    echo "*** ERROR: Build failed with exit code $?"
+    printError "Build failed with exit code $?"
     if [ -n "$BUILDX_NAME" ]; then
-				echo "*** INFO: Deleting Docker buildx $BUILDX_NAME."
+				printInfo "Deleting Docker buildx $BUILDX_NAME."
 				docker buildx rm "$BUILDX_NAME"
 		fi
     exit 1

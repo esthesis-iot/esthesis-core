@@ -47,6 +47,11 @@ device agent, you can have the embedded endpoints only listen to `127.0.0.1` (wh
 value).
 :::
 
+Both embedded endpoints expect data to follow the
+[esthesis Line Protocol](../07-References/01-esthesis-line-protocol.md), however you can push any
+other format you may have and convert it into the esthesis Line Protocol using the
+[Transforming payloads](05-Transforming%20payloads.md) functionality of the agent.
+
 ## HTTP endpoints
 esthesis device agent exposes two HTTP endpoints:
 - `/telemetry` - for sending telemetry data to the esthesis platform, and

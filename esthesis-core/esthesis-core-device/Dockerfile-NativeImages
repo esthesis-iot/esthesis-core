@@ -1,0 +1,16 @@
+FROM golang:1.21.3-bookworm
+ENV NATIVE_IMAGES=""
+ENV LDFLAGS=""
+
+WORKDIR /app
+COPY go/. .
+RUN go mod download
+RUN \
+  IFS=',' read -ra entries <<< "$NATIVE_IMAGES" && \
+  for entry in "${entries[@]}"; do \
+    IFS='/' read -ra parts <<< "$entry" && \
+    platform="${parts[0]}" && \
+    architecture="${parts[1]}" && \
+    echo "Creating native image for $platform/$architecture."&& \
+   	CGO_ENABLED=0 GOOS=$platform GOARCH=$architecture go build -ldflags "$LDFLAGS" -o ../native/$VERSION/esthesis-core-device-$platform-$architecture cmd/main.go; \
+  done
