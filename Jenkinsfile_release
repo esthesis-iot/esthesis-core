@@ -96,21 +96,21 @@ pipeline{
                         sh '''
                             git config --global user.email "devops-d2@eurodyn.com"
                             git config --global user.name "$Username"
-                            git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-platform.git
+                            git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-core.git
                         '''
                     }
                 }
             }
         }
-        stage ("esthesis-platform: Changes for RELEASE version"){
+        stage ("esthesis-core: Changes for RELEASE version"){
             steps{
                 container (name: 'esthesis-release-builder') {
                     withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
-                            git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-platform.git
-                            cd esthesis-platform
+                            git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-core.git
+                            cd esthesis-core
                             git checkout v2
 
                             cd esthesis-server
@@ -136,7 +136,7 @@ pipeline{
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''#!/bin/bash
-                            cd esthesis-platform/helm/esthesis-platform
+                            cd esthesis-core/helm/esthesis-platform
                             find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: $RELEASE_VERSION|"
                             cd charts
                             find . -name *.yaml | xargs sed -i "s|esthesisiot/esthesis-ui:.*$|esthesisiot/esthesis-ui:$RELEASE_VERSION|"
@@ -144,20 +144,20 @@ pipeline{
 
                             git commit -a -m "release: prepare release $RELEASE_VERSION"
                             git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
-                            git push https://$Username:$Password@github.com/esthesis-iot/esthesis-platform HEAD:v2 --tags
+                            git push https://$Username:$Password@github.com/esthesis-iot/esthesis-core HEAD:v2 --tags
                         '''
                     }
                 }
             }
         }
-        stage ("esthesis-platform: Build & Push Docker images"){
+        stage ("esthesis-core: Build & Push Docker images"){
             environment {
 		         DOCKERHUB_CREDENTIALS=credentials('dockerhub-credentials')
 	        }
             steps{
                 container (name: 'esthesis-release-builder') {
                     sh '''
-                        cd esthesis-platform
+                        cd esthesis-core
                         echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
                         docker-compose -f docker-compose.yml build esthesis-ui
                         docker push esthesisiot/esthesis-ui:$RELEASE_VERSION
@@ -167,14 +167,14 @@ pipeline{
                 }
             }
         }
-        stage ("esthesis-platform: Changes for next development version"){
+        stage ("esthesis-core: Changes for next development version"){
             steps{
                 container (name: 'esthesis-release-builder') {
                     withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
-                            cd esthesis-platform/esthesis-server
+                            cd esthesis-core/esthesis-server
                             mvn versions:set -DnewVersion=$NEXT_DEV_VERSION
                             mvn versions:commit
 
@@ -197,15 +197,15 @@ pipeline{
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
-                            cd esthesis-platform/helm/esthesis-platform
+                            cd esthesis-core/helm/esthesis-platform
                             find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: $NEXT_DEV_VERSION|"
                             cd charts
                             find . -name *.yaml | xargs sed -i "s|esthesisiot/esthesis-ui:.*$|esthesisiot/esthesis-ui:$NEXT_DEV_VERSION|"
                             find . -name *.yaml | xargs sed -i "s|esthesisiot/esthesis-server:.*$|esthesisiot/esthesis-server:$NEXT_DEV_VERSION|"
 
-                            git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-platform.git
+                            git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-core.git
                             git commit -a -m "release: prepare for next development iteration: $NEXT_DEV_VERSION"
-                            git push https://$Username:$Password@github.com/esthesis-iot/esthesis-platform HEAD:v2
+                            git push https://$Username:$Password@github.com/esthesis-iot/esthesis-core HEAD:v2
                         '''
                     }
                 }
