@@ -5,7 +5,7 @@ pipeline {
               apiVersion: v1
               kind: Pod
               metadata:
-                name: esthesis-platform
+                name: esthesis-v2
                 namespace: jenkins
               spec:
                 affinity:
@@ -24,7 +24,7 @@ pipeline {
                   runAsUser: 0
                   runAsGroup: 0
                 containers:
-                - name: esthesis-platform-builder
+                - name: esthesis-v2-builder
                   image: eddevopsd2/maven-java-npm-docker:mvn3.6.3-jdk15-node16.14.2-docker
                   volumeMounts:
                   - name: maven
@@ -60,14 +60,14 @@ pipeline {
             parallel {
                 stage('Build esthesis-server') {
                     steps {
-                        container (name: 'esthesis-platform-builder') {
+                        container (name: 'esthesis-v2-builder') {
                             sh 'mvn -f esthesis-server/pom.xml clean install'
                         }
                     }
                 }
                 stage('Build esthesis-ui') {
                     steps {
-                        container (name: 'esthesis-platform-builder') {
+                        container (name: 'esthesis-v2-builder') {
                             sh '''
                                 cd esthesis-ui
                                 npm install
@@ -80,7 +80,7 @@ pipeline {
         }
         stage('Sonar Analysis') {
             steps {
-                container (name: 'esthesis-platform-builder') {
+                container (name: 'esthesis-v2-builder') {
                     withSonarQubeEnv('sonar'){
                         sh ' /root/sonar-scanner/sonar-scanner/bin/sonar-scanner -Dsonar.projectVersion="$(mvn -f esthesis-server/pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.token=${SONAR_GLOBAL_KEY} -Dsonar.working.directory="/tmp"'
                     }
@@ -91,14 +91,14 @@ pipeline {
             parallel {
                 stage('Produce bom.xml for esthesis-server') {
                     steps{
-                        container (name: 'esthesis-platform-builder') {
+                        container (name: 'esthesis-v2-builder') {
                             sh 'mvn -f esthesis-server/pom.xml org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom'
                         }
                     }
                 }
                 stage('Produce bom.xml for esthesis-ui') {
                     steps{
-                        container (name: 'esthesis-platform-builder') {
+                        container (name: 'esthesis-v2-builder') {
                             sh '''
                                 cd esthesis-ui
                                 npm install --global @cyclonedx/cyclonedx-npm
@@ -111,7 +111,7 @@ pipeline {
         }
         stage('Dependency-Track Analysis for esthesis-server') {
             steps{
-                container (name: 'esthesis-platform-builder') {
+                container (name: 'esthesis-v2-builder') {
                     sh '''
                         cat > payload.json <<__HERE__
                         {
@@ -129,7 +129,7 @@ pipeline {
         }
         stage('Dependency-Track Analysis for esthesis-ui') {
             steps{
-                container (name: 'esthesis-platform-builder') {
+                container (name: 'esthesis-v2-builder') {
                     sh '''
                         cat > payload.json <<__HERE__
                         {
