@@ -111,7 +111,6 @@ pipeline {
                 container (name: 'esthesis-core-builder') {
                     withSonarQubeEnv('sonar') {
                         sh '''
-                            cd esthesis-core
                             /root/sonar-scanner/sonar-scanner/bin/sonar-scanner -Dsonar.projectVersion="$(mvn -f esthesis-core-backend/pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.token=${SONAR_GLOBAL_KEY} -Dsonar.working.directory="/tmp"
                         '''
                     }
