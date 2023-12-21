@@ -63,8 +63,8 @@ pipeline {
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
-                            dnf -y install util-linux
-                            dnf -y install jq
+                            apt-get update -y
+                            apt-get install -y util-linux jq
                             docker login -u $Username -p $Password docker.io
                         '''
                     }
