@@ -109,9 +109,9 @@ fi
 #BUILDX_NAME=$(LC_CTYPE=C tr -dc 'a-zA-Z' < /dev/urandom | head -c 1)$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 11)
 printInfo "Creating Docker buildx."
 if [ "$ESTHESIS_BUILDX_KUBERNETES" = "true" ]; then
-	BUILDX_NAME=$(docker buildx create --driver kubernetes --name "$BUILDX_NAME" --use --config buildkitd.toml)
+	BUILDX_NAME=$(docker buildx create --driver kubernetes --use --config buildkitd.toml)
 else
-	BUILDX_NAME=$(docker buildx create --name "$BUILDX_NAME" --use --config buildkitd.toml)
+	BUILDX_NAME=$(docker buildx create --use --config buildkitd.toml)
 fi
 printInfo "Docker buildx created: $BUILDX_NAME."
 
