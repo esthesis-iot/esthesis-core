@@ -25,7 +25,7 @@ pipeline {
                   runAsGroup: 0
                 containers:
                 - name: esthesis-release-builder
-                  image: eddevopsd2/ubuntu-dind:mvn3.8.5-jdk17-node18.16-ubuntu22.04-docker24.0.0
+                  image: eddevopsd2/ubuntu-pind:podman-mvn3.8.5-jdk17-node18.16-go1.20-buildx-helm
                   volumeMounts:
                   - name: maven
                     mountPath: /root/.m2/
@@ -63,8 +63,8 @@ pipeline {
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
-                            apt-get update -y
-                            apt-get install -y util-linux jq
+                            dnf -y install util-linux
+                            dnf -y install jq
                             docker login -u $Username -p $Password docker.io
                         '''
                     }
@@ -177,9 +177,9 @@ pipeline {
                         sh '''
                             cd esthesis-core
                             git remote set-url origin https://$Username:$Password@github.com/esthesis-iot/esthesis-core.git
-                            git add esthesis-core/esthesis-core-docs/versioned_docs
-                            git add esthesis-core/esthesis-core-docs/versioned_sidebars
-                            git add esthesis-core/esthesis-core-docs/versions.json
+                            git add esthesis-core-docs/versioned_docs
+                            git add esthesis-core-docs/versioned_sidebars
+                            git add esthesis-core-docs/versions.json
                             git commit -a -m "release: prepare release $RELEASE_VERSION"
                             git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
                             git push https://$Username:$Password@github.com/esthesis-iot/esthesis-core HEAD:main --tags
