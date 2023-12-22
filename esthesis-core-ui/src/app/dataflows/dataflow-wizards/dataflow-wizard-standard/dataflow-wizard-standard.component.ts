@@ -30,7 +30,7 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
   ngOnInit(): void {
     this.form = this.fb.group({
       wizardName: ["standard", [Validators.required]],
-      version: ["3.0.3-SNAPSHOT", [Validators.required]],
+      version: ["3.0.3", [Validators.required]],
       kafkaClusterUrl: ["esthesis-core-kafka-kafka-bootstrap:9092", [Validators.required]],
       mongoDbClusterUrl: ["mongodb://mongodb:27017", [Validators.required]],
       mongoDbDatabase: ["esthesiscore", [Validators.required]],
