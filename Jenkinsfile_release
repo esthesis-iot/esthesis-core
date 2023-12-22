@@ -264,7 +264,7 @@ pipeline {
                                 sh '''
                                     release_id=$(curl -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $Password" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/esthesis-iot/esthesis-core/releases/tags/$RELEASE_VERSION | jq -r '.id')
 
-                                    cd esthesis-core/esthesis-core-device/native/*/
+                                    cd esthesis-core/esthesis-core-device/native/
                                     curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $Password" -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: application/octet-stream" https://uploads.github.com/repos/esthesis-iot/esthesis-core/releases/$release_id/assets?name=esthesis-core-device-darwin-amd64 --data-binary "@esthesis-core-device-darwin-amd64"
                                     curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $Password" -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: application/octet-stream" https://uploads.github.com/repos/esthesis-iot/esthesis-core/releases/$release_id/assets?name=esthesis-core-device-darwin-arm64 --data-binary "@esthesis-core-device-darwin-arm64"
                                     curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $Password" -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: application/octet-stream" https://uploads.github.com/repos/esthesis-iot/esthesis-core/releases/$release_id/assets?name=esthesis-core-device-linux-amd64 --data-binary "@esthesis-core-device-linux-amd64"
