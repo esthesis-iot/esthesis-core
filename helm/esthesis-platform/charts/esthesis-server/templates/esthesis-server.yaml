@@ -100,11 +100,11 @@ spec:
             failureThreshold: 2
           resources:  
             limits: 
-              cpu: 500m 
-              memory: 512Mi 
+              cpu: 2000m 
+              memory: 3Gi 
             requests: 
-              cpu: 250m 
-              memory: 512Mi
+              cpu: 1000m 
+              memory: 2Gi
       volumes:
         - name: esthesis-server-pv
           persistentVolumeClaim:
