@@ -168,6 +168,36 @@ pipeline {
                 }
             }
         }
+        stage ("Run esthesis-core-backend publish script"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    sh '''
+                        cd esthesis-core/esthesis-core-backend
+                        bash publish.sh
+                    '''
+                }
+            }
+        }
+        stage ("Run esthesis-core-ui publish script"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    sh '''
+                        cd esthesis-core/esthesis-core-ui
+                        bash publish.sh
+                    '''
+                }
+            }
+        }
+        stage ("Run esthesis-core-device publish script"){
+            steps{
+                container (name: 'esthesis-release-builder') {
+                    sh '''
+                        cd esthesis-core/esthesis-core-device
+                        bash publish.sh
+                    '''
+                }
+            }
+        }
         stage ("esthesis-core: Git push RELEASE version"){
             steps{
                 container (name: 'esthesis-release-builder') {
@@ -223,36 +253,7 @@ pipeline {
                 }
             }
         }
-        stage ("Run esthesis-core-backend publish script"){
-            steps{
-                container (name: 'esthesis-release-builder') {
-                    sh '''
-                        cd esthesis-core/esthesis-core-backend
-                        bash publish.sh
-                    '''
-                }
-            }
-        }
-        stage ("Run esthesis-core-ui publish script"){
-            steps{
-                container (name: 'esthesis-release-builder') {
-                    sh '''
-                        cd esthesis-core/esthesis-core-ui
-                        bash publish.sh
-                    '''
-                }
-            }
-        }
-        stage ("Run esthesis-core-device publish script"){
-            steps{
-                container (name: 'esthesis-release-builder') {
-                    sh '''
-                        cd esthesis-core/esthesis-core-device
-                        bash publish.sh
-                    '''
-                }
-            }
-        }
+
         stage ("esthesis-device: Attach device assets"){
             steps{
                 container (name: 'esthesis-release-builder') {
