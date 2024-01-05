@@ -108,8 +108,8 @@ pipeline {
         stage ("esthesis-core: Changes for RELEASE version"){
             steps{
                 container (name: 'esthesis-release-builder') {
-                    sh 'cp /root/.m2/sed-script.sh ./sed-script.sh'
-                    sh './sed-script.sh'
+                    sh 'chmod +x ./sed-css-script.sh'
+                    sh './sed-css-script.sh'
                     sh '''
                         cd esthesis-core/esthesis-core-backend
                         mvn versions:set -DnewVersion=$RELEASE_VERSION
