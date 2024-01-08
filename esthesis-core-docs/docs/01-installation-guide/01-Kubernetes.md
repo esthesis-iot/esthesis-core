@@ -185,7 +185,7 @@ production use case.
 The following environment variables are used by the Helm charts to configure the installation, you
 may change them to suit your needs:
 ```
-export DOMAIN=esthesis-prod.home.nassosmichas.com
+export DOMAIN=esthesis-prod.mydomain.com
 export TIMEZONE=Europe/Athens
 export ESTHESIS_ADMIN_USERNAME=admin
 export ESTHESIS_ADMIN_PASSWORD=esthesis
