@@ -26,8 +26,7 @@ public class AgentResourceImpl implements AgentResource {
 	@Inject
 	AgentService agentService;
 
-	public AgentRegistrationResponse register(
-		AgentRegistrationRequest agentRegistrationRequest)
+	public AgentRegistrationResponse register(AgentRegistrationRequest agentRegistrationRequest)
 	throws NoSuchAlgorithmException, IOException, InvalidKeySpecException,
 				 OperatorCreationException, NoSuchProviderException {
 		log.debug("Received agent registration request '{}'.",

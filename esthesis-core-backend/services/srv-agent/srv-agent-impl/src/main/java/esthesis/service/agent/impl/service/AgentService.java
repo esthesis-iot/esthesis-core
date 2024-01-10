@@ -112,6 +112,7 @@ public class AgentService {
 		// Issue registration request.
 		log.debug("Requesting device registration with: '{}'", deviceRegistration);
 		DeviceEntity deviceEntity = deviceSystemResource.register(deviceRegistration);
+		log.debug("Device registration successful: '{}'", deviceEntity);
 
 		// Process the response.
 		AgentRegistrationResponse agentRegistrationResponse = new AgentRegistrationResponse();

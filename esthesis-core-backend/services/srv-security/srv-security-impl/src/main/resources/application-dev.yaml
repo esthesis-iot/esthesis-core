@@ -29,12 +29,6 @@ quarkus:
       otlp:
         traces:
           endpoint: http://grafana-tempo-distributor.esthesis:4317
-  oidc-client:
-    auth-server-url: http://keycloak.esthesis/realms/esthesis
-    grant-options:
-      password:
-        username: esthesis-system
-        password: esthesis-system
   config:
     locations: "../../../../_dev/profiles"
   rest-client:

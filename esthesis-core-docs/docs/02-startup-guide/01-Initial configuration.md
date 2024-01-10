@@ -2,6 +2,11 @@
 
 The following sections describe how to configure the esthesis Core platform after installation.
 
+:::tip
+If you are configuring a production installation, make sure you also read the
+[MQTT security hardening](./03-MQTT-security-hardening.md) section before proceeding.
+:::
+
 ## Create a Certificate Authority (CA)
 - Navigate to "Key Management > CAs".
 - Click on the "Create" button.
@@ -34,6 +39,15 @@ It is not necessary to create a tag, however it is highly recommended.
 - Under "Security", choose as root CA the CA you created before.
 
 ## Set up the Dataflows
+### Manual configuration
+Although the exact order in which dataflows are deployed is not important, you may use the following
+order:
+- MQTT client
+- Redis cache
+- Ping updater
+- Command reply updater
+- InfluxDB writer
+### Using Wizards
 Without any dataflow configured esthesis Core can not do much. You can set up individual
 dataflows for your use case, or you can use one of the provided wizards. Once the dataflows are
 configured, you can start registering devices and send data to the platform.

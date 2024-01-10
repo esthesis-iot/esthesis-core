@@ -24,10 +24,6 @@ quarkus:
   otel:
     sdk:
       disabled: true
-  oidc-client:
-    client-id: esthesis
-    grant:
-      type: PASSWORD
   rest-client:
     SettingsResource:
       url: http://esthesis-core-srv-settings-service:8080
@@ -40,12 +36,6 @@ quarkus:
       scope: Singleton
     TagResource:
       url: http://esthesis-core-srv-tag-service:8080
-      scope: Singleton
-    DataflowResource:
-      url: http://esthesis-core-srv-dataflow-service:8080
-      scope: Singleton
-    DataflowSystemResource:
-      url: http://esthesis-core-srv-dataflow-service:8080
       scope: Singleton
     AuditResource:
       url: http://esthesis-core-srv-audit-service:8080

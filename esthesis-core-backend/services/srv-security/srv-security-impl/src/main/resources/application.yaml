@@ -26,10 +26,6 @@ quarkus:
   otel:
     sdk:
       disabled: true
-  oidc-client:
-    client-id: esthesis
-    grant:
-      type: PASSWORD
   rest-client:
     AuditResource:
       url: http://esthesis-core-srv-audit-service:8080

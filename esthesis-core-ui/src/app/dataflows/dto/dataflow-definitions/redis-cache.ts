@@ -24,7 +24,7 @@ export const DATAFLOW_DEFINITION_REDIS_CACHE = {
       fieldGroup: [
         {
           key: "url", type: "input", defaultValue: "redis://:esthesis-system@redis-headless:6379/0",
-          props: {label: "The url of the Redis store", required: true, hintStart: "e.g. redis://username:password@server:port/database"}
+          props: {label: "The url of the Redis store", required: true, hintStart: "e.g. redis://username:password@server:port/database. Password should be URL Encoded, if it contains special characters."}
         },
         {
           key: "max-size", type: "input", defaultValue: "1024",

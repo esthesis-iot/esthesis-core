@@ -58,19 +58,19 @@ func Post() {
 	randomBatteryCurrent := randomFloat(0, 100)
 
 	payload := demoCategory + " " + strings.Join([]string{
-		"cpu_temperature=" + fmt.Sprintf("%.2f", randomCpuTemperature),
-		"cpu_load=" + fmt.Sprintf("%.2f", randomCpuLoad),
-		"threads=" + fmt.Sprintf("%d", randomThreads),
-		"processes=" + fmt.Sprintf("%d", randomProcesses),
-		"memory=" + fmt.Sprintf("%.2f", randomMemory),
-		"disk=" + fmt.Sprintf("%.2f", randomDisk),
-		"network=" + fmt.Sprintf("%.2f", randomNetwork),
-		"battery=" + fmt.Sprintf("%.2f", randomBattery),
-		"battery_temperature=" + fmt.Sprintf("%.2f", randomBatteryTemperature),
-		"battery_voltage=" + fmt.Sprintf("%.2f", randomBatteryVoltage),
-		"battery_current=" + fmt.Sprintf("%.2f", randomBatteryCurrent),
-		"gps_lat=" + fmt.Sprintf("%.15f", randomGps[0]),
-		"gps_lon=" + fmt.Sprintf("%.15f", randomGps[1]),
+		"cpu_temperature=" + fmt.Sprintf("%.2f", randomCpuTemperature) + "f",
+		"cpu_load=" + fmt.Sprintf("%.2f", randomCpuLoad) + "f",
+		"threads=" + fmt.Sprintf("%d", randomThreads) + "i",
+		"processes=" + fmt.Sprintf("%d", randomProcesses) + "i",
+		"memory=" + fmt.Sprintf("%.2f", randomMemory) + "f",
+		"disk=" + fmt.Sprintf("%.2f", randomDisk) + "f",
+		"network=" + fmt.Sprintf("%.2f", randomNetwork) + "f",
+		"battery=" + fmt.Sprintf("%.2f", randomBattery) + "f",
+		"battery_temperature=" + fmt.Sprintf("%.2f", randomBatteryTemperature) + "f",
+		"battery_voltage=" + fmt.Sprintf("%.2f", randomBatteryVoltage) + "f",
+		"battery_current=" + fmt.Sprintf("%.2f", randomBatteryCurrent) + "f",
+		"gps_lat=" + fmt.Sprintf("%.15f", randomGps[0]) + "f",
+		"gps_lon=" + fmt.Sprintf("%.15f", randomGps[1]) + "f",
 	}, ",")
 
 	mqttClient.Publish(demoTopic,

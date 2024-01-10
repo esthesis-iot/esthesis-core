@@ -20,8 +20,6 @@ quarkus:
       username: esthesis-system
       password: esthesis-system
   rest-client:
-    DataflowSystemResource:
-      url: http://localhost:59060
     AuditResource:
       url: http://localhost:59140
   redis:
@@ -35,12 +33,6 @@ quarkus:
       otlp:
         traces:
           endpoint: http://grafana-tempo-distributor.esthesis:4317
-  oidc-client:
-    auth-server-url: http://keycloak.esthesis/realms/esthesis
-    grant-options:
-      password:
-        username: esthesis-system
-        password: esthesis-system
   config:
     locations: "../../../../_dev/profiles"
 

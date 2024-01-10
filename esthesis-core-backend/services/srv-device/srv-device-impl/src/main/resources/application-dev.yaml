@@ -47,21 +47,9 @@ quarkus:
     TagResource:
       url: http://localhost:59020
       scope: Singleton
-    DataflowResource:
-      url: http://localhost:59060
-      scope: Singleton
-    DataflowSystemResource:
-      url: http://localhost:59060
-      scope: Singleton
     AuditResource:
       url: http://localhost:59140
       scope: Singleton
-  oidc-client:
-    auth-server-url: http://keycloak.esthesis/realms/esthesis
-    grant-options:
-      password:
-        username: esthesis-system
-        password: esthesis-system
   config:
     locations: "../../../../_dev/profiles"
 

@@ -38,7 +38,7 @@ export const DATAFLOW_DEFINITION_COMMAND_REPLY_UPDATER = {
       props: {label: "Esthesis database"},
       fieldGroup: [
         {
-          key: "esthesis-db-url", type: "input", defaultValue: "mongodb://mongodb:27017",
+          key: "esthesis-db-url", type: "input", defaultValue: "mongodb://esthesis-mongodb-esthesiscore-svc:27017",
           props: {label: "URL"}
         }, {
           key: "esthesis-db-name", type: "input", defaultValue: "esthesiscore",

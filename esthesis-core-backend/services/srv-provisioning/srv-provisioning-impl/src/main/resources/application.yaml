@@ -32,6 +32,10 @@ quarkus:
     client-id: esthesis
     grant:
       type: PASSWORD
+    grant-options:
+      password:
+        username: ${OIDC_CLIENT_USERNAME}
+        password: ${OIDC_CLIENT_PASSWORD}
   rest-client:
     DeviceSystemResource:
       url: http://esthesis-core-srv-device-service:8080

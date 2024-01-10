@@ -1,4 +1,3 @@
-# Kubernetes
 
 esthesis CORE can be deployed on Kubernetes using the publicly available Helm charts. The Helm
 charts are available on the [TBC].
@@ -60,8 +59,17 @@ Whether Keycloak should be installed by this chart or not.<br/>
 Default: `true`
 
 🔹 `KEYCLOAK_INGRESS_HOSTNAME`<br/>
-The hostname of the ingress rule that will be created for Keycloak\
+The hostname of the ingress rule that will be created for Keycloak<br/>
 Default: `keycloak.esthesis.local`
+
+🔹 `KEYCLOAK_CERT_MANAGER_CLUSTER_ISSUER`<br/>
+The name of a Cert Manager cluster issuer to be used. This option is mutually exclusive with `KEYCLOAK_CERT_MANAGER_ISSUER`<br/>
+Default: ``
+
+🔹 `KEYCLOAK_CERT_MANAGER_ISSUER`<br/>
+The name of a (namespace scoped) Cert Manager issuer to be used. This option is mutually exclusive
+with `KEYCLOAK_CERT_MANAGER_CLUSTER_ISSUER`<br/>
+Default: ``
 
 ### MongoDB
 🔹 `MONGODB_ENABLED`<br/>
@@ -123,6 +131,15 @@ Default: `esthesiscore.esthesis.local`
 The URL to redirect to after logging out from esthesis UI.<br/>
 Default: `/logout`
 
+🔹 `ESTHESIS_UI_CERT_MANAGER_CLUSTER_ISSUER`<br/>
+The name of a Cert Manager cluster issuer to be used. This option is mutually exclusive with `ESTHESIS_UI_CERT_MANAGER_ISSUER`<br/>
+Default: ``
+
+🔹 `ESTHESIS_UI_CERT_MANAGER_ISSUER`<br/>
+The name of a (namespace scoped) Cert Manager issuer to be used. This option is mutually exclusive
+with `ESTHESIS_UI_CERT_MANAGER_CLUSTER_ISSUER`<br/>
+Default: ``
+
 ### Redis
 🔹 `REDIS_ENABLED`<br/>
 Whether Redis should be installed by this chart or not.<br/>
@@ -137,6 +154,31 @@ Default: `redis-master:6379/0`
 🔹 `MOSQUITTO_ENABLED`<br/>
 Whether Mosquitto should be installed by this chart or not.<br/>
 Default: `true`
+
+🔹 `MOSQUITTO_MUTUAL_TLS`<br/>
+Whether Mosquitto sohuld be configured for mutual TLS.<br/>
+Default: `false`
+
+🔹 `MOSQUITTO_SUPERUSER`<br/>
+The name of the supe-user account. This account will be able to freely publish and subscribe to/from
+any topic. When enabling TLS, this should be equal to the CN of the certificate.<br/>
+Default: `esthesis`
+
+🔹 `MOSQUITTO_CA_CERT`<br/>
+The certificate of the CA, encoded in Base64.<br/>
+Default: ``
+
+🔹 `MOSQUITTO_SERVER_CERT`<br/>
+The certificate of the mosquitto server, encoded in Base64.<br/>
+Default: ``
+
+🔹 `MOSQUITTO_SERVER_KEY`<br/>
+The private key of the mosquitto server, encoded in Base64.<br/>
+Default: ``
+
+🔹 `MOSQUITTO_SERVICE_TYPE`<br/>
+The type of the service to expose Mosquitto by.<br/>
+Default: `ClusterIP`
 
 ### InfluxDB
 🔹 `INFLUXDB_ENABLED`<br/>
@@ -193,7 +235,6 @@ export ESTHESIS_SYSTEM_USERNAME=system
 export ESTHESIS_SYSTEM_PASSWORD=esthesis
 export KEYCLOAK_INGRESS_HOSTNAME=keycloak.$DOMAIN
 export ESTHESIS_UI_INGRESS_HOSTNAME=esthesis-core.$DOMAIN
-export ESTHESIS_API_INGRESS_HOSTNAME=esthesis-core.$DOMAIN
 export OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_HOSTNAME/realms/esthesis"
 ```
 
@@ -204,8 +245,9 @@ export OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_HOSTNAME/realms/es
 	```
 - Install the Helmfile:
 	```shell
-	helmfile sync
+	helmfile sync --namespace={my-namespace}
 	```
+
 
 ### Application
 - Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
@@ -214,7 +256,7 @@ export OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_HOSTNAME/realms/es
 	```
 - Install the Helmfile:
 	```shell
-	helmfile sync
+	helmfile sync --namespace={my-namespace}
 	```
 
 ## Notes
@@ -228,3 +270,21 @@ via deployments, configure HPA, etc. A Service Account `esthesis-core-srv-kubern
 created with no additional permissions other than the ones of the `default` service account. Depending
 on how security is implemented in your Kubernetes cluster, you may need to provide the necessary
 roles/permissions to this service account.
+
+## Cert Manager integration
+If you have [Cert Manager](https://cert-manager.io) installed in your cluster, you can use it to
+automatically generate and renew certificates for esthesis UI and Keycloak. To do so, you need to
+set the following environmental variables:
+```
+export KEYCLOAK_CERT_MANAGER_CLUSTER_ISSUER=letsencrypt-prod
+export ESTHESIS_UI_CERT_MANAGER_CLUSTER_ISSUER=letsencrypt-prod
+```
+
+If you are using namespace scoped issuers, you can alternatively specify:
+```
+export KEYCLOAK_CERT_MANAGER_ISSUER=letsencrypt-prod
+export ESTHESIS_UI_CERT_MANAGER_ISSUER=letsencrypt-prod
+```
+
+Make sure you specify only one of the two variants, otherwise the installation will fail.  Do not
+forget to change `letsencrypt-prod` to the value of your own issuers.

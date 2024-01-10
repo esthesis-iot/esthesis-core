@@ -28,25 +28,29 @@ quarkus:
     client-id: esthesis
     grant:
       type: PASSWORD
+    grant-options:
+      password:
+        username: ${OIDC_CLIENT_USERNAME}
+        password: ${OIDC_CLIENT_PASSWORD}
   rest-client:
     SettingsSystemResource:
-      url: http://esthesis-core-settings-service:8080
+      url: http://esthesis-core-srv-settings-service:8080
       scope: Singleton
     CASystemResource:
-      url: http://esthesis-core-security-service:8080
+      url: http://esthesis-core-srv-crypto-service:8080
       scope: Singleton
     DataflowSystemResource:
-      url: http://esthesis-core-dataflow-service:8080
+      url: http://esthesis-core-srv-dataflow-service:8080
       scope: Singleton
     DeviceSystemResource:
-      url: http://esthesis-core-device-service:8080
+      url: http://esthesis-core-srv-device-service:8080
       scope: Singleton
     ProvisioningAgentResource:
-      url: http://esthesis-core-provisioning-service:8080
+      url: http://esthesis-core-srv-provisioning-service:8080
       scope: Singleton
     SigningSystemResource:
-      url: http://esthesis-core-security-service:8080
+      url: http://esthesis-core-srv-security-service:8080
       scope: Singleton
     InfrastructureSystemResource:
-      url: http://esthesis-core-infrastructure-service:8080
+      url: http://esthesis-core-srv-infrastructure-service:8080
       scope: Singleton

@@ -82,7 +82,8 @@ export const DATAFLOW_TEMPLATE_WRAPPED_KUBERNETES = [{
       },
       fieldArray: {
         fieldGroup: [
-          { key: "name", type: "input", props: {label: "Secret key name", required: true, className: "flex-row"}},
+          { key: "name", type: "input", props: {label: "Secret key name", required: true,
+              className: "flex-row", hintStart: "Mount under /etc/esthesis/secrets/<name>"}},
           { key: "content", type: "textarea", props: {label: "Content", required: true,
               className: "flex-row", autosize: true, autosizeMinRows: 1, autosizeMaxRows: 10}}
         ]

@@ -43,19 +43,18 @@ and add the following environment variables:
 
 ```shell
 export MOSQUITTO_MUTUAL_TLS=true
-export MOSQUITTO_SUPER_USER=esthesis-platform
-export MOSQUITTO_TLS_CA_CERT=$(cat ca.crt | base64)
-export MOSQUITTO_TLS_CERT=$(cat cert.crt | base64)
-export MOSQUITTO_TLS_KEY=$(cat cert.key | base64)
+export MOSQUITTO_CA_CERT=$(cat ca.crt | base64)
+export MOSQUITTO_SERVER_CERT=$(cat cert.crt | base64)
+export MOSQUITTO_SERVER_KEY=$(cat cert.key | base64)
 ```
 
 :::info
 1. Replace the names of ca.crt, cert.crt and cert.key with the files you downloaded above.
-2. The name of the user specified in `MOSQUITTO_SUPER_USER` will be the "superuser" for the MQTT, i.e.
+2. The name of the user specified by `MOSQUITTO_SUPER_USER` will be the "superuser" for the MQTT, i.e.
 a user that can subscribe and publish to/from any topic. This user should be used by the esthesis
 platform to communicate with the MQTT broker. Create a separate certificate for this user, having
-the Common Name set to the same name as the one you specified here (for the given example
-above, `esthesis-platform`).
+the Common Name set to the same name as the one you specified by `MOSQUITTO_SUPER_USER` (if you
+did not specify a value for `MOSQUITTO_SUPER_USER`, the default value is 'esthesis').
 3. During the deployment of the supporting infrastructure you, probably, had to define an array of
 environment variables to be used by the Helm charts. Do not forget to re-specify these variables
 before you re-run the `helmfile sync` command here, otherwise the deployment might fail or have
@@ -73,14 +72,12 @@ the URL of the MQTT broker used by the devices to start with `ssl://` instead of
 :::
 
 :::warning Dataflows failing to connect
-If you have configured a dataflow that access the MQTT broker, you need to update it to point
+If you have configured a dataflow that accesses the MQTT broker, you need to update it to point
 to the TLS URL of the MQTT broker. In addition, you need to update the dataflow to use a certificate
 to identify itself to the MQTT broker.
 
 Be careful which certificate you will use. Dataflows accessing the MQTT broker, usually, require
 full-access, that means to be able to subscribe and publish to/from any topic. If you have used the
 provided Mosquitto configuration, you need to use the certificate of the "superuser" you created
-while hardening the security of the MQTT broker (i.e. enabling TLS and certificate-based authentication).
-By default, this user is `esthesis-platform`, and this should be the CN of the certificate you should
-create and use.
+while hardening the security of the MQTT broker.
 :::

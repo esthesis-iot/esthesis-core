@@ -28,11 +28,11 @@ export const DATAFLOW_DEFINITION_MQTT_CLIENT = {
           }
         },
         {key: "cert", type: "input", props: {required: false, label: "Client certificate",
-            hintStart: "Specify a filesystem location, e.g. /mosquitto/secret/client.crt"}},
+            hintStart: "Specify a filesystem location, e.g. /etc/esthesis/secrets/client.crt"}},
         {key: "key", type: "input", props: {required: false, label: "Client private key",
-            hintStart: "Specify a filesystem location, e.g. /mosquitto/secret/client.key"}},
+            hintStart: "Specify a filesystem location, e.g. /etc/esthesis/secrets/client.key"}},
         {key: "ca", type: "input", props: {required: false, label: "Certificate Authority certificate",
-            hintStart: "Specify a filesystem location, e.g. /mosquitto/secret/ca.cert"}},
+            hintStart: "Specify a filesystem location, e.g. /etc/esthesis/secrets/ca.cert"}},
       ],
     },
     {

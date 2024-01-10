@@ -59,6 +59,7 @@ public class RedisRoute extends RouteBuilder {
     });
 
     config.kafkaMetadataTopic().ifPresent(val -> {
+			//TODO redact password
       log.info("Setting up route from Kafka topic '{}' to Redis '{}'.",
           val, config.redisUrl());
       from("kafka:" + val)

@@ -35,7 +35,11 @@ quarkus:
     client-id: esthesis
     grant:
       type: PASSWORD
+    grant-options:
+      password:
+        username: ${OIDC_CLIENT_USERNAME}
+        password: ${OIDC_CLIENT_PASSWORD}
   rest-client:
     ApplicationSystemResource:
-      url: http://esthesis-core-srv-application-system:8080
+      url: http://esthesis-core-srv-application-service:8080
       scope: Singleton

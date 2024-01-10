@@ -34,10 +34,12 @@ SSH to your Microk8s VM and enable the following addons:
 - `microk8s enable ingress`
 
 ## Installation
+Unless you are on a cluster shared with others, create and use a namespace named "esthesis", so that
+you can follow the instructions below without having to change parameters.
 
 - Install the supporting dependencies in `esthesis-helm/esthesis-core-deps`:
 	```shell
-	helmfile -e dev sync
+	helmfile -e dev sync --namespace=esthesis
 	```
 
 	:::tip
@@ -47,7 +49,7 @@ SSH to your Microk8s VM and enable the following addons:
 
 - Install the application components in `esthesis-helm/esthesis-core`:
 	```shell
-	DEV_HOST=192.168.40.236 helmfile -e dev sync
+	DEV_HOST=192.168.40.236 helmfile -e dev sync --namespace=esthesis
 	```
 
 	:::caution
