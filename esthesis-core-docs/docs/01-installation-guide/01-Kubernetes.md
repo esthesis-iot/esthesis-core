@@ -248,7 +248,6 @@ export OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_HOSTNAME/realms/es
 	helmfile sync --namespace={my-namespace}
 	```
 
-
 ### Application
 - Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
 	```shell
@@ -286,5 +285,5 @@ export KEYCLOAK_CERT_MANAGER_ISSUER=letsencrypt-prod
 export ESTHESIS_UI_CERT_MANAGER_ISSUER=letsencrypt-prod
 ```
 
-Make sure you specify only one of the two variants, otherwise the installation will fail.  Do not
-forget to change `letsencrypt-prod` to the value of your own issuers.
+Make sure you specify only one of the two variants, otherwise the installation will fail. Do not
+forget to change `letsencrypt-prod` to the value of your own issuer.
