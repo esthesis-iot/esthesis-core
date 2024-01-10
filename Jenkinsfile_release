@@ -134,10 +134,12 @@ pipeline {
         stage ("esthesis-docs: Changes for RELEASE version"){
             steps{
                 container (name: 'esthesis-release-builder') {
+                    script {
+                        sh "sed -i 's/helmfile-esthesis-core-deps-[0-9]*\\.[0-9]*\\.[0-9]*\\.tgz/helmfile-esthesis-core-deps-${env.RELEASE_VERSION}.tgz/g' esthesis-core/esthesis-core-docs/docs/01-installation-guide/01-Kubernetes.md"
+                        sh "sed -i 's/helmfile-esthesis-core-[0-9]*\\.[0-9]*\\.[0-9]*\\.tgz/helmfile-esthesis-core-${env.RELEASE_VERSION}.tgz/g' esthesis-core/esthesis-core-docs/docs/01-installation-guide/01-Kubernetes.md"
+                    }
                     sh '''
                         cd esthesis-core/esthesis-core-docs
-                        sed -E -i \'s/(helmfile-esthesis-core-deps-)[0-9]+\\.[0-9]+\\.[0-9]+.tgz/\1\'"${RELEASE_VERSION}"'.tgz/\' docs/01-installation-guide/01-Kubernetes.md
-                        sed -E -i \'s/(helmfile-esthesis-core-)[0-9]+\\.[0-9]+\\.[0-9]+.tgz/\1\'"${RELEASE_VERSION}"'.tgz/\' docs/01-installation-guide/01-Kubernetes.md
                         sed -i \"s|esthesisiot/esthesis-agent:[^\\ ]*|esthesisiot/esthesis-agent:${RELEASE_VERSION}|g\" docs/07-developers-guide/09-Developing\\ esthesis\\ device\\ agent.md
                         sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package.json
                         npm install
