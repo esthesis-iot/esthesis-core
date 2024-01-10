@@ -136,8 +136,8 @@ pipeline {
                 container (name: 'esthesis-release-builder') {
                     sh '''
                         cd esthesis-core/esthesis-core-docs
-                        sed -E -i \'s/(helmfile-esthesis-core-deps-)[0-9]+\\.[0-9]+\\.[0-9]+.tgz/\\1\'"${RELEASE_VERSION}"'.tgz/\' docs/01-installation-guide/01-Kubernetes.md
-                        sed -E -i \'s/(helmfile-esthesis-core-)[0-9]+\\.[0-9]+\\.[0-9]+.tgz/\\1\'"${RELEASE_VERSION}"'.tgz/\' docs/01-installation-guide/01-Kubernetes.md
+                        sed -E -i \'s/(helmfile-esthesis-core-deps-)[0-9]+\\.[0-9]+\\.[0-9]+.tgz/\1\'"${RELEASE_VERSION}"'.tgz/\' docs/01-installation-guide/01-Kubernetes.md
+                        sed -E -i \'s/(helmfile-esthesis-core-)[0-9]+\\.[0-9]+\\.[0-9]+.tgz/\1\'"${RELEASE_VERSION}"'.tgz/\' docs/01-installation-guide/01-Kubernetes.md
                         sed -i \"s|esthesisiot/esthesis-agent:[^\\ ]*|esthesisiot/esthesis-agent:${RELEASE_VERSION}|g\" docs/07-developers-guide/09-Developing\\ esthesis\\ device\\ agent.md
                         sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package.json
                         npm install
