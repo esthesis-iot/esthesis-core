@@ -1,7 +1,7 @@
 # Transforming payloads
 
 The embedded MQTT and HTTP endpoints allow the device agent to receive data from external sources
-using the [eLP protocol](../07-References/01-esthesis-line-protocol.md). When the external sources
+using the [eLP protocol](../08-References/01-esthesis-line-protocol.md). When the external sources
 are under your control, eLP is a simple protocol you can easily work with. However, when the
 external sources are not under your control, you may need to transform their payloads before they
 are sent to the device agent.

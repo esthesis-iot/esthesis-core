@@ -48,7 +48,7 @@ value).
 :::
 
 Both embedded endpoints expect data to follow the
-[esthesis Line Protocol](../07-References/01-esthesis-line-protocol.md), however you can push any
+[esthesis Line Protocol](../08-References/01-esthesis-line-protocol.md), however you can push any
 other format you may have and convert it into the esthesis Line Protocol using the
 [Transforming payloads](05-Transforming%20payloads.md) functionality of the agent.
 
