@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-public-access</artifactId>
-    <version>3.0.4</version>
+    <version>3.0.5-SNAPSHOT</version>
   </parent>
 
   <artifactId>srv-public-access-client</artifactId>
@@ -17,7 +17,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-common</artifactId>
-      <version>3.0.4</version>
+      <version>3.0.5-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
