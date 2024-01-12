@@ -46,9 +46,15 @@ kafka:
   bootstrap:
     servers:
       - esthesis-core-kafka-kafka-external-bootstrap.esthesis:9095
+  security:
+    protocol: SASL_PLAINTEXT
+  sasl:
+    mechanism: SCRAM-SHA-512
+    jaas:
+      config: org.apache.kafka.common.security.scram.ScramLoginModule required username=esthesis-system password=esthesis-system;
 
 esthesis:
   oidc:
-    authority: "http://esthesis-dev-keycloak/realms/esthesis"
+    authority: "http://keycloak.esthesis/realms/esthesis"
     redirect-url: "http://localhost:4200/callback"
     post-logout-redirect-uri: "http://localhost:4200/logged-out"

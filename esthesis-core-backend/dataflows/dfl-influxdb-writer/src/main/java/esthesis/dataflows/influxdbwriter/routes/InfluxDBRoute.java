@@ -10,6 +10,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
 import org.apache.camel.model.dataformat.AvroDataFormat;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
 @ApplicationScoped
@@ -21,9 +22,12 @@ public class InfluxDBRoute extends RouteBuilder {
 	@Inject
 	AppConfig config;
 
+	@ConfigProperty(name = "quarkus.application.name")
+	String appName;
+
 	@Override
 	public void configure() {
-		BannerUtil.showBanner("dfl-influxdb-writer");
+		BannerUtil.showBanner(appName);
 
 		// Configure concurrency.
 		ComponentsBuilderFactory.seda()

@@ -31,6 +31,7 @@ import org.apache.camel.model.dataformat.AvroDataFormat;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jsse.provider.BouncyCastleJsseProvider;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
 @ApplicationScoped
@@ -45,13 +46,16 @@ public class MqttRoute extends RouteBuilder {
 	@Inject
 	CryptoService cryptoService;
 
+	@ConfigProperty(name = "quarkus.application.name")
+	String appName;
+
 	@Override
 	@SuppressWarnings({"java:S1192", "java:S1602"})
 	public void configure()
 	throws IOException {
 		Security.insertProviderAt(new BouncyCastleProvider(), 1);
 		Security.insertProviderAt(new BouncyCastleJsseProvider(), 2);
-		BannerUtil.showBanner("dfl-mqtt-client");
+		BannerUtil.showBanner(appName);
 
 		// Configure Kafka.
 		ComponentsBuilderFactory.kafka()

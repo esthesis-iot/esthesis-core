@@ -29,10 +29,13 @@ public class PingRoute extends RouteBuilder {
 	@ConfigProperty(name = "quarkus.mongodb.connection-string")
 	String mongoUrl;
 
+	@ConfigProperty(name = "quarkus.application.name")
+	String appName;
+
 	@Override
 	@SuppressWarnings("java:S2629")
 	public void configure() {
-		BannerUtil.showBanner("dfl-ping-updater");
+		BannerUtil.showBanner(appName);
 
 		// Configure concurrency.
 		ComponentsBuilderFactory.seda()

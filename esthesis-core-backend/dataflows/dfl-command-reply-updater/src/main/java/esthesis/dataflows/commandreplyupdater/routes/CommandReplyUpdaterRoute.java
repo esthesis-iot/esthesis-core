@@ -25,10 +25,13 @@ public class CommandReplyUpdaterRoute extends RouteBuilder {
 	@ConfigProperty(name = "quarkus.mongodb.connection-string")
 	String mongoUrl;
 
+	@ConfigProperty(name = "quarkus.application.name")
+	String appName;
+
 	@Override
 	@SuppressWarnings("java:S2629")
 	public void configure() {
-		BannerUtil.showBanner("dfl-command-reply-updater");
+		BannerUtil.showBanner(appName);
 
 		// Configure concurrency.
 		ComponentsBuilderFactory.seda()

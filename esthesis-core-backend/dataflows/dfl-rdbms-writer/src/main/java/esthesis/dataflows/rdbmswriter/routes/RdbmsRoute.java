@@ -10,6 +10,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
 import org.apache.camel.model.dataformat.AvroDataFormat;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
 @ApplicationScoped
@@ -20,6 +21,9 @@ public class RdbmsRoute extends RouteBuilder {
 
 	@Inject
 	AppConfig config;
+
+	@ConfigProperty(name = "quarkus.application.name")
+	String appName;
 
 	@SuppressWarnings("java:S2629")
 	private void printRouteInfo(String topic) {
@@ -34,7 +38,7 @@ public class RdbmsRoute extends RouteBuilder {
 
 	@Override
 	public void configure() {
-		BannerUtil.showBanner("dfl-rdbms-writer");
+		BannerUtil.showBanner(appName);
 
 		// Configure concurrency.
 		ComponentsBuilderFactory.seda()

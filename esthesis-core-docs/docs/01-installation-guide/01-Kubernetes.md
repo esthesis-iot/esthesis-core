@@ -58,9 +58,9 @@ Default: `esthesis-system`
 Whether Keycloak should be installed by this chart or not.<br/>
 Default: `true`
 
-🔹 `KEYCLOAK_INGRESS_HOSTNAME`<br/>
+🔹 `KEYCLOAK_INGRESS_NAME`<br/>
 The hostname of the ingress rule that will be created for Keycloak<br/>
-Default: `keycloak.esthesis.local`
+Default: ``
 
 🔹 `KEYCLOAK_CERT_MANAGER_CLUSTER_ISSUER`<br/>
 The name of a Cert Manager cluster issuer to be used. This option is mutually exclusive with `KEYCLOAK_CERT_MANAGER_ISSUER`<br/>
@@ -92,40 +92,31 @@ Default: As specified in `ESTHESIS_SYSTEM_USERNAME`
 The password to authenticate with.<br/>
 Default: As specified in `ESTHESIS_SYSTEM_PASSWORD`
 
-### APISIX
-🔹 `APISIX_ENABLED`<br/>
-Whether APISIX should be installed by this chart or not.<br/>
-Default: `true`
-
-🔹 `APISIX_INGRESS_NAMESPACE`<br/>
-The namespace to monitor for ingress rules.<br/>
-Default: (empty, all namespaces are monitored)
-
 ### OpenID Connect
 🔹 `OIDC_AUTHORITY_URL_EXTERNAL`<br/>
 The URL of the OpenID Connect authority to use for external connections. This URL should be accessible
 from the end-user's Internet browser using esthesis UI.<br/>
-Default: `https://keycloak.esthesis.local/realms/esthesis`
+Default: ``
 
 🔹 `OIDC_AUTHORITY_URL_CLUSTER`<br/>
 The URL of the OpenID Connect authority to use for internal connections. This URL should be accessible
 from components running inside the Kubernetes cluster.<br/>
-Default: `http://keycloak/realms/esthesis`
+Default: `http://keycloak.<Namespace>.svc.cluster.local/realms/esthesis`
 
 🔹 `OIDC_DISCOVERY_URL_CLUSTER`<br/>
 The URL of the OpenID Connect discovery endpoint to use for internal connections. This URL should be
 accessible from components running inside the Kubernetes cluster.<br/>
-Default: `http://keycloak/realms/esthesis/.well-known/openid-configuration`
+Default: `http://keycloak.<Namespace>.svc.cluster.local/realms/esthesis/.well-known/openid-configuration`
 
 🔹 `OIDC_JWT_VERIFY_LOCATION_CLUSTER`<br/>
 The URL of the OpenID Connect JWT verification endpoint to use for internal connections. This URL
 should be accessible from components running inside the Kubernetes cluster.<br/>
-Default: `http://keycloak/realms/esthesis/protocol/openid-connect/certs`
+Default: `http://keycloak.<Namespace>.svc.cluster.local/realms/esthesis/protocol/openid-connect/certs`
 
 ### esthesis UI
-🔹 `ESTHESIS_UI_INGRESS_HOSTNAME`<br/>
+🔹 `ESTHESIS_INGRESS_NAME`<br/>
 The hostname of the ingress rule that will be created for esthesis UI.<br/>
-Default: `esthesiscore.esthesis.local`
+Default: ``
 
 🔹 `ESTHESIS_UI_LOGOUT_URL`<br/>
 The URL to redirect to after logging out from esthesis UI.<br/>
@@ -205,16 +196,6 @@ The URL of the Camunda gateway to use for internal connections. This URL should 
 components running inside the Kubernetes cluster.<br/>
 Default: `camunda-zeebe-gateway:26500`
 
-### Microk8s
-🔹 `MK8S_EXPOSE_INGRESS`<br/>
-Exposes the default ingress (NGINX) by creating a LoadBalancer type service.<br/>
-Default: `false`
-
-🔹 `MK8S_INGRESS_NAMESPACE`<br/>
-The namespace to use for the default ingress (NGINX).<br/>
-Default: `ingress`
-</details>
-
 ## Installation
 esthesis Core comes in two Helm charts, one installing all the required dependencies and another one
 installing the application components. You can enable/disable which specific dependencies you want
@@ -224,19 +205,24 @@ tune their properties or replace them altogether with your own resources to supp
 production use case.
 
 ### Environment variables
-The following environment variables are used by the Helm charts to configure the installation, you
-may change them to suit your needs:
+The following list is a recommended starting point of environment variables to set before you
+proceed with the installation:
 ```
-export DOMAIN=esthesis-prod.mydomain.com
+export DOMAIN=domain.com
 export TIMEZONE=Europe/Athens
-export ESTHESIS_ADMIN_USERNAME=admin
-export ESTHESIS_ADMIN_PASSWORD=esthesis
-export ESTHESIS_SYSTEM_USERNAME=system
-export ESTHESIS_SYSTEM_PASSWORD=esthesis
-export KEYCLOAK_INGRESS_HOSTNAME=keycloak.$DOMAIN
-export ESTHESIS_UI_INGRESS_HOSTNAME=esthesis-core.$DOMAIN
-export OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_HOSTNAME/realms/esthesis"
+export ESTHESIS_ADMIN_USERNAME=esthesis-admin
+export ESTHESIS_ADMIN_PASSWORD=wEc25LP82F97OfoX
+export ESTHESIS_SYSTEM_USERNAME=esthesis-system
+export ESTHESIS_SYSTEM_PASSWORD=O0ddC1Qhf4cjW21N
+export KEYCLOAK_INGRESS_NAME=keycloak.$DOMAIN
+export ESTHESIS_INGRESS_NAME=esthesis-core.$DOMAIN
+export OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_NAME/realms/esthesis"
+export KEYCLOAK_CERT_MANAGER_CLUSTER_ISSUER=letsencrypt-prod
+export ESTHESIS_UI_CERT_MANAGER_CLUSTER_ISSUER=letsencrypt-prod
+export MOSQUITTO_SERVICE_TYPE=LoadBalancer
 ```
+
+Make sure you adapt the values to your own environment.
 
 ### Supporting infrastructure
 - Obtain the Helmfile corresponding to the esthesis version you want to install. For example:

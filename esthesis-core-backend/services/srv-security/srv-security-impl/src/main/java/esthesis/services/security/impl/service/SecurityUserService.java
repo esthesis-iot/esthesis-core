@@ -23,6 +23,8 @@ public class SecurityUserService extends BaseService<UserEntity> {
 		return findFirstByColumn("username", username);
 	}
 
+	//TODO review this method, is this logic still needed? Could we inject this logic in liquibase
+	//scripts or similar?
 	/**
 	 * If User collection is empty, create a default admin user.
 	 */

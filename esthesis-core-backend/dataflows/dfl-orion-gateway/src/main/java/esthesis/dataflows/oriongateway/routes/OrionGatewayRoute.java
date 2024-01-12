@@ -13,6 +13,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
 import org.apache.camel.model.dataformat.AvroDataFormat;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
 @ApplicationScoped
@@ -30,10 +31,13 @@ public class OrionGatewayRoute extends RouteBuilder {
 	@Inject
 	AppConfig appConfig;
 
+	@ConfigProperty(name = "quarkus.application.name")
+	String appName;
+
 	@Override
 	@SuppressWarnings("java:S2629")
 	public void configure() {
-		BannerUtil.showBanner("dfl-orion-gateway");
+		BannerUtil.showBanner(appName);
 
 		// Check if existing devices should be registered in Orion.
 		if (appConfig.orionRetroCreateDevicesOnSchedule()) {

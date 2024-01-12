@@ -5,6 +5,7 @@ import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.ws.rs.core.Application;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.info.Contact;
 import org.eclipse.microprofile.openapi.annotations.info.Info;
@@ -21,7 +22,10 @@ import org.eclipse.microprofile.openapi.annotations.info.Info;
 )
 public class App extends Application {
 
+	@ConfigProperty(name = "quarkus.application.name")
+	String appName;
+
 	void onStart(@Observes StartupEvent ev) {
-		BannerUtil.showBanner("srv-dt");
+		BannerUtil.showBanner(appName);
 	}
 }
