@@ -19,7 +19,7 @@ review them, so you can customize them to your needs.
 
 ## Configuration parameters
 
-<details><summary>The following parameters can be defined as environmental variables during installation:</summary></details>
+<details><summary>The following parameters can be defined as environmental variables during installation:</summary>
 
 ### General
 
@@ -207,6 +207,8 @@ Default: `true`
 The URL of the Camunda gateway to use for internal connections. This URL should be accessible from
 components running inside the Kubernetes cluster.<br/>
 Default: `camunda-zeebe-gateway:26500`
+
+</details>
 
 ## Installation
 
