@@ -1,4 +1,3 @@
-
 esthesis CORE can be deployed on Kubernetes using the publicly available Helm charts. The Helm
 charts are available on the [TBC].
 
@@ -12,15 +11,18 @@ Please note that Helm charts come with reasonable defaults; we strongly advise t
 review them, so you can customize them to your needs.
 
 ## Requirements
+
 - A Kubernetes cluster with a minimum of 3 nodes and support for Load Balancer service types as well
-as Ingress support.
+  as Ingress support.
 - [Helm](https://helm.sh)
 - [Helmfile](https://github.com/helmfile/helmfile)
 
 ## Configuration parameters
-<details><summary>The following parameters can be defined as environmental variables during installation:</summary>
+
+<details><summary>The following parameters can be defined as environmental variables during installation:</summary></details>
 
 ### General
+
 🔹 `TIMEZONE`<br/>
 The containers timezone to set (note, some containers do not respect this setting).<br/>
 Default: `Europe/Athens`
@@ -31,6 +33,7 @@ installed by the Helm chart).<br/>
 Default: `WARN`
 
 ### Accounts
+
 🔹 `ESTHESIS_ADMIN_USERNAME`<br/>
 The username of the esthesis administrator user. Use this account to connect to esthesis UI after installation is done.<br/>
 Default: `esthesis-admin`
@@ -54,6 +57,7 @@ The password of the esthesis system user.<br/>
 Default: `esthesis-system`
 
 ### Keycloak
+
 🔹 `KEYCLOAK_ENABLED`<br/>
 Whether Keycloak should be installed by this chart or not.<br/>
 Default: `true`
@@ -72,6 +76,7 @@ with `KEYCLOAK_CERT_MANAGER_CLUSTER_ISSUER`<br/>
 Default: ``
 
 ### MongoDB
+
 🔹 `MONGODB_ENABLED`<br/>
 Whether MongoDB should be installed by this chart or not.<br/>
 Default: `true`
@@ -93,6 +98,7 @@ The password to authenticate with.<br/>
 Default: As specified in `ESTHESIS_SYSTEM_PASSWORD`
 
 ### OpenID Connect
+
 🔹 `OIDC_AUTHORITY_URL_EXTERNAL`<br/>
 The URL of the OpenID Connect authority to use for external connections. This URL should be accessible
 from the end-user's Internet browser using esthesis UI.<br/>
@@ -114,6 +120,7 @@ should be accessible from components running inside the Kubernetes cluster.<br/>
 Default: `http://keycloak.<Namespace>.svc.cluster.local/realms/esthesis/protocol/openid-connect/certs`
 
 ### esthesis UI
+
 🔹 `ESTHESIS_INGRESS_NAME`<br/>
 The hostname of the ingress rule that will be created for esthesis UI.<br/>
 Default: ``
@@ -132,6 +139,7 @@ with `ESTHESIS_UI_CERT_MANAGER_CLUSTER_ISSUER`<br/>
 Default: ``
 
 ### Redis
+
 🔹 `REDIS_ENABLED`<br/>
 Whether Redis should be installed by this chart or not.<br/>
 Default: `true`
@@ -142,6 +150,7 @@ Kubernetes cluster.<br/>
 Default: `redis-master:6379/0`
 
 ### Mosquitto
+
 🔹 `MOSQUITTO_ENABLED`<br/>
 Whether Mosquitto should be installed by this chart or not.<br/>
 Default: `true`
@@ -172,11 +181,13 @@ The type of the service to expose Mosquitto by.<br/>
 Default: `ClusterIP`
 
 ### InfluxDB
+
 🔹 `INFLUXDB_ENABLED`<br/>
 Whether InfluxDB should be installed by this chart or not.<br/>
 Default: `true`
 
 ### Kafka
+
 🔹 `KAFKA_ENABLED`<br/>
 Whether Kafka should be installed by this chart or not.<br/>
 Default: `true`
@@ -187,6 +198,7 @@ inside the Kubernetes cluster.<br/>
 Default: `kafka:9092`
 
 ### Camunda
+
 🔹 `CAMUNDA_ENABLED`<br/>
 Whether Camunda should be installed by this chart or not.<br/>
 Default: `true`
@@ -197,6 +209,7 @@ components running inside the Kubernetes cluster.<br/>
 Default: `camunda-zeebe-gateway:26500`
 
 ## Installation
+
 esthesis Core comes in two Helm charts, one installing all the required dependencies and another one
 installing the application components. You can enable/disable which specific dependencies you want
 to install by setting the corresponding `*_ENABLED` parameter to `true` or `false`. Do note that
@@ -205,8 +218,10 @@ tune their properties or replace them altogether with your own resources to supp
 production use case.
 
 ### Environment variables
+
 The following list is a recommended starting point of environment variables to set before you
 proceed with the installation:
+
 ```
 export DOMAIN=domain.com
 export TIMEZONE=Europe/Athens
@@ -225,47 +240,53 @@ export MOSQUITTO_SERVICE_TYPE=LoadBalancer
 Make sure you adapt the values to your own environment.
 
 ### Supporting infrastructure
+
 - Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
-	```shell
-	wget -qO- https://esthes.is/helm/helmfile-esthesis-core-deps-3.0.0.tgz | tar xvz
-	```
+  ```shell
+  wget -qO- https://esthes.is/helm/helmfile-esthesis-core-deps-3.0.0.tgz | tar xvz
+  ```
 - Install the Helmfile:
-	```shell
-	helmfile sync --namespace={my-namespace}
-	```
+  ```shell
+  helmfile sync --namespace={my-namespace}
+  ```
 
 ### Application
+
 - Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
-	```shell
-	wget -qO- https://esthes.is/helm/helmfile-esthesis-core-3.0.0.tgz | tar xvz
-	```
+  ```shell
+  wget -qO- https://esthes.is/helm/helmfile-esthesis-core-3.0.0.tgz | tar xvz
+  ```
 - Install the Helmfile:
-	```shell
-	helmfile sync --namespace={my-namespace}
-	```
+  ```shell
+  helmfile sync --namespace={my-namespace}
+  ```
 
 ## Notes
+
 1. You need to access the UI via HTTPS, accessing it via HTTP will not work.
 2. The UI is exposed under the domain you specified in the environmental variable `ESTHESIS_UI_INGRESS_HOSTNAME`.
 3. If you are using a self-signed certificate which is not imported into your local system, before
-trying to log in into the application you need to visit the Keycloak URL first and accept the
-certificate. Otherwise, the login will fail.
+   trying to log in into the application you need to visit the Keycloak URL first and accept the
+   certificate. Otherwise, the login will fail.
 4. `esthesis-core-srv-kubernetes` needs to be able to list all namespaces as well as schedule pods
-via deployments, configure HPA, etc. A Service Account `esthesis-core-srv-kubernetes` is automatically
-created with no additional permissions other than the ones of the `default` service account. Depending
-on how security is implemented in your Kubernetes cluster, you may need to provide the necessary
-roles/permissions to this service account.
+   via deployments, configure HPA, etc. A Service Account `esthesis-core-srv-kubernetes` is automatically
+   created with no additional permissions other than the ones of the `default` service account. Depending
+   on how security is implemented in your Kubernetes cluster, you may need to provide the necessary
+   roles/permissions to this service account.
 
 ## Cert Manager integration
+
 If you have [Cert Manager](https://cert-manager.io) installed in your cluster, you can use it to
 automatically generate and renew certificates for esthesis UI and Keycloak. To do so, you need to
 set the following environmental variables:
+
 ```
 export KEYCLOAK_CERT_MANAGER_CLUSTER_ISSUER=letsencrypt-prod
 export ESTHESIS_UI_CERT_MANAGER_CLUSTER_ISSUER=letsencrypt-prod
 ```
 
 If you are using namespace scoped issuers, you can alternatively specify:
+
 ```
 export KEYCLOAK_CERT_MANAGER_ISSUER=letsencrypt-prod
 export ESTHESIS_UI_CERT_MANAGER_ISSUER=letsencrypt-prod
