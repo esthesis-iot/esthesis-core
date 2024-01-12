@@ -6,9 +6,12 @@
 # Environment variables:
 #   ESTHESIS_REGISTRY_USERNAME: The username to use when authenticating with the registry.
 #   ESTHESIS_REGISTRY_PASSWORD: The password to use when authenticating with the registry.
-#   ESTHESIS_REGISTRY_URL: The URL of the registry to push to (default: docker.io).
-#   ESTHESIS_ARCHITECTURES: The architectures to build (default: linux/amd64).
-#   ESTHESIS_BUILDX_KUBERNETES: If set to true, a builder will be created in Kubernetes (default: false).
+#   ESTHESIS_REGISTRY_URL: 			The URL of the registry to push to (default: docker.io).
+#   ESTHESIS_ARCHITECTURES: 		The architectures to build (default: linux/amd64).
+#   ESTHESIS_BUILDX_KUBERNETES: If set to true, a builder will be created in Kubernetes
+#   														(default: false).
+#		ESTHESIS_GLOBAL_BUILD: 			If set to true, a global build is performed first. This is to build
+#																dependencies that are shared between modules (default: false).
 #
 # Usage:
 #   ./publish.sh
@@ -50,6 +53,11 @@ fi
 # If $ESTHESIS_REGISTRY_URL is empty, set it to docker.io.
 if [ -z "$ESTHESIS_REGISTRY_URL" ]; then
   ESTHESIS_REGISTRY_URL="docker.io"
+fi
+
+# If $ESTHESIS_GLOBAL_BUILD is empty, set it to false.
+if [ -z "$ESTHESIS_GLOBAL_BUILD" ]; then
+  ESTHESIS_GLOBAL_BUILD="false"
 fi
 
 # Set buildx driver options.
@@ -103,6 +111,13 @@ if [ $# -eq 2 ]; then
 	modules=(
 		"$1" "$2"
 	)
+fi
+
+# Before start building the requested module(s), check if a global build needs to be performed
+# first. This is to build dependencies that are shared between modules.
+if [ "$ESTHESIS_GLOBAL_BUILD" = "true" ]; then
+	printInfo "Performing global build."
+	./mvnw clean package
 fi
 
 # Create a Docker buildx.
