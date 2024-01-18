@@ -7,7 +7,7 @@ if [ "$1" != "" ]; then
 fi
 
 [ -e "local-env.sh" ] && source "local-env.sh"
-env ESTHESIS_DFL_KAFKA_CLUSTER_URL=esthesis-core-kafka-kafka-external-bootstrap.esthesis:9095 \
+env ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.esthesis:9092 \
     ESTHESIS_DFL_KAFKA_TELEMETRY_TOPIC=esthesis-telemetry \
     ESTHESIS_DFL_KAFKA_APPLICATION_TOPIC=esthesis-app \
     ESTHESIS_DFL_ORION_URL=http://orion.esthesis.localdev:1026 \

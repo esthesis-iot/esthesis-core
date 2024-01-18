@@ -19,5 +19,5 @@ env \
     ESTHESIS_DFL_KAFKA_TOPIC_COMMAND_REQUEST=esthesis-command-request \
     ESTHESIS_DFL_KAFKA_TOPIC_COMMAND_REPLY=esthesis-command-reply \
     ESTHESIS_DFL_MQTT_BROKER_CLUSTER_URL=tcp://mosquitto.esthesis:1883 \
-    ESTHESIS_DFL_KAFKA_CLUSTER_URL=esthesis-core-kafka-kafka-external-bootstrap.esthesis:9095 \
+    ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.esthesis:9092 \
 ./mvnw quarkus:dev -Ddebug=39152 -Dquarkus.profile="$PROFILES"

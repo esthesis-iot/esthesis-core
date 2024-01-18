@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# Check if the number of arguments is not equal to 1
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <namespace>"
+    exit 1
+fi
 
 # The name of this tmux session.
 SESSION=esthesis-dev
@@ -141,7 +146,7 @@ tmux select-layout tiled
 tmux split-window -v
 tmux select-pane -t 0.20 -T "Kubefwd"
 tmux pipe-pane -o -t 0.20 "sed -u 's/^/\[Kubefwd     \] /' | cat >> $LOGS"
-tmux send-keys "sudo -E kubefwd svc -d esthesis" C-m
+tmux send-keys "sudo -E kubefwd svc -d $1" C-m
 tmux select-layout tiled
 
 # Start log monitoring

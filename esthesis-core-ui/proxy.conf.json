@@ -1,8 +1,0 @@
-{
-  "/api": {
-    "target": "http://apisix-gateway.esthesis",
-    "secure": false,
-    "ws": true,
-    "changeOrigin": true
-  }
-}

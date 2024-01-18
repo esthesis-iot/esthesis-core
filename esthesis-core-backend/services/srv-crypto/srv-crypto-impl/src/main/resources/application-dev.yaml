@@ -13,7 +13,7 @@ quarkus:
       url: http://localhost:59010
       scope: Singleton
   mongodb:
-    connection-string: mongodb://mongodb.esthesis:27017
+    connection-string: mongodb://mongodb-headless.esthesis:27017
     database: esthesiscore
     credentials:
       username: esthesis-system
@@ -42,7 +42,7 @@ quarkus:
 kafka:
   bootstrap:
     servers:
-      - esthesis-core-kafka-kafka-external-bootstrap.esthesis:9095
+      - kafka.esthesis:9092
   security:
     protocol: SASL_PLAINTEXT
   sasl:

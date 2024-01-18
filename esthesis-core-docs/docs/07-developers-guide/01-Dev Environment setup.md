@@ -49,35 +49,30 @@ you can follow the instructions below without having to change parameters.
 
 - Install the application components in `esthesis-helm/esthesis-core`:
 	```shell
-	DEV_HOST=192.168.40.236 helmfile -e dev sync --namespace=esthesis
+	helmfile -e dev sync --namespace=esthesis
 	```
-
-	:::caution
-	You need to specify the IP address of your development machine in the `DEV_HOST` environment
-	variable. This is needed so that the API gateway (APISIX) knows where to forward the requests to
-	(since in `dev` setup the services run on your own machine, not in Kubernetes).
-	:::
 
 ## Access to resources
 To proxy the Kubernetes services of the project to your local machine for development purposes, you
 can use [kubefwd](https://kubefwd.com) and execute:
 ```shell
-sudo -E kubefwd svc -d esthesis
+sudo -E kubefwd svc -d <namespace>
 ```
-kubefwd will proxy all services to your localhost and create local DNS entries for them. The table
-below summarises the resources you can access after running the above command. Note that if you have
+1. kubefwd will proxy all services to your localhost and create local DNS entries for them. The table
+below summarises the resources you can access after running the above command. Replace `<namespace>`
+with the namespace you have deployed the services to. Note that if you have
 deployed the services in a different namespace than `esthesis`, you need to adjust the namespace
-element in the table below:
+element in the domains in the table below:
+2. You may need to, occasionally, restart kubefwd, especially if pods get recreated often.
 
 | Resource | URL/host | Credentials |
 |-|-|-|
-| APISIX Dashboard   | http://apisix-dashboard.esthesis | esthesis-system / esthesis-system |
 | Redis              | redis-master.esthesis:6379/0 | (empty) / esthesis-system |
 | Mosquitto          | mosquitto.esthesis:1883 ||
 | Grafana            | http://grafana.esthesis:3000 | esthesis-system / esthesis-system |
 | InfluxDB Admin UI  | http://influxdb.esthesis:8086 | esthesis-system / esthesis-system |
 | InfluxDB           | influxdb.esthesis:8088 ||
-| MongoDB            | mongodb.esthesis:27017 | esthesis-system / esthesis-system |
+| MongoDB            | mongodb-headless.esthesis:27017 | esthesis-system / esthesis-system |
 | esthesis Core UI   | http://localhost:4200 | esthesis-admin / esthesis-admin |
 | Keycloak           | http://keycloak.esthesis | esthesis-system / esthesis-system |
 | Kafka              | kafka.esthesis:9095 ||

@@ -11,7 +11,11 @@ if [ "$TERM_PROGRAM" = tmux ]; then
   CONSOLE=false
 fi
 
-[ -e "local-env.sh" ] && source "local-env.sh"
+if [ -e "$(pwd)/local-env.sh" ]; then
+	echo "Sourcing $(pwd)/local-env.sh."
+	source "local-env.sh"
+fi
+
 cd srv-kubernetes-impl || exit
 ./mvnw quarkus:dev \
   -Dquarkus.http.port=59050 \
