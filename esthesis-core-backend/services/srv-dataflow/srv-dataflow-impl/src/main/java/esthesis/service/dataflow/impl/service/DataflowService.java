@@ -1,11 +1,8 @@
 package esthesis.service.dataflow.impl.service;
 
 import com.github.slugify.Slugify;
-import com.mongodb.MongoCommandException;
 import esthesis.common.data.MapUtils;
 import esthesis.service.common.BaseService;
-import esthesis.service.crypto.resource.CAResource;
-import esthesis.service.crypto.resource.CertificateResource;
 import esthesis.service.dataflow.dto.DockerTagsDTO;
 import esthesis.service.dataflow.entity.DataflowEntity;
 import esthesis.service.dataflow.impl.docker.DockerClient;
@@ -17,12 +14,10 @@ import esthesis.service.kubernetes.resource.KubernetesResource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.transaction.Transactional.TxType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.swing.SpinnerDateModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -132,14 +127,7 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		return builder.build();
 	}
 
-	@Override
-	public DataflowEntity save(DataflowEntity dataflowEntity) {
-		log.debug("Saving dataflow '{}'.", dataflowEntity);
-
-		// Save the dataflow.
-		dataflowEntity = super.save(dataflowEntity);
-
-		// Schedule dataflow in Kubernetes.
+	private PodInfoDTO createPodInfo(DataflowEntity dataflowEntity) {
 		PodInfoDTO podInfoDTO = new PodInfoDTO();
 		podInfoDTO.setName(Slugify.builder().build().slugify(dataflowEntity.getName()));
 		if (dataflowEntity.getImage() != null &&
@@ -167,8 +155,20 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		podInfoDTO.setStatus(dataflowEntity.isStatus());
 		podInfoDTO.setSecret(getSecretSpec(dataflowEntity));
 
+		return podInfoDTO;
+	}
+
+	@Override
+	public DataflowEntity save(DataflowEntity dataflowEntity) {
+		log.debug("Saving dataflow '{}'.", dataflowEntity);
+
+		// Save the dataflow.
+		dataflowEntity = super.save(dataflowEntity);
+
+		// Schedule dataflow in Kubernetes.
+		PodInfoDTO podInfoDTO = createPodInfo(dataflowEntity);
 		log.debug("Scheduling pod '{}' in Kubernetes.", podInfoDTO);
-//		kubernetesResource.schedulePod(podInfoDTO);
+		kubernetesResource.schedulePod(podInfoDTO);
 
 		return dataflowEntity;
 	}
@@ -185,10 +185,10 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		// Unschedule dataflow.
 		DataflowEntity dataflow = findById(dataflowId);
 		dataflow.setStatus(false);
-		dataflow = save(dataflow);
+		PodInfoDTO podInfoDTO = createPodInfo(dataflow);
+		kubernetesResource.schedulePod(podInfoDTO);
 
 		// Delete dataflow.
 		super.delete(dataflow);
 	}
-
 }
