@@ -1,6 +1,7 @@
 package esthesis.service.dataflow.impl.service;
 
 import com.github.slugify.Slugify;
+import com.mongodb.MongoCommandException;
 import esthesis.common.data.MapUtils;
 import esthesis.service.common.BaseService;
 import esthesis.service.crypto.resource.CAResource;
@@ -16,10 +17,12 @@ import esthesis.service.kubernetes.resource.KubernetesResource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional.TxType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.swing.SpinnerDateModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -36,13 +39,13 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	private static final String KUBERNETES_MAX_PODS = "pods-max";
 	private static final String KUBERNETES_CPU_REQUEST = "cpu-request";
 	private static final String KUBERNETES_CPU_LIMIT = "cpu-limit";
-	private final static String CUSTOM_ENV_VARS_KEY_NAME = "env";
-	private final static String CUSTOM_ENV_VARS_SEPARATOR = "\n";
-	private final static String CUSTOM_ENV_VARS_KEY_VALUE_SEPARATOR = "=";
-	private final static String IMAGE_REGISTRY_URL = "registry";
-	private final static String SECRET_NAME = "name";
-	private final static String SECRET_PATH = "path";
-	private final static String SECRET_CONTENT = "content";
+	private static final String CUSTOM_ENV_VARS_KEY_NAME = "env";
+	private static final String CUSTOM_ENV_VARS_SEPARATOR = "\n";
+	private static final String CUSTOM_ENV_VARS_KEY_VALUE_SEPARATOR = "=";
+	private static final String IMAGE_REGISTRY_URL = "registry";
+	private static final String SECRET_NAME = "name";
+	private static final String SECRET_PATH = "path";
+	private static final String SECRET_CONTENT = "content";
 
 	@Inject
 	@RestClient
@@ -139,11 +142,12 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		// Schedule dataflow in Kubernetes.
 		PodInfoDTO podInfoDTO = new PodInfoDTO();
 		podInfoDTO.setName(Slugify.builder().build().slugify(dataflowEntity.getName()));
-		if (StringUtils.isEmpty(dataflowEntity.getImage().get(IMAGE_REGISTRY_URL).toString())) {
-			podInfoDTO.setImage(DOCKER_IMAGE_PREFIX + dataflowEntity.getType());
-		} else {
+		if (dataflowEntity.getImage() != null &&
+			StringUtils.isNotEmpty(dataflowEntity.getImage().get(IMAGE_REGISTRY_URL).toString())) {
 			podInfoDTO.setImage(dataflowEntity.getImage().get(IMAGE_REGISTRY_URL).toString() + "/"
 				+ DOCKER_IMAGE_PREFIX + dataflowEntity.getType());
+		} else {
+			podInfoDTO.setImage(DOCKER_IMAGE_PREFIX + dataflowEntity.getType());
 		}
 		podInfoDTO.setVersion(
 			(String) dataflowEntity.getKubernetes().get(KUBERNETES_CONTAINER_IMAGE_VERSION));
@@ -164,7 +168,7 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		podInfoDTO.setSecret(getSecretSpec(dataflowEntity));
 
 		log.debug("Scheduling pod '{}' in Kubernetes.", podInfoDTO);
-		kubernetesResource.schedulePod(podInfoDTO);
+//		kubernetesResource.schedulePod(podInfoDTO);
 
 		return dataflowEntity;
 	}
@@ -178,13 +182,13 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	}
 
 	public void delete(String dataflowId) {
-		// Remove the dataflow from Kubernetes.
+		// Unschedule dataflow.
 		DataflowEntity dataflow = findById(dataflowId);
 		dataflow.setStatus(false);
-		save(dataflow);
+		dataflow = save(dataflow);
 
-		// Remove the dataflow from the database.
-		delete(findById(dataflowId));
+		// Delete dataflow.
+		super.delete(dataflow);
 	}
 
 }

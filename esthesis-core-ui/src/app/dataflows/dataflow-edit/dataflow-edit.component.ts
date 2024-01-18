@@ -98,9 +98,14 @@ export class DataflowEditComponent extends SecurityBaseComponent implements OnIn
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.dataflowService.delete(this.id).subscribe(() => {
-          this.utilityService.popupSuccess("Dataflow component successfully deleted.");
-          this.router.navigate(["dataflow"]);
+        this.dataflowService.delete(this.id).subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("Dataflow component successfully deleted.");
+            this.router.navigate(["dataflow"]);
+          }, error: err => {
+            this.utilityService.popupErrorWithTraceId(
+              "There was an error trying to delete dataflow.", err);
+          }
         });
       }
     });

@@ -39,6 +39,10 @@ It is not necessary to create a tag, however it is highly recommended.
 - Under "Security", choose as root CA the CA you created before.
 
 ## Set up the Dataflows
+Without any dataflow configured esthesis Core can not do much. You can set up individual
+dataflows for your use case, or you can use one of the provided wizards. Once the dataflows are
+configured, you can start registering devices and send data to the platform.
+
 ### Manual configuration
 Although the exact order in which dataflows are deployed is not important, you may use the following
 order:
@@ -48,9 +52,6 @@ order:
 - Command reply updater
 - InfluxDB writer
 ### Using Wizards
-Without any dataflow configured esthesis Core can not do much. You can set up individual
-dataflows for your use case, or you can use one of the provided wizards. Once the dataflows are
-configured, you can start registering devices and send data to the platform.
 - Navigate to "Dataflows".
 - Click on the "Create" button.
 - Click on the "Wizards" button.

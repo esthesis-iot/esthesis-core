@@ -10,7 +10,8 @@ import {SecurityBaseComponent} from "../../../shared/components/security-base-co
 import {DataflowsService} from "../../dataflows.service";
 import {WizardDataflowDto} from "../../dto/wizard-dataflow";
 import {forkJoin} from "rxjs";
-
+import { concat, of } from 'rxjs';
+import { delay, tap } from 'rxjs/operators';
 @Component({
   selector: "app-dataflow-wizard-standard",
   templateUrl: "./dataflow-wizard-standard.component.html"
@@ -31,8 +32,8 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
     this.form = this.fb.group({
       wizardName: ["standard", [Validators.required]],
       version: ["3.0.3", [Validators.required]],
-      kafkaClusterUrl: ["esthesis-core-kafka-kafka-bootstrap:9092", [Validators.required]],
-      mongoDbClusterUrl: ["mongodb://esthesis-mongodb-esthesiscore-svc:27017", [Validators.required]],
+      kafkaClusterUrl: ["kafka:9092", [Validators.required]],
+      mongoDbClusterUrl: ["mongodb://mongodb-headless:27017", [Validators.required]],
       mongoDbDatabase: ["esthesiscore", [Validators.required]],
       mongoDbUsername: ["esthesis-system", [Validators.required]],
       mongoDbPassword: ["esthesis-system", [Validators.required]],
@@ -41,7 +42,7 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
       influxDbOrg: ["esthesis", [Validators.required]],
       influxDbBucket: ["esthesis", [Validators.required]],
       influxDbToken: ["", [Validators.required]],
-      redisClusterUrl: ["redis://:esthesis-system@redis-headless:6379/0", [Validators.required]],
+      redisClusterUrl: ["redis://:esthesis-system@redis-master:6379/0", [Validators.required]],
       dockerRegistry: ["", []],
     });
 
@@ -55,6 +56,8 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
   }
 
   execute() {
+    let calls = [];
+
     // Ping DFL.
     const pingDfl: WizardDataflowDto = {
       type: "ping-updater",
@@ -93,6 +96,7 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
           registry: this.form.get("dockerRegistry")?.value
         };
     }
+    calls.push(this.dataflowService.save(pingDfl));
     const pingDflServiceCall = this.dataflowService.save(pingDfl);
 
     // Command Reply Updater DFL.
@@ -270,19 +274,51 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
     }
     const redisCacheServiceCall = this.dataflowService.save(redisCacheDfl);
 
+    concat(...calls).subscribe({
+      next: () => {
+        this.utilityService.popupSuccess("Wizard was executed successfully");
+        this.router.navigate(["/dataflow"]);
+      }, error: () => {
+        this.utilityService.popupError("Failed to execute the wizard, check which dataflows have already been created");
+      }
+    });
+
+    /*const sequentialPromise = promises.reduce((prevPromise, promiseFn) => {
+      return prevPromise.then(() => promiseFn());
+    }, Promise.resolve());
+
     if (!this.form.valid) {
       this.utilityService.popupError("You need to fill in all required fields");
     } else {
-      // Execute all service calls with a forkJoin.
-      forkJoin({ping: pingDflServiceCall, commandReply: commandReplyUpdatedServiceCall, mqtt: mqttClientServiceCall,
-        influx: influxDbWriterServiceCall, redis: redisCacheServiceCall}).subscribe({
-        next: () => {
+      // Execute all service calls.
+       const sequence = Promise.resolve().then(() => {
+         return pingDflServiceCall;
+       }).then(() => {
+          return commandReplyUpdatedServiceCall;
+       }).then(() => {
+          return mqttClientServiceCall;
+       }).then(() => {
+          return influxDbWriterServiceCall;
+       }).then(() => {
+          return redisCacheServiceCall;
+       });
+
+        sequence.then(() => {
           this.utilityService.popupSuccess("Wizard was executed successfully");
           this.router.navigate(["/dataflow"]);
-        }, error: () => {
+        }).catch(() => {
           this.utilityService.popupError("Failed to execute the wizard, check which dataflows have already been created");
-        }
-      });
-    }
+        });*/
+
+      // forkJoin({ping: pingDflServiceCall, commandReply: commandReplyUpdatedServiceCall, mqtt: mqttClientServiceCall,
+      //   influx: influxDbWriterServiceCall, redis: redisCacheServiceCall}).subscribe({
+      //   next: () => {
+      //     this.utilityService.popupSuccess("Wizard was executed successfully");
+      //     this.router.navigate(["/dataflow"]);
+      //   }, error: () => {
+      //     this.utilityService.popupError("Failed to execute the wizard, check which dataflows have already been created");
+      //   }
+      // });
+    // }
   }
 }
