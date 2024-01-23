@@ -31,6 +31,9 @@ public class PingService {
 		// Get the message from the exchange.
 		EsthesisDataMessage esthesisMessage = exchange.getIn().getBody(EsthesisDataMessage.class);
 
+		log.debug("Searching for existing device with hardware ID '{}'.",
+			esthesisMessage.getHardwareId());
+
 		// Create search criteria for the MongoDB query.
 		Bson equalsClause = Filters.eq("hardwareId", esthesisMessage.getHardwareId());
 
@@ -43,7 +46,7 @@ public class PingService {
 			exchange.getIn().getHeader(KafkaConstants.KEY));
 		// Get the message from the exchange.
 		EsthesisDataMessage esthesisMessage = exchange.getIn().getBody(EsthesisDataMessage.class);
-		log.debug("Esthesis message: '{}'.",
+		log.debug("esthesis message: '{}'.",
 			StringUtils.abbreviate(esthesisMessage.toString(),
 				AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH));
 

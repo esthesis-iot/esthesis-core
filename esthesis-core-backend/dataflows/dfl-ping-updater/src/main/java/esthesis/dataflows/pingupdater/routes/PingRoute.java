@@ -7,6 +7,7 @@ import esthesis.dataflows.pingupdater.service.PingService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
@@ -79,16 +80,20 @@ public class PingRoute extends RouteBuilder {
         config.kafkaPingTopic(), mongoUrl, config.esthesisDbName());
 
     from("kafka:" + config.kafkaPingTopic())
+				.log(LoggingLevel.DEBUG, log, "Received message from Kafka '${body}'.")
         .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
         .to("seda:ping");
 
     from("seda:ping")
+				.log(LoggingLevel.DEBUG, log, "Processing message '${body}'.")
         .bean(pingService, "searchForExistingDevice")
         .bean(pingService, "updateTimestamp")
+				.log(LoggingLevel.DEBUG, log, "Message processed, sending to MongoDB.")
         .to("mongodb:camelMongoClient?"
             + "database=" + config.esthesisDbName()
             + "&collection=Device"
-            + "&operation=update");
+            + "&operation=update")
+				.log(LoggingLevel.DEBUG, log, "Message sent to MongoDB.");
     // @formatter:on
 
 		log.info("Routes created successfully.");
