@@ -3,7 +3,7 @@ package esthesis.dataflows.oriongateway.service;
 import esthesis.avro.EsthesisDataMessage;
 import esthesis.avro.MessageTypeEnum;
 import esthesis.common.AppConstants.Device.Status;
-import esthesis.common.data.ValueUtils.ValueType;
+import esthesis.common.data.DataUtils.ValueType;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.dataflows.oriongateway.config.AppConfig;
 import esthesis.dataflows.oriongateway.dto.OrionAttributeDTO;
@@ -68,6 +68,7 @@ public class OrionGatewayService {
 	}
 
 	/**
+	 * //TODO check comment
 	 * Returns whether a/ the service is configured to perform data updates (i.e. update the metrics
 	 * received by esthesis in Orion), b/ the specific device is already registered in Orion, and c/
 	 * the specific device has an attribute allowing/disallowing data updates.

@@ -43,7 +43,7 @@ public class KubernetesService {
 	 */
 	private List<EnvVar> getEnvVar(PodInfoDTO podInfoDTO) {
 		List<EnvVar> envVars = new ArrayList<>();
-		podInfoDTO.getConfiguration().forEach((k, v) ->
+		podInfoDTO.getEnvironment().forEach((k, v) ->
 			envVars.add(new EnvVarBuilder().withName(k).withValue(v).build())
 		);
 
@@ -54,20 +54,19 @@ public class KubernetesService {
 	 * Creates or updates a secret.
 	 *
 	 * @param secretDTO The secret to create or update.
-	 * @return The name of the secret.
 	 */
 	public void createSecret(SecretDTO secretDTO) {
-		if (secretDTO == null) {
+		if (secretDTO == null || secretDTO.getEntries() == null || secretDTO.getEntries().isEmpty()) {
 			return;
 		}
 
 		SecretBuilder secretBuilder = new SecretBuilder();
 		secretBuilder.withNewMetadata().withName(secretDTO.getName()).endMetadata();
-		secretDTO.getEntries().forEach((secret) -> {
+		secretDTO.getEntries().forEach(secret ->
 			secretBuilder.addToData(secret.getName(),
-				Base64.getEncoder().encodeToString(secret.getContent().getBytes(UTF_8)));
-		});
+      	Base64.getEncoder().encodeToString(secret.getContent().getBytes(UTF_8))));
 		log.debug("Creating secret '{}'.", secretBuilder.build());
+		//TODO fix deprecation
 		kc.secrets().resource(secretBuilder.build()).createOrReplace();
 	}
 
@@ -110,9 +109,9 @@ public class KubernetesService {
       .endSpec();
 
 		// Add secret.
-		if (podInfoDTO.getSecret() != null) {
+		if (podInfoDTO.getSecret() != null && podInfoDTO.getSecret().getEntries() != null
+			&& !podInfoDTO.getSecret().getEntries().isEmpty()) {
 			createSecret(podInfoDTO.getSecret());
-
 			String volumeName = podInfoDTO.getName() + SECRET_VOLUME_SUFFIX;
 				deploymentBuilder.editSpec().editTemplate()
 				.editSpec()
@@ -133,6 +132,7 @@ public class KubernetesService {
 		// @formatter:on
 
 		if (podInfoDTO.isStatus()) {
+			//TODO fix deprecation
 			kc.apps().deployments().inNamespace(podInfoDTO.getNamespace())
 				.resource(deploymentBuilder.build()).createOrReplace();
 		} else {
@@ -184,6 +184,7 @@ public class KubernetesService {
 		// Create or remove the pod, according to the requested pod status.
 		if (podInfoDTO.isStatus()) {
 			kc.autoscaling().v2().horizontalPodAutoscalers().inNamespace(
+				//TODO fix deprecation
 				podInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).createOrReplace();
 		} else {
 			kc.autoscaling().v2().horizontalPodAutoscalers().inNamespace(

@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {FormGroup} from "@angular/forms";
 import {FormlyFieldConfig} from "@ngx-formly/core";
-import {dataflows} from "../dto/dataflow-definition";
+import {dataflows} from "../dto/dataflow-definitions/dataflow-definition";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DataflowsService} from "../dataflows.service";
 import {TagsService} from "../../tags/tags.service";
@@ -56,18 +56,10 @@ export class DataflowEditComponent extends SecurityBaseComponent implements OnIn
         }
       });
     }
-
-    // Replace the tags field with the actual tags.
-    this.tagService.find("sort=name,asc").subscribe(onNext => {
-      this.replaceSelectValues(this.fields, "tags",
-        onNext.content.map(t => {
-          return {label: t.name, value: t.id};
-        }));
-    });
-
+    
     // Replace the namespace field with the actual namespaces.
     this.dataflowService.getNamespaces().subscribe(onNext => {
-      this.replaceSelectValues(this.fields, "namespace",
+      this.dataflowService.replaceSelectValues(this.fields, "namespace",
         onNext.map(t => {
           return {label: t, value: t};
         }));
@@ -76,7 +68,7 @@ export class DataflowEditComponent extends SecurityBaseComponent implements OnIn
     // Find Docker tags for this dataflow.
     this.dataflowService.getAvailableTags(this.type).subscribe({
       next: tags => {
-        this.replaceSelectValues(this.fields, "docker",
+        this.dataflowService.replaceSelectValues(this.fields, "container-image-version",
           tags.results.map(t => {
             return {label: t.name, value: t.name};
           }));
@@ -123,18 +115,5 @@ export class DataflowEditComponent extends SecurityBaseComponent implements OnIn
         }
       });
     }
-  }
-
-  private replaceSelectValues(fields: FormlyFieldConfig[], searchElement: string, values: any[]) {
-    fields.forEach(f => {
-      if (f.key === searchElement) {
-        f.props!.options = values;
-      }
-      f.fieldGroup?.forEach(fg => {
-        if (fg.key === searchElement) {
-          fg.props!.options = values;
-        }
-      });
-    });
   }
 }

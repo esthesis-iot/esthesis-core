@@ -64,7 +64,10 @@ import {RepeatSecretTypeComponent} from "./_custom-types/formly-secrets-section"
     MatSlideToggleModule,
     FormlyModule.forChild({
       wrappers: [{name: "section", component: DataflowEditSectionComponent}],
-      types: [{name: "repeat-secret", component: RepeatSecretTypeComponent}]
+      types: [{name: "repeat-secret", component: RepeatSecretTypeComponent}],
+      validationMessages: [
+        {name: "required", message: "This field is required"}
+      ],
     }),
     FormlyMaterialModule,
     FormlyMatSliderModule,

@@ -1,6 +1,6 @@
 package esthesis.dataflows.oriongateway.service;
 
-import esthesis.common.data.ValueUtils.ValueType;
+import esthesis.common.data.DataUtils.ValueType;
 import esthesis.dataflows.oriongateway.client.OrionClient;
 import esthesis.dataflows.oriongateway.config.AppConfig;
 import esthesis.dataflows.oriongateway.dto.OrionAttributeDTO;

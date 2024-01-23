@@ -31,9 +31,9 @@ public class InfluxDBRoute extends RouteBuilder {
 
 		// Configure concurrency.
 		ComponentsBuilderFactory.seda()
-			.queueSize(config.queueSize())
-			.defaultPollTimeout(config.pollTimeout())
-			.concurrentConsumers(config.consumers())
+			.queueSize(config.concurrencyQueueSize())
+			.defaultPollTimeout(config.concurrencyPollTimeout())
+			.concurrentConsumers(config.concurrencyConsumers())
 			.register(getContext(), "seda");
 
 		// Configure Kafka.
@@ -49,15 +49,29 @@ public class InfluxDBRoute extends RouteBuilder {
 			() -> log.warn(
 				"Kafka consumer group is not set, having more than one pods running in parallel "
 					+ "may have unexpected results."));
-
+		config.kafkaSecurityProtocol().ifPresentOrElse(val -> {
+				log.info("Using Kafka security protocol '{}'.", val);
+				kafkaComponentBuilder.securityProtocol(val);
+				config.kafkaSaslMechanism().ifPresent(
+					saslMechanism -> {
+						log.info("Using Kafka SASL mechanism '{}'.", saslMechanism);
+						kafkaComponentBuilder.saslMechanism(saslMechanism);
+					});
+				config.kafkaJaasConfig().ifPresent(
+					jaasConfig -> {
+						log.debug("Using Kafka JAAS configuration '{}'.", jaasConfig);
+						kafkaComponentBuilder.saslJaasConfig(jaasConfig);
+					});
+			},
+			() -> log.warn(
+				"Kafka security protocol is not set, no security protocol will be configured."));
 		kafkaComponentBuilder.register(getContext(), "kafka");
 
 		// @formatter:off
     config.kafkaTelemetryTopic().ifPresentOrElse(val -> {
-      String kafkaTopic = val;
       log.info("Setting up route from Kafka topic '{}' to InfluxDB '{}' "
-          + "bucket '{}'.", kafkaTopic, config.influxUrl(), config.influxBucket());
-      from("kafka:" + kafkaTopic)
+          + "bucket '{}'.", val, config.influxUrl(), config.influxBucket());
+      from("kafka:" + val)
           .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
           .to("seda:telemetry");
       from("seda:telemetry")
@@ -66,10 +80,9 @@ public class InfluxDBRoute extends RouteBuilder {
 
 
     config.kafkaMetadataTopic().ifPresentOrElse(val -> {
-      String kafkaTopic = val;
       log.info("Setting up route from Kafka topic '{}' to InfluxDB '{}' "
-          + "bucket '{}'.", kafkaTopic, config.influxUrl(), config.influxBucket());
-      from("kafka:" + kafkaTopic)
+          + "bucket '{}'.", val, config.influxUrl(), config.influxBucket());
+      from("kafka:" + val)
           .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
           .to("seda:metadata");
       from("seda:metadata")

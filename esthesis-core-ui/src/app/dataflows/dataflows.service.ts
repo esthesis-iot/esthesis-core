@@ -5,6 +5,7 @@ import {Observable} from "rxjs";
 import {environment} from "../../environments/environment";
 import {DataflowDto} from "./dto/dataflow-dto";
 import {DockerTagsDto} from "./dto/docker-tags";
+import {FormlyFieldConfig} from "@ngx-formly/core";
 
 @Injectable({
   providedIn: "root"
@@ -33,5 +34,18 @@ export class DataflowsService extends CrudService<DataflowDto> {
           "Content-Type": "application/json"
         }
       });
+  }
+
+  replaceSelectValues(fields: FormlyFieldConfig[], searchElement: string, values: any[]) {
+    fields.forEach(f => {
+      if (f.key === searchElement) {
+        f.props!.options = values;
+      }
+      f.fieldGroup?.forEach(fg => {
+        if (fg.key === searchElement) {
+          fg.props!.options = values;
+        }
+      });
+    });
   }
 }

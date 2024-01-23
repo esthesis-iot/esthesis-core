@@ -20,4 +20,7 @@ env \
     ESTHESIS_DFL_KAFKA_TOPIC_COMMAND_REPLY=esthesis-command-reply \
     ESTHESIS_DFL_MQTT_BROKER_CLUSTER_URL=tcp://mosquitto.esthesis:1883 \
     ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.esthesis:9092 \
+    ESTHESIS_DFL_KAFKA_SECURITY_PROTOCOL=SASL_PLAINTEXT \
+		ESTHESIS_DFL_KAFKA_SASL_MECHANISM=SCRAM-SHA-512 \
+		ESTHESIS_DFL_KAFKA_JAAS_CONFIG="org.apache.kafka.common.security.scram.ScramLoginModule required username=esthesis-system password=esthesis-system;" \
 ./mvnw quarkus:dev -Ddebug=39152 -Dquarkus.profile="$PROFILES"

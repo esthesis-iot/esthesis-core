@@ -6,7 +6,7 @@ import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
 import esthesis.avro.EsthesisDataMessage;
-import esthesis.common.data.ValueUtils.ValueType;
+import esthesis.common.data.DataUtils.ValueType;
 import esthesis.dataflows.influxdbwriter.config.AppConfig;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;

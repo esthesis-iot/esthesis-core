@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {dataflows} from "../dto/dataflow-definition";
+import {dataflows} from "../dto/dataflow-definitions/dataflow-definition";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
 

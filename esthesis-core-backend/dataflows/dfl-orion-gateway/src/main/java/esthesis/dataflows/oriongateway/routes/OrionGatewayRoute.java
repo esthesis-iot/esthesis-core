@@ -29,7 +29,7 @@ public class OrionGatewayRoute extends RouteBuilder {
 	OrionClientService orionClientService;
 
 	@Inject
-	AppConfig appConfig;
+	AppConfig config;
 
 	@ConfigProperty(name = "quarkus.application.name")
 	String appName;
@@ -40,47 +40,64 @@ public class OrionGatewayRoute extends RouteBuilder {
 		BannerUtil.showBanner(appName);
 
 		// Check if existing devices should be registered in Orion.
-		if (appConfig.orionRetroCreateDevicesOnSchedule()) {
+		if (config.orionRetroCreateDevicesOnSchedule()) {
 			log.info("Will be adding existing devices to Orion on schedule '{}'.",
-				appConfig.orionRetroCreateDevicesSchedule());
+				config.orionRetroCreateDevicesSchedule());
 		}
 
-		if (appConfig.orionRetroCreateDevicesOnBoot()) {
+		if (config.orionRetroCreateDevicesOnBoot()) {
 			log.info("Adding existing devices to Orion on boot.");
 			orionGatewayService.addExistingEsthesisDevicesToOrion();
 		}
 
 		// Configure concurrency.
 		ComponentsBuilderFactory.seda()
-			.queueSize(appConfig.queueSize())
-			.defaultPollTimeout(appConfig.pollTimeout())
-			.concurrentConsumers(appConfig.consumers())
+			.queueSize(config.concurrencyQueueSize())
+			.defaultPollTimeout(config.concurrencyPollTimeout())
+			.concurrentConsumers(config.concurrencyConsumers())
 			.register(getContext(), "seda");
 
 		// Configure Kafka.
-		log.info("Configuring Kafka component for '{}'.", appConfig.kafkaClusterUrl());
 		KafkaComponentBuilder kafkaComponentBuilder =
-			ComponentsBuilderFactory.kafka().brokers(appConfig.kafkaClusterUrl());
-		appConfig.kafkaConsumerGroup().ifPresentOrElse(val -> {
+			ComponentsBuilderFactory.kafka().valueDeserializer(
+					"org.apache.kafka.common.serialization.ByteArrayDeserializer")
+				.brokers(config.kafkaClusterUrl());
+		config.kafkaConsumerGroup().ifPresentOrElse(val -> {
 				log.info("Using Kafka consumer group '{}'.", val);
 				kafkaComponentBuilder.groupId(val);
 			},
 			() -> log.warn(
 				"Kafka consumer group is not set, having more than one pods running in parallel "
 					+ "may have unexpected results."));
+		config.kafkaSecurityProtocol().ifPresentOrElse(val -> {
+				log.info("Using Kafka security protocol '{}'.", val);
+				kafkaComponentBuilder.securityProtocol(val);
+				config.kafkaSaslMechanism().ifPresent(
+					saslMechanism -> {
+						log.info("Using Kafka SASL mechanism '{}'.", saslMechanism);
+						kafkaComponentBuilder.saslMechanism(saslMechanism);
+					});
+				config.kafkaJaasConfig().ifPresent(
+					jaasConfig -> {
+						log.debug("Using Kafka JAAS configuration '{}'.", jaasConfig);
+						kafkaComponentBuilder.saslJaasConfig(jaasConfig);
+					});
+			},
+			() -> log.warn(
+				"Kafka security protocol is not set, no security protocol will be configured."));
 		kafkaComponentBuilder.register(getContext(), "kafka");
 
 		// Try to establish a connection to the Orion server.
-		log.info("Connecting to Orion server at '{}', version '{}'.", appConfig.orionUrl(),
+		log.info("Connecting to Orion server at '{}', version '{}'.", config.orionUrl(),
 			orionClientService.getVersion());
 
 		// Listen for application messages.
 		// @formatter:off
-    if (appConfig.kafkaApplicationTopic().isPresent()) {
+    if (config.kafkaApplicationTopic().isPresent()) {
       log.info("Listening for application messages on Kafka topic '{}'.",
-          appConfig.kafkaApplicationTopic().get());
+          config.kafkaApplicationTopic().get());
 
-      from("kafka:" + appConfig.kafkaApplicationTopic().get())
+      from("kafka:" + config.kafkaApplicationTopic().get())
           .unmarshal().json(AppMessage.class)
           .to("seda:appMessage");
 
@@ -93,10 +110,10 @@ public class OrionGatewayRoute extends RouteBuilder {
 
 		// Listen for telemetry messages.
 		// @formatter:off
-    if (appConfig.kafkaTelemetryTopic().isPresent()) {
-      log.info("Creating route from Kafka topic '{}'.", appConfig.kafkaTelemetryTopic().get());
+    if (config.kafkaTelemetryTopic().isPresent()) {
+      log.info("Creating route from Kafka topic '{}'.", config.kafkaTelemetryTopic().get());
 
-      from("kafka:" + appConfig.kafkaTelemetryTopic().get())
+      from("kafka:" + config.kafkaTelemetryTopic().get())
           .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
           .to("seda:telemetry");
 
@@ -109,10 +126,10 @@ public class OrionGatewayRoute extends RouteBuilder {
 
 		// Listen for metadata messages.
 		// @formatter:off
-    if (appConfig.kafkaMetadataTopic().isPresent()) {
-      log.info("Creating route from Kafka topic '{}'.", appConfig.kafkaMetadataTopic().get());
+    if (config.kafkaMetadataTopic().isPresent()) {
+      log.info("Creating route from Kafka topic '{}'.", config.kafkaMetadataTopic().get());
 
-      from("kafka:" + appConfig.kafkaMetadataTopic().get())
+      from("kafka:" + config.kafkaMetadataTopic().get())
           .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
           .to("seda:metadata");
 

@@ -1,7 +1,7 @@
 package esthesis.service.dataflow.impl.service;
 
 import com.github.slugify.Slugify;
-import esthesis.common.data.MapUtils;
+import esthesis.common.data.DataUtils;
 import esthesis.service.common.BaseService;
 import esthesis.service.dataflow.dto.DockerTagsDTO;
 import esthesis.service.dataflow.entity.DataflowEntity;
@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -28,19 +29,20 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 public class DataflowService extends BaseService<DataflowEntity> {
 
 	private static final String DOCKER_IMAGE_PREFIX = "esthesisiot/esthesis-core-dfl-";
-	private static final String KUBERNETES_CONTAINER_IMAGE_VERSION = "docker";
+	private static final String CONTAINER_IMAGE_VERSION = "container-image-version";
 	private static final String KUBERNETES_NAMESPACE = "namespace";
 	private static final String KUBERNETES_MIN_PODS = "pods-min";
 	private static final String KUBERNETES_MAX_PODS = "pods-max";
 	private static final String KUBERNETES_CPU_REQUEST = "cpu-request";
 	private static final String KUBERNETES_CPU_LIMIT = "cpu-limit";
+	private static final String KUBERNETES_IMAGE_REGISTRY_URL = "registry";
 	private static final String CUSTOM_ENV_VARS_KEY_NAME = "env";
 	private static final String CUSTOM_ENV_VARS_SEPARATOR = "\n";
 	private static final String CUSTOM_ENV_VARS_KEY_VALUE_SEPARATOR = "=";
-	private static final String IMAGE_REGISTRY_URL = "registry";
 	private static final String SECRET_NAME = "name";
 	private static final String SECRET_PATH = "path";
 	private static final String SECRET_CONTENT = "content";
+	private static final String CONFIG_SECTION_KUBERNETES = "kubernetes";
 
 	@Inject
 	@RestClient
@@ -60,7 +62,7 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	 * @param map The map to flatten.
 	 */
 	private Map<String, String> flattenMap(Map<String, Object> map) {
-		return map.entrySet().stream().flatMap(MapUtils::flatten)
+		return map.entrySet().stream().flatMap(DataUtils::flatten)
 			.map(entry -> Map.entry(entry.getKey(), entry.getValue().toString()))
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
@@ -74,16 +76,22 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	private Map<String, String> makeEnvironmentVariables(Map<String, String> map, String keyPrefix) {
 		Map<String, String> env = new HashMap<>();
 		map.forEach((key, value) -> {
+			log.info("Evaluate key '{}' with value '{}'.", key, value);
+			// Skip pod scheduling-related environmental variables.
+			if (key.startsWith(CONFIG_SECTION_KUBERNETES + ".")) {
+				log.info("Skipping key '{}' with value '{}'.", key, value);
+				return;
+			}
 			String newKey = keyPrefix + key.toUpperCase().replace(".", "_").replace("-", "_");
 			env.put(newKey, value);
-			log.trace("Adding key '{}' with value '{}' to environment variables.", newKey, value);
+			log.info("Adding key '{}' with value '{}' to environment variables.", newKey, value);
 		});
 
 		return env;
 	}
 
 	/**
-	 * Converts free-form environmental variables to environmental variables for Kubernetes.
+	 * Converts user-provided environmental variables to environmental variables for Kubernetes.
 	 *
 	 * @param envString A string containing the environmental variables.
 	 */
@@ -109,19 +117,20 @@ public class DataflowService extends BaseService<DataflowEntity> {
 
 		// Get the secrets.
 		Map<String, String> flatMap = flattenMap(dataflowEntity.getConfig());
+
+		@SuppressWarnings("unchecked")
 		List<Map<String, String>> secrets =
-			(List<Map<String, String>>) dataflowEntity.getKubernetes().get("secrets");
+			(List<Map<String, String>>) MapUtils.getMap(
+				dataflowEntity.getConfig(), CONFIG_SECTION_KUBERNETES).get("secrets");
 
 		// Iterate over the secrets and add them to the builder.
 		if (secrets != null && !secrets.isEmpty()) {
-			secrets.forEach(secret -> {
-				builder.entry(
-					SecretEntryDTO.builder()
-						.name(secret.get(SECRET_NAME))
-						.path(flatMap.get(SECRET_PATH))
-						.content(secret.get(SECRET_CONTENT)).build()
-				);
-			});
+			secrets.forEach(secret -> builder.entry(
+        SecretEntryDTO.builder()
+          .name(secret.get(SECRET_NAME))
+          .path(flatMap.get(SECRET_PATH))
+          .content(secret.get(SECRET_CONTENT)).build()
+      ));
 		}
 
 		return builder.build();
@@ -130,27 +139,27 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	private PodInfoDTO createPodInfo(DataflowEntity dataflowEntity) {
 		PodInfoDTO podInfoDTO = new PodInfoDTO();
 		podInfoDTO.setName(Slugify.builder().build().slugify(dataflowEntity.getName()));
-		if (dataflowEntity.getImage() != null &&
-			StringUtils.isNotEmpty(dataflowEntity.getImage().get(IMAGE_REGISTRY_URL).toString())) {
-			podInfoDTO.setImage(dataflowEntity.getImage().get(IMAGE_REGISTRY_URL).toString() + "/"
+		@SuppressWarnings("unchecked")
+		Map<String, Object> k8sConfig = (Map<String, Object>)MapUtils.getMap(
+			dataflowEntity.getConfig(), CONFIG_SECTION_KUBERNETES);
+
+		if (MapUtils.getString(k8sConfig, KUBERNETES_IMAGE_REGISTRY_URL) != null) {
+			podInfoDTO.setImage(MapUtils.getString(k8sConfig, KUBERNETES_IMAGE_REGISTRY_URL) + "/"
 				+ DOCKER_IMAGE_PREFIX + dataflowEntity.getType());
 		} else {
 			podInfoDTO.setImage(DOCKER_IMAGE_PREFIX + dataflowEntity.getType());
 		}
-		podInfoDTO.setVersion(
-			(String) dataflowEntity.getKubernetes().get(KUBERNETES_CONTAINER_IMAGE_VERSION));
-		podInfoDTO.setNamespace((String) dataflowEntity.getKubernetes().get(KUBERNETES_NAMESPACE));
-		podInfoDTO.setMinInstances(
-			Integer.parseInt(dataflowEntity.getKubernetes().get(KUBERNETES_MIN_PODS).toString()));
-		podInfoDTO.setMaxInstances(
-			Integer.parseInt(dataflowEntity.getKubernetes().get(KUBERNETES_MAX_PODS).toString()));
-		podInfoDTO.setCpuRequest((String) dataflowEntity.getKubernetes().get(KUBERNETES_CPU_REQUEST));
-		podInfoDTO.setCpuLimit((String) dataflowEntity.getKubernetes().get(KUBERNETES_CPU_LIMIT));
-		podInfoDTO.setConfiguration(
-			makeEnvironmentVariables(flattenMap(dataflowEntity.getConfig()), "ESTHESIS_DFL_"));
-		if (dataflowEntity.getKubernetes().get(CUSTOM_ENV_VARS_KEY_NAME) != null) {
-			podInfoDTO.getConfiguration().putAll(addCustomEnvVariables(
-				dataflowEntity.getKubernetes().get(CUSTOM_ENV_VARS_KEY_NAME).toString()));
+		podInfoDTO.setVersion(MapUtils.getString(k8sConfig, CONTAINER_IMAGE_VERSION));
+		podInfoDTO.setNamespace(MapUtils.getString (k8sConfig, KUBERNETES_NAMESPACE));
+		podInfoDTO.setMinInstances(MapUtils.getIntValue(k8sConfig, KUBERNETES_MIN_PODS));
+		podInfoDTO.setMaxInstances(MapUtils.getIntValue(k8sConfig, KUBERNETES_MAX_PODS));
+		podInfoDTO.setCpuRequest(MapUtils.getString(k8sConfig, KUBERNETES_CPU_REQUEST));
+		podInfoDTO.setCpuLimit(MapUtils.getString(k8sConfig, KUBERNETES_CPU_LIMIT));
+		podInfoDTO.setEnvironment(makeEnvironmentVariables(
+			flattenMap(dataflowEntity.getConfig()), "ESTHESIS_DFL_"));
+		if (MapUtils.getString(k8sConfig, CUSTOM_ENV_VARS_KEY_NAME) != null) {
+			podInfoDTO.getEnvironment().putAll(addCustomEnvVariables(
+				MapUtils.getString(k8sConfig, CUSTOM_ENV_VARS_KEY_NAME)));
 		}
 		podInfoDTO.setStatus(dataflowEntity.isStatus());
 		podInfoDTO.setSecret(getSecretSpec(dataflowEntity));

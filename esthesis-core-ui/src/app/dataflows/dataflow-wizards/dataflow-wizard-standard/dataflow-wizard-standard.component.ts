@@ -1,324 +1,331 @@
 import {Component, OnInit} from "@angular/core";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {CertificatesService} from "../../../certificates/certificates.service";
-import {QFormsService} from "@qlack/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {UtilityService} from "../../../shared/services/utility.service";
-import {MatDialog} from "@angular/material/dialog";
-import {AppConstants} from "../../../app.constants";
 import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
+import {Router} from "@angular/router";
 import {DataflowsService} from "../../dataflows.service";
-import {WizardDataflowDto} from "../../dto/wizard-dataflow";
-import {forkJoin} from "rxjs";
-import { concat, of } from 'rxjs';
-import { delay, tap } from 'rxjs/operators';
+import {UtilityService} from "../../../shared/services/utility.service";
+import {AppConstants} from "../../../app.constants";
+import {FormGroup} from "@angular/forms";
+import {DATAFLOW_WIZARD_STANDARD} from "./dto/dws-dto";
+import {FormlyFieldConfig} from "@ngx-formly/core";
+import {DATAFLOW_DEFINITION_PING_UPDATER} from "../../dto/dataflow-definitions/ping-updater";
+import {concatMap, delay, from, Observable, tap} from "rxjs";
+import * as _ from "lodash";
+
 @Component({
   selector: "app-dataflow-wizard-standard",
   templateUrl: "./dataflow-wizard-standard.component.html"
 })
 export class DataflowWizardStandardComponent extends SecurityBaseComponent implements OnInit {
-  form!: FormGroup;
-  namespaces: string[] = [];
+  form = new FormGroup({});
+  fields: FormlyFieldConfig[] = [];
+  // fields: any[] = [];
+  model = {};
 
-  constructor(private fb: FormBuilder, private certificatesService: CertificatesService,
-    private qForms: QFormsService,
-    private route: ActivatedRoute, private router: Router,
-    private utilityService: UtilityService, private dialog: MatDialog,
-    private dataflowService: DataflowsService) {
+  constructor(private dataflowService: DataflowsService, private utilityService: UtilityService,
+    private router: Router) {
     super(AppConstants.SECURITY.CATEGORY.DATAFLOW);
   }
 
   ngOnInit(): void {
-    this.form = this.fb.group({
-      wizardName: ["standard", [Validators.required]],
-      version: ["3.0.3", [Validators.required]],
-      kafkaClusterUrl: ["kafka:9092", [Validators.required]],
-      mongoDbClusterUrl: ["mongodb://mongodb-headless:27017", [Validators.required]],
-      mongoDbDatabase: ["esthesiscore", [Validators.required]],
-      mongoDbUsername: ["esthesis-system", [Validators.required]],
-      mongoDbPassword: ["esthesis-system", [Validators.required]],
-      namespace: ["default", [Validators.required]],
-      influxDbClusterUrl: ["http://influxdb:8086", [Validators.required]],
-      influxDbOrg: ["esthesis", [Validators.required]],
-      influxDbBucket: ["esthesis", [Validators.required]],
-      influxDbToken: ["", [Validators.required]],
-      redisClusterUrl: ["redis://:esthesis-system@redis-master:6379/0", [Validators.required]],
-      dockerRegistry: ["", []],
+    // Find namespaces.
+    this.dataflowService.getNamespaces().subscribe(onNext => {
+      this.dataflowService.replaceSelectValues(this.fields, "namespace",
+        onNext.map(t => {
+          return {label: t, value: t};
+        }));
     });
 
-    this.dataflowService.getNamespaces().subscribe({
-      next: onNext => {
-        this.namespaces = onNext;
+    // Find Docker tags for this dataflow. Since this is a wizard and all dataflows share versions,
+    // we just use ping-updater as a reference.
+    this.dataflowService.getAvailableTags(DATAFLOW_DEFINITION_PING_UPDATER.type).subscribe({
+      next: tags => {
+        this.dataflowService.replaceSelectValues(this.fields, "container-image-version",
+          tags.results.map(t => {
+            return {label: t.name, value: t.name};
+          }));
       }, error: err => {
-        this.utilityService.popupErrorWithTraceId("Could not get available namespaces", err);
+        this.utilityService.popupErrorWithTraceId(
+          "Could not fetch available Docker tags for this image.", err);
       }
     });
+
+    this.fields = DATAFLOW_WIZARD_STANDARD.fields;
   }
 
-  execute() {
-    let calls = [];
-
-    // Ping DFL.
-    const pingDfl: WizardDataflowDto = {
+  private createPingUpdaterCall(): {} {
+    return {
       type: "ping-updater",
       name: "dfl-ping-updater",
-      description: "Ping updater, created by wizard",
+      description: "Ping updater, created by standard wizard.",
       status: true,
+      version: _.get(this.model, "kubernetes.container-image-version"),
       config: {
+        "esthesis-db": {
+          name: _.get(this.model, "config.esthesis-db.name"),
+          url: _.get(this.model, "config.esthesis-db.url"),
+          username: _.get(this.model, "config.esthesis-db.username"),
+          password: _.get(this.model, "config.esthesis-db.password")
+        },
+        influx: {
+          bucket: _.get(this.model, "config.influx.bucket"),
+          org: _.get(this.model, "config.influx.org"),
+          url: _.get(this.model, "config.influx.url"),
+          token: _.get(this.model, "config.influx.token")
+        },
         kafka: {
-          "cluster-url": this.form.get("kafkaClusterUrl")?.value,
+          "cluster-url": _.get(this.model, "config.kafka.cluster-url"),
+          "jaas-config": _.get(this.model, "config.kafka.jaas-config"),
+          "sasl-mechanism": _.get(this.model, "config.kafka.sasl-mechanism"),
+          "security-protocol": _.get(this.model, "config.kafka.security-protocol"),
           "consumer-group": "dfl-ping-updater",
           "ping-topic": "esthesis-ping",
         },
-        "esthesis-db-url": this.form.get("mongoDbClusterUrl")?.value,
-        "esthesis-db-name": this.form.get("mongoDbDatabase")?.value,
-        "esthesis-db-username": this.form.get("mongoDbUsername")?.value,
-        "esthesis-db-password": this.form.get("mongoDbPassword")?.value,
-        "queue-size": "100",
-        "poll-timeout": "1000",
-        consumers: "10",
+        kubernetes: {
+          "cpu-limit": _.get(this.model, "config.kubernetes.cpu-limit"),
+          "cpu-request": _.get(this.model, "config.kubernetes.cpu-request"),
+          "pods-max": _.get(this.model, "config.kubernetes.pods-max"),
+          "pods-min": _.get(this.model, "config.kubernetes.pods-min"),
+          namespace: _.get(this.model, "config.kubernetes.namespace"),
+          registry: _.get(this.model, "config.kubernetes.registry"),
+        },
         logging: {
           common: "INFO",
           esthesis: "INFO"
-        }
-      },
-      kubernetes: {
-        namespace: this.form.get("namespace")?.value,
-        docker: this.form.get("version")?.value,
-        "cpu-request": "250m",
-        "cpu-limit": "1",
-        "pods-min": "1",
-        "pods-max": "10",
+        },
+        redis: {
+          "max-size": _.get(this.model, "config.redis.max-size"),
+          ttl: _.get(this.model, "config.redis.ttl"),
+          url: _.get(this.model, "config.redis.url"),
+        },
+        concurrency: {
+          consumers: 10,
+          "poll-timeout": 1000,
+          "queue-size": 1000
+        },
       }
     };
-    if (this.form.get("dockerRegistry")?.value) {
-        pingDfl.image = {
-          registry: this.form.get("dockerRegistry")?.value
-        };
-    }
-    calls.push(this.dataflowService.save(pingDfl));
-    const pingDflServiceCall = this.dataflowService.save(pingDfl);
+  }
 
-    // Command Reply Updater DFL.
-    const commandReplyUpdatedDfl: WizardDataflowDto = {
+  private createCommandReplyUpdater(): {} {
+    return {
       type: "command-reply-updater",
       name: "dfl-command-reply-updater",
-      description: "Command Reply updater, created by wizard",
+      description: "Command Reply updater, created by standard wizard.",
       status: true,
+      version: _.get(this.model, "kubernetes.container-image-version"),
       config: {
+        concurrency: {
+          consumers: 10,
+          "poll-timeout": 1000,
+          "queue-size": 1000
+        },
+        "esthesis-db": {
+          name: _.get(this.model, "config.esthesis-db.name"),
+          url: _.get(this.model, "config.esthesis-db.url"),
+          username: _.get(this.model, "config.esthesis-db.username"),
+          password: _.get(this.model, "config.esthesis-db.password")
+        },
         kafka: {
-          "cluster-url": this.form.get("kafkaClusterUrl")?.value,
+          "cluster-url": _.get(this.model, "config.kafka.cluster-url"),
+          "jaas-config": _.get(this.model, "config.kafka.jaas-config"),
+          "sasl-mechanism": _.get(this.model, "config.kafka.sasl-mechanism"),
+          "security-protocol": _.get(this.model, "config.kafka.security-protocol"),
           "consumer-group": "dfl-command-reply-updater",
           "command-reply-topic": "esthesis-command-reply",
         },
-        "esthesis-db-url": this.form.get("mongoDbClusterUrl")?.value,
-        "esthesis-db-name": this.form.get("mongoDbDatabase")?.value,
-        "esthesis-db-username": this.form.get("mongoDbUsername")?.value,
-        "esthesis-db-password": this.form.get("mongoDbPassword")?.value,
-        "queue-size": "100",
-        "poll-timeout": "1000",
-        consumers: "10",
+        kubernetes: {
+          "cpu-limit": _.get(this.model, "config.kubernetes.cpu-limit"),
+          "cpu-request": _.get(this.model, "config.kubernetes.cpu-request"),
+          "pods-max": _.get(this.model, "config.kubernetes.pods-max"),
+          "pods-min": _.get(this.model, "config.kubernetes.pods-min"),
+          namespace: _.get(this.model, "config.kubernetes.namespace"),
+          registry: _.get(this.model, "config.kubernetes.registry"),
+        },
         logging: {
           common: "INFO",
           esthesis: "INFO"
         }
-      },
-      kubernetes: {
-        namespace: this.form.get("namespace")?.value,
-        docker: this.form.get("version")?.value,
-        "cpu-request": "250m",
-        "cpu-limit": "1",
-        "pods-min": "1",
-        "pods-max": "10",
       }
     };
-    if (this.form.get("dockerRegistry")?.value) {
-      commandReplyUpdatedDfl.image = {
-        registry: this.form.get("dockerRegistry")?.value
-      };
-    }
-    const commandReplyUpdatedServiceCall = this.dataflowService.save(commandReplyUpdatedDfl);
+  }
 
-    // MQTT Client DFL.
-    const mqttClientDfl: WizardDataflowDto = {
+  private createMqttClient(): {} {
+    return {
       type: "mqtt-client",
       name: "dfl-mqtt-client",
-      description: "MQTT client, created by wizard",
+      description: "MQTT client, created by standard wizard.",
       status: true,
+      version: _.get(this.model, "kubernetes.container-image-version"),
       config: {
-        "mqtt-broker": {
-          "cluster-url": "tcp://mosquitto:1883",
+        concurrency: {
+          consumers: 10,
+          "poll-timeout": 1000,
+          "queue-size": 1000
         },
-        "mqtt-topic": {
-          ping: "esthesis/ping",
-          telemetry: "esthesis/telemetry",
-          metadata: "esthesis/metadata",
-          "command-request": "esthesis/command/request",
-          "command-reply": "esthesis/command/reply",
+        "mqtt-broker": {
+          "cluster-url": _.get(this.model, "config.mqtt-broker.cluster-url"),
+        },
+        "config.mqtt": {
+          "ping-topic": "esthesis/ping",
+          "telemetry-topic": "esthesis/telemetry",
+          "metadata-topic": "esthesis/metadata",
+          "command-request-topic": "esthesis/command/request",
+          "command-reply-topic": "esthesis/command/reply"
         },
         kafka: {
-          "cluster-url": this.form.get("kafkaClusterUrl")?.value,
+          "cluster-url": _.get(this.model, "config.kafka.cluster-url"),
+          "jaas-config": _.get(this.model, "config.kafka.jaas-config"),
+          "sasl-mechanism": _.get(this.model, "config.kafka.sasl-mechanism"),
+          "security-protocol": _.get(this.model, "config.kafka.security-protocol"),
+          "consumer-group": "dfl-mqtt-client",
+          "ping-topic": "esthesis-ping",
+          "telemetry-topic": "esthesis-telemetry",
+          "metadata-topic": "esthesis-metadata",
+          "command-request-topic": "esthesis-command-request",
+          "command-reply-topic": "esthesis-command-reply"
         },
-        "kafka-topic": {
-          ping: "esthesis-ping",
-          telemetry: "esthesis-telemetry",
-          metadata: "esthesis-metadata",
-          "command-request": "esthesis-command-request",
-          "command-reply": "esthesis-command-reply",
+        kubernetes: {
+          "cpu-limit": _.get(this.model, "config.kubernetes.cpu-limit"),
+          "cpu-request": _.get(this.model, "config.kubernetes.cpu-request"),
+          "pods-max": _.get(this.model, "config.kubernetes.pods-max"),
+          "pods-min": _.get(this.model, "config.kubernetes.pods-min"),
+          namespace: _.get(this.model, "config.kubernetes.namespace"),
+          registry: _.get(this.model, "config.kubernetes.registry"),
         },
         logging: {
           common: "INFO",
           esthesis: "INFO"
         }
-      },
-      kubernetes: {
-        namespace: this.form.get("namespace")?.value,
-        docker: this.form.get("version")?.value,
-        "cpu-request": "250m",
-        "cpu-limit": "1",
-        "pods-min": "1",
-        "pods-max": "10",
       }
     };
-    if (this.form.get("dockerRegistry")?.value) {
-      mqttClientDfl.image = {
-        registry: this.form.get("dockerRegistry")?.value
-      };
-    }
-    const mqttClientServiceCall = this.dataflowService.save(mqttClientDfl);
+  }
 
-    // InfluxDB Writer DFL.
-    const influxDbWriterDfl: WizardDataflowDto = {
+  private createInfluxDBWriter(): {} {
+    return {
       type: "influxdb-writer",
       name: "dfl-influxdb-writer",
-      description: "InfluxDB writer, created by wizard",
+      description: "InfluxDB writer, created by standard wizard.",
       status: true,
+      version: _.get(this.model, "kubernetes.container-image-version"),
       config: {
-        "influx-url": this.form.get("influxDbClusterUrl")?.value,
-        "influx-org": this.form.get("influxDbOrg")?.value,
-        "influx-bucket": this.form.get("influxDbBucket")?.value,
-        "influx-token": this.form.get("influxDbToken")?.value,
+        influx: {
+          bucket: _.get(this.model, "config.influx.bucket"),
+          org: _.get(this.model, "config.influx.org"),
+          url: _.get(this.model, "config.influx.url"),
+          token: _.get(this.model, "config.influx.token")
+        },
         kafka: {
-          "cluster-url": this.form.get("kafkaClusterUrl")?.value,
           "consumer-group": "dfl-influxdb-writer",
           "telemetry-topic": "esthesis-telemetry",
           "metadata-topic": "esthesis-metadata",
+          "cluster-url": _.get(this.model, "config.kafka.cluster-url"),
+          "jaas-config": _.get(this.model, "config.kafka.jaas-config"),
+          "sasl-mechanism": _.get(this.model, "config.kafka.sasl-mechanism"),
+          "security-protocol": _.get(this.model, "config.kafka.security-protocol"),
         },
-        "esthesis-db-url": this.form.get("mongoDbClusterUrl")?.value,
-        "esthesis-db-name": this.form.get("mongoDbDatabase")?.value,
-        "esthesis-db-username": this.form.get("mongoDbUsername")?.value,
-        "esthesis-db-password": this.form.get("mongoDbPassword")?.value,
-        "queue-size": "100",
-        "poll-timeout": "1000",
-        consumers: "10",
+        kubernetes: {
+          "cpu-limit": _.get(this.model, "config.kubernetes.cpu-limit"),
+          "cpu-request": _.get(this.model, "config.kubernetes.cpu-request"),
+          "pods-max": _.get(this.model, "config.kubernetes.pods-max"),
+          "pods-min": _.get(this.model, "config.kubernetes.pods-min"),
+          namespace: _.get(this.model, "config.kubernetes.namespace"),
+          registry: _.get(this.model, "config.kubernetes.registry"),
+        },
+        concurrency: {
+          consumers: 10,
+          "poll-timeout": 1000,
+          "queue-size": 1000
+        },
         logging: {
           common: "INFO",
           esthesis: "INFO"
         }
-      },
-      kubernetes: {
-        namespace: this.form.get("namespace")?.value,
-        docker: this.form.get("version")?.value,
-        "cpu-request": "250m",
-        "cpu-limit": "1",
-        "pods-min": "1",
-        "pods-max": "10",
       }
     };
-    if (this.form.get("dockerRegistry")?.value) {
-      influxDbWriterDfl.image = {
-        registry: this.form.get("dockerRegistry")?.value
-      };
-    }
-    const influxDbWriterServiceCall = this.dataflowService.save(influxDbWriterDfl);
+  }
 
-    // Redis Cache DFL.
-    const redisCacheDfl: WizardDataflowDto = {
+  private createRedisCache(): {} {
+    return {
       type: "redis-cache",
       name: "dfl-redis-cache",
-      description: "Redis cache, created by wizard",
+      description: "Redis cache, created by standard wizard.",
       status: true,
+      version: _.get(this.model, "kubernetes.container-image-version"),
       config: {
         redis: {
-          url: this.form.get("redisClusterUrl")?.value,
-          "max-size": "1024",
-          ttl: "0"
+          "max-size": _.get(this.model, "config.redis.max-size"),
+          ttl: _.get(this.model, "config.redis.ttl"),
+          url: _.get(this.model, "config.redis.url"),
         },
         kafka: {
-          "cluster-url": this.form.get("kafkaClusterUrl")?.value,
           "consumer-group": "dfl-redis-cache",
           "telemetry-topic": "esthesis-telemetry",
           "metadata-topic": "esthesis-metadata",
+          "cluster-url": _.get(this.model, "config.kafka.cluster-url"),
+          "jaas-config": _.get(this.model, "config.kafka.jaas-config"),
+          "sasl-mechanism": _.get(this.model, "config.kafka.sasl-mechanism"),
+          "security-protocol": _.get(this.model, "config.kafka.security-protocol"),
         },
-        "queue-size": "100",
-        "poll-timeout": "1000",
-        consumers: "10",
+        kubernetes: {
+          "cpu-limit": _.get(this.model, "config.kubernetes.cpu-limit"),
+          "cpu-request": _.get(this.model, "config.kubernetes.cpu-request"),
+          "pods-max": _.get(this.model, "config.kubernetes.pods-max"),
+          "pods-min": _.get(this.model, "config.kubernetes.pods-min"),
+          namespace: _.get(this.model, "config.kubernetes.namespace"),
+          registry: _.get(this.model, "config.kubernetes.registry"),
+        },
+        concurrency: {
+          consumers: 10,
+          "poll-timeout": 1000,
+          "queue-size": 1000
+        },
         logging: {
           common: "INFO",
           esthesis: "INFO"
         }
-      },
-      kubernetes: {
-        namespace: this.form.get("namespace")?.value,
-        docker: this.form.get("version")?.value,
-        "cpu-request": "250m",
-        "cpu-limit": "1",
-        "pods-min": "1",
-        "pods-max": "10",
       }
     };
-    if (this.form.get("dockerRegistry")?.value) {
-      redisCacheDfl.image = {
-        registry: this.form.get("dockerRegistry")?.value
-      };
-    }
-    const redisCacheServiceCall = this.dataflowService.save(redisCacheDfl);
+  }
 
-    concat(...calls).subscribe({
-      next: () => {
+  execute() {
+    console.log(this.model);
+
+    const calls: Array<Observable<any>> = [];
+    const callNames: string[] = [];
+
+    calls.push(this.dataflowService.save(this.createPingUpdaterCall()));
+    callNames.push("Ping updater dataflow");
+    calls.push(this.dataflowService.save(this.createCommandReplyUpdater()));
+    callNames.push("Command Reply updater dataflow");
+    calls.push(this.dataflowService.save(this.createMqttClient()));
+    callNames.push("MQTT client dataflow");
+    calls.push(this.dataflowService.save(this.createInfluxDBWriter()));
+    callNames.push("InfluxDB writer dataflow");
+    calls.push(this.dataflowService.save(this.createRedisCache()));
+    callNames.push("Redis cache writer dataflow");
+
+    // Make the calls.
+    let counter = 0;
+    from(calls)
+    .pipe(
+      concatMap((observable: Observable<any>) => {
+        return observable.pipe(
+          delay(1000),
+          tap(() => {
+            counter++;
+            this.utilityService.popupSuccess(`Dataflow ${callNames[counter - 1]} started`);
+          })
+        );
+      })
+    )
+    .subscribe({
+      error: (error: any) => {
+        this.utilityService.popupErrorWithTraceId("Failed to execute the wizard", error);
+      },
+      complete: () => {
         this.utilityService.popupSuccess("Wizard was executed successfully");
         this.router.navigate(["/dataflow"]);
-      }, error: () => {
-        this.utilityService.popupError("Failed to execute the wizard, check which dataflows have already been created");
       }
     });
-
-    /*const sequentialPromise = promises.reduce((prevPromise, promiseFn) => {
-      return prevPromise.then(() => promiseFn());
-    }, Promise.resolve());
-
-    if (!this.form.valid) {
-      this.utilityService.popupError("You need to fill in all required fields");
-    } else {
-      // Execute all service calls.
-       const sequence = Promise.resolve().then(() => {
-         return pingDflServiceCall;
-       }).then(() => {
-          return commandReplyUpdatedServiceCall;
-       }).then(() => {
-          return mqttClientServiceCall;
-       }).then(() => {
-          return influxDbWriterServiceCall;
-       }).then(() => {
-          return redisCacheServiceCall;
-       });
-
-        sequence.then(() => {
-          this.utilityService.popupSuccess("Wizard was executed successfully");
-          this.router.navigate(["/dataflow"]);
-        }).catch(() => {
-          this.utilityService.popupError("Failed to execute the wizard, check which dataflows have already been created");
-        });*/
-
-      // forkJoin({ping: pingDflServiceCall, commandReply: commandReplyUpdatedServiceCall, mqtt: mqttClientServiceCall,
-      //   influx: influxDbWriterServiceCall, redis: redisCacheServiceCall}).subscribe({
-      //   next: () => {
-      //     this.utilityService.popupSuccess("Wizard was executed successfully");
-      //     this.router.navigate(["/dataflow"]);
-      //   }, error: () => {
-      //     this.utilityService.popupError("Failed to execute the wizard, check which dataflows have already been created");
-      //   }
-      // });
-    // }
-  }
+  };
 }

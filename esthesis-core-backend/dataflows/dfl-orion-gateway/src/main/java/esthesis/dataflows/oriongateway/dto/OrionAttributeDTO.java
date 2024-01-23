@@ -1,6 +1,6 @@
 package esthesis.dataflows.oriongateway.dto;
 
-import esthesis.common.data.ValueUtils.ValueType;
+import esthesis.common.data.DataUtils.ValueType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

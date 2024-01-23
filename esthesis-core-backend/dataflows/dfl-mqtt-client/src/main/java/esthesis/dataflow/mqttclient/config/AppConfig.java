@@ -21,36 +21,48 @@ public interface AppConfig {
 	Optional<String> mqttBrokerCa();
 
 	// The prefix of the MQTT Ping topic.
-	Optional<String> mqttTopicPing();
+	Optional<String> mqttPingTopic();
 
 	// The prefix of the MQTT Telemetry topic.
-	Optional<String> mqttTopicTelemetry();
+	Optional<String> mqttTelemetryTopic();
 
 	// The prefix of the MQTT Metadata topic.
-	Optional<String> mqttTopicMetadata();
+	Optional<String> mqttMetadataTopic();
 
 	// The prefix of the MQTT Command Request topic.
-	Optional<String> mqttTopicCommandRequest();
+	Optional<String> mqttCommandRequestTopic();
 
 	// The prefix of the MQTT Command Reply topic.
-	Optional<String> mqttTopicCommandReply();
+	Optional<String> mqttCommandReplyTopic();
 
 	// The URLs of the Kafka brokers.
 	String kafkaClusterUrl();
 
+	// The security protocol to use when connecting to the Kafka cluster. If empty, no security
+	// protocol will be setup.
+	Optional<String> kafkaSecurityProtocol();
+
+	// The SASL mechanism to use when connecting to the Kafka cluster. If empty, no SASL mechanism
+	// will be setup.
+	Optional<String> kafkaSaslMechanism();
+
+	// The JAAS configuration to use when connecting to the Kafka cluster. If empty, no JAAS
+	// configuration will be setup.
+	Optional<String> kafkaJaasConfig();
+
 	// The prefix of the Kafka Ping topic.
-	Optional<String> kafkaTopicPing();
+	Optional<String> kafkaPingTopic();
 
 	// The prefix of the Kafka Telemetry topic.
-	Optional<String> kafkaTopicTelemetry();
+	Optional<String> kafkaTelemetryTopic();
 
 	// The prefix of the Kafka Metadata topic.
-	Optional<String> kafkaTopicMetadata();
+	Optional<String> kafkaMetadataTopic();
 
 	// The prefix of the Kafka Command Request topic.
-	Optional<String> kafkaTopicCommandRequest();
+	Optional<String> kafkaCommandRequestTopic();
 
 	// The prefix of the Kafka Command Reply topic.
-	Optional<String> kafkaTopicCommandReply();
+	Optional<String> kafkaCommandReplyTopic();
 
 }

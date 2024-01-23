@@ -46,6 +46,6 @@ public class PodInfoDTO {
 	// The secret to create for this pod.
 	private SecretDTO secret;
 
-	// Configuration options for the pod.
-	private Map<String, String> configuration;
+	// Environment variables for the pod.
+	private Map<String, String> environment;
 }

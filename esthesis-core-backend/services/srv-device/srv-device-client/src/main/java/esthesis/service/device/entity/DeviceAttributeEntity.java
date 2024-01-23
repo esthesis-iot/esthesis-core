@@ -1,6 +1,6 @@
 package esthesis.service.device.entity;
 
-import esthesis.common.data.ValueUtils.ValueType;
+import esthesis.common.data.DataUtils.ValueType;
 import esthesis.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;

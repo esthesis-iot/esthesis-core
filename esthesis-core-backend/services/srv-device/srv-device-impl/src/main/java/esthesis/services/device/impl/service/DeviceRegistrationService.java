@@ -6,8 +6,8 @@ import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Device.Status;
 import esthesis.common.AppConstants.DeviceRegistrationMode;
 import esthesis.common.AppConstants.NamedSetting;
-import esthesis.common.data.ValueUtils;
-import esthesis.common.data.ValueUtils.ValueType;
+import esthesis.common.data.DataUtils;
+import esthesis.common.data.DataUtils.ValueType;
 import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QDisabledException;
 import esthesis.common.exception.QDoesNotExistException;
@@ -222,7 +222,7 @@ public class DeviceRegistrationService {
 				String attributeValue = attributeValuePair[0];
 				ValueType attributeType =
 					attributeValuePair.length > 1 ? ValueType.valueOf(attributeValuePair[1].toUpperCase())
-						: ValueUtils.detect(attributeValuePair[0]);
+						: DataUtils.detectValueType(attributeValuePair[0]);
 
 				deviceAttributeRepository.persist(
 					DeviceAttributeEntity.builder().deviceId(newDeviceId.toHexString())

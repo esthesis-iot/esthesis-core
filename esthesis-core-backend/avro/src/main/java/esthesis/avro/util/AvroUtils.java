@@ -8,8 +8,8 @@ import esthesis.avro.ReplyType;
 import esthesis.avro.ValueData;
 import esthesis.avro.ValueTypeEnum;
 import esthesis.common.AppConstants;
-import esthesis.common.data.ValueUtils;
-import esthesis.common.data.ValueUtils.ValueType;
+import esthesis.common.data.DataUtils;
+import esthesis.common.data.DataUtils.ValueType;
 import esthesis.common.exception.QMismatchException;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.time.Instant;
@@ -29,7 +29,7 @@ public class AvroUtils {
 	 * @param builder The builder to set the resulting values to
 	 */
 	private ValueData.Builder setValue(String val, ValueData.Builder builder) {
-		ValueType valueType = ValueUtils.detectWithHints(val);
+		ValueType valueType = DataUtils.detectValueTypeWithHints(val);
 		String extractedVal;
 		log.trace("Detected value type '{}' for value '{}'.", valueType, val);
 		switch (valueType) {

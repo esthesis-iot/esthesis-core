@@ -41,13 +41,13 @@ public class DflMqttClientService {
 	private MessageTypeEnum getMessageType(Exchange exchange) {
 		String topic = exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC, String.class);
 
-		if (config.mqttTopicPing().isPresent() && topic.startsWith(config.mqttTopicPing().get())) {
+		if (config.mqttPingTopic().isPresent() && topic.startsWith(config.mqttPingTopic().get())) {
 			return MessageTypeEnum.P;
-		} else if (config.mqttTopicTelemetry().isPresent() && topic.startsWith(
-			config.mqttTopicTelemetry().get())) {
+		} else if (config.mqttTelemetryTopic().isPresent() && topic.startsWith(
+			config.mqttTelemetryTopic().get())) {
 			return MessageTypeEnum.T;
-		} else if (config.mqttTopicMetadata().isPresent() && topic.startsWith(
-			config.mqttTopicMetadata().get())) {
+		} else if (config.mqttMetadataTopic().isPresent() && topic.startsWith(
+			config.mqttMetadataTopic().get())) {
 			return MessageTypeEnum.M;
 		} else {
 			throw new UnsupportedOperationException(

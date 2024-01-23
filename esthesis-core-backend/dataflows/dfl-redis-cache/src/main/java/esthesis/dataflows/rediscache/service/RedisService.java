@@ -2,7 +2,7 @@ package esthesis.dataflows.rediscache.service;
 
 import esthesis.avro.EsthesisDataMessage;
 import esthesis.common.AppConstants;
-import esthesis.common.data.ValueUtils.ValueType;
+import esthesis.common.data.DataUtils.ValueType;
 import esthesis.dataflows.rediscache.config.AppConfig;
 import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;

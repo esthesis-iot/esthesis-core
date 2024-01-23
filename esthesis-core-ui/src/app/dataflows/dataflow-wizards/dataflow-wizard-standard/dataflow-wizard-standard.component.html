@@ -1,104 +1,19 @@
 <div class="card w-full bg-base-200 rounded-b-none">
   <div class="card-body">
-    <h2 class="card-title text-2xl flex flex-row justify-between">
+    <h2 class="card-title text-2xl flex flex-row justify-between mb-10">
       <div class="flex flex-row gap-2">
         <fa-icon icon="diagram-project"></fa-icon>
         <div>Standard - Dataflow wizard</div>
       </div>
     </h2>
-    <div class="mt-3">
-      <fa-icon icon="info-circle"></fa-icon>
-      Creates a dataflow will all basic services included, ping, command reply updater,
-      MQTT client, Redis cache, and InfluxDB writer.
-    </div>
-    <div class="mt-5">
-      <form [formGroup]="form" class="flex flex-col" novalidate>
-        <div class="font-bold text-xl">General</div>
-        <div class="pl-5 border-l-2 border-l-primary/50 rounded-xl flex flex-col">
-          <mat-form-field>
-            <mat-label>Version</mat-label>
-            <input formControlName="version" matInput>
-            <mat-hint>The version of the dataflows to deploy</mat-hint>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Namespace</mat-label>
-            <mat-select formControlName="namespace">
-              <mat-option *ngFor="let ns of namespaces" [value]="ns">
-                {{ ns }}
-              </mat-option>
-            </mat-select>
-            <mat-hint>The Kubernetes namespace where dataflows will be deployed</mat-hint>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Custom Docker registry</mat-label>
-            <input formControlName="dockerRegistry" matInput>
-            <mat-hint>A custom Docker registry to pull images from, e.g. localhost:32000</mat-hint>
-          </mat-form-field>
-        </div>
-
-        <div class="font-bold text-xl mt-5">Kafka</div>
-        <div class="pl-5 border-l-2 border-l-primary/50 rounded-xl flex flex-col">
-          <mat-form-field>
-            <mat-label>Cluster URL</mat-label>
-            <input formControlName="kafkaClusterUrl" matInput>
-            <mat-hint>The URL of Kafka accessible from inside the cluster</mat-hint>
-          </mat-form-field>
-        </div>
-
-        <div class="font-bold text-xl mt-5">MongoDB</div>
-        <div class="pl-5 border-l-2 border-l-primary/50 rounded-xl flex flex-col">
-          <mat-form-field>
-            <mat-label>Cluster URL</mat-label>
-            <input formControlName="mongoDbClusterUrl" matInput>
-            <mat-hint>The URL of MongoDB accessible from inside the cluster</mat-hint>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>The name of the database to use</mat-label>
-            <input formControlName="mongoDbDatabase" matInput>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>The username to connect with</mat-label>
-            <input formControlName="mongoDbUsername" matInput>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>The password to use</mat-label>
-            <input formControlName="mongoDbPassword" matInput type="password">
-          </mat-form-field>
-        </div>
-
-        <div class="font-bold text-xl mt-5">InfluxDB</div>
-        <div class="pl-5 border-l-2 border-l-primary/50 rounded-xl flex flex-col">
-          <mat-form-field>
-            <mat-label>Cluster URL</mat-label>
-            <input formControlName="influxDbClusterUrl" matInput>
-            <mat-hint>The URL of InfluxDB accessible from inside the cluster</mat-hint>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Organisation name</mat-label>
-            <input formControlName="influxDbOrg" matInput>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Bucket</mat-label>
-            <input formControlName="influxDbBucket" matInput>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Access token</mat-label>
-            <input formControlName="influxDbToken" matInput>
-          </mat-form-field>
-        </div>
-
-        <div class="font-bold text-xl mt-5">Redis</div>
-        <div class="pl-5 border-l-2 border-l-primary/50 rounded-xl flex flex-col">
-          <mat-form-field>
-            <mat-label>Cluster URL</mat-label>
-            <input formControlName="redisClusterUrl" matInput>
-            <mat-hint>The URL of Redis accessible from inside the cluster</mat-hint>
-          </mat-form-field>
-        </div>
+    <div>
+      <form [formGroup]="form">
+        <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
       </form>
     </div>
     <div class="card-actions justify-start mt-10">
-      <button class="btn btn-sm btn-primary" (click)="execute()">EXECUTE</button>
+      <button class="btn btn-sm btn-secondary" routerLink="/dataflow">CANCEL</button>
+      <button (click)="execute()" *ngIf="allowWrite" class="btn btn-sm btn-primary">EXECUTE</button>
     </div>
   </div>
 </div>

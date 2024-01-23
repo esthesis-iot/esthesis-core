@@ -9,14 +9,7 @@ import jakarta.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.Security;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
 import javax.net.ssl.X509ExtendedKeyManager;
 import javax.net.ssl.X509ExtendedTrustManager;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +18,7 @@ import nl.altindag.ssl.pem.util.PemUtils;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
+import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
 import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.camel.component.paho.PahoConstants;
 import org.apache.camel.model.dataformat.AvroDataFormat;
@@ -58,11 +52,28 @@ public class MqttRoute extends RouteBuilder {
 		BannerUtil.showBanner(appName);
 
 		// Configure Kafka.
-		ComponentsBuilderFactory.kafka()
-			.brokers(config.kafkaClusterUrl())
-			.valueDeserializer("org.apache.kafka.common.serialization.ByteArrayDeserializer")
-			.valueSerializer("org.apache.kafka.common.serialization.ByteArraySerializer")
-			.register(getContext(), "kafka");
+		KafkaComponentBuilder kafkaComponentBuilder =
+			ComponentsBuilderFactory.kafka()
+				.valueDeserializer("org.apache.kafka.common.serialization.ByteArrayDeserializer")
+				.valueSerializer("org.apache.kafka.common.serialization.ByteArraySerializer")
+				.brokers(config.kafkaClusterUrl());
+		config.kafkaSecurityProtocol().ifPresentOrElse(val -> {
+				log.info("Using Kafka security protocol '{}'.", val);
+				kafkaComponentBuilder.securityProtocol(val);
+				config.kafkaSaslMechanism().ifPresent(
+					saslMechanism -> {
+						log.info("Using Kafka SASL mechanism '{}'.", saslMechanism);
+						kafkaComponentBuilder.saslMechanism(saslMechanism);
+					});
+				config.kafkaJaasConfig().ifPresent(
+					jaasConfig -> {
+						log.debug("Using Kafka JAAS configuration '{}'.", jaasConfig);
+						kafkaComponentBuilder.saslJaasConfig(jaasConfig);
+					});
+			},
+			() -> log.warn(
+				"Kafka security protocol is not set, no security protocol will be configured."));
+		kafkaComponentBuilder.register(getContext(), "kafka");
 
 		// Configure Paho, with SSL if needed.
 		log.debug("Using MQTT broker URL '{}'.", config.mqttBrokerClusterUrl());
@@ -107,8 +118,8 @@ public class MqttRoute extends RouteBuilder {
 		}
 
 		// @formatter:off
-    config.mqttTopicTelemetry().ifPresentOrElse(mqttTopic -> {
-      config.kafkaTopicTelemetry().ifPresentOrElse(kafkaTopic -> {
+    config.mqttTelemetryTopic().ifPresentOrElse(mqttTopic -> {
+      config.kafkaTelemetryTopic().ifPresentOrElse(kafkaTopic -> {
         log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.", mqttTopic, kafkaTopic);
         from("paho:" + mqttTopic + "/#?" + socketFactory)
             .bean(dflMqttClientService, "toEsthesisDataMessages")
@@ -118,8 +129,8 @@ public class MqttRoute extends RouteBuilder {
       }, () -> log.debug("Kafka telemetry topic is not set."));
     }, () -> log.debug("MQTT telemetry topic is not set."));
 
-    config.mqttTopicMetadata().ifPresentOrElse(mqttTopic -> {
-      config.kafkaTopicMetadata().ifPresentOrElse(kafkaTopic -> {
+    config.mqttMetadataTopic().ifPresentOrElse(mqttTopic -> {
+      config.kafkaMetadataTopic().ifPresentOrElse(kafkaTopic -> {
         log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.", mqttTopic, kafkaTopic);
         from("paho:" + mqttTopic + "/#?" + socketFactory)
             .bean(dflMqttClientService, "toEsthesisDataMessages")
@@ -129,8 +140,8 @@ public class MqttRoute extends RouteBuilder {
       }, () -> log.debug("Kafka metadata topic is not set."));
     }, () -> log.debug("MQTT metadata topic is not set."));
 
-    config.mqttTopicPing().ifPresentOrElse(mqttTopic -> {
-      config.kafkaTopicPing().ifPresentOrElse(kafkaTopic -> {
+    config.mqttPingTopic().ifPresentOrElse(mqttTopic -> {
+      config.kafkaPingTopic().ifPresentOrElse(kafkaTopic -> {
         log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.", mqttTopic, kafkaTopic);
         from("paho:" + mqttTopic + "/#?" + socketFactory)
             .bean(dflMqttClientService, "toEsthesisDataMessages")
@@ -140,8 +151,8 @@ public class MqttRoute extends RouteBuilder {
       }, () -> log.debug("Kafka ping topic is not set."));
     }, () -> log.debug("MQTT ping topic is not set."));
 
-    config.mqttTopicCommandReply().ifPresentOrElse(mqttTopic -> {
-      config.kafkaTopicCommandReply().ifPresentOrElse(kafkaTopic -> {
+    config.mqttCommandReplyTopic().ifPresentOrElse(mqttTopic -> {
+      config.kafkaCommandReplyTopic().ifPresentOrElse(kafkaTopic -> {
         log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.", mqttTopic, kafkaTopic);
         from("paho:" + mqttTopic + "/#?"  + socketFactory)
             .bean(dflMqttClientService, "processCommandReplyMessage")
@@ -150,8 +161,8 @@ public class MqttRoute extends RouteBuilder {
       }, () -> log.debug("Kafka command reply topic is not set."));
     }, () -> log.debug("MQTT command reply topic is not set."));
 
-    config.mqttTopicCommandRequest().ifPresentOrElse(mqttTopic -> {
-      config.kafkaTopicCommandRequest().ifPresentOrElse(kafkaTopic -> {
+    config.mqttCommandRequestTopic().ifPresentOrElse(mqttTopic -> {
+      config.kafkaCommandRequestTopic().ifPresentOrElse(kafkaTopic -> {
         log.info("Creating route from Kafka topic '{}' to MQTT topic '{}'.", kafkaTopic, mqttTopic);
         from("kafka:" + kafkaTopic)
             .setHeader(PahoConstants.CAMEL_PAHO_OVERRIDE_TOPIC,

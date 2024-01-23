@@ -1,11 +1,11 @@
 import {
-  DATAFLOW_TEMPLATE_IMAGE_REGISTRY,
+  DATAFLOW_TEMPLATE_CONCURRENCY,
   DATAFLOW_TEMPLATE_KAFKA,
+  DATAFLOW_TEMPLATE_KUBERNETES,
   DATAFLOW_TEMPLATE_LOGGING,
   DATAFLOW_TEMPLATE_MAIN,
-  DATAFLOW_TEMPLATE_STATUS,
-  DATAFLOW_TEMPLATE_WRAPPED_CONCURRENCY,
-  DATAFLOW_TEMPLATE_WRAPPED_KUBERNETES
+  DATAFLOW_TEMPLATE_REDIS,
+  DATAFLOW_TEMPLATE_STATUS
 } from "./templates";
 
 export const DATAFLOW_DEFINITION_REDIS_CACHE = {
@@ -15,35 +15,13 @@ export const DATAFLOW_DEFINITION_REDIS_CACHE = {
   description: "A component caching values from devices to a Redis store to be served as part of the Digital Twins API.",
   icon: "assets/img/dataflows/redis.png",
   fields: [
-    ...DATAFLOW_TEMPLATE_STATUS,
-    ...DATAFLOW_TEMPLATE_MAIN,
-    ...DATAFLOW_TEMPLATE_IMAGE_REGISTRY,
-    {
-      key: "config.redis", wrappers: ["section"],
-      props: {label: "Redis"},
-      fieldGroup: [
-        {
-          key: "url", type: "input", defaultValue: "redis://:esthesis-system@redis-headless:6379/0",
-          props: {label: "The url of the Redis store", required: true, hintStart: "e.g. redis://username:password@server:port/database. Password should be URL Encoded, if it contains special characters."}
-        },
-        {
-          key: "max-size", type: "input", defaultValue: "1024",
-          props: {
-            label: "The maximum value size (in bytes) eligible for caching", required: true,
-            hintStart: "This value pertains to device measurements caching, provisioning packages will be cached regardless of size."
-          }
-        },
-        {
-          key: "ttl", type: "input", defaultValue: "0",
-          props: {
-            label: "Time to live (in minutes), set to 0 to never automatically expire cached entries.",
-            required: true, hintStart: "This value pertains to device measurements caching, provisioning packages will be cached forever."
-          }
-        }
-      ]
-    }, {
-      key: "config.kafka", wrappers: ["section"],
-      props: {label: "Kafka"},
+    { fieldGroup: DATAFLOW_TEMPLATE_STATUS },
+    { fieldGroup: DATAFLOW_TEMPLATE_MAIN },
+    { key: "config.redis", wrappers: ["section"],
+      props: { label: "Redis" },
+      fieldGroup: DATAFLOW_TEMPLATE_REDIS },
+    { key: "config.kafka", wrappers: ["section"],
+      props: { label: "Kafka" },
       fieldGroup: [
         ...DATAFLOW_TEMPLATE_KAFKA,
         {
@@ -60,8 +38,14 @@ export const DATAFLOW_DEFINITION_REDIS_CACHE = {
         }
       ]
     },
-    ...DATAFLOW_TEMPLATE_WRAPPED_KUBERNETES,
-    ...DATAFLOW_TEMPLATE_WRAPPED_CONCURRENCY,
-    ...DATAFLOW_TEMPLATE_LOGGING
+    { key: "config.kubernetes", wrappers: ["section"], props: {label: "Kubernetes"},
+      fieldGroup: DATAFLOW_TEMPLATE_KUBERNETES
+    },
+    { key: "config.concurrency", wrappers: ["section"], props: {label: "Concurrency"},
+      fieldGroup: DATAFLOW_TEMPLATE_CONCURRENCY
+    },
+    { key: "config.logging", wrappers: ["section"], props: {label: "Logging"},
+      fieldGroup: DATAFLOW_TEMPLATE_LOGGING
+    }
   ]
 };

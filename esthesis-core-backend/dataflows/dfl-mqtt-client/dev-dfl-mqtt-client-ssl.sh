@@ -20,6 +20,9 @@ env \
     ESTHESIS_DFL_KAFKA_TOPIC_COMMAND_REPLY=esthesis-command-reply \
     ESTHESIS_DFL_MQTT_BROKER_CLUSTER_URL=ssl://mosquitto.esthesis:8883 \
     ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.esthesis=:9095 \
+    ESTHESIS_DFL_KAFKA_SECURITY_PROTOCOL=SASL_PLAINTEXT \
+		ESTHESIS_DFL_KAFKA_SASL_MECHANISM=SCRAM-SHA-512 \
+		ESTHESIS_DFL_KAFKA_JAAS_CONFIG="org.apache.kafka.common.security.scram.ScramLoginModule required username=esthesis-system password=esthesis-system;" \
     ESTHESIS_DFL_MQTT_BROKER_CA=certs/esthesis-core-root-ca.crt \
     ESTHESIS_DFL_MQTT_BROKER_CERT=certs/esthesis-platform.crt \
     ESTHESIS_DFL_MQTT_BROKER_KEY=certs/esthesis-platform.key \
