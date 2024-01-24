@@ -24,11 +24,11 @@ that the agent compiles and runs on your machine, but not very useful for develo
 
 ### Run locally
 
-To run the agent locally go inside `go` directory and execute:
+To run the agent locally switch to `go` directory and execute:
 
 ```shell
 HID=abc123 && \
-REGISTRATION_URL=http://apisix-gateway.esthesis/api/agent/v1/register && \
+REGISTRATION_URL=http://localhost:4200/api/agent/v1/register && \
 go run cmd/main.go \
     --hardwareId=$HID \
     --registrationUrl=$REGISTRATION_URL \
@@ -45,12 +45,12 @@ go run cmd/main.go \
 ### Run locally, automatically recompiling on changes
 
 If you want your agent to automatically recompile and restart on changes, you can use
-[air](https://github.com/cosmtrek/air). To run the agent locally go inside `go` directory and
+[air](https://github.com/cosmtrek/air). To run the agent locally switch to `go` directory and
 execute:
 
 ```shell
 HID=abc125 && \
-REGISTRATION_URL=http://apisix-gateway.esthesis/api/agent/v1/register && \
+REGISTRATION_URL=http://localhost:4200/api/agent/v1/register && \
 air --build.cmd "go build -o /tmp/esthesis-core-device cmd/main.go" --build.bin "/tmp/esthesis-core-device" -- \
 	--hardwareId=$HID \
 	--registrationUrl=$REGISTRATION_URL \
@@ -67,39 +67,51 @@ air --build.cmd "go build -o /tmp/esthesis-core-device cmd/main.go" --build.bin 
 ## Testing multiple agents
 
 ### Using containers
+To execute one (or more) device agents in Docker containers running on your local machine, connecting
+to your development esthesis Core instance, you need to prepare the following:
 
-```shell
-APISIX_IP=$(dig +short apisix-gateway.esthesis) && \
-RND_PREFIX=esthesis-test-device-$(uuidgen | cut -f1 -d"-" | awk '{print tolower($0)}') && \
-for ((i=1; i<=3; i++)); do
-	HID=$RND_PREFIX-$i && \
-	docker run -d --name $HID \
-		-e HARDWARE_ID=$HID \
-		-e REGISTRATION_URL=http://apisix-gateway.esthesis/api/agent/v1/register \
-		-e PROPERTIES_FILE=/app/.esthesis/esthesis.properties \
-		-e SECURE_PROPERTIES_FILE=/app/.esthesis/secure/esthesis.properties \
-		-e TEMP_DIR=/app/.esthesis/temp \
-		-e VERSION_FILE=/app/version \
-		-e PROVISIONING_SCRIPT=/app/firmware-update.sh \
-		-e LOG_LEVEL=debug \
-		-e AUTO_UPDATE=false \
-		-e SECURE_PROVISIONING=true \
-		--add-host apisix-gateway.esthesis:$APISIX_IP \
-		$REGISTRY_URL/esthesisiot/esthesis-core-device:latest-debug
-done
-```
+1. A container running `kubefwd` to forward the Mosquitto service:
+	```shell
+	docker run -d --privileged \
+ 		--add-host=host.docker.internal:host-gateway \
+ 		--name kubefwd \
+		-v "$(echo $HOME)/.kube/config":/root/.kube/config \
+		txn2/kubefwd services -d esthesis -n esthesis -f metadata.name=mosquitto
+	```
+2. A container running the device agent, obtaining its network via the container you created above:
+	```shell
+	REGISTRY_URL=<your-registry> && \
+	RND_PREFIX=esthesis-test-device-$(uuidgen | cut -f1 -d"-" | awk '{print tolower($0)}') && \
+	for ((i=1; i<=3; i++)); do
+		HID=$RND_PREFIX-$i && \
+		docker run -d --name $HID \
+			-e HARDWARE_ID=$HID \
+			-e REGISTRATION_URL=http://host.docker.internal:4200/api/agent/v1/register \
+			-e PROPERTIES_FILE=/app/.esthesis/esthesis.properties \
+			-e SECURE_PROPERTIES_FILE=/app/.esthesis/secure/esthesis.properties \
+			-e TEMP_DIR=/app/.esthesis/temp \
+			-e VERSION_FILE=/app/version \
+			-e PROVISIONING_SCRIPT=/app/firmware-update.sh \
+			-e LOG_LEVEL=debug \
+			-e AUTO_UPDATE=false \
+			-e SECURE_PROVISIONING=true \
+			--net container:kubefwd \
+			$REGISTRY_URL/esthesisiot/esthesis-core-device:latest
+	done
+	```
 
 ### Using Kubernetes
 
 ```shell
+REGISTRY_URL=<your-registry> && \
 RND_PREFIX=esthesis-test-device-$(uuidgen | cut -f1 -d"-" | awk '{print tolower($0)}') && \
 for ((i=1; i<=3; i++)); do
 	HID=$RND_PREFIX-$i && \
 	kubectl run $HID \
-		--image $REGISTRY_URL/esthesisiot/esthesis-core-device:latest-debug \
+		--image $REGISTRY_URL/esthesisiot/esthesis-core-device:latest \
 		--image-pull-policy=Always \
 		--env="HARDWARE_ID=$HID" \
-		--env="REGISTRATION_URL=http://apisix-gateway/api/agent/v1/register" \
+		--env="REGISTRATION_URL=http://<your-host-machine>:4200/api/agent/v1/register" \
 		--env="PROPERTIES_FILE=/app/.esthesis/esthesis.properties" \
 		--env="SECURE_PROPERTIES_FILE=/app/.esthesis/secure/esthesis.properties" \
 		--env="TEMP_DIR=/app/.esthesis/temp" \
@@ -107,7 +119,6 @@ for ((i=1; i<=3; i++)); do
 		--env="PROVISIONING_SCRIPT=/app/.esthesis/firmware.sh" \
 		--env="LOG_LEVEL=debug" \
 		--env="AUTO_UPDATE=false" \
-		--env="TAGS=k8s" \
 		--env="SECURE_PROVISIONING=true"
 done
 ```
