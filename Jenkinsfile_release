@@ -124,9 +124,6 @@ pipeline {
 
                         cd ../esthesis-core-device/go/internal/pkg/config/
                         sed -i 's/const Version = .*$/const Version = \"'$RELEASE_VERSION'\"/' config.go
-
-                        cd ../../../../../esthesis-core-ui/src/app/dataflows/dataflow-wizards/dataflow-wizard-standard/
-                        sed -i "s/version: \\[\\"[^\\"]*-SNAPSHOT\\", \\[Validators.required\\]\\]/version: [\\"$RELEASE_VERSION\\", [Validators.required]]/g" dataflow-wizard-standard.component.ts
                     '''
                 }
             }
@@ -303,9 +300,6 @@ pipeline {
 
                         cd ../esthesis-core-device/go/internal/pkg/config/
                         sed -i 's/const Version = .*$/const Version = \"'$NEXT_DEV_VERSION'\"/' config.go
-
-                        cd ../../../../../esthesis-core-ui/src/app/dataflows/dataflow-wizards/dataflow-wizard-standard/
-                        sed -i "s/version: \\[\\"[^\\"]*-SNAPSHOT\\", \\[Validators.required\\]\\]/version: [\\"$RELEASE_VERSION\\", [Validators.required]]/g" dataflow-wizard-standard.component.ts
                     '''
                 }
             }
