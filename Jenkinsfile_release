@@ -117,6 +117,7 @@ pipeline {
                         cd esthesis-core/esthesis-core-backend
                         mvn versions:set -DnewVersion=$RELEASE_VERSION
                         mvn versions:commit
+                        mvn clean install -DskipTests
 
                         cd ../esthesis-core-ui
                         sed -i 's|\"version\":.*$|\"version\": \"'$RELEASE_VERSION'\",|' package.json
