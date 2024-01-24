@@ -5,11 +5,11 @@ import {DataflowsService} from "../../dataflows.service";
 import {UtilityService} from "../../../shared/services/utility.service";
 import {AppConstants} from "../../../app.constants";
 import {FormGroup} from "@angular/forms";
-import {DATAFLOW_WIZARD_STANDARD} from "./dto/dws-dto";
 import {FormlyFieldConfig} from "@ngx-formly/core";
 import {DATAFLOW_DEFINITION_PING_UPDATER} from "../../dto/dataflow-definitions/ping-updater";
 import {concatMap, delay, from, Observable, tap} from "rxjs";
 import * as _ from "lodash";
+import {DATAFLOW_WIZARD_STANDARD} from "./dto/dataflow-wizard-standard-dto";
 
 @Component({
   selector: "app-dataflow-wizard-standard",
@@ -18,7 +18,6 @@ import * as _ from "lodash";
 export class DataflowWizardStandardComponent extends SecurityBaseComponent implements OnInit {
   form = new FormGroup({});
   fields: FormlyFieldConfig[] = [];
-  // fields: any[] = [];
   model = {};
 
   constructor(private dataflowService: DataflowsService, private utilityService: UtilityService,
