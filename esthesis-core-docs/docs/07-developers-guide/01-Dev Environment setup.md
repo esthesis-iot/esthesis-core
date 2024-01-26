@@ -122,6 +122,11 @@ There are plugins for all major IDEs, so you can easily follow the convention.
 	 sudo sysctl fs.inotify.max_user_instances=1280
 	 sudo sysctl fs.inotify.max_user_watches=655360
 	 ```
+   If you face any issues building the project via Maven, you may also need to increase the number of
+	 open files:
+	 ```
+ 	 ulimit -S -n 65536
+ 	 ```
 4. You can create a `local-env.sh` script alongside the `dev-{service}.sh` scripts to customise your
 	 local development environment. If such a file exist, it will be sourced by the `dev-{service}.sh`.
 5. `srv-kubernetes` service needs to be able to create new pods in your Kubernetes environment. This
