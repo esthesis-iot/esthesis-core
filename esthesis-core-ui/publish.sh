@@ -36,14 +36,14 @@ printInfo() {
 
 # If $ESTHESIS_REGISTRY_URL is empty, set it to docker.io.
 if [ -z "$ESTHESIS_REGISTRY_URL" ]; then
-  ESTHESIS_REGISTRY_URL="docker.io"
+  ESTHESIS_REGISTRY_URL="docker.io/esthesisiot"
 fi
 
 # Find the version of the package.
 PACKAGE_VERSION=$(npm pkg get version --workspaces=false | tr -d \")
 printInfo "Package version: $PACKAGE_VERSION."
-if [[ "${PACKAGE_VERSION}" == *SNAPSHOT && $ESTHESIS_REGISTRY_URL == "docker.io" ]]; then
-    printError "Cannot push a snapshot version to docker.io."
+if [[ "${PACKAGE_VERSION}" == *SNAPSHOT && $ESTHESIS_REGISTRY_URL == "docker.io/esthesisiot" ]]; then
+    printError "Cannot push a snapshot version to docker.io/esthesisiot."
     exit 1
 fi
 
@@ -72,7 +72,7 @@ if [ -n "$ESTHESIS_REGISTRY_USERNAME" ] && [ -n "$ESTHESIS_REGISTRY_PASSWORD" ];
 fi
 
 # Build & Push
-IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesisiot/esthesis-core-ui"
+IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesis-core-ui"
 printInfo "Building $ESTHESIS_ARCHITECTURES for $IMAGE_NAME."
 TAGS=("latest" "$PACKAGE_VERSION")
 for TAG in "${TAGS[@]}"; do
