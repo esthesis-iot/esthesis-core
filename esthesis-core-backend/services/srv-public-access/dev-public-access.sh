@@ -13,7 +13,7 @@ fi
 
 [ -e "local-env.sh" ] && source "local-env.sh"
 cd srv-public-access-impl || exit
-./mvnw quarkus:dev \
+./mvnw quarkus:remote-dev \
   -Dquarkus.http.port=59160 \
   -Ddebug=59161 \
   -Dquarkus.profile="$PROFILES" \

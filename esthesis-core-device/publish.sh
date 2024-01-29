@@ -59,7 +59,7 @@ BUILD_DATE=$(rfc3339Date)
 
 # If $ESTHESIS_REGISTRY_URL is empty, set it to docker.io.
 if [ -z "$ESTHESIS_REGISTRY_URL" ]; then
-  ESTHESIS_REGISTRY_URL="docker.io"
+  ESTHESIS_REGISTRY_URL="docker.io/esthesisiot"
 fi
 
 # Set buildx driver options.
@@ -141,7 +141,7 @@ if [ "$ESTHESIS_BUILD_CONTAINERS" = "true" ]; then
   fi
 
 	# OS, Architecture, ARM version, extension
-	IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesisiot/esthesis-core-device"
+	IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesis-core-device"
 	TAGS=("latest" "$PACKAGE_VERSION")
 	for TAG in "${TAGS[@]}"; do
 		printInfo "Building container $IMAGE_NAME:$TAG."
