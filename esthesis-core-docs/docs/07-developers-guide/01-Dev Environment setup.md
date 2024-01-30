@@ -11,11 +11,7 @@ machine, instead of being deployed to the Kubernetes cluster.
 
 ## Requirements
 
-- A dev Kubernetes cluster with at least 16GB of RAM. We suggest firing up an [Ubuntu server](https://ubuntu.com/download/server)
-	in the virtualisation platform of your choice, while preselecting Microk8s in the installed packages
-	screen. This way you can have a single-node cluster, using the same Kubernetes distribution the
-	rest of us are also using, so we can provide appropriate guidance and setup instructions that work
-	across the board.
+- A dev Kubernetes cluster with at least 16GB of RAM.
 - [Helm](https://helm.sh)
 - [Helmfile](https://github.com/helmfile/helmfile)
 - Many of the build and helper scripts are written for a Unix/Linux shell. If you are on
@@ -26,12 +22,6 @@ machine, instead of being deployed to the Kubernetes cluster.
 	`promtail --config.file=config.yaml`.
 
 ## Kubernetes initialisation
-
-SSH to your Microk8s VM and enable the following addons:
-- `microk8s enable dns`
-- `microk8s enable hostpath-storage`
-- `microk8s enable registry`
-- `microk8s enable ingress`
 
 ## Installation
 Unless you are on a cluster shared with others, create and use a namespace named "esthesis", so that

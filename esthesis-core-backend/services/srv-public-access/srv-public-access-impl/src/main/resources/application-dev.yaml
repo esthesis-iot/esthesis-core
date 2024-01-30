@@ -1,16 +1,6 @@
 quarkus:
-  package:
-    type: mutable-jar
   live-reload:
     instrumentation: true
-    password: esthesis
-    url: http://localhost:59160
-  container-image:
-    builder: jib
-    build: true
-    push: true
-    registry: localhost:32000
-
   http:
     host: 0.0.0.0
     cors: false
