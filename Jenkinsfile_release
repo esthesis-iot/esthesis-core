@@ -48,7 +48,7 @@ pipeline {
     options {
         disableConcurrentBuilds()
         buildDiscarder(logRotator(numToKeepStr: '10'))
-        timeout(time: 3, unit: 'HOURS')
+        timeout(time: 4, unit: 'HOURS')
     }
     stages {
     	stage ('Prerequisites') {
@@ -146,10 +146,6 @@ pipeline {
 
                         rm -rf ../../../esthesis-docs/docs/*
                         cp -r build/* ../../esthesis-docs/docs
-                    '''
-                    sh '''
-                        filePath="esthesis-core/esthesis-core-docs/src/css/custom.css"
-                        sed -i '$d' "$filePath"
                     '''
                 }
             }
