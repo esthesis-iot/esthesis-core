@@ -48,7 +48,7 @@ pipeline {
     options {
         disableConcurrentBuilds()
         buildDiscarder(logRotator(numToKeepStr: '10'))
-        timeout(time: 4, unit: 'HOURS')
+        timeout(time: 5, unit: 'HOURS')
     }
     stages {
     	stage ('Prerequisites') {
@@ -109,7 +109,7 @@ pipeline {
             steps{
                 container (name: 'esthesis-release-builder') {
                     script{
-                        def cssCode = ".dropdown__menu > li:nth-child(1) { display: none\!important; }"
+                        def cssCode = ".dropdown__menu > li:nth-child(1) { display: none!important; }"
                         def filePath = "esthesis-core/esthesis-core-docs/src/css/custom.css"
                         sh "echo '${cssCode}' >> ${filePath}"
                     }
@@ -146,6 +146,10 @@ pipeline {
 
                         rm -rf ../../../esthesis-docs/docs/*
                         cp -r build/* ../../esthesis-docs/docs
+                    '''
+                    sh '''
+                        filePath="esthesis-core/esthesis-core-docs/src/css/custom.css"
+                        sed -i '$d' "$filePath"
                     '''
                 }
             }
