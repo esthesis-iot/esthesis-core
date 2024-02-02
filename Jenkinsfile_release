@@ -109,7 +109,7 @@ pipeline {
             steps{
                 container (name: 'esthesis-release-builder') {
                     script{
-                        def cssCode = ".dropdown__menu > li:nth-child(1) { display: none\\!important; }"
+                        def cssCode = ".dropdown__menu > li:nth-child(1) { display: none\!important; }"
                         def filePath = "esthesis-core/esthesis-core-docs/src/css/custom.css"
                         sh "echo '${cssCode}' >> ${filePath}"
                     }
