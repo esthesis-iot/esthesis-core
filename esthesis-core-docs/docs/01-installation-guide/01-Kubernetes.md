@@ -28,9 +28,12 @@ The containers timezone to set (note, some containers do not respect this settin
 Default: `Europe/Athens`
 
 🔹 `ESTHESIS_LOG_LEVEL`<br/>
-The log level to be used for the esthesis components (i.e. does not affect third-party components
-installed by the Helm chart).<br/>
+The log level to be used for the esthesis components (i.e. does not affect third-party components installed by the Helm chart).<br/>
 Default: `WARN`
+
+🔹 `IMAGE_PULL_SECRET`<br/>
+The secret to use when pulling container images.<br/>
+Default: ``
 
 ### Accounts
 
