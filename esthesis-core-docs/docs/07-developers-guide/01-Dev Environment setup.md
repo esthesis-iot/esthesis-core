@@ -67,7 +67,7 @@ element in the domains in the table below:
 | Keycloak           | http://keycloak.esthesis | esthesis-system / esthesis-system |
 | Kafka              | kafka.esthesis:9095 ||
 | Kafka UI           | http://kafka-ui.esthesis ||
-| Docker Registry UI | http://docker-registry-ui-docker-registry-ui-user-interface.esthesis ||
+| Docker Registry UI | http://docker-registry-user-interface.esthesis/ ||
 
 ## Running the services
 The above installation will prepare all the necessary components to support esthesis Core. The actual
