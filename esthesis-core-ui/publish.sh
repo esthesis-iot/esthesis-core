@@ -6,7 +6,7 @@
 # Required environment variables:
 #   ESTHESIS_REGISTRY_USERNAME: The username to use when authenticating with the registry.
 #   ESTHESIS_REGISTRY_PASSWORD: The password to use when authenticating with the registry.
-#   ESTHESIS_REGISTRY_URL: The URL of the registry to push to (default: docker.io).
+#   ESTHESIS_REGISTRY_URL: The URL of the registry to push to (default: docker.io/esthesisiot).
 #   ESTHESIS_ARCHITECTURES: The architectures to build (default: linux/amd64).
 #   ESTHESIS_BUILDX_KUBERNETES: If set to true, a builder will be created in Kubernetes (default: false).
 #
