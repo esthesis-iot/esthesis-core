@@ -54,6 +54,9 @@ with the namespace you have deployed the services to. Note that if you have
 deployed the services in a different namespace than `esthesis`, you need to adjust the namespace
 element in the domains in the table below:
 2. You may need to, occasionally, restart kubefwd, especially if pods get recreated often.
+3. The Container Registry is deployed as a NodePort service with a randomly assigned port. If you
+need to specify your own port, you can use the `REGISTRY_NODE_PORT` environment variable when
+deploying the Helm Chart.
 
 | Resource | URL/host | Credentials |
 |-|-|-|

@@ -16,6 +16,8 @@
 # Usage:
 #   ./publish.sh
 #   ./publish.sh <module-path> <module-name>
+#   ./publish.sh dfl
+#   ./publish.sh srv
 #
 # Example:
 #   ./publish.sh services/srv-about/srv-about-impl srv-about
@@ -78,38 +80,53 @@ if [ -z "$ESTHESIS_ARCHITECTURES" ]; then
 	ESTHESIS_ARCHITECTURES="linux/amd64"
 fi
 
-# Array with all modules to be published.
-modules=(
-    "dataflows/dfl-command-reply-updater" "dfl-command-reply-updater"
-    "dataflows/dfl-influxdb-writer" "dfl-influxdb-writer"
-    "dataflows/dfl-mqtt-client" "dfl-mqtt-client"
-    "dataflows/dfl-orion-gateway" "dfl-orion-gateway"
-    "dataflows/dfl-ping-updater" "dfl-ping-updater"
-    "dataflows/dfl-rdbms-writer" "dfl-rdbms-writer"
-    "dataflows/dfl-redis-cache" "dfl-redis-cache"
-    "services/srv-about/srv-about-impl" "srv-about"
-    "services/srv-agent/srv-agent-impl" "srv-agent"
-    "services/srv-application/srv-application-impl" "srv-application"
-    "services/srv-audit/srv-audit-impl" "srv-audit"
-    "services/srv-campaign/srv-campaign-impl" "srv-campaign"
-    "services/srv-command/srv-command-impl" "srv-command"
-    "services/srv-crypto/srv-crypto-impl" "srv-crypto"
-    "services/srv-dataflow/srv-dataflow-impl" "srv-dataflow"
-    "services/srv-device/srv-device-impl" "srv-device"
-    "services/srv-dt/srv-dt-impl" "srv-dt"
-    "services/srv-infrastructure/srv-infrastructure-impl" "srv-infrastructure"
-    "services/srv-kubernetes/srv-kubernetes-impl" "srv-kubernetes"
-    "services/srv-provisioning/srv-provisioning-impl" "srv-provisioning"
-    "services/srv-public-access/srv-public-access-impl" "srv-public-access"
-    "services/srv-security/srv-security-impl" "srv-security"
-    "services/srv-settings/srv-settings-impl" "srv-settings"
-    "services/srv-tag/srv-tag-impl" "srv-tag"
+# Arrays with all modules to be published.
+modulesDataFlows=(
+	"dataflows/dfl-command-reply-updater" "dfl-command-reply-updater"
+	"dataflows/dfl-influxdb-writer" "dfl-influxdb-writer"
+	"dataflows/dfl-mqtt-client" "dfl-mqtt-client"
+	"dataflows/dfl-orion-gateway" "dfl-orion-gateway"
+	"dataflows/dfl-ping-updater" "dfl-ping-updater"
+	"dataflows/dfl-rdbms-writer" "dfl-rdbms-writer"
+	"dataflows/dfl-redis-cache" "dfl-redis-cache"
+)
+modulesServices=(
+	"services/srv-about/srv-about-impl" "srv-about"
+	"services/srv-agent/srv-agent-impl" "srv-agent"
+	"services/srv-application/srv-application-impl" "srv-application"
+	"services/srv-audit/srv-audit-impl" "srv-audit"
+	"services/srv-campaign/srv-campaign-impl" "srv-campaign"
+	"services/srv-command/srv-command-impl" "srv-command"
+	"services/srv-crypto/srv-crypto-impl" "srv-crypto"
+	"services/srv-dataflow/srv-dataflow-impl" "srv-dataflow"
+	"services/srv-device/srv-device-impl" "srv-device"
+	"services/srv-dt/srv-dt-impl" "srv-dt"
+	"services/srv-infrastructure/srv-infrastructure-impl" "srv-infrastructure"
+	"services/srv-kubernetes/srv-kubernetes-impl" "srv-kubernetes"
+	"services/srv-provisioning/srv-provisioning-impl" "srv-provisioning"
+	"services/srv-public-access/srv-public-access-impl" "srv-public-access"
+	"services/srv-security/srv-security-impl" "srv-security"
+	"services/srv-settings/srv-settings-impl" "srv-settings"
+	"services/srv-tag/srv-tag-impl" "srv-tag"
 )
 
-# If the user has provided a specific module to be published, only publish that one.
+# Check what should be published.
 if [ $# -eq 2 ]; then
 	modules=(
 		"$1" "$2"
+	)
+elif [ $# -eq 1 ] && [ $1 = "dfl" ]; then
+	modules=(
+		"${modulesDataFlows[@]}"
+	)
+elif [ $# -eq 1 ] && [ $1 = "srv" ]; then
+	modules=(
+		"${modulesServices[@]}"
+	)
+else
+	modules=(
+		"${modulesServices[@]}"
+		"${modulesDataFlows[@]}"
 	)
 fi
 
