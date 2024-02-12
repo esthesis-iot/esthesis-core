@@ -160,9 +160,7 @@ pipeline {
                     sh '''
                         cd esthesis-helm
                         find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: $RELEASE_VERSION|"
-                        find . -name helmfile.yaml | xargs sed -i "s|esthesisVersion:.*$|esthesisVersion: $RELEASE_VERSION|"
-                        find . -name deployment.yaml | xargs sed -i "s|esthesisiot/esthesis-core-ui:.*$|esthesisiot/esthesis-core-ui:$RELEASE_VERSION|"
-                        find . -name _helpers.tpl | xargs sed -i "s|esthesisiot/{{ .podName }}:.*$|esthesisiot/{{ .podName }}:$RELEASE_VERSION|"
+                        find . -name Chart.yaml | xargs sed -i "s|appVersion:.*$|appVersion: $RELEASE_VERSION|"
                         bash package.sh
                     '''
                 }
@@ -311,9 +309,7 @@ pipeline {
                     sh '''
                         cd esthesis-helm
                         find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: $NEXT_DEV_VERSION|"
-                        find . -name helmfile.yaml | xargs sed -i "s|esthesisVersion:.*$|esthesisVersion: $NEXT_DEV_VERSION|"
-                        find . -name deployment.yaml | xargs sed -i "s|esthesisiot/esthesis-core-ui:.*$|esthesisiot/esthesis-core-ui:$NEXT_DEV_VERSION|"
-                        find . -name _helpers.tpl | xargs sed -i "s|esthesisiot/{{ .podName }}:.*$|esthesisiot/{{ .podName }}:$NEXT_DEV_VERSION|"
+                        find . -name Chart.yaml | xargs sed -i "s|appVersion:.*$|appVersion: $NEXT_DEV_VERSION|"
                     '''
                 }
             }
