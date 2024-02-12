@@ -60,7 +60,6 @@ pipeline {
                         sh '''
                             apt-get update -y
                             apt-get install -y util-linux jq
-                            sh 'dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock &> dockerd-logfile &'
                             docker login -u $Username -p $Password docker.io
                         '''
                     }
