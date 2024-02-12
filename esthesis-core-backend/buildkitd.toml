@@ -1,1 +1,1 @@
-insecure-entitlements = [ "network.host", "security.insecure" ]
+insecure-entitlements = [ "network.host", "security.insecure"]
