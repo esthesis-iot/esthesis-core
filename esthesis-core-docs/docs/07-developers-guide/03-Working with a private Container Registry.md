@@ -6,7 +6,7 @@ production-like Kubernetes cluster can pull them from. Considering esthesis Core
 services with support of multiple architectures, pushing all those images to e.g. Docker Hub can take a
 long time.
 
-To speed up the process you can use the Container Registry provided by the dependency Helm Chart.
+To speed up the process you can use the private Container Registry provided by the dependencies Helm Chart.
 The chart will deploy a private registry in your Kubernetes cluster as a NodePort Service. The service
 will be assigned a random port, so you should take note of the IP of your worker node as well as the
 assigned port. You can then use the `publish.sh` script to build and push your images to the private
@@ -14,10 +14,10 @@ registry.
 
 ## Building and pushing images
 When using the `publish.sh` script to prepare your images, you can define the `ESTHESIS_REGISTRY_URL`
-environment variable to point to a private registry. This variable should point to the IP address
-of your private registry, for example:
+environment variable to point to a private registry. This variable should point to the IP address,
+port, and username of your private registry, for example:
 ```shell
-ESTHESIS_REGISTRY_URL=192.168.10.47:32000 ./publish.sh
+ESTHESIS_REGISTRY_URL=192.168.10.47:32000/esthesis ./publish.sh
 ```
 
 Note that since your private registry will be insecure, you need to add it to the insecure registries
@@ -33,10 +33,10 @@ insecure-entitlements = [ "network.host", "security.insecure"]
 ## Using the private registry in testing a production-like installation
 When testing a production-like installation, you can configure the Helm charts to use the images from
 your private registry instead of e.g. Docker Hub. To do so, you can define the `ESTHESIS_REGISTRY_URL`
-environment variable to point to the private registry. This variable should point to the IP address
-of your private registry, for example:
+environment variable to point to the private registry. This variable should point to the IP address,
+port, and username of your private registry, for example:
 ```shell
-ESTHESIS_REGISTRY_URL=192.168.10.47:32000 helmfile sync
+ESTHESIS_REGISTRY_URL=192.168.10.47:32000/esthesis helmfile sync
 ```
 
 :::tip
@@ -47,4 +47,13 @@ define `ESTHESIS_SINGLE_NODE=true` environmental variable.
 
 ## Deploying Dataflows
 To use a private registry when deploying a Dataflow, you can use the
-"Custom Docker Registry" field in the Dataflow definition screen specifying `localhost:32000`.
+"Custom Docker Registry" field in the Dataflow definition screen specifying the same registry
+coordinates you used when building the services, for example `192.168.10.47:32000/esthesis`. Similarly
+to when building the services, you should configure your Kubernetes distribution to be able to pull
+from that insecure registry. The exact way this is done depends on the Kubernetes distribution you
+are using.
+
+Depending on your Kubernetes distribution, you might be able to get away with adding the registry to
+the insecure registries list by replacing the IP address of your registry with `localhost`, for
+example `localhost:32000/esthesis`.
+```

@@ -71,7 +71,7 @@ export const DATAFLOW_TEMPLATE_KUBERNETES = [
   { key: "registry", type: "input", defaultValue: "",
     props: {
       required: false, label: "Custom image registry",
-      hintStart: "e.g. 10.111.22.22:32000"} },
+      hintStart: "e.g. 10.111.22.22:32000/project"} },
   { key: "pods-min", type: "input", defaultValue: "1",
     props: {label: "Minimum pods", required: true} },
   { key: "pods-max", type: "input", defaultValue: "10",

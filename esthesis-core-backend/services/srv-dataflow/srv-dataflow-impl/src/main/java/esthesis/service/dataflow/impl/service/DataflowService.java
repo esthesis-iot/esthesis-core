@@ -28,7 +28,8 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 @ApplicationScoped
 public class DataflowService extends BaseService<DataflowEntity> {
 
-	private static final String DOCKER_IMAGE_PREFIX = "esthesisiot/esthesis-core-dfl-";
+	private static final String DOCKER_IMAGE_PREFIX = "esthesis-core-dfl-";
+	private static final String DOCKER_IMAGE_DEFAULT_URL = "esthesisiot";
 	private static final String CONTAINER_IMAGE_VERSION = "container-image-version";
 	private static final String KUBERNETES_NAMESPACE = "namespace";
 	private static final String KUBERNETES_MIN_PODS = "pods-min";
@@ -136,19 +137,22 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		return builder.build();
 	}
 
+	private String createDflImageUrl(Map<String, Object> k8sConfig, String dflType) {
+		if (MapUtils.getString(k8sConfig, KUBERNETES_IMAGE_REGISTRY_URL) != null) {
+			return MapUtils.getString(k8sConfig, KUBERNETES_IMAGE_REGISTRY_URL) + "/"
+				+ DOCKER_IMAGE_PREFIX + dflType;
+		} else {
+			return DOCKER_IMAGE_DEFAULT_URL + "/" + DOCKER_IMAGE_PREFIX + dflType;
+		}
+	}
+
 	private PodInfoDTO createPodInfo(DataflowEntity dataflowEntity) {
 		PodInfoDTO podInfoDTO = new PodInfoDTO();
 		podInfoDTO.setName(Slugify.builder().build().slugify(dataflowEntity.getName()));
 		@SuppressWarnings("unchecked")
 		Map<String, Object> k8sConfig = (Map<String, Object>)MapUtils.getMap(
 			dataflowEntity.getConfig(), CONFIG_SECTION_KUBERNETES);
-
-		if (MapUtils.getString(k8sConfig, KUBERNETES_IMAGE_REGISTRY_URL) != null) {
-			podInfoDTO.setImage(MapUtils.getString(k8sConfig, KUBERNETES_IMAGE_REGISTRY_URL) + "/"
-				+ DOCKER_IMAGE_PREFIX + dataflowEntity.getType());
-		} else {
-			podInfoDTO.setImage(DOCKER_IMAGE_PREFIX + dataflowEntity.getType());
-		}
+		podInfoDTO.setImage(createDflImageUrl(k8sConfig, dataflowEntity.getType()));
 		podInfoDTO.setVersion(MapUtils.getString(k8sConfig, CONTAINER_IMAGE_VERSION));
 		podInfoDTO.setNamespace(MapUtils.getString (k8sConfig, KUBERNETES_NAMESPACE));
 		podInfoDTO.setMinInstances(MapUtils.getIntValue(k8sConfig, KUBERNETES_MIN_PODS));
@@ -183,7 +187,7 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	}
 
 	public DockerTagsDTO getImageTags(String dflType) {
-		return dockerClient.getTags(DOCKER_IMAGE_PREFIX + dflType);
+		return dockerClient.getTags(DOCKER_IMAGE_DEFAULT_URL + "/" + DOCKER_IMAGE_PREFIX + dflType);
 	}
 
 	public List<String> getNamespaces() {
