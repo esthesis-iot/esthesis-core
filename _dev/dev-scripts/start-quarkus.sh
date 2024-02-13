@@ -51,7 +51,7 @@ if [ "$2" != "0" ]; then
 			-Dquarkus.mongodb.connection-string="$ESTHESIS_MONGODB_URL" \
 			-Dquarkus.otel.exporter.otlp.traces.endpoint="$ESTHESIS_GRAFANA_TEMPO_DISTRIBUTOR_URL" \
 			-Dquarkus.redis.hosts="$ESTHESIS_REDIS_URL" \
-			-Dkafka.bootstrap.servers[0]="$ESTHESIS_KAFKA_URL" \
+			-Dkafka.bootstrap.servers="$ESTHESIS_KAFKA_URL" \
 			-Dquarkus.zeebe.client.broker.gateway-address="$ESTHESIS_CAMUNDA_ZEEBE_URL" \
 			-Dquarkus.oidc-client.auth-server-url="$ESTHESIS_KEYCLOAK_AUTH_SERVER_URL" \
 			-Desthesis.oidc.authority="$ESTHESIS_KEYCLOAK_AUTH_SERVER_URL"
@@ -66,7 +66,7 @@ else
 		-Dquarkus.mongodb.connection-string="$ESTHESIS_MONGODB_URL" \
 		-Dquarkus.otel.exporter.otlp.traces.endpoint="$ESTHESIS_GRAFANA_TEMPO_DISTRIBUTOR_URL" \
 		-Dquarkus.redis.hosts="$ESTHESIS_REDIS_URL" \
-		-Dkafka.bootstrap.servers[0]="$ESTHESIS_KAFKA_URL" \
+		-Dkafka.bootstrap.servers="$ESTHESIS_KAFKA_URL" \
 		-Dquarkus.zeebe.client.broker.gateway-address="$ESTHESIS_CAMUNDA_ZEEBE_URL" \
 		-Dquarkus.oidc-client.auth-server-url="$ESTHESIS_KEYCLOAK_AUTH_SERVER_URL" \
 		-Desthesis.oidc.authority="$ESTHESIS_KEYCLOAK_AUTH_SERVER_URL"
