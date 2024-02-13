@@ -36,7 +36,7 @@ For a typical demo installation, you can run the device agent as:
 	--demoInterval 5
 ```
 
-Replace `{{URL}}` with the URL of your esthesis Core installation.
+Replace `{{URL}}` with the URL of your esthesis Core UI installation.
 
 ### Container client
 The container client is available on Docker Hub and is built for multiple platforms and architectures:
@@ -55,7 +55,7 @@ docker run -d \
 	esthesisiot/esthesis-core-device
 ```
 
-Replace `{{URL}}` with the URL of your esthesis Core installation.
+Replace `{{URL}}` with the URL of your esthesis Core UI installation.
 
 ## Check the device registration
 If registration was successful, you should see the device in the device list in esthesis Core and
