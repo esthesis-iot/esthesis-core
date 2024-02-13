@@ -1,4 +1,0 @@
-insecure-entitlements = [ "network.host", "security.insecure"]
-[registry."192.168.10.47:32000"]
-  http = true
-  insecure = true

@@ -129,11 +129,16 @@ if [ "$ESTHESIS_BUILD_CONTAINERS" = "true" ]; then
 	# Create a Docker buildx.
   BUILDX_NAME=$(LC_CTYPE=C tr -dc 'a-zA-Z' < /dev/urandom | head -c 1)$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 11)
   printInfo "Creating Docker buildx $BUILDX_NAME."
-  if [ "$ESTHESIS_BUILDX_KUBERNETES" = "true" ]; then
-  	docker buildx create --driver kubernetes --name "$BUILDX_NAME" --use --config buildkitd.toml
+  if test -f "buildkitd.toml"; then
+      BUILDKIT_CONFIG="--config buildkitd.toml"
   else
-  	docker buildx create --name "$BUILDX_NAME" --use --config buildkitd.toml
-	fi
+      BUILDKIT_CONFIG=""
+  fi
+  if [ "$ESTHESIS_BUILDX_KUBERNETES" = "true" ]; then
+    docker buildx create --driver kubernetes --name "$BUILDX_NAME" --use $BUILDKIT_CONFIG
+  else
+    docker buildx create --name "$BUILDX_NAME" --use $BUILDKIT_CONFIG
+  fi
 
   # Login to remote registry.
   if [ -n "$ESTHESIS_REGISTRY_USERNAME" ] && [ -n "$ESTHESIS_REGISTRY_PASSWORD" ]; then
