@@ -20,12 +20,14 @@ machine, instead of being deployed to the Kubernetes cluster.
 	endpoint to collect logs and forward them to Loki. If you want to develop and test Loki functionality
 	you need to be running Promtail with the configuration file in `_dev/promtail/config.yaml`, e.g.
 	`promtail --config.file=config.yaml`.
+- [Kubens + Kubectx](https://github.com/ahmetb/kubectx) for easy context and namespace switching.
 
 ## Kubernetes initialisation
 
 ## Installation
 Unless you are on a cluster shared with others, create and use a namespace named "esthesis", so that
-you can follow the instructions below without having to change parameters.
+you can follow the instructions below without having to change parameters. If you are using a
+different namespace, replace it accordingly.
 
 - Install the supporting dependencies in `esthesis-helm/esthesis-core-deps`:
 	```shell
@@ -84,6 +86,11 @@ You can start the Angular frontend by running `npm start` in `esthesis-core-ui` 
 ### Backend
 Each backend service comes with its own `dev-{service-name}.sh` script that you can use to start the
 service in development mode. You need to run each of the services in a separate terminal window.
+
+Many of the backend services need to access the dependency services (e.g. Keycloak, Kafka, MongoDB,
+etc.) you have deployed above. To be able to figure out the domain name under which these services are
+accessible, we are using internally `kubens -c`, so make sure before you start up a service you
+have switched to the Kubernetes context and namespace where the services are deployed.
 
 ### Automation
 Starting up (and restarting) all those services manually can be a tedious task. We have prepared a

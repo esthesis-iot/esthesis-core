@@ -1,20 +1,11 @@
 #!/usr/bin/env bash
 
-PROFILES="dev"
-if [ "$1" != "" ]; then
-  PROFILES="$PROFILES,$1"
-  echo "Activating profiles: $PROFILES"
-fi
+# Starter script.
+# Arguments:
+#   $1: Additional profiles to activate. 'dev' profile activates by default.
 
-CONSOLE=true
-if [ "$TERM_PROGRAM" = tmux ]; then
-  CONSOLE=false
-fi
-
+# Source local environment variables.
 [ -e "local-env.sh" ] && source "local-env.sh"
-cd srv-audit-impl || exit
-./mvnw quarkus:dev \
-  -Dquarkus.http.port=59140 \
-  -Ddebug=59141 \
-  -Dquarkus.profile="$PROFILES" \
-	-Dquarkus.console.enabled="$CONSOLE"
+
+# Call starter script
+source ../../../_dev/dev-scripts/start-quarkus.sh "srv-audit-impl" "59140" "59141" "$1"

@@ -16,6 +16,9 @@ if [ "$ESTHESIS_TMUX_PAUSE" = true ]; then
 	PAUSE="echo 'Press ENTER key to start...'; head -n 1 >/dev/null"
 fi
 
+# Set additional environment variables.
+export ESTHESIS_KEYCLOAK_URL="http://keycloak.$1/realms/esthesis/protocol/openid-connect/certs"
+
 # The path to the aggregated logs file.
 LOGS=/tmp/esthesis-dev.log
 
@@ -31,7 +34,7 @@ tmux rename-window "Apps"
 # Start UI
 tmux select-pane -t 0.0 -T "UI"
 tmux pipe-pane -o -t 0.0 "sed -u 's/^/\[UI          \] /' | cat >> $LOGS"
-tmux send-keys "cd $(pwd)/..; cd esthesis-core-ui; eval $PAUSE; npm start" C-m
+tmux send-keys "cd $(pwd)/..; cd esthesis-core-ui; eval $PAUSE; [ -n "$(command -v nvm)" ] && nvm use; npm start" C-m
 
 # Start services
 tmux split-window -v
@@ -140,7 +143,7 @@ tmux select-layout tiled
 tmux split-window -v
 tmux select-pane -t 0.18 -T "Docusaurus"
 tmux pipe-pane -o -t 0.18 "sed -u 's/^/\[Docusaurus  \] /' | cat >> $LOGS"
-tmux send-keys "cd $(pwd)/..; cd esthesis-core-docs; eval $PAUSE; npm start" C-m
+tmux send-keys "cd $(pwd)/..; cd esthesis-core-docs; eval $PAUSE; [ -n "$(command -v nvm)" ] && nvm use; npm start" C-m
 tmux select-layout tiled
 
 # Start Promtail

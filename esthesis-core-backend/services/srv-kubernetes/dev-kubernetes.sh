@@ -1,24 +1,11 @@
 #!/usr/bin/env bash
 
-PROFILES="dev"
-if [ "$1" != "" ]; then
-  PROFILES="$PROFILES,$1"
-  echo "Activating profiles: $PROFILES"
-fi
+# Starter script.
+# Arguments:
+#   $1: Additional profiles to activate. 'dev' profile activates by default.
 
-CONSOLE=true
-if [ "$TERM_PROGRAM" = tmux ]; then
-  CONSOLE=false
-fi
+# Source local environment variables.
+[ -e "local-env.sh" ] && source "local-env.sh"
 
-if [ -e "$(pwd)/local-env.sh" ]; then
-	echo "Sourcing $(pwd)/local-env.sh."
-	source "local-env.sh"
-fi
-
-cd srv-kubernetes-impl || exit
-./mvnw quarkus:dev \
-  -Dquarkus.http.port=59050 \
-  -Ddebug=59051 \
-  -Dquarkus.profile="$PROFILES" \
-	-Dquarkus.console.enabled="$CONSOLE"
+# Call starter script
+source ../../../_dev/dev-scripts/start-quarkus.sh "srv-kubernetes-impl" "59050" "59051" "$1"

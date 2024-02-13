@@ -1,3 +1,4 @@
+
 quarkus:
   live-reload:
     instrumentation: true
