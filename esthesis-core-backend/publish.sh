@@ -68,7 +68,7 @@ if [ -z "$ESTHESIS_BUILDX_KUBERNETES" ]; then
 fi
 
 # Find the version of the package.
-PACKAGE_VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.4.0:evaluate -Dexpression=project.version | fgrep -v "[INFO]")
+PACKAGE_VERSION=$(grep -m 1 '<version>' pom.xml | awk -F'[><]' '{print $3}')
 printInfo "Package version: $PACKAGE_VERSION."
 if [[ "${PACKAGE_VERSION}" == *SNAPSHOT && $ESTHESIS_REGISTRY_URL == "docker.io/esthesisiot" ]]; then
     printError "Cannot push a snapshot version to docker.io/esthesisiot."
