@@ -17,6 +17,11 @@ review them, so you can customize them to your needs.
 - [Helm](https://helm.sh)
 - [Helmfile](https://github.com/helmfile/helmfile)
 
+:::tip
+If you are deploying esthesis CORE in a public cloud, make sue you also take into account any
+specific instructions for the cloud provider you are using.
+:::
+
 ## Configuration parameters
 
 <details><summary>The following parameters can be defined as environmental variables during installation:</summary>
