@@ -159,9 +159,9 @@ pipeline {
                 container (name: 'esthesis-release-builder') {
                     sh '''
                         cd esthesis-helm
-                        find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: $RELEASE_VERSION|"
-                        find . -name Chart.yaml | xargs sed -i "s|appVersion:.*$|appVersion: $RELEASE_VERSION|"
-                        find . -name helmfile.yaml | xargs sed -i "s|- version:.*$|- version: $RELEASE_VERSION|"
+                        find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: \"$RELEASE_VERSION\"|"
+                        find . -name Chart.yaml | xargs sed -i "s|appVersion:.*$|appVersion: \"$RELEASE_VERSION\"|"
+                        find . -name helmfile.yaml | xargs sed -i "s|- version:.*$|- version: \"$RELEASE_VERSION\"|"
                         bash package.sh
                     '''
                 }
@@ -309,9 +309,9 @@ pipeline {
                 container (name: 'esthesis-release-builder') {
                     sh '''
                         cd esthesis-helm
-                        find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: $NEXT_DEV_VERSION|"
-                        find . -name Chart.yaml | xargs sed -i "s|appVersion:.*$|appVersion: $NEXT_DEV_VERSION|"
-                        find . -name helmfile.yaml | xargs sed -i "s|- version:.*$|- version: $NEXT_DEV_VERSION|"
+                        find . -name Chart.yaml | xargs sed -i "s|version:.*$|version: \"$NEXT_DEV_VERSION\"|"
+                        find . -name Chart.yaml | xargs sed -i "s|appVersion:.*$|appVersion: \"$NEXT_DEV_VERSION\"|"
+                        find . -name helmfile.yaml | xargs sed -i "s|- version:.*$|- version: \"$NEXT_DEV_VERSION\"|"
                     '''
                 }
             }
