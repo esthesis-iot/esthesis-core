@@ -19,7 +19,6 @@
 #   ESTHESIS_LOCAL_BUILD: 			If set to false, individual modules are not build. This is helpful
 #																when this script is used as part of another script (for example,
 #																a release script) which already performs a build (default: true).
-# 	DOCKER_BUILDKIT:            0, or 1 (optional, default: 1)
 # Usage:
 #   ./publish.sh
 #   ./publish.sh <module-path> <module-name>
@@ -34,7 +33,11 @@
 set -e
 exit_handler() {
     printError "Build failed with exit code $?"
-    exit 1
+    if [ -n "$BUILDX_NAME" ]; then
+			printInfo "Deleting Docker buildx $BUILDX_NAME."
+			docker buildx rm "$BUILDX_NAME"
+		fi
+		exit 1
 }
 trap exit_handler ERR
 
@@ -73,11 +76,6 @@ fi
 # If $ESTHESIS_REGISTRY_TYPE is empty, set it to aws.
 if [ -z "$ESTHESIS_REGISTRY_TYPE" ]; then
   ESTHESIS_REGISTRY_TYPE="aws"
-fi
-
-# If $DOCKER_BUILDKIT is empty, set it to 1.
-if [ -z "$DOCKER_BUILDKIT" ]; then
-  DOCKER_BUILDKIT=1
 fi
 
 MAVEN_OPTIMISE_PARAMS="-DskipTests -Dmaven.test.skip=true -T 1C"
@@ -152,6 +150,20 @@ if [ "$ESTHESIS_GLOBAL_BUILD" = "true" ]; then
 	./mvnw clean package $MAVEN_OPTIMISE_PARAMS
 fi
 
+# Create a Docker buildx.
+BUILDX_NAME=$(LC_CTYPE=C tr -dc 'a-zA-Z' < /dev/urandom | head -c 1)$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 11)
+printInfo "Creating Docker buildx $BUILDX_NAME."
+if test -f "buildkitd.toml"; then
+    BUILDKIT_CONFIG="--config buildkitd.toml"
+else
+		BUILDKIT_CONFIG=""
+fi
+#if [ "$ESTHESIS_BUILDX_KUBERNETES" = "true" ]; then
+#  docker buildx create --driver kubernetes --name "$BUILDX_NAME" --use $BUILDKIT_CONFIG
+#else
+  docker buildx create --name "$BUILDX_NAME" --use $BUILDKIT_CONFIG
+#fi
+
 # Login to remote registry.
 if [ "$ESTHESIS_REGISTRY_TYPE" = "aws" ]; then
 	aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ESTHESIS_REGISTRY_URL
@@ -174,12 +186,16 @@ for ((i = 0; i < ${#modules[@]}; i += 2)); do
 	fi
 
 	printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION"
-	DOCKER_BUILDKIT=$DOCKER_BUILDKIT docker buildx build \
-				 -f src/main/docker/Dockerfile.jvm \
-				 --platform "$ESTHESIS_ARCHITECTURES" \
-				 -t "$IMAGE_NAME:$PACKAGE_VERSION" \
-				 -t "$IMAGE_NAME:latest" \
-				 --push .
+	docker buildx build \
+		 -f src/main/docker/Dockerfile.jvm \
+		 --platform "$ESTHESIS_ARCHITECTURES" \
+		 -t "$IMAGE_NAME:$PACKAGE_VERSION" \
+		 -t "$IMAGE_NAME:latest" \
+		 --push .
 
 	popd || exit
 done
+
+# Delete the buildx.
+printInfo "Deleting Docker buildx $BUILDX_NAME."
+docker buildx rm "$BUILDX_NAME"

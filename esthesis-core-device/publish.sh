@@ -13,7 +13,6 @@
 #   ESTHESIS_REGISTRY_PASSWORD:	The password to login to the 'auth' type registry.
 #   ESTHESIS_BUILD_NATIVE: 			If set to true, native executables will be built (default: true).
 #   ESTHESIS_BUILD_CONTAINERS: 	If set to true, containers will be built and pushed (default: true).
-# 	DOCKER_BUILDKIT:            0, or 1 (optional, default: 1)
 #
 # Usage examples:
 #   ./publish.sh
@@ -24,6 +23,10 @@
 set -e
 exit_handler() {
     printError "Build failed with exit code $?"
+    if [ -n "$BUILDX_NAME" ]; then
+    				printInfo "Deleting Docker buildx $BUILDX_NAME."
+    				docker buildx rm "$BUILDX_NAME"
+    		fi
 		if [ -n "$CONTAINER_NAME" ]; then
 				printInfo "Deleting Docker container $CONTAINER_NAME."
 				docker rm "$CONTAINER_NAME"
@@ -39,12 +42,6 @@ printError() {
 printInfo() {
 	printf "\e[32m***INFO: $1\e[0m\n"
 }
-
-# If $DOCKER_BUILDKIT is empty, set it to 1.
-if [ -z "$DOCKER_BUILDKIT" ]; then
-  DOCKER_BUILDKIT=1
-  exit 1
-fi
 
 # A date in RFC3339 format.
 rfc3339Date() {
@@ -133,6 +130,20 @@ if [ "$ESTHESIS_BUILD_NATIVE" = "true" ]; then
 fi
 
 if [ "$ESTHESIS_BUILD_CONTAINERS" = "true" ]; then
+	# Create a Docker buildx.
+    BUILDX_NAME=$(LC_CTYPE=C tr -dc 'a-zA-Z' < /dev/urandom | head -c 1)$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 11)
+    printInfo "Creating Docker buildx $BUILDX_NAME."
+    if test -f "buildkitd.toml"; then
+        BUILDKIT_CONFIG="--config buildkitd.toml"
+    else
+        BUILDKIT_CONFIG=""
+    fi
+#    if [ "$ESTHESIS_BUILDX_KUBERNETES" = "true" ]; then
+#      docker buildx create --driver kubernetes --name "$BUILDX_NAME" --use $BUILDKIT_CONFIG
+#    else
+      docker buildx create --name "$BUILDX_NAME" --use $BUILDKIT_CONFIG
+#    fi
+
 	# Login to remote registry.
   if [ "$ESTHESIS_REGISTRY_TYPE" = "aws" ]; then
   	aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ESTHESIS_REGISTRY_URL
@@ -143,10 +154,14 @@ if [ "$ESTHESIS_BUILD_CONTAINERS" = "true" ]; then
 	# OS, Architecture, ARM version, extension
 	IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesis-core-device"
 	printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION."
-	DOCKER_BUILDKIT=$DOCKER_BUILDKIT docker buildx build \
-			--platform "linux/arm/v6,linux/arm/v7,linux/arm64,linux/amd64" \
-			-t "$IMAGE_NAME:$PACKAGE_VERSION" \
-			-t "$IMAGE_NAME:latest" \
-			--build-arg "LDFLAGS=$LDFLAGS" \
-			--push .
+	docker buildx build \
+		--platform "linux/arm/v6,linux/arm/v7,linux/arm64,linux/amd64" \
+		-t "$IMAGE_NAME:$PACKAGE_VERSION" \
+		-t "$IMAGE_NAME:latest" \
+		--build-arg "LDFLAGS=$LDFLAGS" \
+		--push .
+
+	# Delete the buildx.
+		printInfo "Deleting Docker buildx $BUILDX_NAME."
+		docker buildx rm "$BUILDX_NAME"
 fi
