@@ -57,9 +57,14 @@ PACKAGE_VERSION=$(cat go/internal/pkg/config/config.go | grep "const Version" | 
 COMMIT_ID=$(git rev-parse HEAD)
 BUILD_DATE=$(rfc3339Date)
 
-# If $ESTHESIS_REGISTRY_URL is empty, set it to docker.io.
+# If $ESTHESIS_REGISTRY_URL is empty, set it to aws.
 if [ -z "$ESTHESIS_REGISTRY_URL" ]; then
-  ESTHESIS_REGISTRY_URL="docker.io/esthesisiot"
+  ESTHESIS_REGISTRY_URL="public.ecr.aws/b0c5e0h9"
+fi
+
+# If $ESTHESIS_REGISTRY_TYPE is empty, set it to aws.
+if [ -z "$ESTHESIS_REGISTRY_TYPE" ]; then
+  ESTHESIS_REGISTRY_TYPE="aws"
 fi
 
 # Builds to execute.
