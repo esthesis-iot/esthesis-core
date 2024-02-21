@@ -4,10 +4,16 @@
 # Publishes the esthesis-core-backend modules to a container registry.
 #
 # Environment variables:
-#   ESTHESIS_REGISTRY_USERNAME: The username to use when authenticating with the registry.
-#   ESTHESIS_REGISTRY_PASSWORD: The password to use when authenticating with the registry.
-#   ESTHESIS_REGISTRY_URL: 			The URL of the registry to push to (default: docker.io/esthesisiot).
-#   ESTHESIS_ARCHITECTURES: 		The architectures to build (default: linux/amd64).
+#   ESTHESIS_REGISTRY_URL: 			The URL of the registry to push to
+#   														(default: public.ecr.aws/b0c5e0h9).
+#  	ESTHESIS_REGISTRY_TYPE:			aws: Login will be attempted using 'aws ecr-public get-login-password'.
+#  															auth: Login will be attempted using username and password.
+#  															open:	No login will be attempted.
+#  															(default: aws).
+#   ESTHESIS_REGISTRY_USERNAME:	The username to login to the 'auth' type registry.
+#   ESTHESIS_REGISTRY_PASSWORD:	The password to login to the 'auth' type registry.
+#   ESTHESIS_ARCHITECTURES: 		The architectures to build, e.g. linux/amd64,linux/arm64
+#   														(default: linux/amd64,linux/arm64).
 #   ESTHESIS_BUILDX_KUBERNETES: If set to true, a builder will be created in Kubernetes
 #   														(default: false).
 #		ESTHESIS_GLOBAL_BUILD: 			If set to true, a global build is performed first. This is to build
@@ -57,7 +63,7 @@ fi
 
 # If $ESTHESIS_REGISTRY_URL is empty, set it to docker.io.
 if [ -z "$ESTHESIS_REGISTRY_URL" ]; then
-  ESTHESIS_REGISTRY_URL="docker.io/esthesisiot"
+  ESTHESIS_REGISTRY_URL="public.ecr.aws/b0c5e0h9"
 fi
 
 # If $ESTHESIS_GLOBAL_BUILD is empty, set it to false.
@@ -68,6 +74,11 @@ fi
 # If $ESTHESIS_LOCAL_BUILD is empty, set it to true.
 if [ -z "$ESTHESIS_LOCAL_BUILD" ]; then
   ESTHESIS_LOCAL_BUILD="true"
+fi
+
+# If $ESTHESIS_REGISTRY_TYPE is empty, set it to aws.
+if [ -z "$ESTHESIS_REGISTRY_TYPE" ]; then
+  ESTHESIS_REGISTRY_TYPE="aws"
 fi
 
 # Set buildx driver options.
@@ -86,7 +97,7 @@ fi
 
 # Architectures to build, i.e. "linux/amd64,linux/arm64"
 if [ -z "$ESTHESIS_ARCHITECTURES" ]; then
-	ESTHESIS_ARCHITECTURES="linux/amd64"
+	ESTHESIS_ARCHITECTURES="linux/amd64,linux/arm64"
 fi
 
 # Arrays with all modules to be published.
@@ -161,7 +172,9 @@ fi
 #fi
 
 # Login to remote registry.
-if [ -n "$ESTHESIS_REGISTRY_USERNAME" ] && [ -n "$ESTHESIS_REGISTRY_PASSWORD" ]; then
+if [ "$ESTHESIS_REGISTRY_TYPE" = "aws" ]; then
+	aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ESTHESIS_REGISTRY_URL
+elif [ "$ESTHESIS_REGISTRY_TYPE" = "auth" ]; then
 	docker login "$ESTHESIS_REGISTRY_URL" --username "$ESTHESIS_REGISTRY_USERNAME" --password "$ESTHESIS_REGISTRY_PASSWORD"
 fi
 
@@ -179,15 +192,16 @@ for ((i = 0; i < ${#modules[@]}; i += 2)); do
 		./mvnw clean package $MAVEN_OPTIMISE_PARAMS
 	fi
 
-	TAGS=("latest" "$PACKAGE_VERSION")
-	for TAG in "${TAGS[@]}"; do
-		printInfo "Building container $IMAGE_NAME:$TAG."
-		docker buildx build \
-					 -f src/main/docker/Dockerfile.jvm \
-					 --platform "$ESTHESIS_ARCHITECTURES" \
-					 -t "$IMAGE_NAME:$TAG" \
-					 --push .
-	done
+#	TAGS=("latest" "$PACKAGE_VERSION")
+#	for TAG in "${TAGS[@]}"; do
+printInfo "Building container $IMAGE_NAME:$TAG."
+docker buildx build \
+			 -f src/main/docker/Dockerfile.jvm \
+			 --platform "$ESTHESIS_ARCHITECTURES" \
+			 -t "$IMAGE_NAME:$PACKAGE_VERSION" \
+			 -t "$IMAGE_NAME:latest" \
+			 --push .
+#	done
 
 	popd || exit
 done
