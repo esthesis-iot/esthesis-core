@@ -80,7 +80,7 @@ MAVEN_OPTIMISE_PARAMS="-DskipTests -Dmaven.test.skip=true -T 1C"
 # Find the version of the package.
 PACKAGE_VERSION=$(grep -m 1 '<version>' pom.xml | awk -F'[><]' '{print $3}')
 printInfo "Package version: $PACKAGE_VERSION."
-if [[ "${PACKAGE_VERSION}" == *SNAPSHOT && $ESTHESIS_REGISTRY_URL == "docker.io/esthesisiot" ]]; then
+if [[ "${PACKAGE_VERSION}" == *SNAPSHOT && $ESTHESIS_REGISTRY_URL == "public.ecr.aws/b0c5e0h9" ]]; then
     printError "Cannot push a snapshot version to docker.io/esthesisiot."
     exit 1
 fi

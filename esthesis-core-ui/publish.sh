@@ -48,7 +48,7 @@ fi
 # Find the version of the package.
 PACKAGE_VERSION=$(npm pkg get version --workspaces=false | tr -d \")
 printInfo "Package version: $PACKAGE_VERSION."
-if [[ "${PACKAGE_VERSION}" == *SNAPSHOT && $ESTHESIS_REGISTRY_URL == "docker.io/esthesisiot" ]]; then
+if [[ "${PACKAGE_VERSION}" == *SNAPSHOT && $ESTHESIS_REGISTRY_URL == "public.ecr.aws/b0c5e0h9" ]]; then
     printError "Cannot push a snapshot version to docker.io/esthesisiot."
     exit 1
 fi
