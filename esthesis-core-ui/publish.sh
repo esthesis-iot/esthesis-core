@@ -14,6 +14,7 @@
 #   ESTHESIS_REGISTRY_PASSWORD:	The password to login to the 'auth' type registry.
 #   ESTHESIS_ARCHITECTURES: 		The architectures to build, e.g. linux/amd64,linux/arm64
 #   														(default: linux/amd64,linux/arm64).
+# 	DOCKER_BUILDKIT:            0, or 1 (optional, default: 1)
 #
 # Usage:
 #   ./publish.sh
@@ -45,6 +46,12 @@ if [ -z "$ESTHESIS_REGISTRY_TYPE" ]; then
   ESTHESIS_REGISTRY_TYPE="aws"
 fi
 
+# If $DOCKER_BUILDKIT is empty, set it to 1.
+if [ -z "$DOCKER_BUILDKIT" ]; then
+  DOCKER_BUILDKIT=1
+  exit 1
+fi
+
 # Find the version of the package.
 PACKAGE_VERSION=$(npm pkg get version --workspaces=false | tr -d \")
 printInfo "Package version: $PACKAGE_VERSION"
@@ -68,7 +75,7 @@ fi
 # Build & Push
 IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesis-core-ui"
 printInfo "Building $ESTHESIS_ARCHITECTURES for $IMAGE_NAME:$PACKAGE_VERSION"
-docker buildx build \
+DOCKER_BUILDKIT=$DOCKER_BUILDKIT docker buildx build \
        --platform "$ESTHESIS_ARCHITECTURES" \
        -t "$IMAGE_NAME:$PACKAGE_VERSION" \
        -t "$IMAGE_NAME:latest" \

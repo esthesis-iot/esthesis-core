@@ -19,7 +19,7 @@
 #   ESTHESIS_LOCAL_BUILD: 			If set to false, individual modules are not build. This is helpful
 #																when this script is used as part of another script (for example,
 #																a release script) which already performs a build (default: true).
-#
+# 	DOCKER_BUILDKIT:            0, or 1 (optional, default: 1)
 # Usage:
 #   ./publish.sh
 #   ./publish.sh <module-path> <module-name>
@@ -73,6 +73,12 @@ fi
 # If $ESTHESIS_REGISTRY_TYPE is empty, set it to aws.
 if [ -z "$ESTHESIS_REGISTRY_TYPE" ]; then
   ESTHESIS_REGISTRY_TYPE="aws"
+fi
+
+# If $DOCKER_BUILDKIT is empty, set it to 1.
+if [ -z "$DOCKER_BUILDKIT" ]; then
+  DOCKER_BUILDKIT=1
+  exit 1
 fi
 
 MAVEN_OPTIMISE_PARAMS="-DskipTests -Dmaven.test.skip=true -T 1C"
@@ -169,7 +175,7 @@ for ((i = 0; i < ${#modules[@]}; i += 2)); do
 	fi
 
 	printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION"
-	docker buildx build \
+	DOCKER_BUILDKIT=$DOCKER_BUILDKIT docker buildx build \
 				 -f src/main/docker/Dockerfile.jvm \
 				 --platform "$ESTHESIS_ARCHITECTURES" \
 				 -t "$IMAGE_NAME:$PACKAGE_VERSION" \

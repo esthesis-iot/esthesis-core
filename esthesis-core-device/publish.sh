@@ -11,8 +11,9 @@
 #  															(default: aws).
 #   ESTHESIS_REGISTRY_USERNAME:	The username to login to the 'auth' type registry.
 #   ESTHESIS_REGISTRY_PASSWORD:	The password to login to the 'auth' type registry.
-#   ESTHESIS_BUILD_NATIVE: If set to true, native executables will be built (default: true).
-#   ESTHESIS_BUILD_CONTAINERS: If set to true, containers will be built and pushed (default: true).
+#   ESTHESIS_BUILD_NATIVE: 			If set to true, native executables will be built (default: true).
+#   ESTHESIS_BUILD_CONTAINERS: 	If set to true, containers will be built and pushed (default: true).
+# 	DOCKER_BUILDKIT:            0, or 1 (optional, default: 1)
 #
 # Usage examples:
 #   ./publish.sh
@@ -38,6 +39,12 @@ printError() {
 printInfo() {
 	printf "\e[32m***INFO: $1\e[0m\n"
 }
+
+# If $DOCKER_BUILDKIT is empty, set it to 1.
+if [ -z "$DOCKER_BUILDKIT" ]; then
+  DOCKER_BUILDKIT=1
+  exit 1
+fi
 
 # A date in RFC3339 format.
 rfc3339Date() {
@@ -136,7 +143,7 @@ if [ "$ESTHESIS_BUILD_CONTAINERS" = "true" ]; then
 	# OS, Architecture, ARM version, extension
 	IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesis-core-device"
 	printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION."
-	docker buildx build \
+	DOCKER_BUILDKIT=$DOCKER_BUILDKIT docker buildx build \
 			--platform "linux/arm/v6,linux/arm/v7,linux/arm64,linux/amd64" \
 			-t "$IMAGE_NAME:$PACKAGE_VERSION" \
 			-t "$IMAGE_NAME:latest" \
