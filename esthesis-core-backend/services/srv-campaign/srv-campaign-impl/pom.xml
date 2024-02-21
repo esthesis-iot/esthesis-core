@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-campaign</artifactId>
-    <version>3.0.10-SNAPSHOT</version>
+    <version>3.0.14</version>
   </parent>
 
   <artifactId>srv-campaign-impl</artifactId>
@@ -18,27 +18,27 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-campaign-client</artifactId>
-      <version>3.0.10-SNAPSHOT</version>
+      <version>3.0.14</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-audit-client</artifactId>
-      <version>3.0.10-SNAPSHOT</version>
+      <version>3.0.14</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-device-client</artifactId>
-      <version>3.0.10-SNAPSHOT</version>
+      <version>3.0.14</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-command-client</artifactId>
-      <version>3.0.10-SNAPSHOT</version>
+      <version>3.0.14</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>utl-redis</artifactId>
-      <version>3.0.10-SNAPSHOT</version>
+      <version>3.0.14</version>
     </dependency>
 
     <!-- QUARKUS -->

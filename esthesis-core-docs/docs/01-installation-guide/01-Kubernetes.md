@@ -253,7 +253,7 @@ Make sure you adapt the values to your own environment.
 
 - Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
   ```shell
-  wget -qO- https://esthes.is/helm/helmfile-esthesis-core-deps-3.0.9.tgz | tar xvz
+  wget -qO- https://esthes.is/helm/helmfile-esthesis-core-deps-3.0.14.tgz | tar xvz
   ```
 - Install the Helmfile:
   ```shell
@@ -264,7 +264,7 @@ Make sure you adapt the values to your own environment.
 
 - Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
   ```shell
-  wget -qO- https://esthes.is/helm/helmfile-esthesis-core-3.0.9.tgz | tar xvz
+  wget -qO- https://esthes.is/helm/helmfile-esthesis-core-3.0.14.tgz | tar xvz
   ```
 - Install the Helmfile:
   ```shell
