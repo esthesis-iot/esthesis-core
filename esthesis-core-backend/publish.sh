@@ -168,7 +168,7 @@ for ((i = 0; i < ${#modules[@]}; i += 2)); do
 		./mvnw clean package $MAVEN_OPTIMISE_PARAMS
 	fi
 
-	printInfo "Building container $IMAGE_NAME:$TAG."
+	printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION"
 	docker buildx build \
 				 -f src/main/docker/Dockerfile.jvm \
 				 --platform "$ESTHESIS_ARCHITECTURES" \

@@ -47,7 +47,7 @@ fi
 
 # Find the version of the package.
 PACKAGE_VERSION=$(npm pkg get version --workspaces=false | tr -d \")
-printInfo "Package version: $PACKAGE_VERSION."
+printInfo "Package version: $PACKAGE_VERSION"
 if [[ "${PACKAGE_VERSION}" == *SNAPSHOT && $ESTHESIS_REGISTRY_URL == "public.ecr.aws/b0c5e0h9" ]]; then
     printError "Cannot push a snapshot version to docker.io/esthesisiot."
     exit 1
@@ -67,11 +67,10 @@ fi
 
 # Build & Push
 IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesis-core-ui"
-printInfo "Building $ESTHESIS_ARCHITECTURES for $IMAGE_NAME."
-printInfo "Building container $IMAGE_NAME:$TAG."
+printInfo "Building $ESTHESIS_ARCHITECTURES for $IMAGE_NAME:$PACKAGE_VERSION"
 docker buildx build \
        --platform "$ESTHESIS_ARCHITECTURES" \
-       -t "$IMAGE_NAME:$TAG" \
+       -t "$IMAGE_NAME:$PACKAGE_VERSION" \
        -t "$IMAGE_NAME:latest" \
        --push .
 
