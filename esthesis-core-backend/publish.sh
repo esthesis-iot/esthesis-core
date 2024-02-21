@@ -78,7 +78,6 @@ fi
 # If $DOCKER_BUILDKIT is empty, set it to 1.
 if [ -z "$DOCKER_BUILDKIT" ]; then
   DOCKER_BUILDKIT=1
-  exit 1
 fi
 
 MAVEN_OPTIMISE_PARAMS="-DskipTests -Dmaven.test.skip=true -T 1C"
