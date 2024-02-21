@@ -3,12 +3,16 @@
 # Publishes the esthesis-core-device modules to a container registry, and builds native executables.
 #
 # Environment variables:
-#   ESTHESIS_REGISTRY_USERNAME: The username to use when authenticating with the registry.
-#   ESTHESIS_REGISTRY_PASSWORD: The password to use when authenticating with the registry.
-#   ESTHESIS_REGISTRY_URL: The URL of the registry to push to (default: docker.io).
+#   ESTHESIS_REGISTRY_URL: 			The URL of the registry to push to
+#   														(default: public.ecr.aws/b0c5e0h9).
+#  	ESTHESIS_REGISTRY_TYPE:			aws: Login will be attempted using 'aws ecr-public get-login-password'.
+#  															auth: Login will be attempted using username and password.
+#  															open:	No login will be attempted.
+#  															(default: aws).
+#   ESTHESIS_REGISTRY_USERNAME:	The username to login to the 'auth' type registry.
+#   ESTHESIS_REGISTRY_PASSWORD:	The password to login to the 'auth' type registry.
 #   ESTHESIS_BUILD_NATIVE: If set to true, native executables will be built (default: true).
 #   ESTHESIS_BUILD_CONTAINERS: If set to true, containers will be built and pushed (default: true).
-#   ESTHESIS_BUILDX_KUBERNETES: If set to true, a builder will be created in Kubernetes (default: false).
 #
 # Usage examples:
 #   ./publish.sh
@@ -19,13 +23,9 @@
 set -e
 exit_handler() {
     printError "Build failed with exit code $?"
-    if [ -n "$BUILDX_NAME" ]; then
-				printInfo "Deleting Docker buildx $BUILDX_NAME."
-				docker buildx rm "$BUILDX_NAME"
-		fi
 		if [ -n "$CONTAINER_NAME" ]; then
-				printInfo "Deleting Docker container $BUILDX_NAME."
-				docker rm "$BUILDX_NAME"
+				printInfo "Deleting Docker container $CONTAINER_NAME."
+				docker rm "$CONTAINER_NAME"
 		fi
     exit 1
 }
@@ -60,11 +60,6 @@ BUILD_DATE=$(rfc3339Date)
 # If $ESTHESIS_REGISTRY_URL is empty, set it to docker.io.
 if [ -z "$ESTHESIS_REGISTRY_URL" ]; then
   ESTHESIS_REGISTRY_URL="docker.io/esthesisiot"
-fi
-
-# Set buildx driver options.
-if [ -z "$ESTHESIS_BUILDX_KUBERNETES" ]; then
-  ESTHESIS_BUILDX_KUBERNETES="false"
 fi
 
 # Builds to execute.
@@ -126,38 +121,20 @@ if [ "$ESTHESIS_BUILD_NATIVE" = "true" ]; then
 fi
 
 if [ "$ESTHESIS_BUILD_CONTAINERS" = "true" ]; then
-	# Create a Docker buildx.
-  BUILDX_NAME=$(LC_CTYPE=C tr -dc 'a-zA-Z' < /dev/urandom | head -c 1)$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 11)
-  printInfo "Creating Docker buildx $BUILDX_NAME."
-  if test -f "buildkitd.toml"; then
-      BUILDKIT_CONFIG="--config buildkitd.toml"
-  else
-      BUILDKIT_CONFIG=""
-  fi
-  if [ "$ESTHESIS_BUILDX_KUBERNETES" = "true" ]; then
-    docker buildx create --driver kubernetes --name "$BUILDX_NAME" --use $BUILDKIT_CONFIG
-  else
-    docker buildx create --name "$BUILDX_NAME" --use $BUILDKIT_CONFIG
-  fi
-
-  # Login to remote registry.
-  if [ -n "$ESTHESIS_REGISTRY_USERNAME" ] && [ -n "$ESTHESIS_REGISTRY_PASSWORD" ]; then
+	# Login to remote registry.
+  if [ "$ESTHESIS_REGISTRY_TYPE" = "aws" ]; then
+  	aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ESTHESIS_REGISTRY_URL
+  elif [ "$ESTHESIS_REGISTRY_TYPE" = "auth" ]; then
   	docker login "$ESTHESIS_REGISTRY_URL" --username "$ESTHESIS_REGISTRY_USERNAME" --password "$ESTHESIS_REGISTRY_PASSWORD"
   fi
 
 	# OS, Architecture, ARM version, extension
 	IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesis-core-device"
-	TAGS=("latest" "$PACKAGE_VERSION")
-	for TAG in "${TAGS[@]}"; do
-		printInfo "Building container $IMAGE_NAME:$TAG."
-		docker buildx build \
-				--platform "linux/arm/v6,linux/arm/v7,linux/arm64,linux/amd64" \
-				-t "$IMAGE_NAME:$TAG" \
-				--build-arg "LDFLAGS=$LDFLAGS" \
-				--push .
-	done
-
-  # Delete the buildx.
-  printInfo "Deleting Docker buildx $BUILDX_NAME."
-  docker buildx rm "$BUILDX_NAME"
+	printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION."
+	docker buildx build \
+			--platform "linux/arm/v6,linux/arm/v7,linux/arm64,linux/amd64" \
+			-t "$IMAGE_NAME:$PACKAGE_VERSION" \
+			-t "$IMAGE_NAME:latest" \
+			--build-arg "LDFLAGS=$LDFLAGS" \
+			--push .
 fi
