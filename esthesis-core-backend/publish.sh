@@ -14,8 +14,6 @@
 #   ESTHESIS_REGISTRY_PASSWORD:	The password to login to the 'auth' type registry.
 #   ESTHESIS_ARCHITECTURES: 		The architectures to build, e.g. linux/amd64,linux/arm64
 #   														(default: linux/amd64,linux/arm64).
-#   ESTHESIS_BUILDX_KUBERNETES: If set to true, a builder will be created in Kubernetes
-#   														(default: false).
 #		ESTHESIS_GLOBAL_BUILD: 			If set to true, a global build is performed first. This is to build
 #																dependencies that are shared between modules (default: false).
 #   ESTHESIS_LOCAL_BUILD: 			If set to false, individual modules are not build. This is helpful
@@ -36,10 +34,6 @@
 set -e
 exit_handler() {
     printError "Build failed with exit code $?"
-#    if [ -n "$BUILDX_NAME" ]; then
-#				printInfo "Deleting Docker buildx $BUILDX_NAME."
-#				docker buildx rm "$BUILDX_NAME"
-#		fi
     exit 1
 }
 trap exit_handler ERR
@@ -61,7 +55,7 @@ if [ -x "$(command -v podman)" ]; then
     fi
 fi
 
-# If $ESTHESIS_REGISTRY_URL is empty, set it to docker.io.
+# If $ESTHESIS_REGISTRY_URL is empty, set it to aws.
 if [ -z "$ESTHESIS_REGISTRY_URL" ]; then
   ESTHESIS_REGISTRY_URL="public.ecr.aws/b0c5e0h9"
 fi
@@ -81,10 +75,6 @@ if [ -z "$ESTHESIS_REGISTRY_TYPE" ]; then
   ESTHESIS_REGISTRY_TYPE="aws"
 fi
 
-# Set buildx driver options.
-if [ -z "$ESTHESIS_BUILDX_KUBERNETES" ]; then
-  ESTHESIS_BUILDX_KUBERNETES="false"
-fi
 MAVEN_OPTIMISE_PARAMS="-DskipTests -Dmaven.test.skip=true -T 1C"
 
 # Find the version of the package.
@@ -157,20 +147,6 @@ if [ "$ESTHESIS_GLOBAL_BUILD" = "true" ]; then
 	./mvnw clean package $MAVEN_OPTIMISE_PARAMS
 fi
 
-# Create a Docker buildx.
-#BUILDX_NAME=$(LC_CTYPE=C tr -dc 'a-zA-Z' < /dev/urandom | head -c 1)$(LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 11)
-#printInfo "Creating Docker buildx $BUILDX_NAME."
-#if test -f "buildkitd.toml"; then
-#    BUILDKIT_CONFIG="--config buildkitd.toml"
-#else
-#		BUILDKIT_CONFIG=""
-#fi
-#if [ "$ESTHESIS_BUILDX_KUBERNETES" = "true" ]; then
-#  docker buildx create --driver kubernetes --name "$BUILDX_NAME" --use $BUILDKIT_CONFIG
-#else
-#  docker buildx create --name "$BUILDX_NAME" --use $BUILDKIT_CONFIG
-#fi
-
 # Login to remote registry.
 if [ "$ESTHESIS_REGISTRY_TYPE" = "aws" ]; then
 	aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ESTHESIS_REGISTRY_URL
@@ -184,28 +160,21 @@ for ((i = 0; i < ${#modules[@]}; i += 2)); do
 	MODULE_NAME="${modules[$i+1]}"
 	IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesis-core-$MODULE_NAME"
 	printInfo "Building $ESTHESIS_ARCHITECTURES for $IMAGE_NAME."
-	pushd .
 
+	pushd .
 	cd "$MODULE_PATH" || exit
 	if [ "$ESTHESIS_LOCAL_BUILD" = "true" ]; then
 		printInfo "Building module $MODULE_NAME."
 		./mvnw clean package $MAVEN_OPTIMISE_PARAMS
 	fi
 
-#	TAGS=("latest" "$PACKAGE_VERSION")
-#	for TAG in "${TAGS[@]}"; do
-printInfo "Building container $IMAGE_NAME:$TAG."
-docker buildx build \
-			 -f src/main/docker/Dockerfile.jvm \
-			 --platform "$ESTHESIS_ARCHITECTURES" \
-			 -t "$IMAGE_NAME:$PACKAGE_VERSION" \
-			 -t "$IMAGE_NAME:latest" \
-			 --push .
-#	done
+	printInfo "Building container $IMAGE_NAME:$TAG."
+	docker buildx build \
+				 -f src/main/docker/Dockerfile.jvm \
+				 --platform "$ESTHESIS_ARCHITECTURES" \
+				 -t "$IMAGE_NAME:$PACKAGE_VERSION" \
+				 -t "$IMAGE_NAME:latest" \
+				 --push .
 
 	popd || exit
 done
-
-# Delete the buildx.
-#printInfo "Deleting Docker buildx $BUILDX_NAME."
-#docker buildx rm "$BUILDX_NAME"
