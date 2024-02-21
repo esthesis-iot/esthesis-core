@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-command</artifactId>
-    <version>3.0.10-SNAPSHOT</version>
+    <version>3.0.13</version>
   </parent>
 
   <artifactId>srv-command-impl</artifactId>
@@ -24,27 +24,27 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-command-client</artifactId>
-      <version>3.0.10-SNAPSHOT</version>
+      <version>3.0.13</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-tag-client</artifactId>
-      <version>3.0.10-SNAPSHOT</version>
+      <version>3.0.13</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-settings-client</artifactId>
-      <version>3.0.10-SNAPSHOT</version>
+      <version>3.0.13</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-dataflow-client</artifactId>
-      <version>3.0.10-SNAPSHOT</version>
+      <version>3.0.13</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-audit-client</artifactId>
-      <version>3.0.10-SNAPSHOT</version>
+      <version>3.0.13</version>
     </dependency>
 
     <!-- OTHER -->
