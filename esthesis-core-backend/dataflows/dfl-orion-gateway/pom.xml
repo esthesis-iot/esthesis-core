@@ -9,7 +9,7 @@
   <parent>
     <artifactId>dataflows</artifactId>
     <groupId>esthesis</groupId>
-    <version>3.0.23-SNAPSHOT</version>
+    <version>3.0.23</version>
   </parent>
 
   <dependencies>
@@ -45,17 +45,17 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>dfl-common</artifactId>
-      <version>3.0.23-SNAPSHOT</version>
+      <version>3.0.23</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-device-client</artifactId>
-      <version>3.0.23-SNAPSHOT</version>
+      <version>3.0.23</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>utl-kafka-notifications-common</artifactId>
-      <version>3.0.23-SNAPSHOT</version>
+      <version>3.0.23</version>
     </dependency>
   </dependencies>
 
