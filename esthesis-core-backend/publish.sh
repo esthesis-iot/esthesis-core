@@ -19,6 +19,7 @@
 #   ESTHESIS_LOCAL_BUILD: 			If set to false, individual modules are not build. This is helpful
 #																when this script is used as part of another script (for example,
 #																a release script) which already performs a build (default: true).
+#		ESTHESIS_PARALLEL_BUILD:		If set to true, modules are built in parallel (default: false).
 # Usage:
 #   ./publish.sh
 #   ./publish.sh <module-path> <module-name>
@@ -76,6 +77,11 @@ fi
 # If $ESTHESIS_REGISTRY_TYPE is empty, set it to aws.
 if [ -z "$ESTHESIS_REGISTRY_TYPE" ]; then
   ESTHESIS_REGISTRY_TYPE="aws"
+fi
+
+# if $ESTHESIS_PARALLEL_BUILD is empty, set it to false.
+if [ -z "$ESTHESIS_PARALLEL_BUILD" ]; then
+	ESTHESIS_PARALLEL_BUILD="false"
 fi
 
 MAVEN_OPTIMISE_PARAMS="-DskipTests -Dmaven.test.skip=true -T 1C"
@@ -172,6 +178,7 @@ elif [ "$ESTHESIS_REGISTRY_TYPE" = "auth" ]; then
 fi
 
 # Iterate over all modules and publish them.
+declare -a pids
 for ((i = 0; i < ${#modules[@]}; i += 2)); do
 	MODULE_PATH="${modules[$i]}"
 	MODULE_NAME="${modules[$i+1]}"
@@ -186,14 +193,28 @@ for ((i = 0; i < ${#modules[@]}; i += 2)); do
 	fi
 
 	printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION"
-	docker buildx build \
-		 -f src/main/docker/Dockerfile.jvm \
-		 --platform "$ESTHESIS_ARCHITECTURES" \
-		 -t "$IMAGE_NAME:$PACKAGE_VERSION" \
-		 -t "$IMAGE_NAME:latest" \
-		 --push .
-
+	if [ "$ESTHESIS_PARALLEL_BUILD" = "true" ]; then
+		docker buildx build \
+			-f src/main/docker/Dockerfile.jvm \
+			--platform "$ESTHESIS_ARCHITECTURES" \
+			-t "$IMAGE_NAME:$PACKAGE_VERSION" \
+			-t "$IMAGE_NAME:latest" \
+			--push . &
+		pids+=($!)
+	else
+		docker buildx build \
+			-f src/main/docker/Dockerfile.jvm \
+			--platform "$ESTHESIS_ARCHITECTURES" \
+			-t "$IMAGE_NAME:$PACKAGE_VERSION" \
+			-t "$IMAGE_NAME:latest" \
+			--push .
+	fi
 	popd || exit
+done
+
+# Wait for all processes to finish
+for pid in "${pids[@]}"; do
+    wait "$pid"
 done
 
 # Delete the buildx.
