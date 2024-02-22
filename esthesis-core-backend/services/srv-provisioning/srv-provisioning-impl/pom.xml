@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-provisioning</artifactId>
-    <version>3.0.22</version>
+    <version>3.0.23-SNAPSHOT</version>
   </parent>
 
   <artifactId>srv-provisioning-impl</artifactId>
@@ -30,22 +30,22 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-provisioning-client</artifactId>
-      <version>3.0.22</version>
+      <version>3.0.23-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-device-client</artifactId>
-      <version>3.0.22</version>
+      <version>3.0.23-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>utl-redis</artifactId>
-      <version>3.0.22</version>
+      <version>3.0.23-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-audit-client</artifactId>
-      <version>3.0.22</version>
+      <version>3.0.23-SNAPSHOT</version>
     </dependency>
 
     <!-- CAMEL -->
