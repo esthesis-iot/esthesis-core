@@ -7,7 +7,7 @@
 
 	<groupId>esthesis</groupId>
 	<artifactId>esthesis-core-backend</artifactId>
-	<version>3.0.21</version>
+	<version>3.0.22-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<build>
