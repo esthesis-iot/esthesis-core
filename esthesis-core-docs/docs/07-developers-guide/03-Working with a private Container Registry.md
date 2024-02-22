@@ -17,7 +17,7 @@ When using the `publish.sh` script to prepare your images, you can define the `E
 environment variable to point to a private registry. This variable should point to the IP address,
 port, and username of your private registry, for example:
 ```shell
-ESTHESIS_REGISTRY_URL=192.168.10.47:32000/esthesis ./publish.sh
+ESTHESIS_REGISTRY_TYPE=open ESTHESIS_REGISTRY_URL=192.168.10.47:32000/esthesis ./publish.sh
 ```
 
 Note that since your private registry will be insecure, you need to add it to the insecure registries
@@ -29,6 +29,14 @@ insecure-entitlements = [ "network.host", "security.insecure"]
   http = true
   insecure = true
 ```
+
+In case you are pushing to a private registry requiring authentication, you can define the following
+environment variables:
+```shell
+ESTHESIS_REGISTRY_TYPE=auth
+ESTHESIS_REGISTRY_USERNAME= <username>
+ESTHESIS_REGISTRY_PASSWORD= <password>
+````
 
 ## Using the private registry in testing a production-like installation
 When testing a production-like installation, you can configure the Helm charts to use the images from

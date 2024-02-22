@@ -84,6 +84,16 @@ if [ -z "$ESTHESIS_PARALLEL_BUILD" ]; then
 	ESTHESIS_PARALLEL_BUILD="false"
 fi
 
+# Check mandatory environment variables.
+if [ "$ESTHESIS_REGISTRY_TYPE" = "auth" ]; then
+	if [ -z "$ESTHESIS_REGISTRY_USERNAME" ]; then
+			printError "ESTHESIS_REGISTRY_USERNAME is not set."
+  fi
+  if [ -z "$ESTHESIS_REGISTRY_PASSWORD" ]; then
+			printError "ESTHESIS_REGISTRY_PASSWORD is not set."
+	fi
+fi
+
 MAVEN_OPTIMISE_PARAMS="-DskipTests -Dmaven.test.skip=true -T 1C"
 
 # Find the version of the package.
