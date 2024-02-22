@@ -79,6 +79,18 @@ if [ -z "$ESTHESIS_BUILD_CONTAINERS" ]; then
 	ESTHESIS_BUILD_CONTAINERS="true"
 fi
 
+# Check mandatory environment variables.
+if [ "$ESTHESIS_REGISTRY_TYPE" = "auth" ]; then
+	if [ -z "$ESTHESIS_REGISTRY_USERNAME" ]; then
+			printError "ESTHESIS_REGISTRY_USERNAME is not set."
+			exit 1
+  fi
+  if [ -z "$ESTHESIS_REGISTRY_PASSWORD" ]; then
+			printError "ESTHESIS_REGISTRY_PASSWORD is not set."
+			exit 1
+	fi
+fi
+
 printInfo "Package version: $PACKAGE_VERSION."
 printInfo "Commit ID: $COMMIT_ID."
 printInfo "Build date: $BUILD_DATE."

@@ -49,6 +49,18 @@ if [ -z "$ESTHESIS_REGISTRY_TYPE" ]; then
   ESTHESIS_REGISTRY_TYPE="auth"
 fi
 
+# Check mandatory environment variables.
+if [ "$ESTHESIS_REGISTRY_TYPE" = "auth" ]; then
+	if [ -z "$ESTHESIS_REGISTRY_USERNAME" ]; then
+			printError "ESTHESIS_REGISTRY_USERNAME is not set."
+			exit 1
+  fi
+  if [ -z "$ESTHESIS_REGISTRY_PASSWORD" ]; then
+			printError "ESTHESIS_REGISTRY_PASSWORD is not set."
+			exit 1
+	fi
+fi
+
 # Find the version of the package.
 PACKAGE_VERSION=$(npm pkg get version --workspaces=false | tr -d \")
 printInfo "Package version: $PACKAGE_VERSION"

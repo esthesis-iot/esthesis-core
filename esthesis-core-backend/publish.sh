@@ -88,9 +88,11 @@ fi
 if [ "$ESTHESIS_REGISTRY_TYPE" = "auth" ]; then
 	if [ -z "$ESTHESIS_REGISTRY_USERNAME" ]; then
 			printError "ESTHESIS_REGISTRY_USERNAME is not set."
+			exit 1
   fi
   if [ -z "$ESTHESIS_REGISTRY_PASSWORD" ]; then
 			printError "ESTHESIS_REGISTRY_PASSWORD is not set."
+			exit 1
 	fi
 fi
 
