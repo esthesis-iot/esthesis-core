@@ -128,7 +128,19 @@ pipeline {
                 }
             }
         }
-        stage('Produce bom.xml for frontend module') {
+        stage('Post Dependency-Track Analysis for device') {
+            steps{
+                container (name: 'esthesis-core-builder') {
+                    sh '''
+                        echo '{"project": "415e6ce0-42b1-44be-b7ba-3b58dbb32b10", "bom": "'"$(cat esthesis-core-device/go/bom.xml | base64 -w 0)"'"}' > payload.json
+                    '''
+                    sh '''
+                        curl -X "PUT" ${DEPENDENCY_TRACK_URL} -H 'Content-Type: application/json' -H 'X-API-Key: '${DEPENDENCY_TRACK_API_KEY} -d @payload.json
+                    '''
+                }
+            }
+        }
+        stage('Produce bom.xml for ui') {
             steps {
                 container (name: 'esthesis-core-builder') {
                     sh '''
@@ -139,16 +151,11 @@ pipeline {
                 }
             }
         }
-        stage('Post Dependency-Track Analysis for device') {
-            steps{
+        stage('Post Dependency-Track Analysis for ui') {
+            steps {
                 container (name: 'esthesis-core-builder') {
                     sh '''
-                        cat > payload.json <<__HERE__
-                        {
-                            "project": "415e6ce0-42b1-44be-b7ba-3b58dbb32b10",
-                            "bom": "$(cat esthesis-core-device/go/bom.xml |base64 -w 0 -)"
-                        }
-                        __HERE__
+                        echo '{"project": "229ec483-35c9-4a98-b904-bc8c5b1d6544", "bom": "'"$(cat esthesis-core-ui/bom.xml | base64 -w 0)"'"}' > payload.json
                     '''
                     sh '''
                         curl -X "PUT" ${DEPENDENCY_TRACK_URL} -H 'Content-Type: application/json' -H 'X-API-Key: '${DEPENDENCY_TRACK_API_KEY} -d @payload.json
@@ -160,34 +167,10 @@ pipeline {
             steps {
                 container (name: 'esthesis-core-builder') {
                     sh '''
-                          cat > payload.json <<__HERE__
-                          {
-                            "project": "39a4839b-4da4-41be-b576-22d7686e9101",
-                            "bom": "$(cat esthesis-core-backend/target/bom.xml |base64 -w 0 -)"
-                          }
-                          __HERE__
+                        echo '{"project": "39a4839b-4da4-41be-b576-22d7686e9101", "bom": "'"$(cat esthesis-core-backend/target/bom.xml | base64 -w 0)"'"}' > payload.json
                     '''
-
                     sh '''
                           curl -X "PUT" ${DEPENDENCY_TRACK_URL} -H 'Content-Type: application/json' -H 'X-API-Key: '${DEPENDENCY_TRACK_API_KEY} -d @payload.json
-                    '''
-                }
-            }
-        }
-        stage('Post Dependency-Track Analysis for ui') {
-            steps {
-                container (name: 'esthesis-core-builder') {
-                    sh '''
-                        cat > payload.json <<__HERE__
-                        {
-                          "project": "229ec483-35c9-4a98-b904-bc8c5b1d6544",
-                          "bom": "$(cat esthesis-core-ui/bom.xml |base64 -w 0 -)"
-                        }
-                        __HERE__
-                    '''
-
-                    sh '''
-                        curl -X "PUT" ${DEPENDENCY_TRACK_URL} -H 'Content-Type: application/json' -H 'X-API-Key: '${DEPENDENCY_TRACK_API_KEY} -d @payload.json
                     '''
                 }
             }
