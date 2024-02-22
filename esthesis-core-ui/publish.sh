@@ -5,11 +5,11 @@
 #
 # Required environment variables:
 #   ESTHESIS_REGISTRY_URL: 			The URL of the registry to push to
-#   														(default: public.ecr.aws/b0c5e0h9).
+#   														(default: docker.io/esthesisiot).
 #  	ESTHESIS_REGISTRY_TYPE:			aws: Login will be attempted using 'aws ecr-public get-login-password'.
 #  															auth: Login will be attempted using username and password.
 #  															open:	No login will be attempted.
-#  															(default: aws).
+#  															(default: auth).
 #   ESTHESIS_REGISTRY_USERNAME:	The username to login to the 'auth' type registry.
 #   ESTHESIS_REGISTRY_PASSWORD:	The password to login to the 'auth' type registry.
 #   ESTHESIS_ARCHITECTURES: 		The architectures to build, e.g. linux/amd64,linux/arm64
@@ -41,12 +41,12 @@ printInfo() {
 
 # If $ESTHESIS_REGISTRY_URL is empty, set it to aws.
 if [ -z "$ESTHESIS_REGISTRY_URL" ]; then
-  ESTHESIS_REGISTRY_URL="public.ecr.aws/b0c5e0h9"
+  ESTHESIS_REGISTRY_URL="docker.io/esthesisiot"
 fi
 
 # If $ESTHESIS_REGISTRY_TYPE is empty, set it to aws.
 if [ -z "$ESTHESIS_REGISTRY_TYPE" ]; then
-  ESTHESIS_REGISTRY_TYPE="aws"
+  ESTHESIS_REGISTRY_TYPE="auth"
 fi
 
 # Find the version of the package.
@@ -70,11 +70,7 @@ if test -f "buildkitd.toml"; then
 else
 		BUILDKIT_CONFIG=""
 fi
-#if [ "$ESTHESIS_BUILDX_KUBERNETES" = "true" ]; then
-#  docker buildx create --driver kubernetes --name "$BUILDX_NAME" --use $BUILDKIT_CONFIG
-#else
-  docker buildx create --name "$BUILDX_NAME" --use $BUILDKIT_CONFIG
-#fi
+docker buildx create --name "$BUILDX_NAME" --use $BUILDKIT_CONFIG
 
 # Login to remote registry.
 if [ "$ESTHESIS_REGISTRY_TYPE" = "aws" ]; then
