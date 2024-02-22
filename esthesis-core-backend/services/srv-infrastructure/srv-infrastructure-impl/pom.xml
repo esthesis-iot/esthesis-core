@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-infrastructure</artifactId>
-    <version>3.0.21-SNAPSHOT</version>
+    <version>3.0.21</version>
   </parent>
 
   <artifactId>srv-infrastructure-impl</artifactId>
@@ -18,17 +18,17 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-infrastructure-client</artifactId>
-      <version>3.0.21-SNAPSHOT</version>
+      <version>3.0.21</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-tag-client</artifactId>
-      <version>3.0.21-SNAPSHOT</version>
+      <version>3.0.21</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-audit-client</artifactId>
-      <version>3.0.21-SNAPSHOT</version>
+      <version>3.0.21</version>
     </dependency>
   </dependencies>
 
