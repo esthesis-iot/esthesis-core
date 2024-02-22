@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>dataflows</artifactId>
-    <version>3.0.19</version>
+    <version>3.0.20-SNAPSHOT</version>
   </parent>
 
   <artifactId>dfl-redis-cache</artifactId>
@@ -22,12 +22,12 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>dfl-common</artifactId>
-      <version>3.0.19</version>
+      <version>3.0.20-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>utl-redis</artifactId>
-      <version>3.0.19</version>
+      <version>3.0.20-SNAPSHOT</version>
     </dependency>
 
     <!-- OTHERS -->
