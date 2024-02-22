@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-kubernetes</artifactId>
-    <version>3.0.16</version>
+    <version>3.0.17-SNAPSHOT</version>
   </parent>
 
   <artifactId>srv-kubernetes-client</artifactId>
