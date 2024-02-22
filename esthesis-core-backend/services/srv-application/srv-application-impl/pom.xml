@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-application</artifactId>
-    <version>3.0.19-SNAPSHOT</version>
+    <version>3.0.19</version>
   </parent>
   <artifactId>srv-application-impl</artifactId>
 
@@ -17,12 +17,12 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-application-client</artifactId>
-      <version>3.0.19-SNAPSHOT</version>
+      <version>3.0.19</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-audit-client</artifactId>
-      <version>3.0.19-SNAPSHOT</version>
+      <version>3.0.19</version>
     </dependency>
 
     <!-- QUARKUS -->

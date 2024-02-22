@@ -10,22 +10,22 @@
     <dependency>
       <artifactId>srv-tag-client</artifactId>
       <groupId>esthesis</groupId>
-      <version>3.0.19-SNAPSHOT</version>
+      <version>3.0.19</version>
     </dependency>
     <dependency>
       <artifactId>srv-audit-client</artifactId>
       <groupId>esthesis</groupId>
-      <version>3.0.19-SNAPSHOT</version>
+      <version>3.0.19</version>
     </dependency>
     <dependency>
       <artifactId>srv-security-client</artifactId>
       <groupId>esthesis</groupId>
-      <version>3.0.19-SNAPSHOT</version>
+      <version>3.0.19</version>
     </dependency>
     <dependency>
       <artifactId>utl-kafka-notifications-outgoing</artifactId>
       <groupId>esthesis</groupId>
-      <version>3.0.19-SNAPSHOT</version>
+      <version>3.0.19</version>
     </dependency>
   </dependencies>
 
@@ -34,7 +34,7 @@
   <parent>
     <artifactId>srv-tag</artifactId>
     <groupId>esthesis</groupId>
-    <version>3.0.19-SNAPSHOT</version>
+    <version>3.0.19</version>
   </parent>
 
 </project>
