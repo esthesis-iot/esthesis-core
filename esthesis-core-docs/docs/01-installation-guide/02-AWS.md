@@ -47,8 +47,10 @@ parameters:
 ```
 
 When deploying esthesis CORE dependencies, you will need to specify the Bitnami-specific storage class
-for MOngoDB, by setting the following environment variables prior to running the Helmfile install command:
+for MongoDB, and Keycloak by setting the following environment variables prior to running the Helmfile
+install command:
 
 ```bash
 MONGODB_STORAGE_CLASS=bitnami-sc
+KEYCLOAK_STORAGE_CLASS=bitnami-sc
 ```
