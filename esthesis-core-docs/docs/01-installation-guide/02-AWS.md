@@ -25,8 +25,8 @@ parameters:
 
 However, there are certain charts (specifically, the ones from Bitnami) that require a specific
 uid and gid to be set in the storage class' underlying user. For that, you need to create an additional
-storage class that uses EFS and sets the uid and gid to 1001. You can create such a storage class
-by deploying the following descriptor:
+storage class that uses EFS and sets the uid and gid to 1001 (for Bitnami charts). You can create
+such a storage class by deploying the following descriptor:
 
 ```yaml
 apiVersion: storage.k8s.io/v1

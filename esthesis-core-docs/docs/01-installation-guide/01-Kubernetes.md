@@ -13,7 +13,7 @@ review them, so you can customize them to your needs.
 ## Requirements
 
 - A Kubernetes cluster with a minimum of 3 nodes and support for Load Balancer service types as well
-  as Ingress support.
+  as Ingress support (you can, optionally, install an nginx ingress controller using this chart)..
 - [Helm](https://helm.sh)
 - [Helmfile](https://github.com/helmfile/helmfile)
 
@@ -38,6 +38,10 @@ Default: `WARN`
 
 🔹 `IMAGE_PULL_SECRET`<br/>
 The secret to use when pulling container images.<br/>
+Default: ``
+
+🔹 `INGRESS_CLASS_NAME`<br/>
+The name of the ingress class to use.<br/>
 Default: ``
 
 ### Accounts
@@ -70,8 +74,8 @@ Default: `esthesis-system`
 Whether Keycloak should be installed by this chart or not.<br/>
 Default: `true`
 
-🔹 `KEYCLOAK_INGRESS_NAME`<br/>
-The hostname of the ingress rule that will be created for Keycloak<br/>
+🔹 `KEYCLOAK_HOSTNAME`<br/>
+The hostname for Keycloak<br/>
 Default: ``
 
 🔹 `KEYCLOAK_CERT_MANAGER_CLUSTER_ISSUER`<br/>
@@ -127,9 +131,15 @@ The URL of the OpenID Connect JWT verification endpoint to use for internal conn
 should be accessible from components running inside the Kubernetes cluster.<br/>
 Default: `http://keycloak.<Namespace>.svc.cluster.local/realms/esthesis/protocol/openid-connect/certs`
 
+### Ingress nginx
+
+🔹 `INGRESS_NGINX_ENABLED`<br/>
+Whether Ingress nginx should be installed by this chart or not.<br/>
+Default: `false`
+
 ### esthesis UI
 
-🔹 `ESTHESIS_INGRESS_NAME`<br/>
+🔹 `ESTHESIS_HOSTNAME`<br/>
 The hostname of the ingress rule that will be created for esthesis UI.<br/>
 Default: ``
 
@@ -193,6 +203,10 @@ Default: `ClusterIP`
 🔹 `INFLUXDB_ENABLED`<br/>
 Whether InfluxDB should be installed by this chart or not.<br/>
 Default: `true`
+
+🔹 `INFLUXDB_SIZE`<br/>
+InfluxDB storage size.<br/>
+Default: `32Gi`
 
 ### Kafka
 
