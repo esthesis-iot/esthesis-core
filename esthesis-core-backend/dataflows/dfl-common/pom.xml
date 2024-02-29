@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>dataflows</artifactId>
-    <version>3.0.25</version>
+    <version>3.0.26-SNAPSHOT</version>
   </parent>
 
   <artifactId>dfl-common</artifactId>
@@ -30,12 +30,12 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>common</artifactId>
-      <version>3.0.25</version>
+      <version>3.0.26-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>avro</artifactId>
-      <version>3.0.25</version>
+      <version>3.0.26-SNAPSHOT</version>
     </dependency>
 
     <!-- THIRD-PARTY -->
