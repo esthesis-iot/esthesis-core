@@ -7,7 +7,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>util</artifactId>
-    <version>3.0.25-SNAPSHOT</version>
+    <version>3.0.25</version>
   </parent>
 
   <artifactId>utl-redis</artifactId>
@@ -20,7 +20,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>common</artifactId>
-      <version>3.0.25-SNAPSHOT</version>
+      <version>3.0.25</version>
     </dependency>
 
     <!-- QUARKUS -->
