@@ -68,6 +68,12 @@ Default: `esthesis-system`
 The password of the esthesis system user.<br/>
 Default: `esthesis-system`
 
+🔹 `ESTHESIS_KUBERNETES_SERVICE_CREATE_RBAC`<br/>
+The Kubernetes microservice needs to be able to access the Kubernetes API to create resources. The
+deployment can automatically create all necessary roles and bindings for it, however if you do not
+have such permissions in your cluster you can disable it and create them manually.<br/>
+Default: `true`
+
 ### Keycloak
 
 🔹 `KEYCLOAK_ENABLED`<br/>
@@ -294,9 +300,13 @@ Make sure you adapt the values to your own environment.
    certificate. Otherwise, the login will fail.
 4. `esthesis-core-srv-kubernetes` needs to be able to list all namespaces as well as schedule pods
    via deployments, configure HPA, etc. A Service Account `esthesis-core-srv-kubernetes` is automatically
-   created with no additional permissions other than the ones of the `default` service account. Depending
-   on how security is implemented in your Kubernetes cluster, you may need to provide the necessary
-   roles/permissions to this service account.
+   created and configured with the necessary permissions. If you do not have the necessary permissions
+	 to properly configure this Service Account during the installation of the Helm chart, you can
+	 disable the automatic creation of the Service Account by setting the
+	 `ESTHESIS_KUBERNETES_SERVICE_CREATE_RBAC` environmental variable to `false` and create the
+	 Service Account manually. The resources that need to be manually created can be found in
+	 [esthesis-core-srv-kubernetes](https://github.com/esthesis-iot/esthesis-helm/tree/main/esthesis-core/templates/srv-kubernetes/rbac) and need to be available and properly configured before the
+	 installation of the Helm chart.
 
 ## Cert Manager integration
 
