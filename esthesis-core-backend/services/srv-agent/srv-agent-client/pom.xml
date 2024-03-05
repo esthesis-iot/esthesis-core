@@ -7,14 +7,14 @@
 	<parent>
 		<groupId>esthesis</groupId>
 		<artifactId>srv-agent</artifactId>
-		<version>3.0.29-SNAPSHOT</version>
+		<version>3.0.29</version>
 	</parent>
 
 	<dependencies>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-device-client</artifactId>
-      <version>3.0.29-SNAPSHOT</version>
+      <version>3.0.29</version>
     </dependency>
   </dependencies>
 
