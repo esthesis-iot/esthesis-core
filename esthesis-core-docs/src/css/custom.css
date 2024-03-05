@@ -38,3 +38,4 @@
 	justify-content: center;
 	align-items: center;
 }
+.dropdown__menu > li:nth-child(1) { display: none!important; }
