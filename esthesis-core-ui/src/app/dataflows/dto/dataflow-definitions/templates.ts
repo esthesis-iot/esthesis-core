@@ -60,7 +60,7 @@ export const DATAFLOW_TEMPLATE_KAFKA = [
 // *************************************************************************************************
 export const DATAFLOW_TEMPLATE_KUBERNETES = [
   { key: "namespace", type: "select", props: {required: true, label: "Namespace"} },
-  { key: "cpu-request", type: "input", defaultValue: "250m", props: {required: true, label: "CPU Request"} },
+  { key: "cpu-request", type: "input", defaultValue: "100m", props: {required: true, label: "CPU Request"} },
   { key: "cpu-limit", type: "input", defaultValue: "1", props: {required: true, label: "CPU Limit"} },
   { key: "container-image-version", type: "select",
     props: {
