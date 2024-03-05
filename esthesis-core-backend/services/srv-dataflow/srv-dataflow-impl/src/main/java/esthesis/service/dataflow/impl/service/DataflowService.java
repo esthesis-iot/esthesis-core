@@ -138,7 +138,7 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	}
 
 	private String createDflImageUrl(Map<String, Object> k8sConfig, String dflType) {
-		if (MapUtils.getString(k8sConfig, KUBERNETES_IMAGE_REGISTRY_URL) != null) {
+		if (StringUtils.isNotBlank(MapUtils.getString(k8sConfig, KUBERNETES_IMAGE_REGISTRY_URL))) {
 			return MapUtils.getString(k8sConfig, KUBERNETES_IMAGE_REGISTRY_URL) + "/"
 				+ DOCKER_IMAGE_PREFIX + dflType;
 		} else {
