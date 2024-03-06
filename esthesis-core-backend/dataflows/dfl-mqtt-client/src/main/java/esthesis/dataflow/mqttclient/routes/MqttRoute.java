@@ -79,6 +79,7 @@ public class MqttRoute extends RouteBuilder {
 		log.info("Using MQTT broker URL '{}'.", config.mqttBrokerClusterUrl());
 		ComponentsBuilderFactory.paho()
 			.brokerUrl(config.mqttBrokerClusterUrl())
+			.keepAliveInterval(config.mqttBrokerKeepAliveInterval())
 			.register(getContext(), "paho");
 		String socketFactory;
 		if (config.mqttBrokerClusterUrl().startsWith("ssl://")) {

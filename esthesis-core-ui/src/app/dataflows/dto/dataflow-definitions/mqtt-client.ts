@@ -23,6 +23,9 @@ export const DATAFLOW_DEFINITION_MQTT_CLIENT = {
             hintStart: "e.g. tcp://mosquitto:1883, ssl://mosquitto:8883",
           }
         },
+        { key: "keep-alive-interval", type: "input", defaultValue: 30,
+          props: {required: true, label: "Keep alive interval",
+          hintStart: "The interval at which to send MQTT PINGREQ packets to the broker, in seconds."} },
         { key: "cert", type: "input", props: {required: false, label: "Client certificate",
           hintStart: "Specify a filesystem location, e.g. /etc/esthesis/secrets/client.crt"} },
         { key: "key", type: "input", props: {required: false, label: "Client private key",

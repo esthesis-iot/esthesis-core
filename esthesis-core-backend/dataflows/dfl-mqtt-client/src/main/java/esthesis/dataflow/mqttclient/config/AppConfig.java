@@ -11,6 +11,9 @@ public interface AppConfig {
 	// The URL of the MQTT broker.
 	String mqttBrokerClusterUrl();
 
+	// The interval at which to send MQTT PINGREQ packets to the broker, in seconds.
+	int mqttBrokerKeepAliveInterval();
+
 	// The filesystem path to the client certificate.
 	Optional<String> mqttBrokerCert();
 
