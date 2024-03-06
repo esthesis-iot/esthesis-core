@@ -28,7 +28,7 @@ export const DATAFLOW_DEFINITION_COMMAND_REPLY_UPDATER = {
         }
       ]
     },
-    { key: "config.esthesis-db", wrappers: ["section"], props: {label: "Kafka"},
+    { key: "config.esthesis-db", wrappers: ["section"], props: {label: "esthesis CORE database"},
       fieldGroup: DATAFLOW_TEMPLATE_MONGODB },
     { key: "config.kubernetes", wrappers: ["section"], props: {label: "Kubernetes"},
       fieldGroup: DATAFLOW_TEMPLATE_KUBERNETES
