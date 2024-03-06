@@ -10,13 +10,13 @@
     <dependency>
       <artifactId>srv-security-client</artifactId>
       <groupId>esthesis</groupId>
-      <version>3.0.30</version>
+      <version>3.0.31-SNAPSHOT</version>
     </dependency>
     <dependency>
       <artifactId>srv-audit-client</artifactId>
       <groupId>esthesis</groupId>
       <scope>compile</scope>
-      <version>3.0.30</version>
+      <version>3.0.31-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
@@ -25,7 +25,7 @@
   <parent>
     <artifactId>srv-security</artifactId>
     <groupId>esthesis</groupId>
-    <version>3.0.30</version>
+    <version>3.0.31-SNAPSHOT</version>
   </parent>
 
 </project>
