@@ -18,7 +18,7 @@ export const DATAFLOW_TEMPLATE_STATUS = [
 // *************************************************************************************************
 export const DATAFLOW_TEMPLATE_MONGODB = [
     { key: "url", type: "input", defaultValue: "mongodb://mongodb-headless:27017",
-      props: {label: "URL", hintStart: "e.g. mongodb://mongodb-headless:27017"} },
+      props: {label: "URL", hintStart: "e.g. mongodb://mongodb-headless:27017, mongodb+srv://mongodb-headless.namespace.svc.cluster.local/?tls=false"} },
     { key: "name", type: "input", defaultValue: "esthesiscore",
       props: {label: "Database name"} },
     { key: "username", type: "input", defaultValue: "esthesis-system",
