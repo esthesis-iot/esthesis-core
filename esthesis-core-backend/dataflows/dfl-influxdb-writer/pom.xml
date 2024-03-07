@@ -8,7 +8,7 @@
   <parent>
     <artifactId>dataflows</artifactId>
     <groupId>esthesis</groupId>
-    <version>3.0.32</version>
+    <version>3.0.33-SNAPSHOT</version>
   </parent>
 
   <artifactId>dfl-influxdb-writer</artifactId>
@@ -21,7 +21,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>dfl-common</artifactId>
-      <version>3.0.32</version>
+      <version>3.0.33-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.influxdb</groupId>
