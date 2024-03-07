@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-kubernetes</artifactId>
-    <version>3.0.31</version>
+    <version>3.0.32-SNAPSHOT</version>
   </parent>
 
   <artifactId>srv-kubernetes-impl</artifactId>
@@ -24,7 +24,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-kubernetes-client</artifactId>
-      <version>3.0.31</version>
+      <version>3.0.32-SNAPSHOT</version>
     </dependency>
 
     <!-- THIRD-PARTY -->
