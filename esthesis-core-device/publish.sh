@@ -163,7 +163,7 @@ if [ "$ESTHESIS_BUILD_CONTAINERS" = "true" ]; then
 	IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesis-core-device"
 	printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION."
 	docker buildx build \
-		--platform "linux/arm64" \
+		--platform "linux/arm/v6,linux/arm/v7,linux/arm64,linux/amd64" \
 		-t "$IMAGE_NAME:$PACKAGE_VERSION" \
 		-t "$IMAGE_NAME:latest" \
 		--build-arg "LDFLAGS=$LDFLAGS" \
@@ -172,7 +172,7 @@ if [ "$ESTHESIS_BUILD_CONTAINERS" = "true" ]; then
 printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION-busybox."
 	docker buildx build \
 		-f Dockerfile-BusyBox \
-		--platform "linux/arm64" \
+		--platform "linux/arm/v6,linux/arm/v7,linux/arm64,linux/amd64" \
 		-t "$IMAGE_NAME:$PACKAGE_VERSION-busybox" \
 		-t "$IMAGE_NAME:latest-busybox" \
 		--build-arg "LDFLAGS=$LDFLAGS" \
