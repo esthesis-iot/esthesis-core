@@ -159,7 +159,7 @@ if [ "$ESTHESIS_BUILD_CONTAINERS" = "true" ]; then
   	docker login "$ESTHESIS_REGISTRY_URL" --username "$ESTHESIS_REGISTRY_USERNAME" --password "$ESTHESIS_REGISTRY_PASSWORD"
   fi
 
-	# OS, Architecture, ARM version, extension
+	# Build and push.
 	IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesis-core-device"
 	printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION."
 	docker buildx build \
