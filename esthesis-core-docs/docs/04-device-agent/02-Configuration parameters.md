@@ -176,6 +176,12 @@ command line arguments. The following tables lists all available configuration p
 			<td>Alphanumeric Alphanumeric </td>
 		</tr>
 		<tr>
+			<td><code>MQTT_INFLIGHT_TTL_DURATION, mqttInflightTTLDuration</code></td>
+			<td>The number of seconds that a queued inflight message should exist before being purged.<br/><br/>
+					Default: 60</td>
+			<td>Numeric</td>
+		</tr>
+		<tr>
 			<td><code>MQTT_TIMEOUT, mqttTimeout</code></td>
 			<td>The number of seconds to wait before failing an outgoing MQTT message.<br/><br/>
 					Default: 60</td>

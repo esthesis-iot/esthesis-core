@@ -59,8 +59,15 @@ func Start(done chan bool) {
 	mqttListeningAddress := config.Flags.
 		EndpointMqttListeningIP + ":" + strconv.Itoa(config.Flags.EndpointMqttListeningPort)
 
+	inflightTTLDuration := config.Flags.MqttInflightTTLDuration
+
+	// Create Server configurable options
+	opts := &mqtt.Options{
+		InflightTTL: int64(inflightTTLDuration),
+	}
+
 	// Create the  MQTT Server.
-	server := mqtt.NewServer(nil)
+	server := mqtt.NewServer(opts)
 
 	// Create a TCP listener.
 	tcp := listeners.NewTCP("t1", mqttListeningAddress)

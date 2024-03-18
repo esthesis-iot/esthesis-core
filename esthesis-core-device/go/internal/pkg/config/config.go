@@ -75,6 +75,7 @@ type flagsStruct struct {
 	LuaExtraMqttMetadataTopic     []string
 	LuaExtraHttpTelemetryEndpoint []string
 	LuaExtraHttpMetadataEndpoint  []string
+	MqttInflightTTLDuration       int // in seconds
 }
 
 var Flags = flagsStruct{}
@@ -277,6 +278,9 @@ func InitCmdFlags(osArgs []string) {
 	opt.BoolVar(&Flags.IgnoreMqttInsecure, "ignoreMqttInsecure", false,
 		opt.GetEnv("IGNORE_MQTT_INSECURE"),
 		opt.Description("A flag to ignore MQTT certificate errors"))
+	opt.IntVar(&Flags.MqttInflightTTLDuration, "mqttInflightTTLDuration",
+		60, opt.GetEnv("MQTT_INFLIGHT_TTL_DURATION"),
+		opt.Description("The number of seconds that a queued inflight message should exist before being purged"))
 
 	// Parse CLI arguments.
 	_, err := opt.Parse(osArgs)
