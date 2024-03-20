@@ -7,7 +7,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-device</artifactId>
-    <version>3.0.34-SNAPSHOT</version>
+    <version>3.0.34</version>
   </parent>
 
   <artifactId>srv-device-impl</artifactId>
@@ -27,37 +27,37 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-device-client</artifactId>
-      <version>3.0.34-SNAPSHOT</version>
+      <version>3.0.34</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-settings-client</artifactId>
-      <version>3.0.34-SNAPSHOT</version>
+      <version>3.0.34</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-crypto-client</artifactId>
-      <version>3.0.34-SNAPSHOT</version>
+      <version>3.0.34</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-tag-client</artifactId>
-      <version>3.0.34-SNAPSHOT</version>
+      <version>3.0.34</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-audit-client</artifactId>
-      <version>3.0.34-SNAPSHOT</version>
+      <version>3.0.34</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>utl-redis</artifactId>
-      <version>3.0.34-SNAPSHOT</version>
+      <version>3.0.34</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>utl-kafka-notifications-outgoing</artifactId>
-      <version>3.0.34-SNAPSHOT</version>
+      <version>3.0.34</version>
     </dependency>
 
     <!-- THIRD-PARTY -->
