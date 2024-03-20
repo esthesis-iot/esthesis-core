@@ -31,7 +31,7 @@ export const DATAFLOW_DEFINITION_MQTT_CLIENT = {
         { key: "key", type: "input", props: {required: false, label: "Client private key",
           hintStart: "Specify a filesystem location, e.g. /etc/esthesis/secrets/client.key"} },
         { key: "ca", type: "input", props: {required: false, label: "Certificate Authority certificate",
-          hintStart: "Specify a filesystem location, e.g. /etc/esthesis/secrets/ca.cert"} },
+          hintStart: "Specify a filesystem location, e.g. /etc/esthesis/secrets/ca.crt"} },
       ],
     },
     { key: "config.mqtt", wrappers: ["section"], props: {label: "MQTT Topics"},

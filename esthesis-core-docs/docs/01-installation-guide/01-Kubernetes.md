@@ -143,8 +143,8 @@ Default: `http://keycloak.<Namespace>.svc.cluster.local/realms/esthesis/protocol
 Whether Ingress nginx should be installed by this chart or not.<br/>
 Default: `false`
 
-🔹 `AWS_INGRESS_NGINX_SSL_CERT_ARN`<br/>
-The arn of the certificate from AWS Certificate Manager. This should be used only if the installation is on AWS. <br/>
+🔹 `INGRESS_NGINX_SSL_CERT_ARN`<br/>
+The arn of the certificate.<br/>
 Default: ``
 
 ### esthesis UI
