@@ -143,28 +143,28 @@ the following environment parameters:
 Whether InfluxDB should be installed by this chart or not.<br/>
 Default: `true`
 
-- For MongoDB
+For MongoDB:
 
-- ESTHESIS_BACKUP_MONGODB_CRONJOB_NAME: The name you want the cronjob to have
-- mongouser: The root user for mongodb
-- secretName: The name of the secret that contains mongo-root-password
-- host: The name of the mongodb service on kubernetes
-- port: The port of mongodb
-- schedule: When you want the cronjob to run
-- subPath: The path on the PV that the backups should be stored on
+- ESTHESIS_BACKUP_MONGODB_CRONJOB_NAME: The name you want the cronjob to have. Default value is `esthesis-mongodb-backup-cronjob`
+- ESTHESIS_BACKUP_MONGODB_USER: The root user for mongodb. Default value is `root`
+- ESTHESIS_BACKUP_MONGODB_SECRET: The name of the secret that contains mongo-root-password. Default value is `my-mongodb`
+- ESTHESIS_BACKUP_MONGODB_HOST: The name of the mongodb service on kubernetes. Default value is `my-mongodb`
+- ESTHESIS_BACKUP_MONGODB_PORT: The port of mongodb. Default value is `27017`
+- ESTHESIS_BACKUP_MONGODB_SCHEDULE: When you want the cronjob to run. Default value is `0 2 * * *`
+- ESTHESIS_BACKUP_MONGODB_PATH: The path on the PV that the backups should be stored on. Default value is `backup/mongodb`
 
-- For InfluxDB
+For InfluxDB:
 
-- name: The name you want the cronjob to have
-- secretName: The name of the secret that contains INFLUX_TOKEN
-- host: The name of the influxdb service on kubernetes
-- port: The port of influxdb
-- schedule: When you want the cronjob to run
-- subPath: The path on the PV that the backups should be stored on
+- ESTHESIS_BACKUP_INFLUXDB_CRONJOB_NAME: The name you want the cronjob to have. Default value is `esthesis-influxdb-backup-cronjob`
+- ESTHESIS_BACKUP_INFLUXDB_SECRET: The name of the secret that contains INFLUX_TOKEN. Default value is `my-influxdb`
+- ESTHESIS_BACKUP_INFLUXDB_HOST: The name of the influxdb service on kubernetes. Default value is `my-influxdb`
+- ESTHESIS_BACKUP_INFLUXDB_PORT: The port of influxdb. Default value is `8086`
+- ESTHESIS_BACKUP_INFLUXDB_SCHEDULE: When you want the cronjob to run. Default value is `0 2 * * *`
+- ESTHESIS_BACKUP_INFLUXDB_PATH: The path on the PV that the backups should be stored on. Default value is `backup/influxdb`
 
-- Backup PVC
+Backup PVC:
 
-- claimName: The name you want the PVC to have
-- volumeName: The name of the PV that the PVC will be mounted on
-- storageClassName: If on S3, it should be left empty, otherwise it should be configured to the correct storageClassName
-- storage: How much storage you want you PVC to request
+- ESTHESIS_BACKUP_PVC_NAME: The name you want the PVC to have. Default value is `esthesis-backup-s3-claim`
+- ESTHESIS_BACKUP_VOLUME_NAME: The name of the PV that the PVC will be mounted on. Default value is `esthesis-backup-s3-pv`
+- ESTHESIS_BACKUP_STORAGE_CLASS_NAME: If on S3, it should be left empty, otherwise it should be configured to the correct storageClassName. Default value is empty.
+- ESTHESIS_BACKUP_STORAGE: How much storage you want you PVC to request. Default value is `10Gi`
