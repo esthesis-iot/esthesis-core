@@ -37,11 +37,17 @@ export class BreadcrumbService {
 
       // Add an element for the current route part.
       if (route.data.breadcrumb) {
-        const breadcrumb = {
-          label: this.getLabel(route),
-          url: "/" + routeUrl.join("/")
-        };
-        breadcrumbs.push(breadcrumb);
+        // If the title starts with "|", do not create a link.
+        if (typeof route.data.breadcrumb === "string" && route.data.breadcrumb.startsWith("|")) {
+          breadcrumbs.push({
+            label: route.data.breadcrumb.substring(1)
+          });
+        } else {
+          breadcrumbs.push({
+            label: this.getLabel(route),
+            url: "/" + routeUrl.join("/")
+          });
+        }
       }
 
       // Add another element for the next route part.

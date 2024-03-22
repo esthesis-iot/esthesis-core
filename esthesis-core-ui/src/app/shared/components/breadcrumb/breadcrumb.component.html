@@ -1,10 +1,19 @@
 <div class="flex flex-row ml-1 mb-5 items-center">
-  <fa-icon icon="home" class="mr-2"></fa-icon>
   <div class="text-sm breadcrumbs ml-1">
     <ul>
-      <li><a routerLink="/dashboard">Home</a></li>
+      <li>
+        <a href="/dashboard">
+          <fa-icon icon="home"></fa-icon>
+        </a>
+      </li>
       <li *ngFor="let breadcrumb of (breadcrumbs$ | async)">
-        <a [href]="breadcrumb.url">{{ breadcrumb.label }}</a>
+        <!-- If a URL exists, make it a link, otherwise just display the text -->
+        <ng-container *ngIf="breadcrumb.url; else nolink">
+          <a [href]="breadcrumb.url">{{ breadcrumb.label }}</a>
+        </ng-container>
+        <ng-template #nolink>
+          {{ breadcrumb.label }}
+        </ng-template>
       </li>
     </ul>
   </div>
