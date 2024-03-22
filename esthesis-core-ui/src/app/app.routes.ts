@@ -93,6 +93,11 @@ export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
       path: "security",
       loadChildren: () => import("./security/security.module").then(m => m.SecurityModule),
       canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Security"}
+    },
+    {
+      path: "user",
+      loadChildren: () => import("./user/user.module").then(m => m.UserModule),
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "|User"}
     }
   ],
   {

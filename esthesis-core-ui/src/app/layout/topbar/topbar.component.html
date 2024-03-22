@@ -1,16 +1,16 @@
 <div class="flex flex-row justify-end mt-4 items-center">
-  <form novalidate [formGroup]="form">
-    <div class="relative focus-within:text-gray-400">
-          <span class="absolute inset-y-0 left-0 flex items-center pl-2">
-            <fa-icon icon="search"></fa-icon>
-          </span>
-      <input type="text" formControlName="searchTerm"
-             class="input py-2 text-sm text-white rounded-2xl pl-10 focus:text-inherit bg-inherit
-                    hover:bg-base-200 w-32 focus:w-64 transition-all ease-in"
-             (blur)="closeSearchResults()"
-             placeholder="Search..." autocomplete="off">
-    </div>
-  </form>
+<!--  <form novalidate [formGroup]="form">-->
+<!--    <div class="relative focus-within:text-gray-400">-->
+<!--          <span class="absolute inset-y-0 left-0 flex items-center pl-2">-->
+<!--            <fa-icon icon="search"></fa-icon>-->
+<!--          </span>-->
+<!--      <input type="text" formControlName="searchTerm"-->
+<!--             class="input py-2 text-sm text-white rounded-2xl pl-10 focus:text-inherit bg-inherit-->
+<!--                    hover:bg-base-200 w-32 focus:w-64 transition-all ease-in"-->
+<!--             (blur)="closeSearchResults()"-->
+<!--             placeholder="Search..." autocomplete="off">-->
+<!--    </div>-->
+<!--  </form>-->
 
   <div title="Change Theme" matTooltip="Themes" class="dropdown dropdown-end ">
     <div tabindex="0" class="btn gap-1 normal-case btn-ghost">
@@ -44,15 +44,16 @@
     </div>
   </div>
 
-<!--  <div title="Change Theme" class="dropdown dropdown-end ">-->
-<!--    <div tabindex="0" class="btn gap-1 normal-case btn-ghost">-->
-<!--      <fa-icon icon="user" size="xl"></fa-icon>-->
-<!--      <fa-icon icon="chevron-down"></fa-icon>-->
-<!--    </div>-->
-<!--    <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-300 rounded-box w-52">-->
-<!--      <li><a>Item 1</a></li>-->
-<!--      <li><a>Item 2</a></li>-->
-<!--    </ul>-->
-<!--  </div>-->
+  <div title="Change Theme" class="dropdown dropdown-end ">
+    <div tabindex="0" class="btn gap-1 normal-case btn-ghost">
+      <fa-icon icon="user" size="xl"></fa-icon>
+      <fa-icon icon="chevron-down"></fa-icon>
+    </div>
+    <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-300 rounded-box w-52">
+      <li><a [href]="'user/profile'">Profile</a></li>
+      <li></li>
+      <li><a [href]="'user/signout'">Sign out</a></li>
+    </ul>
+  </div>
 
 </div>

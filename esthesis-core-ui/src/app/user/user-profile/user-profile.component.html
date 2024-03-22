@@ -1,0 +1,44 @@
+<div class="card w-full bg-base-200 rounded-b-none">
+  <div class="card-body">
+    <h2 class="card-title text-2xl flex flex-row justify-between mb-10">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="user"></fa-icon>
+        <div>User profile</div>
+      </div>
+    </h2>
+    <div>
+      <form [formGroup]="form" novalidate>
+        <div class="flex flex-col">
+          <mat-form-field>
+            <mat-label>Sub</mat-label>
+            <input formControlName="sub" matInput>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Preferred username</mat-label>
+            <input formControlName="preferredUsername" matInput>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input formControlName="email" matInput>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Email verified</mat-label>
+            <input formControlName="emailVerified" matInput>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input formControlName="name" matInput>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Given name</mat-label>
+            <input formControlName="givenName" matInput>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Family name</mat-label>
+            <input formControlName="familyName" matInput>
+          </mat-form-field>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
