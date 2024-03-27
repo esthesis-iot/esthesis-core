@@ -226,12 +226,12 @@
               </div>
 
               <div *ngIf="!this.form.disabled" class="flex flex-row gap-2">
-                <button (click)="addDeviceOrTag()" [disabled]="!allowWrite || (form.controls.searchByHardwareId.value == ''&& form.controls.searchByTags.value == '')"
+                <button (click)="addDeviceOrTag()" [disabled]="!allowWrite || (form.controls['searchByHardwareId'].value == ''&& form.controls['searchByTags'].value == '')"
                         class="btn btn-sm">
                   <fa-icon class="mr-1" icon="plus"></fa-icon>
                   ADD
                 </button>
-                <button [disabled]="!allowWrite || (form.controls.searchByHardwareId.value == '' && form.controls.searchByTags.value == '')" [matMenuTriggerFor]="groupMenu"
+                <button [disabled]="!allowWrite || (form.controls['searchByHardwareId'].value == '' && form.controls['searchByTags'].value == '')" [matMenuTriggerFor]="groupMenu"
                         class="btn btn-sm">
                   <fa-icon class="mr-1" icon="layer-group"></fa-icon>
                   ADD IN GROUP
@@ -387,8 +387,7 @@
                       </mat-form-field>
                       <mat-form-field>
                         <input [ngxMatDatetimePicker]="picker" formControlName="scheduleDate"
-                               matInput
-                               placeholder="Choose a date">
+                               matInput placeholder="Choose a date">
                         <mat-datepicker-toggle [for]="$any(picker)"
                                                matSuffix></mat-datepicker-toggle>
                         <ngx-mat-datetime-picker #picker [enableMeridian]="false"

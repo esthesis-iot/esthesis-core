@@ -1,6 +1,5 @@
 import {Component, isDevMode, OnInit} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {BaseComponent} from "../../shared/components/base-component";
 import {QFormsService} from "@qlack/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ProvisioningService} from "../../provisioning/provisioning.service";
@@ -13,7 +12,8 @@ import {TagsService} from "../../tags/tags.service";
 import {CampaignsService} from "../campaigns.service";
 import {CampaignDto} from "../dto/campaign-dto";
 import {CampaignConditionDto} from "../dto/campaign-condition-dto";
-import * as _ from "lodash";
+import * as _ from "lodash-es";
+import {groupBy, values} from "lodash-es";
 import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
@@ -292,7 +292,8 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
   }
 
   getMemberGroups() {
-    return _(this.form.get("members")?.value).groupBy("group").values().value();
+    // return _(this.form.get("members")?.value).groupBy("group").values().value();
+    return values(groupBy(this.form.get("members")?.value, 'group'));
   }
 
   /**
@@ -425,7 +426,7 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
   }
 
   removeCondition(i: number) {
-    (this.form.controls.conditions as FormArray).removeAt(i);
+    (this.form.controls['conditions'] as FormArray).removeAt(i);
   }
 
   delete() {

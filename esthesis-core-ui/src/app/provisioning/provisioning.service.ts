@@ -1,15 +1,15 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {environment} from "../../environments/environment";
 import {ProvisioningDto} from "./dto/provisioning-dto";
 import {CrudDownloadService} from "../shared/services/crud-download.service";
 import {FileSaverService} from "ngx-filesaver";
+import {AppConstants} from "../app.constants";
 
 @Injectable({
   providedIn: "root"
 })
 export class ProvisioningService extends CrudDownloadService<ProvisioningDto> {
-  private prefix = environment.apiPrefix + "/provisioning/v1";
+  private prefix = AppConstants.API_ROOT + "/provisioning/v1";
 
   constructor(http: HttpClient, fs: FileSaverService) {
     super(http, "provisioning/v1", fs);

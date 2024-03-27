@@ -13,7 +13,7 @@ import {SecurityGroupsService} from "../../security-groups.service";
 import {GroupDto} from "../../dto/group-dto";
 import {SecurityRolesService} from "../../security-roles.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import * as _ from "lodash";
+import * as _ from "lodash-es";
 import {
   SecurityPoliciesEditorComponent
 } from "../../security-policies/security-policies-editor/security-policies-editor.component";
@@ -132,7 +132,7 @@ export class SecurityGroupsEditComponent extends SecurityBaseComponent implement
 
   addRole() {
     const roleId = this.rolesFilterCtrl.value;
-    this.form.controls.roles.value.push(roleId);
+    this.form.controls['roles'].value.push(roleId);
     this.rolesFilterCtrl.patchValue("");
   }
 
@@ -147,7 +147,7 @@ export class SecurityGroupsEditComponent extends SecurityBaseComponent implement
   }
 
   removeRole(roleId: string) {
-    const roles = this.form.controls.roles.value;
+    const roles = this.form.controls['roles'].value;
     const index = roles.indexOf(roleId);
     if (index >= 0) {
       roles.splice(index, 1);
@@ -155,7 +155,7 @@ export class SecurityGroupsEditComponent extends SecurityBaseComponent implement
   }
 
   removePolicy(policy: any) {
-    const policies = this.form.controls.policies.value;
+    const policies = this.form.controls['policies'].value;
     const index = policies.indexOf(policy);
     if (index >= 0) {
       policies.splice(index, 1);
@@ -166,8 +166,8 @@ export class SecurityGroupsEditComponent extends SecurityBaseComponent implement
     const editorDialogRef = this.dialog.open(SecurityPoliciesEditorComponent, {width: "40rem"});
     editorDialogRef.afterClosed().subscribe(result => {
       if (result) {
-        if (this.form.controls.policies.value) {
-          this.form.controls.policies.value.push(result);
+        if (this.form.controls['policies'].value) {
+          this.form.controls['policies'].value.push(result);
         } else {
           this.form.patchValue({
             policies: [result]

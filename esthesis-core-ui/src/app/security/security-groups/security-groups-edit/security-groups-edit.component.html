@@ -40,7 +40,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let roleId of form.controls.roles.value as string">
+            <tr *ngFor="let roleId of form.controls['roles'].value as string">
               <td>{{getRoleName(roleId)}}</td>
               <td>{{getRoleDescription(roleId)}}</td>
               <td>
@@ -67,7 +67,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let policy of form.controls.policies.value as string">
+            <tr *ngFor="let policy of form.controls['policies'].value as string">
               <td>{{policy}}</td>
               <td>
                 <button (click)="removePolicy(policy)"

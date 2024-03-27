@@ -1,4 +1,7 @@
 export const AppConstants = {
+  // The API root context.
+  API_ROOT: "/api",
+
   // An id designating a new record is to be created.
   NEW_RECORD_ID: "new",
 

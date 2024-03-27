@@ -3,10 +3,8 @@ import {Injectable} from "@angular/core";
 import {CrudService} from "../shared/services/crud.service";
 import {UserDto} from "./dto/user-dto";
 import {BehaviorSubject, Observable, tap} from "rxjs";
-import {environment} from "../../environments/environment";
 import {AppConstants} from "../app.constants";
-import * as _ from "lodash";
-import {Log} from "ng2-logger/browser";
+import * as _ from "lodash-es";
 
 /**
  * A service to provide tags manipulation.
@@ -23,8 +21,6 @@ export class SecurityService extends CrudService<UserDto> {
   private _authDone = new BehaviorSubject<boolean>(false);
   // tslint:disable-next-line:variable-name
   private _authDone$ = this._authDone.asObservable();
-  // Logger.
-  private log = Log.create("SecurityService");
 
   constructor(http: HttpClient) {
     super(http, "security/v1/users");
@@ -41,7 +37,7 @@ export class SecurityService extends CrudService<UserDto> {
   getPermissions(): Observable<string[]> {
     // this.permissionsFetched = false;
     if (!this.permissionsFetched) {
-      return this.http.get<string[]>(`${environment.apiPrefix}/security/v1/users/user-permissions`)
+      return this.http.get<string[]>(`${AppConstants.API_ROOT}/security/v1/users/user-permissions`)
       .pipe(tap((permissions) => {
         sessionStorage.setItem(AppConstants.SECURITY.SESSION_STORAGE.PERMISSIONS, JSON.stringify(permissions));
         this.permissionsFetched = true;
@@ -67,7 +63,7 @@ export class SecurityService extends CrudService<UserDto> {
           observer.next(permissionEvaluation);
           observer.complete();
         }, error: err => {
-          this.log.error("Could not evaluate user permission.", err);
+          console.log("Could not evaluate user permission.", err);
           observer.error(err);
         }
       });
@@ -104,7 +100,7 @@ export class SecurityService extends CrudService<UserDto> {
           observer.next(permissionEvaluation);
           observer.complete();
         }, error: err => {
-          this.log.error("Could not evaluate user permission.", err);
+          console.log("Could not evaluate user permission.", err);
           observer.error(err);
         }
       });

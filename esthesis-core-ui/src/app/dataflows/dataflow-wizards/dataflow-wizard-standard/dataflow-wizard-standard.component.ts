@@ -8,7 +8,7 @@ import {FormGroup} from "@angular/forms";
 import {FormlyFieldConfig} from "@ngx-formly/core";
 import {DATAFLOW_DEFINITION_PING_UPDATER} from "../../dto/dataflow-definitions/ping-updater";
 import {concatMap, delay, from, Observable, tap} from "rxjs";
-import * as _ from "lodash";
+import * as _ from "lodash-es";
 import {DATAFLOW_WIZARD_STANDARD} from "./dto/dataflow-wizard-standard-dto";
 
 @Component({

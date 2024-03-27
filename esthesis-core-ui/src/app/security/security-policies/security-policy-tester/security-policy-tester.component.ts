@@ -25,8 +25,8 @@ export class SecurityPolicyTesterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.form.controls.policy.valueChanges.pipe(debounceTime(250), distinctUntilChanged()).subscribe(() => {
-      this.securityService.isIncluded(this.form.controls.policy.value).subscribe({
+    this.form.controls['policy'].valueChanges.pipe(debounceTime(250), distinctUntilChanged()).subscribe(() => {
+      this.securityService.isIncluded(this.form.controls['policy'].value).subscribe({
         next: (result) => {
           this.checkStatus = result;
         }, error: () => {

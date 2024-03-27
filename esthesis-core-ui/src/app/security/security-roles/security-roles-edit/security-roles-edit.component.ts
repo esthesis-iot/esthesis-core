@@ -13,7 +13,7 @@ import {RoleDto} from "../../dto/role-dto";
 import {SecurityPoliciesService} from "../../security-policies.service";
 import {PolicyDto} from "../../dto/policy-dto";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import * as _ from "lodash";
+import * as _ from "lodash-es";
 import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
 import {AppConstants} from "../../../app.constants";
 
@@ -128,7 +128,7 @@ export class SecurityRolesEditComponent extends SecurityBaseComponent implements
 
   addPolicy() {
     const policyId = this.policiesFilterCtrl.value;
-    this.form.controls.policies.value.push(policyId);
+    this.form.controls['policies'].value.push(policyId);
     this.policiesFilterCtrl.patchValue("");
   }
 
@@ -146,7 +146,7 @@ export class SecurityRolesEditComponent extends SecurityBaseComponent implements
   }
 
   removePolicy(policyId: string) {
-    const policies = this.form.controls.policies.value;
+    const policies = this.form.controls['policies'].value;
     const index = policies.indexOf(policyId);
     if (index >= 0) {
       policies.splice(index, 1);

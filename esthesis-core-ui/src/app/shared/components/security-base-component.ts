@@ -1,7 +1,6 @@
 import {BaseComponent} from "./base-component";
 import {SecurityService} from "../../security/security.service";
 import {Directive, inject} from "@angular/core";
-import {Log} from "ng2-logger/browser";
 
 @Directive()
 export class SecurityBaseComponent extends BaseComponent {
@@ -12,7 +11,6 @@ export class SecurityBaseComponent extends BaseComponent {
   allowDelete = false;
   category: string;
   objectId?: string | null;
-  private log = Log.create("SecurityBaseComponent");
   private readonly securityService: SecurityService;
 
   constructor(category: string, objectId?: string | null) {

@@ -42,7 +42,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let policyId of form.controls.policies.value as string">
+            <tr *ngFor="let policyId of form.controls['policies'].value as string">
               <td>{{getPolicyName(policyId)}}</td>
               <td>{{getPolicyDescription(policyId)}}</td>
               <td>{{getPolicyRule(policyId)}}</td>

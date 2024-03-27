@@ -1,10 +1,9 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {SettingsService} from "../settings.service";
-import * as _ from "lodash";
+import * as _ from "lodash-es";
 import {SettingDto} from "../dto/setting-dto";
 import {AppConstants} from "../../app.constants";
-import {BaseComponent} from "../../shared/components/base-component";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 

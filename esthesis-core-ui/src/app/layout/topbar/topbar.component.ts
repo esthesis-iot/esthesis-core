@@ -25,7 +25,7 @@ export class TopbarComponent implements OnInit {
   }
 
   closeSearchResults() {
-    this.form.controls.searchTerm.setValue("");
+    this.form.controls['searchTerm'].setValue("");
   }
 
   selectTheme(name: string) {

@@ -43,14 +43,14 @@ export class DevicePreregisterCamComponent implements OnInit {
   }
 
   onCodeResult(resultString: string) {
-    const existingIds: string = this.form.controls.ids.value;
+    const existingIds: string = this.form.controls['ids'].value;
     if (!existingIds) {
       this.beepOK();
-      this.form.controls.ids.setValue(resultString);
+      this.form.controls['ids'].setValue(resultString);
     } else {
       if (existingIds.indexOf(resultString) === -1) {
         this.beepOK();
-        this.form.controls.ids.setValue(resultString + "\n" + existingIds);
+        this.form.controls['ids'].setValue(resultString + "\n" + existingIds);
       } else {
         this.beepExists();
       }
@@ -79,7 +79,7 @@ export class DevicePreregisterCamComponent implements OnInit {
   }
 
   save() {
-    this.selfDialogRef.close(this.form.controls.ids.value);
+    this.selfDialogRef.close(this.form.controls['ids'].value);
   }
 
   private beep(frequency: number) {

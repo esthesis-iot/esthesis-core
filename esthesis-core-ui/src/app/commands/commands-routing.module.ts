@@ -10,7 +10,7 @@ const routes: Routes = [
   {
     path: "reply/:id", component: CommandReplyComponent, data: {
       breadcrumb: (route: ActivatedRouteSnapshot) => {
-        return "Command " + route.params.id;
+        return "Command " + route.params['id'];
       }
     }
   },

@@ -9,8 +9,8 @@ const routes: Routes = [
   {
     path: ":id", component: ProvisioningEditComponent, data: {
       breadcrumb: (route: ActivatedRouteSnapshot) => {
-        return route.params.id === AppConstants.NEW_RECORD_ID ?
-          "New provisioning package" : "Provisioning package " + route.params.id;
+        return route.params['id'] === AppConstants.NEW_RECORD_ID ?
+          "New provisioning package" : "Provisioning package " + route.params['id'];
       }
     }
   },

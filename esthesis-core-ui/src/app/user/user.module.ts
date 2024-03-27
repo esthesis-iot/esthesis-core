@@ -9,12 +9,14 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {ReactiveFormsModule} from "@angular/forms";
 import { UserSignoutComponent } from './user-signout/user-signout.component';
+import { UserThemesComponent } from './user-themes/user-themes.component';
 
 
 @NgModule({
   declarations: [
     UserProfileComponent,
-    UserSignoutComponent
+    UserSignoutComponent,
+    UserThemesComponent
   ],
   imports: [
     CommonModule,

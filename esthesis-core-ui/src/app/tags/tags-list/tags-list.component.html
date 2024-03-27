@@ -20,18 +20,21 @@
       <table [dataSource]="dataSource" aria-describedby="List of tags"
              cdk-table class="table w-full" matSort matSortActive="name"
              matSortDirection="asc" matSortDisableClear matSortStart="asc">
+        <!-- Columns definition -->
         <ng-container cdkColumnDef="name">
           <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Name</th>
           <td *cdkCellDef="let element" cdk-cell>{{element.name}}</td>
         </ng-container>
+
+        <!-- Row template for embedded and standalone instances -->
         <tr *cdkHeaderRowDef="displayedColumns" cdk-header-row></tr>
         <ng-template [ngIf]="!embedded && allowWrite">
           <tr *cdkRowDef="let element; columns: displayedColumns;" [routerLink]="element.id"
-              cdk-row class="hover hover:cursor-pointer"></tr>
+              cdk-row class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
         </ng-template>
         <ng-template [ngIf]="embedded">
           <tr (click)="embeddedClick(element)" *cdkRowDef="let element; columns: displayedColumns;"
-              cdk-row class="hover hover:cursor-pointer"></tr>
+              cdk-row class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
         </ng-template>
       </table>
       <mat-paginator #paginator (page)="changePage()"

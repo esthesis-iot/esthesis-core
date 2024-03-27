@@ -1,6 +1,5 @@
 import {NgModule} from "@angular/core";
 import {ActivatedRouteSnapshot, RouterModule, Routes} from "@angular/router";
-import {TagsListComponent} from "../tags/tags-list/tags-list.component";
 import {
   SecurityUsersListComponent
 } from "./security-users/security-users-list/security-users-list.component";
@@ -30,25 +29,25 @@ const routes: Routes = [
   {path: "users", component: SecurityUsersListComponent, data: {breadcrumb: "Users"}},
   {path: "users/:id", component: SecurityUsersEditComponent, data: {
       breadcrumb: (route: ActivatedRouteSnapshot) => {
-        return "User " + route.params.id;
+        return "User " + route.params['id'];
       }
     }},
   {path: "groups", component: SecurityGroupsListComponent, data: {breadcrumb: "Groups"}},
   {path: "groups/:id", component: SecurityGroupsEditComponent, data: {
       breadcrumb: (route: ActivatedRouteSnapshot) => {
-        return "Group " + route.params.id;
+        return "Group " + route.params['id'];
       }
     }},
   {path: "roles", component: SecurityRolesListComponent, data: {breadcrumb: "Roles"}},
   {path: "roles/:id", component: SecurityRolesEditComponent, data: {
       breadcrumb: (route: ActivatedRouteSnapshot) => {
-        return "Role " + route.params.id;
+        return "Role " + route.params['id'];
       }
     }},
   {path: "policies", component: SecurityPoliciesListComponent, data: {breadcrumb: "Policies"}},
   {path: "policies/:id", component: SecurityPoliciesEditComponent, data: {
       breadcrumb: (route: ActivatedRouteSnapshot) => {
-        return "Policy " + route.params.id;
+        return "Policy " + route.params['id'];
       }
     }}
 ];

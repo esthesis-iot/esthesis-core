@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SettingsService} from "../settings.service";
-import * as _ from "lodash";
+import * as _ from "lodash-es";
 import {SettingDto} from "../dto/setting-dto";
 import {AppConstants} from "../../app.constants";
 import {UtilityService} from "../../shared/services/utility.service";

@@ -3,16 +3,16 @@ import {HttpClient} from "@angular/common/http";
 import {CaDto} from "./dto/ca-dto";
 import {FormGroup} from "@angular/forms";
 import {Observable} from "rxjs";
-import {environment} from "../../environments/environment";
 import {CrudDownloadService} from "../shared/services/crud-download.service";
 import {FileSaverService} from "ngx-filesaver";
 import {UtilityService} from "../shared/services/utility.service";
+import {AppConstants} from "../app.constants";
 
 @Injectable({
   providedIn: "root"
 })
 export class CasService extends CrudDownloadService<CaDto> {
-  private prefix = environment.apiPrefix + "/crypto/ca/v1";
+  private prefix = AppConstants.API_ROOT + "/crypto/ca/v1";
 
   constructor(http: HttpClient, private utilityService: UtilityService, fs: FileSaverService) {
     super(http, "crypto/ca/v1", fs);

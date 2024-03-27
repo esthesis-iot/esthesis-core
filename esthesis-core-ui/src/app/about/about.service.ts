@@ -2,13 +2,13 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {AboutDto} from "./dto/about-dto";
-import {environment} from "../../environments/environment";
+import {AppConstants} from "../app.constants";
 
 @Injectable({
   providedIn: "root"
 })
 export class AboutService {
-  private prefix = environment.apiPrefix + "/about/v1";
+  private prefix = AppConstants.API_ROOT + "/about/v1";
 
   constructor(private http: HttpClient) {
   }

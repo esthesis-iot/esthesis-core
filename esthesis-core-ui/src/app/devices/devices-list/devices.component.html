@@ -60,12 +60,12 @@
         <ng-template [ngIf]="!embedded">
           <tr *cdkRowDef="let row; columns: displayedColumns; let element;"
               [routerLink]="element.id"
-              cdk-row class="hover hover:cursor-pointer"></tr>
+              cdk-row class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
         </ng-template>
         <ng-template [ngIf]="embedded">
           <tr (click)="embeddedClick(element)"
               *cdkRowDef="let row; columns: displayedColumns; let element;"
-              cdk-row class="hover hover:cursor-pointer"></tr>
+              cdk-row class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
         </ng-template>
 
       </table>

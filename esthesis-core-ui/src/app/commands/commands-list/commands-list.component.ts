@@ -2,7 +2,6 @@ import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {MatSort} from "@angular/material/sort";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
-import {BaseComponent} from "../../shared/components/base-component";
 import {CommandRequestDto} from "../dto/command-request-dto";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {CommandsService} from "../commands.service";
@@ -20,8 +19,7 @@ import {SecurityBaseComponent} from "../../shared/components/security-base-compo
 
 @Component({
   selector: "app-commands-list",
-  templateUrl: "./commands-list.component.html",
-  styleUrls: ["./commands-list.component.scss"]
+  templateUrl: "./commands-list.component.html"
 })
 export class CommandsListComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   displayedColumns = ["command", "createdOn", "dispatchedOn", "pills"];

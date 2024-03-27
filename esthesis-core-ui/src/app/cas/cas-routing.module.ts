@@ -10,7 +10,7 @@ const routes: Routes = [
   {
     path: ":id", component: CasEditComponent, data: {
       breadcrumb: (route: ActivatedRouteSnapshot) => {
-        return "Certificate Authority " + route.params.id;
+        return "Certificate Authority " + route.params['id'];
       }
     }
   },

@@ -1,4 +1,3 @@
-/* tslint:disable:max-line-length */
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/http";
 import {NgModule} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
@@ -41,7 +40,8 @@ import {
   faDiagramProject,
   faDownload,
   faEnvelope,
-  faEnvelopeOpen, faFileCircleCheck,
+  faEnvelopeOpen,
+  faFileCircleCheck,
   faFileCirclePlus,
   faFlag,
   faForward,

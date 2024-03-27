@@ -49,7 +49,7 @@ export class ApplicationEditComponent extends SecurityBaseComponent implements O
   }
 
   generateToken() {
-    this.form.controls.token.setValue(uuidv4());
+    this.form.controls['token'].setValue(uuidv4());
   }
 
   save() {

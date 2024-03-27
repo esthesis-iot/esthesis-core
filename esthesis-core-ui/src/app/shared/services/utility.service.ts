@@ -1,5 +1,4 @@
 import {Injectable} from "@angular/core";
-import {Log} from "ng2-logger/browser";
 import {Clipboard} from "@angular/cdk/clipboard";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
@@ -7,8 +6,6 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   providedIn: "root"
 })
 export class UtilityService {
-  private log = Log.create("UtilityService");
-
   constructor(private snackBar: MatSnackBar,
     private clipboard: Clipboard) {
   }
@@ -42,7 +39,7 @@ export class UtilityService {
     try {
       traceId = "\n\n(trace id: " + error.error.traceId + ")";
     } catch (e) {
-      this.log.error("Could not parse error message to extract trace id.", e, error);
+      console.log("Could not parse error message to extract trace id.", e, error);
     }
     this.snackBar.open(message + traceId, "CLOSE", {
       duration: 10000,
@@ -57,7 +54,7 @@ export class UtilityService {
       errorMessage = error.error.errorMessage + "\n\n" +
         "(trace id: " + error.error.traceId + ")";
     } catch (e) {
-      this.log.error("Could not parse error message.", e, error);
+      console.log("Could not parse error message.", e, error);
     }
     this.snackBar.open(errorMessage, "CLOSE", {
       duration: 10000,

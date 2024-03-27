@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, Input, ViewChild} from "@angular/core";
 import {NgTerminal} from "ng-terminal";
 import {DeviceTerminalService} from "./device-terminal.service";
-import {BaseComponent} from "../../../shared/components/base-component";
 import {CommandExecuteRequestDto} from "../../../commands/dto/command-execute-request-dto";
 import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
 import {AppConstants} from "../../../app.constants";
@@ -69,7 +68,7 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
           break;
         case "Backspace":
           // Do not delete the prompt
-          if (this.terminal.underlying.buffer.active.cursorX > 2) {
+          if (this.terminal.underlying!.buffer.active.cursorX > 2) {
             this.terminal.write("\b \b");
           }
           if (this.command.length > 0) {
@@ -143,7 +142,7 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
     if (this.historyPointer >= this.history.length) {
       this.historyPointer = 0;
     }
-    this.terminal.write("\b \b".repeat(this.terminal.underlying.buffer.active.cursorX - 2));
+    this.terminal.write("\b \b".repeat(this.terminal.underlying!.buffer.active.cursorX - 2));
     const historyCommand = this.history[this.historyPointer];
     this.terminal.write(historyCommand);
     this.command = historyCommand;

@@ -2,7 +2,6 @@ import {Component, OnInit} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
 import {QFormsService} from "@qlack/forms";
 import {DevicesService} from "../../devices.service";
-import {BaseComponent} from "../../../shared/components/base-component";
 import {ActivatedRoute} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../../shared/services/utility.service";
@@ -90,7 +89,7 @@ export class DeviceProfileComponent extends SecurityBaseComponent implements OnI
   }
 
   deleteAttribute(i: number) {
-    (this.deviceProfileForm.controls.attributes as FormArray).removeAt(i);
+    (this.deviceProfileForm.controls['attributes'] as FormArray).removeAt(i);
   }
 
   private generateAttributeFormGroup(attribute: DeviceAttributeDto): FormGroup {
@@ -105,7 +104,7 @@ export class DeviceProfileComponent extends SecurityBaseComponent implements OnI
   private getProfile() {
     this.devicesService.getProfile(this.id!).subscribe({
       next: (profile) => {
-        this.deviceProfileForm.controls.attributes = this.fb.array<DeviceAttributeDto>([]);
+        this.deviceProfileForm.controls['attributes'] = this.fb.array<DeviceAttributeDto>([]);
         profile.attributes.forEach((attribute) => {
           // @ts-ignore
           this.deviceProfileForm.controls.attributes.push(this.generateAttributeFormGroup(attribute));

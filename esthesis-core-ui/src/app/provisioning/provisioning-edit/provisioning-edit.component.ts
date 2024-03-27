@@ -1,16 +1,14 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {QFormsService} from "@qlack/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {HttpClient, HttpEventType} from "@angular/common/http";
-import {BaseComponent} from "../../shared/components/base-component";
+import {HttpEventType} from "@angular/common/http";
 import {TagDto} from "../../tags/dto/tag-dto";
 import {TagsService} from "../../tags/tags.service";
 import {ProvisioningService} from "../provisioning.service";
 import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
-import * as _ from "lodash";
+import * as _ from "lodash-es";
 import {ProvisioningDto} from "../dto/provisioning-dto";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {MatDialog} from "@angular/material/dialog";
@@ -31,9 +29,9 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
   baseVersions?: ProvisioningDto[];
 
   constructor(private fb: FormBuilder, private dialog: MatDialog,
-    private qForms: QFormsService, private tagService: TagsService,
+    private tagService: TagsService,
     private provisioningService: ProvisioningService, private route: ActivatedRoute,
-    private router: Router, private http: HttpClient, private utilityService: UtilityService) {
+    private router: Router, private utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.PROVISIONING, route.snapshot.paramMap.get("id"));
   }
 
@@ -121,7 +119,7 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
     this.findBaseVersions();
 
     // If tags change, update base versions.
-    this.form.controls.tags.valueChanges.pipe(
+    this.form.controls['tags'].valueChanges.pipe(
       debounceTime(100), distinctUntilChanged()
     ).subscribe(() => {
       this.findBaseVersions();
@@ -133,25 +131,25 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
     // single field.
     // Add common fields.
     const patchedForm = new FormGroup({});
-    if (this.form.controls.id.value) {
-      patchedForm.addControl("id", this.form.controls.id);
+    if (this.form.controls['id'].value) {
+      patchedForm.addControl("id", this.form.controls['id']);
     }
-    patchedForm.addControl("name", this.form.controls.name);
-    patchedForm.addControl("description", this.form.controls.description);
-    patchedForm.addControl("version", this.form.controls.version);
-    patchedForm.addControl("prerequisiteVersion", this.form.controls.prerequisiteVersion);
-    patchedForm.addControl("tags", this.form.controls.tags);
-    patchedForm.addControl("attributes", this.form.controls.attributes);
-    patchedForm.addControl("type", this.form.controls.type);
-    patchedForm.addControl("available", this.form.controls.available);
-    patchedForm.addControl("file", this.form.controls.file);
-    patchedForm.addControl("fileName", this.form.controls.fileName);
-    patchedForm.addControl("sha256", this.form.controls.sha256);
+    patchedForm.addControl("name", this.form.controls['name']);
+    patchedForm.addControl("description", this.form.controls['description']);
+    patchedForm.addControl("version", this.form.controls['version']);
+    patchedForm.addControl("prerequisiteVersion", this.form.controls['prerequisiteVersion']);
+    patchedForm.addControl("tags", this.form.controls['tags']);
+    patchedForm.addControl("attributes", this.form.controls['attributes']);
+    patchedForm.addControl("type", this.form.controls['type']);
+    patchedForm.addControl("available", this.form.controls['available']);
+    patchedForm.addControl("file", this.form.controls['file']);
+    patchedForm.addControl("fileName", this.form.controls['fileName']);
+    patchedForm.addControl("sha256", this.form.controls['sha256']);
 
     // Add type-specific fields.
     let typeSpecificConfiguration = "";
     _.forEach(this.form.controls, (value, key) => {
-      if (key.startsWith(this.form.controls.type.value) && value.value) {
+      if (key.startsWith(this.form.controls['type'].value) && value.value) {
         typeSpecificConfiguration += key + "=" + value.value + ",";
       }
     });
@@ -200,8 +198,8 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
   }
 
   selectFile(event: any) {
-    this.form.controls.file.patchValue(event.target.files[0]);
-    this.form.controls.fileName.patchValue(event.target.files[0].name);
+    this.form.controls['file'].patchValue(event.target.files[0]);
+    this.form.controls['fileName'].patchValue(event.target.files[0].name);
   }
 
   download() {
@@ -222,11 +220,11 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
    * filtered to match at least one of the tags of this version.
    */
   findBaseVersions() {
-    const tags = this.form.controls.tags.value.join(",");
+    const tags = this.form.controls['tags'].value.join(",");
     this.provisioningService.findBaseVersions(tags).subscribe({
       next: (next: any) => {
         this.baseVersions =
-          next.filter((value: any) => value.version !== this.form.controls.version.value);
+          next.filter((value: any) => value['version'] !== this.form.controls['version'].value);
       }, error: (err: any) => {
         this.utilityService.popupErrorWithTraceId("There was a problem fetching available base versions.", err);
       }

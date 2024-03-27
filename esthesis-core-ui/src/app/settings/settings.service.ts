@@ -3,8 +3,8 @@ import {Injectable} from "@angular/core";
 import {CrudService} from "../shared/services/crud.service";
 import {Observable} from "rxjs";
 import {DevicePageFieldDefinitionDto} from "./dto/device-page-field-definition-dto";
-import {environment} from "src/environments/environment";
 import {SettingDto} from "./dto/setting-dto";
+import {AppConstants} from "../app.constants";
 
 /**
  * A service providing functionality to manage settings.
@@ -13,7 +13,7 @@ import {SettingDto} from "./dto/setting-dto";
   providedIn: "root"
 })
 export class SettingsService extends CrudService<SettingDto> {
-  private prefix = environment.apiPrefix + "/settings/v1";
+  private prefix = AppConstants.API_ROOT + "/settings/v1";
 
   constructor(http: HttpClient) {
     super(http, "settings/v1");

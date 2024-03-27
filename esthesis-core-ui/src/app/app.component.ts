@@ -1,22 +1,15 @@
 import {Component, OnInit} from "@angular/core";
-import {Log} from "ng2-logger/browser";
 import {BaseComponent} from "./shared/components/base-component";
-import {AppConstants} from "./app.constants";
 import {OidcSecurityService} from "angular-auth-oidc-client";
 import {SecurityService} from "./security/security.service";
 import {UtilityService} from "./shared/services/utility.service";
 
 @Component({
   selector: "app-root",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"]
+  templateUrl: "./app.component.html"
 })
 export class AppComponent extends BaseComponent implements OnInit {
   // Expose application constants.
-  constants = AppConstants;
-  // Logger.
-  private log = Log.create("AppComponent");
-  // tslint:disable-next-line:variable-name
   private _isLoggedIn = false;
 
   constructor(private oidcService: OidcSecurityService,
@@ -24,8 +17,8 @@ export class AppComponent extends BaseComponent implements OnInit {
     super();
 
     // Check if a specific theme has already been saved for this user.
-    // tslint:disable-next-line:no-unused-expression
-    localStorage.getItem("theme") && document.querySelector("html")!.setAttribute("data-theme", localStorage.getItem("theme")!);
+    localStorage.getItem("theme") &&
+      document.querySelector("html")!.setAttribute("data-theme", localStorage.getItem("theme")!);
   }
 
   isLoggedIn(): boolean {

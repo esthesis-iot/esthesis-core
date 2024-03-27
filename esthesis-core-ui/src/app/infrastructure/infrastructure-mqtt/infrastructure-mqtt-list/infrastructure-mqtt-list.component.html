@@ -22,7 +22,7 @@
   </ng-container>
   <tr *cdkHeaderRowDef="columns" cdk-header-row></tr>
   <tr *cdkRowDef="let row; columns: columns; let element;" [routerLink]="'mqtt/' + element.id"
-      cdk-row class="hover hover:cursor-pointer"></tr>
+      cdk-row class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
 </table>
 <mat-paginator (page)="changePage()"
                [pageSizeOptions]="[10, 30, 50]"

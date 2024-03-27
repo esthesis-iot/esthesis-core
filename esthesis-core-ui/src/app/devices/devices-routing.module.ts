@@ -17,7 +17,7 @@ const routes: Routes = [
     path: ":id", component: DeviceComponent,
     data: {
       breadcrumb: (route: ActivatedRouteSnapshot) => {
-        return "Device " + route.params.id;
+        return "Device " + route.params['id'];
       }
     }
   },

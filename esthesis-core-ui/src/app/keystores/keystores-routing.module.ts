@@ -8,7 +8,7 @@ const routes: Routes = [
   {
     path: ":id", component: KeystoreEditComponent, data: {
       breadcrumb: (route: ActivatedRouteSnapshot) => {
-        return "Keystore " + route.params.id;
+        return "Keystore " + route.params['id'];
       }
     }
   },

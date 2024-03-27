@@ -56,7 +56,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let groupId of form.controls.groups.value as string">
+            <tr *ngFor="let groupId of form.controls['groups'].value as string">
               <td>{{getGroupName(groupId)}}</td>
               <td>{{getGroupDescription(groupId)}}</td>
               <td>
@@ -85,7 +85,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let policy of form.controls.policies.value as string">
+            <tr *ngFor="let policy of form.controls['policies'].value as string">
               <td>{{policy}}</td>
               <td>
                 <button (click)="removePolicy(policy)"

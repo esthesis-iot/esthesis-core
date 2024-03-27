@@ -2,14 +2,14 @@ import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {CommandExecuteRequestDto} from "../../../commands/dto/command-execute-request-dto";
-import {environment} from "src/environments/environment";
 import {CommandReplyDto} from "../../../commands/dto/command-reply-dto";
+import {AppConstants} from "../../../app.constants";
 
 @Injectable({
   providedIn: "root"
 })
 export class DeviceTerminalService {
-  private prefix = environment.apiPrefix + "/command/v1";
+  private prefix = AppConstants.API_ROOT + "/command/v1";
 
   constructor(private http: HttpClient) {
   }

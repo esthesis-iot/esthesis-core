@@ -8,7 +8,7 @@ import {InfrastructureMqttService} from "../infrastructure-mqtt.service";
 import {QFormsService, QPageableReply} from "@qlack/forms";
 import {UtilityService} from "../../../shared/services/utility.service";
 import {TagsService} from "../../../tags/tags.service";
-import * as _ from "lodash";
+import * as _ from "lodash-es";
 import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
 import {AppConstants} from "../../../app.constants";
 

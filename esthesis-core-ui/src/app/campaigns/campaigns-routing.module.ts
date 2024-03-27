@@ -9,8 +9,8 @@ const routes: Routes = [
   {
     path: ":id", component: CampaignEditComponent, data: {
       breadcrumb: (route: ActivatedRouteSnapshot) => {
-        return route.params.id === AppConstants.NEW_RECORD_ID ?
-          "New campaign" : "Campaign " + route.params.id;
+        return route.params['id'] === AppConstants.NEW_RECORD_ID ?
+          "New campaign" : "Campaign " + route.params['id'];
       }
     }
   },

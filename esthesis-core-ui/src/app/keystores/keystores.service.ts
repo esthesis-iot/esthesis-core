@@ -3,14 +3,14 @@ import {HttpClient} from "@angular/common/http";
 import {CrudDownloadService} from "../shared/services/crud-download.service";
 import {FileSaverService} from "ngx-filesaver";
 import {KeystoreDto} from "./dto/keystore-dto";
-import {environment} from "../../environments/environment";
 import {Observable} from "rxjs";
+import {AppConstants} from "../app.constants";
 
 @Injectable({
   providedIn: "root"
 })
 export class KeystoresService extends CrudDownloadService<KeystoreDto> {
-  private prefix = environment.apiPrefix + "/crypto/keystore/v1";
+  private prefix = AppConstants.API_ROOT + "/crypto/keystore/v1";
 
   constructor(http: HttpClient, fs: FileSaverService) {
     super(http, "crypto/keystore/v1", fs);
@@ -26,6 +26,6 @@ export class KeystoresService extends CrudDownloadService<KeystoreDto> {
   }
 
   getSupportedKeystoreTypes(): Observable<string[]> {
-    return this.http.get<string[]>(`${environment.apiPrefix}/crypto/crypto-info/v1/keystore-types`);
+    return this.http.get<string[]>(`${AppConstants.API_ROOT}/crypto/crypto-info/v1/keystore-types`);
   }
 }

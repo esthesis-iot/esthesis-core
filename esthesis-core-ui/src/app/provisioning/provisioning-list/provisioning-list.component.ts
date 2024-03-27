@@ -4,7 +4,7 @@ import {QFormsService} from "@qlack/forms";
 import {ProvisioningService} from "../provisioning.service";
 import {TagsService} from "../../tags/tags.service";
 import {TagDto} from "../../tags/dto/tag-dto";
-import * as _ from "lodash";
+import * as _ from "lodash-es";
 import {AppConstants} from "../../app.constants";
 import {ProvisioningDto} from "../dto/provisioning-dto";
 import {

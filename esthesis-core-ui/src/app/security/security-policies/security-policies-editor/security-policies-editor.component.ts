@@ -38,15 +38,15 @@ export class SecurityPoliciesEditorComponent extends BaseComponent implements On
     }
 
     // When a "READ" or "CREATE" operation is selected, only "*" is a valid option for Object ID.
-    this.form.controls.operation.valueChanges.pipe(distinctUntilChanged()).subscribe(
+    this.form.controls['operation'].valueChanges.pipe(distinctUntilChanged()).subscribe(
       (operation) => {
         if (operation === this.appConstants.SECURITY.OPERATION.READ || operation === this.appConstants.SECURITY.OPERATION.CREATE) {
           this.form.patchValue({
             objectId: "*"
           });
-          this.form.controls.objectId.disable();
+          this.form.controls['objectId'].disable();
         } else {
-          this.form.controls.objectId.enable();
+          this.form.controls['objectId'].enable();
         }
       });
   }

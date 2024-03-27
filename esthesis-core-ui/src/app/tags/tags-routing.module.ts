@@ -8,7 +8,7 @@ const routes: Routes = [
   {
     path: ":id", component: TagEditComponent, data: {
       breadcrumb: (route: ActivatedRouteSnapshot) => {
-        return "Tag " + route.params.id;
+        return "Tag " + route.params['id'];
       }
     }
   }

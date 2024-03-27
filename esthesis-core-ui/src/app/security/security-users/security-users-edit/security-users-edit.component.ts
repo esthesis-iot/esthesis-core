@@ -13,7 +13,7 @@ import {UserDto} from "../../dto/user-dto";
 import {GroupDto} from "../../dto/group-dto";
 import {SecurityGroupsService} from "../../security-groups.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import * as _ from "lodash";
+import * as _ from "lodash-es";
 import {
   SecurityPoliciesEditorComponent
 } from "../../security-policies/security-policies-editor/security-policies-editor.component";
@@ -140,11 +140,11 @@ export class SecurityUsersEditComponent extends SecurityBaseComponent implements
   addGroup() {
     // TODO not sure why this if-block is needed, since 'groups' is initialized as an empty array
     // TODO in the form definition. All other similar forms in security don't need this.
-    if (!this.form.controls.groups.value) {
-      this.form.controls.groups.patchValue([]);
+    if (!this.form.controls['groups'].value) {
+      this.form.controls['groups'].patchValue([]);
     }
     const groupId = this.groupsFilterCtrl.value;
-    this.form.controls.groups.value.push(groupId);
+    this.form.controls['groups'].value.push(groupId);
     this.groupsFilterCtrl.patchValue("");
   }
 
@@ -159,7 +159,7 @@ export class SecurityUsersEditComponent extends SecurityBaseComponent implements
   }
 
   removeGroup(groupId: string) {
-    const groups = this.form.controls.groups.value;
+    const groups = this.form.controls['groups'].value;
     const index = groups.indexOf(groupId);
     if (index >= 0) {
       groups.splice(index, 1);
@@ -167,7 +167,7 @@ export class SecurityUsersEditComponent extends SecurityBaseComponent implements
   }
 
   removePolicy(policy: any) {
-    const policies = this.form.controls.policies.value;
+    const policies = this.form.controls['policies'].value;
     const index = policies.indexOf(policy);
     if (index >= 0) {
       policies.splice(index, 1);
@@ -178,8 +178,8 @@ export class SecurityUsersEditComponent extends SecurityBaseComponent implements
     const editorDialogRef = this.dialog.open(SecurityPoliciesEditorComponent, {width: "40rem"});
     editorDialogRef.afterClosed().subscribe(result => {
       if (result) {
-        if (this.form.controls.policies.value) {
-          this.form.controls.policies.value.push(result);
+        if (this.form.controls['policies'].value) {
+          this.form.controls['policies'].value.push(result);
         } else {
           this.form.patchValue({
             policies: [result]

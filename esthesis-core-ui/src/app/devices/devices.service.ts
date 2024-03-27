@@ -3,19 +3,19 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {DeviceRegisterDto} from "./dto/device-register-dto";
 import {DeviceDto} from "./dto/device-dto";
-import {environment} from "../../environments/environment";
 import {DevicePageFieldDataDto} from "./dto/device-page-field-data-dto";
 import {GeolocationDto} from "./dto/geolocation-dto";
 import {CrudDownloadService} from "../shared/services/crud-download.service";
 import {FileSaverService} from "ngx-filesaver";
 import {UtilityService} from "../shared/services/utility.service";
 import {DeviceProfileDto} from "./dto/device-profile-dto";
+import {AppConstants} from "../app.constants";
 
 @Injectable({
   providedIn: "root"
 })
 export class DevicesService extends CrudDownloadService<DeviceDto> {
-  private prefix = environment.apiPrefix + "/device/v1";
+  private prefix = AppConstants.API_ROOT + "/device/v1";
 
   constructor(http: HttpClient, fs: FileSaverService, private utilityService: UtilityService) {
     super(http, "device/v1", fs);

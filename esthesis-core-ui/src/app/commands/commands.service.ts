@@ -4,15 +4,15 @@ import {Observable} from "rxjs";
 import {CrudService} from "../shared/services/crud.service";
 import {CommandRequestDto} from "./dto/command-request-dto";
 import {CommandReplyDto} from "./dto/command-reply-dto";
-import {environment} from "../../environments/environment";
 import {CommandExecuteRequestDto} from "./dto/command-execute-request-dto";
 import {DeviceDto} from "../devices/dto/device-dto";
+import {AppConstants} from "../app.constants";
 
 @Injectable({
   providedIn: "root"
 })
 export class CommandsService extends CrudService<CommandRequestDto> {
-  private prefix = environment.apiPrefix + "/command/v1";
+  private prefix = AppConstants.API_ROOT + "/command/v1";
 
   constructor(http: HttpClient) {
     super(http, "command/v1");

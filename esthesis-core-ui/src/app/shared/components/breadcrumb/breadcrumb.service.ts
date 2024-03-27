@@ -36,11 +36,11 @@ export class BreadcrumbService {
       const routeUrl = parentUrl.concat(route.url.map(url => url.path));
 
       // Add an element for the current route part.
-      if (route.data.breadcrumb) {
+      if (route.data['breadcrumb']) {
         // If the title starts with "|", do not create a link.
-        if (typeof route.data.breadcrumb === "string" && route.data.breadcrumb.startsWith("|")) {
+        if (typeof route.data['breadcrumb'] === "string" && route.data['breadcrumb'].startsWith("|")) {
           breadcrumbs.push({
-            label: route.data.breadcrumb.substring(1)
+            label: route.data['breadcrumb'].substring(1)
           });
         } else {
           breadcrumbs.push({
@@ -56,8 +56,8 @@ export class BreadcrumbService {
   }
 
   private getLabel(route: ActivatedRouteSnapshot) {
-    return typeof route.data.breadcrumb === "function"
-      ? route.data.breadcrumb(route) : route.data.breadcrumb;
+    return typeof route.data['breadcrumb'] === "function"
+      ? route.data['breadcrumb'](route) : route.data['breadcrumb'];
   }
 
 }

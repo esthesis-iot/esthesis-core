@@ -2,15 +2,15 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {FormGroup} from "@angular/forms";
 import {CertificateDto} from "./dto/certificate-dto";
-import {environment} from "../../environments/environment";
 import {CrudDownloadService} from "../shared/services/crud-download.service";
 import {FileSaverService} from "ngx-filesaver";
+import {AppConstants} from "../app.constants";
 
 @Injectable({
   providedIn: "root"
 })
 export class CertificatesService extends CrudDownloadService<CertificateDto> {
-  private prefix = environment.apiPrefix + "/crypto/certificate/v1";
+  private prefix = AppConstants.API_ROOT + "/crypto/certificate/v1";
 
   constructor(http: HttpClient, fs: FileSaverService) {
     super(http, "crypto/certificate/v1", fs);

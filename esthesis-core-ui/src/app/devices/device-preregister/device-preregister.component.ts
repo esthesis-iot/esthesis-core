@@ -5,8 +5,6 @@ import {Router} from "@angular/router";
 import {TagDto} from "../../tags/dto/tag-dto";
 import {TagsService} from "../../tags/tags.service";
 import {DevicePreregisterCamComponent} from "./device-preregister-cam.component";
-import {BaseComponent} from "../../shared/components/base-component";
-import {QFormsService} from "@qlack/forms";
 import {DeviceRegisterDto} from "../dto/device-register-dto";
 import {v4 as uuidv4} from "uuid";
 import {Dialog} from "@angular/cdk/dialog";
@@ -24,7 +22,7 @@ export class DevicePreregisterComponent extends SecurityBaseComponent implements
   form!: FormGroup;
   availableTags: TagDto[] | undefined;
 
-  constructor(private fb: FormBuilder, private qForms: QFormsService,
+  constructor(private fb: FormBuilder,
     private devicesService: DevicesService, private router: Router,
     private utilityService: UtilityService, private tagService: TagsService,
     private dialog: Dialog, private qFormValidation: QFormValidationEEService) {
@@ -80,7 +78,7 @@ export class DevicePreregisterComponent extends SecurityBaseComponent implements
     });
     dialogRef.closed.subscribe(result => {
       if (result) {
-        this.form.controls.hardwareId.patchValue(result);
+        this.form.controls['hardwareId'].patchValue(result);
       }
     });
   }
