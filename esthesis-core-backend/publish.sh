@@ -195,6 +195,7 @@ for ((i = 0; i < ${#modules[@]}; i += 2)); do
 
 	pushd .
 	cd "$MODULE_PATH" || exit
+	printInfo "Switching to $MODULE_NAME on $(pwd)."
 	if [ "$ESTHESIS_LOCAL_BUILD" = "true" ]; then
 		printInfo "Building module $MODULE_NAME."
 		./mvnw clean package $MAVEN_OPTIMISE_PARAMS
