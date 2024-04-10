@@ -204,7 +204,7 @@ for ((i = 0; i < ${#modules[@]}; i += 2)); do
 	printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION"
 	if [ "$ESTHESIS_PARALLEL_BUILD" = "true" ]; then
 		docker buildx build \
-			-f src/main/docker/Dockerfile.jvm \
+			-f ./src/main/docker/Dockerfile.jvm \
 			--platform "$ESTHESIS_ARCHITECTURES" \
 			-t "$IMAGE_NAME:$PACKAGE_VERSION" \
 			-t "$IMAGE_NAME:latest" \
@@ -212,7 +212,7 @@ for ((i = 0; i < ${#modules[@]}; i += 2)); do
 		pids+=($!)
 	else
 		docker buildx build \
-			-f src/main/docker/Dockerfile.jvm \
+			-f ./src/main/docker/Dockerfile.jvm \
 			--platform "$ESTHESIS_ARCHITECTURES" \
 			-t "$IMAGE_NAME:$PACKAGE_VERSION" \
 			-t "$IMAGE_NAME:latest" \
