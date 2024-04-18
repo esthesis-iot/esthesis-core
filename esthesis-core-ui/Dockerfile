@@ -25,6 +25,7 @@ WORKDIR /app
 # Install and cache app dependencies
 COPY --from=npm /app/node_modules /app/node_modules
 COPY --from=npm /app/package.json /app/package.json
+RUN npm config set registry http://registry.npmjs.org/
 RUN npm install -g @angular/cli --no-audit
 
 # Add app
