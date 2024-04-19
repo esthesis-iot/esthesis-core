@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>esthesis-core-backend</artifactId>
 		<groupId>esthesis</groupId>
-		<version>3.0.36-SNAPSHOT</version>
+		<version>3.0.36</version>
 	</parent>
 
 	<artifactId>avro</artifactId>
@@ -23,7 +23,7 @@
 		<dependency>
 			<artifactId>common</artifactId>
 			<groupId>esthesis</groupId>
-			<version>3.0.36-SNAPSHOT</version>
+			<version>3.0.36</version>
 		</dependency>
 	</dependencies>
 </project>
