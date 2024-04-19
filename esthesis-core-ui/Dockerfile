@@ -10,8 +10,11 @@ WORKDIR /app
 
 # Install and cache app dependencies
 COPY package.json /app/package.json
-RUN npm config set registry http://registry.npmjs.org/
-RUN npm install --no-audit
+
+RUN npm config set proxy null \
+    && npm config set https-proxy null \
+    && npm config set noproxy registry.npmjs.org \
+    && npm install --no-audit --maxsockets 1
 
 #####################################################################################################
 ## Build application.
