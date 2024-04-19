@@ -46,7 +46,7 @@ FROM nginx:stable
 LABEL maintainer="esthesis@eurodyn.com"
 
 # Copy artifact build from the 'build environment'.
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app/dist/browser /usr/share/nginx/html
 
 # Patch nginx configuration to amend try_files.
 RUN sed -i 's/location \/ {/location \/ {\n        try_files \$uri \$uri\/ \/index\.html \=404;\n/g' /etc/nginx/conf.d/default.conf
