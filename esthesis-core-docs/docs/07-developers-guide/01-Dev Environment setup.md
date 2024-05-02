@@ -36,8 +36,19 @@ different namespace, replace it accordingly.
 
 	:::tip
 	Once you have performed the initial installation, you can use the `--skip-deps` flag to skip the
-  dependencies check, therefore speeding up your deployment.
+  dependencies check, therefore speeding up your re-deployment.
 	:::
+
+	Several supporting services are disabled by default. You can enable the following services by
+	setting their respective environment values to `true` before running `helmfile`:
+
+	| Service            | Environment variable  |
+	|--------------------|-----------------------|
+	| Grafana            | GRAFANA_ENABLED       |
+	| Grafana Loki       | GRAFANA_LOKI_ENABLED  |
+	| Grafana Tempo      | GRAFANA_TEMPO_ENABLED |
+	| Container Registry | REGISTRY_ENABLED      |
+	| Kafka UI           | KAFKA_UI_ENABLED      |
 
 - Install the application components in `esthesis-helm/esthesis-core`:
 	```shell
@@ -48,14 +59,15 @@ different namespace, replace it accordingly.
 To proxy the Kubernetes services of the project to your local machine for development purposes, you
 can use [kubefwd](https://kubefwd.com) and execute:
 ```shell
-sudo -E kubefwd svc -d <namespace>
+sudo -E kubefwd svc -d esthesis
 ```
 1. kubefwd will proxy all services to your localhost and create local DNS entries for them. The table
 below summarises the resources you can access after running the above command. Replace `<namespace>`
 with the namespace you have deployed the services to. Note that if you have
 deployed the services in a different namespace than `esthesis`, you need to adjust the namespace
 element in the domains in the table below:
-2. You may need to, occasionally, restart kubefwd, especially if pods get recreated often.
+2. You may need to, occasionally, restart kubefwd, especially if pods get recreated often or if your
+development machine went through sleep mode.
 3. The Container Registry is deployed as a NodePort service with a randomly assigned port. If you
 need to specify your own port, you can use the `REGISTRY_NODE_PORT` environment variable when
 deploying the Helm Chart.
