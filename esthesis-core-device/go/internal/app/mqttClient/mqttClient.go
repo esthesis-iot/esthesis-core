@@ -70,27 +70,31 @@ func Connect() bool {
 	opts.AddBroker(mqttServer)
 	opts.SetClientID(config.Flags.HardwareId)
 	opts.SetKeepAlive(60 * time.Second)
+	opts.SetAutoReconnect(true)
+	opts.SetConnectRetry(true)
+	opts.SetConnectRetryInterval(60 * time.Second)
 	// Set TLS configuration, if MQTT broker URL starts with "ssl://".
 	if mqttServer[0:6] == "ssl://" {
 		tlsConfig := getTlsConfig()
 		opts.SetTLSConfig(tlsConfig)
 	}
 
+	opts.SetOnConnectHandler(func(c mqtt.Client) {
+		// Subscribe to command request topic.
+		commandRequestTopic := config.Flags.TopicCommandRequest + "/" + config.Flags.HardwareId
+		log.Debugf("Subscribing to topic '%s'.", commandRequestTopic)
+		if token := c.Subscribe(commandRequestTopic, 0,
+			mqttCommandRequestReceiver.OnMessage); token.Wait() && token.Error() != nil {
+			log.Debugf("Error Subscribing to topic '%s'. Error '%s'", commandRequestTopic, token.Error())
+		} else {
+			log.Debugf("Subscribed to topic '%s'.", commandRequestTopic)
+		}
+	})
+
 	client = mqtt.NewClient(opts)
 	token := client.Connect()
 	if token.Wait() && token.Error() != nil {
 		panic(token.Error())
-	}
-
-	// Subscribe to command request topic.
-	commandRequestTopic := config.Flags.TopicCommandRequest + "/" + config.Flags.HardwareId
-	log.Debugf("Subscribing to topic '%s'.", commandRequestTopic)
-	if token := client.Subscribe(commandRequestTopic, 0,
-		mqttCommandRequestReceiver.OnMessage); token.Wait() && token.Error() != nil {
-		fmt.Println(token.Error())
-		os.Exit(1)
-	} else {
-		log.Debugf("Subscribed to topic '%s'.", commandRequestTopic)
 	}
 
 	return true
