@@ -94,13 +94,16 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
   }
 
   private executeCommand() {
+    // Normalize multiple spaces into one
+    this.command = this.command.replace(/\s+/g, ' ').trim();
+
     const cmdSplit = this.command.split(" ");
     const cmd: CommandExecuteRequestDto = {
       hardwareIds: this.hardwareId,
       commandType: this.appConstants.DEVICE.COMMAND.TYPE.EXECUTE,
       executionType: this.appConstants.DEVICE.COMMAND.EXECUTION.SYNCHRONOUS,
       command: cmdSplit[0],
-      arguments: cmdSplit.slice(1).join("")
+      arguments: cmdSplit.slice(1).join(" ")
     };
     this.blockInput = true;
     this.command = "";
