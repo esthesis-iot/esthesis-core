@@ -47,9 +47,13 @@ type flagsStruct struct {
 	EndpointHttp                  bool
 	EndpointHttpListeningIP       string
 	EndpointHttpListeningPort     int
+	EndpointHttpAuthUsername      string
+	EndpointHttpAuthPassword      string
 	EndpointMqtt                  bool
 	EndpointMqttListeningIP       string
 	EndpointMqttListeningPort     int
+	EndpointMqttAuthUsername      string
+	EndpointMqttAuthPassword      string
 	AutoUpdate                    bool
 	SecureProvisioning            bool
 	SignatureAlgorithm            string
@@ -201,6 +205,12 @@ func InitCmdFlags(osArgs []string) {
 	opt.IntVar(&Flags.EndpointHttpListeningPort, "endpointHttpListeningPort",
 		8080, opt.GetEnv("ENDPOINT_HTTP_LISTENING_PORT"),
 		opt.Description("The port in which the embedded HTTP server listens to"))
+	opt.StringVar(&Flags.EndpointHttpAuthUsername, "endpointHttpAuthUsername",
+		"", opt.GetEnv("ENDPOINT_HTTP_AUTH_USERNAME"),
+		opt.Description("The username to connect to the embedded HTTP endpoint"))
+	opt.StringVar(&Flags.EndpointHttpAuthPassword, "endpointHttpAuthPassword",
+		"", opt.GetEnv("ENDPOINT_HTTP_AUTH_PASSWORD"),
+		opt.Description("The password to connect to the embedded HTTP endpoint"))
 	opt.IntVar(&Flags.MqttTimeout, "mqttTimeout",
 		60, opt.GetEnv("MQTT_TIMEOUT"),
 		opt.Description("The number of seconds to wait before failing an outgoing MQTT message"))
@@ -213,6 +223,11 @@ func InitCmdFlags(osArgs []string) {
 	opt.IntVar(&Flags.EndpointMqttListeningPort, "endpointMqttListeningPort}",
 		1883, opt.GetEnv("ENDPOINT_MQTT_LISTENING_PORT"),
 		opt.Description("The port in which the embedded MQTT server listens to"))
+	opt.StringVar(&Flags.EndpointMqttAuthUsername, "endpointMqttAuthUsername",
+		"", opt.GetEnv("ENDPOINT_MQTT_AUTH_USERNAME"),
+		opt.Description("The username to connect to the embedded MQTT endpoint"))
+	opt.StringVar(&Flags.EndpointMqttAuthPassword, "endpointMqttAuthPassword",
+		"", opt.GetEnv("ENDPOINT_MQTT_AUTH_PASSWORD"))
 	opt.BoolVar(&Flags.AutoUpdate, "autoUpdate", false,
 		opt.GetEnv("AUTO_UPDATE"),
 		opt.Description("A flag indicating whether the device should try to automatically obtain newer firmware"+

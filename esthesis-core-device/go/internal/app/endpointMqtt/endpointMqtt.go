@@ -72,8 +72,11 @@ func Start(done chan bool) {
 	// Create a TCP listener.
 	tcp := listeners.NewTCP("t1", mqttListeningAddress)
 
-	// Add the listener to the server with default options (nil).
-	err := server.AddListener(tcp, nil)
+	// Create authentication handler
+	authHandler := createAuth(config.Flags.EndpointMqttAuthUsername, config.Flags.EndpointMqttAuthPassword)
+
+	// Add the listener to the server with the created auth handler
+	err := server.AddListener(tcp, &listeners.Config{Auth: authHandler})
 	if err != nil {
 		log.Fatal(err)
 	}

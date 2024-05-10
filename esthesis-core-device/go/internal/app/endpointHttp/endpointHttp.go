@@ -16,6 +16,23 @@ import (
 	"time"
 )
 
+func basicAuth(h httprouter.Handle) httprouter.Handle {
+	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+		requiredUser := config.Flags.EndpointHttpAuthUsername
+		requiredPassword := config.Flags.EndpointHttpAuthPassword
+
+		user, password, hasAuth := r.BasicAuth()
+
+		if (requiredUser == "" || requiredPassword == "") || (hasAuth && user == requiredUser && password == requiredPassword) {
+			h(w, r, ps)
+		} else {
+			// Request Basic Authentication
+			w.Header().Set("WWW-Authenticate", "Basic realm=Restricted")
+			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+		}
+	}
+}
+
 // Find the LUA handler for the provided custom telemetry endpoint name.
 func getCustomTelemetryEndpointLuaHandler(endpointName string) string {
 	for i := 0; i < len(config.Flags.LuaExtraHttpTelemetryEndpoint); i += 2 {
@@ -133,20 +150,27 @@ func Start(done chan bool) {
 
 	// Default HTTP routes
 	router := httprouter.New()
-	router.POST("/telemetry", telemetryEndpoint)
-	router.POST("/metadata", metadataEndpoint)
+	router.POST("/telemetry", basicAuth(telemetryEndpoint))
+	router.POST("/metadata", basicAuth(metadataEndpoint))
 
 	// Create custom HTTP routes for LuaExtraHttpTelemetryEndpoint.
 	for i := 0; i < len(config.Flags.LuaExtraHttpTelemetryEndpoint); i += 2 {
-		router.POST(config.Flags.LuaExtraHttpTelemetryEndpoint[i], customTelemetryEndpoint)
+		router.POST(config.Flags.LuaExtraHttpTelemetryEndpoint[i], basicAuth(customTelemetryEndpoint))
 	}
 	// Create custom HTTP routes for LuaExtraHttpMetadataEndpoint.
 	for i := 0; i < len(config.Flags.LuaExtraHttpMetadataEndpoint); i += 2 {
-		router.POST(config.Flags.LuaExtraHttpMetadataEndpoint[i], customMetadataEndpoint)
+		router.POST(config.Flags.LuaExtraHttpMetadataEndpoint[i], basicAuth(customMetadataEndpoint))
 	}
 
 	log.Infof("Starting embedded HTTP server at '%s'.",
 		httpListeningAddress)
+
+	if config.Flags.EndpointHttpAuthUsername == "" || config.Flags.EndpointHttpAuthPassword == "" {
+		log.Warnf("No basic auth defined for HTTP Endpoints!")
+	} else {
+		log.Debugf("Basic auth defined for HTTP Endpoints!"+
+			" Only authenticated user '%s' will be allowed", config.Flags.EndpointHttpAuthUsername)
+	}
 	srv := startHTTPServer(router, httpListeningAddress)
 
 	<-done

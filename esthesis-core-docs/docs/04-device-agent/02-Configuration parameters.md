@@ -79,6 +79,20 @@ command line arguments. The following tables lists all available configuration p
 			<td>Numeric</td>
 		</tr>
 		<tr>
+			<td><code>ENDPOINT_HTTP_AUTH_USERNAME, endpointHttpAuthUsername</code></td>
+			<td>The username to connect to the embedded HTTP endpoint.
+					If defined, it must be sent as Basic auth together with its password.
+			</td>
+			<td>Alphanumeric</td>
+		</tr>
+		<tr>
+			<td><code>ENDPOINT_HTTP_AUTH_PASSWORD, endpointHttpAuthPassword</code></td>
+			<td>The password to connect to the embedded HTTP endpoint.
+				  If defined, it must be sent as Basic auth together with its username.
+				</td>
+			<td>Alphanumeric</td>
+		</tr>
+		<tr>
 			<td><code>ENDPOINT_MQTT, endpointMqtt</code></td>
 			<td>Whether the embedded MQTT server is enabled or not.<br/><br/>
 					Default: false</td>
@@ -95,6 +109,18 @@ command line arguments. The following tables lists all available configuration p
 			<td>The port in which the embedded MQTT server listens to.<br/><br/>
 					Default: 1883</td>
 			<td>Numeric</td>
+		</tr>
+		<tr>
+			<td><code>ENDPOINT_MQTT_AUTH_USERNAME, endpointMqttAuthUsername</code></td>
+			<td>The username to connect to the embedded MQTT endpoint.
+				</td>
+			<td>Alphanumeric</td>
+		</tr>
+		<tr>
+			<td><code>ENDPOINT_MQTT_AUTH_PASSWORD, endpointMqttAuthPassword</code></td>
+			<td>The password to connect to the embedded MQTT endpoint.
+				</td>
+			<td>Alphanumeric</td>
 		</tr>
 		<tr>
 			<td><code>HEALTH_REPORT_INTERVAL, healthReportInterval</code></td>
