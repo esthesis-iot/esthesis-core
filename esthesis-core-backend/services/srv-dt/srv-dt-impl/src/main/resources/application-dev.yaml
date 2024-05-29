@@ -9,7 +9,7 @@ quarkus:
         level: DEBUG
     handler:
       gelf:
-        enabled: true
+        enabled: false
         host: "localhost"
         port: 12201
   rest-client:
@@ -24,7 +24,7 @@ quarkus:
         password: esthesis-system
   otel:
     sdk:
-      disabled: false
+      disabled: true
     traces:
       sampler: always_on
     exporter:

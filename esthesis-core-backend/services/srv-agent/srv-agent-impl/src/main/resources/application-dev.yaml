@@ -11,14 +11,14 @@ quarkus:
         level: DEBUG
     handler:
       gelf:
-        enabled: true
+        enabled: false
         host: "localhost"
         port: 12201
   mongodb:
     connection-string: mongodb://mongodb-headless.esthesis:27017
   otel:
     sdk:
-      disabled: false
+      disabled: true
     traces:
       sampler: always_on
     exporter:

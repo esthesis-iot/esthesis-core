@@ -10,7 +10,7 @@ quarkus:
         level: DEBUG
     handler:
       gelf:
-        enabled: true
+        enabled: false
         host: "localhost"
         port: 12201
   mongodb:
@@ -26,7 +26,7 @@ quarkus:
     hosts: redis://:esthesis-system@redis-master.esthesis:6379/0
   otel:
     sdk:
-      disabled: false
+      disabled: true
     traces:
       sampler: always_on
     exporter:
