@@ -18,15 +18,20 @@ When using the `publish.sh` script to prepare your images, you can define the `E
 environment variable to point to a private registry. This variable should point to the IP address,
 port, and username of your private registry, for example:
 ```shell
-ESTHESIS_REGISTRY_TYPE=open ESTHESIS_REGISTRY_URL=192.168.10.47:32000/esthesis ./publish.sh
+ESTHESIS_REGISTRY_TYPE=open ESTHESIS_REGISTRY_URL=192.168.50.211:5000/esthesis ./publish.sh
 ```
+
+:::tip
+192.168.50.211:5000 is used as an example in all following configurations too, change it according
+to your own setup.
+:::
 
 Note that since your private registry will be insecure, you need to add it to the insecure registries
 list. To do so, create a file `buildkit.toml` and place it in the same level as the `publish.sh` script.
 The contents of this file should be similar to:
 ```toml
 insecure-entitlements = [ "network.host", "security.insecure"]
-[registry."192.168.10.47:32000"]
+[registry."192.168.50.211:5000"]
   http = true
   insecure = true
 ```
@@ -45,7 +50,7 @@ your private registry instead of e.g. Docker Hub. To do so, you can define the `
 environment variable to point to the private registry. This variable should point to the IP address,
 port, and username of your private registry, for example:
 ```shell
-ESTHESIS_REGISTRY_URL=192.168.10.47:32000/esthesis helmfile sync
+ESTHESIS_REGISTRY_URL=192.168.50.211:5000/esthesis helmfile sync
 ```
 
 :::tip
@@ -57,10 +62,20 @@ define `ESTHESIS_SINGLE_NODE=true` environmental variable.
 ## Deploying Dataflows
 To use a private registry when deploying a Dataflow, you can use the
 "Custom Docker Registry" field in the Dataflow definition screen specifying the same registry
-coordinates you used when building the services, for example `192.168.10.47:32000/esthesis`. Similarly
+coordinates you used when building the services, for example `192.168.50.211:5000/esthesis`. Similarly
 to when building the services, you should configure your Kubernetes distribution to be able to pull
 from that insecure registry. The exact way this is done depends on the Kubernetes distribution you
 are using.
+
+- K3S:\
+	Edit or create `/etc/rancher/k3s/registries.yaml` and add the following lines:
+	```toml
+	mirrors:
+  "192.168.50.211:5000":
+    endpoint:
+      - "http://192.168.50.211:5000"
+	```
+ 	Restart the K3S service with `sudo systemctl restart k3s.service`.
 
 Depending on your Kubernetes distribution, you might be able to get away with adding the registry to
 the insecure registries list by replacing the IP address of your registry with `localhost`, for
