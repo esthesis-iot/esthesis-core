@@ -23,6 +23,10 @@ fi
 
 # Set environment variables.
 NAMESPACE=$(kubens -c)
+if [ "$NAMESPACE" = "" ]; then
+	echo "***ERROR: Could not find current namespace. Exiting."
+	exit 1
+fi
 ESTHESIS_KEYCLOAK_PUBLIC_KEY_URL="http://keycloak.$NAMESPACE/realms/esthesis/protocol/openid-connect/certs"
 ESTHESIS_KEYCLOAK_AUTH_SERVER_URL="http://keycloak.$NAMESPACE/realms/esthesis"
 ESTHESIS_MONGODB_URL="mongodb://mongodb-headless.$NAMESPACE:27017"
