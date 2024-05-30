@@ -7,7 +7,7 @@ esthesis Core. The agent is created in Go and can be compiled for any platform s
 
 :::tip
 When running the agent for the first time for a specific hardware Id, make sure that the tag you
-specify via `--tags` exists in esthesis CORE and it is assigned to the registered MQTT server in
+specify via `--tags` exists in esthesis CORE, and it is assigned to the registered MQTT server in
 infrastructure page.
 :::
 
@@ -39,6 +39,7 @@ go run cmd/main.go \
     --provisioningScript=$HOME/.esthesis/device/$HID/firmware.sh \
     --autoUpdate=false --secureProvisioning=true \
     --versionReport=true \
+    --tags=dev \
     --logLevel=debug
 ```
 
@@ -61,6 +62,7 @@ air --build.cmd "go build -o /tmp/esthesis-core-device cmd/main.go" --build.bin 
 	--provisioningScript=$HOME/.esthesis/device/$HID/firmware.sh \
 	--autoUpdate=true --secureProvisioning=true \
 	--versionReport=true \
+	--tags=dev \
 	--logLevel=debug
 ```
 
@@ -95,6 +97,7 @@ to your development esthesis Core instance, you need to prepare the following:
 			-e LOG_LEVEL=debug \
 			-e AUTO_UPDATE=false \
 			-e SECURE_PROVISIONING=true \
+ 			-e TAGS=dev \
 			--net container:kubefwd \
 			$REGISTRY_URL/esthesisiot/esthesis-core-device:latest
 	done
@@ -119,6 +122,7 @@ for ((i=1; i<=3; i++)); do
 		--env="PROVISIONING_SCRIPT=/app/.esthesis/firmware.sh" \
 		--env="LOG_LEVEL=debug" \
 		--env="AUTO_UPDATE=false" \
-		--env="SECURE_PROVISIONING=true"
+		--env="SECURE_PROVISIONING=true" \
+		--env="TAGS=dev" \
 done
 ```
