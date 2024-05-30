@@ -27,6 +27,9 @@ quarkus:
   swagger-ui:
     always-include: true
     path: /api/openapi-ui
+    title: esthes.is Digital Twin API
+    operations-sorter: alpha
+    tags-sorter: alpha
     urls:
       default: /api/dt/openapi
   smallrye-openapi:

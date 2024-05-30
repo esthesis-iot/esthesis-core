@@ -21,7 +21,7 @@ export class AboutComponent extends SecurityBaseComponent implements OnInit {
     href = href.substring(0, href.length - this.pageRouteName.length);
 
     this.dtJsonUrl = href + "/api/dt/openapi";
-    this.dtSwaggerUrl = href + "/api/dt/openapi-ui/";
+    this.dtSwaggerUrl = href + "/api/dt/openapi-ui/index.html";
   }
 
   ngOnInit() {
@@ -29,5 +29,4 @@ export class AboutComponent extends SecurityBaseComponent implements OnInit {
       this.about = onNext;
     });
   }
-
 }
