@@ -163,15 +163,9 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
         },
         "mqtt-broker": {
           "cluster-url": _.get(this.model, "config.mqtt-broker.cluster-url"),
+          "keep-alive-interval": 30
         },
         mqtt: {
-          "ping-topic": "esthesis/ping",
-          "telemetry-topic": "esthesis/telemetry",
-          "metadata-topic": "esthesis/metadata",
-          "command-request-topic": "esthesis/command/request",
-          "command-reply-topic": "esthesis/command/reply"
-        },
-        "config.mqtt": {
           "ping-topic": "esthesis/ping",
           "telemetry-topic": "esthesis/telemetry",
           "metadata-topic": "esthesis/metadata",
