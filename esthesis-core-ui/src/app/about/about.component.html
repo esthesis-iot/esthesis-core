@@ -1,9 +1,9 @@
 <div class="card w-full bg-base-200 rounded-b-none">
   <div class="card-body">
-    <h2 class="card-title text-2xl flex flex-row justify-between mb-10">
+    <h2 class="card-title text-2xl flex flex-row justify-between">
       <div class="flex flex-row gap-2">
         <fa-icon icon="address-card"></fa-icon>
-        <div>Devices</div>
+        <div>About</div>
       </div>
     </h2>
     <div>
@@ -11,28 +11,28 @@
         <mat-tab>
           <ng-template mat-tab-label>General</ng-template>
           <ng-template matTabContent>
-            <div fxLayout="column" fxLayoutGap="1rem">
+            <div>
               <div>
                 <div class="font-bold">Version</div>
                 <div>{{about.gitVersion}}</div>
               </div>
-              <div>
+              <div class="mt-2">
                 <div class="font-bold">Git commit id</div>
                 <div>{{about.gitCommitId}}</div>
               </div>
-              <div>
+              <div class="mt-2">
                 <div class="font-bold">Git build date</div>
                 <div
                   *ngIf="about.gitBuildTime">{{about.gitBuildTime | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
               </div>
-              <div>
+              <div class="mt-2">
                 <div class="font-bold">Digital Twin OpenAPI specification</div>
                 <div>
                   <a [href]="dtJsonUrl" target="_blank">{{dtJsonUrl}}</a>
                   <fa-icon icon="arrow-up-right-from-square" class="ml-2"></fa-icon>
                 </div>
               </div>
-              <div>
+              <div class="mt-2">
                 <div class="font-bold">Digital Twin OpenAPI UI</div>
                 <div>
                   <a [href]="dtSwaggerUrl" target="_blank">{{dtSwaggerUrl}}</a>
