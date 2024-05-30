@@ -35,6 +35,11 @@
       <artifactId>utl-redis</artifactId>
       <version>3.0.38-SNAPSHOT</version>
     </dependency>
+		<dependency>
+			<groupId>esthesis</groupId>
+			<artifactId>srv-command-client</artifactId>
+			<version>3.0.38-SNAPSHOT</version>
+		</dependency>
 
   </dependencies>
 </project>

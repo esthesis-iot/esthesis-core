@@ -1,11 +1,16 @@
 package esthesis.service.dt.impl.resource;
 
+import esthesis.avro.CommandType;
+import esthesis.avro.ExecutionType;
+import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.dt.dto.DTValueReplyDTO;
 import esthesis.service.dt.impl.service.DTService;
 import esthesis.service.dt.resource.DTResource;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
@@ -67,5 +72,47 @@ public class DTResourceImpl implements DTResource {
 		} else {
 			return Response.status(Status.NO_CONTENT).build();
 		}
+	}
+
+	@Override
+	public Response executeCommandSyncByHardwareId(String hardwareId, String command) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.e, ExecutionType.s, command);
+		commandRequest.setHardwareIds(hardwareId);
+		return Response.ok(dtService.sendCommandSync(commandRequest)).build();
+	}
+
+	@Override
+	public Response executeCommandAsyncByHardwareId(String hardwareId, String command) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.e, ExecutionType.a, command);
+		commandRequest.setHardwareIds(hardwareId);
+		return Response.ok(dtService.sendCommandAsync(commandRequest)).build();
+	}
+
+	@Override
+	public Response executeCommandSyncByTag(String tag, String command) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.e, ExecutionType.s, command);
+		commandRequest.setTags(tag);
+		return Response.ok(dtService.sendCommandSync(commandRequest)).build();
+	}
+
+	@Override
+	public Response executeCommandAsyncByTag(String tag, String command) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.e, ExecutionType.a, command);
+		commandRequest.setTags(tag);
+		return Response.ok(dtService.sendCommandAsync(commandRequest)).build();
+	}
+
+	@Override
+	public Response getCommandReply(String correlationId) {
+		return  Response.ok(dtService.getReplies(correlationId)).build();
+	}
+
+	private CommandRequestEntity createCommandRequest(CommandType commandType, ExecutionType executionType, String command){
+		return new CommandRequestEntity()
+			.setCreatedOn(Instant.now())
+			.setCommandType(commandType)
+			.setExecutionType(executionType)
+			.setCommand(command)
+			.setArguments("");
 	}
 }

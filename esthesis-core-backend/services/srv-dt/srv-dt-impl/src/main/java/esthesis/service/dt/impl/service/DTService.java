@@ -1,20 +1,25 @@
 package esthesis.service.dt.impl.service;
 
-import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
-import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
-
+import esthesis.common.entity.CommandReplyEntity;
+import esthesis.service.command.entity.CommandRequestEntity;
+import esthesis.service.command.resource.CommandSystemResource;
 import esthesis.service.dt.dto.DTValueReplyDTO;
 import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+
+import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
+import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
 
 @Slf4j
 @Transactional
@@ -23,6 +28,12 @@ public class DTService {
 
 	@Inject
 	RedisUtils redisUtils;
+
+
+	@Inject
+	@RestClient
+	CommandSystemResource commandSystemResource;
+
 
 	/**
 	 * Finds a specific value previously cached for a device.
@@ -84,4 +95,18 @@ public class DTService {
 
 		return values;
 	}
+
+	public String sendCommandAsync(CommandRequestEntity commandRequestEntity) {
+		return  commandSystemResource.save(commandRequestEntity);
+	}
+
+	public List<CommandReplyEntity> sendCommandSync(CommandRequestEntity commandRequestEntity) {
+		String correlationId = commandSystemResource.save(commandRequestEntity);
+		return getReplies(correlationId);
+	}
+
+	public List<CommandReplyEntity> getReplies(String correlationId){
+		return  commandSystemResource.getReplies(correlationId);
+	}
+
 }

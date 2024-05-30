@@ -43,3 +43,6 @@ quarkus:
     ApplicationSystemResource:
       url: http://esthesis-core-srv-application-service:8080
       scope: Singleton
+    CommandSystemResource:
+      url: http://esthesis-core-srv-command-service:8080
+      scope: Singleton

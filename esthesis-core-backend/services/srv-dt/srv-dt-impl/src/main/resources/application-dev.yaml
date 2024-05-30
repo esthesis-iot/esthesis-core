@@ -16,6 +16,9 @@ quarkus:
     ApplicationSystemResource:
       url: http://localhost:59090
       scope: Singleton
+    CommandSystemResource:
+      url: http://localhost:59080
+      scope: Singleton
   oidc-client:
     auth-server-url: http://keycloak.esthesis/realms/esthesis
     grant-options:
