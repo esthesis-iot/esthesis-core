@@ -6,7 +6,8 @@ production-like Kubernetes cluster can pull them from. Considering esthesis Core
 services with support of multiple architectures, pushing all those images to e.g. Docker Hub can take a
 long time.
 
-To speed up the process you can use the private Container Registry provided by the dependencies Helm Chart.
+To speed up the process you can use the private Container Registry provided by esthesis dependencies
+Helm Chart.
 The chart will deploy a private registry in your Kubernetes cluster as a NodePort Service. The service
 will be assigned a random port, so you should take note of the IP of your worker node as well as the
 assigned port. You can then use the `publish.sh` script to build and push your images to the private
