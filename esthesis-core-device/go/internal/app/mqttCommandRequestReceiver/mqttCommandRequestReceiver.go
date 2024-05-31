@@ -10,6 +10,7 @@ import (
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/dto"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/util"
 	log "github.com/sirupsen/logrus"
+	"io"
 	"os/exec"
 	"strings"
 )
@@ -34,13 +35,75 @@ func executeCommand(command *dto.CommandRequest, client mqtt.Client) {
 		cmd.Args = append(cmd.Args, arg)
 	}
 
+	// Function to publish the command reply
+	publishCommandReply := func(commandReply dto.CommandReply) {
+		var replyText = serialiseCommandReply(&commandReply)
+		log.Debugf("Publishing to topic '%s' command reply '%s' .",
+			commandReplyTopic, util.AbbrS(replyText))
+		token := client.Publish(commandReplyTopic, 0, false, replyText)
+		token.Wait()
+	}
+
 	// According to the execution type of the command, we either fire-and-forget
 	// or wait to collect the results.
 	if command.ExecutionType == appConstants.CommandExecutionTypeAsynchronous {
-		err := cmd.Start()
+		// Create pipes for stdout and stderr
+		stdoutPipe, err := cmd.StdoutPipe()
 		if err != nil {
-			log.WithError(err).Errorf("Could not execute asynchronous command.")
+			log.WithError(err).Errorf("Could not create stdout pipe for asynchronous command.")
+			commandReply := dto.CommandReply{
+				CorrelationId: command.Id,
+				Success:       false,
+				Output:        err.Error(),
+			}
+			publishCommandReply(commandReply)
+			return
 		}
+		stderrPipe, err := cmd.StderrPipe()
+		if err != nil {
+			log.WithError(err).Errorf("Could not create stderr pipe for asynchronous command.")
+			commandReply := dto.CommandReply{
+				CorrelationId: command.Id,
+				Success:       false,
+				Output:        err.Error(),
+			}
+			publishCommandReply(commandReply)
+			return
+		}
+
+		// Start the command
+		err = cmd.Start()
+		if err != nil {
+			log.WithError(err).Errorf("Could not start asynchronous command.")
+			commandReply := dto.CommandReply{
+				CorrelationId: command.Id,
+				Success:       false,
+				Output:        err.Error(),
+			}
+			publishCommandReply(commandReply)
+			return
+		}
+
+		// Read the output in a separate goroutine
+		go func() {
+			// Capture stdout
+			stdout, _ := io.ReadAll(stdoutPipe)
+			// Capture stderr
+			stderr, _ := io.ReadAll(stderrPipe)
+
+			err = cmd.Wait()
+			var commandReply dto.CommandReply
+			commandReply.CorrelationId = command.Id
+			if err != nil {
+				log.WithError(err).Errorf("Could not complete asynchronous command.")
+				commandReply.Success = false
+				commandReply.Output = err.Error() + ": " + string(stderr)
+			} else {
+				commandReply.Success = true
+				commandReply.Output = strings.TrimSpace(string(stdout))
+			}
+			publishCommandReply(commandReply)
+		}()
 	} else if command.ExecutionType == appConstants.CommandExecutionTypeSynchronous {
 		out, err := cmd.Output()
 		// Send a reply with the results of this command.
@@ -54,12 +117,7 @@ func executeCommand(command *dto.CommandRequest, client mqtt.Client) {
 			commandReply.Success = true
 			commandReply.Output = strings.TrimSpace(string(out))
 		}
-
-		var replyText = serialiseCommandReply(&commandReply)
-		log.Debugf("Publishing to topic '%s' command reply '%s' .",
-			commandReplyTopic, util.AbbrS(replyText))
-		token := client.Publish(commandReplyTopic, 0, false, replyText)
-		token.Wait()
+		publishCommandReply(commandReply)
 	} else {
 		log.Errorf("Unknown command type '%s'.", command.ExecutionType)
 	}
