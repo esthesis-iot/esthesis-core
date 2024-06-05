@@ -26,14 +26,18 @@ quarkus:
       disabled: true
   swagger-ui:
     always-include: true
-    path: /api/openapi-ui
+    path: /api/dt/openapi-ui
     title: esthes.is Digital Twin API
     operations-sorter: alpha
     tags-sorter: alpha
     urls:
       default: /api/dt/openapi
   smallrye-openapi:
-    path: /api/openapi
+    path: /api/dt/openapi
+    security-scheme: api-key
+    security-scheme-name: X-ESTHESIS-DT-APP
+    api-key-parameter-in: header
+    api-key-parameter-name: X-ESTHESIS-DT-APP
   oidc-client:
     client-id: esthesis
     grant:
