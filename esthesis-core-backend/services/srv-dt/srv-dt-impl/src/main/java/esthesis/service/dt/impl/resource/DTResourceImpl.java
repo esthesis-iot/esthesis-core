@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.Response.Status;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -104,10 +105,126 @@ public class DTResourceImpl implements DTResource {
 
 	@Override
 	public Response getCommandReply(String correlationId) {
-		return  Response.ok(dtService.getReplies(correlationId)).build();
+		return Response.ok(dtService.getReplies(correlationId)).build();
 	}
 
-	private CommandRequestEntity createCommandRequest(CommandType commandType, ExecutionType executionType, String command){
+	@Override
+	public Response pingCommandSyncByHardwareId(String hardwareId) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.p, ExecutionType.s);
+		commandRequest.setHardwareIds(hardwareId);
+		return Response.ok(dtService.sendCommandSync(commandRequest)).build();
+	}
+
+	@Override
+	public Response pingCommandAsyncByHardwareId(String hardwareId) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.p, ExecutionType.a);
+		commandRequest.setHardwareIds(hardwareId);
+		return Response.ok(dtService.sendCommandAsync(commandRequest)).build();
+	}
+
+	@Override
+	public Response pingCommandSyncByTag(String tag) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.p, ExecutionType.s);
+		commandRequest.setTags(tag);
+		return Response.ok(dtService.sendCommandSync(commandRequest)).build();
+	}
+
+	@Override
+	public Response pingCommandAsyncByTag(String tag) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.p, ExecutionType.a);
+		commandRequest.setTags(tag);
+		return Response.ok(dtService.sendCommandAsync(commandRequest)).build();
+	}
+
+	@Override
+	public Response shutdownCommandSyncByHardwareId(String hardwareId) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.s, ExecutionType.s);
+		commandRequest.setHardwareIds(hardwareId);
+		return Response.ok(dtService.sendCommandSync(commandRequest)).build();
+	}
+
+	@Override
+	public Response shutdownCommandAsyncByHardwareId(String hardwareId) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.s, ExecutionType.a);
+		commandRequest.setHardwareIds(hardwareId);
+		return Response.ok(dtService.sendCommandAsync(commandRequest)).build();
+	}
+
+	@Override
+	public Response shutdownCommandSyncByTag(String tag) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.s, ExecutionType.s);
+		commandRequest.setTags(tag);
+		return Response.ok(dtService.sendCommandSync(commandRequest)).build();
+	}
+
+	@Override
+	public Response shutdownCommandAsyncByTag(String tag) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.s, ExecutionType.a);
+		commandRequest.setTags(tag);
+		return Response.ok(dtService.sendCommandAsync(commandRequest)).build();
+	}
+
+	@Override
+	public Response rebootCommandSyncByHardwareId(String hardwareId) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.r, ExecutionType.s);
+		commandRequest.setHardwareIds(hardwareId);
+		return Response.ok(dtService.sendCommandSync(commandRequest)).build();
+	}
+
+	@Override
+	public Response rebootCommandAsyncByHardwareId(String hardwareId) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.r, ExecutionType.a);
+		commandRequest.setHardwareIds(hardwareId);
+		return Response.ok(dtService.sendCommandAsync(commandRequest)).build();
+	}
+
+	@Override
+	public Response rebootCommandSyncByTag(String tag) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.r, ExecutionType.s);
+		commandRequest.setTags(tag);
+		return Response.ok(dtService.sendCommandSync(commandRequest)).build();
+	}
+
+	@Override
+	public Response rebootCommandAsyncByTag(String tag) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.r, ExecutionType.a);
+		commandRequest.setTags(tag);
+		return Response.ok(dtService.sendCommandAsync(commandRequest)).build();
+	}
+
+	@Override
+	public Response firmwareCommandSyncByHardwareId(String hardwareId) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.f, ExecutionType.s);
+		commandRequest.setHardwareIds(hardwareId);
+		return Response.ok(dtService.sendCommandSync(commandRequest)).build();
+	}
+
+	@Override
+	public Response firmwareCommandAsyncByHardwareId(String hardwareId) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.f, ExecutionType.a);
+		commandRequest.setHardwareIds(hardwareId);
+		return Response.ok(dtService.sendCommandAsync(commandRequest)).build();
+	}
+
+	@Override
+	public Response firmwareCommandSyncByTag(String tag) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.f, ExecutionType.s);
+		commandRequest.setTags(tag);
+		return Response.ok(dtService.sendCommandSync(commandRequest)).build();
+	}
+
+	@Override
+	public Response firmwareCommandAsyncByTag(String tag) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.f, ExecutionType.a);
+		commandRequest.setTags(tag);
+		return Response.ok(dtService.sendCommandAsync(commandRequest)).build();
+	}
+
+	private CommandRequestEntity createCommandRequest(CommandType commandType, ExecutionType executionType) {
+		return createCommandRequest(commandType, executionType, "");
+	}
+
+	private CommandRequestEntity createCommandRequest(CommandType commandType, ExecutionType executionType, String command) {
 		return new CommandRequestEntity()
 			.setCreatedOn(Instant.now())
 			.setCommandType(commandType)

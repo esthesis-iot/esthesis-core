@@ -1,6 +1,7 @@
 package autoUpdate
 
 import (
+	"errors"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/cryptoUtil"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/dto"
@@ -27,21 +28,23 @@ func IsUpdateInProgress() bool {
 	return updateInProgress
 }
 
-func Update(packageId string) {
+func Update(packageId string) (string, error) {
+	var errMessage string
 	// Find where provisioning information should be requested from.
 	provisioningUrl := config.GetRegistrationProperty(config.RegistrationPropertyProvisioningUrl)
 
 	// If a firmware update is already in progress, skip this request.
 	if IsUpdateInProgress() {
-		log.Debugf("Update already in progress. Skipping.")
-		return
+		errMessage = "Update already in progress. Skipping."
+		log.Debugf(errMessage)
+		return "", errors.New(errMessage)
 	}
 
 	// If a firmware update handling script is not present, skip this request.
 	if !util.IsFileExists(config.Flags.ProvisioningScript) {
 		log.Warnf("Firmware update handling script '%s' not found, skipping firmware update.",
 			config.Flags.ProvisioningScript)
-		return
+		return "", errors.New("update handling script not found")
 	}
 
 	// Proceed with the update.
@@ -55,9 +58,10 @@ func Update(packageId string) {
 	// Read the version of the currently installed firmware.
 	currentVersion := util.GetFirmwareVersion()
 	if currentVersion == "" {
-		log.Error("Current firmware version is unknown, aborting firmware upgrade.")
+		errMessage = "Current firmware version is unknown, aborting firmware upgrade."
+		log.Error(errMessage)
 		terminateUpdate()
-		return
+		return "", errors.New(errMessage)
 	}
 	log.Debugf("Current firmware version is '%s'.", currentVersion)
 
@@ -70,7 +74,7 @@ func Update(packageId string) {
 		if err != nil {
 			log.WithError(err).Errorf("Could not sign hardware ID.")
 			terminateUpdate()
-			return
+			return "", errors.New(err.Error())
 		} else {
 			log.Debugf("Signature: %s", signature)
 			token = signature
@@ -118,17 +122,18 @@ func Update(packageId string) {
 	if err != nil {
 		log.WithError(err).Errorf("Could not get provisioning info.")
 		terminateUpdate()
-		return
+		return "", errors.New(err.Error())
 	}
 	if response.IsError() {
 		log.Errorf("Could not get provisioning info due to '%s'.", response.Status())
 		terminateUpdate()
-		return
+		return "", errors.New(response.String())
 	}
 	if agentProvisioningInfoResponse == nil || agentProvisioningInfoResponse.Id == "" {
-		log.Debugf("No provisioning info available.")
+		errMessage = "No provisioning info available."
+		log.Debugf(errMessage)
 		terminateUpdate()
-		return
+		return "", errors.New(errMessage)
 	}
 
 	// Fetch provisioning package.
@@ -141,12 +146,12 @@ func Update(packageId string) {
 	if err != nil {
 		log.WithError(err).Errorf("Could not download provisioning package.")
 		terminateUpdate()
-		return
+		return "", errors.New(err.Error())
 	}
 	if response.IsError() {
 		log.Errorf("Could not download provisioning package due to '%s'.", response.Status())
 		terminateUpdate()
-		return
+		return "", errors.New(response.String())
 	}
 
 	log.Debugf("Provisioning package downloaded to '%s'.", downloadFilename)
@@ -157,13 +162,13 @@ func Update(packageId string) {
 		if err != nil {
 			log.WithError(err).Errorf("Could not hash downloaded file.")
 			terminateUpdate()
-			return
+			return "", errors.New(err.Error())
 		}
 		if encoded != agentProvisioningInfoResponse.Sha256 {
 			log.Errorf("Hash of downloaded file does not match, calculated '%s' but expected '%s'.",
 				encoded, agentProvisioningInfoResponse.Sha256)
 			terminateUpdate()
-			return
+			return "", errors.New("hash of downloaded file does not match")
 		} else {
 			log.Debugf("Hash of downloaded file matches, '%s'.", encoded)
 		}
@@ -193,9 +198,12 @@ func Update(packageId string) {
 	err = cmd.Start()
 	if err != nil {
 		log.WithError(err).Errorf("Could not execute firmware update.")
+		return "", errors.New(err.Error())
 	}
-	log.Info("Firmware update initiated.")
+	infoMessage := "Firmware update initiated."
+	log.Info(infoMessage)
 	terminateUpdate()
+	return infoMessage, nil
 }
 
 func Start(done chan bool) {
