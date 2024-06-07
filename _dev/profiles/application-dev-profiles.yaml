@@ -19,12 +19,12 @@
           level: DEBUG
         "org.mongodb":
           level: DEBUG
-"%debug-token":
+"%debug-oidc":
   quarkus:
     log:
       category:
-        "io.quarkus.oidc.token.propagation.reactive":
-          level: DEBUG
+        "io.quarkus.oidc":
+          level: TRACE
 "%debug-camel":
   quarkus:
     log:

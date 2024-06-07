@@ -13,6 +13,7 @@ export ESTHESIS_DFL_MQTT_TOPIC_TELEMETRY=esthesis/telemetry
 export ESTHESIS_DFL_MQTT_TOPIC_METADATA=esthesis/metadata
 export ESTHESIS_DFL_MQTT_TOPIC_COMMAND_REQUEST=esthesis/command/request
 export ESTHESIS_DFL_MQTT_TOPIC_COMMAND_REPLY=esthesis/command/reply
+export ESTHESIS_DFL_MQTT_BROKER_KEEP_ALIVE_INTERVAL=30
 export ESTHESIS_DFL_KAFKA_TOPIC_PING=esthesis-ping
 export ESTHESIS_DFL_KAFKA_TOPIC_TELEMETRY=esthesis-telemetry
 export ESTHESIS_DFL_KAFKA_TOPIC_METADATA=esthesis-metadata
@@ -23,4 +24,9 @@ export ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.$(kubens -c):9092
 export ESTHESIS_DFL_KAFKA_SECURITY_PROTOCOL=SASL_PLAINTEXT
 export ESTHESIS_DFL_KAFKA_SASL_MECHANISM=SCRAM-SHA-512
 export ESTHESIS_DFL_KAFKA_JAAS_CONFIG="org.apache.kafka.common.security.scram.ScramLoginModule required username=esthesis-system password=esthesis-system;"
-source ../../../_dev/dev-scripts/start-quarkus.sh "." "0" "39152" "$1"
+source ../../../_dev/dev-scripts/start-quarkus.sh \
+	LAUNCH_FOLDER="$(pwd)" \
+	MVNW_DIR="$(pwd)/../.." \
+	DEBUG_PORT="39152" \
+	PROFILES="${1:-dev}${1:+,dev}"
+

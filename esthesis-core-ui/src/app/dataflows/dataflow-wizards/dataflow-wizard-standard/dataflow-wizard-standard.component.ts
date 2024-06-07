@@ -27,12 +27,7 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
 
   ngOnInit(): void {
     // Find namespaces.
-    this.dataflowService.getNamespaces().subscribe(onNext => {
-      this.dataflowService.replaceSelectValues(this.fields, "namespace",
-        onNext.map(t => {
-          return {label: t, value: t};
-        }));
-    });
+    this.refreshNamespaces();
 
     // Find Docker tags for this dataflow. Since this is a wizard and all dataflows share versions,
     // we just use ping-updater as a reference.
@@ -328,4 +323,13 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
       }
     });
   };
+
+  refreshNamespaces() {
+    this.dataflowService.getNamespaces().subscribe(onNext => {
+      this.dataflowService.replaceSelectValues(this.fields, "namespace",
+        onNext.map(t => {
+          return {label: t, value: t};
+        }));
+    });
+  }
 }

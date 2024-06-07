@@ -26,9 +26,3 @@ quarkus:
           endpoint: http://grafana-tempo-distributor.esthesis:4317
   config:
     locations: "../../../../_dev/profiles"
-
-esthesis:
-  oidc:
-    authority: "http://keycloak.esthesis/realms/esthesis"
-    redirect-url: "http://localhost:4200/callback"
-    post-logout-redirect-uri: "http://localhost:4200/logged-out"

@@ -5,7 +5,6 @@ quarkus:
     host: 0.0.0.0
     cors: false
   log:
-    min-level: TRACE
     category:
       esthesis:
         level: DEBUG
@@ -14,8 +13,6 @@ quarkus:
         enabled: false
         host: "localhost"
         port: 12201
-  mongodb:
-    connection-string: mongodb://mongodb-headless.esthesis:27017
   otel:
     sdk:
       disabled: true
@@ -47,21 +44,10 @@ quarkus:
     InfrastructureSystemResource:
       url: http://localhost:59110
       scope: Singleton
-  oidc-client:
-    auth-server-url: http://keycloak.esthesis/realms/esthesis
-    grant-options:
-      password:
-        username: esthesis-system
-        password: esthesis-system
-  redis:
-    hosts: redis://:esthesis-system@redis-master.esthesis:6379/0
   config:
     locations: "../../../../_dev/profiles"
 
 kafka:
-  bootstrap:
-    servers:
-      - kafka.esthesis:9092
   security:
     protocol: SASL_PLAINTEXT
   sasl:

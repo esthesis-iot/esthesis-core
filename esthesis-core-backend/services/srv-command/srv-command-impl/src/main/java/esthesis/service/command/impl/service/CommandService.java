@@ -28,7 +28,6 @@ import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Message;
@@ -56,9 +55,6 @@ public class CommandService {
 
 	@Inject
 	CommandReplyService commandReplyService;
-
-	@ConfigProperty(name = "quarkus.application.name")
-	String appName;
 
 	// The emitter for sending command requests to Kafka. The name of the topic is dynamically set
 	// based on application settings, however we need to provide a default value here to be able to

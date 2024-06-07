@@ -8,4 +8,12 @@
 [ -e "local-env.sh" ] && source "local-env.sh"
 
 # Call starter script
-source ../../../_dev/dev-scripts/start-quarkus.sh "srv-infrastructure-impl" "59110" "59111" "$1"
+source ../../../_dev/dev-scripts/start-quarkus.sh \
+	LAUNCH_FOLDER="$(pwd)/srv-infrastructure-impl" \
+	MVNW_DIR="$(pwd)/../.." \
+	WEB_PORT="59110" \
+	DEBUG_PORT="59111" \
+	PROFILES="${1:-dev}${1:+,dev}" \
+	OIDC="true" \
+	OIDC_CLIENT="true" \
+	MONGODB="true"

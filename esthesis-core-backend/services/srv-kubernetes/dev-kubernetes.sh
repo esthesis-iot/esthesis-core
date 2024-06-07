@@ -8,4 +8,11 @@
 [ -e "local-env.sh" ] && source "local-env.sh"
 
 # Call starter script
-source ../../../_dev/dev-scripts/start-quarkus.sh "srv-kubernetes-impl" "59050" "59051" "$1"
+source ../../../_dev/dev-scripts/start-quarkus.sh \
+	LAUNCH_FOLDER="$(pwd)/srv-kubernetes-impl" \
+	MVNW_DIR="$(pwd)/../.." \
+	WEB_PORT="59050" \
+	DEBUG_PORT="59051" \
+	PROFILES="${1:-dev}${1:+,dev}" \
+	OIDC="true" \
+	MONGODB="true"

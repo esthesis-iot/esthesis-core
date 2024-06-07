@@ -31,16 +31,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bson.types.ObjectId;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @Transactional
 @ApplicationScoped
 public class CampaignService extends BaseService<CampaignEntity> {
-
-	@Inject
-	JsonWebToken jwt;
 
 	@Inject
 	ZeebeClient zeebeClient;

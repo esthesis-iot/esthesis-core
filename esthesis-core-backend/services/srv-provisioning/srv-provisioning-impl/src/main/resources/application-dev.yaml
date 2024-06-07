@@ -22,7 +22,6 @@ quarkus:
       url: http://localhost:59140
       scope: Singleton
   mongodb:
-    connection-string: mongodb://mongodb-headless.esthesis:27017
     database: esthesiscore
     credentials:
       username: esthesis-system
@@ -36,19 +35,5 @@ quarkus:
       otlp:
         traces:
           endpoint: http://grafana-tempo-distributor.esthesis:4317
-  oidc-client:
-    auth-server-url: http://keycloak.esthesis/realms/esthesis
-    grant-options:
-      password:
-        username: esthesis-system
-        password: esthesis-system
-  redis:
-    hosts: redis://:esthesis-system@redis-master.esthesis:6379/0
   config:
     locations: "../../../../_dev/profiles"
-
-mp:
-  jwt:
-    verify:
-      publickey:
-        location: http://keycloak.esthesis/realms/esthesis/protocol/openid-connect/certs

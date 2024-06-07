@@ -8,4 +8,15 @@
 [ -e "local-env.sh" ] && source "local-env.sh"
 
 # Call starter script
-source ../../../_dev/dev-scripts/start-quarkus.sh "srv-campaign-impl" "59150" "59151" "$1"
+source ../../../_dev/dev-scripts/start-quarkus.sh \
+	LAUNCH_FOLDER="$(pwd)/srv-campaign-impl" \
+	MVNW_DIR="$(pwd)/../.." \
+	WEB_PORT="59150" \
+	DEBUG_PORT="59151" \
+	PROFILES="${1:-dev}${1:+,dev}" \
+	OIDC="true" \
+	OIDC_CLIENT="true" \
+	MONGODB="true" \
+	ZEEBE="true" \
+	REDIS="true"
+

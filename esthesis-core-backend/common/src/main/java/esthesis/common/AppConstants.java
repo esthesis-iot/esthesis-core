@@ -25,6 +25,10 @@ public class AppConstants {
 	//TODO where/how is this used?
 	public static final String REGISTRATION_SECRET_HEADER_NAME = "X-ESTHESIS-REGISTRATION-SECRET";
 
+	// Security roles.
+	public static final String ROLE_USER = "user";
+	public static final String ROLE_SYSTEM = "system";
+
 	// Settings keys.
 	public enum NamedSetting {
 		SECURITY_ASYMMETRIC_KEY_SIZE, SECURITY_ASYMMETRIC_KEY_ALGORITHM,

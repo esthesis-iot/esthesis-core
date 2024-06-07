@@ -16,7 +16,7 @@ registry.
 ## Building and pushing images
 When using the `publish.sh` script to prepare your images, you can define the `ESTHESIS_REGISTRY_URL`
 environment variable to point to a private registry. This variable should point to the IP address,
-port, and username of your private registry, for example:
+port, and user/project name of your private registry, for example:
 ```shell
 ESTHESIS_REGISTRY_TYPE=open ESTHESIS_REGISTRY_URL=192.168.50.211:5000/esthesis ./publish.sh
 ```
@@ -48,28 +48,30 @@ ESTHESIS_REGISTRY_PASSWORD= <password>
 When testing a production-like installation, you can configure the Helm charts to use the images from
 your private registry instead of e.g. Docker Hub. To do so, you can define the `ESTHESIS_REGISTRY_URL`
 environment variable to point to the private registry. This variable should point to the IP address,
-port, and username of your private registry, for example:
+port, and user/project name of your private registry, for example:
 ```shell
-ESTHESIS_REGISTRY_URL=192.168.50.211:5000/esthesis helmfile sync
+ESTHESIS_REGISTRY_URL=192.168.50.211:5000/esthesis helmfile sync -n esthesis
 ```
 
 :::tip
 When using the Helm charts without the `-env dev` flag, the charts will automatically
 use multi-node deployments. If you are testing in a single-node Kubernetes cluster, you need to also
 define `ESTHESIS_SINGLE_NODE=true` environmental variable.
+
+If you want to use the Helm charts, locally available to your machine, while still deploying a
+production-level setup, you can use the `ESTHESIS_LOCAL_CHARTS=true` environmental variable.
 :::
 
 ## Deploying Dataflows
-To use a private registry when deploying a Dataflow, you can use the
-"Custom Docker Registry" field in the Dataflow definition screen specifying the same registry
-coordinates you used when building the services, for example `192.168.50.211:5000/esthesis`. Similarly
-to when building the services, you should configure your Kubernetes distribution to be able to pull
-from that insecure registry. The exact way this is done depends on the Kubernetes distribution you
-are using.
+To use a private registry when deploying a Dataflow, you can use the "Custom Docker Registry" field
+in the Dataflow definition screen specifying the same registry coordinates you used when building
+the services, for example `192.168.50.211:5000/esthesis`. Similarly to when building the services,
+you should configure your Kubernetes distribution to be able to pull from that insecure registry.
+The exact way this is done depends on the Kubernetes distribution you are using.
 
 - K3S:\
 	Edit or create `/etc/rancher/k3s/registries.yaml` and add the following lines:
-	```toml
+	```yaml
 	mirrors:
   "192.168.50.211:5000":
     endpoint:

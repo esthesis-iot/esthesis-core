@@ -14,10 +14,22 @@
   <artifactId>srv-settings-client</artifactId>
 
   <dependencies>
+		<!-- QUARKUS -->
+		<dependency>
+			<artifactId>quarkus-rest-client-oidc-filter</artifactId>
+			<groupId>io.quarkus</groupId>
+		</dependency>
+		<dependency>
+			<artifactId>quarkus-rest-client-oidc-token-propagation</artifactId>
+			<groupId>io.quarkus</groupId>
+		</dependency>
+
+		<!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-common</artifactId>
       <version>3.0.38-SNAPSHOT</version>
     </dependency>
   </dependencies>
+
 </project>

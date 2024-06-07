@@ -8,7 +8,6 @@ import {CallbackComponent} from "./callback.component";
 export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
     // Redirect for empty path.
     {path: "", redirectTo: "dashboard", pathMatch: "full"},
-    // {path: "**", redirectTo: "dashboard"},
     {path: "callback", component: CallbackComponent},
     {
       path: "dashboard",

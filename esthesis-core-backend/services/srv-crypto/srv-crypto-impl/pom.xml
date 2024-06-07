@@ -13,6 +13,12 @@
   <artifactId>srv-crypto-impl</artifactId>
 
   <dependencies>
+		<!-- QUARKUS -->
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-oidc</artifactId>
+		</dependency>
+
     <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
@@ -41,10 +47,6 @@
     </dependency>
 
     <!-- OTHERS -->
-<!--    <dependency>-->
-<!--      <groupId>commons-codec</groupId>-->
-<!--      <artifactId>commons-codec</artifactId>-->
-<!--    </dependency>-->
     <dependency>
       <groupId>com.github.slugify</groupId>
       <artifactId>slugify</artifactId>

@@ -22,4 +22,8 @@ export ESTHESIS_DFL_KAFKA_CONSUMER_GROUP=dfl-redis-cache
 export ESTHESIS_DFL_CONCURRENCY_POLL_TIMEOUT=1000
 export ESTHESIS_DFL_CONCURRENCY_CONSUMERS=10
 export ESTHESIS_DFL_CONCURRENCY_QUEUE_SIZE=1000
-source ../../../_dev/dev-scripts/start-quarkus.sh "." "0" "39156" "$1"
+source ../../../_dev/dev-scripts/start-quarkus.sh \
+	LAUNCH_FOLDER="$(pwd)" \
+	MVNW_DIR="$(pwd)/../.." \
+	DEBUG_PORT="39156" \
+	PROFILES="${1:-dev}${1:+,dev}"

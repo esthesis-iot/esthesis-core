@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
-import org.apache.camel.model.dataformat.AvroDataFormat;
+import org.apache.camel.model.dataformat.AvroLibrary;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
@@ -71,21 +71,20 @@ public class RedisRoute extends RouteBuilder {
       //TODO redact password
       log.info("Setting up route from Kafka topic '{}' to Redis '{}'.", val, config.redisUrl());
       from("kafka:" + val)
-          .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-          .to("seda:telemetry");
+				.unmarshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisDataMessage")
+				.to("seda:telemetry");
       from("seda:telemetry")
-          .bean(redisService, "process");
+				.bean(redisService, "process");
     });
 
     config.kafkaMetadataTopic().ifPresent(val -> {
 			//TODO redact password
-      log.info("Setting up route from Kafka topic '{}' to Redis '{}'.",
-          val, config.redisUrl());
+      log.info("Setting up route from Kafka topic '{}' to Redis '{}'.", val, config.redisUrl());
       from("kafka:" + val)
-          .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-          .to("seda:metadata");
+				.unmarshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisDataMessage")
+				.to("seda:metadata");
       from("seda:metadata")
-          .bean(redisService, "process");
+				.bean(redisService, "process");
     });
     // @formatter:on
 

@@ -19,5 +19,9 @@
       <artifactId>srv-common</artifactId>
       <version>3.0.38-SNAPSHOT</version>
     </dependency>
+		<dependency>
+			<artifactId>quarkus-rest-client-oidc-token-propagation</artifactId>
+			<groupId>io.quarkus</groupId>
+		</dependency>
   </dependencies>
 </project>

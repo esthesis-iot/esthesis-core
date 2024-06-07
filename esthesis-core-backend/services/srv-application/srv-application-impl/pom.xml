@@ -13,6 +13,16 @@
   <artifactId>srv-application-impl</artifactId>
 
   <dependencies>
+		<!-- QUARKUS -->
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-cache</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-oidc</artifactId>
+		</dependency>
+
     <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
@@ -23,12 +33,6 @@
       <groupId>esthesis</groupId>
       <artifactId>srv-audit-client</artifactId>
       <version>3.0.38-SNAPSHOT</version>
-    </dependency>
-
-    <!-- QUARKUS -->
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-cache</artifactId>
     </dependency>
   </dependencies>
 </project>

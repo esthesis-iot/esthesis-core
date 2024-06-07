@@ -1,23 +1,24 @@
 import {HttpClient} from "@angular/common/http";
 import {map} from "rxjs";
 import {LogLevel, StsConfigHttpLoader} from "angular-auth-oidc-client";
+import {OidcConfigDto} from "./dto/oidc-config-dto";
 
 export const httpLoaderFactory = (httpClient: HttpClient) => {
-  const config$ = httpClient.get<any>("api/public-access/oidc-config").pipe(
-    map((customConfig: any) => {
+  const config$ = httpClient.get<OidcConfigDto>("api/public-access/oidc-config").pipe(
+    map((config: any) => {
       return {
-        authority: customConfig.authority,
-        redirectUrl: customConfig.redirectUrl,
-        postLogoutRedirectUri: customConfig.postLogoutRedirectUri,
-        clientId: customConfig.clientId,
-        scope: customConfig.scope,
-        responseType: customConfig.responseType,
-        silentRenew: customConfig.silentRenew,
-        useRefreshToken: customConfig.useRefreshToken,
-        renewTimeBeforeTokenExpiresInSeconds: customConfig.renewTimeBeforeTokenExpiresInSeconds,
-        maxIdTokenIatOffsetAllowedInSeconds: customConfig.maxIdTokenIatOffsetAllowedInSeconds,
-        ignoreNonceAfterRefresh: customConfig.ignoreNonceAfterRefresh,
-        secureRoutes: customConfig.secureRoutes,
+        authority: config.authority,
+        redirectUrl: config.redirectUrl,
+        postLogoutRedirectUri: config.postLogoutRedirectUri,
+        clientId: config.clientId,
+        scope: config.scope,
+        responseType: config.responseType,
+        silentRenew: config.silentRenew,
+        useRefreshToken: config.useRefreshToken,
+        renewTimeBeforeTokenExpiresInSeconds: config.renewTimeBeforeTokenExpiresInSeconds,
+        maxIdTokenIatOffsetAllowedInSeconds: config.maxIdTokenIatOffsetAllowedInSeconds,
+        ignoreNonceAfterRefresh: config.ignoreNonceAfterRefresh,
+        secureRoutes: config.secureRoutes,
         logLevel: LogLevel.Warn
       };
     })

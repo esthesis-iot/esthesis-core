@@ -21,31 +21,11 @@
       <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
-      <artifactId>quarkus-resteasy-reactive</artifactId>
+      <artifactId>quarkus-rest-jackson</artifactId>
       <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
-      <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
-      <groupId>io.quarkus</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>quarkus-rest-client-reactive-jackson</artifactId>
-      <groupId>io.quarkus</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>quarkus-smallrye-jwt</artifactId>
-      <groupId>io.quarkus</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>quarkus-smallrye-jwt-build</artifactId>
-      <groupId>io.quarkus</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>quarkus-oidc-token-propagation-reactive</artifactId>
-      <groupId>io.quarkus</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>quarkus-oidc-client-reactive-filter</artifactId>
+      <artifactId>quarkus-rest-client-jackson</artifactId>
       <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>

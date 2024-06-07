@@ -15,7 +15,6 @@ quarkus:
         host: "localhost"
         port: 12201
   mongodb:
-    connection-string: mongodb://mongodb-headless.esthesis:27017
     database: esthesiscore
     credentials:
       username: esthesis-system
@@ -35,9 +34,3 @@ quarkus:
     AuditResource:
       url: http://localhost:59140
       scope: Singleton
-
-mp:
-  jwt:
-    verify:
-      publickey:
-        location: http://keycloak.esthesis/realms/esthesis/protocol/openid-connect/certs

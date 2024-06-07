@@ -27,7 +27,7 @@ that the agent compiles and runs on your machine, but not very useful for develo
 To run the agent locally switch to `go` directory and execute:
 
 ```shell
-HID=abc123 && \
+HID=abc001 && \
 REGISTRATION_URL=http://localhost:4200/api/agent/v1/register && \
 go run cmd/main.go \
     --hardwareId=$HID \

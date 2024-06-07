@@ -19,12 +19,8 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 public class TagResourceImpl implements TagResource {
-
-	@Inject
-	JsonWebToken jwt;
 
 	@Inject
 	TagService tagService;

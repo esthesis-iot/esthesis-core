@@ -14,6 +14,13 @@
   <artifactId>srv-about-client</artifactId>
 
   <dependencies>
+		<!-- QUARKUS -->
+		<dependency>
+			<artifactId>quarkus-rest-client-oidc-token-propagation</artifactId>
+			<groupId>io.quarkus</groupId>
+		</dependency>
+
+		<!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-common</artifactId>

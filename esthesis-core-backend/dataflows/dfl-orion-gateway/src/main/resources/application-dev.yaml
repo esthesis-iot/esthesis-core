@@ -7,7 +7,7 @@ quarkus:
         level: DEBUG
     handler:
       gelf:
-        enabled: true
+        enabled: false
         host: "localhost"
         port: 12201
   rest-client:

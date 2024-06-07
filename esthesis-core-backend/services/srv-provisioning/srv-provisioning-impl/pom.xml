@@ -26,6 +26,12 @@
   </dependencyManagement>
 
   <dependencies>
+		<!-- QUARKUS -->
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-oidc</artifactId>
+		</dependency>
+
     <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>

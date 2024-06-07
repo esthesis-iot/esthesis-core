@@ -13,15 +13,11 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @Slf4j
 @Transactional
 @ApplicationScoped
 public class ApplicationService extends BaseService<ApplicationEntity> {
-
-	@Inject
-	JsonWebToken jwt;
 
 	@Inject
 	@CacheName("dt-token-is-valid")

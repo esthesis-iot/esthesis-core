@@ -12,7 +12,7 @@ fi
 SESSION=esthesis-dev
 
 # Services startup delay (in seconds). This allows kubefwd to start before services.
-SVC_STARTUP_DELAY=15
+SVC_STARTUP_DELAY=10
 
 # Check if environment variable ESTHESIS_TMUX_PAUSE is set to true.
 if [ "$ESTHESIS_TMUX_PAUSE" = true ]; then
@@ -34,7 +34,7 @@ tmux rename-window "Apps"
 # Start UI
 tmux select-pane -t 0.0 -T "UI"
 tmux pipe-pane -o -t 0.0 "sed -u 's/^/\[UI          \] /' | cat >> $LOGS"
-tmux send-keys "sleep $SVC_STARTUP_DELAY; cd $(pwd)/..; cd esthesis-core-ui; eval $PAUSE; [ -n "$(command -v nvm)" ] && nvm use; npm start" C-m
+tmux send-keys "sleep $((SVC_STARTUP_DELAY + RANDOM % 6)); cd $(pwd)/..; cd esthesis-core-ui; eval $PAUSE; [ -n "$(command -v nvm)" ] && nvm use; npm start" C-m
 
 ## Start services
 services=(
@@ -62,7 +62,7 @@ for service in "${services[@]}"; do
 		tmux split-window -v
 		tmux select-pane -t 0.$pane_index -T "$title"
 		tmux pipe-pane -o -t 0.$pane_index "sed -u 's/^/[$title] /' | cat >> $LOGS"
-		tmux send-keys "sleep $SVC_STARTUP_DELAY; cd $(pwd)/..; cd esthesis-core-backend/services/$dir; eval $PAUSE; ./$script" C-m
+		tmux send-keys "sleep $((SVC_STARTUP_DELAY + RANDOM % 6)); cd $(pwd)/..; cd esthesis-core-backend/services/$dir; eval $PAUSE; ./$script" C-m
 		tmux select-layout tiled
 		((pane_index++))
 done
@@ -95,5 +95,3 @@ tmux send-keys "tail -f $LOGS" C-m
 
 # Attach to session
 tmux a
-
-

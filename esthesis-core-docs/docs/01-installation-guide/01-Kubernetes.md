@@ -11,7 +11,6 @@ Please note that Helm charts come with reasonable defaults; we strongly advise t
 review them, so you can customize them to your needs.
 
 ## Requirements
-
 - A Kubernetes cluster with a minimum of 3 nodes and support for Load Balancer service types as well
   as Ingress support (you can, optionally, install an nginx ingress controller using this chart)..
 - [Helm](https://helm.sh)
@@ -23,11 +22,9 @@ specific instructions for the cloud provider you are using.
 :::
 
 ## Configuration parameters
-
 <details><summary>The following parameters can be defined as environmental variables during installation:</summary>
 
 ### General
-
 🔹 `TIMEZONE`<br/>
 The containers timezone to set (note, some containers do not respect this setting).<br/>
 Default: `Europe/Athens`
@@ -45,7 +42,6 @@ The name of the ingress class to use.<br/>
 Default: ``
 
 ### Accounts
-
 🔹 `ESTHESIS_ADMIN_USERNAME`<br/>
 The username of the esthesis administrator user. Use this account to connect to esthesis UI after installation is done.<br/>
 Default: `esthesis-admin`
@@ -75,7 +71,6 @@ have such permissions in your cluster you can disable it and create them manuall
 Default: `true`
 
 ### Keycloak
-
 🔹 `KEYCLOAK_ENABLED`<br/>
 Whether Keycloak should be installed by this chart or not.<br/>
 Default: `true`
@@ -94,7 +89,6 @@ with `KEYCLOAK_CERT_MANAGER_CLUSTER_ISSUER`<br/>
 Default: ``
 
 ### MongoDB
-
 🔹 `MONGODB_ENABLED`<br/>
 Whether MongoDB should be installed by this chart or not.<br/>
 Default: `true`
@@ -116,29 +110,27 @@ The password to authenticate with.<br/>
 Default: As specified in `ESTHESIS_SYSTEM_PASSWORD`
 
 ### OpenID Connect
+🔹 `OIDC_AUTH_SERVER_URL`<br/>
+The URL of the OpenID Connect authority to use. This URL should be accessible for intra-service
+communication, so it does not need to be accessible for end-users.<br/>
+Default: `http://keycloak.{{ .Namespace }}.svc.cluster.local/realms/esthesis`
 
-🔹 `OIDC_AUTHORITY_URL_EXTERNAL`<br/>
-The URL of the OpenID Connect authority to use for external connections. This URL should be accessible
-from the end-user's Internet browser using esthesis UI.<br/>
-Default: ``
+🔹 `OIDC_CLIENT_AUTH_SERVER_URL`<br/>
+The URL of the OpenID Connect authority to use when a service needs to authenticate autonomously
+(this is needed for services of type 'system', which do not act on behalf of a user). This URL
+should be accessible for intra-service communication, so it does not need to be accessible for
+end-users.<br/>
+Default: `http://keycloak.{{ .Namespace }}.svc.cluster.local/realms/esthesis`
 
-🔹 `OIDC_AUTHORITY_URL_CLUSTER`<br/>
-The URL of the OpenID Connect authority to use for internal connections. This URL should be accessible
-from components running inside the Kubernetes cluster.<br/>
-Default: `http://keycloak.<Namespace>.svc.cluster.local/realms/esthesis`
+🔹 `ESTHESIS_REPORTED_OIDC_AUTHORITY_URL`<br/>
+The URL of the OpenID Connect authority end-users use to authenticate.<br/>
+Default: `http://keycloak.{{ .Namespace }}.svc.cluster.local/realms/esthesis`
 
-🔹 `OIDC_DISCOVERY_URL_CLUSTER`<br/>
-The URL of the OpenID Connect discovery endpoint to use for internal connections. This URL should be
-accessible from components running inside the Kubernetes cluster.<br/>
-Default: `http://keycloak.<Namespace>.svc.cluster.local/realms/esthesis/.well-known/openid-configuration`
-
-🔹 `OIDC_JWT_VERIFY_LOCATION_CLUSTER`<br/>
-The URL of the OpenID Connect JWT verification endpoint to use for internal connections. This URL
-should be accessible from components running inside the Kubernetes cluster.<br/>
-Default: `http://keycloak.<Namespace>.svc.cluster.local/realms/esthesis/protocol/openid-connect/certs`
+🔹 `ESTHESIS_REPORTED_OIDC_POST_LOGOUT_URL`<br/>
+The URL the user is forwarded to when logging out..<br/>
+Default: `http://esthesis-core.{{ .Namespace }}.svc.cluster.local/logout`
 
 ### Ingress nginx
-
 🔹 `INGRESS_NGINX_ENABLED`<br/>
 Whether Ingress nginx should be installed by this chart or not.<br/>
 Default: `false`
@@ -148,7 +140,6 @@ The arn of the certificate.<br/>
 Default: ``
 
 ### esthesis UI
-
 🔹 `ESTHESIS_HOSTNAME`<br/>
 The hostname of the ingress rule that will be created for esthesis UI.<br/>
 Default: ``
@@ -167,7 +158,6 @@ with `ESTHESIS_UI_CERT_MANAGER_CLUSTER_ISSUER`<br/>
 Default: ``
 
 ### Redis
-
 🔹 `REDIS_ENABLED`<br/>
 Whether Redis should be installed by this chart or not.<br/>
 Default: `true`
@@ -178,7 +168,6 @@ Kubernetes cluster.<br/>
 Default: `redis-master:6379/0`
 
 ### Mosquitto
-
 🔹 `MOSQUITTO_ENABLED`<br/>
 Whether Mosquitto should be installed by this chart or not.<br/>
 Default: `true`
@@ -209,7 +198,6 @@ The type of the service to expose Mosquitto by.<br/>
 Default: `ClusterIP`
 
 ### InfluxDB
-
 🔹 `INFLUXDB_ENABLED`<br/>
 Whether InfluxDB should be installed by this chart or not.<br/>
 Default: `true`
@@ -219,7 +207,6 @@ InfluxDB storage size.<br/>
 Default: `32Gi`
 
 ### Kafka
-
 🔹 `KAFKA_ENABLED`<br/>
 Whether Kafka should be installed by this chart or not.<br/>
 Default: `true`
@@ -230,7 +217,6 @@ inside the Kubernetes cluster.<br/>
 Default: `kafka:9092`
 
 ### Camunda
-
 🔹 `CAMUNDA_ENABLED`<br/>
 Whether Camunda should be installed by this chart or not.<br/>
 Default: `true`
@@ -243,7 +229,6 @@ Default: `camunda-zeebe-gateway:26500`
 </details>
 
 ## Installation
-
 esthesis Core comes in two Helm charts, one installing all the required dependencies and another one
 installing the application components. You can enable/disable which specific dependencies you want
 to install by setting the corresponding `*_ENABLED` parameter to `true` or `false`. Do note that
@@ -252,7 +237,6 @@ tune their properties or replace them altogether with your own resources to supp
 production use case.
 
 ### Environment variables
-
 The following list is a recommended starting point of environment variables to set before you
 proceed with the installation:
 
@@ -274,7 +258,6 @@ export MOSQUITTO_SERVICE_TYPE=LoadBalancer
 Make sure you adapt the values to your own environment.
 
 ### Supporting infrastructure
-
 - Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
   ```shell
   wget -qO- https://esthes.is/helm/helmfile-esthesis-core-deps-3.0.37.tgz | tar xvz
@@ -285,7 +268,6 @@ Make sure you adapt the values to your own environment.
   ```
 
 ### Application
-
 - Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
   ```shell
   wget -qO- https://esthes.is/helm/helmfile-esthesis-core-3.0.37.tgz | tar xvz
@@ -296,7 +278,6 @@ Make sure you adapt the values to your own environment.
   ```
 
 ## Notes
-
 1. You need to access the UI via HTTPS, accessing it via HTTP will not work.
 2. The UI is exposed under the domain you specified in the environmental variable `ESTHESIS_UI_INGRESS_HOSTNAME`.
 3. If you are using a self-signed certificate which is not imported into your local system, before
@@ -313,7 +294,6 @@ Make sure you adapt the values to your own environment.
 	 installation of the Helm chart.
 
 ## Cert Manager integration
-
 If you have [Cert Manager](https://cert-manager.io) installed in your cluster, you can use it to
 automatically generate and renew certificates for esthesis UI and Keycloak. To do so, you need to
 set the following environmental variables:

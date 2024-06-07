@@ -1,8 +1,10 @@
 package esthesis.service.device.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
 import esthesis.service.device.entity.DeviceEntity;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -36,13 +38,14 @@ public interface DeviceRegistrationResource {
 	 */
 	@POST
 	@Path("/v1/preregister")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	Response preregister(@Valid DeviceRegistrationDTO deviceRegistration)
 	throws NoSuchAlgorithmException, IOException, OperatorCreationException,
 				 InvalidKeySpecException, NoSuchProviderException;
 
 	@PUT
 	@Path("/v1/activate/{hardwareId}")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	DeviceEntity activatePreregisteredDevice(
 		@PathParam(value = "hardwareId") String hardwareId);
-
 }

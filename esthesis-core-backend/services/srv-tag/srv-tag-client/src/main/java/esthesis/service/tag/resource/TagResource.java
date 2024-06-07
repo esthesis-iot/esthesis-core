@@ -1,9 +1,11 @@
 package esthesis.service.tag.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.tag.entity.TagEntity;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.DELETE;
@@ -26,10 +28,12 @@ public interface TagResource {
 
 	@GET
 	@Path("/v1/find")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	Page<TagEntity> find(@BeanParam Pageable pageable);
 
 	@GET
 	@Path("/v1/get-all")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	List<TagEntity> getAll();
 
 	/**
@@ -40,6 +44,7 @@ public interface TagResource {
 	 */
 	@GET
 	@Path("/v1/find/by-name/{name}")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	TagEntity findByName(@PathParam("name") String name,
 		@QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
 
@@ -51,19 +56,23 @@ public interface TagResource {
 	 */
 	@GET
 	@Path("/v1/find/by-names")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	List<TagEntity> findByNames(@QueryParam("names") String name,
 		@QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
 
 	@GET
 	@Path("/v1/{id}")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	TagEntity findById(@PathParam("id") String id);
 
 	@DELETE
 	@Path("/v1/{id}")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	Response delete(@PathParam("id") String id);
 
 	@POST
 	@Path("/v1")
 	@Produces("application/json")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	TagEntity save(@Valid TagEntity tagEntity);
 }

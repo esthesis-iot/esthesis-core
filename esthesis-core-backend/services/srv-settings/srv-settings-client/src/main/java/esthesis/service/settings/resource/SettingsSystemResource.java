@@ -1,8 +1,10 @@
 package esthesis.service.settings.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.service.settings.entity.SettingEntity;
 import io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -16,6 +18,6 @@ public interface SettingsSystemResource {
 
 	@GET
 	@Path("/v1/system/find/by-name/{name}")
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	SettingEntity findByName(@PathParam("name") NamedSetting name);
-
 }

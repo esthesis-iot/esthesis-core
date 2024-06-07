@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
-import org.apache.camel.model.dataformat.AvroDataFormat;
+import org.apache.camel.model.dataformat.AvroLibrary;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
@@ -76,7 +76,8 @@ public class CommandReplyUpdaterRoute extends RouteBuilder {
             + "'{}'.", config.kafkaCommandReplyTopic(), mongoUrl, config.esthesisDbName());
 
     from("kafka:" + config.kafkaCommandReplyTopic())
-        .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisCommandReplyMessage"))
+			.unmarshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisCommandReplyMessage")
+//        .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisCommandReplyMessage"))
         .to("seda:commandReplyUpdater");
 
     from("seda:commandReplyUpdater")

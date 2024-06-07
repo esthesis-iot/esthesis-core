@@ -26,7 +26,6 @@ export class AppComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
-    // This is a necessary call as per
     // https://angular-auth-oidc-client.com/docs/documentation/auto-login
     this.oidcService.checkAuth().subscribe((loginResponse) => {
       this._isLoggedIn = loginResponse.isAuthenticated;

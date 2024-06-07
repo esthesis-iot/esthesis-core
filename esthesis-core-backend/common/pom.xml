@@ -24,7 +24,7 @@
       <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
-      <artifactId>quarkus-resteasy-reactive-common</artifactId>
+      <artifactId>quarkus-rest</artifactId>
       <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>

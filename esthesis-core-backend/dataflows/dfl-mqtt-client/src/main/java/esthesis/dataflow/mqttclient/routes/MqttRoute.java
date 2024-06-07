@@ -21,7 +21,7 @@ import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
 import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.camel.component.paho.PahoConstants;
-import org.apache.camel.model.dataformat.AvroDataFormat;
+import org.apache.camel.model.dataformat.AvroLibrary;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jsse.provider.BouncyCastleJsseProvider;
@@ -123,10 +123,10 @@ public class MqttRoute extends RouteBuilder {
       config.kafkaTelemetryTopic().ifPresentOrElse(kafkaTopic -> {
         log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.", mqttTopic, kafkaTopic);
         from("paho:" + mqttTopic + "/#?" + socketFactory)
-            .bean(dflMqttClientService, "toEsthesisDataMessages")
-            .split(body())
-            .marshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-            .toD("kafka:" + kafkaTopic);
+					.bean(dflMqttClientService, "toEsthesisDataMessages")
+					.split(body())
+					.marshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisDataMessage")
+					.toD("kafka:" + kafkaTopic);
       }, () -> log.debug("Kafka telemetry topic is not set."));
     }, () -> log.debug("MQTT telemetry topic is not set."));
 
@@ -134,10 +134,10 @@ public class MqttRoute extends RouteBuilder {
       config.kafkaMetadataTopic().ifPresentOrElse(kafkaTopic -> {
         log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.", mqttTopic, kafkaTopic);
         from("paho:" + mqttTopic + "/#?" + socketFactory)
-            .bean(dflMqttClientService, "toEsthesisDataMessages")
-            .split(body())
-            .marshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-            .toD("kafka:" + kafkaTopic);
+					.bean(dflMqttClientService, "toEsthesisDataMessages")
+					.split(body())
+					.marshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisDataMessage")
+					.toD("kafka:" + kafkaTopic);
       }, () -> log.debug("Kafka metadata topic is not set."));
     }, () -> log.debug("MQTT metadata topic is not set."));
 
@@ -145,10 +145,10 @@ public class MqttRoute extends RouteBuilder {
       config.kafkaPingTopic().ifPresentOrElse(kafkaTopic -> {
         log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.", mqttTopic, kafkaTopic);
         from("paho:" + mqttTopic + "/#?" + socketFactory)
-            .bean(dflMqttClientService, "toEsthesisDataMessages")
-            .split(body())
-            .marshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-            .to("kafka:" + kafkaTopic);
+					.bean(dflMqttClientService, "toEsthesisDataMessages")
+					.split(body())
+					.marshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisDataMessage")
+					.to("kafka:" + kafkaTopic);
       }, () -> log.debug("Kafka ping topic is not set."));
     }, () -> log.debug("MQTT ping topic is not set."));
 
@@ -156,9 +156,9 @@ public class MqttRoute extends RouteBuilder {
       config.kafkaCommandReplyTopic().ifPresentOrElse(kafkaTopic -> {
         log.info("Creating route from MQTT topic '{}' to Kafka topic '{}'.", mqttTopic, kafkaTopic);
         from("paho:" + mqttTopic + "/#?"  + socketFactory)
-            .bean(dflMqttClientService, "processCommandReplyMessage")
-            .marshal(new AvroDataFormat("esthesis.avro.EsthesisCommandReplyMessage"))
-            .toD("kafka:" + kafkaTopic);
+					.bean(dflMqttClientService, "processCommandReplyMessage")
+					.marshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisCommandReplyMessage")
+					.toD("kafka:" + kafkaTopic);
       }, () -> log.debug("Kafka command reply topic is not set."));
     }, () -> log.debug("MQTT command reply topic is not set."));
 
@@ -166,14 +166,14 @@ public class MqttRoute extends RouteBuilder {
       config.kafkaCommandRequestTopic().ifPresentOrElse(kafkaTopic -> {
         log.info("Creating route from Kafka topic '{}' to MQTT topic '{}'.", kafkaTopic, mqttTopic);
         from("kafka:" + kafkaTopic)
-            .setHeader(PahoConstants.CAMEL_PAHO_OVERRIDE_TOPIC,
-                constant(mqttTopic).append("/").append(header(KafkaConstants.KEY)))
-            .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisCommandRequestMessage"))
-            .log(LoggingLevel.DEBUG, log, "Received command request message '${body}'.")
-            .bean(dflMqttClientService, "commandRequestToLineProtocol")
-            .log(LoggingLevel.DEBUG, log, "Sending command request message '${body}' via MQTT.")
-            .to("paho:dynamic?brokerUrl=" + config.mqttBrokerClusterUrl() +
-							(StringUtils.isEmpty(socketFactory) ? "" : "&" + socketFactory));
+					.setHeader(PahoConstants.CAMEL_PAHO_OVERRIDE_TOPIC,
+							constant(mqttTopic).append("/").append(header(KafkaConstants.KEY)))
+					.unmarshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisCommandRequestMessage")
+					.log(LoggingLevel.DEBUG, log, "Received command request message '${body}'.")
+					.bean(dflMqttClientService, "commandRequestToLineProtocol")
+					.log(LoggingLevel.DEBUG, log, "Sending command request message '${body}' via MQTT.")
+					.to("paho:dynamic?brokerUrl=" + config.mqttBrokerClusterUrl() +
+						(StringUtils.isEmpty(socketFactory) ? "" : "&" + socketFactory));
       }, () -> log.debug("Kafka command request topic is not set."));
     }, () -> log.debug("MQTT command request topic is not set."));
     // @formatter:on

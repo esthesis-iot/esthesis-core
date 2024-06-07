@@ -16,12 +16,6 @@ quarkus:
     ApplicationSystemResource:
       url: http://localhost:59090
       scope: Singleton
-  oidc-client:
-    auth-server-url: http://keycloak.esthesis/realms/esthesis
-    grant-options:
-      password:
-        username: esthesis-system
-        password: esthesis-system
   otel:
     sdk:
       disabled: true
@@ -31,14 +25,6 @@ quarkus:
       otlp:
         traces:
           endpoint: http://grafana-tempo-distributor.esthesis:4317
-  redis:
-    hosts: redis://:esthesis-system@redis-master.esthesis:6379/0
   config:
     locations: "../../../../_dev/profiles"
-
-mp:
-  jwt:
-    verify:
-      publickey:
-        location: http://keycloak.esthesis/realms/esthesis/protocol/openid-connect/certs
 

@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
-import org.apache.camel.model.dataformat.AvroDataFormat;
+import org.apache.camel.model.dataformat.AvroLibrary;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
@@ -81,7 +81,7 @@ public class RdbmsRoute extends RouteBuilder {
     config.kafkaTelemetryTopic().ifPresentOrElse(val -> {
       printRouteInfo(val);
       from("kafka:" + val)
-        .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
+				.unmarshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisDataMessage")
         .to("seda:telemetry");
       from("seda:telemetry")
         .bean(rdbmsService, "process");
@@ -90,8 +90,8 @@ public class RdbmsRoute extends RouteBuilder {
     config.kafkaMetadataTopic().ifPresentOrElse(val -> {
       printRouteInfo(val);
       from("kafka:" + val)
-          .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-          .to("seda:metadata");
+				.unmarshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisDataMessage")
+				.to("seda:metadata");
       from("seda:metadata")
           .bean(rdbmsService, "process");
     }, () -> log.debug("Kafka metadata topic is not set, skipping route."));

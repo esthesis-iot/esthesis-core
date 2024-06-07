@@ -24,7 +24,6 @@ public class CommandSystemResourceImpl implements CommandSystemResource {
 		return correlationID;
 	}
 
-
 	@Override
 	public List<CommandReplyEntity> getReplies(String correlationId) {
 		return commandService.getReplies(correlationId);

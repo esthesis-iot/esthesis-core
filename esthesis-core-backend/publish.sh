@@ -84,6 +84,11 @@ if [ -z "$ESTHESIS_PARALLEL_BUILD" ]; then
 	ESTHESIS_PARALLEL_BUILD="false"
 fi
 
+# Set MVNW location.
+MVNW="$(pwd)/mvnw"
+printInfo "Using $MVNW."
+
+
 # Check mandatory environment variables.
 if [ "$ESTHESIS_REGISTRY_TYPE" = "auth" ]; then
 	if [ -z "$ESTHESIS_REGISTRY_USERNAME" ]; then
@@ -165,7 +170,7 @@ fi
 # first. This is to build dependencies that are shared between modules.
 if [ "$ESTHESIS_GLOBAL_BUILD" = "true" ]; then
 	printInfo "Performing global build."
-	./mvnw clean package $MAVEN_OPTIMISE_PARAMS
+	$MVNW clean package $MAVEN_OPTIMISE_PARAMS
 fi
 
 # Create a Docker buildx.
@@ -198,7 +203,7 @@ for ((i = 0; i < ${#modules[@]}; i += 2)); do
 	printInfo "Switching to $MODULE_NAME on $(pwd)."
 	if [ "$ESTHESIS_LOCAL_BUILD" = "true" ]; then
 		printInfo "Building module $MODULE_NAME."
-		./mvnw clean package $MAVEN_OPTIMISE_PARAMS
+		$MVNW clean package $MAVEN_OPTIMISE_PARAMS
 	fi
 
 	printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION"

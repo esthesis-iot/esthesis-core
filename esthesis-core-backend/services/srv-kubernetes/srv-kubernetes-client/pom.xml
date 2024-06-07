@@ -13,4 +13,12 @@
 
   <artifactId>srv-kubernetes-client</artifactId>
 
+	<dependencies>
+		<!-- QUARKUS -->
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-rest-client-oidc-token-propagation</artifactId>
+		</dependency>
+	</dependencies>
+
 </project>

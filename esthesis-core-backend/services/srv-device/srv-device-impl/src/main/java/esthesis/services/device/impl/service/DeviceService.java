@@ -30,16 +30,12 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @Transactional
 @ApplicationScoped
 public class DeviceService extends BaseService<DeviceEntity> {
-
-	@Inject
-	JsonWebToken jwt;
 
 	@Inject
 	DeviceRepository deviceRepository;

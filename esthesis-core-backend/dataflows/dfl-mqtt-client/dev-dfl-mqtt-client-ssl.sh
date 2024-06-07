@@ -35,7 +35,11 @@ export ESTHESIS_DFL_KAFKA_JAAS_CONFIG="org.apache.kafka.common.security.scram.Sc
 export ESTHESIS_DFL_MQTT_BROKER_CA=certs/esthesis-core-root-ca.crt
 export ESTHESIS_DFL_MQTT_BROKER_CERT=certs/esthesis-platform.crt
 export ESTHESIS_DFL_MQTT_BROKER_KEY=certs/esthesis-platform.key
-source ../../../_dev/dev-scripts/start-quarkus.sh "." "0" "39152" "$1"
+source ../../../_dev/dev-scripts/start-quarkus.sh \
+	LAUNCH_FOLDER="$(pwd)" \
+	MVNW_DIR="$(pwd)/../.." \
+	DEBUG_PORT="39152" \
+	PROFILES="${1:-dev}${1:+,dev}"
 
 # Trying to debug TLS related issues? Try this:
 # -Djavax.net.debug=ssl,handshake

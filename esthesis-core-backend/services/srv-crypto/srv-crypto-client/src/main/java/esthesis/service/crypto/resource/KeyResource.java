@@ -1,7 +1,9 @@
 package esthesis.service.crypto.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import java.io.IOException;
@@ -22,21 +24,23 @@ public interface KeyResource {
 
 	@GET
 	@Path("/v1/keypair")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	KeyPair generateKeyPair()
 	throws NoSuchAlgorithmException, NoSuchProviderException;
 
 	@GET
 	@Path("/v1/publicKeyToPEM")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	String publicKeyToPEM(PublicKey publicKey) throws IOException;
 
 	@GET
 	@Path("/v1/privateKeyToPEM")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	String privateKeyToPEM(PrivateKey keyPair) throws IOException;
 
 	@GET
 	@Path("/v1/certificate")
-	String generateCertificateAsPEM(
-		CreateCertificateRequestDTO createCertificateRequestDTO)
-	throws NoSuchAlgorithmException, InvalidKeySpecException,
-				 OperatorCreationException, IOException;
+	@RolesAllowed(AppConstants.ROLE_USER)
+	String generateCertificateAsPEM(CreateCertificateRequestDTO createCertificateRequestDTO)
+	throws NoSuchAlgorithmException, InvalidKeySpecException, OperatorCreationException, IOException;
 }

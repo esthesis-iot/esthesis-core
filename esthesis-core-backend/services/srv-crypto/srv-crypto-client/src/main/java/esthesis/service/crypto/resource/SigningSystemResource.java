@@ -1,7 +1,9 @@
 package esthesis.service.crypto.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.common.crypto.dto.SignatureVerificationRequestDTO;
 import io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -19,6 +21,7 @@ public interface SigningSystemResource {
 
 	@POST
 	@Path("/v1/verify-signature")
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	boolean verifySignature(@Valid SignatureVerificationRequestDTO request)
 	throws NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, InvalidKeyException;
 

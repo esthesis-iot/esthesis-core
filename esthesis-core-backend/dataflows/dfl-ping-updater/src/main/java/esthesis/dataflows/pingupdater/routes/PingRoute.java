@@ -11,7 +11,7 @@ import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
-import org.apache.camel.model.dataformat.AvroDataFormat;
+import org.apache.camel.model.dataformat.AvroLibrary;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
@@ -80,9 +80,9 @@ public class PingRoute extends RouteBuilder {
         config.kafkaPingTopic(), mongoUrl, config.esthesisDbName());
 
     from("kafka:" + config.kafkaPingTopic())
-				.log(LoggingLevel.DEBUG, log, "Received message from Kafka '${body}'.")
-        .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-        .to("seda:ping");
+			.log(LoggingLevel.DEBUG, log, "Received message from Kafka '${body}'.")
+			.unmarshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisDataMessage")
+			.to("seda:ping");
 
     from("seda:ping")
 				.log(LoggingLevel.DEBUG, log, "Processing message '${body}'.")

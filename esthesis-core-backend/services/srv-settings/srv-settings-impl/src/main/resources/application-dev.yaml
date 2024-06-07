@@ -14,7 +14,6 @@ quarkus:
         host: "localhost"
         port: 12201
   mongodb:
-    connection-string: mongodb://mongodb-headless.esthesis:27017
     database: esthesiscore
     credentials:
       username: esthesis-system
@@ -22,8 +21,6 @@ quarkus:
   rest-client:
     AuditResource:
       url: http://localhost:59140
-  redis:
-    hosts: redis://:esthesis-system@redis-master.esthesis:6379/0
   otel:
     sdk:
       disabled: true
@@ -36,25 +33,10 @@ quarkus:
   config:
     locations: "../../../../_dev/profiles"
 
-mp:
-  jwt:
-    verify:
-      publickey:
-        location: http://keycloak.esthesis/realms/esthesis/protocol/openid-connect/certs
-
 kafka:
-  bootstrap:
-    servers:
-      - kafka.esthesis:9092
   security:
     protocol: SASL_PLAINTEXT
   sasl:
     mechanism: SCRAM-SHA-512
     jaas:
       config: org.apache.kafka.common.security.scram.ScramLoginModule required username=esthesis-system password=esthesis-system;
-
-esthesis:
-  oidc:
-    authority: "http://keycloak.esthesis/realms/esthesis"
-    redirect-url: "http://localhost:4200/callback"
-    post-logout-redirect-uri: "http://localhost:4200/logged-out"

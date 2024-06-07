@@ -12,12 +12,8 @@ import esthesis.services.infrastructure.impl.service.InfrastructureMqttService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 public class InfrastructureMqttResourceImpl implements InfrastructureMqttResource {
-
-	@Inject
-	JsonWebToken jwt;
 
 	@Inject
 	InfrastructureMqttService infrastructureMqttService;

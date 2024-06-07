@@ -6,6 +6,7 @@ import esthesis.common.AppConstants.Security.Operation;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.audit.resource.AuditResource;
 import io.quarkus.arc.profile.UnlessBuildProfile;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
@@ -14,7 +15,6 @@ import jakarta.interceptor.InvocationContext;
 import java.lang.reflect.Method;
 import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
@@ -25,16 +25,20 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 public class AuditedInterceptor {
 
 	@Inject
-	JsonWebToken jwt;
+	SecurityIdentity securityIdentity;
+
 	@Inject
 	@RestClient
 	AuditResource auditResource;
+
 	@Inject
 	ObjectMapper mapper;
+
 	private int maxRequestSize = 16 * 1024 * 1000;
 
 	@AroundInvoke
 	Object audit(InvocationContext ctx) throws Exception {
+
 		// Extract annotation parameters.
 		Method method = ctx.getMethod();
 		Audited audited = method.getAnnotation(Audited.class);
@@ -45,7 +49,7 @@ public class AuditedInterceptor {
 			.setOperation(audited.op())
 			.setMessage(audited.msg())
 			.setCreatedOn(Instant.now())
-			.setCreatedBy(jwt.getName());
+			.setCreatedBy(securityIdentity.getPrincipal().getName());
 
 		// Capture before data.
 		if (audited.log() == Audited.AuditLogType.DATA_IN
@@ -61,7 +65,7 @@ public class AuditedInterceptor {
 					.append(",");
 				i++;
 			}
-			if (beforeValue.length() > 0) {
+			if (!beforeValue.isEmpty()) {
 				beforeValue.deleteCharAt(beforeValue.length() - 1);
 				beforeValue.insert(0, "{");
 				beforeValue.append("}");

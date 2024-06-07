@@ -23,15 +23,11 @@ import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
 @Authenticated
 public class CertificateResourceImpl implements CertificateResource {
-
-	@Inject
-	JsonWebToken jwt;
 
 	@Inject
 	@RestClient

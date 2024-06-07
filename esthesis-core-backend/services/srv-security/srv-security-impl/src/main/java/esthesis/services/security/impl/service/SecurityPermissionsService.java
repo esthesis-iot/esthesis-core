@@ -7,6 +7,7 @@ import esthesis.service.security.entity.GroupEntity;
 import esthesis.service.security.entity.PolicyEntity;
 import esthesis.service.security.entity.RoleEntity;
 import esthesis.service.security.entity.UserEntity;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -16,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @Slf4j
 @Transactional
@@ -24,7 +24,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 public class SecurityPermissionsService {
 
 	@Inject
-	JsonWebToken jwt;
+	SecurityIdentity securityIdentity;
 
 	@Inject
 	SecurityUserService securityUserService;
@@ -62,7 +62,8 @@ public class SecurityPermissionsService {
 		boolean permissionEvaluation = permissionAllowed && !permissionDenied;
 		log.debug("Permission evaluation for user '{}' on resource '{}:{}:{}' is '{}' [allowed='{}', "
 				+ "denied='{}'].",
-			jwt.getName(), category, operation, resourceId, permissionEvaluation, permissionAllowed,
+			securityIdentity.getPrincipal().getName(), category, operation, resourceId, permissionEvaluation,
+			permissionAllowed,
 			permissionDenied);
 
 		return permissionEvaluation;
@@ -74,7 +75,7 @@ public class SecurityPermissionsService {
 	 * @return
 	 */
 	public List<String> getPermissionsForUser() {
-		return getPermissionsForUser(jwt.getName());
+		return getPermissionsForUser(securityIdentity.getPrincipal().getName());
 	}
 
 	private boolean isPermission(List<String> permissions,

@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
-import org.apache.camel.model.dataformat.AvroDataFormat;
+import org.apache.camel.model.dataformat.AvroLibrary;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
@@ -114,8 +114,8 @@ public class OrionGatewayRoute extends RouteBuilder {
       log.info("Creating route from Kafka topic '{}'.", config.kafkaTelemetryTopic().get());
 
       from("kafka:" + config.kafkaTelemetryTopic().get())
-          .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-          .to("seda:telemetry");
+				.unmarshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisDataMessage")
+				.to("seda:telemetry");
 
       from("seda:telemetry")
           .bean(orionGatewayService, "processData");
@@ -130,8 +130,8 @@ public class OrionGatewayRoute extends RouteBuilder {
       log.info("Creating route from Kafka topic '{}'.", config.kafkaMetadataTopic().get());
 
       from("kafka:" + config.kafkaMetadataTopic().get())
-          .unmarshal(new AvroDataFormat("esthesis.avro.EsthesisDataMessage"))
-          .to("seda:metadata");
+				.unmarshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisDataMessage")
+				.to("seda:metadata");
 
       from("seda:metadata")
           .bean(orionGatewayService, "processData");

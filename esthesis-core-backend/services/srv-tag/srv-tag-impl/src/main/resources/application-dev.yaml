@@ -15,7 +15,6 @@ quarkus:
         host: "localhost"
         port: 12201
   mongodb:
-    connection-string: mongodb://mongodb-headless.esthesis:27017
     database: esthesiscore
     credentials:
       username: esthesis-system
@@ -37,16 +36,7 @@ quarkus:
   config:
     locations: "../../../../_dev/profiles"
 
-mp:
-  jwt:
-    verify:
-      publickey:
-        location: http://keycloak.esthesis/realms/esthesis/protocol/openid-connect/certs
-
 kafka:
-  bootstrap:
-    servers:
-      - kafka.esthesis:9092
   security:
     protocol: SASL_PLAINTEXT
   sasl:

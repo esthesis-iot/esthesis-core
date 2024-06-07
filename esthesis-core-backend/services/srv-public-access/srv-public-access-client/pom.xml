@@ -14,6 +14,7 @@
   <artifactId>srv-public-access-client</artifactId>
 
   <dependencies>
+		<!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-common</artifactId>

@@ -38,21 +38,21 @@ public class TagService extends BaseService<TagEntity> {
 	public Page<TagEntity> find(Pageable pageable) {
 		log.debug("Finding all tags with '{}'.", pageable);
 
-		if (!securityResource.isPermitted(Category.TAG, Operation.READ)) {
-			throw new QSecurityException("You are not allowed to view tags.");
-		} else {
+//		if (!securityResource.isPermitted(Category.TAG, Operation.READ)) {
+//			throw new QSecurityException("You are not allowed to view tags.");
+//		} else {
 			return super.find(pageable);
-		}
+//		}
 	}
 
 	@Override
 	public Page<TagEntity> find(Pageable pageable, boolean partialMatch) {
 		log.debug("Finding all tags with partial match with '{}'.", pageable);
-		if (!securityResource.isPermitted(Category.TAG, Operation.READ)) {
-			throw new QSecurityException("You are not allowed to view tags.");
-		} else {
+//		if (!securityResource.isPermitted(Category.TAG, Operation.READ)) {
+//			throw new QSecurityException("You are not allowed to view tags.");
+//		} else {
 			return super.find(pageable, partialMatch);
-		}
+//		}
 	}
 
 	@Override

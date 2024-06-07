@@ -14,7 +14,14 @@
   <artifactId>srv-campaign-client</artifactId>
 
   <dependencies>
-    <dependency>
+		<!-- QUARKUS -->
+		<dependency>
+			<artifactId>quarkus-rest-client-oidc-token-propagation</artifactId>
+			<groupId>io.quarkus</groupId>
+		</dependency>
+
+		<!-- ESTHESIS -->
+		<dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-common</artifactId>
       <version>3.0.38-SNAPSHOT</version>

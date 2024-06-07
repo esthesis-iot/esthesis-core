@@ -19,6 +19,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-kubernetes-client</artifactId>
     </dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-oidc</artifactId>
+		</dependency>
 
     <!-- PROJECT -->
     <dependency>
@@ -26,7 +30,5 @@
       <artifactId>srv-kubernetes-client</artifactId>
       <version>3.0.38-SNAPSHOT</version>
     </dependency>
-
-    <!-- THIRD-PARTY -->
   </dependencies>
 </project>

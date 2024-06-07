@@ -8,7 +8,7 @@
 [ -e "local-env.sh" ] && source "local-env.sh"
 
 # Call starter script
-export ESTHESIS_DFL_ESTHESIS_DB_URL=mongodb://mongodb.$(kubens -c):27017
+export ESTHESIS_DFL_ESTHESIS_DB_URL=mongodb://mongodb-headless.$(kubens -c):27017
 export ESTHESIS_DFL_ESTHESIS_DB_NAME=esthesiscore
 export ESTHESIS_DFL_ESTHESIS_DB_USERNAME=esthesis-system
 export ESTHESIS_DFL_ESTHESIS_DB_PASSWORD=esthesis-system
@@ -21,4 +21,8 @@ export ESTHESIS_DFL_KAFKA_JAAS_CONFIG="org.apache.kafka.common.security.scram.Sc
 export ESTHESIS_DFL_CONCURRENCY_POLL_TIMEOUT=1000
 export ESTHESIS_DFL_CONCURRENCY_CONSUMERS=10
 export ESTHESIS_DFL_CONCURRENCY_QUEUE_SIZE=1000
-source ../../../_dev/dev-scripts/start-quarkus.sh "." "0" "39150" "$1"
+source ../../../_dev/dev-scripts/start-quarkus.sh \
+	LAUNCH_FOLDER="$(pwd)" \
+	MVNW_DIR="$(pwd)/../.." \
+	DEBUG_PORT="39150" \
+	PROFILES="${1:-dev}${1:+,dev}"

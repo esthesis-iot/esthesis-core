@@ -15,13 +15,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @Slf4j
 public class SettingsResourceImpl implements SettingsResource {
-
-	@Inject
-	JsonWebToken jwt;
 
 	@Inject
 	SettingsService settingsService;

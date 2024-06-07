@@ -98,7 +98,7 @@ need to set the following flags to the `deployment.yaml` descriptor of the sourc
 - Annotate the `SettingsSystemResource` interface with `@RegisterRestClient(configKey = "SettingsSystemResource")`.
 	It is important to note that the value of the `configKey` parameter must match the name of the service
 	in source service's `application.properties` file.
-- Annotate the `SettingsResource` interface with `@RegisterProvider(OidcClientRequestReactiveFilter.class)`.
+- Annotate the `SettingsSystemResource` interface with `@RegisterProvider(OidcClientRequestReactiveFilter.class)`.
 	This annotation tells Quarkus to inject the `OidcClientRequestReactiveFilter` into the REST client,
 	which is responsible to obtain (e.g. create) a valid access token from the OIDC provider and propagate
 	it to the target service. Using this annotation the source service acts as an OIDC client obtaining
