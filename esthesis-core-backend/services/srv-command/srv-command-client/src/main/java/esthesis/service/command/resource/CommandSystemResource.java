@@ -1,6 +1,7 @@
 package esthesis.service.command.resource;
 
 import esthesis.common.entity.CommandReplyEntity;
+import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
 import esthesis.service.command.entity.CommandRequestEntity;
 import io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter;
 import jakarta.ws.rs.GET;
@@ -25,10 +26,20 @@ public interface CommandSystemResource {
 	 * this command can be obtained later.
 	 *
 	 * @param request The command request to save and execute.
-	 * @return The correlation ID of the command request.
+	 * @return The request scheduled info, including the correlation ID of the command request.
 	 */
 	@POST
 	@Path("/v1")
-	String save(CommandRequestEntity request);
+	ExecuteRequestScheduleInfoDTO save(CommandRequestEntity request);
+
+
+	/**
+	 *  Find and count the number of collected replies for a given correlation ID
+	 * @param correlationId The correlation ID of the command request.
+	 * @return The number of collected replies found for the provided correlation ID
+	 */
+	@GET
+	@Path("/v1/reply/count/{correlationId}")
+	long countCollectedReplies(@PathParam("correlationId") String correlationId);
 
 }

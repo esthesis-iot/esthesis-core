@@ -136,6 +136,7 @@ public class CommandService {
 
 		// Provide information regarding the scheduling of the execution.
 		ExecuteRequestScheduleInfoDTO scheduleInfo = new ExecuteRequestScheduleInfoDTO();
+		scheduleInfo.setCorrelationId(requestId);
 
 		// Find the devices to which the command should be sent.
 		Set<String> hardwareIds = new HashSet<>();
@@ -207,7 +208,7 @@ public class CommandService {
 	}
 
 	public long countCollectedReplies(String correlationId) {
-		return commandReplyService.countByColumn("corellationId", correlationId);
+		return commandReplyService.countByColumn("correlationId", correlationId);
 	}
 
 	public void deleteReplies(String correlationId) {
