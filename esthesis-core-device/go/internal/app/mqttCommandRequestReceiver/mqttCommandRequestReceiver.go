@@ -256,6 +256,26 @@ func updateCommand(command *dto.CommandRequest, client mqtt.Client) {
 	}
 }
 
+func pingCommand(command *dto.CommandRequest, client mqtt.Client) {
+	log.Warn("Executing ping command... ")
+	channels.GetPingChan() <- false
+	publishCommandReply(dto.CommandReply{
+		CorrelationId: command.Id,
+		Success:       true,
+		Output:        "PING command was sent to the device."}, client)
+
+}
+
+func healthCommand(command *dto.CommandRequest, client mqtt.Client) {
+	log.Warn("Executing health command... ")
+	channels.GetHealthChan() <- false
+	publishCommandReply(dto.CommandReply{
+		CorrelationId: command.Id,
+		Success:       true,
+		Output:        "HEALTH command was sent to the device."}, client)
+
+}
+
 func OnMessage(client mqtt.Client, msg mqtt.Message) {
 	log.Debugf("Received command request message '%s'.", util.AbbrBA(msg.Payload()))
 
@@ -273,9 +293,9 @@ func OnMessage(client mqtt.Client, msg mqtt.Message) {
 		case appConstants.CommandTypeExec:
 			go executeCommand(&commandRequest, client)
 		case appConstants.CommandTypePing:
-			channels.GetPingChan() <- false
+			pingCommand(&commandRequest, client)
 		case appConstants.CommandTypeHealth:
-			channels.GetHealthChan() <- false
+			healthCommand(&commandRequest, client)
 		case appConstants.CommandTypeReboot:
 			rebootCommand(&commandRequest, client)
 		case appConstants.CommandTypeShutdown:

@@ -150,6 +150,20 @@ public class DTResourceImpl implements DTResource {
 	}
 
 	@Override
+	public Response healthCommandByHardwareId(String hardwareId, boolean async) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.h, (async ? ExecutionType.a : ExecutionType.s));
+		commandRequest.setHardwareIds(hardwareId);
+		return getCommandResponse(commandRequest);
+	}
+
+	@Override
+	public Response healthCommandByTag(String tag, boolean async) {
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.h, (async ? ExecutionType.a : ExecutionType.s));
+		commandRequest.setTags(tag);
+		return getCommandResponse(commandRequest);
+	}
+
+	@Override
 	public Response getCommandReply(String correlationId) {
 		return Response.ok(dtService.getReplies(correlationId)).build();
 	}

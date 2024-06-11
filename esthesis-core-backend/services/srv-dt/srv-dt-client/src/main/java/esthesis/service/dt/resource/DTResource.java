@@ -230,5 +230,36 @@ public interface DTResource {
 		@QueryParam("async") @DefaultValue("false") boolean async
 	);
 
+	@POST
+	@DTSecurityFilter
+	@Path("/v1/command/device/{hardwareId}/health")
+	@Operation(summary = "Send a health command to a device, either synchronously (default) or asynchronously")
+	Response healthCommandByHardwareId(
+		@Parameter(
+			description = "The hardware ID of the target device",
+			required = true,
+			schema = @Schema(type = SchemaType.STRING))
+		@PathParam("hardwareId") String hardwareId,
+
+		@Parameter(description = "Set to true to execute the command asynchronously",
+			schema = @Schema(type = SchemaType.BOOLEAN))
+		@QueryParam("async") @DefaultValue("false") boolean async
+	);
+
+	@POST
+	@DTSecurityFilter
+	@Path("/v1/command/tag/{tag}/health")
+	@Operation(summary = "Send a health command to be executed on devices by tag, either synchronously (default) or asynchronously")
+	Response healthCommandByTag(
+		@Parameter(
+			description = "The tag of the targeted devices",
+			required = true,
+			schema = @Schema(type = SchemaType.STRING))
+		@PathParam("tag") String tag,
+
+		@Parameter(description = "Set to true to execute the command asynchronously",
+			schema = @Schema(type = SchemaType.BOOLEAN))
+		@QueryParam("async") @DefaultValue("false") boolean async
+	);
 
 }
