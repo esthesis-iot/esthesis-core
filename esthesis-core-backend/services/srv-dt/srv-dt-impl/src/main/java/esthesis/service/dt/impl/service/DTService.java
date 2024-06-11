@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.awaitility.Awaitility;
+import org.bson.Document;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.time.Instant;
@@ -98,15 +99,21 @@ public class DTService {
 		return values;
 	}
 
-	public String sendCommandAsync(CommandRequestEntity commandRequestEntity) {
-		// Save the request and immediately return its correlation ID
-		return  commandSystemResource.save(commandRequestEntity).getCorrelationId();
+	public ExecuteRequestScheduleInfoDTO saveCommandRequest(CommandRequestEntity commandRequestEntity) {
+		return  commandSystemResource.save(commandRequestEntity);
 	}
 
-	public List<CommandReplyEntity> sendCommandSync(CommandRequestEntity commandRequestEntity) {
-		// Save the request and schedule its execution.
-		ExecuteRequestScheduleInfoDTO requestScheduleInfo = commandSystemResource.save(commandRequestEntity);
+	public List<Document> getReplies(String correlationId){
+		return  commandSystemResource.getReplies(correlationId).stream().map(CommandReplyEntity::asDocument).toList();
+	}
 
+	/**
+	 * Waits for the expected number of replies within a timeout of 10s with a poll interval of 300ms.
+	 *
+	 * @param requestScheduleInfo Info about the scheduled request, including correlation ID and number of devices.
+	 * @return A List of replies
+	 */
+	public List<Document> waitAndGetReplies(ExecuteRequestScheduleInfoDTO requestScheduleInfo){
 		// Wait for replies to be collected.
 		boolean allRepliesCollected = waitForReplies(requestScheduleInfo, 10000, 300);
 
@@ -118,18 +125,6 @@ public class DTService {
 		return getReplies(requestScheduleInfo.getCorrelationId());
 	}
 
-	public List<CommandReplyEntity> getReplies(String correlationId){
-		return  commandSystemResource.getReplies(correlationId);
-	}
-
-	/**
-	 * Waits for the expected number of replies within a timeout.
-	 *
-	 * @param requestScheduleInfo Info about the scheduled request, including correlation ID and number of devices.
-	 * @param timeout Maximum wait time in milliseconds.
-	 * @param pollInterval Interval to check the condition in milliseconds.
-	 * @return true if all replies are collected within the timeout, false if a timeout occurs.
-	 */
 	private boolean waitForReplies(ExecuteRequestScheduleInfoDTO requestScheduleInfo, long timeout, long pollInterval) {
 		try {
 			Awaitility.await()
@@ -145,5 +140,4 @@ public class DTService {
 			return false;
 		}
 	}
-
 }
