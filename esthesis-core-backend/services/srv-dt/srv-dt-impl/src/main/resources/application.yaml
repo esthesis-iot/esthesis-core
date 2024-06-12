@@ -53,3 +53,10 @@ quarkus:
     CommandSystemResource:
       url: http://esthesis-core-srv-command-service:8080
       scope: Singleton
+    AuditResource:
+      url: http://esthesis-core-srv-audit-service:8080
+      scope: Singleton
+esthesis:
+  dt-api:
+      timeout-in-ms: ${DT_API_REQUEST_TIMEOUT_MS:30000}
+      poll-interval-in-ms: ${DT_API_REQUEST_POLL_INTERVAL_MS:1000}

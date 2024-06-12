@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.awaitility.Awaitility;
 import org.bson.Document;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.time.Instant;
@@ -36,6 +37,12 @@ public class DTService {
 	@Inject
 	@RestClient
 	CommandSystemResource commandSystemResource;
+
+	@ConfigProperty(name = "esthesis.dt-api.timeout-in-ms")
+	Integer timeoutMs;
+
+	@ConfigProperty(name = "esthesis.dt-api.poll-interval-in-ms")
+	Integer pollInvervalMs;
 
 
 	/**
@@ -115,7 +122,7 @@ public class DTService {
 	 */
 	public List<Document> waitAndGetReplies(ExecuteRequestScheduleInfoDTO requestScheduleInfo){
 		// Wait for replies to be collected.
-		boolean allRepliesCollected = waitForReplies(requestScheduleInfo, 10000, 300);
+		boolean allRepliesCollected = waitForReplies(requestScheduleInfo);
 
 		if (!allRepliesCollected) {
 			log.warn("Timeout occurred while waiting for replies.");
@@ -125,11 +132,11 @@ public class DTService {
 		return getReplies(requestScheduleInfo.getCorrelationId());
 	}
 
-	private boolean waitForReplies(ExecuteRequestScheduleInfoDTO requestScheduleInfo, long timeout, long pollInterval) {
+	private boolean waitForReplies(ExecuteRequestScheduleInfoDTO requestScheduleInfo) {
 		try {
 			Awaitility.await()
-				.atMost(timeout, TimeUnit.MILLISECONDS)
-				.pollInterval(pollInterval, TimeUnit.MILLISECONDS)
+				.atMost(timeoutMs, TimeUnit.MILLISECONDS)
+				.pollInterval(pollInvervalMs, TimeUnit.MILLISECONDS)
 				.until(() -> commandSystemResource.countCollectedReplies(
 						requestScheduleInfo.getCorrelationId()
 					) == requestScheduleInfo.getDevicesScheduled()
