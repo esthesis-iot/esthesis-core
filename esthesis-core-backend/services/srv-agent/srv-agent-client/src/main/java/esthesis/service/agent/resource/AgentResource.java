@@ -21,7 +21,6 @@ import org.jboss.resteasy.reactive.RestResponse;
 
 @Path("/api")
 public interface AgentResource {
-
 	@POST
 	@Path(value = "/v1/register")
 	AgentRegistrationResponse register(@Valid AgentRegistrationRequest agentRegistrationRequest)

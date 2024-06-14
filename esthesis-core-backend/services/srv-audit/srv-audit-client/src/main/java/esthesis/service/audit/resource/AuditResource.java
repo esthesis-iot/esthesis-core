@@ -5,7 +5,7 @@ import esthesis.common.AppConstants.Security.Operation;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
+import io.quarkus.oidc.token.propagation.AccessToken;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.DELETE;
@@ -14,12 +14,11 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+@AccessToken
 @Path("/api")
 @RegisterRestClient(configKey = "AuditResource")
-@RegisterProvider(AccessTokenRequestReactiveFilter.class)
 public interface AuditResource {
 
 	@GET

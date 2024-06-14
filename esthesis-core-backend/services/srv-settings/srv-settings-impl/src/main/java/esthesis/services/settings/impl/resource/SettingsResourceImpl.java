@@ -1,5 +1,6 @@
 package esthesis.services.settings.impl.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.AppConstants.Security.Category;
 import esthesis.common.AppConstants.Security.Operation;
@@ -9,6 +10,7 @@ import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.services.settings.impl.service.DevicePageFieldService;
 import esthesis.services.settings.impl.service.SettingsService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import java.util.Arrays;
@@ -26,12 +28,14 @@ public class SettingsResourceImpl implements SettingsResource {
 	DevicePageFieldService devicePageFieldService;
 
 	@Override
+	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	@Audited(cat = Category.SETTINGS, op = Operation.READ, msg = "Get setting")
 	public SettingEntity findByName(NamedSetting name) {
 		return settingsService.findByName(name);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.SETTINGS, op = Operation.READ, msg = "Get settings")
 	public List<SettingEntity> findByNames(String names) {
 		return Arrays.stream(names.split(",")).map(
@@ -40,6 +44,7 @@ public class SettingsResourceImpl implements SettingsResource {
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.SETTINGS, op = Operation.WRITE, msg = "Save settings")
 	public void save(SettingEntity... settingEntities) {
 		// Saving a setting entry is a special case as the caller might want to
@@ -65,16 +70,19 @@ public class SettingsResourceImpl implements SettingsResource {
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	public List<String> findAllUniqueMeasurementNames() {
 		return settingsService.findAllUniqueMeasurementNames();
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	public List<DevicePageFieldEntity> getDevicePageFields() {
 		return devicePageFieldService.getFields();
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.SETTINGS, op = Operation.WRITE, msg = "Save device page fields")
 	public void saveDevicePageFields(@Valid List<DevicePageFieldEntity> fields) {
 		devicePageFieldService.saveFields(fields);

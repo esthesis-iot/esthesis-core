@@ -1,8 +1,10 @@
 package esthesis.service.crypto.impl.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.common.crypto.CryptoService;
 import esthesis.common.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.service.crypto.resource.SigningSystemResource;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -17,6 +19,7 @@ public class SigningSystemResourceImpl implements SigningSystemResource {
 	CryptoService cryptoService;
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public boolean verifySignature(SignatureVerificationRequestDTO request)
 	throws NoSuchAlgorithmException, InvalidKeySpecException, SignatureException,
 				 InvalidKeyException {

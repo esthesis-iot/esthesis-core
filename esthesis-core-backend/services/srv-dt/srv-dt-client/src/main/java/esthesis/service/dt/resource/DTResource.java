@@ -11,27 +11,27 @@ public interface DTResource {
 
 	@GET
 	@DTSecurityFilter
-	@Path("/v1/get/{hardwareId}/{category}/{measurement}")
 	@Produces("application/json")
+	@Path("/v1/get/{hardwareId}/{category}/{measurement}")
 	Response findJSON(String hardwareId, String category, String measurement);
 
 	@GET
 	@DTSecurityFilter
-	@Path("/v1/get/{hardwareId}/{category}/{measurement}")
 	@Produces("text/plain")
+	@Path("/v1/get/{hardwareId}/{category}/{measurement}")
 	Response findPlain(String hardwareId, String category,
 		String measurement);
 
 	@GET
 	@DTSecurityFilter
-	@Path("/v1/get/{hardwareId}/{category}")
 	@Produces("application/json")
+	@Path("/v1/get/{hardwareId}/{category}")
 	Response findAllJSON(String hardwareId, String category);
 
 	@GET
 	@DTSecurityFilter
-	@Path("/v1/get/{hardwareId}/{category}")
 	@Produces("text/plain")
+	@Path("/v1/get/{hardwareId}/{category}")
 	Response findAllPlain(String hardwareId, String category);
 
 	@GET

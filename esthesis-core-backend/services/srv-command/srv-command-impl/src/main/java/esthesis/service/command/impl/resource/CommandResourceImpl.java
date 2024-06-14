@@ -1,5 +1,6 @@
 package esthesis.service.command.impl.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Security.Category;
 import esthesis.common.AppConstants.Security.Operation;
 import esthesis.common.entity.CommandReplyEntity;
@@ -12,6 +13,7 @@ import esthesis.service.command.resource.CommandResource;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.entity.DeviceEntity;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.GET;
@@ -32,6 +34,7 @@ public class CommandResourceImpl implements CommandResource {
 	@GET
 	@Override
 	@Path("/v1/find")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.COMMAND, op = Operation.READ, msg = "Search commands",
 		log = AuditLogType.DATA_IN)
 	public Page<CommandRequestEntity> find(@BeanParam Pageable pageable) {
@@ -39,18 +42,21 @@ public class CommandResourceImpl implements CommandResource {
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.COMMAND, op = Operation.READ, msg = "Get command")
 	public CommandRequestEntity getCommand(String commandId) {
 		return commandService.getCommand(commandId);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.COMMAND, op = Operation.READ, msg = "Get reply")
 	public List<CommandReplyEntity> getReply(String correlationId) {
 		return commandService.getReplies(correlationId);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.COMMAND, op = Operation.WRITE, msg = "Save command")
 	public String save(CommandRequestEntity request) {
 		String correlationID = commandService.saveRequest(request).toString();
@@ -60,6 +66,7 @@ public class CommandResourceImpl implements CommandResource {
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.COMMAND, op = Operation.WRITE, msg = "Save command")
 	public List<CommandReplyEntity> saveAndWait(CommandRequestEntity request, long timeout,
 		long pollInterval) {
@@ -89,35 +96,41 @@ public class CommandResourceImpl implements CommandResource {
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	public List<DeviceEntity> findDevicesByHardwareId(String hardwareId) {
 		return commandService.findDevicesByHardwareId(hardwareId);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.COMMAND, op = Operation.DELETE, msg = "Delete command")
 	public void deleteCommand(String commandId) {
 		commandService.deleteCommand(commandId);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.COMMAND, op = Operation.DELETE, msg = "Delete command reply")
 	public void deleteReply(String replyId) {
 		commandService.deleteReply(replyId);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.COMMAND, op = Operation.DELETE, msg = "Delete command replies")
 	public void deleteReplies(String correlationId) {
 		commandService.deleteReplies(correlationId);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.COMMAND, op = Operation.DELETE, msg = "Purge commands")
 	public void purge(Optional<Integer> durationInDays) {
 		commandService.purge(durationInDays);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.COMMAND, op = Operation.DELETE, msg = "Purge all commands")
 	public void purgeAll() {
 		commandService.purge(Optional.empty());

@@ -89,14 +89,14 @@ public class DflMqttClientService {
 		// Create an EsthesisMessage out of each line of the message content.
 		List<EsthesisDataMessage> messages = new ArrayList<>();
 		body.lines().filter(line -> !line.startsWith("#")).forEach(line -> {
-			Builder esthesisMessageBuilder = EsthesisDataMessage.newBuilder()
+			Builder esthesisDataMessageBuilder = EsthesisDataMessage.newBuilder()
 				.setId(UUID.randomUUID().toString()).setHardwareId(hardwareId).setType(messageType)
 				.setSeenAt(Instant.now().toString())
 				.setChannel(exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC, String.class))
 				.setSeenBy(appName);
 			try {
-				esthesisMessageBuilder.setPayload(avroUtils.parsePayload(line));
-				EsthesisDataMessage msg = esthesisMessageBuilder.build();
+				esthesisDataMessageBuilder.setPayload(avroUtils.parsePayload(line));
+				EsthesisDataMessage msg = esthesisDataMessageBuilder.build();
 				log.debug("Parsed message to Avro message '{}'.",
 					StringUtils.abbreviate(msg.toString(), AppConstants.MESSAGE_LOG_ABBREVIATION_LENGTH));
 				messages.add(msg);

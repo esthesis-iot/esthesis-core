@@ -1,5 +1,6 @@
 package esthesis.services.device.impl.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
@@ -7,6 +8,7 @@ import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
 import esthesis.services.device.impl.service.DeviceRegistrationService;
 import esthesis.services.device.impl.service.DeviceService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -26,6 +28,7 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	DeviceService deviceService;
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public DeviceEntity register(DeviceRegistrationDTO deviceRegistration)
 	throws IOException, InvalidKeySpecException, NoSuchAlgorithmException,
 				 OperatorCreationException, NoSuchProviderException {
@@ -33,16 +36,19 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public DeviceEntity findByHardwareId(String hardwareId) {
 		return deviceService.findByHardwareId(hardwareId, false).orElseThrow();
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public DeviceEntity findById(String esthesisId) {
 		return deviceService.findById(esthesisId);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public String findPublicKey(String hardwareId) {
 		return deviceService.findByHardwareId(hardwareId, false).orElseThrow()
 			.getDeviceKey().getPublicKey();
@@ -54,6 +60,7 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	 * @param esthesisId The esthesis ID of the device.
 	 */
 	@Override
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public List<DeviceAttributeEntity> getDeviceAttributesByEsthesisId(String esthesisId) {
 		DeviceEntity deviceEntity = deviceService.findById(esthesisId);
 		if (deviceEntity != null) {
@@ -70,6 +77,7 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	 * @return
 	 */
 	@Override
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public List<DeviceAttributeEntity> getDeviceAttributesByEsthesisHardwareId(
 		String esthesisHardwareId) {
 		Optional<DeviceEntity> byHardwareId = deviceService.findByHardwareId(esthesisHardwareId, false);
@@ -81,8 +89,8 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public List<String> getDeviceIds() {
 		return deviceService.getDevicesIds();
 	}
-
 }

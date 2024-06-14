@@ -1,19 +1,16 @@
 package esthesis.service.infrastructure.resource;
 
-import esthesis.common.AppConstants;
 import esthesis.service.infrastructure.entity.InfrastructureMqttEntity;
-import io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter;
-import jakarta.annotation.security.RolesAllowed;
+import io.quarkus.oidc.client.filter.OidcClientFilter;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import java.util.Optional;
-import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+@OidcClientFilter
 @Path("/api/system-mqtt")
 @RegisterRestClient(configKey = "InfrastructureSystemResource")
-@RegisterProvider(OidcClientRequestReactiveFilter.class)
 public interface InfrastructureMqttSystemResource {
 
 	/**
@@ -23,7 +20,6 @@ public interface InfrastructureMqttSystemResource {
 	 */
 	@GET
 	@Path("/v1/match-by-tag")
-	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	Optional<InfrastructureMqttEntity> matchMqttServerByTags(@QueryParam("tags") String tags);
 
 	/**
@@ -32,6 +28,5 @@ public interface InfrastructureMqttSystemResource {
 	 */
 	@GET
 	@Path("/v1/match-random")
-	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	Optional<InfrastructureMqttEntity> matchRandomMqttServer();
 }

@@ -1,6 +1,7 @@
 package esthesis.dataflows.rdbmswriter.routes;
 
 import esthesis.common.banner.BannerUtil;
+import esthesis.dataflow.common.EsthesisAvroFormats;
 import esthesis.dataflows.rdbmswriter.config.AppConfig;
 import esthesis.dataflows.rdbmswriter.service.RdbmsService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -9,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
-import org.apache.camel.model.dataformat.AvroLibrary;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
@@ -81,7 +81,7 @@ public class RdbmsRoute extends RouteBuilder {
     config.kafkaTelemetryTopic().ifPresentOrElse(val -> {
       printRouteInfo(val);
       from("kafka:" + val)
-				.unmarshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisDataMessage")
+				.unmarshal(EsthesisAvroFormats.esthesisDataMessageFormat())
         .to("seda:telemetry");
       from("seda:telemetry")
         .bean(rdbmsService, "process");
@@ -90,7 +90,7 @@ public class RdbmsRoute extends RouteBuilder {
     config.kafkaMetadataTopic().ifPresentOrElse(val -> {
       printRouteInfo(val);
       from("kafka:" + val)
-				.unmarshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisDataMessage")
+				.unmarshal(EsthesisAvroFormats.esthesisDataMessageFormat())
 				.to("seda:metadata");
       from("seda:metadata")
           .bean(rdbmsService, "process");

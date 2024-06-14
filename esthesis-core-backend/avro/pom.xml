@@ -15,14 +15,14 @@
 	<dependencies>
 		<!-- QUARKUS -->
 		<dependency>
-			<artifactId>quarkus-avro</artifactId>
 			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-avro</artifactId>
 		</dependency>
 
 		<!-- ESTHESIS -->
 		<dependency>
-			<artifactId>common</artifactId>
 			<groupId>esthesis</groupId>
+			<artifactId>common</artifactId>
 			<version>3.0.38-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

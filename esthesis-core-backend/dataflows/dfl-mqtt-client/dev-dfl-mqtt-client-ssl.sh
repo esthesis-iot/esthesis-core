@@ -17,16 +17,17 @@ fi
 [ -e "local-env.sh" ] && source "local-env.sh"
 
 # Call starter script
-export ESTHESIS_DFL_MQTT_TOPIC_PING=esthesis/ping
-export ESTHESIS_DFL_MQTT_TOPIC_TELEMETRY=esthesis/telemetry
-export ESTHESIS_DFL_MQTT_TOPIC_METADATA=esthesis/metadata
-export ESTHESIS_DFL_MQTT_TOPIC_COMMAND_REQUEST=esthesis/command/request
-export ESTHESIS_DFL_MQTT_TOPIC_COMMAND_REPLY=esthesis/command/reply
-export ESTHESIS_DFL_KAFKA_TOPIC_PING=esthesis-ping
-export ESTHESIS_DFL_KAFKA_TOPIC_TELEMETRY=esthesis-telemetry
-export ESTHESIS_DFL_KAFKA_TOPIC_METADATA=esthesis-metadata
-export ESTHESIS_DFL_KAFKA_TOPIC_COMMAND_REQUEST=esthesis-command-request
-export ESTHESIS_DFL_KAFKA_TOPIC_COMMAND_REPLY=esthesis-command-reply
+export ESTHESIS_DFL_MQTT_PING_TOPIC=esthesis/ping
+export ESTHESIS_DFL_MQTT_TELEMETRY_TOPIC=esthesis/telemetry
+export ESTHESIS_DFL_MQTT_METADATA_TOPIC=esthesis/metadata
+export ESTHESIS_DFL_MQTT_COMMAND_REQUEST_TOPIC=esthesis/command/request
+export ESTHESIS_DFL_MQTT_COMMAND_REPLY_TOPIC=esthesis/command/reply
+export ESTHESIS_DFL_MQTT_BROKER_KEEP_ALIVE_INTERVAL=30
+export ESTHESIS_DFL_KAFKA_PING_TOPIC=esthesis-ping
+export ESTHESIS_DFL_KAFKA_TELEMETRY_TOPIC=esthesis-telemetry
+export ESTHESIS_DFL_KAFKA_METADATA_TOPIC=esthesis-metadata
+export ESTHESIS_DFL_KAFKA_COMMAND_REQUEST_TOPIC=esthesis-command-request
+export ESTHESIS_DFL_KAFKA_COMMAND_REPLY_TOPIC=esthesis-command-reply
 export ESTHESIS_DFL_MQTT_BROKER_CLUSTER_URL=tcp://mosquitto.$(kubens -c):1883
 export ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.$(kubens -c):9092
 export ESTHESIS_DFL_KAFKA_SECURITY_PROTOCOL=SASL_PLAINTEXT

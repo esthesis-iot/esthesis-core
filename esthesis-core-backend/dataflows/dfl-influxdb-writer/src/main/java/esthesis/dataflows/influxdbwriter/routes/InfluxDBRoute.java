@@ -1,6 +1,7 @@
 package esthesis.dataflows.influxdbwriter.routes;
 
 import esthesis.common.banner.BannerUtil;
+import esthesis.dataflow.common.EsthesisAvroFormats;
 import esthesis.dataflows.influxdbwriter.config.AppConfig;
 import esthesis.dataflows.influxdbwriter.service.InfluxDBService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -9,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
-import org.apache.camel.model.dataformat.AvroLibrary;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
@@ -64,7 +64,7 @@ public class InfluxDBRoute extends RouteBuilder {
       log.info("Setting up route from Kafka topic '{}' to InfluxDB '{}' "
           + "bucket '{}'.", val, config.influxUrl(), config.influxBucket());
       from("kafka:" + val)
-				.unmarshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisDataMessage")
+				.unmarshal(EsthesisAvroFormats.esthesisDataMessageFormat())
 				.to("seda:telemetry");
       from("seda:telemetry")
           .bean(influxDBService, "process");
@@ -75,8 +75,8 @@ public class InfluxDBRoute extends RouteBuilder {
       log.info("Setting up route from Kafka topic '{}' to InfluxDB '{}' "
           + "bucket '{}'.", val, config.influxUrl(), config.influxBucket());
       from("kafka:" + val)
-					.unmarshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisDataMessage")
-          .to("seda:metadata");
+				.unmarshal(EsthesisAvroFormats.esthesisDataMessageFormat())
+				.to("seda:metadata");
       from("seda:metadata")
           .bean(influxDBService, "process");
     }, () -> log.debug("Kafka metadata topic is not set, skipping route."));

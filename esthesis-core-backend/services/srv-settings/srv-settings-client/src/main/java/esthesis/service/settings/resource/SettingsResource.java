@@ -1,23 +1,20 @@
 package esthesis.service.settings.resource;
 
-import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.service.settings.entity.DevicePageFieldEntity;
 import esthesis.service.settings.entity.SettingEntity;
-import io.quarkus.oidc.token.propagation.reactive.AccessTokenRequestReactiveFilter;
-import jakarta.annotation.security.RolesAllowed;
+import io.quarkus.oidc.token.propagation.AccessToken;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import java.util.List;
-import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+@AccessToken
 @Path("/api")
 @RegisterRestClient(configKey = "SettingsResource")
-@RegisterProvider(AccessTokenRequestReactiveFilter.class)
 public interface SettingsResource {
 
 	/**
@@ -28,7 +25,6 @@ public interface SettingsResource {
 	 */
 	@GET
 	@Path("/v1/find/by-name/{name}")
-	@RolesAllowed(AppConstants.ROLE_USER)
 	SettingEntity findByName(@PathParam("name") NamedSetting name);
 
 	/**
@@ -38,7 +34,6 @@ public interface SettingsResource {
 	 */
 	@GET
 	@Path("/v1/find/by-names/{names}")
-	@RolesAllowed(AppConstants.ROLE_USER)
 	List<SettingEntity> findByNames(@PathParam("names") String names);
 
 	/**
@@ -47,7 +42,6 @@ public interface SettingsResource {
 	 */
 	@POST
 	@Path("/v1")
-	@RolesAllowed(AppConstants.ROLE_USER)
 	void save(@Valid SettingEntity... settingEntities);
 
 	/**
@@ -57,7 +51,6 @@ public interface SettingsResource {
 	 */
 	@GET
 	@Path("/v1/find-measurement-names")
-	@RolesAllowed(AppConstants.ROLE_USER)
 	List<String> findAllUniqueMeasurementNames();
 
 	/**
@@ -68,7 +61,6 @@ public interface SettingsResource {
 	 */
 	@GET
 	@Path("/v1/device-page-fields")
-	@RolesAllowed(AppConstants.ROLE_USER)
 	List<DevicePageFieldEntity> getDevicePageFields();
 
 	/**
@@ -79,6 +71,5 @@ public interface SettingsResource {
 	 */
 	@POST
 	@Path("/v1/device-page-fields")
-	@RolesAllowed(AppConstants.ROLE_USER)
 	void saveDevicePageFields(@Valid List<DevicePageFieldEntity> fields);
 }

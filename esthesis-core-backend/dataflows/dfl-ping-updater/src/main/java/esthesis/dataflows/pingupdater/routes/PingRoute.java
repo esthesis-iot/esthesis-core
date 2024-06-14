@@ -1,7 +1,7 @@
 package esthesis.dataflows.pingupdater.routes;
 
-import esthesis.avro.util.AvroUtils;
 import esthesis.common.banner.BannerUtil;
+import esthesis.dataflow.common.EsthesisAvroFormats;
 import esthesis.dataflows.pingupdater.config.AppConfig;
 import esthesis.dataflows.pingupdater.service.PingService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -11,7 +11,6 @@ import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
-import org.apache.camel.model.dataformat.AvroLibrary;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Slf4j
@@ -23,9 +22,6 @@ public class PingRoute extends RouteBuilder {
 
 	@Inject
 	AppConfig config;
-
-	@Inject
-	AvroUtils avroUtils;
 
 	@ConfigProperty(name = "quarkus.mongodb.connection-string")
 	String mongoUrl;
@@ -81,7 +77,7 @@ public class PingRoute extends RouteBuilder {
 
     from("kafka:" + config.kafkaPingTopic())
 			.log(LoggingLevel.DEBUG, log, "Received message from Kafka '${body}'.")
-			.unmarshal().avro(AvroLibrary.Jackson, "esthesis.avro.EsthesisDataMessage")
+			.unmarshal(EsthesisAvroFormats.esthesisDataMessageFormat())
 			.to("seda:ping");
 
     from("seda:ping")

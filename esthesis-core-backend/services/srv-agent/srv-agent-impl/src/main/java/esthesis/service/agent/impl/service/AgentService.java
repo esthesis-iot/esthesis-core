@@ -83,81 +83,6 @@ public class AgentService {
 	private final int requestsPerTimeslot = 5;
 
 	/**
-	 * Registers a new device into the system.
-	 */
-	public AgentRegistrationResponse register(AgentRegistrationRequest agentRegistrationRequest)
-	throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, NoSuchProviderException,
-				 OperatorCreationException {
-		// Check the proposed hardware id conforms to the naming convention.
-		if (!agentRegistrationRequest.getHardwareId().matches(HARDWARE_ID_REGEX)) {
-			throw new QMismatchException("Hardware ID does not conform to the naming convention '{}'.",
-				HARDWARE_ID_REGEX);
-		}
-
-		// Prepare a registration request.
-		DeviceRegistrationDTO deviceRegistration = new DeviceRegistrationDTO();
-		deviceRegistration.setHardwareId(agentRegistrationRequest.getHardwareId());
-		deviceRegistration.setAttributes(agentRegistrationRequest.getAttributes());
-		if (StringUtils.isNotBlank(agentRegistrationRequest.getTags())) {
-			deviceRegistration.setTags(
-				Arrays.stream(agentRegistrationRequest.getTags().split(",")).toList());
-		}
-		deviceRegistration.setType(agentRegistrationRequest.getType());
-		if (StringUtils.isNotBlank(agentRegistrationRequest.getRegistrationSecret())) {
-			deviceRegistration.setRegistrationSecret(agentRegistrationRequest.getRegistrationSecret());
-		}
-
-		deviceRegistration.setAttributes(agentRegistrationRequest.getAttributes());
-
-		// Issue registration request.
-		log.debug("Requesting device registration with: '{}'", deviceRegistration);
-		DeviceEntity deviceEntity = deviceSystemResource.register(deviceRegistration);
-		log.debug("Device registration successful: '{}'", deviceEntity);
-
-		// Process the response.
-		AgentRegistrationResponse agentRegistrationResponse = new AgentRegistrationResponse();
-		agentRegistrationResponse.setCertificate(deviceEntity.getDeviceKey().getCertificate());
-		agentRegistrationResponse.setPublicKey(deviceEntity.getDeviceKey().getPublicKey());
-		agentRegistrationResponse.setPrivateKey(deviceEntity.getDeviceKey().getPrivateKey());
-
-		// Find the root CA to be pushed to the device.
-		SettingEntity rootCa = settingsSystemResource.findByName(NamedSetting.DEVICE_ROOT_CA);
-		if (rootCa == null) {
-			log.warn("Root CA is not set, the device will not receive a root CA.");
-		} else {
-			agentRegistrationResponse.setRootCaCertificate(
-				caSystemResource.getCACertificate(rootCa.asString()));
-		}
-
-		// Find the MQTT server to send back to the device.
-		Optional<InfrastructureMqttEntity> mqttServer;
-		if (StringUtils.isNotEmpty(agentRegistrationRequest.getTags())) {
-			mqttServer =
-				infrastructureMqttSystemResource.matchMqttServerByTags(agentRegistrationRequest.getTags());
-		} else {
-			mqttServer = infrastructureMqttSystemResource.matchRandomMqttServer();
-		}
-		if (mqttServer.isPresent()) {
-			agentRegistrationResponse.setMqttServer(mqttServer.get().getUrl());
-		} else {
-			log.warn("Could not find a matching MQTT server for device '{}' with "
-					+ "tags '{}' during registration.", agentRegistrationRequest.getHardwareId(),
-				agentRegistrationRequest.getTags());
-		}
-
-		// Set provisioning URL.
-		SettingEntity provisioningUrl = settingsSystemResource.findByName(
-			NamedSetting.DEVICE_PROVISIONING_URL);
-		if (provisioningUrl != null) {
-			agentRegistrationResponse.setProvisioningUrl(provisioningUrl.getValue());
-		} else {
-			log.warn("Provisioning URL is not set.");
-		}
-
-		return agentRegistrationResponse;
-	}
-
-	/**
 	 * Attempts to validate a request token sent by a device while requesting information on available
 	 * provisioning packages. The token is an RSA/SHA256 digital signature of a SHA256 hashed version
 	 * of the hardware id of the device requesting the information.
@@ -307,4 +232,80 @@ public class AgentService {
 			() -> new QDoesNotExistException("Invalid download token '{}' for provisioning package.",
 				token)).onItem().transformToUni(id -> redisUtils.downloadProvisioningPackage(id));
 	}
+
+	/**
+	 * Registers a new device into the system.
+	 */
+	public AgentRegistrationResponse register(AgentRegistrationRequest agentRegistrationRequest)
+	throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, NoSuchProviderException,
+				 OperatorCreationException {
+		// Check the proposed hardware id conforms to the naming convention.
+		if (!agentRegistrationRequest.getHardwareId().matches(HARDWARE_ID_REGEX)) {
+			throw new QMismatchException("Hardware ID does not conform to the naming convention '{}'.",
+				HARDWARE_ID_REGEX);
+		}
+
+		// Prepare a registration request.
+		DeviceRegistrationDTO deviceRegistration = new DeviceRegistrationDTO();
+		deviceRegistration.setHardwareId(agentRegistrationRequest.getHardwareId());
+		deviceRegistration.setAttributes(agentRegistrationRequest.getAttributes());
+		if (StringUtils.isNotBlank(agentRegistrationRequest.getTags())) {
+			deviceRegistration.setTags(
+				Arrays.stream(agentRegistrationRequest.getTags().split(",")).toList());
+		}
+		deviceRegistration.setType(agentRegistrationRequest.getType());
+		if (StringUtils.isNotBlank(agentRegistrationRequest.getRegistrationSecret())) {
+			deviceRegistration.setRegistrationSecret(agentRegistrationRequest.getRegistrationSecret());
+		}
+
+		deviceRegistration.setAttributes(agentRegistrationRequest.getAttributes());
+
+		// Issue registration request.
+		log.debug("Requesting device registration with: '{}'", deviceRegistration);
+		DeviceEntity deviceEntity = deviceSystemResource.register(deviceRegistration);
+		log.debug("Device registration successful: '{}'", deviceEntity);
+
+		// Process the response.
+		AgentRegistrationResponse agentRegistrationResponse = new AgentRegistrationResponse();
+		agentRegistrationResponse.setCertificate(deviceEntity.getDeviceKey().getCertificate());
+		agentRegistrationResponse.setPublicKey(deviceEntity.getDeviceKey().getPublicKey());
+		agentRegistrationResponse.setPrivateKey(deviceEntity.getDeviceKey().getPrivateKey());
+
+		// Find the root CA to be pushed to the device.
+		SettingEntity rootCa = settingsSystemResource.findByName(NamedSetting.DEVICE_ROOT_CA);
+		if (rootCa == null) {
+			log.warn("Root CA is not set, the device will not receive a root CA.");
+		} else {
+			agentRegistrationResponse.setRootCaCertificate(
+				caSystemResource.getCACertificate(rootCa.asString()));
+		}
+
+		// Find the MQTT server to send back to the device.
+		Optional<InfrastructureMqttEntity> mqttServer;
+		if (StringUtils.isNotEmpty(agentRegistrationRequest.getTags())) {
+			mqttServer =
+				infrastructureMqttSystemResource.matchMqttServerByTags(agentRegistrationRequest.getTags());
+		} else {
+			mqttServer = infrastructureMqttSystemResource.matchRandomMqttServer();
+		}
+		if (mqttServer.isPresent()) {
+			agentRegistrationResponse.setMqttServer(mqttServer.get().getUrl());
+		} else {
+			log.warn("Could not find a matching MQTT server for device '{}' with "
+					+ "tags '{}' during registration.", agentRegistrationRequest.getHardwareId(),
+				agentRegistrationRequest.getTags());
+		}
+
+		// Set provisioning URL.
+		SettingEntity provisioningUrl = settingsSystemResource.findByName(
+			NamedSetting.DEVICE_PROVISIONING_URL);
+		if (provisioningUrl != null) {
+			agentRegistrationResponse.setProvisioningUrl(provisioningUrl.getValue());
+		} else {
+			log.warn("Provisioning URL is not set.");
+		}
+
+		return agentRegistrationResponse;
+	}
+
 }

@@ -1,46 +1,24 @@
 <?xml version="1.0"?>
 <project
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>esthesis</groupId>
-    <artifactId>dataflows</artifactId>
-    <version>3.0.38-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>esthesis</groupId>
+		<artifactId>dataflows</artifactId>
+		<version>3.0.38-SNAPSHOT</version>
+	</parent>
 
-  <artifactId>dfl-common</artifactId>
+	<artifactId>dfl-common</artifactId>
 
-  <dependencies>
-    <!-- QUARKUS -->
-    <dependency>
-      <groupId>org.eclipse.microprofile.rest.client</groupId>
-      <artifactId>microprofile-rest-client-api</artifactId>
-    </dependency>
-
-    <!-- ESTHESIS -->
-    <dependency>
-      <groupId>esthesis</groupId>
-      <artifactId>common</artifactId>
-      <version>3.0.38-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>esthesis</groupId>
-      <artifactId>avro</artifactId>
-      <version>3.0.38-SNAPSHOT</version>
-    </dependency>
-
-    <!-- THIRD-PARTY -->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-    </dependency>
+	<dependencies>
+		<!-- QUARKUS -->
+		<dependency>
+			<groupId>org.eclipse.microprofile.rest.client</groupId>
+			<artifactId>microprofile-rest-client-api</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-avro</artifactId>
@@ -49,5 +27,27 @@
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-jackson-avro</artifactId>
 		</dependency>
-  </dependencies>
+
+		<!-- ESTHESIS -->
+		<dependency>
+			<groupId>esthesis</groupId>
+			<artifactId>common</artifactId>
+			<version>3.0.38-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>esthesis</groupId>
+			<artifactId>avro</artifactId>
+			<version>3.0.38-SNAPSHOT</version>
+		</dependency>
+
+		<!-- THIRD-PARTY -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+	</dependencies>
 </project>

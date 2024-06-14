@@ -5,8 +5,9 @@
   quarkus:
     log:
       category:
-        "org.jboss.resteasy.reactive":
-          level: DEBUG
+        "org.jboss.resteasy":
+          min-level: TRACE
+          level: TRACE
     rest-client:
       logging:
         scope: request-response
@@ -16,28 +17,34 @@
     log:
       category:
         "io.quarkus.mongodb.panache.common.runtime":
+          min-level: TRACE
           level: DEBUG
         "org.mongodb":
+          min-level: TRACE
           level: DEBUG
 "%debug-oidc":
   quarkus:
     log:
       category:
         "io.quarkus.oidc":
+          min-level: TRACE
           level: TRACE
 "%debug-camel":
   quarkus:
     log:
       category:
         "org.apache.camel":
+          min-level: TRACE
           level: DEBUG
 "%trace":
   quarkus:
     log:
       category:
         esthesis:
+          min-level: TRACE
           level: TRACE
 "%trace-all":
   quarkus:
     log:
+      min-level: TRACE
       level: TRACE

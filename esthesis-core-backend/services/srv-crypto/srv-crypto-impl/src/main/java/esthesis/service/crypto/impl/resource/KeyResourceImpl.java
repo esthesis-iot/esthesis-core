@@ -1,5 +1,6 @@
 package esthesis.service.crypto.impl.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.crypto.CryptoService;
 import esthesis.common.crypto.dto.CertificateSignRequestDTO;
@@ -13,6 +14,7 @@ import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
 import io.quarkus.logging.Log;
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.security.KeyFactory;
@@ -49,6 +51,7 @@ public class KeyResourceImpl implements KeyResource {
 	CaEntityRepository caEntityRepository;
 
 	@Override
+	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	public KeyPair generateKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException {
 		CreateKeyPairRequestDTO createKeyPairRequestDTO = new CreateKeyPairRequestDTO();
 		createKeyPairRequestDTO.setKeySize(
@@ -60,16 +63,19 @@ public class KeyResourceImpl implements KeyResource {
 	}
 
 	@Override
+	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	public String publicKeyToPEM(PublicKey publicKey) throws IOException {
 		return cryptoService.publicKeyToPEM(publicKey);
 	}
 
 	@Override
+	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	public String privateKeyToPEM(PrivateKey privateKey) throws IOException {
 		return cryptoService.privateKeyToPEM(privateKey);
 	}
 
 	@Override
+	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	public String generateCertificateAsPEM(CreateCertificateRequestDTO createCertificateRequestDTO)
 	throws NoSuchAlgorithmException, InvalidKeySpecException, OperatorCreationException, IOException {
 		// Prepare a certificate sign request.

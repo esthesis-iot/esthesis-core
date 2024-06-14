@@ -12,6 +12,10 @@
     <version>3.0.38-SNAPSHOT</version>
   </parent>
 
+	<properties>
+		<sslcontext-kickstart.version>8.1.2</sslcontext-kickstart.version>
+	</properties>
+
   <dependencies>
     <!-- ESTHESIS -->
     <dependency>
@@ -30,12 +34,12 @@
 		<dependency>
 			<groupId>io.github.hakky54</groupId>
 			<artifactId>sslcontext-kickstart</artifactId>
-			<version>8.1.2</version>
+			<version>${sslcontext-kickstart.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.hakky54</groupId>
 			<artifactId>sslcontext-kickstart-for-pem</artifactId>
-			<version>8.1.2</version>
+			<version>${sslcontext-kickstart.version}</version>
 		</dependency>
   </dependencies>
 

@@ -1,6 +1,7 @@
 package esthesis.service.crypto.impl.resource;
 
 import com.github.slugify.Slugify;
+import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Security.Category;
 import esthesis.common.AppConstants.Security.Operation;
 import esthesis.service.audit.ccc.Audited;
@@ -11,6 +12,7 @@ import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.entity.KeystoreEntity;
 import esthesis.service.crypto.impl.service.KeystoreService;
 import esthesis.service.crypto.resource.KeystoreResource;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -25,6 +27,7 @@ public class KeystoreResourceImpl implements KeystoreResource {
 	@GET
 	@Override
 	@Path("/v1/find")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@JSONReplyFilter(filter = "content,content.id,content.name,content.description,content.createdAt")
 	@Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Search keystores",
 		log = AuditLogType.DATA_IN)
@@ -33,22 +36,26 @@ public class KeystoreResourceImpl implements KeystoreResource {
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "View keystore")
 	public KeystoreEntity findById(String id) {
 		return keystoreService.findById(id);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	public KeystoreEntity save(KeystoreEntity keystoreEntity) {
 		return keystoreService.save(keystoreEntity);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	public void delete(String id) {
 		keystoreService.deleteById(id);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	public Response download(String id) {
 		KeystoreEntity keystoreEntity = keystoreService.findById(id);
 

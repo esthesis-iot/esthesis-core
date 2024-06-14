@@ -1,5 +1,6 @@
 package esthesis.services.audit.impl.resource;
 
+import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Security;
 import esthesis.common.AppConstants.Security.Category;
 import esthesis.common.AppConstants.Security.Operation;
@@ -11,6 +12,7 @@ import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.services.audit.impl.service.AuditService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.GET;
@@ -28,6 +30,7 @@ public class AuditResourceImpl implements AuditResource {
 	@GET
 	@Override
 	@Path("/v1/find")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.AUDIT, op = Operation.READ, msg = "Search audit",
 		log = AuditLogType.DATA_IN)
 	@JSONReplyFilter(filter = "content,content.id,content.createdOn,content.createdBy,"
@@ -37,22 +40,26 @@ public class AuditResourceImpl implements AuditResource {
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	public Category[] getCategories() {
 		return Security.Category.values();
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	public Operation[] getOperations() {
 		return Operation.values();
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.AUDIT, op = Operation.READ, msg = "View audit entry")
 	public AuditEntity findById(String id) {
 		return auditService.findById(id);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.AUDIT, op = Operation.READ, msg = "Delete audit entry")
 	public Response delete(String id) {
 		if (auditService.deleteById(id)) {
@@ -63,8 +70,8 @@ public class AuditResourceImpl implements AuditResource {
 	}
 
 	@Override
+	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	public AuditEntity save(AuditEntity auditEntity) {
 		return auditService.save(auditEntity);
 	}
-
 }

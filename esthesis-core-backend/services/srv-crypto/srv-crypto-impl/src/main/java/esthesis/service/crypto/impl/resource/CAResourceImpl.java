@@ -1,6 +1,5 @@
 package esthesis.service.crypto.impl.resource;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.slugify.Slugify;
 import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Security.Category;
@@ -16,6 +15,7 @@ import esthesis.service.crypto.form.ImportCaForm;
 import esthesis.service.crypto.impl.service.CAService;
 import esthesis.service.crypto.resource.CAResource;
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.GET;
@@ -30,12 +30,10 @@ public class CAResourceImpl implements CAResource {
 	@Inject
 	CAService caService;
 
-	@Inject
-	ObjectMapper mapper;
-
 	@GET
 	@Override
 	@Path("/v1/find")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,"
 		+ "content.parentCaId,content.validity,content.name")
 	@Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Search certificate authorities",
@@ -47,6 +45,7 @@ public class CAResourceImpl implements CAResource {
 	@GET
 	@Override
 	@Path("/v1/{id}")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@JSONReplyFilter(filter = "id,cn,issued,parentCa,validity,parentCaId,name")
 	@Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "View certificate authority")
 	public CaEntity findById(String id) {
@@ -54,6 +53,7 @@ public class CAResourceImpl implements CAResource {
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	public CaEntity findByIdComplete(String id) {
 		return findById(id);
 	}
@@ -61,12 +61,14 @@ public class CAResourceImpl implements CAResource {
 	@GET
 	@Override
 	@Path("/v1/eligible-for-signing")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@JSONReplyFilter(filter = "id,cn,name")
 	public List<CaEntity> getEligbleForSigning() {
 		return caService.getEligibleForSigning();
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Download certificate authority", log =
 		AuditLogType.DATA_IN)
 	public Response download(String caId, AppConstants.KeyType type) {
@@ -95,24 +97,28 @@ public class CAResourceImpl implements CAResource {
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Import certificate authority")
 	public CaEntity importCa(ImportCaForm importCaForm) {
 		return caService.importCa(importCaForm);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.CRYPTO, op = Operation.DELETE, msg = "Delete certificate authority")
 	public void delete(String id) {
 		caService.deleteById(id);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Save certificate authority")
 	public CaEntity save(CaEntity caEntity) {
 		return caService.save(caEntity);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	public String getCACertificate(String caId) {
 		return findById(caId).getCertificate();
 	}

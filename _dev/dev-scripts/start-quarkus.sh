@@ -130,7 +130,8 @@ cd "$LAUNCH_FOLDER"
 	$( [ "$OIDC_CLIENT" = "true" ] && echo "-Dquarkus.oidc-client.auth-server-url=$ESTHESIS_OIDC_SERVER_URL" ) \
 	$( [ "$OIDC_CLIENT" = "true" ] && echo "-Dquarkus.oidc-client.grant-options.password.username=esthesis-system" ) \
 	$( [ "$OIDC_CLIENT" = "true" ] && echo "-Dquarkus.oidc-client.grant-options.password.password=esthesis-system" ) \
+	$( [ "$OIDC_CLIENT" = "true" ] && echo "-Dquarkus.oidc-client.client-id=esthesis" ) \
+	$( [ "$OIDC_CLIENT" = "true" ] && echo "-Dquarkus.oidc-client.grant.type=password" ) \
 	-Desthesis.oidc.redirect-url="http://localhost:4200/callback" \
 	-Desthesis.oidc.post-logout-redirect-uri="http://localhost:4200/logged-out" \
 	-Desthesis.oidc.authority="http://keycloak.$NAMESPACE/realms/esthesis"
-

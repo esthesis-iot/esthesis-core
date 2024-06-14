@@ -1,6 +1,5 @@
 package esthesis.service.crypto.impl.resource;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.slugify.Slugify;
 import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Security.Category;
@@ -13,11 +12,11 @@ import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.entity.CertificateEntity;
 import esthesis.service.crypto.form.ImportCertificateForm;
-import esthesis.service.crypto.impl.repository.CertificateEntityRepository;
 import esthesis.service.crypto.impl.service.CertificateService;
 import esthesis.service.crypto.resource.CertificateResource;
 import esthesis.service.settings.resource.SettingsResource;
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.GET;
@@ -36,15 +35,10 @@ public class CertificateResourceImpl implements CertificateResource {
 	@Inject
 	CertificateService certificateService;
 
-	@Inject
-	CertificateEntityRepository certificateEntityRepository;
-
-	@Inject
-	ObjectMapper mapper;
-
 	@GET
 	@Override
 	@Path("/v1/find")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.issuer,content"
 		+ ".validity,content.name")
 	@Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Search certificates", log =
@@ -56,6 +50,7 @@ public class CertificateResourceImpl implements CertificateResource {
 	@GET
 	@Override
 	@Path("/v1/{id}")
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@JSONReplyFilter(filter = "id,cn,issued,validity,issuer,san,name")
 	@Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "View certificate")
 	public CertificateEntity findById(String id) {
@@ -63,11 +58,13 @@ public class CertificateResourceImpl implements CertificateResource {
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	public CertificateEntity findByIdComplete(String id) {
 		return findById(id);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Download certificate", log =
 		AuditLogType.DATA_IN)
 	public Response download(String certId, AppConstants.KeyType type) {
@@ -95,18 +92,21 @@ public class CertificateResourceImpl implements CertificateResource {
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Import certificate")
 	public CertificateEntity importCertificate(ImportCertificateForm importCertificateForm) {
 		return certificateService.importCertificate(importCertificateForm);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.CRYPTO, op = Operation.DELETE, msg = "Delete certificate")
 	public void delete(String id) {
 		certificateService.deleteById(id);
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Save certificate")
 	public CertificateEntity save(CertificateEntity certificateEntity) {
 		return certificateService.save(certificateEntity);

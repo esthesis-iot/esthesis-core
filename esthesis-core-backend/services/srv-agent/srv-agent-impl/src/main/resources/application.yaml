@@ -25,14 +25,6 @@ quarkus:
   otel:
     sdk:
       disabled: true
-  oidc-client:
-    client-id: esthesis
-    grant:
-      type: PASSWORD
-    grant-options:
-      password:
-        username: ${OIDC_CLIENT_USERNAME}
-        password: ${OIDC_CLIENT_PASSWORD}
   rest-client:
     SettingsSystemResource:
       url: http://esthesis-core-srv-settings-service:8080
