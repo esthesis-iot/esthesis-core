@@ -1,6 +1,7 @@
 package autoUpdate
 
 import (
+	"crypto/tls"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/cryptoUtil"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/dto"
@@ -112,6 +113,7 @@ func Update(packageId string) {
 	url.RawQuery = values.Encode()
 	log.Debugf("Requesting provisioning packages from '%s'.", url.String())
 	client := resty.New()
+	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: !config.Flags.TlsVerification})
 	response, err := client.R().
 		SetResult(&agentProvisioningInfoResponse).
 		Get(url.String())

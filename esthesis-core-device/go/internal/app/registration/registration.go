@@ -39,6 +39,7 @@ func Register() bool {
 	client.SetRetryCount(math.MaxInt)
 	client.SetRetryWaitTime(time.Duration(config.Flags.RetryHttpRequest) * time.Second)
 	client.SetTimeout(time.Duration(config.Flags.HttpTimeout) * time.Second)
+	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: !config.Flags.TlsVerification})
 	client.AddRetryCondition(
 		func(r *resty.Response, err error) bool {
 			if r.StatusCode() > 200 && !channels.GetIsShutdown() {

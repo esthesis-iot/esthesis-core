@@ -80,6 +80,7 @@ type flagsStruct struct {
 	LuaExtraHttpTelemetryEndpoint []string
 	LuaExtraHttpMetadataEndpoint  []string
 	MqttInflightTTLDuration       int // in seconds
+	TlsVerification               bool
 }
 
 var Flags = flagsStruct{}
@@ -134,6 +135,9 @@ func InitCmdFlags(osArgs []string) {
 	opt.IntVar(&Flags.RetryHttpRequest, "httpRetry", 60,
 		opt.GetEnv("HTTP_RETRY"),
 		opt.Description("The number of seconds to wait before retrying a failed HTTP request"))
+	opt.BoolVar(&Flags.TlsVerification, "tlsVerification", true,
+		opt.GetEnv("TLS_VERIFICATION"),
+		opt.Description("A flag indicating whether TLS verification should be enabled"))
 
 	// MQTT topics
 	opt.StringVar(&Flags.TopicPing, "topicPing", "esthesis/ping",
