@@ -122,6 +122,10 @@ should be accessible for intra-service communication, so it does not need to be 
 end-users.<br/>
 Default: `http://keycloak.{{ .Namespace }}.svc.cluster.local/realms/esthesis`
 
+🔹 `OIDC_TLS_VERIFICATION`<br/>
+Whether TLS should be verified when contacting OpenID Connect authority.<br/>
+Default: `required`
+
 🔹 `ESTHESIS_REPORTED_OIDC_AUTHORITY_URL`<br/>
 The URL of the OpenID Connect authority end-users use to authenticate.<br/>
 Default: `http://keycloak.{{ .Namespace }}.svc.cluster.local/realms/esthesis`
@@ -237,25 +241,23 @@ tune their properties or replace them altogether with your own resources to supp
 production use case.
 
 ### Environment variables
-The following list is a recommended starting point of environment variables to set before you
-proceed with the installation:
-
+The following list is a starting point of environment variables to set before you proceed with the
+installation, you need to amend them to match your own environment:
 ```
-export DOMAIN=domain.com
+export DOMAIN=esthesis.domain.com
 export TIMEZONE=Europe/Athens
 export ESTHESIS_ADMIN_USERNAME=esthesis-admin
-export ESTHESIS_ADMIN_PASSWORD=wEc25LP82F97OfoX
+export ESTHESIS_ADMIN_PASSWORD=esthesis-admin
 export ESTHESIS_SYSTEM_USERNAME=esthesis-system
-export ESTHESIS_SYSTEM_PASSWORD=O0ddC1Qhf4cjW21N
-export KEYCLOAK_INGRESS_NAME=keycloak.$DOMAIN
-export ESTHESIS_INGRESS_NAME=esthesis-core.$DOMAIN
-export OIDC_AUTHORITY_URL_EXTERNAL="https://$KEYCLOAK_INGRESS_NAME/realms/esthesis"
-export KEYCLOAK_CERT_MANAGER_CLUSTER_ISSUER=letsencrypt-prod
-export ESTHESIS_UI_CERT_MANAGER_CLUSTER_ISSUER=letsencrypt-prod
+export ESTHESIS_SYSTEM_PASSWORD=esthesis-system
+export KEYCLOAK_HOSTNAME=keycloak.$DOMAIN
 export MOSQUITTO_SERVICE_TYPE=LoadBalancer
+export ESTHESIS_HOSTNAME=esthesis-core.$DOMAIN
+export ESTHESIS_REPORTED_OIDC_AUTHORITY_URL="https://$KEYCLOAK_HOSTNAME/realms/esthesis"
+export ESTHESIS_REPORTED_OIDC_POST_LOGOUT_URL="https://$ESTHESIS_HOSTNAME/logged-out"
+export OIDC_AUTH_SERVER_URL="https://$KEYCLOAK_HOSTNAME/realms/esthesis"
+export OIDC_CLIENT_AUTH_SERVER_URL="https://$KEYCLOAK_HOSTNAME/realms/esthesis"
 ```
-
-Make sure you adapt the values to your own environment.
 
 ### Supporting infrastructure
 - Obtain the Helmfile corresponding to the esthesis version you want to install. For example:

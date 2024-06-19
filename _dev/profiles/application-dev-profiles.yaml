@@ -1,6 +1,20 @@
 ###############################################################################
 # DEV PROFILES
 ###############################################################################
+"%debug":
+  quarkus:
+    log:
+      category:
+        esthesis:
+          min-level: TRACE
+          level: DEBUG
+"%trace":
+  quarkus:
+    log:
+      category:
+        esthesis:
+          min-level: TRACE
+          level: TRACE
 "%debug-rest":
   quarkus:
     log:
@@ -36,13 +50,11 @@
         "org.apache.camel":
           min-level: TRACE
           level: DEBUG
-"%trace":
+"%debug-all":
   quarkus:
     log:
-      category:
-        esthesis:
-          min-level: TRACE
-          level: TRACE
+      min-level: TRACE
+      level: DEBUG
 "%trace-all":
   quarkus:
     log:

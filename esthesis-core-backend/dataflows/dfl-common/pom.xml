@@ -19,14 +19,10 @@
 			<groupId>org.eclipse.microprofile.rest.client</groupId>
 			<artifactId>microprofile-rest-client-api</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-avro</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-jackson-avro</artifactId>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.apache.camel</groupId>-->
+<!--			<artifactId>camel-avro</artifactId>-->
+<!--		</dependency>-->
 
 		<!-- ESTHESIS -->
 		<dependency>

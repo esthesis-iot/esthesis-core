@@ -185,7 +185,7 @@ public class RedisUtils {
 	}
 
 	public void deleteProvisioningPackage(String provisioningPackageId) {
-		keyCommand.del(KeyType.ESTHESIS_PP + "." + provisioningPackageId.toString());
+		keyCommand.del(KeyType.ESTHESIS_PP + "." + provisioningPackageId);
 	}
 
 	public boolean keyExists(KeyType keyType, String key) {
@@ -194,7 +194,7 @@ public class RedisUtils {
 
 	public Uni<byte[]> downloadProvisioningPackage(String provisioningPackageId) {
 		return redis.getReactive().hash(byte[].class)
-			.hget(KeyType.ESTHESIS_PP + "." + provisioningPackageId.toString(),
+			.hget(KeyType.ESTHESIS_PP + "." + provisioningPackageId,
 				REDIS_KEY_PROVISIONING_PACKAGE_FILE);
 	}
 
@@ -208,7 +208,7 @@ public class RedisUtils {
 	}
 
 	public void resetCounter(KeyType keyType, String key) {
-		countCommands.set(keyType + "." + key, 0l);
+		countCommands.set(keyType + "." + key, 0L);
 	}
 
 }

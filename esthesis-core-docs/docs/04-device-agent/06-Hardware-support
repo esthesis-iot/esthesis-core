@@ -11,7 +11,7 @@ corresponding architecture:
 |-----------------------------------|-----------|-----------------------------------|--------------|
 | Raspberry Pi 1 Model A, A+, B, B+ | BCM2835   | esthesis-core-device-linux-arm6   | linux/arm/v6 |
 | Raspberry Pi Zero, Zero W         | BCM2835   | esthesis-core-device-linux-arm6   | linux/arm/v6 |
-| Raspberry Pi Compute Module 1		 | BCM2835   | esthesis-core-device-linux-arm6   | linux/arm/v6 |
+| Raspberry Pi Compute Module 1		 	| BCM2835   | esthesis-core-device-linux-arm6   | linux/arm/v6 |
 | Raspberry Pi 2 Model B            | BCM2836   | esthesis-core-device-linux-arm7   | linux/arm/v7 |
 | Raspberry Pi 2 Model B (late)     | BCM2837   | esthesis-core-device-linux-arm7   | linux/arm/v7 |
 | Raspberry Pi 3 Model B            | BCM2837   | esthesis-core-device-linux-arm7   | linux/arm/v7 |
@@ -21,7 +21,7 @@ corresponding architecture:
 | Raspberry Pi 4 Model B            | BCM2711   | esthesis-core-device-linux-arm64  | linux/arm64  |
 | Raspberry Pi 400                  | BCM2711   | esthesis-core-device-linux-arm64  | linux/arm64  |
 | Raspberry Pi Compute Module 4     | BCM2711   | esthesis-core-device-linux-arm64  | linux/arm64  |
-| Raspberry Pi 5             			 | BCM2712   | esthesis-core-device-linux-arm64  | linux/arm64  |
+| Raspberry Pi 5             			 	| BCM2712   | esthesis-core-device-linux-arm64  | linux/arm64  |
 
 ### A Guide to Setting Up Watchdog on Raspberry Pi
 

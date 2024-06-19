@@ -60,6 +60,10 @@ define `ESTHESIS_SINGLE_NODE=true` environmental variable.
 
 If you want to use the Helm charts, locally available to your machine, while still deploying a
 production-level setup, you can use the `ESTHESIS_LOCAL_CHARTS=true` environmental variable.
+
+If while working with a private you are also deploying on a Kubernetes cluster thart does not
+have access to proper certificates, you can also set `OIDC_TLS_VERIFICATION=none` while deploying
+the Helm charts.
 :::
 
 ## Deploying Dataflows

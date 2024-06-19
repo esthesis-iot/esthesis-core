@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Transactional
 @ApplicationScoped
-class CommandRequestService extends BaseService<CommandRequestEntity> {
+class  CommandRequestService extends BaseService<CommandRequestEntity> {
 
 	/**
 	 * Purges all commands older than the given duration.

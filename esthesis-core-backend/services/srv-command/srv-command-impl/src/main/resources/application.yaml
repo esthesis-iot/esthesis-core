@@ -46,4 +46,4 @@ mp:
     outgoing:
       esthesis-command-request:
         value:
-          serializer: esthesis.service.command.impl.serialization.EsthesisCommandRequestMessageSerializer
+          serializer: esthesis.avro.util.kafka.EsthesisCommandRequestSerializer

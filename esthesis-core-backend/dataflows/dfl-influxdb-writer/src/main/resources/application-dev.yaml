@@ -12,7 +12,7 @@ quarkus:
         port: 12201
   otel:
     sdk:
-      disabled: false
+      disabled: true
     traces:
       sampler: always_on
     exporter:

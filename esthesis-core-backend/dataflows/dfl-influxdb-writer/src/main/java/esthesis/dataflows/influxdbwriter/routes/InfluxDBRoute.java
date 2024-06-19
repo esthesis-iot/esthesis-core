@@ -1,7 +1,7 @@
 package esthesis.dataflows.influxdbwriter.routes;
 
+import esthesis.avro.util.camel.EsthesisDataMessageDataFormat;
 import esthesis.common.banner.BannerUtil;
-import esthesis.dataflow.common.EsthesisAvroFormats;
 import esthesis.dataflows.influxdbwriter.config.AppConfig;
 import esthesis.dataflows.influxdbwriter.service.InfluxDBService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -64,7 +64,7 @@ public class InfluxDBRoute extends RouteBuilder {
       log.info("Setting up route from Kafka topic '{}' to InfluxDB '{}' "
           + "bucket '{}'.", val, config.influxUrl(), config.influxBucket());
       from("kafka:" + val)
-				.unmarshal(EsthesisAvroFormats.esthesisDataMessageFormat())
+				.unmarshal(EsthesisDataMessageDataFormat.create())
 				.to("seda:telemetry");
       from("seda:telemetry")
           .bean(influxDBService, "process");
@@ -75,7 +75,7 @@ public class InfluxDBRoute extends RouteBuilder {
       log.info("Setting up route from Kafka topic '{}' to InfluxDB '{}' "
           + "bucket '{}'.", val, config.influxUrl(), config.influxBucket());
       from("kafka:" + val)
-				.unmarshal(EsthesisAvroFormats.esthesisDataMessageFormat())
+				.unmarshal(EsthesisDataMessageDataFormat.create())
 				.to("seda:metadata");
       from("seda:metadata")
           .bean(influxDBService, "process");

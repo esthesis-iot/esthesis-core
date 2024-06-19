@@ -1,12 +1,13 @@
 package esthesis.dataflows.rediscache.routes;
 
+import esthesis.avro.util.camel.EsthesisDataMessageDataFormat;
 import esthesis.common.banner.BannerUtil;
-import esthesis.dataflow.common.EsthesisAvroFormats;
 import esthesis.dataflows.rediscache.config.AppConfig;
 import esthesis.dataflows.rediscache.service.RedisService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
@@ -69,9 +70,11 @@ public class RedisRoute extends RouteBuilder {
 		// @formatter:off
     config.kafkaTelemetryTopic().ifPresent(val -> {
       //TODO redact password
-      log.info("Setting up route from Kafka topic '{}' to Redis '{}'.", val, config.redisUrl());
+      log.info("Setting up route from Kafka topic '{}' to Redis '{}'.", val, config.	redisUrl());
       from("kafka:" + val)
-				.unmarshal(EsthesisAvroFormats.esthesisDataMessageFormat())
+				.routeId("kafka-telemetry-to-redis")
+				.unmarshal(EsthesisDataMessageDataFormat.create())
+				.log(LoggingLevel.DEBUG, log, "Received telemetry message '${body}'.")
 				.to("seda:telemetry");
       from("seda:telemetry")
 				.bean(redisService, "process");
@@ -81,7 +84,9 @@ public class RedisRoute extends RouteBuilder {
 			//TODO redact password
       log.info("Setting up route from Kafka topic '{}' to Redis '{}'.", val, config.redisUrl());
       from("kafka:" + val)
-				.unmarshal(EsthesisAvroFormats.esthesisDataMessageFormat())
+				.routeId("kafka-metadata-to-redis")
+				.unmarshal(EsthesisDataMessageDataFormat.create())
+				.log(LoggingLevel.DEBUG, log, "Received metadata message '${body}'.")
 				.to("seda:metadata");
       from("seda:metadata")
 				.bean(redisService, "process");

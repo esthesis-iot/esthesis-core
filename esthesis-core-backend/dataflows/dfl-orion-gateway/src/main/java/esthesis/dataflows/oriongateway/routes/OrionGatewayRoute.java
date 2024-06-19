@@ -1,7 +1,7 @@
 package esthesis.dataflows.oriongateway.routes;
 
+import esthesis.avro.util.camel.EsthesisDataMessageDataFormat;
 import esthesis.common.banner.BannerUtil;
-import esthesis.dataflow.common.EsthesisAvroFormats;
 import esthesis.dataflows.oriongateway.config.AppConfig;
 import esthesis.dataflows.oriongateway.service.OrionClientService;
 import esthesis.dataflows.oriongateway.service.OrionGatewayService;
@@ -114,7 +114,7 @@ public class OrionGatewayRoute extends RouteBuilder {
       log.info("Creating route from Kafka topic '{}'.", config.kafkaTelemetryTopic().get());
 
       from("kafka:" + config.kafkaTelemetryTopic().get())
-				.unmarshal(EsthesisAvroFormats.esthesisDataMessageFormat())
+				.unmarshal(EsthesisDataMessageDataFormat.create())
 				.to("seda:telemetry");
 
       from("seda:telemetry")
@@ -130,7 +130,7 @@ public class OrionGatewayRoute extends RouteBuilder {
       log.info("Creating route from Kafka topic '{}'.", config.kafkaMetadataTopic().get());
 
       from("kafka:" + config.kafkaMetadataTopic().get())
-				.unmarshal(EsthesisAvroFormats.esthesisDataMessageFormat())
+				.unmarshal(EsthesisDataMessageDataFormat.create())
 				.to("seda:metadata");
 
       from("seda:metadata")

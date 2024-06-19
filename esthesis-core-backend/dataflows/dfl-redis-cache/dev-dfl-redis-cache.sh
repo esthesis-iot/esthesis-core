@@ -8,8 +8,7 @@
 [ -e "local-env.sh" ] && source "local-env.sh"
 
 # Call starter script
-export ESTHESIS_DFL_REDIS_URL=redis://redis.$(kubens -c):6379/0
-export ESTHESIS_DFL_REDIS_PASSWORD=esthesis-system
+export ESTHESIS_DFL_REDIS_URL=redis://:esthesis-system@redis-master.$(kubens -c):6379/0
 export ESTHESIS_DFL_REDIS_MAX_SIZE=1024
 export ESTHESIS_DFL_REDIS_TTL=0
 export ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.$(kubens -c):9092

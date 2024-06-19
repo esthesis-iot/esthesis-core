@@ -1,7 +1,7 @@
 package esthesis.dataflows.pingupdater.routes;
 
+import esthesis.avro.util.camel.EsthesisDataMessageDataFormat;
 import esthesis.common.banner.BannerUtil;
-import esthesis.dataflow.common.EsthesisAvroFormats;
 import esthesis.dataflows.pingupdater.config.AppConfig;
 import esthesis.dataflows.pingupdater.service.PingService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -77,7 +77,7 @@ public class PingRoute extends RouteBuilder {
 
     from("kafka:" + config.kafkaPingTopic())
 			.log(LoggingLevel.DEBUG, log, "Received message from Kafka '${body}'.")
-			.unmarshal(EsthesisAvroFormats.esthesisDataMessageFormat())
+			.unmarshal(EsthesisDataMessageDataFormat.create())
 			.to("seda:ping");
 
     from("seda:ping")

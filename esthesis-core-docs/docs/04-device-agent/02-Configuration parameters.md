@@ -350,5 +350,11 @@ command line arguments. The following tables lists all available configuration p
 					Default: false</td>
 			<td>Boolean</td>
 		</tr>
+		<tr>
+			<td><code>TLS_VERIFICATION, tlsVerification</code></td>
+			<td>Whether outgoing HTTPS connections should have TLS verified/.<br/><br/>
+					Default: true</td>
+			<td>Boolean</td>
+		</tr>
   </tbody>
 </table>

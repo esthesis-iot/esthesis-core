@@ -159,9 +159,9 @@ public class CommandService {
 		for (String hardwareId : hardwareIds) {
 			EsthesisCommandRequestMessage esthesisCommandRequestMessage =
 				avroCommandRequest(request, hardwareId);
+
 			log.debug("Sending command '{}' to device '{}' via Kafka topic '{}'.",
-				esthesisCommandRequestMessage, hardwareId,
-				KAFKA_CONTROL_REQUEST_TOPIC);
+				esthesisCommandRequestMessage, hardwareId, KAFKA_CONTROL_REQUEST_TOPIC);
 			commandRequestEmitter.send(
 				Message.of(esthesisCommandRequestMessage)
 					.addMetadata(OutgoingKafkaRecordMetadata.<String>builder()

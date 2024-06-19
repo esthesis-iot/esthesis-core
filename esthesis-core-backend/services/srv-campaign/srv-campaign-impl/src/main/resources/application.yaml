@@ -30,14 +30,6 @@ quarkus:
     client:
       security:
         plaintext: true
-  oidc-client:
-    client-id: esthesis
-    grant:
-      type: PASSWORD
-    grant-options:
-      password:
-        username: ${OIDC_CLIENT_USERNAME}
-        password: ${OIDC_CLIENT_PASSWORD}
   rest-client:
     AuditResource:
       url: http://esthesis-core-srv-audit-service:8080
@@ -48,3 +40,11 @@ quarkus:
     CommandSystemResource:
       url: http://esthesis-core-srv-command-service:8080
       scope: Singleton
+  # Do not remove the following configuration, it is needed, so that it can be overridden in runtime
+  # (otherwise environment variables such as QUARKUS_OIDC_CLIENT_GRANT_OPTIONS_PASSWORD_USERNAME
+  # are ignored (see https://github.com/quarkusio/quarkus/discussions/41259#discussioncomment-9795685).
+  oidc-client:
+    grant-options:
+      password:
+        username: defined-in-runtime
+        password: defined-in-runtime

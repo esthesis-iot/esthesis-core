@@ -22,7 +22,7 @@ quarkus:
         password: esthesis-system
   otel:
     sdk:
-      disabled: false
+      disabled: true
     traces:
       sampler: always_on
     exporter:
