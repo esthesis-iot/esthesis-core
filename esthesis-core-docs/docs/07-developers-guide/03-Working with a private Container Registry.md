@@ -54,14 +54,14 @@ ESTHESIS_REGISTRY_URL=192.168.50.211:5000/esthesis helmfile sync -n esthesis
 ```
 
 :::tip
-When using the Helm charts without the `-env dev` flag, the charts will automatically
+1. When using the Helm charts without the `-env dev` flag, the charts will automatically
 use multi-node deployments. If you are testing in a single-node Kubernetes cluster, you need to also
 define `ESTHESIS_SINGLE_NODE=true` environmental variable.
 
-If you want to use the Helm charts, locally available to your machine, while still deploying a
+2. If you want to use the Helm charts, locally available to your machine, while still deploying a
 production-level setup, you can use the `ESTHESIS_LOCAL_CHARTS=true` environmental variable.
 
-If while working with a private you are also deploying on a Kubernetes cluster thart does not
+3. If while working with a private you are also deploying on a Kubernetes cluster thart does not
 have access to proper certificates, you can also set `OIDC_TLS_VERIFICATION=none` while deploying
 the Helm charts.
 :::

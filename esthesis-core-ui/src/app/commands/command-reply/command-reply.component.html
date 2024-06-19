@@ -81,7 +81,7 @@
       </div>
 
       <!-- Replies -->
-      <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-5 flex-auto">
         <div class="text-accent font-bold">Replies</div>
         <div *ngIf="!commandReplies">
           <div class="mockup-code w-full">
@@ -107,8 +107,8 @@
             </div>
           </div>
           <div>
-            <div class="mockup-code w-full">
-              <pre><code>{{reply.output}}</code></pre>
+            <div class="mockup-code">
+              <pre class="ml-3"><code><br>{{reply.output}}</code></pre>
             </div>
           </div>
         </div>

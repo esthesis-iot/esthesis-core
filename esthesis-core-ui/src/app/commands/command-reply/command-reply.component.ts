@@ -13,8 +13,7 @@ import {AppConstants} from "../../app.constants";
 
 @Component({
   selector: "app-command-reply",
-  templateUrl: "./command-reply.component.html",
-  styleUrls: ["./command-reply.component.scss"]
+  templateUrl: "./command-reply.component.html"
 })
 export class CommandReplyComponent extends SecurityBaseComponent implements OnInit {
   id!: string;
