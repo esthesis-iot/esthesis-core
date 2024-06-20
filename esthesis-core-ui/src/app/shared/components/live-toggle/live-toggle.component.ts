@@ -3,8 +3,7 @@ import {CountdownComponent, CountdownConfig, CountdownEvent} from "ngx-countdown
 
 @Component({
   selector: "app-live-toggle",
-  templateUrl: "./live-toggle.component.html",
-  styleUrls: ["./live-toggle.component.scss"]
+  templateUrl: "./live-toggle.component.html"
 })
 export class LiveToggleComponent {
   @ViewChild("countdown", {static: false}) private countdown!: CountdownComponent;

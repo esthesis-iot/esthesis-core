@@ -6,8 +6,7 @@ import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: "app-mat-icon-picker",
-  templateUrl: "./mat-icon-picker.component.html",
-  styleUrls: ["./mat-icon-picker.component.scss"]
+  templateUrl: "./mat-icon-picker.component.html"
 })
 export class MatIconPickerComponent implements OnInit {
   // Icons pack from:

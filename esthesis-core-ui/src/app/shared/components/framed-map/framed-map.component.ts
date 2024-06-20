@@ -3,8 +3,7 @@ import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 
 @Component({
   selector: "app-framed-map",
-  templateUrl: "./framed-map.component.html",
-  styleUrls: ["./framed-map.component.scss"]
+  templateUrl: "./framed-map.component.html"
 })
 export class FramedMapComponent implements OnInit {
   @Input() longitude!: number;
