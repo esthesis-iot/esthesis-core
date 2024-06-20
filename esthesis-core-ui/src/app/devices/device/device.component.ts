@@ -4,7 +4,6 @@ import {TagDto} from "../../tags/dto/tag-dto";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TagsService} from "../../tags/tags.service";
 import {DevicesService} from "../devices.service";
-import {BaseComponent} from "src/app/shared/components/base-component";
 import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
@@ -20,8 +19,7 @@ import {SecurityBaseComponent} from "../../shared/components/security-base-compo
 
 @Component({
   selector: "app-device",
-  templateUrl: "./device.component.html",
-  styleUrls: ["./device.component.scss"]
+  templateUrl: "./device.component.html"
 })
 export class DeviceComponent extends SecurityBaseComponent implements OnInit {
   id!: string | null;

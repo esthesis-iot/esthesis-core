@@ -14,8 +14,7 @@ import {AppConstants} from "../../../app.constants";
 
 @Component({
   selector: "app-device-profile",
-  templateUrl: "./device-profile.component.html",
-  styleUrls: ["./device-profile.component.scss"]
+  templateUrl: "./device-profile.component.html"
 })
 export class DeviceProfileComponent extends SecurityBaseComponent implements OnInit {
   id!: string | null;

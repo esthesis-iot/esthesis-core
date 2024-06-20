@@ -5,25 +5,26 @@
          class="grow table">
     <caption class="invisible">Sensor data</caption>
     <ng-container cdkColumnDef="measurement">
-      <th cdk-header-cell *matHeaderCellDef mat-sort-header>Measurement</th>
-      <td *matCellDef="let element" cdk-cell> {{element.label}}</td>
+      <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col">Measurement</th>
+      <td *cdkCellDef="let element" cdk-cell> {{element.label}}</td>
     </ng-container>
     <ng-container cdkColumnDef="value">
-      <th cdk-header-cell *matHeaderCellDef mat-sort-header>Value</th>
-      <td *matCellDef="let element" cdk-cell> {{element.value}}</td>
+      <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col">Value</th>
+      <td *cdkCellDef="let element" cdk-cell> {{element.value}}</td>
     </ng-container>
     <ng-container cdkColumnDef="lastUpdatedOn">
-      <th cdk-header-cell *matHeaderCellDef mat-sort-header>Last updated on</th>
-      <td *matCellDef="let element"
+      <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col">Last updated on</th>
+      <td *cdkCellDef="let element"
           cdk-cell> {{element.lastUpdate | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</td>
     </ng-container>
     <ng-container cdkColumnDef="lastUpdatedOnAgo">
-      <th cdk-header-cell *matHeaderCellDef></th>
-      <td *matCellDef="let element"
+      <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"></th>
+      <td *cdkCellDef="let element"
           cdk-cell> {{element.lastUpdate | amFromUtc | amLocal | amTimeAgo}}</td>
     </ng-container>
-    <tr *matHeaderRowDef="displayedColumns" cdk-header-row></tr>
-    <tr *matRowDef="let row; columns: displayedColumns; let element;" cdk-row
-        (click)="copyValue(row)" class="hover hover:cursor-pointer"></tr>
+
+    <tr *cdkHeaderRowDef="displayedColumns" cdk-header-row></tr>
+    <tr *cdkRowDef="let row; columns: displayedColumns; let element;" cdk-row
+        (click)="copyValue(row)" class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
   </table>
 </div>

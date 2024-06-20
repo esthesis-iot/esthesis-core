@@ -1,5 +1,4 @@
 import {Component, OnInit} from "@angular/core";
-import {BaseComponent} from "../../shared/components/base-component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
@@ -16,8 +15,7 @@ import {SecurityBaseComponent} from "../../shared/components/security-base-compo
 
 @Component({
   selector: "app-command-create",
-  templateUrl: "./command-create.component.html",
-  styleUrls: ["./command-create.component.scss"]
+  templateUrl: "./command-create.component.html"
 })
 export class CommandCreateComponent extends SecurityBaseComponent implements OnInit {
   searchDevicesForm!: FormGroup;
