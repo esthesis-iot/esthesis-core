@@ -49,7 +49,8 @@ different namespace, replace it accordingly.
 	| Grafana Tempo      | GRAFANA_TEMPO_ENABLED |
 	| Container Registry | REGISTRY_ENABLED      |
 	| Kafka UI           | KAFKA_UI_ENABLED      |
-
+	| Orion LD           | ORION_LD_ENABLED      |
+d
 - Install the application components in `esthesis-helm/esthesis-core`:
 	```shell
 	helmfile -e dev sync --namespace=esthesis
@@ -72,19 +73,20 @@ development machine went through sleep mode.
 need to specify your own port, you can use the `REGISTRY_NODE_PORT` environment variable when
 deploying the Helm Chart.
 
-| Resource | URL/host | Credentials |
-|-|-|-|
-| Redis              | redis-master.esthesis:6379/0 | (empty) / esthesis-system |
-| Mosquitto          | mosquitto.esthesis:1883 ||
-| Grafana            | http://grafana.esthesis:3000 | esthesis-system / esthesis-system |
-| InfluxDB Admin UI  | http://influxdb.esthesis:8086 | esthesis-system / esthesis-system |
-| InfluxDB           | influxdb.esthesis:8088 ||
-| MongoDB            | mongodb-headless.esthesis:27017 | esthesis-system / esthesis-system |
-| esthesis Core UI   | http://localhost:4200 | esthesis-admin / esthesis-admin |
-| Keycloak           | http://keycloak.esthesis | esthesis-system / esthesis-system |
-| Kafka              | kafka.esthesis:9095 ||
-| Kafka UI           | http://kafka-ui.esthesis ||
+| Resource           | URL/host                                        | Credentials |
+|--------------------|-------------------------------------------------|-|
+| Redis              | redis-master.esthesis:6379/0                    | (empty) / esthesis-system |
+| Mosquitto          | mosquitto.esthesis:1883                         ||
+| Grafana            | http://grafana.esthesis:3000                    | esthesis-system / esthesis-system |
+| InfluxDB Admin UI  | http://influxdb.esthesis:8086                   | esthesis-system / esthesis-system |
+| InfluxDB           | influxdb.esthesis:8088                          ||
+| MongoDB            | mongodb-headless.esthesis:27017                 | esthesis-system / esthesis-system |
+| esthesis Core UI   | http://localhost:4200                           | esthesis-admin / esthesis-admin |
+| Keycloak           | http://keycloak.esthesis                        | esthesis-system / esthesis-system |
+| Kafka              | kafka.esthesis:9095                             ||
+| Kafka UI           | http://kafka-ui.esthesis                        ||
 | Docker Registry UI | http://docker-registry-user-interface.esthesis/ ||
+| Orion LD           | http://orionld.esthesis:1026                    ||
 
 ## Running the services
 The above installation will prepare all the necessary components to support esthesis Core. The actual
