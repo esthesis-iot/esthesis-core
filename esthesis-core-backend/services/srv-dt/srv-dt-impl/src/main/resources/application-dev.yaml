@@ -16,6 +16,12 @@ quarkus:
     ApplicationSystemResource:
       url: http://localhost:59090
       scope: Singleton
+    CommandSystemResource:
+      url: http://localhost:59080
+      scope: Singleton
+    AuditResource:
+      url: http://localhost:59140
+      scope: Singleton
   otel:
     sdk:
       disabled: true

@@ -59,7 +59,6 @@ export default [
   {
     context: ["/api/dt"],
     target: "http://127.0.0.1:59130",
-    pathRewrite: { "/dt": "/" },
     secure: false,
   },
   {

@@ -26,23 +26,37 @@ quarkus:
       disabled: true
   swagger-ui:
     always-include: true
-    path: /api/openapi-ui
+    path: /api/dt/openapi-ui
     title: esthes.is Digital Twin API
     operations-sorter: alpha
     tags-sorter: alpha
     urls:
       default: /api/dt/openapi
   smallrye-openapi:
-    path: /api/openapi
+    path: /api/dt/openapi
+    security-scheme: api-key
+    security-scheme-name: X-ESTHESIS-DT-APP
+    api-key-parameter-in: header
+    api-key-parameter-name: X-ESTHESIS-DT-APP
   rest-client:
     ApplicationSystemResource:
       url: http://esthesis-core-srv-application-service:8080
       scope: Singleton
-  # Do not remove the following configuration, it is needed, so that it can be overridden in runtime
-  # (otherwise environment variables such as QUARKUS_OIDC_CLIENT_GRANT_OPTIONS_PASSWORD_USERNAME
-  # are ignored (see https://github.com/quarkusio/quarkus/discussions/41259#discussioncomment-9795685).
-  oidc-client:
-    grant-options:
-      password:
-        username: defined-in-runtime
-        password: defined-in-runtime
+    CommandSystemResource:
+      url: http://esthesis-core-srv-command-service:8080
+      scope: Singleton
+    AuditResource:
+      url: http://esthesis-core-srv-audit-service:8080
+      scope: Singleton
+    # Do not remove the following configuration, it is needed, so that it can be overridden in runtime
+    # (otherwise environment variables such as QUARKUS_OIDC_CLIENT_GRANT_OPTIONS_PASSWORD_USERNAME
+    # are ignored (see https://github.com/quarkusio/quarkus/discussions/41259#discussioncomment-9795685).
+    oidc-client:
+      grant-options:
+        password:
+          username: defined-in-runtime
+          password: defined-in-runtime
+esthesis:
+  dt-api:
+      timeout-in-ms: ${DT_API_REQUEST_TIMEOUT_MS:30000}
+      poll-interval-in-ms: ${DT_API_REQUEST_POLL_INTERVAL_MS:1000}

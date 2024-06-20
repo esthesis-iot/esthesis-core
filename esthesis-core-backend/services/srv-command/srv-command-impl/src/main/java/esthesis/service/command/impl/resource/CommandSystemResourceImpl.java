@@ -2,6 +2,7 @@ package esthesis.service.command.impl.resource;
 
 import esthesis.common.AppConstants;
 import esthesis.common.entity.CommandReplyEntity;
+import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.command.impl.service.CommandService;
 import esthesis.service.command.resource.CommandSystemResource;
@@ -20,16 +21,20 @@ public class CommandSystemResourceImpl implements CommandSystemResource {
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
-	public String save(CommandRequestEntity request) {
+	public ExecuteRequestScheduleInfoDTO save(CommandRequestEntity request) {
 		String correlationID = commandService.saveRequest(request).toString();
-		commandService.executeRequest(correlationID);
 
-		return correlationID;
+		return commandService.executeRequest(correlationID);
 	}
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public List<CommandReplyEntity> getReplies(String correlationId) {
 		return commandService.getReplies(correlationId);
+	}
+
+	@Override
+	public long countCollectedReplies(String correlationId) {
+		return commandService.countCollectedReplies(correlationId);
 	}
 }

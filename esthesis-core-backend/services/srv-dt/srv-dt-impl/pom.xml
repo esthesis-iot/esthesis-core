@@ -35,6 +35,17 @@
       <artifactId>utl-redis</artifactId>
       <version>3.0.38-SNAPSHOT</version>
     </dependency>
+		<dependency>
+			<groupId>esthesis</groupId>
+			<artifactId>srv-command-client</artifactId>
+			<version>3.0.38-SNAPSHOT</version>
+		</dependency>
+		<!-- OTHER -->
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<version>${awaitility.version}</version>
+		</dependency>
 
   </dependencies>
 </project>

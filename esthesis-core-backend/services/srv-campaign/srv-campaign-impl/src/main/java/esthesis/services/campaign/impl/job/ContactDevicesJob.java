@@ -133,7 +133,7 @@ public class ContactDevicesJob implements JobHandler {
 				default ->
 					throw new QMismatchException("Unknown campaign type '{}'.", campaignEntity.getType());
 			}
-			ObjectId commandRequestId = new ObjectId(commandSystemResource.save(cmd));
+			ObjectId commandRequestId = new ObjectId(commandSystemResource.save(cmd).getCorrelationId());
 			device.setCommandRequestId(commandRequestId);
 			campaignDeviceMonitorService.save(device);
 

@@ -9,6 +9,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.info.Contact;
 import org.eclipse.microprofile.openapi.annotations.info.Info;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 
 @ApplicationScoped
 @OpenAPIDefinition(
@@ -18,7 +19,8 @@ import org.eclipse.microprofile.openapi.annotations.info.Info;
 		contact = @Contact(
 			name = "esthesis",
 			url = "https://esthes.is",
-			email = "esthesis@eurodyn.com"))
+			email = "esthesis@eurodyn.com")),
+	security = @SecurityRequirement(name = "X-ESTHESIS-DT-APP")
 )
 public class App extends Application {
 

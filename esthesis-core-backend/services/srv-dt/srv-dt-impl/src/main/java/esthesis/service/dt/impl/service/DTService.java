@@ -1,20 +1,30 @@
 package esthesis.service.dt.impl.service;
 
-import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
-import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
-
+import esthesis.common.entity.CommandReplyEntity;
+import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
+import esthesis.service.command.entity.CommandRequestEntity;
+import esthesis.service.command.resource.CommandSystemResource;
 import esthesis.service.dt.dto.DTValueReplyDTO;
 import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.awaitility.Awaitility;
+import org.bson.Document;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import java.util.concurrent.TimeUnit;
+
+import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
+import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
 
 @Slf4j
 @Transactional
@@ -23,6 +33,17 @@ public class DTService {
 
 	@Inject
 	RedisUtils redisUtils;
+
+	@Inject
+	@RestClient
+	CommandSystemResource commandSystemResource;
+
+	@ConfigProperty(name = "esthesis.dt-api.timeout-in-ms")
+	Integer timeoutMs;
+
+	@ConfigProperty(name = "esthesis.dt-api.poll-interval-in-ms")
+	Integer pollInvervalMs;
+
 
 	/**
 	 * Finds a specific value previously cached for a device.
@@ -83,5 +104,47 @@ public class DTService {
 		});
 
 		return values;
+	}
+
+	public ExecuteRequestScheduleInfoDTO saveCommandRequest(CommandRequestEntity commandRequestEntity) {
+		return  commandSystemResource.save(commandRequestEntity);
+	}
+
+	public List<Document> getReplies(String correlationId){
+		return  commandSystemResource.getReplies(correlationId).stream().map(CommandReplyEntity::asDocument).toList();
+	}
+
+	/**
+	 * Waits for the expected number of replies within a timeout of 10s with a poll interval of 300ms.
+	 *
+	 * @param requestScheduleInfo Info about the scheduled request, including correlation ID and number of devices.
+	 * @return A List of replies
+	 */
+	public List<Document> waitAndGetReplies(ExecuteRequestScheduleInfoDTO requestScheduleInfo){
+		// Wait for replies to be collected.
+		boolean allRepliesCollected = waitForReplies(requestScheduleInfo);
+
+		if (!allRepliesCollected) {
+			log.warn("Timeout occurred while waiting for replies.");
+		}
+
+		// Collect and return the replies.
+		return getReplies(requestScheduleInfo.getCorrelationId());
+	}
+
+	private boolean waitForReplies(ExecuteRequestScheduleInfoDTO requestScheduleInfo) {
+		try {
+			Awaitility.await()
+				.atMost(timeoutMs, TimeUnit.MILLISECONDS)
+				.pollInterval(pollInvervalMs, TimeUnit.MILLISECONDS)
+				.until(() -> commandSystemResource.countCollectedReplies(
+						requestScheduleInfo.getCorrelationId()
+					) == requestScheduleInfo.getDevicesScheduled()
+				);
+			return true;
+		} catch (org.awaitility.core.ConditionTimeoutException e) {
+			log.warn("Awaitility timeout occurred while waiting for replies for correlationID: {}", requestScheduleInfo.getCorrelationId());
+			return false;
+		}
 	}
 }

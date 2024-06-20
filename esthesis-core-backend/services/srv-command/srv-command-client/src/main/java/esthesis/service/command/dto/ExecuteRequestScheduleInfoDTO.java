@@ -21,5 +21,8 @@ public class ExecuteRequestScheduleInfoDTO {
   // constitute that the command was actually successfully executed on the
   // device's side.
   private int devicesScheduled = 0;
-  
+
+	// The correlation ID for this request
+	private String correlationId;
+
 }
