@@ -178,8 +178,8 @@ public class OrionGatewayService {
 		// Pre-registration checks
 		// *********************************************************************************************
 		// Find the esthesis attributes of this device.
-		List<DeviceAttributeEntity> esthesisDeviceAttributes = deviceSystemResource.getDeviceAttributesByEsthesisId(
-			esthesisId);
+		List<DeviceAttributeEntity> esthesisDeviceAttributes =
+			deviceSystemResource.getDeviceAttributesByEsthesisId(esthesisId);
 
 		// Check whether this device should be registered.
 		if (!isRegistrationAllowed(esthesisDeviceAttributes)) {

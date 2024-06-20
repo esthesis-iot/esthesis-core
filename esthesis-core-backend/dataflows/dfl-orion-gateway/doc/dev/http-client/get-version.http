@@ -1,0 +1,12 @@
+@orion=orionld.esthesis:1026
+
+# Get version of Orion Context Broker.
+GET http://{{orion}}/version
+
+###
+# Get entities.
+GET http://{{orion}}/v2/entities
+
+###
+# Get entity values.
+GET http://{{orion}}/v2/entities/dev001?options=keyValues

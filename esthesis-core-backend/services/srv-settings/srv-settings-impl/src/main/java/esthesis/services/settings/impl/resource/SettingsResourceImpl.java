@@ -76,7 +76,7 @@ public class SettingsResourceImpl implements SettingsResource {
 	}
 
 	@Override
-	@RolesAllowed(AppConstants.ROLE_USER)
+	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	public List<DevicePageFieldEntity> getDevicePageFields() {
 		return devicePageFieldService.getFields();
 	}

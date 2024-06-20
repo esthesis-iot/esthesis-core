@@ -100,7 +100,6 @@ public class OrionGatewayRoute extends RouteBuilder {
       from("kafka:" + config.kafkaApplicationTopic().get())
           .unmarshal().json(AppMessage.class)
           .to("seda:appMessage");
-
       from("seda:appMessage")
           .bean(orionMessagingService, "onAppMessage");
     } else {
@@ -116,7 +115,6 @@ public class OrionGatewayRoute extends RouteBuilder {
       from("kafka:" + config.kafkaTelemetryTopic().get())
 				.unmarshal(EsthesisDataMessageDataFormat.create())
 				.to("seda:telemetry");
-
       from("seda:telemetry")
           .bean(orionGatewayService, "processData");
       } else {
@@ -132,7 +130,6 @@ public class OrionGatewayRoute extends RouteBuilder {
       from("kafka:" + config.kafkaMetadataTopic().get())
 				.unmarshal(EsthesisDataMessageDataFormat.create())
 				.to("seda:metadata");
-
       from("seda:metadata")
           .bean(orionGatewayService, "processData");
       } else {

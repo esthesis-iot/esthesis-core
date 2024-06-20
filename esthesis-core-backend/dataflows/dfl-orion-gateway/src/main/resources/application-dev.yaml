@@ -14,12 +14,6 @@ quarkus:
     DeviceSystemResource:
       url: http://localhost:59010
       scope: Singleton
-  oidc-client:
-    auth-server-url: http://keycloak.esthesis/realms/esthesis
-    grant-options:
-      password:
-        username: esthesis-system
-        password: esthesis-system
   otel:
     sdk:
       disabled: true

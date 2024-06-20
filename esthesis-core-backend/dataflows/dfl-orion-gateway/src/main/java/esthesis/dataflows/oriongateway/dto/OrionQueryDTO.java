@@ -22,5 +22,4 @@ public class OrionQueryDTO implements Serializable {
 
     private String q;
   }
-
 }
