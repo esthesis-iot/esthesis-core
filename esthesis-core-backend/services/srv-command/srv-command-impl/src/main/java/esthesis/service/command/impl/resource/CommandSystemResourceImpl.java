@@ -34,6 +34,7 @@ public class CommandSystemResourceImpl implements CommandSystemResource {
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public long countCollectedReplies(String correlationId) {
 		return commandService.countCollectedReplies(correlationId);
 	}

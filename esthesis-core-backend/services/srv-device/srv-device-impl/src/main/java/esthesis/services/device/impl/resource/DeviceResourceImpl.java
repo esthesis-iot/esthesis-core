@@ -107,7 +107,7 @@ public class DeviceResourceImpl implements DeviceResource {
 	}
 
 	@Override
-	@RolesAllowed(AppConstants.ROLE_USER)
+	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	public List<DeviceEntity> findByTagId(String tagId) {
 		return deviceTagService.findByTagId(tagId);
 	}

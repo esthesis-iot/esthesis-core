@@ -7,3 +7,4 @@
 **/pom.xml.versionsBackup
 **/local-env.sh
 **/buildkitd.toml
+**/.mvn

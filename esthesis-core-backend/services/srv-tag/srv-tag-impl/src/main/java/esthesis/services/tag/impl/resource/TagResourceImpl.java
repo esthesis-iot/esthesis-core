@@ -56,7 +56,7 @@ public class TagResourceImpl implements TagResource {
 	}
 
 	@Override
-	@RolesAllowed(AppConstants.ROLE_USER)
+	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	public List<TagEntity> findByNames(@QueryParam("names") String names,
 		boolean partialMatch) {
 		return tagService.findByColumnIn("name", Arrays.asList(names.split(",")),
