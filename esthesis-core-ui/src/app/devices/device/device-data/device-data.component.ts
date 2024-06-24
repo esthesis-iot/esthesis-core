@@ -19,6 +19,7 @@ export class DeviceDataComponent extends SecurityBaseComponent implements OnInit
   form!: FormGroup;
   // Columns to display.
   displayedColumns = ["measurement", "value", "lastUpdatedOn", "lastUpdatedOnAgo"];
+  tableLoading = true;
 
   // Datasource definition.
   datasource: MatTableDataSource<DevicePageFieldDataDto> = new MatTableDataSource<DevicePageFieldDataDto>();
@@ -39,6 +40,8 @@ export class DeviceDataComponent extends SecurityBaseComponent implements OnInit
         });
       }, error: (err) => {
         this.utilityService.popupErrorWithTraceId("Could not fetch device data.", err);
+      }, complete: () => {
+        this.tableLoading = false;
       }
     });
 

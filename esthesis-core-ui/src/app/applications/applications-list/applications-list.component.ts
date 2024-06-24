@@ -21,6 +21,7 @@ export class ApplicationsListComponent extends SecurityBaseComponent implements 
   filterForm: FormGroup;
   // Expose application constants.
   constants = AppConstants;
+  tableLoading = true;
 
   // References to sorting and pagination.
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
@@ -65,6 +66,7 @@ export class ApplicationsListComponent extends SecurityBaseComponent implements 
     .subscribe(onNext => {
       this.dataSource.data = onNext.content;
       this.paginator.length = onNext.totalElements;
+      this.tableLoading = false;
     });
   }
 

@@ -23,12 +23,20 @@
           cdk-cell> {{element.lastUpdate | amFromUtc | amLocal | amTimeAgo}}</td>
     </ng-container>
 
+    <tr class="mat-row" *matNoDataRow>
+      <td *ngIf="tableLoading" class="mat-cell" [attr.colspan]="displayedColumns.length">
+        <div class="skeleton h-8 flex-grow"></div>
+      </td>
+      <td *ngIf="!tableLoading" class="mat-cell" [attr.colspan]="displayedColumns.length">
+        No data available to display
+      </td>
+    </tr>
     <tr *cdkHeaderRowDef="displayedColumns" cdk-header-row></tr>
     <tr *cdkRowDef="let row; columns: displayedColumns; let element;" cdk-row
         (click)="copyValue(row)" class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
   </table>
 
-  <div class="collapse collapse-arrow">
+  <div class="collapse collapse-arrow" *ngIf="!tableLoading">
     <input type="checkbox" />
     <div class="collapse-title text-accent font-medium">
       Import data
