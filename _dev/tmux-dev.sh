@@ -85,7 +85,7 @@ tmux select-layout tiled
 tmux split-window -v
 tmux select-pane -t 0.20 -T "Kubefwd"
 tmux pipe-pane -o -t 0.20 "sed -u 's/^/\[Kubefwd     \] /' | cat >> $LOGS"
-tmux send-keys "eval $PAUSE; sudo -E kubefwd svc -n $1 -d $1 -l 'app.kubernetes.io/name in (mongodb,keycloak,kafka,influxdb,redis,zeebe-gateway,grafana,mosquitto,kafka-ui,grafana-loki,grafana-tempo,docker-registry-ui)'" C-m
+tmux send-keys "eval $PAUSE; sudo -E kubefwd svc -n $1 -d $1 -l 'app.kubernetes.io/name in (mongodb,keycloak,kafka,influxdb,redis,zeebe-gateway,grafana,mosquitto,kafka-ui,grafana-loki,grafana-tempo,docker-registry-ui,orion)'" C-m
 tmux select-layout tiled
 
 # Start log monitoring
