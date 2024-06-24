@@ -12,6 +12,7 @@
           <mat-form-field>
             <mat-label>Name</mat-label>
             <input formControlName="name" matInput>
+            <mat-hint>Only letters, numbers, and underscores are allowed.</mat-hint>
             <app-field-error [displayError]="isFieldValid(form, 'name')"
                              [errorMessage]="form.controls['name'].getError('message')"
                              matSuffix>

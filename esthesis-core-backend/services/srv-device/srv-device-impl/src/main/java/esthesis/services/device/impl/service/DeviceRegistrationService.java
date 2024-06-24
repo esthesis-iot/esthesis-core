@@ -90,10 +90,17 @@ public class DeviceRegistrationService {
 					hardwareId);
 				if (createMissing) {
 					log.debug("Creating missing tag '{}' for device with hardware id '{}'.", tag, hardwareId);
-					TagEntity tagEntity = new TagEntity();
-					tagEntity.setName(tag);
-					tagResource.save(tagEntity);
-					validTags.add(tag);
+					// Check if tag name conforms to the being composed of numbers, letters, and underscore
+					// only.
+					if (!tag.matches("^[a-zA-Z0-9_]+$")) {
+						log.warn("Tag name '{}' does not conform to the naming convention '{}'. Tag will be "
+								+ "ignored.",	tag, "^[a-zA-Z0-9_]+$");
+					} else {
+						TagEntity tagEntity = new TagEntity();
+						tagEntity.setName(tag);
+						tagResource.save(tagEntity);
+						validTags.add(tag);
+					}
 				}
 			} else {
 				validTags.add(tag);

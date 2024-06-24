@@ -287,7 +287,9 @@ command line arguments. The following tables lists all available configuration p
 		</tr>
 		<tr>
 			<td><code>TAGS, tags</code></td>
-			<td>A comma-separated list of tags to associate with this device.</td>
+			<td>A comma-separated list of tags to associate with this device. Tag names should only
+					contain letters, numbers, and underscore.
+			</td>
 			<td>Alphanumeric</td>
 		</tr>
 		<tr>
