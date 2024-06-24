@@ -42,6 +42,14 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
     return this.http.post(`${this.prefix}/${deviceId}/profile`, profile);
   }
 
+  importTelemetry(deviceId: string, data: any) {
+    return this.http.post(`${this.prefix}/${deviceId}/import-data/telemetry`, data);
+  }
+
+  importMetadata(deviceId: string, data: any) {
+    return this.http.post(`${this.prefix}/${deviceId}/import-data/metadata`, data);
+  }
+
   getProfile(deviceId: string): Observable<DeviceProfileDto> {
     return this.http.get<DeviceProfileDto>(`${this.prefix}/${deviceId}/profile`);
   }

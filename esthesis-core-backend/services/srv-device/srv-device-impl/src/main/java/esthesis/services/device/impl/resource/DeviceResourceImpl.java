@@ -1,6 +1,7 @@
 package esthesis.services.device.impl.resource;
 
 import com.github.slugify.Slugify;
+import esthesis.avro.MessageTypeEnum;
 import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Security.Category;
 import esthesis.common.AppConstants.Security.Operation;
@@ -167,6 +168,20 @@ public class DeviceResourceImpl implements DeviceResource {
 	@Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Save a device profile")
 	public void saveProfile(String deviceId, DeviceProfileDTO deviceProfileDTO) {
 		deviceService.saveProfile(deviceId, deviceProfileDTO);
+	}
+
+	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
+	@Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Import device telemetry data")
+	public void importTelemetry(String deviceId, String data) {
+		deviceService.importData(deviceId, data, MessageTypeEnum.T);
+	}
+
+	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
+	@Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Import device metadata data")
+	public void importMetadata(String deviceId, String data) {
+		deviceService.importData(deviceId, data, MessageTypeEnum.M);
 	}
 
 	@Override

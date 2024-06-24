@@ -2,6 +2,7 @@ package esthesis.services.device.impl.service;
 
 import com.google.common.collect.Lists;
 import esthesis.service.device.entity.DeviceEntity;
+import esthesis.service.settings.resource.SettingsResource;
 import esthesis.service.tag.entity.TagEntity;
 import esthesis.service.tag.resource.TagResource;
 import esthesis.services.device.impl.repository.DeviceRepository;
@@ -27,8 +28,12 @@ public class DeviceTagService {
 	@RestClient
 	TagResource tagResource;
 
+	@Inject
+	@RestClient
+	SettingsResource settingsResource;
+
 	/**
-	 * Finds the devices matched by the specific list of tags.
+	 * Finds the devices matched by the specific list of tags.v
 	 *
 	 * @param tagNames     The list of tag names to search by.
 	 * @param partialMatch Whether the search for the tag name will be partial or not.

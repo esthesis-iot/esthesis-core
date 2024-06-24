@@ -56,19 +56,16 @@ public class CommandService {
 	@Inject
 	CommandReplyService commandReplyService;
 
-	// The emitter for sending command requests to Kafka. The name of the topic is dynamically set
-	// based on application settings, however we need to provide a default value here to be able to
-	// set the custom serializer in application.yaml.
 	@Inject
 	@Channel("esthesis-command-request")
 	Emitter<EsthesisCommandRequestMessage> commandRequestEmitter;
 
-	private String KAFKA_CONTROL_REQUEST_TOPIC;
+	private String KAFKA_TOPIC_COMMAND_REQUEST;
 
 	@PostConstruct
 	void init() {
 		//TODO we need to setup a Kafka event for when this configuration changes
-		KAFKA_CONTROL_REQUEST_TOPIC = settingsResource.findByName(
+		KAFKA_TOPIC_COMMAND_REQUEST = settingsResource.findByName(
 			NamedSetting.KAFKA_TOPIC_COMMAND_REQUEST).asString();
 	}
 
@@ -162,11 +159,11 @@ public class CommandService {
 				avroCommandRequest(request, hardwareId);
 
 			log.debug("Sending command '{}' to device '{}' via Kafka topic '{}'.",
-				esthesisCommandRequestMessage, hardwareId, KAFKA_CONTROL_REQUEST_TOPIC);
+				esthesisCommandRequestMessage, hardwareId, KAFKA_TOPIC_COMMAND_REQUEST);
 			commandRequestEmitter.send(
 				Message.of(esthesisCommandRequestMessage)
 					.addMetadata(OutgoingKafkaRecordMetadata.<String>builder()
-						.withTopic(KAFKA_CONTROL_REQUEST_TOPIC)
+						.withTopic(KAFKA_TOPIC_COMMAND_REQUEST)
 						.withKey(hardwareId)
 						.build())
 					.addMetadata(TracingMetadata.withCurrent(Context.current())));

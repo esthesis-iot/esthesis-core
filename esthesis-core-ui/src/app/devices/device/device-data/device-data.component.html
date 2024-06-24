@@ -1,4 +1,4 @@
-<div class="flex">
+<div class="flex flex-col gap-2">
   <table [dataSource]="datasource" cdk-table
          matSort matSortActive="measurement"
          matSortDirection="asc" matSortDisableClear matSortStart="asc"
@@ -27,4 +27,29 @@
     <tr *cdkRowDef="let row; columns: displayedColumns; let element;" cdk-row
         (click)="copyValue(row)" class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
   </table>
+
+  <div class="collapse collapse-arrow">
+    <input type="checkbox" />
+    <div class="collapse-title text-accent font-medium">
+      Import data
+    </div>
+    <div class="collapse-content">
+      <form [formGroup]="form" novalidate>
+        <mat-form-field class="w-full relative -top-4">
+          <textarea placeholder="Enter data in eLP format" formControlName="data"
+                    matInput cdkTextareaAutosize></textarea>
+        </mat-form-field>
+        <button (click)="clearData()" [disabled]="!form.controls['data'].value" class="btn btn-accent btn-sm">CLEAR</button>
+        <button *ngIf="allowRead" [matMenuTriggerFor]="menu"
+                class="btn btn-sm btn-primary ml-2" [disabled]="form.invalid">
+          IMPORT AS
+          <fa-icon class="ml-2" icon="caret-down"></fa-icon>
+          <mat-menu #menu="matMenu" xPosition="before">
+            <button (click)="submitTelemetry()" mat-menu-item>Telemetry</button>
+            <button (click)="submitMetadata()" mat-menu-item>Metadata</button>
+          </mat-menu>
+        </button>
+      </form>
+    </div>
+  </div>
 </div>

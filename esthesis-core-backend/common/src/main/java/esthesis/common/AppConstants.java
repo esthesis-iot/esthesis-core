@@ -3,10 +3,11 @@ package esthesis.common;
 public class AppConstants {
 
 	// The topic prefix to use when a Kafka topic needs to be created.
-	//TODO to be removed with Settings preferences
+	//TODO to be removed with Settings preferences - is it used?
 	public static final String KAFKA_TOPIC_PREFIX = "esthesis-";
 
 	// A keyword used to indicate a new record being created.
+	//TODO is it used?
 	public static final String NEW_RECORD_ID = "new";
 
 	// Redis key suffixes for measurements.
@@ -40,7 +41,11 @@ public class AppConstants {
 		DEVICE_PROVISIONING_SECURE, DEVICE_PROVISIONING_CACHE_TIME,
 		DEVICE_PUSHED_TAGS,
 
-		KAFKA_TOPIC_COMMAND_REQUEST, KAFKA_TOPIC_EVENT_TAG_DELETE
+		KAFKA_TOPIC_COMMAND_REQUEST, KAFKA_TOPIC_TELEMETRY, KAFKA_TOPIC_METADATA,
+		KAFKA_TOPIC_APPLICATION,
+		// Application events
+		//TODO we need a different naming convention, not starting with KAFKA_TOPIC
+		KAFKA_TOPIC_EVENT_TAG_DELETE
 	}
 
 	public enum KeyType {

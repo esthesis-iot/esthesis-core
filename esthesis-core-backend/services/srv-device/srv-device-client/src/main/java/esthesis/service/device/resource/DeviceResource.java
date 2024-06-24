@@ -119,6 +119,14 @@ public interface DeviceResource {
 	void saveProfile(@PathParam("deviceId") String deviceId,
 		DeviceProfileDTO deviceProfileDTO);
 
+	@POST
+	@Path("/v1/{deviceId}/import-data/telemetry")
+	void importTelemetry(@PathParam("deviceId") String deviceId, String data);
+
+	@POST
+	@Path("/v1/{deviceId}/import-data/metadata")
+	void importMetadata(@PathParam("deviceId") String deviceId, String data);
+
 	/**
 	 * Returns all data (i.e. metrics) available in cache for this device.
 	 *

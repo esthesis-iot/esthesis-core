@@ -63,6 +63,11 @@
       <artifactId>utl-kafka-notifications-outgoing</artifactId>
       <version>3.0.38-SNAPSHOT</version>
     </dependency>
+		<dependency>
+			<groupId>esthesis</groupId>
+			<artifactId>avro</artifactId>
+			<version>3.0.38-SNAPSHOT</version>
+		</dependency>
 
     <!-- THIRD-PARTY -->
     <dependency>
@@ -70,5 +75,5 @@
       <artifactId>slugify</artifactId>
       <version>${slugify.version}</version>
     </dependency>
-  </dependencies>
+	</dependencies>
 </project>

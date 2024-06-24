@@ -5,7 +5,6 @@ import {TagsService} from "../tags.service";
 import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
-import {QFormsService} from "@qlack/forms";
 import {TagDto} from "../dto/tag-dto";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
@@ -23,7 +22,7 @@ export class TagEditComponent extends SecurityBaseComponent implements OnInit {
   id!: string;
 
   constructor(private fb: FormBuilder, private tagService: TagsService,
-    private route: ActivatedRoute, private qForms: QFormsService, private router: Router,
+    private route: ActivatedRoute, private router: Router,
     private utilityService: UtilityService, private dialog: MatDialog,
     private qFormValidation: QFormValidationEEService) {
     super(AppConstants.SECURITY.CATEGORY.TAG, route.snapshot.paramMap.get("id"));

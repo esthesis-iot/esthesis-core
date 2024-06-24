@@ -1,6 +1,10 @@
 package esthesis.services.device.impl.service;
 
+import esthesis.avro.EsthesisDataMessage;
+import esthesis.avro.MessageTypeEnum;
+import esthesis.avro.util.AvroUtils;
 import esthesis.common.AppConstants.NamedSetting;
+import esthesis.common.exception.QMismatchException;
 import esthesis.service.common.BaseService;
 import esthesis.service.device.dto.DeviceProfileDTO;
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
@@ -18,7 +22,10 @@ import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subj
 import esthesis.util.kafka.notifications.outgoing.KafkaNotification;
 import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;
+import io.opentelemetry.context.Context;
 import io.quarkus.qute.Qute;
+import io.smallrye.reactive.messaging.TracingMetadata;
+import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -27,9 +34,14 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
@@ -49,6 +61,16 @@ public class DeviceService extends BaseService<DeviceEntity> {
 
 	@Inject
 	RedisUtils redisUtils;
+
+	@Inject
+	AvroUtils avroUtils;
+
+	@ConfigProperty(name = "quarkus.application.name")
+	String appName;
+
+	@Inject
+	@Channel("esthesis-data-message")
+	Emitter<EsthesisDataMessage> dataMessageEmitter;
 
 	private List<DeviceProfileFieldDataDTO> getProfileFields(String deviceId) {
 		List<DeviceProfileFieldDataDTO> fields = new ArrayList<>();
@@ -225,4 +247,54 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	public List<String> getDevicesIds() {
 		return getAll().stream().map(DeviceEntity::getId).map(ObjectId::toHexString).toList();
 	}
+
+  public void importData(String deviceId, String data, MessageTypeEnum messageType) {
+		log.debug("Importing '{}' data for device '{}'.", messageType, deviceId);
+
+		// Collect data for the messages to be created.
+		String hardwareId = findById(deviceId).getHardwareId();
+		String kafkaTopic;
+		if (messageType == MessageTypeEnum.T) {
+			kafkaTopic = settingsResource.findByName(NamedSetting.KAFKA_TOPIC_TELEMETRY).getValue();
+		} else if (messageType == MessageTypeEnum.M) {
+			kafkaTopic = settingsResource.findByName(NamedSetting.KAFKA_TOPIC_METADATA).getValue();
+		} else {
+			throw new QMismatchException("Unknown message type '{}'.", messageType);
+		}
+		log.debug("Publishing imported data to Kafka topic '{}'.", kafkaTopic);
+
+		// Split data into new lines and import each line.
+		String[] lines = data.split("\n");
+		int okCounter = 0, errorCounter = 0;
+		for (String line : lines) {
+			log.debug("Processing line '{}'.", line);
+			try {
+				EsthesisDataMessage esthesisDataMessage = EsthesisDataMessage.newBuilder()
+					.setId(UUID.randomUUID().toString())
+					.setHardwareId(hardwareId)
+					.setType(messageType)
+					.setSeenAt(Instant.now().toString())
+					.setSeenBy(appName)
+					.setChannel("data-import")
+					.setPayload(avroUtils.parsePayload(line))
+					.build();
+				log.debug("Parsed message to Avro message '{}'.", esthesisDataMessage);
+
+				dataMessageEmitter.send(
+					Message.of(esthesisDataMessage)
+						.addMetadata(OutgoingKafkaRecordMetadata.<String>builder()
+							.withTopic(kafkaTopic)
+							.withKey(hardwareId)
+							.build())
+						.addMetadata(TracingMetadata.withCurrent(Context.current())));
+
+				okCounter++;
+			} catch (Exception e) {
+				log.error("Failed to parse line.", e);
+				errorCounter++;
+			}
+		}
+
+		log.debug("Imported '{}' messages successfully, with '{}' errors.", okCounter, errorCounter);
+  }
 }

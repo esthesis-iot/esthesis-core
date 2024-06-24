@@ -1,35 +1,35 @@
 # Inter-service notifications
 
-In a fully distributed microservices system, like esthesis Core, it is often required a service
+In a fully distributed microservices system, like esthesis CORE, it is often neccessary a service
 to be notified of events that occur in other services. For example, when a device is deleted from
 the system, it might be necessary to remove the history of commands that were sent to it.
 
-In esthesis Core, we use a Kafka-based mechanism to notify services of events that occur in other
-services. To facilitate and standardised the use of this mechanism, we have created a library named
+In esthesis CORE, we use a Kafka-based mechanism to notify services of events that occur in other
+services. To facilitate and standardise the use of this mechanism, we have created a library named
 `utl-kafka-notifications`. The aim of this library is not only to provide utility code when you
-want to send or receive notifications, but also to provide a standardised way of doing so.
+want to send and receive notifications, but also to provide a standardised way of doing so.
 
 ## Standardising components and actions
 The names of the components that can participate in the notification mechanism are defined in
-[KafkaNotificationsConstants.java](https://github.com/esthesis-iot/esthesis-platform/blob/main/esthesis-core/esthesis-core-backend/util/utl-kafka-notifications/utl-kafka-notifications-common/src/main/java/esthesis/util/kafka/notifications/common/KafkaNotificationsConstants.java)
-file. If the component, or action, you are working with is not included in that file, you should
-first extend it with your new component or action.
+[KafkaNotificationsConstants.java](https://github.com/esthesis-iot/esthesis-platform/blob/main/esthesis-core/esthesis-core-backend/util/utl-kafka-notifications/utl-kafka-notifications-common/src/main/java/esthesis/util/kafka/notifications/common/KafkaNotificationsConstants.java) file. This class is always work in progress, as we keep
+adding components and event types to it, so if the component, or action, you are working with is not
+included, you can extend it appropriately.
 
 There are three different `enum` classes that you can extend:
-1. `Component`: This class defines the components that can participate in the notification mechanism. You should add a new entry representing your component.
+1. `Component`: This class defines the components that can participate in the notification mechanism.
+You should add a new entry representing your component.
 2. `Subject`: This class defines the subject of the component being targeted by the message. For
 example, the Device component may publish messages with different subjects to represent the
 different types of the underlying object types it manages. For most components, the Subject name
 will be the same as the Component name, especially considering the narrow scope of each
 microservice in esthesis Core.
-3. `Action`: This class defines the actions that was performed and that triggered the message. Try
-to reuse the existing actions and only define new action types when strictly necessary.
+3. `Action`: This class defines the action that was performed which triggered the message. Try
+to reuse the existing actions and only define new action types when absolutely necessary.
 
 ## The standard message
-For components to be able to udnerstand messages sent by other components, all messages are
-published as the [AppMessage](https://github.com/esthesis-iot/esthesis-platform/blob/main/esthesis-core/esthesis-core-backend/util/utl-kafka-notifications/utl-kafka-notifications-common/src/main/java/esthesis/util/kafka/notifications/common/AppMessage.java)
-class. `AppMessage` encapsulates the information defined in `KafkaNotificationsConstants` while
-also providing a custom payload attribute.
+For components to be able to understand messages sent by other components, all messages are
+published as an [AppMessage](https://github.com/esthesis-iot/esthesis-platform/blob/main/esthesis-core/esthesis-core-backend/util/utl-kafka-notifications/utl-kafka-notifications-common/src/main/java/esthesis/util/kafka/notifications/common/AppMessage.java) class. `AppMessage` encapsulates the information defined in
+`KafkaNotificationsConstants` while also providing a custom payload attribute.
 
 ## Sending notifications
 To facilitate sending notifications from your components we have implemented the [KafkaNotification](https://github.com/esthesis-iot/esthesis-platform/blob/main/esthesis-core/esthesis-core-backend/util/utl-kafka-notifications/utl-kafka-notifications-outgoing/src/main/java/esthesis/util/kafka/notifications/outgoing/KafkaNotification.java)
@@ -44,19 +44,17 @@ The annotation has the following attributes:
 4. `comment`: A comment that can be used to provide more information about the notification.
 5. `idParamOrder`: The order of the parameter that contains the ID of the object for the notification.
 This parameter starts at 0 to indicate the first parameter of the method. Make sure that if your
-method's parameters change, you update this attribute accordingly.
+method's parameter order changes, you update this attribute accordingly.
 6. `idParamRegEx`: A regular expression that is used to extract the ID of the object for the notification.
 If used, this attribute takes precedence over `idParamOrder`. This parameter is useful in cases where
 the only argument to a method is a complex object that contains the ID of the object for the notification.
-See how it is used in `register` method in [DeviceRegistrationService.java](https://github.com/esthesis-iot/esthesis-platform/blob/main/esthesis-core/esthesis-core-backend/services/srv-device/srv-device-impl/src/main/java/esthesis/services/device/impl/service/DeviceRegistrationService.java)
-as an example.
+See how it is used in `register` method in [DeviceRegistrationService.java](https://github.com/esthesis-iot/esthesis-platform/blob/main/esthesis-core/esthesis-core-backend/services/srv-device/srv-device-impl/src/main/java/esthesis/services/device/impl/service/DeviceRegistrationService.java) as an example.
 
 ### Setup
 To be able to send notification using the above mechanism, you need to set up in your component's
 applications YAML the following:
 - The `kafka.bootstrap.servers` property, to connect your component to the Kafka broker.
 - The `mp.messaging.outgoing.esthesis-app-out.topic` property set to `esthesis-app`.
-
 
 ### Example
 Let us see how this works taking [DeviceService.java](https://github.com/esthesis-iot/esthesis-platform/blob/7cb8c453e2c507ab8c90b5d47ae56e14b8aa158d/esthesis-core/esthesis-core-backend/services/srv-device/srv-device-impl/src/main/java/esthesis/services/device/impl/service/DeviceService.java#L219) as an example:

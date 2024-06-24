@@ -90,7 +90,9 @@ public class DflMqttClientService {
 		List<EsthesisDataMessage> messages = new ArrayList<>();
 		body.lines().filter(line -> !line.startsWith("#")).forEach(line -> {
 			Builder esthesisDataMessageBuilder = EsthesisDataMessage.newBuilder()
-				.setId(UUID.randomUUID().toString()).setHardwareId(hardwareId).setType(messageType)
+				.setId(UUID.randomUUID().toString())
+				.setHardwareId(hardwareId)
+				.setType(messageType)
 				.setSeenAt(Instant.now().toString())
 				.setChannel(exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC, String.class))
 				.setSeenBy(appName);

@@ -64,4 +64,25 @@
       </ext:document>
     </ext:insertOne>
   </changeSet>
+
+	<changeSet author="European Dynamics SA" id="6">
+    <ext:insertOne collectionName="Setting">
+      <ext:document>
+        {"name":"KAFKA_TOPIC_TELEMETRY", "value": "esthesis-telemetry"}
+      </ext:document>
+    </ext:insertOne>
+		<ext:insertOne collectionName="Setting">
+      <ext:document>
+        {"name":"KAFKA_TOPIC_METADATA", "value": "esthesis-metadata"}
+      </ext:document>
+    </ext:insertOne>
+  </changeSet>
+
+	<changeSet author="European Dynamics SA" id="7">
+    <ext:insertOne collectionName="Setting">
+      <ext:document>
+        {"name":"KAFKA_TOPIC_APPLICATION", "value": "esthesis-app"}
+      </ext:document>
+    </ext:insertOne>
+  </changeSet>
 </databaseChangeLog>

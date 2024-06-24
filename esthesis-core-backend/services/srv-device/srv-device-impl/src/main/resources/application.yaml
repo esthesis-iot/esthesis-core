@@ -45,6 +45,9 @@ mp:
     outgoing:
       esthesis-app-out:
         topic: esthesis-app
+      esthesis-data-message:
+        value:
+          serializer: esthesis.avro.util.kafka.EsthesisDataMessageSerializer
     incoming:
       esthesis-app-in:
         topic: esthesis-app
