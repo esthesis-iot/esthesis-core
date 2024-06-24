@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.semver4j.Semver;
@@ -56,35 +57,33 @@ public class ProvisioningAgentService {
 			deviceEntity.getTags());
 		log.debug("Found '{}' provisioning packages '{}'.", matchedPackages.size(), matchedPackages);
 
-		// Find candidate version.
+		// Find all versions higher than the current one.
 		List<ProvisioningPackageEntity> greaterVersions = matchedPackages.stream()
 			.filter(p -> new Semver(p.getVersion()).isGreaterThan(version))
 			.sorted(Comparator.comparing(p -> new Semver(p.getVersion())))
 			.toList();
 		log.debug("Found '{}' greater versions '{}'.", greaterVersions.size(), greaterVersions);
 
-		String candidateVersion = version;
-		for (ProvisioningPackageEntity ppe : greaterVersions) {
-			if (ppe.getPrerequisiteVersion() != null
-				&& provisioningRepository.findById(new ObjectId(ppe.getPrerequisiteVersion()))
-				.getVersion().equals(version)) {
-				candidateVersion = ppe.getVersion();
-			} else if (ppe.getPrerequisiteVersion() != null) {
-				break;
-			} else {
-				candidateVersion = ppe.getVersion();
-			}
-		}
-
-		log.debug("Final candidate version is '{}'.", candidateVersion);
-
-		if (candidateVersion.equals(version)) {
-			return null;
+		// Find the first version that respects the base version requirement.
+		ProvisioningPackageEntity candidateVersion;
+		if (greaterVersions.stream().filter(p -> StringUtils.isNotBlank(p.getPrerequisiteVersion())).findAny()
+			.isEmpty()) {
+			// If the list of greater versions do not have any prerequisite versions, return the last one.
+			candidateVersion = greaterVersions.get(greaterVersions.size() - 1);
 		} else {
-			String finalCandidateVersion = candidateVersion;
-			return greaterVersions.stream().filter(
-				p -> p.getVersion().equals(finalCandidateVersion)).findFirst().orElseThrow();
+			// If the list of greater versions have prerequisite versions, then return the lowest
+			// prerequisite version.
+			candidateVersion = greaterVersions.stream().filter(
+				p -> p.getVersion().equals(
+					greaterVersions.stream()
+						.filter(x -> StringUtils.isNotEmpty(x.getPrerequisiteVersion()))
+						.min(Comparator.comparing(x -> new Semver(x.getPrerequisiteVersion())))
+						.orElseThrow().getPrerequisiteVersion()
+				)
+			).findFirst().orElseThrow();
 		}
+
+		return candidateVersion;
 	}
 
 	public ProvisioningPackageEntity findById(String provisioningPackageId) {

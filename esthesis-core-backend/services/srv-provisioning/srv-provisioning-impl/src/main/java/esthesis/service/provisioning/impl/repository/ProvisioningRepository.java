@@ -44,4 +44,14 @@ public class ProvisioningRepository implements PanacheMongoRepository<Provisioni
 		return list("tags in ?1", tagIds.toArray());
 	}
 
+	/**
+	 * Checks if a version is in a list of tags.
+	 * @param version The version to check.
+	 * @param tags The tags to check.
+	 * @return True if the version is in the tags, false otherwise.
+	 */
+	public boolean versionInTags(String version, List<String> tags) {
+		List<ProvisioningPackageEntity> matchedPackages = findByTagIds(tags);
+		return matchedPackages.stream().anyMatch(p -> p.getVersion().equals(version));
+	}
 }

@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ import lombok.ToString;
 import org.jboss.resteasy.reactive.RestForm;
 
 @Data
+@Builder()
 @NoArgsConstructor
 @AllArgsConstructor
 @RegisterForReflection
