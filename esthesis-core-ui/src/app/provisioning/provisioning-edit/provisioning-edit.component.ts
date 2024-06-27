@@ -8,18 +8,17 @@ import {ProvisioningService} from "../provisioning.service";
 import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
-import * as _ from "lodash-es";
 import {ProvisioningDto} from "../dto/provisioning-dto";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
+import {QFormValidationEEService} from "../../shared/services/form-validation.service";
 
 @Component({
   selector: "app-provisioning-edit",
-  templateUrl: "./provisioning-edit.component.html",
-  styleUrls: ["./provisioning-edit.component.scss"]
+  templateUrl: "./provisioning-edit.component.html"
 })
 export class ProvisioningEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
@@ -28,10 +27,10 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
   provisioningPackage?: ProvisioningDto;
   baseVersions?: ProvisioningDto[];
 
-  constructor(private fb: FormBuilder, private dialog: MatDialog,
-    private tagService: TagsService,
+  constructor(private fb: FormBuilder, private dialog: MatDialog, private tagService: TagsService,
     private provisioningService: ProvisioningService, private route: ActivatedRoute,
-    private router: Router, private utilityService: UtilityService) {
+    private router: Router, private utilityService: UtilityService,
+    private qFormValidation: QFormValidationEEService) {
     super(AppConstants.SECURITY.CATEGORY.PROVISIONING, route.snapshot.paramMap.get("id"));
   }
 
@@ -39,7 +38,7 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
     // Check if an edit is performed and fetch data.
     this.id = this.route.snapshot.paramMap.get("id")!;
 
-    // // Setup the form.
+    // // Set up the form.
     this.form = this.fb.group({
       id: [],
       name: [null, [Validators.required, Validators.maxLength(256)]],
@@ -52,35 +51,12 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
       available: [true, [Validators.required]],
       sha256: [],
 
-      // ESTHESIS type
+      // INTERNAL type
       fileName: [],
       file: [],
 
-      // WEB type
-      WEB_URL: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
-      WEB_USERNAME: [],
-      WEB_PASSWORD: [],
-
-      // FTP type
-      FTP_HOST: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
-      FTP_USERNAME: [],
-      FTP_PASSWORD: [],
-      FTP_PORT: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
-      FTP_PATH: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
-      FTP_PASSIVE: [],
-
-      // MINIO type
-      MINIO_URL: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
-      MINIO_BUCKET: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
-      MINIO_OBJECT: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}],
-      MINIO_ACCESS_KEY: [],
-      MINIO_SECRET_KEY: [],
-
-      // S3
-      s3Url: [],
-
-      // Minio
-      minioUrl: [],
+      // EXTERNAL type
+      WEB_URL: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}]
     });
 
     // Fill-in the form with data if editing an existing item.
@@ -146,18 +122,6 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
     patchedForm.addControl("fileName", this.form.controls['fileName']);
     patchedForm.addControl("sha256", this.form.controls['sha256']);
 
-    // Add type-specific fields.
-    let typeSpecificConfiguration = "";
-    _.forEach(this.form.controls, (value, key) => {
-      if (key.startsWith(this.form.controls['type'].value) && value.value) {
-        typeSpecificConfiguration += key + "=" + value.value + ",";
-      }
-    });
-    if (typeSpecificConfiguration.endsWith(",")) {
-      typeSpecificConfiguration = typeSpecificConfiguration.substring(0, typeSpecificConfiguration.length - 1);
-    }
-    patchedForm.addControl("typeSpecificConfiguration", this.fb.control(typeSpecificConfiguration));
-
     // Save the patched form.
     this.provisioningService.upload(patchedForm).subscribe({
       next: (next: any) => {
@@ -170,7 +134,14 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
           }
         }
       }, error: (err: any) => {
-        this.utilityService.popupErrorWithTraceId("There was a problem uploading the provisioning package.", err);
+        if (err.status === 400) {
+          const validationErrors = err.error;
+          if (validationErrors) {
+            this.qFormValidation.applyValidationErrors(this.form, validationErrors.violations);
+          }
+        } else {
+          this.utilityService.popupErrorWithTraceId("There was a problem uploading the provisioning package.", err);
+        }
       }
     });
   }
@@ -204,15 +175,6 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
 
   download() {
     this.provisioningService.download(this.id);
-  }
-
-  recache() {
-    this.provisioningService.recache(this.id).subscribe({
-      next: () => {
-        this.utilityService.popupSuccess("Provisioning package is being recached.");
-        this.router.navigate(["provisioning"]);
-      }
-    });
   }
 
   /**

@@ -6,6 +6,7 @@ import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.form.ProvisioningPackageForm;
 import io.quarkus.oidc.token.propagation.AccessToken;
 import io.smallrye.mutiny.Uni;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -31,27 +32,13 @@ public interface ProvisioningResource {
 	Page<ProvisioningPackageEntity> find(@BeanParam Pageable provisioningPackage);
 
 	@GET
-	@Path("/v1/recache")
-	void recacheAll();
-
-	@GET
 	@Path("/v1/{id}")
 	ProvisioningPackageEntity findById(@PathParam("id") String provisioningPackageId);
-
-	/**
-	 * Recaches a previously uploaded provisioning package.
-	 *
-	 * @param provisioningPackageId The id of the provisioning package to recache.
-	 * @return Returns the expected number of bytes to be cached, if known.
-	 */
-	@GET
-	@Path("/v1/{id}/recache")
-	void recache(@PathParam("id") String provisioningPackageId);
 
 	@POST
 	@Path("/v1")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	ProvisioningPackageEntity save(@MultipartForm ProvisioningPackageForm provisioningPackageForm);
+	ProvisioningPackageEntity save(@MultipartForm @Valid ProvisioningPackageForm provisioningPackageForm);
 
 	@DELETE
 	@Path("/v1/{id}")

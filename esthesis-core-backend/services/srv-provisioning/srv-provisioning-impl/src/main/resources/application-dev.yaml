@@ -21,6 +21,9 @@ quarkus:
     AuditResource:
       url: http://localhost:59140
       scope: Singleton
+    SettingsResource:
+      url: http://localhost:59030
+      scope: Singleton
   mongodb:
     database: esthesiscore
     credentials:

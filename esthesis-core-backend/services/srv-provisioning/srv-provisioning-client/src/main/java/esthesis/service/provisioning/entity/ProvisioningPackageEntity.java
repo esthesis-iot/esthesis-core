@@ -1,8 +1,6 @@
 package esthesis.service.provisioning.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import esthesis.common.AppConstants.Provisioning.CacheStatus;
-import esthesis.common.AppConstants.Provisioning.ConfigOption;
 import esthesis.common.AppConstants.Provisioning.Type;
 import esthesis.common.entity.BaseEntity;
 import esthesis.common.jackson.MongoInstantDeserializer;
@@ -10,9 +8,7 @@ import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,20 +35,19 @@ public class ProvisioningPackageEntity extends BaseEntity {
 	private String description;
 
 	// Whether this package is available for distribution or not.
+	@NotNull
 	@RestForm
 	private boolean available;
 
 	// The version of this package, following semantic versioning principles. This allows esthesis
 	// to automatically determine which package is "next" to be downloaded given a specific package
 	// version, helpful during device firmware updates. If semantic versioning is not followed,
-	// automatic updates should not be used as the next-version package to be downloaded cannot be
-	// determined reliably.
+	// switch this feature off in the settings of the application.
+	@NotNull
 	@RestForm
 	private String version;
 
-	// A reference to a version which is a prerequisite for this version to be installed. This is
-	// also taken into account when esthesis tries to determine which is the next version of a
-	// package to be installed on a device given the current version of the device.
+	// A reference to a version which is a prerequisite for this version to be installed.
 	@RestForm
 	private String prerequisiteVersion;
 
@@ -83,29 +78,7 @@ public class ProvisioningPackageEntity extends BaseEntity {
 	@RestForm
 	private Type type;
 
-	// A comma-separated list of key=value pairs with package type specific configuration.
-	@RestForm
-	private String typeSpecificConfiguration;
-
-	// Indicates what's the current status of a provisioning package's cache.
-	private CacheStatus cacheStatus;
-
-	// A log output of the caching result.
-	private String log;
-
 	@JsonDeserialize(using = MongoInstantDeserializer.class)
 	private Instant createdOn;
-
-	/**
-	 * Find Config (fc), is a convenience method to return a value from typeSpecificConfiguration.
-	 *
-	 * @param key The key to look for.
-	 */
-	public Optional<String> fc(ConfigOption key) {
-		return Arrays.stream(getTypeSpecificConfiguration().split(","))
-			.filter(s -> s.startsWith(key + "="))
-			.findFirst()
-			.map(s -> s.substring(s.indexOf("=") + 1));
-	}
 
 }

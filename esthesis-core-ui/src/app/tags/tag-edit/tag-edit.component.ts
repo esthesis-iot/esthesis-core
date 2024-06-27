@@ -66,7 +66,6 @@ export class TagEditComponent extends SecurityBaseComponent implements OnInit {
             this.qFormValidation.applyValidationErrors(this.form, validationErrors.violations);
           }
         } else if (err.status === 401) {
-          console.log(err);
           this.utilityService.popupErrorWithTraceId(err.error.errorMessage, err);
         } else {
           this.utilityService.popupError("There was an error trying to save this tag.");

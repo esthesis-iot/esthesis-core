@@ -28,6 +28,20 @@
     <mat-hint>The time for which a provisioning package download token remains valid (in minutes)
     </mat-hint>
   </mat-form-field>
+
+  <div class="font-bold text-xl mt-5">Provisioning versions follow semantic versioning</div>
+  <mat-form-field>
+    <mat-select [formControlName]="appConstants.NAMED_SETTING.DEVICE_PROVISIONING_SEMVER"
+                placeholder="Semantic versioning">
+      <mat-option value="true">Pprovisioning packages follow semantic versioning</mat-option>
+      <mat-option value="false">Provisioning packages do not follow semantic versioning
+      </mat-option>
+    </mat-select>
+    <mat-hint>If your provisioning packages follow semantic versioning, the most recent version
+      of a provisioning package for a device can be automatically suggested. If you do not follow
+      semantic versioning, turn this feature off as it may have unexpected results.
+    </mat-hint>
+  </mat-form-field>
 </form>
 
 <button (click)="save()" *ngIf="allowWrite" [disabled]="form.invalid"

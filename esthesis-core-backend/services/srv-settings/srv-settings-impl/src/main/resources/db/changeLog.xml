@@ -85,4 +85,12 @@
       </ext:document>
     </ext:insertOne>
   </changeSet>
+
+	<changeSet author="European Dynamics SA" id="8">
+    <ext:insertOne collectionName="Setting">
+      <ext:document>
+				{"name":"DEVICE_PROVISIONING_SEMVER", "value": "true"},
+      </ext:document>
+    </ext:insertOne>
+  </changeSet>
 </databaseChangeLog>

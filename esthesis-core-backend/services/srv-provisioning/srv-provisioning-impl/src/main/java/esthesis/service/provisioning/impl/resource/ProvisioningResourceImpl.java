@@ -39,24 +39,9 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
-	@Audited(cat = Category.PROVISIONING, op = Operation.WRITE, msg = "Recache all provisioning "
-		+ "packages")
-	public void recacheAll() {
-		provisioningService.cacheAll();
-	}
-
-	@Override
-	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.PROVISIONING, op = Operation.READ, msg = "View provisioning package")
 	public ProvisioningPackageEntity findById(String id) {
 		return provisioningService.findById(id);
-	}
-
-	@Override
-	@RolesAllowed(AppConstants.ROLE_USER)
-	@Audited(cat = Category.PROVISIONING, op = Operation.WRITE, msg = "Recache provisioning package")
-	public void recache(String provisioningPackageId) {
-		provisioningService.recache(provisioningPackageId);
 	}
 
 	@Override

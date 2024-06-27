@@ -7,9 +7,6 @@ import {TagDto} from "../../tags/dto/tag-dto";
 import * as _ from "lodash-es";
 import {AppConstants} from "../../app.constants";
 import {ProvisioningDto} from "../dto/provisioning-dto";
-import {
-  OkCancelModalComponent
-} from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatDialog} from "@angular/material/dialog";
@@ -21,7 +18,7 @@ import {SecurityBaseComponent} from "../../shared/components/security-base-compo
   templateUrl: "./provisioning-list.component.html"
 })
 export class ProvisioningListComponent extends SecurityBaseComponent implements AfterViewInit {
-  columns = ["name", "version", "prerequisiteVersion", "state", "size", "tags", "createdOn", "type", "cacheStatus"];
+  columns = ["name", "version", "prerequisiteVersion", "state", "size", "tags", "createdOn", "type"];
   datasource = new MatTableDataSource<ProvisioningDto>();
   availableTags: TagDto[] | undefined;
   // The list of all packages, so that base-version references can be resolved.
@@ -106,26 +103,5 @@ export class ProvisioningListComponent extends SecurityBaseComponent implements 
       this.sort.direction);
   }
 
-  cacheAll() {
-    this.dialog.open(OkCancelModalComponent, {
-      data: {
-        title: "Recache all packages",
-        question: "Are you sure you want to download all packages and update them in Redis?",
-        buttons: {
-          ok: true, cancel: true, reload: false
-        }
-      }
-    }).afterClosed().subscribe(result => {
-      if (result) {
-        this.provisioningService.recacheAll().subscribe({
-          next: () => {
-            this.utilityService.popupSuccess("Started caching provisioning packages..");
-          }, error: (error) => {
-            this.utilityService.popupErrorWithTraceId("Could not start caching provisioning packages.", error);
-          }
-        });
-      }
-    });
-  }
 }
 

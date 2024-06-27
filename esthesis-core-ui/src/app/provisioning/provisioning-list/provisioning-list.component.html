@@ -50,23 +50,6 @@
           <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Type</th>
           <td *cdkCellDef="let element" cdk-cell>{{element.type}}</td>
         </ng-container>
-        <ng-container matColumnDef="cacheStatus">
-          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Cache</th>
-          <td *cdkCellDef="let element" [ngSwitch]="element.cacheStatus" cdk-cell>
-            <div *ngSwitchCase="appConstants.PROVISIONING.CACHE_STATUS.COMPLETED"
-                 class="status-completed">Completed
-            </div>
-            <div *ngSwitchCase="appConstants.PROVISIONING.CACHE_STATUS.FAILED"
-                 class="status-failed">Failed
-            </div>
-            <div *ngSwitchCase="appConstants.PROVISIONING.CACHE_STATUS.IN_PROGRESS"
-                 class="status-inprogress">In progress
-            </div>
-            <div *ngSwitchCase="appConstants.PROVISIONING.CACHE_STATUS.NOT_STARTED"
-                 class="status-notstarted">Not started
-            </div>
-          </td>
-        </ng-container>
         <tr *cdkHeaderRowDef="columns" cdk-header-row></tr>
         <tr *cdkRowDef="let row; columns: columns; let element;" [routerLink]="element.id"
             cdk-row class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
@@ -79,7 +62,6 @@
       </mat-paginator>
     </div>
     <div class="card-actions justify-start mt-10">
-      <button (click)="cacheAll()" *ngIf="allowWrite" class="btn btn-sm btn-secondary">CACHE ALL</button>
       <button *ngIf="allowCreate" [routerLink]="appConstants.NEW_RECORD_ID" class="btn btn-sm btn-primary">CREATE
       </button>
     </div>

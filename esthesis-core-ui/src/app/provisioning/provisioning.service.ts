@@ -23,10 +23,6 @@ export class ProvisioningService extends CrudDownloadService<ProvisioningDto> {
     });
   }
 
-  recache(id: string) {
-    return this.http.get(`${this.prefix}/${id}/recache`);
-  }
-
   recacheAll() {
     return this.http.get(`${this.prefix}/recache`);
   }

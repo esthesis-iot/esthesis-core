@@ -16,5 +16,4 @@ source ../../../_dev/dev-scripts/start-quarkus.sh \
 	PROFILES="${1:-dev}${1:+,dev}" \
 	OIDC="true" \
 	OIDC_CLIENT="true" \
-	MONGODB="true" \
-	REDIS="true"
+	MONGODB="true"

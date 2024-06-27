@@ -23,13 +23,11 @@ export class SettingsProvisioningComponent extends SecurityBaseComponent impleme
 
   ngOnInit() {
     // Define the form.
-    // TODO to be fully dynamic, the name of the form control should be derived from the name
-    //  of the respective setting. Create an empty form group and then add the form controls
-    //  programmatically.
     this.form = this.fb.group({
       DEVICE_PROVISIONING_URL: [],
       DEVICE_PROVISIONING_SECURE: [],
       DEVICE_PROVISIONING_CACHE_TIME: [],
+      DEVICE_PROVISIONING_SEMVER: [],
     });
 
 
@@ -38,6 +36,7 @@ export class SettingsProvisioningComponent extends SecurityBaseComponent impleme
       AppConstants.NAMED_SETTING.DEVICE_PROVISIONING_URL,
       AppConstants.NAMED_SETTING.DEVICE_PROVISIONING_SECURE,
       AppConstants.NAMED_SETTING.DEVICE_PROVISIONING_CACHE_TIME,
+      AppConstants.NAMED_SETTING.DEVICE_PROVISIONING_SEMVER,
     ]).subscribe(onNext => {
       onNext.forEach(setting => {
         this.form.controls[setting.name].patchValue(setting.value);

@@ -77,8 +77,7 @@ export class CommandCreateComponent extends SecurityBaseComponent implements OnI
     });
 
     // Get provisioning packages.
-    this.provisioningService.find("available=true&cacheStatus="
-      + this.appConstants.PROVISIONING.CACHE_STATUS.COMPLETED + "&sort=version,desc").subscribe({
+    this.provisioningService.find("available=true&sort=version,desc").subscribe({
       next: (provisioningPackages) => {
         this.provisioningPackages = provisioningPackages.content;
       }, error: (error) => {
