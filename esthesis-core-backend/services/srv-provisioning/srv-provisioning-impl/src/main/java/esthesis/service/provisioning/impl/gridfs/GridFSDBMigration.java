@@ -18,7 +18,7 @@ public class GridFSDBMigration {
 	@ConfigProperty(name = "quarkus.mongodb.database")
 	String dbName;
 
-	private final static String GRIDFS_BUCKET_NAME = "ProvisioningPackageBucket";
+	public static final String GRIDFS_BUCKET_NAME = "ProvisioningPackageBucket";
 
 	public void checkMigration() {
 		log.debug("Creating GridFS bucket '{}' in database '{}'", GRIDFS_BUCKET_NAME, dbName);

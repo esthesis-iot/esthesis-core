@@ -1,6 +1,5 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {HttpEvent, HttpResponse} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CertificatesService} from "../certificates.service";
 import {MatDialog} from "@angular/material/dialog";
@@ -47,19 +46,19 @@ export class CertificateImportComponent extends SecurityBaseComponent implements
   }
 
   import() {
-    this.certificatesService.import(this.form).subscribe({
-      next: (event: HttpEvent<any>) => {
-        if (event instanceof HttpResponse) {
-          if (event.status === 200) {
-            this.utilityService.popupSuccess("Certificate restored successfully.");
-            this.router.navigate(["certificates"]);
-          } else {
-            this.utilityService.popupError("Something went wrong, please try again.");
-          }
-        }
-      }, error: (error: any) => {
-        this.utilityService.popupError(error.error);
-      }
-    });
+    // this.certificatesService.import(this.form).subscribe({
+    //   next: (event: HttpEvent<any>) => {
+    //     if (event instanceof HttpResponse) {
+    //       if (event.status === 200) {
+    //         this.utilityService.popupSuccess("Certificate restored successfully.");
+    //         this.router.navigate(["certificates"]);
+    //       } else {
+    //         this.utilityService.popupError("Something went wrong, please try again.");
+    //       }
+    //     }
+    //   }, error: (error: any) => {
+    //     this.utilityService.popupError(error.error);
+    //   }
+    // });
   }
 }

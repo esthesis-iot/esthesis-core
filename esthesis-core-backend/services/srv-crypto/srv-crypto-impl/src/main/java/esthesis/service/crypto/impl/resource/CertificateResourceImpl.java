@@ -11,7 +11,6 @@ import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.entity.CertificateEntity;
-import esthesis.service.crypto.form.ImportCertificateForm;
 import esthesis.service.crypto.impl.service.CertificateService;
 import esthesis.service.crypto.resource.CertificateResource;
 import esthesis.service.settings.resource.SettingsResource;
@@ -24,6 +23,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 @Authenticated
 public class CertificateResourceImpl implements CertificateResource {
@@ -93,9 +93,11 @@ public class CertificateResourceImpl implements CertificateResource {
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
-	@Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Import certificate")
-	public CertificateEntity importCertificate(ImportCertificateForm importCertificateForm) {
-		return certificateService.importCertificate(importCertificateForm);
+	@Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Import certificate",
+		log = AuditLogType.DATA_OUT)
+	public CertificateEntity importCertificate(CertificateEntity certificateEntity,
+		FileUpload publicKey, FileUpload privateKey, FileUpload certificate) {
+		return certificateService.importCertificate(certificateEntity, publicKey, privateKey, certificate);
 	}
 
 	@Override

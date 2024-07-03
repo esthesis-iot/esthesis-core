@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {CaDto} from "./dto/ca-dto";
-import {FormGroup} from "@angular/forms";
 import {Observable} from "rxjs";
 import {CrudDownloadService} from "../shared/services/crud-download.service";
 import {FileSaverService} from "ngx-filesaver";
@@ -36,12 +35,11 @@ export class CasService extends CrudDownloadService<CaDto> {
     });
   }
 
-  import(form: FormGroup) {
-    return this.upload(form, `${this.prefix}/import`, false);
+  import(json: any, files: Map<string, File | null>) {
+    return this.upload(json, files, `${this.prefix}/import`);
   }
 
   getEligibleForSigning(): Observable<CaDto[]> {
     return this.http.get<CaDto[]>(`${this.prefix}/eligible-for-signing`);
   }
-
 }

@@ -2,13 +2,12 @@ package esthesis.service.provisioning.impl.service;
 
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.AppConstants.Provisioning.Type;
-import esthesis.common.exception.QExceptionWrapper;
 import esthesis.common.exception.QMismatchException;
 import esthesis.service.common.BaseService;
+import esthesis.service.common.gridfs.GridFSDTO;
+import esthesis.service.common.gridfs.GridFSService;
 import esthesis.service.common.validation.CVBuilder;
-import esthesis.service.provisioning.entity.ProvisioningPackageBinaryEntity;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
-import esthesis.service.provisioning.form.ProvisioningPackageForm;
 import esthesis.service.settings.resource.SettingsResource;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -16,14 +15,15 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
 import org.semver4j.Semver;
 
 @Slf4j
@@ -31,8 +31,14 @@ import org.semver4j.Semver;
 @ApplicationScoped
 public class ProvisioningService extends BaseService<ProvisioningPackageEntity> {
 
+	private static final String GRIDFS_BUCKET_NAME = "ProvisioningPackageBucket";
+	private static final String GRIDFS_METADATA_NAME = "provisioningPackageId";
+
 	@Inject
-	ProvisioningBinaryService provisioningBinaryService;
+	GridFSService gridFSService;
+
+	@ConfigProperty(name = "quarkus.mongodb.database")
+	String dbName;
 
 	@Inject
 	@RestClient
@@ -43,10 +49,9 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 	}
 
 	@SuppressWarnings("java:S6205")
-	public ProvisioningPackageEntity save(ProvisioningPackageForm pf) {
-
+	public ProvisioningPackageEntity save(ProvisioningPackageEntity ppe, FileUpload file) {
 		// Custom validation for version, if semver should be followed.
-		if (isSemverEnabled() && !Semver.isValid(pf.getVersion())) {
+		if (isSemverEnabled() && !Semver.isValid(ppe.getVersion())) {
 			throw new ConstraintViolationException(
 				Collections.singleton(new CVBuilder<>()
 					.path("version")
@@ -55,50 +60,37 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 					.build()));
 		}
 
-		// Convert the uploaded form to a ProvisioningPackage.
-		ProvisioningPackageEntity ppe =
-			pf.getId() != null ? findById(pf.getId().toHexString()) : new ProvisioningPackageEntity();
-		ppe.setName(pf.getName());
-		ppe.setDescription(pf.getDescription());
-		ppe.setAvailable(pf.isAvailable());
-		ppe.setVersion((pf.getVersion()));
-		ppe.setTags(pf.getTags());
-		ppe.setAttributes(pf.getAttributes());
-		ppe.setPrerequisiteVersion(pf.getPrerequisiteVersion());
-		ppe.setSha256(pf.getSha256());
-		// Only for new records.
-		if (pf.getId() == null) {
-			ppe.setType(pf.getType());
+		if (ppe.getId() == null) {
 			ppe.setCreatedOn(Instant.now());
-		}
-		// For new records, for INTERNAL type use the uploaded file's filename, for other types,
-		// extract the filename from the URL.
-		if (pf.getId() == null) {
-			switch (ppe.getType()) {
-				case INTERNAL -> {
-					ppe.setFilename(pf.getFile().fileName());
-					ppe.setSize(pf.getFile().size());
-					ppe.setContentType(pf.getFile().contentType());
-				}
-				case EXTERNAL -> {
-					ppe.setFilename(pf.getFilename());
-				}
-				default ->
-					throw new QMismatchException("Unsupported provisioning package type: " + ppe.getType());
+			if (ppe.getType() == Type.INTERNAL) {
+				ppe.setFilename(file.fileName());
+				ppe.setSize(file.uploadedFile().toFile().length());
+				ppe.setContentType(file.contentType());
+			}
+		} else {
+			if (ppe.getType() == Type.INTERNAL) {
+				ProvisioningPackageEntity existingPpe = findById(ppe.getId().toHexString());
+				ppe.setFilename(existingPpe.getFilename());
+				ppe.setSize(existingPpe.getSize());
+				ppe.setContentType(existingPpe.getContentType());
 			}
 		}
 		ppe = save(ppe);
 
 		// Update the binary package only for new records of ESTHESIS type.
-		if (pf.getId() == null && pf.getType() == Type.INTERNAL) {
-			ProvisioningPackageBinaryEntity pb = new ProvisioningPackageBinaryEntity();
-			pb.setProvisioningPackage(ppe.getId());
+		if (ppe.getType() == Type.INTERNAL && file != null) {
 			try {
-				pb.setPayload(Files.readAllBytes(pf.getFile().uploadedFile()));
+				gridFSService.saveBinary(GridFSDTO.builder()
+					.database(dbName)
+					.metadataName(GRIDFS_METADATA_NAME)
+					.metadataValue(ppe.getId().toHexString())
+					.bucketName(GRIDFS_BUCKET_NAME)
+					.file(file)
+					.build());
+				log.debug("Uploaded file {} saved successfully.", ppe.getFilename());
 			} catch (IOException e) {
-				throw new QExceptionWrapper("Could not read uploaded file.", e);
+				throw new QMismatchException("Could not save uploaded file.", e);
 			}
-			provisioningBinaryService.save(pb);
 		}
 
 		return ppe;
@@ -108,7 +100,12 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 		// Delete the provisioning package from the database.
 		Type type = findById(provisioningPackageId).getType();
 		if (type.equals(Type.INTERNAL)) {
-			provisioningBinaryService.deleteByColumn("provisioningPackage", provisioningPackageId);
+			gridFSService.deleteBinary(GridFSDTO.builder()
+				.database(dbName)
+				.metadataName(GRIDFS_METADATA_NAME)
+				.metadataValue(provisioningPackageId)
+				.bucketName(GRIDFS_BUCKET_NAME)
+				.build());
 		}
 		super.deleteById(provisioningPackageId);
 	}
@@ -118,9 +115,14 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 		if (ppe.getType() != Type.INTERNAL) {
 			throw new QMismatchException("Only internal provisioning packages can be downloaded.");
 		}
-		ProvisioningPackageBinaryEntity pb = provisioningBinaryService.findByColumn("provisioningPackage",
-			provisioningPackageId).get(0);
-		return Uni.createFrom().item(pb.getPayload());
+
+		// Download the binary package from the database.
+		return gridFSService.downloadBinary(GridFSDTO.builder()
+			.database(dbName)
+			.metadataName(GRIDFS_METADATA_NAME)
+			.metadataValue(provisioningPackageId)
+			.bucketName(GRIDFS_BUCKET_NAME)
+			.build());
 	}
 
 	public List<ProvisioningPackageEntity> findByTags(String tags) {

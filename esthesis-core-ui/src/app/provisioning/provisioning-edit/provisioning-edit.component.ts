@@ -26,6 +26,7 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
   availableTags: TagDto[] | undefined;
   provisioningPackage?: ProvisioningDto;
   baseVersions?: ProvisioningDto[];
+  file: File | null = null;
 
   constructor(private fb: FormBuilder, private dialog: MatDialog, private tagService: TagsService,
     private provisioningService: ProvisioningService, private route: ActivatedRoute,
@@ -38,7 +39,7 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
     // Check if an edit is performed and fetch data.
     this.id = this.route.snapshot.paramMap.get("id")!;
 
-    // // Set up the form.
+    // Set up the form.
     this.form = this.fb.group({
       id: [],
       name: [null, [Validators.required, Validators.maxLength(256)]],
@@ -50,13 +51,10 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
       type: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}, [Validators.required]],
       available: [true, [Validators.required]],
       sha256: [],
-
       // INTERNAL type
       fileName: [],
-      file: [],
-
       // EXTERNAL type
-      WEB_URL: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}]
+      url: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}]
     });
 
     // Fill-in the form with data if editing an existing item.
@@ -103,27 +101,9 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
   }
 
   save() {
-    // Create a custom form to submit to the backend combining type-specific configuration into a
-    // single field.
-    // Add common fields.
-    const patchedForm = new FormGroup({});
-    if (this.form.controls['id'].value) {
-      patchedForm.addControl("id", this.form.controls['id']);
-    }
-    patchedForm.addControl("name", this.form.controls['name']);
-    patchedForm.addControl("description", this.form.controls['description']);
-    patchedForm.addControl("version", this.form.controls['version']);
-    patchedForm.addControl("prerequisiteVersion", this.form.controls['prerequisiteVersion']);
-    patchedForm.addControl("tags", this.form.controls['tags']);
-    patchedForm.addControl("attributes", this.form.controls['attributes']);
-    patchedForm.addControl("type", this.form.controls['type']);
-    patchedForm.addControl("available", this.form.controls['available']);
-    patchedForm.addControl("file", this.form.controls['file']);
-    patchedForm.addControl("fileName", this.form.controls['fileName']);
-    patchedForm.addControl("sha256", this.form.controls['sha256']);
-
     // Save the patched form.
-    this.provisioningService.upload(patchedForm).subscribe({
+    this.provisioningService.upload(this.form.getRawValue(),
+      new Map<string, File | null>([["file", this.file]])).subscribe({
       next: (next: any) => {
         if (next.type === HttpEventType.Response) {
           if (next.status === 200) {
@@ -168,9 +148,12 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
     });
   }
 
-  selectFile(event: any) {
-    this.form.controls['file'].patchValue(event.target.files[0]);
-    this.form.controls['fileName'].patchValue(event.target.files[0].name);
+  fileSelect(event: any) {
+    const file: File = event.target?.files[0];
+    if (file) {
+      this.file = file;
+      this.form.controls['fileName'].setValue(file.name);
+    }
   }
 
   download() {

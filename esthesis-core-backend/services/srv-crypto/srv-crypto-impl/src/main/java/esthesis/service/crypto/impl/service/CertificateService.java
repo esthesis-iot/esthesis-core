@@ -11,7 +11,6 @@ import esthesis.common.exception.QMutationNotPermittedException;
 import esthesis.service.common.BaseService;
 import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.entity.CertificateEntity;
-import esthesis.service.crypto.form.ImportCertificateForm;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
@@ -37,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 @Slf4j
 @Transactional
@@ -56,18 +56,18 @@ public class CertificateService extends BaseService<CertificateEntity> {
 	@RestClient
 	SettingsResource settingsResource;
 
-	public CertificateEntity importCertificate(
-		ImportCertificateForm importCertificateForm) {
+	public CertificateEntity importCertificate(CertificateEntity importedCertificateEntity,
+		FileUpload publicKey, FileUpload privateKey, FileUpload certificate) {
 		CertificateEntity certificateEntity = new CertificateEntity();
 
 		try {
 			// Set the keys into the certificate entity.
-			certificateEntity.setCertificate(
-				Files.readString(importCertificateForm.getCertificate().uploadedFile().toAbsolutePath()));
 			certificateEntity.setPublicKey(
-				Files.readString(importCertificateForm.getPublicKey().uploadedFile().toAbsolutePath()));
+				Files.readString(publicKey.uploadedFile().toAbsolutePath()));
 			certificateEntity.setPrivateKey(
-				Files.readString(importCertificateForm.getPrivateKey().uploadedFile().toAbsolutePath()));
+				Files.readString(privateKey.uploadedFile().toAbsolutePath()));
+			certificateEntity.setCertificate(
+				Files.readString(certificate.uploadedFile().toAbsolutePath()));
 
 			// Extract additional certificate information.
 			X509Certificate x509Certificate = cryptoService.pemToCertificate(
@@ -78,7 +78,7 @@ public class CertificateService extends BaseService<CertificateEntity> {
 			certificateEntity.setValidity(x509Certificate.getNotAfter().toInstant());
 			certificateEntity.setIssuer(
 				cryptoService.cleanUpCn(x509Certificate.getIssuerX500Principal().getName()));
-			certificateEntity.setName(importCertificateForm.getName());
+			certificateEntity.setName(importedCertificateEntity.getName());
 			if (x509Certificate.getSubjectAlternativeNames() != null) {
 				certificateEntity.setSan(x509Certificate.getSubjectAlternativeNames().stream()
 					.map(san -> san.get(1).toString())

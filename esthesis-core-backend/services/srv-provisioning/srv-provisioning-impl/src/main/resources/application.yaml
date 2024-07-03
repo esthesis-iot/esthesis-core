@@ -1,6 +1,9 @@
 quarkus:
   application:
     name: esthesis-core-srv-provisioning
+  http:
+    limits:
+      max-body-size: 256M
   devservices:
     enabled: false
   log:
@@ -24,10 +27,10 @@ quarkus:
   otel:
     sdk:
       disabled: true
-  index-dependency:
-    fileupload:
-      group-id: io.quarkus.resteasy.reactive
-      artifact-id: resteasy-reactive-common
+#  index-dependency:
+#    fileupload:
+#      group-id: io.quarkus.resteasy.reactive
+#      artifact-id: resteasy-reactive-common
   rest-client:
     DeviceSystemResource:
       url: http://esthesis-core-srv-device-service:8080

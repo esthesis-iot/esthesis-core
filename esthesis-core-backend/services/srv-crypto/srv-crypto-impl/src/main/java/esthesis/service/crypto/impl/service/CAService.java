@@ -11,7 +11,6 @@ import esthesis.common.exception.QMutationNotPermittedException;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.validation.CVExceptionContainer;
 import esthesis.service.crypto.entity.CaEntity;
-import esthesis.service.crypto.form.ImportCaForm;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
@@ -36,6 +35,7 @@ import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 /**
  * Certificate Authority management.
@@ -108,20 +108,21 @@ public class CAService extends BaseService<CaEntity> {
 		return getRepository().find("privateKey != null", Sort.ascending("cn")).list();
 	}
 
-	public CaEntity importCa(ImportCaForm importCaForm) {
+	public CaEntity importCa(CaEntity importedCaEntity, FileUpload publicKey, FileUpload privateKey,
+		FileUpload certificate) {
 		CaEntity caEntity = new CaEntity();
 		try {
 			// Set the keys into the certificate entity.
-			caEntity.setCertificate(
-				Files.readString(importCaForm.getCertificate().uploadedFile().toAbsolutePath()));
-			caEntity.setPrivateKey(
-				Files.readString(importCaForm.getPrivateKey().uploadedFile().toAbsolutePath()));
 			caEntity.setPublicKey(
-				Files.readString(importCaForm.getPublicKey().uploadedFile().toAbsolutePath()));
+				Files.readString(publicKey.uploadedFile().toAbsolutePath()));
+			caEntity.setPrivateKey(
+				Files.readString(privateKey.uploadedFile().toAbsolutePath()));
+			caEntity.setCertificate(
+				Files.readString(certificate.uploadedFile().toAbsolutePath()));
 
 			// Extract additional certificate information.
 			X509Certificate x509Certificate = cryptoService.pemToCertificate(caEntity.getCertificate());
-			caEntity.setName(importCaForm.getName());
+			caEntity.setName(importedCaEntity.getName());
 			caEntity.setIssued(x509Certificate.getNotBefore().toInstant());
 			caEntity.setValidity(x509Certificate.getNotAfter().toInstant());
 

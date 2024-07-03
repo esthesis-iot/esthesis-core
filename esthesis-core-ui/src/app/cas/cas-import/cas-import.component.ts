@@ -1,10 +1,8 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {QFormsService} from "@qlack/forms";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {HttpEvent, HttpResponse} from "@angular/common/http";
 import {CasService} from "../cas.service";
-import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
@@ -16,11 +14,11 @@ import {AppConstants} from "../../app.constants";
 })
 export class CasImportComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
+  publicKeyfile: File | null = null;
+  privateKeyfile: File | null = null;
+  certificateFile: File | null = null;
 
-  constructor(private fb: FormBuilder, private casService: CasService,
-    private qForms: QFormsService,
-    private route: ActivatedRoute, private router: Router,
-    private dialog: MatDialog,
+  constructor(private fb: FormBuilder, private casService: CasService, private router: Router,
     private utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.CA);
   }
@@ -28,27 +26,38 @@ export class CasImportComponent extends SecurityBaseComponent implements OnInit 
   ngOnInit() {
     // Set up the form.
     this.form = this.fb.group({
-      name: [null, [Validators.required]],
-      publicKey: [null, [Validators.required]],
-      privateKey: [null, [Validators.required]],
-      certificate: [null, [Validators.required]],
+      name: [null, [Validators.required]]
     });
   }
 
   selectPublicKey(event: any) {
-    this.form.controls['publicKey'].patchValue(event.target.files[0]);
+    const file: File = event.target?.files[0];
+    if (file) {
+      this.publicKeyfile = file;
+    }
   }
 
   selectPrivateKey(event: any) {
-    this.form.controls['privateKey'].patchValue(event.target.files[0]);
+    const file: File = event.target?.files[0];
+    if (file) {
+      this.privateKeyfile = file;
+    }
   }
 
   selectCertificate(event: any) {
-    this.form.controls['certificate'].patchValue(event.target.files[0]);
+    const file: File = event.target?.files[0];
+    if (file) {
+      this.certificateFile = file;
+    }
   }
 
   import() {
-    this.casService.import(this.form).subscribe({
+    let files = new Map<string, File | null>([
+      [AppConstants.KEY_TYPE.PUBLIC_KEY.toLowerCase(), this.publicKeyfile],
+      [AppConstants.KEY_TYPE.PRIVATE_KEY.toLowerCase(), this.privateKeyfile],
+      [AppConstants.KEY_TYPE.CERTIFICATE.toLowerCase(), this.certificateFile]
+    ]);
+    this.casService.import(this.form.getRawValue(), files).subscribe({
       next: (event: HttpEvent<any>) => {
         if (event instanceof HttpResponse) {
           if (event.status === 200) {

@@ -11,7 +11,6 @@ import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.entity.CaEntity;
-import esthesis.service.crypto.form.ImportCaForm;
 import esthesis.service.crypto.impl.service.CAService;
 import esthesis.service.crypto.resource.CAResource;
 import io.quarkus.security.Authenticated;
@@ -23,6 +22,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 @Authenticated
 public class CAResourceImpl implements CAResource {
@@ -98,9 +98,11 @@ public class CAResourceImpl implements CAResource {
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
-	@Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Import certificate authority")
-	public CaEntity importCa(ImportCaForm importCaForm) {
-		return caService.importCa(importCaForm);
+	@Audited(cat = Category.CRYPTO, op = Operation.WRITE, msg = "Import certificate authority",
+		log = AuditLogType.DATA_OUT)
+	public CaEntity importCa(CaEntity caEntity, FileUpload publicKey, FileUpload privateKey,
+		FileUpload certificate) {
+		return caService.importCa(caEntity, publicKey, privateKey, certificate);
 	}
 
 	@Override

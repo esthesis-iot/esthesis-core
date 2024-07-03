@@ -31,7 +31,7 @@ export class CertificatesService extends CrudDownloadService<CertificateDto> {
   }
 
   import(form: FormGroup) {
-    return this.upload(form, `${this.prefix}/import`, false);
+    // return this.upload(form, `${this.prefix}/import`, false);
   }
 
 }

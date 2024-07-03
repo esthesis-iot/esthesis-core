@@ -3,8 +3,8 @@ package esthesis.service.provisioning.resource;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
-import esthesis.service.provisioning.form.ProvisioningPackageForm;
 import io.quarkus.oidc.token.propagation.AccessToken;
+import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Uni;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
@@ -19,8 +19,10 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.jboss.resteasy.reactive.MultipartForm;
+import org.jboss.resteasy.reactive.PartType;
+import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.RestResponse;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 @AccessToken
 @Path("/api")
@@ -38,7 +40,9 @@ public interface ProvisioningResource {
 	@POST
 	@Path("/v1")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	ProvisioningPackageEntity save(@MultipartForm @Valid ProvisioningPackageForm provisioningPackageForm);
+	ProvisioningPackageEntity save(
+		@Valid @RestForm("dto") @PartType(MediaType.APPLICATION_JSON) ProvisioningPackageEntity provisioningPackageEntity,
+		@RestForm("file") FileUpload file);
 
 	@DELETE
 	@Path("/v1/{id}")
@@ -47,6 +51,7 @@ public interface ProvisioningResource {
 	@GET
 	@Path("/v1/{id}/download")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@Blocking
 	Uni<RestResponse<byte[]>> download(@PathParam("id") String provisioning);
 
 	@GET

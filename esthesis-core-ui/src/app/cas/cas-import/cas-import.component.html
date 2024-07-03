@@ -19,7 +19,7 @@
           <label class="label pl-0">
             <span class="text-accent">Select Public Key</span>
           </label>
-          <input (change)="selectPublicKey($event)" class="file-input file-input-ghost w-full max-w-xs"
+          <input (change)="selectPublicKey($event)" class="file-input file-input-bordered w-full max-w-xs"
                  type="file"/>
         </div>
 
@@ -27,7 +27,7 @@
           <label class="label pl-0">
             <span class="text-accent">Select Private Key</span>
           </label>
-          <input (change)="selectPrivateKey($event)" class="file-input file-input-ghost w-full max-w-xs"
+          <input (change)="selectPrivateKey($event)" class="file-input file-input-bordered w-full max-w-xs"
                  type="file"/>
         </div>
 
@@ -35,14 +35,15 @@
           <label class="label pl-0">
             <span class="text-accent">Select Certificate</span>
           </label>
-          <input (change)="selectCertificate($event)" class="file-input file-input-ghost w-full max-w-xs"
+          <input (change)="selectCertificate($event)" class="file-input file-input-bordered w-full max-w-xs"
                  type="file"/>
         </div>
       </form>
     </div>
     <div class="card-actions justify-start mt-10">
       <button class="btn btn-sm btn-secondary" routerLink="/cas">CANCEL</button>
-      <button (click)="import()" *ngIf="allowCreate" [disabled]="form.invalid"
+      <button (click)="import()" *ngIf="allowCreate"
+              [disabled]="form.invalid || !this.publicKeyfile || !this.privateKeyfile || !this.certificateFile"
               class="btn btn-sm btn-primary">IMPORT
       </button>
     </div>

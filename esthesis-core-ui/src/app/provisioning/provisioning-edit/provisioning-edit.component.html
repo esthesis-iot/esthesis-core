@@ -108,28 +108,18 @@
 
           <!-- Internal package type -->
           <div *ngIf="form.getRawValue().type === appConstants.PROVISIONING.TYPE.INTERNAL
-                    && id === appConstants.NEW_RECORD_ID" class="flex">
-
-<!--            <mat-form-field class="flex-grow">-->
-<!--              <mat-label>Internal package</mat-label>-->
-<!--              <input (click)="this.id === appConstants.NEW_RECORD_ID ? file.click() : null"-->
-<!--                     formControlName="fileName" matInput readonly-->
-<!--                     placeholder="Choose file" class="cursor-pointer">-->
-<!--              <div>-->
-<!--                <input #file (change)="selectFile($event)" hidden type="file">-->
-<!--              </div>-->
-<!--            </mat-form-field>-->
-
-
+                    && id === appConstants.NEW_RECORD_ID" class="flex flex-col">
+            <div class="text-accent mt-2">Internal package file</div>
+            <input type="file" class="file-input file-input-bordered w-full max-w-xs mt-2"
+                   (change)="fileSelect($event)"/>
           </div>
-            <input type="file" class="file-input file-input-bordered w-full max-w-xs" />
 
           <!-- External package type -->
           <div
             *ngIf="form.getRawValue().type === appConstants.PROVISIONING.TYPE.EXTERNAL" class="flex flex-row">
             <mat-form-field class="flex-grow">
               <mat-label>Package URL</mat-label>
-              <input formControlName="WEB_URL" matInput>
+              <input formControlName="url" matInput>
               <mat-hint>An HTTP/HTTPS URL of the location of the package, e.g.
                 http://package-server/fw100.zip
               </mat-hint>
@@ -138,6 +128,7 @@
         </div>
       </form>
     </div>
+
     <div class="card-actions justify-start mt-10">
       <button class="btn btn-sm btn-secondary" routerLink="/provisioning">CANCEL</button>
       <button (click)="download()"

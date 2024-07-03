@@ -8,7 +8,6 @@ import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
-import esthesis.service.provisioning.form.ProvisioningPackageForm;
 import esthesis.service.provisioning.impl.service.ProvisioningService;
 import esthesis.service.provisioning.resource.ProvisioningResource;
 import io.smallrye.mutiny.Uni;
@@ -21,6 +20,7 @@ import jakarta.ws.rs.core.HttpHeaders;
 import java.util.List;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 public class ProvisioningResourceImpl implements ProvisioningResource {
 
@@ -45,10 +45,9 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
 	}
 
 	@Override
-	@RolesAllowed(AppConstants.ROLE_USER)
-	@Audited(cat = Category.PROVISIONING, op = Operation.WRITE, msg = "Save provisioning package")
-	public ProvisioningPackageEntity save(ProvisioningPackageForm pf) {
-		return provisioningService.save(pf);
+	public ProvisioningPackageEntity save(ProvisioningPackageEntity provisioningPackageEntity,
+		FileUpload file) {
+		return provisioningService.save(provisioningPackageEntity, file);
 	}
 
 	@Override

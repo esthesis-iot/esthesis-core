@@ -6,8 +6,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   providedIn: "root"
 })
 export class UtilityService {
-  constructor(private snackBar: MatSnackBar,
-    private clipboard: Clipboard) {
+  constructor(private snackBar: MatSnackBar, private clipboard: Clipboard) {
   }
 
   /**
@@ -36,11 +35,10 @@ export class UtilityService {
 
   popupErrorWithTraceId(message: string, error: any): void {
     let traceId = "";
-    try {
+    if (error.error?.traceId) {
       traceId = "\n\n(trace id: " + error.error.traceId + ")";
-    } catch (e) {
-      console.log("Could not parse error message to extract trace id.", e, error);
     }
+
     this.snackBar.open(message + traceId, "CLOSE", {
       duration: 10000,
       verticalPosition: "top",

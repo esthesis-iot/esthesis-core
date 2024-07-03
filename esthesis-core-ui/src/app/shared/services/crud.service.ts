@@ -1,7 +1,6 @@
 import {HttpClient, HttpEvent, HttpRequest} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {QPageableReply} from "@qlack/forms";
-import {FormGroup} from "@angular/forms";
 import {AppConstants} from "../../app.constants";
 
 /**
@@ -32,19 +31,31 @@ export class CrudService<T> {
     return this.http.delete(`${AppConstants.API_ROOT}/${this.endpoint}/${id}`);
   }
 
-  upload(form: FormGroup, url?: string, reportProgress?: boolean): Observable<HttpEvent<{}>> {
-    const formData = new FormData();
-    for (const formField in form.value) {
-      if (form.value[formField]) {
-        formData.append(formField, form.value[formField]);
-      }
+  /**
+   * Uploads a file along with an object.
+   * @param object The object to upload.
+   * @param files A map of files to upload. The key is the form field name and the value is the
+   *   file.
+   * @param url The URL to upload to. If not provided, the default endpoint URL will be used.
+   */
+  upload(object: T, files: Map<string, File | null>, url?: string): Observable<HttpEvent<{}>> {
+    if (!url) {
+      url = `${AppConstants.API_ROOT}/${this.endpoint}`;
     }
-    const req = new HttpRequest("POST", url ? url : `${AppConstants.API_ROOT}/${this.endpoint}`,
-      formData, {
-        reportProgress: reportProgress
+
+    const formData: FormData = new FormData();
+    formData.append('dto', JSON.stringify(object));
+    if (files) {
+      files.forEach((value, key) => {
+        formData.append(key, value!, value!.name);
+      });
+    }
+    const req = new HttpRequest("POST", url, formData, {
+        reportProgress: true
       }
     );
 
     return this.http.request(req);
   }
+
 }

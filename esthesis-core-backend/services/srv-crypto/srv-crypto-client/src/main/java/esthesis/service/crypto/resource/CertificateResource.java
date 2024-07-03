@@ -4,7 +4,6 @@ import esthesis.common.AppConstants;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.entity.CertificateEntity;
-import esthesis.service.crypto.form.ImportCertificateForm;
 import io.quarkus.oidc.token.propagation.AccessToken;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
@@ -19,7 +18,9 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.jboss.resteasy.reactive.MultipartForm;
+import org.jboss.resteasy.reactive.PartType;
+import org.jboss.resteasy.reactive.RestForm;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 @AccessToken
 @Path("/api/certificate")
@@ -47,7 +48,9 @@ public interface CertificateResource {
 	@POST
 	@Path("/v1/import")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	CertificateEntity importCertificate(@MultipartForm ImportCertificateForm input);
+	CertificateEntity importCertificate(@RestForm("dto") @PartType(MediaType.APPLICATION_JSON) CertificateEntity certificateEntity,
+		@RestForm("public") FileUpload publicKey, @RestForm("private") FileUpload privateKey,
+		@RestForm("certificate") FileUpload certificate);
 
 	@DELETE
 	@Path("/v1/{id}")
