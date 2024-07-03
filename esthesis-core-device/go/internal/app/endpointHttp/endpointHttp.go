@@ -65,11 +65,12 @@ func getBody(r *http.Request) []byte {
 func telemetryEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// Get body.
 	body := getBody(r)
-	log.Debugf("Received telemetry data: '%s'.", body)
+	uri := r.RequestURI
+	log.Debugf("Received telemetry data: '%s' on URI: '%s'", body, uri)
 
 	// Check if payload should be transformed.
 	if config.Flags.LuaHttpTelemetryScript != "" {
-		body = []byte(luaExecutor.ExecuteLuaScript(string(body[:]),
+		body = []byte(luaExecutor.ExecuteLuaScript(uri, string(body[:]),
 			config.Flags.LuaHttpTelemetryScript))
 	}
 
@@ -81,11 +82,12 @@ func telemetryEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 func metadataEndpoint(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get body.
 	body := getBody(r)
-	log.Debugf("Received metadata data: '%s'.", body)
+	uri := r.RequestURI
+	log.Debugf("Received metadata data: '%s' on uri '%s'.", body, uri)
 
 	// Check if payload should be transformed.
 	if config.Flags.LuaHttpMetadataScript != "" {
-		body = []byte(luaExecutor.ExecuteLuaScript(string(body[:]),
+		body = []byte(luaExecutor.ExecuteLuaScript(uri, string(body[:]),
 			config.Flags.LuaHttpMetadataScript))
 	}
 
@@ -97,12 +99,13 @@ func metadataEndpoint(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 func customTelemetryEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// Get body.
 	body := getBody(r)
-	log.Debugf("Received telemetry data: '%s'.", body)
+	uri := r.RequestURI
+	log.Debugf("Received telemetry data: '%s' on URI '%s'", body, uri)
 
 	// Check if payload should be transformed.
 	luaHandler := getCustomTelemetryEndpointLuaHandler(r.RequestURI)
 	if luaHandler != "" {
-		body = []byte(luaExecutor.ExecuteLuaScript(string(body[:]), luaHandler))
+		body = []byte(luaExecutor.ExecuteLuaScript(uri, string(body[:]), luaHandler))
 	}
 
 	// Send payload to MQTT broker.
@@ -113,12 +116,13 @@ func customTelemetryEndpoint(w http.ResponseWriter, r *http.Request, _ httproute
 func customMetadataEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// Get body.
 	body := getBody(r)
-	log.Debugf("Received metadata data: '%s'.", body)
+	uri := r.RequestURI
+	log.Debugf("Received metadata data: '%s' on  URI '%s'", body, uri)
 
 	// Check if payload should be transformed.
 	luaHandler := getCustomMetadataEndpointLuaHandler(r.RequestURI)
 	if luaHandler != "" {
-		body = []byte(luaExecutor.ExecuteLuaScript(string(body[:]), luaHandler))
+		body = []byte(luaExecutor.ExecuteLuaScript(uri, string(body[:]), luaHandler))
 	}
 
 	// Send payload to MQTT broker.

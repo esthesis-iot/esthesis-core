@@ -92,10 +92,10 @@ func Start(done chan bool) {
 		if topic == telemetryEndpoint || isCustomTelemetryTopic(topic) {
 			// Check if payload should be transformed.
 			if isCustomTelemetryTopic(topic) && getCustomTelemetryTopicLuaHandler(topic) != "" {
-				payload = []byte(luaExecutor.ExecuteLuaScript(string(payload[:]),
+				payload = []byte(luaExecutor.ExecuteLuaScript(topic, string(payload[:]),
 					getCustomTelemetryTopicLuaHandler(topic)))
 			} else if !isCustomTelemetryTopic(topic) && config.Flags.LuaMqttTelemetryScript != "" {
-				payload = []byte(luaExecutor.ExecuteLuaScript(string(payload[:]),
+				payload = []byte(luaExecutor.ExecuteLuaScript(topic, string(payload[:]),
 					config.Flags.LuaMqttTelemetryScript))
 			}
 			mqttClient.Publish(config.Flags.
@@ -104,10 +104,10 @@ func Start(done chan bool) {
 		} else if topic == metadataEndpoint || isCustomMetadataTopic(topic) {
 			// Check if payload should be transformed.
 			if isCustomMetadataTopic(topic) && getCustomMetadataTopicLuaHandler(topic) != "" {
-				payload = []byte(luaExecutor.ExecuteLuaScript(string(payload[:]),
+				payload = []byte(luaExecutor.ExecuteLuaScript(topic, string(payload[:]),
 					getCustomMetadataTopicLuaHandler(topic)))
 			} else if !isCustomMetadataTopic(topic) && config.Flags.LuaMqttMetadataScript != "" {
-				payload = []byte(luaExecutor.ExecuteLuaScript(string(payload[:]),
+				payload = []byte(luaExecutor.ExecuteLuaScript(topic, string(payload[:]),
 					config.Flags.LuaMqttMetadataScript))
 			}
 			mqttClient.Publish(config.Flags.

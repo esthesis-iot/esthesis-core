@@ -5,9 +5,10 @@ import (
 	"github.com/yuin/gopher-lua"
 )
 
-func ExecuteLuaScript(payload string, luaScriptFileLocation string) string {
+func ExecuteLuaScript(endpoint string, payload string, luaScriptFileLocation string) string {
 	L := lua.NewState()
 	L.SetGlobal("payload", lua.LString(payload))
+	L.SetGlobal("endpoint", lua.LString(endpoint))
 	defer L.Close()
 	if err := L.DoFile(luaScriptFileLocation); err != nil {
 		log.WithError(err).Error("Error executing lua script.")
