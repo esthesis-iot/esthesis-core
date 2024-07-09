@@ -53,32 +53,30 @@ return transformedPayload
 ## Lua incoming endpoint variable
 In your Lua script, you also have access to an additional variable called `endpoint`.
 This variable contains the MQTT topic or HTTP URI, depending on the source of the incoming payload.
-This can be used to help determine the logic to apply when modifying the payload based on the specific endpoint.
+This can be used to help determine the logic to apply when modifying the payload based on the specific
+endpoint on which data was received.
 
 ### Example Lua script making use of the endpoint variable
-Let's say, different from the previous example, we don't have the category name on the first line of the payload,
-but instead, this information is in the topic or URI name.
-For example, on the endpoint:
+You have a system that sends data into the following MQTT topics:
 
-`sensor/hardware/cpu`
-
-We receive the cpu category payload, with the following structure:
+ **sensor/hardware/cpu**:
 ```text
 temperature=20
 load=2
 ```
-On the other hand, in the following endpoint:
 
-`sensor/hardware/memory`
-
-We have the memory category  with its data in the payload such as:
+**sensor/hardware/memory**:
 ```text
 free=80
 used=20
 loadAverage=50
 ```
 
-Below is an example of how to utilize the `endpoint` variable in your Lua script to handle that:
+The format of the data is exactly the same, so you want to implement your
+Lua script logic only once, however the resulting eLP should be differentiated based on the topic
+in which the data was received.
+
+Below is an example of how to utilise the `endpoint` variable in your Lua script to handle that:
 ```lua
 -- Splitting the payload into lines
 
