@@ -11,7 +11,7 @@ import (
 )
 
 // Version The application version
-const Version = "3.0.38"
+const Version = "3.0.39-SNAPSHOT"
 
 // Properties received when this device was registered with the esthesis platform.
 const (
