@@ -36,7 +36,7 @@ public class TagService extends BaseService<TagEntity> {
 
 	@Override
 	public Page<TagEntity> find(Pageable pageable) {
-		log.debug("Finding all tags with '{}'.", pageable);
+		log.trace("Finding all tags with '{}'.", pageable);
 
 //		if (!securityResource.isPermitted(Category.TAG, Operation.READ)) {
 //			throw new QSecurityException("You are not allowed to view tags.");
@@ -47,7 +47,7 @@ public class TagService extends BaseService<TagEntity> {
 
 	@Override
 	public Page<TagEntity> find(Pageable pageable, boolean partialMatch) {
-		log.debug("Finding all tags with partial match with '{}'.", pageable);
+		log.trace("Finding all tags with partial match with '{}'.", pageable);
 //		if (!securityResource.isPermitted(Category.TAG, Operation.READ)) {
 //			throw new QSecurityException("You are not allowed to view tags.");
 //		} else {

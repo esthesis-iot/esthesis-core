@@ -104,7 +104,7 @@ public class SecurityPermissionsService {
 	 * @param username The username of the user.
 	 */
 	public List<String> getPermissionsForUser(String username) {
-		log.debug("Getting permissions for user '{}'.", username);
+		log.trace("Getting permissions for user '{}'.", username);
 
 		// Find the user.
 		UserEntity userEntity = securityUserService.findByUsername(username);

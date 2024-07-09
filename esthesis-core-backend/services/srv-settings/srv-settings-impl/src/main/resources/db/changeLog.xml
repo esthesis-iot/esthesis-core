@@ -5,7 +5,7 @@
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
-  <changeSet author="European Dynamics SA" id="1">
+  <changeSet author="European Dynamics SA" id="srv-settings-1">
     <ext:createCollection collectionName="Setting"/>
 
     <ext:createIndex collectionName="Setting">
@@ -27,7 +27,7 @@
     </ext:insertMany>
   </changeSet>
 
-  <changeSet author="European Dynamics SA" id="2">
+  <changeSet author="European Dynamics SA" id="srv-settings-2">
     <ext:insertMany collectionName="Setting">
       <ext:documents>
         [
@@ -38,7 +38,7 @@
     </ext:insertMany>
   </changeSet>
 
-  <changeSet author="European Dynamics SA" id="3">
+  <changeSet author="European Dynamics SA" id="srv-settings-3">
     <ext:insertOne collectionName="Setting">
       <ext:document>
         {"name":"DEVICE_PROVISIONING_CACHE_TIME", "value": "60"}
@@ -46,7 +46,7 @@
     </ext:insertOne>
   </changeSet>
 
-  <changeSet author="European Dynamics SA" id="4">
+  <changeSet author="European Dynamics SA" id="srv-settings-4">
     <ext:runCommand>
       <ext:command>
         {
@@ -57,7 +57,7 @@
     </ext:runCommand>
   </changeSet>
 
-  <changeSet author="European Dynamics SA" id="5">
+  <changeSet author="European Dynamics SA" id="srv-settings-5">
     <ext:insertOne collectionName="Setting">
       <ext:document>
         {"name":"DEVICE_PUSHED_TAGS", "value": "false"}
@@ -65,7 +65,7 @@
     </ext:insertOne>
   </changeSet>
 
-	<changeSet author="European Dynamics SA" id="6">
+	<changeSet author="European Dynamics SA" id="srv-settings-6">
     <ext:insertOne collectionName="Setting">
       <ext:document>
         {"name":"KAFKA_TOPIC_TELEMETRY", "value": "esthesis-telemetry"}
@@ -78,7 +78,7 @@
     </ext:insertOne>
   </changeSet>
 
-	<changeSet author="European Dynamics SA" id="7">
+	<changeSet author="European Dynamics SA" id="srv-settings-7">
     <ext:insertOne collectionName="Setting">
       <ext:document>
         {"name":"KAFKA_TOPIC_APPLICATION", "value": "esthesis-app"}
@@ -86,7 +86,7 @@
     </ext:insertOne>
   </changeSet>
 
-	<changeSet author="European Dynamics SA" id="8">
+	<changeSet author="European Dynamics SA" id="srv-settings-8">
     <ext:insertOne collectionName="Setting">
       <ext:document>
 				{"name":"DEVICE_PROVISIONING_SEMVER", "value": "true"},

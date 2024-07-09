@@ -3,6 +3,7 @@ package appConstants
 type CommandType string
 type CommandExecutionType string
 type CommandSuccessType string
+type ProvisioningType string
 
 const (
 	CommandTypeExec     CommandType = "e"
@@ -26,3 +27,8 @@ const (
 const DeviceType = "ESTHESIS"
 
 const RegistrationSecretHeaderName = "X-ESTHESIS-REGISTRATION-SECRET"
+
+const (
+	ProvisioningPackageTypeInternal ProvisioningType = "INTERNAL"
+	ProvisioningPackageTypeExternal ProvisioningType = "EXTERNAL"
+)

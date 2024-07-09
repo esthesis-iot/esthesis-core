@@ -130,6 +130,11 @@ public class CommandResourceImpl implements CommandResource {
 	}
 
 	@Override
+	public void replayCommand(String sourceCommandId) {
+		commandService.replayCommand(sourceCommandId);
+	}
+
+	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.COMMAND, op = Operation.DELETE, msg = "Purge all commands")
 	public void purgeAll() {

@@ -24,17 +24,17 @@ public class SettingsService extends BaseService<SettingEntity> {
 	RedisUtils redisUtils;
 
 	public SettingEntity findByName(NamedSetting name) {
-		log.debug("Looking up key '{}'.", name);
+		log.trace("Looking up key '{}'.", name);
 		SettingEntity settingEntity = findFirstByColumn("name", name.toString());
-		log.debug("Found value '{}'.", settingEntity);
+		log.trace("Found value '{}'.", settingEntity);
 
 		return settingEntity;
 	}
 
 	public SettingEntity findByTextName(String name) {
-		log.debug("Looking up key '{}'.", name);
+		log.trace("Looking up key '{}'.", name);
 		SettingEntity settingEntity = findFirstByColumn("name", name);
-		log.debug("Found value '{}'.", settingEntity);
+		log.trace("Found value '{}'.", settingEntity);
 
 		return settingEntity;
 	}

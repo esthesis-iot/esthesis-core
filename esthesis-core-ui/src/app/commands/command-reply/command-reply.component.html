@@ -70,13 +70,18 @@
               *ngIf="commandRequest?.dispatchedOn">{{commandRequest?.dispatchedOn | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z'}}</div>
           </div>
         </div>
-        <div class="card-actions justify-start">
-          <button (click)="deleteReplies()" *ngIf="commandReplies && allowDelete" class="btn btn-accent btn-sm">
+        <div class="card-actions justify-start w-40">
+          <button (click)="deleteReplies()" *ngIf="commandReplies && allowDelete" class="btn btn-accent btn-sm w-40">
             DELETE REPLIES
           </button>
-          <button (click)="deleteCommand()" *ngIf="allowDelete" class="btn btn-accent btn-sm">
+          <button (click)="deleteCommand()" *ngIf="allowDelete" class="btn btn-accent btn-sm w-40">
             DELETE COMMAND
           </button>
+          <div class="tooltip" data-tip="Create a copy of this command and re-execute it as a new command.">
+          <button (click)="replayCommand()" *ngIf="allowCreate" class="btn btn-primary btn-sm w-40" >
+            REPLAY
+          </button>
+          </div>
         </div>
       </div>
 

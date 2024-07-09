@@ -2,25 +2,25 @@ package esthesis.service.provisioning.impl.resource;
 
 import esthesis.common.AppConstants;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
-import esthesis.service.provisioning.impl.service.ProvisioningAgentService;
-import esthesis.service.provisioning.resource.ProvisioningAgentResource;
+import esthesis.service.provisioning.impl.service.ProvisioningService;
+import esthesis.service.provisioning.resource.ProvisioningSystemResource;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 
-public class ProvisioningAgentResourceImpl implements ProvisioningAgentResource {
+public class ProvisioningSystemResourceImpl implements ProvisioningSystemResource {
 
 	@Inject
-	ProvisioningAgentService provisioningAgentService;
+	ProvisioningService provisioningService;
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public ProvisioningPackageEntity find(String hardwareId, String version) {
-		return provisioningAgentService.find(hardwareId, version);
+		return provisioningService.semVerFind(hardwareId, version);
 	}
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public ProvisioningPackageEntity findById(String provisioningPackageId) {
-		return provisioningAgentService.findById(provisioningPackageId);
+		return provisioningService.findById(provisioningPackageId);
 	}
 }

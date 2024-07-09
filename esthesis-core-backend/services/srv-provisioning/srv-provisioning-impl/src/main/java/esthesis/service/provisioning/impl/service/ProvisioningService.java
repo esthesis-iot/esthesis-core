@@ -1,5 +1,8 @@
 package esthesis.service.provisioning.impl.service;
 
+import static esthesis.common.AppConstants.GridFS.PROVISIONING_BUCKET_NAME;
+import static esthesis.common.AppConstants.GridFS.PROVISIONING_METADATA_NAME;
+
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.AppConstants.Provisioning.Type;
 import esthesis.common.exception.QMismatchException;
@@ -7,7 +10,10 @@ import esthesis.service.common.BaseService;
 import esthesis.service.common.gridfs.GridFSDTO;
 import esthesis.service.common.gridfs.GridFSService;
 import esthesis.service.common.validation.CVBuilder;
+import esthesis.service.device.entity.DeviceEntity;
+import esthesis.service.device.resource.DeviceResource;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
+import esthesis.service.provisioning.impl.repository.ProvisioningRepository;
 import esthesis.service.settings.resource.SettingsResource;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -21,18 +27,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 import org.semver4j.Semver;
 
 @Slf4j
-@Transactional
 @ApplicationScoped
 public class ProvisioningService extends BaseService<ProvisioningPackageEntity> {
-
-	private static final String GRIDFS_BUCKET_NAME = "ProvisioningPackageBucket";
-	private static final String GRIDFS_METADATA_NAME = "provisioningPackageId";
 
 	@Inject
 	GridFSService gridFSService;
@@ -44,11 +47,18 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 	@RestClient
 	SettingsResource settingsResource;
 
+	@Inject
+	@RestClient
+	DeviceResource deviceResource;
+
+	@Inject
+	ProvisioningRepository provisioningRepository;
+
 	private boolean isSemverEnabled() {
 		return settingsResource.findByName(NamedSetting.DEVICE_PROVISIONING_SEMVER).asBoolean();
 	}
 
-	@SuppressWarnings("java:S6205")
+	@Transactional
 	public ProvisioningPackageEntity save(ProvisioningPackageEntity ppe, FileUpload file) {
 		// Custom validation for version, if semver should be followed.
 		if (isSemverEnabled() && !Semver.isValid(ppe.getVersion())) {
@@ -75,6 +85,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 				ppe.setContentType(existingPpe.getContentType());
 			}
 		}
+		ppe.setCreatedOn(Instant.now());
 		ppe = save(ppe);
 
 		// Update the binary package only for new records of ESTHESIS type.
@@ -82,9 +93,9 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 			try {
 				gridFSService.saveBinary(GridFSDTO.builder()
 					.database(dbName)
-					.metadataName(GRIDFS_METADATA_NAME)
+					.metadataName(PROVISIONING_METADATA_NAME)
 					.metadataValue(ppe.getId().toHexString())
-					.bucketName(GRIDFS_BUCKET_NAME)
+					.bucketName(PROVISIONING_BUCKET_NAME)
 					.file(file)
 					.build());
 				log.debug("Uploaded file {} saved successfully.", ppe.getFilename());
@@ -96,15 +107,16 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 		return ppe;
 	}
 
+	@Transactional
 	public void delete(String provisioningPackageId) {
 		// Delete the provisioning package from the database.
 		Type type = findById(provisioningPackageId).getType();
 		if (type.equals(Type.INTERNAL)) {
 			gridFSService.deleteBinary(GridFSDTO.builder()
 				.database(dbName)
-				.metadataName(GRIDFS_METADATA_NAME)
+				.metadataName(PROVISIONING_METADATA_NAME)
 				.metadataValue(provisioningPackageId)
-				.bucketName(GRIDFS_BUCKET_NAME)
+				.bucketName(PROVISIONING_BUCKET_NAME)
 				.build());
 		}
 		super.deleteById(provisioningPackageId);
@@ -119,9 +131,9 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 		// Download the binary package from the database.
 		return gridFSService.downloadBinary(GridFSDTO.builder()
 			.database(dbName)
-			.metadataName(GRIDFS_METADATA_NAME)
+			.metadataName(PROVISIONING_METADATA_NAME)
 			.metadataValue(provisioningPackageId)
-			.bucketName(GRIDFS_BUCKET_NAME)
+			.bucketName(PROVISIONING_BUCKET_NAME)
 			.build());
 	}
 
@@ -138,5 +150,68 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 				.sorted(Comparator.comparing(ProvisioningPackageEntity::getVersion))
 				.toList();
 		}
+	}
+
+	/**
+	 * Finds the candidate provisioning package for the given hardware id and current device firmware
+	 * version. Versions are checked using semver using https://github.com/vdurmont/semver4j.
+	 * <p>
+	 * The selection algorithm goes as follows:
+	 * <ul>
+	 * <li>Find all provisioning packages that match at least one of the tags assigned to the
+	 * device.</li>
+	 * <l1>Find the next greater semver than the one currently installed on the device, while
+	 * respecting the baseversion requirement.</l1>
+	 * <l1>Return the first match</l1>
+	 *
+	 * </ul>
+	 *
+	 * @param hardwareId The hardware id of the device to find a provisioning package for.
+	 * @param version    The version of the firmware currently installed on the device.
+	 * @return
+	 */
+	public ProvisioningPackageEntity semVerFind(String hardwareId, String version) {
+		// Find the tags of the device.
+		log.debug("Finding provisioning packages for hardwareId '{}'.", hardwareId);
+		List<DeviceEntity> deviceEntities = deviceResource.findByHardwareIds(hardwareId, false);
+		if (deviceEntities.isEmpty()) {
+			throw new QMismatchException("No device found with hardware id '" + hardwareId + "'.");
+		}
+		DeviceEntity deviceEntity = deviceEntities.get(0);
+		log.debug("Device found with id '{}' and tags '{}'.", deviceEntity.getId(),
+			deviceEntity.getTags());
+
+		// Find matching packages based on tags.
+		List<ProvisioningPackageEntity> matchedPackages = provisioningRepository.findByTagIds(
+			deviceEntity.getTags());
+		log.debug("Found '{}' provisioning packages '{}'.", matchedPackages.size(), matchedPackages);
+
+		// Find all versions higher than the current one.
+		List<ProvisioningPackageEntity> greaterVersions = matchedPackages.stream()
+			.filter(p -> new Semver(p.getVersion()).isGreaterThan(version))
+			.sorted(Comparator.comparing(p -> new Semver(p.getVersion())))
+			.toList();
+		log.debug("Found '{}' greater versions '{}'.", greaterVersions.size(), greaterVersions);
+
+		// Find the first version that respects the base version requirement.
+		ProvisioningPackageEntity candidateVersion;
+		if (greaterVersions.stream().filter(p -> StringUtils.isNotBlank(p.getPrerequisiteVersion())).findAny()
+			.isEmpty()) {
+			// If the list of greater versions do not have any prerequisite versions, return the last one.
+			candidateVersion = greaterVersions.get(greaterVersions.size() - 1);
+		} else {
+			// If the list of greater versions have prerequisite versions, then return the lowest
+			// prerequisite version.
+			candidateVersion = greaterVersions.stream().filter(
+				p -> p.getVersion().equals(
+					greaterVersions.stream()
+						.filter(x -> StringUtils.isNotEmpty(x.getPrerequisiteVersion()))
+						.min(Comparator.comparing(x -> new Semver(x.getPrerequisiteVersion())))
+						.orElseThrow().getPrerequisiteVersion()
+				)
+			).findFirst().orElseThrow();
+		}
+
+		return candidateVersion;
 	}
 }

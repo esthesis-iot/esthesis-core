@@ -19,7 +19,7 @@ import org.mockito.MockitoAnnotations;
 class ProvisioningAgentServiceTest {
 
 	@InjectMocks
-	private ProvisioningAgentService provisioningAgentService;
+	private ProvisioningService provisioningService;
 
 	@Mock
 	private DeviceSystemResource deviceSystemResource;
@@ -54,7 +54,7 @@ class ProvisioningAgentServiceTest {
 			ProvisioningPackageEntity.builder().version("1.0.2").tags(List.of("tag1")).build()
 		);
 		when(provisioningRepository.findByTagIds(deviceEntity.getTags())).thenReturn(packages);
-		result = provisioningAgentService.find(hardwareId, deviceVersion);
+		result = provisioningService.semVerFind(hardwareId, deviceVersion);
 		assertEquals(expectedVersion, result.getVersion());
 
 		// 1.0.0 -> 1.0.2, tag does not exist.
@@ -69,7 +69,7 @@ class ProvisioningAgentServiceTest {
 			ProvisioningPackageEntity.builder().version("1.0.2").tags(List.of("tag1")).build()
 		);
 		when(provisioningRepository.findByTagIds(deviceEntity.getTags())).thenReturn(packages);
-		result = provisioningAgentService.find(hardwareId, deviceVersion);
+		result = provisioningService.semVerFind(hardwareId, deviceVersion);
 		assertEquals(expectedVersion, result.getVersion());
 
 		// 1.0.0 -> 1.0.5, multiple tags.
@@ -86,7 +86,7 @@ class ProvisioningAgentServiceTest {
 			ProvisioningPackageEntity.builder().version("1.0.5").tags(List.of("tag2")).build()
 		);
 		when(provisioningRepository.findByTagIds(deviceEntity.getTags())).thenReturn(packages);
-		result = provisioningAgentService.find(hardwareId, deviceVersion);
+		result = provisioningService.semVerFind(hardwareId, deviceVersion);
 		assertEquals(expectedVersion, result.getVersion());
 
 		// 1.0.0 -> 2.0.0, higher versions exist in 1.0.x branch, tag exists.
@@ -102,7 +102,7 @@ class ProvisioningAgentServiceTest {
 			ProvisioningPackageEntity.builder().version("2.0.0").tags(List.of("tag1")).build()
 		);
 		when(provisioningRepository.findByTagIds(deviceEntity.getTags())).thenReturn(packages);
-		result = provisioningAgentService.find(hardwareId, deviceVersion);
+		result = provisioningService.semVerFind(hardwareId, deviceVersion);
 		assertEquals(expectedVersion, result.getVersion());
 
 		// 1.0.0 -> 1.0.9, 2.0.0 exists but has 1.0.9 as a prerequisite, tag exists.
@@ -119,7 +119,7 @@ class ProvisioningAgentServiceTest {
 				.tags(List.of("tag1")).prerequisiteVersion("1.0.9").build()
 		);
 		when(provisioningRepository.findByTagIds(deviceEntity.getTags())).thenReturn(packages);
-		result = provisioningAgentService.find(hardwareId, deviceVersion);
+		result = provisioningService.semVerFind(hardwareId, deviceVersion);
 		assertEquals(expectedVersion, result.getVersion());
 	}
 

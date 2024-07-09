@@ -43,12 +43,12 @@ type CommandReply struct {
 }
 
 type AgentProvisioningInfoResponse struct {
-	Id            string `json:"id"`
-	Name          string `json:"name"`
-	Version       string `json:"version"`
-	Size          int64  `json:"size"`
-	Sha256        string `json:"sha256"`
-	DownloadUrl   string `json:"downloadUrl"`
-	DownloadToken string `json:"downloadToken"`
-	Filename      string `json:"filename"`
+	Id            string                        `json:"id"`
+	Name          string                        `json:"name"`
+	Version       string                        `json:"version"`
+	DownloadUrl   string                        `json:"downloadUrl"` // Set only for EXTERNAL type.
+	Type          appConstants.ProvisioningType `json:"type"`
+	Size          int64                         `json:"size"` // Set only for INTERNAL type.
+	Sha256        string                        `json:"sha256"`
+	DownloadToken string                        `json:"downloadToken"` // Set only for INTERNAL type.
 }

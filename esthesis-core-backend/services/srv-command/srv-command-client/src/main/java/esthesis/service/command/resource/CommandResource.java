@@ -11,6 +11,7 @@ import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
@@ -94,6 +95,10 @@ public interface CommandResource {
 	@Path("/v1/purge/{durationInDays}")
 	void purge(
 		@PathParam("durationInDays") @DefaultValue("0") Optional<Integer> durationInDays);
+
+	@PUT
+	@Path("/v1/replay/{sourceCommandId}")
+	void replayCommand(@PathParam("sourceCommandId") String sourceCommandId);
 
 	@DELETE
 	@Path("/v1/purge")

@@ -100,8 +100,10 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
     });
   }
 
+  /**
+   * Save the form data.
+   */
   save() {
-    // Save the patched form.
     this.provisioningService.upload(this.form.getRawValue(),
       new Map<string, File | null>([["file", this.file]])).subscribe({
       next: (next: any) => {
@@ -126,6 +128,9 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
     });
   }
 
+  /**
+   * Delete the provisioning package.
+   */
   delete() {
     const dialogRef = this.dialog.open(OkCancelModalComponent, {
       data: {
@@ -148,6 +153,10 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
     });
   }
 
+  /**
+   * File selection event.
+   * @param event The file selection event.
+   */
   fileSelect(event: any) {
     const file: File = event.target?.files[0];
     if (file) {
@@ -156,6 +165,9 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
     }
   }
 
+  /**
+   * Download the provisioning package.
+   */
   download() {
     this.provisioningService.download(this.id);
   }

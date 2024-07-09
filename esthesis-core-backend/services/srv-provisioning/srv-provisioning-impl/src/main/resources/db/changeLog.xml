@@ -1,0 +1,11 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+  xmlns:ext="https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+  <changeSet author="European Dynamics SA" id="srv-provisioning-1">
+    <ext:dropCollection collectionName="ProvisioningPackageBinary"/>
+  </changeSet>
+</databaseChangeLog>

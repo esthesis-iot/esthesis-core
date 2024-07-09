@@ -120,4 +120,27 @@ export class CommandReplyComponent extends SecurityBaseComponent implements OnIn
       }
     });
   }
+
+  replayCommand() {
+    this.dialog.open(OkCancelModalComponent, {
+      data: {
+        title: "Replay command",
+        question: "Are you sure you want to create a new command by copying this command??",
+        buttons: {
+          ok: true, cancel: true, reload: false
+        }
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.commandService.replayCommand(this.id).subscribe({
+          next: () => {
+            this.utilityService.popupSuccess("Command replayed successfully.");
+            this.router.navigate(["command"]);
+          }, error: (error) => {
+            this.utilityService.popupErrorWithTraceId("Could not reply this command.", error);
+          }
+        });
+      }
+    });
+  }
 }

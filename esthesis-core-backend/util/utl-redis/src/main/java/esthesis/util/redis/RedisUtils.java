@@ -1,6 +1,5 @@
 package esthesis.util.redis;
 
-import static esthesis.common.AppConstants.REDIS_KEY_PROVISIONING_PACKAGE_FILE;
 import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
 import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
 
@@ -30,13 +29,11 @@ public class RedisUtils {
 	RedisDataSource redis;
 
 	private HashCommands<String, String, String> hashCommandText;
-	private HashCommands<String, String, byte[]> hashCommandBinary;
 	private KeyCommands<String> keyCommand;
 	private ValueCommands<String, Long> countCommands;
 
 	public enum KeyType {
 		ESTHESIS_DM,    // Esthesis Device Measurement
-		ESTHESIS_PP,    // Esthesis Provisioning Package (binary content)
 		ESTHESIS_PPDT,  // Esthesis Provisioning Package (download token)
 		ESTHESIS_PRT    // Provisioning Request Timer
 	}
@@ -44,7 +41,6 @@ public class RedisUtils {
 	@PostConstruct
 	void init() {
 		hashCommandText = redis.hash(String.class);
-		hashCommandBinary = redis.hash(byte[].class);
 		keyCommand = redis.key();
 		countCommands = redis.value(Long.class);
 	}
@@ -175,27 +171,8 @@ public class RedisUtils {
 		return keyCommand.keys(prefix + "*");
 	}
 
-	public boolean cacheProvisioningPackage(String packageId, byte[] file) {
-		return
-			hashCommandBinary.hset(KeyType.ESTHESIS_PP + "." + packageId,
-				REDIS_KEY_PROVISIONING_PACKAGE_FILE, file) &&
-				hashCommandText.hset(KeyType.ESTHESIS_PP + "." + packageId,
-					REDIS_KEY_PROVISIONING_PACKAGE_FILE + "." + REDIS_KEY_SUFFIX_TIMESTAMP,
-					Instant.now().toString());
-	}
-
-	public void deleteProvisioningPackage(String provisioningPackageId) {
-		keyCommand.del(KeyType.ESTHESIS_PP + "." + provisioningPackageId);
-	}
-
 	public boolean keyExists(KeyType keyType, String key) {
 		return keyCommand.exists(keyType + "." + key);
-	}
-
-	public Uni<byte[]> downloadProvisioningPackage(String provisioningPackageId) {
-		return redis.getReactive().hash(byte[].class)
-			.hget(KeyType.ESTHESIS_PP + "." + provisioningPackageId,
-				REDIS_KEY_PROVISIONING_PACKAGE_FILE);
 	}
 
 	public long incrCounter(KeyType keyType, String key, long expireInSeconds) {
@@ -210,5 +187,4 @@ public class RedisUtils {
 	public void resetCounter(KeyType keyType, String key) {
 		countCommands.set(keyType + "." + key, 0L);
 	}
-
 }

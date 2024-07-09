@@ -25,7 +25,6 @@ import org.bson.types.ObjectId;
  * Service for interacting with a GridFS bucket.
  */
 @Slf4j
-@Transactional
 @ApplicationScoped
 public class GridFSService {
 	private static final String GRIDFS_METADATA_PREFIX = "metadata.";
@@ -40,6 +39,7 @@ public class GridFSService {
 	 * @return the ObjectId of the saved file.
 	 * @throws IOException if the file cannot be read.
 	 */
+	@Transactional
 	public ObjectId saveBinary(@Valid GridFSDTO gridFSDTO)
 	throws IOException {
 		MongoDatabase database = mongoClient.getDatabase(gridFSDTO.getDatabase());
@@ -58,6 +58,7 @@ public class GridFSService {
 	 *
 	 * @param gridFSDTO the GridFS DTO containing the metadata and bucket name.
 	 */
+	@Transactional
 	public void deleteBinary(@Valid GridFSDTO gridFSDTO) {
 		MongoDatabase database = mongoClient.getDatabase(gridFSDTO.getDatabase());
 		GridFSBucket gridFSBucket = GridFSBuckets.create(database, gridFSDTO.getBucketName());

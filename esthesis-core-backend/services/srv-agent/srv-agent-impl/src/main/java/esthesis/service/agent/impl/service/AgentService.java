@@ -1,9 +1,12 @@
 package esthesis.service.agent.impl.service;
 
+import static esthesis.common.AppConstants.GridFS.PROVISIONING_BUCKET_NAME;
+import static esthesis.common.AppConstants.GridFS.PROVISIONING_METADATA_NAME;
 import static esthesis.common.AppConstants.HARDWARE_ID_REGEX;
 
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.AppConstants.Provisioning.Redis;
+import esthesis.common.AppConstants.Provisioning.Type;
 import esthesis.common.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.exception.QLimitException;
@@ -12,6 +15,8 @@ import esthesis.common.exception.QSecurityException;
 import esthesis.service.agent.dto.AgentProvisioningInfoResponse;
 import esthesis.service.agent.dto.AgentRegistrationRequest;
 import esthesis.service.agent.dto.AgentRegistrationResponse;
+import esthesis.service.common.gridfs.GridFSDTO;
+import esthesis.service.common.gridfs.GridFSService;
 import esthesis.service.crypto.resource.CASystemResource;
 import esthesis.service.crypto.resource.SigningSystemResource;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
@@ -20,7 +25,7 @@ import esthesis.service.device.resource.DeviceSystemResource;
 import esthesis.service.infrastructure.entity.InfrastructureMqttEntity;
 import esthesis.service.infrastructure.resource.InfrastructureMqttSystemResource;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
-import esthesis.service.provisioning.resource.ProvisioningAgentResource;
+import esthesis.service.provisioning.resource.ProvisioningSystemResource;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsSystemResource;
 import esthesis.util.redis.RedisUtils;
@@ -42,12 +47,14 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.operator.OperatorCreationException;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
-@Transactional
 @ApplicationScoped
 public class AgentService {
+	@ConfigProperty(name = "quarkus.mongodb.database")
+	String dbName;
 
 	@Inject
 	@RestClient
@@ -67,7 +74,7 @@ public class AgentService {
 
 	@Inject
 	@RestClient
-	ProvisioningAgentResource provisioningAgentResource;
+	ProvisioningSystemResource provisioningAgentResource;
 
 	@Inject
 	@RestClient
@@ -76,7 +83,10 @@ public class AgentService {
 	@Inject
 	RedisUtils redisUtils;
 
-	// The number of seconds after which the counter for provisioning requests is reset.
+	@Inject
+	GridFSService gridFSService;
+
+	// The number of seconds after which the counter for provisioning requests is reset (in seconds).
 	private final int requestCounterTimeout = 300;
 
 	// The number of provisioning requests that can be made within the timeout period.
@@ -87,8 +97,8 @@ public class AgentService {
 	 * provisioning packages. The token is an RSA/SHA256 digital signature of a SHA256 hashed version
 	 * of the hardware id of the device requesting the information.
 	 *
-	 * @param hardwareId
-	 * @param token
+	 * @param hardwareId The hardware id of the device requesting the information.
+	 * @param token 		The token sent by the device.
 	 */
 	private void validateRequestToken(String hardwareId, Optional<String> token) {
 		if (token.isEmpty()) {
@@ -141,10 +151,13 @@ public class AgentService {
 		}
 	}
 
+	/**
+	 * Prepares a response with the details of a provisioning package and a download token.
+	 * @param pp The provisioning package to prepare the response for.
+	 * @return The response with the provisioning package details and the download token.
+	 */
 	private AgentProvisioningInfoResponse prepareAgentProvisioningInfoResponse(
 		ProvisioningPackageEntity pp) {
-		// If a provisioning package was found, and it is a later version than the one currently
-		// installed on the device, create a download token for it.
 		log.debug("Found provisioning package '{}'.", pp);
 
 		String randomToken = UUID.randomUUID().toString().replace("-", "");
@@ -162,11 +175,15 @@ public class AgentService {
 		apir.setName(pp.getName());
 		apir.setVersion(pp.getVersion());
 		apir.setSize(pp.getSize());
-		apir.setFilename(pp.getFilename());
 		apir.setSha256(pp.getSha256());
-		apir.setDownloadUrl(
-			settingsSystemResource.findByName(NamedSetting.DEVICE_PROVISIONING_URL).asString());
-		apir.setDownloadToken(randomToken);
+		apir.setType(pp.getType());
+		if (pp.getType() == Type.EXTERNAL) {
+			apir.setDownloadUrl(pp.getUrl());
+		} else if (pp.getType() == Type.INTERNAL) {
+			apir.setDownloadToken(randomToken);
+		}
+
+		log.debug("Prepared provisioning package response '{}'.", apir);
 
 		return apir;
 	}
@@ -226,16 +243,21 @@ public class AgentService {
 	}
 
 	public Uni<byte[]> downloadProvisioningPackage(String token) {
-		// Find the provisioning package id associated with the download token.
 		return redisUtils.getFromHashReactive(KeyType.ESTHESIS_PPDT, token,
 			Redis.DOWNLOAD_TOKEN_PACKAGE_ID).onItem().ifNull().failWith(
 			() -> new QDoesNotExistException("Invalid download token '{}' for provisioning package.",
-				token)).onItem().transformToUni(id -> redisUtils.downloadProvisioningPackage(id));
+				token)).onItem().transformToUni(id -> gridFSService.downloadBinary(GridFSDTO.builder()
+					.database(dbName)
+					.metadataName(PROVISIONING_METADATA_NAME)
+					.metadataValue(id)
+					.bucketName(PROVISIONING_BUCKET_NAME)
+					.build()));
 	}
 
 	/**
 	 * Registers a new device into the system.
 	 */
+	@Transactional
 	public AgentRegistrationResponse register(AgentRegistrationRequest agentRegistrationRequest)
 	throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, NoSuchProviderException,
 				 OperatorCreationException {

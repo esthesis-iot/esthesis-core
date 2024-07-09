@@ -22,6 +22,11 @@ quarkus:
       otlp:
         traces:
           endpoint: http://grafana-tempo-distributor.esthesis:4317
+  mongodb:
+    database: esthesiscore
+    credentials:
+      username: esthesis-system
+      password: esthesis-system
   rest-client:
     SettingsSystemResource:
       url: http://localhost:59030
@@ -35,7 +40,7 @@ quarkus:
     DeviceSystemResource:
       url: http://localhost:59010
       scope: Singleton
-    ProvisioningAgentResource:
+    ProvisioningSystemResource:
       url: http://localhost:59100
       scope: Singleton
     SigningSystemResource:

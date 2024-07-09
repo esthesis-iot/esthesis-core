@@ -72,6 +72,7 @@ if [ "$NAMESPACE" = "" ]; then
 	exit 1
 fi
 echo "**********************************************************************************************"
+echo "JDK: "$(java -version 2>&1 | head -n 1 | sed 's/^[ \t]*//;s/[ \t]*$//')
 echo "Namespace: $NAMESPACE."
 echo "Launching Quarkus service from: $LAUNCH_FOLDER."
 echo "Using Maven Wrapper: $MVNW_DIR."
@@ -114,7 +115,7 @@ fi
 echo "**********************************************************************************************"
 
 # Run Quarkus.
-cd "$LAUNCH_FOLDER"
+cd "$LAUNCH_FOLDER" || exit
 # shellcheck disable=SC2046
 "$MVNW_DIR"/mvnw quarkus:dev -q \
 	-Dquarkus.profile="$PROFILES" \

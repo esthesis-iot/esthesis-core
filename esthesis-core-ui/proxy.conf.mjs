@@ -9,12 +9,6 @@ export default [
     secure: false,
   },
   {
-    context: ["/api/agent"],
-    target: "http://127.0.0.1:59070",
-    pathRewrite: { "/agent": "/" },
-    secure: false,
-  },
-  {
     context: ["/api/application"],
     target: "http://127.0.0.1:59090",
     pathRewrite: { "/application": "/" },

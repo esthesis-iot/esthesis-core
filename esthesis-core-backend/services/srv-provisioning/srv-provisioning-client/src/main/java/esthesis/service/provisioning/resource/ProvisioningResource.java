@@ -4,7 +4,6 @@ import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import io.quarkus.oidc.token.propagation.AccessToken;
-import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Uni;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
@@ -51,7 +50,6 @@ public interface ProvisioningResource {
 	@GET
 	@Path("/v1/{id}/download")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	@Blocking
 	Uni<RestResponse<byte[]>> download(@PathParam("id") String provisioning);
 
 	@GET

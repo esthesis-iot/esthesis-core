@@ -8,10 +8,7 @@
       <div *ngIf="id != appConstants.NEW_RECORD_ID && provisioningPackage"
            class="flex flex-row gap-2">
         <div *ngIf="provisioningPackage.size">
-          <span class="badge">{{provisioningPackage.size | filesize}}</span>
-        </div>
-        <div *ngIf="provisioningPackage.sha256">
-          <span class="badge">{{provisioningPackage.sha256}}</span>
+          <span class="badge">size {{provisioningPackage.size | filesize}}</span>
         </div>
       </div>
     </h2>

@@ -75,6 +75,11 @@ public class AppConstants {
 
 	}
 
+	public static class GridFS {
+		public static final String PROVISIONING_BUCKET_NAME = "ProvisioningPackageBucket";
+		public static final String PROVISIONING_METADATA_NAME = "provisioningPackageId";
+	}
+
 	public static class Keystore {
 
 		public static class Item {

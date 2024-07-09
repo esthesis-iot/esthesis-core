@@ -6,6 +6,8 @@ quarkus:
       max-body-size: 256M
   devservices:
     enabled: false
+  liquibase-mongodb:
+    migrate-at-start: true
   log:
     console:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
@@ -32,7 +34,7 @@ quarkus:
 #      group-id: io.quarkus.resteasy.reactive
 #      artifact-id: resteasy-reactive-common
   rest-client:
-    DeviceSystemResource:
+    DeviceResource:
       url: http://esthesis-core-srv-device-service:8080
       scope: Singleton
     AuditResource:

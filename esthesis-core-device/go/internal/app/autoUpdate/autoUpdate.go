@@ -3,11 +3,13 @@ package autoUpdate
 import (
 	"crypto/tls"
 	"errors"
+	"github.com/esthesis-iot/esthesis-device/internal/pkg/appConstants"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/cryptoUtil"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/dto"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/util"
 	"github.com/go-resty/resty/v2"
+	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"math/rand"
 	"net/url"
@@ -17,12 +19,14 @@ import (
 	"time"
 )
 
-var versionFile string
 var notBefore time.Time
 var updateInProgress bool
 
+const provisioningContextRoot = "/api/v1/provisioning"
+
 func terminateUpdate() {
 	updateInProgress = false
+	log.Debug("Terminated firmware update.")
 }
 
 func IsUpdateInProgress() bool {
@@ -30,9 +34,16 @@ func IsUpdateInProgress() bool {
 }
 
 func Update(packageId string) (string, error) {
+	log.Debug("Starting firmware update.")
 	var errMessage string
-	// Find where provisioning information should be requested from.
+	// Find where provisioning information should be requested from. If no provisιoning URL is set,
+	// skip this request.
 	provisioningUrl := config.GetRegistrationProperty(config.RegistrationPropertyProvisioningUrl)
+	if provisioningUrl == "" {
+		errMessage = "No provisioning URL set, skipping firmware update."
+		log.Debugf(errMessage)
+		return "", errors.New(errMessage)
+	}
 
 	// If a firmware update is already in progress, skip this request.
 	if IsUpdateInProgress() {
@@ -66,7 +77,7 @@ func Update(packageId string) (string, error) {
 	}
 	log.Debugf("Current firmware version is '%s'.", currentVersion)
 
-	// If provisioning requires signed tokens produce one.
+	// If provisioning requires a signed token produce one.
 	var token = ""
 	if config.Flags.SecureProvisioning {
 		var signature, err = cryptoUtil.Sign(
@@ -89,11 +100,11 @@ func Update(packageId string) (string, error) {
 	var err error
 	var url *url.URL
 	if packageId == "" {
-		finalProvisioningUrl := provisioningUrl + "/api/v1/provisioning/find"
+		finalProvisioningUrl := provisioningUrl + provisioningContextRoot + "/find"
 		log.Debugf("Using provisioning URL '%s'", finalProvisioningUrl)
 		url, err = url.Parse(finalProvisioningUrl)
 	} else {
-		finalProvisioningUrl := provisioningUrl + "/api/v1/provisioning/find/by-id"
+		finalProvisioningUrl := provisioningUrl + provisioningContextRoot + "/find/by-id"
 		log.Debugf("Using provisioning URL '%s'", finalProvisioningUrl)
 		url, err = url.Parse(finalProvisioningUrl)
 	}
@@ -132,30 +143,43 @@ func Update(packageId string) (string, error) {
 		return "", errors.New(response.String())
 	}
 	if agentProvisioningInfoResponse == nil || agentProvisioningInfoResponse.Id == "" {
-		errMessage = "No provisioning info available."
+		errMessage = "No provisioning info available for provisioning package with id '" + packageId + "'."
 		log.Debugf(errMessage)
 		terminateUpdate()
 		return "", errors.New(errMessage)
 	}
 
 	// Fetch provisioning package.
-	log.Debugf("Downloading provisioning package '%+v'", agentProvisioningInfoResponse)
-	downloadFilename := path.Join(config.Flags.TempDir, agentProvisioningInfoResponse.Filename)
-	response, err = client.R().
-		SetOutput(downloadFilename).
-		SetQueryParam("token", agentProvisioningInfoResponse.DownloadToken).
-		Get(provisioningUrl + "/api/v1/provisioning/download")
-	if err != nil {
+	downloadFilename := path.Join(config.Flags.TempDir, uuid.New().String())
+	log.Debugf("Downloading '%+v' provisioning package '%+v' to '%+v'.",
+		agentProvisioningInfoResponse.Type, agentProvisioningInfoResponse, downloadFilename)
+	var downloadResponse *resty.Response
+	var downloadErr error
+	if agentProvisioningInfoResponse.Type == appConstants.ProvisioningPackageTypeInternal {
+		downloadResponse, downloadErr = client.R().
+			SetOutput(downloadFilename).
+			SetQueryParam("token", agentProvisioningInfoResponse.DownloadToken).
+			Get(provisioningUrl + provisioningContextRoot + "/download")
+	} else if agentProvisioningInfoResponse.Type == appConstants.ProvisioningPackageTypeExternal {
+		downloadResponse, downloadErr = client.R().
+			SetOutput(downloadFilename).
+			Get(agentProvisioningInfoResponse.DownloadUrl)
+	} else {
+		errMessage = string("Unknown provisioning type '" + agentProvisioningInfoResponse.Type + "'.")
+		log.Error(errMessage)
+		terminateUpdate()
+		return "", errors.New(errMessage)
+	}
+	if downloadErr != nil {
 		log.WithError(err).Errorf("Could not download provisioning package.")
 		terminateUpdate()
 		return "", errors.New(err.Error())
 	}
-	if response.IsError() {
+	if downloadResponse.IsError() {
 		log.Errorf("Could not download provisioning package due to '%s'.", response.Status())
 		terminateUpdate()
 		return "", errors.New(response.String())
 	}
-
 	log.Debugf("Provisioning package downloaded to '%s'.", downloadFilename)
 
 	// If a hash was received for this file, check it matches.
@@ -209,7 +233,6 @@ func Update(packageId string) (string, error) {
 }
 
 func Start(done chan bool) {
-	versionFile = config.Flags.VersionFile
 	log.Debug("Starting automatic firmware update monitoring.")
 
 	// Wait for a random number of minutes (up to an hour) before start checking for firmware updates.

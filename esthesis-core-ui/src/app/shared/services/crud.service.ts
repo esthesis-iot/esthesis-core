@@ -45,9 +45,11 @@ export class CrudService<T> {
 
     const formData: FormData = new FormData();
     formData.append('dto', JSON.stringify(object));
-    if (files) {
+    if (files && files.size > 0) {
       files.forEach((value, key) => {
-        formData.append(key, value!, value!.name);
+        if (value) {
+          formData.append(key, value!, value!.name);
+        }
       });
     }
     const req = new HttpRequest("POST", url, formData, {

@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /**
@@ -33,6 +34,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @RegisterForReflection
 @Accessors(chain = true)
+@ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = true)
 @MongoEntity(collection = "CommandRequest")
 public class CommandRequestEntity extends BaseEntity {

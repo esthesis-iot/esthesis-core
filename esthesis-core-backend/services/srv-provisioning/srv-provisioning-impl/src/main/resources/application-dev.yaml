@@ -15,7 +15,7 @@ quarkus:
         host: "localhost"
         port: 12201
   rest-client:
-    DeviceSystemResource:
+    DeviceResource:
       url: http://localhost:59010
       scope: Singleton
     AuditResource:

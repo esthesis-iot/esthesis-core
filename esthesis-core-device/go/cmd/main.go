@@ -36,7 +36,6 @@ func main() {
 	switch config.Flags.LogLevel {
 	case "debug":
 		log.SetLevel(log.DebugLevel)
-		log.SetReportCaller(true)
 	case "info":
 		log.SetLevel(log.InfoLevel)
 	case "trace":
@@ -45,13 +44,12 @@ func main() {
 	default:
 		log.SetLevel(log.InfoLevel)
 	}
-	log.SetFormatter(&log.TextFormatter{TimestampFormat: "2006-01-02 15:04:05",
-		FullTimestamp: true})
+	log.SetFormatter(&log.TextFormatter{TimestampFormat: "2006-01-02 15:04:05", FullTimestamp: true})
 
 	// Wait at initialisation.
 	if config.Flags.PauseStartup {
 		fmt.Print("Press 'Enter' to continue...")
-		fmt.Scanln()
+		_, _ = fmt.Scanln()
 	}
 
 	// Termination signal handler.
@@ -176,5 +174,4 @@ func main() {
 	for {
 		time.Sleep(1000 * time.Millisecond)
 	}
-
 }

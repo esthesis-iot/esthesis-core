@@ -59,8 +59,6 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
-	@Audited(cat = Category.PROVISIONING, op = Operation.READ, msg = "Download provisioning "
-		+ "package", log = AuditLogType.DATA_IN)
 	public Uni<RestResponse<byte[]>> download(String provisioningPackageId) {
 		ProvisioningPackageEntity pp = provisioningService.findById(provisioningPackageId);
 		Uni<byte[]> binary = provisioningService.download(provisioningPackageId);

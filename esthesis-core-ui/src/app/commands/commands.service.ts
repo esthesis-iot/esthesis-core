@@ -62,4 +62,8 @@ export class CommandsService extends CrudService<CommandRequestDto> {
   purgeAll(): Observable<any> {
     return this.http.delete(`${this.prefix}/command/purge`);
   }
+
+  replayCommand(sourceCommandId: string) {
+    return this.http.put(`${this.prefix}/replay/${sourceCommandId}`, null);
+  }
 }

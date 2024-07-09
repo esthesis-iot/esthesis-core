@@ -110,7 +110,9 @@ public class CommandService {
 
 	public ExecuteRequestScheduleInfoDTO saveRequestAndExecute(
 		CommandRequestEntity commandRequestEntity) {
+		log.debug("Saving command request '{}'.", commandRequestEntity);
 		ObjectId requestId = saveRequest(commandRequestEntity);
+		log.debug("Saved command request '{}' with ID '{}'.", commandRequestEntity, requestId);
 		return executeRequest(requestId.toString());
 	}
 
@@ -152,12 +154,10 @@ public class CommandService {
 		log.debug("Found '{}' devices to send command request '{}'.",
 			hardwareIds.size(), requestId);
 
-		// Send the command to the devices by queuing an Avro
-		// EsthesisControlMessage message in Kafka.
+		// Send the command to the devices by queuing an Avro EsthesisControlMessage message in Kafka.
 		for (String hardwareId : hardwareIds) {
 			EsthesisCommandRequestMessage esthesisCommandRequestMessage =
 				avroCommandRequest(request, hardwareId);
-
 			log.debug("Sending command '{}' to device '{}' via Kafka topic '{}'.",
 				esthesisCommandRequestMessage, hardwareId, KAFKA_TOPIC_COMMAND_REQUEST);
 			commandRequestEmitter.send(
@@ -167,10 +167,10 @@ public class CommandService {
 						.withKey(hardwareId)
 						.build())
 					.addMetadata(TracingMetadata.withCurrent(Context.current())));
-			request.setDispatchedOn(Instant.now());
-			commandRequestService.save(request);
 			scheduleInfo.setDevicesScheduled(scheduleInfo.getDevicesScheduled() + 1);
 		}
+		request.setDispatchedOn(Instant.now());
+		commandRequestService.save(request);
 
 		return scheduleInfo;
 	}
@@ -207,4 +207,24 @@ public class CommandService {
 	public void deleteReplies(String correlationId) {
 		commandReplyService.deleteByColumn("correlationId", correlationId);
 	}
+
+  public void replayCommand(String sourceCommandId) {
+		CommandRequestEntity sourceCommand = commandRequestService.findById(sourceCommandId);
+		if (sourceCommand == null) {
+			throw new QDoesNotExistException("Command request '{}' does not exist.", sourceCommandId);
+		}
+
+		// Create a new command request based on the source command.
+		CommandRequestEntity replayCommand = new CommandRequestEntity();
+		replayCommand.setCommandType(sourceCommand.getCommandType());
+		replayCommand.setExecutionType(sourceCommand.getExecutionType());
+		replayCommand.setCommand(sourceCommand.getCommand());
+		replayCommand.setArguments(sourceCommand.getArguments());
+		replayCommand.setHardwareIds(sourceCommand.getHardwareIds());
+		replayCommand.setTags(sourceCommand.getTags());
+		replayCommand.setCreatedOn(Instant.now());
+
+		// Save the new command request.
+		saveRequestAndExecute(replayCommand);
+  }
 }

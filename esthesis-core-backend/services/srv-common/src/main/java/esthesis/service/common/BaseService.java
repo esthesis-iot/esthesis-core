@@ -1,7 +1,5 @@
 package esthesis.service.common;
 
-import com.mongodb.client.model.FindOneAndUpdateOptions;
-import com.mongodb.client.model.ReturnDocument;
 import esthesis.common.entity.BaseEntity;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
@@ -12,11 +10,9 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
 @Slf4j
-@Transactional
 public abstract class BaseService<D extends BaseEntity> {
 
 	@Inject
@@ -123,15 +119,19 @@ public abstract class BaseService<D extends BaseEntity> {
 		return quarkusPage;
 	}
 
+	@Transactional
 	public D save(D entity) {
 		if (entity.getId() != null) {
-			repository
-				.mongoCollection()
-				.findOneAndUpdate(new Document("_id", entity.getId()),
-					new Document("$set", entity),
-					new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
+			log.trace("Updating entity with ID '{}'.", entity.getId());
+			repository.update(entity);
+//				return repository
+//				.mongoCollection()
+//				.findOneAndUpdate(new Document("_id", entity.getId()),
+//					new Document("$set", entity),
+//					new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
 		} else {
 			ObjectId id = new ObjectId();
+			log.trace("Creating new entity with ID '{}'.", entity.getId());
 			entity.setId(id);
 			repository.persist(entity);
 		}
@@ -143,18 +143,22 @@ public abstract class BaseService<D extends BaseEntity> {
 		return repository.findById(new ObjectId(id));
 	}
 
+	@Transactional
 	public boolean deleteById(String deviceId) {
 		return repository.deleteById(new ObjectId(deviceId));
 	}
 
+	@Transactional
 	public void delete(D entity) {
 		repository.delete(entity);
 	}
 
+	@Transactional
 	public long deleteAll() {
 		return repository.deleteAll();
 	}
 
+	@Transactional
 	public long deleteByColumn(String columnName, Object value) {
 		return repository.delete(columnName + " = ?1", value);
 	}

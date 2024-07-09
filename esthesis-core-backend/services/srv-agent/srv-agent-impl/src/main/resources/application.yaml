@@ -38,7 +38,7 @@ quarkus:
     DeviceSystemResource:
       url: http://esthesis-core-srv-device-service:8080
       scope: Singleton
-    ProvisioningAgentResource:
+    ProvisioningSystemResource:
       url: http://esthesis-core-srv-provisioning-service:8080
       scope: Singleton
     SigningSystemResource:

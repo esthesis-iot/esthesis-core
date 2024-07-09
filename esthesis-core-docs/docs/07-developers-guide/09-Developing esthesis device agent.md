@@ -28,7 +28,7 @@ To run the agent locally switch to `go` directory and execute:
 
 ```shell
 HID=abc001 && \
-REGISTRATION_URL=http://localhost:4200/api/agent/v1/register && \
+REGISTRATION_URL=http://localhost:59070/api/v1/register && \
 go run cmd/main.go \
     --hardwareId=$HID \
     --registrationUrl=$REGISTRATION_URL \
@@ -51,7 +51,7 @@ execute:
 
 ```shell
 HID=abc125 && \
-REGISTRATION_URL=http://localhost:4200/api/agent/v1/register && \
+REGISTRATION_URL=http://localhost:59070/api/v1/register && \
 air --build.cmd "go build -o /tmp/esthesis-core-device cmd/main.go" --build.bin "/tmp/esthesis-core-device" -- \
 	--hardwareId=$HID \
 	--registrationUrl=$REGISTRATION_URL \
@@ -88,7 +88,7 @@ to your development esthesis Core instance, you need to prepare the following:
 		HID=$RND_PREFIX-$i && \
 		docker run -d --name $HID \
 			-e HARDWARE_ID=$HID \
-			-e REGISTRATION_URL=http://host.docker.internal:4200/api/agent/v1/register \
+			-e REGISTRATION_URL=http://host.docker.internal:59070/api/v1/register \
 			-e PROPERTIES_FILE=/app/.esthesis/esthesis.properties \
 			-e SECURE_PROPERTIES_FILE=/app/.esthesis/secure/esthesis.properties \
 			-e TEMP_DIR=/app/.esthesis/temp \
@@ -114,7 +114,7 @@ for ((i=1; i<=3; i++)); do
 		--image $REGISTRY_URL/esthesisiot/esthesis-core-device:latest \
 		--image-pull-policy=Always \
 		--env="HARDWARE_ID=$HID" \
-		--env="REGISTRATION_URL=http://<your-host-machine>:4200/api/agent/v1/register" \
+		--env="REGISTRATION_URL=http://<your-host-machine>:59070/api/v1/register" \
 		--env="PROPERTIES_FILE=/app/.esthesis/esthesis.properties" \
 		--env="SECURE_PROPERTIES_FILE=/app/.esthesis/secure/esthesis.properties" \
 		--env="TEMP_DIR=/app/.esthesis/temp" \
