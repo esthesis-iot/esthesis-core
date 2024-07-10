@@ -7,6 +7,8 @@ quarkus:
     category:
       esthesis:
         level: DEBUG
+      "org.mongodb":
+        level: WARN
     handler:
       gelf:
         enabled: false
