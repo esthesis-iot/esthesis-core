@@ -4,9 +4,11 @@ import esthesis.common.AppConstants;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Length;
 
 @Data
 @NoArgsConstructor
@@ -14,8 +16,10 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class AgentRegistrationRequest {
 
-	// The hardware ID of the device.
+	// The hardware ID of the device. It can only contain alphanumeric values, hyphens, and underscores.
 	@NotBlank
+	@Length(min = 3, max = 512)
+	@Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "Hardware ID must contain only alphanumeric characters, hyphens, and underscores.")
 	private String hardwareId;
 
 	// Comma-separated list of tag names.

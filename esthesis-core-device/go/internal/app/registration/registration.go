@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/appConstants"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/channels"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
@@ -44,14 +45,15 @@ func Register() bool {
 		func(r *resty.Response, err error) bool {
 			if r.StatusCode() > 200 && !channels.GetIsShutdown() {
 				var errorReply *dto.ErrorReply
+				_ = fmt.Sprintf("Error response: %s", r.Body())
 				err := json.Unmarshal(r.Body(), &errorReply)
 				if err == nil {
 					log.WithFields(log.Fields{"traceId": errorReply.TraceId}).
-						Warnf("Registration failed with '%s'. Retrying after '%d' seconds.",
-							r.Status(), config.Flags.RetryHttpRequest)
+						Warnf("Registration failed with '%s' '%s'. Retrying after '%d' seconds.",
+							r.Status(), r.Body(), config.Flags.RetryHttpRequest)
 				} else {
-					log.Warnf("Registration failed with '%s'. Retrying after '%d' seconds.",
-						r.Status(), config.Flags.RetryHttpRequest)
+					log.Warnf("Registration failed with '%s' '%s'. Retrying after '%d' seconds.",
+						r.Status(), r.Body(), config.Flags.RetryHttpRequest)
 				}
 				return true
 			} else {

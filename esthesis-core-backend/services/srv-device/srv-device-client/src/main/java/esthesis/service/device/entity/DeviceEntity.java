@@ -6,6 +6,7 @@ import esthesis.service.device.dto.DeviceKeyDTO;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import java.time.Instant;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -27,7 +28,8 @@ import org.hibernate.validator.constraints.Length;
 public class DeviceEntity extends BaseEntity {
 
 	@NotBlank
-	@Length(min = 1, max = 1024)
+	@Length(min = 3, max = 512)
+	@Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "Hardware ID must contain only alphanumeric characters, hyphens, and underscores.")
 	private String hardwareId;
 
 	private AppConstants.Device.Status status;

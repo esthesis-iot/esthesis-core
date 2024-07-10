@@ -4,12 +4,14 @@ import esthesis.common.AppConstants;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Length;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +21,8 @@ import lombok.experimental.Accessors;
 public class DeviceRegistrationDTO {
 
 	@NotBlank
+	@Length(min = 3, max = 512)
+	@Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "Hardware ID must contain only alphanumeric characters, hyphens, and underscores.")
 	private String hardwareId;
 
 	// The list of tag names this device supports.

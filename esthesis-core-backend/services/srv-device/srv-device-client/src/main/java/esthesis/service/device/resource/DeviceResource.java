@@ -31,6 +31,9 @@ import java.util.List;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+/**
+ * Interface and REST client for the DeviceResource.
+ */
 @AccessToken
 @Path("/api")
 @RegisterRestClient(configKey = "DeviceResource")
@@ -78,6 +81,12 @@ public interface DeviceResource {
 	@Path("/v1/find/by-tag-name")
 	List<DeviceEntity> findByTagName(@QueryParam("tag") String tag);
 
+	/**
+	 * Finds the devices matching the given tag IDs.
+	 *
+	 * @param tagId The tag ID to search by.
+	 * @return The list of devices matching the given tag ID.
+	 */
 	@GET
 	@Path("/v1/find/by-tag-id")
 	List<DeviceEntity> findByTagId(@QueryParam("tag") String tagId);
@@ -130,8 +139,8 @@ public interface DeviceResource {
 	/**
 	 * Returns all data (i.e. metrics) available in cache for this device.
 	 *
-	 * @param deviceId
-	 * @return
+	 * @param deviceId The device ID.
+	 * @return The list of device data.
 	 */
 	@GET
 	@Path("/v1/{deviceId}/device-data")
