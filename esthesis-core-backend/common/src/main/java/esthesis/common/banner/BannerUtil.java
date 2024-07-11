@@ -1,7 +1,6 @@
 package esthesis.common.banner;
 
 import esthesis.common.git.GitUtil;
-import java.time.ZoneId;
 
 public class BannerUtil {
 
@@ -10,8 +9,8 @@ public class BannerUtil {
 
 	//@formatter:off
   private static final String BANNER = """
-***************************************************"
-https://esthes.is              esthesis@eurodyn.com"
+***************************************************
+https://esthes.is              esthesis@eurodyn.com
 
            _   _               _       _       _
   ___  ___| |_| |__   ___  ___(_)___  (_) ___ | |_
