@@ -2,10 +2,12 @@
 
 # Set ESTHESIS_TMUX_PAUSE environment variable to 'true' to pause before starting each service.
 
-# Check if the number of arguments is not equal to 1
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <namespace>"
-    exit 1
+# If $ESTHESIS_DEV_ENV is k8s, the namespace needs to be set.
+if [[ "${ESTHESIS_DEV_ENV}" == "k8s" || "${ESTHESIS_DEV_ENV}" == "" ]]; then
+	if [ "$#" -ne 1 ]; then
+      echo "Usage: $0 <namespace>"
+      exit 1
+  fi
 fi
 
 # The name of this tmux session.
@@ -62,7 +64,7 @@ for service in "${services[@]}"; do
 		tmux split-window -v
 		tmux select-pane -t 0.$pane_index -T "$title"
 		tmux pipe-pane -o -t 0.$pane_index "sed -u 's/^/[$title] /' | cat >> $LOGS"
-		tmux send-keys "sleep $((SVC_STARTUP_DELAY + RANDOM % 6)); cd $(pwd)/..; cd esthesis-core-backend/services/$dir; eval $PAUSE; ./$script" C-m
+		tmux send-keys "sleep $((SVC_STARTUP_DELAY + RANDOM % 6)); cd $(pwd)/..; cd esthesis-core-backend/services/$dir; eval $PAUSE; ESTHESIS_DEV_ENV=$ESTHESIS_DEV_ENV ./$script" C-m
 		tmux select-layout tiled
 		((pane_index++))
 done

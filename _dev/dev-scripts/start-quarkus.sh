@@ -17,6 +17,26 @@
 #   GRAFANA_TEMPO		: true/false indicating whether to enable Grafana Tempo configuration (default: false).
 ####################################################################################################
 
+# Check the type of dev environment used, and prepare environment-specific variables.
+if [[ -z "${ESTHESIS_DEV_ENV}" ]]; then
+  ESTHESIS_DEV_ENV="k8s"
+else
+  if [[ "${ESTHESIS_DEV_ENV}" != "docker" && "${ESTHESIS_DEV_ENV}" != "k8s" ]]; then
+    echo "ESTHESIS_DEV_ENV is wrongly defined, it should be 'docker' or 'k8s. Exiting..."
+    exit 1
+  fi
+fi
+if [[ "${ESTHESIS_DEV_ENV}" == "docker" ]]; then
+	ESTHESIS_OIDC_AUTHORITY="http://localhost:8080/realms/esthesis"
+else
+	NAMESPACE=$(kubens -c)
+	if [ "$NAMESPACE" = "" ]; then
+  	echo "***ERROR Could not find current namespace. Exiting."
+  	exit 1
+  fi
+  ESTHESIS_OIDC_AUTHORITY="http://keycloak.$NAMESPACE/realms/esthesis"
+fi
+
 # Init arguments.
 LAUNCH_FOLDER="."
 WEB_PORT=0
@@ -66,14 +86,13 @@ if [ "$TERM_PROGRAM" = tmux ]; then
 fi
 
 # Set environment variables.
-NAMESPACE=$(kubens -c)
-if [ "$NAMESPACE" = "" ]; then
-	echo "***ERROR Could not find current namespace. Exiting."
-	exit 1
-fi
 echo "**********************************************************************************************"
 echo "JDK: "$(java -version 2>&1 | head -n 1 | sed 's/^[ \t]*//;s/[ \t]*$//')
-echo "Namespace: $NAMESPACE."
+if [ "$ESTHESIS_DEV_ENV" = "k8s" ]; then
+	echo "Namespace: $NAMESPACE."
+else
+	echo "Running in Docker environment."
+fi
 echo "Launching Quarkus service from: $LAUNCH_FOLDER."
 echo "Using Maven Wrapper: $MVNW_DIR."
 if [ -n "$WEB_PORT" ]; then
@@ -84,7 +103,11 @@ if [ -n "$DEBUG_PORT" ]; then
 fi
 echo "Using profiles: $PROFILES."
 if [ "$OIDC" = "true" ] || [ "$OIDC_CLIENT" = "true" ]; then
-	ESTHESIS_OIDC_SERVER_URL="http://keycloak.$NAMESPACE/realms/esthesis"
+	if [ "$ESTHESIS_DEV_ENV" = "k8s" ]; then
+		ESTHESIS_OIDC_SERVER_URL="http://keycloak.$NAMESPACE/realms/esthesis"
+	else
+		ESTHESIS_OIDC_SERVER_URL="http://localhost:8080/realms/esthesis"
+	fi
 	if [ "$OIDC" = "true" ]; then
 		echo "Enabling OIDC configuration at: $ESTHESIS_OIDC_SERVER_URL."
 	fi
@@ -93,7 +116,11 @@ if [ "$OIDC" = "true" ] || [ "$OIDC_CLIENT" = "true" ]; then
 	fi
 fi
 if [ "$MONGODB" = "true" ]; then
-	ESTHESIS_MONGODB_URL="mongodb://mongodb-headless.$NAMESPACE:27017"
+	if [ "$ESTHESIS_DEV_ENV" = "docker" ]; then
+		ESTHESIS_MONGODB_URL="mongodb://localhost:27017"
+	else
+		ESTHESIS_MONGODB_URL="mongodb://mongodb-headless.$NAMESPACE:27017"
+	fi
 	echo "Enabling MongoDB configuration at: $ESTHESIS_MONGODB_URL."
 fi
 if [ "$REDIS" = "true" ]; then
@@ -101,7 +128,11 @@ if [ "$REDIS" = "true" ]; then
 	echo "Enabling Redis configuration at: $ESTHESIS_REDIS_URL."
 fi
 if [ "$KAFKA" = "true" ]; then
-	ESTHESIS_KAFKA_URL="kafka.$NAMESPACE:9092"
+	if [ "$ESTHESIS_DEV_ENV" = "docker" ]; then
+		ESTHESIS_KAFKA_URL="localhost:9092"
+	else
+		ESTHESIS_KAFKA_URL="kafka.$NAMESPACE:9092"
+	fi
 	echo "Enabling Kafka configuration at: $ESTHESIS_KAFKA_URL."
 fi
 if [ "$ZEEBE" = "true" ]; then
@@ -135,4 +166,4 @@ cd "$LAUNCH_FOLDER" || exit
 	$( [ "$OIDC_CLIENT" = "true" ] && echo "-Dquarkus.oidc-client.grant.type=password" ) \
 	-Desthesis.oidc.redirect-url="http://localhost:4200/callback" \
 	-Desthesis.oidc.post-logout-redirect-uri="http://localhost:4200/logged-out" \
-	-Desthesis.oidc.authority="http://keycloak.$NAMESPACE/realms/esthesis"
+	-Desthesis.oidc.authority="$ESTHESIS_OIDC_AUTHORITY"

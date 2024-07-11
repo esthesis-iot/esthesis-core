@@ -13,5 +13,4 @@ source ../../../_dev/dev-scripts/start-quarkus.sh \
 	MVNW_DIR="$(pwd)/../.." \
 	WEB_PORT="59160" \
 	DEBUG_PORT="59161" \
-	PROFILES="${1:-dev}${1:+,dev}" \
-	MONGODB="true"
+	PROFILES="${1:-dev}${1:+,dev}"
