@@ -1,5 +1,7 @@
 package esthesis.services.tag.impl.service;
 
+import static esthesis.common.AppConstants.ROLE_SYSTEM;
+
 import esthesis.common.AppConstants.Security.Category;
 import esthesis.common.AppConstants.Security.Operation;
 import esthesis.common.exception.QSecurityException;
@@ -14,6 +16,7 @@ import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Acti
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subject;
 import esthesis.util.kafka.notifications.outgoing.KafkaNotification;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -33,6 +36,9 @@ public class TagService extends BaseService<TagEntity> {
 	@Inject
 	@RestClient
 	SecurityResource securityResource;
+
+	@Inject
+	SecurityIdentity securityIdentity;
 
 	@Override
 	public Page<TagEntity> find(Pageable pageable) {
@@ -59,12 +65,15 @@ public class TagService extends BaseService<TagEntity> {
 	public TagEntity save(TagEntity tagEntity) {
 		log.debug("Saving tag '{}'.", tagEntity);
 
-		// Security check.
-		if (tagEntity.getId() == null && !securityResource.isPermitted(Category.TAG,
-			Operation.CREATE)) {
-			throw new QSecurityException("You are not allowed to create tags.");
-		} else if (!securityResource.isPermitted(Category.TAG, Operation.WRITE)) {
-			throw new QSecurityException("You are not allowed to update tags.");
+		// Security check. Tags can be created during device registration, where we only have a system
+		// user available. In this case, we do not check for permissions.
+		if (!securityIdentity.getRoles().contains(ROLE_SYSTEM)) {
+			if (tagEntity.getId() == null && !securityResource.isPermitted(Category.TAG,
+				Operation.CREATE)) {
+				throw new QSecurityException("You are not allowed to create tags.");
+			} else if (!securityResource.isPermitted(Category.TAG, Operation.WRITE)) {
+				throw new QSecurityException("You are not allowed to update tags.");
+			}
 		}
 
 		// Ensure no other tag has the same name.

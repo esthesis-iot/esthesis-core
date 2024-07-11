@@ -71,7 +71,7 @@ public class TagResourceImpl implements TagResource {
 	}
 
 	@Override
-	@RolesAllowed(AppConstants.ROLE_USER)
+	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	@Audited(cat = Category.TAG, op = Operation.WRITE, msg = "Save tag")
 	public TagEntity save(@Valid TagEntity tagEntity) {
 		return tagService.save(tagEntity);

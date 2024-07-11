@@ -29,7 +29,7 @@ public class DeviceEntity extends BaseEntity {
 
 	@NotBlank
 	@Length(min = 3, max = 512)
-	@Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "Hardware ID must contain only alphanumeric characters, hyphens, and underscores.")
+	@Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "Only alphanumeric characters, hyphens, and underscores are allowed.")
 	private String hardwareId;
 
 	private AppConstants.Device.Status status;

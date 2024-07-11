@@ -23,7 +23,7 @@ public class TagEntity extends BaseEntity {
 
 	@NotBlank
 	@Length(min = 3, max = 255)
-	@Pattern(regexp = "^[a-zA-Z0-9_]*$", message = "Only letters, numbers and underscores are allowed.")
+	@Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "Only alphanumeric characters, hyphens, and underscores are allowed.")
 	private String name;
 
 	@Length(max = 2048)

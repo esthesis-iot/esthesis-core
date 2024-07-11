@@ -92,9 +92,10 @@ public class DeviceRegistrationService {
 					log.debug("Creating missing tag '{}' for device with hardware id '{}'.", tag, hardwareId);
 					// Check if tag name conforms to the being composed of numbers, letters, and underscore
 					// only.
-					if (!tag.matches("^[a-zA-Z0-9_]+$")) {
+					String regex = "^[a-zA-Z0-9_-]+$";
+					if (!tag.matches(regex)) {
 						log.warn("Tag name '{}' does not conform to the naming convention '{}'. Tag will be "
-								+ "ignored.",	tag, "^[a-zA-Z0-9_]+$");
+								+ "ignored.",	tag, regex);
 					} else {
 						TagEntity tagEntity = new TagEntity();
 						tagEntity.setName(tag);
