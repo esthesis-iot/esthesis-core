@@ -23,7 +23,6 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -195,7 +194,7 @@ public class CommandService {
 		commandReplyService.deleteById(replyId);
 	}
 
-	public void purge(Optional<Integer> durationInDays) {
+	public void purge(int durationInDays) {
 		commandReplyService.purge(durationInDays);
 		commandRequestService.purge(durationInDays);
 	}

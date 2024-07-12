@@ -20,7 +20,6 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
@@ -125,8 +124,15 @@ public class CommandResourceImpl implements CommandResource {
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.COMMAND, op = Operation.DELETE, msg = "Purge commands")
-	public void purge(Optional<Integer> durationInDays) {
+	public void purge(int durationInDays) {
 		commandService.purge(durationInDays);
+	}
+
+	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
+	@Audited(cat = Category.COMMAND, op = Operation.DELETE, msg = "Purge commands")
+	public void purge() {
+		commandService.purge(0);
 	}
 
 	@Override
@@ -134,10 +140,4 @@ public class CommandResourceImpl implements CommandResource {
 		commandService.replayCommand(sourceCommandId);
 	}
 
-	@Override
-	@RolesAllowed(AppConstants.ROLE_USER)
-	@Audited(cat = Category.COMMAND, op = Operation.DELETE, msg = "Purge all commands")
-	public void purgeAll() {
-		commandService.purge(Optional.empty());
-	}
 }

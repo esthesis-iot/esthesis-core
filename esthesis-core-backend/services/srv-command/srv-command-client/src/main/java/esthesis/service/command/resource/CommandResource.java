@@ -16,7 +16,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import java.util.List;
-import java.util.Optional;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 @AccessToken
@@ -91,16 +90,23 @@ public interface CommandResource {
 	@Path("/v1/reply/all/{correlationId}")
 	void deleteReplies(@PathParam("correlationId") String correlationId);
 
+	/**
+	 * Purges all command and replies older than the given duration.
+	 * @param durationInDays The duration, in days.
+	 */
 	@DELETE
 	@Path("/v1/purge/{durationInDays}")
-	void purge(
-		@PathParam("durationInDays") @DefaultValue("0") Optional<Integer> durationInDays);
+	void purge(@PathParam("durationInDays")int durationInDays);
+
+	/**
+	 * Purges all command and replies.
+	 */
+	@DELETE
+	@Path("/v1/purge")
+	void purge();
 
 	@PUT
 	@Path("/v1/replay/{sourceCommandId}")
 	void replayCommand(@PathParam("sourceCommandId") String sourceCommandId);
 
-	@DELETE
-	@Path("/v1/purge")
-	void purgeAll();
 }

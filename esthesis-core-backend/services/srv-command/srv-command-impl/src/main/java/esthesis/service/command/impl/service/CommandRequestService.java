@@ -6,7 +6,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -19,13 +18,13 @@ class  CommandRequestService extends BaseService<CommandRequestEntity> {
 	 *
 	 * @param duration The duration, in days.
 	 */
-	public void purge(Optional<Integer> duration) {
-		if (duration.isEmpty()) {
+	public void purge(int duration) {
+		if (duration == 0) {
 			deleteAll();
 		} else {
 			getRepository().delete(
 				"createdOn <= ?1",
-				Instant.now().minus(Duration.ofDays(duration.get())));
+				Instant.now().minus(Duration.ofDays(duration)));
 		}
 	}
 

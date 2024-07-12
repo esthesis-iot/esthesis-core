@@ -110,7 +110,7 @@ export class CommandsListComponent extends SecurityBaseComponent implements OnIn
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.commandService.purgeAll().subscribe({
+        this.commandService.purge(0).subscribe({
           next: () => {
             this.utilityService.popupSuccess("All commands and replies have been purged.");
             this.refreshCurrentData();
