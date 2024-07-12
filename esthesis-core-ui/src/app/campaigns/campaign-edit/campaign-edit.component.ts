@@ -38,8 +38,7 @@ import {SecurityBaseComponent} from "../../shared/components/security-base-compo
 
 @Component({
   selector: "app-campaign-edit",
-  templateUrl: "./campaign-edit.component.html",
-  styleUrls: ["./campaign-edit.component.scss"]
+  templateUrl: "./campaign-edit.component.html"
 })
 export class CampaignEditComponent extends SecurityBaseComponent implements OnInit {
   // Campaign details form.

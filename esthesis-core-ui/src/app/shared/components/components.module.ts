@@ -4,7 +4,6 @@ import {LiveToggleComponent} from "./live-toggle/live-toggle.component";
 import {BreadcrumbComponent} from "./breadcrumb/breadcrumb.component";
 import {OkCancelModalComponent} from "./ok-cancel-modal/ok-cancel-modal.component";
 import {BooleanCheckboxComponent} from "./boolean-checkbox/boolean-checkbox.component";
-import {TextModalComponent} from "./text-modal/text-modal.component";
 import {InputModalComponent} from "./input-modal/input-modal.component";
 import {MatIconPickerComponent} from "./mat-icon-picker/mat-icon-picker.component";
 import {FieldErrorComponent} from "./field-error/field-error.component";
@@ -28,7 +27,6 @@ import {AcDirective} from "./ac/ac.directive";
     BreadcrumbComponent,
     OkCancelModalComponent,
     BooleanCheckboxComponent,
-    TextModalComponent,
     InputModalComponent,
     MatIconPickerComponent,
     FieldErrorComponent,

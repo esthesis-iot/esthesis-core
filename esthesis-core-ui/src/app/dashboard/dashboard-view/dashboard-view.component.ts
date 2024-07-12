@@ -9,8 +9,7 @@ import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: "app-dashboard-view",
-  templateUrl: "./dashboard-view.component.html",
-  styleUrls: ["./dashboard-view.component.scss"]
+  templateUrl: "./dashboard-view.component.html"
 })
 export class DashboardViewComponent extends BaseComponent implements OnInit, OnDestroy {
   dashboardOptions!: GridsterConfig;
