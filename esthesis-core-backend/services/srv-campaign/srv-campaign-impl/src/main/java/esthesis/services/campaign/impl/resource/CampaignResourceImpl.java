@@ -58,7 +58,7 @@ public class CampaignResourceImpl implements CampaignResource {
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.CAMPAIGN, op = Operation.WRITE, msg = "Replicate campaign")
-	public CampaignEntity replicate(String campaignId) {
+	public CampaignEntity replay(String campaignId) {
 		return campaignService.replicate(campaignId);
 	}
 

@@ -3,7 +3,6 @@ package esthesis.services.campaign.impl.service;
 import esthesis.service.campaign.entity.CampaignDeviceMonitorEntity;
 import esthesis.service.common.BaseService;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -11,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 
 @Slf4j
-@Transactional
 @ApplicationScoped
 public class CampaignDeviceMonitorService extends BaseService<CampaignDeviceMonitorEntity> {
 

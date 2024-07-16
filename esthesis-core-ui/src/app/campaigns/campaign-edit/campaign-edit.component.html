@@ -33,7 +33,7 @@
               </span>
               <span
                 *ngSwitchCase="appConstants.CAMPAIGN.STATE.TERMINATED_BY_WORKFLOW">Terminated</span>
-              <span *ngSwitchCase="appConstants.CAMPAIGN.STATE.TERMINATED_BY_USER">Terminated (by user)</span>
+              <span *ngSwitchCase="appConstants.CAMPAIGN.STATE.TERMINATED_BY_USER">Terminated</span>
             </div>
           </div>
           <div class="stat-desc">{{campaignStats?.stateDescription}}</div>
@@ -126,7 +126,7 @@
                 <mat-form-field>
                   <mat-label>Type</mat-label>
                   <mat-select formControlName="type">
-                    <mat-option *ngFor="let o of appConstants.CAMPAIGN.TYPE| keyvalue"
+                    <mat-option *ngFor="let o of appConstants.CAMPAIGN.TYPE | keyvalue"
                                 [value]="o.value">{{normaliseString(o.key)}}
                     </mat-option>
                   </mat-select>
@@ -325,6 +325,13 @@
                 </mat-menu>
               </div>
             </div>
+            <div role="alert" class="alert alert-error mb-4" *ngIf="constraintViolations">
+              <ul>
+                <li *ngFor="let v of constraintViolations">
+                  Condition '{{getDescription(v.field)}}': {{v.message}}.
+                </li>
+              </ul>
+            </div>
             <div *ngIf="errorsConditions" class="validation-errors flex flex-row">
               <div>
                 <mat-icon>rule</mat-icon>
@@ -476,9 +483,9 @@
       <button *ngIf="isButtonCancelEnabled" class="btn btn-sm btn-secondary"
               routerLink="/campaigns">CANCEL
       </button>
-      <button (click)="replicate()"
-              *ngIf="isButtonReplicateEnabled && allowCreate"
-              class="btn btn-sm btn-secondary">REPLICATE
+      <button (click)="replay()"
+              *ngIf="isButtonReplayEnabled && allowCreate"
+              class="btn btn-sm btn-primary">REPLAY
       </button>
       <button (click)="delete()"
               [disabled]="!isButtonDeleteEnabled && allowDelete"
@@ -494,7 +501,7 @@
               *ngIf="isButtonStopEnabled && allowWrite" class="btn btn-sm btn-primary" matTooltip="Stop campaign">
         STOP
       </button>
-      <button (click)="save(false)"
+      <button (click)="save(false)" [disabled]="form.invalid"
               *ngIf="isButtonSaveEnabled && allowWrite" class="btn btn-sm btn-primary">SAVE
       </button>
     </div>

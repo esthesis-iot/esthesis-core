@@ -29,4 +29,11 @@ public class CVExceptionContainer<D> {
 	public void throwCVE() {
 		throw new ConstraintViolationException(violations);
 	}
+
+	public void throwCVEIfNotEmpty() {
+		if (!violations.isEmpty()) {
+			throwCVE();
+		}
+	}
+
 }

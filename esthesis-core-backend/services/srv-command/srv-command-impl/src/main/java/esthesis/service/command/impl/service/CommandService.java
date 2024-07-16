@@ -101,10 +101,36 @@ public class CommandService {
 	 * Saves a command to be scheduled for execution. Note that this method does not send the command
 	 * to the device, see {@link #executeRequest(String)}.
 	 *
-	 * @param commandRequestEntity The command request to save.
+	 * @param cre The command request to save.
 	 */
-	public ObjectId saveRequest(CommandRequestEntity commandRequestEntity) {
-		return commandRequestService.save(commandRequestEntity).getId();
+	public ObjectId saveRequest(CommandRequestEntity cre) {
+		// Set a default description for the command according to the command type, if none is provided.
+		if (StringUtils.isBlank(cre.getDescription())) {
+			switch (cre.getCommandType()) {
+				case e:
+					cre.setDescription("Execute");
+					break;
+				case f:
+					cre.setDescription("Firmware update");
+					break;
+				case r:
+					cre.setDescription("Reboot");
+					break;
+				case s:
+					cre.setDescription("Shutdown");
+					break;
+				case p:
+					cre.setDescription("Ping");
+					break;
+				case h:
+					cre.setDescription("Health report");
+					break;
+				default:
+					cre.setDescription("Unknown");
+					break;
+			}
+		}
+		return commandRequestService.save(cre).getId();
 	}
 
 	public ExecuteRequestScheduleInfoDTO saveRequestAndExecute(

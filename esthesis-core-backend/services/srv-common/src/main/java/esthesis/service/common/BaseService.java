@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 
 @Slf4j
@@ -124,11 +125,6 @@ public abstract class BaseService<D extends BaseEntity> {
 		if (entity.getId() != null) {
 			log.trace("Updating entity with ID '{}'.", entity.getId());
 			repository.update(entity);
-//				return repository
-//				.mongoCollection()
-//				.findOneAndUpdate(new Document("_id", entity.getId()),
-//					new Document("$set", entity),
-//					new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
 		} else {
 			ObjectId id = new ObjectId();
 			log.trace("Creating new entity with ID '{}'.", entity.getId());
@@ -158,8 +154,21 @@ public abstract class BaseService<D extends BaseEntity> {
 		return repository.deleteAll();
 	}
 
+	/**
+	 * Delete all entities that match the given column and value.
+	 * @param columnName The column name to match.
+	 * @param value The value to match. Be careful to set the object type expected by the column.
+	 * @return The number of entities deleted.
+	 */
 	@Transactional
 	public long deleteByColumn(String columnName, Object value) {
+		// Sanity check when seemingly trying to delete an ID column without providing an ObjectId.
+		if (StringUtils.endsWithIgnoreCase(columnName, "id") && !(value instanceof ObjectId)) {
+			log.warn("Trying to delete by ID column without providing an ObjectId. "
+					+ "Column: '{}', Value: '{}'.",
+				columnName, value);
+		}
+
 		return repository.delete(columnName + " = ?1", value);
 	}
 

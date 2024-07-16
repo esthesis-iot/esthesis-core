@@ -32,9 +32,9 @@ import {
   faQuestion
 } from "@fortawesome/free-solid-svg-icons";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
-import {CountdownEvent} from "ngx-countdown";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {ConstraintViolationDto} from "../../shared/dto/constraint-violation-dto";
 
 @Component({
   selector: "app-campaign-edit",
@@ -72,9 +72,10 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
   isButtonCancelEnabled = false;
   isButtonSaveEnabled = false;
   isButtonDeleteEnabled = false;
-  isButtonReplicateEnabled = false;
+  isButtonReplayEnabled = false;
   isStatisticsEnabled = false;
   isLiveEnabled = false;
+  constraintViolations?: ConstraintViolationDto[];
 
   constructor(private fb: FormBuilder, public utilityService: UtilityService,
     private qForms: QFormsService, private provisioningService: ProvisioningService,
@@ -133,7 +134,7 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
           this.isButtonDeleteEnabled =
             this.id !== AppConstants.NEW_RECORD_ID;
 
-          this.isButtonReplicateEnabled =
+          this.isButtonReplayEnabled =
             this.id !== AppConstants.NEW_RECORD_ID;
 
           this.isStatisticsEnabled =
@@ -147,7 +148,7 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
       this.isButtonCancelEnabled = true;
       this.isButtonSaveEnabled = true;
       this.isButtonDeleteEnabled = true;
-      this.isButtonReplicateEnabled = false;
+      this.isButtonReplayEnabled = false;
       this.isStatisticsEnabled = false;
     }
   }
@@ -178,6 +179,20 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
       advancedPropertyRecheckTimer: [isDevMode() ? "PT1S" : "PT1M", [Validators.required]],
       advancedUpdateRepliesTimer: [isDevMode() ? "PT1S" : "PT1M", [Validators.required]],
       advancedUpdateRepliesFinalTimer: [isDevMode() ? "PT1S" : "PT1M", [Validators.required]],
+    });
+
+    // Conditional validators.
+    this.form.valueChanges.subscribe(val => {
+      if (val['type'] == this.appConstants.CAMPAIGN.TYPE.EXECUTE_COMMAND) {
+        this.form.controls['commandName'].addValidators(Validators.required);
+      } else {
+        this.form.controls['commandName'].removeValidators(Validators.required);
+      }
+      if (val['type'] == this.appConstants.CAMPAIGN.TYPE.PROVISIONING) {
+        this.form.controls['provisioningPackageId'].addValidators(Validators.required);
+      } else {
+        this.form.controls['provisioningPackageId'].removeValidators(Validators.required);
+      }
     });
 
     // Monitor campaign type to fetch provisioning packages.
@@ -230,8 +245,7 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
     }
 
     // @ts-ignore
-    this.form.controls.conditions.push(
-      this.createCondition(condition));
+    this.form.controls.conditions.push(this.createCondition(condition));
   }
 
   getConditions() {
@@ -291,12 +305,11 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
   }
 
   getMemberGroups() {
-    // return _(this.form.get("members")?.value).groupBy("group").values().value();
     return values(groupBy(this.form.get("members")?.value, 'group'));
   }
 
   /**
-   *
+   * Adds a device or tag to the campaign.
    * @param groupNumber
    *          undefined: The entry is added on the last group. If no groups exist, a new group is
    *                     automatically created.
@@ -384,10 +397,6 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
     });
   }
 
-  validate() {
-    // Check that each group/phase only has one condition of type PAUSE.
-  }
-
   save(startCampaign: boolean) {
     // Clear unused entries and errors.
     this.form.get("searchByHardwareId")?.setValue("");
@@ -419,6 +428,9 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
           this.utilityService.popupError("Campaign could not be started.");
         } else {
           this.utilityService.popupError("Campaign can not be saved.");
+        }
+        if (error.status === 400) {
+          this.constraintViolations = error.error.violations;
         }
       }
     });
@@ -498,37 +510,29 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
     });
   }
 
-  replicate() {
+  replay() {
     this.dialog.open(OkCancelModalComponent, {
       data: {
-        title: "Replicate campaign",
-        question: "Do you really want to replicate this campaign?",
+        title: "Replay campaign",
+        question: "A new campaign will be created to replay this campaign, proceed?",
         buttons: {
           ok: true, cancel: true, reload: false
         }
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        this.campaignService.replicateCampaign(this.id!).subscribe({
+        this.campaignService.replayCampaign(this.id!).subscribe({
           next: (campaign) => {
-            this.utilityService.popupSuccess("Campaign successfully replicated.");
+            this.utilityService.popupSuccess("Campaign successfully replayed.");
             this.router.navigate(["campaigns", campaign.id]).then(() => {
               this.ngOnInit();
             });
           }, error: err => {
-            this.utilityService.popupErrorWithTraceId("Could not replicate campaign.", err);
+            this.utilityService.popupErrorWithTraceId("Could not replay campaign.", err);
           }
         });
       }
     });
-  }
-
-  countDownEvent(event: CountdownEvent) {
-    if (event.action === "done") {
-      this.initData();
-      // this.countdown.restart();
-      // this.countdown.begin();
-    }
   }
 
   private getCampaignStats() {

@@ -11,7 +11,7 @@
     {
       "name": "hardwareId",
       "type": "string",
-      "doc": "The hardware id of the device that sent the message"
+      "doc": "The hardware id to send the command to"
     },
     {
       "name": "commandType",
@@ -51,7 +51,11 @@
     },
     {
       "name": "command",
-      "type": "string",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null,
       "doc": "The command to execute"
     },
     {
@@ -65,7 +69,10 @@
     },
     {
       "name": "createdAt",
-      "type": "string",
+			"type": [
+				"null",
+				"string"
+			],
       "doc": "A timestamp in ISO-8601 format"
     }
   ]

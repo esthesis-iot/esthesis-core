@@ -34,9 +34,9 @@ export class CampaignsService extends CrudService<CampaignDto> {
       `${AppConstants.API_ROOT}/campaign/v1/${campaignId}/resume`);
   }
 
-  replicateCampaign(campaignId: string): Observable<CampaignDto> {
+  replayCampaign(campaignId: string): Observable<CampaignDto> {
     return this.http.get<CampaignDto>(
-      `${AppConstants.API_ROOT}/campaign/v1/${campaignId}/replicate`);
+      `${AppConstants.API_ROOT}/campaign/v1/${campaignId}/replay`);
   }
 
   stats(campaignId: any): Observable<CampaignStatsDto> {

@@ -12,6 +12,7 @@ import {AppConstants} from "../../app.constants";
 import {ProvisioningDto} from "../../provisioning/dto/provisioning-dto";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {CommandExecuteRequestDto} from "../dto/command-execute-request-dto";
 
 @Component({
   selector: "app-command-create",
@@ -42,11 +43,11 @@ export class CommandCreateComponent extends SecurityBaseComponent implements OnI
 
     // Step 2 form.
     this.commandForm = this.formBuilder.group({
-      commandType: ["", [Validators.required]],
+      commandType: [null, [Validators.required]],
       executionType: [this.appConstants.DEVICE.COMMAND.EXECUTION.ASYNCHRONOUS],
-      command: [""],
-      arguments: [""],
-      description: [""]
+      command: [null],
+      arguments: [null],
+      description: [null]
     });
 
     // Watch changes on the hardware id to find matching devices.
@@ -86,16 +87,21 @@ export class CommandCreateComponent extends SecurityBaseComponent implements OnI
     });
   }
 
+  /**
+   * Save and dispatch the command.
+   */
   save() {
-    // Save the command.
-    this.commandService.execute(
-      {
-        ...{
-          hardwareIds: this.selectedHardwareIds.join(","),
-          tags: this.searchDevicesForm.value.tags ? this.searchDevicesForm.value.tags.join(",") : ""
-        },
-        ...this.commandForm.value
-      }).subscribe({
+    let commandExecuteRequestDto : CommandExecuteRequestDto;
+    commandExecuteRequestDto = {
+      hardwareIds: this.selectedHardwareIds.join(","),
+      tags: this.searchDevicesForm.value.tags ? this.searchDevicesForm.value.tags.join(",") : "",
+      commandType: this.commandForm.value.commandType,
+      executionType: this.commandForm.value.executionType,
+      command: this.commandForm.value.command,
+      arguments: this.commandForm.value.arguments,
+      description: this.commandForm.value.description
+    };
+    this.commandService.execute(commandExecuteRequestDto).subscribe({
       next: () => {
         this.utilityService.popupSuccess("Command dispatched successfully.");
         this.router.navigate(["command"]);

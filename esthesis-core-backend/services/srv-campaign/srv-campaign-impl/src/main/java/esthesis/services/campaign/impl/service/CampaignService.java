@@ -1,6 +1,15 @@
 package esthesis.services.campaign.impl.service;
 
+import static esthesis.services.campaign.impl.dto.ValidationMessages.DATE_IN_PAST;
+import static esthesis.services.campaign.impl.dto.ValidationMessages.DATE_REQUIRED;
+import static esthesis.services.campaign.impl.dto.ValidationMessages.GENERIC;
+import static esthesis.services.campaign.impl.dto.ValidationMessages.OPERATION_REQUIRED;
+import static esthesis.services.campaign.impl.dto.ValidationMessages.POSITIVE_INTEGER;
+import static esthesis.services.campaign.impl.dto.ValidationMessages.PROPERTY_NAME_REQUIRED;
+import static esthesis.services.campaign.impl.dto.ValidationMessages.STAGE_REQUIRED;
+
 import esthesis.common.AppConstants.Campaign.Condition;
+import esthesis.common.AppConstants.Campaign.Condition.Op;
 import esthesis.common.AppConstants.Campaign.Member.Type;
 import esthesis.common.AppConstants.Campaign.State;
 import esthesis.service.campaign.dto.CampaignConditionDTO;
@@ -11,6 +20,8 @@ import esthesis.service.campaign.entity.CampaignEntity;
 import esthesis.service.campaign.exception.CampaignDeviceAmbiguous;
 import esthesis.service.campaign.exception.CampaignDeviceDoesNotExist;
 import esthesis.service.common.BaseService;
+import esthesis.service.common.validation.CVExceptionContainer;
+import esthesis.service.common.validation.SoftValidators;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.services.campaign.impl.dto.GroupDTO;
@@ -34,7 +45,6 @@ import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
-@Transactional
 @ApplicationScoped
 public class CampaignService extends BaseService<CampaignEntity> {
 
@@ -50,12 +60,77 @@ public class CampaignService extends BaseService<CampaignEntity> {
 
 	public static final String CAMPAIGN_PROCESS_ID = "DeviceCampaignProcess";
 
+	private String createValidationPath(CampaignConditionDTO campaignConditionDTO) {
+		return String.valueOf(campaignConditionDTO.getType());
+	}
+
 	@Override
+	@Transactional
 	public CampaignEntity save(CampaignEntity campaignEntity) {
+		CVExceptionContainer<String> violations = new CVExceptionContainer<>();
+		List<CampaignConditionDTO> conditions = campaignEntity.getConditions();
+		for (CampaignConditionDTO condition : conditions) {
+			switch (condition.getType()) {
+				case SUCCESS:
+					if (condition.getValue() == null) {
+						violations.addViolation(createValidationPath(condition), GENERIC);
+					}
+					break;
+				case PROPERTY:
+					if (condition.getStage() == null) {
+						violations.addViolation(createValidationPath(condition), STAGE_REQUIRED);
+					}
+					if (StringUtils.isBlank(condition.getPropertyName())) {
+						violations.addViolation(createValidationPath(condition), PROPERTY_NAME_REQUIRED);
+					}
+					if (condition.getOperation() == null) {
+						violations.addViolation(createValidationPath(condition), OPERATION_REQUIRED);
+					}
+					if (condition.getValue() == null) {
+						violations.addViolation(createValidationPath(condition), GENERIC);
+					}
+					break;
+				case PAUSE:
+					if (condition.getStage() == null) {
+						violations.addViolation(createValidationPath(condition), STAGE_REQUIRED);
+					}
+					if (condition.getOperation() == null) {
+						violations.addViolation(createValidationPath(condition), OPERATION_REQUIRED);
+					}
+					break;
+				case BATCH:
+					if (SoftValidators.isNotPositiveInteger(condition.getValue())) {
+						violations.addViolation(createValidationPath(condition), POSITIVE_INTEGER);
+					}
+					break;
+				case DATETIME:
+					if (condition.getStage() == null) {
+						violations.addViolation(createValidationPath(condition), STAGE_REQUIRED);
+					}
+					if (condition.getOperation() == null) {
+						violations.addViolation(createValidationPath(condition), OPERATION_REQUIRED);
+					}
+					if (condition.getScheduleDate() == null) {
+						violations.addViolation(createValidationPath(condition), DATE_REQUIRED);
+					}
+					if (condition.getScheduleDate() != null
+						&& condition.getScheduleDate().isBefore(Instant.now())
+						&& condition.getOperation() == Op.BEFORE) {
+						violations.addViolation(createValidationPath(condition), DATE_IN_PAST);
+					}
+					break;
+				default:
+					violations.addViolation(createValidationPath(condition), GENERIC);
+					break;
+			}
+		}
+		violations.throwCVEIfNotEmpty();
+
 		if (campaignEntity.getState() == null) {
 			campaignEntity.setState(State.CREATED);
 			campaignEntity.setCreatedOn(Instant.now());
 		}
+
 		return super.save(campaignEntity);
 	}
 
@@ -140,6 +215,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
 		return campaignStatsDTO;
 	}
 
+	@Transactional
 	public void start(String campaignId) {
 		// Get the campaign about to start.
 		log.debug("Starting campaign with id '{}'.", campaignId);
@@ -154,7 +230,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
 					false);
 
 				// Check if a unique device was found.
-				if (device.size() == 0) {
+				if (device.isEmpty()) {
 					log.debug("Device with hardware id '{}' was not found.", member.getIdentifier());
 					throw new CampaignDeviceDoesNotExist("Device with hardware id '{}' can not be found.",
 						member.getIdentifier());
@@ -166,8 +242,8 @@ public class CampaignService extends BaseService<CampaignEntity> {
 				}
 
 				// Create a monitoring entry for this device.
-				log.debug("Adding device with hardware id '{}' to campaign '{}'.",
-					member.getIdentifier(), campaignId);
+				log.debug("Creating device monitoring entry for device with hardware id '{}' in "
+						+ "campaign '{}'.", member.getIdentifier(), campaignId);
 				CampaignDeviceMonitorEntity cdm = new CampaignDeviceMonitorEntity();
 				cdm.setDeviceId(device.get(0).getId());
 				cdm.setHardwareId(device.get(0).getHardwareId());
@@ -175,11 +251,9 @@ public class CampaignService extends BaseService<CampaignEntity> {
 				cdm.setGroup(member.getGroup());
 				campaignDeviceMonitorService.save(cdm);
 			} else {
-				log.debug("Adding devices matching tag '{}' to campaign '{}'.",
-					member.getIdentifier(), campaignId);
 				deviceResource.findByTagName(member.getIdentifier()).forEach(device -> {
-					log.debug("Adding device with hardware id '{}' to campaign '{}'.",
-						device.getHardwareId(), campaignId);
+					log.debug("Creating device monitoring entry for device with hardware id '{}' in "
+						+ "campaign '{}'.", member.getIdentifier(), campaignId);
 					CampaignDeviceMonitorEntity cdm = new CampaignDeviceMonitorEntity();
 					cdm.setDeviceId(device.getId());
 					cdm.setHardwareId(device.getHardwareId());
@@ -210,16 +284,29 @@ public class CampaignService extends BaseService<CampaignEntity> {
 		super.save(campaignEntity);
 	}
 
+	@Transactional
 	public void delete(String campaignId) {
 		try {
+			log.debug("Terminating campaign instance in workflow engine for campaign id '{}'.",
+				campaignId);
 			terminate(campaignId);
+			log.debug("Terminated campaign instance in workflow engine for campaign id '{}'.",
+				campaignId);
 		} catch (ClientStatusException e) {
 			log.warn("Could not delete campaign instance in workflow engine.", e);
 		}
-		deleteById(campaignId);
-		campaignDeviceMonitorService.deleteByColumn("campaignId", campaignId);
+		log.debug("Deleting campaign with id '{}'.", campaignId);
+		boolean deletedCampaigns = deleteById(campaignId);
+		log.debug("Deleted campaign with id '{}' - records deleted: '{}'.", campaignId,
+			deletedCampaigns);
+		log.debug("Deleting campaign device monitor entries for campaign id '{}'.", campaignId);
+		long deletedDeviceMonitors =
+			campaignDeviceMonitorService.deleteByColumn("campaignId", new ObjectId(campaignId));
+		log.debug("Deleted campaign device monitor entries for campaign id '{}' - records deleted: "
+			+ "'{}'.", campaignId, deletedDeviceMonitors);
 	}
 
+	@Transactional
 	public void terminate(String campaignId) {
 		CampaignEntity campaignEntity = findById(campaignId);
 
@@ -274,6 +361,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
 			.toList();
 	}
 
+	@Transactional
 	public CampaignEntity setStateDescription(String campaignId, String stateDescription) {
 		log.debug("Setting state description for campaign id '{}' to '{}'.", campaignId,
 			stateDescription);
