@@ -4,8 +4,7 @@
 # Arguments:
 #   $1: Additional profiles to activate. 'dev' profile activates by default.
 
-# Source local environment variables.
-[ -e "local-env.sh" ] && source "local-env.sh"
+
 
 # Call starter script
 export ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.$(kubens -c):9092
@@ -20,6 +19,10 @@ export ESTHESIS_DFL_ORION_DELETE_DEVICES=true
 export ESTHESIS_DFL_CONCURRENCY_POLL_TIMEOUT=1000
 export ESTHESIS_DFL_CONCURRENCY_CONSUMERS=10
 export ESTHESIS_DFL_CONCURRENCY_QUEUE_SIZE=1000
+
+# Source local environment variables.
+[ -e "local-env.sh" ] && source "local-env.sh"
+
 source ../../../_dev/dev-scripts/start-quarkus.sh \
 	LAUNCH_FOLDER="$(pwd)" \
 	MVNW_DIR="$(pwd)/../.." \

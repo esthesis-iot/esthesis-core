@@ -13,14 +13,18 @@ import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
 import io.quarkus.cache.CacheResult;
+import io.quarkus.qute.Qute;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Transactional
@@ -124,19 +128,38 @@ public class OrionGatewayService {
 	 * Generates the orion ID that an esthesis device should use. The resulting ID is based on the
 	 * configuration options available in the device attributes as well as in AppConfig.
 	 *
-	 * @param deviceId         The ID to use if no configuration options specify otherwise.
+	 * @param esthesisHardwareId         The ID to use if no configuration options specify otherwise.
 	 * @param deviceAttributes The esthesis device attributes.
 	 */
-	private String generateOrionDeviceId(String deviceId,
-		List<DeviceAttributeEntity> deviceAttributes) {
+	private String generateOrionDeviceId(String esthesisHardwareId,
+																			 List<DeviceAttributeEntity> deviceAttributes) {
 		if (appConfig.orionIdAttribute().isEmpty()) {
-			return appConfig.orionIdPrefix().orElse("") + deviceId;
+			return appConfig.orionIdPrefix() + esthesisHardwareId;
 		} else {
 			String idAttribute = appConfig.orionIdAttribute().get();
 			return deviceAttributes.stream()
 				.filter(attribute -> attribute.getAttributeName().equals(idAttribute))
 				.map(DeviceAttributeEntity::getAttributeValue).findFirst()
-				.orElse(appConfig.orionIdPrefix().orElse("") + deviceId);
+				.orElse(appConfig.orionIdPrefix() + esthesisHardwareId);
+		}
+	}
+
+	/**
+	 * Generates an Orion device ID using the configuration attributes.
+	 *
+	 * @param esthesisHardwareId The ID to use if no configuration options specify otherwise.
+	 * @return The Orion device ID.
+	 */
+	private String generateOrionDeviceId(String esthesisHardwareId) {
+		if (appConfig.orionIdAttribute().isEmpty()) {
+			return appConfig.orionIdPrefix() + esthesisHardwareId;
+
+		} else {
+			String nameAttribute = appConfig.orionIdAttribute().get();
+			return deviceSystemResource
+				.getDeviceAttributeByEsthesisHardwareIdAndAttributeName(esthesisHardwareId, nameAttribute)
+				.map(DeviceAttributeEntity::getAttributeValue)
+				.orElse(appConfig.orionIdPrefix() + esthesisHardwareId);
 		}
 	}
 
@@ -190,6 +213,7 @@ public class OrionGatewayService {
 
 		// Find the esthesis device.
 		DeviceEntity esthesisDevice = deviceSystemResource.findById(esthesisId);
+		log.debug("Esthesis device to be registered: {}", esthesisDevice.getHardwareId());
 		if (esthesisDevice == null) {
 			log.debug("Device with esthesis ID '{}' not found in esthesis, skipping registration.",
 				esthesisId);
@@ -230,8 +254,11 @@ public class OrionGatewayService {
 			DeviceAttributeEntity.builder().attributeName(appConfig.attributeEsthesisHardwareId())
 				.attributeValue(esthesisDevice.getHardwareId()).attributeType(ValueType.STRING)
 				.build());
-		orionEntity.setAttributes(
-			OrionEntityDTO.attributesFromEsthesisDeviceAttributes(esthesisDeviceAttributes));
+
+		// Prevent configuration attributes from being sent to Orion
+		removeConfigurationAttributes(esthesisDeviceAttributes);
+
+		orionEntity.setAttributes(OrionEntityDTO.attributesFromEsthesisDeviceAttributes(esthesisDeviceAttributes));
 
 		orionClientService.createEntity(orionEntity);
 		log.info("Device '{}' of type '{}' successfully registered in Orion.", orionDeviceId,
@@ -247,6 +274,9 @@ public class OrionGatewayService {
 		// Get esthesis device attributes.
 		List<DeviceAttributeEntity> esthesisAttributes = deviceSystemResource.getDeviceAttributesByEsthesisId(
 			esthesisId);
+
+		// Prevent configuration attributes from being sent to Orion
+		removeConfigurationAttributes(esthesisAttributes);
 
 		// Get Orion attributes.
 		OrionEntityDTO orionEntity = orionClientService.getEntityByEsthesisId(esthesisId);
@@ -275,6 +305,32 @@ public class OrionGatewayService {
 				orionClientService.deleteAttribute(orionEntity.getId(), orionAttribute.getName());
 			}
 		}
+	}
+
+	// Remove attributes used primarily for configuration purposes from the array
+	private void removeConfigurationAttributes(List<DeviceAttributeEntity> esthesisAttributes) {
+		esthesisAttributes.removeIf(deviceAttributeEntity -> {
+			// custom measurement formatter attribute
+			Optional<String> customMeasurementFormatterAttributeName = appConfig.customMeasurementFormatterAttributeName();
+			if(customMeasurementFormatterAttributeName.isPresent()
+				&& deviceAttributeEntity.getAttributeName().equalsIgnoreCase(customMeasurementFormatterAttributeName.get())){
+					return true;
+			}
+
+			// orionUpdateDataAttribute attribute
+			Optional<String> orionUpdateDataAttribute = appConfig.orionUpdateDataAttribute();
+			if(orionUpdateDataAttribute.isPresent() && deviceAttributeEntity.getAttributeName().equalsIgnoreCase(orionUpdateDataAttribute.get())){
+				return true;
+			}
+
+			// orionRegistrationEnabledAttribute attribute
+			Optional<String> orionRegistrationEnabledAttribute = appConfig.orionRegistrationEnabledAttribute();
+			if(orionRegistrationEnabledAttribute.isPresent() && deviceAttributeEntity.getAttributeName().equalsIgnoreCase(orionRegistrationEnabledAttribute.get())){
+				return true;
+			}
+
+			return  false;
+		});
 	}
 
 	public void deleteEntityByEsthesisId(String esthesisId) {
@@ -317,11 +373,38 @@ public class OrionGatewayService {
 			}
 
 			String category = esthesisMessage.getPayload().getCategory();
+			String esthesisMessageSeenAt = esthesisMessage.getSeenAt();
+			String hardwareId = esthesisMessage.getHardwareId();
+
+			String orionId = generateOrionDeviceId(esthesisHardwareId);
+
+
+			Optional<DeviceAttributeEntity> customMeasurementFormatterAttribute =
+				appConfig.customMeasurementFormatterAttributeName()
+					.flatMap(name -> deviceSystemResource.getDeviceAttributeByEsthesisHardwareIdAndAttributeName(esthesisHardwareId, name));
+
+			log.debug("customMeasurementFormatterAttribute exists: {}.", customMeasurementFormatterAttribute.isPresent());
 			esthesisMessage.getPayload().getValues().forEach((valueData) -> {
-				orionClientService.setAttribute(esthesisHardwareId, category + "." + valueData.getName(),
-					valueData.getValue(), ValueType.valueOf(valueData.getValueType().name()),
-					attributeType);
+				if (customMeasurementFormatterAttribute.isPresent()) {
+					String customFormattedValue =
+						Qute.fmt(customMeasurementFormatterAttribute.get().getAttributeValue(),
+							Map.of("esthesisHardwareId", esthesisHardwareId,
+								"category", category,
+								"esthesisMessageSeenAt", esthesisMessageSeenAt,
+								"hardwareId", hardwareId,
+								"measurementName", valueData.getName(),
+								"measurementValue", valueData.getValue())
+						);
+					log.debug("customFormattedValue {}", customFormattedValue);
+					orionClientService.setAttribute(orionId, customFormattedValue);
+				} else {
+					orionClientService.setAttribute(orionId, category + "." + valueData.getName(),
+						valueData.getValue(), ValueType.valueOf(valueData.getValueType().name()), attributeType);
+				}
 			});
+		}else{
+			log.debug("esthesisHardwareId {} is not allowed to update data on orion", esthesisHardwareId);
 		}
 	}
+
 }

@@ -233,6 +233,10 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		return fields;
 	}
 
+	public Optional<DeviceAttributeEntity> getDeviceAttributeByName(String deviceId, String attributeName){
+		return deviceAttributeRepository.findByDeviceIdAndName(deviceId, attributeName);
+	}
+
 	@Override
 	@KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE,
 		action = Action.DELETE, idParamOrder = 0)

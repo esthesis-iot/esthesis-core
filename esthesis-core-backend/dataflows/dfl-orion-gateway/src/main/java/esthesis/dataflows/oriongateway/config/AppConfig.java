@@ -61,12 +61,13 @@ public interface AppConfig {
   Optional<String> orionTypeAttribute();
 
   // The name of the attribute that contains the device ID. If not present, the device ID (i.e.
-  // the ID with which the device is registered in the platform) is used.
+  // the ID with which the device is registered in the platform) is used. if Defined, it must be a valid URL
   Optional<String> orionIdAttribute();
 
-  // An optional prefix to add to the device ID when registering a new device, if
+  // A prefix to add to the device ID when registering a new device, if
   // orionIdAttribute is not set.
-  Optional<String> orionIdPrefix();
+	@WithDefault("urn:ngsi-ld:")
+  String orionIdPrefix();
 
   // A device attribute indicating whether this device should be registered in Orion or not. If
   // this attribute is not specified, all devices are registered. If this attribute is specified,
@@ -123,4 +124,16 @@ public interface AppConfig {
   // The value of the metadata attribute to indicate an attribute is maintained by esthesis.
   @WithDefault("esthesis")
   String esthesisOrionMetadataValue();
+
+
+	// Orion LD Contexts defined, separated by comma.
+	@WithDefault("https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld")
+	String orionLdDefinedContexts();
+
+	// Orion LD Contexts Rel defined, separated by comma and respecting the defined contexts order
+	@WithDefault("http://www.w3.org/ns/json-ld#context")
+	String orionLdDefinedContextsRelationships();
+
+	//Custom measurement structure using Qute formmater
+	Optional<String> customMeasurementFormatterAttributeName();
 }

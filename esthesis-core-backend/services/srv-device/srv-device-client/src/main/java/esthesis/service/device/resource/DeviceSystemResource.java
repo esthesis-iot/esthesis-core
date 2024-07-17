@@ -14,6 +14,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
+import java.util.Optional;
+
 import org.bouncycastle.operator.OperatorCreationException;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
@@ -53,4 +55,9 @@ public interface DeviceSystemResource {
 	@GET
 	@Path("/v1/system/device-ids")
 	List<String> getDeviceIds();
+
+	@GET
+	@Path("/v1/system/{esthesisHardwareId}/attribute-by-esthesis-id/{attributeName}")
+	Optional<DeviceAttributeEntity> getDeviceAttributeByEsthesisHardwareIdAndAttributeName(
+		@PathParam("esthesisHardwareId") String esthesisHardwareId, @PathParam("attributeName") String attributeName);
 }

@@ -93,4 +93,12 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	public List<String> getDeviceIds() {
 		return deviceService.getDevicesIds();
 	}
+
+	@Override
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
+	public Optional<DeviceAttributeEntity> getDeviceAttributeByEsthesisHardwareIdAndAttributeName(String esthesisHardwareId, String attributeName) {
+		return deviceService.getDeviceAttributeByName(deviceService.findByHardwareId(esthesisHardwareId, false).orElseThrow().getId().toHexString(), attributeName);
+	}
+
+
 }
