@@ -7,7 +7,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>utl-kafka-notifications</artifactId>
-    <version>3.0.40-SNAPSHOT</version>
+    <version>3.0.40</version>
   </parent>
 
   <artifactId>utl-kafka-notifications-outgoing</artifactId>
@@ -22,7 +22,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>utl-kafka-notifications-common</artifactId>
-      <version>3.0.40-SNAPSHOT</version>
+      <version>3.0.40</version>
     </dependency>
 
     <!-- THIRD-PARTY -->
