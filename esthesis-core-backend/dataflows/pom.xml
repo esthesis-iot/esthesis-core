@@ -8,11 +8,11 @@
 	<parent>
 		<groupId>esthesis</groupId>
 		<artifactId>esthesis-core-backend</artifactId>
-		<version>3.0.42-SNAPSHOT</version>
+		<version>3.0.42</version>
 	</parent>
 
 	<artifactId>dataflows</artifactId>
-	<version>3.0.42-SNAPSHOT</version>
+	<version>3.0.42</version>
 	<packaging>pom</packaging>
 
 	<dependencyManagement>
