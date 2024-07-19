@@ -136,4 +136,8 @@ public interface AppConfig {
 
 	//Custom measurement structure using Qute formmater
 	Optional<String> customMeasurementFormatterAttributeName();
+
+	// A list off attributes name, separated by comma, to be synchronized and send to orion.
+	// If defined, only the attributes containing the values in this list will be stored in Orion
+	Optional<String>  orionAttributesToSync();
 }

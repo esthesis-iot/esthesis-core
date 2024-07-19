@@ -74,4 +74,9 @@ public interface OrionClient {
 	@Path("/ngsi-ld/v1/entities/")
 	@Retry(maxRetries = 3)
 	List<Map<String, Object>> query(@BeanParam OrionQueryDTO orionQueryDTO);
+
+	@GET
+	@Path("/ngsi-ld/v1/entities/{entityId}")
+	@Retry(maxRetries = 3)
+	Map<String, Object> getEntity(@PathParam("entityId") String entityId);
 }

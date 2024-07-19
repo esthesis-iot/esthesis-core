@@ -1,6 +1,7 @@
 package esthesis.dataflows.oriongateway.service;
 
 import esthesis.common.data.DataUtils.ValueType;
+import esthesis.common.exception.QDoesNotExistException;
 import esthesis.dataflows.oriongateway.client.OrionClient;
 import esthesis.dataflows.oriongateway.client.OrionClientHeaderFilter;
 import esthesis.dataflows.oriongateway.config.AppConfig;
@@ -14,6 +15,7 @@ import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
@@ -24,6 +26,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static java.util.function.Predicate.not;
 
@@ -139,57 +142,37 @@ public class OrionClientService {
 		orionClient.createEntity(jsonBuilder.build().toString());
 	}
 
-	/**
-	 * Returns the Orion ID of the device with the given esthesis hardware ID.
-	 *
-	 * @param esthesisHardwareId The esthesis hardware ID of the device.
-	 */
-	public String getOrionIdByEsthesisHardwareId(String esthesisHardwareId) {
-		List<Map<String, Object>> entitiesMatched = orionClient.query(
-			OrionQueryDTO.builder()
-						.q(appConfig.attributeEsthesisHardwareId() + "==\"" + esthesisHardwareId +"\"").build());
-		if (CollectionUtils.isEmpty(entitiesMatched)) {
-			return null;
-		} else {
-			if (entitiesMatched.size() > 1) {
-				log.warn(
-					"Multiple devices found in Orion with esthesis hardware ID '{}'. Returning the first one.",
-					esthesisHardwareId);
+	public OrionEntityDTO getEntityByOrionId(String orionId) {
+		try {
+			log.debug("Get entity by orion id: {}", orionId);
+			Map<String, Object> entity = orionClient.getEntity(orionId);
+
+			if (Objects.nonNull(entity)) {
+				OrionEntityDTO orionEntityDTO = new OrionEntityDTO();
+				orionEntityDTO.setId(entity.get("id").toString());
+				orionEntityDTO.setType(entity.get("type").toString());
+
+				// Add remaining keys as attributes.
+				entity.forEach((key, value) -> {
+					if (!key.equals("id") && !key.equals("type")) {
+						OrionAttributeDTO orionAttributeDTO = new OrionAttributeDTO();
+						orionAttributeDTO.setName(key);
+						orionAttributeDTO.setValue(value.toString());
+						orionEntityDTO.getAttributes().add(orionAttributeDTO);
+					}
+				});
+
+				return orionEntityDTO;
+			} else {
+				log.debug("entity with orion id: {} is null", orionId);
+				return null;
 			}
-			Map<String, Object> entity = entitiesMatched.get(0);
-			return entity.get("id").toString();
-		}
-	}
-
-	public OrionEntityDTO getEntityByEsthesisId(String esthesisId) {
-		// Find the Orion Entity for this device.
-		List<Map<String, Object>> entitiesMatched = orionClient.query(
-			OrionQueryDTO.builder().q(appConfig.attributeEsthesisId() + "==\"" + esthesisId+"\"").build());
-
-		if (CollectionUtils.isEmpty(entitiesMatched)) {
+		} catch (NotFoundException | QDoesNotExistException e) {
+			log.debug("entity with orion id: {} was not found", orionId);
+			// Return null if the entity is not found (404 error).
 			return null;
-		} else {
-			if (entitiesMatched.size() > 1) {
-				log.warn("Multiple devices found in Orion with esthesis ID '{}'. Returning the first one.",
-					esthesisId);
-			}
-			Map<String, Object> entity = entitiesMatched.get(0);
-			OrionEntityDTO orionEntityDTO = new OrionEntityDTO();
-			orionEntityDTO.setId(entity.get("id").toString());
-			orionEntityDTO.setType(entity.get("type").toString());
-
-			// Add remaining keys as attributes.
-			entity.forEach((key, value) -> {
-				if (!key.equals("id") && !key.equals("type")) {
-					OrionAttributeDTO orionAttributeDTO = new OrionAttributeDTO();
-					orionAttributeDTO.setName(key);
-					orionAttributeDTO.setValue(value.toString());
-					orionEntityDTO.getAttributes().add(orionAttributeDTO);
-				}
-			});
-
-			return orionEntityDTO;
 		}
+
 	}
 
 	public String getVersion() {
