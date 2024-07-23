@@ -45,7 +45,11 @@ public class KeystoreResourceImpl implements KeystoreResource {
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	public KeystoreEntity save(KeystoreEntity keystoreEntity) {
-		return keystoreService.save(keystoreEntity);
+		if (keystoreEntity.getId() == null) {
+			return keystoreService.saveNew(keystoreEntity);
+		} else {
+			return keystoreService.saveUpdate(keystoreEntity);
+		}
 	}
 
 	@Override

@@ -9,35 +9,39 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 
+/**
+ * Base service class for all services, providing common functionality to services. Most methods of
+ * this class are 'protected', to disallow using them directly from the API. This is to ensure that
+ * the service methods are used instead, which can (should) be annotated with security annotations.
+ * @param <D> The entity type to manage.
+ */
 @Slf4j
 public abstract class BaseService<D extends BaseEntity> {
 
 	@Inject
+	@Getter
 	@SuppressWarnings("CdiInjectionPointsInspection")
 	PanacheMongoRepository<D> repository;
 
-	public PanacheMongoRepository<D> getRepository() {
-		return repository;
-	}
-
-	public List<D> getAll(String sortField, Sort.Direction sortDirection) {
+	protected List<D> getAll(String sortField, Sort.Direction sortDirection) {
 		return repository.listAll(Sort.by(sortField, sortDirection));
 	}
 
-	public List<D> getAll() {
+	protected List<D> getAll() {
 		return repository.listAll();
 	}
 
-	public Optional<D> findRandom() {
+	protected Optional<D> findRandom() {
 		return repository.listAll().stream().findAny();
 	}
 
 	@SuppressWarnings("java:S1192")
-	public D findFirstByColumn(String column, Object value, boolean partialMatch) {
+	protected D findFirstByColumn(String column, Object value, boolean partialMatch) {
 		if (partialMatch) {
 			return repository.find(column + " like ?1", value).firstResult();
 		} else {
@@ -45,12 +49,12 @@ public abstract class BaseService<D extends BaseEntity> {
 		}
 	}
 
-	public D findFirstByColumn(String column, Object value) {
+	protected D findFirstByColumn(String column, Object value) {
 		return findFirstByColumn(column, value, false);
 	}
 
 	@SuppressWarnings("java:S1192")
-	public List<D> findByColumn(String column, Object value, boolean partialMatch) {
+	protected List<D> findByColumn(String column, Object value, boolean partialMatch) {
 		if (partialMatch) {
 			return repository.find(column + " like ?1", value).list();
 		} else {
@@ -58,11 +62,11 @@ public abstract class BaseService<D extends BaseEntity> {
 		}
 	}
 
-	public List<D> findByColumnNull(String column) {
+	protected List<D> findByColumnNull(String column) {
 		return repository.find(column + " is null").list();
 	}
 
-	public List<D> findByColumnIn(String column, List<String> values, boolean partialMatch) {
+	protected List<D> findByColumnIn(String column, List<String> values, boolean partialMatch) {
 		if (partialMatch) {
 			return repository.find(column + " like ?1", String.join("|", values)).list();
 		} else {
@@ -70,19 +74,19 @@ public abstract class BaseService<D extends BaseEntity> {
 		}
 	}
 
-	public List<D> findByColumn(String column, Object value) {
+	protected List<D> findByColumn(String column, Object value) {
 		return findByColumn(column, value, false);
 	}
 
-	public long countByColumn(String column, Object value) {
+	protected long countByColumn(String column, Object value) {
 		return repository.count(column + " = ?1", value);
 	}
 
-	public Page<D> find(Pageable pageable) {
+	protected Page<D> find(Pageable pageable) {
 		return find(pageable, false);
 	}
 
-	public Page<D> find(Pageable pageable, boolean partialMatch) {
+	protected Page<D> find(Pageable pageable, boolean partialMatch) {
 		// Create a wrapper for the results.
 		Page<D> quarkusPage = new Page<>();
 
@@ -121,7 +125,7 @@ public abstract class BaseService<D extends BaseEntity> {
 	}
 
 	@Transactional
-	public D save(D entity) {
+	protected D save(D entity) {
 		if (entity.getId() != null) {
 			log.trace("Updating entity with ID '{}'.", entity.getId());
 			repository.update(entity);
@@ -135,22 +139,26 @@ public abstract class BaseService<D extends BaseEntity> {
 		return repository.findById(entity.getId());
 	}
 
-	public D findById(String id) {
+	protected D findById(String id) {
 		return repository.findById(new ObjectId(id));
 	}
 
+	protected D findById(ObjectId id) {
+		return repository.findById(id);
+	}
+
 	@Transactional
-	public boolean deleteById(String deviceId) {
+	protected boolean deleteById(String deviceId) {
 		return repository.deleteById(new ObjectId(deviceId));
 	}
 
 	@Transactional
-	public void delete(D entity) {
+	protected void delete(D entity) {
 		repository.delete(entity);
 	}
 
 	@Transactional
-	public long deleteAll() {
+	protected long deleteAll() {
 		return repository.deleteAll();
 	}
 
@@ -161,7 +169,7 @@ public abstract class BaseService<D extends BaseEntity> {
 	 * @return The number of entities deleted.
 	 */
 	@Transactional
-	public long deleteByColumn(String columnName, Object value) {
+	protected long deleteByColumn(String columnName, Object value) {
 		// Sanity check when seemingly trying to delete an ID column without providing an ObjectId.
 		if (StringUtils.endsWithIgnoreCase(columnName, "id") && !(value instanceof ObjectId)) {
 			log.warn("Trying to delete by ID column without providing an ObjectId. "

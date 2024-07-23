@@ -1,14 +1,18 @@
 package esthesis.services.tag.impl.service;
 
 import static esthesis.common.AppConstants.ROLE_SYSTEM;
+import static esthesis.common.AppConstants.Security.Category.TAG;
+import static esthesis.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.common.AppConstants.Security.Operation.READ;
+import static esthesis.common.AppConstants.Security.Operation.WRITE;
 
-import esthesis.common.AppConstants.Security.Category;
 import esthesis.common.AppConstants.Security.Operation;
 import esthesis.common.exception.QSecurityException;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.common.validation.CVExceptionContainer;
+import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.security.resource.SecurityResource;
 import esthesis.service.tag.entity.TagEntity;
 import esthesis.services.tag.impl.repository.TagRepository;
@@ -40,75 +44,57 @@ public class TagService extends BaseService<TagEntity> {
 	@Inject
 	SecurityIdentity securityIdentity;
 
-	@Override
-	public Page<TagEntity> find(Pageable pageable) {
-		log.trace("Finding all tags with '{}'.", pageable);
-
-//		if (!securityResource.isPermitted(Category.TAG, Operation.READ)) {
-//			throw new QSecurityException("You are not allowed to view tags.");
-//		} else {
-			return super.find(pageable);
-//		}
-	}
-
-	@Override
-	public Page<TagEntity> find(Pageable pageable, boolean partialMatch) {
-		log.trace("Finding all tags with partial match with '{}'.", pageable);
-//		if (!securityResource.isPermitted(Category.TAG, Operation.READ)) {
-//			throw new QSecurityException("You are not allowed to view tags.");
-//		} else {
-			return super.find(pageable, partialMatch);
-//		}
-	}
-
-	@Override
-	public TagEntity save(TagEntity tagEntity) {
-		log.debug("Saving tag '{}'.", tagEntity);
-
-		// Security check. Tags can be created during device registration, where we only have a system
-		// user available. In this case, we do not check for permissions.
-		if (!securityIdentity.getRoles().contains(ROLE_SYSTEM)) {
-			if (tagEntity.getId() == null && !securityResource.isPermitted(Category.TAG,
-				Operation.CREATE)) {
-				throw new QSecurityException("You are not allowed to create tags.");
-			} else if (!securityResource.isPermitted(Category.TAG, Operation.WRITE)) {
-				throw new QSecurityException("You are not allowed to update tags.");
-			}
-		}
-
-		// Ensure no other tag has the same name.
-		TagEntity existingTagEntity = findFirstByColumn("name", tagEntity.getName());
-		if (existingTagEntity != null && (tagEntity.getId() == null || !existingTagEntity.getId()
-			.equals(tagEntity.getId()))) {
-			new CVExceptionContainer<TagEntity>().addViolation("name",
-				"A tag with name '{}' already exists.", tagEntity.getName()).throwCVE();
-		}
-
+	private TagEntity saveHandler(TagEntity tagEntity) {
 		return super.save(tagEntity);
+	}
+
+	@Override
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = TAG, operation = READ)
+	public Page<TagEntity> find(Pageable pageable) {
+		return super.find(pageable);
+	}
+
+	@Override
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = TAG, operation = READ)
+	public Page<TagEntity> find(Pageable pageable, boolean partialMatch) {
+		return super.find(pageable, partialMatch);
+	}
+
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = TAG, operation = CREATE)
+	public TagEntity saveNew(TagEntity tagEntity) {
+		return saveHandler(tagEntity);
+	}
+
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = TAG, operation = WRITE)
+	public TagEntity saveUpdate(TagEntity tagEntity) {
+		return saveHandler(tagEntity);
 	}
 
 	@Override
 	@KafkaNotification(component = Component.TAG, subject = Subject.TAG, action = Action.DELETE,
 		idParamOrder = 0)
+	@ErnPermission(category = TAG, operation = DELETE)
 	public boolean deleteById(String id) {
 		log.debug("Deleting tag with id '{}'.", id);
-		if (!securityResource.isPermitted(Category.TAG, Operation.DELETE, id)) {
+		if (!securityResource.isPermitted(TAG, Operation.DELETE, id)) {
 			throw new QSecurityException("You are not allowed to delete this tags.");
 		} else {
 			return super.deleteById(id);
 		}
 	}
 
+	@ErnPermission(category = TAG, operation = READ)
 	public List<TagEntity> findByName(String name, boolean partialMatch) {
-		if (!securityResource.isPermitted(Category.TAG, Operation.READ)) {
+		if (!securityResource.isPermitted(TAG, Operation.READ)) {
 			throw new QSecurityException("You are not allowed to view tags.");
 		} else {
 			return findByName(Collections.singletonList(name), partialMatch);
 		}
 	}
 
+	@ErnPermission(category = TAG, operation = READ)
 	public List<TagEntity> findByName(List<String> names, boolean partialMatch) {
-		if (!securityResource.isPermitted(Category.TAG, Operation.READ)) {
+		if (!securityResource.isPermitted(TAG, Operation.READ)) {
 			throw new QSecurityException("You are not allowed to view tags.");
 		} else {
 			if (partialMatch) {
@@ -117,5 +103,36 @@ public class TagService extends BaseService<TagEntity> {
 				return tagRepository.findByName(names);
 			}
 		}
+	}
+
+	@Override
+	@ErnPermission(category = TAG, operation = READ)
+	public List<TagEntity> getAll() {
+		return super.getAll();
+	}
+
+	@Override
+	@ErnPermission(category = TAG, operation = READ)
+	public TagEntity findById(String id) {
+		return super.findById(id);
+	}
+
+	@Override
+	@ErnPermission(category = TAG, operation = READ)
+	public List<TagEntity> findByColumn(String column, Object value) {
+		return super.findByColumn(column, value);
+	}
+
+	@Override
+	@ErnPermission(category = TAG, operation = READ)
+	public List<TagEntity> findByColumnIn(String column, List<String> values,
+		boolean partialMatch) {
+		return super.findByColumnIn(column, values, partialMatch);
+	}
+
+	@Override
+	@ErnPermission(category = TAG, operation = READ)
+	public TagEntity findFirstByColumn(String column, Object value, boolean partialMatch) {
+		return super.findFirstByColumn(column, value, partialMatch);
 	}
 }

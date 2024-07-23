@@ -24,3 +24,7 @@ quarkus:
   otel:
     sdk:
       disabled: true
+  rest-client:
+    SecurityResource:
+      url: http://esthesis-core-srv-security-service:8080
+      scope: Singleton

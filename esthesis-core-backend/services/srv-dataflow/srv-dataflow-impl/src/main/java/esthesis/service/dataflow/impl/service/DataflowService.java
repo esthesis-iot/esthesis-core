@@ -1,8 +1,16 @@
 package esthesis.service.dataflow.impl.service;
 
+import static esthesis.common.AppConstants.Security.Category.DATAFLOW;
+import static esthesis.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.common.AppConstants.Security.Operation.READ;
+import static esthesis.common.AppConstants.Security.Operation.WRITE;
+
 import com.github.slugify.Slugify;
 import esthesis.common.data.DataUtils;
 import esthesis.service.common.BaseService;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
 import esthesis.service.dataflow.dto.DockerTagsDTO;
 import esthesis.service.dataflow.entity.DataflowEntity;
 import esthesis.service.dataflow.impl.docker.DockerClient;
@@ -11,6 +19,7 @@ import esthesis.service.kubernetes.dto.SecretDTO;
 import esthesis.service.kubernetes.dto.SecretDTO.SecretDTOBuilder;
 import esthesis.service.kubernetes.dto.SecretEntryDTO;
 import esthesis.service.kubernetes.resource.KubernetesResource;
+import esthesis.service.security.annotation.ErnPermission;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -171,8 +180,7 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		return podInfoDTO;
 	}
 
-	@Override
-	public DataflowEntity save(DataflowEntity dataflowEntity) {
+	private DataflowEntity saveHandler(DataflowEntity dataflowEntity) {
 		log.debug("Saving dataflow '{}'.", dataflowEntity);
 
 		// Save the dataflow.
@@ -186,14 +194,17 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		return dataflowEntity;
 	}
 
+	@ErnPermission(category = DATAFLOW, operation = READ)
 	public DockerTagsDTO getImageTags(String dflType) {
 		return dockerClient.getTags(DOCKER_IMAGE_DEFAULT_URL + "/" + DOCKER_IMAGE_PREFIX + dflType);
 	}
 
+	@ErnPermission(category = DATAFLOW, operation = READ)
 	public List<String> getNamespaces() {
 		return kubernetesResource.getNamespaces();
 	}
 
+	@ErnPermission(category = DATAFLOW, operation = DELETE)
 	public void delete(String dataflowId) {
 		// Unschedule dataflow.
 		DataflowEntity dataflow = findById(dataflowId);
@@ -203,5 +214,27 @@ public class DataflowService extends BaseService<DataflowEntity> {
 
 		// Delete dataflow.
 		super.delete(dataflow);
+	}
+
+	@ErnPermission(category = DATAFLOW, operation = CREATE)
+	public DataflowEntity saveNew(DataflowEntity dataflowEntity) {
+		return saveHandler(dataflowEntity);
+	}
+
+	@ErnPermission(category = DATAFLOW, operation = WRITE)
+	public DataflowEntity saveUpdate(DataflowEntity dataflowEntity) {
+		return saveHandler(dataflowEntity);
+	}
+
+	@Override
+	@ErnPermission(category = DATAFLOW, operation = READ)
+	public Page<DataflowEntity> find(Pageable pageable, boolean partialMatch) {
+		return super.find(pageable, partialMatch);
+	}
+
+	@Override
+	@ErnPermission(category = DATAFLOW, operation = READ)
+	public DataflowEntity findById(String id) {
+		return super.findById(id);
 	}
 }

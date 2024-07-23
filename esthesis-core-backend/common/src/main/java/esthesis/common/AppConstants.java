@@ -127,17 +127,19 @@ public class AppConstants {
 			KEYSTORE,
 			KUBERNETES,
 			PROVISIONING,
+			SECURITY,
 			SETTINGS,
 			TAG,
 			USERS,
 			GROUPS,
 			ROLES,
 			POLICIES,
-			NULL
+			NULL	// Required for annotations.
 		}
 
 		public enum Operation {
-			CREATE, READ, WRITE, DELETE, OTHER
+			CREATE, READ, WRITE, DELETE, AUDIT,
+			NULL	// Required for annotations.
 		}
 
 		public enum Permission {

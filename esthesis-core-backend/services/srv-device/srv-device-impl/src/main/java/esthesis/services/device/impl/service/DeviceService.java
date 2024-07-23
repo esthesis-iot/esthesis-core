@@ -1,16 +1,25 @@
 package esthesis.services.device.impl.service;
 
+import static esthesis.common.AppConstants.Security.Category.DEVICE;
+import static esthesis.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.common.AppConstants.Security.Operation.READ;
+import static esthesis.common.AppConstants.Security.Operation.WRITE;
+
 import esthesis.avro.EsthesisDataMessage;
 import esthesis.avro.MessageTypeEnum;
 import esthesis.avro.util.AvroUtils;
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.exception.QMismatchException;
 import esthesis.service.common.BaseService;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.DeviceProfileDTO;
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
 import esthesis.service.device.dto.GeolocationDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
+import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.entity.DevicePageFieldEntity;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
@@ -103,12 +112,17 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		return fields;
 	}
 
+	private DeviceEntity saveHandler(DeviceEntity entity) {
+		return super.save(entity);
+	}
+
 	/**
 	 * Finds a device by its hardware ID.
 	 *
 	 * @param hardwareId   The hardware ID to search by.
 	 * @param partialMatch Whether the search for the hardware ID should be partial or not.
 	 */
+	@ErnPermission(category = DEVICE, operation = READ)
 	public Optional<DeviceEntity> findByHardwareId(String hardwareId, boolean partialMatch) {
 		if (partialMatch) {
 			return deviceRepository.findByHardwareIdPartial(hardwareId);
@@ -124,6 +138,7 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	 * @param partialMatch Whether the search for the hardware ID will be partial or not.
 	 * @return Returns the list of devices matched.
 	 */
+	@ErnPermission(category = DEVICE, operation = READ)
 	public List<DeviceEntity> findByHardwareId(List<String> hardwareIds, boolean partialMatch) {
 		if (partialMatch) {
 			return deviceRepository.findByHardwareIdPartial(hardwareIds);
@@ -139,6 +154,7 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	 * @param partialMatch Whether the search for the hardware ID will be partial or not.
 	 * @return The number of the devices in the list that matched.
 	 */
+	@ErnPermission(category = DEVICE, operation = READ)
 	public long countByHardwareId(List<String> hardwareIds, boolean partialMatch) {
 		if (partialMatch) {
 			return deviceRepository.countByHardwareIdPartial(hardwareIds);
@@ -152,6 +168,7 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	 *
 	 * @param deviceId The device ID to search by.
 	 */
+	@ErnPermission(category = DEVICE, operation = READ)
 	public GeolocationDTO getGeolocation(String deviceId) {
 		SettingEntity settingEntityLon = settingsResource.findByName(NamedSetting.DEVICE_GEO_LON);
 		SettingEntity settingEntityLat = settingsResource.findByName(NamedSetting.DEVICE_GEO_LAT);
@@ -177,19 +194,22 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		}
 	}
 
+	@ErnPermission(category = DEVICE, operation = READ)
 	public String getPublicKey(String id) {
 		return findById(id).getDeviceKey().getPublicKey();
 	}
 
+	@ErnPermission(category = DEVICE, operation = READ)
 	public String getPrivateKey(String id) {
 		return findById(id).getDeviceKey().getPrivateKey();
 	}
 
+	@ErnPermission(category = DEVICE, operation = READ)
 	public String getCertificate(String id) {
 		return findById(id).getDeviceKey().getCertificate();
 	}
 
-
+	@ErnPermission(category = DEVICE, operation = WRITE)
 	@KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE_ATTRIBUTE,
 		action = Action.UPDATE, idParamOrder = 0)
 	public void saveProfile(String deviceId, DeviceProfileDTO deviceProfileDTO) {
@@ -238,6 +258,7 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	}
 
 	@Override
+	@ErnPermission(category = DEVICE, operation = DELETE)
 	@KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE,
 		action = Action.DELETE, idParamOrder = 0)
 	public boolean deleteById(String deviceId) {
@@ -248,10 +269,12 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		return super.deleteById(deviceId);
 	}
 
+	@ErnPermission(category = DEVICE, operation = READ)
 	public List<String> getDevicesIds() {
 		return getAll().stream().map(DeviceEntity::getId).map(ObjectId::toHexString).toList();
 	}
 
+	@ErnPermission(category = DEVICE, operation = WRITE)
   public void importData(String deviceId, String data, MessageTypeEnum messageType) {
 		log.debug("Importing '{}' data for device '{}'.", messageType, deviceId);
 
@@ -301,4 +324,26 @@ public class DeviceService extends BaseService<DeviceEntity> {
 
 		log.debug("Imported '{}' messages successfully, with '{}' errors.", okCounter, errorCounter);
   }
+
+	@Override
+	@ErnPermission(category = DEVICE, operation = READ)
+	public Page<DeviceEntity> find(Pageable pageable, boolean partialMatch) {
+		return super.find(pageable, partialMatch);
+	}
+
+	@Override
+	@ErnPermission(category = DEVICE, operation = READ)
+	public DeviceEntity findById(String id) {
+		return super.findById(id);
+	}
+
+	@ErnPermission(category = DEVICE, operation = CREATE)
+	public DeviceEntity saveNew(DeviceEntity entity) {
+		return saveHandler(entity);
+	}
+
+	@ErnPermission(category = DEVICE, operation = WRITE)
+	public DeviceEntity saveUpdate(DeviceEntity entity) {
+		return saveHandler(entity);
+	}
 }

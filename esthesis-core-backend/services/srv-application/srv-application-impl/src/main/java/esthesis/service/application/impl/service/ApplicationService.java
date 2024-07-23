@@ -1,10 +1,16 @@
 package esthesis.service.application.impl.service;
 
+import static esthesis.common.AppConstants.Security.Category.APPLICATION;
+import static esthesis.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.common.AppConstants.Security.Operation.READ;
+import static esthesis.common.AppConstants.Security.Operation.WRITE;
+
 import esthesis.service.application.entity.ApplicationEntity;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.common.validation.CVExceptionContainer;
+import esthesis.service.security.annotation.ErnPermission;
 import io.quarkus.cache.Cache;
 import io.quarkus.cache.CacheName;
 import io.quarkus.cache.CacheResult;
@@ -23,45 +29,55 @@ public class ApplicationService extends BaseService<ApplicationEntity> {
 	@CacheName("dt-token-is-valid")
 	Cache dtTokenIsValidCache;
 
+	/**
+	 * Invalidate the cache for the token of the application entity.
+	 * @param applicationEntity the application entity to invalidate the cache for.
+	 */
+	private void invalidateCache(ApplicationEntity applicationEntity) {
+		ApplicationEntity existingApplicationEntity = findFirstByColumn("name",
+			applicationEntity.getName());
+		if (existingApplicationEntity != null) {
+			dtTokenIsValidCache.invalidate(existingApplicationEntity.getToken()).await()
+				.indefinitely();
+		} else {
+			dtTokenIsValidCache.invalidate(applicationEntity.getToken()).await().indefinitely();
+		}
+	}
+
+	private ApplicationEntity saveHandler(ApplicationEntity applicationEntity) {
+		invalidateCache(applicationEntity);
+		applicationEntity.setCreatedOn(Instant.now());
+
+		return super.save(applicationEntity);
+	}
+
 	@Override
+	@ErnPermission(category = APPLICATION, operation = READ)
 	public Page<ApplicationEntity> find(Pageable pageable) {
 		log.debug("Finding all applications with '{}'.", pageable);
 		return super.find(pageable);
 	}
 
 	@Override
+	@ErnPermission(category = APPLICATION, operation = READ)
 	public Page<ApplicationEntity> find(Pageable pageable, boolean partialMatch) {
 		log.debug("Finding all applications with partial match with '{}'.",
 			pageable);
 		return super.find(pageable, partialMatch);
 	}
 
-	@Override
-	public ApplicationEntity save(ApplicationEntity applicationEntity) {
-		log.debug("Saving application '{}'.", applicationEntity);
-		// Ensure no other application has the same name.
-		ApplicationEntity existingApplicationEntity = findFirstByColumn("name",
-			applicationEntity.getName());
-		if (existingApplicationEntity != null && (applicationEntity.getId() == null
-			|| !existingApplicationEntity.getId().equals(applicationEntity.getId()))) {
-			new CVExceptionContainer<ApplicationEntity>()
-				.addViolation("name", "An application with name '{}' already "
-					+ "exists.", applicationEntity.getName())
-				.throwCVE();
-		}
+	@ErnPermission(category = APPLICATION, operation = CREATE)
+	public ApplicationEntity saveNew(ApplicationEntity applicationEntity) {
+		return saveHandler(applicationEntity);
+	}
 
-		// Invalidate cache.
-		if (existingApplicationEntity != null) {
-			dtTokenIsValidCache.invalidate(existingApplicationEntity.getToken()).await()
-				.indefinitely();
-		}
-		dtTokenIsValidCache.invalidate(applicationEntity.getToken()).await().indefinitely();
-
-		applicationEntity.setCreatedOn(Instant.now());
-		return super.save(applicationEntity);
+	@ErnPermission(category = APPLICATION, operation = WRITE)
+	public ApplicationEntity saveUpdate(ApplicationEntity applicationEntity) {
+		return saveHandler(applicationEntity);
 	}
 
 	@Override
+	@ErnPermission(category = APPLICATION, operation = DELETE)
 	public boolean deleteById(String id) {
 		log.debug("Deleting application with id '{}'.", id);
 		ApplicationEntity applicationEntity = findById(id);
@@ -73,6 +89,12 @@ public class ApplicationService extends BaseService<ApplicationEntity> {
 			log.warn("Application with id '{}' not found to be deleted.", id);
 			return false;
 		}
+	}
+
+	@Override
+	@ErnPermission(category = APPLICATION, operation = READ)
+	public ApplicationEntity findById(String id) {
+		return super.findById(id);
 	}
 
 	@CacheResult(cacheName = "dt-token-is-valid")

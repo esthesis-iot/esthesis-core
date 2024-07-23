@@ -31,7 +31,11 @@ public class CampaignResourceImpl implements CampaignResource {
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.CAMPAIGN, op = Operation.WRITE, msg = "Save campaign")
 	public void save(CampaignEntity campaignEntity) {
-		campaignService.save(campaignEntity);
+		if (campaignEntity.getId() == null) {
+			campaignService.saveNew(campaignEntity);
+		} else {
+			campaignService.saveUpdate(campaignEntity);
+		}
 	}
 
 	@Override

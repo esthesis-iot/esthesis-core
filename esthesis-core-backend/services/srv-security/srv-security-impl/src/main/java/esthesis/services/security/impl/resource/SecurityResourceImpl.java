@@ -71,7 +71,11 @@ public class SecurityResourceImpl implements SecurityResource {
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.USERS, op = Operation.READ, msg = "Save user")
 	public UserEntity saveUser(UserEntity userEntity) {
-		return securityUserService.save(userEntity);
+		if (userEntity.getId() == null) {
+			return securityUserService.saveNew(userEntity);
+		} else {
+			return securityUserService.saveUpdate(userEntity);
+		}
 	}
 
 	@Override
@@ -111,7 +115,11 @@ public class SecurityResourceImpl implements SecurityResource {
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.POLICIES, op = Operation.READ, msg = "Save policy")
 	public PolicyEntity savePolicy(PolicyEntity policyEntity) {
-		return securityPolicyService.save(policyEntity);
+		if (policyEntity.getId() == null) {
+			return securityPolicyService.saveNew(policyEntity);
+		} else {
+			return securityPolicyService.saveUpdate(policyEntity);
+		}
 	}
 
 	// ***********************************************************************************************
@@ -145,7 +153,11 @@ public class SecurityResourceImpl implements SecurityResource {
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.ROLES, op = Operation.WRITE, msg = "Save role")
 	public RoleEntity saveRole(RoleEntity roleEntity) {
-		return securityRoleService.save(roleEntity);
+		if (roleEntity.getId() == null) {
+			return securityRoleService.saveNew(roleEntity);
+		} else {
+			return securityRoleService.saveUpdate(roleEntity);
+		}
 	}
 
 	// ***********************************************************************************************
@@ -179,7 +191,11 @@ public class SecurityResourceImpl implements SecurityResource {
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.GROUPS, op = Operation.WRITE, msg = "Save group")
 	public GroupEntity saveGroup(GroupEntity groupEntity) {
-		return securityGroupService.save(groupEntity);
+		 if (groupEntity.getId() == null) {
+			return securityGroupService.saveNew(groupEntity);
+		} else {
+			return securityGroupService.saveUpdate(groupEntity);
+		}
 	}
 
 	// ***********************************************************************************************

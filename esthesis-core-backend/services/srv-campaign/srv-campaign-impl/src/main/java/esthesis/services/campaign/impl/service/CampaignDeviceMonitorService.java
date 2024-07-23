@@ -161,4 +161,14 @@ public class CampaignDeviceMonitorService extends BaseService<CampaignDeviceMoni
 		return BigDecimal.valueOf(replied)
 			.divide(BigDecimal.valueOf(contacted), 2, RoundingMode.FLOOR);
 	}
+
+	@Override
+	public CampaignDeviceMonitorEntity save(CampaignDeviceMonitorEntity entity) {
+		return super.save(entity);
+	}
+
+	@Override
+	public long deleteByColumn(String columnName, Object value) {
+		return super.deleteByColumn(columnName, value);
+	}
 }

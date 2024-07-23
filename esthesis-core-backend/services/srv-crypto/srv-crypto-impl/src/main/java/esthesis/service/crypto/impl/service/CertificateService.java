@@ -1,6 +1,11 @@
 package esthesis.service.crypto.impl.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static esthesis.common.AppConstants.ROLE_SYSTEM;
+import static esthesis.common.AppConstants.Security.Category.CRYPTO;
+import static esthesis.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.common.AppConstants.Security.Operation.READ;
+
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.crypto.CryptoService;
 import esthesis.common.crypto.dto.CertificateSignRequestDTO;
@@ -9,8 +14,11 @@ import esthesis.common.exception.QCouldNotSaveException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QMutationNotPermittedException;
 import esthesis.service.common.BaseService;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.entity.CertificateEntity;
+import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
@@ -44,9 +52,6 @@ import org.jboss.resteasy.reactive.multipart.FileUpload;
 public class CertificateService extends BaseService<CertificateEntity> {
 
 	@Inject
-	ObjectMapper mapper;
-
-	@Inject
 	CAService caService;
 
 	@Inject
@@ -56,6 +61,7 @@ public class CertificateService extends BaseService<CertificateEntity> {
 	@RestClient
 	SettingsResource settingsResource;
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = CREATE)
 	public CertificateEntity importCertificate(CertificateEntity importedCertificateEntity,
 		FileUpload publicKey, FileUpload privateKey, FileUpload certificate) {
 		CertificateEntity certificateEntity = new CertificateEntity();
@@ -96,6 +102,7 @@ public class CertificateService extends BaseService<CertificateEntity> {
 	@Override
 	@KafkaNotification(component = Component.CERTIFICATE, subject = Subject.CERTIFICATE,
 		action = Action.CREATEORUPDATE, idParamRegEx = "BaseEntity\\(id=(.*?)\\)")
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = CREATE)
 	public CertificateEntity save(CertificateEntity certificateEntity) {
 		// Certificates can not be edited, so throw an exception in that case.
 		if (certificateEntity.getId() != null) {
@@ -187,18 +194,21 @@ public class CertificateService extends BaseService<CertificateEntity> {
 		}
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public String getPrivateKey(String certId) {
 		CertificateEntity certificateEntity = findById(certId);
 
 		return certificateEntity.getPrivateKey();
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public String getPublicKey(String certId) {
 		CertificateEntity certificateEntity = findById(certId);
 
 		return certificateEntity.getPublicKey();
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public String getCertificate(String certId) {
 		CertificateEntity certificateEntity = findById(certId);
 
@@ -208,7 +218,20 @@ public class CertificateService extends BaseService<CertificateEntity> {
 	@Override
 	@KafkaNotification(component = Component.CERTIFICATE, subject = Subject.CERTIFICATE,
 		action = Action.DELETE, idParamOrder = 0)
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = DELETE)
 	public boolean deleteById(String id) {
 		return super.deleteById(id);
+	}
+
+	@Override
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
+	public CertificateEntity findById(String id) {
+		return super.findById(id);
+	}
+
+	@Override
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
+	public Page<CertificateEntity> find(Pageable pageable) {
+		return super.find(pageable);
 	}
 }

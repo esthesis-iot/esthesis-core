@@ -78,8 +78,12 @@ public class DeviceResourceImpl implements DeviceResource {
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Save device")
-	public DeviceEntity save(@Valid DeviceEntity object) {
-		return deviceService.save(object);
+	public DeviceEntity save(@Valid DeviceEntity deviceEntity) {
+		if (deviceEntity.getId() != null) {
+			return deviceService.saveNew(deviceEntity);
+		} else {
+			return deviceService.saveUpdate(deviceEntity);
+		}
 	}
 
 	@Override

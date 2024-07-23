@@ -32,7 +32,11 @@ public class InfrastructureMqttResourceImpl implements InfrastructureMqttResourc
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(op = Operation.WRITE, cat = Category.INFRASTRUCTURE, msg = "Save infrastructure / MQTT")
 	public InfrastructureMqttEntity save(InfrastructureMqttEntity mqttEntity) {
-		return infrastructureMqttService.save(mqttEntity);
+		if (mqttEntity.getId() == null) {
+			return infrastructureMqttService.saveNew(mqttEntity);
+		} else {
+			return infrastructureMqttService.saveUpdate(mqttEntity);
+		}
 	}
 
 	@Override

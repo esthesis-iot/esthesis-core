@@ -1,7 +1,16 @@
 package esthesis.services.infrastructure.impl.service;
 
+import static esthesis.common.AppConstants.Security.Category.INFRASTRUCTURE;
+import static esthesis.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.common.AppConstants.Security.Operation.READ;
+import static esthesis.common.AppConstants.Security.Operation.WRITE;
+
 import esthesis.service.common.BaseService;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
 import esthesis.service.infrastructure.entity.InfrastructureMqttEntity;
+import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.tag.entity.TagEntity;
 import esthesis.service.tag.resource.TagSystemResource;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -23,8 +32,12 @@ public class InfrastructureMqttService extends BaseService<InfrastructureMqttEnt
 	@RestClient
 	TagSystemResource tagSystemResource;
 
-	public Optional<InfrastructureMqttEntity> matchByTags(String tags) {
+	private InfrastructureMqttEntity saveHandler(InfrastructureMqttEntity entity) {
+		return super.save(entity);
+	}
 
+	@ErnPermission(category = INFRASTRUCTURE, operation = READ)
+	public Optional<InfrastructureMqttEntity> matchByTags(String tags) {
 		log.debug("Looking for a matching MQTT server for tags '{}'.", tags);
 
 		// Convert the names of the tags to their IDs.
@@ -57,8 +70,8 @@ public class InfrastructureMqttService extends BaseService<InfrastructureMqttEnt
 		return match;
 	}
 
+	@ErnPermission(category = INFRASTRUCTURE, operation = READ)
 	public Optional<InfrastructureMqttEntity> matchRandom() {
-
 		log.debug("Looking for a random MQTT server.");
 
 		// Find a random MQTT server.
@@ -67,5 +80,33 @@ public class InfrastructureMqttService extends BaseService<InfrastructureMqttEnt
 		log.debug("Returning MQTT server '{}'.", match);
 
 		return match;
+	}
+
+	@Override
+	@ErnPermission(category = INFRASTRUCTURE, operation = READ)
+	public Page<InfrastructureMqttEntity> find(Pageable pageable) {
+		return super.find(pageable);
+	}
+
+	@Override
+	@ErnPermission(category = INFRASTRUCTURE, operation = READ)
+	public InfrastructureMqttEntity findById(String id) {
+		return super.findById(id);
+	}
+
+	@ErnPermission(category = INFRASTRUCTURE, operation = CREATE)
+	public InfrastructureMqttEntity saveNew(InfrastructureMqttEntity entity) {
+		return saveHandler(entity);
+	}
+
+	@ErnPermission(category = INFRASTRUCTURE, operation = WRITE)
+	public InfrastructureMqttEntity saveUpdate(InfrastructureMqttEntity entity) {
+		return saveHandler(entity);
+	}
+
+	@Override
+	@ErnPermission(category = INFRASTRUCTURE, operation = DELETE)
+	public boolean deleteById(String deviceId) {
+		return super.deleteById(deviceId);
 	}
 }

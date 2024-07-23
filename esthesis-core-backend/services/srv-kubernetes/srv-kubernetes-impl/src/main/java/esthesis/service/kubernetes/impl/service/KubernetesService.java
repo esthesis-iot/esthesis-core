@@ -1,9 +1,13 @@
 package esthesis.service.kubernetes.impl.service;
 
+import static esthesis.common.AppConstants.Security.Category.KUBERNETES;
+import static esthesis.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.common.AppConstants.Security.Operation.READ;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import esthesis.service.kubernetes.dto.PodInfoDTO;
 import esthesis.service.kubernetes.dto.SecretDTO;
+import esthesis.service.security.annotation.ErnPermission;
 import io.fabric8.kubernetes.api.model.EnvVar;
 import io.fabric8.kubernetes.api.model.EnvVarBuilder;
 import io.fabric8.kubernetes.api.model.Quantity;
@@ -55,6 +59,7 @@ public class KubernetesService {
 	 *
 	 * @param secretDTO The secret to create or update.
 	 */
+	@ErnPermission(category = KUBERNETES, operation = CREATE)
 	public void createSecret(SecretDTO secretDTO) {
 		if (secretDTO == null || secretDTO.getEntries() == null || secretDTO.getEntries().isEmpty()) {
 			return;
@@ -75,6 +80,7 @@ public class KubernetesService {
 	 *
 	 * @param podInfoDTO The pod to schedule.
 	 */
+	@ErnPermission(category = KUBERNETES, operation = CREATE)
 	public boolean schedulePod(PodInfoDTO podInfoDTO) {
 		log.debug("Scheduling pod '{}'.", podInfoDTO);
 
@@ -197,6 +203,7 @@ public class KubernetesService {
 	/**
 	 * Returns the list of namespaces.
 	 */
+	@ErnPermission(category = KUBERNETES, operation = READ)
 	public List<String> getNamespaces() {
 		return kc.namespaces().list().getItems().stream().map(
 				n -> n.getMetadata().getName()).toList().stream()

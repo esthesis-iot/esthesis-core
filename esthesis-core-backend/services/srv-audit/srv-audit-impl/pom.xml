@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>esthesis</groupId>
 		<artifactId>srv-audit</artifactId>
-		<version>3.0.42-SNAPSHOT</version>
+		<version>3.0.43-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>srv-audit-impl</artifactId>
@@ -24,8 +24,13 @@
 		<dependency>
 			<groupId>esthesis</groupId>
 			<artifactId>srv-audit-client</artifactId>
-			<version>3.0.42-SNAPSHOT</version>
+			<version>3.0.43-SNAPSHOT</version>
 		</dependency>
-	</dependencies>
+    <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>srv-security-client</artifactId>
+      <version>3.0.41-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 
 </project>

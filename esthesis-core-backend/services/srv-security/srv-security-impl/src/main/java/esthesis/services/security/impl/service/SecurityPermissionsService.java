@@ -55,9 +55,9 @@ public class SecurityPermissionsService {
 			resourceId = "*";
 		}
 		List<String> permissions = getPermissionsForUser();
-		boolean permissionAllowed = isPermission(permissions, Permission.ALLOW, category, operation,
+		boolean permissionAllowed = isPermitted(permissions, Permission.ALLOW, category, operation,
 			resourceId);
-		boolean permissionDenied = isPermission(permissions, Permission.DENY, category, operation,
+		boolean permissionDenied = isPermitted(permissions, Permission.DENY, category, operation,
 			resourceId);
 		boolean permissionEvaluation = permissionAllowed && !permissionDenied;
 		log.debug("Permission evaluation for user '{}' on resource '{}:{}:{}' is '{}' [allowed='{}', "
@@ -71,14 +71,12 @@ public class SecurityPermissionsService {
 
 	/**
 	 * Get all permissions for the current user (i.e. the one identified on the JWT).
-	 *
-	 * @return
 	 */
 	public List<String> getPermissionsForUser() {
 		return getPermissionsForUser(securityIdentity.getPrincipal().getName());
 	}
 
-	private boolean isPermission(List<String> permissions,
+	private boolean isPermitted(List<String> permissions,
 		AppConstants.Security.Permission permission, AppConstants.Security.Category category,
 		Operation operation, String resourceId) {
 

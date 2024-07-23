@@ -1,7 +1,11 @@
 package esthesis.services.about.impl.service;
 
+import static esthesis.common.AppConstants.Security.Category.ABOUT;
+import static esthesis.common.AppConstants.Security.Operation.READ;
+
 import esthesis.common.git.GitUtil;
 import esthesis.service.about.dto.AboutGeneralDTO;
+import esthesis.service.security.annotation.ErnPermission;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public class AboutService {
 
+	@ErnPermission(category = ABOUT, operation = READ)
 	public AboutGeneralDTO getGeneralInfo() {
 		AboutGeneralDTO about = new AboutGeneralDTO();
 

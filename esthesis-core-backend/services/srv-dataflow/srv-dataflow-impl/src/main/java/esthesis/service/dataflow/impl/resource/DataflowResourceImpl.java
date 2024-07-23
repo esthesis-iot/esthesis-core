@@ -56,7 +56,11 @@ public class DataflowResourceImpl implements DataflowResource {
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.DATAFLOW, op = Operation.WRITE, msg = "Save dataflow")
 	public DataflowEntity save(DataflowEntity dataflowEntity) {
-		return dataflowService.save(dataflowEntity);
+		if (dataflowEntity.getId() == null) {
+			return dataflowService.saveNew(dataflowEntity);
+		} else {
+			return dataflowService.saveUpdate(dataflowEntity);
+		}
 	}
 
 	@Override

@@ -1,5 +1,11 @@
 package esthesis.services.campaign.impl.service;
 
+import static esthesis.common.AppConstants.ROLE_SYSTEM;
+import static esthesis.common.AppConstants.Security.Category.CAMPAIGN;
+import static esthesis.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.common.AppConstants.Security.Operation.READ;
+import static esthesis.common.AppConstants.Security.Operation.WRITE;
 import static esthesis.services.campaign.impl.dto.ValidationMessages.DATE_IN_PAST;
 import static esthesis.services.campaign.impl.dto.ValidationMessages.DATE_REQUIRED;
 import static esthesis.services.campaign.impl.dto.ValidationMessages.GENERIC;
@@ -20,10 +26,13 @@ import esthesis.service.campaign.entity.CampaignEntity;
 import esthesis.service.campaign.exception.CampaignDeviceAmbiguous;
 import esthesis.service.campaign.exception.CampaignDeviceDoesNotExist;
 import esthesis.service.common.BaseService;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
 import esthesis.service.common.validation.CVExceptionContainer;
 import esthesis.service.common.validation.SoftValidators;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
+import esthesis.service.security.annotation.ErnPermission;
 import esthesis.services.campaign.impl.dto.GroupDTO;
 import esthesis.services.campaign.impl.job.WorkflowParameters;
 import io.camunda.zeebe.client.ZeebeClient;
@@ -64,9 +73,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
 		return String.valueOf(campaignConditionDTO.getType());
 	}
 
-	@Override
-	@Transactional
-	public CampaignEntity save(CampaignEntity campaignEntity) {
+	private CampaignEntity saveHandler(CampaignEntity campaignEntity) {
 		CVExceptionContainer<String> violations = new CVExceptionContainer<>();
 		List<CampaignConditionDTO> conditions = campaignEntity.getConditions();
 		for (CampaignConditionDTO condition : conditions) {
@@ -134,6 +141,19 @@ public class CampaignService extends BaseService<CampaignEntity> {
 		return super.save(campaignEntity);
 	}
 
+	@Transactional
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = CREATE)
+	public CampaignEntity saveNew(CampaignEntity campaignEntity) {
+		return saveHandler(campaignEntity);
+	}
+
+	@Transactional
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = WRITE)
+	public CampaignEntity saveUpdate(CampaignEntity campaignEntity) {
+		return saveHandler(campaignEntity);
+	}
+
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = WRITE)
 	public void resume(String campaignId) {
 		// Get campaign to resume.
 		log.debug("Resuming campaign with id '{}'.", campaignId);
@@ -145,6 +165,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
 			.join();
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = READ)
 	public List<Integer> findGroups(String campaignId) {
 		CampaignEntity campaign = findById(campaignId);
 		int groupsNo =
@@ -159,6 +180,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
 		return groups;
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = READ)
 	public CampaignStatsDTO getCampaignStats(String campaignId) {
 		CampaignStatsDTO campaignStatsDTO = new CampaignStatsDTO();
 		CampaignEntity campaignEntity = findById(campaignId);
@@ -216,6 +238,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
 	}
 
 	@Transactional
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = WRITE)
 	public void start(String campaignId) {
 		// Get the campaign about to start.
 		log.debug("Starting campaign with id '{}'.", campaignId);
@@ -285,6 +308,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
 	}
 
 	@Transactional
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = DELETE)
 	public void delete(String campaignId) {
 		try {
 			log.debug("Terminating campaign instance in workflow engine for campaign id '{}'.",
@@ -307,6 +331,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
 	}
 
 	@Transactional
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = WRITE)
 	public void terminate(String campaignId) {
 		CampaignEntity campaignEntity = findById(campaignId);
 
@@ -331,6 +356,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
 	 * @param campaignId The id of the campaign to replicate.
 	 * @return The id of the new campaign.
 	 */
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = CREATE)
 	public CampaignEntity replicate(String campaignId) {
 		CampaignEntity campaignEntity = findById(campaignId);
 
@@ -352,6 +378,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
 			.setAdvancedUpdateRepliesTimer(campaignEntity.getAdvancedUpdateRepliesTimer()));
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = READ)
 	public List<CampaignConditionDTO> getCondition(CampaignEntity campaignEntity,
 		GroupDTO groupDTO, Condition.Type type) {
 		return campaignEntity.getConditions().stream()
@@ -368,5 +395,17 @@ public class CampaignService extends BaseService<CampaignEntity> {
 		CampaignEntity campaignEntity = findById(campaignId);
 		campaignEntity.setStateDescription(stateDescription);
 		return save(campaignEntity);
+	}
+
+	@Override
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = READ)
+	public CampaignEntity findById(String id) {
+		return super.findById(id);
+	}
+
+	@Override
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = READ)
+	public Page<CampaignEntity> find(Pageable pageable) {
+		return super.find(pageable);
 	}
 }
