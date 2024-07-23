@@ -51,6 +51,9 @@ quarkus:
     CertificateResource:
       url: http://localhost:59040
       scope: Singleton
+    SecurityResource:
+      url: http://localhost:59170
+      scope: Singleton
 
 kafka:
   security:

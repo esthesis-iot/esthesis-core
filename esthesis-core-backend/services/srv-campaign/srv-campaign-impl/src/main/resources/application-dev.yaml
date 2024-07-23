@@ -40,6 +40,9 @@ quarkus:
     CommandSystemResource:
       url: http://localhost:59080
       scope: Singleton
+    SecurityResource:
+      url: http://localhost:59170
+      scope: Singleton
   zeebe:
     client:
       broker:

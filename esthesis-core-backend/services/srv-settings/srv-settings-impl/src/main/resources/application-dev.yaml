@@ -23,6 +23,10 @@ quarkus:
   rest-client:
     AuditResource:
       url: http://localhost:59140
+      scope: Singleton
+    SecurityResource:
+      url: http://localhost:59170
+      scope: Singleton
   otel:
     sdk:
       disabled: true

@@ -20,7 +20,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 @Slf4j
 @Interceptor
 @Priority(Interceptor.Priority.APPLICATION)
-@Audited(op = Operation.OTHER, cat = Category.NULL, msg = "")
+@Audited(op = Operation.AUDIT, cat = Category.NULL, msg = "")
 @UnlessBuildProfile("test")
 public class AuditedInterceptor {
 

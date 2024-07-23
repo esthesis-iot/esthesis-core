@@ -33,4 +33,18 @@ class CommandReplyService extends BaseService<CommandReplyEntity> {
 		}
 	}
 
+	@Override
+	public boolean deleteById(String deviceId) {
+		return super.deleteById(deviceId);
+	}
+
+	@Override
+	public long countByColumn(String column, Object value) {
+		return super.countByColumn(column, value);
+	}
+
+	@Override
+	public long deleteByColumn(String columnName, Object value) {
+		return super.deleteByColumn(columnName, value);
+	}
 }

@@ -1,6 +1,9 @@
 package esthesis.services.device.impl.service;
 
 import static esthesis.common.AppConstants.HARDWARE_ID_REGEX;
+import static esthesis.common.AppConstants.Security.Category.DEVICE;
+import static esthesis.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.common.AppConstants.Security.Operation.WRITE;
 
 import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Device.Status;
@@ -19,6 +22,7 @@ import esthesis.service.device.dto.DeviceKeyDTO;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
+import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.service.tag.entity.TagEntity;
@@ -153,6 +157,7 @@ public class DeviceRegistrationService {
 	 * @param hardwareId The hardware id of the device to be registered.
 	 * @param tags       The tag names associated with this device as a comma-separated list.
 	 */
+	@ErnPermission(category = DEVICE, operation = CREATE)
 	@KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE, action = Action.CREATE,
 		idParamRegEx = "BaseEntity\\(id=(.*?)\\)")
 	DeviceEntity register(String hardwareId, List<String> tags, AppConstants.Device.Status status,
@@ -251,6 +256,7 @@ public class DeviceRegistrationService {
 	 *
 	 * @param deviceRegistration The preregistration details of the device.
 	 */
+	@ErnPermission(category = DEVICE, operation = CREATE)
 	public void preregister(DeviceRegistrationDTO deviceRegistration)
 	throws NoSuchAlgorithmException, OperatorCreationException, InvalidKeySpecException,
 				 NoSuchProviderException, IOException {
@@ -288,6 +294,7 @@ public class DeviceRegistrationService {
 	 * @throws OperatorCreationException
 	 * @throws NoSuchProviderException
 	 */
+	@ErnPermission(category = DEVICE, operation = CREATE)
 	public DeviceEntity register(DeviceRegistrationDTO deviceRegistration)
 	throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, OperatorCreationException,
 				 NoSuchProviderException {
@@ -320,6 +327,7 @@ public class DeviceRegistrationService {
 	 *
 	 * @param hardwareId The hardware id of the device to activate.
 	 */
+	@ErnPermission(category = DEVICE, operation = WRITE)
 	public DeviceEntity activatePreregisteredDevice(String hardwareId) {
 		Optional<DeviceEntity> optionalDevice = deviceRepository.findByHardwareId(hardwareId);
 

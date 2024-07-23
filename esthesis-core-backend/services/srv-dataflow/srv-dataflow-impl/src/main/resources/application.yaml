@@ -46,3 +46,6 @@ quarkus:
     CertificateResource:
       url: http://esthesis-core-srv-crypto-service:8080
       scope: Singleton
+    SecurityResource:
+      url: http://esthesis-core-srv-security-service:8080
+      scope: Singleton

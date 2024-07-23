@@ -34,6 +34,9 @@ quarkus:
     DeviceResource:
       url: http://esthesis-core-srv-device-service:8080
       scope: Singleton
+    SecurityResource:
+      url: http://esthesis-core-srv-security-service:8080
+      scope: Singleton
 
 mp:
   messaging:

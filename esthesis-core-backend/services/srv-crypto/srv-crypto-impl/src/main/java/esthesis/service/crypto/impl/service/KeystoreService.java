@@ -2,17 +2,26 @@ package esthesis.service.crypto.impl.service;
 
 import static esthesis.common.AppConstants.Keystore.Item.KeyType.CERT;
 import static esthesis.common.AppConstants.Keystore.Item.KeyType.PRIVATE;
+import static esthesis.common.AppConstants.ROLE_SYSTEM;
+import static esthesis.common.AppConstants.Security.Category.CRYPTO;
+import static esthesis.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.common.AppConstants.Security.Operation.READ;
+import static esthesis.common.AppConstants.Security.Operation.WRITE;
 
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.crypto.CryptoService;
 import esthesis.common.exception.QSecurityException;
 import esthesis.service.common.BaseService;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.dto.KeystoreEntryDTO;
 import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.entity.CertificateEntity;
 import esthesis.service.crypto.entity.KeystoreEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
+import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.resource.SettingsResource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -73,7 +82,12 @@ public class KeystoreService extends BaseService<KeystoreEntity> {
 		return keystore;
 	}
 
+	private KeystoreEntity saveHandler(KeystoreEntity entity) {
+		return super.save(entity);
+	}
+
 	@SuppressWarnings("java:S3776")
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public byte[] download(String keystoreId) {
 		try {
 			KeystoreEntity keystoreEntity = findById(keystoreId);
@@ -150,5 +164,33 @@ public class KeystoreService extends BaseService<KeystoreEntity> {
 		} catch (Exception e) {
 			throw new QSecurityException("Error while creating keystore", e);
 		}
+	}
+
+	@Override
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
+	public KeystoreEntity findById(String id) {
+		return super.findById(id);
+	}
+
+	@Override
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
+	public Page<KeystoreEntity> find(Pageable pageable) {
+		return super.find(pageable);
+	}
+
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = CREATE)
+	public KeystoreEntity saveNew(KeystoreEntity entity) {
+		return saveHandler(entity);
+	}
+
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = WRITE)
+	public KeystoreEntity saveUpdate(KeystoreEntity entity) {
+		return saveHandler(entity);
+	}
+
+	@Override
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = DELETE)
+	public boolean deleteById(String deviceId) {
+		return super.deleteById(deviceId);
 	}
 }

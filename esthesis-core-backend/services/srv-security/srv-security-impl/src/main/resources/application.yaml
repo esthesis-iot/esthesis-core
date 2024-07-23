@@ -30,6 +30,9 @@ quarkus:
     AuditResource:
       url: http://esthesis-core-srv-audit-service:8080
       scope: Singleton
+    SecurityResource:
+      url: http://esthesis-core-srv-security-service:8080
+      scope: Singleton
 
 esthesis:
   security:

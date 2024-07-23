@@ -55,6 +55,6 @@ public class PauseJob implements JobHandler {
 
 		p.setPauseCondition(pauseCondition);
 		client.newCompleteCommand(job.getKey()).variables(p).send().join();
-		campaignService.save(campaignEntity);
+		campaignService.saveUpdate(campaignEntity);
 	}
 }

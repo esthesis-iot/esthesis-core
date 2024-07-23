@@ -1,7 +1,12 @@
 package esthesis.services.device.impl.service;
 
+import static esthesis.common.AppConstants.Security.Category.DEVICE;
+import static esthesis.common.AppConstants.Security.Operation.READ;
+import static esthesis.common.AppConstants.Security.Operation.WRITE;
+
 import com.google.common.collect.Lists;
 import esthesis.service.device.entity.DeviceEntity;
+import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.service.tag.entity.TagEntity;
 import esthesis.service.tag.resource.TagResource;
@@ -39,6 +44,7 @@ public class DeviceTagService {
 	 * @param partialMatch Whether the search for the tag name will be partial or not.
 	 * @return Returns the devices matched.
 	 */
+	@ErnPermission(category = DEVICE, operation = READ)
 	public List<DeviceEntity> findByTagName(List<String> tagNames,
 		boolean partialMatch) {
 		if (CollectionUtils.isEmpty(tagNames)) {
@@ -60,10 +66,12 @@ public class DeviceTagService {
 	 * @param partialMatch Whether the search for the tag name will be partial or not.
 	 * @return Returns the devices matched.
 	 */
+	@ErnPermission(category = DEVICE, operation = READ)
 	public List<DeviceEntity> findByTagName(String tagName, boolean partialMatch) {
 		return findByTagName(Collections.singletonList(tagName), partialMatch);
 	}
 
+	@ErnPermission(category = DEVICE, operation = READ)
 	public List<DeviceEntity> findByTagId(String tagId) {
 		return deviceRepository.findByTagId(tagId);
 	}
@@ -74,6 +82,7 @@ public class DeviceTagService {
 	 * @param tags         The list of tag names to search by.
 	 * @param partialMatch Whether the search for the tag name should be partial or not.
 	 */
+	@ErnPermission(category = DEVICE, operation = READ)
 	public Long countByTag(List<String> tags, boolean partialMatch) {
 		List<TagEntity> tagsByName = Lists.newArrayList(
 			tagResource.findByNames(String.join(",", tags), partialMatch));
@@ -92,6 +101,7 @@ public class DeviceTagService {
 	 *
 	 * @param tagId the ID of the tag to be removed.
 	 */
+	@ErnPermission(category = DEVICE, operation = WRITE)
 	public void removeTagById(String tagId) {
 		log.debug("Removing tag id '{}' from all devices.", tagId);
 		deviceRepository.find("tags", tagId).stream()

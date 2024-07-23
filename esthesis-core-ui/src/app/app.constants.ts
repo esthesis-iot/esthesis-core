@@ -193,6 +193,7 @@ export const AppConstants = {
       KEYSTORE: "keystore",
       KUBERNETES: "kubernetes",
       PROVISIONING: "provisioning",
+      SECURITY: "security",
       SETTINGS: "settings",
       TAG: "tag",
       USERS: "users",
@@ -201,12 +202,12 @@ export const AppConstants = {
       POLICIES: "policies",
       NULL: "null"
     },
-    // Equivalent to AppConstants.Audit.Operation
+    // Equivalent to AppConstants.Security.Operation
     OPERATION: {
+      CREATE: "create",
       READ: "read",
       WRITE: "write",
-      DELETE: "delete",
-      CREATE: "create"
+      DELETE: "delete"
     },
     PERMISSION: {
       ALLOW: "allow",

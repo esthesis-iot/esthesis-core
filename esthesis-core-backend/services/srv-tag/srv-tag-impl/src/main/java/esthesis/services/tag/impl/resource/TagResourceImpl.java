@@ -74,6 +74,10 @@ public class TagResourceImpl implements TagResource {
 	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	@Audited(cat = Category.TAG, op = Operation.WRITE, msg = "Save tag")
 	public TagEntity save(@Valid TagEntity tagEntity) {
-		return tagService.save(tagEntity);
+		if (tagEntity.getId() == null) {
+			return tagService.saveNew(tagEntity);
+		} else {
+			return tagService.saveUpdate(tagEntity);
+		}
 	}
 }

@@ -1,24 +1,72 @@
 package esthesis.service.security.annotation;
 
+import esthesis.common.AppConstants.Security.Category;
+import esthesis.common.AppConstants.Security.Operation;
+import esthesis.common.entity.BaseEntity;
+import esthesis.common.exception.QSecurityException;
+import esthesis.service.security.resource.SecurityResource;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.Priority;
+import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @Interceptor
 @Priority(Interceptor.Priority.APPLICATION)
-@ErnPermission
+@ErnPermission(category = Category.NULL, operation = Operation.NULL)
 public class ErnPermissionInterceptor {
+
+	@Inject
+	SecurityIdentity securityIdentity;
+
+	@Inject
+	@RestClient
+	SecurityResource securityResource;
 
 	@AroundInvoke
 	Object checkPermission(InvocationContext ctx) throws Exception {
-		log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> BEFORE");
-		// Proceed with the invocation.
-		Object proceed = ctx.proceed();
-		log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AFTER");
+		log.trace("Checking permission for method '{}' on class '{}.",
+			ctx.getMethod().getName(), ctx.getTarget().getClass().getName());
+		// Get annotation parameters.
+		ErnPermission ernPermission = ctx.getMethod().getAnnotation(ErnPermission.class);
+		log.trace("Security annotation parameter: '{}'", ernPermission);
 
-		return proceed;
+		if (Arrays.stream(ernPermission.bypassForRoles()).noneMatch(securityIdentity::hasRole)) {
+			log.trace("Security check will be performed.");
+
+			// Get entity id.
+			String resourceId = null;
+			if (ctx.getParameters() != null && ctx.getParameters().length > 0 && ctx.getParameters()[0] != null) {
+				Object entity = ctx.getParameters()[0];
+				if (entity instanceof String entityId) {
+					resourceId = entityId;
+				} else if (entity instanceof BaseEntity baseEntity && baseEntity.getId() != null) {
+					resourceId = baseEntity.getId().toHexString();
+				}
+				log.trace("Found resource ID: '{}'.", resourceId);
+			}
+
+			// Perform security check.
+			if (resourceId != null) {
+				if (!securityResource.isPermitted(ernPermission.category(), ernPermission.operation(),
+					resourceId)) {
+					throw new QSecurityException("You are not allowed to perform this operation.");
+				}
+			} else {
+				if (!securityResource.isPermitted(ernPermission.category(), ernPermission.operation())) {
+					throw new QSecurityException("You are not allowed to perform this operation.");
+				}
+			}
+		} else {
+			log.trace("Security check will be bypassed.");
+		}
+
+		// Proceed with the invocation.
+		return ctx.proceed();
 	}
 }

@@ -1,5 +1,11 @@
 package esthesis.service.command.impl.service;
 
+import static esthesis.common.AppConstants.ROLE_SYSTEM;
+import static esthesis.common.AppConstants.Security.Category.COMMAND;
+import static esthesis.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.common.AppConstants.Security.Operation.READ;
+
 import esthesis.avro.EsthesisCommandRequestMessage;
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.entity.CommandReplyEntity;
@@ -10,6 +16,7 @@ import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
+import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.service.tag.resource.TagResource;
 import io.opentelemetry.context.Context;
@@ -93,6 +100,7 @@ public class CommandService {
 	 *
 	 * @param hardwareId The hardware ID to search for.
 	 */
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = READ)
 	public List<DeviceEntity> findDevicesByHardwareId(String hardwareId) {
 		return deviceResource.findByHardwareIds(hardwareId, true);
 	}
@@ -103,6 +111,7 @@ public class CommandService {
 	 *
 	 * @param cre The command request to save.
 	 */
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = CREATE)
 	public ObjectId saveRequest(CommandRequestEntity cre) {
 		// Set a default description for the command according to the command type, if none is provided.
 		if (StringUtils.isBlank(cre.getDescription())) {
@@ -133,6 +142,7 @@ public class CommandService {
 		return commandRequestService.save(cre).getId();
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = CREATE)
 	public ExecuteRequestScheduleInfoDTO saveRequestAndExecute(
 		CommandRequestEntity commandRequestEntity) {
 		log.debug("Saving command request '{}'.", commandRequestEntity);
@@ -200,39 +210,48 @@ public class CommandService {
 		return scheduleInfo;
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = READ)
 	public Page<CommandRequestEntity> findCommandRequest(Pageable pageable) {
 		return commandRequestService.find(pageable);
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = READ)
 	public CommandRequestEntity getCommand(String commandId) {
 		return commandRequestService.findById(commandId);
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = READ)
 	public List<CommandReplyEntity> getReplies(String correlationId) {
 		return commandReplyService.findByCorrelationId(correlationId);
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = DELETE)
 	public void deleteCommand(String commandId) {
 		commandRequestService.deleteById(commandId);
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = DELETE)
 	public void deleteReply(String replyId) {
 		commandReplyService.deleteById(replyId);
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = DELETE)
 	public void purge(int durationInDays) {
 		commandReplyService.purge(durationInDays);
 		commandRequestService.purge(durationInDays);
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = READ)
 	public long countCollectedReplies(String correlationId) {
 		return commandReplyService.countByColumn("correlationId", correlationId);
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = DELETE)
 	public void deleteReplies(String correlationId) {
 		commandReplyService.deleteByColumn("correlationId", correlationId);
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = CREATE)
   public void replayCommand(String sourceCommandId) {
 		CommandRequestEntity sourceCommand = commandRequestService.findById(sourceCommandId);
 		if (sourceCommand == null) {

@@ -47,7 +47,11 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
 	@Override
 	public ProvisioningPackageEntity save(ProvisioningPackageEntity provisioningPackageEntity,
 		FileUpload file) {
-		return provisioningService.save(provisioningPackageEntity, file);
+		if (provisioningPackageEntity.getId() == null) {
+			return provisioningService.saveNew(provisioningPackageEntity, file);
+		} else {
+			return provisioningService.saveUpdate(provisioningPackageEntity, file);
+		}
 	}
 
 	@Override

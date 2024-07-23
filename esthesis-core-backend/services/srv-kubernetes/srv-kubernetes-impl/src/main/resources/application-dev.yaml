@@ -25,3 +25,7 @@ quarkus:
           endpoint: http://grafana-tempo-distributor.esthesis:4317
   config:
     locations: "../../../../_dev/profiles"
+  rest-client:
+    SecurityResource:
+      url: http://localhost:59170
+      scope: Singleton

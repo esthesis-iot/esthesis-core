@@ -68,6 +68,11 @@
 			<artifactId>avro</artifactId>
 			<version>3.0.43-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>esthesis</groupId>
+			<artifactId>srv-security-client</artifactId>
+			<version>3.0.41-SNAPSHOT</version>
+		</dependency>
 
     <!-- THIRD-PARTY -->
     <dependency>
@@ -75,5 +80,5 @@
       <artifactId>slugify</artifactId>
       <version>${slugify.version}</version>
     </dependency>
-	</dependencies>
+  </dependencies>
 </project>

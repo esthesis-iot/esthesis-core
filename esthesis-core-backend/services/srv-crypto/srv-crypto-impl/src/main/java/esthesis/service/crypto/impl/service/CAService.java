@@ -1,5 +1,11 @@
 package esthesis.service.crypto.impl.service;
 
+import static esthesis.common.AppConstants.ROLE_SYSTEM;
+import static esthesis.common.AppConstants.Security.Category.CRYPTO;
+import static esthesis.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.common.AppConstants.Security.Operation.READ;
+
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.crypto.CryptoService;
 import esthesis.common.crypto.dto.CAHolderDTO;
@@ -9,8 +15,11 @@ import esthesis.common.exception.QCouldNotSaveException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QMutationNotPermittedException;
 import esthesis.service.common.BaseService;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
 import esthesis.service.common.validation.CVExceptionContainer;
 import esthesis.service.crypto.entity.CaEntity;
+import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
@@ -52,9 +61,21 @@ public class CAService extends BaseService<CaEntity> {
 	@Inject
 	CryptoService cryptoService;
 
+	private List<String> getCertificate(String caId, List<String> certificteChain) {
+		CaEntity caEntity = findById(caId);
+		certificteChain.add(caEntity.getCertificate());
+
+		if (caEntity.getParentCaId() != null) {
+			getCertificate(caEntity.getParentCaId().toHexString(), certificteChain);
+		}
+
+		return certificteChain;
+	}
+
 	@Override
 	@KafkaNotification(component = Component.CA, subject = Subject.CA,
 		action = Action.CREATEORUPDATE, idParamRegEx = "BaseEntity\\(id=(.*?)\\)")
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = CREATE)
 	public CaEntity save(CaEntity caEntity) {
 		// CAs can not be edited, so throw an exception in that case.
 		if (caEntity.getId() != null) {
@@ -104,10 +125,12 @@ public class CAService extends BaseService<CaEntity> {
 		}
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public List<CaEntity> getEligibleForSigning() {
 		return getRepository().find("privateKey != null", Sort.ascending("cn")).list();
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = CREATE)
 	public CaEntity importCa(CaEntity importedCaEntity, FileUpload publicKey, FileUpload privateKey,
 		FileUpload certificate) {
 		CaEntity caEntity = new CaEntity();
@@ -141,29 +164,21 @@ public class CAService extends BaseService<CaEntity> {
 		}
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public String getPrivateKey(String caId) {
 		CaEntity caEntity = findById(caId);
 
 		return caEntity.getPrivateKey();
 	}
 
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public String getPublicKey(String caId) {
 		CaEntity caEntity = findById(caId);
 
 		return caEntity.getPublicKey();
 	}
 
-	private List<String> getCertificate(String caId, List<String> certificteChain) {
-		CaEntity caEntity = findById(caId);
-		certificteChain.add(caEntity.getCertificate());
-
-		if (caEntity.getParentCaId() != null) {
-			getCertificate(caEntity.getParentCaId().toHexString(), certificteChain);
-		}
-
-		return certificteChain;
-	}
-
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public List<String> getCertificate(String caId) {
 		List<String> certificateChain = new ArrayList<>();
 		getCertificate(caId, certificateChain);
@@ -174,7 +189,26 @@ public class CAService extends BaseService<CaEntity> {
 	@Override
 	@KafkaNotification(component = Component.CA, subject = Subject.CA,
 		action = Action.DELETE, idParamOrder = 0)
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = DELETE)
 	public boolean deleteById(String caId) {
 		return super.deleteById(caId);
+	}
+
+	@Override
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
+	public CaEntity findFirstByColumn(String column, Object value) {
+		return super.findFirstByColumn(column, value);
+	}
+
+	@Override
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
+	public CaEntity findById(String id) {
+		return super.findById(id);
+	}
+
+	@Override
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
+	public Page<CaEntity> find(Pageable pageable) {
+		return super.find(pageable);
 	}
 }

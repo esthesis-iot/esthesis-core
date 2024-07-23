@@ -1,8 +1,14 @@
 package esthesis.services.settings.impl.service;
 
+import static esthesis.common.AppConstants.Security.Category.SETTINGS;
+import static esthesis.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.common.AppConstants.Security.Operation.READ;
+import static esthesis.common.AppConstants.Security.Operation.WRITE;
+
 import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.service.common.BaseService;
+import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;
@@ -23,6 +29,11 @@ public class SettingsService extends BaseService<SettingEntity> {
 	@Inject
 	RedisUtils redisUtils;
 
+	private SettingEntity saveHandler(SettingEntity entity) {
+		return super.save(entity);
+	}
+
+	@ErnPermission(category = SETTINGS, operation = READ)
 	public SettingEntity findByName(NamedSetting name) {
 		log.trace("Looking up key '{}'.", name);
 		SettingEntity settingEntity = findFirstByColumn("name", name.toString());
@@ -31,6 +42,7 @@ public class SettingsService extends BaseService<SettingEntity> {
 		return settingEntity;
 	}
 
+	@ErnPermission(category = SETTINGS, operation = READ)
 	public SettingEntity findByTextName(String name) {
 		log.trace("Looking up key '{}'.", name);
 		SettingEntity settingEntity = findFirstByColumn("name", name);
@@ -44,6 +56,7 @@ public class SettingsService extends BaseService<SettingEntity> {
 	 * <p>
 	 * TODO: Evaluate performance with a large number of devices in Redis.
 	 */
+	@ErnPermission(category = SETTINGS, operation = READ)
 	public List<String> findAllUniqueMeasurementNames() {
 		// Get all hash names containing measurement values.
 		List<String> keys = redisUtils.findKeysStartingWith(KeyType.ESTHESIS_DM.toString());
@@ -58,5 +71,15 @@ public class SettingsService extends BaseService<SettingEntity> {
 		}
 
 		return fields.stream().sorted().toList();
+	}
+
+	@ErnPermission(category = SETTINGS, operation = CREATE)
+	public SettingEntity saveNew(SettingEntity entity) {
+		return saveHandler(entity);
+	}
+
+	@ErnPermission(category = SETTINGS, operation = WRITE)
+	public SettingEntity saveUpdate(SettingEntity entity) {
+		return saveHandler(entity);
 	}
 }

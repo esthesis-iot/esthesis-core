@@ -24,11 +24,17 @@
 			<artifactId>quarkus-oidc</artifactId>
 		</dependency>
 
-    <!-- PROJECT -->
+    <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-kubernetes-client</artifactId>
       <version>3.0.43-SNAPSHOT</version>
     </dependency>
+		<dependency>
+			<groupId>esthesis</groupId>
+			<artifactId>srv-security-client</artifactId>
+			<version>3.0.41-SNAPSHOT</version>
+		</dependency>
+
   </dependencies>
 </project>

@@ -28,7 +28,7 @@ public class TerminateCampaignJob implements JobHandler {
 		campaignEntity.setState(State.TERMINATED_BY_WORKFLOW);
 		campaignEntity.setTerminatedOn(Instant.now());
 		campaignEntity.setStateDescription("Campaign terminated at " + Instant.now() + ".");
-		campaignService.save(campaignEntity);
+		campaignService.saveUpdate(campaignEntity);
 		log.debug("Campaign with id '{}' terminated.", p.getCampaignId());
 
 		client.newCompleteCommand(job.getKey()).send().join();

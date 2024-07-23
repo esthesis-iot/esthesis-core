@@ -12,6 +12,9 @@ quarkus:
     DeviceResource:
       url: http://localhost:59010
       scope: Singleton
+    SecurityResource:
+      url: http://localhost:59170
+      scope: Singleton
   mongodb:
     database: esthesiscore
     credentials:

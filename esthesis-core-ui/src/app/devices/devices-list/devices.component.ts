@@ -4,7 +4,6 @@ import {Router} from "@angular/router";
 import {MatSort} from "@angular/material/sort";
 import {DeviceDto} from "../dto/device-dto";
 import {DevicesService} from "../devices.service";
-import {BaseComponent} from "../../shared/components/base-component";
 import {QFormsService} from "@qlack/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {MatPaginator} from "@angular/material/paginator";
@@ -13,6 +12,7 @@ import {CountdownComponent} from "ngx-countdown";
 import {MatDialogRef} from "@angular/material/dialog";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
+import {UtilityService} from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-devices",
@@ -33,7 +33,8 @@ export class DevicesComponent extends SecurityBaseComponent implements OnInit, A
 
   constructor(private fb: FormBuilder, private router: Router,
     private deviceService: DevicesService, private qForms: QFormsService,
-    @Optional() private dialogRef: MatDialogRef<DevicesComponent>) {
+    @Optional() private dialogRef: MatDialogRef<DevicesComponent>,
+    private utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.DEVICE);
     this.filterForm = this.fb.group({
       hardwareId: [],
@@ -70,9 +71,13 @@ export class DevicesComponent extends SecurityBaseComponent implements OnInit, A
     // Convert FormGroup to a query string to pass as a filter.
     this.deviceService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(), [],
       false, page, size, sort, sortDirection))
-    .subscribe(onNext => {
-      this.datasource.data = onNext.content;
-      this.paginator.length = onNext.totalElements;
+    .subscribe({
+      next: (onNext) => {
+        this.datasource.data = onNext.content;
+        this.paginator.length = onNext.totalElements;
+      }, error: (onError: any) => {
+        this.utilityService.popupErrorWithTraceId("Could not fetch devices.", onError);
+      }
     });
   }
 

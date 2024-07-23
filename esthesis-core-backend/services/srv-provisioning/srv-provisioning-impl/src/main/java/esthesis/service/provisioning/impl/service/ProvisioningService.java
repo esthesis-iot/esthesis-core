@@ -2,6 +2,11 @@ package esthesis.service.provisioning.impl.service;
 
 import static esthesis.common.AppConstants.GridFS.PROVISIONING_BUCKET_NAME;
 import static esthesis.common.AppConstants.GridFS.PROVISIONING_METADATA_NAME;
+import static esthesis.common.AppConstants.Security.Category.PROVISIONING;
+import static esthesis.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.common.AppConstants.Security.Operation.READ;
+import static esthesis.common.AppConstants.Security.Operation.WRITE;
 
 import esthesis.common.AppConstants.NamedSetting;
 import esthesis.common.AppConstants.Provisioning.Type;
@@ -9,11 +14,14 @@ import esthesis.common.exception.QMismatchException;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.gridfs.GridFSDTO;
 import esthesis.service.common.gridfs.GridFSService;
+import esthesis.service.common.paging.Page;
+import esthesis.service.common.paging.Pageable;
 import esthesis.service.common.validation.CVBuilder;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.impl.repository.ProvisioningRepository;
+import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.resource.SettingsResource;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -58,8 +66,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 		return settingsResource.findByName(NamedSetting.DEVICE_PROVISIONING_SEMVER).asBoolean();
 	}
 
-	@Transactional
-	public ProvisioningPackageEntity save(ProvisioningPackageEntity ppe, FileUpload file) {
+	private ProvisioningPackageEntity saveHandler(ProvisioningPackageEntity ppe, FileUpload file) {
 		// Custom validation for version, if semver should be followed.
 		if (isSemverEnabled() && !Semver.isValid(ppe.getVersion())) {
 			throw new ConstraintViolationException(
@@ -108,6 +115,19 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 	}
 
 	@Transactional
+	@ErnPermission(category = PROVISIONING, operation = CREATE)
+	public ProvisioningPackageEntity saveNew(ProvisioningPackageEntity ppe, FileUpload file) {
+		return saveHandler(ppe, file);
+	}
+
+	@Transactional
+	@ErnPermission(category = PROVISIONING, operation = WRITE)
+	public ProvisioningPackageEntity saveUpdate(ProvisioningPackageEntity ppe, FileUpload file) {
+		return saveHandler(ppe, file);
+	}
+
+	@Transactional
+	@ErnPermission(category = PROVISIONING, operation = DELETE)
 	public void delete(String provisioningPackageId) {
 		// Delete the provisioning package from the database.
 		Type type = findById(provisioningPackageId).getType();
@@ -122,6 +142,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 		super.deleteById(provisioningPackageId);
 	}
 
+	@ErnPermission(category = PROVISIONING, operation = READ)
 	public Uni<byte[]> download(String provisioningPackageId) {
 		ProvisioningPackageEntity ppe = findById(provisioningPackageId);
 		if (ppe.getType() != Type.INTERNAL) {
@@ -137,6 +158,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 			.build());
 	}
 
+	@ErnPermission(category = PROVISIONING, operation = READ)
 	public List<ProvisioningPackageEntity> findByTags(String tags) {
 		List<ProvisioningPackageEntity> packages = tags.isBlank()
 			? getAll()
@@ -170,6 +192,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 	 * @param version    The version of the firmware currently installed on the device.
 	 * @return
 	 */
+	@ErnPermission(category = PROVISIONING, operation = READ)
 	public ProvisioningPackageEntity semVerFind(String hardwareId, String version) {
 		// Find the tags of the device.
 		log.debug("Finding provisioning packages for hardwareId '{}'.", hardwareId);
@@ -214,4 +237,17 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 
 		return candidateVersion;
 	}
+
+	@Override
+	@ErnPermission(category = PROVISIONING, operation = READ)
+	public Page<ProvisioningPackageEntity> find(Pageable pageable) {
+		return super.find(pageable);
+	}
+
+	@Override
+	@ErnPermission(category = PROVISIONING, operation = READ)
+	public ProvisioningPackageEntity findById(String id) {
+		return super.findById(id);
+	}
+
 }

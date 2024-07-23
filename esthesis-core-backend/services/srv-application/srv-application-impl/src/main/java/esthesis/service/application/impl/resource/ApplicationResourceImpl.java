@@ -53,7 +53,11 @@ public class ApplicationResourceImpl implements ApplicationResource {
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.APPLICATION, op = Operation.WRITE, msg = "Save application")
-	public ApplicationEntity save(@Valid ApplicationEntity tag) {
-		return applicationService.save(tag);
+	public ApplicationEntity save(@Valid ApplicationEntity applicationEntity) {
+		if (applicationEntity.getId() == null) {
+			return applicationService.saveNew(applicationEntity);
+		} else {
+			return applicationService.saveUpdate(applicationEntity);
+		}
 	}
 }

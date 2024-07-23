@@ -61,7 +61,7 @@ public class NotificationsHandler {
 		SettingEntity deviceRootCa = settingsService.findByName(NamedSetting.DEVICE_ROOT_CA);
 		if (deviceRootCa != null && deviceRootCa.getValue().equals(caId)) {
 			deviceRootCa.setValue(null);
-			settingsService.save(deviceRootCa);
+			settingsService.saveUpdate(deviceRootCa);
 			log.debug("Setting root CA to null.");
 		}
 	}

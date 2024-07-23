@@ -25,7 +25,7 @@ public class SetWorkflowStatusToPausedJob implements JobHandler {
 		campaignEntity.setState(State.PAUSED_BY_WORKFLOW);
 		String msg = "Campaign paused, needs to be manually resumed.";
 		campaignEntity = campaignEntity.setStateDescription(msg);
-		campaignService.save(campaignEntity);
+		campaignService.saveUpdate(campaignEntity);
 		client.newCompleteCommand(job.getKey()).send().join();
 	}
 

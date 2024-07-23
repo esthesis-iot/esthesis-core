@@ -51,5 +51,11 @@
       <artifactId>utl-redis</artifactId>
       <version>3.0.43-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>srv-security-client</artifactId>
+      <version>3.0.41-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 </project>
