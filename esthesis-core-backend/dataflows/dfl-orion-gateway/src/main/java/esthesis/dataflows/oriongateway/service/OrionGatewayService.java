@@ -323,7 +323,7 @@ public class OrionGatewayService {
 		if (filterAttributes.isEmpty()) {
 			// Create a list with all configuration attributes
 			List<String> configurationAttributes = Stream.of(
-					appConfig.customMeasurementFormatterAttributeName(),
+					appConfig.orionCustomMeasurementJsonFormatAttributeName(),
 					appConfig.orionUpdateDataAttribute(),
 					appConfig.orionRegistrationEnabledAttribute(),
 					appConfig.orionAttributesToSync()
@@ -407,7 +407,7 @@ public class OrionGatewayService {
 
 			// Check if device has set the custom measurement formatter attribute
 			Optional<DeviceAttributeEntity> customMeasurementFormatterAttribute =
-				appConfig.customMeasurementFormatterAttributeName()
+				appConfig.orionCustomMeasurementJsonFormatAttributeName()
 					.flatMap(name -> deviceSystemResource.getDeviceAttributeByEsthesisHardwareIdAndAttributeName(esthesisHardwareId, name));
 
 			log.debug("customMeasurementFormatterAttribute exists: {}.", customMeasurementFormatterAttribute.isPresent());

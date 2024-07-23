@@ -128,16 +128,35 @@ public interface AppConfig {
 
 	// Orion LD Contexts defined, separated by comma.
 	@WithDefault("https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld")
-	String orionLdDefinedContexts();
+	String orionLdDefinedContextsUrl();
 
 	// Orion LD Contexts Rel defined, separated by comma and respecting the defined contexts order
 	@WithDefault("http://www.w3.org/ns/json-ld#context")
 	String orionLdDefinedContextsRelationships();
 
-	//Custom measurement structure using Qute formmater
-	Optional<String> customMeasurementFormatterAttributeName();
+	//Custom measurement structure using Qute formater
+	Optional<String> orionCustomMeasurementJsonFormatAttributeName();
 
-	// A list off attributes name, separated by comma, to be synchronized and send to orion.
+	// A list of attributes name, separated by comma, to be synchronized and send to orion.
 	// If defined, only the attributes containing the values in this list will be stored in Orion
 	Optional<String>  orionAttributesToSync();
+
+	// The type of authentication to be used in Orion
+	@WithDefault("NONE")
+	String orionAuthenticationType();
+
+	// The URL to be used for authentication in Orion
+	Optional<String> orionAuthenticationUrl();
+
+	// The credential token to be used for authentication in Orion
+	Optional<String> orionAuthenticationCredentialToken();
+
+	// The username to be used for authentication in Orion
+	Optional<String> orionAuthenticationUsername();
+
+	// The password to be used for authentication in Orion
+	Optional<String> orionAuthenticationPassword();
+
+	// The grant type to be used for authentication in Orion
+	Optional<String> orionAuthenticationGrantType();
 }

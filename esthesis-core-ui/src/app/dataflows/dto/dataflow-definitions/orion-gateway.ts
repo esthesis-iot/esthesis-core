@@ -99,6 +99,47 @@ export const DATAFLOW_DEFINITION_FIWARE_ORION = {
         { key: "esthesis-orion-metadata-value", type: "input", required: true, defaultValue: "esthesis",
           props: {label: "The value of the metadata attribute to indicate an attribute is maintained by esthesis."}
         },
+        { key: "orion-ld-defined-contexts-url", type: "input", required: true,
+          defaultValue: "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+          props: {label: "The URL of the Orion LD Contexts separated by comma", required: true}
+        },
+        { key: "orion-ld-defined-contexts-relationships", type: "input", required: true,
+          defaultValue: "http://www.w3.org/ns/json-ld#context",
+          props: {label: "The relationships of the Orion LD Contexts defined separated by comma", required: true}
+        },
+        { key: "orion-custom-measurement-json-format-attribute-name", type: "input",
+          props: {label: "A custom measurement JSON structure formatted using the Qute engine template"}
+        },
+        { key: "orion-attributes-to-sync", type: "input",
+          props: {label: "A list of attribute/measurement names, separated by commas, to be the only ones synchronized and sent to Orion"}
+        },
+        { key: "orion-attributes-to-sync", type: "input",
+          props: {label: "A list of attribute/measurement names, separated by commas, to be the only ones synchronized and sent to Orion"}
+        },
+        {
+          key: "orion-authentication-type", type: "select", defaultValue: "NONE",
+          props: {
+            label: "Type of authentication", required: true, options: [
+              {value: "NONE", label: "No authentication"},
+              {value: "KEYROCK", label: "Keyrock oauth2"},
+            ],
+          }
+        },
+        { key: "orion-authentication-url", type: "input",
+          props: {label: "The URL to be used for authentication"}
+        },
+        { key: "orion-authentication-credential-token", type: "input",
+          props: {label: "The credential token to be used for authentication "}
+        },
+        { key: "orion-authentication-username", type: "input",
+          props: {label: "The username to be used for authentication"}
+        },
+        { key: "orion-authentication-password", type: "password",
+          props: {label: "The password to be used for authentication"}
+        },
+        { key: "orion-authentication-grant-type", type: "input",
+          props: {label: "The grant type to be used for authentication"}
+        },
       ]
     },
     { key: "config.kafka", wrappers: ["section"], props: {label: "Kafka"},
