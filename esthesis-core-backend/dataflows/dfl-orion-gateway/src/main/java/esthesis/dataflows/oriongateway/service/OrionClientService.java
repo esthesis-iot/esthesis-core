@@ -7,7 +7,6 @@ import esthesis.dataflows.oriongateway.client.OrionClientHeaderFilter;
 import esthesis.dataflows.oriongateway.config.AppConfig;
 import esthesis.dataflows.oriongateway.dto.OrionAttributeDTO;
 import esthesis.dataflows.oriongateway.dto.OrionEntityDTO;
-import esthesis.dataflows.oriongateway.dto.OrionQueryDTO;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -17,7 +16,6 @@ import jakarta.json.JsonObjectBuilder;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 import java.math.BigDecimal;
@@ -39,11 +37,19 @@ public class OrionClientService {
 	// at runtime.
 	OrionClient orionClient;
 
+	// Defined at runtime as it rely on the configurations set for auth
+	OrionAuthService authService;
+
+
 	@Inject
 	AppConfig appConfig;
 
 	public enum ATTRIBUTE_TYPE {
 		ATTRIBUTE, TELEMETRY, METADATA
+	}
+
+	public enum AUTHENTICATION_TYPE {
+		NONE, KEYROCK
 	}
 
 	@PostConstruct
@@ -53,7 +59,7 @@ public class OrionClientService {
 		URI orionUrl = URI.create(appConfig.orionUrl());
 
 		// Get the LD contexts urls from configuration variable. It is necessary to create the Link header
-		List<String> contexts = Arrays.stream(appConfig.orionLdDefinedContexts().split(","))
+		List<String> contexts = Arrays.stream(appConfig.orionLdDefinedContextsUrl().split(","))
 			.map(String::trim)
 			.filter(not(String::isBlank)).toList();
 
@@ -62,9 +68,16 @@ public class OrionClientService {
 			.map(String::trim)
 			.filter(not(String::isBlank)).toList();
 
+		// Check for auth configurations and set the auth service accordingly.
+		// If no auth is defined then uses the OrionNoAuthService
+		if(AUTHENTICATION_TYPE.KEYROCK.name().equalsIgnoreCase(appConfig.orionAuthenticationType())){
+			authService = new OrionKeyrockAuthService(this.appConfig);
+		}else{
+			authService = new OrionNoAuthService();
+		}
 
 		orionClient = RestClientBuilder.newBuilder()
-			.register(new OrionClientHeaderFilter(contexts, contextsRelationships))
+			.register(new OrionClientHeaderFilter(contexts, contextsRelationships, authService))
 			.baseUri(orionUrl).build(OrionClient.class);
 
 
