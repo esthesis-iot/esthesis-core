@@ -77,7 +77,7 @@ public class TagService extends BaseService<TagEntity> {
 	public boolean deleteById(String id) {
 		log.debug("Deleting tag with id '{}'.", id);
 		if (!securityResource.isPermitted(TAG, Operation.DELETE, id)) {
-			throw new QSecurityException("You are not allowed to delete this tags.");
+			throw new QSecurityException("You are not allowed to delete this tag.");
 		} else {
 			return super.deleteById(id);
 		}
