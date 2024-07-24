@@ -1,5 +1,6 @@
 package esthesis.service.security.annotation;
 
+import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Security.Category;
 import esthesis.common.AppConstants.Security.Operation;
 import esthesis.common.entity.BaseEntity;
@@ -41,11 +42,12 @@ public class ErnPermissionInterceptor {
 
 			// Get entity id.
 			String resourceId = null;
-			if (ctx.getParameters() != null && ctx.getParameters().length > 0 && ctx.getParameters()[0] != null) {
-				Object entity = ctx.getParameters()[0];
-				if (entity instanceof String entityId) {
+			if (ernPermission.checkResourceId() && ctx.getParameters() != null &&
+				ctx.getParameters().length > 0 && ctx.getParameters()[0] != null) {
+				Object arg0 = ctx.getParameters()[0];
+				if (arg0 instanceof String entityId && !entityId.equals(AppConstants.NEW_RECORD_ID)) {
 					resourceId = entityId;
-				} else if (entity instanceof BaseEntity baseEntity && baseEntity.getId() != null) {
+				} else if (arg0 instanceof BaseEntity baseEntity && baseEntity.getId() != null) {
 					resourceId = baseEntity.getId().toHexString();
 				}
 				log.trace("Found resource ID: '{}'.", resourceId);

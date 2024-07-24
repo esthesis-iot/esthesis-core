@@ -29,7 +29,6 @@
     <dependency>
       <artifactId>srv-audit-client</artifactId>
       <groupId>esthesis</groupId>
-      <scope>compile</scope>
       <version>3.0.43-SNAPSHOT</version>
     </dependency>
   </dependencies>

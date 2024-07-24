@@ -89,17 +89,19 @@ public class AuditedInterceptor {
 			auditEntity.setValueOut(replyJson);
 		}
 
-		if (auditEntity.getValueIn() != null) {
-			log.trace("Data in size: {}", auditEntity.getValueIn().length());
-			log.trace("Data in : {}", auditEntity.getValueIn());
-		} else {
-			log.trace("Data in is null");
-		}
-		if (auditEntity.getValueOut() != null) {
-			log.trace("Data out size: {}", auditEntity.getValueOut().length());
-			log.trace("Data out : {}", auditEntity.getValueOut());
-		} else {
-			log.trace("Data out is null");
+		if (log.isTraceEnabled()) {
+			if (auditEntity.getValueIn() != null) {
+				log.trace("Data in size: {}", auditEntity.getValueIn().length());
+				log.trace("Data in : {}", auditEntity.getValueIn());
+			} else {
+				log.trace("Data in is null");
+			}
+			if (auditEntity.getValueOut() != null) {
+				log.trace("Data out size: {}", auditEntity.getValueOut().length());
+				log.trace("Data out : {}", auditEntity.getValueOut());
+			} else {
+				log.trace("Data out is null");
+			}
 		}
 
 		auditResource.save(auditEntity);
