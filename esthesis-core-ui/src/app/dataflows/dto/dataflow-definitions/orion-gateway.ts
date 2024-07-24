@@ -30,7 +30,7 @@ export const DATAFLOW_DEFINITION_FIWARE_ORION = {
         { key: "orion-id-attribute", type: "input",
           props: {label: "The name of a device attribute indicating the ID to use when registering devices in Orion"}
         },
-        { key: "orion-id-prefix", type: "input",
+        { key: "orion-id-prefix", type: "input", defaultValue: "urn:ngsi-ld:",
           props: {label: "A prefix to add to the device ID when registering devices in Orion, when not using an attribute-defined ID"}
         },
         { key: "orion-registration-enabled-attribute", type: "input",
