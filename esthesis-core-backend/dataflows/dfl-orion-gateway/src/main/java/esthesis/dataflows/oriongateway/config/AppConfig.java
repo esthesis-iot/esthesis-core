@@ -134,8 +134,8 @@ public interface AppConfig {
 	@WithDefault("http://www.w3.org/ns/json-ld#context")
 	String orionLdDefinedContextsRelationships();
 
-	//Custom measurement structure using Qute formater
-	Optional<String> orionCustomMeasurementJsonFormatAttributeName();
+	//Custom entity JSON structure to be saved in Orion using Qute formater
+	Optional<String> orionCustomEntityJsonFormatAttributeName();
 
 	// A list of attributes name, separated by comma, to be synchronized and send to orion.
 	// If defined, only the attributes containing the values in this list will be stored in Orion

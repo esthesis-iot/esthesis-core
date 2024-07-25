@@ -107,8 +107,8 @@ export const DATAFLOW_DEFINITION_FIWARE_ORION = {
           defaultValue: "http://www.w3.org/ns/json-ld#context",
           props: {label: "The relationships of the Orion LD Contexts defined separated by comma", required: true}
         },
-        { key: "orion-custom-measurement-json-format-attribute-name", type: "input",
-          props: {label: "A custom measurement JSON structure formatted using the Qute engine template"}
+        { key: "orion-custom-entity-json-format-attribute-name", type: "input",
+          props: {label: "A custom entity JSON structure to be used for saving in Orion formatted using the Qute engine template"}
         },
         { key: "orion-attributes-to-sync", type: "input",
           props: {label: "A list of attribute/measurement names, separated by commas, to be the only ones synchronized and sent to Orion"}

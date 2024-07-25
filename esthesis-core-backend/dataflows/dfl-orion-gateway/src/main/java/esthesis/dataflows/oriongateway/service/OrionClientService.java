@@ -127,8 +127,12 @@ public class OrionClientService {
 		  orionClient.appendAttributes(entityId, jsonBuilder.build().toString());
 	}
 
-	public void setAttribute(String entityId, String attributeJson) {
-		orionClient.appendAttributes(entityId, attributeJson);
+	public void saveOrUpdateEntities(String entitiesJson) {
+		//Check and add brackets in case it is missing in the custom entities JSON
+		if(!entitiesJson.trim().startsWith("[")){
+			entitiesJson = "[" + entitiesJson + "]";
+		}
+		orionClient.createOrUpdateEntities(entitiesJson);
 	}
 
 	public void deleteAttribute(String entityId, String attributeName) {
