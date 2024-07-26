@@ -165,6 +165,7 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
     navigator.clipboard.readText().then(
       text => {
         this.terminal.write(text);
+        this.command += text;
         this.terminal.underlying?.focus();
       }
     )
