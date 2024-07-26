@@ -41,6 +41,7 @@ import {
   faDownload,
   faEnvelope,
   faEnvelopeOpen,
+  faEraser,
   faFileCircleCheck,
   faFileCirclePlus,
   faFlag,
@@ -56,6 +57,7 @@ import {
   faMemory,
   faMicrochip,
   faNetworkWired,
+  faPaste,
   faPause,
   faPercent,
   faPlay,
@@ -144,7 +146,8 @@ export class AppModule {
       faArrowUpRightFromSquare, faCaretDown, faAddressCard, faBroadcastTower, faBuildingShield,
       faCertificate, faCubes, faDashboard, faDesktop, faDiagramProject, faGear, faGlobe,
       faMicrochip, faNetworkWired, faShieldHalved, faStamp, faTag, faUser, faUsers,
-      faUsersBetweenLines, faXmarksLines, faFileCirclePlus, faBoxArchive, faFileCircleCheck);
+      faUsersBetweenLines, faXmarksLines, faFileCirclePlus, faBoxArchive, faFileCircleCheck,
+      faPaste, faEraser);
     faConfig.fixedWidth = true;
   }
 }

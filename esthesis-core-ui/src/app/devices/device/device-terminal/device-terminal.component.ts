@@ -5,6 +5,7 @@ import {CommandExecuteRequestDto} from "../../../commands/dto/command-execute-re
 import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
 import {AppConstants} from "../../../app.constants";
 import {ActivatedRoute} from "@angular/router";
+import {UtilityService} from "../../../shared/services/utility.service";
 
 @Component({
   selector: "app-device-terminal",
@@ -28,7 +29,8 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
   private historyPointer = 0;
   private winX: number;
 
-  constructor(private deviceTerminalService: DeviceTerminalService, private route: ActivatedRoute) {
+  constructor(private deviceTerminalService: DeviceTerminalService,
+    private utilityService: UtilityService, route: ActivatedRoute) {
     super(AppConstants.SECURITY.CATEGORY.DEVICE, route.snapshot.paramMap.get("id"));
     this.winX = window.innerWidth;
   }
@@ -77,8 +79,11 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
           break;
         default:
           if (ev.ctrlKey && (ev.key === "c" || ev.key === "C")) {
-            this.command = "";
+            if (this.command !== "") {
+              this.terminal.write("^C");
+            }
             this.terminal.write("\r\n$ ");
+            this.command = "";
           } else if (printable) {
             this.terminal.write(e.key);
             this.command += e.key;
@@ -95,7 +100,7 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
 
   private executeCommand() {
     // Normalize multiple spaces into one
-    this.command = this.command.replace(/\s+/g, ' ').trim();
+    this.command = this.command.replace(/\s+/g, " ").trim();
 
     const cmdSplit = this.command.split(" ");
     const cmd: CommandExecuteRequestDto = {
@@ -150,4 +155,23 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
     this.terminal.write(historyCommand);
     this.command = historyCommand;
   }
+
+  clear() {
+    this.terminal.underlying?.clear();
+    this.terminal.underlying?.focus();
+  }
+
+  paste() {
+    navigator.clipboard.readText().then(
+      text => {
+        this.terminal.write(text);
+        this.terminal.underlying?.focus();
+      }
+    )
+    .catch(() => {
+        this.utilityService.popupError("Cannot read clipboard text.");
+      }
+    );
+  }
+
 }
