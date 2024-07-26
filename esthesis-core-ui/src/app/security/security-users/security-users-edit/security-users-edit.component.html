@@ -36,7 +36,7 @@
 
           <!-- Display all groups in a table -->
           <div class="mt-10 text-xl">Groups</div>
-          <mat-form-field>
+          <mat-form-field *ngIf="allowWrite || allowCreate">
             <input [formControl]="groupsFilterCtrl" [matAutocomplete]="auto"
                    matInput placeholder="Search for a group to add...">
             <mat-autocomplete #auto="matAutocomplete">
@@ -60,7 +60,7 @@
               <td>{{getGroupName(groupId)}}</td>
               <td>{{getGroupDescription(groupId)}}</td>
               <td>
-                <button (click)="removeGroup(groupId)"
+                <button (click)="removeGroup(groupId)" *ngIf="allowWrite || allowCreate"
                         class="btn btn-sm btn-ghost" matTooltip="Remove group">
                   <fa-icon icon="trash-can"></fa-icon>
                 </button>
@@ -73,9 +73,9 @@
           <div class="mt-10 text-xl flex flex-row gap-5">
             <div>Custom policies</div>
             <fa-icon (click)="policyEditor()" class="cursor-pointer" icon="file-circle-plus"
-                     matSuffix matTooltip="Add policy"></fa-icon>
+                     matSuffix matTooltip="Add policy" *ngIf="allowWrite || allowCreate"></fa-icon>
             <fa-icon (click)="policyTester()" class="cursor-pointer" icon="file-circle-check"
-                     matSuffix matTooltip="Test policy"></fa-icon>
+                     matSuffix matTooltip="Test policy" *ngIf="allowWrite || allowCreate"></fa-icon>
           </div>
           <table class="table w-full">
             <caption class="invisible">Custom policies</caption>
@@ -88,7 +88,7 @@
             <tr *ngFor="let policy of form.controls['policies'].value as string">
               <td>{{policy}}</td>
               <td>
-                <button (click)="removePolicy(policy)"
+                <button (click)="removePolicy(policy)" *ngIf="allowWrite || allowCreate"
                         class="btn btn-sm btn-ghost" matTooltip="Remove policy">
                   <fa-icon icon="trash-can"></fa-icon>
                 </button>

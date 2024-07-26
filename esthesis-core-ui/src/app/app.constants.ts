@@ -195,7 +195,7 @@ export const AppConstants = {
       PROVISIONING: "provisioning",
       SECURITY: "security",
       SETTINGS: "settings",
-      TAG: "tag",
+      TAGS: "tags",
       USERS: "users",
       GROUPS: "groups",
       ROLES: "roles",

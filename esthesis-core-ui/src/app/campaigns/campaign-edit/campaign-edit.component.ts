@@ -180,6 +180,7 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
       advancedUpdateRepliesTimer: [isDevMode() ? "PT1S" : "PT1M", [Validators.required]],
       advancedUpdateRepliesFinalTimer: [isDevMode() ? "PT1S" : "PT1M", [Validators.required]],
     });
+    this.isFormDisabled().subscribe(disabled => disabled && this.form.disable());
 
     // Conditional validators.
     this.form.valueChanges.subscribe(val => {

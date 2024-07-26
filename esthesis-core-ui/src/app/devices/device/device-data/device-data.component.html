@@ -36,7 +36,7 @@
         (click)="copyValue(row)" class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
   </table>
 
-  <div class="collapse collapse-arrow" *ngIf="!tableLoading">
+  <div class="collapse collapse-arrow" *ngIf="!tableLoading && allowWrite">
     <input type="checkbox" />
     <div class="collapse-title text-accent font-medium">
       Import data

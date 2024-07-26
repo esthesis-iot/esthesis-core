@@ -56,6 +56,7 @@ export class KeystoreEditComponent extends SecurityBaseComponent implements OnIn
       type: ["", Validators.required],
       version: ["0"],
     });
+    this.isFormDisabled().subscribe(disabled => disabled && this.form.disable());
 
     // Get supported keystores types.
     this.keystoresService.getSupportedKeystoreTypes().subscribe({

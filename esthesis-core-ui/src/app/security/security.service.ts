@@ -16,7 +16,6 @@ import * as _ from "lodash-es";
 export class SecurityService extends CrudService<UserDto> {
   permissionsFetched = false;
   // An event emitter for components that need to be notified when authentication is done.
-  // @Output() public authDoneEvent: EventEmitter<any> = new EventEmitter<any>();
   // tslint:disable-next-line:variable-name
   private _authDone = new BehaviorSubject<boolean>(false);
   // tslint:disable-next-line:variable-name
@@ -35,18 +34,15 @@ export class SecurityService extends CrudService<UserDto> {
   }
 
   getPermissions(): Observable<string[]> {
-    // this.permissionsFetched = false;
     if (!this.permissionsFetched) {
       return this.http.get<string[]>(`${AppConstants.API_ROOT}/security/v1/users/user-permissions`)
       .pipe(tap((permissions) => {
         sessionStorage.setItem(AppConstants.SECURITY.SESSION_STORAGE.PERMISSIONS, JSON.stringify(permissions));
         this.permissionsFetched = true;
-        // this.log.data("User permissions fetched from remote service:", permissions);
       }));
     } else {
       return new Observable<string[]>(observer => {
         const permissions = JSON.parse(sessionStorage.getItem(AppConstants.SECURITY.SESSION_STORAGE.PERMISSIONS)!);
-        // this.log.data("User permissions fetched from session storage:", permissions);
         observer.next(permissions);
         observer.complete();
       });
@@ -70,8 +66,7 @@ export class SecurityService extends CrudService<UserDto> {
     });
   }
 
-  isPermitted(category: string, operation: string,
-    resourceId?: string | null): Observable<boolean> {
+  isPermitted(category: string, operation: string, resourceId?: string | null): Observable<boolean> {
     const ernPrefix = AppConstants.SECURITY.ERN.ROOT + ":" + AppConstants.SECURITY.ERN.SYSTEM
       + ":" + AppConstants.SECURITY.ERN.SUBSYSTEM;
     const allow = AppConstants.SECURITY.PERMISSION.ALLOW;
@@ -100,7 +95,7 @@ export class SecurityService extends CrudService<UserDto> {
           observer.next(permissionEvaluation);
           observer.complete();
         }, error: err => {
-          console.log("Could not evaluate user permission.", err);
+          console.error("Could not evaluate user permission.", err);
           observer.error(err);
         }
       });

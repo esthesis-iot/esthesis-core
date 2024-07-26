@@ -39,6 +39,7 @@ export class DataflowEditComponent extends SecurityBaseComponent implements OnIn
     // Find the form definition for this dataflow and extract dataflow details.
     this.dataflow = dataflows.find(d => d.type === this.type);
     this.fields = this.dataflow.fields || [];
+    this.isFormDisabled().subscribe(disabled => disabled && this.form.disable());
 
     // Enrich model with manual entries.
     this.model = {
@@ -56,7 +57,7 @@ export class DataflowEditComponent extends SecurityBaseComponent implements OnIn
         }
       });
     }
-    
+
     // Replace the namespace field with the actual namespaces.
     this.dataflowService.getNamespaces().subscribe(onNext => {
       this.dataflowService.replaceSelectValues(this.fields, "namespace",

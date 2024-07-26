@@ -40,6 +40,8 @@ export class DeviceProfileComponent extends SecurityBaseComponent implements OnI
 
     // Get Device profile.
     this.getProfile();
+
+    this.isFormDisabled().subscribe(disabled => disabled && this.deviceProfileForm.disable());
   }
 
   public getAttributeFormGroup() {

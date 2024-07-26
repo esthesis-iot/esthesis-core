@@ -42,6 +42,7 @@ export class InfrastructureMqttEditComponent extends SecurityBaseComponent imple
       active: [null, [Validators.required, Validators.maxLength(1)]],
       tags: [[]]
     });
+    this.isFormDisabled().subscribe(disabled => disabled && this.form.disable());
 
     // Fill-in the form with data if editing an existing item.
     if (this.id && this.id !== this.appConstants.NEW_RECORD_ID) {

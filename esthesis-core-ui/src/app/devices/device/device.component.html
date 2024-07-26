@@ -110,7 +110,7 @@
               <app-device-data></app-device-data>
             </ng-template>
           </mat-tab>
-          <mat-tab>
+          <mat-tab *ngIf="allowWrite">
             <ng-template mat-tab-label>
               <fa-icon class="mr-1" icon="terminal"></fa-icon>
               Pseudo-terminal

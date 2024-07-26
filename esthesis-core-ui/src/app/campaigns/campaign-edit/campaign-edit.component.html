@@ -487,7 +487,7 @@
               *ngIf="isButtonReplayEnabled && allowCreate"
               class="btn btn-sm btn-primary">REPLAY
       </button>
-      <button (click)="delete()"
+      <button (click)="delete()" *ngIf="allowDelete"
               [disabled]="!isButtonDeleteEnabled && allowDelete"
               class="btn btn-sm btn-accent">DELETE
       </button>

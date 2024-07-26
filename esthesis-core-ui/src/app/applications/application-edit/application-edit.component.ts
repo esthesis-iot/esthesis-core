@@ -39,6 +39,7 @@ export class ApplicationEditComponent extends SecurityBaseComponent implements O
       token: [null, [Validators.required, Validators.maxLength(256)]],
       state: [null, [Validators.required]]
     });
+    this.isFormDisabled().subscribe(disabled => disabled && this.form.disable());
 
     if (this.id && this.id !== this.appConstants.NEW_RECORD_ID) {
       // Fill-in the form with data if editing an existing item.
