@@ -9,8 +9,8 @@ import {TagDto} from "../dto/tag-dto";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 import {QFormValidationEEService} from "../../shared/services/form-validation.service";
-import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
+import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 
 @Component({
   selector: "app-tag-edit",
@@ -25,19 +25,18 @@ export class TagEditComponent extends SecurityBaseComponent implements OnInit {
     private route: ActivatedRoute, private router: Router,
     private utilityService: UtilityService, private dialog: MatDialog,
     private qFormValidation: QFormValidationEEService) {
-    super(AppConstants.SECURITY.CATEGORY.TAG, route.snapshot.paramMap.get("id"));
+    super(AppConstants.SECURITY.CATEGORY.TAGS, route.snapshot.paramMap.get("id"));
   }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get("id")!;
-
     // Set up the form.
     this.form = this.fb.group({
       id: [],
-      name: [{value: null, disabled: false},
-        [Validators.minLength(3), Validators.maxLength(255), Validators.required]],
+      name: [null, [Validators.minLength(3), Validators.maxLength(255), Validators.required]],
       description: [null, [Validators.maxLength(2048)]]
     });
+
     // Fill-in the form with data if editing an existing item.
     if (this.id !== this.appConstants.NEW_RECORD_ID) {
       this.tagService.findById(this.id).subscribe({
@@ -48,6 +47,7 @@ export class TagEditComponent extends SecurityBaseComponent implements OnInit {
         }
       });
     }
+    this.isFormDisabled().subscribe(disabled => disabled && this.form.disable());
   }
 
   save() {
@@ -93,5 +93,9 @@ export class TagEditComponent extends SecurityBaseComponent implements OnInit {
         });
       }
     });
+  }
+
+  test() {
+    console.log(this.allowWrite);
   }
 }

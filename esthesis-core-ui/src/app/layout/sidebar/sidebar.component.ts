@@ -64,7 +64,7 @@ export class SidebarComponent implements OnDestroy {
         infrastructure: this.securityService.isPermitted(AppConstants.SECURITY.CATEGORY.INFRASTRUCTURE,
           AppConstants.SECURITY.OPERATION.READ),
         application: this.securityService.isPermitted(AppConstants.SECURITY.CATEGORY.APPLICATION, AppConstants.SECURITY.OPERATION.READ),
-        tag: this.securityService.isPermitted(AppConstants.SECURITY.CATEGORY.TAG, AppConstants.SECURITY.OPERATION.READ),
+        tags: this.securityService.isPermitted(AppConstants.SECURITY.CATEGORY.TAGS, AppConstants.SECURITY.OPERATION.READ),
         settings: this.securityService.isPermitted(AppConstants.SECURITY.CATEGORY.SETTINGS, AppConstants.SECURITY.OPERATION.READ),
         users: this.securityService.isPermitted(AppConstants.SECURITY.CATEGORY.USERS, AppConstants.SECURITY.OPERATION.READ),
         groups: this.securityService.isPermitted(AppConstants.SECURITY.CATEGORY.GROUPS, AppConstants.SECURITY.OPERATION.READ),
@@ -107,7 +107,7 @@ export class SidebarComponent implements OnDestroy {
       if (result.application) {
         this.categoryIntegrations.push({icon: faDesktop, title: "Applications", route: "applications", type: SidebarItemType.ITEM});
       }
-      if (result.tag) {
+      if (result.tags) {
         this.categorySettings.push({icon: faTag, title: "Tags", route: "tags", type: SidebarItemType.ITEM});
       }
       if (result.settings) {

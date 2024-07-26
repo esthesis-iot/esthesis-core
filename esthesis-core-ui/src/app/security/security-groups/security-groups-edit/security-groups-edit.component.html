@@ -21,7 +21,7 @@
 
           <!-- Display all roles in a table -->
           <div class="mt-10 text-xl">Roles</div>
-          <mat-form-field>
+          <mat-form-field *ngIf="allowWrite || allowCreate">
             <input [formControl]="rolesFilterCtrl" [matAutocomplete]="auto"
                    matInput placeholder="Search for a role to add...">
             <mat-autocomplete #auto="matAutocomplete">
@@ -44,7 +44,7 @@
               <td>{{getRoleName(roleId)}}</td>
               <td>{{getRoleDescription(roleId)}}</td>
               <td>
-                <button (click)="removeRole(roleId)"
+                <button (click)="removeRole(roleId)" *ngIf="allowWrite || allowCreate"
                         class="btn btn-sm btn-ghost" matTooltip="Remove role">
                   <fa-icon icon="trash-can"></fa-icon>
                 </button>
@@ -57,7 +57,7 @@
           <div class="mt-10 text-xl flex flex-row gap-5">
             <div>Custom policies</div>
             <fa-icon (click)="policyEditor()" class="cursor-pointer" icon="file-circle-plus"
-                     matSuffix matTooltip="Add policy"></fa-icon>
+                     matSuffix matTooltip="Add policy" *ngIf="allowWrite || allowCreate"></fa-icon>
           </div>
           <table class="table w-full">
             <caption class="invisible">Custom policies</caption>
@@ -70,7 +70,7 @@
             <tr *ngFor="let policy of form.controls['policies'].value as string">
               <td>{{policy}}</td>
               <td>
-                <button (click)="removePolicy(policy)"
+                <button (click)="removePolicy(policy)" *ngIf="allowWrite || allowCreate"
                         class="btn btn-sm btn-ghost" matTooltip="Remove policy">
                   <fa-icon icon="trash-can"></fa-icon>
                 </button>

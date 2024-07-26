@@ -129,7 +129,7 @@ public class AppConstants {
 			PROVISIONING,
 			SECURITY,
 			SETTINGS,
-			TAG,
+			TAGS,
 			USERS,
 			GROUPS,
 			ROLES,

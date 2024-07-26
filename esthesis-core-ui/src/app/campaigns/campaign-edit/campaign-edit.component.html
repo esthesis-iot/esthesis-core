@@ -226,12 +226,12 @@
               </div>
 
               <div *ngIf="!this.form.disabled" class="flex flex-row gap-2">
-                <button (click)="addDeviceOrTag()" [disabled]="!allowWrite || (form.controls['searchByHardwareId'].value == ''&& form.controls['searchByTags'].value == '')"
+                <button (click)="addDeviceOrTag()" [disabled]="!allowWrite || (!form.controls['searchByHardwareId'].value && !form.controls['searchByTags'].value)"
                         class="btn btn-sm">
                   <fa-icon class="mr-1" icon="plus"></fa-icon>
                   ADD
                 </button>
-                <button [disabled]="!allowWrite || (form.controls['searchByHardwareId'].value == '' && form.controls['searchByTags'].value == '')" [matMenuTriggerFor]="groupMenu"
+                <button [disabled]="!allowWrite || (!form.controls['searchByHardwareId'].value && !form.controls['searchByTags'].value)" [matMenuTriggerFor]="groupMenu"
                         class="btn btn-sm">
                   <fa-icon class="mr-1" icon="layer-group"></fa-icon>
                   ADD IN GROUP
@@ -487,7 +487,7 @@
               *ngIf="isButtonReplayEnabled && allowCreate"
               class="btn btn-sm btn-primary">REPLAY
       </button>
-      <button (click)="delete()"
+      <button (click)="delete()" *ngIf="allowDelete"
               [disabled]="!isButtonDeleteEnabled && allowDelete"
               class="btn btn-sm btn-accent">DELETE
       </button>

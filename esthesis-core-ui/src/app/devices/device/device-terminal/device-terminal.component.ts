@@ -5,6 +5,7 @@ import {CommandExecuteRequestDto} from "../../../commands/dto/command-execute-re
 import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
 import {AppConstants} from "../../../app.constants";
 import {ActivatedRoute} from "@angular/router";
+import {UtilityService} from "../../../shared/services/utility.service";
 
 @Component({
   selector: "app-device-terminal",
@@ -22,13 +23,15 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
   };
   timeout = 3000;
   polling = 500;
-  private command = "";
+  // command = "";
   private blockInput = false;
   private history: string[] = [];
   private historyPointer = 0;
   private winX: number;
+  command = "";
 
-  constructor(private deviceTerminalService: DeviceTerminalService, private route: ActivatedRoute) {
+  constructor(private deviceTerminalService: DeviceTerminalService,
+    private utilityService: UtilityService, route: ActivatedRoute) {
     super(AppConstants.SECURITY.CATEGORY.DEVICE, route.snapshot.paramMap.get("id"));
     this.winX = window.innerWidth;
   }
@@ -57,6 +60,10 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
             this.terminal.write("$ ");
           }
           this.historyPointer = this.history.length;
+          console.log(this.terminal.underlying!.buffer.active.getLine(0)?.translateToString());
+          break;
+        case "ArrowLeft":
+        case "ArrowRight":
           break;
         case "ArrowDown":
           this.historyPointer++;
@@ -77,16 +84,25 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
           break;
         default:
           if (ev.ctrlKey && (ev.key === "c" || ev.key === "C")) {
-            this.command = "";
+            if (this.command !== "") {
+              this.terminal.write("^C");
+            }
             this.terminal.write("\r\n$ ");
+            this.command = "";
           } else if (printable) {
             this.terminal.write(e.key);
-            this.command += e.key;
+            if (this.terminal.underlying!.buffer.active.cursorX - 2 == this.command.length) {
+              this.command += e.key;
+            } else {
+              this.command = this.command.substring(0, this.terminal.underlying!.buffer.active.cursorX - 2)
+                + e.key + this.command.substring(this.terminal.underlying!.buffer.active.cursorX - 2);
+            }
           }
       }
     });
 
     this.terminal.write("$ ");
+    this.terminal.underlying?.focus();
   }
 
   private termColorRed(message: string) {
@@ -95,7 +111,7 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
 
   private executeCommand() {
     // Normalize multiple spaces into one
-    this.command = this.command.replace(/\s+/g, ' ').trim();
+    this.command = this.command.replace(/\s+/g, " ").trim();
 
     const cmdSplit = this.command.split(" ");
     const cmd: CommandExecuteRequestDto = {
@@ -149,5 +165,24 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
     const historyCommand = this.history[this.historyPointer];
     this.terminal.write(historyCommand);
     this.command = historyCommand;
+  }
+
+  clear() {
+    this.terminal.underlying?.clear();
+    this.terminal.underlying?.focus();
+  }
+
+  paste() {
+    navigator.clipboard.readText().then(
+      text => {
+        this.terminal.write(text);
+        this.command += text;
+        this.terminal.underlying?.focus();
+      }
+    )
+    .catch(() => {
+        this.utilityService.popupError("Cannot read clipboard text.");
+      }
+    );
   }
 }

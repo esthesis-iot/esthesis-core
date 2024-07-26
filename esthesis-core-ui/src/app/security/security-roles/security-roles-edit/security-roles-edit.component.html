@@ -21,7 +21,7 @@
 
           <!-- Display all policies in a table -->
           <div class="mt-10 text-xl">Policies</div>
-          <mat-form-field>
+          <mat-form-field *ngIf="allowWrite || allowCreate">
             <input [formControl]="policiesFilterCtrl" [matAutocomplete]="auto"
                    matInput placeholder="Search for a policy to add...">
             <mat-autocomplete #auto="matAutocomplete">
@@ -47,7 +47,7 @@
               <td>{{getPolicyDescription(policyId)}}</td>
               <td>{{getPolicyRule(policyId)}}</td>
               <td>
-                <button (click)="removePolicy(policyId)"
+                <button (click)="removePolicy(policyId)" *ngIf="allowWrite || allowCreate"
                         class="btn btn-sm btn-ghost" matTooltip="Remove policy">
                   <fa-icon icon="trash-can"></fa-icon>
                 </button>

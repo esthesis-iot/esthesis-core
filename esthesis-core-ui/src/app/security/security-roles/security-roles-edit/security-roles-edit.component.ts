@@ -46,6 +46,7 @@ export class SecurityRolesEditComponent extends SecurityBaseComponent implements
       description: [],
       policies: [[]]
     });
+    this.isFormDisabled().subscribe(disabled => disabled && this.form.disable());
 
     // Fill-in the form with data if editing an existing item.
     if (this.id !== this.appConstants.NEW_RECORD_ID) {

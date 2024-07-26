@@ -31,7 +31,7 @@ public class TagResourceImpl implements TagResource {
 	@Override
 	@Path("/v1/find")
 	@RolesAllowed(AppConstants.ROLE_USER)
-	@Audited(cat = Category.TAG, op = Operation.READ, msg = "Search tags", log = AuditLogType.DATA_IN)
+	@Audited(cat = Category.TAGS, op = Operation.READ, msg = "Search tags", log = AuditLogType.DATA_IN)
 	public Page<TagEntity> find(@BeanParam Pageable pageable) {
 		return tagService.find(pageable, true);
 	}
@@ -44,7 +44,7 @@ public class TagResourceImpl implements TagResource {
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
-	@Audited(cat = Category.TAG, op = Operation.READ, msg = "View tag")
+	@Audited(cat = Category.TAGS, op = Operation.READ, msg = "View tag")
 	public TagEntity findById(@PathParam("id") String id) {
 		return tagService.findById(id);
 	}
@@ -65,14 +65,14 @@ public class TagResourceImpl implements TagResource {
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
-	@Audited(cat = Category.TAG, op = Operation.DELETE, msg = "Delete tag")
+	@Audited(cat = Category.TAGS, op = Operation.DELETE, msg = "Delete tag")
 	public Response delete(@PathParam("id") String id) {
 		return tagService.deleteById(id) ? Response.ok().build() : Response.notModified().build();
 	}
 
 	@Override
 	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
-	@Audited(cat = Category.TAG, op = Operation.WRITE, msg = "Save tag")
+	@Audited(cat = Category.TAGS, op = Operation.WRITE, msg = "Save tag")
 	public TagEntity save(@Valid TagEntity tagEntity) {
 		if (tagEntity.getId() == null) {
 			return tagService.saveNew(tagEntity);

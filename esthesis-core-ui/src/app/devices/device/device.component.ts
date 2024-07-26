@@ -47,6 +47,7 @@ export class DeviceComponent extends SecurityBaseComponent implements OnInit {
       status: [null, [Validators.required, Validators.maxLength(32)]],
       hardwareId: [null, [Validators.required, Validators.maxLength(512)]]
     });
+    this.isFormDisabled().subscribe(disabled => disabled && this.deviceInfoForm.disable());
 
     // Get available tags.
     this.tagService.find("sort=name,asc").subscribe(onNext => {

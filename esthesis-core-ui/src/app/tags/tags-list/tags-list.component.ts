@@ -24,15 +24,15 @@ export class TagsListComponent extends SecurityBaseComponent implements OnInit, 
   @Input() embedded = false;
 
   displayedColumns = ["name"];
-  dataSource = new MatTableDataSource<TagDto>();
+  datasource = new MatTableDataSource<TagDto>();
   filterForm: FormGroup;
 
   constructor(private fb: FormBuilder, private router: Router, private tagService: TagsService,
     private qForms: QFormsService, @Optional() private dialogRef: MatDialogRef<TagsListComponent>,
     private utilityService: UtilityService) {
-    super(AppConstants.SECURITY.CATEGORY.TAG);
+    super(AppConstants.SECURITY.CATEGORY.TAGS);
     this.filterForm = this.fb.group({
-      name: [],
+      name: null,
     });
   }
 
@@ -65,7 +65,7 @@ export class TagsListComponent extends SecurityBaseComponent implements OnInit, 
     this.tagService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
       [], false, page, size, sort, sortDirection)).subscribe({
       next: (onNext) => {
-        this.dataSource.data = onNext.content;
+        this.datasource.data = onNext.content;
         this.paginator.length = onNext.totalElements;
       }, error: (onError: any) => {
         this.utilityService.popupErrorWithTraceId("Could not fetch tags.", onError);

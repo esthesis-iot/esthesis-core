@@ -56,6 +56,7 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
       // EXTERNAL type
       url: [{value: null, disabled: this.id !== this.appConstants.NEW_RECORD_ID}]
     });
+    this.isFormDisabled().subscribe(disabled => disabled && this.form.disable());
 
     // Fill-in the form with data if editing an existing item.
     if (this.id && this.id !== this.appConstants.NEW_RECORD_ID) {

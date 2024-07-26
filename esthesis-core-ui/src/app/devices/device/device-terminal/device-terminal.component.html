@@ -1,4 +1,4 @@
-<div *ngIf="allowWrite && allowRead" class="mb-5">
+<div class="flex flex-col">
   <div class="flex flex-row gap-5">
     <div class="stats shadow">
       <div class="stat">
@@ -34,7 +34,22 @@
       </div>
     </div>
   </div>
-</div>
-<div class="flex grow bg-black">
-  <ng-terminal #term [cols]="80" [rows]="25"></ng-terminal>
+  <div class="navbar bg-base-100 mt-5 rounded-t-2xl">
+    <div class="navbar-start">
+    </div>
+    <div class="navbar-center">
+      <a class="text">Terminal</a>
+    </div>
+    <div class="navbar-end">
+      <button class="btn btn-ghost btn-circle" matTooltip="Paste" (click)="paste()">
+        <fa-icon icon="paste"></fa-icon>
+      </button>
+      <button class="btn btn-ghost btn-circle" matTooltip="Clear" (click)="clear()">
+        <fa-icon icon="eraser"></fa-icon>
+      </button>
+    </div>
+  </div>
+  <div class="flex grow bg-black">
+    <ng-terminal #term [cols]="80" [rows]="25"></ng-terminal>
+  </div>
 </div>

@@ -17,7 +17,7 @@
       </div>
 
       <!-- Table -->
-      <table [dataSource]="dataSource" aria-describedby="List of tags"
+      <table [dataSource]="datasource" aria-describedby="List of tags"
              cdk-table class="table w-full" matSort matSortActive="name"
              matSortDirection="asc" matSortDisableClear matSortStart="asc">
         <!-- Columns definition -->
@@ -28,11 +28,11 @@
 
         <!-- Row template for embedded and standalone instances -->
         <tr *cdkHeaderRowDef="displayedColumns" cdk-header-row></tr>
-        <ng-template [ngIf]="!embedded && allowWrite">
+        <ng-template [ngIf]="!embedded && allowRead">
           <tr *cdkRowDef="let element; columns: displayedColumns;" [routerLink]="element.id"
               cdk-row class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
         </ng-template>
-        <ng-template [ngIf]="embedded">
+        <ng-template [ngIf]="embedded && allowRead">
           <tr (click)="embeddedClick(element)" *cdkRowDef="let element; columns: displayedColumns;"
               cdk-row class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
         </ng-template>
