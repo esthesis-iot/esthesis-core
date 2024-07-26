@@ -23,11 +23,12 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
   };
   timeout = 3000;
   polling = 500;
-  private command = "";
+  // command = "";
   private blockInput = false;
   private history: string[] = [];
   private historyPointer = 0;
   private winX: number;
+  command = "";
 
   constructor(private deviceTerminalService: DeviceTerminalService,
     private utilityService: UtilityService, route: ActivatedRoute) {
@@ -59,6 +60,10 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
             this.terminal.write("$ ");
           }
           this.historyPointer = this.history.length;
+          console.log(this.terminal.underlying!.buffer.active.getLine(0)?.translateToString());
+          break;
+        case "ArrowLeft":
+        case "ArrowRight":
           break;
         case "ArrowDown":
           this.historyPointer++;
@@ -86,12 +91,18 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
             this.command = "";
           } else if (printable) {
             this.terminal.write(e.key);
-            this.command += e.key;
+            if (this.terminal.underlying!.buffer.active.cursorX - 2 == this.command.length) {
+              this.command += e.key;
+            } else {
+              this.command = this.command.substring(0, this.terminal.underlying!.buffer.active.cursorX - 2)
+                + e.key + this.command.substring(this.terminal.underlying!.buffer.active.cursorX - 2);
+            }
           }
       }
     });
 
     this.terminal.write("$ ");
+    this.terminal.underlying?.focus();
   }
 
   private termColorRed(message: string) {
@@ -174,5 +185,4 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
       }
     );
   }
-
 }

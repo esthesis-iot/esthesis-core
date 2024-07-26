@@ -22,6 +22,7 @@ import {
   faBell,
   faBoxArchive,
   faBroadcastTower,
+  faBug,
   faBuildingShield,
   faCalendar,
   faCaretDown,
@@ -147,7 +148,7 @@ export class AppModule {
       faCertificate, faCubes, faDashboard, faDesktop, faDiagramProject, faGear, faGlobe,
       faMicrochip, faNetworkWired, faShieldHalved, faStamp, faTag, faUser, faUsers,
       faUsersBetweenLines, faXmarksLines, faFileCirclePlus, faBoxArchive, faFileCircleCheck,
-      faPaste, faEraser);
+      faPaste, faEraser, faBug);
     faConfig.fixedWidth = true;
   }
 }
