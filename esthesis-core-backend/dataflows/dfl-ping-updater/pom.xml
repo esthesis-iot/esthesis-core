@@ -9,14 +9,14 @@
   <parent>
     <artifactId>dataflows</artifactId>
     <groupId>esthesis</groupId>
-    <version>3.0.44-SNAPSHOT</version>
+    <version>3.0.44</version>
   </parent>
 
   <dependencies>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>dfl-common</artifactId>
-      <version>3.0.44-SNAPSHOT</version>
+      <version>3.0.44</version>
     </dependency>
     <dependency>
       <groupId>org.apache.camel.quarkus</groupId>
