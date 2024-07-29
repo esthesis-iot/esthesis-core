@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-settings</artifactId>
-    <version>3.0.44</version>
+    <version>3.0.45-SNAPSHOT</version>
   </parent>
   <artifactId>srv-settings-impl</artifactId>
 
@@ -27,27 +27,27 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-settings-client</artifactId>
-      <version>3.0.44</version>
+      <version>3.0.45-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-audit-client</artifactId>
-      <version>3.0.44</version>
+      <version>3.0.45-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>utl-redis</artifactId>
-      <version>3.0.44</version>
+      <version>3.0.45-SNAPSHOT</version>
     </dependency>
 		<dependency>
 			<groupId>esthesis</groupId>
 			<artifactId>utl-kafka-notifications-common</artifactId>
-			<version>3.0.44</version>
+			<version>3.0.45-SNAPSHOT</version>
 		</dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-security-client</artifactId>
-      <version>3.0.44</version>
+      <version>3.0.45-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
