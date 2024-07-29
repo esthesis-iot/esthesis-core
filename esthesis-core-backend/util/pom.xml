@@ -8,11 +8,11 @@
 	<parent>
 		<groupId>esthesis</groupId>
 		<artifactId>esthesis-core-backend</artifactId>
-		<version>3.0.43-SNAPSHOT</version>
+		<version>3.0.43</version>
 	</parent>
 
 	<artifactId>util</artifactId>
-	<version>3.0.43-SNAPSHOT</version>
+	<version>3.0.43</version>
 	<packaging>pom</packaging>
 
 	<modules>
