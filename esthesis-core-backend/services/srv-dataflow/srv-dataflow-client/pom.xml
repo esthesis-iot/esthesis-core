@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-dataflow</artifactId>
-    <version>3.0.46-SNAPSHOT</version>
+    <version>3.0.46</version>
   </parent>
 
   <artifactId>srv-dataflow-client</artifactId>
@@ -24,7 +24,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-common</artifactId>
-      <version>3.0.46-SNAPSHOT</version>
+      <version>3.0.46</version>
     </dependency>
   </dependencies>
 
