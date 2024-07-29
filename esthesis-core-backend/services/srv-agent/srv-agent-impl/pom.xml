@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-agent</artifactId>
-    <version>3.0.45</version>
+    <version>3.0.46-SNAPSHOT</version>
   </parent>
 
   <artifactId>srv-agent-impl</artifactId>
@@ -24,37 +24,37 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-agent-client</artifactId>
-      <version>3.0.45</version>
+      <version>3.0.46-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-device-client</artifactId>
-      <version>3.0.45</version>
+      <version>3.0.46-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-crypto-client</artifactId>
-      <version>3.0.45</version>
+      <version>3.0.46-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-settings-client</artifactId>
-      <version>3.0.45</version>
+      <version>3.0.46-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-infrastructure-client</artifactId>
-      <version>3.0.45</version>
+      <version>3.0.46-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-provisioning-client</artifactId>
-      <version>3.0.45</version>
+      <version>3.0.46-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>utl-redis</artifactId>
-      <version>3.0.45</version>
+      <version>3.0.46-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
