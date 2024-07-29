@@ -92,24 +92,24 @@
       <!-- Tabs -->
       <div class="grow">
         <mat-tab-group [disableRipple]="true" animationDuration="0ms">
-<!--          <mat-tab>-->
-<!--            <ng-template mat-tab-label>-->
-<!--              <fa-icon class="mr-1" icon="memory"></fa-icon>-->
-<!--              Profile-->
-<!--            </ng-template>-->
-<!--            <ng-template matTabContent>-->
-<!--              <app-device-profile></app-device-profile>-->
-<!--            </ng-template>-->
-<!--          </mat-tab>-->
-<!--          <mat-tab>-->
-<!--            <ng-template mat-tab-label>-->
-<!--              <fa-icon class="mr-1" icon="database"></fa-icon>-->
-<!--              Data-->
-<!--            </ng-template>-->
-<!--            <ng-template matTabContent>-->
-<!--              <app-device-data></app-device-data>-->
-<!--            </ng-template>-->
-<!--          </mat-tab>-->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <fa-icon class="mr-1" icon="memory"></fa-icon>
+              Profile
+            </ng-template>
+            <ng-template matTabContent>
+              <app-device-profile></app-device-profile>
+            </ng-template>
+          </mat-tab>
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <fa-icon class="mr-1" icon="database"></fa-icon>
+              Data
+            </ng-template>
+            <ng-template matTabContent>
+              <app-device-data></app-device-data>
+            </ng-template>
+          </mat-tab>
           <mat-tab *ngIf="allowWrite">
             <ng-template mat-tab-label>
               <fa-icon class="mr-1" icon="terminal"></fa-icon>
