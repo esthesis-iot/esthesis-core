@@ -1,8 +1,14 @@
 // *************************************************************************************************
 // Main
 // *************************************************************************************************
+import {AppConstants} from "../../../app.constants";
+
 export const DATAFLOW_TEMPLATE_MAIN = [
-  { key: "name", type: "input", props: {required: true, label: "Name"} },
+  { key: "name", type: "input", props: {required: true, label: "Name"},
+    expressions: {
+      "props.readonly": "model.id && model.id !== '" + AppConstants.NEW_RECORD_ID + "'"
+    }
+  },
   { key: "description", type: "input", props: {required: false, label: "Description"} }
 ];
 
