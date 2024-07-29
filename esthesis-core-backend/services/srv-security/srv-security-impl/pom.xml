@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>srv-security</artifactId>
 		<groupId>esthesis</groupId>
-		<version>3.0.45-SNAPSHOT</version>
+		<version>3.0.45</version>
 	</parent>
 
 	<artifactId>srv-security-impl</artifactId>
@@ -24,12 +24,12 @@
     <dependency>
       <artifactId>srv-security-client</artifactId>
       <groupId>esthesis</groupId>
-      <version>3.0.45-SNAPSHOT</version>
+      <version>3.0.45</version>
     </dependency>
     <dependency>
       <artifactId>srv-audit-client</artifactId>
       <groupId>esthesis</groupId>
-      <version>3.0.45-SNAPSHOT</version>
+      <version>3.0.45</version>
     </dependency>
   </dependencies>
 
