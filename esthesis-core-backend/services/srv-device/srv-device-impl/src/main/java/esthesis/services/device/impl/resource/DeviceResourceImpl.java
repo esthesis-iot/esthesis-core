@@ -11,7 +11,7 @@ import esthesis.service.audit.ccc.Audited;
 import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.common.validation.CVExceptionContainer;
+import esthesis.service.common.validation.CVEBuilder;
 import esthesis.service.device.dto.DeviceProfileDTO;
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
@@ -207,9 +207,7 @@ public class DeviceResourceImpl implements DeviceResource {
 		try {
 			deviceRegistrationService.preregister(deviceRegistration);
 		} catch (QAlreadyExistsException e) {
-			new CVExceptionContainer<DeviceRegistrationDTO>()
-				.addViolation("ids", "One or more IDs are already registered.")
-				.throwCVE();
+			CVEBuilder.addAndThrow("ids", "One or more IDs are already registered.");
 		}
 
 		return Response.ok().build();

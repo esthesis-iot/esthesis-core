@@ -16,7 +16,7 @@ import esthesis.service.common.gridfs.GridFSDTO;
 import esthesis.service.common.gridfs.GridFSService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.common.validation.CVBuilder;
+import esthesis.service.common.validation.CVEBuilder;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
@@ -27,11 +27,9 @@ import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolationException;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -69,12 +67,8 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 	private ProvisioningPackageEntity saveHandler(ProvisioningPackageEntity ppe, FileUpload file) {
 		// Custom validation for version, if semver should be followed.
 		if (isSemverEnabled() && !Semver.isValid(ppe.getVersion())) {
-			throw new ConstraintViolationException(
-				Collections.singleton(new CVBuilder<>()
-					.path("version")
-					.message("Version does not follow semantic versioning scheme. You can switch this "
-						+ "option off in the settings.")
-					.build()));
+			CVEBuilder.addAndThrow("version", "Version does not follow semantic versioning scheme. "
+				+ "You can switch this option off in the settings.");
 		}
 
 		if (ppe.getId() == null) {
@@ -218,7 +212,8 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 
 		// Find the first version that respects the base version requirement.
 		ProvisioningPackageEntity candidateVersion;
-		if (greaterVersions.stream().filter(p -> StringUtils.isNotBlank(p.getPrerequisiteVersion())).findAny()
+		if (greaterVersions.stream().filter(p -> StringUtils.isNotBlank(p.getPrerequisiteVersion()))
+			.findAny()
 			.isEmpty()) {
 			// If the list of greater versions do not have any prerequisite versions, return the last one.
 			candidateVersion = greaterVersions.get(greaterVersions.size() - 1);
