@@ -1,6 +1,6 @@
 # Dev environment setup
 
-In the following sections you can see how to set up a development environment for esthesis Core. The
+In the following sections you can see how to set up a development environment for esthesis CORE. The
 development environment varies drastically from the production setup, as its purpose is to allow
 developers to quickly implement and test new features.
 
@@ -81,7 +81,7 @@ deploying the Helm Chart.
 | InfluxDB Admin UI  | http://influxdb.esthesis:8086                   | esthesis-system / esthesis-system |
 | InfluxDB           | influxdb.esthesis:8088                          ||
 | MongoDB            | mongodb-headless.esthesis:27017                 | esthesis-system / esthesis-system |
-| esthesis Core UI   | http://localhost:4200                           | esthesis-admin / esthesis-admin |
+| esthesis CORE UI      | http://localhost:4200                           | esthesis-admin / esthesis-admin |
 | Keycloak           | http://keycloak.esthesis                        | esthesis-system / esthesis-system |
 | Kafka              | kafka.esthesis:9095                             ||
 | Kafka UI           | http://kafka-ui.esthesis                        ||
@@ -89,7 +89,7 @@ deploying the Helm Chart.
 | Orion LD           | http://orionld.esthesis:1026                    ||
 
 ## Running the services
-The above installation will prepare all the necessary components to support esthesis Core. The actual
+The above installation will prepare all the necessary components to support esthesis CORE. The actual
 backend services as well as the UI, however, will not be installed in Kubernetes. You need to run
 these in your local machine. Note that we did try Quarkus' remote development mode, but it was a bit
 finicky, and we ended up losing time when it was not working or not picking up changes correctly.

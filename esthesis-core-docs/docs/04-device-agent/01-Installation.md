@@ -5,8 +5,8 @@ or as a standalone executable. The following sections describe how to install th
 both scenarios.
 
 :::tip
-To have your device communicating with esthesis Core, you must have registered an MQTT server
-under Integrations > Infrastructure. In order for esthesis Core to be able to process data coming
+To have your device communicating with esthesis CORE, you must have registered an MQTT server
+under Integrations > Infrastructure. In order for esthesis CORE to be able to process data coming
 from your device, you must have also defined the appropriate dataflows under Integrations > Dataflows.
 :::
 
@@ -15,7 +15,7 @@ The esthesis device agent can be found in Docker hub as the
 [esthesis core device](https://hub.docker.com/repository/docker/esthesisiot/esthesis-core-device/general)
 image. The esthesis device agent supports a plethora of configuration options (see
 [Configuration parameters](02-Configuration%20parameters.md)), however the minimum configuration
-required to successfully start it up and have it connect to esthesis Core is the following:
+required to successfully start it up and have it connect to esthesis CORE is the following:
 
 ```shell
 docker run \
@@ -27,7 +27,7 @@ docker run \
 :::caution
 1. You must replace the `REGISTRATION_URL` environment variable with the hostname matching your installation.
 2. You must create/mount a data volume to the container, so that the device agent can persist
-its state. If you do not do so, the device agent will not be able to reconnect to esthesis Core
+its state. If you do not do so, the device agent will not be able to reconnect to esthesis CORE
 after a restart, instead it will create to re-register (and probably fail if you have kept the
 `HARDWARE_ID` unchanged).
 :::

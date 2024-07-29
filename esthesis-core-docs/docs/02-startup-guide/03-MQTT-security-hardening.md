@@ -63,7 +63,7 @@ unexpected results.
 
 ## Warnings
 :::warning Losing connectivity with your devices
-Before you apply the above procedure, make sure devices already provisioned to esthesis Core have
+Before you apply the above procedure, make sure devices already provisioned to esthesis CORE have
 been issued with a certificate signed by the CA used above. Otherwise, they will lose connectivity
 to the MQTT broker.
 

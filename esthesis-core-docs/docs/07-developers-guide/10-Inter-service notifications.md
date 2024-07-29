@@ -22,7 +22,7 @@ You should add a new entry representing your component.
 example, the Device component may publish messages with different subjects to represent the
 different types of the underlying object types it manages. For most components, the Subject name
 will be the same as the Component name, especially considering the narrow scope of each
-microservice in esthesis Core.
+microservice in esthesis CORE.
 3. `Action`: This class defines the action that was performed which triggered the message. Try
 to reuse the existing actions and only define new action types when absolutely necessary.
 

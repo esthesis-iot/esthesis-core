@@ -3,7 +3,7 @@ Before you start registering real devices it is a good idea to test the platform
 You can register a test device and enable its "demo mode" to start receiving data right away.
 
 ## Prepare the platform for new devices registration
-Check that esthesis Core is configured to accept new device registrations in
+Check that esthesis CORE is configured to accept new device registrations in
 Settings > Device registration > Registration mode. You can set it to "Open registration" for now,
 but do not forget to change it to a more secure setting later.
 
@@ -20,7 +20,7 @@ You can download the device agent from:
 Make sure you select the correct version for your platform.
 :::
 
-The agent client is a command line tool that can be heavily customised for your esthesis Core
+The agent client is a command line tool that can be heavily customised for your esthesis CORE
 installation. You can view all the available configuration options by issuing:
 
 ```bash
@@ -36,7 +36,7 @@ For a typical demo installation, you can run the device agent as:
 	--demoInterval 5
 ```
 
-Replace `{{URL}}` with the URL of your esthesis Core UI installation.
+Replace `{{URL}}` with the URL of your esthesis CORE UI installation.
 
 ### Container client
 The container client is available on Docker Hub and is built for multiple platforms and architectures:
@@ -55,10 +55,10 @@ docker run -d \
 	esthesisiot/esthesis-core-device
 ```
 
-Replace `{{URL}}` with the URL of your esthesis Core UI installation.
+Replace `{{URL}}` with the URL of your esthesis CORE UI installation.
 
 ## Check the device registration
-If registration was successful, you should see the device in the device list in esthesis Core and
+If registration was successful, you should see the device in the device list in esthesis CORE and
 the device should be sending data to the platform:
 
 ![Demo device data](/img/docs/startup-guide/demo-device-data.png)

@@ -2,7 +2,7 @@
 When working in dev mode you run all services in your local machine, so there is no need to
 push images to a container registry. However, when you want to test your changes in a production-like
 Kubernetes environment you need to push your images to a container registry, so that your
-production-like Kubernetes cluster can pull them from. Considering esthesis Core maintains many
+production-like Kubernetes cluster can pull them from. Considering esthesis CORE maintains many
 services with support of multiple architectures, pushing all those images to e.g. Docker Hub can take a
 long time.
 

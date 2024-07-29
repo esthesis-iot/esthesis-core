@@ -1,6 +1,6 @@
 # Initial configuration
 
-The following sections describe how to configure the esthesis Core platform after installation.
+The following sections describe how to configure the esthesis CORE platform after installation.
 
 :::tip
 If you are configuring a production installation, make sure you also read the
@@ -13,7 +13,7 @@ If you are configuring a production installation, make sure you also read the
 - Fill in all information except "Parent CA".
 
 :::tip
-esthesis Core can work without creating a CA. However, if in the future you want to enable
+esthesis CORE can work without creating a CA. However, if in the future you want to enable
 certificate-based authentication for your devices, you will need to create one then. Devices that
 have already been registered with the platform prior to the creation of the CA will need to have
 their certificates reissued. To avoid this hassle, we suggest you create a CA early on.
@@ -25,7 +25,7 @@ their certificates reissued. To avoid this hassle, we suggest you create a CA ea
 - Fill in all necessary information.
 
 :::tip
-Tags in esthesis Core play an important role allowing components to be optimally grouped together.
+Tags in esthesis CORE play an important role allowing components to be optimally grouped together.
 It is not necessary to create a tag, however it is highly recommended.
 :::
 
@@ -39,7 +39,7 @@ It is not necessary to create a tag, however it is highly recommended.
 - Under "Security", choose as root CA the CA you created before.
 
 ## Set up the Dataflows
-Without any dataflow configured esthesis Core can not do much. You can set up individual
+Without any dataflow configured esthesis CORE can not do much. You can set up individual
 dataflows for your use case, or you can use one of the provided wizards. Once the dataflows are
 configured, you can start registering devices and send data to the platform.
 

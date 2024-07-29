@@ -233,10 +233,10 @@ Default: `camunda-zeebe-gateway:26500`
 </details>
 
 ## Installation
-esthesis Core comes in two Helm charts, one installing all the required dependencies and another one
+esthesis CORE comes in two Helm charts, one installing all the required dependencies and another one
 installing the application components. You can enable/disable which specific dependencies you want
 to install by setting the corresponding `*_ENABLED` parameter to `true` or `false`. Do note that
-although the provided dependencies are adequate to have esthesis Core up and running, you might want to
+although the provided dependencies are adequate to have esthesis CORE up and running, you might want to
 tune their properties or replace them altogether with your own resources to support your specific
 production use case.
 
