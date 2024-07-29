@@ -1,7 +1,7 @@
 # Developing esthesis Device Agent
 
 The esthesis Device Agent is a software component that runs on the device and connects it to the
-esthesis Core. The agent is created in Go and can be compiled for any platform supported by Go.
+esthesis CORE. The agent is created in Go and can be compiled for any platform supported by Go.
 
 ## Run and compile
 
@@ -70,7 +70,7 @@ air --build.cmd "go build -o /tmp/esthesis-core-device cmd/main.go" --build.bin 
 
 ### Using containers
 To execute one (or more) device agents in Docker containers running on your local machine, connecting
-to your development esthesis Core instance, you need to prepare the following:
+to your development esthesis CORE instance, you need to prepare the following:
 
 1. A container running `kubefwd` to forward the Mosquitto service:
 	```shell

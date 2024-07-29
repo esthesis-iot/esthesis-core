@@ -28,7 +28,7 @@ import esthesis.service.campaign.exception.CampaignDeviceDoesNotExist;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.common.validation.CVExceptionContainer;
+import esthesis.service.common.validation.CVEBuilder;
 import esthesis.service.common.validation.SoftValidators;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
@@ -74,64 +74,64 @@ public class CampaignService extends BaseService<CampaignEntity> {
 	}
 
 	private CampaignEntity saveHandler(CampaignEntity campaignEntity) {
-		CVExceptionContainer<String> violations = new CVExceptionContainer<>();
+		CVEBuilder<String> violations = new CVEBuilder<>();
 		List<CampaignConditionDTO> conditions = campaignEntity.getConditions();
 		for (CampaignConditionDTO condition : conditions) {
 			switch (condition.getType()) {
 				case SUCCESS:
 					if (condition.getValue() == null) {
-						violations.addViolation(createValidationPath(condition), GENERIC);
+						violations.add(createValidationPath(condition), GENERIC);
 					}
 					break;
 				case PROPERTY:
 					if (condition.getStage() == null) {
-						violations.addViolation(createValidationPath(condition), STAGE_REQUIRED);
+						violations.add(createValidationPath(condition), STAGE_REQUIRED);
 					}
 					if (StringUtils.isBlank(condition.getPropertyName())) {
-						violations.addViolation(createValidationPath(condition), PROPERTY_NAME_REQUIRED);
+						violations.add(createValidationPath(condition), PROPERTY_NAME_REQUIRED);
 					}
 					if (condition.getOperation() == null) {
-						violations.addViolation(createValidationPath(condition), OPERATION_REQUIRED);
+						violations.add(createValidationPath(condition), OPERATION_REQUIRED);
 					}
 					if (condition.getValue() == null) {
-						violations.addViolation(createValidationPath(condition), GENERIC);
+						violations.add(createValidationPath(condition), GENERIC);
 					}
 					break;
 				case PAUSE:
 					if (condition.getStage() == null) {
-						violations.addViolation(createValidationPath(condition), STAGE_REQUIRED);
+						violations.add(createValidationPath(condition), STAGE_REQUIRED);
 					}
 					if (condition.getOperation() == null) {
-						violations.addViolation(createValidationPath(condition), OPERATION_REQUIRED);
+						violations.add(createValidationPath(condition), OPERATION_REQUIRED);
 					}
 					break;
 				case BATCH:
 					if (SoftValidators.isNotPositiveInteger(condition.getValue())) {
-						violations.addViolation(createValidationPath(condition), POSITIVE_INTEGER);
+						violations.add(createValidationPath(condition), POSITIVE_INTEGER);
 					}
 					break;
 				case DATETIME:
 					if (condition.getStage() == null) {
-						violations.addViolation(createValidationPath(condition), STAGE_REQUIRED);
+						violations.add(createValidationPath(condition), STAGE_REQUIRED);
 					}
 					if (condition.getOperation() == null) {
-						violations.addViolation(createValidationPath(condition), OPERATION_REQUIRED);
+						violations.add(createValidationPath(condition), OPERATION_REQUIRED);
 					}
 					if (condition.getScheduleDate() == null) {
-						violations.addViolation(createValidationPath(condition), DATE_REQUIRED);
+						violations.add(createValidationPath(condition), DATE_REQUIRED);
 					}
 					if (condition.getScheduleDate() != null
 						&& condition.getScheduleDate().isBefore(Instant.now())
 						&& condition.getOperation() == Op.BEFORE) {
-						violations.addViolation(createValidationPath(condition), DATE_IN_PAST);
+						violations.add(createValidationPath(condition), DATE_IN_PAST);
 					}
 					break;
 				default:
-					violations.addViolation(createValidationPath(condition), GENERIC);
+					violations.add(createValidationPath(condition), GENERIC);
 					break;
 			}
 		}
-		violations.throwCVEIfNotEmpty();
+		violations.throwCVE();
 
 		if (campaignEntity.getState() == null) {
 			campaignEntity.setState(State.CREATED);

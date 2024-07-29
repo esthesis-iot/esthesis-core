@@ -1,6 +1,6 @@
 # Permissions and Security
 
-esthesis Core secures access to resources via a permissions system. This system is based on the
+esthesis CORE secures access to resources via a permissions system. This system is based on the
 Policies model, which is a set of rules that are evaluated to determine whether a user has access
 to a resource.
 
@@ -75,7 +75,7 @@ ern:esthesis:core:ca:*:delete:allow
 ```
 
 The above policy allows the deletion of any resources in the Certificate Authoridy service of the
-esthesis Core module.
+esthesis CORE module.
 
 ## Backend integration
 You can perform manual security checks using the `isPermitted` method in the `SecurityPermissionsService`

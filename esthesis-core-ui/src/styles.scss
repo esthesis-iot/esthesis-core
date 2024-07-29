@@ -10,31 +10,6 @@
 @tailwind utilities;
 
 // Custom styles.
-.cdk-header-cell {
-  text-transform: uppercase !important;
-}
-
-.mat-mdc-menu-item-text {
-  @apply text-base-content;
-}
-
-.mat-datepicker-content {
-  @apply shadow;
-  @apply bg-base-100;
-  @apply text-base-content #{!important};
-}
-.mat-calendar-body-selected {
-  @apply bg-accent;
-  @apply text-base-content;
-  @apply font-extrabold;
-}
-.mat-calendar-body-cell-content {
-  @apply border-0 #{!important};
-}
-.mat-calendar-period-button {
-  @apply text-base-content #{!important};
-}
-.mat-calendar-arrow {
-  fill: currentColor;
-  @apply text-base-content #{!important};
+:root {
+  --esthesis-green: #009999;
 }

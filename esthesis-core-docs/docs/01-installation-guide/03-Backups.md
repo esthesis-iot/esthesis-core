@@ -1,5 +1,5 @@
 # Backups
-The following sections provide instructions on how to configure backups for the esthesis Core
+The following sections provide instructions on how to configure backups for the esthesis CORE
 services. The backup procedure is a combination of enabling the backup feature on the underlying
 services, as well as configuring your deployment environment to store the backups. Accordingly,
 instructions are targeting specific cloud environments.
@@ -9,7 +9,7 @@ instructions are targeting specific cloud environments.
 ## Backup on AWS with EFS
 
 ## Backup on AWS with S3
-The following section provides instructions on how to configure backups when running esthesis Core
+The following section provides instructions on how to configure backups when running esthesis CORE
 on AWS. Backups are targeting S3 buckets, which have been mounted as a Persistent Volume (PV) on
 the Kubernetes cluster. To follow the next steps you need:
 - An existing AWS Identity and Access Management (IAM) OpenID Connect (OIDC) provider for your

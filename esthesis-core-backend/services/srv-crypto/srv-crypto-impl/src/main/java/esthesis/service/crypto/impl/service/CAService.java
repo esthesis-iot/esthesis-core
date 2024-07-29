@@ -17,7 +17,7 @@ import esthesis.common.exception.QMutationNotPermittedException;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.common.validation.CVExceptionContainer;
+import esthesis.service.common.validation.CVEBuilder;
 import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.resource.SettingsResource;
@@ -84,8 +84,8 @@ public class CAService extends BaseService<CaEntity> {
 
 		// Check a CA with the same name doesn't already exist.
 		if (findFirstByColumn("cn", caEntity.getCn()) != null) {
-			new CVExceptionContainer<CaEntity>().addViolation("cn",
-				"A Certificate Authority with CN '{}' already exists.", caEntity.getCn()).throwCVE();
+			CVEBuilder.addAndThrow("cn", "A Certificate Authority with CN {} already exists.",
+				caEntity.getCn());
 		}
 
 		// Create the CA.

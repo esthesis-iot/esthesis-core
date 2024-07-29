@@ -60,7 +60,7 @@ const config = {
 		(
 			{
 				navbar: {
-					title: 'esthesis Core',
+					title: 'esthesis CORE',
 					logo: {
 						alt: 'esthesis',
 						src: 'img/logo.png',
@@ -132,21 +132,21 @@ const config = {
 						{
 							title: 'Products',
 							items: [
-								{label: 'esthesis Core', to: 'https://esthes.is'},
-								{label: 'esthesis Edge', to: 'https://esthes.is'},
-								{label: 'esthesis Gateway', to: 'https://esthes.is'},
+								{label: 'esthesis CORE', to: 'https://esthes.is'},
+								{label: 'esthesis EDGE', to: 'https://esthes.is'},
+								{label: 'esthesis GATEWAY', to: 'https://esthes.is'},
 								{label: 'esthesis UNS', to: 'https://esthes.is'},
-								{label: 'esthesis Historian', to: 'https://esthes.is'},
+								{label: 'esthesis HISTORIAN', to: 'https://esthes.is'},
 							],
 						},
 						{
 							title: 'Documentation',
 							items: [
-								{label: 'esthesis Core', to: 'https://esthes.is'},
-								{label: 'esthesis Edge', to: 'https://esthes.is'},
-								{label: 'esthesis Gateway', to: 'https://esthes.is'},
+								{label: 'esthesis CORE', to: 'https://esthes.is'},
+								{label: 'esthesis EDGE', to: 'https://esthes.is'},
+								{label: 'esthesis GATEWAY', to: 'https://esthes.is'},
 								{label: 'esthesis UNS', to: 'https://esthes.is'},
-								{label: 'esthesis Historian', to: 'https://esthes.is'},
+								{label: 'esthesis HISTORIAN', to: 'https://esthes.is'},
 							],
 						},
 						{

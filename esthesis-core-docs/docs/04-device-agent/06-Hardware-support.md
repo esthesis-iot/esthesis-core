@@ -134,7 +134,3 @@ Save the changes and enable watchdog on boot:
 ```bash
 sudo systemctl enable watchdog
 ```
-
-#### Conclusion
-
-By incorporating watchdog functionality into your Raspberry Pi IoT gateway, you fortify its reliability, ensuring uninterrupted data exchange between connected devices and the cloud. This streamlined guide empowers IoT enthusiasts to configure watchdog effortlessly, safeguarding against system failures and guaranteeing the seamless operation of their IoT ecosystems. Embrace the resilience of watchdog to optimize the performance of your Raspberry Pi-based IoT gateway and elevate your IoT projects to new heights of reliability.

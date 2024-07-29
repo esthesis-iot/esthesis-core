@@ -1,14 +1,16 @@
-<div [ngClass]="sidebar ? 'w-52' : 'w-12 transition-all ease-in-out duration-300'" class="flex-col">
+<div [ngClass]="sidebar ? 'w-52' : 'w-12 transition-all ease-in-out duration-300'"
+     class="flex-col">
   <div class="flex flex-row">
-    <button (click)="toggleSidebar()" class="btn btn-ghost pt-0 pb-0 pl-2 pr-2 mr-2">
-      <fa-icon icon="bars"></fa-icon>
+    <button (click)="toggleSidebar()" class="ml-2 mr-2.5">
+      <img alt="esthesis CORE logo" ngSrc="assets/img/logo.png" height="70" width="60"
+           class="ml-1">
     </button>
-    <div class="flex-row">
-      <div class="text-xl font-thin">esthesis</div>
-      <div class="font-thin text-sm font-mono">CORE</div>
+    <div class="flex-row mt-2" *ngIf="sidebar">
+      <div class="text-xl  font-thin">esthesis</div>
+      <div class="font-thin text-sm font-mono text-[var(--esthesis-green)]">CORE</div>
     </div>
   </div>
-  <div class="flex flex-col overflow-hidden mt-10">
+  <div class="flex flex-col overflow-hidden mt-5">
     <ul class="flex flex-col mb-10">
       <li *ngFor="let menuItem of menuItems">
         <!-- SIDEBAR FULL -->
@@ -38,8 +40,7 @@
                [attr.data-tip]="menuItem.title">
             <a [routerLink]="menuItem.route"
                class="flex flex-row items-center hover:bg-primary/20 rounded-r-2xl my-2"
-               matTooltip="{{menuItem.title}}"
-               matTooltipPosition="after"
+               matTooltip="{{menuItem.title}}" matTooltipPosition="after"
                routerLinkActive="bg-primary hover:!bg-primary hover:!cursor-default text-white">
                 <span
                   class="inline-flex h-10 w-12 items-center justify-center text-lg hover:cursor-pointer">

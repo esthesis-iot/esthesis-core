@@ -22,7 +22,7 @@ It is therefore a convenient protocol for devices with limited resources.
 
 However, being a text-based protocol, it is not the most efficient way to use when data has already
 arrived at esthesis and needs to be further processed by the various Dataflow components of esthesis
-Core. For this reason, esthesis Core supports internally the [Avro](https://avro.apache.org/)
+Core. For this reason, esthesis CORE supports internally the [Avro](https://avro.apache.org/)
 data serialization.
 
 Here is how it works:
@@ -44,7 +44,7 @@ flowchart LR
 	B -- eLP --> DT1
 	DT1 -- eLP --> R1
 	DT2 -- eLP --> R2
-	subgraph esthesis Core
+	subgraph esthesis CORE
 		R1 --Avro--> K
 		R2 --Avro--> K
 		K --Avro--> D

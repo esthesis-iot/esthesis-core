@@ -1,5 +1,5 @@
 import {NgModule} from "@angular/core";
-import {CommonModule} from "@angular/common";
+import {CommonModule, NgOptimizedImage} from "@angular/common";
 import {MatIconModule} from "@angular/material/icon";
 import {RouterLink, RouterModule} from "@angular/router";
 import {MatMenuModule} from "@angular/material/menu";
@@ -37,7 +37,8 @@ import {FooterComponent} from "./footer/footer.component";
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-    MatTooltipModule
+    MatTooltipModule,
+    NgOptimizedImage
   ]
 })
 export class LayoutModule {

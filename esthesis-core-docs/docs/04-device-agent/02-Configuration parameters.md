@@ -221,7 +221,7 @@ command line arguments. The following tables lists all available configuration p
 		</tr>
 		<tr>
 			<td><code>PING_INTERVAL, pingInterval</code></td>
-			<td>The frequency to ping esthesis Core (in seconds).<br/><br/>
+			<td>The frequency to ping esthesis CORE (in seconds).<br/><br/>
 					Default: 60</td>
 			<td>Numeric</td>
 		</tr>
