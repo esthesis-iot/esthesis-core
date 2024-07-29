@@ -84,7 +84,8 @@ public class CAService extends BaseService<CaEntity> {
 
 		// Check a CA with the same name doesn't already exist.
 		if (findFirstByColumn("cn", caEntity.getCn()) != null) {
-			CVEBuilder.addAndThrow("cn", "A Certificate Authority with CN '{}' already exists.");
+			CVEBuilder.addAndThrow("cn", "A Certificate Authority with CN {} already exists.",
+				caEntity.getCn());
 		}
 
 		// Create the CA.
