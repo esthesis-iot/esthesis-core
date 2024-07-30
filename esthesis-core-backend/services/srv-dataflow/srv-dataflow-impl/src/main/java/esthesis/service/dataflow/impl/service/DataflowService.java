@@ -12,6 +12,7 @@ import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.dataflow.dto.DockerTagsDTO;
+import esthesis.service.dataflow.dto.FormlySelectOption;
 import esthesis.service.dataflow.entity.DataflowEntity;
 import esthesis.service.dataflow.impl.docker.DockerClient;
 import esthesis.service.kubernetes.dto.PodInfoDTO;
@@ -200,8 +201,9 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	}
 
 	@ErnPermission(category = DATAFLOW, operation = READ)
-	public List<String> getNamespaces() {
-		return kubernetesResource.getNamespaces();
+	public List<FormlySelectOption> getNamespaces() {
+		return kubernetesResource.getNamespaces().stream()
+			.map(namespace -> new FormlySelectOption(namespace, namespace)).toList();
 	}
 
 	@ErnPermission(category = DATAFLOW, operation = DELETE)

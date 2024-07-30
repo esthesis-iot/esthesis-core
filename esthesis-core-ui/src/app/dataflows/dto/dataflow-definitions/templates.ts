@@ -2,6 +2,8 @@
 // Main
 // *************************************************************************************************
 import {AppConstants} from "../../../app.constants";
+import {DataflowsService} from "../../dataflows.service";
+import {FormlyFieldConfig} from "@ngx-formly/core";
 
 export const DATAFLOW_TEMPLATE_MAIN = [
   { key: "name", type: "input", props: {required: true, label: "Name"},
@@ -65,7 +67,13 @@ export const DATAFLOW_TEMPLATE_KAFKA = [
 // Kubernetes
 // *************************************************************************************************
 export const DATAFLOW_TEMPLATE_KUBERNETES = [
-  { key: "namespace", type: "select", props: {required: true, label: "Namespace"} },
+  { key: "namespace", type: "select", props: {required: true, label: "Namespace"},
+    hooks: {
+      onInit: (field: FormlyFieldConfig) => {
+        field.props!.options = DataflowsService.instance.getNamespaces();
+      }
+    }
+  },
   { key: "cpu-request", type: "input", defaultValue: "100m", props: {required: true, label: "CPU Request"} },
   { key: "cpu-limit", type: "input", defaultValue: "1", props: {required: true, label: "CPU Limit"} },
   { key: "container-image-version", type: "select",
