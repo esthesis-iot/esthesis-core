@@ -79,9 +79,6 @@ public class OrionClientService {
 		orionClient = RestClientBuilder.newBuilder()
 			.register(new OrionClientHeaderFilter(contexts, contextsRelationships, authService))
 			.baseUri(orionUrl).build(OrionClient.class);
-
-
-		log.info("Orion Client version: {}", orionClient.getVersion());
 	}
 
 	private JsonObject toOrionAttributeJson(String attributeValue, ValueType attributeValueType,

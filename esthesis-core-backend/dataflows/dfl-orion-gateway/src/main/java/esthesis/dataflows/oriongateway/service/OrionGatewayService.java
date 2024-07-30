@@ -20,6 +20,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
@@ -411,14 +412,11 @@ public class OrionGatewayService {
 			// Extract the most relevant data from the message
 			String category = esthesisMessage.getPayload().getCategory();
 			String esthesisMessageSeenAt = esthesisMessage.getSeenAt();
-			String hardwareId = esthesisMessage.getHardwareId();
 
 			// Check if device has set the custom measurement formatter attribute
 			Optional<DeviceAttributeEntity> customOrionEntityJsonAttribute =
 				appConfig.orionCustomEntityJsonFormatAttributeName()
 					.flatMap(name -> deviceSystemResource.getDeviceAttributeByEsthesisHardwareIdAndAttributeName(esthesisHardwareId, name));
-
-			log.debug("customOrionEntityJsonAttribute exists: {}.", customOrionEntityJsonAttribute.isPresent());
 
 			// Retrieve the list attribute to be filtered, if any
 			List<String> filterAttributes = getConfiguredFilterAttributes();
@@ -426,15 +424,14 @@ public class OrionGatewayService {
 			esthesisMessage.getPayload().getValues().forEach((valueData) -> {
 
 				if (canSendAttribute(valueData, filterAttributes)) {
-					// if custom formatter is set, generate the dinamic json using the Qute formatter
+					// if custom formatter is set, generate the dynamic json using the Qute formatter
 					// along with the relevant measurement data
 					if (customOrionEntityJsonAttribute.isPresent()) {
 						String customFormattedValue =
 							Qute.fmt(customOrionEntityJsonAttribute.get().getAttributeValue(),
-								Map.of("esthesisHardwareId", esthesisHardwareId,
-									"category", category,
+								Map.of("category", category,
 									"esthesisMessageSeenAt", esthesisMessageSeenAt,
-									"hardwareId", hardwareId,
+									"hardwareId", esthesisHardwareId,
 									"measurementName", valueData.getName(),
 									"measurementValue", valueData.getValue())
 							);
@@ -454,7 +451,7 @@ public class OrionGatewayService {
 
 	private boolean canSendAttribute(ValueData valueData, List<String> filterAttributes) {
 		return filterAttributes.isEmpty() || filterAttributes.stream().anyMatch(filter ->
-			valueData.getName().toLowerCase().contains(filter.toLowerCase().trim()));
+			StringUtils.equals(valueData.getName(), filter.trim()));
 	}
 
 }
