@@ -4,11 +4,9 @@ import {FormlyFieldConfig} from "@ngx-formly/core";
 import {dataflows} from "../dto/dataflow-definitions/dataflow-definition";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DataflowsService} from "../dataflows.service";
-import {TagsService} from "../../tags/tags.service";
 import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
-import {QFormsService} from "@qlack/forms";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
@@ -27,8 +25,7 @@ export class DataflowEditComponent extends SecurityBaseComponent implements OnIn
   dataflow!: any;
 
   constructor(private route: ActivatedRoute, private dataflowService: DataflowsService,
-    private tagService: TagsService, private utilityService: UtilityService,
-    private dialog: MatDialog, private qForms: QFormsService, private router: Router) {
+    private utilityService: UtilityService, private dialog: MatDialog, private router: Router) {
     super(AppConstants.SECURITY.CATEGORY.DATAFLOW, route.snapshot.paramMap.get("id"));
   }
 
@@ -57,14 +54,6 @@ export class DataflowEditComponent extends SecurityBaseComponent implements OnIn
         }
       });
     }
-
-    // Replace the namespace field with the actual namespaces.
-    this.dataflowService.getNamespaces().subscribe(onNext => {
-      this.dataflowService.replaceSelectValues(this.fields, "namespace",
-        onNext.map(t => {
-          return {label: t, value: t};
-        }));
-    });
 
     // Find Docker tags for this dataflow.
     this.dataflowService.getAvailableTags(this.type).subscribe({

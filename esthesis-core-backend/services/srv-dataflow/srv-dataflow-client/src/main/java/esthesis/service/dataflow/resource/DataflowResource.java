@@ -3,6 +3,7 @@ package esthesis.service.dataflow.resource;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.dataflow.dto.DockerTagsDTO;
+import esthesis.service.dataflow.dto.FormlySelectOption;
 import esthesis.service.dataflow.entity.DataflowEntity;
 import io.quarkus.oidc.token.propagation.AccessToken;
 import jakarta.validation.Valid;
@@ -45,5 +46,5 @@ public interface DataflowResource {
 
 	@GET
 	@Path("/v1/namespaces")
-	List<String> getNamespaces();
+	List<FormlySelectOption> getNamespaces();
 }

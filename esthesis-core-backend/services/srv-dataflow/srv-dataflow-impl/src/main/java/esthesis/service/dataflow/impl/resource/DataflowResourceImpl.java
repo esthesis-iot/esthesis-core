@@ -9,6 +9,7 @@ import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.dataflow.dto.DockerTagsDTO;
+import esthesis.service.dataflow.dto.FormlySelectOption;
 import esthesis.service.dataflow.entity.DataflowEntity;
 import esthesis.service.dataflow.impl.service.DataflowService;
 import esthesis.service.dataflow.resource.DataflowResource;
@@ -71,7 +72,7 @@ public class DataflowResourceImpl implements DataflowResource {
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
-	public List<String> getNamespaces() {
+	public List<FormlySelectOption> getNamespaces() {
 		return dataflowService.getNamespaces();
 	}
 }

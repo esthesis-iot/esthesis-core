@@ -12,9 +12,13 @@ import {AppConstants} from "../app.constants";
 })
 export class DataflowsService extends CrudService<DataflowDto> {
   private prefix = AppConstants.API_ROOT + "/dataflow/v1";
+  // A static instance of this service to be used when defining Formly templates, for populating
+  // dynamic field values such as selects. Do not use this instance anywhere else.
+  static instance: DataflowsService;
 
   constructor(http: HttpClient) {
     super(http, "dataflow/v1");
+    DataflowsService.instance = this;
   }
 
   getAvailableTags(dflType: string): Observable<DockerTagsDto> {
@@ -22,9 +26,8 @@ export class DataflowsService extends CrudService<DataflowDto> {
       `${this.prefix}/docker-tags/${dflType}`);
   }
 
-  getNamespaces(): Observable<string[]> {
-    return this.http.get<string[]>(
-      `${this.prefix}/namespaces`);
+  getNamespaces(): Observable<any[]> {
+    return this.http.get<string[]>(`${this.prefix}/namespaces`);
   }
 
   override save(data: any): Observable<any> {
