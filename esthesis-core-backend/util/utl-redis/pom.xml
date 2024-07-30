@@ -12,9 +12,6 @@
 
   <artifactId>utl-redis</artifactId>
 
-  <properties>
-  </properties>
-
   <dependencies>
     <!-- ESTHESIS -->
     <dependency>
