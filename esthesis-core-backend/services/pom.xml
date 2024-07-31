@@ -49,7 +49,7 @@
 			<artifactId>quarkus-smallrye-health</artifactId>
 		</dependency>
 
-    <!-- THIRD-PARTY -->
+    <!-- ESTHESIS -->
     <dependency>
       <artifactId>common</artifactId>
       <groupId>esthesis</groupId>
