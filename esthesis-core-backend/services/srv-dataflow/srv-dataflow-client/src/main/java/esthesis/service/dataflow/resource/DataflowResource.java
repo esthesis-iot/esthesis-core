@@ -2,7 +2,6 @@ package esthesis.service.dataflow.resource;
 
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.dataflow.dto.DockerTagsDTO;
 import esthesis.service.dataflow.dto.FormlySelectOption;
 import esthesis.service.dataflow.entity.DataflowEntity;
 import io.quarkus.oidc.token.propagation.AccessToken;
@@ -39,10 +38,6 @@ public interface DataflowResource {
 	@Path("/v1")
 	@Produces("application/json")
 	DataflowEntity save(@Valid DataflowEntity dataflowEntity);
-
-	@GET
-	@Path("/v1/docker-tags/{dflType}")
-	DockerTagsDTO getImageTags(@PathParam("dflType") String dflType);
 
 	@GET
 	@Path("/v1/namespaces")

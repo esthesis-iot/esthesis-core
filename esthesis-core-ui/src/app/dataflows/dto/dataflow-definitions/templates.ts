@@ -76,11 +76,8 @@ export const DATAFLOW_TEMPLATE_KUBERNETES = [
   },
   { key: "cpu-request", type: "input", defaultValue: "100m", props: {required: true, label: "CPU Request"} },
   { key: "cpu-limit", type: "input", defaultValue: "1", props: {required: true, label: "CPU Limit"} },
-  { key: "container-image-version", type: "select",
-    props: {
-      label: "Select the version of this dataflow to deploy", required: true, multiple: false,
-      options: []
-    }
+  { key: "container-image-version", type: "input",
+    props: { label: "Set the version of this dataflow to deploy", required: true }
   },
   { key: "registry", type: "input", defaultValue: "",
     props: {

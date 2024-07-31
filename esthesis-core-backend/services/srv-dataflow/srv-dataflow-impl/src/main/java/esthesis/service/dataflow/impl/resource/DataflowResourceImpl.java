@@ -8,7 +8,6 @@ import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.dataflow.dto.DockerTagsDTO;
 import esthesis.service.dataflow.dto.FormlySelectOption;
 import esthesis.service.dataflow.entity.DataflowEntity;
 import esthesis.service.dataflow.impl.service.DataflowService;
@@ -62,12 +61,6 @@ public class DataflowResourceImpl implements DataflowResource {
 		} else {
 			return dataflowService.saveUpdate(dataflowEntity);
 		}
-	}
-
-	@Override
-	@RolesAllowed(AppConstants.ROLE_USER)
-	public DockerTagsDTO getImageTags(String dflType) {
-		return dataflowService.getImageTags(dflType);
 	}
 
 	@Override

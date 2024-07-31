@@ -6,7 +6,6 @@ import {UtilityService} from "../../../shared/services/utility.service";
 import {AppConstants} from "../../../app.constants";
 import {FormGroup} from "@angular/forms";
 import {FormlyFieldConfig} from "@ngx-formly/core";
-import {DATAFLOW_DEFINITION_PING_UPDATER} from "../../dto/dataflow-definitions/ping-updater";
 import {concatMap, delay, from, Observable, tap} from "rxjs";
 import * as _ from "lodash-es";
 import {DATAFLOW_WIZARD_STANDARD} from "./dto/dataflow-wizard-standard-dto";
@@ -28,21 +27,6 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
   ngOnInit(): void {
     // Find namespaces.
     this.refreshNamespaces();
-
-    // Find Docker tags for this dataflow. Since this is a wizard and all dataflows share versions,
-    // we just use ping-updater as a reference.
-    this.dataflowService.getAvailableTags(DATAFLOW_DEFINITION_PING_UPDATER.type).subscribe({
-      next: tags => {
-        this.dataflowService.replaceSelectValues(this.fields, "container-image-version",
-          tags.results.map(t => {
-            return {label: t.name, value: t.name};
-          }));
-      }, error: err => {
-        this.utilityService.popupErrorWithTraceId(
-          "Could not fetch available Docker tags for this image.", err);
-      }
-    });
-
     this.fields = DATAFLOW_WIZARD_STANDARD.fields;
   }
 
