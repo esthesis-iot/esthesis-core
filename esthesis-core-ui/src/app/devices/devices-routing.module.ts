@@ -1,8 +1,9 @@
 import {NgModule} from "@angular/core";
-import {ActivatedRouteSnapshot, RouterModule, Routes} from "@angular/router";
+import {RouterModule, Routes} from "@angular/router";
 import {DevicesComponent} from "./devices-list/devices.component";
 import {DevicePreregisterComponent} from "./device-preregister/device-preregister.component";
 import {DeviceComponent} from "./device/device.component";
+import {deviceNameResolver} from "../shared/components/breadcrumb/breadcrumb.resolver";
 
 const routes: Routes = [
   {
@@ -15,10 +16,8 @@ const routes: Routes = [
   },
   {
     path: ":id", component: DeviceComponent,
-    data: {
-      breadcrumb: (route: ActivatedRouteSnapshot) => {
-        return "Device " + route.params['id'];
-      }
+    resolve: {
+      breadcrumb: deviceNameResolver
     }
   },
 ];

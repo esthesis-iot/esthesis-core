@@ -9,13 +9,17 @@ import {
 import {
   DataflowWizardStandardComponent
 } from "./dataflow-wizards/dataflow-wizard-standard/dataflow-wizard-standard.component";
+import {dflNameResolver} from "../shared/components/breadcrumb/breadcrumb.resolver";
 
 const routes: Routes = [
-  {path: "", component: DataflowsListComponent},
-  {path: "new", component: DataflowNewComponent},
+  {path: "", component: DataflowsListComponent, data: {breadcrumb: ""}},
+  {path: "new", component: DataflowNewComponent, data: {breadcrumb: "New dataflow"}},
   {path: "wizards", component: DataflowWizardsListComponent},
   {path: "wizards/standard", component: DataflowWizardStandardComponent},
-  {path: "edit/:type/:id", component: DataflowEditComponent}
+  {path: "edit/:type/:id", component: DataflowEditComponent,
+    resolve: {
+      breadcrumb: dflNameResolver
+    }}
 ];
 
 

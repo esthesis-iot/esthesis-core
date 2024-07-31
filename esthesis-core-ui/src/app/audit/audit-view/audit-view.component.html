@@ -8,6 +8,10 @@
     </h2>
     <div *ngIf="(auditEvent| json) != '{}'" class="flex flex-col">
       <div class="flex flex-row">
+        <div class="font-bold w-24">ID:</div>
+        <div>{{auditEvent.id}}</div>
+      </div>
+      <div class="flex flex-row">
         <div class="font-bold w-24">User:</div>
         <div>{{auditEvent.createdBy}}</div>
       </div>
@@ -28,7 +32,7 @@
         <div>{{auditEvent.message}}</div>
       </div>
 
-      <div class="font-bold mt-5">Data input</div>
+      <div class="font-bold mt-5 bg">Data input</div>
       <ngx-json-viewer *ngIf="auditEvent.valueIn" [expanded]="true"
                        [json]="auditEvent.valueIn" class="text-base ml-5"></ngx-json-viewer>
       <div *ngIf="!auditEvent.valueIn" class="italic">No value recorded in audit</div>

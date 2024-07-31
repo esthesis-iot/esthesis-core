@@ -12,7 +12,7 @@ export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
     {
       path: "dashboard",
       loadChildren: () => import("./dashboard/dashboard.module").then(m => m.DashboardModule),
-      canActivate: [AutoLoginPartialRoutesGuard]
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Dashboard"}
     },
     {
       path: "audit",
@@ -91,7 +91,7 @@ export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
     {
       path: "security",
       loadChildren: () => import("./security/security.module").then(m => m.SecurityModule),
-      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "Security"}
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: ""}
     },
     {
       path: "user",

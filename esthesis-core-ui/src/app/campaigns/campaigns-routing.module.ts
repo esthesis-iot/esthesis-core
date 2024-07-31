@@ -1,17 +1,15 @@
 import {NgModule} from "@angular/core";
-import {ActivatedRouteSnapshot, RouterModule, Routes} from "@angular/router";
+import {RouterModule, Routes} from "@angular/router";
 import {CampaignsComponent} from "./campaigns-list/campaigns.component";
 import {CampaignEditComponent} from "./campaign-edit/campaign-edit.component";
-import {AppConstants} from "../app.constants";
+import {campaignNameResolver} from "../shared/components/breadcrumb/breadcrumb.resolver";
 
 const routes: Routes = [
   {path: "", component: CampaignsComponent, data: {breadcrumb: ""}},
   {
-    path: ":id", component: CampaignEditComponent, data: {
-      breadcrumb: (route: ActivatedRouteSnapshot) => {
-        return route.params['id'] === AppConstants.NEW_RECORD_ID ?
-          "New campaign" : "Campaign " + route.params['id'];
-      }
+    path: ":id", component: CampaignEditComponent,
+    resolve: {
+      breadcrumb: campaignNameResolver
     }
   },
 ];

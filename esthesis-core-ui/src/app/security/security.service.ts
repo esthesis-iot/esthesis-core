@@ -115,7 +115,7 @@ export class SecurityService extends CrudService<UserDto> {
     const userData = this.getUserData();
     if (userData) {
       return userData[AppConstants.SECURITY.USERDATA.FIRST_NAME] + " "
-      + userData[AppConstants.SECURITY.USERDATA.LAST_NAME] as string;
+        + userData[AppConstants.SECURITY.USERDATA.LAST_NAME];
     } else {
       return null;
     }

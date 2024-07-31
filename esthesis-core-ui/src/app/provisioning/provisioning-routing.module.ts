@@ -1,17 +1,15 @@
 import {NgModule} from "@angular/core";
-import {ActivatedRouteSnapshot, RouterModule, Routes} from "@angular/router";
+import {RouterModule, Routes} from "@angular/router";
 import {ProvisioningEditComponent} from "./provisioning-edit/provisioning-edit.component";
 import {ProvisioningListComponent} from "./provisioning-list/provisioning-list.component";
-import {AppConstants} from "../app.constants";
+import {provisioningPackageNameResolver} from "../shared/components/breadcrumb/breadcrumb.resolver";
 
 const routes: Routes = [
-  {path: "", component: ProvisioningListComponent},
+  {path: "", component: ProvisioningListComponent, data: {breadcrumb: ""}},
   {
-    path: ":id", component: ProvisioningEditComponent, data: {
-      breadcrumb: (route: ActivatedRouteSnapshot) => {
-        return route.params['id'] === AppConstants.NEW_RECORD_ID ?
-          "New provisioning package" : "Provisioning package " + route.params['id'];
-      }
+    path: ":id", component: ProvisioningEditComponent,
+    resolve: {
+      breadcrumb: provisioningPackageNameResolver
     }
   },
 ];

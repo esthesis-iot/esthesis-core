@@ -4,10 +4,14 @@ import {InfrastructureComponent} from "./infrastructure.component";
 import {
   InfrastructureMqttEditComponent
 } from "./infrastructure-mqtt/infrastructure-mqtt-edit/infrastructure-mqtt-edit.component";
+import {infraMqttNameResolver} from "../shared/components/breadcrumb/breadcrumb.resolver";
 
 const routes: Routes = [
-  {path: "", component: InfrastructureComponent},
-  {path: "mqtt/:id", component: InfrastructureMqttEditComponent},
+  {path: "", component: InfrastructureComponent, data: {breadcrumb: ""}},
+  {path: "mqtt/:id", component: InfrastructureMqttEditComponent,
+    resolve: {
+      breadcrumb: infraMqttNameResolver
+    }},
 ];
 
 @NgModule({

@@ -16,9 +16,7 @@ export class BreadcrumbService {
   readonly breadcrumbs$ = this._breadcrumbs$.asObservable();
 
   constructor(private router: Router) {
-    this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd)
-    ).subscribe(() => {
+    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
       // Construct the breadcrumb hierarchy.
       const root = this.router.routerState.snapshot.root;
       const breadcrumbs: Breadcrumb[] = [];
@@ -52,6 +50,11 @@ export class BreadcrumbService {
 
       // Add another element for the next route part.
       this.addBreadcrumb(route.firstChild, routeUrl, breadcrumbs);
+
+      // If breadcrumbs only has one element, remove its link.
+      if (breadcrumbs.length === 1) {
+        breadcrumbs[0].url = undefined;
+      }
     }
   }
 

@@ -2,14 +2,12 @@
   <div class="text-sm breadcrumbs ml-1">
     <ul>
       <li>
-        <a href="/dashboard">
           <fa-icon icon="home"></fa-icon>
-        </a>
       </li>
       <li *ngFor="let breadcrumb of (breadcrumbs$ | async)">
         <!-- If a URL exists, make it a link, otherwise just display the text -->
         <ng-container *ngIf="breadcrumb.url; else nolink">
-          <a [href]="breadcrumb.url">{{ breadcrumb.label }}</a>
+          <a [href]="breadcrumb.url" class="font-bold">{{ breadcrumb.label }}</a>
         </ng-container>
         <ng-template #nolink>
           {{ breadcrumb.label }}

@@ -1,15 +1,15 @@
 import {NgModule} from "@angular/core";
-import {ActivatedRouteSnapshot, RouterModule, Routes} from "@angular/router";
+import {RouterModule, Routes} from "@angular/router";
 import {KeystoresListComponent} from "./keystores-list/keystores-list.component";
 import {KeystoreEditComponent} from "./keystore-edit/keystore-edit.component";
+import {keystoreNameResolver} from "../shared/components/breadcrumb/breadcrumb.resolver";
 
 const routes: Routes = [
   {path: "", component: KeystoresListComponent, data: {breadcrumb: ""}},
   {
-    path: ":id", component: KeystoreEditComponent, data: {
-      breadcrumb: (route: ActivatedRouteSnapshot) => {
-        return "Keystore " + route.params['id'];
-      }
+    path: ":id", component: KeystoreEditComponent,
+    resolve: {
+      breadcrumb: keystoreNameResolver
     }
   },
 ];

@@ -1,12 +1,10 @@
-import {AfterViewInit, Component, Input, OnInit, Optional, ViewChild} from "@angular/core";
-import {BaseComponent} from "../../../shared/components/base-component";
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
 import {QFormsService} from "@qlack/forms";
-import {MatDialogRef} from "@angular/material/dialog";
 import {UtilityService} from "../../../shared/services/utility.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {SecurityService} from "../../security.service";
