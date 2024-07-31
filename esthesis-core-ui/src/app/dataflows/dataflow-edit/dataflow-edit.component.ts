@@ -50,23 +50,10 @@ export class DataflowEditComponent extends SecurityBaseComponent implements OnIn
         next: (reply) => {
           this.model = reply;
         }, error: (err) => {
-          this.utilityService.popupErrorWithTraceId("Could not feth dataflow.", err);
+          this.utilityService.popupErrorWithTraceId("Could not fetch dataflow.", err);
         }
       });
     }
-
-    // Find Docker tags for this dataflow.
-    this.dataflowService.getAvailableTags(this.type).subscribe({
-      next: tags => {
-        this.dataflowService.replaceSelectValues(this.fields, "container-image-version",
-          tags.results.map(t => {
-            return {label: t.name, value: t.name};
-          }));
-      }, error: err => {
-        this.utilityService.popupErrorWithTraceId(
-          "Could not fetch available Docker tags for this image.", err);
-      }
-    });
   }
 
   delete() {

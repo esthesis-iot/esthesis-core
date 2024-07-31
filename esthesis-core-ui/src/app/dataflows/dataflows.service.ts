@@ -3,7 +3,6 @@ import {HttpClient} from "@angular/common/http";
 import {CrudService} from "../shared/services/crud.service";
 import {Observable} from "rxjs";
 import {DataflowDto} from "./dto/dataflow-dto";
-import {DockerTagsDto} from "./dto/docker-tags";
 import {FormlyFieldConfig} from "@ngx-formly/core";
 import {AppConstants} from "../app.constants";
 
@@ -19,11 +18,6 @@ export class DataflowsService extends CrudService<DataflowDto> {
   constructor(http: HttpClient) {
     super(http, "dataflow/v1");
     DataflowsService.instance = this;
-  }
-
-  getAvailableTags(dflType: string): Observable<DockerTagsDto> {
-    return this.http.get<DockerTagsDto>(
-      `${this.prefix}/docker-tags/${dflType}`);
   }
 
   getNamespaces(): Observable<any[]> {

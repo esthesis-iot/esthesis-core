@@ -11,7 +11,6 @@ import esthesis.common.data.DataUtils;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.dataflow.dto.DockerTagsDTO;
 import esthesis.service.dataflow.dto.FormlySelectOption;
 import esthesis.service.dataflow.entity.DataflowEntity;
 import esthesis.service.dataflow.impl.docker.DockerClient;
@@ -193,11 +192,6 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		kubernetesResource.schedulePod(podInfoDTO);
 
 		return dataflowEntity;
-	}
-
-	@ErnPermission(category = DATAFLOW, operation = READ)
-	public DockerTagsDTO getImageTags(String dflType) {
-		return dockerClient.getTags(DOCKER_IMAGE_DEFAULT_URL + "/" + DOCKER_IMAGE_PREFIX + dflType);
 	}
 
 	@ErnPermission(category = DATAFLOW, operation = READ)

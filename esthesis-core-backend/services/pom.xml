@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>esthesis</groupId>
 		<artifactId>esthesis-core-backend</artifactId>
-		<version>3.0.47-SNAPSHOT</version>
+		<version>3.0.48-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>services</artifactId>
@@ -49,11 +49,11 @@
 			<artifactId>quarkus-smallrye-health</artifactId>
 		</dependency>
 
-    <!-- THIRD-PARTY -->
+    <!-- ESTHESIS -->
     <dependency>
       <artifactId>common</artifactId>
       <groupId>esthesis</groupId>
-      <version>3.0.47-SNAPSHOT</version>
+      <version>3.0.48-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
