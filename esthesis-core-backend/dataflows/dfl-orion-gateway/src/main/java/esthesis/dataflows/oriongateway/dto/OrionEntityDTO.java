@@ -27,7 +27,6 @@ public class OrionEntityDTO {
       orionAttributes.add(OrionAttributeDTO.builder()
           .name(esthesisAttribute.getAttributeName())
           .value(esthesisAttribute.getAttributeValue())
-          .type(esthesisAttribute.getAttributeType())
           .maintainedByEsthesis(true)
           .build());
     }

@@ -1,10 +1,12 @@
 package esthesis.dataflows.oriongateway.dto;
 
-import java.io.Serializable;
+import jakarta.ws.rs.QueryParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Data
 @Builder
@@ -12,14 +14,27 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrionQueryDTO implements Serializable {
 
-  private Expression expression;
+	//Comma separated list of URIs to be retrieved
+	@QueryParam("id")
+	private String id;
 
-  @Data
-  @Builder
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class Expression implements Serializable {
+	//Regular expression that must be matched by Entity ids
+	@QueryParam("idPattern")
+	private String idPattern;
 
-    private String q;
-  }
+	//Comma separated list of Entity type names to be retrieved
+	@QueryParam("type")
+	private String type;
+
+	//Custom queries E.g. by attribute value using the following format: q=?attribute==value
+	@QueryParam("q")
+	private String q;
+
+	//Comma separated list of attribute names (properties or relationships) to be retrieved
+	@QueryParam("attrs")
+	private String attrs;
+
+	//Pagination limit
+	@QueryParam("limit")
+	private Integer limit;
 }

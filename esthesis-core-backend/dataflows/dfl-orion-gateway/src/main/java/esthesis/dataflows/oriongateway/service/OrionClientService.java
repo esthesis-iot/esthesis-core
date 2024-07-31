@@ -1,12 +1,12 @@
 package esthesis.dataflows.oriongateway.service;
 
 import esthesis.common.data.DataUtils.ValueType;
+import esthesis.common.exception.QDoesNotExistException;
 import esthesis.dataflows.oriongateway.client.OrionClient;
+import esthesis.dataflows.oriongateway.client.OrionClientHeaderFilter;
 import esthesis.dataflows.oriongateway.config.AppConfig;
 import esthesis.dataflows.oriongateway.dto.OrionAttributeDTO;
 import esthesis.dataflows.oriongateway.dto.OrionEntityDTO;
-import esthesis.dataflows.oriongateway.dto.OrionQueryDTO;
-import esthesis.dataflows.oriongateway.dto.OrionQueryDTO.Expression;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -14,14 +14,19 @@ import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
+import java.util.Objects;
+
+import static java.util.function.Predicate.not;
 
 @Slf4j
 @Transactional
@@ -32,6 +37,10 @@ public class OrionClientService {
 	// at runtime.
 	OrionClient orionClient;
 
+	// Defined at runtime as it rely on the configurations set for auth
+	OrionAuthService authService;
+
+
 	@Inject
 	AppConfig appConfig;
 
@@ -39,29 +48,51 @@ public class OrionClientService {
 		ATTRIBUTE, TELEMETRY, METADATA
 	}
 
+	public enum AUTHENTICATION_TYPE {
+		NONE, KEYROCK
+	}
+
 	@PostConstruct
 	void init() {
 		// Configure Orion client.
 		log.info("Configuring Orion client for '{}'.", appConfig.orionUrl());
 		URI orionUrl = URI.create(appConfig.orionUrl());
-		orionClient = RestClientBuilder.newBuilder().baseUri(orionUrl).build(OrionClient.class);
+
+		// Get the LD contexts urls from configuration variable. It is necessary to create the Link header
+		List<String> contexts = Arrays.stream(appConfig.orionLdDefinedContextsUrl().split(","))
+			.map(String::trim)
+			.filter(not(String::isBlank)).toList();
+
+		// Get contexts relationship definitions from configuration variable. It is necessary to create the Link header
+		List<String> contextsRelationships = Arrays.stream(appConfig.orionLdDefinedContextsRelationships().split(","))
+			.map(String::trim)
+			.filter(not(String::isBlank)).toList();
+
+		// Check for auth configurations and set the auth service accordingly.
+		// If no auth is defined then uses the OrionNoAuthService
+		if(AUTHENTICATION_TYPE.KEYROCK.name().equalsIgnoreCase(appConfig.orionAuthenticationType())){
+			authService = new OrionKeyrockAuthService(this.appConfig);
+		}else{
+			authService = new OrionNoAuthService();
+		}
+
+		orionClient = RestClientBuilder.newBuilder()
+			.register(new OrionClientHeaderFilter(contexts, contextsRelationships, authService))
+			.baseUri(orionUrl).build(OrionClient.class);
 	}
 
 	private JsonObject toOrionAttributeJson(String attributeValue, ValueType attributeValueType,
-		ATTRIBUTE_TYPE attributeType) {
+																					ATTRIBUTE_TYPE attributeType) {
 		// Create metadata for this attribute.
 		JsonObjectBuilder builder = Json.createObjectBuilder()
-			.add("metadata",
+			.add(appConfig.esthesisOrionMetadataName(),
 				Json.createObjectBuilder()
-					.add(appConfig.esthesisOrionMetadataName(),
-						Json.createObjectBuilder()
-							.add("value", appConfig.esthesisOrionMetadataValue())
-							.add("type", "Text"))
-					.add(appConfig.esthesisAttributeSourceMetadataName(),
-						Json.createObjectBuilder()
-							.add("value", attributeType.name())
-							.add("type", "Text"))
-			);
+					.add("value", appConfig.esthesisOrionMetadataValue())
+					.add("type", "Property"))
+			.add(appConfig.esthesisAttributeSourceMetadataName(),
+				Json.createObjectBuilder()
+					.add("value", attributeType.name())
+					.add("type", "Property"));
 
 		// Set the value of the attribute.
 		try {
@@ -90,7 +121,15 @@ public class OrionClientService {
 		JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
 		jsonBuilder.add(attributeName,
 			toOrionAttributeJson(attributeValue, attributeValueType, attributeType));
-		orionClient.setAttribute(entityId, jsonBuilder.build().toString());
+		  orionClient.appendAttributes(entityId, jsonBuilder.build().toString());
+	}
+
+	public void saveOrUpdateEntities(String entitiesJson) {
+		//Check and add brackets in case it is missing in the custom entities JSON
+		if(!entitiesJson.trim().startsWith("[")){
+			entitiesJson = "[" + entitiesJson + "]";
+		}
+		orionClient.createOrUpdateEntities(entitiesJson);
 	}
 
 	public void deleteAttribute(String entityId, String attributeName) {
@@ -117,68 +156,37 @@ public class OrionClientService {
 		orionClient.createEntity(jsonBuilder.build().toString());
 	}
 
-	/**
-	 * Returns the Orion ID of the device with the given esthesis hardware ID.
-	 *
-	 * @param esthesisHardwareId The esthesis hardware ID of the device.
-	 */
-	public String getOrionIdByEsthesisHardwareId(String esthesisHardwareId) {
-		List<Map<String, Object>> entitiesMatched = orionClient.query(
-			OrionQueryDTO.builder().expression(
-					Expression.builder()
-						.q(appConfig.attributeEsthesisHardwareId() + "==" + esthesisHardwareId).build())
-				.build());
-		if (CollectionUtils.isEmpty(entitiesMatched)) {
-			return null;
-		} else {
-			if (entitiesMatched.size() > 1) {
-				log.warn(
-					"Multiple devices found in Orion with esthesis hardware ID '{}'. Returning the first one.",
-					esthesisHardwareId);
-			}
-			Map<String, Object> entity = entitiesMatched.get(0);
-			return entity.get("id").toString();
-		}
-	}
+	public OrionEntityDTO getEntityByOrionId(String orionId) {
+		try {
+			log.debug("Get entity by orion id: {}", orionId);
+			Map<String, Object> entity = orionClient.getEntity(orionId);
 
-	public OrionEntityDTO getEntityByEsthesisId(String esthesisId) {
-		// Find the Orion Entity for this device.
-		List<Map<String, Object>> entitiesMatched = orionClient.query(
-			OrionQueryDTO.builder().expression(
-					Expression.builder().q(appConfig.attributeEsthesisId() + "==" + esthesisId).build())
-				.build());
+			if (Objects.nonNull(entity)) {
+				OrionEntityDTO orionEntityDTO = new OrionEntityDTO();
+				orionEntityDTO.setId(entity.get("id").toString());
+				orionEntityDTO.setType(entity.get("type").toString());
 
-		if (CollectionUtils.isEmpty(entitiesMatched)) {
-			return null;
-		} else {
-			if (entitiesMatched.size() > 1) {
-				log.warn("Multiple devices found in Orion with esthesis ID '{}'. Returning the first one.",
-					esthesisId);
-			}
-			Map<String, Object> entity = entitiesMatched.get(0);
-			OrionEntityDTO orionEntityDTO = new OrionEntityDTO();
-			orionEntityDTO.setId(entity.get("id").toString());
-			orionEntityDTO.setType(entity.get("type").toString());
-
-			// Add remaining keys as attributes.
-			entity.forEach((key, value) -> {
-				if (!key.equals("id") && !key.equals("type")) {
-					OrionAttributeDTO orionAttributeDTO = new OrionAttributeDTO();
-					orionAttributeDTO.setName(key);
-					orionAttributeDTO.setValue(value.toString());
-					if (key.equals("metadata")) {
-						value = ((Map<String, Object>) value).get("maintainedBy");
-						if (value != null) {
-							orionAttributeDTO.setMaintainedByEsthesis(
-								Boolean.parseBoolean(((Map<String, Object>) value).get("value").toString()));
-						}
+				// Add remaining keys as attributes.
+				entity.forEach((key, value) -> {
+					if (!key.equals("id") && !key.equals("type")) {
+						OrionAttributeDTO orionAttributeDTO = new OrionAttributeDTO();
+						orionAttributeDTO.setName(key);
+						orionAttributeDTO.setValue(value.toString());
+						orionEntityDTO.getAttributes().add(orionAttributeDTO);
 					}
-					orionEntityDTO.getAttributes().add(orionAttributeDTO);
-				}
-			});
+				});
 
-			return orionEntityDTO;
+				return orionEntityDTO;
+			} else {
+				log.debug("entity with orion id: {} is null", orionId);
+				return null;
+			}
+		} catch (NotFoundException | QDoesNotExistException e) {
+			log.debug("entity with orion id: {} was not found", orionId);
+			// Return null if the entity is not found (404 error).
+			return null;
 		}
+
 	}
 
 	public String getVersion() {
