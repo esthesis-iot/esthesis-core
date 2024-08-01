@@ -5,7 +5,7 @@ import static esthesis.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.common.AppConstants.Security.Operation.READ;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import esthesis.service.kubernetes.dto.PodInfoDTO;
+import esthesis.service.kubernetes.dto.DeploymentInfoDTO;
 import esthesis.service.kubernetes.dto.SecretDTO;
 import esthesis.service.security.annotation.ErnPermission;
 import io.fabric8.kubernetes.api.model.EnvVar;
@@ -43,11 +43,11 @@ public class KubernetesService {
 	/**
 	 * Generates a list of environmental variables out of a pod definition.
 	 *
-	 * @param podInfoDTO The pod definition.
+	 * @param deploymentInfoDTO The pod definition.
 	 */
-	private List<EnvVar> getEnvVar(PodInfoDTO podInfoDTO) {
+	private List<EnvVar> getEnvVar(DeploymentInfoDTO deploymentInfoDTO) {
 		List<EnvVar> envVars = new ArrayList<>();
-		podInfoDTO.getEnvironment().forEach((k, v) ->
+		deploymentInfoDTO.getEnvironment().forEach((k, v) ->
 			envVars.add(new EnvVarBuilder().withName(k).withValue(v).build())
 		);
 
@@ -76,38 +76,38 @@ public class KubernetesService {
 	}
 
 	/**
-	 * Schedules a pod.
+	 * Schedules a Kubernetes Deployment.
 	 *
-	 * @param podInfoDTO The pod to schedule.
+	 * @param deploymentInfoDTO The deployment information to deploy.
 	 */
 	@ErnPermission(category = KUBERNETES, operation = CREATE)
-	public boolean schedulePod(PodInfoDTO podInfoDTO) {
-		log.debug("Scheduling pod '{}'.", podInfoDTO);
+	public boolean scheduleDeployment(DeploymentInfoDTO deploymentInfoDTO) {
+		log.debug("Scheduling deployment '{}'.", deploymentInfoDTO);
 
 		//@formatter:off
     // Create a deployment for the pod.
     DeploymentBuilder deploymentBuilder = new DeploymentBuilder()
       .withNewMetadata()
-        .withName(podInfoDTO.getName())
+        .withName(deploymentInfoDTO.getName())
       .endMetadata()
       .withNewSpec()
         .withNewSelector()
-          .addToMatchLabels("app", podInfoDTO.getName())
+          .addToMatchLabels("app", deploymentInfoDTO.getName())
         .endSelector()
         .withNewTemplate()
           .withNewMetadata()
-            .addToLabels("app", podInfoDTO.getName())
+            .addToLabels("app", deploymentInfoDTO.getName())
           .endMetadata()
           .withNewSpec()
             .addNewContainer()
-              .withName(podInfoDTO.getName())
-              .withImage(podInfoDTO.getImage())
+              .withName(deploymentInfoDTO.getName())
+              .withImage(deploymentInfoDTO.getImage())
               .withImagePullPolicy("Always")
-              .withEnv(getEnvVar(podInfoDTO))
+              .withEnv(getEnvVar(deploymentInfoDTO))
               .withResources(
                   new ResourceRequirementsBuilder()
-                      .addToRequests("cpu", Quantity.parse(podInfoDTO.getCpuRequest()))
-                      .addToLimits("cpu", Quantity.parse(podInfoDTO.getCpuLimit()))
+                      .addToRequests("cpu", Quantity.parse(deploymentInfoDTO.getCpuRequest()))
+                      .addToLimits("cpu", Quantity.parse(deploymentInfoDTO.getCpuLimit()))
                       .build())
             .endContainer()
           .endSpec()
@@ -115,16 +115,16 @@ public class KubernetesService {
       .endSpec();
 
 		// Add secret.
-		if (podInfoDTO.getSecret() != null && podInfoDTO.getSecret().getEntries() != null
-			&& !podInfoDTO.getSecret().getEntries().isEmpty()) {
-			createSecret(podInfoDTO.getSecret());
-			String volumeName = podInfoDTO.getName() + SECRET_VOLUME_SUFFIX;
+		if (deploymentInfoDTO.getSecret() != null && deploymentInfoDTO.getSecret().getEntries() != null
+			&& !deploymentInfoDTO.getSecret().getEntries().isEmpty()) {
+			createSecret(deploymentInfoDTO.getSecret());
+			String volumeName = deploymentInfoDTO.getName() + SECRET_VOLUME_SUFFIX;
 				deploymentBuilder.editSpec().editTemplate()
 				.editSpec()
 					.addNewVolumeLike(
 						new VolumeBuilder().withName(volumeName)
 							.withSecret(new SecretVolumeSourceBuilder()
-								.withSecretName(podInfoDTO.getSecret().getName())
+								.withSecretName(deploymentInfoDTO.getSecret().getName())
 								.build())
 							.build())
 					.endVolume()
@@ -137,28 +137,28 @@ public class KubernetesService {
 		}
 		// @formatter:on
 
-		if (podInfoDTO.isStatus()) {
+		if (deploymentInfoDTO.isStatus()) {
 			//TODO fix deprecation
-			kc.apps().deployments().inNamespace(podInfoDTO.getNamespace())
+			kc.apps().deployments().inNamespace(deploymentInfoDTO.getNamespace())
 				.resource(deploymentBuilder.build()).createOrReplace();
 		} else {
-			kc.apps().deployments().inNamespace(podInfoDTO.getNamespace())
+			kc.apps().deployments().inNamespace(deploymentInfoDTO.getNamespace())
 				.resource(deploymentBuilder.build()).delete();
 		}
 
 		//@formatter:off
-    // Create a horizontal pod autoscaler for the pod.
+    // Create a horizontal pod autoscaler.
     HorizontalPodAutoscaler horizontalPodAutoscaler = new HorizontalPodAutoscalerBuilder()
-      .withNewMetadata().withName("hpa-" + podInfoDTO.getName())
+      .withNewMetadata().withName("hpa-" + deploymentInfoDTO.getName())
         .endMetadata()
       .withNewSpec()
         .withNewScaleTargetRef()
           .withApiVersion("apps/v1")
           .withKind("Deployment")
-          .withName(podInfoDTO.getName())
+          .withName(deploymentInfoDTO.getName())
         .endScaleTargetRef()
-        .withMinReplicas(podInfoDTO.getMinInstances())
-        .withMaxReplicas(podInfoDTO.getMaxInstances())
+        .withMinReplicas(deploymentInfoDTO.getMinInstances())
+        .withMaxReplicas(deploymentInfoDTO.getMaxInstances())
         .addToMetrics(new MetricSpecBuilder()
             .withType("Resource")
             .withNewResource()
@@ -187,14 +187,14 @@ public class KubernetesService {
     .build();
     //@formatter:on
 
-		// Create or remove the pod, according to the requested pod status.
-		if (podInfoDTO.isStatus()) {
-			kc.autoscaling().v2().horizontalPodAutoscalers().inNamespace(
+		// Create or remove the deployment, according to the requested deployment status.
+		if (deploymentInfoDTO.isStatus()) {
 				//TODO fix deprecation
-				podInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).createOrReplace();
+			kc.autoscaling().v2().horizontalPodAutoscalers().inNamespace(
+				deploymentInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).createOrReplace();
 		} else {
 			kc.autoscaling().v2().horizontalPodAutoscalers().inNamespace(
-				podInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).delete();
+				deploymentInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).delete();
 		}
 
 		return true;

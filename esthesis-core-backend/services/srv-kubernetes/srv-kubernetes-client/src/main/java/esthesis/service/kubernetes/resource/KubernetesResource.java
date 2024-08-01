@@ -1,6 +1,6 @@
 package esthesis.service.kubernetes.resource;
 
-import esthesis.service.kubernetes.dto.PodInfoDTO;
+import esthesis.service.kubernetes.dto.DeploymentInfoDTO;
 import io.quarkus.oidc.token.propagation.AccessToken;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -15,8 +15,8 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface KubernetesResource {
 
 	@POST
-	@Path("/v1/pod/start")
-	Boolean schedulePod(PodInfoDTO podInfoDTO);
+	@Path("/v1/deployment/schedule")
+	Boolean scheduleDeployment(DeploymentInfoDTO deploymentInfoDTO);
 
 	@GET
 	@Path("/v1/namespaces")

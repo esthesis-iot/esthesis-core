@@ -14,7 +14,7 @@ import esthesis.service.common.paging.Pageable;
 import esthesis.service.dataflow.dto.FormlySelectOption;
 import esthesis.service.dataflow.entity.DataflowEntity;
 import esthesis.service.dataflow.impl.docker.DockerClient;
-import esthesis.service.kubernetes.dto.PodInfoDTO;
+import esthesis.service.kubernetes.dto.DeploymentInfoDTO;
 import esthesis.service.kubernetes.dto.SecretDTO;
 import esthesis.service.kubernetes.dto.SecretDTO.SecretDTOBuilder;
 import esthesis.service.kubernetes.dto.SecretEntryDTO;
@@ -155,29 +155,29 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		}
 	}
 
-	private PodInfoDTO createPodInfo(DataflowEntity dataflowEntity) {
-		PodInfoDTO podInfoDTO = new PodInfoDTO();
-		podInfoDTO.setName(Slugify.builder().build().slugify(dataflowEntity.getName()));
+	private DeploymentInfoDTO createPodInfo(DataflowEntity dataflowEntity) {
+		DeploymentInfoDTO deploymentInfoDTO = new DeploymentInfoDTO();
+		deploymentInfoDTO.setName(Slugify.builder().build().slugify(dataflowEntity.getName()));
 		@SuppressWarnings("unchecked")
 		Map<String, Object> k8sConfig = (Map<String, Object>)MapUtils.getMap(
 			dataflowEntity.getConfig(), CONFIG_SECTION_KUBERNETES);
-		podInfoDTO.setImage(createDflImageUrl(k8sConfig, dataflowEntity.getType()));
-		podInfoDTO.setVersion(MapUtils.getString(k8sConfig, CONTAINER_IMAGE_VERSION));
-		podInfoDTO.setNamespace(MapUtils.getString (k8sConfig, KUBERNETES_NAMESPACE));
-		podInfoDTO.setMinInstances(MapUtils.getIntValue(k8sConfig, KUBERNETES_MIN_PODS));
-		podInfoDTO.setMaxInstances(MapUtils.getIntValue(k8sConfig, KUBERNETES_MAX_PODS));
-		podInfoDTO.setCpuRequest(MapUtils.getString(k8sConfig, KUBERNETES_CPU_REQUEST));
-		podInfoDTO.setCpuLimit(MapUtils.getString(k8sConfig, KUBERNETES_CPU_LIMIT));
-		podInfoDTO.setEnvironment(makeEnvironmentVariables(
+		deploymentInfoDTO.setImage(createDflImageUrl(k8sConfig, dataflowEntity.getType()));
+		deploymentInfoDTO.setVersion(MapUtils.getString(k8sConfig, CONTAINER_IMAGE_VERSION));
+		deploymentInfoDTO.setNamespace(MapUtils.getString (k8sConfig, KUBERNETES_NAMESPACE));
+		deploymentInfoDTO.setMinInstances(MapUtils.getIntValue(k8sConfig, KUBERNETES_MIN_PODS));
+		deploymentInfoDTO.setMaxInstances(MapUtils.getIntValue(k8sConfig, KUBERNETES_MAX_PODS));
+		deploymentInfoDTO.setCpuRequest(MapUtils.getString(k8sConfig, KUBERNETES_CPU_REQUEST));
+		deploymentInfoDTO.setCpuLimit(MapUtils.getString(k8sConfig, KUBERNETES_CPU_LIMIT));
+		deploymentInfoDTO.setEnvironment(makeEnvironmentVariables(
 			flattenMap(dataflowEntity.getConfig()), "ESTHESIS_DFL_"));
 		if (MapUtils.getString(k8sConfig, CUSTOM_ENV_VARS_KEY_NAME) != null) {
-			podInfoDTO.getEnvironment().putAll(addCustomEnvVariables(
+			deploymentInfoDTO.getEnvironment().putAll(addCustomEnvVariables(
 				MapUtils.getString(k8sConfig, CUSTOM_ENV_VARS_KEY_NAME)));
 		}
-		podInfoDTO.setStatus(dataflowEntity.isStatus());
-		podInfoDTO.setSecret(getSecretSpec(dataflowEntity));
+		deploymentInfoDTO.setStatus(dataflowEntity.isStatus());
+		deploymentInfoDTO.setSecret(getSecretSpec(dataflowEntity));
 
-		return podInfoDTO;
+		return deploymentInfoDTO;
 	}
 
 	private DataflowEntity saveHandler(DataflowEntity dataflowEntity) {
@@ -187,9 +187,9 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		dataflowEntity = super.save(dataflowEntity);
 
 		// Schedule dataflow in Kubernetes.
-		PodInfoDTO podInfoDTO = createPodInfo(dataflowEntity);
-		log.debug("Scheduling pod '{}' in Kubernetes.", podInfoDTO);
-		kubernetesResource.schedulePod(podInfoDTO);
+		DeploymentInfoDTO deploymentInfoDTO = createPodInfo(dataflowEntity);
+		log.debug("Scheduling pod '{}' in Kubernetes.", deploymentInfoDTO);
+		kubernetesResource.scheduleDeployment(deploymentInfoDTO);
 
 		return dataflowEntity;
 	}
@@ -205,8 +205,8 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		// Unschedule dataflow.
 		DataflowEntity dataflow = findById(dataflowId);
 		dataflow.setStatus(false);
-		PodInfoDTO podInfoDTO = createPodInfo(dataflow);
-		kubernetesResource.schedulePod(podInfoDTO);
+		DeploymentInfoDTO deploymentInfoDTO = createPodInfo(dataflow);
+		kubernetesResource.scheduleDeployment(deploymentInfoDTO);
 
 		// Delete dataflow.
 		super.delete(dataflow);

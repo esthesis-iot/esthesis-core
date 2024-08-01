@@ -1,7 +1,7 @@
 package esthesis.service.kubernetes.impl.resource;
 
 import esthesis.common.AppConstants;
-import esthesis.service.kubernetes.dto.PodInfoDTO;
+import esthesis.service.kubernetes.dto.DeploymentInfoDTO;
 import esthesis.service.kubernetes.impl.service.KubernetesService;
 import esthesis.service.kubernetes.resource.KubernetesResource;
 import jakarta.annotation.security.RolesAllowed;
@@ -15,8 +15,8 @@ public class KubernetesResourceImpl implements KubernetesResource {
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
-	public Boolean schedulePod(PodInfoDTO podInfoDTO) {
-		return kubernetesService.schedulePod(podInfoDTO);
+	public Boolean scheduleDeployment(DeploymentInfoDTO deploymentInfoDTO) {
+		return kubernetesService.scheduleDeployment(deploymentInfoDTO);
 	}
 
 	@Override

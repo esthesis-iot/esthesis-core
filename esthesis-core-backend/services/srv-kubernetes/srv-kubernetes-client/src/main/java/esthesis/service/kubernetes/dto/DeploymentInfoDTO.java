@@ -8,14 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * A DTO for the information required to deploy a pod.
+ * A DTO for the information required to deploy a Kubernetes Deployment.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @RegisterForReflection
 @Accessors(chain = true)
-public class PodInfoDTO {
+public class DeploymentInfoDTO {
 
 	// The name of the pod.
 	private String name;
