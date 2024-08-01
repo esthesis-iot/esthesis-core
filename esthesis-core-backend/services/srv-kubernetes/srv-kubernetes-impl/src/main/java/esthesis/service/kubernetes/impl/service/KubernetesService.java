@@ -71,7 +71,8 @@ public class KubernetesService {
 			secretBuilder.addToData(secret.getName(),
 				Base64.getEncoder().encodeToString(secret.getContent().getBytes(UTF_8))));
 		log.debug("Creating secret '{}'.", secretBuilder.build());
-		kc.secrets().inNamespace(namespace).resource(secretBuilder.build()).createOrReplace();
+		kc.secrets().inNamespace(namespace).resource(secretBuilder.build()).forceConflicts().serverSideApply();
+
 	}
 
 	/**
@@ -138,7 +139,7 @@ public class KubernetesService {
 		// Push (or delete) the deployment.
 		if (deploymentInfoDTO.isStatus()) {
 			kc.apps().deployments().inNamespace(deploymentInfoDTO.getNamespace())
-				.resource(deploymentBuilder.build()).createOrReplace();
+				.resource(deploymentBuilder.build()).forceConflicts().serverSideApply();
 		} else {
 			kc.apps().deployments().inNamespace(deploymentInfoDTO.getNamespace())
 				.resource(deploymentBuilder.build()).delete();
@@ -193,7 +194,7 @@ public class KubernetesService {
 		// Push the HPA.
 		if (deploymentInfoDTO.isStatus()) {
 			kc.autoscaling().v2().horizontalPodAutoscalers().inNamespace(
-				deploymentInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).createOrReplace();
+				deploymentInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).forceConflicts().serverSideApply();
 		} else {
 			kc.autoscaling().v2().horizontalPodAutoscalers().inNamespace(
 				deploymentInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).delete();
