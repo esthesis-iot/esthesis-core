@@ -12,7 +12,6 @@
       </form>
     </div>
     <div class="card-actions justify-start mt-10">
-      <button class="btn btn-sm btn-neutral" (click)="refreshNamespaces()" >REFRESH NAMESPACES</button>
       <button class="btn btn-sm btn-secondary" routerLink="/dataflow">CANCEL</button>
       <button class="btn btn-sm btn-primary" (click)="execute()" *ngIf="allowWrite" >EXECUTE</button>
     </div>

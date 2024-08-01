@@ -25,8 +25,6 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
   }
 
   ngOnInit(): void {
-    // Find namespaces.
-    this.refreshNamespaces();
     this.fields = DATAFLOW_WIZARD_STANDARD.fields;
   }
 
@@ -267,8 +265,6 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
   }
 
   execute() {
-    console.log(this.model);
-
     const calls: Array<Observable<any>> = [];
     const callNames: string[] = [];
 
@@ -307,13 +303,4 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
       }
     });
   };
-
-  refreshNamespaces() {
-    this.dataflowService.getNamespaces().subscribe(onNext => {
-      this.dataflowService.replaceSelectValues(this.fields, "namespace",
-        onNext.map(t => {
-          return {label: t, value: t};
-        }));
-    });
-  }
 }
