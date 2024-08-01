@@ -25,7 +25,7 @@ pipeline {
                   runAsGroup: 0
                 containers:
                 - name: esthesis-core-builder
-                  image: eddevopsd2/ubuntu-dind:dind-mvn3.8.5-jdk17-node18.16-go1.20-buildx-helm3.12.1
+                  image: eddevopsd2/ubuntu-dind:docker24-mvn3.9.6-jdk21-node18.16-go1.20-buildx-helm
                   volumeMounts:
                   - name: maven
                     mountPath: /root/.m2/
@@ -178,35 +178,9 @@ pipeline {
     }
     post {
         changed {
-            script {
-                if (currentBuild.result == 'SUCCESS') {
-                        rocketSend avatar: "http://d2-np.eurodyn.com/jenkins/jenkins.png", channel: 'esthesis-iot', message: ":white_check_mark: | ${BUILD_URL} \n\nBuild succeeded on branch *${env.BRANCH_NAME}* \nChangelog: ${getChangeString(10)}", rawMessage: true
-                } else {
-                        rocketSend avatar: "http://d2-np.eurodyn.com/jenkins/jenkins.png", channel: 'esthesis-iot', message: ":x: | ${BUILD_URL} \n\nBuild failed on branch *${env.BRANCH_NAME}* \nChangelog: ${getChangeString(10)}", rawMessage: true
-                }
-            }
+            emailext subject: '$DEFAULT_SUBJECT',
+                body: '$DEFAULT_CONTENT',
+                to: '12133724.eurodynlu.onmicrosoft.com@emea.teams.ms'
         }
     }
-}
-@NonCPS
-def getChangeString(maxMessages) {
-    MAX_MSG_LEN = 100
-    def changeString = ""
-
-    def changeLogSets = currentBuild.changeSets
-
-    for (int i = 0; i < changeLogSets.size(); i++) {
-        def entries = changeLogSets[i].items
-        for (int j = 0; j < entries.length && i + j < maxMessages; j++) {
-            def entry = entries[j]
-            truncated_msg = entry.msg.take(MAX_MSG_LEN)
-            changeString += "*${truncated_msg}* _by author ${entry.author}_\n"
-        }
-    }
-
-    if (!changeString) {
-        changeString = " There have not been any changes since the last build"
-    }
-
-    return changeString
 }
