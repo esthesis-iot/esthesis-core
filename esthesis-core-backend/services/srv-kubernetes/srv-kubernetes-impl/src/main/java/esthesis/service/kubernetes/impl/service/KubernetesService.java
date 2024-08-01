@@ -69,7 +69,7 @@ public class KubernetesService {
 		secretBuilder.withNewMetadata().withName(secretDTO.getName()).endMetadata();
 		secretDTO.getEntries().forEach(secret ->
 			secretBuilder.addToData(secret.getName(),
-      	Base64.getEncoder().encodeToString(secret.getContent().getBytes(UTF_8))));
+				Base64.getEncoder().encodeToString(secret.getContent().getBytes(UTF_8))));
 		log.debug("Creating secret '{}'.", secretBuilder.build());
 		//TODO fix deprecation
 		kc.secrets().resource(secretBuilder.build()).createOrReplace();
@@ -208,5 +208,17 @@ public class KubernetesService {
 		return kc.namespaces().list().getItems().stream().map(
 				n -> n.getMetadata().getName()).toList().stream()
 			.sorted().toList();
+	}
+
+	/**
+	 * Check if a deployment with the given name exists.
+	 *
+	 * @param name      The deployment name to check.
+	 * @param namespace The namespace to check.
+	 * @return True if the deployment name is available, false otherwise.
+	 */
+	@ErnPermission(category = KUBERNETES, operation = READ)
+	public boolean isDeploymentNameAvailable(String name, String namespace) {
+		return kc.apps().deployments().inNamespace(namespace).withName(name).get() == null;
 	}
 }

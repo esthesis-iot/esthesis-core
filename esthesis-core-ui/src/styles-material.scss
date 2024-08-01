@@ -325,3 +325,10 @@ mat-radio-group {
 .mat-mdc-menu-item-text {
   @apply text-base-content;
 }
+
+.mat-mdc-form-field-error-wrapper {
+  padding-left: 0 !important;
+  margin-top: 3px !important;
+  @apply font-bold;
+  @apply text-error #{!important};
+}

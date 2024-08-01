@@ -1,5 +1,6 @@
 package esthesis.service.dataflow.impl.resource;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Security.Category;
 import esthesis.common.AppConstants.Security.Operation;
@@ -8,6 +9,7 @@ import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
+import esthesis.service.common.validation.CVEBuilder;
 import esthesis.service.dataflow.dto.FormlySelectOption;
 import esthesis.service.dataflow.entity.DataflowEntity;
 import esthesis.service.dataflow.impl.service.DataflowService;
@@ -24,6 +26,9 @@ public class DataflowResourceImpl implements DataflowResource {
 
 	@Inject
 	DataflowService dataflowService;
+
+	@Inject
+	ObjectMapper objectMapper;
 
 	@GET
 	@Override
@@ -56,11 +61,22 @@ public class DataflowResourceImpl implements DataflowResource {
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.DATAFLOW, op = Operation.WRITE, msg = "Save dataflow")
 	public DataflowEntity save(DataflowEntity dataflowEntity) {
+		DataflowEntity retVal = dataflowEntity;
+
 		if (dataflowEntity.getId() == null) {
-			return dataflowService.saveNew(dataflowEntity);
+			// Check if the name is available.
+			String namespace = objectMapper.valueToTree(dataflowEntity.getConfig())
+				.path("kubernetes").path("namespace").asText();
+			if (!dataflowService.isDeploymentNameAvailable(dataflowEntity.getName(), namespace)) {
+				CVEBuilder.addAndThrow("name", "Name is already in use.");
+			} else {
+				retVal = dataflowService.saveNew(dataflowEntity);
+			}
 		} else {
-			return dataflowService.saveUpdate(dataflowEntity);
+			retVal = dataflowService.saveUpdate(dataflowEntity);
 		}
+
+		return retVal;
 	}
 
 	@Override

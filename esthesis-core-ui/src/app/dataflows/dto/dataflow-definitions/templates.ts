@@ -6,7 +6,11 @@ import {DataflowsService} from "../../dataflows.service";
 import {FormlyFieldConfig} from "@ngx-formly/core";
 
 export const DATAFLOW_TEMPLATE_MAIN = [
-  { key: "name", type: "input", props: {required: true, label: "Name"},
+  { key: "name", type: "input", props: {
+    required: true, label: "Name",
+    hintStart: "The name of the dataflow, this will be used as the name of the Kubernetes deployment, " +
+      "so it should only contain alphanumerics and the hyphen."
+    },
     expressions: {
       "props.readonly": "model.id && model.id !== '" + AppConstants.NEW_RECORD_ID + "'"
     }

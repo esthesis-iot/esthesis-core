@@ -4,6 +4,7 @@ import esthesis.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +29,8 @@ public class DataflowEntity extends BaseEntity {
 	private boolean status;
 
 	@NotBlank
-	@Length(max = 1024)
+	@Length(min = 3, max = 47)
+	@Pattern(regexp = "^[a-z0-9-]+$")
 	private String name;
 
 	@Length(max = 4096)

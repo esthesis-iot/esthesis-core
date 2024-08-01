@@ -24,4 +24,10 @@ public class KubernetesResourceImpl implements KubernetesResource {
 	public List<String> getNamespaces() {
 		return kubernetesService.getNamespaces();
 	}
+
+	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
+	public Boolean isDeploymentNameAvailable(String name, String namespace) {
+		return kubernetesService.isDeploymentNameAvailable(name, namespace);
+	}
 }

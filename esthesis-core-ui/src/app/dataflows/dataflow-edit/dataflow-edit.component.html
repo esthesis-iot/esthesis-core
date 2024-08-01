@@ -17,7 +17,7 @@
               class="btn btn-sm btn-accent">
         DELETE
       </button>
-      <button (click)="save()" *ngIf="allowWrite" class="btn btn-sm btn-primary">SAVE</button>
+      <button (click)="save()" [disabled]="form.invalid" *ngIf="allowWrite" class="btn btn-sm btn-primary">SAVE</button>
     </div>
   </div>
 </div>

@@ -11,6 +11,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
+import {QFormValidationEEService} from "../../shared/services/form-validation.service";
 
 @Component({
   selector: "app-dataflow-edit",
@@ -25,7 +26,8 @@ export class DataflowEditComponent extends SecurityBaseComponent implements OnIn
   dataflow!: any;
 
   constructor(private route: ActivatedRoute, private dataflowService: DataflowsService,
-    private utilityService: UtilityService, private dialog: MatDialog, private router: Router) {
+    private utilityService: UtilityService, private dialog: MatDialog, private router: Router,
+    private qFormValidation: QFormValidationEEService) {
     super(AppConstants.SECURITY.CATEGORY.DATAFLOW, route.snapshot.paramMap.get("id"));
   }
 
@@ -88,7 +90,17 @@ export class DataflowEditComponent extends SecurityBaseComponent implements OnIn
         next: () => {
           this.router.navigate(["dataflow"]);
         }, error: (err) => {
-          this.utilityService.popupErrorWithTraceId("There was an error saving this dataflow.", err);
+          if (err.status === 400) {
+            const validationErrors = err.error;
+            if (validationErrors) {
+              this.qFormValidation.applyFormlyValidationErrors(this.form, validationErrors.violations);
+              this.utilityService.popupError("Please correct your data and try again.");
+            }
+          } else if (err.status === 401) {
+            this.utilityService.popupErrorWithTraceId(err.error.errorMessage, err);
+          } else {
+            this.utilityService.popupError("There was an error trying to save this dataflow.");
+          }
         }
       });
     }

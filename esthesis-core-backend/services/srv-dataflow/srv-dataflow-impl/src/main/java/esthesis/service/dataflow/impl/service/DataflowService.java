@@ -233,4 +233,9 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	public DataflowEntity findById(String id) {
 		return super.findById(id);
 	}
+
+	@ErnPermission(category = DATAFLOW, operation = READ)
+	public boolean isDeploymentNameAvailable(String name, String namespace) {
+		return kubernetesResource.isDeploymentNameAvailable(name, namespace);
+	}
 }
