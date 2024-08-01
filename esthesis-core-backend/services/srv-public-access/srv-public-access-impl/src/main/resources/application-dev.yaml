@@ -6,7 +6,6 @@ quarkus:
     host: 0.0.0.0
     cors: false
   log:
-    min-level: TRACE
     category:
       esthesis:
         level: DEBUG

@@ -2,6 +2,31 @@ quarkus:
   http:
     host: 0.0.0.0
     cors: false
+  log:
+    category:
+      esthesis:
+        level: DEBUG
+      "org.mongodb":
+        level: WARN
+    handler:
+      gelf:
+        enabled: false
+        host: "localhost"
+        port: 12201
+  mongodb:
+    database: esthesiscore
+    credentials:
+      username: esthesis-system
+      password: esthesis-system
+  otel:
+    sdk:
+      disabled: true
+    traces:
+      sampler: always_on
+    exporter:
+      otlp:
+        traces:
+          endpoint: http://grafana-tempo-distributor.esthesis:4317
   rest-client:
     SettingsResource:
       url: http://localhost:59030
@@ -15,31 +40,6 @@ quarkus:
     SecurityResource:
       url: http://localhost:59170
       scope: Singleton
-  mongodb:
-    database: esthesiscore
-    credentials:
-      username: esthesis-system
-      password: esthesis-system
-  log:
-    category:
-      esthesis:
-        level: DEBUG
-      "org.mongodb":
-        level: WARN
-    handler:
-      gelf:
-        enabled: false
-        host: "localhost"
-        port: 12201
-  otel:
-    sdk:
-      disabled: true
-    traces:
-      sampler: always_on
-    exporter:
-      otlp:
-        traces:
-          endpoint: http://grafana-tempo-distributor.esthesis:4317
   config:
     locations: "../../../../_dev/profiles"
 
