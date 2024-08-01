@@ -60,7 +60,7 @@ public class KubernetesService {
 	 * @param secretDTO The secret to create or update.
 	 */
 	@ErnPermission(category = KUBERNETES, operation = CREATE)
-	public void createSecret(SecretDTO secretDTO) {
+	public void createSecret(SecretDTO secretDTO, String namespace) {
 		if (secretDTO == null || secretDTO.getEntries() == null || secretDTO.getEntries().isEmpty()) {
 			return;
 		}
@@ -71,8 +71,7 @@ public class KubernetesService {
 			secretBuilder.addToData(secret.getName(),
 				Base64.getEncoder().encodeToString(secret.getContent().getBytes(UTF_8))));
 		log.debug("Creating secret '{}'.", secretBuilder.build());
-		//TODO fix deprecation
-		kc.secrets().resource(secretBuilder.build()).createOrReplace();
+		kc.secrets().inNamespace(namespace).resource(secretBuilder.build()).createOrReplace();
 	}
 
 	/**
@@ -85,7 +84,7 @@ public class KubernetesService {
 		log.debug("Scheduling deployment '{}'.", deploymentInfoDTO);
 
 		//@formatter:off
-    // Create a deployment for the pod.
+    // Create a deployment specification.
     DeploymentBuilder deploymentBuilder = new DeploymentBuilder()
       .withNewMetadata()
         .withName(deploymentInfoDTO.getName())
@@ -114,10 +113,10 @@ public class KubernetesService {
         .endTemplate()
       .endSpec();
 
-		// Add secret.
+		// Add secrets to the deployment definition.
 		if (deploymentInfoDTO.getSecret() != null && deploymentInfoDTO.getSecret().getEntries() != null
 			&& !deploymentInfoDTO.getSecret().getEntries().isEmpty()) {
-			createSecret(deploymentInfoDTO.getSecret());
+			createSecret(deploymentInfoDTO.getSecret(), deploymentInfoDTO.getNamespace());
 			String volumeName = deploymentInfoDTO.getName() + SECRET_VOLUME_SUFFIX;
 				deploymentBuilder.editSpec().editTemplate()
 				.editSpec()
@@ -136,18 +135,22 @@ public class KubernetesService {
 				.endSpec().endTemplate().endSpec();
 		}
 		// @formatter:on
-
+		// Push (or delete) the deployment.
 		if (deploymentInfoDTO.isStatus()) {
-			//TODO fix deprecation
 			kc.apps().deployments().inNamespace(deploymentInfoDTO.getNamespace())
 				.resource(deploymentBuilder.build()).createOrReplace();
 		} else {
 			kc.apps().deployments().inNamespace(deploymentInfoDTO.getNamespace())
 				.resource(deploymentBuilder.build()).delete();
+			// Delete secrets.
+			if (deploymentInfoDTO.getSecret() != null) {
+				kc.secrets().inNamespace(deploymentInfoDTO.getNamespace())
+					.withName(deploymentInfoDTO.getSecret().getName()).delete();
+			}
 		}
 
 		//@formatter:off
-    // Create a horizontal pod autoscaler.
+    // Create an HPA definition.
     HorizontalPodAutoscaler horizontalPodAutoscaler = new HorizontalPodAutoscalerBuilder()
       .withNewMetadata().withName("hpa-" + deploymentInfoDTO.getName())
         .endMetadata()
@@ -187,9 +190,8 @@ public class KubernetesService {
     .build();
     //@formatter:on
 
-		// Create or remove the deployment, according to the requested deployment status.
+		// Push the HPA.
 		if (deploymentInfoDTO.isStatus()) {
-				//TODO fix deprecation
 			kc.autoscaling().v2().horizontalPodAutoscalers().inNamespace(
 				deploymentInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).createOrReplace();
 		} else {
