@@ -199,8 +199,7 @@ export const AppConstants = {
       USERS: "users",
       GROUPS: "groups",
       ROLES: "roles",
-      POLICIES: "policies",
-      NULL: "null"
+      POLICIES: "policies"
     },
     // Equivalent to AppConstants.Security.Operation
     OPERATION: {

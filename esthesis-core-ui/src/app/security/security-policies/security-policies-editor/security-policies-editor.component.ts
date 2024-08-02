@@ -1,8 +1,6 @@
 import {Component, Input, OnInit, Optional} from "@angular/core";
 import {BaseComponent} from "../../../shared/components/base-component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Router} from "@angular/router";
-import {QFormsService} from "@qlack/forms";
 import {MatDialogRef} from "@angular/material/dialog";
 import {RuleDto} from "../../dto/rule-dto";
 import {distinctUntilChanged} from "rxjs/operators";
@@ -15,8 +13,7 @@ export class SecurityPoliciesEditorComponent extends BaseComponent implements On
   @Input() existingErn?: string;
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router,
-    private qForms: QFormsService,
+  constructor(private fb: FormBuilder,
     @Optional() private dialogRef: MatDialogRef<SecurityPoliciesEditorComponent>) {
     super();
     this.form = this.fb.group({
