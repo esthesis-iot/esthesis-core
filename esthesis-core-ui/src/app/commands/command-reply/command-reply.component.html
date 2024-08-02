@@ -89,8 +89,8 @@
       <div class="flex flex-col gap-5 flex-auto">
         <div class="text-accent font-bold">Replies</div>
         <div *ngIf="!commandReplies">
-          <div class="mockup-code w-full">
-            <pre><code>No replies received for this command.</code></pre>
+          <div class="w-full">
+            No replies received for this command.
           </div>
         </div>
         <div *ngFor="let reply of commandReplies; let i = index" class="flex flex-col gap-5">
@@ -111,6 +111,7 @@
               </button>
             </div>
           </div>
+          <div *ngIf="reply.isTrimmed" class="badge badge-error">Reply is trimmed</div>
           <div>
             <div class="mockup-code">
               <pre class="ml-3"><code><br>{{reply.output}}</code></pre>

@@ -5,4 +5,5 @@ export interface CommandReplyDto extends BaseDto {
   hardwareId: string;
   success: boolean;
   output: string;
+  isTrimmed: boolean;
 }

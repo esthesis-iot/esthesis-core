@@ -53,6 +53,9 @@ public class CommandReplyEntity extends BaseEntity {
   // The time when the reply was created.
   private Instant createdOn;
 
+	// Whether the output has been trimmed to fit in the database.
+	private boolean isTrimmed = false;
+
   /**
    * Returns a representation of this object as a BSON document. This is useful in case Quarkus
    * Panache is not available where this object is being used (for example, in Dataflows).
@@ -63,6 +66,7 @@ public class CommandReplyEntity extends BaseEntity {
         .append("hardwareId", hardwareId)
         .append("success", success)
         .append("output", output)
-        .append("createdOn", createdOn);
+        .append("createdOn", createdOn)
+				.append("trimmed", isTrimmed);
   }
 }
