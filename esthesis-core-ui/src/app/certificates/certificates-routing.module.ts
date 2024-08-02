@@ -7,7 +7,7 @@ import {certificateNameResolver} from "../shared/components/breadcrumb/breadcrum
 
 const routes: Routes = [
   {path: "", component: CertificatesListComponent, data: {breadcrumb: ""}},
-  {path: "import", component: CertificateImportComponent},
+  {path: "import", component: CertificateImportComponent, data: {breadcrumb: "|Import certificate"}},
   {path: ":id", component: CertificateEditComponent,
     resolve: {
       breadcrumb: certificateNameResolver

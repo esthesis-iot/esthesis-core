@@ -1,11 +1,11 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {CertificatesService} from "../certificates.service";
-import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
+import {HttpEvent, HttpResponse} from "@angular/common/http";
 
 @Component({
   selector: "app-certificate-import",
@@ -13,52 +13,63 @@ import {AppConstants} from "../../app.constants";
   styleUrls: []
 })
 export class CertificateImportComponent extends SecurityBaseComponent implements OnInit {
-
   form!: FormGroup;
+  publicKeyfile: File | null = null;
+  privateKeyfile: File | null = null;
+  certificateFile: File | null = null;
 
   constructor(private fb: FormBuilder, private certificatesService: CertificatesService,
-    private route: ActivatedRoute, private router: Router,
-    private dialog: MatDialog,
-    private utilityService: UtilityService) {
+    private router: Router, private utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.CERTIFICATES);
   }
 
   ngOnInit() {
     // Set up the form.
     this.form = this.fb.group({
-      name: [null, [Validators.required]],
-      publicKey: [null, [Validators.required]],
-      privateKey: [null, [Validators.required]],
-      certificate: [null, [Validators.required]],
+      name: [null, [Validators.required]]
     });
   }
 
   selectPublicKey(event: any) {
-    this.form.controls['publicKey'].patchValue(event.target.files[0]);
+    const file: File = event.target?.files[0];
+    if (file) {
+      this.publicKeyfile = file;
+    }
   }
 
   selectPrivateKey(event: any) {
-    this.form.controls['privateKey'].patchValue(event.target.files[0]);
+    const file: File = event.target?.files[0];
+    if (file) {
+      this.privateKeyfile = file;
+    }
   }
 
   selectCertificate(event: any) {
-    this.form.controls['certificate'].patchValue(event.target.files[0]);
+    const file: File = event.target?.files[0];
+    if (file) {
+      this.certificateFile = file;
+    }
   }
 
   import() {
-    // this.certificatesService.import(this.form).subscribe({
-    //   next: (event: HttpEvent<any>) => {
-    //     if (event instanceof HttpResponse) {
-    //       if (event.status === 200) {
-    //         this.utilityService.popupSuccess("Certificate restored successfully.");
-    //         this.router.navigate(["certificates"]);
-    //       } else {
-    //         this.utilityService.popupError("Something went wrong, please try again.");
-    //       }
-    //     }
-    //   }, error: (error: any) => {
-    //     this.utilityService.popupError(error.error);
-    //   }
-    // });
+    let files = new Map<string, File | null>([
+      [AppConstants.KEY_TYPE.PUBLIC_KEY.toLowerCase(), this.publicKeyfile],
+      [AppConstants.KEY_TYPE.PRIVATE_KEY.toLowerCase(), this.privateKeyfile],
+      [AppConstants.KEY_TYPE.CERTIFICATE.toLowerCase(), this.certificateFile]
+    ]);
+    this.certificatesService.import(this.form.getRawValue(), files).subscribe({
+      next: (event: HttpEvent<any>) => {
+        if (event instanceof HttpResponse) {
+          if (event.status === 200) {
+            this.utilityService.popupSuccess("Certificate imported successfully.");
+            this.router.navigate(["certificates"]);
+          } else {
+            this.utilityService.popupError("Could not import certificate, please try again.");
+          }
+        }
+      }, error: (error: any) => {
+        this.utilityService.popupErrorWithTraceId("Could not import certificate, please try again.", error.error);
+      }
+    });
   }
 }

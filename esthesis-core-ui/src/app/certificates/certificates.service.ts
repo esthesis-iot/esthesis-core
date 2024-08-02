@@ -1,6 +1,5 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {FormGroup} from "@angular/forms";
 import {CertificateDto} from "./dto/certificate-dto";
 import {CrudDownloadService} from "../shared/services/crud-download.service";
 import {FileSaverService} from "ngx-filesaver";
@@ -30,9 +29,8 @@ export class CertificatesService extends CrudDownloadService<CertificateDto> {
     });
   }
 
-  //TODO
-  import(form: FormGroup) {
-    // return this.upload(form, `${this.prefix}/import`, false);
+  import(json: any, files: Map<string, File | null>) {
+    return this.upload(json, files, `${this.prefix}/import`);
   }
 
 }

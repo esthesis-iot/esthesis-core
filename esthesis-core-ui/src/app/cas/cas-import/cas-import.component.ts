@@ -61,14 +61,14 @@ export class CasImportComponent extends SecurityBaseComponent implements OnInit 
       next: (event: HttpEvent<any>) => {
         if (event instanceof HttpResponse) {
           if (event.status === 200) {
-            this.utilityService.popupSuccess("Certificate Authority restored successfully.");
+            this.utilityService.popupSuccess("Certificate authority imported successfully.");
             this.router.navigate(["cas"]);
           } else {
-            this.utilityService.popupError("Could not import Certificate Authority, please try again.");
+            this.utilityService.popupError("Could not import certificate authority, please try again.");
           }
         }
       }, error: (error: any) => {
-        this.utilityService.popupErrorWithTraceId("Could not import Certificate Authority, please try again.", error.error);
+        this.utilityService.popupErrorWithTraceId("Could not import certificate authority, please try again.", error.error);
       }
     });
   }

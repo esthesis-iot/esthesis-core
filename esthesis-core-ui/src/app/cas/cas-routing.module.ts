@@ -7,7 +7,7 @@ import {caNameResolver} from "../shared/components/breadcrumb/breadcrumb.resolve
 
 const routes: Routes = [
   {path: "", component: CasListComponent, data: {breadcrumb: ""}},
-  {path: "import", component: CasImportComponent},
+  {path: "import", component: CasImportComponent, data: {breadcrumb: "|Import certificate authority"}},
   {
     path: ":id", component: CasEditComponent,
     resolve: {
