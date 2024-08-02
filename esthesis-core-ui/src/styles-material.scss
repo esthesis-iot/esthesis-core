@@ -235,11 +235,11 @@ mat-datepicker-content {
   }
 
   svg {
-    @apply fill-primary #{!important};
+    @apply fill-primary-content #{!important};
   }
 
   .mat-mdc-icon-button {
-    @apply text-primary #{!important};
+    @apply text-primary-content #{!important};
   }
 
   .mat-calendar-body-today {
@@ -247,6 +247,15 @@ mat-datepicker-content {
   }
 }
 
+mat-month-view thead tr span {
+  @apply text-base-content;
+  @apply font-bold;
+}
+
+.mat-calendar-table-header-divider {
+  @apply border-t-base-content #{!important};
+  @apply border-t #{!important};
+}
 .mat-datepicker-content {
   @apply shadow;
   @apply bg-base-100;
