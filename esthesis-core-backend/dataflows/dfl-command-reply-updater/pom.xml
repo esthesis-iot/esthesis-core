@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>dataflows</artifactId>
 		<groupId>esthesis</groupId>
-		<version>3.0.48</version>
+		<version>3.0.49-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>dfl-command-reply-updater</artifactId>
@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>esthesis</groupId>
 			<artifactId>dfl-common</artifactId>
-			<version>3.0.48</version>
+			<version>3.0.49-SNAPSHOT</version>
 		</dependency>
 
 		<!-- THIRD PARTY -->
