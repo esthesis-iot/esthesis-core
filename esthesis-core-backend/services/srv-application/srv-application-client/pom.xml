@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>srv-application</artifactId>
-    <version>3.0.49</version>
+    <version>3.0.50-SNAPSHOT</version>
   </parent>
 
   <artifactId>srv-application-client</artifactId>
@@ -28,7 +28,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>srv-common</artifactId>
-      <version>3.0.49</version>
+      <version>3.0.50-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
