@@ -17,6 +17,7 @@ import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.DeviceProfileDTO;
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
 import esthesis.service.device.dto.GeolocationDTO;
+import esthesis.service.device.dto.ImportDataProcessingInstructionsDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.security.annotation.ErnPermission;
@@ -38,14 +39,18 @@ import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.awaitility.Awaitility;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -219,7 +224,7 @@ public class DeviceService extends BaseService<DeviceEntity> {
 				.toList());
 
 		// Save the attributes.
-		deviceProfileDTO.getAttributes().forEach((attribute) -> {
+		deviceProfileDTO.getAttributes().forEach(attribute -> {
 			DeviceAttributeEntity deviceAttributeEntity = deviceAttributeRepository.findByDeviceIdAndName(
 				deviceId, attribute.getAttributeName()).orElse(
 				new DeviceAttributeEntity(new ObjectId(), deviceId));
@@ -253,7 +258,8 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		return fields;
 	}
 
-	public Optional<DeviceAttributeEntity> getDeviceAttributeByName(String deviceId, String attributeName){
+	public Optional<DeviceAttributeEntity> getDeviceAttributeByName(String deviceId,
+		String attributeName) {
 		return deviceAttributeRepository.findByDeviceIdAndName(deviceId, attributeName);
 	}
 
@@ -275,8 +281,10 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	}
 
 	@ErnPermission(category = DEVICE, operation = WRITE)
-  public void importData(String deviceId, String data, MessageTypeEnum messageType) {
-		log.debug("Importing '{}' data for device '{}'.", messageType, deviceId);
+	public void importData(String deviceId, BufferedReader reader, MessageTypeEnum messageType,
+		ImportDataProcessingInstructionsDTO instructionsDTO)
+	throws IOException {
+		log.info("Importing '{}' data for device '{}'.", messageType, deviceId);
 
 		// Collect data for the messages to be created.
 		String hardwareId = findById(deviceId).getHardwareId();
@@ -291,10 +299,21 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		log.debug("Publishing imported data to Kafka topic '{}'.", kafkaTopic);
 
 		// Split data into new lines and import each line.
-		String[] lines = data.split("\n");
-		int okCounter = 0, errorCounter = 0;
-		for (String line : lines) {
+		String line;
+		int batchCounter = 0;
+		int okCounter = 0;
+		int errorCounter = 0;
+		while ((line = reader.readLine()) != null) {
 			log.debug("Processing line '{}'.", line);
+			if (batchCounter >= instructionsDTO.getBatchSize() && instructionsDTO.getBatchDelay() > 0) {
+				log.debug("Batch processing limit reached, will wait for {} msec.",
+					instructionsDTO.getBatchDelay());
+				Awaitility.await()
+					.pollDelay(instructionsDTO.getBatchDelay(), TimeUnit.MILLISECONDS)
+					.atLeast(instructionsDTO.getBatchDelay(), TimeUnit.MILLISECONDS)
+					.until(() -> true);
+				batchCounter = 0;
+			}
 			try {
 				EsthesisDataMessage esthesisDataMessage = EsthesisDataMessage.newBuilder()
 					.setId(UUID.randomUUID().toString())
@@ -320,10 +339,11 @@ public class DeviceService extends BaseService<DeviceEntity> {
 				log.error("Failed to parse line.", e);
 				errorCounter++;
 			}
+			batchCounter++;
 		}
 
-		log.debug("Imported '{}' messages successfully, with '{}' errors.", okCounter, errorCounter);
-  }
+		log.info("Imported '{}' messages successfully, with '{}' errors.", okCounter, errorCounter);
+	}
 
 	@Override
 	@ErnPermission(category = DEVICE, operation = READ)

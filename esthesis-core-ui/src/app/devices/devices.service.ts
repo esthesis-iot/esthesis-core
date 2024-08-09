@@ -10,6 +10,8 @@ import {FileSaverService} from "ngx-filesaver";
 import {UtilityService} from "../shared/services/utility.service";
 import {DeviceProfileDto} from "./dto/device-profile-dto";
 import {AppConstants} from "../app.constants";
+import {DeviceTextDataImportDto} from "./dto/device-text-data-import-dto";
+import {DeviceDataImportDto} from "./dto/device-data-import-dto";
 
 @Injectable({
   providedIn: "root"
@@ -42,12 +44,17 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
     return this.http.post(`${this.prefix}/${deviceId}/profile`, profile);
   }
 
-  importTelemetry(deviceId: string, data: any) {
-    return this.http.post(`${this.prefix}/${deviceId}/import-data/telemetry`, data);
+  importDeviceDataFromText(dataImportType: string, deviceId: string,
+    deviceTextDataImportDto: DeviceTextDataImportDto) {
+    return this.http.post(`${this.prefix}/${deviceId}/import-data/${dataImportType}/text`,
+      deviceTextDataImportDto);
   }
 
-  importMetadata(deviceId: string, data: any) {
-    return this.http.post(`${this.prefix}/${deviceId}/import-data/metadata`, data);
+  importDeviceDataFromFile(dataImportType: string, deviceId: string,
+    deviceDataImportDto: DeviceDataImportDto, file: File) {
+    const files = file ? new Map<string, File | null>([["file", file]]) : new Map<string, File | null>();
+    return this.upload(deviceDataImportDto, files,
+      `${this.prefix}/${deviceId}/import-data/${dataImportType}/file`);
   }
 
   getProfile(deviceId: string): Observable<DeviceProfileDto> {

@@ -1,6 +1,9 @@
 quarkus:
   application:
     name: esthesis-core-srv-device
+  http:
+    limits:
+      max-body-size: 256M
   devservices:
     enabled: false
   log:

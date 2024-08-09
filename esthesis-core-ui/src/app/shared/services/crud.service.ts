@@ -32,13 +32,13 @@ export class CrudService<T> {
   }
 
   /**
-   * Uploads a file along with an object.
+   * Uploads an object with files.
    * @param object The object to upload.
    * @param files A map of files to upload. The key is the form field name and the value is the
    *   file.
    * @param url The URL to upload to. If not provided, the default endpoint URL will be used.
    */
-  upload(object: T, files: Map<string, File | null>, url?: string): Observable<HttpEvent<{}>> {
+  upload(object: any, files: Map<string, File | null>, url?: string): Observable<HttpEvent<{}>> {
     if (!url) {
       url = `${AppConstants.API_ROOT}/${this.endpoint}`;
     }

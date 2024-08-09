@@ -66,6 +66,10 @@ public class AppConstants {
 			DISABLED, PREREGISTERED, REGISTERED
 		}
 
+		public enum DataImportType {
+			TELEMETRY, METADATA
+		}
+
 		public static class Attribute {
 
 			public enum Type {

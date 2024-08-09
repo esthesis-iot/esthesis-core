@@ -67,12 +67,10 @@ export const AppConstants = {
       REGISTERED: "REGISTERED",
       APPROVAL: "APPROVAL"
     },
-
     SETTING: {
       DEVICE_GEO_LAT: "DEVICE_GEO_LAT",
       DEVICE_GEO_LON: "DEVICE_GEO_LON"
     },
-
     COMMAND: {
       TYPE: {
         EXECUTE: "e",
@@ -85,6 +83,16 @@ export const AppConstants = {
       EXECUTION: {
         SYNCHRONOUS: "s",
         ASYNCHRONOUS: "a"
+      }
+    },
+    DATA_IMPORT: {
+      TYPE: {
+        TELEMETRY: "TELEMETRY",
+        METADATA: "METADATA"
+      },
+      SOURCE: {
+        TEXT: "TEXT",
+        FILE: "FILE"
       }
     }
   },

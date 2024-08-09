@@ -1,16 +1,21 @@
 package esthesis.service.device.resource;
 
 import esthesis.common.AppConstants;
+import esthesis.common.AppConstants.Device.DataImportType;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
+import esthesis.service.device.dto.DeviceDataImportDTO;
 import esthesis.service.device.dto.DeviceProfileDTO;
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
+import esthesis.service.device.dto.DeviceTextDataImportDTO;
 import esthesis.service.device.dto.GeolocationDTO;
 import esthesis.service.device.entity.DeviceEntity;
 import io.quarkus.oidc.token.propagation.AccessToken;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.DefaultValue;
@@ -30,6 +35,9 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import org.jboss.resteasy.reactive.PartType;
+import org.jboss.resteasy.reactive.RestForm;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 /**
  * Interface and REST client for the DeviceResource.
@@ -125,16 +133,20 @@ public interface DeviceResource {
 
 	@POST
 	@Path("/v1/{deviceId}/profile")
-	void saveProfile(@PathParam("deviceId") String deviceId,
-		DeviceProfileDTO deviceProfileDTO);
+	void saveProfile(@PathParam("deviceId") String deviceId, DeviceProfileDTO deviceProfileDTO);
 
 	@POST
-	@Path("/v1/{deviceId}/import-data/telemetry")
-	void importTelemetry(@PathParam("deviceId") String deviceId, String data);
+	@Path("/v1/{deviceId}/import-data/{type}/text")
+	void importDeviceDataFromText(@PathParam("deviceId") @NotEmpty String deviceId,
+		@PathParam("type") @NotNull DataImportType type,
+		@NotNull DeviceTextDataImportDTO deviceTextDataImportDTO);
 
 	@POST
-	@Path("/v1/{deviceId}/import-data/metadata")
-	void importMetadata(@PathParam("deviceId") String deviceId, String data);
+	@Path("/v1/{deviceId}/import-data/{type}/file")
+	void importDeviceDataFromFile(@PathParam("deviceId") @NotEmpty String deviceId,
+		@PathParam("type") @NotNull DataImportType type,
+		@RestForm("dto") @PartType(MediaType.APPLICATION_JSON) @NotNull DeviceDataImportDTO deviceDataImportDTO,
+		@RestForm("file") @NotNull FileUpload file);
 
 	/**
 	 * Returns all data (i.e. metrics) available in cache for this device.
@@ -144,7 +156,7 @@ public interface DeviceResource {
 	 */
 	@GET
 	@Path("/v1/{deviceId}/device-data")
-	List<DeviceProfileFieldDataDTO> getDeviceData(String deviceId);
+	List<DeviceProfileFieldDataDTO> getDeviceData(@PathParam("deviceId") String deviceId);
 
 	@POST
 	@Path("/v1/preregister")

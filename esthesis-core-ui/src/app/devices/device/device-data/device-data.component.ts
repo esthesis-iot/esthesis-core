@@ -9,6 +9,8 @@ import {UtilityService} from "../../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
 import {AppConstants} from "../../../app.constants";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {DeviceTextDataImportDto} from "../../dto/device-text-data-import-dto";
+import {DeviceDataImportDto} from "../../dto/device-data-import-dto";
 
 @Component({
   selector: "app-device-data",
@@ -17,11 +19,9 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 export class DeviceDataComponent extends SecurityBaseComponent implements OnInit, AfterViewInit {
   id: string | null;
   form!: FormGroup;
-  // Columns to display.
+  elpFile: File | null = null;
   displayedColumns = ["measurement", "value", "lastUpdatedOn", "lastUpdatedOnAgo"];
   tableLoading = true;
-
-  // Datasource definition.
   datasource: MatTableDataSource<DevicePageFieldDataDto> = new MatTableDataSource<DevicePageFieldDataDto>();
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
 
@@ -47,7 +47,9 @@ export class DeviceDataComponent extends SecurityBaseComponent implements OnInit
 
     // Prepare the form to manually enter data.
     this.form = this.fb.group({
-      data: [{value: null, disabled: false}, [Validators.required]]
+      data: [null],
+      batchSize: [null,  [Validators.pattern("^[0-9]*$")]],
+      batchDelay: [null,  [Validators.pattern("^[0-9]*$")]],
     });
   }
 
@@ -73,33 +75,44 @@ export class DeviceDataComponent extends SecurityBaseComponent implements OnInit
     this.utilityService.copyToClipboard(row.value);
   }
 
-  submitTelemetry() {
-    if (this.form.valid) {
-      this.devicesService.importTelemetry(this.id!, this.form.get("data")!.value).subscribe({
-        next: () => {
-          this.utilityService.popupSuccess("Data imported successfully.");
-          this.clearData();
-        }, error: (err) => {
-          this.utilityService.popupErrorWithTraceId("Could not import data.", err);
-        }
-      });
+  importDeviceData(dataImportType: string, dataImportSource: string) {
+    // Shared reply handler.
+    const replyHandler = {
+      next: () => {
+        this.utilityService.popupSuccess("Data imported successfully.");
+        this.clearTextData();
+        this.clearFileData();
+      }, error: (err: any) => {
+        this.utilityService.popupErrorWithTraceId("Could not import data.", err);
+      }
+    }
+
+    if (dataImportSource == this.appConstants.DEVICE.DATA_IMPORT.SOURCE.TEXT) {
+      this.devicesService.importDeviceDataFromText(dataImportType, this.id!,
+        this.form.getRawValue() as DeviceTextDataImportDto).subscribe(replyHandler);
+    } else if (dataImportSource == this.appConstants.DEVICE.DATA_IMPORT.SOURCE.FILE) {
+      this.devicesService.importDeviceDataFromFile(dataImportType, this.id!,
+        this.form.getRawValue() as DeviceDataImportDto, this.elpFile!).subscribe(replyHandler);
+    } else {
+      this.utilityService.popupError("Invalid data import source.");
     }
   }
 
-  submitMetadata() {
-    if (this.form.valid) {
-      this.devicesService.importMetadata(this.id!, this.form.get("data")!.value).subscribe({
-        next: () => {
-          this.utilityService.popupSuccess("Data submitted for import successfully.");
-          this.clearData();
-        }, error: (err) => {
-          this.utilityService.popupErrorWithTraceId("Could not import data.", err);
-        }
-      });
-    }
-  }
-
-  clearData() {
+  clearTextData() {
     this.form.reset();
+  }
+
+  clearFileData() {
+    const fileInput = document.getElementById('file') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
+
+  selectELPFile(event: any) {
+    const file: File = event.target?.files[0];
+    if (file) {
+      this.elpFile = file;
+    }
   }
 }

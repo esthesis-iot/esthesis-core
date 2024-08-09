@@ -36,28 +36,68 @@
         (click)="copyValue(row)" class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
   </table>
 
-  <div class="collapse collapse-arrow" *ngIf="!tableLoading && allowWrite">
-    <input type="checkbox" />
-    <div class="collapse-title text-accent font-medium">
-      Import data
-    </div>
-    <div class="collapse-content">
-      <form [formGroup]="form" novalidate>
-        <mat-form-field class="w-full relative -top-4">
+  <div class="join join-vertical w-full" *ngIf="!tableLoading && allowWrite">
+    <div class="collapse collapse-arrow join-item border-base-300 border">
+      <input type="radio" name="my-accordion-4"/>
+      <div class="collapse-title font-medium text-accent">Import data from text</div>
+      <div class="collapse-content">
+        <form [formGroup]="form" novalidate>
+          <mat-form-field class="w-full relative -top-4">
           <textarea placeholder="Enter data in eLP format" formControlName="data"
                     matInput cdkTextareaAutosize></textarea>
-        </mat-form-field>
-        <button (click)="clearData()" [disabled]="!form.controls['data'].value" class="btn btn-accent btn-sm">CLEAR</button>
-        <button *ngIf="allowRead" [matMenuTriggerFor]="menu"
-                class="btn btn-sm btn-primary ml-2" [disabled]="form.invalid">
-          IMPORT AS
-          <fa-icon class="ml-2" icon="caret-down"></fa-icon>
-          <mat-menu #menu="matMenu" xPosition="before">
-            <button (click)="submitTelemetry()" mat-menu-item>Telemetry</button>
-            <button (click)="submitMetadata()" mat-menu-item>Metadata</button>
-          </mat-menu>
-        </button>
-      </form>
+          </mat-form-field>
+          <mat-form-field class="w-full relative -top-4">
+            <input matInput formControlName="batchSize" placeholder="Batch size (optional)"/>
+          </mat-form-field>
+          <mat-form-field class="w-full relative -top-4">
+            <input matInput formControlName="batchDelay" placeholder="Delay between batches in msec (optional)"/>
+          </mat-form-field>
+          <button (click)="clearTextData()" [disabled]="!form.controls['data'].value"
+                  class="btn btn-accent btn-sm">CLEAR</button>
+          <button *ngIf="allowRead" [matMenuTriggerFor]="menu"
+                  class="btn btn-sm btn-primary ml-2" [disabled]="form.invalid">
+            IMPORT AS
+            <fa-icon class="ml-2" icon="caret-down"></fa-icon>
+            <mat-menu #menu="matMenu" xPosition="before">
+              <button (click)="importDeviceData(appConstants.DEVICE.DATA_IMPORT.TYPE.TELEMETRY,
+                appConstants.DEVICE.DATA_IMPORT.SOURCE.TEXT)" mat-menu-item>Telemetry</button>
+              <button (click)="importDeviceData(appConstants.DEVICE.DATA_IMPORT.TYPE.METADATA,
+                appConstants.DEVICE.DATA_IMPORT.SOURCE.TEXT)" mat-menu-item>Metadata</button>
+            </mat-menu>
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="collapse collapse-arrow join-item border-base-300 border">
+      <input type="radio" name="my-accordion-4" />
+      <div class="collapse-title font-medium text-accent">Import data from file</div>
+      <div class="collapse-content">
+        <form [formGroup]="form" novalidate>
+          <mat-form-field class="w-full relative -top-4">
+            <input matInput formControlName="batchSize" placeholder="Batch size (optional)"/>
+          </mat-form-field>
+          <mat-form-field class="w-full relative -top-4">
+            <input matInput formControlName="batchDelay" placeholder="Delay between batches in msec (optional)"/>
+          </mat-form-field>
+          <div class="form-control w-full max-w-xs mb-10">
+            <input (change)="selectELPFile($event)" class="file-input file-input-bordered w-full max-w-xs"
+                   type="file" id="file"/>
+          </div>
+          <button (click)="clearFileData()" [disabled]="!elpFile"
+                  class="btn btn-accent btn-sm">CLEAR</button>
+          <button *ngIf="allowRead" [matMenuTriggerFor]="menu"
+                  class="btn btn-sm btn-primary ml-2" [disabled]="form.invalid">
+            IMPORT AS
+            <fa-icon class="ml-2" icon="caret-down"></fa-icon>
+            <mat-menu #menu="matMenu" xPosition="before">
+              <button (click)="importDeviceData(appConstants.DEVICE.DATA_IMPORT.TYPE.TELEMETRY,
+                appConstants.DEVICE.DATA_IMPORT.SOURCE.FILE)" mat-menu-item>Telemetry</button>
+              <button (click)="importDeviceData(appConstants.DEVICE.DATA_IMPORT.TYPE.METADATA,
+                appConstants.DEVICE.DATA_IMPORT.SOURCE.FILE)" mat-menu-item>Metadata</button>
+            </mat-menu>
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
