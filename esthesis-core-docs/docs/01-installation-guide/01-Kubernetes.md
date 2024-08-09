@@ -314,3 +314,13 @@ export ESTHESIS_UI_CERT_MANAGER_ISSUER=letsencrypt-prod
 
 Make sure you specify only one of the two variants, otherwise the installation will fail. Do not
 forget to change `letsencrypt-prod` to the value of your own issuer.
+
+## Wildcard Certificate integration
+If you have a wildcard certificate installed on you cluster as a secret for your domain, and you want the included ingress-nginx controller to use it, you will need to set the following environmental variables:
+
+```
+export INGRESS_NGINX_LOAD_BALANCER_IP=192.168.1.60
+export INGRESS_NGINX_CUSTOM_SSL=wildcard-tls
+```
+
+Do not forget to change `192.168.1.60` to your external load balancer IP and `wildcard-tls` to the name of your secret.
