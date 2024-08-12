@@ -159,4 +159,7 @@ public interface AppConfig {
 
 	// The grant type to be used for authentication in Orion
 	Optional<String> orionAuthenticationGrantType();
+
+	// NGSILD-Tenant value to specify the tenant scope in Orion-LD requests
+	Optional<String> orionLdTenant();
 }

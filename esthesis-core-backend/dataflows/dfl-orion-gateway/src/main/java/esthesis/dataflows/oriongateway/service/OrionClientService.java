@@ -77,7 +77,7 @@ public class OrionClientService {
 		}
 
 		orionClient = RestClientBuilder.newBuilder()
-			.register(new OrionClientHeaderFilter(contexts, contextsRelationships, authService))
+			.register(new OrionClientHeaderFilter(contexts, contextsRelationships, authService, this.appConfig.orionLdTenant().orElse(null)))
 			.baseUri(orionUrl).build(OrionClient.class);
 	}
 

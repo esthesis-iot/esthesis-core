@@ -107,6 +107,9 @@ export const DATAFLOW_DEFINITION_FIWARE_ORION = {
           defaultValue: "http://www.w3.org/ns/json-ld#context",
           props: {label: "The relationships of the Orion LD Contexts defined separated by comma", required: true}
         },
+        { key: "orion-ld-tenant", type: "input",
+          props: {label: "A NGSILD-Tenant value to specify the tenant scope in Orion-LD requests"}
+        },
         { key: "orion-custom-entity-json-format-attribute-name", type: "input",
           props: {label: "A custom entity JSON structure to be used for saving in Orion formatted using the Qute engine template"}
         },
