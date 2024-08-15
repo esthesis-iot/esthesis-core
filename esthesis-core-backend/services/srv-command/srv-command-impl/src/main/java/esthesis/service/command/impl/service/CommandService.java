@@ -211,8 +211,8 @@ public class CommandService {
 	}
 
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = READ)
-	public Page<CommandRequestEntity> findCommandRequest(Pageable pageable) {
-		return commandRequestService.find(pageable);
+	public Page<CommandRequestEntity> findCommandRequest(Pageable pageable, boolean partialMatch) {
+		return commandRequestService.find(pageable, partialMatch);
 	}
 
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = READ)

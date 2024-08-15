@@ -44,7 +44,7 @@ public class CertificateResourceImpl implements CertificateResource {
 	@Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Search certificates", log =
 		AuditLogType.DATA_IN)
 	public Page<CertificateEntity> find(@BeanParam Pageable pageable) {
-		return certificateService.find(pageable);
+		return certificateService.find(pageable, true);
 	}
 
 	@GET

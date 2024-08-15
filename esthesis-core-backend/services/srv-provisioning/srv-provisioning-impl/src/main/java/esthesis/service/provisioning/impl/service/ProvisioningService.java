@@ -235,8 +235,8 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 
 	@Override
 	@ErnPermission(category = PROVISIONING, operation = READ)
-	public Page<ProvisioningPackageEntity> find(Pageable pageable) {
-		return super.find(pageable);
+	public Page<ProvisioningPackageEntity> find(Pageable pageable, boolean partialMatch) {
+		return super.find(pageable, partialMatch);
 	}
 
 	@Override

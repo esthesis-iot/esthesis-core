@@ -405,7 +405,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
 
 	@Override
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = READ)
-	public Page<CampaignEntity> find(Pageable pageable) {
-		return super.find(pageable);
+	public Page<CampaignEntity> find(Pageable pageable, boolean partialMatch) {
+		return super.find(pageable, partialMatch);
 	}
 }

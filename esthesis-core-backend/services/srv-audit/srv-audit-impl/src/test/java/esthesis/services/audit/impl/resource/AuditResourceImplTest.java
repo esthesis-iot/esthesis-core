@@ -2,6 +2,7 @@ package esthesis.services.audit.impl.resource;
 
 import static io.restassured.RestAssured.given;
 
+import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Security.Category;
 import esthesis.common.AppConstants.Security.Operation;
 import esthesis.service.audit.entity.AuditEntity;
@@ -9,6 +10,7 @@ import esthesis.service.audit.resource.AuditResource;
 import esthesis.services.audit.impl.TestHelper;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 import java.util.UUID;
@@ -23,6 +25,7 @@ class AuditResourceImplTest {
 	TestHelper testHelper;
 
 	@Test
+	@TestSecurity(user = "test-user", roles = AppConstants.ROLE_USER)
 	void find() {
 		String username = UUID.randomUUID().toString();
 		for (int i = 0; i < 10; i++) {
@@ -38,6 +41,7 @@ class AuditResourceImplTest {
 	}
 
 	@Test
+	@TestSecurity(user = "test-user", roles = AppConstants.ROLE_USER)
 	void getCategories() {
 		given()
 			.when().get("/v1/categories")
@@ -48,6 +52,7 @@ class AuditResourceImplTest {
 	}
 
 	@Test
+	@TestSecurity(user = "test-user", roles = AppConstants.ROLE_USER)
 	void getOperations() {
 		given()
 			.when().get("/v1/operations")
@@ -58,6 +63,7 @@ class AuditResourceImplTest {
 	}
 
 	@Test
+	@TestSecurity(user = "test-user", roles = AppConstants.ROLE_USER)
 	void findById() {
 		AuditEntity auditEntity = testHelper.persistAuditEntity();
 
@@ -70,6 +76,7 @@ class AuditResourceImplTest {
 	}
 
 	@Test
+	@TestSecurity(user = "test-user", roles = AppConstants.ROLE_USER)
 	void delete() {
 		AuditEntity auditEntity = testHelper.persistAuditEntity();
 
@@ -85,6 +92,7 @@ class AuditResourceImplTest {
 	}
 
 	@Test
+	@TestSecurity(user = "test-user", roles = AppConstants.ROLE_USER)
 	void deleteNotFound() {
 		ObjectId id = new ObjectId();
 		given()
@@ -94,6 +102,7 @@ class AuditResourceImplTest {
 	}
 
 	@Test
+	@TestSecurity(user = "test-user", roles = AppConstants.ROLE_USER)
 	void save() {
 		AuditEntity auditEntity = testHelper.makeAuditEntity();
 		String username = UUID.randomUUID().toString();

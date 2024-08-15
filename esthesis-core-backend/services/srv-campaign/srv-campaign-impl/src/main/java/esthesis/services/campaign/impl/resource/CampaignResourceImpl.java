@@ -24,7 +24,7 @@ public class CampaignResourceImpl implements CampaignResource {
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.CAMPAIGN, op = Operation.READ, msg = "Find campaigns")
 	public Page<CampaignEntity> find(Pageable pageable) {
-		return campaignService.find(pageable);
+		return campaignService.find(pageable, true);
 	}
 
 	@Override

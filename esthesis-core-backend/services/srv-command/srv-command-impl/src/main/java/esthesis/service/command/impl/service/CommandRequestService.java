@@ -41,8 +41,8 @@ class  CommandRequestService extends BaseService<CommandRequestEntity> {
 	}
 
 	@Override
-	public Page<CommandRequestEntity> find(Pageable pageable) {
-		return super.find(pageable);
+	public Page<CommandRequestEntity> find(Pageable pageable, boolean partialMatch) {
+		return super.find(pageable, partialMatch);
 	}
 
 	@Override

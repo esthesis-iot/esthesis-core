@@ -231,7 +231,7 @@ public class CertificateService extends BaseService<CertificateEntity> {
 
 	@Override
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
-	public Page<CertificateEntity> find(Pageable pageable) {
-		return super.find(pageable);
+	public Page<CertificateEntity> find(Pageable pageable, boolean partialMatch) {
+		return super.find(pageable, partialMatch);
 	}
 }

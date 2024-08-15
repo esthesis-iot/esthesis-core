@@ -84,8 +84,8 @@ public class InfrastructureMqttService extends BaseService<InfrastructureMqttEnt
 
 	@Override
 	@ErnPermission(category = INFRASTRUCTURE, operation = READ)
-	public Page<InfrastructureMqttEntity> find(Pageable pageable) {
-		return super.find(pageable);
+	public Page<InfrastructureMqttEntity> find(Pageable pageable, boolean partialMatch) {
+		return super.find(pageable, partialMatch);
 	}
 
 	@Override

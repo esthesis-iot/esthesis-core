@@ -23,8 +23,8 @@ public class AuditService extends BaseService<AuditEntity> {
 
 	@Override
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = AUDIT, operation = READ)
-	public Page<AuditEntity> find(Pageable pageable) {
-		return super.find(pageable);
+	public Page<AuditEntity> find(Pageable pageable, boolean partialMatch) {
+		return super.find(pageable, partialMatch);
 	}
 
 	@Override

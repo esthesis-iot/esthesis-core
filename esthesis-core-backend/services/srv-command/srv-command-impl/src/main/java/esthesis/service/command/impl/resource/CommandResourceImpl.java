@@ -37,7 +37,7 @@ public class CommandResourceImpl implements CommandResource {
 	@Audited(cat = Category.COMMAND, op = Operation.READ, msg = "Search commands",
 		log = AuditLogType.DATA_IN)
 	public Page<CommandRequestEntity> find(@BeanParam Pageable pageable) {
-		return commandService.findCommandRequest(pageable);
+		return commandService.findCommandRequest(pageable, true);
 	}
 
 	@Override

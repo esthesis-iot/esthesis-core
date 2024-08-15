@@ -25,7 +25,7 @@ public class InfrastructureMqttResourceImpl implements InfrastructureMqttResourc
 	@Audited(op = Operation.READ, cat = Category.INFRASTRUCTURE, msg = "Search infrastructure / "
 		+ "MQTT", log = AuditLogType.DATA_IN)
 	public Page<InfrastructureMqttEntity> find(@BeanParam Pageable pageable) {
-		return infrastructureMqttService.find(pageable);
+		return infrastructureMqttService.find(pageable, true);
 	}
 
 	@Override
