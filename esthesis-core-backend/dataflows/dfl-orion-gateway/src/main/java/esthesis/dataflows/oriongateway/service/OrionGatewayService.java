@@ -409,9 +409,9 @@ public class OrionGatewayService {
 				return;
 			}
 
-			// Extract the most relevant data from the message
+			// Extract category and timestamp from the observed value
 			String category = esthesisMessage.getPayload().getCategory();
-			String esthesisMessageSeenAt = esthesisMessage.getSeenAt();
+			String timestamp = esthesisMessage.getPayload().getTimestamp();
 
 			// Check if device has set the custom measurement formatter attribute
 			Optional<DeviceAttributeEntity> customOrionEntityJsonAttribute =
@@ -430,7 +430,7 @@ public class OrionGatewayService {
 						String customFormattedValue =
 							Qute.fmt(customOrionEntityJsonAttribute.get().getAttributeValue(),
 								Map.of("category", category,
-									"esthesisMessageSeenAt", esthesisMessageSeenAt,
+									"timestamp", timestamp,
 									"hardwareId", esthesisHardwareId,
 									"measurementName", valueData.getName(),
 									"measurementValue", valueData.getValue())
