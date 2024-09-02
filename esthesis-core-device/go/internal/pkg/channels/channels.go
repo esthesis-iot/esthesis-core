@@ -12,6 +12,7 @@ var healthChan chan bool
 var autoUpdateChan chan bool
 var lock sync.Mutex
 var isShutdown = false
+var mqttPublishChan chan bool
 
 func GetPingChan() chan bool {
 	lock.Lock()
@@ -74,6 +75,16 @@ func GetIsShutdown() bool {
 	return isShutdown
 }
 
+func GetMqttPublishChan() chan bool {
+	lock.Lock()
+	if mqttPublishChan == nil {
+		mqttPublishChan = make(chan bool)
+	}
+	lock.Unlock()
+
+	return mqttPublishChan
+}
+
 func Shutdown() {
 	isShutdown = true
 }
@@ -101,3 +112,5 @@ func IsDemoChan() bool {
 func IsHealthChan() bool {
 	return healthChan != nil
 }
+
+func IsMqttPublishChan() bool { return mqttPublishChan != nil }

@@ -11,6 +11,7 @@ import (
 	"github.com/esthesis-iot/esthesis-device/internal/app/mqttPing"
 	"github.com/esthesis-iot/esthesis-device/internal/app/registration"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/banner"
+	"github.com/esthesis-iot/esthesis-device/internal/pkg/buffer"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/channels"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/util"
@@ -77,6 +78,9 @@ func main() {
 		if channels.IsAutoUpdateChan() {
 			channels.GetAutoUpdateChan() <- true
 		}
+		if channels.IsMqttPublishChan() {
+			channels.GetMqttPublishChan() <- true
+		}
 		log.Debug("Disconnecting MQTT client.")
 		mqttClient.Disconnect()
 		wg.Wait()
@@ -125,12 +129,39 @@ func main() {
 		}()
 	}
 
+	//buffer configuration
+	bufferOptions := buffer.BufferOptions{
+		SizeLimit:       config.Flags.BufferSizeLimit,
+		PublishInterval: config.Flags.BufferPublishInterval,
+	}
+	var buff buffer.Buffer
+
+	if config.Flags.BufferType == "ON-DISK" {
+		log.Infof("Buffer type set to store data on disk in the '%s' file", config.Flags.BufferFile)
+		buff = buffer.NewOnDiskBuffer(bufferOptions, config.Flags.BufferFile)
+	} else {
+		log.Info("Buffer type set to store data in memory")
+		buff = buffer.NewInMemoryBuffer(bufferOptions)
+
+	}
+
+	// Startup local buffer
+	if mqttServerConnected {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			if buff != nil {
+				buff.Start(channels.GetMqttPublishChan())
+			}
+		}()
+	}
+
 	// Startup embedded HTTP server.
 	if config.Flags.EndpointHttp && mqttServerConnected {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			endpointHttp.Start(channels.GetEndpointHttpChan())
+			endpointHttp.Start(channels.GetEndpointHttpChan(), buff)
 		}()
 	}
 
@@ -139,7 +170,7 @@ func main() {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			endpointMqtt.Start(channels.GetEndpointMqttChan())
+			endpointMqtt.Start(channels.GetEndpointMqttChan(), buff)
 		}()
 	}
 

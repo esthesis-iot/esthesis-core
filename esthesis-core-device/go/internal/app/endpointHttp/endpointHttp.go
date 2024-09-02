@@ -3,6 +3,7 @@ package endpointHttp
 import (
 	"context"
 	"github.com/esthesis-iot/esthesis-device/internal/app/mqttClient"
+	"github.com/esthesis-iot/esthesis-device/internal/pkg/buffer"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/exitCodes"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/luaExecutor"
@@ -16,7 +17,7 @@ import (
 	"time"
 )
 
-func basicAuth(h httprouter.Handle) httprouter.Handle {
+func basicAuth(h func(w http.ResponseWriter, r *http.Request, _ httprouter.Params, buff buffer.Buffer), b buffer.Buffer) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		requiredUser := config.Flags.EndpointHttpAuthUsername
 		requiredPassword := config.Flags.EndpointHttpAuthPassword
@@ -24,7 +25,7 @@ func basicAuth(h httprouter.Handle) httprouter.Handle {
 		user, password, hasAuth := r.BasicAuth()
 
 		if (requiredUser == "" || requiredPassword == "") || (hasAuth && user == requiredUser && password == requiredPassword) {
-			h(w, r, ps)
+			h(w, r, ps, b)
 		} else {
 			// Request Basic Authentication
 			w.Header().Set("WWW-Authenticate", "Basic realm=Restricted")
@@ -62,7 +63,7 @@ func getBody(r *http.Request) []byte {
 	return body
 }
 
-func telemetryEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func telemetryEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter.Params, buff buffer.Buffer) {
 	// Get body.
 	body := getBody(r)
 	uri := r.RequestURI
@@ -76,10 +77,16 @@ func telemetryEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 
 	// Send payload to MQTT broker.
 	var topic = config.Flags.TopicTelemetry + "/" + config.Flags.HardwareId
-	mqttClient.Publish(topic, body).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+	published := mqttClient.Publish(topic, body).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+
+	// If failed to publish, store the message in the buffer to try sending again
+	if !published {
+		item := buffer.Item{Timestamp: time.Now().UnixNano(), Payload: body, Topic: topic}
+		buff.Store(item)
+	}
 }
 
-func metadataEndpoint(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func metadataEndpoint(w http.ResponseWriter, r *http.Request, ps httprouter.Params, buff buffer.Buffer) {
 	// Get body.
 	body := getBody(r)
 	uri := r.RequestURI
@@ -93,10 +100,16 @@ func metadataEndpoint(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 
 	// Send payload to MQTT broker.
 	var topic = config.Flags.TopicMetadata + "/" + config.Flags.HardwareId
-	mqttClient.Publish(topic, body).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+	published := mqttClient.Publish(topic, body).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+
+	// If failed to publish, store the message in the buffer to try sending again
+	if !published {
+		item := buffer.Item{Timestamp: time.Now().UnixNano(), Payload: body, Topic: topic}
+		buff.Store(item)
+	}
 }
 
-func customTelemetryEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func customTelemetryEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter.Params, buff buffer.Buffer) {
 	// Get body.
 	body := getBody(r)
 	uri := r.RequestURI
@@ -110,10 +123,16 @@ func customTelemetryEndpoint(w http.ResponseWriter, r *http.Request, _ httproute
 
 	// Send payload to MQTT broker.
 	var topic = config.Flags.TopicTelemetry + "/" + config.Flags.HardwareId
-	mqttClient.Publish(topic, body).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+	published := mqttClient.Publish(topic, body).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+
+	// If failed to publish, store the message in the buffer to try sending again
+	if !published {
+		item := buffer.Item{Timestamp: time.Now().UnixNano(), Payload: body, Topic: topic}
+		buff.Store(item)
+	}
 }
 
-func customMetadataEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func customMetadataEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter.Params, buff buffer.Buffer) {
 	// Get body.
 	body := getBody(r)
 	uri := r.RequestURI
@@ -127,7 +146,13 @@ func customMetadataEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter
 
 	// Send payload to MQTT broker.
 	var topic = config.Flags.TopicMetadata + "/" + config.Flags.HardwareId
-	mqttClient.Publish(topic, body).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+	published := mqttClient.Publish(topic, body).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+
+	// If failed to publish, store the message in the buffer to try sending again
+	if !published {
+		item := buffer.Item{Timestamp: time.Now().UnixNano(), Payload: body, Topic: topic}
+		buff.Store(item)
+	}
 }
 
 func startHTTPServer(r http.Handler, listeningAddress string) *http.Server {
@@ -147,23 +172,23 @@ func startHTTPServer(r http.Handler, listeningAddress string) *http.Server {
 	return srv
 }
 
-func Start(done chan bool) {
+func Start(done chan bool, buff buffer.Buffer) {
 	// HTTP server listening address.
 	httpListeningAddress := config.Flags.
 		EndpointHttpListeningIP + ":" + strconv.Itoa(config.Flags.EndpointHttpListeningPort)
 
 	// Default HTTP routes
 	router := httprouter.New()
-	router.POST("/telemetry", basicAuth(telemetryEndpoint))
-	router.POST("/metadata", basicAuth(metadataEndpoint))
+	router.POST("/telemetry", basicAuth(telemetryEndpoint, buff))
+	router.POST("/metadata", basicAuth(metadataEndpoint, buff))
 
 	// Create custom HTTP routes for LuaExtraHttpTelemetryEndpoint.
 	for i := 0; i < len(config.Flags.LuaExtraHttpTelemetryEndpoint); i += 2 {
-		router.POST(config.Flags.LuaExtraHttpTelemetryEndpoint[i], basicAuth(customTelemetryEndpoint))
+		router.POST(config.Flags.LuaExtraHttpTelemetryEndpoint[i], basicAuth(customTelemetryEndpoint, buff))
 	}
 	// Create custom HTTP routes for LuaExtraHttpMetadataEndpoint.
 	for i := 0; i < len(config.Flags.LuaExtraHttpMetadataEndpoint); i += 2 {
-		router.POST(config.Flags.LuaExtraHttpMetadataEndpoint[i], basicAuth(customMetadataEndpoint))
+		router.POST(config.Flags.LuaExtraHttpMetadataEndpoint[i], basicAuth(customMetadataEndpoint, buff))
 	}
 
 	log.Infof("Starting embedded HTTP server at '%s'.",
