@@ -5,7 +5,6 @@ import (
 	"container/list"
 	"encoding/gob"
 	"github.com/esthesis-iot/esthesis-device/internal/app/mqttClient"
-	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	log "github.com/sirupsen/logrus"
 	"time"
 )
@@ -98,7 +97,7 @@ func (buffer inMemoryBuffer) Publish() {
 		item := element.Value.(*Item)
 		topic := item.Topic
 		payload := item.Payload
-		published := mqttClient.Publish(topic, payload).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+		published := mqttClient.Publish(topic, payload)
 		// If published with success then remove the element from buffer
 		if published {
 			buffer.Remove(element)

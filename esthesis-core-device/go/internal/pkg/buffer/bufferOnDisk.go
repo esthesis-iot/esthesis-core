@@ -5,7 +5,6 @@ import (
 	"encoding/gob"
 	"errors"
 	"github.com/esthesis-iot/esthesis-device/internal/app/mqttClient"
-	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	log "github.com/sirupsen/logrus"
 	"go.etcd.io/bbolt"
 	"strconv"
@@ -147,7 +146,7 @@ func (buffer *onDiskBuffer) RetrieveNext() *Item {
 		}
 	})
 	if err != nil {
-		log.Debugf("Unable to retrieve next cached element: '%s'", err)
+		//log.Debugf("Unable to retrieve next cached element: '%s'", err)
 		return nil
 	}
 
@@ -184,7 +183,7 @@ func (buffer *onDiskBuffer) Publish() {
 		log.Debugf("Sending item %#v from buffer", item)
 		topic := item.Topic
 		payload := item.Payload
-		published := mqttClient.Publish(topic, payload).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+		published := mqttClient.Publish(topic, payload)
 		// If published with success then remove the item from buffer
 		if published {
 			buffer.Remove(item)

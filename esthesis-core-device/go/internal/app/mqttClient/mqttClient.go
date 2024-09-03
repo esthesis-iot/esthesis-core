@@ -14,6 +14,7 @@ import (
 )
 
 var client mqtt.Client
+var clientOptions *mqtt.ClientOptions
 
 func getTlsConfig() *tls.Config {
 	// Import CA.
@@ -69,15 +70,22 @@ func Connect() bool {
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(mqttServer)
 	opts.SetClientID(config.Flags.HardwareId)
-	opts.SetKeepAlive(60 * time.Second)
-	opts.SetAutoReconnect(true)
-	opts.SetConnectRetry(true)
-	opts.SetConnectRetryInterval(60 * time.Second)
+	opts.SetAutoReconnect(false) // handled manually to avoid false positives
+	opts.SetConnectRetry(false)  // handled manually to avoid false positives
+	opts.SetKeepAlive(time.Duration(config.Flags.MqttTimeout) * time.Second)
+	opts.SetWriteTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+	opts.SetConnectTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+	opts.SetPingTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+	//opts.SetConnectRetryInterval(5 * time.Second)
 	// Set TLS configuration, if MQTT broker URL starts with "ssl://".
 	if mqttServer[0:6] == "ssl://" {
 		tlsConfig := getTlsConfig()
 		opts.SetTLSConfig(tlsConfig)
 	}
+
+	opts.SetConnectionLostHandler(func(c mqtt.Client, err error) {
+		go autoReconnectClient()
+	})
 
 	opts.SetOnConnectHandler(func(c mqtt.Client) {
 		// Subscribe to command request topic.
@@ -92,6 +100,7 @@ func Connect() bool {
 	})
 
 	client = mqtt.NewClient(opts)
+	clientOptions = opts
 	token := client.Connect()
 	if token.Wait() && token.Error() != nil {
 		panic(token.Error())
@@ -100,11 +109,31 @@ func Connect() bool {
 	return true
 }
 
-func Publish(topic string, payload []byte) mqtt.Token {
+func Publish(topic string, payload []byte) bool {
 	if client != nil {
 		log.Debugf("Publishing '%s' to topic '%s'.", util.AbbrBA(payload), topic)
-		return client.Publish(topic, 0, false, payload)
+		token := client.Publish(topic, 0, false, payload)
+
+		if token.Wait() && token.Error() != nil {
+			log.Debugf("Failed publishing '%s' to topic '%s' due error : '%v'.", util.AbbrBA(payload), topic, token.Error())
+			return false
+		}
+		return true
 	} else {
-		return nil
+		return false
+	}
+}
+
+func autoReconnectClient() {
+	log.Debugf("Trying to reconnect MQTT client")
+	for {
+		client = mqtt.NewClient(clientOptions)
+		token := client.Connect()
+		if token.Wait() && token.Error() == nil {
+			log.Debugf("MQTT Client reconnected successfully")
+			return
+		}
+		log.Debugf("Unable to reconnect MQTT Client error: %v", token.Error())
+		time.Sleep(1 * time.Second)
 	}
 }

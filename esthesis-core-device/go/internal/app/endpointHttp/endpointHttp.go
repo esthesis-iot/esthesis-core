@@ -77,7 +77,7 @@ func telemetryEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 
 	// Send payload to MQTT broker.
 	var topic = config.Flags.TopicTelemetry + "/" + config.Flags.HardwareId
-	published := mqttClient.Publish(topic, body).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+	published := mqttClient.Publish(topic, body)
 
 	// If failed to publish, store the message in the buffer to try sending again
 	if !published {
@@ -100,7 +100,7 @@ func metadataEndpoint(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 
 	// Send payload to MQTT broker.
 	var topic = config.Flags.TopicMetadata + "/" + config.Flags.HardwareId
-	published := mqttClient.Publish(topic, body).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+	published := mqttClient.Publish(topic, body)
 
 	// If failed to publish, store the message in the buffer to try sending again
 	if !published {
@@ -123,7 +123,7 @@ func customTelemetryEndpoint(w http.ResponseWriter, r *http.Request, _ httproute
 
 	// Send payload to MQTT broker.
 	var topic = config.Flags.TopicTelemetry + "/" + config.Flags.HardwareId
-	published := mqttClient.Publish(topic, body).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+	published := mqttClient.Publish(topic, body)
 
 	// If failed to publish, store the message in the buffer to try sending again
 	if !published {
@@ -146,7 +146,7 @@ func customMetadataEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter
 
 	// Send payload to MQTT broker.
 	var topic = config.Flags.TopicMetadata + "/" + config.Flags.HardwareId
-	published := mqttClient.Publish(topic, body).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+	published := mqttClient.Publish(topic, body)
 
 	// If failed to publish, store the message in the buffer to try sending again
 	if !published {

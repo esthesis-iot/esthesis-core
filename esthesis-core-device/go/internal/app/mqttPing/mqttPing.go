@@ -11,9 +11,7 @@ var pingTopic string
 
 func Post() {
 	payload := "health ping=" + time.Now().Format(time.RFC3339)
-	mqttClient.Publish(pingTopic,
-		[]byte(payload)).WaitTimeout(time.Duration(config.Flags.
-		MqttTimeout) * time.Second)
+	mqttClient.Publish(pingTopic, []byte(payload))
 }
 
 func Start(done chan bool) {

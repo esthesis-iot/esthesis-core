@@ -15,9 +15,7 @@ var healthTopic string
 
 func Post() {
 	payload := getHealthInfo()
-	mqttClient.Publish(healthTopic,
-		[]byte(payload)).WaitTimeout(time.Duration(config.Flags.
-		MqttTimeout) * time.Second)
+	mqttClient.Publish(healthTopic, []byte(payload))
 }
 func appendLoadHealth(healthInfo *string) {
 	loadavg, err := loadavg.Get()

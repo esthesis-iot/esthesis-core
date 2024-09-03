@@ -101,7 +101,7 @@ func Start(done chan bool, buff buffer.Buffer) {
 			}
 
 			topic := config.Flags.TopicTelemetry + "/" + config.Flags.HardwareId
-			published := mqttClient.Publish(topic, payload).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+			published := mqttClient.Publish(topic, payload)
 
 			// If failed to publish, store the message in the buffer to try sending again
 			if !published {
@@ -119,7 +119,7 @@ func Start(done chan bool, buff buffer.Buffer) {
 					config.Flags.LuaMqttMetadataScript))
 			}
 			topic := config.Flags.TopicMetadata + "/" + config.Flags.HardwareId
-			published := mqttClient.Publish(topic, payload).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+			published := mqttClient.Publish(topic, payload)
 
 			// If failed to publish, store the message in the buffer to try sending again
 			if !published {
