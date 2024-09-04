@@ -73,8 +73,6 @@ func (buffer *onDiskBuffer) Store(item Item) bool {
 	log.Debugf("Storing item %d", item.Timestamp)
 	sizeKB := buffer.SizeInKB()
 
-	log.Debugf("buffer size is %dKB", sizeKB)
-
 	if sizeKB > -1 && sizeKB <= buffer.options.SizeLimit {
 		err := buffer.db.Update(func(tx *bbolt.Tx) error {
 			b, err := tx.CreateBucketIfNotExists([]byte(BucketName))
@@ -110,17 +108,18 @@ func (buffer *onDiskBuffer) Store(item Item) bool {
 func (buffer *onDiskBuffer) SizeInKB() int {
 	var size int
 	err := buffer.db.View(func(tx *bbolt.Tx) error {
-		b := tx.Bucket([]byte(BucketName))
-		if b != nil {
-			size = b.Stats().KeyN
-		}
+		size = int(tx.Size())
 		return nil
 	})
+
 	if err != nil {
-		log.Errorf("Error getting buffer size: %v", err)
+		log.Errorf("Error getting buffer size: '%v' ", err)
 		return -1
 	}
-	return size / 1024
+
+	sizeKB := (size / 1024)
+	log.Debugf("cache size is %dKB", sizeKB)
+	return sizeKB
 }
 
 func (buffer *onDiskBuffer) RetrieveNext() *Item {
@@ -180,7 +179,6 @@ func (buffer *onDiskBuffer) Remove(item *Item) bool {
 func (buffer *onDiskBuffer) Publish() {
 	item := buffer.RetrieveNext()
 	if item != nil {
-		log.Debugf("Sending item %#v from buffer", item)
 		topic := item.Topic
 		payload := item.Payload
 		published := mqttClient.Publish(topic, payload)
