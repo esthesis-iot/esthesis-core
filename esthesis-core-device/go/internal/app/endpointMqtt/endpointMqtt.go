@@ -105,7 +105,7 @@ func Start(done chan bool, buff buffer.Buffer) {
 
 			// If failed to publish, store the message in the buffer to try sending again
 			if !published {
-				item := buffer.Item{Timestamp: time.Now().UnixNano(), Payload: payload, Topic: topic}
+				item := buffer.Message{Timestamp: time.Now().UnixNano(), Payload: payload, Topic: topic}
 				buff.Store(item)
 			}
 
@@ -123,7 +123,7 @@ func Start(done chan bool, buff buffer.Buffer) {
 
 			// If failed to publish, store the message in the buffer to try sending again
 			if !published {
-				item := buffer.Item{Timestamp: time.Now().UnixNano(), Payload: payload, Topic: topic}
+				item := buffer.Message{Timestamp: time.Now().UnixNano(), Payload: payload, Topic: topic}
 				buff.Store(item)
 			}
 		} else {

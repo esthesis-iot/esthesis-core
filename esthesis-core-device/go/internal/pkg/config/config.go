@@ -83,6 +83,7 @@ type flagsStruct struct {
 	TlsVerification               bool
 	BufferType                    string // IN-MEMORY OR ON-DISK
 	BufferSizeLimit               int    // in KB
+	BufferFreeSpaceThreshold      int    // Threshold in KB to trigger disk space reclamation by compacting the ON-DISK buffer
 	BufferPublishInterval         int    // in milliseconds
 	BufferFile                    string
 }
@@ -312,6 +313,9 @@ func InitCmdFlags(osArgs []string) {
 	opt.IntVar(&Flags.BufferSizeLimit, "bufferSizeLimit",
 		10000, opt.GetEnv("BUFFER_SIZE_LIMIT"),
 		opt.Description("The limit size of the local buffer in KB"))
+	opt.IntVar(&Flags.BufferFreeSpaceThreshold, "bufferFreeSpaceThreshold",
+		1000, opt.GetEnv("BUFFER_FREE_SPACE_THRESHOLD"),
+		opt.Description("Threshold in KB to trigger disk space reclamation by compacting the ON-DISK buffer"))
 	opt.IntVar(&Flags.BufferPublishInterval, "bufferPublishInterval",
 		1000, opt.GetEnv("BUFFER_PUBLISH_INTERVAL"),
 		opt.Description("The interval in milliseconds at which the local buffer should publish its messages"))

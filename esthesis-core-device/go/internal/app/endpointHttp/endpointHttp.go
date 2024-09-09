@@ -81,7 +81,7 @@ func telemetryEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 
 	// If failed to publish, store the message in the buffer to try sending again
 	if !published {
-		item := buffer.Item{Timestamp: time.Now().UnixNano(), Payload: body, Topic: topic}
+		item := buffer.Message{Timestamp: time.Now().UnixNano(), Payload: body, Topic: topic}
 		buff.Store(item)
 	}
 }
@@ -104,7 +104,7 @@ func metadataEndpoint(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 
 	// If failed to publish, store the message in the buffer to try sending again
 	if !published {
-		item := buffer.Item{Timestamp: time.Now().UnixNano(), Payload: body, Topic: topic}
+		item := buffer.Message{Timestamp: time.Now().UnixNano(), Payload: body, Topic: topic}
 		buff.Store(item)
 	}
 }
@@ -127,7 +127,7 @@ func customTelemetryEndpoint(w http.ResponseWriter, r *http.Request, _ httproute
 
 	// If failed to publish, store the message in the buffer to try sending again
 	if !published {
-		item := buffer.Item{Timestamp: time.Now().UnixNano(), Payload: body, Topic: topic}
+		item := buffer.Message{Timestamp: time.Now().UnixNano(), Payload: body, Topic: topic}
 		buff.Store(item)
 	}
 }
@@ -150,7 +150,7 @@ func customMetadataEndpoint(w http.ResponseWriter, r *http.Request, _ httprouter
 
 	// If failed to publish, store the message in the buffer to try sending again
 	if !published {
-		item := buffer.Item{Timestamp: time.Now().UnixNano(), Payload: body, Topic: topic}
+		item := buffer.Message{Timestamp: time.Now().UnixNano(), Payload: body, Topic: topic}
 		buff.Store(item)
 	}
 }

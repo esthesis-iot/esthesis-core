@@ -130,7 +130,7 @@ func main() {
 	}
 
 	//buffer configuration
-	bufferOptions := buffer.BufferOptions{
+	bufferOptions := buffer.Options{
 		SizeLimit:       config.Flags.BufferSizeLimit,
 		PublishInterval: config.Flags.BufferPublishInterval,
 	}

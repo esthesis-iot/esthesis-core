@@ -11,7 +11,7 @@ import (
 
 type inMemoryBuffer struct {
 	items   *list.List
-	options BufferOptions
+	options Options
 }
 
 func (buffer inMemoryBuffer) Start(done chan bool) {
@@ -35,7 +35,7 @@ LOOP:
 	log.Debug("Buffer MQTT Publisher stopped.")
 }
 
-func (buffer inMemoryBuffer) Store(item Item) bool {
+func (buffer inMemoryBuffer) Store(item Message) bool {
 	sizeKB := buffer.SizeInKB()
 
 	log.Debugf("buffer size is %dKB", sizeKB)
@@ -87,14 +87,14 @@ func (buffer inMemoryBuffer) Remove(element *list.Element) bool {
 
 }
 
-func NewInMemoryBuffer(options BufferOptions) Buffer {
+func NewInMemoryBuffer(options Options) Buffer {
 	return &inMemoryBuffer{items: list.New(), options: options}
 }
 
 func (buffer inMemoryBuffer) Publish() {
 	element := buffer.RetrieveNext()
 	if element != nil {
-		item := element.Value.(*Item)
+		item := element.Value.(*Message)
 		topic := item.Topic
 		payload := item.Payload
 		published := mqttClient.Publish(topic, payload)

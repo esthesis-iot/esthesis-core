@@ -47,7 +47,7 @@ func IsFirmwareVersionFilePresent() bool {
 
 func GetFirmwareVersion() string {
 	version, _ := ReadTextFile(config.Flags.VersionFile)
-	// Remove spaces and new lines.
+	// RemoveMessage spaces and new lines.
 	version = strings.TrimSpace(version)
 	version = strings.Replace(version, "\n", "", -1)
 	version = strings.Replace(version, "\r", "", -1)
