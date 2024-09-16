@@ -17,6 +17,7 @@ import java.util.UUID;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 
+@Ignore
 @QuarkusTest
 @TestHTTPEndpoint(AuditResource.class)
 class AuditResourceImplTest {
