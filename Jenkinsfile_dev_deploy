@@ -91,9 +91,9 @@ pipeline {
                     passwordVariable: 'Password')]){
                         sh '''
                             cd esthesis-core-backend
-                            ESTHESIS_REGISTRY_TYPE=auth
-                            ESTHESIS_REGISTRY_USERNAME=$Username
-                            ESTHESIS_REGISTRY_PASSWORD=$Password
+                            export ESTHESIS_REGISTRY_TYPE=auth
+                            export ESTHESIS_REGISTRY_USERNAME=$Username
+                            export ESTHESIS_REGISTRY_PASSWORD=$Password
                             ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
                         '''
                     }
@@ -108,9 +108,9 @@ pipeline {
                     passwordVariable: 'Password')]){
                         sh '''
                             cd esthesis-core-ui
-                            ESTHESIS_REGISTRY_TYPE=auth
-                            ESTHESIS_REGISTRY_USERNAME=$Username
-                            ESTHESIS_REGISTRY_PASSWORD=$Password
+                            export ESTHESIS_REGISTRY_TYPE=auth
+                            export ESTHESIS_REGISTRY_USERNAME=$Username
+                            export ESTHESIS_REGISTRY_PASSWORD=$Password
                             ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
                         '''
                     }
@@ -125,9 +125,9 @@ pipeline {
                     passwordVariable: 'Password')]){
                         sh '''
                             cd esthesis-core-device
-                            ESTHESIS_REGISTRY_TYPE=auth
-                            ESTHESIS_REGISTRY_USERNAME=$Username
-                            ESTHESIS_REGISTRY_PASSWORD=$Password                        
+                            export ESTHESIS_REGISTRY_TYPE=auth
+                            export ESTHESIS_REGISTRY_USERNAME=$Username
+                            export ESTHESIS_REGISTRY_PASSWORD=$Password                        
                             ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
                         '''
                     }
