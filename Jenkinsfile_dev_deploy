@@ -87,12 +87,6 @@ pipeline {
                 container (name: 'esthesis-dev-deployer') {
                     sh '''
                         cd esthesis-core-backend
-                        cat << EOF > buildkit.toml
-                        insecure-entitlements = [ "network.host", "security.insecure" ]
-                        [registry."harbor.devops-d2.eurodyn.com"]
-                        http = true
-                        insecure = true
-                        EOF
                         ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
                     '''
                 }
@@ -103,12 +97,6 @@ pipeline {
                 container (name: 'esthesis-dev-deployer') {
                     sh '''
                         cd esthesis-core-ui
-                        cat << EOF > buildkit.toml
-                        insecure-entitlements = [ "network.host", "security.insecure" ]
-                        [registry."harbor.devops-d2.eurodyn.com"]
-                        http = true
-                        insecure = true
-                        EOF
                         ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
                     '''
                 }
@@ -119,12 +107,6 @@ pipeline {
                 container (name: 'esthesis-dev-deployer') {
                     sh '''
                         cd esthesis-core-device
-                        cat << EOF > buildkit.toml
-                        insecure-entitlements = [ "network.host", "security.insecure" ]
-                        [registry."harbor.devops-d2.eurodyn.com"]
-                        http = true
-                        insecure = true
-                        EOF
                         ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
                     '''
                 }
