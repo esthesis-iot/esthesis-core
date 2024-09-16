@@ -86,30 +86,51 @@ pipeline {
         stage ("Run esthesis-core-backend publish script"){
             steps{
                 container (name: 'esthesis-dev-deployer') {
-                    sh '''
-                        cd esthesis-core-backend
-                        ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
-                    '''
+                    withCredentials([usernamePassword(credentialsId: 'harbor-creds',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        sh '''
+                            cd esthesis-core-backend
+                            ESTHESIS_REGISTRY_TYPE=auth
+                            ESTHESIS_REGISTRY_USERNAME= $Username
+                            ESTHESIS_REGISTRY_PASSWORD= $Password
+                            ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
+                        '''
+                    }
                 }
             }
         }
         stage ("Run esthesis-core-ui publish script"){
             steps{
                 container (name: 'esthesis-dev-deployer') {
-                    sh '''
-                        cd esthesis-core-ui
-                        ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
-                    '''
+                    withCredentials([usernamePassword(credentialsId: 'harbor-creds',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        sh '''
+                            cd esthesis-core-ui
+                            ESTHESIS_REGISTRY_TYPE=auth
+                            ESTHESIS_REGISTRY_USERNAME= $Username
+                            ESTHESIS_REGISTRY_PASSWORD= $Password
+                            ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
+                        '''
+                    }
                 }
             }
         }
         stage ("Run esthesis-core-device publish script"){
             steps{
                 container (name: 'esthesis-dev-deployer') {
-                    sh '''
-                        cd esthesis-core-device
-                        ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
-                    '''
+                    withCredentials([usernamePassword(credentialsId: 'harbor-creds',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        sh '''
+                            cd esthesis-core-device
+                            ESTHESIS_REGISTRY_TYPE=auth
+                            ESTHESIS_REGISTRY_USERNAME= $Username
+                            ESTHESIS_REGISTRY_PASSWORD= $Password                        
+                            ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
+                        '''
+                    }
                 }
             }
         }
