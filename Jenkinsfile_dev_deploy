@@ -74,6 +74,7 @@ pipeline {
                     passwordVariable: 'Password')]){
                         sh '''
                             cd ..
+                            rm -rf esthesis-helm
                             git config --global user.email "devops-d2@eurodyn.com"
                             git config --global user.name "$Username"
                             git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-helm
