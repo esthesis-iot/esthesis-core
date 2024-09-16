@@ -73,10 +73,7 @@ pipeline {
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
-                            git config --global user.email "devops-d2@eurodyn.com"
-                            git config --global user.name "$Username"
-                            git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-core
-
+                            cd ..
                             git config --global user.email "devops-d2@eurodyn.com"
                             git config --global user.name "$Username"
                             git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-helm
@@ -89,7 +86,7 @@ pipeline {
             steps{
                 container (name: 'esthesis-dev-deployer') {
                     sh '''
-                        cd esthesis-core/esthesis-core-backend
+                        cd esthesis-core-backend
                         cat << EOF > buildkit.toml
                         insecure-entitlements = [ "network.host", "security.insecure" ]
                         [registry."harbor.devops-d2.eurodyn.com"]
@@ -105,7 +102,7 @@ pipeline {
             steps{
                 container (name: 'esthesis-dev-deployer') {
                     sh '''
-                        cd esthesis-core/esthesis-core-ui
+                        cd esthesis-core-ui
                         cat << EOF > buildkit.toml
                         insecure-entitlements = [ "network.host", "security.insecure" ]
                         [registry."harbor.devops-d2.eurodyn.com"]
@@ -121,7 +118,7 @@ pipeline {
             steps{
                 container (name: 'esthesis-dev-deployer') {
                     sh '''
-                        cd esthesis-core/esthesis-core-device
+                        cd esthesis-core-device
                         cat << EOF > buildkit.toml
                         insecure-entitlements = [ "network.host", "security.insecure" ]
                         [registry."harbor.devops-d2.eurodyn.com"]
@@ -137,7 +134,7 @@ pipeline {
             steps{
                 container (name: 'esthesis-dev-deployer') {
                     sh '''
-                        cd esthesis-helm
+                        cd ../esthesis-helm
                         helm package ./esthesis-core
                         helm push esthesis-core-*.tgz oci://harbor.devops-d2.eurodyn.com/esthesis
                         helm package ./esthesis-core-deps
@@ -147,26 +144,4 @@ pipeline {
             }
         }
     }
-}
-@NonCPS
-def getChangeString(maxMessages) {
-    MAX_MSG_LEN = 100
-    def changeString = ""
-
-    def changeLogSets = currentBuild.changeSets
-
-    for (int i = 0; i < changeLogSets.size(); i++) {
-        def entries = changeLogSets[i].items
-        for (int j = 0; j < entries.length && i + j < maxMessages; j++) {
-            def entry = entries[j]
-            truncated_msg = entry.msg.take(MAX_MSG_LEN)
-            changeString += "*${truncated_msg}* _by author ${entry.author}_\n"
-        }
-    }
-
-    if (!changeString) {
-        changeString = " There have not been any changes since the last build"
-    }
-
-    return changeString
 }
