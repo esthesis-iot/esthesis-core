@@ -1,0 +1,172 @@
+pipeline {
+    agent {
+        kubernetes {
+            yaml '''
+              apiVersion: v1
+              kind: Pod
+              metadata:
+                name: esthesis-dev-deploy
+                namespace: jenkins
+              spec:
+                affinity:
+                  podAntiAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                    - weight: 50
+                      podAffinityTerm:
+                        labelSelector:
+                          matchExpressions:
+                          - key: jenkins/jenkins-jenkins-agent
+                            operator: In
+                            values:
+                            - "true"
+                        topologyKey: kubernetes.io/hostname
+                securityContext:
+                  runAsUser: 0
+                  runAsGroup: 0
+                containers:
+                - name: esthesis-dev-deployer
+                  image: eddevopsd2/ubuntu-dind:docker24-mvn3.8.5-jdk17-node18.16-go1.20-buildx-helm
+                  volumeMounts:
+                  - name: maven
+                    mountPath: /root/.m2/
+                    subPath: esthesis
+                  tty: true
+                  securityContext:
+                    privileged: true
+                    runAsUser: 0
+                    fsGroup: 0
+                imagePullSecrets:
+                - name: regcred
+                volumes:
+                - name: maven
+                  persistentVolumeClaim:
+                    claimName: maven-nfs-pvc
+            '''
+            workspaceVolume persistentVolumeClaimWorkspaceVolume(claimName: 'workspace-nfs-pvc', readOnly: false)
+        }
+    }
+    options {
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        timeout(time: 5, unit: 'HOURS')
+    }
+    stages {
+    	stage ('Prerequisites') {
+            steps {
+                container (name: 'esthesis-dev-deployer') {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        sh '''
+                            apt-get update -y
+                            apt-get install -y util-linux jq
+                            docker login -u $Username -p $Password docker.io
+                        '''
+                    }
+                }
+            }
+        }
+        stage ("Clone esthesis-iot projects") {
+            steps{
+                container (name: 'esthesis-dev-deployer') {
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        sh '''
+                            git config --global user.email "devops-d2@eurodyn.com"
+                            git config --global user.name "$Username"
+                            git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-core
+
+                            git config --global user.email "devops-d2@eurodyn.com"
+                            git config --global user.name "$Username"
+                            git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-helm
+                        '''
+                    }
+                }
+            }
+        }
+        stage ("Run esthesis-core-backend publish script"){
+            steps{
+                container (name: 'esthesis-dev-deployer') {
+                    sh '''
+                        cd esthesis-core/esthesis-core-backend
+                        cat << EOF > buildkit.toml
+                        insecure-entitlements = [ "network.host", "security.insecure" ]
+                        [registry."harbor.devops-d2.eurodyn.com"]
+                        http = true
+                        insecure = true
+                        EOF
+                        ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
+                    '''
+                }
+            }
+        }
+        stage ("Run esthesis-core-ui publish script"){
+            steps{
+                container (name: 'esthesis-dev-deployer') {
+                    sh '''
+                        cd esthesis-core/esthesis-core-ui
+                        cat << EOF > buildkit.toml
+                        insecure-entitlements = [ "network.host", "security.insecure" ]
+                        [registry."harbor.devops-d2.eurodyn.com"]
+                        http = true
+                        insecure = true
+                        EOF
+                        ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
+                    '''
+                }
+            }
+        }
+        stage ("Run esthesis-core-device publish script"){
+            steps{
+                container (name: 'esthesis-dev-deployer') {
+                    sh '''
+                        cd esthesis-core/esthesis-core-device
+                        cat << EOF > buildkit.toml
+                        insecure-entitlements = [ "network.host", "security.insecure" ]
+                        [registry."harbor.devops-d2.eurodyn.com"]
+                        http = true
+                        insecure = true
+                        EOF
+                        ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
+                    '''
+                }
+            }
+        }
+        stage ("esthesis-helm: Changes for RELEASE version"){
+            steps{
+                container (name: 'esthesis-dev-deployer') {
+                    sh '''
+                        cd esthesis-helm
+                        helm package ./esthesis-core
+                        helm push esthesis-core-*.tgz oci://harbor.devops-d2.eurodyn.com/esthesis
+                        helm package ./esthesis-core-deps
+                        helm push esthesis-core-deps-*.tgz oci://harbor.devops-d2.eurodyn.com/esthesis
+                    '''
+                }
+            }
+        }
+    }
+}
+@NonCPS
+def getChangeString(maxMessages) {
+    MAX_MSG_LEN = 100
+    def changeString = ""
+
+    def changeLogSets = currentBuild.changeSets
+
+    for (int i = 0; i < changeLogSets.size(); i++) {
+        def entries = changeLogSets[i].items
+        for (int j = 0; j < entries.length && i + j < maxMessages; j++) {
+            def entry = entries[j]
+            truncated_msg = entry.msg.take(MAX_MSG_LEN)
+            changeString += "*${truncated_msg}* _by author ${entry.author}_\n"
+        }
+    }
+
+    if (!changeString) {
+        changeString = " There have not been any changes since the last build"
+    }
+
+    return changeString
+}
