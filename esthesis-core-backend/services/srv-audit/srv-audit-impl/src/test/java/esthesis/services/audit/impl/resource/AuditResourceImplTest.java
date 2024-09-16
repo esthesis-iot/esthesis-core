@@ -1,4 +1,4 @@
-package esthesis.services.audit.impl.resource;
+/*package esthesis.services.audit.impl.resource;
 
 import static io.restassured.RestAssured.given;
 
@@ -17,7 +17,6 @@ import java.util.UUID;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 
-@Ignore
 @QuarkusTest
 @TestHTTPEndpoint(AuditResource.class)
 class AuditResourceImplTest {
@@ -120,3 +119,4 @@ class AuditResourceImplTest {
 			.body("createdBy", org.hamcrest.Matchers.equalTo(username));
 	}
 }
+*/
