@@ -9,7 +9,7 @@
   <parent>
     <artifactId>dataflows</artifactId>
     <groupId>esthesis</groupId>
-    <version>3.0.51-SNAPSHOT</version>
+    <version>3.0.52-SNAPSHOT</version>
   </parent>
 
 	<properties>
@@ -21,7 +21,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>dfl-common</artifactId>
-      <version>3.0.51-SNAPSHOT</version>
+      <version>3.0.52-SNAPSHOT</version>
     </dependency>
 
     <!-- CAMEL -->
