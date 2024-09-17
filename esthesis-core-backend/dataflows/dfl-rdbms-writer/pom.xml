@@ -7,14 +7,14 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>dataflows</artifactId>
-    <version>3.0.51-SNAPSHOT</version>
+    <version>3.0.51</version>
   </parent>
   <artifactId>dfl-rdbms-writer</artifactId>
   <dependencies>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>dfl-common</artifactId>
-      <version>3.0.51-SNAPSHOT</version>
+      <version>3.0.51</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
