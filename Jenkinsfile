@@ -25,7 +25,7 @@ pipeline {
                   runAsGroup: 0
                 containers:
                 - name: esthesis-core-builder
-                  image: eddevopsd2/ubuntu-dind:docker24-mvn3.9.6-jdk21-node18.16-go1.20-buildx-helm
+                  image: eddevopsd2/ubuntu-dind:docker24-mvn3.9.6-jdk21-node18.16-go1.23-buildx-helm
                   volumeMounts:
                   - name: maven
                     mountPath: /root/.m2/
@@ -122,8 +122,8 @@ pipeline {
                 container (name: 'esthesis-core-builder') {
                     sh '''
                         cd esthesis-core-device
-                        go install github.com/CycloneDX/cyclonedx-gomod/cmd/cyclonedx-gomod@v1.4.0
-                        /go/bin/cyclonedx-gomod mod go > go/bom.xml
+                        go install github.com/CycloneDX/cyclonedx-gomod/cmd/cyclonedx-gomod@v1.8.0
+                        /root/go/bin/cyclonedx-gomod mod go > go/bom.xml
                     '''
                 }
             }
