@@ -73,7 +73,6 @@ pipeline {
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
-                            cd ..
                             rm -rf esthesis-helm
                             git config --global user.email "devops-d2@eurodyn.com"
                             git config --global user.name "$Username"
@@ -138,7 +137,7 @@ pipeline {
             steps{
                 container (name: 'esthesis-dev-deployer') {
                     sh '''
-                        cd ../esthesis-helm/esthesis-core-deps
+                        cd esthesis-helm/esthesis-core-deps
                         export DOMAIN=esthesis-dev.eurodyn.com
                         export TIMEZONE=Europe/Athens
                         export ESTHESIS_ADMIN_USERNAME=esthesis-admin
@@ -158,12 +157,6 @@ pipeline {
                         export ESTHESIS_LOCAL_CHARTS=true
                         export IMAGE_PULL_SECRET=regcred
                         ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis helmfile sync -n esthesis-demo
-                        echo "Waiting for Keycloak to become available..."
-                        until curl --insecure -s -o /dev/null -w "%{http_code}" https://$KEYCLOAK_HOSTNAME/realms/esthesis | grep -q "200"; do
-                            echo "Keycloak is not ready yet, waiting for 10 seconds..."
-                            sleep 10
-                        done
-                        echo "Keycloak is online!"
                     '''
                 }
             }
@@ -172,7 +165,7 @@ pipeline {
             steps{
                 container (name: 'esthesis-dev-deployer') {
                     sh '''
-                        cd ../esthesis-helm/esthesis-core
+                        cd esthesis-helm/esthesis-core
                         export DOMAIN=esthesis-dev.eurodyn.com
                         export TIMEZONE=Europe/Athens
                         export ESTHESIS_ADMIN_USERNAME=esthesis-admin
