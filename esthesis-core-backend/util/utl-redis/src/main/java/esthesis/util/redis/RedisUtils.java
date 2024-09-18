@@ -35,7 +35,8 @@ public class RedisUtils {
 	public enum KeyType {
 		ESTHESIS_DM,    // Esthesis Device Measurement
 		ESTHESIS_PPDT,  // Esthesis Provisioning Package (download token)
-		ESTHESIS_PRT    // Provisioning Request Timer
+		ESTHESIS_PRT,    // Provisioning Request Timer
+		ESTHESIS_DFLRI    // Dataflows report interval
 	}
 
 	@PostConstruct

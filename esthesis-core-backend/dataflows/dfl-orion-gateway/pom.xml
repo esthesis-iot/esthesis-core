@@ -65,6 +65,11 @@
       <artifactId>utl-kafka-notifications-common</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
+		<dependency>
+			<groupId>esthesis</groupId>
+			<artifactId>utl-redis</artifactId>
+			<version>3.0.52-SNAPSHOT</version>
+		</dependency>
   </dependencies>
 
 </project>

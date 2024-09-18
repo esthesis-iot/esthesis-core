@@ -13,6 +13,8 @@ import esthesis.dataflows.oriongateway.service.OrionClientService.ATTRIBUTE_TYPE
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
+import esthesis.util.redis.RedisUtils;
+import esthesis.util.redis.RedisUtils.KeyType;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.qute.Qute;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -23,6 +25,8 @@ import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,6 +46,9 @@ public class OrionGatewayService {
 
 	@Inject
 	OrionClientService orionClientService;
+
+	@Inject
+	RedisUtils redisUtils;
 
 	/**
 	 * Checks whether the device attributes allow registration.
@@ -95,7 +102,7 @@ public class OrionGatewayService {
 
 		// check if device doesn't have a custom attribute for format and saving entities in Orion
 		// if it has then it should skip registration check
-		if(appConfig.orionCustomEntityJsonFormatAttributeName().isEmpty()) {
+		if (appConfig.orionCustomEntityJsonFormatAttributeName().isEmpty()) {
 			// Check whether this device is registered in Orion.
 			String orionId = generateOrionDeviceId(esthesisHardwareId);
 			OrionEntityDTO orionEntity = orionClientService.getEntityByOrionId(orionId);
@@ -135,8 +142,8 @@ public class OrionGatewayService {
 	 * Generates the orion ID that an esthesis device should use. The resulting ID is based on the
 	 * configuration options available in the device attributes as well as in AppConfig.
 	 *
-	 * @param esthesisHardwareId         The ID to use if no configuration options specify otherwise.
-	 * @param deviceAttributes The esthesis device attributes.
+	 * @param esthesisHardwareId The ID to use if no configuration options specify otherwise.
+	 * @param deviceAttributes   The esthesis device attributes.
 	 */
 	private String generateOrionDeviceId(String esthesisHardwareId,
 																			 List<DeviceAttributeEntity> deviceAttributes) {
@@ -423,18 +430,14 @@ public class OrionGatewayService {
 
 			esthesisMessage.getPayload().getValues().forEach((valueData) -> {
 
-				if (canSendAttribute(valueData, filterAttributes)) {
+				String redisKey = getRedisKey(valueData, esthesisHardwareId, category);
+
+				if (canSendAttribute(valueData, filterAttributes, redisKey)) {
 					// if custom formatter is set, generate the dynamic json using the Qute formatter
 					// along with the relevant measurement data
 					if (customOrionEntityJsonAttribute.isPresent()) {
 						String customFormattedValue =
-							Qute.fmt(customOrionEntityJsonAttribute.get().getAttributeValue(),
-								Map.of("category", category,
-									"timestamp", timestamp,
-									"hardwareId", esthesisHardwareId,
-									"measurementName", valueData.getName(),
-									"measurementValue", valueData.getValue())
-							);
+							getCustomFormattedValue(valueData, customOrionEntityJsonAttribute, category, timestamp, esthesisHardwareId);
 						log.debug("customFormattedValue {}", customFormattedValue);
 						orionClientService.saveOrUpdateEntities(customFormattedValue);
 					} else {
@@ -442,6 +445,11 @@ public class OrionGatewayService {
 						orionClientService.setAttribute(orionId, category + "." + valueData.getName(),
 							valueData.getValue(), ValueType.valueOf(valueData.getValueType().name()), attributeType);
 					}
+
+					if (hasCustomInterval()) {
+						saveOnRedis(redisKey);
+					}
+
 				}
 			});
 		} else {
@@ -449,9 +457,50 @@ public class OrionGatewayService {
 		}
 	}
 
-	private boolean canSendAttribute(ValueData valueData, List<String> filterAttributes) {
-		return filterAttributes.isEmpty() || filterAttributes.stream().anyMatch(filter ->
-			StringUtils.equals(valueData.getName(), filter.trim()));
+	private void saveOnRedis(String redisKey) {
+		String expirationString = Instant.now().plus(appConfig.customInterval(), ChronoUnit.SECONDS).toString();
+		redisUtils.setToHash(KeyType.ESTHESIS_DFLRI, redisKey, "expiration", expirationString);
+		redisUtils.setExpirationForHash(KeyType.ESTHESIS_DFLRI, redisKey, appConfig.customInterval());
+		log.debug("Storing key {} in redis with expiration to {}", redisKey, expirationString);
+	}
+
+	private static String getCustomFormattedValue(ValueData valueData, Optional<DeviceAttributeEntity> customOrionEntityJsonAttribute, String category, String timestamp, String esthesisHardwareId) {
+		return Qute.fmt(customOrionEntityJsonAttribute.get().getAttributeValue(),
+				Map.of("category", category,
+					"timestamp", timestamp,
+					"hardwareId", esthesisHardwareId,
+					"measurementName", valueData.getName(),
+					"measurementValue", valueData.getValue())
+			);
+	}
+
+	private String getRedisKey(ValueData valueData, String esthesisHardwareId, String category) {
+		String redisKey = "orion." + esthesisHardwareId + "." + category + "." + valueData.getName();
+		return redisKey.toLowerCase().trim();
+	}
+
+	// Check if attribute shall be sent to orion
+	private boolean canSendAttribute(ValueData valueData, List<String> filterAttributes, String redisKey) {
+
+		// check if  attribute is expected to be sent
+		if (filterAttributes.isEmpty() || filterAttributes.stream().anyMatch(filter ->
+			StringUtils.equals(valueData.getName(), filter.trim()))) {
+
+			// check if it is the right time to send if custom interval is set
+			if (hasCustomInterval()) {
+				var hash = redisUtils.getHash(KeyType.ESTHESIS_DFLRI, redisKey);
+				return hash.isEmpty();
+			}
+
+			return true;
+
+		}
+		return false;
+	}
+
+	// check if necessary properties to use a custom interval are set
+	private boolean hasCustomInterval() {
+		return appConfig.customInterval() > 0 && appConfig.customRedisUrl().isPresent();
 	}
 
 }

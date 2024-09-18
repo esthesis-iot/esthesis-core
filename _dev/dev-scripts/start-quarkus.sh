@@ -124,7 +124,7 @@ if [ "$MONGODB" = "true" ]; then
 	echo "Enabling MongoDB configuration at: $ESTHESIS_MONGODB_URL."
 fi
 if [ "$REDIS" = "true" ]; then
-	ESTHESIS_REDIS_URL="redis://:esthesis-system@redis-master.$NAMESPACE:6379/0"
+	ESTHESIS_REDIS_URL="redis://:esthe++sis-system@redis-master.$NAMESPACE:6379/0"
 	echo "Enabling Redis configuration at: $ESTHESIS_REDIS_URL."
 fi
 if [ "$KAFKA" = "true" ]; then
