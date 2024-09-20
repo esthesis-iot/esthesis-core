@@ -74,22 +74,6 @@ pipeline {
                 }
             }
         }
-        stage ("Clone esthesis-iot projects") {
-            steps{
-                container (name: 'esthesis-dev-deployer') {
-                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
-                    usernameVariable: 'Username',
-                    passwordVariable: 'Password')]){
-                        sh '''
-                            rm -rf esthesis-helm
-                            git config --global user.email "devops-d2@eurodyn.com"
-                            git config --global user.name "$Username"
-                            git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-helm
-                        '''
-                    }
-                }
-            }
-        }
         stage ("Run esthesis-core-backend publish script"){
             steps{
                 container (name: 'esthesis-dev-deployer') {
@@ -148,6 +132,7 @@ pipeline {
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
+                            apt-get install -y argocd
                             argocd login argocd.devops-d2.eurodyn.com:443 --username $Username --password $Password --grpc-web
                             argocd app terminate-op esthesis-core
                             argocd app delete esthesis-core -y
