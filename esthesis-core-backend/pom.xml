@@ -135,8 +135,8 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<artifactId>${quarkus.platform.artifact-id}</artifactId>
 				<groupId>${quarkus.platform.group-id}</groupId>
+				<artifactId>${quarkus.platform.artifact-id}</artifactId>
 				<scope>import</scope>
 				<type>pom</type>
 				<version>${quarkus.platform.version}</version>
@@ -217,7 +217,7 @@
 	</profiles>
 
 	<properties>
-		<maven.compiler.release>17</maven.compiler.release>
+		<maven.compiler.release>21</maven.compiler.release>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
