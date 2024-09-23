@@ -162,4 +162,10 @@ public interface AppConfig {
 
 	// NGSILD-Tenant value to specify the tenant scope in Orion-LD requests
 	Optional<String> orionLdTenant();
+
+	// The interval at which to send data to orion, in seconds.
+	Optional<String> orionForwardingInterval();
+
+	// The redis URL which is necessary due to the forwarding interval feat
+	Optional<String> redisUrl();
 }
