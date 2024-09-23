@@ -1,6 +1,6 @@
 package esthesis.service.command.impl.service;
 
-import esthesis.common.entity.CommandReplyEntity;
+import esthesis.service.command.entity.CommandReplyEntity;
 import esthesis.service.common.BaseService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
