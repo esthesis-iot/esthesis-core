@@ -117,11 +117,13 @@ public class OrionClientService {
 	}
 
 	public void setAttribute(String entityId, String attributeName, String attributeValue,
-		ValueType attributeValueType, ATTRIBUTE_TYPE attributeType) {
+													 ValueType attributeValueType, ATTRIBUTE_TYPE attributeType) {
 		JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
 		jsonBuilder.add(attributeName,
 			toOrionAttributeJson(attributeValue, attributeValueType, attributeType));
-		  orionClient.appendAttributes(entityId, jsonBuilder.build().toString());
+		String json = jsonBuilder.build().toString();
+		log.debug("Sending attribute to orion '{}' for entity '{}'", json, entityId);
+		orionClient.appendAttributes(entityId, json);
 	}
 
 	public void saveOrUpdateEntities(String entitiesJson) {
@@ -129,6 +131,7 @@ public class OrionClientService {
 		if(!entitiesJson.trim().startsWith("[")){
 			entitiesJson = "[" + entitiesJson + "]";
 		}
+		log.debug("Sending data to orion {}", entitiesJson);
 		orionClient.createOrUpdateEntities(entitiesJson);
 	}
 
@@ -153,7 +156,10 @@ public class OrionClientService {
 				ATTRIBUTE_TYPE.ATTRIBUTE));
 		});
 
-		orionClient.createEntity(jsonBuilder.build().toString());
+		String json = jsonBuilder.build().toString();
+		log.debug("Creating entity in orion {}", json);
+
+		orionClient.createEntity(json);
 	}
 
 	public OrionEntityDTO getEntityByOrionId(String orionId) {

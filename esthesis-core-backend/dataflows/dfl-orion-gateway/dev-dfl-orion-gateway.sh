@@ -19,9 +19,7 @@ export ESTHESIS_DFL_ORION_DELETE_DEVICES=true
 export ESTHESIS_DFL_CONCURRENCY_POLL_TIMEOUT=1000
 export ESTHESIS_DFL_CONCURRENCY_CONSUMERS=10
 export ESTHESIS_DFL_CONCURRENCY_QUEUE_SIZE=1000
-export ESTHESIS_DFL_CUSTOM_REDIS_URL=redis://:esthesis-system@redis-master.$(kubens -c):6379/0
-export ESTHESIS_DFL_CUSTOM_INTERVAL=0
-
+export ESTHESIS_DFL_REDIS_URL=redis://:esthesis-system@redis-master.$(kubens -c):6379/0
 # Source local environment variables.
 [ -e "local-env.sh" ] && source "local-env.sh"
 

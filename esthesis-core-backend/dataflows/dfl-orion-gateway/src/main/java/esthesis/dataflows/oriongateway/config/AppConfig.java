@@ -164,8 +164,8 @@ public interface AppConfig {
 	Optional<String> orionLdTenant();
 
 	// The interval at which to send data to orion, in seconds.
-	int customInterval();
+	Optional<String> orionForwardingInterval();
 
-	// The redis URL necessary for the custom interval setup
-	Optional<String> customRedisUrl();
+	// The redis URL which is necessary due to the forwarding interval feat
+	Optional<String> redisUrl();
 }

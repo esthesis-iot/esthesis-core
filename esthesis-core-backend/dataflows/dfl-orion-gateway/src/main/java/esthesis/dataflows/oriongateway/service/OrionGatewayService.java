@@ -438,7 +438,6 @@ public class OrionGatewayService {
 					if (customOrionEntityJsonAttribute.isPresent()) {
 						String customFormattedValue =
 							getCustomFormattedValue(valueData, customOrionEntityJsonAttribute, category, timestamp, esthesisHardwareId);
-						log.debug("customFormattedValue {}", customFormattedValue);
 						orionClientService.saveOrUpdateEntities(customFormattedValue);
 					} else {
 						String orionId = generateOrionDeviceId(esthesisHardwareId);
@@ -446,7 +445,7 @@ public class OrionGatewayService {
 							valueData.getValue(), ValueType.valueOf(valueData.getValueType().name()), attributeType);
 					}
 
-					if (hasCustomInterval()) {
+					if (hasForwardingIntervalSet()) {
 						saveOnRedis(redisKey);
 					}
 
@@ -458,9 +457,9 @@ public class OrionGatewayService {
 	}
 
 	private void saveOnRedis(String redisKey) {
-		String expirationString = Instant.now().plus(appConfig.customInterval(), ChronoUnit.SECONDS).toString();
+		String expirationString = Instant.now().plus(getOrionForwardingIntervalValue(), ChronoUnit.SECONDS).toString();
 		redisUtils.setToHash(KeyType.ESTHESIS_DFLRI, redisKey, "expiration", expirationString);
-		redisUtils.setExpirationForHash(KeyType.ESTHESIS_DFLRI, redisKey, appConfig.customInterval());
+		redisUtils.setExpirationForHash(KeyType.ESTHESIS_DFLRI, redisKey, getOrionForwardingIntervalValue());
 		log.debug("Storing key {} in redis with expiration to {}", redisKey, expirationString);
 	}
 
@@ -487,7 +486,7 @@ public class OrionGatewayService {
 			StringUtils.equals(valueData.getName(), filter.trim()))) {
 
 			// check if it is the right time to send if custom interval is set
-			if (hasCustomInterval()) {
+			if (hasForwardingIntervalSet()) {
 				var hash = redisUtils.getHash(KeyType.ESTHESIS_DFLRI, redisKey);
 				return hash.isEmpty();
 			}
@@ -498,9 +497,14 @@ public class OrionGatewayService {
 		return false;
 	}
 
-	// check if necessary properties to use a custom interval are set
-	private boolean hasCustomInterval() {
-		return appConfig.customInterval() > 0 && appConfig.customRedisUrl().isPresent();
+	private int getOrionForwardingIntervalValue(){
+		String interval = appConfig.orionForwardingInterval().orElse("0");
+		return Integer.parseInt(interval);
+	}
+
+	// check if the forwarding interval is set
+	private boolean hasForwardingIntervalSet() {
+		return  getOrionForwardingIntervalValue() > 0 && appConfig.redisUrl().isPresent();
 	}
 
 }
