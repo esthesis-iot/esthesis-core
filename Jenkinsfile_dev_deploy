@@ -65,7 +65,7 @@ pipeline {
                     passwordVariable: 'Password')]){
                         sh '''
                             apt-get update -y
-                            apt-get install -y util-linux jq argocd
+                            apt-get install -y util-linux jq
                             docker login -u $Username -p $Password docker.io
                             [ -d /sys/fs/cgroup/systemd ] || mkdir /sys/fs/cgroup/systemd
                             mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
@@ -132,7 +132,6 @@ pipeline {
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
-                            apt-get install -y argocd
                             argocd login argocd.devops-d2.eurodyn.com:443 --username $Username --password $Password --grpc-web
                             argocd app terminate-op esthesis-core || true
                             argocd app delete esthesis-core -y
