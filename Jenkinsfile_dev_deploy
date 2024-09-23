@@ -25,7 +25,7 @@ pipeline {
                   runAsGroup: 0
                 containers:
                 - name: esthesis-dev-deployer
-                  image: eddevopsd2/ubuntu-dind:docker24-mvn3.8.5-jdk17-node18.16-go1.20-buildx-helm-helmfile
+                  image: eddevopsd2/ubuntu-dind:docker24-mvn3.8.5-jdk17-node18.16-go1.20-buildx-helm
                   volumeMounts:
                   - name: maven
                     mountPath: /root/.m2/
@@ -134,12 +134,12 @@ pipeline {
                         sh '''
                             apt-get install -y argocd
                             argocd login argocd.devops-d2.eurodyn.com:443 --username $Username --password $Password --grpc-web
-                            argocd app terminate-op esthesis-core
+                            argocd app terminate-op esthesis-core || true
                             argocd app delete esthesis-core -y
-                            argocd app terminate-op esthesis-core-deps
+                            argocd app terminate-op esthesis-core-deps || true
                             argocd app delete esthesis-core-deps -y
-                            wait 60
-                            argocd app sync default-esthesis-demo-infra                          
+                            sleep 60
+                            argocd app sync default-esthesis-demo-infra
                         '''
                     }
                 }
