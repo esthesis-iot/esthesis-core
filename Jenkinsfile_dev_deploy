@@ -80,8 +80,8 @@ pipeline {
                     def success = false
                     def retries = 0
                     while (!success) {
-                        try {
-                            if (retries < 10) {                           
+                        if (retries < 10) {     
+                            try {                      
                                 container(name: 'esthesis-dev-deployer') {
                                     withCredentials([usernamePassword(credentialsId: 'harbor-creds',
                                     usernameVariable: 'Username',
@@ -96,13 +96,14 @@ pipeline {
                                     }
                                 }
                                 success = true // exit loop on success
-                            } else {
-                                success = true // exit loop on 10 retries
-                                error "Publish script failed after 10 retries"
+                            } catch (Exception e) {
+                                echo "Publish script failed. Retrying..."
+                                sleep 10 // optional sleep before retrying
+                                retries++
                             }
-                        } catch (Exception e) {
-                            echo "Publish script failed. Retrying..."
-                            sleep 10 // optional sleep before retrying
+                        } else {
+                            success = true // exit loop on 10 retries
+                            error "Publish script failed after 10 retries"
                         }
                     }
                 }
