@@ -74,53 +74,86 @@ pipeline {
                 }
             }
         }
-        stage ("Run esthesis-core-backend publish script"){
-            steps{
-                container (name: 'esthesis-dev-deployer') {
-                    withCredentials([usernamePassword(credentialsId: 'harbor-creds',
-                    usernameVariable: 'Username',
-                    passwordVariable: 'Password')]){
-                        sh '''
-                            cd esthesis-core-backend
-                            export ESTHESIS_REGISTRY_TYPE=auth
-                            export ESTHESIS_REGISTRY_USERNAME=$Username
-                            export ESTHESIS_REGISTRY_PASSWORD=$Password
-                            ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
-                        '''
+        stage ("Run esthesis-core-backend publish script") {
+            steps {
+                script {
+                    def success = false
+                    while (!success) {
+                        try {
+                            container(name: 'esthesis-dev-deployer') {
+                                withCredentials([usernamePassword(credentialsId: 'harbor-creds',
+                                usernameVariable: 'Username',
+                                passwordVariable: 'Password')]){
+                                    sh '''
+                                        cd esthesis-core-backend
+                                        export ESTHESIS_REGISTRY_TYPE=auth
+                                        export ESTHESIS_REGISTRY_USERNAME=$Username
+                                        export ESTHESIS_REGISTRY_PASSWORD=$Password
+                                        ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
+                                    '''
+                                }
+                            }
+                            success = true // exit loop on success
+                        } catch (Exception e) {
+                            echo "Publish script failed. Retrying..."
+                            sleep 10 // optional sleep before retrying
+                        }
                     }
                 }
             }
         }
         stage ("Run esthesis-core-ui publish script"){
             steps{
-                container (name: 'esthesis-dev-deployer') {
-                    withCredentials([usernamePassword(credentialsId: 'harbor-creds',
-                    usernameVariable: 'Username',
-                    passwordVariable: 'Password')]){
-                        sh '''
-                            cd esthesis-core-ui
-                            export ESTHESIS_REGISTRY_TYPE=auth
-                            export ESTHESIS_REGISTRY_USERNAME=$Username
-                            export ESTHESIS_REGISTRY_PASSWORD=$Password
-                            ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
-                        '''
+                script {
+                    def success = false
+                    while (!success) {
+                        try {
+                            container(name: 'esthesis-dev-deployer') {
+                                withCredentials([usernamePassword(credentialsId: 'harbor-creds',
+                                usernameVariable: 'Username',
+                                passwordVariable: 'Password')]){
+                                    sh '''
+                                        cd esthesis-core-ui
+                                        export ESTHESIS_REGISTRY_TYPE=auth
+                                        export ESTHESIS_REGISTRY_USERNAME=$Username
+                                        export ESTHESIS_REGISTRY_PASSWORD=$Password
+                                        ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
+                                    '''
+                                }
+                            }
+                            success = true // exit loop on success
+                        } catch (Exception e) {
+                            echo "Publish script failed. Retrying..."
+                            sleep 10 // optional sleep before retrying
+                        }
                     }
                 }
             }
         }
         stage ("Run esthesis-core-device publish script"){
             steps{
-                container (name: 'esthesis-dev-deployer') {
-                    withCredentials([usernamePassword(credentialsId: 'harbor-creds',
-                    usernameVariable: 'Username',
-                    passwordVariable: 'Password')]){
-                        sh '''
-                            cd esthesis-core-device
-                            export ESTHESIS_REGISTRY_TYPE=auth
-                            export ESTHESIS_REGISTRY_USERNAME=$Username
-                            export ESTHESIS_REGISTRY_PASSWORD=$Password                        
-                            ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
-                        '''
+                script {
+                    def success = false
+                    while (!success) {
+                        try {
+                            container(name: 'esthesis-dev-deployer') {
+                                withCredentials([usernamePassword(credentialsId: 'harbor-creds',
+                                usernameVariable: 'Username',
+                                passwordVariable: 'Password')]){
+                                    sh '''
+                                        cd esthesis-core-device
+                                        export ESTHESIS_REGISTRY_TYPE=auth
+                                        export ESTHESIS_REGISTRY_USERNAME=$Username
+                                        export ESTHESIS_REGISTRY_PASSWORD=$Password                        
+                                        ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
+                                    '''
+                                }
+                            }
+                            success = true // exit loop on success
+                        } catch (Exception e) {
+                            echo "Publish script failed. Retrying..."
+                            sleep 10 // optional sleep before retrying
+                        }
                     }
                 }
             }
@@ -134,12 +167,10 @@ pipeline {
                         sh '''
                             argocd login argocd.devops-d2.eurodyn.com:443 --username $Username --password $Password --grpc-web
                             argocd app terminate-op esthesis-core || true
-                            argocd app delete esthesis-core -y
+                            argocd app delete esthesis-core -y || true
                             argocd app terminate-op esthesis-core-deps || true
-                            argocd app delete esthesis-core-deps -y
-                            sleep 60
-                            argocd app sync default-esthesis-demo-infra
-                        '''
+                            argocd app delete esthesis-core-deps -y || true
+                            sleep 60                        '''
                     }
                 }
             }
