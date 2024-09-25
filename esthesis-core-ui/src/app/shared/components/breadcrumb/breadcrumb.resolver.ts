@@ -19,6 +19,7 @@ import {SecurityGroupsService} from "../../../security/security-groups.service";
 import {SecurityRolesService} from "../../../security/security-roles.service";
 import {SecurityPoliciesService} from "../../../security/security-policies.service";
 import {AuditService} from "../../../audit/audit.service";
+import {CommandsService} from "../../../commands/commands.service";
 
 export const deviceNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   return "|" + (await firstValueFrom(inject(DevicesService).findById(route.paramMap.get("id")))).hardwareId;
@@ -145,4 +146,8 @@ export const securityPolicyNameResolver: ResolveFn<string> = async (route: Activ
 export const auditNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   const id = route.paramMap.get("id");
   return "|" + (await firstValueFrom(inject(AuditService).findById(route.paramMap.get("id")))).message;
+}
+
+export const commandNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
+  return "|" + (await firstValueFrom(inject(CommandsService).findById(route.paramMap.get("id")))).description;
 }
