@@ -1,13 +1,13 @@
 package esthesis.service.dataflow.impl.service;
 
-import static esthesis.common.AppConstants.Security.Category.DATAFLOW;
-import static esthesis.common.AppConstants.Security.Operation.CREATE;
-import static esthesis.common.AppConstants.Security.Operation.DELETE;
-import static esthesis.common.AppConstants.Security.Operation.READ;
-import static esthesis.common.AppConstants.Security.Operation.WRITE;
+import static esthesis.core.common.AppConstants.Security.Category.DATAFLOW;
+import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
+import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
 import com.github.slugify.Slugify;
-import esthesis.common.data.DataUtils;
+import esthesis.core.common.data.DataUtils;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;

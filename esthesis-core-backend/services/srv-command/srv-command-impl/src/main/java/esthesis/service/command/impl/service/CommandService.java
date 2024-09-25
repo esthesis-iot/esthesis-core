@@ -1,15 +1,15 @@
 package esthesis.service.command.impl.service;
 
-import static esthesis.common.AppConstants.ROLE_SYSTEM;
-import static esthesis.common.AppConstants.Security.Category.COMMAND;
-import static esthesis.common.AppConstants.Security.Operation.CREATE;
-import static esthesis.common.AppConstants.Security.Operation.DELETE;
-import static esthesis.common.AppConstants.Security.Operation.READ;
+import static esthesis.core.common.AppConstants.ROLE_SYSTEM;
+import static esthesis.core.common.AppConstants.Security.Category.COMMAND;
+import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
 
 import esthesis.avro.EsthesisCommandRequestMessage;
-import esthesis.common.AppConstants.NamedSetting;
+import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.command.entity.CommandReplyEntity;
-import esthesis.common.exception.QDoesNotExistException;
+import esthesis.core.common.exception.QDoesNotExistException;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.common.paging.Page;

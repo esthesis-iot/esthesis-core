@@ -1,7 +1,7 @@
 package esthesis.service.crypto.dto;
 
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Keystore.Item.KeyType;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.Keystore.Item.KeyType;
 import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.List;

@@ -1,7 +1,7 @@
 package esthesis.dataflows.commandreplyupdater.routes;
 
 import esthesis.avro.util.camel.EsthesisCommandReplyDataFormat;
-import esthesis.common.banner.BannerUtil;
+import esthesis.core.common.banner.BannerUtil;
 import esthesis.dataflows.commandreplyupdater.config.AppConfig;
 import esthesis.dataflows.commandreplyupdater.service.CommandReplyUpdaterService;
 import jakarta.enterprise.context.ApplicationScoped;

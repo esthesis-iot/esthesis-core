@@ -1,6 +1,6 @@
 package esthesis.service.campaign.dto;
 
-import esthesis.common.AppConstants;
+import esthesis.core.common.AppConstants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

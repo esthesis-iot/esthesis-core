@@ -3,14 +3,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <artifactId>dfl-orion-gateway</artifactId>
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>dataflows</artifactId>
     <groupId>esthesis</groupId>
+    <artifactId>esthesis-core-dfl</artifactId>
     <version>3.0.52-SNAPSHOT</version>
   </parent>
+
+  <artifactId>esthesis-core-dfl-orion-gateway</artifactId>
 
   <dependencies>
     <!-- QUARKUS -->
@@ -52,22 +53,22 @@
     <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>dfl-common</artifactId>
+      <artifactId>esthesis-core-dfl-common</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-device-client</artifactId>
+      <artifactId>esthesis-core-services-device-client</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>utl-kafka-notifications-common</artifactId>
+      <artifactId>esthesis-core-util-kafka-notifications-common</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
 		<dependency>
 			<groupId>esthesis</groupId>
-			<artifactId>utl-redis</artifactId>
+			<artifactId>esthesis-core-util-redis</artifactId>
 			<version>3.0.52-SNAPSHOT</version>
 		</dependency>
   </dependencies>

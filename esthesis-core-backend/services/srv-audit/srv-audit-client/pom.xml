@@ -7,16 +7,16 @@
 
   <parent>
     <groupId>esthesis</groupId>
-    <artifactId>srv-audit</artifactId>
+    <artifactId>esthesis-core-services-audit</artifactId>
     <version>3.0.52-SNAPSHOT</version>
   </parent>
 
-  <artifactId>srv-audit-client</artifactId>
+  <artifactId>esthesis-core-services-audit-client</artifactId>
 
   <dependencies>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-common</artifactId>
+      <artifactId>esthesis-core-services-common</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
 		<dependency>

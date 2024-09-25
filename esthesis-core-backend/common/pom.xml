@@ -6,12 +6,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>esthesis-core-backend</artifactId>
 		<groupId>esthesis</groupId>
+		<artifactId>esthesis-core</artifactId>
 		<version>3.0.52-SNAPSHOT</version>
 	</parent>
 
-  <artifactId>common</artifactId>
+  <artifactId>esthesis-core-common</artifactId>
 
   <dependencies>
     <!-- QUARKUS -->

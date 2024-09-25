@@ -1,6 +1,6 @@
 package esthesis.service.agent.dto;
 
-import esthesis.common.AppConstants.Provisioning;
+import esthesis.core.common.AppConstants.Provisioning;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;

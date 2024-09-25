@@ -1,12 +1,12 @@
 package esthesis.services.settings.impl.service;
 
-import static esthesis.common.AppConstants.Security.Category.SETTINGS;
-import static esthesis.common.AppConstants.Security.Operation.CREATE;
-import static esthesis.common.AppConstants.Security.Operation.READ;
-import static esthesis.common.AppConstants.Security.Operation.WRITE;
+import static esthesis.core.common.AppConstants.Security.Category.SETTINGS;
+import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
+import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.NamedSetting;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.common.BaseService;
 import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.entity.SettingEntity;

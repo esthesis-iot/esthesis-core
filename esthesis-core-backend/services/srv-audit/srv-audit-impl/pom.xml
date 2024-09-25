@@ -7,11 +7,11 @@
 
 	<parent>
 		<groupId>esthesis</groupId>
-		<artifactId>srv-audit</artifactId>
+		<artifactId>esthesis-core-services-audit</artifactId>
 		<version>3.0.52-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>srv-audit-impl</artifactId>
+	<artifactId>esthesis-core-services-audit-impl</artifactId>
 
 	<dependencies>
 		<!-- QUARKUS -->
@@ -23,12 +23,12 @@
 		<!-- ESTHESIS -->
 		<dependency>
 			<groupId>esthesis</groupId>
-			<artifactId>srv-audit-client</artifactId>
+			<artifactId>esthesis-core-services-audit-client</artifactId>
 			<version>3.0.52-SNAPSHOT</version>
 		</dependency>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-security-client</artifactId>
+      <artifactId>esthesis-core-services-security-client</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
   </dependencies>

@@ -7,10 +7,11 @@
 
   <parent>
     <groupId>esthesis</groupId>
-    <artifactId>srv-crypto</artifactId>
+    <artifactId>esthesis-core-services-crypto</artifactId>
     <version>3.0.52-SNAPSHOT</version>
   </parent>
-  <artifactId>srv-crypto-impl</artifactId>
+
+  <artifactId>esthesis-core-services-crypto-impl</artifactId>
 
   <dependencies>
 		<!-- QUARKUS -->
@@ -22,32 +23,32 @@
     <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-crypto-client</artifactId>
+      <artifactId>esthesis-core-services-crypto-client</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-settings-client</artifactId>
+      <artifactId>esthesis-core-services-settings-client</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-audit-client</artifactId>
+      <artifactId>esthesis-core-services-audit-client</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-device-client</artifactId>
+      <artifactId>esthesis-core-services-device-client</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>utl-kafka-notifications-outgoing</artifactId>
+      <artifactId>esthesis-core-util-kafka-notifications-outgoing</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
 		<dependency>
 			<groupId>esthesis</groupId>
-			<artifactId>srv-security-client</artifactId>
+			<artifactId>esthesis-core-services-security-client</artifactId>
 			<version>3.0.52-SNAPSHOT</version>
 		</dependency>
 
@@ -55,7 +56,6 @@
     <dependency>
       <groupId>com.github.slugify</groupId>
       <artifactId>slugify</artifactId>
-      <version>${slugify.version}</version>
     </dependency>
   </dependencies>
 </project>

@@ -1,7 +1,7 @@
 package esthesis.service.audit.entity;
 
-import esthesis.common.AppConstants;
-import esthesis.common.entity.BaseEntity;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.NotNull;

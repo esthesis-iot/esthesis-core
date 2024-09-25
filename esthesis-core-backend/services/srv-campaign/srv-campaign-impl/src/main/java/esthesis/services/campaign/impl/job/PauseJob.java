@@ -1,8 +1,8 @@
 package esthesis.services.campaign.impl.job;
 
-import esthesis.common.AppConstants.Campaign.Condition.Op;
-import esthesis.common.AppConstants.Campaign.Condition.Type;
-import esthesis.common.exception.QMismatchException;
+import esthesis.core.common.AppConstants.Campaign.Condition.Op;
+import esthesis.core.common.AppConstants.Campaign.Condition.Type;
+import esthesis.core.common.exception.QMismatchException;
 import esthesis.service.campaign.dto.CampaignConditionDTO;
 import esthesis.service.campaign.entity.CampaignEntity;
 import esthesis.services.campaign.impl.dto.GroupDTO;

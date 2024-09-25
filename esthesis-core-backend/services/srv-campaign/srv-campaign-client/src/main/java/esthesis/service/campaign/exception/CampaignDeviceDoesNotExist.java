@@ -1,6 +1,6 @@
 package esthesis.service.campaign.exception;
 
-import esthesis.common.exception.QDoesNotExistException;
+import esthesis.core.common.exception.QDoesNotExistException;
 
 public class CampaignDeviceDoesNotExist extends QDoesNotExistException {
 

@@ -1,17 +1,17 @@
 package esthesis.service.crypto.impl.service;
 
-import static esthesis.common.AppConstants.Keystore.Item.KeyType.CERT;
-import static esthesis.common.AppConstants.Keystore.Item.KeyType.PRIVATE;
-import static esthesis.common.AppConstants.ROLE_SYSTEM;
-import static esthesis.common.AppConstants.Security.Category.CRYPTO;
-import static esthesis.common.AppConstants.Security.Operation.CREATE;
-import static esthesis.common.AppConstants.Security.Operation.DELETE;
-import static esthesis.common.AppConstants.Security.Operation.READ;
-import static esthesis.common.AppConstants.Security.Operation.WRITE;
+import static esthesis.core.common.AppConstants.Keystore.Item.KeyType.CERT;
+import static esthesis.core.common.AppConstants.Keystore.Item.KeyType.PRIVATE;
+import static esthesis.core.common.AppConstants.ROLE_SYSTEM;
+import static esthesis.core.common.AppConstants.Security.Category.CRYPTO;
+import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
+import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
-import esthesis.common.AppConstants.NamedSetting;
-import esthesis.common.crypto.CryptoService;
-import esthesis.common.exception.QSecurityException;
+import esthesis.core.common.AppConstants.NamedSetting;
+import esthesis.core.common.crypto.CryptoService;
+import esthesis.core.common.exception.QSecurityException;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;

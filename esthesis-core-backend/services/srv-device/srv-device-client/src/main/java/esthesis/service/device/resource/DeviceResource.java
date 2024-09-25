@@ -1,7 +1,7 @@
 package esthesis.service.device.resource;
 
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Device.DataImportType;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.Device.DataImportType;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.DeviceDataImportDTO;

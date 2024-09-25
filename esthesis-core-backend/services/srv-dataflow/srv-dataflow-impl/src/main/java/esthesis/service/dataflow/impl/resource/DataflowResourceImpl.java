@@ -1,9 +1,9 @@
 package esthesis.service.dataflow.impl.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Security.Category;
-import esthesis.common.AppConstants.Security.Operation;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.Security.Category;
+import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.JSONReplyFilter;

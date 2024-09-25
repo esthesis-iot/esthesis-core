@@ -1,8 +1,8 @@
 package esthesis.service.provisioning.impl.resource;
 
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Security.Category;
-import esthesis.common.AppConstants.Security.Operation;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.Security.Category;
+import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.Page;

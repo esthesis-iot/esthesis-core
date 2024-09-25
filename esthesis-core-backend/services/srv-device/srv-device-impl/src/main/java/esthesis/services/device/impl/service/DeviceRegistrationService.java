@@ -1,21 +1,21 @@
 package esthesis.services.device.impl.service;
 
-import static esthesis.common.AppConstants.HARDWARE_ID_REGEX;
-import static esthesis.common.AppConstants.Security.Category.DEVICE;
-import static esthesis.common.AppConstants.Security.Operation.CREATE;
-import static esthesis.common.AppConstants.Security.Operation.WRITE;
+import static esthesis.core.common.AppConstants.HARDWARE_ID_REGEX;
+import static esthesis.core.common.AppConstants.Security.Category.DEVICE;
+import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Device.Status;
-import esthesis.common.AppConstants.DeviceRegistrationMode;
-import esthesis.common.AppConstants.NamedSetting;
-import esthesis.common.data.DataUtils;
-import esthesis.common.data.DataUtils.ValueType;
-import esthesis.common.exception.QAlreadyExistsException;
-import esthesis.common.exception.QDisabledException;
-import esthesis.common.exception.QDoesNotExistException;
-import esthesis.common.exception.QMismatchException;
-import esthesis.common.exception.QSecurityException;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.Device.Status;
+import esthesis.core.common.AppConstants.DeviceRegistrationMode;
+import esthesis.core.common.AppConstants.NamedSetting;
+import esthesis.core.common.data.DataUtils;
+import esthesis.core.common.data.DataUtils.ValueType;
+import esthesis.core.common.exception.QAlreadyExistsException;
+import esthesis.core.common.exception.QDisabledException;
+import esthesis.core.common.exception.QDoesNotExistException;
+import esthesis.core.common.exception.QMismatchException;
+import esthesis.core.common.exception.QSecurityException;
 import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.service.crypto.resource.KeyResource;
 import esthesis.service.device.dto.DeviceKeyDTO;

@@ -1,6 +1,6 @@
 package esthesis.service.kubernetes.impl.resource;
 
-import esthesis.common.AppConstants;
+import esthesis.core.common.AppConstants;
 import esthesis.service.kubernetes.dto.DeploymentInfoDTO;
 import esthesis.service.kubernetes.impl.service.KubernetesService;
 import esthesis.service.kubernetes.resource.KubernetesResource;

@@ -1,7 +1,7 @@
 package esthesis.service.campaign.entity;
 
-import esthesis.common.AppConstants;
-import esthesis.common.entity.BaseEntity;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.entity.BaseEntity;
 import esthesis.service.campaign.dto.CampaignConditionDTO;
 import esthesis.service.campaign.dto.CampaignMemberDTO;
 import io.quarkus.mongodb.panache.common.MongoEntity;

@@ -1,7 +1,7 @@
 package esthesis.service.agent.impl.resource;
 
-import esthesis.common.exception.QLimitException;
-import esthesis.common.exception.QSecurityException;
+import esthesis.core.common.exception.QLimitException;
+import esthesis.core.common.exception.QSecurityException;
 import esthesis.service.agent.dto.AgentRegistrationRequest;
 import esthesis.service.agent.dto.AgentRegistrationResponse;
 import esthesis.service.agent.impl.service.AgentService;

@@ -2,7 +2,7 @@ package esthesis.services.settings.impl.notifications;
 
 import static esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.SMALLRYE_KAFKA_CHANNEL_IN;
 
-import esthesis.common.AppConstants.NamedSetting;
+import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.services.settings.impl.service.SettingsService;
 import esthesis.util.kafka.notifications.common.AppMessage;

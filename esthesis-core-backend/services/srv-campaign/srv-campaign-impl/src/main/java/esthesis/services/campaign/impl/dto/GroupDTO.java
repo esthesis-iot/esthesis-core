@@ -1,6 +1,6 @@
 package esthesis.services.campaign.impl.dto;
 
-import esthesis.common.AppConstants.Campaign.Condition.Stage;
+import esthesis.core.common.AppConstants.Campaign.Condition.Stage;
 import esthesis.services.campaign.impl.job.WorkflowParameters;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import lombok.Data;

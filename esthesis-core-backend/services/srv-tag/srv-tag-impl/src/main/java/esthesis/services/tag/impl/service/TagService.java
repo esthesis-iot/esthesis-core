@@ -1,14 +1,14 @@
 package esthesis.services.tag.impl.service;
 
-import static esthesis.common.AppConstants.ROLE_SYSTEM;
-import static esthesis.common.AppConstants.Security.Category.TAGS;
-import static esthesis.common.AppConstants.Security.Operation.CREATE;
-import static esthesis.common.AppConstants.Security.Operation.DELETE;
-import static esthesis.common.AppConstants.Security.Operation.READ;
-import static esthesis.common.AppConstants.Security.Operation.WRITE;
+import static esthesis.core.common.AppConstants.ROLE_SYSTEM;
+import static esthesis.core.common.AppConstants.Security.Category.TAGS;
+import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
+import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
-import esthesis.common.AppConstants.Security.Operation;
-import esthesis.common.exception.QSecurityException;
+import esthesis.core.common.AppConstants.Security.Operation;
+import esthesis.core.common.exception.QSecurityException;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;

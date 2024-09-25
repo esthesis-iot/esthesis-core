@@ -1,9 +1,9 @@
 package esthesis.services.settings.impl.resource;
 
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.NamedSetting;
-import esthesis.common.AppConstants.Security.Category;
-import esthesis.common.AppConstants.Security.Operation;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.NamedSetting;
+import esthesis.core.common.AppConstants.Security.Category;
+import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.service.settings.entity.DevicePageFieldEntity;
 import esthesis.service.settings.entity.SettingEntity;

@@ -1,9 +1,9 @@
 package esthesis.service.provisioning.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import esthesis.common.AppConstants.Provisioning.Type;
-import esthesis.common.entity.BaseEntity;
-import esthesis.common.jackson.MongoInstantDeserializer;
+import esthesis.core.common.AppConstants.Provisioning.Type;
+import esthesis.core.common.entity.BaseEntity;
+import esthesis.core.common.jackson.MongoInstantDeserializer;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.NotEmpty;

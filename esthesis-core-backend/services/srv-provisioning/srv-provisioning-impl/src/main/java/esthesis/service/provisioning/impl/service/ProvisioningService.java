@@ -1,16 +1,16 @@
 package esthesis.service.provisioning.impl.service;
 
-import static esthesis.common.AppConstants.GridFS.PROVISIONING_BUCKET_NAME;
-import static esthesis.common.AppConstants.GridFS.PROVISIONING_METADATA_NAME;
-import static esthesis.common.AppConstants.Security.Category.PROVISIONING;
-import static esthesis.common.AppConstants.Security.Operation.CREATE;
-import static esthesis.common.AppConstants.Security.Operation.DELETE;
-import static esthesis.common.AppConstants.Security.Operation.READ;
-import static esthesis.common.AppConstants.Security.Operation.WRITE;
+import static esthesis.core.common.AppConstants.GridFS.PROVISIONING_BUCKET_NAME;
+import static esthesis.core.common.AppConstants.GridFS.PROVISIONING_METADATA_NAME;
+import static esthesis.core.common.AppConstants.Security.Category.PROVISIONING;
+import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
+import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
-import esthesis.common.AppConstants.NamedSetting;
-import esthesis.common.AppConstants.Provisioning.Type;
-import esthesis.common.exception.QMismatchException;
+import esthesis.core.common.AppConstants.NamedSetting;
+import esthesis.core.common.AppConstants.Provisioning.Type;
+import esthesis.core.common.exception.QMismatchException;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.gridfs.GridFSDTO;
 import esthesis.service.common.gridfs.GridFSService;

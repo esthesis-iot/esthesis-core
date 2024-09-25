@@ -7,17 +7,17 @@
 
   <parent>
     <groupId>esthesis</groupId>
-    <artifactId>srv-public-access</artifactId>
+    <artifactId>esthesis-core-services-public-access</artifactId>
     <version>3.0.52-SNAPSHOT</version>
   </parent>
 
-  <artifactId>srv-public-access-client</artifactId>
+  <artifactId>esthesis-core-services-public-access-client</artifactId>
 
   <dependencies>
 		<!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-common</artifactId>
+      <artifactId>esthesis-core-services-common</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
   </dependencies>

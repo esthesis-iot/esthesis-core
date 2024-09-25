@@ -1,6 +1,6 @@
 package esthesis.service.device.dto;
 
-import esthesis.common.AppConstants;
+import esthesis.core.common.AppConstants;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.io.Serializable;

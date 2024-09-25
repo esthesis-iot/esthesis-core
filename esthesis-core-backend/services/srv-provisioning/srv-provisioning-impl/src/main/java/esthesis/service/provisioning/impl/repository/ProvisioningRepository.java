@@ -2,7 +2,7 @@ package esthesis.service.provisioning.impl.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esthesis.common.exception.QMismatchException;
+import esthesis.core.common.exception.QMismatchException;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import jakarta.enterprise.context.ApplicationScoped;

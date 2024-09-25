@@ -1,6 +1,6 @@
 package esthesis.services.campaign.impl.job;
 
-import esthesis.common.AppConstants.Campaign.Condition.Type;
+import esthesis.core.common.AppConstants.Campaign.Condition.Type;
 import esthesis.service.campaign.dto.CampaignConditionDTO;
 import esthesis.service.campaign.entity.CampaignDeviceMonitorEntity;
 import esthesis.service.campaign.entity.CampaignEntity;

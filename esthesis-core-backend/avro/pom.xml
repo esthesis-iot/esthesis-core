@@ -5,24 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>esthesis-core-backend</artifactId>
+		<artifactId>esthesis-core</artifactId>
 		<groupId>esthesis</groupId>
 		<version>3.0.52-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>avro</artifactId>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<artifactId>quarkus-camel-bom</artifactId>
-				<groupId>io.quarkus.platform</groupId>
-				<scope>import</scope>
-				<type>pom</type>
-				<version>${quarkus.platform.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+	<artifactId>esthesis-core-avro</artifactId>
 
 	<dependencies>
 		<!-- QUARKUS -->
@@ -34,7 +22,7 @@
 		<!-- ESTHESIS -->
 		<dependency>
 			<groupId>esthesis</groupId>
-			<artifactId>common</artifactId>
+			<artifactId>esthesis-core-common</artifactId>
 			<version>3.0.52-SNAPSHOT</version>
 		</dependency>
 

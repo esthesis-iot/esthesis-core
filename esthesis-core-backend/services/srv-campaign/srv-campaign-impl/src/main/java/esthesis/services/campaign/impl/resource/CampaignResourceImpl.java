@@ -1,8 +1,8 @@
 package esthesis.services.campaign.impl.resource;
 
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Security.Category;
-import esthesis.common.AppConstants.Security.Operation;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.Security.Category;
+import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.service.campaign.dto.CampaignStatsDTO;
 import esthesis.service.campaign.entity.CampaignEntity;

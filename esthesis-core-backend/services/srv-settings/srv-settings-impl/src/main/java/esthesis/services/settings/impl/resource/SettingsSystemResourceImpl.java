@@ -1,7 +1,7 @@
 package esthesis.services.settings.impl.resource;
 
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.NamedSetting;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsSystemResource;
 import esthesis.services.settings.impl.service.SettingsService;

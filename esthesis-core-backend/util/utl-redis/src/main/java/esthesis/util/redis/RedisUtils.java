@@ -1,7 +1,7 @@
 package esthesis.util.redis;
 
-import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
-import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
+import static esthesis.core.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
+import static esthesis.core.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
 
 import io.quarkus.redis.datasource.RedisDataSource;
 import io.quarkus.redis.datasource.hash.HashCommands;

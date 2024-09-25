@@ -1,6 +1,6 @@
 package esthesis.service.command.impl.resource;
 
-import esthesis.common.AppConstants;
+import esthesis.core.common.AppConstants;
 import esthesis.service.command.entity.CommandReplyEntity;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
 import esthesis.service.command.entity.CommandRequestEntity;

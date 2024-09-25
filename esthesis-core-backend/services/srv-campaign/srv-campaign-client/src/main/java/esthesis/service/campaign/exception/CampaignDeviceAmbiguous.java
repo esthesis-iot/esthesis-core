@@ -1,6 +1,6 @@
 package esthesis.service.campaign.exception;
 
-import esthesis.common.exception.QMismatchException;
+import esthesis.core.common.exception.QMismatchException;
 
 public class CampaignDeviceAmbiguous extends QMismatchException {
 

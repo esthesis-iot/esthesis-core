@@ -1,6 +1,6 @@
 package esthesis.services.publicaccess.impl;
 
-import esthesis.common.banner.BannerUtil;
+import esthesis.core.common.banner.BannerUtil;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;

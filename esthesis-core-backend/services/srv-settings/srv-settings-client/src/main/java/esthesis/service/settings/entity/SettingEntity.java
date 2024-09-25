@@ -1,6 +1,6 @@
 package esthesis.service.settings.entity;
 
-import esthesis.common.entity.BaseEntity;
+import esthesis.core.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.AllArgsConstructor;

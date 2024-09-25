@@ -1,7 +1,7 @@
 package esthesis.dataflows.pingupdater.routes;
 
 import esthesis.avro.util.camel.EsthesisDataMessageDataFormat;
-import esthesis.common.banner.BannerUtil;
+import esthesis.core.common.banner.BannerUtil;
 import esthesis.dataflows.pingupdater.config.AppConfig;
 import esthesis.dataflows.pingupdater.service.PingService;
 import jakarta.enterprise.context.ApplicationScoped;

@@ -1,6 +1,6 @@
 package esthesis.service.crypto.impl.resource;
 
-import esthesis.common.AppConstants;
+import esthesis.core.common.AppConstants;
 import esthesis.service.crypto.impl.service.CAService;
 import esthesis.service.crypto.resource.CASystemResource;
 import io.quarkus.security.Authenticated;

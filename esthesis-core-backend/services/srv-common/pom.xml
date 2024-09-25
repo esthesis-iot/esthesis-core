@@ -4,12 +4,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
 		<groupId>esthesis</groupId>
-		<artifactId>services</artifactId>
+		<artifactId>esthesis-core-services</artifactId>
 		<version>3.0.52-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>srv-common</artifactId>
+	<artifactId>esthesis-core-services-common</artifactId>
 
 	<dependencies>
 		<!-- QUARKUS -->
@@ -26,7 +26,6 @@
 		<dependency>
 			<artifactId>jackson-antpathfilter</artifactId>
 			<groupId>ch.mfrey.jackson</groupId>
-			<version>${jackson-antpathfilter.version}</version>
 		</dependency>
 	</dependencies>
 

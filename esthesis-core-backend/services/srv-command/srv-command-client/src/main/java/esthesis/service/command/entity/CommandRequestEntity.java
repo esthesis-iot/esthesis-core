@@ -2,7 +2,7 @@ package esthesis.service.command.entity;
 
 import esthesis.avro.CommandType;
 import esthesis.avro.ExecutionType;
-import esthesis.common.entity.BaseEntity;
+import esthesis.core.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.NotEmpty;

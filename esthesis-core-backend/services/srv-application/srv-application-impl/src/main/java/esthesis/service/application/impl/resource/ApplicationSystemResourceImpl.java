@@ -1,6 +1,6 @@
 package esthesis.service.application.impl.resource;
 
-import esthesis.common.AppConstants;
+import esthesis.core.common.AppConstants;
 import esthesis.service.application.impl.service.ApplicationService;
 import esthesis.service.application.resource.ApplicationSystemResource;
 import jakarta.annotation.security.RolesAllowed;

@@ -1,8 +1,8 @@
 package esthesis.services.device.impl.service;
 
-import static esthesis.common.AppConstants.Security.Category.DEVICE;
-import static esthesis.common.AppConstants.Security.Operation.READ;
-import static esthesis.common.AppConstants.Security.Operation.WRITE;
+import static esthesis.core.common.AppConstants.Security.Category.DEVICE;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
+import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
 import com.google.common.collect.Lists;
 import esthesis.service.device.entity.DeviceEntity;

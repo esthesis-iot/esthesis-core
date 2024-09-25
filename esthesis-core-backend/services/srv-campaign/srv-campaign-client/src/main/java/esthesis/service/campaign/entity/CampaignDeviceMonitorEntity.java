@@ -1,6 +1,6 @@
 package esthesis.service.campaign.entity;
 
-import esthesis.common.entity.BaseEntity;
+import esthesis.core.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

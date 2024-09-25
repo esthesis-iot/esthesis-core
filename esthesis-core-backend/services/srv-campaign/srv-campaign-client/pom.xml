@@ -7,11 +7,11 @@
 
   <parent>
     <groupId>esthesis</groupId>
-    <artifactId>srv-campaign</artifactId>
+    <artifactId>esthesis-core-services-campaign</artifactId>
     <version>3.0.52-SNAPSHOT</version>
   </parent>
 
-  <artifactId>srv-campaign-client</artifactId>
+  <artifactId>esthesis-core-services-campaign-client</artifactId>
 
   <dependencies>
 		<!-- QUARKUS -->
@@ -23,7 +23,7 @@
 		<!-- ESTHESIS -->
 		<dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-common</artifactId>
+      <artifactId>esthesis-core-services-common</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
   </dependencies>

@@ -1,6 +1,6 @@
 package esthesis.service.crypto.resource;
 
-import esthesis.common.AppConstants;
+import esthesis.core.common.AppConstants;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.entity.CertificateEntity;

@@ -3,25 +3,31 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <artifactId>dfl-ping-updater</artifactId>
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>dataflows</artifactId>
     <groupId>esthesis</groupId>
+    <artifactId>esthesis-core-dfl</artifactId>
     <version>3.0.52-SNAPSHOT</version>
   </parent>
 
+  <artifactId>esthesis-core-dfl-ping-updater</artifactId>
+
   <dependencies>
-    <dependency>
-      <groupId>esthesis</groupId>
-      <artifactId>dfl-common</artifactId>
-      <version>3.0.52-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel.quarkus</groupId>
-      <artifactId>camel-quarkus-mongodb</artifactId>
-    </dependency>
+		<!-- QUARKUS -->
+		<dependency>
+			<groupId>org.apache.camel.quarkus</groupId>
+			<artifactId>camel-quarkus-mongodb</artifactId>
+		</dependency>
+
+		<!-- ESTHESIS -->
+		<dependency>
+			<groupId>esthesis</groupId>
+			<artifactId>esthesis-core-dfl-common</artifactId>
+			<version>3.0.52-SNAPSHOT</version>
+		</dependency>
+
+		<!-- THIRD PARTY -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>

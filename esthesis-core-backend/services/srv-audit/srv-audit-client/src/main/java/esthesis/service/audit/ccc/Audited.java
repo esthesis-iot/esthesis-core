@@ -1,7 +1,7 @@
 package esthesis.service.audit.ccc;
 
-import esthesis.common.AppConstants.Security.Category;
-import esthesis.common.AppConstants.Security.Operation;
+import esthesis.core.common.AppConstants.Security.Category;
+import esthesis.core.common.AppConstants.Security.Operation;
 import jakarta.enterprise.util.Nonbinding;
 import jakarta.interceptor.InterceptorBinding;
 import java.lang.annotation.ElementType;

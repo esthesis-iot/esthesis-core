@@ -3,7 +3,7 @@ package esthesis.services.audit.impl;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 
-import esthesis.common.entity.BaseEntity;
+import esthesis.core.common.entity.BaseEntity;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.services.audit.impl.repository.AuditRepository;
 import jakarta.enterprise.context.ApplicationScoped;

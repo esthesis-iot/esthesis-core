@@ -1,7 +1,7 @@
 package esthesis.services.settings.impl.service;
 
-import static esthesis.common.AppConstants.Security.Category.SETTINGS;
-import static esthesis.common.AppConstants.Security.Operation.WRITE;
+import static esthesis.core.common.AppConstants.Security.Category.SETTINGS;
+import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
 import esthesis.service.common.BaseService;
 import esthesis.service.security.annotation.ErnPermission;

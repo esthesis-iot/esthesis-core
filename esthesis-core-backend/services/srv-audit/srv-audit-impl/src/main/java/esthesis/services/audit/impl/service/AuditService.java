@@ -1,12 +1,12 @@
 package esthesis.services.audit.impl.service;
 
-import static esthesis.common.AppConstants.ROLE_SYSTEM;
-import static esthesis.common.AppConstants.Security.Category.AUDIT;
-import static esthesis.common.AppConstants.Security.Operation.CREATE;
-import static esthesis.common.AppConstants.Security.Operation.DELETE;
-import static esthesis.common.AppConstants.Security.Operation.READ;
+import static esthesis.core.common.AppConstants.ROLE_SYSTEM;
+import static esthesis.core.common.AppConstants.Security.Category.AUDIT;
+import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
 
-import esthesis.common.exception.QAlreadyExistsException;
+import esthesis.core.common.exception.QAlreadyExistsException;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;

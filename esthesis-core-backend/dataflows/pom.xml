@@ -7,25 +7,13 @@
 
 	<parent>
 		<groupId>esthesis</groupId>
-		<artifactId>esthesis-core-backend</artifactId>
+		<artifactId>esthesis-core</artifactId>
 		<version>3.0.52-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>dataflows</artifactId>
+	<artifactId>esthesis-core-dfl</artifactId>
 	<version>3.0.52-SNAPSHOT</version>
 	<packaging>pom</packaging>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<artifactId>quarkus-camel-bom</artifactId>
-				<groupId>io.quarkus.platform</groupId>
-				<scope>import</scope>
-				<type>pom</type>
-				<version>${quarkus.platform.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<dependencies>
     <!-- QUARKUS -->

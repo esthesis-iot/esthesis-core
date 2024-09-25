@@ -1,6 +1,6 @@
 package esthesis.services.campaign.impl.job;
 
-import esthesis.common.AppConstants.Campaign.State;
+import esthesis.core.common.AppConstants.Campaign.State;
 import esthesis.service.campaign.entity.CampaignEntity;
 import esthesis.services.campaign.impl.service.CampaignService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;

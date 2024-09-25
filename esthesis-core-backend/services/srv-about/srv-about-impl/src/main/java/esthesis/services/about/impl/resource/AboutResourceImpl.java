@@ -1,8 +1,8 @@
 package esthesis.services.about.impl.resource;
 
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Security.Category;
-import esthesis.common.AppConstants.Security.Operation;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.Security.Category;
+import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.service.about.dto.AboutGeneralDTO;
 import esthesis.service.about.resource.AboutResource;
 import esthesis.service.audit.ccc.Audited;

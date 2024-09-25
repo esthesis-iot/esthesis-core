@@ -1,16 +1,16 @@
 package esthesis.services.device.impl.service;
 
-import static esthesis.common.AppConstants.Security.Category.DEVICE;
-import static esthesis.common.AppConstants.Security.Operation.CREATE;
-import static esthesis.common.AppConstants.Security.Operation.DELETE;
-import static esthesis.common.AppConstants.Security.Operation.READ;
-import static esthesis.common.AppConstants.Security.Operation.WRITE;
+import static esthesis.core.common.AppConstants.Security.Category.DEVICE;
+import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
+import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
 import esthesis.avro.EsthesisDataMessage;
 import esthesis.avro.MessageTypeEnum;
 import esthesis.avro.util.AvroUtils;
-import esthesis.common.AppConstants.NamedSetting;
-import esthesis.common.exception.QMismatchException;
+import esthesis.core.common.AppConstants.NamedSetting;
+import esthesis.core.common.exception.QMismatchException;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;

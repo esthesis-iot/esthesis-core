@@ -7,11 +7,11 @@
 
 	<parent>
 		<groupId>esthesis</groupId>
-		<artifactId>dataflows</artifactId>
+		<artifactId>esthesis-core-dfl</artifactId>
 		<version>3.0.52-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>dfl-common</artifactId>
+	<artifactId>esthesis-core-dfl-common</artifactId>
 
 	<dependencies>
 		<!-- QUARKUS -->
@@ -27,12 +27,12 @@
 		<!-- ESTHESIS -->
 		<dependency>
 			<groupId>esthesis</groupId>
-			<artifactId>common</artifactId>
+			<artifactId>esthesis-core-common</artifactId>
 			<version>3.0.52-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>esthesis</groupId>
-			<artifactId>avro</artifactId>
+			<artifactId>esthesis-core-avro</artifactId>
 			<version>3.0.52-SNAPSHOT</version>
 		</dependency>
 

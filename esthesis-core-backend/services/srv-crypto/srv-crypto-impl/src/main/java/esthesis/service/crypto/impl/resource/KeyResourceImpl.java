@@ -1,10 +1,10 @@
 package esthesis.service.crypto.impl.resource;
 
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.NamedSetting;
-import esthesis.common.crypto.CryptoService;
-import esthesis.common.crypto.dto.CertificateSignRequestDTO;
-import esthesis.common.crypto.dto.CreateKeyPairRequestDTO;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.NamedSetting;
+import esthesis.core.common.crypto.CryptoService;
+import esthesis.core.common.crypto.dto.CertificateSignRequestDTO;
+import esthesis.core.common.crypto.dto.CreateKeyPairRequestDTO;
 import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.impl.repository.CaEntityRepository;

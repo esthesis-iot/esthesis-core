@@ -1,6 +1,6 @@
 package esthesis.service.settings.resource;
 
-import esthesis.common.AppConstants.NamedSetting;
+import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.settings.entity.DevicePageFieldEntity;
 import esthesis.service.settings.entity.SettingEntity;
 import io.quarkus.oidc.token.propagation.AccessToken;

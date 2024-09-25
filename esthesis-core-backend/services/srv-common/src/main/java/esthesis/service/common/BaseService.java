@@ -1,6 +1,6 @@
 package esthesis.service.common;
 
-import esthesis.common.entity.BaseEntity;
+import esthesis.core.common.entity.BaseEntity;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;

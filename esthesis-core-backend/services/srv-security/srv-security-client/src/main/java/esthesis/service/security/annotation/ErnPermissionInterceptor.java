@@ -1,10 +1,10 @@
 package esthesis.service.security.annotation;
 
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Security.Category;
-import esthesis.common.AppConstants.Security.Operation;
-import esthesis.common.entity.BaseEntity;
-import esthesis.common.exception.QSecurityException;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.Security.Category;
+import esthesis.core.common.AppConstants.Security.Operation;
+import esthesis.core.common.entity.BaseEntity;
+import esthesis.core.common.exception.QSecurityException;
 import esthesis.service.security.resource.SecurityResource;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.Priority;

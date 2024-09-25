@@ -1,8 +1,8 @@
 package esthesis.service.kubernetes.impl.service;
 
-import static esthesis.common.AppConstants.Security.Category.KUBERNETES;
-import static esthesis.common.AppConstants.Security.Operation.CREATE;
-import static esthesis.common.AppConstants.Security.Operation.READ;
+import static esthesis.core.common.AppConstants.Security.Category.KUBERNETES;
+import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import esthesis.service.kubernetes.dto.DeploymentInfoDTO;

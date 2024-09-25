@@ -1,6 +1,6 @@
 package esthesis.services.infrastructure.impl.resource;
 
-import esthesis.common.AppConstants;
+import esthesis.core.common.AppConstants;
 import esthesis.service.infrastructure.entity.InfrastructureMqttEntity;
 import esthesis.service.infrastructure.resource.InfrastructureMqttSystemResource;
 import esthesis.services.infrastructure.impl.service.InfrastructureMqttService;

@@ -6,17 +6,17 @@
 
   <parent>
     <groupId>esthesis</groupId>
-    <artifactId>util</artifactId>
+    <artifactId>esthesis-core-util</artifactId>
     <version>3.0.52-SNAPSHOT</version>
   </parent>
 
-  <artifactId>utl-redis</artifactId>
+  <artifactId>esthesis-core-util-redis</artifactId>
 
   <dependencies>
     <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>common</artifactId>
+      <artifactId>esthesis-core-common</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
 

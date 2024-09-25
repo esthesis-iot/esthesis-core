@@ -6,16 +6,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>esthesis</groupId>
-		<artifactId>srv-agent</artifactId>
+		<artifactId>esthesis-core-services-agent</artifactId>
 		<version>3.0.52-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>srv-agent-client</artifactId>
+	<artifactId>esthesis-core-services-agent-client</artifactId>
 
 	<dependencies>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-device-client</artifactId>
+      <artifactId>esthesis-core-services-device-client</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
   </dependencies>

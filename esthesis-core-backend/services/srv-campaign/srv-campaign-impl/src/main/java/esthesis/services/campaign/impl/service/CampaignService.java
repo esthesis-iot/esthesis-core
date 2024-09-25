@@ -1,11 +1,11 @@
 package esthesis.services.campaign.impl.service;
 
-import static esthesis.common.AppConstants.ROLE_SYSTEM;
-import static esthesis.common.AppConstants.Security.Category.CAMPAIGN;
-import static esthesis.common.AppConstants.Security.Operation.CREATE;
-import static esthesis.common.AppConstants.Security.Operation.DELETE;
-import static esthesis.common.AppConstants.Security.Operation.READ;
-import static esthesis.common.AppConstants.Security.Operation.WRITE;
+import static esthesis.core.common.AppConstants.ROLE_SYSTEM;
+import static esthesis.core.common.AppConstants.Security.Category.CAMPAIGN;
+import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
+import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 import static esthesis.services.campaign.impl.dto.ValidationMessages.DATE_IN_PAST;
 import static esthesis.services.campaign.impl.dto.ValidationMessages.DATE_REQUIRED;
 import static esthesis.services.campaign.impl.dto.ValidationMessages.GENERIC;
@@ -14,10 +14,10 @@ import static esthesis.services.campaign.impl.dto.ValidationMessages.POSITIVE_IN
 import static esthesis.services.campaign.impl.dto.ValidationMessages.PROPERTY_NAME_REQUIRED;
 import static esthesis.services.campaign.impl.dto.ValidationMessages.STAGE_REQUIRED;
 
-import esthesis.common.AppConstants.Campaign.Condition;
-import esthesis.common.AppConstants.Campaign.Condition.Op;
-import esthesis.common.AppConstants.Campaign.Member.Type;
-import esthesis.common.AppConstants.Campaign.State;
+import esthesis.core.common.AppConstants.Campaign.Condition;
+import esthesis.core.common.AppConstants.Campaign.Condition.Op;
+import esthesis.core.common.AppConstants.Campaign.Member.Type;
+import esthesis.core.common.AppConstants.Campaign.State;
 import esthesis.service.campaign.dto.CampaignConditionDTO;
 import esthesis.service.campaign.dto.CampaignMemberDTO;
 import esthesis.service.campaign.dto.CampaignStatsDTO;

@@ -1,8 +1,8 @@
 package esthesis.service.application.impl.resource;
 
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Security.Category;
-import esthesis.common.AppConstants.Security.Operation;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.Security.Category;
+import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.service.application.entity.ApplicationEntity;
 import esthesis.service.application.impl.service.ApplicationService;
 import esthesis.service.application.resource.ApplicationResource;

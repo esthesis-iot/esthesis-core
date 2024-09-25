@@ -1,6 +1,6 @@
 package esthesis.service.provisioning.impl.resource;
 
-import esthesis.common.AppConstants;
+import esthesis.core.common.AppConstants;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.impl.service.ProvisioningService;
 import esthesis.service.provisioning.resource.ProvisioningSystemResource;

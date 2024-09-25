@@ -1,18 +1,18 @@
 package esthesis.service.crypto.impl.service;
 
-import static esthesis.common.AppConstants.ROLE_SYSTEM;
-import static esthesis.common.AppConstants.Security.Category.CRYPTO;
-import static esthesis.common.AppConstants.Security.Operation.CREATE;
-import static esthesis.common.AppConstants.Security.Operation.DELETE;
-import static esthesis.common.AppConstants.Security.Operation.READ;
+import static esthesis.core.common.AppConstants.ROLE_SYSTEM;
+import static esthesis.core.common.AppConstants.Security.Category.CRYPTO;
+import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
 
-import esthesis.common.AppConstants.NamedSetting;
-import esthesis.common.crypto.CryptoService;
-import esthesis.common.crypto.dto.CertificateSignRequestDTO;
-import esthesis.common.crypto.dto.CreateKeyPairRequestDTO;
-import esthesis.common.exception.QCouldNotSaveException;
-import esthesis.common.exception.QMismatchException;
-import esthesis.common.exception.QMutationNotPermittedException;
+import esthesis.core.common.AppConstants.NamedSetting;
+import esthesis.core.common.crypto.CryptoService;
+import esthesis.core.common.crypto.dto.CertificateSignRequestDTO;
+import esthesis.core.common.crypto.dto.CreateKeyPairRequestDTO;
+import esthesis.core.common.exception.QCouldNotSaveException;
+import esthesis.core.common.exception.QMismatchException;
+import esthesis.core.common.exception.QMutationNotPermittedException;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;

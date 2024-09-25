@@ -1,17 +1,17 @@
 package esthesis.service.agent.impl.service;
 
-import static esthesis.common.AppConstants.GridFS.PROVISIONING_BUCKET_NAME;
-import static esthesis.common.AppConstants.GridFS.PROVISIONING_METADATA_NAME;
-import static esthesis.common.AppConstants.HARDWARE_ID_REGEX;
+import static esthesis.core.common.AppConstants.GridFS.PROVISIONING_BUCKET_NAME;
+import static esthesis.core.common.AppConstants.GridFS.PROVISIONING_METADATA_NAME;
+import static esthesis.core.common.AppConstants.HARDWARE_ID_REGEX;
 
-import esthesis.common.AppConstants.NamedSetting;
-import esthesis.common.AppConstants.Provisioning.Redis;
-import esthesis.common.AppConstants.Provisioning.Type;
-import esthesis.common.crypto.dto.SignatureVerificationRequestDTO;
-import esthesis.common.exception.QDoesNotExistException;
-import esthesis.common.exception.QLimitException;
-import esthesis.common.exception.QMismatchException;
-import esthesis.common.exception.QSecurityException;
+import esthesis.core.common.AppConstants.NamedSetting;
+import esthesis.core.common.AppConstants.Provisioning.Redis;
+import esthesis.core.common.AppConstants.Provisioning.Type;
+import esthesis.core.common.crypto.dto.SignatureVerificationRequestDTO;
+import esthesis.core.common.exception.QDoesNotExistException;
+import esthesis.core.common.exception.QLimitException;
+import esthesis.core.common.exception.QMismatchException;
+import esthesis.core.common.exception.QSecurityException;
 import esthesis.service.agent.dto.AgentProvisioningInfoResponse;
 import esthesis.service.agent.dto.AgentRegistrationRequest;
 import esthesis.service.agent.dto.AgentRegistrationResponse;

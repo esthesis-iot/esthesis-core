@@ -1,8 +1,8 @@
 package esthesis.services.security.impl.service;
 
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Security.Operation;
-import esthesis.common.AppConstants.Security.Permission;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.Security.Operation;
+import esthesis.core.common.AppConstants.Security.Permission;
 import esthesis.service.security.entity.GroupEntity;
 import esthesis.service.security.entity.PolicyEntity;
 import esthesis.service.security.entity.RoleEntity;

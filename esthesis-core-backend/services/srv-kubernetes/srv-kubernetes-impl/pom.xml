@@ -7,11 +7,11 @@
 
   <parent>
     <groupId>esthesis</groupId>
-    <artifactId>srv-kubernetes</artifactId>
+    <artifactId>esthesis-core-services-kubernetes</artifactId>
     <version>3.0.52-SNAPSHOT</version>
   </parent>
 
-  <artifactId>srv-kubernetes-impl</artifactId>
+  <artifactId>esthesis-core-services-kubernetes-impl</artifactId>
 
   <dependencies>
     <!-- QUARKUS -->
@@ -27,12 +27,12 @@
     <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-kubernetes-client</artifactId>
+      <artifactId>esthesis-core-services-kubernetes-client</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
 		<dependency>
 			<groupId>esthesis</groupId>
-			<artifactId>srv-security-client</artifactId>
+			<artifactId>esthesis-core-services-security-client</artifactId>
 			<version>3.0.52-SNAPSHOT</version>
 		</dependency>
 

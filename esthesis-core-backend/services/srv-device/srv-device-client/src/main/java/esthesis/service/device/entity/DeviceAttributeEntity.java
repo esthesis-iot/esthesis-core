@@ -1,7 +1,7 @@
 package esthesis.service.device.entity;
 
-import esthesis.common.data.DataUtils.ValueType;
-import esthesis.common.entity.BaseEntity;
+import esthesis.core.common.data.DataUtils.ValueType;
+import esthesis.core.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.NotNull;

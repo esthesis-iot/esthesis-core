@@ -6,12 +6,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>dataflows</artifactId>
     <groupId>esthesis</groupId>
+    <artifactId>esthesis-core-dfl</artifactId>
     <version>3.0.52-SNAPSHOT</version>
   </parent>
 
-  <artifactId>dfl-influxdb-writer</artifactId>
+  <artifactId>esthesis-core-dfl-influxdb-writer</artifactId>
 
   <properties>
     <influxdb-client-java.version>6.6.0</influxdb-client-java.version>
@@ -20,7 +20,7 @@
   <dependencies>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>dfl-common</artifactId>
+      <artifactId>esthesis-core-dfl-common</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
     <dependency>

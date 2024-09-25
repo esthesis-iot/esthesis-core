@@ -7,11 +7,11 @@
 
   <parent>
     <groupId>esthesis</groupId>
-    <artifactId>srv-infrastructure</artifactId>
+    <artifactId>esthesis-core-services-infrastructure</artifactId>
     <version>3.0.52-SNAPSHOT</version>
   </parent>
 
-  <artifactId>srv-infrastructure-impl</artifactId>
+  <artifactId>esthesis-core-services-infrastructure-impl</artifactId>
 
   <dependencies>
 		<!-- QUARKUS -->
@@ -23,22 +23,22 @@
     <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-infrastructure-client</artifactId>
+      <artifactId>esthesis-core-services-infrastructure-client</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-tag-client</artifactId>
+      <artifactId>esthesis-core-services-tag-client</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-audit-client</artifactId>
+      <artifactId>esthesis-core-services-audit-client</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-security-client</artifactId>
+      <artifactId>esthesis-core-services-security-client</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
   </dependencies>

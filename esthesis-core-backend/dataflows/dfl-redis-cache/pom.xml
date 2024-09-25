@@ -7,11 +7,11 @@
 
   <parent>
     <groupId>esthesis</groupId>
-    <artifactId>dataflows</artifactId>
+    <artifactId>esthesis-core-dfl</artifactId>
     <version>3.0.52-SNAPSHOT</version>
   </parent>
 
-  <artifactId>dfl-redis-cache</artifactId>
+  <artifactId>esthesis-core-dfl-redis-cache</artifactId>
 
   <properties>
     <influxdb-client-java.version>6.6.0</influxdb-client-java.version>
@@ -21,12 +21,12 @@
     <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>dfl-common</artifactId>
+      <artifactId>esthesis-core-dfl-common</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>utl-redis</artifactId>
+      <artifactId>esthesis-core-util-redis</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
 

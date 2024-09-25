@@ -1,8 +1,8 @@
 package esthesis.service.crypto.impl.resource;
 
-import esthesis.common.AppConstants;
-import esthesis.common.crypto.CryptoService;
-import esthesis.common.crypto.dto.SignatureVerificationRequestDTO;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.crypto.CryptoService;
+import esthesis.core.common.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.service.crypto.resource.SigningSystemResource;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;

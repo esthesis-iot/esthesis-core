@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
-import static esthesis.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
+import static esthesis.core.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
+import static esthesis.core.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
 
 @Slf4j
 @Transactional

@@ -1,7 +1,7 @@
 package esthesis.service.crypto.impl.resource;
 
-import esthesis.common.AppConstants;
-import esthesis.common.crypto.CryptoService;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.crypto.CryptoService;
 import esthesis.service.crypto.resource.CryptoInfoResource;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;

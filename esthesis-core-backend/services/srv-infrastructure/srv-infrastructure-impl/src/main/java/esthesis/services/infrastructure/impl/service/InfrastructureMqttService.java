@@ -1,10 +1,10 @@
 package esthesis.services.infrastructure.impl.service;
 
-import static esthesis.common.AppConstants.Security.Category.INFRASTRUCTURE;
-import static esthesis.common.AppConstants.Security.Operation.CREATE;
-import static esthesis.common.AppConstants.Security.Operation.DELETE;
-import static esthesis.common.AppConstants.Security.Operation.READ;
-import static esthesis.common.AppConstants.Security.Operation.WRITE;
+import static esthesis.core.common.AppConstants.Security.Category.INFRASTRUCTURE;
+import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
+import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
+import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;

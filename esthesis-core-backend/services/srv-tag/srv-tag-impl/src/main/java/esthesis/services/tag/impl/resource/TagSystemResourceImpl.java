@@ -1,6 +1,6 @@
 package esthesis.services.tag.impl.resource;
 
-import esthesis.common.AppConstants;
+import esthesis.core.common.AppConstants;
 import esthesis.service.tag.entity.TagEntity;
 import esthesis.service.tag.resource.TagSystemResource;
 import esthesis.services.tag.impl.service.TagService;

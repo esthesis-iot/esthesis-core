@@ -1,9 +1,9 @@
 package esthesis.services.about.impl.service;
 
-import static esthesis.common.AppConstants.Security.Category.ABOUT;
-import static esthesis.common.AppConstants.Security.Operation.READ;
+import static esthesis.core.common.AppConstants.Security.Category.ABOUT;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
 
-import esthesis.common.git.GitUtil;
+import esthesis.core.common.git.GitUtil;
 import esthesis.service.about.dto.AboutGeneralDTO;
 import esthesis.service.security.annotation.ErnPermission;
 import jakarta.enterprise.context.ApplicationScoped;

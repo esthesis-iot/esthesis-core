@@ -7,11 +7,11 @@
 
   <parent>
     <groupId>esthesis</groupId>
-    <artifactId>srv-provisioning</artifactId>
+    <artifactId>esthesis-core-services-provisioning</artifactId>
     <version>3.0.52-SNAPSHOT</version>
   </parent>
 
-  <artifactId>srv-provisioning-client</artifactId>
+  <artifactId>esthesis-core-services-provisioning-client</artifactId>
 
   <dependencies>
 		<!-- QUARKUS -->
@@ -27,7 +27,7 @@
 		<!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>srv-common</artifactId>
+      <artifactId>esthesis-core-services-common</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>
   </dependencies>

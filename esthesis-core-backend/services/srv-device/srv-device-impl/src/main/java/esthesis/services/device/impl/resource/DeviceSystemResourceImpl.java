@@ -1,7 +1,7 @@
 package esthesis.services.device.impl.resource;
 
-import esthesis.common.AppConstants;
-import esthesis.common.exception.QDoesNotExistException;
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.exception.QDoesNotExistException;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
