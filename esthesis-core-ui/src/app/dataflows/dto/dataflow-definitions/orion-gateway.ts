@@ -140,6 +140,22 @@ export const DATAFLOW_DEFINITION_FIWARE_ORION = {
         { key: "orion-authentication-grant-type", type: "input",
           props: {label: "The grant type to be used for authentication"}
         },
+        { key: "orion-forwarding-interval", type: "input",
+          props: {
+            label: "The interval, in seconds, at which new messages are forwarded. Any messages received between intervals will be ignored",
+            required: false
+          }
+        },
+      ]
+    },
+    { key: "config.redis", wrappers: ["section"], props: {label: "Redis"},
+      fieldGroup: [
+        { key: "url", type: "input", defaultValue: "redis://:esthesis-system@redis-master:6379/0",
+          props: {
+            label: "The URL of the Redis store.", required: true,
+            hintStart: "e.g. redis://username:password@server:port/database. Password should be URL Encoded, if it contains special characters."
+          }
+        }
       ]
     },
     { key: "config.kafka", wrappers: ["section"], props: {label: "Kafka"},

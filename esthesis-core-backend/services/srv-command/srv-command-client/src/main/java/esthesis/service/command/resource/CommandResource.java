@@ -1,6 +1,6 @@
 package esthesis.service.command.resource;
 
-import esthesis.common.entity.CommandReplyEntity;
+import esthesis.service.command.entity.CommandReplyEntity;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;

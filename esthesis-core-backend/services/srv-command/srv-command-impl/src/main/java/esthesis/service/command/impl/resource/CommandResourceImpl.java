@@ -3,7 +3,7 @@ package esthesis.service.command.impl.resource;
 import esthesis.common.AppConstants;
 import esthesis.common.AppConstants.Security.Category;
 import esthesis.common.AppConstants.Security.Operation;
-import esthesis.common.entity.CommandReplyEntity;
+import esthesis.service.command.entity.CommandReplyEntity;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;

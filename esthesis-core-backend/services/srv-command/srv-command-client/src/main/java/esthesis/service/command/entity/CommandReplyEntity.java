@@ -1,5 +1,6 @@
-package esthesis.common.entity;
+package esthesis.service.command.entity;
 
+import esthesis.common.entity.BaseEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.time.Instant;

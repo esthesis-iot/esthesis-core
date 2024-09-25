@@ -8,7 +8,7 @@ import static esthesis.common.AppConstants.Security.Operation.READ;
 
 import esthesis.avro.EsthesisCommandRequestMessage;
 import esthesis.common.AppConstants.NamedSetting;
-import esthesis.common.entity.CommandReplyEntity;
+import esthesis.service.command.entity.CommandReplyEntity;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
 import esthesis.service.command.entity.CommandRequestEntity;

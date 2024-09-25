@@ -1,7 +1,7 @@
 package esthesis.service.command.impl.resource;
 
 import esthesis.common.AppConstants;
-import esthesis.common.entity.CommandReplyEntity;
+import esthesis.service.command.entity.CommandReplyEntity;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.command.impl.service.CommandService;
