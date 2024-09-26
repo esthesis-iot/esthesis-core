@@ -25,7 +25,7 @@ pipeline {
                   runAsGroup: 0
                 containers:
                 - name: esthesis-dev-deployer
-                  image: eddevopsd2/ubuntu-dind:docker24-mvn3.8.5-jdk17-node18.16-go1.20-buildx-helm-argocd
+                  image: eddevopsd2/ubuntu-dind:docker24-mvn3.9.6-jdk21-node18.16-go1.23-buildx-helm-argocd
                   volumeMounts:
                   - name: maven
                     mountPath: /root/.m2/
