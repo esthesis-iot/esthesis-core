@@ -84,27 +84,23 @@ pipeline {
                 }
             }
         }
-        stage ('Build Bom') {
-            parallel {
-                stage('Build Common') {
-                    steps {
-                        container (name: 'esthesis-core-builder') {
-                            sh '''
-                                cd esthesis-common
-                                mvn clean install
-                            '''
-                        }
-                    }
+        stage('Build Bom') {
+            steps {
+                container (name: 'esthesis-core-builder') {
+                    sh '''
+                        cd esthesis-bom
+                        mvn clean install
+                    '''
                 }
-                stage('Build Bom') {
-                    steps {
-                        container (name: 'esthesis-core-builder') {
-                            sh '''
-                                cd esthesis-bom
-                                mvn clean install
-                            '''
-                        }
-                    }
+            }
+        }
+        stage('Build Common') {
+            steps {
+                container (name: 'esthesis-core-builder') {
+                    sh '''
+                        cd esthesis-common
+                        mvn clean install
+                    '''
                 }
             }
         }
