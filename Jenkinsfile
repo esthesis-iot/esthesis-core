@@ -68,6 +68,47 @@ pipeline {
                 }
             }
         }
+        stage ('Clone Common and Bom Repositories') {
+            steps {
+                container (name: 'esthesis-dev-deployer') {
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        sh '''
+                            rm -rf esthesis-helm
+                            git config --global user.email "devops-d2@eurodyn.com"
+                            git config --global user.name "$Username"
+                            git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-bom
+                            git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-common
+                        '''
+                    }
+                }
+            }
+        }
+        stage ('Build Bom') {
+            parallel {
+                stage('Build Common') {
+                    steps {
+                        container (name: 'esthesis-core-builder') {
+                            sh '''
+                                cd esthesis-common
+                                mvn clean install
+                            '''
+                        }
+                    }
+                }
+                stage('Build Bom') {
+                    steps {
+                        container (name: 'esthesis-core-builder') {
+                            sh '''
+                                cd esthesis-bom
+                                mvn clean install
+                            '''
+                        }
+                    }
+                }
+            }
+        }
         stage ('Builds') {
             parallel {
                 stage('Go Build Device') {
