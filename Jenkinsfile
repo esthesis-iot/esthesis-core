@@ -70,12 +70,11 @@ pipeline {
         }
         stage ('Clone Common and Bom Repositories') {
             steps {
-                container (name: 'esthesis-dev-deployer') {
+                container (name: 'esthesis-core-builder') {
                     withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
-                            rm -rf esthesis-helm
                             git config --global user.email "devops-d2@eurodyn.com"
                             git config --global user.name "$Username"
                             git clone https://$Username:$Password@github.com/esthesis-iot/esthesis-bom
