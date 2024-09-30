@@ -3,7 +3,7 @@ package esthesis.dataflow.mqttclient.routes;
 import esthesis.avro.util.camel.EsthesisCommandReplyDataFormat;
 import esthesis.avro.util.camel.EsthesisCommandRequestDataFormat;
 import esthesis.avro.util.camel.EsthesisDataMessageDataFormat;
-import esthesis.core.common.banner.BannerUtil;
+import esthesis.common.banner.BannerUtil;
 import esthesis.dataflow.mqttclient.config.AppConfig;
 import esthesis.dataflow.mqttclient.service.DflMqttClientService;
 import jakarta.enterprise.context.ApplicationScoped;

@@ -1,7 +1,7 @@
 package esthesis.dataflows.oriongateway.routes;
 
 import esthesis.avro.util.camel.EsthesisDataMessageDataFormat;
-import esthesis.core.common.banner.BannerUtil;
+import esthesis.common.banner.BannerUtil;
 import esthesis.dataflows.oriongateway.config.AppConfig;
 import esthesis.dataflows.oriongateway.service.OrionClientService;
 import esthesis.dataflows.oriongateway.service.OrionGatewayService;

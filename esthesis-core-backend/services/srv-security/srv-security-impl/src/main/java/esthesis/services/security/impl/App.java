@@ -1,6 +1,6 @@
 package esthesis.services.security.impl;
 
-import esthesis.core.common.banner.BannerUtil;
+import esthesis.common.banner.BannerUtil;
 import esthesis.services.security.impl.service.SecurityUserService;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
