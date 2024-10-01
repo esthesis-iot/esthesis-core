@@ -7,7 +7,7 @@ import esthesis.avro.EsthesisDataMessage.Builder;
 import esthesis.avro.MessageTypeEnum;
 import esthesis.avro.util.AvroUtils;
 import esthesis.core.common.AppConstants;
-import esthesis.core.common.exception.QMismatchException;
+import esthesis.common.exception.QMismatchException;
 import esthesis.dataflow.mqttclient.config.AppConfig;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

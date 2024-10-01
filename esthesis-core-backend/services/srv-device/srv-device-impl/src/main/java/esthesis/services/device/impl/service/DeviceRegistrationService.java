@@ -5,17 +5,18 @@ import static esthesis.core.common.AppConstants.Security.Category.DEVICE;
 import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
+import esthesis.common.exception.QAlreadyExistsException;
+import esthesis.common.exception.QDisabledException;
+import esthesis.common.exception.QDoesNotExistException;
+import esthesis.common.exception.QMismatchException;
+import esthesis.common.exception.QSecurityException;
+import esthesis.common.util.EsthesisCommonConstants;
 import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.Device.Status;
 import esthesis.core.common.AppConstants.DeviceRegistrationMode;
 import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.core.common.data.DataUtils;
 import esthesis.core.common.data.DataUtils.ValueType;
-import esthesis.core.common.exception.QAlreadyExistsException;
-import esthesis.core.common.exception.QDisabledException;
-import esthesis.core.common.exception.QDoesNotExistException;
-import esthesis.core.common.exception.QMismatchException;
-import esthesis.core.common.exception.QSecurityException;
 import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.service.crypto.resource.KeyResource;
 import esthesis.service.device.dto.DeviceKeyDTO;
@@ -161,7 +162,7 @@ public class DeviceRegistrationService {
 	@KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE, action = Action.CREATE,
 		idParamRegEx = "BaseEntity\\(id=(.*?)\\)")
 	DeviceEntity register(String hardwareId, List<String> tags, AppConstants.Device.Status status,
-		AppConstants.Device.Type deviceType, String registrationSecret, String attributes)
+		EsthesisCommonConstants.Device.Type deviceType, String registrationSecret, String attributes)
 	throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, OperatorCreationException,
 				 NoSuchProviderException {
 		log.debug("Registering device with hardware id '{}', tags '{}', status '{}', "
@@ -203,8 +204,12 @@ public class DeviceRegistrationService {
 
 		// Create the new device.
 		ObjectId newDeviceId = new ObjectId();
-		final DeviceEntity deviceEntity = new DeviceEntity().setHardwareId(hardwareId).setStatus(status)
-			.setType(deviceType).setCreatedOn(Instant.now()).setDeviceKey(deviceKeyDTO);
+		final DeviceEntity deviceEntity = new DeviceEntity()
+			.setHardwareId(hardwareId)
+			.setStatus(status)
+			.setType(deviceType)
+			.setCreatedOn(Instant.now())
+			.setDeviceKey(deviceKeyDTO);
 		deviceEntity.setId(newDeviceId);
 		if (status != Status.PREREGISTERED) {
 			deviceEntity.setRegisteredOn(Instant.now());

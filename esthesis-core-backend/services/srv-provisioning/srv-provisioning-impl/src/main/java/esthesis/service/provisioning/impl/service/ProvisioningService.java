@@ -10,7 +10,7 @@ import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
 import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.core.common.AppConstants.Provisioning.Type;
-import esthesis.core.common.exception.QMismatchException;
+import esthesis.common.exception.QMismatchException;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.gridfs.GridFSDTO;
 import esthesis.service.common.gridfs.GridFSService;

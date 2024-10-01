@@ -8,7 +8,7 @@ import static esthesis.core.common.AppConstants.Security.Operation.READ;
 import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
 import esthesis.core.common.AppConstants.Security.Operation;
-import esthesis.core.common.exception.QSecurityException;
+import esthesis.common.exception.QSecurityException;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;

@@ -1,7 +1,7 @@
 package esthesis.dataflow.common;
 
-import esthesis.core.common.exception.QDoesNotExistException;
-import esthesis.core.common.exception.QExceptionWrapper;
+import esthesis.common.exception.QDoesNotExistException;
+import esthesis.common.exception.QExceptionWrapper;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;

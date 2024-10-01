@@ -20,10 +20,6 @@
       <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
-      <artifactId>quarkus-hibernate-validator</artifactId>
-      <groupId>io.quarkus</groupId>
-    </dependency>
-    <dependency>
       <artifactId>quarkus-rest</artifactId>
       <groupId>io.quarkus</groupId>
     </dependency>

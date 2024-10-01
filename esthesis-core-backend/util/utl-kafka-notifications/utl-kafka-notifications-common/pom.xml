@@ -11,12 +11,4 @@
   </parent>
 
   <artifactId>esthesis-core-util-kafka-notifications-common</artifactId>
-
-  <dependencies>
-    <!-- QUARKUS -->
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-hibernate-validator</artifactId>
-    </dependency>
-  </dependencies>
 </project>

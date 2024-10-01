@@ -5,7 +5,7 @@ import esthesis.core.common.crypto.dto.CertificateSignRequestDTO;
 import esthesis.core.common.crypto.dto.CreateCARequestDTO;
 import esthesis.core.common.crypto.dto.CreateKeyPairRequestDTO;
 import esthesis.core.common.crypto.dto.SignatureVerificationRequestDTO;
-import esthesis.core.common.exception.QDoesNotExistException;
+import esthesis.common.exception.QDoesNotExistException;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

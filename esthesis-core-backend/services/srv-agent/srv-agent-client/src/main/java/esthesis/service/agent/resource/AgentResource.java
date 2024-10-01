@@ -1,7 +1,7 @@
 package esthesis.service.agent.resource;
 
-import esthesis.service.agent.dto.AgentRegistrationRequest;
-import esthesis.service.agent.dto.AgentRegistrationResponse;
+import esthesis.common.agent.dto.AgentRegistrationRequest;
+import esthesis.common.agent.dto.AgentRegistrationResponse;
 import io.smallrye.mutiny.Uni;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
@@ -17,9 +17,11 @@ import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Optional;
 import org.bouncycastle.operator.OperatorCreationException;
+import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.resteasy.reactive.RestResponse;
 
 @Path("/api")
+@RegisterRestClient(configKey = "AgentResource")
 public interface AgentResource {
 	@POST
 	@Path(value = "/v1/register")

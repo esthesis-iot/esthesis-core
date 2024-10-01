@@ -1,9 +1,9 @@
 package esthesis.service.agent.impl.resource;
 
-import esthesis.core.common.exception.QLimitException;
-import esthesis.core.common.exception.QSecurityException;
-import esthesis.service.agent.dto.AgentRegistrationRequest;
-import esthesis.service.agent.dto.AgentRegistrationResponse;
+import esthesis.common.agent.dto.AgentRegistrationRequest;
+import esthesis.common.agent.dto.AgentRegistrationResponse;
+import esthesis.common.exception.QLimitException;
+import esthesis.common.exception.QSecurityException;
 import esthesis.service.agent.impl.service.AgentService;
 import esthesis.service.agent.resource.AgentResource;
 import io.smallrye.mutiny.Uni;

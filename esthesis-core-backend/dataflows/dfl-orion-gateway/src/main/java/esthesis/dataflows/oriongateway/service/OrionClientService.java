@@ -1,7 +1,7 @@
 package esthesis.dataflows.oriongateway.service;
 
 import esthesis.core.common.data.DataUtils.ValueType;
-import esthesis.core.common.exception.QDoesNotExistException;
+import esthesis.common.exception.QDoesNotExistException;
 import esthesis.dataflows.oriongateway.client.OrionClient;
 import esthesis.dataflows.oriongateway.client.OrionClientHeaderFilter;
 import esthesis.dataflows.oriongateway.config.AppConfig;

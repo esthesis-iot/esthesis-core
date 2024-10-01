@@ -5,7 +5,7 @@ import esthesis.avro.MessageTypeEnum;
 import esthesis.avro.ValueData;
 import esthesis.core.common.AppConstants.Device.Status;
 import esthesis.core.common.data.DataUtils.ValueType;
-import esthesis.core.common.exception.QDoesNotExistException;
+import esthesis.common.exception.QDoesNotExistException;
 import esthesis.dataflows.oriongateway.config.AppConfig;
 import esthesis.dataflows.oriongateway.dto.OrionAttributeDTO;
 import esthesis.dataflows.oriongateway.dto.OrionEntityDTO;

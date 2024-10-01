@@ -3,7 +3,7 @@ package esthesis.dataflows.pingupdater.service;
 import com.mongodb.client.model.Filters;
 import esthesis.avro.EsthesisDataMessage;
 import esthesis.core.common.AppConstants;
-import esthesis.core.common.exception.QMismatchException;
+import esthesis.common.exception.QMismatchException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import java.time.Instant;

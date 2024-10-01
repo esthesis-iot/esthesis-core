@@ -9,7 +9,7 @@ import static esthesis.core.common.AppConstants.Security.Operation.READ;
 import esthesis.avro.EsthesisCommandRequestMessage;
 import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.command.entity.CommandReplyEntity;
-import esthesis.core.common.exception.QDoesNotExistException;
+import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.common.paging.Page;

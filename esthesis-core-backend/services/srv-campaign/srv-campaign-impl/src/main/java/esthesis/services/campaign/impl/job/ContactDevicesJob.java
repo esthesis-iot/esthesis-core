@@ -4,7 +4,7 @@ import esthesis.avro.CommandType;
 import esthesis.avro.ExecutionType;
 import esthesis.core.common.AppConstants.Campaign.Condition.Stage;
 import esthesis.core.common.AppConstants.Campaign.Condition.Type;
-import esthesis.core.common.exception.QMismatchException;
+import esthesis.common.exception.QMismatchException;
 import esthesis.service.campaign.dto.CampaignConditionDTO;
 import esthesis.service.campaign.entity.CampaignDeviceMonitorEntity;
 import esthesis.service.campaign.entity.CampaignEntity;

@@ -1,6 +1,6 @@
 package esthesis.service.common.logging;
 
-import esthesis.core.common.exception.QSecurityException;
+import esthesis.common.exception.QSecurityException;
 import io.opentelemetry.api.trace.Span;
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;

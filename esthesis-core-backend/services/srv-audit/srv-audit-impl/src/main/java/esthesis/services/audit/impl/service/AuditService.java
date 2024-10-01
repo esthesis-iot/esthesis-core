@@ -6,7 +6,7 @@ import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
 import static esthesis.core.common.AppConstants.Security.Operation.READ;
 
-import esthesis.core.common.exception.QAlreadyExistsException;
+import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;

@@ -58,10 +58,6 @@ public class AppConstants {
 
 	public static class Device {
 
-		public enum Type {
-			ESTHESIS, OTHER
-		}
-
 		public enum Status {
 			DISABLED, PREREGISTERED, REGISTERED
 		}

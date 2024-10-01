@@ -1,6 +1,6 @@
 package esthesis.service.device.dto;
 
-import esthesis.core.common.AppConstants;
+import esthesis.common.util.EsthesisCommonConstants;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,7 +31,7 @@ public class DeviceRegistrationDTO {
 
 	// The type of the device being registered.
 	@NotNull
-	private AppConstants.Device.Type type;
+	private EsthesisCommonConstants.Device.Type type;
 
 	// The optional registration secret, when the platform operates in that mode.
 	private String registrationSecret;

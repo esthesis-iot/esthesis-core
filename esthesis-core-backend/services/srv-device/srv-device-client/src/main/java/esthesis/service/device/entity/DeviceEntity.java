@@ -1,5 +1,6 @@
 package esthesis.service.device.entity;
 
+import esthesis.common.util.EsthesisCommonConstants;
 import esthesis.core.common.AppConstants;
 import esthesis.core.common.entity.BaseEntity;
 import esthesis.service.device.dto.DeviceKeyDTO;
@@ -52,6 +53,6 @@ public class DeviceEntity extends BaseEntity {
 	private DeviceKeyDTO deviceKey;
 
 	// The type of the device.
-	private AppConstants.Device.Type type;
+	private EsthesisCommonConstants.Device.Type type;
 
 }

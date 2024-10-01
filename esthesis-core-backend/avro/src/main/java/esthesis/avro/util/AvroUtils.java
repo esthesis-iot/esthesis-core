@@ -10,7 +10,7 @@ import esthesis.avro.ValueTypeEnum;
 import esthesis.core.common.AppConstants;
 import esthesis.core.common.data.DataUtils;
 import esthesis.core.common.data.DataUtils.ValueType;
-import esthesis.core.common.exception.QMismatchException;
+import esthesis.common.exception.QMismatchException;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.time.Instant;
 import java.util.Arrays;

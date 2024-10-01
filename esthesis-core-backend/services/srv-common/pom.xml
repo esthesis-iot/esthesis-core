@@ -17,10 +17,6 @@
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-mongodb-panache</artifactId>
 		</dependency>
-		<dependency>
-			<artifactId>quarkus-hibernate-validator</artifactId>
-			<groupId>io.quarkus</groupId>
-		</dependency>
 
 		<!-- THIRD-PARTY -->
 		<dependency>

@@ -10,7 +10,7 @@ import esthesis.avro.EsthesisDataMessage;
 import esthesis.avro.MessageTypeEnum;
 import esthesis.avro.util.AvroUtils;
 import esthesis.core.common.AppConstants.NamedSetting;
-import esthesis.core.common.exception.QMismatchException;
+import esthesis.common.exception.QMismatchException;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
