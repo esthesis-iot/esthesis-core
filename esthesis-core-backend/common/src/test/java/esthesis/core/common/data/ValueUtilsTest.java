@@ -2,7 +2,8 @@ package esthesis.core.common.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import esthesis.core.common.data.DataUtils.ValueType;
+import esthesis.common.data.DataUtils;
+import esthesis.common.data.DataUtils.ValueType;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import org.junit.jupiter.api.Test;

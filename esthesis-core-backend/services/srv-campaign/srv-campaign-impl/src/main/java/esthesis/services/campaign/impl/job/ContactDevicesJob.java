@@ -1,10 +1,10 @@
 package esthesis.services.campaign.impl.job;
 
-import esthesis.avro.CommandType;
-import esthesis.avro.ExecutionType;
+import esthesis.common.avro.CommandType;
+import esthesis.common.avro.ExecutionType;
+import esthesis.common.exception.QMismatchException;
 import esthesis.core.common.AppConstants.Campaign.Condition.Stage;
 import esthesis.core.common.AppConstants.Campaign.Condition.Type;
-import esthesis.common.exception.QMismatchException;
 import esthesis.service.campaign.dto.CampaignConditionDTO;
 import esthesis.service.campaign.entity.CampaignDeviceMonitorEntity;
 import esthesis.service.campaign.entity.CampaignEntity;

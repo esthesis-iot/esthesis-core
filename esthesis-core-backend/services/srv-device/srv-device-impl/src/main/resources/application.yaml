@@ -54,7 +54,7 @@ mp:
         topic: esthesis-app
       esthesis-data-message:
         value:
-          serializer: esthesis.avro.util.kafka.EsthesisDataMessageSerializer
+          serializer: esthesis.core.common.serder.kafka.EsthesisDataMessageSerializer
     incoming:
       esthesis-app-in:
         topic: esthesis-app

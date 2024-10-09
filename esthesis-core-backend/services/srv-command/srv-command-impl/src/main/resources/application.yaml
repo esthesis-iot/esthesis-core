@@ -50,4 +50,4 @@ mp:
     outgoing:
       esthesis-command-request:
         value:
-          serializer: esthesis.avro.util.kafka.EsthesisCommandRequestSerializer
+          serializer: esthesis.core.common.serder.kafka.EsthesisCommandRequestSerializer

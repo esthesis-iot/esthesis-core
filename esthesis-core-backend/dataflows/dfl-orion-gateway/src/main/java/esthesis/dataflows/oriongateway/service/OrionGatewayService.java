@@ -1,11 +1,11 @@
 package esthesis.dataflows.oriongateway.service;
 
-import esthesis.avro.EsthesisDataMessage;
-import esthesis.avro.MessageTypeEnum;
-import esthesis.avro.ValueData;
-import esthesis.core.common.AppConstants.Device.Status;
-import esthesis.core.common.data.DataUtils.ValueType;
+import esthesis.common.avro.EsthesisDataMessage;
+import esthesis.common.avro.MessageTypeEnum;
+import esthesis.common.avro.ValueData;
+import esthesis.common.data.DataUtils.ValueType;
 import esthesis.common.exception.QDoesNotExistException;
+import esthesis.core.common.AppConstants.Device.Status;
 import esthesis.dataflows.oriongateway.config.AppConfig;
 import esthesis.dataflows.oriongateway.dto.OrionAttributeDTO;
 import esthesis.dataflows.oriongateway.dto.OrionEntityDTO;
@@ -20,17 +20,16 @@ import io.quarkus.qute.Qute;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.Exchange;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.Exchange;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @Transactional

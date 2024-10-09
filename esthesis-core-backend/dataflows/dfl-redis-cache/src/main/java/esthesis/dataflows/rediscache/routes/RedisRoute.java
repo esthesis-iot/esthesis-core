@@ -1,7 +1,7 @@
 package esthesis.dataflows.rediscache.routes;
 
-import esthesis.avro.util.camel.EsthesisDataMessageDataFormat;
 import esthesis.common.banner.BannerUtil;
+import esthesis.core.common.serder.camel.EsthesisDataMessageDataFormat;
 import esthesis.dataflows.rediscache.config.AppConfig;
 import esthesis.dataflows.rediscache.service.RedisService;
 import jakarta.enterprise.context.ApplicationScoped;

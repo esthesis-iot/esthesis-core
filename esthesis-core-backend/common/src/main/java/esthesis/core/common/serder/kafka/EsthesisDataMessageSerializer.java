@@ -1,6 +1,6 @@
-package esthesis.avro.util.kafka;
+package esthesis.core.common.serder.kafka;
 
-import esthesis.avro.EsthesisDataMessage;
+import esthesis.common.avro.EsthesisDataMessage;
 import java.util.Map;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

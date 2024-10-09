@@ -1,6 +1,6 @@
-package esthesis.avro.util.kafka;
+package esthesis.core.common.serder.kafka;
 
-import esthesis.avro.EsthesisCommandRequestMessage;
+import esthesis.common.avro.EsthesisCommandRequestMessage;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serializer;

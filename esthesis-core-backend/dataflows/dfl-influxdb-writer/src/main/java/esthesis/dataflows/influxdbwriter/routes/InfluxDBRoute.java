@@ -1,7 +1,7 @@
 package esthesis.dataflows.influxdbwriter.routes;
 
-import esthesis.avro.util.camel.EsthesisDataMessageDataFormat;
 import esthesis.common.banner.BannerUtil;
+import esthesis.core.common.serder.camel.EsthesisDataMessageDataFormat;
 import esthesis.dataflows.influxdbwriter.config.AppConfig;
 import esthesis.dataflows.influxdbwriter.service.InfluxDBService;
 import jakarta.enterprise.context.ApplicationScoped;

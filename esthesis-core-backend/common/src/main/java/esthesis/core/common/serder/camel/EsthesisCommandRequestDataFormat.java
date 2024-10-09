@@ -1,6 +1,6 @@
-package esthesis.avro.util.camel;
+package esthesis.core.common.serder.camel;
 
-import esthesis.avro.EsthesisCommandRequestMessage;
+import esthesis.common.avro.EsthesisCommandRequestMessage;
 import java.io.InputStream;
 import java.io.OutputStream;
 import org.apache.camel.Exchange;

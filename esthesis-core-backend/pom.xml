@@ -113,7 +113,6 @@
 		<module>services</module>
 		<module>dataflows</module>
 		<module>util</module>
-		<module>avro</module>
 	</modules>
 
 	<profiles>

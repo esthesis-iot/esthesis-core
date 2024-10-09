@@ -1,7 +1,7 @@
 package esthesis.dataflows.rdbmswriter.routes;
 
-import esthesis.avro.util.camel.EsthesisDataMessageDataFormat;
 import esthesis.common.banner.BannerUtil;
+import esthesis.core.common.serder.camel.EsthesisDataMessageDataFormat;
 import esthesis.dataflows.rdbmswriter.config.AppConfig;
 import esthesis.dataflows.rdbmswriter.service.RdbmsService;
 import jakarta.enterprise.context.ApplicationScoped;

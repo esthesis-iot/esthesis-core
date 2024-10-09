@@ -1,8 +1,8 @@
 package esthesis.dataflows.rdbmswriter.service;
 
-import esthesis.avro.EsthesisDataMessage;
-import esthesis.avro.ValueData;
-import esthesis.core.common.data.DataUtils.ValueType;
+import esthesis.common.avro.EsthesisDataMessage;
+import esthesis.common.avro.ValueData;
+import esthesis.common.data.DataUtils.ValueType;
 import esthesis.common.exception.QExceptionWrapper;
 import esthesis.dataflows.rdbmswriter.config.AppConfig;
 import io.agroal.api.AgroalDataSource;

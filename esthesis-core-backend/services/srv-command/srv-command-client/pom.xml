@@ -32,11 +32,6 @@
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
-      <artifactId>esthesis-core-avro</artifactId>
-      <version>3.0.52-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-device-client</artifactId>
       <version>3.0.52-SNAPSHOT</version>
     </dependency>

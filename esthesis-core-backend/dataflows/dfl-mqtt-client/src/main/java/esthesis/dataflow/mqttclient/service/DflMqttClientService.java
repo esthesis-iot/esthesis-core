@@ -1,13 +1,13 @@
 package esthesis.dataflow.mqttclient.service;
 
-import esthesis.avro.EsthesisCommandReplyMessage;
-import esthesis.avro.EsthesisCommandRequestMessage;
-import esthesis.avro.EsthesisDataMessage;
-import esthesis.avro.EsthesisDataMessage.Builder;
-import esthesis.avro.MessageTypeEnum;
-import esthesis.avro.util.AvroUtils;
-import esthesis.core.common.AppConstants;
+import esthesis.common.avro.AvroUtils;
+import esthesis.common.avro.EsthesisCommandReplyMessage;
+import esthesis.common.avro.EsthesisCommandRequestMessage;
+import esthesis.common.avro.EsthesisDataMessage;
+import esthesis.common.avro.EsthesisDataMessage.Builder;
+import esthesis.common.avro.MessageTypeEnum;
 import esthesis.common.exception.QMismatchException;
+import esthesis.core.common.AppConstants;
 import esthesis.dataflow.mqttclient.config.AppConfig;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

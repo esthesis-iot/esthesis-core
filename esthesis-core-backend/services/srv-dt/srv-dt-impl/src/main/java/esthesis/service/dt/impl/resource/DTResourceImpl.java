@@ -1,7 +1,7 @@
 package esthesis.service.dt.impl.resource;
 
-import esthesis.avro.CommandType;
-import esthesis.avro.ExecutionType;
+import esthesis.common.avro.CommandType;
+import esthesis.common.avro.ExecutionType;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.dt.dto.DTValueReplyDTO;
@@ -10,11 +10,9 @@ import esthesis.service.dt.resource.DTResource;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 

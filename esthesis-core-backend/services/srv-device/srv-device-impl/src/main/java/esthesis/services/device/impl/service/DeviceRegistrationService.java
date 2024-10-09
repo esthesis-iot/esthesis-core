@@ -5,6 +5,8 @@ import static esthesis.core.common.AppConstants.Security.Category.DEVICE;
 import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
+import esthesis.common.data.DataUtils;
+import esthesis.common.data.DataUtils.ValueType;
 import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QDisabledException;
 import esthesis.common.exception.QDoesNotExistException;
@@ -15,8 +17,6 @@ import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.Device.Status;
 import esthesis.core.common.AppConstants.DeviceRegistrationMode;
 import esthesis.core.common.AppConstants.NamedSetting;
-import esthesis.core.common.data.DataUtils;
-import esthesis.core.common.data.DataUtils.ValueType;
 import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.service.crypto.resource.KeyResource;
 import esthesis.service.device.dto.DeviceKeyDTO;

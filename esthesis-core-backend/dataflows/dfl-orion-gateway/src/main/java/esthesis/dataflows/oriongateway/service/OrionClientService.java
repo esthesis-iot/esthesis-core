@@ -1,6 +1,8 @@
 package esthesis.dataflows.oriongateway.service;
 
-import esthesis.core.common.data.DataUtils.ValueType;
+import static java.util.function.Predicate.not;
+
+import esthesis.common.data.DataUtils.ValueType;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.dataflows.oriongateway.client.OrionClient;
 import esthesis.dataflows.oriongateway.client.OrionClientHeaderFilter;
@@ -15,9 +17,6 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
-import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -25,8 +24,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import static java.util.function.Predicate.not;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 @Slf4j
 @Transactional
