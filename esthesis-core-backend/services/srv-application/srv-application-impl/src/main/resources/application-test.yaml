@@ -1,0 +1,9 @@
+quarkus:
+  log:
+    level: ERROR
+  devservices:
+    enabled: true
+  mongodb:
+    database: esthesiscore-test
+  http:
+    test-port: 0

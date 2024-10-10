@@ -1,0 +1,31 @@
+quarkus:
+  log:
+    level: ERROR
+  devservices:
+    enabled: true
+  mongodb:
+    database: esthesiscore-test
+  rest-client:
+    SettingsSystemResource:
+      url: http://localhost:59030
+      scope: Singleton
+    CASystemResource:
+      url: http://localhost:59040
+      scope: Singleton
+    DataflowSystemResource:
+      url: http://localhost:59060
+      scope: Singleton
+    DeviceSystemResource:
+      url: http://localhost:59010
+      scope: Singleton
+    ProvisioningSystemResource:
+      url: http://localhost:59100
+      scope: Singleton
+    SigningSystemResource:
+      url: http://localhost:59040
+      scope: Singleton
+    InfrastructureSystemResource:
+      url: http://localhost:59110
+      scope: Singleton
+  http:
+    test-port: 0

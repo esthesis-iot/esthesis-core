@@ -1,10 +1,9 @@
-/*package esthesis.services.audit.impl.resource;
+package esthesis.services.audit.impl.resource;
 
 import static io.restassured.RestAssured.given;
 
-import esthesis.common.AppConstants;
-import esthesis.common.AppConstants.Security.Category;
-import esthesis.common.AppConstants.Security.Operation;
+
+import esthesis.core.common.AppConstants;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.audit.resource.AuditResource;
 import esthesis.services.audit.impl.TestHelper;
@@ -48,7 +47,7 @@ class AuditResourceImplTest {
 			.then()
 			.statusCode(200)
 			.contentType(ContentType.JSON)
-			.body("size()", org.hamcrest.Matchers.equalTo(Category.values().length));
+			.body("size()", org.hamcrest.Matchers.equalTo(AppConstants.Security.Category.values().length));
 	}
 
 	@Test
@@ -59,7 +58,7 @@ class AuditResourceImplTest {
 			.then()
 			.statusCode(200)
 			.contentType(ContentType.JSON)
-			.body("size()", org.hamcrest.Matchers.equalTo(Operation.values().length));
+			.body("size()", org.hamcrest.Matchers.equalTo(AppConstants.Security.Operation.values().length));
 	}
 
 	@Test
@@ -119,4 +118,3 @@ class AuditResourceImplTest {
 			.body("createdBy", org.hamcrest.Matchers.equalTo(username));
 	}
 }
-*/
