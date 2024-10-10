@@ -219,7 +219,7 @@ pipeline {
                     usernameVariable: 'Username',
                     passwordVariable: 'Password')]){
                         sh '''
-                            argocd login argocd.devops-d2.eurodyn.com:443 --username $Username --password $Password --grpc-web
+                            argocd login argocd.devops-d2-services.eurodyn.com:443 --username $Username --password $Password --grpc-web
                             argocd app terminate-op esthesis-core || true
                             argocd app delete esthesis-core -y || true
                             argocd app terminate-op esthesis-core-deps || true
