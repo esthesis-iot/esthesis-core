@@ -50,15 +50,16 @@ export MOSQUITTO_SERVER_KEY=$(cat cert.key | base64)
 
 :::info
 1. Replace the names of ca.crt, cert.crt and cert.key with the files you downloaded above.
-2. The name of the user specified by `MOSQUITTO_SUPER_USER` will be the "superuser" for the MQTT, i.e.
-a user that can subscribe and publish to/from any topic. This user should be used by the esthesis
-platform to communicate with the MQTT broker. Create a separate certificate for this user, having
-the Common Name set to the same name as the one you specified by `MOSQUITTO_SUPER_USER` (if you
-did not specify a value for `MOSQUITTO_SUPER_USER`, the default value is 'esthesis').
-3. During the deployment of the supporting infrastructure you, probably, had to define an array of
+2. During the deployment of the supporting infrastructure you, probably, had to define an array of
 environment variables to be used by the Helm charts. Do not forget to re-specify these variables
 before you re-run the `helmfile sync` command here, otherwise the deployment might fail or have
 unexpected results.
+3. The name of the user specified by `MOSQUITTO_SUPER_USER` (in your environment variables while
+deploying the supporting infrastructure) will be the "superuser" for the MQTT, i.e.
+a user that can subscribe and publish to/from any topic. Create a separate certificate for this
+user, having the Common Name set to the same name as the one you specified by
+`MOSQUITTO_SUPER_USER` (if you did not specify a value for `MOSQUITTO_SUPER_USER`, the default
+value is 'esthesis').
 :::
 
 ## Warnings
@@ -68,7 +69,9 @@ been issued with a certificate signed by the CA used above. Otherwise, they will
 to the MQTT broker.
 
 In addition, since the MQTT broker will no longer accept non-TLS connections, you need to update
-the URL of the MQTT broker used by the devices to start with `ssl://` instead of `tcp://`.
+the URL of the MQTT broker used by the devices to start with `ssl://` instead of `tcp://`. For the
+time being, this is a manual process by editing the `esthesis.properties` file on the devices,
+changing the value of `MqttServer` property.
 :::
 
 :::warning Dataflows failing to connect

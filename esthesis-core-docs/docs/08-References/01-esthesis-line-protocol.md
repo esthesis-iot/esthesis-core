@@ -22,7 +22,8 @@ to. It should start with a letter.
 - **timestamp**, should be expressed as a string, following <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_new">ISO-8601</a>.
 The timestamp value is shared between all measurements of the same line. If you need to send
 multiple measurements with each one having a unique timestamp, split them in different lines
-and specify a separate timestamp for each. If a timestamp value is not present, the time at the time of processing the message will be used as a timestamp.
+and specify a separate timestamp for each. If a timestamp value is not present, the time at the
+time of processing the message will be used as a timestamp.
 
 ### Value typing
 When an eLP message is received by an esthesis Dataflow, the dataflow will try to determine the type
