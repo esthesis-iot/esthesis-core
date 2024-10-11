@@ -44,12 +44,12 @@ and add the following environment variables:
 ```shell
 export MOSQUITTO_MUTUAL_TLS=true
 export MOSQUITTO_CA_CERT=$(cat ca.crt | base64)
-export MOSQUITTO_SERVER_CERT=$(cat cert.crt | base64)
-export MOSQUITTO_SERVER_KEY=$(cat cert.key | base64)
+export MOSQUITTO_SERVER_CERT=$(cat server.crt | base64)
+export MOSQUITTO_SERVER_KEY=$(cat server.key | base64)
 ```
 
 :::info
-1. Replace the names of ca.crt, cert.crt and cert.key with the files you downloaded above.
+1. Replace the names of ca.crt, server.crt and server.key with the files you downloaded above.
 2. During the deployment of the supporting infrastructure you, probably, had to define an array of
 environment variables to be used by the Helm charts. Do not forget to re-specify these variables
 before you re-run the `helmfile sync` command here, otherwise the deployment might fail or have

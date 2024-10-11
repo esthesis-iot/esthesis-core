@@ -11,7 +11,7 @@
 ####################################################################################################
 
 # Build stage.
-FROM golang:1.21.3-bookworm as build
+FROM golang:1.21.3-bookworm AS build
 ARG LDFLAGS=""
 ENV CGO_ENABLED=0
 

@@ -16,7 +16,7 @@
 #
 # Usage examples:
 #   ./publish.sh
-# 	ESTHESIS_REGISTRY_URL=192.168.10.21:32000 ./publish.sh
+# 	ESTHESIS_REGISTRY_TYPE=open ESTHESIS_REGISTRY_URL=192.168.50.211:5000/esthesis ./publish.sh
 ####################################################################################################
 
 # Trap exit.

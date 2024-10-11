@@ -2,7 +2,7 @@
 # Cache NPM modules.
 ####################################################################################################
 # node:lts-bookworm-slim
-FROM node:lts-bookworm-slim as npm
+FROM node:lts-bookworm-slim AS npm
 LABEL maintainer="esthesis@eurodyn.com"
 
 # Set working directory
@@ -20,7 +20,7 @@ RUN npm config set proxy null \
 ## Build application.
 #####################################################################################################
 # node:lts-bookworm-slim
-FROM node:lts-bookworm-slim as build
+FROM node:lts-bookworm-slim AS build
 LABEL maintainer="esthesis@eurodyn.com"
 
 # Set working directory

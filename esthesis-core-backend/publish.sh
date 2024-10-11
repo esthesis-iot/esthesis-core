@@ -20,14 +20,13 @@
 #																when this script is used as part of another script (for example,
 #																a release script) which already performs a build (default: true).
 #		ESTHESIS_PARALLEL_BUILD:		If set to true, modules are built in parallel (default: false).
-# Usage:
+#
+# Usage examples:
 #   ./publish.sh
-#   ./publish.sh <module-path> <module-name>
+#   ./publish.sh services/srv-about/srv-about-impl srv-about
 #   ./publish.sh dfl
 #   ./publish.sh srv
-#
-# Example:
-#   ./publish.sh services/srv-about/srv-about-impl srv-about
+#   ESTHESIS_REGISTRY_TYPE=open ESTHESIS_REGISTRY_URL=192.168.50.211:5000/esthesis ./publish.sh dfl
 ####################################################################################################
 
 # Trap exit.
@@ -104,9 +103,9 @@ fi
 MAVEN_OPTIMISE_PARAMS="-DskipTests -Dmaven.test.skip=true -T 1C"
 
 # Find the version of the package.
-PACKAGE_VERSION=$(grep -m 1 '<version>' pom.xml | awk -F'[><]' '{print $3}')
+PACKAGE_VERSION=$(grep -A 1 '<artifactId>esthesis-core</artifactId>' pom.xml | grep '<version>' | sed -E 's/.*<version>(.*)<\/version>.*/\1/')
 printInfo "Package version: $PACKAGE_VERSION."
-if [[ "${PACKAGE_VERSION}" == *SNAPSHOT && $ESTHESIS_REGISTRY_URL == "public.ecr.aws/b0c5e0h9" ]]; then
+if [[ "${PACKAGE_VERSION}" == *SNAPSHOT && $ESTHESIS_REGISTRY_URL == "docker.io/esthesisiot" ]]; then
     printError "Cannot push a snapshot version to docker.io/esthesisiot."
     exit 1
 fi
