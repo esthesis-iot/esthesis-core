@@ -67,8 +67,6 @@ pipeline {
                             apt-get update -y
                             apt-get install -y util-linux jq
                             docker login -u $Username -p $Password docker.io
-                            [ -d /sys/fs/cgroup/systemd ] || mkdir /sys/fs/cgroup/systemd
-                            mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
                         '''
                     }
                 }
