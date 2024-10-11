@@ -121,11 +121,7 @@ pipeline {
                 stage('Build Server') {
                     steps {
                         container (name: 'esthesis-core-builder') {
-                            sh '''
-                                [ -d /sys/fs/cgroup/systemd ] || mkdir /sys/fs/cgroup/systemd
-                                mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
-                                mvn -f esthesis-core-backend/pom.xml clean install -Pcyclonedx-bom
-                            '''
+                            sh 'mvn -f esthesis-core-backend/pom.xml clean install -Pcyclonedx-bom'
                         }
                     }
                 }
