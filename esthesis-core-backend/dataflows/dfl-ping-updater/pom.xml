@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-core-dfl</artifactId>
-    <version>3.0.52</version>
+    <version>3.0.53-SNAPSHOT</version>
   </parent>
 
   <artifactId>esthesis-core-dfl-ping-updater</artifactId>
@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>esthesis</groupId>
 			<artifactId>esthesis-core-dfl-common</artifactId>
-			<version>3.0.52</version>
+			<version>3.0.53-SNAPSHOT</version>
 		</dependency>
 
 		<!-- THIRD PARTY -->

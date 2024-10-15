@@ -12,7 +12,7 @@
 	</parent>
 
 	<artifactId>esthesis-core</artifactId>
-	<version>3.0.52</version>
+	<version>3.0.53-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
