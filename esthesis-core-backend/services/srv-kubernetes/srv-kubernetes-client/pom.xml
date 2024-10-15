@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-core-services-kubernetes</artifactId>
-    <version>3.0.52-SNAPSHOT</version>
+    <version>3.0.52</version>
   </parent>
 
   <artifactId>esthesis-core-services-kubernetes-client</artifactId>

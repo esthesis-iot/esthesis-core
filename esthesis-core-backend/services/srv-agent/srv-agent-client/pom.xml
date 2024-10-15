@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>esthesis</groupId>
 		<artifactId>esthesis-core-services-agent</artifactId>
-		<version>3.0.52-SNAPSHOT</version>
+		<version>3.0.52</version>
 	</parent>
 
 	<artifactId>esthesis-core-services-agent-client</artifactId>
@@ -16,7 +16,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-device-client</artifactId>
-      <version>3.0.52-SNAPSHOT</version>
+      <version>3.0.52</version>
     </dependency>
   </dependencies>
 

@@ -1,6 +1,6 @@
 {
   "name": "esthesis-ui",
-  "version": "3.0.52-SNAPSHOT",
+  "version": "3.0.52",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --disable-host-check --proxy-config proxy.conf.mjs --hmr --open",
