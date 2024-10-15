@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-core-services-about</artifactId>
-    <version>3.0.53-SNAPSHOT</version>
+    <version>3.0.53</version>
   </parent>
 
   <artifactId>esthesis-core-services-about-impl</artifactId>
@@ -24,17 +24,17 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-about-client</artifactId>
-      <version>3.0.53-SNAPSHOT</version>
+      <version>3.0.53</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-audit-client</artifactId>
-      <version>3.0.53-SNAPSHOT</version>
+      <version>3.0.53</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-security-client</artifactId>
-      <version>3.0.53-SNAPSHOT</version>
+      <version>3.0.53</version>
     </dependency>
   </dependencies>
 </project>

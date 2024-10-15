@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>esthesis</groupId>
 		<artifactId>esthesis-core-dfl</artifactId>
-		<version>3.0.53-SNAPSHOT</version>
+		<version>3.0.53</version>
 	</parent>
 
 	<artifactId>esthesis-core-dfl-command-reply-updater</artifactId>
@@ -18,12 +18,12 @@
 		<dependency>
 			<groupId>esthesis</groupId>
 			<artifactId>esthesis-core-dfl-common</artifactId>
-			<version>3.0.53-SNAPSHOT</version>
+			<version>3.0.53</version>
 		</dependency>
 		<dependency>
 			<groupId>esthesis</groupId>
 			<artifactId>esthesis-core-services-command-client</artifactId>
-			<version>3.0.53-SNAPSHOT</version>
+			<version>3.0.53</version>
 		</dependency>
 
 		<!-- THIRD PARTY -->

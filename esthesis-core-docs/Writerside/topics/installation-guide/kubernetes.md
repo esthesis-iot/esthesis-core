@@ -286,7 +286,7 @@ export OIDC_CLIENT_AUTH_SERVER_URL="https://$KEYCLOAK_HOSTNAME/realms/esthesis"
 ### Supporting infrastructure
 - Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
   ```shell
-  wget -qO- https://esthes.is/helm/helmfile-esthesis-core-deps-3.0.52.tgz | tar xvz
+  wget -qO- https://esthes.is/helm/helmfile-esthesis-core-deps-3.0.53.tgz | tar xvz
   ```
 - Install the Helmfile:
   ```shell
@@ -296,7 +296,7 @@ export OIDC_CLIENT_AUTH_SERVER_URL="https://$KEYCLOAK_HOSTNAME/realms/esthesis"
 ### Application
 - Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
   ```shell
-  wget -qO- https://esthes.is/helm/helmfile-esthesis-core-3.0.52.tgz | tar xvz
+  wget -qO- https://esthes.is/helm/helmfile-esthesis-core-3.0.53.tgz | tar xvz
   ```
 - Install the Helmfile:
   ```shell
