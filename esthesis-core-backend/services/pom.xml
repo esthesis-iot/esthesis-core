@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>esthesis</groupId>
 		<artifactId>esthesis-core</artifactId>
-		<version>3.0.54</version>
+		<version>3.0.55-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>esthesis-core-services</artifactId>
@@ -53,7 +53,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-common</artifactId>
-      <version>3.0.54</version>
+      <version>3.0.55-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
