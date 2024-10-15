@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-core-services-command</artifactId>
-    <version>3.0.54-SNAPSHOT</version>
+    <version>3.0.54</version>
   </parent>
 
   <artifactId>esthesis-core-services-command-impl</artifactId>
@@ -28,32 +28,32 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-command-client</artifactId>
-      <version>3.0.54-SNAPSHOT</version>
+      <version>3.0.54</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-tag-client</artifactId>
-      <version>3.0.54-SNAPSHOT</version>
+      <version>3.0.54</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-settings-client</artifactId>
-      <version>3.0.54-SNAPSHOT</version>
+      <version>3.0.54</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-dataflow-client</artifactId>
-      <version>3.0.54-SNAPSHOT</version>
+      <version>3.0.54</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-audit-client</artifactId>
-      <version>3.0.54-SNAPSHOT</version>
+      <version>3.0.54</version>
     </dependency>
 		<dependency>
 			<groupId>esthesis</groupId>
 			<artifactId>esthesis-core-services-security-client</artifactId>
-			<version>3.0.54-SNAPSHOT</version>
+			<version>3.0.54</version>
 		</dependency>
 
     <!-- OTHER -->
