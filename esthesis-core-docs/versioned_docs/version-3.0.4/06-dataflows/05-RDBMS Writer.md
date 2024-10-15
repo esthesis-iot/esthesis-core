@@ -1,2 +1,0 @@
-# RDBMS Writer dataflow
-

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="esthesis-core"
+                  name="esthesis CORE - Documentation" start-page="introduction-main.md">
+
+    <toc-element topic="introduction-main.md"/>
+    <toc-element toc-title="Installation guide">
+        <toc-element topic="index.md"/>
+        <toc-element topic="kubernetes.md"/>
+        <toc-element topic="aws.md"/>
+        <toc-element topic="backups.md"/>
+    </toc-element>
+    <toc-element toc-title="Startup guide">
+        <toc-element topic="initial_configuration.md"/>
+        <toc-element topic="registering-a-test-device.md"/>
+        <toc-element topic="mqtt-security-hardening.md"/>
+        <toc-element topic="tags.md"/>
+        <toc-element topic="central-logging.md"/>
+        <toc-element topic="metrics.md"/>
+        <toc-element topic="distributed-tracing.md"/>
+    </toc-element>
+    <toc-element toc-title="User guide">
+        <toc-element topic="introduction-user-guide.md"/>
+    </toc-element>
+    <toc-element toc-title="Device Agent">
+        <toc-element topic="introduction-agent.md"/>
+        <toc-element topic="Installation.md"/>
+        <toc-element topic="configuration-parameters.md"/>
+        <toc-element topic="embedded-endpoints.md"/>
+        <toc-element topic="transforming-payloads.md"/>
+        <toc-element topic="hardware-support.md"/>
+    </toc-element>
+    <toc-element toc-title="Digital Twins">
+        <toc-element topic="introduction-dt.md"/>
+    </toc-element>
+    <toc-element toc-title="Dataflows">
+        <toc-element topic="introduction-dataflows.md"/>
+        <toc-element topic="mqtt-client.md"/>
+        <toc-element topic="ping-updater.md"/>
+        <toc-element topic="command-reply-updater.md"/>
+        <toc-element topic="influxdb-writer.md"/>
+        <toc-element topic="rdbms-writer.md"/>
+        <toc-element topic="redis-cache.md"/>
+        <toc-element topic="fiware-orion-gateway.md"/>
+    </toc-element>
+    <toc-element toc-title="Developers Guide">
+        <toc-element topic="dev-environment-setup.md"/>
+        <toc-element topic="working-with-helm-charts.md"/>
+        <toc-element topic="working-with-a-private-container-registry.md"/>
+        <toc-element topic="developing-backend-services.md"/>
+        <toc-element topic="developing-dataflows.md"/>
+        <toc-element topic="permissions-and-security.md"/>
+        <toc-element topic="cross-service-transactions.md"/>
+        <toc-element topic="developing-esthesis-device-agent.md"/>
+        <toc-element topic="inter-service-notifications.md"/>
+        <toc-element topic="caching.md"/>
+        <toc-element topic="resources-vs-system-resources.md"/>
+        <toc-element topic="testing.md"/>
+        <toc-element topic="auditing.md">
+        </toc-element>
+        <toc-element topic="observability.md"/>
+        <toc-element topic="provisioning.md"/>
+        <toc-element topic="release-process.md"/>
+        <toc-element topic="faq.md"/>
+    </toc-element>
+    <toc-element toc-title="References">
+        <toc-element topic="avro-support.md"/>
+        <toc-element topic="esthesis-line-protocol.md"/>
+    </toc-element>
+    <toc-element toc-title="Contact &amp; support">
+        <toc-element topic="introduction-contact-support.md"/>
+    </toc-element>
+    <toc-element topic="uns-edge-gateway-historian.md"/>
+</instance-profile>

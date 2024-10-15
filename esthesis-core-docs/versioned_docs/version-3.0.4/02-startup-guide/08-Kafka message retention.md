@@ -1,3 +1,0 @@
-# Kafka message retention
-
-[TBC]

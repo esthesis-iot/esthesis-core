@@ -1,2 +1,0 @@
-# Fiware Orion gateway dataflow
-

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE buildprofiles SYSTEM "https://resources.jetbrains.com/writerside/1.0/build-profiles.dtd">
+<buildprofiles xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/build-profiles.xsd"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <variables></variables>
+    <build-profile instance="esthesis-core">
+        <variables>
+            <noindex-content>false</noindex-content>
+            <primary-color>#059999</primary-color>
+            <color-preset>soft</color-preset>
+            <link-color>#059999</link-color>
+            <custom-favicons>logo.png</custom-favicons>
+            <header-logo>logo.png</header-logo>
+
+            <download-title>Get esthesis CORE</download-title>
+            <download-page>https://esthes.is/core</download-page>
+            <showDownloadButton>true</showDownloadButton>
+        </variables>
+        <footer>
+            <copyright>European Dynamics SA</copyright>
+            <social type="linkedin" href="https://www.linkedin.com/company/european-dynamics"/>
+            <link href="https://www.eurodyn.com">esthesis CORE</link>
+            <link href="https://www.eurodyn.com">esthesis EDGE</link>
+            <link href="https://www.eurodyn.com">esthesis GATEWAY</link>
+            <link href="https://www.eurodyn.com">esthesis UNS</link>
+            <link href="https://www.eurodyn.com">esthesis HISTORIAN</link>
+        </footer>
+    </build-profile>
+
+</buildprofiles>

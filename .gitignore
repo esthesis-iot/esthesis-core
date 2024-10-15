@@ -8,3 +8,4 @@
 **/local-env.sh
 **/buildkitd.toml
 **/.mvn
+/esthesis-core-docs/web-archive/
