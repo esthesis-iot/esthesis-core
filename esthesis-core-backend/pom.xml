@@ -8,11 +8,11 @@
 	<parent>
 		<groupId>esthesis</groupId>
 		<artifactId>esthesis-bom</artifactId>
-		<version>1.0.4-SNAPSHOT</version>
+		<version>1.0.4</version>
 	</parent>
 
 	<artifactId>esthesis-core</artifactId>
-	<version>3.0.55-SNAPSHOT</version>
+	<version>3.0.55</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -61,7 +61,7 @@
 		<dependency>
 			<groupId>esthesis</groupId>
 			<artifactId>esthesis-common</artifactId>
-			<version>1.0.4-SNAPSHOT</version>
+			<version>1.0.4</version>
 		</dependency>
 
 		<!-- THIRD-PARTY -->
