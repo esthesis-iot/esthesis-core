@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-core-services-agent</artifactId>
-    <version>3.0.55</version>
+    <version>3.0.56-SNAPSHOT</version>
   </parent>
 
   <artifactId>esthesis-core-services-agent-impl</artifactId>
@@ -24,37 +24,37 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-agent-client</artifactId>
-      <version>3.0.55</version>
+      <version>3.0.56-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-device-client</artifactId>
-      <version>3.0.55</version>
+      <version>3.0.56-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-crypto-client</artifactId>
-      <version>3.0.55</version>
+      <version>3.0.56-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-settings-client</artifactId>
-      <version>3.0.55</version>
+      <version>3.0.56-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-infrastructure-client</artifactId>
-      <version>3.0.55</version>
+      <version>3.0.56-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-provisioning-client</artifactId>
-      <version>3.0.55</version>
+      <version>3.0.56-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-util-redis</artifactId>
-      <version>3.0.55</version>
+      <version>3.0.56-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
