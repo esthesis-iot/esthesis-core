@@ -121,7 +121,16 @@ pipeline {
                 stage('Build Server') {
                     steps {
                         container (name: 'esthesis-core-builder') {
-                            sh 'mvn -f esthesis-core-backend/pom.xml clean install -Pcyclonedx-bom'
+                            withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials',
+                            usernameVariable: 'Username',
+                            passwordVariable: 'Password')]){
+                                sh '''
+                                    docker login -u $Username -p $Password docker.io
+                                    docker pull redis:7
+                                    docker pull mongo:4.4
+                                    mvn -f esthesis-core-backend/pom.xml clean install -Pcyclonedx-bom
+                                '''
+                            }
                         }
                     }
                 }
