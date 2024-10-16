@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 docker rm writerside-esthesis-core
-docker pull registry.jetbrains.team/p/writerside/builder/writerside-builder:242.21870 --tls-verify=false
 docker run  \
 	-v .:/opt/sources \
 	--name writerside-esthesis-core \
