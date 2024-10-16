@@ -1,12 +1,12 @@
-package esthesis.core.common.crypto;
+package esthesis.service.crypto.impl.util;
 
-import esthesis.core.common.crypto.dto.CAHolderDTO;
-import esthesis.core.common.crypto.dto.CertificateSignRequestDTO;
-import esthesis.core.common.crypto.dto.CreateCARequestDTO;
-import esthesis.core.common.crypto.dto.CreateKeyPairRequestDTO;
-import esthesis.core.common.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.common.exception.QDoesNotExistException;
-import jakarta.enterprise.context.ApplicationScoped;
+import esthesis.core.common.crypto.CoreCommonCryptoUtil;
+import esthesis.core.common.dto.SignatureVerificationRequestDTO;
+import esthesis.service.crypto.impl.dto.CAHolderDTO;
+import esthesis.service.crypto.impl.dto.CertificateSignRequestDTO;
+import esthesis.service.crypto.impl.dto.CreateCARequestDTO;
+import esthesis.service.crypto.impl.dto.CreateKeyPairRequestDTO;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -57,15 +57,17 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
 @Slf4j
-@ApplicationScoped
-public class CryptoService extends CryptoConverters {
+public class SrvCryptoCryptoUtil extends CoreCommonCryptoUtil {
 
-	private final Pattern ipv4Pattern = Pattern.compile(
+	private SrvCryptoCryptoUtil() {
+	}
+
+	private static final Pattern ipv4Pattern = Pattern.compile(
 		"^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$");
 	private static final String CN = "CN";
 	public static final String CERT_TYPE = "X509";
 
-	private boolean isValidIPV4Address(final String email) {
+	private static boolean isValidIPV4Address(final String email) {
 		Matcher matcher = ipv4Pattern.matcher(email);
 		return matcher.matches();
 	}
@@ -73,7 +75,7 @@ public class CryptoService extends CryptoConverters {
 	/**
 	 * Returns the default provider for secure random.
 	 */
-	private SecureRandom getSecureRandomAlgorithm() throws NoSuchAlgorithmException {
+	private static SecureRandom getSecureRandomAlgorithm() throws NoSuchAlgorithmException {
 		return getSecureRandomAlgorithm(null);
 	}
 
@@ -83,7 +85,7 @@ public class CryptoService extends CryptoConverters {
 	 * @param secureRandomAlgorithm the secure random algorithm to find.
 	 */
 
-	private SecureRandom getSecureRandomAlgorithm(final String secureRandomAlgorithm)
+	private static SecureRandom getSecureRandomAlgorithm(final String secureRandomAlgorithm)
 	throws NoSuchAlgorithmException {
 		SecureRandom selectedAlgorithm;
 		if (StringUtils.isBlank(secureRandomAlgorithm)) {
@@ -96,7 +98,7 @@ public class CryptoService extends CryptoConverters {
 		return selectedAlgorithm;
 	}
 
-	public String cleanUpCn(String cn) {
+	public static String cleanUpCn(String cn) {
 		if (cn.startsWith(CN + "=")) {
 			return cn.substring(CN.length() + 1);
 		} else {
@@ -116,7 +118,7 @@ public class CryptoService extends CryptoConverters {
 	 *                                   encryption
 	 * @throws IOException               thrown when something unexpected happens
 	 */
-	public CAHolderDTO createCA(final CreateCARequestDTO createCARequestDTO)
+	public static CAHolderDTO createCA(final CreateCARequestDTO createCARequestDTO)
 	throws NoSuchAlgorithmException, InvalidKeySpecException, OperatorCreationException, IOException,
 				 NoSuchProviderException {
 		log.debug("Creating a new CA '{}'.", createCARequestDTO);
@@ -167,7 +169,7 @@ public class CryptoService extends CryptoConverters {
 	 *                                   certificate
 	 */
 	@SuppressWarnings({"squid:S2274", "squid:S2142"})
-	public X509CertificateHolder generateCertificate(
+	public static X509CertificateHolder generateCertificate(
 		final CertificateSignRequestDTO certificateSignRequestDTO)
 	throws OperatorCreationException, CertIOException {
 		log.debug("Generating a certificate for '{}'.", certificateSignRequestDTO);
@@ -223,7 +225,7 @@ public class CryptoService extends CryptoConverters {
 	 * @return the generated keypair
 	 * @throws NoSuchAlgorithmException thrown when no algorithm is found for encryption
 	 */
-	public KeyPair createKeyPair(final CreateKeyPairRequestDTO createKeyPairRequestDTO)
+	public static KeyPair createKeyPair(final CreateKeyPairRequestDTO createKeyPairRequestDTO)
 	throws NoSuchAlgorithmException, NoSuchProviderException {
 		final KeyPairGenerator keyPairGenerator;
 		log.debug("Creating a keypair for '{}'.", createKeyPairRequestDTO);
@@ -249,7 +251,7 @@ public class CryptoService extends CryptoConverters {
 	/**
 	 * Converts a byte array holding a private key in DER format to a private key.
 	 */
-	public PrivateKey privateKeyFromByteArray(final byte[] key, final String keyAlgorithm,
+	public static PrivateKey privateKeyFromByteArray(final byte[] key, final String keyAlgorithm,
 		final String keyProvider)
 	throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
 		log.debug("Converting private key '{}' PrivateKey.", key);
@@ -271,7 +273,7 @@ public class CryptoService extends CryptoConverters {
 	 * @param keystoreProvider The provider for the specific keystore type.
 	 * @param keystorePassword The password of the keystore.
 	 */
-	public byte[] createKeystore(final String keystoreType, final String keystoreProvider,
+	public static byte[] createKeystore(final String keystoreType, final String keystoreProvider,
 		final String keystorePassword)
 	throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, IOException,
 				 CertificateException {
@@ -290,7 +292,7 @@ public class CryptoService extends CryptoConverters {
 			ks.load(null, null);
 		}
 
-		return keystoreSerialize(ks, keystorePassword);
+		return SrvCryptoCryptoConverters.keystoreSerialize(ks, keystorePassword);
 	}
 
 	/**
@@ -304,19 +306,21 @@ public class CryptoService extends CryptoConverters {
 	 * @param certificate      The certificate to save.
 	 * @param certificateAlias The alias under which the certificate is saved.
 	 */
-	public byte[] saveCertificateToKeystore(final byte[] keystore, final String keystoreType,
+	public static byte[] saveCertificateToKeystore(final byte[] keystore, final String keystoreType,
 		final String keystoreProvider, final String keystorePassword, final String certificateAlias,
 		final byte[] certificate)
 	throws NoSuchAlgorithmException, CertificateException, NoSuchProviderException, KeyStoreException,
 				 IOException {
 		// Load the keystore.
-		KeyStore ks = keystoreDeserialize(keystore, keystoreType, keystorePassword, keystoreProvider);
+		KeyStore ks = SrvCryptoCryptoConverters.keystoreDeserialize(keystore, keystoreType,
+			keystorePassword,
+			keystoreProvider);
 
 		// Add the certificate.
 		ks.setCertificateEntry(certificateAlias,
 			new JcaX509CertificateConverter().getCertificate(new X509CertificateHolder(certificate)));
 
-		return keystoreSerialize(ks, keystorePassword);
+		return SrvCryptoCryptoConverters.keystoreSerialize(ks, keystorePassword);
 	}
 
 	/**
@@ -333,13 +337,15 @@ public class CryptoService extends CryptoConverters {
 	 * @param certificateChain The certificate chain for the key.
 	 */
 	@SuppressWarnings("squid:S00107")
-	public byte[] savePrivateKeyToKeystore(final byte[] keystore, final String keystoreType,
+	public static byte[] savePrivateKeyToKeystore(final byte[] keystore, final String keystoreType,
 		final String keystoreProvider, final String keystorePassword, final String keyAlias,
 		final PrivateKey key, final String keyPassword, final String certificateChain)
 	throws NoSuchAlgorithmException, CertificateException, NoSuchProviderException, KeyStoreException,
 				 IOException {
 		// Load the keystore.
-		KeyStore ks = keystoreDeserialize(keystore, keystoreType, keystorePassword, keystoreProvider);
+		KeyStore ks = SrvCryptoCryptoConverters.keystoreDeserialize(keystore, keystoreType,
+			keystorePassword,
+			keystoreProvider);
 
 		Collection<? extends Certificate> certificates = CertificateFactory.getInstance("X.509")
 			.generateCertificates(
@@ -350,7 +356,7 @@ public class CryptoService extends CryptoConverters {
 			keyPassword != null ? keyPassword.toCharArray() : "".toCharArray(),
 			certificates.toArray(new Certificate[0]));
 
-		return keystoreSerialize(ks, keystorePassword);
+		return SrvCryptoCryptoConverters.keystoreSerialize(ks, keystorePassword);
 	}
 
 	/**
@@ -363,7 +369,7 @@ public class CryptoService extends CryptoConverters {
 	 * @throws InvalidKeyException      thrown when the provided key is invalid
 	 * @throws SignatureException       thrown when something unexpected occurs during signing
 	 */
-	public boolean verifySignature(final SignatureVerificationRequestDTO request)
+	public static boolean verifySignature(final SignatureVerificationRequestDTO request)
 	throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
 				 SignatureException {
 		log.debug("Received signature verification request '{}'.", request);
@@ -371,7 +377,8 @@ public class CryptoService extends CryptoConverters {
 			throw new QDoesNotExistException("The provided signature to validate is empty.");
 		}
 		final Signature signature = Signature.getInstance(request.getSignatureAlgorithm());
-		signature.initVerify(pemToPublicKey(request.getPublicKey(), request.getKeyAlgorithm()));
+		signature.initVerify(SrvCryptoCryptoConverters.pemToPublicKey(request.getPublicKey(),
+			request.getKeyAlgorithm()));
 		signature.update(request.getPayload());
 
 		boolean verification = signature.verify(Base64.getDecoder().decode(request.getSignature()));
@@ -385,7 +392,7 @@ public class CryptoService extends CryptoConverters {
 	 *
 	 * @return
 	 */
-	public List<String> getSupportedKeystoreTypes() {
+	public static List<String> getSupportedKeystoreTypes() {
 		List<String> types = new ArrayList<>();
 		Provider[] providers = Security.getProviders();
 		for (Provider provider : providers) {
@@ -403,7 +410,7 @@ public class CryptoService extends CryptoConverters {
 	 *
 	 * @return
 	 */
-	public List<String> getSupportedKeyAlgorithms() {
+	public static List<String> getSupportedKeyAlgorithms() {
 		List<String> algorithms = new ArrayList<>();
 		Provider[] providers = Security.getProviders();
 		for (Provider provider : providers) {
@@ -421,7 +428,7 @@ public class CryptoService extends CryptoConverters {
 	 *
 	 * @return
 	 */
-	public List<String> getSupportedSignatureAlgorithms() {
+	public static List<String> getSupportedSignatureAlgorithms() {
 		List<String> algorithms = new ArrayList<>();
 		Provider[] providers = Security.getProviders();
 		for (Provider provider : providers) {
@@ -439,7 +446,7 @@ public class CryptoService extends CryptoConverters {
 	 *
 	 * @return
 	 */
-	public List<String> getSupportedMessageDigestAlgorithms() {
+	public static List<String> getSupportedMessageDigestAlgorithms() {
 		List<String> algorithms = new ArrayList<>();
 		Provider[] providers = Security.getProviders();
 		for (Provider provider : providers) {
@@ -457,7 +464,7 @@ public class CryptoService extends CryptoConverters {
 	 *
 	 * @return
 	 */
-	public List<String> getSupportedKeyAgreementAlgorithms() {
+	public static List<String> getSupportedKeyAgreementAlgorithms() {
 		List<String> algorithms = new ArrayList<>();
 		Provider[] providers = Security.getProviders();
 		for (Provider provider : providers) {
@@ -468,6 +475,5 @@ public class CryptoService extends CryptoConverters {
 			}
 		}
 		return algorithms;
-
 	}
 }

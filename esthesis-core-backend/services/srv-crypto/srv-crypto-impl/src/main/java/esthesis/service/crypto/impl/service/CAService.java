@@ -6,19 +6,20 @@ import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
 import static esthesis.core.common.AppConstants.Security.Operation.READ;
 
-import esthesis.core.common.AppConstants.NamedSetting;
-import esthesis.core.common.crypto.CryptoService;
-import esthesis.core.common.crypto.dto.CAHolderDTO;
-import esthesis.core.common.crypto.dto.CreateCARequestDTO;
-import esthesis.core.common.crypto.dto.CreateKeyPairRequestDTO;
 import esthesis.common.exception.QCouldNotSaveException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QMutationNotPermittedException;
+import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.common.validation.CVEBuilder;
 import esthesis.service.crypto.entity.CaEntity;
+import esthesis.service.crypto.impl.dto.CAHolderDTO;
+import esthesis.service.crypto.impl.dto.CreateCARequestDTO;
+import esthesis.service.crypto.impl.dto.CreateKeyPairRequestDTO;
+import esthesis.service.crypto.impl.util.SrvCryptoCryptoConverters;
+import esthesis.service.crypto.impl.util.SrvCryptoCryptoUtil;
 import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
@@ -57,9 +58,6 @@ public class CAService extends BaseService<CaEntity> {
 	@Inject
 	@RestClient
 	SettingsResource settingsResource;
-
-	@Inject
-	CryptoService cryptoService;
 
 	private List<String> getCertificate(String caId, List<String> certificteChain) {
 		CaEntity caEntity = findById(caId);
@@ -107,15 +105,17 @@ public class CAService extends BaseService<CaEntity> {
 				createCARequestBuilder.issuerCN(parentCaEntity.getCn())
 					.issuerPrivateKeyAlgorithm(asymmetricKeyAlgorithm)
 					.issuerPrivateKey(
-						cryptoService.pemToPrivateKey(parentCaEntity.getPrivateKey(),
+						SrvCryptoCryptoConverters.pemToPrivateKey(parentCaEntity.getPrivateKey(),
 							asymmetricKeyAlgorithm));
 				caEntity.setParentCa(parentCaEntity.getCn());
 			}
 
-			final CAHolderDTO caHolderDTO = cryptoService.createCA(createCARequestBuilder.build());
-			caEntity.setCertificate(cryptoService.certificateToPEM(caHolderDTO.getCertificate()));
-			caEntity.setPrivateKey(cryptoService.privateKeyToPEM(caHolderDTO.getPrivateKey()));
-			caEntity.setPublicKey(cryptoService.publicKeyToPEM(caHolderDTO.getPublicKey()));
+			final CAHolderDTO caHolderDTO = SrvCryptoCryptoUtil.createCA(createCARequestBuilder.build());
+			caEntity.setCertificate(
+				SrvCryptoCryptoConverters.certificateToPEM(caHolderDTO.getCertificate()));
+			caEntity.setPrivateKey(
+				SrvCryptoCryptoConverters.privateKeyToPEM(caHolderDTO.getPrivateKey()));
+			caEntity.setPublicKey(SrvCryptoCryptoConverters.publicKeyToPEM(caHolderDTO.getPublicKey()));
 			caEntity.setIssued(Instant.now());
 
 			return super.save(caEntity);
@@ -144,14 +144,17 @@ public class CAService extends BaseService<CaEntity> {
 				Files.readString(certificate.uploadedFile().toAbsolutePath()));
 
 			// Extract additional certificate information.
-			X509Certificate x509Certificate = cryptoService.pemToCertificate(caEntity.getCertificate());
+			X509Certificate x509Certificate = SrvCryptoCryptoConverters.pemToCertificate(
+				caEntity.getCertificate());
 			caEntity.setName(importedCaEntity.getName());
 			caEntity.setIssued(x509Certificate.getNotBefore().toInstant());
 			caEntity.setValidity(x509Certificate.getNotAfter().toInstant());
 
 			//Set CN and parent CA.
-			String cn = cryptoService.cleanUpCn(x509Certificate.getSubjectX500Principal().getName());
-			String issuer = cryptoService.cleanUpCn(x509Certificate.getIssuerX500Principal().getName());
+			String cn = SrvCryptoCryptoUtil.cleanUpCn(
+				x509Certificate.getSubjectX500Principal().getName());
+			String issuer = SrvCryptoCryptoUtil.cleanUpCn(
+				x509Certificate.getIssuerX500Principal().getName());
 			caEntity.setCn(cn);
 			if (!cn.equalsIgnoreCase(issuer)) {
 				caEntity.setParentCa(issuer);

@@ -1,12 +1,12 @@
-package esthesis.core.common.crypto;
+package esthesis.service.crypto.impl.util;
 
+import esthesis.core.common.crypto.CoreCommonCryptoConverters;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -15,13 +15,8 @@ import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
@@ -32,17 +27,9 @@ import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 
 @Slf4j
-public class CryptoConverters {
+public class SrvCryptoCryptoConverters extends CoreCommonCryptoConverters {
 
 	private static final String CERTIFICATE = "CERTIFICATE";
-
-	private String removeHeaderFooter(final String key) {
-		String regex = "---.*---\\n*";
-		final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
-		final Matcher matcher = pattern.matcher(key);
-
-		return matcher.replaceAll("");
-	}
 
 	/**
 	 * Converts a certificate to a PEM format encoded as X.509.
@@ -50,7 +37,7 @@ public class CryptoConverters {
 	 * @return the generated PEM
 	 * @throws IOException thrown when something unexpected happens
 	 */
-	public String certificateToPEM(final Certificate certificate)
+	public static String certificateToPEM(final Certificate certificate)
 	throws IOException {
 		log.trace("Converting '{}' certificate to PEM.", certificate);
 		try (StringWriter pemStrWriter = new StringWriter()) {
@@ -63,48 +50,7 @@ public class CryptoConverters {
 		}
 	}
 
-	/**
-	 * Parses a certificate in PEM format encoded as X.509.
-	 *
-	 * @param cert the certificate in PEM format
-	 * @return the generated certificate
-	 * @throws CertificateException thrown when something unexpected happens while generating the
-	 *                              certificate
-	 */
-	public X509Certificate pemToCertificate(final String cert)
-	throws CertificateException {
-		log.trace("Parsing '{}' PEM certificate.", cert);
-		CertificateFactory fact = CertificateFactory.getInstance("X.509");
-
-		return (X509Certificate) fact.generateCertificate(
-			new ByteArrayInputStream(cert.getBytes(StandardCharsets.UTF_8)));
-	}
-
-	/**
-	 * Converts a PEM/PKCS8 private key to a {@link PrivateKey}.
-	 *
-	 * @param privateKey the private key to convert
-	 * @param algorithm  the security algorithm with which this key was generated
-	 * @return the generated PEM format
-	 * @throws NoSuchAlgorithmException thrown when no algorithm is found for encryption
-	 * @throws InvalidKeySpecException  thrown when the provided key is invalid
-	 */
-	public PrivateKey pemToPrivateKey(String privateKey, final String algorithm)
-	throws NoSuchAlgorithmException, InvalidKeySpecException {
-		log.trace("Converting PEM private key '{}' to PrivateKey.", privateKey);
-
-		// Cleanup the PEM from unwanted text.
-		privateKey = removeHeaderFooter(privateKey).trim();
-
-		// Read the cleaned up PEM and generate the public key.
-		byte[] encoded = Base64.decodeBase64(privateKey);
-		final PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
-		final KeyFactory factory = KeyFactory.getInstance(algorithm);
-
-		return factory.generatePrivate(keySpec);
-	}
-
-	public String privateKeyToPEM(final PrivateKey key) throws IOException {
+	public static String privateKeyToPEM(final PrivateKey key) throws IOException {
 		try (StringWriter pemStrWriter = new StringWriter()) {
 			try (JcaPEMWriter pemWriter = new JcaPEMWriter(pemStrWriter)) {
 				pemWriter.writeObject(new JcaPKCS8Generator(key, null));
@@ -114,7 +60,7 @@ public class CryptoConverters {
 		}
 	}
 
-	public String publicKeyToPEM(final PublicKey key) throws IOException {
+	public static String publicKeyToPEM(final PublicKey key) throws IOException {
 		try (StringWriter pemStrWriter = new StringWriter()) {
 			try (JcaPEMWriter pemWriter = new JcaPEMWriter(pemStrWriter)) {
 				pemWriter.writeObject(key);
@@ -133,7 +79,7 @@ public class CryptoConverters {
 	 * @throws NoSuchAlgorithmException thrown when no algorithm is found for encryption
 	 * @throws InvalidKeySpecException  thrown when the provided key is invalid
 	 */
-	public PublicKey pemToPublicKey(String publicKey, final String algorithm)
+	public static PublicKey pemToPublicKey(String publicKey, final String algorithm)
 	throws NoSuchAlgorithmException, InvalidKeySpecException {
 		PublicKey key;
 
@@ -155,7 +101,7 @@ public class CryptoConverters {
 	 * @param keystore         The keystore to convert.
 	 * @param keystorePassword The password of the keystore.
 	 */
-	public byte[] keystoreSerialize(final KeyStore keystore,
+	public static byte[] keystoreSerialize(final KeyStore keystore,
 		final String keystorePassword)
 	throws IOException, CertificateException, NoSuchAlgorithmException,
 				 KeyStoreException {
@@ -179,7 +125,7 @@ public class CryptoConverters {
 	 * @param keystorePassword The password of the keystore.
 	 * @param keystoreProvider A provider for the specific keystore type.
 	 */
-	public KeyStore keystoreDeserialize(final byte[] keystore,
+	public static KeyStore keystoreDeserialize(final byte[] keystore,
 		final String keystoreType, final String keystorePassword,
 		final String keystoreProvider)
 	throws KeyStoreException, NoSuchProviderException, IOException,

@@ -1,4 +1,4 @@
-package esthesis.core.common.crypto.dto;
+package esthesis.service.crypto.impl.dto;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;

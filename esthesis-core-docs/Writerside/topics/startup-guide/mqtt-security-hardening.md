@@ -7,7 +7,7 @@ the actual devices managed in the system, it is of paramount importance to enabl
 before you expose your installation outside a controlled network.
 
 The following instructions show you how you can enable certificate-based authentication using
-Eclipse Mosquitto, which is the MQTT broker being used when you set up esthesis using the provider
+Eclipse Mosquitto, which is the MQTT broker being used when you set up esthesis using the provided
 Helm charts.
 
 ## Create a Certificate Authority and a Certificate

@@ -1,46 +1,42 @@
 package esthesis.service.crypto.impl.resource;
 
 import esthesis.core.common.AppConstants;
-import esthesis.core.common.crypto.CryptoService;
+import esthesis.service.crypto.impl.util.SrvCryptoCryptoUtil;
 import esthesis.service.crypto.resource.CryptoInfoResource;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.inject.Inject;
 import java.util.List;
 
 @Authenticated
 public class CryptoInfoResourceImpl implements CryptoInfoResource {
 
-	@Inject
-	CryptoService cryptoService;
-
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	public List<String> getSupportedKeystoreTypes() {
-		return cryptoService.getSupportedKeystoreTypes();
+		return SrvCryptoCryptoUtil.getSupportedKeystoreTypes();
 	}
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	public List<String> getSupportedKeyAlgorithms() {
-		return cryptoService.getSupportedKeyAlgorithms();
+		return SrvCryptoCryptoUtil.getSupportedKeyAlgorithms();
 	}
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	public List<String> getSupportedSignatureAlgorithms() {
-		return cryptoService.getSupportedSignatureAlgorithms();
+		return SrvCryptoCryptoUtil.getSupportedSignatureAlgorithms();
 	}
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	public List<String> getSupportedMessageDigestAlgorithms() {
-		return cryptoService.getSupportedMessageDigestAlgorithms();
+		return SrvCryptoCryptoUtil.getSupportedMessageDigestAlgorithms();
 	}
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	public List<String> getSupportedKeyAgreementAlgorithms() {
-		return cryptoService.getSupportedKeyAgreementAlgorithms();
+		return SrvCryptoCryptoUtil.getSupportedKeyAgreementAlgorithms();
 	}
 }

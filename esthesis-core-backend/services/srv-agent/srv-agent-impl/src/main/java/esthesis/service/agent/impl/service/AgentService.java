@@ -6,14 +6,14 @@ import static esthesis.core.common.AppConstants.HARDWARE_ID_REGEX;
 
 import esthesis.common.agent.dto.AgentRegistrationRequest;
 import esthesis.common.agent.dto.AgentRegistrationResponse;
-import esthesis.core.common.AppConstants.NamedSetting;
-import esthesis.core.common.AppConstants.Provisioning.Redis;
-import esthesis.core.common.AppConstants.Provisioning.Type;
-import esthesis.core.common.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.exception.QLimitException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QSecurityException;
+import esthesis.core.common.AppConstants.NamedSetting;
+import esthesis.core.common.AppConstants.Provisioning.Redis;
+import esthesis.core.common.AppConstants.Provisioning.Type;
+import esthesis.core.common.dto.SignatureVerificationRequestDTO;
 import esthesis.service.agent.dto.AgentProvisioningInfoResponse;
 import esthesis.service.common.gridfs.GridFSDTO;
 import esthesis.service.common.gridfs.GridFSService;
@@ -53,6 +53,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 @Slf4j
 @ApplicationScoped
 public class AgentService {
+
 	@ConfigProperty(name = "quarkus.mongodb.database")
 	String dbName;
 
@@ -98,7 +99,7 @@ public class AgentService {
 	 * of the hardware id of the device requesting the information.
 	 *
 	 * @param hardwareId The hardware id of the device requesting the information.
-	 * @param token 		The token sent by the device.
+	 * @param token      The token sent by the device.
 	 */
 	private void validateRequestToken(String hardwareId, Optional<String> token) {
 		if (token.isEmpty()) {
@@ -153,6 +154,7 @@ public class AgentService {
 
 	/**
 	 * Prepares a response with the details of a provisioning package and a download token.
+	 *
 	 * @param pp The provisioning package to prepare the response for.
 	 * @return The response with the provisioning package details and the download token.
 	 */
@@ -247,11 +249,11 @@ public class AgentService {
 			Redis.DOWNLOAD_TOKEN_PACKAGE_ID).onItem().ifNull().failWith(
 			() -> new QDoesNotExistException("Invalid download token '{}' for provisioning package.",
 				token)).onItem().transformToUni(id -> gridFSService.downloadBinary(GridFSDTO.builder()
-					.database(dbName)
-					.metadataName(PROVISIONING_METADATA_NAME)
-					.metadataValue(id)
-					.bucketName(PROVISIONING_BUCKET_NAME)
-					.build()));
+			.database(dbName)
+			.metadataName(PROVISIONING_METADATA_NAME)
+			.metadataValue(id)
+			.bucketName(PROVISIONING_BUCKET_NAME)
+			.build()));
 	}
 
 	/**

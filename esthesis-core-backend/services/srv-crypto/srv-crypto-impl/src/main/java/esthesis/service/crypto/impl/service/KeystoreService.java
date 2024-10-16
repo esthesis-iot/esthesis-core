@@ -9,9 +9,8 @@ import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
 import static esthesis.core.common.AppConstants.Security.Operation.READ;
 import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
-import esthesis.core.common.AppConstants.NamedSetting;
-import esthesis.core.common.crypto.CryptoService;
 import esthesis.common.exception.QSecurityException;
+import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
@@ -19,6 +18,8 @@ import esthesis.service.crypto.dto.KeystoreEntryDTO;
 import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.entity.CertificateEntity;
 import esthesis.service.crypto.entity.KeystoreEntity;
+import esthesis.service.crypto.impl.util.SrvCryptoCryptoConverters;
+import esthesis.service.crypto.impl.util.SrvCryptoCryptoUtil;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.service.security.annotation.ErnPermission;
@@ -40,9 +41,6 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 public class KeystoreService extends BaseService<KeystoreEntity> {
 
 	@Inject
-	CryptoService cryptoService;
-
-	@Inject
 	CertificateService certificateService;
 
 	@Inject
@@ -62,9 +60,10 @@ public class KeystoreService extends BaseService<KeystoreEntity> {
 		final String certificateChain, final String keystoreType, final String keystoreProvider)
 	throws NoSuchAlgorithmException, InvalidKeySpecException, CertificateException, KeyStoreException,
 				 IOException, NoSuchProviderException {
-		final PrivateKey pk = cryptoService.pemToPrivateKey(privateKey,
+		final PrivateKey pk = SrvCryptoCryptoConverters.pemToPrivateKey(privateKey,
 			settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString());
-		keystore = cryptoService.savePrivateKeyToKeystore(keystore, keystoreType, keystoreProvider,
+		keystore = SrvCryptoCryptoUtil.savePrivateKeyToKeystore(keystore, keystoreType,
+			keystoreProvider,
 			keystorePassword, keyAlias + ".key", pk, keyPassword, certificateChain);
 
 		return keystore;
@@ -75,9 +74,10 @@ public class KeystoreService extends BaseService<KeystoreEntity> {
 		final String keystoreProvider)
 	throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException,
 				 NoSuchProviderException {
-		keystore = cryptoService.saveCertificateToKeystore(keystore, keystoreType, keystoreProvider,
+		keystore = SrvCryptoCryptoUtil.saveCertificateToKeystore(keystore, keystoreType,
+			keystoreProvider,
 			keystorePassword, certificateAlias + ".crt",
-			cryptoService.pemToCertificate(certificate).getEncoded());
+			SrvCryptoCryptoConverters.pemToCertificate(certificate).getEncoded());
 
 		return keystore;
 	}
@@ -95,7 +95,7 @@ public class KeystoreService extends BaseService<KeystoreEntity> {
 			final String keystoreProvider = keystoreEntity.getType().split("/")[1];
 			final String keystorePassword = keystoreEntity.getPassword();
 
-			byte[] keystore = cryptoService.createKeystore(keystoreType, keystoreProvider,
+			byte[] keystore = SrvCryptoCryptoUtil.createKeystore(keystoreType, keystoreProvider,
 				keystorePassword);
 
 			for (KeystoreEntryDTO entry : keystoreEntity.getEntries()) {
