@@ -87,19 +87,19 @@ public class MqttRoute extends RouteBuilder {
 			if (config.mqttBrokerCert().isEmpty()) {
 				log.warn("SSL is enabled but no client certificate is provided.");
 			} else {
-				clientCert = Files.readString(Paths.get(config.mqttBrokerCert().get()));
+				clientCert = Files.readString(Paths.get(config.mqttBrokerCert().orElseThrow()));
 				log.debug("Using client certificate '{}'.", clientCert);
 			}
 			if (config.mqttBrokerKey().isEmpty()) {
 				log.warn("SSL is enabled but no client private key is provided.");
 			} else {
-				clientKey = Files.readString(Paths.get(config.mqttBrokerKey().get()));
+				clientKey = Files.readString(Paths.get(config.mqttBrokerKey().orElseThrow()));
 				log.debug("Using client private key '{}'.", clientKey);
 			}
 			if (config.mqttBrokerCa().isEmpty()) {
 				log.warn("SSL is enabled but no CA certificate is provided.");
 			} else {
-				caCert = Files.readString(Paths.get(config.mqttBrokerCa().get()));
+				caCert = Files.readString(Paths.get(config.mqttBrokerCa().orElseThrow()));
 				log.debug("Using CA certificate '{}'.", caCert);
 			}
 

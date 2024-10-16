@@ -1,4 +1,4 @@
-package esthesis.core.common.crypto.dto;
+package esthesis.service.crypto.impl.dto;
 
 import jakarta.validation.constraints.NotNull;
 import java.math.BigInteger;

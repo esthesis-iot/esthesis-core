@@ -6,18 +6,19 @@ import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
 import static esthesis.core.common.AppConstants.Security.Operation.READ;
 
-import esthesis.core.common.AppConstants.NamedSetting;
-import esthesis.core.common.crypto.CryptoService;
-import esthesis.core.common.crypto.dto.CertificateSignRequestDTO;
-import esthesis.core.common.crypto.dto.CreateKeyPairRequestDTO;
 import esthesis.common.exception.QCouldNotSaveException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QMutationNotPermittedException;
+import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.entity.CertificateEntity;
+import esthesis.service.crypto.impl.dto.CertificateSignRequestDTO;
+import esthesis.service.crypto.impl.dto.CreateKeyPairRequestDTO;
+import esthesis.service.crypto.impl.util.SrvCryptoCryptoConverters;
+import esthesis.service.crypto.impl.util.SrvCryptoCryptoUtil;
 import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
@@ -55,9 +56,6 @@ public class CertificateService extends BaseService<CertificateEntity> {
 	CAService caService;
 
 	@Inject
-	CryptoService cryptoService;
-
-	@Inject
 	@RestClient
 	SettingsResource settingsResource;
 
@@ -76,14 +74,14 @@ public class CertificateService extends BaseService<CertificateEntity> {
 				Files.readString(certificate.uploadedFile().toAbsolutePath()));
 
 			// Extract additional certificate information.
-			X509Certificate x509Certificate = cryptoService.pemToCertificate(
+			X509Certificate x509Certificate = SrvCryptoCryptoConverters.pemToCertificate(
 				certificateEntity.getCertificate());
 			certificateEntity.setCn(
-				cryptoService.cleanUpCn(x509Certificate.getSubjectX500Principal().getName()));
+				SrvCryptoCryptoUtil.cleanUpCn(x509Certificate.getSubjectX500Principal().getName()));
 			certificateEntity.setIssued(x509Certificate.getNotBefore().toInstant());
 			certificateEntity.setValidity(x509Certificate.getNotAfter().toInstant());
 			certificateEntity.setIssuer(
-				cryptoService.cleanUpCn(x509Certificate.getIssuerX500Principal().getName()));
+				SrvCryptoCryptoUtil.cleanUpCn(x509Certificate.getIssuerX500Principal().getName()));
 			certificateEntity.setName(importedCertificateEntity.getName());
 			if (x509Certificate.getSubjectAlternativeNames() != null) {
 				certificateEntity.setSan(x509Certificate.getSubjectAlternativeNames().stream()
@@ -118,7 +116,7 @@ public class CertificateService extends BaseService<CertificateEntity> {
 			}
 
 			// Generate a keypair.
-			final KeyPair keyPair = cryptoService.createKeyPair(
+			final KeyPair keyPair = SrvCryptoCryptoUtil.createKeyPair(
 				CreateKeyPairRequestDTO.builder()
 					.keySize(settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_SIZE).asInt())
 					.keyPairGeneratorAlgorithm(
@@ -148,7 +146,7 @@ public class CertificateService extends BaseService<CertificateEntity> {
 			if (caEntity != null) {
 				certificateSignRequestDTO.setIssuerCN(caEntity.getCn());
 				certificateSignRequestDTO.setIssuerPrivateKey(
-					cryptoService.pemToPrivateKey(
+					SrvCryptoCryptoConverters.pemToPrivateKey(
 						caEntity.getPrivateKey(),
 						settingsResource.findByName(
 								NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM)
@@ -160,10 +158,11 @@ public class CertificateService extends BaseService<CertificateEntity> {
 
 			// Sign the certificate.
 			final X509CertificateHolder x509CertificateHolder =
-				cryptoService.generateCertificate(certificateSignRequestDTO);
+				SrvCryptoCryptoUtil.generateCertificate(certificateSignRequestDTO);
 
 			// Generate the PEM version of the certificate.
-			String certPEM = cryptoService.certificateToPEM(x509CertificateHolder.toASN1Structure());
+			String certPEM = SrvCryptoCryptoConverters.certificateToPEM(
+				x509CertificateHolder.toASN1Structure());
 
 			// Add the certificate chain.
 			if (caEntity != null) {
@@ -174,8 +173,8 @@ public class CertificateService extends BaseService<CertificateEntity> {
 			// Populate the certificate DTO to persist it.
 			certificateEntity.setIssued(certificateSignRequestDTO.getValidForm());
 			certificateEntity
-				.setPrivateKey(cryptoService.privateKeyToPEM(keyPair.getPrivate()));
-			certificateEntity.setPublicKey(cryptoService.publicKeyToPEM(keyPair.getPublic()));
+				.setPrivateKey(SrvCryptoCryptoConverters.privateKeyToPEM(keyPair.getPrivate()));
+			certificateEntity.setPublicKey(SrvCryptoCryptoConverters.publicKeyToPEM(keyPair.getPublic()));
 			certificateEntity.setIssuer(certificateSignRequestDTO.getIssuerCN());
 			certificateEntity.setCertificate(certPEM);
 			certificateEntity.setSan(certificateSignRequestDTO.getSan());

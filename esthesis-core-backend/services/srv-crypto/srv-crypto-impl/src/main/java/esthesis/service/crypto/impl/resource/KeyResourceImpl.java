@@ -2,13 +2,14 @@ package esthesis.service.crypto.impl.resource;
 
 import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.NamedSetting;
-import esthesis.core.common.crypto.CryptoService;
-import esthesis.core.common.crypto.dto.CertificateSignRequestDTO;
-import esthesis.core.common.crypto.dto.CreateKeyPairRequestDTO;
 import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.service.crypto.entity.CaEntity;
+import esthesis.service.crypto.impl.dto.CertificateSignRequestDTO;
+import esthesis.service.crypto.impl.dto.CreateKeyPairRequestDTO;
 import esthesis.service.crypto.impl.repository.CaEntityRepository;
 import esthesis.service.crypto.impl.service.CAService;
+import esthesis.service.crypto.impl.util.SrvCryptoCryptoConverters;
+import esthesis.service.crypto.impl.util.SrvCryptoCryptoUtil;
 import esthesis.service.crypto.resource.KeyResource;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
@@ -42,9 +43,6 @@ public class KeyResourceImpl implements KeyResource {
 	SettingsResource settingsResource;
 
 	@Inject
-	CryptoService cryptoService;
-
-	@Inject
 	CAService caService;
 
 	@Inject
@@ -59,21 +57,22 @@ public class KeyResourceImpl implements KeyResource {
 		createKeyPairRequestDTO.setKeyPairGeneratorAlgorithm(
 			settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString());
 
-		return cryptoService.createKeyPair(createKeyPairRequestDTO);
+		return SrvCryptoCryptoUtil.createKeyPair(createKeyPairRequestDTO);
 	}
 
 	@Override
 	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	public String publicKeyToPEM(PublicKey publicKey) throws IOException {
-		return cryptoService.publicKeyToPEM(publicKey);
+		return SrvCryptoCryptoConverters.publicKeyToPEM(publicKey);
 	}
 
 	@Override
 	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	public String privateKeyToPEM(PrivateKey privateKey) throws IOException {
-		return cryptoService.privateKeyToPEM(privateKey);
+		return SrvCryptoCryptoConverters.privateKeyToPEM(privateKey);
 	}
 
+	//TODO: Move logic to service layer.
 	@Override
 	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	public String generateCertificateAsPEM(CreateCertificateRequestDTO createCertificateRequestDTO)
@@ -116,17 +115,18 @@ public class KeyResourceImpl implements KeyResource {
 				.setValidTo(caEntity.getValidity())
 				.setIssuerCN(caEntity.getCn())
 				.setIssuerPrivateKey(
-					cryptoService.pemToPrivateKey(caEntity.getPrivateKey(),
+					SrvCryptoCryptoConverters.pemToPrivateKey(caEntity.getPrivateKey(),
 						settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM)
 							.asString()));
 		}
 
 		// Sign the certificate.
-		X509CertificateHolder x509CertificateHolder = cryptoService.generateCertificate(
+		X509CertificateHolder x509CertificateHolder = SrvCryptoCryptoUtil.generateCertificate(
 			certificateSignRequestDTO);
 
 		// Convert the certificate to PEM.
-		String cert = cryptoService.certificateToPEM(x509CertificateHolder.toASN1Structure());
+		String cert = SrvCryptoCryptoConverters.certificateToPEM(
+			x509CertificateHolder.toASN1Structure());
 
 		// Add certificate chain, if requested.
 		if (createCertificateRequestDTO.isIncludeCertificateChain() && !(caRegistryEntry == null
