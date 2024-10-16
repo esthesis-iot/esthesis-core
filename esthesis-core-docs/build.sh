@@ -3,7 +3,7 @@ docker rm writerside-esthesis-core
 docker run  \
 	-v .:/opt/sources \
 	--name writerside-esthesis-core \
-	registry.jetbrains.team/p/writerside/builder/writerside-builder:242.21870 \
+	jetbrains/writerside-builder:242.21870 \
 	/bin/bash -c "
 	export DISPLAY=:99 &&
 	Xvfb :99 &
