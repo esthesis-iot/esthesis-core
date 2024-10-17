@@ -7,7 +7,7 @@ import esthesis.common.exception.QLimitException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QSecurityException;
 import esthesis.core.common.AppConstants;
-import esthesis.core.common.crypto.dto.SignatureVerificationRequestDTO;
+import esthesis.core.common.dto.SignatureVerificationRequestDTO;
 import esthesis.service.agent.dto.AgentProvisioningInfoResponse;
 import esthesis.service.common.gridfs.GridFSDTO;
 import esthesis.service.common.gridfs.GridFSService;
