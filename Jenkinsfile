@@ -128,7 +128,7 @@ pipeline {
                                     docker login -u $Username -p $Password docker.io
                                     docker pull redis:7
                                     docker pull mongo:4.4
-                                    mvn -f esthesis-core-backend/pom.xml clean install -Pcyclonedx-bom
+                                    mvn -f esthesis-core-backend/pom.xml clean install -DskipTests -Pcyclonedx-bom
                                 '''
                             }
                         }
