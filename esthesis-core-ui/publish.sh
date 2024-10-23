@@ -64,6 +64,10 @@ fi
 
 # Find the version of the package.
 PACKAGE_VERSION=$(npm pkg get version --workspaces=false | tr -d \")
+if [ -z "$PACKAGE_VERSION" ]; then
+  printError "Could not set PACKAGE_VERSION."
+  exit 1
+fi
 printInfo "Package version: $PACKAGE_VERSION"
 if [[ "${PACKAGE_VERSION}" == *SNAPSHOT && $ESTHESIS_REGISTRY_URL == "docker.io/esthesisiot" ]]; then
     printError "Cannot push a snapshot version to docker.io/esthesisiot."

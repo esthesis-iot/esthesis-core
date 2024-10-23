@@ -58,7 +58,15 @@ rfc3339Date() {
 
 # Set defaults and validate environment variables.
 PACKAGE_VERSION=$(cat go/internal/pkg/config/config.go | grep "const Version" | cut -d'"' -f2)
+if [ -z "$PACKAGE_VERSION" ]; then
+	printError "Could not set PACKAGE_VERSION."
+	exit 1
+fi
 COMMIT_ID=$(git rev-parse HEAD)
+if [ -z "$COMMIT_ID" ]; then
+	printError "Could not set COMMIT_ID."
+	exit 1
+fi
 BUILD_DATE=$(rfc3339Date)
 
 # If $ESTHESIS_REGISTRY_URL is empty, set it to aws.
