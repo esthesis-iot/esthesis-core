@@ -21,6 +21,7 @@
 		<maven.compiler.release>21</maven.compiler.release>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<jacoco.version>0.8.12</jacoco.version>
 	</properties>
 
 	<build>
@@ -131,7 +132,7 @@
 		<profile>
 			<activation>
 				<property>
-					<name>cyclonedx-bom</name>
+					<name>cicd</name>
 				</property>
 			</activation>
 			<build>
@@ -173,9 +174,45 @@
 						<groupId>org.cyclonedx</groupId>
 						<inherited>false</inherited>
 					</plugin>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${jacoco.version}</version>
+						<executions>
+							<execution>
+								<id>prepare-agent</id>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+								<configuration>
+									<destFile>${project.build.directory}/jacoco.exec</destFile>
+									<propertyName>jacocoArgLine</propertyName>
+								</configuration>
+							</execution>
+							<execution>
+								<id>report</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+								<configuration>
+									<dataFile>${project.build.directory}/jacoco.exec</dataFile>
+									<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Maven Surefire Plugin -->
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<argLine>${jacocoArgLine}</argLine>
+						</configuration>
+					</plugin>
 				</plugins>
 			</build>
-			<id>cyclonedx-bom</id>
+			<id>cicd</id>
 		</profile>
 	</profiles>
 </project>
