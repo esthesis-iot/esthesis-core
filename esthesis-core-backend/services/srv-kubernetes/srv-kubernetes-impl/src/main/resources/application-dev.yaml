@@ -10,7 +10,6 @@ quarkus:
         level: WARN
     handler:
       gelf:
-        enabled: false
         host: "localhost"
         port: 12201
   otel:
