@@ -69,30 +69,23 @@ for service in "${services[@]}"; do
 		((pane_index++))
 done
 
-# Start Docusaurus
-tmux split-window -v
-tmux select-pane -t 0.18 -T "Docusaurus"
-tmux pipe-pane -o -t 0.18 "sed -u 's/^/\[Docusaurus  \] /' | cat >> $LOGS"
-tmux send-keys "cd $(pwd)/..; cd esthesis-core-docs; eval $PAUSE; [ -n "$(command -v nvm)" ] && nvm use; npm start" C-m
-tmux select-layout tiled
-
 # Start Promtail
 tmux split-window -v
-tmux select-pane -t 0.19 -T "Promtail"
-tmux pipe-pane -o -t 0.19 "sed -u 's/^/\[Promtail    \] /' | cat >> $LOGS"
+tmux select-pane -t 0.18 -T "Promtail"
+tmux pipe-pane -o -t 0.18 "sed -u 's/^/\[Promtail    \] /' | cat >> $LOGS"
 tmux send-keys "eval $PAUSE; promtail --config.file=./promtail/config.yaml" C-m
 tmux select-layout tiled
 
 # Start kubefwd
 tmux split-window -v
-tmux select-pane -t 0.20 -T "Kubefwd"
-tmux pipe-pane -o -t 0.20 "sed -u 's/^/\[Kubefwd     \] /' | cat >> $LOGS"
+tmux select-pane -t 0.19 -T "Kubefwd"
+tmux pipe-pane -o -t 0.19 "sed -u 's/^/\[Kubefwd     \] /' | cat >> $LOGS"
 tmux send-keys "eval $PAUSE; sudo -E kubefwd svc -n $1 -d $1 -l 'app.kubernetes.io/name in (mongodb,keycloak,kafka,influxdb,redis,zeebe-gateway,grafana,mosquitto,kafka-ui,grafana-loki,grafana-tempo,docker-registry-ui,orion)'" C-m
 tmux select-layout tiled
 
 # Start log monitoring
 tmux split-window -f
-tmux select-pane -t 0.21 -T "Log monitoring"
+tmux select-pane -t 0.20 -T "Log monitoring"
 tmux send-keys "tail -f $LOGS" C-m
 
 # Attach to session

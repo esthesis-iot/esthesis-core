@@ -16,7 +16,7 @@
 #   														(default: linux/amd64,linux/arm64).
 #		ESTHESIS_GLOBAL_BUILD: 			If set to true, a global build is performed first. This is to build
 #																dependencies that are shared between modules (default: false).
-#   ESTHESIS_LOCAL_BUILD: 			If set to false, individual modules are not build. This is helpful
+#   ESTHESIS_LOCAL_BUILD: 			If set to false, individual modules are not built. This is helpful
 #																when this script is used as part of another script (for example,
 #																a release script) which already performs a build (default: true).
 #		ESTHESIS_PARALLEL_BUILD:		If set to true, modules are built in parallel (default: false).
@@ -86,7 +86,6 @@ fi
 # Set MVNW location.
 MVNW="$(pwd)/mvnw"
 printInfo "Using $MVNW."
-
 
 # Check mandatory environment variables.
 if [ "$ESTHESIS_REGISTRY_TYPE" = "auth" ]; then
@@ -202,8 +201,8 @@ for ((i = 0; i < ${#modules[@]}; i += 2)); do
 	printInfo "Switching to $MODULE_NAME on $(pwd)."
 	if [ "$ESTHESIS_LOCAL_BUILD" = "true" ]; then
 		printInfo "Building module $MODULE_NAME."
-		$MVNW clean package $MAVEN_OPTIMISE_PARAMS
-	fi
+		$MVNW clean package "$MAVEN_OPTIMISE_PARAMS"
+	"fi"
 
 	printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION"
 	if [ "$ESTHESIS_PARALLEL_BUILD" = "true" ]; then
