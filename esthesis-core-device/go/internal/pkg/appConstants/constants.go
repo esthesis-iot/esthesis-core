@@ -24,7 +24,7 @@ const (
 	CommandSuccessTypeFailure CommandSuccessType = "f"
 )
 
-const DeviceType = "ESTHESIS"
+const DeviceType = "CORE"
 
 const RegistrationSecretHeaderName = "X-ESTHESIS-REGISTRATION-SECRET"
 
