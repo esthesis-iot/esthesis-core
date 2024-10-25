@@ -206,7 +206,7 @@ for ((i = 0; i < ${#modules[@]}; i += 2)); do
 	if [ "$ESTHESIS_LOCAL_BUILD" = "true" ]; then
 		printInfo "Building module $MODULE_NAME."
 		$MVNW clean package "$MAVEN_OPTIMISE_PARAMS"
-	"fi"
+	fi
 
 	printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION"
 	if [ "$ESTHESIS_PARALLEL_BUILD" = "true" ]; then
