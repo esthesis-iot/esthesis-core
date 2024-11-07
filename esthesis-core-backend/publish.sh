@@ -58,12 +58,12 @@ if [ -x "$(command -v podman)" ]; then
     fi
 fi
 
-# If $ESTHESIS_REGISTRY_URL is empty, set it to aws.
+# If $ESTHESIS_REGISTRY_URL is empty, set it to Docker Hub.
 if [ -z "$ESTHESIS_REGISTRY_URL" ]; then
   ESTHESIS_REGISTRY_URL="docker.io/esthesisiot"
 fi
 
-# If $ESTHESIS_REGISTRY_TYPE is empty, set it to aws.
+# If $ESTHESIS_REGISTRY_TYPE is empty, set it to 'auth'.
 if [ -z "$ESTHESIS_REGISTRY_TYPE" ]; then
   ESTHESIS_REGISTRY_TYPE="auth"
 fi
@@ -187,7 +187,7 @@ docker buildx create --name "$BUILDX_NAME" --use $BUILDKIT_CONFIG
 
 # Login to remote registry.
 if [ "$ESTHESIS_REGISTRY_TYPE" = "aws" ]; then
-	aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ESTHESIS_REGISTRY_URL
+	aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin "$ESTHESIS_REGISTRY_URL"
 elif [ "$ESTHESIS_REGISTRY_TYPE" = "auth" ]; then
 	docker login "$ESTHESIS_REGISTRY_URL" --username "$ESTHESIS_REGISTRY_USERNAME" --password "$ESTHESIS_REGISTRY_PASSWORD"
 fi
