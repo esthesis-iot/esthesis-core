@@ -14,7 +14,7 @@ review them, so you can customize them to your needs.
 
 ## Requirements
 - A Kubernetes cluster with a minimum of 3 nodes and support for Load Balancer service types as well
-  as Ingress support (you can, optionally, install an nginx ingress controller using this chart)..
+  as Ingress support (you can, optionally, install an nginx ingress controller using this chart).
 - [Helm](https://helm.sh)
 - [Helmfile](https://github.com/helmfile/helmfile)
 
