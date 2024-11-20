@@ -102,4 +102,16 @@ export class UtilityService {
     this.popupSuccess("Value copied to clipboard.");
   }
 
+  /**
+   * Get the computed color of a Tailwind class.
+   * @param className The Tailwind class to resolve.
+   */
+  getTailwindColor(className: string): string {
+    const tempElement = document.createElement('div');
+    tempElement.className = className;
+    document.body.appendChild(tempElement);
+    const color = getComputedStyle(tempElement).color;
+    document.body.removeChild(tempElement);
+    return color;
+  }
 }

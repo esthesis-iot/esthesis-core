@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import {AboutService} from "./about.service";
 import {AboutDto} from "./dto/about-dto";
 import {SecurityBaseComponent} from "../shared/components/security-base-component";
@@ -9,6 +9,7 @@ import {AppConstants} from "../app.constants";
   templateUrl: "./about.component.html"
 })
 export class AboutComponent extends SecurityBaseComponent implements OnInit {
+  @Input() embedded = false;
   about = {} as AboutDto;
   dtJsonUrl!: string;
   dtSwaggerUrl!: string;

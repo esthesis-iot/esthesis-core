@@ -30,8 +30,8 @@ import {
   faCheck,
   faChevronDown,
   faCircle,
-  faCircleInfo,
-  faCircleUp,
+  faCircleInfo, faCirclePlay,
+  faCircleUp, faCircleXmark,
   faClipboard,
   faCog,
   faCubes,
@@ -63,7 +63,7 @@ import {
   faPercent,
   faPlay,
   faPlus,
-  faRefresh,
+  faRefresh, faRulerCombined, faRunning,
   faSearch,
   faShieldHalved,
   faSpinner,
@@ -90,6 +90,7 @@ import {faGithub, faInstagram, faTwitter} from "@fortawesome/free-brands-svg-ico
 import {ComponentsModule} from "./shared/components/components.module";
 import {CallbackComponent} from "./callback.component";
 import {httpLoaderFactory} from "./shared/services/auth.service";
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -130,7 +131,8 @@ import {httpLoaderFactory} from "./shared/services/auth.service";
   exports: [],
   providers: [
     QFormsModule,
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    provideCharts(withDefaultRegisterables())
   ]
 })
 
@@ -148,7 +150,7 @@ export class AppModule {
       faCertificate, faCubes, faDashboard, faDesktop, faDiagramProject, faGear, faGlobe,
       faMicrochip, faNetworkWired, faShieldHalved, faStamp, faTag, faUser, faUsers,
       faUsersBetweenLines, faXmarksLines, faFileCirclePlus, faBoxArchive, faFileCircleCheck,
-      faPaste, faEraser, faBug);
+      faPaste, faEraser, faBug, faRulerCombined, faCirclePlay, faCircleXmark);
     faConfig.fixedWidth = true;
   }
 }

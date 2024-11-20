@@ -1,16 +1,53 @@
 <div class="card w-full bg-base-200 rounded-b-none">
   <div class="card-body">
-    <h2 class="card-title text-2xl flex flex-row justify-between">
+    <h2 class="card-title text-2xl flex flex-row justify-between mb-2">
       <div class="flex flex-row gap-2">
         <fa-icon icon="dashboard"></fa-icon>
         <div>Dashboard</div>
       </div>
+      <div class="">
+        <button class="btn btn-sm btn-ghost" matTooltip="Add widget">
+          <fa-icon icon="plus"></fa-icon>
+        </button>
+        <button class="btn btn-sm btn-ghost" matTooltip="Dashboards">
+          <fa-icon icon="ruler-combined"></fa-icon>
+        </button>
+        <button class="btn btn-sm btn-ghost" matTooltip="Configure dashboard">
+          <fa-icon icon="cog"></fa-icon>
+        </button>
+      </div>
     </h2>
     <div>
-      <!--      <gridster [options]="dashboardOptions" class="gridster" #gridsterComponent>-->
-      <!--        <gridster-item [id]="item.id" [item]="item.grid" *ngFor="let item of dashboardWidgets">-->
-      <!--        </gridster-item>-->
-      <!--      </gridster>-->
+      <ngx-masonry [ordered]="true" [options]="masonryOptions">
+        <div ngxMasonryItem class="transition-all mb-2.5" *ngFor="let widget of dashboardItems; index as i"
+             [ngSwitch]="widget.type"
+             [ngStyle]="{'width.px': widget.columns * appConstants.DASHBOARD.DEFAULTS.COLUMN_WIDTH}">
+          <app-dashboard-item-sensor *ngSwitchCase="appConstants.DASHBOARD.WIDGET.SENSOR"
+                                     [widget]="widget" [index]="i" />
+          <app-dashboard-item-security-stats *ngSwitchCase="appConstants.DASHBOARD.WIDGET.SECURITY_STATS"
+                                     [widget]="widget" [index]="i" />
+          <app-dashboard-item-devices-status *ngSwitchCase="appConstants.DASHBOARD.WIDGET.DEVICES_STATUS"
+                                     [widget]="widget" [index]="i" />
+          <app-dashboard-item-devices-latest *ngSwitchCase="appConstants.DASHBOARD.WIDGET.DEVICES_LATEST"
+                                     [widget]="widget" [index]="i" />
+          <app-dashboard-item-about *ngSwitchCase="appConstants.DASHBOARD.WIDGET.ABOUT"
+                                     [widget]="widget" [index]="i" />
+          <app-dashboard-item-campaigns *ngSwitchCase="appConstants.DASHBOARD.WIDGET.CAMPAIGNS"
+                                     [widget]="widget" [index]="i" />
+          <app-dashboard-item-notes *ngSwitchCase="appConstants.DASHBOARD.WIDGET.NOTES"
+                                     [widget]="widget" [index]="i" />
+          <app-dashboard-item-title *ngSwitchCase="appConstants.DASHBOARD.WIDGET.TITLE"
+                                     [widget]="widget" [index]="i" />
+          <app-dashboard-item-devices-last-seen *ngSwitchCase="appConstants.DASHBOARD.WIDGET.DEVICES_LAST_SEEN"
+                                     [widget]="widget" [index]="i" />
+          <app-dashboard-item-audit *ngSwitchCase="appConstants.DASHBOARD.WIDGET.AUDIT"
+                                     [widget]="widget" [index]="i" />
+          <app-dashboard-item-device-map *ngSwitchCase="appConstants.DASHBOARD.WIDGET.DEVICE_MAP"
+                                     [widget]="widget" [index]="i" />
+          <app-dashboard-item-sensor-icon *ngSwitchCase="appConstants.DASHBOARD.WIDGET.SENSOR_ICON"
+                                     [widget]="widget" [index]="i" />
+        </div>
+      </ngx-masonry>
     </div>
   </div>
 </div>
