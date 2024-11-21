@@ -5,7 +5,7 @@ import {CertificatesService} from "../certificates.service";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
-import {HttpEvent, HttpResponse} from "@angular/common/http";
+import { HttpEvent, HttpResponse } from "@angular/common/http";
 
 @Component({
   selector: "app-certificate-import",

@@ -1,4 +1,4 @@
-import {HttpClient, HttpEvent, HttpRequest} from "@angular/common/http";
+import { HttpClient, HttpEvent, HttpRequest } from "@angular/common/http";
 import {Observable} from "rxjs";
 import {QPageableReply} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";

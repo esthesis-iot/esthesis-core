@@ -1,4 +1,4 @@
-import {HttpClient} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {ApplicationDto} from "./dto/application-dto";
 import {CrudService} from "../shared/services/crud.service";

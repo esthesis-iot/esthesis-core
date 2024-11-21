@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import {CaDto} from "./dto/ca-dto";
 import {Observable} from "rxjs";
 import {CrudDownloadService} from "../shared/services/crud-download.service";
