@@ -127,7 +127,6 @@ pipeline {
                 container (name: 'esthesis-core-builder') {
                     sh '''
                         cd esthesis-core-device
-                        go install github.com/CycloneDX/cyclonedx-gomod/cmd/cyclonedx-gomod@v1.8.0
                         /root/go/bin/cyclonedx-gomod mod go > go/bom.xml
                     '''
                 }
