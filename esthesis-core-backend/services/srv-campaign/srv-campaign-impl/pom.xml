@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-core-services-campaign</artifactId>
-    <version>3.0.57-SNAPSHOT</version>
+    <version>3.0.57</version>
   </parent>
 
   <artifactId>esthesis-core-services-campaign-impl</artifactId>
@@ -28,32 +28,32 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-campaign-client</artifactId>
-      <version>3.0.57-SNAPSHOT</version>
+      <version>3.0.57</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-audit-client</artifactId>
-      <version>3.0.57-SNAPSHOT</version>
+      <version>3.0.57</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-device-client</artifactId>
-      <version>3.0.57-SNAPSHOT</version>
+      <version>3.0.57</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-command-client</artifactId>
-      <version>3.0.57-SNAPSHOT</version>
+      <version>3.0.57</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-util-redis</artifactId>
-      <version>3.0.57-SNAPSHOT</version>
+      <version>3.0.57</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-security-client</artifactId>
-      <version>3.0.57-SNAPSHOT</version>
+      <version>3.0.57</version>
     </dependency>
   </dependencies>
 </project>
