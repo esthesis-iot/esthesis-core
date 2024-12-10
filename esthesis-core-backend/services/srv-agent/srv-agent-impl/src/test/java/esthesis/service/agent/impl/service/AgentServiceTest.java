@@ -31,7 +31,6 @@ import jakarta.inject.Inject;
 import lombok.SneakyThrows;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -120,7 +119,7 @@ class AgentServiceTest {
 
 	@SneakyThrows
 	@BeforeEach
-	void setup() {
+	void setupMocks() {
 		// Mock CA certificate retrieval
 		when(caSystemResource.getCACertificate("test-ca-id")).thenReturn("test-ca");
 
@@ -190,8 +189,8 @@ class AgentServiceTest {
 			);
 	}
 
-	@AfterEach
-	void after() {
+	@BeforeEach
+	void resetCounters() {
 		// Reset provisioning request counter for hardware "test-hardware-4" after each test
 		redisUtils.resetCounter(RedisUtils.KeyType.ESTHESIS_PRT, "test-hardware-4");
 	}

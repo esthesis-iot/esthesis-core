@@ -68,8 +68,11 @@ public class TestHelper {
 		return pageable;
 	}
 
-	public PanacheQuery<AuditEntity> findAllEntities(){
+	public PanacheQuery<AuditEntity> findAllEntities() {
 		return auditRepository.findAll();
 	}
 
+	public void clearDB() {
+		auditRepository.deleteAll();
+	}
 }

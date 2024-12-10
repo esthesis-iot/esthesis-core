@@ -1,11 +1,9 @@
 quarkus:
   log:
-    level: ERROR
+    level: INFO
   devservices:
     enabled: true
   mongodb:
     database: esthesiscore-test
-    devservices:
-      image-name: "mongo:4.4"
   http:
     test-port: 0

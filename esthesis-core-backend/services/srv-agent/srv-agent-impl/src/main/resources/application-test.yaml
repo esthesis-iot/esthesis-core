@@ -5,6 +5,8 @@ quarkus:
     enabled: true
   mongodb:
     database: esthesiscore-test
+    devservices:
+      image-name: "mongo:4.4"
   rest-client:
     SettingsSystemResource:
       url: http://localhost:59030

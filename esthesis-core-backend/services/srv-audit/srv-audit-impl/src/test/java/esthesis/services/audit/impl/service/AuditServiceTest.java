@@ -3,17 +3,21 @@ package esthesis.services.audit.impl.service;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.common.paging.Page;
 import esthesis.services.audit.impl.TestHelper;
-import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
-@TestTransaction
+@Transactional
 class AuditServiceTest {
 
 	@Inject
@@ -21,6 +25,11 @@ class AuditServiceTest {
 
 	@Inject
 	TestHelper testHelper;
+
+	@BeforeEach
+	void clearDatabase() {
+		testHelper.clearDB();
+	}
 
 	@Test
 	void find() {

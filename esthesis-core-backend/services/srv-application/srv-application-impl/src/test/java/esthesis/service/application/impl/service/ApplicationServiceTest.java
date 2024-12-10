@@ -30,7 +30,6 @@ import static org.mockito.Mockito.when;
 
 @Slf4j
 @QuarkusTest
-@TestTransaction
 class ApplicationServiceTest {
 
 	@Inject
@@ -41,6 +40,7 @@ class ApplicationServiceTest {
 
 	@Mock
 	UriInfo uriInfo;
+
 
 	/**
 	 * Helper method to create and persist an application entity.
@@ -70,7 +70,7 @@ class ApplicationServiceTest {
 	}
 
 	@BeforeEach
-	void setUp() {
+	void setupMocks() {
 		// Initialize mocks
 		MockitoAnnotations.openMocks(this);
 
@@ -78,6 +78,11 @@ class ApplicationServiceTest {
 		when(uriInfo.getRequestUri()).thenReturn(URI.create("http://localhost:8080/applications?page=0&size=10&sort=name,asc"));
 		when(uriInfo.getQueryParameters()).thenReturn(new MultivaluedHashMap<>());
 
+	}
+
+	@BeforeEach
+	void clearDatabase() {
+		applicationRepository.deleteAll();
 	}
 
 	@Test

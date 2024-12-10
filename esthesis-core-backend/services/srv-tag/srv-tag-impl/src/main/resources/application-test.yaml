@@ -6,7 +6,7 @@ quarkus:
   mongodb:
     database: esthesiscore-test
     devservices:
-      image-name: "mongo:6.0.5"
+      image-name: "mongo:4.4"
   http:
     test-port: 0
 
