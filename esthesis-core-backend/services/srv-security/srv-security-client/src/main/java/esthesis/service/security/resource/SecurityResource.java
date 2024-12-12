@@ -36,6 +36,10 @@ public interface SecurityResource {
 	Page<UserEntity> findUsers(@BeanParam Pageable pageable);
 
 	@GET
+	@Path("/v1/users/find/{username}")
+	UserEntity findUserByUsername(@PathParam("username") String username);
+
+	@GET
 	@Path("/v1/users/{userId}")
 	UserEntity getUser(@PathParam("userId") String userId);
 

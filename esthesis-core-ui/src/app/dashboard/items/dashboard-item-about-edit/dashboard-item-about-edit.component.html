@@ -1,0 +1,47 @@
+<div class="card rounded-b-none">
+  <div class="card-body p-0 pt-4">
+    <h2 class="card-title text-2xl flex flex-row justify-between">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="dashboard"></fa-icon>
+        <div>About</div>
+      </div>
+    </h2>
+    <div>
+      <form [formGroup]="form" novalidate>
+        <div class="flex flex-row gap-5">
+          <div class="flex flex-col flex-grow">
+            <mat-form-field>
+              <mat-label>Title</mat-label>
+              <input formControlName="title" matInput>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Subtitle</mat-label>
+              <input formControlName="subtitle" matInput>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Columns</mat-label>
+              <mat-select formControlName="columns">
+                <mat-option [value]="1">1</mat-option>
+                <mat-option [value]="2">2</mat-option>
+                <mat-option [value]="3">3</mat-option>
+                <mat-option [value]="4">4</mat-option>
+                <mat-option [value]="5">5</mat-option>
+                <mat-option [value]="6">6</mat-option>
+                <mat-option [value]="7">7</mat-option>
+                <mat-option [value]="8">8</mat-option>
+                <mat-option [value]="0">Full width</mat-option>
+              </mat-select>
+              <mat-hint>Item's width in dashboard.</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="card-actions justify-start mt-10">
+      <button class="btn btn-sm btn-secondary" (click)="cancel()">CANCEL</button>
+      <button (click)="save()" *ngIf="allowCreate || allowWrite" [disabled]="form.invalid"
+              class="btn btn-sm btn-primary">SAVE
+      </button>
+    </div>
+  </div>
+</div>

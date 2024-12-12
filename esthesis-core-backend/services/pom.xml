@@ -76,5 +76,6 @@
     <module>srv-campaign</module>
     <module>srv-public-access</module>
     <module>srv-security</module>
+    <module>srv-dashboard</module>
   </modules>
 </project>

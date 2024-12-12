@@ -35,8 +35,9 @@ quarkus:
     SecurityResource:
       url: http://esthesis-core-srv-security-service:8080
       scope: Singleton
+
 mp:
   messaging:
     incoming:
-      esthesis-app-in:
-        topic: esthesis-app
+      esthesis-app-unicast-in:
+        topic: esthesis-app-unicast

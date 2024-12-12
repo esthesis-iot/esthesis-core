@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>esthesis</groupId>
+    <artifactId>esthesis-core-services-dashboard</artifactId>
+    <version>3.0.57-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>esthesis-core-services-dashboard-impl</artifactId>
+
+  <dependencies>
+		<!-- QUARKUS -->
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-oidc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-resteasy-reactive</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-scheduler</artifactId>
+		</dependency>
+
+    <!-- ESTHESIS -->
+    <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>esthesis-core-services-dashboard-client</artifactId>
+      <version>3.0.57-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>esthesis-core-services-audit-client</artifactId>
+      <version>3.0.57-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>esthesis</groupId>
+      <artifactId>esthesis-core-services-security-client</artifactId>
+      <version>3.0.57-SNAPSHOT</version>
+    </dependency>
+		<dependency>
+			<groupId>esthesis</groupId>
+			<artifactId>esthesis-core-util-kafka-notifications-outgoing</artifactId>
+			<version>3.0.57-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>

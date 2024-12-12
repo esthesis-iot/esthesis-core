@@ -98,4 +98,10 @@ export default [
     pathRewrite: { "/tag": "/" },
     secure: false,
   },
+  {
+    context: ["/api/dashboard"],
+    target: "http://127.0.0.1:59180",
+    pathRewrite: { "/dashboard": "/" },
+    secure: false,
+  }
 ];

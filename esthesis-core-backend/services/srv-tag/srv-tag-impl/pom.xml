@@ -22,23 +22,23 @@
 
     <!-- ESTHESIS -->
     <dependency>
+      <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-tag-client</artifactId>
-      <groupId>esthesis</groupId>
       <version>3.0.59-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-audit-client</artifactId>
-      <groupId>esthesis</groupId>
       <version>3.0.59-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-security-client</artifactId>
-      <groupId>esthesis</groupId>
       <version>3.0.59-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <artifactId>esthesis-core-util-kafka-notifications-outgoing</artifactId>
       <groupId>esthesis</groupId>
+      <artifactId>esthesis-core-util-kafka-notifications-outgoing</artifactId>
       <version>3.0.59-SNAPSHOT</version>
     </dependency>
   </dependencies>

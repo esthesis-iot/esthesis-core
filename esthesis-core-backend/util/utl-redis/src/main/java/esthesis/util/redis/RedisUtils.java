@@ -8,14 +8,15 @@ import io.quarkus.redis.datasource.hash.HashCommands;
 import io.quarkus.redis.datasource.keys.KeyCommands;
 import io.quarkus.redis.datasource.value.ValueCommands;
 import io.smallrye.mutiny.Uni;
+import io.vertx.core.eventbus.EventBus;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -23,20 +24,25 @@ import org.apache.commons.lang3.tuple.Triple;
 
 @Slf4j
 @ApplicationScoped
+@RequiredArgsConstructor
 public class RedisUtils {
 
-	@Inject
-	RedisDataSource redis;
+	private final RedisDataSource redis;
+	private final EventBus bus;
 
 	private HashCommands<String, String, String> hashCommandText;
 	private KeyCommands<String> keyCommand;
 	private ValueCommands<String, Long> countCommands;
 
 	public enum KeyType {
-		ESTHESIS_DM,    // Esthesis Device Measurement
-		ESTHESIS_PPDT,  // Esthesis Provisioning Package (download token)
-		ESTHESIS_PRT,    // Provisioning Request Timer
-		ESTHESIS_DFLRI    // Dataflows report interval
+		// Esthesis Device Measurement. Keep the latest value of each measurement for each device.
+		ESTHESIS_DM,
+		// Esthesis Provisioning Package (download token).
+		ESTHESIS_PPDT,
+		// Provisioning Request Timer.
+		ESTHESIS_PRT,
+		// Dataflows report interval.
+		ESTHESIS_DFLRI
 	}
 
 	@PostConstruct
@@ -53,10 +59,9 @@ public class RedisUtils {
 	 * @param key     The key (name) of the hash.
 	 * @param field   The name of the field to set inside the hash.
 	 * @param value   the value of the key to set.
-	 * @return Returns true if the value was set.
 	 */
-	public boolean setToHash(KeyType keyType, String key, String field, String value) {
-		return hashCommandText.hset(keyType + "." + key, field, value);
+	public void setToHash(KeyType keyType, String key, String field, String value) {
+		hashCommandText.hset(keyType + "." + key, field, value);
 	}
 
 	/**
@@ -121,17 +126,15 @@ public class RedisUtils {
 		// Add the key, value, and last updated values to the list.
 		keyValMap.entrySet().stream().filter(
 			entry -> !entry.getKey().endsWith(REDIS_KEY_SUFFIX_VALUE_TYPE) && !entry.getKey()
-				.endsWith(REDIS_KEY_SUFFIX_TIMESTAMP)).forEach(entry ->
-			triplets.add(new ImmutableTriple<>(entry.getKey(), entry.getValue(),
-				getLastUpdate(keyType, key, entry.getKey())))
-		);
+				.endsWith(REDIS_KEY_SUFFIX_TIMESTAMP)).forEach(entry -> triplets.add(
+			new ImmutableTriple<>(entry.getKey(), entry.getValue(),
+				getLastUpdate(keyType, key, entry.getKey()))));
 
 		return triplets;
 	}
 
 	/**
-	 * Sets a hash to expire after a specific number of seconds. Note that Redis does not allow to
-	 * individually expire fields within a hash.
+	 * Sets a hash to expire after a specific number of seconds.
 	 *
 	 * @param keyType The type of this key (the key name will be prefixed with this value).
 	 * @param key     The key (name) of the hash.
@@ -172,6 +175,10 @@ public class RedisUtils {
 		return keyCommand.keys(prefix + "*");
 	}
 
+	public boolean isKeysStartingWith(String prefix) {
+		return !keyCommand.keys(prefix + "*").isEmpty();
+	}
+
 	public boolean keyExists(KeyType keyType, String key) {
 		return keyCommand.exists(keyType + "." + key);
 	}
@@ -188,4 +195,6 @@ public class RedisUtils {
 	public void resetCounter(KeyType keyType, String key) {
 		countCommands.set(keyType + "." + key, 0L);
 	}
+
 }
+

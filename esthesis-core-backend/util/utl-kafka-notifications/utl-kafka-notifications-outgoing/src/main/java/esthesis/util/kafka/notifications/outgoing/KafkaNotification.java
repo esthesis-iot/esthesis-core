@@ -45,4 +45,8 @@ public @interface KafkaNotification {
 	// parameter should include a single capturing group.
 	@Nonbinding
 	String idParamRegEx() default "";
+
+	// If set to true, the message will be posted to the broadcast topic.
+	@Nonbinding
+	boolean broadcast() default false;
 }

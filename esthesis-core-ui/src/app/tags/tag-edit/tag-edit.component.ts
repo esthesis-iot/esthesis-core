@@ -94,8 +94,4 @@ export class TagEditComponent extends SecurityBaseComponent implements OnInit {
       }
     });
   }
-
-  test() {
-    console.log(this.allowWrite);
-  }
 }

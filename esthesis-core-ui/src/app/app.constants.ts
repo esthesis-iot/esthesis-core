@@ -223,23 +223,49 @@ export const AppConstants = {
   },
 
   DASHBOARD: {
+    REFRESH_INTERVAL_MINUTES: 15,
     DEFAULTS: {
       COLUMN_WIDTH: 100,
       ROW_HEIGHT: 50
     },
-    WIDGET: {
-      SENSOR: "SENSOR",
-      SECURITY_STATS: "SECURITY_STATS",
-      DEVICES_STATUS: "DEVICES_STATUS",
-      DEVICES_LATEST: "DEVICES_LATEST",
-      AUDIT: "AUDIT",
-      ABOUT: "ABOUT",
-      CAMPAIGNS: "CAMPAIGNS",
-      NOTES: "NOTES",
-      TITLE: "TITLE",
-      DEVICES_LAST_SEEN: "DEVICES_LAST_SEEN",
-      DEVICE_MAP: "DEVICE_MAP",
-      SENSOR_ICON: "SENSOR_ICON"
+    ITEM: {
+      TYPE: {
+        ABOUT: "ABOUT",
+        AUDIT: "AUDIT",
+        CAMPAIGNS: "CAMPAIGNS",
+        DATETIME: "DATETIME",
+        DEVICE_MAP: "DEVICE_MAP",
+        DEVICES_LAST_SEEN: "DEVICES_LAST_SEEN",
+        DEVICES_LATEST: "DEVICES_LATEST",
+        DEVICES_STATUS: "DEVICES_STATUS",
+        IMAGE: "IMAGE",
+        NOTES: "NOTES",
+        SECURITY_STATS: "SECURITY_STATS",
+        SENSOR: "SENSOR",
+        SENSOR_ICON: "SENSOR_ICON",
+        TITLE: "TITLE"
+      },
+      COLUMNS: {
+        ABOUT: 4,
+        AUDIT: 4,
+        CAMPAIGNS: 2,
+        DATETIME: 2,
+        DEVICE_MAP: 2,
+        DEVICES_LAST_SEEN: 2,
+        DEVICES_LATEST: 2,
+        DEVICES_STATUS: 2,
+        IMAGE: 2,
+        NOTES: 2,
+        SECURITY_STATS: 2,
+        SENSOR: 2,
+        SENSOR_ICON: 2,
+        TITLE: 2
+      },
+      DEFAULTS: {
+        AUDIT: {
+          entries: 5
+        }
+      }
     }
   }
 

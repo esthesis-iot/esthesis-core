@@ -7,7 +7,6 @@ public class AppConstants {
 	public static final String KAFKA_TOPIC_PREFIX = "esthesis-";
 
 	// A keyword used to indicate a new record being created.
-	//TODO is it used?
 	public static final String NEW_RECORD_ID = "new";
 
 	// Redis key suffixes for measurements.
@@ -76,6 +75,7 @@ public class AppConstants {
 	}
 
 	public static class GridFS {
+
 		public static final String PROVISIONING_BUCKET_NAME = "ProvisioningPackageBucket";
 		public static final String PROVISIONING_METADATA_NAME = "provisioningPackageId";
 	}
@@ -101,6 +101,7 @@ public class AppConstants {
 		}
 
 		public static class Redis {
+
 			public static final String DOWNLOAD_TOKEN_PACKAGE_ID = "DTPI";
 			public static final String DOWNLOAD_TOKEN_CREATED_ON = "DTCO";
 
@@ -134,12 +135,12 @@ public class AppConstants {
 			GROUPS,
 			ROLES,
 			POLICIES,
-			NULL	// Required for annotations.
+			NULL  // Required for annotations.
 		}
 
 		public enum Operation {
 			CREATE, READ, WRITE, DELETE, AUDIT,
-			NULL	// Required for annotations.
+			NULL  // Required for annotations.
 		}
 
 		public enum Permission {
@@ -193,4 +194,10 @@ public class AppConstants {
 		}
 	}
 
+	public static class Dashboard {
+
+		public enum Type {
+			AUDIT
+		}
+	}
 }

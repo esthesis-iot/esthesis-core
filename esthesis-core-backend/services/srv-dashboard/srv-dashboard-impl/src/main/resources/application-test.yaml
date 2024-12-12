@@ -1,0 +1,7 @@
+quarkus:
+  log:
+    level: ERROR
+  devservices:
+    enabled: true
+  http:
+    test-port: 0

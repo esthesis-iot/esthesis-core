@@ -1,0 +1,61 @@
+quarkus:
+  application:
+    name: esthesis-core-srv-dashboard
+  devservices:
+    enabled: false
+  log:
+    min-level: TRACE
+    console:
+      format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+    handler:
+      gelf:
+        enabled: false
+        include-full-mdc: true
+        skip-hostname-resolution: false
+        additional-field:
+          platform:
+            value: esthesis
+          module:
+            value: esthesis-core
+          type:
+            value: API
+          service:
+            value: ${quarkus.application.name}
+  banner:
+    enabled: false
+  otel:
+    sdk:
+      disabled: true
+  scheduler:
+    start-mode: FORCED
+  quartz:
+    store-type: ram
+  rest-client:
+    AuditResource:
+      url: http://esthesis-core-srv-audit-service:8080
+      scope: Singleton
+    AuditSystemResource:
+      url: http://esthesis-core-srv-audit-service:8080
+      scope: Singleton
+    SecurityResource:
+      url: http://esthesis-core-srv-security-service:8080
+      scope: Singleton
+  # Do not remove the following configuration, it is needed, so that it can be overridden in runtime
+  # (otherwise environment variables such as QUARKUS_OIDC_CLIENT_GRANT_OPTIONS_PASSWORD_USERNAME
+  # are ignored (see https://github.com/quarkusio/quarkus/discussions/41259#discussioncomment-9795685).
+  oidc-client:
+    grant-options:
+      password:
+        username: defined-in-runtime
+        password: defined-in-runtime
+
+mp:
+  messaging:
+    incoming:
+      esthesis-app-broadcast-in:
+        topic: esthesis-app-broadcast
+        group:
+          id: esthesis-dashboard-${random.uuid}
+    outgoing:
+      esthesis-app-broadcast-out:
+        topic: esthesis-app-broadcast

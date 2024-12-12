@@ -1,7 +1,8 @@
 import {
   HTTP_INTERCEPTORS,
   HttpClient,
-  provideHttpClient, withInterceptors,
+  provideHttpClient,
+  withInterceptors,
 } from "@angular/common/http";
 import {NgModule} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
@@ -32,8 +33,10 @@ import {
   faCheck,
   faChevronDown,
   faCircle,
-  faCircleInfo, faCirclePlay,
-  faCircleUp, faCircleXmark,
+  faCircleInfo,
+  faCirclePlay,
+  faCircleUp,
+  faCircleXmark,
   faClipboard,
   faCog,
   faCubes,
@@ -54,9 +57,11 @@ import {
   faHeart,
   faHeartCircleBolt,
   faHome,
+  faIcons,
   faIdBadge,
   faLayerGroup,
   faListCheck,
+  faMaximize,
   faMemory,
   faMicrochip,
   faNetworkWired,
@@ -65,8 +70,10 @@ import {
   faPercent,
   faPlay,
   faPlus,
-  faRefresh, faRulerCombined, faRunning,
+  faRefresh,
+  faRulerCombined,
   faSearch,
+  faShareNodes,
   faShieldHalved,
   faSpinner,
   faSquare,
@@ -94,7 +101,7 @@ import {CallbackComponent} from "./callback.component";
 import {httpLoaderFactory} from "./shared/services/auth.service";
 import {provideCharts, withDefaultRegisterables} from "ng2-charts";
 import {NgProgressbar, provideNgProgressOptions} from "ngx-progressbar";
-import {NgProgressHttp, progressInterceptor} from "ngx-progressbar/http";
+import {NgProgressHttp, progressInterceptor, provideNgProgressHttp} from "ngx-progressbar/http";
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -118,13 +125,18 @@ import {NgProgressHttp, progressInterceptor} from "ngx-progressbar/http";
     MatSnackBarModule,
     MatButtonModule,
     FontAwesomeModule,
-    ComponentsModule, NgProgressbar, NgProgressbar, NgProgressHttp], providers: [
+    ComponentsModule, NgProgressbar, NgProgressHttp], providers: [
     QFormsModule,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     provideCharts(withDefaultRegisterables()),
     provideHttpClient(withInterceptors([progressInterceptor])),
     provideNgProgressOptions({
-      flat: false,
+      flat: false
+    }),
+    provideNgProgressHttp({
+      silentApis: [
+        "api/dashboard/v1/sub"
+      ]
     })
   ]
 })
@@ -143,7 +155,8 @@ export class AppModule {
       faCertificate, faCubes, faDashboard, faDesktop, faDiagramProject, faGear, faGlobe,
       faMicrochip, faNetworkWired, faShieldHalved, faStamp, faTag, faUser, faUsers,
       faUsersBetweenLines, faXmarksLines, faFileCirclePlus, faBoxArchive, faFileCircleCheck,
-      faPaste, faEraser, faBug, faRulerCombined, faCirclePlay, faCircleXmark);
+      faPaste, faEraser, faBug, faRulerCombined, faCirclePlay, faCircleXmark, faShareNodes,
+      faMaximize, faIcons);
     faConfig.fixedWidth = true;
   }
 }

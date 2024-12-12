@@ -54,7 +54,8 @@ import {AcDirective} from "./ac/ac.directive";
     BreadcrumbComponent,
     LiveToggleComponent,
     FramedMapComponent,
-    AcDirective
+    AcDirective,
+    MatIconPickerComponent
   ]
 })
 export class ComponentsModule {

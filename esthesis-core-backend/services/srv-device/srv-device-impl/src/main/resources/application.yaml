@@ -48,14 +48,12 @@ quarkus:
     SecurityResource:
       url: http://esthesis-core-srv-security-service:8080
       scope: Singleton
+
 mp:
   messaging:
-    outgoing:
-      esthesis-app-out:
-        topic: esthesis-app
-      esthesis-data-message:
-        value:
-          serializer: esthesis.core.common.serder.kafka.EsthesisDataMessageSerializer
     incoming:
-      esthesis-app-in:
-        topic: esthesis-app
+      esthesis-app-unicast-in:
+        topic: esthesis-app-unicast
+    outgoing:
+      esthesis-app-unicast-out:
+        topic: esthesis-app-unicast

@@ -8,7 +8,10 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 export class TopbarComponent implements OnInit {
   form!: FormGroup;
   public isMenuOpen = false;
-  themes = ["acid", "aqua", "autumn", "black", "bumblebee", "business", "cmyk", "coffee", "corporate", "cupcake", "cyberpunk", "dark", "dracula", "emerald", "fantasy", "forest", "garden", "halloween", "lemonade", "light", "lofi", "luxury", "night", "pastel", "retro", "synthwave", "valentine", "winter", "wireframe"];
+  themes = ["acid", "aqua", "autumn", "black", "bumblebee", "business", "cmyk", "coffee", "corporate",
+    "cupcake", "cyberpunk", "dark", "dracula", "emerald", "fantasy", "forest", "garden", "halloween",
+    "lemonade", "light", "lofi", "luxury", "night", "pastel", "retro", "synthwave", "valentine",
+    "winter", "wireframe"];
 
   constructor(private fb: FormBuilder) {
   }
@@ -25,7 +28,7 @@ export class TopbarComponent implements OnInit {
   }
 
   closeSearchResults() {
-    this.form.controls['searchTerm'].setValue("");
+    this.form.controls["searchTerm"].setValue("");
   }
 
   selectTheme(name: string) {
