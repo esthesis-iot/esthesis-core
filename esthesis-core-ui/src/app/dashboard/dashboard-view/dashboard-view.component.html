@@ -5,9 +5,10 @@
         <fa-icon icon="dashboard"></fa-icon>
         <div class="flex flex-row items-center">
           <div>Dashboard</div>
-          <div class="badge badge-accent ml-1">online</div>
-          <div class="badge badge-secondary ml-1">offline</div>
         </div>
+      </div>
+      <div class="badge badge-neutral ml-1" *ngIf="!dashboardLoading">
+        updated {{ lastEventDate | amFromUtc | amLocal | amTimeAgo }}
       </div>
       <div
         *ngIf="!screenfull.isFullscreen && selectedDashboard && selectedDashboard.items.length > 0 && !dashboardLoading">
@@ -20,16 +21,37 @@
           <fa-icon icon="dashboard"></fa-icon>
           <fa-icon icon="chevron-down"></fa-icon>
           <mat-menu #dashboardMenu="matMenu" xPosition="before">
-            <ul class="dropdown-content z-[1] menu rounded-box w-60">
+            <ul class="dropdown-content z-[1] menu rounded-box w-60 text-lg">
               <div class="divider" *ngIf="sharedDashboards.length > 0">private</div>
               <li class="flex flex-row" *ngFor="let dashboard of ownDashboards">
-                <a class="w-full" (click)="switchDashboard(dashboard.id)">
-                  <fa-icon icon="home" [fixedWidth]="true" *ngIf="dashboard.home"
-                           matTooltip="This is the default dashboard being displayed"></fa-icon>
-                  <div [ngClass]="dashboard.home ? '' : 'ml-6'">{{ dashboard.name }}</div>
-                  <fa-icon icon="share-nodes" *ngIf="dashboard.shared"
-                           matTooltip="You are sharing this dashboard with other users"></fa-icon>
-                </a>
+                <!-- If not selected, wrap with <a> -->
+                <ng-container *ngIf="dashboard.id !== selectedDashboard.id; else selectedLink">
+                  <a class="w-full" (click)="switchDashboard(dashboard.id)">
+                    <ng-container
+                      [ngTemplateOutlet]="commonTemplate"
+                      [ngTemplateOutletContext]="{ $implicit: dashboard }">
+                    </ng-container>
+                  </a>
+                </ng-container>
+
+                <!-- If selected, wrap with <div> -->
+                <ng-template #selectedLink>
+                  <div class="w-full pointer-events-none">
+                    <ng-container
+                      [ngTemplateOutlet]="commonTemplate"
+                      [ngTemplateOutletContext]="{ $implicit: dashboard }">
+                    </ng-container>
+                  </div>
+                </ng-template>
+
+                <!-- Common template for the internal content -->
+                <ng-template #commonTemplate let-dash>
+                  <fa-icon icon="home" [fixedWidth]="true" *ngIf="dash.home"></fa-icon>
+                  <div [ngClass]="{'ml-6': !dash.home, 'text-accent': dash.id === selectedDashboard.id}">
+                    {{ dash.name }}
+                  </div>
+                  <fa-icon icon="share-nodes" *ngIf="dash.shared"></fa-icon>
+                </ng-template>
               </li>
               <div *ngIf="sharedDashboards.length > 0">
                 <div class="divider">shared</div>
@@ -98,7 +120,8 @@
       </button>
     </div>
   </div>
-  <div *ngIf="selectedDashboard && selectedDashboard.items?.length == 0 && !dashboardLoading" class="pb-10">
+  <div *ngIf="selectedDashboard && selectedDashboard.items?.length == 0 && !dashboardLoading"
+       class="pb-10">
     <div role="alert" class="alert flex flex-col">
         <span><fa-icon icon="circle-info" class="text-accent"></fa-icon>
           You have not added any items to this dashboard. You can add new items

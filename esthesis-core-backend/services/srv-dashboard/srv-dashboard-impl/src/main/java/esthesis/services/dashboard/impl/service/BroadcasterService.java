@@ -11,7 +11,6 @@ import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Comp
 import io.opentelemetry.context.Scope;
 import io.quarkus.scheduler.Scheduled;
 import io.quarkus.scheduler.Scheduler;
-import io.quarkus.security.identity.SecurityIdentity;
 import io.smallrye.common.annotation.Blocking;
 import io.smallrye.reactive.messaging.TracingMetadata;
 import io.smallrye.reactive.messaging.kafka.KafkaRecord;
@@ -45,7 +44,6 @@ public class BroadcasterService {
 	// messages to keep their underlying update job active.
 	private Map<String, Instant> jobsTracker = new ConcurrentHashMap<>();
 	private final DashboardService dashboardService;
-	private final SecurityIdentity securityIdentity;
 
 	/**
 	 * Cleans up all scheduled jobs when the service is destroyed.

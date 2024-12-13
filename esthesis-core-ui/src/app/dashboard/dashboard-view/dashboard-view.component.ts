@@ -1,9 +1,7 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {BaseComponent} from "../../shared/components/base-component";
 import {DashboardService} from "../dashboard.service";
-import {MatDialog} from "@angular/material/dialog";
 import {NgxMasonryComponent} from "ngx-masonry";
-import {ActivatedRoute} from "@angular/router";
 import {DashboardDto} from "../dto/view-edit/dashboard-dto";
 import {UtilityService} from "../../shared/services/utility.service";
 import screenfull from "screenfull";
@@ -28,14 +26,13 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
     horizontalOrder: true,
   };
   dashboardLoading = true;
-  dashboardConnectedStatus = false;
+  lastEventDate?: Date;
   protected readonly screenfull = screenfull;
   private sseSubscription: Subscription | null = null;
   private subscriptionRefreshHandler?: number;
   private subscriptionId!: string;
 
-  constructor(private dialog: MatDialog, private utilityService: UtilityService,
-    private dashboardService: DashboardService, private route: ActivatedRoute,
+  constructor(private utilityService: UtilityService, private dashboardService: DashboardService,
     private sseClient: SseClient, private oidcSecurityService: OidcSecurityService) {
     super();
   }
@@ -88,7 +85,7 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
         const headers = new HttpHeaders().set("Authorization", `Bearer ${token}`);
         this.sseSubscription = this.sseClient.stream(
           `api/dashboard/v1/sub/${this.selectedDashboard?.id}/${this.subscriptionId}`,
-          {keepAlive: true, reconnectionDelay: 3_000, responseType: "event"},
+          {keepAlive: true, reconnectionDelay: 3000, responseType: "event"},
           {headers}, "GET").subscribe((event) => {
           if (event.type === "error") {
             const errorEvent = event as ErrorEvent;
@@ -97,27 +94,22 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
             const messageEvent = event as MessageEvent;
             const data = JSON.parse(messageEvent.data) as DashboardUpdateDto;
             this.dashboardService.sendMessage(data);
+            this.lastEventDate = new Date();
           }
         });
-
-        this.dashboardConnectedStatus = true;
       });
     }
   }
 
   private unsubscribeFromDashboard(): Observable<boolean> {
+    console.debug("Unsubscribing from dashboard " + this.selectedDashboard?.id + ".");
     if (!this.selectedDashboard) {
       return of(true);
     }
 
-    console.debug("Unsubscribing from dashboard " + this.selectedDashboard.id + ".");
-
     return this.dashboardService.unsub(this.subscriptionId).pipe(
       tap(() => {
-        // Mark dashboard as disconnected
-        this.dashboardConnectedStatus = false;
-
-        // Clear the refresh interval if set
+        // Clear the subscription refresh handler.
         if (this.subscriptionRefreshHandler) {
           clearInterval(this.subscriptionRefreshHandler);
           this.subscriptionRefreshHandler = undefined;
@@ -176,7 +168,6 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
   fullscreen(dashboardDiv: HTMLElement) {
     if (screenfull.isEnabled) {
       screenfull.toggle(dashboardDiv).then(() => {
-        this.utilityService.popupInfo("Fullscreen mode enabled, press ESC to exit.");
       });
     }
   }

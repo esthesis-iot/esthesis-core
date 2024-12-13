@@ -111,8 +111,8 @@ public class DashboardService extends BaseService<DashboardEntity> {
 
 	@ErnPermission(category = DASHBOARD, operation = READ)
 	public List<DashboardEntity> findAllForCurrentUser() {
-		UserEntity user = findCurrentUser();
-		return super.findByColumn("ownerId", user.getId(), false, "name", Direction.Ascending);
+		return super.findByColumn("ownerId", findCurrentUser().getId(), false, "name",
+			Direction.Ascending);
 	}
 
 	@ErnPermission(category = DASHBOARD, operation = READ)

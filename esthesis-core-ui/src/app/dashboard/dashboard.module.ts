@@ -110,6 +110,7 @@ import {
 import {
   DashboardItemDevicesLastSeenEditComponent
 } from "./items/dashboard-item-devices-last-seen-edit/dashboard-item-devices-last-seen-edit.component";
+import {MomentModule} from "ngx-moment";
 
 // @ts-ignore
 @NgModule({
@@ -171,7 +172,8 @@ import {
     MatMenuTrigger,
     CdkDropList,
     CdkDragHandle,
-    CdkDrag
+    CdkDrag,
+    MomentModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [
