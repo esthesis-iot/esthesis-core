@@ -94,29 +94,47 @@
                 Threshold configuration
               </mat-checkbox>
               <div *ngIf="form.get('configuration_threshold')?.value" class="flex flex-col">
-                <div >
+                <div class="flex flex-row">
                   <mat-form-field class="ml-7 -mt-2">
                     <mat-label>Low</mat-label>
                     <input formControlName="configuration_threshold_low" matInput>
                   </mat-form-field>
                   <ngx-colors ngx-colors-trigger class="inline-block m-5"
-                    formControlName="configuration_threshold_low_color"></ngx-colors>
+                    formControlName="configuration_threshold_low_color"
+                              matTooltip="select color"></ngx-colors>
+                  <button class="btn btn-sm btn-ghost mt-5 -ml-4"
+                          (click)="form.get('configuration_threshold_low_color')?.setValue(null)"
+                          matTooltip="clear color">
+                    <fa-icon icon="trash-can"></fa-icon>
+                  </button>
                 </div>
-                <div>
+                <div class="flex flex-row">
                   <mat-form-field class="ml-7 -mt-2">
                     <mat-label>Middle</mat-label>
                     <input formControlName="configuration_threshold_middle" matInput>
                   </mat-form-field>
                   <ngx-colors ngx-colors-trigger class="inline-block m-5"
-                    formControlName="configuration_threshold_middle_color"></ngx-colors>
+                    formControlName="configuration_threshold_middle_color"
+                              matTooltip="select color"></ngx-colors>
+                  <button class="btn btn-sm btn-ghost mt-5 -ml-4"
+                          (click)="form.get('configuration_threshold_middle_color')?.setValue(null)"
+                          matTooltip="clear color">
+                    <fa-icon icon="trash-can"></fa-icon>
+                  </button>
                 </div>
-                <div>
+                <div class="flex flex-row">
                   <mat-form-field class="ml-7 -mt-2">
                     <mat-label>High</mat-label>
                     <input formControlName="configuration_threshold_high" matInput>
                   </mat-form-field>
                   <ngx-colors ngx-colors-trigger class="inline-block m-5"
-                    formControlName="configuration_threshold_high_color"></ngx-colors>
+                    formControlName="configuration_threshold_high_color"
+                              matTooltip="select color"></ngx-colors>
+                  <button class="btn btn-sm btn-ghost mt-5 -ml-4"
+                          (click)="form.get('configuration_threshold_high_color')?.setValue(null)"
+                          matTooltip="clear color">
+                    <fa-icon icon="trash-can"></fa-icon>
+                  </button>
                 </div>
               </div>
             </div>

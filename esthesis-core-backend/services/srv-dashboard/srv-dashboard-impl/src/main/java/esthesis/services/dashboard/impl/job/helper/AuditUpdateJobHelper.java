@@ -40,11 +40,4 @@ public class AuditUpdateJobHelper extends UpdateJobHelper {
 			.build();
 	}
 
-	public void test(DashboardEntity dashboardEntity, DashboardItemDTO item)
-	throws JsonProcessingException {
-		DashboardUpdateAudit refresh = refresh(dashboardEntity, item);
-
-		
-	}
-
 }
