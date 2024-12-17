@@ -49,6 +49,7 @@
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
+
             <mat-form-field>
               <mat-label>Measurement</mat-label>
               <input [matAutocomplete]="configuration_measurement"
@@ -60,31 +61,65 @@
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
+
             <mat-form-field>
               <mat-label>Unit</mat-label>
               <input formControlName="configuration_unit" matInput>
               <mat-hint>The unit associated with this measurement.</mat-hint>
             </mat-form-field>
+
             <mat-form-field>
               <mat-label>Precision</mat-label>
               <input formControlName="configuration_precision" matInput>
               <mat-hint>The number of decimal points.</mat-hint>
             </mat-form-field>
+
             <div class="flex flex-row">
-              <mat-checkbox class="mt-3 -ml-3"
-                            formControlName="configuration_sparkline"></mat-checkbox>
-              <div class="mt-5 text-accent">Display sparkline</div>
-              <fa-icon [ngClass]="form.get('configuration_sparkline')?.value ? '' : 'invisible'"
-                       icon="warning" class="mt-5 ml-4 text-warning"
-                       matTooltip="No active connection to esthesis HISTORIAN is configured.
+              <mat-checkbox class="mt-3 -ml-3" formControlName="configuration_sparkline">
+                Display sparkline
+                <fa-icon [ngClass]="form.get('configuration_sparkline')?.value ? '' : 'invisible'"
+                         icon="warning" class="mt-5 ml-4 text-warning"
+                         matTooltip="No active connection to esthesis HISTORIAN is configured.
                        Sparkline data will only be updated while the dashboard is open."></fa-icon>
+              </mat-checkbox>
             </div>
-            <mat-form-field class="ml-7 -mt-2"
-                            [ngClass]="form.get('configuration_sparkline')?.value ? '' : 'invisible'">
+            <mat-form-field class="ml-7 -mt-2" *ngIf="form.get('configuration_sparkline')?.value">
               <mat-label>Sparkline points</mat-label>
               <input formControlName="configuration_sparkline_points" matInput>
               <mat-hint>The number of points the sparkline will display.</mat-hint>
             </mat-form-field>
+
+            <div>
+              <mat-checkbox class="mt-3 -ml-3" formControlName="configuration_threshold">
+                Threshold configuration
+              </mat-checkbox>
+              <div *ngIf="form.get('configuration_threshold')?.value" class="flex flex-col">
+                <div >
+                  <mat-form-field class="ml-7 -mt-2">
+                    <mat-label>Low</mat-label>
+                    <input formControlName="configuration_threshold_low" matInput>
+                  </mat-form-field>
+                  <ngx-colors ngx-colors-trigger class="inline-block m-5"
+                    formControlName="configuration_threshold_low_color"></ngx-colors>
+                </div>
+                <div>
+                  <mat-form-field class="ml-7 -mt-2">
+                    <mat-label>Middle</mat-label>
+                    <input formControlName="configuration_threshold_middle" matInput>
+                  </mat-form-field>
+                  <ngx-colors ngx-colors-trigger class="inline-block m-5"
+                    formControlName="configuration_threshold_middle_color"></ngx-colors>
+                </div>
+                <div>
+                  <mat-form-field class="ml-7 -mt-2">
+                    <mat-label>High</mat-label>
+                    <input formControlName="configuration_threshold_high" matInput>
+                  </mat-form-field>
+                  <ngx-colors ngx-colors-trigger class="inline-block m-5"
+                    formControlName="configuration_threshold_high_color"></ngx-colors>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </form>

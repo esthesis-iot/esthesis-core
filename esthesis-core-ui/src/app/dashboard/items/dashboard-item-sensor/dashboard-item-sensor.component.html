@@ -1,20 +1,23 @@
-<div class="flex flex-col bg-base-100 mt-1 ml-1 mr-1 p-4 rounded-xl">
+<div class="flex flex-col bg-base-100 mt-1 ml-1 mr-1 p-4 rounded-xl"
+     [ngStyle]="{ 'background-color': computeBackgroundColor()}">
   <div class="flex flex-row justify-between">
     <div class="stat-title">{{ item.title }}</div>
-    <div>
-<!--      <i class="text-accent text-xl fa-solid {{ item.icon }}"></i>-->
+    <div *ngIf="config?.icon">
+      <i class="text-accent text-xl fa-solid {{ config?.icon }}"></i>
     </div>
   </div>
   <div class="flex flex-row mt-2">
-    <div class="stat-value">{{ sensorValue }}</div>
-<!--    <div class="mt-3 text-xl ml-2 text-base-content/50">{{ item.unit }}</div>-->
+    <div class="stat-value">
+      {{ lastMessage?.value | number:('1.' + config?.precision + '-' + config?.precision) }}
+    </div>
+    <div class="mt-3 text-xl ml-2 text-base-content/50">{{ config?.unit }}</div>
   </div>
   <div *ngIf="item.subtitle" class="stat-desc">{{ item.subtitle }}</div>
   <app-chart-host class="mt-3">
     <canvas
       baseChart
-      [data]="barChartData"
-      [options]="barChartOptions"
+      [data]="sparkLineData"
+      [options]="sparkLineOptions"
       type="line"
       height="30">
     </canvas>

@@ -27,6 +27,9 @@ quarkus:
         traces:
           endpoint: http://grafana-tempo-distributor.esthesis:4317
   rest-client:
+    AboutSystemResource:
+      url: http://localhost:59120
+      scope: Singleton
     AuditResource:
       url: http://localhost:59140
       scope: Singleton

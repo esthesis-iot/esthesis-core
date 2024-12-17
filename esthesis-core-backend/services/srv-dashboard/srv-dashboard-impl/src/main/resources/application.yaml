@@ -31,6 +31,9 @@ quarkus:
   quartz:
     store-type: ram
   rest-client:
+    AboutSystemResource:
+      url: http://esthesis-core-srv-about-service:8080
+      scope: Singleton
     AuditResource:
       url: http://esthesis-core-srv-audit-service:8080
       scope: Singleton

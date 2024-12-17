@@ -35,10 +35,6 @@ export class DashboardItemAuditComponent extends DashboardItemGenericComponent i
     this.emitterSub = this.dashboardService.getMessage().subscribe((message) => {
       if (message.id === this.item.id) {
         this.lastMessage = message as DashboardUpdateAuditDto;
-        console.log("Received message: ", this.lastMessage.auditEntries);
-        for (const entry of this.lastMessage.auditEntries) {
-          console.log("Entry: ", Object.keys(entry)[0], Object.values(entry)[0]);
-        }
       }
     });
   }

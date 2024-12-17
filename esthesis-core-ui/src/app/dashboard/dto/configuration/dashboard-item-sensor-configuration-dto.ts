@@ -6,4 +6,12 @@ export interface DashboardItemSensorConfigurationDto {
   icon: string;
   precision: number;
   sparklinePoints: number;
+
+  threshold: boolean;
+  thresholdLow: number;
+  thresholdLowColor: string;
+  thresholdMiddle: number;
+  thresholdMiddleColor: string;
+  thresholdHigh: number;
+  thresholdHighColor: string;
 }

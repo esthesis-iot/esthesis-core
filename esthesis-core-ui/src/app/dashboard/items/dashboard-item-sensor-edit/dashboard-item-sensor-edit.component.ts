@@ -40,7 +40,6 @@ export class DashboardItemSensorEditComponent extends SecurityBaseComponent impl
     }
 
     // Set up the form.
-    console.log("Incoming DI: ", this.incomingDi);
     this.form = this.fb.group({
       id: [],
       title: [this.incomingDi.title, [Validators.minLength(3), Validators.maxLength(255), Validators.required]],
@@ -52,7 +51,14 @@ export class DashboardItemSensorEditComponent extends SecurityBaseComponent impl
       configuration_icon: [configuration?.icon],
       configuration_precision: [configuration?.precision, [Validators.pattern('^[0-9]+$')]],
       configuration_sparkline: [configuration?.sparkline],
-      configuration_sparkline_points: [configuration?.sparklinePoints, [Validators.pattern('^[0-9]+$')]]
+      configuration_sparkline_points: [configuration?.sparklinePoints, [Validators.pattern('^[0-9]+$')]],
+      configuration_threshold: [configuration?.threshold],
+      configuration_threshold_low: [configuration?.thresholdLow],
+      configuration_threshold_low_color: [configuration?.thresholdLowColor],
+      configuration_threshold_middle: [configuration?.thresholdMiddle],
+      configuration_threshold_middle_color: [configuration?.thresholdMiddleColor],
+      configuration_threshold_high: [configuration?.thresholdHigh],
+      configuration_threshold_high_color: [configuration?.thresholdHighColor],
     });
 
     // Monitor for changes in search by hardware id input.
@@ -139,7 +145,14 @@ export class DashboardItemSensorEditComponent extends SecurityBaseComponent impl
         icon: this.form.get("configuration_icon")!.value,
         precision: this.form.get("configuration_precision")!.value,
         sparkline: this.form.get("configuration_sparkline")!.value,
-        sparklinePoints: this.form.get("configuration_sparkline_points")!.value
+        sparklinePoints: this.form.get("configuration_sparkline_points")!.value,
+        threshold: this.form.get("configuration_threshold")!.value,
+        thresholdLow: this.form.get("configuration_threshold_low")!.value,
+        thresholdLowColor: this.form.get("configuration_threshold_low_color")!.value,
+        thresholdMiddle: this.form.get("configuration_threshold_middle")!.value,
+        thresholdMiddleColor: this.form.get("configuration_threshold_middle_color")!.value,
+        thresholdHigh: this.form.get("configuration_threshold_high")!.value,
+        thresholdHighColor: this.form.get("configuration_threshold_high_color")!.value
       } as DashboardItemSensorConfigurationDto)
     }
     this.dialogRef.close(di);

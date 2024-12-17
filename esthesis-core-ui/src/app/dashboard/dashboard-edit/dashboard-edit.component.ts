@@ -110,6 +110,7 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
 
     // Disable the form if the user does not have permission to edit.
     this.isFormDisabled().subscribe(disabled => disabled && this.form.disable());
+
   }
 
   save() {
@@ -193,6 +194,9 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
 
   dropItem(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.dashboardItems, event.previousIndex, event.currentIndex);
+    for (let i = 0; i < this.dashboardItems.length; i++) {
+      this.dashboardItems[i].index = i;
+    }
   }
 
   removeItem(di: DashboardItemDto) {
