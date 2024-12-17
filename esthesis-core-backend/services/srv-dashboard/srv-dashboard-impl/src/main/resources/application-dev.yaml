@@ -36,6 +36,9 @@ quarkus:
     SecurityResource:
       url: http://localhost:59170
       scope: Singleton
+    SecuritySystemResource:
+      url: http://localhost:59170
+      scope: Singleton
   config:
     locations: "../../../../_dev/profiles"
 

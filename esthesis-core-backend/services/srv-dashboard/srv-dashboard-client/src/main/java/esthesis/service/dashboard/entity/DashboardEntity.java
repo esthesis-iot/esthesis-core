@@ -34,6 +34,7 @@ public class DashboardEntity extends BaseEntity {
 
 	private boolean shared;
 	private boolean home;
+	private boolean displayLastUpdate;
 
 	//TODO setup a kafka listener to remove user's dashboards when the user is deleted.
 	private ObjectId ownerId;

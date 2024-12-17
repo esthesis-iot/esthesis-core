@@ -40,6 +40,7 @@ export class DashboardItemAuditEditComponent extends SecurityBaseComponent imple
 
   save() {
     let di: DashboardItemDto = {
+      id: this.incomingDi.id,
       type: this.incomingDi.type,
       title: this.form.get("title")!.value,
       subtitle: this.form.get("subtitle")!.value,

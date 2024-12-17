@@ -1,10 +1,13 @@
 package esthesis.services.dashboard.impl.dto;
 
-import java.util.List;
+import esthesis.core.common.AppConstants;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 @Data
-public class DashboardUpdate {
+@SuperBuilder
+public abstract class DashboardUpdate {
 
-	private List<DashboardUpdateAudit> audit;
+	private String id;
+	private AppConstants.Dashboard.Type type;
 }

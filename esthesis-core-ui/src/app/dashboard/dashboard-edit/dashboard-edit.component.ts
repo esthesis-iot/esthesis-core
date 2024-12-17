@@ -16,7 +16,6 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {
   DashboardItemSensorEditComponent
 } from "../items/dashboard-item-sensor-edit/dashboard-item-sensor-edit.component";
-import {DashboardDto} from "../dto/view-edit/dashboard-dto";
 import {
   DashboardItemAboutEditComponent
 } from "../items/dashboard-item-about-edit/dashboard-item-about-edit.component";
@@ -56,6 +55,8 @@ import {
 import {
   DashboardItemTitleComponent
 } from "../items/dashboard-item-title/dashboard-item-title.component";
+import {DashboardDto} from "../dto/view-edit/dashboard-dto";
+import {v4} from "uuid";
 
 @Component({
   selector: "app-dashboard-edit",
@@ -81,6 +82,7 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
       name: [null, [Validators.minLength(3), Validators.maxLength(255), Validators.required]],
       description: [null, [Validators.maxLength(2048)]],
       updateInterval: [5, [Validators.min(1), Validators.max(300)]],
+      displayLastUpdate: [true],
       shared: [false],
       home: [false],
       items: []
@@ -113,7 +115,6 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
   save() {
     // Set dashboard items.
     this.form.get("items")!.setValue(this.dashboardItems);
-    console.log(this.form.getRawValue());
     this.dashboardService.save(this.form.getRawValue() as DashboardDto).subscribe({
       next: () => {
         if (this.id === this.appConstants.NEW_RECORD_ID) {
@@ -123,6 +124,7 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
         }
         this.router.navigate(["dashboard"]);
       }, error: (err) => {
+        console.log(err);
         if (err.status === 400) {
           const validationErrors = err.error;
           if (validationErrors) {
@@ -159,28 +161,34 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
   }
 
   addItem() {
-    const devicesDialogRef = this.dialog.open(DashboardItemNewComponent);
-    devicesDialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        // Find default configuration for dashboard item.
-        let defaultConfiguration = "{}";
-        switch (result.type) {
-          case AppConstants.DASHBOARD.ITEM.TYPE.AUDIT:
-            defaultConfiguration = JSON.stringify(this.appConstants.DASHBOARD.ITEM.DEFAULTS.AUDIT);
-            break;
-        }
+    this.dialog.open(DashboardItemNewComponent, {data: {existingItemTypes: this.dashboardItems.map(di => di.type)}})
+      .afterClosed().subscribe(result => {
+        if (result) {
+          // Find default configuration for dashboard item.
+          let defaultConfiguration = "{}";
+          switch (result.type) {
+            case AppConstants.DASHBOARD.ITEM.TYPE.AUDIT:
+              defaultConfiguration = JSON.stringify(this.appConstants.DASHBOARD.ITEM.DEFAULTS.AUDIT);
+              break;
+            case AppConstants.DASHBOARD.ITEM.TYPE.ABOUT:
+              defaultConfiguration = JSON.stringify(this.appConstants.DASHBOARD.ITEM.DEFAULTS.ABOUT);
+              break;
+            case AppConstants.DASHBOARD.ITEM.TYPE.SENSOR:
+              defaultConfiguration = JSON.stringify(this.appConstants.DASHBOARD.ITEM.DEFAULTS.SENSOR);
+              break;
+          }
 
-        // Add selected dashboard item.
-        this.dashboardItems.push({
-          id: result.id,
-          type: result.type,
-          columns: this.appConstants.DASHBOARD.ITEM.COLUMNS[result.type.split(".").pop() as keyof typeof this.appConstants.DASHBOARD.ITEM.COLUMNS],
-          index: this.dashboardItems.length,
-          title: result.name,
-          configuration: defaultConfiguration
-        });
-      }
-    });
+          // Add selected dashboard item.
+          this.dashboardItems.push({
+            id: v4(),
+            type: result.type,
+            columns: this.appConstants.DASHBOARD.ITEM.COLUMNS[result.type.split(".").pop() as keyof typeof this.appConstants.DASHBOARD.ITEM.COLUMNS],
+            index: this.dashboardItems.length,
+            title: result.name,
+            configuration: defaultConfiguration
+          });
+        }
+      });
   }
 
   dropItem(event: CdkDragDrop<string[]>) {

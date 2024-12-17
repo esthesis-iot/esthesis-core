@@ -197,7 +197,7 @@ public class AppConstants {
 	public static class Dashboard {
 
 		public enum Type {
-			AUDIT
+			AUDIT, ABOUT, SENSOR
 		}
 	}
 }

@@ -1,6 +1,5 @@
-import {BaseDto} from "../../../dto/base-dto";
-
-export interface DashboardItemDto extends BaseDto {
+export interface DashboardItemDto {
+  id: string;
   type: string;
   title: string;
   subtitle?: string;

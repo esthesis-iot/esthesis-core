@@ -27,18 +27,28 @@
             <mat-label class="text-accent mb-2">Update interval: </mat-label>
             <div>{{ form.controls['updateInterval'].value }} seconds</div>
           </div>
-          <input formControlName="updateInterval"  type="range" min="1" max="300" value="5" class="range" />
+          <input formControlName="updateInterval"  type="range" min="1" max="300" value="5" class="range mb-3" />
 
           <div class="flex flex-row">
-            <mat-checkbox class="mt-3" formControlName="shared"></mat-checkbox>
-            <div class="mt-5">Shared with other users</div>
+            <mat-checkbox class="mt-3" formControlName="displayLastUpdate">
+              Display dashboard last update label
+            </mat-checkbox>
           </div>
+
           <div class="flex flex-row">
-            <mat-checkbox class="mt-3" formControlName="home"></mat-checkbox>
-            <div class="mt-5">Home dashboard</div>
-            <fa-icon icon="info-circle" class="ml-2 mt-5"
-                     matTooltip="Setting a dashboard as Home, will unset any other already set
+            <mat-checkbox class="mt-3" formControlName="shared">
+              Shared with other users
+            </mat-checkbox>
+          </div>
+
+          <div class="flex flex-row">
+            <mat-checkbox class="mt-3" formControlName="home">
+              Home dashboard
+              <fa-icon icon="info-circle" class="ml-2 mt-5"
+                       matTooltip="Setting a dashboard as Home, will unset any other already set
                      Home dashboard."></fa-icon>
+            </mat-checkbox>
+
           </div>
         </div>
       </form>

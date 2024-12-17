@@ -7,5 +7,6 @@ export interface DashboardDto extends BaseDto {
   description: string;
   shared: boolean;
   home: boolean;
+  displayLastUpdate: boolean;
   items: DashboardItemDto[];
 }

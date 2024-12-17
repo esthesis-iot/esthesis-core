@@ -1,11 +1,7 @@
-import {Component, OnInit, Optional} from "@angular/core";
+import {Component, Inject, OnInit, Optional} from "@angular/core";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
-import {FormBuilder} from "@angular/forms";
-import {DashboardService} from "../dashboard.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {UtilityService} from "../../shared/services/utility.service";
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {QFormValidationEEService} from "../../shared/services/form-validation.service";
+import {ActivatedRoute} from "@angular/router";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {AppConstants} from "../../app.constants";
 
 @Component({
@@ -13,73 +9,101 @@ import {AppConstants} from "../../app.constants";
   templateUrl: "./dashboard-item-new.component.html"
 })
 export class DashboardItemNewComponent extends SecurityBaseComponent implements OnInit {
-  dashboardId!: string;  // Dashboard ID.
+  // Dashboard Id.
+  dashboardId!: string;
+
+  // List of dashboard items.
   itemsList: {
     name: string,
     description: string,
     icon: string,
-    type: string
-  }[] = [
-    {
-      name: "About", description: "Displays information about the esthesis CORE installation, " +
-        "similar to the About page.", icon: "about.png",
-      type: this.appConstants.DASHBOARD.ITEM.TYPE.ABOUT
-    },
-    {
-      name: "Audit", description: "Displays latest audit entries.", icon: "about.png",
-      type: this.appConstants.DASHBOARD.ITEM.TYPE.AUDIT
-    },
-    {
-      name: "Campaigns", description: "Displays campaign statistics.", icon: "about.png"
-      , type: this.appConstants.DASHBOARD.ITEM.TYPE.CAMPAIGNS
-    },
-    {
-      name: "Map", description: "Displays a map with device coordinates.", icon: "about.png",
-      type: this.appConstants.DASHBOARD.ITEM.TYPE.DEVICE_MAP
-    },
-    {
-      name: "Last seen", description: "Displays statistics on when devices were last seen.",
-      icon: "about.png", type: this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_LAST_SEEN
-    },
-    {
-      name: "Latest", description: "Displays a list of devices recently registered.",
-      icon: "about.png", type: this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_LATEST
-    },
-    {
-      name: "Status", description: "Displays statistics on devices status.", icon: "about.png",
-      type: this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_STATUS
-    },
-    {
-      name: "Notes", description: "Displays user notes.", icon: "about.png",
-      type: this.appConstants.DASHBOARD.ITEM.TYPE.NOTES
-    },
-    {
-      name: "Security", description: "Displays statistics on security.", icon: "about.png",
-      type: this.appConstants.DASHBOARD.ITEM.TYPE.SECURITY_STATS
-    },
-    {
-      name: "Sensor", description: "Displays a device sensor.", icon: "about.png",
-      type: this.appConstants.DASHBOARD.ITEM.TYPE.SENSOR
-    },
-    {
-      name: "Icon", description: "Displays a device sensor with an icon that changes based on sensor value.",
-      icon: "about.png", type: this.appConstants.DASHBOARD.ITEM.TYPE.SENSOR_ICON
-    },
-    {
-      name: "Title", description: "Displays a text title.", icon: "about.png",
-      type: this.appConstants.DASHBOARD.ITEM.TYPE.TITLE
-    },
-  ];
+    type: string,
+    available: boolean;
+  }[] = [];
 
-  constructor(private fb: FormBuilder, private dashboardService: DashboardService,
-    private route: ActivatedRoute, private router: Router,
-    private utilityService: UtilityService, private dialog: MatDialog,
-    @Optional() private dialogRef: MatDialogRef<DashboardItemNewComponent>,
-    private qFormValidation: QFormValidationEEService) {
+  constructor(private readonly route: ActivatedRoute,
+    @Optional() private readonly dialogRef: MatDialogRef<DashboardItemNewComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
     super(AppConstants.SECURITY.CATEGORY.DASHBOARD, route.snapshot.paramMap.get("id"));
   }
 
+  /**
+   * Check for single-instance items in the dashboard that should not be added more than once.
+   * @param itemType The type of the item to be added.
+   */
+  private itemAvailable(itemType: string): boolean {
+    if (AppConstants.DASHBOARD.SINGLE_INSTANCE_ITEMS.indexOf(itemType) === -1) {
+      return true;
+    } else {
+      return this.data.existingItemTypes.indexOf(itemType) === -1;
+    }
+  }
+
   ngOnInit(): void {
+    this.itemsList = [
+      {
+        name: "About", description: "Displays information about the esthesis CORE installation, " +
+          "similar to the About page.", icon: "about.png",
+        type: this.appConstants.DASHBOARD.ITEM.TYPE.ABOUT,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.ABOUT)
+      },
+      {
+        name: "Audit", description: "Displays latest audit entries.", icon: "about.png",
+        type: this.appConstants.DASHBOARD.ITEM.TYPE.AUDIT,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.AUDIT)
+      },
+      {
+        name: "Campaigns", description: "Displays campaign statistics.", icon: "about.png"
+        , type: this.appConstants.DASHBOARD.ITEM.TYPE.CAMPAIGNS,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.CAMPAIGNS)
+      },
+      {
+        name: "Map", description: "Displays a map with device coordinates.", icon: "about.png",
+        type: this.appConstants.DASHBOARD.ITEM.TYPE.DEVICE_MAP,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.DEVICE_MAP)
+      },
+      {
+        name: "Last seen", description: "Displays statistics on when devices were last seen.",
+        icon: "about.png", type: this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_LAST_SEEN,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_LAST_SEEN)
+      },
+      {
+        name: "Latest", description: "Displays a list of devices recently registered.",
+        icon: "about.png", type: this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_LATEST,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_LATEST)
+      },
+      {
+        name: "Status", description: "Displays statistics on devices status.", icon: "about.png",
+        type: this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_STATUS,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_STATUS)
+      },
+      {
+        name: "Notes", description: "Displays user notes.", icon: "about.png",
+        type: this.appConstants.DASHBOARD.ITEM.TYPE.NOTES,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.NOTES)
+      },
+      {
+        name: "Security", description: "Displays statistics on security.", icon: "about.png",
+        type: this.appConstants.DASHBOARD.ITEM.TYPE.SECURITY_STATS,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.SECURITY_STATS)
+      },
+      {
+        name: "Sensor", description: "Displays a device sensor.", icon: "about.png",
+        type: this.appConstants.DASHBOARD.ITEM.TYPE.SENSOR,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.SENSOR)
+      },
+      {
+        name: "Icon", description: "Displays a device sensor with an icon that changes based on sensor value.",
+        icon: "about.png", type: this.appConstants.DASHBOARD.ITEM.TYPE.SENSOR_ICON,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.SENSOR_ICON)
+      },
+      {
+        name: "Title", description: "Displays a text title.", icon: "about.png",
+        type: this.appConstants.DASHBOARD.ITEM.TYPE.TITLE,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.TITLE)
+      }
+    ];
+
     // Sort items list by name.
     this.itemsList.sort((a, b) => a.name.localeCompare(b.name));
 

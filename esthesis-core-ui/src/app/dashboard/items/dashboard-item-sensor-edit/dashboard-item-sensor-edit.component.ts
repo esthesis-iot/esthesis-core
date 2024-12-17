@@ -126,6 +126,7 @@ export class DashboardItemSensorEditComponent extends SecurityBaseComponent impl
 
   save() {
     let di: DashboardItemDto = {
+      id: this.incomingDi.id,
       type: this.incomingDi.type,
       title: this.form.get("title")!.value,
       subtitle: this.form.get("subtitle")!.value,

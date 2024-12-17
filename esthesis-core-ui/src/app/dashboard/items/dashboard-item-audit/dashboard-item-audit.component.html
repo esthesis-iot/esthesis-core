@@ -12,19 +12,18 @@
           <th scope="col">Message</th>
         </tr>
         </thead>
-        <tbody *ngIf="!auditItems">
-        <tr *ngFor="let i of [].constructor(Number(config?.entries))">
+        <tbody *ngIf="!lastMessage">
+        <tr *ngFor="let i of utilityService.arrayGen(config!.entries)">
           <td colspan="2">
             <div class="skeleton h-5 w-full"></div>
           </td>
         </tr>
         </tbody>
-        <tbody *ngIf="auditItems">
-        <tr *ngFor="let item of auditItems">
-          <td class="whitespace-nowrap">{{ item.username }}</td>
-          <td class="whitespace-nowrap overflow-x-scroll">{{ item.message }}</td>
+        <tbody *ngIf="lastMessage">
+        <tr *ngFor="let item of lastMessage.auditEntries">
+          <td>{{ Object.keys(item)[0] }}</td>
+          <td>{{ Object.values(item)[0] }}</td>
         </tr>
-
       </table>
     </div>
   </div>

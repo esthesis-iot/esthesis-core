@@ -17,6 +17,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DashboardItemDTO {
 
+	private String id;
+
 	@NotBlank
 	private AppConstants.Dashboard.Type type;
 

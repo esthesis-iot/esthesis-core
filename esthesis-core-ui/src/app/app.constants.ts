@@ -228,6 +228,7 @@ export const AppConstants = {
       COLUMN_WIDTH: 100,
       ROW_HEIGHT: 50
     },
+    SINGLE_INSTANCE_ITEMS: [""],
     ITEM: {
       TYPE: {
         ABOUT: "ABOUT",
@@ -264,7 +265,9 @@ export const AppConstants = {
       DEFAULTS: {
         AUDIT: {
           entries: 5
-        }
+        },
+        ABOUT: {},
+        SENSOR: {}
       }
     }
   }

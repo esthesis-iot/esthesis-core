@@ -9,7 +9,6 @@ import {SseClient} from "ngx-sse-client";
 import {OidcSecurityService} from "angular-auth-oidc-client";
 import {HttpHeaders} from "@angular/common/http";
 import {catchError, map, Observable, of, Subscription, tap} from "rxjs";
-import {DashboardUpdateDto} from "../dto/updates/DashboardUpdateDto";
 import {v4 as uuidv4} from "uuid";
 
 @Component({
@@ -92,8 +91,9 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
             console.error(event, errorEvent.message);
           } else {
             const messageEvent = event as MessageEvent;
-            const data = JSON.parse(messageEvent.data) as DashboardUpdateDto;
-            this.dashboardService.sendMessage(data);
+            JSON.parse(messageEvent.data).forEach((item: any) => {
+              this.dashboardService.sendMessage(item)
+            });
             this.lastEventDate = new Date();
           }
         });
@@ -171,4 +171,6 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
       });
     }
   }
+
+  protected readonly Date = Date;
 }

@@ -12,7 +12,7 @@ import {DashboardUpdateDto} from "./dto/updates/DashboardUpdateDto";
 export class DashboardService extends CrudService<DashboardDto> {
   private static readonly resource = `dashboard/v1`;
   // An emitter for dashboard updates.
-  private dashboardEmitter = new Subject<DashboardUpdateDto>();
+  private readonly dashboardEmitter = new Subject<DashboardUpdateDto>();
 
   constructor(http: HttpClient) {
     super(http, DashboardService.resource);

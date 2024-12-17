@@ -1,5 +1,6 @@
-import {DashboardUpdateAuditDto} from "./DashboardUpdateAuditDto";
+import {AppConstants} from "../../../app.constants";
 
 export interface DashboardUpdateDto {
-   audit: DashboardUpdateAuditDto[];
+  id: string;
+  type: typeof AppConstants.DASHBOARD.ITEM.TYPE
 }

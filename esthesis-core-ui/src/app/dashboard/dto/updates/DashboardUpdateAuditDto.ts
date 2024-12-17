@@ -1,4 +1,5 @@
-export interface DashboardUpdateAuditDto {
-  username: string;
-  message: string;
+import {DashboardUpdateDto} from "./DashboardUpdateDto";
+
+export interface DashboardUpdateAuditDto extends DashboardUpdateDto {
+  auditEntries: [{}];
 }

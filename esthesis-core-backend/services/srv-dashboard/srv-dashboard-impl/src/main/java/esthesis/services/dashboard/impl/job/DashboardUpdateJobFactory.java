@@ -3,7 +3,6 @@ package esthesis.services.dashboard.impl.job;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.ws.rs.sse.SseEventSink;
-import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -24,7 +23,6 @@ public class DashboardUpdateJobFactory {
 		log.debug("Initialising job task for dashboard '{}'.", dashboardId);
 		DashboardUpdateJob job = CDI.current().select(DashboardUpdateJob.class).get();
 		job.setDashboardId(dashboardId);
-		job.setScheduledOn(Instant.now());
 		job.setSseEventSink(sseEventSink);
 		job.hookSse();
 		job.setDashboardEntity();
