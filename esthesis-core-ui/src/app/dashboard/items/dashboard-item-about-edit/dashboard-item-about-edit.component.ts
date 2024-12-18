@@ -35,7 +35,8 @@ export class DashboardItemAboutEditComponent extends SecurityBaseComponent imple
       title: this.form.get("title")!.value,
       subtitle: this.form.get("subtitle")!.value,
       columns: this.form.get("columns")!.value,
-      index: this.incomingDi.index
+      index: this.incomingDi.index,
+      enabled: this.incomingDi.enabled
     };
     this.dialogRef.close(di);
   }

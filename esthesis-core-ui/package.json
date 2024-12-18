@@ -53,6 +53,7 @@
     "ngx-countdown": "18.0.0",
     "ngx-filesaver": "18.0.0",
     "ngx-filesize": "3.0.4",
+    "ngx-filter-pipe": "^3.0.1",
     "ngx-json-viewer": "3.2.1",
     "ngx-mask": "18.0.4",
     "ngx-masonry": "^14.0.1",

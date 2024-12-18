@@ -33,4 +33,6 @@ public class DashboardItemDTO {
 	private int index;
 
 	private String configuration;
+
+	private boolean enabled;
 }

@@ -72,11 +72,14 @@
             <fa-icon class="hover:cursor-pointer" icon="bars" cdkDragHandle></fa-icon>
           </div>
           <div class="">{{di.title}}</div>
-          <div class="text-right ml-auto">
+          <div class="text-right ml-auto flex flex-row">
+            <input type="checkbox" class="toggle toggle-sm mr-4 mt-0.5"
+                   [checked]="di.enabled" (click)="switchItemState(di)"
+                   (keydown)="switchItemState(di)" matTooltip="Item status"/>
             <fa-icon icon="cog" class="mr-4 hover:cursor-pointer" matTooltip="Configure"
-            (click)="configureItem(di)"></fa-icon>
+            (click)="configureItem(di)" (keydown)="configureItem(di)"></fa-icon>
             <fa-icon icon="trash-can" class="mr-4 hover:cursor-pointer" matTooltip="Remove"
-            (click)="removeItem(di)"></fa-icon>
+            (click)="removeItem(di)" (keydown)="removeItem(di)"></fa-icon>
           </div>
         </div>
       </div>

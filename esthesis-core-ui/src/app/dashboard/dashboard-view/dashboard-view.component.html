@@ -74,7 +74,7 @@
     <div *ngIf="selectedDashboard && selectedDashboard.items.length > 0 && !dashboardLoading">
       <ngx-masonry [ordered]="true" [options]="masonryOptions">
         <div ngxMasonryItem class="transition-all mb-2.5"
-             *ngFor="let item of selectedDashboard.items; index as i"
+             *ngFor="let item of selectedDashboard.items | filterBy: {enabled: true}; index as i"
              [ngSwitch]="item.type"
              [ngStyle]="{'width.px': item.columns * appConstants.DASHBOARD.DEFAULTS.COLUMN_WIDTH}">
           <app-dashboard-item-sensor *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.SENSOR"

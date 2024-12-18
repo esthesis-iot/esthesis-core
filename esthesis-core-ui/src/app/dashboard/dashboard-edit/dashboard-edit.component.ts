@@ -102,7 +102,7 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
       this.dashboardService.findById(this.id).subscribe({
         next: (response) => {
           this.dashboardItems = response.items;
-          this.configureItem(this.dashboardItems[1]);
+          // this.configureItem(this.dashboardItems[1]);
         }, error: (error) => {
           this.utilityService.popupErrorWithTraceId("Could not fetch dashboard items.", error);
         }
@@ -187,7 +187,8 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
             columns: this.appConstants.DASHBOARD.ITEM.COLUMNS[result.type.split(".").pop() as keyof typeof this.appConstants.DASHBOARD.ITEM.COLUMNS],
             index: this.dashboardItems.length,
             title: result.name,
-            configuration: defaultConfiguration
+            configuration: defaultConfiguration,
+            enabled: true
           });
         }
       });
@@ -268,5 +269,9 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
         this.dashboardItems[result.index] = result;
       }
     });
+  }
+
+  switchItemState(di: DashboardItemDto) {
+    di.enabled = !di.enabled;
   }
 }

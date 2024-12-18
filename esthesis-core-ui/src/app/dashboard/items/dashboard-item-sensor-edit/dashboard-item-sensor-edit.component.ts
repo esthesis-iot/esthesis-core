@@ -138,6 +138,7 @@ export class DashboardItemSensorEditComponent extends SecurityBaseComponent impl
       subtitle: this.form.get("subtitle")!.value,
       columns: this.form.get("columns")!.value,
       index: this.incomingDi.index,
+      enabled: this.incomingDi.enabled,
       configuration: JSON.stringify({
         hardwareId: this.form.get("configuration_hardwareId")!.value,
         measurement: this.form.get("configuration_measurement")!.value,

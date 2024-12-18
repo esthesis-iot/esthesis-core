@@ -10,6 +10,7 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 import {HttpHeaders} from "@angular/common/http";
 import {catchError, map, Observable, of, Subscription, tap} from "rxjs";
 import {v4 as uuidv4} from "uuid";
+import * as _ from "lodash";
 
 @Component({
   selector: "app-dashboard-view",
@@ -67,7 +68,7 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
   }
 
   private subscribeToDashboard() {
-    if (this.selectedDashboard && this.selectedDashboard.items.length > 0) {
+    if (this.selectedDashboard && _.filter(this.selectedDashboard?.items, {enabled: true}).length > 0) {
       this.oidcSecurityService.getAccessToken().subscribe((token) => {
         // Set up a refresh subscription handler.
         this.subscriptionRefreshHandler = window.setInterval(() => {

@@ -112,6 +112,7 @@ import {
 } from "./items/dashboard-item-devices-last-seen-edit/dashboard-item-devices-last-seen-edit.component";
 import {MomentModule} from "ngx-moment";
 import {NgxColorsModule} from "ngx-colors";
+import {FilterPipeModule} from "ngx-filter-pipe";
 
 // @ts-ignore
 @NgModule({
@@ -175,7 +176,8 @@ import {NgxColorsModule} from "ngx-colors";
     CdkDragHandle,
     CdkDrag,
     MomentModule,
-    NgxColorsModule
+    NgxColorsModule,
+    FilterPipeModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [

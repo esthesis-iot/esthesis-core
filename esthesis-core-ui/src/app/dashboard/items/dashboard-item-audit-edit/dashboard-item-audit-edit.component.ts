@@ -46,6 +46,7 @@ export class DashboardItemAuditEditComponent extends SecurityBaseComponent imple
       subtitle: this.form.get("subtitle")!.value,
       columns: this.form.get("columns")!.value,
       index: this.incomingDi.index,
+      enabled: this.incomingDi.enabled,
       configuration: JSON.stringify({
         entries: this.form.get("configuration_entries")!.value
       } as DashboardItemAuditConfigurationDto)

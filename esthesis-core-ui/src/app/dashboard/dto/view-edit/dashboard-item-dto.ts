@@ -6,4 +6,5 @@ export interface DashboardItemDto {
   columns: number;
   index: number;
   configuration?: string;
+  enabled: boolean;
 }
