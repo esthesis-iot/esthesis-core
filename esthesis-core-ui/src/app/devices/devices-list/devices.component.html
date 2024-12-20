@@ -70,7 +70,6 @@
               *cdkRowDef="let row; columns: displayedColumns; let element;"
               cdk-row class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
         </ng-template>
-
       </table>
       <mat-paginator #paginator (page)="changePage()"
                      [pageSizeOptions]="[10, 30, 50]"

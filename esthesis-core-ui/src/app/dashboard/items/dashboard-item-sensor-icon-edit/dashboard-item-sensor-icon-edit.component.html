@@ -1,1 +1,112 @@
-<p>dashboard-item-sensor-icon-edit works!</p>
+<div class="card rounded-b-none">
+  <div class="card-body p-0 pt-4">
+    <h2 class="card-title text-2xl flex flex-row justify-between">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="dashboard"></fa-icon>
+        <div>Sensor Icon</div>
+      </div>
+    </h2>
+    <div>
+      <form [formGroup]="form" novalidate>
+        <div class="flex flex-row gap-5">
+          <div class="flex flex-col">
+            <mat-form-field>
+              <mat-label>Title</mat-label>
+              <input formControlName="title" matInput>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Subtitle</mat-label>
+              <input formControlName="subtitle" matInput>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Columns</mat-label>
+              <mat-select formControlName="columns">
+                <mat-option [value]="1">1</mat-option>
+                <mat-option [value]="2">2</mat-option>
+                <mat-option [value]="3">3</mat-option>
+                <mat-option [value]="4">4</mat-option>
+                <mat-option [value]="5">5</mat-option>
+                <mat-option [value]="6">6</mat-option>
+                <mat-option [value]="7">7</mat-option>
+                <mat-option [value]="8">8</mat-option>
+                <mat-option [value]="0">Full width</mat-option>
+              </mat-select>
+              <mat-hint>Item's width in dashboard.</mat-hint>
+            </mat-form-field>
+          </div>
+          <div class="flex flex-col border-l-2 pl-4 border-base-200 flex-grow">
+            <mat-form-field>
+              <mat-label>Device</mat-label>
+              <input formControlName="configuration_hardwareId" matInput
+                     [matAutocomplete]="configuration_hardwareId">
+              <mat-hint>The hardware ID to display measurements from.</mat-hint>
+              <mat-autocomplete #configuration_hardwareId="matAutocomplete">
+                <mat-option *ngFor="let hardwareId of searchHardwareIds" [value]="hardwareId">
+                  {{ hardwareId }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Measurement</mat-label>
+              <input [matAutocomplete]="configuration_measurement"
+                     formControlName="configuration_measurement" matInput>
+              <mat-autocomplete #configuration_measurement="matAutocomplete">
+                <mat-option
+                  *ngFor="let measurement of filteredUniqueMeasurements" [value]="measurement">
+                  {{ measurement }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Unit</mat-label>
+              <input formControlName="configuration_unit" matInput>
+              <mat-hint>The unit associated with this measurement.</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Precision</mat-label>
+              <input formControlName="configuration_precision" matInput>
+              <mat-hint>The number of decimal points.</mat-hint>
+            </mat-form-field>
+
+            <div class="mt-5 text-accent">Conditions
+              <fa-icon class="text-primary-content/50" icon="info-circle"
+                       matTooltip="You can specify any valid JavaScript expression,
+                       using &#123;val&#125; to reference the value being rendered.
+                       The first condition that evaluates to true wins."></fa-icon>
+            </div>
+            <div class="mb-2 text-primary-content/20">
+
+            </div>
+            <div *ngFor="let condition of getConditions(); let i = index"
+                 formArrayName="configuration_conditions">
+              <div [formGroupName]="i" class="flex flex-row">
+                <mat-form-field class="flex-grow">
+                  <mat-label>Condition</mat-label>
+                  <input formControlName="condition" matInput>
+                </mat-form-field>
+                <div>
+                  <app-mat-icon-picker formControlName="icon"></app-mat-icon-picker>
+                </div>
+                <div class="mt-3 ml-1.5 cursor-pointer">
+                  <fa-icon (click)="removeCondition(i)" (keydown)="removeCondition(i)"
+                           icon="trash-can" matTooltip="Remove condition"></fa-icon>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-ghost" (click)="addCondition()">Add Condition</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="card-actions justify-start mt-10">
+      <button class="btn btn-sm btn-secondary" (click)="cancel()">CANCEL</button>
+      <button (click)="save()" *ngIf="allowCreate || allowWrite" [disabled]="form.invalid"
+              class="btn btn-sm btn-primary">SAVE
+      </button>
+    </div>
+  </div>
+</div>

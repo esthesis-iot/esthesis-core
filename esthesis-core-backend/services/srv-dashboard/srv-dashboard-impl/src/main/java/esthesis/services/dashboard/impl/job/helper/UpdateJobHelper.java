@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-public abstract class UpdateJobHelper {
+public abstract class UpdateJobHelper<T> {
 
 	@Inject
 	ObjectMapper objectMapper;
@@ -31,15 +31,13 @@ public abstract class UpdateJobHelper {
 	// while the value is a boolean representing the result of the security check.
 	private final Map<String, Boolean> securityChecks = new HashMap<>();
 
-
 	protected <C> C getConfig(Class<C> configurationClass, DashboardItemDTO item)
 	throws JsonProcessingException {
 		return objectMapper.readValue(item.getConfiguration(), configurationClass);
 	}
 
 	protected boolean checkSecurity(DashboardEntity dashboardEntity, Category category,
-		Operation operation,
-		String hardwareId) {
+		Operation operation, String hardwareId) {
 		String securityKey = String.join(":", category.toString(), operation.toString(), hardwareId,
 			dashboardEntity.getOwnerId().toHexString());
 		if (securityChecks.containsKey(securityKey) && Boolean.FALSE.equals(
@@ -53,6 +51,6 @@ public abstract class UpdateJobHelper {
 		return Boolean.TRUE.equals(securityChecks.get(securityKey));
 	}
 
-	public abstract Object refresh(DashboardEntity dashboardEntity, DashboardItemDTO item)
+	public abstract T refresh(DashboardEntity dashboardEntity, DashboardItemDTO item)
 	throws JsonProcessingException;
 }

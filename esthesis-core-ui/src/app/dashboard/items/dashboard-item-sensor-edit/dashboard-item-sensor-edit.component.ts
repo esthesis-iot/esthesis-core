@@ -61,27 +61,6 @@ export class DashboardItemSensorEditComponent extends SecurityBaseComponent impl
       configuration_threshold_high_color: [configuration?.thresholdHighColor],
     });
 
-    // Monitor for changes in search by hardware id input.
-    this.form.get("configuration_hardwareId")!.valueChanges.pipe(
-      debounceTime(300), distinctUntilChanged()
-    ).subscribe({
-      next: (searchVal: string) => {
-        if (searchVal && searchVal.trim() !== "") {
-          this.deviceService.findDeviceByPartialHardwareId(searchVal).subscribe({
-            next: (devices: DeviceDto[]) => {
-              if (devices && devices.length > 0) {
-                this.searchHardwareIds = devices.map(d => d.hardwareId);
-              } else {
-                this.searchHardwareIds = [];
-              }
-            }
-          });
-        } else {
-          this.searchHardwareIds = [];
-        }
-      }
-    });
-
     // Fetch possible device measurements to be used in Lat/Lon settings.
     this.settingsService.findMeasurementNames().subscribe({
       next: next => {
@@ -125,8 +104,7 @@ export class DashboardItemSensorEditComponent extends SecurityBaseComponent impl
         }
       }
     });
-
-
+    
     this.isFormDisabled().subscribe(disabled => disabled && this.form.disable());
   }
 

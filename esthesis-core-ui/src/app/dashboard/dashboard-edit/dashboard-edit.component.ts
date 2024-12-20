@@ -102,7 +102,7 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
       this.dashboardService.findById(this.id).subscribe({
         next: (response) => {
           this.dashboardItems = response.items;
-          // this.configureItem(this.dashboardItems[1]);
+          // this.configureItem(this.dashboardItems[4]);
         }, error: (error) => {
           this.utilityService.popupErrorWithTraceId("Could not fetch dashboard items.", error);
         }
@@ -111,7 +111,6 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
 
     // Disable the form if the user does not have permission to edit.
     this.isFormDisabled().subscribe(disabled => disabled && this.form.disable());
-
   }
 
   save() {

@@ -40,6 +40,9 @@ quarkus:
     AuditSystemResource:
       url: http://esthesis-core-srv-audit-service:8080
       scope: Singleton
+    CampaignSystemResource:
+      url: http://esthesis-core-srv-campaign-service:8080
+      scope: Singleton
     SecurityResource:
       url: http://esthesis-core-srv-security-service:8080
       scope: Singleton

@@ -15,7 +15,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @ApplicationScoped
-public class AuditUpdateJobHelper extends UpdateJobHelper {
+public class AuditUpdateJobHelper extends UpdateJobHelper<DashboardUpdateAudit> {
 
 	@Inject
 	@RestClient

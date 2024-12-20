@@ -14,7 +14,7 @@ import jakarta.inject.Inject;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @ApplicationScoped
-public class AboutUpdateJobHelper extends UpdateJobHelper {
+public class AboutUpdateJobHelper extends UpdateJobHelper<DashboardUpdateAbout> {
 
 	@Inject
 	@RestClient

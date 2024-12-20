@@ -2,15 +2,22 @@
   <div class="flex flex-row justify-between">
     <div class="stat-title">{{ item.title }}</div>
   </div>
-  <div class="flex flex-row justify-between">
-    <div>
+  <div class="flex flex-row" *ngIf="lastMessage">
+    <div class="flex-grow">
       <div class="flex flex-row mt-2">
-        <div class="stat-value">135</div>
+        <div class="stat-value">{{ getValue() }}</div>
       </div>
-      <div class="stat-desc">litres</div>
+      <div class="flex flex-row stat-desc gap-2">
+        <div>{{ config?.unit }}</div>
+        <div *ngIf="item.subtitle" class="stat-desc">{{ item.subtitle }}</div>
+      </div>
     </div>
-    <div class="">
-      <i class="text-accent text-6xl fa-solid fa-battery-half fa-rotate-270"></i>
+    <div>
+      <i class="fa-fw text-accent text-6xl fa-solid" [ngClass]="getIcon()"></i>
     </div>
+  </div>
+  <div class="flex flex-col gap-1 mt-2" *ngIf="!lastMessage">
+    <div class="skeleton h-12 w-full"></div>
+    <div class="skeleton h-5 w-full"></div>
   </div>
 </div>

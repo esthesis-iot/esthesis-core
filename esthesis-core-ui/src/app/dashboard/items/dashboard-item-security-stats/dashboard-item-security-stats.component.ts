@@ -1,15 +1,12 @@
-import { Component } from '@angular/core';
-import {
-  DashboardItemGenericComponent
-} from "../dashboard-item-generic/dashboard-item-generic.component";
+import {Component} from "@angular/core";
+import {DashboardUpdateSecurityStatsDto} from "../../dto/updates/DashboardUpdateSecurityStatsDto";
+import {DashboardItemComponent} from "../dashboard-item.component";
 
 @Component({
   selector: 'app-dashboard-item-security-stats',
   templateUrl: './dashboard-item-security-stats.component.html'
 })
-export class DashboardItemSecurityStatsComponent extends DashboardItemGenericComponent {
-  constructor() {
-    super();
-  }
+export class DashboardItemSecurityStatsComponent extends DashboardItemComponent<DashboardUpdateSecurityStatsDto> {
+
 
 }

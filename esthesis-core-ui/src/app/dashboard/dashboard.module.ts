@@ -5,7 +5,7 @@ import {DashboardRoutingModule} from "./dashboard-routing.module";
 import {DashboardViewComponent} from "./dashboard-view/dashboard-view.component";
 import {MAT_DATE_FORMATS} from "@angular/material/core";
 import {MatIconModule} from "@angular/material/icon";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatCardModule} from "@angular/material/card";
 import {MatTableModule} from "@angular/material/table";
 import {MatButtonModule} from "@angular/material/button";
@@ -113,6 +113,19 @@ import {
 import {MomentModule} from "ngx-moment";
 import {NgxColorsModule} from "ngx-colors";
 import {FilterPipeModule} from "ngx-filter-pipe";
+import {
+  CdkCell,
+  CdkCellDef,
+  CdkColumnDef,
+  CdkHeaderCell,
+  CdkHeaderCellDef,
+  CdkHeaderRow,
+  CdkHeaderRowDef,
+  CdkRow,
+  CdkRowDef,
+  CdkTable
+} from "@angular/cdk/table";
+import {MatSort, MatSortHeader} from "@angular/material/sort";
 
 // @ts-ignore
 @NgModule({
@@ -177,7 +190,20 @@ import {FilterPipeModule} from "ngx-filter-pipe";
     CdkDrag,
     MomentModule,
     NgxColorsModule,
-    FilterPipeModule
+    FilterPipeModule,
+    CdkCell,
+    CdkCellDef,
+    CdkColumnDef,
+    CdkHeaderCell,
+    CdkHeaderRow,
+    CdkHeaderRowDef,
+    CdkRow,
+    CdkRowDef,
+    CdkTable,
+    MatSort,
+    MatSortHeader,
+    CdkHeaderCellDef,
+    FormsModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [

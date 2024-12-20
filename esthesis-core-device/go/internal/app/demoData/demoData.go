@@ -35,11 +35,24 @@ func randomFloat(min, max float64) float64 {
 	return min + rand.Float64()*(max-min)
 }
 
+func randomString(length int) string {
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	timestamp := time.Now().UnixNano()
+	result := make([]byte, length)
+	for i := 0; i < length; i++ {
+		index := int((timestamp>>uint(i*3))&63) % len(charset)
+		result[i] = charset[index]
+	}
+
+	return string(result)
+}
+
 func randomGps() []float64 {
 	gpsIndex++
 	if gpsIndex >= len(gps) {
 		gpsIndex = 0
 	}
+
 	return gps[gpsIndex]
 }
 
@@ -71,6 +84,7 @@ func Post() {
 		"battery_current=" + fmt.Sprintf("%.2f", randomBatteryCurrent) + "f",
 		"gps_lat=" + fmt.Sprintf("%.15f", randomGps[0]) + "f",
 		"gps_lon=" + fmt.Sprintf("%.15f", randomGps[1]) + "f",
+		"rnd_str=" + "rnd-" + randomString(12),
 	}, ",")
 
 	mqttClient.Publish(demoTopic,

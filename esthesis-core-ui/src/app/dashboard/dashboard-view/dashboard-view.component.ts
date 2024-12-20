@@ -92,9 +92,7 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
             console.error(event, errorEvent.message);
           } else {
             const messageEvent = event as MessageEvent;
-            JSON.parse(messageEvent.data).forEach((item: any) => {
-              this.dashboardService.sendMessage(item)
-            });
+            this.dashboardService.sendMessage(JSON.parse(messageEvent.data))
             this.lastEventDate = new Date();
           }
         });

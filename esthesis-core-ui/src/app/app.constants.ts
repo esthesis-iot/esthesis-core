@@ -249,7 +249,7 @@ export const AppConstants = {
       COLUMNS: {
         ABOUT: 4,
         AUDIT: 4,
-        CAMPAIGNS: 2,
+        CAMPAIGNS: 5,
         DATETIME: 2,
         DEVICE_MAP: 2,
         DEVICES_LAST_SEEN: 2,

@@ -1,26 +1,24 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
-import {
-  DashboardItemGenericComponent
-} from "../dashboard-item-generic/dashboard-item-generic.component";
+import {Component, ViewChild} from "@angular/core";
 import {BaseChartDirective} from "ng2-charts";
-import {UtilityService} from "../../../shared/services/utility.service";
 import {ChartConfiguration, ChartData} from "chart.js";
+import {DashboardUpdateDevicesStatusDto} from "../../dto/updates/DashboardUpdateDevicesStatusDto";
+import {DashboardItemComponent} from "../dashboard-item.component";
 
 @Component({
   selector: 'app-dashboard-item-devices-status',
   templateUrl: './dashboard-item-devices-status.component.html'
 })
-export class DashboardItemDevicesStatusComponent extends DashboardItemGenericComponent implements OnInit{
+export class DashboardItemDevicesStatusComponent extends DashboardItemComponent<DashboardUpdateDevicesStatusDto> {
   sensorValue?: string;
   @ViewChild(BaseChartDirective) chart: BaseChartDirective<'pie'> | undefined;
 
-  constructor(private utilityService: UtilityService) {
-    super();
-  }
-
-  ngOnInit(): void {
-
-  }
+  // constructor(private utilityService: UtilityService) {
+  //   super();
+  // }
+  //
+  // ngOnInit(): void {
+  //
+  // }
 
   public chartOptions: ChartConfiguration<'pie'>['options'] = {
     responsive: true,

@@ -1,29 +1,23 @@
 import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
-import {
-  DashboardItemGenericComponent
-} from "../dashboard-item-generic/dashboard-item-generic.component";
 import {ChartConfiguration, ChartData} from "chart.js";
 import {BaseChartDirective} from "ng2-charts";
-import {Subscription} from "rxjs";
 import {
   DashboardItemSensorConfigurationDto
 } from "../../dto/configuration/dashboard-item-sensor-configuration-dto";
-import {DashboardService} from "../../dashboard.service";
-import {UtilityService} from "../../../shared/services/utility.service";
 import {DashboardUpdateSensorDto} from "../../dto/updates/DashboardUpdateSensorDto";
+import {DashboardItemComponent} from "../dashboard-item.component";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: "app-dashboard-item-sensor",
   templateUrl: "./dashboard-item-sensor.component.html"
 })
-export class DashboardItemSensorComponent extends DashboardItemGenericComponent implements OnInit, OnDestroy {
-  lastMessage?: DashboardUpdateSensorDto;
+export class DashboardItemSensorComponent
+  extends DashboardItemComponent<DashboardUpdateSensorDto, DashboardItemSensorConfigurationDto>
+  implements OnInit, OnDestroy {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective<"line"> | undefined;
-  // The subscription to receive dashboard updates.
-  emitterSub?: Subscription;
-  // The dashboard item configuration.
-  config?: DashboardItemSensorConfigurationDto;
-
+  // A subscription to receive notification from the superclass when lastMessage is updated.
+  lastMessageSubscription?: Subscription;
   public sparkLineData: ChartData<"line"> = {
     labels: [],
     datasets: [
@@ -34,7 +28,6 @@ export class DashboardItemSensorComponent extends DashboardItemGenericComponent 
       }
     ],
   };
-
   public sparkLineOptions: ChartConfiguration<"line">["options"] = {
     responsive: true,
     maintainAspectRatio: false,
@@ -63,36 +56,25 @@ export class DashboardItemSensorComponent extends DashboardItemGenericComponent 
     },
   };
 
-  constructor(private utilityService: UtilityService,
-    private readonly dashboardService: DashboardService) {
-    super();
-  }
-
-  ngOnInit(): void {
-    if (this.item.configuration) {
-      this.config = JSON.parse(this.item.configuration) as DashboardItemSensorConfigurationDto;
-    }
-    this.emitterSub = this.dashboardService.getMessage().subscribe((message) => {
-      if (message.id === this.item.id) {
-        this.lastMessage = message as DashboardUpdateSensorDto;
-        if (this.config?.sparkline) {
-          this.sparkLineData.datasets[0].data.push(Number(this.lastMessage.value));
-          this.sparkLineData.labels?.push(this.lastMessage.value);
-
-          if (this.sparkLineData.datasets[0].data.length > this.config.sparklinePoints) {
-            this.sparkLineData.datasets[0].data.shift();
-            this.sparkLineData.labels?.shift();
-          }
-
-          this.chart?.update();
+  override ngOnInit(): void {
+    super.ngOnInit();
+    this.lastMessageSubscription = this.lastMessageEmitter.subscribe(lastMessage => {
+      if (this.config?.sparkline) {
+        this.sparkLineData.datasets[0].data.push(Number(lastMessage.value));
+        this.sparkLineData.labels?.push(lastMessage.value);
+        if (this.sparkLineData.datasets[0].data.length > this.config.sparklinePoints) {
+          this.sparkLineData.datasets[0].data.shift();
+          this.sparkLineData.labels?.shift();
         }
+        this.chart?.update();
       }
     });
   }
 
-  ngOnDestroy() {
-    if (this.emitterSub) {
-      this.emitterSub.unsubscribe();
+  override ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.lastMessageSubscription) {
+      this.lastMessageSubscription.unsubscribe();
     }
   }
 
@@ -100,7 +82,7 @@ export class DashboardItemSensorComponent extends DashboardItemGenericComponent 
     if (this.config?.threshold) {
       if (this.lastMessage) {
         const lastValue = Number(this.lastMessage.value);
-        if ( lastValue <= this.config.thresholdLow) {
+        if (lastValue <= this.config.thresholdLow) {
           return this.config.thresholdLowColor;
         } else if (lastValue <= this.config.thresholdMiddle) {
           return this.config.thresholdMiddleColor;
@@ -108,10 +90,10 @@ export class DashboardItemSensorComponent extends DashboardItemGenericComponent 
           return this.config.thresholdHighColor;
         }
       } else {
-        return "inherit";
+        return "bg-base-100";
       }
     } else {
-      return "inherit";
+      return "bg-base-100";
     }
   }
 }
