@@ -35,6 +35,7 @@ import esthesis.util.kafka.notifications.outgoing.KafkaNotification;
 import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;
 import io.opentelemetry.context.Context;
+import io.quarkus.panache.common.Sort;
 import io.quarkus.qute.Qute;
 import io.smallrye.reactive.messaging.TracingMetadata;
 import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
@@ -400,5 +401,12 @@ public class DeviceService extends BaseService<DeviceEntity> {
 			Instant.now().minus(Duration.ofMinutes(1))));
 
 		return devicesLastSeenStatsDTO;
+	}
+
+	public List<DeviceEntity> getLatestDevices(int limit) {
+		return deviceRepository
+			.findAll(Sort.descending("registeredOn"))
+			.page(io.quarkus.panache.common.Page.of(0, limit))
+			.list();
 	}
 }

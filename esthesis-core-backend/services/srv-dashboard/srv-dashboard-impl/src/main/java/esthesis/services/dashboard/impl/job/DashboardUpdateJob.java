@@ -12,6 +12,7 @@ import esthesis.services.dashboard.impl.job.helper.AboutUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.AuditUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.CampaignsUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DevicesLastSeenUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.DevicesLatestUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.SensorIconUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.SensorUpdateJobHelper;
 import esthesis.services.dashboard.impl.service.DashboardService;
@@ -74,6 +75,8 @@ public class DashboardUpdateJob {
 	AboutUpdateJobHelper aboutUpdateJobHelper;
 	@Inject
 	CampaignsUpdateJobHelper campaignsUpdateJobHelper;
+	@Inject
+	DevicesLatestUpdateJobHelper devicesLatestUpdateJobHelper;
 
 	/**
 	 * Broadcasts a dashboard update to the user's SSE event sink, while avoiding sending the same
@@ -82,7 +85,7 @@ public class DashboardUpdateJob {
 	 * @param update the dashboard update to broadcast
 	 * @param itemId the ID of the dashboard item
 	 */
-	private void broadcast(DashboardUpdate update, String itemId) {
+	private synchronized void broadcast(DashboardUpdate update, String itemId) {
 		if (update != null) {
 			try {
 				String json = objectMapper.writeValueAsString(update);
@@ -157,6 +160,11 @@ public class DashboardUpdateJob {
 				case DEVICES_LAST_SEEN:
 					CompletableFuture.runAsync(
 						() -> broadcast(devicesLastSeenUpdateJobHelper.refresh(dashboardEntity, item),
+							item.getId()));
+					break;
+				case DEVICES_LATEST:
+					CompletableFuture.runAsync(
+						() -> broadcast(devicesLatestUpdateJobHelper.refresh(dashboardEntity, item),
 							item.getId()));
 					break;
 				default:

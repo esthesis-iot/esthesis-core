@@ -5,45 +5,51 @@ import esthesis.core.common.AppConstants.Security.Category;
 import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.service.dashboard.dto.DashboardItemDTO;
 import esthesis.service.dashboard.entity.DashboardEntity;
-import esthesis.service.device.dto.DevicesLastSeenStatsDTO;
+import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
-import esthesis.services.dashboard.impl.dto.update.DashboardUpdateDevicesLastSeen;
+import esthesis.services.dashboard.impl.dto.config.DashboardItemDevicesLatestConfiguration;
+import esthesis.services.dashboard.impl.dto.update.DashboardUpdateDevicesLatest;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 
 @Slf4j
 @ApplicationScoped
-public class DevicesLastSeenUpdateJobHelper extends
-	UpdateJobHelper<DashboardUpdateDevicesLastSeen> {
+public class DevicesLatestUpdateJobHelper extends
+	UpdateJobHelper<DashboardUpdateDevicesLatest> {
 
 	@Inject
 	@RestClient
 	DeviceSystemResource deviceSystemResource;
 
-	public DashboardUpdateDevicesLastSeen refresh(DashboardEntity dashboardEntity,
+	public DashboardUpdateDevicesLatest refresh(DashboardEntity dashboardEntity,
 		DashboardItemDTO item) {
-		
+
 		try {
-			// Security checks.
+			// Get item configuration & security checks.
+			DashboardItemDevicesLatestConfiguration config = getConfig(
+				DashboardItemDevicesLatestConfiguration.class, item);
 			if (!checkSecurity(dashboardEntity, Category.DEVICE, Operation.READ, "")) {
 				return null;
 			}
 
 			// Get data.
-			DevicesLastSeenStatsDTO deviceStats = deviceSystemResource.getDeviceStats();
+			List<DeviceEntity> latestDevices = deviceSystemResource.getLatestDevices(config.getEntries());
 
 			// Return update.
-			return DashboardUpdateDevicesLastSeen.builder()
+			return DashboardUpdateDevicesLatest.builder()
 				.id(item.getId())
 				.type(Type.DEVICES_LAST_SEEN)
-				.lastMonth(deviceStats.getSeenLastMonth())
-				.lastWeek(deviceStats.getSeenLastWeek())
-				.lastDay(deviceStats.getSeenLastDay())
-				.lastHour(deviceStats.getSeenLastHour())
-				.lastMinute(deviceStats.getSeenLastMinute())
+				.devices(latestDevices.stream()
+					.map(device -> DashboardUpdateDevicesLatest.DTO.builder()
+						.hardwareId(device.getHardwareId())
+						.registeredOn(device.getRegisteredOn())
+						.type(device.getType())
+						.build())
+					.toList())
 				.build();
 		} catch (Exception e) {
 			log.error("Error parsing configuration for '{}' item with 'id' {}",

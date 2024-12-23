@@ -177,6 +177,9 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
             case AppConstants.DASHBOARD.ITEM.TYPE.SENSOR:
               defaultConfiguration = JSON.stringify(this.appConstants.DASHBOARD.ITEM.DEFAULTS.SENSOR);
               break;
+            case AppConstants.DASHBOARD.ITEM.TYPE.DEVICES_LATEST:
+              defaultConfiguration = JSON.stringify(this.appConstants.DASHBOARD.ITEM.DEFAULTS.DEVICES_LATEST);
+              break;
           }
 
           // Add selected dashboard item.

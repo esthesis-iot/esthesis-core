@@ -35,7 +35,6 @@ export class DashboardItemDevicesLastSeenComponent
     }
   };
   public pieChartData: ChartData<"pie", number[], string | string[]> = {
-    labels: [" Last month", " Last week", " Last day", " Last hour", " Last minute"],
     datasets: [
       {
         data: [0,0,0,0,0],
@@ -60,6 +59,7 @@ export class DashboardItemDevicesLastSeenComponent
         Number(lastMessage.lastHour),
         Number(lastMessage.lastMinute)
       ];
+      this.pieChartData.labels = [" Last month", " Last week", " Last day", " Last hour", " Last minute"];
       this.chart?.update();
     });
   }

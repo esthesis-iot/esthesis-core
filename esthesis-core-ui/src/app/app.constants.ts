@@ -253,7 +253,7 @@ export const AppConstants = {
         DATETIME: 2,
         DEVICE_MAP: 2,
         DEVICES_LAST_SEEN: 3,
-        DEVICES_LATEST: 2,
+        DEVICES_LATEST: 5,
         DEVICES_STATUS: 2,
         IMAGE: 2,
         NOTES: 2,
@@ -267,7 +267,10 @@ export const AppConstants = {
           entries: 5
         },
         ABOUT: {},
-        SENSOR: {}
+        SENSOR: {},
+        DEVICES_LATEST: {
+          entries: 5
+        }
       }
     }
   }

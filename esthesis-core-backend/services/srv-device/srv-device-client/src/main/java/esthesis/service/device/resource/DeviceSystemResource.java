@@ -65,4 +65,8 @@ public interface DeviceSystemResource {
 	@GET
 	@Path("/v1/system/device-stats")
 	DevicesLastSeenStatsDTO getDeviceStats();
+
+	@GET
+	@Path("/v1/system/device-latest")
+	List<DeviceEntity> getLatestDevices(int limit);
 }

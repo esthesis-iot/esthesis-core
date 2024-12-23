@@ -2,14 +2,15 @@
   <div class="flex flex-row justify-between">
     <div class="stat-title">{{ item.title }}</div>
   </div>
-  <div class="overflow-hidden cursor-default w-full p-0 m-0">
-    <app-chart-host chartType="pie" class="p-0 m-0">
-      <canvas class="mt-4 ml-0"
+  <div class="overflow-hidden cursor-default w-full h-32 mt-6"
+       [ngClass]="!lastMessage ? 'skeleton' : ''">
+    <app-chart-host chartType="pie">
+      <canvas
         baseChart
         [data]="pieChartData"
         [options]="pieChartOptions"
         type="pie"
-        height="120px">
+        height="120">
       </canvas>
     </app-chart-host>
   </div>

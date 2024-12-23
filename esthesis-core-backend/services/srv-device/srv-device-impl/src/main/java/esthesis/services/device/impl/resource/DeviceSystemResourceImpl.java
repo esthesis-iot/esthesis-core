@@ -7,6 +7,7 @@ import esthesis.service.device.dto.DevicesLastSeenStatsDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
+import esthesis.services.device.impl.repository.DeviceRepository;
 import esthesis.services.device.impl.service.DeviceRegistrationService;
 import esthesis.services.device.impl.service.DeviceService;
 import jakarta.annotation.security.RolesAllowed;
@@ -27,6 +28,8 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 
 	@Inject
 	DeviceService deviceService;
+	@Inject
+	DeviceRepository deviceRepository;
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
@@ -110,5 +113,9 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 		return deviceService.getDeviceStats();
 	}
 
+	@Override
+	public List<DeviceEntity> getLatestDevices(int limit) {
+		return deviceService.getLatestDevices(limit);
+	}
 
 }
