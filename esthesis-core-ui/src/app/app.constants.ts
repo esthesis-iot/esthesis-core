@@ -252,7 +252,7 @@ export const AppConstants = {
         CAMPAIGNS: 5,
         DATETIME: 2,
         DEVICE_MAP: 2,
-        DEVICES_LAST_SEEN: 2,
+        DEVICES_LAST_SEEN: 3,
         DEVICES_LATEST: 2,
         DEVICES_STATUS: 2,
         IMAGE: 2,

@@ -36,6 +36,9 @@ quarkus:
     AuditSystemResource:
       url: http://localhost:59140
       scope: Singleton
+    DeviceSystemResource:
+      url: http://localhost:59010
+      scope: Singleton
     SecurityResource:
       url: http://localhost:59170
       scope: Singleton

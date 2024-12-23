@@ -37,6 +37,9 @@ quarkus:
     AuditResource:
       url: http://esthesis-core-srv-audit-service:8080
       scope: Singleton
+    DeviceSystemResource:
+      url: http://esthesis-core-srv-device-service:8080
+      scope: Singleton
     AuditSystemResource:
       url: http://esthesis-core-srv-audit-service:8080
       scope: Singleton

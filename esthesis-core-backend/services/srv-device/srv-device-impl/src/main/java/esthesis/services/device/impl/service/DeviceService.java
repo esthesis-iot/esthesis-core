@@ -10,12 +10,14 @@ import esthesis.common.avro.AvroUtils;
 import esthesis.common.avro.EsthesisDataMessage;
 import esthesis.common.avro.MessageTypeEnum;
 import esthesis.common.exception.QMismatchException;
+import esthesis.core.common.AppConstants.Device.Status;
 import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.DeviceProfileDTO;
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
+import esthesis.service.device.dto.DevicesLastSeenStatsDTO;
 import esthesis.service.device.dto.GeolocationDTO;
 import esthesis.service.device.dto.ImportDataProcessingInstructionsDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
@@ -42,6 +44,7 @@ import jakarta.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -365,5 +368,37 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	@ErnPermission(category = DEVICE, operation = WRITE)
 	public DeviceEntity saveUpdate(DeviceEntity entity) {
 		return saveHandler(entity);
+	}
+
+	public DevicesLastSeenStatsDTO getDeviceStats() {
+		DevicesLastSeenStatsDTO devicesLastSeenStatsDTO = new DevicesLastSeenStatsDTO();
+		devicesLastSeenStatsDTO.setTotal(getAll().size());
+		devicesLastSeenStatsDTO.setDisabled(deviceRepository.countByStatus(Status.DISABLED));
+		devicesLastSeenStatsDTO.setPreregistered(deviceRepository.countByStatus(Status.PREREGISTERED));
+		devicesLastSeenStatsDTO.setRegistered(deviceRepository.countByStatus(Status.REGISTERED));
+
+		devicesLastSeenStatsDTO.setSeenLastMonth(deviceRepository.countLastSeenAfter(
+			Instant.now().minus(Duration.ofDays(30))));
+		devicesLastSeenStatsDTO.setSeenLastWeek(deviceRepository.countLastSeenAfter(
+			Instant.now().minus(Duration.ofDays(7))));
+		devicesLastSeenStatsDTO.setSeenLastDay(deviceRepository.countLastSeenAfter(
+			Instant.now().minus(Duration.ofDays(1))));
+		devicesLastSeenStatsDTO.setSeenLastHour(deviceRepository.countLastSeenAfter(
+			Instant.now().minus(Duration.ofHours(1))));
+		devicesLastSeenStatsDTO.setSeenLastMinute(deviceRepository.countLastSeenAfter(
+			Instant.now().minus(Duration.ofMinutes(1))));
+
+		devicesLastSeenStatsDTO.setJoinedLastMonth(deviceRepository.countJoinedAfter(
+			Instant.now().minus(Duration.ofDays(30))));
+		devicesLastSeenStatsDTO.setJoinedLastWeek(deviceRepository.countJoinedAfter(
+			Instant.now().minus(Duration.ofDays(7))));
+		devicesLastSeenStatsDTO.setJoinedLastDay(deviceRepository.countJoinedAfter(
+			Instant.now().minus(Duration.ofDays(1))));
+		devicesLastSeenStatsDTO.setJoinedLastHour(deviceRepository.countJoinedAfter(
+			Instant.now().minus(Duration.ofHours(1))));
+		devicesLastSeenStatsDTO.setJoinedLastMinute(deviceRepository.countJoinedAfter(
+			Instant.now().minus(Duration.ofMinutes(1))));
+
+		return devicesLastSeenStatsDTO;
 	}
 }

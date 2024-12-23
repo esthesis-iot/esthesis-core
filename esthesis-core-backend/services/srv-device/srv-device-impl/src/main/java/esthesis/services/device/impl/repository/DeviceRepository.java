@@ -1,8 +1,10 @@
 package esthesis.services.device.impl.repository;
 
+import esthesis.core.common.AppConstants.Device;
 import esthesis.service.device.entity.DeviceEntity;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import jakarta.enterprise.context.ApplicationScoped;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +51,18 @@ public class DeviceRepository implements PanacheMongoRepository<DeviceEntity> {
 	 */
 	public Long countByTag(List<String> tags) {
 		return count("tags in ?1", tags);
+	}
+
+	public Long countByStatus(Device.Status status) {
+		return count("status", status);
+	}
+
+	public Long countLastSeenAfter(Instant lastSeen) {
+		return count("lastSeen >= ?1", lastSeen);
+	}
+
+	public Long countJoinedAfter(Instant joined) {
+		return count("registeredOn >= ?1", joined);
 	}
 
 }

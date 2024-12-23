@@ -1,6 +1,7 @@
 package esthesis.service.device.resource;
 
 import esthesis.service.device.dto.DeviceRegistrationDTO;
+import esthesis.service.device.dto.DevicesLastSeenStatsDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import io.quarkus.oidc.client.filter.OidcClientFilter;
@@ -15,7 +16,6 @@ import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Optional;
-
 import org.bouncycastle.operator.OperatorCreationException;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
@@ -59,5 +59,10 @@ public interface DeviceSystemResource {
 	@GET
 	@Path("/v1/system/{esthesisHardwareId}/attribute-by-esthesis-id/{attributeName}")
 	Optional<DeviceAttributeEntity> getDeviceAttributeByEsthesisHardwareIdAndAttributeName(
-		@PathParam("esthesisHardwareId") String esthesisHardwareId, @PathParam("attributeName") String attributeName);
+		@PathParam("esthesisHardwareId") String esthesisHardwareId,
+		@PathParam("attributeName") String attributeName);
+
+	@GET
+	@Path("/v1/system/device-stats")
+	DevicesLastSeenStatsDTO getDeviceStats();
 }

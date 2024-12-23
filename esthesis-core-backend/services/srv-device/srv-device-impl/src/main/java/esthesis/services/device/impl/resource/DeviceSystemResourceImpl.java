@@ -1,8 +1,9 @@
 package esthesis.services.device.impl.resource;
 
-import esthesis.core.common.AppConstants;
 import esthesis.common.exception.QDoesNotExistException;
+import esthesis.core.common.AppConstants;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
+import esthesis.service.device.dto.DevicesLastSeenStatsDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
@@ -96,8 +97,17 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
-	public Optional<DeviceAttributeEntity> getDeviceAttributeByEsthesisHardwareIdAndAttributeName(String esthesisHardwareId, String attributeName) {
-		return deviceService.getDeviceAttributeByName(deviceService.findByHardwareId(esthesisHardwareId, false).orElseThrow().getId().toHexString(), attributeName);
+	public Optional<DeviceAttributeEntity> getDeviceAttributeByEsthesisHardwareIdAndAttributeName(
+		String esthesisHardwareId, String attributeName) {
+		return deviceService.getDeviceAttributeByName(
+			deviceService.findByHardwareId(esthesisHardwareId, false).orElseThrow().getId().toHexString(),
+			attributeName);
+	}
+
+	@Override
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
+	public DevicesLastSeenStatsDTO getDeviceStats() {
+		return deviceService.getDeviceStats();
 	}
 
 

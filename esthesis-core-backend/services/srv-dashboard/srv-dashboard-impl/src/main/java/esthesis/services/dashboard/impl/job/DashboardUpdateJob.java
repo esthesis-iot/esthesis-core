@@ -2,14 +2,16 @@ package esthesis.services.dashboard.impl.job;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.dashboard.dto.DashboardItemDTO;
 import esthesis.service.dashboard.entity.DashboardEntity;
 import esthesis.services.dashboard.impl.dto.DashboardUpdate;
-import esthesis.services.dashboard.impl.dto.update.DashboardUpdateCampaigns;
 import esthesis.services.dashboard.impl.job.helper.AboutUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.AuditUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.CampaignsUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.DevicesLastSeenUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.SensorIconUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.SensorUpdateJobHelper;
 import esthesis.services.dashboard.impl.service.DashboardService;
@@ -21,9 +23,11 @@ import jakarta.inject.Named;
 import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseBroadcaster;
 import jakarta.ws.rs.sse.SseEventSink;
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  * Job for updating a dashboard. This job checks which elements a dashboard contains and updates the
@@ -43,6 +47,8 @@ public class DashboardUpdateJob {
 	DashboardService dashboardService;
 	@Inject
 	Sse sse;
+	@Inject
+	DevicesLastSeenUpdateJobHelper devicesLastSeenUpdateJobHelper;
 	@Setter
 	private String dashboardId;
 	@Setter
@@ -51,6 +57,10 @@ public class DashboardUpdateJob {
 	private DashboardEntity dashboardEntity;
 	@Inject
 	ObjectMapper objectMapper;
+	// A local cache to maintain a hash of the last update message sent for each dashboard item.
+	// This is used to prevent sending the same message multiple times when no updates exist.
+	private final Cache<String, String> updateJobCache = Caffeine.newBuilder()
+		.expireAfterWrite(Duration.ofHours(1)).build();
 
 	@Inject
 	AuditUpdateJobHelper auditUpdateJobHelper;
@@ -64,6 +74,28 @@ public class DashboardUpdateJob {
 	AboutUpdateJobHelper aboutUpdateJobHelper;
 	@Inject
 	CampaignsUpdateJobHelper campaignsUpdateJobHelper;
+
+	/**
+	 * Broadcasts a dashboard update to the user's SSE event sink, while avoiding sending the same
+	 * message multiple times.
+	 *
+	 * @param update the dashboard update to broadcast
+	 * @param itemId the ID of the dashboard item
+	 */
+	private void broadcast(DashboardUpdate update, String itemId) {
+		if (update != null) {
+			try {
+				String json = objectMapper.writeValueAsString(update);
+				String jsonHash = DigestUtils.md5Hex(json);
+				if (!jsonHash.equals(updateJobCache.getIfPresent(itemId))) {
+					updateJobCache.put(itemId, jsonHash);
+					sseBroadcaster.broadcast(sse.newEvent(json));
+				}
+			} catch (JsonProcessingException e) {
+				log.error("Error parsing update for dashboard item with id '{}'.", itemId, e);
+			}
+		}
+	}
 
 	/**
 	 * Hooks the SSE event sink to the broadcaster. This method should be called once during job
@@ -102,85 +134,36 @@ public class DashboardUpdateJob {
 		dashboardEntity.getItems().stream().filter(DashboardItemDTO::isEnabled).forEach(item -> {
 			switch (item.getType()) {
 				case AUDIT:
-					CompletableFuture.runAsync(() -> {
-						try {
-							DashboardUpdate update = auditUpdateJobHelper.refresh(dashboardEntity, item);
-							if (update != null) {
-								String json = objectMapper.writeValueAsString(update);
-								sseBroadcaster.broadcast(sse.newEvent(json));
-							}
-						} catch (JsonProcessingException e) {
-							log.error("Could not refresh audit for dashboard item '{}'.", item, e);
-						}
-					});
+					CompletableFuture.runAsync(
+						() -> broadcast(auditUpdateJobHelper.refresh(dashboardEntity, item), item.getId()));
 					break;
 				case SENSOR:
-					CompletableFuture.runAsync(() -> {
-						try {
-							DashboardUpdate update = sensorUpdateJobHelper.refresh(dashboardEntity, item);
-							if (update != null) {
-								String json = objectMapper.writeValueAsString(update);
-								sseBroadcaster.broadcast(sse.newEvent(json));
-							}
-						} catch (JsonProcessingException e) {
-							log.error("Could not refresh sensor for dashboard item '{}'.", item, e);
-						}
-					});
+					CompletableFuture.runAsync(
+						() -> broadcast(sensorUpdateJobHelper.refresh(dashboardEntity, item), item.getId()));
 					break;
 				case SENSOR_ICON:
-					CompletableFuture.runAsync(() -> {
-						try {
-							DashboardUpdate update = sensorIconUpdateJobHelper.refresh(dashboardEntity, item);
-							if (update != null) {
-								String json = objectMapper.writeValueAsString(update);
-								sseBroadcaster.broadcast(sse.newEvent(json));
-							}
-						} catch (JsonProcessingException e) {
-							log.error("Could not refresh sensor icon for dashboard item '{}'.", item, e);
-						}
-					});
+					CompletableFuture.runAsync(
+						() -> broadcast(sensorIconUpdateJobHelper.refresh(dashboardEntity, item),
+							item.getId()));
 					break;
 				case ABOUT:
-					CompletableFuture.runAsync(() -> {
-						try {
-							DashboardUpdate update = aboutUpdateJobHelper.refresh(dashboardEntity, item);
-							if (update != null) {
-								String json = objectMapper.writeValueAsString(update);
-								sseBroadcaster.broadcast(sse.newEvent(json));
-							}
-						} catch (JsonProcessingException e) {
-							log.error("Could not refresh about for dashboard item '{}'.", item, e);
-						}
-					});
+					CompletableFuture.runAsync(
+						() -> broadcast(aboutUpdateJobHelper.refresh(dashboardEntity, item), item.getId()));
 					break;
 				case CAMPAIGNS:
-					CompletableFuture.runAsync(() -> {
-						try {
-							DashboardUpdateCampaigns update = campaignsUpdateJobHelper.refresh(dashboardEntity,
-								item);
-							if (update != null) {
-								String json = objectMapper.writeValueAsString(update);
-								sseBroadcaster.broadcast(sse.newEvent(json));
-							}
-						} catch (JsonProcessingException e) {
-							log.error("Could not refresh campaigns for dashboard item '{}'.", item, e);
-						}
-					});
+					CompletableFuture.runAsync(
+						() -> broadcast(campaignsUpdateJobHelper.refresh(dashboardEntity, item), item.getId()));
+					break;
+				case DEVICES_LAST_SEEN:
+					CompletableFuture.runAsync(
+						() -> broadcast(devicesLastSeenUpdateJobHelper.refresh(dashboardEntity, item),
+							item.getId()));
 					break;
 				default:
 					log.warn("Unknown dashboard item type '{}' for dashboard '{}'.", item.getType(),
 						dashboardId);
 			}
 		});
-
-//		// Create a JSON representation of the dashboard update data and send it to the user via SSE.
-//		try {
-//			String json = objectMapper.writeValueAsString(dashboardUpdates);
-//			log.trace("Sending dashboard update for dashboard '{}': {}", dashboardId, json);
-//			sseBroadcaster.broadcast(sse.newEvent(json));
-//		} catch (Exception e) {
-//			log.error("Could not serialise dashboard update for dashboard '{}'.", dashboardId, e);
-//		}
 	}
 
 }

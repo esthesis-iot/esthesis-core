@@ -1,6 +1,5 @@
 package esthesis.services.dashboard.impl.job.helper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import esthesis.core.common.AppConstants.Dashboard.Type;
 import esthesis.core.common.AppConstants.Security.Category;
 import esthesis.core.common.AppConstants.Security.Operation;
@@ -11,8 +10,11 @@ import esthesis.service.dashboard.entity.DashboardEntity;
 import esthesis.services.dashboard.impl.dto.update.DashboardUpdateAbout;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+
+@Slf4j
 @ApplicationScoped
 public class AboutUpdateJobHelper extends UpdateJobHelper<DashboardUpdateAbout> {
 
@@ -20,25 +22,30 @@ public class AboutUpdateJobHelper extends UpdateJobHelper<DashboardUpdateAbout> 
 	@RestClient
 	AboutSystemResource aboutSystemResource;
 
-	public DashboardUpdateAbout refresh(DashboardEntity dashboardEntity,
-		DashboardItemDTO item) throws JsonProcessingException {
+	public DashboardUpdateAbout refresh(DashboardEntity dashboardEntity, DashboardItemDTO item) {
 
-		// Security checks.
-		if (!checkSecurity(dashboardEntity, Category.ABOUT, Operation.READ, "")) {
+		try {
+			// Security checks.
+			if (!checkSecurity(dashboardEntity, Category.ABOUT, Operation.READ, "")) {
+				return null;
+			}
+
+			// Get data.
+			AboutGeneralDTO generalInfo = aboutSystemResource.getGeneralInfo();
+
+			// Return update.
+			return DashboardUpdateAbout.builder()
+				.id(item.getId())
+				.type(Type.ABOUT)
+				.gitBuildTime(generalInfo.getGitBuildTime())
+				.gitCommitId(generalInfo.getGitCommitId())
+				.gitCommitIdAbbrev(generalInfo.getGitCommitIdAbbrev())
+				.gitBuildTime(generalInfo.getGitBuildTime())
+				.build();
+		} catch (Exception e) {
+			log.error("Error parsing configuration for '{}' item with 'id' {}",
+				Type.ABOUT, item.getId(), e);
 			return null;
 		}
-
-		// Get data.
-		AboutGeneralDTO generalInfo = aboutSystemResource.getGeneralInfo();
-
-		// Return update.
-		return DashboardUpdateAbout.builder()
-			.id(item.getId())
-			.type(Type.ABOUT)
-			.gitBuildTime(generalInfo.getGitBuildTime())
-			.gitCommitId(generalInfo.getGitCommitId())
-			.gitCommitIdAbbrev(generalInfo.getGitCommitIdAbbrev())
-			.gitBuildTime(generalInfo.getGitBuildTime())
-			.build();
 	}
 }

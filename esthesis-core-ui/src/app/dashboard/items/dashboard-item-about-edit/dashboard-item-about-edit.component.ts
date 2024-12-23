@@ -14,7 +14,7 @@ export class DashboardItemAboutEditComponent extends SecurityBaseComponent imple
 
   constructor(@Inject(MAT_DIALOG_DATA) public readonly incomingDi: DashboardItemDto,
     readonly fb: FormBuilder, public dialogRef: MatDialogRef<DashboardItemAboutEditComponent>) {
-    super(AppConstants.SECURITY.CATEGORY.DASHBOARD);
+    super(AppConstants.SECURITY.CATEGORY.ABOUT);
   }
 
   ngOnInit(): void {

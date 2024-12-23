@@ -51,6 +51,5 @@ public abstract class UpdateJobHelper<T> {
 		return Boolean.TRUE.equals(securityChecks.get(securityKey));
 	}
 
-	public abstract T refresh(DashboardEntity dashboardEntity, DashboardItemDTO item)
-	throws JsonProcessingException;
+	public abstract T refresh(DashboardEntity dashboardEntity, DashboardItemDTO item);
 }

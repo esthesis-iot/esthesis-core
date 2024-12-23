@@ -13,8 +13,10 @@ import esthesis.util.redis.RedisUtils.KeyType;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+@Slf4j
 @ApplicationScoped
 @Named("SensorIconUpdateJobHelper")
 public class SensorIconUpdateJobHelper extends UpdateJobHelper<DashboardUpdateSensorIcon> {
@@ -22,27 +24,33 @@ public class SensorIconUpdateJobHelper extends UpdateJobHelper<DashboardUpdateSe
 	@Inject
 	RedisUtils redisUtils;
 
-	public DashboardUpdateSensorIcon refresh(DashboardEntity dashboardEntity, DashboardItemDTO item)
-	throws JsonProcessingException {
-		// Get item configuration & security checks.
-		DashboardItemSensorIconConfiguration config = getConfig(
-			DashboardItemSensorIconConfiguration.class, item);
-		if (StringUtils.isBlank(config.getHardwareId()) || StringUtils.isBlank(
-			config.getMeasurement())) {
+	public DashboardUpdateSensorIcon refresh(DashboardEntity dashboardEntity, DashboardItemDTO item) {
+		try {
+			// Get item configuration & security checks.
+			DashboardItemSensorIconConfiguration config = getConfig(
+				DashboardItemSensorIconConfiguration.class, item);
+			if (StringUtils.isBlank(config.getHardwareId()) || StringUtils.isBlank(
+				config.getMeasurement())) {
+				return null;
+			}
+			if (!checkSecurity(dashboardEntity, Category.DEVICE, Operation.READ,
+				config.getHardwareId())) {
+				return null;
+			}
+
+			// Get sensor value and return update.
+			return DashboardUpdateSensorIcon.builder()
+				.id(item.getId())
+				.type(Type.SENSOR_ICON)
+				.hardwareId(config.getHardwareId())
+				.measurement(config.getMeasurement())
+				.value(redisUtils.getFromHash(KeyType.ESTHESIS_DM, config.getHardwareId(),
+					config.getMeasurement()))
+				.build();
+		} catch (JsonProcessingException e) {
+			log.error("Error parsing configuration for '{}' item with id '{}'.",
+				Type.SENSOR_ICON, item.getId(), e);
 			return null;
 		}
-		if (!checkSecurity(dashboardEntity, Category.DEVICE, Operation.READ, config.getHardwareId())) {
-			return null;
-		}
-		
-		// Get sensor value and return update.
-		return DashboardUpdateSensorIcon.builder()
-			.id(item.getId())
-			.type(Type.SENSOR_ICON)
-			.hardwareId(config.getHardwareId())
-			.measurement(config.getMeasurement())
-			.value(redisUtils.getFromHash(KeyType.ESTHESIS_DM, config.getHardwareId(),
-				config.getMeasurement()))
-			.build();
 	}
 }

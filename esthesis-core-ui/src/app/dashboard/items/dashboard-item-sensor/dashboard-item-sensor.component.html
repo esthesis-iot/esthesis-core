@@ -23,8 +23,8 @@
     <div class="skeleton h-5 w-full"></div>
   </div>
 
-  <div style="min-height: 30px" *ngIf="lastMessage && config?.sparkline" class="mt-3">
-    <app-chart-host>
+  <div *ngIf="lastMessage && config?.sparkline" class="mt-3 min-h-[30px]">
+    <app-chart-host chartType="line">
       <canvas
         baseChart
         [data]="sparkLineData"
@@ -34,6 +34,6 @@
       </canvas>
     </app-chart-host>
   </div>
-  <div style="min-height: 30px" *ngIf="!lastMessage && config?.sparkline" class="skeleton h-15 mt-2 mb-2 w-full">
+  <div *ngIf="!lastMessage && config?.sparkline" class="skeleton h-15 mt-2 mb-2 w-full min-h-[30px]">
   </div>
 </div>

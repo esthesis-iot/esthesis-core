@@ -2,44 +2,15 @@
   <div class="flex flex-row justify-between">
     <div class="stat-title">{{ item.title }}</div>
   </div>
-  <div class="bg-gray-200 overflow-hidden flex cursor-default h-16 mt-4 mr-2 w-full">
-    <div class="bg-base-100/90 h-full flex items-center justify-center"
-         style="min-width: 10px"
-         [ngStyle]="{'width': Math.round(timeHistogram[0] * 100 / timeHistogramTotal) + '%'}">
-      <span class="text-white text-sm"
-            matTooltip="{{ timeHistogram[0] }} devices seen in the last minute">{{ timeHistogram[0] }}</span>
-    </div>
-    <div class="bg-base-100/70 h-full flex items-center justify-center"
-         style="min-width: 10px"
-         [ngStyle]="{'width': Math.round(timeHistogram[1] * 100 / timeHistogramTotal) + '%'}">
-      <span class="text-white text-sm"
-            matTooltip="{{ timeHistogram[1] }} devices seen in the last hour">{{ timeHistogram[1] }}</span>
-    </div>
-    <div class="bg-base-100/50 h-full flex items-center justify-center"
-         style="min-width: 10px"
-         [ngStyle]="{'width': Math.round(timeHistogram[2] * 100 / timeHistogramTotal) + '%'}">
-      <span class="text-white text-sm"
-            matTooltip="{{ timeHistogram[2] }} devices seen in the last day">{{ timeHistogram[2] }}</span>
-    </div>
-    <div class="bg-base-100/30 h-full flex items-center justify-center"
-         style="min-width: 10px"
-         [ngStyle]="{'width': Math.round(timeHistogram[3] * 100 / timeHistogramTotal) + '%'}">
-      <span class="text-white text-sm"
-            matTooltip="{{ timeHistogram[3] }} devices seen in the last month">{{ timeHistogram[3] }}</span>
-    </div>
-    <div class="bg-base-100/10 h-full flex items-center justify-center"
-         style="min-width: 10px"
-         [ngStyle]="{'width': Math.round(timeHistogram[4] * 100 / timeHistogramTotal) + '%'}">
-      <span class="text-gray-700 text-sm"
-            matTooltip="{{ timeHistogram[4] }} devices seen in more than one month">{{ timeHistogram[4] }}</span>
-    </div>
+  <div class="overflow-hidden cursor-default w-full p-0 m-0">
+    <app-chart-host chartType="pie" class="p-0 m-0">
+      <canvas class="mt-4 ml-0"
+        baseChart
+        [data]="pieChartData"
+        [options]="pieChartOptions"
+        type="pie"
+        height="120px">
+      </canvas>
+    </app-chart-host>
   </div>
-  <div class="flex flex-row mt-2 bg-gray-200 text-xs w-full whitespace-nowrap">
-    <div class="flex-1 bg-base-100/90 p-1 pl-2 text-white">1 minute</div>
-    <div class="flex-1 bg-base-100/70 p-1 pl-2 text-white">1 hour</div>
-    <div class="flex-1 bg-base-100/50 p-1 pl-2 text-white">1 day</div>
-    <div class="flex-1 bg-base-100/30 p-1 pl-2 text-white">1 month</div>
-    <div class="flex-1 bg-base-100/10 p-1 pl-2 text-gray-700">Older</div>
-  </div>
-
 </div>
