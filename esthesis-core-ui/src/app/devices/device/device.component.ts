@@ -63,9 +63,6 @@ export class DeviceComponent extends SecurityBaseComponent implements OnInit {
 
     // Get geolocation if available.
     this.geolocation = this.devicesService.getGeolocation(this.id!);
-
-    // Set security.
-
   }
 
   saveDeviceInfo() {

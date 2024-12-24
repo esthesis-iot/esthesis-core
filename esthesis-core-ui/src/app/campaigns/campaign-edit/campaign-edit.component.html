@@ -237,7 +237,7 @@
                   ADD IN GROUP
                 </button>
                 <mat-menu #groupMenu="matMenu" yPosition="below">
-                  <div *ngIf="currentGroup() > 1">
+                  <div *ngIf="currentGroup() > 0">
                     <button (click)="addDeviceOrTag(i+1)"
                             *ngFor="let item of [].constructor(currentGroup()); let i = index"
                             mat-menu-item>

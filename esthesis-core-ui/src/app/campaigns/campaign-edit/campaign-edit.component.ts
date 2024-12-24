@@ -289,7 +289,7 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
   }
 
   getProvisioningPackages() {
-    this.provisioningService.find("available=true&sort=name,asc,packageVersion,asc").subscribe(onNext => {
+    this.provisioningService.find("available=true&sort=name,asc,version,asc").subscribe(onNext => {
       this.provisioningPackages = onNext.content;
     });
   }
@@ -297,7 +297,7 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
   currentGroup(): number {
     let groupNo;
     if (this.form.get("members")?.value.length === 0) {
-      groupNo = 1;
+      groupNo = 0;
     } else {
       groupNo = (_.maxBy(this.form.get("members")?.value, (o: CampaignMemberDto) => o.group) as CampaignMemberDto).group;
     }

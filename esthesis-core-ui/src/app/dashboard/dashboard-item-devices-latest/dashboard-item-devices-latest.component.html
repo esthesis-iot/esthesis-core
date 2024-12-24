@@ -1,0 +1,37 @@
+<div class="flex flex-col bg-base-100 mt-1 ml-1 mr-1 p-4 rounded-xl">
+  <div class="flex flex-row justify-between">
+    <div class="stat-title">{{ widget.title }}</div>
+  </div>
+  <div *ngIf="widget.subtitle" class="stat-desc">{{ widget.subtitle }}</div>
+  <div>
+    <div class="overflow-x-auto">
+      <table class="table">
+        <!-- head -->
+        <thead>
+          <tr>
+            <th scope="col">Hardware Id</th>
+            <th scope="col">Type</th>
+            <th scope="col">Registered</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>enedis-22516914714270</td>
+          <td>EDGE</td>
+          <td>2024-11-14 12:42:04 +02:00</td>
+        </tr>
+        <tr>
+          <td>enedis-22516914714270</td>
+          <td>EDGE</td>
+          <td>2024-11-14 12:42:04 +02:00</td>
+        </tr>
+        <tr>
+          <td>enedis-22516914714270</td>
+          <td>EDGE</td>
+          <td>2024-11-14 12:42:04 +02:00</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

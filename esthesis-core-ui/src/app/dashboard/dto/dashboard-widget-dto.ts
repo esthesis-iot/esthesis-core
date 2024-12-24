@@ -2,11 +2,11 @@ import {BaseDto} from "../../dto/base-dto";
 
 export interface DashboardWidgetDto extends BaseDto {
   type: string;
-  gridCols: number;
-  gridRows: number;
-  gridX: number;
-  gridY: number;
-  configuration: any;
-  dashboard: number;
-  updateEvery: number;
+  subtitle?: string;
+  columns: number;
+  index: number;
+  title: string;
+  unit?: string;
+  icon?: string;
+  precision?: number;
 }

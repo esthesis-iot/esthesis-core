@@ -1,5 +1,5 @@
 import {CrudService} from "./crud.service";
-import {HttpClient, HttpResponse} from "@angular/common/http";
+import { HttpClient, HttpResponse } from "@angular/common/http";
 import {FileSaverService} from "ngx-filesaver";
 
 export class CrudDownloadService<T> extends CrudService<T> {

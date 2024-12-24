@@ -11,6 +11,9 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 @NgModule({
   declarations: [AboutComponent],
+  exports: [
+    AboutComponent
+  ],
   imports: [
     CommonModule,
     AboutRoutingModule,

@@ -220,6 +220,27 @@ export const AppConstants = {
       ALLOW: "allow",
       DENY: "deny"
     }
+  },
+
+  DASHBOARD: {
+    DEFAULTS: {
+      COLUMN_WIDTH: 100,
+      ROW_HEIGHT: 50
+    },
+    WIDGET: {
+      SENSOR: "SENSOR",
+      SECURITY_STATS: "SECURITY_STATS",
+      DEVICES_STATUS: "DEVICES_STATUS",
+      DEVICES_LATEST: "DEVICES_LATEST",
+      AUDIT: "AUDIT",
+      ABOUT: "ABOUT",
+      CAMPAIGNS: "CAMPAIGNS",
+      NOTES: "NOTES",
+      TITLE: "TITLE",
+      DEVICES_LAST_SEEN: "DEVICES_LAST_SEEN",
+      DEVICE_MAP: "DEVICE_MAP",
+      SENSOR_ICON: "SENSOR_ICON"
+    }
   }
 
 };

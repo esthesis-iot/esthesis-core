@@ -23,8 +23,7 @@
       "ES2022",
       "dom"
     ],
-    "forceConsistentCasingInFileNames": true,
-    "downlevelIteration": true
+    "forceConsistentCasingInFileNames": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

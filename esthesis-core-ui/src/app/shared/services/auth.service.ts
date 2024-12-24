@@ -1,4 +1,4 @@
-import {HttpClient} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import {map} from "rxjs";
 import {LogLevel, StsConfigHttpLoader} from "angular-auth-oidc-client";
 import {OidcConfigDto} from "./dto/oidc-config-dto";

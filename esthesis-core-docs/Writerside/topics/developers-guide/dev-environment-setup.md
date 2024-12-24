@@ -42,7 +42,7 @@ different namespace, replace it accordingly.
 	Several supporting services are disabled by default. You can enable the following services by
 	setting their respective environment values to `true` before running `helmfile`:
 
-	| Service            | Environment variable  |
+	| **Service**            | **Environment variable**  |
 	|--------------------|-----------------------|
 	| Grafana            | GRAFANA_ENABLED       |
 	| Grafana Loki       | GRAFANA_LOKI_ENABLED  |
@@ -73,7 +73,7 @@ development machine went through sleep mode.
 need to specify your own port, you can use the `REGISTRY_NODE_PORT` environment variable when
 deploying the Helm Chart.
 
-| Resource           | URL/host                                        | Credentials |
+| **Resource**           | **URL/host**                                        | **Credentials** |
 |--------------------|-------------------------------------------------|-|
 | Redis              | redis-master.esthesis:6379/0                    | (empty) / esthesis-system |
 | Mosquitto          | mosquitto.esthesis:1883                         ||

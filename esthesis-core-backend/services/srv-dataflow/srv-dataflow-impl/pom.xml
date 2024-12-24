@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-core-services-dataflow</artifactId>
-    <version>3.0.57-SNAPSHOT</version>
+    <version>3.0.58-SNAPSHOT</version>
   </parent>
 
   <artifactId>esthesis-core-services-dataflow-impl</artifactId>
@@ -24,37 +24,37 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-dataflow-client</artifactId>
-      <version>3.0.57-SNAPSHOT</version>
+      <version>3.0.58-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-settings-client</artifactId>
-      <version>3.0.57-SNAPSHOT</version>
+      <version>3.0.58-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-tag-client</artifactId>
-      <version>3.0.57-SNAPSHOT</version>
+      <version>3.0.58-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-kubernetes-client</artifactId>
-      <version>3.0.57-SNAPSHOT</version>
+      <version>3.0.58-SNAPSHOT</version>
     </dependency>
 		<dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-crypto-client</artifactId>
-      <version>3.0.57-SNAPSHOT</version>
+      <version>3.0.58-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-audit-client</artifactId>
-      <version>3.0.57-SNAPSHOT</version>
+      <version>3.0.58-SNAPSHOT</version>
     </dependency>
 		<dependency>
 			<groupId>esthesis</groupId>
 			<artifactId>esthesis-core-services-security-client</artifactId>
-			<version>3.0.57-SNAPSHOT</version>
+			<version>3.0.58-SNAPSHOT</version>
 		</dependency>
 
     <!-- OTHERS -->

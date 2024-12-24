@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import {Observable} from "rxjs";
 import {DeviceRegisterDto} from "./dto/device-register-dto";
 import {DeviceDto} from "./dto/device-dto";

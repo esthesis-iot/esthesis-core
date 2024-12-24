@@ -1,12 +1,14 @@
-import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/http";
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  provideHttpClient, withInterceptors,
+} from "@angular/common/http";
 import {NgModule} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {AppComponent} from "./app.component";
 import {routing} from "./app.routes";
 import {QFormsModule} from "@qlack/forms";
-import {NgProgressModule} from "ngx-progressbar";
-import {NgProgressHttpModule} from "ngx-progressbar/http";
 import {AuthInterceptor, AuthModule, StsConfigLoader} from "angular-auth-oidc-client";
 import {LayoutModule} from "./layout/layout.module";
 import {MatToolbarModule} from "@angular/material/toolbar";
@@ -30,8 +32,8 @@ import {
   faCheck,
   faChevronDown,
   faCircle,
-  faCircleInfo,
-  faCircleUp,
+  faCircleInfo, faCirclePlay,
+  faCircleUp, faCircleXmark,
   faClipboard,
   faCog,
   faCubes,
@@ -63,7 +65,7 @@ import {
   faPercent,
   faPlay,
   faPlus,
-  faRefresh,
+  faRefresh, faRulerCombined, faRunning,
   faSearch,
   faShieldHalved,
   faSpinner,
@@ -90,6 +92,9 @@ import {faGithub, faInstagram, faTwitter} from "@fortawesome/free-brands-svg-ico
 import {ComponentsModule} from "./shared/components/components.module";
 import {CallbackComponent} from "./callback.component";
 import {httpLoaderFactory} from "./shared/services/auth.service";
+import {provideCharts, withDefaultRegisterables} from "ng2-charts";
+import {NgProgressbar, provideNgProgressOptions} from "ngx-progressbar";
+import {NgProgressHttp, progressInterceptor} from "ngx-progressbar/http";
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -97,22 +102,10 @@ import {httpLoaderFactory} from "./shared/services/auth.service";
     AppComponent,
     CallbackComponent
   ],
-  imports: [
-    BrowserModule,
+  exports: [], imports: [BrowserModule,
     BrowserAnimationsModule,
     routing,
-    HttpClientModule,
     LayoutModule,
-    HttpClientModule,
-    NgProgressModule.withConfig({
-      color: "#50A7D7",
-      debounceTime: 500,
-      meteor: false,
-      spinner: false,
-      thick: true,
-      trickleSpeed: 500
-    }),
-    NgProgressHttpModule,
     AuthModule.forRoot({
       loader: {
         provide: StsConfigLoader,
@@ -125,12 +118,14 @@ import {httpLoaderFactory} from "./shared/services/auth.service";
     MatSnackBarModule,
     MatButtonModule,
     FontAwesomeModule,
-    ComponentsModule,
-  ],
-  exports: [],
-  providers: [
+    ComponentsModule, NgProgressbar, NgProgressbar, NgProgressHttp], providers: [
     QFormsModule,
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    provideCharts(withDefaultRegisterables()),
+    provideHttpClient(withInterceptors([progressInterceptor])),
+    provideNgProgressOptions({
+      flat: false,
+    })
   ]
 })
 
@@ -148,7 +143,7 @@ export class AppModule {
       faCertificate, faCubes, faDashboard, faDesktop, faDiagramProject, faGear, faGlobe,
       faMicrochip, faNetworkWired, faShieldHalved, faStamp, faTag, faUser, faUsers,
       faUsersBetweenLines, faXmarksLines, faFileCirclePlus, faBoxArchive, faFileCircleCheck,
-      faPaste, faEraser, faBug);
+      faPaste, faEraser, faBug, faRulerCombined, faCirclePlay, faCircleXmark);
     faConfig.fixedWidth = true;
   }
 }

@@ -11,5 +11,6 @@
 
 // Custom styles.
 :root {
-  --esthesis-green: #009999;
+  --ng-progress-thickness: 2;
+  --ng-progress-color: theme('textColor.accent');
 }
