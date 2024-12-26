@@ -140,4 +140,8 @@ public class TestHelper {
 		pageable.setUriInfo(uriInfo);
 		return pageable;
 	}
+
+	public CertificateEntity findOneCertificateEntity() {
+		return certificateEntityRepository.findAll().firstResult();
+	}
 }

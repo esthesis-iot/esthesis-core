@@ -1,6 +1,6 @@
 package esthesis.service.crypto.impl.service;
 
-import esthesis.service.crypto.entity.CaEntity;
+import esthesis.service.crypto.entity.CertificateEntity;
 import esthesis.service.crypto.impl.TestHelper;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
@@ -10,6 +10,7 @@ import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.server.core.multipart.DefaultFileUpload;
 import org.jboss.resteasy.reactive.server.core.multipart.FormData;
@@ -22,7 +23,6 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM;
@@ -30,26 +30,26 @@ import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @Slf4j
 @QuarkusTest
-class CAServiceTest {
+class CertificateServiceTest {
 
 	@Inject
 	TestHelper testHelper;
 
 	@Inject
-	CAService caService;
+	CertificateService certificateService;
 
 	@InjectMock
 	@MockitoConfig(convertScopes = true)
 	@RestClient
 	SettingsResource settingsResource;
 
-	int initialCaSizeInDB = 0;
+
+	int initialCertificateSizeInDB = 0;
 
 	@BeforeEach
 	void setUp() {
@@ -57,9 +57,10 @@ class CAServiceTest {
 		testHelper.createEntities(null);
 		testHelper.createEntities(testHelper.findOneCaEntity());
 
-		initialCaSizeInDB = testHelper.findAllCaEntity().size();
+		initialCertificateSizeInDB = testHelper.findAllCertificateEntity().size();
 
-		log.info("Initial CA size in DB: {}", initialCaSizeInDB);
+		log.info("Initial certificate size in DB: {}", initialCertificateSizeInDB);
+
 
 		// Mock the relevant settings
 		SettingEntity mockKeyAlgorithmSetting = mock(SettingEntity.class);
@@ -79,39 +80,21 @@ class CAServiceTest {
 
 	}
 
-	@Test
-	void save() {
-		CaEntity newCa = new CaEntity();
-		newCa.setCn("test-new-ca");
-		newCa.setIssued(Instant.now());
-		newCa.setValidity(Instant.now().plus(360, ChronoUnit.DAYS));
-		newCa.setName("Test new CA");
-		newCa.setPrivateKey("test-private-key");
-		newCa.setPublicKey("test-public-key");
-		caService.save(newCa);
-
-		assertEquals(initialCaSizeInDB + 1, testHelper.findAllCaEntity().size());
-	}
-
-	@Test
-	void getEligibleForSigning() {
-		int numberOfCasWithPrivateKey = initialCaSizeInDB;
-		assertEquals(numberOfCasWithPrivateKey, caService.getEligibleForSigning().size());
-	}
-
 	@SneakyThrows
 	@Test
-	void importCa() {
-		// Arrange
-		CaEntity importedCaEntity = new CaEntity();
-		importedCaEntity.setCertificate("Test Certificate");
-		importedCaEntity.setCn("Test Cn");
-		importedCaEntity.setIssued(Instant.now());
-		importedCaEntity.setName("Test Name");
-		importedCaEntity.setPrivateKey("Test Private Key");
-		importedCaEntity.setPublicKey("Test Public Key");
+	void importCertificate() {
 
-		// Load files from the test resources folder
+		// Arrange - Create a certificate entity
+
+		CertificateEntity certificate = new CertificateEntity();
+		certificate.setCertificate("Test Certificate");
+		certificate.setCn("Test Cn");
+		certificate.setIssued(Instant.now());
+		certificate.setName("Test Name");
+		certificate.setPrivateKey("Test Private Key");
+		certificate.setPublicKey("Test Public Key");
+
+		// Arrange - Load files from the test resources folder
 		Path publicKeyPath =
 			Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("public-key-test.txt")).toURI());
 		Path privateKeyPath =
@@ -119,7 +102,7 @@ class CAServiceTest {
 		Path certificatePath =
 			Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("certificate-test.txt")).toURI());
 
-		// Create FormValue mocks for each file
+		// Arrange - Create FormValue mocks for each file
 		FormValue publicKeyFormValue = mock(FormValue.class);
 		when(publicKeyFormValue.getFileItem()).thenReturn(new FormData.FileItemImpl(publicKeyPath));
 
@@ -129,31 +112,50 @@ class CAServiceTest {
 		FormValue certificateFormValue = mock(FormValue.class);
 		when(certificateFormValue.getFileItem()).thenReturn(new FormData.FileItemImpl(certificatePath));
 
-		// Create DefaultFileUpload instances
+		// Arrange - Create DefaultFileUpload instances
 		DefaultFileUpload publicKey = new DefaultFileUpload("Test Public Key", publicKeyFormValue);
 		DefaultFileUpload privateKey = new DefaultFileUpload("Test Private Key", privateKeyFormValue);
-		DefaultFileUpload certificate = new DefaultFileUpload("Test Certificate", certificateFormValue);
-
+		DefaultFileUpload certificateFileUpload = new DefaultFileUpload("Test Certificate", certificateFormValue);
 
 		// Act
-		CaEntity caEntity = caService.importCa(importedCaEntity, publicKey, privateKey, certificate);
+		CertificateEntity certificateImported =
+			certificateService.importCertificate(certificate, publicKey, privateKey, certificateFileUpload);
 
 		// Assert
-		assertNotNull(caEntity);
-		assertEquals("Test Name", caEntity.getName());
-		assertNotNull(caEntity.getPublicKey());
-		assertNotNull(caEntity.getPrivateKey());
-		assertNotNull(caEntity.getCertificate());
+		assertNotNull(certificateImported);
+		assertEquals("Test Name", certificateImported.getName());
+		assertNotNull(certificateImported.getPublicKey());
+		assertNotNull(certificateImported.getPrivateKey());
+		assertNotNull(certificateImported.getCertificate());
+
+	}
+
+	@Test
+	void save() {
+		// Arrange
+		CertificateEntity newCertificate = new CertificateEntity();
+		newCertificate.setCn("test-new-certificate");
+		newCertificate.setIssued(Instant.now());
+		newCertificate.setValidity(Instant.now().plus(360, ChronoUnit.DAYS));
+		newCertificate.setName("Test new certificate");
+		newCertificate.setPrivateKey("test-private-key");
+		newCertificate.setPublicKey("test-public-key");
+		newCertificate.setSignatureAlgorithm("test-signature-algorithm");
+		newCertificate.setSan("test-san");
+
+		// Act
+		certificateService.save(newCertificate);
+
+		// Assert
+		assertEquals(initialCertificateSizeInDB + 1, testHelper.findAllCertificateEntity().size());
 	}
 
 	@Test
 	void getPrivateKey() {
 		// Arrange
-		String validCaId = testHelper.findOneCaEntity().getId().toString();
-
+		String validCertificateId = testHelper.findOneCertificateEntity().getId().toString();
 		// Act
-		String privateKey = caService.getPrivateKey(validCaId);
-
+		String privateKey = certificateService.getPrivateKey(validCertificateId);
 		// Assert
 		assertEquals("test-private-key", privateKey);
 	}
@@ -161,11 +163,9 @@ class CAServiceTest {
 	@Test
 	void getPublicKey() {
 		// Arrange
-		String validCaId = testHelper.findOneCaEntity().getId().toString();
-
+		String validCertificateId = testHelper.findOneCertificateEntity().getId().toString();
 		// Act
-		String publicKey = caService.getPublicKey(validCaId);
-
+		String publicKey = certificateService.getPublicKey(validCertificateId);
 		// Assert
 		assertEquals("test-public-key", publicKey);
 	}
@@ -173,78 +173,51 @@ class CAServiceTest {
 	@Test
 	void getCertificate() {
 		// Arrange
-		CaEntity ca = testHelper.findOneCaEntityWithParentCa();
-		String caId = ca.getId().toString();
-
+		String validCertificateId = testHelper.findOneCertificateEntity().getId().toString();
 		// Act
-		List<String> certificate = caService.getCertificate(caId);
-
+		String certificate = certificateService.getCertificate(validCertificateId);
 		// Assert
-		assertEquals(2, certificate.size());
-		assertEquals("test-cert-pem-format", certificate.getFirst());
+		assertEquals("test-cert-pem-format", certificate);
+
 	}
 
 	@Test
 	void deleteById() {
 		// Arrange
-		String validCaId = testHelper.findOneCaEntity().getId().toString();
+		String unexistentCertificateId = new ObjectId().toString();
+		String validCertificateId = testHelper.findOneCertificateEntity().getId().toString();
 
-		// Act
-		caService.deleteById(validCaId);
+		// Act try to delete an unexistent certificate
+		certificateService.deleteById(unexistentCertificateId);
 
-		// Assert
-		assertEquals(initialCaSizeInDB - 1, testHelper.findAllCaEntity().size());
-	}
+		// Assert nothing happens
+		assertEquals(initialCertificateSizeInDB, testHelper.findAllCertificateEntity().size());
 
-	@Test
-	void findFirstByColumn() {
-		// Arrange
-		CaEntity ca = testHelper.findOneCaEntityWithParentCa();
-		Map<String, Object> fields = Map.of(
-			"cn", ca.getCn(),
-			"issued", ca.getIssued(),
-			"validity", ca.getValidity(),
-			"publicKey", ca.getPublicKey(),
-			"privateKey", ca.getPrivateKey(),
-			"certificate", ca.getCertificate(),
-			"parentCa", ca.getParentCa(),
-			"parentCaId", ca.getParentCaId(),
-			"name", ca.getName()
-		);
+		// Act try to delete a valid certificate
+		certificateService.deleteById(validCertificateId);
 
-		// Act & Assert
-		for (Map.Entry<String, Object> entry : fields.entrySet()) {
-			String column = entry.getKey();
-			Object value = entry.getValue();
+		// Assert the certificate is deleted
+		assertEquals(initialCertificateSizeInDB - 1, testHelper.findAllCertificateEntity().size());
 
-			CaEntity nonexistentEntity = caService.findFirstByColumn(column, "nonexistent");
-			CaEntity existentEntity = caService.findFirstByColumn(column, value);
-
-			assertNull(nonexistentEntity, "Expected null for column: " + column + " with value: nonexistent");
-			assertNotNull(existentEntity, "Expected entity for column: " + column + " with value: " + value + " but found null");
-		}
-
-		// Special case: Testing nonexistent column
-		CaEntity caNonexistent = caService.findFirstByColumn("nonexistent", "test");
-		assertNull(caNonexistent, "Expected null for nonexistent column");
 	}
 
 	@Test
 	void findById() {
 		// Arrange
-		String validCaId = testHelper.findOneCaEntity().getId().toString();
+		String validCertificateId = testHelper.findOneCertificateEntity().getId().toString();
 
 		// Act & Assert
-		CaEntity caEntity = caService.findById(validCaId);
-		assertNotNull(caEntity);
+		CertificateEntity certificateEntity = certificateService.findById(validCertificateId);
+		assertNotNull(certificateEntity);
 	}
 
 	@Test
 	void find() {
 		// Act
-		List<CaEntity> caEntities = caService.find(testHelper.makePageable(0, 100), true).getContent();
+		List<CertificateEntity> certificates =
+			certificateService.find(testHelper.makePageable(0, 100), true).getContent();
 
 		// Assert
-		assertEquals(initialCaSizeInDB, caEntities.size());
+		assertEquals(initialCertificateSizeInDB, certificates.size());
 	}
 }
