@@ -100,8 +100,9 @@ class DataflowServiceTest {
 		// Act
 		DataflowEntity savedDataflow = dataflowService.saveNew(newDataflow);
 
-		// Assert dataflow is saved
+		// Assert
 		assertEquals(initialDataflowSizeInDB + 1, testHelper.findAllDataflowEntity().size());
+		assertEquals("new dataflow", savedDataflow.getName());
 	}
 
 

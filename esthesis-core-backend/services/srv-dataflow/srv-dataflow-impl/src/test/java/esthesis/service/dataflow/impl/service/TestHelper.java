@@ -23,14 +23,13 @@ public class TestHelper {
 	@Inject
 	DataflowRepository dataflowRepository;
 
-	public DataflowEntity createDataflow() {
+	public void createDataflow() {
 		DataflowEntity dataflow = new DataflowEntity();
 		dataflow.setName("test dataflow");
 		dataflow.setType("test type");
 		dataflow.setConfig(createDataflowConfig());
 		dataflow.setStatus(true);
 		dataflowRepository.persist(dataflow);
-		return dataflow;
 	}
 
 	// Create a configuration map that matches the expected structure for the dataflow configuration
