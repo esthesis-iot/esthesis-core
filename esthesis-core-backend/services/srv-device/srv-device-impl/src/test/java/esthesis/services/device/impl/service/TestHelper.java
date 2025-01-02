@@ -1,18 +1,33 @@
 package esthesis.services.device.impl.service;
 
+import esthesis.common.data.DataUtils;
 import esthesis.common.util.EsthesisCommonConstants.Device.Type;
 import esthesis.core.common.AppConstants.Device.Status;
 import esthesis.core.common.entity.BaseEntity;
+import esthesis.service.common.paging.Pageable;
+import esthesis.service.device.dto.DeviceKeyDTO;
+import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
+import esthesis.service.settings.entity.DevicePageFieldEntity;
 import esthesis.service.tag.entity.TagEntity;
+import esthesis.services.device.impl.repository.DeviceAttributeRepository;
 import esthesis.services.device.impl.repository.DeviceRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.UriInfo;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Triple;
 import org.bson.types.ObjectId;
 import org.instancio.Instancio;
+import org.mockito.Mockito;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
+import java.net.URI;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +36,7 @@ import static esthesis.core.common.AppConstants.Device.Status.PREREGISTERED;
 import static esthesis.core.common.AppConstants.Device.Status.REGISTERED;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
+import static org.mockito.Mockito.when;
 
 @ApplicationScoped
 public class TestHelper {
@@ -28,44 +44,46 @@ public class TestHelper {
 	@Inject
 	DeviceRepository deviceRepository;
 
+	@Inject
+	DeviceAttributeRepository deviceAttributeRepository;
+
 	public void clearDatabase() {
 		deviceRepository.deleteAll();
+		deviceAttributeRepository.deleteAll();
 	}
 
 
 	public void createEntities() {
-		DeviceEntity deviceCore1 =
-			makeDeviceEntity("test-registered-device-core-1", REGISTERED, "tag1,tag2", Type.CORE);
 
-		DeviceEntity deviceCore2 =
-			makeDeviceEntity("test-registered-device-core-2", REGISTERED, "tag3,tag4", Type.CORE);
+		List<DeviceEntity> devices = new ArrayList<>();
 
-		DeviceEntity deviceCore3 =
-			makeDeviceEntity("test-disabled-device-core-1", DISABLED, "tag5", Type.CORE);
+		// Make core devices with different statuses
+		devices.add(makeDeviceEntity("test-registered-device-core-1", REGISTERED, "tag1,tag2", Type.CORE));
+		devices.add(makeDeviceEntity("test-registered-device-core-2", REGISTERED, "tag3,tag4", Type.CORE));
+		devices.add(makeDeviceEntity("test-disabled-device-core-1", DISABLED, "tag5", Type.CORE));
+		devices.add(makeDeviceEntity("test-preregistered-device-core-1",PREREGISTERED , "tag6", Type.CORE));
 
-		DeviceEntity deviceCore4 =
-			makeDeviceEntity("test-preregistered-device-core-1",PREREGISTERED , "tag6", Type.CORE);
+		// Make edge devices with different statuses
+		devices.add(makeDeviceEntity("test-registered-device-active-edge-1", REGISTERED, "tag1,tag2", Type.EDGE));
+		devices.add(makeDeviceEntity("test-registered-device-active-edge-2", REGISTERED, "tag3,tag4", Type.EDGE));
+		devices.add(makeDeviceEntity("test-disabled-device-edge-1", DISABLED, "tag5", Type.EDGE));
+		devices.add(makeDeviceEntity("test-preregistered-device-edge-1",PREREGISTERED , "tag6", Type.EDGE));
 
-		DeviceEntity deviceEdge1 =
-			makeDeviceEntity("test-registered-device-active-edge-1", REGISTERED, "tag1,tag2", Type.EDGE);
 
-		DeviceEntity deviceEdge2 =
-			makeDeviceEntity("test-registered-device-active-edge-2", REGISTERED, "tag3,tag4", Type.EDGE);
+		// Persist all devices
+		devices.forEach(device -> deviceRepository.persist(device));
 
-		DeviceEntity deviceEdge3 =
-			makeDeviceEntity("test-disabled-device-edge-1", DISABLED, "tag5", Type.EDGE);
+		// Create a boolean attribute for each device
+	  devices.forEach(device ->{
+			DeviceAttributeEntity attribute = new DeviceAttributeEntity();
+			attribute.setDeviceId(device.getId().toString());
+			attribute.setAttributeName("test-boolean-attribute-" + device.getHardwareId());
+			attribute.setAttributeValue("true");
+			attribute.setAttributeType(DataUtils.ValueType.BOOLEAN);
+			deviceAttributeRepository.persist(attribute);
+		});
 
-		DeviceEntity deviceEdge4 =
-			makeDeviceEntity("test-preregistered-device-edge-1",PREREGISTERED , "tag6", Type.EDGE);
 
-		deviceRepository.persist(deviceCore1);
-		deviceRepository.persist(deviceCore2);
-		deviceRepository.persist(deviceCore3);
-		deviceRepository.persist(deviceCore4);
-		deviceRepository.persist(deviceEdge1);
-		deviceRepository.persist(deviceEdge2);
-		deviceRepository.persist(deviceEdge3);
-		deviceRepository.persist(deviceEdge4);
 	}
 
 
@@ -82,8 +100,17 @@ public class TestHelper {
 			.set(field(DeviceEntity.class, "createdOn"),  Instant.now().minus(1, ChronoUnit.DAYS))
 			.set(field(DeviceEntity.class, "registeredOn"),  Instant.now().minus(12, ChronoUnit.HOURS))
 			.set(field(DeviceEntity.class, "lastSeen"),  Instant.now().minus(5, ChronoUnit.MINUTES))
+			.set(field(DeviceEntity.class, "deviceKey"),  makeDeviceKey())
 			.create();
 
+	}
+
+	private DeviceKeyDTO makeDeviceKey() {
+		return new DeviceKeyDTO()
+			.setPrivateKey("test-private-key")
+			.setPublicKey("test-public-key")
+			.setCertificate("test-certificate")
+			.setCertificateCaId("test-ca-id");
 	}
 
 	public List<DeviceEntity> findAllDeviceEntity() {
@@ -127,5 +154,61 @@ public class TestHelper {
 
 	public DeviceEntity findDeviceByID(ObjectId id) {
 		return deviceRepository.findById(id);
+	}
+
+	public List<DeviceAttributeEntity> findAllDeviceAttributes(){
+		return deviceAttributeRepository.findAll().list();
+	}
+
+	public List<DeviceAttributeEntity> findAllDeviceAttributesByDeviceId(String deviceId){
+		return deviceAttributeRepository.findByDeviceId(deviceId);
+	}
+
+	public List<DevicePageFieldEntity> getDevicePageFields() {
+		return List.of(
+			new DevicePageFieldEntity().setMeasurement("test-measurement-1").setLabel("test-label-1").setShown(true).setFormatter("${val}").setIcon("test-icon-1"),
+			new DevicePageFieldEntity().setMeasurement("test-measurement-2").setLabel("test-label-2").setShown(true).setFormatter("${val}%").setIcon("test-icon-2"),
+			new DevicePageFieldEntity().setMeasurement("test-measurement-3").setLabel("test-label-3").setShown(false).setFormatter("${val}").setIcon("test-icon-3")
+		);
+	}
+
+	public List<Triple<String, String, Instant>> mockRedisHashTriplets() {
+		List<Triple<String, String, Instant>> triplets = new ArrayList<>();
+		triplets.add(new ImmutableTriple<>("test-key-1", "test-value-1", Instant.now()));
+		triplets.add(new ImmutableTriple<>("test-key-2", "test-value-2", Instant.now()));
+		triplets.add(new ImmutableTriple<>("test-key-3", "test-value-3", Instant.now()));
+		return triplets;
+	}
+
+	public BufferedReader getBufferedReaderForImportData() {
+		String testElp = """
+			test-category test-measurement-1=10.1f 2025-01-01T00:00:00.000Z
+			test-category test-measurement-2=10.2f 2025-01-01T00:00:00.000Z
+			test-category test-measurement-3=10.3f 2025-01-01T00:00:00.000Z
+			test-category test-measurement-4=10.4f 2025-01-01T00:00:00.000Z
+			""";
+		return new BufferedReader(
+			new StringReader(testElp)
+		);
+	}
+
+	/**
+	 * Helper method to create a Pageable object with the specified parameters
+	 */
+	public Pageable makePageable(int page, int size) {
+
+		// Create a mock of UriInfo
+		UriInfo uriInfo = Mockito.mock(UriInfo.class);
+
+		// Define the behavior of the mock
+		when(uriInfo.getRequestUri()).thenReturn(URI.create("http://localhost:8080/find?page=" + page + "&size=" + size));
+		when(uriInfo.getQueryParameters()).thenReturn(new MultivaluedHashMap<>());
+
+		Pageable pageable = new Pageable();
+		pageable.setPage(page);
+		pageable.setSize(size);
+		pageable.setSort("");
+		pageable.setUriInfo(uriInfo);
+		return pageable;
 	}
 }
