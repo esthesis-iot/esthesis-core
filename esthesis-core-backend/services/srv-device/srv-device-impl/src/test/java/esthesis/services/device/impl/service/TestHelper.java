@@ -29,7 +29,9 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static esthesis.core.common.AppConstants.Device.Status.DISABLED;
 import static esthesis.core.common.AppConstants.Device.Status.PREREGISTERED;
@@ -47,27 +49,80 @@ public class TestHelper {
 	@Inject
 	DeviceAttributeRepository deviceAttributeRepository;
 
+	Map<String, String> tagsIdMap = new HashMap<>();
+
 	public void clearDatabase() {
 		deviceRepository.deleteAll();
 		deviceAttributeRepository.deleteAll();
+		tagsIdMap = new HashMap<>();
 	}
 
 
 	public void createEntities() {
 
+		prepareTags();
+
 		List<DeviceEntity> devices = new ArrayList<>();
 
 		// Make core devices with different statuses
-		devices.add(makeDeviceEntity("test-registered-device-core-1", REGISTERED, "tag1,tag2", Type.CORE));
-		devices.add(makeDeviceEntity("test-registered-device-core-2", REGISTERED, "tag3,tag4", Type.CORE));
-		devices.add(makeDeviceEntity("test-disabled-device-core-1", DISABLED, "tag5", Type.CORE));
-		devices.add(makeDeviceEntity("test-preregistered-device-core-1",PREREGISTERED , "tag6", Type.CORE));
+		devices.add(
+			makeDeviceEntity(
+			"test-registered-device-core-1",
+			REGISTERED,
+			tagsIdMap.get("tag1") + "," + tagsIdMap.get("tag2"),
+			Type.CORE)
+		);
+
+		devices.add(
+			makeDeviceEntity(
+				"test-registered-device-core-2",
+				REGISTERED,
+				tagsIdMap.get("tag3") + "," + tagsIdMap.get("tag4"),
+				Type.CORE)
+		);
+
+		devices.add(
+			makeDeviceEntity(
+				"test-disabled-device-core-1",
+				DISABLED,
+				tagsIdMap.get("tag5"),
+				Type.CORE));
+
+		devices.add(
+			makeDeviceEntity(
+				"test-preregistered-device-core-1",
+				PREREGISTERED ,
+				tagsIdMap.get("tag6"),
+				Type.CORE)
+		);
 
 		// Make edge devices with different statuses
-		devices.add(makeDeviceEntity("test-registered-device-active-edge-1", REGISTERED, "tag1,tag2", Type.EDGE));
-		devices.add(makeDeviceEntity("test-registered-device-active-edge-2", REGISTERED, "tag3,tag4", Type.EDGE));
-		devices.add(makeDeviceEntity("test-disabled-device-edge-1", DISABLED, "tag5", Type.EDGE));
-		devices.add(makeDeviceEntity("test-preregistered-device-edge-1",PREREGISTERED , "tag6", Type.EDGE));
+		devices.add(
+			makeDeviceEntity(
+				"test-registered-device-active-edge-1",
+				REGISTERED,
+				tagsIdMap.get("tag1") + "," + tagsIdMap.get("tag2"),
+				Type.EDGE));
+
+		devices.add(
+			makeDeviceEntity("test-registered-device-active-edge-2",
+				REGISTERED,
+				tagsIdMap.get("tag3") + "," + tagsIdMap.get("tag4"),
+				Type.EDGE));
+
+		devices.add(
+			makeDeviceEntity(
+				"test-disabled-device-edge-1",
+				DISABLED,
+				tagsIdMap.get("tag5"),
+				Type.EDGE));
+
+		devices.add(
+			makeDeviceEntity(
+				"test-preregistered-device-edge-1",
+				PREREGISTERED ,
+				tagsIdMap.get("tag6"),
+				Type.EDGE));
 
 
 		// Persist all devices
@@ -83,7 +138,16 @@ public class TestHelper {
 			deviceAttributeRepository.persist(attribute);
 		});
 
+	}
 
+	private void prepareTags() {
+		tagsIdMap = new HashMap<>();
+		tagsIdMap.put("tag1", new ObjectId().toHexString());
+		tagsIdMap.put("tag2", new ObjectId().toHexString());
+		tagsIdMap.put("tag3", new ObjectId().toHexString());
+		tagsIdMap.put("tag4", new ObjectId().toHexString());
+		tagsIdMap.put("tag5", new ObjectId().toHexString());
+		tagsIdMap.put("tag6", new ObjectId().toHexString());
 	}
 
 
@@ -145,11 +209,11 @@ public class TestHelper {
 		return deviceRepository.findAll().stream().filter(device -> device.getType().equals(type)).toList();
 	}
 
-	public TagEntity makeTag() {
+	public TagEntity makeTag(String tagName) {
 		return Instancio.of(TagEntity.class)
-			.set(field(BaseEntity.class, "id"), new ObjectId())
-			.set(field(TagEntity.class, "name"), "tag-test")
-			.create();
+		.set(field(BaseEntity.class, "id"), new ObjectId(tagsIdMap.get(tagName)))
+		.set(field(TagEntity.class, "name"), tagName)
+		.create();
 	}
 
 	public DeviceEntity findDeviceByID(ObjectId id) {
@@ -211,4 +275,13 @@ public class TestHelper {
 		pageable.setUriInfo(uriInfo);
 		return pageable;
 	}
+
+	public List<DeviceEntity> findDevicesByHardwareId(String hardwareId) {
+		return deviceRepository.findByHardwareId(List.of(hardwareId));
+	}
+
+	public  String getTagId(String tagName) {
+		return tagsIdMap.get(tagName).toString();
+	}
+
 }

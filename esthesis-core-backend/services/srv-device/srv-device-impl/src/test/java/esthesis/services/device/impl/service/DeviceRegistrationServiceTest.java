@@ -18,6 +18,7 @@ import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,7 +84,7 @@ class DeviceRegistrationServiceTest {
 		when(keyResource.generateKeyPair()).thenReturn(new KeyPair(mock(PublicKey.class), mock(PrivateKey.class)));
 
 		// Arrange mock tag resource requests
-		when(tagResource.findByName(anyString(), anyBoolean())).thenReturn(testHelper.makeTag());
+		when(tagResource.findByName(anyString(), anyBoolean())).thenReturn(testHelper.makeTag("tag1"));
 
 		// Arrange mock settings resource requests
 		when(settingsResource.findByName(DEVICE_PUSHED_TAGS))
