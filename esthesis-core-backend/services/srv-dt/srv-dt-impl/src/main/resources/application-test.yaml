@@ -1,0 +1,13 @@
+quarkus:
+  log:
+    level: INFO
+  devservices:
+    enabled: true
+  mongodb:
+    database: esthesiscore-test
+  http:
+    test-port: 0
+esthesis:
+  dt-api:
+    timeout-in-ms: ${DT_API_REQUEST_TIMEOUT_MS:1000}
+    poll-interval-in-ms: ${DT_API_REQUEST_POLL_INTERVAL_MS:100}
