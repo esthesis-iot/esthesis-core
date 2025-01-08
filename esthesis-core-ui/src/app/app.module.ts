@@ -102,6 +102,8 @@ import {httpLoaderFactory} from "./shared/services/auth.service";
 import {provideCharts, withDefaultRegisterables} from "ng2-charts";
 import {NgProgressbar, provideNgProgressOptions} from "ngx-progressbar";
 import {NgProgressHttp, progressInterceptor, provideNgProgressHttp} from "ngx-progressbar/http";
+import {provideLumberjack} from "@ngworker/lumberjack";
+import {provideLumberjackConsoleDriver} from "@ngworker/lumberjack/console-driver";
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -109,7 +111,8 @@ import {NgProgressHttp, progressInterceptor, provideNgProgressHttp} from "ngx-pr
     AppComponent,
     CallbackComponent
   ],
-  exports: [], imports: [BrowserModule,
+  exports: [],
+  imports: [BrowserModule,
     BrowserAnimationsModule,
     routing,
     LayoutModule,
@@ -125,7 +128,8 @@ import {NgProgressHttp, progressInterceptor, provideNgProgressHttp} from "ngx-pr
     MatSnackBarModule,
     MatButtonModule,
     FontAwesomeModule,
-    ComponentsModule, NgProgressbar, NgProgressHttp], providers: [
+    ComponentsModule, NgProgressbar, NgProgressHttp],
+  providers: [
     QFormsModule,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     provideCharts(withDefaultRegisterables()),
@@ -137,7 +141,9 @@ import {NgProgressHttp, progressInterceptor, provideNgProgressHttp} from "ngx-pr
       silentApis: [
         "api/dashboard/v1/sub"
       ]
-    })
+    }),
+    provideLumberjack(),
+    provideLumberjackConsoleDriver(),
   ]
 })
 

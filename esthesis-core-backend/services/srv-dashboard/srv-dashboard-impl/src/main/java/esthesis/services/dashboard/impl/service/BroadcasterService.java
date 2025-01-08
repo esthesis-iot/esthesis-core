@@ -42,7 +42,7 @@ public class BroadcasterService {
 	// A tracker to be able to identify stale jobs. The key of the map is the job identity and the
 	// value is the time the job was initialised. Active dashboards should send periodic keep-alive
 	// messages to keep their underlying update job active.
-	private Map<String, Instant> jobsTracker = new ConcurrentHashMap<>();
+	private final Map<String, Instant> jobsTracker = new ConcurrentHashMap<>();
 	private final DashboardService dashboardService;
 
 	/**
@@ -103,7 +103,8 @@ public class BroadcasterService {
 	}
 
 	/**
-	 * Handles Kafka messages for unsubscribing users from dashboards.
+	 * Handles Kafka messages for unsubscribing users from dashboards, as well as refreshing
+	 * subscriptions (i.e. to keep the underlying job alive).
 	 *
 	 * @param msg the Kafka message.
 	 * @return a completion stage.

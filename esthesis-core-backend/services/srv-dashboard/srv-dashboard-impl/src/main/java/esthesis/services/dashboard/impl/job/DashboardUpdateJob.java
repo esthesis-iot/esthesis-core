@@ -48,8 +48,6 @@ public class DashboardUpdateJob {
 	DashboardService dashboardService;
 	@Inject
 	Sse sse;
-	@Inject
-	DevicesLastSeenUpdateJobHelper devicesLastSeenUpdateJobHelper;
 	@Setter
 	private String dashboardId;
 	@Setter
@@ -60,9 +58,12 @@ public class DashboardUpdateJob {
 	ObjectMapper objectMapper;
 	// A local cache to maintain a hash of the last update message sent for each dashboard item.
 	// This is used to prevent sending the same message multiple times when no updates exist.
+	// The cache has a default expiry of 1 hour, so at least once per hour every dashboard item
+	// will receive an update regardless of whether the data has changed or not.
 	private final Cache<String, String> updateJobCache = Caffeine.newBuilder()
 		.expireAfterWrite(Duration.ofHours(1)).build();
 
+	// Helper classes for updating the dashboard items.
 	@Inject
 	AuditUpdateJobHelper auditUpdateJobHelper;
 	@Inject
@@ -77,6 +78,8 @@ public class DashboardUpdateJob {
 	CampaignsUpdateJobHelper campaignsUpdateJobHelper;
 	@Inject
 	DevicesLatestUpdateJobHelper devicesLatestUpdateJobHelper;
+	@Inject
+	DevicesLastSeenUpdateJobHelper devicesLastSeenUpdateJobHelper;
 
 	/**
 	 * Broadcasts a dashboard update to the user's SSE event sink, while avoiding sending the same
@@ -101,18 +104,19 @@ public class DashboardUpdateJob {
 	}
 
 	/**
-	 * Hooks the SSE event sink to the broadcaster. This method should be called once during job
-	 * initialization.
+	 * Package-private method to hooks the SSE event sink to the broadcaster. This method should be
+	 * called once during job initialization from {@link DashboardUpdateJobFactory}.
 	 */
-	public void hookSse() {
+	void hookSse() {
 		sseBroadcaster = sse.newBroadcaster();
 		sseBroadcaster.register(sseEventSink);
 	}
 
 	/**
-	 * Sets the dashboard entity. This method should be called once during job initialization.
+	 * Package-private method to set the dashboard entity. This method should be called once during
+	 * job initialization.
 	 */
-	public void setDashboardEntity() {
+	void setDashboardEntity() {
 		dashboardEntity = dashboardService.findByIdOptional(dashboardId).orElseThrow(
 			() -> new QDoesNotExistException("Dashboard with id '" + dashboardId + "' does not exist."));
 	}

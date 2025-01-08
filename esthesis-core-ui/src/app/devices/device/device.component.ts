@@ -7,15 +7,14 @@ import {DevicesService} from "../devices.service";
 import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
-import {QFormsService} from "@qlack/forms";
 import {DeviceDto} from "../dto/device-dto";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 import {GeolocationDto} from "../dto/geolocation-dto";
-import {Observable} from "rxjs";
 import {FramedMapComponent} from "../../shared/components/framed-map/framed-map.component";
 import {AppConstants} from "../../app.constants";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {latLng, Layer, MapOptions, marker, tileLayer} from "leaflet";
 
 @Component({
   selector: "app-device",
@@ -27,13 +26,15 @@ export class DeviceComponent extends SecurityBaseComponent implements OnInit {
   device: DeviceDto | undefined;
   availableTags: TagDto[] | undefined;
   hardwareId = "";
-  // Geolocation details for this device.
-  geolocation?: Observable<GeolocationDto>;
+  // Geolocation and map options for this device.
+  geolocation?: GeolocationDto;
+  mapOptions?: MapOptions;
+  mapLayers?: Layer[];
 
-  constructor(private fb: FormBuilder, private dialog: MatDialog,
-    private qForms: QFormsService, private tagService: TagsService,
-    private devicesService: DevicesService, private route: ActivatedRoute,
-    private router: Router, private utilityService: UtilityService) {
+  constructor(private readonly fb: FormBuilder, private readonly dialog: MatDialog,
+    private readonly tagService: TagsService,private readonly devicesService: DevicesService,
+    private readonly route: ActivatedRoute, private readonly router: Router,
+    private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.DEVICE, route.snapshot.paramMap.get("id"));
   }
 
@@ -62,7 +63,22 @@ export class DeviceComponent extends SecurityBaseComponent implements OnInit {
     });
 
     // Get geolocation if available.
-    this.geolocation = this.devicesService.getGeolocation(this.id!);
+    // this.geolocation = this.devicesService.getGeolocation(this.id!);
+    this.devicesService.getGeolocation(this.id!).subscribe({
+      next: (geolocation) => {
+        this.geolocation = geolocation;
+        this.mapOptions = {
+          layers: [
+            tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+          ],
+          zoom: 15,
+          center: latLng(geolocation.latitude, geolocation.longitude)
+        };
+        this.mapLayers = [
+          marker([geolocation.latitude, geolocation.longitude])
+        ];
+      }
+    })
   }
 
   saveDeviceInfo() {
@@ -113,23 +129,20 @@ export class DeviceComponent extends SecurityBaseComponent implements OnInit {
    * Display a bigger version of the map in a dialog.
    */
   showMap() {
-    this.devicesService.getGeolocation(this.id!).subscribe({
-      next: (geolocation) => {
-        const mapInstance = this.dialog.open(FramedMapComponent, {
-          maxWidth: "100vw",
-          maxHeight: "100vh",
-          height: "100%",
-          width: "100%"
-        }).componentInstance;
-        mapInstance.longitude = geolocation.longitude;
-        mapInstance.latitude = geolocation.latitude;
-        mapInstance.zoom = 13;
-        mapInstance.height = "100%";
-        mapInstance.width = "100%";
-        mapInstance.title = "Device " + this.hardwareId;
-      }, error: (error) => {
-        this.utilityService.popupErrorWithTraceId(error, "Error while retrieving geolocation.");
+    console.log(this.geolocation);
+    this.dialog.open(FramedMapComponent, {
+      maxWidth: "100vw",
+      maxHeight: "100vh",
+      height: "100%",
+      width: "100%",
+      data: {
+        longitude: this.geolocation!.longitude,
+        latitude: this.geolocation!.latitude,
+        zoom: 15,
+        title: "Device " + this.hardwareId
       }
+    }).afterClosed().subscribe(result => {
+      // Do nothing.
     });
   }
 }

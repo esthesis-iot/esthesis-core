@@ -1,24 +1,33 @@
-import {Component, Input, OnInit} from "@angular/core";
-import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
+import {Component, Inject, Input} from "@angular/core";
+import {latLng, Layer, MapOptions, marker, tileLayer} from "leaflet";
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
 @Component({
   selector: "app-framed-map",
   templateUrl: "./framed-map.component.html"
 })
-export class FramedMapComponent implements OnInit {
+export class FramedMapComponent {
   @Input() longitude!: number;
   @Input() latitude!: number;
   @Input() zoom = 13;
   @Input() width = "100%";
   @Input() height = "200";
   @Input() title?: string;
-  geoUrl?: SafeResourceUrl;
 
-  constructor(public sanitizer: DomSanitizer) {
+  mapOptions?: MapOptions;
+  mapLayers?: Layer[];
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+    this.mapOptions = {
+      layers: [
+        tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+      ],
+      zoom: this.zoom,
+      center: latLng(this.latitude, this.longitude)
+    };
+    this.mapLayers = [
+      marker([this.latitude, this.longitude])
+    ];
   }
 
-  ngOnInit(): void {
-    this.geoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-      `https://maps.google.com/maps?q=${this.latitude},${this.longitude}&z=${this.zoom}&output=embed`);
-  }
 }

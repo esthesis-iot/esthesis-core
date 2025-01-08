@@ -39,6 +39,7 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {CdkTableModule} from "@angular/cdk/table";
 import {CountdownComponent} from "ngx-countdown";
 import {ComponentsModule} from "../shared/components/components.module";
+import {LeafletModule} from "@bluehalo/ngx-leaflet";
 
 @NgModule({
   declarations: [
@@ -84,7 +85,8 @@ import {ComponentsModule} from "../shared/components/components.module";
     FontAwesomeModule,
     CdkTableModule,
     CountdownComponent,
-    FormsModule
+    FormsModule,
+    LeafletModule
   ]
 })
 export class DevicesModule {

@@ -11,6 +11,7 @@ import {HttpHeaders} from "@angular/common/http";
 import {catchError, map, Observable, of, Subscription, tap} from "rxjs";
 import {v4 as uuidv4} from "uuid";
 import * as _ from "lodash";
+import {LumberjackService} from "@ngworker/lumberjack";
 
 @Component({
   selector: "app-dashboard-view",
@@ -32,8 +33,10 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
   private subscriptionRefreshHandler?: number;
   private subscriptionId!: string;
 
-  constructor(private utilityService: UtilityService, private dashboardService: DashboardService,
-    private sseClient: SseClient, private oidcSecurityService: OidcSecurityService) {
+  constructor(private readonly utilityService: UtilityService,
+    private readonly dashboardService: DashboardService, private readonly sseClient: SseClient,
+    private readonly oidcSecurityService: OidcSecurityService,
+    private readonly logger: LumberjackService) {
     super();
   }
 
@@ -68,20 +71,23 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
   }
 
   private subscribeToDashboard() {
+    this.logger.logDebug("Subscribing to dashboard " + this.selectedDashboard?.id + ".");
     if (this.selectedDashboard && _.filter(this.selectedDashboard?.items, {enabled: true}).length > 0) {
       this.oidcSecurityService.getAccessToken().subscribe((token) => {
         // Set up a refresh subscription handler.
+        this.logger.logDebug("Setting up refresh subscription handler for dashboard " + this.selectedDashboard!.id + ".");
         this.subscriptionRefreshHandler = window.setInterval(() => {
           this.dashboardService.refreshSub(this.subscriptionId).subscribe({
             next: () => {
-              console.debug("Refreshed dashboard " + this.selectedDashboard!.id);
+              this.logger.logDebug("Refreshed dashboard " + this.selectedDashboard!.id);
             }, error: (error) => {
-              this.utilityService.popupErrorWithTraceId("Could not refresh dashboard.", error);
+              this.logger.logError("Could not refresh dashboard " + this.selectedDashboard!.id, error);
             }
           });
         }, this.appConstants.DASHBOARD.REFRESH_INTERVAL_MINUTES * 60000);
 
         // Subscribe to SSE events for this dashboard.
+        this.logger.logDebug("Subscribing to SSE events for dashboard " + this.selectedDashboard?.id + ".");
         const headers = new HttpHeaders().set("Authorization", `Bearer ${token}`);
         this.sseSubscription = this.sseClient.stream(
           `api/dashboard/v1/sub/${this.selectedDashboard?.id}/${this.subscriptionId}`,
@@ -89,11 +95,15 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
           {headers}, "GET").subscribe((event) => {
           if (event.type === "error") {
             const errorEvent = event as ErrorEvent;
-            console.error(event, errorEvent.message);
+            this.logger.logError("Error in SSE event for dashboard " + this.selectedDashboard?.id
+              + ": " + errorEvent.message + ".");
           } else {
             const messageEvent = event as MessageEvent;
-            this.dashboardService.sendMessage(JSON.parse(messageEvent.data))
+            const eventData = JSON.parse(messageEvent.data);
+            this.dashboardService.sendMessage(eventData);
             this.lastEventDate = new Date();
+            this.logger.logDebug("Received SSE event for dashboard " + this.selectedDashboard?.id
+              + ": " + eventData + ".");
           }
         });
       });
@@ -101,7 +111,7 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
   }
 
   private unsubscribeFromDashboard(): Observable<boolean> {
-    console.debug("Unsubscribing from dashboard " + this.selectedDashboard?.id + ".");
+    this.logger.logDebug("Unsubscribing from dashboard " + this.selectedDashboard?.id + ".");
     if (!this.selectedDashboard) {
       return of(true);
     }
@@ -118,35 +128,39 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
         this.sseSubscription?.unsubscribe();
         this.sseSubscription = null;
 
-        console.debug("Unsubscribed from dashboard " + this.selectedDashboard?.id + ".");
+        this.logger.logDebug("Unsubscribed from dashboard " + this.selectedDashboard?.id + ".");
       }),
       map(() => true),
       catchError(error => {
-        this.utilityService.popupErrorWithTraceId(
-          "Could not unsubscribe from dashboard " + this.selectedDashboard?.id + ".",
-          error
-        );
-        return of(false)
+        this.logger.logError("Could not unsubscribe from dashboard " + this.selectedDashboard?.id + ".", error);
+        return of(false);
       })
     );
   }
 
+  /**
+   * Failsafe to terminate a dashboard subscription before window unload.
+   * @param event The beforeunload event.
+   */
   @HostListener("window:beforeunload", ["$event"])
   handleBeforeUnload(event: Event): void {
     this.unsubscribeFromDashboard().subscribe(
       (success) => {
         if (success) {
-          console.debug("Unsubscribed from dashboard before window unload.");
+          this.logger.logDebug("Unsubscribed from dashboard before window unload.");
         }
       }
     );
   }
 
+  /**
+   * Terminate dashboard subscription when the view changes.
+   */
   ngOnDestroy() {
     this.unsubscribeFromDashboard().subscribe(
       (success) => {
         if (success) {
-          console.debug("Unsubscribed from dashboard on destroy.");
+          this.logger.logDebug("Unsubscribed from dashboard on destroy.");
         }
       }
     );
@@ -161,7 +175,7 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
           this.subscribeToDashboard();
         }
       }
-    )
+    );
   }
 
   fullscreen(dashboardDiv: HTMLElement) {

@@ -21,10 +21,10 @@ export class TagEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   id!: string;
 
-  constructor(private fb: FormBuilder, private tagService: TagsService,
-    private route: ActivatedRoute, private router: Router,
-    private utilityService: UtilityService, private dialog: MatDialog,
-    private qFormValidation: QFormValidationEEService) {
+  constructor(private readonly fb: FormBuilder, private readonly tagService: TagsService,
+    private readonly route: ActivatedRoute, private readonly router: Router,
+    private readonly utilityService: UtilityService, private readonly dialog: MatDialog,
+    private readonly qFormValidation: QFormValidationEEService) {
     super(AppConstants.SECURITY.CATEGORY.TAGS, route.snapshot.paramMap.get("id"));
   }
 
