@@ -42,6 +42,7 @@ import static org.mockito.Mockito.when;
 
 @Slf4j
 @QuarkusTest
+@SuppressWarnings("unchecked")
 class KubernetesServiceTest {
 
 	@InjectMocks
