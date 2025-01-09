@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit} from "@angular/core";
-import {DashboardItemDto} from "../dto/view-edit/dashboard-item-dto";
+import {DashboardItemDto} from "../dto/dashboard-item-dto";
 import {Subject, Subscription} from "rxjs";
 import {DashboardService} from "../dashboard.service";
 import {UtilityService} from "../../shared/services/utility.service";
@@ -13,7 +13,6 @@ export class DashboardItemComponent<T, K = unknown> implements OnInit, OnDestroy
   // A reference to the concrete dashboard item extending this class.
   @Input() item!: DashboardItemDto;
 
-  // TODO is it needed?
   // The index of this item in the dashboard.
   @Input() index!: number;
 

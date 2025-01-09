@@ -63,7 +63,6 @@ export class DeviceComponent extends SecurityBaseComponent implements OnInit {
     });
 
     // Get geolocation if available.
-    // this.geolocation = this.devicesService.getGeolocation(this.id!);
     this.devicesService.getGeolocation(this.id!).subscribe({
       next: (geolocation) => {
         this.geolocation = geolocation;
@@ -75,7 +74,8 @@ export class DeviceComponent extends SecurityBaseComponent implements OnInit {
           center: latLng(geolocation.latitude, geolocation.longitude)
         };
         this.mapLayers = [
-          marker([geolocation.latitude, geolocation.longitude])
+          marker([geolocation.latitude, geolocation.longitude],
+            { icon: AppConstants.MAP_DEFAULT_ICON})
         ];
       }
     })
@@ -129,20 +129,17 @@ export class DeviceComponent extends SecurityBaseComponent implements OnInit {
    * Display a bigger version of the map in a dialog.
    */
   showMap() {
-    console.log(this.geolocation);
     this.dialog.open(FramedMapComponent, {
       maxWidth: "100vw",
       maxHeight: "100vh",
-      height: "100%",
       width: "100%",
+      height: "100%",
       data: {
         longitude: this.geolocation!.longitude,
         latitude: this.geolocation!.latitude,
         zoom: 15,
         title: "Device " + this.hardwareId
       }
-    }).afterClosed().subscribe(result => {
-      // Do nothing.
     });
   }
 }

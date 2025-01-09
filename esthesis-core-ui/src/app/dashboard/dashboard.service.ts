@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable, Subject} from "rxjs";
 import {AppConstants} from "../app.constants";
 import {CrudService} from "../shared/services/crud.service";
-import {DashboardDto} from "./dto/view-edit/dashboard-dto";
+import {DashboardDto} from "./dto/dashboard-dto";
 import {DashboardUpdateDto} from "./dto/updates/DashboardUpdateDto";
 
 @Injectable({

@@ -6,7 +6,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   providedIn: "root"
 })
 export class UtilityService {
-  constructor(private snackBar: MatSnackBar, private clipboard: Clipboard) {
+  constructor(private readonly snackBar: MatSnackBar, private readonly clipboard: Clipboard) {
   }
 
   /**

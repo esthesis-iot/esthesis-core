@@ -7,11 +7,10 @@ import esthesis.service.device.dto.DevicesLastSeenStatsDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
-import esthesis.services.device.impl.repository.DeviceRepository;
 import esthesis.services.device.impl.service.DeviceRegistrationService;
 import esthesis.services.device.impl.service.DeviceService;
+import esthesis.services.device.impl.service.DeviceTagService;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.inject.Inject;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -19,17 +18,16 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.operator.OperatorCreationException;
 
+@RequiredArgsConstructor
 public class DeviceSystemResourceImpl implements DeviceSystemResource {
 
-	@Inject
-	DeviceRegistrationService deviceRegistrationService;
-
-	@Inject
-	DeviceService deviceService;
-	@Inject
-	DeviceRepository deviceRepository;
+	private final DeviceRegistrationService deviceRegistrationService;
+	private final DeviceService deviceService;
+	private final DeviceTagService deviceTagService;
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
@@ -116,6 +114,22 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	@Override
 	public List<DeviceEntity> getLatestDevices(int limit) {
 		return deviceService.getLatestDevices(limit);
+	}
+
+	/**
+	 * Returns the hardware IDs of devices that have the specified tags.
+	 *
+	 * @param tags a comma-separated list of tags.
+	 * @return a list of hardware IDs.
+	 */
+	@Override
+	public List<String> findByTagNames(String tags) {
+		if (StringUtils.isNotEmpty(tags)) {
+			return deviceTagService.findByTagName(List.of(tags.split(",")), false).stream()
+				.map(DeviceEntity::getHardwareId).toList();
+		} else {
+			return List.of();
+		}
 	}
 
 }

@@ -4,29 +4,27 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.dashboard.dto.DashboardItemDTO;
 import esthesis.service.dashboard.entity.DashboardEntity;
 import esthesis.services.dashboard.impl.dto.DashboardUpdate;
 import esthesis.services.dashboard.impl.job.helper.AboutUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.AuditUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.CampaignsUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.DeviceMapUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DevicesLastSeenUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DevicesLatestUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.SensorIconUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.SensorUpdateJobHelper;
-import esthesis.services.dashboard.impl.service.DashboardService;
-import io.quarkus.arc.Unremovable;
-import jakarta.annotation.PreDestroy;
-import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
+import esthesis.services.dashboard.impl.job.helper.UpdateJobHelper;
 import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseBroadcaster;
-import jakarta.ws.rs.sse.SseEventSink;
 import java.time.Duration;
+import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CompletableFuture;
-import lombok.Setter;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -40,22 +38,17 @@ import org.apache.commons.codec.digest.DigestUtils;
  * REST client, check if the user has the necessary permissions to access the underlying data).
  */
 @Slf4j
-@Dependent
-@Unremovable
+@AllArgsConstructor
 public class DashboardUpdateJob {
 
-	@Inject
-	DashboardService dashboardService;
-	@Inject
-	Sse sse;
-	@Setter
-	private String dashboardId;
-	@Setter
-	private SseEventSink sseEventSink;
-	private SseBroadcaster sseBroadcaster;
-	private DashboardEntity dashboardEntity;
-	@Inject
-	ObjectMapper objectMapper;
+	private final String subscriptionId;
+	private final Sse sse;
+	private final String dashboardId;
+	private final SseBroadcaster sseBroadcaster;
+	private final DashboardEntity dashboardEntity;
+	private final ObjectMapper objectMapper;
+	private final Map<Class<? extends UpdateJobHelper<?>>, UpdateJobHelper<?>> helpers;
+
 	// A local cache to maintain a hash of the last update message sent for each dashboard item.
 	// This is used to prevent sending the same message multiple times when no updates exist.
 	// The cache has a default expiry of 1 hour, so at least once per hour every dashboard item
@@ -63,23 +56,15 @@ public class DashboardUpdateJob {
 	private final Cache<String, String> updateJobCache = Caffeine.newBuilder()
 		.expireAfterWrite(Duration.ofHours(1)).build();
 
-	// Helper classes for updating the dashboard items.
-	@Inject
-	AuditUpdateJobHelper auditUpdateJobHelper;
-	@Inject
-	@Named("SensorUpdateJobHelper")
-	SensorUpdateJobHelper sensorUpdateJobHelper;
-	@Inject
-	@Named("SensorIconUpdateJobHelper")
-	SensorIconUpdateJobHelper sensorIconUpdateJobHelper;
-	@Inject
-	AboutUpdateJobHelper aboutUpdateJobHelper;
-	@Inject
-	CampaignsUpdateJobHelper campaignsUpdateJobHelper;
-	@Inject
-	DevicesLatestUpdateJobHelper devicesLatestUpdateJobHelper;
-	@Inject
-	DevicesLastSeenUpdateJobHelper devicesLastSeenUpdateJobHelper;
+	// A pool of threads, to make sure that under unfavourable circumstances we do not exhaust
+	// system resources.
+	private final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(
+		10, // Core pool size.
+		50, // Maximum pool size.
+		5000L, TimeUnit.MILLISECONDS, // Keep-alive time.
+		new ArrayBlockingQueue<>(50), // Task queue with capacity.
+		new ThreadPoolExecutor.AbortPolicy() // Default rejection policy.
+	);
 
 	/**
 	 * Broadcasts a dashboard update to the user's SSE event sink, while avoiding sending the same
@@ -104,76 +89,73 @@ public class DashboardUpdateJob {
 	}
 
 	/**
-	 * Package-private method to hooks the SSE event sink to the broadcaster. This method should be
-	 * called once during job initialization from {@link DashboardUpdateJobFactory}.
-	 */
-	void hookSse() {
-		sseBroadcaster = sse.newBroadcaster();
-		sseBroadcaster.register(sseEventSink);
-	}
-
-	/**
-	 * Package-private method to set the dashboard entity. This method should be called once during
-	 * job initialization.
-	 */
-	void setDashboardEntity() {
-		dashboardEntity = dashboardService.findByIdOptional(dashboardId).orElseThrow(
-			() -> new QDoesNotExistException("Dashboard with id '" + dashboardId + "' does not exist."));
-	}
-
-	/**
 	 * Destroys the job task, releasing the SSE broadcaster.
 	 */
-	@PreDestroy
 	public void destroy() {
-		log.debug("Destroying job task for dashboard '{}'.", dashboardId);
+		log.debug("Destroying job task for subscription '{}' for dashboard '{}'.", subscriptionId,
+			dashboardId);
 		if (sseBroadcaster != null) {
 			sseBroadcaster.close();
 		}
-		log.debug("Job task destroyed for dashboard '{}'.", dashboardId);
+		log.debug("Job task destroyed for subscription '{}' for dashboard '{}'.", subscriptionId,
+			dashboardId);
 	}
 
 	/**
 	 * Executes the job task.
 	 */
 	public void execute() {
-		System.out.println("Executing job for dashboard '" + dashboardId + "'.");
+		log.debug("Executing job for subscription '{}' for dashboard '{}'.", subscriptionId,
+			dashboardId);
 		dashboardEntity.getItems().stream().filter(DashboardItemDTO::isEnabled).forEach(item -> {
 			switch (item.getType()) {
 				case AUDIT:
 					CompletableFuture.runAsync(
-						() -> broadcast(auditUpdateJobHelper.refresh(dashboardEntity, item), item.getId()));
+						() -> broadcast(((AuditUpdateJobHelper) helpers.get(AuditUpdateJobHelper.class))
+							.refresh(dashboardEntity, item), item.getId()), threadPool);
 					break;
 				case SENSOR:
 					CompletableFuture.runAsync(
-						() -> broadcast(sensorUpdateJobHelper.refresh(dashboardEntity, item), item.getId()));
+						() -> broadcast(((SensorUpdateJobHelper) helpers.get(SensorUpdateJobHelper.class))
+							.refresh(dashboardEntity, item), item.getId()), threadPool);
 					break;
 				case SENSOR_ICON:
 					CompletableFuture.runAsync(
-						() -> broadcast(sensorIconUpdateJobHelper.refresh(dashboardEntity, item),
-							item.getId()));
+						() -> broadcast(
+							((SensorIconUpdateJobHelper) helpers.get(SensorIconUpdateJobHelper.class))
+								.refresh(dashboardEntity, item), item.getId()), threadPool);
 					break;
 				case ABOUT:
 					CompletableFuture.runAsync(
-						() -> broadcast(aboutUpdateJobHelper.refresh(dashboardEntity, item), item.getId()));
+						() -> broadcast(((AboutUpdateJobHelper) helpers.get(AboutUpdateJobHelper.class))
+							.refresh(dashboardEntity, item), item.getId()), threadPool);
 					break;
 				case CAMPAIGNS:
 					CompletableFuture.runAsync(
-						() -> broadcast(campaignsUpdateJobHelper.refresh(dashboardEntity, item), item.getId()));
+						() -> broadcast(((CampaignsUpdateJobHelper) helpers.get(CampaignsUpdateJobHelper.class))
+							.refresh(dashboardEntity, item), item.getId()), threadPool);
 					break;
 				case DEVICES_LAST_SEEN:
 					CompletableFuture.runAsync(
-						() -> broadcast(devicesLastSeenUpdateJobHelper.refresh(dashboardEntity, item),
-							item.getId()));
+						() -> broadcast(
+							((DevicesLastSeenUpdateJobHelper) helpers.get(DevicesLastSeenUpdateJobHelper.class))
+								.refresh(dashboardEntity, item), item.getId()), threadPool);
 					break;
 				case DEVICES_LATEST:
 					CompletableFuture.runAsync(
-						() -> broadcast(devicesLatestUpdateJobHelper.refresh(dashboardEntity, item),
-							item.getId()));
+						() -> broadcast(
+							((DevicesLatestUpdateJobHelper) helpers.get(DevicesLatestUpdateJobHelper.class))
+								.refresh(dashboardEntity, item), item.getId()), threadPool);
+					break;
+				case DEVICE_MAP:
+					CompletableFuture.runAsync(
+						() -> broadcast(
+							((DeviceMapUpdateJobHelper) helpers.get(DeviceMapUpdateJobHelper.class))
+								.refresh(dashboardEntity, item), item.getId()), threadPool);
 					break;
 				default:
-					log.warn("Unknown dashboard item type '{}' for dashboard '{}'.", item.getType(),
-						dashboardId);
+					log.warn("Unknown dashboard item type '{}' for subscription '{}' for dashboard '{}'.",
+						item.getType(), subscriptionId, dashboardId);
 			}
 		});
 	}

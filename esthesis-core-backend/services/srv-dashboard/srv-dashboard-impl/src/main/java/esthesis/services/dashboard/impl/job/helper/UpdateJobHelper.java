@@ -7,6 +7,7 @@ import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.service.dashboard.dto.DashboardItemDTO;
 import esthesis.service.dashboard.entity.DashboardEntity;
 import esthesis.service.security.resource.SecuritySystemResource;
+import esthesis.services.dashboard.impl.job.DashboardUpdateJobFactory;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,5 +52,20 @@ public abstract class UpdateJobHelper<T> {
 		return Boolean.TRUE.equals(securityChecks.get(securityKey));
 	}
 
+	/**
+	 * The main method to be executed to refresh the value of a dashboard item.
+	 *
+	 * @param dashboardEntity the dashboard entity to which the item belongs.
+	 * @param item            the dashboard item to be refreshed.
+	 * @return the new value of the dashboard item.
+	 */
 	public abstract T refresh(DashboardEntity dashboardEntity, DashboardItemDTO item);
+
+	/**
+	 * Initializes the helpers of this job. This method is called by {@link DashboardUpdateJobFactory}
+	 * when the job is created and before it is returned to the caller. By default, this method does
+	 * nothing unless overridden.
+	 */
+	public void init() {
+	}
 }

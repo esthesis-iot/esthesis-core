@@ -3,11 +3,13 @@
     <div class="stat-title">{{ item.title }}</div>
   </div>
   <div *ngIf="item.subtitle" class="stat-desc">{{ item.subtitle }}</div>
-  <div>
-    <app-framed-map
-      [latitude]="30"
-      [longitude]="20"
-      [zoom]="8">
-    </app-framed-map>
+  <div [ngClass]="mapVisible ? '' : 'invisible'">
+    <div class="mt-2" [ngStyle]="{height: config?.height + 'px'}"
+         leaflet
+         [leafletOptions]="mapOptions"
+         [leafletLayers]="mapLayers"
+         (leafletMouseDown)="onMouseDown($event)"
+         (leafletMapReady)="onMapReady($event)">
+    </div>
   </div>
 </div>

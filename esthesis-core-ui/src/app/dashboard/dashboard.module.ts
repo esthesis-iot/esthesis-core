@@ -126,6 +126,7 @@ import {
   CdkTable
 } from "@angular/cdk/table";
 import {MatSort, MatSortHeader} from "@angular/material/sort";
+import {LeafletModule} from "@bluehalo/ngx-leaflet";
 
 // @ts-ignore
 @NgModule({
@@ -203,7 +204,8 @@ import {MatSort, MatSortHeader} from "@angular/material/sort";
     MatSort,
     MatSortHeader,
     CdkHeaderCellDef,
-    FormsModule
+    FormsModule,
+    LeafletModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [

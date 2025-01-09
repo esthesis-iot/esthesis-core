@@ -64,6 +64,7 @@ import {
   faMaximize,
   faMemory,
   faMicrochip,
+  faMinusCircle,
   faNetworkWired,
   faPaste,
   faPause,
@@ -162,7 +163,7 @@ export class AppModule {
       faMicrochip, faNetworkWired, faShieldHalved, faStamp, faTag, faUser, faUsers,
       faUsersBetweenLines, faXmarksLines, faFileCirclePlus, faBoxArchive, faFileCircleCheck,
       faPaste, faEraser, faBug, faRulerCombined, faCirclePlay, faCircleXmark, faShareNodes,
-      faMaximize, faIcons);
+      faMaximize, faIcons, faMinusCircle);
     faConfig.fixedWidth = true;
   }
 }

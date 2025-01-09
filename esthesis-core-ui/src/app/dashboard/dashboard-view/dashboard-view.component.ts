@@ -2,7 +2,7 @@ import {Component, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/co
 import {BaseComponent} from "../../shared/components/base-component";
 import {DashboardService} from "../dashboard.service";
 import {NgxMasonryComponent} from "ngx-masonry";
-import {DashboardDto} from "../dto/view-edit/dashboard-dto";
+import {DashboardDto} from "../dto/dashboard-dto";
 import {UtilityService} from "../../shared/services/utility.service";
 import screenfull from "screenfull";
 import {SseClient} from "ngx-sse-client";
@@ -11,7 +11,6 @@ import {HttpHeaders} from "@angular/common/http";
 import {catchError, map, Observable, of, Subscription, tap} from "rxjs";
 import {v4 as uuidv4} from "uuid";
 import * as _ from "lodash";
-import {LumberjackService} from "@ngworker/lumberjack";
 
 @Component({
   selector: "app-dashboard-view",
@@ -35,8 +34,7 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
 
   constructor(private readonly utilityService: UtilityService,
     private readonly dashboardService: DashboardService, private readonly sseClient: SseClient,
-    private readonly oidcSecurityService: OidcSecurityService,
-    private readonly logger: LumberjackService) {
+    private readonly oidcSecurityService: OidcSecurityService) {
     super();
   }
 
@@ -102,8 +100,6 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
             const eventData = JSON.parse(messageEvent.data);
             this.dashboardService.sendMessage(eventData);
             this.lastEventDate = new Date();
-            this.logger.logDebug("Received SSE event for dashboard " + this.selectedDashboard?.id
-              + ": " + eventData + ".");
           }
         });
       });

@@ -1,19 +1,13 @@
-import {Component, Inject, Input} from "@angular/core";
+import {Component, Inject} from "@angular/core";
 import {latLng, Layer, MapOptions, marker, tileLayer} from "leaflet";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {AppConstants} from "../../../app.constants";
 
 @Component({
   selector: "app-framed-map",
   templateUrl: "./framed-map.component.html"
 })
 export class FramedMapComponent {
-  @Input() longitude!: number;
-  @Input() latitude!: number;
-  @Input() zoom = 13;
-  @Input() width = "100%";
-  @Input() height = "200";
-  @Input() title?: string;
-
   mapOptions?: MapOptions;
   mapLayers?: Layer[];
 
@@ -22,11 +16,12 @@ export class FramedMapComponent {
       layers: [
         tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
       ],
-      zoom: this.zoom,
-      center: latLng(this.latitude, this.longitude)
+      zoom: data.zoom,
+      center: latLng(data.latitude, data.longitude)
     };
     this.mapLayers = [
-      marker([this.latitude, this.longitude])
+      marker([data.latitude, data.longitude],
+        { icon: AppConstants.MAP_DEFAULT_ICON})
     ];
   }
 

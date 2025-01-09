@@ -10,7 +10,7 @@ import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {DashboardService} from "../dashboard.service";
-import {DashboardItemDto} from "../dto/view-edit/dashboard-item-dto";
+import {DashboardItemDto} from "../dto/dashboard-item-dto";
 import {DashboardItemNewComponent} from "../dashboard-item-new/dashboard-item-new.component";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {
@@ -55,7 +55,7 @@ import {
 import {
   DashboardItemTitleComponent
 } from "../items/dashboard-item-title/dashboard-item-title.component";
-import {DashboardDto} from "../dto/view-edit/dashboard-dto";
+import {DashboardDto} from "../dto/dashboard-dto";
 import {v4} from "uuid";
 
 @Component({
@@ -67,10 +67,10 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
   id!: string;  // Dashboard ID.
   dashboardItems: DashboardItemDto[] = [];
 
-  constructor(private fb: FormBuilder, private dashboardService: DashboardService,
-    private route: ActivatedRoute, private router: Router,
-    private utilityService: UtilityService, private dialog: MatDialog,
-    private qFormValidation: QFormValidationEEService) {
+  constructor(private readonly fb: FormBuilder, private readonly dashboardService: DashboardService,
+    private readonly route: ActivatedRoute, private readonly router: Router,
+    private readonly utilityService: UtilityService, private readonly dialog: MatDialog,
+    private readonly qFormValidation: QFormValidationEEService) {
     super(AppConstants.SECURITY.CATEGORY.DASHBOARD, route.snapshot.paramMap.get("id"));
   }
 
@@ -102,7 +102,8 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
       this.dashboardService.findById(this.id).subscribe({
         next: (response) => {
           this.dashboardItems = response.items;
-          // this.configureItem(this.dashboardItems[4]);
+          // For development: automatically open the edit item dialog.
+          // this.configureItem(this.dashboardItems[6]);
         }, error: (error) => {
           this.utilityService.popupErrorWithTraceId("Could not fetch dashboard items.", error);
         }

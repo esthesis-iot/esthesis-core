@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from "@angular/core";
 import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {DashboardItemDto} from "../../dto/view-edit/dashboard-item-dto";
+import {DashboardItemDto} from "../../dto/dashboard-item-dto";
 import {AppConstants} from "../../../app.constants";
 import {
   DashboardItemDevicesLatestConfigurationDto

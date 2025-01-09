@@ -25,6 +25,8 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 /**
@@ -35,15 +37,18 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
 @RequiredArgsConstructor
 public class BroadcasterService {
 
-	// The scheduler keeping track of the dashboard update jobs.
+	private final DashboardService dashboardService;
+	// The scheduler executing the dashboard update jobs.
 	private final Scheduler scheduler;
 	// The factory for creating dashboard update jobs for a user and dashboard.
 	private final DashboardUpdateJobFactory dashboardUpdateJobFactory;
-	// A tracker to be able to identify stale jobs. The key of the map is the job identity and the
-	// value is the time the job was initialised. Active dashboards should send periodic keep-alive
-	// messages to keep their underlying update job active.
-	private final Map<String, Instant> jobsTracker = new ConcurrentHashMap<>();
-	private final DashboardService dashboardService;
+	// A tracker to be able to identify stale jobs:
+	// - The key is the job identity.
+	// - The value is a pair with the job instance and the time the job was initialised.
+	// Active dashboards should send periodic keep-alive messages to keep their respective update
+	// job active.
+	private final Map<String, Pair<DashboardUpdateJob, Instant>> subscriptionsTracker =
+		new ConcurrentHashMap<>();
 
 	/**
 	 * Cleans up all scheduled jobs when the service is destroyed.
@@ -61,27 +66,28 @@ public class BroadcasterService {
 	/**
 	 * Unregisters a user from receiving updates for a dashboard.
 	 *
-	 * @param dashboardId    the id of the dashboard.
 	 * @param subscriptionId the id of the subscription sent by the client.
 	 */
-	private void unregister(String dashboardId, String subscriptionId) {
-		log.debug("Unscheduling job for dashboard '{}'.", dashboardId);
+	private void unregister(String subscriptionId) {
+		log.debug("Unscheduling subscription '{}'.", subscriptionId);
 		if (scheduler.getScheduledJob(subscriptionId) != null) {
 			scheduler.unscheduleJob(subscriptionId);
-			jobsTracker.remove(subscriptionId);
-			log.debug("Job unscheduled for dashboard '{}'.", dashboardId);
+			subscriptionsTracker.get(subscriptionId).getLeft().destroy();
+			subscriptionsTracker.remove(subscriptionId);
+			log.debug("Unscheduled subscription '{}'.", subscriptionId);
 		} else {
-			log.debug("Could not find a job for dashboard '{}'.", dashboardId);
+			log.debug("Could not find subscription '{}' to unschedule it.", subscriptionId);
 		}
 	}
 
 	private void refreshSub(String subscriptionId) {
 		log.debug("Refreshing subscription '{}'.", subscriptionId);
 		if (scheduler.getScheduledJob(subscriptionId) != null) {
-			jobsTracker.put(subscriptionId, Instant.now());
+			subscriptionsTracker.replace(subscriptionId,
+				ImmutablePair.of(subscriptionsTracker.get(subscriptionId).getLeft(), Instant.now()));
 			log.debug("Subscription '{}' refreshed.", subscriptionId);
 		} else {
-			log.debug("Could not find subscription '{}'.", subscriptionId);
+			log.debug("Could not find subscription '{}' to refresh it.", subscriptionId);
 		}
 	}
 
@@ -92,11 +98,11 @@ public class BroadcasterService {
 	@Scheduled(every = "5m")
 	void checkStaleJobs() {
 		log.trace("Checking for stale jobs.");
-		for (Map.Entry<String, Instant> entry : new HashMap<>(jobsTracker).entrySet()) {
-			if (entry.getValue().isBefore(Instant.now().minus(1, ChronoUnit.HOURS))) {
+		for (Map.Entry<String, Pair<DashboardUpdateJob, Instant>> entry :
+			new HashMap<>(subscriptionsTracker).entrySet()) {
+			if (entry.getValue().getRight().isBefore(Instant.now().minus(1, ChronoUnit.HOURS))) {
 				log.debug("Job '{}' is stale, unscheduling.", entry.getKey());
-				scheduler.unscheduleJob(entry.getKey());
-				jobsTracker.remove(entry.getKey());
+				unregister(entry.getKey());
 			}
 		}
 		log.trace("Stale jobs checked.");
@@ -120,9 +126,8 @@ public class BroadcasterService {
 			.orElse(io.opentelemetry.context.Context.current().makeCurrent())) {
 			if (msg.getPayload().getComponent() == Component.DASHBOARD) {
 				if (msg.getPayload().getAction() == UNSUB) {
-					String username = msg.getKey();
 					String dashboardId = msg.getPayload().getTargetId();
-					unregister(username, dashboardId);
+					unregister(dashboardId);
 				} else if (msg.getPayload().getAction() == REFRESHSUB) {
 					String subscriptionId = msg.getPayload().getTargetId();
 					refreshSub(subscriptionId);
@@ -150,11 +155,13 @@ public class BroadcasterService {
 		dashboardService.findAllForCurrentUser().stream()
 			.filter(dashboardEntity -> dashboardEntity.getId().toHexString().equals(dashboardId))
 			.findFirst().ifPresentOrElse(dashboardEntity -> {
-				DashboardUpdateJob job = dashboardUpdateJobFactory.create(dashboardId, sseEventSink);
+				DashboardUpdateJob job = dashboardUpdateJobFactory.create(subscriptionId, dashboardId,
+					sseEventSink);
+				subscriptionsTracker.put(subscriptionId, ImmutablePair.of(job, Instant.now()));
 				scheduler.newJob(subscriptionId)
 					.setInterval(dashboardEntity.getUpdateInterval() + "s")
-					.setTask(executionContext -> job.execute()).schedule();
-				jobsTracker.put(subscriptionId, Instant.now());
+					.setTask(executionContext -> subscriptionsTracker.get(subscriptionId).getLeft().execute())
+					.schedule();
 				log.debug("Job scheduled for dashboard '{}', with subscription id '{}'.", dashboardId,
 					subscriptionId);
 			}, () -> log.debug("Could not find a dashboard subscription with id '{}'.", subscriptionId));

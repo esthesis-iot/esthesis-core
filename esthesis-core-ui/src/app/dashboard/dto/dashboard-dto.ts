@@ -1,4 +1,4 @@
-import {BaseDto} from "../../../dto/base-dto";
+import {BaseDto} from "../../dto/base-dto";
 import {DashboardItemDto} from "./dashboard-item-dto";
 
 export interface DashboardDto extends BaseDto {

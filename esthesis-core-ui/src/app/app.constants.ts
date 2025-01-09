@@ -1,3 +1,5 @@
+import {Icon, icon} from "leaflet";
+
 export const AppConstants = {
   // The API root context.
   API_ROOT: "/api",
@@ -251,7 +253,7 @@ export const AppConstants = {
         AUDIT: 4,
         CAMPAIGNS: 5,
         DATETIME: 2,
-        DEVICE_MAP: 2,
+        DEVICE_MAP: 4,
         DEVICES_LAST_SEEN: 3,
         DEVICES_LATEST: 5,
         DEVICES_STATUS: 2,
@@ -270,10 +272,19 @@ export const AppConstants = {
         SENSOR: {},
         DEVICES_LATEST: {
           entries: 5
-        }
+        },
+        DEVICES_MAP: {}
       }
     }
-  }
+  },
+
+  MAP_DEFAULT_ICON: icon({
+    ...Icon.Default.prototype.options,
+    iconUrl: "assets/marker-icon.png",
+    iconRetinaUrl: "assets/marker-icon-2x.png",
+    shadowUrl: "assets/marker-shadow.png"
+  })
+
 
 };
 

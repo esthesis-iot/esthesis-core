@@ -12,8 +12,9 @@ export class AppComponent extends BaseComponent implements OnInit {
   // Expose application constants.
   private _isLoggedIn = false;
 
-  constructor(private oidcService: OidcSecurityService,
-    private securityUsersService: SecurityService, private utilityService: UtilityService) {
+  constructor(private readonly oidcService: OidcSecurityService,
+    private readonly securityUsersService: SecurityService,
+    private readonly utilityService: UtilityService) {
     super();
 
     // Check if a specific theme has already been saved for this user.

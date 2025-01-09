@@ -69,4 +69,8 @@ public interface DeviceSystemResource {
 	@GET
 	@Path("/v1/system/device-latest")
 	List<DeviceEntity> getLatestDevices(int limit);
+
+	@GET
+	@Path("/v1/find/by-tag-names")
+	List<String> findByTagNames(@QueryParam("tag") String tags);
 }

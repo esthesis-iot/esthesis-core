@@ -3,7 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
 import {AppConstants} from "../../../app.constants";
-import {DashboardItemDto} from "../../dto/view-edit/dashboard-item-dto";
+import {DashboardItemDto} from "../../dto/dashboard-item-dto";
 import {DeviceDto} from "../../../devices/dto/device-dto";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {DevicesService} from "../../../devices/devices.service";
@@ -61,7 +61,7 @@ export class DashboardItemSensorEditComponent extends SecurityBaseComponent impl
       configuration_threshold_high_color: [configuration?.thresholdHighColor],
     });
 
-    // Fetch possible device measurements to be used in Lat/Lon settings.
+    // Fetch possible device measurements.
     this.settingsService.findMeasurementNames().subscribe({
       next: next => {
         this.allUniqueMeasurements = next;
@@ -104,7 +104,7 @@ export class DashboardItemSensorEditComponent extends SecurityBaseComponent impl
         }
       }
     });
-    
+
     this.isFormDisabled().subscribe(disabled => disabled && this.form.disable());
   }
 

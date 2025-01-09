@@ -103,8 +103,7 @@
                                     [item]="item" [index]="i"/>
           <app-dashboard-item-device-map *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.DEVICE_MAP"
                                          [item]="item" [index]="i"/>
-          <app-dashboard-item-sensor-icon
-            *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.SENSOR_ICON"
+          <app-dashboard-item-sensor-icon *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.SENSOR_ICON"
             [item]="item" [index]="i"/>
         </div>
       </ngx-masonry>
