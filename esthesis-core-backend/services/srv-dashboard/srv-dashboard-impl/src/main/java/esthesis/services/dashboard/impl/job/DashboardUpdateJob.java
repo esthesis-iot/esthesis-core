@@ -13,8 +13,12 @@ import esthesis.services.dashboard.impl.job.helper.CampaignsUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DeviceMapUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DevicesLastSeenUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DevicesLatestUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.DevicesStatusUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.NotesUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.SecurityStatsUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.SensorIconUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.SensorUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.TitleUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.UpdateJobHelper;
 import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseBroadcaster;
@@ -109,31 +113,26 @@ public class DashboardUpdateJob {
 			dashboardId);
 		dashboardEntity.getItems().stream().filter(DashboardItemDTO::isEnabled).forEach(item -> {
 			switch (item.getType()) {
-				case AUDIT:
-					CompletableFuture.runAsync(
-						() -> broadcast(((AuditUpdateJobHelper) helpers.get(AuditUpdateJobHelper.class))
-							.refresh(dashboardEntity, item), item.getId()), threadPool);
-					break;
-				case SENSOR:
-					CompletableFuture.runAsync(
-						() -> broadcast(((SensorUpdateJobHelper) helpers.get(SensorUpdateJobHelper.class))
-							.refresh(dashboardEntity, item), item.getId()), threadPool);
-					break;
-				case SENSOR_ICON:
-					CompletableFuture.runAsync(
-						() -> broadcast(
-							((SensorIconUpdateJobHelper) helpers.get(SensorIconUpdateJobHelper.class))
-								.refresh(dashboardEntity, item), item.getId()), threadPool);
-					break;
 				case ABOUT:
 					CompletableFuture.runAsync(
 						() -> broadcast(((AboutUpdateJobHelper) helpers.get(AboutUpdateJobHelper.class))
+							.refresh(dashboardEntity, item), item.getId()), threadPool);
+					break;
+				case AUDIT:
+					CompletableFuture.runAsync(
+						() -> broadcast(((AuditUpdateJobHelper) helpers.get(AuditUpdateJobHelper.class))
 							.refresh(dashboardEntity, item), item.getId()), threadPool);
 					break;
 				case CAMPAIGNS:
 					CompletableFuture.runAsync(
 						() -> broadcast(((CampaignsUpdateJobHelper) helpers.get(CampaignsUpdateJobHelper.class))
 							.refresh(dashboardEntity, item), item.getId()), threadPool);
+					break;
+				case DEVICE_MAP:
+					CompletableFuture.runAsync(
+						() -> broadcast(
+							((DeviceMapUpdateJobHelper) helpers.get(DeviceMapUpdateJobHelper.class))
+								.refresh(dashboardEntity, item), item.getId()), threadPool);
 					break;
 				case DEVICES_LAST_SEEN:
 					CompletableFuture.runAsync(
@@ -147,10 +146,39 @@ public class DashboardUpdateJob {
 							((DevicesLatestUpdateJobHelper) helpers.get(DevicesLatestUpdateJobHelper.class))
 								.refresh(dashboardEntity, item), item.getId()), threadPool);
 					break;
-				case DEVICE_MAP:
+				case DEVICES_STATUS:
 					CompletableFuture.runAsync(
 						() -> broadcast(
-							((DeviceMapUpdateJobHelper) helpers.get(DeviceMapUpdateJobHelper.class))
+							((DevicesStatusUpdateJobHelper) helpers.get(DevicesStatusUpdateJobHelper.class))
+								.refresh(dashboardEntity, item), item.getId()), threadPool);
+					break;
+				case NOTES:
+					CompletableFuture.runAsync(
+						() -> broadcast(
+							((NotesUpdateJobHelper) helpers.get(NotesUpdateJobHelper.class))
+								.refresh(dashboardEntity, item), item.getId()), threadPool);
+					break;
+				case SECURITY_STATS:
+					CompletableFuture.runAsync(
+						() -> broadcast(
+							((SecurityStatsUpdateJobHelper) helpers.get(SecurityStatsUpdateJobHelper.class))
+								.refresh(dashboardEntity, item), item.getId()), threadPool);
+					break;
+				case SENSOR:
+					CompletableFuture.runAsync(
+						() -> broadcast(((SensorUpdateJobHelper) helpers.get(SensorUpdateJobHelper.class))
+							.refresh(dashboardEntity, item), item.getId()), threadPool);
+					break;
+				case SENSOR_ICON:
+					CompletableFuture.runAsync(
+						() -> broadcast(
+							((SensorIconUpdateJobHelper) helpers.get(SensorIconUpdateJobHelper.class))
+								.refresh(dashboardEntity, item), item.getId()), threadPool);
+					break;
+				case TITLE:
+					CompletableFuture.runAsync(
+						() -> broadcast(
+							((TitleUpdateJobHelper) helpers.get(TitleUpdateJobHelper.class))
 								.refresh(dashboardEntity, item), item.getId()), threadPool);
 					break;
 				default:

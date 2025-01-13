@@ -48,7 +48,8 @@
                 <!-- Common template for the internal content -->
                 <ng-template #commonTemplate let-dash>
                   <fa-icon icon="home" [fixedWidth]="true" *ngIf="dash.home"></fa-icon>
-                  <div [ngClass]="{'ml-6': !dash.home, 'text-accent': dash.id === selectedDashboard.id}">
+                  <div
+                    [ngClass]="{'ml-6': !dash.home, 'text-accent': dash.id === selectedDashboard.id}">
                     {{ dash.name }}
                   </div>
                   <fa-icon icon="share-nodes" *ngIf="dash.shared"></fa-icon>
@@ -77,34 +78,22 @@
              *ngFor="let item of selectedDashboard.items | filterBy: {enabled: true}; index as i"
              [ngSwitch]="item.type"
              [ngStyle]="{'width.px': item.columns * appConstants.DASHBOARD.DEFAULTS.COLUMN_WIDTH}">
-          <app-dashboard-item-sensor *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.SENSOR"
-                                     [item]="item" [index]="i"/>
-          <app-dashboard-item-security-stats
-            *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.SECURITY_STATS"
-            [item]="item" [index]="i"/>
-          <app-dashboard-item-devices-status
-            *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.DEVICES_STATUS"
-            [item]="item" [index]="i"/>
-          <app-dashboard-item-devices-latest
-            *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.DEVICES_LATEST"
-            [item]="item" [index]="i"/>
-          <app-dashboard-item-about *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.ABOUT"
-                                    [item]="item" [index]="i"/>
-          <app-dashboard-item-campaigns *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.CAMPAIGNS"
-                                        [item]="item" [index]="i"/>
-          <app-dashboard-item-notes *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.NOTES"
-                                    [item]="item" [index]="i"/>
-          <app-dashboard-item-title *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.TITLE"
-                                    [item]="item" [index]="i"/>
-          <app-dashboard-item-devices-last-seen
-            *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.DEVICES_LAST_SEEN"
-            [item]="item" [index]="i"/>
-          <app-dashboard-item-audit *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.AUDIT"
-                                    [item]="item" [index]="i"/>
-          <app-dashboard-item-device-map *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.DEVICE_MAP"
-                                         [item]="item" [index]="i"/>
-          <app-dashboard-item-sensor-icon *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.SENSOR_ICON"
-            [item]="item" [index]="i"/>
+
+          <!-- @formatter:off -->
+          <app-dashboard-item-about               *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.ABOUT" [item]="item" [index]="i"/>
+          <app-dashboard-item-audit               *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.AUDIT" [item]="item" [index]="i"/>
+          <app-dashboard-item-campaigns           *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.CAMPAIGNS" [item]="item" [index]="i"/>
+          <app-dashboard-item-device-map          *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.DEVICE_MAP" [item]="item" [index]="i"/>
+          <app-dashboard-item-devices-last-seen   *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.DEVICES_LAST_SEEN" [item]="item" [index]="i"/>
+          <app-dashboard-item-devices-latest      *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.DEVICES_LATEST" [item]="item" [index]="i"/>
+          <app-dashboard-item-devices-status      *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.DEVICES_STATUS" [item]="item" [index]="i"/>
+          <app-dashboard-item-sensor              *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.SENSOR" [item]="item" [index]="i"/>
+          <app-dashboard-item-sensor-icon         *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.SENSOR_ICON" [item]="item" [index]="i"/>
+          <app-dashboard-item-title               *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.TITLE" [item]="item" [index]="i"/>
+
+          <app-dashboard-item-security-stats      *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.SECURITY_STATS" [item]="item" [index]="i"/>
+          <app-dashboard-item-notes               *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.NOTES" [item]="item" [index]="i"/>
+          <!-- @formatter:on -->
         </div>
       </ngx-masonry>
     </div>

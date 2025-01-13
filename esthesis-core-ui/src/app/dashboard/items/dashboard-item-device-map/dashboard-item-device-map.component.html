@@ -3,8 +3,9 @@
     <div class="stat-title">{{ item.title }}</div>
   </div>
   <div *ngIf="item.subtitle" class="stat-desc">{{ item.subtitle }}</div>
+  <div *ngIf="!mapVisible" class="absolute top-[50px] w-[calc(100%-40px)] skeleton" [ngStyle]="{height: config?.height + 'px'}"></div>
   <div [ngClass]="mapVisible ? '' : 'invisible'">
-    <div class="mt-2" [ngStyle]="{height: config?.height + 'px'}"
+    <div class="mt-2 rounded" [ngStyle]="{height: config?.height + 'px'}"
          leaflet
          [leafletOptions]="mapOptions"
          [leafletLayers]="mapLayers"

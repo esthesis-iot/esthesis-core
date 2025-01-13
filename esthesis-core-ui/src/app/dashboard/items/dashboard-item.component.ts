@@ -22,7 +22,7 @@ export class DashboardItemComponent<T, K = unknown> implements OnInit, OnDestroy
   // The configuration options of the component.
   config?: K;
 
-  // The subscription to receive dashboard updates.
+  // The subscription to receive notifications on dashboard updates.
   emitterSub?: Subscription;
 
   // An emitter to notify child components of updates.

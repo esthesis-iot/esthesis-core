@@ -8,6 +8,7 @@ import esthesis.service.dashboard.entity.DashboardEntity;
 import esthesis.service.device.dto.DevicesLastSeenStatsDTO;
 import esthesis.service.device.resource.DeviceSystemResource;
 import esthesis.services.dashboard.impl.dto.update.DashboardUpdateDevicesLastSeen;
+import esthesis.services.dashboard.impl.dto.update.DashboardUpdateDevicesLastSeen.DashboardUpdateDevicesLastSeenBuilder;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -25,20 +26,21 @@ public class DevicesLastSeenUpdateJobHelper extends
 
 	public DashboardUpdateDevicesLastSeen refresh(DashboardEntity dashboardEntity,
 		DashboardItemDTO item) {
-		
+		DashboardUpdateDevicesLastSeenBuilder<?, ?> replyBuilder = DashboardUpdateDevicesLastSeen.builder()
+			.id(item.getId())
+			.type(Type.DEVICES_LAST_SEEN);
+
 		try {
 			// Security checks.
 			if (!checkSecurity(dashboardEntity, Category.DEVICE, Operation.READ, "")) {
-				return null;
+				return replyBuilder.isSecurityError(true).isError(true).build();
 			}
 
 			// Get data.
 			DevicesLastSeenStatsDTO deviceStats = deviceSystemResource.getDeviceStats();
 
 			// Return update.
-			return DashboardUpdateDevicesLastSeen.builder()
-				.id(item.getId())
-				.type(Type.DEVICES_LAST_SEEN)
+			return replyBuilder
 				.lastMonth(deviceStats.getSeenLastMonth())
 				.lastWeek(deviceStats.getSeenLastWeek())
 				.lastDay(deviceStats.getSeenLastDay())
@@ -46,9 +48,9 @@ public class DevicesLastSeenUpdateJobHelper extends
 				.lastMinute(deviceStats.getSeenLastMinute())
 				.build();
 		} catch (Exception e) {
-			log.error("Error parsing configuration for '{}' item with 'id' {}",
-				Type.DEVICES_LATEST, item.getId(), e);
-			return null;
+			log.error("Error processing '{}' for dashboard item '{}'.", Type.DEVICES_LAST_SEEN,
+				item.getId(), e);
+			return replyBuilder.isError(true).build();
 		}
 	}
 }

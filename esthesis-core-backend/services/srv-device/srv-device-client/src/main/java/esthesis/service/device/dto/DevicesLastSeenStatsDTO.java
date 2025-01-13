@@ -1,18 +1,11 @@
 package esthesis.service.device.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class DevicesLastSeenStatsDTO {
-
-	// Total devices.
-	private long total;
-	// Total devices with status disabled.
-	private long disabled;
-	// Total devices with status preregistered.
-	private long preregistered;
-	// Total devices with status registered.
-	private long registered;
+@EqualsAndHashCode(callSuper = true)
+public class DevicesLastSeenStatsDTO extends DevicesTotalsStatsDTO {
 
 	// The number of devices that sent a successful ping last month.
 	private long seenLastMonth;

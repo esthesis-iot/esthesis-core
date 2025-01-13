@@ -1,41 +1,29 @@
 <div class="flex flex-col bg-base-100 mt-1 ml-1 mr-1 p-4 rounded-xl">
   <div class="flex flex-row justify-between">
     <div class="stat-title">{{ item.title }}</div>
-    <div>
-<!--      <i class="text-accent  fa-solid {{ item.icon }}"></i>-->
-    </div>
   </div>
   <div *ngIf="item.subtitle" class="stat-desc">{{ item.subtitle }}</div>
-  <div class="flex flex-row mt-2 justify-between">
-    <div class="flex flex-col">
-      <div class=" text-center text-base-content/50">Users</div>
-      <fa-icon class="mt-1 mb-1 text-center text-lg text-primary" icon="user"></fa-icon>
-      <div class="text-2xl text-center">123</div>
+
+  <div class="stats" [ngClass]="config?.orientation == 'vertical' ? 'stats-vertical h-[400px]' : 'stats-horizontal h-[90px]'">
+    <div class="stat">
+      <div class="stat-title">Users</div>
+      <div class="stat-value" [ngClass]="!lastMessage ? 'skeleton w-15 h-8 mt-2' : ''">{{lastMessage?.users}}</div>
     </div>
-    <div class="mt-2 mb-2 bg-base-content/10" style="width: 2px"></div>
-    <div class="flex flex-col">
-      <div class=" text-center text-base-content/50">Groups</div>
-      <fa-icon class="mt-1 mb-1 text-center text-lg text-primary" icon="users"></fa-icon>
-      <div class="text-2xl text-center">123
-      </div>
+    <div class="stat">
+      <div class="stat-title">Groups</div>
+      <div class="stat-value" [ngClass]="!lastMessage ? 'skeleton w-15 h-8 mt-2' : ''">{{ lastMessage?.groups }}</div>
     </div>
-    <div class="mt-2 mb-2 bg-base-content/10" style="width: 2px"></div>
-    <div class="flex flex-col">
-      <div class=" text-center text-base-content/50">Roles</div>
-      <fa-icon class="mt-1 mb-1 text-center text-lg text-primary" icon="users-between-lines"></fa-icon>
-      <div class="text-2xl text-center">123</div>
+    <div class="stat">
+      <div class="stat-title">Roles</div>
+      <div class="stat-value" [ngClass]="!lastMessage ? 'skeleton w-15 h-8 mt-2' : ''">{{ lastMessage?.roles }}</div>
     </div>
-    <div class="mt-2 mb-2 bg-base-content/10" style="width: 2px"></div>
-    <div class="flex flex-col">
-      <div class=" text-center text-base-content/50">Policies</div>
-      <fa-icon class="mt-1 mb-1 text-center text-lg text-primary" icon="building-shield"></fa-icon>
-      <div class="text-2xl text-center">123</div>
+    <div class="stat">
+      <div class="stat-title">Policies</div>
+      <div class="stat-value" [ngClass]="!lastMessage ? 'skeleton w-15 h-8 mt-2' : ''">{{ lastMessage?.policies }}</div>
     </div>
-    <div class="mt-2 mb-2 bg-base-content/10" style="width: 2px"></div>
-    <div class="flex flex-col">
-      <div class=" text-center text-base-content/50">Audits</div>
-      <fa-icon class="mt-1 mb-1 text-center text-lg text-primary" icon="xmarks-lines"></fa-icon>
-      <div class="text-2xl text-center">123222</div>
+    <div class="stat">
+      <div class="stat-title">Audits</div>
+      <div class="stat-value" [ngClass]="!lastMessage ? 'skeleton w-15 h-8 mt-2' : ''">{{ lastMessage?.audits }}</div>
     </div>
   </div>
 </div>

@@ -9,7 +9,7 @@ import {AppConstants} from "../../app.constants";
   templateUrl: "./dashboard-item-new.component.html"
 })
 export class DashboardItemNewComponent extends SecurityBaseComponent implements OnInit {
-  // Dashboard Id.
+  // Dashboard ID.
   dashboardId!: string;
 
   // List of dashboard items.
@@ -58,6 +58,11 @@ export class DashboardItemNewComponent extends SecurityBaseComponent implements 
         available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.CAMPAIGNS)
       },
       {
+        name: "Date/Time", description: "Displays date and time.", icon: "about.png"
+        , type: this.appConstants.DASHBOARD.ITEM.TYPE.DATETIME,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.DATETIME)
+      },
+      {
         name: "Map", description: "Displays a map with device coordinates.", icon: "about.png",
         type: this.appConstants.DASHBOARD.ITEM.TYPE.DEVICE_MAP,
         available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.DEVICE_MAP)
@@ -76,6 +81,11 @@ export class DashboardItemNewComponent extends SecurityBaseComponent implements 
         name: "Status", description: "Displays statistics on devices status.", icon: "about.png",
         type: this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_STATUS,
         available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_STATUS)
+      },
+      {
+        name: "Image", description: "Displays an image.", icon: "about.png",
+        type: this.appConstants.DASHBOARD.ITEM.TYPE.IMAGE,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.IMAGE)
       },
       {
         name: "Notes", description: "Displays user notes.", icon: "about.png",

@@ -2,6 +2,7 @@ package esthesis.service.security.resource;
 
 import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.Security.Operation;
+import esthesis.service.security.dto.StatsDTO;
 import io.quarkus.oidc.client.filter.OidcClientFilter;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -19,5 +20,9 @@ public interface SecuritySystemResource {
 	boolean isPermitted(@QueryParam("category") AppConstants.Security.Category category,
 		@QueryParam("operation") Operation operation,
 		@QueryParam("resourceId") String resourceId, @QueryParam("userId") ObjectId userId);
+
+	@GET
+	@Path("/v1/stats")
+	StatsDTO stats();
 
 }

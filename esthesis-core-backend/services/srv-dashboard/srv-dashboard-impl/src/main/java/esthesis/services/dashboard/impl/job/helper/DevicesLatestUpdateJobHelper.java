@@ -9,6 +9,7 @@ import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
 import esthesis.services.dashboard.impl.dto.config.DashboardItemDevicesLatestConfiguration;
 import esthesis.services.dashboard.impl.dto.update.DashboardUpdateDevicesLatest;
+import esthesis.services.dashboard.impl.dto.update.DashboardUpdateDevicesLatest.DashboardUpdateDevicesLatestBuilder;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.util.List;
@@ -18,8 +19,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @ApplicationScoped
-public class DevicesLatestUpdateJobHelper extends
-	UpdateJobHelper<DashboardUpdateDevicesLatest> {
+public class DevicesLatestUpdateJobHelper extends UpdateJobHelper<DashboardUpdateDevicesLatest> {
 
 	@Inject
 	@RestClient
@@ -27,22 +27,23 @@ public class DevicesLatestUpdateJobHelper extends
 
 	public DashboardUpdateDevicesLatest refresh(DashboardEntity dashboardEntity,
 		DashboardItemDTO item) {
+		DashboardUpdateDevicesLatestBuilder<?, ?> replyBuilder = DashboardUpdateDevicesLatest.builder()
+			.id(item.getId())
+			.type(Type.DEVICES_LAST_SEEN);
 
 		try {
 			// Get item configuration & security checks.
 			DashboardItemDevicesLatestConfiguration config = getConfig(
 				DashboardItemDevicesLatestConfiguration.class, item);
 			if (!checkSecurity(dashboardEntity, Category.DEVICE, Operation.READ, "")) {
-				return null;
+				return replyBuilder.isSecurityError(true).isError(true).build();
 			}
 
 			// Get data.
 			List<DeviceEntity> latestDevices = deviceSystemResource.getLatestDevices(config.getEntries());
 
 			// Return update.
-			return DashboardUpdateDevicesLatest.builder()
-				.id(item.getId())
-				.type(Type.DEVICES_LAST_SEEN)
+			return replyBuilder
 				.devices(latestDevices.stream()
 					.map(device -> DashboardUpdateDevicesLatest.DTO.builder()
 						.hardwareId(device.getHardwareId())
@@ -52,9 +53,9 @@ public class DevicesLatestUpdateJobHelper extends
 					.toList())
 				.build();
 		} catch (Exception e) {
-			log.error("Error parsing configuration for '{}' item with 'id' {}",
-				Type.DEVICES_LATEST, item.getId(), e);
-			return null;
+			log.error("Error processing '{}' for dashboard item '{}'.", Type.DEVICES_LATEST, item.getId(),
+				e);
+			return replyBuilder.isError(true).build();
 		}
 	}
 }

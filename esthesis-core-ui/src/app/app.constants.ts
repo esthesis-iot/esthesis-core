@@ -256,24 +256,43 @@ export const AppConstants = {
         DEVICE_MAP: 4,
         DEVICES_LAST_SEEN: 3,
         DEVICES_LATEST: 5,
-        DEVICES_STATUS: 2,
+        DEVICES_STATUS: 8,
         IMAGE: 2,
-        NOTES: 2,
+        NOTES: 4,
         SECURITY_STATS: 2,
         SENSOR: 2,
         SENSOR_ICON: 2,
-        TITLE: 2
+        TITLE: 4
       },
       DEFAULTS: {
+        ABOUT: {},
         AUDIT: {
           entries: 5
         },
-        ABOUT: {},
-        SENSOR: {},
+        CAMPAIGNS: {},
+        DATETIME: {},
+        DEVICE_MAP: {
+          zoom: 2,
+          height: 200,
+          hardwareIds: []
+        },
+        DEVICES_LAST_SEEN: {},
         DEVICES_LATEST: {
           entries: 5
         },
-        DEVICES_MAP: {}
+        DEVICES_STATUS: {
+          orientation: "horizontal"
+        },
+        IMAGE: {},
+        NOTES: {
+          notes: "esthesis IoT"
+        },
+        SECURITY_STATS: {},
+        SENSOR: {},
+        SENSOR_ICON: {},
+        TITLE: {
+          title: "esthesis IoT"
+        }
       }
     }
   },
@@ -283,8 +302,14 @@ export const AppConstants = {
     iconUrl: "assets/marker-icon.png",
     iconRetinaUrl: "assets/marker-icon-2x.png",
     shadowUrl: "assets/marker-shadow.png"
-  })
+  }),
 
+  // Get a value by key name.
+  getValue<T = any>(keyPath: string): T | undefined {
+    return keyPath
+    .split('.')
+    .reduce((obj: any, key) => obj?.[key], AppConstants);
+  }
 
 };
 

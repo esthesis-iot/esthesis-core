@@ -51,4 +51,10 @@ public class AuditService extends BaseService<AuditEntity> {
 
 		return super.save(auditEntity);
 	}
+
+	@Override
+	@ErnPermission(category = AUDIT, operation = READ)
+	public long countAll() {
+		return super.countAll();
+	}
 }

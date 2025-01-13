@@ -1,8 +1,9 @@
 package esthesis.services.dashboard.impl.job.helper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import esthesis.core.common.AppConstants.Dashboard.Type;
 import esthesis.core.common.AppConstants.NamedSetting;
+import esthesis.core.common.AppConstants.Security.Category;
+import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.service.dashboard.dto.DashboardItemDTO;
 import esthesis.service.dashboard.entity.DashboardEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
@@ -47,46 +48,45 @@ public class DeviceMapUpdateJobHelper extends UpdateJobHelper<DashboardUpdateDev
 	}
 
 	public DashboardUpdateDeviceMap refresh(DashboardEntity dashboardEntity, DashboardItemDTO item) {
+		DashboardUpdateDeviceMapBuilder<?, ?> replyBuilder =
+			DashboardUpdateDeviceMap.builder()
+				.id(item.getId())
+				.type(Type.DEVICE_MAP);
+
 		try {
-			// Get item configuration & security checks.
+			// Get item configuration.
 			DashboardItemDeviceMapConfiguration config =
 				getConfig(DashboardItemDeviceMapConfiguration.class, item);
 			if (config.getHardwareIds().length == 0 && config.getTags().length == 0) {
-				return null;
+				return replyBuilder.build();
 			}
 
 			// Find the hardware IDs to be displayed on the map.
 			List<String> hardwareIds = new ArrayList<>(List.of(config.getHardwareIds()));
 			if (config.getTags() != null && config.getTags().length > 0) {
-				hardwareIds.addAll(
-					deviceSystemResource.findByTagNames(String.join(",", config.getTags())));
+				hardwareIds.addAll(deviceSystemResource.findByTagIds(String.join(",", config.getTags())));
 			}
 			hardwareIds = hardwareIds.stream().distinct().collect(Collectors.toList());
 
-			//TODO
-//			if (!checkSecurity(dashboardEntity, Category.DEVICE, Operation.READ,
-//				config.getHardwareId())) {
-//				return null;
-//			}
-
 			// Get coordinates and return update.
-			DashboardUpdateDeviceMapBuilder<?, ?> builder = DashboardUpdateDeviceMap.builder()
-				.id(item.getId())
-				.type(Type.DEVICE_MAP);
-
 			hardwareIds.forEach(hardwareId -> {
-				String lat = redisUtils.getFromHash(KeyType.ESTHESIS_DM, hardwareId, latMeasurement);
-				String lon = redisUtils.getFromHash(KeyType.ESTHESIS_DM, hardwareId, lonMeasurement);
-				if (StringUtils.isNotBlank(lat) && StringUtils.isNotBlank(lon)) {
-					builder.coordinate(String.join(",", hardwareId, lat, lon));
+				if (checkSecurity(dashboardEntity, Category.DEVICE, Operation.READ, hardwareId)) {
+					String lat = redisUtils.getFromHash(KeyType.ESTHESIS_DM, hardwareId, latMeasurement);
+					String lon = redisUtils.getFromHash(KeyType.ESTHESIS_DM, hardwareId, lonMeasurement);
+					if (StringUtils.isNotBlank(lat) && StringUtils.isNotBlank(lon)) {
+						replyBuilder.coordinate(String.join(",", hardwareId, lat, lon));
+					}
+				} else {
+					// Although the caller would not know for which hardware ID the security check
+					// failed, we should indicate that a security error occurred.
+					replyBuilder.isSecurityError(true);
 				}
 			});
 
-			return builder.build();
-		} catch (JsonProcessingException e) {
-			log.error("Error parsing configuration for '{}' item with id '{}'.",
-				Type.SENSOR, item.getId(), e);
-			return null;
+			return replyBuilder.build();
+		} catch (Exception e) {
+			log.error("Error processing '{}' for dashboard item '{}'.", Type.DEVICE_MAP, item.getId(), e);
+			return replyBuilder.isError(true).build();
 		}
 	}
 }

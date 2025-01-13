@@ -17,4 +17,8 @@ public interface AuditSystemResource {
 	@Path("/v1/system/find")
 	Page<AuditEntity> find(@QueryParam("entries") int entries);
 
+	@GET
+	@Path("/v1/system/count")
+	Long countAll();
+	
 }

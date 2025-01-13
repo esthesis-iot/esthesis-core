@@ -127,6 +127,9 @@ import {
 } from "@angular/cdk/table";
 import {MatSort, MatSortHeader} from "@angular/material/sort";
 import {LeafletModule} from "@bluehalo/ngx-leaflet";
+import {
+  DashboardItemTitleEditComponent
+} from "./items/dashboard-item-title-edit/dashboard-item-title-edit.component";
 
 // @ts-ignore
 @NgModule({
@@ -140,6 +143,7 @@ import {LeafletModule} from "@bluehalo/ngx-leaflet";
     DashboardItemCampaignsComponent,
     DashboardItemAboutComponent,
     DashboardItemTitleComponent,
+    DashboardItemTitleEditComponent,
     DashboardItemNotesComponent,
     DashboardItemDevicesLastSeenComponent,
     DashboardItemDeviceMapComponent,

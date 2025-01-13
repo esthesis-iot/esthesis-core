@@ -4,6 +4,7 @@ import esthesis.common.exception.QDoesNotExistException;
 import esthesis.core.common.AppConstants;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
 import esthesis.service.device.dto.DevicesLastSeenStatsDTO;
+import esthesis.service.device.dto.DevicesTotalsStatsDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
@@ -19,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.operator.OperatorCreationException;
 
 @RequiredArgsConstructor
@@ -112,6 +112,14 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	}
 
 	@Override
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
+	public DevicesTotalsStatsDTO getDeviceTotalsStats() {
+		return deviceService.getDeviceTotals();
+	}
+
+
+	@Override
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public List<DeviceEntity> getLatestDevices(int limit) {
 		return deviceService.getLatestDevices(limit);
 	}
@@ -123,13 +131,17 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	 * @return a list of hardware IDs.
 	 */
 	@Override
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public List<String> findByTagNames(String tags) {
-		if (StringUtils.isNotEmpty(tags)) {
-			return deviceTagService.findByTagName(List.of(tags.split(",")), false).stream()
-				.map(DeviceEntity::getHardwareId).toList();
-		} else {
-			return List.of();
-		}
+		return deviceTagService.findByTagName(List.of(tags.split(",")), false).stream()
+			.map(DeviceEntity::getHardwareId).toList();
+	}
+
+	@Override
+	@RolesAllowed(AppConstants.ROLE_SYSTEM)
+	public List<String> findByTagIds(String tags) {
+		return deviceTagService.findByTagId(List.of(tags.split(","))).stream()
+			.map(DeviceEntity::getHardwareId).toList();
 	}
 
 }

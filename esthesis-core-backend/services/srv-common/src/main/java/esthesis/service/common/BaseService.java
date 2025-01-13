@@ -96,6 +96,10 @@ public abstract class BaseService<D extends BaseEntity> {
 		return repository.count(column + " = ?1", value);
 	}
 
+	protected long countAll() {
+		return repository.count();
+	}
+
 	protected Page<D> find(Pageable pageable) {
 		return find(pageable, false);
 	}

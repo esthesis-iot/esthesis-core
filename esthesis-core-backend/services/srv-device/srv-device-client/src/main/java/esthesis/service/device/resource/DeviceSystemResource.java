@@ -2,6 +2,7 @@ package esthesis.service.device.resource;
 
 import esthesis.service.device.dto.DeviceRegistrationDTO;
 import esthesis.service.device.dto.DevicesLastSeenStatsDTO;
+import esthesis.service.device.dto.DevicesTotalsStatsDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import io.quarkus.oidc.client.filter.OidcClientFilter;
@@ -67,10 +68,18 @@ public interface DeviceSystemResource {
 	DevicesLastSeenStatsDTO getDeviceStats();
 
 	@GET
+	@Path("/v1/system/device-totals")
+	DevicesTotalsStatsDTO getDeviceTotalsStats();
+
+	@GET
 	@Path("/v1/system/device-latest")
 	List<DeviceEntity> getLatestDevices(int limit);
 
 	@GET
 	@Path("/v1/find/by-tag-names")
-	List<String> findByTagNames(@QueryParam("tag") String tags);
+	List<String> findByTagNames(@QueryParam("tags") String tags);
+
+	@GET
+	@Path("/v1/find/by-tag-ids")
+	List<String> findByTagIds(@QueryParam("tags") String tags);
 }

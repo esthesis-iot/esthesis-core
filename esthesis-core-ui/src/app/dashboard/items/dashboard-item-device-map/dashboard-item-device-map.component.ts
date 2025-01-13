@@ -22,8 +22,8 @@ export class DashboardItemDeviceMapComponent
     layers: [
       tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
     ],
-    zoom: 3,
-    center: latLng(7.96950810378, 23.72361367489),
+    zoom: 1,
+    center: latLng(30, 0),
   };
   mapLayers: Layer[] = [];
   // A subscription to receive notification from the superclass when lastMessage is updated.
@@ -37,24 +37,27 @@ export class DashboardItemDeviceMapComponent
     super.ngOnInit();
     this.lastMessageSubscription = this.lastMessageEmitter.subscribe(lastMessage => {
       this.mapVisible = true;
-      // Add points to the map.
-      this.mapLayers = [];
-      let lat!: number;
-      let lon!: number;
-      lastMessage.coordinates.forEach(coordinate => {
-        lat = Number(coordinate.split(",")[1]);
-        lon = Number(coordinate.split(",")[2]);
-        this.mapLayers.push(
-          marker([lat, lon], {icon: AppConstants.MAP_DEFAULT_ICON})
-            .bindTooltip(coordinate.split(",")[0])
-        );
-      });
 
-      if (!this.mapInteracted) {
-        if (this.config?.mapLon && this.config?.mapLat) {
-          this.map.setView(latLng(this.config.mapLat, this.config.mapLon), this.config.zoom);
-        } else {
-          this.map.setView(latLng(lat, lon), this.config!.zoom);
+      // Add points to the map.
+      if (lastMessage.coordinates.length > 0) {
+        this.mapLayers = [];
+        let lat!: number;
+        let lon!: number;
+        lastMessage.coordinates.forEach(coordinate => {
+          lat = Number(coordinate.split(",")[1]);
+          lon = Number(coordinate.split(",")[2]);
+          this.mapLayers.push(
+            marker([lat, lon], {icon: AppConstants.MAP_DEFAULT_ICON})
+            .bindTooltip(coordinate.split(",")[0])
+          );
+        });
+
+        if (!this.mapInteracted) {
+          if (this.config?.mapLon && this.config?.mapLat) {
+            this.map.setView(latLng(this.config.mapLat, this.config.mapLon), this.config.zoom);
+          } else {
+            this.map.setView(latLng(lat, lon), this.config!.zoom);
+          }
         }
       }
     })

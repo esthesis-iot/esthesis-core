@@ -15,14 +15,16 @@ component.
    should be assigned to your component, and the `DEFAULTS` is the default configuration for your component. You need to
    define all three properties. If your component should only be included in a dashboard once, add it to the
    `SINGLE_INSTANCE_ITEMS` array.
-2. Update `dashboard-item-new.component.ts`, adding your component to the `itemsList` array in `ngOnInit`.
-3. Create a DTO to capture your component's configuration under `dto/configuration`, the DTO should be named
-   `dashboard-item-<type>-configuration-dto.ts`. 
+2. Update `dashboard-item-new.component.ts`, adding your component to the `itemsList` array in `ngOnInit()`.
+3. If your component requires custom configuration options, create a DTO to capture your component's 
+   configuration under `dto/configuration`. The DTO should be named `dashboard-item-<type>-configuration-dto.ts`. 
 4. Create 'view' and 'edit' Angular components for your component under `dashboard/items`. The 'view' component should
    be named `dashboard-item-<type>.component.ts` and the 'edit' component should be named
    `dashboard-item-<type>-edit.component.ts`.
-5. To receive dashboard updates you need to have your component subscribing to the `dashboardEmitter` emitter of
-   `DashboardService`. Check existing components for examples on how to do this.
+5. The value targeting your component will be available in `lastMessage` variables. If you want your component to also 
+   receive real-time notification when that value changes (e.g. to perform a manual action 'on change') you can have 
+   your component subscribing to the `lastMessageEmitter` emitter. Check existing components for examples on how 
+   to do this.
 6. Update `dashboard-view.component.html` to include your component in the `ngxMasonryItem` div.
 
 ### Backend

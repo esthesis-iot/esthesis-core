@@ -8,6 +8,7 @@ import esthesis.service.about.resource.AboutSystemResource;
 import esthesis.service.dashboard.dto.DashboardItemDTO;
 import esthesis.service.dashboard.entity.DashboardEntity;
 import esthesis.services.dashboard.impl.dto.update.DashboardUpdateAbout;
+import esthesis.services.dashboard.impl.dto.update.DashboardUpdateAbout.DashboardUpdateAboutBuilder;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -23,29 +24,29 @@ public class AboutUpdateJobHelper extends UpdateJobHelper<DashboardUpdateAbout> 
 	AboutSystemResource aboutSystemResource;
 
 	public DashboardUpdateAbout refresh(DashboardEntity dashboardEntity, DashboardItemDTO item) {
+		DashboardUpdateAboutBuilder<?, ?> replyBuilder = DashboardUpdateAbout.builder()
+			.id(item.getId())
+			.type(Type.ABOUT);
 
 		try {
 			// Security checks.
 			if (!checkSecurity(dashboardEntity, Category.ABOUT, Operation.READ, "")) {
-				return null;
+				return replyBuilder.isError(true).isSecurityError(true).build();
 			}
 
 			// Get data.
 			AboutGeneralDTO generalInfo = aboutSystemResource.getGeneralInfo();
 
 			// Return update.
-			return DashboardUpdateAbout.builder()
-				.id(item.getId())
-				.type(Type.ABOUT)
+			return replyBuilder
 				.gitBuildTime(generalInfo.getGitBuildTime())
 				.gitCommitId(generalInfo.getGitCommitId())
 				.gitCommitIdAbbrev(generalInfo.getGitCommitIdAbbrev())
 				.gitBuildTime(generalInfo.getGitBuildTime())
 				.build();
 		} catch (Exception e) {
-			log.error("Error parsing configuration for '{}' item with 'id' {}",
-				Type.ABOUT, item.getId(), e);
-			return null;
+			log.error("Error processing '{}' for dashboard item '{}'.", Type.ABOUT, item.getId(), e);
+			return replyBuilder.isError(true).build();
 		}
 	}
 }

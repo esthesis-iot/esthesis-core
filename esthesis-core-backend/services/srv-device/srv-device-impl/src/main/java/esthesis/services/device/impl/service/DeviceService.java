@@ -18,6 +18,7 @@ import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.DeviceProfileDTO;
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
 import esthesis.service.device.dto.DevicesLastSeenStatsDTO;
+import esthesis.service.device.dto.DevicesTotalsStatsDTO;
 import esthesis.service.device.dto.GeolocationDTO;
 import esthesis.service.device.dto.ImportDataProcessingInstructionsDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
@@ -373,10 +374,12 @@ public class DeviceService extends BaseService<DeviceEntity> {
 
 	public DevicesLastSeenStatsDTO getDeviceStats() {
 		DevicesLastSeenStatsDTO devicesLastSeenStatsDTO = new DevicesLastSeenStatsDTO();
-		devicesLastSeenStatsDTO.setTotal(getAll().size());
-		devicesLastSeenStatsDTO.setDisabled(deviceRepository.countByStatus(Status.DISABLED));
-		devicesLastSeenStatsDTO.setPreregistered(deviceRepository.countByStatus(Status.PREREGISTERED));
-		devicesLastSeenStatsDTO.setRegistered(deviceRepository.countByStatus(Status.REGISTERED));
+
+		DevicesTotalsStatsDTO totalsDTO = getDeviceTotals();
+		devicesLastSeenStatsDTO.setTotal(totalsDTO.getTotal());
+		devicesLastSeenStatsDTO.setDisabled(totalsDTO.getDisabled());
+		devicesLastSeenStatsDTO.setPreregistered(totalsDTO.getPreregistered());
+		devicesLastSeenStatsDTO.setRegistered(totalsDTO.getRegistered());
 
 		devicesLastSeenStatsDTO.setSeenLastMonth(deviceRepository.countLastSeenAfter(
 			Instant.now().minus(Duration.ofDays(30))));
@@ -408,5 +411,15 @@ public class DeviceService extends BaseService<DeviceEntity> {
 			.findAll(Sort.descending("registeredOn"))
 			.page(io.quarkus.panache.common.Page.of(0, limit))
 			.list();
+	}
+
+	public DevicesTotalsStatsDTO getDeviceTotals() {
+		DevicesTotalsStatsDTO stats = new DevicesTotalsStatsDTO();
+		stats.setTotal(getAll().size());
+		stats.setDisabled(deviceRepository.countByStatus(Status.DISABLED));
+		stats.setPreregistered(deviceRepository.countByStatus(Status.PREREGISTERED));
+		stats.setRegistered(deviceRepository.countByStatus(Status.REGISTERED));
+
+		return stats;
 	}
 }

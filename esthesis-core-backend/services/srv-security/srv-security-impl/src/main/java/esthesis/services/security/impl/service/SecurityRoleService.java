@@ -3,6 +3,7 @@ package esthesis.services.security.impl.service;
 import static esthesis.core.common.AppConstants.Security.Category.SECURITY;
 import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
 import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
 import esthesis.service.common.BaseService;
@@ -47,5 +48,11 @@ public class SecurityRoleService extends BaseService<RoleEntity> {
 	@ErnPermission(category = SECURITY, operation = WRITE)
 	public RoleEntity saveUpdate(RoleEntity entity) {
 		return saveHandler(entity);
+	}
+
+	@Override
+	@ErnPermission(category = SECURITY, operation = READ)
+	public long countAll() {
+		return super.countAll();
 	}
 }

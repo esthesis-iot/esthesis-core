@@ -1,52 +1,15 @@
-import {Component, ViewChild} from "@angular/core";
-import {BaseChartDirective} from "ng2-charts";
-import {ChartConfiguration, ChartData} from "chart.js";
+import {Component} from "@angular/core";
 import {DashboardUpdateDevicesStatusDto} from "../../dto/updates/DashboardUpdateDevicesStatusDto";
 import {DashboardItemComponent} from "../dashboard-item.component";
+import {
+  DashboardItemDevicesStatusConfigurationDto
+} from "../../dto/configuration/dashboard-item-devices-status-configuration-dto";
 
 @Component({
-  selector: 'app-dashboard-item-devices-status',
-  templateUrl: './dashboard-item-devices-status.component.html'
+  selector: "app-dashboard-item-devices-status",
+  templateUrl: "./dashboard-item-devices-status.component.html"
 })
-export class DashboardItemDevicesStatusComponent extends DashboardItemComponent<DashboardUpdateDevicesStatusDto> {
-  sensorValue?: string;
-  @ViewChild(BaseChartDirective) chart: BaseChartDirective<'pie'> | undefined;
-
-  // constructor(private utilityService: UtilityService) {
-  //   super();
-  // }
-  //
-  // ngOnInit(): void {
-  //
-  // }
-
-  public chartOptions: ChartConfiguration<'pie'>['options'] = {
-    responsive: true,
-    maintainAspectRatio: false,
-    // events: [],
-    layout: {
-      padding: 0
-    },
-    plugins: {
-      legend: {
-        display: false,
-      }
-    },
-  };
-
-  public chartData: ChartData<'pie'> = {
-    labels: ['Disabled', 'Preregistered', 'Registered', 'Approval'],
-    datasets: [
-      {
-        data: [65, 59, 80, 81],
-        backgroundColor: [
-          this.utilityService.getTailwindColor('text-accent'),
-          this.utilityService.getTailwindColor('text-secondary'),
-          this.utilityService.getTailwindColor('text-primary'),
-          this.utilityService.getTailwindColor('text-base-content/20'),
-        ],
-      }
-    ],
-  };
-
+export class DashboardItemDevicesStatusComponent
+  extends DashboardItemComponent<DashboardUpdateDevicesStatusDto,
+    DashboardItemDevicesStatusConfigurationDto> {
 }

@@ -9,14 +9,19 @@ import esthesis.services.dashboard.impl.job.helper.CampaignsUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DeviceMapUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DevicesLastSeenUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DevicesLatestUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.DevicesStatusUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.NotesUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.SecurityStatsUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.SensorIconUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.SensorUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.TitleUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.UpdateJobHelper;
 import esthesis.services.dashboard.impl.service.DashboardService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseBroadcaster;
 import jakarta.ws.rs.sse.SseEventSink;
+import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,21 +42,30 @@ public class DashboardUpdateJobFactory {
 	private final DevicesLatestUpdateJobHelper devicesLatestUpdateJobHelper;
 	private final DevicesLastSeenUpdateJobHelper devicesLastSeenUpdateJobHelper;
 	private final DeviceMapUpdateJobHelper deviceMapUpdateJobHelper;
+	private final DevicesStatusUpdateJobHelper devicesStatusUpdateJobHelper;
+	private final NotesUpdateJobHelper notesUpdateJobHelper;
+	private final SecurityStatsUpdateJobHelper securityStatsUpdateJobHelper;
+	private final TitleUpdateJobHelper titleUpdateJobHelper;
 	private final DashboardService dashboardService;
 	private final Sse sse;
 	private final ObjectMapper objectMapper;
 
 	private Map<Class<? extends UpdateJobHelper<?>>, UpdateJobHelper<?>> getHelpers() {
-		return Map.of(
-			AuditUpdateJobHelper.class, auditUpdateJobHelper,
-			SensorUpdateJobHelper.class, sensorUpdateJobHelper,
-			SensorIconUpdateJobHelper.class, sensorIconUpdateJobHelper,
-			AboutUpdateJobHelper.class, aboutUpdateJobHelper,
-			CampaignsUpdateJobHelper.class, campaignsUpdateJobHelper,
-			DevicesLatestUpdateJobHelper.class, devicesLatestUpdateJobHelper,
-			DevicesLastSeenUpdateJobHelper.class, devicesLastSeenUpdateJobHelper,
-			DeviceMapUpdateJobHelper.class, deviceMapUpdateJobHelper
-		);
+		Map<Class<? extends UpdateJobHelper<?>>, UpdateJobHelper<?>> map = new HashMap<>();
+		map.put(AboutUpdateJobHelper.class, aboutUpdateJobHelper);
+		map.put(AuditUpdateJobHelper.class, auditUpdateJobHelper);
+		map.put(CampaignsUpdateJobHelper.class, campaignsUpdateJobHelper);
+		map.put(DeviceMapUpdateJobHelper.class, deviceMapUpdateJobHelper);
+		map.put(DevicesLastSeenUpdateJobHelper.class, devicesLastSeenUpdateJobHelper);
+		map.put(DevicesLatestUpdateJobHelper.class, devicesLatestUpdateJobHelper);
+		map.put(DevicesStatusUpdateJobHelper.class, devicesStatusUpdateJobHelper);
+		map.put(SensorUpdateJobHelper.class, sensorUpdateJobHelper);
+		map.put(SensorIconUpdateJobHelper.class, sensorIconUpdateJobHelper);
+		map.put(NotesUpdateJobHelper.class, notesUpdateJobHelper);
+		map.put(SecurityStatsUpdateJobHelper.class, securityStatsUpdateJobHelper);
+		map.put(TitleUpdateJobHelper.class, titleUpdateJobHelper);
+
+		return map;
 	}
 
 	/**

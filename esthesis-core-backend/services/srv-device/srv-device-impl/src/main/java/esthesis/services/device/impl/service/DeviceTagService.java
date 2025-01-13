@@ -40,13 +40,12 @@ public class DeviceTagService {
 	/**
 	 * Finds the devices matched by the specific list of tags.v
 	 *
-	 * @param tagNames     The list of tag names to search by.
+	 * @param tagNames     The list of tag names to search by, separated by comma.
 	 * @param partialMatch Whether the search for the tag name will be partial or not.
 	 * @return Returns the devices matched.
 	 */
 	@ErnPermission(category = DEVICE, operation = READ)
-	public List<DeviceEntity> findByTagName(List<String> tagNames,
-		boolean partialMatch) {
+	public List<DeviceEntity> findByTagName(List<String> tagNames, boolean partialMatch) {
 		if (CollectionUtils.isEmpty(tagNames)) {
 			return new ArrayList<>();
 		} else {
@@ -74,6 +73,11 @@ public class DeviceTagService {
 	@ErnPermission(category = DEVICE, operation = READ)
 	public List<DeviceEntity> findByTagId(String tagId) {
 		return deviceRepository.findByTagId(tagId);
+	}
+
+	@ErnPermission(category = DEVICE, operation = READ)
+	public List<DeviceEntity> findByTagId(List<String> tagIds) {
+		return deviceRepository.findByTagId(tagIds);
 	}
 
 	/**

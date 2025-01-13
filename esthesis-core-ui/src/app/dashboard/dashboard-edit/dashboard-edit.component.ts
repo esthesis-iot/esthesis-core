@@ -52,11 +52,11 @@ import {
 import {
   DashboardItemSensorIconEditComponent
 } from "../items/dashboard-item-sensor-icon-edit/dashboard-item-sensor-icon-edit.component";
-import {
-  DashboardItemTitleComponent
-} from "../items/dashboard-item-title/dashboard-item-title.component";
 import {DashboardDto} from "../dto/dashboard-dto";
 import {v4} from "uuid";
+import {
+  DashboardItemTitleEditComponent
+} from "../items/dashboard-item-title-edit/dashboard-item-title-edit.component";
 
 @Component({
   selector: "app-dashboard-edit",
@@ -103,7 +103,7 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
         next: (response) => {
           this.dashboardItems = response.items;
           // For development: automatically open the edit item dialog.
-          // this.configureItem(this.dashboardItems[6]);
+          // this.configureItem(this.dashboardItems[3]);
         }, error: (error) => {
           this.utilityService.popupErrorWithTraceId("Could not fetch dashboard items.", error);
         }
@@ -167,21 +167,8 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
       .afterClosed().subscribe(result => {
         if (result) {
           // Find default configuration for dashboard item.
-          let defaultConfiguration = "{}";
-          switch (result.type) {
-            case AppConstants.DASHBOARD.ITEM.TYPE.AUDIT:
-              defaultConfiguration = JSON.stringify(this.appConstants.DASHBOARD.ITEM.DEFAULTS.AUDIT);
-              break;
-            case AppConstants.DASHBOARD.ITEM.TYPE.ABOUT:
-              defaultConfiguration = JSON.stringify(this.appConstants.DASHBOARD.ITEM.DEFAULTS.ABOUT);
-              break;
-            case AppConstants.DASHBOARD.ITEM.TYPE.SENSOR:
-              defaultConfiguration = JSON.stringify(this.appConstants.DASHBOARD.ITEM.DEFAULTS.SENSOR);
-              break;
-            case AppConstants.DASHBOARD.ITEM.TYPE.DEVICES_LATEST:
-              defaultConfiguration = JSON.stringify(this.appConstants.DASHBOARD.ITEM.DEFAULTS.DEVICES_LATEST);
-              break;
-          }
+          let defaultConfiguration =  JSON.stringify(
+            AppConstants.getValue("DASHBOARD.ITEM.DEFAULTS." + result.type));
 
           // Add selected dashboard item.
           this.dashboardItems.push({
@@ -216,6 +203,10 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
     }).afterClosed().subscribe(result => {
       if (result) {
         this.dashboardItems.splice(di.index, 1);
+        // Re-index items.
+        for (let i = 0; i < this.dashboardItems.length; i++) {
+          this.dashboardItems[i].index = i;
+        }
       }
     });
   }
@@ -264,7 +255,7 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
         diEditComponent = DashboardItemSensorIconEditComponent;
         break;
       case AppConstants.DASHBOARD.ITEM.TYPE.TITLE:
-        diEditComponent = DashboardItemTitleComponent;
+        diEditComponent = DashboardItemTitleEditComponent;
         break;
     }
     this.dialog.open(diEditComponent, {data: di, width: "60%"}).afterClosed().subscribe(result => {

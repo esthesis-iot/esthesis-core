@@ -20,7 +20,12 @@ public class AuditSystemResourceImpl implements AuditSystemResource {
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public Page<AuditEntity> find(int entries) {
 		Pageable pageable = new Pageable().setPage(0).setSize(entries).setSort("createdOn,desc");
-		
+
 		return auditService.find(pageable, false);
+	}
+
+	@Override
+	public Long countAll() {
+		return auditService.countAll();
 	}
 }

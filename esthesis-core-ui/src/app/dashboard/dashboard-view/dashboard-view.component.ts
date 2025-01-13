@@ -98,6 +98,8 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
           } else {
             const messageEvent = event as MessageEvent;
             const eventData = JSON.parse(messageEvent.data);
+            // Uncomment to debug all incoming messages.
+            // this.logger.logDebug("Received SSE event for dashboard.", eventData);
             this.dashboardService.sendMessage(eventData);
             this.lastEventDate = new Date();
           }
