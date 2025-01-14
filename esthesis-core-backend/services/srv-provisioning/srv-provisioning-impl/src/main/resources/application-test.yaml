@@ -1,0 +1,11 @@
+quarkus:
+  log:
+    level: INFO
+  devservices:
+    enabled: true
+  mongodb:
+    database: esthesiscore-test
+  http:
+    test-port: 0
+  liquibase-mongodb:
+    migrate-at-start: false
