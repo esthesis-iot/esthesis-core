@@ -27,15 +27,6 @@ public class SecurityStatsUpdateJobHelper extends UpdateJobHelper<DashboardUpdat
 		DashboardUpdateSecurityStatsBuilder<?, ?> replyBuilder = DashboardUpdateSecurityStats.builder()
 			.id(item.getId()).type(Type.SECURITY_STATS);
 
-		System.out.println(
-			"users:" + checkSecurity(dashboardEntity, Category.USERS, Operation.READ, "*"));
-		System.out.println(
-			"groups:" + checkSecurity(dashboardEntity, Category.GROUPS, Operation.READ, "*"));
-		System.out.println(
-			"policies:" + checkSecurity(dashboardEntity, Category.POLICIES, Operation.READ, "*"));
-		System.out.println(
-			"audit:" + checkSecurity(dashboardEntity, Category.AUDIT, Operation.READ, "*"));
-
 		try {
 			if (!checkSecurity(dashboardEntity, Category.USERS, Operation.READ, "*") ||
 				!checkSecurity(dashboardEntity, Category.GROUPS, Operation.READ, "*") ||

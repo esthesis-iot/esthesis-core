@@ -7,6 +7,7 @@ import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
 import static esthesis.core.common.AppConstants.Security.Operation.READ;
 import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
+import esthesis.common.exception.QAuthorisationException;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.audit.resource.AuditSystemResource;
 import esthesis.service.common.BaseService;
@@ -51,11 +52,11 @@ public class DashboardService extends BaseService<DashboardEntity> {
 
 	private DashboardEntity saveHandler(DashboardEntity dashboardEntity) {
 		UserEntity user = findCurrentUser();
-		dashboardEntity.setOwnerId(user.getId());
 
 		// If no other dashboards exist for this user, set this one as the home dashboard. Otherwise,
 		// if this dashboard is set as the home dashboard, unset the home dashboard for all other
 		// dashboards.
+		dashboardEntity.setOwnerId(user.getId());
 		if (findAllForCurrentUser().isEmpty()) {
 			dashboardEntity.setHome(true);
 		} else if (dashboardEntity.isHome()) {
@@ -80,6 +81,12 @@ public class DashboardService extends BaseService<DashboardEntity> {
 	@Transactional
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = DASHBOARD, operation = WRITE)
 	public DashboardEntity saveUpdate(DashboardEntity dashboardEntity) {
+		// Ensure only own dashboards can be updated.
+		if (!findById(dashboardEntity.getId()).getOwnerId().equals(findCurrentUser().getId())) {
+			throw new QAuthorisationException("User '{}' is not the owner of the shared dashboard '{}'.",
+				securityIdentity.getPrincipal().getName(), dashboardEntity.getName());
+		}
+
 		return saveHandler(dashboardEntity);
 	}
 

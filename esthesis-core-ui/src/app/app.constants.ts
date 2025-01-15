@@ -225,10 +225,9 @@ export const AppConstants = {
   },
 
   DASHBOARD: {
-    REFRESH_INTERVAL_MINUTES: 15,
+    REFRESH_INTERVAL_MINUTES: 1, // How often to send a keep-alive.
     DEFAULTS: {
-      COLUMN_WIDTH: 100,
-      ROW_HEIGHT: 50
+      COLUMN_WIDTH: 100
     },
     SINGLE_INSTANCE_ITEMS: [""],
     ITEM: {
@@ -252,14 +251,14 @@ export const AppConstants = {
         ABOUT: 4,
         AUDIT: 4,
         CAMPAIGNS: 5,
-        DATETIME: 2,
+        DATETIME: 4,
         DEVICE_MAP: 4,
         DEVICES_LAST_SEEN: 3,
         DEVICES_LATEST: 5,
         DEVICES_STATUS: 8,
-        IMAGE: 2,
+        IMAGE: 5,
         NOTES: 4,
-        SECURITY_STATS: 2,
+        SECURITY_STATS: 6,
         SENSOR: 2,
         SENSOR_ICON: 2,
         TITLE: 4
@@ -270,11 +269,20 @@ export const AppConstants = {
           entries: 5
         },
         CAMPAIGNS: {},
-        DATETIME: {},
+        DATETIME: {
+          date: true,
+          time: true,
+          local: true,
+          server: true,
+          formatDate: "MMMM Do YYYY",
+          formatTime: "h:mm:ss a",
+          formatDateTime: "MMMM Do YYYY, h:mm:ss a"
+        },
         DEVICE_MAP: {
           zoom: 2,
           height: 200,
-          hardwareIds: []
+          hardwareIds: [],
+          tags: []
         },
         DEVICES_LAST_SEEN: {},
         DEVICES_LATEST: {
@@ -283,11 +291,17 @@ export const AppConstants = {
         DEVICES_STATUS: {
           orientation: "horizontal"
         },
-        IMAGE: {},
+        IMAGE: {
+          height: 400,
+          refresh: 0,
+          imageUrl: "https://placehold.co/450x400?text=esthesis%20IoT"
+        },
         NOTES: {
           notes: "esthesis IoT"
         },
-        SECURITY_STATS: {},
+        SECURITY_STATS: {
+          orientation: "horizontal"
+        },
         SENSOR: {},
         SENSOR_ICON: {},
         TITLE: {

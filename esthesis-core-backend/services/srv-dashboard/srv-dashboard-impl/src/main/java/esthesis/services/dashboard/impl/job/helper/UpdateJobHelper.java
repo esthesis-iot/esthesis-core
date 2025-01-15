@@ -38,14 +38,14 @@ public abstract class UpdateJobHelper<T> {
 	}
 
 	protected boolean checkSecurity(DashboardEntity dashboardEntity, Category category,
-		Operation operation, String hardwareId) {
-		String securityKey = String.join(":", category.toString(), operation.toString(), hardwareId,
+		Operation operation, String resourceId) {
+		String securityKey = String.join(":", category.toString(), operation.toString(), resourceId,
 			dashboardEntity.getOwnerId().toHexString());
 		if (securityChecks.containsKey(securityKey) && Boolean.FALSE.equals(
 			securityChecks.get(securityKey))) {
 			return false;
 		} else if (!securityChecks.containsKey(securityKey)) {
-			Boolean check = securitySystemResource.isPermitted(category, operation, hardwareId,
+			Boolean check = securitySystemResource.isPermitted(category, operation, resourceId,
 				dashboardEntity.getOwnerId());
 			securityChecks.put(securityKey, check);
 		}

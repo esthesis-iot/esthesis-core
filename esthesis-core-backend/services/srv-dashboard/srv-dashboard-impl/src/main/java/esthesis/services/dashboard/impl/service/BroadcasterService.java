@@ -4,6 +4,7 @@ import static esthesis.util.kafka.notifications.common.KafkaNotificationsConstan
 import static esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action.UNSUB;
 import static esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.SMALLRYE_KAFKA_BROADCAST_CHANNEL_IN;
 
+import esthesis.service.dashboard.entity.DashboardEntity;
 import esthesis.services.dashboard.impl.job.DashboardUpdateJob;
 import esthesis.services.dashboard.impl.job.DashboardUpdateJobFactory;
 import esthesis.util.kafka.notifications.common.AppMessage;
@@ -20,6 +21,7 @@ import jakarta.ws.rs.sse.SseEventSink;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
@@ -93,14 +95,14 @@ public class BroadcasterService {
 
 	/**
 	 * Checks for stale jobs and unschedules them. A job is considered stale if it has not been
-	 * refreshed for more than an hour.
+	 * refreshed for more than 5 minutes (by default, dashboards send a keep-alive every 1 minute).
 	 */
-	@Scheduled(every = "5m")
+	@Scheduled(every = "1m")
 	void checkStaleJobs() {
 		log.trace("Checking for stale jobs.");
 		for (Map.Entry<String, Pair<DashboardUpdateJob, Instant>> entry :
 			new HashMap<>(subscriptionsTracker).entrySet()) {
-			if (entry.getValue().getRight().isBefore(Instant.now().minus(1, ChronoUnit.HOURS))) {
+			if (entry.getValue().getRight().isBefore(Instant.now().minus(5, ChronoUnit.MINUTES))) {
 				log.debug("Job '{}' is stale, unscheduling.", entry.getKey());
 				unregister(entry.getKey());
 			}
@@ -152,7 +154,12 @@ public class BroadcasterService {
 		log.debug("Scheduling job for dashboard '{}, with subscription id '{}'.", dashboardId,
 			subscriptionId);
 
-		dashboardService.findAllForCurrentUser().stream()
+		// Find own dashboards and shared dashboards.
+		List<DashboardEntity> dashboards = dashboardService.findAllForCurrentUser();
+		dashboards.addAll(dashboardService.findShared());
+
+		// Find the dashboard requested by the user.
+		dashboards.stream()
 			.filter(dashboardEntity -> dashboardEntity.getId().toHexString().equals(dashboardId))
 			.findFirst().ifPresentOrElse(dashboardEntity -> {
 				DashboardUpdateJob job = dashboardUpdateJobFactory.create(subscriptionId, dashboardId,
@@ -164,7 +171,7 @@ public class BroadcasterService {
 					.schedule();
 				log.debug("Job scheduled for dashboard '{}', with subscription id '{}'.", dashboardId,
 					subscriptionId);
-			}, () -> log.debug("Could not find a dashboard subscription with id '{}'.", subscriptionId));
+			}, () -> log.debug("Could not find a dashboard with id '{}'.", subscriptionId));
 	}
 
 }

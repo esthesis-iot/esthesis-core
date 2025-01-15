@@ -5,12 +5,12 @@ import esthesis.service.about.dto.AboutGeneralDTO;
 import esthesis.service.about.resource.AboutSystemResource;
 import esthesis.services.about.impl.service.AboutService;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.inject.Inject;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class AboutSystemResourceImpl implements AboutSystemResource {
 
-	@Inject
-	AboutService aboutService;
+	private final AboutService aboutService;
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)

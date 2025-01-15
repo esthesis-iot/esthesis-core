@@ -8,12 +8,12 @@ import esthesis.service.about.resource.AboutResource;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.services.about.impl.service.AboutService;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.inject.Inject;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class AboutResourceImpl implements AboutResource {
 
-	@Inject
-	AboutService aboutService;
+	private final AboutService aboutService;
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)

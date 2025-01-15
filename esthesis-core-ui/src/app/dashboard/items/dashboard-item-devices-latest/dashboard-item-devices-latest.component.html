@@ -13,7 +13,6 @@
           <th scope="col">Type</th>
         </tr>
         </thead>
-
         <tbody *ngIf="!lastMessage && config">
         <tr *ngFor="let i of utilityService.arrayGen(config!.entries)">
           <td colspan="3">
@@ -21,15 +20,16 @@
           </td>
         </tr>
         </tbody>
-
         <tbody *ngIf="lastMessage">
         <tr *ngFor="let item of lastMessage.devices">
           <td class="overflow-hidden whitespace-nowrap">{{ item.hardwareId }}</td>
-          <td class="overflow-hidden whitespace-nowrap">{{ item.registeredOn | amFromUtc | amLocal | amTimeAgo }}</td>
-          <td class="overflow-hidden whitespace-nowrap"><img [src]="'assets/img/logos/' + item.type.toLowerCase() + '-logo.png'"
+          <td *ngIf="item.hardwareId" class="overflow-hidden whitespace-nowrap">{{ item.registeredOn | amFromUtc | amLocal | amTimeAgo }}</td>
+          <td *ngIf="!item.hardwareId" class="overflow-hidden whitespace-nowrap">&nbsp;</td>
+          <td *ngIf="item.hardwareId" class="overflow-hidden whitespace-nowrap"><img [src]="'assets/img/logos/' + item.type.toLowerCase() + '-logo.png'"
                    alt="{{item.type.toLowerCase()}}" width="20" height="15" class="inline">
             {{ item.type.toLowerCase() }}
           </td>
+          <td *ngIf="!item.hardwareId" class="overflow-hidden whitespace-nowrap">&nbsp;</td>
         </tr>
       </table>
     </div>

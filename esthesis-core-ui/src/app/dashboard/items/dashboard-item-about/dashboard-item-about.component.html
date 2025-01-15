@@ -7,19 +7,25 @@
     <div>
       <div>
         <div class="font-bold">Version</div>
-        <div *ngIf="!lastMessage" class="skeleton h-5 w-full"></div>
-        <div *ngIf="lastMessage">{{ lastMessage.gitVersion }}</div>
+        <div *ngIf="!lastMessage" class="skeleton w-full">&nbsp;</div>
+        <div *ngIf="lastMessage && lastMessage.gitVersion">{{ lastMessage.gitVersion }}</div>
+        <div *ngIf="lastMessage && !lastMessage.gitVersion">N/A</div>
       </div>
       <div class="mt-2">
         <div class="font-bold">Git commit id</div>
-        <div *ngIf="!lastMessage" class="skeleton h-5 w-full"></div>
-        <div *ngIf="lastMessage">{{ lastMessage.gitCommitId }}</div>
+        <div *ngIf="!lastMessage" class="skeleton w-full">&nbsp;</div>
+        <div *ngIf="lastMessage && lastMessage.gitCommitId">{{ lastMessage.gitCommitId }}</div>
+        <div *ngIf="lastMessage && !lastMessage.gitCommitId">N/A</div>
       </div>
       <div class="mt-2">
         <div class="font-bold">Git build date</div>
-        <div *ngIf="!lastMessage" class="skeleton h-5 w-full"></div>
+        <div *ngIf="!lastMessage" class="skeleton w-full">&nbsp;</div>
         <div
           *ngIf="lastMessage && lastMessage.gitBuildTime">{{ lastMessage.gitBuildTime | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z' }}
+        </div>
+        <div
+          *ngIf="lastMessage && !lastMessage.gitBuildTime">
+          N/A
         </div>
       </div>
     </div>

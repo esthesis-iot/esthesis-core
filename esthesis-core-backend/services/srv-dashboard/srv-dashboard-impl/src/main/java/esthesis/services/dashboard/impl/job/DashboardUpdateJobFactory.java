@@ -6,10 +6,12 @@ import esthesis.service.dashboard.entity.DashboardEntity;
 import esthesis.services.dashboard.impl.job.helper.AboutUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.AuditUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.CampaignsUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.DatetimeUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DeviceMapUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DevicesLastSeenUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DevicesLatestUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DevicesStatusUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.ImageUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.NotesUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.SecurityStatsUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.SensorIconUpdateJobHelper;
@@ -46,6 +48,8 @@ public class DashboardUpdateJobFactory {
 	private final NotesUpdateJobHelper notesUpdateJobHelper;
 	private final SecurityStatsUpdateJobHelper securityStatsUpdateJobHelper;
 	private final TitleUpdateJobHelper titleUpdateJobHelper;
+	private final ImageUpdateJobHelper imageUpdateJobHelper;
+	private final DatetimeUpdateJobHelper datetimeUpdateJobHelper;
 	private final DashboardService dashboardService;
 	private final Sse sse;
 	private final ObjectMapper objectMapper;
@@ -64,6 +68,8 @@ public class DashboardUpdateJobFactory {
 		map.put(NotesUpdateJobHelper.class, notesUpdateJobHelper);
 		map.put(SecurityStatsUpdateJobHelper.class, securityStatsUpdateJobHelper);
 		map.put(TitleUpdateJobHelper.class, titleUpdateJobHelper);
+		map.put(ImageUpdateJobHelper.class, imageUpdateJobHelper);
+		map.put(DatetimeUpdateJobHelper.class, datetimeUpdateJobHelper);
 
 		return map;
 	}

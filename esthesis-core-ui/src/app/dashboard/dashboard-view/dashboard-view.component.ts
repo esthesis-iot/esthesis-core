@@ -1,7 +1,7 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {BaseComponent} from "../../shared/components/base-component";
 import {DashboardService} from "../dashboard.service";
-import {NgxMasonryComponent} from "ngx-masonry";
+import {NgxMasonryComponent, NgxMasonryOptions} from "ngx-masonry";
 import {DashboardDto} from "../dto/dashboard-dto";
 import {UtilityService} from "../../shared/services/utility.service";
 import screenfull from "screenfull";
@@ -21,9 +21,9 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
   selectedDashboard?: DashboardDto;
   ownDashboards: DashboardDto[] = [];
   sharedDashboards: DashboardDto[] = [];
-  masonryOptions = {
-    columnWidth: 100,
-    horizontalOrder: true,
+  masonryOptions: NgxMasonryOptions = {
+    columnWidth: this.appConstants.DASHBOARD.DEFAULTS.COLUMN_WIDTH,
+    horizontalOrder: true
   };
   dashboardLoading = true;
   lastEventDate?: Date;
@@ -31,6 +31,7 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
   private sseSubscription: Subscription | null = null;
   private subscriptionRefreshHandler?: number;
   private subscriptionId!: string;
+  protected readonly Date = Date;
 
   constructor(private readonly utilityService: UtilityService,
     private readonly dashboardService: DashboardService, private readonly sseClient: SseClient,
@@ -66,6 +67,14 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
         this.dashboardLoading = false;
       }
     });
+  }
+
+  public isSharedByOthers(): boolean {
+    if (!this.selectedDashboard) {
+      return false;
+    } else {
+      return this.sharedDashboards.some((dashboard) => dashboard.id === this.selectedDashboard?.id);
+    }
   }
 
   private subscribeToDashboard() {
@@ -169,7 +178,11 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
       (success) => {
         if (success) {
           this.subscriptionId = uuidv4();
-          this.selectedDashboard = this.ownDashboards.find((dashboard) => dashboard.id === id);
+          if (this.ownDashboards.find((dashboard) => dashboard.id === id)) {
+            this.selectedDashboard = this.ownDashboards.find((dashboard) => dashboard.id === id);
+          } else if (this.sharedDashboards.find((dashboard) => dashboard.id === id)) {
+            this.selectedDashboard = this.sharedDashboards.find((dashboard) => dashboard.id === id);
+          }
           this.subscribeToDashboard();
         }
       }
@@ -182,6 +195,4 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
       });
     }
   }
-
-  protected readonly Date = Date;
 }

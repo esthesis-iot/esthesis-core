@@ -1,1 +1,9 @@
-<p>dashboard-item-image works!</p>
+<div class="flex flex-col bg-base-100 mt-1 ml-1 mr-1 p-4 rounded-xl">
+  <div class="flex flex-row justify-between">
+    <div class="stat-title">{{ item.title }}</div>
+  </div>
+  <div *ngIf="item.subtitle" class="stat-desc">{{ item.subtitle }}</div>
+  <div class="mt-4" [ngStyle]="{height: config?.height + 'px'}">
+    <img alt="" src="{{updateUrl}}" height="{{config?.height}}}"/>
+  </div>
+</div>

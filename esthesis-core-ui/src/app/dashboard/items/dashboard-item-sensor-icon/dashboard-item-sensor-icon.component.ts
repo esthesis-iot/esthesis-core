@@ -22,7 +22,7 @@ export class DashboardItemSensorIconComponent
   }
 
   getIcon(): string | undefined {
-    let icon = "question";
+    let icon = "fa-question";
 
     if (this.config && this.lastMessage?.value) {
       for (const condition of this.config.conditions) {

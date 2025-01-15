@@ -10,10 +10,12 @@ import esthesis.services.dashboard.impl.dto.DashboardUpdate;
 import esthesis.services.dashboard.impl.job.helper.AboutUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.AuditUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.CampaignsUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.DatetimeUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DeviceMapUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DevicesLastSeenUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DevicesLatestUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DevicesStatusUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.ImageUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.NotesUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.SecurityStatsUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.SensorIconUpdateJobHelper;
@@ -66,7 +68,7 @@ public class DashboardUpdateJob {
 		10, // Core pool size.
 		50, // Maximum pool size.
 		5000L, TimeUnit.MILLISECONDS, // Keep-alive time.
-		new ArrayBlockingQueue<>(50), // Task queue with capacity.
+		new ArrayBlockingQueue<>(50), // Task queue capacity.
 		new ThreadPoolExecutor.AbortPolicy() // Default rejection policy.
 	);
 
@@ -112,6 +114,12 @@ public class DashboardUpdateJob {
 		log.debug("Executing job for subscription '{}' for dashboard '{}'.", subscriptionId,
 			dashboardId);
 		dashboardEntity.getItems().stream().filter(DashboardItemDTO::isEnabled).forEach(item -> {
+			// Uncomment to simulate a slow update.
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
 			switch (item.getType()) {
 				case ABOUT:
 					CompletableFuture.runAsync(
@@ -126,6 +134,11 @@ public class DashboardUpdateJob {
 				case CAMPAIGNS:
 					CompletableFuture.runAsync(
 						() -> broadcast(((CampaignsUpdateJobHelper) helpers.get(CampaignsUpdateJobHelper.class))
+							.refresh(dashboardEntity, item), item.getId()), threadPool);
+					break;
+				case DATETIME:
+					CompletableFuture.runAsync(
+						() -> broadcast(((DatetimeUpdateJobHelper) helpers.get(DatetimeUpdateJobHelper.class))
 							.refresh(dashboardEntity, item), item.getId()), threadPool);
 					break;
 				case DEVICE_MAP:
@@ -150,6 +163,12 @@ public class DashboardUpdateJob {
 					CompletableFuture.runAsync(
 						() -> broadcast(
 							((DevicesStatusUpdateJobHelper) helpers.get(DevicesStatusUpdateJobHelper.class))
+								.refresh(dashboardEntity, item), item.getId()), threadPool);
+					break;
+				case IMAGE:
+					CompletableFuture.runAsync(
+						() -> broadcast(
+							((ImageUpdateJobHelper) helpers.get(ImageUpdateJobHelper.class))
 								.refresh(dashboardEntity, item), item.getId()), threadPool);
 					break;
 				case NOTES:

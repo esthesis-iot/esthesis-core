@@ -1,7 +1,7 @@
-<div class="flex flex-col bg-base-100 mt-1 ml-1 mr-1 p-4 rounded-xl">
+<div class="flex flex-col bg-base-100 mt-1 ml-1 mr-1 p-4 rounded-xl h-[200px]">
   <div class="flex flex-row justify-between">
     <div class="stat-title">{{ item.title }}</div>
   </div>
   <div *ngIf="item.subtitle" class="stat-desc">{{ item.subtitle }}</div>
-  <div><pre>{{lastMessage?.notes}}</pre></div>
+  <div class="overflow-scroll font-mono">{{lastMessage?.notes}}</div>
 </div>

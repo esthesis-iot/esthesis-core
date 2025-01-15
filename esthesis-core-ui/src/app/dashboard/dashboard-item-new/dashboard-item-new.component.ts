@@ -124,4 +124,8 @@ export class DashboardItemNewComponent extends SecurityBaseComponent implements 
   selectItem(w: { name: string; description: string; icon: string }) {
     this.dialogRef.close(w);
   }
+
+  close() {
+    this.dialogRef.close();
+  }
 }

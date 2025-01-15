@@ -102,8 +102,9 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
       this.dashboardService.findById(this.id).subscribe({
         next: (response) => {
           this.dashboardItems = response.items;
-          // For development: automatically open the edit item dialog.
+          // For development: automatically open the edit/add item dialog.
           // this.configureItem(this.dashboardItems[3]);
+          // this.addItem();
         }, error: (error) => {
           this.utilityService.popupErrorWithTraceId("Could not fetch dashboard items.", error);
         }

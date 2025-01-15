@@ -9,18 +9,20 @@
   </div>
 
   <div class="flex flex-row mt-2" *ngIf="lastMessage">
-    <div class="stat-value">{{ getValue() }}</div>
-    <div class="mt-3 text-xl ml-2 text-base-content/50">{{ config?.unit }}</div>
+    <div *ngIf="getValue()" class="stat-value">{{ getValue() }}</div>
+    <div *ngIf="!getValue()" class="stat-value">&nbsp;</div>
+    <div *ngIf="config?.unit" class="mt-3 text-xl ml-2 text-base-content/50">{{ config?.unit }}</div>
+    <div *ngIf="!config?.unit" class="mt-3 text-xl ml-2 text-base-content/50">&nbsp;</div>
   </div>
-  <div *ngIf="!lastMessage">
-    <div class="stat-value">
-      <div class="skeleton h-10 mt-2 mb-2 w-full"></div>
-    </div>
+  <div class="flex flex-row mt-2" *ngIf="!lastMessage">
+    <div class="stat-value skeleton">&nbsp;</div>
+    <div class="mt-3 text-xl ml-2 text-base-content/50 skeleton">&nbsp;</div>
   </div>
+
 
   <div *ngIf="item.subtitle && lastMessage" class="stat-desc">{{ item.subtitle }}</div>
   <div *ngIf="item.subtitle && !lastMessage" class="stat-desc">
-    <div class="skeleton h-5 w-full"></div>
+    <div class="skeleton w-full">&nbsp;</div>
   </div>
 
   <div *ngIf="lastMessage && config?.sparkline" class="mt-3 min-h-[30px]">

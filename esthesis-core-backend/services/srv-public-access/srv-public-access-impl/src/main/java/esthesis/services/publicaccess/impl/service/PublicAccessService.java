@@ -60,8 +60,6 @@ public class PublicAccessService {
 		oidcConfigDTO.setIgnoreNonceAfterRefresh(ignoreNonceAfterRefresh);
 		oidcConfigDTO.setSecureRoutes(secureRoutes);
 
-		log.debug("oidcConfigDTO: {}", oidcConfigDTO);
-
 		return oidcConfigDTO;
 	}
 

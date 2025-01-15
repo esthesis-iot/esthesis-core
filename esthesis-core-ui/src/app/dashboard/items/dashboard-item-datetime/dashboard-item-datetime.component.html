@@ -1,1 +1,17 @@
-<p>dashboard-item-datetime works!</p>
+<div class="flex flex-col bg-base-100 mt-1 ml-1 mr-1 p-4 rounded-xl">
+  <div class="flex flex-row justify-between">
+    <div class="stat-title">{{ item.title }}</div>
+  </div>
+  <div *ngIf="item.subtitle" class="stat-desc">{{ item.subtitle }}</div>
+  <div *ngIf="config?.local">
+    <div class="font-bold mt-2">Local</div>
+    <div *ngIf="lastMessage">{{localDisplay}}</div>
+    <div *ngIf="!lastMessage" class="skeleton">&nbsp;</div>
+  </div>
+  <div *ngIf="config?.server">
+    <div class="font-bold mt-2">Server/Remote</div>
+    <div *ngIf="lastMessage">{{serverDisplay}}</div>
+    <div *ngIf="!lastMessage" class="skeleton">&nbsp;</div>
+  </div>
+  <div class="italic text-sm mt-4">* times displayed based on last dashboard update received</div>
+</div>

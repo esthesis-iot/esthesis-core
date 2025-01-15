@@ -1,5 +1,5 @@
 import {NgModule, NO_ERRORS_SCHEMA} from "@angular/core";
-import {CommonModule} from "@angular/common";
+import {CommonModule, NgOptimizedImage} from "@angular/common";
 
 import {DashboardRoutingModule} from "./dashboard-routing.module";
 import {DashboardViewComponent} from "./dashboard-view/dashboard-view.component";
@@ -209,7 +209,8 @@ import {
     MatSortHeader,
     CdkHeaderCellDef,
     FormsModule,
-    LeafletModule
+    LeafletModule,
+    NgOptimizedImage
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [
