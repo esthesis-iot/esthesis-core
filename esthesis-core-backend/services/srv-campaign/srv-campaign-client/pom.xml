@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-core-services-campaign</artifactId>
-    <version>3.0.58-SNAPSHOT</version>
+    <version>3.0.58</version>
   </parent>
 
   <artifactId>esthesis-core-services-campaign-client</artifactId>
@@ -24,7 +24,7 @@
 		<dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-common</artifactId>
-      <version>3.0.58-SNAPSHOT</version>
+      <version>3.0.58</version>
     </dependency>
   </dependencies>
 </project>
