@@ -20,16 +20,20 @@ import io.quarkus.qute.Qute;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+
+import static esthesis.core.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
 
 @Slf4j
 @Transactional
@@ -149,7 +153,7 @@ public class OrionGatewayService {
 		if (appConfig.orionIdAttribute().isEmpty()) {
 			return appConfig.orionIdPrefix() + esthesisHardwareId;
 		} else {
-			String idAttribute = appConfig.orionIdAttribute().get();
+			String idAttribute = appConfig.orionIdAttribute().orElseThrow();
 			return deviceAttributes.stream()
 				.filter(attribute -> attribute.getAttributeName().equals(idAttribute))
 				.map(DeviceAttributeEntity::getAttributeValue).findFirst()
@@ -166,9 +170,8 @@ public class OrionGatewayService {
 	private String generateOrionDeviceId(String esthesisHardwareId) {
 		if (appConfig.orionIdAttribute().isEmpty()) {
 			return appConfig.orionIdPrefix() + esthesisHardwareId;
-
 		} else {
-			String nameAttribute = appConfig.orionIdAttribute().get();
+			String nameAttribute = appConfig.orionIdAttribute().orElseThrow();
 			return deviceSystemResource
 				.getDeviceAttributeByEsthesisHardwareIdAndAttributeName(esthesisHardwareId, nameAttribute)
 				.map(DeviceAttributeEntity::getAttributeValue)
@@ -186,7 +189,7 @@ public class OrionGatewayService {
 		if (appConfig.orionTypeAttribute().isEmpty()) {
 			return appConfig.orionDefaultType();
 		} else {
-			String typeAttribute = appConfig.orionTypeAttribute().get();
+			String typeAttribute = appConfig.orionTypeAttribute().orElseThrow();
 			return deviceAttributes.stream()
 				.filter(attribute -> attribute.getAttributeName().equals(typeAttribute))
 				.map(DeviceAttributeEntity::getAttributeValue).findFirst()
@@ -414,62 +417,131 @@ public class OrionGatewayService {
 				log.warn("Message type '{}' not supported, skipping.", esthesisMessage.getType());
 				return;
 			}
-
-			// Extract category and timestamp from the observed value
-			String category = esthesisMessage.getPayload().getCategory();
-			String timestamp = esthesisMessage.getPayload().getTimestamp();
-
-			// Check if device has set the custom measurement formatter attribute
-			Optional<DeviceAttributeEntity> customOrionEntityJsonAttribute =
-				appConfig.orionCustomEntityJsonFormatAttributeName()
-					.flatMap(name -> deviceSystemResource.getDeviceAttributeByEsthesisHardwareIdAndAttributeName(esthesisHardwareId, name));
-
-			// Retrieve the list attribute to be filtered, if any
-			List<String> filterAttributes = getConfiguredFilterAttributes();
-
-			esthesisMessage.getPayload().getValues().forEach((valueData) -> {
-
-				String redisKey = getRedisKey(valueData, esthesisHardwareId, category);
-
-				if (canSendAttribute(valueData, filterAttributes, redisKey)) {
-					// if custom formatter is set, generate the dynamic json using the Qute formatter
-					// along with the relevant measurement data
-					if (customOrionEntityJsonAttribute.isPresent()) {
-						String customFormattedValue =
-							getCustomFormattedValue(valueData, customOrionEntityJsonAttribute, category, timestamp, esthesisHardwareId);
-						orionClientService.saveOrUpdateEntities(customFormattedValue);
-					} else {
-						String orionId = generateOrionDeviceId(esthesisHardwareId);
-						orionClientService.setAttribute(orionId, category + "." + valueData.getName(),
-							valueData.getValue(), ValueType.valueOf(valueData.getValueType().name()), attributeType);
-					}
-
-					if (hasForwardingIntervalSet()) {
-						saveOnRedis(redisKey);
-					}
-
-				}
-			});
+			processAttribute(esthesisMessage, esthesisHardwareId, attributeType);
 		} else {
 			log.debug("esthesisHardwareId {} is not allowed to update data on orion", esthesisHardwareId);
 		}
 	}
 
-	private void saveOnRedis(String redisKey) {
-		String expirationString = Instant.now().plus(getOrionForwardingIntervalValue(), ChronoUnit.SECONDS).toString();
-		redisUtils.setToHash(KeyType.ESTHESIS_DFLRI, redisKey, "expiration", expirationString);
-		redisUtils.setExpirationForHash(KeyType.ESTHESIS_DFLRI, redisKey, getOrionForwardingIntervalValue());
-		log.debug("Storing key {} in redis with expiration to {}", redisKey, expirationString);
+	private void processAttribute(EsthesisDataMessage esthesisMessage,
+																String esthesisHardwareId,
+																ATTRIBUTE_TYPE attributeType) {
+		// Extract category, timestamp and values from the observed value
+		String category = esthesisMessage.getPayload().getCategory();
+		String timestamp = esthesisMessage.getPayload().getTimestamp();
+		List<ValueData> values = esthesisMessage.getPayload().getValues();
+
+		// Check if device has set the custom measurement formatter attribute
+		Optional<DeviceAttributeEntity> customOrionEntityJsonAttribute =
+			appConfig.orionCustomEntityJsonFormatAttributeName()
+				.flatMap(name -> deviceSystemResource.getDeviceAttributeByEsthesisHardwareIdAndAttributeName(esthesisHardwareId, name));
+
+		// Retrieve the list attribute to be filtered, if any
+		List<String> filterAttributes = getConfiguredFilterAttributes();
+
+		values.forEach(valueData ->
+			validateAndSendAttribute(
+				esthesisHardwareId,
+				attributeType,
+				valueData,
+				category,
+				filterAttributes,
+				timestamp,
+				customOrionEntityJsonAttribute
+			)
+		);
+	}
+
+	private void validateAndSendAttribute(String esthesisHardwareId,
+																				ATTRIBUTE_TYPE attributeType,
+																				ValueData valueData,
+																				String category,
+																				List<String> filterAttributes,
+																				String timestamp,
+																				Optional<DeviceAttributeEntity> customOrionEntityJsonAttribute) {
+		String redisKey = getRedisKey(valueData, esthesisHardwareId, category);
+
+		if (canSendAttribute(valueData, filterAttributes)) {
+			if (hasForwardingIntervalSet()) {
+				String latestTimestamp =
+					redisUtils.getHash(KeyType.ESTHESIS_DFLRI, redisKey).getOrDefault(REDIS_KEY_SUFFIX_TIMESTAMP, "");
+
+				if (StringUtils.isNotBlank(latestTimestamp)) {
+					// check if the latest timestamp is valid against the interval,
+					// if so, send the attribute and update the latest timestamp on redis
+					if (isTimestampValidAgainstInterval(latestTimestamp, timestamp)) {
+						sendAttribute(esthesisHardwareId, attributeType, valueData, customOrionEntityJsonAttribute, category, timestamp);
+						saveTimestampOnRedis(redisKey, timestamp);
+
+						// else check if the latest timestamp is valid past data.
+						// if so, send the attribute but don't update the latest timestamp on redis
+					} else if (isPastTimestampValidAgainstInterval(latestTimestamp, timestamp)) {
+						sendAttribute(esthesisHardwareId, attributeType, valueData, customOrionEntityJsonAttribute, category, timestamp);
+					} else {
+						log.debug("Attribute {}  with timestamp {} was ignored as it is not valid against the forwarding interval rule", valueData.getName(), timestamp);
+					}
+				} else {
+					sendAttribute(esthesisHardwareId, attributeType, valueData, customOrionEntityJsonAttribute, category, timestamp);
+					saveTimestampOnRedis(redisKey, timestamp);
+				}
+			} else {
+				sendAttribute(esthesisHardwareId, attributeType, valueData, customOrionEntityJsonAttribute, category, timestamp);
+			}
+		} else{
+			log.debug("Attribute {} was ignored as it is not in the filter list", valueData.getName());
+		}
+	}
+
+	// send the attribute to orion
+	private void sendAttribute(String esthesisHardwareId, ATTRIBUTE_TYPE attributeType, ValueData valueData, Optional<DeviceAttributeEntity> customOrionEntityJsonAttribute, String category, String timestamp) {
+		// if custom formatter is set, generate the dynamic json using the Qute formatter
+		// along with the relevant measurement data
+		if (customOrionEntityJsonAttribute.isPresent()) {
+			String customFormattedValue =
+				getCustomFormattedValue(valueData, customOrionEntityJsonAttribute, category, timestamp, esthesisHardwareId);
+			orionClientService.saveOrUpdateEntities(customFormattedValue);
+		} else {
+			String orionId = generateOrionDeviceId(esthesisHardwareId);
+			orionClientService.setAttribute(orionId, category + "." + valueData.getName(),
+				valueData.getValue(), ValueType.valueOf(valueData.getValueType().name()), attributeType);
+		}
+	}
+
+	// check againts the forwarding interval if the new timestamp is valid past data
+	private boolean isPastTimestampValidAgainstInterval(String latestTimestamp, String newTimestamp) {
+		try {
+			long timeDiffInSeconds = ChronoUnit.SECONDS.between(Instant.parse(latestTimestamp), Instant.parse(newTimestamp));
+			return (timeDiffInSeconds + getOrionForwardingIntervalValue()) < 0;
+		} catch (Exception e) {
+			log.error("Error while validating timestamp {} against latest timestamp {}", newTimestamp, latestTimestamp, e);
+		}
+		return false;
+	}
+
+	// check against the forwarding interval if the new timestamp is valid new data
+	private boolean isTimestampValidAgainstInterval(String latestTimestamp, String newTimestamp) {
+		try {
+			long timeDiffInSeconds = ChronoUnit.SECONDS.between(Instant.parse(latestTimestamp), Instant.parse(newTimestamp));
+			return timeDiffInSeconds >= getOrionForwardingIntervalValue();
+		} catch (Exception e) {
+			log.error("Error while validating timestamp {} against latest timestamp {}", newTimestamp, latestTimestamp, e);
+		}
+		return false;
+	}
+
+	private void saveTimestampOnRedis(String redisKey, String timestamp) {
+		redisUtils.setToHash(KeyType.ESTHESIS_DFLRI, redisKey, REDIS_KEY_SUFFIX_TIMESTAMP, timestamp);
+		log.debug("Updating key {} in redis with value {}", redisKey, timestamp);
 	}
 
 	private static String getCustomFormattedValue(ValueData valueData, Optional<DeviceAttributeEntity> customOrionEntityJsonAttribute, String category, String timestamp, String esthesisHardwareId) {
-		return Qute.fmt(customOrionEntityJsonAttribute.get().getAttributeValue(),
-				Map.of("category", category,
-					"timestamp", timestamp,
-					"hardwareId", esthesisHardwareId,
-					"measurementName", valueData.getName(),
-					"measurementValue", valueData.getValue())
-			);
+		return Qute.fmt(customOrionEntityJsonAttribute.orElseThrow().getAttributeValue(),
+			Map.of("category", category,
+				"timestamp", timestamp,
+				"hardwareId", esthesisHardwareId,
+				"measurementName", valueData.getName(),
+				"measurementValue", valueData.getValue())
+		);
 	}
 
 	private String getRedisKey(ValueData valueData, String esthesisHardwareId, String category) {
@@ -477,33 +549,20 @@ public class OrionGatewayService {
 		return redisKey.toLowerCase().trim();
 	}
 
-	// Check if attribute shall be sent to orion
-	private boolean canSendAttribute(ValueData valueData, List<String> filterAttributes, String redisKey) {
-
-		// check if  attribute is expected to be sent
-		if (filterAttributes.isEmpty() || filterAttributes.stream().anyMatch(filter ->
-			StringUtils.equals(valueData.getName(), filter.trim()))) {
-
-			// check if it is the right time to send if custom interval is set
-			if (hasForwardingIntervalSet()) {
-				var hash = redisUtils.getHash(KeyType.ESTHESIS_DFLRI, redisKey);
-				return hash.isEmpty();
-			}
-
-			return true;
-
-		}
-		return false;
+	// check if the attribute should be sent according to the configuration filter set by the user
+	private boolean canSendAttribute(ValueData valueData, List<String> filterAttributes) {
+		return filterAttributes.isEmpty() || filterAttributes.stream().anyMatch(filter ->
+			StringUtils.equals(valueData.getName(), filter.trim()));
 	}
 
-	private int getOrionForwardingIntervalValue(){
+	private int getOrionForwardingIntervalValue() {
 		String interval = appConfig.orionForwardingInterval().orElse("0");
 		return Integer.parseInt(interval);
 	}
 
 	// check if the forwarding interval is set
 	private boolean hasForwardingIntervalSet() {
-		return  getOrionForwardingIntervalValue() > 0 && appConfig.redisUrl().isPresent();
+		return getOrionForwardingIntervalValue() > 0 && appConfig.redisUrl().isPresent();
 	}
 
 }
