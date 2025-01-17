@@ -3,17 +3,10 @@
     <h2 class="card-title text-2xl flex flex-row justify-between border-b-2 pb-2 mb-3 border-base-100">
       <div class="flex flex-row gap-2">
         <fa-icon icon="dashboard"></fa-icon>
-        <div>Device Map</div>
+        <div>Chart</div>
       </div>
     </h2>
     <div>
-      <div role="alert" class="alert alert-info mb-8" *ngIf="noCoordsWarning">
-        <fa-icon icon="info-circle"></fa-icon>
-        <p>
-          To be able to display the map you need to define which measurements pertain to latitude
-          and longitude. You can do so in Settings &gt; Device page.
-        </p>
-      </div>
       <form [formGroup]="form" novalidate>
         <div class="flex flex-row gap-5">
           <div class="flex flex-col">
@@ -44,8 +37,7 @@
           <div class="flex flex-col border-l-2 pl-4 border-base-200 flex-grow">
             <div class="flex flex-row gap-8">
               <div class="w-1/2 flex flex-col">
-                <div id="add-tag">
-                  <div class="font-bold mb-2">Select device tags to map</div>
+                <div>
                   <mat-form-field class="w-full">
                     <mat-label>Tags</mat-label>
                     <mat-select formControlName="configuration_tags" multiple>
@@ -55,8 +47,7 @@
                     </mat-select>
                   </mat-form-field>
                 </div>
-                <div id="add-device">
-                  <div class="font-bold mt-4">Select devices to map</div>
+                <div>
                   <mat-form-field class="w-full">
                     <mat-label>Device</mat-label>
                     <input formControlName="search_hardwareId" matInput
@@ -69,68 +60,62 @@
                       </mat-option>
                     </mat-autocomplete>
                   </mat-form-field>
-                  <div class="mt-4 max-h-96">
+                  <div class="mt-2 max-h-96">
                     <div class="max-h-full overflow-scroll">
                       <div class="flex flex-row items-center gap-1.5" *ngFor="let d of form.get('configuration_hardwareIds')?.value">
                         <div class="cursor-pointer" (click)="removeHardwareId(d)"
                              (keydown)="removeHardwareId(d)">
-                          <fa-icon icon="minus-circle" matTooltip="remove"></fa-icon></div>
+                          <fa-icon icon="minus-circle" matTooltip="Remove device"></fa-icon></div>
                         <div>{{d}}</div>
                       </div>
                     </div>
-                    <div class="italic"
-                         *ngIf="form.get('configuration_hardwareIds')?.value.length == 0">Select a device above</div>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <mat-form-field class="w-full">
+                    <mat-label>Measurement</mat-label>
+                    <input [matAutocomplete]="search_measurement" matInput
+                           formControlName="search_measurement" (keydown.enter)="addMeasurement()">
+                    <mat-hint>Search a measurement, add it by pressing Enter.</mat-hint>
+                    <mat-autocomplete #search_measurement="matAutocomplete">
+                      <mat-option
+                        *ngFor="let measurement of filteredUniqueMeasurements" [value]="measurement">
+                        {{ measurement }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                  <div class="mt-2 max-h-96">
+                    <div class="max-h-full overflow-scroll">
+                      <div class="flex flex-row items-center gap-1.5" *ngFor="let d of form.get('configuration_measurements')?.value">
+                        <div class="cursor-pointer" (click)="removeMeasurement(d)"
+                             (keydown)="removeMeasurement(d)">
+                          <fa-icon icon="minus-circle" matTooltip="Remove measurement"></fa-icon></div>
+                        <div>{{d}}</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="w-1/2">
-                <div id="zoom-level">
-                  <mat-form-field class="w-full">
-                    <mat-label>Default zoom level</mat-label>
-                    <mat-select formControlName="configuration_zoom_level">
-                      <mat-option [value]="0">0</mat-option>
-                      <mat-option [value]="1">1</mat-option>
-                      <mat-option [value]="2">2</mat-option>
-                      <mat-option [value]="3">3</mat-option>
-                      <mat-option [value]="4">4</mat-option>
-                      <mat-option [value]="5">5</mat-option>
-                      <mat-option [value]="6">6</mat-option>
-                      <mat-option [value]="7">7</mat-option>
-                      <mat-option [value]="8">8</mat-option>
-                      <mat-option [value]="9">9</mat-option>
-                      <mat-option [value]="10">10</mat-option>
-                      <mat-option [value]="11">11</mat-option>
-                      <mat-option [value]="12">12</mat-option>
-                      <mat-option [value]="13">13</mat-option>
-                      <mat-option [value]="14">14</mat-option>
-                      <mat-option [value]="15">15</mat-option>
-                      <mat-option [value]="16">16</mat-option>
-                      <mat-option [value]="17">17</mat-option>
-                      <mat-option [value]="18">18</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-                <div id="height">
+                <div>
                   <mat-form-field class="w-full">
                     <input matInput formControlName="configuration_height">
                     <mat-label>Height (in pixels)</mat-label>
                   </mat-form-field>
                 </div>
-                <div id="map-center">
-                  <div class="font-bold mb-2 mt-2">Fixed map center
-                    <fa-icon icon="circle-info" matTooltip="If set, the map will remain centred on
-                      this location, otherwise the map will be automatically centred on the last
-                      inserted pin."></fa-icon>
-                    <mat-form-field class="w-full">
-                      <input matInput formControlName="configuration_map_lat">
-                      <mat-label>Latitude</mat-label>
-                    </mat-form-field>
-                    <mat-form-field class="w-full">
-                      <input matInput formControlName="configuration_map_lon">
-                      <mat-label>Longitude</mat-label>
-                    </mat-form-field>
-                  </div>
+                <div>
+                  <mat-form-field class="w-full">
+                    <input matInput formControlName="configuration_totalPoints">
+                    <mat-label>Number of points to display</mat-label>
+                  </mat-form-field>
                 </div>
+                <div>
+                  <mat-form-field class="w-full">
+                    <input matInput formControlName="configuration_lineTension">
+                    <mat-label>Line tension</mat-label>
+                  </mat-form-field>
+                </div>
+
               </div>
             </div>
           </div>

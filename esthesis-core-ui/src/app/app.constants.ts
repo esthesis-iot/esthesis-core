@@ -235,6 +235,7 @@ export const AppConstants = {
         ABOUT: "ABOUT",
         AUDIT: "AUDIT",
         CAMPAIGNS: "CAMPAIGNS",
+        CHART: "CHART",
         DATETIME: "DATETIME",
         DEVICE_MAP: "DEVICE_MAP",
         DEVICES_LAST_SEEN: "DEVICES_LAST_SEEN",
@@ -251,6 +252,7 @@ export const AppConstants = {
         ABOUT: 4,
         AUDIT: 4,
         CAMPAIGNS: 5,
+        CHART: 8,
         DATETIME: 4,
         DEVICE_MAP: 4,
         DEVICES_LAST_SEEN: 3,
@@ -269,6 +271,14 @@ export const AppConstants = {
           entries: 5
         },
         CAMPAIGNS: {},
+        CHART: {
+          hardwareIds: [],
+          tags: [],
+          measurements: [],
+          height: 300,
+          totalPoints: 100,
+          lineTension: 0.5
+        },
         DATETIME: {
           date: true,
           time: true,
@@ -279,7 +289,7 @@ export const AppConstants = {
           formatDateTime: "MMMM Do YYYY, h:mm:ss a"
         },
         DEVICE_MAP: {
-          zoom: 2,
+          zoom: 10,
           height: 200,
           hardwareIds: [],
           tags: []

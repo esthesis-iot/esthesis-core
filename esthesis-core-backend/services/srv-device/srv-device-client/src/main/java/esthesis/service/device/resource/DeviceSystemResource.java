@@ -79,6 +79,12 @@ public interface DeviceSystemResource {
 	@Path("/v1/find/by-tag-names")
 	List<String> findByTagNames(@QueryParam("tags") String tags);
 
+	/**
+	 * Find devices by tag name.
+	 *
+	 * @param tags Comma-separated list of tag names.
+	 * @return List of device hardware IDs.
+	 */
 	@GET
 	@Path("/v1/find/by-tag-ids")
 	List<String> findByTagIds(@QueryParam("tags") String tags);

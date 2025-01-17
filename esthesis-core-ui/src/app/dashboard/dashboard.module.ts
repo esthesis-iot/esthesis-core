@@ -130,6 +130,12 @@ import {LeafletModule} from "@bluehalo/ngx-leaflet";
 import {
   DashboardItemTitleEditComponent
 } from "./items/dashboard-item-title-edit/dashboard-item-title-edit.component";
+import {
+  DashboardItemChartComponent
+} from "./items/dashboard-item-chart/dashboard-item-chart.component";
+import {
+  DashboardItemChartEditComponent
+} from "./items/dashboard-item-chart-edit/dashboard-item-chart-edit.component";
 
 // @ts-ignore
 @NgModule({
@@ -155,6 +161,8 @@ import {
     DashboardItemAuditEditComponent,
     DashboardItemCampaignsEditComponent,
     DashboardItemDeviceMapEditComponent,
+    DashboardItemChartComponent,
+    DashboardItemChartEditComponent,
     DashboardItemDevicesLatestEditComponent,
     DashboardItemDevicesStatusEditComponent,
     DashboardItemNotesEditComponent,
@@ -210,7 +218,7 @@ import {
     CdkHeaderCellDef,
     FormsModule,
     LeafletModule,
-    NgOptimizedImage
+    NgOptimizedImage,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [

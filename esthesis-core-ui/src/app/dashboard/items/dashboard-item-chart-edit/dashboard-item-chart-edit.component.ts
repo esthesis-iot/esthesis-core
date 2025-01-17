@@ -9,28 +9,28 @@ import {UtilityService} from "../../../shared/services/utility.service";
 import {AppConstants} from "../../../app.constants";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {DeviceDto} from "../../../devices/dto/device-dto";
-import {
-  DashboardItemDeviceMapConfigurationDto
-} from "../../dto/configuration/dashboard-item-device-map-configuration-dto";
 import {TagDto} from "../../../tags/dto/tag-dto";
 import {TagsService} from "../../../tags/tags.service";
+import {
+  DashboardItemChartConfigurationDto
+} from "../../dto/configuration/dashboard-item-chart-configuration-dto";
 
 @Component({
-  selector: 'app-dashboard-item-device-map-edit',
-  templateUrl: './dashboard-item-device-map-edit.component.html'
+  selector: 'app-dashboard-item-chart-edit',
+  templateUrl: './dashboard-item-chart-edit.component.html'
 })
-export class DashboardItemDeviceMapEditComponent extends SecurityBaseComponent implements OnInit {
+export class DashboardItemChartEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
-  // A helper auto-complete container for devices matching the user's search input.
+  // Auto-complete complete helpers.
   searchHardwareIds?: string[];
+  allUniqueMeasurements?: string[];
+  filteredUniqueMeasurements?: string[];
   tags?: TagDto[];
-  // Display a warning that no measurements are defined as coordinates in application settings.
-  noCoordsWarning = false;
 
   constructor(@Inject(MAT_DIALOG_DATA) public readonly incomingDi: DashboardItemDto,
     private readonly fb: FormBuilder, private readonly deviceService: DevicesService,
     private readonly settingsService: SettingsService, private readonly utilityService: UtilityService,
-    public dialogRef: MatDialogRef<DashboardItemDeviceMapEditComponent>,
+    public dialogRef: MatDialogRef<DashboardItemChartEditComponent>,
     private readonly tagService: TagsService) {
     super(AppConstants.SECURITY.CATEGORY.DASHBOARD);
 
@@ -42,26 +42,26 @@ export class DashboardItemDeviceMapEditComponent extends SecurityBaseComponent i
       columns: [this.incomingDi.columns, [Validators.required]],
       configuration_hardwareIds: [[]],
       configuration_tags: [[]],
-      configuration_zoom_level: [0, [Validators.required]],
-      configuration_map_lat: [[], []],
-      configuration_map_lon: [[]],
+      configuration_measurements: [[]],
       configuration_height: [null, [Validators.required]],
+      configuration_totalPoints: [null, [Validators.required]],
+      configuration_lineTension: [null, [Validators.required]],
       search_hardwareId: [],
-      search_tags: [],
+      search_measurement: []
     });
   }
 
   ngOnInit(): void {
     // Parse configuration.
     if (this.incomingDi.configuration != null) {
-      const conf = JSON.parse(this.incomingDi.configuration) as DashboardItemDeviceMapConfigurationDto;
+      const conf = JSON.parse(this.incomingDi.configuration) as DashboardItemChartConfigurationDto;
       this.form.patchValue({
         configuration_hardwareIds: conf.hardwareIds,
         configuration_tags: conf.tags,
-        configuration_zoom_level: conf.zoom,
-        configuration_map_lat: conf.mapLat,
-        configuration_map_lon: conf.mapLon,
-        configuration_height: conf.height
+        configuration_measurements: conf.measurements,
+        configuration_height: conf.height,
+        configuration_totalPoints: conf.totalPoints,
+        configuration_lineTension: conf.lineTension
       })
     }
 
@@ -87,8 +87,19 @@ export class DashboardItemDeviceMapEditComponent extends SecurityBaseComponent i
         } else {
           this.searchHardwareIds = [];
         }
-      }, error: (err) => {
+      }
+    });
 
+    // Monitor for changes in search by measurement input, search by partial match.
+    this.form.get("search_measurement")!.valueChanges.pipe(
+      distinctUntilChanged()
+    ).subscribe({
+      next: (searchVal: string) => {
+        if (searchVal && searchVal.trim() !== "") {
+          this.filteredUniqueMeasurements = this.allUniqueMeasurements!.filter(m => m.includes(searchVal));
+        } else {
+          this.filteredUniqueMeasurements = this.allUniqueMeasurements;
+        }
       }
     });
 
@@ -102,16 +113,13 @@ export class DashboardItemDeviceMapEditComponent extends SecurityBaseComponent i
       }
     });
 
-    // Check if coordinates measurements are defined in application settings.
-    this.settingsService.findByNames([AppConstants.DEVICE.SETTING.DEVICE_GEO_LAT, AppConstants.DEVICE.SETTING.DEVICE_GEO_LON]).subscribe({
-      next: (res) => {
-        if (res && res.length < 2) {
-          this.noCoordsWarning = true;
-        }
-        console.log("res", res);
-      }, error: (error) => {
-        this.utilityService.popupErrorWithTraceId(
-          "Could not fetch settings, please try again later.", error);
+    // Fetch possible device measurements.
+    this.settingsService.findMeasurementNames().subscribe({
+      next: next => {
+        this.allUniqueMeasurements = next;
+        this.filteredUniqueMeasurements = next;
+      }, error: err => {
+        this.utilityService.popupErrorWithTraceId("Error fetching device measurements.", err);
       }
     });
 
@@ -130,11 +138,11 @@ export class DashboardItemDeviceMapEditComponent extends SecurityBaseComponent i
       configuration: JSON.stringify({
         hardwareIds: this.form.get("configuration_hardwareIds")!.value,
         tags: this.form.get("configuration_tags")!.value,
-        zoom: this.form.get("configuration_zoom_level")!.value,
+        measurements: this.form.get("configuration_measurements")!.value,
         height: this.form.get("configuration_height")!.value,
-        mapLat: this.form.get("configuration_map_lat")!.value,
-        mapLon: this.form.get("configuration_map_lon")!.value
-      } as DashboardItemDeviceMapConfigurationDto)
+        totalPoints: this.form.get("configuration_totalPoints")!.value,
+        lineTension: this.form.get("configuration_lineTension")!.value
+      } as DashboardItemChartConfigurationDto)
     }
     this.dialogRef.close(di);
   }
@@ -153,7 +161,21 @@ export class DashboardItemDeviceMapEditComponent extends SecurityBaseComponent i
 
   removeHardwareId(hardwareId: string) {
     this.form.get("configuration_hardwareIds")?.value
-    .splice(this.form.get("configuration_hardwareIds")?.value.indexOf(hardwareId), 1);
+      .splice(this.form.get("configuration_hardwareIds")?.value.indexOf(hardwareId), 1);
+  }
+
+  addMeasurement() {
+    // Before adding a measurement, check if it's already in the list.
+    let measurement = this.form.get("search_measurement")?.value;
+    if (!this.form.get("configuration_measurements")?.value.includes(measurement)) {
+      this.form.get("configuration_measurements")?.value.push(measurement);
+    }
+    this.form.get("search_measurement")?.setValue(null);
+  }
+
+  removeMeasurement(measurement: string) {
+    this.form.get("configuration_measurements")?.value
+    .splice(this.form.get("configuration_measurements")?.value.indexOf(measurement), 1);
   }
 }
 

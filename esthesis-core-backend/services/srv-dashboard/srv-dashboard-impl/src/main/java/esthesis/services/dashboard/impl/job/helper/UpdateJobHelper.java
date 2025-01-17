@@ -62,9 +62,11 @@ public abstract class UpdateJobHelper<T> {
 	public abstract T refresh(DashboardEntity dashboardEntity, DashboardItemDTO item);
 
 	/**
-	 * Initializes the helpers of this job. This method is called by {@link DashboardUpdateJobFactory}
-	 * when the job is created and before it is returned to the caller. By default, this method does
-	 * nothing unless overridden.
+	 * Initialises the helpers of this job. This method is called by {@link DashboardUpdateJobFactory}
+	 * when the job is created, before it is returned to the caller. By default, this method does
+	 * nothing unless overridden. Also, take into account that when the job is initialised it is not
+	 * known for which specific dashboard item it will be used, so any initialisation logic should be
+	 * generic and not depend on the specific dashboard item's needs.
 	 */
 	public void init() {
 	}

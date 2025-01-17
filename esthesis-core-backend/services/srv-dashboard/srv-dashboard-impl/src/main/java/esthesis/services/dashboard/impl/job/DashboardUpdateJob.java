@@ -10,6 +10,7 @@ import esthesis.services.dashboard.impl.dto.DashboardUpdate;
 import esthesis.services.dashboard.impl.job.helper.AboutUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.AuditUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.CampaignsUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.ChartUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DatetimeUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DeviceMapUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DevicesLastSeenUpdateJobHelper;
@@ -111,15 +112,9 @@ public class DashboardUpdateJob {
 	 * Executes the job task.
 	 */
 	public void execute() {
-		log.debug("Executing job for subscription '{}' for dashboard '{}'.", subscriptionId,
+		log.trace("Executing job for subscription '{}' for dashboard '{}'.", subscriptionId,
 			dashboardId);
 		dashboardEntity.getItems().stream().filter(DashboardItemDTO::isEnabled).forEach(item -> {
-			// Uncomment to simulate a slow update.
-			try {
-				Thread.sleep(300);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
 			switch (item.getType()) {
 				case ABOUT:
 					CompletableFuture.runAsync(
@@ -134,6 +129,11 @@ public class DashboardUpdateJob {
 				case CAMPAIGNS:
 					CompletableFuture.runAsync(
 						() -> broadcast(((CampaignsUpdateJobHelper) helpers.get(CampaignsUpdateJobHelper.class))
+							.refresh(dashboardEntity, item), item.getId()), threadPool);
+					break;
+				case CHART:
+					CompletableFuture.runAsync(
+						() -> broadcast(((ChartUpdateJobHelper) helpers.get(ChartUpdateJobHelper.class))
 							.refresh(dashboardEntity, item), item.getId()), threadPool);
 					break;
 				case DATETIME:

@@ -57,6 +57,9 @@ import {v4} from "uuid";
 import {
   DashboardItemTitleEditComponent
 } from "../items/dashboard-item-title-edit/dashboard-item-title-edit.component";
+import {
+  DashboardItemChartEditComponent
+} from "../items/dashboard-item-chart-edit/dashboard-item-chart-edit.component";
 
 @Component({
   selector: "app-dashboard-edit",
@@ -103,8 +106,7 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
         next: (response) => {
           this.dashboardItems = response.items;
           // For development: automatically open the edit/add item dialog.
-          // this.configureItem(this.dashboardItems[3]);
-          // this.addItem();
+          // this.configureItem(this.dashboardItems[0]);
         }, error: (error) => {
           this.utilityService.popupErrorWithTraceId("Could not fetch dashboard items.", error);
         }
@@ -224,6 +226,9 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
         break;
       case AppConstants.DASHBOARD.ITEM.TYPE.CAMPAIGNS:
         diEditComponent = DashboardItemCampaignsEditComponent;
+        break;
+      case AppConstants.DASHBOARD.ITEM.TYPE.CHART:
+        diEditComponent = DashboardItemChartEditComponent;
         break;
       case AppConstants.DASHBOARD.ITEM.TYPE.DATETIME:
         diEditComponent = DashboardItemDatetimeEditComponent;

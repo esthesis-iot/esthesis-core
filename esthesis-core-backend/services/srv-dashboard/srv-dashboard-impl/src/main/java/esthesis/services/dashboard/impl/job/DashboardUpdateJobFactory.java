@@ -6,6 +6,7 @@ import esthesis.service.dashboard.entity.DashboardEntity;
 import esthesis.services.dashboard.impl.job.helper.AboutUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.AuditUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.CampaignsUpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.ChartUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DatetimeUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DeviceMapUpdateJobHelper;
 import esthesis.services.dashboard.impl.job.helper.DevicesLastSeenUpdateJobHelper;
@@ -50,6 +51,7 @@ public class DashboardUpdateJobFactory {
 	private final TitleUpdateJobHelper titleUpdateJobHelper;
 	private final ImageUpdateJobHelper imageUpdateJobHelper;
 	private final DatetimeUpdateJobHelper datetimeUpdateJobHelper;
+	private final ChartUpdateJobHelper chartUpdateJobHelper;
 	private final DashboardService dashboardService;
 	private final Sse sse;
 	private final ObjectMapper objectMapper;
@@ -70,6 +72,7 @@ public class DashboardUpdateJobFactory {
 		map.put(TitleUpdateJobHelper.class, titleUpdateJobHelper);
 		map.put(ImageUpdateJobHelper.class, imageUpdateJobHelper);
 		map.put(DatetimeUpdateJobHelper.class, datetimeUpdateJobHelper);
+		map.put(ChartUpdateJobHelper.class, chartUpdateJobHelper);
 
 		return map;
 	}
@@ -95,11 +98,12 @@ public class DashboardUpdateJobFactory {
 			() -> new QDoesNotExistException("Dashboard '{}' does not exist.", dashboardId));
 
 		// Initialise helpers.
-		getHelpers().forEach((k, v) -> v.init());
+		Map<Class<? extends UpdateJobHelper<?>>, UpdateJobHelper<?>> helpers = getHelpers();
+		helpers.forEach((k, v) -> v.init());
 
 		// Create job.
 		DashboardUpdateJob job = new DashboardUpdateJob(subscriptionId, sse, dashboardId,
-			sseBroadcaster, dashboardEntity, objectMapper, getHelpers());
+			sseBroadcaster, dashboardEntity, objectMapper, helpers);
 
 		// Return job.
 		log.debug("Job task initialised for subscription '{}' for dashboard '{}'.", subscriptionId,

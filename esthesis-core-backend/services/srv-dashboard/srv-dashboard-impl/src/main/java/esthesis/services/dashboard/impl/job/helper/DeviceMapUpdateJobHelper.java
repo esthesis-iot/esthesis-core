@@ -62,28 +62,35 @@ public class DeviceMapUpdateJobHelper extends UpdateJobHelper<DashboardUpdateDev
 			}
 
 			// Find the hardware IDs to be displayed on the map.
-			List<String> hardwareIds = new ArrayList<>(List.of(config.getHardwareIds()));
+			List<String> hardwareIds = new ArrayList<>();
+			if (config.getHardwareIds() != null && config.getHardwareIds().length > 0) {
+				hardwareIds.addAll(List.of(config.getHardwareIds()));
+			}
 			if (config.getTags() != null && config.getTags().length > 0) {
 				hardwareIds.addAll(deviceSystemResource.findByTagIds(String.join(",", config.getTags())));
 			}
 			hardwareIds = hardwareIds.stream().distinct().collect(Collectors.toList());
 
-			// Get coordinates and return update.
-			hardwareIds.forEach(hardwareId -> {
-				if (checkSecurity(dashboardEntity, Category.DEVICE, Operation.READ, hardwareId)) {
-					String lat = redisUtils.getFromHash(KeyType.ESTHESIS_DM, hardwareId, latMeasurement);
-					String lon = redisUtils.getFromHash(KeyType.ESTHESIS_DM, hardwareId, lonMeasurement);
-					if (StringUtils.isNotBlank(lat) && StringUtils.isNotBlank(lon)) {
-						replyBuilder.coordinate(String.join(",", hardwareId, lat, lon));
+			if (hardwareIds.isEmpty()) {
+				return replyBuilder.build();
+			} else {
+				// Get coordinates and return update.
+				hardwareIds.forEach(hardwareId -> {
+					if (checkSecurity(dashboardEntity, Category.DEVICE, Operation.READ, hardwareId)) {
+						String lat = redisUtils.getFromHash(KeyType.ESTHESIS_DM, hardwareId, latMeasurement);
+						String lon = redisUtils.getFromHash(KeyType.ESTHESIS_DM, hardwareId, lonMeasurement);
+						if (StringUtils.isNotBlank(lat) && StringUtils.isNotBlank(lon)) {
+							replyBuilder.coordinate(String.join(",", hardwareId, lat, lon));
+						}
+					} else {
+						// Although the caller would not know for which hardware ID the security check
+						// failed, we should indicate that a security error occurred.
+						replyBuilder.isSecurityError(true);
 					}
-				} else {
-					// Although the caller would not know for which hardware ID the security check
-					// failed, we should indicate that a security error occurred.
-					replyBuilder.isSecurityError(true);
-				}
-			});
+				});
 
-			return replyBuilder.build();
+				return replyBuilder.build();
+			}
 		} catch (Exception e) {
 			log.error("Error processing '{}' for dashboard item '{}'.", Type.DEVICE_MAP, item.getId(), e);
 			return replyBuilder.isError(true).build();

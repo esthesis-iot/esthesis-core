@@ -58,14 +58,24 @@ export class DashboardItemNewComponent extends SecurityBaseComponent implements 
         available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.CAMPAIGNS)
       },
       {
+        name: "Chart", description: "Display device measurements on a chart.", icon: "about.png"
+        , type: this.appConstants.DASHBOARD.ITEM.TYPE.CHART,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.CHART)
+      },
+      {
         name: "Date/Time", description: "Displays date and time.", icon: "about.png"
         , type: this.appConstants.DASHBOARD.ITEM.TYPE.DATETIME,
         available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.DATETIME)
       },
       {
-        name: "Map", description: "Displays a map with device coordinates.", icon: "about.png",
-        type: this.appConstants.DASHBOARD.ITEM.TYPE.DEVICE_MAP,
-        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.DEVICE_MAP)
+        name: "Icon", description: "Displays a device sensor with an icon that changes based on sensor value.",
+        icon: "about.png", type: this.appConstants.DASHBOARD.ITEM.TYPE.SENSOR_ICON,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.SENSOR_ICON)
+      },
+      {
+        name: "Image", description: "Displays an image.", icon: "about.png",
+        type: this.appConstants.DASHBOARD.ITEM.TYPE.IMAGE,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.IMAGE)
       },
       {
         name: "Last seen", description: "Displays statistics on when devices were last seen.",
@@ -78,19 +88,19 @@ export class DashboardItemNewComponent extends SecurityBaseComponent implements 
         available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_LATEST)
       },
       {
-        name: "Status", description: "Displays statistics on devices status.", icon: "about.png",
-        type: this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_STATUS,
-        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_STATUS)
-      },
-      {
-        name: "Image", description: "Displays an image.", icon: "about.png",
-        type: this.appConstants.DASHBOARD.ITEM.TYPE.IMAGE,
-        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.IMAGE)
+        name: "Map", description: "Displays a map with device coordinates.", icon: "about.png",
+        type: this.appConstants.DASHBOARD.ITEM.TYPE.DEVICE_MAP,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.DEVICE_MAP)
       },
       {
         name: "Notes", description: "Displays user notes.", icon: "about.png",
         type: this.appConstants.DASHBOARD.ITEM.TYPE.NOTES,
         available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.NOTES)
+      },
+      {
+        name: "Status", description: "Displays statistics on devices status.", icon: "about.png",
+        type: this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_STATUS,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.DEVICES_STATUS)
       },
       {
         name: "Security", description: "Displays statistics on security.", icon: "about.png",
@@ -101,11 +111,6 @@ export class DashboardItemNewComponent extends SecurityBaseComponent implements 
         name: "Sensor", description: "Displays a device sensor.", icon: "about.png",
         type: this.appConstants.DASHBOARD.ITEM.TYPE.SENSOR,
         available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.SENSOR)
-      },
-      {
-        name: "Icon", description: "Displays a device sensor with an icon that changes based on sensor value.",
-        icon: "about.png", type: this.appConstants.DASHBOARD.ITEM.TYPE.SENSOR_ICON,
-        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.SENSOR_ICON)
       },
       {
         name: "Title", description: "Displays a text title.", icon: "about.png",
