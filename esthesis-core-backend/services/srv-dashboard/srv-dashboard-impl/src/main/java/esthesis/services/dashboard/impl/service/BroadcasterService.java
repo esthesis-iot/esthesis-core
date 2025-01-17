@@ -102,7 +102,7 @@ public class BroadcasterService {
 		log.trace("Checking for stale jobs.");
 		for (Map.Entry<String, Pair<DashboardUpdateJob, Instant>> entry :
 			new HashMap<>(subscriptionsTracker).entrySet()) {
-			if (entry.getValue().getRight().isBefore(Instant.now().minus(5, ChronoUnit.MINUTES))) {
+			if (entry.getValue().getRight().isBefore(Instant.now().minus(15, ChronoUnit.MINUTES))) {
 				log.debug("Job '{}' is stale, unscheduling.", entry.getKey());
 				unregister(entry.getKey());
 			}

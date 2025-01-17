@@ -7,10 +7,8 @@ import {UtilityService} from "../../shared/services/utility.service";
 import screenfull from "screenfull";
 import {SseClient} from "ngx-sse-client";
 import {OidcSecurityService} from "angular-auth-oidc-client";
-import {HttpHeaders} from "@angular/common/http";
 import {catchError, map, Observable, of, Subscription, tap} from "rxjs";
 import {v4 as uuidv4} from "uuid";
-import * as _ from "lodash";
 
 @Component({
   selector: "app-dashboard-view",
@@ -79,42 +77,38 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
 
   private subscribeToDashboard() {
     this.logger.logDebug("Subscribing to dashboard " + this.selectedDashboard?.id + ".");
-    if (this.selectedDashboard && _.filter(this.selectedDashboard?.items, {enabled: true}).length > 0) {
-      this.oidcSecurityService.getAccessToken().subscribe((token) => {
-        // Set up a refresh subscription handler.
-        this.logger.logDebug("Setting up refresh subscription handler for dashboard " + this.selectedDashboard!.id + ".");
-        this.subscriptionRefreshHandler = window.setInterval(() => {
-          this.dashboardService.refreshSub(this.subscriptionId).subscribe({
-            next: () => {
-              this.logger.logDebug("Refreshed dashboard " + this.selectedDashboard!.id);
-            }, error: (error) => {
-              this.logger.logError("Could not refresh dashboard " + this.selectedDashboard!.id, error);
-            }
-          });
-        }, this.appConstants.DASHBOARD.REFRESH_INTERVAL_MINUTES * 60000);
-
-        // Subscribe to SSE events for this dashboard.
-        this.logger.logDebug("Subscribing to SSE events for dashboard " + this.selectedDashboard?.id + ".");
-        const headers = new HttpHeaders().set("Authorization", `Bearer ${token}`);
-        this.sseSubscription = this.sseClient.stream(
-          `api/dashboard/v1/sub/${this.selectedDashboard?.id}/${this.subscriptionId}`,
-          {keepAlive: true, reconnectionDelay: 3000, responseType: "event"},
-          {headers}, "GET").subscribe((event) => {
-          if (event.type === "error") {
-            const errorEvent = event as ErrorEvent;
-            this.logger.logError("Error in SSE event for dashboard " + this.selectedDashboard?.id
-              + ": " + errorEvent.message + ".");
-          } else {
-            const messageEvent = event as MessageEvent;
-            const eventData = JSON.parse(messageEvent.data);
-            // Uncomment to debug all incoming messages.
-            // this.logger.logDebug("Received SSE event for dashboard.", eventData);
-            this.dashboardService.sendMessage(eventData);
-            this.lastEventDate = new Date();
+    this.oidcSecurityService.getAccessToken().subscribe((token) => {
+      // Set up a refresh subscription handler.
+      this.logger.logDebug("Setting up refresh subscription handler for dashboard " + this.selectedDashboard!.id + ".");
+      this.subscriptionRefreshHandler = window.setInterval(() => {
+        this.dashboardService.refreshSub(this.subscriptionId).subscribe({
+          next: () => {
+            this.logger.logDebug("Refreshed dashboard " + this.selectedDashboard!.id);
+          }, error: (error) => {
+            this.logger.logError("Could not refresh dashboard " + this.selectedDashboard!.id, error);
           }
         });
+      }, this.appConstants.DASHBOARD.REFRESH_INTERVAL_MINUTES * 60000);
+
+      // Subscribe to SSE events for this dashboard.
+      this.logger.logDebug("Subscribing to SSE events for dashboard " + this.selectedDashboard?.id + ".");
+      this.sseSubscription = this.sseClient.stream(
+        `/api/dashboard/v1/sub/${this.selectedDashboard?.id}/${this.subscriptionId}`,
+        {keepAlive: true, reconnectionDelay: 3000, responseType: "event"}).subscribe((event) => {
+        if (event.type === "error") {
+          const errorEvent = event as ErrorEvent;
+          this.logger.logError("Error in SSE event for dashboard " + this.selectedDashboard?.id
+            + ": " + errorEvent.message + ".");
+        } else {
+          const messageEvent = event as MessageEvent;
+          const eventData = JSON.parse(messageEvent.data);
+          // Uncomment to debug all incoming messages.
+          // this.logger.logDebug("Received SSE event for dashboard.", eventData);
+          this.dashboardService.sendMessage(eventData);
+          this.lastEventDate = new Date();
+        }
       });
-    }
+    });
   }
 
   private unsubscribeFromDashboard(): Observable<boolean> {

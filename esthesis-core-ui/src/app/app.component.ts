@@ -3,6 +3,8 @@ import {BaseComponent} from "./shared/components/base-component";
 import {OidcSecurityService} from "angular-auth-oidc-client";
 import {SecurityService} from "./security/security.service";
 import {UtilityService} from "./shared/services/utility.service";
+import {HttpEvent, HttpHandlerFn, HttpRequest} from "@angular/common/http";
+import {Observable} from "rxjs";
 
 @Component({
   selector: "app-root",
@@ -43,4 +45,9 @@ export class AppComponent extends BaseComponent implements OnInit {
       }
     });
   }
+}
+
+export function loggingInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> {
+  console.log(req.url);
+  return next(req);
 }
