@@ -219,7 +219,7 @@ pipeline {
     }
     post {
         success {
-            build job: 'esthesis-dev-deploy'
+            build job: "esthesis-dev-deploy/main", propagate: false, wait: false
         }
         changed {
             emailext subject: '$DEFAULT_SUBJECT',
