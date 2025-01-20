@@ -68,6 +68,42 @@ pipeline {
                 }
             }
         }
+        stage ('Clone Common and Bom Repositories') {
+            steps {
+                container (name: 'esthesis-core-builder') {
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        sh '''
+                            git config --global user.email "devops-d2@eurodyn.com"
+                            git config --global user.name "$Username"
+                            git clone https://$Password@github.com/esthesis-iot/esthesis-bom
+                            git clone https://$Password@github.com/esthesis-iot/esthesis-common
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Build Bom') {
+            steps {
+                container (name: 'esthesis-core-builder') {
+                    sh '''
+                        cd esthesis-bom
+                        mvn clean install
+                    '''
+                }
+            }
+        }
+        stage('Build Common') {
+            steps {
+                container (name: 'esthesis-core-builder') {
+                    sh '''
+                        cd esthesis-common
+                        mvn clean install
+                    '''
+                }
+            }
+        }
         stage ('Builds') {
             parallel {
                 stage('Go Build Device') {
@@ -126,6 +162,7 @@ pipeline {
             steps {
                 container (name: 'esthesis-core-builder') {
                     sh '''
+                        export PATH=$PATH:$(go env GOPATH)/bin
                         cd esthesis-core-device
                         /root/go/bin/cyclonedx-gomod mod go > go/bom.xml
                     '''
@@ -181,6 +218,9 @@ pipeline {
         }
     }
     post {
+        success {
+            build job: 'esthesis-dev-deploy'
+        }
         changed {
             emailext subject: '$DEFAULT_SUBJECT',
                 body: '$DEFAULT_CONTENT',
