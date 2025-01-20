@@ -171,7 +171,7 @@ fi
 # Before start building the requested module(s), check if a global build needs to be performed
 # first. This is to build dependencies that are shared between modules.
 if [ "$ESTHESIS_GLOBAL_BUILD" = "true" ]; then
-	printInfo "Performing global build."
+	printInfo "Performing global build using $MVNW with parameters $MAVEN_OPTIMISE_PARAMS."
 	$MVNW clean package $MAVEN_OPTIMISE_PARAMS
 fi
 

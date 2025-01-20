@@ -4,7 +4,7 @@
   </div>
   <div *ngIf="item.subtitle" class="stat-desc">{{ item.subtitle }}</div>
   <div *ngIf="lastMessage && config" class="text-2xl">
-    {{ lastMessage?.title }}
+    {{ lastMessage.title }}
   </div>
   <div *ngIf="!lastMessage || !config" class="text-2xl skeleton">
     &nbsp;

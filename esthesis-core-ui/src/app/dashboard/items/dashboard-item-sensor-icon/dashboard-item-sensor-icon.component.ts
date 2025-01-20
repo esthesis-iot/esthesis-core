@@ -27,7 +27,9 @@ export class DashboardItemSensorIconComponent
     if (this.config && this.lastMessage?.value) {
       for (const condition of this.config.conditions) {
         const conditionValue = condition.condition.replace("{val}", this.lastMessage?.value);
-        if (eval(conditionValue)) {
+        // Avoid direct-eval (https://esbuild.github.io/content-types/#direct-eval).
+        const eval2 = eval;
+        if (eval2(conditionValue)) {
           icon = condition.icon;
           break;
         }

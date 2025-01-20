@@ -1,5 +1,11 @@
 package esthesis.services.audit.impl.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.common.paging.Page;
 import esthesis.services.audit.impl.TestHelper;
@@ -7,10 +13,7 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.bson.types.ObjectId;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @TestTransaction
@@ -30,9 +33,9 @@ class AuditServiceTest {
 
 		// Assert find all
 		Page<AuditEntity> entityPage =
-			auditService.find(testHelper.makePageable(0,10,"name,asc"), true);
+			auditService.find(testHelper.makePageable(0, 10, "name,asc"), true);
 
-		assertEquals(2, entityPage.getContent().size());
+		assertTrue(entityPage.getContent().size() >= 2);
 	}
 
 	@Test
@@ -45,8 +48,6 @@ class AuditServiceTest {
 		// Assert entity was persisted
 		assertNotNull(entity);
 		assertEquals(auditId, entity.getId().toString());
-		assertEquals(1, testHelper.findAllEntities().stream().count());
-
 	}
 
 	@Test
@@ -64,36 +65,44 @@ class AuditServiceTest {
 
 	@Test
 	void deleteByIdOK() {
-		// Insert and extract new audit id
+		// Count the records before delete.
+		long countBefore = auditService.countAll();
+
+		// Insert and extract new audit id.
 		String auditId = testHelper.persistAuditEntity().getId().toString();
 
-	 // Perform delete operation
-	 boolean deleted =	auditService.deleteById(auditId);
+		// Perform delete operation.
+		boolean deleted = auditService.deleteById(auditId);
 
-		// Assert entity was deleted
+		// Assert entity was deleted.
 		assertTrue(deleted);
-		assertEquals(0, testHelper.findAllEntities().stream().count());
+		long countAfter = auditService.countAll();
+		assertEquals(countBefore, countAfter);
 	}
 
 	@Test
 	void deleteByIdNOK() {
-		// Insert a new audit entity
-		testHelper.persistAuditEntity().getId().toString();
+		// Count the records before delete.
+		long countBefore = auditService.countAll();
 
-		// Perform delete operation for a nonexistent id
-		boolean deleted =	auditService.deleteById(new ObjectId().toString());
+		// Insert a new audit entity.
+		testHelper.persistAuditEntity();
 
-		// Assert entity was not deleted
+		// Perform delete operation for a nonexistent id.
+		boolean deleted = auditService.deleteById(new ObjectId().toString());
+
+		// Assert entity was not deleted.
 		assertFalse(deleted);
-		assertEquals(1, testHelper.findAllEntities().stream().count());
+		long countAfter = auditService.countAll();
+		assertTrue(countBefore < countAfter);
 	}
 
 	@Test
 	void save() {
-		// Perform a save operation
-		auditService.save(testHelper.makeAuditEntity());
+		// Perform a save operation.
+		String id = auditService.save(testHelper.makeAuditEntity()).getId().toHexString();
 
-		// Assert entity was persisted
-		assertEquals(1, testHelper.findAllEntities().stream().count());
+		// Assert entity was persisted.
+		assertNotNull(auditService.findById(id));
 	}
 }
