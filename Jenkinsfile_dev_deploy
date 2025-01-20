@@ -126,6 +126,7 @@ pipeline {
                                             export ESTHESIS_REGISTRY_USERNAME=$Username
                                             export ESTHESIS_REGISTRY_PASSWORD=$Password
                                             export ESTHESIS_GLOBAL_BUILD=true
+                                            export ESTHESIS_LOCAL_BUILD=false
                                             ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
                                         '''
                                     }
