@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {map} from "rxjs";
 import {LogLevel, StsConfigHttpLoader} from "angular-auth-oidc-client";
 import {OidcConfigDto} from "./dto/oidc-config-dto";
@@ -19,7 +19,7 @@ export const httpLoaderFactory = (httpClient: HttpClient) => {
         maxIdTokenIatOffsetAllowedInSeconds: config.maxIdTokenIatOffsetAllowedInSeconds,
         ignoreNonceAfterRefresh: config.ignoreNonceAfterRefresh,
         secureRoutes: config.secureRoutes,
-        logLevel: LogLevel.Warn
+        logLevel: LogLevel.Warn,
       };
     })
   );

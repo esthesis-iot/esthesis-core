@@ -7,7 +7,7 @@ import {
 import {NgModule} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {AppComponent, loggingInterceptor} from "./app.component";
+import {AppComponent} from "./app.component";
 import {routing} from "./app.routes";
 import {QFormsModule} from "@qlack/forms";
 import {AuthInterceptor, AuthModule, StsConfigLoader} from "angular-auth-oidc-client";
@@ -134,7 +134,7 @@ import {provideLumberjackConsoleDriver} from "@ngworker/lumberjack/console-drive
     QFormsModule,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     provideCharts(withDefaultRegisterables()),
-    provideHttpClient(withInterceptors([progressInterceptor, loggingInterceptor])),
+    provideHttpClient(withInterceptors([progressInterceptor])),
     provideNgProgressOptions({
       flat: false
     }),

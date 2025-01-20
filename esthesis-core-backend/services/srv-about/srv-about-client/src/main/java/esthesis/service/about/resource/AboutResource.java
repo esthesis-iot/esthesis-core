@@ -7,8 +7,8 @@ import jakarta.ws.rs.Path;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 @Path("/api")
-@RegisterRestClient(configKey = "AboutResource")
 @AccessToken
+@RegisterRestClient(configKey = "AboutResource")
 public interface AboutResource {
 
 	@GET
