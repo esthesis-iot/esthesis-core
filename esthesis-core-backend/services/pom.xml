@@ -58,24 +58,24 @@
   </dependencies>
 
   <modules>
-    <module>srv-common</module>
-    <module>srv-device</module>
-    <module>srv-tag</module>
-    <module>srv-settings</module>
-    <module>srv-crypto</module>
-    <module>srv-kubernetes</module>
-    <module>srv-dataflow</module>
+    <module>srv-about</module>
     <module>srv-agent</module>
     <module>srv-application</module>
-    <module>srv-command</module>
-    <module>srv-provisioning</module>
-    <module>srv-infrastructure</module>
-    <module>srv-about</module>
-    <module>srv-dt</module>
     <module>srv-audit</module>
     <module>srv-campaign</module>
+    <module>srv-command</module>
+    <module>srv-common</module>
+    <module>srv-crypto</module>
+    <module>srv-dashboard</module>
+    <module>srv-dataflow</module>
+    <module>srv-device</module>
+    <module>srv-dt</module>
+    <module>srv-infrastructure</module>
+    <module>srv-kubernetes</module>
+    <module>srv-provisioning</module>
     <module>srv-public-access</module>
     <module>srv-security</module>
-    <module>srv-dashboard</module>
+    <module>srv-settings</module>
+    <module>srv-tag</module>
   </modules>
 </project>
