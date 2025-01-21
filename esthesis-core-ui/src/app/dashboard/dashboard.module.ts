@@ -136,6 +136,7 @@ import {
 import {
   DashboardItemChartEditComponent
 } from "./items/dashboard-item-chart-edit/dashboard-item-chart-edit.component";
+import { DashboardItemCommonConfigComponent } from './items/dashboard-item-common-config/dashboard-item-common-config.component';
 
 // @ts-ignore
 @NgModule({
@@ -175,6 +176,7 @@ import {
     DashboardItemImageEditComponent,
     DashboardItemUrlEditComponent,
     DashboardItemDevicesLastSeenEditComponent,
+    DashboardItemCommonConfigComponent,
   ],
   imports: [
     CommonModule,

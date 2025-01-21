@@ -9,31 +9,7 @@
     <div>
       <form [formGroup]="form" novalidate>
         <div class="flex flex-row gap-5">
-          <div class="flex flex-col">
-            <mat-form-field>
-              <mat-label>Title</mat-label>
-              <input formControlName="title" matInput>
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Subtitle</mat-label>
-              <input formControlName="subtitle" matInput>
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Columns</mat-label>
-              <mat-select formControlName="columns">
-                <mat-option [value]="1">1</mat-option>
-                <mat-option [value]="2">2</mat-option>
-                <mat-option [value]="3">3</mat-option>
-                <mat-option [value]="4">4</mat-option>
-                <mat-option [value]="5">5</mat-option>
-                <mat-option [value]="6">6</mat-option>
-                <mat-option [value]="7">7</mat-option>
-                <mat-option [value]="8">8</mat-option>
-                <mat-option [value]="0">Full width</mat-option>
-              </mat-select>
-              <mat-hint>Item's width in dashboard.</mat-hint>
-            </mat-form-field>
-          </div>
+          <app-dashboard-item-common-config [parentForm]="form"></app-dashboard-item-common-config>
           <div class="flex flex-col border-l-2 pl-4 border-base-200 flex-grow">
             <mat-form-field>
               <mat-label>Image URL</mat-label>
