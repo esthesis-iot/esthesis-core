@@ -3,5 +3,6 @@ quarkus:
     level: ERROR
   devservices:
     enabled: true
+    timeout: 5m
   http:
     test-port: 0
