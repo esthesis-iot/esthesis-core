@@ -42,8 +42,7 @@ export class DashboardItemNewComponent extends SecurityBaseComponent implements 
   ngOnInit(): void {
     this.itemsList = [
       {
-        name: "About", description: "Displays information about the esthesis CORE installation, " +
-          "similar to the About page.", icon: "about.png",
+        name: "About", description: "Displays information about the esthesis CORE installation.", icon: "about.png",
         type: this.appConstants.DASHBOARD.ITEM.TYPE.ABOUT,
         available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.ABOUT)
       },
@@ -73,7 +72,7 @@ export class DashboardItemNewComponent extends SecurityBaseComponent implements 
         available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.SENSOR_ICON)
       },
       {
-        name: "Image", description: "Displays an image.", icon: "about.png",
+        name: "Image", description: "Displays an image, supporting auto-refresh.", icon: "about.png",
         type: this.appConstants.DASHBOARD.ITEM.TYPE.IMAGE,
         available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.IMAGE)
       },

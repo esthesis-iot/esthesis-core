@@ -10,24 +10,20 @@
       <div *ngFor="let w of itemsList">
         <div *ngIf="w.available;then itemEnabled else itemDisabled"></div>
         <ng-template #itemEnabled>
-          <div class="card w-40 bg-base-100 shadow-xl hover:cursor-pointer hover:bg-base-200"
-               (click)="selectItem(w)" (keydown)="selectItem(w)" [matTooltip]="w.description">
-            <figure class="pt-4">
-              <img class="rounded-xl max-h-24" src="{{'assets/img/widgets/' + w.icon}}" alt=""/>
-            </figure>
+          <div class="card w-64 h-48 bg-base-100 shadow-xl hover:cursor-pointer hover:bg-base-200"
+               (click)="selectItem(w)" (keydown)="selectItem(w)">
             <div class="card-body items-center text-center">
               <h2 class="card-title">{{w.name}}</h2>
+              {{w.description}}
             </div>
           </div>
         </ng-template>
         <ng-template #itemDisabled>
-          <div class="card w-40 shadow-xl bg-base-100 hover:cursor-not-allowed opacity-25"
+          <div class="card w-64 h-48 shadow-xl bg-base-100 hover:cursor-not-allowed opacity-25"
                matTooltip="You can only have one item of this type in your dashboard.">
-            <figure class="pt-4">
-              <img class="rounded-xl max-h-24" src="{{'assets/img/widgets/' + w.icon}}" alt=""/>
-            </figure>
             <div class="card-body items-center text-center">
               <h2 class="card-title">{{w.name}}</h2>
+              {{w.description}}
             </div>
           </div>
         </ng-template>
