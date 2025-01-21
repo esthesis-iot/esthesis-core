@@ -13,8 +13,10 @@ export class SecurityPolicyTesterComponent implements OnInit {
   form: FormGroup;
   checkStatus = false;
 
-  constructor(private fb: FormBuilder, @Optional() private dialogRef: MatDialogRef<SecurityPolicyTesterComponent>,
-    private securityService: SecurityService, private utilityService: UtilityService) {
+  constructor(private readonly fb: FormBuilder,
+    @Optional() private readonly dialogRef: MatDialogRef<SecurityPolicyTesterComponent>,
+    private readonly securityService: SecurityService,
+    private readonly utilityService: UtilityService) {
     this.form = this.fb.group({
       policy: []
     });
@@ -25,8 +27,8 @@ export class SecurityPolicyTesterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.form.controls['policy'].valueChanges.pipe(debounceTime(250), distinctUntilChanged()).subscribe(() => {
-      this.securityService.isIncluded(this.form.controls['policy'].value).subscribe({
+    this.form.controls["policy"].valueChanges.pipe(debounceTime(250), distinctUntilChanged()).subscribe(() => {
+      this.securityService.isIncluded(this.form.controls["policy"].value).subscribe({
         next: (result) => {
           this.checkStatus = result;
         }, error: () => {

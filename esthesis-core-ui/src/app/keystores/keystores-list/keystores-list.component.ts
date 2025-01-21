@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatSort} from "@angular/material/sort";
-import {Router} from "@angular/router";
 import {KeystoresService} from "../keystores.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {QFormsService} from "@qlack/forms";
@@ -25,9 +24,9 @@ export class KeystoresListComponent extends SecurityBaseComponent implements OnI
   datasource: MatTableDataSource<KeystoreDto> = new MatTableDataSource<KeystoreDto>();
   filterForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router,
-    private storesService: KeystoresService, private qForms: QFormsService,
-    private keystoresServices: KeystoresService, private utilityService: UtilityService) {
+  constructor(private readonly fb: FormBuilder, private readonly qForms: QFormsService,
+    private readonly keystoresServices: KeystoresService,
+    private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.KEYSTORE);
     this.filterForm = this.fb.group({
       name: []

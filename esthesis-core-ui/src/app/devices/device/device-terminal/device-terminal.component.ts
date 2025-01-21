@@ -23,15 +23,14 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
   };
   timeout = 3000;
   polling = 500;
-  // command = "";
   private blockInput = false;
   private history: string[] = [];
   private historyPointer = 0;
   private winX: number;
   command = "";
 
-  constructor(private deviceTerminalService: DeviceTerminalService,
-    private utilityService: UtilityService, route: ActivatedRoute) {
+  constructor(private readonly deviceTerminalService: DeviceTerminalService,
+    private readonly utilityService: UtilityService, route: ActivatedRoute) {
     super(AppConstants.SECURITY.CATEGORY.DEVICE, route.snapshot.paramMap.get("id"));
     this.winX = window.innerWidth;
   }

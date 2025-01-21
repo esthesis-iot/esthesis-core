@@ -17,7 +17,7 @@ public class CVImpl<D> implements ConstraintViolation<D> {
 	private Object executableReturnValue;
 	private Path propertyPath;
 	private Object invalidValue;
-	public ConstraintDescriptor<?> constraintDescriptor;
+	private ConstraintDescriptor<?> constraintDescriptor;
 
 	@Override
 	public <U> U unwrap(Class<U> type) {

@@ -2,10 +2,6 @@ package esthesis.core.common;
 
 public class AppConstants {
 
-	// The topic prefix to use when a Kafka topic needs to be created.
-	//TODO to be removed with Settings preferences - is it used?
-	public static final String KAFKA_TOPIC_PREFIX = "esthesis-";
-
 	// A keyword used to indicate a new record being created.
 	public static final String NEW_RECORD_ID = "new";
 
@@ -19,11 +15,6 @@ public class AppConstants {
 
 	// The size limit when displaying possibly large content in the logs.
 	public static final int MESSAGE_LOG_ABBREVIATION_LENGTH = 4096;
-
-	// The header containing the shared secret for device registration (when the platform operates
-	// in that mode).
-	//TODO where/how is this used?
-	public static final String REGISTRATION_SECRET_HEADER_NAME = "X-ESTHESIS-REGISTRATION-SECRET";
 
 	// Security roles.
 	public static final String ROLE_USER = "user";
@@ -42,9 +33,6 @@ public class AppConstants {
 
 		KAFKA_TOPIC_COMMAND_REQUEST, KAFKA_TOPIC_TELEMETRY, KAFKA_TOPIC_METADATA,
 		KAFKA_TOPIC_APPLICATION,
-		// Application events
-		//TODO we need a different naming convention, not starting with KAFKA_TOPIC
-		KAFKA_TOPIC_EVENT_TAG_DELETE
 	}
 
 	public enum KeyType {
@@ -76,11 +64,17 @@ public class AppConstants {
 
 	public static class GridFS {
 
+		private GridFS() {
+		}
+
 		public static final String PROVISIONING_BUCKET_NAME = "ProvisioningPackageBucket";
 		public static final String PROVISIONING_METADATA_NAME = "provisioningPackageId";
 	}
 
 	public static class Keystore {
+
+		private Keystore() {
+		}
 
 		public static class Item {
 
@@ -150,6 +144,9 @@ public class AppConstants {
 
 		public static class Ern {
 
+			private Ern() {
+			}
+			
 			public static final String ROOT = "ern";
 			public static final String SYSTEM = "esthesis";
 			public static final String SUBSYSTEM = "core";

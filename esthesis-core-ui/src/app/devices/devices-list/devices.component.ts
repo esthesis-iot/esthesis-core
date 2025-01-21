@@ -1,6 +1,5 @@
 import {AfterViewInit, Component, Input, OnInit, Optional, ViewChild} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {Router} from "@angular/router";
 import {MatSort} from "@angular/material/sort";
 import {DeviceDto} from "../dto/device-dto";
 import {DevicesService} from "../devices.service";
@@ -29,12 +28,12 @@ export class DevicesComponent extends SecurityBaseComponent implements OnInit, A
   datasource: MatTableDataSource<DeviceDto> = new MatTableDataSource<DeviceDto>();
   // Search filter.
   filterForm: FormGroup;
-  @ViewChild("countdown", {static: false}) private countdown!: CountdownComponent;
+  @ViewChild("countdown", {static: false}) private readonly countdown!: CountdownComponent;
 
-  constructor(private fb: FormBuilder, private router: Router,
-    private deviceService: DevicesService, private qForms: QFormsService,
-    @Optional() private dialogRef: MatDialogRef<DevicesComponent>,
-    private utilityService: UtilityService) {
+  constructor(private readonly fb: FormBuilder,
+    private readonly deviceService: DevicesService, private readonly qForms: QFormsService,
+    @Optional() private readonly dialogRef: MatDialogRef<DevicesComponent>,
+    private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.DEVICE);
     this.filterForm = this.fb.group({
       hardwareId: [],

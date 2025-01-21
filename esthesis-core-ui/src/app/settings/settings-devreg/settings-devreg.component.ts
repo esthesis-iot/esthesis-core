@@ -14,8 +14,8 @@ import {SecurityBaseComponent} from "../../shared/components/security-base-compo
 export class SettingsDevregComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
 
-  constructor(private fb: FormBuilder, private settingsService: SettingsService,
-    private utilityService: UtilityService, ) {
+  constructor(private readonly fb: FormBuilder, private readonly settingsService: SettingsService,
+    private readonly utilityService: UtilityService,) {
     super(AppConstants.SECURITY.CATEGORY.SETTINGS);
   }
 

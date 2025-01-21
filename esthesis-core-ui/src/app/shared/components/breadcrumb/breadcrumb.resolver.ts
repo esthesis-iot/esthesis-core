@@ -153,6 +153,5 @@ export const securityPolicyNameResolver: ResolveFn<string> = async (route: Activ
 };
 
 export const auditNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
-  const id = route.paramMap.get("id");
   return "|" + (await firstValueFrom(inject(AuditService).findById(route.paramMap.get("id")))).message;
 };

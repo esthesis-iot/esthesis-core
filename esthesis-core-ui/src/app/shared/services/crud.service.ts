@@ -1,4 +1,4 @@
-import { HttpClient, HttpEvent, HttpRequest } from "@angular/common/http";
+import {HttpClient, HttpEvent, HttpRequest} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {QPageableReply} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";
@@ -7,7 +7,7 @@ import {AppConstants} from "../../app.constants";
  * A convenience CRUD service to be extended by concrete services to provide default CRUD methods.
  */
 export class CrudService<T> {
-  constructor(public http: HttpClient, private endpoint: string) {
+  constructor(public http: HttpClient, private readonly endpoint: string) {
   }
 
   save(object: T | T[]): Observable<any> {
@@ -48,7 +48,7 @@ export class CrudService<T> {
     if (files && files.size > 0) {
       files.forEach((value, key) => {
         if (value) {
-          formData.append(key, value!, value!.name);
+          formData.append(key, value, value.name);
         }
       });
     }

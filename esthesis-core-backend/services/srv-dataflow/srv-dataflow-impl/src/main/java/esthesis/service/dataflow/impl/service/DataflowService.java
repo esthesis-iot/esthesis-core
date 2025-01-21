@@ -136,11 +136,11 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		// Iterate over the secrets and add them to the builder.
 		if (secrets != null && !secrets.isEmpty()) {
 			secrets.forEach(secret -> builder.entry(
-        SecretEntryDTO.builder()
-          .name(secret.get(SECRET_NAME))
-          .path(flatMap.get(SECRET_PATH))
-          .content(secret.get(SECRET_CONTENT)).build()
-      ));
+				SecretEntryDTO.builder()
+					.name(secret.get(SECRET_NAME))
+					.path(flatMap.get(SECRET_PATH))
+					.content(secret.get(SECRET_CONTENT)).build()
+			));
 		}
 
 		return builder.build();
@@ -159,11 +159,11 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		DeploymentInfoDTO deploymentInfoDTO = new DeploymentInfoDTO();
 		deploymentInfoDTO.setName(Slugify.builder().build().slugify(dataflowEntity.getName()));
 		@SuppressWarnings("unchecked")
-		Map<String, Object> k8sConfig = (Map<String, Object>)MapUtils.getMap(
+		Map<String, Object> k8sConfig = (Map<String, Object>) MapUtils.getMap(
 			dataflowEntity.getConfig(), CONFIG_SECTION_KUBERNETES);
 		deploymentInfoDTO.setImage(createDflImageUrl(k8sConfig, dataflowEntity.getType()));
 		deploymentInfoDTO.setVersion(MapUtils.getString(k8sConfig, CONTAINER_IMAGE_VERSION));
-		deploymentInfoDTO.setNamespace(MapUtils.getString (k8sConfig, KUBERNETES_NAMESPACE));
+		deploymentInfoDTO.setNamespace(MapUtils.getString(k8sConfig, KUBERNETES_NAMESPACE));
 		deploymentInfoDTO.setMinInstances(MapUtils.getIntValue(k8sConfig, KUBERNETES_MIN_PODS));
 		deploymentInfoDTO.setMaxInstances(MapUtils.getIntValue(k8sConfig, KUBERNETES_MAX_PODS));
 		deploymentInfoDTO.setCpuRequest(MapUtils.getString(k8sConfig, KUBERNETES_CPU_REQUEST));

@@ -36,5 +36,6 @@ public class DataflowEntity extends BaseEntity {
 	@Length(max = 4096)
 	private String description;
 
+	@SuppressWarnings("java:S1948")
 	private Map<String, Object> config;
 }

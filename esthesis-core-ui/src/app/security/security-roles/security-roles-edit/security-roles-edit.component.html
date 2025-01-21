@@ -25,8 +25,8 @@
             <input [formControl]="policiesFilterCtrl" [matAutocomplete]="auto"
                    matInput placeholder="Search for a policy to add...">
             <mat-autocomplete #auto="matAutocomplete">
-              <mat-option (click)="addPolicy()" *ngFor="let policy of filteredPolicies"
-                          [value]="policy.id">
+              <mat-option (click)="addPolicy()" (keydown)="addPolicy()"
+                          *ngFor="let policy of filteredPolicies" [value]="policy.id">
                 <span class="font-bold">{{policy.name}}</span><br>
                 <span class="font-thin">{{policy.rule}}</span>
               </mat-option>

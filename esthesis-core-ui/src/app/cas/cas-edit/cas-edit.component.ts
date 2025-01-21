@@ -7,7 +7,6 @@ import {CasService} from "../cas.service";
 import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
-import {QFormsService} from "@qlack/forms";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 import {QFormValidationEEService} from "../../shared/services/form-validation.service";
@@ -23,9 +22,11 @@ export class CasEditComponent extends SecurityBaseComponent implements OnInit {
   id!: string | null;
   parents: CaDto[] | undefined;
 
-  constructor(private fb: FormBuilder, private caService: CasService, private qForms: QFormsService,
-    private route: ActivatedRoute, private router: Router, private dialog: MatDialog,
-    private utilityService: UtilityService, private qFormValidation: QFormValidationEEService) {
+  constructor(private readonly fb: FormBuilder, private readonly caService: CasService,
+    private readonly route: ActivatedRoute, private readonly router: Router,
+    private readonly dialog: MatDialog,
+    private readonly utilityService: UtilityService,
+    private readonly qFormValidation: QFormValidationEEService) {
     super(AppConstants.SECURITY.CATEGORY.CA, route.snapshot.paramMap.get("id"));
   }
 

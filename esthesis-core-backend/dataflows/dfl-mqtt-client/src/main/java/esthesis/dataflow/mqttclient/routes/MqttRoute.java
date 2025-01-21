@@ -74,7 +74,9 @@ public class MqttRoute extends RouteBuilder {
 		kafkaComponentBuilder.register(getContext(), "kafka");
 
 		// Configure Paho, with SSL if needed.
-		log.info("Using MQTT broker URL '{}'.", config.mqttBrokerClusterUrl());
+		if (log.isInfoEnabled()) {
+			log.info("Using MQTT broker URL '{}'.", config.mqttBrokerClusterUrl());
+		}
 		ComponentsBuilderFactory.paho()
 			.brokerUrl(config.mqttBrokerClusterUrl())
 			.keepAliveInterval(config.mqttBrokerKeepAliveInterval())

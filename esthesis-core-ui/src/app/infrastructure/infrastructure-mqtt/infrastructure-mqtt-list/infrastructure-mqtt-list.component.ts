@@ -24,9 +24,9 @@ export class InfrastructureMqttListComponent extends SecurityBaseComponent imple
   datasource = new MatTableDataSource<InfrastructureMqttDto>();
   availableTags: TagDto[] | undefined;
 
-  constructor(private infrastructureService: InfrastructureMqttService,
-    private qForms: QFormsService, private utilityService: UtilityService,
-    private tagService: TagsService) {
+  constructor(private readonly infrastructureService: InfrastructureMqttService,
+    private readonly qForms: QFormsService, private readonly utilityService: UtilityService,
+    private readonly tagService: TagsService) {
     super(AppConstants.SECURITY.CATEGORY.INFRASTRUCTURE);
   }
 

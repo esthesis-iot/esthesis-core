@@ -1,6 +1,5 @@
 import {Component, isDevMode, OnInit} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {QFormsService} from "@qlack/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ProvisioningService} from "../../provisioning/provisioning.service";
 import {CampaignMemberDto} from "../dto/campaign-member-dto";
@@ -77,12 +76,12 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
   isLiveEnabled = false;
   constraintViolations?: ConstraintViolationDto[];
 
-  constructor(private fb: FormBuilder, public utilityService: UtilityService,
-    private qForms: QFormsService, private provisioningService: ProvisioningService,
-    private route: ActivatedRoute, private router: Router,
-    private deviceService: DevicesService,
-    private tagService: TagsService, private campaignService: CampaignsService,
-    private dialog: MatDialog) {
+  constructor(private readonly fb: FormBuilder, public utilityService: UtilityService,
+    private readonly provisioningService: ProvisioningService,
+    private readonly route: ActivatedRoute, private readonly router: Router,
+    private readonly deviceService: DevicesService,
+    private readonly tagService: TagsService, private readonly campaignService: CampaignsService,
+    private readonly dialog: MatDialog) {
     super(AppConstants.SECURITY.CATEGORY.CAMPAIGN, route.snapshot.paramMap.get("id"));
   }
 
@@ -322,12 +321,10 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
     let groupNo: number;
     if (groupNumber === undefined) {
       groupNo = this.currentGroup();
+    } else if (groupNumber === 0) {
+      groupNo = this.currentGroup() + 1;
     } else {
-      if (groupNumber === 0) {
-        groupNo = this.currentGroup() + 1;
-      } else {
-        groupNo = groupNumber;
-      }
+      groupNo = groupNumber;
     }
 
     // Add hardware Ids.

@@ -11,7 +11,7 @@
         <div *ngIf="w.available;then itemEnabled else itemDisabled"></div>
         <ng-template #itemEnabled>
           <div class="card w-40 bg-base-100 shadow-xl hover:cursor-pointer hover:bg-base-200"
-               (click)="selectItem(w)" [matTooltip]="w.description">
+               (click)="selectItem(w)" (keydown)="selectItem(w)" [matTooltip]="w.description">
             <figure class="pt-4">
               <img class="rounded-xl max-h-24" src="{{'assets/img/widgets/' + w.icon}}" alt=""/>
             </figure>

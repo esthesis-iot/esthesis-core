@@ -26,7 +26,7 @@ export class DevicePreregisterCamComponent implements OnInit {
   torchAvailable$ = new BehaviorSubject<boolean>(false);
   tryHarder = false;
 
-  constructor(private fb: FormBuilder,
+  constructor(private readonly fb: FormBuilder,
     public selfDialogRef: DialogRef<DevicePreregisterCamComponent>) {
   }
 
@@ -39,7 +39,7 @@ export class DevicePreregisterCamComponent implements OnInit {
 
   onCamerasFound(devices: MediaDeviceInfo[]): void {
     this.availableDevices = devices;
-    this.hasDevices = Boolean(devices && devices.length);
+    this.hasDevices = Boolean(devices?.length);
   }
 
   onCodeResult(resultString: string) {
@@ -47,13 +47,11 @@ export class DevicePreregisterCamComponent implements OnInit {
     if (!existingIds) {
       this.beepOK();
       this.form.controls['ids'].setValue(resultString);
+    } else if (existingIds.indexOf(resultString) === -1) {
+      this.beepOK();
+      this.form.controls["ids"].setValue(resultString + "\n" + existingIds);
     } else {
-      if (existingIds.indexOf(resultString) === -1) {
-        this.beepOK();
-        this.form.controls['ids'].setValue(resultString + "\n" + existingIds);
-      } else {
-        this.beepExists();
-      }
+      this.beepExists();
     }
   }
 

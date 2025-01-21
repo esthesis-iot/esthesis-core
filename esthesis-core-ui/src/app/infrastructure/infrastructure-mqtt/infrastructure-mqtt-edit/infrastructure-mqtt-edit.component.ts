@@ -2,7 +2,6 @@ import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TagDto} from "../../../tags/dto/tag-dto";
 import {MatDialog} from "@angular/material/dialog";
-import {QFormsService} from "@qlack/forms";
 import {TagsService} from "../../../tags/tags.service";
 import {InfrastructureMqttService} from "../infrastructure-mqtt.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -23,10 +22,11 @@ export class InfrastructureMqttEditComponent extends SecurityBaseComponent imple
   id!: string | null;
   availableTags: TagDto[] | undefined;
 
-  constructor(private fb: FormBuilder, private dialog: MatDialog,
-    private qForms: QFormsService, private tagsService: TagsService,
-    private infrastructureMqttService: InfrastructureMqttService, private route: ActivatedRoute,
-    private router: Router, private utilityService: UtilityService) {
+  constructor(private readonly fb: FormBuilder, private readonly dialog: MatDialog,
+    private readonly tagsService: TagsService,
+    private readonly infrastructureMqttService: InfrastructureMqttService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router, private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.INFRASTRUCTURE, route.snapshot.paramMap.get("id"));
   }
 
@@ -48,7 +48,7 @@ export class InfrastructureMqttEditComponent extends SecurityBaseComponent imple
     if (this.id && this.id !== this.appConstants.NEW_RECORD_ID) {
       this.infrastructureMqttService.findById(this.id).subscribe({
         next: (mqttServer: InfrastructureMqttDto) => {
-          this.form!.patchValue(mqttServer);
+          this.form.patchValue(mqttServer);
         }, error: (err: any) => {
           this.utilityService.popupErrorWithTraceId("Could not fetch MQTT server.", err);
         }

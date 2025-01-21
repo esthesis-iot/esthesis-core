@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
-import { HttpEvent, HttpResponse } from "@angular/common/http";
+import {HttpEvent, HttpResponse} from "@angular/common/http";
 import {CasService} from "../cas.service";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
@@ -18,8 +18,8 @@ export class CasImportComponent extends SecurityBaseComponent implements OnInit 
   privateKeyfile: File | null = null;
   certificateFile: File | null = null;
 
-  constructor(private fb: FormBuilder, private casService: CasService, private router: Router,
-    private utilityService: UtilityService) {
+  constructor(private readonly fb: FormBuilder, private readonly casService: CasService,
+    private readonly router: Router, private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.CA);
   }
 

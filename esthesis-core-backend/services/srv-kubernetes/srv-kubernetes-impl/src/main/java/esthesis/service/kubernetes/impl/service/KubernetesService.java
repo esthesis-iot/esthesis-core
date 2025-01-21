@@ -34,8 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public class KubernetesService {
 
-	private final String SECRET_MOUNT_LOCATION = "/etc/esthesis/secrets";
-	private final String SECRET_VOLUME_SUFFIX = "-secret-volume";
+	private static final String SECRET_MOUNT_LOCATION = "/etc/esthesis/secrets";
+	private static final String SECRET_VOLUME_SUFFIX = "-secret-volume";
 
 	@Inject
 	KubernetesClient kc;
@@ -71,7 +71,8 @@ public class KubernetesService {
 			secretBuilder.addToData(secret.getName(),
 				Base64.getEncoder().encodeToString(secret.getContent().getBytes(UTF_8))));
 		log.debug("Creating secret '{}'.", secretBuilder.build());
-		kc.secrets().inNamespace(namespace).resource(secretBuilder.build()).forceConflicts().serverSideApply();
+		kc.secrets().inNamespace(namespace).resource(secretBuilder.build()).forceConflicts()
+			.serverSideApply();
 
 	}
 
@@ -118,7 +119,7 @@ public class KubernetesService {
 		if (deploymentInfoDTO.getSecret() != null && deploymentInfoDTO.getSecret().getEntries() != null
 			&& !deploymentInfoDTO.getSecret().getEntries().isEmpty()) {
 			createSecret(deploymentInfoDTO.getSecret(), deploymentInfoDTO.getNamespace());
-			String volumeName = deploymentInfoDTO.getName() + SECRET_VOLUME_SUFFIX;
+			String volumeName = deploymentInfoDTO.getName() + KubernetesService.SECRET_VOLUME_SUFFIX;
 				deploymentBuilder.editSpec().editTemplate()
 				.editSpec()
 					.addNewVolumeLike(
@@ -131,7 +132,7 @@ public class KubernetesService {
 				.editContainer(0).addNewVolumeMountLike(
 					new VolumeMountBuilder()
 						.withName(volumeName)
-						.withMountPath(SECRET_MOUNT_LOCATION).build()
+						.withMountPath(KubernetesService.SECRET_MOUNT_LOCATION).build()
 				).endVolumeMount().endContainer()
 				.endSpec().endTemplate().endSpec();
 		}
@@ -194,7 +195,8 @@ public class KubernetesService {
 		// Push the HPA.
 		if (deploymentInfoDTO.isStatus()) {
 			kc.autoscaling().v2().horizontalPodAutoscalers().inNamespace(
-				deploymentInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).forceConflicts().serverSideApply();
+					deploymentInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).forceConflicts()
+				.serverSideApply();
 		} else {
 			kc.autoscaling().v2().horizontalPodAutoscalers().inNamespace(
 				deploymentInfoDTO.getNamespace()).resource(horizontalPodAutoscaler).delete();

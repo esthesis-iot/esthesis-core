@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {QFormsService} from "@qlack/forms";
 import {UtilityService} from "../../../shared/services/utility.service";
 import {MatDialog} from "@angular/material/dialog";
 import {QFormValidationEEService} from "../../../shared/services/form-validation.service";
@@ -25,10 +24,11 @@ export class SecurityPoliciesEditComponent extends SecurityBaseComponent impleme
   form!: FormGroup;
   id!: string;
 
-  constructor(private fb: FormBuilder, private securityPoliciesService: SecurityPoliciesService,
-    private route: ActivatedRoute, private qForms: QFormsService, private router: Router,
-    private utilityService: UtilityService, private dialog: MatDialog,
-    private qFormValidation: QFormValidationEEService) {
+  constructor(private readonly fb: FormBuilder,
+    private readonly securityPoliciesService: SecurityPoliciesService,
+    private readonly route: ActivatedRoute, private readonly router: Router,
+    private readonly utilityService: UtilityService, private readonly dialog: MatDialog,
+    private readonly qFormValidation: QFormValidationEEService) {
     super(AppConstants.SECURITY.CATEGORY.POLICIES, route.snapshot.paramMap.get("id"));
   }
 
@@ -43,7 +43,7 @@ export class SecurityPoliciesEditComponent extends SecurityBaseComponent impleme
       rule: [null, [Validators.required]]
     });
     this.isFormDisabled().subscribe(disabled => disabled && this.form.disable());
-    
+
     // Fill-in the form with data if editing an existing item.
     if (this.id !== this.appConstants.NEW_RECORD_ID) {
       this.securityPoliciesService.findById(this.id).subscribe({

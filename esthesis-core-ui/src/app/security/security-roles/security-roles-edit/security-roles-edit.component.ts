@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {QFormsService} from "@qlack/forms";
 import {UtilityService} from "../../../shared/services/utility.service";
 import {MatDialog} from "@angular/material/dialog";
 import {QFormValidationEEService} from "../../../shared/services/form-validation.service";
@@ -28,11 +27,12 @@ export class SecurityRolesEditComponent extends SecurityBaseComponent implements
   filteredPolicies: PolicyDto[] = [];
   policiesFilterCtrl = new FormControl();
 
-  constructor(private fb: FormBuilder, private securityRolesService: SecurityRolesService,
-    private route: ActivatedRoute, private qForms: QFormsService, private router: Router,
-    private utilityService: UtilityService, private dialog: MatDialog,
-    private qFormValidation: QFormValidationEEService,
-    private securityPoliciesService: SecurityPoliciesService) {
+  constructor(private readonly fb: FormBuilder,
+    private readonly securityRolesService: SecurityRolesService,
+    private readonly route: ActivatedRoute, private readonly router: Router,
+    private readonly utilityService: UtilityService, private readonly dialog: MatDialog,
+    private readonly qFormValidation: QFormValidationEEService,
+    private readonly securityPoliciesService: SecurityPoliciesService) {
     super(AppConstants.SECURITY.CATEGORY.ROLES, route.snapshot.paramMap.get("id"));
   }
 
@@ -75,7 +75,7 @@ export class SecurityRolesEditComponent extends SecurityBaseComponent implements
         if (searchVal && searchVal.trim() !== "") {
           this.filteredPolicies = _.filter(this.allPolicies, (policy) => {
             return policy.name.toLowerCase().indexOf(searchVal.toLowerCase()) !== -1 ||
-            policy.description?.toLowerCase().indexOf(searchVal.toLowerCase()) !== -1;
+              policy.description?.toLowerCase().indexOf(searchVal.toLowerCase()) !== -1;
           });
         } else {
           this.filteredPolicies = this.allPolicies;
@@ -129,7 +129,7 @@ export class SecurityRolesEditComponent extends SecurityBaseComponent implements
 
   addPolicy() {
     const policyId = this.policiesFilterCtrl.value;
-    this.form.controls['policies'].value.push(policyId);
+    this.form.controls["policies"].value.push(policyId);
     this.policiesFilterCtrl.patchValue("");
   }
 
@@ -137,17 +137,19 @@ export class SecurityRolesEditComponent extends SecurityBaseComponent implements
     const policy = _.find(this.allPolicies, (p) => p.id === policyId);
     return policy?.name;
   }
+
   getPolicyDescription(policyId: string) {
     const policy = _.find(this.allPolicies, (p) => p.id === policyId);
     return policy?.description;
   }
+
   getPolicyRule(policyId: string) {
     const policy = _.find(this.allPolicies, (p) => p.id === policyId);
     return policy?.rule;
   }
 
   removePolicy(policyId: string) {
-    const policies = this.form.controls['policies'].value;
+    const policies = this.form.controls["policies"].value;
     const index = policies.indexOf(policyId);
     if (index >= 0) {
       policies.splice(index, 1);

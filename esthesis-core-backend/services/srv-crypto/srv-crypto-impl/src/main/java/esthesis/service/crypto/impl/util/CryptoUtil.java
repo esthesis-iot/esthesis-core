@@ -1,7 +1,6 @@
 package esthesis.service.crypto.impl.util;
 
 import esthesis.common.exception.QDoesNotExistException;
-import esthesis.core.common.crypto.CoreCommonCryptoUtil;
 import esthesis.core.common.dto.SignatureVerificationRequestDTO;
 import esthesis.service.crypto.impl.dto.CAHolderDTO;
 import esthesis.service.crypto.impl.dto.CertificateSignRequestDTO;
@@ -57,9 +56,9 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
 @Slf4j
-public class SrvCryptoCryptoUtil extends CoreCommonCryptoUtil {
+public class CryptoUtil {
 
-	private SrvCryptoCryptoUtil() {
+	private CryptoUtil() {
 	}
 
 	private static final Pattern ipv4Pattern = Pattern.compile(
@@ -292,7 +291,7 @@ public class SrvCryptoCryptoUtil extends CoreCommonCryptoUtil {
 			ks.load(null, null);
 		}
 
-		return SrvCryptoCryptoConverters.keystoreSerialize(ks, keystorePassword);
+		return CryptoConvertersUtil.keystoreSerialize(ks, keystorePassword);
 	}
 
 	/**
@@ -312,7 +311,7 @@ public class SrvCryptoCryptoUtil extends CoreCommonCryptoUtil {
 	throws NoSuchAlgorithmException, CertificateException, NoSuchProviderException, KeyStoreException,
 				 IOException {
 		// Load the keystore.
-		KeyStore ks = SrvCryptoCryptoConverters.keystoreDeserialize(keystore, keystoreType,
+		KeyStore ks = CryptoConvertersUtil.keystoreDeserialize(keystore, keystoreType,
 			keystorePassword,
 			keystoreProvider);
 
@@ -320,7 +319,7 @@ public class SrvCryptoCryptoUtil extends CoreCommonCryptoUtil {
 		ks.setCertificateEntry(certificateAlias,
 			new JcaX509CertificateConverter().getCertificate(new X509CertificateHolder(certificate)));
 
-		return SrvCryptoCryptoConverters.keystoreSerialize(ks, keystorePassword);
+		return CryptoConvertersUtil.keystoreSerialize(ks, keystorePassword);
 	}
 
 	/**
@@ -343,7 +342,7 @@ public class SrvCryptoCryptoUtil extends CoreCommonCryptoUtil {
 	throws NoSuchAlgorithmException, CertificateException, NoSuchProviderException, KeyStoreException,
 				 IOException {
 		// Load the keystore.
-		KeyStore ks = SrvCryptoCryptoConverters.keystoreDeserialize(keystore, keystoreType,
+		KeyStore ks = CryptoConvertersUtil.keystoreDeserialize(keystore, keystoreType,
 			keystorePassword,
 			keystoreProvider);
 
@@ -356,7 +355,7 @@ public class SrvCryptoCryptoUtil extends CoreCommonCryptoUtil {
 			keyPassword != null ? keyPassword.toCharArray() : "".toCharArray(),
 			certificates.toArray(new Certificate[0]));
 
-		return SrvCryptoCryptoConverters.keystoreSerialize(ks, keystorePassword);
+		return CryptoConvertersUtil.keystoreSerialize(ks, keystorePassword);
 	}
 
 	/**
@@ -377,7 +376,7 @@ public class SrvCryptoCryptoUtil extends CoreCommonCryptoUtil {
 			throw new QDoesNotExistException("The provided signature to validate is empty.");
 		}
 		final Signature signature = Signature.getInstance(request.getSignatureAlgorithm());
-		signature.initVerify(SrvCryptoCryptoConverters.pemToPublicKey(request.getPublicKey(),
+		signature.initVerify(CryptoConvertersUtil.pemToPublicKey(request.getPublicKey(),
 			request.getKeyAlgorithm()));
 		signature.update(request.getPayload());
 

@@ -22,8 +22,9 @@
           <mat-form-field>
             <mat-label>Rule</mat-label>
             <input formControlName="rule" matInput>
-            <fa-icon (click)="policyEditor()" class="mr-3 cursor-pointer" icon="file-circle-plus"
-                     matSuffix matTooltip="Open policy editor" *ngIf="allowWrite || allowCreate"></fa-icon>
+            <fa-icon (click)="policyEditor()" (keydown)="policyEditor()" class="mr-3 cursor-pointer"
+                     icon="file-circle-plus" matSuffix
+                     matTooltip="Open policy editor" *ngIf="allowWrite || allowCreate"></fa-icon>
           </mat-form-field>
         </div>
       </form>

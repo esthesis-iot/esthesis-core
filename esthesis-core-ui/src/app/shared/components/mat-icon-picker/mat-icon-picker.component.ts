@@ -15,7 +15,7 @@ import * as solidIcons from "@fortawesome/free-solid-svg-icons";
   ]
 })
 export class MatIconPickerComponent implements OnInit, ControlValueAccessor {
-  private allIcons: string[] = [];
+  private readonly allIcons: string[] = [];
   filteredIcons: string[] = [];
   filterForm: FormGroup;
   selectedIcon?: string;
@@ -24,7 +24,7 @@ export class MatIconPickerComponent implements OnInit, ControlValueAccessor {
   // The state of the search button.
   searchButtonState = true;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private readonly fb: FormBuilder) {
     this.filterForm = this.fb.group({
       icon: [],
     });
@@ -35,7 +35,7 @@ export class MatIconPickerComponent implements OnInit, ControlValueAccessor {
 
       // Ignore icons.
       // Add icon if it doesn't end with a number, or with 'az' or 'za'.
-      if (!iconName.endsWith("az") && !iconName.endsWith("za") && !iconName.match(/\d$/)) {
+      if (!iconName.endsWith("az") && !iconName.endsWith("za") && !RegExp(/\d$/).exec(iconName)) {
         this.allIcons.push(iconName);
       }
     }

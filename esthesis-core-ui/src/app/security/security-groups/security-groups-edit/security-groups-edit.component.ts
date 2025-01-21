@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {QFormsService} from "@qlack/forms";
 import {UtilityService} from "../../../shared/services/utility.service";
 import {MatDialog} from "@angular/material/dialog";
 import {QFormValidationEEService} from "../../../shared/services/form-validation.service";
@@ -31,11 +30,12 @@ export class SecurityGroupsEditComponent extends SecurityBaseComponent implement
   filteredRoles: RoleDto[] = [];
   rolesFilterCtrl = new FormControl();
 
-  constructor(private fb: FormBuilder, private securityGroupsService: SecurityGroupsService,
-    private route: ActivatedRoute, private qForms: QFormsService, private router: Router,
-    private utilityService: UtilityService, private dialog: MatDialog,
-    private qFormValidation: QFormValidationEEService,
-    private securityRolesService: SecurityRolesService) {
+  constructor(private readonly fb: FormBuilder,
+    private readonly securityGroupsService: SecurityGroupsService,
+    private readonly route: ActivatedRoute, private readonly router: Router,
+    private readonly utilityService: UtilityService, private readonly dialog: MatDialog,
+    private readonly qFormValidation: QFormValidationEEService,
+    private readonly securityRolesService: SecurityRolesService) {
     super(AppConstants.SECURITY.CATEGORY.GROUPS, route.snapshot.paramMap.get("id"));
   }
 
@@ -133,7 +133,7 @@ export class SecurityGroupsEditComponent extends SecurityBaseComponent implement
 
   addRole() {
     const roleId = this.rolesFilterCtrl.value;
-    this.form.controls['roles'].value.push(roleId);
+    this.form.controls["roles"].value.push(roleId);
     this.rolesFilterCtrl.patchValue("");
   }
 
@@ -148,7 +148,7 @@ export class SecurityGroupsEditComponent extends SecurityBaseComponent implement
   }
 
   removeRole(roleId: string) {
-    const roles = this.form.controls['roles'].value;
+    const roles = this.form.controls["roles"].value;
     const index = roles.indexOf(roleId);
     if (index >= 0) {
       roles.splice(index, 1);
@@ -156,7 +156,7 @@ export class SecurityGroupsEditComponent extends SecurityBaseComponent implement
   }
 
   removePolicy(policy: any) {
-    const policies = this.form.controls['policies'].value;
+    const policies = this.form.controls["policies"].value;
     const index = policies.indexOf(policy);
     if (index >= 0) {
       policies.splice(index, 1);
@@ -167,8 +167,8 @@ export class SecurityGroupsEditComponent extends SecurityBaseComponent implement
     const editorDialogRef = this.dialog.open(SecurityPoliciesEditorComponent, {width: "40rem"});
     editorDialogRef.afterClosed().subscribe(result => {
       if (result) {
-        if (this.form.controls['policies'].value) {
-          this.form.controls['policies'].value.push(result);
+        if (this.form.controls["policies"].value) {
+          this.form.controls["policies"].value.push(result);
         } else {
           this.form.patchValue({
             policies: [result]

@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {CrudDownloadService} from "../shared/services/crud-download.service";
 import {FileSaverService} from "ngx-filesaver";
 import {KeystoreDto} from "./dto/keystore-dto";
@@ -10,7 +10,7 @@ import {AppConstants} from "../app.constants";
   providedIn: "root"
 })
 export class KeystoresService extends CrudDownloadService<KeystoreDto> {
-  private prefix = AppConstants.API_ROOT + "/crypto/keystore/v1";
+  private readonly prefix = AppConstants.API_ROOT + "/crypto/keystore/v1";
 
   constructor(http: HttpClient, fs: FileSaverService) {
     super(http, "crypto/keystore/v1", fs);

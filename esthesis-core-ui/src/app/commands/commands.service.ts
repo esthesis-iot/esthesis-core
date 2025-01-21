@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {CrudService} from "../shared/services/crud.service";
@@ -12,7 +12,7 @@ import {AppConstants} from "../app.constants";
   providedIn: "root"
 })
 export class CommandsService extends CrudService<CommandRequestDto> {
-  private prefix = AppConstants.API_ROOT + "/command/v1";
+  private readonly prefix = AppConstants.API_ROOT + "/command/v1";
 
   constructor(http: HttpClient) {
     super(http, "command/v1");

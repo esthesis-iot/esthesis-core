@@ -27,7 +27,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 public class RdbmsService {
 
 	@Inject
-	private AppConfig config;
+	AppConfig config;
 
 	@Inject
 	AgroalDataSource dataSource;
@@ -54,7 +54,7 @@ public class RdbmsService {
 		return vals.toString();
 	}
 
-	@SuppressWarnings("java:S2695")
+	@SuppressWarnings({"java:S2695", "java:S2077"})
 	private void multi(EsthesisDataMessage esthesisMessage)
 	throws SQLException {
 		String statement =
@@ -62,8 +62,7 @@ public class RdbmsService {
 				" (" + getColumnsForMultiTableStrategy(esthesisMessage) + ")" +
 				" VALUES (" + getValuesForMultiTableStrategy(esthesisMessage) + ")";
 		try (Connection connection = dataSource.getConnection()) {
-			try (PreparedStatement preparedStatement = connection.prepareStatement(
-				statement)) {
+			try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
 				preparedStatement.setString(1, esthesisMessage.getHardwareId());
 				preparedStatement.setTimestamp(2,
 					new Timestamp(
@@ -107,6 +106,7 @@ public class RdbmsService {
 		}
 	}
 
+	@SuppressWarnings("java:S2077")
 	private void single(EsthesisDataMessage esthesisMessage)
 	throws SQLException {
 		try (Connection connection = dataSource.getConnection()) {

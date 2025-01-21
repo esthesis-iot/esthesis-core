@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 public class Page<D> {
 
-  public int page;
-  public int size;
-  public long totalElements;
-  public List<D> content;
+	private int index;
+	private int size;
+	private long totalElements;
+	private List<D> content;
 }

@@ -7,7 +7,6 @@ import {CommandsService} from "../commands.service";
 import {TagDto} from "../../tags/dto/tag-dto";
 import {TagsService} from "../../tags/tags.service";
 import {DeviceDto} from "../../devices/dto/device-dto";
-import {DevicesService} from "../../devices/devices.service";
 import {AppConstants} from "../../app.constants";
 import {ProvisioningDto} from "../../provisioning/dto/provisioning-dto";
 import {UtilityService} from "../../shared/services/utility.service";
@@ -28,9 +27,11 @@ export class CommandCreateComponent extends SecurityBaseComponent implements OnI
   searchDevices?: DeviceDto[];
   selectedHardwareIds: string[] = [];
 
-  constructor(private formBuilder: FormBuilder, private commandService: CommandsService,
-    private utilityService: UtilityService, private router: Router, private tagService: TagsService,
-    private provisioningService: ProvisioningService, private deviceService: DevicesService) {
+  constructor(private readonly formBuilder: FormBuilder,
+    private readonly commandService: CommandsService,
+    private readonly utilityService: UtilityService, private readonly router: Router,
+    private readonly tagService: TagsService,
+    private readonly provisioningService: ProvisioningService,) {
     super(AppConstants.SECURITY.CATEGORY.COMMAND);
   }
 
@@ -91,7 +92,7 @@ export class CommandCreateComponent extends SecurityBaseComponent implements OnI
    * Save and dispatch the command.
    */
   save() {
-    let commandExecuteRequestDto : CommandExecuteRequestDto;
+    let commandExecuteRequestDto: CommandExecuteRequestDto;
     commandExecuteRequestDto = {
       hardwareIds: this.selectedHardwareIds.join(","),
       tags: this.searchDevicesForm.value.tags ? this.searchDevicesForm.value.tags.join(",") : "",

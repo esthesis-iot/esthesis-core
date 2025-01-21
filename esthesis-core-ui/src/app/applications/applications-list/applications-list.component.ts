@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {MatSort} from "@angular/material/sort";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {Router} from "@angular/router";
 import {ApplicationDto} from "../dto/application-dto";
 import {ApplicationsService} from "../applications.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
@@ -27,9 +26,9 @@ export class ApplicationsListComponent extends SecurityBaseComponent implements 
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
-  constructor(private fb: FormBuilder, private router: Router,
-    private applicationsService: ApplicationsService,
-    private qForms: QFormsService) {
+  constructor(private readonly fb: FormBuilder,
+    private readonly applicationsService: ApplicationsService,
+    private readonly qForms: QFormsService) {
     super(AppConstants.SECURITY.CATEGORY.APPLICATION);
     this.filterForm = this.fb.group({
       name: [],

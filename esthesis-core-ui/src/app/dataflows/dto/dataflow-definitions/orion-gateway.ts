@@ -153,7 +153,7 @@ export const DATAFLOW_DEFINITION_FIWARE_ORION = {
         { key: "url", type: "input", defaultValue: "redis://:esthesis-system@redis-master:6379/0",
           props: {
             label: "The URL of the Redis store.", required: true,
-            hintStart: "e.g. redis://username:password@server:port/database. Password should be URL Encoded, if it contains special characters."
+            hintStart: "e.g. redis://username:password@server:port/database. Password should be URL Encoded, if it contains special characters."//NOSONAR
           }
         }
       ]

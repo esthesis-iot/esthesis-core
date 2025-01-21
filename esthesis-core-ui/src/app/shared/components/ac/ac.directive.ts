@@ -1,4 +1,4 @@
-import {Directive, Input, OnInit, TemplateRef, ViewContainerRef} from "@angular/core";
+import {Directive, Input, TemplateRef, ViewContainerRef} from "@angular/core";
 import {SecurityService} from "../../../security/security.service";
 
 /**
@@ -9,8 +9,9 @@ import {SecurityService} from "../../../security/security.service";
 })
 export class AcDirective {
   constructor(
-    private templateRef: TemplateRef<any>, private viewContainer: ViewContainerRef,
-    private securityUsersService: SecurityService) {
+    private readonly templateRef: TemplateRef<any>,
+    private readonly viewContainer: ViewContainerRef,
+    private readonly securityUsersService: SecurityService) {
   }
 
   @Input() set ac(conditions: string[]) {

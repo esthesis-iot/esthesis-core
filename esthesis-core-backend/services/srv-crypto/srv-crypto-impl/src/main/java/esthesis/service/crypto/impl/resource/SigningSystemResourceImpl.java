@@ -2,7 +2,7 @@ package esthesis.service.crypto.impl.resource;
 
 import esthesis.core.common.AppConstants;
 import esthesis.core.common.dto.SignatureVerificationRequestDTO;
-import esthesis.service.crypto.impl.util.SrvCryptoCryptoUtil;
+import esthesis.service.crypto.impl.util.CryptoUtil;
 import esthesis.service.crypto.resource.SigningSystemResource;
 import jakarta.annotation.security.RolesAllowed;
 import java.security.InvalidKeyException;
@@ -19,7 +19,7 @@ public class SigningSystemResourceImpl implements SigningSystemResource {
 	public boolean verifySignature(SignatureVerificationRequestDTO request)
 	throws NoSuchAlgorithmException, InvalidKeySpecException, SignatureException,
 				 InvalidKeyException {
-		return SrvCryptoCryptoUtil.verifySignature(request);
+		return CryptoUtil.verifySignature(request);
 	}
 
 }

@@ -22,9 +22,10 @@ export class CertificatesListComponent extends SecurityBaseComponent implements 
   columns: string[] = [];
   datasource = new MatTableDataSource<CertificateDto>();
 
-  constructor(private certificateService: CertificatesService, private qForms: QFormsService,
-    @Optional() private dialogRef: MatDialogRef<CertificatesListComponent>,
-    private utilityService: UtilityService) {
+  constructor(private readonly certificateService: CertificatesService,
+    private readonly qForms: QFormsService,
+    @Optional() private readonly dialogRef: MatDialogRef<CertificatesListComponent>,
+    private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.CERTIFICATES);
   }
 

@@ -33,16 +33,16 @@ export class SidebarComponent implements OnDestroy {
   menuItemType = SidebarItemType;
   sidebar = true;
   menuItems: SidebarItemDto[] = [];
-  private categoryGeneral: SidebarItemDto[] = [];
-  private categoryDevices: SidebarItemDto[] = [];
-  private categoryKeyManagement: SidebarItemDto[] = [];
-  private categoryIntegrations: SidebarItemDto[] = [];
-  private categorySettings: SidebarItemDto[] = [];
-  private categorySecurity: SidebarItemDto[] = [];
-  private categoryAbout: SidebarItemDto[] = [];
-  private authSubscription;
+  private readonly categoryGeneral: SidebarItemDto[] = [];
+  private readonly categoryDevices: SidebarItemDto[] = [];
+  private readonly categoryKeyManagement: SidebarItemDto[] = [];
+  private readonly categoryIntegrations: SidebarItemDto[] = [];
+  private readonly categorySettings: SidebarItemDto[] = [];
+  private readonly categorySecurity: SidebarItemDto[] = [];
+  private readonly categoryAbout: SidebarItemDto[] = [];
+  private readonly authSubscription;
 
-  constructor(private securityService: SecurityService) {
+  constructor(private readonly securityService: SecurityService) {
     this.authSubscription = this.securityService.isAuthDone().subscribe((authResult) => {
       if (authResult) {
         this.addSidebarEntries();

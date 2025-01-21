@@ -9,8 +9,8 @@ import {UtilityService} from "../../shared/services/utility.service";
 })
 export class UserSignoutComponent {
 
-  constructor(private oidcSecurityService: OidcSecurityService, private router: Router,
-    private utilityService: UtilityService) {
+  constructor(private readonly oidcSecurityService: OidcSecurityService,
+    private readonly router: Router, private readonly utilityService: UtilityService) {
     this.oidcSecurityService.logoffAndRevokeTokens().subscribe({
       next: () => {
         this.router.navigate(["dashboard"]);

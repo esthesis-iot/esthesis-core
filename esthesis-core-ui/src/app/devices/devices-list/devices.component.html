@@ -66,7 +66,7 @@
               cdk-row class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
         </ng-template>
         <ng-template [ngIf]="embedded">
-          <tr (click)="embeddedClick(element)"
+          <tr (click)="embeddedClick(element)" (keydown)="embeddedClick(element)"
               *cdkRowDef="let row; columns: displayedColumns; let element;"
               cdk-row class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
         </ng-template>

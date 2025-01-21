@@ -132,10 +132,10 @@ public abstract class BaseService<D extends BaseEntity> {
 
 		// Set query metadata.
 		if (pageable.getPageObject().isPresent()) {
-			quarkusPage.setPage(pageable.getPage());
+			quarkusPage.setIndex(pageable.getPage());
 			quarkusPage.setSize(pageable.getSize());
 		} else {
-			quarkusPage.setPage(0);
+			quarkusPage.setIndex(0);
 			quarkusPage.setSize(quarkusPage.getContent().size());
 		}
 

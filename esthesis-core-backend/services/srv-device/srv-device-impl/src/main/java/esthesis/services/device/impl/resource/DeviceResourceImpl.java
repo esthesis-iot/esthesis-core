@@ -46,7 +46,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.operator.OperatorCreationException;
-import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,10 +90,10 @@ public class DeviceResourceImpl implements DeviceResource {
 	private void importELPText(String deviceId, String data, MessageTypeEnum messageType,
 		ImportDataProcessingInstructionsDTO instructionsDTO) {
 		try (BufferedReader reader = new BufferedReader(new StringReader(data))) {
-			deviceService.importData(deviceId, reader, MessageTypeEnum.T, instructionsDTO);
-		} catch (IOException e) {
+			deviceService.importData(deviceId, reader, messageType, instructionsDTO);
+		} catch (IOException e) { //NOSONAR
 			log.error("Error importing file.", e);
-			throw new QExceptionWrapper("Could not import file", e);
+			throw new QExceptionWrapper("Could not import file.", e);
 		}
 	}
 
@@ -224,8 +223,10 @@ public class DeviceResourceImpl implements DeviceResource {
 			}
 			default -> throw new QDoesNotExistException("Key type '{}' is not valid.", type);
 		}
-		return ResponseBuilder.ok(content)
-			.header("Content-Disposition", "attachment; filename=" + filename).build().toResponse();
+
+		return Response.ok(content)
+			.header("Content-Disposition", "attachment; filename=" + filename)
+			.build();
 	}
 
 

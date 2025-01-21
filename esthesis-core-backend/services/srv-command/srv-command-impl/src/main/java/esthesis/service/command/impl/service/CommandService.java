@@ -66,12 +66,12 @@ public class CommandService {
 	@Channel("esthesis-command-request")
 	Emitter<EsthesisCommandRequestMessage> commandRequestEmitter;
 
-	private String KAFKA_TOPIC_COMMAND_REQUEST;
+	private String kafkaTopicCommandRequest;
 
 	@PostConstruct
 	void init() {
 		//TODO we need to setup a Kafka event for when this configuration changes
-		KAFKA_TOPIC_COMMAND_REQUEST = settingsResource.findByName(
+		kafkaTopicCommandRequest = settingsResource.findByName(
 			NamedSetting.KAFKA_TOPIC_COMMAND_REQUEST).asString();
 	}
 
@@ -194,11 +194,11 @@ public class CommandService {
 			EsthesisCommandRequestMessage esthesisCommandRequestMessage =
 				avroCommandRequest(request, hardwareId);
 			log.debug("Sending command '{}' to device '{}' via Kafka topic '{}'.",
-				esthesisCommandRequestMessage, hardwareId, KAFKA_TOPIC_COMMAND_REQUEST);
+				esthesisCommandRequestMessage, hardwareId, kafkaTopicCommandRequest);
 			commandRequestEmitter.send(
 				Message.of(esthesisCommandRequestMessage)
 					.addMetadata(OutgoingKafkaRecordMetadata.<String>builder()
-						.withTopic(KAFKA_TOPIC_COMMAND_REQUEST)
+						.withTopic(kafkaTopicCommandRequest)
 						.withKey(hardwareId)
 						.build())
 					.addMetadata(TracingMetadata.withCurrent(Context.current())));
@@ -252,7 +252,7 @@ public class CommandService {
 	}
 
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = CREATE)
-  public void replayCommand(String sourceCommandId) {
+	public void replayCommand(String sourceCommandId) {
 		CommandRequestEntity sourceCommand = commandRequestService.findById(sourceCommandId);
 		if (sourceCommand == null) {
 			throw new QDoesNotExistException("Command request '{}' does not exist.", sourceCommandId);
@@ -270,5 +270,5 @@ public class CommandService {
 
 		// Save the new command request.
 		saveRequestAndExecute(replayCommand);
-  }
+	}
 }

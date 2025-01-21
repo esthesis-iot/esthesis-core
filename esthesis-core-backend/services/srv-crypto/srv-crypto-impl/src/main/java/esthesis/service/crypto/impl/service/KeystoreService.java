@@ -18,8 +18,8 @@ import esthesis.service.crypto.dto.KeystoreEntryDTO;
 import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.entity.CertificateEntity;
 import esthesis.service.crypto.entity.KeystoreEntity;
-import esthesis.service.crypto.impl.util.SrvCryptoCryptoConverters;
-import esthesis.service.crypto.impl.util.SrvCryptoCryptoUtil;
+import esthesis.service.crypto.impl.util.CryptoConvertersUtil;
+import esthesis.service.crypto.impl.util.CryptoUtil;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.service.security.annotation.ErnPermission;
@@ -60,9 +60,9 @@ public class KeystoreService extends BaseService<KeystoreEntity> {
 		final String certificateChain, final String keystoreType, final String keystoreProvider)
 	throws NoSuchAlgorithmException, InvalidKeySpecException, CertificateException, KeyStoreException,
 				 IOException, NoSuchProviderException {
-		final PrivateKey pk = SrvCryptoCryptoConverters.pemToPrivateKey(privateKey,
+		final PrivateKey pk = CryptoConvertersUtil.pemToPrivateKey(privateKey,
 			settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString());
-		keystore = SrvCryptoCryptoUtil.savePrivateKeyToKeystore(keystore, keystoreType,
+		keystore = CryptoUtil.savePrivateKeyToKeystore(keystore, keystoreType,
 			keystoreProvider,
 			keystorePassword, keyAlias + ".key", pk, keyPassword, certificateChain);
 
@@ -74,10 +74,10 @@ public class KeystoreService extends BaseService<KeystoreEntity> {
 		final String keystoreProvider)
 	throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException,
 				 NoSuchProviderException {
-		keystore = SrvCryptoCryptoUtil.saveCertificateToKeystore(keystore, keystoreType,
+		keystore = CryptoUtil.saveCertificateToKeystore(keystore, keystoreType,
 			keystoreProvider,
 			keystorePassword, certificateAlias + ".crt",
-			SrvCryptoCryptoConverters.pemToCertificate(certificate).getEncoded());
+			CryptoConvertersUtil.pemToCertificate(certificate).getEncoded());
 
 		return keystore;
 	}
@@ -95,7 +95,7 @@ public class KeystoreService extends BaseService<KeystoreEntity> {
 			final String keystoreProvider = keystoreEntity.getType().split("/")[1];
 			final String keystorePassword = keystoreEntity.getPassword();
 
-			byte[] keystore = SrvCryptoCryptoUtil.createKeystore(keystoreType, keystoreProvider,
+			byte[] keystore = CryptoUtil.createKeystore(keystoreType, keystoreProvider,
 				keystorePassword);
 
 			for (KeystoreEntryDTO entry : keystoreEntity.getEntries()) {

@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {CrudService} from "../shared/services/crud.service";
 import {Observable} from "rxjs";
 import {DataflowDto} from "./dto/dataflow-dto";
@@ -10,7 +10,7 @@ import {AppConstants} from "../app.constants";
   providedIn: "root"
 })
 export class DataflowsService extends CrudService<DataflowDto> {
-  private prefix = AppConstants.API_ROOT + "/dataflow/v1";
+  private readonly prefix = AppConstants.API_ROOT + "/dataflow/v1";
   // A static instance of this service to be used when defining Formly templates, for populating
   // dynamic field values such as selects. Do not use this instance anywhere else.
   static instance: DataflowsService;

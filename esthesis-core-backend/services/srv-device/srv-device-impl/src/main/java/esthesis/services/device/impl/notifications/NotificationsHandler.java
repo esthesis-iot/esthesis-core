@@ -32,12 +32,11 @@ public class NotificationsHandler {
 	public CompletionStage<Void> onMessage(Message<AppMessage> msg) {
 		log.trace("Processing Kafka application message '{}'", msg);
 		// Set the context for the message.
-		Scope scope = msg.getMetadata().get(TracingMetadata.class)
-			.map(tm -> tm.getCurrentContext().makeCurrent())
-			.orElse(Context.current().makeCurrent());
 
 		// Process the message.
-		try {
+		try (Scope scope = msg.getMetadata().get(TracingMetadata.class)
+			.map(tm -> tm.getCurrentContext().makeCurrent())
+			.orElse(Context.current().makeCurrent())) {
 			switch (msg.getPayload().getComponent()) {
 				case TAG -> {
 					switch (msg.getPayload().getAction()) {
@@ -49,8 +48,6 @@ public class NotificationsHandler {
 			}
 		} catch (Exception e) {
 			log.warn("Could not handle Kafka message '{}'.", msg, e);
-		} finally {
-			scope.close();
 		}
 
 		return msg.ack();

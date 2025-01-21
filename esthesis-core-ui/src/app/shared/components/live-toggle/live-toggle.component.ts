@@ -6,7 +6,7 @@ import {CountdownComponent, CountdownConfig, CountdownEvent} from "ngx-countdown
   templateUrl: "./live-toggle.component.html"
 })
 export class LiveToggleComponent {
-  @ViewChild("countdown", {static: false}) private countdown!: CountdownComponent;
+  @ViewChild("countdown", {static: false}) private readonly countdown!: CountdownComponent;
   @Output() tick = new EventEmitter<Date>();
   @Input() counter = 10;
   live = false;

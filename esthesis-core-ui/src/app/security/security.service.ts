@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {CrudService} from "../shared/services/crud.service";
 import {UserDto} from "./dto/user-dto";
@@ -17,9 +17,9 @@ export class SecurityService extends CrudService<UserDto> {
   permissionsFetched = false;
   // An event emitter for components that need to be notified when authentication is done.
   // tslint:disable-next-line:variable-name
-  private _authDone = new BehaviorSubject<boolean>(false);
+  private readonly _authDone = new BehaviorSubject<boolean>(false);
   // tslint:disable-next-line:variable-name
-  private _authDone$ = this._authDone.asObservable();
+  private readonly _authDone$ = this._authDone.asObservable();
 
   constructor(http: HttpClient) {
     super(http, "security/v1/users");

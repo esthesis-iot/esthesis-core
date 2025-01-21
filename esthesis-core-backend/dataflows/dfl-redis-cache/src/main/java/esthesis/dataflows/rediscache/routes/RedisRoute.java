@@ -69,8 +69,7 @@ public class RedisRoute extends RouteBuilder {
 
 		// @formatter:off
     config.kafkaTelemetryTopic().ifPresent(val -> {
-      //TODO redact password
-      log.info("Setting up route from Kafka topic '{}' to Redis '{}'.", val, config.	redisUrl());
+      log.info("Setting up route from Kafka topic '{}' to Redis.", val);
       from("kafka:" + val)
 				.routeId("kafka-telemetry-to-redis")
 				.unmarshal(EsthesisDataMessageDataFormat.create())
@@ -81,8 +80,7 @@ public class RedisRoute extends RouteBuilder {
     });
 
     config.kafkaMetadataTopic().ifPresent(val -> {
-			//TODO redact password
-      log.info("Setting up route from Kafka topic '{}' to Redis '{}'.", val, config.redisUrl());
+      log.info("Setting up route from Kafka topic '{}' to Redis.", val);
       from("kafka:" + val)
 				.routeId("kafka-metadata-to-redis")
 				.unmarshal(EsthesisDataMessageDataFormat.create())

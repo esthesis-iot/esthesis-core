@@ -33,7 +33,8 @@
               cdk-row class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
         </ng-template>
         <ng-template [ngIf]="embedded && allowRead">
-          <tr (click)="embeddedClick(element)" *cdkRowDef="let element; columns: displayedColumns;"
+          <tr (click)="embeddedClick(element)" (keydown)="embeddedClick(element)"
+              *cdkRowDef="let element; columns: displayedColumns;"
               cdk-row class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
         </ng-template>
       </table>

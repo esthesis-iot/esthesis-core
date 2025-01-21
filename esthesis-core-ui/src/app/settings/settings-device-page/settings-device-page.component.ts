@@ -21,8 +21,8 @@ export class SettingsDevicePageComponent extends SecurityBaseComponent implement
   allUniqueMeasurements?: string[];
   fetchingGeoAttributes = true;
 
-  constructor(private fb: FormBuilder, private utilityService: UtilityService,
-    private settingsService: SettingsService) {
+  constructor(private readonly fb: FormBuilder, private readonly utilityService: UtilityService,
+    private readonly settingsService: SettingsService) {
     super(AppConstants.SECURITY.CATEGORY.SETTINGS);
   }
 

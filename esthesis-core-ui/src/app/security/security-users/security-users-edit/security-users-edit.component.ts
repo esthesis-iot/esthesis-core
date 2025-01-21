@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {QFormsService} from "@qlack/forms";
 import {UtilityService} from "../../../shared/services/utility.service";
 import {MatDialog} from "@angular/material/dialog";
 import {QFormValidationEEService} from "../../../shared/services/form-validation.service";
@@ -35,11 +34,12 @@ export class SecurityUsersEditComponent extends SecurityBaseComponent implements
   filteredGroups: GroupDto[] = [];
   groupsFilterCtrl = new FormControl();
 
-  constructor(private fb: FormBuilder, private securityUsersService: SecurityService,
-    private route: ActivatedRoute, private qForms: QFormsService, private router: Router,
-    private utilityService: UtilityService, private dialog: MatDialog,
-    private qFormValidation: QFormValidationEEService,
-    private securityGroupsService: SecurityGroupsService) {
+  constructor(private readonly fb: FormBuilder,
+    private readonly securityUsersService: SecurityService,
+    private readonly route: ActivatedRoute, private readonly router: Router,
+    private readonly utilityService: UtilityService, private readonly dialog: MatDialog,
+    private readonly qFormValidation: QFormValidationEEService,
+    private readonly securityGroupsService: SecurityGroupsService) {
     super(AppConstants.SECURITY.CATEGORY.USERS, route.snapshot.paramMap.get("id"));
   }
 
@@ -141,11 +141,11 @@ export class SecurityUsersEditComponent extends SecurityBaseComponent implements
   addGroup() {
     // TODO not sure why this if-block is needed, since 'groups' is initialized as an empty array
     // TODO in the form definition. All other similar forms in security don't need this.
-    if (!this.form.controls['groups'].value) {
-      this.form.controls['groups'].patchValue([]);
+    if (!this.form.controls["groups"].value) {
+      this.form.controls["groups"].patchValue([]);
     }
     const groupId = this.groupsFilterCtrl.value;
-    this.form.controls['groups'].value.push(groupId);
+    this.form.controls["groups"].value.push(groupId);
     this.groupsFilterCtrl.patchValue("");
   }
 
@@ -160,7 +160,7 @@ export class SecurityUsersEditComponent extends SecurityBaseComponent implements
   }
 
   removeGroup(groupId: string) {
-    const groups = this.form.controls['groups'].value;
+    const groups = this.form.controls["groups"].value;
     const index = groups.indexOf(groupId);
     if (index >= 0) {
       groups.splice(index, 1);
@@ -168,7 +168,7 @@ export class SecurityUsersEditComponent extends SecurityBaseComponent implements
   }
 
   removePolicy(policy: any) {
-    const policies = this.form.controls['policies'].value;
+    const policies = this.form.controls["policies"].value;
     const index = policies.indexOf(policy);
     if (index >= 0) {
       policies.splice(index, 1);
@@ -179,8 +179,8 @@ export class SecurityUsersEditComponent extends SecurityBaseComponent implements
     const editorDialogRef = this.dialog.open(SecurityPoliciesEditorComponent, {width: "40rem"});
     editorDialogRef.afterClosed().subscribe(result => {
       if (result) {
-        if (this.form.controls['policies'].value) {
-          this.form.controls['policies'].value.push(result);
+        if (this.form.controls["policies"].value) {
+          this.form.controls["policies"].value.push(result);
         } else {
           this.form.patchValue({
             policies: [result]

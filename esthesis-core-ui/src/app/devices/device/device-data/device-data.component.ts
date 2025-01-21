@@ -25,8 +25,9 @@ export class DeviceDataComponent extends SecurityBaseComponent implements OnInit
   datasource: MatTableDataSource<DevicePageFieldDataDto> = new MatTableDataSource<DevicePageFieldDataDto>();
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
 
-  constructor(private devicesService: DevicesService, private utilityService: UtilityService,
-    private route: ActivatedRoute, private fb: FormBuilder) {
+  constructor(private readonly devicesService: DevicesService,
+    private readonly utilityService: UtilityService,
+    private readonly route: ActivatedRoute, private readonly fb: FormBuilder) {
     super(AppConstants.SECURITY.CATEGORY.DEVICE, route.snapshot.paramMap.get("id"));
     this.id = this.route.snapshot.paramMap.get("id");
   }
@@ -48,8 +49,8 @@ export class DeviceDataComponent extends SecurityBaseComponent implements OnInit
     // Prepare the form to manually enter data.
     this.form = this.fb.group({
       data: [null],
-      batchSize: [null,  [Validators.pattern("^[0-9]*$")]],
-      batchDelay: [null,  [Validators.pattern("^[0-9]*$")]],
+      batchSize: [null, [Validators.pattern("^[0-9]*$")]],
+      batchDelay: [null, [Validators.pattern("^[0-9]*$")]],
     });
   }
 
@@ -85,7 +86,7 @@ export class DeviceDataComponent extends SecurityBaseComponent implements OnInit
       }, error: (err: any) => {
         this.utilityService.popupErrorWithTraceId("Could not import data.", err);
       }
-    }
+    };
 
     if (dataImportSource == this.appConstants.DEVICE.DATA_IMPORT.SOURCE.TEXT) {
       this.devicesService.importDeviceDataFromText(dataImportType, this.id!,
@@ -103,9 +104,9 @@ export class DeviceDataComponent extends SecurityBaseComponent implements OnInit
   }
 
   clearFileData() {
-    const fileInput = document.getElementById('file') as HTMLInputElement;
+    const fileInput = document.getElementById("file") as HTMLInputElement;
     if (fileInput) {
-      fileInput.value = '';
+      fileInput.value = "";
     }
   }
 

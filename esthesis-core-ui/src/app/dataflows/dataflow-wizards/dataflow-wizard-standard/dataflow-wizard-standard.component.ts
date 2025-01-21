@@ -19,8 +19,9 @@ export class DataflowWizardStandardComponent extends SecurityBaseComponent imple
   fields: FormlyFieldConfig[] = [];
   model = {};
 
-  constructor(private dataflowService: DataflowsService, private utilityService: UtilityService,
-    private router: Router) {
+  constructor(private readonly dataflowService: DataflowsService,
+    private readonly utilityService: UtilityService,
+    private readonly router: Router) {
     super(AppConstants.SECURITY.CATEGORY.DATAFLOW);
   }
 

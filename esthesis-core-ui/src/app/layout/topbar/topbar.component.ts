@@ -13,7 +13,7 @@ export class TopbarComponent implements OnInit {
     "lemonade", "light", "lofi", "luxury", "night", "pastel", "retro", "synthwave", "valentine",
     "winter", "wireframe"];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private readonly fb: FormBuilder) {
   }
 
   ngOnInit(): void {

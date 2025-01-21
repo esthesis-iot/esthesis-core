@@ -16,7 +16,9 @@
           <mat-form-field class="grow">
             <mat-label>Security token</mat-label>
             <input formControlName="token" matInput>
-            <fa-icon *ngIf="allowWrite||allowCreate"  (click)="generateToken()" class="mr-3 cursor-pointer" icon="id-badge"
+            <fa-icon *ngIf="allowWrite||allowCreate"  (click)="generateToken()"
+                     (keydown)="generateToken()"
+                     class="mr-3 cursor-pointer" icon="id-badge"
                      matSuffix matTooltip="Generate token"></fa-icon>
           </mat-form-field>
         </div>
