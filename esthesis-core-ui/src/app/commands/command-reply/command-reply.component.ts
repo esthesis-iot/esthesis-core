@@ -20,8 +20,10 @@ export class CommandReplyComponent extends SecurityBaseComponent implements OnIn
   commandRequest?: CommandRequestDto;
   commandReplies?: CommandReplyDto[];
 
-  constructor(private route: ActivatedRoute, private commandService: CommandsService,
-    private utilityService: UtilityService, private dialog: MatDialog, private router: Router) {
+  constructor(private readonly route: ActivatedRoute,
+    private readonly commandService: CommandsService,
+    private readonly utilityService: UtilityService, private readonly dialog: MatDialog,
+    private readonly router: Router) {
     super(AppConstants.SECURITY.CATEGORY.COMMAND, route.snapshot.paramMap.get("id"));
   }
 

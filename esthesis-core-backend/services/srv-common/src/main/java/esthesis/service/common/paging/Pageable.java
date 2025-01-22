@@ -14,12 +14,14 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 @Getter
 @Setter
+@Accessors(chain = true)
 @NoArgsConstructor
 public class Pageable {
 
@@ -46,7 +48,7 @@ public class Pageable {
 		pageable.setSort("");
 		return pageable;
 	}
-	
+
 	public Optional<io.quarkus.panache.common.Page> getPageObject() {
 		if (page != null && size != null) {
 			return Optional.of(io.quarkus.panache.common.Page.of(page, size));

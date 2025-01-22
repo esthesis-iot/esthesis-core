@@ -43,5 +43,5 @@ quarkus:
 mp:
   messaging:
     outgoing:
-      esthesis-app-out:
-        topic: esthesis-app
+      esthesis-app-unicast-out:
+        topic: esthesis-app-unicast

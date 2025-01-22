@@ -11,7 +11,6 @@ import esthesis.service.tag.entity.TagEntity;
 import esthesis.service.tag.resource.TagResource;
 import esthesis.services.tag.impl.service.TagService;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.GET;
@@ -21,11 +20,12 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class TagResourceImpl implements TagResource {
 
-	@Inject
-	TagService tagService;
+	private final TagService tagService;
 
 	@GET
 	@Override

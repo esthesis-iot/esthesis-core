@@ -1,6 +1,8 @@
 package esthesis.service.device.resource;
 
 import esthesis.service.device.dto.DeviceRegistrationDTO;
+import esthesis.service.device.dto.DevicesLastSeenStatsDTO;
+import esthesis.service.device.dto.DevicesTotalsStatsDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import io.quarkus.oidc.client.filter.OidcClientFilter;
@@ -15,7 +17,6 @@ import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Optional;
-
 import org.bouncycastle.operator.OperatorCreationException;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
@@ -59,5 +60,32 @@ public interface DeviceSystemResource {
 	@GET
 	@Path("/v1/system/{esthesisHardwareId}/attribute-by-esthesis-id/{attributeName}")
 	Optional<DeviceAttributeEntity> getDeviceAttributeByEsthesisHardwareIdAndAttributeName(
-		@PathParam("esthesisHardwareId") String esthesisHardwareId, @PathParam("attributeName") String attributeName);
+		@PathParam("esthesisHardwareId") String esthesisHardwareId,
+		@PathParam("attributeName") String attributeName);
+
+	@GET
+	@Path("/v1/system/device-stats")
+	DevicesLastSeenStatsDTO getDeviceStats();
+
+	@GET
+	@Path("/v1/system/device-totals")
+	DevicesTotalsStatsDTO getDeviceTotalsStats();
+
+	@GET
+	@Path("/v1/system/device-latest")
+	List<DeviceEntity> getLatestDevices(int limit);
+
+	@GET
+	@Path("/v1/find/by-tag-names")
+	List<String> findByTagNames(@QueryParam("tags") String tags);
+
+	/**
+	 * Find devices by tag name.
+	 *
+	 * @param tags Comma-separated list of tag names.
+	 * @return List of device hardware IDs.
+	 */
+	@GET
+	@Path("/v1/find/by-tag-ids")
+	List<String> findByTagIds(@QueryParam("tags") String tags);
 }

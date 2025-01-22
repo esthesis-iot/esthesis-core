@@ -22,10 +22,10 @@ export class DevicePreregisterComponent extends SecurityBaseComponent implements
   form!: FormGroup;
   availableTags: TagDto[] | undefined;
 
-  constructor(private fb: FormBuilder,
-    private devicesService: DevicesService, private router: Router,
-    private utilityService: UtilityService, private tagService: TagsService,
-    private dialog: Dialog, private qFormValidation: QFormValidationEEService) {
+  constructor(private readonly fb: FormBuilder,
+    private readonly devicesService: DevicesService, private readonly router: Router,
+    private readonly utilityService: UtilityService, private readonly tagService: TagsService,
+    private readonly dialog: Dialog, private readonly qFormValidation: QFormValidationEEService) {
     super(AppConstants.SECURITY.CATEGORY.DEVICE);
   }
 

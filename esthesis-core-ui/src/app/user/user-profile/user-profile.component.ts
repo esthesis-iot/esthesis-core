@@ -9,7 +9,8 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 export class UserProfileComponent {
   form!: FormGroup;
 
-  constructor(private oidcSecurityService: OidcSecurityService, private fb: FormBuilder) {
+  constructor(private readonly oidcSecurityService: OidcSecurityService,
+    private readonly fb: FormBuilder) {
   }
 
   ngOnInit() {

@@ -13,9 +13,9 @@ export class AboutComponent extends SecurityBaseComponent implements OnInit {
   about = {} as AboutDto;
   dtJsonUrl!: string;
   dtSwaggerUrl!: string;
-  private pageRouteName = "/about";
+  private readonly pageRouteName = "/about";
 
-  constructor(private aboutService: AboutService) {
+  constructor(private readonly aboutService: AboutService) {
     super(AppConstants.SECURITY.CATEGORY.ABOUT);
     // Find the location of this page, so that the Swagger URL can be constructed.
     let href = window.location.toString();

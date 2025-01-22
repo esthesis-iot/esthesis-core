@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {AuditDto} from "./dto/audit-dto";
@@ -12,7 +12,7 @@ import {AppConstants} from "../app.constants";
   providedIn: "root"
 })
 export class AuditService extends CrudService<AuditDto> {
-  private prefix = AppConstants.API_ROOT + "/audit/v1";
+  private readonly prefix = AppConstants.API_ROOT + "/audit/v1";
 
   constructor(http: HttpClient) {
     super(http, "audit/v1");

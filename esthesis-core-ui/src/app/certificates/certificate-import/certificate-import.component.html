@@ -17,26 +17,26 @@
         </mat-form-field>
 
         <div class="form-control w-full max-w-xs ">
-          <label class="label pl-0">
+          <label class="label pl-0" for="select-public-key">
             <span class="text-accent">Select Public Key</span>
           </label>
-          <input (change)="selectPublicKey($event)" class="file-input file-input-ghost w-full max-w-xs"
+          <input id="select-public-key" (change)="selectPublicKey($event)" class="file-input file-input-ghost w-full max-w-xs"
                  type="file"/>
         </div>
 
         <div class="form-control w-full max-w-xs ">
-          <label class="label pl-0">
+          <label class="label pl-0" for="select-private-key">
             <span class="text-accent">Select Private Key</span>
           </label>
-          <input (change)="selectPrivateKey($event)" class="file-input file-input-ghost w-full max-w-xs"
+          <input id="select-private-key" (change)="selectPrivateKey($event)" class="file-input file-input-ghost w-full max-w-xs"
                  type="file"/>
         </div>
 
         <div class="form-control w-full max-w-xs ">
-          <label class="label pl-0">
+          <label class="label pl-0" for="select-cert">
             <span class="text-accent">Select Certificate</span>
           </label>
-          <input (change)="selectCertificate($event)" class="file-input file-input-ghost w-full max-w-xs"
+          <input id="select-cert" (change)="selectCertificate($event)" class="file-input file-input-ghost w-full max-w-xs"
                  type="file"/>
         </div>
       </form>

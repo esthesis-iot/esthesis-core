@@ -1,0 +1,36 @@
+<div class="card w-full rounded-b-none" >
+  <div class="card-body p-0 pt-4">
+    <h2 class="card-title text-2xl flex flex-row justify-between">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="dashboard"></fa-icon>
+        <div>Add a dashboard item</div>
+      </div>
+    </h2>
+    <div class="flex flex-row flex-wrap gap-5 mt-4 justify-center">
+      <div *ngFor="let w of itemsList">
+        <div *ngIf="w.available;then itemEnabled else itemDisabled"></div>
+        <ng-template #itemEnabled>
+          <div class="card w-64 h-48 bg-base-100 shadow-xl hover:cursor-pointer hover:bg-base-200"
+               (click)="selectItem(w)" (keydown)="selectItem(w)">
+            <div class="card-body items-center text-center">
+              <h2 class="card-title">{{w.name}}</h2>
+              {{w.description}}
+            </div>
+          </div>
+        </ng-template>
+        <ng-template #itemDisabled>
+          <div class="card w-64 h-48 shadow-xl bg-base-100 hover:cursor-not-allowed opacity-25"
+               matTooltip="You can only have one item of this type in your dashboard.">
+            <div class="card-body items-center text-center">
+              <h2 class="card-title">{{w.name}}</h2>
+              {{w.description}}
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+    <div class="mt-4 mb-4 ml-auto mr-2">
+      <button class="btn btn-sm btn-secondary" (click)="close()">CANCEL</button>
+    </div>
+  </div>
+</div>

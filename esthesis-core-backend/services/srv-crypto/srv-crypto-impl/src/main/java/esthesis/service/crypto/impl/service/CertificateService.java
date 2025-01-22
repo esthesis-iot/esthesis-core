@@ -13,30 +13,40 @@ import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
+import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.entity.CertificateEntity;
 import esthesis.service.crypto.impl.dto.CertificateSignRequestDTO;
 import esthesis.service.crypto.impl.dto.CreateKeyPairRequestDTO;
-import esthesis.service.crypto.impl.util.SrvCryptoCryptoConverters;
-import esthesis.service.crypto.impl.util.SrvCryptoCryptoUtil;
+import esthesis.service.crypto.impl.repository.CaEntityRepository;
+import esthesis.service.crypto.impl.util.CryptoConvertersUtil;
+import esthesis.service.crypto.impl.util.CryptoUtil;
 import esthesis.service.security.annotation.ErnPermission;
+import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subject;
 import esthesis.util.kafka.notifications.outgoing.KafkaNotification;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -59,6 +69,9 @@ public class CertificateService extends BaseService<CertificateEntity> {
 	@RestClient
 	SettingsResource settingsResource;
 
+	@Inject
+	CaEntityRepository caEntityRepository;
+
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = CREATE)
 	public CertificateEntity importCertificate(CertificateEntity importedCertificateEntity,
 		FileUpload publicKey, FileUpload privateKey, FileUpload certificate) {
@@ -74,14 +87,14 @@ public class CertificateService extends BaseService<CertificateEntity> {
 				Files.readString(certificate.uploadedFile().toAbsolutePath()));
 
 			// Extract additional certificate information.
-			X509Certificate x509Certificate = SrvCryptoCryptoConverters.pemToCertificate(
+			X509Certificate x509Certificate = CryptoConvertersUtil.pemToCertificate(
 				certificateEntity.getCertificate());
 			certificateEntity.setCn(
-				SrvCryptoCryptoUtil.cleanUpCn(x509Certificate.getSubjectX500Principal().getName()));
+				CryptoUtil.cleanUpCn(x509Certificate.getSubjectX500Principal().getName()));
 			certificateEntity.setIssued(x509Certificate.getNotBefore().toInstant());
 			certificateEntity.setValidity(x509Certificate.getNotAfter().toInstant());
 			certificateEntity.setIssuer(
-				SrvCryptoCryptoUtil.cleanUpCn(x509Certificate.getIssuerX500Principal().getName()));
+				CryptoUtil.cleanUpCn(x509Certificate.getIssuerX500Principal().getName()));
 			certificateEntity.setName(importedCertificateEntity.getName());
 			if (x509Certificate.getSubjectAlternativeNames() != null) {
 				certificateEntity.setSan(x509Certificate.getSubjectAlternativeNames().stream()
@@ -116,7 +129,7 @@ public class CertificateService extends BaseService<CertificateEntity> {
 			}
 
 			// Generate a keypair.
-			final KeyPair keyPair = SrvCryptoCryptoUtil.createKeyPair(
+			final KeyPair keyPair = CryptoUtil.createKeyPair(
 				CreateKeyPairRequestDTO.builder()
 					.keySize(settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_SIZE).asInt())
 					.keyPairGeneratorAlgorithm(
@@ -146,7 +159,7 @@ public class CertificateService extends BaseService<CertificateEntity> {
 			if (caEntity != null) {
 				certificateSignRequestDTO.setIssuerCN(caEntity.getCn());
 				certificateSignRequestDTO.setIssuerPrivateKey(
-					SrvCryptoCryptoConverters.pemToPrivateKey(
+					CryptoConvertersUtil.pemToPrivateKey(
 						caEntity.getPrivateKey(),
 						settingsResource.findByName(
 								NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM)
@@ -158,10 +171,10 @@ public class CertificateService extends BaseService<CertificateEntity> {
 
 			// Sign the certificate.
 			final X509CertificateHolder x509CertificateHolder =
-				SrvCryptoCryptoUtil.generateCertificate(certificateSignRequestDTO);
+				CryptoUtil.generateCertificate(certificateSignRequestDTO);
 
 			// Generate the PEM version of the certificate.
-			String certPEM = SrvCryptoCryptoConverters.certificateToPEM(
+			String certPEM = CryptoConvertersUtil.certificateToPEM(
 				x509CertificateHolder.toASN1Structure());
 
 			// Add the certificate chain.
@@ -173,8 +186,8 @@ public class CertificateService extends BaseService<CertificateEntity> {
 			// Populate the certificate DTO to persist it.
 			certificateEntity.setIssued(certificateSignRequestDTO.getValidForm());
 			certificateEntity
-				.setPrivateKey(SrvCryptoCryptoConverters.privateKeyToPEM(keyPair.getPrivate()));
-			certificateEntity.setPublicKey(SrvCryptoCryptoConverters.publicKeyToPEM(keyPair.getPublic()));
+				.setPrivateKey(CryptoConvertersUtil.privateKeyToPEM(keyPair.getPrivate()));
+			certificateEntity.setPublicKey(CryptoConvertersUtil.publicKeyToPEM(keyPair.getPublic()));
 			certificateEntity.setIssuer(certificateSignRequestDTO.getIssuerCN());
 			certificateEntity.setCertificate(certPEM);
 			certificateEntity.setSan(certificateSignRequestDTO.getSan());
@@ -232,5 +245,70 @@ public class CertificateService extends BaseService<CertificateEntity> {
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public Page<CertificateEntity> find(Pageable pageable, boolean partialMatch) {
 		return super.find(pageable, partialMatch);
+	}
+
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
+	public String generateCertificateAsPEM(CreateCertificateRequestDTO createCertificateRequestDTO)
+	throws NoSuchAlgorithmException, InvalidKeySpecException, OperatorCreationException, IOException {
+		// Prepare a certificate sign request.
+		// Create a public key.
+		PublicKey publicKey = KeyFactory.getInstance(
+				settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
+			.generatePublic(new X509EncodedKeySpec(
+				createCertificateRequestDTO.getKeyPair().getPublic().getEncoded()));
+
+		// Create a private key.
+		PrivateKey privateKey = KeyFactory.getInstance(
+				settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM).asString())
+			.generatePrivate(new PKCS8EncodedKeySpec(
+				createCertificateRequestDTO.getKeyPair().getPrivate().getEncoded()));
+
+		// Create a certificate sign request.
+		CertificateSignRequestDTO certificateSignRequestDTO =
+			new CertificateSignRequestDTO()
+				.setLocale(Locale.getDefault())
+				.setPrivateKey(privateKey)
+				.setPublicKey(publicKey)
+				.setValidForm(Instant.now())
+				.setSignatureAlgorithm(
+					settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM)
+						.asString()).setSubjectCN(createCertificateRequestDTO.getCn());
+
+		// If a root CA is defined, use it to sign the certificate. Otherwise, self-sign the certificate.
+		SettingEntity caRegistryEntry = settingsResource.findByName(NamedSetting.DEVICE_ROOT_CA);
+		if (caRegistryEntry == null || StringUtils.isBlank(caRegistryEntry.getValue())) {
+			Log.warn("No root CA is defined, will generate a self-signed certificate.");
+			certificateSignRequestDTO
+				.setValidTo(Instant.now().plus(3650, ChronoUnit.DAYS))
+				.setIssuerCN(createCertificateRequestDTO.getCn())
+				.setIssuerPrivateKey(privateKey);
+		} else {
+			final CaEntity caEntity = caEntityRepository.findById(caRegistryEntry.asObjectId());
+			certificateSignRequestDTO
+				.setValidTo(caEntity.getValidity())
+				.setIssuerCN(caEntity.getCn())
+				.setIssuerPrivateKey(
+					CryptoConvertersUtil.pemToPrivateKey(caEntity.getPrivateKey(),
+						settingsResource.findByName(NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM)
+							.asString()));
+		}
+
+		// Sign the certificate.
+		X509CertificateHolder x509CertificateHolder = CryptoUtil.generateCertificate(
+			certificateSignRequestDTO);
+
+		// Convert the certificate to PEM.
+		String cert = CryptoConvertersUtil.certificateToPEM(
+			x509CertificateHolder.toASN1Structure());
+
+		// Add certificate chain, if requested.
+		if (createCertificateRequestDTO.isIncludeCertificateChain() && !(caRegistryEntry == null
+			|| StringUtils.isBlank(caRegistryEntry.getValue()))) {
+			final CaEntity caEntity = caEntityRepository.findById(caRegistryEntry.asObjectId());
+			cert = String.join("", cert,
+				String.join("", caService.getCertificate(caEntity.getId().toHexString())));
+		}
+
+		return cert;
 	}
 }

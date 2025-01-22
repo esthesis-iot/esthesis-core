@@ -8,15 +8,15 @@
 	<parent>
 		<groupId>esthesis</groupId>
 		<artifactId>esthesis-core</artifactId>
-		<version>3.0.58-SNAPSHOT</version>
+		<version>3.0.59-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>esthesis-core-util</artifactId>
-	<version>3.0.58-SNAPSHOT</version>
+	<version>3.0.59-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
 		<module>utl-redis</module>
 		<module>utl-kafka-notifications</module>
-	</modules>
+  </modules>
 </project>

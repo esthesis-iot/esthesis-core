@@ -1,3 +1,5 @@
+import {Icon, icon} from "leaflet";
+
 export const AppConstants = {
   // The API root context.
   API_ROOT: "/api",
@@ -223,24 +225,114 @@ export const AppConstants = {
   },
 
   DASHBOARD: {
+    REFRESH_INTERVAL_MINUTES: 1, // How often to send a keep-alive.
     DEFAULTS: {
-      COLUMN_WIDTH: 100,
-      ROW_HEIGHT: 50
+      COLUMN_WIDTH: 100
     },
-    WIDGET: {
-      SENSOR: "SENSOR",
-      SECURITY_STATS: "SECURITY_STATS",
-      DEVICES_STATUS: "DEVICES_STATUS",
-      DEVICES_LATEST: "DEVICES_LATEST",
-      AUDIT: "AUDIT",
-      ABOUT: "ABOUT",
-      CAMPAIGNS: "CAMPAIGNS",
-      NOTES: "NOTES",
-      TITLE: "TITLE",
-      DEVICES_LAST_SEEN: "DEVICES_LAST_SEEN",
-      DEVICE_MAP: "DEVICE_MAP",
-      SENSOR_ICON: "SENSOR_ICON"
+    SINGLE_INSTANCE_ITEMS: [""],
+    ITEM: {
+      TYPE: {
+        ABOUT: "ABOUT",
+        AUDIT: "AUDIT",
+        CAMPAIGNS: "CAMPAIGNS",
+        CHART: "CHART",
+        DATETIME: "DATETIME",
+        DEVICE_MAP: "DEVICE_MAP",
+        DEVICES_LAST_SEEN: "DEVICES_LAST_SEEN",
+        DEVICES_LATEST: "DEVICES_LATEST",
+        DEVICES_STATUS: "DEVICES_STATUS",
+        IMAGE: "IMAGE",
+        NOTES: "NOTES",
+        SECURITY_STATS: "SECURITY_STATS",
+        SENSOR: "SENSOR",
+        SENSOR_ICON: "SENSOR_ICON",
+        TITLE: "TITLE"
+      },
+      COLUMNS: {
+        ABOUT: 4,
+        AUDIT: 4,
+        CAMPAIGNS: 5,
+        CHART: 8,
+        DATETIME: 4,
+        DEVICE_MAP: 4,
+        DEVICES_LAST_SEEN: 3,
+        DEVICES_LATEST: 5,
+        DEVICES_STATUS: 8,
+        IMAGE: 5,
+        NOTES: 4,
+        SECURITY_STATS: 6,
+        SENSOR: 2,
+        SENSOR_ICON: 2,
+        TITLE: 4
+      },
+      DEFAULTS: {
+        ABOUT: {},
+        AUDIT: {
+          entries: 5
+        },
+        CAMPAIGNS: {},
+        CHART: {
+          hardwareIds: [],
+          tags: [],
+          measurements: [],
+          height: 300,
+          totalPoints: 100,
+          lineTension: 0.5
+        },
+        DATETIME: {
+          date: true,
+          time: true,
+          local: true,
+          server: true,
+          formatDate: "MMMM Do YYYY",
+          formatTime: "h:mm:ss a",
+          formatDateTime: "MMMM Do YYYY, h:mm:ss a"
+        },
+        DEVICE_MAP: {
+          zoom: 10,
+          height: 200,
+          hardwareIds: [],
+          tags: []
+        },
+        DEVICES_LAST_SEEN: {},
+        DEVICES_LATEST: {
+          entries: 5
+        },
+        DEVICES_STATUS: {
+          orientation: "horizontal"
+        },
+        IMAGE: {
+          height: 400,
+          refresh: 0,
+          imageUrl: "https://placehold.co/450x400?text=esthesis%20IoT"
+        },
+        NOTES: {
+          notes: "esthesis IoT"
+        },
+        SECURITY_STATS: {
+          orientation: "horizontal"
+        },
+        SENSOR: {},
+        SENSOR_ICON: {},
+        TITLE: {
+          title: "esthesis IoT"
+        }
+      }
     }
+  },
+
+  MAP_DEFAULT_ICON: icon({
+    ...Icon.Default.prototype.options,
+    iconUrl: "assets/marker-icon.png",
+    iconRetinaUrl: "assets/marker-icon-2x.png",
+    shadowUrl: "assets/marker-shadow.png"
+  }),
+
+  // Get a value by key name.
+  getValue<T = any>(keyPath: string): T | undefined {
+    return keyPath
+    .split('.')
+    .reduce((obj: any, key) => obj?.[key], AppConstants);
   }
 
 };

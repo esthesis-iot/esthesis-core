@@ -6,7 +6,7 @@ import {AbstractControl, FormGroup} from "@angular/forms";
 })
 export class QFormValidationEEService {
 
-  private static FORM_TYPE = {
+  private static readonly FORM_TYPE = {
     CLASSIC: "CLASSIC",
     FORMLY: "FORMLY"
   };

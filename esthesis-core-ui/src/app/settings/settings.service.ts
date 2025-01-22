@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {CrudService} from "../shared/services/crud.service";
 import {Observable} from "rxjs";
@@ -13,7 +13,7 @@ import {AppConstants} from "../app.constants";
   providedIn: "root"
 })
 export class SettingsService extends CrudService<SettingDto> {
-  private prefix = AppConstants.API_ROOT + "/settings/v1";
+  private readonly prefix = AppConstants.API_ROOT + "/settings/v1";
 
   constructor(http: HttpClient) {
     super(http, "settings/v1");

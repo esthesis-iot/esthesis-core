@@ -11,17 +11,16 @@
       <!-- Device info -->
       <div class="w-96 pr-10">
         <form [formGroup]="deviceInfoForm" class="flex flex-col gap-3" novalidate>
-
           <div>
             <div class="font-bold">Hardware ID</div>
-            <div>{{device?.hardwareId}}</div>
+            <div>{{ device?.hardwareId }}</div>
           </div>
 
           <div>
             <div class="font-bold">Last seen</div>
             <div *ngIf="device?.lastSeen">
-              {{device?.lastSeen | amFromUtc | amLocal}}<br>
-              {{device?.lastSeen | amFromUtc | amLocal | amTimeAgo}}
+              {{ device?.lastSeen | amFromUtc | amLocal }}<br>
+              {{ device?.lastSeen | amFromUtc | amLocal | amTimeAgo }}
             </div>
             <div *ngIf="!device?.lastSeen" class="value-text">
               Never
@@ -31,7 +30,7 @@
           <div>
             <div class="font-bold">Created</div>
             <div *ngIf="device?.createdOn">
-              {{device?.createdOn | amFromUtc | amLocal}}
+              {{ device?.createdOn | amFromUtc | amLocal }}
             </div>
             <div *ngIf="!device?.createdOn" class="value-text">
               Never
@@ -41,7 +40,7 @@
           <div>
             <div class="font-bold">Registered on</div>
             <div *ngIf="device?.registeredOn">
-              {{device?.registeredOn | amFromUtc | amLocal}}
+              {{ device?.registeredOn | amFromUtc | amLocal }}
             </div>
             <div *ngIf="!device?.registeredOn" class="value-text">
               Never
@@ -50,7 +49,7 @@
 
           <div>
             <mat-form-field class="w-full -mt-5">
-              <label class="font-bold">Registration Status</label>
+              <div class="font-bold">Registration Status</div>
               <mat-select formControlName="status">
                 <mat-option *ngFor="let o of appConstants.DEVICE.STATUS | keyvalue"
                             [value]="o.value">
@@ -62,28 +61,27 @@
 
           <div class="-mt-8">
             <mat-form-field class="w-full">
-              <label class="font-bold">Tags</label>
+              <div class="font-bold">Tags</div>
               <mat-select formControlName="tags" multiple>
                 <mat-option *ngFor="let tag of availableTags"
-                            [value]="tag.id">{{tag.name}}</mat-option>
+                            [value]="tag.id">{{ tag.name }}
+                </mat-option>
               </mat-select>
             </mat-form-field>
           </div>
 
-          <div *ngIf="geolocation | async as geolocation$">
-            <div>
-              <div class="flex flex-row">
-                <div class="font-bold">Location</div>
-                <fa-icon (click)="showMap()" class="ml-1 cursor-pointer"
-                         icon="up-right-from-square"></fa-icon>
-              </div>
-              <app-framed-map
-                [latitude]="geolocation$.latitude"
-                [longitude]="geolocation$.longitude"
-                [zoom]="13" height="200" width="100%">
-              </app-framed-map>
-              <div
-                class="geoAgo">{{geolocation$.lastUpdated | amFromUtc | amLocal | amTimeAgo}}</div>
+          <div *ngIf="mapOptions && geolocation && mapLayers">
+            <div class="flex flex-row">
+              <div class="font-bold">Location</div>
+              <fa-icon (click)="showMap()" (keydown)="showMap()" class="ml-1 cursor-pointer"
+                       icon="up-right-from-square"></fa-icon>
+            </div>
+            <div class="mt-2 h-[200px]"
+                 leaflet
+                 [leafletOptions]="mapOptions"
+                 [leafletLayers]="mapLayers">
+            </div>
+            <div class="geoAgo">{{ geolocation.lastUpdated | amFromUtc | amLocal | amTimeAgo }}
             </div>
           </div>
         </form>
@@ -142,7 +140,7 @@
       </button>
       <button (click)="saveDeviceInfo()"
               *ngIf="allowWrite"
-              [disabled]="deviceInfoForm.invalid || deviceInfoForm.pristine"
+              [disabled]="deviceInfoForm.invalid || !deviceInfoForm.dirty"
               class="btn btn-sm btn-primary">SAVE
       </button>
     </div>

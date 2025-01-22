@@ -3,6 +3,7 @@ quarkus:
     name: esthesis-core-srv-tag
   devservices:
     enabled: false
+
   log:
     console:
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
@@ -32,8 +33,9 @@ quarkus:
     SecurityResource:
       url: http://esthesis-core-srv-security-service:8080
       scope: Singleton
+
 mp:
   messaging:
     outgoing:
-      esthesis-app-out:
-        topic: esthesis-app
+      esthesis-app-unicast-out:
+        topic: esthesis-app-unicast

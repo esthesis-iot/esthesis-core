@@ -88,10 +88,10 @@ public class AgentService {
 	GridFSService gridFSService;
 
 	// The number of seconds after which the counter for provisioning requests is reset (in seconds).
-	private final int requestCounterTimeout = 300;
+	private static final int REQUEST_COUNTER_TIMEOUT = 300;
 
 	// The number of provisioning requests that can be made within the timeout period.
-	private final int requestsPerTimeslot = 5;
+	private static final int REQUESTS_PER_TIMESLOT = 5;
 
 	/**
 	 * Attempts to validate a request token sent by a device while requesting information on available
@@ -139,12 +139,13 @@ public class AgentService {
 	private void validateRequestsLimit(String hardwareId) {
 		if (settingsSystemResource.findByName(NamedSetting.DEVICE_PROVISIONING_SECURE).asBoolean()) {
 			long counter = redisUtils.incrCounter(KeyType.ESTHESIS_PRT, hardwareId,
-				requestCounterTimeout);
-			if (counter > requestsPerTimeslot) {
+				AgentService.REQUEST_COUNTER_TIMEOUT);
+			if (counter > AgentService.REQUESTS_PER_TIMESLOT) {
 				throw new QLimitException(
 					"Device with hardware id '{}' has exceeded the number of allowed provisioning "
-						+ "requests, '{}' requests per '{}' seconds).", hardwareId, requestsPerTimeslot,
-					requestCounterTimeout);
+						+ "requests, '{}' requests per '{}' seconds).", hardwareId,
+					AgentService.REQUESTS_PER_TIMESLOT,
+					AgentService.REQUEST_COUNTER_TIMEOUT);
 			}
 
 			// If the token was validated, reset the caching counter.

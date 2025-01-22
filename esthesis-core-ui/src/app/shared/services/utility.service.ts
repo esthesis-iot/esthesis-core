@@ -6,7 +6,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   providedIn: "root"
 })
 export class UtilityService {
-  constructor(private snackBar: MatSnackBar, private clipboard: Clipboard) {
+  constructor(private readonly snackBar: MatSnackBar, private readonly clipboard: Clipboard) {
   }
 
   /**
@@ -113,5 +113,13 @@ export class UtilityService {
     const color = getComputedStyle(tempElement).color;
     document.body.removeChild(tempElement);
     return color;
+  }
+
+  /**
+   * Generate an array of numbers from 1 to max.
+   * @param max The maximum number to generate.
+   */
+  arrayGen(max: number): number[] {
+    return Array.from({ length: max }, (_, i) => i + 1);
   }
 }

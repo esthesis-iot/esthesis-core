@@ -1,6 +1,5 @@
 import {Component, OnInit} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
-import {QFormsService} from "@qlack/forms";
 import {DevicesService} from "../../devices.service";
 import {ActivatedRoute} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
@@ -24,9 +23,9 @@ export class DeviceProfileComponent extends SecurityBaseComponent implements OnI
   // The device profile fields.
   deviceProfileFields?: DevicePageFieldDataDto[];
 
-  constructor(private fb: FormBuilder, private qForms: QFormsService,
-    private devicesService: DevicesService, private route: ActivatedRoute,
-    private utilityService: UtilityService, private dialog: MatDialog) {
+  constructor(private readonly fb: FormBuilder,
+    private readonly devicesService: DevicesService, private readonly route: ActivatedRoute,
+    private readonly utilityService: UtilityService, private readonly dialog: MatDialog) {
     super(AppConstants.SECURITY.CATEGORY.DEVICE, route.snapshot.paramMap.get("id"));
   }
 

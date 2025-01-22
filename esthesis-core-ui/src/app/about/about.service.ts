@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {AboutDto} from "./dto/about-dto";
 import {AppConstants} from "../app.constants";
@@ -8,9 +8,9 @@ import {AppConstants} from "../app.constants";
   providedIn: "root"
 })
 export class AboutService {
-  private prefix = AppConstants.API_ROOT + "/about/v1";
+  private readonly prefix = AppConstants.API_ROOT + "/about/v1";
 
-  constructor(private http: HttpClient) {
+  constructor(private readonly http: HttpClient) {
   }
 
   getAbout(): Observable<AboutDto> {

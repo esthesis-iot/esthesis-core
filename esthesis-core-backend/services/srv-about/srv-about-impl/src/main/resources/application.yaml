@@ -26,6 +26,10 @@ quarkus:
   otel:
     sdk:
       disabled: true
+  cache:
+    caffeine:
+      dashboardCache:
+        expire-after-write: 1h
   rest-client:
     AuditResource:
       url: http://esthesis-core-srv-audit-service:8080

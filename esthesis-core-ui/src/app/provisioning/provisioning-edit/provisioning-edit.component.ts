@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import { HttpEventType } from "@angular/common/http";
+import {HttpEventType} from "@angular/common/http";
 import {TagDto} from "../../tags/dto/tag-dto";
 import {TagsService} from "../../tags/tags.service";
 import {ProvisioningService} from "../provisioning.service";
@@ -28,10 +28,11 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
   baseVersions?: ProvisioningDto[];
   file: File | null = null;
 
-  constructor(private fb: FormBuilder, private dialog: MatDialog, private tagService: TagsService,
-    private provisioningService: ProvisioningService, private route: ActivatedRoute,
-    private router: Router, private utilityService: UtilityService,
-    private qFormValidation: QFormValidationEEService) {
+  constructor(private readonly fb: FormBuilder, private readonly dialog: MatDialog,
+    private readonly tagService: TagsService, private readonly route: ActivatedRoute,
+    private readonly provisioningService: ProvisioningService,
+    private readonly router: Router, private readonly utilityService: UtilityService,
+    private readonly qFormValidation: QFormValidationEEService) {
     super(AppConstants.SECURITY.CATEGORY.PROVISIONING, route.snapshot.paramMap.get("id"));
   }
 
@@ -94,7 +95,7 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
     this.findBaseVersions();
 
     // If tags change, update base versions.
-    this.form.controls['tags'].valueChanges.pipe(
+    this.form.controls["tags"].valueChanges.pipe(
       debounceTime(100), distinctUntilChanged()
     ).subscribe(() => {
       this.findBaseVersions();
@@ -162,7 +163,7 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
     const file: File = event.target?.files[0];
     if (file) {
       this.file = file;
-      this.form.controls['fileName'].setValue(file.name);
+      this.form.controls["fileName"].setValue(file.name);
     }
   }
 
@@ -178,11 +179,11 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
    * filtered to match at least one of the tags of this version.
    */
   findBaseVersions() {
-    const tags = this.form.controls['tags'].value.join(",");
+    const tags = this.form.controls["tags"].value.join(",");
     this.provisioningService.findBaseVersions(tags).subscribe({
       next: (next: any) => {
         this.baseVersions =
-          next.filter((value: any) => value['version'] !== this.form.controls['version'].value);
+          next.filter((value: any) => value["version"] !== this.form.controls["version"].value);
       }, error: (err: any) => {
         this.utilityService.popupErrorWithTraceId("There was a problem fetching available base versions.", err);
       }

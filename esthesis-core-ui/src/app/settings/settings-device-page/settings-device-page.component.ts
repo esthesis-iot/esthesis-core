@@ -1,9 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {DevicePageFieldDefinitionDto} from "../dto/device-page-field-definition-dto";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
-import {DevicesService} from "../../devices/devices.service";
 import {SettingsService} from "../settings.service";
-import {QFormsService} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";
 import {SettingDto} from "../dto/setting-dto";
 import * as _ from "lodash-es";
@@ -23,9 +21,8 @@ export class SettingsDevicePageComponent extends SecurityBaseComponent implement
   allUniqueMeasurements?: string[];
   fetchingGeoAttributes = true;
 
-  constructor(private devicesService: DevicesService, private fb: FormBuilder,
-    private utilityService: UtilityService, private qForms: QFormsService,
-    private settingsService: SettingsService) {
+  constructor(private readonly fb: FormBuilder, private readonly utilityService: UtilityService,
+    private readonly settingsService: SettingsService) {
     super(AppConstants.SECURITY.CATEGORY.SETTINGS);
   }
 

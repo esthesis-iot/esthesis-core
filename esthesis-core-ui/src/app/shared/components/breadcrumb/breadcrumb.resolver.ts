@@ -19,10 +19,11 @@ import {SecurityGroupsService} from "../../../security/security-groups.service";
 import {SecurityRolesService} from "../../../security/security-roles.service";
 import {SecurityPoliciesService} from "../../../security/security-policies.service";
 import {AuditService} from "../../../audit/audit.service";
+import {DashboardService} from "../../../dashboard/dashboard.service";
 
 export const deviceNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   return "|" + (await firstValueFrom(inject(DevicesService).findById(route.paramMap.get("id")))).hardwareId;
-}
+};
 
 export const provisioningPackageNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   const id = route.paramMap.get("id");
@@ -31,7 +32,7 @@ export const provisioningPackageNameResolver: ResolveFn<string> = async (route: 
   } else {
     return "|" + (await firstValueFrom(inject(ProvisioningService).findById(route.paramMap.get("id")))).name;
   }
-}
+};
 
 export const campaignNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   const id = route.paramMap.get("id");
@@ -40,16 +41,16 @@ export const campaignNameResolver: ResolveFn<string> = async (route: ActivatedRo
   } else {
     return "|" + (await firstValueFrom(inject(CampaignsService).findById(route.paramMap.get("id")))).name;
   }
-}
+};
 
-export const certificateNameResolver: ResolveFn<string|undefined> = async (route: ActivatedRouteSnapshot) => {
+export const certificateNameResolver: ResolveFn<string | undefined> = async (route: ActivatedRouteSnapshot) => {
   const id = route.paramMap.get("id");
   if (id === AppConstants.NEW_RECORD_ID) {
     return "|New certificate";
   } else {
     return "|" + (await firstValueFrom(inject(CertificatesService).findById(route.paramMap.get("id")))).name;
   }
-}
+};
 
 export const caNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   const id = route.paramMap.get("id");
@@ -58,7 +59,7 @@ export const caNameResolver: ResolveFn<string> = async (route: ActivatedRouteSna
   } else {
     return "|" + (await firstValueFrom(inject(CasService).findById(route.paramMap.get("id")))).name;
   }
-}
+};
 
 export const keystoreNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   const id = route.paramMap.get("id");
@@ -67,17 +68,17 @@ export const keystoreNameResolver: ResolveFn<string> = async (route: ActivatedRo
   } else {
     return "|" + (await firstValueFrom(inject(KeystoresService).findById(route.paramMap.get("id")))).name;
   }
-}
+};
 
 export const dflNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   const id = route.paramMap.get("id");
   if (id === AppConstants.NEW_RECORD_ID) {
-    const type= route.paramMap.get("type");
+    const type = route.paramMap.get("type");
     return `|New ${type} dataflow`;
   } else {
     return "|" + (await firstValueFrom(inject(DataflowsService).findById(route.paramMap.get("id")))).name;
   }
-}
+};
 
 export const infraMqttNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   const id = route.paramMap.get("id");
@@ -86,7 +87,7 @@ export const infraMqttNameResolver: ResolveFn<string> = async (route: ActivatedR
   } else {
     return "|" + (await firstValueFrom(inject(InfrastructureMqttService).findById(route.paramMap.get("id")))).name;
   }
-}
+};
 
 export const applicationNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   const id = route.paramMap.get("id");
@@ -95,7 +96,7 @@ export const applicationNameResolver: ResolveFn<string> = async (route: Activate
   } else {
     return "|" + (await firstValueFrom(inject(ApplicationsService).findById(route.paramMap.get("id")))).name;
   }
-}
+};
 
 export const tagNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   const id = route.paramMap.get("id");
@@ -104,16 +105,25 @@ export const tagNameResolver: ResolveFn<string> = async (route: ActivatedRouteSn
   } else {
     return "|" + (await firstValueFrom(inject(TagsService).findById(route.paramMap.get("id")))).name;
   }
-}
+};
 
-export const userNameResolver: ResolveFn<string|null> = (route: ActivatedRouteSnapshot) => {
+export const dashboardNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
+  const id = route.paramMap.get("id");
+  if (id === AppConstants.NEW_RECORD_ID) {
+    return "|New dashboard";
+  } else {
+    return "|" + (await firstValueFrom(inject(DashboardService).findById(route.paramMap.get("id")))).name;
+  }
+};
+
+export const userNameResolver: ResolveFn<string | null> = (route: ActivatedRouteSnapshot) => {
   const id = route.paramMap.get("id");
   if (id === AppConstants.NEW_RECORD_ID) {
     return "|New user";
   } else {
     return `|${inject(SecurityService).getFullName()} (${inject(SecurityService).getUsername()})`;
   }
-}
+};
 
 export const securityGroupNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   const id = route.paramMap.get("id");
@@ -122,7 +132,7 @@ export const securityGroupNameResolver: ResolveFn<string> = async (route: Activa
   } else {
     return "|" + (await firstValueFrom(inject(SecurityGroupsService).findById(route.paramMap.get("id")))).name;
   }
-}
+};
 
 export const securityRoleNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   const id = route.paramMap.get("id");
@@ -131,7 +141,7 @@ export const securityRoleNameResolver: ResolveFn<string> = async (route: Activat
   } else {
     return "|" + (await firstValueFrom(inject(SecurityRolesService).findById(route.paramMap.get("id")))).name;
   }
-}
+};
 
 export const securityPolicyNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   const id = route.paramMap.get("id");
@@ -140,9 +150,8 @@ export const securityPolicyNameResolver: ResolveFn<string> = async (route: Activ
   } else {
     return "|" + (await firstValueFrom(inject(SecurityPoliciesService).findById(route.paramMap.get("id")))).name;
   }
-}
+};
 
 export const auditNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
-  const id = route.paramMap.get("id");
   return "|" + (await firstValueFrom(inject(AuditService).findById(route.paramMap.get("id")))).message;
-}
+};

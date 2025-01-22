@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatSort} from "@angular/material/sort";
-import {Router} from "@angular/router";
 import {QFormsService} from "@qlack/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {DataflowsService} from "../dataflows.service";
@@ -25,8 +24,8 @@ export class DataflowsListComponent extends SecurityBaseComponent implements OnI
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
-  constructor(private fb: FormBuilder, private router: Router,
-    private dataflowService: DataflowsService, private qForms: QFormsService) {
+  constructor(private readonly fb: FormBuilder,
+    private readonly dataflowService: DataflowsService, private readonly qForms: QFormsService) {
     super(AppConstants.SECURITY.CATEGORY.DATAFLOW);
     this.filterForm = this.fb.group({
       name: [],

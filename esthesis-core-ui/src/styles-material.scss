@@ -341,3 +341,7 @@ mat-radio-group {
   @apply font-bold;
   @apply text-error #{!important};
 }
+
+.mdc-label {
+  @apply text-base;
+}

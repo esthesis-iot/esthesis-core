@@ -13,10 +13,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.UriInfo;
+import java.net.URI;
 import org.instancio.Instancio;
 import org.mockito.Mockito;
-
-import java.net.URI;
 
 @ApplicationScoped
 public class TestHelper {
@@ -57,7 +56,8 @@ public class TestHelper {
 		UriInfo uriInfo = Mockito.mock(UriInfo.class);
 
 		// Define the behavior of the mock
-		when(uriInfo.getRequestUri()).thenReturn(URI.create("http://localhost:8080/find?page=0&size=10"));
+		when(uriInfo.getRequestUri()).thenReturn(
+			URI.create("http://localhost:8080/find?page=0&size=10"));
 		when(uriInfo.getQueryParameters()).thenReturn(new MultivaluedHashMap<>());
 
 		Pageable pageable = new Pageable();

@@ -20,8 +20,8 @@ export class SettingsSecurityComponent extends SecurityBaseComponent implements 
   certificates: CertificateDto[] | undefined;
   cas: CaDto[] | undefined;
 
-  constructor(private fb: FormBuilder, private settingsService: SettingsService,
-    private utilityService: UtilityService, private casService: CasService) {
+  constructor(private readonly fb: FormBuilder, private readonly settingsService: SettingsService,
+    private readonly utilityService: UtilityService, private readonly casService: CasService) {
     super(AppConstants.SECURITY.CATEGORY.SETTINGS);
   }
 

@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {QFormsService} from "@qlack/forms";
 import {MatDialog} from "@angular/material/dialog";
 import {DevicesComponent} from "../../devices/devices-list/devices.component";
 import {KeystoresService} from "../keystores.service";
@@ -35,10 +34,9 @@ export class KeystoreEditComponent extends SecurityBaseComponent implements OnIn
   // Keystore types which we know don't work.
   excludedKeystoreTypes = ["DKS/SUN", "KeychainStore/Apple"];
 
-  constructor(private fb: FormBuilder, private router: Router,
-    private qForms: QFormsService, private dialog: MatDialog,
-    private keystoresService: KeystoresService, private utilityService: UtilityService,
-    private route: ActivatedRoute) {
+  constructor(private readonly fb: FormBuilder, private readonly router: Router,
+    private readonly dialog: MatDialog, private readonly keystoresService: KeystoresService,
+    private readonly utilityService: UtilityService, private readonly route: ActivatedRoute) {
     super(AppConstants.SECURITY.CATEGORY.KEYSTORE, route.snapshot.paramMap.get("id"));
   }
 
@@ -87,14 +85,14 @@ export class KeystoreEditComponent extends SecurityBaseComponent implements OnIn
     devicesDialogRef.afterClosed().subscribe(result => {
       // Add the selected devices to the keystore items.
       if (result) {
-        this.form.controls['entries'].value.push({
+        this.form.controls["entries"].value.push({
           id: result.id,
           resourceType: this.appConstants.KEYSTORE.ITEM.RESOURCE_TYPE.DEVICE,
           keyType: [this.appConstants.KEYSTORE.ITEM.KEY_TYPE.CERTIFICATE,
             this.appConstants.KEYSTORE.ITEM.KEY_TYPE.PRIVATE_KEY],
           name: result.hardwareId
         });
-        this.dataSource = new MatTableDataSource<KeystoreEntryDto>(this.form.controls['entries'].value);
+        this.dataSource = new MatTableDataSource<KeystoreEntryDto>(this.form.controls["entries"].value);
       }
     });
   }
@@ -105,14 +103,14 @@ export class KeystoreEditComponent extends SecurityBaseComponent implements OnIn
     certDialogRef.afterClosed().subscribe(result => {
       // Add the selected devices to the keystore items.
       if (result) {
-        this.form.controls['entries'].value.push({
+        this.form.controls["entries"].value.push({
           id: result.id,
           resourceType: this.appConstants.KEYSTORE.ITEM.RESOURCE_TYPE.CERTIFICATE,
           keyType: [this.appConstants.KEYSTORE.ITEM.KEY_TYPE.CERTIFICATE,
             this.appConstants.KEYSTORE.ITEM.KEY_TYPE.PRIVATE_KEY],
           name: result.name
         });
-        this.dataSource = new MatTableDataSource<KeystoreEntryDto>(this.form.controls['entries'].value);
+        this.dataSource = new MatTableDataSource<KeystoreEntryDto>(this.form.controls["entries"].value);
       }
     });
   }
@@ -123,14 +121,14 @@ export class KeystoreEditComponent extends SecurityBaseComponent implements OnIn
     caDialogRef.afterClosed().subscribe(result => {
       // Add the selected devices to the keystore items.
       if (result) {
-        this.form.controls['entries'].value.push({
+        this.form.controls["entries"].value.push({
           id: result.id,
           resourceType: this.appConstants.KEYSTORE.ITEM.RESOURCE_TYPE.CA,
           keyType: [this.appConstants.KEYSTORE.ITEM.KEY_TYPE.CERTIFICATE,
             this.appConstants.KEYSTORE.ITEM.KEY_TYPE.PRIVATE_KEY],
           name: result.name
         });
-        this.dataSource = new MatTableDataSource<KeystoreEntryDto>(this.form.controls['entries'].value);
+        this.dataSource = new MatTableDataSource<KeystoreEntryDto>(this.form.controls["entries"].value);
       }
     });
   }
@@ -160,7 +158,7 @@ export class KeystoreEditComponent extends SecurityBaseComponent implements OnIn
 
   removeItem(array: KeystoreEntryDto[], element: KeystoreEntryDto) {
     array.forEach((item, index) => item.id === element.id && array.splice(index, 1));
-    this.dataSource = new MatTableDataSource<KeystoreEntryDto>(this.form.controls['entries'].value);
+    this.dataSource = new MatTableDataSource<KeystoreEntryDto>(this.form.controls["entries"].value);
   }
 
   delete() {
@@ -194,14 +192,14 @@ export class KeystoreEditComponent extends SecurityBaseComponent implements OnIn
     tagDialogRef.afterClosed().subscribe(result => {
       // Add the selected devices to the keystore items.
       if (result) {
-        this.form.controls['entries'].value.push({
+        this.form.controls["entries"].value.push({
           id: result.id,
           resourceType: this.appConstants.KEYSTORE.ITEM.RESOURCE_TYPE.TAG,
           keyType: [this.appConstants.KEYSTORE.ITEM.KEY_TYPE.CERTIFICATE,
             this.appConstants.KEYSTORE.ITEM.KEY_TYPE.PRIVATE_KEY],
           name: result.name
         });
-        this.dataSource = new MatTableDataSource<KeystoreEntryDto>(this.form.controls['entries'].value);
+        this.dataSource = new MatTableDataSource<KeystoreEntryDto>(this.form.controls["entries"].value);
       }
     });
   }

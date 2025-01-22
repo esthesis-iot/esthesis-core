@@ -1,0 +1,35 @@
+<div class="flex flex-col bg-base-100 mt-1 ml-1 mr-1 p-4 rounded-xl">
+  <div class="flex flex-row justify-between">
+    <div class="stat-title">{{ item.title }}</div>
+  </div>
+  <div class="flex flex-row" *ngIf="lastMessage">
+    <div class="flex-grow">
+      <div class="flex flex-row mt-2">
+        <div *ngIf="getValue()" class="stat-value">{{ getValue() }}</div>
+        <div *ngIf="!getValue()" class="stat-value">&nbsp;</div>
+      </div>
+      <div class="flex flex-row stat-desc gap-2">
+        <div>{{ config?.unit }}</div>
+        <div *ngIf="item.subtitle" class="stat-desc">{{ item.subtitle }}</div>
+        <div *ngIf="!item.subtitle" class="stat-desc">&nbsp;</div>
+      </div>
+    </div>
+    <div>
+      <i class="fa-fw text-accent text-6xl fa-solid" [ngClass]="getIcon()"></i>
+    </div>
+  </div>
+  <div class="flex flex-row skeleton" *ngIf="!lastMessage">
+    <div class="flex-grow">
+      <div class="flex flex-row mt-2">
+        <div class="stat-value">&nbsp;</div>
+      </div>
+      <div class="flex flex-row stat-desc gap-2">
+        <div>&nbsp;</div>
+        <div *ngIf="item.subtitle" class="stat-desc">&nbsp;</div>
+      </div>
+    </div>
+    <div>
+      <i class="fa-fw text-accent text-6xl fa-solid">&nbsp;</i>
+    </div>
+  </div>
+</div>

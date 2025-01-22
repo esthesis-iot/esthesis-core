@@ -1,0 +1,16 @@
+<div class="flex flex-col bg-base-100 mt-1 ml-1 mr-1 p-4 rounded-xl">
+  <div class="flex flex-row justify-between">
+    <div class="stat-title">{{ item.title }}</div>
+  </div>
+  <div *ngIf="item.subtitle" class="stat-desc">{{ item.subtitle }}</div>
+  <div *ngIf="!mapVisible" class="absolute top-[50px] w-[calc(100%-40px)] skeleton" [ngStyle]="{height: config?.height + 'px'}"></div>
+  <div [ngClass]="mapVisible ? '' : 'invisible'">
+    <div class="mt-2 rounded" [ngStyle]="{height: config?.height + 'px'}"
+         leaflet
+         [leafletOptions]="mapOptions"
+         [leafletLayers]="mapLayers"
+         (leafletMouseDown)="onMouseDown($event)"
+         (leafletMapReady)="onMapReady($event)">
+    </div>
+  </div>
+</div>

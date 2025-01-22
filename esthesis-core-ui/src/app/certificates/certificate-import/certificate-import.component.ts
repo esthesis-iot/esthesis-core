@@ -5,7 +5,7 @@ import {CertificatesService} from "../certificates.service";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
-import { HttpEvent, HttpResponse } from "@angular/common/http";
+import {HttpEvent, HttpResponse} from "@angular/common/http";
 
 @Component({
   selector: "app-certificate-import",
@@ -18,8 +18,9 @@ export class CertificateImportComponent extends SecurityBaseComponent implements
   privateKeyfile: File | null = null;
   certificateFile: File | null = null;
 
-  constructor(private fb: FormBuilder, private certificatesService: CertificatesService,
-    private router: Router, private utilityService: UtilityService) {
+  constructor(private readonly fb: FormBuilder,
+    private readonly certificatesService: CertificatesService,
+    private readonly router: Router, private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.CERTIFICATES);
   }
 

@@ -52,6 +52,11 @@ public class SecurityResourceImpl implements SecurityResource {
 	}
 
 	@Override
+	public UserEntity findUserByUsername(String username) {
+		return securityUserService.findByUsername(username);
+	}
+
+	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.USERS, op = Operation.READ, msg = "View user")
 	public UserEntity getUser(String userId) {
@@ -191,7 +196,7 @@ public class SecurityResourceImpl implements SecurityResource {
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.GROUPS, op = Operation.WRITE, msg = "Save group")
 	public GroupEntity saveGroup(GroupEntity groupEntity) {
-		 if (groupEntity.getId() == null) {
+		if (groupEntity.getId() == null) {
 			return securityGroupService.saveNew(groupEntity);
 		} else {
 			return securityGroupService.saveUpdate(groupEntity);

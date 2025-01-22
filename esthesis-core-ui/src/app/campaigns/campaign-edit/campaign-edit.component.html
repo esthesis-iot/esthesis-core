@@ -351,7 +351,8 @@
                     <fa-icon [icon]="getIcon(condition.value.type)" class="mr-2"></fa-icon>
                   </div>
                   <div>{{getDescription(condition.value.type)}}</div>
-                  <fa-icon (click)="removeCondition(i)" *ngIf="!this.form.disabled"
+                  <fa-icon *ngIf="!this.form.disabled" (click)="removeCondition(i)"
+                           (keydown)="removeCondition(i)"
                            class="text-base-content/50 hover:text-base-content"
                            icon="trash-can" matTooltip="Remove condition"></fa-icon>
                 </div>

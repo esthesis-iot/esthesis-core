@@ -1,20 +1,30 @@
-<h2 mat-dialog-title>Select an icon</h2>
-<mat-dialog-content>
-  <div class="flex flex-col">
+<div class="flex flex-col">
+  <div class="hover:cursor-pointer border-2 p-2 border-base-100" *ngIf="!state">
+    <i *ngIf="selectedIcon" [ngClass]="selectedIcon"  class="fa-solid fa-fw hover:cursor-pointer"
+       (click)="state = !state" matTooltip="Change icon"
+       (keydown)="state = !state"></i>
+    <fa-icon *ngIf="!selectedIcon" icon="icons"
+             class="fa-fw hover:cursor-pointer text-primary-content/20"
+             (keydown)="state = !state" (click)="state = !state" matTooltip="Select icon"></fa-icon>
+  </div>
+  <div class="flex flex-col w-full bg-base-100 p-4 shadow-lg rounded-xl" *ngIf="state">
+    <div class="flex flex-row text-lg justify-end w-full">
+      <div><fa-icon icon="eraser" class="hover:cursor-pointer"
+                    (click)="selectedIcon = ''; state = false"
+                    (keydown)="selectedIcon = ''; state = false" matTooltip="Clear icon"></fa-icon></div>
+      <div><fa-icon icon="close" class="hover:cursor-pointer"
+               (click)="state = !state" (keydown)="state = !state" matTooltip="Close"></fa-icon></div>
+    </div>
     <div [formGroup]="filterForm" class="flex flex-row">
       <mat-form-field>
-        <input formControlName="icon" matInput placeholder="Find icon by name">
+        <input formControlName="icon" matInput placeholder="Search icon...">
       </mat-form-field>
-      <button (click)="clearFilter()" mat-button>CLEAR</button>
     </div>
-    <div class="flex flex-row flex-wrap gap-2">
+    <div class="flex flex-row flex-wrap gap-2 max-h-64 overflow-scroll">
       <div *ngFor="let icon of filteredIcons">
-        <mat-icon (click)="select(icon.id)" [fontIcon]="icon.id"></mat-icon>
+        <i [ngClass]="icon" class="fa-solid fa-fw hover:cursor-pointer hover:text-accent"
+           (click)="select(icon)" (keydown)="select(icon)" [matTooltip]="icon"></i>
       </div>
     </div>
   </div>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button class="btn btn-sm btn-secondary" tabindex="-1" (click)="dialogRef.close(null)">CANCEL
-  </button>
-</mat-dialog-actions>
+</div>

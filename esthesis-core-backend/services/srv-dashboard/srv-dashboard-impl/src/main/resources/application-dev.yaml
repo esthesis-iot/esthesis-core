@@ -1,0 +1,63 @@
+quarkus:
+  live-reload:
+    instrumentation: true
+  http:
+    host: 0.0.0.0
+    cors: false
+  log:
+    category:
+      esthesis:
+        level: DEBUG
+    handler:
+      gelf:
+        host: "localhost"
+        port: 12201
+  mongodb:
+    database: esthesiscore
+    credentials:
+      username: esthesis-system
+      password: esthesis-system
+  otel:
+    sdk:
+      disabled: true
+    traces:
+      sampler: always_on
+    exporter:
+      otlp:
+        traces:
+          endpoint: http://grafana-tempo-distributor.esthesis:4317
+  rest-client:
+    AboutSystemResource:
+      url: http://localhost:59120
+      scope: Singleton
+    AuditResource:
+      url: http://localhost:59140
+      scope: Singleton
+    AuditSystemResource:
+      url: http://localhost:59140
+      scope: Singleton
+    DeviceSystemResource:
+      url: http://localhost:59010
+      scope: Singleton
+    SecurityResource:
+      url: http://localhost:59170
+      scope: Singleton
+    SecuritySystemResource:
+      url: http://localhost:59170
+      scope: Singleton
+    CampaignSystemResource:
+      url: http://localhost:59150
+      scope: Singleton
+    SettingsSystemResource:
+      url: http://localhost:59030
+      scope: Singleton
+  config:
+    locations: "../../../../_dev/profiles"
+
+kafka:
+  security:
+    protocol: SASL_PLAINTEXT
+  sasl:
+    mechanism: SCRAM-SHA-512
+    jaas:
+      config: org.apache.kafka.common.security.scram.ScramLoginModule required username=esthesis-system password=esthesis-system;

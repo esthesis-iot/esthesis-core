@@ -62,9 +62,10 @@ export const DATAFLOW_TEMPLATE_KAFKA = [
     props: {required: false, label: "Security protocol", hintStart: "e.g. SASL_PLAINTEXT"} },
   { key: "sasl-mechanism", type: "input", defaultValue: "SCRAM-SHA-512",
     props: {required: false, label: "SASL mechanism", hintStart: "e.g. SCRAM-SHA-512"} },
-  { key: "jaas-config", type: "input", defaultValue: "org.apache.kafka.common.security.scram.ScramLoginModule required username=esthesis-system password=esthesis-system;",
+  { key: "jaas-config", type: "input",
+    defaultValue: "org.apache.kafka.common.security.scram.ScramLoginModule required username=esthesis-system password=esthesis-system;", //NOSONAR
     props: {required: false, label: "JAAS configuration", type: "password",
-      hintStart: "e.g. org.apache.kafka.common.security.scram.ScramLoginModule required username=esthesis-system password=esthesis-system;"} },
+      hintStart: "e.g. org.apache.kafka.common.security.scram.ScramLoginModule required username=esthesis-system password=esthesis-system;"} } //NOSONAR
 ];
 
 // *************************************************************************************************
@@ -109,7 +110,7 @@ export const DATAFLOW_TEMPLATE_KUBERNETES = [
 // InfluxDB
 // *************************************************************************************************
 export const DATAFLOW_TEMPLATE_INFLUXDB = [
-  { key: "url", type: "input", defaultValue: "http://influxdb:8086",
+  { key: "url", type: "input", defaultValue: "http://influxdb:8086",  //NOSONAR
     props: {label: "URL"} },
   { key: "token", type: "input",
     props: {label: "Access token", type: "password", required: true} },
@@ -124,7 +125,7 @@ export const DATAFLOW_TEMPLATE_INFLUXDB = [
 // *************************************************************************************************
 export const DATAFLOW_TEMPLATE_REDIS = [
   { key: "url", type: "input", defaultValue: "redis://:esthesis-system@redis-master:6379/0",
-    props: {label: "The url of the Redis store", required: true, hintStart: "e.g. redis://username:password@server:port/database. Password should be URL Encoded, if it contains special characters."} },
+    props: {label: "The url of the Redis store", required: true, hintStart: "e.g. redis://username:password@server:port/database. Password should be URL Encoded, if it contains special characters."} },//NOSONAR
   { key: "max-size", type: "input", defaultValue: "1024",
     props: {
       label: "The maximum value size (in bytes) eligible for caching", required: true,

@@ -1,11 +1,8 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
-import {BaseComponent} from "../../../shared/components/base-component";
 import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
-import {RoleDto} from "../../dto/role-dto";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {Router} from "@angular/router";
 import {QFormsService} from "@qlack/forms";
 import {UtilityService} from "../../../shared/services/utility.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
@@ -27,9 +24,9 @@ export class SecurityGroupsListComponent extends SecurityBaseComponent implement
   dataSource: MatTableDataSource<GroupDto> = new MatTableDataSource<GroupDto>();
   filterForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router,
-    private securityGroupsService: SecurityGroupsService, private qForms: QFormsService,
-    private utilityService: UtilityService) {
+  constructor(private readonly fb: FormBuilder,
+    private readonly securityGroupsService: SecurityGroupsService,
+    private readonly qForms: QFormsService, private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.GROUPS);
     this.filterForm = this.fb.group({
       name: [],

@@ -18,7 +18,8 @@ export class CampaignsComponent extends SecurityBaseComponent implements AfterVi
   columns = ["name", "state", "createdOn", "startedOn", "terminatedOn"];
   datasource = new MatTableDataSource<CampaignDto>();
 
-  constructor(private campaignsService: CampaignsService, private qForms: QFormsService) {
+  constructor(private readonly campaignsService: CampaignsService,
+    private readonly qForms: QFormsService) {
     super(AppConstants.SECURITY.CATEGORY.CAMPAIGN);
   }
 

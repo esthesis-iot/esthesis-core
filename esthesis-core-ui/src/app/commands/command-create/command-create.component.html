@@ -19,7 +19,9 @@
             <input [matAutocomplete]="auto" formControlName="hardwareId" matInput
                    placeholder="Search by hardware Id">
             <mat-autocomplete #auto="matAutocomplete">
-              <mat-option (click)="selectHardwareId(device.hardwareId)" *ngFor="let device of searchDevices"
+              <mat-option (click)="selectHardwareId(device.hardwareId)"
+                          (keydown)="selectHardwareId(device.hardwareId)"
+                          *ngFor="let device of searchDevices"
                           [value]="device.hardwareId">
                 <span>{{device.hardwareId}}</span>
               </mat-option>
@@ -30,7 +32,8 @@
         <div *ngIf="selectedHardwareIds.length > 0" class="flex flex-row gap-2 flex-wrap mb-5">
           <span *ngFor="let id of selectedHardwareIds" class="badge badge-md badge-primary">
             {{ id }}
-            <fa-icon (click)="removeChip(id)" class="cursor-pointer" icon="xmark"></fa-icon>
+            <fa-icon (click)="removeChip(id)" (keydown)="removeChip(id)"
+                     class="cursor-pointer" icon="xmark"></fa-icon>
           </span>
         </div>
 

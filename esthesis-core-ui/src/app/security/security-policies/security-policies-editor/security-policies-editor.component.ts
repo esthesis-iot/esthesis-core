@@ -13,8 +13,8 @@ export class SecurityPoliciesEditorComponent extends BaseComponent implements On
   @Input() existingErn?: string;
   form: FormGroup;
 
-  constructor(private fb: FormBuilder,
-    @Optional() private dialogRef: MatDialogRef<SecurityPoliciesEditorComponent>) {
+  constructor(private readonly fb: FormBuilder,
+    @Optional() private readonly dialogRef: MatDialogRef<SecurityPoliciesEditorComponent>) {
     super();
     this.form = this.fb.group({
       root: ["ern", [Validators.required]],

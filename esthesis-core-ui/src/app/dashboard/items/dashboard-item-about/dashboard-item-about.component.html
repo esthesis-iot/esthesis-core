@@ -1,0 +1,33 @@
+<div class="flex flex-col bg-base-100 mt-1 ml-1 mr-1 p-4 rounded-xl">
+  <div class="flex flex-row justify-between">
+    <div class="stat-title">{{ item.title }}</div>
+  </div>
+  <div *ngIf="item.subtitle" class="stat-desc">{{ item.subtitle }}</div>
+  <div class="mt-2 overflow-hidden">
+    <div>
+      <div>
+        <div class="font-bold">Version</div>
+        <div *ngIf="!lastMessage" class="skeleton w-full">&nbsp;</div>
+        <div *ngIf="lastMessage && lastMessage.gitVersion">{{ lastMessage.gitVersion }}</div>
+        <div *ngIf="lastMessage && !lastMessage.gitVersion">N/A</div>
+      </div>
+      <div class="mt-2">
+        <div class="font-bold">Git commit id</div>
+        <div *ngIf="!lastMessage" class="skeleton w-full">&nbsp;</div>
+        <div *ngIf="lastMessage && lastMessage.gitCommitId">{{ lastMessage.gitCommitId }}</div>
+        <div *ngIf="lastMessage && !lastMessage.gitCommitId">N/A</div>
+      </div>
+      <div class="mt-2">
+        <div class="font-bold">Git build date</div>
+        <div *ngIf="!lastMessage" class="skeleton w-full">&nbsp;</div>
+        <div
+          *ngIf="lastMessage && lastMessage.gitBuildTime">{{ lastMessage.gitBuildTime | amFromUtc | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm:ss Z' }}
+        </div>
+        <div
+          *ngIf="lastMessage && !lastMessage.gitBuildTime">
+          N/A
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

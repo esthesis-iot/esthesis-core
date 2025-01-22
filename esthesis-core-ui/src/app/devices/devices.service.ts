@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {DeviceRegisterDto} from "./dto/device-register-dto";
 import {DeviceDto} from "./dto/device-dto";
@@ -17,9 +17,9 @@ import {DeviceDataImportDto} from "./dto/device-data-import-dto";
   providedIn: "root"
 })
 export class DevicesService extends CrudDownloadService<DeviceDto> {
-  private prefix = AppConstants.API_ROOT + "/device/v1";
+  private readonly prefix = AppConstants.API_ROOT + "/device/v1";
 
-  constructor(http: HttpClient, fs: FileSaverService, private utilityService: UtilityService) {
+  constructor(http: HttpClient, fs: FileSaverService, private readonly utilityService: UtilityService) {
     super(http, "device/v1", fs);
   }
 

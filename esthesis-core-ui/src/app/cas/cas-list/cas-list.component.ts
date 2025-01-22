@@ -22,9 +22,9 @@ export class CasListComponent extends SecurityBaseComponent implements OnInit, A
   columns: string[] = [];
   datasource = new MatTableDataSource<CaDto>();
 
-  constructor(private caService: CasService, private qForms: QFormsService,
-    @Optional() private dialogRef: MatDialogRef<CasListComponent>,
-    private utilityService: UtilityService) {
+  constructor(private readonly caService: CasService, private readonly qForms: QFormsService,
+    @Optional() private readonly dialogRef: MatDialogRef<CasListComponent>,
+    private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.CA);
   }
 

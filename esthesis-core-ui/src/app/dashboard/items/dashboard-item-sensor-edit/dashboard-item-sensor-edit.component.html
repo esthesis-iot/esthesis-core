@@ -1,0 +1,128 @@
+<div class="card rounded-b-none">
+  <div class="card-body p-0 pt-4">
+    <h2 class="card-title text-2xl flex flex-row justify-between border-b-2 pb-2 mb-3 border-base-100">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="dashboard"></fa-icon>
+        <div>Sensor</div>
+      </div>
+    </h2>
+    <div>
+      <form [formGroup]="form" novalidate>
+        <div class="flex flex-row gap-5">
+          <app-dashboard-item-common-config [parentForm]="form"></app-dashboard-item-common-config>
+          <div class="flex flex-col border-l-2 pl-4 border-base-200 flex-grow">
+            <div class="absolute top-5 right-0 z-10 text-3xl max-w-64">
+              <app-mat-icon-picker formControlName="configuration_icon"></app-mat-icon-picker>
+            </div>
+            <mat-form-field>
+              <mat-label>Device</mat-label>
+              <input formControlName="configuration_hardwareId" matInput
+                     [matAutocomplete]="configuration_hardwareId">
+              <mat-hint>The hardware ID to display measurements from.</mat-hint>
+              <mat-autocomplete #configuration_hardwareId="matAutocomplete">
+                <mat-option *ngFor="let hardwareId of searchHardwareIds" [value]="hardwareId">
+                  {{ hardwareId }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Measurement</mat-label>
+              <input [matAutocomplete]="configuration_measurement"
+                     formControlName="configuration_measurement" matInput>
+              <mat-autocomplete #configuration_measurement="matAutocomplete">
+                <mat-option
+                  *ngFor="let measurement of filteredUniqueMeasurements" [value]="measurement">
+                  {{ measurement }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Unit</mat-label>
+              <input formControlName="configuration_unit" matInput>
+              <mat-hint>The unit associated with this measurement.</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Precision</mat-label>
+              <input formControlName="configuration_precision" matInput>
+              <mat-hint>The number of decimal points.</mat-hint>
+            </mat-form-field>
+
+            <div class="flex flex-row">
+              <mat-checkbox class="mt-3 -ml-3" formControlName="configuration_sparkline">
+                Display sparkline
+                <fa-icon [ngClass]="form.get('configuration_sparkline')?.value ? '' : 'invisible'"
+                         icon="warning" class="mt-5 ml-4 text-warning"
+                         matTooltip="No active connection to esthesis HISTORIAN is configured.
+                       Sparkline data will only be updated while the dashboard is open."></fa-icon>
+              </mat-checkbox>
+            </div>
+            <mat-form-field class="ml-7 -mt-2" *ngIf="form.get('configuration_sparkline')?.value">
+              <mat-label>Sparkline points</mat-label>
+              <input formControlName="configuration_sparkline_points" matInput>
+              <mat-hint>The number of points the sparkline will display.</mat-hint>
+            </mat-form-field>
+
+            <div>
+              <mat-checkbox class="mt-3 -ml-3" formControlName="configuration_threshold">
+                Threshold configuration
+              </mat-checkbox>
+              <div *ngIf="form.get('configuration_threshold')?.value" class="flex flex-col">
+                <div class="flex flex-row">
+                  <mat-form-field class="ml-7 -mt-2">
+                    <mat-label>Low</mat-label>
+                    <input formControlName="configuration_threshold_low" matInput>
+                  </mat-form-field>
+                  <ngx-colors ngx-colors-trigger class="inline-block m-5"
+                    formControlName="configuration_threshold_low_color"
+                              matTooltip="select color"></ngx-colors>
+                  <button class="btn btn-sm btn-ghost mt-5 -ml-4"
+                          (click)="form.get('configuration_threshold_low_color')?.setValue(null)"
+                          matTooltip="clear color">
+                    <fa-icon icon="trash-can"></fa-icon>
+                  </button>
+                </div>
+                <div class="flex flex-row">
+                  <mat-form-field class="ml-7 -mt-2">
+                    <mat-label>Middle</mat-label>
+                    <input formControlName="configuration_threshold_middle" matInput>
+                  </mat-form-field>
+                  <ngx-colors ngx-colors-trigger class="inline-block m-5"
+                    formControlName="configuration_threshold_middle_color"
+                              matTooltip="select color"></ngx-colors>
+                  <button class="btn btn-sm btn-ghost mt-5 -ml-4"
+                          (click)="form.get('configuration_threshold_middle_color')?.setValue(null)"
+                          matTooltip="clear color">
+                    <fa-icon icon="trash-can"></fa-icon>
+                  </button>
+                </div>
+                <div class="flex flex-row">
+                  <mat-form-field class="ml-7 -mt-2">
+                    <mat-label>High</mat-label>
+                    <input formControlName="configuration_threshold_high" matInput>
+                  </mat-form-field>
+                  <ngx-colors ngx-colors-trigger class="inline-block m-5"
+                    formControlName="configuration_threshold_high_color"
+                              matTooltip="select color"></ngx-colors>
+                  <button class="btn btn-sm btn-ghost mt-5 -ml-4"
+                          (click)="form.get('configuration_threshold_high_color')?.setValue(null)"
+                          matTooltip="clear color">
+                    <fa-icon icon="trash-can"></fa-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="card-actions justify-start mt-10">
+      <button class="btn btn-sm btn-secondary" (click)="cancel()">CANCEL</button>
+      <button (click)="save()" *ngIf="allowCreate || allowWrite" [disabled]="form.invalid"
+              class="btn btn-sm btn-primary">SAVE
+      </button>
+    </div>
+  </div>
+</div>

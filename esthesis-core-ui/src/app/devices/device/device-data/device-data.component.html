@@ -33,7 +33,8 @@
     </tr>
     <tr *cdkHeaderRowDef="displayedColumns" cdk-header-row></tr>
     <tr *cdkRowDef="let row; columns: displayedColumns; let element;" cdk-row
-        (click)="copyValue(row)" class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
+        (keydown)="copyValue(row)" (click)="copyValue(row)"
+        class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>
   </table>
 
   <div class="join join-vertical w-full" *ngIf="!tableLoading && allowWrite">

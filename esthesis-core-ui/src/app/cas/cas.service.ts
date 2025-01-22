@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {CaDto} from "./dto/ca-dto";
 import {Observable} from "rxjs";
 import {CrudDownloadService} from "../shared/services/crud-download.service";
@@ -11,9 +11,10 @@ import {AppConstants} from "../app.constants";
   providedIn: "root"
 })
 export class CasService extends CrudDownloadService<CaDto> {
-  private prefix = AppConstants.API_ROOT + "/crypto/ca/v1";
+  private readonly prefix = AppConstants.API_ROOT + "/crypto/ca/v1";
 
-  constructor(http: HttpClient, private utilityService: UtilityService, fs: FileSaverService) {
+  constructor(http: HttpClient, private readonly utilityService: UtilityService,
+    fs: FileSaverService) {
     super(http, "crypto/ca/v1", fs);
   }
 

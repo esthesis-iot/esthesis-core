@@ -187,6 +187,10 @@ public class CampaignService extends BaseService<CampaignEntity> {
 
 		// Set the state of this campaign.
 		campaignStatsDTO.setStateDescription(campaignEntity.getStateDescription());
+		campaignStatsDTO.setState(campaignEntity.getState());
+		campaignStatsDTO.setCreatedOn(campaignEntity.getCreatedOn());
+		campaignStatsDTO.setStartedOn(campaignEntity.getStartedOn());
+		campaignStatsDTO.setTerminatedOn(campaignEntity.getTerminatedOn());
 
 		// Find the group members of each campaign group.
 		int campaignGroups = findGroups(campaignId).size();
@@ -211,26 +215,37 @@ public class CampaignService extends BaseService<CampaignEntity> {
 		campaignStatsDTO.setMembersContacted(campaignDeviceMonitorService.countContacted(campaignId));
 
 		// Calculate success rate.
-		campaignStatsDTO.setSuccessRate(
-			new BigDecimal(campaignStatsDTO.getMembersReplied())
-				.divide(new BigDecimal(campaignStatsDTO.getAllMembers()), 1, RoundingMode.DOWN)
-				.multiply(new BigDecimal(100)));
+		if (campaignStatsDTO.getAllMembers() == 0) {
+			campaignStatsDTO.setSuccessRate(BigDecimal.valueOf(0));
+		} else {
+			campaignStatsDTO.setSuccessRate(
+				new BigDecimal(campaignStatsDTO.getMembersReplied())
+					.divide(new BigDecimal(campaignStatsDTO.getAllMembers()), 1, RoundingMode.DOWN)
+					.multiply(new BigDecimal(100)));
+		}
 
 		// Calculate progress.
-		campaignStatsDTO.setProgress(
-			new BigDecimal(campaignStatsDTO.getMembersContacted())
-				.divide(new BigDecimal(campaignStatsDTO.getAllMembers()), 1, RoundingMode.DOWN)
-				.multiply(new BigDecimal(100)));
+		if (campaignStatsDTO.getAllMembers() == 0) {
+			campaignStatsDTO.setProgress(BigDecimal.valueOf(0));
+		} else {
+			campaignStatsDTO.setProgress(
+				new BigDecimal(campaignStatsDTO.getMembersContacted())
+					.divide(new BigDecimal(campaignStatsDTO.getAllMembers()), 1, RoundingMode.DOWN)
+					.multiply(new BigDecimal(100)));
+		}
 
 		// Calculate duration and ETA.
-		long diff;
+		long diff = 0;
 		if (campaignEntity.getState() != State.TERMINATED_BY_USER
 			&& campaignEntity.getState() != State.TERMINATED_BY_WORKFLOW) {
-			diff = Instant.now().toEpochMilli() - campaignEntity.getStartedOn().toEpochMilli();
+			if (campaignEntity.getStartedOn() != null) {
+				diff = Instant.now().toEpochMilli() - campaignEntity.getStartedOn().toEpochMilli();
+			}
 		} else {
-			diff =
-				campaignEntity.getTerminatedOn().toEpochMilli() - campaignEntity.getStartedOn()
+			if (campaignEntity.getTerminatedOn() != null && campaignEntity.getStartedOn() != null) {
+				diff = campaignEntity.getTerminatedOn().toEpochMilli() - campaignEntity.getStartedOn()
 					.toEpochMilli();
+			}
 		}
 		campaignStatsDTO.setDuration(DurationFormatUtils.formatDurationWords(diff, true, true));
 
@@ -266,7 +281,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
 
 				// Create a monitoring entry for this device.
 				log.debug("Creating device monitoring entry for device with hardware id '{}' in "
-						+ "campaign '{}'.", member.getIdentifier(), campaignId);
+					+ "campaign '{}'.", member.getIdentifier(), campaignId);
 				CampaignDeviceMonitorEntity cdm = new CampaignDeviceMonitorEntity();
 				cdm.setDeviceId(device.get(0).getId());
 				cdm.setHardwareId(device.get(0).getHardwareId());
@@ -407,5 +422,11 @@ public class CampaignService extends BaseService<CampaignEntity> {
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = READ)
 	public Page<CampaignEntity> find(Pageable pageable, boolean partialMatch) {
 		return super.find(pageable, partialMatch);
+	}
+
+	@Override
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = READ)
+	public List<CampaignEntity> getAll() {
+		return super.getAll();
 	}
 }

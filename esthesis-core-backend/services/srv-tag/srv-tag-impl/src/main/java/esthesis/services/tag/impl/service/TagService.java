@@ -7,42 +7,29 @@ import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
 import static esthesis.core.common.AppConstants.Security.Operation.READ;
 import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
-import esthesis.core.common.AppConstants.Security.Operation;
-import esthesis.common.exception.QSecurityException;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.security.annotation.ErnPermission;
-import esthesis.service.security.resource.SecurityResource;
 import esthesis.service.tag.entity.TagEntity;
 import esthesis.services.tag.impl.repository.TagRepository;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Component;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Subject;
 import esthesis.util.kafka.notifications.outgoing.KafkaNotification;
-import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
-@Transactional
 @ApplicationScoped
+@RequiredArgsConstructor
 public class TagService extends BaseService<TagEntity> {
 
-	@Inject
-	TagRepository tagRepository;
-
-	@Inject
-	@RestClient
-	SecurityResource securityResource;
-
-	@Inject
-	SecurityIdentity securityIdentity;
+	private final TagRepository tagRepository;
 
 	private TagEntity saveHandler(TagEntity tagEntity) {
 		return super.save(tagEntity);
@@ -60,48 +47,39 @@ public class TagService extends BaseService<TagEntity> {
 		return super.find(pageable, partialMatch);
 	}
 
+	@Transactional
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = TAGS, operation = CREATE)
 	public TagEntity saveNew(TagEntity tagEntity) {
 		return saveHandler(tagEntity);
 	}
 
+	@Transactional
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = TAGS, operation = WRITE)
 	public TagEntity saveUpdate(TagEntity tagEntity) {
 		return saveHandler(tagEntity);
 	}
 
 	@Override
+	@Transactional
+	@ErnPermission(category = TAGS, operation = DELETE)
 	@KafkaNotification(component = Component.TAG, subject = Subject.TAG, action = Action.DELETE,
 		idParamOrder = 0)
-	@ErnPermission(category = TAGS, operation = DELETE)
 	public boolean deleteById(String id) {
-		log.debug("Deleting tag with id '{}'.", id);
-		if (!securityResource.isPermitted(TAGS, Operation.DELETE, id)) {
-			throw new QSecurityException("You are not allowed to delete this tag.");
-		} else {
-			return super.deleteById(id);
-		}
+		return super.deleteById(id);
 	}
 
 	@ErnPermission(category = TAGS, operation = READ)
 	public List<TagEntity> findByName(String name, boolean partialMatch) {
-		if (!securityResource.isPermitted(TAGS, Operation.READ)) {
-			throw new QSecurityException("You are not allowed to view tags.");
-		} else {
-			return findByName(Collections.singletonList(name), partialMatch);
-		}
+		return findByName(Collections.singletonList(name), partialMatch);
 	}
 
 	@ErnPermission(category = TAGS, operation = READ)
 	public List<TagEntity> findByName(List<String> names, boolean partialMatch) {
-		if (!securityResource.isPermitted(TAGS, Operation.READ)) {
-			throw new QSecurityException("You are not allowed to view tags.");
+
+		if (partialMatch) {
+			return tagRepository.findByNamePartial(names);
 		} else {
-			if (partialMatch) {
-				return tagRepository.findByNamePartial(names);
-			} else {
-				return tagRepository.findByName(names);
-			}
+			return tagRepository.findByName(names);
 		}
 	}
 

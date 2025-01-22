@@ -12,7 +12,7 @@ import {AppConstants} from "../app.constants";
 export class InfrastructureComponent extends SecurityBaseComponent implements AfterViewInit {
   @ViewChild(MatTabGroup, {static: true}) tabs!: MatTabGroup;
 
-  constructor(private activatedRoute: ActivatedRoute) {
+  constructor(private readonly activatedRoute: ActivatedRoute) {
     super(AppConstants.SECURITY.CATEGORY.INFRASTRUCTURE);
   }
 

@@ -14,16 +14,13 @@ import {SecurityBaseComponent} from "../../shared/components/security-base-compo
 export class SettingsDevregComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
 
-  constructor(private fb: FormBuilder, private settingsService: SettingsService,
-    private utilityService: UtilityService, ) {
+  constructor(private readonly fb: FormBuilder, private readonly settingsService: SettingsService,
+    private readonly utilityService: UtilityService,) {
     super(AppConstants.SECURITY.CATEGORY.SETTINGS);
   }
 
   ngOnInit() {
     // Define the form.
-    // TODO to be fully dynamic, the name of the form control should be derived from the name
-    //  of the respective setting. Create an empty form group and then add the form controls
-    //  programmatically.
     this.form = this.fb.group({
       DEVICE_REGISTRATION_MODE: [null, [Validators.required]],
       DEVICE_REGISTRATION_SECRET: [null, []],

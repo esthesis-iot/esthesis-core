@@ -1,10 +1,12 @@
 import * as _ from "lodash-es";
 import {AppConstants} from "../../app.constants";
 import {FormGroup} from "@angular/forms";
+import {inject} from "@angular/core";
+import {LumberjackService} from "@ngworker/lumberjack";
 
-export class BaseComponent {
-
-  readonly appConstants = AppConstants;
+export abstract class BaseComponent {
+  protected readonly appConstants = AppConstants;
+  protected readonly logger = inject(LumberjackService);
 
   /**
    * Utility method to lookup within an object by the value of its keys and return the key name.

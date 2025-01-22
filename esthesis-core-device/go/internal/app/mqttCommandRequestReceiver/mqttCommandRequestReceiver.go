@@ -185,7 +185,7 @@ func rebootCommand(command *dto.CommandRequest, client mqtt.Client) {
 	rebootScript := config.Flags.RebootScript
 	if rebootScript == "" {
 		log.Warn("Received a reboot command but no reboot script is configured. " +
-			"Command will be ignored.")
+			"Command will be ignored.") // NOSONAR
 		publishCommandReply(dto.CommandReply{
 			CorrelationId: command.Id,
 			Success:       false,

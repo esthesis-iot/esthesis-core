@@ -3,6 +3,7 @@ package esthesis.services.security.impl.service;
 import static esthesis.core.common.AppConstants.Security.Category.SECURITY;
 import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
+import static esthesis.core.common.AppConstants.Security.Operation.READ;
 import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
 import esthesis.service.common.BaseService;
@@ -37,6 +38,7 @@ public class SecurityUserService extends BaseService<UserEntity> {
 
 	//TODO review this method, is this logic still needed? Could we inject this logic in liquibase
 	//scripts or similar?
+
 	/**
 	 * If User collection is empty, create a default admin user.
 	 */
@@ -84,5 +86,11 @@ public class SecurityUserService extends BaseService<UserEntity> {
 	@Override
 	public Page<UserEntity> find(Pageable pageable, boolean partialMatch) {
 		return super.find(pageable, partialMatch);
+	}
+
+	@Override
+	@ErnPermission(category = SECURITY, operation = READ)
+	public long countAll() {
+		return super.countAll();
 	}
 }

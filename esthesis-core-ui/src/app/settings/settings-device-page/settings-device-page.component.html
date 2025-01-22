@@ -73,7 +73,7 @@
           <input formControlName="formatter" matInput>
         </mat-form-field>
 
-        <fa-icon (click)="deleteField(i)" class="cursor-pointer mt-2" icon="trash-can"
+        <fa-icon (click)="deleteField(i)" (keydown)="deleteField(i)" class="cursor-pointer mt-2" icon="trash-can"
                  matTooltip="Remove field"></fa-icon>
       </div>
     </div>

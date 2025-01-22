@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, Input, OnInit, Optional, ViewChild} from "@angular/core";
 import {MatSort} from "@angular/material/sort";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {Router} from "@angular/router";
 import {TagDto} from "../dto/tag-dto";
 import {TagsService} from "../tags.service";
 import {QFormsService} from "@qlack/forms";
@@ -27,9 +26,9 @@ export class TagsListComponent extends SecurityBaseComponent implements OnInit, 
   datasource = new MatTableDataSource<TagDto>();
   filterForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router, private tagService: TagsService,
-    private qForms: QFormsService, @Optional() private dialogRef: MatDialogRef<TagsListComponent>,
-    private utilityService: UtilityService) {
+  constructor(private readonly fb: FormBuilder, private readonly tagService: TagsService,
+    private readonly qForms: QFormsService, private readonly utilityService: UtilityService,
+    @Optional() private readonly dialogRef: MatDialogRef<TagsListComponent>) {
     super(AppConstants.SECURITY.CATEGORY.TAGS);
     this.filterForm = this.fb.group({
       name: null,

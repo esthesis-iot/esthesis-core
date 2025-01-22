@@ -10,12 +10,15 @@ import esthesis.common.avro.AvroUtils;
 import esthesis.common.avro.EsthesisDataMessage;
 import esthesis.common.avro.MessageTypeEnum;
 import esthesis.common.exception.QMismatchException;
+import esthesis.core.common.AppConstants.Device.Status;
 import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.DeviceProfileDTO;
 import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
+import esthesis.service.device.dto.DevicesLastSeenStatsDTO;
+import esthesis.service.device.dto.DevicesTotalsStatsDTO;
 import esthesis.service.device.dto.GeolocationDTO;
 import esthesis.service.device.dto.ImportDataProcessingInstructionsDTO;
 import esthesis.service.device.entity.DeviceAttributeEntity;
@@ -33,6 +36,7 @@ import esthesis.util.kafka.notifications.outgoing.KafkaNotification;
 import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;
 import io.opentelemetry.context.Context;
+import io.quarkus.panache.common.Sort;
 import io.quarkus.qute.Qute;
 import io.smallrye.reactive.messaging.TracingMetadata;
 import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
@@ -42,6 +46,7 @@ import jakarta.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -365,5 +370,56 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	@ErnPermission(category = DEVICE, operation = WRITE)
 	public DeviceEntity saveUpdate(DeviceEntity entity) {
 		return saveHandler(entity);
+	}
+
+	public DevicesLastSeenStatsDTO getDeviceStats() {
+		DevicesLastSeenStatsDTO devicesLastSeenStatsDTO = new DevicesLastSeenStatsDTO();
+
+		DevicesTotalsStatsDTO totalsDTO = getDeviceTotals();
+		devicesLastSeenStatsDTO.setTotal(totalsDTO.getTotal());
+		devicesLastSeenStatsDTO.setDisabled(totalsDTO.getDisabled());
+		devicesLastSeenStatsDTO.setPreregistered(totalsDTO.getPreregistered());
+		devicesLastSeenStatsDTO.setRegistered(totalsDTO.getRegistered());
+
+		devicesLastSeenStatsDTO.setSeenLastMonth(deviceRepository.countLastSeenAfter(
+			Instant.now().minus(Duration.ofDays(30))));
+		devicesLastSeenStatsDTO.setSeenLastWeek(deviceRepository.countLastSeenAfter(
+			Instant.now().minus(Duration.ofDays(7))));
+		devicesLastSeenStatsDTO.setSeenLastDay(deviceRepository.countLastSeenAfter(
+			Instant.now().minus(Duration.ofDays(1))));
+		devicesLastSeenStatsDTO.setSeenLastHour(deviceRepository.countLastSeenAfter(
+			Instant.now().minus(Duration.ofHours(1))));
+		devicesLastSeenStatsDTO.setSeenLastMinute(deviceRepository.countLastSeenAfter(
+			Instant.now().minus(Duration.ofMinutes(1))));
+
+		devicesLastSeenStatsDTO.setJoinedLastMonth(deviceRepository.countJoinedAfter(
+			Instant.now().minus(Duration.ofDays(30))));
+		devicesLastSeenStatsDTO.setJoinedLastWeek(deviceRepository.countJoinedAfter(
+			Instant.now().minus(Duration.ofDays(7))));
+		devicesLastSeenStatsDTO.setJoinedLastDay(deviceRepository.countJoinedAfter(
+			Instant.now().minus(Duration.ofDays(1))));
+		devicesLastSeenStatsDTO.setJoinedLastHour(deviceRepository.countJoinedAfter(
+			Instant.now().minus(Duration.ofHours(1))));
+		devicesLastSeenStatsDTO.setJoinedLastMinute(deviceRepository.countJoinedAfter(
+			Instant.now().minus(Duration.ofMinutes(1))));
+
+		return devicesLastSeenStatsDTO;
+	}
+
+	public List<DeviceEntity> getLatestDevices(int limit) {
+		return deviceRepository
+			.findAll(Sort.descending("registeredOn"))
+			.page(io.quarkus.panache.common.Page.of(0, limit))
+			.list();
+	}
+
+	public DevicesTotalsStatsDTO getDeviceTotals() {
+		DevicesTotalsStatsDTO stats = new DevicesTotalsStatsDTO();
+		stats.setTotal(getAll().size());
+		stats.setDisabled(deviceRepository.countByStatus(Status.DISABLED));
+		stats.setPreregistered(deviceRepository.countByStatus(Status.PREREGISTERED));
+		stats.setRegistered(deviceRepository.countByStatus(Status.REGISTERED));
+
+		return stats;
 	}
 }

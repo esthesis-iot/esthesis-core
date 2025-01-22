@@ -8,7 +8,6 @@ import {CasService} from "../../cas/cas.service";
 import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
-import {QFormsService} from "@qlack/forms";
 import {CertificateDto} from "../dto/certificate-dto";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
@@ -26,10 +25,11 @@ export class CertificateEditComponent extends SecurityBaseComponent implements O
   // Expose application constants.
   constants = AppConstants;
 
-  constructor(private fb: FormBuilder, private certificatesService: CertificatesService,
-    private qForms: QFormsService,
-    private route: ActivatedRoute, private router: Router, private caService: CasService,
-    private utilityService: UtilityService, private dialog: MatDialog) {
+  constructor(private readonly fb: FormBuilder,
+    private readonly certificatesService: CertificatesService,
+    private readonly route: ActivatedRoute, private readonly router: Router,
+    private readonly caService: CasService,
+    private readonly utilityService: UtilityService, private readonly dialog: MatDialog) {
     super(AppConstants.SECURITY.CATEGORY.CERTIFICATES, route.snapshot.paramMap.get("id"));
   }
 

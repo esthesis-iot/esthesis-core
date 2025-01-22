@@ -46,6 +46,7 @@ quarkus:
     SecurityResource:
       url: http://esthesis-core-srv-security-service:8080
       scope: Singleton
+
 mp:
   messaging:
     outgoing:

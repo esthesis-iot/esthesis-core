@@ -14,10 +14,11 @@ import esthesis.service.common.paging.Pageable;
 import esthesis.service.security.annotation.ErnPermission;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Transactional
+@RequiredArgsConstructor
 @ApplicationScoped
 public class AuditService extends BaseService<AuditEntity> {
 
@@ -34,12 +35,14 @@ public class AuditService extends BaseService<AuditEntity> {
 	}
 
 	@Override
+	@Transactional
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = AUDIT, operation = DELETE)
 	public boolean deleteById(String deviceId) {
 		return super.deleteById(deviceId);
 	}
 
 	@Override
+	@Transactional
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = AUDIT, operation = CREATE)
 	public AuditEntity save(AuditEntity auditEntity) {
 		if (super.findById(auditEntity.getId()) != null) {
@@ -47,5 +50,11 @@ public class AuditService extends BaseService<AuditEntity> {
 		}
 
 		return super.save(auditEntity);
+	}
+
+	@Override
+	@ErnPermission(category = AUDIT, operation = READ)
+	public long countAll() {
+		return super.countAll();
 	}
 }

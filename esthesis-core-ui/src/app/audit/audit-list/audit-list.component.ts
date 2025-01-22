@@ -10,7 +10,6 @@ import moment from "moment";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {UtilityService} from "../../shared/services/utility.service";
-import {SecurityService} from "../../security/security.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
 
@@ -34,9 +33,8 @@ export class AuditListComponent extends SecurityBaseComponent implements OnInit,
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
-  constructor(private auditService: AuditService, private fb: FormBuilder,
-    private userService: SecurityService, private qForms: QFormsService,
-    private utilityService: UtilityService) {
+  constructor(private readonly auditService: AuditService, private readonly fb: FormBuilder,
+    private readonly qForms: QFormsService, private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.AUDIT);
     this.filterForm = this.fb.group({
       dateFrom: [],

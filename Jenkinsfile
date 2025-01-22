@@ -68,6 +68,42 @@ pipeline {
                 }
             }
         }
+        stage ('Clone Common and Bom Repositories') {
+            steps {
+                container (name: 'esthesis-core-builder') {
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins-Github-token',
+                    usernameVariable: 'Username',
+                    passwordVariable: 'Password')]){
+                        sh '''
+                            git config --global user.email "devops-d2@eurodyn.com"
+                            git config --global user.name "$Username"
+                            git clone https://$Password@github.com/esthesis-iot/esthesis-bom
+                            git clone https://$Password@github.com/esthesis-iot/esthesis-common
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Build Bom') {
+            steps {
+                container (name: 'esthesis-core-builder') {
+                    sh '''
+                        cd esthesis-bom
+                        mvn clean install
+                    '''
+                }
+            }
+        }
+        stage('Build Common') {
+            steps {
+                container (name: 'esthesis-core-builder') {
+                    sh '''
+                        cd esthesis-common
+                        mvn clean install
+                    '''
+                }
+            }
+        }
         stage ('Builds') {
             parallel {
                 stage('Go Build Device') {
@@ -92,7 +128,7 @@ pipeline {
                                     docker login -u $Username -p $Password docker.io
                                     docker pull redis:7
                                     docker pull mongo:4.4
-                                    mvn -f esthesis-core-backend/pom.xml clean install -Dmaven.test.failure.ignore=true -Pcicd
+                                    mvn -f esthesis-core-backend/pom.xml clean install -Pcicd
                                 '''
                             }
                         }
@@ -126,6 +162,7 @@ pipeline {
             steps {
                 container (name: 'esthesis-core-builder') {
                     sh '''
+                        export PATH=$PATH:$(go env GOPATH)/bin
                         cd esthesis-core-device
                         /root/go/bin/cyclonedx-gomod mod go > go/bom.xml
                     '''
@@ -181,6 +218,9 @@ pipeline {
         }
     }
     post {
+        success {
+            build job: "esthesis-dev-deploy/main", propagate: false, wait: false
+        }
         changed {
             emailext subject: '$DEFAULT_SUBJECT',
                 body: '$DEFAULT_CONTENT',

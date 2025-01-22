@@ -98,22 +98,22 @@ func Update(packageId string) (string, error) {
 	// Find available provisioning packages or get the specific provisioning package requested.
 	var agentProvisioningInfoResponse *dto.AgentProvisioningInfoResponse
 	var err error
-	var url *url.URL
+	var provisioningPackageUrl *url.URL
 	if packageId == "" {
 		finalProvisioningUrl := provisioningUrl + provisioningContextRoot + "/find"
 		log.Debugf("Using provisioning URL '%s'", finalProvisioningUrl)
-		url, err = url.Parse(finalProvisioningUrl)
+		provisioningPackageUrl, err = provisioningPackageUrl.Parse(finalProvisioningUrl)
 	} else {
 		finalProvisioningUrl := provisioningUrl + provisioningContextRoot + "/find/by-id"
 		log.Debugf("Using provisioning URL '%s'", finalProvisioningUrl)
-		url, err = url.Parse(finalProvisioningUrl)
+		provisioningPackageUrl, err = provisioningPackageUrl.Parse(finalProvisioningUrl)
 	}
 	if err != nil {
 		log.WithError(err).Errorf("Could not parse provisioning URL '%s'.", provisioningUrl)
 		terminateUpdate()
 	}
 
-	values := url.Query()
+	values := provisioningPackageUrl.Query()
 	if token != "" {
 		values.Add("token", token)
 	}
@@ -125,13 +125,13 @@ func Update(packageId string) (string, error) {
 		values.Add("packageId", packageId)
 	}
 
-	url.RawQuery = values.Encode()
-	log.Debugf("Requesting provisioning packages from '%s'.", url.String())
+	provisioningPackageUrl.RawQuery = values.Encode()
+	log.Debugf("Requesting provisioning packages from '%s'.", provisioningPackageUrl.String())
 	client := resty.New()
 	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: !config.Flags.TlsVerification})
 	response, err := client.R().
 		SetResult(&agentProvisioningInfoResponse).
-		Get(url.String())
+		Get(provisioningPackageUrl.String())
 	if err != nil {
 		log.WithError(err).Errorf("Could not get provisioning info.")
 		terminateUpdate()
@@ -244,7 +244,10 @@ func Start(done chan bool) {
 	// Check for new updates once per day.
 	ticker := time.NewTicker(24 * time.Hour)
 	defer func() { ticker.Stop() }()
-	Update("")
+	_, err := Update("")
+	if err != nil {
+		log.WithError(err).Errorf("Could not check for firmware updates.") // NOSONAR
+	}
 
 LOOP:
 	for {
@@ -253,11 +256,17 @@ LOOP:
 			if doneMsg {
 				break LOOP
 			} else {
-				Update("")
+				_, err := Update("")
+				if err != nil {
+					log.WithError(err).Errorf("Could not check for firmware updates.")
+				}
 			}
 		case <-ticker.C:
 			if time.Now().After(notBefore) {
-				Update("")
+				_, err := Update("")
+				if err != nil {
+					log.WithError(err).Errorf("Could not check for firmware updates.")
+				}
 			}
 		}
 	}

@@ -18,6 +18,7 @@ import org.bson.types.ObjectId;
  * Base service class for all services, providing common functionality to services. Most methods of
  * this class are 'protected', to disallow using them directly from the API. This is to ensure that
  * the service methods are used instead, which can (should) be annotated with security annotations.
+ *
  * @param <D> The entity type to manage.
  */
 @Slf4j
@@ -53,12 +54,25 @@ public abstract class BaseService<D extends BaseEntity> {
 		return findFirstByColumn(column, value, false);
 	}
 
-	@SuppressWarnings("java:S1192")
 	protected List<D> findByColumn(String column, Object value, boolean partialMatch) {
+		return findByColumn(column, value, partialMatch, null, null);
+	}
+
+	@SuppressWarnings("java:S1192")
+	protected List<D> findByColumn(String column, Object value, boolean partialMatch,
+		String orderColumn, Sort.Direction direction) {
+		String query = column;
+
 		if (partialMatch) {
-			return repository.find(column + " like ?1", value).list();
+			query += " like ?1";
 		} else {
-			return repository.find(column + " = ?1", value).list();
+			query += " = ?1";
+		}
+
+		if (orderColumn != null && direction != null) {
+			return repository.find(query, Sort.by(orderColumn, direction), value).list();
+		} else {
+			return repository.find(query, value).list();
 		}
 	}
 
@@ -80,6 +94,10 @@ public abstract class BaseService<D extends BaseEntity> {
 
 	protected long countByColumn(String column, Object value) {
 		return repository.count(column + " = ?1", value);
+	}
+
+	protected long countAll() {
+		return repository.count();
 	}
 
 	protected Page<D> find(Pageable pageable) {
@@ -114,10 +132,10 @@ public abstract class BaseService<D extends BaseEntity> {
 
 		// Set query metadata.
 		if (pageable.getPageObject().isPresent()) {
-			quarkusPage.setPage(pageable.getPage());
+			quarkusPage.setIndex(pageable.getPage());
 			quarkusPage.setSize(pageable.getSize());
 		} else {
-			quarkusPage.setPage(0);
+			quarkusPage.setIndex(0);
 			quarkusPage.setSize(quarkusPage.getContent().size());
 		}
 
@@ -143,6 +161,10 @@ public abstract class BaseService<D extends BaseEntity> {
 		return repository.findById(new ObjectId(id));
 	}
 
+	protected Optional<D> findByIdOptional(String id) {
+		return repository.findByIdOptional(new ObjectId(id));
+	}
+
 	protected D findById(ObjectId id) {
 		return repository.findById(id);
 	}
@@ -164,8 +186,10 @@ public abstract class BaseService<D extends BaseEntity> {
 
 	/**
 	 * Delete all entities that match the given column and value.
+	 *
 	 * @param columnName The column name to match.
-	 * @param value The value to match. Be careful to set the object type expected by the column.
+	 * @param value      The value to match. Be careful to set the object type expected by the
+	 *                   column.
 	 * @return The number of entities deleted.
 	 */
 	@Transactional

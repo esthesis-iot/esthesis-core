@@ -7,7 +7,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-core-util-kafka-notifications</artifactId>
-    <version>3.0.58-SNAPSHOT</version>
+    <version>3.0.59-SNAPSHOT</version>
   </parent>
 
   <artifactId>esthesis-core-util-kafka-notifications-outgoing</artifactId>
@@ -17,12 +17,16 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-messaging-kafka</artifactId>
     </dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-oidc</artifactId>
+		</dependency>
 
     <!-- ESTHESIS -->
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-util-kafka-notifications-common</artifactId>
-      <version>3.0.58-SNAPSHOT</version>
+      <version>3.0.59-SNAPSHOT</version>
     </dependency>
 
     <!-- THIRD-PARTY -->
@@ -30,6 +34,6 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
-  </dependencies>
+	</dependencies>
 
 </project>

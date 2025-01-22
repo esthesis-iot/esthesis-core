@@ -1,0 +1,30 @@
+<div class="flex flex-col bg-base-100 mt-1 ml-1 mr-1 p-4 rounded-xl">
+  <div class="flex flex-row justify-between">
+    <div class="stat-title">{{ item.title }}</div>
+  </div>
+  <div *ngIf="item.subtitle" class="stat-desc">{{ item.subtitle }}</div>
+  <div>
+    <div class="overflow-x-auto">
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">User</th>
+          <th scope="col">Message</th>
+        </tr>
+        </thead>
+        <tbody *ngIf="!lastMessage && config">
+        <tr *ngFor="let i of utilityService.arrayGen(config!.entries)">
+          <td colspan="2">
+            <div class="skeleton h-5 w-full"></div>
+          </td>
+        </tr>
+        </tbody>
+        <tbody *ngIf="lastMessage">
+        <tr *ngFor="let item of lastMessage.auditEntries">
+          <td>{{ Object.keys(item)[0] }}</td>
+          <td>{{ Object.values(item)[0] }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>

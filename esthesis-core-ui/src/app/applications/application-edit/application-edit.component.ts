@@ -5,7 +5,6 @@ import {ApplicationsService} from "../applications.service";
 import {
   OkCancelModalComponent
 } from "src/app/shared/components/ok-cancel-modal/ok-cancel-modal.component";
-import {QFormsService} from "@qlack/forms";
 import {v4 as uuidv4} from "uuid";
 import {ApplicationDto} from "../dto/application-dto";
 import {MatDialog} from "@angular/material/dialog";
@@ -22,10 +21,11 @@ export class ApplicationEditComponent extends SecurityBaseComponent implements O
   form!: FormGroup;
   id?: string;
 
-  constructor(private fb: FormBuilder, private applicationService: ApplicationsService,
-    private qForms: QFormsService,
-    private route: ActivatedRoute, private router: Router, private dialog: MatDialog,
-    private utilityService: UtilityService) {
+  constructor(private readonly fb: FormBuilder,
+    private readonly applicationService: ApplicationsService,
+    private readonly route: ActivatedRoute, private readonly router: Router,
+    private readonly dialog: MatDialog,
+    private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.APPLICATION, route.snapshot.paramMap.get("id"));
   }
 
@@ -50,7 +50,7 @@ export class ApplicationEditComponent extends SecurityBaseComponent implements O
   }
 
   generateToken() {
-    this.form.controls['token'].setValue(uuidv4());
+    this.form.controls["token"].setValue(uuidv4());
   }
 
   save() {

@@ -15,5 +15,4 @@ source ../../../_dev/dev-scripts/start-quarkus.sh \
 	WEB_PORT="59120" \
 	DEBUG_PORT="59121" \
 	PROFILES="${1:-dev}${1:+,dev}" \
-	OIDC="true" \
-	MONGODB="true"
+	OIDC="true"

@@ -38,3 +38,11 @@ quarkus:
     SecurityResource:
       url: http://localhost:59170
       scope: Singleton
+
+kafka:
+  security:
+    protocol: SASL_PLAINTEXT
+  sasl:
+    mechanism: SCRAM-SHA-512
+    jaas:
+      config: org.apache.kafka.common.security.scram.ScramLoginModule required username=esthesis-system password=esthesis-system;

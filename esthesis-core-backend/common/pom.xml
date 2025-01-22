@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>esthesis</groupId>
 		<artifactId>esthesis-core</artifactId>
-		<version>3.0.58-SNAPSHOT</version>
+		<version>3.0.59-SNAPSHOT</version>
 	</parent>
 
   <artifactId>esthesis-core-common</artifactId>
@@ -27,6 +27,10 @@
       <artifactId>quarkus-jackson</artifactId>
       <groupId>io.quarkus</groupId>
     </dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-cache</artifactId>
+		</dependency>
 
     <!-- THIRD PARTY -->
     <dependency>

@@ -1,0 +1,108 @@
+<div class="card rounded-b-none">
+  <div class="card-body p-0 pt-4">
+    <h2 class="card-title text-2xl flex flex-row justify-between border-b-2 pb-2 mb-3 border-base-100">
+      <div class="flex flex-row gap-2">
+        <fa-icon icon="dashboard"></fa-icon>
+        <div>Chart</div>
+      </div>
+    </h2>
+    <div>
+      <form [formGroup]="form" novalidate>
+        <div class="flex flex-row gap-5">
+          <app-dashboard-item-common-config [parentForm]="form"></app-dashboard-item-common-config>
+          <div class="flex flex-col border-l-2 pl-4 border-base-200 flex-grow">
+            <div class="flex flex-row gap-8">
+              <div class="w-1/2 flex flex-col">
+                <div>
+                  <mat-form-field class="w-full">
+                    <mat-label>Tags</mat-label>
+                    <mat-select formControlName="configuration_tags" multiple>
+                      <mat-option *ngFor="let tag of tags" [value]="tag.id">
+                        {{ tag.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field class="w-full">
+                    <mat-label>Device</mat-label>
+                    <input formControlName="search_hardwareId" matInput
+                           [matAutocomplete]="search_hardwareId"
+                           (keydown.enter)="addDevice()">
+                    <mat-hint>Search a device, add it by pressing Enter.</mat-hint>
+                    <mat-autocomplete #search_hardwareId="matAutocomplete">
+                      <mat-option *ngFor="let hardwareId of searchHardwareIds" [value]="hardwareId">
+                        {{ hardwareId }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                  <div class="mt-2 max-h-96">
+                    <div class="max-h-full overflow-scroll">
+                      <div class="flex flex-row items-center gap-1.5" *ngFor="let d of form.get('configuration_hardwareIds')?.value">
+                        <div class="cursor-pointer" (click)="removeHardwareId(d)"
+                             (keydown)="removeHardwareId(d)">
+                          <fa-icon icon="minus-circle" matTooltip="Remove device"></fa-icon></div>
+                        <div>{{d}}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <mat-form-field class="w-full">
+                    <mat-label>Measurement</mat-label>
+                    <input [matAutocomplete]="search_measurement" matInput
+                           formControlName="search_measurement" (keydown.enter)="addMeasurement()">
+                    <mat-hint>Search a measurement, add it by pressing Enter.</mat-hint>
+                    <mat-autocomplete #search_measurement="matAutocomplete">
+                      <mat-option
+                        *ngFor="let measurement of filteredUniqueMeasurements" [value]="measurement">
+                        {{ measurement }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                  <div class="mt-2 max-h-96">
+                    <div class="max-h-full overflow-scroll">
+                      <div class="flex flex-row items-center gap-1.5" *ngFor="let d of form.get('configuration_measurements')?.value">
+                        <div class="cursor-pointer" (click)="removeMeasurement(d)"
+                             (keydown)="removeMeasurement(d)">
+                          <fa-icon icon="minus-circle" matTooltip="Remove measurement"></fa-icon></div>
+                        <div>{{d}}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="w-1/2">
+                <div>
+                  <mat-form-field class="w-full">
+                    <input matInput formControlName="configuration_height">
+                    <mat-label>Height (in pixels)</mat-label>
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field class="w-full">
+                    <input matInput formControlName="configuration_totalPoints">
+                    <mat-label>Number of points to display</mat-label>
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field class="w-full">
+                    <input matInput formControlName="configuration_lineTension">
+                    <mat-label>Line tension</mat-label>
+                  </mat-form-field>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="card-actions justify-start mt-10">
+      <button class="btn btn-sm btn-secondary" (click)="cancel()">CANCEL</button>
+      <button (click)="save()" *ngIf="allowCreate || allowWrite" [disabled]="form.invalid"
+              class="btn btn-sm btn-primary">SAVE
+      </button>
+    </div>
+  </div>
+</div>

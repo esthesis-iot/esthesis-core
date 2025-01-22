@@ -20,10 +20,12 @@
           <div class="flex flex-col">
             <mat-label class="text-accent">Options</mat-label>
             <mat-selection-list>
-              <mat-list-option (click)="toggleTryHarder()" [selected]="tryHarder">
+              <mat-list-option (click)="toggleTryHarder()" (keydown)="toggleTryHarder()"
+                               [selected]="tryHarder">
                 Advanced matching
               </mat-list-option>
               <mat-list-option (click)="toggleTorch()" [selected]="torchEnabled"
+                               (keydown)="toggleTorch()"
                                *ngIf="torchAvailable$ | async">
                 Torch
               </mat-list-option>

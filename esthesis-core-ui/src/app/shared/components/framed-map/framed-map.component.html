@@ -1,4 +1,9 @@
-<div class="font-bold">{{title}}</div>
+<div class="font-bold">{{data.title}}</div>
 
-<iframe [src]="geoUrl"
-        [width]="width" [height]="height" title="map" class="mt-2 border-0"></iframe>
+<div class="mt-2 w-full h-full" *ngIf="mapLayers && mapOptions">
+  <div class="w-full h-full" *ngIf="mapLayers && mapOptions"
+       leaflet
+       [leafletOptions]="mapOptions"
+       [leafletLayers]="mapLayers">
+  </div>
+</div>

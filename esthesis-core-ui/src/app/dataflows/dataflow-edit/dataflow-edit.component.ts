@@ -25,9 +25,11 @@ export class DataflowEditComponent extends SecurityBaseComponent implements OnIn
   model = {};
   dataflow!: any;
 
-  constructor(private route: ActivatedRoute, private dataflowService: DataflowsService,
-    private utilityService: UtilityService, private dialog: MatDialog, private router: Router,
-    private qFormValidation: QFormValidationEEService) {
+  constructor(private readonly route: ActivatedRoute,
+    private readonly dataflowService: DataflowsService,
+    private readonly utilityService: UtilityService, private readonly dialog: MatDialog,
+    private readonly router: Router,
+    private readonly qFormValidation: QFormValidationEEService) {
     super(AppConstants.SECURITY.CATEGORY.DATAFLOW, route.snapshot.paramMap.get("id"));
   }
 

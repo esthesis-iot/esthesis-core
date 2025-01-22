@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {QFormsService} from "@qlack/forms";
 import {
   OkCancelModalComponent
 } from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
@@ -21,9 +20,9 @@ export class AuditViewComponent extends SecurityBaseComponent implements OnInit 
   id!: string;
   auditEvent = {} as AuditDto;
 
-  constructor(private fb: FormBuilder, private auditService: AuditService,
-    private route: ActivatedRoute, private qForms: QFormsService, private router: Router,
-    private utilityService: UtilityService, private dialog: MatDialog) {
+  constructor(private readonly auditService: AuditService,
+    private readonly route: ActivatedRoute, private readonly router: Router,
+    private readonly utilityService: UtilityService, private readonly dialog: MatDialog) {
     super(AppConstants.SECURITY.CATEGORY.AUDIT, route.snapshot.paramMap.get("id"));
   }
 

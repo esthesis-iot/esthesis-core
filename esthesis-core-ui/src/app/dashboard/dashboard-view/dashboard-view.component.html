@@ -1,53 +1,124 @@
-<div class="card w-full bg-base-200 rounded-b-none">
+<div class="card w-full bg-base-200 rounded-b-none" #dashboardDiv>
   <div class="card-body">
-    <h2 class="card-title text-2xl flex flex-row justify-between mb-2">
-      <div class="flex flex-row gap-2">
+    <div class="card-title text-2xl flex flex-row justify-between mb-2">
+      <div class="flex flex-row gap-2" *ngIf="!screenfull.isFullscreen">
         <fa-icon icon="dashboard"></fa-icon>
-        <div>Dashboard</div>
+        <div class="flex flex-row items-center">
+          <div>Dashboard</div>
+        </div>
       </div>
-      <div class="">
-        <button class="btn btn-sm btn-ghost" matTooltip="Add widget">
-          <fa-icon icon="plus"></fa-icon>
-        </button>
-        <button class="btn btn-sm btn-ghost" matTooltip="Dashboards">
-          <fa-icon icon="ruler-combined"></fa-icon>
-        </button>
-        <button class="btn btn-sm btn-ghost" matTooltip="Configure dashboard">
+      <div class="badge badge-neutral ml-1"
+           *ngIf="!dashboardLoading && selectedDashboard && selectedDashboard.displayLastUpdate && selectedDashboard.items.length > 0">
+        updated {{ lastEventDate | amFromUtc | amLocal | amTimeAgo }}
+      </div>
+      <div *ngIf="!screenfull.isFullscreen && !dashboardLoading">
+        <button *ngIf="selectedDashboard " class="btn btn-sm btn-ghost" matTooltip="Configure dashboard"
+                [routerLink]="['/dashboard', selectedDashboard.id]"
+                [disabled]="selectedDashboard && isSharedByOthers()">
           <fa-icon icon="cog"></fa-icon>
         </button>
+        <button [matMenuTriggerFor]="dashboardMenu" class="btn btn-sm btn-ghost"
+                matTooltip="Dashboards">
+          <fa-icon icon="dashboard"></fa-icon>
+          <fa-icon icon="chevron-down"></fa-icon>
+          <mat-menu #dashboardMenu="matMenu" xPosition="before">
+            <ul class="dropdown-content z-[1] menu rounded-box w-60 text-lg">
+              <li class="flex flex-row" *ngFor="let dashboard of ownDashboards">
+                <!-- If not selected, wrap with <a> -->
+                <ng-container *ngIf="selectedDashboard && dashboard.id !== selectedDashboard.id; else selectedLink">
+                  <a class="w-full" (click)="switchDashboard(dashboard.id)">
+                    <ng-container
+                      [ngTemplateOutlet]="commonTemplate"
+                      [ngTemplateOutletContext]="{ $implicit: dashboard }">
+                    </ng-container>
+                  </a>
+                </ng-container>
+
+                <!-- If selected, wrap with <div> -->
+                <ng-template #selectedLink>
+                  <div class="w-full pointer-events-none">
+                    <ng-container
+                      [ngTemplateOutlet]="commonTemplate"
+                      [ngTemplateOutletContext]="{ $implicit: dashboard }">
+                    </ng-container>
+                  </div>
+                </ng-template>
+
+                <!-- Common template for the internal content -->
+                <ng-template #commonTemplate let-dash>
+                  <fa-icon icon="home" [fixedWidth]="true" *ngIf="dash.home"></fa-icon>
+                  <div
+                    [ngClass]="{'ml-6': !dash.home, 'text-accent': selectedDashboard && dash.id === selectedDashboard.id}">
+                    {{ dash.name }}
+                  </div>
+                  <fa-icon icon="share-nodes" *ngIf="dash.shared"></fa-icon>
+                </ng-template>
+              </li>
+              <div *ngIf="sharedDashboards.length > 0">
+                <div class="divider">shared</div>
+                <li class="flex flex-row w-full" *ngFor="let dashboard of sharedDashboards">
+                  <a class="w-full" (click)="switchDashboard(dashboard.id)">{{ dashboard.name }}</a>
+                </li>
+              </div>
+              <div class="divider"></div>
+              <li><a [href]="'dashboard/' + appConstants.NEW_RECORD_ID">Create new</a></li>
+            </ul>
+          </mat-menu>
+        </button>
+        <button *ngIf="selectedDashboard" class="btn btn-sm btn-ghost" matTooltip="Fullscreen"
+                (click)="fullscreen(dashboardDiv)">
+          <fa-icon icon="maximize"></fa-icon>
+        </button>
       </div>
-    </h2>
-    <div>
+    </div>
+    <div *ngIf="selectedDashboard && selectedDashboard.items.length > 0 && !dashboardLoading">
       <ngx-masonry [ordered]="true" [options]="masonryOptions">
-        <div ngxMasonryItem class="transition-all mb-2.5" *ngFor="let widget of dashboardItems; index as i"
-             [ngSwitch]="widget.type"
-             [ngStyle]="{'width.px': widget.columns * appConstants.DASHBOARD.DEFAULTS.COLUMN_WIDTH}">
-          <app-dashboard-item-sensor *ngSwitchCase="appConstants.DASHBOARD.WIDGET.SENSOR"
-                                     [widget]="widget" [index]="i" />
-          <app-dashboard-item-security-stats *ngSwitchCase="appConstants.DASHBOARD.WIDGET.SECURITY_STATS"
-                                     [widget]="widget" [index]="i" />
-          <app-dashboard-item-devices-status *ngSwitchCase="appConstants.DASHBOARD.WIDGET.DEVICES_STATUS"
-                                     [widget]="widget" [index]="i" />
-          <app-dashboard-item-devices-latest *ngSwitchCase="appConstants.DASHBOARD.WIDGET.DEVICES_LATEST"
-                                     [widget]="widget" [index]="i" />
-          <app-dashboard-item-about *ngSwitchCase="appConstants.DASHBOARD.WIDGET.ABOUT"
-                                     [widget]="widget" [index]="i" />
-          <app-dashboard-item-campaigns *ngSwitchCase="appConstants.DASHBOARD.WIDGET.CAMPAIGNS"
-                                     [widget]="widget" [index]="i" />
-          <app-dashboard-item-notes *ngSwitchCase="appConstants.DASHBOARD.WIDGET.NOTES"
-                                     [widget]="widget" [index]="i" />
-          <app-dashboard-item-title *ngSwitchCase="appConstants.DASHBOARD.WIDGET.TITLE"
-                                     [widget]="widget" [index]="i" />
-          <app-dashboard-item-devices-last-seen *ngSwitchCase="appConstants.DASHBOARD.WIDGET.DEVICES_LAST_SEEN"
-                                     [widget]="widget" [index]="i" />
-          <app-dashboard-item-audit *ngSwitchCase="appConstants.DASHBOARD.WIDGET.AUDIT"
-                                     [widget]="widget" [index]="i" />
-          <app-dashboard-item-device-map *ngSwitchCase="appConstants.DASHBOARD.WIDGET.DEVICE_MAP"
-                                     [widget]="widget" [index]="i" />
-          <app-dashboard-item-sensor-icon *ngSwitchCase="appConstants.DASHBOARD.WIDGET.SENSOR_ICON"
-                                     [widget]="widget" [index]="i" />
+        <div ngxMasonryItem class="transition-all mb-2.5"
+             *ngFor="let item of selectedDashboard.items | filterBy: {enabled: true}; index as i"
+             [ngSwitch]="item.type"
+             [ngStyle]="item.columns == 0 ? {'width': '100%'} : {'width.px': item.columns * appConstants.DASHBOARD.DEFAULTS.COLUMN_WIDTH}">
+          <!-- @formatter:off -->
+          <app-dashboard-item-about               *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.ABOUT" [item]="item" [index]="i"/>
+          <app-dashboard-item-audit               *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.AUDIT" [item]="item" [index]="i"/>
+          <app-dashboard-item-campaigns           *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.CAMPAIGNS" [item]="item" [index]="i"/>
+          <app-dashboard-item-chart               *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.CHART" [item]="item" [index]="i"/>
+          <app-dashboard-item-device-map          *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.DEVICE_MAP" [item]="item" [index]="i"/>
+          <app-dashboard-item-datetime            *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.DATETIME" [item]="item" [index]="i"/>
+          <app-dashboard-item-devices-last-seen   *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.DEVICES_LAST_SEEN" [item]="item" [index]="i"/>
+          <app-dashboard-item-devices-latest      *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.DEVICES_LATEST" [item]="item" [index]="i"/>
+          <app-dashboard-item-devices-status      *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.DEVICES_STATUS" [item]="item" [index]="i"/>
+          <app-dashboard-item-sensor              *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.SENSOR" [item]="item" [index]="i"/>
+          <app-dashboard-item-sensor-icon         *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.SENSOR_ICON" [item]="item" [index]="i"/>
+          <app-dashboard-item-title               *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.TITLE" [item]="item" [index]="i"/>
+          <app-dashboard-item-security-stats      *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.SECURITY_STATS" [item]="item" [index]="i"/>
+          <app-dashboard-item-notes               *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.NOTES" [item]="item" [index]="i"/>
+          <app-dashboard-item-image               *ngSwitchCase="appConstants.DASHBOARD.ITEM.TYPE.IMAGE" [item]="item" [index]="i"/>
+          <!-- @formatter:on -->
         </div>
       </ngx-masonry>
+    </div>
+  </div>
+  <div *ngIf="!selectedDashboard && !dashboardLoading" class="pb-10">
+    <div role="alert" class="alert flex flex-col">
+        <span><fa-icon icon="circle-info" class="text-accent"></fa-icon>
+          You have not created a dashboard yet. You can create a new dashboard by using
+          the button below.</span>
+      <button class="btn btn-sm btn-accent mt-2"
+              [routerLink]="['/dashboard', appConstants.NEW_RECORD_ID]">
+        Create new dashboard
+      </button>
+    </div>
+  </div>
+  <div *ngIf="selectedDashboard && selectedDashboard.items?.length == 0 && !dashboardLoading"
+       class="pb-10">
+    <div role="alert" class="alert flex flex-col">
+        <span><fa-icon icon="circle-info" class="text-accent"></fa-icon>
+          You have not added any items to this dashboard. You can add new items
+          to this dashboard by using the button below.</span>
+      <button class="btn btn-sm btn-accent mt-2"
+              [routerLink]="['/dashboard', selectedDashboard.id]">
+        Add dashboard items
+      </button>
     </div>
   </div>
 </div>

@@ -41,4 +41,6 @@ public class AppMessage {
 	// A comment to be included with the message.
 	private String comment;
 
+	// If this message was sent to a broadcast topic.
+	private boolean broadcast = false;
 }

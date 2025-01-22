@@ -3,7 +3,6 @@ import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {Router} from "@angular/router";
 import {QFormsService} from "@qlack/forms";
 import {UtilityService} from "../../../shared/services/utility.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
@@ -26,8 +25,9 @@ export class SecurityUsersListComponent extends SecurityBaseComponent implements
   dataSource: MatTableDataSource<UserDto> = new MatTableDataSource<UserDto>();
   filterForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router, private securityUsersService: SecurityService,
-    private qForms: QFormsService, private utilityService: UtilityService) {
+  constructor(private readonly fb: FormBuilder,
+    private readonly securityUsersService: SecurityService,
+    private readonly qForms: QFormsService, private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.USERS);
     this.filterForm = this.fb.group({
       username: [],

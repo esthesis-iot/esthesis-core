@@ -11,7 +11,7 @@ import (
 )
 
 // Version The application version
-const Version = "3.0.58-SNAPSHOT"
+const Version = "3.0.59-SNAPSHOT"
 
 // Properties received when this device was registered with the esthesis platform.
 const (
@@ -118,7 +118,7 @@ func InitCmdFlags(osArgs []string) {
 		opt.GetEnv("HTTP_TIMEOUT"),
 		opt.Description("The number of seconds after which an HTTP call times out"))
 	opt.StringVar(&Flags.PropertiesFile, "propertiesFile",
-		filepath.Join(getHomeDir(), ".esthesis", "device", "esthesis.properties"),
+		filepath.Join(getHomeDir(), ".esthesis", "device", "esthesis.properties"), // NOSONAR
 		opt.GetEnv("PROPERTIES_FILE"),
 		opt.Description("The file to store the agent’s configuration"))
 	opt.StringVar(&Flags.SecurePropertiesFile, "securePropertiesFile",
@@ -172,7 +172,7 @@ func InitCmdFlags(osArgs []string) {
 
 	opt.StringSliceVar(&Flags.LuaExtraMqttTelemetryTopic, "luaExtraMqttTelemetryTopic", 2, 2,
 		opt.Description("A custom MQTT telemetry topic (arg 1) to listen to, "+
-			"being processed by a custom Lua script (arg 2)"))
+			"being processed by a custom Lua script (arg 2)")) // NOSONAR
 	opt.StringSliceVar(&Flags.LuaExtraMqttMetadataTopic, "luaExtraMqttMetadataTopic", 2, 2,
 		opt.Description("A custom MQTT metadata topic (arg 1) to listen to, "+
 			"being processed by a custom Lua script (arg 2)"))
@@ -304,15 +304,15 @@ func InitCmdFlags(osArgs []string) {
 	// Parse CLI arguments.
 	_, err := opt.Parse(osArgs)
 	if opt.Called("help") {
-		fmt.Fprintf(os.Stderr, opt.Help())
+		_, _ = fmt.Fprintf(os.Stderr, opt.Help())
 		os.Exit(exitCodes.ExitHelp)
 	}
 	if opt.Called("version") {
 		os.Exit(exitCodes.ExitVersion)
 	}
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "ERROR: %s\n\n", err)
-		fmt.Fprintf(os.Stderr, opt.Help(getoptions.HelpSynopsis))
+		_, _ = fmt.Fprintf(os.Stderr, "ERROR: %s\n\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, opt.Help(getoptions.HelpSynopsis))
 		os.Exit(exitCodes.ExitCliParse)
 	}
 	// Currently, only SHA256WITHRSA is supported.

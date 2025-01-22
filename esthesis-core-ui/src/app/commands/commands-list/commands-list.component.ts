@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {MatSort} from "@angular/material/sort";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {Router} from "@angular/router";
 import {CommandRequestDto} from "../dto/command-request-dto";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {CommandsService} from "../commands.service";
@@ -32,10 +31,10 @@ export class CommandsListComponent extends SecurityBaseComponent implements OnIn
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
-  constructor(private fb: FormBuilder, private router: Router,
-    private utilityService: UtilityService,
-    private commandService: CommandsService, private dialog: MatDialog,
-    private qForms: QFormsService) {
+  constructor(private readonly fb: FormBuilder,
+    private readonly utilityService: UtilityService,
+    private readonly commandService: CommandsService, private readonly dialog: MatDialog,
+    private readonly qForms: QFormsService) {
     super(AppConstants.SECURITY.CATEGORY.COMMAND);
     this.filterForm = this.fb.group({
       command: [],

@@ -20,6 +20,7 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {CountdownComponent} from "ngx-countdown";
 import {FramedMapComponent} from "./framed-map/framed-map.component";
 import {AcDirective} from "./ac/ac.directive";
+import {LeafletModule} from "@bluehalo/ngx-leaflet";
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import {AcDirective} from "./ac/ac.directive";
     MatInputModule,
     MatTooltipModule,
     FontAwesomeModule,
-    CountdownComponent
+    CountdownComponent,
+    LeafletModule
   ],
   exports: [
     BooleanCheckboxComponent,
@@ -54,7 +56,8 @@ import {AcDirective} from "./ac/ac.directive";
     BreadcrumbComponent,
     LiveToggleComponent,
     FramedMapComponent,
-    AcDirective
+    AcDirective,
+    MatIconPickerComponent
   ]
 })
 export class ComponentsModule {

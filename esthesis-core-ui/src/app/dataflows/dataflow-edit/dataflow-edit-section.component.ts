@@ -1,7 +1,9 @@
-// TODO: Is this still used?
 import {FieldWrapper} from "@ngx-formly/core";
 import {Component} from "@angular/core";
 
+/**
+ * A section wrapper, used in dataflows.module.ts.
+ */
 @Component({
   selector: "app-dataflow-edit-section",
   template: `

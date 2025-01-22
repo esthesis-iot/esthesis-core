@@ -18,8 +18,8 @@ import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.impl.dto.CAHolderDTO;
 import esthesis.service.crypto.impl.dto.CreateCARequestDTO;
 import esthesis.service.crypto.impl.dto.CreateKeyPairRequestDTO;
-import esthesis.service.crypto.impl.util.SrvCryptoCryptoConverters;
-import esthesis.service.crypto.impl.util.SrvCryptoCryptoUtil;
+import esthesis.service.crypto.impl.util.CryptoConvertersUtil;
+import esthesis.service.crypto.impl.util.CryptoUtil;
 import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
@@ -105,17 +105,17 @@ public class CAService extends BaseService<CaEntity> {
 				createCARequestBuilder.issuerCN(parentCaEntity.getCn())
 					.issuerPrivateKeyAlgorithm(asymmetricKeyAlgorithm)
 					.issuerPrivateKey(
-						SrvCryptoCryptoConverters.pemToPrivateKey(parentCaEntity.getPrivateKey(),
+						CryptoConvertersUtil.pemToPrivateKey(parentCaEntity.getPrivateKey(),
 							asymmetricKeyAlgorithm));
 				caEntity.setParentCa(parentCaEntity.getCn());
 			}
 
-			final CAHolderDTO caHolderDTO = SrvCryptoCryptoUtil.createCA(createCARequestBuilder.build());
+			final CAHolderDTO caHolderDTO = CryptoUtil.createCA(createCARequestBuilder.build());
 			caEntity.setCertificate(
-				SrvCryptoCryptoConverters.certificateToPEM(caHolderDTO.getCertificate()));
+				CryptoConvertersUtil.certificateToPEM(caHolderDTO.getCertificate()));
 			caEntity.setPrivateKey(
-				SrvCryptoCryptoConverters.privateKeyToPEM(caHolderDTO.getPrivateKey()));
-			caEntity.setPublicKey(SrvCryptoCryptoConverters.publicKeyToPEM(caHolderDTO.getPublicKey()));
+				CryptoConvertersUtil.privateKeyToPEM(caHolderDTO.getPrivateKey()));
+			caEntity.setPublicKey(CryptoConvertersUtil.publicKeyToPEM(caHolderDTO.getPublicKey()));
 			caEntity.setIssued(Instant.now());
 
 			return super.save(caEntity);
@@ -144,16 +144,16 @@ public class CAService extends BaseService<CaEntity> {
 				Files.readString(certificate.uploadedFile().toAbsolutePath()));
 
 			// Extract additional certificate information.
-			X509Certificate x509Certificate = SrvCryptoCryptoConverters.pemToCertificate(
+			X509Certificate x509Certificate = CryptoConvertersUtil.pemToCertificate(
 				caEntity.getCertificate());
 			caEntity.setName(importedCaEntity.getName());
 			caEntity.setIssued(x509Certificate.getNotBefore().toInstant());
 			caEntity.setValidity(x509Certificate.getNotAfter().toInstant());
 
 			//Set CN and parent CA.
-			String cn = SrvCryptoCryptoUtil.cleanUpCn(
+			String cn = CryptoUtil.cleanUpCn(
 				x509Certificate.getSubjectX500Principal().getName());
-			String issuer = SrvCryptoCryptoUtil.cleanUpCn(
+			String issuer = CryptoUtil.cleanUpCn(
 				x509Certificate.getIssuerX500Principal().getName());
 			caEntity.setCn(cn);
 			if (!cn.equalsIgnoreCase(issuer)) {

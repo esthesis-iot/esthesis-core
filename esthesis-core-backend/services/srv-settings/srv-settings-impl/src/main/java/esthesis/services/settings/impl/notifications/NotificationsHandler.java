@@ -1,6 +1,6 @@
 package esthesis.services.settings.impl.notifications;
 
-import static esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.SMALLRYE_KAFKA_CHANNEL_IN;
+import static esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.SMALLRYE_KAFKA_UNICAST_CHANNEL_IN;
 
 import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.settings.entity.SettingEntity;
@@ -12,7 +12,6 @@ import io.smallrye.common.annotation.Blocking;
 import io.smallrye.reactive.messaging.TracingMetadata;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
@@ -26,16 +25,16 @@ public class NotificationsHandler {
 	SettingsService settingsService;
 
 	@Blocking
-	@Incoming(SMALLRYE_KAFKA_CHANNEL_IN)
+	@Incoming(SMALLRYE_KAFKA_UNICAST_CHANNEL_IN)
 	public CompletionStage<Void> onMessage(Message<AppMessage> msg) {
 		log.trace("Processing Kafka application message '{}'", msg);
-		Scope scope = Context.current().makeCurrent();
+		// Set the context for the message.
+		Scope scope = msg.getMetadata().get(TracingMetadata.class)
+			.map(tm -> tm.getCurrentContext().makeCurrent())
+			.orElse(Context.current().makeCurrent());
 
+		// Process the message.
 		try {
-			Optional<TracingMetadata> tracingMetadata = msg.getMetadata().get(TracingMetadata.class);
-			if (tracingMetadata.isPresent()) {
-				scope = tracingMetadata.get().getCurrentContext().makeCurrent();
-			}
 			switch (msg.getPayload().getComponent()) {
 				case CA -> {
 					switch (msg.getPayload().getAction()) {
