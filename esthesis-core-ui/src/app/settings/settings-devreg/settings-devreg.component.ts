@@ -21,9 +21,6 @@ export class SettingsDevregComponent extends SecurityBaseComponent implements On
 
   ngOnInit() {
     // Define the form.
-    // TODO to be fully dynamic, the name of the form control should be derived from the name
-    //  of the respective setting. Create an empty form group and then add the form controls
-    //  programmatically.
     this.form = this.fb.group({
       DEVICE_REGISTRATION_MODE: [null, [Validators.required]],
       DEVICE_REGISTRATION_SECRET: [null, []],

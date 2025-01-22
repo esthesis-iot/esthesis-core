@@ -139,11 +139,6 @@ export class SecurityUsersEditComponent extends SecurityBaseComponent implements
   }
 
   addGroup() {
-    // TODO not sure why this if-block is needed, since 'groups' is initialized as an empty array
-    // TODO in the form definition. All other similar forms in security don't need this.
-    if (!this.form.controls["groups"].value) {
-      this.form.controls["groups"].patchValue([]);
-    }
     const groupId = this.groupsFilterCtrl.value;
     this.form.controls["groups"].value.push(groupId);
     this.groupsFilterCtrl.patchValue("");

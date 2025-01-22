@@ -72,7 +72,7 @@ export class SidebarComponent implements OnDestroy {
         policies: this.securityService.isPermitted(AppConstants.SECURITY.CATEGORY.POLICIES, AppConstants.SECURITY.OPERATION.READ),
         audit: this.securityService.isPermitted(AppConstants.SECURITY.CATEGORY.AUDIT, AppConstants.SECURITY.OPERATION.READ),
         about: this.securityService.isPermitted(AppConstants.SECURITY.CATEGORY.ABOUT, AppConstants.SECURITY.OPERATION.READ)
-      }).subscribe((result) => {
+      }).subscribe((result) => { //NOSONAR
       if (result.dashboard) {
         this.categoryGeneral.push({icon: faDashboard, title: "Dashboard", route: "dashboard", type: SidebarItemType.ITEM});
       }

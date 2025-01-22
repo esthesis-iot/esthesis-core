@@ -53,8 +53,6 @@ public class SettingsService extends BaseService<SettingEntity> {
 
 	/**
 	 * Finds all unique measurement names sent by devices.
-	 * <p>
-	 * TODO: Evaluate performance with a large number of devices in Redis.
 	 */
 	@ErnPermission(category = SETTINGS, operation = READ)
 	public List<String> findAllUniqueMeasurementNames() {

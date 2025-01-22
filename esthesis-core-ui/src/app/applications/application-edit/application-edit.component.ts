@@ -24,7 +24,7 @@ export class ApplicationEditComponent extends SecurityBaseComponent implements O
   constructor(private readonly fb: FormBuilder,
     private readonly applicationService: ApplicationsService,
     private readonly route: ActivatedRoute, private readonly router: Router,
-    private dialog: MatDialog,
+    private readonly dialog: MatDialog,
     private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.APPLICATION, route.snapshot.paramMap.get("id"));
   }

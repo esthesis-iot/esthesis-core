@@ -55,7 +55,7 @@ export class CommandCreateComponent extends SecurityBaseComponent implements OnI
     this.searchDevicesForm.valueChanges.pipe(debounceTime(500), distinctUntilChanged()
     ).subscribe({
       next: (next) => {
-        if (next && next.hardwareId) {
+        if (next?.hardwareId) {
           this.commandService.findDevicesByHardwareId(next.hardwareId).subscribe({
             next: (hardwareIds) => {
               if (hardwareIds && hardwareIds.length > 0) {

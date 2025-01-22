@@ -72,13 +72,6 @@ public class CryptoUtil {
 	}
 
 	/**
-	 * Returns the default provider for secure random.
-	 */
-	private static SecureRandom getSecureRandomAlgorithm() throws NoSuchAlgorithmException {
-		return getSecureRandomAlgorithm(null);
-	}
-
-	/**
 	 * Finds the requested secure random algorithm or returns the default one.
 	 *
 	 * @param secureRandomAlgorithm the secure random algorithm to find.

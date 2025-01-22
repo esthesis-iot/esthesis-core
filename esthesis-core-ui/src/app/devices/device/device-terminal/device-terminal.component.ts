@@ -24,9 +24,9 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
   timeout = 3000;
   polling = 500;
   private blockInput = false;
-  private history: string[] = [];
+  private readonly history: string[] = [];
   private historyPointer = 0;
-  private winX: number;
+  private readonly winX: number;
   command = "";
 
   constructor(private readonly deviceTerminalService: DeviceTerminalService,

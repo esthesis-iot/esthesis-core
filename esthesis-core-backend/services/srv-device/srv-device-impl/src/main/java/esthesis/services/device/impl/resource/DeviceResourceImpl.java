@@ -112,7 +112,7 @@ public class DeviceResourceImpl implements DeviceResource {
 		ImportDataProcessingInstructionsDTO instructionsDTO) {
 		try (BufferedReader reader = new BufferedReader(new FileReader(file.filePath().toFile()))) {
 			deviceService.importData(deviceId, reader, messageType, instructionsDTO);
-		} catch (IOException e) {
+		} catch (IOException e) { //NOSONAR
 			log.error("Error importing file.", e);
 			throw new QExceptionWrapper("Could not import file", e);
 		}

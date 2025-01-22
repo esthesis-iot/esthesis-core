@@ -13,7 +13,7 @@ export class DataflowsService extends CrudService<DataflowDto> {
   private readonly prefix = AppConstants.API_ROOT + "/dataflow/v1";
   // A static instance of this service to be used when defining Formly templates, for populating
   // dynamic field values such as selects. Do not use this instance anywhere else.
-  static instance: DataflowsService;
+  static instance: DataflowsService;  //NOSONAR
 
   constructor(http: HttpClient) {
     super(http, "dataflow/v1");
