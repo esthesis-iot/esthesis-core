@@ -127,11 +127,15 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>cicd</id>
 			<activation>
 				<property>
 					<name>cicd</name>
 				</property>
 			</activation>
+			<properties>
+				<jacoco.version>0.8.12</jacoco.version>
+			</properties>
 			<build>
 				<pluginManagement>
 					<plugins>
@@ -167,6 +171,24 @@
 				</pluginManagement>
 				<plugins>
 					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${jacoco.version}</version>
+						<executions>
+							<execution>
+								<id>default-prepare-agent</id>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+								<configuration>
+									<exclClassLoaders>*QuarkusClassLoader</exclClassLoaders>
+									<destFile>${project.build.directory}/jacoco-quarkus.exec</destFile>
+									<append>true</append>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<systemPropertyVariables>
@@ -184,7 +206,6 @@
 					</plugin>
 				</plugins>
 			</build>
-			<id>cicd</id>
 		</profile>
 	</profiles>
 </project>
