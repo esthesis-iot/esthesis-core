@@ -28,7 +28,7 @@ export class DashboardItemDevicesLatestComponent
           lastMessage.devices.push({
             hardwareId: "",
             registeredOn: new Date(),
-            type: AppConstants.DEVICE.TYPE.ESTHESIS
+            type: AppConstants.DEVICE.TYPE.OTHER
           });
         }
       }
