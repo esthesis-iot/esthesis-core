@@ -39,6 +39,9 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Service for managing commands.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -142,6 +145,12 @@ public class CommandService {
 		return commandRequestService.save(cre).getId();
 	}
 
+	/**
+	 * Saves a command and executes it immediately.
+	 *
+	 * @param commandRequestEntity The command request to save and execute.
+	 * @return Information regarding the scheduling of the execution.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = CREATE)
 	public ExecuteRequestScheduleInfoDTO saveRequestAndExecute(
 		CommandRequestEntity commandRequestEntity) {
@@ -155,6 +164,7 @@ public class CommandService {
 	 * Executes (i.e. sends to the device) a previously saved command.
 	 *
 	 * @param requestId The previously saved command request ID.
+	 * @return Information regarding the scheduling of the execution.
 	 */
 	public ExecuteRequestScheduleInfoDTO executeRequest(String requestId) {
 		// Find the command to execute or produce an error if the command can not be found.
@@ -210,47 +220,98 @@ public class CommandService {
 		return scheduleInfo;
 	}
 
+	/**
+	 * Finds command requests.
+	 *
+	 * @param pageable     Paging parameters.
+	 * @param partialMatch Whether to perform a partial match on the command request.
+	 * @return A page of command requests.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = READ)
 	public Page<CommandRequestEntity> findCommandRequest(Pageable pageable, boolean partialMatch) {
 		return commandRequestService.find(pageable, partialMatch);
 	}
 
+	/**
+	 * Finds a command request.
+	 *
+	 * @param commandId The ID of the command to find.
+	 * @return The command request.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = READ)
 	public CommandRequestEntity getCommand(String commandId) {
 		return commandRequestService.findById(commandId);
 	}
 
+	/**
+	 * Finds command replies.
+	 *
+	 * @param correlationId The correlation ID of the command replies to find.
+	 * @return A list of command replies.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = READ)
 	public List<CommandReplyEntity> getReplies(String correlationId) {
 		return commandReplyService.findByCorrelationId(correlationId);
 	}
 
+	/**
+	 * Deletes a command.
+	 *
+	 * @param commandId The ID of the command to delete.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = DELETE)
 	public void deleteCommand(String commandId) {
 		commandRequestService.deleteById(commandId);
 	}
 
+	/**
+	 * Deletes a command reply.
+	 *
+	 * @param replyId The ID of the command reply to delete.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = DELETE)
 	public void deleteReply(String replyId) {
 		commandReplyService.deleteById(replyId);
 	}
 
+	/**
+	 * Purges command requests and replies older than a certain duration.
+	 *
+	 * @param durationInDays The duration in days.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = DELETE)
 	public void purge(int durationInDays) {
 		commandReplyService.purge(durationInDays);
 		commandRequestService.purge(durationInDays);
 	}
 
+	/**
+	 * Counts the number of collected replies.
+	 *
+	 * @param correlationId The correlation ID of the replies.
+	 * @return The number of replies.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = READ)
 	public long countCollectedReplies(String correlationId) {
 		return commandReplyService.countByColumn("correlationId", correlationId);
 	}
 
+	/**
+	 * Deletes all replies for a given correlation ID.
+	 *
+	 * @param correlationId The correlation ID of the replies to delete.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = DELETE)
 	public void deleteReplies(String correlationId) {
 		commandReplyService.deleteByColumn("correlationId", correlationId);
 	}
 
+	/**
+	 * Replays a command by creating a new command matching the old command and executing it
+	 * immediately.
+	 *
+	 * @param sourceCommandId The ID of the source command to replay.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = CREATE)
 	public void replayCommand(String sourceCommandId) {
 		CommandRequestEntity sourceCommand = commandRequestService.findById(sourceCommandId);

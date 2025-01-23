@@ -16,6 +16,9 @@ import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+/**
+ * A REST client for the Orion Context Broker.
+ */
 @Path("")
 @Produces("application/json")
 @RegisterRestClient(configKey = "OrionClient")
@@ -51,13 +54,13 @@ public interface OrionClient {
 	@Path("/ngsi-ld/v1/entities/{entityId}/attrs/{attrName}")
 	@Retry(maxRetries = 3)
 	void setAttribute(@PathParam("entityId") String entityId,
-										 @PathParam("attrName") String attrName, String attributeJson);
+		@PathParam("attrName") String attrName, String attributeJson);
 
 	@DELETE
 	@Path("/ngsi-ld/v1/entities/{entityId}/attrs/{attrName}")
 	@Retry(maxRetries = 3)
 	void deleteAttribute(@PathParam("entityId") String entityId,
-											 @PathParam("attrName") String attrName);
+		@PathParam("attrName") String attrName);
 
 	@DELETE
 	@Path("/ngsi-ld/v1/entities/{entityId}")

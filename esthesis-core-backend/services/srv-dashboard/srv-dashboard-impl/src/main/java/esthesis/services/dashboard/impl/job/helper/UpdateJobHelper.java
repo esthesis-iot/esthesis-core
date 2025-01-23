@@ -13,6 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Helper class for updating a dashboard item.
+ *
+ * @param <T> the type of the value to be refreshed.
+ */
 public abstract class UpdateJobHelper<T> {
 
 	@Inject

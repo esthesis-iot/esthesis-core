@@ -17,6 +17,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * ProvisioningPackage entity.
+ */
 @Data
 @Builder()
 @NoArgsConstructor
@@ -55,7 +58,7 @@ public class ProvisioningPackageEntity extends BaseEntity {
 
 	private String filename;
 
-	// The Tag ids associated with this package.
+	// The Tag IDs associated with this package.
 	private List<String> tags;
 
 	// The attributes of a package are sent to the device during a firmware update. Attributes

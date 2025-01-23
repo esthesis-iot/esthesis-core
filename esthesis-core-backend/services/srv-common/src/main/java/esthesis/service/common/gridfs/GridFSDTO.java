@@ -5,9 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
+/**
+ * MongoDB Grifs parameters.
+ */
 @Builder
 @Data
 public class GridFSDTO {
+
 	@NotEmpty
 	private String metadataName;
 	@NotEmpty

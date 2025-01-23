@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+/**
+ * A representation of a Docker tag.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,9 +18,9 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DockerTagDTO {
 
-  private String name;
-  @JsonProperty("tag_status")
-  private String status;
-  @JsonProperty("last_updated")
-  private Instant lastUpdated;
+	private String name;
+	@JsonProperty("tag_status")
+	private String status;
+	@JsonProperty("last_updated")
+	private Instant lastUpdated;
 }

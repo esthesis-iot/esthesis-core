@@ -12,6 +12,9 @@ import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+/**
+ * A REST client to request access token from Keyrock.
+ */
 @Path("")
 @Produces("application/json")
 @RegisterRestClient(configKey = "KeyrockAuthClient")
@@ -23,8 +26,8 @@ public interface OrionKeyrockAuthClient {
 	@Path("/oauth2/token")
 	@Retry(maxRetries = 3)
 	OrionKeyrockAccessTokenDTO requestAccessToken(@FormParam("username") String username,
-																								@FormParam("password") String password,
-																								@FormParam("grant_type") String grantType,
-																								@HeaderParam("Authorization") String basicAuth);
+		@FormParam("password") String password,
+		@FormParam("grant_type") String grantType,
+		@HeaderParam("Authorization") String basicAuth);
 
 }

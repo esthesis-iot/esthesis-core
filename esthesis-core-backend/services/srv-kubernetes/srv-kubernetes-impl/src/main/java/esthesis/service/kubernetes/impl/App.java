@@ -6,6 +6,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+/**
+ * A component providing management services for the Kubernetes functionality.
+ */
 @ApplicationScoped
 public class App {
 

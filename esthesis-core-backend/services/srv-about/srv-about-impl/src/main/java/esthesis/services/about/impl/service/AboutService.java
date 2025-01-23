@@ -10,10 +10,18 @@ import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Provides information about the application.
+ */
 @Slf4j
 @ApplicationScoped
 public class AboutService {
 
+	/**
+	 * Returns general information about the application.
+	 *
+	 * @return general information about the application.
+	 */
 	@ErnPermission(category = ABOUT, operation = READ)
 	public AboutGeneralDTO getGeneralInfo() {
 		AboutGeneralDTO about = new AboutGeneralDTO();
@@ -22,19 +30,19 @@ public class AboutService {
 		GitUtil gitUtil = new GitUtil();
 
 		String gitBuildTime = gitUtil.getGitProperty(GitUtil.GIT_PROPERTY_BUILD_TIME);
-		String gitComitIdFull = gitUtil.getGitProperty(GitUtil.GIT_PROPERTY_COMMIT_ID_FULL);
-		String gitComitIdAbbrev = gitUtil.getGitProperty(GitUtil.GIT_PROPERTY_COMMIT_ID_ABBREV);
+		String gitCommitIdFull = gitUtil.getGitProperty(GitUtil.GIT_PROPERTY_COMMIT_ID_FULL);
+		String gitCommitIdAbbrev = gitUtil.getGitProperty(GitUtil.GIT_PROPERTY_COMMIT_ID_ABBREV);
 		String gitVersion = gitUtil.getGitProperty(GitUtil.GIT_PROPERTY_VERSION);
 
 		if (StringUtils.isNotBlank(gitBuildTime)) {
 			about.setGitBuildTime(gitBuildTime);
 		}
-		if (StringUtils.isNotBlank(gitComitIdFull)) {
-			about.setGitCommitId(gitComitIdFull);
+		if (StringUtils.isNotBlank(gitCommitIdFull)) {
+			about.setGitCommitId(gitCommitIdFull);
 		}
 
-		if (StringUtils.isNotBlank(gitComitIdAbbrev)) {
-			about.setGitCommitIdAbbrev(gitComitIdAbbrev);
+		if (StringUtils.isNotBlank(gitCommitIdAbbrev)) {
+			about.setGitCommitIdAbbrev(gitCommitIdAbbrev);
 		}
 		if (StringUtils.isNotBlank(gitVersion)) {
 			about.setGitVersion(gitVersion);

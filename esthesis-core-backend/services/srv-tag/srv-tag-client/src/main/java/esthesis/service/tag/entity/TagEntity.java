@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
+/**
+ * Tag entity.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

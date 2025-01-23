@@ -14,6 +14,9 @@ import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Helper class for updating the DEVICES_STATUS dashboard item.
+ */
 @Slf4j
 @ApplicationScoped
 public class DevicesStatusUpdateJobHelper extends UpdateJobHelper<DashboardUpdateDevicesStatus> {

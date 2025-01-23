@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
+/**
+ * Entity to represent an audit entry.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

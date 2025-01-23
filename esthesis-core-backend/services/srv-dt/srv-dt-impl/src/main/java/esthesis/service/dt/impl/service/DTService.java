@@ -1,7 +1,10 @@
 package esthesis.service.dt.impl.service;
 
-import esthesis.service.command.entity.CommandReplyEntity;
+import static esthesis.core.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
+import static esthesis.core.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
+
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
+import esthesis.service.command.entity.CommandReplyEntity;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.command.resource.CommandSystemResource;
 import esthesis.service.dt.dto.DTValueReplyDTO;
@@ -10,6 +13,11 @@ import esthesis.util.redis.RedisUtils.KeyType;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.awaitility.Awaitility;
@@ -17,15 +25,9 @@ import org.bson.Document;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import static esthesis.core.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
-import static esthesis.core.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
-
+/**
+ * Service for handling DT operations.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -44,13 +46,13 @@ public class DTService {
 	@ConfigProperty(name = "esthesis.dt-api.poll-interval-in-ms")
 	Integer pollInvervalMs;
 
-
 	/**
 	 * Finds a specific value previously cached for a device.
 	 *
 	 * @param hardwareId  The hardware id to target.
 	 * @param category    The category of the measurement.
 	 * @param measurement The measurement to find.
+	 * @return The value if found, otherwise null.
 	 */
 	public DTValueReplyDTO find(String hardwareId, String category, String measurement) {
 		String value = redisUtils.getFromHash(
@@ -79,6 +81,7 @@ public class DTService {
 	 *
 	 * @param hardwareId The hardware id to target.
 	 * @param category   The category of the measurements to return.
+	 * @return A list of values if found, otherwise an empty list.
 	 */
 	public List<DTValueReplyDTO> findAll(String hardwareId, String category) {
 		List<DTValueReplyDTO> values = new ArrayList<>();
@@ -106,21 +109,37 @@ public class DTService {
 		return values;
 	}
 
-	public ExecuteRequestScheduleInfoDTO saveCommandRequest(CommandRequestEntity commandRequestEntity) {
-		return  commandSystemResource.save(commandRequestEntity);
-	}
-
-	public List<Document> getReplies(String correlationId){
-		return  commandSystemResource.getReplies(correlationId).stream().map(CommandReplyEntity::asDocument).toList();
+	/**
+	 * Saves a command request to the command system.
+	 *
+	 * @param commandRequestEntity The command request to save.
+	 * @return The schedule info for the saved request.
+	 */
+	public ExecuteRequestScheduleInfoDTO saveCommandRequest(
+		CommandRequestEntity commandRequestEntity) {
+		return commandSystemResource.save(commandRequestEntity);
 	}
 
 	/**
-	 * Waits for the expected number of replies within a timeout of 10s with a poll interval of 300ms.
+	 * Gets the replies for a specific correlation ID.
 	 *
-	 * @param requestScheduleInfo Info about the scheduled request, including correlation ID and number of devices.
+	 * @param correlationId The correlation ID to get replies for.
+	 * @return A list of replies.
+	 */
+	public List<Document> getReplies(String correlationId) {
+		return commandSystemResource.getReplies(correlationId).stream()
+			.map(CommandReplyEntity::asDocument).toList();
+	}
+
+	/**
+	 * Waits for the expected number of replies within a timeout of 10s with a poll interval of
+	 * 300ms.
+	 *
+	 * @param requestScheduleInfo Info about the scheduled request, including correlation ID and
+	 *                            number of devices.
 	 * @return A List of replies
 	 */
-	public List<Document> waitAndGetReplies(ExecuteRequestScheduleInfoDTO requestScheduleInfo){
+	public List<Document> waitAndGetReplies(ExecuteRequestScheduleInfoDTO requestScheduleInfo) {
 		// Wait for replies to be collected.
 		boolean allRepliesCollected = waitForReplies(requestScheduleInfo);
 
@@ -132,6 +151,12 @@ public class DTService {
 		return getReplies(requestScheduleInfo.getCorrelationId());
 	}
 
+	/**
+	 * Waits for replies to a specific command up to a timeout.
+	 *
+	 * @param requestScheduleInfo The request schedule info.
+	 * @return True if all replies were collected, otherwise false.
+	 */
 	private boolean waitForReplies(ExecuteRequestScheduleInfoDTO requestScheduleInfo) {
 		try {
 			Awaitility.await()
@@ -143,7 +168,8 @@ public class DTService {
 				);
 			return true;
 		} catch (org.awaitility.core.ConditionTimeoutException e) {
-			log.warn("Awaitility timeout occurred while waiting for replies for correlationID: {}", requestScheduleInfo.getCorrelationId());
+			log.warn("Awaitility timeout occurred while waiting for replies for correlationID: {}",
+				requestScheduleInfo.getCorrelationId());
 			return false;
 		}
 	}

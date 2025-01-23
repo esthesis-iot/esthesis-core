@@ -50,6 +50,9 @@ import org.jboss.resteasy.reactive.multipart.FileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implementation of {@link DeviceResource}.
+ */
 public class DeviceResourceImpl implements DeviceResource {
 
 	private static final Logger log = LoggerFactory.getLogger(DeviceResourceImpl.class);
@@ -229,7 +232,6 @@ public class DeviceResourceImpl implements DeviceResource {
 			.build();
 	}
 
-
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	public DeviceProfileDTO getProfile(String deviceId) {
@@ -248,11 +250,7 @@ public class DeviceResourceImpl implements DeviceResource {
 	public List<DeviceProfileFieldDataDTO> getDeviceData(String deviceId) {
 		return deviceService.getDeviceData(deviceId);
 	}
-
-	/**
-	 * Preregister devices in the platform. DeviceRegistrationDTO.hardwareId may content multiple
-	 * devices in this case, separated by new lines.
-	 */
+	
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Preregistering device")

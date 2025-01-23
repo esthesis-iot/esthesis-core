@@ -12,6 +12,9 @@ import jakarta.inject.Inject;
 import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * A job handler for terminating a campaign.
+ */
 @Slf4j
 @ApplicationScoped
 public class TerminateCampaignJob implements JobHandler {
@@ -19,6 +22,12 @@ public class TerminateCampaignJob implements JobHandler {
 	@Inject
 	CampaignService campaignService;
 
+	/**
+	 * Terminates a campaign.
+	 *
+	 * @param client The job client.
+	 * @param job    The activated job.
+	 */
 	@JobWorker(type = "TerminateCampaignJob")
 	public void handle(JobClient client, ActivatedJob job) {
 		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);

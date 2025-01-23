@@ -18,6 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Implementation of {@link SecuritySystemResource}.
+ */
 @ApplicationScoped
 @RequiredArgsConstructor
 public class SecuritySystemResourceImpl implements SecuritySystemResource {

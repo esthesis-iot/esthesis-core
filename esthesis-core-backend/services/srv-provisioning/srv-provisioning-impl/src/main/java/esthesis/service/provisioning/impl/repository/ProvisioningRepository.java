@@ -10,6 +10,9 @@ import jakarta.inject.Inject;
 import java.util.List;
 import org.bson.Document;
 
+/**
+ * Quarkus Panache repository for {@link ProvisioningPackageEntity}.
+ */
 @ApplicationScoped
 public class ProvisioningRepository implements PanacheMongoRepository<ProvisioningPackageEntity> {
 
@@ -21,6 +24,7 @@ public class ProvisioningRepository implements PanacheMongoRepository<Provisioni
 	 * underlying ProvisioningPackage class.
 	 *
 	 * @param doc The document to convert.
+	 * @return The converted ProvisioningPackageEntity.
 	 */
 	public ProvisioningPackageEntity parse(Document doc) {
 		String json = doc.toJson();
@@ -39,6 +43,7 @@ public class ProvisioningRepository implements PanacheMongoRepository<Provisioni
 	 * Find all provisioning packages that match at least one of the given tags.
 	 *
 	 * @param tagIds The tag ids to match.
+	 * @return A list of provisioning packages that match at least one of the given tags.
 	 */
 	public List<ProvisioningPackageEntity> findByTagIds(List<String> tagIds) {
 		return list("tags in ?1", tagIds.toArray());
@@ -46,8 +51,9 @@ public class ProvisioningRepository implements PanacheMongoRepository<Provisioni
 
 	/**
 	 * Checks if a version is in a list of tags.
+	 *
 	 * @param version The version to check.
-	 * @param tags The tags to check.
+	 * @param tags    The tags to check.
 	 * @return True if the version is in the tags, false otherwise.
 	 */
 	public boolean versionInTags(String version, List<String> tags) {

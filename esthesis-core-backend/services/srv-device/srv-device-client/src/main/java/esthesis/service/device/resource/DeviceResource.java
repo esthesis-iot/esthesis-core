@@ -40,7 +40,7 @@ import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 /**
- * Interface and REST client for the DeviceResource.
+ * REST client for the device resource.
  */
 @AccessToken
 @Path("/api")
@@ -52,6 +52,7 @@ public interface DeviceResource {
 	 *
 	 * @param tags         A comma-separated list of tag names to search by.
 	 * @param partialMatch If true, the search will be performed using partial matching.
+	 * @return The number of devices having one or more of the given tag names.
 	 */
 	@GET
 	@Path("/v1/count/by-tag")
@@ -63,6 +64,7 @@ public interface DeviceResource {
 	 *
 	 * @param hardwareIds  A comma-separated list of hardware IDs to search by.
 	 * @param partialMatch Whether to perform a partial match on the hardware IDs.
+	 * @return The number of devices having one or more of the given hardware IDs.
 	 */
 	@GET
 	@Path("/v1/count/by-hardware-id")
@@ -74,6 +76,7 @@ public interface DeviceResource {
 	 *
 	 * @param hardwareIds  The hardware IDs to search by.
 	 * @param partialMatch Whether to perform a partial match on the hardware IDs.
+	 * @return The list of devices matching the given hardware IDs.
 	 */
 	@GET
 	@Path("/v1/find/by-hardware-id")
@@ -84,6 +87,7 @@ public interface DeviceResource {
 	 * Finds the devices matching the given tag names.
 	 *
 	 * @param tag The tag name to search by.
+	 * @return The list of devices matching the given tag name.
 	 */
 	@GET
 	@Path("/v1/find/by-tag-name")
@@ -99,48 +103,110 @@ public interface DeviceResource {
 	@Path("/v1/find/by-tag-id")
 	List<DeviceEntity> findByTagId(@QueryParam("tag") String tagId);
 
+	/**
+	 * List devices.
+	 *
+	 * @param pageable pagination parameters.
+	 * @return a page of devices.
+	 */
 	@GET
 	@Path("/v1/find")
 	@RolesAllowed("default-roles-esthesis")
 	Page<DeviceEntity> find(@BeanParam Pageable pageable);
 
+	/**
+	 * Finds the devices by the given hardware ID.
+	 *
+	 * @param id The hardware ID to search by.
+	 * @return The device matching the given hardware ID.
+	 */
 	@GET
 	@Path("/v1/{deviceId}")
 	DeviceEntity get(@PathParam("deviceId") String id);
 
+	/**
+	 * Deletes the device with the given ID.
+	 *
+	 * @param id The ID of the device to delete.
+	 */
 	@DELETE
 	@Path("/v1/{deviceId}")
 	void delete(@PathParam("deviceId") String id);
 
+	/**
+	 * Saves the given device.
+	 *
+	 * @param object The device to save.
+	 * @return The saved device.
+	 */
 	@POST
 	@Path("/v1")
 	DeviceEntity save(@Valid DeviceEntity object);
 
+	/**
+	 * Gets the geolocation information of the device with the given ID.
+	 *
+	 * @param deviceId The ID of the device to get the geolocation information for.
+	 * @return The geolocation information of the device.
+	 */
 	@GET
 	@Path("/v1/{deviceId}/geolocation")
 	GeolocationDTO getDeviceGeolocation(String deviceId);
 
+	/**
+	 * Downloads the key of the given type for the device with the given ID.
+	 *
+	 * @param deviceId The ID of the device to download the key for.
+	 * @param type     The type of the key to download.
+	 * @return The key of the given type for the device with the given ID.
+	 */
 	@GET
 	@Path("/v1/{deviceId}/download")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	Response download(@PathParam("deviceId") String deviceId,
 		@QueryParam("type") AppConstants.KeyType type);
 
-
+	/**
+	 * Gets the profile of the device with the given ID.
+	 *
+	 * @param deviceId The ID of the device to get the profile for.
+	 * @return The profile of the device.
+	 */
 	@GET
 	@Path("/v1/{deviceId}/profile")
 	DeviceProfileDTO getProfile(@PathParam("deviceId") String deviceId);
 
+	/**
+	 * Saves the profile of the device with the given ID.
+	 *
+	 * @param deviceId         The ID of the device to save the profile for.
+	 * @param deviceProfileDTO The profile to save.
+	 */
 	@POST
 	@Path("/v1/{deviceId}/profile")
 	void saveProfile(@PathParam("deviceId") String deviceId, DeviceProfileDTO deviceProfileDTO);
 
+	/**
+	 * Imports device data from text.
+	 *
+	 * @param deviceId                The ID of the device to import data for.
+	 * @param type                    The type of the data to import.
+	 * @param deviceTextDataImportDTO The data to import.
+	 */
 	@POST
 	@Path("/v1/{deviceId}/import-data/{type}/text")
 	void importDeviceDataFromText(@PathParam("deviceId") @NotEmpty String deviceId,
 		@PathParam("type") @NotNull DataImportType type,
 		@NotNull DeviceTextDataImportDTO deviceTextDataImportDTO);
 
+	/**
+	 * Imports device data from a file.
+	 *
+	 * @param deviceId            The ID of the device to import data for.
+	 * @param type                The type of the data to import.
+	 * @param deviceDataImportDTO The data to import.
+	 * @param file                The file to import the data from.
+	 */
 	@POST
 	@Path("/v1/{deviceId}/import-data/{type}/file")
 	void importDeviceDataFromFile(@PathParam("deviceId") @NotEmpty String deviceId,
@@ -158,12 +224,29 @@ public interface DeviceResource {
 	@Path("/v1/{deviceId}/device-data")
 	List<DeviceProfileFieldDataDTO> getDeviceData(@PathParam("deviceId") String deviceId);
 
+	/**
+	 * Preregisters a device.
+	 *
+	 * @param deviceRegistration The device registration information.
+	 * @return The device entity.
+	 * @throws NoSuchAlgorithmException  when the algorithm is not found.
+	 * @throws IOException               when an I/O exception occurs.
+	 * @throws OperatorCreationException when the operator cannot be created.
+	 * @throws InvalidKeySpecException   when the key specification is invalid.
+	 * @throws NoSuchProviderException   when the provider is not found.
+	 */
 	@POST
 	@Path("/v1/preregister")
 	Response preregister(@Valid DeviceRegistrationDTO deviceRegistration)
 	throws NoSuchAlgorithmException, IOException, OperatorCreationException,
 				 InvalidKeySpecException, NoSuchProviderException;
 
+	/**
+	 * Activates a preregistered device.
+	 *
+	 * @param hardwareId The hardware ID of the device to activate.
+	 * @return The device entity.
+	 */
 	@PUT
 	@Path("/v1/activate/{hardwareId}")
 	DeviceEntity activatePreregisteredDevice(@PathParam(value = "hardwareId") String hardwareId);

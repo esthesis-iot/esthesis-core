@@ -20,17 +20,20 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
+/**
+ * Implementation of the {@link AgentResource} interface.
+ */
 @Slf4j
 public class AgentResourceImpl implements AgentResource {
 
 	@Inject
 	AgentService agentService;
 
+	@Override
 	public AgentRegistrationResponse register(AgentRegistrationRequest agentRegistrationRequest)
-	throws NoSuchAlgorithmException, IOException, InvalidKeySpecException,
-				 OperatorCreationException, NoSuchProviderException {
-		log.debug("Received agent registration request '{}'.",
-			agentRegistrationRequest);
+	throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, OperatorCreationException,
+				 NoSuchProviderException {
+		log.debug("Received agent registration request '{}'.", agentRegistrationRequest);
 
 		return agentService.register(agentRegistrationRequest);
 	}
@@ -53,7 +56,7 @@ public class AgentResourceImpl implements AgentResource {
 	public Response findProvisioningPackageById(String hardwareId, String packageId,
 		Optional<String> token) {
 		log.debug("Received find provisioning package by id request for hardware id '{}' and package "
-				+ "id '{}' with token '{}'.", hardwareId, packageId, token);
+			+ "id '{}' with token '{}'.", hardwareId, packageId, token);
 		try {
 			return Response.ok(agentService.findProvisioningPackageById(hardwareId, packageId, token))
 				.build();

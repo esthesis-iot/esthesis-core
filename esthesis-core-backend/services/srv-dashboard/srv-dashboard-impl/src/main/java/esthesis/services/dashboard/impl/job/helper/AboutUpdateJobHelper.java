@@ -14,7 +14,9 @@ import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-
+/**
+ * Helper class for updating the ABOUT dashboard item.
+ */
 @Slf4j
 @ApplicationScoped
 public class AboutUpdateJobHelper extends UpdateJobHelper<DashboardUpdateAbout> {

@@ -21,6 +21,9 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+/**
+ * Implementation of the {@link AuditResource} interface.
+ */
 @Produces(MediaType.APPLICATION_JSON)
 public class AuditResourceImpl implements AuditResource {
 

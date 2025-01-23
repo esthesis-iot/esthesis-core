@@ -8,8 +8,12 @@ import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+/**
+ * A component providing access to security services.
+ */
 @ApplicationScoped
 public class App {
+
 	@ConfigProperty(name = "quarkus.application.name")
 	String appName;
 

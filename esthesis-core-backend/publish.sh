@@ -136,6 +136,7 @@ modulesServices=(
 	"services/srv-campaign/srv-campaign-impl" "srv-campaign"
 	"services/srv-command/srv-command-impl" "srv-command"
 	"services/srv-crypto/srv-crypto-impl" "srv-crypto"
+	"services/srv-dashboard/srv-dashboard-impl" "srv-dashboard"
 	"services/srv-dataflow/srv-dataflow-impl" "srv-dataflow"
 	"services/srv-device/srv-device-impl" "srv-device"
 	"services/srv-dt/srv-dt-impl" "srv-dt"

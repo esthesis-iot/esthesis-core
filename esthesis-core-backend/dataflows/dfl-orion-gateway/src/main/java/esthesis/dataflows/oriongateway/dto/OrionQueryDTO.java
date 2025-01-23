@@ -1,13 +1,15 @@
 package esthesis.dataflows.oriongateway.dto;
 
 import jakarta.ws.rs.QueryParam;
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
+/**
+ * DTO for representing a query sent to Orion.
+ */
 @Data
 @Builder
 @NoArgsConstructor

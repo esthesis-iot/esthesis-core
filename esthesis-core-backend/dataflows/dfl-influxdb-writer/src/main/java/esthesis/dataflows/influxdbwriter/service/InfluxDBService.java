@@ -19,6 +19,9 @@ import org.apache.camel.Exchange;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+/**
+ * Utility service for writing data to an InfluxDB.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -57,6 +60,12 @@ public class InfluxDBService {
 				config.influxOrg(), config.influxBucket());
 	}
 
+	/**
+	 * Process the given exchange by converting the message to an InfluxDB point and writing it to the
+	 * InfluxDB.
+	 *
+	 * @param exchange the Camel exchange to process the message form.
+	 */
 	public void process(Exchange exchange) {
 		// Get the message from the exchange.
 		EsthesisDataMessage esthesisMessage = exchange.getIn()

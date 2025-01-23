@@ -27,9 +27,6 @@ export class SettingsSecurityComponent extends SecurityBaseComponent implements 
 
   ngOnInit() {
     // Define the form.
-    // TODO to be fully dynamic, the name of the form control should be derived from the name
-    //  of the respective setting. Create an empty form group and then add the form controls
-    //  programmatically.
     this.form = this.fb.group({
       PLATFORM_CERTIFICATE: ["", []],
       DEVICE_ROOT_CA: ["", []]

@@ -16,6 +16,9 @@ import lombok.experimental.Accessors;
 import org.bson.types.ObjectId;
 import org.hibernate.validator.constraints.Length;
 
+/**
+ * Dashboard entity.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

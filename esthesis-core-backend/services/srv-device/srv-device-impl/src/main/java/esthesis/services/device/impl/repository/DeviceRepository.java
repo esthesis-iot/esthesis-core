@@ -8,6 +8,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Quarkus Panache repository for {@link DeviceEntity}.
+ */
 @ApplicationScoped
 @SuppressWarnings("java:S1192")
 public class DeviceRepository implements PanacheMongoRepository<DeviceEntity> {

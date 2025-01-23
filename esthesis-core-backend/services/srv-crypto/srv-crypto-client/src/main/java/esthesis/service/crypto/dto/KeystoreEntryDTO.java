@@ -11,6 +11,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+/**
+ * A representation of a keystore entry.
+ */
 @Data
 @Builder
 @AllArgsConstructor

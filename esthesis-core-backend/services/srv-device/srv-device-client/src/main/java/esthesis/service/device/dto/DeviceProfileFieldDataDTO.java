@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+/**
+ * A representation of a device profile field data.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,9 +18,9 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DeviceProfileFieldDataDTO implements Serializable {
 
-  private String label;
-  private String value;
-  private String valueType;
-  private Instant lastUpdate;
-  private String icon;
+	private String label;
+	private String value;
+	private String valueType;
+	private Instant lastUpdate;
+	private String icon;
 }

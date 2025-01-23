@@ -53,6 +53,9 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Service for managing campaigns.
+ */
 @Slf4j
 @ApplicationScoped
 public class CampaignService extends BaseService<CampaignEntity> {
@@ -69,10 +72,22 @@ public class CampaignService extends BaseService<CampaignEntity> {
 
 	public static final String CAMPAIGN_PROCESS_ID = "DeviceCampaignProcess";
 
+	/**
+	 * Create a validation path for a campaign condition.
+	 *
+	 * @param campaignConditionDTO The campaign condition to create a validation path for.
+	 * @return The validation path.
+	 */
 	private String createValidationPath(CampaignConditionDTO campaignConditionDTO) {
 		return String.valueOf(campaignConditionDTO.getType());
 	}
 
+	/**
+	 * Save campaign handler, to allow different permissions for new and updated campaigns.
+	 *
+	 * @param campaignEntity The campaign to save.
+	 * @return The saved campaign.
+	 */
 	private CampaignEntity saveHandler(CampaignEntity campaignEntity) {
 		CVEBuilder<String> violations = new CVEBuilder<>();
 		List<CampaignConditionDTO> conditions = campaignEntity.getConditions();
@@ -141,18 +156,36 @@ public class CampaignService extends BaseService<CampaignEntity> {
 		return super.save(campaignEntity);
 	}
 
+	/**
+	 * Save a new campaign.
+	 *
+	 * @param campaignEntity The campaign to save.
+	 * @return The saved campaign.
+	 */
 	@Transactional
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = CREATE)
 	public CampaignEntity saveNew(CampaignEntity campaignEntity) {
 		return saveHandler(campaignEntity);
 	}
 
+	/**
+	 * Save an updated campaign.
+	 *
+	 * @param campaignEntity The campaign to save.
+	 * @return The saved campaign.
+	 */
 	@Transactional
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = WRITE)
 	public CampaignEntity saveUpdate(CampaignEntity campaignEntity) {
 		return saveHandler(campaignEntity);
 	}
 
+
+	/**
+	 * Resumes a previously paused campaign.
+	 *
+	 * @param campaignId The id of the campaign to resume.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = WRITE)
 	public void resume(String campaignId) {
 		// Get campaign to resume.
@@ -165,6 +198,12 @@ public class CampaignService extends BaseService<CampaignEntity> {
 			.join();
 	}
 
+	/**
+	 * Find the groups of a campaign.
+	 *
+	 * @param campaignId The id of the campaign to find the groups for.
+	 * @return The groups of the campaign.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = READ)
 	public List<Integer> findGroups(String campaignId) {
 		CampaignEntity campaign = findById(campaignId);
@@ -180,6 +219,12 @@ public class CampaignService extends BaseService<CampaignEntity> {
 		return groups;
 	}
 
+	/**
+	 * Get the statistics of a campaign.
+	 *
+	 * @param campaignId The id of the campaign to get the statistics for.
+	 * @return The statistics of the campaign.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = READ)
 	public CampaignStatsDTO getCampaignStats(String campaignId) {
 		CampaignStatsDTO campaignStatsDTO = new CampaignStatsDTO();
@@ -252,6 +297,11 @@ public class CampaignService extends BaseService<CampaignEntity> {
 		return campaignStatsDTO;
 	}
 
+	/**
+	 * Start a campaign.
+	 *
+	 * @param campaignId The id of the campaign to start.
+	 */
 	@Transactional
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = WRITE)
 	public void start(String campaignId) {
@@ -322,6 +372,11 @@ public class CampaignService extends BaseService<CampaignEntity> {
 		super.save(campaignEntity);
 	}
 
+	/**
+	 * Delete a campaign.
+	 *
+	 * @param campaignId The id of the campaign to delete.
+	 */
 	@Transactional
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = DELETE)
 	public void delete(String campaignId) {
@@ -345,6 +400,11 @@ public class CampaignService extends BaseService<CampaignEntity> {
 			+ "'{}'.", campaignId, deletedDeviceMonitors);
 	}
 
+	/**
+	 * Terminate a campaign.
+	 *
+	 * @param campaignId The id of the campaign to terminate.
+	 */
 	@Transactional
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = WRITE)
 	public void terminate(String campaignId) {
@@ -393,6 +453,14 @@ public class CampaignService extends BaseService<CampaignEntity> {
 			.setAdvancedUpdateRepliesTimer(campaignEntity.getAdvancedUpdateRepliesTimer()));
 	}
 
+	/**
+	 * Get the conditions of a campaign.
+	 *
+	 * @param campaignEntity The campaign to get the conditions for.
+	 * @param groupDTO       The group to get the conditions for.
+	 * @param type           The type of the conditions to get.
+	 * @return The conditions of the campaign.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = READ)
 	public List<CampaignConditionDTO> getCondition(CampaignEntity campaignEntity,
 		GroupDTO groupDTO, Condition.Type type) {
@@ -403,6 +471,13 @@ public class CampaignService extends BaseService<CampaignEntity> {
 			.toList();
 	}
 
+	/**
+	 * Set the state description of a campaign.
+	 *
+	 * @param campaignId       The id of the campaign to set the state description for.
+	 * @param stateDescription The state description to set.
+	 * @return The campaign with the updated state description.
+	 */
 	@Transactional
 	public CampaignEntity setStateDescription(String campaignId, String stateDescription) {
 		log.debug("Setting state description for campaign id '{}' to '{}'.", campaignId,

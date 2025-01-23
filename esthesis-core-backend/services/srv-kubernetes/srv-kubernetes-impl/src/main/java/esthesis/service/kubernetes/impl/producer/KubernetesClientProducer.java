@@ -5,6 +5,9 @@ import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Singleton;
 
+/**
+ * Produces a KubernetesClient instance to connect to a Kubernetes cluster.
+ */
 @Singleton
 public class KubernetesClientProducer {
 

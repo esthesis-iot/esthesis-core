@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+/**
+ * Group entity.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,10 +24,10 @@ import lombok.experimental.Accessors;
 @MongoEntity(collection = "Group")
 public class GroupEntity extends BaseEntity {
 
-  private String name;
-  private String description;
-  // References to role IDs
-  private List<String> roles;
-  // Custom policies, expressed as string.
-  private List<String> policies;
+	private String name;
+	private String description;
+	// References to role IDs
+	private List<String> roles;
+	// Custom policies, expressed as string.
+	private List<String> policies;
 }

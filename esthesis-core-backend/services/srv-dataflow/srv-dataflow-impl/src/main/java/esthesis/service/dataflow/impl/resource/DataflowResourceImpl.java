@@ -22,6 +22,9 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 
+/**
+ * Implementation of the {@link DataflowResource} interface.
+ */
 public class DataflowResourceImpl implements DataflowResource {
 
 	@Inject

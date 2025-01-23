@@ -8,6 +8,9 @@ import esthesis.services.dashboard.impl.dto.update.DashboardUpdateDatetime.Dashb
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Helper class for updating the DATETIME dashboard item.
+ */
 @Slf4j
 @ApplicationScoped
 public class DatetimeUpdateJobHelper extends UpdateJobHelper<DashboardUpdateDatetime> {

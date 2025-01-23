@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Implementation of the {@link SettingsResource} interface.
+ */
 @Slf4j
 public class SettingsResourceImpl implements SettingsResource {
 

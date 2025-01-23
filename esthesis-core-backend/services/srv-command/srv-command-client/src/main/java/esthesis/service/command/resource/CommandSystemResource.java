@@ -1,7 +1,7 @@
 package esthesis.service.command.resource;
 
-import esthesis.service.command.entity.CommandReplyEntity;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
+import esthesis.service.command.entity.CommandReplyEntity;
 import esthesis.service.command.entity.CommandRequestEntity;
 import io.quarkus.oidc.client.filter.OidcClientFilter;
 import jakarta.ws.rs.GET;
@@ -11,11 +11,20 @@ import jakarta.ws.rs.PathParam;
 import java.util.List;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+/**
+ * A REST client for the command system service, when used by SYSTEM OIDC clients.
+ */
 @OidcClientFilter
 @Path("/api/system-command")
 @RegisterRestClient(configKey = "CommandSystemResource")
 public interface CommandSystemResource {
 
+	/**
+	 * Find and count the number of collected replies for a given correlation ID of a campaign.
+	 *
+	 * @param correlationId The correlation ID of the command request.
+	 * @return The number of collected replies found for the provided correlation ID
+	 */
 	@GET
 	@Path("/v1/reply/{correlationId}")
 	List<CommandReplyEntity> getReplies(@PathParam("correlationId") String correlationId);
@@ -33,7 +42,8 @@ public interface CommandSystemResource {
 
 
 	/**
-	 *  Find and count the number of collected replies for a given correlation ID
+	 * Find and count the number of collected replies for a given correlation ID
+	 *
 	 * @param correlationId The correlation ID of the command request.
 	 * @return The number of collected replies found for the provided correlation ID
 	 */

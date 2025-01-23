@@ -5,6 +5,9 @@ import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 
+/**
+ * Quarkus Panache repository for {@link DataflowEntity}.
+ */
 @ApplicationScoped
 public class DataflowRepository implements PanacheMongoRepository<DataflowEntity> {
 

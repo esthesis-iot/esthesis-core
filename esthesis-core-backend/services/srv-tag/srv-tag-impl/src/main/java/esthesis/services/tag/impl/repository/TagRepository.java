@@ -6,6 +6,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Quarkus Panache repository for {@link TagEntity}.
+ */
 @ApplicationScoped
 public class TagRepository implements PanacheMongoRepository<TagEntity> {
 

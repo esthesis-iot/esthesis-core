@@ -4,30 +4,33 @@ import io.quarkus.runtime.annotations.StaticInitSafe;
 import io.smallrye.config.ConfigMapping;
 import java.util.Optional;
 
+/**
+ * Configuration for the Redis Cache DFL.
+ */
 @StaticInitSafe
 @ConfigMapping(prefix = "esthesis.dfl")
 public interface AppConfig {
 
-  // The URL of the redis cluster.
-  String redisUrl();
+	// The URL of the redis cluster.
+	String redisUrl();
 
-  // The maximum value size (in bytes) eligible for caching.
-  int redisMaxSize();
+	// The maximum value size (in bytes) eligible for caching.
+	int redisMaxSize();
 
-  // TTL (in minutes)
-  long redisTtl();
+	// TTL (in minutes)
+	long redisTtl();
 
-  // The Kafka consumer group id.
-  Optional<String> kafkaConsumerGroup();
+	// The Kafka consumer group id.
+	Optional<String> kafkaConsumerGroup();
 
-  // The Kafka topic to consume telemetry messages from.
-  Optional<String> kafkaTelemetryTopic();
+	// The Kafka topic to consume telemetry messages from.
+	Optional<String> kafkaTelemetryTopic();
 
-  // The Kafka topic to consume metadata messages from.
-  Optional<String> kafkaMetadataTopic();
+	// The Kafka topic to consume metadata messages from.
+	Optional<String> kafkaMetadataTopic();
 
-  // The URL of the Kafka cluster to connect to.
-  String kafkaClusterUrl();
+	// The URL of the Kafka cluster to connect to.
+	String kafkaClusterUrl();
 
 	// The security protocol to use when connecting to the Kafka cluster. If empty, no security
 	// protocol will be setup.

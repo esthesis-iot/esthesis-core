@@ -63,6 +63,9 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Service for managing devices.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -91,6 +94,12 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	@Channel("esthesis-data-message")
 	Emitter<EsthesisDataMessage> dataMessageEmitter;
 
+	/**
+	 * Returns the profile fields of a device.
+	 *
+	 * @param deviceId The device ID to search by.
+	 * @return The list of profile fields.
+	 */
 	private List<DeviceProfileFieldDataDTO> getProfileFields(String deviceId) {
 		List<DeviceProfileFieldDataDTO> fields = new ArrayList<>();
 
@@ -131,6 +140,7 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	 *
 	 * @param hardwareId   The hardware ID to search by.
 	 * @param partialMatch Whether the search for the hardware ID should be partial or not.
+	 * @return Returns the device matched.
 	 */
 	@ErnPermission(category = DEVICE, operation = READ)
 	public Optional<DeviceEntity> findByHardwareId(String hardwareId, boolean partialMatch) {
@@ -177,6 +187,7 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	 * Returns the last known geolocation attributes of a device.
 	 *
 	 * @param deviceId The device ID to search by.
+	 * @return The last known geolocation attributes.
 	 */
 	@ErnPermission(category = DEVICE, operation = READ)
 	public GeolocationDTO getGeolocation(String deviceId) {
@@ -204,21 +215,45 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		}
 	}
 
+	/**
+	 * Returns the public key of a device.
+	 *
+	 * @param id The device ID to search by.
+	 * @return The public key of the device.
+	 */
 	@ErnPermission(category = DEVICE, operation = READ)
 	public String getPublicKey(String id) {
 		return findById(id).getDeviceKey().getPublicKey();
 	}
 
+	/**
+	 * Returns the private key of a device.
+	 *
+	 * @param id The device ID to search by.
+	 * @return The private key of the device.
+	 */
 	@ErnPermission(category = DEVICE, operation = READ)
 	public String getPrivateKey(String id) {
 		return findById(id).getDeviceKey().getPrivateKey();
 	}
 
+	/**
+	 * Returns the certificate of a device.
+	 *
+	 * @param id The device ID to search by.
+	 * @return The certificate of the device.
+	 */
 	@ErnPermission(category = DEVICE, operation = READ)
 	public String getCertificate(String id) {
 		return findById(id).getDeviceKey().getCertificate();
 	}
 
+	/**
+	 * Saves the profile of a device.
+	 *
+	 * @param deviceId         The device ID to save the profile for.
+	 * @param deviceProfileDTO The profile to save.
+	 */
 	@ErnPermission(category = DEVICE, operation = WRITE)
 	@KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE_ATTRIBUTE,
 		action = Action.UPDATE, idParamOrder = 0)
@@ -240,6 +275,12 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		});
 	}
 
+	/**
+	 * Returns the profile of a device.
+	 *
+	 * @param deviceId The device ID to search by.
+	 * @return The profile of the device.
+	 */
 	public DeviceProfileDTO getProfile(String deviceId) {
 		DeviceProfileDTO deviceProfileDTO = new DeviceProfileDTO();
 		deviceProfileDTO.setAttributes(deviceAttributeRepository.findByDeviceId(deviceId));
@@ -248,6 +289,12 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		return deviceProfileDTO;
 	}
 
+	/**
+	 * Returns the data of a device.
+	 *
+	 * @param deviceId The device ID to search by.
+	 * @return The data of the device.
+	 */
 	public List<DeviceProfileFieldDataDTO> getDeviceData(String deviceId) {
 		List<DeviceProfileFieldDataDTO> fields = new ArrayList<>();
 		DeviceEntity deviceEntity = findById(deviceId);
@@ -263,6 +310,13 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		return fields;
 	}
 
+	/**
+	 * Returns the data of a device.
+	 *
+	 * @param deviceId      The device ID to search by.
+	 * @param attributeName The attribute name to search by.
+	 * @return The data of the device.
+	 */
 	public Optional<DeviceAttributeEntity> getDeviceAttributeByName(String deviceId,
 		String attributeName) {
 		return deviceAttributeRepository.findByDeviceIdAndName(deviceId, attributeName);
@@ -280,11 +334,25 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		return super.deleteById(deviceId);
 	}
 
+	/**
+	 * Returns the IDs of all devices.
+	 *
+	 * @return The IDs of all devices.
+	 */
 	@ErnPermission(category = DEVICE, operation = READ)
 	public List<String> getDevicesIds() {
 		return getAll().stream().map(DeviceEntity::getId).map(ObjectId::toHexString).toList();
 	}
 
+	/**
+	 * Imports data for a device.
+	 *
+	 * @param deviceId        The device ID to import data for.
+	 * @param reader          The reader to read the data from.
+	 * @param messageType     The type of the message to import.
+	 * @param instructionsDTO The instructions for processing the import.
+	 * @throws IOException If an I/O error occurs.
+	 */
 	@ErnPermission(category = DEVICE, operation = WRITE)
 	public void importData(String deviceId, BufferedReader reader, MessageTypeEnum messageType,
 		ImportDataProcessingInstructionsDTO instructionsDTO)
@@ -362,16 +430,33 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		return super.findById(id);
 	}
 
+	/**
+	 * Creates a new device.
+	 *
+	 * @param entity The device to save.
+	 * @return The saved device.
+	 */
 	@ErnPermission(category = DEVICE, operation = CREATE)
 	public DeviceEntity saveNew(DeviceEntity entity) {
 		return saveHandler(entity);
 	}
 
+	/**
+	 * Updates an existing device.
+	 *
+	 * @param entity The device to update.
+	 * @return The updated device.
+	 */
 	@ErnPermission(category = DEVICE, operation = WRITE)
 	public DeviceEntity saveUpdate(DeviceEntity entity) {
 		return saveHandler(entity);
 	}
 
+	/**
+	 * Returns statistics on all devices.
+	 *
+	 * @return The statistics on all devices.
+	 */
 	public DevicesLastSeenStatsDTO getDeviceStats() {
 		DevicesLastSeenStatsDTO devicesLastSeenStatsDTO = new DevicesLastSeenStatsDTO();
 
@@ -406,6 +491,12 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		return devicesLastSeenStatsDTO;
 	}
 
+	/**
+	 * Returns the latest devices registered in the system.
+	 *
+	 * @param limit The number of devices to return.
+	 * @return The latest devices.
+	 */
 	public List<DeviceEntity> getLatestDevices(int limit) {
 		return deviceRepository
 			.findAll(Sort.descending("registeredOn"))
@@ -413,6 +504,11 @@ public class DeviceService extends BaseService<DeviceEntity> {
 			.list();
 	}
 
+	/**
+	 * Returns statistics on all devices.
+	 *
+	 * @return The statistics on all devices.
+	 */
 	public DevicesTotalsStatsDTO getDeviceTotals() {
 		DevicesTotalsStatsDTO stats = new DevicesTotalsStatsDTO();
 		stats.setTotal(getAll().size());

@@ -1,13 +1,12 @@
 package esthesis.service.crypto.impl.resource;
 
+import esthesis.common.crypto.CryptoConvertersUtil;
+import esthesis.common.crypto.CryptoUtil;
+import esthesis.common.crypto.dto.CreateCertificateRequestDTO;
+import esthesis.common.crypto.dto.CreateKeyPairRequestDTO;
 import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.NamedSetting;
-import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
-import esthesis.service.crypto.impl.dto.CreateKeyPairRequestDTO;
-import esthesis.service.crypto.impl.service.CAService;
 import esthesis.service.crypto.impl.service.CertificateService;
-import esthesis.service.crypto.impl.util.CryptoConvertersUtil;
-import esthesis.service.crypto.impl.util.CryptoUtil;
 import esthesis.service.crypto.resource.KeyResource;
 import esthesis.service.settings.resource.SettingsResource;
 import io.quarkus.security.Authenticated;
@@ -23,6 +22,9 @@ import java.security.spec.InvalidKeySpecException;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Implementation of the @{@link KeyResource} interface.
+ */
 @Authenticated
 public class KeyResourceImpl implements KeyResource {
 
@@ -30,8 +32,6 @@ public class KeyResourceImpl implements KeyResource {
 	@RestClient
 	SettingsResource settingsResource;
 
-	@Inject
-	CAService caService;
 	@Inject
 	CertificateService certificateService;
 

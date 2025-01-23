@@ -7,6 +7,9 @@ import esthesis.services.about.impl.service.AboutService;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Implementation of the AboutSystemResource interface.
+ */
 @RequiredArgsConstructor
 public class AboutSystemResourceImpl implements AboutSystemResource {
 

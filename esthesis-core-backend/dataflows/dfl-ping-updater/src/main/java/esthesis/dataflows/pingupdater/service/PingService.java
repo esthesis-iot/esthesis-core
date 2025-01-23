@@ -16,6 +16,9 @@ import org.bson.BsonDateTime;
 import org.bson.BsonDocument;
 import org.bson.conversions.Bson;
 
+/**
+ * Utilities for updating the ping timestamp of a device in the database.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -27,6 +30,11 @@ public class PingService {
 	// The MongoDB field name for the ping value.
 	private static final String PING_ATTRIBUTE_NAME = "lastSeen";
 
+	/**
+	 * Search for an existing device in the database.
+	 *
+	 * @param exchange The Camel exchange.
+	 */
 	public void searchForExistingDevice(Exchange exchange) {
 		// Get the message from the exchange.
 		EsthesisDataMessage esthesisMessage = exchange.getIn().getBody(EsthesisDataMessage.class);
@@ -41,6 +49,11 @@ public class PingService {
 		exchange.getIn().setHeader(MongoDbConstants.CRITERIA, equalsClause);
 	}
 
+	/**
+	 * Update the ping timestamp of a device in the database.
+	 *
+	 * @param exchange The Camel exchange.
+	 */
 	public void updateTimestamp(Exchange exchange) {
 		log.debug("Updating ping timestamp for hardware ID '{}'.",
 			exchange.getIn().getHeader(KafkaConstants.KEY));

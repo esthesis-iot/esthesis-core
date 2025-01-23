@@ -18,6 +18,9 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
+/**
+ * An entity representing a device.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

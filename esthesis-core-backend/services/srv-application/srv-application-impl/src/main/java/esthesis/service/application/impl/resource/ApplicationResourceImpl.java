@@ -19,6 +19,9 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 
+/**
+ * Implementation of the {@link ApplicationResource} interface.
+ */
 public class ApplicationResourceImpl implements ApplicationResource {
 
 	@Inject

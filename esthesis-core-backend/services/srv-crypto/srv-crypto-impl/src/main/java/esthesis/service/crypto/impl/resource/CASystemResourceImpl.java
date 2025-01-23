@@ -7,6 +7,9 @@ import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 
+/**
+ * Implementation of the @{@link CASystemResource} interface.
+ */
 @Authenticated
 public class CASystemResourceImpl implements CASystemResource {
 

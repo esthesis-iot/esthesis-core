@@ -24,6 +24,9 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 @ApplicationScoped
 
+/**
+ * A job handler for the property job.
+ */
 public class PropertyJob implements JobHandler {
 
 	@Inject
@@ -35,8 +38,14 @@ public class PropertyJob implements JobHandler {
 	@Inject
 	RedisUtils redisUtils;
 
+	/**
+	 * Retrieves and evaluates a property for the campaign job.
+	 *
+	 * @param client The job client.
+	 * @param job    The activated job.
+	 */
 	@JobWorker(type = "PropertyJob")
-	@SuppressWarnings({"java:S2200", "java:S1121" })
+	@SuppressWarnings({"java:S2200", "java:S1121"})
 	public void handle(JobClient client, ActivatedJob job) {
 		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);
 		GroupDTO groupDTO = new GroupDTO(job);

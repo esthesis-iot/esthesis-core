@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+/**
+ * A representation of a dashboard item.
+ */
 @Data
 @ToString
 @NoArgsConstructor

@@ -25,6 +25,9 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Implementation of the {@link DashboardResource} interface.
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class DashboardResourceImpl implements DashboardResource {
@@ -38,15 +41,6 @@ public class DashboardResourceImpl implements DashboardResource {
 		broadcasterService.register(dashboardId, subscriptionId, sseEventSink);
 	}
 
-	/**
-	 * Refreshes a user subscription to a dashboard. Since it is not known which instance of the
-	 * dashboard component received this request and which instance of the dashboard component is
-	 * handling the broadcaster for the user, this method triggers a refresh subscription Kafka
-	 * message. All dashboard service-instances will receive this message and the one handling the
-	 * broadcaster instance for the user will refresh it.
-	 *
-	 * @param subscriptionId the id of the subscription to refresh.
-	 */
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@KafkaNotification(component = Component.DASHBOARD, subject = Subject.DASHBOARD, action = REFRESHSUB,
@@ -58,15 +52,6 @@ public class DashboardResourceImpl implements DashboardResource {
 		return Response.ok().build();
 	}
 
-	/**
-	 * Unsubscribes a user from a dashboard. Since it is not known which instance of the dashboard
-	 * component received this request and which instance of the dashboard component is handling the
-	 * broadcaster for the user, this method triggers an unsubscription Kafka message. All dashboard
-	 * service-instances will receive this message and the one handling  the broadcaster instance for
-	 * the user will remove it.
-	 *
-	 * @param dashboardId the id of the dashboard to unsubscribe the user from.
-	 */
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@KafkaNotification(component = Component.DASHBOARD, subject = Subject.DASHBOARD, action = UNSUB,

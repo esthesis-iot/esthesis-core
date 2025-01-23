@@ -7,6 +7,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Singular;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Data update for the DEVICE_MAP dashboard item type.
+ */
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)

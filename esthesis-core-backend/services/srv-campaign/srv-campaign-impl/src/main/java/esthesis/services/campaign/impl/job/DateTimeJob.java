@@ -18,6 +18,9 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 
+/**
+ * Date/time condition job handler.
+ */
 @Slf4j
 @ApplicationScoped
 public class DateTimeJob implements JobHandler {
@@ -25,6 +28,13 @@ public class DateTimeJob implements JobHandler {
 	@Inject
 	CampaignService campaignService;
 
+	/**
+	 * Handle date/time condition job, optionally pausing the campaign until the date/time condition
+	 * is met.
+	 *
+	 * @param client the job client to use.
+	 * @param job    the job to handle.
+	 */
 	@JobWorker(type = "DateTimeJob")
 	public void handle(JobClient client, ActivatedJob job) {
 		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);

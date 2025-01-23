@@ -3,6 +3,9 @@ package esthesis.service.device.dto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * A representation of the statistics of the devices last seen.
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DevicesLastSeenStatsDTO extends DevicesTotalsStatsDTO {

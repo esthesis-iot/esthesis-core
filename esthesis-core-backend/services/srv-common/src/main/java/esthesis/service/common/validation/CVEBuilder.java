@@ -16,6 +16,13 @@ public class CVEBuilder<D> {
 	// Set of constraint violations.
 	private final Set<ConstraintViolation<D>> violations = new HashSet<>();
 
+	/**
+	 * Helper method to create a single constraint violation.
+	 *
+	 * @param path    the object path of the violation.
+	 * @param message the message of the violation.
+	 * @return the constraint violation.
+	 */
 	private CVImpl<D> createViolation(String path, String message) {
 		CVImpl<D> violation = new CVImpl<>();
 		violation.setMessage(message);

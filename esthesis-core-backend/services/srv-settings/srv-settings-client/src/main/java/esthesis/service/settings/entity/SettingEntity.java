@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.bson.types.ObjectId;
 
+/**
+ * Setting entity.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,26 +22,26 @@ import org.bson.types.ObjectId;
 @MongoEntity(collection = "Setting")
 public class SettingEntity extends BaseEntity {
 
-  private String name;
-  private String value;
+	private String name;
+	private String value;
 
-  public String asString() {
-    return String.valueOf(value);
-  }
+	public String asString() {
+		return String.valueOf(value);
+	}
 
-  public int asInt() {
-    return Integer.parseInt(String.valueOf(value));
-  }
+	public int asInt() {
+		return Integer.parseInt(String.valueOf(value));
+	}
 
-  public long asLong() {
-    return Long.parseLong(String.valueOf(value));
-  }
+	public long asLong() {
+		return Long.parseLong(String.valueOf(value));
+	}
 
-  public boolean asBoolean() {
-    return Boolean.parseBoolean(String.valueOf(value));
-  }
+	public boolean asBoolean() {
+		return Boolean.parseBoolean(String.valueOf(value));
+	}
 
-  public ObjectId asObjectId() {
-    return new ObjectId(asString());
-  }
+	public ObjectId asObjectId() {
+		return new ObjectId(asString());
+	}
 }

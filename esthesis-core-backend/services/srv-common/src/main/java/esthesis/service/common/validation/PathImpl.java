@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
+/**
+ * Implementation of the @{@link Path} interface.
+ */
 public class PathImpl implements Path {
 
 	private final String path;

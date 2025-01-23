@@ -10,6 +10,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Advanced settings job handler.
+ */
 @Slf4j
 @ApplicationScoped
 public class GetAdvancedSettingsJob implements JobHandler {
@@ -17,6 +20,12 @@ public class GetAdvancedSettingsJob implements JobHandler {
 	@Inject
 	CampaignService campaignService;
 
+	/**
+	 * Retrieves advanced settings for a campaign.
+	 *
+	 * @param client the job client to use.
+	 * @param job    the job to handle.
+	 */
 	@Override
 	@JobWorker(type = "GetAdvancedSettingsJob")
 	public void handle(JobClient client, ActivatedJob job) {

@@ -11,6 +11,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * A job handler that checks the remaining devices condition for a campaign.
+ */
 @Slf4j
 @ApplicationScoped
 public class CheckRemainingDevicesJob implements JobHandler {
@@ -21,6 +24,12 @@ public class CheckRemainingDevicesJob implements JobHandler {
 	@Inject
 	CampaignService campaignService;
 
+	/**
+	 * Check if there are any remaining devices to contact.
+	 *
+	 * @param client the job client to use.
+	 * @param job    the job to handle.
+	 */
 	@JobWorker(type = "CheckRemainingDevicesJob")
 	public void handle(JobClient client, ActivatedJob job) {
 		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);

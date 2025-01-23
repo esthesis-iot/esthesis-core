@@ -13,6 +13,10 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Handling all exceptions thrown by the application, optionally logging the error and returning a
+ * custom response to the client.
+ */
 @Slf4j
 @Provider
 @Priority(Integer.MAX_VALUE)

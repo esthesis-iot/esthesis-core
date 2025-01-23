@@ -11,20 +11,23 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.security.KeyPair;
 import lombok.SneakyThrows;
 
+/**
+ * A Jackson deserializer for {@link KeyPair}.
+ */
 public class KeyPairDeserializer extends StdDeserializer<KeyPair> {
 
-  protected KeyPairDeserializer(Class<?> vc) {
-    super(vc);
-  }
+	protected KeyPairDeserializer(Class<?> vc) {
+		super(vc);
+	}
 
-  @SneakyThrows
-  @Override
-  public KeyPair deserialize(JsonParser p, DeserializationContext ctxt) {
-    ObjectCodec oc = p.getCodec();
-    JsonNode node = oc.readTree(p);
-    final String publicKey = node.get(PUBLIC_KEY).asText();
-    final String privateKey = node.get(PRIVATE_KEY).asText();
+	@SneakyThrows
+	@Override
+	public KeyPair deserialize(JsonParser p, DeserializationContext ctxt) {
+		ObjectCodec oc = p.getCodec();
+		JsonNode node = oc.readTree(p);
+		final String publicKey = node.get(PUBLIC_KEY).asText();
+		final String privateKey = node.get(PRIVATE_KEY).asText();
 
-    return new KeyPair(SerDerUtils.getPublicKey(publicKey), SerDerUtils.getPrivateKey(privateKey));
-  }
+		return new KeyPair(SerDerUtils.getPublicKey(publicKey), SerDerUtils.getPrivateKey(privateKey));
+	}
 }

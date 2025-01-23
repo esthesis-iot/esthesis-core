@@ -24,23 +24,49 @@ import org.bson.types.ObjectId;
 @Slf4j
 public abstract class BaseService<D extends BaseEntity> {
 
+	// The repository to use for the entity.
 	@Inject
 	@Getter
 	@SuppressWarnings("CdiInjectionPointsInspection")
 	PanacheMongoRepository<D> repository;
 
+	/**
+	 * Get all entities from the repository.
+	 *
+	 * @param sortField     The field to sort by.
+	 * @param sortDirection The direction to sort in.
+	 * @return A list of all entities.
+	 */
 	protected List<D> getAll(String sortField, Sort.Direction sortDirection) {
 		return repository.listAll(Sort.by(sortField, sortDirection));
 	}
 
+	/**
+	 * Get all entities from the repository.
+	 *
+	 * @return A list of all entities.
+	 */
 	protected List<D> getAll() {
 		return repository.listAll();
 	}
 
+	/**
+	 * Find a random entity from the repository.
+	 *
+	 * @return An optional entity.
+	 */
 	protected Optional<D> findRandom() {
 		return repository.listAll().stream().findAny();
 	}
 
+	/**
+	 * Find the first entity that matches the given column and value.
+	 *
+	 * @param column       The column to match.
+	 * @param value        The value to match.
+	 * @param partialMatch Whether to do a partial match.
+	 * @return The first entity that matches the given column and value.
+	 */
 	@SuppressWarnings("java:S1192")
 	protected D findFirstByColumn(String column, Object value, boolean partialMatch) {
 		if (partialMatch) {
@@ -50,14 +76,39 @@ public abstract class BaseService<D extends BaseEntity> {
 		}
 	}
 
+	/**
+	 * Find the first entity that matches the given column and value.
+	 *
+	 * @param column The column to match.
+	 * @param value  The value to match.
+	 * @return The first entity that matches the given column and value.
+	 */
 	protected D findFirstByColumn(String column, Object value) {
 		return findFirstByColumn(column, value, false);
 	}
 
+	/**
+	 * Find all entities that match the given column and value.
+	 *
+	 * @param column       The column to match.
+	 * @param value        The value to match.
+	 * @param partialMatch Whether to do a partial match.
+	 * @return A list of all entities that match the given column and value.
+	 */
 	protected List<D> findByColumn(String column, Object value, boolean partialMatch) {
 		return findByColumn(column, value, partialMatch, null, null);
 	}
 
+	/**
+	 * Find all entities that match the given column and value, supporting ordering.
+	 *
+	 * @param column       The column to match.
+	 * @param value        The value to match.
+	 * @param partialMatch Whether to do a partial match.
+	 * @param orderColumn  The column to order by.
+	 * @param direction    The direction to order in.
+	 * @return A list of all entities that match the given column and value.
+	 */
 	@SuppressWarnings("java:S1192")
 	protected List<D> findByColumn(String column, Object value, boolean partialMatch,
 		String orderColumn, Sort.Direction direction) {
@@ -76,10 +127,24 @@ public abstract class BaseService<D extends BaseEntity> {
 		}
 	}
 
+	/**
+	 * Find all entities that do not have a value set for the given column.
+	 *
+	 * @param column The column to match.
+	 * @return A list of all entities without value set for the given column.
+	 */
 	protected List<D> findByColumnNull(String column) {
 		return repository.find(column + " is null").list();
 	}
 
+	/**
+	 * Find all entities that have a value set for the given column in a list of values.
+	 *
+	 * @param column       The column to match.
+	 * @param values       The values to match.
+	 * @param partialMatch Whether to do a partial match.
+	 * @return A list of all entities that have a value set for the given column.
+	 */
 	protected List<D> findByColumnIn(String column, List<String> values, boolean partialMatch) {
 		if (partialMatch) {
 			return repository.find(column + " like ?1", String.join("|", values)).list();
@@ -88,22 +153,54 @@ public abstract class BaseService<D extends BaseEntity> {
 		}
 	}
 
+	/**
+	 * Find all entities that have a value set for the given column.
+	 *
+	 * @param column The column to match.
+	 * @param value  The value to match.
+	 * @return A list of all entities that have a value set for the given column.
+	 */
 	protected List<D> findByColumn(String column, Object value) {
 		return findByColumn(column, value, false);
 	}
 
+	/**
+	 * Count the number of entities that match the given column and value.
+	 *
+	 * @param column The column to match.
+	 * @param value  The value to match.
+	 * @return The number of entities that match the given column and value.
+	 */
 	protected long countByColumn(String column, Object value) {
 		return repository.count(column + " = ?1", value);
 	}
 
+	/**
+	 * Counts all entities.
+	 *
+	 * @return The total number of entities.
+	 */
 	protected long countAll() {
 		return repository.count();
 	}
 
+	/**
+	 * Return all entities, supporting paging.
+	 *
+	 * @param pageable Representation of page, size, and sort search parameters.
+	 * @return A page of entities that match the given column and value.
+	 */
 	protected Page<D> find(Pageable pageable) {
 		return find(pageable, false);
 	}
 
+	/**
+	 * Find all entities, supporting paging and partial matching.
+	 *
+	 * @param pageable     Representation of page, size, and sort search parameters.
+	 * @param partialMatch Whether to do a partial match.
+	 * @return A page of entities that match the given column and value.
+	 */
 	protected Page<D> find(Pageable pageable, boolean partialMatch) {
 		// Create a wrapper for the results.
 		Page<D> quarkusPage = new Page<>();
@@ -142,6 +239,13 @@ public abstract class BaseService<D extends BaseEntity> {
 		return quarkusPage;
 	}
 
+	/**
+	 * Save the given entity. If the entity has an ID, it will be updated, otherwise it will be
+	 * created.
+	 *
+	 * @param entity The entity to save.
+	 * @return The saved entity.
+	 */
 	@Transactional
 	protected D save(D entity) {
 		if (entity.getId() != null) {
@@ -157,28 +261,62 @@ public abstract class BaseService<D extends BaseEntity> {
 		return repository.findById(entity.getId());
 	}
 
+	/**
+	 * Find an entity by its ID.
+	 *
+	 * @param id The ID of the entity to find.
+	 * @return The entity with the given ID.
+	 */
 	protected D findById(String id) {
 		return repository.findById(new ObjectId(id));
 	}
 
+	/**
+	 * Find an entity by its ID, returning an optional.
+	 *
+	 * @param id The ID of the entity to find.
+	 * @return The entity with the given ID.
+	 */
 	protected Optional<D> findByIdOptional(String id) {
 		return repository.findByIdOptional(new ObjectId(id));
 	}
 
+	/**
+	 * Find an entity by its ID.
+	 *
+	 * @param id The ID of the entity to find.
+	 * @return The entity with the given ID.
+	 */
 	protected D findById(ObjectId id) {
 		return repository.findById(id);
 	}
 
+	/**
+	 * Delete an entity by its ID.
+	 *
+	 * @param id The ID of the entity to delete.
+	 * @return Whether the entity was deleted.
+	 */
 	@Transactional
-	protected boolean deleteById(String deviceId) {
-		return repository.deleteById(new ObjectId(deviceId));
+	protected boolean deleteById(String id) {
+		return repository.deleteById(new ObjectId(id));
 	}
 
+	/**
+	 * Delete an entity by its ID.
+	 *
+	 * @param entity The entity to delete.
+	 */
 	@Transactional
 	protected void delete(D entity) {
 		repository.delete(entity);
 	}
 
+	/**
+	 * Delete all entities.
+	 *
+	 * @return The number of entities deleted.
+	 */
 	@Transactional
 	protected long deleteAll() {
 		return repository.deleteAll();

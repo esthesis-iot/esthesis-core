@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+/**
+ * A representation of Docker tags;
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,6 +17,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DockerTagsDTO {
 
-  private int count;
-  private List<DockerTagDTO> results;
+	private int count;
+	private List<DockerTagDTO> results;
 }

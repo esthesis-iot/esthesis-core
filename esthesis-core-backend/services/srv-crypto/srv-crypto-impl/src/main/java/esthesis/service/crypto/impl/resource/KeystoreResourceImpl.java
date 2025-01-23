@@ -19,6 +19,9 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
+/**
+ * Implementation of the @{@link KeystoreResource} interface.
+ */
 public class KeystoreResourceImpl implements KeystoreResource {
 
 	@Inject

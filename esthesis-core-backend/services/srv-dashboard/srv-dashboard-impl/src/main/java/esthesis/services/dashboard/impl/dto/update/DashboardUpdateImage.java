@@ -6,6 +6,9 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Data update for the IMAGE dashboard item type.
+ */
 @Data
 @SuperBuilder
 @ToString(callSuper = true)

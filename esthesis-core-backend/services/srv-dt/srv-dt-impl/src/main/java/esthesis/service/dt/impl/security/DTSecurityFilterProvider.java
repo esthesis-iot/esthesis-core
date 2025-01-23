@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * A custom security filter to secure the DT service using application tokens.
+ */
 @Slf4j
 @Provider
 @DTSecurityFilter

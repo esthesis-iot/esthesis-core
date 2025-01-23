@@ -26,6 +26,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Sevrice for managing dashboards.
+ */
 @Slf4j
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -40,6 +43,11 @@ public class DashboardService extends BaseService<DashboardEntity> {
 	@RestClient
 	AuditSystemResource auditSystemResource;
 
+	/**
+	 * Finds the current user.
+	 *
+	 * @return The current user.
+	 */
 	private UserEntity findCurrentUser() {
 		String username = securityIdentity.getPrincipal().getName();
 		UserEntity user = securityResource.findUserByUsername(username);
@@ -50,6 +58,13 @@ public class DashboardService extends BaseService<DashboardEntity> {
 		return user;
 	}
 
+	/**
+	 * Handles the saving of a dashboard, to allow different permissions for new and updated
+	 * dashboards.
+	 *
+	 * @param dashboardEntity The dashboard to save.
+	 * @return The saved dashboard.
+	 */
 	private DashboardEntity saveHandler(DashboardEntity dashboardEntity) {
 		UserEntity user = findCurrentUser();
 
@@ -72,12 +87,24 @@ public class DashboardService extends BaseService<DashboardEntity> {
 		return super.save(dashboardEntity);
 	}
 
+	/**
+	 * Saves a new dashboard.
+	 *
+	 * @param dashboardEntity The dashboard to save.
+	 * @return The saved dashboard.
+	 */
 	@Transactional
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = DASHBOARD, operation = CREATE)
 	public DashboardEntity saveNew(DashboardEntity dashboardEntity) {
 		return saveHandler(dashboardEntity);
 	}
 
+	/**
+	 * Updates an existing dashboard.
+	 *
+	 * @param dashboardEntity The dashboard to update.
+	 * @return The updated dashboard.
+	 */
 	@Transactional
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = DASHBOARD, operation = WRITE)
 	public DashboardEntity saveUpdate(DashboardEntity dashboardEntity) {
@@ -95,6 +122,13 @@ public class DashboardService extends BaseService<DashboardEntity> {
 	@ErnPermission(category = DASHBOARD, operation = DELETE)
 	public boolean deleteById(String id) {
 		log.debug("Deleting dashboard with id '{}'.", id);
+
+		// Check if the user is the owner of this dashboard before allowing deletion.
+		DashboardEntity dashboard = findById(id);
+		if (!dashboard.getOwnerId().equals(findCurrentUser().getId())) {
+			throw new QAuthorisationException("User '{}' is not the owner of the shared dashboard '{}'.",
+				securityIdentity.getPrincipal().getName(), dashboard.getName());
+		}
 
 		// If this dashboard is the home dashboard, set the home dashboard to the next dashboard in the
 		// list of dashboards.

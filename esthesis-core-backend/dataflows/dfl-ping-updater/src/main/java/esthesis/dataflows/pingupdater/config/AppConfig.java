@@ -4,21 +4,24 @@ import io.quarkus.runtime.annotations.StaticInitSafe;
 import io.smallrye.config.ConfigMapping;
 import java.util.Optional;
 
+/**
+ * Configuration for the Ping Updater DFL.
+ */
 @StaticInitSafe
 @ConfigMapping(prefix = "esthesis.dfl")
 public interface AppConfig {
 
-  // The name of the database to update.
-  String esthesisDbName();
+	// The name of the database to update.
+	String esthesisDbName();
 
-  // The Kafka consumer group id.
-  Optional<String> kafkaConsumerGroup();
+	// The Kafka consumer group id.
+	Optional<String> kafkaConsumerGroup();
 
-  // The Kafka topic to consume ping messages from.
-  String kafkaPingTopic();
+	// The Kafka topic to consume ping messages from.
+	String kafkaPingTopic();
 
-  // The URL of the Kafka cluster to connect to.
-  String kafkaClusterUrl();
+	// The URL of the Kafka cluster to connect to.
+	String kafkaClusterUrl();
 
 	// The security protocol to use when connecting to the Kafka cluster. If empty, no security
 	// protocol will be setup.
@@ -32,12 +35,12 @@ public interface AppConfig {
 	// configuration will be setup.
 	Optional<String> kafkaJaasConfig();
 
-  // The number of messages that can be queued for processing.
-  int concurrencyQueueSize();
+	// The number of messages that can be queued for processing.
+	int concurrencyQueueSize();
 
-  // How often the queue is polled for new messages (in milliseconds).
-  int concurrencyPollTimeout();
+	// How often the queue is polled for new messages (in milliseconds).
+	int concurrencyPollTimeout();
 
-  // The maximum number of concurrent consumers.
-  int concurrencyConsumers();
+	// The maximum number of concurrent consumers.
+	int concurrencyConsumers();
 }

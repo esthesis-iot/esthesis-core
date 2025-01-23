@@ -10,6 +10,9 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Implementation of the {@link AuditSystemResource} interface.
+ */
 @ApplicationScoped
 @RequiredArgsConstructor
 public class AuditSystemResourceImpl implements AuditSystemResource {

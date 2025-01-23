@@ -5,6 +5,11 @@ import jakarta.validation.Path;
 import jakarta.validation.metadata.ConstraintDescriptor;
 import lombok.Data;
 
+/**
+ * Implementation of the @{@link ConstraintViolation} interface.
+ *
+ * @param <D> the type of the object that is the root of the object graph.
+ */
 @Data
 public class CVImpl<D> implements ConstraintViolation<D> {
 

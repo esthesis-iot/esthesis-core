@@ -17,6 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
 
+/**
+ * Handles notifications from Kafka.
+ */
 @Slf4j
 @ApplicationScoped
 public class NotificationsHandler {

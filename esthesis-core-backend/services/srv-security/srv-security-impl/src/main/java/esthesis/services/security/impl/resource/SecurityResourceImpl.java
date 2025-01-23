@@ -23,6 +23,9 @@ import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 
+/**
+ * Implementation of {@link SecurityResource}.
+ */
 public class SecurityResourceImpl implements SecurityResource {
 
 	@Inject

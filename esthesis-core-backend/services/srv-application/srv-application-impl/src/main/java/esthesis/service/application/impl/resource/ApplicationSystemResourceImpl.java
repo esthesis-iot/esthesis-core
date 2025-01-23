@@ -6,6 +6,9 @@ import esthesis.service.application.resource.ApplicationSystemResource;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 
+/**
+ * Implementation of the {@link ApplicationSystemResource} interface.
+ */
 public class ApplicationSystemResourceImpl implements ApplicationSystemResource {
 
 	@Inject

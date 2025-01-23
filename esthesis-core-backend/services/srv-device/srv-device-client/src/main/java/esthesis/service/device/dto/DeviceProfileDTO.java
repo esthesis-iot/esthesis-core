@@ -8,12 +8,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+/**
+ * A representation of a device profile section.
+ */
 @Data
 @NoArgsConstructor
 @RegisterForReflection
 @Accessors(chain = true)
 public class DeviceProfileDTO implements Serializable {
 
-  private List<DeviceAttributeEntity> attributes;
-  private List<DeviceProfileFieldDataDTO> fields;
+	private List<DeviceAttributeEntity> attributes;
+	private List<DeviceProfileFieldDataDTO> fields;
 }

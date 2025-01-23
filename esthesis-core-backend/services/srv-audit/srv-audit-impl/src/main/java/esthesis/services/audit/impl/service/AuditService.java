@@ -17,6 +17,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Provides management functionality for audit entries.
+ */
 @Slf4j
 @RequiredArgsConstructor
 @ApplicationScoped

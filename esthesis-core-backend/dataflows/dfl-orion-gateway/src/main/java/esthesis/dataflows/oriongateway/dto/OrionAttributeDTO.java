@@ -6,14 +6,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO for representing an Orion attribute.
+ */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrionAttributeDTO {
 
-  private String name;
-  private String value;
-  private ValueType type;
-  private boolean maintainedByEsthesis;
+	private String name;
+	private String value;
+	private ValueType type;
+	private boolean maintainedByEsthesis;
 }

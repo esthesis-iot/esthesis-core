@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+/**
+ * A representation of a campaign member (device or tag).
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -14,12 +17,12 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class CampaignMemberDTO {
 
-  // The identifier of this member, either a device hardware id or a tag name.
-  private String identifier;
+	// The identifier of this member, either a device hardware id or a tag name.
+	private String identifier;
 
-  // The group this member belongs to.
-  private int group;
+	// The group this member belongs to.
+	private int group;
 
-  // The type of this member, either a device or a tag.
-  private AppConstants.Campaign.Member.Type type;
+	// The type of this member, either a device or a tag.
+	private AppConstants.Campaign.Member.Type type;
 }

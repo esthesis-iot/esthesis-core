@@ -1,16 +1,20 @@
 package esthesis.dataflows.oriongateway.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.Instant;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
-import java.util.List;
+/**
+ * DTO for representing an Orion Keyrock access token.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrionKeyrockAccessTokenDTO {
+
 	@JsonProperty("access_token")
 	private String accessToken;
 

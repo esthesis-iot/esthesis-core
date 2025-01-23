@@ -23,6 +23,9 @@ import org.apache.camel.component.paho.PahoConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+/**
+ * Utility class for processing messages received from the MQTT broker.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -37,6 +40,12 @@ public class DflMqttClientService {
 	@ConfigProperty(name = "quarkus.application.name")
 	String appName;
 
+	/**
+	 * Determines the type of message received based on the topic that the message was received on.
+	 *
+	 * @param exchange The Camel exchange.
+	 * @return The type of message received.
+	 */
 	@SuppressWarnings("java:S3655")
 	private MessageTypeEnum getMessageType(Exchange exchange) {
 		String topic = exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC, String.class);
@@ -131,6 +140,11 @@ public class DflMqttClientService {
 			avroUtils.parseCommandReplyLP(commandReply, getHardwareId(exchange), appName, topic));
 	}
 
+	/**
+	 * Converts an {@link EsthesisCommandRequestMessage} to an ELP string.
+	 *
+	 * @param exchange The Camel exchange with the Avro message.
+	 */
 	public void commandRequestToLineProtocol(Exchange exchange) {
 		EsthesisCommandRequestMessage msg = exchange.getIn()
 			.getBody(EsthesisCommandRequestMessage.class);

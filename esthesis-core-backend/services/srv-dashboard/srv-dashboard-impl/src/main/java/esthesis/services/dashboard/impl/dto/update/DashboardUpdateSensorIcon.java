@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Data update for the SENSOR_ICON dashboard item type.
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder

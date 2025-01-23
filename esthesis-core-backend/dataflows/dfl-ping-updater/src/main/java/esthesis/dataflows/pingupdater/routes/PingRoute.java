@@ -13,6 +13,9 @@ import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+/**
+ * Camel routes that listen to a Kafka topic, process a message, and update the MongoDB database.
+ */
 @Slf4j
 @ApplicationScoped
 public class PingRoute extends RouteBuilder {
@@ -29,6 +32,9 @@ public class PingRoute extends RouteBuilder {
 	@ConfigProperty(name = "quarkus.application.name")
 	String appName;
 
+	/**
+	 * Configures the Camel routes.
+	 */
 	@Override
 	@SuppressWarnings("java:S2629")
 	public void configure() {

@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.bson.types.ObjectId;
 
+/**
+ * The CA entity.
+ */
 @Data
 @NoArgsConstructor
 @RegisterForReflection

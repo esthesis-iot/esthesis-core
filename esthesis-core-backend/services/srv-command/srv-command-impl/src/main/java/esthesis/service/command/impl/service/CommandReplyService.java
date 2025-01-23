@@ -9,11 +9,20 @@ import java.time.Instant;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Service for managing command replies.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
 class CommandReplyService extends BaseService<CommandReplyEntity> {
 
+	/**
+	 * Finds all replies for the given correlation ID.
+	 *
+	 * @param correlationId The correlation ID.
+	 * @return The replies.
+	 */
 	public List<CommandReplyEntity> findByCorrelationId(String correlationId) {
 		return findByColumn("correlationId", correlationId);
 	}
@@ -34,8 +43,8 @@ class CommandReplyService extends BaseService<CommandReplyEntity> {
 	}
 
 	@Override
-	public boolean deleteById(String deviceId) {
-		return super.deleteById(deviceId);
+	public boolean deleteById(String id) {
+		return super.deleteById(id);
 	}
 
 	@Override

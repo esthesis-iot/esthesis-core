@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+/**
+ * Policy entity
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +23,7 @@ import lombok.experimental.Accessors;
 @MongoEntity(collection = "Policy")
 public class PolicyEntity extends BaseEntity {
 
-  private String name;
-  private String description;
-  private String rule;
+	private String name;
+	private String description;
+	private String rule;
 }

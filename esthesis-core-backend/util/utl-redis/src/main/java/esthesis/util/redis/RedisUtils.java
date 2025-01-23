@@ -22,6 +22,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 
+/**
+ * A utility class that provides a set of methods to interact with Redis.
+ */
 @Slf4j
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -34,6 +37,9 @@ public class RedisUtils {
 	private KeyCommands<String> keyCommand;
 	private ValueCommands<String, Long> countCommands;
 
+	/**
+	 * The types of keys kept in Redis.
+	 */
 	public enum KeyType {
 		// Esthesis Device Measurement. Keep the latest value of each measurement for each device.
 		ESTHESIS_DM,
@@ -171,18 +177,45 @@ public class RedisUtils {
 		}
 	}
 
+	/**
+	 * Finds keys starting with a specific prefix.
+	 *
+	 * @param prefix The prefix to search for.
+	 * @return Returns a list of keys that start with the given prefix.
+	 */
 	public List<String> findKeysStartingWith(String prefix) {
 		return keyCommand.keys(prefix + "*");
 	}
 
+	/**
+	 * Checks if there are keys starting with a specific prefix.
+	 *
+	 * @param prefix The prefix to search for.
+	 * @return Returns true if there are keys starting with the given prefix.
+	 */
 	public boolean isKeysStartingWith(String prefix) {
 		return !keyCommand.keys(prefix + "*").isEmpty();
 	}
 
+	/**
+	 * Checks if a key exists in the cache.
+	 *
+	 * @param keyType The type of this key (the key name will be prefixed with this value).
+	 * @param key     The key to check.
+	 * @return Returns true if the key exists.
+	 */
 	public boolean keyExists(KeyType keyType, String key) {
 		return keyCommand.exists(keyType + "." + key);
 	}
 
+	/**
+	 * Increments a counter kept in the cache.
+	 *
+	 * @param keyType         The type of this key (the key name will be prefixed with this value).
+	 * @param key             The key to increment.
+	 * @param expireInSeconds The number of seconds after which the key will expire.
+	 * @return Returns the new value of the counter.
+	 */
 	public long incrCounter(KeyType keyType, String key, long expireInSeconds) {
 		long val = countCommands.incrby(keyType + "." + key, 1);
 		if (expireInSeconds > 0) {
@@ -192,6 +225,12 @@ public class RedisUtils {
 		return val;
 	}
 
+	/**
+	 * Resets a counter kept in the cache.
+	 *
+	 * @param keyType The type of this key (the key name will be prefixed with this value).
+	 * @param key     The key to reset.
+	 */
 	public void resetCounter(KeyType keyType, String key) {
 		countCommands.set(keyType + "." + key, 0L);
 	}

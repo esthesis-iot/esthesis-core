@@ -27,6 +27,9 @@ import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Message;
 
+/**
+ * Interceptor for Kafka notifications.
+ */
 @Slf4j
 @Interceptor
 @Priority(Interceptor.Priority.APPLICATION)

@@ -84,7 +84,7 @@ public class DashboardUpdateJob {
 		if (update != null) {
 			try {
 				String json = objectMapper.writeValueAsString(update);
-				String jsonHash = DigestUtils.md5Hex(json);
+				String jsonHash = DigestUtils.md5Hex(json);  //NOSONAR
 				if (!jsonHash.equals(updateJobCache.getIfPresent(itemId))) {
 					updateJobCache.put(itemId, jsonHash);
 					sseBroadcaster.broadcast(sse.newEvent(json));

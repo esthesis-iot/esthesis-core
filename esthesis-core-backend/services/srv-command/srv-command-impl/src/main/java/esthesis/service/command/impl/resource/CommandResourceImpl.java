@@ -3,10 +3,10 @@ package esthesis.service.command.impl.resource;
 import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.Security.Category;
 import esthesis.core.common.AppConstants.Security.Operation;
-import esthesis.service.command.entity.CommandReplyEntity;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
+import esthesis.service.command.entity.CommandReplyEntity;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.command.impl.service.CommandService;
 import esthesis.service.command.resource.CommandResource;
@@ -24,6 +24,9 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
 
+/**
+ * Implementation of the {@link CommandResource} interface.
+ */
 @Slf4j
 public class CommandResourceImpl implements CommandResource {
 

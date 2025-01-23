@@ -10,10 +10,13 @@ import java.time.Duration;
 import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Service for managing command requests.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
-class  CommandRequestService extends BaseService<CommandRequestEntity> {
+class CommandRequestService extends BaseService<CommandRequestEntity> {
 
 	/**
 	 * Purges all commands older than the given duration.

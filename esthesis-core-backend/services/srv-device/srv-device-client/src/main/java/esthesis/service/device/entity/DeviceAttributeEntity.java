@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.bson.types.ObjectId;
 
+/**
+ * An entity representing device attributes.
+ */
 @Data
 @Builder
 @NoArgsConstructor

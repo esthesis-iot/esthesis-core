@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+/**
+ * User entity.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,13 +24,13 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 public class UserEntity extends BaseEntity {
 
-  private String username;
-  private String email;
-  private String firstName;
-  private String lastName;
-  private String description;
-  // References to group IDs.
-  private List<String> groups;
-  // Custom policies expressed as string.
-  private List<String> policies;
+	private String username;
+	private String email;
+	private String firstName;
+	private String lastName;
+	private String description;
+	// References to group IDs.
+	private List<String> groups;
+	// Custom policies expressed as string.
+	private List<String> policies;
 }

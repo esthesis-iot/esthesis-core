@@ -9,6 +9,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * A job handler that creates a timer expression for a campaign, optionally pausing a campaign.
+ */
 @Slf4j
 @ApplicationScoped
 public class CreateTimerExpressionJob implements JobHandler {
@@ -16,6 +19,12 @@ public class CreateTimerExpressionJob implements JobHandler {
 	@Inject
 	CampaignService campaignService;
 
+	/**
+	 * Create a timer expression for a campaign.
+	 *
+	 * @param client the job client to use.
+	 * @param job    the job to handle.
+	 */
 	@JobWorker(type = "CreateTimerExpressionJob")
 	public void handle(JobClient client, ActivatedJob job) {
 		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);

@@ -21,6 +21,9 @@ import org.apache.camel.Exchange;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+/**
+ * Utilities for writing data to the RDBMS.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -32,6 +35,12 @@ public class RdbmsService {
 	@Inject
 	AgroalDataSource dataSource;
 
+	/**
+	 * Get the column names when using the multi-table update strategy.
+	 *
+	 * @param esthesisMessage The message to get the columns for.
+	 * @return The columns for the multi-table strategy.
+	 */
 	private String getColumnsForMultiTableStrategy(
 		EsthesisDataMessage esthesisMessage) {
 		return
@@ -41,6 +50,12 @@ public class RdbmsService {
 					.map(ValueData::getName).collect(Collectors.joining(", "));
 	}
 
+	/**
+	 * Get the values when using the multi-table update strategy.
+	 *
+	 * @param esthesisMessage The message to get the values for.
+	 * @return The values for the multi-table strategy.
+	 */
 	private String getValuesForMultiTableStrategy(
 		EsthesisDataMessage esthesisMessage) {
 		StringBuilder vals = new StringBuilder("?, ?, ");
@@ -54,6 +69,12 @@ public class RdbmsService {
 		return vals.toString();
 	}
 
+	/**
+	 * Insert data into the database using the multi-table strategy.
+	 *
+	 * @param esthesisMessage The message to insert.
+	 * @throws SQLException If an error occurs while inserting the data.
+	 */
 	@SuppressWarnings({"java:S2695", "java:S2077"})
 	private void multi(EsthesisDataMessage esthesisMessage)
 	throws SQLException {
@@ -106,6 +127,12 @@ public class RdbmsService {
 		}
 	}
 
+	/**
+	 * Insert data into the database using the single-table strategy.
+	 *
+	 * @param esthesisMessage The message to insert.
+	 * @throws SQLException If an error occurs while inserting the data.
+	 */
 	@SuppressWarnings("java:S2077")
 	private void single(EsthesisDataMessage esthesisMessage)
 	throws SQLException {
@@ -136,6 +163,12 @@ public class RdbmsService {
 		}
 	}
 
+	/**
+	 * Processes a message from the Camel exchange.
+	 *
+	 * @param exchange The exchange to process the message from.
+	 * @throws SQLException If an error occurs while processing the exchange.
+	 */
 	public void process(Exchange exchange) throws SQLException {
 		// Get the message from the exchange.
 		EsthesisDataMessage esthesisMessage = exchange.getIn().getBody(EsthesisDataMessage.class);

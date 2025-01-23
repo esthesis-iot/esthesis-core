@@ -82,6 +82,11 @@ public class BroadcasterService {
 		}
 	}
 
+	/**
+	 * Refreshes a subscription to keep the underlying job alive.
+	 *
+	 * @param subscriptionId the id of the subscription sent by the client.
+	 */
 	private void refreshSub(String subscriptionId) {
 		log.debug("Refreshing subscription '{}'.", subscriptionId);
 		if (scheduler.getScheduledJob(subscriptionId) != null) {

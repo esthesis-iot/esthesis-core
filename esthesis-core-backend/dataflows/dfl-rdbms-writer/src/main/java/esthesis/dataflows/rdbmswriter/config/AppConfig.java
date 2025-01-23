@@ -5,52 +5,55 @@ import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithDefault;
 import java.util.Optional;
 
+/**
+ * Configuration for the RDBMS writer DFL.
+ */
 @StaticInitSafe
 @ConfigMapping(prefix = "esthesis.dfl")
 public interface AppConfig {
 
-  enum STORAGE_STRATEGY {
-    SINGLE, MULTI
-  }
+	enum STORAGE_STRATEGY {
+		SINGLE, MULTI
+	}
 
-  String dbKind();
+	String dbKind();
 
-  String dbJdbcUrl();
+	String dbJdbcUrl();
 
-  STORAGE_STRATEGY dbStorageStrategy();
+	STORAGE_STRATEGY dbStorageStrategy();
 
-  @WithDefault("esthesis_key")
-  String dbStorageStrategySingleKeyName();
+	@WithDefault("esthesis_key")
+	String dbStorageStrategySingleKeyName();
 
-  @WithDefault("esthesis_value")
-  String dbStorageStrategySingleValueName();
+	@WithDefault("esthesis_value")
+	String dbStorageStrategySingleValueName();
 
-  @WithDefault("esthesis_timestamp")
-  String dbStorageStrategySingleTimestampName();
+	@WithDefault("esthesis_timestamp")
+	String dbStorageStrategySingleTimestampName();
 
-  @WithDefault("esthesis_hardware_id")
-  String dbStorageStrategySingleHardwareIdName();
+	@WithDefault("esthesis_hardware_id")
+	String dbStorageStrategySingleHardwareIdName();
 
-  @WithDefault("measurements")
-  String dbStorageStrategySingleTableName();
+	@WithDefault("measurements")
+	String dbStorageStrategySingleTableName();
 
-  @WithDefault("esthesis_timestamp")
-  String dbStorageStrategyMultiTimestampName();
+	@WithDefault("esthesis_timestamp")
+	String dbStorageStrategyMultiTimestampName();
 
-  @WithDefault("esthesis_hardware_id")
-  String dbStorageStrategyMultiHardwareIdName();
+	@WithDefault("esthesis_hardware_id")
+	String dbStorageStrategyMultiHardwareIdName();
 
-  // The Kafka consumer group id.
-  Optional<String> kafkaConsumerGroup();
+	// The Kafka consumer group id.
+	Optional<String> kafkaConsumerGroup();
 
-  // The Kafka topic to consume telemetry messages from.
-  Optional<String> kafkaTelemetryTopic();
+	// The Kafka topic to consume telemetry messages from.
+	Optional<String> kafkaTelemetryTopic();
 
-  // The Kafka topic to consume metadata messages from.
-  Optional<String> kafkaMetadataTopic();
+	// The Kafka topic to consume metadata messages from.
+	Optional<String> kafkaMetadataTopic();
 
-  // The URL of the Kafka cluster to connect to.
-  String kafkaClusterUrl();
+	// The URL of the Kafka cluster to connect to.
+	String kafkaClusterUrl();
 
 	// The security protocol to use when connecting to the Kafka cluster. If empty, no security
 	// protocol will be setup.

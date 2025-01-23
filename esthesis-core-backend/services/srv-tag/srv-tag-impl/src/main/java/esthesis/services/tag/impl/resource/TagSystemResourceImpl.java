@@ -8,6 +8,9 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import java.util.List;
 
+/**
+ * Implementation of the {@link TagSystemResource} interface.
+ */
 public class TagSystemResourceImpl implements TagSystemResource {
 
 	@Inject

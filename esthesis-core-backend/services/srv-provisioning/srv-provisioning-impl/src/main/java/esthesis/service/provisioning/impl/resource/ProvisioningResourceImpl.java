@@ -22,6 +22,9 @@ import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
+/**
+ * Implementation of {@link ProvisioningResource}.
+ */
 public class ProvisioningResourceImpl implements ProvisioningResource {
 
 	@Inject

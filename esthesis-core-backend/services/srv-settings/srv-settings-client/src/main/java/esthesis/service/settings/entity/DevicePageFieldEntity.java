@@ -10,6 +10,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+/**
+ * DevicePageField entity.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

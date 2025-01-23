@@ -22,6 +22,9 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Implementation of the @{@link TagResource} interface.
+ */
 @RequiredArgsConstructor
 public class TagResourceImpl implements TagResource {
 

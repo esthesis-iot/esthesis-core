@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serializer;
 
+/**
+ * Serializer for esthesis data message. See esthesis-common/src/main/avro.
+ */
 @Slf4j
 public class EsthesisDataMessageSerializer implements Serializer<EsthesisDataMessage> {
 

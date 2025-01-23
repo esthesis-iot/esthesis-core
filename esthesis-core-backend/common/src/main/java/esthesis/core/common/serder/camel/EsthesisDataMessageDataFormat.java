@@ -7,6 +7,9 @@ import org.apache.camel.Exchange;
 import org.apache.camel.spi.DataFormat;
 import org.apache.camel.support.service.ServiceSupport;
 
+/**
+ * Serializer/Deserializer for an esthesis data message. See esthesis-common/src/main/avro.
+ */
 public class EsthesisDataMessageDataFormat extends ServiceSupport implements DataFormat {
 
 	@Override

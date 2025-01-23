@@ -1,6 +1,12 @@
 package esthesis.services.campaign.impl.dto;
 
+/**
+ * A collection of validation messages for error handling.
+ */
 public class ValidationMessages {
+
+	private ValidationMessages() {
+	}
 
 	public static final String POSITIVE_INTEGER = "Must be a positive integer";
 	public static final String STAGE_REQUIRED = "Stage is required";

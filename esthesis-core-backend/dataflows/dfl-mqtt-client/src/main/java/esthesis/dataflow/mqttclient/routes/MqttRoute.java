@@ -28,6 +28,9 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jsse.provider.BouncyCastleJsseProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+/**
+ * Camel routes for processing MQTT messages and outputting them to Kafka topic.
+ */
 @Slf4j
 @ApplicationScoped
 public class MqttRoute extends RouteBuilder {
