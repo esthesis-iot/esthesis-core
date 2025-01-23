@@ -21,7 +21,7 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
   sharedDashboards: DashboardDto[] = [];
   masonryOptions: NgxMasonryOptions = {
     columnWidth: this.appConstants.DASHBOARD.DEFAULTS.COLUMN_WIDTH,
-    horizontalOrder: true
+    // horizontalOrder: true
   };
   dashboardLoading = true;
   lastEventDate?: Date;
