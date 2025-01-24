@@ -18,17 +18,19 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.jboss.resteasy.reactive.multipart.FileUpload;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static esthesis.core.common.AppConstants.Provisioning.*;
+import static esthesis.core.common.AppConstants.Provisioning.Type.EXTERNAL;
+import static esthesis.core.common.AppConstants.Provisioning.Type.INTERNAL;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -60,30 +62,18 @@ class ProvisioningServiceTest {
 	@InjectMock
 	GridFSService gridFSService;
 
-	int initialProvisioningPackageSizeInDB = 0;
-	int initialInternalProvisioningPackageSizeInDB = 0;
-	int inititalExternalProvisioningPackageSizeInDB = 0;
-
 
 	@SneakyThrows
 	@BeforeEach
 	void setUp() {
+		// Clear the test database before each test.
 		testHelper.clearDatabase();
-		testHelper.createProvisioningPackages();
 
-		initialProvisioningPackageSizeInDB = testHelper.findAllProvisioningPackages().size();
-		initialInternalProvisioningPackageSizeInDB = testHelper.findAllInternalProvisioningPackages().size();
-		inititalExternalProvisioningPackageSizeInDB = testHelper.findAllExternalProvisioningPackages().size();
-		log.info("Initial provisioning package size in DB: {}", initialProvisioningPackageSizeInDB);
-		log.info("Initial internal provisioning package size in DB: {}", initialInternalProvisioningPackageSizeInDB);
-		log.info("Initial external provisioning package size in DB: {}", inititalExternalProvisioningPackageSizeInDB);
-
+		// Mock semantic versioning as enabled.
 		when(settingsResource.findByName(NamedSetting.DEVICE_PROVISIONING_SEMVER))
 			.thenReturn(new SettingEntity(NamedSetting.DEVICE_PROVISIONING_SEMVER.name(), "true"));
 
-		when(deviceResource.findByHardwareIds(anyString(), anyBoolean()))
-			.thenReturn(List.of(testHelper.makeDeviceEntity("testHardwareId")));
-
+		// Mock GridFS operations save, delete and download.
 		when(gridFSService.saveBinary(any(GridFSDTO.class))).thenReturn(new ObjectId());
 		doNothing().when(gridFSService).deleteBinary(any(GridFSDTO.class));
 		when(gridFSService.downloadBinary(any(GridFSDTO.class))).thenReturn(Uni.createFrom().item(new byte[0]));
@@ -93,27 +83,21 @@ class ProvisioningServiceTest {
 	@SneakyThrows
 	@Test
 	void saveNew() {
-		// Arrange
-		ProvisioningPackageEntity provisioningPackage =
-			testHelper.createInternalProvisioningPackage("test-provisioning-package", "1.0.1");
-		FileUpload fileUpload = testHelper.createFileUpload();
+		// Perform a save of a new provisioning package.
+		String id = provisioningService.saveNew(
+			testHelper.createProvisioningPackageEntity(
+				"test-provisioning-package",
+				"1.0.1",
+				"1.0.0",
+				true,
+				List.of("test-tag"),
+				INTERNAL),
+			testHelper.createFileUpload()).getId().toHexString();
 
-		// Act
-		ProvisioningPackageEntity newProvisioningPackage = provisioningService.saveNew(provisioningPackage, fileUpload);
+		// Assert entity was persisted.
+		assertNotNull(provisioningService.findById(id));
 
-		// Assert
-		ProvisioningPackageEntity savedProvisioningPackage =
-			testHelper.findProvisioningPackage(newProvisioningPackage.getId().toString());
-
-
-		assertNotNull(savedProvisioningPackage);
-		assertEquals("test-provisioning-package", savedProvisioningPackage.getName());
-		assertEquals("1.0.1", savedProvisioningPackage.getVersion());
-		assertEquals(
-			initialProvisioningPackageSizeInDB + 1,
-			testHelper.findAllProvisioningPackages().size(),
-			"Database size should increase by 1 after saving a new provisioning package.");
-
+		// Assert GridFS save operation was called.
 		verify(gridFSService, times(1)).saveBinary(any(GridFSDTO.class));
 
 	}
@@ -121,92 +105,187 @@ class ProvisioningServiceTest {
 	@SneakyThrows
 	@Test
 	void saveUpdate() {
-		// Arrange
-		ProvisioningPackageEntity exisingProvisioningPackage = testHelper.findOneProvisioningPackage(Type.INTERNAL);
-		exisingProvisioningPackage.setName("test-provisioning-package-updated");
-		exisingProvisioningPackage.setVersion("1.0.2");
-		exisingProvisioningPackage.setAvailable(true);
-		FileUpload fileUpload = testHelper.createFileUpload();
+		// Perform a save of a new provisioning package.
+		ProvisioningPackageEntity provisioningPackage = provisioningService.saveNew(
+			testHelper.createProvisioningPackageEntity(
+				"test-provisioning-package",
+				"1.0.1",
+				"1.0.0",
+				true,
+				List.of("test-tag"),
+				INTERNAL),
+			testHelper.createFileUpload());
 
-		// Act
-		provisioningService.saveUpdate(exisingProvisioningPackage, fileUpload);
+		// Get the id of the saved entity.
+		String id = provisioningPackage.getId().toHexString();
 
-		// Assert
-		ProvisioningPackageEntity updatedProvisioningPackage =
-			testHelper.findProvisioningPackage(exisingProvisioningPackage.getId().toString());
+		// Update values and perform an update operation.
+		provisioningPackage.setName("updated-provisioning-package");
+		provisioningPackage.setVersion("1.0.2");
+		provisioningService.saveUpdate(provisioningPackage, testHelper.createFileUpload());
 
-		assertEquals("test-provisioning-package-updated", updatedProvisioningPackage.getName());
+		// Assert entity was updated.
+		ProvisioningPackageEntity updatedProvisioningPackage = provisioningService.findById(id);
+
+		assertEquals("updated-provisioning-package", updatedProvisioningPackage.getName());
 		assertEquals("1.0.2", updatedProvisioningPackage.getVersion());
-		assertEquals(initialProvisioningPackageSizeInDB,
-			testHelper.findAllProvisioningPackages().size(),
-			"Database size should not change after updating a package.");
 
-		verify(gridFSService, times(1)).saveBinary(any(GridFSDTO.class));
+		// Assert GridFS save operation was called twice.
+		verify(gridFSService, times(2)).saveBinary(any(GridFSDTO.class));
 	}
 
 	@Test
 	void delete() {
-		// Arrange
-		List<String> provisioningPackageIds =
-			testHelper.findAllProvisioningPackages()
-				.stream()
-				.map(ProvisioningPackageEntity::getId)
-				.map(Object::toString).toList();
+		// Perform a save of a new provisioning package.
+		String id = provisioningService.saveNew(
+			testHelper.createProvisioningPackageEntity(
+				"test-provisioning-package",
+				"1.0.1",
+				"1.0.0",
+				true,
+				List.of("test-tag"),
+				INTERNAL),
+			testHelper.createFileUpload()).getId().toHexString();
 
-		// Act
-		for (String id : provisioningPackageIds) {
-			provisioningService.delete(id);
-		}
+		// Confirm the entity was persisted.
+		assertNotNull(provisioningService.findById(id));
 
-		// Assert
-		assertEquals(0,
-			testHelper.findAllProvisioningPackages().size(),
-			"Database size should be 0 after deleting all packages.");
+		// Delete the entity.
+		provisioningService.delete(id);
 
-		verify(gridFSService, times(initialInternalProvisioningPackageSizeInDB)).deleteBinary(any(GridFSDTO.class));
+		// Confirm the entity was deleted.
+		assertNull(provisioningService.findById(id));
+
+		// Assert GridFS delete operation was called.
+		verify(gridFSService, times(1)).deleteBinary(any(GridFSDTO.class));
 
 	}
 
 
 	@Test
 	void download() {
-		// Arrange
-		ProvisioningPackageEntity internalProvisioningPackage = testHelper.findOneProvisioningPackage(Type.INTERNAL);
-		ProvisioningPackageEntity externalProvisioningPackage = testHelper.findOneProvisioningPackage(Type.EXTERNAL);
-		String internalProvisioningPackageId = internalProvisioningPackage.getId().toString();
-		String externalProvisioningPackageId = externalProvisioningPackage.getId().toString();
+		// Perform a save of an internal provisioning package.
+		String internalProvisioningPackageId =
+			provisioningService.saveNew(
+				testHelper.createProvisioningPackageEntity(
+					"internal-provisioning-package",
+					"1.0.1",
+					"1.0.0",
+					true,
+					List.of("test-tag"),
+					INTERNAL),
+				testHelper.createFileUpload()).getId().toHexString();
 
-		// Act && Assert
-		assertDoesNotThrow(
-			() -> provisioningService.download(internalProvisioningPackageId),
-			"Internal provisioning packages download should not throw any exception."
-		);
+		// Perform a save of an external provisioning package.
+		String externalProvisioningPackageId =
+			provisioningService.saveNew(
+				testHelper.createProvisioningPackageEntity(
+					"exteral-provisioning-package",
+					"1.0.1",
+					"1.0.0",
+					true,
+					List.of("test-tag"),
+					EXTERNAL),
+				testHelper.createFileUpload()).getId().toHexString();
 
-		assertThrows(
-			QMismatchException.class,
-			() -> provisioningService.download(externalProvisioningPackageId),
-			"External provisioning packages download should throw a QMismatchException.");
+		// Assert internal provisioning packages download does not throw any exception.
+		assertDoesNotThrow(() -> provisioningService.download(internalProvisioningPackageId));
 
+		// Assert external provisioning packages download throws a QMismatchException.
+		assertThrows(QMismatchException.class,
+			() -> provisioningService.download(externalProvisioningPackageId));
+
+		// Assert GridFS download operation was called only once.
 		verify(gridFSService, times(1)).downloadBinary(any(GridFSDTO.class));
 	}
 
 	@Test
 	void findByTags() {
-		// ToDo
+		// Perform a save of a provisioning package with a test-tag.
+		provisioningService.saveNew(
+			testHelper.createProvisioningPackageEntity(
+				"test-provisioning-package",
+				"1.0.1",
+				"1.0.0",
+				true,
+				List.of("test-tag"),
+				INTERNAL),
+			testHelper.createFileUpload());
+
+		// Assert a non-existent tag won't bring results.
+		assertTrue(provisioningService.findByTags("non-existing").isEmpty());
+
+		// Assert a valid tag will find the provisioning package.
+		assertEquals(1, provisioningService.findByTags("test-tag").size());
 	}
 
 	@Test
 	void semVerFind() {
-		// ToDo
+		// Mock finding a valid device with a test-tag.
+		when(deviceResource.findByHardwareIds(anyString(), anyBoolean()))
+			.thenReturn(List.of(testHelper.createDeviceEntity("testHardwareId", List.of("test-tag"))));
+
+		// Perform a save of a provisioning package with semver version 2.1.1 without prerequisite version.
+		provisioningService.saveNew(testHelper.createProvisioningPackageEntity(
+			"test-provisioning-package",
+			"2.1.1",
+			null,
+			true,
+			List.of("test-tag"),
+			INTERNAL), testHelper.createFileUpload());
+
+		// Assert a candidate semver version is found for the given hardware id and smaller current versions.
+		assertNotNull(provisioningService.semVerFind("testHardwareId", "1.0.0"));
+		assertNotNull(provisioningService.semVerFind("testHardwareId", "2.0.0"));
+		assertNotNull(provisioningService.semVerFind("testHardwareId", "2.0.1"));
+		assertNotNull(provisioningService.semVerFind("testHardwareId", "2.1.0"));
+
+		// Assert a candidate semver version is not found for the given hardware id and equals or higher current versions.
+		assertThrows(Exception.class, () -> provisioningService.semVerFind("testHardwareId", "2.1.1"));
+		assertThrows(Exception.class, () -> provisioningService.semVerFind("testHardwareId", "2.1.2"));
+		assertThrows(Exception.class, () -> provisioningService.semVerFind("testHardwareId", "2.2.1"));
+		assertThrows(Exception.class, () -> provisioningService.semVerFind("testHardwareId", "3.0.0"));
+
+		// Todo test for semVerFind with prerequisite version.
 	}
 
 	@Test
 	void find() {
-		// ToDo
+		// Assert no provisioning packages are returned.
+		assertEquals(0,
+			provisioningService.find(testHelper.makePageable(0, 10), true).getContent().size());
+
+		// Perform a save of a provisioning package.
+		provisioningService.saveNew(
+			testHelper.createProvisioningPackageEntity(
+				"test-provisioning-package",
+				"1.0.1",
+				"1.0.0",
+				true,
+				List.of("test-tag"),
+				INTERNAL),
+			testHelper.createFileUpload());
+
+		// Assert one provisioning package is returned.
+		assertEquals(1,
+			provisioningService.find(testHelper.makePageable(0, 10), true).getContent().size());
+
 	}
 
 	@Test
 	void findById() {
-		// ToDo
+		// Perform a save of a provisioning package.
+		String id = provisioningService.saveNew(
+			testHelper.createProvisioningPackageEntity(
+				"test-provisioning-package",
+				"1.0.1",
+				"1.0.0",
+				true,
+				List.of("test-tag"),
+				INTERNAL),
+			testHelper.createFileUpload()).getId().toHexString();
+
+		// Assert the entity was found.
+		assertNotNull(provisioningService.findById(id));
 	}
 }
