@@ -177,15 +177,12 @@
 						<executions>
 							<execution>
 								<id>default-prepare-agent</id>
-								<phase>test</phase>
 								<goals>
 									<goal>prepare-agent</goal>
-									<goal>report-aggregate</goal>
 								</goals>
 								<configuration>
 									<exclClassLoaders>*QuarkusClassLoader</exclClassLoaders>
-									<destFile>${project.build.directory}/jacoco.exec</destFile>
-									<outputDirectory>${project.build.directory}/jacoco-aggregate</outputDirectory>
+									<destFile>${project.build.directory}/jacoco-quarkus.exec</destFile>
 									<append>true</append>
 								</configuration>
 							</execution>
