@@ -182,7 +182,7 @@
 								</goals>
 								<configuration>
 									<exclClassLoaders>*QuarkusClassLoader</exclClassLoaders>
-									<destFile>${project.build.directory}/jacoco-quarkus.exec</destFile>
+									<destFile>${project.build.directory}/jacoco.exec</destFile>
 									<append>true</append>
 								</configuration>
 							</execution>
