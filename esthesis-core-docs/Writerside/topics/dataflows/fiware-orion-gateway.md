@@ -38,3 +38,7 @@ By default, the DFL will push data to Orion as [TBC]. You can customise the data
   well as the number of parallel execution processing threads.
 - Logging: You can specify the logging level for the esthesis components in this DFL, as well as the general logging
   level.
+
+## Outputs
+
+The DFL updates a Fiware Orion Context Broker with incoming telemetry and metadata values.
