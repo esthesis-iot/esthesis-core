@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,24 +56,22 @@ class KubernetesServiceTest {
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
 
-		// Mock secrets
+		// Mock resources and service secrets.
 		MixedOperation<Secret, SecretList, Resource<Secret>> mockSecrets = mock(MixedOperation.class);
 		NonNamespaceOperation<Secret, SecretList, Resource<Secret>> mockInNamespaceSecrets = mock(NonNamespaceOperation.class);
 		Resource<Secret> mockResourceSecrets = mock(Resource.class);
 		ServerSideApplicable<Secret> mockServerSideSecrets = mock(ServerSideApplicable.class);
-
 		when(kc.secrets()).thenReturn(mockSecrets);
 		when(mockSecrets.inNamespace(anyString())).thenReturn(mockInNamespaceSecrets);
 		when(mockInNamespaceSecrets.resource(any())).thenReturn(mockResourceSecrets);
 		when(mockResourceSecrets.forceConflicts()).thenReturn(mockServerSideSecrets);
 		when(mockServerSideSecrets.serverSideApply()).thenReturn(mock(Secret.class));
 
-		// Mock apps and deployments
+		// Mock apps and deployments.
 		AppsAPIGroupDSL mockApps = mock(AppsAPIGroupDSL.class);
 		MixedOperation<Deployment, DeploymentList, RollableScalableResource<Deployment>> mockDeployments = mock(MixedOperation.class);
 		NonNamespaceOperation<Deployment, DeploymentList, RollableScalableResource<Deployment>> mockInNamespaceDeployments = mock(NonNamespaceOperation.class);
 		RollableScalableResource<Deployment> mockDeploymentResource = mock(RollableScalableResource.class);
-
 		when(kc.apps()).thenReturn(mockApps);
 		when(mockApps.deployments()).thenReturn(mockDeployments);
 		when(mockDeployments.inNamespace(anyString())).thenReturn(mockInNamespaceDeployments);
@@ -82,13 +81,12 @@ class KubernetesServiceTest {
 		when(mockDeploymentResource.forceConflicts()).thenReturn(mockDeploymentResource);
 		when(mockDeploymentResource.serverSideApply()).thenReturn(mock(Deployment.class));
 
-		// Mock autoscaling
+		// Mock autoscaling.
 		AutoscalingAPIGroupDSL mockAutoscaling = mock(AutoscalingAPIGroupDSL.class);
 		V2AutoscalingAPIGroupDSL mockAutoscalingV2 = mock(V2AutoscalingAPIGroupDSL.class);
 		MixedOperation<HorizontalPodAutoscaler, HorizontalPodAutoscalerList, Resource<HorizontalPodAutoscaler>> mockHpa = mock(MixedOperation.class);
 		NonNamespaceOperation<HorizontalPodAutoscaler, HorizontalPodAutoscalerList, Resource<HorizontalPodAutoscaler>> mockInNamespaceHpa = mock(NonNamespaceOperation.class);
 		Resource<HorizontalPodAutoscaler> mockHpaResource = mock(Resource.class);
-
 		when(kc.autoscaling()).thenReturn(mockAutoscaling);
 		when(mockAutoscaling.v2()).thenReturn(mockAutoscalingV2);
 		when(mockAutoscalingV2.horizontalPodAutoscalers()).thenReturn(mockHpa);
@@ -97,11 +95,10 @@ class KubernetesServiceTest {
 		when(mockHpaResource.forceConflicts()).thenReturn(mockHpaResource);
 		when(mockHpaResource.serverSideApply()).thenReturn(mock(HorizontalPodAutoscaler.class));
 
-		// Mock namespaces
+		// Mock namespaces.
 		MixedOperation<Namespace, NamespaceList, Resource<Namespace>> mockNamespaces = mock(MixedOperation.class);
 		NamespaceList mockNamespaceList = mock(NamespaceList.class);
 		Namespace mockNamespace = mock(Namespace.class);
-
 		when(kc.namespaces()).thenReturn(mockNamespaces);
 		when(mockNamespaces.list()).thenReturn(mockNamespaceList);
 		when(mockNamespaceList.getItems()).thenReturn(List.of(mockNamespace));
@@ -111,32 +108,35 @@ class KubernetesServiceTest {
 
 	@Test
 	void createSecret() {
-		// Arrange
+		// Arrange a few test secret entries.
 		List<SecretEntryDTO> secretEntries = List.of(
 			new SecretEntryDTO("test-name-1", "test-content-1", "test-path-1"),
 			new SecretEntryDTO("test-name-2", "test-content-2", "test-path-2")
 		);
-		SecretDTO secretDTO = new SecretDTO("test-secret", secretEntries);
 
-		// Act & Assert
-		assertDoesNotThrow(() -> kubernetesService.createSecret(secretDTO, "test-namespace"));
+		// Assert no exception is thrown.
+		assertDoesNotThrow(() -> kubernetesService.createSecret(new SecretDTO("test-secret", secretEntries), "test-namespace"));
 	}
 
 	@Test
 	void scheduleDeployment() {
-		// Arrange
+		// Arrange a few test secret entries.
 		List<SecretEntryDTO> secretEntries = List.of(
 			new SecretEntryDTO("test-name-1", "test-content-1", "test-path-1"),
 			new SecretEntryDTO("test-name-2", "test-content-2", "test-path-2")
 		);
-		SecretDTO secretDTO = new SecretDTO("test-secret", secretEntries);
 
-		DeploymentInfoDTO deploymentInfo = getDeploymentInfoDTO(secretDTO);
-
-		// Act & Assert
-		assertDoesNotThrow(() -> kubernetesService.scheduleDeployment(deploymentInfo));
+		// Assert no exception is thrown.
+		assertDoesNotThrow(() ->
+			kubernetesService.scheduleDeployment(getDeploymentInfoDTO(new SecretDTO("test-secret", secretEntries))));
 	}
 
+	/**
+	 * Test helper method to create a deployment info dto.
+	 *
+	 * @param secretDTO The secret dto to use.
+	 * @return The deployment info dto.
+	 */
 	private DeploymentInfoDTO getDeploymentInfoDTO(SecretDTO secretDTO) {
 		DeploymentInfoDTO deploymentInfo = new DeploymentInfoDTO();
 		deploymentInfo.setName("test-deployment");
@@ -156,19 +156,13 @@ class KubernetesServiceTest {
 
 	@Test
 	void getNamespaces() {
-		// Act
-		List<String> namespaces = kubernetesService.getNamespaces();
-
-		// Assert
-		assertFalse(namespaces.isEmpty());
+		// Assert the list of namespaces is not empty.
+		assertFalse(kubernetesService.getNamespaces().isEmpty());
 	}
 
 	@Test
 	void isDeploymentNameAvailable() {
-		// Act
-		boolean result = kubernetesService.isDeploymentNameAvailable("test-deployment", "test-namespace");
-
-		// Assert
-		assertTrue(result);
+		// Assert the deployment name is available.
+		assertTrue(kubernetesService.isDeploymentNameAvailable("test-deployment", "test-namespace"));
 	}
 }

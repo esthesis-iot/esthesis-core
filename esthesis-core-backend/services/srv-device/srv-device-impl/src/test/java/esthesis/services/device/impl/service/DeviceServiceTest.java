@@ -76,7 +76,7 @@ class DeviceServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		testHelper.clearDatabase();
+		testHelper.setup();
 		testHelper.createEntities();
 
 		// Mock the relevant settings

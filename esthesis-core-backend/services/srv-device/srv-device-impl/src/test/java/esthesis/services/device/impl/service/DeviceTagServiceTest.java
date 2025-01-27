@@ -15,7 +15,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +37,7 @@ class DeviceTagServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		testHelper.clearDatabase();
+		testHelper.setup();
 		testHelper.createEntities();
 
 		// Mock the tag resource requests

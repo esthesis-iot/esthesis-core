@@ -28,43 +28,26 @@ public class TestHelper {
 		"tag2", makeTag("tag2"),
 		"tag3", makeTag("tag3"));
 
-	public void createEntities() {
-		infrastructureMqttRepository.persist(new InfrastructureMqttEntity(
-				"MQTT1",
-				"http://localhost.test",
-				true,
-				List.of(findTagByName("tag1").getId().toString())
-			)
+	public InfrastructureMqttEntity createInfrastructureMQtt(String name, String url, boolean active, String tag) {
+		return new InfrastructureMqttEntity(
+			name,
+			url,
+			active, List.of(findTagByName(tag).getId().toString())
 		);
-
-		infrastructureMqttRepository.persist(new InfrastructureMqttEntity(
-				"MQTT2",
-				"http://localhost.test",
-				true,
-				List.of(findTagByName("tag2").getId().toString())
-			)
-		);
-
-		infrastructureMqttRepository.persist(new InfrastructureMqttEntity(
-			"MQTT3",
-			"http://localhost.test",
-			true,
-			List.of(findTagByName("tag3").getId().toString())
-		));
-
-
 	}
 
 
 	/**
-	 * Helper method to create a Pageable object with the specified parameters
+	 * Mock a Pageable object with the specified parameters.
+	 *
+	 * @param page The page number being requested.
+	 * @param size The size of the page.
+	 * @return The mocked Pageable object.
 	 */
 	public Pageable makePageable(int page, int size) {
 
-		// Create a mock of UriInfo
+		// Mock the request URI and parameters.
 		UriInfo uriInfo = Mockito.mock(UriInfo.class);
-
-		// Define the behavior of the mock
 		when(uriInfo.getRequestUri()).thenReturn(URI.create("http://localhost:8080/find?page=" + page + "&size=" + size));
 		when(uriInfo.getQueryParameters()).thenReturn(new MultivaluedHashMap<>());
 
@@ -82,14 +65,6 @@ public class TestHelper {
 
 	public List<InfrastructureMqttEntity> findAllInfrastructureMqttEntity() {
 		return infrastructureMqttRepository.listAll();
-	}
-
-	public InfrastructureMqttEntity findOneInfrastructureMqttEntity() {
-		return findAllInfrastructureMqttEntity().getFirst();
-	}
-
-	public InfrastructureMqttEntity findInfrastructureMqttEntityById(String id) {
-		return infrastructureMqttRepository.findById(new ObjectId(id));
 	}
 
 	public TagEntity makeTag(String name) {

@@ -51,16 +51,15 @@ public class TestHelper {
 
 	Map<String, String> tagsIdMap = new HashMap<>();
 
-	public void clearDatabase() {
+	public void setup() {
 		deviceRepository.deleteAll();
 		deviceAttributeRepository.deleteAll();
 		tagsIdMap = new HashMap<>();
+		prepareTags();
 	}
 
 
 	public void createEntities() {
-
-		prepareTags();
 
 		List<DeviceEntity> devices = new ArrayList<>();
 

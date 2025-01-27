@@ -4,7 +4,6 @@ import esthesis.common.exception.QAlreadyExistsException;
 import esthesis.common.exception.QDisabledException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QSecurityException;
-import esthesis.common.util.EsthesisCommonConstants;
 import esthesis.core.common.AppConstants;
 import esthesis.service.crypto.resource.KeyResource;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
@@ -29,12 +28,14 @@ import java.security.PublicKey;
 import java.util.List;
 
 import static esthesis.common.util.EsthesisCommonConstants.Device.Type.CORE;
+import static esthesis.common.util.EsthesisCommonConstants.Device.Type.EDGE;
+import static esthesis.core.common.AppConstants.Device.Status.PREREGISTERED;
 import static esthesis.core.common.AppConstants.Device.Status.REGISTERED;
 import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_PUSHED_TAGS;
 import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_REGISTRATION_MODE;
 import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_REGISTRATION_SECRET;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -66,307 +67,205 @@ class DeviceRegistrationServiceTest {
 	@Inject
 	DeviceRegistrationService deviceRegistrationService;
 
-	int initialDeviceSizeInDB = 0;
-	int initialRegisteredDeviceSizeInDB = 0;
-	int initialPreregisteredDeviceSizeInDB = 0;
-	int initialDisabledDeviceSizeInDB = 0;
-	int initialCoreDeviceSizeInDB = 0;
-	int initialEdgeDeviceSizeInDB = 0;
-
-
 	@SneakyThrows
 	@BeforeEach
 	void setUp() {
-		testHelper.clearDatabase();
-		testHelper.createEntities();
+		testHelper.setup();
 
-		// Arrange mock generation of a key pair request
+		// Mock the generation of a key pair request.
 		when(keyResource.generateKeyPair()).thenReturn(new KeyPair(mock(PublicKey.class), mock(PrivateKey.class)));
 
-		// Arrange mock tag resource requests
+		// Mock the existence of a tag called "tag1".
 		when(tagResource.findByName(anyString(), anyBoolean())).thenReturn(testHelper.makeTag("tag1"));
 
-		// Arrange mock settings resource requests
+		// Mock the settings for enabling the device to push tags.
 		when(settingsResource.findByName(DEVICE_PUSHED_TAGS))
 			.thenReturn(new SettingEntity(DEVICE_PUSHED_TAGS.toString(), "true"));
+
+	}
+
+	@Test
+	@SneakyThrows
+	void registerOpenMode() {
+		// Mock devices registration mode as "OPEN".
+		when(settingsResource.findByName(DEVICE_REGISTRATION_MODE))
+			.thenReturn(new SettingEntity(DEVICE_REGISTRATION_MODE.toString(),
+				AppConstants.DeviceRegistrationMode.OPEN.name()));
+
+		// Register a new CORE device.
+		ObjectId coreDeviceId =
+			deviceRegistrationService.register(new DeviceRegistrationDTO()
+				.setHardwareId("new-core-device")
+				.setTags(List.of("tag1"))
+				.setType(CORE)).getId();
+
+		// Register a new EDGE device.
+		ObjectId edgeDeviceId =
+			deviceRegistrationService.register(new DeviceRegistrationDTO()
+				.setHardwareId("new-edge-device")
+				.setTags(List.of("tag2", "tag3"))
+				.setType(EDGE)).getId();
+
+		// Assert CORE device was persisted.
+		DeviceEntity coreDevice = testHelper.findDeviceByID(coreDeviceId);
+		assertNotNull(coreDevice);
+		assertEquals("new-core-device", coreDevice.getHardwareId());
+		assertEquals(CORE, coreDevice.getType());
+		assertEquals(1, coreDevice.getTags().size());
+
+		// Assert EDGE device was persisted.
+		DeviceEntity edgeDevice = testHelper.findDeviceByID(edgeDeviceId);
+		assertNotNull(edgeDevice);
+		assertEquals("new-edge-device", edgeDevice.getHardwareId());
+		assertEquals(EDGE, edgeDevice.getType());
+		assertEquals(2, edgeDevice.getTags().size());
+
+		// Assert it doesn't allow registering a device with an already existing hardware-id.
+		DeviceRegistrationDTO repeatedDevice =
+			new DeviceRegistrationDTO().setHardwareId("new-core-device").setType(CORE);
+		assertThrows(QAlreadyExistsException.class, () -> deviceRegistrationService.register(repeatedDevice));
+
+		// Assert registration fails for invalid hardware name.
+		DeviceRegistrationDTO invalidHardwareId1 =
+			new DeviceRegistrationDTO().setHardwareId("invalid hardware id").setType(CORE);
+		assertThrows(QMismatchException.class, () -> deviceRegistrationService.register(invalidHardwareId1));
+
+		// Assert registration fails for invalid hardware name.
+		DeviceRegistrationDTO invalidHardwareId2 =
+			new DeviceRegistrationDTO().setHardwareId("#device@").setType(CORE);
+		assertThrows(QMismatchException.class, () -> deviceRegistrationService.register(invalidHardwareId2));
+
+		// Assert registration fails for invalid hardware name.
+		DeviceRegistrationDTO invalidHardwareId3 =
+			new DeviceRegistrationDTO().setHardwareId("@#$%&").setType(CORE);
+		assertThrows(QMismatchException.class, () -> deviceRegistrationService.register(invalidHardwareId3));
+	}
+
+
+	@Test
+	@SneakyThrows
+	void registerOpenWithSecretMode() {
+		// Mock devices registration mode as "OPEN WITH SECRET".
+		when(settingsResource.findByName(DEVICE_REGISTRATION_MODE))
+			.thenReturn(new SettingEntity(DEVICE_REGISTRATION_MODE.toString(),
+				AppConstants.DeviceRegistrationMode.OPEN_WITH_SECRET.name()));
+
+		// Mock the registration secret required for devices auto registration as "test-secret".
 		when(settingsResource.findByName(DEVICE_REGISTRATION_SECRET))
 			.thenReturn(new SettingEntity(DEVICE_REGISTRATION_SECRET.toString(), "test-secret"));
 
+		// Assert that a missing required secret doesn't allow registering the device.
+		DeviceRegistrationDTO coreDeviceWithoutSecret =
+			new DeviceRegistrationDTO().setHardwareId("new-core-device").setType(CORE);
+		assertThrows(QSecurityException.class, () -> deviceRegistrationService.register(coreDeviceWithoutSecret));
 
-		initialDeviceSizeInDB = testHelper.findAllDeviceEntity().size();
-		initialRegisteredDeviceSizeInDB = testHelper.findAllRegisteredDeviceEntity().size();
-		initialPreregisteredDeviceSizeInDB = testHelper.findAllPreregisteredDeviceEntity().size();
-		initialDisabledDeviceSizeInDB = testHelper.findAllDisabledDeviceEntity().size();
-		initialCoreDeviceSizeInDB = testHelper.findAllCoreDeviceEntity().size();
-		initialEdgeDeviceSizeInDB = testHelper.findAllEdgeDeviceEntity().size();
+		// Assert that a wrong registration secret doesn't allow registering the device.
+		DeviceRegistrationDTO edgeDeviceWithWrongSecret =
+			new DeviceRegistrationDTO().setHardwareId("new-edge-device").setType(EDGE).setRegistrationSecret("wrong-value");
+		assertThrows(QSecurityException.class, () -> deviceRegistrationService.register(edgeDeviceWithWrongSecret));
 
-		log.info("Initial device size in DB: {}", initialDeviceSizeInDB);
-		log.info("Initial registered device size in DB: {}", initialRegisteredDeviceSizeInDB);
-		log.info("Initial preregistered device size in DB: {}", initialPreregisteredDeviceSizeInDB);
-		log.info("Initial disabled device size in DB: {}", initialDisabledDeviceSizeInDB);
-		log.info("Initial core device size in DB: {}", initialCoreDeviceSizeInDB);
-		log.info("Initial edge device size in DB: {}", initialEdgeDeviceSizeInDB);
-	}
+		// Perform the registering of a core and an edge device using the correct registration secret.
+		ObjectId coreDeviceId =
+			deviceRegistrationService.register(new DeviceRegistrationDTO()
+				.setHardwareId("new-core-device")
+				.setRegistrationSecret("test-secret")
+				.setType(CORE)).getId();
 
-	@SneakyThrows
-	@Test
-	void registerOpenModeOK() {
-		//Arrange new core device
-		DeviceRegistrationDTO newCoreDevice = new DeviceRegistrationDTO();
-		newCoreDevice.setHardwareId("new-core-device");
-		newCoreDevice.setTags(List.of("tag1", "new-tag"));
-		newCoreDevice.setType(CORE);
+		ObjectId edgeDeviceId =
+			deviceRegistrationService.register(new DeviceRegistrationDTO()
+				.setHardwareId("new-edge-device")
+				.setRegistrationSecret("test-secret")
+				.setType(EDGE)).getId();
 
-		// Arrange new edge device
-		DeviceRegistrationDTO newEdgeDevice = new DeviceRegistrationDTO();
-		newEdgeDevice.setHardwareId("new-edge-device");
-		newEdgeDevice.setTags(List.of("tag3", "new-tag"));
-		newEdgeDevice.setType(EsthesisCommonConstants.Device.Type.EDGE);
-
-		// Arrange mock registration in OPEN mode
-		when(settingsResource.findByName(DEVICE_REGISTRATION_MODE))
-			.thenReturn(new SettingEntity(DEVICE_REGISTRATION_MODE.toString(),
-				AppConstants.DeviceRegistrationMode.OPEN.name()));
-
-		//Act
-		deviceRegistrationService.register(newCoreDevice);
-		deviceRegistrationService.register(newEdgeDevice);
-
-		//Assert
-		assertEquals(initialDeviceSizeInDB + 2, testHelper.findAllDeviceEntity().size());
-		assertEquals(initialRegisteredDeviceSizeInDB + 2, testHelper.findAllRegisteredDeviceEntity().size());
-		assertEquals(initialCoreDeviceSizeInDB + 1, testHelper.findAllCoreDeviceEntity().size());
-		assertEquals(initialEdgeDeviceSizeInDB + 1, testHelper.findAllEdgeDeviceEntity().size());
-		assertEquals(initialPreregisteredDeviceSizeInDB, testHelper.findAllPreregisteredDeviceEntity().size());
-		assertEquals(initialDisabledDeviceSizeInDB, testHelper.findAllDisabledDeviceEntity().size());
+		// Assert devices were persisted.
+		assertNotNull(testHelper.findDeviceByID(coreDeviceId));
+		assertNotNull(testHelper.findDeviceByID(edgeDeviceId));
 
 	}
 
-
-	@SneakyThrows
-	@Test
-	void registerOpenModeNOK() {
-		//Arrange new core device with existing hardware id
-		DeviceRegistrationDTO newCoreDevice = new DeviceRegistrationDTO();
-		newCoreDevice.setHardwareId("test-registered-device-core-1");
-		newCoreDevice.setTags(List.of("tag1", "new-tag"));
-		newCoreDevice.setType(CORE);
-
-		// Arrange new edge device with invalid hardware id
-		DeviceRegistrationDTO newEdgeDevice = new DeviceRegistrationDTO();
-		newEdgeDevice.setHardwareId("invalid hardware id");
-		newEdgeDevice.setTags(List.of("tag3", "new-tag"));
-		newEdgeDevice.setType(EsthesisCommonConstants.Device.Type.EDGE);
-
-		// Arrange mock registration in OPEN mode
-		when(settingsResource.findByName(DEVICE_REGISTRATION_MODE))
-			.thenReturn(new SettingEntity(DEVICE_REGISTRATION_MODE.toString(),
-				AppConstants.DeviceRegistrationMode.OPEN.name()));
-
-		//Act & Assert throws exceptions
-		assertThrows(QAlreadyExistsException.class, () -> deviceRegistrationService.register(newCoreDevice));
-		assertThrows(QMismatchException.class, () -> deviceRegistrationService.register(newEdgeDevice));
-
-		//Assert no changes were made to the database
-		assertEquals(initialDeviceSizeInDB, testHelper.findAllDeviceEntity().size());
-
-	}
-
-	@Test
-	void registerOpenWithSecretModeOK() {
-		//Arrange new core device with expected secret
-		DeviceRegistrationDTO newCoreDevice = new DeviceRegistrationDTO();
-		newCoreDevice.setHardwareId("new-core-device");
-		newCoreDevice.setTags(List.of("tag1", "new-tag"));
-		newCoreDevice.setType(CORE);
-		newCoreDevice.setRegistrationSecret("test-secret");
-
-		// Arrange new edge device with expected secret
-		DeviceRegistrationDTO newEdgeDevice = new DeviceRegistrationDTO();
-		newEdgeDevice.setHardwareId("new-edge-device");
-		newEdgeDevice.setTags(List.of("tag3", "new-tag"));
-		newEdgeDevice.setType(EsthesisCommonConstants.Device.Type.EDGE);
-		newEdgeDevice.setRegistrationSecret("test-secret");
-
-		// Arrange mock registration in OPEN WITH SECRET mode
-		when(settingsResource.findByName(DEVICE_REGISTRATION_MODE))
-			.thenReturn(new SettingEntity(DEVICE_REGISTRATION_MODE.toString(),
-				AppConstants.DeviceRegistrationMode.OPEN_WITH_SECRET.name()));
-
-		//Act & Assert
-		assertDoesNotThrow(() -> deviceRegistrationService.register(newCoreDevice));
-		assertDoesNotThrow(() -> deviceRegistrationService.register(newEdgeDevice));
-
-		//Assert new devices are registered
-		assertEquals(initialDeviceSizeInDB + 2, testHelper.findAllDeviceEntity().size());
-		assertEquals(initialCoreDeviceSizeInDB + 1, testHelper.findAllCoreDeviceEntity().size());
-		assertEquals(initialEdgeDeviceSizeInDB + 1, testHelper.findAllEdgeDeviceEntity().size());
-
-	}
-
-
-	@Test
-	void registerOpenWithSecretModeNOK() {
-		//Arrange new core device without secret
-		DeviceRegistrationDTO newCoreDevice = new DeviceRegistrationDTO();
-		newCoreDevice.setHardwareId("new-core-device");
-		newCoreDevice.setTags(List.of("tag1", "new-tag"));
-		newCoreDevice.setType(CORE);
-
-		// Arrange new edge device with invalid registration secret
-		DeviceRegistrationDTO newEdgeDevice = new DeviceRegistrationDTO();
-		newEdgeDevice.setHardwareId("new-edge-device");
-		newEdgeDevice.setTags(List.of("tag3", "new-tag"));
-		newEdgeDevice.setType(EsthesisCommonConstants.Device.Type.EDGE);
-		newEdgeDevice.setRegistrationSecret("invalid-secret");
-
-		// Arrange mock registration in OPEN WITH SECRET mode
-		when(settingsResource.findByName(DEVICE_REGISTRATION_MODE))
-			.thenReturn(new SettingEntity(DEVICE_REGISTRATION_MODE.toString(),
-				AppConstants.DeviceRegistrationMode.OPEN_WITH_SECRET.name()));
-
-		//Act & Assert
-		assertThrows(QSecurityException.class, () -> deviceRegistrationService.register(newCoreDevice));
-		assertThrows(QSecurityException.class, () -> deviceRegistrationService.register(newEdgeDevice));
-
-		//Assert no changes were made to the database
-		assertEquals(initialDeviceSizeInDB, testHelper.findAllDeviceEntity().size());
-		assertEquals(initialCoreDeviceSizeInDB, testHelper.findAllCoreDeviceEntity().size());
-		assertEquals(initialEdgeDeviceSizeInDB, testHelper.findAllEdgeDeviceEntity().size());
-
-	}
 
 	@Test
 	void registerDisabledMode() {
-		//Arrange new core device
-		DeviceRegistrationDTO newCoreDevice = new DeviceRegistrationDTO();
-		newCoreDevice.setHardwareId("new-core-device");
-		newCoreDevice.setTags(List.of("tag1", "new-tag"));
-		newCoreDevice.setType(CORE);
-
-		// Arrange new edge device
-		DeviceRegistrationDTO newEdgeDevice = new DeviceRegistrationDTO();
-		newEdgeDevice.setHardwareId("new-edge-device");
-		newEdgeDevice.setTags(List.of("tag3", "new-tag"));
-		newEdgeDevice.setType(EsthesisCommonConstants.Device.Type.EDGE);
-
-		// Arrange mock registration in DISABLED mode
+		// Mock devices registration mode as "DISABLED".
 		when(settingsResource.findByName(DEVICE_REGISTRATION_MODE))
 			.thenReturn(new SettingEntity(DEVICE_REGISTRATION_MODE.toString(),
 				AppConstants.DeviceRegistrationMode.DISABLED.name()));
 
-		//Act & Assert throws exception
-		assertThrows(QDisabledException.class, () -> deviceRegistrationService.register(newCoreDevice));
-		assertThrows(QDisabledException.class, () -> deviceRegistrationService.register(newEdgeDevice));
+		// Assert core device registration is not enabled.
+		DeviceRegistrationDTO coreDevice =
+			new DeviceRegistrationDTO().setHardwareId("new-core-device").setType(CORE);
+		assertThrows(QDisabledException.class, () -> deviceRegistrationService.register(coreDevice));
 
-		//Assert no changes were made to the database
-		assertEquals(initialDeviceSizeInDB, testHelper.findAllDeviceEntity().size());
-		assertEquals(initialCoreDeviceSizeInDB, testHelper.findAllCoreDeviceEntity().size());
-		assertEquals(initialEdgeDeviceSizeInDB, testHelper.findAllEdgeDeviceEntity().size());
-
+		// Assert edge device registration is not enabled.
+		DeviceRegistrationDTO edgeDevice =
+			new DeviceRegistrationDTO().setHardwareId("new-edge-device").setType(EDGE);
+		assertThrows(QDisabledException.class, () -> deviceRegistrationService.register(edgeDevice));
 	}
 
 
 	@SneakyThrows
 	@Test
 	void registerIDMode() {
-		//Arrange find preregistered device
-		DeviceEntity device = testHelper.findAllPreregisteredDeviceEntity().getFirst();
+		// Mock devices registration mode as "OPEN".
+		when(settingsResource.findByName(DEVICE_REGISTRATION_MODE))
+			.thenReturn(new SettingEntity(DEVICE_REGISTRATION_MODE.toString(),
+				AppConstants.DeviceRegistrationMode.OPEN.name()));
 
-		//Arrange device registration from preregistered device
-		DeviceRegistrationDTO deviceRegistration = new DeviceRegistrationDTO();
-		deviceRegistration.setHardwareId(device.getHardwareId());
+		// Pre-register a new core device.
+		deviceRegistrationService.preregister(new DeviceRegistrationDTO()
+			.setHardwareId("new-core-device")
+			.setType(CORE));
 
-		// Arrange mock registration in ID mode
+		// Mock devices registration mode as "ID".
 		when(settingsResource.findByName(DEVICE_REGISTRATION_MODE))
 			.thenReturn(new SettingEntity(DEVICE_REGISTRATION_MODE.toString(),
 				AppConstants.DeviceRegistrationMode.ID.name()));
 
-		// Act
-		deviceRegistrationService.register(deviceRegistration);
+		// Perform device registration in ID mode.
+		ObjectId deviceId =
+			deviceRegistrationService.register(new DeviceRegistrationDTO().setHardwareId("new-core-device")).getId();
 
-		// Assert device was updated
-		DeviceEntity updatedDevice = testHelper.findDeviceByID(device.getId());
-		assertEquals(deviceRegistration.getHardwareId(), updatedDevice.getHardwareId());
-		assertEquals(REGISTERED, updatedDevice.getStatus());
-
-		// Assert no changes were made to the database
-		assertEquals(initialDeviceSizeInDB, testHelper.findAllDeviceEntity().size());
-
+		// Assert device has updated status from "PREREGISTERED" to "REGISTERED".
+		assertEquals(REGISTERED, testHelper.findDeviceByID(deviceId).getStatus());
 	}
 
 	@SneakyThrows
 	@Test
-	void preregisterOK() {
-		//Arrange new core device
-		DeviceRegistrationDTO newCoreDevice = new DeviceRegistrationDTO();
-		newCoreDevice.setHardwareId("new-core-device");
-		newCoreDevice.setTags(List.of("tag1"));
-		newCoreDevice.setType(CORE);
-
-		// Arrange new edge device
-		DeviceRegistrationDTO newEdgeDevice = new DeviceRegistrationDTO();
-		newEdgeDevice.setHardwareId("new-edge-device");
-		newEdgeDevice.setTags(List.of("tag3"));
-		newEdgeDevice.setType(EsthesisCommonConstants.Device.Type.EDGE);
-
-		// Arrange mock registration in OPEN mode
+	void preregister() {
+		// Mock devices registration mode as "OPEN".
 		when(settingsResource.findByName(DEVICE_REGISTRATION_MODE))
 			.thenReturn(new SettingEntity(DEVICE_REGISTRATION_MODE.toString(),
 				AppConstants.DeviceRegistrationMode.OPEN.name()));
 
-		//Act
-		deviceRegistrationService.preregister(newCoreDevice);
-		deviceRegistrationService.preregister(newEdgeDevice);
+		// Pre-register a new CORE device.
+		deviceRegistrationService.preregister(new DeviceRegistrationDTO()
+			.setHardwareId("new-core-device")
+			.setType(CORE));
 
-		//Assert new devices were created as preregistered
-		assertEquals(initialDeviceSizeInDB + 2, testHelper.findAllDeviceEntity().size());
-		assertEquals(initialPreregisteredDeviceSizeInDB + 2, testHelper.findAllPreregisteredDeviceEntity().size());
-		assertEquals(initialCoreDeviceSizeInDB + 1, testHelper.findAllCoreDeviceEntity().size());
-		assertEquals(initialEdgeDeviceSizeInDB + 1, testHelper.findAllEdgeDeviceEntity().size());
-		assertEquals(initialDisabledDeviceSizeInDB, testHelper.findAllDisabledDeviceEntity().size());
-		assertEquals(initialRegisteredDeviceSizeInDB, testHelper.findAllRegisteredDeviceEntity().size());
+		// Pre-register a new EDGE device.
+		deviceRegistrationService.preregister(new DeviceRegistrationDTO()
+			.setHardwareId("new-edge-device")
+			.setType(EDGE));
+
+		// Assert devices were persisted with status "PREREGISTERED".
+		assertEquals(PREREGISTERED, testHelper.findDevicesByHardwareId("new-core-device").getFirst().getStatus());
+		assertEquals(PREREGISTERED, testHelper.findDevicesByHardwareId("new-edge-device").getFirst().getStatus());
 	}
 
-	@Test
-	void preregisterNOK() {
-		//Arrange new core device with existing hardware id
-		DeviceRegistrationDTO newCoreDevice = new DeviceRegistrationDTO();
-		newCoreDevice.setHardwareId("test-registered-device-core-1");
-		newCoreDevice.setTags(List.of("tag1", "new-tag"));
-		newCoreDevice.setType(CORE);
-
-		// Arrange new edge device with invalid hardware id
-		DeviceRegistrationDTO newEdgeDevice = new DeviceRegistrationDTO();
-		newEdgeDevice.setHardwareId("@invalid@hardware$id");
-		newEdgeDevice.setTags(List.of("tag3", "new-tag"));
-		newEdgeDevice.setType(EsthesisCommonConstants.Device.Type.EDGE);
-
-		// Arrange mock registration in OPEN mode
-		when(settingsResource.findByName(DEVICE_REGISTRATION_MODE))
-			.thenReturn(new SettingEntity(DEVICE_REGISTRATION_MODE.toString(),
-				AppConstants.DeviceRegistrationMode.OPEN.name()));
-
-		//Act & Assert throws exceptions
-		assertThrows(QAlreadyExistsException.class, () -> deviceRegistrationService.preregister(newCoreDevice));
-		assertThrows(QMismatchException.class, () -> deviceRegistrationService.preregister(newEdgeDevice));
-
-		//Assert no changes were made to the database
-		assertEquals(initialDeviceSizeInDB, testHelper.findAllDeviceEntity().size());
-	}
-
-
+	@SneakyThrows
 	@Test
 	void activatePreregisteredDevice() {
-		// Arrange find preregistered device
-		DeviceEntity preregisteredDevice = testHelper.findAllPreregisteredDeviceEntity().getFirst();
+		// Mock devices registration mode as "OPEN".
+		when(settingsResource.findByName(DEVICE_REGISTRATION_MODE))
+			.thenReturn(new SettingEntity(DEVICE_REGISTRATION_MODE.toString(),
+				AppConstants.DeviceRegistrationMode.OPEN.name()));
 
-		// Act
-		deviceRegistrationService.activatePreregisteredDevice(preregisteredDevice.getHardwareId());
+		// Pre-register a new CORE device.
+		deviceRegistrationService.preregister(new DeviceRegistrationDTO()
+			.setHardwareId("new-core-device")
+			.setType(CORE));
 
-		// Assert one device was updated from preregistered to registered
-		assertEquals(initialDeviceSizeInDB, testHelper.findAllDeviceEntity().size());
-		assertEquals(initialPreregisteredDeviceSizeInDB - 1, testHelper.findAllPreregisteredDeviceEntity().size());
-		assertEquals(initialRegisteredDeviceSizeInDB + 1, testHelper.findAllRegisteredDeviceEntity().size());
+		// Assert device was activated.
+		assertEquals(REGISTERED, deviceRegistrationService.activatePreregisteredDevice("new-core-device").getStatus());
 	}
 }

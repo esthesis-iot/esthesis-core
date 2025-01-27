@@ -217,6 +217,8 @@ class ProvisioningServiceTest {
 
 		// Assert a valid tag will find the provisioning package.
 		assertEquals(1, provisioningService.findByTags("test-tag").size());
+
+		// Todo cover multiple tags and SemServer disabled options
 	}
 
 	@Test
@@ -270,10 +272,15 @@ class ProvisioningServiceTest {
 		assertEquals(1,
 			provisioningService.find(testHelper.makePageable(0, 10), true).getContent().size());
 
+		// Todo cover more cases with different parameters.
+
 	}
 
 	@Test
 	void findById() {
+		// Assert no entity is found for non-existent id.
+		assertNull(provisioningService.findById(new ObjectId().toHexString()));
+
 		// Perform a save of a provisioning package.
 		String id = provisioningService.saveNew(
 			testHelper.createProvisioningPackageEntity(

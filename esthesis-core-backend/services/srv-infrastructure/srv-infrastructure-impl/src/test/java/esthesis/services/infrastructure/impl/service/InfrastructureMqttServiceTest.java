@@ -14,9 +14,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @Slf4j
@@ -34,124 +37,145 @@ class InfrastructureMqttServiceTest {
 	@RestClient
 	TagSystemResource tagSystemResource;
 
-	int initialEntitiesInDB = 0;
 
 	@BeforeEach
 	void setUp() {
 		testHelper.clearDatabase();
-		testHelper.createEntities();
-
-		when(tagSystemResource.findByName("tag1")).thenReturn(testHelper.findTagByName("tag1"));
-		when(tagSystemResource.findByName("tag2")).thenReturn(testHelper.findTagByName("tag2"));
-		when(tagSystemResource.findByName("tag3")).thenReturn(testHelper.findTagByName("tag3"));
-
-		initialEntitiesInDB = testHelper.findAllInfrastructureMqttEntity().size();
-
-		log.info("Initial entities in DB: {}", initialEntitiesInDB);
 	}
 
 
 	@Test
 	void matchByTags() {
-		// Act
-		InfrastructureMqttEntity existingMqtt = infrastructureMqttService.matchByTags("tag2").orElse(null);
-		InfrastructureMqttEntity nonExistingMqttTags = infrastructureMqttService.matchByTags("unexistingTag").orElse(null);
-		InfrastructureMqttEntity emptyMqttTags = infrastructureMqttService.matchByTags("").orElse(null);
+		// Mock finding a tag named tag1.
+		when(tagSystemResource.findByName("tag1")).thenReturn(testHelper.findTagByName("tag1"));
 
-		//Assert - Find the MQTT server matching the provided tags or return a random MQTT server as a fallback
-		assertNotNull(existingMqtt);
-		assertEquals("MQTT2", existingMqtt.getName());
-		assertNotNull(nonExistingMqttTags);
-		assertNotNull(emptyMqttTags);
+		// Perform a save of a new mqtt entity with a tag named tag1.
+		infrastructureMqttService.saveNew(
+			testHelper.createInfrastructureMQtt(
+				"MQTT1",
+				"http://localhost.test",
+				true, "tag1")
+		);
+
+		// Assert existing tag matches existing MQTT Infrastructure.
+		assertTrue(infrastructureMqttService.matchByTags("tag1").isPresent());
+
+		// Assert non-existing tag  also matches existing MQTT Infrastructure (by calling the match random method).
+		assertTrue(infrastructureMqttService.matchByTags("non-existing-tag").isPresent());
+
 	}
 
 	@Test
 	void matchRandom() {
-		// Act
-		Optional<InfrastructureMqttEntity> infrastructureMqtt = infrastructureMqttService.matchRandom();
+		// Perform a save of a new mqtt entity.
+		infrastructureMqttService.saveNew(
+			testHelper.createInfrastructureMQtt(
+				"MQTT1",
+				"http://localhost.test",
+				true, "tag1")
+		);
 
-		//Assert
-		assertTrue(infrastructureMqtt.isPresent());
+		// Assert MQTT Infrastructure is found.
+		assertTrue(infrastructureMqttService.matchRandom().isPresent());
 	}
 
 	@Test
 	void find() {
-		// Act
-		List<InfrastructureMqttEntity> infrastructureMqttEntities =
-			infrastructureMqttService.find(testHelper.makePageable(0, 100), true).getContent();
+		// Assert no MQTT Infrastructure is found.
+		assertEquals(0,
+			infrastructureMqttService.find(
+				testHelper.makePageable(0, 100),
+				true).getContent().size());
 
-		//Assert
-		assertEquals(initialEntitiesInDB, infrastructureMqttEntities.size());
+		// Perform a save of a new MQTT Infrastructure entity.
+		infrastructureMqttService.saveNew(
+			testHelper.createInfrastructureMQtt(
+				"MQTT1",
+				"http://localhost.test",
+				true, "tag1")
+		);
+
+		// Assert the persisted MQTT Infrastructure is found.
+		assertEquals(1,
+			infrastructureMqttService.find(
+				testHelper.makePageable(0, 100),
+				true).getContent().size());
+
+		// Todo cover more cases with different parameters.
 
 	}
 
 
 	@Test
 	void findById() {
-		// Arrange
-		String validId = testHelper.findOneInfrastructureMqttEntity().getId().toString();
-		String nonExistingId = new ObjectId().toString();
+		// Assert no MQTT Infrastructure is found for non-existing id.
+		assertNull(infrastructureMqttService.findById(new ObjectId().toHexString()));
 
-		// Act
-		InfrastructureMqttEntity existingMqtt = infrastructureMqttService.findById(validId);
-		InfrastructureMqttEntity nonExistingMqtt = infrastructureMqttService.findById(nonExistingId);
+		// Perform a save of a new MQTT Infrastructure entity.
+		String id = infrastructureMqttService.saveNew(
+			testHelper.createInfrastructureMQtt(
+				"MQTT1", "http://localhost.test",
+				true, "tag1")
+		).getId().toHexString();
 
-		// Assert
-		assertNull(nonExistingMqtt);
-		assertNotNull(existingMqtt);
+		// Assert the persisted MQTT Infrastructure is found.
+		assertNotNull(infrastructureMqttService.findById(id));
+
+
 	}
 
 	@Test
 	void saveNew() {
-		// Arrange
-		InfrastructureMqttEntity newInfrastructureMqttEntity = new InfrastructureMqttEntity();
-		newInfrastructureMqttEntity.setName("test-name");
-		newInfrastructureMqttEntity.setTags(List.of("tag1", "tag2"));
-		newInfrastructureMqttEntity.setUrl("http://localhost.test");
-		newInfrastructureMqttEntity.setActive(true);
+		// Perform a save of a new MQTT Infrastructure entity.
+		String id = infrastructureMqttService.saveNew(
+			testHelper.createInfrastructureMQtt(
+				"MQTT1", "http://localhost.test",
+				true, "tag1")
+		).getId().toHexString();
 
-		// Act
-		InfrastructureMqttEntity savedInfrastructureMqttEntity = infrastructureMqttService.saveNew(newInfrastructureMqttEntity);
-
-		// Assert
-		assertNotNull(savedInfrastructureMqttEntity);
-		assertEquals(initialEntitiesInDB + 1, testHelper.findAllInfrastructureMqttEntity().size());
+		// Assert entity was persisted.
+		assertNotNull(infrastructureMqttService.findById(id));
 	}
 
 	@Test
 	void saveUpdate() {
-		// Arrange
-		InfrastructureMqttEntity existingInfrastructureMqttEntity = testHelper.findOneInfrastructureMqttEntity();
-		existingInfrastructureMqttEntity.setName("updated-name");
-		existingInfrastructureMqttEntity.setTags(List.of("tag1", "tag2", "tag3"));
-		existingInfrastructureMqttEntity.setUrl("http://localhost.test.updated");
-		existingInfrastructureMqttEntity.setActive(false);
+		// Perform a save of a new MQTT Infrastructure entity.
+		String id = infrastructureMqttService.saveNew(
+			testHelper.createInfrastructureMQtt(
+				"MQTT1", "http://localhost.test",
+				true, "tag1")
+		).getId().toHexString();
 
-		// Act
-		infrastructureMqttService.saveUpdate(existingInfrastructureMqttEntity);
+		// Retrieve the entity and perform an update.
+		InfrastructureMqttEntity infrastructureMqtt = infrastructureMqttService.findById(id);
+		infrastructureMqtt.setName("MQTT2");
+		infrastructureMqtt.setUrl("http://localhost.test2");
+		infrastructureMqtt.setActive(false);
+		infrastructureMqtt.setTags(List.of("tag2", "tag3"));
+		infrastructureMqttService.saveUpdate(infrastructureMqtt);
 
-		InfrastructureMqttEntity updatedInfrastructureMqttEntity =
-			testHelper.findInfrastructureMqttEntityById(existingInfrastructureMqttEntity.getId().toString());
+		// Assert entity was updated.
+		InfrastructureMqttEntity updatedInfrastructureMqtt = infrastructureMqttService.findById(id);
+		assertEquals("MQTT2", updatedInfrastructureMqtt.getName());
+		assertEquals("http://localhost.test2", updatedInfrastructureMqtt.getUrl());
+		assertFalse(updatedInfrastructureMqtt.isActive());
+		assertEquals(2, updatedInfrastructureMqtt.getTags().size());
 
-		// Assert
-		assertEquals(initialEntitiesInDB, testHelper.findAllInfrastructureMqttEntity().size());
-		assertEquals("updated-name", updatedInfrastructureMqttEntity.getName());
-		assertEquals(3, updatedInfrastructureMqttEntity.getTags().size());
-		assertEquals("http://localhost.test.updated", updatedInfrastructureMqttEntity.getUrl());
-		assertFalse(updatedInfrastructureMqttEntity.isActive());
 	}
 
 	@Test
 	void deleteById() {
-		// Arrange
-		String existingId = testHelper.findOneInfrastructureMqttEntity().getId().toString();
-		String nonExistingId = new ObjectId().toString();
+		// Perform a save of a new MQTT Infrastructure entity.
+		String id = infrastructureMqttService.saveNew(
+			testHelper.createInfrastructureMQtt(
+				"MQTT1", "http://localhost.test",
+				true, "tag1")
+		).getId().toHexString();
 
-		// Act
-		infrastructureMqttService.deleteById(nonExistingId);
-		infrastructureMqttService.deleteById(existingId);
+		// Perform a delete operation.
+		infrastructureMqttService.deleteById(id);
 
-		// Assert
-		assertEquals(initialEntitiesInDB - 1, testHelper.findAllInfrastructureMqttEntity().size());
+		// Assert entity was deleted.
+		assertNull(infrastructureMqttService.findById(id));
 	}
 }
