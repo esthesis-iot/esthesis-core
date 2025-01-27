@@ -26,4 +26,8 @@
         <description>Created after removal of "dfl-concurrency" from esthesis CORE - Documentation</description>
         <accepts>dfl-concurrency.html</accepts>
     </rule>
+    <rule id="722b6f30">
+        <description>Created after removal of "User guide" from esthesis CORE - Documentation</description>
+        <accepts>introduction-user-guide.html</accepts>
+    </rule>
 </rules>

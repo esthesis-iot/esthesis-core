@@ -19,9 +19,6 @@
         <toc-element topic="tags.md"/>
         <toc-element topic="observability-guide.md"/>
     </toc-element>
-    <toc-element toc-title="User guide">
-        <toc-element topic="introduction-user-guide.md"/>
-    </toc-element>
     <toc-element toc-title="Device Agent">
         <toc-element topic="introduction-agent.md"/>
         <toc-element topic="Installation.md"/>
