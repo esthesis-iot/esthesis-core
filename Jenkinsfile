@@ -162,12 +162,12 @@ pipeline {
                     SOURCEFILES=""
 
                     # Find all target/classes directories and add them to --classfiles
-                    for dir in $(find services -type d -path "*/target/classes"); do
+                    for dir in $(find . -type d -path "*/target/classes"); do
                         CLASSFILES="$CLASSFILES --classfiles=$dir"
                     done
 
                     # Find all src/main/java directories and add them to --sourcefiles
-                    for dir in $(find services -type d -path "*/src/main/java"); do
+                    for dir in $(find . -type d -path "*/src/main/java"); do
                         SOURCEFILES="$SOURCEFILES --sourcefiles=$dir"
                     done
 
