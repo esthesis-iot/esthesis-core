@@ -1,4 +1,7 @@
 # MQTT security hardening
+<warning>
+Read this section before you open up your production installations.
+</warning>
 
 The default Helm charts for esthesis dependencies deploy an MQTT broker with no security
 configured. This may be convenient to make sure everything works in your environment, however by no

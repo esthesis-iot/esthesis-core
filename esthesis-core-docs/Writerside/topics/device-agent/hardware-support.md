@@ -1,5 +1,9 @@
 # Hardware support
 
+## Generic x86_64
+
+## Arm64
+
 ## Raspberry Pi
 
 ### Raspberry Pi support and compatibility

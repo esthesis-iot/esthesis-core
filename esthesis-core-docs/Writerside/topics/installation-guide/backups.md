@@ -5,8 +5,14 @@ services, as well as configuring your deployment environment to store the backup
 instructions are targeting specific cloud environments.
 
 ## Backup with a custom storage class
+<note>
+To be completed
+</note>
 
 ## Backup on AWS with EFS
+<note>
+To be completed
+</note>
 
 ## Backup on AWS with S3
 The following section provides instructions on how to configure backups when running esthesis CORE
