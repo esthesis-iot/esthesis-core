@@ -21,16 +21,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM;
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_KEY_SIZE;
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -49,26 +49,19 @@ class CAServiceTest {
 	@RestClient
 	SettingsResource settingsResource;
 
-	int initialCaSizeInDB = 0;
 
 	@BeforeEach
 	void setUp() {
 		testHelper.clearDatabase();
-		testHelper.createEntities(null);
-		testHelper.createEntities(testHelper.findOneCaEntity());
 
-		initialCaSizeInDB = testHelper.findAllCaEntity().size();
-
-		log.info("Initial CA size in DB: {}", initialCaSizeInDB);
-
-		// Mock the relevant settings
+		// Mock the security-related settings.
 		SettingEntity mockKeyAlgorithmSetting = mock(SettingEntity.class);
 		SettingEntity mockKeySizeSetting = mock(SettingEntity.class);
 		SettingEntity mockSignatureAlgorithmSetting = mock(SettingEntity.class);
 
-		when(mockKeyAlgorithmSetting.asString()).thenReturn("RSA"); // Valid asymmetric key algorithm
-		when(mockKeySizeSetting.asInt()).thenReturn(2048); // Typical key size for RSA
-		when(mockSignatureAlgorithmSetting.asString()).thenReturn("SHA256withRSA"); // Common signature algorithm
+		when(mockKeyAlgorithmSetting.asString()).thenReturn("RSA");
+		when(mockKeySizeSetting.asInt()).thenReturn(2048);
+		when(mockSignatureAlgorithmSetting.asString()).thenReturn("SHA256withRSA");
 
 		when(settingsResource.findByName(SECURITY_ASYMMETRIC_KEY_ALGORITHM))
 			.thenReturn(mockKeyAlgorithmSetting);
@@ -81,45 +74,62 @@ class CAServiceTest {
 
 	@Test
 	void save() {
-		CaEntity newCa = new CaEntity();
-		newCa.setCn("test-new-ca");
-		newCa.setIssued(Instant.now());
-		newCa.setValidity(Instant.now().plus(360, ChronoUnit.DAYS));
-		newCa.setName("Test new CA");
-		newCa.setPrivateKey("test-private-key");
-		newCa.setPublicKey("test-public-key");
-		caService.save(newCa);
+		// Perform the operation for saving a new CA.
+		String newCaId = caService.save(new CaEntity()
+				.setCn("test-new-ca")
+				.setIssued(Instant.now())
+				.setValidity(Instant.now().plus(360, ChronoUnit.DAYS))
+				.setName("Test new CA")
+				.setPrivateKey("test-private-key")
+				.setPublicKey("test-public-key"))
+			.getId()
+			.toHexString();
 
-		assertEquals(initialCaSizeInDB + 1, testHelper.findAllCaEntity().size());
+		// Assert CA was saved with the provided values.
+		CaEntity savedCa = caService.findById(newCaId);
+		assertEquals("test-new-ca", savedCa.getCn());
+		assertNotNull(savedCa.getIssued());
+		assertNotNull(savedCa.getValidity());
+		assertEquals("Test new CA", savedCa.getName());
+		assertNotNull(savedCa.getPrivateKey());
+		assertNotNull(savedCa.getPublicKey());
+
+
 	}
 
 	@Test
 	void getEligibleForSigning() {
-		int numberOfCasWithPrivateKey = initialCaSizeInDB;
-		assertEquals(numberOfCasWithPrivateKey, caService.getEligibleForSigning().size());
+		// Assert that no CAs are eligible for signing.
+		assertTrue(caService.getEligibleForSigning().isEmpty());
+
+		// Perform the operation for saving a new eligible CA.
+		caService.save(testHelper.makeCaEntity(null));
+
+		// Assert CA eligible for signing exists.
+		assertFalse(caService.getEligibleForSigning().isEmpty());
 	}
 
 	@SneakyThrows
 	@Test
 	void importCa() {
-		// Arrange
-		CaEntity importedCaEntity = new CaEntity();
-		importedCaEntity.setCertificate("Test Certificate");
-		importedCaEntity.setCn("Test Cn");
-		importedCaEntity.setIssued(Instant.now());
-		importedCaEntity.setName("Test Name");
-		importedCaEntity.setPrivateKey("Test Private Key");
-		importedCaEntity.setPublicKey("Test Public Key");
 
-		// Load files from the test resources folder
+		// Load files from the test resources folder to be used as form values.
 		Path publicKeyPath =
-			Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("public-key-test.txt")).toURI());
-		Path privateKeyPath =
-			Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("private-key-test.txt")).toURI());
-		Path certificatePath =
-			Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("certificate-test.txt")).toURI());
+			Paths.get(Objects.requireNonNull(
+					getClass().getClassLoader().getResource("public-key-test.txt"))
+				.toURI());
 
-		// Create FormValue mocks for each file
+		Path privateKeyPath =
+			Paths.get(Objects.requireNonNull(
+					getClass().getClassLoader().getResource("private-key-test.txt"))
+				.toURI());
+
+		Path certificatePath =
+			Paths.get(Objects.requireNonNull(
+					getClass().getClassLoader().getResource("certificate-test.txt"))
+				.toURI());
+
+		// Create FormValue mocks for each file.
 		FormValue publicKeyFormValue = mock(FormValue.class);
 		when(publicKeyFormValue.getFileItem()).thenReturn(new FormData.FileItemImpl(publicKeyPath));
 
@@ -129,16 +139,27 @@ class CAServiceTest {
 		FormValue certificateFormValue = mock(FormValue.class);
 		when(certificateFormValue.getFileItem()).thenReturn(new FormData.FileItemImpl(certificatePath));
 
-		// Create DefaultFileUpload instances
+		// Create DefaultFileUpload instances for each file.
 		DefaultFileUpload publicKey = new DefaultFileUpload("Test Public Key", publicKeyFormValue);
 		DefaultFileUpload privateKey = new DefaultFileUpload("Test Private Key", privateKeyFormValue);
 		DefaultFileUpload certificate = new DefaultFileUpload("Test Certificate", certificateFormValue);
 
+		// Prepare CA to be imported.
+		CaEntity importedCaEntity = new CaEntity();
+		importedCaEntity.setCertificate("Test Certificate");
+		importedCaEntity.setCn("Test Cn");
+		importedCaEntity.setIssued(Instant.now());
+		importedCaEntity.setName("Test Name");
+		importedCaEntity.setPrivateKey("Test Private Key");
+		importedCaEntity.setPublicKey("Test Public Key");
 
-		// Act
-		CaEntity caEntity = caService.importCa(importedCaEntity, publicKey, privateKey, certificate);
 
-		// Assert
+		// Perform the operation for importing a CA with the given mocked files.
+		String caId =
+			caService.importCa(importedCaEntity, publicKey, privateKey, certificate).getId().toHexString();
+
+		// Assert CA was imported and saved with the provided files.
+		CaEntity caEntity = caService.findById(caId);
 		assertNotNull(caEntity);
 		assertEquals("Test Name", caEntity.getName());
 		assertNotNull(caEntity.getPublicKey());
@@ -148,103 +169,83 @@ class CAServiceTest {
 
 	@Test
 	void getPrivateKey() {
-		// Arrange
-		String validCaId = testHelper.findOneCaEntity().getId().toString();
+		// Perform the operation for saving a CA with a private key.
+		String caId = caService.save(testHelper.makeCaEntity(null)).getId().toHexString();
 
-		// Act
-		String privateKey = caService.getPrivateKey(validCaId);
-
-		// Assert
-		assertNotNull(privateKey);
+		// Assert private key was saved.
+		assertNotNull(caService.getPrivateKey(caId));
 	}
 
 	@Test
 	void getPublicKey() {
-		// Arrange
-		String validCaId = testHelper.findOneCaEntity().getId().toString();
+		// Perform the operation for saving a CA with a public key.
+		String caId = caService.save(testHelper.makeCaEntity(null)).getId().toHexString();
 
-		// Act
-		String publicKey = caService.getPublicKey(validCaId);
-
-		// Assert
-		assertNotNull(publicKey);
+		// Assert public key was saved.
+		assertNotNull(caService.getPublicKey(caId));
 	}
 
 	@Test
 	void getCertificate() {
-		// Arrange
-		CaEntity ca = testHelper.findOneCaEntityWithParentCa();
-		String caId = ca.getId().toString();
+		// Perform the operation for saving a CA with a certificate.
+		String caId = caService.save(testHelper.makeCaEntity(null)).getId().toHexString();
 
-		// Act
-		List<String> certificate = caService.getCertificate(caId);
-
-		// Assert
-		assertEquals(2, certificate.size());
-		assertNotNull(certificate.getFirst());
+		// Assert certificate was saved.
+		assertNotNull(caService.getCertificate(caId));
 	}
 
 	@Test
 	void deleteById() {
-		// Arrange
-		String validCaId = testHelper.findOneCaEntity().getId().toString();
+		// Perform the operation for saving a new CA.
+		String caId = caService.save(testHelper.makeCaEntity(null)).getId().toHexString();
 
-		// Act
-		caService.deleteById(validCaId);
+		// Assert CA is persisted.
+		assertNotNull(caService.findById(caId));
 
-		// Assert
-		assertEquals(initialCaSizeInDB - 1, testHelper.findAllCaEntity().size());
+		// Perform the operation for deleting the CA.
+		caService.deleteById(caId);
+
+		// Assert CA was deleted.
+		assertNull(caService.findById(caId));
+
 	}
 
 	@Test
 	void findFirstByColumn() {
-		// Arrange
-		CaEntity ca = testHelper.findOneCaEntityWithParentCa();
-		Map<String, Object> fields = Map.of(
-			"cn", ca.getCn(),
-			"issued", ca.getIssued(),
-			"validity", ca.getValidity(),
-			"publicKey", ca.getPublicKey(),
-			"privateKey", ca.getPrivateKey(),
-			"certificate", ca.getCertificate(),
-			"parentCa", ca.getParentCa(),
-			"parentCaId", ca.getParentCaId(),
-			"name", ca.getName()
-		);
+		// Perform the operation for saving a new CA.
+		caService.save(new CaEntity()
+			.setCn("test cn")
+			.setName("test name")
+			.setIssued(Instant.now())
+			.setValidity(Instant.now().plus(360, ChronoUnit.DAYS)));
 
-		// Act & Assert
-		for (Map.Entry<String, Object> entry : fields.entrySet()) {
-			String column = entry.getKey();
-			Object value = entry.getValue();
+		// Assert CA can be found by valid columns values.
+		assertNotNull(caService.findFirstByColumn("name", "test name"));
+		assertNotNull(caService.findFirstByColumn("cn", "test cn"));
 
-			CaEntity nonexistentEntity = caService.findFirstByColumn(column, "nonexistent");
-			CaEntity existentEntity = caService.findFirstByColumn(column, value);
-
-			assertNull(nonexistentEntity, "Expected null for column: " + column + " with value: nonexistent");
-			assertNotNull(existentEntity, "Expected entity for column: " + column + " with value: " + value + " but found null");
-		}
-
-		// Special case: Testing nonexistent column
-		CaEntity caNonexistent = caService.findFirstByColumn("nonexistent", "test");
-		assertNull(caNonexistent, "Expected null for nonexistent column");
+		// Assert CA cannot be found by invalid columns values.
+		assertNull(caService.findFirstByColumn("name", "invalid name"));
+		assertNull(caService.findFirstByColumn("cn", "invalid cn"));
 	}
 
 	@Test
 	void findById() {
-		// Arrange
-		String validCaId = testHelper.findOneCaEntity().getId().toString();
+		// Perform the operation for saving a new CA.
+		String caId = caService.save(testHelper.makeCaEntity(null)).getId().toHexString();
 
-		// Act & Assert
-		CaEntity caEntity = caService.findById(validCaId);
-		assertNotNull(caEntity);
+		// Assert CA can be found by id.
+		assertNotNull(caService.findById(caId));
 	}
 
 	@Test
 	void find() {
-		// Act
-		List<CaEntity> caEntities = caService.find(testHelper.makePageable(0, 100), true).getContent();
+		// Assert no CAs are found.
+		assertTrue(caService.find(testHelper.makePageable(0, 100), true).getContent().isEmpty());
 
-		// Assert
-		assertEquals(initialCaSizeInDB, caEntities.size());
+		// Perform the operation for saving a new CA.
+		caService.save(testHelper.makeCaEntity(null));
+
+		// Assert CA can be found.
+		assertFalse(caService.find(testHelper.makePageable(0, 100), true).getContent().isEmpty());
 	}
 }

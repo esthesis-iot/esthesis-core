@@ -179,14 +179,16 @@ public class TestHelper {
 	}
 
 	/**
-	 * Helper method to create a Pageable object with the specified parameters
+	 * Mock a Pageable object with the specified parameters.
+	 *
+	 * @param page The page number being requested.
+	 * @param size The size of the page.
+	 * @return The mocked Pageable object.
 	 */
 	public Pageable makePageable(int page, int size) {
 
-		// Create a mock of UriInfo
+		// Mock the request URI and parameters.
 		UriInfo uriInfo = Mockito.mock(UriInfo.class);
-
-		// Define the behavior of the mock
 		when(uriInfo.getRequestUri()).thenReturn(URI.create("http://localhost:8080/find?page=" + page + "&size=" + size));
 		when(uriInfo.getQueryParameters()).thenReturn(new MultivaluedHashMap<>());
 

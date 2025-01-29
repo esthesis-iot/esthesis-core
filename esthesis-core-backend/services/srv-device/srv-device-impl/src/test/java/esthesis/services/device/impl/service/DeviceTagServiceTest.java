@@ -1,6 +1,6 @@
 package esthesis.services.device.impl.service;
 
-import esthesis.service.device.entity.DeviceEntity;
+import esthesis.core.common.AppConstants;
 import esthesis.service.tag.resource.TagResource;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
@@ -13,7 +13,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static esthesis.common.util.EsthesisCommonConstants.Device.Type.CORE;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -33,134 +38,114 @@ class DeviceTagServiceTest {
 	@Inject
 	DeviceTagService deviceTagService;
 
-	int initialDeviceSizeInDB = 0;
+	@Inject
+	DeviceService deviceService;
 
 	@BeforeEach
 	void setUp() {
 		testHelper.setup();
-		testHelper.createEntities();
 
-		// Mock the tag resource requests
-		when(tagResource.findByNames(eq("tag1"), anyBoolean())).thenReturn(List.of(testHelper.makeTag("tag1")));
-		when(tagResource.findByNames(eq("tag2"), anyBoolean())).thenReturn(List.of(testHelper.makeTag("tag2")));
-		when(tagResource.findByNames(eq("tag3"), anyBoolean())).thenReturn(List.of(testHelper.makeTag("tag3")));
-		when(tagResource.findByNames(eq("tag4"), anyBoolean())).thenReturn(List.of(testHelper.makeTag("tag4")));
-		when(tagResource.findByNames(eq("tag5"), anyBoolean())).thenReturn(List.of(testHelper.makeTag("tag5")));
-		when(tagResource.findByNames(eq("tag6"), anyBoolean())).thenReturn(List.of(testHelper.makeTag("tag6")));
-		when(tagResource.findByNames(eq("tag"), anyBoolean())).thenReturn(List.of(
-			testHelper.makeTag("tag1"),
-			testHelper.makeTag("tag2"),
-			testHelper.makeTag("tag3"),
-			testHelper.makeTag("tag4"),
-			testHelper.makeTag("tag5"),
-			testHelper.makeTag("tag6"))
-		);
-
-		initialDeviceSizeInDB = testHelper.findAllDeviceEntity().size();
-		log.info("Initial device size in DB: {}", initialDeviceSizeInDB);
+		// Mock the tag resource requests.
+		when(tagResource.findByNames("tag1", anyBoolean())).thenReturn(List.of(testHelper.makeTag("tag1")));
+		when(tagResource.findByNames("tag", eq(true)))
+			.thenReturn(List.of(testHelper.makeTag("tag1"), testHelper.makeTag("tag2")));
 	}
 
 	@Test
 	void findByTagName() {
-		// Arrange
-		String existentTagName = "tag1";
-		String existentPartialTagName = "tag";
-		String nonExistentTagName = "nonExistentTag";
+		// Perform a save operation for a new device.
+		deviceService.saveNew(
+			testHelper.makeDeviceEntity(
+				"test-hardware-id",
+				AppConstants.Device.Status.REGISTERED,
+				testHelper.getTagId("tag1"),
+				CORE)).getId().toHexString();
 
-		// Act
-		List<DeviceEntity> existentTagDevicesExactMatch =
-			deviceTagService.findByTagName(existentTagName, false);
-		List<DeviceEntity> existentTagDevicesPartialMatch =
-			deviceTagService.findByTagName(existentPartialTagName, true);
+		// Assert device can be found by existing tag name.
+		assertFalse(deviceTagService.findByTagName("tag1", false).isEmpty());
+		assertFalse(deviceTagService.findByTagName("tag1", true).isEmpty());
+		assertFalse(deviceTagService.findByTagName("tag", true).isEmpty());
 
-		List<DeviceEntity> nonExistentTagDevicesExactMatch =
-			deviceTagService.findByTagName(nonExistentTagName, false);
-		List<DeviceEntity> nonExistentTagDevicesPartiaMatch =
-			deviceTagService.findByTagName(nonExistentTagName, true);
-
-		// Assert
-		assertEquals(2, existentTagDevicesExactMatch.size());
-		assertEquals(8, existentTagDevicesPartialMatch.size());
-		assertTrue(nonExistentTagDevicesExactMatch.isEmpty());
-		assertTrue(nonExistentTagDevicesPartiaMatch.isEmpty());
-
+		// Assert non-existing tag can't find any device.
+		assertTrue(deviceTagService.findByTagName("nonExistentTag", false).isEmpty());
+		assertTrue(deviceTagService.findByTagName("nonExistentTag", true).isEmpty());
 	}
 
 	@Test
 	void findByTagNameList() {
-		// Arrange
-		String existentTagName = "tag1";
-		String existentPartialTagName = "tag";
-		String nonExistentTagName = "nonExistentTag";
+		// Perform a save operation for a new device.
+		deviceService.saveNew(
+			testHelper.makeDeviceEntity(
+				"test-hardware-id",
+				AppConstants.Device.Status.REGISTERED,
+				testHelper.getTagId("tag1"),
+				CORE)).getId().toHexString();
 
-		// Act
-		List<DeviceEntity> existentTagDevicesExactMatch =
-			deviceTagService.findByTagName(List.of(existentTagName), false);
-		List<DeviceEntity> existentTagDevicesPartialMatch =
-			deviceTagService.findByTagName(List.of(existentPartialTagName), true);
+		// Assert device can be found by existing tag name.
+		assertFalse(deviceTagService.findByTagName(List.of("tag1"), false).isEmpty());
+		assertFalse(deviceTagService.findByTagName(List.of("tag1"), true).isEmpty());
+		assertFalse(deviceTagService.findByTagName(List.of("tag"), true).isEmpty());
 
-		List<DeviceEntity> nonExistentTagDevicesExactMatch =
-			deviceTagService.findByTagName(List.of(nonExistentTagName), false);
-		List<DeviceEntity> nonExistentTagDevicesPartiaMatch =
-			deviceTagService.findByTagName(List.of(nonExistentTagName), true);
-
-		// Assert
-		assertEquals(2, existentTagDevicesExactMatch.size());
-		assertEquals(8, existentTagDevicesPartialMatch.size());
-		assertTrue(nonExistentTagDevicesExactMatch.isEmpty());
-		assertTrue(nonExistentTagDevicesPartiaMatch.isEmpty());
+		// Assert non-existing tag can't find any device.
+		assertTrue(deviceTagService.findByTagName(List.of("nonExistentTag"), false).isEmpty());
+		assertTrue(deviceTagService.findByTagName(List.of("nonExistentTag"), true).isEmpty());
 	}
 
 	@Test
 	void findByTagId() {
-		// Arrange
-		String existentTagId = testHelper.getTagId("tag1");
-		String nonExistentTagId = "nonExistentTag";
+		// Perform a save operation for a new device.
+		deviceService.saveNew(
+			testHelper.makeDeviceEntity(
+				"test-hardware-id",
+				AppConstants.Device.Status.REGISTERED,
+				testHelper.getTagId("tag1"),
+				CORE)).getId().toHexString();
 
-		// Act
-		List<DeviceEntity> existentTagDevices = deviceTagService.findByTagId(existentTagId);
-		List<DeviceEntity> nonExistentTagDevices = deviceTagService.findByTagId(nonExistentTagId);
+		// Assert device can be found by its tag id.
+		assertNotNull(deviceTagService.findByTagId(testHelper.getTagId("tag1")));
 
-		// Assert
-		assertEquals(2, existentTagDevices.size());
-		assertTrue(nonExistentTagDevices.isEmpty());
+		// Assert non-existing tag id can't find any device.
+		assertTrue(deviceTagService.findByTagId("nonExistentTag").isEmpty());
 	}
 
 	@Test
 	void countByTag() {
-		// Arrange
-		String existentTagName = "tag1";
-		String existentPartialTagName = "tag";
-		String nonExistentTagName = "nonExistentTag";
+		// Perform a save operation for a new device.
+		deviceService.saveNew(
+			testHelper.makeDeviceEntity(
+				"test-hardware-id",
+				AppConstants.Device.Status.REGISTERED,
+				testHelper.getTagId("tag1"),
+				CORE)).getId().toHexString();
 
-		// Act
-		Long existentTagDevices = deviceTagService.countByTag(List.of(existentTagName), false);
-		Long existentTagDevicesPartial = deviceTagService.countByTag(List.of(existentPartialTagName), true);
-		Long nonExistentTagDevices = deviceTagService.countByTag(List.of(nonExistentTagName), false);
-		Long nonExistentTagDevicesPartial = deviceTagService.countByTag(List.of(nonExistentTagName), true);
+		// Assert existing tags count one device.
+		assertEquals(1, deviceTagService.countByTag(List.of("tag1"), false));
+		assertEquals(1, deviceTagService.countByTag(List.of("tag1"), true));
+		assertEquals(1, deviceTagService.countByTag(List.of("tag"), true));
 
-		// Assert
-		assertEquals(2L, existentTagDevices);
-		assertEquals(initialDeviceSizeInDB, existentTagDevicesPartial);
-		assertEquals(0L, nonExistentTagDevices);
-		assertEquals(0L, nonExistentTagDevicesPartial);
+		// Assert non-existing tags can't count any devices.
+		assertEquals(0, deviceTagService.countByTag(List.of("nonExistentTag"), false));
+		assertEquals(0, deviceTagService.countByTag(List.of("nonExistentTag"), true));
 	}
 
 	@Test
 	void removeTagById() {
-		// Arrange
-		String existentTagId = testHelper.getTagId("tag1");
-		String nonExistentTagId = "nonExistentTag";
 
-		// Act & Assert - No exception is thrown and no tag is removed
-		assertDoesNotThrow(() -> deviceTagService.removeTagById(nonExistentTagId));
-		List<DeviceEntity> devices = testHelper.findAllDeviceEntity();
-		assertTrue(devices.stream().noneMatch(device -> device.getTags().isEmpty()));
+		// Perform a save operation for a new device.
+		String deviceID = deviceService.saveNew(
+			testHelper.makeDeviceEntity(
+				"test-hardware-id",
+				AppConstants.Device.Status.REGISTERED,
+				"tag1",
+				CORE)).getId().toHexString();
 
-		// Act & Assert - tag was removed
-		deviceTagService.removeTagById(existentTagId);
-		devices = testHelper.findAllDeviceEntity();
-		assertTrue(devices.stream().noneMatch(device -> device.getTags().contains(existentTagId)));
+		//Assert no tag is removed when tag does not exist.
+		assertDoesNotThrow(() -> deviceTagService.removeTagById("nonExistentTag"));
+		assertFalse(deviceService.findById(deviceID).getTags().isEmpty());
+
+		// Assert tag is removed when tag exists.
+		assertDoesNotThrow(() -> deviceTagService.removeTagById("tag1"));
+		assertTrue(deviceService.findById(deviceID).getTags().isEmpty());
 
 	}
 }

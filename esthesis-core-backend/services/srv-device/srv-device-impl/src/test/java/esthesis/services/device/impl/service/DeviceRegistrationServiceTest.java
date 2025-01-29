@@ -17,7 +17,6 @@ import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,6 +66,9 @@ class DeviceRegistrationServiceTest {
 	@Inject
 	DeviceRegistrationService deviceRegistrationService;
 
+	@Inject
+	DeviceService deviceService;
+
 	@SneakyThrows
 	@BeforeEach
 	void setUp() {
@@ -75,7 +77,7 @@ class DeviceRegistrationServiceTest {
 		// Mock the generation of a key pair request.
 		when(keyResource.generateKeyPair()).thenReturn(new KeyPair(mock(PublicKey.class), mock(PrivateKey.class)));
 
-		// Mock the existence of a tag called "tag1".
+		// Mock finding a tag.
 		when(tagResource.findByName(anyString(), anyBoolean())).thenReturn(testHelper.makeTag("tag1"));
 
 		// Mock the settings for enabling the device to push tags.
@@ -93,28 +95,28 @@ class DeviceRegistrationServiceTest {
 				AppConstants.DeviceRegistrationMode.OPEN.name()));
 
 		// Register a new CORE device.
-		ObjectId coreDeviceId =
+		String coreDeviceId =
 			deviceRegistrationService.register(new DeviceRegistrationDTO()
 				.setHardwareId("new-core-device")
 				.setTags(List.of("tag1"))
-				.setType(CORE)).getId();
+				.setType(CORE)).getId().toHexString();
 
 		// Register a new EDGE device.
-		ObjectId edgeDeviceId =
+		String edgeDeviceId =
 			deviceRegistrationService.register(new DeviceRegistrationDTO()
 				.setHardwareId("new-edge-device")
 				.setTags(List.of("tag2", "tag3"))
-				.setType(EDGE)).getId();
+				.setType(EDGE)).getId().toHexString();
 
 		// Assert CORE device was persisted.
-		DeviceEntity coreDevice = testHelper.findDeviceByID(coreDeviceId);
+		DeviceEntity coreDevice = deviceService.findById(coreDeviceId);
 		assertNotNull(coreDevice);
 		assertEquals("new-core-device", coreDevice.getHardwareId());
 		assertEquals(CORE, coreDevice.getType());
 		assertEquals(1, coreDevice.getTags().size());
 
 		// Assert EDGE device was persisted.
-		DeviceEntity edgeDevice = testHelper.findDeviceByID(edgeDeviceId);
+		DeviceEntity edgeDevice = deviceService.findById(edgeDeviceId);
 		assertNotNull(edgeDevice);
 		assertEquals("new-edge-device", edgeDevice.getHardwareId());
 		assertEquals(EDGE, edgeDevice.getType());
@@ -165,21 +167,21 @@ class DeviceRegistrationServiceTest {
 		assertThrows(QSecurityException.class, () -> deviceRegistrationService.register(edgeDeviceWithWrongSecret));
 
 		// Perform the registering of a core and an edge device using the correct registration secret.
-		ObjectId coreDeviceId =
+		String coreDeviceId =
 			deviceRegistrationService.register(new DeviceRegistrationDTO()
 				.setHardwareId("new-core-device")
 				.setRegistrationSecret("test-secret")
-				.setType(CORE)).getId();
+				.setType(CORE)).getId().toHexString();
 
-		ObjectId edgeDeviceId =
+		String edgeDeviceId =
 			deviceRegistrationService.register(new DeviceRegistrationDTO()
 				.setHardwareId("new-edge-device")
 				.setRegistrationSecret("test-secret")
-				.setType(EDGE)).getId();
+				.setType(EDGE)).getId().toHexString();
 
 		// Assert devices were persisted.
-		assertNotNull(testHelper.findDeviceByID(coreDeviceId));
-		assertNotNull(testHelper.findDeviceByID(edgeDeviceId));
+		assertNotNull(deviceService.findById(coreDeviceId));
+		assertNotNull(deviceService.findById(edgeDeviceId));
 
 	}
 
@@ -222,11 +224,12 @@ class DeviceRegistrationServiceTest {
 				AppConstants.DeviceRegistrationMode.ID.name()));
 
 		// Perform device registration in ID mode.
-		ObjectId deviceId =
-			deviceRegistrationService.register(new DeviceRegistrationDTO().setHardwareId("new-core-device")).getId();
+		String deviceId =
+			deviceRegistrationService.register(new DeviceRegistrationDTO().setHardwareId("new-core-device"))
+				.getId().toHexString();
 
 		// Assert device has updated status from "PREREGISTERED" to "REGISTERED".
-		assertEquals(REGISTERED, testHelper.findDeviceByID(deviceId).getStatus());
+		assertEquals(REGISTERED, deviceService.findById(deviceId).getStatus());
 	}
 
 	@SneakyThrows
@@ -248,8 +251,10 @@ class DeviceRegistrationServiceTest {
 			.setType(EDGE));
 
 		// Assert devices were persisted with status "PREREGISTERED".
-		assertEquals(PREREGISTERED, testHelper.findDevicesByHardwareId("new-core-device").getFirst().getStatus());
-		assertEquals(PREREGISTERED, testHelper.findDevicesByHardwareId("new-edge-device").getFirst().getStatus());
+		assertEquals(PREREGISTERED,
+			deviceService.findByHardwareId("new-core-device", false).orElseThrow().getStatus());
+		assertEquals(PREREGISTERED,
+			deviceService.findByHardwareId("new-edge-device", false).orElseThrow().getStatus());
 	}
 
 	@SneakyThrows

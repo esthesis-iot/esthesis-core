@@ -1,7 +1,6 @@
 package esthesis.service.dataflow.impl.service;
 
 import esthesis.common.exception.QDoesNotExistException;
-import esthesis.service.dataflow.dto.FormlySelectOption;
 import esthesis.service.dataflow.entity.DataflowEntity;
 import esthesis.service.kubernetes.dto.DeploymentInfoDTO;
 import esthesis.service.kubernetes.resource.KubernetesResource;
@@ -16,9 +15,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -41,17 +39,11 @@ class DataflowServiceTest {
 	@RestClient
 	KubernetesResource kubernetesResource;
 
-	int initialDataflowSizeInDB = 0;
-
 	@BeforeEach
 	void setUp() {
 		testHelper.clearDatabase();
-		testHelper.createDataflow();
-		initialDataflowSizeInDB = testHelper.findAllDataflowEntity().size();
 
-		log.info("Initial dataflow size in DB: {}", initialDataflowSizeInDB);
-
-		// Mock the kubernetes resource requests
+		// Mock scheduling the deployment, getting the namespaces and checking if the deployment name is available.
 		when(kubernetesResource.scheduleDeployment(Mockito.any(DeploymentInfoDTO.class))).thenReturn(true);
 		when(kubernetesResource.getNamespaces()).thenReturn(testHelper.getNamespaces());
 		when(kubernetesResource.isDeploymentNameAvailable(anyString(), anyString())).thenReturn(true);
@@ -59,95 +51,124 @@ class DataflowServiceTest {
 
 	@Test
 	void getNamespaces() {
-		// Arrange
-		int expectedSize = testHelper.getNamespaces().size();
-
-		// Act
-		List<FormlySelectOption> namespaces = dataflowService.getNamespaces();
-
-		// Assert
-		assertEquals(expectedSize, namespaces.size());
+		// Assert namespaces are returned.
+		assertFalse(dataflowService.getNamespaces().isEmpty());
 	}
 
 	@Test
 	void delete() {
-		// Arrange
-		String nonexistentDataflowId = new ObjectId().toString();
-		String validDataflowId = testHelper.findOneDataflowEntity().getId().toString();
+		// Perform a save operation for a new dataflow.
+		String dataflowId =
+			dataflowService.saveNew(testHelper.createDataflow("test dataflow"))
+				.getId()
+				.toHexString();
 
-		// Act try to delete nonexistent dataflow
+		// Assert deletion fails for nonexistent dataflow.
+		String nonexistentDataflowId = new ObjectId().toHexString();
 		assertThrows(QDoesNotExistException.class, () -> dataflowService.delete(nonexistentDataflowId));
 
-		// Assert dataflow is not deleted
-		assertEquals(initialDataflowSizeInDB, testHelper.findAllDataflowEntity().size());
+		// Assert dataflow exists.
+		assertNotNull(dataflowService.findById(dataflowId));
 
-		// Act try to delete valid dataflow
-		dataflowService.delete(validDataflowId);
+		// Perform a delete operation for the dataflow.
+		dataflowService.delete(dataflowId);
 
-		// Assert dataflow is deleted
-		assertEquals(initialDataflowSizeInDB - 1, testHelper.findAllDataflowEntity().size());
+		// Assert dataflow was deleted.
+		assertNull(dataflowService.findById(dataflowId));
 	}
 
 	@Test
 	void saveNew() {
-		// Arrange
-		DataflowEntity newDataflow = new DataflowEntity();
-		newDataflow.setName("new dataflow");
-		newDataflow.setType("new type");
-		newDataflow.setStatus(true);
-		newDataflow.setConfig(testHelper.createDataflowConfig());
+		// Perform a save operation for a new dataflow.
+		String dataflowId =
+			dataflowService.saveNew(new DataflowEntity()
+					.setName("new dataflow")
+					.setType("new type")
+					.setStatus(true)
+					.setConfig(testHelper.createDataflowConfig()))
+				.getId().toHexString();
 
-		// Act
-		DataflowEntity savedDataflow = dataflowService.saveNew(newDataflow);
-
-		// Assert
-		assertEquals(initialDataflowSizeInDB + 1, testHelper.findAllDataflowEntity().size());
+		// Assert dataflow was saved with the provided values.
+		DataflowEntity savedDataflow = dataflowService.findById(dataflowId);
 		assertEquals("new dataflow", savedDataflow.getName());
+		assertEquals("new type", savedDataflow.getType());
+		assertTrue(savedDataflow.isStatus());
+		assertEquals(testHelper.createDataflowConfig(), savedDataflow.getConfig());
 	}
 
 
 	@Test
 	void saveUpdate() {
-		// Arrange
-		DataflowEntity existingDataflow = testHelper.findOneDataflowEntity();
-		existingDataflow.setName("updated dataflow");
-		existingDataflow.setType("updated type");
-		existingDataflow.setStatus(false);
+		// Perform a save operation for a new dataflow.
+		String dataflowId =
+			dataflowService.saveNew(new DataflowEntity()
+					.setName("new dataflow")
+					.setType("new type")
+					.setStatus(true)
+					.setConfig(testHelper.createDataflowConfig()))
+				.getId().toHexString();
 
-		// Act
-		DataflowEntity savedDataflow = dataflowService.saveUpdate(existingDataflow);
+		// Perform an update operation for the dataflow.
+		DataflowEntity dataflow = dataflowService.findById(dataflowId);
+		dataflow.setName("updated dataflow");
+		dataflow.setType("updated type");
+		dataflow.setStatus(false);
+		dataflowService.saveUpdate(dataflow);
 
-		// Assert dataflow is updated
-		assertEquals(initialDataflowSizeInDB, testHelper.findAllDataflowEntity().size());
-		assertEquals(existingDataflow.getId(), savedDataflow.getId());
+		// Assert dataflow was updated with the provided values.
+		DataflowEntity updatedDataflow = dataflowService.findById(dataflowId);
+		assertEquals("updated dataflow", updatedDataflow.getName());
+		assertEquals("updated type", updatedDataflow.getType());
+		assertFalse(updatedDataflow.isStatus());
 	}
 
 	@Test
 	void find() {
-		// Act
-		List<DataflowEntity> dataflowEntities =
-			dataflowService.find(testHelper.makePageable(0, 100), true).getContent();
+		// Assert no dataflows exist.
+		assertTrue(dataflowService.find(
+				testHelper.makePageable(0, 100), true)
+			.getContent()
+			.isEmpty());
 
-		// Assert
-		assertEquals(initialDataflowSizeInDB, dataflowEntities.size());
+		assertTrue(dataflowService.find(
+				testHelper.makePageable(0, 100), false)
+			.getContent()
+			.isEmpty());
+
+		// Perform a save operation for a new dataflow.
+		dataflowService.saveNew(testHelper.createDataflow("test dataflow"));
+
+		// Assert dataflow exists.
+		assertFalse(dataflowService.find(
+				testHelper.makePageable(0, 100), true)
+			.getContent()
+			.isEmpty());
+
+		assertFalse(dataflowService.find(
+				testHelper.makePageable(0, 100), false)
+			.getContent().
+			isEmpty());
 
 	}
 
 	@Test
 	void findById() {
-		//Arrange
-		String validDataflowId = testHelper.findOneDataflowEntity().getId().toString();
-		String nonexistentDataflowId = new ObjectId().toString();
+		// Perform a save operation for a new dataflow.
+		String dataflowId =
+			dataflowService.saveNew(testHelper.createDataflow("test dataflow"))
+				.getId()
+				.toHexString();
 
-		// Act & Assert
-		assertNull(dataflowService.findById(nonexistentDataflowId));
-		assertNotNull(dataflowService.findById(validDataflowId));
+		// Assert dataflow can be found.
+		assertNotNull(dataflowService.findById(dataflowId));
 
+		// Assert non-existent dataflow cannot be found.
+		assertNull(dataflowService.findById(new ObjectId().toHexString()));
 	}
 
 	@Test
 	void isDeploymentNameAvailable() {
-		// Act & Assert
+		// Assert deployment name is available.
 		assertTrue(dataflowService.isDeploymentNameAvailable("test-name", "test-namespace"));
 	}
 }

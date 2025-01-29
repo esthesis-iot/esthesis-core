@@ -54,13 +54,6 @@ class CertificateServiceTest {
 	@BeforeEach
 	void setUp() {
 		testHelper.clearDatabase();
-		testHelper.createEntities(null);
-		testHelper.createEntities(testHelper.findOneCaEntity());
-
-		initialCertificateSizeInDB = testHelper.findAllCertificateEntity().size();
-
-		log.info("Initial certificate size in DB: {}", initialCertificateSizeInDB);
-
 
 		// Mock the relevant settings
 		SettingEntity mockKeyAlgorithmSetting = mock(SettingEntity.class);

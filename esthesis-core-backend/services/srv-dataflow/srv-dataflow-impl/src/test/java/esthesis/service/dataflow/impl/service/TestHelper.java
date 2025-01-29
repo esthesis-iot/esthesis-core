@@ -23,30 +23,30 @@ public class TestHelper {
 	@Inject
 	DataflowRepository dataflowRepository;
 
-	public void createDataflow() {
+	public DataflowEntity createDataflow(String dataflowName) {
 		DataflowEntity dataflow = new DataflowEntity();
-		dataflow.setName("test dataflow");
+		dataflow.setName(dataflowName);
 		dataflow.setType("test type");
 		dataflow.setConfig(createDataflowConfig());
 		dataflow.setStatus(true);
-		dataflowRepository.persist(dataflow);
+		return dataflow;
 	}
 
-	// Create a configuration map that matches the expected structure for the dataflow configuration
+	// Create a configuration map that matches the expected structure for the dataflow configuration.
 	public Map<String, Object> createDataflowConfig() {
-		// Kubernetes-specific configuration
+
 		Map<String, Object> kubernetesConfig = new HashMap<>();
 
 		// Secrets configuration
 		List<Map<String, String>> secrets = new ArrayList<>();
 		secrets.add(Map.of(
-			"name", "exampleSecret", // Aligning with SECRET_NAME
-			"path", "/path/to/secret", // Aligning with SECRET_PATH
-			"content", "exampleContent" // Aligning with SECRET_CONTENT
+			"name", "exampleSecret",
+			"path", "/path/to/secret",
+			"content", "exampleContent"
 		));
 		kubernetesConfig.put("secrets", secrets);
 
-		// Other Kubernetes configuration details
+		// Other Kubernetes configuration details.
 		kubernetesConfig.put("namespace", "test-namespace");
 		kubernetesConfig.put("container-image-version", "1.0.0");
 		kubernetesConfig.put("pods-min", 1);
@@ -56,7 +56,7 @@ public class TestHelper {
 		kubernetesConfig.put("registry", "docker.registry.url");
 		kubernetesConfig.put("env", "ENV_VAR1=value1\nENV_VAR2=value2");
 
-		// Flattened map inclusion
+		// Flattened map inclusion.
 		Map<String, Object> config = new HashMap<>();
 		config.put("kubernetes", kubernetesConfig);
 		return config;
@@ -67,27 +67,22 @@ public class TestHelper {
 		dataflowRepository.deleteAll();
 	}
 
-	public List<DataflowEntity> findAllDataflowEntity() {
-		return dataflowRepository.listAll();
-	}
-
 	public List<String> getNamespaces() {
 		return List.of("test-namespace-1", "test-namespace-2", "test-namespace-3");
 	}
 
-	public DataflowEntity findOneDataflowEntity() {
-		return dataflowRepository.findAll().firstResult();
-	}
 
 	/**
-	 * Helper method to create a Pageable object with the specified parameters
+	 * Mock a Pageable object with the specified parameters.
+	 *
+	 * @param page The page number being requested.
+	 * @param size The size of the page.
+	 * @return The mocked Pageable object.
 	 */
 	public Pageable makePageable(int page, int size) {
 
-		// Create a mock of UriInfo
+		// Mock the request URI and parameters.
 		UriInfo uriInfo = Mockito.mock(UriInfo.class);
-
-		// Define the behavior of the mock
 		when(uriInfo.getRequestUri()).thenReturn(URI.create("http://localhost:8080/find?page=" + page + "&size=" + size));
 		when(uriInfo.getQueryParameters()).thenReturn(new MultivaluedHashMap<>());
 
