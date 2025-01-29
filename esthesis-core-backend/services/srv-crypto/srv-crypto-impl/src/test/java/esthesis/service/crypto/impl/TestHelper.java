@@ -125,18 +125,6 @@ public class TestHelper {
 		return caEntityRepository.findAll().firstResult();
 	}
 
-	public CaEntity findOneCaEntityWithParentCa() {
-		return caEntityRepository
-			.findAll()
-			.stream()
-			.filter(ca -> ca.getParentCa() != null)
-			.findFirst()
-			.orElse(null);
-	}
-
-	public List<CaEntity> findAllCaEntity() {
-		return caEntityRepository.findAll().list();
-	}
 
 	public List<CertificateEntity> findAllCertificateEntity() {
 		return certificateEntityRepository.findAll().list();

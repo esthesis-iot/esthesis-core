@@ -1,7 +1,5 @@
 package esthesis.services.campaign.impl;
 
-import esthesis.common.util.EsthesisCommonConstants;
-import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.Campaign.Condition.Op;
 import esthesis.core.common.AppConstants.Campaign.Condition.Stage;
 import esthesis.core.common.AppConstants.Campaign.Condition.Type;
@@ -11,7 +9,6 @@ import esthesis.service.campaign.dto.CampaignMemberDTO;
 import esthesis.service.campaign.entity.CampaignDeviceMonitorEntity;
 import esthesis.service.campaign.entity.CampaignEntity;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.device.dto.DeviceKeyDTO;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.services.campaign.impl.repository.CampaignDeviceMonitorRepository;
 import esthesis.services.campaign.impl.repository.CampaignRepository;
@@ -31,7 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static esthesis.common.util.EsthesisCommonConstants.Device.Type.*;
+import static esthesis.common.util.EsthesisCommonConstants.Device.Type.CORE;
 import static esthesis.core.common.AppConstants.Campaign.Member.Type.DEVICE;
 import static esthesis.core.common.AppConstants.Campaign.Member.Type.TAG;
 import static esthesis.core.common.AppConstants.Device.Status.REGISTERED;
@@ -57,10 +54,6 @@ public class TestHelper {
 			.set(all(field("terminatedOn")), Instant.now())
 			.set(all(field("processInstanceId")), String.valueOf(new Random().nextInt(1,999999)))
 			.create();
-	}
-
-	public CampaignEntity persistCampaignEntity() {
-		return persistCampaignEntity(makeCampaignEntity());
 	}
 
 	public CampaignEntity persistCampaignEntity(CampaignEntity campaignEntity) {
