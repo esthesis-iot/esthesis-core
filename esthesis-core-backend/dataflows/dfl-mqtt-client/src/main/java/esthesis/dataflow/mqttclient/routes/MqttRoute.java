@@ -168,7 +168,7 @@ public class MqttRoute extends RouteBuilder {
 					.routeId("mqtt-command-reply-to-kafka")
 					.bean(dflMqttClientService, "processCommandReplyMessage")
 					.marshal(EsthesisCommandReplyDataFormat.create())
-					.log(LoggingLevel.DEBUG, log, "Sending command reply message '${body}'")
+					.log(LoggingLevel.TRACE, log, "Sending command reply message '${body}'")
 					.toD("kafka:" + kafkaTopic);
       }, () -> log.debug("Kafka command reply topic is not set."));
     }, () -> log.debug("MQTT command reply topic is not set."));
@@ -183,7 +183,7 @@ public class MqttRoute extends RouteBuilder {
 						constant(mqttTopic).append("/").append(header(KafkaConstants.KEY)))
 					.log(LoggingLevel.DEBUG, log, "Received command request message '${body}'.")
 					.bean(dflMqttClientService, "commandRequestToLineProtocol")
-					.log(LoggingLevel.DEBUG, log, "Sending command request message '${body}'")
+					.log(LoggingLevel.TRACE, log, "Sending command request message '${body}'")
 					.to("paho:dynamic?brokerUrl=" + config.mqttBrokerClusterUrl() +
 						(StringUtils.isEmpty(socketFactory) ? "" : "&" + socketFactory));
       }, () -> log.debug("Kafka command request topic is not set."));

@@ -196,14 +196,14 @@ public class CommandService {
 		}
 
 		scheduleInfo.setDevicesMatched(hardwareIds.size());
-		log.debug("Found '{}' devices to send command request '{}'.",
+		log.trace("Found '{}' devices to send command request '{}'.",
 			hardwareIds.size(), requestId);
 
 		// Send the command to the devices by queuing an Avro EsthesisControlMessage message in Kafka.
 		for (String hardwareId : hardwareIds) {
 			EsthesisCommandRequestMessage esthesisCommandRequestMessage =
 				avroCommandRequest(request, hardwareId);
-			log.debug("Sending command '{}' to device '{}' via Kafka topic '{}'.",
+			log.trace("Sending command '{}' to device '{}' via Kafka topic '{}'.",
 				esthesisCommandRequestMessage, hardwareId, kafkaTopicCommandRequest);
 			commandRequestEmitter.send(
 				Message.of(esthesisCommandRequestMessage)

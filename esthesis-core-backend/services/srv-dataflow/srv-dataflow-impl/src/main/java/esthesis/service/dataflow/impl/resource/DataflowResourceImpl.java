@@ -64,14 +64,14 @@ public class DataflowResourceImpl implements DataflowResource {
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.DATAFLOW, op = Operation.WRITE, msg = "Save dataflow")
 	public DataflowEntity save(DataflowEntity dataflowEntity) {
-		DataflowEntity retVal = dataflowEntity;
+		DataflowEntity retVal;
 
 		if (dataflowEntity.getId() == null) {
 			// Check if the name is available.
 			String namespace = objectMapper.valueToTree(dataflowEntity.getConfig())
 				.path("kubernetes").path("namespace").asText();
 			if (!dataflowService.isDeploymentNameAvailable(dataflowEntity.getName(), namespace)) {
-				CVEBuilder.addAndThrow("name", "Name is already in use.");
+				throw CVEBuilder.addAndThrow("name", "Name is already in use.");
 			} else {
 				retVal = dataflowService.saveNew(dataflowEntity);
 			}

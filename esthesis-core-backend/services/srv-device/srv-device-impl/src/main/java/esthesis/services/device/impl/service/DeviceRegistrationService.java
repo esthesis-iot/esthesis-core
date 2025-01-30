@@ -175,7 +175,7 @@ public class DeviceRegistrationService {
 		EsthesisCommonConstants.Device.Type deviceType, String registrationSecret, String attributes)
 	throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, OperatorCreationException,
 				 NoSuchProviderException {
-		log.debug("Registering device with hardware id '{}', tags '{}', status '{}', "
+		log.trace("Registering device with hardware id '{}', tags '{}', status '{}', "
 				+ "secret '{}', and attributes '{}'.", hardwareId, tags, status, registrationSecret,
 			attributes);
 
@@ -272,7 +272,7 @@ public class DeviceRegistrationService {
 	 * @param deviceRegistration The preregistration details of the device.
 	 */
 	@ErnPermission(category = DEVICE, operation = CREATE)
-	public void preregister(DeviceRegistrationDTO deviceRegistration)
+	public List<DeviceEntity> preregister(DeviceRegistrationDTO deviceRegistration)
 	throws NoSuchAlgorithmException, OperatorCreationException, InvalidKeySpecException,
 				 NoSuchProviderException, IOException {
 		// Split IDs.
@@ -291,11 +291,15 @@ public class DeviceRegistrationService {
 		}
 
 		// Register IDs.
+		List<DeviceEntity> preregisteredDevices = new ArrayList<>();
 		for (String hardwareId : idList) {
-			log.debug("Requested to preregister a device with hardware id '{}'.", hardwareId);
-			register(hardwareId, deviceRegistration.getTags(), Status.PREREGISTERED,
-				deviceRegistration.getType(), deviceRegistration.getRegistrationSecret(), null);
+			log.trace("Requested to preregister a device with hardware id '{}'.", hardwareId);
+			preregisteredDevices.add(
+				register(hardwareId, deviceRegistration.getTags(), Status.PREREGISTERED,
+					deviceRegistration.getType(), deviceRegistration.getRegistrationSecret(), null));
 		}
+
+		return preregisteredDevices;
 	}
 
 	/**

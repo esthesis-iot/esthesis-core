@@ -1,0 +1,114 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+	xmlns:ext="https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+	<changeSet author="European Dynamics SA" id="srv-crypto-1">
+		<ext:createIndex collectionName="Certificate">
+			<ext:keys>
+				{ "name": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: true, name: "idx_name" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Certificate">
+			<ext:keys>
+				{ "cn": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_cn" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Certificate">
+			<ext:keys>
+				{ "issued": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_issued" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Certificate">
+			<ext:keys>
+				{ "validity": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_validity" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Certificate">
+			<ext:keys>
+				{ "issuer": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_issuer" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Ca">
+			<ext:keys>
+				{ "name": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: true, name: "idx_name" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Ca">
+			<ext:keys>
+				{ "cn": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_cn" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Ca">
+			<ext:keys>
+				{ "parentCa": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_parent_ca" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Ca">
+			<ext:keys>
+				{ "issued": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_issued" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Ca">
+			<ext:keys>
+				{ "validity": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_validity" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Keystore">
+			<ext:keys>
+				{ "name": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: true, name: "idx_name" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Keystore">
+			<ext:keys>
+				{ "description": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_description" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Keystore">
+			<ext:keys>
+				{ "createdOn": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_created_on" }
+			</ext:options>
+		</ext:createIndex>
+	</changeSet>
+</databaseChangeLog>

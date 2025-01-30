@@ -93,7 +93,7 @@ public class KafkaNotificationInterceptor {
 			.addMetadata(OutgoingKafkaRecordMetadata.<String>builder()
 				.withKey(username).build())
 			.addMetadata(TracingMetadata.withCurrent(Context.current()));
-		log.debug("Sending Kafka notification '{}'.", msg.getPayload());
+		log.trace("Sending Kafka notification '{}'.", msg.getPayload());
 
 		// Emit the message.
 		if (kafkaNotification.broadcast()) {

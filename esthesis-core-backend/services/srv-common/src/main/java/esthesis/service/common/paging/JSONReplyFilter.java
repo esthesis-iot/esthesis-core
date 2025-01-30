@@ -10,7 +10,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Dynamics filtering of JSON results in REST as per
+ * Dynamic filtering of JSON results in REST as per
  * https://github.com/Antibrumm/jackson-antpathfilter
  * <p>
  * NOTE: Due to the way Quarkus handles annotations, for this annotation to work you need to have

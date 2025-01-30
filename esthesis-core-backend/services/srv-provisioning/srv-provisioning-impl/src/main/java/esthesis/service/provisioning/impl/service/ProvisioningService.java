@@ -82,8 +82,8 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 	private ProvisioningPackageEntity saveHandler(ProvisioningPackageEntity ppe, FileUpload file) {
 		// Custom validation for version, if semver should be followed.
 		if (isSemverEnabled() && !Semver.isValid(ppe.getVersion())) {
-			CVEBuilder.addAndThrow("version", "Version does not follow semantic versioning scheme. "
-				+ "You can switch this option off in the settings.");
+			throw CVEBuilder.addAndThrow("version", "Version does not follow semantic versioning "
+				+ "scheme. You can switch this option off in the settings.");
 		}
 
 		if (ppe.getId() == null) {

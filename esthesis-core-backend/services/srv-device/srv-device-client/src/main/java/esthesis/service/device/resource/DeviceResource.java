@@ -228,7 +228,7 @@ public interface DeviceResource {
 	 * Preregisters a device.
 	 *
 	 * @param deviceRegistration The device registration information.
-	 * @return The device entity.
+	 * @return The device entities that were preregistered.
 	 * @throws NoSuchAlgorithmException  when the algorithm is not found.
 	 * @throws IOException               when an I/O exception occurs.
 	 * @throws OperatorCreationException when the operator cannot be created.
@@ -237,7 +237,7 @@ public interface DeviceResource {
 	 */
 	@POST
 	@Path("/v1/preregister")
-	Response preregister(@Valid DeviceRegistrationDTO deviceRegistration)
+	List<DeviceEntity> preregister(@Valid DeviceRegistrationDTO deviceRegistration)
 	throws NoSuchAlgorithmException, IOException, OperatorCreationException,
 				 InvalidKeySpecException, NoSuchProviderException;
 
