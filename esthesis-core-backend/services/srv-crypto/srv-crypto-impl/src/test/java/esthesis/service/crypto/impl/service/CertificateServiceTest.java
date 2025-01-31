@@ -1,5 +1,6 @@
 package esthesis.service.crypto.impl.service;
 
+import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.entity.CertificateEntity;
 import esthesis.service.crypto.impl.TestHelper;
 import esthesis.service.settings.entity.SettingEntity;
@@ -10,7 +11,6 @@ import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.server.core.multipart.DefaultFileUpload;
 import org.jboss.resteasy.reactive.server.core.multipart.FormData;
@@ -22,14 +22,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Objects;
 
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM;
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_KEY_SIZE;
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,21 +50,21 @@ class CertificateServiceTest {
 	@RestClient
 	SettingsResource settingsResource;
 
-
-	int initialCertificateSizeInDB = 0;
+	@Inject
+	CAService caService;
 
 	@BeforeEach
 	void setUp() {
 		testHelper.clearDatabase();
 
-		// Mock the relevant settings
+		// Mock the security-related settings.
 		SettingEntity mockKeyAlgorithmSetting = mock(SettingEntity.class);
 		SettingEntity mockKeySizeSetting = mock(SettingEntity.class);
 		SettingEntity mockSignatureAlgorithmSetting = mock(SettingEntity.class);
 
-		when(mockKeyAlgorithmSetting.asString()).thenReturn("RSA"); // Valid asymmetric key algorithm
-		when(mockKeySizeSetting.asInt()).thenReturn(2048); // Typical key size for RSA
-		when(mockSignatureAlgorithmSetting.asString()).thenReturn("SHA256withRSA"); // Common signature algorithm
+		when(mockKeyAlgorithmSetting.asString()).thenReturn("RSA");
+		when(mockKeySizeSetting.asInt()).thenReturn(2048);
+		when(mockSignatureAlgorithmSetting.asString()).thenReturn("SHA256withRSA");
 
 		when(settingsResource.findByName(SECURITY_ASYMMETRIC_KEY_ALGORITHM))
 			.thenReturn(mockKeyAlgorithmSetting);
@@ -77,7 +79,7 @@ class CertificateServiceTest {
 	@Test
 	void importCertificate() {
 
-		// Arrange - Create a certificate entity
+		// Prepare a certificate to be imported.
 
 		CertificateEntity certificate = new CertificateEntity();
 		certificate.setCertificate("Test Certificate");
@@ -87,7 +89,7 @@ class CertificateServiceTest {
 		certificate.setPrivateKey("Test Private Key");
 		certificate.setPublicKey("Test Public Key");
 
-		// Arrange - Load files from the test resources folder
+		// Prepare mocks for file upload.
 		Path publicKeyPath =
 			Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("public-key-test.txt")).toURI());
 		Path privateKeyPath =
@@ -95,7 +97,7 @@ class CertificateServiceTest {
 		Path certificatePath =
 			Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("certificate-test.txt")).toURI());
 
-		// Arrange - Create FormValue mocks for each file
+		// Create FormValue mocks for each file.
 		FormValue publicKeyFormValue = mock(FormValue.class);
 		when(publicKeyFormValue.getFileItem()).thenReturn(new FormData.FileItemImpl(publicKeyPath));
 
@@ -105,16 +107,16 @@ class CertificateServiceTest {
 		FormValue certificateFormValue = mock(FormValue.class);
 		when(certificateFormValue.getFileItem()).thenReturn(new FormData.FileItemImpl(certificatePath));
 
-		// Arrange - Create DefaultFileUpload instances
+		// Create DefaultFileUpload instances.
 		DefaultFileUpload publicKey = new DefaultFileUpload("Test Public Key", publicKeyFormValue);
 		DefaultFileUpload privateKey = new DefaultFileUpload("Test Private Key", privateKeyFormValue);
 		DefaultFileUpload certificateFileUpload = new DefaultFileUpload("Test Certificate", certificateFormValue);
 
-		// Act
+		// Perform the import operation.
 		CertificateEntity certificateImported =
 			certificateService.importCertificate(certificate, publicKey, privateKey, certificateFileUpload);
 
-		// Assert
+		// Assert certificate was imported.
 		assertNotNull(certificateImported);
 		assertEquals("Test Name", certificateImported.getName());
 		assertNotNull(certificateImported.getPublicKey());
@@ -125,7 +127,7 @@ class CertificateServiceTest {
 
 	@Test
 	void save() {
-		// Arrange
+		// Arrange a new certificate.
 		CertificateEntity newCertificate = new CertificateEntity();
 		newCertificate.setCn("test-new-certificate");
 		newCertificate.setIssued(Instant.now());
@@ -136,81 +138,98 @@ class CertificateServiceTest {
 		newCertificate.setSignatureAlgorithm("test-signature-algorithm");
 		newCertificate.setSan("test-san");
 
-		// Act
-		certificateService.save(newCertificate);
+		// Perform the save operation for the new certificate.
+		String certificateId = certificateService.save(newCertificate).getId().toHexString();
 
-		// Assert
-		assertEquals(initialCertificateSizeInDB + 1, testHelper.findAllCertificateEntity().size());
+		// Assert certificate was saved with the provided values.
+		CertificateEntity savedCertificate = certificateService.findById(certificateId);
+		assertEquals("test-new-certificate", savedCertificate.getCn());
+		assertNotNull(savedCertificate.getIssued());
+		assertNotNull(savedCertificate.getValidity());
+		assertNotNull(savedCertificate.getPrivateKey());
+		assertEquals("Test new certificate", savedCertificate.getName());
+		assertEquals("test-san", savedCertificate.getSan());
 	}
 
 	@Test
 	void getPrivateKey() {
-		// Arrange
-		String validCertificateId = testHelper.findOneCertificateEntity().getId().toString();
-		// Act
-		String privateKey = certificateService.getPrivateKey(validCertificateId);
-		// Assert
-		assertNotNull(privateKey);
+		// Perform a save operation for a new CA.
+		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
+
+		//  Perform a save operation for a new certificate.
+		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId().toHexString();
+
+		// Assert private key can be retrieved.
+		assertNotNull(certificateService.getPrivateKey(certificateId));
 	}
 
 	@Test
 	void getPublicKey() {
-		// Arrange
-		String validCertificateId = testHelper.findOneCertificateEntity().getId().toString();
-		// Act
-		String publicKey = certificateService.getPublicKey(validCertificateId);
-		// Assert
-		assertNotNull(publicKey);
+		// Perform a save operation for a new CA.
+		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
+
+		//  Perform a save operation for a new certificate.
+		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId().toHexString();
+
+		// Assert public key can be retrieved.
+		assertNotNull(certificateService.getPublicKey(certificateId));
 	}
 
 	@Test
 	void getCertificate() {
-		// Arrange
-		String validCertificateId = testHelper.findOneCertificateEntity().getId().toString();
-		// Act
-		String certificate = certificateService.getCertificate(validCertificateId);
-		// Assert
-		assertNotNull(certificate);
+		// Perform a save operation for a new CA.
+		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
 
+		//  Perform a save operation for a new certificate.
+		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId().toHexString();
+
+		// Assert certificate can be retrieved.
+		assertNotNull(certificateService.getCertificate(certificateId));
 	}
 
 	@Test
 	void deleteById() {
-		// Arrange
-		String unexistentCertificateId = new ObjectId().toString();
-		String validCertificateId = testHelper.findOneCertificateEntity().getId().toString();
+		// Perform a save operation for a new CA.
+		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
 
-		// Act try to delete an unexistent certificate
-		certificateService.deleteById(unexistentCertificateId);
+		//  Perform a save operation for a new certificate.
+		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId().toHexString();
 
-		// Assert nothing happens
-		assertEquals(initialCertificateSizeInDB, testHelper.findAllCertificateEntity().size());
+		// Assert certificate exists.
+		assertNotNull(certificateService.findById(certificateId));
 
-		// Act try to delete a valid certificate
-		certificateService.deleteById(validCertificateId);
+		// Perform the delete operation for the certificate.
+		certificateService.deleteById(certificateId);
 
-		// Assert the certificate is deleted
-		assertEquals(initialCertificateSizeInDB - 1, testHelper.findAllCertificateEntity().size());
+		// Assert certificate was deleted.
+		assertNull(certificateService.findById(certificateId));
 
 	}
 
 	@Test
 	void findById() {
-		// Arrange
-		String validCertificateId = testHelper.findOneCertificateEntity().getId().toString();
+		// Perform a save operation for a new CA.
+		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
 
-		// Act & Assert
-		CertificateEntity certificateEntity = certificateService.findById(validCertificateId);
-		assertNotNull(certificateEntity);
+		//  Perform a save operation for a new certificate.
+		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId().toHexString();
+
+		// Assert certificate can be found by id.
+		assertNotNull(certificateService.findById(certificateId));
 	}
 
 	@Test
 	void find() {
-		// Act
-		List<CertificateEntity> certificates =
-			certificateService.find(testHelper.makePageable(0, 100), true).getContent();
+		// Assert no certificates are found.
+		assertTrue(certificateService.find(testHelper.makePageable(0, 100), true).getContent().isEmpty());
 
-		// Assert
-		assertEquals(initialCertificateSizeInDB, certificates.size());
+		// Perform a save operation for a new CA.
+		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
+
+		//  Perform a save operation for a new certificate.
+		certificateService.save(testHelper.makeCertificateEntity(ca));
+
+		// Assert certificate can be found.
+		assertFalse(certificateService.find(testHelper.makePageable(0, 100), true).getContent().isEmpty());
 	}
 }

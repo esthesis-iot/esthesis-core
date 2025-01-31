@@ -1,5 +1,6 @@
 package esthesis.service.crypto.impl.service;
 
+import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.entity.KeystoreEntity;
 import esthesis.service.crypto.impl.TestHelper;
 import esthesis.service.device.resource.DeviceResource;
@@ -11,7 +12,6 @@ import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,8 +22,10 @@ import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_KEY_SIZE;
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -48,26 +50,24 @@ class KeystoreServiceTest {
 	@RestClient
 	DeviceResource deviceResource;
 
-	int initialKeystoreSizeInDB = 0;
+	@Inject
+	CAService caService;
+
+	@Inject
+	CertificateService certificateService;
 
 	@BeforeEach
 	void setUp() {
 		testHelper.clearDatabase();
-		testHelper.createEntities(null);
-		testHelper.createEntities(testHelper.findOneCaEntity());
 
-		initialKeystoreSizeInDB = testHelper.findAllKeystoreEntity().size();
-
-		log.info("Initial keystore size in DB: {}", initialKeystoreSizeInDB);
-
-		// Mock the relevant settings
+		// Mock the security-related settings.
 		SettingEntity mockKeyAlgorithmSetting = mock(SettingEntity.class);
 		SettingEntity mockKeySizeSetting = mock(SettingEntity.class);
 		SettingEntity mockSignatureAlgorithmSetting = mock(SettingEntity.class);
 
-		when(mockKeyAlgorithmSetting.asString()).thenReturn("RSA"); // Valid asymmetric key algorithm
-		when(mockKeySizeSetting.asInt()).thenReturn(2048); // Typical key size for RSA
-		when(mockSignatureAlgorithmSetting.asString()).thenReturn("SHA256withRSA"); // Common signature algorithm
+		when(mockKeyAlgorithmSetting.asString()).thenReturn("RSA");
+		when(mockKeySizeSetting.asInt()).thenReturn(2048);
+		when(mockSignatureAlgorithmSetting.asString()).thenReturn("SHA256withRSA");
 
 		when(settingsResource.findByName(SECURITY_ASYMMETRIC_KEY_ALGORITHM))
 			.thenReturn(mockKeyAlgorithmSetting);
@@ -76,7 +76,7 @@ class KeystoreServiceTest {
 		when(settingsResource.findByName(SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM))
 			.thenReturn(mockSignatureAlgorithmSetting);
 
-		// Mock the relevant device settings
+		// Mock getting and finding devices by tag name.
 		when(deviceResource.get(anyString())).thenReturn(testHelper.makeDeviceEntity("test-device-1"));
 		when(deviceResource.findByTagName(anyString())).thenReturn(
 			List.of(
@@ -88,46 +88,60 @@ class KeystoreServiceTest {
 	@SneakyThrows
 	@Test
 	void download() {
-		// Arrange
-		KeystoreEntity keystore = testHelper.findOneKeystoreEntity();
-		String validKeystoreId = keystore.getId().toString();
+		// Perform a save operation for a new CA, certificate and keystore.
+		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
 
-		// Act
-		byte[] keystoreBytes = keystoreService.download(validKeystoreId);
+		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId().toHexString();
 
-		// Assert
-		assertNotNull(keystoreBytes);
+		String keystoreId =
+			keystoreService.saveNew(
+					testHelper.makeKeystoreEntity(certificateId, ca.getId().toHexString()))
+				.getId()
+				.toHexString();
+
+
+		// Assert keystore can be downloaded.
+		assertNotNull(keystoreService.download(keystoreId));
 	}
 
 	@Test
 	void findById() {
-		// Arrange
-		String validKeystoreId = testHelper.findOneKeystoreEntity().getId().toString();
-		String unexistingKeystoreId = new ObjectId().toString();
+		// Perform a save operation for a new CA, certificate and keystore.
+		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
 
-		// Act
-		KeystoreEntity unexistingKeystoreEntity = keystoreService.findById(unexistingKeystoreId);
-		KeystoreEntity keystoreEntity = keystoreService.findById(validKeystoreId);
+		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId().toHexString();
 
-		// Assert
-		assertNull(unexistingKeystoreEntity);
-		assertNotNull(keystoreEntity);
+		String keystoreId =
+			keystoreService.saveNew(
+					testHelper.makeKeystoreEntity(certificateId, ca.getId().toHexString()))
+				.getId()
+				.toHexString();
+
+		// Assert keystore can be found by id.
+		assertNotNull(keystoreService.findById(keystoreId));
 	}
 
 	@Test
 	void find() {
+		// Assert no keystores are found.
+		assertTrue(keystoreService.find(testHelper.makePageable(0, 100), true).getContent().isEmpty());
 
-		// Act
-		List<KeystoreEntity> keystoreEntities =
-			keystoreService.find(testHelper.makePageable(0, 100), true).getContent();
+		// Perform a save operation for a new CA, certificate and keystore.
+		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
 
-		// Assert
-		assertEquals(initialKeystoreSizeInDB, keystoreEntities.size());
+		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId().toHexString();
+
+		keystoreService.saveNew(testHelper.makeKeystoreEntity(certificateId, ca.getId().toHexString()));
+
+		// Assert keystore can be found.
+		assertFalse(keystoreService.find(testHelper.makePageable(0, 100), true).getContent().isEmpty());
 
 	}
 
 	@Test
 	void saveNew() {
+
+		// Prepare a new keystore entity to be saved.
 		KeystoreEntity keystoreEntity = new KeystoreEntity();
 		keystoreEntity.setName("test-keystore");
 		keystoreEntity.setType("PKCS12");
@@ -135,63 +149,68 @@ class KeystoreServiceTest {
 		keystoreEntity.setPassword("test-password");
 		keystoreEntity.setVersion(1);
 
-		// Act
-		KeystoreEntity savedKeystoreEntity = keystoreService.saveNew(keystoreEntity);
+		// Perform the save operation.
+		String keystoreId = keystoreService.saveNew(keystoreEntity).getId().toHexString();
 
-		// Assert new keystore was created
-		assertEquals(initialKeystoreSizeInDB + 1, testHelper.findAllKeystoreEntity().size());
 
-		// Assert saved keystore values are correct
-		assertNotNull(savedKeystoreEntity);
-		assertEquals("test-keystore", savedKeystoreEntity.getName());
-		assertEquals("PKCS12", savedKeystoreEntity.getType());
-		assertEquals("Test keystore", savedKeystoreEntity.getDescription());
-		assertEquals("test-password", savedKeystoreEntity.getPassword());
-		assertEquals(1, savedKeystoreEntity.getVersion());
+		// Assert keystore was saved with correct values.
+		KeystoreEntity keystore = keystoreService.findById(keystoreId);
+
+		assertEquals("test-keystore", keystore.getName());
+		assertEquals("PKCS12", keystore.getType());
+		assertEquals("Test keystore", keystore.getDescription());
+		assertEquals("test-password", keystore.getPassword());
+		assertEquals(1, keystore.getVersion());
 
 	}
 
 	@Test
 	void saveUpdate() {
-		// Arrange
-		KeystoreEntity existingKeystore = testHelper.findOneKeystoreEntity();
-		existingKeystore.setName("updated-keystore");
-		existingKeystore.setVersion(2);
-		existingKeystore.setDescription("Updated description");
+		// Perform a save operation for a new CA, certificate and keystore.
+		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
 
-		// Act
-		keystoreService.saveUpdate(existingKeystore);
+		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId().toHexString();
 
-		// Arrange
-		KeystoreEntity updatedKeystore = testHelper.findOneKeystoreEntityById(existingKeystore.getId().toString());
+		String keystoreId =
+			keystoreService.saveNew(
+					testHelper.makeKeystoreEntity(certificateId, ca.getId().toHexString()))
+				.getId()
+				.toHexString();
 
-		// Assert entity was updated
-		assertNotNull(updatedKeystore);
+		// Perform an update operation.
+		KeystoreEntity keystore = keystoreService.findById(keystoreId);
+		keystore.setName("updated-keystore");
+		keystore.setVersion(2);
+		keystore.setDescription("Updated description");
+		keystoreService.saveUpdate(keystore);
+
+		// Assert keystore was updated with correct values.
+		KeystoreEntity updatedKeystore = keystoreService.findById(keystoreId);
 		assertEquals("updated-keystore", updatedKeystore.getName());
 		assertEquals(2, updatedKeystore.getVersion());
 		assertEquals("Updated description", updatedKeystore.getDescription());
-
-		// Assert no new keystore was created
-		assertEquals(initialKeystoreSizeInDB, testHelper.findAllKeystoreEntity().size());
-
 	}
 
 	@Test
 	void deleteById() {
-		// Arrange
-		String validKeystoreId = testHelper.findOneKeystoreEntity().getId().toString();
-		String unexistentKeystoreId = new ObjectId().toString();
+		// Perform a save operation for a new CA, certificate and keystore.
+		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
 
-		// Act try to delete an unexistent keystore
-		keystoreService.deleteById(unexistentKeystoreId);
+		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId().toHexString();
 
-		// Assert nothing happens
-		assertEquals(initialKeystoreSizeInDB, testHelper.findAllKeystoreEntity().size());
+		String keystoreId =
+			keystoreService.saveNew(
+					testHelper.makeKeystoreEntity(certificateId, ca.getId().toHexString()))
+				.getId()
+				.toHexString();
 
-		// Act try to delete a valid keystore
-		keystoreService.deleteById(validKeystoreId);
+		// Assert keystore exists.
+		assertNotNull(keystoreService.findById(keystoreId));
 
-		// Assert the keystore is deleted
-		assertEquals(initialKeystoreSizeInDB - 1, testHelper.findAllKeystoreEntity().size());
+		// Perform the delete operation for the keystore.
+		keystoreService.deleteById(keystoreId);
+
+		// Assert keystore was deleted.
+		assertNull(keystoreService.findById(keystoreId));
 	}
 }

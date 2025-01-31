@@ -216,7 +216,7 @@ class CampaignServiceTest {
 	@Test
 	void find() {
 		List<CampaignEntity> campaigns =
-			campaignService.find(testHelper.makePageable(0, 10, "name,asc"), true).getContent();
+			campaignService.find(testHelper.makePageable(0, 10), true).getContent();
 		assertEquals(5, campaigns.size());
 	}
 }

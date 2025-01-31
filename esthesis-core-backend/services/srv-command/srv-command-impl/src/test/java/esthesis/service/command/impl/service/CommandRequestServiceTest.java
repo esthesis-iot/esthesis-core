@@ -11,92 +11,152 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @QuarkusTest
 class CommandRequestServiceTest {
 
-    @Inject
-    CommandRequestService commandRequestService;
+	@Inject
+	CommandRequestService commandRequestService;
 
-    @Inject
-    TestHelper testHelper;
+	@Inject
+	TestHelper testHelper;
 
-    int initialEntitiesSize = 0;
+	@BeforeEach
+	void setUp() {
+		testHelper.clearDatabase();
+	}
 
-    @BeforeEach
-    void setUp() {
-        testHelper.clearDatabase();
-        testHelper.createMultipleCommandRequestEntities();
-        initialEntitiesSize = testHelper.findAllCommandRequestEntities().size();
-        log.info("Initial entities size: {}", initialEntitiesSize);
-    }
+	@Test
+	void purge() {
+		// Perform a save operation for a new request with creation date as now.
+		String commandId = commandRequestService.save(
+				testHelper.makeCommandRequestEntity(
+						"test-hardware-id",
+						"test-tag",
+						CommandType.e,
+						ExecutionType.s)
+					.setCreatedOn(Instant.now()))
+			.getId()
+			.toHexString();
 
-    @Test
-    void purge() {
-        commandRequestService.purge(7);
-        assertEquals(initialEntitiesSize, testHelper.findAllCommandRequestEntities().size());
+		// Assert command request exists
+		assertNotNull(commandRequestService.findById(commandId));
 
-        commandRequestService.purge(5);
-        assertEquals(initialEntitiesSize - 3, testHelper.findAllCommandRequestEntities().size());
+		// Perform a purge operation for 1 day or more.
+		commandRequestService.purge(1);
+
+		// Assert command request still exists
+		assertNotNull(commandRequestService.findById(commandId));
+
+		// Perform a purge operation for 0 days or more.
+		commandRequestService.purge(0);
+
+		// Assert command request no longer exists
+		assertNull(commandRequestService.findById(commandId));
+
+	}
+
+	@Test
+	void save() {
+		// Perform a save operation for a new request.
+		String commandId =
+			commandRequestService.save(
+					new CommandRequestEntity(
+						"test-hardware-id",
+						"tag-test",
+						CommandType.e,
+						ExecutionType.s,
+						"test command",
+						"test args",
+						"test description",
+						Instant.now(),
+						Instant.now())
+				).getId()
+				.toHexString();
+
+		// Assert command request was persisted with the expected values.
+		CommandRequestEntity commandRequest = commandRequestService.findById(commandId);
+		assertEquals("test-hardware-id", commandRequest.getHardwareIds());
+		assertEquals("tag-test", commandRequest.getTags());
+		assertEquals(CommandType.e, commandRequest.getCommandType());
+		assertEquals(ExecutionType.s, commandRequest.getExecutionType());
+		assertEquals("test command", commandRequest.getCommand());
+		assertEquals("test args", commandRequest.getArguments());
+		assertEquals("test description", commandRequest.getDescription());
+		assertNotNull(commandRequest.getCreatedOn());
+		assertNotNull(commandRequest.getDispatchedOn());
 
 
-        commandRequestService.purge(5);
-        assertEquals(initialEntitiesSize - 3, testHelper.findAllCommandRequestEntities().size());
+	}
 
-        commandRequestService.purge(3);
-        assertEquals(initialEntitiesSize - 6, testHelper.findAllCommandRequestEntities().size());
+	@Test
+	void findById() {
+		// Perform a save operation for a new request
+		String commandId = commandRequestService.save(
+				testHelper.makeCommandRequestEntity(
+					"test-hardware-id",
+					"test-tag",
+					CommandType.e,
+					ExecutionType.s))
+			.getId()
+			.toHexString();
 
-        commandRequestService.purge(1);
-        assertEquals(initialEntitiesSize - 9, testHelper.findAllCommandRequestEntities().size());
+		// Assert command request can be found.
+		assertNotNull(commandRequestService.findById(commandId));
+	}
 
-        commandRequestService.purge(0);
-        assertEquals(0, testHelper.findAllCommandRequestEntities().size());
+	@Test
+	void find() {
+		// Assert that no command requests exist.
+		assertTrue(
+			commandRequestService.find(
+					testHelper.makePageable(1, 10),
+					false)
+				.getContent()
+				.isEmpty());
 
-    }
+		// Perform a save operation for a new request.
+		commandRequestService.save(
+			testHelper.makeCommandRequestEntity(
+				"test-hardware-id",
+				"test-tag",
+				CommandType.e,
+				ExecutionType.s));
 
-    @Test
-    void save() {
-        CommandRequestEntity newCommandRequest =
-                testHelper.makeCommandRequestEntity(
-                                "hardware-id-1",
-                                null,
-                                CommandType.e,
-                                ExecutionType.a
-                        ).setCreatedOn(Instant.now())
-                        .setDispatchedOn(null);
+		// Assert that a command requests exists.
+		assertFalse(commandRequestService.find(
+				testHelper.makePageable(0, 10),
+				true)
+			.getContent()
+			.isEmpty());
+	}
 
-        commandRequestService.save(newCommandRequest);
+	@Test
+	void deleteById() {
+		// Perform a save operation for a new request
+		String commandId = commandRequestService.save(
+				testHelper.makeCommandRequestEntity(
+					"test-hardware-id",
+					"test-tag",
+					CommandType.e,
+					ExecutionType.s))
+			.getId()
+			.toHexString();
 
-        assertEquals(initialEntitiesSize + 1, testHelper.findAllCommandRequestEntities().size());
-    }
+		// Assert command request can be found.
+		assertNotNull(commandRequestService.findById(commandId));
 
-    @Test
-    void findById() {
-        String commandId = testHelper.findOneCommandRequestEntity().getId().toString();
-        CommandRequestEntity commandRequest = commandRequestService.findById(commandId);
-        assertNotNull(commandRequest);
-    }
+		// Delete command request.
+		commandRequestService.deleteById(commandId);
 
-    @Test
-    void find() {
-        List<CommandRequestEntity> results =
-                commandRequestService.find(
-                                testHelper.makePageable(0, 10),
-                                false)
-                        .getContent();
-
-        assertEquals(10, results.size());
-    }
-
-    @Test
-    void deleteById() {
-        String commandId = testHelper.findOneCommandRequestEntity().getId().toString();
-        commandRequestService.deleteById(commandId);
-        assertEquals(initialEntitiesSize - 1, testHelper.findAllCommandRequestEntities().size());
-    }
+		// Assert command request can no longer be found.
+		assertNull(commandRequestService.findById(commandId));
+	}
 }

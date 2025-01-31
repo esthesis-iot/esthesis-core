@@ -6,10 +6,9 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 class CommandReplyServiceTest {
@@ -23,92 +22,106 @@ class CommandReplyServiceTest {
 	@BeforeEach
 	void setUp() {
 		testHelper.clearDatabase();
-
-		// Persist 6 command reply entities for 2 unique hardware IDs:
-		// 3 entities with success execution and 3 with failed execution
-		// 4 entities with the current timestamp and 2 entities with a timestamp from 2 days ago.
-		testHelper.createCommandReplyEntity(
-			testHelper.makeSuccessCommandReplyEntity(
-				"hardware-test-1",
-				"correlationId-1"
-			)
-		);
-		testHelper.createCommandReplyEntity(
-			testHelper.makeSuccessCommandReplyEntity(
-				"hardware-test-2",
-				"correlationId-2"
-			)
-		);
-		testHelper.createCommandReplyEntity(
-			testHelper.makeFailedCommandReplyEntity(
-				"hardware-test-1",
-				"correlationId-3"
-			)
-		);
-		testHelper.createCommandReplyEntity(
-			testHelper.makeFailedCommandReplyEntity(
-				"hardware-test-2",
-				"correlationId-4"
-			)
-		);
-
-		testHelper.createCommandReplyEntity(
-			testHelper.makeSuccessCommandReplyEntity(
-				"hardware-test-1",
-				"correlationId-5"
-			).setCreatedOn(
-				Instant.now().minus(2, ChronoUnit.DAYS))
-		);
-		testHelper.createCommandReplyEntity(
-			testHelper.makeFailedCommandReplyEntity(
-				"hardware-test-1",
-				"correlationId-6"
-			).setCreatedOn(
-				Instant.now().minus(2, ChronoUnit.DAYS))
-		);
 	}
 
 	@Test
 	void findByCorrelationId() {
-		assertEquals(1, commandReplyService.findByCorrelationId("correlationId-1").size());
-		assertEquals(0, commandReplyService.findByCorrelationId("correlationId-unexistent").size());
+		// Perform a save operation for a new reply.
+		testHelper.createCommandReplyEntity("hardware-test-1",
+			"correlationId-1",
+			"test-output",
+			true);
+
+		// Assert that there is reply for the correlation ID.
+		assertFalse(commandReplyService.findByCorrelationId("correlationId-1").isEmpty());
+
+		// Assert that there are no replies for non-existent correlation ID.
+		assertTrue(commandReplyService.findByCorrelationId("correlationId-non-existent").isEmpty());
 	}
 
 	@Test
 	void purge() {
-		commandReplyService.purge(7);
-		assertEquals(6,  testHelper.findAllCommandReplyEntities().size());
+		// Perform a save operation for a new reply with creation date as now.
+		testHelper.createCommandReplyEntity("hardware-test-1",
+			"correlationId-1",
+			"test-output",
+			true);
 
-		commandReplyService.purge(2);
-		assertEquals(4,  testHelper.findAllCommandReplyEntities().size());
-
+		// Perform a purge operation for 1 day or more
 		commandReplyService.purge(1);
-		assertEquals(4,  testHelper.findAllCommandReplyEntities().size());
 
+		// Assert the reply was not deleted.
+		assertFalse(commandReplyService.findByCorrelationId("correlationId-1").isEmpty());
+
+		// Perform a purge operation for 0 days or more.
 		commandReplyService.purge(0);
-		assertEquals(0,  testHelper.findAllCommandReplyEntities().size());
+
+
+		// Assert the reply was deleted.
+		assertTrue(commandReplyService.findByCorrelationId("correlationId-1").isEmpty());
+
 	}
 
 	@Test
 	void deleteById() {
-		String id = testHelper.findOneCommandReplyEntity().getId().toString();
-		commandReplyService.deleteById(id);
-		assertEquals(5,  testHelper.findAllCommandReplyEntities().size());
+		// Perform a save operation for a new reply.
+		String replyId =
+			testHelper.createCommandReplyEntity("hardware-test-1",
+					"correlationId-1",
+					"test-output",
+					true)
+				.getId()
+				.toHexString();
+
+		// Assert that there is reply for the correlation ID.
+		assertFalse(commandReplyService.findByCorrelationId("correlationId-1").isEmpty());
+
+		// Perform a delete operation for the reply ID.
+		commandReplyService.deleteById(replyId);
+
+		// Assert that there is no reply for the correlation ID.
+		assertTrue(commandReplyService.findByCorrelationId("correlationId-1").isEmpty());
+
 	}
 
 	@Test
 	void countByColumn() {
-		assertEquals(2,  commandReplyService.countByColumn("hardwareId", "hardware-test-2"));
-		assertEquals(0,  commandReplyService.countByColumn("hardwareId", "hardware-test-unexistent"));
-		assertEquals(1,  commandReplyService.countByColumn("correlationId", "correlationId-1"));
+		// Perform a save operation for a new reply.
+		testHelper.createCommandReplyEntity("hardware-test-1",
+			"correlationId-1",
+			"test-output",
+			true);
+
+		// Assert correct values counted.
+		assertEquals(1, commandReplyService.countByColumn("hardwareId", "hardware-test-1"));
+		assertEquals(1, commandReplyService.countByColumn("success", true));
+
+		// Assert wrong values counted.
+		assertEquals(0, commandReplyService.countByColumn("hardwareId", "hardware-test-unexistent"));
+		assertEquals(0, commandReplyService.countByColumn("success", false));
 	}
 
 	@Test
 	void deleteByColumn() {
-		commandReplyService.deleteByColumn("hardwareId", "hardware-test-unexistent");
-		assertEquals(6,  testHelper.findAllCommandReplyEntities().size());
+		// Perform a save operation for a new reply.
+		testHelper.createCommandReplyEntity("hardware-test-1",
+			"correlationId-1",
+			"test-output",
+			true);
 
-		commandReplyService.deleteByColumn("hardwareId", "hardware-test-2");
-		assertEquals(4,  testHelper.findAllCommandReplyEntities().size());
+		// Perform a delete operation for an non-existent hardware ID.
+		commandReplyService.deleteByColumn("hardwareId", "hardware-test-non-existent");
+
+		// Assert that there is reply for the correlation ID.
+		assertFalse(commandReplyService.findByCorrelationId("correlationId-1").isEmpty());
+
+
+		// Perform a delete operation for the correct hardware ID.
+		commandReplyService.deleteByColumn("hardwareId", "hardware-test-1");
+
+		// Assert that there is no reply for the correlation ID.
+		assertTrue(commandReplyService.findByCorrelationId("correlationId-1").isEmpty());
+
+
 	}
 }

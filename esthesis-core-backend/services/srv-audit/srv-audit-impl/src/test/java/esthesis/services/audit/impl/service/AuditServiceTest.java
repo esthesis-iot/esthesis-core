@@ -33,7 +33,7 @@ class AuditServiceTest {
 
 		// Assert find all
 		Page<AuditEntity> entityPage =
-			auditService.find(testHelper.makePageable(0, 10, "name,asc"), true);
+			auditService.find(testHelper.makePageable(0, 10), true);
 
 		assertTrue(entityPage.getContent().size() >= 2);
 	}

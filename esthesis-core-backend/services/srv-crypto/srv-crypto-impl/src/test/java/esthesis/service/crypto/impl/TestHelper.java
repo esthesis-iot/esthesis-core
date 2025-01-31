@@ -31,7 +31,7 @@ import java.util.Objects;
 
 import static esthesis.common.util.EsthesisCommonConstants.Device.Type.CORE;
 import static esthesis.core.common.AppConstants.Device.Status.REGISTERED;
-import static esthesis.core.common.AppConstants.Keystore.Item.*;
+import static esthesis.core.common.AppConstants.Keystore.Item.KeyType;
 import static esthesis.core.common.AppConstants.Keystore.Item.ResourceType.CA;
 import static esthesis.core.common.AppConstants.Keystore.Item.ResourceType.CERT;
 import static esthesis.core.common.AppConstants.Keystore.Item.ResourceType.DEVICE;
@@ -101,38 +101,12 @@ public class TestHelper {
 			.create();
 	}
 
-	/**
-	 * Generates a Certificate Authority (CA) entity, a Certificate entity using the created CA,
-	 * and a Keystore entity. The entities are then persisted in their respective repositories.
-	 */
-	public void createEntities(CaEntity pareCaEntity) {
-		CaEntity caEntity = makeCaEntity(pareCaEntity);
-		caEntityRepository.persist(caEntity);
-		CertificateEntity certificateEntity = makeCertificateEntity(caEntity);
-		certificateEntityRepository.persist(certificateEntity);
-		KeystoreEntity keystoreEntity =
-			makeKeystoreEntity(certificateEntity.getId().toString(), caEntity.getId().toString());
-		keystoreEntityRepository.persist(keystoreEntity);
-	}
-
 	public void clearDatabase() {
 		caEntityRepository.deleteAll();
 		certificateEntityRepository.deleteAll();
 		keystoreEntityRepository.deleteAll();
 	}
 
-	public CaEntity findOneCaEntity() {
-		return caEntityRepository.findAll().firstResult();
-	}
-
-
-	public List<CertificateEntity> findAllCertificateEntity() {
-		return certificateEntityRepository.findAll().list();
-	}
-
-	public List<KeystoreEntity> findAllKeystoreEntity() {
-		return keystoreEntityRepository.findAll().list();
-	}
 
 	/**
 	 * Mock a Pageable object with the specified parameters.
@@ -156,15 +130,15 @@ public class TestHelper {
 		return pageable;
 	}
 
-	public CertificateEntity findOneCertificateEntity() {
-		return certificateEntityRepository.findAll().firstResult();
-	}
-
+	/**
+	 * Create a device entity with the specified hardware ID.
+	 *
+	 * @param hardwareId The hardware ID of the device.
+	 * @return The created device entity.
+	 */
 	@SneakyThrows
 	public DeviceEntity makeDeviceEntity(String hardwareId) {
 
-
-		// Create a device key with valid certificate, private key, and public key
 		DeviceKeyDTO deviceKey = new DeviceKeyDTO();
 		deviceKey.setCertificate(getValidCertificate());
 		deviceKey.setPrivateKey(getValidPrivateKey());
@@ -181,9 +155,6 @@ public class TestHelper {
 			.setStatus(REGISTERED);
 	}
 
-	public KeystoreEntity findOneKeystoreEntity() {
-		return keystoreEntityRepository.findAll().firstResult();
-	}
 
 	public KeystoreEntity findOneKeystoreEntityById(String id) {
 		return keystoreEntityRepository
