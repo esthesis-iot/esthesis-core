@@ -156,14 +156,6 @@ public class TestHelper {
 	}
 
 
-	public KeystoreEntity findOneKeystoreEntityById(String id) {
-		return keystoreEntityRepository
-			.findAll()
-			.stream()
-			.filter(keystore -> keystore.getId().toString().equals(id))
-			.findFirst()
-			.orElse(null);
-	}
 
 	private KeystoreEntryDTO makeKeyStoreEntry(String id,
 																						 AppConstants.Keystore.Item.ResourceType resourceType,

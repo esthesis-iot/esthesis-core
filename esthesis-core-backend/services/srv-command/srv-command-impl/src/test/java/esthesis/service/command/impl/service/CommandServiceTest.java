@@ -180,14 +180,12 @@ class CommandServiceTest {
 
 
 		// Perform a save operation for a new request.
-		String commandId =
 			commandService.saveRequest(
 					testHelper.makeCommandRequestEntity(
 						"test-hardware-id",
 						"test-tag",
 						CommandType.e,
-						ExecutionType.a))
-				.toHexString();
+						ExecutionType.a));
 
 
 		// Assert command request can be found.
