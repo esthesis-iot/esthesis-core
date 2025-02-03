@@ -305,14 +305,12 @@ class CampaignServiceTest {
 
 
 		// Perform the save operation for a new campaign.
-		String campaignId = campaignService.saveNew(
+		campaignService.saveNew(
 				testHelper.makeCampaignEntity(
 					"test-campaign-new",
 					"test description",
 					PROVISIONING,
-					CREATED))
-			.getId()
-			.toHexString();
+					CREATED));
 
 		// Assert campaign is found.
 		assertFalse(
