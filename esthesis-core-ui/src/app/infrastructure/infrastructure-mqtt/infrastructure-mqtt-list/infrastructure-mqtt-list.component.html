@@ -14,12 +14,6 @@
     <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Status</th>
     <td *cdkCellDef="let element" cdk-cell> {{element.active ? 'Active' : 'Inactive'}}</td>
   </ng-container>
-  <ng-container cdkColumnDef="tags">
-    <th *cdkHeaderCellDef cdk-header-cell scope="col"> Tags</th>
-    <td *cdkCellDef="let element" cdk-cell>
-      {{resolveTag(element.tags)}}
-    </td>
-  </ng-container>
   <tr *cdkHeaderRowDef="columns" cdk-header-row></tr>
   <tr *cdkRowDef="let row; columns: columns; let element;" [routerLink]="'mqtt/' + element.id"
       cdk-row class="hover:bg-base-300 hover:cursor-pointer bg-base-content/5 text-base"></tr>

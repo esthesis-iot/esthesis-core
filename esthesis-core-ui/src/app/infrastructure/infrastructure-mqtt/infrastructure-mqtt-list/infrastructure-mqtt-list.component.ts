@@ -7,8 +7,6 @@ import {TagDto} from "../../../tags/dto/tag-dto";
 import {InfrastructureMqttService} from "../infrastructure-mqtt.service";
 import {QFormsService, QPageableReply} from "@qlack/forms";
 import {UtilityService} from "../../../shared/services/utility.service";
-import {TagsService} from "../../../tags/tags.service";
-import * as _ from "lodash-es";
 import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
 import {AppConstants} from "../../../app.constants";
 
@@ -20,13 +18,12 @@ export class InfrastructureMqttListComponent extends SecurityBaseComponent imple
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
-  columns = ["name", "url", "tags", "active"];
+  columns = ["name", "url", "active"];
   datasource = new MatTableDataSource<InfrastructureMqttDto>();
   availableTags: TagDto[] | undefined;
 
   constructor(private readonly infrastructureService: InfrastructureMqttService,
-    private readonly qForms: QFormsService, private readonly utilityService: UtilityService,
-    private readonly tagService: TagsService) {
+    private readonly qForms: QFormsService, private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.INFRASTRUCTURE);
   }
 
@@ -38,16 +35,6 @@ export class InfrastructureMqttListComponent extends SecurityBaseComponent imple
     this.sort.sortChange.subscribe((onNext: { active: string; direction: string; }) => {
       this.paginator.pageIndex = 0;
       this.fetchData(0, this.paginator.pageSize, onNext.active, onNext.direction);
-    });
-
-    // Get available tags.
-    this.tagService.find("sort=name,asc").subscribe({
-      next: (next) => {
-        this.availableTags = next.content;
-      }, error: (error) => {
-        this.utilityService.popupErrorWithTraceId(
-          "Could not fetch tags, please try again later.", error);
-      }
     });
   }
 
@@ -67,14 +54,5 @@ export class InfrastructureMqttListComponent extends SecurityBaseComponent imple
   changePage() {
     this.fetchData(this.paginator.pageIndex, this.paginator.pageSize, this.sort.active,
       this.sort.start);
-  }
-
-  resolveTag(ids: string[]): string {
-    return _.map(
-      _.filter(this.availableTags, i => _.includes(ids, i.id)),
-      (j) => {
-        return j.name;
-      }
-    ).join(", ");
   }
 }

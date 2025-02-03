@@ -272,6 +272,16 @@ public abstract class BaseService<D extends BaseEntity> {
 	}
 
 	/**
+	 * Find entities by their IDs.
+	 *
+	 * @param ids The IDs of the entities to find.
+	 * @return The entities with the given IDs.
+	 */
+	protected List<D> findByIds(List<String> ids) {
+		return repository.list("_id in ?1", ids.stream().map(ObjectId::new).toList());
+	}
+
+	/**
 	 * Find an entity by its ID, returning an optional.
 	 *
 	 * @param id The ID of the entity to find.

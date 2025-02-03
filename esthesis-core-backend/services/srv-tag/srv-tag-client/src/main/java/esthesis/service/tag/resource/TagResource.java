@@ -79,6 +79,16 @@ public interface TagResource {
 	TagEntity findById(@PathParam("id") String id);
 
 	/**
+	 * Finds multiple tags by their ids.
+	 *
+	 * @param id A comma-separated list of ids.
+	 * @return A list of tags with the given ids.
+	 */
+	@GET
+	@Path("/v1/find/by-ids")
+	List<TagEntity> findByIds(@QueryParam("ids") String id);
+
+	/**
 	 * Deletes a tag by its id.
 	 *
 	 * @param id The id of the tag to delete.

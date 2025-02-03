@@ -53,6 +53,11 @@ public class TagResourceImpl implements TagResource {
 	}
 
 	@Override
+	public List<TagEntity> findByIds(String ids) {
+		return tagService.findByIds(Arrays.asList(ids.split(",")));
+	}
+
+	@Override
 	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	public TagEntity findByName(@PathParam("name") String name, boolean partialMatch) {
 		return tagService.findFirstByColumn("name", name, partialMatch);

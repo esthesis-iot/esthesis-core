@@ -31,10 +31,24 @@
           </mat-form-field>
           <mat-form-field>
             <mat-label>Tags</mat-label>
-            <mat-select formControlName="tags" multiple>
-              <mat-option *ngFor="let tag of availableTags"
-                          [value]="tag.id">{{tag.name}}</mat-option>
-            </mat-select>
+            <mtx-select
+              id="input"
+              [items]="(filteredTags$ | async) || []"
+              bindLabel="name"
+              bindValue="id"
+              [addTag]="false"
+              [multiple]="true"
+              [hideSelected]="true"
+              [trackByFn]="tagsTrackByFn"
+              [minTermLength]="2"
+              [loading]="filteredTagsLoading"
+              typeToSearchText="Please enter 2 or more characters"
+              [typeahead]="filteredTagsInput$"
+              [virtualScroll]="true"
+              (scroll)="onScrollTags($event)"
+              (scrollToEnd)="onScrollToEndTags()"
+              formControlName="tags">
+            </mtx-select>
           </mat-form-field>
         </div>
       </form>

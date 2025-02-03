@@ -27,6 +27,10 @@ export class CrudService<T> {
     return this.http.get<T>(`${AppConstants.API_ROOT}/${this.endpoint}/${id}`);
   }
 
+  findByIds(id: string[]): Observable<T[]> {
+    return this.http.get<T[]>(`${AppConstants.API_ROOT}/${this.endpoint}/find/by-ids?ids=${id}`);
+  }
+
   delete(id: any): Observable<any> {
     return this.http.delete(`${AppConstants.API_ROOT}/${this.endpoint}/${id}`);
   }

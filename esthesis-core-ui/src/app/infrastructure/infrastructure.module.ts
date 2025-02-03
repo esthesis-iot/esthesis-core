@@ -26,6 +26,13 @@ import {
   InfrastructureMqttEditComponent
 } from "./infrastructure-mqtt/infrastructure-mqtt-edit/infrastructure-mqtt-edit.component";
 import {CdkTableModule} from "@angular/cdk/table";
+import {NgSelectComponent} from "@ng-select/ng-select";
+import {
+  CdkFixedSizeVirtualScroll,
+  CdkVirtualForOf,
+  CdkVirtualScrollViewport
+} from "@angular/cdk/scrolling";
+import {MtxSelect} from "@ng-matero/extensions/select";
 
 @NgModule({
   declarations: [
@@ -53,6 +60,11 @@ import {CdkTableModule} from "@angular/cdk/table";
     MatProgressSpinnerModule,
     FontAwesomeModule,
     CdkTableModule,
+    NgSelectComponent,
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
+    MtxSelect,
   ],
   schemas: [NO_ERRORS_SCHEMA],
 })

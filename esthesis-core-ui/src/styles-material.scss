@@ -143,6 +143,11 @@ mat-form-field {
     @apply bg-accent #{!important};
   }
 }
+ng-dropdown-panel {
+  @apply bg-base-300 #{!important};
+  margin-left: 15px !important;
+  margin-right: 15px !important;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // LIST

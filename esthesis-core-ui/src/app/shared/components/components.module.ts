@@ -14,7 +14,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatInputModule} from "@angular/material/input";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {CountdownComponent} from "ngx-countdown";
@@ -33,7 +33,7 @@ import {LeafletModule} from "@bluehalo/ngx-leaflet";
     FieldErrorComponent,
     TitlelisePipe,
     FramedMapComponent,
-    AcDirective,
+    AcDirective
   ],
   imports: [
     CommonModule,
@@ -47,7 +47,8 @@ import {LeafletModule} from "@bluehalo/ngx-leaflet";
     MatTooltipModule,
     FontAwesomeModule,
     CountdownComponent,
-    LeafletModule
+    LeafletModule,
+    FormsModule
   ],
   exports: [
     BooleanCheckboxComponent,

@@ -1,8 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {TagDto} from "../../../tags/dto/tag-dto";
 import {MatDialog} from "@angular/material/dialog";
-import {TagsService} from "../../../tags/tags.service";
 import {InfrastructureMqttService} from "../infrastructure-mqtt.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {UtilityService} from "../../../shared/services/utility.service";
@@ -20,13 +18,11 @@ import {AppConstants} from "../../../app.constants";
 export class InfrastructureMqttEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   id!: string | null;
-  availableTags: TagDto[] | undefined;
 
   constructor(private readonly fb: FormBuilder, private readonly dialog: MatDialog,
-    private readonly tagsService: TagsService,
     private readonly infrastructureMqttService: InfrastructureMqttService,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router, private readonly utilityService: UtilityService) {
+    private readonly route: ActivatedRoute, private readonly router: Router,
+    private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.INFRASTRUCTURE, route.snapshot.paramMap.get("id"));
   }
 
@@ -49,18 +45,15 @@ export class InfrastructureMqttEditComponent extends SecurityBaseComponent imple
       this.infrastructureMqttService.findById(this.id).subscribe({
         next: (mqttServer: InfrastructureMqttDto) => {
           this.form.patchValue(mqttServer);
+          this.tagsService.findByIds(mqttServer.tags).subscribe({
+            next: (tags: any) => {
+              this.loadFilteredTags(tags);
+            }});
         }, error: (err: any) => {
           this.utilityService.popupErrorWithTraceId("Could not fetch MQTT server.", err);
         }
       });
     }
-
-    // Get available tags.
-    this.tagsService.find("sort=name,asc").subscribe({
-      next: (tags: any) => {
-        this.availableTags = tags.content;
-      }
-    });
   }
 
   save() {

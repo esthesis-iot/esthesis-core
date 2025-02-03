@@ -148,4 +148,10 @@ public class TagService extends BaseService<TagEntity> {
 	public TagEntity findFirstByColumn(String column, Object value, boolean partialMatch) {
 		return super.findFirstByColumn(column, value, partialMatch);
 	}
+
+	@Override
+	@ErnPermission(category = TAGS, operation = READ)
+	public List<TagEntity> findByIds(List<String> ids) {
+		return super.findByIds(ids);
+	}
 }
