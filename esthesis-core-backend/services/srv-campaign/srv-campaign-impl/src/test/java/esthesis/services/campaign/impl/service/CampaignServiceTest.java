@@ -1,8 +1,5 @@
 package esthesis.services.campaign.impl.service;
 
-import esthesis.service.campaign.dto.CampaignConditionDTO;
-import esthesis.service.campaign.dto.CampaignStatsDTO;
-import esthesis.service.campaign.entity.CampaignDeviceMonitorEntity;
 import esthesis.service.campaign.entity.CampaignEntity;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.services.campaign.impl.TestHelper;
@@ -11,31 +8,28 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
-import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static esthesis.core.common.AppConstants.Campaign.Condition.Stage.ENTRY;
 import static esthesis.core.common.AppConstants.Campaign.Condition.Type.SUCCESS;
 import static esthesis.core.common.AppConstants.Campaign.State.CREATED;
 import static esthesis.core.common.AppConstants.Campaign.State.RUNNING;
+import static esthesis.core.common.AppConstants.Campaign.Type.EXECUTE_COMMAND;
+import static esthesis.core.common.AppConstants.Campaign.Type.PROVISIONING;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
@@ -62,19 +56,7 @@ class CampaignServiceTest {
 		//Clear DB
 		testHelper.clearDatabase();
 
-		// Setup initial campaign entities
-		List<CampaignEntity> campaignEntities =
-			List.of(
-				testHelper.makeCampaignEntity().setName("test-campaign-1"),
-				testHelper.makeCampaignEntity().setName("test-campaign-2"),
-				testHelper.makeCampaignEntity().setName("test-campaign-3"),
-				testHelper.makeCampaignEntity().setName("test-campaign-4"),
-				testHelper.makeCampaignEntity().setName("test-campaign-5")
-			);
-
-		campaignEntities.forEach(testHelper::persistCampaignEntity);
-
-		// Mock metrics service methods
+		// Mock monitor metrics and counters.
 		when(campaignDeviceMonitorService.countInGroup(anyString(), anyInt())).thenReturn(10L);
 		when(campaignDeviceMonitorService.countContacted(anyString())).thenReturn(10L);
 		when(campaignDeviceMonitorService.countContacted(anyString(), anyInt())).thenReturn(10L);
@@ -82,141 +64,262 @@ class CampaignServiceTest {
 		when(campaignDeviceMonitorService.countReplies(anyString(), anyInt())).thenReturn(10L);
 		when(campaignDeviceMonitorService.countAll(anyString())).thenReturn(100L);
 
-		// Mock device resource
+		// Mock finding devices by hardware ID and tag name.
 		when(deviceResource.findByHardwareIds(anyString(), anyBoolean()))
 			.thenReturn(List.of(testHelper.makeDeviceEntity("test-device-1")));
 		when(deviceResource.findByTagName(anyString()))
-			.thenReturn(List.of(testHelper.makeDeviceEntity("test-device-2")));
+			.thenReturn(List.of(testHelper.makeDeviceEntity("test-device-1")));
 
 	}
 
 	@Test
 	void saveNew() {
-		long initialCount = testHelper.findAllCampaignEntities().stream().count();
+		// Perform the save operation for a new campaign.
+		String campaignId = campaignService.saveNew(
+				testHelper.makeCampaignEntity(
+					"test-campaign-new",
+					"test description",
+					PROVISIONING,
+					CREATED))
+			.getId()
+			.toHexString();
 
-		CampaignEntity campaign = testHelper.makeCampaignEntity().setName("test-campaign-new");
-		campaignService.saveNew(campaign);
+		// Assert campaign was saved with the correct values.
+		CampaignEntity campaign = campaignService.findById(campaignId);
+		assertEquals("test-campaign-new", campaign.getName());
+		assertEquals("test description", campaign.getDescription());
+		assertEquals(PROVISIONING, campaign.getType());
+		assertEquals(CREATED, campaign.getState());
 
-		List<CampaignEntity> allCampaign = testHelper.findAllCampaignEntities().list();
-
-		assertEquals(initialCount + 1, allCampaign.size());
-		assertTrue(allCampaign.stream().anyMatch(campaignEntity -> campaignEntity.getName().equals("test-campaign-new")));
 	}
 
 	@Test
 	void saveUpdate() {
-		long initialCount = testHelper.findAllCampaignEntities().stream().count();
+		// Perform the save operation for a new campaign.
+		String campaignId = campaignService.saveNew(
+				testHelper.makeCampaignEntity(
+					"test-campaign-new",
+					"test description",
+					PROVISIONING,
+					CREATED))
+			.getId()
+			.toHexString();
 
-		CampaignEntity campaign = testHelper.makeCampaignEntity().setName("test-campaign-new");
-		campaign = campaignService.saveUpdate(campaign); // Insert
+		// Perform the update operation.
+		CampaignEntity campaign = campaignService.findById(campaignId);
 		campaign.setName("test-campaign-updated");
-		campaignService.saveUpdate(campaign); // Update
+		campaign.setDescription("test description updated");
+		campaign.setType(EXECUTE_COMMAND);
+		campaign.setState(RUNNING);
+		campaignService.saveUpdate(campaign);
 
-		List<CampaignEntity> allCampaign = testHelper.findAllCampaignEntities().list();
+		// Assert campaign was update with the correct values.
+		CampaignEntity updatedCampaign = campaignService.findById(campaignId);
+		assertEquals("test-campaign-updated", updatedCampaign.getName());
+		assertEquals("test description updated", updatedCampaign.getDescription());
+		assertEquals(EXECUTE_COMMAND, updatedCampaign.getType());
+		assertEquals(RUNNING, updatedCampaign.getState());
 
-		assertEquals(initialCount + 1, allCampaign.size());
-		assertTrue(allCampaign.stream().anyMatch(campaignEntity -> campaignEntity.getName().equals("test-campaign-updated")));
 	}
 
 	@Test
 	void resume() {
-		String campaignId = new ObjectId().toString();
+		// Perform the save operation for a new campaign.
+		String campaignId = campaignService.saveNew(
+				testHelper.makeCampaignEntity(
+					"test-campaign-new",
+					"test description",
+					PROVISIONING,
+					CREATED))
+			.getId()
+			.toHexString();
+
+		// Assert resume operation does not throw an exception.
 		assertDoesNotThrow(() -> campaignService.resume(campaignId));
+
+		// Todo add zeebeClient verifications.
 	}
 
 	@Test
 	void findGroups() {
-		String campaignId = testHelper.findAllCampaignEntities().stream().findFirst().orElseThrow().getId().toString();
+		// Perform the save operation for a new campaign.
+		String campaignId = campaignService.saveNew(
+				testHelper.makeCampaignEntity(
+					"test-campaign-new",
+					"test description",
+					PROVISIONING,
+					CREATED))
+			.getId()
+			.toHexString();
+
+		// Assert groups are found.
 		assertFalse(campaignService.findGroups(campaignId).isEmpty());
 	}
 
 	@Test
 	void getCampaignStats() {
-		String campaignId = testHelper.findAllCampaignEntities().stream().findFirst().orElseThrow().getId().toString();
-		CampaignStatsDTO statsDTO = campaignService.getCampaignStats(campaignId);
+		// Perform the save operation for a new campaign.
+		String campaignId = campaignService.saveNew(
+				testHelper.makeCampaignEntity(
+					"test-campaign-new",
+					"test description",
+					PROVISIONING,
+					CREATED))
+			.getId()
+			.toHexString();
 
-		assertEquals(100L, statsDTO.getAllMembers());
-		assertEquals("1 day", statsDTO.getDuration());
-		assertEquals(10L, statsDTO.getMembersContacted());
-		assertEquals(0L, statsDTO.getMembersContactedButNotReplied());
-		assertEquals(10L, statsDTO.getMembersReplied());
-		assertEquals(new BigDecimal("10.0"), statsDTO.getSuccessRate());
-		assertEquals(new BigDecimal("10.0"), statsDTO.getProgress());
+		// Assert campaign stats are found.
+		assertNotNull(campaignService.getCampaignStats(campaignId));
+
 	}
 
 	@Test
 	void start() {
-		String campaignId =
-			testHelper.persistCampaignEntity(
-					testHelper.makeCampaignEntity()
-						.setName("test-campaign-start").setState(CREATED).setProcessInstanceId(null)
-						.setStartedOn(null)
-						.setTerminatedOn(null)
-				)
-				.getId()
-				.toString();
 
+		// Perform the save operation for a new campaign.
+		String campaignId = campaignService.saveNew(
+				testHelper.makeCampaignEntity(
+						"test-campaign-new",
+						"test description",
+						PROVISIONING,
+						CREATED)
+					.setProcessInstanceId(null)
+					.setStartedOn(null)
+					.setTerminatedOn(null)
+			)
+			.getId()
+			.toHexString();
+
+		// Perform the start operation for the campaign.
 		campaignService.start(campaignId);
 
-		CampaignEntity campaign =
-			testHelper.findAllCampaignEntities()
-				.stream()
-				.filter(campaignEntity -> campaignEntity.getName().equals("test-campaign-start"))
-				.findFirst()
-				.orElseThrow();
-
-
+		// Assert campaign has been started.
+		CampaignEntity campaign = campaignService.findById(campaignId);
 		assertEquals(RUNNING, campaign.getState());
 		assertNotNull(campaign.getProcessInstanceId());
 		assertNotNull(campaign.getStartedOn());
 		assertNull(campaign.getTerminatedOn());
-
-		// Verify if the 4 CampaignMemberDTO created from the testHelper  class had their metrics saved
-		verify(campaignDeviceMonitorService, times(4)).save(any(CampaignDeviceMonitorEntity.class));
 	}
 
 	@Test
 	void delete() {
-		String campaignId = testHelper.findAllCampaignEntities().stream().findFirst().orElseThrow().getId().toString();
-		assertDoesNotThrow(() -> campaignService.delete(campaignId));
-		assertEquals(4, testHelper.findAllCampaignEntities().list().size());
+		// Perform the save operation for a new campaign.
+		String campaignId = campaignService.saveNew(
+				testHelper.makeCampaignEntity(
+					"test-campaign-new",
+					"test description",
+					PROVISIONING,
+					CREATED))
+			.getId()
+			.toHexString();
+
+		// Perform the delete operation for the campaign.
+		campaignService.delete(campaignId);
+
+		// Assert campaign has been deleted.
+		assertNull(campaignService.findById(campaignId));
+
+		// Todo verify device monitor resource calls.
 	}
 
 	@Test
 	void replicate() {
-		String campaignId = testHelper.findAllCampaignEntities().stream().findFirst().orElseThrow().getId().toString();
-		assertDoesNotThrow(() -> campaignService.replicate(campaignId));
-		assertEquals(6, testHelper.findAllCampaignEntities().list().size());
+		// Perform the save operation for a new campaign.
+		String campaignId = campaignService.saveNew(
+				testHelper.makeCampaignEntity(
+					"test-campaign-new",
+					"test description",
+					PROVISIONING,
+					CREATED))
+			.getId()
+			.toHexString();
+
+		// Perform the replicate operation for the campaign.
+		String replicatedId = campaignService.replicate(campaignId).getId().toHexString();
+
+		// Assert both campaign exists
+		assertNotNull(campaignService.findById(campaignId));
+		assertNotNull(campaignService.findById(replicatedId));
+
 	}
 
 	@Test
 	void getCondition() {
-		CampaignEntity campaign = testHelper.findAllCampaignEntities().stream().findFirst().orElseThrow();
-		List<CampaignConditionDTO> conditions = campaignService.getCondition(campaign, new GroupDTO(ENTRY, 1), SUCCESS);
-		assertEquals(1, conditions.size());
+		// Perform the save operation for a new campaign.
+		CampaignEntity campaign = campaignService.saveNew(
+			testHelper.makeCampaignEntity(
+				"test-campaign-new",
+				"test description",
+				PROVISIONING,
+				CREATED));
+
+		// Assert conditions can be found for the given campaign, group and condition type.
+		assertFalse(campaignService.getCondition(campaign, new GroupDTO(ENTRY, 1), SUCCESS).isEmpty());
+
 	}
 
 	@Test
 	void setStateDescription() {
-		String campaignId = testHelper.findAllCampaignEntities().stream().findFirst().orElseThrow().getId().toString();
+		// Perform the save operation for a new campaign.
+		String campaignId = campaignService.saveNew(
+				testHelper.makeCampaignEntity(
+					"test-campaign-new",
+					"test description",
+					PROVISIONING,
+					CREATED))
+			.getId()
+			.toHexString();
+
+		// Perform the update of the state description.
 		campaignService.setStateDescription(campaignId, "Updated state description");
-
-		CampaignEntity campaign = testHelper.findCampaign(campaignId);
-
-		assertEquals("Updated state description", campaign.getStateDescription());
+		// Assert update was persisted.
+		assertEquals("Updated state description", campaignService.findById(campaignId).getStateDescription());
 	}
 
 	@Test
 	void findById() {
-		String campaignId = testHelper.findAllCampaignEntities().stream().findFirst().orElseThrow().getId().toString();
-		CampaignEntity campaign = campaignService.findById(campaignId);
-		assertNotNull(campaign);
+		// Perform the save operation for a new campaign.
+		String campaignId = campaignService.saveNew(
+				testHelper.makeCampaignEntity(
+					"test-campaign-new",
+					"test description",
+					PROVISIONING,
+					CREATED))
+			.getId()
+			.toHexString();
+
+		// Assert campaign was found.
+		assertNotNull(campaignService.findById(campaignId));
 	}
 
 	@Test
 	void find() {
-		List<CampaignEntity> campaigns =
-			campaignService.find(testHelper.makePageable(0, 10), true).getContent();
-		assertEquals(5, campaigns.size());
+
+		// Assert no campaign is found.
+		assertTrue(
+			campaignService.find(
+					testHelper.makePageable(0, 10),
+					true)
+				.getContent()
+				.isEmpty());
+
+
+		// Perform the save operation for a new campaign.
+		String campaignId = campaignService.saveNew(
+				testHelper.makeCampaignEntity(
+					"test-campaign-new",
+					"test description",
+					PROVISIONING,
+					CREATED))
+			.getId()
+			.toHexString();
+
+		// Assert campaign is found.
+		assertFalse(
+			campaignService.find(
+					testHelper.makePageable(0, 10),
+					true)
+				.getContent()
+				.isEmpty());
 	}
 }

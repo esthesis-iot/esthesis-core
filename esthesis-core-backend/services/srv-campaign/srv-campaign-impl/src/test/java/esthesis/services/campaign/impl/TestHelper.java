@@ -1,5 +1,6 @@
 package esthesis.services.campaign.impl;
 
+import esthesis.core.common.AppConstants.Campaign;
 import esthesis.core.common.AppConstants.Campaign.Condition.Op;
 import esthesis.core.common.AppConstants.Campaign.Condition.Stage;
 import esthesis.core.common.AppConstants.Campaign.Condition.Type;
@@ -12,7 +13,6 @@ import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.services.campaign.impl.repository.CampaignDeviceMonitorRepository;
 import esthesis.services.campaign.impl.repository.CampaignRepository;
-import io.quarkus.mongodb.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MultivaluedHashMap;
@@ -45,22 +45,23 @@ public class TestHelper {
 	@Inject
 	CampaignDeviceMonitorRepository campaignDeviceMonitorRepository;
 
-	public CampaignEntity makeCampaignEntity() {
+	public CampaignEntity makeCampaignEntity(String name,
+																					 String description,
+																					 Campaign.Type type,
+																					 Campaign.State state) {
 		return Instancio.of(CampaignEntity.class)
 			.ignore(all(field(BaseEntity.class, "id")))
 			.set(all(field("conditions")), makeAllValidConditions())
 			.set(all(field("members")), makeAllValidMembers())
 			.set(all(field("startedOn")), Instant.now().minus(1, ChronoUnit.DAYS))
 			.set(all(field("terminatedOn")), Instant.now())
-			.set(all(field("processInstanceId")), String.valueOf(new Random().nextInt(1,999999)))
+			.set(all(field("processInstanceId")), String.valueOf(new Random().nextInt(1, 999999)))
+			.set(all(field("name")), name)
+			.set(all(field("description")), description)
+			.set(all(field("type")), type)
+			.set(all(field("state")), state)
 			.create();
 	}
-
-	public CampaignEntity persistCampaignEntity(CampaignEntity campaignEntity) {
-		campaignRepository.persist(campaignEntity);
-		return campaignEntity;
-	}
-
 
 	public CampaignDeviceMonitorEntity makeCampaignDeviceMonitorEntity() {
 		return Instancio.of(CampaignDeviceMonitorEntity.class)
@@ -69,15 +70,12 @@ public class TestHelper {
 
 	}
 
-	public CampaignDeviceMonitorEntity persistCampaignDeviceMonitorEntity(CampaignDeviceMonitorEntity entity) {
-		campaignDeviceMonitorRepository.persist(entity);
-		return entity;
-	}
+	public CampaignDeviceMonitorEntity makeCampaignDeviceMonitorEntity(ObjectId campaignId) {
+		return Instancio.of(CampaignDeviceMonitorEntity.class)
+			.ignore(all(field(BaseEntity.class, "id")))
+			.set(all(field("campaignId")), campaignId)
+			.create();
 
-	public CampaignDeviceMonitorEntity persistCampaignDeviceMonitorEntity() {
-		CampaignDeviceMonitorEntity entity = makeCampaignDeviceMonitorEntity();
-		campaignDeviceMonitorRepository.persist(entity);
-		return entity;
 	}
 
 
@@ -101,18 +99,6 @@ public class TestHelper {
 		pageable.setSort("");
 		pageable.setUriInfo(uriInfo);
 		return pageable;
-	}
-
-	public PanacheQuery<CampaignDeviceMonitorEntity> findAllCampaignDeviceMonitorEntities() {
-		return campaignDeviceMonitorRepository.findAll();
-	}
-
-	public PanacheQuery<CampaignEntity> findAllCampaignEntities() {
-		return campaignRepository.findAll();
-	}
-
-	public CampaignEntity findCampaign(String campaignId) {
-		return campaignRepository.findById(new ObjectId(campaignId));
 	}
 
 	public void clearDatabase() {
