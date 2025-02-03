@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import lombok.experimental.Accessors;
 
+/**
+ * A representation of a Kubernetes Secret.
+ */
 @Data
 @Builder
 @NoArgsConstructor

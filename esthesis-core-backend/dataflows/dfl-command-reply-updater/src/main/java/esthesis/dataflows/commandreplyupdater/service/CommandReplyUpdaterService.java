@@ -9,10 +9,15 @@ import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 
+/**
+ * Service to update the command reply entity when a reply to a previously sent command is received
+ * by an agent.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
 public class CommandReplyUpdaterService {
+
 	/**
 	 * Set the output of the command reply entity. If the output is larger than MongoDB maximum size,
 	 * it will be truncated and the `isTrimmed` field will be set.

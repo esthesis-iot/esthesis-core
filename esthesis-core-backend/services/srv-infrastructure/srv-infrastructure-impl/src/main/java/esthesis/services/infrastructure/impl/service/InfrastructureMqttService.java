@@ -23,6 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Service for managing MQTT servers infrastructure.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -32,10 +35,22 @@ public class InfrastructureMqttService extends BaseService<InfrastructureMqttEnt
 	@RestClient
 	TagSystemResource tagSystemResource;
 
+	/**
+	 * Save handler for MQTT servers.
+	 *
+	 * @param entity The MQTT server to save.
+	 * @return The saved MQTT server.
+	 */
 	private InfrastructureMqttEntity saveHandler(InfrastructureMqttEntity entity) {
 		return super.save(entity);
 	}
 
+	/**
+	 * Finds an MQTT server matching the given tags.
+	 *
+	 * @param tags The tags to match.
+	 * @return The matching MQTT server, or an empty optional if no match is found.
+	 */
 	@ErnPermission(category = INFRASTRUCTURE, operation = READ)
 	public Optional<InfrastructureMqttEntity> matchByTags(String tags) {
 		log.debug("Looking for a matching MQTT server for tags '{}'.", tags);
@@ -66,10 +81,14 @@ public class InfrastructureMqttService extends BaseService<InfrastructureMqttEnt
 		}
 
 		log.debug("Returning MQTT server '{}'.", match);
-
 		return match;
 	}
 
+	/**
+	 * Finds a random MQTT server.
+	 *
+	 * @return The random MQTT server, or an empty optional if no match is found.
+	 */
 	@ErnPermission(category = INFRASTRUCTURE, operation = READ)
 	public Optional<InfrastructureMqttEntity> matchRandom() {
 		log.debug("Looking for a random MQTT server.");
@@ -94,16 +113,34 @@ public class InfrastructureMqttService extends BaseService<InfrastructureMqttEnt
 		return super.findById(id);
 	}
 
+	/**
+	 * Crerates a new MQTT server.
+	 *
+	 * @param entity The MQTT server to create.
+	 * @return The created MQTT server.
+	 */
 	@ErnPermission(category = INFRASTRUCTURE, operation = CREATE)
 	public InfrastructureMqttEntity saveNew(InfrastructureMqttEntity entity) {
 		return saveHandler(entity);
 	}
 
+	/**
+	 * Updates an existing MQTT server.
+	 *
+	 * @param entity The MQTT server to update.
+	 * @return The updated MQTT server.
+	 */
 	@ErnPermission(category = INFRASTRUCTURE, operation = WRITE)
 	public InfrastructureMqttEntity saveUpdate(InfrastructureMqttEntity entity) {
 		return saveHandler(entity);
 	}
 
+	/**
+	 * Deletes an MQTT server by ID.
+	 *
+	 * @param deviceId The ID of the entity to delete.
+	 * @return True if the entity was deleted, false otherwise.
+	 */
 	@Override
 	@ErnPermission(category = INFRASTRUCTURE, operation = DELETE)
 	public boolean deleteById(String deviceId) {

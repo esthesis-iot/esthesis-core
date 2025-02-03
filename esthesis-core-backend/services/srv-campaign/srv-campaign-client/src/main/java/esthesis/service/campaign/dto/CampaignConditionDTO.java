@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+/**
+ * A representation of campaign condition.
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -15,13 +18,13 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class CampaignConditionDTO {
 
-  private AppConstants.Campaign.Condition.Type type;
-  private AppConstants.Campaign.Condition.Op operation;
-  private AppConstants.Campaign.Condition.Stage stage;
-  private int group;
+	private AppConstants.Campaign.Condition.Type type;
+	private AppConstants.Campaign.Condition.Op operation;
+	private AppConstants.Campaign.Condition.Stage stage;
+	private int group;
 
-  private String value;
-  private String propertyName;
-  private Boolean propertyIgnorable;
-  private Instant scheduleDate;
+	private String value;
+	private String propertyName;
+	private Boolean propertyIgnorable;
+	private Instant scheduleDate;
 }

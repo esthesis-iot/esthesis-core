@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+/**
+ * A representation of the geolocation data.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +18,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class GeolocationDTO {
 
-  private BigDecimal latitude;
-  private BigDecimal longitude;
-  private Instant lastUpdated;
+	private BigDecimal latitude;
+	private BigDecimal longitude;
+	private Instant lastUpdated;
 }

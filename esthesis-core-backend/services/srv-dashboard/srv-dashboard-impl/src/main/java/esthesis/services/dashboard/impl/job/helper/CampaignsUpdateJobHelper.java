@@ -16,6 +16,9 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Helper class for updating the CAMPAIGNS dashboard item.
+ */
 @Slf4j
 @ApplicationScoped
 public class CampaignsUpdateJobHelper extends UpdateJobHelper<DashboardUpdateCampaigns> {

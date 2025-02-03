@@ -12,6 +12,9 @@ import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+/**
+ * Camel routes for writing data to an InfluxDB.
+ */
 @Slf4j
 @ApplicationScoped
 public class InfluxDBRoute extends RouteBuilder {

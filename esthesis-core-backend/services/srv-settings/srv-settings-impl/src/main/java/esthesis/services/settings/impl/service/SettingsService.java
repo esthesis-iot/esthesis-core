@@ -21,6 +21,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Service for managing settings.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -29,10 +32,22 @@ public class SettingsService extends BaseService<SettingEntity> {
 	@Inject
 	RedisUtils redisUtils;
 
+	/**
+	 * Save handler for settings.
+	 *
+	 * @param entity the setting to save.
+	 * @return the saved entity.
+	 */
 	private SettingEntity saveHandler(SettingEntity entity) {
 		return super.save(entity);
 	}
 
+	/**
+	 * Find setting by name.
+	 *
+	 * @param name the setting name.
+	 * @return the setting entity.
+	 */
 	@ErnPermission(category = SETTINGS, operation = READ)
 	public SettingEntity findByName(NamedSetting name) {
 		log.trace("Looking up key '{}'.", name);
@@ -42,6 +57,12 @@ public class SettingsService extends BaseService<SettingEntity> {
 		return settingEntity;
 	}
 
+	/**
+	 * Find setting by the textual representation of its name.
+	 *
+	 * @param name the setting name.
+	 * @return the setting entity.
+	 */
 	@ErnPermission(category = SETTINGS, operation = READ)
 	public SettingEntity findByTextName(String name) {
 		log.trace("Looking up key '{}'.", name);
@@ -53,6 +74,8 @@ public class SettingsService extends BaseService<SettingEntity> {
 
 	/**
 	 * Finds all unique measurement names sent by devices.
+	 *
+	 * @return the list of unique measurement names.
 	 */
 	@ErnPermission(category = SETTINGS, operation = READ)
 	public List<String> findAllUniqueMeasurementNames() {
@@ -71,11 +94,23 @@ public class SettingsService extends BaseService<SettingEntity> {
 		return fields.stream().sorted().toList();
 	}
 
+	/**
+	 * Create a new setting.
+	 *
+	 * @param entity the setting to create.
+	 * @return the created entity.
+	 */
 	@ErnPermission(category = SETTINGS, operation = CREATE)
 	public SettingEntity saveNew(SettingEntity entity) {
 		return saveHandler(entity);
 	}
 
+	/**
+	 * Save or update a setting.
+	 *
+	 * @param entity the setting to save.
+	 * @return the saved entity.
+	 */
 	@ErnPermission(category = SETTINGS, operation = WRITE)
 	public SettingEntity saveUpdate(SettingEntity entity) {
 		return saveHandler(entity);

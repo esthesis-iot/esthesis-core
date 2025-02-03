@@ -17,6 +17,9 @@ import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Interceptor to audit method calls.
+ */
 @Slf4j
 @Interceptor
 @Priority(Interceptor.Priority.APPLICATION)
@@ -36,6 +39,13 @@ public class AuditedInterceptor {
 
 	private int maxRequestSize = 16 * 1024 * 1000;
 
+	/**
+	 * Audits the method call.
+	 *
+	 * @param ctx The invocation context.
+	 * @return The result of the method call.
+	 * @throws Exception If an error occurs.
+	 */
 	@AroundInvoke
 	Object audit(InvocationContext ctx) throws Exception {
 

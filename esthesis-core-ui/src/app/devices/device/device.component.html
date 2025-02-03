@@ -108,7 +108,8 @@
               <app-device-data></app-device-data>
             </ng-template>
           </mat-tab>
-          <mat-tab *ngIf="allowWrite">
+          <mat-tab *ngIf="allowWrite"
+                   [disabled]="device?.type === appConstants.DEVICE.TYPE.EDGE">
             <ng-template mat-tab-label>
               <fa-icon class="mr-1" icon="terminal"></fa-icon>
               Pseudo-terminal

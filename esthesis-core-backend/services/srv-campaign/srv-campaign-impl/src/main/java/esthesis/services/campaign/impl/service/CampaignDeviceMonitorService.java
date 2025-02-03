@@ -9,6 +9,9 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 
+/**
+ * Service for managing the monitoring of devices in a campaign.
+ */
 @Slf4j
 @ApplicationScoped
 public class CampaignDeviceMonitorService extends BaseService<CampaignDeviceMonitorEntity> {
@@ -16,8 +19,8 @@ public class CampaignDeviceMonitorService extends BaseService<CampaignDeviceMoni
 	/**
 	 * Finds the devices of a campaign.
 	 *
-	 * @param campaignId
-	 * @return
+	 * @param campaignId The campaign id to find the devices for.
+	 * @return The devices of the campaign.
 	 */
 	public List<CampaignDeviceMonitorEntity> findByCampaignID(String campaignId) {
 		return findByColumn("campaignId", new ObjectId(campaignId));
@@ -28,6 +31,7 @@ public class CampaignDeviceMonitorService extends BaseService<CampaignDeviceMoni
 	 *
 	 * @param campaignId The campaign id to find the devices for.
 	 * @param group      The group to find the devices for.
+	 * @return The devices of the campaign group.
 	 */
 	public List<CampaignDeviceMonitorEntity> findByCampaignIdAndGroup(String campaignId, int group) {
 		return getRepository().find("campaignId = ?1 and group = ?2", new ObjectId(campaignId), group)
@@ -36,19 +40,20 @@ public class CampaignDeviceMonitorService extends BaseService<CampaignDeviceMoni
 
 
 	/**
-	 * Count all devices for the whole campaign.
+	 * Counts all devices for the whole campaign.
 	 *
 	 * @param campaignId The campaign id to count the devices for.
-	 * @return
+	 * @return The number of devices.
 	 */
 	public long countAll(String campaignId) {
 		return getRepository().count("campaignId = ?1", new ObjectId(campaignId));
 	}
 
 	/**
-	 * Count device replies for the whole campaign.
+	 * Counts device replies for the whole campaign.
 	 *
 	 * @param campaignId The campaign id to count the replies for.
+	 * @return The number of replies.
 	 */
 	public long countReplies(String campaignId) {
 		return getRepository().count("campaignId = ?1 and commandRequestId is not null"
@@ -56,10 +61,11 @@ public class CampaignDeviceMonitorService extends BaseService<CampaignDeviceMoni
 	}
 
 	/**
-	 * Cound device replies for a specific campaign group.
+	 * Counts device replies for a specific campaign group.
 	 *
 	 * @param campaignId The campaign id to count the replies for.
 	 * @param group      The group to count the replies for.
+	 * @return The number of replies.
 	 */
 	public long countReplies(String campaignId, int group) {
 		return getRepository().count("campaignId = ?1 and group = ?2 and commandRequestId is not null"
@@ -67,15 +73,23 @@ public class CampaignDeviceMonitorService extends BaseService<CampaignDeviceMoni
 	}
 
 	/**
-	 * Count the devices that have been contacted for the whole campaign.
+	 * Counts the devices that have been contacted for the whole campaign.
 	 *
 	 * @param campaignId The campaign id to count the devices for.
+	 * @return The number of devices.
 	 */
 	public long countContacted(String campaignId) {
 		return getRepository().count("campaignId = ?1 and commandRequestId is not null",
 			new ObjectId(campaignId));
 	}
 
+	/**
+	 * Counts the devices in a group.
+	 *
+	 * @param campaignId The campaign id to count the devices for.
+	 * @param group      The group to count the devices for.
+	 * @return The number of devices.
+	 */
 	public long countInGroup(String campaignId, int group) {
 		return getRepository().count("campaignId = ?1 and group = ?2",
 			new ObjectId(campaignId), group);
@@ -86,6 +100,7 @@ public class CampaignDeviceMonitorService extends BaseService<CampaignDeviceMoni
 	 *
 	 * @param campaignId The campaign id to count the devices for.
 	 * @param group      The group to count the devices for.
+	 * @return The number of devices.
 	 */
 	public long countContacted(String campaignId, int group) {
 		return getRepository().count("campaignId = ?1 and group = ?2 and commandRequestId is not null",
@@ -96,6 +111,7 @@ public class CampaignDeviceMonitorService extends BaseService<CampaignDeviceMoni
 	 * Count the devices that have been contacted but have not replied for the whole campaign.
 	 *
 	 * @param campaignId The campaign id to count the devices for.
+	 * @return The number of devices.
 	 */
 	public long countContactedNotReplied(String campaignId) {
 		return getRepository().count("campaignId = ?1 and commandRequestId is not null"
@@ -108,6 +124,7 @@ public class CampaignDeviceMonitorService extends BaseService<CampaignDeviceMoni
 	 *
 	 * @param campaignId The campaign to search for.
 	 * @param group      The group to search for.
+	 * @return The devices that have been contacted but not replied yet.
 	 */
 	public List<CampaignDeviceMonitorEntity> findContactedNotReplied(String campaignId, int group) {
 		return getRepository()
@@ -122,6 +139,7 @@ public class CampaignDeviceMonitorService extends BaseService<CampaignDeviceMoni
 	 * @param campaignId The campaign to search for.
 	 * @param group      The group to search for.
 	 * @param batchSize  The maximum number of devices to return.
+	 * @return The devices that have not been contacted yet.
 	 */
 	public List<CampaignDeviceMonitorEntity> findNotContacted(String campaignId,
 		int group, int batchSize) {
@@ -137,6 +155,7 @@ public class CampaignDeviceMonitorService extends BaseService<CampaignDeviceMoni
 	 *
 	 * @param campaignId The campaign to search for.
 	 * @param group      The group to search for.
+	 * @return true if there are devices that have not been contacted yet, false otherwise.
 	 */
 	public boolean hasUncontactedDevices(String campaignId, int group) {
 		return getRepository()

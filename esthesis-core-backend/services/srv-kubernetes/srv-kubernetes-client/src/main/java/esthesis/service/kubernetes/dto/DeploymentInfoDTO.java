@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * A DTO for the information required to deploy a Kubernetes Deployment.
+ * A representation of  the information required to deploy a Kubernetes Deployment.
  */
 @Data
 @NoArgsConstructor

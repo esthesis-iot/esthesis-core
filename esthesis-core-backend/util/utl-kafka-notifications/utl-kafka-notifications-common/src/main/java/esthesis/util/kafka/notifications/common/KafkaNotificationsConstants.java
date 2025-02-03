@@ -1,5 +1,8 @@
 package esthesis.util.kafka.notifications.common;
 
+/**
+ * Constants used by the Kafka notifications system.
+ */
 public class KafkaNotificationsConstants {
 
 	/*

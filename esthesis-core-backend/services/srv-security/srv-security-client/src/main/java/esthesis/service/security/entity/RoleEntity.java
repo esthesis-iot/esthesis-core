@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+/**
+ * Role entity
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +24,7 @@ import lombok.experimental.Accessors;
 @MongoEntity(collection = "Role")
 public class RoleEntity extends BaseEntity {
 
-  private String name;
-  private String description;
-  private List<String> policies;
+	private String name;
+	private String description;
+	private List<String> policies;
 }

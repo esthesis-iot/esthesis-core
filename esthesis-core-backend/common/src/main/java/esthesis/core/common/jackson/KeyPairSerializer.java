@@ -6,23 +6,26 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import java.security.KeyPair;
 
+/**
+ * Serializer for {@link KeyPair} objects.
+ */
 public class KeyPairSerializer extends StdSerializer<KeyPair> {
 
-  public static final String PUBLIC_KEY = "publicKey";
-  public static final String PRIVATE_KEY = "privateKey";
+	public static final String PUBLIC_KEY = "publicKey";
+	public static final String PRIVATE_KEY = "privateKey";
 
-  protected KeyPairSerializer(Class<KeyPair> t) {
-    super(t);
-  }
+	protected KeyPairSerializer(Class<KeyPair> t) {
+		super(t);
+	}
 
-  @Override
-  public void serialize(KeyPair value, JsonGenerator gen, SerializerProvider provider)
-  throws IOException {
-    gen.writeStartObject();
-    gen.writeFieldName(PUBLIC_KEY);
-    gen.writeBinary(value.getPublic().getEncoded());
-    gen.writeFieldName(PRIVATE_KEY);
-    gen.writeBinary(value.getPrivate().getEncoded());
-    gen.writeEndObject();
-  }
+	@Override
+	public void serialize(KeyPair value, JsonGenerator gen, SerializerProvider provider)
+	throws IOException {
+		gen.writeStartObject();
+		gen.writeFieldName(PUBLIC_KEY);
+		gen.writeBinary(value.getPublic().getEncoded());
+		gen.writeFieldName(PRIVATE_KEY);
+		gen.writeBinary(value.getPrivate().getEncoded());
+		gen.writeEndObject();
+	}
 }

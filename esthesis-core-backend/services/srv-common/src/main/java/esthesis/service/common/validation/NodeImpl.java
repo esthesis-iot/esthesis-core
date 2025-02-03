@@ -4,6 +4,9 @@ import jakarta.validation.ElementKind;
 import jakarta.validation.Path.Node;
 import lombok.Data;
 
+/**
+ * Implementation of the @{@link Node} interface.
+ */
 @Data
 public class NodeImpl implements Node {
 

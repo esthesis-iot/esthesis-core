@@ -5,6 +5,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+/**
+ * Service for providing public access information.
+ */
 @Slf4j
 @ApplicationScoped
 public class PublicAccessService {
@@ -45,6 +48,11 @@ public class PublicAccessService {
 	@ConfigProperty(name = "esthesis.oidc.secure-routes")
 	String[] secureRoutes;
 
+	/**
+	 * Gets OIDC configuration.
+	 *
+	 * @return OIDC configuration.
+	 */
 	public OidcConfigDTO getOidcConfig() {
 		OidcConfigDTO oidcConfigDTO = new OidcConfigDTO();
 		oidcConfigDTO.setAuthority(authority);

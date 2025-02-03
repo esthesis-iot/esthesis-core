@@ -17,14 +17,17 @@
             <download-page>https://esthes.is/core</download-page>
             <showDownloadButton>true</showDownloadButton>
         </variables>
+
         <footer>
-            <copyright>European Dynamics SA</copyright>
+            <social type="email" href="mailto:esthesis@eurodyn.com"/>
+            <social type="blog" href="https://www.eurodyn.com"/>
             <social type="linkedin" href="https://www.linkedin.com/company/european-dynamics"/>
-            <link href="https://www.eurodyn.com">esthesis CORE</link>
-            <link href="https://www.eurodyn.com">esthesis EDGE</link>
-            <link href="https://www.eurodyn.com">esthesis GATEWAY</link>
-            <link href="https://www.eurodyn.com">esthesis UNS</link>
-            <link href="https://www.eurodyn.com">esthesis HISTORIAN</link>
+            <link href="https://www.eurodyn.com">CORE</link>
+            <link href="https://www.eurodyn.com">EDGE</link>
+            <link href="https://www.eurodyn.com">GATEWAY</link>
+            <link href="https://www.eurodyn.com">UNS</link>
+            <link href="https://www.eurodyn.com">HISTORIAN</link>
+            <copyright>European Dynamics, licensed under the EUPL-1.2-or-later</copyright>
         </footer>
     </build-profile>
 

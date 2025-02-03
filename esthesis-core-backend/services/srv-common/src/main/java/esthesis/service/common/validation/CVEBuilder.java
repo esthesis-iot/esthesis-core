@@ -16,6 +16,13 @@ public class CVEBuilder<D> {
 	// Set of constraint violations.
 	private final Set<ConstraintViolation<D>> violations = new HashSet<>();
 
+	/**
+	 * Helper method to create a single constraint violation.
+	 *
+	 * @param path    the object path of the violation.
+	 * @param message the message of the violation.
+	 * @return the constraint violation.
+	 */
 	private CVImpl<D> createViolation(String path, String message) {
 		CVImpl<D> violation = new CVImpl<>();
 		violation.setMessage(message);
@@ -30,8 +37,9 @@ public class CVEBuilder<D> {
 	 * @param path    the object path of the violation.
 	 * @param message the message of the violation.
 	 */
-	public static void addAndThrow(String path, String message) {
-		new CVEBuilder<>().add(path, message).throwCVE();
+	public static ConstraintViolationException addAndThrow(String path, String message)
+	throws ConstraintViolationException {
+		return new CVEBuilder<>().add(path, message).throwCVE();
 	}
 
 	/**
@@ -41,8 +49,9 @@ public class CVEBuilder<D> {
 	 * @param message the message of the violation.
 	 * @param args    the arguments to format the message.
 	 */
-	public static void addAndThrow(String path, String message, Object... args) {
-		new CVEBuilder<>().add(path, message, args).throwCVE();
+	public static ConstraintViolationException addAndThrow(String path, String message,
+		Object... args) throws ConstraintViolationException {
+		return new CVEBuilder<>().add(path, message, args).throwCVE();
 	}
 
 	/**
@@ -78,10 +87,10 @@ public class CVEBuilder<D> {
 	/**
 	 * Throws a @see ConstraintViolationException, if any violations have been added to the builder.
 	 */
-	public void throwCVE() {
-		if (!violations.isEmpty()) {
-			throw new ConstraintViolationException(violations);
-		}
+	public ConstraintViolationException throwCVE() throws ConstraintViolationException {
+//		if (!violations.isEmpty()) {
+		return new ConstraintViolationException(violations);
+//		}
 	}
 
 }

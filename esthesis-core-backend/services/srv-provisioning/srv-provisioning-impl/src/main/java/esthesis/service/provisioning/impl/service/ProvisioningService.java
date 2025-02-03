@@ -8,9 +8,9 @@ import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
 import static esthesis.core.common.AppConstants.Security.Operation.READ;
 import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
+import esthesis.common.exception.QMismatchException;
 import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.core.common.AppConstants.Provisioning.Type;
-import esthesis.common.exception.QMismatchException;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.gridfs.GridFSDTO;
 import esthesis.service.common.gridfs.GridFSService;
@@ -39,6 +39,9 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 import org.semver4j.Semver;
 
+/**
+ * Service for provisioning packages.
+ */
 @Slf4j
 @ApplicationScoped
 public class ProvisioningService extends BaseService<ProvisioningPackageEntity> {
@@ -60,15 +63,27 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 	@Inject
 	ProvisioningRepository provisioningRepository;
 
+	/**
+	 * Checks if semantic versioning is enabled in the settings.
+	 *
+	 * @return True if enabled, false otherwise.
+	 */
 	private boolean isSemverEnabled() {
 		return settingsResource.findByName(NamedSetting.DEVICE_PROVISIONING_SEMVER).asBoolean();
 	}
 
+	/**
+	 * Saves the provisioning package entity and the binary package.
+	 *
+	 * @param ppe  The provisioning package entity.
+	 * @param file The uploaded file.
+	 * @return The saved provisioning package entity.
+	 */
 	private ProvisioningPackageEntity saveHandler(ProvisioningPackageEntity ppe, FileUpload file) {
 		// Custom validation for version, if semver should be followed.
 		if (isSemverEnabled() && !Semver.isValid(ppe.getVersion())) {
-			CVEBuilder.addAndThrow("version", "Version does not follow semantic versioning scheme. "
-				+ "You can switch this option off in the settings.");
+			throw CVEBuilder.addAndThrow("version", "Version does not follow semantic versioning "
+				+ "scheme. You can switch this option off in the settings.");
 		}
 
 		if (ppe.getId() == null) {
@@ -108,18 +123,37 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 		return ppe;
 	}
 
+	/**
+	 * Creates a new provisioning package entity.
+	 *
+	 * @param ppe  The provisioning package entity.
+	 * @param file The uploaded file.
+	 * @return The saved provisioning package entity.
+	 */
 	@Transactional
 	@ErnPermission(category = PROVISIONING, operation = CREATE)
 	public ProvisioningPackageEntity saveNew(ProvisioningPackageEntity ppe, FileUpload file) {
 		return saveHandler(ppe, file);
 	}
 
+	/**
+	 * Updates an existing provisioning package entity.
+	 *
+	 * @param ppe  The provisioning package entity.
+	 * @param file The uploaded file.
+	 * @return The saved provisioning package entity.
+	 */
 	@Transactional
 	@ErnPermission(category = PROVISIONING, operation = WRITE)
 	public ProvisioningPackageEntity saveUpdate(ProvisioningPackageEntity ppe, FileUpload file) {
 		return saveHandler(ppe, file);
 	}
 
+	/**
+	 * Deletes a provisioning package entity.
+	 *
+	 * @param provisioningPackageId The id of the provisioning package entity.
+	 */
 	@Transactional
 	@ErnPermission(category = PROVISIONING, operation = DELETE)
 	public void delete(String provisioningPackageId) {
@@ -136,6 +170,12 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 		super.deleteById(provisioningPackageId);
 	}
 
+	/**
+	 * Downloads the binary package of an internal provisioning package.
+	 *
+	 * @param provisioningPackageId The id of the provisioning package entity.
+	 * @return The binary package.
+	 */
 	@ErnPermission(category = PROVISIONING, operation = READ)
 	public Uni<byte[]> download(String provisioningPackageId) {
 		ProvisioningPackageEntity ppe = findById(provisioningPackageId);
@@ -152,6 +192,12 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 			.build());
 	}
 
+	/**
+	 * Finds all provisioning packages that match at least one of the tags assigned to the device.
+	 *
+	 * @param tags The tags assigned to the device.
+	 * @return The list of provisioning packages.
+	 */
 	@ErnPermission(category = PROVISIONING, operation = READ)
 	public List<ProvisioningPackageEntity> findByTags(String tags) {
 		List<ProvisioningPackageEntity> packages = tags.isBlank()
@@ -184,7 +230,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 	 *
 	 * @param hardwareId The hardware id of the device to find a provisioning package for.
 	 * @param version    The version of the firmware currently installed on the device.
-	 * @return
+	 * @return The candidate provisioning package.
 	 */
 	@ErnPermission(category = PROVISIONING, operation = READ)
 	public ProvisioningPackageEntity semVerFind(String hardwareId, String version) {
@@ -233,12 +279,25 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 		return candidateVersion;
 	}
 
+	/**
+	 * Finds all provisioning packages.
+	 *
+	 * @param pageable     Representation of page, size, and sort search parameters.
+	 * @param partialMatch Whether to do a partial match.
+	 * @return The list of provisioning packages.
+	 */
 	@Override
 	@ErnPermission(category = PROVISIONING, operation = READ)
 	public Page<ProvisioningPackageEntity> find(Pageable pageable, boolean partialMatch) {
 		return super.find(pageable, partialMatch);
 	}
 
+	/**
+	 * Finds a provisioning package by ID.
+	 *
+	 * @param id The ID of the entity to find.
+	 * @return The provisioning package entity.
+	 */
 	@Override
 	@ErnPermission(category = PROVISIONING, operation = READ)
 	public ProvisioningPackageEntity findById(String id) {

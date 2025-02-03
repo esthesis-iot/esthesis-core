@@ -5,6 +5,7 @@ import static esthesis.core.common.AppConstants.Security.Category.DEVICE;
 import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
+import esthesis.common.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.common.data.DataUtils;
 import esthesis.common.data.DataUtils.ValueType;
 import esthesis.common.exception.QAlreadyExistsException;
@@ -17,7 +18,6 @@ import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.Device.Status;
 import esthesis.core.common.AppConstants.DeviceRegistrationMode;
 import esthesis.core.common.AppConstants.NamedSetting;
-import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.service.crypto.resource.KeyResource;
 import esthesis.service.device.dto.DeviceKeyDTO;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
@@ -53,6 +53,9 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Service for registering devices.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -100,7 +103,7 @@ public class DeviceRegistrationService {
 					String regex = "^[a-zA-Z0-9_-]+$";
 					if (!tag.matches(regex)) {
 						log.warn("Tag name '{}' does not conform to the naming convention '{}'. Tag will be "
-								+ "ignored.",	tag, regex);
+							+ "ignored.", tag, regex);
 					} else {
 						TagEntity tagEntity = new TagEntity();
 						tagEntity.setName(tag);
@@ -118,6 +121,7 @@ public class DeviceRegistrationService {
 
 	/**
 	 * Check if a registration secret is needed.
+	 *
 	 * @param registrationSecret The registration secret to check.
 	 */
 	private void checkRegistrationSecret(String registrationSecret) {
@@ -134,6 +138,7 @@ public class DeviceRegistrationService {
 
 	/**
 	 * Check if the given hardware id is valid.
+	 *
 	 * @param hardwareId The hardware id to check.
 	 */
 	private void checkHardwareId(String hardwareId) {
@@ -144,6 +149,11 @@ public class DeviceRegistrationService {
 		}
 	}
 
+	/**
+	 * Check if a device with the same hardware ID does not already exist.
+	 *
+	 * @param hardwareId The hardware id to check.
+	 */
 	private void checkIfDeviceExists(String hardwareId) {
 		// Check that a device with the same hardware ID does not already exist.
 		if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
@@ -165,7 +175,7 @@ public class DeviceRegistrationService {
 		EsthesisCommonConstants.Device.Type deviceType, String registrationSecret, String attributes)
 	throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, OperatorCreationException,
 				 NoSuchProviderException {
-		log.debug("Registering device with hardware id '{}', tags '{}', status '{}', "
+		log.trace("Registering device with hardware id '{}', tags '{}', status '{}', "
 				+ "secret '{}', and attributes '{}'.", hardwareId, tags, status, registrationSecret,
 			attributes);
 
@@ -262,7 +272,7 @@ public class DeviceRegistrationService {
 	 * @param deviceRegistration The preregistration details of the device.
 	 */
 	@ErnPermission(category = DEVICE, operation = CREATE)
-	public void preregister(DeviceRegistrationDTO deviceRegistration)
+	public List<DeviceEntity> preregister(DeviceRegistrationDTO deviceRegistration)
 	throws NoSuchAlgorithmException, OperatorCreationException, InvalidKeySpecException,
 				 NoSuchProviderException, IOException {
 		// Split IDs.
@@ -281,23 +291,27 @@ public class DeviceRegistrationService {
 		}
 
 		// Register IDs.
+		List<DeviceEntity> preregisteredDevices = new ArrayList<>();
 		for (String hardwareId : idList) {
-			log.debug("Requested to preregister a device with hardware id '{}'.", hardwareId);
-			register(hardwareId, deviceRegistration.getTags(), Status.PREREGISTERED,
-				deviceRegistration.getType(), deviceRegistration.getRegistrationSecret(), null);
+			log.trace("Requested to preregister a device with hardware id '{}'.", hardwareId);
+			preregisteredDevices.add(
+				register(hardwareId, deviceRegistration.getTags(), Status.PREREGISTERED,
+					deviceRegistration.getType(), deviceRegistration.getRegistrationSecret(), null));
 		}
+
+		return preregisteredDevices;
 	}
 
 	/**
 	 * The public entrypoint to register a device.
 	 *
-	 * @param deviceRegistration
-	 * @return
-	 * @throws IOException
-	 * @throws InvalidKeySpecException
-	 * @throws NoSuchAlgorithmException
-	 * @throws OperatorCreationException
-	 * @throws NoSuchProviderException
+	 * @param deviceRegistration The registration details of the device.
+	 * @return The registered device.
+	 * @throws IOException               If an error occurs during registration.
+	 * @throws InvalidKeySpecException   If an error occurs during registration.
+	 * @throws NoSuchAlgorithmException  If an error occurs during registration.
+	 * @throws OperatorCreationException If an error occurs during registration.
+	 * @throws NoSuchProviderException   If an error occurs during registration.
 	 */
 	@ErnPermission(category = DEVICE, operation = CREATE)
 	public DeviceEntity register(DeviceRegistrationDTO deviceRegistration)
@@ -331,6 +345,7 @@ public class DeviceRegistrationService {
 	 * the device already exists in system's database.
 	 *
 	 * @param hardwareId The hardware id of the device to activate.
+	 * @return The activated device.
 	 */
 	@ErnPermission(category = DEVICE, operation = WRITE)
 	public DeviceEntity activatePreregisteredDevice(String hardwareId) {

@@ -6,6 +6,7 @@ import static esthesis.core.common.AppConstants.HARDWARE_ID_REGEX;
 
 import esthesis.common.agent.dto.AgentRegistrationRequest;
 import esthesis.common.agent.dto.AgentRegistrationResponse;
+import esthesis.common.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.exception.QLimitException;
 import esthesis.common.exception.QMismatchException;
@@ -13,7 +14,6 @@ import esthesis.common.exception.QSecurityException;
 import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.core.common.AppConstants.Provisioning.Redis;
 import esthesis.core.common.AppConstants.Provisioning.Type;
-import esthesis.core.common.dto.SignatureVerificationRequestDTO;
 import esthesis.service.agent.dto.AgentProvisioningInfoResponse;
 import esthesis.service.common.gridfs.GridFSDTO;
 import esthesis.service.common.gridfs.GridFSService;
@@ -50,6 +50,9 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Service for handling agent operations.
+ */
 @Slf4j
 @ApplicationScoped
 public class AgentService {
@@ -136,6 +139,13 @@ public class AgentService {
 			token, hardwareId);
 	}
 
+	/**
+	 * Validates that the number of requests for provisioning packages for a device with a given
+	 * hardware id does not exceed the limit set by the system. The limit is defined by the number of
+	 * requests that can be made within a certain time period.
+	 *
+	 * @param hardwareId The hardware id of the device for which the requests are being made.
+	 */
 	private void validateRequestsLimit(String hardwareId) {
 		if (settingsSystemResource.findByName(NamedSetting.DEVICE_PROVISIONING_SECURE).asBoolean()) {
 			long counter = redisUtils.incrCounter(KeyType.ESTHESIS_PRT, hardwareId,
@@ -144,8 +154,7 @@ public class AgentService {
 				throw new QLimitException(
 					"Device with hardware id '{}' has exceeded the number of allowed provisioning "
 						+ "requests, '{}' requests per '{}' seconds).", hardwareId,
-					AgentService.REQUESTS_PER_TIMESLOT,
-					AgentService.REQUEST_COUNTER_TIMEOUT);
+					AgentService.REQUESTS_PER_TIMESLOT, AgentService.REQUEST_COUNTER_TIMEOUT);
 			}
 
 			// If the token was validated, reset the caching counter.
@@ -169,8 +178,7 @@ public class AgentService {
 		redisUtils.setToHash(KeyType.ESTHESIS_PPDT, randomToken, Redis.DOWNLOAD_TOKEN_CREATED_ON,
 			Instant.now().toString());
 		redisUtils.setExpirationForHash(KeyType.ESTHESIS_PPDT, randomToken,
-			settingsSystemResource.findByName(NamedSetting.DEVICE_PROVISIONING_CACHE_TIME).asLong()
-				* 60);
+			settingsSystemResource.findByName(NamedSetting.DEVICE_PROVISIONING_CACHE_TIME).asLong() * 60);
 
 		// Prepare the reply with the provisioning package details and the download token.
 		AgentProvisioningInfoResponse apir = new AgentProvisioningInfoResponse();
@@ -191,6 +199,14 @@ public class AgentService {
 		return apir;
 	}
 
+	/**
+	 * Returns information of a provisioning package by its ID.
+	 *
+	 * @param hardwareId The hardware id of the device requesting the information.
+	 * @param packageId  The id of the provisioning package to return information for.
+	 * @param token      The token sent by the device.
+	 * @return The response with the provisioning package details.
+	 */
 	public AgentProvisioningInfoResponse findProvisioningPackageById(String hardwareId,
 		String packageId, Optional<String> token) {
 		// Check that requests for this hardware id are not being made too often.
@@ -220,10 +236,10 @@ public class AgentService {
 	 * certain time period. The counter functionality only works when the platform is running in
 	 * secure provisioning mode, and it is reset once a successful request is made.
 	 *
-	 * @param hardwareId
+	 * @param hardwareId The hardware id of the device requesting the information.
 	 * @param version    The current version of the firmware installed on the device.
-	 * @param token
-	 * @return
+	 * @param token      The token sent by the device.
+	 * @return The response with the provisioning package details.
 	 */
 	public AgentProvisioningInfoResponse findProvisioningPackage(String hardwareId, String version,
 		Optional<String> token) {
@@ -245,20 +261,32 @@ public class AgentService {
 		}
 	}
 
+	/**
+	 * Downloads a provisioning package by its download token.
+	 *
+	 * @param token The download token of the provisioning package to download.
+	 * @return The binary data of the provisioning package.
+	 */
 	public Uni<byte[]> downloadProvisioningPackage(String token) {
 		return redisUtils.getFromHashReactive(KeyType.ESTHESIS_PPDT, token,
 			Redis.DOWNLOAD_TOKEN_PACKAGE_ID).onItem().ifNull().failWith(
 			() -> new QDoesNotExistException("Invalid download token '{}' for provisioning package.",
-				token)).onItem().transformToUni(id -> gridFSService.downloadBinary(GridFSDTO.builder()
-			.database(dbName)
-			.metadataName(PROVISIONING_METADATA_NAME)
-			.metadataValue(id)
-			.bucketName(PROVISIONING_BUCKET_NAME)
-			.build()));
+				token)).onItem().transformToUni(id -> gridFSService.downloadBinary(
+			GridFSDTO.builder().database(dbName).metadataName(PROVISIONING_METADATA_NAME)
+				.metadataValue(id).bucketName(PROVISIONING_BUCKET_NAME).build()));
 	}
 
 	/**
-	 * Registers a new device into the system.
+	 * Registers a device with the system and returns the necessary information for the device to
+	 * connect to the platform.
+	 *
+	 * @param agentRegistrationRequest The request with the details of the device to register.
+	 * @return The response with the necessary information for the device to connect to the platform.
+	 * @throws NoSuchAlgorithmException  If the algorithm used for key generation is not supported.
+	 * @throws IOException               If an I/O error occurs.
+	 * @throws InvalidKeySpecException   If the key specification is invalid.
+	 * @throws NoSuchProviderException   If the security provider is not found.
+	 * @throws OperatorCreationException If the operator for key generation cannot be created.
 	 */
 	@Transactional
 	public AgentRegistrationResponse register(AgentRegistrationRequest agentRegistrationRequest)
@@ -308,8 +336,8 @@ public class AgentService {
 		// Find the MQTT server to send back to the device.
 		Optional<InfrastructureMqttEntity> mqttServer;
 		if (StringUtils.isNotEmpty(agentRegistrationRequest.getTags())) {
-			mqttServer =
-				infrastructureMqttSystemResource.matchMqttServerByTags(agentRegistrationRequest.getTags());
+			mqttServer = infrastructureMqttSystemResource.matchMqttServerByTags(
+				agentRegistrationRequest.getTags());
 		} else {
 			mqttServer = infrastructureMqttSystemResource.matchRandomMqttServer();
 		}

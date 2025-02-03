@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+/**
+ * Representation of a DT value reply.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,10 +17,10 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DTValueReplyDTO {
 
-  String hardwareId;
-  String category;
-  String measurement;
-  Object value;
-  Instant recordedAt;
-  String valueType;
+	String hardwareId;
+	String category;
+	String measurement;
+	Object value;
+	Instant recordedAt;
+	String valueType;
 }

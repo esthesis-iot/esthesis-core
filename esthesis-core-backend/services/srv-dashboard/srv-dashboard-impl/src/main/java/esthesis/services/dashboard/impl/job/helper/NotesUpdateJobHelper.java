@@ -9,6 +9,9 @@ import esthesis.services.dashboard.impl.dto.update.DashboardUpdateNotes.Dashboar
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Helper class for updating the NOTES dashboard item.
+ */
 @Slf4j
 @ApplicationScoped
 public class NotesUpdateJobHelper extends UpdateJobHelper<DashboardUpdateNotes> {

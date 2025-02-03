@@ -1,7 +1,7 @@
 package esthesis.services.campaign.impl.job;
 
-import esthesis.service.command.entity.CommandReplyEntity;
 import esthesis.service.campaign.entity.CampaignDeviceMonitorEntity;
+import esthesis.service.command.entity.CommandReplyEntity;
 import esthesis.service.command.resource.CommandSystemResource;
 import esthesis.services.campaign.impl.dto.GroupDTO;
 import esthesis.services.campaign.impl.service.CampaignDeviceMonitorService;
@@ -17,6 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * A job handler for updating replies from devices.
+ */
 @Slf4j
 @ApplicationScoped
 public class UpdateRepliesJob implements JobHandler {
@@ -31,6 +34,12 @@ public class UpdateRepliesJob implements JobHandler {
 	@RestClient
 	CommandSystemResource commandSystemResource;
 
+	/**
+	 * Updates replies from devices, so that rate conditions can be properly checked.
+	 *
+	 * @param client The job client.
+	 * @param job    The activated job.
+	 */
 	@JobWorker(type = "UpdateRepliesJob")
 	public void handle(JobClient client, ActivatedJob job) {
 		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);

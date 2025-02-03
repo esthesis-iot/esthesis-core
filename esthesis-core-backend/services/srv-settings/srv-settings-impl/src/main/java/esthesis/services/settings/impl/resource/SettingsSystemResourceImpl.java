@@ -9,6 +9,9 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Implementation of the {@link SettingsSystemResource} interface.
+ */
 @Slf4j
 public class SettingsSystemResourceImpl implements SettingsSystemResource {
 

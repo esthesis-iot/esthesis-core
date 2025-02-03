@@ -22,6 +22,9 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.bouncycastle.operator.OperatorCreationException;
 
+/**
+ * Implementation of {@link DeviceSystemResource}.
+ */
 @RequiredArgsConstructor
 public class DeviceSystemResourceImpl implements DeviceSystemResource {
 
@@ -56,11 +59,6 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 			.getDeviceKey().getPublicKey();
 	}
 
-	/**
-	 * Returns the list of attributes for a device.
-	 *
-	 * @param esthesisId The esthesis ID of the device.
-	 */
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public List<DeviceAttributeEntity> getDeviceAttributesByEsthesisId(String esthesisId) {
@@ -72,12 +70,6 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 		}
 	}
 
-	/**
-	 * Returns the list of attributes for a device.
-	 *
-	 * @param esthesisHardwareId The esthesis hardware ID of the device.
-	 * @return
-	 */
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public List<DeviceAttributeEntity> getDeviceAttributesByEsthesisHardwareId(
@@ -124,12 +116,6 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 		return deviceService.getLatestDevices(limit);
 	}
 
-	/**
-	 * Returns the hardware IDs of devices that have the specified tags.
-	 *
-	 * @param tags a comma-separated list of tags.
-	 * @return a list of hardware IDs.
-	 */
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public List<String> findByTagNames(String tags) {

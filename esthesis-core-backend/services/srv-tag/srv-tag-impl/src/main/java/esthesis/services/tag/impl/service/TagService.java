@@ -24,6 +24,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Service for managing tags.
+ */
 @Slf4j
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -31,6 +34,12 @@ public class TagService extends BaseService<TagEntity> {
 
 	private final TagRepository tagRepository;
 
+	/**
+	 * Save handler for tag entity.
+	 *
+	 * @param tagEntity Tag entity to save.
+	 * @return Saved tag entity.
+	 */
 	private TagEntity saveHandler(TagEntity tagEntity) {
 		return super.save(tagEntity);
 	}
@@ -47,12 +56,24 @@ public class TagService extends BaseService<TagEntity> {
 		return super.find(pageable, partialMatch);
 	}
 
+	/**
+	 * Creates a new tag.
+	 *
+	 * @param tagEntity the tag to create.
+	 * @return the created tag.
+	 */
 	@Transactional
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = TAGS, operation = CREATE)
 	public TagEntity saveNew(TagEntity tagEntity) {
 		return saveHandler(tagEntity);
 	}
 
+	/**
+	 * Updates an existing tag.
+	 *
+	 * @param tagEntity the tag to update.
+	 * @return the updated tag.
+	 */
 	@Transactional
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = TAGS, operation = WRITE)
 	public TagEntity saveUpdate(TagEntity tagEntity) {
@@ -68,11 +89,25 @@ public class TagService extends BaseService<TagEntity> {
 		return super.deleteById(id);
 	}
 
+	/**
+	 * Finds tags by name.
+	 *
+	 * @param name         the name of the tag to find.
+	 * @param partialMatch whether to perform partial match.
+	 * @return the list of tags found.
+	 */
 	@ErnPermission(category = TAGS, operation = READ)
 	public List<TagEntity> findByName(String name, boolean partialMatch) {
 		return findByName(Collections.singletonList(name), partialMatch);
 	}
 
+	/**
+	 * Finds tags by names.
+	 *
+	 * @param names        the names of the tags to find.
+	 * @param partialMatch whether to perform partial match.
+	 * @return the list of tags found.
+	 */
 	@ErnPermission(category = TAGS, operation = READ)
 	public List<TagEntity> findByName(List<String> names, boolean partialMatch) {
 

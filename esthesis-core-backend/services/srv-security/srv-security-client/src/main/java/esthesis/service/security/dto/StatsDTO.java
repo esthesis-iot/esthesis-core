@@ -4,6 +4,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
+/**
+ * A representation of statistics about security.
+ */
 @Data
 @Builder
 @ToString

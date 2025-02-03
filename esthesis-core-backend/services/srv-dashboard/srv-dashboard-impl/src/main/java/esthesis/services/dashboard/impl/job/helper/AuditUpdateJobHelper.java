@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Helper class for updating the AUDIT dashboard item.
+ */
 @Slf4j
 @ApplicationScoped
 public class AuditUpdateJobHelper extends UpdateJobHelper<DashboardUpdateAudit> {

@@ -32,6 +32,9 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Service for managing dataflows.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -67,6 +70,7 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	 * </pre>
 	 *
 	 * @param map The map to flatten.
+	 * @return The flattened map.
 	 */
 	private Map<String, String> flattenMap(Map<String, Object> map) {
 		return map.entrySet().stream().flatMap(DataUtils::flatten)
@@ -79,6 +83,7 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	 *
 	 * @param map       The configuration options to convert.
 	 * @param keyPrefix The prefix to add to the keys.
+	 * @return The environmental variables.
 	 */
 	private Map<String, String> makeEnvironmentVariables(Map<String, String> map, String keyPrefix) {
 		Map<String, String> env = new HashMap<>();
@@ -101,6 +106,7 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	 * Converts user-provided environmental variables to environmental variables for Kubernetes.
 	 *
 	 * @param envString A string containing the environmental variables.
+	 * @return The environmental variables.
 	 */
 	private Map<String, String> addCustomEnvVariables(String envString) {
 		Map<String, String> env = new HashMap<>();
@@ -118,6 +124,12 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		return env;
 	}
 
+	/**
+	 * Creates a secret specification DTO for a dataflow.
+	 *
+	 * @param dataflowEntity The dataflow entity.
+	 * @return The secret specification.
+	 */
 	private SecretDTO getSecretSpec(DataflowEntity dataflowEntity) {
 		// Create a builder for the secret.
 		SecretDTOBuilder builder = SecretDTO.builder().name(dataflowEntity.getName());
@@ -143,6 +155,13 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		return builder.build();
 	}
 
+	/**
+	 * Creates the URL for the Docker image of a dataflow.
+	 *
+	 * @param k8sConfig The Kubernetes configuration.
+	 * @param dflType   The type of the dataflow.
+	 * @return The URL of the Docker image.
+	 */
 	private String createDflImageUrl(Map<String, Object> k8sConfig, String dflType) {
 		if (StringUtils.isNotBlank(MapUtils.getString(k8sConfig, KUBERNETES_IMAGE_REGISTRY_URL))) {
 			return MapUtils.getString(k8sConfig, KUBERNETES_IMAGE_REGISTRY_URL) + "/"
@@ -152,6 +171,12 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		}
 	}
 
+	/**
+	 * Creates a deployment information DTO for a dataflow.
+	 *
+	 * @param dataflowEntity The dataflow entity.
+	 * @return The deployment information DTO.
+	 */
 	private DeploymentInfoDTO createPodInfo(DataflowEntity dataflowEntity) {
 		DeploymentInfoDTO deploymentInfoDTO = new DeploymentInfoDTO();
 		deploymentInfoDTO.setName(Slugify.builder().build().slugify(dataflowEntity.getName()));
@@ -177,6 +202,12 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		return deploymentInfoDTO;
 	}
 
+	/**
+	 * Saves a dataflow entity.
+	 *
+	 * @param dataflowEntity The dataflow entity to save.
+	 * @return The saved dataflow entity.
+	 */
 	private DataflowEntity saveHandler(DataflowEntity dataflowEntity) {
 		log.debug("Saving dataflow '{}'.", dataflowEntity);
 
@@ -191,12 +222,22 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		return dataflowEntity;
 	}
 
+	/**
+	 * Retrieves the namespaces available in the Kubernetes cluster.
+	 *
+	 * @return The namespaces.
+	 */
 	@ErnPermission(category = DATAFLOW, operation = READ)
 	public List<FormlySelectOption> getNamespaces() {
 		return kubernetesResource.getNamespaces().stream()
 			.map(namespace -> new FormlySelectOption(namespace, namespace)).toList();
 	}
 
+	/**
+	 * Deletes a dataflow.
+	 *
+	 * @param dataflowId The ID of the dataflow to delete.
+	 */
 	@ErnPermission(category = DATAFLOW, operation = DELETE)
 	public void delete(String dataflowId) {
 		// Unschedule dataflow.
@@ -212,28 +253,60 @@ public class DataflowService extends BaseService<DataflowEntity> {
 		super.delete(dataflow);
 	}
 
+	/**
+	 * Creates a new dataflow entity.
+	 *
+	 * @param dataflowEntity The dataflow entity to save.
+	 * @return The created dataflow entity.
+	 */
 	@ErnPermission(category = DATAFLOW, operation = CREATE)
 	public DataflowEntity saveNew(DataflowEntity dataflowEntity) {
 		return saveHandler(dataflowEntity);
 	}
 
+	/**
+	 * Saves an updated dataflow entity.
+	 *
+	 * @param dataflowEntity The dataflow entity to save.
+	 * @return The saved dataflow entity.
+	 */
 	@ErnPermission(category = DATAFLOW, operation = WRITE)
 	public DataflowEntity saveUpdate(DataflowEntity dataflowEntity) {
 		return saveHandler(dataflowEntity);
 	}
 
+	/**
+	 * Finds dataflows.
+	 *
+	 * @param pageable     Representation of page, size, and sort search parameters.
+	 * @param partialMatch Whether to do a partial match.
+	 * @return The dataflows.
+	 */
 	@Override
 	@ErnPermission(category = DATAFLOW, operation = READ)
 	public Page<DataflowEntity> find(Pageable pageable, boolean partialMatch) {
 		return super.find(pageable, partialMatch);
 	}
 
+	/**
+	 * Finds a dataflow by ID.
+	 *
+	 * @param id The ID of the entity to find.
+	 * @return The dataflow entity.
+	 */
 	@Override
 	@ErnPermission(category = DATAFLOW, operation = READ)
 	public DataflowEntity findById(String id) {
 		return super.findById(id);
 	}
 
+	/**
+	 * Checks if a Kubernetes deployment name is available.
+	 *
+	 * @param name      The name to check.
+	 * @param namespace The namespace to check.
+	 * @return Whether the deployment name is available.
+	 */
 	@ErnPermission(category = DATAFLOW, operation = READ)
 	public boolean isDeploymentNameAvailable(String name, String namespace) {
 		return kubernetesResource.isDeploymentNameAvailable(name, namespace);

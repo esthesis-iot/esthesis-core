@@ -15,6 +15,9 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.core.Response;
 
+/**
+ * Implementation of the {@link InfrastructureMqttResource} interface.
+ */
 public class InfrastructureMqttResourceImpl implements InfrastructureMqttResource {
 
 	@Inject

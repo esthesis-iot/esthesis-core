@@ -8,6 +8,9 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.tuple.Pair;
 
+/**
+ * Data update for the AUDIT dashboard item type.
+ */
 @Data
 @SuperBuilder
 @ToString(callSuper = true)

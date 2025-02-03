@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Data update for the DEVICES_STATUS dashboard item type.
+ */
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)

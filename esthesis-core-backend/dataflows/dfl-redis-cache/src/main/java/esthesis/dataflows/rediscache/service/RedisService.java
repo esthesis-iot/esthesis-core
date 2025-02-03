@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Utilities for writing data to Redis.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -27,6 +30,11 @@ public class RedisService {
 	public static final String TIMESTAMP_FIELD_NAME = "timestamp";
 	public static final String VALUE_TYPE_FIELD_NAME = "valueType";
 
+	/**
+	 * Process the message and write the data to Redis.
+	 *
+	 * @param exchange The exchange containing the message.
+	 */
 	public void process(Exchange exchange) {
 		// Get the message from the exchange.
 		EsthesisDataMessage esthesisMessage = exchange.getIn()

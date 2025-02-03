@@ -6,20 +6,23 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import java.security.PublicKey;
 
+/**
+ * Serializer for {@link PublicKey}.
+ */
 public class PublicKeySerializer extends StdSerializer<PublicKey> {
 
-  public static final String PUBLIC_KEY = "publicKey";
+	public static final String PUBLIC_KEY = "publicKey";
 
-  protected PublicKeySerializer(Class<PublicKey> t) {
-    super(t);
-  }
+	protected PublicKeySerializer(Class<PublicKey> t) {
+		super(t);
+	}
 
-  @Override
-  public void serialize(PublicKey value, JsonGenerator gen, SerializerProvider provider)
-  throws IOException {
-    gen.writeStartObject();
-    gen.writeFieldName(PUBLIC_KEY);
-    gen.writeBinary(value.getEncoded());
-    gen.writeEndObject();
-  }
+	@Override
+	public void serialize(PublicKey value, JsonGenerator gen, SerializerProvider provider)
+	throws IOException {
+		gen.writeStartObject();
+		gen.writeFieldName(PUBLIC_KEY);
+		gen.writeBinary(value.getEncoded());
+		gen.writeEndObject();
+	}
 }

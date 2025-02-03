@@ -3,5 +3,5 @@
     <div class="stat-title">{{ item.title }}</div>
   </div>
   <div *ngIf="item.subtitle" class="stat-desc">{{ item.subtitle }}</div>
-  <div class="overflow-scroll font-mono">{{lastMessage?.notes}}</div>
+  <div class="overflow-scroll font-mono whitespace-pre-wrap">{{lastMessage?.notes}}</div>
 </div>

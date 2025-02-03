@@ -1,10 +1,10 @@
 package esthesis.service.security.annotation;
 
+import esthesis.common.exception.QSecurityException;
 import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.Security.Category;
 import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.core.common.entity.BaseEntity;
-import esthesis.common.exception.QSecurityException;
 import esthesis.service.security.resource.SecurityResource;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.Priority;
@@ -16,6 +16,9 @@ import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Interceptor for checking security permissions.
+ */
 @Slf4j
 @Interceptor
 @Priority(Interceptor.Priority.APPLICATION)

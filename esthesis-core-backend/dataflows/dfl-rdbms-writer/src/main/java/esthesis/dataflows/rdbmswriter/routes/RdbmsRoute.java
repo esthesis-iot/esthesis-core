@@ -12,6 +12,9 @@ import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+/**
+ * Camel routes for writing data to a relational database.
+ */
 @Slf4j
 @ApplicationScoped
 public class RdbmsRoute extends RouteBuilder {
@@ -25,6 +28,11 @@ public class RdbmsRoute extends RouteBuilder {
 	@ConfigProperty(name = "quarkus.application.name")
 	String appName;
 
+	/**
+	 * Print route information.
+	 *
+	 * @param topic Kafka topic.
+	 */
 	@SuppressWarnings("java:S2629")
 	private void printRouteInfo(String topic) {
 		log.info("Setting up route from Kafka topic '{}' to '{}', storage "
@@ -36,6 +44,9 @@ public class RdbmsRoute extends RouteBuilder {
 					: ""));
 	}
 
+	/**
+	 * Configure Camel routes.
+	 */
 	@Override
 	public void configure() {
 		BannerUtil.showBanner(appName);

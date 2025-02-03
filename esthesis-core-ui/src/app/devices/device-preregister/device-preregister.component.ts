@@ -34,7 +34,7 @@ export class DevicePreregisterComponent extends SecurityBaseComponent implements
     this.form = this.fb.group({
       hardwareId: [null, [Validators.required]],
       tags: [],
-      type: this.appConstants.DEVICE.TYPE.ESTHESIS
+      type: this.appConstants.DEVICE.TYPE.CORE
     });
 
     // Get available tags.

@@ -5,4 +5,29 @@
         <description>Created after removal of "Dashboard" from esthesis CORE - Documentation</description>
         <accepts>Dashboard-dev.html</accepts>
     </rule>
+    <rule id="f9f508">
+        <description>Created after removal of "Metrics" from esthesis CORE - Documentation</description>
+        <accepts>metrics.html</accepts>
+    </rule>
+    <rule id="5143c203">
+        <description>Created after removal of "Distributed Tracing" from esthesis CORE - Documentation</description>
+        <accepts>distributed-tracing.html</accepts>
+    </rule>
+    <rule id="3ba47495">
+        <description>Created after removal of "Working with Helm charts" from esthesis CORE - Documentation
+        </description>
+        <accepts>working-with-helm-charts.html</accepts>
+    </rule>
+    <rule id="5d0bd1c3">
+        <description>Created after removal of "esthesis CORE" from esthesis CORE - Documentation</description>
+        <accepts>esthesis_core.html</accepts>
+    </rule>
+    <rule id="35d87868">
+        <description>Created after removal of "dfl-concurrency" from esthesis CORE - Documentation</description>
+        <accepts>dfl-concurrency.html</accepts>
+    </rule>
+    <rule id="722b6f30">
+        <description>Created after removal of "User guide" from esthesis CORE - Documentation</description>
+        <accepts>introduction-user-guide.html</accepts>
+    </rule>
 </rules>

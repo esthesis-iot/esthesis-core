@@ -9,6 +9,8 @@ import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
 import static esthesis.core.common.AppConstants.Security.Operation.READ;
 import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
+import esthesis.common.crypto.CryptoConvertersUtil;
+import esthesis.common.crypto.CryptoUtil;
 import esthesis.common.exception.QSecurityException;
 import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.common.BaseService;
@@ -18,8 +20,6 @@ import esthesis.service.crypto.dto.KeystoreEntryDTO;
 import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.entity.CertificateEntity;
 import esthesis.service.crypto.entity.KeystoreEntity;
-import esthesis.service.crypto.impl.util.CryptoConvertersUtil;
-import esthesis.service.crypto.impl.util.CryptoUtil;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.service.security.annotation.ErnPermission;
@@ -36,6 +36,9 @@ import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Service for handling keystore entities.
+ */
 @Transactional
 @ApplicationScoped
 public class KeystoreService extends BaseService<KeystoreEntity> {
@@ -54,6 +57,25 @@ public class KeystoreService extends BaseService<KeystoreEntity> {
 	@RestClient
 	SettingsResource settingsResource;
 
+	/**
+	 * Adds a private key to a keystore.
+	 *
+	 * @param keystore         the keystore to add the key to.
+	 * @param keystorePassword the password of the keystore.
+	 * @param privateKey       the private key to add.
+	 * @param keyAlias         the alias of the key.
+	 * @param keyPassword      the password of the key.
+	 * @param certificateChain the certificate chain of the key.
+	 * @param keystoreType     the type of the keystore.
+	 * @param keystoreProvider the provider of the keystore.
+	 * @return the keystore with the added key.
+	 * @throws NoSuchAlgorithmException if the algorithm is not found.
+	 * @throws InvalidKeySpecException  if the key spec is invalid.
+	 * @throws CertificateException     if the certificate is invalid.
+	 * @throws KeyStoreException        if the keystore is invalid.
+	 * @throws IOException              if an I/O error occurs.
+	 * @throws NoSuchProviderException  if the provider is not found.
+	 */
 	@SuppressWarnings("java:S107")
 	private byte[] addPrivateKeyToKeystore(byte[] keystore, final String keystorePassword,
 		final String privateKey, final String keyAlias, final String keyPassword,
@@ -69,6 +91,22 @@ public class KeystoreService extends BaseService<KeystoreEntity> {
 		return keystore;
 	}
 
+	/**
+	 * Adds a certificate to a keystore.
+	 *
+	 * @param keystore         the keystore to add the certificate to.
+	 * @param keystorePassword the password of the keystore.
+	 * @param certificate      the certificate to add.
+	 * @param certificateAlias the alias of the certificate.
+	 * @param keystoreType     the type of the keystore.
+	 * @param keystoreProvider the provider of the keystore.
+	 * @return the keystore with the added certificate.
+	 * @throws CertificateException     if the certificate is invalid.
+	 * @throws NoSuchAlgorithmException if the algorithm is not found.
+	 * @throws KeyStoreException        if the keystore is invalid.
+	 * @throws IOException              if an I/O error occurs.
+	 * @throws NoSuchProviderException  if the provider is not found.
+	 */
 	private byte[] addCertificateToKeystore(byte[] keystore, final String keystorePassword,
 		final String certificate, final String certificateAlias, final String keystoreType,
 		final String keystoreProvider)
@@ -86,6 +124,12 @@ public class KeystoreService extends BaseService<KeystoreEntity> {
 		return super.save(entity);
 	}
 
+	/**
+	 * Downloads a keystore.
+	 *
+	 * @param keystoreId the id of the keystore to download.
+	 * @return the keystore.
+	 */
 	@SuppressWarnings("java:S3776")
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public byte[] download(String keystoreId) {
@@ -178,11 +222,23 @@ public class KeystoreService extends BaseService<KeystoreEntity> {
 		return super.find(pageable, true);
 	}
 
+	/**
+	 * Saves a new keystore.
+	 *
+	 * @param entity the keystore to save.
+	 * @return the saved keystore.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = CREATE)
 	public KeystoreEntity saveNew(KeystoreEntity entity) {
 		return saveHandler(entity);
 	}
 
+	/**
+	 * Updates a keystore.
+	 *
+	 * @param entity the keystore to update.
+	 * @return the updated keystore.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = WRITE)
 	public KeystoreEntity saveUpdate(KeystoreEntity entity) {
 		return saveHandler(entity);

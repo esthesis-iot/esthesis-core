@@ -6,6 +6,11 @@ import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
 import static esthesis.core.common.AppConstants.Security.Operation.READ;
 
+import esthesis.common.crypto.CryptoConvertersUtil;
+import esthesis.common.crypto.CryptoUtil;
+import esthesis.common.crypto.dto.CAHolderDTO;
+import esthesis.common.crypto.dto.CreateCARequestDTO;
+import esthesis.common.crypto.dto.CreateKeyPairRequestDTO;
 import esthesis.common.exception.QCouldNotSaveException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QMutationNotPermittedException;
@@ -15,11 +20,6 @@ import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.common.validation.CVEBuilder;
 import esthesis.service.crypto.entity.CaEntity;
-import esthesis.service.crypto.impl.dto.CAHolderDTO;
-import esthesis.service.crypto.impl.dto.CreateCARequestDTO;
-import esthesis.service.crypto.impl.dto.CreateKeyPairRequestDTO;
-import esthesis.service.crypto.impl.util.CryptoConvertersUtil;
-import esthesis.service.crypto.impl.util.CryptoUtil;
 import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.resource.SettingsResource;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants.Action;
@@ -59,6 +59,13 @@ public class CAService extends BaseService<CaEntity> {
 	@RestClient
 	SettingsResource settingsResource;
 
+	/**
+	 * Recursively fetches the certificate chain for a CA.
+	 *
+	 * @param caId            The ID of the CA to fetch the certificate chain for.
+	 * @param certificteChain The certificate chain to add the certificates to.
+	 * @return The certificate chain.
+	 */
 	private List<String> getCertificate(String caId, List<String> certificteChain) {
 		CaEntity caEntity = findById(caId);
 		certificteChain.add(caEntity.getCertificate());
@@ -70,6 +77,12 @@ public class CAService extends BaseService<CaEntity> {
 		return certificteChain;
 	}
 
+	/**
+	 * Saves a CA.
+	 *
+	 * @param caEntity The entity to save.
+	 * @return The saved entity.
+	 */
 	@Override
 	@KafkaNotification(component = Component.CA, subject = Subject.CA,
 		action = Action.CREATEORUPDATE, idParamRegEx = "BaseEntity\\(id=(.*?)\\)")
@@ -82,7 +95,7 @@ public class CAService extends BaseService<CaEntity> {
 
 		// Check a CA with the same name doesn't already exist.
 		if (findFirstByColumn("cn", caEntity.getCn()) != null) {
-			CVEBuilder.addAndThrow("cn", "A Certificate Authority with CN {} already exists.",
+			throw CVEBuilder.addAndThrow("cn", "A Certificate Authority with CN {} already exists.",
 				caEntity.getCn());
 		}
 
@@ -125,11 +138,26 @@ public class CAService extends BaseService<CaEntity> {
 		}
 	}
 
+	/**
+	 * Fetches all CAs that are eligible for signing. A certificate is eligible for signing when it
+	 * has a private key set.
+	 *
+	 * @return The list of CAs.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public List<CaEntity> getEligibleForSigning() {
 		return getRepository().find("privateKey != null", Sort.ascending("cn")).list();
 	}
 
+	/**
+	 * Imports a CA.
+	 *
+	 * @param importedCaEntity The entity to import.
+	 * @param publicKey        The public key.
+	 * @param privateKey       The private key.
+	 * @param certificate      The certificate.
+	 * @return The imported entity.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = CREATE)
 	public CaEntity importCa(CaEntity importedCaEntity, FileUpload publicKey, FileUpload privateKey,
 		FileUpload certificate) {
@@ -167,6 +195,12 @@ public class CAService extends BaseService<CaEntity> {
 		}
 	}
 
+	/**
+	 * Fetches the private key for a CA.
+	 *
+	 * @param caId The ID of the CA to fetch the private key for.
+	 * @return The private key.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public String getPrivateKey(String caId) {
 		CaEntity caEntity = findById(caId);
@@ -174,6 +208,12 @@ public class CAService extends BaseService<CaEntity> {
 		return caEntity.getPrivateKey();
 	}
 
+	/**
+	 * Fetches the public key for a CA.
+	 *
+	 * @param caId The ID of the CA to fetch the public key for.
+	 * @return The public key.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public String getPublicKey(String caId) {
 		CaEntity caEntity = findById(caId);
@@ -181,6 +221,12 @@ public class CAService extends BaseService<CaEntity> {
 		return caEntity.getPublicKey();
 	}
 
+	/**
+	 * Fetches the certificate for a CA.
+	 *
+	 * @param caId The ID of the CA to fetch the certificate for.
+	 * @return The certificate.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public List<String> getCertificate(String caId) {
 		List<String> certificateChain = new ArrayList<>();

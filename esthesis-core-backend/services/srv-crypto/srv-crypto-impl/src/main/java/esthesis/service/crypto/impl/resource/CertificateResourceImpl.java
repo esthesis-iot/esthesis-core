@@ -1,10 +1,10 @@
 package esthesis.service.crypto.impl.resource;
 
 import com.github.slugify.Slugify;
+import esthesis.common.exception.QDoesNotExistException;
 import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.Security.Category;
 import esthesis.core.common.AppConstants.Security.Operation;
-import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.JSONReplyFilter;
@@ -25,6 +25,9 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
+/**
+ * Implementation of the @{@link CertificateResource} interface.
+ */
 @Authenticated
 public class CertificateResourceImpl implements CertificateResource {
 
@@ -97,7 +100,8 @@ public class CertificateResourceImpl implements CertificateResource {
 		log = AuditLogType.DATA_OUT)
 	public CertificateEntity importCertificate(CertificateEntity certificateEntity,
 		FileUpload publicKey, FileUpload privateKey, FileUpload certificate) {
-		return certificateService.importCertificate(certificateEntity, publicKey, privateKey, certificate);
+		return certificateService.importCertificate(certificateEntity, publicKey, privateKey,
+			certificate);
 	}
 
 	@Override

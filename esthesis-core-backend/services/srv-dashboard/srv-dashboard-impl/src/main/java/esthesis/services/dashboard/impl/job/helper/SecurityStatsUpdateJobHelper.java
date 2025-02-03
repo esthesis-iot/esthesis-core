@@ -6,21 +6,17 @@ import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.service.dashboard.dto.DashboardItemDTO;
 import esthesis.service.dashboard.entity.DashboardEntity;
 import esthesis.service.security.dto.StatsDTO;
-import esthesis.service.security.resource.SecuritySystemResource;
 import esthesis.services.dashboard.impl.dto.update.DashboardUpdateSecurityStats;
 import esthesis.services.dashboard.impl.dto.update.DashboardUpdateSecurityStats.DashboardUpdateSecurityStatsBuilder;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Helper class for updating the SECURITY_STATS dashboard item.
+ */
 @Slf4j
 @ApplicationScoped
 public class SecurityStatsUpdateJobHelper extends UpdateJobHelper<DashboardUpdateSecurityStats> {
-
-	@Inject
-	@RestClient
-	SecuritySystemResource securitySystemResource;
 
 	public DashboardUpdateSecurityStats refresh(DashboardEntity dashboardEntity,
 		DashboardItemDTO item) {

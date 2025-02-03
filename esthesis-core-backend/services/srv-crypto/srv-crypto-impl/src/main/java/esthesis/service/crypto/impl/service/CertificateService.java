@@ -6,6 +6,11 @@ import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
 import static esthesis.core.common.AppConstants.Security.Operation.READ;
 
+import esthesis.common.crypto.CryptoConvertersUtil;
+import esthesis.common.crypto.CryptoUtil;
+import esthesis.common.crypto.dto.CertificateSignRequestDTO;
+import esthesis.common.crypto.dto.CreateCertificateRequestDTO;
+import esthesis.common.crypto.dto.CreateKeyPairRequestDTO;
 import esthesis.common.exception.QCouldNotSaveException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QMutationNotPermittedException;
@@ -13,14 +18,9 @@ import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.crypto.dto.CreateCertificateRequestDTO;
 import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.entity.CertificateEntity;
-import esthesis.service.crypto.impl.dto.CertificateSignRequestDTO;
-import esthesis.service.crypto.impl.dto.CreateKeyPairRequestDTO;
 import esthesis.service.crypto.impl.repository.CaEntityRepository;
-import esthesis.service.crypto.impl.util.CryptoConvertersUtil;
-import esthesis.service.crypto.impl.util.CryptoUtil;
 import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
@@ -57,6 +57,9 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
+/**
+ * Service for managing certificates.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -72,6 +75,15 @@ public class CertificateService extends BaseService<CertificateEntity> {
 	@Inject
 	CaEntityRepository caEntityRepository;
 
+	/**
+	 * Import a certificate.
+	 *
+	 * @param importedCertificateEntity The certificate entity to import.
+	 * @param publicKey                 The public key file.
+	 * @param privateKey                The private key file.
+	 * @param certificate               The certificate file.
+	 * @return The imported certificate entity.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = CREATE)
 	public CertificateEntity importCertificate(CertificateEntity importedCertificateEntity,
 		FileUpload publicKey, FileUpload privateKey, FileUpload certificate) {
@@ -206,6 +218,12 @@ public class CertificateService extends BaseService<CertificateEntity> {
 		}
 	}
 
+	/**
+	 * Get the private key of a certificate.
+	 *
+	 * @param certId The certificate ID.
+	 * @return The private key.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public String getPrivateKey(String certId) {
 		CertificateEntity certificateEntity = findById(certId);
@@ -213,6 +231,12 @@ public class CertificateService extends BaseService<CertificateEntity> {
 		return certificateEntity.getPrivateKey();
 	}
 
+	/**
+	 * Get the public key of a certificate.
+	 *
+	 * @param certId The certificate ID.
+	 * @return The public key.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public String getPublicKey(String certId) {
 		CertificateEntity certificateEntity = findById(certId);
@@ -220,6 +244,12 @@ public class CertificateService extends BaseService<CertificateEntity> {
 		return certificateEntity.getPublicKey();
 	}
 
+	/**
+	 * Get the certificate of a certificate.
+	 *
+	 * @param certId The certificate ID.
+	 * @return The certificate.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public String getCertificate(String certId) {
 		CertificateEntity certificateEntity = findById(certId);
@@ -227,6 +257,12 @@ public class CertificateService extends BaseService<CertificateEntity> {
 		return certificateEntity.getCertificate();
 	}
 
+	/**
+	 * Delete a certificate by ID.
+	 *
+	 * @param id The ID of the entity to delete.
+	 * @return True if the entity was deleted, false otherwise.
+	 */
 	@Override
 	@KafkaNotification(component = Component.CERTIFICATE, subject = Subject.CERTIFICATE,
 		action = Action.DELETE, idParamOrder = 0)
@@ -235,18 +271,41 @@ public class CertificateService extends BaseService<CertificateEntity> {
 		return super.deleteById(id);
 	}
 
+	/**
+	 * Find a certificate by ID.
+	 *
+	 * @param id The ID of the entity to find.
+	 * @return The entity.
+	 */
 	@Override
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public CertificateEntity findById(String id) {
 		return super.findById(id);
 	}
 
+	/**
+	 * Find all certificates.
+	 *
+	 * @param pageable     Representation of page, size, and sort search parameters.
+	 * @param partialMatch Whether to do a partial match.
+	 * @return The page of entities.
+	 */
 	@Override
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public Page<CertificateEntity> find(Pageable pageable, boolean partialMatch) {
 		return super.find(pageable, partialMatch);
 	}
 
+	/**
+	 * Generate a certificate as PEM.
+	 *
+	 * @param createCertificateRequestDTO The request to create a certificate.
+	 * @return The certificate as PEM.
+	 * @throws NoSuchAlgorithmException  If the algorithm is not found.
+	 * @throws InvalidKeySpecException   If the key spec is invalid.
+	 * @throws OperatorCreationException If the operator can not be created.
+	 * @throws IOException               If an I/O error occurs.
+	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
 	public String generateCertificateAsPEM(CreateCertificateRequestDTO createCertificateRequestDTO)
 	throws NoSuchAlgorithmException, InvalidKeySpecException, OperatorCreationException, IOException {

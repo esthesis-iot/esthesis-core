@@ -25,6 +25,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * A job handler that contacts devices for a campaign.
+ */
 @Slf4j
 @ApplicationScoped
 public class ContactDevicesJob implements JobHandler {
@@ -90,6 +93,13 @@ public class ContactDevicesJob implements JobHandler {
 		return Integer.MAX_VALUE;
 	}
 
+	/**
+	 * Contact devices for a campaign, essentially sending commands via the command service.
+	 *
+	 * @param client the job client to use.
+	 * @param job    the job to handle.
+	 * @throws Exception if an error occurs.
+	 */
 	@JobWorker(type = "ContactDevicesJob")
 	public void handle(JobClient client, ActivatedJob job) throws Exception {
 		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);

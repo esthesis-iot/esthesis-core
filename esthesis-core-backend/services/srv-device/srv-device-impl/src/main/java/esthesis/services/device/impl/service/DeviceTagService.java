@@ -20,6 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Service for managing device tags.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -66,11 +69,23 @@ public class DeviceTagService {
 		return findByTagName(Collections.singletonList(tagName), partialMatch);
 	}
 
+	/**
+	 * Finds the devices matched by the specific list of tags.
+	 *
+	 * @param tagId The tag id to search by.
+	 * @return Returns the devices matched.
+	 */
 	@ErnPermission(category = DEVICE, operation = READ)
 	public List<DeviceEntity> findByTagId(String tagId) {
 		return deviceRepository.findByTagId(tagId);
 	}
 
+	/**
+	 * Finds the devices matched by the specific list of tags.
+	 *
+	 * @param tagIds The list of tag ids to search by.
+	 * @return Returns the devices matched.
+	 */
 	@ErnPermission(category = DEVICE, operation = READ)
 	public List<DeviceEntity> findByTagId(List<String> tagIds) {
 		return deviceRepository.findByTagId(tagIds);
@@ -81,6 +96,7 @@ public class DeviceTagService {
 	 *
 	 * @param tags         The list of tag names to search by.
 	 * @param partialMatch Whether the search for the tag name should be partial or not.
+	 * @return Returns the number of devices matched.
 	 */
 	@ErnPermission(category = DEVICE, operation = READ)
 	public Long countByTag(List<String> tags, boolean partialMatch) {

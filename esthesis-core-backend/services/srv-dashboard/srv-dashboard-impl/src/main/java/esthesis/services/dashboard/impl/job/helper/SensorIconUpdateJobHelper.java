@@ -16,6 +16,9 @@ import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Helper class for updating the SENSOR_ICON dashboard item.
+ */
 @Slf4j
 @ApplicationScoped
 public class SensorIconUpdateJobHelper extends UpdateJobHelper<DashboardUpdateSensorIcon> {

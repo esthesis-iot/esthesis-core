@@ -1,5 +1,5 @@
 import {browser} from "k6/browser";
-import {Auth} from "./tests/auth.js";
+import {Auth} from "./common/auth.js";
 import {Devices} from "./tests/devices.js";
 import {Command} from "./tests/command.js";
 import {Provisioning} from "./tests/provisioning.js";

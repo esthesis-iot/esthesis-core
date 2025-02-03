@@ -12,6 +12,9 @@ import jakarta.ws.rs.PathParam;
 import java.util.List;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+/**
+ * A REST client for the settings service.
+ */
 @AccessToken
 @Path("/api")
 @RegisterRestClient(configKey = "SettingsResource")
@@ -20,8 +23,8 @@ public interface SettingsResource {
 	/**
 	 * Finds a setting by name.
 	 *
-	 * @param name The name of the setting.
 	 * @param name The name of the setting to find.
+	 * @return The setting, or null if not found.
 	 */
 	@GET
 	@Path("/v1/find/by-name/{name}")
@@ -31,6 +34,7 @@ public interface SettingsResource {
 	 * Finds multiple settings entries by name.
 	 *
 	 * @param names A comma-separated list of names.
+	 * @return The settings, or an empty list if none are found.
 	 */
 	@GET
 	@Path("/v1/find/by-names/{names}")
@@ -39,6 +43,7 @@ public interface SettingsResource {
 	/**
 	 * Saves one or more settings.
 	 *
+	 * @param settingEntities The settings to save.
 	 */
 	@POST
 	@Path("/v1")
@@ -47,7 +52,7 @@ public interface SettingsResource {
 	/**
 	 * Finds all unique measurement names currently held in Redis cache.
 	 *
-	 * @return
+	 * @return A list of unique measurement names.
 	 */
 	@GET
 	@Path("/v1/find-measurement-names")
@@ -57,7 +62,7 @@ public interface SettingsResource {
 	 * Gets the measurements that have been configured in settings for being displayed in the device
 	 * page.
 	 *
-	 * @return
+	 * @return The fields.
 	 */
 	@GET
 	@Path("/v1/device-page-fields")

@@ -1,8 +1,8 @@
 package esthesis.services.campaign.impl.job;
 
+import esthesis.common.exception.QMismatchException;
 import esthesis.core.common.AppConstants.Campaign.Condition.Op;
 import esthesis.core.common.AppConstants.Campaign.Condition.Type;
-import esthesis.common.exception.QMismatchException;
 import esthesis.service.campaign.dto.CampaignConditionDTO;
 import esthesis.service.campaign.entity.CampaignEntity;
 import esthesis.services.campaign.impl.dto.GroupDTO;
@@ -16,6 +16,9 @@ import jakarta.inject.Inject;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * A job handler for the pause job.
+ */
 @Slf4j
 @ApplicationScoped
 public class PauseJob implements JobHandler {
@@ -23,6 +26,12 @@ public class PauseJob implements JobHandler {
 	@Inject
 	CampaignService campaignService;
 
+	/**
+	 * Checks whether a campaign should be paused.
+	 *
+	 * @param client The job client.
+	 * @param job    The activated job.
+	 */
 	@JobWorker(type = "PauseJob")
 	public void handle(JobClient client, ActivatedJob job) {
 		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);

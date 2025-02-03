@@ -1,0 +1,50 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+	xmlns:ext="https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+	<changeSet author="European Dynamics SA" id="srv-campaign-1">
+		<ext:createIndex collectionName="Campaign">
+			<ext:keys>
+				{ "name": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: true, name: "idx_name" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Campaign">
+			<ext:keys>
+				{ "state": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_state" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Campaign">
+			<ext:keys>
+				{ "createdOn": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_created_on" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Campaign">
+			<ext:keys>
+				{ "startedOn": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_started_on" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Campaign">
+			<ext:keys>
+				{ "terminatedOn": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_terminated_on" }
+			</ext:options>
+		</ext:createIndex>
+	</changeSet>
+</databaseChangeLog>

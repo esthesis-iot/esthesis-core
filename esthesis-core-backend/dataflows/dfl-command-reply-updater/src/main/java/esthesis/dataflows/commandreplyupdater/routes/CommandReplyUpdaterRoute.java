@@ -12,6 +12,9 @@ import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+/**
+ * Camel routes that listen to Kafka for command replies and stores them in a MongoDB database.
+ */
 @Slf4j
 @ApplicationScoped
 public class CommandReplyUpdaterRoute extends RouteBuilder {

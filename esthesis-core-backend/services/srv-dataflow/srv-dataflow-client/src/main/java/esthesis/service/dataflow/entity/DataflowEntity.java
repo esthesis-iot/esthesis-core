@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
+/**
+ * Dataflow entity.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

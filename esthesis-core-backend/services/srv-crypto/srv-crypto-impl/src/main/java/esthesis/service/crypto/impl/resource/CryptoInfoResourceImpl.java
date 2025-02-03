@@ -1,12 +1,15 @@
 package esthesis.service.crypto.impl.resource;
 
+import esthesis.common.crypto.CryptoUtil;
 import esthesis.core.common.AppConstants;
-import esthesis.service.crypto.impl.util.CryptoUtil;
 import esthesis.service.crypto.resource.CryptoInfoResource;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import java.util.List;
 
+/**
+ * Implementation of the @{@link CryptoInfoResource} interface.
+ */
 @Authenticated
 public class CryptoInfoResourceImpl implements CryptoInfoResource {
 

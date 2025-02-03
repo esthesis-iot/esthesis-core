@@ -22,6 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Helper class for updating the DEVICE_MAP dashboard item.
+ */
 @Slf4j
 @ApplicationScoped
 public class DeviceMapUpdateJobHelper extends UpdateJobHelper<DashboardUpdateDeviceMap> {

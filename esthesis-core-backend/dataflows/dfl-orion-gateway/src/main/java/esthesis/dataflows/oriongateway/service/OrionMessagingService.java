@@ -8,6 +8,9 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 
+/**
+ * Service responsible for handling Kafka application notifications.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -19,6 +22,11 @@ public class OrionMessagingService {
 	@Inject
 	AppConfig appConfig;
 
+	/**
+	 * Handles an application message.
+	 *
+	 * @param exchange The Camel exchange containing the message to process.
+	 */
 	@SuppressWarnings({"java:S1301", "java:S108", "java:S131", "java:S6205"})
 	public void onAppMessage(Exchange exchange) {
 		AppMessage appMessage = exchange.getIn().getBody(AppMessage.class);
@@ -61,6 +69,11 @@ public class OrionMessagingService {
 		}
 	}
 
+	/**
+	 * Handles a device creation message.
+	 *
+	 * @param appMessage The application message.
+	 */
 	public void onCreateDeviceMessage(AppMessage appMessage) {
 		log.debug("Received device creation message '{}'.", appMessage);
 		// Extract the device esthesis ID.
@@ -70,6 +83,11 @@ public class OrionMessagingService {
 		orionGatewayService.registerDeviceOnOrion(esthesisId);
 	}
 
+	/**
+	 * Handles a device attribute update message.
+	 *
+	 * @param appMessage The application message.
+	 */
 	public void onUpdateDeviceAtrributeMessage(AppMessage appMessage) {
 		// Find the device in Orion.
 		String esthesisId = appMessage.getTargetId();
@@ -78,6 +96,11 @@ public class OrionMessagingService {
 		orionGatewayService.syncAttributes(esthesisId);
 	}
 
+	/**
+	 * Handles a device removal message.
+	 *
+	 * @param appMessage The application message.
+	 */
 	public void onDeleteDeviceMessage(AppMessage appMessage) {
 		log.debug("Received device removal message '{}'.", appMessage);
 		// Extract the device esthesis ID.

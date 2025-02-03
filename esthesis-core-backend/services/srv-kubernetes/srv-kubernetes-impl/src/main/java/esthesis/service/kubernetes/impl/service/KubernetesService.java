@@ -29,6 +29,9 @@ import java.util.Base64;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Service to interact with Kubernetes.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -44,6 +47,7 @@ public class KubernetesService {
 	 * Generates a list of environmental variables out of a pod definition.
 	 *
 	 * @param deploymentInfoDTO The pod definition.
+	 * @return The list of environmental variables.
 	 */
 	private List<EnvVar> getEnvVar(DeploymentInfoDTO deploymentInfoDTO) {
 		List<EnvVar> envVars = new ArrayList<>();
@@ -80,6 +84,7 @@ public class KubernetesService {
 	 * Schedules a Kubernetes Deployment.
 	 *
 	 * @param deploymentInfoDTO The deployment information to deploy.
+	 * @return True if the deployment was successful, false otherwise.
 	 */
 	@ErnPermission(category = KUBERNETES, operation = CREATE)
 	public boolean scheduleDeployment(DeploymentInfoDTO deploymentInfoDTO) {
@@ -207,6 +212,8 @@ public class KubernetesService {
 
 	/**
 	 * Returns the list of namespaces.
+	 *
+	 * @return The list of namespaces.
 	 */
 	@ErnPermission(category = KUBERNETES, operation = READ)
 	public List<String> getNamespaces() {

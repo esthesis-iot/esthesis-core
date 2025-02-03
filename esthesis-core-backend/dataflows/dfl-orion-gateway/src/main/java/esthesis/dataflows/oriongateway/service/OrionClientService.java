@@ -27,6 +27,9 @@ import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
+/**
+ * Service to interact with Orion Context Broker.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -35,11 +38,8 @@ public class OrionClientService {
 	// The Orion client isn't automatically injected, as we need to configure its URL dynamically
 	// at runtime.
 	OrionClient orionClient;
-
 	// Defined at runtime as it rely on the configurations set for auth
 	OrionAuthService authService;
-
-
 	@Inject
 	AppConfig appConfig;
 
@@ -63,60 +63,36 @@ public class OrionClientService {
 			.filter(not(String::isBlank)).toList();
 
 		// Get contexts relationship definitions from configuration variable. It is necessary to create the Link header
-		List<String> contextsRelationships = Arrays.stream(appConfig.orionLdDefinedContextsRelationships().split(","))
+		List<String> contextsRelationships = Arrays.stream(
+				appConfig.orionLdDefinedContextsRelationships().split(","))
 			.map(String::trim)
 			.filter(not(String::isBlank)).toList();
 
 		// Check for auth configurations and set the auth service accordingly.
 		// If no auth is defined then uses the OrionNoAuthService
-		if(AUTHENTICATION_TYPE.KEYROCK.name().equalsIgnoreCase(appConfig.orionAuthenticationType())){
+		if (AUTHENTICATION_TYPE.KEYROCK.name().equalsIgnoreCase(appConfig.orionAuthenticationType())) {
 			authService = new OrionKeyrockAuthService(this.appConfig);
-		}else{
+		} else {
 			authService = new OrionNoAuthService();
 		}
 
 		orionClient = RestClientBuilder.newBuilder()
-			.register(new OrionClientHeaderFilter(contexts, contextsRelationships, authService, this.appConfig.orionLdTenant().orElse(null)))
+			.register(new OrionClientHeaderFilter(contexts, contextsRelationships, authService,
+				this.appConfig.orionLdTenant().orElse(null)))
 			.baseUri(orionUrl).build(OrionClient.class);
 	}
 
-	private JsonObject toOrionAttributeJson(String attributeValue, ValueType attributeValueType,
-																					ATTRIBUTE_TYPE attributeType) {
-		// Create metadata for this attribute.
-		JsonObjectBuilder builder = Json.createObjectBuilder()
-			.add(appConfig.esthesisOrionMetadataName(),
-				Json.createObjectBuilder()
-					.add("value", appConfig.esthesisOrionMetadataValue())
-					.add("type", "Property"))
-			.add(appConfig.esthesisAttributeSourceMetadataName(),
-				Json.createObjectBuilder()
-					.add("value", attributeType.name())
-					.add("type", "Property"));
-
-		// Set the value of the attribute.
-		try {
-			switch (attributeValueType) {
-				case BOOLEAN -> builder.add("value", Boolean.parseBoolean(attributeValue));
-				case BYTE -> builder.add("value", Byte.parseByte(attributeValue));
-				case SHORT -> builder.add("value", Short.parseShort(attributeValue));
-				case INTEGER -> builder.add("value", Integer.parseInt(attributeValue));
-				case LONG -> builder.add("value", Long.parseLong(attributeValue));
-				case BIG_INTEGER -> builder.add("value", new BigInteger(attributeValue));
-				case FLOAT, DOUBLE -> builder.add("value", Double.parseDouble(attributeValue));
-				case BIG_DECIMAL -> builder.add("value", new BigDecimal(attributeValue));
-				default -> builder.add("value", attributeValue);
-			}
-		} catch (Exception e) {
-			log.warn("Failed to parse attribute value '{}' as type '{}'. Will default to a string "
-				+ "representation.", attributeValue, attributeValueType);
-			builder.add("value", attributeValue);
-		}
-
-		return builder.build();
-	}
-
+	/**
+	 * Sets an attribute for an entity in Orion.
+	 *
+	 * @param entityId           The ID of the entity.
+	 * @param attributeName      The name of the attribute.
+	 * @param attributeValue     The value of the attribute.
+	 * @param attributeValueType The type of the attribute value.
+	 * @param attributeType      The type of the attribute.
+	 */
 	public void setAttribute(String entityId, String attributeName, String attributeValue,
-													 ValueType attributeValueType, ATTRIBUTE_TYPE attributeType) {
+		ValueType attributeValueType, ATTRIBUTE_TYPE attributeType) {
 		JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
 		jsonBuilder.add(attributeName,
 			toOrionAttributeJson(attributeValue, attributeValueType, attributeType));
@@ -125,19 +101,81 @@ public class OrionClientService {
 		orionClient.appendAttributes(entityId, json);
 	}
 
+	/**
+	 * Converts an attribute value to a JSON object that can be sent to Orion.
+	 *
+	 * @param attributeValue     The value of the attribute.
+	 * @param attributeValueType The type of the attribute value.
+	 * @param attributeType      The type of the attribute.
+	 * @return The JSON object representing the attribute.
+	 */
+	private JsonObject toOrionAttributeJson(String attributeValue, ValueType attributeValueType,
+		ATTRIBUTE_TYPE attributeType) {
+		final String VALUE_ATR = "value";
+		final String TYPE_ATR = "type";
+
+		// Create metadata for this attribute.
+		JsonObjectBuilder builder = Json.createObjectBuilder()
+			.add(appConfig.esthesisOrionMetadataName(),
+				Json.createObjectBuilder()
+					.add(VALUE_ATR, appConfig.esthesisOrionMetadataValue())
+					.add(TYPE_ATR, "Property"))
+			.add(appConfig.esthesisAttributeSourceMetadataName(),
+				Json.createObjectBuilder()
+					.add(VALUE_ATR, attributeType.name())
+					.add(TYPE_ATR, "Property"));
+
+		// Set the value of the attribute.
+		try {
+			switch (attributeValueType) {
+				case BOOLEAN -> builder.add(VALUE_ATR, Boolean.parseBoolean(attributeValue));
+				case BYTE -> builder.add(VALUE_ATR, Byte.parseByte(attributeValue));
+				case SHORT -> builder.add(VALUE_ATR, Short.parseShort(attributeValue));
+				case INTEGER -> builder.add(VALUE_ATR, Integer.parseInt(attributeValue));
+				case LONG -> builder.add(VALUE_ATR, Long.parseLong(attributeValue));
+				case BIG_INTEGER -> builder.add(VALUE_ATR, new BigInteger(attributeValue));
+				case FLOAT, DOUBLE -> builder.add(VALUE_ATR, Double.parseDouble(attributeValue));
+				case BIG_DECIMAL -> builder.add(VALUE_ATR, new BigDecimal(attributeValue));
+				default -> builder.add(VALUE_ATR, attributeValue);
+			}
+		} catch (Exception e) {
+			log.warn("Failed to parse attribute value '{}' as type '{}'. Will default to a string "
+				+ "representation.", attributeValue, attributeValueType);
+			builder.add(VALUE_ATR, attributeValue);
+		}
+
+		return builder.build();
+	}
+
+	/**
+	 * Saves or updates a list of entities in Orion.
+	 *
+	 * @param entitiesJson The JSON representation of the entities.
+	 */
 	public void saveOrUpdateEntities(String entitiesJson) {
 		//Check and add brackets in case it is missing in the custom entities JSON
-		if(!entitiesJson.trim().startsWith("[")){
+		if (!entitiesJson.trim().startsWith("[")) {
 			entitiesJson = "[" + entitiesJson + "]";
 		}
 		log.debug("Sending data to orion {}", entitiesJson);
 		orionClient.createOrUpdateEntities(entitiesJson);
 	}
 
+	/**
+	 * Deletes an attribute from an entity in Orion.
+	 *
+	 * @param entityId      The ID of the entity.
+	 * @param attributeName The name of the attribute.
+	 */
 	public void deleteAttribute(String entityId, String attributeName) {
 		orionClient.deleteAttribute(entityId, attributeName);
 	}
 
+	/**
+	 * Creates an entity in Orion.
+	 *
+	 * @param orionEntityDTO The entity to create.
+	 */
 	public void createEntity(OrionEntityDTO orionEntityDTO) {
 		// Create a JSON builder to build the JSON representation of the new Orion device.
 		JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
@@ -161,6 +199,11 @@ public class OrionClientService {
 		orionClient.createEntity(json);
 	}
 
+	/**
+	 * Retrieves an entity from Orion by its ID.
+	 *
+	 * @param orionId The entity to update.
+	 */
 	public OrionEntityDTO getEntityByOrionId(String orionId) {
 		try {
 			log.debug("Get entity by orion id: {}", orionId);
@@ -194,10 +237,20 @@ public class OrionClientService {
 
 	}
 
+	/**
+	 * Retrieves the version of the Orion Context Broker.
+	 *
+	 * @return The version of the Orion Context Broker.
+	 */
 	public String getVersion() {
 		return orionClient.getVersion();
 	}
 
+	/**
+	 * Deletes an entity from Orion by its ID.
+	 *
+	 * @param orionId The ID of the entity to delete.
+	 */
 	public void deleteEntity(String orionId) {
 		orionClient.deleteEntity(orionId);
 	}

@@ -1,5 +1,8 @@
 package esthesis.core.common;
 
+/**
+ * Global application constants across all CORE modules.
+ */
 public class AppConstants {
 
 	// A keyword used to indicate a new record being created.
@@ -35,14 +38,17 @@ public class AppConstants {
 		KAFKA_TOPIC_APPLICATION,
 	}
 
+	// Types of security keys.
 	public enum KeyType {
 		PUBLIC, PRIVATE, CERTIFICATE
 	}
 
+	// The registration mode available in CORE.
 	public enum DeviceRegistrationMode {
 		DISABLED, OPEN, OPEN_WITH_SECRET, ID
 	}
 
+	// Device-related constants.
 	public static class Device {
 
 		public enum Status {
@@ -62,6 +68,7 @@ public class AppConstants {
 
 	}
 
+	// MongoDB GridFS constants.
 	public static class GridFS {
 
 		private GridFS() {
@@ -88,6 +95,7 @@ public class AppConstants {
 		}
 	}
 
+	// Constants to identify provisioning packages and cache them in Redis.
 	public static class Provisioning {
 
 		public enum Type {
@@ -104,6 +112,7 @@ public class AppConstants {
 		}
 	}
 
+	// Security and Audit constants.
 	public static class Security {
 
 		public enum Category {
@@ -132,27 +141,31 @@ public class AppConstants {
 			NULL  // Required for annotations.
 		}
 
+		// Available operations.
 		public enum Operation {
 			CREATE, READ, WRITE, DELETE, AUDIT,
 			NULL  // Required for annotations.
 		}
 
+		// Available permissions.
 		public enum Permission {
 
 			ALLOW, DENY;
 		}
 
+		// ERN common prefixes.
 		public static class Ern {
 
 			private Ern() {
 			}
-			
+
 			public static final String ROOT = "ern";
 			public static final String SYSTEM = "esthesis";
 			public static final String SUBSYSTEM = "core";
 		}
 	}
 
+	// Constants for the Campaigns functionality.
 	public static class Campaign {
 
 		public enum State {
@@ -191,6 +204,7 @@ public class AppConstants {
 		}
 	}
 
+	// Constants for the Dashboard functionality.
 	public static class Dashboard {
 
 		public enum Type {

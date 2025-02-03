@@ -325,4 +325,31 @@
 		</ext:runCommand>
 	</changeSet>
 
+	<changeSet author="European Dynamics SA" id="srv-security-3">
+		<ext:createIndex collectionName="User">
+			<ext:keys>
+				{ "username": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: true, name: "idx_username" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="User">
+			<ext:keys>
+				{ "firstName": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_firstName" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="User">
+			<ext:keys>
+				{ "lastName": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_lastName" }
+			</ext:options>
+		</ext:createIndex>
+	</changeSet>
+
 </databaseChangeLog>

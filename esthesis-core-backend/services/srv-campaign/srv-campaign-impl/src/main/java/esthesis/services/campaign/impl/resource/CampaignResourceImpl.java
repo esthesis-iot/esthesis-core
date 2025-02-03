@@ -15,6 +15,9 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 
+/**
+ * Implementation of the @{@link CampaignResource}.
+ */
 public class CampaignResourceImpl implements CampaignResource {
 
 	@Inject

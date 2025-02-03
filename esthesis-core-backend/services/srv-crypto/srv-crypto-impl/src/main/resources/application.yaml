@@ -3,6 +3,8 @@ quarkus:
     name: esthesis-core-srv-crypto
   devservices:
     enabled: false
+  liquibase-mongodb:
+    migrate-at-start: true
   log:
     min-level: TRACE
     console:

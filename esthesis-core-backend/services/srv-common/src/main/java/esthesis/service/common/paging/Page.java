@@ -3,6 +3,11 @@ package esthesis.service.common.paging;
 import java.util.List;
 import lombok.Data;
 
+/**
+ * Support for paging parameters.
+ *
+ * @param <D>
+ */
 @Data
 public class Page<D> {
 

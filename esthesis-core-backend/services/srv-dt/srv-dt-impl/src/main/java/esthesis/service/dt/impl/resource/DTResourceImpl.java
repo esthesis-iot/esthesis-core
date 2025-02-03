@@ -16,12 +16,45 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Implementation of the {@link DTResource} interface.
+ */
 public class DTResourceImpl implements DTResource {
 
 	public static final String HEADER_CORRELATION_ID = "correlation-id";
 
 	@Inject
 	DTService dtService;
+
+	/**
+	 * Create a command request entity with the given command type and execution type.
+	 *
+	 * @param commandType   The type of command to create this request for.
+	 * @param executionType The type of execution to create this request for.
+	 * @return The created command request entity.
+	 */
+	private CommandRequestEntity createCommandRequest(CommandType commandType,
+		ExecutionType executionType) {
+		return createCommandRequest(commandType, executionType, "");
+	}
+
+	/**
+	 * Create a command request entity with the given command type, execution type and command.
+	 *
+	 * @param commandType   The type of command to create this request for.
+	 * @param executionType The type of execution to create this request for.
+	 * @param command       The command to create this request for.
+	 * @return The created command request entity.
+	 */
+	private CommandRequestEntity createCommandRequest(CommandType commandType,
+		ExecutionType executionType, String command) {
+		return new CommandRequestEntity()
+			.setCreatedOn(Instant.now())
+			.setCommandType(commandType)
+			.setExecutionType(executionType)
+			.setCommand(command)
+			.setArguments("");
+	}
 
 	@Override
 	public Response findJSON(String hardwareId, String category, String measurement) {
@@ -78,7 +111,8 @@ public class DTResourceImpl implements DTResource {
 
 	@Override
 	public Response executeCommandByHardwareId(String hardwareId, String command, boolean async) {
-		CommandRequestEntity commandRequest = createCommandRequest(CommandType.e, (async ? ExecutionType.a : ExecutionType.s), command);
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.e,
+			(async ? ExecutionType.a : ExecutionType.s), command);
 		commandRequest.setHardwareIds(hardwareId);
 		return getCommandResponse(commandRequest);
 
@@ -86,77 +120,88 @@ public class DTResourceImpl implements DTResource {
 
 	@Override
 	public Response executeCommandByTag(String tag, String command, boolean async) {
-		CommandRequestEntity commandRequest = createCommandRequest(CommandType.e, (async ? ExecutionType.a : ExecutionType.s), command);
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.e,
+			(async ? ExecutionType.a : ExecutionType.s), command);
 		commandRequest.setTags(tag);
 		return getCommandResponse(commandRequest);
 	}
 
 	@Override
 	public Response pingCommandByHardwareId(String hardwareId, boolean async) {
-		CommandRequestEntity commandRequest = createCommandRequest(CommandType.p, (async ? ExecutionType.a : ExecutionType.s));
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.p,
+			(async ? ExecutionType.a : ExecutionType.s));
 		commandRequest.setHardwareIds(hardwareId);
 		return getCommandResponse(commandRequest);
 	}
 
 	@Override
 	public Response pingCommandByTag(String tag, boolean async) {
-		CommandRequestEntity commandRequest = createCommandRequest(CommandType.p, (async ? ExecutionType.a : ExecutionType.s));
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.p,
+			(async ? ExecutionType.a : ExecutionType.s));
 		commandRequest.setTags(tag);
 		return getCommandResponse(commandRequest);
 	}
 
 	@Override
 	public Response shutdownCommandByHardwareId(String hardwareId, boolean async) {
-		CommandRequestEntity commandRequest = createCommandRequest(CommandType.s, (async ? ExecutionType.a : ExecutionType.s));
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.s,
+			(async ? ExecutionType.a : ExecutionType.s));
 		commandRequest.setHardwareIds(hardwareId);
 		return getCommandResponse(commandRequest);
 	}
 
 	@Override
 	public Response shutdownCommandByTag(String tag, boolean async) {
-		CommandRequestEntity commandRequest = createCommandRequest(CommandType.s, (async ? ExecutionType.a : ExecutionType.s));
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.s,
+			(async ? ExecutionType.a : ExecutionType.s));
 		commandRequest.setTags(tag);
 		return getCommandResponse(commandRequest);
 	}
 
 	@Override
 	public Response rebootCommandByHardwareId(String hardwareId, boolean async) {
-		CommandRequestEntity commandRequest = createCommandRequest(CommandType.r, (async ? ExecutionType.a : ExecutionType.s));
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.r,
+			(async ? ExecutionType.a : ExecutionType.s));
 		commandRequest.setHardwareIds(hardwareId);
 		return getCommandResponse(commandRequest);
 	}
 
 	@Override
 	public Response rebootCommandByTag(String tag, boolean async) {
-		CommandRequestEntity commandRequest = createCommandRequest(CommandType.r, (async ? ExecutionType.a : ExecutionType.s));
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.r,
+			(async ? ExecutionType.a : ExecutionType.s));
 		commandRequest.setTags(tag);
 		return getCommandResponse(commandRequest);
 	}
 
 	@Override
 	public Response firmwareCommandByHardwareId(String hardwareId, boolean async) {
-		CommandRequestEntity commandRequest = createCommandRequest(CommandType.f, (async ? ExecutionType.a : ExecutionType.s));
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.f,
+			(async ? ExecutionType.a : ExecutionType.s));
 		commandRequest.setHardwareIds(hardwareId);
 		return getCommandResponse(commandRequest);
 	}
 
 	@Override
 	public Response firmwareCommandByTag(String tag, boolean async) {
-		CommandRequestEntity commandRequest = createCommandRequest(CommandType.f, (async ? ExecutionType.a : ExecutionType.s));
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.f,
+			(async ? ExecutionType.a : ExecutionType.s));
 		commandRequest.setTags(tag);
 		return getCommandResponse(commandRequest);
 	}
 
 	@Override
 	public Response healthCommandByHardwareId(String hardwareId, boolean async) {
-		CommandRequestEntity commandRequest = createCommandRequest(CommandType.h, (async ? ExecutionType.a : ExecutionType.s));
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.h,
+			(async ? ExecutionType.a : ExecutionType.s));
 		commandRequest.setHardwareIds(hardwareId);
 		return getCommandResponse(commandRequest);
 	}
 
 	@Override
 	public Response healthCommandByTag(String tag, boolean async) {
-		CommandRequestEntity commandRequest = createCommandRequest(CommandType.h, (async ? ExecutionType.a : ExecutionType.s));
+		CommandRequestEntity commandRequest = createCommandRequest(CommandType.h,
+			(async ? ExecutionType.a : ExecutionType.s));
 		commandRequest.setTags(tag);
 		return getCommandResponse(commandRequest);
 	}
@@ -178,19 +223,5 @@ public class DTResourceImpl implements DTResource {
 				.header(HEADER_CORRELATION_ID, scheduleInfo.getCorrelationId())
 				.build();
 		}
-	}
-
-
-	private CommandRequestEntity createCommandRequest(CommandType commandType, ExecutionType executionType) {
-		return createCommandRequest(commandType, executionType, "");
-	}
-
-	private CommandRequestEntity createCommandRequest(CommandType commandType, ExecutionType executionType, String command) {
-		return new CommandRequestEntity()
-			.setCreatedOn(Instant.now())
-			.setCommandType(commandType)
-			.setExecutionType(executionType)
-			.setCommand(command)
-			.setArguments("");
 	}
 }

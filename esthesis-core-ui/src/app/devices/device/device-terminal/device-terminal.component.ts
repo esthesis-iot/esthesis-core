@@ -42,7 +42,7 @@ export class DeviceTerminalComponent extends SecurityBaseComponent implements Af
     });
 
     // Keypress handling.
-    this.terminal.onKey().subscribe(e => {
+    this.terminal.onKey().subscribe(e => { // NOSONAR
       if (this.blockInput) {
         return;
       }

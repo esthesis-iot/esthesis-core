@@ -38,13 +38,14 @@ after a restart, instead it will create to re-register (and probably fail if you
 </note>
 
 Docker images are maintained for the following architectures:
-- linux/arm/6
-- linux/arm/7
+- linux/arm/v6
+- linux/arm/v7
 - linux/arm64
+- linux/amd64
 
 ### Standalone executable
-Download the standalone executable matching your operating system and architecture from the release
-page. Start the device agent with the following command:
+Download the standalone executable matching your operating system and architecture from the [releases
+page](https://github.com/esthesis-iot/esthesis-core/releases). Start the device agent with the following command:
 
 ```shell
 ./esthesis-core-device \

@@ -2,6 +2,9 @@ package esthesis.service.device.dto;
 
 import lombok.Data;
 
+/**
+ * A representation of the statistics of the devices.
+ */
 @Data
 public class DevicesTotalsStatsDTO {
 

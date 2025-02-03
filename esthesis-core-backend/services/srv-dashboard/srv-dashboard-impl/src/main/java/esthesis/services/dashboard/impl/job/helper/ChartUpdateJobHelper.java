@@ -21,8 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Triple;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+/**
+ * Helper class for updating the CHART dashboard item.
+ */
 @Slf4j
-//@Dependent
 @ApplicationScoped
 public class ChartUpdateJobHelper extends UpdateJobHelper<DashboardUpdateChart> {
 

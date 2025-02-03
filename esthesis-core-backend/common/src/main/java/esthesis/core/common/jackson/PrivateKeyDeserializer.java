@@ -10,19 +10,22 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.security.PrivateKey;
 import lombok.SneakyThrows;
 
+/**
+ * A custom Jackson deserializer for {@link PrivateKey} objects.
+ */
 public class PrivateKeyDeserializer extends StdDeserializer<PrivateKey> {
 
-  protected PrivateKeyDeserializer(Class<?> vc) {
-    super(vc);
-  }
+	protected PrivateKeyDeserializer(Class<?> vc) {
+		super(vc);
+	}
 
-  @SneakyThrows
-  @Override
-  public PrivateKey deserialize(JsonParser p, DeserializationContext ctxt) {
-    ObjectCodec oc = p.getCodec();
-    JsonNode node = oc.readTree(p);
-    final String privateKey = node.get(PRIVATE_KEY).asText();
+	@SneakyThrows
+	@Override
+	public PrivateKey deserialize(JsonParser p, DeserializationContext ctxt) {
+		ObjectCodec oc = p.getCodec();
+		JsonNode node = oc.readTree(p);
+		final String privateKey = node.get(PRIVATE_KEY).asText();
 
-    return SerDerUtils.getPrivateKey(privateKey);
-  }
+		return SerDerUtils.getPrivateKey(privateKey);
+	}
 }

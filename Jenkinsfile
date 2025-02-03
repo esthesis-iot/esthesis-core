@@ -34,6 +34,8 @@ pipeline {
                     mountPath: /root/sonar-scanner
                   - name: docker
                     mountPath: /root/.docker
+                  - name: jacoco-cli
+                    mountPath: /root/jacoco-cli
                   tty: true
                   securityContext:
                     privileged: true
@@ -51,6 +53,9 @@ pipeline {
                 - name: docker
                   persistentVolumeClaim:
                     claimName: docker-nfs-pvc
+                - name: jacoco-cli
+                  persistentVolumeClaim:
+                    claimName: jacoco-cli-nfs-pvc
             '''
             workspaceVolume persistentVolumeClaimWorkspaceVolume(claimName: 'workspace-nfs-pvc', readOnly: false)
         }
@@ -144,6 +149,36 @@ pipeline {
                             '''
                         }
                     }
+                }
+            }
+        }
+        stage('Generate Aggregate Code Coverage'){
+            steps {
+                container (name: 'esthesis-core-builder') {
+                    sh '''
+                    cd esthesis-core-backend
+
+                    CLASSFILES=""
+                    SOURCEFILES=""
+
+                    # Find all target/classes directories and add them to --classfiles
+                    for dir in $(find . -type d -path "*/target/classes"); do
+                        CLASSFILES="$CLASSFILES --classfiles=$dir"
+                    done
+
+                    # Find all src/main/java directories and add them to --sourcefiles
+                    for dir in $(find . -type d -path "*/src/main/java"); do
+                        SOURCEFILES="$SOURCEFILES --sourcefiles=$dir"
+                    done
+
+                    # Run the JaCoCo CLI
+                    java -jar /root/jacoco-cli/jacococli.jar report target/jacoco.exec \
+                        $CLASSFILES \
+                        $SOURCEFILES \
+                        --html target/coverage/jacoco-report \
+                        --xml target/coverage/jacoco.xml \
+                        --csv target/coverage/jacoco-report.csv
+                    '''
                 }
             }
         }

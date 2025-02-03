@@ -13,6 +13,9 @@ import lombok.Singular;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
+/**
+ * A representation of the data needed to register a device.
+ */
 @Data
 @NoArgsConstructor
 @RegisterForReflection

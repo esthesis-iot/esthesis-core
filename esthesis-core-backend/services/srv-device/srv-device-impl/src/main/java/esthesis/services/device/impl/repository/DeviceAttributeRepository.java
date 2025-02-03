@@ -7,6 +7,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Quarkus Panache repository for {@link DeviceAttributeEntity}.
+ */
 @ApplicationScoped
 public class DeviceAttributeRepository implements PanacheMongoRepository<DeviceAttributeEntity> {
 

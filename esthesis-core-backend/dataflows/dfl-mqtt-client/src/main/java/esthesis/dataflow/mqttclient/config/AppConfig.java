@@ -4,6 +4,9 @@ import io.quarkus.runtime.annotations.StaticInitSafe;
 import io.smallrye.config.ConfigMapping;
 import java.util.Optional;
 
+/**
+ * Configuration for the MQTT client DFL.
+ */
 @StaticInitSafe
 @ConfigMapping(prefix = "esthesis.dfl")
 public interface AppConfig {

@@ -6,6 +6,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+/**
+ * A component providing access to public information (i.e. information that can be accessed by
+ * non-authenticated users).
+ */
 @ApplicationScoped
 public class App {
 

@@ -27,3 +27,5 @@ sequenceDiagram
 		esthesis Dataflow->>Data persistence: Persist data
 ```
 
+In the following sections you find out how to install the device agent into your devices, how to configure it and 
+connect it to esthesis CORE, as well as how to send data from your devices to the platform and vice versa.

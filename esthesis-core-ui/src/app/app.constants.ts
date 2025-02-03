@@ -61,7 +61,9 @@ export const AppConstants = {
       }
     },
     TYPE: {
-      ESTHESIS: "ESTHESIS"
+      CORE: "CORE",
+      EDGE: "EDGE",
+      OTHER: "OTHER"
     },
     STATUS: {
       DISABLED: "DISABLED",

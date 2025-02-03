@@ -18,6 +18,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Service class for managing security permissions.
+ */
 @Slf4j
 @Transactional
 @ApplicationScoped
@@ -44,16 +47,25 @@ public class SecurityPermissionsService {
 	/**
 	 * Check if the current user is permitted to perform the given operation on the given resource.
 	 *
-	 * @param category
-	 * @param operation
-	 * @param resourceId
-	 * @return
+	 * @param category   The category of the resource.
+	 * @param operation  The operation to perform.
+	 * @param resourceId The ID of the resource.
+	 * @return True if the user is permitted, false otherwise.
 	 */
 	public boolean isPermitted(AppConstants.Security.Category category, Operation operation,
 		String resourceId) {
 		return isPermitted(category, operation, resourceId, securityIdentity.getPrincipal().getName());
 	}
 
+	/**
+	 * Check if the given user is permitted to perform the given operation on the given resource.
+	 *
+	 * @param category   The category of the resource.
+	 * @param operation  The operation to perform.
+	 * @param resourceId The ID of the resource.
+	 * @param username   The username of the user.
+	 * @return True if the user is permitted, false otherwise.
+	 */
 	public boolean isPermitted(AppConstants.Security.Category category, Operation operation,
 		String resourceId, String username) {
 		if (StringUtils.isBlank(resourceId)) {
@@ -75,11 +87,23 @@ public class SecurityPermissionsService {
 
 	/**
 	 * Get all permissions for the current user (i.e. the one identified on the JWT).
+	 *
+	 * @return The list of permissions.
 	 */
 	public List<String> getPermissionsForUser() {
 		return getPermissionsForUser(securityIdentity.getPrincipal().getName());
 	}
 
+	/**
+	 * Check if the given user is permitted to perform the given operation on the given resource.
+	 *
+	 * @param permissions The list of permissions.
+	 * @param permission  The permission to check.
+	 * @param category    The category of the resource.
+	 * @param operation   The operation to perform.
+	 * @param resourceId  The ID of the resource.
+	 * @return True if the user is permitted, false otherwise.
+	 */
 	private boolean isPermitted(List<String> permissions,
 		AppConstants.Security.Permission permission, AppConstants.Security.Category category,
 		Operation operation, String resourceId) {
@@ -104,6 +128,7 @@ public class SecurityPermissionsService {
 	 * Get all permissions for the given user.
 	 *
 	 * @param username The username of the user.
+	 * @return The list of permissions.
 	 */
 	public List<String> getPermissionsForUser(String username) {
 		log.trace("Getting permissions for user '{}'.", username);

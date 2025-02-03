@@ -11,6 +11,9 @@ import org.eclipse.microprofile.openapi.annotations.info.Contact;
 import org.eclipse.microprofile.openapi.annotations.info.Info;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 
+/**
+ * A component providing management services for the DT functionality.
+ */
 @ApplicationScoped
 @OpenAPIDefinition(
 	info = @Info(

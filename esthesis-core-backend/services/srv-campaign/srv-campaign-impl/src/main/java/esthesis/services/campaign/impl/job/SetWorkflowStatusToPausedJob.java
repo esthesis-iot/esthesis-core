@@ -11,6 +11,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * A job handler for setting the workflow status to paused.
+ */
 @Slf4j
 @ApplicationScoped
 public class SetWorkflowStatusToPausedJob implements JobHandler {
@@ -18,6 +21,12 @@ public class SetWorkflowStatusToPausedJob implements JobHandler {
 	@Inject
 	CampaignService campaignService;
 
+	/**
+	 * Pauses a campaign.
+	 *
+	 * @param client
+	 * @param job
+	 */
 	@JobWorker(type = "SetWorkflowStatusToPausedJob")
 	public void handle(JobClient client, ActivatedJob job) {
 		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);

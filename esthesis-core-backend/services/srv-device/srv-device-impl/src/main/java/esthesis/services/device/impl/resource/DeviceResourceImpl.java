@@ -11,6 +11,7 @@ import esthesis.core.common.AppConstants.Security.Category;
 import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.service.audit.ccc.Audited.AuditLogType;
+import esthesis.service.common.paging.JSONReplyFilter;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.common.validation.CVEBuilder;
@@ -31,6 +32,7 @@ import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
@@ -50,6 +52,9 @@ import org.jboss.resteasy.reactive.multipart.FileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implementation of {@link DeviceResource}.
+ */
 public class DeviceResourceImpl implements DeviceResource {
 
 	private static final Logger log = LoggerFactory.getLogger(DeviceResourceImpl.class);
@@ -229,7 +234,6 @@ public class DeviceResourceImpl implements DeviceResource {
 			.build();
 	}
 
-
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	public DeviceProfileDTO getProfile(String deviceId) {
@@ -249,23 +253,20 @@ public class DeviceResourceImpl implements DeviceResource {
 		return deviceService.getDeviceData(deviceId);
 	}
 
-	/**
-	 * Preregister devices in the platform. DeviceRegistrationDTO.hardwareId may content multiple
-	 * devices in this case, separated by new lines.
-	 */
 	@Override
+	@POST
+	@Path("/v1/preregister")
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Preregistering device")
-	public Response preregister(@Valid DeviceRegistrationDTO deviceRegistration)
+	@JSONReplyFilter(filter = "id,hardwareId,status")
+	public List<DeviceEntity> preregister(@Valid DeviceRegistrationDTO deviceRegistration)
 	throws NoSuchAlgorithmException, IOException, OperatorCreationException,
 				 InvalidKeySpecException, NoSuchProviderException {
 		try {
-			deviceRegistrationService.preregister(deviceRegistration);
+			return deviceRegistrationService.preregister(deviceRegistration);
 		} catch (QAlreadyExistsException e) {
-			CVEBuilder.addAndThrow("ids", "One or more IDs are already registered.");
+			throw CVEBuilder.addAndThrow("ids", "One or more IDs are already registered.");
 		}
-
-		return Response.ok().build();
 	}
 
 	@Override

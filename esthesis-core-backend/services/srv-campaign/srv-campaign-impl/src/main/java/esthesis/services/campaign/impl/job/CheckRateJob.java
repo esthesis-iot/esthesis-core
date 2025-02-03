@@ -18,6 +18,9 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 
+/**
+ * A job handler that checks the rate condition for a campaign.
+ */
 @Slf4j
 @ApplicationScoped
 public class CheckRateJob implements JobHandler {
@@ -28,6 +31,13 @@ public class CheckRateJob implements JobHandler {
 	@Inject
 	CampaignDeviceMonitorService campaignDeviceMonitorService;
 
+	/**
+	 * Find a rate condition set for a group in a campaign.
+	 *
+	 * @param client the job client to use.
+	 * @param job    the job to handle.
+	 * @throws Exception if an error occurs.
+	 */
 	@Override
 	@JobWorker(type = "CheckRateJob")
 	public void handle(JobClient client, ActivatedJob job) throws Exception {
@@ -53,9 +63,9 @@ public class CheckRateJob implements JobHandler {
 					conditions.size(), p.getCampaignId(), groupDTO);
 			} else {
 				log.debug("Found batch condition '{}' for campaign id '{}', group '{}'.",
-					conditions.get(0), p.getCampaignId(), groupDTO);
+					conditions.getFirst(), p.getCampaignId(), groupDTO);
 			}
-			BigDecimal requestedRate = new BigDecimal(conditions.get(0).getValue());
+			BigDecimal requestedRate = new BigDecimal(conditions.getFirst().getValue());
 			requestedRate = requestedRate.divide(new BigDecimal(100), 2, RoundingMode.FLOOR);
 			BigDecimal actualRate = campaignDeviceMonitorService.checkRate(p.getCampaignId(),
 				groupDTO.getGroup());

@@ -7,6 +7,9 @@ import esthesis.service.provisioning.resource.ProvisioningSystemResource;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 
+/**
+ * Implementation of {@link ProvisioningSystemResource}.
+ */
 public class ProvisioningSystemResourceImpl implements ProvisioningSystemResource {
 
 	@Inject

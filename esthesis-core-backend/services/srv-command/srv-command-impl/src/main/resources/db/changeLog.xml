@@ -1,0 +1,34 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+	xmlns:ext="https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+	<changeSet author="European Dynamics SA" id="srv-command-1">
+		<ext:createIndex collectionName="CommandRequest">
+			<ext:keys>
+				{ "createdOn": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_created_on" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="CommandRequest">
+			<ext:keys>
+				{ "dispatchedOn": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_dispatched_on" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="CommandReply">
+			<ext:keys>
+				{ "hardwareId": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_hardware_id" }
+			</ext:options>
+		</ext:createIndex>
+	</changeSet>
+</databaseChangeLog>

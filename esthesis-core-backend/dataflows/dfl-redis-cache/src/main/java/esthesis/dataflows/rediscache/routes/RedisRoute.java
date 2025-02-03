@@ -13,6 +13,9 @@ import org.apache.camel.builder.component.ComponentsBuilderFactory;
 import org.apache.camel.builder.component.dsl.KafkaComponentBuilderFactory.KafkaComponentBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+/**
+ * Camel routes for processing messages from Kafka and storing them in Redis.
+ */
 @Slf4j
 @ApplicationScoped
 public class RedisRoute extends RouteBuilder {
@@ -26,6 +29,9 @@ public class RedisRoute extends RouteBuilder {
 	@ConfigProperty(name = "quarkus.application.name")
 	String appName;
 
+	/**
+	 * Configures the Camel routes.
+	 */
 	@Override
 	public void configure() {
 		BannerUtil.showBanner(appName);

@@ -1,13 +1,29 @@
 package esthesis.service.agent.impl.service;
 
+import static esthesis.common.util.EsthesisCommonConstants.Device.Capability.EXECUTE;
+import static esthesis.common.util.EsthesisCommonConstants.Device.Capability.PROVISIONING;
+import static esthesis.common.util.EsthesisCommonConstants.Device.Type.CORE;
+import static esthesis.core.common.AppConstants.GridFS.PROVISIONING_BUCKET_NAME;
+import static esthesis.core.common.AppConstants.GridFS.PROVISIONING_METADATA_NAME;
+import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_PROVISIONING_CACHE_TIME;
+import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_PROVISIONING_SECURE;
+import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM;
+import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import esthesis.common.agent.dto.AgentRegistrationRequest;
 import esthesis.common.agent.dto.AgentRegistrationResponse;
+import esthesis.common.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.exception.QLimitException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QSecurityException;
 import esthesis.core.common.AppConstants;
-import esthesis.core.common.dto.SignatureVerificationRequestDTO;
 import esthesis.service.agent.dto.AgentProvisioningInfoResponse;
 import esthesis.service.common.gridfs.GridFSDTO;
 import esthesis.service.common.gridfs.GridFSService;
@@ -28,31 +44,14 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.MockitoConfig;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Optional;
 import lombok.SneakyThrows;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Optional;
-
-import static esthesis.common.util.EsthesisCommonConstants.Device.Capability.EXECUTE;
-import static esthesis.common.util.EsthesisCommonConstants.Device.Capability.PROVISIONING;
-import static esthesis.common.util.EsthesisCommonConstants.Device.Type.CORE;
-import static esthesis.core.common.AppConstants.GridFS.PROVISIONING_BUCKET_NAME;
-import static esthesis.core.common.AppConstants.GridFS.PROVISIONING_METADATA_NAME;
-import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_PROVISIONING_CACHE_TIME;
-import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_PROVISIONING_SECURE;
-import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM;
-import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @QuarkusTest
 class AgentServiceTest {
@@ -105,7 +104,8 @@ class AgentServiceTest {
 	 * @param available The availability of the provisioning package
 	 * @return a new instance of a ProvisioningPackageEntity
 	 */
-	private ProvisioningPackageEntity newProvisioningPackage(String name, String version, boolean available) {
+	private ProvisioningPackageEntity newProvisioningPackage(String name, String version,
+		boolean available) {
 		ProvisioningPackageEntity provisioningPackage =
 			ProvisioningPackageEntity.builder()
 				.name(name)
@@ -278,7 +278,8 @@ class AgentServiceTest {
 	@Test
 	void downloadProvisioningPackageNOK() {
 		assertThrows(QDoesNotExistException.class,
-			() -> agentService.downloadProvisioningPackage("test-download-token-nonexistent").await().indefinitely());
+			() -> agentService.downloadProvisioningPackage("test-download-token-nonexistent").await()
+				.indefinitely());
 	}
 
 	@SneakyThrows
@@ -312,7 +313,8 @@ class AgentServiceTest {
 				.hardwareId("test-hardware@#$")
 				.build();
 
-		assertThrows(QMismatchException.class, () -> agentService.register(testAgentRequestWithInvalidName1));
+		assertThrows(QMismatchException.class,
+			() -> agentService.register(testAgentRequestWithInvalidName1));
 
 		//Test when Hardware id has spaces
 		AgentRegistrationRequest testAgentRequestWithInvalidName2 =
@@ -320,6 +322,7 @@ class AgentServiceTest {
 				.hardwareId("test hardware")
 				.build();
 
-		assertThrows(QMismatchException.class, () -> agentService.register(testAgentRequestWithInvalidName2));
+		assertThrows(QMismatchException.class,
+			() -> agentService.register(testAgentRequestWithInvalidName2));
 	}
 }

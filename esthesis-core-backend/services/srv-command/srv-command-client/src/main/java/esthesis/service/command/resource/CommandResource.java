@@ -18,19 +18,40 @@ import jakarta.ws.rs.QueryParam;
 import java.util.List;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+/**
+ * A REST client for the command service.
+ */
 @AccessToken
 @Path("/api")
 @RegisterRestClient(configKey = "CommandResource")
 public interface CommandResource {
 
+	/**
+	 * Finds all command requests.
+	 *
+	 * @param pageable The page to retrieve.
+	 * @return The page of command requests.
+	 */
 	@GET
 	@Path("/v1/find")
 	Page<CommandRequestEntity> find(@BeanParam Pageable pageable);
 
+	/**
+	 * Finds a command by ID.
+	 *
+	 * @param commandId The command ID to search by.
+	 * @return The command request.
+	 */
 	@GET
 	@Path("/v1/{commandId}")
 	CommandRequestEntity getCommand(@PathParam("commandId") String commandId);
 
+	/**
+	 * Finds a command reply by its correlation ID.
+	 *
+	 * @param correlationId The correlation ID to search by.
+	 * @return The command reply.
+	 */
 	@GET
 	@Path("/v1/reply/{correlationId}")
 	List<CommandReplyEntity> getReply(@PathParam("correlationId") String correlationId);
@@ -61,7 +82,6 @@ public interface CommandResource {
 	 * @return Returns the reply to the command. If the command timed out, an empty reply will be
 	 * returned
 	 */
-
 	@POST
 	@Path("/v1/wait-for-reply")
 	List<CommandReplyEntity> saveAndWait(CommandRequestEntity request,
@@ -78,25 +98,41 @@ public interface CommandResource {
 	List<DeviceEntity> findDevicesByHardwareId(
 		@QueryParam("hardwareId") String hardwareId);
 
+	/**
+	 * Deletes a command.
+	 *
+	 * @param commandId The command ID to delete.
+	 */
 	@DELETE
 	@Path("/v1/{commandId}")
 	void deleteCommand(@PathParam("commandId") String commandId);
 
+	/**
+	 * Deletes a reply.
+	 *
+	 * @param replyId The reply ID to delete.
+	 */
 	@DELETE
 	@Path("/v1/reply/{replyId}")
 	void deleteReply(@PathParam("replyId") String replyId);
 
+	/**
+	 * Deletes all replies for a given correlation ID.
+	 *
+	 * @param correlationId The correlation ID to delete replies for.
+	 */
 	@DELETE
 	@Path("/v1/reply/all/{correlationId}")
 	void deleteReplies(@PathParam("correlationId") String correlationId);
 
 	/**
 	 * Purges all command and replies older than the given duration.
+	 *
 	 * @param durationInDays The duration, in days.
 	 */
 	@DELETE
 	@Path("/v1/purge/{durationInDays}")
-	void purge(@PathParam("durationInDays")int durationInDays);
+	void purge(@PathParam("durationInDays") int durationInDays);
 
 	/**
 	 * Purges all command and replies.
@@ -105,6 +141,11 @@ public interface CommandResource {
 	@Path("/v1/purge")
 	void purge();
 
+	/**
+	 * Replays a command.
+	 *
+	 * @param sourceCommandId The command ID to replay.
+	 */
 	@PUT
 	@Path("/v1/replay/{sourceCommandId}")
 	void replayCommand(@PathParam("sourceCommandId") String sourceCommandId);

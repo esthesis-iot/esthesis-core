@@ -27,6 +27,9 @@ import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Message;
 
+/**
+ * Interceptor for Kafka notifications.
+ */
 @Slf4j
 @Interceptor
 @Priority(Interceptor.Priority.APPLICATION)
@@ -90,7 +93,7 @@ public class KafkaNotificationInterceptor {
 			.addMetadata(OutgoingKafkaRecordMetadata.<String>builder()
 				.withKey(username).build())
 			.addMetadata(TracingMetadata.withCurrent(Context.current()));
-		log.debug("Sending Kafka notification '{}'.", msg.getPayload());
+		log.trace("Sending Kafka notification '{}'.", msg.getPayload());
 
 		// Emit the message.
 		if (kafkaNotification.broadcast()) {

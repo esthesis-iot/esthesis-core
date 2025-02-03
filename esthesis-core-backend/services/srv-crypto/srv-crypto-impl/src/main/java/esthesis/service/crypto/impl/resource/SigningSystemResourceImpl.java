@@ -1,8 +1,8 @@
 package esthesis.service.crypto.impl.resource;
 
+import esthesis.common.crypto.CryptoUtil;
+import esthesis.common.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.core.common.AppConstants;
-import esthesis.core.common.dto.SignatureVerificationRequestDTO;
-import esthesis.service.crypto.impl.util.CryptoUtil;
 import esthesis.service.crypto.resource.SigningSystemResource;
 import jakarta.annotation.security.RolesAllowed;
 import java.security.InvalidKeyException;
@@ -11,6 +11,9 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Implementation of the @{@link SigningSystemResource} interface.
+ */
 @Slf4j
 public class SigningSystemResourceImpl implements SigningSystemResource {
 

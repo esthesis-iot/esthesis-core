@@ -7,19 +7,23 @@ import org.apache.camel.Exchange;
 import org.apache.camel.spi.DataFormat;
 import org.apache.camel.support.service.ServiceSupport;
 
+/**
+ * Serializer/Deserializer for an esthesis command reply message. See
+ * esthesis-common/src/main/avro.
+ */
 public class EsthesisCommandReplyDataFormat extends ServiceSupport implements DataFormat {
 
- @Override
- public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
-	 EsthesisCommandReplyMessage.getEncoder().encode((EsthesisCommandReplyMessage) graph, stream);
- }
+	@Override
+	public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
+		EsthesisCommandReplyMessage.getEncoder().encode((EsthesisCommandReplyMessage) graph, stream);
+	}
 
- @Override
- public Object unmarshal(Exchange exchange, InputStream stream) throws Exception {
-  return EsthesisCommandReplyMessage.getDecoder().decode(stream);
- }
+	@Override
+	public Object unmarshal(Exchange exchange, InputStream stream) throws Exception {
+		return EsthesisCommandReplyMessage.getDecoder().decode(stream);
+	}
 
- public static EsthesisCommandReplyDataFormat create() {
-	return new EsthesisCommandReplyDataFormat();
- }
+	public static EsthesisCommandReplyDataFormat create() {
+		return new EsthesisCommandReplyDataFormat();
+	}
 }

@@ -7,6 +7,9 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.tuple.Triple;
 
+/**
+ * Data update for the CHART dashboard item type.
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder

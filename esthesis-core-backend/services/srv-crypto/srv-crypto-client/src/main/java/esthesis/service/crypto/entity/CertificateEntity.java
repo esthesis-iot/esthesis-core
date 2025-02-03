@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * A representation of a certificate.
+ * The certificate entity.
  */
 @Data
 @NoArgsConstructor

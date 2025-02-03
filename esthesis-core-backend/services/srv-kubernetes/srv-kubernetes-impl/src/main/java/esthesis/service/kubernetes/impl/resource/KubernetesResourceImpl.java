@@ -8,6 +8,9 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import java.util.List;
 
+/**
+ * Implementation of {@link KubernetesResource}.
+ */
 public class KubernetesResourceImpl implements KubernetesResource {
 
 	@Inject

@@ -1,5 +1,8 @@
 package esthesis.service.common.validation;
 
+/**
+ * Custom validators that do not throw exceptions, but return boolean values.
+ */
 public class SoftValidators {
 
 	private SoftValidators() {

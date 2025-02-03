@@ -18,15 +18,28 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+/**
+ * REST client for managing Tag resources.
+ */
 @AccessToken
 @Path("/api")
 @RegisterRestClient(configKey = "TagResource")
 public interface TagResource {
 
+	/**
+	 * Finds all tags.
+	 *
+	 * @param pageable pagination parameters.
+	 */
 	@GET
 	@Path("/v1/find")
 	Page<TagEntity> find(@BeanParam Pageable pageable);
 
+	/**
+	 * Finds all tags.
+	 *
+	 * @return a list of all tags.
+	 */
 	@GET
 	@Path("/v1/get-all")
 	List<TagEntity> getAll();
@@ -36,6 +49,7 @@ public interface TagResource {
 	 *
 	 * @param name         The name of the tag to search.
 	 * @param partialMatch If true, the search will be performed using a partial match.
+	 * @return The tag with the given name.
 	 */
 	@GET
 	@Path("/v1/find/by-name/{name}")
@@ -47,20 +61,39 @@ public interface TagResource {
 	 *
 	 * @param name         A comma-separated list of names.
 	 * @param partialMatch If true, the search will be performed using a partial match.
+	 * @return A list of tags with the given names.
 	 */
 	@GET
 	@Path("/v1/find/by-names")
 	List<TagEntity> findByNames(@QueryParam("names") String name,
 		@QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
 
+	/**
+	 * Finds a tag by its id.
+	 *
+	 * @param id The id of the tag to search.
+	 * @return The tag with the given id.
+	 */
 	@GET
 	@Path("/v1/{id}")
 	TagEntity findById(@PathParam("id") String id);
 
+	/**
+	 * Deletes a tag by its id.
+	 *
+	 * @param id The id of the tag to delete.
+	 * @return The response.
+	 */
 	@DELETE
 	@Path("/v1/{id}")
 	Response delete(@PathParam("id") String id);
 
+	/**
+	 * Saves a tag.
+	 *
+	 * @param tagEntity The tag to save.
+	 * @return The saved tag.
+	 */
 	@POST
 	@Path("/v1")
 	@Produces("application/json")

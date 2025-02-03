@@ -18,6 +18,9 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * A representation of a pageable request.
+ */
 @Slf4j
 @Getter
 @Setter
@@ -96,7 +99,7 @@ public class Pageable {
 	 * </ul>
 	 *
 	 * @param partialMatch Whether to include partial matches in the query using the 'like' clause.
-	 * @return
+	 * @return A string representing the keys of the query parameters.
 	 */
 	@SuppressWarnings("java:S1192")
 	public String getQueryKeys(boolean partialMatch) {
@@ -160,7 +163,7 @@ public class Pageable {
 	 * to interpret the value first as a number, then as a date (using ISO 8601 format), and
 	 * finally just use the value verbatim.
 	 *
-	 * @return
+	 * @return A map representing the values of the query parameters.
 	 */
 	@SuppressWarnings("java:S3776")
 	public Map<String, Object> getQueryValues() {
@@ -200,6 +203,11 @@ public class Pageable {
 		}
 	}
 
+	/**
+	 * Returns whether the request has a query defined.
+	 *
+	 * @return True if the request has a query defined, false otherwise.
+	 */
 	public boolean hasQuery() {
 		if (uriInfo != null) {
 			return uriInfo.getQueryParameters().keySet().stream()
@@ -209,6 +217,11 @@ public class Pageable {
 		}
 	}
 
+	/**
+	 * Custom toString method for printing a Pageable object.
+	 *
+	 * @return A string representation of the Pageable object.
+	 */
 	@Override
 	public String toString() {
 		return "Pageable(" + "uriInfo=" + uriInfo.getRequestUri() + ", page=" + page + ", size=" + size

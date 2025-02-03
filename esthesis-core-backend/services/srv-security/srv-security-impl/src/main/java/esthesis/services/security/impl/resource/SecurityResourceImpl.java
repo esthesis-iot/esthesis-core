@@ -23,6 +23,9 @@ import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 
+/**
+ * Implementation of {@link SecurityResource}.
+ */
 public class SecurityResourceImpl implements SecurityResource {
 
 	@Inject
@@ -74,7 +77,7 @@ public class SecurityResourceImpl implements SecurityResource {
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
-	@Audited(cat = Category.USERS, op = Operation.READ, msg = "Save user")
+	@Audited(cat = Category.USERS, op = Operation.WRITE, msg = "Save user")
 	public UserEntity saveUser(UserEntity userEntity) {
 		if (userEntity.getId() == null) {
 			return securityUserService.saveNew(userEntity);

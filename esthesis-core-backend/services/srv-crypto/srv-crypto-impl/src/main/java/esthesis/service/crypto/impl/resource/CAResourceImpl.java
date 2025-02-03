@@ -1,10 +1,10 @@
 package esthesis.service.crypto.impl.resource;
 
 import com.github.slugify.Slugify;
+import esthesis.common.exception.QDoesNotExistException;
 import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.Security.Category;
 import esthesis.core.common.AppConstants.Security.Operation;
-import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.common.paging.JSONReplyFilter;
@@ -24,6 +24,9 @@ import java.util.List;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
+/**
+ * Implementation of the {@link CAResource} interface.
+ */
 @Authenticated
 public class CAResourceImpl implements CAResource {
 

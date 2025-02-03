@@ -1,0 +1,58 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+	xmlns:ext="https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+	<changeSet author="European Dynamics SA" id="srv-device-1">
+		<ext:createIndex collectionName="Device">
+			<ext:keys>
+				{ "hardwareId": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: true, name: "idx_hardware_id" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Device">
+			<ext:keys>
+				{ "type": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_type" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Device">
+			<ext:keys>
+				{ "lastSeen": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_last_seen" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Device">
+			<ext:keys>
+				{ "createdOn": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_created_on" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Device">
+			<ext:keys>
+				{ "registeredOn": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_registered_on" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="Device">
+			<ext:keys>
+				{ "status": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_status" }
+			</ext:options>
+		</ext:createIndex>
+	</changeSet>
+</databaseChangeLog>

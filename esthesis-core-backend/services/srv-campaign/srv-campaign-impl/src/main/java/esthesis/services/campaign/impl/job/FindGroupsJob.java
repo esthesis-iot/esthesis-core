@@ -10,6 +10,9 @@ import jakarta.inject.Inject;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Find groups job handler.
+ */
 @Slf4j
 @ApplicationScoped
 public class FindGroupsJob implements JobHandler {
@@ -17,6 +20,12 @@ public class FindGroupsJob implements JobHandler {
 	@Inject
 	CampaignService campaignService;
 
+	/**
+	 * Finds the available groups for a campaign.
+	 *
+	 * @param client the Job client to use.
+	 * @param job    the job to handle.
+	 */
 	@JobWorker(type = "FindGroupsJob")
 	public void handle(JobClient client, ActivatedJob job) {
 		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);
