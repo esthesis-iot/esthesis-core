@@ -3,6 +3,7 @@ quarkus:
     level: INFO
   devservices:
     enabled: true
+    timeout: 5m
   mongodb:
     database: esthesiscore-test
   http:
