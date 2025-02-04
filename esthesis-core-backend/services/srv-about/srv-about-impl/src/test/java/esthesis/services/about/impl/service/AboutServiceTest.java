@@ -17,10 +17,10 @@ class AboutServiceTest {
 
 	@Test
 	void testGetGeneralInfo() {
-		// Call the getGeneralInfo() method
+		// Perform the call to get the general info.
 		AboutGeneralDTO about = aboutService.getGeneralInfo();
 
-		// Verify the results
+		// Verify the results.
 		assertNotNull(about);
 		assertNotNull(about.getGitBuildTime());
 		assertNotNull(about.getGitCommitId());

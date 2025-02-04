@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import static esthesis.core.common.AppConstants.Campaign.State.CREATED;
 import static esthesis.core.common.AppConstants.Campaign.Type.PROVISIONING;
@@ -55,7 +56,7 @@ class CampaignDeviceMonitorServiceTest {
 		assertNotNull(campaignDeviceMonitorService.findByCampaignID(campaignId.toHexString()));
 
 		// Assert campaign device monitor is not found by non-existent campaign ID.
-		assertNull(campaignDeviceMonitorService.findByCampaignID(new ObjectId().toHexString()));
+		assertTrue(campaignDeviceMonitorService.findByCampaignID(new ObjectId().toHexString()).isEmpty());
 	}
 
 	@Test
@@ -73,13 +74,13 @@ class CampaignDeviceMonitorServiceTest {
 		campaignDeviceMonitorService.save(testHelper.makeCampaignDeviceMonitorEntity(campaignId).setGroup(1));
 
 		// Assert campaign device monitor is found by campaign ID and group.
-		assertNotNull(campaignDeviceMonitorService.findByCampaignIdAndGroup(campaignId.toHexString(), 1));
+		assertFalse(campaignDeviceMonitorService.findByCampaignIdAndGroup(campaignId.toHexString(), 1).isEmpty());
 
 		// Assert campaign device monitor is not found by campaign ID and non-existing group.
-		assertNull(campaignDeviceMonitorService.findByCampaignIdAndGroup(campaignId.toHexString(), 2));
+		assertTrue(campaignDeviceMonitorService.findByCampaignIdAndGroup(campaignId.toHexString(), 2).isEmpty());
 
 		// Assert campaign device monitor is not found by non-existent campaign ID.
-		assertNull(campaignDeviceMonitorService.findByCampaignIdAndGroup(new ObjectId().toHexString(), 1));
+		assertTrue(campaignDeviceMonitorService.findByCampaignIdAndGroup(new ObjectId().toHexString(), 1).isEmpty());
 
 
 	}
@@ -356,7 +357,10 @@ class CampaignDeviceMonitorServiceTest {
 		);
 
 		// Assert rate is zero for the given campaign ID and group 1.
-		assertEquals(BigDecimal.ZERO, campaignDeviceMonitorService.checkRate(campaignId.toString(), 1));
+		assertEquals(
+			BigDecimal.ZERO.setScale(2, RoundingMode.UNNECESSARY),
+			campaignDeviceMonitorService.checkRate(campaignId.toString(), 1)
+				.setScale(2, RoundingMode.UNNECESSARY));
 
 
 		// Perform the save operation for a new campaign device monitor that has been contacted and has replies with group 1.

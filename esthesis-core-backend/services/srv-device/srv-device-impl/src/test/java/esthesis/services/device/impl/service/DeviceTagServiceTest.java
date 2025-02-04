@@ -46,8 +46,8 @@ class DeviceTagServiceTest {
 		testHelper.setup();
 
 		// Mock the tag resource requests.
-		when(tagResource.findByNames("tag1", anyBoolean())).thenReturn(List.of(testHelper.makeTag("tag1")));
-		when(tagResource.findByNames("tag", eq(true)))
+		when(tagResource.findByNames(eq("tag1"), anyBoolean())).thenReturn(List.of(testHelper.makeTag("tag1")));
+		when(tagResource.findByNames(eq("tag"), eq(true)))
 			.thenReturn(List.of(testHelper.makeTag("tag1"), testHelper.makeTag("tag2")));
 	}
 

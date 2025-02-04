@@ -4,6 +4,8 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.mockito.Mockito.when;
 
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.Security;
 import esthesis.core.common.entity.BaseEntity;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.common.paging.Pageable;
@@ -22,6 +24,17 @@ public class TestHelper {
 
 	@Inject
 	AuditRepository auditRepository;
+
+	public AuditEntity makeAuditEntity(String message,
+																		 Security.Category category,
+																		 Security.Operation operation) {
+		return Instancio.of(AuditEntity.class)
+			.ignore(all(field(BaseEntity.class, "id")))
+			.set(field(AuditEntity.class, "message"), message)
+			.set(field(AuditEntity.class, "category"), category)
+			.set(field(AuditEntity.class, "operation"), operation)
+			.create();
+	}
 
 	public AuditEntity makeAuditEntity() {
 		return Instancio.of(AuditEntity.class)

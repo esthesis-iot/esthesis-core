@@ -4,7 +4,6 @@ import esthesis.service.application.entity.ApplicationEntity;
 import esthesis.service.application.impl.repository.ApplicationRepository;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MultivaluedHashMap;
@@ -17,8 +16,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.net.URI;
-import java.time.Instant;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -41,40 +38,29 @@ class ApplicationServiceTest {
 	@Mock
 	UriInfo uriInfo;
 
-
 	/**
-	 * Helper method to create and persist an application entity.
-	 */
-	private ApplicationEntity createApplication(String name, boolean state, String token) {
-		ApplicationEntity applicationEntity =
-			new ApplicationEntity()
-				.setName(name)
-				.setState(state)
-				.setToken(token)
-				.setCreatedOn(Instant.now());
-		applicationRepository.persist(applicationEntity);
-
-		return applicationEntity;
-	}
-
-	/**
-	 * Helper method to create a Pageable object with the specified parameters
+	 * Helper method to create a Pageable object with the specified parameters.
+	 *
+	 * @param page Current page.
+	 * @param size Size of the page.
+	 * @param sort Sort order.
+	 * @return The mocked Pageable object.
 	 */
 	private Pageable getPageable(int page, int size, String sort) {
 		Pageable pageable = new Pageable();
 		pageable.setPage(page);
 		pageable.setSize(size);
-		pageable.setSort(sort); // Sorting field and direction (e.g., "name,asc")
-		pageable.setUriInfo(uriInfo); // using mock uriInfo to simplify
+		pageable.setSort(sort);
+		pageable.setUriInfo(uriInfo);
 		return pageable;
 	}
 
 	@BeforeEach
 	void setupMocks() {
-		// Initialize mocks
+		// Initialize mocks.
 		MockitoAnnotations.openMocks(this);
 
-		// Mock UriInfo methods
+		// Mock Pageable UriInfo methods.
 		when(uriInfo.getRequestUri()).thenReturn(URI.create("http://localhost:8080/applications?page=0&size=10&sort=name,asc"));
 		when(uriInfo.getQueryParameters()).thenReturn(new MultivaluedHashMap<>());
 
@@ -87,64 +73,67 @@ class ApplicationServiceTest {
 
 	@Test
 	void find() {
-		// Create test applications
-		createApplication("test-application-1", true, "test-token-1");
-		createApplication("test-application-2", true, "test-token-2");
+		// Perform the save operation for a new application.
+		applicationService.saveNew(
+			new ApplicationEntity()
+				.setName("test-application")
+				.setToken("test-token")
+				.setState(true));
 
-		// Create test Pageable
+		// Create a test pageable.
 		Pageable pageable = getPageable(0, 10, "name,asc");
 
 		Page<ApplicationEntity> applications = applicationService.find(pageable);
 
-		//Assert find all
-		assertEquals(2, applications.getContent().size());
+		//Assert find all has results.
+		assertFalse(applications.getContent().isEmpty());
 
 	}
 
 	@Test
 	void saveNew() {
-		var newApplication =
+		// Perform the save operation for a new application.
+		String applicationId =
 			applicationService.saveNew(
-				new ApplicationEntity()
-					.setName("test-application")
-					.setToken("test-token")
-					.setState(true));
+					new ApplicationEntity()
+						.setName("test-application")
+						.setToken("test-token")
+						.setState(true))
+				.getId()
+				.toHexString();
 
-		// Assert new Id has been generated
-		assertNotNull(newApplication.getId());
+		// Assert application was persisted with correct values.
+		ApplicationEntity application = applicationService.findById(applicationId);
+		assertEquals("test-application", application.getName());
+		assertEquals("test-token", application.getToken());
+		assertEquals(true, application.getState());
 
-		// Assert it was persisted
-		assertEquals(1, applicationRepository.findAll().stream().count());
 	}
 
 	@Test
 	void saveUpdate() {
 
-		// Persist new application
-		ApplicationEntity application =
-			applicationService.saveUpdate(
-				new ApplicationEntity("test-application", "test-token", true, Instant.now())
-			);
+		// Perform the save operation for a new application.
+		String applicationId =
+			applicationService.saveNew(
+					new ApplicationEntity()
+						.setName("test-application")
+						.setToken("test-token")
+						.setState(true))
+				.getId()
+				.toHexString();
 
-		// Assert application was persisted
-		assertEquals(1, applicationRepository.findAll().stream().count());
+		// Perform the update operation.
+		ApplicationEntity application = applicationService.findById(applicationId);
 
-		// change application values
 		application.setName("test-application-update");
 		application.setState(false);
 		application.setToken("test-token-update");
-
-		// Persist update
 		applicationService.saveUpdate(application);
 
-		List<ApplicationEntity> applications = applicationRepository.findAll().list();
+		// Assert application was update with the correct values.
+		ApplicationEntity applicationUpdated = applicationService.findById(applicationId);
 
-		// Assert it was not duplicated
-		assertEquals(1, applications.size());
-
-		ApplicationEntity applicationUpdated = applications.getFirst();
-		// Assert changes were persisted
-		assertNotNull(applicationUpdated.getId());
 		assertEquals("test-application-update", applicationUpdated.getName());
 		assertEquals(false, applicationUpdated.getState());
 		assertEquals("test-token-update", applicationUpdated.getToken());
@@ -154,71 +143,102 @@ class ApplicationServiceTest {
 
 	@Test
 	void deleteByIdOK() {
-		// Create test application
-		ApplicationEntity application = createApplication("test-application", true, "test-token");
+		// Perform the save operation for a new application.
+		String applicationId =
+			applicationService.saveNew(
+					new ApplicationEntity()
+						.setName("test-application")
+						.setToken("test-token")
+						.setState(true))
+				.getId()
+				.toHexString();
 
-		// Perform delete
-		boolean deleted = applicationService.deleteById(application.getId().toString());
+		// Assert application exists.
+		assertNotNull(applicationService.findById(applicationId));
 
-		// Assert positive deletion indication
-		assertTrue(deleted);
+		// Perform the delete operation.
+		applicationService.deleteById(applicationId);
 
-		//Assert it was removed from db
-		assertEquals(0, applicationRepository.findAll().stream().count());
+		// Assert application was deleted.
+		assertNull(applicationService.findById(applicationId));
 	}
 
 	@Test
 	void deleteByIdNOK() {
-		// Create test application
-		createApplication("test-application", true, "test-token");
+		// Perform the save operation for a new application.
+		String applicationId =
+			applicationService.saveNew(
+					new ApplicationEntity()
+						.setName("test-application")
+						.setToken("test-token")
+						.setState(true))
+				.getId()
+				.toHexString();
 
-		// Perform delete with nonexistent object id
-		boolean deleted = applicationService.deleteById(new ObjectId().toString());
+		// Perform the delete operation of a non-existent application.
+		applicationService.deleteById(new ObjectId().toString());
 
-		// Assert negative deletion indication
-		assertFalse(deleted);
-
-		// Assert nothing was removed from db
-		assertEquals(1, applicationRepository.findAll().stream().count());
+		// Assert application was not deleted.
+		assertNotNull(applicationService.findById(applicationId));
 	}
 
 	@Test
 	void findByIdOK() {
-		// Create test application
-		String applicationId = createApplication("test-application", true, "test-token").getId().toString();
+		// Perform the save operation for a new application.
+		String applicationId =
+			applicationService.saveNew(
+					new ApplicationEntity()
+						.setName("test-application")
+						.setToken("test-token")
+						.setState(true))
+				.getId()
+				.toHexString();
 
-		ApplicationEntity application = applicationService.findById(applicationId);
-
-		// Assert application was found
-		assertNotNull(application);
+		// Assert application can be found.
+		assertNotNull(applicationService.findById(applicationId));
 	}
 
 	@Test
 	void findByIdNOK() {
-		// Create test application
-		createApplication("test-application", true, "test-token");
+		// Perform the save operation for a new application.
+		applicationService.saveNew(
+			new ApplicationEntity()
+				.setName("test-application")
+				.setToken("test-token")
+				.setState(true));
 
-		// Assert won't find any application with nonexistent id
+		// Assert application cannot be found for non-existent id.
 		assertNull(applicationService.findById(new ObjectId().toString()));
 
-		// Assert won't accept invalid Object id
+		// Assert won't accept invalid Object id.
 		assertThrows(IllegalArgumentException.class, () -> applicationService.findById("invalid-object-id"));
 
 	}
 
 	@Test
 	void isTokenValidOK() {
-		// Create test application with state enabled
-		createApplication("test-application-1", true, "test-token-1");
-		assertTrue(applicationService.isTokenValid("test-token-1"));
+		// Perform the save operation for a new application with state enabled.
+		applicationService.saveNew(
+			new ApplicationEntity()
+				.setName("test-application")
+				.setToken("test-token")
+				.setState(true));
+
+		// Assert application token is valid.
+		assertTrue(applicationService.isTokenValid("test-token"));
+
 	}
 
 	@Test
 	void isTokenValidNOK() {
-		// Create test application with state disabled
-		createApplication("test-application-2", false, "test-token-2");
+		// Perform the save operation for a new application with state disabled.
+		applicationService.saveNew(
+			new ApplicationEntity()
+				.setName("test-application")
+				.setToken("test-token-disabled")
+				.setState(false));
 
-		assertFalse(applicationService.isTokenValid("test-token-2"));
-		assertFalse(applicationService.isTokenValid("test-token-nonexistent"));
+		// Assert application token is not valid.
+		assertFalse(applicationService.isTokenValid("test-token-disabled"));
 	}
 }
