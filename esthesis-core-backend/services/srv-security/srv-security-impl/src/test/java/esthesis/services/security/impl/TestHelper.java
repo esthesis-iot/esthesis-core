@@ -16,6 +16,7 @@ import jakarta.ws.rs.core.UriInfo;
 import org.mockito.Mockito;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -70,6 +71,10 @@ public class TestHelper {
 		return groupEntity;
 	}
 
+	public GroupEntity makeGroupEntity(String name, List<String> policies) {
+		return makeGroupEntity(name).setPolicies(policies);
+	}
+
 
 	public PolicyEntity makePolicyEntity(String testPolicy) {
 		PolicyEntity policyEntity = new PolicyEntity();
@@ -79,12 +84,20 @@ public class TestHelper {
 		return policyEntity;
 	}
 
+	public PolicyEntity makePolicyEntity(String name, String rule) {
+		return makePolicyEntity(name).setRule(rule);
+	}
+
 	public RoleEntity makeRoleEntity(String testRole) {
 		RoleEntity roleEntity = new RoleEntity();
 		roleEntity.setName(testRole);
 		roleEntity.setDescription("test description");
 		roleEntity.setPolicies(List.of("test policy"));
 		return roleEntity;
+	}
+
+	public RoleEntity makeRoleEntity(String role, List<String> policies) {
+		return makeRoleEntity(role).setPolicies(policies);
 	}
 
 	public UserEntity makeUserEntity(String testUser) {
@@ -98,5 +111,13 @@ public class TestHelper {
 		userEntity.setLastName("LastName");
 		userEntity.setEmail("test@email.eu");
 		return userEntity;
+	}
+
+	public UserEntity makeUserEntity(String username, List<String> policies, List<String> groups) {
+		return makeUserEntity(username).setPolicies(policies).setGroups(groups);
+	}
+
+	public Principal makePrincipal(String username) {
+		return () -> username;
 	}
 }
