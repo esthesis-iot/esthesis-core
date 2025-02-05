@@ -1,6 +1,5 @@
 package esthesis.services.dashboard.impl;
 
-import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.Dashboard;
 import esthesis.service.dashboard.dto.DashboardItemDTO;
 import esthesis.service.dashboard.entity.DashboardEntity;
@@ -42,10 +41,6 @@ public class TestHelper {
 
 		dashboard.setItems(items);
 		return dashboard;
-	}
-
-	public DashboardEntity makeDashboard(String name, ObjectId ownerId) {
-		return makeDashboard(name).setOwnerId(ownerId);
 	}
 
 	public DashboardItemDTO makeDashboardItem(String title, Integer index, Dashboard.Type type) {
