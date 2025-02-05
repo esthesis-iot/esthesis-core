@@ -1,7 +1,6 @@
 package esthesis.services.tag.impl;
 
 import esthesis.service.common.paging.Pageable;
-import esthesis.service.tag.entity.TagEntity;
 import esthesis.services.tag.impl.repository.TagRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
