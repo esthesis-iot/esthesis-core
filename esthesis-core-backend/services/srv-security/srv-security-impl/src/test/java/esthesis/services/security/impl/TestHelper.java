@@ -96,10 +96,6 @@ public class TestHelper {
 		return roleEntity;
 	}
 
-	public RoleEntity makeRoleEntity(String role, List<String> policies) {
-		return makeRoleEntity(role).setPolicies(policies);
-	}
-
 	public UserEntity makeUserEntity(String testUser) {
 		UserEntity userEntity = new UserEntity();
 		userEntity.setUsername(testUser);

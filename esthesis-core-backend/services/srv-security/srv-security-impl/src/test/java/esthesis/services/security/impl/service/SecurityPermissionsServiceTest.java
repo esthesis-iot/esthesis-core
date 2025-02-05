@@ -16,7 +16,8 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 class SecurityPermissionsServiceTest {
@@ -26,9 +27,6 @@ class SecurityPermissionsServiceTest {
 
 	@Inject
 	SecurityGroupService securityGroupService;
-
-	@Inject
-	SecurityRoleService securityRoleService;
 
 	@Inject
 	SecurityPolicyService securityPolicyService;
@@ -196,14 +194,11 @@ class SecurityPermissionsServiceTest {
 				.toHexString();
 
 		// Perform save operation for a new user belonging to the group created without any policies.
-		String userId =
-			securityUserService.saveNew(
-					testHelper.makeUserEntity(
-						"principal-user",
-						List.of(),
-						List.of(groupId)))
-				.getId()
-				.toHexString();
+		securityUserService.saveNew(
+			testHelper.makeUserEntity(
+				"principal-user",
+				List.of(),
+				List.of(groupId)));
 
 		// Assert user has no permissions.
 		assertTrue(securityPermissionsService.getPermissionsForUser().isEmpty());
@@ -230,14 +225,11 @@ class SecurityPermissionsServiceTest {
 				.toHexString();
 
 		// Perform save operation for a new user belonging to the group created without any policies.
-		String userId =
-			securityUserService.saveNew(
-					testHelper.makeUserEntity(
-						"test-user",
-						List.of(),
-						List.of(groupId)))
-				.getId()
-				.toHexString();
+		securityUserService.saveNew(
+			testHelper.makeUserEntity(
+				"test-user",
+				List.of(),
+				List.of(groupId)));
 
 		// Assert user has no permissions.
 		assertTrue(securityPermissionsService.getPermissionsForUser("test-user").isEmpty());
