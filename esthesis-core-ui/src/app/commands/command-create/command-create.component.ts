@@ -1,15 +1,14 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
-import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {CommandsService} from "../commands.service";
-import {DeviceDto} from "../../devices/dto/device-dto";
 import {AppConstants} from "../../app.constants";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {CommandExecuteRequestDto} from "../dto/command-execute-request-dto";
-import {SMART_SELECT_BIND_VALUE} from "../../shared/components/smart-select/smart-select.component";
 import {TagsService} from "../../tags/tags.service";
+import {DevicesService} from "../../devices/devices.service";
+import {ProvisioningService} from "../../provisioning/provisioning.service";
 
 @Component({
   selector: "app-command-create",
@@ -19,19 +18,19 @@ export class CommandCreateComponent extends SecurityBaseComponent implements OnI
   searchDevicesForm!: FormGroup;
   commandForm!: FormGroup;
   isSearching = false;
-  searchDevices?: DeviceDto[];
-  selectedHardwareIds: string[] = [];
 
   constructor(private readonly formBuilder: FormBuilder,
     private readonly commandService: CommandsService, public readonly tagsService: TagsService,
-    private readonly utilityService: UtilityService, private readonly router: Router) {
+    private readonly utilityService: UtilityService, private readonly router: Router,
+    protected readonly devicesService: DevicesService,
+    protected readonly provisioningService: ProvisioningService) {
     super(AppConstants.SECURITY.CATEGORY.COMMAND);
   }
 
   ngOnInit() {
     // Step 1 form.
     this.searchDevicesForm = this.formBuilder.group({
-      hardwareId: [],
+      hardwareIds: [],
       tags: [],
     });
 
@@ -43,28 +42,6 @@ export class CommandCreateComponent extends SecurityBaseComponent implements OnI
       arguments: [null],
       description: [null]
     });
-
-    // Watch changes on the hardware id to find matching devices.
-    this.searchDevicesForm.valueChanges.pipe(debounceTime(500), distinctUntilChanged()
-    ).subscribe({
-      next: (next) => {
-        if (next?.hardwareId) {
-          this.commandService.findDevicesByHardwareId(next.hardwareId).subscribe({
-            next: (hardwareIds) => {
-              if (hardwareIds && hardwareIds.length > 0) {
-                this.searchDevices = hardwareIds;
-              } else {
-                this.searchDevices = [];
-              }
-            }, error: (error) => {
-              this.utilityService.popupErrorWithTraceId("Could not search for devices.", error);
-            }
-          });
-        } else {
-          this.searchDevices = [];
-        }
-      }
-    });
   }
 
   /**
@@ -73,7 +50,7 @@ export class CommandCreateComponent extends SecurityBaseComponent implements OnI
   save() {
     let commandExecuteRequestDto: CommandExecuteRequestDto;
     commandExecuteRequestDto = {
-      hardwareIds: this.selectedHardwareIds.join(","),
+      hardwareIds: this.searchDevicesForm.value.hardwareIds ? this.searchDevicesForm.value.hardwareIds.join(",") : "",
       tags: this.searchDevicesForm.value.tags ? this.searchDevicesForm.value.tags.join(",") : "",
       commandType: this.commandForm.value.commandType,
       executionType: this.commandForm.value.executionType,
@@ -81,6 +58,7 @@ export class CommandCreateComponent extends SecurityBaseComponent implements OnI
       arguments: this.commandForm.value.arguments,
       description: this.commandForm.value.description
     };
+
     this.commandService.execute(commandExecuteRequestDto).subscribe({
       next: () => {
         this.utilityService.popupSuccess("Command dispatched successfully.");
@@ -96,7 +74,7 @@ export class CommandCreateComponent extends SecurityBaseComponent implements OnI
    */
   canDispatch(): boolean {
     // Check at least one device or a tag is selected.
-    let dispatchOK = (this.selectedHardwareIds.length > 0 || this.searchDevicesForm.value.tags)
+    let dispatchOK = (this.searchDevicesForm.getRawValue()["hardwareIds"] &&  this.searchDevicesForm.getRawValue()["hardwareIds"].length > 0 || this.searchDevicesForm.value.tags)
       && this.commandForm.valid;
 
     // Check that for Execute & Firmware type of commands, there is a command and execution mode
@@ -110,19 +88,4 @@ export class CommandCreateComponent extends SecurityBaseComponent implements OnI
     return dispatchOK;
   }
 
-  removeChip(id: string) {
-    this.selectedHardwareIds = this.selectedHardwareIds.filter(hardwareId => hardwareId !== id);
-  }
-
-  selectHardwareId(hardwareId: string) {
-    if (!this.selectedHardwareIds.find(p => p === hardwareId)) {
-      this.selectedHardwareIds.push(hardwareId);
-      this.searchDevicesForm.patchValue({
-        hardwareId: ""
-      });
-      this.searchDevices = [];
-    }
-  }
-
-  protected readonly SMART_SELECT_BIND_VALUE = SMART_SELECT_BIND_VALUE;
 }

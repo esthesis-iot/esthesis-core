@@ -4,15 +4,6 @@ import {BehaviorSubject, map, Observable, of, tap} from "rxjs";
 import {debounceTime, distinctUntilChanged, switchMap} from "rxjs/operators";
 import {QPageableReply} from "@qlack/forms";
 
-//TODO delete
-// What attribute of DTO should be bound to the parent form's field.
-export enum SMART_SELECT_BIND_VALUE {
-  NAME = "name",
-  ID = "id",
-  HARDWARE_ID = "hardwareId",
-  CN = "cn"
-}
-
 // Parent class for all smart select components. Smart select components provide select input
 // elements supporting server-side filtering and virtual scrolling, so that very large datasets
 // can be loaded and displayed efficiently.

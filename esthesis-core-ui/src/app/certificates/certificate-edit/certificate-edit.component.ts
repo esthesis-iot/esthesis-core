@@ -11,7 +11,6 @@ import {CertificateDto} from "../dto/certificate-dto";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
-import {SMART_SELECT_BIND_VALUE} from "../../shared/components/smart-select/smart-select.component";
 
 @Component({
   selector: "app-certificate-edit",
@@ -110,5 +109,4 @@ export class CertificateEditComponent extends SecurityBaseComponent implements O
     this.certificatesService.download(this.id!, AppConstants.KEY_TYPE.PRIVATE_KEY);
   }
 
-  protected readonly SMART_SELECT_BIND_VALUE = SMART_SELECT_BIND_VALUE;
 }

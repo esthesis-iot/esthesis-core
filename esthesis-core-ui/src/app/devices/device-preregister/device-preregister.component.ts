@@ -10,7 +10,6 @@ import {UtilityService} from "../../shared/services/utility.service";
 import {QFormValidationEEService} from "../../shared/services/form-validation.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
-import {SMART_SELECT_BIND_VALUE} from "../../shared/components/smart-select/smart-select.component";
 import {TagsService} from "../../tags/tags.service";
 
 @Component({
@@ -19,7 +18,6 @@ import {TagsService} from "../../tags/tags.service";
   styleUrls: []
 })
 export class DevicePreregisterComponent extends SecurityBaseComponent implements OnInit {
-  protected readonly SMART_SELECT_BIND_VALUE = SMART_SELECT_BIND_VALUE;
   form!: FormGroup;
 
   constructor(private readonly fb: FormBuilder,

@@ -13,29 +13,16 @@
             <mat-spinner [diameter]="15" [strokeWidth]="1"></mat-spinner>
           </div>
         </div>
-        <div>
-          <mat-form-field class="w-full">
-            <mat-label>Devices</mat-label>
-            <input [matAutocomplete]="auto" formControlName="hardwareId" matInput
-                   placeholder="Search by hardware Id">
-            <mat-autocomplete #auto="matAutocomplete">
-              <mat-option (click)="selectHardwareId(device.hardwareId)"
-                          (keydown)="selectHardwareId(device.hardwareId)"
-                          *ngFor="let device of searchDevices"
-                          [value]="device.hardwareId">
-                <span>{{device.hardwareId}}</span>
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
-        </div>
-
-        <div *ngIf="selectedHardwareIds.length > 0" class="flex flex-row gap-2 flex-wrap mb-5">
-          <span *ngFor="let id of selectedHardwareIds" class="badge badge-md badge-primary">
-            {{ id }}
-            <fa-icon (click)="removeChip(id)" (keydown)="removeChip(id)"
-                     class="cursor-pointer" icon="xmark"></fa-icon>
-          </span>
-        </div>
+        <app-smart-select class="flex flex-grow" label="Devices"
+                          [parentForm]="searchDevicesForm"
+                          parentFormField="hardwareIds"
+                          dtoValue="hardwareId"
+                          dtoLabel="hardwareId"
+                          searchMethod="find"
+                          searchTerm="hardwareId"
+                          getMethod="findByHardwareIds"
+                          [service]="devicesService">
+        </app-smart-select>
         <app-smart-select class="flex flex-grow" label="Tags"
                           [parentForm]="searchDevicesForm"
                           parentFormField="tags"
@@ -89,23 +76,25 @@
         <!-- Firmware -->
         <div *ngIf="commandForm.value['commandType'] == appConstants.DEVICE.COMMAND.TYPE.FIRMWARE"
              class="flex flex-col ml-5">
-<!--          <mat-form-field>-->
-<!--            <mat-label>Provisioning package</mat-label>-->
-<!--            <mat-select formControlName="command">-->
-<!--              <mat-option *ngFor="let pp of provisioningPackages"-->
-<!--                          [value]="pp.id">{{pp.name}} - {{pp.version}}</mat-option>-->
-<!--            </mat-select>-->
-<!--          </mat-form-field>-->
-          <app-provisioning-select class="flex flex-grow"
-             [parentForm]="commandForm" parentFormProvisioningField="command"
-             label="Provisioning package">
-          </app-provisioning-select>
+          <app-smart-select class="flex flex-grow"
+                            [parentForm]="commandForm"
+                            parentFormField="command"
+                            label="Provisioning package"
+                            dtoValue="id"
+                            dtoLabel="name"
+                            searchMethod="find"
+                            searchTerm="name"
+                            getMethod="findByIds"
+                            [service]="provisioningService"
+                            [multiple]="false">
+          </app-smart-select>
         </div>
       </form>
     </div>
     <div class="card-actions justify-start mt-10">
       <button class="btn btn-sm btn-secondary" routerLink="/command">CANCEL</button>
-      <button (click)="save()" *ngIf="allowCreate" [disabled]="!canDispatch()" class="btn btn-sm btn-primary">DISPATCH
+      <button (click)="save()" *ngIf="allowCreate" [disabled]="!canDispatch()"
+              class="btn btn-sm btn-primary">DISPATCH
       </button>
     </div>
   </div>

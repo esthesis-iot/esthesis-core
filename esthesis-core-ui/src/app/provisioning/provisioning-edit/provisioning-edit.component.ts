@@ -12,7 +12,6 @@ import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
 import {QFormValidationEEService} from "../../shared/services/form-validation.service";
-import {SMART_SELECT_BIND_VALUE} from "../../shared/components/smart-select/smart-select.component";
 import {TagsService} from "../../tags/tags.service";
 
 @Component({
@@ -153,5 +152,4 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
     this.provisioningService.download(this.id);
   }
 
-  protected readonly SMART_SELECT_BIND_VALUE = SMART_SELECT_BIND_VALUE;
 }

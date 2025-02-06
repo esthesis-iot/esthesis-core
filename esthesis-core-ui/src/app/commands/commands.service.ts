@@ -1,11 +1,10 @@
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {CrudService} from "../shared/services/crud.service";
 import {CommandRequestDto} from "./dto/command-request-dto";
 import {CommandReplyDto} from "./dto/command-reply-dto";
 import {CommandExecuteRequestDto} from "./dto/command-execute-request-dto";
-import {DeviceDto} from "../devices/dto/device-dto";
 import {AppConstants} from "../app.constants";
 
 @Injectable({
@@ -21,11 +20,6 @@ export class CommandsService extends CrudService<CommandRequestDto> {
   getReply(requestId: string): Observable<CommandReplyDto[]> {
     return this.http.get<CommandReplyDto[]>(
       `${this.prefix}/reply/${requestId}`);
-  }
-
-  findDevicesByHardwareId(hardwareId: string): Observable<DeviceDto[]> {
-    return this.http.get<DeviceDto[]>(`${this.prefix}/find-devices/by-hardware-id`,
-      {params: new HttpParams().set("hardwareId", hardwareId)});
   }
 
   /**
