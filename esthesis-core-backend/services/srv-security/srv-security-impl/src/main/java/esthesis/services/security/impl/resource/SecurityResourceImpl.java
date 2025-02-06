@@ -51,7 +51,7 @@ public class SecurityResourceImpl implements SecurityResource {
 	@Audited(cat = Category.USERS, op = Operation.READ, msg = "Search users", log =
 		AuditLogType.DATA_IN)
 	public Page<UserEntity> findUsers(@BeanParam Pageable pageable) {
-		return securityUserService.find(pageable, true);
+		return securityUserService.find(pageable);
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class SecurityResourceImpl implements SecurityResource {
 	@Audited(cat = Category.POLICIES, op = Operation.READ, msg = "Search policies", log =
 		AuditLogType.DATA_IN)
 	public Page<PolicyEntity> findPolicies(@BeanParam Pageable pageable) {
-		return securityPolicyService.find(pageable, true);
+		return securityPolicyService.find(pageable);
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public class SecurityResourceImpl implements SecurityResource {
 	@Audited(cat = Category.ROLES, op = Operation.READ, msg = "Search roles", log =
 		AuditLogType.DATA_IN)
 	public Page<RoleEntity> findRoles(Pageable pageable) {
-		return securityRoleService.find(pageable, true);
+		return securityRoleService.find(pageable);
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public class SecurityResourceImpl implements SecurityResource {
 	@Audited(cat = Category.GROUPS, op = Operation.READ, msg = "Search groups", log =
 		AuditLogType.DATA_IN)
 	public Page<GroupEntity> findGroups(Pageable pageable) {
-		return securityGroupService.find(pageable, true);
+		return securityGroupService.find(pageable);
 	}
 
 	@Override

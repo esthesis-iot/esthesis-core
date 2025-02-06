@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatSort} from "@angular/material/sort";
 import {DeviceDto} from "../dto/device-dto";
 import {DevicesService} from "../devices.service";
-import {QFormsService} from "@qlack/forms";
+import {QFilterAlias, QFormsService} from "@qlack/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
@@ -30,10 +30,9 @@ export class DevicesComponent extends SecurityBaseComponent implements OnInit, A
   filterForm: FormGroup;
   @ViewChild("countdown", {static: false}) private readonly countdown!: CountdownComponent;
 
-  constructor(private readonly fb: FormBuilder,
-    private readonly deviceService: DevicesService, private readonly qForms: QFormsService,
-    @Optional() private readonly dialogRef: MatDialogRef<DevicesComponent>,
-    private readonly utilityService: UtilityService) {
+  constructor(private readonly fb: FormBuilder, private readonly deviceService: DevicesService,
+    private readonly qForms: QFormsService, private readonly utilityService: UtilityService,
+    @Optional() private readonly dialogRef: MatDialogRef<DevicesComponent>) {
     super(AppConstants.SECURITY.CATEGORY.DEVICE);
     this.filterForm = this.fb.group({
       hardwareId: [],
@@ -68,8 +67,8 @@ export class DevicesComponent extends SecurityBaseComponent implements OnInit, A
 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
-    this.deviceService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(), [],
-      false, page, size, sort, sortDirection))
+    this.deviceService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
+      [new QFilterAlias('hardwareId', 'hardwareId*')], false, page, size, sort, sortDirection))
     .subscribe({
       next: (onNext) => {
         this.datasource.data = onNext.content;

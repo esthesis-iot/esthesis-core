@@ -8,4 +8,55 @@
   <changeSet author="European Dynamics SA" id="srv-provisioning-1">
     <ext:dropCollection collectionName="ProvisioningPackageBinary"/>
   </changeSet>
+
+	<changeSet author="European Dynamics SA" id="srv-provisioning-2">
+		<ext:createIndex collectionName="ProvisioningPackage">
+			<ext:keys>
+				{ "name": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_name" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="ProvisioningPackage">
+			<ext:keys>
+				{ "version": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_version" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="ProvisioningPackage">
+			<ext:keys>
+				{ "state": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_state" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="ProvisioningPackage">
+			<ext:keys>
+				{ "size": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_size" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="ProvisioningPackage">
+			<ext:keys>
+				{ "createdOn": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_created_on" }
+			</ext:options>
+		</ext:createIndex>
+		<ext:createIndex collectionName="ProvisioningPackage">
+			<ext:keys>
+				{ "type": 1, type: 1}
+			</ext:keys>
+			<ext:options>
+				{ unique: false, name: "idx_type" }
+			</ext:options>
+		</ext:createIndex>
+	</changeSet>
 </databaseChangeLog>

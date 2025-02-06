@@ -55,16 +55,12 @@
             </app-field-error>
           </mat-form-field>
 
-          <mat-form-field>
-            <mat-label>Depends on version</mat-label>
-            <mat-select formControlName="prerequisiteVersion">
-              <mat-option *ngFor="let version of baseVersions" [value]="version.id">{{version.name}}
-                - {{version.version}}</mat-option>
-            </mat-select>
-            <mat-hint>A previous version required to be installed before this package can be
-              installed
-            </mat-hint>
-          </mat-form-field>
+          <app-provisioning-select class="flex flex-grow"
+                          [parentForm]="form" parentFormProvisioningField="prerequisiteVersion"
+                          label="Parent provisioning package"
+                          [parentFormInitWithProvisioning]="form.getRawValue()['prerequisiteVersion']"
+                          hint="A previous version required to be installed before this package can be installed.">
+          </app-provisioning-select>
 
           <mat-form-field class="mt2">
             <mat-label>Availability</mat-label>
@@ -82,13 +78,9 @@
                       matInput></textarea>
           </mat-form-field>
 
-          <mat-form-field>
-            <mat-label>Tags</mat-label>
-            <mat-select formControlName="tags" multiple>
-              <mat-option *ngFor="let tag of availableTags"
-                          [value]="tag.id">{{tag.name}}</mat-option>
-            </mat-select>
-          </mat-form-field>
+          <app-tag-select class="flex flex-grow"
+                          [parentForm]="form" parentFormTagsField="tags">
+          </app-tag-select>
 
           <mat-form-field>
             <mat-label>Attributes</mat-label>

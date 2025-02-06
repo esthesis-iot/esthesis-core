@@ -2,13 +2,9 @@ import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import {ProvisioningService} from "../../provisioning/provisioning.service";
 import {CommandsService} from "../commands.service";
-import {TagDto} from "../../tags/dto/tag-dto";
-import {TagsService} from "../../tags/tags.service";
 import {DeviceDto} from "../../devices/dto/device-dto";
 import {AppConstants} from "../../app.constants";
-import {ProvisioningDto} from "../../provisioning/dto/provisioning-dto";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {CommandExecuteRequestDto} from "../dto/command-execute-request-dto";
@@ -20,26 +16,21 @@ import {CommandExecuteRequestDto} from "../dto/command-execute-request-dto";
 export class CommandCreateComponent extends SecurityBaseComponent implements OnInit {
   searchDevicesForm!: FormGroup;
   commandForm!: FormGroup;
-  // The list of currently active provisioning packages.
-  provisioningPackages?: ProvisioningDto[];
   isSearching = false;
-  availableTags: TagDto[] | undefined;
   searchDevices?: DeviceDto[];
   selectedHardwareIds: string[] = [];
 
   constructor(private readonly formBuilder: FormBuilder,
     private readonly commandService: CommandsService,
-    private readonly utilityService: UtilityService, private readonly router: Router,
-    private readonly tagService: TagsService,
-    private readonly provisioningService: ProvisioningService,) {
+    private readonly utilityService: UtilityService, private readonly router: Router) {
     super(AppConstants.SECURITY.CATEGORY.COMMAND);
   }
 
   ngOnInit() {
     // Step 1 form.
     this.searchDevicesForm = this.formBuilder.group({
-      hardwareId: [""],
-      tags: [""],
+      hardwareId: [],
+      tags: [],
     });
 
     // Step 2 form.
@@ -70,20 +61,6 @@ export class CommandCreateComponent extends SecurityBaseComponent implements OnI
         } else {
           this.searchDevices = [];
         }
-      }
-    });
-
-    // Get available tags.
-    this.tagService.find("sort=name,asc").subscribe(onNext => {
-      this.availableTags = onNext.content;
-    });
-
-    // Get provisioning packages.
-    this.provisioningService.find("available=true&sort=version,desc").subscribe({
-      next: (provisioningPackages) => {
-        this.provisioningPackages = provisioningPackages.content;
-      }, error: (error) => {
-        this.utilityService.popupErrorWithTraceId("Could not search for provisioning packages.", error);
       }
     });
   }

@@ -43,7 +43,7 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public DeviceEntity findByHardwareId(String hardwareId) {
-		return deviceService.findByHardwareId(hardwareId, false).orElseThrow();
+		return deviceService.findByHardwareId(hardwareId).orElseThrow();
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public String findPublicKey(String hardwareId) {
-		return deviceService.findByHardwareId(hardwareId, false).orElseThrow()
+		return deviceService.findByHardwareId(hardwareId).orElseThrow()
 			.getDeviceKey().getPublicKey();
 	}
 
@@ -74,7 +74,7 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public List<DeviceAttributeEntity> getDeviceAttributesByEsthesisHardwareId(
 		String esthesisHardwareId) {
-		Optional<DeviceEntity> byHardwareId = deviceService.findByHardwareId(esthesisHardwareId, false);
+		Optional<DeviceEntity> byHardwareId = deviceService.findByHardwareId(esthesisHardwareId);
 		if (byHardwareId.isPresent()) {
 			return deviceService.getProfile(byHardwareId.get().getId().toHexString()).getAttributes();
 		} else {
@@ -93,7 +93,7 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	public Optional<DeviceAttributeEntity> getDeviceAttributeByEsthesisHardwareIdAndAttributeName(
 		String esthesisHardwareId, String attributeName) {
 		return deviceService.getDeviceAttributeByName(
-			deviceService.findByHardwareId(esthesisHardwareId, false).orElseThrow().getId().toHexString(),
+			deviceService.findByHardwareId(esthesisHardwareId).orElseThrow().getId().toHexString(),
 			attributeName);
 	}
 
@@ -119,7 +119,7 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public List<String> findByTagNames(String tags) {
-		return deviceTagService.findByTagName(List.of(tags.split(",")), false).stream()
+		return deviceTagService.findByTagName(List.of(tags.split(","))).stream()
 			.map(DeviceEntity::getHardwareId).toList();
 	}
 

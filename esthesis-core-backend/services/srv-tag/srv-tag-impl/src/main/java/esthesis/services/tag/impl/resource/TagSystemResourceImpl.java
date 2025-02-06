@@ -25,6 +25,6 @@ public class TagSystemResourceImpl implements TagSystemResource {
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public TagEntity findByName(String name) {
-		return tagService.findFirstByColumn("name", name, false);
+		return tagService.findFirstByColumn("name", name);
 	}
 }

@@ -96,8 +96,8 @@ export class AuditListComponent extends SecurityBaseComponent implements OnInit,
 
     // Convert FormGroup to a query string to pass as a filter.
     this.auditService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(), [
-      new QFilterAlias("dateFrom", "createdOn>="),
-      new QFilterAlias("dateTo", "createdOn<=")], false, page, size, sort, sortDirection))
+      new QFilterAlias("dateFrom", "createdOn>="), new QFilterAlias("dateTo", "createdOn<="),
+      new QFilterAlias("createdBy", "createdBy*")], false, page, size, sort, sortDirection))
     .subscribe({
       next: (reply: any) => {
         this.datasource.data = reply.content;

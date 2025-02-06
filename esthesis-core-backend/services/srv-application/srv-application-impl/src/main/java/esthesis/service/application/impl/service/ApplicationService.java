@@ -74,22 +74,7 @@ public class ApplicationService extends BaseService<ApplicationEntity> {
 		log.debug("Finding all applications with '{}'.", pageable);
 		return super.find(pageable);
 	}
-
-	/**
-	 * Find all applications with partial match.
-	 *
-	 * @param pageable     a pageable object to define the page and size of the result.
-	 * @param partialMatch a boolean to define if the search should be a partial match.
-	 * @return a page of application entities.
-	 */
-	@Override
-	@ErnPermission(category = APPLICATION, operation = READ)
-	public Page<ApplicationEntity> find(Pageable pageable, boolean partialMatch) {
-		log.debug("Finding all applications with partial match with '{}'.",
-			pageable);
-		return super.find(pageable, partialMatch);
-	}
-
+	
 	/**
 	 * Save a new application entity.
 	 *

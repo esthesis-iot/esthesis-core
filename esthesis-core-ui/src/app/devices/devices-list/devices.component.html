@@ -28,9 +28,9 @@
         </ng-container>
         <ng-container cdkColumnDef="type">
           <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Type</th>
-          <td *cdkCellDef="let element" cdk-cell>
-            <img [src]="'assets/img/logos/' + element.type.toLowerCase() + '-logo.png'"
-                 alt="{{element.type.toLowerCase()}}" width="20" height="15" class="inline">
+          <td *cdkCellDef="let element" cdk-cell class="whitespace-nowrap">
+            <img [ngSrc]="'assets/img/logos/' + element.type.toLowerCase() + '-logo.png'"
+                 alt="{{element.type.toLowerCase()}}" width="20" height="22" class="inline">
             {{element.type.toLowerCase()}}</td>
         </ng-container>
         <ng-container cdkColumnDef="lastSeen">

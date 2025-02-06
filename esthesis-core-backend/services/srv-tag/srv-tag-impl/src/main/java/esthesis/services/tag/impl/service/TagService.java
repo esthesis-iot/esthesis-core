@@ -50,12 +50,6 @@ public class TagService extends BaseService<TagEntity> {
 		return super.find(pageable);
 	}
 
-	@Override
-	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = TAGS, operation = READ)
-	public Page<TagEntity> find(Pageable pageable, boolean partialMatch) {
-		return super.find(pageable, partialMatch);
-	}
-
 	/**
 	 * Creates a new tag.
 	 *
@@ -92,31 +86,25 @@ public class TagService extends BaseService<TagEntity> {
 	/**
 	 * Finds tags by name.
 	 *
-	 * @param name         the name of the tag to find.
-	 * @param partialMatch whether to perform partial match.
+	 * @param name the name of the tag to find.
 	 * @return the list of tags found.
 	 */
 	@ErnPermission(category = TAGS, operation = READ)
-	public List<TagEntity> findByName(String name, boolean partialMatch) {
-		return findByName(Collections.singletonList(name), partialMatch);
+	public List<TagEntity> findByName(String name) {
+		return findByName(Collections.singletonList(name));
 	}
 
 	/**
 	 * Finds tags by names.
 	 *
-	 * @param names        the names of the tags to find.
-	 * @param partialMatch whether to perform partial match.
+	 * @param names the names of the tags to find.
 	 * @return the list of tags found.
 	 */
 	@ErnPermission(category = TAGS, operation = READ)
-	public List<TagEntity> findByName(List<String> names, boolean partialMatch) {
-
-		if (partialMatch) {
-			return tagRepository.findByNamePartial(names);
-		} else {
-			return tagRepository.findByName(names);
-		}
+	public List<TagEntity> findByName(List<String> names) {
+		return tagRepository.findByName(names);
 	}
+
 
 	@Override
 	@ErnPermission(category = TAGS, operation = READ)
@@ -138,15 +126,8 @@ public class TagService extends BaseService<TagEntity> {
 
 	@Override
 	@ErnPermission(category = TAGS, operation = READ)
-	public List<TagEntity> findByColumnIn(String column, List<String> values,
-		boolean partialMatch) {
-		return super.findByColumnIn(column, values, partialMatch);
-	}
-
-	@Override
-	@ErnPermission(category = TAGS, operation = READ)
-	public TagEntity findFirstByColumn(String column, Object value, boolean partialMatch) {
-		return super.findFirstByColumn(column, value, partialMatch);
+	public TagEntity findFirstByColumn(String column, Object value) {
+		return super.findFirstByColumn(column, value);
 	}
 
 	@Override

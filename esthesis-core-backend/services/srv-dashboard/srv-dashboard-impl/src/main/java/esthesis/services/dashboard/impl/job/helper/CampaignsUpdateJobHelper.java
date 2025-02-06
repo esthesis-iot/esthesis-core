@@ -8,6 +8,7 @@ import esthesis.service.campaign.dto.CampaignStatsDTO;
 import esthesis.service.campaign.resource.CampaignSystemResource;
 import esthesis.service.dashboard.dto.DashboardItemDTO;
 import esthesis.service.dashboard.entity.DashboardEntity;
+import esthesis.services.dashboard.impl.dto.config.DashboardItemCampaignsConfiguration;
 import esthesis.services.dashboard.impl.dto.update.DashboardUpdateCampaigns;
 import esthesis.services.dashboard.impl.dto.update.DashboardUpdateCampaigns.DashboardUpdateCampaignsBuilder;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -34,13 +35,15 @@ public class CampaignsUpdateJobHelper extends UpdateJobHelper<DashboardUpdateCam
 			.type(Type.CAMPAIGNS);
 
 		try {
-			// Security checks.
+			// Get item configuration & security checks.
+			DashboardItemCampaignsConfiguration config = getConfig(
+				DashboardItemCampaignsConfiguration.class, item);
 			if (!checkSecurity(dashboardEntity, Category.CAMPAIGN, Operation.READ, "")) {
 				return replyBuilder.isError(true).isSecurityError(true).build();
 			}
 
 			// Get data.
-			List<CampaignStatsDTO> stats = campaignSystemResource.getStats();
+			List<CampaignStatsDTO> stats = campaignSystemResource.getStats(config.getEntries());
 
 			// Return update.
 			return replyBuilder

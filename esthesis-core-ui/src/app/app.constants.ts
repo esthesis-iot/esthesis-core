@@ -68,8 +68,7 @@ export const AppConstants = {
     STATUS: {
       DISABLED: "DISABLED",
       PREREGISTERED: "PREREGISTERED",
-      REGISTERED: "REGISTERED",
-      APPROVAL: "APPROVAL"
+      REGISTERED: "REGISTERED"
     },
     SETTING: {
       DEVICE_GEO_LAT: "DEVICE_GEO_LAT",
@@ -272,7 +271,9 @@ export const AppConstants = {
         AUDIT: {
           entries: 5
         },
-        CAMPAIGNS: {},
+        CAMPAIGNS: {
+          entries: 10
+        },
         CHART: {
           hardwareIds: [],
           tags: [],
@@ -322,7 +323,6 @@ export const AppConstants = {
       }
     }
   },
-
   MAP_DEFAULT_ICON: icon({
     ...Icon.Default.prototype.options,
     iconUrl: "assets/marker-icon.png",

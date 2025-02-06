@@ -60,14 +60,9 @@
           </div>
 
           <div class="-mt-8">
-            <mat-form-field class="w-full">
-              <div class="font-bold">Tags</div>
-              <mat-select formControlName="tags" multiple>
-                <mat-option *ngFor="let tag of availableTags"
-                            [value]="tag.id">{{ tag.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+            <app-tag-select class="flex flex-grow"
+                            [parentForm]="deviceInfoForm" parentFormTagsField="tags">
+            </app-tag-select>
           </div>
 
           <div *ngIf="mapOptions && geolocation && mapLayers">

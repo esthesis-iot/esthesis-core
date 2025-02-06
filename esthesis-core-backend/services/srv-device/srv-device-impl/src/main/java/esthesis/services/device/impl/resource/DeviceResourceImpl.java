@@ -128,7 +128,7 @@ public class DeviceResourceImpl implements DeviceResource {
 	@Audited(cat = Category.DEVICE, op = Operation.READ, msg = "Search devices", log =
 		AuditLogType.DATA_IN)
 	public Page<DeviceEntity> find(@BeanParam Pageable pageable) {
-		return deviceService.find(pageable, true);
+		return deviceService.find(pageable);
 	}
 
 	@GET
@@ -149,38 +149,25 @@ public class DeviceResourceImpl implements DeviceResource {
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
-	@Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Save device")
-	public DeviceEntity save(@Valid DeviceEntity deviceEntity) {
-		if (deviceEntity.getId() != null) {
-			return deviceService.saveNew(deviceEntity);
-		} else {
-			return deviceService.saveUpdate(deviceEntity);
-		}
-	}
-
-	@Override
-	@RolesAllowed(AppConstants.ROLE_USER)
 	public Long countByHardwareIds(
-		@QueryParam("hardwareIds") String hardwareIds,
-		@QueryParam("partialMatch") boolean partialMatch) {
+		@QueryParam("hardwareIds") String hardwareIds) {
 		if (StringUtils.isBlank(hardwareIds)) {
 			return 0L;
 		} else {
-			return deviceService.countByHardwareId(
-				Arrays.asList(hardwareIds.split(",")), partialMatch);
+			return deviceService.countByHardwareId(Arrays.asList(hardwareIds.split(",")));
 		}
 	}
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
-	public List<DeviceEntity> findByHardwareIds(String hardwareIds, boolean partialMatch) {
-		return deviceService.findByHardwareId(Arrays.asList(hardwareIds.split(",")), partialMatch);
+	public List<DeviceEntity> findByHardwareIds(String hardwareIds) {
+		return deviceService.findByHardwareId(Arrays.asList(hardwareIds.split(",")));
 	}
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	public List<DeviceEntity> findByTagName(String tag) {
-		return deviceTagService.findByTagName(tag, false);
+		return deviceTagService.findByTagName(tag);
 	}
 
 	@Override
@@ -191,10 +178,8 @@ public class DeviceResourceImpl implements DeviceResource {
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
-	public Long countByTags(@QueryParam("tags") String tags,
-		@QueryParam("partialMatch") boolean partialMatch) {
-		return deviceTagService.countByTag(Arrays.asList(tags.split(",")),
-			partialMatch);
+	public Long countByTags(@QueryParam("tags") String tags) {
+		return deviceTagService.countByTag(Arrays.asList(tags.split(",")));
 	}
 
 	@Override
@@ -274,6 +259,15 @@ public class DeviceResourceImpl implements DeviceResource {
 	@Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Activating preregistered device")
 	public DeviceEntity activatePreregisteredDevice(String hardwareId) {
 		return deviceRegistrationService.activatePreregisteredDevice(hardwareId);
+	}
+
+	@Override
+	@RolesAllowed(AppConstants.ROLE_USER)
+	@Audited(cat = Category.DEVICE, op = Operation.WRITE, msg = "Save device")
+	public Response saveTagsAndStatus(DeviceEntity deviceEntity) {
+		deviceService.saveTagsAndStatus(deviceEntity);
+
+		return Response.ok().build();
 	}
 
 	@Override

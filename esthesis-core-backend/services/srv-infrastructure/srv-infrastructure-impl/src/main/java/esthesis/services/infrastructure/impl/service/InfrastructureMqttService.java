@@ -76,7 +76,7 @@ public class InfrastructureMqttService extends BaseService<InfrastructureMqttEnt
 			if (tagIds.isEmpty()) {
 				match = findRandom();
 			} else {
-				match = findByColumnIn("tags", tagIds, false).stream().findAny();
+				match = findByColumnIn("tags", tagIds).stream().findAny();
 			}
 		}
 
@@ -103,8 +103,8 @@ public class InfrastructureMqttService extends BaseService<InfrastructureMqttEnt
 
 	@Override
 	@ErnPermission(category = INFRASTRUCTURE, operation = READ)
-	public Page<InfrastructureMqttEntity> find(Pageable pageable, boolean partialMatch) {
-		return super.find(pageable, partialMatch);
+	public Page<InfrastructureMqttEntity> find(Pageable pageable) {
+		return super.find(pageable);
 	}
 
 	@Override

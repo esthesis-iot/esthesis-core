@@ -34,7 +34,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @RegisterForReflection
 @Accessors(chain = true)
-@ToString(callSuper=true)
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @MongoEntity(collection = "CommandRequest")
 public class CommandRequestEntity extends BaseEntity {
@@ -42,7 +42,7 @@ public class CommandRequestEntity extends BaseEntity {
 	// A comma-separated list of hardware IDs to which the command should be sent.
 	private String hardwareIds;
 
-	// A comma-separated list of tag names to which the command should be sent.
+	// A comma-separated list of tag IDs to which the command should be sent.
 	private String tags;
 
 	// The type of execution for the command.

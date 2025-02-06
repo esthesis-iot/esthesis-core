@@ -206,23 +206,15 @@
                 </ul>
               </div>
               <div *ngIf="!this.form.disabled" class="flex flex-row gap-5">
-                <mat-form-field class="grow">
-                  <mat-label>Search by hardware id</mat-label>
-                  <input [matAutocomplete]="auto" formControlName="searchByHardwareId"
-                         matInput>
-                  <mat-autocomplete #auto="matAutocomplete">
-                    <mat-option *ngFor="let device of searchDevices" [value]="device.hardwareId">
-                      <span>{{device.hardwareId}}</span>
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-                <mat-form-field class="grow">
-                  <mat-label>Add by tags</mat-label>
-                  <mat-select formControlName="searchByTags" multiple>
-                    <mat-option *ngFor="let tag of availableTags"
-                                [value]="tag.name">{{tag.name}}</mat-option>
-                  </mat-select>
-                </mat-form-field>
+                <app-device-select class="flex flex-grow"
+                   [parentForm]="form" parentFormDeviceField="searchByHardwareId"
+                   bindValue="hardwareId" label="Search by hardware ID">
+                </app-device-select>
+                <app-tag-select class="flex flex-grow" label="Search by tags"
+                                [bindValue]="TAG_SELECT_BIND_VALUE.NAME"
+                                [parentForm]="form" parentFormTagsField="searchByTags"
+                                [multiple]="false">
+                </app-tag-select>
               </div>
 
               <div *ngIf="!this.form.disabled" class="flex flex-row gap-2">
@@ -262,7 +254,7 @@
                                matTooltip="Delete group"></fa-icon>
                     </button>
                   </div>
-                  <div class="mt-2">
+                  <div class="mt-2 flex flex-col gap-1">
                     <div *ngFor="let item of group"
                          class="device flex flex-row justify-start align-middle">
                       <div [ngSwitch]="item.type" class="mr-2">

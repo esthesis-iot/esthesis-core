@@ -20,11 +20,6 @@
           <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Version</th>
           <td *cdkCellDef="let element" cdk-cell>{{element.version}}</td>
         </ng-container>
-        <ng-container matColumnDef="prerequisiteVersion">
-          <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Base Version</th>
-          <td *cdkCellDef="let element" cdk-cell>
-            {{resolveBaseVersion(element.prerequisiteVersion)}}</td>
-        </ng-container>
         <ng-container matColumnDef="state">
           <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> State</th>
           <td *cdkCellDef="let element" cdk-cell>
@@ -35,12 +30,6 @@
           <th *cdkHeaderCellDef cdk-header-cell mat-sort-header scope="col"> Size</th>
           <td *cdkCellDef="let element" cdk-cell>
             {{element.type === constants.PROVISIONING.TYPE.INTERNAL ? (element["size"] | filesize) : "-"}}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="tags">
-          <th *cdkHeaderCellDef cdk-header-cell scope="col"> Tags</th>
-          <td *cdkCellDef="let element" cdk-cell>
-            {{resolveTag(element.tags)}}
           </td>
         </ng-container>
         <ng-container matColumnDef="createdOn">

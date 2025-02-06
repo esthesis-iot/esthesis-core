@@ -12,6 +12,7 @@ import esthesis.service.common.paging.Pageable;
 import esthesis.services.campaign.impl.service.CampaignService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 
@@ -26,8 +27,8 @@ public class CampaignResourceImpl implements CampaignResource {
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.CAMPAIGN, op = Operation.READ, msg = "Find campaigns")
-	public Page<CampaignEntity> find(Pageable pageable) {
-		return campaignService.find(pageable, true);
+	public Page<CampaignEntity> find(@BeanParam Pageable pageable) {
+		return campaignService.find(pageable);
 	}
 
 	@Override

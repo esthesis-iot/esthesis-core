@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatSort} from "@angular/material/sort";
-import {QFormsService} from "@qlack/forms";
+import {QFilterAlias, QFormsService} from "@qlack/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {DataflowsService} from "../dataflows.service";
 import {DataflowDto} from "../dto/dataflow-dto";
@@ -58,7 +58,7 @@ export class DataflowsListComponent extends SecurityBaseComponent implements OnI
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
     this.dataflowService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
-      [], false, page, size, sort, sortDirection))
+      [new QFilterAlias('name', 'name*')], false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       // Convert keys to text.
       onNext.content.forEach((dataflowDto: DataflowDto) => {

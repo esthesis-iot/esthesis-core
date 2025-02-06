@@ -62,63 +62,39 @@ public abstract class BaseService<D extends BaseEntity> {
 	/**
 	 * Find the first entity that matches the given column and value.
 	 *
-	 * @param column       The column to match.
-	 * @param value        The value to match.
-	 * @param partialMatch Whether to do a partial match.
-	 * @return The first entity that matches the given column and value.
-	 */
-	@SuppressWarnings("java:S1192")
-	protected D findFirstByColumn(String column, Object value, boolean partialMatch) {
-		if (partialMatch) {
-			return repository.find(column + " like ?1", value).firstResult();
-		} else {
-			return repository.find(column + " = ?1", value).firstResult();
-		}
-	}
-
-	/**
-	 * Find the first entity that matches the given column and value.
-	 *
 	 * @param column The column to match.
 	 * @param value  The value to match.
 	 * @return The first entity that matches the given column and value.
 	 */
+	@SuppressWarnings("java:S1192")
 	protected D findFirstByColumn(String column, Object value) {
-		return findFirstByColumn(column, value, false);
+		return repository.find(column + " = ?1", value).firstResult();
 	}
 
 	/**
 	 * Find all entities that match the given column and value.
 	 *
-	 * @param column       The column to match.
-	 * @param value        The value to match.
-	 * @param partialMatch Whether to do a partial match.
+	 * @param column The column to match.
+	 * @param value  The value to match.
 	 * @return A list of all entities that match the given column and value.
 	 */
-	protected List<D> findByColumn(String column, Object value, boolean partialMatch) {
-		return findByColumn(column, value, partialMatch, null, null);
+	protected List<D> findByColumn(String column, Object value) {
+		return findByColumn(column, value, null, null);
 	}
 
 	/**
 	 * Find all entities that match the given column and value, supporting ordering.
 	 *
-	 * @param column       The column to match.
-	 * @param value        The value to match.
-	 * @param partialMatch Whether to do a partial match.
-	 * @param orderColumn  The column to order by.
-	 * @param direction    The direction to order in.
+	 * @param column      The column to match.
+	 * @param value       The value to match.
+	 * @param orderColumn The column to order by.
+	 * @param direction   The direction to order in.
 	 * @return A list of all entities that match the given column and value.
 	 */
 	@SuppressWarnings("java:S1192")
-	protected List<D> findByColumn(String column, Object value, boolean partialMatch,
+	protected List<D> findByColumn(String column, Object value,
 		String orderColumn, Sort.Direction direction) {
-		String query = column;
-
-		if (partialMatch) {
-			query += " like ?1";
-		} else {
-			query += " = ?1";
-		}
+		String query = column + " = ?1";
 
 		if (orderColumn != null && direction != null) {
 			return repository.find(query, Sort.by(orderColumn, direction), value).list();
@@ -140,28 +116,12 @@ public abstract class BaseService<D extends BaseEntity> {
 	/**
 	 * Find all entities that have a value set for the given column in a list of values.
 	 *
-	 * @param column       The column to match.
-	 * @param values       The values to match.
-	 * @param partialMatch Whether to do a partial match.
-	 * @return A list of all entities that have a value set for the given column.
-	 */
-	protected List<D> findByColumnIn(String column, List<String> values, boolean partialMatch) {
-		if (partialMatch) {
-			return repository.find(column + " like ?1", String.join("|", values)).list();
-		} else {
-			return repository.find(column + " in ?1", values).list();
-		}
-	}
-
-	/**
-	 * Find all entities that have a value set for the given column.
-	 *
 	 * @param column The column to match.
-	 * @param value  The value to match.
+	 * @param values The values to match.
 	 * @return A list of all entities that have a value set for the given column.
 	 */
-	protected List<D> findByColumn(String column, Object value) {
-		return findByColumn(column, value, false);
+	protected List<D> findByColumnIn(String column, List<String> values) {
+		return repository.find(column + " in ?1", values).list();
 	}
 
 	/**
@@ -185,37 +145,26 @@ public abstract class BaseService<D extends BaseEntity> {
 	}
 
 	/**
-	 * Return all entities, supporting paging.
+	 * Find all entities, supporting paging and partial matching.
 	 *
 	 * @param pageable Representation of page, size, and sort search parameters.
 	 * @return A page of entities that match the given column and value.
 	 */
 	protected Page<D> find(Pageable pageable) {
-		return find(pageable, false);
-	}
-
-	/**
-	 * Find all entities, supporting paging and partial matching.
-	 *
-	 * @param pageable     Representation of page, size, and sort search parameters.
-	 * @param partialMatch Whether to do a partial match.
-	 * @return A page of entities that match the given column and value.
-	 */
-	protected Page<D> find(Pageable pageable, boolean partialMatch) {
 		// Create a wrapper for the results.
 		Page<D> quarkusPage = new Page<>();
 
 		// Execute the query to get count and results.
 		if (pageable.hasQuery()) {
 			quarkusPage.setTotalElements(
-				repository.count(pageable.getQueryKeys(partialMatch), pageable.getQueryValues()));
+				repository.count(pageable.getQueryKeys(), pageable.getQueryValues()));
 			pageable.getPageObject().ifPresentOrElse(val ->
 					quarkusPage.setContent(
-						repository.find(pageable.getQueryKeys(partialMatch), pageable.getSortObject(),
+						repository.find(pageable.getQueryKeys(), pageable.getSortObject(),
 							pageable.getQueryValues()).page(val).list())
 				, () ->
 					quarkusPage.setContent(
-						repository.find(pageable.getQueryKeys(partialMatch), pageable.getSortObject(),
+						repository.find(pageable.getQueryKeys(), pageable.getSortObject(),
 							pageable.getQueryValues()).list()));
 		} else {
 			pageable.getPageObject().ifPresentOrElse(val -> {
@@ -249,11 +198,9 @@ public abstract class BaseService<D extends BaseEntity> {
 	@Transactional
 	protected D save(D entity) {
 		if (entity.getId() != null) {
-			log.trace("Updating entity with ID '{}'.", entity.getId());
 			repository.update(entity);
 		} else {
 			ObjectId id = new ObjectId();
-			log.trace("Creating new entity with ID '{}'.", entity.getId());
 			entity.setId(id);
 			repository.persist(entity);
 		}

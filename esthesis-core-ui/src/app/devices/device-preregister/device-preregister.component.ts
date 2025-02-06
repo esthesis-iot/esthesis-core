@@ -2,8 +2,6 @@ import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DevicesService} from "../devices.service";
 import {Router} from "@angular/router";
-import {TagDto} from "../../tags/dto/tag-dto";
-import {TagsService} from "../../tags/tags.service";
 import {DevicePreregisterCamComponent} from "./device-preregister-cam.component";
 import {DeviceRegisterDto} from "../dto/device-register-dto";
 import {v4 as uuidv4} from "uuid";
@@ -12,6 +10,9 @@ import {UtilityService} from "../../shared/services/utility.service";
 import {QFormValidationEEService} from "../../shared/services/form-validation.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
+import {
+  TAG_SELECT_BIND_VALUE
+} from "../../shared/components/smart-selects/tag-select/tag-select.component";
 
 @Component({
   selector: "app-device-preregister",
@@ -20,12 +21,11 @@ import {AppConstants} from "../../app.constants";
 })
 export class DevicePreregisterComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
-  availableTags: TagDto[] | undefined;
 
   constructor(private readonly fb: FormBuilder,
     private readonly devicesService: DevicesService, private readonly router: Router,
-    private readonly utilityService: UtilityService, private readonly tagService: TagsService,
-    private readonly dialog: Dialog, private readonly qFormValidation: QFormValidationEEService) {
+    private readonly utilityService: UtilityService, private readonly dialog: Dialog,
+    private readonly qFormValidation: QFormValidationEEService) {
     super(AppConstants.SECURITY.CATEGORY.DEVICE);
   }
 
@@ -37,15 +37,6 @@ export class DevicePreregisterComponent extends SecurityBaseComponent implements
       type: this.appConstants.DEVICE.TYPE.CORE
     });
 
-    // Get available tags.
-    this.tagService.find("sort=name,asc").subscribe({
-      next: (next) => {
-        this.availableTags = next.content;
-      },
-      error: () => {
-        this.utilityService.popupError("There was an error while getting available tags, please try again later.");
-      }
-    });
   }
 
   save() {
@@ -78,8 +69,10 @@ export class DevicePreregisterComponent extends SecurityBaseComponent implements
     });
     dialogRef.closed.subscribe(result => {
       if (result) {
-        this.form.controls['hardwareId'].patchValue(result);
+        this.form.controls["hardwareId"].patchValue(result);
       }
     });
   }
+
+  protected readonly TAG_SELECT_BIND_VALUE = TAG_SELECT_BIND_VALUE;
 }

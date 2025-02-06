@@ -21,13 +21,10 @@
           </mat-hint>
         </mat-form-field>
 
-        <mat-form-field class="mt-5">
-          <mat-label>Tags</mat-label>
-          <mat-select formControlName="tags" multiple>
-            <mat-option *ngFor="let tag of availableTags"
-                        [value]="tag.name">{{tag.name}}</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <app-tag-select class="flex flex-grow"
+                        [bindValue]="TAG_SELECT_BIND_VALUE.NAME"
+                        [parentForm]="form" parentFormTagsField="tags">
+        </app-tag-select>
       </form>
     </div>
     <div class="card-actions justify-start mt-10">

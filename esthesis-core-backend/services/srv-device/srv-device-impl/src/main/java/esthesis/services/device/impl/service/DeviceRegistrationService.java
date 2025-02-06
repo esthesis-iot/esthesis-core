@@ -93,7 +93,7 @@ public class DeviceRegistrationService {
 		List<String> validTags = new ArrayList<>();
 
 		for (String tag : tags) {
-			if (tagResource.findByName(tag, false) == null) {
+			if (tagResource.findByName(tag) == null) {
 				log.warn("Device-pushed tag '{}' for device with hardware id '{}' does not exist.", tag,
 					hardwareId);
 				if (createMissing) {
@@ -230,7 +230,7 @@ public class DeviceRegistrationService {
 			List<String> validTags = checkTags(hardwareId, tags,
 				settingsResource.findByName(NamedSetting.DEVICE_PUSHED_TAGS).asBoolean());
 			deviceEntity.setTags(
-				validTags.stream().map(tag -> tagResource.findByName(tag, false).getId().toString())
+				validTags.stream().map(tag -> tagResource.findByName(tag).getId().toString())
 					.toList());
 		}
 

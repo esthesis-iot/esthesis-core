@@ -7,7 +7,6 @@ import io.quarkus.oidc.token.propagation.AccessToken;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -47,26 +46,22 @@ public interface TagResource {
 	/**
 	 * Finds a tag by its name.
 	 *
-	 * @param name         The name of the tag to search.
-	 * @param partialMatch If true, the search will be performed using a partial match.
+	 * @param name The name of the tag to search.
 	 * @return The tag with the given name.
 	 */
 	@GET
 	@Path("/v1/find/by-name/{name}")
-	TagEntity findByName(@PathParam("name") String name,
-		@QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
+	TagEntity findByName(@PathParam("name") String name);
 
 	/**
 	 * Finds multiple tags by their names.
 	 *
-	 * @param name         A comma-separated list of names.
-	 * @param partialMatch If true, the search will be performed using a partial match.
+	 * @param name A comma-separated list of names.
 	 * @return A list of tags with the given names.
 	 */
 	@GET
 	@Path("/v1/find/by-names")
-	List<TagEntity> findByNames(@QueryParam("names") String name,
-		@QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
+	List<TagEntity> findByNames(@QueryParam("names") String name);
 
 	/**
 	 * Finds a tag by its id.

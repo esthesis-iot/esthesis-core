@@ -12,13 +12,11 @@ import esthesis.service.device.dto.DeviceTextDataImportDTO;
 import esthesis.service.device.dto.GeolocationDTO;
 import esthesis.service.device.entity.DeviceEntity;
 import io.quarkus.oidc.token.propagation.AccessToken;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -50,38 +48,32 @@ public interface DeviceResource {
 	/**
 	 * Counts the number of devices having one or more of the given tag names.
 	 *
-	 * @param tags         A comma-separated list of tag names to search by.
-	 * @param partialMatch If true, the search will be performed using partial matching.
+	 * @param tags A comma-separated list of tag names to search by.
 	 * @return The number of devices having one or more of the given tag names.
 	 */
 	@GET
 	@Path("/v1/count/by-tag")
-	Long countByTags(@QueryParam("tag") String tags,
-		@QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
+	Long countByTags(@QueryParam("tag") String tags);
 
 	/**
 	 * Counts the number of devices having one or more of the given hardware IDs.
 	 *
-	 * @param hardwareIds  A comma-separated list of hardware IDs to search by.
-	 * @param partialMatch Whether to perform a partial match on the hardware IDs.
+	 * @param hardwareIds A comma-separated list of hardware IDs to search by.
 	 * @return The number of devices having one or more of the given hardware IDs.
 	 */
 	@GET
 	@Path("/v1/count/by-hardware-id")
-	Long countByHardwareIds(@QueryParam("hardwareIds") String hardwareIds,
-		@QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
+	Long countByHardwareIds(@QueryParam("hardwareIds") String hardwareIds);
 
 	/**
 	 * Finds the devices matching a comma-separated list of hardware IDs.
 	 *
-	 * @param hardwareIds  The hardware IDs to search by.
-	 * @param partialMatch Whether to perform a partial match on the hardware IDs.
+	 * @param hardwareIds The hardware IDs to search by.
 	 * @return The list of devices matching the given hardware IDs.
 	 */
 	@GET
 	@Path("/v1/find/by-hardware-id")
-	List<DeviceEntity> findByHardwareIds(@QueryParam("hardwareIds") String hardwareIds,
-		@QueryParam("partialMatch") @DefaultValue("false") boolean partialMatch);
+	List<DeviceEntity> findByHardwareIds(@QueryParam("hardwareIds") String hardwareIds);
 
 	/**
 	 * Finds the devices matching the given tag names.
@@ -111,7 +103,6 @@ public interface DeviceResource {
 	 */
 	@GET
 	@Path("/v1/find")
-	@RolesAllowed("default-roles-esthesis")
 	Page<DeviceEntity> find(@BeanParam Pageable pageable);
 
 	/**
@@ -132,17 +123,7 @@ public interface DeviceResource {
 	@DELETE
 	@Path("/v1/{deviceId}")
 	void delete(@PathParam("deviceId") String id);
-
-	/**
-	 * Saves the given device.
-	 *
-	 * @param object The device to save.
-	 * @return The saved device.
-	 */
-	@POST
-	@Path("/v1")
-	DeviceEntity save(@Valid DeviceEntity object);
-
+	
 	/**
 	 * Gets the geolocation information of the device with the given ID.
 	 *
@@ -250,4 +231,8 @@ public interface DeviceResource {
 	@PUT
 	@Path("/v1/activate/{hardwareId}")
 	DeviceEntity activatePreregisteredDevice(@PathParam(value = "hardwareId") String hardwareId);
+
+	@POST
+	@Path("/v1/tags-and-status")
+	Response saveTagsAndStatus(DeviceEntity deviceEntity);
 }

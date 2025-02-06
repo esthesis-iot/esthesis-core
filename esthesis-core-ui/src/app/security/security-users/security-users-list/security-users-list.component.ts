@@ -3,7 +3,7 @@ import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {QFormsService} from "@qlack/forms";
+import {QFilterAlias, QFormsService} from "@qlack/forms";
 import {UtilityService} from "../../../shared/services/utility.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {SecurityService} from "../../security.service";
@@ -62,7 +62,8 @@ export class SecurityUsersListComponent extends SecurityBaseComponent implements
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
     this.securityUsersService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
-      [], false, page, size, sort, sortDirection)).subscribe({
+      [new QFilterAlias('username', 'username*'), new QFilterAlias('firstName', 'firstName*'),
+        new QFilterAlias('lastName', 'lastName*')], false, page, size, sort, sortDirection)).subscribe({
       next: (onNext) => {
         this.dataSource.data = onNext.content;
         this.paginator.length = onNext.totalElements;

@@ -39,7 +39,7 @@ public class AuditResourceImpl implements AuditResource {
 	@JSONReplyFilter(filter = "content,content.id,content.createdOn,content.createdBy,"
 		+ "content.operation,content.category,content.message")
 	public Page<AuditEntity> find(@BeanParam Pageable pageable) {
-		return auditService.find(pageable, true);
+		return auditService.find(pageable);
 	}
 
 	@Override

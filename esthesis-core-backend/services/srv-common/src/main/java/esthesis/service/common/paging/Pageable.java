@@ -38,7 +38,7 @@ public class Pageable {
 	public String sort;
 
 	@Context
-	@JsonIgnore // Do not serialize this field, especially when auditing.
+	@JsonIgnore
 	private UriInfo uriInfo;
 
 	/**
@@ -96,13 +96,13 @@ public class Pageable {
 	 * <li>[]: Signifies a key that will be rendered with an 'in' clause.</li>
 	 * <li>>, >=, <, <=: Signifies a key that will be rendered with a 'greater than',
 	 * 'greater than or equal to', etc. </li>
+	 * <li>*: Indicates a partial match, rendered with a 'like' operator.</li>
 	 * </ul>
 	 *
-	 * @param partialMatch Whether to include partial matches in the query using the 'like' clause.
 	 * @return A string representing the keys of the query parameters.
 	 */
 	@SuppressWarnings("java:S1192")
-	public String getQueryKeys(boolean partialMatch) {
+	public String getQueryKeys() {
 		MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 		log.trace("Query params: {}", queryParams);
 		StringBuilder queryKeys = new StringBuilder();
@@ -124,8 +124,9 @@ public class Pageable {
 				} else if (key.endsWith("<=")) {
 					key = key.substring(0, key.length() - 2);
 					queryKeys.append(key).append(" <= :v_").append(keyHash).append(" and ");
-				} else if (partialMatch) {
-					queryKeys.append(key).append(" like :v_").append(keyHash).append(" and ");
+				} else if (key.endsWith("*")) {
+					queryKeys.append(StringUtils.stripEnd(key, "*")).append(" like :v_").append(keyHash)
+						.append(" and ");
 				} else {
 					queryKeys.append(key).append(" = :v_").append(keyHash).append(" and ");
 				}
@@ -133,12 +134,11 @@ public class Pageable {
 		});
 
 		// Remove final " and ".
-		if (queryKeys.length() > 0) {
+		if (!queryKeys.isEmpty()) {
 			queryKeys.delete(queryKeys.length() - " and ".length(), queryKeys.length());
 		}
 
 		log.trace("Query keys: {}", queryKeys);
-
 		return queryKeys.toString();
 	}
 

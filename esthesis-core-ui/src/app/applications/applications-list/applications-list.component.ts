@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {ApplicationDto} from "../dto/application-dto";
 import {ApplicationsService} from "../applications.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import {QFormsService} from "@qlack/forms";
+import {QFilterAlias, QFormsService} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
@@ -61,7 +61,7 @@ export class ApplicationsListComponent extends SecurityBaseComponent implements 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
     this.applicationsService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
-      null!, false, page, size, sort, sortDirection))
+      [new QFilterAlias('name', 'name*')], false, page, size, sort, sortDirection))
     .subscribe(onNext => {
       this.dataSource.data = onNext.content;
       this.paginator.length = onNext.totalElements;

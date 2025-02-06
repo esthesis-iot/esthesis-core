@@ -36,14 +36,9 @@
                      class="cursor-pointer" icon="xmark"></fa-icon>
           </span>
         </div>
-
-        <mat-form-field class="w-full">
-          <mat-label>Tags</mat-label>
-          <mat-select class="mt1" formControlName="tags" multiple>
-            <mat-option *ngFor="let tag of availableTags"
-                        [value]="tag.name">{{tag.name}}</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <app-tag-select class="flex flex-grow"
+                        [parentForm]="searchDevicesForm" parentFormTagsField="tags">
+        </app-tag-select>
       </form>
 
       <form [formGroup]="commandForm" class="flex flex-col">
@@ -87,13 +82,17 @@
         <!-- Firmware -->
         <div *ngIf="commandForm.value['commandType'] == appConstants.DEVICE.COMMAND.TYPE.FIRMWARE"
              class="flex flex-col ml-5">
-          <mat-form-field>
-            <mat-label>Provisioning package</mat-label>
-            <mat-select formControlName="command">
-              <mat-option *ngFor="let pp of provisioningPackages"
-                          [value]="pp.id">{{pp.name}} - {{pp.version}}</mat-option>
-            </mat-select>
-          </mat-form-field>
+<!--          <mat-form-field>-->
+<!--            <mat-label>Provisioning package</mat-label>-->
+<!--            <mat-select formControlName="command">-->
+<!--              <mat-option *ngFor="let pp of provisioningPackages"-->
+<!--                          [value]="pp.id">{{pp.name}} - {{pp.version}}</mat-option>-->
+<!--            </mat-select>-->
+<!--          </mat-form-field>-->
+          <app-provisioning-select class="flex flex-grow"
+             [parentForm]="commandForm" parentFormProvisioningField="command"
+             label="Provisioning package">
+          </app-provisioning-select>
         </div>
       </form>
     </div>

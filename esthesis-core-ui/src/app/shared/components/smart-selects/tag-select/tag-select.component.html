@@ -1,0 +1,20 @@
+<mat-form-field [formGroup]="parentForm" class="flex flex-grow cursor-pointer">
+  <mat-label class="cursor-pointer">{{ label }}</mat-label>
+  <mtx-select class="cursor-pointer"
+    id="input"
+    [items]="items"
+    bindLabel="name"
+    [bindValue]="bindValue"
+    [addTag]="false"
+    [multiple]="multiple"
+    [hideSelected]="true"
+    [minTermLength]="2"
+    [loading]="isLoading"
+    typeToSearchText="Please enter 2 or more characters"
+    [typeahead]="searchInput$"
+    [virtualScroll]="true"
+    (scrollToEnd)="onScrollToEnd()"
+    (search)="searchInput$.next($event.term)"
+    [formControlName]="parentFormTagsField">
+  </mtx-select>
+</mat-form-field>

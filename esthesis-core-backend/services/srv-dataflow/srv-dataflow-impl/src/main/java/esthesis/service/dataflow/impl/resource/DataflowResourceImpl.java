@@ -42,7 +42,7 @@ public class DataflowResourceImpl implements DataflowResource {
 	@Audited(cat = Category.DATAFLOW, op = Operation.READ, msg = "Search dataflows",
 		log = AuditLogType.DATA_IN)
 	public Page<DataflowEntity> find(@BeanParam Pageable pageable) {
-		return dataflowService.find(pageable, true);
+		return dataflowService.find(pageable);
 	}
 
 	@Override

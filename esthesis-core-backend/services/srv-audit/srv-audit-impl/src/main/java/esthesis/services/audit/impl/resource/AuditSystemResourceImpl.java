@@ -24,7 +24,7 @@ public class AuditSystemResourceImpl implements AuditSystemResource {
 	public Page<AuditEntity> find(int entries) {
 		Pageable pageable = new Pageable().setPage(0).setSize(entries).setSort("createdOn,desc");
 
-		return auditService.find(pageable, false);
+		return auditService.find(pageable);
 	}
 
 	@Override

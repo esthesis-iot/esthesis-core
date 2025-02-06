@@ -1,7 +1,6 @@
 package esthesis.services.device.impl.service;
 
 import static esthesis.core.common.AppConstants.Security.Category.DEVICE;
-import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
 import static esthesis.core.common.AppConstants.Security.Operation.READ;
 import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
@@ -131,56 +130,31 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		return fields;
 	}
 
-	private DeviceEntity saveHandler(DeviceEntity entity) {
-		return super.save(entity);
-	}
-
 	/**
 	 * Finds a device by its hardware ID.
 	 *
-	 * @param hardwareId   The hardware ID to search by.
-	 * @param partialMatch Whether the search for the hardware ID should be partial or not.
+	 * @param hardwareId The hardware ID to search by.
 	 * @return Returns the device matched.
 	 */
 	@ErnPermission(category = DEVICE, operation = READ)
-	public Optional<DeviceEntity> findByHardwareId(String hardwareId, boolean partialMatch) {
-		if (partialMatch) {
-			return deviceRepository.findByHardwareIdPartial(hardwareId);
-		} else {
-			return deviceRepository.findByHardwareId(hardwareId);
-		}
+	public Optional<DeviceEntity> findByHardwareId(String hardwareId) {
+		return deviceRepository.findByHardwareId(hardwareId);
 	}
 
-	/**
-	 * Finds the devices by a list of hardware Ids.
-	 *
-	 * @param hardwareIds  The list of hardware IDs to check.
-	 * @param partialMatch Whether the search for the hardware ID will be partial or not.
-	 * @return Returns the list of devices matched.
-	 */
 	@ErnPermission(category = DEVICE, operation = READ)
-	public List<DeviceEntity> findByHardwareId(List<String> hardwareIds, boolean partialMatch) {
-		if (partialMatch) {
-			return deviceRepository.findByHardwareIdPartial(hardwareIds);
-		} else {
-			return deviceRepository.findByHardwareId(hardwareIds);
-		}
+	public List<DeviceEntity> findByHardwareId(List<String> hardwareId) {
+		return deviceRepository.findByHardwareId(hardwareId);
 	}
 
 	/**
 	 * Counts the devices in a list of hardware Ids. Search takes place via an exact match algorithm.
 	 *
-	 * @param hardwareIds  The list of hardware Ids to check.
-	 * @param partialMatch Whether the search for the hardware ID will be partial or not.
+	 * @param hardwareIds The list of hardware Ids to check.
 	 * @return The number of the devices in the list that matched.
 	 */
 	@ErnPermission(category = DEVICE, operation = READ)
-	public long countByHardwareId(List<String> hardwareIds, boolean partialMatch) {
-		if (partialMatch) {
-			return deviceRepository.countByHardwareIdPartial(hardwareIds);
-		} else {
-			return deviceRepository.countByHardwareId(hardwareIds);
-		}
+	public long countByHardwareId(List<String> hardwareIds) {
+		return deviceRepository.countByHardwareId(hardwareIds);
 	}
 
 	/**
@@ -255,8 +229,7 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	 * @param deviceProfileDTO The profile to save.
 	 */
 	@ErnPermission(category = DEVICE, operation = WRITE)
-	@KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE_ATTRIBUTE,
-		action = Action.UPDATE, idParamOrder = 0)
+	@KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE_ATTRIBUTE, action = Action.UPDATE, idParamOrder = 0)
 	public void saveProfile(String deviceId, DeviceProfileDTO deviceProfileDTO) {
 		// Remove attributes no longer present.
 		deviceAttributeRepository.deleteAttributesNotIn(deviceId,
@@ -266,8 +239,8 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		// Save the attributes.
 		deviceProfileDTO.getAttributes().forEach(attribute -> {
 			DeviceAttributeEntity deviceAttributeEntity = deviceAttributeRepository.findByDeviceIdAndName(
-				deviceId, attribute.getAttributeName()).orElse(
-				new DeviceAttributeEntity(new ObjectId(), deviceId));
+					deviceId, attribute.getAttributeName())
+				.orElse(new DeviceAttributeEntity(new ObjectId(), deviceId));
 			deviceAttributeEntity.setAttributeValue(attribute.getAttributeValue());
 			deviceAttributeEntity.setAttributeName(attribute.getAttributeName());
 			deviceAttributeEntity.setAttributeType(attribute.getAttributeType());
@@ -324,8 +297,7 @@ public class DeviceService extends BaseService<DeviceEntity> {
 
 	@Override
 	@ErnPermission(category = DEVICE, operation = DELETE)
-	@KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE,
-		action = Action.DELETE, idParamOrder = 0)
+	@KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE, action = Action.DELETE, idParamOrder = 0)
 	public boolean deleteById(String deviceId) {
 		// Delete all the attributes for this device.
 		deviceAttributeRepository.deleteByDeviceId(deviceId);
@@ -355,8 +327,7 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	 */
 	@ErnPermission(category = DEVICE, operation = WRITE)
 	public void importData(String deviceId, BufferedReader reader, MessageTypeEnum messageType,
-		ImportDataProcessingInstructionsDTO instructionsDTO)
-	throws IOException {
+		ImportDataProcessingInstructionsDTO instructionsDTO) throws IOException {
 		log.info("Importing '{}' data for device '{}'.", messageType, deviceId);
 
 		// Collect data for the messages to be created.
@@ -381,31 +352,20 @@ public class DeviceService extends BaseService<DeviceEntity> {
 			if (batchCounter >= instructionsDTO.getBatchSize() && instructionsDTO.getBatchDelay() > 0) {
 				log.debug("Batch processing limit reached, will wait for {} msec.",
 					instructionsDTO.getBatchDelay());
-				Awaitility.await()
-					.pollDelay(instructionsDTO.getBatchDelay(), TimeUnit.MILLISECONDS)
-					.atLeast(instructionsDTO.getBatchDelay(), TimeUnit.MILLISECONDS)
-					.until(() -> true);
+				Awaitility.await().pollDelay(instructionsDTO.getBatchDelay(), TimeUnit.MILLISECONDS)
+					.atLeast(instructionsDTO.getBatchDelay(), TimeUnit.MILLISECONDS).until(() -> true);
 				batchCounter = 0;
 			}
 			try {
 				EsthesisDataMessage esthesisDataMessage = EsthesisDataMessage.newBuilder()
-					.setId(UUID.randomUUID().toString())
-					.setHardwareId(hardwareId)
-					.setType(messageType)
-					.setSeenAt(Instant.now().toString())
-					.setSeenBy(appName)
-					.setChannel("data-import")
-					.setPayload(avroUtils.parsePayload(line))
-					.build();
+					.setId(UUID.randomUUID().toString()).setHardwareId(hardwareId).setType(messageType)
+					.setSeenAt(Instant.now().toString()).setSeenBy(appName).setChannel("data-import")
+					.setPayload(avroUtils.parsePayload(line)).build();
 				log.debug("Parsed message to Avro message '{}'.", esthesisDataMessage);
 
-				dataMessageEmitter.send(
-					Message.of(esthesisDataMessage)
-						.addMetadata(OutgoingKafkaRecordMetadata.<String>builder()
-							.withTopic(kafkaTopic)
-							.withKey(hardwareId)
-							.build())
-						.addMetadata(TracingMetadata.withCurrent(Context.current())));
+				dataMessageEmitter.send(Message.of(esthesisDataMessage).addMetadata(
+					OutgoingKafkaRecordMetadata.<String>builder().withTopic(kafkaTopic).withKey(hardwareId)
+						.build()).addMetadata(TracingMetadata.withCurrent(Context.current())));
 
 				okCounter++;
 			} catch (Exception e) {
@@ -420,8 +380,8 @@ public class DeviceService extends BaseService<DeviceEntity> {
 
 	@Override
 	@ErnPermission(category = DEVICE, operation = READ)
-	public Page<DeviceEntity> find(Pageable pageable, boolean partialMatch) {
-		return super.find(pageable, partialMatch);
+	public Page<DeviceEntity> find(Pageable pageable) {
+		return super.find(pageable);
 	}
 
 	@Override
@@ -430,27 +390,27 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		return super.findById(id);
 	}
 
-	/**
-	 * Creates a new device.
-	 *
-	 * @param entity The device to save.
-	 * @return The saved device.
-	 */
-	@ErnPermission(category = DEVICE, operation = CREATE)
-	public DeviceEntity saveNew(DeviceEntity entity) {
-		return saveHandler(entity);
-	}
-
-	/**
-	 * Updates an existing device.
-	 *
-	 * @param entity The device to update.
-	 * @return The updated device.
-	 */
-	@ErnPermission(category = DEVICE, operation = WRITE)
-	public DeviceEntity saveUpdate(DeviceEntity entity) {
-		return saveHandler(entity);
-	}
+//	/**
+//	 * Creates a new device.
+//	 *
+//	 * @param entity The device to save.
+//	 * @return The saved device.
+//	 */
+//	@ErnPermission(category = DEVICE, operation = CREATE)
+//	public DeviceEntity saveNew(DeviceEntity entity) {
+//		return saveHandler(entity);
+//	}
+//
+//	/**
+//	 * Updates an existing device.
+//	 *
+//	 * @param entity The device to update.
+//	 * @return The updated device.
+//	 */
+//	@ErnPermission(category = DEVICE, operation = WRITE)
+//	public DeviceEntity saveUpdate(DeviceEntity entity) {
+//		return saveHandler(entity);
+//	}
 
 	/**
 	 * Returns statistics on all devices.
@@ -466,27 +426,27 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		devicesLastSeenStatsDTO.setPreregistered(totalsDTO.getPreregistered());
 		devicesLastSeenStatsDTO.setRegistered(totalsDTO.getRegistered());
 
-		devicesLastSeenStatsDTO.setSeenLastMonth(deviceRepository.countLastSeenAfter(
-			Instant.now().minus(Duration.ofDays(30))));
-		devicesLastSeenStatsDTO.setSeenLastWeek(deviceRepository.countLastSeenAfter(
-			Instant.now().minus(Duration.ofDays(7))));
-		devicesLastSeenStatsDTO.setSeenLastDay(deviceRepository.countLastSeenAfter(
-			Instant.now().minus(Duration.ofDays(1))));
-		devicesLastSeenStatsDTO.setSeenLastHour(deviceRepository.countLastSeenAfter(
-			Instant.now().minus(Duration.ofHours(1))));
-		devicesLastSeenStatsDTO.setSeenLastMinute(deviceRepository.countLastSeenAfter(
-			Instant.now().minus(Duration.ofMinutes(1))));
+		devicesLastSeenStatsDTO.setSeenLastMonth(
+			deviceRepository.countLastSeenAfter(Instant.now().minus(Duration.ofDays(30))));
+		devicesLastSeenStatsDTO.setSeenLastWeek(
+			deviceRepository.countLastSeenAfter(Instant.now().minus(Duration.ofDays(7))));
+		devicesLastSeenStatsDTO.setSeenLastDay(
+			deviceRepository.countLastSeenAfter(Instant.now().minus(Duration.ofDays(1))));
+		devicesLastSeenStatsDTO.setSeenLastHour(
+			deviceRepository.countLastSeenAfter(Instant.now().minus(Duration.ofHours(1))));
+		devicesLastSeenStatsDTO.setSeenLastMinute(
+			deviceRepository.countLastSeenAfter(Instant.now().minus(Duration.ofMinutes(1))));
 
-		devicesLastSeenStatsDTO.setJoinedLastMonth(deviceRepository.countJoinedAfter(
-			Instant.now().minus(Duration.ofDays(30))));
-		devicesLastSeenStatsDTO.setJoinedLastWeek(deviceRepository.countJoinedAfter(
-			Instant.now().minus(Duration.ofDays(7))));
-		devicesLastSeenStatsDTO.setJoinedLastDay(deviceRepository.countJoinedAfter(
-			Instant.now().minus(Duration.ofDays(1))));
-		devicesLastSeenStatsDTO.setJoinedLastHour(deviceRepository.countJoinedAfter(
-			Instant.now().minus(Duration.ofHours(1))));
-		devicesLastSeenStatsDTO.setJoinedLastMinute(deviceRepository.countJoinedAfter(
-			Instant.now().minus(Duration.ofMinutes(1))));
+		devicesLastSeenStatsDTO.setJoinedLastMonth(
+			deviceRepository.countJoinedAfter(Instant.now().minus(Duration.ofDays(30))));
+		devicesLastSeenStatsDTO.setJoinedLastWeek(
+			deviceRepository.countJoinedAfter(Instant.now().minus(Duration.ofDays(7))));
+		devicesLastSeenStatsDTO.setJoinedLastDay(
+			deviceRepository.countJoinedAfter(Instant.now().minus(Duration.ofDays(1))));
+		devicesLastSeenStatsDTO.setJoinedLastHour(
+			deviceRepository.countJoinedAfter(Instant.now().minus(Duration.ofHours(1))));
+		devicesLastSeenStatsDTO.setJoinedLastMinute(
+			deviceRepository.countJoinedAfter(Instant.now().minus(Duration.ofMinutes(1))));
 
 		return devicesLastSeenStatsDTO;
 	}
@@ -498,10 +458,8 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	 * @return The latest devices.
 	 */
 	public List<DeviceEntity> getLatestDevices(int limit) {
-		return deviceRepository
-			.findAll(Sort.descending("registeredOn"))
-			.page(io.quarkus.panache.common.Page.of(0, limit))
-			.list();
+		return deviceRepository.findAll(Sort.descending("registeredOn"))
+			.page(io.quarkus.panache.common.Page.of(0, limit)).list();
 	}
 
 	/**
@@ -517,5 +475,11 @@ public class DeviceService extends BaseService<DeviceEntity> {
 		stats.setRegistered(deviceRepository.countByStatus(Status.REGISTERED));
 
 		return stats;
+	}
+
+	@ErnPermission(category = DEVICE, operation = WRITE)
+	public void saveTagsAndStatus(DeviceEntity deviceEntity) {
+		deviceRepository.update(findById(deviceEntity.getId()).setTags(deviceEntity.getTags())
+			.setStatus(deviceEntity.getStatus()));
 	}
 }

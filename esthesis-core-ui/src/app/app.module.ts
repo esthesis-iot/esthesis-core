@@ -105,14 +105,18 @@ import {NgProgressbar, provideNgProgressOptions} from "ngx-progressbar";
 import {NgProgressHttp, progressInterceptor, provideNgProgressHttp} from "ngx-progressbar/http";
 import {provideLumberjack} from "@ngworker/lumberjack";
 import {provideLumberjackConsoleDriver} from "@ngworker/lumberjack/console-driver";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatFormField, MatLabel} from "@angular/material/form-field";
+import {MtxSelect} from "@ng-matero/extensions/select";
 
 @NgModule({
   bootstrap: [AppComponent],
   declarations: [
     AppComponent,
-    CallbackComponent
+    CallbackComponent,
   ],
-  exports: [],
+  exports: [
+  ],
   imports: [BrowserModule,
     BrowserAnimationsModule,
     routing,
@@ -129,7 +133,7 @@ import {provideLumberjackConsoleDriver} from "@ngworker/lumberjack/console-drive
     MatSnackBarModule,
     MatButtonModule,
     FontAwesomeModule,
-    ComponentsModule, NgProgressbar, NgProgressHttp],
+    ComponentsModule, NgProgressbar, NgProgressHttp, FormsModule, MatFormField, MatLabel, MtxSelect, ReactiveFormsModule],
   providers: [
     QFormsModule,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

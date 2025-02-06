@@ -152,13 +152,13 @@ public class DashboardService extends BaseService<DashboardEntity> {
 
 	@ErnPermission(category = DASHBOARD, operation = READ)
 	public List<DashboardEntity> findAllForCurrentUser() {
-		return super.findByColumn("ownerId", findCurrentUser().getId(), false, "name",
+		return super.findByColumn("ownerId", findCurrentUser().getId(), "name",
 			Direction.Ascending);
 	}
 
 	@ErnPermission(category = DASHBOARD, operation = READ)
 	public List<DashboardEntity> findShared() {
-		return super.findByColumn("shared", true, false, "name", Direction.Ascending);
+		return super.findByColumn("shared", true, "name", Direction.Ascending);
 	}
 
 }

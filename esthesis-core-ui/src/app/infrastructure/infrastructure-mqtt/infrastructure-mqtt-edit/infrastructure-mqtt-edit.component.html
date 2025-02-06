@@ -16,8 +16,7 @@
           </mat-form-field>
           <mat-form-field>
             <mat-label>URL</mat-label>
-            <input formControlName="url" matInput
-                   required>
+            <input formControlName="url" matInput required>
             <mat-hint align="start">This URL of the MQTT server to be forwarded to devices during
               registration, ex: mqtt://mqtt.server:1883, ssl://mqtt.server:8883
             </mat-hint>
@@ -29,27 +28,9 @@
               <mat-option [value]="false">Inactive</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field>
-            <mat-label>Tags</mat-label>
-            <mtx-select
-              id="input"
-              [items]="(filteredTags$ | async) || []"
-              bindLabel="name"
-              bindValue="id"
-              [addTag]="false"
-              [multiple]="true"
-              [hideSelected]="true"
-              [trackByFn]="tagsTrackByFn"
-              [minTermLength]="2"
-              [loading]="filteredTagsLoading"
-              typeToSearchText="Please enter 2 or more characters"
-              [typeahead]="filteredTagsInput$"
-              [virtualScroll]="true"
-              (scroll)="onScrollTags($event)"
-              (scrollToEnd)="onScrollToEndTags()"
-              formControlName="tags">
-            </mtx-select>
-          </mat-form-field>
+          <app-tag-select class="flex flex-grow"
+                          [parentForm]="form" parentFormTagsField="tags">
+          </app-tag-select>
         </div>
       </form>
     </div>

@@ -20,6 +20,9 @@ quarkus:
     AuditResource:
       url: http://localhost:59140
       scope: Singleton
+    TagResource:
+      url: http://localhost:59020
+      scope: Singleton
   otel:
     sdk:
       disabled: true

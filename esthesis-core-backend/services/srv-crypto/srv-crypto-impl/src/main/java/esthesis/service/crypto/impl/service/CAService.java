@@ -257,7 +257,7 @@ public class CAService extends BaseService<CaEntity> {
 
 	@Override
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
-	public Page<CaEntity> find(Pageable pageable, boolean partialMatch) {
-		return super.find(pageable, partialMatch);
+	public Page<CaEntity> find(Pageable pageable) {
+		return super.find(pageable);
 	}
 }

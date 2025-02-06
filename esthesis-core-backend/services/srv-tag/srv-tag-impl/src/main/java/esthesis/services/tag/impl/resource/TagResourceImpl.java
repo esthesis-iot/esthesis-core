@@ -36,13 +36,18 @@ public class TagResourceImpl implements TagResource {
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@Audited(cat = Category.TAGS, op = Operation.READ, msg = "Search tags", log = AuditLogType.DATA_IN)
 	public Page<TagEntity> find(@BeanParam Pageable pageable) {
-		return tagService.find(pageable, true);
+		return tagService.find(pageable);
 	}
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	public List<TagEntity> getAll() {
 		return tagService.getAll();
+	}
+
+	@Override
+	public TagEntity findByName(String name) {
+		return tagService.findByName(name).getLast();
 	}
 
 	@Override
@@ -59,16 +64,8 @@ public class TagResourceImpl implements TagResource {
 
 	@Override
 	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
-	public TagEntity findByName(@PathParam("name") String name, boolean partialMatch) {
-		return tagService.findFirstByColumn("name", name, partialMatch);
-	}
-
-	@Override
-	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
-	public List<TagEntity> findByNames(@QueryParam("names") String names,
-		boolean partialMatch) {
-		return tagService.findByColumnIn("name", Arrays.asList(names.split(",")),
-			partialMatch);
+	public List<TagEntity> findByNames(@QueryParam("names") String names) {
+		return tagService.findByColumn("name", Arrays.asList(names.split(",")));
 	}
 
 	@Override

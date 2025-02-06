@@ -128,18 +128,6 @@ public class SecurityUserService extends BaseService<UserEntity> {
 	}
 
 	/**
-	 * Find all security users.
-	 *
-	 * @param pageable     Representation of page, size, and sort search parameters.
-	 * @param partialMatch Whether to do a partial match.
-	 * @return The page of security users.
-	 */
-	@Override
-	public Page<UserEntity> find(Pageable pageable, boolean partialMatch) {
-		return super.find(pageable, partialMatch);
-	}
-
-	/**
 	 * Count all security users.
 	 *
 	 * @return The number of security users.

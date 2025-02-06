@@ -63,7 +63,7 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
 
   findDeviceByPartialHardwareId(hardwareId: string): Observable<DeviceDto[]> {
     return this.http.get<DeviceDto[]>(
-      `${this.prefix}/find/by-hardware-id?hardwareIds=${hardwareId}&partialMatch=true`);
+      `${this.prefix}/find/by-hardware-id?hardwareIds=${hardwareId}`);
   }
 
   getDeviceData(deviceId: string): Observable<DevicePageFieldDataDto[]> {
@@ -74,5 +74,9 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
   getGeolocation(deviceId: string): Observable<GeolocationDto> {
     return this.http.get<GeolocationDto>(
       `${this.prefix}/${deviceId}/geolocation`);
+  }
+
+  saveTagsAndStatus(deviceDto: DeviceDto) {
+    return this.http.post(`${this.prefix}/tags-and-status`, deviceDto);
   }
 }

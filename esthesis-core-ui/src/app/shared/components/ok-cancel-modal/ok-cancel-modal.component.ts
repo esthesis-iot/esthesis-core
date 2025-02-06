@@ -3,8 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: "app-ok-cancel-modal",
-  templateUrl: "./ok-cancel-modal.component.html",
-  styleUrls: []
+  templateUrl: "./ok-cancel-modal.component.html"
 })
 export class OkCancelModalComponent {
 

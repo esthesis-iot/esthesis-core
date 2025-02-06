@@ -6,7 +6,6 @@ import {CampaignMemberDto} from "../dto/campaign-member-dto";
 import {DevicesService} from "../../devices/devices.service";
 import {DeviceDto} from "../../devices/dto/device-dto";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import {TagDto} from "../../tags/dto/tag-dto";
 import {TagsService} from "../../tags/tags.service";
 import {CampaignsService} from "../campaigns.service";
 import {CampaignDto} from "../dto/campaign-dto";
@@ -34,6 +33,9 @@ import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {ConstraintViolationDto} from "../../shared/dto/constraint-violation-dto";
+import {
+  TAG_SELECT_BIND_VALUE
+} from "../../shared/components/smart-selects/tag-select/tag-select.component";
 
 @Component({
   selector: "app-campaign-edit",
@@ -49,7 +51,7 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
   // A helper auto-complete container for devices matching the user's search input.
   searchDevices?: DeviceDto[];
   // The list of currently available tags.
-  availableTags: TagDto[] | undefined;
+  // availableTags: TagDto[] | undefined;
   memberGroups: any;
   // Validation errors.
   errorsMain?: string[];
@@ -224,11 +226,6 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
       }
     });
 
-    // Get available tags.
-    this.tagService.find("sort=name,asc").subscribe(onNext => {
-      this.availableTags = onNext.content;
-    });
-
     this.initData();
   }
 
@@ -317,7 +314,7 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
    *                  0: The entry is added in a new group.
    */
   addDeviceOrTag(groupNumber?: number) {
-    console.log("Adding to group: " + groupNumber);
+    // Determine group number to add the member.
     let groupNo: number;
     if (groupNumber === undefined) {
       groupNo = this.currentGroup();
@@ -327,31 +324,32 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
       groupNo = groupNumber;
     }
 
-    // Add hardware Ids.
+    // Add the hardware ID to the members list if not already exists.
     let hardwareId = this.form.get("searchByHardwareId")?.value;
-    if (hardwareId && hardwareId !== "") {
-      hardwareId = hardwareId.trim();
-      this.form.get("members")?.value.push(
-        new CampaignMemberDto(
-          uuidv4(),
-          this.appConstants.CAMPAIGN.MEMBER_TYPE.DEVICE,
-          hardwareId, groupNo));
+    if (hardwareId && hardwareId.trim() !== "") {
+      if (!_.find(this.form.get("members")!.value, (o: CampaignMemberDto) => o.identifier === hardwareId)) {
+        this.form.get("members")?.value.push(
+          new CampaignMemberDto(uuidv4(), this.appConstants.CAMPAIGN.MEMBER_TYPE.DEVICE,
+            hardwareId, groupNo));
+      }
     }
 
     // Add tags.
-    const tags = this.form.get("searchByTags")!.value;
-    if (tags && tags.length > 0) {
-      const tagString = tags.join(", ");
-      this.form.get("members")?.value.push(
-        new CampaignMemberDto(uuidv4(),
-          this.appConstants.CAMPAIGN.MEMBER_TYPE.TAG,
-          tagString, groupNo));
+    const tag = this.form.get("searchByTags")!.value;
+    console.log(tag);
+    // Add the tag to the members list if not already exists.
+    if (tag && tag.trim() !== "") {
+      if (!_.find(this.form.get("members")!.value, (o: CampaignMemberDto) => o.identifier === tag)) {
+        this.form.get("members")?.value.push(
+          new CampaignMemberDto(uuidv4(), this.appConstants.CAMPAIGN.MEMBER_TYPE.TAG,
+            tag, groupNo));
+      }
     }
 
     // Clear search boxes.
     this.form.patchValue({
-      searchByHardwareId: "",
-      searchByTags: ""
+      searchByHardwareId: null,
+      searchByTags: null
     });
 
     this.memberGroups = this.getMemberGroups();
@@ -564,4 +562,6 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
       propertyIgnorable: campaignConditionDto.propertyIgnorable,
     });
   }
+
+  protected readonly TAG_SELECT_BIND_VALUE = TAG_SELECT_BIND_VALUE;
 }

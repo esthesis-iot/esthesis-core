@@ -40,6 +40,12 @@
 			<artifactId>esthesis-core-services-command-client</artifactId>
 			<version>3.0.59-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>esthesis</groupId>
+			<artifactId>esthesis-core-services-tag-client</artifactId>
+			<version>3.0.59-SNAPSHOT</version>
+		</dependency>
+
 		<!-- OTHER -->
 		<dependency>
 			<groupId>org.awaitility</groupId>

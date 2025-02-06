@@ -286,14 +286,13 @@ public class CertificateService extends BaseService<CertificateEntity> {
 	/**
 	 * Find all certificates.
 	 *
-	 * @param pageable     Representation of page, size, and sort search parameters.
-	 * @param partialMatch Whether to do a partial match.
+	 * @param pageable Representation of page, size, and sort search parameters.
 	 * @return The page of entities.
 	 */
 	@Override
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
-	public Page<CertificateEntity> find(Pageable pageable, boolean partialMatch) {
-		return super.find(pageable, partialMatch);
+	public Page<CertificateEntity> find(Pageable pageable) {
+		return super.find(pageable);
 	}
 
 	/**

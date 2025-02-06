@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {CommandRequestDto} from "../dto/command-request-dto";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {CommandsService} from "../commands.service";
-import {QFormsService} from "@qlack/forms";
+import {QFilterAlias, QFormsService} from "@qlack/forms";
 import {AppConstants} from "../../app.constants";
 import {CommandCreateComponent} from "../command-create/command-create.component";
 import {
@@ -67,7 +67,7 @@ export class CommandsListComponent extends SecurityBaseComponent implements OnIn
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
     this.commandService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
-      null!, false, page, size, sort, sortDirection))
+      [new QFilterAlias('command', 'description*')], false, page, size, sort, sortDirection))
     .subscribe({
       next: (response) => {
         this.dataSource.data = response.content;

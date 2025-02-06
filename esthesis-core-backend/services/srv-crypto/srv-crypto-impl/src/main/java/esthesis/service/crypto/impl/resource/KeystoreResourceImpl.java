@@ -35,7 +35,7 @@ public class KeystoreResourceImpl implements KeystoreResource {
 	@Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Search keystores",
 		log = AuditLogType.DATA_IN)
 	public Page<KeystoreEntity> find(Pageable pageable) {
-		return keystoreService.find(pageable, true);
+		return keystoreService.find(pageable);
 	}
 
 	@Override

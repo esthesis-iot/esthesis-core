@@ -42,7 +42,7 @@ public class CAResourceImpl implements CAResource {
 	@Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "Search certificate authorities",
 		log = AuditLogType.DATA_IN)
 	public Page<CaEntity> find(@BeanParam Pageable pageable) {
-		return caService.find(pageable, true);
+		return caService.find(pageable);
 	}
 
 	@GET

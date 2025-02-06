@@ -21,6 +21,12 @@ import {CountdownComponent} from "ngx-countdown";
 import {FramedMapComponent} from "./framed-map/framed-map.component";
 import {AcDirective} from "./ac/ac.directive";
 import {LeafletModule} from "@bluehalo/ngx-leaflet";
+import {TagSelectComponent} from "./smart-selects/tag-select/tag-select.component";
+import {MtxSelect} from "@ng-matero/extensions/select";
+import {
+  ProvisioningSelectComponent
+} from "./smart-selects/provisioning-select/provisioning-select.component";
+import {DeviceSelectComponent} from "./smart-selects/device-select/device-select.component";
 
 @NgModule({
   declarations: [
@@ -33,7 +39,10 @@ import {LeafletModule} from "@bluehalo/ngx-leaflet";
     FieldErrorComponent,
     TitlelisePipe,
     FramedMapComponent,
-    AcDirective
+    AcDirective,
+    TagSelectComponent,
+    ProvisioningSelectComponent,
+    DeviceSelectComponent
   ],
   imports: [
     CommonModule,
@@ -48,7 +57,8 @@ import {LeafletModule} from "@bluehalo/ngx-leaflet";
     FontAwesomeModule,
     CountdownComponent,
     LeafletModule,
-    FormsModule
+    FormsModule,
+    MtxSelect
   ],
   exports: [
     BooleanCheckboxComponent,
@@ -58,7 +68,10 @@ import {LeafletModule} from "@bluehalo/ngx-leaflet";
     LiveToggleComponent,
     FramedMapComponent,
     AcDirective,
-    MatIconPickerComponent
+    MatIconPickerComponent,
+    TagSelectComponent,
+    ProvisioningSelectComponent,
+    DeviceSelectComponent
   ]
 })
 export class ComponentsModule {

@@ -1,8 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
-import {TagDto} from "../../tags/dto/tag-dto";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {TagsService} from "../../tags/tags.service";
 import {DevicesService} from "../devices.service";
 import {
   OkCancelModalComponent
@@ -24,7 +22,6 @@ export class DeviceComponent extends SecurityBaseComponent implements OnInit {
   id!: string | null;
   deviceInfoForm!: FormGroup;
   device: DeviceDto | undefined;
-  availableTags: TagDto[] | undefined;
   hardwareId = "";
   // Geolocation and map options for this device.
   geolocation?: GeolocationDto;
@@ -32,7 +29,7 @@ export class DeviceComponent extends SecurityBaseComponent implements OnInit {
   mapLayers?: Layer[];
 
   constructor(private readonly fb: FormBuilder, private readonly dialog: MatDialog,
-    private readonly tagService: TagsService,private readonly devicesService: DevicesService,
+    private readonly devicesService: DevicesService,
     private readonly route: ActivatedRoute, private readonly router: Router,
     private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.DEVICE, route.snapshot.paramMap.get("id"));
@@ -49,11 +46,6 @@ export class DeviceComponent extends SecurityBaseComponent implements OnInit {
       hardwareId: [null, [Validators.required, Validators.maxLength(512)]]
     });
     this.isFormDisabled().subscribe(disabled => disabled && this.deviceInfoForm.disable());
-
-    // Get available tags.
-    this.tagService.find("sort=name,asc").subscribe(onNext => {
-      this.availableTags = onNext.content;
-    });
 
     // Fetch the data for this device.
     this.devicesService.findById(this.id).subscribe(onNext => {
@@ -82,7 +74,7 @@ export class DeviceComponent extends SecurityBaseComponent implements OnInit {
   }
 
   saveDeviceInfo() {
-    this.devicesService.save(this.deviceInfoForm.getRawValue() as DeviceDto).subscribe({
+    this.devicesService.saveTagsAndStatus(this.deviceInfoForm.getRawValue() as DeviceDto).subscribe({
       next: () => {
         this.utilityService.popupSuccess("Device successfully saved.");
         this.router.navigate(["devices"]);
@@ -142,4 +134,5 @@ export class DeviceComponent extends SecurityBaseComponent implements OnInit {
       }
     });
   }
+
 }

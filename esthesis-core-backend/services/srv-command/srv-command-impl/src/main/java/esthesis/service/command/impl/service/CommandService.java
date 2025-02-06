@@ -99,13 +99,13 @@ public class CommandService {
 	}
 
 	/**
-	 * Finds devices with the given (partial) hardware Id. The matching algorithm is partial.
+	 * Finds devices with the given hardware ID. The matching algorithm is partial.
 	 *
 	 * @param hardwareId The hardware ID to search for.
 	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = READ)
 	public List<DeviceEntity> findDevicesByHardwareId(String hardwareId) {
-		return deviceResource.findByHardwareIds(hardwareId, true);
+		return deviceResource.findByHardwareIds(hardwareId);
 	}
 
 	/**
@@ -189,7 +189,7 @@ public class CommandService {
 		// Add devices by their tags.
 		if (StringUtils.isNotBlank(request.getTags())) {
 			hardwareIds.addAll(
-				tagResource.findByNames(request.getTags(), false).stream()
+				tagResource.findByIds(request.getTags()).stream()
 					.map(tag -> deviceResource.findByTagId(tag.getId().toString()))
 					.flatMap(List::stream).map(DeviceEntity::getHardwareId)
 					.toList());
@@ -223,13 +223,12 @@ public class CommandService {
 	/**
 	 * Finds command requests.
 	 *
-	 * @param pageable     Paging parameters.
-	 * @param partialMatch Whether to perform a partial match on the command request.
+	 * @param pageable Paging parameters.
 	 * @return A page of command requests.
 	 */
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = READ)
-	public Page<CommandRequestEntity> findCommandRequest(Pageable pageable, boolean partialMatch) {
-		return commandRequestService.find(pageable, partialMatch);
+	public Page<CommandRequestEntity> findCommandRequest(Pageable pageable) {
+		return commandRequestService.find(pageable);
 	}
 
 	/**

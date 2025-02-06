@@ -39,17 +39,16 @@ public class DeviceTagService {
 	/**
 	 * Finds the devices matched by the specific list of tags.v
 	 *
-	 * @param tagNames     The list of tag names to search by, separated by comma.
-	 * @param partialMatch Whether the search for the tag name will be partial or not.
+	 * @param tagNames The list of tag names to search by, separated by comma.
 	 * @return Returns the devices matched.
 	 */
 	@ErnPermission(category = DEVICE, operation = READ)
-	public List<DeviceEntity> findByTagName(List<String> tagNames, boolean partialMatch) {
+	public List<DeviceEntity> findByTagName(List<String> tagNames) {
 		if (CollectionUtils.isEmpty(tagNames)) {
 			return new ArrayList<>();
 		} else {
 			List<TagEntity> tagsByName = Lists.newArrayList(
-				tagResource.findByNames(String.join(",", tagNames), partialMatch));
+				tagResource.findByNames(String.join(",", tagNames)));
 			return deviceRepository.findByTagId(tagsByName.stream()
 				.map(TagEntity::getId)
 				.map(Object::toString)
@@ -60,13 +59,12 @@ public class DeviceTagService {
 	/**
 	 * Finds the devices matched by the specific list of tags.
 	 *
-	 * @param tagName      The tag name to search by.
-	 * @param partialMatch Whether the search for the tag name will be partial or not.
+	 * @param tagName The tag name to search by.
 	 * @return Returns the devices matched.
 	 */
 	@ErnPermission(category = DEVICE, operation = READ)
-	public List<DeviceEntity> findByTagName(String tagName, boolean partialMatch) {
-		return findByTagName(Collections.singletonList(tagName), partialMatch);
+	public List<DeviceEntity> findByTagName(String tagName) {
+		return findByTagName(Collections.singletonList(tagName));
 	}
 
 	/**
@@ -94,14 +92,13 @@ public class DeviceTagService {
 	/**
 	 * Counts the number of devices having at least one of the tags specified.
 	 *
-	 * @param tags         The list of tag names to search by.
-	 * @param partialMatch Whether the search for the tag name should be partial or not.
+	 * @param tags The list of tag names to search by.
 	 * @return Returns the number of devices matched.
 	 */
 	@ErnPermission(category = DEVICE, operation = READ)
-	public Long countByTag(List<String> tags, boolean partialMatch) {
+	public Long countByTag(List<String> tags) {
 		List<TagEntity> tagsByName = Lists.newArrayList(
-			tagResource.findByNames(String.join(",", tags), partialMatch));
+			tagResource.findByNames(String.join(",", tags)));
 		if (!CollectionUtils.isEmpty(tagsByName)) {
 			return deviceRepository.countByTag(tagsByName.stream()
 				.map(TagEntity::getId)

@@ -34,7 +34,7 @@ public class ApplicationResourceImpl implements ApplicationResource {
 	@Audited(cat = Category.APPLICATION, op = Operation.READ, msg = "Search applications",
 		log = AuditLogType.DATA_IN)
 	public Page<ApplicationEntity> find(@BeanParam Pageable pageable) {
-		return applicationService.find(pageable, true);
+		return applicationService.find(pageable);
 	}
 
 	@Override

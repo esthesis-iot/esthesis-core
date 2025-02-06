@@ -202,7 +202,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 	public List<ProvisioningPackageEntity> findByTags(String tags) {
 		List<ProvisioningPackageEntity> packages = tags.isBlank()
 			? getAll()
-			: findByColumnIn("tags", Arrays.asList(tags.split(",")), false);
+			: findByColumnIn("tags", Arrays.asList(tags.split(",")));
 		if (isSemverEnabled()) {
 			return packages.stream()
 				.sorted(Comparator.comparing(ppe -> new Semver(ppe.getVersion())))
@@ -236,7 +236,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 	public ProvisioningPackageEntity semVerFind(String hardwareId, String version) {
 		// Find the tags of the device.
 		log.debug("Finding provisioning packages for hardwareId '{}'.", hardwareId);
-		List<DeviceEntity> deviceEntities = deviceResource.findByHardwareIds(hardwareId, false);
+		List<DeviceEntity> deviceEntities = deviceResource.findByHardwareIds(hardwareId);
 		if (deviceEntities.isEmpty()) {
 			throw new QMismatchException("No device found with hardware id '" + hardwareId + "'.");
 		}
@@ -282,14 +282,13 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 	/**
 	 * Finds all provisioning packages.
 	 *
-	 * @param pageable     Representation of page, size, and sort search parameters.
-	 * @param partialMatch Whether to do a partial match.
+	 * @param pageable Representation of page, size, and sort search parameters.
 	 * @return The list of provisioning packages.
 	 */
 	@Override
 	@ErnPermission(category = PROVISIONING, operation = READ)
-	public Page<ProvisioningPackageEntity> find(Pageable pageable, boolean partialMatch) {
-		return super.find(pageable, partialMatch);
+	public Page<ProvisioningPackageEntity> find(Pageable pageable) {
+		return super.find(pageable);
 	}
 
 	/**

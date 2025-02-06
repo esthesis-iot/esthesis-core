@@ -1,21 +1,20 @@
 package esthesis.service.provisioning.impl.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.service.provisioning.entity.ProvisioningPackageEntity;
 import esthesis.service.provisioning.impl.repository.ProvisioningRepository;
+import java.util.Arrays;
+import java.util.List;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 class ProvisioningAgentServiceTest {
 
@@ -49,7 +48,7 @@ class ProvisioningAgentServiceTest {
 		deviceEntity = new DeviceEntity();
 		deviceEntity.setId(new ObjectId());
 		deviceEntity.setTags(List.of("tag1"));
-		when(deviceResource.findByHardwareIds(hardwareId, false)).thenReturn(List.of(deviceEntity));
+		when(deviceResource.findByHardwareIds(hardwareId)).thenReturn(List.of(deviceEntity));
 		packages = Arrays.asList(
 			ProvisioningPackageEntity.builder().version("1.0.1").tags(List.of("tag1")).build(),
 			ProvisioningPackageEntity.builder().version("1.0.2").tags(List.of("tag1")).build()
@@ -64,7 +63,7 @@ class ProvisioningAgentServiceTest {
 		deviceEntity = new DeviceEntity();
 		deviceEntity.setId(new ObjectId());
 		deviceEntity.setTags(List.of("tagXYZ"));
-		when(deviceResource.findByHardwareIds(hardwareId, false)).thenReturn(List.of(deviceEntity));
+		when(deviceResource.findByHardwareIds(hardwareId)).thenReturn(List.of(deviceEntity));
 		packages = Arrays.asList(
 			ProvisioningPackageEntity.builder().version("1.0.1").tags(List.of("tag1")).build(),
 			ProvisioningPackageEntity.builder().version("1.0.2").tags(List.of("tag1")).build()
@@ -79,7 +78,7 @@ class ProvisioningAgentServiceTest {
 		deviceEntity = new DeviceEntity();
 		deviceEntity.setId(new ObjectId());
 		deviceEntity.setTags(List.of("tag1,tag2"));
-		when(deviceResource.findByHardwareIds(hardwareId, false)).thenReturn(List.of(deviceEntity));
+		when(deviceResource.findByHardwareIds(hardwareId)).thenReturn(List.of(deviceEntity));
 		packages = Arrays.asList(
 			ProvisioningPackageEntity.builder().version("1.0.1").tags(List.of("tag1")).build(),
 			ProvisioningPackageEntity.builder().version("1.0.2").tags(List.of("tag1")).build(),
@@ -96,7 +95,7 @@ class ProvisioningAgentServiceTest {
 		deviceEntity = new DeviceEntity();
 		deviceEntity.setId(new ObjectId());
 		deviceEntity.setTags(List.of("tag1"));
-		when(deviceResource.findByHardwareIds(hardwareId, false)).thenReturn(List.of(deviceEntity));
+		when(deviceResource.findByHardwareIds(hardwareId)).thenReturn(List.of(deviceEntity));
 		packages = Arrays.asList(
 			ProvisioningPackageEntity.builder().version("1.0.1").tags(List.of("tag1")).build(),
 			ProvisioningPackageEntity.builder().version("1.0.2").tags(List.of("tag1")).build(),
@@ -112,7 +111,7 @@ class ProvisioningAgentServiceTest {
 		deviceEntity = new DeviceEntity();
 		deviceEntity.setId(new ObjectId());
 		deviceEntity.setTags(List.of("tag1"));
-		when(deviceResource.findByHardwareIds(hardwareId, false)).thenReturn(List.of(deviceEntity));
+		when(deviceResource.findByHardwareIds(hardwareId)).thenReturn(List.of(deviceEntity));
 		packages = Arrays.asList(
 			ProvisioningPackageEntity.builder().version("1.0.1").tags(List.of("tag1")).build(),
 			ProvisioningPackageEntity.builder().version("1.0.9").tags(List.of("tag1")).build(),

@@ -36,13 +36,12 @@ public class SecurityGroupService extends BaseService<GroupEntity> {
 	/**
 	 * Find all groups.
 	 *
-	 * @param pageable     Representation of page, size, and sort search parameters.
-	 * @param partialMatch Whether to do a partial match.
+	 * @param pageable Representation of page, size, and sort search parameters.
 	 * @return The page of groups.
 	 */
 	@Override
-	public Page<GroupEntity> find(Pageable pageable, boolean partialMatch) {
-		return super.find(pageable, partialMatch);
+	public Page<GroupEntity> find(Pageable pageable) {
+		return super.find(pageable);
 	}
 
 	/**

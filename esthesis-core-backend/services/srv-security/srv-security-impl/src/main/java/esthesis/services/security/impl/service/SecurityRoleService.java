@@ -36,13 +36,12 @@ public class SecurityRoleService extends BaseService<RoleEntity> {
 	/**
 	 * Find all security roles.
 	 *
-	 * @param pageable     Representation of page, size, and sort search parameters.
-	 * @param partialMatch Whether to do a partial match.
+	 * @param pageable Representation of page, size, and sort search parameters.
 	 * @return The page of security roles.
 	 */
 	@Override
-	public Page<RoleEntity> find(Pageable pageable, boolean partialMatch) {
-		return super.find(pageable, partialMatch);
+	public Page<RoleEntity> find(Pageable pageable) {
+		return super.find(pageable);
 	}
 
 	/**

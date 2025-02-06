@@ -314,8 +314,7 @@ public class CampaignService extends BaseService<CampaignEntity> {
 			if (member.getType() == Type.DEVICE) {
 				log.debug("Searching device with hardware id '{}'.", member.getIdentifier());
 				// Find the device behind this member's identifier.
-				List<DeviceEntity> device = deviceResource.findByHardwareIds(member.getIdentifier(),
-					false);
+				List<DeviceEntity> device = deviceResource.findByHardwareIds(member.getIdentifier());
 
 				// Check if a unique device was found.
 				if (device.isEmpty()) {
@@ -495,8 +494,8 @@ public class CampaignService extends BaseService<CampaignEntity> {
 
 	@Override
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = READ)
-	public Page<CampaignEntity> find(Pageable pageable, boolean partialMatch) {
-		return super.find(pageable, partialMatch);
+	public Page<CampaignEntity> find(Pageable pageable) {
+		return super.find(pageable);
 	}
 
 	@Override

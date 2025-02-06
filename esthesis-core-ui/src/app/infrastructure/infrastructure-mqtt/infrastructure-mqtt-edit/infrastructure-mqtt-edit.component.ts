@@ -10,6 +10,7 @@ import {
 } from "../../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
 import {AppConstants} from "../../../app.constants";
+import {TagsService} from "../../../tags/tags.service";
 
 @Component({
   selector: "app-infrastructure-mqtt-edit",
@@ -22,7 +23,7 @@ export class InfrastructureMqttEditComponent extends SecurityBaseComponent imple
   constructor(private readonly fb: FormBuilder, private readonly dialog: MatDialog,
     private readonly infrastructureMqttService: InfrastructureMqttService,
     private readonly route: ActivatedRoute, private readonly router: Router,
-    private readonly utilityService: UtilityService) {
+    private readonly utilityService: UtilityService, private readonly tagsService: TagsService) {
     super(AppConstants.SECURITY.CATEGORY.INFRASTRUCTURE, route.snapshot.paramMap.get("id"));
   }
 
@@ -45,10 +46,6 @@ export class InfrastructureMqttEditComponent extends SecurityBaseComponent imple
       this.infrastructureMqttService.findById(this.id).subscribe({
         next: (mqttServer: InfrastructureMqttDto) => {
           this.form.patchValue(mqttServer);
-          this.tagsService.findByIds(mqttServer.tags).subscribe({
-            next: (tags: any) => {
-              this.loadFilteredTags(tags);
-            }});
         }, error: (err: any) => {
           this.utilityService.popupErrorWithTraceId("Could not fetch MQTT server.", err);
         }
@@ -90,5 +87,7 @@ export class InfrastructureMqttEditComponent extends SecurityBaseComponent imple
       }
     });
   }
+
+  protected readonly structuredClone = structuredClone;
 }
 

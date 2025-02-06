@@ -3,7 +3,7 @@ import {MatSort} from "@angular/material/sort";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {TagDto} from "../dto/tag-dto";
 import {TagsService} from "../tags.service";
-import {QFormsService} from "@qlack/forms";
+import {QFilterAlias, QFormsService} from "@qlack/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
@@ -62,7 +62,7 @@ export class TagsListComponent extends SecurityBaseComponent implements OnInit, 
   fetchData(page: number, size: number, sort: string, sortDirection: string) {
     // Convert FormGroup to a query string to pass as a filter.
     this.tagService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
-      [], false, page, size, sort, sortDirection)).subscribe({
+      [new QFilterAlias('name', 'name*')], false, page, size, sort, sortDirection)).subscribe({
       next: (onNext) => {
         this.datasource.data = onNext.content;
         this.paginator.length = onNext.totalElements;

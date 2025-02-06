@@ -37,7 +37,8 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
 	@Audited(cat = Category.PROVISIONING, op = Operation.READ, msg = "Search provisioning packages"
 		, log = AuditLogType.DATA_IN)
 	public Page<ProvisioningPackageEntity> find(@BeanParam Pageable pageable) {
-		return provisioningService.find(pageable, false);
+		System.out.println(pageable);
+		return provisioningService.find(pageable);
 	}
 
 	@Override

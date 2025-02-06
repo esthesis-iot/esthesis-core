@@ -218,8 +218,8 @@ public class KeystoreService extends BaseService<KeystoreEntity> {
 
 	@Override
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
-	public Page<KeystoreEntity> find(Pageable pageable, boolean partialMatch) {
-		return super.find(pageable, true);
+	public Page<KeystoreEntity> find(Pageable pageable) {
+		return super.find(pageable);
 	}
 
 	/**

@@ -129,7 +129,7 @@ public interface DTResource {
 	 * Send a custom command to be executed on devices by tag, either synchronously (default) or
 	 * asynchronously.
 	 *
-	 * @param tag     The tag of the targeted devices.
+	 * @param tag     The tag name of the targeted devices.
 	 * @param command The command to execute on the devices.
 	 * @param async   Set to true to execute the command asynchronously.
 	 * @return The response containing the command execution result.
@@ -137,11 +137,11 @@ public interface DTResource {
 	@POST
 	@DTSecurityFilter
 	@Path("/v1/command/tag/{tag}/execute")
-	@Operation(summary = "Send a custom command to be executed on devices by tag, either "
+	@Operation(summary = "Send a custom command to be executed on devices by tag name, either "
 		+ "synchronously (default) or asynchronously./")
 	Response executeCommandByTag(
 		@Parameter(
-			description = "The tag of the targeted devices",
+			description = "The tag name of the targeted devices",
 			required = true,
 			schema = @Schema(type = SchemaType.STRING))
 		@PathParam("tag") String tag,
@@ -196,18 +196,18 @@ public interface DTResource {
 	 * Send a ping command to be executed on devices by tag, either synchronously (default) or
 	 * asynchronously.
 	 *
-	 * @param tag   The tag of the targeted devices.
+	 * @param tag   The tag name of the targeted devices.
 	 * @param async Set to true to execute the command asynchronously.
 	 * @return The response containing the command execution result.
 	 */
 	@POST
 	@DTSecurityFilter
 	@Path("/v1/command/tag/{tag}/ping")
-	@Operation(summary = "Send a ping command to be executed on devices by tag, either "
+	@Operation(summary = "Send a ping command to be executed on devices by tag name, either "
 		+ "synchronously (default) or asynchronously.")
 	Response pingCommandByTag(
 		@Parameter(
-			description = "The tag of the targeted devices",
+			description = "The tag name of the targeted devices",
 			required = true,
 			schema = @Schema(type = SchemaType.STRING))
 		@PathParam("tag") String tag,
@@ -245,18 +245,18 @@ public interface DTResource {
 	 * Send a shutdown command to be executed on devices by tag, either synchronously (default) or
 	 * asynchronously.
 	 *
-	 * @param tag   The tag of the targeted devices.
+	 * @param tag   The tag name of the targeted devices.
 	 * @param async Set to true to execute the command asynchronously.
 	 * @return The response containing the command execution result.
 	 */
 	@POST
 	@DTSecurityFilter
 	@Path("/v1/command/tag/{tag}/shutdown")
-	@Operation(summary = "Send a shutdown command to be executed on devices by tag, either "
+	@Operation(summary = "Send a shutdown command to be executed on devices by tag name, either "
 		+ "synchronously (default) or asynchronously")
 	Response shutdownCommandByTag(
 		@Parameter(
-			description = "The tag of the targeted devices",
+			description = "The tag name of the targeted devices",
 			required = true,
 			schema = @Schema(type = SchemaType.STRING))
 		@PathParam("tag") String tag,
@@ -293,18 +293,18 @@ public interface DTResource {
 	 * Send a reboot command to be executed on devices by tag, either synchronously (default) or
 	 * asynchronously.
 	 *
-	 * @param tag   The tag of the targeted devices.
+	 * @param tag   The tag name of the targeted devices.
 	 * @param async Set to true to execute the command asynchronously.
 	 * @return The response containing the command execution result.
 	 */
 	@POST
 	@DTSecurityFilter
 	@Path("/v1/command/tag/{tag}/reboot")
-	@Operation(summary = "Send a reboot command to be executed on devices by tag, either "
+	@Operation(summary = "Send a reboot command to be executed on devices by tag name, either "
 		+ "synchronously (default) or asynchronously")
 	Response rebootCommandByTag(
 		@Parameter(
-			description = "The tag of the targeted devices",
+			description = "The tag name of the targeted devices",
 			required = true,
 			schema = @Schema(type = SchemaType.STRING))
 		@PathParam("tag") String tag,
@@ -342,18 +342,18 @@ public interface DTResource {
 	 * Send a firmware update command to be executed on devices by tag, either synchronously (default)
 	 * or asynchronously.
 	 *
-	 * @param tag   The tag of the targeted devices.
+	 * @param tag   The tag name of the targeted devices.
 	 * @param async Set to true to execute the command asynchronously.
 	 * @return The response containing the command execution result.
 	 */
 	@POST
 	@DTSecurityFilter
 	@Path("/v1/command/tag/{tag}/firmware")
-	@Operation(summary = "Send a firmware update command to be executed on devices by tag, either "
-		+ "synchronously (default) or asynchronously")
+	@Operation(summary = "Send a firmware update command to be executed on devices by tag name, "
+		+ "either synchronously (default) or asynchronously")
 	Response firmwareCommandByTag(
 		@Parameter(
-			description = "The tag of the targeted devices",
+			description = "The tag name of the targeted devices",
 			required = true,
 			schema = @Schema(type = SchemaType.STRING))
 		@PathParam("tag") String tag,
@@ -391,18 +391,18 @@ public interface DTResource {
 	 * Send a health command to be executed on devices by tag, either synchronously (default) or
 	 * asynchronously.
 	 *
-	 * @param tag   The tag of the targeted devices.
+	 * @param tag   The tag name of the targeted devices.
 	 * @param async Set to true to execute the command asynchronously.
 	 * @return The response containing the command execution result.
 	 */
 	@POST
 	@DTSecurityFilter
 	@Path("/v1/command/tag/{tag}/health")
-	@Operation(summary = "Send a health command to be executed on devices by tag, either "
+	@Operation(summary = "Send a health command to be executed on devices by tag name, either "
 		+ "synchronously (default) or asynchronously")
 	Response healthCommandByTag(
 		@Parameter(
-			description = "The tag of the targeted devices",
+			description = "The tag name of the targeted devices",
 			required = true,
 			schema = @Schema(type = SchemaType.STRING))
 		@PathParam("tag") String tag,
