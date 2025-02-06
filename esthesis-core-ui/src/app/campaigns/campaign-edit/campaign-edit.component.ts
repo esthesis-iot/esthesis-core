@@ -33,14 +33,12 @@ import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {ConstraintViolationDto} from "../../shared/dto/constraint-violation-dto";
-import {SMART_SELECT_BIND_VALUE} from "../../shared/components/smart-select/smart-select.component";
 
 @Component({
   selector: "app-campaign-edit",
   templateUrl: "./campaign-edit.component.html"
 })
 export class CampaignEditComponent extends SecurityBaseComponent implements OnInit {
-  protected readonly SMART_SELECT_BIND_VALUE = SMART_SELECT_BIND_VALUE;
   // Campaign details form.
   form!: FormGroup;
   // The id of the form currently being processed.
@@ -80,7 +78,7 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
   constructor(private readonly fb: FormBuilder, public utilityService: UtilityService,
     private readonly provisioningService: ProvisioningService,
     private readonly route: ActivatedRoute, private readonly router: Router,
-    public readonly deviceService: DevicesService,
+    protected readonly devicesService: DevicesService,
     public readonly tagsService: TagsService, private readonly campaignService: CampaignsService,
     private readonly dialog: MatDialog) {
     super(AppConstants.SECURITY.CATEGORY.CAMPAIGN, route.snapshot.paramMap.get("id"));
@@ -210,7 +208,7 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
     ).subscribe({
       next: (searchVal: string) => {
         if (searchVal && searchVal.trim() !== "") {
-          this.deviceService.findDeviceByPartialHardwareId(searchVal).subscribe({
+          this.devicesService.findByHardwareIds(searchVal).subscribe({
             next: (devices: DeviceDto[]) => {
               if (devices && devices.length > 0) {
                 this.searchDevices = devices;
@@ -335,7 +333,6 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
 
     // Add tags.
     const tag = this.form.get("searchByTags")!.value;
-    console.log(tag);
     // Add the tag to the members list if not already exists.
     if (tag && tag.trim() !== "") {
       if (!_.find(this.form.get("members")!.value, (o: CampaignMemberDto) => o.identifier === tag)) {

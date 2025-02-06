@@ -161,7 +161,7 @@ public class DeviceResourceImpl implements DeviceResource {
 	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	public List<DeviceEntity> findByHardwareIds(String hardwareIds) {
-		return deviceService.findByHardwareId(Arrays.asList(hardwareIds.split(",")));
+		return deviceService.findByHardwareIds(Arrays.asList(hardwareIds.split(",")));
 	}
 
 	@Override

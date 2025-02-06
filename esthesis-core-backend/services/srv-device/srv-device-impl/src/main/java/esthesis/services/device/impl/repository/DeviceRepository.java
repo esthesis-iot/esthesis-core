@@ -15,11 +15,11 @@ import java.util.Optional;
 @SuppressWarnings("java:S1192")
 public class DeviceRepository implements PanacheMongoRepository<DeviceEntity> {
 
-	public Optional<DeviceEntity> findByHardwareId(String hardwareId) {
+	public Optional<DeviceEntity> findByHardwareIds(String hardwareId) {
 		return find("hardwareId", hardwareId).firstResultOptional();
 	}
 
-	public List<DeviceEntity> findByHardwareId(List<String> hardwareIds) {
+	public List<DeviceEntity> findByHardwareIds(List<String> hardwareIds) {
 		return find("hardwareId in ?1", hardwareIds).list();
 	}
 

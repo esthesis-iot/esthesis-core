@@ -33,14 +33,17 @@
             <mat-datepicker-toggle [for]="validityPicker" matSuffix></mat-datepicker-toggle>
             <mat-datepicker #validityPicker disabled="false"></mat-datepicker>
           </mat-form-field>
-          <mat-form-field>
-            <mat-label>Parent CA</mat-label>
-            <mat-select formControlName="parentCaId">
-              <mat-option *ngFor="let option of parents" [value]="option.id">
-                {{ option.cn }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <app-smart-select class="flex flex-grow"
+                            [parentForm]="form"
+                            parentFormField="parentCaId"
+                            dtoValue="id"
+                            dtoLabel="name"
+                            searchMethod="find"
+                            searchTerm="cn"
+                            getMethod="findById"
+                            [multiple]="false"
+                            label="Parent CA" [service]="caService">
+          </app-smart-select>
         </div>
       </form>
     </div>

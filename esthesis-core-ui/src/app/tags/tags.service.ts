@@ -17,12 +17,12 @@ export class TagsService extends CrudService<TagDto> {
     super(http, "tag/v1");
   }
 
-  findByNames(names: string[]): Observable<TagDto[]> {
+  findByName(names: string): Observable<TagDto[]> {
     if (!names || names.length === 0) {
       return of([]);
     } else {
       return this.http.get<TagDto[]>(
-        `${AppConstants.API_ROOT}/${this.endpoint}/find/by-names?names=${names.join(",")}`
+        `${AppConstants.API_ROOT}/${this.endpoint}/find/by-names?names=${names}`
       );
     }
   }

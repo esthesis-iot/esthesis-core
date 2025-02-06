@@ -21,8 +21,13 @@
           </mat-hint>
         </mat-form-field>
         <app-smart-select class="flex flex-grow" label="Search by tags"
-                          [bindValue]="SMART_SELECT_BIND_VALUE.NAME"
-                          [parentForm]="form" parentFormTargetField="tags"
+                          [parentForm]="form"
+                          parentFormField="tags"
+                          dtoValue="name"
+                          dtoLabel="name"
+                          searchMethod="find"
+                          searchTerm="name"
+                          getMethod="findByName"
                           [service]="tagsService">
         </app-smart-select>
       </form>

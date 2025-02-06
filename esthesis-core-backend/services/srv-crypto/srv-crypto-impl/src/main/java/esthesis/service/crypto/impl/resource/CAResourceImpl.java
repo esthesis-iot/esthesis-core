@@ -19,6 +19,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
@@ -47,9 +48,28 @@ public class CAResourceImpl implements CAResource {
 
 	@GET
 	@Override
-	@Path("/v1/{id}")
+	@Path("/v1/find/by-ids")
+	@RolesAllowed(AppConstants.ROLE_USER)
+	@JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,"
+		+ "content.parentCaId,content.validity,content.name")
+	public List<CaEntity> findByIds(String id) {
+		return caService.findByIds(id);
+	}
+
+	@GET
+	@Path("/v1/find/by-cn")
+	@Override
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@JSONReplyFilter(filter = "id,cn,issued,parentCa,validity,parentCaId,name")
+	public CaEntity findByCn(@QueryParam("cn") String cn) {
+		return caService.findByCn(cn);
+	}
+
+	@GET
+	@Override
+	@Path("/v1/{id}")
+	@RolesAllowed(AppConstants.ROLE_USER)
+	@JSONReplyFilter(filter = "id,cn,issued,validity,name,parentCa,parentCaId")
 	@Audited(cat = Category.CRYPTO, op = Operation.READ, msg = "View certificate authority")
 	public CaEntity findById(String id) {
 		return caService.findById(id);

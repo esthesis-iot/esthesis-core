@@ -22,10 +22,9 @@ export class CasEditComponent extends SecurityBaseComponent implements OnInit {
   id!: string | null;
   parents: CaDto[] | undefined;
 
-  constructor(private readonly fb: FormBuilder, private readonly caService: CasService,
+  constructor(private readonly fb: FormBuilder, protected readonly caService: CasService,
     private readonly route: ActivatedRoute, private readonly router: Router,
-    private readonly dialog: MatDialog,
-    private readonly utilityService: UtilityService,
+    private readonly dialog: MatDialog, private readonly utilityService: UtilityService,
     private readonly qFormValidation: QFormValidationEEService) {
     super(AppConstants.SECURITY.CATEGORY.CA, route.snapshot.paramMap.get("id"));
   }
@@ -122,4 +121,5 @@ export class CasEditComponent extends SecurityBaseComponent implements OnInit {
   downloadPrivateKey() {
     this.caService.download(this.id!, AppConstants.KEY_TYPE.PRIVATE_KEY);
   }
+
 }

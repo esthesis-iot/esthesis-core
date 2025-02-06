@@ -156,7 +156,7 @@ public class DeviceRegistrationService {
 	 */
 	private void checkIfDeviceExists(String hardwareId) {
 		// Check that a device with the same hardware ID does not already exist.
-		if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
+		if (deviceRepository.findByHardwareIds(hardwareId).isPresent()) {
 			throw new QAlreadyExistsException(
 				"A device with hardware id '{}' is already registered with the platform.", hardwareId);
 		}
@@ -284,7 +284,7 @@ public class DeviceRegistrationService {
 		// are available. If any of the given IDs is already assigned on an
 		// existing device abort the preregistration.
 		for (String hardwareId : idList) {
-			if (deviceRepository.findByHardwareId(hardwareId).isPresent()) {
+			if (deviceRepository.findByHardwareIds(hardwareId).isPresent()) {
 				throw new QAlreadyExistsException("Preregistration id '{}' is already assigned to a device "
 					+ "registered in the system.", hardwareId);
 			}
@@ -349,7 +349,7 @@ public class DeviceRegistrationService {
 	 */
 	@ErnPermission(category = DEVICE, operation = WRITE)
 	public DeviceEntity activatePreregisteredDevice(String hardwareId) {
-		Optional<DeviceEntity> optionalDevice = deviceRepository.findByHardwareId(hardwareId);
+		Optional<DeviceEntity> optionalDevice = deviceRepository.findByHardwareIds(hardwareId);
 
 		// Check that a device with the same hardware ID is not already registered.
 		if (optionalDevice.isPresent() && !optionalDevice.get().getStatus()

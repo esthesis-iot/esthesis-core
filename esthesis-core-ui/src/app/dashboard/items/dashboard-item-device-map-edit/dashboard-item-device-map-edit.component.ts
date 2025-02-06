@@ -71,7 +71,7 @@ export class DashboardItemDeviceMapEditComponent extends SecurityBaseComponent i
     ).subscribe({
       next: (searchVal: string) => {
         if (searchVal && searchVal.trim() !== "") {
-          this.deviceService.findDeviceByPartialHardwareId(searchVal).subscribe({
+          this.deviceService.findByHardwareIds(searchVal).subscribe({
             next: (devices: DeviceDto[]) => {
               if (devices && devices.length > 0) {
                 this.searchHardwareIds = devices.map(d => d.hardwareId);

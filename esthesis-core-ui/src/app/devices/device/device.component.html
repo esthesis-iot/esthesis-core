@@ -61,7 +61,13 @@
 
           <div class="-mt-8">
             <app-smart-select class="flex flex-grow" label="Tags"
-                              [parentForm]="deviceInfoForm" parentFormTargetField="tags"
+                              [parentForm]="deviceInfoForm"
+                              parentFormField="tags"
+                              dtoValue="id"
+                              dtoLabel="name"
+                              searchMethod="find"
+                              searchTerm="name"
+                              getMethod="findByIds"
                               [service]="tagsService">
             </app-smart-select>
           </div>

@@ -43,7 +43,7 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public DeviceEntity findByHardwareId(String hardwareId) {
-		return deviceService.findByHardwareId(hardwareId).orElseThrow();
+		return deviceService.findByHardwareIds(hardwareId).orElseThrow();
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public String findPublicKey(String hardwareId) {
-		return deviceService.findByHardwareId(hardwareId).orElseThrow()
+		return deviceService.findByHardwareIds(hardwareId).orElseThrow()
 			.getDeviceKey().getPublicKey();
 	}
 
@@ -74,7 +74,7 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
 	public List<DeviceAttributeEntity> getDeviceAttributesByEsthesisHardwareId(
 		String esthesisHardwareId) {
-		Optional<DeviceEntity> byHardwareId = deviceService.findByHardwareId(esthesisHardwareId);
+		Optional<DeviceEntity> byHardwareId = deviceService.findByHardwareIds(esthesisHardwareId);
 		if (byHardwareId.isPresent()) {
 			return deviceService.getProfile(byHardwareId.get().getId().toHexString()).getAttributes();
 		} else {
@@ -93,7 +93,7 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 	public Optional<DeviceAttributeEntity> getDeviceAttributeByEsthesisHardwareIdAndAttributeName(
 		String esthesisHardwareId, String attributeName) {
 		return deviceService.getDeviceAttributeByName(
-			deviceService.findByHardwareId(esthesisHardwareId).orElseThrow().getId().toHexString(),
+			deviceService.findByHardwareIds(esthesisHardwareId).orElseThrow().getId().toHexString(),
 			attributeName);
 	}
 

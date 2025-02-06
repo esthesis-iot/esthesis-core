@@ -137,13 +137,13 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	 * @return Returns the device matched.
 	 */
 	@ErnPermission(category = DEVICE, operation = READ)
-	public Optional<DeviceEntity> findByHardwareId(String hardwareId) {
-		return deviceRepository.findByHardwareId(hardwareId);
+	public Optional<DeviceEntity> findByHardwareIds(String hardwareId) {
+		return deviceRepository.findByHardwareIds(hardwareId);
 	}
 
 	@ErnPermission(category = DEVICE, operation = READ)
-	public List<DeviceEntity> findByHardwareId(List<String> hardwareId) {
-		return deviceRepository.findByHardwareId(hardwareId);
+	public List<DeviceEntity> findByHardwareIds(List<String> hardwareId) {
+		return deviceRepository.findByHardwareIds(hardwareId);
 	}
 
 	/**

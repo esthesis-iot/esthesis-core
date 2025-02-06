@@ -259,9 +259,9 @@ class DeviceRegistrationServiceTest {
 
 		// Assert devices were persisted with status "PREREGISTERED".
 		assertEquals(PREREGISTERED,
-			deviceService.findByHardwareId("new-core-device").orElseThrow().getStatus());
+			deviceService.findByHardwareIds("new-core-device").orElseThrow().getStatus());
 		assertEquals(PREREGISTERED,
-			deviceService.findByHardwareId("new-edge-device").orElseThrow().getStatus());
+			deviceService.findByHardwareIds("new-edge-device").orElseThrow().getStatus());
 	}
 
 	@SneakyThrows

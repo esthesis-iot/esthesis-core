@@ -260,4 +260,14 @@ public class CAService extends BaseService<CaEntity> {
 	public Page<CaEntity> find(Pageable pageable) {
 		return super.find(pageable);
 	}
+
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
+	public List<CaEntity> findByIds(String id) {
+		return super.findByIds(List.of(id.split(",")));
+	}
+
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CRYPTO, operation = READ)
+	public CaEntity findByCn(String cn) {
+		return super.findFirstByColumn("cn", cn);
+	}
 }

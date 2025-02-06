@@ -61,9 +61,9 @@ export class DevicesService extends CrudDownloadService<DeviceDto> {
     return this.http.get<DeviceProfileDto>(`${this.prefix}/${deviceId}/profile`);
   }
 
-  findDeviceByPartialHardwareId(hardwareId: string): Observable<DeviceDto[]> {
+  findByHardwareIds(hardwareIds: string): Observable<DeviceDto[]> {
     return this.http.get<DeviceDto[]>(
-      `${this.prefix}/find/by-hardware-id?hardwareIds=${hardwareId}`);
+      `${this.prefix}/find/by-hardware-id?hardwareIds=${hardwareIds}`);
   }
 
   getDeviceData(deviceId: string): Observable<DevicePageFieldDataDto[]> {

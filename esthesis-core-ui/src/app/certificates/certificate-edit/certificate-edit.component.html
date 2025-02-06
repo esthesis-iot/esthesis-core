@@ -30,14 +30,18 @@
           <mat-datepicker-toggle [for]="validityPicker" matSuffix></mat-datepicker-toggle>
           <mat-datepicker #validityPicker disabled="false"></mat-datepicker>
         </mat-form-field>
-        <mat-form-field *ngIf="!form.controls['id'].value">
-          <mat-label>Signed by</mat-label>
-          <mat-select formControlName="issuer">
-            <mat-option *ngFor="let issuer of issuers" [value]="issuer.cn">
-              {{ issuer.cn }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <app-smart-select *ngIf="!form.controls['id'].value" class="flex flex-grow"
+                          [parentForm]="form"
+                          parentFormField="issuer"
+                          dtoValue="cn"
+                          dtoLabel="cn"
+                          searchMethod="find"
+                          searchTerm="name"
+                          getMethod="findByCn"
+                          [multiple]="false"
+                          label="Signed by" [service]="caService">
+        </app-smart-select>
+
         <mat-form-field *ngIf="form.controls['id'].value">
           <mat-label>Signed by</mat-label>
           <input formControlName="issuer" matInput>

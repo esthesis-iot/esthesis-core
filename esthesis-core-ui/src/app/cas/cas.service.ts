@@ -43,4 +43,8 @@ export class CasService extends CrudDownloadService<CaDto> {
   getEligibleForSigning(): Observable<CaDto[]> {
     return this.http.get<CaDto[]>(`${this.prefix}/eligible-for-signing`);
   }
+
+  findByCn(cn: string): Observable<CaDto> {
+    return this.http.get<CaDto>(`${this.prefix}/find/by-cn?cn=${cn}`);
+  }
 }

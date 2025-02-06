@@ -4,11 +4,13 @@ import {BehaviorSubject, map, Observable, of, tap} from "rxjs";
 import {debounceTime, distinctUntilChanged, switchMap} from "rxjs/operators";
 import {QPageableReply} from "@qlack/forms";
 
-// What type of DTO value should be bound to the parent form.
+//TODO delete
+// What attribute of DTO should be bound to the parent form's field.
 export enum SMART_SELECT_BIND_VALUE {
   NAME = "name",
   ID = "id",
-  HARDWARE_ID = "hardwareId"
+  HARDWARE_ID = "hardwareId",
+  CN = "cn"
 }
 
 // Parent class for all smart select components. Smart select components provide select input
@@ -21,23 +23,35 @@ export enum SMART_SELECT_BIND_VALUE {
 export class SmartSelectComponent implements OnInit {
   // The parent form in which updates will be made.
   @Input() parentForm!: FormGroup;
-  // The name of the data field that will be updated in the parent form.
-  @Input() parentFormTargetField!: string;
+
+  // The name of the field that will be updated in the parent form.
+  @Input() parentFormField!: string;
+
   // The label of the select field that will be generated.
   @Input() label!: string;
-  // The service to use for searches and lookups. This service should implement search-by-id and,
-  // optionally, search-by-name.
+
+  // The service to use for searches and lookups.
   @Input() service!: any;
-  // The DTO value to bind to the parent form.
-  @Input() bindValue: SMART_SELECT_BIND_VALUE = SMART_SELECT_BIND_VALUE.ID;
-  // The DTO value to use for the label of the field (i.e. the value displayed)
-  @Input() bindLabel: string = "name";
+
   // Whether to allow multiple selection.
   @Input() multiple: boolean = true;
+
   // A hint to display in the select field.
   @Input() hint?: string;
+
   // The items loaded into the virtual scrolling area of the select field.
   items: any[] = [];
+
+  // The name of the search method and term to use when searching data for the select options.
+  @Input() searchMethod!: string;
+  @Input() searchTerm!: string;
+  // The name of the get method and term used when looking up specific item(s).
+  @Input() getMethod!: string;
+  // The DTO attribute to bind to the parent form.
+  @Input() dtoValue!: string;
+  // The DTO attribute to use for the label of the field (i.e. the value displayed)
+  @Input() dtoLabel!: string;
+
   // Items originally selected when the component was initialized.
   initItems: any[] = [];
   currentPage = 0;
@@ -50,7 +64,6 @@ export class SmartSelectComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.searchInput$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -61,7 +74,7 @@ export class SmartSelectComponent implements OnInit {
       this.mergeSelectedItems();
     });
 
-    this.parentForm.get(this.parentFormTargetField)?.valueChanges.subscribe(
+    this.parentForm.get(this.parentFormField)?.valueChanges.subscribe(
       (items: string[]) => {
         if (items && items.length > 0) {
           this.fetchSelectedItems(items);
@@ -73,17 +86,8 @@ export class SmartSelectComponent implements OnInit {
     if (!term) return of([]);
 
     this.isLoading = true;
-    let searchQueryTerm;
-    if (this.bindValue === SMART_SELECT_BIND_VALUE.NAME || this.bindValue === SMART_SELECT_BIND_VALUE.ID) {
-      searchQueryTerm = "name";
-    } else if (this.bindValue === SMART_SELECT_BIND_VALUE.HARDWARE_ID) {
-      searchQueryTerm = "hardwareId";
-    }else {
-      throw new Error("Unknown bindValue.");
-    }
-
-    return this.service["find"](
-      `${searchQueryTerm}*=${term}&page=${page}&size=${this.pageSize}&sort=name,asc`)
+    return this.service[`${this.searchMethod}`](
+      `${this.searchTerm}*=${term}&page=${page}&size=${this.pageSize}&sort=name,asc`)
     .pipe(
       tap((items: QPageableReply<any>) => {
         this.isLoading = false;
@@ -94,24 +98,13 @@ export class SmartSelectComponent implements OnInit {
   }
 
   fetchSelectedItems(selectedItems: string[]): void {
-    if (this.bindValue === SMART_SELECT_BIND_VALUE.NAME) {
-      this.service["findByNames"](selectedItems).subscribe((items: any) => {
-        this.initItems = items;
-        this.items = [...this.initItems, ...this.items];
-      });
-    } else if (this.bindValue === SMART_SELECT_BIND_VALUE.ID) {
-      this.service["findByIds"](selectedItems).subscribe((items: any) => {
-        this.initItems = items;
-        this.items = [...this.initItems, ...this.items];
-      });
-    } else if (this.bindValue === SMART_SELECT_BIND_VALUE.HARDWARE_ID) {
-      this.service["findDeviceByPartialHardwareId"](selectedItems).subscribe((items: any) => {
-        this.initItems = items;
-        this.items = [...this.initItems, ...this.items];
-      });
-    } else {
-      throw new Error("Unknown bindValue.");
-    }
+    this.service[`${this.getMethod}`](selectedItems).subscribe((items: any) => {
+      if (!Array.isArray(items)) {
+        items = [items];
+      }
+      this.initItems = items;
+      this.items = [...this.initItems, ...this.items];
+    });
   }
 
   onScrollToEnd() {

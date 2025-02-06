@@ -107,12 +107,12 @@ class DeviceServiceTest {
 				CORE));
 
 		// Assert the device can be found by its hardware id.
-		assertTrue(deviceService.findByHardwareId("test-hardware-id").isPresent());
-		assertFalse(deviceService.findByHardwareId("test-hardware").isPresent());
+		assertTrue(deviceService.findByHardwareIds("test-hardware-id").isPresent());
+		assertFalse(deviceService.findByHardwareIds("test-hardware").isPresent());
 
 		// Assert non-existing hardware id cannot found any device.
-		assertFalse(deviceService.findByHardwareId("non-existing-hardware-id").isPresent());
-		assertFalse(deviceService.findByHardwareId("non-existing-hardware").isPresent());
+		assertFalse(deviceService.findByHardwareIds("non-existing-hardware-id").isPresent());
+		assertFalse(deviceService.findByHardwareIds("non-existing-hardware").isPresent());
 
 	}
 
@@ -127,13 +127,13 @@ class DeviceServiceTest {
 				CORE));
 
 		// Assert the device can be found by its hardware id.
-		assertFalse(deviceService.findByHardwareId(List.of("test-hardware-id")).isEmpty());
+		assertFalse(deviceService.findByHardwareIds(List.of("test-hardware-id")).isEmpty());
 
 		// Assert non-existing hardware id cannot found any device.
 		assertTrue(
-			deviceService.findByHardwareId(List.of("non-existing-hardware-id")).isEmpty());
-		assertTrue(deviceService.findByHardwareId(List.of("non-existing-hardware-id")).isEmpty());
-		assertTrue(deviceService.findByHardwareId(List.of("non-existing-hardware")).isEmpty());
+			deviceService.findByHardwareIds(List.of("non-existing-hardware-id")).isEmpty());
+		assertTrue(deviceService.findByHardwareIds(List.of("non-existing-hardware-id")).isEmpty());
+		assertTrue(deviceService.findByHardwareIds(List.of("non-existing-hardware")).isEmpty());
 	}
 
 

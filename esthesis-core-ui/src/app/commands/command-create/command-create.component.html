@@ -37,7 +37,13 @@
           </span>
         </div>
         <app-smart-select class="flex flex-grow" label="Tags"
-                          [parentForm]="searchDevicesForm" parentFormTargetField="tags"
+                          [parentForm]="searchDevicesForm"
+                          parentFormField="tags"
+                          dtoValue="id"
+                          dtoLabel="name"
+                          searchMethod="find"
+                          searchTerm="name"
+                          getMethod="findByIds"
                           [service]="tagsService">
         </app-smart-select>
       </form>

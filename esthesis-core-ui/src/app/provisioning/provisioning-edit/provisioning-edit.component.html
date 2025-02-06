@@ -55,9 +55,15 @@
             </app-field-error>
           </mat-form-field>
           <app-smart-select class="flex flex-grow"
-                            [parentForm]="form" parentFormTargetField="prerequisiteVersion"
+                            [parentForm]="form"
+                            parentFormField="prerequisiteVersion"
                             label="Parent provisioning package"
                             hint="A previous version required to be installed before this package can be installed."
+                            dtoValue="id"
+                            dtoLabel="name"
+                            searchMethod="find"
+                            searchTerm="name"
+                            getMethod="findByIds"
                             [service]="provisioningService"
                             [multiple]="false">
           </app-smart-select>
@@ -78,7 +84,12 @@
           </mat-form-field>
 
           <app-smart-select class="flex flex-grow" label="Tags"
-                            [parentForm]="form" parentFormTargetField="tags"
+                            [parentForm]="form" parentFormField="tags"
+                            dtoValue="id"
+                            dtoLabel="name"
+                            searchMethod="find"
+                            searchTerm="name"
+                            getMethod="findByIds"
                             [service]="tagsService">
           </app-smart-select>
 

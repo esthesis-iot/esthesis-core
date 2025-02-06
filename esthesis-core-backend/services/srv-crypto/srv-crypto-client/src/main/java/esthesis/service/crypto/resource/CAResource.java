@@ -42,6 +42,26 @@ public interface CAResource {
 	Page<CaEntity> find(@BeanParam Pageable pageable);
 
 	/**
+	 * Finds multiple CAs by their ids.
+	 *
+	 * @param id A comma-separated list of ids.
+	 * @return A list of CAs with the given ids.
+	 */
+	@GET
+	@Path("/v1/find/by-ids")
+	List<CaEntity> findByIds(@QueryParam("ids") String id);
+
+	/**
+	 * Finds a CAs by its cn.
+	 *
+	 * @param cn A CN of a CA.
+	 * @return A CAs with the CN.
+	 */
+	@GET
+	@Path("/v1/find/by-cn")
+	CaEntity findByCn(@QueryParam("cn") String cn);
+
+	/**
 	 * Find a CA by ID, without its properties. Use this method to get the basic information of a CA.
 	 *
 	 * @param id the ID of the CA.

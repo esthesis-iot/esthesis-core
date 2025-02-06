@@ -3,7 +3,6 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CertificatesService} from "../certificates.service";
 import {AppConstants} from "../../app.constants";
-import {CaDto} from "../../cas/dto/ca-dto";
 import {CasService} from "../../cas/cas.service";
 import {
   OkCancelModalComponent
@@ -12,6 +11,7 @@ import {CertificateDto} from "../dto/certificate-dto";
 import {MatDialog} from "@angular/material/dialog";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
+import {SMART_SELECT_BIND_VALUE} from "../../shared/components/smart-select/smart-select.component";
 
 @Component({
   selector: "app-certificate-edit",
@@ -21,14 +21,13 @@ import {SecurityBaseComponent} from "../../shared/components/security-base-compo
 export class CertificateEditComponent extends SecurityBaseComponent implements OnInit {
   form!: FormGroup;
   id!: string | null;
-  issuers: CaDto[] | undefined;
   // Expose application constants.
   constants = AppConstants;
 
   constructor(private readonly fb: FormBuilder,
     private readonly certificatesService: CertificatesService,
     private readonly route: ActivatedRoute, private readonly router: Router,
-    private readonly caService: CasService,
+    protected readonly caService: CasService,
     private readonly utilityService: UtilityService, private readonly dialog: MatDialog) {
     super(AppConstants.SECURITY.CATEGORY.CERTIFICATES, route.snapshot.paramMap.get("id"));
   }
@@ -57,11 +56,6 @@ export class CertificateEditComponent extends SecurityBaseComponent implements O
         disabled: this.id !== AppConstants.NEW_RECORD_ID
       }, [Validators.required]],
       issuer: [{value: null, disabled: this.id !== AppConstants.NEW_RECORD_ID}, []]
-    });
-
-    // Fill dropdowns.
-    this.caService.getEligibleForSigning().subscribe(onNext => {
-      this.issuers = onNext;
     });
 
     // Fill-in the form with data if editing an existing item.
@@ -115,4 +109,6 @@ export class CertificateEditComponent extends SecurityBaseComponent implements O
   downloadPrivateKey() {
     this.certificatesService.download(this.id!, AppConstants.KEY_TYPE.PRIVATE_KEY);
   }
+
+  protected readonly SMART_SELECT_BIND_VALUE = SMART_SELECT_BIND_VALUE;
 }

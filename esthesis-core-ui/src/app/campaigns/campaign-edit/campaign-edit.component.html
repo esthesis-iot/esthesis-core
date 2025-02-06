@@ -207,14 +207,22 @@
               </div>
               <div *ngIf="!this.form.disabled" class="flex flex-row gap-5">
                 <app-smart-select class="flex flex-grow" label="Search by hardware ID"
-                                  [bindValue]="SMART_SELECT_BIND_VALUE.HARDWARE_ID"
-                                  bindLabel="hardwareId"
-                                  [parentForm]="form" parentFormTargetField="searchByHardwareId"
-                                  [multiple]="false" [service]="deviceService">
+                                  [parentForm]="form"
+                                  parentFormField="searchByHardwareId"
+                                  dtoValue="hardwareId"
+                                  dtoLabel="hardwareId"
+                                  searchMethod="find"
+                                  searchTerm="hardwareId"
+                                  getMethod="findByHardwareIds"
+                                  [multiple]="false" [service]="devicesService">
                 </app-smart-select>
                 <app-smart-select class="flex flex-grow" label="Search by tags"
-                                  [bindValue]="SMART_SELECT_BIND_VALUE.NAME"
-                                  [parentForm]="form" parentFormTargetField="searchByTags"
+                                  [parentForm]="form" parentFormField="searchByTags"
+                                  dtoValue="name"
+                                  dtoLabel="name"
+                                  searchMethod="find"
+                                  searchTerm="name"
+                                  getMethod="findByName"
                                   [multiple]="false" [service]="tagsService">
                 </app-smart-select>
               </div>
