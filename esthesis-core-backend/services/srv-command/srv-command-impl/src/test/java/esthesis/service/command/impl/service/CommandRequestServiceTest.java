@@ -1,22 +1,21 @@
 package esthesis.service.command.impl.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import esthesis.common.avro.CommandType;
 import esthesis.common.avro.ExecutionType;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.command.impl.TestHelper;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
+import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.time.Instant;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @QuarkusTest
@@ -117,8 +116,7 @@ class CommandRequestServiceTest {
 		// Assert that no command requests exist.
 		assertTrue(
 			commandRequestService.find(
-					testHelper.makePageable(1, 10),
-					false)
+					testHelper.makePageable(1, 10))
 				.getContent()
 				.isEmpty());
 
@@ -132,8 +130,7 @@ class CommandRequestServiceTest {
 
 		// Assert that a command requests exists.
 		assertFalse(commandRequestService.find(
-				testHelper.makePageable(0, 10),
-				true)
+				testHelper.makePageable(0, 10))
 			.getContent()
 			.isEmpty());
 	}

@@ -1,15 +1,18 @@
 package esthesis.services.security.impl.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import esthesis.service.security.entity.RoleEntity;
 import esthesis.services.security.impl.TestHelper;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 class SecurityRoleServiceTest {
@@ -29,8 +32,7 @@ class SecurityRoleServiceTest {
 	void find() {
 		// Assert no roles exist.
 		assertTrue(
-			securityRoleService.find(testHelper.makePageable(0, 10),
-					true)
+			securityRoleService.find(testHelper.makePageable(0, 10))
 				.getContent()
 				.isEmpty());
 
@@ -39,8 +41,7 @@ class SecurityRoleServiceTest {
 
 		// Assert role can be found.
 		assertFalse(
-			securityRoleService.find(testHelper.makePageable(0, 10),
-					true)
+			securityRoleService.find(testHelper.makePageable(0, 10))
 				.getContent()
 				.isEmpty());
 	}
@@ -85,7 +86,8 @@ class SecurityRoleServiceTest {
 				List.of("test policy")));
 
 		// Assert role was saved with correct values.
-		RoleEntity role = securityRoleService.find(testHelper.makePageable(0, 10), true).getContent().get(0);
+		RoleEntity role = securityRoleService.find(testHelper.makePageable(0, 10)).getContent()
+			.get(0);
 		assertEquals("test role", role.getName());
 		assertEquals("test description", role.getDescription());
 		assertEquals(List.of("test policy"), role.getPolicies());

@@ -1,5 +1,20 @@
 package esthesis.service.provisioning.impl.service;
 
+import static esthesis.core.common.AppConstants.Provisioning.Type.EXTERNAL;
+import static esthesis.core.common.AppConstants.Provisioning.Type.INTERNAL;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import esthesis.common.exception.QMismatchException;
 import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.common.gridfs.GridFSDTO;
@@ -14,30 +29,13 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.MockitoConfig;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
+import java.util.List;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static esthesis.core.common.AppConstants.Provisioning.Type.EXTERNAL;
-import static esthesis.core.common.AppConstants.Provisioning.Type.INTERNAL;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @Slf4j
 @QuarkusTest
@@ -76,7 +74,8 @@ class ProvisioningServiceTest {
 		// Mock GridFS operations save, delete and download.
 		when(gridFSService.saveBinary(any(GridFSDTO.class))).thenReturn(new ObjectId());
 		doNothing().when(gridFSService).deleteBinary(any(GridFSDTO.class));
-		when(gridFSService.downloadBinary(any(GridFSDTO.class))).thenReturn(Uni.createFrom().item(new byte[0]));
+		when(gridFSService.downloadBinary(any(GridFSDTO.class))).thenReturn(
+			Uni.createFrom().item(new byte[0]));
 
 	}
 
@@ -224,7 +223,7 @@ class ProvisioningServiceTest {
 	@Test
 	void semVerFind() {
 		// Mock finding a valid device with a test-tag.
-		when(deviceResource.findByHardwareIds(anyString(), anyBoolean()))
+		when(deviceResource.findByHardwareIds(anyString()))
 			.thenReturn(List.of(testHelper.createDeviceEntity("testHardwareId", List.of("test-tag"))));
 
 		// Perform a save of a provisioning package with semver version 2.1.1 without prerequisite version.
@@ -255,7 +254,7 @@ class ProvisioningServiceTest {
 	void find() {
 		// Assert no provisioning packages are returned.
 		assertEquals(0,
-			provisioningService.find(testHelper.makePageable(0, 10), true).getContent().size());
+			provisioningService.find(testHelper.makePageable(0, 10)).getContent().size());
 
 		// Perform a save of a provisioning package.
 		provisioningService.saveNew(
@@ -270,7 +269,7 @@ class ProvisioningServiceTest {
 
 		// Assert one provisioning package is returned.
 		assertEquals(1,
-			provisioningService.find(testHelper.makePageable(0, 10), true).getContent().size());
+			provisioningService.find(testHelper.makePageable(0, 10)).getContent().size());
 
 		// Todo cover more cases with different parameters.
 

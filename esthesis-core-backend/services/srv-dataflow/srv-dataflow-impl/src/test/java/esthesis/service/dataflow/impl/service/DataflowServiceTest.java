@@ -1,5 +1,14 @@
 package esthesis.service.dataflow.impl.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.dataflow.entity.DataflowEntity;
 import esthesis.service.kubernetes.dto.DeploymentInfoDTO;
@@ -14,15 +23,6 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 @Slf4j
 @QuarkusTest
@@ -44,7 +44,8 @@ class DataflowServiceTest {
 		testHelper.clearDatabase();
 
 		// Mock scheduling the deployment, getting the namespaces and checking if the deployment name is available.
-		when(kubernetesResource.scheduleDeployment(Mockito.any(DeploymentInfoDTO.class))).thenReturn(true);
+		when(kubernetesResource.scheduleDeployment(Mockito.any(DeploymentInfoDTO.class))).thenReturn(
+			true);
 		when(kubernetesResource.getNamespaces()).thenReturn(testHelper.getNamespaces());
 		when(kubernetesResource.isDeploymentNameAvailable(anyString(), anyString())).thenReturn(true);
 	}
@@ -126,12 +127,12 @@ class DataflowServiceTest {
 	void find() {
 		// Assert no dataflows exist.
 		assertTrue(dataflowService.find(
-				testHelper.makePageable(0, 100), true)
+				testHelper.makePageable(0, 100))
 			.getContent()
 			.isEmpty());
 
 		assertTrue(dataflowService.find(
-				testHelper.makePageable(0, 100), false)
+				testHelper.makePageable(0, 100))
 			.getContent()
 			.isEmpty());
 
@@ -140,12 +141,12 @@ class DataflowServiceTest {
 
 		// Assert dataflow exists.
 		assertFalse(dataflowService.find(
-				testHelper.makePageable(0, 100), true)
+				testHelper.makePageable(0, 100))
 			.getContent()
 			.isEmpty());
 
 		assertFalse(dataflowService.find(
-				testHelper.makePageable(0, 100), false)
+				testHelper.makePageable(0, 100))
 			.getContent().
 			isEmpty());
 

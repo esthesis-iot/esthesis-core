@@ -1,20 +1,5 @@
 package esthesis.services.campaign.impl.service;
 
-import esthesis.service.campaign.entity.CampaignEntity;
-import esthesis.service.device.resource.DeviceResource;
-import esthesis.services.campaign.impl.TestHelper;
-import esthesis.services.campaign.impl.dto.GroupDTO;
-import io.quarkus.test.InjectMock;
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.MockitoConfig;
-import jakarta.inject.Inject;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
-
-import java.util.List;
-
 import static esthesis.core.common.AppConstants.Campaign.Condition.Stage.ENTRY;
 import static esthesis.core.common.AppConstants.Campaign.Condition.Type.SUCCESS;
 import static esthesis.core.common.AppConstants.Campaign.State.CREATED;
@@ -27,10 +12,23 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+
+import esthesis.service.campaign.entity.CampaignEntity;
+import esthesis.service.device.resource.DeviceResource;
+import esthesis.services.campaign.impl.TestHelper;
+import esthesis.services.campaign.impl.dto.GroupDTO;
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.MockitoConfig;
+import jakarta.inject.Inject;
+import java.util.List;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 
 @QuarkusTest
 class CampaignServiceTest {
@@ -65,7 +63,7 @@ class CampaignServiceTest {
 		when(campaignDeviceMonitorService.countAll(anyString())).thenReturn(100L);
 
 		// Mock finding devices by hardware ID and tag name.
-		when(deviceResource.findByHardwareIds(anyString(), anyBoolean()))
+		when(deviceResource.findByHardwareIds(anyString()))
 			.thenReturn(List.of(testHelper.makeDeviceEntity("test-device-1")));
 		when(deviceResource.findByTagName(anyString()))
 			.thenReturn(List.of(testHelper.makeDeviceEntity("test-device-1")));
@@ -273,7 +271,8 @@ class CampaignServiceTest {
 		// Perform the update of the state description.
 		campaignService.setStateDescription(campaignId, "Updated state description");
 		// Assert update was persisted.
-		assertEquals("Updated state description", campaignService.findById(campaignId).getStateDescription());
+		assertEquals("Updated state description",
+			campaignService.findById(campaignId).getStateDescription());
 	}
 
 	@Test
@@ -298,25 +297,22 @@ class CampaignServiceTest {
 		// Assert no campaign is found.
 		assertTrue(
 			campaignService.find(
-					testHelper.makePageable(0, 10),
-					true)
+					testHelper.makePageable(0, 10))
 				.getContent()
 				.isEmpty());
 
-
 		// Perform the save operation for a new campaign.
 		campaignService.saveNew(
-				testHelper.makeCampaignEntity(
-					"test-campaign-new",
-					"test description",
-					PROVISIONING,
-					CREATED));
+			testHelper.makeCampaignEntity(
+				"test-campaign-new",
+				"test description",
+				PROVISIONING,
+				CREATED));
 
 		// Assert campaign is found.
 		assertFalse(
 			campaignService.find(
-					testHelper.makePageable(0, 10),
-					true)
+					testHelper.makePageable(0, 10))
 				.getContent()
 				.isEmpty());
 	}

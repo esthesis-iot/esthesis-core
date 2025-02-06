@@ -1,28 +1,5 @@
 package esthesis.service.crypto.impl.service;
 
-import esthesis.service.crypto.entity.CaEntity;
-import esthesis.service.crypto.impl.TestHelper;
-import esthesis.service.settings.entity.SettingEntity;
-import esthesis.service.settings.resource.SettingsResource;
-import io.quarkus.test.InjectMock;
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.MockitoConfig;
-import jakarta.inject.Inject;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.jboss.resteasy.reactive.server.core.multipart.DefaultFileUpload;
-import org.jboss.resteasy.reactive.server.core.multipart.FormData;
-import org.jboss.resteasy.reactive.server.multipart.FormValue;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Objects;
-
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM;
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_KEY_SIZE;
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM;
@@ -33,6 +10,28 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import esthesis.service.crypto.entity.CaEntity;
+import esthesis.service.crypto.impl.TestHelper;
+import esthesis.service.settings.entity.SettingEntity;
+import esthesis.service.settings.resource.SettingsResource;
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.MockitoConfig;
+import jakarta.inject.Inject;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.resteasy.reactive.server.core.multipart.DefaultFileUpload;
+import org.jboss.resteasy.reactive.server.core.multipart.FormData;
+import org.jboss.resteasy.reactive.server.multipart.FormValue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @Slf4j
 @QuarkusTest
@@ -153,10 +152,10 @@ class CAServiceTest {
 		importedCaEntity.setPrivateKey("Test Private Key");
 		importedCaEntity.setPublicKey("Test Public Key");
 
-
 		// Perform the operation for importing a CA with the given mocked files.
 		String caId =
-			caService.importCa(importedCaEntity, publicKey, privateKey, certificate).getId().toHexString();
+			caService.importCa(importedCaEntity, publicKey, privateKey, certificate).getId()
+				.toHexString();
 
 		// Assert CA was imported and saved with the provided files.
 		CaEntity caEntity = caService.findById(caId);
@@ -240,12 +239,12 @@ class CAServiceTest {
 	@Test
 	void find() {
 		// Assert no CAs are found.
-		assertTrue(caService.find(testHelper.makePageable(0, 100), true).getContent().isEmpty());
+		assertTrue(caService.find(testHelper.makePageable(0, 100)).getContent().isEmpty());
 
 		// Perform the operation for saving a new CA.
 		caService.save(testHelper.makeCaEntity(null));
 
 		// Assert CA can be found.
-		assertFalse(caService.find(testHelper.makePageable(0, 100), true).getContent().isEmpty());
+		assertFalse(caService.find(testHelper.makePageable(0, 100)).getContent().isEmpty());
 	}
 }

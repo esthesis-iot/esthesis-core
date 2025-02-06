@@ -1,13 +1,17 @@
 package esthesis.services.security.impl.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import esthesis.service.security.entity.PolicyEntity;
 import esthesis.services.security.impl.TestHelper;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 class SecurityPolicyServiceTest {
@@ -27,8 +31,7 @@ class SecurityPolicyServiceTest {
 	void find() {
 		// Assert no policies exist.
 		assertTrue(
-			securityPolicyService.find(testHelper.makePageable(1, 10),
-					true)
+			securityPolicyService.find(testHelper.makePageable(1, 10))
 				.getContent()
 				.isEmpty());
 
@@ -37,8 +40,7 @@ class SecurityPolicyServiceTest {
 
 		// Assert policy can be found.
 		assertFalse(
-			securityPolicyService.find(testHelper.makePageable(0, 10),
-					true)
+			securityPolicyService.find(testHelper.makePageable(0, 10))
 				.getContent()
 				.isEmpty());
 	}

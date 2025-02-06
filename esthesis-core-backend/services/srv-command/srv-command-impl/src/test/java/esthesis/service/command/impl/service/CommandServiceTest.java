@@ -1,5 +1,18 @@
 package esthesis.service.command.impl.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import esthesis.common.avro.CommandType;
 import esthesis.common.avro.ExecutionType;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
@@ -14,30 +27,14 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
+import java.time.Instant;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
-
-import java.time.Instant;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @Slf4j
 @QuarkusTest
@@ -78,19 +75,20 @@ class CommandServiceTest {
 		SettingEntity mockSettingEntity = mock(SettingEntity.class);
 		when(mockSettingEntity.asString()).thenReturn("test setting");
 		when(settingsResource.findByName(any())).thenReturn(mockSettingEntity);
-		when(tagResource.findByNames(anyString(), anyBoolean())).thenReturn(List.of());
+		when(tagResource.findByNames(anyString())).thenReturn(List.of());
 	}
 
 	@Test
 	void findDevicesByHardwareId() {
 		// Mock finding devices by hardware ID.
-		when(deviceResource.findByHardwareIds(anyString(), anyBoolean())).thenReturn(List.of(mock(DeviceEntity.class)));
+		when(deviceResource.findByHardwareIds(anyString())).thenReturn(
+			List.of(mock(DeviceEntity.class)));
 
 		// Assert no exception is thrown while finding devices by hardware ID.
 		assertDoesNotThrow(() -> commandService.findDevicesByHardwareId("test-hardware-id"));
 
 		// Verify that the device and settings resources were called.
-		verify(deviceResource, times(1)).findByHardwareIds(any(), eq(true));
+		verify(deviceResource, times(1)).findByHardwareIds(any());
 		verify(settingsResource, times(1)).findByName(any());
 	}
 
@@ -160,7 +158,6 @@ class CommandServiceTest {
 		// Perform an execution operation.
 		ExecuteRequestScheduleInfoDTO scheduleInfo = commandService.executeRequest(commandId);
 
-
 		// Assert devices were matched and command request was persisted.
 		assertEquals(1, scheduleInfo.getDevicesMatched());
 		assertEquals(1, scheduleInfo.getDevicesScheduled());
@@ -172,26 +169,22 @@ class CommandServiceTest {
 	void findCommandRequest() {
 		// Assert no command requests exist.
 		assertTrue(commandService.findCommandRequest(
-				testHelper.makePageable(0, 100),
-				true)
+				testHelper.makePageable(0, 100))
 			.getContent()
 			.isEmpty()
 		);
 
-
 		// Perform a save operation for a new request.
-			commandService.saveRequest(
-					testHelper.makeCommandRequestEntity(
-						"test-hardware-id",
-						"test-tag",
-						CommandType.e,
-						ExecutionType.a));
-
+		commandService.saveRequest(
+			testHelper.makeCommandRequestEntity(
+				"test-hardware-id",
+				"test-tag",
+				CommandType.e,
+				ExecutionType.a));
 
 		// Assert command request can be found.
 		assertFalse(commandService.findCommandRequest(
-				testHelper.makePageable(0, 100),
-				true)
+				testHelper.makePageable(0, 100))
 			.getContent()
 			.isEmpty()
 		);
@@ -208,7 +201,6 @@ class CommandServiceTest {
 						CommandType.e,
 						ExecutionType.a))
 				.toHexString();
-
 
 		// Assert command request can be found.
 		assertNotNull(commandService.getCommand(commandId));
@@ -228,7 +220,6 @@ class CommandServiceTest {
 						CommandType.e,
 						ExecutionType.a))
 				.toHexString();
-
 
 		// Assert replies cannot be found for the given command ID.
 		assertTrue(commandService.getReplies(commandId).isEmpty());
@@ -387,8 +378,7 @@ class CommandServiceTest {
 		assertEquals(
 			1,
 			commandService.findCommandRequest(
-					testHelper.makePageable(0, 100),
-					true)
+					testHelper.makePageable(0, 100))
 				.getContent()
 				.size());
 
@@ -399,8 +389,7 @@ class CommandServiceTest {
 		assertEquals(
 			2,
 			commandService.findCommandRequest(
-					testHelper.makePageable(0, 100),
-					true)
+					testHelper.makePageable(0, 100))
 				.getContent()
 				.size());
 	}

@@ -1,19 +1,18 @@
 package esthesis.services.security.impl.service;
 
-import esthesis.service.security.entity.GroupEntity;
-import esthesis.services.security.impl.TestHelper;
-import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import esthesis.service.security.entity.GroupEntity;
+import esthesis.services.security.impl.TestHelper;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 class SecurityGroupServiceTest {
@@ -33,8 +32,7 @@ class SecurityGroupServiceTest {
 	void find() {
 		// Assert no groups exist.
 		assertTrue(
-			securityGroupService.find(testHelper.makePageable(1, 10),
-					true)
+			securityGroupService.find(testHelper.makePageable(1, 10))
 				.getContent()
 				.isEmpty());
 
@@ -44,15 +42,13 @@ class SecurityGroupServiceTest {
 		// Assert group can be found.
 		assertFalse(
 			securityGroupService.find(
-					testHelper.makePageable(0, 10),
-					true)
+					testHelper.makePageable(0, 10))
 				.getContent()
 				.isEmpty());
 
 		assertFalse(
 			securityGroupService.find(
-					testHelper.makePageable(0, 10),
-					false)
+					testHelper.makePageable(0, 10))
 				.getContent()
 				.isEmpty());
 	}

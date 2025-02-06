@@ -1,23 +1,5 @@
 package esthesis.service.crypto.impl.service;
 
-import esthesis.service.crypto.entity.CaEntity;
-import esthesis.service.crypto.entity.KeystoreEntity;
-import esthesis.service.crypto.impl.TestHelper;
-import esthesis.service.device.resource.DeviceResource;
-import esthesis.service.settings.entity.SettingEntity;
-import esthesis.service.settings.resource.SettingsResource;
-import io.quarkus.test.InjectMock;
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.MockitoConfig;
-import jakarta.inject.Inject;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM;
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_KEY_SIZE;
 import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM;
@@ -29,6 +11,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import esthesis.service.crypto.entity.CaEntity;
+import esthesis.service.crypto.entity.KeystoreEntity;
+import esthesis.service.crypto.impl.TestHelper;
+import esthesis.service.device.resource.DeviceResource;
+import esthesis.service.settings.entity.SettingEntity;
+import esthesis.service.settings.resource.SettingsResource;
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.MockitoConfig;
+import jakarta.inject.Inject;
+import java.util.List;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @Slf4j
 @QuarkusTest
@@ -91,14 +90,14 @@ class KeystoreServiceTest {
 		// Perform a save operation for a new CA, certificate and keystore.
 		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
 
-		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId().toHexString();
+		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId()
+			.toHexString();
 
 		String keystoreId =
 			keystoreService.saveNew(
 					testHelper.makeKeystoreEntity(certificateId, ca.getId().toHexString()))
 				.getId()
 				.toHexString();
-
 
 		// Assert keystore can be downloaded.
 		assertNotNull(keystoreService.download(keystoreId));
@@ -109,7 +108,8 @@ class KeystoreServiceTest {
 		// Perform a save operation for a new CA, certificate and keystore.
 		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
 
-		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId().toHexString();
+		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId()
+			.toHexString();
 
 		String keystoreId =
 			keystoreService.saveNew(
@@ -124,17 +124,18 @@ class KeystoreServiceTest {
 	@Test
 	void find() {
 		// Assert no keystores are found.
-		assertTrue(keystoreService.find(testHelper.makePageable(0, 100), true).getContent().isEmpty());
+		assertTrue(keystoreService.find(testHelper.makePageable(0, 100)).getContent().isEmpty());
 
 		// Perform a save operation for a new CA, certificate and keystore.
 		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
 
-		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId().toHexString();
+		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId()
+			.toHexString();
 
 		keystoreService.saveNew(testHelper.makeKeystoreEntity(certificateId, ca.getId().toHexString()));
 
 		// Assert keystore can be found.
-		assertFalse(keystoreService.find(testHelper.makePageable(0, 100), true).getContent().isEmpty());
+		assertFalse(keystoreService.find(testHelper.makePageable(0, 100)).getContent().isEmpty());
 
 	}
 
@@ -152,7 +153,6 @@ class KeystoreServiceTest {
 		// Perform the save operation.
 		String keystoreId = keystoreService.saveNew(keystoreEntity).getId().toHexString();
 
-
 		// Assert keystore was saved with correct values.
 		KeystoreEntity keystore = keystoreService.findById(keystoreId);
 
@@ -169,7 +169,8 @@ class KeystoreServiceTest {
 		// Perform a save operation for a new CA, certificate and keystore.
 		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
 
-		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId().toHexString();
+		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId()
+			.toHexString();
 
 		String keystoreId =
 			keystoreService.saveNew(
@@ -196,7 +197,8 @@ class KeystoreServiceTest {
 		// Perform a save operation for a new CA, certificate and keystore.
 		CaEntity ca = caService.save(testHelper.makeCaEntity(null));
 
-		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId().toHexString();
+		String certificateId = certificateService.save(testHelper.makeCertificateEntity(ca)).getId()
+			.toHexString();
 
 		String keystoreId =
 			keystoreService.saveNew(

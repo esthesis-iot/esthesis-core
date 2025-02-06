@@ -1,35 +1,6 @@
 package esthesis.services.device.impl.service;
 
-import esthesis.common.avro.MessageTypeEnum;
-import esthesis.common.data.DataUtils;
-import esthesis.core.common.AppConstants.Device.Status;
-import esthesis.core.common.AppConstants.NamedSetting;
-import esthesis.service.device.dto.DeviceKeyDTO;
-import esthesis.service.device.dto.DeviceProfileDTO;
-import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
-import esthesis.service.device.dto.ImportDataProcessingInstructionsDTO;
-import esthesis.service.device.entity.DeviceAttributeEntity;
-import esthesis.service.device.entity.DeviceEntity;
-import esthesis.service.settings.entity.SettingEntity;
-import esthesis.service.settings.resource.SettingsResource;
-import esthesis.util.redis.RedisUtils;
-import esthesis.util.redis.RedisUtils.KeyType;
-import io.quarkus.test.InjectMock;
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.MockitoConfig;
-import jakarta.inject.Inject;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.time.Instant;
-import java.util.List;
-
 import static esthesis.common.util.EsthesisCommonConstants.Device.Type.CORE;
-import static esthesis.common.util.EsthesisCommonConstants.Device.Type.EDGE;
 import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_PUSHED_TAGS;
 import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_REGISTRATION_SECRET;
 import static esthesis.core.common.AppConstants.NamedSetting.KAFKA_TOPIC_METADATA;
@@ -43,6 +14,32 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+
+import esthesis.common.avro.MessageTypeEnum;
+import esthesis.common.data.DataUtils;
+import esthesis.core.common.AppConstants.Device.Status;
+import esthesis.core.common.AppConstants.NamedSetting;
+import esthesis.service.device.dto.DeviceProfileDTO;
+import esthesis.service.device.dto.DeviceProfileFieldDataDTO;
+import esthesis.service.device.dto.ImportDataProcessingInstructionsDTO;
+import esthesis.service.device.entity.DeviceAttributeEntity;
+import esthesis.service.device.entity.DeviceEntity;
+import esthesis.service.settings.entity.SettingEntity;
+import esthesis.service.settings.resource.SettingsResource;
+import esthesis.util.redis.RedisUtils;
+import esthesis.util.redis.RedisUtils.KeyType;
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.MockitoConfig;
+import jakarta.inject.Inject;
+import java.time.Instant;
+import java.util.List;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @Slf4j
 @QuarkusTest
@@ -90,8 +87,10 @@ class DeviceServiceTest {
 			.thenReturn(new SettingEntity(NamedSetting.DEVICE_GEO_LON.toString(), "0"));
 
 		// Mock redis relevant keys and values.
-		when(redisUtils.getFromHash(eq(KeyType.ESTHESIS_DM), anyString(), anyString())).thenReturn("test");
-		when(redisUtils.getLastUpdate(eq(KeyType.ESTHESIS_DM), anyString(), anyString())).thenReturn(Instant.now());
+		when(redisUtils.getFromHash(eq(KeyType.ESTHESIS_DM), anyString(), anyString())).thenReturn(
+			"test");
+		when(redisUtils.getLastUpdate(eq(KeyType.ESTHESIS_DM), anyString(), anyString())).thenReturn(
+			Instant.now());
 
 
 	}
@@ -100,7 +99,7 @@ class DeviceServiceTest {
 	void findByHardwareId() {
 
 		// Perform a save operation for a new device.
-		deviceService.saveNew(
+		deviceService.getRepository().persist(
 			testHelper.makeDeviceEntity(
 				"test-hardware-id",
 				Status.REGISTERED,
@@ -108,21 +107,19 @@ class DeviceServiceTest {
 				CORE));
 
 		// Assert the device can be found by its hardware id.
-		assertTrue(deviceService.findByHardwareId("test-hardware-id", false).isPresent());
-		assertTrue(deviceService.findByHardwareId("test-hardware-id", true).isPresent());
-		assertTrue(deviceService.findByHardwareId("test-hardware", true).isPresent());
+		assertTrue(deviceService.findByHardwareId("test-hardware-id").isPresent());
+		assertFalse(deviceService.findByHardwareId("test-hardware").isPresent());
 
 		// Assert non-existing hardware id cannot found any device.
-		assertFalse(deviceService.findByHardwareId("non-existing-hardware-id", false).isPresent());
-		assertFalse(deviceService.findByHardwareId("non-existing-hardware-id", true).isPresent());
-		assertFalse(deviceService.findByHardwareId("non-existing-hardware", true).isPresent());
+		assertFalse(deviceService.findByHardwareId("non-existing-hardware-id").isPresent());
+		assertFalse(deviceService.findByHardwareId("non-existing-hardware").isPresent());
 
 	}
 
 	@Test
 	void findByHardwareIdList() {
 		// Perform a save operation for a new device.
-		deviceService.saveNew(
+		deviceService.getRepository().persist(
 			testHelper.makeDeviceEntity(
 				"test-hardware-id",
 				Status.REGISTERED,
@@ -130,25 +127,23 @@ class DeviceServiceTest {
 				CORE));
 
 		// Assert the device can be found by its hardware id.
-		assertFalse(deviceService.findByHardwareId(List.of("test-hardware-id"), false).isEmpty());
-		assertFalse(deviceService.findByHardwareId(List.of("test-hardware-id"), true).isEmpty());
-		assertFalse(deviceService.findByHardwareId(List.of("test-hardware"), true).isEmpty());
+		assertFalse(deviceService.findByHardwareId(List.of("test-hardware-id")).isEmpty());
 
 		// Assert non-existing hardware id cannot found any device.
-		assertTrue(deviceService.findByHardwareId(List.of("non-existing-hardware-id"), false).isEmpty());
-		assertTrue(deviceService.findByHardwareId(List.of("non-existing-hardware-id"), true).isEmpty());
-		assertTrue(deviceService.findByHardwareId(List.of("non-existing-hardware"), true).isEmpty());
+		assertTrue(
+			deviceService.findByHardwareId(List.of("non-existing-hardware-id")).isEmpty());
+		assertTrue(deviceService.findByHardwareId(List.of("non-existing-hardware-id")).isEmpty());
+		assertTrue(deviceService.findByHardwareId(List.of("non-existing-hardware")).isEmpty());
 	}
 
 
 	@Test
 	void countByHardwareId() {
 		// Assert count is 0 when no device exists.
-		assertEquals(0, deviceService.countByHardwareId(List.of("test-hardware-id"), false));
-		assertEquals(0, deviceService.countByHardwareId(List.of("test-hardware"), true));
+		assertEquals(0, deviceService.countByHardwareId(List.of("test-hardware-id")));
 
 		// Perform a save operation for a new device.
-		deviceService.saveNew(
+		deviceService.getRepository().persist(
 			testHelper.makeDeviceEntity(
 				"test-hardware-id",
 				Status.REGISTERED,
@@ -156,108 +151,106 @@ class DeviceServiceTest {
 				CORE));
 
 		//Assert count is 1 when one device exists.
-		assertEquals(1, deviceService.countByHardwareId(List.of("test-hardware-id"), false));
-		assertEquals(1, deviceService.countByHardwareId(List.of("test-hardware-id"), true));
-		assertEquals(1, deviceService.countByHardwareId(List.of("test-hardware"), true));
+		assertEquals(1, deviceService.countByHardwareId(List.of("test-hardware-id")));
+		assertEquals(0, deviceService.countByHardwareId(List.of("test-hardware")));
 
 		// Assert count is 0 when hardware id does not exist.
-		assertEquals(0, deviceService.countByHardwareId(List.of("non-existing-hardware-id"), false));
-		assertEquals(0, deviceService.countByHardwareId(List.of("non-existing-hardware-id"), true));
-		assertEquals(0, deviceService.countByHardwareId(List.of("non-existing-hardware"), true));
+		assertEquals(0, deviceService.countByHardwareId(List.of("non-existing-hardware-id")));
 	}
 
 	@Test
 	void getPublicKey() {
 		// Perform a save operation for a new device.
-		String deviceId = deviceService.saveNew(
-			testHelper.makeDeviceEntity(
-				"test-hardware-id",
-				Status.REGISTERED,
-				"tag1",
-				CORE)).getId().toHexString();
+		DeviceEntity device = testHelper.makeDeviceEntity(
+			"test-hardware-id",
+			Status.REGISTERED,
+			"tag1",
+			CORE);
+		deviceService.getRepository().persist(device);
 
 		// Assert the public key is found for the provided device id.
-		assertEquals("test-public-key", deviceService.getPublicKey(deviceId));
+		assertEquals("test-public-key", deviceService.getPublicKey(device.getId().toHexString()));
 	}
 
 	@Test
 	void getPrivateKey() {
 		// Perform a save operation for a new device.
-		String deviceId = deviceService.saveNew(
-			testHelper.makeDeviceEntity(
-				"test-hardware-id",
-				Status.REGISTERED,
-				"tag1",
-				CORE)).getId().toHexString();
+		DeviceEntity device = testHelper.makeDeviceEntity(
+			"test-hardware-id",
+			Status.REGISTERED,
+			"tag1",
+			CORE);
+		deviceService.getRepository().persist(device);
 
 		// Assert the private key is found for the provided device id.
-		assertEquals("test-private-key", deviceService.getPrivateKey(deviceId));
+		assertEquals("test-private-key", deviceService.getPrivateKey(device.getId().toHexString()));
 	}
 
 	@Test
 	void getCertificate() {
 		// Perform a save operation for a new device.
-		String deviceId = deviceService.saveNew(
-			testHelper.makeDeviceEntity(
-				"test-hardware-id",
-				Status.REGISTERED,
-				"tag1",
-				CORE)).getId().toHexString();
+		DeviceEntity device = testHelper.makeDeviceEntity(
+			"test-hardware-id",
+			Status.REGISTERED,
+			"tag1",
+			CORE);
+		deviceService.getRepository().persist(device);
 
 		// Assert the certificate is found for the provided device id.
-		assertEquals("test-certificate", deviceService.getCertificate(deviceId));
+		assertEquals("test-certificate", deviceService.getCertificate(device.getId().toHexString()));
 	}
 
 	@Test
 	void saveProfile() {
+		DeviceEntity device = testHelper.makeDeviceEntity(
+			"test-hardware-id",
+			Status.REGISTERED,
+			"tag1",
+			CORE);
 		// Perform a save operation for a new device.
-		String deviceId = deviceService.saveNew(
-			testHelper.makeDeviceEntity(
-				"test-hardware-id",
-				Status.REGISTERED,
-				"tag1",
-				CORE)).getId().toHexString();
+		deviceService.getRepository().persist(device);
 
 		// Assert the attributes list is empty.
-		assertTrue(deviceService.getProfile(deviceId).getAttributes().isEmpty());
+		assertTrue(deviceService.getProfile(device.getId().toHexString()).getAttributes().isEmpty());
 
 		// Save a new profile for the device.
-		deviceService.saveProfile(deviceId,
+		deviceService.saveProfile(device.getId().toHexString(),
 			new DeviceProfileDTO().setAttributes(List.of(
 				new DeviceAttributeEntity(
-					deviceId,
+					device.getId().toHexString(),
 					"test-boolean-attribute",
 					"false",
 					DataUtils.ValueType.BOOLEAN))));
 
 		// Assert the attributes list is not empty.
-		assertFalse(deviceService.getProfile(deviceId).getAttributes().isEmpty());
+		assertFalse(deviceService.getProfile(device.getId().toHexString()).getAttributes().isEmpty());
 	}
 
 	@Test
 	void getProfile() {
 		// Perform a save operation for a new device.
-		String deviceId = deviceService.saveNew(
-			testHelper.makeDeviceEntity(
-				"test-hardware-id",
-				Status.REGISTERED,
-				"tag1",
-				CORE)).getId().toHexString();
+		DeviceEntity device = testHelper.makeDeviceEntity(
+			"test-hardware-id",
+			Status.REGISTERED,
+			"tag1",
+			CORE);
+		deviceService.getRepository().persist(device);
 
 		// Save a new profile for the device.
-		deviceService.saveProfile(deviceId,
+		deviceService.saveProfile(device.getId().toHexString(),
 			new DeviceProfileDTO()
 				.setAttributes(
 					List.of(
 						new DeviceAttributeEntity(
-							deviceId,
+							device.getId().toHexString(),
 							"test-boolean-attribute",
 							"false",
 							DataUtils.ValueType.BOOLEAN))
 				));
 
 		// Assert profile is found and has the expected attribute.
-		DeviceAttributeEntity attribute = deviceService.getProfile(deviceId).getAttributes().getFirst();
+		DeviceAttributeEntity attribute = deviceService.getProfile(device.getId().toHexString())
+			.getAttributes().getFirst();
 		assertEquals("test-boolean-attribute", attribute.getAttributeName());
 		assertEquals("false", attribute.getAttributeValue());
 		assertEquals(DataUtils.ValueType.BOOLEAN, attribute.getAttributeType());
@@ -266,15 +259,15 @@ class DeviceServiceTest {
 	@Test
 	void getDeviceData() {
 		// Perform a save operation for a new device.
-		String deviceId = deviceService.saveNew(
-			testHelper.makeDeviceEntity(
-				"test-hardware-id",
-				Status.REGISTERED,
-				"tag1",
-				CORE)).getId().toHexString();
+		DeviceEntity device = testHelper.makeDeviceEntity(
+			"test-hardware-id",
+			Status.REGISTERED,
+			"tag1",
+			CORE);
+		deviceService.getRepository().persist(device);
 
 		// Save a new profile for the device.
-		deviceService.saveProfile(deviceId,
+		deviceService.saveProfile(device.getId().toHexString(),
 			new DeviceProfileDTO()
 				.setFields(List.of(new DeviceProfileFieldDataDTO(
 					"test-label",
@@ -286,10 +279,12 @@ class DeviceServiceTest {
 		);
 
 		// Mock the redis hash triplets where the device data is stored.
-		when(redisUtils.getHashTriplets(eq(KeyType.ESTHESIS_DM), anyString())).thenReturn(testHelper.mockRedisHashTriplets("test-label", "test-value"));
+		when(redisUtils.getHashTriplets(eq(KeyType.ESTHESIS_DM), anyString())).thenReturn(
+			testHelper.mockRedisHashTriplets("test-label", "test-value"));
 
 		// Assert device data was persisted.
-		DeviceProfileFieldDataDTO deviceProfileFieldDataDTO = deviceService.getDeviceData(deviceId).getFirst();
+		DeviceProfileFieldDataDTO deviceProfileFieldDataDTO =
+			deviceService.getDeviceData(device.getId().toHexString()).getFirst();
 		assertEquals("test-label", deviceProfileFieldDataDTO.getLabel());
 		assertEquals("test-value", deviceProfileFieldDataDTO.getValue());
 	}
@@ -297,29 +292,33 @@ class DeviceServiceTest {
 	@Test
 	void getDeviceAttributeByName() {
 		// Perform a save operation for a new device.
-		String deviceId = deviceService.saveNew(
-			testHelper.makeDeviceEntity(
-				"test-hardware-id",
-				Status.REGISTERED,
-				"tag1",
-				CORE)).getId().toHexString();
+		DeviceEntity device = testHelper.makeDeviceEntity(
+			"test-hardware-id",
+			Status.REGISTERED,
+			"tag1",
+			CORE);
+		deviceService.getRepository().persist(device);
 
 		// Save a new profile for the device.
-		deviceService.saveProfile(deviceId,
+		deviceService.saveProfile(device.getId().toHexString(),
 			new DeviceProfileDTO()
 				.setAttributes(
 					List.of(
 						new DeviceAttributeEntity(
-							deviceId,
+							device.getId().toHexString(),
 							"test-boolean-attribute",
 							"false",
 							DataUtils.ValueType.BOOLEAN))
 				));
 		// Assert valid device attribute was found.
-		assertTrue(deviceService.getDeviceAttributeByName(deviceId, "test-boolean-attribute").isPresent());
+		assertTrue(
+			deviceService.getDeviceAttributeByName(device.getId().toHexString(), "test-boolean-attribute")
+				.isPresent());
 
 		// Assert non-existing device or attribute was not found.
-		assertFalse(deviceService.getDeviceAttributeByName(deviceId, "non-existing-attribute").isPresent());
+		assertFalse(
+			deviceService.getDeviceAttributeByName(device.getId().toHexString(), "non-existing-attribute")
+				.isPresent());
 		assertFalse(deviceService.getDeviceAttributeByName(
 			new ObjectId().toHexString(),
 			"test-boolean-attribute").isPresent());
@@ -330,21 +329,21 @@ class DeviceServiceTest {
 	@Test
 	void deleteById() {
 		// Perform a save operation for a new device.
-		String deviceId = deviceService.saveNew(
-			testHelper.makeDeviceEntity(
-				"test-hardware-id",
-				Status.REGISTERED,
-				"tag1",
-				CORE)).getId().toHexString();
+		DeviceEntity device = testHelper.makeDeviceEntity(
+			"test-hardware-id",
+			Status.REGISTERED,
+			"tag1",
+			CORE);
+		deviceService.getRepository().persist(device);
 
 		// Assert the device was saved.
-		assertNotNull(deviceService.findById(deviceId));
+		assertNotNull(deviceService.findById(device.getId().toHexString()));
 
 		// Perform a delete operation for the device.
-		deviceService.deleteById(deviceId);
+		deviceService.deleteById(device.getId().toHexString());
 
 		// Assert the device was deleted.
-		assertNull(deviceService.findById(deviceId));
+		assertNull(deviceService.findById(device.getId().toHexString()));
 
 	}
 
@@ -354,29 +353,27 @@ class DeviceServiceTest {
 		assertTrue(deviceService.getDevicesIds().isEmpty());
 
 		// Perform a save operation for a new device.
-		String deviceId = deviceService.saveNew(
-			testHelper.makeDeviceEntity(
-				"test-hardware-id",
-				Status.REGISTERED,
-				"tag1",
-				CORE)).getId().toHexString();
+		DeviceEntity device = testHelper.makeDeviceEntity(
+			"test-hardware-id",
+			Status.REGISTERED,
+			"tag1",
+			CORE);
+		deviceService.getRepository().persist(device);
 
 		// Assert device id is found.
-		assertTrue(deviceService.getDevicesIds().contains(deviceId));
-
-
+		assertTrue(deviceService.getDevicesIds().contains(device.getId().toHexString()));
 	}
 
 	@SneakyThrows
 	@Test
 	void importData() {
 		// Perform a save operation for a new device.
-		String deviceId = deviceService.saveNew(
-			testHelper.makeDeviceEntity(
-				"test-hardware-id",
-				Status.REGISTERED,
-				"tag1",
-				CORE)).getId().toHexString();
+		DeviceEntity device = testHelper.makeDeviceEntity(
+			"test-hardware-id",
+			Status.REGISTERED,
+			"tag1",
+			CORE);
+		deviceService.getRepository().persist(device);
 
 		// Arrange and prepare import data instructions DTO.
 		ImportDataProcessingInstructionsDTO instructions =
@@ -388,7 +385,7 @@ class DeviceServiceTest {
 		// Assert import data operation is successful.
 		assertDoesNotThrow(
 			() -> deviceService.importData(
-				deviceId,
+				device.getId().toHexString(),
 				testHelper.getBufferedReaderForImportData(),
 				MessageTypeEnum.T,
 				instructions)
@@ -396,7 +393,7 @@ class DeviceServiceTest {
 
 		assertDoesNotThrow(
 			() -> deviceService.importData(
-				deviceId,
+				device.getId().toHexString(),
 				testHelper.getBufferedReaderForImportData(),
 				MessageTypeEnum.M,
 				instructions)
@@ -408,10 +405,10 @@ class DeviceServiceTest {
 	@Test
 	void find() {
 		// Assert find no devices.
-		assertTrue(deviceService.find(testHelper.makePageable(0, 100), true).getContent().isEmpty());
+		assertTrue(deviceService.find(testHelper.makePageable(0, 100)).getContent().isEmpty());
 
 		// Perform a save operation for a new device.
-		deviceService.saveNew(
+		deviceService.getRepository().persist(
 			testHelper.makeDeviceEntity(
 				"test-hardware-id",
 				Status.REGISTERED,
@@ -420,106 +417,42 @@ class DeviceServiceTest {
 
 		// Assert device is found.
 		assertEquals(1,
-			deviceService.find(testHelper.makePageable(0, 100), true).getContent().size());
-
+			deviceService.find(testHelper.makePageable(0, 100)).getContent().size());
 	}
 
 	@Test
 	void findById() {
 		// Perform a save operation for a new device.
-		String deviceId = deviceService.saveNew(
-			testHelper.makeDeviceEntity(
-				"test-hardware-id",
-				Status.REGISTERED,
-				"tag1",
-				CORE)).getId().toHexString();
+		DeviceEntity device = testHelper.makeDeviceEntity(
+			"test-hardware-id",
+			Status.REGISTERED,
+			"tag1",
+			CORE);
+		deviceService.getRepository().persist(device);
 
 		// Assert device is found.
-		assertNotNull(deviceService.findById(deviceId));
+		assertNotNull(deviceService.findById(device.getId().toHexString()));
 
 		// Assert non-existing device is not found.
 		assertNull(deviceService.findById(new ObjectId().toHexString()));
 	}
 
 	@Test
-	void saveNew() {
-		// Perform a save operation for a new CORE device.
-		String coreDeviceId =
-			deviceService.saveNew(new DeviceEntity()
-				.setHardwareId("new-test-device-1")
-				.setTags(List.of("tag1"))
-				.setDeviceKey(new DeviceKeyDTO()
-					.setPrivateKey("test-private-key")
-					.setPublicKey("test-public-key")
-					.setCertificate("test-certificate"))
-				.setType(CORE)).getId().toHexString();
-
-		// Perform a save operation for a new EDGE device.
-		String edgeDeviceId =
-			deviceService.saveNew(new DeviceEntity()
-				.setHardwareId("new-test-device-2")
-				.setTags(List.of("tag2"))
-				.setDeviceKey(new DeviceKeyDTO()
-					.setPrivateKey("test-private-key")
-					.setPublicKey("test-public-key")
-					.setCertificate("test-certificate"))
-				.setType(EDGE)).getId().toHexString();
-
-		// Assert the devices were saved with the provided properties.
-		DeviceEntity coreDevice = deviceService.findById(coreDeviceId);
-		DeviceEntity edgeDevice = deviceService.findById(edgeDeviceId);
-
-		assertNotNull(coreDevice);
-		assertEquals("new-test-device-1", coreDevice.getHardwareId());
-		assertEquals(CORE, coreDevice.getType());
-		assertTrue(coreDevice.getTags().contains("tag1"));
-
-		assertNotNull(edgeDevice);
-		assertEquals("new-test-device-2", edgeDevice.getHardwareId());
-		assertEquals(EDGE, edgeDevice.getType());
-		assertTrue(edgeDevice.getTags().contains("tag2"));
-	}
-
-	@Test
-	void saveUpdate() {
-		// Perform a save operation for a new device.
-		String deviceId =
-			deviceService.saveNew(new DeviceEntity()
-				.setHardwareId("new-test-device-1")
-				.setStatus(Status.REGISTERED)
-				.setTags(List.of("tag1"))
-				.setType(CORE)).getId().toHexString();
-
-		// Find and update the device.
-		DeviceEntity device = deviceService.findById(deviceId);
-		device.setStatus(Status.DISABLED);
-		device.setTags(List.of("tag2", "tag3"));
-
-		deviceService.saveUpdate(device);
-
-		// Assert the device was updated.
-		DeviceEntity updatedDevice = deviceService.findById(deviceId);
-		assertEquals(Status.DISABLED, updatedDevice.getStatus());
-		assertTrue(updatedDevice.getTags().contains("tag2"));
-		assertTrue(updatedDevice.getTags().contains("tag3"));
-		assertFalse(updatedDevice.getTags().contains("tag1"));
-	}
-
-	@Test
 	void getGeolocation() {
 		// Perform a save operation for a new device.
-		String deviceId = deviceService.saveNew(
-			testHelper.makeDeviceEntity(
-				"test-hardware-id",
-				Status.REGISTERED,
-				"tag1",
-				CORE)).getId().toHexString();
+		DeviceEntity device = testHelper.makeDeviceEntity(
+			"test-hardware-id",
+			Status.REGISTERED,
+			"tag1",
+			CORE);
+		deviceService.getRepository().persist(device);
 
 		// Mock redis geolocation value returned.
 		when(redisUtils.getFromHash(eq(KeyType.ESTHESIS_DM), anyString(), anyString())).thenReturn("0");
-		when(redisUtils.getLastUpdate(eq(KeyType.ESTHESIS_DM), anyString(), anyString())).thenReturn(Instant.now());
+		when(redisUtils.getLastUpdate(eq(KeyType.ESTHESIS_DM), anyString(), anyString())).thenReturn(
+			Instant.now());
 
 		// Assert device geolocation is found.
-		assertNotNull(deviceService.getGeolocation(deviceId));
+		assertNotNull(deviceService.getGeolocation(device.getId().toHexString()));
 	}
 }

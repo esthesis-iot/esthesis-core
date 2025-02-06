@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.Security;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.common.paging.Page;
@@ -36,10 +35,9 @@ class AuditServiceTest {
 				Security.Category.AUDIT,
 				Security.Operation.CREATE));
 
-
 		// Assert audit can be found.
 		Page<AuditEntity> entityPage =
-			auditService.find(testHelper.makePageable(0, 10), true);
+			auditService.find(testHelper.makePageable(0, 10));
 
 		assertFalse(entityPage.getContent().isEmpty());
 	}
@@ -61,11 +59,11 @@ class AuditServiceTest {
 	@Test
 	void findByIdNOK() {
 		// Perform the save operation for a new audit.
-			auditService.save(
-				testHelper.makeAuditEntity(
-					"test create audit",
-					Security.Category.AUDIT,
-					Security.Operation.CREATE));
+		auditService.save(
+			testHelper.makeAuditEntity(
+				"test create audit",
+				Security.Category.AUDIT,
+				Security.Operation.CREATE));
 
 		// Assert non-existent audit id cannot be found.
 		assertNull(auditService.findById(new ObjectId().toHexString()));

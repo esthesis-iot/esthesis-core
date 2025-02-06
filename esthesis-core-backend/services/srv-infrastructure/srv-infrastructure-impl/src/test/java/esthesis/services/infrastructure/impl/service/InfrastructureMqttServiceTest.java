@@ -1,5 +1,12 @@
 package esthesis.services.infrastructure.impl.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
 import esthesis.service.infrastructure.entity.InfrastructureMqttEntity;
 import esthesis.service.tag.resource.TagSystemResource;
 import esthesis.services.infrastructure.impl.TestHelper;
@@ -7,20 +14,12 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
 @Slf4j
 @QuarkusTest
@@ -84,8 +83,7 @@ class InfrastructureMqttServiceTest {
 		// Assert no MQTT Infrastructure is found.
 		assertEquals(0,
 			infrastructureMqttService.find(
-				testHelper.makePageable(0, 100),
-				true).getContent().size());
+				testHelper.makePageable(0, 100)).getContent().size());
 
 		// Perform a save of a new MQTT Infrastructure entity.
 		infrastructureMqttService.saveNew(
@@ -98,8 +96,7 @@ class InfrastructureMqttServiceTest {
 		// Assert the persisted MQTT Infrastructure is found.
 		assertEquals(1,
 			infrastructureMqttService.find(
-				testHelper.makePageable(0, 100),
-				true).getContent().size());
+				testHelper.makePageable(0, 100)).getContent().size());
 
 		// Todo cover more cases with different parameters.
 
