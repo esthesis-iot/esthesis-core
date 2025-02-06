@@ -216,13 +216,13 @@ pipeline {
                 }
             }
         }
-        stage('Produce bom.xml for ui') {
+        stage('Produce bom.json for ui') {
             steps {
                 container (name: 'esthesis-core-builder') {
                     sh '''
                         cd esthesis-core-ui
-                        npm install --global @cyclonedx/cyclonedx-npm
-                        cyclonedx-npm --ignore-npm-errors --output-format xml --output-file bom.xml
+                        npm install --global @cyclonedx/cdxgen
+                        cdxgen -t nodejs -o bom.json
                     '''
                 }
             }
@@ -231,7 +231,7 @@ pipeline {
             steps {
                 container (name: 'esthesis-core-builder') {
                     sh '''
-                        echo '{"project": "229ec483-35c9-4a98-b904-bc8c5b1d6544", "bom": "'"$(cat esthesis-core-ui/bom.xml | base64 -w 0)"'"}' > payload.json
+                        echo '{"project": "229ec483-35c9-4a98-b904-bc8c5b1d6544", "bom": "'"$(cat esthesis-core-ui/bom.json | base64 -w 0)"'"}' > payload.json
                     '''
                     sh '''
                         curl -X "PUT" ${DEPENDENCY_TRACK_URL} -H 'Content-Type: application/json' -H 'X-API-Key: '${DEPENDENCY_TRACK_API_KEY} -d @payload.json
