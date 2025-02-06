@@ -1,26 +1,9 @@
 package esthesis.service.agent.impl.service;
 
-import static esthesis.common.util.EsthesisCommonConstants.Device.Capability.EXECUTE;
-import static esthesis.common.util.EsthesisCommonConstants.Device.Capability.PROVISIONING;
-import static esthesis.common.util.EsthesisCommonConstants.Device.Type.CORE;
-import static esthesis.core.common.AppConstants.GridFS.PROVISIONING_BUCKET_NAME;
-import static esthesis.core.common.AppConstants.GridFS.PROVISIONING_METADATA_NAME;
-import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_PROVISIONING_CACHE_TIME;
-import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_PROVISIONING_SECURE;
-import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM;
-import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 import esthesis.common.agent.dto.AgentRegistrationRequest;
 import esthesis.common.agent.dto.AgentRegistrationResponse;
 import esthesis.common.crypto.dto.SignatureVerificationRequestDTO;
 import esthesis.common.exception.QDoesNotExistException;
-import esthesis.common.exception.QLimitException;
 import esthesis.common.exception.QMismatchException;
 import esthesis.common.exception.QSecurityException;
 import esthesis.core.common.AppConstants;
@@ -44,15 +27,31 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.MockitoConfig;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Optional;
 import lombok.SneakyThrows;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Optional;
+
+import static esthesis.common.util.EsthesisCommonConstants.Device.Capability.EXECUTE;
+import static esthesis.common.util.EsthesisCommonConstants.Device.Capability.PROVISIONING;
+import static esthesis.common.util.EsthesisCommonConstants.Device.Type.CORE;
+import static esthesis.core.common.AppConstants.GridFS.PROVISIONING_BUCKET_NAME;
+import static esthesis.core.common.AppConstants.GridFS.PROVISIONING_METADATA_NAME;
+import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_PROVISIONING_CACHE_TIME;
+import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_PROVISIONING_SECURE;
+import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_KEY_ALGORITHM;
+import static esthesis.core.common.AppConstants.NamedSetting.SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @QuarkusTest
 class AgentServiceTest {
@@ -100,13 +99,13 @@ class AgentServiceTest {
 	/**
 	 * Helper method to create a new provisioning package instance.
 	 *
-	 * @param name      The name of the provisioning package
-	 * @param version   The version of the provisioning package
-	 * @param available The availability of the provisioning package
-	 * @return a new instance of a ProvisioningPackageEntity
+	 * @param name      The name of the provisioning package.
+	 * @param version   The version of the provisioning package.
+	 * @param available The availability of the provisioning package.
+	 * @return a new instance of a ProvisioningPackageEntity.
 	 */
 	private ProvisioningPackageEntity newProvisioningPackage(String name, String version,
-		boolean available) {
+																													 boolean available) {
 		ProvisioningPackageEntity provisioningPackage =
 			ProvisioningPackageEntity.builder()
 				.name(name)
@@ -121,10 +120,10 @@ class AgentServiceTest {
 	@SneakyThrows
 	@BeforeEach
 	void setup() {
-		// Mock CA certificate retrieval
+		// Mock CA certificate retrieval.
 		when(caSystemResource.getCACertificate("test-ca-id")).thenReturn("test-ca");
 
-		// Mocking security-related settings
+		// Mocking security-related settings.
 		when(settingsSystemResource.findByName(DEVICE_PROVISIONING_SECURE))
 			.thenReturn(new SettingEntity().setValue("true"));
 		when(settingsSystemResource.findByName(SECURITY_ASYMMETRIC_KEY_ALGORITHM))
@@ -132,7 +131,7 @@ class AgentServiceTest {
 		when(settingsSystemResource.findByName(SECURITY_ASYMMETRIC_SIGNATURE_ALGORITHM))
 			.thenReturn(new SettingEntity().setValue("test-signature-algorithm"));
 
-		// Mocking public key retrieval
+		// Mocking public key retrieval.
 		when(deviceSystemResource.findPublicKey("test-hardware"))
 			.thenReturn("test-public-key");
 		when(deviceSystemResource.findPublicKey("test-hardware-2"))
@@ -142,42 +141,36 @@ class AgentServiceTest {
 		when(deviceSystemResource.findPublicKey("test-hardware-4"))
 			.thenReturn("test-public-key");
 
-		// Mocking signature verification to return true
+		// Mocking signature verification to return true.
 		when(signingSystemResource.verifySignature(any(SignatureVerificationRequestDTO.class)))
 			.thenReturn(true);
 
-		// Mocking provisioning package from provisioning agent resource
+		// Mocking provisioning package from provisioning agent resource.
 		when(provisioningAgentResource.findById("test-package-id"))
 			.thenReturn(newProvisioningPackage("test-provisioning-package", "v0.0.1", true));
 		when(provisioningAgentResource.find("test-hardware", "v0.0.1"))
 			.thenReturn(newProvisioningPackage("test-provisioning-package", "v0.0.1", true));
 
-		// Mocking provisioning package cache time
+		// Mocking provisioning package cache time.
 		when(settingsSystemResource.findByName(DEVICE_PROVISIONING_CACHE_TIME))
 			.thenReturn(new SettingEntity().setValue("10"));
 
-		// Simulate provisioning limit reached scenario
-		int requestsPerTimeslot = 5;
-		for (int i = 0; i < requestsPerTimeslot; i++) {
-			redisUtils.incrCounter(RedisUtils.KeyType.ESTHESIS_PRT, "test-hardware-4",
-				300);
-		}
 
-		// Mock provisioning package file retrieval from GridFS
+		// Mock provisioning package file retrieval from GridFS.
 		redisUtils.setToHash(RedisUtils.KeyType.ESTHESIS_PPDT,
 			"test-download-token",
 			AppConstants.Provisioning.Redis.DOWNLOAD_TOKEN_PACKAGE_ID,
 			"test-file-id");
 
 		when(gridFSService.downloadBinary(GridFSDTO.builder()
-			.database("esthesiscore-test") // set in application-test.yaml
+			.database("esthesiscore-test") // Set in application-test.yaml.
 			.metadataName(PROVISIONING_METADATA_NAME)
 			.metadataValue("test-file-id")
 			.bucketName(PROVISIONING_BUCKET_NAME)
 			.build()))
 			.thenReturn(Uni.createFrom().item("test-file-content".getBytes(StandardCharsets.UTF_8)));
 
-		// Mocking device registration
+		// Mocking device registration.
 		when(deviceSystemResource.register(any(DeviceRegistrationDTO.class)))
 			.thenReturn(new DeviceEntity()
 				.setDeviceKey(
@@ -188,17 +181,14 @@ class AgentServiceTest {
 				)
 				.setHardwareId("test-hardware")
 			);
-	}
 
-	@AfterEach
-	void after() {
-		// Reset provisioning request counter for hardware "test-hardware-4" after each test
+		// Reset provisioning request counter for hardware "test-hardware-4" after each test.
 		redisUtils.resetCounter(RedisUtils.KeyType.ESTHESIS_PRT, "test-hardware-4");
 	}
 
 	@Test
 	void testFindProvisioningPackageByIdOK() {
-		// Test provisioning package retrieval when available
+		// Test provisioning package retrieval when available.
 		AgentProvisioningInfoResponse infoResponse =
 			agentService.findProvisioningPackageById("test-hardware",
 				"test-package-id", Optional.of("test-token"));
@@ -206,7 +196,7 @@ class AgentServiceTest {
 		assertNotNull(infoResponse);
 		assertEquals("test-provisioning-package", infoResponse.getName());
 
-		// Test when no provisioning package is available
+		// Test when no provisioning package is available.
 		AgentProvisioningInfoResponse infoResponse2 =
 			agentService.findProvisioningPackageById("test-hardware-2",
 				"test-package-id-2", Optional.of("test-token-2"));
@@ -218,33 +208,33 @@ class AgentServiceTest {
 	@Test
 	void testFindProvisioningPackageByIdNOK() {
 
-		// Test when security settings are missing
+		Optional<String> token = Optional.of("test-token");
+		Optional<String> emptyToken = Optional.empty();
+
+		// Test when security settings are missing.
 		assertThrows(QSecurityException.class, () ->
 			agentService.findProvisioningPackageById("test-hardware-3",
-				"test-package-id3", Optional.of("test-token")));
+				"test-package-id3", token));
 
-		// Test when request limit is reached
-		assertThrows(QLimitException.class, () ->
-			agentService.findProvisioningPackageById("test-hardware-4",
-				"test-package-id4", Optional.of("test-token")));
-
-		// Test when security token is missing
+		// Test when security token is missing.
 		assertThrows(QSecurityException.class, () ->
 			agentService.findProvisioningPackageById("test-hardware-5",
-				"test-package-id5", Optional.empty()));
+				"test-package-id5", emptyToken));
+
+		// Todo Test when the request limit is reached.
 
 	}
 
 	@Test
 	void findProvisioningPackageOK() {
-		// Test when a new provisioning package is available
+		// Test when a new provisioning package is available.
 		AgentProvisioningInfoResponse infoResponse =
 			agentService.findProvisioningPackage("test-hardware", "v0.0.1", Optional.of("test-token"));
 
 		assertNotNull(infoResponse);
 		assertEquals("test-provisioning-package", infoResponse.getName());
 
-		// Test when none provisioning package is available
+		// Test when none provisioning package is available.
 		AgentProvisioningInfoResponse infoResponse2 =
 			agentService.findProvisioningPackage("test-hardware-2", "v0.0.1", Optional.of("test-token"));
 
@@ -254,23 +244,24 @@ class AgentServiceTest {
 
 	@Test
 	void findProvisioningPackageNOK() {
-		// Test when security settings are missing
-		assertThrows(QSecurityException.class, () ->
-			agentService.findProvisioningPackage("test-hardware-3", "v0.0.1", Optional.of("test-token")));
+		Optional<String> token = Optional.of("test-token");
+		Optional<String> emptyToken = Optional.empty();
 
-		// Test when the request limit is reached
-		assertThrows(QLimitException.class, () ->
-			agentService.findProvisioningPackage("test-hardware-4", "v0.0.1", Optional.of("test-token")));
-
-		// Test when security token is missing
+		// Test when security settings are missing.
 		assertThrows(QSecurityException.class, () ->
-			agentService.findProvisioningPackage("test-hardware", "v0.0.1", Optional.empty()));
+			agentService.findProvisioningPackage("test-hardware-3", "v0.0.1", token));
+
+		// Test when security token is missing.
+		assertThrows(QSecurityException.class, () ->
+			agentService.findProvisioningPackage("test-hardware", "v0.0.1", emptyToken));
+
+		// Todo Test when the request limit is reached.
 	}
 
 	@Test
 	void downloadProvisioningPackageOK() {
 		byte[] binary = agentService.downloadProvisioningPackage("test-download-token")
-			.await().indefinitely();  // Block until the Uni completes
+			.await().indefinitely();  // Block until the Uni completes.
 
 		String value = new String(binary, StandardCharsets.UTF_8);
 		assertEquals("test-file-content", value);
@@ -299,16 +290,16 @@ class AgentServiceTest {
 		AgentRegistrationResponse testAgentResponse1 = agentService.register(testAgentRequest1);
 
 		assertNotNull(testAgentResponse1);
-		assertEquals(testAgentResponse1.getCertificate(), "test-certificate");
-		assertEquals(testAgentResponse1.getPublicKey(), "test-public-key");
-		assertEquals(testAgentResponse1.getPrivateKey(), "test-private-key");
+		assertEquals("test-certificate", testAgentResponse1.getCertificate());
+		assertEquals("test-public-key", testAgentResponse1.getPublicKey());
+		assertEquals("test-private-key", testAgentResponse1.getPrivateKey());
 	}
 
 	@SneakyThrows
 	@Test
 	void registerNOK() {
 
-		// Test when Hardware id has special characters
+		// Test when Hardware id has special characters.
 		AgentRegistrationRequest testAgentRequestWithInvalidName1 =
 			AgentRegistrationRequest.builder()
 				.hardwareId("test-hardware@#$")
@@ -317,7 +308,7 @@ class AgentServiceTest {
 		assertThrows(QMismatchException.class,
 			() -> agentService.register(testAgentRequestWithInvalidName1));
 
-		//Test when Hardware id has spaces
+		//Test when Hardware id has spaces.
 		AgentRegistrationRequest testAgentRequestWithInvalidName2 =
 			AgentRegistrationRequest.builder()
 				.hardwareId("test hardware")

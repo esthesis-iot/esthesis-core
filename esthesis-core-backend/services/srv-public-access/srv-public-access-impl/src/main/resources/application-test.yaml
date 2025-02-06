@@ -1,0 +1,22 @@
+quarkus:
+  log:
+    level: INFO
+  devservices:
+    enabled: true
+    timeout: 5m
+  http:
+    test-port: 0
+esthesis:
+  oidc:
+    client-id: "test-oidc-client-id"
+    scope: "test-oidc-scope"
+    response-type: "test-oidc-response-type"
+    silent-renew: true
+    use-refresh-token: true
+    renew-time-before-token-expires-in-seconds: 60
+    max-id-token-iat-offset-allowed-in-seconds: 20
+    ignore-nonce-after-refresh: true
+    secure-routes: [ "test-oidc-secure-routes" ]
+    authority: "test-oidc-authority"
+    redirect-url: "test-oidc-redirect-url"
+    post-logout-redirect-uri: "test-oidc-post-logout-redirect-uri"

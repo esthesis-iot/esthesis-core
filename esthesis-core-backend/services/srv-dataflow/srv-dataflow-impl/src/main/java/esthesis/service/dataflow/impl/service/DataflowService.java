@@ -8,12 +8,12 @@ import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
 import com.github.slugify.Slugify;
 import esthesis.common.data.DataUtils;
+import esthesis.common.exception.QDoesNotExistException;
 import esthesis.service.common.BaseService;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.dataflow.dto.FormlySelectOption;
 import esthesis.service.dataflow.entity.DataflowEntity;
-import esthesis.service.dataflow.impl.docker.DockerClient;
 import esthesis.service.kubernetes.dto.DeploymentInfoDTO;
 import esthesis.service.kubernetes.dto.SecretDTO;
 import esthesis.service.kubernetes.dto.SecretDTO.SecretDTOBuilder;
@@ -57,9 +57,6 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	private static final String SECRET_CONTENT = "content";
 	private static final String CONFIG_SECTION_KUBERNETES = "kubernetes";
 
-	@Inject
-	@RestClient
-	DockerClient dockerClient;
 
 	@Inject
 	@RestClient
@@ -245,6 +242,9 @@ public class DataflowService extends BaseService<DataflowEntity> {
 	public void delete(String dataflowId) {
 		// Unschedule dataflow.
 		DataflowEntity dataflow = findById(dataflowId);
+		if(dataflow == null) {
+			throw new QDoesNotExistException("No dataflow found for id {}", dataflowId);
+		}
 		dataflow.setStatus(false);
 		DeploymentInfoDTO deploymentInfoDTO = createPodInfo(dataflow);
 		kubernetesResource.scheduleDeployment(deploymentInfoDTO);

@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.Security;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.common.paging.Page;
 import esthesis.services.audit.impl.TestHelper;
@@ -27,39 +29,46 @@ class AuditServiceTest {
 
 	@Test
 	void find() {
-		// Insert 2 audit entities
-		testHelper.persistAuditEntity();
-		testHelper.persistAuditEntity();
+		// Perform the save operation for a new audit.
+		auditService.save(
+			testHelper.makeAuditEntity(
+				"test create audit",
+				Security.Category.AUDIT,
+				Security.Operation.CREATE));
 
-		// Assert find all
+
+		// Assert audit can be found.
 		Page<AuditEntity> entityPage =
-			auditService.find(testHelper.makePageable(0, 10, "name,asc"), true);
+			auditService.find(testHelper.makePageable(0, 10), true);
 
-		assertTrue(entityPage.getContent().size() >= 2);
+		assertFalse(entityPage.getContent().isEmpty());
 	}
 
 	@Test
 	void findByIdOK() {
-		// Insert and extract new audit id
-		String auditId = testHelper.persistAuditEntity().getId().toString();
+		// Perform the save operation for a new audit.
+		String auditId =
+			auditService.save(
+				testHelper.makeAuditEntity(
+					"test create audit",
+					Security.Category.AUDIT,
+					Security.Operation.CREATE)).getId().toHexString();
 
-		AuditEntity entity = auditService.findById(auditId);
-
-		// Assert entity was persisted
-		assertNotNull(entity);
-		assertEquals(auditId, entity.getId().toString());
+		// Assert audit can be found.
+		assertNotNull(auditService.findById(auditId));
 	}
 
 	@Test
 	void findByIdNOK() {
-		// Insert new audit entity
-		testHelper.persistAuditEntity().getId().toString();
+		// Perform the save operation for a new audit.
+			auditService.save(
+				testHelper.makeAuditEntity(
+					"test create audit",
+					Security.Category.AUDIT,
+					Security.Operation.CREATE));
 
-		// Find audit entity with non-existent id
-		AuditEntity entity = auditService.findById(new ObjectId().toString());
-
-		// Assert entity was not persisted
-		assertNull(entity);
+		// Assert non-existent audit id cannot be found.
+		assertNull(auditService.findById(new ObjectId().toHexString()));
 
 	}
 

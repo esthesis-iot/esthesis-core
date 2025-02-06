@@ -13,7 +13,11 @@ import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 import java.util.UUID;
+
+import jakarta.transaction.Transactional;
 import org.bson.types.ObjectId;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
@@ -22,6 +26,11 @@ class AuditResourceImplTest {
 
 	@Inject
 	TestHelper testHelper;
+
+	@BeforeEach
+	void clearDatabase() {
+		testHelper.clearDB();
+	}
 
 	@Test
 	@TestSecurity(user = "test-user", roles = AppConstants.ROLE_USER)

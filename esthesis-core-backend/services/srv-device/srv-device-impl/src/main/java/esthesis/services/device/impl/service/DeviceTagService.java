@@ -7,7 +7,6 @@ import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 import com.google.common.collect.Lists;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.security.annotation.ErnPermission;
-import esthesis.service.settings.resource.SettingsResource;
 import esthesis.service.tag.entity.TagEntity;
 import esthesis.service.tag.resource.TagResource;
 import esthesis.services.device.impl.repository.DeviceRepository;
@@ -36,9 +35,6 @@ public class DeviceTagService {
 	@RestClient
 	TagResource tagResource;
 
-	@Inject
-	@RestClient
-	SettingsResource settingsResource;
 
 	/**
 	 * Finds the devices matched by the specific list of tags.v

@@ -6,5 +6,8 @@ quarkus:
     timeout: 5m
   mongodb:
     database: esthesiscore-test
+    devservices:
+      enabled: true
+      image-name: "mongo:7.0.5"
   http:
     test-port: 0
