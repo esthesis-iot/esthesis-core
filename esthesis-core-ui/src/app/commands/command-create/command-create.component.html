@@ -36,9 +36,10 @@
                      class="cursor-pointer" icon="xmark"></fa-icon>
           </span>
         </div>
-        <app-tag-select class="flex flex-grow"
-                        [parentForm]="searchDevicesForm" parentFormTagsField="tags">
-        </app-tag-select>
+        <app-smart-select class="flex flex-grow" label="Tags"
+                          [parentForm]="searchDevicesForm" parentFormTargetField="tags"
+                          [service]="tagsService">
+        </app-smart-select>
       </form>
 
       <form [formGroup]="commandForm" class="flex flex-col">

@@ -54,14 +54,13 @@
                              matSuffix>
             </app-field-error>
           </mat-form-field>
-
-          <app-provisioning-select class="flex flex-grow"
-                          [parentForm]="form" parentFormProvisioningField="prerequisiteVersion"
-                          label="Parent provisioning package"
-                          [parentFormInitWithProvisioning]="form.getRawValue()['prerequisiteVersion']"
-                          hint="A previous version required to be installed before this package can be installed.">
-          </app-provisioning-select>
-
+          <app-smart-select class="flex flex-grow"
+                            [parentForm]="form" parentFormTargetField="prerequisiteVersion"
+                            label="Parent provisioning package"
+                            hint="A previous version required to be installed before this package can be installed."
+                            [service]="provisioningService"
+                            [multiple]="false">
+          </app-smart-select>
           <mat-form-field class="mt2">
             <mat-label>Availability</mat-label>
             <mat-select formControlName="available">
@@ -78,9 +77,10 @@
                       matInput></textarea>
           </mat-form-field>
 
-          <app-tag-select class="flex flex-grow"
-                          [parentForm]="form" parentFormTagsField="tags">
-          </app-tag-select>
+          <app-smart-select class="flex flex-grow" label="Tags"
+                            [parentForm]="form" parentFormTargetField="tags"
+                            [service]="tagsService">
+          </app-smart-select>
 
           <mat-form-field>
             <mat-label>Attributes</mat-label>

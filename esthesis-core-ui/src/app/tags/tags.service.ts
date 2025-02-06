@@ -2,7 +2,7 @@ import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {TagDto} from "./dto/tag-dto";
 import {CrudService} from "../shared/services/crud.service";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 import {AppConstants} from "../app.constants";
 
 /**
@@ -18,6 +18,12 @@ export class TagsService extends CrudService<TagDto> {
   }
 
   findByNames(names: string[]): Observable<TagDto[]> {
-    return this.http.get<TagDto[]>(`${AppConstants.API_ROOT}/${this.endpoint}/find/by-names?names=${names.join(",")}`);
+    if (!names || names.length === 0) {
+      return of([]);
+    } else {
+      return this.http.get<TagDto[]>(
+        `${AppConstants.API_ROOT}/${this.endpoint}/find/by-names?names=${names.join(",")}`
+      );
+    }
   }
 }

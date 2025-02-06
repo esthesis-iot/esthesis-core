@@ -65,7 +65,7 @@ public class TagResourceImpl implements TagResource {
 	@Override
 	@RolesAllowed({AppConstants.ROLE_USER, AppConstants.ROLE_SYSTEM})
 	public List<TagEntity> findByNames(@QueryParam("names") String names) {
-		return tagService.findByColumn("name", Arrays.asList(names.split(",")));
+		return tagService.findByColumnIn("name", Arrays.asList(names.split(",")));
 	}
 
 	@Override

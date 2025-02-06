@@ -33,15 +33,14 @@ import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {ConstraintViolationDto} from "../../shared/dto/constraint-violation-dto";
-import {
-  TAG_SELECT_BIND_VALUE
-} from "../../shared/components/smart-selects/tag-select/tag-select.component";
+import {SMART_SELECT_BIND_VALUE} from "../../shared/components/smart-select/smart-select.component";
 
 @Component({
   selector: "app-campaign-edit",
   templateUrl: "./campaign-edit.component.html"
 })
 export class CampaignEditComponent extends SecurityBaseComponent implements OnInit {
+  protected readonly SMART_SELECT_BIND_VALUE = SMART_SELECT_BIND_VALUE;
   // Campaign details form.
   form!: FormGroup;
   // The id of the form currently being processed.
@@ -81,8 +80,8 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
   constructor(private readonly fb: FormBuilder, public utilityService: UtilityService,
     private readonly provisioningService: ProvisioningService,
     private readonly route: ActivatedRoute, private readonly router: Router,
-    private readonly deviceService: DevicesService,
-    private readonly tagService: TagsService, private readonly campaignService: CampaignsService,
+    public readonly deviceService: DevicesService,
+    public readonly tagsService: TagsService, private readonly campaignService: CampaignsService,
     private readonly dialog: MatDialog) {
     super(AppConstants.SECURITY.CATEGORY.CAMPAIGN, route.snapshot.paramMap.get("id"));
   }
@@ -562,6 +561,4 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
       propertyIgnorable: campaignConditionDto.propertyIgnorable,
     });
   }
-
-  protected readonly TAG_SELECT_BIND_VALUE = TAG_SELECT_BIND_VALUE;
 }

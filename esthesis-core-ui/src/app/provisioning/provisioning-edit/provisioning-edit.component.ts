@@ -12,6 +12,8 @@ import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
 import {QFormValidationEEService} from "../../shared/services/form-validation.service";
+import {SMART_SELECT_BIND_VALUE} from "../../shared/components/smart-select/smart-select.component";
+import {TagsService} from "../../tags/tags.service";
 
 @Component({
   selector: "app-provisioning-edit",
@@ -25,8 +27,9 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
 
   constructor(private readonly fb: FormBuilder, private readonly dialog: MatDialog,
     private readonly route: ActivatedRoute, private readonly router: Router,
-    private readonly provisioningService: ProvisioningService,
+    protected readonly provisioningService: ProvisioningService,
     private readonly utilityService: UtilityService,
+    public readonly tagsService: TagsService,
     private readonly qFormValidation: QFormValidationEEService) {
     super(AppConstants.SECURITY.CATEGORY.PROVISIONING, route.snapshot.paramMap.get("id"));
   }
@@ -149,4 +152,6 @@ export class ProvisioningEditComponent extends SecurityBaseComponent implements 
   download() {
     this.provisioningService.download(this.id);
   }
+
+  protected readonly SMART_SELECT_BIND_VALUE = SMART_SELECT_BIND_VALUE;
 }

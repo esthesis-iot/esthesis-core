@@ -42,6 +42,16 @@ public interface ProvisioningResource {
 	Page<ProvisioningPackageEntity> find(@BeanParam Pageable pageable);
 
 	/**
+	 * Finds multiple provisioning packages by their ids.
+	 *
+	 * @param ids A comma-separated list of ids.
+	 * @return A list of provisioning packages with the given ids.
+	 */
+	@GET
+	@Path("/v1/find/by-ids")
+	List<ProvisioningPackageEntity> findByIds(@QueryParam("ids") String ids);
+
+	/**
 	 * Find a provisioning package by id.
 	 *
 	 * @param provisioningPackageId the id of the provisioning package.

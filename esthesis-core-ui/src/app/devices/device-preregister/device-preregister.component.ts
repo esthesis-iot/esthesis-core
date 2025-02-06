@@ -10,9 +10,8 @@ import {UtilityService} from "../../shared/services/utility.service";
 import {QFormValidationEEService} from "../../shared/services/form-validation.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {AppConstants} from "../../app.constants";
-import {
-  TAG_SELECT_BIND_VALUE
-} from "../../shared/components/smart-selects/tag-select/tag-select.component";
+import {SMART_SELECT_BIND_VALUE} from "../../shared/components/smart-select/smart-select.component";
+import {TagsService} from "../../tags/tags.service";
 
 @Component({
   selector: "app-device-preregister",
@@ -20,12 +19,14 @@ import {
   styleUrls: []
 })
 export class DevicePreregisterComponent extends SecurityBaseComponent implements OnInit {
+  protected readonly SMART_SELECT_BIND_VALUE = SMART_SELECT_BIND_VALUE;
   form!: FormGroup;
 
   constructor(private readonly fb: FormBuilder,
     private readonly devicesService: DevicesService, private readonly router: Router,
     private readonly utilityService: UtilityService, private readonly dialog: Dialog,
-    private readonly qFormValidation: QFormValidationEEService) {
+    private readonly qFormValidation: QFormValidationEEService,
+    public readonly tagsService: TagsService) {
     super(AppConstants.SECURITY.CATEGORY.DEVICE);
   }
 
@@ -73,6 +74,4 @@ export class DevicePreregisterComponent extends SecurityBaseComponent implements
       }
     });
   }
-
-  protected readonly TAG_SELECT_BIND_VALUE = TAG_SELECT_BIND_VALUE;
 }

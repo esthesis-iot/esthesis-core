@@ -28,9 +28,10 @@
               <mat-option [value]="false">Inactive</mat-option>
             </mat-select>
           </mat-form-field>
-          <app-tag-select class="flex flex-grow"
-                          [parentForm]="form" parentFormTagsField="tags">
-          </app-tag-select>
+          <app-smart-select class="flex flex-grow"
+                          [parentForm]="form" parentFormTargetField="tags"
+                          label="Tags" [service]="tagsService">
+          </app-smart-select>
         </div>
       </form>
     </div>

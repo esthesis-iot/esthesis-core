@@ -302,5 +302,9 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 	public ProvisioningPackageEntity findById(String id) {
 		return super.findById(id);
 	}
-
+	
+	@ErnPermission(category = PROVISIONING, operation = READ)
+	public List<ProvisioningPackageEntity> findByIds(String ids) {
+		return super.findByIds(Arrays.asList(ids.split(",")));
+	}
 }

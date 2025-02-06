@@ -60,9 +60,10 @@
           </div>
 
           <div class="-mt-8">
-            <app-tag-select class="flex flex-grow"
-                            [parentForm]="deviceInfoForm" parentFormTagsField="tags">
-            </app-tag-select>
+            <app-smart-select class="flex flex-grow" label="Tags"
+                              [parentForm]="deviceInfoForm" parentFormTargetField="tags"
+                              [service]="tagsService">
+            </app-smart-select>
           </div>
 
           <div *ngIf="mapOptions && geolocation && mapLayers">

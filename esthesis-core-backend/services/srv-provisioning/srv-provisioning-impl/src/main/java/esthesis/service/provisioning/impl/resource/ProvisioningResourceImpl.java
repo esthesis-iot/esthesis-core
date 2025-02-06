@@ -37,8 +37,12 @@ public class ProvisioningResourceImpl implements ProvisioningResource {
 	@Audited(cat = Category.PROVISIONING, op = Operation.READ, msg = "Search provisioning packages"
 		, log = AuditLogType.DATA_IN)
 	public Page<ProvisioningPackageEntity> find(@BeanParam Pageable pageable) {
-		System.out.println(pageable);
 		return provisioningService.find(pageable);
+	}
+
+	@Override
+	public List<ProvisioningPackageEntity> findByIds(String ids) {
+		return provisioningService.findByIds(ids);
 	}
 
 	@Override

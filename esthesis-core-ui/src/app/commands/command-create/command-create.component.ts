@@ -8,6 +8,8 @@ import {AppConstants} from "../../app.constants";
 import {UtilityService} from "../../shared/services/utility.service";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {CommandExecuteRequestDto} from "../dto/command-execute-request-dto";
+import {SMART_SELECT_BIND_VALUE} from "../../shared/components/smart-select/smart-select.component";
+import {TagsService} from "../../tags/tags.service";
 
 @Component({
   selector: "app-command-create",
@@ -21,7 +23,7 @@ export class CommandCreateComponent extends SecurityBaseComponent implements OnI
   selectedHardwareIds: string[] = [];
 
   constructor(private readonly formBuilder: FormBuilder,
-    private readonly commandService: CommandsService,
+    private readonly commandService: CommandsService, public readonly tagsService: TagsService,
     private readonly utilityService: UtilityService, private readonly router: Router) {
     super(AppConstants.SECURITY.CATEGORY.COMMAND);
   }
@@ -122,4 +124,5 @@ export class CommandCreateComponent extends SecurityBaseComponent implements OnI
     }
   }
 
+  protected readonly SMART_SELECT_BIND_VALUE = SMART_SELECT_BIND_VALUE;
 }

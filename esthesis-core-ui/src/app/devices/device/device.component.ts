@@ -13,6 +13,7 @@ import {FramedMapComponent} from "../../shared/components/framed-map/framed-map.
 import {AppConstants} from "../../app.constants";
 import {SecurityBaseComponent} from "../../shared/components/security-base-component";
 import {latLng, Layer, MapOptions, marker, tileLayer} from "leaflet";
+import {TagsService} from "../../tags/tags.service";
 
 @Component({
   selector: "app-device",
@@ -29,7 +30,7 @@ export class DeviceComponent extends SecurityBaseComponent implements OnInit {
   mapLayers?: Layer[];
 
   constructor(private readonly fb: FormBuilder, private readonly dialog: MatDialog,
-    private readonly devicesService: DevicesService,
+    private readonly devicesService: DevicesService, public readonly tagsService: TagsService,
     private readonly route: ActivatedRoute, private readonly router: Router,
     private readonly utilityService: UtilityService) {
     super(AppConstants.SECURITY.CATEGORY.DEVICE, route.snapshot.paramMap.get("id"));

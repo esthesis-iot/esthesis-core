@@ -20,11 +20,11 @@
           <mat-hint>You can preregister multiple devices, adding each hardware ID on a separate line
           </mat-hint>
         </mat-form-field>
-
-        <app-tag-select class="flex flex-grow"
-                        [bindValue]="TAG_SELECT_BIND_VALUE.NAME"
-                        [parentForm]="form" parentFormTagsField="tags">
-        </app-tag-select>
+        <app-smart-select class="flex flex-grow" label="Search by tags"
+                          [bindValue]="SMART_SELECT_BIND_VALUE.NAME"
+                          [parentForm]="form" parentFormTargetField="tags"
+                          [service]="tagsService">
+        </app-smart-select>
       </form>
     </div>
     <div class="card-actions justify-start mt-10">

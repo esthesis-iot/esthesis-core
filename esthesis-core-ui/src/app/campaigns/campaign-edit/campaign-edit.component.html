@@ -206,15 +206,17 @@
                 </ul>
               </div>
               <div *ngIf="!this.form.disabled" class="flex flex-row gap-5">
-                <app-device-select class="flex flex-grow"
-                   [parentForm]="form" parentFormDeviceField="searchByHardwareId"
-                   bindValue="hardwareId" label="Search by hardware ID">
-                </app-device-select>
-                <app-tag-select class="flex flex-grow" label="Search by tags"
-                                [bindValue]="TAG_SELECT_BIND_VALUE.NAME"
-                                [parentForm]="form" parentFormTagsField="searchByTags"
-                                [multiple]="false">
-                </app-tag-select>
+                <app-smart-select class="flex flex-grow" label="Search by hardware ID"
+                                  [bindValue]="SMART_SELECT_BIND_VALUE.HARDWARE_ID"
+                                  bindLabel="hardwareId"
+                                  [parentForm]="form" parentFormTargetField="searchByHardwareId"
+                                  [multiple]="false" [service]="deviceService">
+                </app-smart-select>
+                <app-smart-select class="flex flex-grow" label="Search by tags"
+                                  [bindValue]="SMART_SELECT_BIND_VALUE.NAME"
+                                  [parentForm]="form" parentFormTargetField="searchByTags"
+                                  [multiple]="false" [service]="tagsService">
+                </app-smart-select>
               </div>
 
               <div *ngIf="!this.form.disabled" class="flex flex-row gap-2">

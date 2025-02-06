@@ -126,6 +126,12 @@ public class TagService extends BaseService<TagEntity> {
 
 	@Override
 	@ErnPermission(category = TAGS, operation = READ)
+	public List<TagEntity> findByColumnIn(String column, List<String> values) {
+		return super.findByColumnIn(column, values);
+	}
+
+	@Override
+	@ErnPermission(category = TAGS, operation = READ)
 	public TagEntity findFirstByColumn(String column, Object value) {
 		return super.findFirstByColumn(column, value);
 	}

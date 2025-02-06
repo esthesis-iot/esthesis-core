@@ -23,7 +23,7 @@ export class InfrastructureMqttEditComponent extends SecurityBaseComponent imple
   constructor(private readonly fb: FormBuilder, private readonly dialog: MatDialog,
     private readonly infrastructureMqttService: InfrastructureMqttService,
     private readonly route: ActivatedRoute, private readonly router: Router,
-    private readonly utilityService: UtilityService, private readonly tagsService: TagsService) {
+    private readonly utilityService: UtilityService, public readonly tagsService: TagsService) {
     super(AppConstants.SECURITY.CATEGORY.INFRASTRUCTURE, route.snapshot.paramMap.get("id"));
   }
 
