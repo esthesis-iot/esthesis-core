@@ -24,6 +24,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -74,8 +75,8 @@ public class OrionGatewayService {
 		// Pre-registration checks
 		// *********************************************************************************************
 		// Find the esthesis attributes of this device.
-		List<DeviceAttributeEntity> esthesisDeviceAttributes =
-			deviceSystemResource.getDeviceAttributesByEsthesisId(esthesisId);
+		List<DeviceAttributeEntity> esthesisDeviceAttributes
+			= new ArrayList<>(deviceSystemResource.getDeviceAttributesByEsthesisId(esthesisId));
 
 		// Check whether this device should be registered.
 		if (!isRegistrationAllowed(esthesisDeviceAttributes)) {
@@ -285,8 +286,8 @@ public class OrionGatewayService {
 	public void syncAttributes(String esthesisId) {
 		log.debug("Synchronising attributes for device with esthesis ID '{}'.", esthesisId);
 		// Get esthesis device attributes.
-		List<DeviceAttributeEntity> esthesisAttributes = deviceSystemResource.getDeviceAttributesByEsthesisId(
-			esthesisId);
+		List<DeviceAttributeEntity> esthesisAttributes =
+			new ArrayList<>(deviceSystemResource.getDeviceAttributesByEsthesisId(esthesisId));
 
 		// Prevent unwanted attributes from being sent to Orion
 		filterAttributes(esthesisAttributes);
@@ -407,9 +408,10 @@ public class OrionGatewayService {
 			return false;
 		}
 
-		// check if device doesn't have a custom attribute for format and saving entities in Orion
-		// if it has then it should skip registration check
-		if (appConfig.orionCustomEntityJsonFormatAttributeName().isEmpty()) {
+		// Check if any custom Json format configuration exists.
+		// If so, we must skip the check for the device in Orion.
+		if (appConfig.orionCustomEntityJsonFormatAttributeName().isEmpty()
+			&& appConfig.orionCustomEntityJsonFormat().isEmpty()) {
 			// Check whether this device is registered in Orion.
 			String orionId = generateOrionDeviceId(esthesisHardwareId);
 			OrionEntityDTO orionEntity = orionClientService.getEntityByOrionId(orionId);
@@ -459,12 +461,32 @@ public class OrionGatewayService {
 		String timestamp = esthesisMessage.getPayload().getTimestamp();
 		List<ValueData> values = esthesisMessage.getPayload().getValues();
 
+		String customOrionEntityJsonFromDevice;
+		String customOrionEntityJsonFromDataflow = null;
+
 		// Check if device has set the custom measurement formatter attribute.
-		Optional<DeviceAttributeEntity> customOrionEntityJsonAttribute =
+		customOrionEntityJsonFromDevice =
 			appConfig.orionCustomEntityJsonFormatAttributeName()
 				.flatMap(
 					name -> deviceSystemResource.getDeviceAttributeByEsthesisHardwareIdAndAttributeName(
-						esthesisHardwareId, name));
+						esthesisHardwareId, name))
+				.map(DeviceAttributeEntity::getAttributeValue)
+				.orElse(null);
+
+		// If device custom Json is not set, check if the dataflow has set the custom measurement formatter.
+		if(StringUtils.isBlank(customOrionEntityJsonFromDevice)) {
+			customOrionEntityJsonFromDevice = null;
+			customOrionEntityJsonFromDataflow = appConfig.orionCustomEntityJsonFormat().orElse(null);
+		}
+
+		// Set null in case of empty string to avoid false positives.
+		if(StringUtils.isBlank(customOrionEntityJsonFromDataflow)){
+			customOrionEntityJsonFromDataflow = null;
+		}
+
+		// Get the custom Orion entity JSON value given precedence to the device attribute.
+		final String customOrionEntityJson = customOrionEntityJsonFromDevice != null ?
+			customOrionEntityJsonFromDevice : customOrionEntityJsonFromDataflow;
 
 		// Retrieve the list attribute to be filtered, if any.
 		List<String> filterAttributes = getConfiguredFilterAttributes();
@@ -477,7 +499,7 @@ public class OrionGatewayService {
 				category,
 				filterAttributes,
 				timestamp,
-				customOrionEntityJsonAttribute
+				customOrionEntityJson
 			)
 		);
 	}
@@ -491,7 +513,7 @@ public class OrionGatewayService {
 	 * @param category                       The category.
 	 * @param filterAttributes               The list of attributes to filter.
 	 * @param timestamp                      The timestamp.
-	 * @param customOrionEntityJsonAttribute The custom Orion entity JSON attribute.
+	 * @param customOrionEntityJson          The custom Orion entity JSON attribute.
 	 */
 	private void validateAndSendAttribute(String esthesisHardwareId,
 		ATTRIBUTE_TYPE attributeType,
@@ -499,7 +521,7 @@ public class OrionGatewayService {
 		String category,
 		List<String> filterAttributes,
 		String timestamp,
-		Optional<DeviceAttributeEntity> customOrionEntityJsonAttribute) {
+		String customOrionEntityJson) {
 		String redisKey = getRedisKey(valueData, esthesisHardwareId, category);
 
 		if (canSendAttribute(valueData, filterAttributes)) {
@@ -513,14 +535,14 @@ public class OrionGatewayService {
 					// if so, send the attribute and update the latest timestamp on redis
 					if (isTimestampValidAgainstInterval(latestTimestamp, timestamp)) {
 						sendAttribute(esthesisHardwareId, attributeType, valueData,
-							customOrionEntityJsonAttribute, category, timestamp);
+							customOrionEntityJson, category, timestamp);
 						saveTimestampOnRedis(redisKey, timestamp);
 
 						// else check if the latest timestamp is valid past data.
 						// if so, send the attribute but don't update the latest timestamp on redis
 					} else if (isPastTimestampValidAgainstInterval(latestTimestamp, timestamp)) {
 						sendAttribute(esthesisHardwareId, attributeType, valueData,
-							customOrionEntityJsonAttribute, category, timestamp);
+							customOrionEntityJson, category, timestamp);
 					} else {
 						log.debug(
 							"Attribute {}  with timestamp {} was ignored as it is not valid against the forwarding interval rule",
@@ -528,11 +550,11 @@ public class OrionGatewayService {
 					}
 				} else {
 					sendAttribute(esthesisHardwareId, attributeType, valueData,
-						customOrionEntityJsonAttribute, category, timestamp);
+						customOrionEntityJson, category, timestamp);
 					saveTimestampOnRedis(redisKey, timestamp);
 				}
 			} else {
-				sendAttribute(esthesisHardwareId, attributeType, valueData, customOrionEntityJsonAttribute,
+				sendAttribute(esthesisHardwareId, attributeType, valueData, customOrionEntityJson,
 					category, timestamp);
 			}
 		} else {
@@ -599,18 +621,18 @@ public class OrionGatewayService {
 	 * @param esthesisHardwareId             The esthesis hardware ID.
 	 * @param attributeType                  The attribute type.
 	 * @param valueData                      The value data.
-	 * @param customOrionEntityJsonAttribute The custom Orion entity JSON attribute.
+	 * @param customOrionEntityJson          The custom Orion entity JSON.
 	 * @param category                       The category.
 	 * @param timestamp                      The timestamp.
 	 */
 	private void sendAttribute(String esthesisHardwareId, ATTRIBUTE_TYPE attributeType,
-		ValueData valueData, Optional<DeviceAttributeEntity> customOrionEntityJsonAttribute,
+		ValueData valueData, String customOrionEntityJson,
 		String category, String timestamp) {
 		// if custom formatter is set, generate the dynamic json using the Qute formatter
 		// along with the relevant measurement data
-		if (customOrionEntityJsonAttribute.isPresent()) {
+		if (StringUtils.isNotBlank(customOrionEntityJson)) {
 			String customFormattedValue =
-				getCustomFormattedValue(valueData, customOrionEntityJsonAttribute, category, timestamp,
+				getCustomFormattedValue(valueData, customOrionEntityJson, category, timestamp,
 					esthesisHardwareId);
 			orionClientService.saveOrUpdateEntities(customFormattedValue);
 		} else {
@@ -664,16 +686,16 @@ public class OrionGatewayService {
 	 * Get the custom formatted value.
 	 *
 	 * @param valueData                      The value data.
-	 * @param customOrionEntityJsonAttribute The custom Orion entity JSON attribute.
+	 * @param customOrionEntityJson          The custom Orion entity JSON.
 	 * @param category                       The category.
 	 * @param timestamp                      The timestamp.
 	 * @param esthesisHardwareId             The esthesis hardware ID.
 	 * @return The custom formatted value.
 	 */
 	private static String getCustomFormattedValue(ValueData valueData,
-		Optional<DeviceAttributeEntity> customOrionEntityJsonAttribute, String category,
+		String customOrionEntityJson, String category,
 		String timestamp, String esthesisHardwareId) {
-		return Qute.fmt(customOrionEntityJsonAttribute.orElseThrow().getAttributeValue(),
+		return Qute.fmt(customOrionEntityJson,
 			Map.of("category", category,
 				"timestamp", timestamp,
 				"hardwareId", esthesisHardwareId,

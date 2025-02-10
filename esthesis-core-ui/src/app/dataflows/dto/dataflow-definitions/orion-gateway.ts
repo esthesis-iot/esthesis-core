@@ -110,8 +110,14 @@ export const DATAFLOW_DEFINITION_FIWARE_ORION = {
         { key: "orion-ld-tenant", type: "input",
           props: {label: "A NGSILD-Tenant value to specify the tenant scope in Orion-LD requests"}
         },
+        { key: "orion-custom-entity-json-format", type: "input",
+          props: {label: "Define a Qute template to generate a custom JSON structure for all measurements sent through the dataflow. " +
+              "Available variables: {hardwareId}, {category}, {timestamp}, {measurementName}, and {measurementValue}."}
+        },
         { key: "orion-custom-entity-json-format-attribute-name", type: "input",
-          props: {label: "A custom entity JSON structure to be used for saving in Orion formatted using the Qute engine template"}
+          props: {label: "Define an attribute name that holds the custom Qute template to generate the JSON structure at the device level." +
+              "If defined, it takes precedence over the global custom JSON format. " +
+              "Available variables are the same as in the global custom JSON format."}
         },
         { key: "orion-attributes-to-sync", type: "input",
           props: {label: "A list of attribute/measurement names, separated by commas, to be the only ones synchronized and sent to Orion"}

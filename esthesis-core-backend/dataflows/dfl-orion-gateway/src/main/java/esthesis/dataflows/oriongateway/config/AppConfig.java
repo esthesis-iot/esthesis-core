@@ -133,42 +133,49 @@ public interface AppConfig {
 	@WithDefault("https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld")
 	String orionLdDefinedContextsUrl();
 
-	// Orion LD Contexts Rel defined, separated by comma and respecting the defined contexts order
+	// Orion LD Contexts Rel defined, separated by comma and respecting the defined contexts order.
 	@WithDefault("http://www.w3.org/ns/json-ld#context")
 	String orionLdDefinedContextsRelationships();
 
-	//Custom entity JSON structure to be saved in Orion using Qute formater
+	// An attribute name with a custom Qute template to be used to generate the JSON structure.
+	// It will be applied to all measurements send by the device.
 	Optional<String> orionCustomEntityJsonFormatAttributeName();
 
+	// A custom Qute template to be used to generate the JSON structure.
+	// It will be applied to all measurements send through the dataflow.
+	// If both orionCustomEntityJsonFormatAttributeName and orionCustomEntityJsonFormat are defined,
+	// orionCustomEntityJsonFormatAttributeName will be used.
+	Optional<String> orionCustomEntityJsonFormat();
+
 	// A list of attributes name, separated by comma, to be synchronized and send to orion.
-	// If defined, only the attributes containing the values in this list will be stored in Orion
+	// If defined, only the attributes containing the values in this list will be stored in Orion.
 	Optional<String> orionAttributesToSync();
 
 	// The type of authentication to be used in Orion
 	@WithDefault("NONE")
 	String orionAuthenticationType();
 
-	// The URL to be used for authentication in Orion
+	// The URL to be used for authentication in Orion.
 	Optional<String> orionAuthenticationUrl();
 
-	// The credential token to be used for authentication in Orion
+	// The credential token to be used for authentication in Orion.
 	Optional<String> orionAuthenticationCredentialToken();
 
-	// The username to be used for authentication in Orion
+	// The username to be used for authentication in Orion.
 	Optional<String> orionAuthenticationUsername();
 
-	// The password to be used for authentication in Orion
+	// The password to be used for authentication in Orion.
 	Optional<String> orionAuthenticationPassword();
 
-	// The grant type to be used for authentication in Orion
+	// The grant type to be used for authentication in Orion.
 	Optional<String> orionAuthenticationGrantType();
 
-	// NGSILD-Tenant value to specify the tenant scope in Orion-LD requests
+	// NGSILD-Tenant value to specify the tenant scope in Orion-LD requests.
 	Optional<String> orionLdTenant();
 
 	// The interval at which to send data to orion, in seconds.
 	Optional<String> orionForwardingInterval();
 
-	// The redis URL which is necessary due to the forwarding interval feat
+	// The redis URL which is necessary due to the forwarding interval feat.
 	Optional<String> redisUrl();
 }

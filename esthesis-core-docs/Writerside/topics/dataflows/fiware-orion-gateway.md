@@ -59,20 +59,38 @@ interval elapses.
 
 ### 3. Creating Custom JSON
 
-If the default NGSI-v2 structure does not meet your requirements, you can define a fully customised JSON payload to be sent to Orion.
+If the default NGSI-v2 structure does not meet your requirements, you can define a fully customized JSON payload
+to be sent to Orion. This can be configured globally or per device.
 
-To achieve this:
-1. Create an attribute in your esthesis device, e.g., `orion-custom-json`.
-2. Set the attribute value as a valid [Qute template](https://quarkus.io/guides/qute) expression.
+#### Option 1: Global Custom JSON Format (Applies to All Measurements)
+1. Define a global JSON format using the custom entity JSON configuration input.
+2. Set its value as a valid [Qute template](https://quarkus.io/guides/qute) expression that outputs a valid Orion Fiware JSON.
 3. Use the following variables in the template:
-	- `category`
-	- `timestamp`
-	- `hardwareId`
-	- `measurementName`
-	- `measurementValue`
-4. Put your created attribute name in the custom entity JSON configuration, e.g., `orion-custom-json`.
+	- `{category}`
+	- `{timestamp}`
+	- `{hardwareId}`
+	- `{measurementName}`
+	- `{measurementValue}`
 
-#### Example Custom JSON Template:
+This approach ensures that all measurements from all esthesis agents follow the same JSON structure.
+
+#### Option 2: Per-Device Custom JSON Format (Overrides Global Format)
+1. Create an attribute in your esthesis device, e.g., `orion-custom-json`.
+2. Set the attribute value as a valid [Qute template](https://quarkus.io/guides/qute) expression that outputs a valid Orion Fiware JSON.
+3. Use the following variables in the template:
+	- `{category}`
+	- `{timestamp}`
+	- `{hardwareId}`
+	- `{measurementName}`
+	- `{measurementValue}`
+4. Put your created attribute name in the custom entity JSON configuration, e.g., `orion-custom-json`.
+5. If this attribute is defined, it takes precedence over the global JSON format.
+
+This setup allows for flexibility:
+- If a device-specific template is set, it will be used for that given device.
+- If not, the global template will be used.
+
+#### Example of Qute Template expression for a custom JSON Format:
 ```json
 [
   {
@@ -80,7 +98,7 @@ To achieve this:
     "type": "{category}-custom-type",
     "temperature": {
       "type": "Property",
-      "value": {measurementValue},
+      "value": "{measurementValue}",
       "unitCode": "CEL",
       "observedAt": "{timestamp}"
     }
