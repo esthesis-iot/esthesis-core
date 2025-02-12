@@ -1,18 +1,18 @@
-package esthesis.core.common.serder;
+package esthesis.core.common.serder.kafka;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import esthesis.common.avro.CommandType;
 import esthesis.common.avro.EsthesisCommandRequestMessage;
 import esthesis.common.avro.ExecutionType;
-import esthesis.core.common.serder.kafka.EsthesisCommandRequestSerializer;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class EsthesisCommandRequestKafkaSerializerTest {
+class EsthesisCommandRequestSerializerTest {
 
 	@Test
 	void serializeTest() throws IOException {
