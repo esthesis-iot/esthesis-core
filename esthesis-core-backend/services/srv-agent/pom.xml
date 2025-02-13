@@ -7,7 +7,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-core-services</artifactId>
-    <version>3.0.59</version>
+    <version>3.0.60-SNAPSHOT</version>
   </parent>
 
   <artifactId>esthesis-core-services-agent</artifactId>

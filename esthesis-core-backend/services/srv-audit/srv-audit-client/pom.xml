@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-core-services-audit</artifactId>
-    <version>3.0.59</version>
+    <version>3.0.60-SNAPSHOT</version>
   </parent>
 
   <artifactId>esthesis-core-services-audit-client</artifactId>
@@ -17,7 +17,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-common</artifactId>
-      <version>3.0.59</version>
+      <version>3.0.60-SNAPSHOT</version>
     </dependency>
 		<dependency>
 			<artifactId>quarkus-rest-client-oidc-token-propagation</artifactId>

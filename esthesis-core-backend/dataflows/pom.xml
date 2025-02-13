@@ -8,11 +8,11 @@
 	<parent>
 		<groupId>esthesis</groupId>
 		<artifactId>esthesis-core</artifactId>
-		<version>3.0.59</version>
+		<version>3.0.60-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>esthesis-core-dfl</artifactId>
-	<version>3.0.59</version>
+	<version>3.0.60-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<dependencies>
