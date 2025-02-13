@@ -7,7 +7,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-core-util</artifactId>
-    <version>3.0.60-SNAPSHOT</version>
+    <version>3.1.0</version>
   </parent>
 
   <artifactId>esthesis-core-util-redis</artifactId>
@@ -17,7 +17,7 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-common</artifactId>
-      <version>3.0.60-SNAPSHOT</version>
+      <version>3.1.0</version>
     </dependency>
 
     <!-- QUARKUS -->

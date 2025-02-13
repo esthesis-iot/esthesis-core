@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>esthesis-core-services-tag</artifactId>
 		<groupId>esthesis</groupId>
-		<version>3.0.60-SNAPSHOT</version>
+		<version>3.1.0</version>
 	</parent>
 
   <artifactId>esthesis-core-services-tag-impl</artifactId>
@@ -24,22 +24,22 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-tag-client</artifactId>
-      <version>3.0.60-SNAPSHOT</version>
+      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-audit-client</artifactId>
-      <version>3.0.60-SNAPSHOT</version>
+      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-security-client</artifactId>
-      <version>3.0.60-SNAPSHOT</version>
+      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-util-kafka-notifications-outgoing</artifactId>
-      <version>3.0.60-SNAPSHOT</version>
+      <version>3.1.0</version>
     </dependency>
   </dependencies>
 
