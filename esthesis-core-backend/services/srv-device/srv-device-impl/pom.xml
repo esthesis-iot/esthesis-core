@@ -7,7 +7,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-core-services-device</artifactId>
-    <version>3.1.1</version>
+    <version>3.1.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>esthesis-core-services-device-impl</artifactId>
@@ -31,42 +31,42 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-device-client</artifactId>
-      <version>3.1.1</version>
+      <version>3.1.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-settings-client</artifactId>
-      <version>3.1.1</version>
+      <version>3.1.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-crypto-client</artifactId>
-      <version>3.1.1</version>
+      <version>3.1.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-tag-client</artifactId>
-      <version>3.1.1</version>
+      <version>3.1.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-audit-client</artifactId>
-      <version>3.1.1</version>
+      <version>3.1.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-util-redis</artifactId>
-      <version>3.1.1</version>
+      <version>3.1.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-util-kafka-notifications-outgoing</artifactId>
-      <version>3.1.1</version>
+      <version>3.1.2-SNAPSHOT</version>
     </dependency>
 		<dependency>
 			<groupId>esthesis</groupId>
 			<artifactId>esthesis-core-services-security-client</artifactId>
-			<version>3.1.1</version>
+			<version>3.1.2-SNAPSHOT</version>
 		</dependency>
 
     <!-- THIRD-PARTY -->
