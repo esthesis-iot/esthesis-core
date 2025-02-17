@@ -9,11 +9,16 @@
     </h2>
     <div>
       <!-- Filters -->
-      <div [formGroup]="filterForm" class="mb-10 mt-5">
-        <fa-icon class="mr-5 ml-1" icon="search"></fa-icon>
-        <input class="input w-full max-w-xs placeholder-primary-content/30" formControlName="hardwareId"
-               placeholder="Hardware id"
-               type="text"/>
+      <div [formGroup]="filterForm" class="flex flex-row mb-10 mt-5 gap-2 w-full">
+        <fa-icon class="mr-5 ml-1 mt-3" icon="search"></fa-icon>
+        <input class="input placeholder-primary-content/30" formControlName="hardwareId"
+               placeholder="Hardware id" type="text"/>
+        <select class="select" formControlName="type">
+          <option value="" disabled selected>Select device type</option>
+          <option [value]="appConstants.DEVICE.TYPE.CORE">{{appConstants.DEVICE.TYPE.CORE}}</option>
+          <option [value]="appConstants.DEVICE.TYPE.EDGE">{{appConstants.DEVICE.TYPE.EDGE}}</option>
+          <option [value]="appConstants.DEVICE.TYPE.OTHER">{{appConstants.DEVICE.TYPE.OTHER}}</option>
+        </select>
         <button (click)="clearFilter()" class="btn btn-secondary btn-ghost ml-2">CLEAR</button>
       </div>
 

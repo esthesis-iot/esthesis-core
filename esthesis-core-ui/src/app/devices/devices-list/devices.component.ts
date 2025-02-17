@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatSort} from "@angular/material/sort";
 import {DeviceDto} from "../dto/device-dto";
 import {DevicesService} from "../devices.service";
-import {QFilterAlias, QFormsService} from "@qlack/forms";
+import {QFilterAlias, QFormsService, QPageableReply} from "@qlack/forms";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
@@ -36,6 +36,7 @@ export class DevicesComponent extends SecurityBaseComponent implements OnInit, A
     super(AppConstants.SECURITY.CATEGORY.DEVICE);
     this.filterForm = this.fb.group({
       hardwareId: [],
+      type: [""]
     });
   }
 
@@ -70,7 +71,7 @@ export class DevicesComponent extends SecurityBaseComponent implements OnInit, A
     this.deviceService.find(this.qForms.makeQueryStringForData(this.filterForm.getRawValue(),
       [new QFilterAlias('hardwareId', 'hardwareId*')], false, page, size, sort, sortDirection))
     .subscribe({
-      next: (onNext) => {
+      next: (onNext: QPageableReply<DeviceDto>) => {
         this.datasource.data = onNext.content;
         this.paginator.length = onNext.totalElements;
       }, error: (onError: any) => {
