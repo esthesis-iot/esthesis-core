@@ -1,15 +1,19 @@
 package esthesis.dataflows.oriongateway.dto;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import esthesis.service.device.entity.DeviceAttributeEntity;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * DTO class for representing an Orion entity.
+ * DTO class for representing an Orion entity compatible with NGSI-V2 and NGSI-LD.
  */
 @Data
 @Builder
@@ -20,19 +24,28 @@ public class OrionEntityDTO {
 	private String type;
 	private String id;
 
-	private List<OrionAttributeDTO> attributes = new ArrayList<>();
+	// Store attributes but prevent them from appearing as a field in JSON.
+	@JsonIgnore
+	private Map<String, OrionAttributeDTO> attributes = new HashMap<>();
 
-	public static List<OrionAttributeDTO> attributesFromEsthesisDeviceAttributes(
+	// This will place the attributes directly at the root of the JSON object.
+	@JsonAnyGetter
+	public Map<String, OrionAttributeDTO> getAttributesAsJson() {
+		return attributes;
+	}
+
+	public static Map<String, OrionAttributeDTO> attributesFromEsthesisDeviceAttributes(
 		List<DeviceAttributeEntity> esthesisAttributes) {
-		List<OrionAttributeDTO> orionAttributes = new ArrayList<>();
+		Map<String, OrionAttributeDTO> orionAttributes = new HashMap<>();
 		for (DeviceAttributeEntity esthesisAttribute : esthesisAttributes) {
-			orionAttributes.add(OrionAttributeDTO.builder()
-				.name(esthesisAttribute.getAttributeName())
-				.value(esthesisAttribute.getAttributeValue())
-				.maintainedByEsthesis(true)
-				.build());
+			orionAttributes.put(
+				esthesisAttribute.getAttributeName(),
+				OrionAttributeDTO.builder()
+					.value(esthesisAttribute.getAttributeValue())
+					.maintainedByEsthesis(true)
+					.build()
+			);
 		}
-
 		return orionAttributes;
 	}
 }

@@ -134,7 +134,7 @@ public interface AppConfig {
 	String orionLdDefinedContextsUrl();
 
 	// Orion LD Contexts Rel defined, separated by comma and respecting the defined contexts order.
-	@WithDefault("http://www.w3.org/ns/json-ld#context")
+	@WithDefault("https://www.w3.org/ns/json-ld#context")
 	String orionLdDefinedContextsRelationships();
 
 	// An attribute name with a custom Qute template to be used to generate the JSON structure.

@@ -87,12 +87,13 @@ public class OrionGatewayService {
 
 		// Find the esthesis device.
 		DeviceEntity esthesisDevice = deviceSystemResource.findById(esthesisId);
-		log.debug("Esthesis device to be registered: {}", esthesisDevice.getHardwareId());
 		if (esthesisDevice == null) {
 			log.debug("Device with esthesis ID '{}' not found in esthesis, skipping registration.",
 				esthesisId);
 			return;
 		}
+		log.debug("esthesis device to be registered: {}", esthesisDevice.getHardwareId());
+
 		if (esthesisDevice.getStatus() != Status.REGISTERED) {
 			log.debug("Device has status '{}', only devices with status '{}' can be registered in Orion. "
 				+ "Registration skipped.", esthesisDevice.getStatus(), Status.REGISTERED);
@@ -318,14 +319,20 @@ public class OrionGatewayService {
 				ATTRIBUTE_TYPE.ATTRIBUTE);
 		}
 
-		// For every esthesis managed attribute in Orion, if it does not exist in esthesis, delete it.
-		for (OrionAttributeDTO orionAttribute : orionEntity.getAttributes()) {
-			if (!orionAttribute.getName().equals(appConfig.attributeEsthesisId())
+		// For every esthesis-managed attribute in Orion, if it does not exist in esthesis, delete it.
+		for (Map.Entry<String, OrionAttributeDTO> entry : orionEntity.getAttributes().entrySet()) {
+
+			// The key is the attribute name.
+			String attributeName = entry.getKey();
+
+			if (!attributeName.equals(appConfig.attributeEsthesisId())
 				&& esthesisManagedAttributes.stream()
-				.noneMatch(attribute -> attribute.getAttributeName().equals(orionAttribute.getName()))) {
-				log.debug("Deleting attribute '{}' from Orion.", orionAttribute.getName());
+				.noneMatch(attribute -> attribute.getAttributeName().equals(attributeName))) {
+
+				log.debug("Deleting attribute '{}' from Orion.", attributeName);
+
 				// Delete the attribute.
-				orionClientService.deleteAttribute(orionEntity.getId(), orionAttribute.getName());
+				orionClientService.deleteAttribute(orionEntity.getId(), attributeName);
 			}
 		}
 	}

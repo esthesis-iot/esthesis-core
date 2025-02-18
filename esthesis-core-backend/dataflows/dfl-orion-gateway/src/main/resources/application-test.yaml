@@ -4,3 +4,14 @@ quarkus:
   devservices:
     enabled: true
     timeout: 5m
+esthesis:
+  dfl:
+    orion-url: "http://localhost:1026"
+    orion-create-device: true
+    orion-delete-device: true
+    orion-update-data: true
+    orion-default-type: "esthesis"
+    orion-id-prefix: "urn:ngsi-ld:"
+    orion-ld-defined-context-url: "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+    orion-ld-defined-context-relationships: "https://www.w3.org/ns/json-ld#context"
+

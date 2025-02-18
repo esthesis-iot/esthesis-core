@@ -4,13 +4,14 @@ import esthesis.dataflows.oriongateway.client.OrionKeyrockAuthClient;
 import esthesis.dataflows.oriongateway.config.AppConfig;
 import esthesis.dataflows.oriongateway.dto.OrionKeyrockAccessTokenDTO;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.client.ClientRequestContext;
-import java.net.URI;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
-import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 /**
  * This class is responsible for authenticating the requests to the Orion Context Broker. It uses
@@ -21,7 +22,7 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 @ApplicationScoped
 public class OrionKeyrockAuthService implements OrionAuthService {
 
-	// Created at runtime on the Constructor.
+	// Injected on constructor.
 	OrionKeyrockAuthClient keyrockAuthClient;
 
 	// Injected on constructor.
@@ -36,23 +37,20 @@ public class OrionKeyrockAuthService implements OrionAuthService {
 	String grantType;
 	String basicToken;
 
+
 	/**
-	 * Constructor.
-	 *
-	 * @param appConfig
+	 * Constructor for the OrionKeyrockAuthService.
+	 * @param appConfig The application configuration.
+	 * @param keyrockAuthClient The Keyrock authentication client.
 	 */
-	public OrionKeyrockAuthService(AppConfig appConfig) {
+	@Inject
+	public OrionKeyrockAuthService(AppConfig appConfig, @RestClient OrionKeyrockAuthClient keyrockAuthClient) {
 		this.appConfig = appConfig;
 		this.username = appConfig.orionAuthenticationUsername().orElse("");
 		this.password = appConfig.orionAuthenticationPassword().orElse("");
 		this.grantType = appConfig.orionAuthenticationGrantType().orElse("");
 		this.basicToken = "Basic " + appConfig.orionAuthenticationCredentialToken().orElse("");
-
-		this.appConfig.orionAuthenticationUrl().ifPresent(keyrockUrl ->
-			keyrockAuthClient = RestClientBuilder.newBuilder()
-				.baseUri(URI.create(keyrockUrl))
-				.build(OrionKeyrockAuthClient.class));
-
+		this.keyrockAuthClient = keyrockAuthClient;
 	}
 
 	/**
