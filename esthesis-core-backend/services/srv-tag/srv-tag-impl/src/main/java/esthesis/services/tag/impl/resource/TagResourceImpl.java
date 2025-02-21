@@ -47,6 +47,12 @@ public class TagResourceImpl implements TagResource {
 
 	@Override
 	public TagEntity findByName(String name) {
+		List<TagEntity> tags = tagService.findByName(name);
+
+		if (tags.isEmpty()) {
+			return null;
+		}
+
 		return tagService.findByName(name).getLast();
 	}
 
