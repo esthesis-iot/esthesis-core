@@ -14,9 +14,7 @@ import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 import java.util.UUID;
 
-import jakarta.transaction.Transactional;
 import org.bson.types.ObjectId;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
