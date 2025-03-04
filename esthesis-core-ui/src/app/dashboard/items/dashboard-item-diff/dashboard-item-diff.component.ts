@@ -51,8 +51,8 @@ export class DashboardItemDiffComponent extends DashboardItemComponent<Dashboard
   }
 
   private createChart(): void {
-    const width = 928;
-    const height = 600;
+    const width = document.getElementById('chart-container')!.offsetWidth;
+    const height = 200;
     const marginTop = 20;
     const marginRight = 20;
     const marginBottom = 30;
