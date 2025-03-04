@@ -1,22 +1,23 @@
-import {Component, Inject, OnInit} from "@angular/core";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Component, Inject, OnInit} from '@angular/core';
 import {SecurityBaseComponent} from "../../../shared/components/security-base-component";
-import {AppConstants} from "../../../app.constants";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {DashboardItemDto} from "../../dto/dashboard-item-dto";
-import {DeviceDto} from "../../../devices/dto/device-dto";
-import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {DevicesService} from "../../../devices/devices.service";
 import {SettingsService} from "../../../settings/settings.service";
 import {UtilityService} from "../../../shared/services/utility.service";
-import {DashboardItemSensorConfigurationDto} from "../../dto/configuration/dashboard-item-sensor-configuration-dto";
+import {AppConstants} from "../../../app.constants";
+import {debounceTime, distinctUntilChanged} from "rxjs/operators";
+import {DeviceDto} from "../../../devices/dto/device-dto";
+import {DashboardItemDiffConfigurationDto} from "../../dto/configuration/dashboard-item-diff-configuration-dto";
 import {QPageableReply} from "@qlack/forms";
 
 @Component({
-  selector: "app-dashboard-item-sensor-edit",
-  templateUrl: "./dashboard-item-sensor-edit.component.html"
+  selector: 'app-dashboard-item-diff-edit',
+  templateUrl: './dashboard-item-diff-edit.component.html'
 })
-export class DashboardItemSensorEditComponent extends SecurityBaseComponent implements OnInit {
+export class DashboardItemDiffEditComponent extends SecurityBaseComponent implements OnInit {
+
   form!: FormGroup;
   // A helper auto-complete container for devices matching the user's search input.
   searchHardwareIds?: string[];
@@ -25,9 +26,9 @@ export class DashboardItemSensorEditComponent extends SecurityBaseComponent impl
   filteredUniqueMeasurements?: string[];
 
   constructor(@Inject(MAT_DIALOG_DATA) public readonly incomingDi: DashboardItemDto,
-    private readonly fb: FormBuilder, private readonly deviceService: DevicesService,
-    private readonly settingsService: SettingsService, private readonly utilityService: UtilityService,
-    public dialogRef: MatDialogRef<DashboardItemSensorEditComponent>) {
+              private readonly fb: FormBuilder, private readonly deviceService: DevicesService,
+              private readonly settingsService: SettingsService, private readonly utilityService: UtilityService,
+              public dialogRef: MatDialogRef<DashboardItemDiffEditComponent>) {
     super(AppConstants.SECURITY.CATEGORY.DASHBOARD);
   }
 
@@ -35,7 +36,7 @@ export class DashboardItemSensorEditComponent extends SecurityBaseComponent impl
     // Parse configuration to DTO.
     let configuration;
     if (this.incomingDi.configuration != null) {
-      configuration = JSON.parse(this.incomingDi.configuration) as DashboardItemSensorConfigurationDto;
+      configuration = JSON.parse(this.incomingDi.configuration) as DashboardItemDiffConfigurationDto;
     }
 
     // Set up the form.
@@ -48,16 +49,7 @@ export class DashboardItemSensorEditComponent extends SecurityBaseComponent impl
       configuration_measurement: [configuration?.measurement, [Validators.required]],
       configuration_unit: [configuration?.unit],
       configuration_icon: [configuration?.icon],
-      configuration_precision: [configuration?.precision, [Validators.pattern('^[0-9]+$')]],
-      configuration_sparkline: [configuration?.sparkline],
-      configuration_sparkline_points: [configuration?.sparklinePoints, [Validators.pattern('^[0-9]+$')]],
-      configuration_threshold: [configuration?.threshold],
-      configuration_threshold_low: [configuration?.thresholdLow],
-      configuration_threshold_low_color: [configuration?.thresholdLowColor],
-      configuration_threshold_middle: [configuration?.thresholdMiddle],
-      configuration_threshold_middle_color: [configuration?.thresholdMiddleColor],
-      configuration_threshold_high: [configuration?.thresholdHigh],
-      configuration_threshold_high_color: [configuration?.thresholdHighColor],
+      configuration_items: [configuration?.items, [Validators.required, Validators.pattern('^[0-9]+$')]],
     });
 
     // Fetch possible device measurements.
@@ -121,17 +113,8 @@ export class DashboardItemSensorEditComponent extends SecurityBaseComponent impl
         measurement: this.form.get("configuration_measurement")!.value,
         unit: this.form.get("configuration_unit")!.value,
         icon: this.form.get("configuration_icon")!.value,
-        precision: this.form.get("configuration_precision")!.value,
-        sparkline: this.form.get("configuration_sparkline")!.value,
-        sparklinePoints: this.form.get("configuration_sparkline_points")!.value,
-        threshold: this.form.get("configuration_threshold")!.value,
-        thresholdLow: this.form.get("configuration_threshold_low")!.value,
-        thresholdLowColor: this.form.get("configuration_threshold_low_color")!.value,
-        thresholdMiddle: this.form.get("configuration_threshold_middle")!.value,
-        thresholdMiddleColor: this.form.get("configuration_threshold_middle_color")!.value,
-        thresholdHigh: this.form.get("configuration_threshold_high")!.value,
-        thresholdHighColor: this.form.get("configuration_threshold_high_color")!.value
-      } as DashboardItemSensorConfigurationDto)
+        items: this.form.get("configuration_items")!.value,
+      } as DashboardItemDiffConfigurationDto)
     }
     this.dialogRef.close(di);
   }

@@ -242,6 +242,7 @@ export const AppConstants = {
         DEVICES_LAST_SEEN: "DEVICES_LAST_SEEN",
         DEVICES_LATEST: "DEVICES_LATEST",
         DEVICES_STATUS: "DEVICES_STATUS",
+        DIFF: "DIFF",
         IMAGE: "IMAGE",
         NOTES: "NOTES",
         SECURITY_STATS: "SECURITY_STATS",
@@ -254,6 +255,7 @@ export const AppConstants = {
         AUDIT: 4,
         CAMPAIGNS: 5,
         CHART: 8,
+        DIFF: 8,
         DATETIME: 4,
         DEVICE_MAP: 4,
         DEVICES_LAST_SEEN: 3,
@@ -303,6 +305,9 @@ export const AppConstants = {
         },
         DEVICES_STATUS: {
           orientation: "horizontal"
+        },
+        DIFF: {
+          items: 10
         },
         IMAGE: {
           height: 400,

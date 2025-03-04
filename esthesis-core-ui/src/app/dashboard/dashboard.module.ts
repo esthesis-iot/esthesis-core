@@ -137,6 +137,8 @@ import {
   DashboardItemChartEditComponent
 } from "./items/dashboard-item-chart-edit/dashboard-item-chart-edit.component";
 import { DashboardItemCommonConfigComponent } from './items/dashboard-item-common-config/dashboard-item-common-config.component';
+import { DashboardItemDiffComponent } from './items/dashboard-item-diff/dashboard-item-diff.component';
+import { DashboardItemDiffEditComponent } from './items/dashboard-item-diff-edit/dashboard-item-diff-edit.component';
 
 // @ts-ignore
 @NgModule({
@@ -177,6 +179,8 @@ import { DashboardItemCommonConfigComponent } from './items/dashboard-item-commo
     DashboardItemUrlEditComponent,
     DashboardItemDevicesLastSeenEditComponent,
     DashboardItemCommonConfigComponent,
+    DashboardItemDiffComponent,
+    DashboardItemDiffEditComponent,
   ],
   imports: [
     CommonModule,

@@ -7,22 +7,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import esthesis.service.dashboard.dto.DashboardItemDTO;
 import esthesis.service.dashboard.entity.DashboardEntity;
 import esthesis.services.dashboard.impl.dto.DashboardUpdate;
-import esthesis.services.dashboard.impl.job.helper.AboutUpdateJobHelper;
-import esthesis.services.dashboard.impl.job.helper.AuditUpdateJobHelper;
-import esthesis.services.dashboard.impl.job.helper.CampaignsUpdateJobHelper;
-import esthesis.services.dashboard.impl.job.helper.ChartUpdateJobHelper;
-import esthesis.services.dashboard.impl.job.helper.DatetimeUpdateJobHelper;
-import esthesis.services.dashboard.impl.job.helper.DeviceMapUpdateJobHelper;
-import esthesis.services.dashboard.impl.job.helper.DevicesLastSeenUpdateJobHelper;
-import esthesis.services.dashboard.impl.job.helper.DevicesLatestUpdateJobHelper;
-import esthesis.services.dashboard.impl.job.helper.DevicesStatusUpdateJobHelper;
-import esthesis.services.dashboard.impl.job.helper.ImageUpdateJobHelper;
-import esthesis.services.dashboard.impl.job.helper.NotesUpdateJobHelper;
-import esthesis.services.dashboard.impl.job.helper.SecurityStatsUpdateJobHelper;
-import esthesis.services.dashboard.impl.job.helper.SensorIconUpdateJobHelper;
-import esthesis.services.dashboard.impl.job.helper.SensorUpdateJobHelper;
-import esthesis.services.dashboard.impl.job.helper.TitleUpdateJobHelper;
-import esthesis.services.dashboard.impl.job.helper.UpdateJobHelper;
+import esthesis.services.dashboard.impl.job.helper.*;
 import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseBroadcaster;
 import java.time.Duration;
@@ -163,6 +148,12 @@ public class DashboardUpdateJob {
 					CompletableFuture.runAsync(
 						() -> broadcast(
 							((DevicesStatusUpdateJobHelper) helpers.get(DevicesStatusUpdateJobHelper.class))
+								.refresh(dashboardEntity, item), item.getId()), threadPool);
+					break;
+				case DIFF:
+					CompletableFuture.runAsync(
+						() -> broadcast(
+							((DiffUpdateJobHelper) helpers.get(DiffUpdateJobHelper.class))
 								.refresh(dashboardEntity, item), item.getId()), threadPool);
 					break;
 				case IMAGE:

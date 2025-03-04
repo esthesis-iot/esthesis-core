@@ -6,9 +6,7 @@ import {UtilityService} from "../../shared/services/utility.service";
 import {MatDialog} from "@angular/material/dialog";
 import {QFormValidationEEService} from "../../shared/services/form-validation.service";
 import {AppConstants} from "../../app.constants";
-import {
-  OkCancelModalComponent
-} from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
+import {OkCancelModalComponent} from "../../shared/components/ok-cancel-modal/ok-cancel-modal.component";
 import {DashboardService} from "../dashboard.service";
 import {DashboardItemDto} from "../dto/dashboard-item-dto";
 import {DashboardItemNewComponent} from "../dashboard-item-new/dashboard-item-new.component";
@@ -16,12 +14,8 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {
   DashboardItemSensorEditComponent
 } from "../items/dashboard-item-sensor-edit/dashboard-item-sensor-edit.component";
-import {
-  DashboardItemAboutEditComponent
-} from "../items/dashboard-item-about-edit/dashboard-item-about-edit.component";
-import {
-  DashboardItemAuditEditComponent
-} from "../items/dashboard-item-audit-edit/dashboard-item-audit-edit.component";
+import {DashboardItemAboutEditComponent} from "../items/dashboard-item-about-edit/dashboard-item-about-edit.component";
+import {DashboardItemAuditEditComponent} from "../items/dashboard-item-audit-edit/dashboard-item-audit-edit.component";
 import {
   DashboardItemCampaignsEditComponent
 } from "../items/dashboard-item-campaigns-edit/dashboard-item-campaigns-edit.component";
@@ -40,12 +34,8 @@ import {
 import {
   DashboardItemDevicesStatusEditComponent
 } from "../items/dashboard-item-devices-status-edit/dashboard-item-devices-status-edit.component";
-import {
-  DashboardItemImageEditComponent
-} from "../items/dashboard-item-image-edit/dashboard-item-image-edit.component";
-import {
-  DashboardItemNotesEditComponent
-} from "../items/dashboard-item-notes-edit/dashboard-item-notes-edit.component";
+import {DashboardItemImageEditComponent} from "../items/dashboard-item-image-edit/dashboard-item-image-edit.component";
+import {DashboardItemNotesEditComponent} from "../items/dashboard-item-notes-edit/dashboard-item-notes-edit.component";
 import {
   DashboardItemSecurityStatsEditComponent
 } from "../items/dashboard-item-security-stats-edit/dashboard-item-security-stats-edit.component";
@@ -54,12 +44,9 @@ import {
 } from "../items/dashboard-item-sensor-icon-edit/dashboard-item-sensor-icon-edit.component";
 import {DashboardDto} from "../dto/dashboard-dto";
 import {v4} from "uuid";
-import {
-  DashboardItemTitleEditComponent
-} from "../items/dashboard-item-title-edit/dashboard-item-title-edit.component";
-import {
-  DashboardItemChartEditComponent
-} from "../items/dashboard-item-chart-edit/dashboard-item-chart-edit.component";
+import {DashboardItemTitleEditComponent} from "../items/dashboard-item-title-edit/dashboard-item-title-edit.component";
+import {DashboardItemChartEditComponent} from "../items/dashboard-item-chart-edit/dashboard-item-chart-edit.component";
+import {DashboardItemDiffEditComponent} from "../items/dashboard-item-diff-edit/dashboard-item-diff-edit.component";
 
 @Component({
   selector: "app-dashboard-edit",
@@ -244,6 +231,9 @@ export class DashboardEditComponent extends SecurityBaseComponent implements OnI
         break;
       case AppConstants.DASHBOARD.ITEM.TYPE.DEVICES_STATUS:
         diEditComponent = DashboardItemDevicesStatusEditComponent;
+        break;
+      case AppConstants.DASHBOARD.ITEM.TYPE.DIFF:
+        diEditComponent = DashboardItemDiffEditComponent;
         break;
       case AppConstants.DASHBOARD.ITEM.TYPE.IMAGE:
         diEditComponent = DashboardItemImageEditComponent;

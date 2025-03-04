@@ -92,6 +92,11 @@ export class DashboardItemNewComponent extends SecurityBaseComponent implements 
         available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.DEVICE_MAP)
       },
       {
+        name: "Diff", description: "Displays a charts showing differences in the value of a sensor.", icon: "about.png",
+        type: this.appConstants.DASHBOARD.ITEM.TYPE.DIFF,
+        available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.DIFF)
+      },
+      {
         name: "Notes", description: "Displays user notes.", icon: "about.png",
         type: this.appConstants.DASHBOARD.ITEM.TYPE.NOTES,
         available: this.itemAvailable(this.appConstants.DASHBOARD.ITEM.TYPE.NOTES)

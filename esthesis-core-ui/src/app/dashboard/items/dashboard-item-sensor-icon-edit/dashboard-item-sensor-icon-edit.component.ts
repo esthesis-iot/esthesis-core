@@ -16,6 +16,7 @@ import {
 import {
   DashboardItemSensorIconConfigurationDto
 } from "../../dto/configuration/dashboard-item-sensor-icon-configuration-dto";
+import {QPageableReply} from "@qlack/forms";
 
 @Component({
   selector: 'app-dashboard-item-sensor-icon-edit',
@@ -82,10 +83,10 @@ export class DashboardItemSensorIconEditComponent extends SecurityBaseComponent 
     ).subscribe({
       next: (searchVal: string) => {
         if (searchVal && searchVal.trim() !== "") {
-          this.deviceService.findByHardwareIds(searchVal).subscribe({
-            next: (devices: DeviceDto[]) => {
-              if (devices && devices.length > 0) {
-                this.searchHardwareIds = devices.map(d => d.hardwareId);
+          this.deviceService.find("hardwareId*=" + searchVal).subscribe({
+            next: (devices: QPageableReply<DeviceDto>) => {
+              if (devices && devices.content.length > 0) {
+                this.searchHardwareIds = devices.content.map(d => d.hardwareId);
               } else {
                 this.searchHardwareIds = [];
               }
