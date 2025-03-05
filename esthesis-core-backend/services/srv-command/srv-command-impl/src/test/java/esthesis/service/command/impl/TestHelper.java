@@ -2,16 +2,21 @@ package esthesis.service.command.impl;
 
 import esthesis.common.avro.CommandType;
 import esthesis.common.avro.ExecutionType;
+import esthesis.common.util.EsthesisCommonConstants;
+import esthesis.core.common.AppConstants;
 import esthesis.core.common.entity.BaseEntity;
 import esthesis.service.command.entity.CommandReplyEntity;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.command.impl.repository.CommandReplyRepository;
 import esthesis.service.command.impl.repository.CommandRequestRepository;
 import esthesis.service.common.paging.Pageable;
+import esthesis.service.device.entity.DeviceEntity;
+import esthesis.service.tag.entity.TagEntity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.UriInfo;
+import org.bson.types.ObjectId;
 import org.instancio.Instancio;
 import org.mockito.Mockito;
 
@@ -92,4 +97,23 @@ public class TestHelper {
 		pageable.setUriInfo(uriInfo);
 		return pageable;
 	}
+
+	public TagEntity mockTagEntity(String name) {
+		TagEntity tagEntity = new TagEntity();
+		tagEntity.setName(name);
+		tagEntity.setDescription("Test tag");
+		tagEntity.setId(new ObjectId());
+		return tagEntity;
+	}
+
+    public DeviceEntity mockDeviceEntity(String hardwareId) {
+				DeviceEntity deviceEntity = new DeviceEntity();
+				deviceEntity.setHardwareId(hardwareId);
+				deviceEntity.setType(EsthesisCommonConstants.Device.Type.CORE);
+				deviceEntity.setCreatedOn(Instant.now());
+				deviceEntity.setRegisteredOn(Instant.now());
+				deviceEntity.setStatus(AppConstants.Device.Status.REGISTERED);
+				deviceEntity.setId(new ObjectId());
+				return deviceEntity;
+    }
 }
