@@ -7,6 +7,8 @@ import lombok.SneakyThrows;
 import org.apache.camel.Exchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
+@ExtendWith(MockitoExtension.class)
 class EsthesisDataMessageDataFormatTest {
 	private EsthesisDataMessageDataFormat dataFormat;
 	private Exchange exchange;

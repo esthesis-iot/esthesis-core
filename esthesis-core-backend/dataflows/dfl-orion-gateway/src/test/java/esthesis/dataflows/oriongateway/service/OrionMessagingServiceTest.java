@@ -9,16 +9,17 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class OrionMessagingServiceTest {
 
 	@Mock
@@ -48,10 +49,7 @@ class OrionMessagingServiceTest {
 		when(exchange.getIn()).thenReturn(message);
 		when(message.getBody(AppMessage.class)).thenReturn(appMessage);
 
-		// Set up default behaviors for OrionGatewayService methods.
-		doNothing().when(orionGatewayService).registerDeviceOnOrion(anyString());
-		doNothing().when(orionGatewayService).syncAttributes(anyString());
-		doNothing().when(orionGatewayService).deleteEntityByEsthesisId(anyString());
+
 	}
 
 	@Test

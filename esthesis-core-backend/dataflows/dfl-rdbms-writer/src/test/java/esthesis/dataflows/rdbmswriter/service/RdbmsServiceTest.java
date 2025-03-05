@@ -12,11 +12,12 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
@@ -30,6 +31,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class RdbmsServiceTest {
 
 	@Mock
@@ -65,20 +67,19 @@ class RdbmsServiceTest {
 		when(dataSource.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 
-		// Mock PreparedStatement methods to do nothing.
+		// Mock PreparedStatement execution methods.
 		doNothing().when(preparedStatement).setString(anyInt(), anyString());
 		doNothing().when(preparedStatement).setTimestamp(anyInt(), any(Timestamp.class));
-		doNothing().when(preparedStatement).setBigDecimal(anyInt(), any(BigDecimal.class));
-		doNothing().when(preparedStatement).setInt(anyInt(), anyInt());
 
-		// Mock PreparedStatement execution methods.
-		when(preparedStatement.execute()).thenReturn(true);
-		when(preparedStatement.executeUpdate()).thenReturn(1);
+
 	}
 
 	@SneakyThrows
 	@Test
 	void process_WithSingleStrategy() {
+		// Mock PreparedStatement execution methods.
+		when(preparedStatement.executeUpdate()).thenReturn(1);
+
 		// Set up the configuration for SINGLE storage strategy.
 		when(config.dbStorageStrategy()).thenReturn(STORAGE_STRATEGY.SINGLE);
 		when(config.dbStorageStrategySingleTableName()).thenReturn("testTableName");
@@ -108,6 +109,10 @@ class RdbmsServiceTest {
 		when(config.dbStorageStrategy()).thenReturn(STORAGE_STRATEGY.MULTI);
 		when(config.dbStorageStrategyMultiHardwareIdName()).thenReturn("testHardwareIdName");
 		when(config.dbStorageStrategyMultiTimestampName()).thenReturn("testTimestampName");
+
+		// Mock PreparedStatement methods to do nothing.
+		doNothing().when(preparedStatement).setInt(anyInt(), anyInt());
+		when(preparedStatement.execute()).thenReturn(true);
 
 		// Call the process method with the exchange.
 		rdbmsService.process(exchange);

@@ -8,9 +8,11 @@ import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -22,6 +24,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class OrionKeyrockAuthServiceTest {
 
 	@Mock
@@ -48,7 +51,6 @@ class OrionKeyrockAuthServiceTest {
 		when(appConfig.orionAuthenticationPassword()).thenReturn(Optional.of("password"));
 		when(appConfig.orionAuthenticationGrantType()).thenReturn(Optional.of("grantType"));
 		when(appConfig.orionAuthenticationCredentialToken()).thenReturn(Optional.of("credentialToken"));
-		when(appConfig.orionAuthenticationUrl()).thenReturn(Optional.of("http://localhost:8080"));
 
 		// Mock retrieving the access token.
 		when(keyrockAuthClient.requestAccessToken(anyString(), anyString(), anyString(), anyString()))

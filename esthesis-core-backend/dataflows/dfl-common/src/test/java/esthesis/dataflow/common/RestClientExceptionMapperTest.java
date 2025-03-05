@@ -5,11 +5,14 @@ import esthesis.common.exception.QExceptionWrapper;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("ThrowableNotThrown")
 class RestClientExceptionMapperTest {
 	private RestClientExceptionMapper exceptionMapper;

@@ -16,9 +16,11 @@ import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.camel.component.paho.PahoConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.util.List;
@@ -29,6 +31,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class DflMqttClientServiceTest {
 
 	@Mock
@@ -53,12 +56,6 @@ class DflMqttClientServiceTest {
 
 		// Set up common mock behaviors.
 		when(exchange.getIn()).thenReturn(message);
-		when(config.mqttTelemetryTopic()).thenReturn(Optional.of("telemetry/testHardwareId"));
-		when(message.getHeader(PahoConstants.MQTT_TOPIC, String.class)).thenReturn("telemetry/testHardwareId");
-		when(message.getHeader(PahoConstants.MQTT_TOPIC)).thenReturn("telemetry/testHardwareId");
-		when(config.mqttPingTopic()).thenReturn(Optional.of("ping/testHardwareId"));
-		when(config.mqttMetadataTopic()).thenReturn(Optional.of("metadata/testHardwareId"));
-		when(avroUtils.parsePayload(anyString())).thenReturn(createPayload());
 
 		// Set application name.
 		dflMqttClientService.appName = "esthesis-core-dfl-mqtt-client-test";
@@ -66,8 +63,12 @@ class DflMqttClientServiceTest {
 
 	@Test
 	void toEsthesisDataMessages() {
-		// Arrange: Set up the valid payload.
+		// Arrange: Set up the valid headers and payload.
 		String validPayload = "categoryTest measurementOne=1i,measurementTwo=2.0f";
+		when(config.mqttTelemetryTopic()).thenReturn(Optional.of("telemetry/testHardwareId"));
+		when(message.getHeader(PahoConstants.MQTT_TOPIC, String.class)).thenReturn("telemetry/testHardwareId");
+		when(message.getHeader(PahoConstants.MQTT_TOPIC)).thenReturn("telemetry/testHardwareId");
+		when(avroUtils.parsePayload(anyString())).thenReturn(createPayload());
 		when(message.getBody(String.class)).thenReturn(validPayload);
 
 		// Act: Call the method to convert the payload to EsthesisDataMessages.
@@ -83,6 +84,7 @@ class DflMqttClientServiceTest {
 	@Test
 	void processCommandReplyMessage() {
 		// Arrange: Set up the message headers and body.
+		when(message.getHeader(PahoConstants.MQTT_TOPIC, String.class)).thenReturn("telemetry/testHardwareId");
 		when(message.getHeader(PahoConstants.MQTT_TOPIC)).thenReturn("command/reply/testHardwareId");
 		when(message.getBody(String.class)).thenReturn("correlationId s test-payload");
 		when(avroUtils.parseCommandReplyLP(anyString(), anyString(), anyString(), anyString()))

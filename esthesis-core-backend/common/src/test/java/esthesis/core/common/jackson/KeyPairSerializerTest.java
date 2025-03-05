@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.StringWriter;
 import java.security.KeyPair;
@@ -18,6 +20,7 @@ import java.util.Base64;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(MockitoExtension.class)
 class KeyPairSerializerTest {
 
 	private KeyPairSerializer serializer;

@@ -5,6 +5,8 @@ import lombok.SneakyThrows;
 import org.apache.camel.Exchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,6 +15,7 @@ import java.nio.ByteBuffer;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
+@ExtendWith(MockitoExtension.class)
 class EsthesisCommandReplyDataFormatTest {
 
 	private EsthesisCommandReplyDataFormat esthesisCommandReplyDataFormat;

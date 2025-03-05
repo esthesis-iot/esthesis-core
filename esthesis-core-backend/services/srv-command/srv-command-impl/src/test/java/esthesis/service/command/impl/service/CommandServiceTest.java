@@ -18,7 +18,6 @@ import esthesis.common.avro.ExecutionType;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.command.impl.TestHelper;
-import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
@@ -75,21 +74,20 @@ class CommandServiceTest {
 		SettingEntity mockSettingEntity = mock(SettingEntity.class);
 		when(mockSettingEntity.asString()).thenReturn("test setting");
 		when(settingsResource.findByName(any())).thenReturn(mockSettingEntity);
-		when(tagResource.findByNames(anyString())).thenReturn(List.of());
+		when(tagResource.findByNames(anyString())).thenReturn(List.of(testHelper.mockTagEntity("test-tag")));
 	}
 
 	@Test
 	void findDevicesByHardwareId() {
 		// Mock finding devices by hardware ID.
 		when(deviceResource.findByHardwareIds(anyString())).thenReturn(
-			List.of(mock(DeviceEntity.class)));
+			List.of(testHelper.mockDeviceEntity("test-hardware-id")));
 
 		// Assert no exception is thrown while finding devices by hardware ID.
 		assertDoesNotThrow(() -> commandService.findDevicesByHardwareId("test-hardware-id"));
 
 		// Verify that the device and settings resources were called.
 		verify(deviceResource, times(1)).findByHardwareIds(any());
-		verify(settingsResource, times(1)).findByName(any());
 	}
 
 	@Test

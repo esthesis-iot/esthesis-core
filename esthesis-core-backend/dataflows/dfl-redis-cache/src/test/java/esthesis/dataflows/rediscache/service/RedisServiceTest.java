@@ -10,9 +10,11 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class RedisServiceTest {
 
 	@Mock
@@ -50,13 +53,14 @@ class RedisServiceTest {
 		when(exchange.getIn()).thenReturn(message);
 		when(message.getBody(EsthesisDataMessage.class)).thenReturn(createEsthesisDataMessage());
 
-		// Mocks redis calls.
-		doNothing().when(redisUtils).setToHash(any(RedisUtils.KeyType.class), anyString(), anyString(), anyString());
 
 	}
 
 	@Test
 	void process_WithHighMaxSizeAndTTL() {
+		// Mock the RedisUtils calls.
+		doNothing().when(redisUtils).setToHash(any(RedisUtils.KeyType.class), anyString(), anyString(), anyString());
+
 		// Mock the config for TTL and MaxSize.
 		when(config.redisTtl()).thenReturn(60L);
 		when(config.redisMaxSize()).thenReturn(1024 * 1024);

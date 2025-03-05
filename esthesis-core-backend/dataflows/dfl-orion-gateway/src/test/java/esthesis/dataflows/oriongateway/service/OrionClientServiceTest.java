@@ -9,10 +9,12 @@ import esthesis.dataflows.oriongateway.dto.OrionEntityDTO;
 import esthesis.dataflows.oriongateway.service.OrionClientService.ATTRIBUTE_TYPE;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.net.URI;
 import java.util.Map;
@@ -32,6 +34,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class OrionClientServiceTest {
 
 	@Mock
@@ -50,40 +53,18 @@ class OrionClientServiceTest {
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
 
-		// Mock rest clients creation.
-		doReturn(orionClient).when(orionClientService).createOrionClient(anyList(), anyList(), any(URI.class));
-		doReturn(mock(OrionKeyrockAuthClient.class)).when(orionClientService).createKeyRockAuthClient(anyString());
-
-		// Mock default configurations.
-		when(appConfig.orionUrl()).thenReturn("http://test-orion-url");
-		when(appConfig.orionLdDefinedContextsUrl()).thenReturn("https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld");
-		when(appConfig.orionLdDefinedContextsRelationships()).thenReturn("https://www.w3.org/ns/json-ld#context");
-		when(appConfig.esthesisOrionMetadataName()).thenReturn("maintainedBy");
-		when(appConfig.esthesisAttributeSourceMetadataName()).thenReturn("attributeSource");
-		when(appConfig.esthesisOrionMetadataValue()).thenReturn("esthesis");
-		when(appConfig.orionAuthenticationType()).thenReturn("NONE");
-		when(appConfig.orionAuthenticationUrl()).thenReturn(Optional.empty());
-		when(appConfig.orionAuthenticationCredentialToken()).thenReturn(Optional.empty());
-		when(appConfig.orionAuthenticationUsername()).thenReturn(Optional.empty());
-		when(appConfig.orionAuthenticationPassword()).thenReturn(Optional.empty());
-		when(appConfig.orionAuthenticationGrantType()).thenReturn(Optional.empty());
-		when(appConfig.orionLdTenant()).thenReturn(Optional.empty());
-		when(appConfig.orionCustomEntityJsonFormatAttributeName()).thenReturn(Optional.empty());
-		when(appConfig.orionCustomEntityJsonFormat()).thenReturn(Optional.empty());
-		when(appConfig.orionAttributesToSync()).thenReturn(Optional.empty());
-
-		// Mock orion client requests.
-		doNothing().when(orionClient).appendAttributes(anyString(), anyString());
-		doNothing().when(orionClient).createOrUpdateEntities(anyString());
-		doNothing().when(orionClient).deleteAttribute(anyString(), anyString());
-		doNothing().when(orionClient).deleteEntity(anyString());
-
 	}
 
 	@Test
 	void initWithNoAuth() {
+		// Mock rest clients creation.
+		doReturn(orionClient).when(orionClientService).createOrionClient(anyList(), anyList(), any(URI.class));
+
 		// Mock auth configurations for no authentication.
 		when(appConfig.orionAuthenticationType()).thenReturn("NONE");
+		when(appConfig.orionUrl()).thenReturn("http://test-orion-url");
+		when(appConfig.orionLdDefinedContextsUrl()).thenReturn("https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld");
+		when(appConfig.orionLdDefinedContextsRelationships()).thenReturn("https://www.w3.org/ns/json-ld#context");
 
 		// Perform the init method and assert that it does not throw any exception.
 		assertDoesNotThrow(() -> orionClientService.init());
@@ -102,9 +83,16 @@ class OrionClientServiceTest {
 
 	@Test
 	void initWithKeyrockAuth() {
+		// Mock rest clients creation.
+		doReturn(orionClient).when(orionClientService).createOrionClient(anyList(), anyList(), any(URI.class));
+		doReturn(mock(OrionKeyrockAuthClient.class)).when(orionClientService).createKeyRockAuthClient(anyString());
+
 		// Mock auth configurations for Keyrock.
 		when(appConfig.orionAuthenticationType()).thenReturn("KEYROCK");
 		when(appConfig.orionAuthenticationUrl()).thenReturn(Optional.of("http://test-orion-auth-url"));
+		when(appConfig.orionUrl()).thenReturn("http://test-orion-url");
+		when(appConfig.orionLdDefinedContextsUrl()).thenReturn("https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld");
+		when(appConfig.orionLdDefinedContextsRelationships()).thenReturn("https://www.w3.org/ns/json-ld#context");
 
 
 		// Perform the init method and assert that it does not throw any exception.
@@ -124,6 +112,13 @@ class OrionClientServiceTest {
 
 	@Test
 	void setAttribute() {
+		// Mock orion client request.
+		doNothing().when(orionClient).appendAttributes(anyString(), anyString());
+
+		// Mock default configurations.
+		when(appConfig.esthesisOrionMetadataName()).thenReturn("maintainedBy");
+		when(appConfig.esthesisAttributeSourceMetadataName()).thenReturn("attributeSource");
+		when(appConfig.esthesisOrionMetadataValue()).thenReturn("esthesis");
 
 		// Call the method to set the attribute.
 		orionClientService.setAttribute(
@@ -142,6 +137,9 @@ class OrionClientServiceTest {
 
 	@Test
 	void saveOrUpdateEntities() {
+		// Mock orion client request.
+		doNothing().when(orionClient).createOrUpdateEntities(anyString());
+
 		// Prepare a JSON entity.
 		String entityJson = "{\"id\":\"test-entity-id\",\"type\":\"test-entity-type\"}";
 
@@ -154,6 +152,10 @@ class OrionClientServiceTest {
 
 	@Test
 	void deleteAttribute() {
+		// Mock orion client request.
+		doNothing().when(orionClient).deleteAttribute(anyString(), anyString());
+
+
 		// Perform the delete attribute method.
 		orionClientService.deleteAttribute("test-entity-id", "test-attribute-name");
 
@@ -163,6 +165,11 @@ class OrionClientServiceTest {
 
 	@Test
 	void createEntity() {
+		// Mock default configurations.
+		when(appConfig.esthesisOrionMetadataName()).thenReturn("maintainedBy");
+		when(appConfig.esthesisAttributeSourceMetadataName()).thenReturn("attributeSource");
+		when(appConfig.esthesisOrionMetadataValue()).thenReturn("esthesis");
+
 		// Perform the operation to create an entity.
 		orionClientService.createEntity(testHelper.createOrionEntity("test-orion-id"));
 
@@ -200,6 +207,9 @@ class OrionClientServiceTest {
 
 	@Test
 	void deleteEntity() {
+		// Mock orion client request.
+		doNothing().when(orionClient).deleteEntity(anyString());
+
 		orionClientService.deleteEntity("test-orion-id");
 		verify(orionClient).deleteEntity("test-orion-id");
 	}

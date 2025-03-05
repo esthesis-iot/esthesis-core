@@ -12,10 +12,12 @@ import org.apache.camel.Message;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.util.List;
@@ -30,6 +32,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class OrionGatewayServiceTest {
 
 	@InjectMocks
@@ -51,21 +54,6 @@ class OrionGatewayServiceTest {
 		MockitoAnnotations.openMocks(this);
 		testHelper = new TestHelper();
 
-		// Mock default configurations for the Orion Gateway.
-		when(appConfig.orionCreateDevice()).thenReturn(true);
-		when(appConfig.orionDeleteDevice()).thenReturn(true);
-		when(appConfig.orionUpdateData()).thenReturn(true);
-		when(appConfig.orionUpdateDataAttribute()).thenReturn(Optional.empty());
-		when(appConfig.orionUpdateGeolocation()).thenReturn(true);
-		when(appConfig.orionRetroCreateDevicesOnSchedule()).thenReturn(true);
-		when(appConfig.orionRetroCreateDevicesSchedule()).thenReturn("0 0 0 * * ?");
-		when(appConfig.orionRetroCreateDevicesOnBoot()).thenReturn(true);
-		when(appConfig.orionDefaultType()).thenReturn("test-type");
-		when(appConfig.orionIdPrefix()).thenReturn("urn.test:");
-		when(appConfig.attributeEsthesisId()).thenReturn("esthesisId");
-		when(appConfig.attributeEsthesisHardwareId()).thenReturn("esthesisHardwareId");
-		when(appConfig.esthesisOrionMetadataName()).thenReturn("esthesisMetadata");
-		when(appConfig.orionRegistrationEnabledAttribute()).thenReturn(Optional.of("enable-registration"));
 	}
 
 	@Test
@@ -106,6 +94,12 @@ class OrionGatewayServiceTest {
 
 	@Test
 	void registerDeviceOnOrion() {
+		// Mock default configurations for the Orion Gateway.
+		when(appConfig.orionDefaultType()).thenReturn("test-type");
+		when(appConfig.orionIdPrefix()).thenReturn("urn.test:");
+		when(appConfig.attributeEsthesisId()).thenReturn("esthesisId");
+		when(appConfig.attributeEsthesisHardwareId()).thenReturn("esthesisHardwareId");
+		when(appConfig.orionRegistrationEnabledAttribute()).thenReturn(Optional.of("enable-registration"));
 
 		// Mock finding the devices attribute including one enabling the registration of devices in Orion.
 		when(deviceSystemResource.getDeviceAttributesByEsthesisId(anyString()))
@@ -138,6 +132,12 @@ class OrionGatewayServiceTest {
 
 	@Test
 	void syncAttributes() {
+		// Mock default configurations for the Orion Gateway.
+		when(appConfig.orionUpdateDataAttribute()).thenReturn(Optional.empty());
+		when(appConfig.orionIdPrefix()).thenReturn("urn.test:");
+		when(appConfig.attributeEsthesisId()).thenReturn("esthesisId");
+		when(appConfig.orionRegistrationEnabledAttribute()).thenReturn(Optional.of("enable-registration"));
+
 		// Mock finding the devices attribute including one enabling the registration of devices in Orion.
 		when(deviceSystemResource.getDeviceAttributesByEsthesisId(anyString()))
 			.thenReturn(
@@ -193,6 +193,12 @@ class OrionGatewayServiceTest {
 	@Test
 	@DisplayName("Process data")
 	void processData() {
+		// Mock default configurations for the Orion Gateway.
+		when(appConfig.orionUpdateData()).thenReturn(true);
+		when(appConfig.orionUpdateDataAttribute()).thenReturn(Optional.empty());
+		when(appConfig.orionIdPrefix()).thenReturn("urn.test:");
+
+
 		// Mock camel exchange message parameter
 		Exchange exchangeMock = Mockito.mock(Exchange.class);
 		Message messageMock = Mockito.mock(Message.class);
@@ -237,6 +243,10 @@ class OrionGatewayServiceTest {
 	@Test
 	@DisplayName("Process data with custom JSON from device attribute")
 	void processDataWithCustomJsonDevice() {
+		// Mock default configurations for the Orion Gateway.
+		when(appConfig.orionUpdateData()).thenReturn(true);
+		when(appConfig.orionUpdateDataAttribute()).thenReturn(Optional.empty());
+
 		// Mock camel exchange message parameter
 		Exchange exchangeMock = Mockito.mock(Exchange.class);
 		Message messageMock = Mockito.mock(Message.class);
@@ -296,6 +306,10 @@ class OrionGatewayServiceTest {
 	@Test
 	@DisplayName("Process data with custom JSON from dataflow environment variable")
 	void processDataWithCustomJsonDataflow() {
+		// Mock default configurations for the Orion Gateway.
+		when(appConfig.orionUpdateData()).thenReturn(true);
+		when(appConfig.orionUpdateDataAttribute()).thenReturn(Optional.empty());
+
 		// Mock camel exchange message parameter
 		Exchange exchangeMock = Mockito.mock(Exchange.class);
 		Message messageMock = Mockito.mock(Message.class);
@@ -344,6 +358,11 @@ class OrionGatewayServiceTest {
 
 	@Test
 	void isDataUpdateAllowed() {
+		// Mock default configurations for the Orion Gateway.
+		when(appConfig.orionUpdateData()).thenReturn(true);
+		when(appConfig.orionUpdateDataAttribute()).thenReturn(Optional.empty());
+
+
 		// Mock orion entity as already registered in Orion.
 		when(orionClientService.getEntityByOrionId(anyString()))
 			.thenReturn(testHelper.createOrionEntity("urn.test:hardware-id"));

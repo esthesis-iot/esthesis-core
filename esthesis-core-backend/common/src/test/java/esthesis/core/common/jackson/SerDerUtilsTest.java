@@ -2,6 +2,8 @@ package esthesis.core.common.jackson;
 
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -12,6 +14,7 @@ import java.util.Base64;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@ExtendWith(MockitoExtension.class)
 class SerDerUtilsTest {
 
 	@Test
