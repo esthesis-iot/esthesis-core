@@ -175,15 +175,35 @@
 						<artifactId>jacoco-maven-plugin</artifactId>
 						<version>${jacoco.version}</version>
 						<executions>
+							<!-- Ensure each module generates coverage -->
 							<execution>
-								<id>default-prepare-agent</id>
+								<id>prepare-agent</id>
 								<goals>
 									<goal>prepare-agent</goal>
 								</goals>
 								<configuration>
-									<exclClassLoaders>*QuarkusClassLoader</exclClassLoaders>
-									<destFile>${project.build.directory}/jacoco-quarkus.exec</destFile>
-									<append>true</append>
+<!--									<exclClassLoaders>*QuarkusClassLoader</exclClassLoaders>-->
+									<destFile>${project.build.directory}/jacoco.exec</destFile>
+<!--									<append>true</append>-->
+								</configuration>
+							</execution>
+							<!-- Ensure all JaCoCo reports are merged across modules -->
+							<execution>
+								<id>merge-results</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>merge</goal>
+								</goals>
+								<configuration>
+									<destFile>${maven.multiModuleProjectDirectory}/target/jacoco.exec</destFile>
+									<fileSets>
+										<fileSet>
+											<directory>${maven.multiModuleProjectDirectory}</directory>
+											<includes>
+												<include>**/target/jacoco.exec</include>
+											</includes>
+										</fileSet>
+									</fileSets>
 								</configuration>
 							</execution>
 						</executions>
@@ -191,11 +211,12 @@
 					<plugin>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
-							<systemPropertyVariables>
-								<quarkus.jacoco.data-file>${maven.multiModuleProjectDirectory}/target/jacoco.exec</quarkus.jacoco.data-file>
-								<quarkus.jacoco.reuse-data-file>true</quarkus.jacoco.reuse-data-file>
-								<quarkus.jacoco.report-location>${maven.multiModuleProjectDirectory}/target/coverage</quarkus.jacoco.report-location>
-							</systemPropertyVariables>
+							<argLine>@{argLine}</argLine>
+<!--							<systemPropertyVariables>-->
+<!--								<quarkus.jacoco.data-file>${maven.multiModuleProjectDirectory}/target/jacoco-quarkus.exec</quarkus.jacoco.data-file>-->
+<!--								<quarkus.jacoco.reuse-data-file>true</quarkus.jacoco.reuse-data-file>-->
+<!--								<quarkus.jacoco.report-location>${maven.multiModuleProjectDirectory}/target/coverage</quarkus.jacoco.report-location>-->
+<!--							</systemPropertyVariables>-->
 						</configuration>
 					</plugin>
 					<plugin>

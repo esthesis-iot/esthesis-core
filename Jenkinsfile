@@ -171,6 +171,9 @@ pipeline {
                         SOURCEFILES="$SOURCEFILES --sourcefiles=$dir"
                     done
 
+                    # Ensure the coverage directory exists
+                    mkdir -p target/coverage
+
                     # Run the JaCoCo CLI
                     java -jar /root/jacoco-cli/jacococli.jar report target/jacoco.exec \
                         $CLASSFILES \
