@@ -13,6 +13,13 @@ quarkus:
     devservices:
       enabled: true
       image-name: "mongo:7.0.5"
+  keycloak:
+    devservices:
+      enabled: false
+  oidc:
+    auth-server-url: "http://locahost:45123"
+    devservices:
+      enabled: false
   http:
     test-port: 0
   liquibase-mongodb:
