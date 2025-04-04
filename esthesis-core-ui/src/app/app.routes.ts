@@ -97,6 +97,11 @@ export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
       path: "user",
       loadChildren: () => import("./user/user.module").then(m => m.UserModule),
       canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "|User"}
+    },
+    {
+      path: "chatbot",
+      loadChildren: () => import("./chatbot/chatbot.module").then(m => m.ChatbotModule),
+      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: ""}
     }
   ],
   {

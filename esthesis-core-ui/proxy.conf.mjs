@@ -1,4 +1,5 @@
-import { EventEmitter } from "events";
+import {EventEmitter} from "events";
+
 EventEmitter.defaultMaxListeners = Infinity;
 
 export default [
@@ -102,6 +103,12 @@ export default [
     context: ["/api/dashboard"],
     target: "http://127.0.0.1:59180",
     pathRewrite: { "/dashboard": "/" },
+    secure: false,
+  },
+  {
+    context: ["/api/chatbot"],
+    target: "http://127.0.0.1:59190",
+    pathRewrite: { "/chatbot": "/" },
     secure: false,
   }
 ];

@@ -66,12 +66,15 @@ import {
   faMicrochip,
   faMinusCircle,
   faNetworkWired,
+  faPaperPlane,
   faPaste,
   faPause,
   faPercent,
   faPlay,
   faPlus,
+  faRecycle,
   faRefresh,
+  faRobot,
   faRulerCombined,
   faSearch,
   faShareNodes,
@@ -108,6 +111,7 @@ import {provideLumberjackConsoleDriver} from "@ngworker/lumberjack/console-drive
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MtxSelect} from "@ng-matero/extensions/select";
+import {ChatbotModule} from "./chatbot/chatbot.module";
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -133,7 +137,7 @@ import {MtxSelect} from "@ng-matero/extensions/select";
     MatSnackBarModule,
     MatButtonModule,
     FontAwesomeModule,
-    ComponentsModule, NgProgressbar, NgProgressHttp, FormsModule, MatFormField, MatLabel, MtxSelect, ReactiveFormsModule],
+    ComponentsModule, NgProgressbar, NgProgressHttp, FormsModule, MatFormField, MatLabel, MtxSelect, ReactiveFormsModule, ChatbotModule],
   providers: [
     QFormsModule,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
@@ -167,7 +171,7 @@ export class AppModule {
       faMicrochip, faNetworkWired, faShieldHalved, faStamp, faTag, faUser, faUsers,
       faUsersBetweenLines, faXmarksLines, faFileCirclePlus, faBoxArchive, faFileCircleCheck,
       faPaste, faEraser, faBug, faRulerCombined, faCirclePlay, faCircleXmark, faShareNodes,
-      faMaximize, faIcons, faMinusCircle);
+      faMaximize, faIcons, faMinusCircle, faRobot, faPaperPlane, faRecycle);
     faConfig.fixedWidth = true;
   }
 }

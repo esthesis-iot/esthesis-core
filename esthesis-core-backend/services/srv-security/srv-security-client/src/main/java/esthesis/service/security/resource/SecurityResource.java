@@ -7,7 +7,7 @@ import esthesis.service.security.entity.GroupEntity;
 import esthesis.service.security.entity.PolicyEntity;
 import esthesis.service.security.entity.RoleEntity;
 import esthesis.service.security.entity.UserEntity;
-import io.quarkus.oidc.token.propagation.AccessToken;
+import io.quarkus.oidc.token.propagation.common.AccessToken;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.DELETE;

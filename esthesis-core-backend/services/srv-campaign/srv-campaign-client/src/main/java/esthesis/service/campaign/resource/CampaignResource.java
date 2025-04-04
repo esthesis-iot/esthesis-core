@@ -4,7 +4,7 @@ import esthesis.service.campaign.dto.CampaignStatsDTO;
 import esthesis.service.campaign.entity.CampaignEntity;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import io.quarkus.oidc.token.propagation.AccessToken;
+import io.quarkus.oidc.token.propagation.common.AccessToken;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.DELETE;

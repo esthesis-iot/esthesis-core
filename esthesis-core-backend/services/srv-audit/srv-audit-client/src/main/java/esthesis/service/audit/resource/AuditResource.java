@@ -5,7 +5,7 @@ import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.service.audit.entity.AuditEntity;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;
-import io.quarkus.oidc.token.propagation.AccessToken;
+import io.quarkus.oidc.token.propagation.common.AccessToken;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.DELETE;

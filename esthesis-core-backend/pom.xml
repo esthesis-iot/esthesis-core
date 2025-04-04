@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>esthesis</groupId>
 		<artifactId>esthesis-bom</artifactId>
-		<version>1.0.29-SNAPSHOT</version>
+		<version>1.0.30-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>esthesis-core</artifactId>
@@ -26,8 +26,8 @@
 	<build>
 		<plugins>
 			<plugin>
-				<artifactId>quarkus-maven-plugin</artifactId>
 				<groupId>io.quarkus.platform</groupId>
+				<artifactId>quarkus-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>esthesis</groupId>
 			<artifactId>esthesis-common</artifactId>
-			<version>1.0.29-SNAPSHOT</version>
+			<version>1.0.30-SNAPSHOT</version>
 		</dependency>
 
 		<!-- THIRD-PARTY -->

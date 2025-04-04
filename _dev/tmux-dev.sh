@@ -45,6 +45,7 @@ services=(
     "SRV-APPLICATION  		srv-application  			dev-application.sh"
     "SRV-AUDIT        		srv-audit        			dev-audit.sh"
     "SRV-CAMPAIGN     		srv-campaign     			dev-campaign.sh"
+    "SRV-CHATBOT					srv-chatbot						dev-chatbot.sh"
     "SRV-COMMAND      		srv-command      			dev-command.sh"
     "SRV-CRYPTO       		srv-crypto       			dev-crypto.sh"
     "SRV-DATAFLOW     		srv-dataflow     			dev-dataflow.sh"

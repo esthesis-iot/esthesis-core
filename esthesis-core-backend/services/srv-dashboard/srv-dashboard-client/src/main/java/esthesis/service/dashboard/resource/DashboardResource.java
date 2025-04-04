@@ -1,7 +1,7 @@
 package esthesis.service.dashboard.resource;
 
 import esthesis.service.dashboard.entity.DashboardEntity;
-import io.quarkus.oidc.token.propagation.AccessToken;
+import io.quarkus.oidc.token.propagation.common.AccessToken;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;

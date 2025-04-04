@@ -1,0 +1,76 @@
+<div class="absolute rounded-3xl bottom-4 right-4 avatar bg-primary/20 p-2
+            hover:bg-primary transition-all duration-300 ease-in-out hover:cursor-pointer
+            z-10">
+  <fa-icon class="text-2xl select-none" icon="robot" (click)="toggleState()"></fa-icon>
+</div>
+
+<div class="bg-base-300 w-96 h-[500px] p-4 rounded-t-xl absolute bottom-[70px] right-[10px]
+            shadow-lg z-50 border-t-2 border-x-2 border-base-100 flex flex-col"
+     [ngClass]="{'hidden': !state}">
+
+  <div class="overflow-y-auto" #chatbox>
+    <div class="chat chat-start ">
+      <div class="chat-header">
+        <fa-icon icon="robot"></fa-icon> Bot
+        <time class="text-xs opacity-50">2 hours ago</time>
+      </div>
+      <div class="chat-bubble">Welcome to esthesis bot!</div>
+    </div>
+    <div class="chat chat-end">
+      <div class="chat-header">
+        You
+        <time class="text-xs opacity-50">2 hour ago</time>
+      </div>
+      <div class="chat-bubble">How many devices are offline?</div>
+    </div>
+    <div class="chat chat-start ">
+      <div class="chat-header">
+        <fa-icon icon="robot"></fa-icon> Bot
+        <time class="text-xs opacity-50">2 hours ago</time>
+      </div>
+      <div class="chat-bubble">I found 5 devices being offline.</div>
+    </div>
+    <div class="chat chat-end">
+      <div class="chat-header">
+        You
+        <time class="text-xs opacity-50">2 hour ago</time>
+      </div>
+      <div class="chat-bubble">Try to ping them.</div>
+    </div>
+    <div class="chat chat-start ">
+      <div class="chat-header">
+        <fa-icon icon="robot"></fa-icon> Bot
+        <time class="text-xs opacity-50">2 hours ago</time>
+      </div>
+      <div class="chat-bubble">Welcome to esthesis bot!</div>
+    </div>
+    <div class="chat chat-end">
+      <div class="chat-header">
+        You
+        <time class="text-xs opacity-50">2 hour ago</time>
+      </div>
+      <div class="chat-bubble">How many devices are offline?</div>
+    </div>
+    <div class="chat chat-start ">
+      <div class="chat-header">
+        <fa-icon icon="robot"></fa-icon> Bot
+        <time class="text-xs opacity-50">2 hours ago</time>
+      </div>
+      <div class="chat-bubble">I found 5 devices being offline.</div>
+    </div>
+    <div class="chat chat-end">
+      <div class="chat-header">
+        You
+        <time class="text-xs opacity-50">2 hour ago</time>
+      </div>
+      <div class="chat-bubble">Try to ping them.</div>
+    </div>
+  </div>
+
+  <div class="mt-auto pt-3 flex flex-row place-items-center">
+    <input #userinput type="text" class="input input-md w-full input-bordered pr-9"
+            placeholder="Type here..." (keyup.enter)="sendMessage()">
+    <fa-icon icon="paper-plane" matTooltip="Send message" class="absolute right-[80px] hover:cursor-pointer" (click)="sendMessage()"></fa-icon>
+    <button class="btn btn-sm ml-2 tooltip" matTooltip="Clear chat" o><fa-icon icon="recycle"></fa-icon></button>
+  </div>
+</div>

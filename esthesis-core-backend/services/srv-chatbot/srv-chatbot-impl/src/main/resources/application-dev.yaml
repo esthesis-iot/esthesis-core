@@ -1,0 +1,32 @@
+quarkus:
+  live-reload:
+    instrumentation: true
+  http:
+    host: 0.0.0.0
+    cors: false
+  log:
+    category:
+      esthesis:
+        level: DEBUG
+    handler:
+      gelf:
+        host: "localhost"
+        port: 12201
+  otel:
+    sdk:
+      disabled: true
+    traces:
+      sampler: always_on
+    exporter:
+      otlp:
+        traces:
+          endpoint: http://grafana-tempo-distributor.esthesis:4317
+  rest-client:
+    AuditResource:
+      url: http://localhost:59140
+      scope: Singleton
+    SecurityResource:
+      url: http://localhost:59170
+      scope: Singleton
+  config:
+    locations: "../../../../_dev/profiles"

@@ -1,6 +1,6 @@
 package esthesis.service.crypto.resource;
 
-import io.quarkus.oidc.token.propagation.AccessToken;
+import io.quarkus.oidc.token.propagation.common.AccessToken;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import java.util.List;

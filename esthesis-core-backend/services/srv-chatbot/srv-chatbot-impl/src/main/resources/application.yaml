@@ -1,0 +1,35 @@
+quarkus:
+  application:
+    name: esthesis-core-srv-chatbot
+  devservices:
+    enabled: false
+  log:
+    min-level: TRACE
+    console:
+      format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+    handler:
+      gelf:
+        enabled: false
+        include-full-mdc: true
+        skip-hostname-resolution: false
+        additional-field:
+          platform:
+            value: esthesis
+          module:
+            value: esthesis-core
+          type:
+            value: API
+          service:
+            value: ${quarkus.application.name}
+  banner:
+    enabled: false
+  otel:
+    sdk:
+      disabled: true
+  rest-client:
+    AuditResource:
+      url: http://esthesis-core-srv-audit-service:8080
+      scope: Singleton
+    SecurityResource:
+      url: http://esthesis-core-srv-security-service:8080
+      scope: Singleton

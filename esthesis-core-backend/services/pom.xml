@@ -63,6 +63,7 @@
     <module>srv-application</module>
     <module>srv-audit</module>
     <module>srv-campaign</module>
+    <module>srv-chatbot</module>
     <module>srv-command</module>
     <module>srv-common</module>
     <module>srv-crypto</module>

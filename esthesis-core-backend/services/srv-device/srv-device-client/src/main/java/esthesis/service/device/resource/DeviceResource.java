@@ -11,7 +11,7 @@ import esthesis.service.device.dto.DeviceRegistrationDTO;
 import esthesis.service.device.dto.DeviceTextDataImportDTO;
 import esthesis.service.device.dto.GeolocationDTO;
 import esthesis.service.device.entity.DeviceEntity;
-import io.quarkus.oidc.token.propagation.AccessToken;
+import io.quarkus.oidc.token.propagation.common.AccessToken;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -123,7 +123,7 @@ public interface DeviceResource {
 	@DELETE
 	@Path("/v1/{deviceId}")
 	void delete(@PathParam("deviceId") String id);
-	
+
 	/**
 	 * Gets the geolocation information of the device with the given ID.
 	 *

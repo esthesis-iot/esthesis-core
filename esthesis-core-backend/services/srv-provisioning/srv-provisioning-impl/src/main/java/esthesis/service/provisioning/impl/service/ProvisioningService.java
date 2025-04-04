@@ -240,7 +240,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 		if (deviceEntities.isEmpty()) {
 			throw new QMismatchException("No device found with hardware id '" + hardwareId + "'.");
 		}
-		DeviceEntity deviceEntity = deviceEntities.get(0);
+		DeviceEntity deviceEntity = deviceEntities.getFirst();
 		log.debug("Device found with id '{}' and tags '{}'.", deviceEntity.getId(),
 			deviceEntity.getTags());
 
@@ -259,10 +259,9 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 		// Find the first version that respects the base version requirement.
 		ProvisioningPackageEntity candidateVersion;
 		if (greaterVersions.stream().filter(p -> StringUtils.isNotBlank(p.getPrerequisiteVersion()))
-			.findAny()
-			.isEmpty()) {
+			.findAny().isEmpty()) {
 			// If the list of greater versions do not have any prerequisite versions, return the last one.
-			candidateVersion = greaterVersions.get(greaterVersions.size() - 1);
+			candidateVersion = greaterVersions.getLast();
 		} else {
 			// If the list of greater versions have prerequisite versions, then return the lowest
 			// prerequisite version.
@@ -302,7 +301,7 @@ public class ProvisioningService extends BaseService<ProvisioningPackageEntity> 
 	public ProvisioningPackageEntity findById(String id) {
 		return super.findById(id);
 	}
-	
+
 	@ErnPermission(category = PROVISIONING, operation = READ)
 	public List<ProvisioningPackageEntity> findByIds(String ids) {
 		return super.findByIds(Arrays.asList(ids.split(",")));

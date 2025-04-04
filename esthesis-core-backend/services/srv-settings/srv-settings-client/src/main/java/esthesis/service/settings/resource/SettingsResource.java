@@ -3,7 +3,7 @@ package esthesis.service.settings.resource;
 import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.settings.entity.DevicePageFieldEntity;
 import esthesis.service.settings.entity.SettingEntity;
-import io.quarkus.oidc.token.propagation.AccessToken;
+import io.quarkus.oidc.token.propagation.common.AccessToken;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;

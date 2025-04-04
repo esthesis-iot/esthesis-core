@@ -21,6 +21,7 @@ import org.bson.types.ObjectId;
  *
  * @param <D> The entity type to manage.
  */
+// TODO sanitise columns.
 @Slf4j
 public abstract class BaseService<D extends BaseEntity> {
 
