@@ -46,7 +46,7 @@ public class ProvisioningRepository implements PanacheMongoRepository<Provisioni
 	 * @return A list of provisioning packages that match at least one of the given tags.
 	 */
 	public List<ProvisioningPackageEntity> findByTagIds(List<String> tagIds) {
-		return list("tags in ?1", tagIds.toArray());
+		return list("tags in ?1", tagIds);
 	}
 
 	/**
