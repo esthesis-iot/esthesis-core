@@ -40,6 +40,9 @@ export class AppComponent extends BaseComponent implements OnInit {
             this.utilityService.popupErrorWithTraceId("Could not get user permissions.", err);
           }
         });
+      } else{
+        // If not authenticated call the OIDC login page.
+        this.oidcService.authorize();
       }
     });
   }
