@@ -1,8 +1,10 @@
 package esthesis.services.dashboard.impl;
 
+import esthesis.common.util.EsthesisCommonConstants.Device;
 import esthesis.core.common.AppConstants.Dashboard;
 import esthesis.service.dashboard.dto.DashboardItemDTO;
 import esthesis.service.dashboard.entity.DashboardEntity;
+import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.security.entity.UserEntity;
 import esthesis.services.dashboard.impl.repository.DashboardRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -10,6 +12,8 @@ import jakarta.inject.Inject;
 import org.bson.types.ObjectId;
 
 import java.security.Principal;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,5 +75,14 @@ public class TestHelper {
 		user.setGroups(List.of("test-group"));
 		user.setId(userId);
 		return user;
+	}
+
+	public DeviceEntity makeCoreDevice(String hardwareId) {
+		DeviceEntity device = new DeviceEntity();
+		device.setHardwareId(hardwareId);
+		device.setId(new ObjectId());
+		device.setType(Device.Type.CORE);
+		device.setRegisteredOn(Instant.now().minus(1, ChronoUnit.DAYS));
+		return device;
 	}
 }

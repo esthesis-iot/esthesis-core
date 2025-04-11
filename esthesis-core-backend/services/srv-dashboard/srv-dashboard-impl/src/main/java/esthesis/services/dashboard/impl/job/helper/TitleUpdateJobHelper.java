@@ -1,16 +1,13 @@
 package esthesis.services.dashboard.impl.job.helper;
 
 import esthesis.core.common.AppConstants.Dashboard.Type;
-import esthesis.service.audit.resource.AuditSystemResource;
 import esthesis.service.dashboard.dto.DashboardItemDTO;
 import esthesis.service.dashboard.entity.DashboardEntity;
 import esthesis.services.dashboard.impl.dto.config.DashboardItemTitleConfiguration;
 import esthesis.services.dashboard.impl.dto.update.DashboardUpdateTitle;
 import esthesis.services.dashboard.impl.dto.update.DashboardUpdateTitle.DashboardUpdateTitleBuilder;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 /**
  * Helper class for updating the TITLE dashboard item.
@@ -19,9 +16,6 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 @ApplicationScoped
 public class TitleUpdateJobHelper extends UpdateJobHelper<DashboardUpdateTitle> {
 
-	@Inject
-	@RestClient
-	AuditSystemResource auditSystemResource;
 
 	public DashboardUpdateTitle refresh(DashboardEntity dashboardEntity,
 		DashboardItemDTO item) {

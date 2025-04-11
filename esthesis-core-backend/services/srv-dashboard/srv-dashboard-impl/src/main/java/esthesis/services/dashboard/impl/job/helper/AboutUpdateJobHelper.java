@@ -44,6 +44,7 @@ public class AboutUpdateJobHelper extends UpdateJobHelper<DashboardUpdateAbout> 
 				.gitBuildTime(generalInfo.getGitBuildTime())
 				.gitCommitId(generalInfo.getGitCommitId())
 				.gitCommitIdAbbrev(generalInfo.getGitCommitIdAbbrev())
+				.gitVersion(generalInfo.getGitVersion())
 				.gitBuildTime(generalInfo.getGitBuildTime())
 				.build();
 		} catch (Exception e) {
