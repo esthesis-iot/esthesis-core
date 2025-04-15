@@ -12,8 +12,6 @@ quarkus:
     devservices:
       enabled: false
   oidc:
-    auth-server-url: "http://locahost:45123"
-    devservices:
-      enabled: false
+    enabled: false
   http:
     test-port: 0

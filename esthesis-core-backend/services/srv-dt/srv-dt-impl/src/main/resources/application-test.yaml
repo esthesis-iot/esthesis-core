@@ -12,14 +12,18 @@ quarkus:
     database: esthesiscore-test
     devservices:
       enabled: true
-      image-name: "mongo:7.0.5"
+      image-name: mongo:7.0
   keycloak:
     devservices:
       enabled: false
   oidc:
-    auth-server-url: "http://locahost:45123"
+    enabled: false
+  redis:
     devservices:
-      enabled: false
+      image-name: redis:7
+  zeebe:
+    devservices:
+      image-name: camunda/zeebe:8.3.1
   http:
     test-port: 0
 esthesis:

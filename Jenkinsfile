@@ -132,7 +132,10 @@ pipeline {
                                 sh '''
                                     docker login -u $Username -p $Password docker.io
                                     docker pull redis:7
-                                    docker pull mongo:7.0.5
+                                    docker pull mongo:7.0
+                                    docker pull testcontainers/sshd:1.2.0
+                                    docker pull testcontainers/ryuk:0.11.0
+                                    docker pull camunda/zeebe:8.3.1
                                     mvn -f esthesis-core-backend/pom.xml clean install -Pcicd
                                 '''
                             }
