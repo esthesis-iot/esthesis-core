@@ -111,7 +111,7 @@ public class TestHelper {
 			.setType(Type.SUCCESS)
 			.setStage(Stage.ENTRY)
 			.setGroup(1)
-			.setValue("someValue");
+			.setValue("10.0");
 	}
 
 	public CampaignConditionDTO makePropertyCondition() {
