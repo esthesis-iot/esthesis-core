@@ -203,6 +203,7 @@ pipeline {
             steps {
                 container (name: 'esthesis-core-builder') {
                     sh '''
+                    		go install github.com/CycloneDX/cyclonedx-gomod/cmd/cyclonedx-gomod@v1.9.0
                         export PATH=$PATH:$(go env GOPATH)/bin
                         cd esthesis-core-device
                         /root/go/bin/cyclonedx-gomod mod go > go/bom.xml
