@@ -1,18 +1,18 @@
 package esthesis.services.about.impl.resource;
 
-import static io.restassured.RestAssured.when;
-import static org.hamcrest.CoreMatchers.notNullValue;
-
 import esthesis.core.common.AppConstants;
 import esthesis.service.about.dto.AboutGeneralDTO;
-import esthesis.service.about.resource.AboutResource;
+import esthesis.service.about.resource.AboutSystemResource;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import org.junit.jupiter.api.Test;
 
+import static io.restassured.RestAssured.when;
+import static org.hamcrest.CoreMatchers.notNullValue;
+
 @QuarkusTest
-@TestHTTPEndpoint(AboutResource.class)
+@TestHTTPEndpoint(AboutSystemResource.class)
 class AboutSystemResourceImplTest {
 
 	@Test

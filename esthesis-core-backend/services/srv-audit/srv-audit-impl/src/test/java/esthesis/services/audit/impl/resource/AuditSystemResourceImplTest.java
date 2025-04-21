@@ -1,6 +1,7 @@
 package esthesis.services.audit.impl.resource;
 
 import esthesis.core.common.AppConstants;
+import esthesis.service.audit.resource.AuditSystemResource;
 import esthesis.services.audit.impl.TestHelper;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -13,7 +14,7 @@ import static io.restassured.RestAssured.given;
 import static org.jboss.resteasy.reactive.RestResponse.Status.OK;
 
 @QuarkusTest
-@TestHTTPEndpoint(AuditSystemResourceImpl.class)
+@TestHTTPEndpoint(AuditSystemResource.class)
 class AuditSystemResourceImplTest {
 
 	@Inject

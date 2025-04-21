@@ -112,7 +112,7 @@ public class DeviceSystemResourceImpl implements DeviceSystemResource {
 
 	@Override
 	@RolesAllowed(AppConstants.ROLE_SYSTEM)
-	public List<DeviceEntity> getLatestDevices(int limit) {
+	public List<DeviceEntity> getLatestDevices(Integer limit) {
 		return deviceService.getLatestDevices(limit);
 	}
 

@@ -2,6 +2,7 @@ package esthesis.service.application.impl.resource;
 
 import esthesis.core.common.AppConstants;
 import esthesis.service.application.impl.service.ApplicationService;
+import esthesis.service.application.resource.ApplicationSystemResource;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -14,7 +15,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
-@TestHTTPEndpoint(ApplicationSystemResourceImpl.class)
+@TestHTTPEndpoint(ApplicationSystemResource.class)
 class ApplicationSystemResourceImplTest {
 
 	@InjectMock

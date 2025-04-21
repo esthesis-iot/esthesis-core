@@ -6,6 +6,7 @@ import esthesis.common.exception.QLimitException;
 import esthesis.common.exception.QSecurityException;
 import esthesis.service.agent.dto.AgentProvisioningInfoResponse;
 import esthesis.service.agent.impl.service.AgentService;
+import esthesis.service.agent.resource.AgentResource;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -24,7 +25,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
-@TestHTTPEndpoint(AgentResourceImpl.class)
+@TestHTTPEndpoint(AgentResource.class)
 class AgentResourceImplTest {
 
 	@InjectMock

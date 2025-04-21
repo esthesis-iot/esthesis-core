@@ -52,7 +52,7 @@ public class CAResourceImpl implements CAResource {
 	@RolesAllowed(AppConstants.ROLE_USER)
 	@JSONReplyFilter(filter = "content,content.id,content.cn,content.issued,content.parentCa,"
 		+ "content.parentCaId,content.validity,content.name")
-	public List<CaEntity> findByIds(String id) {
+	public List<CaEntity> findByIds(@QueryParam("ids")  String id) {
 		return caService.findByIds(id);
 	}
 

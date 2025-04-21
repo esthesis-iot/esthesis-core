@@ -145,7 +145,7 @@ public interface DeviceSystemResource {
 	 */
 	@GET
 	@Path("/v1/system/device-latest")
-	List<DeviceEntity> getLatestDevices(int limit);
+	List<DeviceEntity> getLatestDevices(@QueryParam("limit") Integer limit);
 
 	/**
 	 * Find devices by tag name.

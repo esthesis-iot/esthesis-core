@@ -1,6 +1,7 @@
 package esthesis.services.campaign.impl.resource;
 
 import esthesis.core.common.AppConstants;
+import esthesis.service.campaign.resource.CampaignSystemResource;
 import esthesis.services.campaign.impl.TestHelper;
 import esthesis.services.campaign.impl.service.CampaignService;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
@@ -17,7 +18,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasSize;
 
 @QuarkusTest
-@TestHTTPEndpoint(CampaignSystemResourceImpl.class)
+@TestHTTPEndpoint(CampaignSystemResource.class)
 class CampaignSystemResourceImplTest {
 
 	@Inject

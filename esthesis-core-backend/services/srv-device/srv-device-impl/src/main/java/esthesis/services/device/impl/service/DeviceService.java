@@ -457,7 +457,7 @@ public class DeviceService extends BaseService<DeviceEntity> {
 	 * @param limit The number of devices to return.
 	 * @return The latest devices.
 	 */
-	public List<DeviceEntity> getLatestDevices(int limit) {
+	public List<DeviceEntity> getLatestDevices(Integer limit) {
 		return deviceRepository.findAll(Sort.descending("registeredOn"))
 			.page(io.quarkus.panache.common.Page.of(0, limit)).list();
 	}

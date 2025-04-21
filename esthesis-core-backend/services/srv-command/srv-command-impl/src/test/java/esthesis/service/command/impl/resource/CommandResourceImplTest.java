@@ -7,6 +7,7 @@ import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.command.impl.TestHelper;
 import esthesis.service.command.impl.service.CommandService;
+import esthesis.service.command.resource.CommandResource;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsResource;
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
-@TestHTTPEndpoint(CommandResourceImpl.class)
+@TestHTTPEndpoint(CommandResource.class)
 class CommandResourceImplTest {
 
 

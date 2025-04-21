@@ -49,8 +49,8 @@ class DeviceServiceTest {
 	TestHelper testHelper;
 
 	@InjectMock
-	@MockitoConfig(convertScopes = true)
 	@RestClient
+	@MockitoConfig(convertScopes = true)
 	SettingsResource settingsResource;
 
 	@InjectMock
