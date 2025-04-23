@@ -28,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @Slf4j
@@ -97,7 +96,7 @@ class DTServiceTest {
 				)
 			);
 
-		// Mock command system resource count, getReplies and save
+		// Mock command system resource count, getReplies and save.
 		when(commandSystemResource.countCollectedReplies("test-correlation-id")).thenReturn(1L);
 		when(commandSystemResource.getReplies("test-correlation-id")).thenReturn(testHelper.makeReplies(5));
 		when(commandSystemResource.save(any(CommandRequestEntity.class))).thenReturn(testHelper.makeExecuteRequestScheduleInfo());

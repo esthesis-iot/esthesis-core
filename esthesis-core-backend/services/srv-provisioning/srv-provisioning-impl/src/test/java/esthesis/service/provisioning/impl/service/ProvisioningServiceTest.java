@@ -72,9 +72,9 @@ class ProvisioningServiceTest {
 			.thenReturn(new SettingEntity(NamedSetting.DEVICE_PROVISIONING_SEMVER.name(), "true"));
 
 		// Mock GridFS operations save, delete and download.
-		when(gridFSService.saveBinary(any(GridFSDTO.class))).thenReturn(new ObjectId());
-		doNothing().when(gridFSService).deleteBinary(any(GridFSDTO.class));
-		when(gridFSService.downloadBinary(any(GridFSDTO.class))).thenReturn(
+		when(gridFSService.saveBinary(any())).thenReturn(new ObjectId());
+		doNothing().when(gridFSService).deleteBinary(any());
+		when(gridFSService.downloadBinary(any())).thenReturn(
 			Uni.createFrom().item(new byte[0]));
 
 	}

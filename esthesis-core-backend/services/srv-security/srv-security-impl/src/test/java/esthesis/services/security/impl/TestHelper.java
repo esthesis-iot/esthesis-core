@@ -96,9 +96,9 @@ public class TestHelper {
 		return roleEntity;
 	}
 
-	public UserEntity makeUserEntity(String testUser) {
+	public UserEntity makeUserEntity(String username) {
 		UserEntity userEntity = new UserEntity();
-		userEntity.setUsername(testUser);
+		userEntity.setUsername(username);
 		userEntity.setDescription("test description");
 		userEntity.setFirstName("FirstName");
 		userEntity.setLastName("test last name");
