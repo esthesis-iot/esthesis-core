@@ -52,8 +52,7 @@ class AuditUpdateJobHelperTest {
 		// Arrange a dashboard and an Audit item.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-audit-dashboard");
 		DashboardItemDTO item =
-			testHelper.makeDashboardItem("test-audit-item", 0, AppConstants.Dashboard.Type.AUDIT)
-				.setConfiguration("{\"entries\": 1}");
+			testHelper.makeDashboardItem("test-audit-item", 0, AppConstants.Dashboard.Type.AUDIT);
 
 		// Assert that the security check fails.
 		assertTrue(auditUpdateJobHelper.refresh(dashboardEntity, item).isSecurityError());
@@ -72,8 +71,7 @@ class AuditUpdateJobHelperTest {
 		// Arrange a dashboard and an AUDIT item.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-audit-dashboard");
 		DashboardItemDTO item =
-			testHelper.makeDashboardItem("test-audit-item", 0, AppConstants.Dashboard.Type.AUDIT)
-				.setConfiguration("{\"entries\": 1}");
+			testHelper.makeDashboardItem("test-audit-item", 0, AppConstants.Dashboard.Type.AUDIT);
 
 		// Assert the audit item was updated correctly.
 		DashboardUpdateAudit dashboardUpdateAudit = auditUpdateJobHelper.refresh(dashboardEntity, item);
@@ -90,7 +88,10 @@ class AuditUpdateJobHelperTest {
 		// Arrange a dashboard and an Audit item without required configuration.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-audit-dashboard");
 		DashboardItemDTO item =
-			testHelper.makeDashboardItem("test-audit-item", 0, AppConstants.Dashboard.Type.AUDIT);
+			testHelper.makeDashboardItem("test-audit-item",
+					0,
+					AppConstants.Dashboard.Type.AUDIT)
+				.setConfiguration(null);
 
 		// Assert that the refresh method results in an error.
 		assertTrue(auditUpdateJobHelper.refresh(dashboardEntity, item).isError());

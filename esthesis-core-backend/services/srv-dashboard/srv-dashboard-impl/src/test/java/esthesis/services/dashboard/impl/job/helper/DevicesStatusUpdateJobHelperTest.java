@@ -46,12 +46,7 @@ class DevicesStatusUpdateJobHelperTest {
 
 
 		// Arrange and mock the device total stats.
-		DevicesTotalsStatsDTO stats = new DevicesTotalsStatsDTO();
-		stats.setDisabled(0L);
-		stats.setRegistered(1L);
-		stats.setPreregistered(1L);
-		stats.setTotal(10L);
-
+		DevicesTotalsStatsDTO stats = testHelper.makeDeviceTotalStats();
 		when(deviceSystemResource.getDeviceTotalsStats()).thenReturn(stats);
 
 

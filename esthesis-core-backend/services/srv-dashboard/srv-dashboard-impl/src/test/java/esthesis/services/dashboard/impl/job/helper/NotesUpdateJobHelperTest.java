@@ -39,7 +39,6 @@ class NotesUpdateJobHelperTest {
 		// Arrange the dashboard and item.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-dashboard");
 		DashboardItemDTO item = testHelper.makeDashboardItem("test-item", 0, NOTES);
-		item.setConfiguration("{\"notes\": \"test-note\"}");
 
 		// Assert the refresh method updates the notes correctly.
 		assertEquals("test-note", notesUpdateJobHelper.refresh(dashboardEntity, item).getNotes());
@@ -54,7 +53,8 @@ class NotesUpdateJobHelperTest {
 
 		// Arrange the dashboard and item.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-dashboard");
-		DashboardItemDTO item = testHelper.makeDashboardItem("test-item", 0, NOTES);
+		DashboardItemDTO item =
+			testHelper.makeDashboardItem("test-item", 0, NOTES).setConfiguration(null);
 
 		// Assert the refresh method returns an error  if no configuration is provided.
 		assertTrue(notesUpdateJobHelper.refresh(dashboardEntity, item).isError());

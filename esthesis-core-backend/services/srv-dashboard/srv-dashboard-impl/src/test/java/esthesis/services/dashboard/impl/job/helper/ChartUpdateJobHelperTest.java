@@ -78,12 +78,7 @@ class ChartUpdateJobHelperTest {
 
 		// Arrange a dashboard and a CHART item.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-chart-dashboard");
-		DashboardItemDTO item =
-			testHelper.makeDashboardItem("test-chart-item",
-					0,
-					CHART)
-				.setConfiguration(
-					"{\"tags\": [\"tag1\"], \"hardwareIds\": [\"hardwareId1\"], \"measurements\": [\"measurement1\"]}");
+		DashboardItemDTO item =	testHelper.makeDashboardItem("test-chart-item",0,CHART);
 
 		// Assert the chart item was updated correctly.
 		assertFalse(chartUpdateJobHelper.refresh(dashboardEntity, item).getData().isEmpty());
@@ -97,7 +92,7 @@ class ChartUpdateJobHelperTest {
 
 		// Arrange a dashboard and a Chart item without required configuration.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-chart-dashboard");
-		DashboardItemDTO item = testHelper.makeDashboardItem("test-chart-item", 0, CHART);
+		DashboardItemDTO item = testHelper.makeDashboardItem("test-chart-item", 0, CHART).setConfiguration("");
 
 
 		// Assert that the refresh method results in an error.

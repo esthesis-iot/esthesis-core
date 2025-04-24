@@ -54,8 +54,7 @@ class DevicesLatestUpdateJobHelperTest {
 		// Arrange the dashboard and item.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-dashboard");
 		DashboardItemDTO item =
-			testHelper.makeDashboardItem("test-item", 0, DEVICES_LATEST)
-				.setConfiguration("{\"entries\": 1 }");
+			testHelper.makeDashboardItem("test-item", 0, DEVICES_LATEST);
 
 		// Assert that the refresh method returns a non-empty list of devices.
 		assertFalse(devicesLatestUpdateJobHelper.refresh(dashboardEntity, item).getDevices().isEmpty());
@@ -71,8 +70,7 @@ class DevicesLatestUpdateJobHelperTest {
 		// Arrange the dashboard and item.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-dashboard");
 		DashboardItemDTO item =
-			testHelper.makeDashboardItem("test-item", 0, DEVICES_LATEST)
-				.setConfiguration("{\"entries\": 1 }");
+			testHelper.makeDashboardItem("test-item", 0, DEVICES_LATEST);
 
 		// Assert that the refresh method returns a security error.
 		assertTrue(devicesLatestUpdateJobHelper.refresh(dashboardEntity, item).isSecurityError());
@@ -91,7 +89,7 @@ class DevicesLatestUpdateJobHelperTest {
 
 		// Arrange the dashboard and item without required configuration.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-dashboard");
-		DashboardItemDTO item = testHelper.makeDashboardItem("test-item", 0, DEVICES_LATEST);
+		DashboardItemDTO item = testHelper.makeDashboardItem("test-item", 0, DEVICES_LATEST).setConfiguration(null);
 
 		// Assert that the refresh method results in an error.
 		assertTrue(devicesLatestUpdateJobHelper.refresh(dashboardEntity, item).isError());

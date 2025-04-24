@@ -52,8 +52,7 @@ class CampaignsUpdateJobHelperTest {
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-campaign-dashboard");
 		DashboardItemDTO item =
 			testHelper.makeDashboardItem(
-					"test-campaign-item", 0, AppConstants.Dashboard.Type.CAMPAIGNS)
-				.setConfiguration("{\"entries\": 1}");
+					"test-campaign-item", 0, AppConstants.Dashboard.Type.CAMPAIGNS);
 
 
 		// Assert that the security check fails.
@@ -78,9 +77,7 @@ class CampaignsUpdateJobHelperTest {
 		// Arrange a dashboard and a CAMPAIGNS item.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-campaign-dashboard");
 		DashboardItemDTO item =
-			testHelper.makeDashboardItem(
-					"test-campaign-item", 0, AppConstants.Dashboard.Type.CAMPAIGNS)
-				.setConfiguration("{\"entries\": 1}");
+			testHelper.makeDashboardItem("test-campaign-item", 0, AppConstants.Dashboard.Type.CAMPAIGNS);
 
 		// Assert the campaign item was updated correctly.
 		DashboardUpdateCampaigns dashboardUpdateCampaign = campaignUpdateJobHelper.refresh(dashboardEntity, item);
@@ -100,7 +97,8 @@ class CampaignsUpdateJobHelperTest {
 		// Arrange a dashboard and a Campaign item without required configuration.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-campaign-dashboard");
 		DashboardItemDTO item =
-			testHelper.makeDashboardItem("test-campaign-item", 0, AppConstants.Dashboard.Type.CAMPAIGNS);
+			testHelper.makeDashboardItem("test-campaign-item", 0, AppConstants.Dashboard.Type.CAMPAIGNS)
+				.setConfiguration(null);
 
 		// Assert that the refresh method results in an error.
 		assertTrue(campaignUpdateJobHelper.refresh(dashboardEntity, item).isError());

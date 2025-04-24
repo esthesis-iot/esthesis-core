@@ -1,6 +1,5 @@
 package esthesis.services.dashboard.impl.job.helper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import esthesis.service.dashboard.dto.DashboardItemDTO;
 import esthesis.service.dashboard.entity.DashboardEntity;
 import esthesis.service.device.resource.DeviceSystemResource;
@@ -8,14 +7,12 @@ import esthesis.service.security.resource.SecuritySystemResource;
 import esthesis.service.settings.entity.SettingEntity;
 import esthesis.service.settings.resource.SettingsSystemResource;
 import esthesis.services.dashboard.impl.TestHelper;
-import esthesis.services.dashboard.impl.dto.config.DashboardItemDeviceMapConfiguration;
 import esthesis.services.dashboard.impl.dto.update.DashboardUpdateDeviceMap;
 import esthesis.util.redis.RedisUtils;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
-import lombok.SneakyThrows;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.Test;
 
@@ -84,11 +81,7 @@ class DeviceMapUpdateJobHelperTest {
 
 		// Arrange a dashboard and a Device Map item.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-map-dashboard");
-		DashboardItemDTO item = testHelper.makeDashboardItem(
-				"test-map-item",
-				0,
-				DEVICE_MAP)
-			.setConfiguration(createDashboardItemDeviceMapConfiguration());
+		DashboardItemDTO item = testHelper.makeDashboardItem("test-map-item",0,DEVICE_MAP);
 
 
 		// Assert the map coordinates are updated.
@@ -116,11 +109,7 @@ class DeviceMapUpdateJobHelperTest {
 
 		// Arrange a dashboard and a Device Map item.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-map-dashboard");
-		DashboardItemDTO item = testHelper.makeDashboardItem(
-				"test-map-item",
-				0,
-				DEVICE_MAP)
-			.setConfiguration(this.createDashboardItemDeviceMapConfiguration());
+		DashboardItemDTO item = testHelper.makeDashboardItem("test-map-item",0, DEVICE_MAP);
 
 
 		// Assert no updates were made due to permission error.
@@ -148,24 +137,11 @@ class DeviceMapUpdateJobHelperTest {
 
 		// Arrange a dashboard and a Device Map item without required configuration.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-map-dashboard");
-		DashboardItemDTO item = testHelper.makeDashboardItem("test-map-item", 0, DEVICE_MAP);
+		DashboardItemDTO item = testHelper.makeDashboardItem("test-map-item", 0, DEVICE_MAP).setConfiguration(null);
 
 		// Assert that the refresh method results in an error.
 		assertTrue(deviceMapUpdateJobHelper.refresh(dashboardEntity, item).isError());
 
 	}
 
-	@SneakyThrows
-	private String createDashboardItemDeviceMapConfiguration() {
-		DashboardItemDeviceMapConfiguration config = new DashboardItemDeviceMapConfiguration();
-		config.setMapLng("23.456");
-		config.setMapLat("23.456");
-		config.setZoom(10);
-		config.setHeight(320);
-		config.setTags(new String[]{"tag1", "tag2"});
-		config.setHardwareIds(new String[]{"hardwareId1", "hardwareId2"});
-
-		return new ObjectMapper().writeValueAsString(config);
-
-	}
 }

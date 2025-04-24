@@ -39,10 +39,9 @@ class TitleUpdateJobHelperTest {
 		// Arrange the dashboard and item.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-dashboard");
 		DashboardItemDTO item = testHelper.makeDashboardItem("test-item", 0, TITLE);
-		item.setConfiguration("{\"title\":\"Test Title\"}");
 
 		// Assert that the refresh method returns the expected title.
-		assertEquals("Test Title", titleUpdateJobHelper.refresh(dashboardEntity, item).getTitle());
+		assertEquals("test-title", titleUpdateJobHelper.refresh(dashboardEntity, item).getTitle());
 
 	}
 
@@ -53,7 +52,7 @@ class TitleUpdateJobHelperTest {
 
 		// Arrange the dashboard and item.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-dashboard");
-		DashboardItemDTO item = testHelper.makeDashboardItem("test-item", 0, TITLE);
+		DashboardItemDTO item = testHelper.makeDashboardItem("test-item", 0, TITLE).setConfiguration(null);
 
 
 		// Assert that the refresh method returns an error.

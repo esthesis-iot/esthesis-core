@@ -59,12 +59,8 @@ class AboutUpdateJobHelperTest {
 		when(securitySystemResource.isPermitted(any(), any(), any(), any())).thenReturn(true);
 
 		// Mock the GeneralInfo response.
-		AboutGeneralDTO generalInfo = new AboutGeneralDTO();
-		generalInfo.setGitBuildTime("2025-04-09T00:00:00Z");
-		generalInfo.setGitCommitId("test-id");
-		generalInfo.setGitVersion("test-version");
-		generalInfo.setGitCommitIdAbbrev("test-abbrev");
-		when(aboutSystemResource.getGeneralInfo()).thenReturn(generalInfo);
+		AboutGeneralDTO about = testHelper.makeAboutGeneral();
+		when(aboutSystemResource.getGeneralInfo()).thenReturn(about);
 
 		// Arrange a dashboard and an ABOUT item.
 		DashboardEntity dashboardEntity = testHelper.makeDashboard("test-about-dashboard");
@@ -72,10 +68,10 @@ class AboutUpdateJobHelperTest {
 
 		// Assert the about item is updated correctly.
 		DashboardUpdateAbout dashboardUpdateAbout = aboutUpdateJobHelper.refresh(dashboardEntity, item);
-		assertEquals("test-id", dashboardUpdateAbout.getGitCommitId());
-		assertEquals("test-version", dashboardUpdateAbout.getGitVersion());
-		assertEquals("2025-04-09T00:00:00Z", dashboardUpdateAbout.getGitBuildTime());
-		assertEquals("test-abbrev", dashboardUpdateAbout.getGitCommitIdAbbrev());
+		assertEquals(about.getGitCommitId(), dashboardUpdateAbout.getGitCommitId());
+		assertEquals(about.getGitVersion() , dashboardUpdateAbout.getGitVersion());
+		assertEquals(about.getGitBuildTime(), dashboardUpdateAbout.getGitBuildTime());
+		assertEquals(about.getGitCommitIdAbbrev(), dashboardUpdateAbout.getGitCommitIdAbbrev());
 
 
 	}

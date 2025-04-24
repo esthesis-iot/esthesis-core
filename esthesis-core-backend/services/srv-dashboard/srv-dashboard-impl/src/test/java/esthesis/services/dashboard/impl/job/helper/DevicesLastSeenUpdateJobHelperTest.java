@@ -46,13 +46,7 @@ class DevicesLastSeenUpdateJobHelperTest {
 		when(securitySystemResource.isPermitted(any(), any(), any(), any())).thenReturn(true);
 
 		// Arrange and mock the device stats.
-		DevicesLastSeenStatsDTO stats = new DevicesLastSeenStatsDTO();
-		stats.setSeenLastDay(1);
-		stats.setSeenLastWeek(2);
-		stats.setSeenLastMonth(3);
-		stats.setSeenLastHour(10);
-		stats.setSeenLastMinute(15);
-
+		DevicesLastSeenStatsDTO stats = testHelper.makeDeviceLastSeenStats();
 		when(deviceSystemResource.getDeviceStats()).thenReturn(stats);
 
 
