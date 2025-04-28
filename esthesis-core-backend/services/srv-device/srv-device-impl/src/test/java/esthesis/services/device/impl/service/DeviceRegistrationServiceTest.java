@@ -10,8 +10,10 @@ import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_REGISTRATION
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import esthesis.common.exception.QAlreadyExistsException;
@@ -280,5 +282,36 @@ class DeviceRegistrationServiceTest {
 		// Assert device was activated.
 		assertEquals(REGISTERED,
 			deviceRegistrationService.activatePreregisteredDevice("new-core-device").getStatus());
+	}
+
+	@Test
+	@SneakyThrows
+	void registerWithNewTags() {
+		// Mock not finding one of the tags.
+		when(tagResource.findByName("tag2")).thenReturn(null);
+
+		// Mock devices registration mode as "OPEN".
+		when(settingsResource.findByName(DEVICE_REGISTRATION_MODE))
+			.thenReturn(new SettingEntity(DEVICE_REGISTRATION_MODE.toString(),
+				AppConstants.DeviceRegistrationMode.OPEN.name()));
+
+		// Register a new CORE device.
+		String coreDeviceId =
+			deviceRegistrationService.register(new DeviceRegistrationDTO()
+				.setHardwareId("new-core-device")
+				.setTags(List.of("tag1", "tag2"))
+				.setType(CORE)).getId().toHexString();
+
+
+		// Assert CORE device was persisted.
+		DeviceEntity coreDevice = deviceService.findById(coreDeviceId);
+		assertNotNull(coreDevice);
+		assertEquals("new-core-device", coreDevice.getHardwareId());
+		assertEquals(CORE, coreDevice.getType());
+		assertEquals(1, coreDevice.getTags().size());
+
+		// Verify new tag was persisted.
+		verify(tagResource).save(any());
+
 	}
 }

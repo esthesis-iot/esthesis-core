@@ -22,6 +22,8 @@ import esthesis.services.dashboard.impl.dto.config.DashboardItemSensorConfigurat
 import esthesis.services.dashboard.impl.dto.config.DashboardItemSensorIconConfiguration;
 import esthesis.services.dashboard.impl.dto.config.DashboardItemTitleConfiguration;
 import esthesis.services.dashboard.impl.repository.DashboardRepository;
+import esthesis.util.kafka.notifications.common.AppMessage;
+import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.SneakyThrows;
@@ -266,5 +268,17 @@ public class TestHelper {
 			case NOTES -> objectMapper.writeValueAsString(makeConfigurationNotes("test-note"));
 			default -> "test configuration";
 		};
+	}
+
+	public AppMessage makeAppMessage(KafkaNotificationsConstants.Component component, KafkaNotificationsConstants.Action action) {
+		return AppMessage.builder()
+			.component(component)
+			.subject(KafkaNotificationsConstants.Subject.DASHBOARD)
+			.action(action)
+			.msgId("test-msg-id")
+			.targetId("test-target-id")
+			.comment("test-comment")
+			.broadcast(false)
+			.build();
 	}
 }

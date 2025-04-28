@@ -10,20 +10,26 @@ import esthesis.dataflows.oriongateway.service.OrionClientService.ATTRIBUTE_TYPE
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import jakarta.ws.rs.NotFoundException;
 
 import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -110,8 +116,9 @@ class OrionClientServiceTest {
 		assertInstanceOf(OrionKeyrockAuthService.class, orionClientService.authService);
 	}
 
-	@Test
-	void setAttribute() {
+	@ParameterizedTest
+	@MethodSource("setAttributeTestCases")
+	void setAttribute(String attributeName, String attributeValue, ValueType valueType, String expectedValue) {
 		// Mock orion client request.
 		doNothing().when(orionClient).appendAttributes(anyString(), anyString());
 
@@ -123,9 +130,54 @@ class OrionClientServiceTest {
 		// Call the method to set the attribute.
 		orionClientService.setAttribute(
 			"test-entity-id",
+			attributeName,
+			attributeValue,
+			valueType,
+			ATTRIBUTE_TYPE.ATTRIBUTE);
+
+		// Verify that the appendAttributes method was called with the correct parameters.
+		String expectedJson = "{\"" + attributeName + "\":{\"maintainedBy\":{\"value\":\"esthesis\",\"type\":\"Property\"}," +
+			"\"attributeSource\":{\"value\":\"ATTRIBUTE\",\"type\":\"Property\"},\"value\":" + expectedValue + "}}";
+
+		verify(orionClient).appendAttributes("test-entity-id", expectedJson);
+	}
+
+	/**
+	 * Test cases for the setAttribute method.
+	 * Each test case consists of the attribute name, value, value type, and expected JSON value.
+	 */
+	private static Stream<Arguments> setAttributeTestCases() {
+		return Stream.of(
+			Arguments.of("test-attribute-string", "test-attribute-value", ValueType.STRING, "\"test-attribute-value\""),
+			Arguments.of("test-attribute-big-decimal", "10.00", ValueType.BIG_DECIMAL, "10.00"),
+			Arguments.of("test-attribute-big-integer", "100", ValueType.BIG_INTEGER, "100"),
+			Arguments.of("test-attribute-integer", "100", ValueType.INTEGER, "100"),
+			Arguments.of("test-attribute-boolean", "true", ValueType.BOOLEAN, "true"),
+			Arguments.of("test-attribute-byte", "test", ValueType.BYTE, "\"test\""),
+			Arguments.of("test-attribute-double", "10.00", ValueType.DOUBLE, "10.0"),
+			Arguments.of("test-attribute-float", "10.00", ValueType.FLOAT, "10.0"),
+			Arguments.of("test-attribute-long", "10", ValueType.LONG, "10"),
+			Arguments.of("test-attribute-short", "10", ValueType.SHORT, "10")
+		);
+	}
+
+
+	@Test
+	void setAttributeCatchError() {
+		// Mock orion client request.
+		doNothing().when(orionClient).appendAttributes(anyString(), anyString());
+
+		// Mock default configurations.
+		when(appConfig.esthesisOrionMetadataName()).thenReturn("maintainedBy");
+		when(appConfig.esthesisAttributeSourceMetadataName()).thenReturn("attributeSource");
+		when(appConfig.esthesisOrionMetadataValue()).thenReturn("esthesis");
+
+		// Call the method to set the attribute with an invalid attribute value for the given type.
+		orionClientService.setAttribute(
+			"test-entity-id",
 			"test-attribute-name",
 			"test-attribute-value",
-			ValueType.STRING,
+			ValueType.INTEGER,
 			ATTRIBUTE_TYPE.ATTRIBUTE);
 
 		// Verify that the appendAttributes method was called with the correct parameters.
@@ -134,6 +186,7 @@ class OrionClientServiceTest {
 
 		verify(orionClient).appendAttributes("test-entity-id", expectedJson);
 	}
+
 
 	@Test
 	void saveOrUpdateEntities() {
@@ -196,7 +249,24 @@ class OrionClientServiceTest {
 		assertEquals(orionEntity.getId(), resultedOrionEntity.getId());
 		assertEquals(orionEntity.getType(), resultedOrionEntity.getType());
 		assertEquals(orionEntity.getAttributes(), resultedOrionEntity.getAttributes());
+	}
 
+	@Test
+	void getEntityByOrionIdNull() {
+		// Mock the Orion entity map response as null.
+		when(orionClient.getEntity("test-orion-id")).thenReturn(null);
+
+		// Assert that the result is null.
+		assertNull(orionClientService.getEntityByOrionId("test-orion-id"));
+	}
+
+	@Test
+	void getEntityByOrionIdCatchNotFound() {
+		// Mock the Orion entity map response to throw an NotFoundException.
+		when(orionClient.getEntity("test-orion-id")).thenThrow(new NotFoundException());
+
+		// Assert that the result is null.
+		assertNull(orionClientService.getEntityByOrionId("test-orion-id"));
 	}
 
 	@Test

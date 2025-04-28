@@ -18,6 +18,7 @@ import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.Device.Status;
 import esthesis.core.common.AppConstants.DeviceRegistrationMode;
 import esthesis.core.common.AppConstants.NamedSetting;
+import esthesis.core.common.entity.BaseEntity;
 import esthesis.service.crypto.resource.KeyResource;
 import esthesis.service.device.dto.DeviceKeyDTO;
 import esthesis.service.device.dto.DeviceRegistrationDTO;
@@ -45,6 +46,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -229,9 +231,12 @@ public class DeviceRegistrationService {
 		if (!CollectionUtils.isEmpty(tags)) {
 			List<String> validTags = checkTags(hardwareId, tags,
 				settingsResource.findByName(NamedSetting.DEVICE_PUSHED_TAGS).asBoolean());
-			deviceEntity.setTags(
-				validTags.stream().map(tag -> tagResource.findByName(tag).getId().toString())
-					.toList());
+			deviceEntity.setTags(validTags.stream()
+				.map(tagResource::findByName)
+				.filter(Objects::nonNull)
+				.map(TagEntity::getId)
+				.map(Object::toString)
+				.toList());
 		}
 
 		// Create device attributes.
