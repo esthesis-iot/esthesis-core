@@ -1,9 +1,9 @@
 # Kubernetes
 
-esthesis CORE can be deployed on Kubernetes using the publicly available Helm charts. The Helm
+Esthesis CORE can be deployed on Kubernetes using the publicly available Helm charts. The Helm
 charts are available on the [TBC].
 
-esthesis CORE comes with a variety of different Helm charts. Some of the provided Helm charts
+Esthesis CORE comes with a variety of different Helm charts. Some of the provided Helm charts
 pertain to mandatory components, while others are optional. During the installation you can choose which
 components you want to install by enabling the relevant configuration options. You can also choose
 to use already existing resources, such as a database or a message broker, instead of the
@@ -16,7 +16,6 @@ review them, so you can customize them to your needs.
 - A Kubernetes cluster with a minimum of 3 nodes and support for Load Balancer service types as well
   as Ingress support (you can, optionally, install an nginx ingress controller using this chart).
 - [Helm](https://helm.sh)
-- [Helmfile](https://github.com/helmfile/helmfile)
 
 <tip>
 If you are deploying esthesis CORE in a public cloud, make sue you also take into account any
@@ -24,288 +23,288 @@ specific instructions for the cloud provider you are using.
 </tip>
 
 ## Configuration parameters
-The following parameters can be defined as environmental variables during installation:
+The following parameters can be defined from variables contained on vaules.yaml during installation:
 
 <chapter title="General" id="general" collapsible="true">
 
-`TIMEZONE`
-: The containers timezone to set (note, some containers do not respect this setting).
-<br/>Default: `Europe/Athens`
+`timezone`<br/>
+: The container's timezone to set (note, some containers do not respect this setting).<br/>
+Default: `Europe/Athens`<br/><br/>
 
-`ESTHESIS_LOG_LEVEL`
-: The log level to be used for the esthesis components (i.e. does not affect third-party components installed by the Helm chart).
-<br/>Default: `WARN`
+`esthesisLogLevel`<br/>
+: The log level to be used for the esthesis components (i.e. does not affect third-party components installed by the Helm chart).<br/>
+Default: `WARN`<br/><br/>
 
-`IMAGE_PULL_SECRET`
-: The secret to use when pulling container images.
+`imagePullSecret`<br/>
+: The name of the Kubernetes Secret to use when pulling container images.<br/><br/>
 
-`INGRESS_CLASS_NAME`
-: The name of the ingress class to use.
+`ingressClassName`<br/>
+: The name of the ingress class to use for ingress rules.<br/><br/>
 
 </chapter>
 
 <chapter title="Accounts" id="accounts" collapsible="true">
 
-`ESTHESIS_ADMIN_USERNAME`
-: The username of the esthesis administrator user. Use this account to connect to esthesis UI after installation is done.
-<br/>Default: `esthesis-admin`
+`esthesisAdminUsername`<br/>
+: The username of the Esthesis administrator.<br/>
+Default: `esthesis-admin`<br/><br/>
 
-`ESTHESIS_ADMIN_PASSWORD`
-: The password of the esthesis administrator user.
-<br/>Default: `esthesis-admin`
+`esthesisAdminPassword`<br/>
+: The password for the Esthesis administrator.<br/>
+Default: `esthesis-admin`<br/><br/>
 
-`ESTHESIS_SYSTEM_USERNAME`
-: The username of the esthesis system user. This is the user being used for esthesis inter-component
-communication, as well as the default username for all other third-party products installed by the
-Helm charts.
-<br/>Default: `esthesis-system`
+`esthesisSystemUsername`<br/>
+: The system-level user for Esthesis services and third-party components.<br/>
+Default: `esthesis-system`<br/><br/>
 
-`ESTHESIS_SYSTEM_PASSWORD`
-: The password of the esthesis system user.
-<br/>Default: `esthesis-system`
+`esthesisSystemPassword`<br/>
+: The password for the system-level user.<br/>
+Default: `esthesis-system`<br/><br/>
 
-`ESTHESIS_SYSTEM_PASSWORD`
-: The password of the esthesis system user.
-<br/>Default: `esthesis-system`
-
-`ESTHESIS_KUBERNETES_SERVICE_CREATE_RBAC`
-: The Kubernetes microservice needs to be able to access the Kubernetes API to create resources. The
-deployment can automatically create all necessary roles and bindings for it, however if you do not
-have such permissions in your cluster you can disable it and create them manually.
-<br/>Default: `true`
+`esthesisKubernetesServiceCreateRBAC`<br/>
+: Whether to create Kubernetes RBAC resources automatically.<br/>
+Default: `true`<br/><br/>
 
 </chapter>
 
 <chapter title="Keycloak" id="keycloak" collapsible="true">
 
-`KEYCLOAK_ENABLED`
-: Whether Keycloak should be installed by this chart or not.
-<br/>Default: `true`
+`keycloak.enabled`<br/>
+: Whether to deploy Keycloak.<br/>
+Default: `true`<br/><br/>
 
-`KEYCLOAK_HOSTNAME`
-: The hostname for Keycloak
+`keycloak.ingress.hostname`<br/>
+: The external hostname for Keycloak.<br/><br/>
 
-`KEYCLOAK_CERT_MANAGER_CLUSTER_ISSUER`
-: The name of a Cert Manager cluster issuer to be used. This option is mutually exclusive with `KEYCLOAK_CERT_MANAGER_ISSUER`
+`keycloak.certManager.clusterIssuer`<br/>
+: Cluster-wide Cert Manager issuer name. Mutually exclusive with `keycloak.certManager.issuer`.<br/><br/>
 
-`KEYCLOAK_CERT_MANAGER_ISSUER`
-: The name of a (namespace scoped) Cert Manager issuer to be used. This option is mutually exclusive
-with `KEYCLOAK_CERT_MANAGER_CLUSTER_ISSUER`
+`keycloak.certManager.issuer`<br/>
+: Namespace-scoped Cert Manager issuer name. Mutually exclusive with `keycloak.certManager.clusterIssuer`.<br/><br/>
 
 </chapter>
 
 <chapter title="MongoDB" id="mongodb" collapsible="true">
 
-`MONGODB_ENABLED`
-: Whether MongoDB should be installed by this chart or not.
-<br/>Default: `true`
+`mongodb.enabled`<br/>
+: Whether to deploy MongoDB.<br/>
+Default: `true`<br/><br/>
 
-`MONGODB_URL_CLUSTER`
-: The internal URL cluster components should use to connect to MongoDB.
-<br/>Default: `mongodb://mongodb:27017`
+`mongodb.urlCluster`<br/>
+: Internal MongoDB connection URL for Esthesis components.<br/>
+Default: `mongodb://mongodb:27017`<br/><br/>
 
-`MONGODB_DATABASE`
-: The database name to use.
-<br/>Default: `esthesiscore`
+`mongodb.database`<br/>
+: Name of the MongoDB database.<br/>
+Default: `esthesiscore`<br/><br/>
 
-`MONGODB_USERNAME`
-: The username to authenticate with.
-<br/>Default: As specified in `ESTHESIS_SYSTEM_USERNAME`
+`mongodb.username`<br/>
+: MongoDB user (usually inherits from `esthesisSystemUsername`).<br/><br/>
 
-`MONGODB_PASSWORD`
-: The password to authenticate with.
-<br/>Default: As specified in `ESTHESIS_SYSTEM_PASSWORD`
+`mongodb.password`<br/>
+: MongoDB password (usually inherits from `esthesisSystemPassword`).<br/><br/>
 
 </chapter>
 
-<chapter title="OpenID Connect" id="oidc" collapsible="true">
+<chapter title="MongoDB" id="mongodb" collapsible="true">
 
-`OIDC_AUTH_SERVER_URL`
-: The URL of the OpenID Connect authority to use. This URL should be accessible for intra-service
-communication, so it does not need to be accessible for end-users.
-<br/>Default: http://keycloak._Namespace_.svc.cluster.local/realms/esthesis
+`mongodb.enabled`<br/>
+: Whether to deploy MongoDB.<br/>
+Default: `true`<br/><br/>
 
-`OIDC_CLIENT_AUTH_SERVER_URL`
-: The URL of the OpenID Connect authority to use when a service needs to authenticate autonomously
-(this is needed for services of type 'system', which do not act on behalf of a user). This URL
-should be accessible for intra-service communication, so it does not need to be accessible for
-end-users.
-<br/>Default: http://keycloak._Namespace_.svc.cluster.local/realms/esthesis
+`mongodb.urlCluster`<br/>
+: Internal MongoDB connection URL for Esthesis components.<br/>
+Default: `mongodb://mongodb:27017`<br/><br/>
 
-`OIDC_TLS_VERIFICATION`
-: Whether TLS should be verified when contacting OpenID Connect authority.
-<br/>Default: `required`
+`mongodb.database`<br/>
+: Name of the MongoDB database.<br/>
+Default: `esthesiscore`<br/><br/>
 
-`ESTHESIS_REPORTED_OIDC_AUTHORITY_URL`
-: The URL of the OpenID Connect authority end-users use to authenticate.
-<br/>Default: http://keycloak._Namespace_.svc.cluster.local/realms/esthesis
+`mongodb.username`<br/>
+: MongoDB user (usually inherits from `esthesisSystemUsername`).<br/><br/>
 
-`ESTHESIS_REPORTED_OIDC_POST_LOGOUT_URL`
-: The URL the user is forwarded to when logging out.
-<br/>Default: http://esthesis-core._Namespace_.svc.cluster.local/logout
+`mongodb.password`<br/>
+: MongoDB password (usually inherits from `esthesisSystemPassword`).<br/><br/>
 
 </chapter>
 
 <chapter title="NGINX Ingress" id="ingnginx" collapsible="true">
 
-`INGRESS_NGINX_ENABLED`
-: Whether Ingress nginx should be installed by this chart or not.
-<br/>Default: `false`
+`ingressNginx.enabled`<br/>
+: Whether to install the nginx ingress controller.<br/>
+Default: `false`<br/><br/>
 
-`INGRESS_NGINX_SSL_CERT_ARN`
-: The arn of the certificate.
+`ingressNginx.sslCertArn`<br/>
+: ARN of the wildcard certificate to use.<br/><br/>
 
 </chapter>
 
 <chapter title="User Interface" id="ui" collapsible="true">
 
-`ESTHESIS_HOSTNAME`
-: The hostname of the ingress rule that will be created for esthesis UI.
+`esthesisHostname`<br/>
+: External hostname for Esthesis UI.<br/><br/>
 
-`ESTHESIS_UI_LOGOUT_URL`
-: The URL to redirect to after logging out from esthesis UI.
-<br/>Default: `/logout`
+`esthesisUi.logoutUrl`<br/>
+: Path to redirect users to after logout.<br/>
+Default: `/logout`<br/><br/>
 
-`ESTHESIS_UI_CERT_MANAGER_CLUSTER_ISSUER`
-: The name of a Cert Manager cluster issuer to be used. This option is mutually exclusive with `ESTHESIS_UI_CERT_MANAGER_ISSUER`
+`esthesisUi.certManager.clusterIssuer`<br/>
+: Cert Manager cluster-wide issuer for UI TLS.<br/><br/>
 
-`ESTHESIS_UI_CERT_MANAGER_ISSUER`
-: The name of a (namespace scoped) Cert Manager issuer to be used. This option is mutually exclusive
-with `ESTHESIS_UI_CERT_MANAGER_CLUSTER_ISSUER`.
+`esthesisUi.certManager.issuer`<br/>
+: Cert Manager namespace-scoped issuer for UI TLS.<br/><br/>
 
 </chapter>
 
 <chapter title="Redis" id="redis" collapsible="true">
 
-`REDIS_ENABLED`
-: Whether Redis should be installed by this chart or not.
-<br/>Default: `true`
+`redis.enabled`<br/>
+: Whether to deploy Redis.<br/>
+Default: `true`<br/><br/>
 
-`REDIS_HOSTS`
-: The list of Redis hosts to use. This URL should be accessible from components running inside the
-Kubernetes cluster.
-<br/>Default: `redis-master:6379/0`
+`redis.hosts`<br/>
+: List of Redis endpoints.<br/>
+Default: `redis-master:6379/0`<br/><br/>
 
 </chapter>
 
 <chapter title="Mosquitto" id="mosquitto" collapsible="true">
 
-`MOSQUITTO_ENABLED`
-: Whether Mosquitto should be installed by this chart or not.
-<br/>Default: `true`
+`mosquitto.enabled`<br/>
+: Whether to deploy Mosquitto.<br/>
+Default: `true`<br/><br/>
 
-`MOSQUITTO_MUTUAL_TLS`
-: Whether Mosquitto sohuld be configured for mutual TLS.
-<br/>Default: `false`
+`mosquitto.mutualTls`<br/>
+: Enable mutual TLS for Mosquitto.<br/>
+Default: `false`<br/><br/>
 
-`MOSQUITTO_SUPERUSER`
-: The name of the supe-user account. This account will be able to freely publish and subscribe to/from
-any topic. When enabling TLS, this should be equal to the CN of the certificate.
-<br/>Default: `esthesis`
+`mosquitto.superuser`<br/>
+: Super-user account (should match certificate CN when TLS is enabled).<br/>
+Default: `esthesis`<br/><br/>
 
-`MOSQUITTO_CA_CERT`
-: The certificate of the CA, encoded in Base64.
+`mosquitto.caCert`<br/>
+: Base64-encoded CA certificate.<br/><br/>
 
-`MOSQUITTO_SERVER_CERT`
-: The certificate of the mosquitto server, encoded in Base64.
+`mosquitto.serverCert`<br/>
+: Base64-encoded Mosquitto server certificate.<br/><br/>
 
-`MOSQUITTO_SERVER_KEY`
-: The private key of the mosquitto server, encoded in Base64.
+`mosquitto.serverKey`<br/>
+: Base64-encoded Mosquitto private key.<br/><br/>
 
-`MOSQUITTO_SERVICE_TYPE`
-: The type of the service to expose Mosquitto by.
-<br/>Default: `ClusterIP`
+`mosquitto.serviceType`<br/>
+: Kubernetes service type to expose Mosquitto.<br/>
+Default: `ClusterIP`<br/><br/>
 
 </chapter>
 
 <chapter title="InfluxDB" id="influxdb" collapsible="true">
 
-`INFLUXDB_ENABLED`
-: Whether InfluxDB should be installed by this chart or not.
-<br/>Default: `true`
+`influxdb.enabled`<br/>
+: Whether to deploy InfluxDB.<br/>
+Default: `true`<br/><br/>
 
-`INFLUXDB_SIZE`
-: InfluxDB storage size.
-<br/>Default: `32Gi`
+`influxdb.size`<br/>
+: Persistent volume size for InfluxDB.<br/>
+Default: `32Gi`<br/><br/>
 
 </chapter>
 
 <chapter title="Kafka" id="kafka" collapsible="true">
 
-`KAFKA_ENABLED`
-: Whether Kafka should be installed by this chart or not.
-<br/>Default: `true`
+`kafka.enabled`<br/>
+: Whether to deploy Kafka.<br/>
+Default: `true`<br/><br/>
 
-`KAFKA_BOOTSTRAP_SERVERS`
-: The list of Kafka bootstrap servers to use. This URL should be accessible from components running
-inside the Kubernetes cluster.
-<br/>Default: `kafka:9092`
+`kafka.bootstrapServers`<br/>
+: List of Kafka bootstrap servers.<br/>
+Default: `kafka:9092`<br/><br/>
 
 </chapter>
 
 <chapter title="Camunda" id="camunda" collapsible="true">
 
-`CAMUNDA_ENABLED`
-: Whether Camunda should be installed by this chart or not.<br/>
-<br/>Default: `true`
+`camunda.enabled`<br/>
+: Whether to deploy Camunda.<br/>
+Default: `true`<br/><br/>
 
-`CAMUNDA_GATEWAY_URL_CLUSTER`
-: The URL of the Camunda gateway to use for internal connections. This URL should be accessible from
-components running inside the Kubernetes cluster.
-<br/>Default: `camunda-zeebe-gateway:26500`
+`camunda.gatewayUrlCluster`<br/>
+: Internal gateway URL for Camunda Zeebe.<br/>
+Default: `camunda-zeebe-gateway:26500`<br/><br/>
 
 </chapter>
 
 ## Installation
 esthesis CORE comes in two Helm charts, one installing all the required dependencies and another one
 installing the application components. You can enable/disable which specific dependencies you want
-to install by setting the corresponding `*_ENABLED` parameter to `true` or `false`. Do note that
+to install by setting the corresponding `charts_enabled.<service>` parameter to `true` or `false`. Do note that
 although the provided dependencies are adequate to have esthesis CORE up and running, you might want to
 tune their properties or replace them altogether with your own resources to support your specific
 production use case.
 
 ### Environment variables
-The following list is a starting point of environment variables to set before you proceed with the
-installation, you need to amend them to match your own environment:
+The following list is a starting point of variables on vaulues.yaml to set before you proceed on both helm charts with the installation, you need to amend them to match your own environment:
+
+#### Esthesis-core values.yaml:
 ```
-export DOMAIN=esthesis.domain.com
-export TIMEZONE=Europe/Athens
-export ESTHESIS_ADMIN_USERNAME=esthesis-admin
-export ESTHESIS_ADMIN_PASSWORD=esthesis-admin
-export ESTHESIS_SYSTEM_USERNAME=esthesis-system
-export ESTHESIS_SYSTEM_PASSWORD=esthesis-system
-export KEYCLOAK_HOSTNAME=keycloak.$DOMAIN
-export MOSQUITTO_SERVICE_TYPE=LoadBalancer
-export ESTHESIS_HOSTNAME=esthesis-core.$DOMAIN
-export ESTHESIS_REPORTED_OIDC_AUTHORITY_URL="https://$KEYCLOAK_HOSTNAME/realms/esthesis"
-export ESTHESIS_REPORTED_OIDC_POST_LOGOUT_URL="https://$ESTHESIS_HOSTNAME/logged-out"
-export OIDC_AUTH_SERVER_URL="https://$KEYCLOAK_HOSTNAME/realms/esthesis"
-export OIDC_CLIENT_AUTH_SERVER_URL="https://$KEYCLOAK_HOSTNAME/realms/esthesis"
+esthesisHostname: esthesis.domain.com
+timezone: "Europe/Athens"
+esthesisAdminUsername: "esthesis-admin"
+esthesisAdminPassword: "esthesis-admin"
+esthesisSystemUsername: "esthesis-system"
+esthesisSystemPassword: "esthesis-system"
+esthesisReportedOidcAuthority: "http://keycloak.<enter_your_namespace_here>.svc.cluster.local/realms/esthesis"
+esthesisReportedOidcPostLogoutUrl: "http://esthesis-core.<enter_your_namespace_here>.svc.cluster.local/logout"
+oidcAuthServerUrl: "http://keycloak.<enter_your_namespace_here>.svc.cluster.local/realms/esthesis"
+oidcClientAuthServerUrl: "http://keycloak.<enter_your_namespace_here>.svc.cluster.local/realms/esthesis"
+redisHosts: "redis://redis-headless.<enter_your_namespace_here>.svc.cluster.local:6379"
+camundaGatewayUrlCluster: "zeebe-gateway.<enter_your_namespace_here>.svc.cluster.local:26500"
+kafkaBootstrapServers: "kafka.<enter_your_namespace_here>.svc.cluster.local:9092"
+mongoDbUrlCluster: "mongodb://mongodb-0.mongodb-headless.<enter_your_namespace_here>.svc.cluster.local:27017,mongodb-1.mongodb-headless.<enter_your_namespace_here>.svc.cluster.local:27017"
+```
+
+#### Esthesis-core-deps values.yaml:
+```
+timezone: "Europe/Athens"
+esthesisAdminUsername: "esthesis-admin"
+esthesisAdminPassword: "esthesis-admin"
+esthesisSystemUsername: "esthesis-system"
+esthesisSystemPassword: "esthesis-system"
+keycloak.ingress.hostname: "keycloak.esthesis.domain.com"
+mosquittoServiceType: "LoadBalancer"
 ```
 
 ### Supporting infrastructure
-- Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
+
+- Add the Esthesis Helm repository:
   ```shell
-  wget -qO- https://esthes.is/helm/helmfile-esthesis-core-deps-3.1.3.tgz | tar xvz
-  ```
-- Install the Helmfile:
-  ```shell
-  helmfile sync --namespace={my-namespace}
+  helm repo add esthesis https://esthes.is/helm
+  helm repo update
   ```
 
+- Install the supporting dependencies (e.g. Keycloak, MongoDB, Redis, etc.):
+  ```shell
+  helm install esthesis-core-deps esthesis/esthesis-core-deps \
+    --namespace <your-namespace> \
+    --create-namespace \
+    -f values-deps.yaml
+  ```
+
+  Replace `values-deps.yaml` with your customized values file if needed.
+
 ### Application
-- Obtain the Helmfile corresponding to the esthesis version you want to install. For example:
+
+- Install the main Esthesis CORE application components:
   ```shell
-  wget -qO- https://esthes.is/helm/helmfile-esthesis-core-3.1.3.tgz | tar xvz
+  helm install esthesis-core esthesis/esthesis-core \
+    --namespace <your-namespace> \
+    -f values.yaml
   ```
-- Install the Helmfile:
-  ```shell
-  helmfile sync --namespace={my-namespace}
-  ```
+
+  Again, replace `values.yaml` with your specific Helm values file.
 
 ## Notes
 1. You need to access the UI via HTTPS, accessing it via HTTP will not work.
-2. The UI is exposed under the domain you specified in the environmental variable `ESTHESIS_UI_INGRESS_HOSTNAME`.
+2. The UI is exposed under the domain you specified in the environmental variable `esthesisHostname`.
 3. If you are using a self-signed certificate which is not imported into your local system, before
    trying to log in into the application you need to visit the Keycloak URL first and accept the
    certificate. Otherwise, the login will fail.
@@ -314,7 +313,7 @@ export OIDC_CLIENT_AUTH_SERVER_URL="https://$KEYCLOAK_HOSTNAME/realms/esthesis"
    created and configured with the necessary permissions. If you do not have the necessary permissions
 	 to properly configure this Service Account during the installation of the Helm chart, you can
 	 disable the automatic creation of the Service Account by setting the
-	 `ESTHESIS_KUBERNETES_SERVICE_CREATE_RBAC` environmental variable to `false` and create the
+	 `esthesisKubernetesServiceCreateRBAC` variable from esthesis-core helm chart to `false` and create the
 	 Service Account manually. The resources that need to be manually created can be found in
 	 [esthesis-core-srv-kubernetes](https://github.com/esthesis-iot/esthesis-helm/tree/main/esthesis-core/templates/srv-kubernetes/rbac) and need to be available and properly configured before the
 	 installation of the Helm chart.
@@ -325,15 +324,13 @@ automatically generate and renew certificates for esthesis UI and Keycloak. To d
 set the following environmental variables:
 
 ```
-export KEYCLOAK_CERT_MANAGER_CLUSTER_ISSUER=letsencrypt-prod
-export ESTHESIS_UI_CERT_MANAGER_CLUSTER_ISSUER=letsencrypt-prod
+esthesisUiCertManagerClusterIssuer: "letsencrypt-prod"
 ```
 
 If you are using namespace scoped issuers, you can alternatively specify:
 
 ```
-export KEYCLOAK_CERT_MANAGER_ISSUER=letsencrypt-prod
-export ESTHESIS_UI_CERT_MANAGER_ISSUER=letsencrypt-prod
+esthesisUiCertManagerIssuer: "letsencrypt-prod"
 ```
 
 Make sure you specify only one of the two variants, otherwise the installation will fail. Do not
@@ -343,8 +340,7 @@ forget to change `letsencrypt-prod` to the value of your own issuer.
 If you have a wildcard certificate installed on you cluster as a secret for your domain, and you want the included ingress-nginx controller to use it, you will need to set the following environmental variables:
 
 ```
-export INGRESS_NGINX_LOAD_BALANCER_IP=192.168.1.60
-export INGRESS_NGINX_CUSTOM_SSL=wildcard-tls
+ingress-nginx.controller.service.externalIPs: "192.168.1.60"
 ```
 
 Do not forget to change `192.168.1.60` to your external load balancer IP and `wildcard-tls` to the name of your secret.
