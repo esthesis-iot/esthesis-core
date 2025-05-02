@@ -1,0 +1,12 @@
+esthesis:
+  dfl:
+    influx-bucket: "test"
+    influx-org: "test"
+    influx-url: "http://localhost:8086"
+    influx-token: "test"
+    concurrency-queue-size: 1
+    kafka-cluster-url: "localhost:9092"
+    concurrency-consumers: 1
+    concurrency-poll-timeout: 1000
+    kafka-telemetry-topic: "telemetry"
+    kafka-metadata-topic: "metadata"

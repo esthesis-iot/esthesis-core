@@ -1,21 +1,27 @@
 quarkus:
-  log:
-    level: INFO
   devservices:
-    enabled: true
-    timeout: 5m
-  kafka:
-    devservices:
-      enabled: false
-      image-name: bitnami/kafka:3.6.1
+    enabled: false
+  redis:
+    hosts: "redis://localhost:6379"
+  rest-client:
+    DeviceSystemResource:
+      url: http://localhost:59010
+      scope: Singleton
 esthesis:
   dfl:
     orion-url: "http://localhost:1026"
     orion-create-device: true
+    orion-retro-create-devices-on-schedule: false
+    orion-retro-create-devices-on-boot: false
     orion-delete-device: true
     orion-update-data: true
     orion-default-type: "esthesis"
     orion-id-prefix: "urn:ngsi-ld:"
-    orion-ld-defined-context-url: "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
-    orion-ld-defined-context-relationships: "https://www.w3.org/ns/json-ld#context"
+    concurrency-consumers: 1
+    concurrency-queue-size: 1
+    concurrency-poll-timeout: 1000
+    kafka-cluster-url: "localhost:9092"
+    kafka-application-topic: "app-topic"
+    kafka-telemetry-topic: "telemetry-topic"
+    kafka-metadata-topic: "metadata-topic"
 

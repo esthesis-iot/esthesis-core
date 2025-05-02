@@ -1,0 +1,15 @@
+esthesis:
+  dfl:
+    kafka-telemetry-topic: "kafka-telemetry"
+    mqtt-telemetry-topic: "mqtt-telemetry"
+    kafka-metadata-topic: "kafka-metadata"
+    mqtt-metadata-topic: "mqtt-metadata"
+    mqtt-ping-topic: "mqtt-ping"
+    kafka-ping-topic: "kafka-ping"
+    mqtt-command-request-topic: "mqtt-command-request"
+   # kafka-command-request-topic: "kafka-command-request"
+    mqtt-command-reply-topic: "mqtt-command-reply"
+    kafka-command-reply-topic: "kafka-command-reply"
+    mqtt-broker-cluster-url: "tcp://localhost:1883"
+    mqtt-broker-keep-alive-interval: 60
+    kafka-cluster-url: "localhost:9092"

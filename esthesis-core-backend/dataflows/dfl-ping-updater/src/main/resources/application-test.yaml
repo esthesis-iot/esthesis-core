@@ -1,0 +1,25 @@
+quarkus:
+  application:
+    name: test-esthesis-core-dfl-ping-updater
+  devservices:
+    enabled: false
+  kafka:
+    devservices:
+      enabled: false
+  mongodb:
+    database: esthesiscore-test
+    connection-string: "mongodb://localhost:62345"
+    devservices:
+      enabled: false
+      image-name: mongo:7.0
+  http:
+    test-port: 0
+esthesis:
+  dfl:
+    concurrency-queue-size: 1
+    kafka-cluster-url: "localhost:9092"
+    esthesis-db-name: "esthesiscore-test"
+    concurrency-consumers: 1
+    kafka-ping-topic: "test-esthesis-core-dfl-ping-updater"
+    concurrency-poll-timeout: 1000
+

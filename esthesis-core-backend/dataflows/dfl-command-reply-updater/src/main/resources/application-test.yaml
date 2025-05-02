@@ -1,0 +1,13 @@
+esthesis:
+  dfl:
+    kafka-cluster-url: "localhost:9092"
+    concurrency-consumers: 1
+    concurrency-queue-size: 1
+    concurrency-poll-timeout: 1000
+    kafka-command-reply-topic: "command-reply"
+    esthesis-db-name: "esthesiscore-test"
+quarkus:
+  mongodb:
+    connection-string: "mongodb://localhost:27017"
+    database: "esthesiscore-test"
+

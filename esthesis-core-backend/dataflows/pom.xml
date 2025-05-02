@@ -43,6 +43,11 @@
       <artifactId>camel-quarkus-seda</artifactId>
       <groupId>org.apache.camel.quarkus</groupId>
     </dependency>
+		<dependency>
+			<artifactId>camel-quarkus-junit5</artifactId>
+			<groupId>org.apache.camel.quarkus</groupId>
+			<scope>test</scope>
+		</dependency>
   </dependencies>
 
   <modules>

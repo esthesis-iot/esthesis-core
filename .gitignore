@@ -9,3 +9,4 @@
 **/.mvn
 /esthesis-core-docs/web-archive/
 /esthesis-core-ui/test/screenshots/
+*.iml

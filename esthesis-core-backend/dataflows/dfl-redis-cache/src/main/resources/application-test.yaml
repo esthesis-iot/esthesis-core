@@ -1,0 +1,14 @@
+quarkus:
+  redis:
+    hosts: "redis://localhost:6379"
+esthesis:
+  dfl:
+    kafka-cluster-url: "localhost:9092"
+    concurrency-consumers: 1
+    concurrency-queue-size: 1
+    concurrency-poll-timeout: 1000
+    kafka-telemetry-topic: "telemetry"
+    kafka-metadata-topic: "metadata"
+    redis-url: "redis://localhost:6379"
+    redis-ttl: 60
+    redis-max-size: 1000000

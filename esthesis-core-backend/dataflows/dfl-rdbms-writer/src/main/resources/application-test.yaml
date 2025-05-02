@@ -1,0 +1,18 @@
+quarkus:
+  datasource:
+    db-kind: "postgresql"
+    username: "test"
+    password: "test"
+    jdbc:
+      url: "jdbc:postgresql://localhost:5432/test"
+esthesis:
+  dfl:
+    kafka-cluster-url: "localhost:9092"
+    db-jdbc-url: "jdbc:postgresql://localhost:5432/test"
+    db-storage-strategy: "single"
+    db-kind: "postgresql"
+    concurrency-consumers: 1
+    concurrency-queue-size: 1
+    concurrency-poll-timeout: 1000
+    kafka-telemetry-topic: "telemetry"
+    kafka-metadata-topic: "metadata"
