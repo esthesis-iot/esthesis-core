@@ -23,6 +23,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -519,7 +521,7 @@ public class OrionGatewayService {
 	 * @param valueData                      The value data.
 	 * @param category                       The category.
 	 * @param filterAttributes               The list of attributes to filter.
-	 * @param timestamp                      The timestamp.
+	 * @param timestamp                      The timestamp in MS precision.
 	 * @param customOrionEntityJson          The custom Orion entity JSON attribute.
 	 */
 	private void validateAndSendAttribute(String esthesisHardwareId,
@@ -638,14 +640,31 @@ public class OrionGatewayService {
 		// if custom formatter is set, generate the dynamic json using the Qute formatter
 		// along with the relevant measurement data
 		if (StringUtils.isNotBlank(customOrionEntityJson)) {
+			String timestampSecondsPrecision = getTimestampSecondsPrecision(timestamp);
+
 			String customFormattedValue =
-				getCustomFormattedValue(valueData, customOrionEntityJson, category, timestamp,
+				getCustomFormattedValue(valueData, customOrionEntityJson, category, timestamp, timestampSecondsPrecision,
 					esthesisHardwareId);
 			orionClientService.saveOrUpdateEntities(customFormattedValue);
 		} else {
 			String orionId = generateOrionDeviceId(esthesisHardwareId);
 			orionClientService.setAttribute(orionId, category + "." + valueData.getName(),
 				valueData.getValue(), ValueType.valueOf(valueData.getValueType().name()), attributeType);
+		}
+	}
+
+	/**
+	 * Convert a timestamp to seconds precision.
+	 *
+	 * @param timestamp The timestamp with Milliseconds precision.
+	 * @return The timestamp with seconds precision.
+	 */
+	private String getTimestampSecondsPrecision(String timestamp) {
+		try {
+			return OffsetDateTime.parse(timestamp).withNano(0).format(DateTimeFormatter.ISO_INSTANT);
+		} catch (Exception e) {
+			log.warn("Unable to parse timestamp '{}' to seconds precision.", timestamp, e);
+			return timestamp;
 		}
 	}
 
@@ -695,16 +714,21 @@ public class OrionGatewayService {
 	 * @param valueData                      The value data.
 	 * @param customOrionEntityJson          The custom Orion entity JSON.
 	 * @param category                       The category.
-	 * @param timestamp                      The timestamp.
+	 * @param timestamp                      The timestamp with MS precision.
+	 * @param timestampSecondsPrecision      The timestamp with seconds precision.
 	 * @param esthesisHardwareId             The esthesis hardware ID.
 	 * @return The custom formatted value.
 	 */
 	private static String getCustomFormattedValue(ValueData valueData,
-		String customOrionEntityJson, String category,
-		String timestamp, String esthesisHardwareId) {
+																								String customOrionEntityJson,
+																								String category,
+																								String timestamp,
+																								String timestampSecondsPrecision,
+																								String esthesisHardwareId) {
 		return Qute.fmt(customOrionEntityJson,
 			Map.of("category", category,
 				"timestamp", timestamp,
+				"timestampSecondsPrecision", timestampSecondsPrecision,
 				"hardwareId", esthesisHardwareId,
 				"measurementName", valueData.getName(),
 				"measurementValue", valueData.getValue())

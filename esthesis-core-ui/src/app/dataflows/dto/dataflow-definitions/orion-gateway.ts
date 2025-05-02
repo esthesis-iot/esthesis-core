@@ -112,7 +112,7 @@ export const DATAFLOW_DEFINITION_FIWARE_ORION = {
         },
         { key: "orion-custom-entity-json-format", type: "input",
           props: {label: "Define a Qute template to generate a custom JSON structure for all measurements sent through the dataflow. " +
-              "Available variables: {hardwareId}, {category}, {timestamp}, {measurementName}, and {measurementValue}."}
+              "Available variables: {hardwareId}, {category}, {timestamp}, {timestampSecondsPrecision}, {measurementName}, and {measurementValue}."}
         },
         { key: "orion-custom-entity-json-format-attribute-name", type: "input",
           props: {label: "Define an attribute name that holds the custom Qute template to generate the JSON structure at the device level." +

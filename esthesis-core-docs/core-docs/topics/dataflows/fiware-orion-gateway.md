@@ -68,6 +68,7 @@ to be sent to Orion. This can be configured globally or per device.
 3. Use the following variables in the template:
 	- `{category}`
 	- `{timestamp}`
+    - `{timestampSecondsPrecision}`
 	- `{hardwareId}`
 	- `{measurementName}`
 	- `{measurementValue}`
@@ -80,6 +81,7 @@ This approach ensures that all measurements from all esthesis agents follow the 
 3. Use the following variables in the template:
 	- `{category}`
 	- `{timestamp}`
+	- `{timestampSecondsPrecision}`
 	- `{hardwareId}`
 	- `{measurementName}`
 	- `{measurementValue}`

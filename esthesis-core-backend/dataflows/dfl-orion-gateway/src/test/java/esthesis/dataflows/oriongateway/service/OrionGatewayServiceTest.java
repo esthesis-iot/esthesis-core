@@ -445,7 +445,7 @@ class OrionGatewayServiceTest {
 		when(exchangeMock.getIn()).thenReturn(messageMock);
 
 
-		String timeISOFormat = "2025-02-07T23:59:59Z";
+		String timeISOFormat = "2025-02-07T23:59:59.123Z";
 
 		// Mock esthesis data message.
 		when(messageMock.getBody(any()))
@@ -463,10 +463,12 @@ class OrionGatewayServiceTest {
 
 		// Prepare a custom JSON template and its expected output for the device attribute.
 		String quteTemplateJsonInput = "{\"custom-level\":\"device\",\"name\":\"{measurementName}\",\"value\":\"{measurementValue}\"," +
-			"\"category\":\"{category}\",\"hardwareId\":\"{hardwareId}\",\"timestamp\":\"{timestamp}\"}";
+			"\"category\":\"{category}\",\"hardwareId\":\"{hardwareId}\",\"timestamp\":\"{timestamp}\"," +
+			"\"timestampSecondsPrecision\":\"{timestampSecondsPrecision}\"}";
 
 		String quteTemplateExpectedOutput = "{\"custom-level\":\"device\",\"name\":\"value-name\",\"value\":\"value\"," +
-			"\"category\":\"category\",\"hardwareId\":\"hardware-id\",\"timestamp\":\"2025-02-07T23:59:59Z\"}";
+			"\"category\":\"category\",\"hardwareId\":\"hardware-id\",\"timestamp\":\"2025-02-07T23:59:59.123Z\"," +
+			"\"timestampSecondsPrecision\":\"2025-02-07T23:59:59Z\"}";
 
 		// Mock custom json attribute value.
 		when(deviceSystemResource.getDeviceAttributeByEsthesisHardwareIdAndAttributeName("hardware-id", "custom-json"))
@@ -599,7 +601,7 @@ class OrionGatewayServiceTest {
 		when(exchangeMock.getIn()).thenReturn(messageMock);
 
 
-		String timeISOFormat = "2025-02-07T23:59:59Z";
+		String timeISOFormat = "2025-02-07T23:59:59.123Z";
 
 		// Mock esthesis data message.
 		when(messageMock.getBody(any()))
@@ -614,14 +616,16 @@ class OrionGatewayServiceTest {
 
 		// Prepare a custom JSON  Qute template.
 		String quteTemplateJsonInput = "{\"custom-level\":\"dataflow\",\"name\":\"{measurementName}\",\"value\":\"{measurementValue}\"," +
-			"\"category\":\"{category}\",\"hardwareId\":\"{hardwareId}\",\"timestamp\":\"{timestamp}\"}";
+			"\"category\":\"{category}\",\"hardwareId\":\"{hardwareId}\",\"timestamp\":\"{timestamp}\"," +
+			"\"timestampSecondsPrecision\":\"{timestampSecondsPrecision}\"}";
 
 		// Mock the existence of the custom JSON environment variable with the Qute template input.
 		when(appConfig.orionCustomEntityJsonFormat()).thenReturn(Optional.of(quteTemplateJsonInput));
 
 		// Expected output for the custom JSON Qute template.
 		String quteTemplateExpectedOutput = "{\"custom-level\":\"dataflow\",\"name\":\"value-name\",\"value\":\"value\"," +
-			"\"category\":\"category\",\"hardwareId\":\"hardware-id\",\"timestamp\":\"2025-02-07T23:59:59Z\"}";
+			"\"category\":\"category\",\"hardwareId\":\"hardware-id\",\"timestamp\":\"2025-02-07T23:59:59.123Z\"," +
+			"\"timestampSecondsPrecision\":\"2025-02-07T23:59:59Z\"}";
 
 
 		// Mock sending data to Orion client.
