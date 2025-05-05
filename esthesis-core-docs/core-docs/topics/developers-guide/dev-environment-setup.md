@@ -13,7 +13,6 @@ machine, instead of being deployed to the Kubernetes cluster.
 
 - A dev Kubernetes cluster with at least 16GB of RAM.
 - [Helm](https://helm.sh)
-- [Helmfile](https://github.com/helmfile/helmfile)
 - Many of the build and helper scripts are written for a Unix/Linux shell. If you are on
 	Windows, you can use [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) or [Cygwin](https://www.cygwin.com/).
 - [Promtail](https://github.com/grafana/loki/releases). Promtail is used to provide a local UDP GELF
