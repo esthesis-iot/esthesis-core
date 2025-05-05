@@ -29,32 +29,31 @@ Unless you are on a cluster shared with others, create and use a namespace named
 you can follow the instructions below without having to change parameters. If you are using a
 different namespace, replace it accordingly.
 
-- Install the supporting dependencies in `esthesis-helm/esthesis-core-deps`:
-	```shell
-	helmfile -e dev sync --namespace=esthesis
-	```
+- Add the Esthesis Helm repository:
+  ```shell
+  helm repo add esthesis https://esthes.is/helm
+  helm repo update
+  ```
+
+- Install the supporting dependencies in `esthesis-helm/esthesis-core-deps`, you can find the dev vaulues [here](https://github.com/esthesis-iot/esthesis-helm/blob/main/esthesis-core-deps/values.dev.yaml):
+	 ```shell
+  helm install esthesis-core-deps esthesis/esthesis-core-deps \
+    --namespace esthesis \
+    --create-namespace \
+    -f values.dev.yaml
+  ```
 
 	<tip>
 	Once you have performed the initial installation, you can use the `--skip-deps` flag to skip the
 	dependencies check, therefore speeding up your re-deployment.
 	</tip>
 
-	Several supporting services are disabled by default. You can enable the following services by
-	setting their respective environment values to `true` before running `helmfile`:
-
-	| **Service**            | **Environment variable**  |
-	|--------------------|-----------------------|
-	| Grafana            | GRAFANA_ENABLED       |
-	| Grafana Loki       | GRAFANA_LOKI_ENABLED  |
-	| Grafana Tempo      | GRAFANA_TEMPO_ENABLED |
-	| Container Registry | REGISTRY_ENABLED      |
-	| Kafka UI           | KAFKA_UI_ENABLED      |
-	| Orion LD           | ORION_LD_ENABLED      |
-
-- Install the application components in `esthesis-helm/esthesis-core`:
+- Install the application components in `esthesis-helm/esthesis-core`, you can find the dev vaulues [here](https://github.com/esthesis-iot/esthesis-helm/blob/main/esthesis-core/values.dev.yaml):
 	```shell
-	helmfile -e dev sync --namespace=esthesis
-	```
+  helm install esthesis-core esthesis/esthesis-core \
+    --namespace esthesis \
+    -f values.dev.yaml
+  ```
 
 ## Access to resources
 To proxy the Kubernetes services of the project to your local machine for development purposes, you
