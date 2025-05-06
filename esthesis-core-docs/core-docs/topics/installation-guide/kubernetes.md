@@ -1,7 +1,7 @@
 # Kubernetes
 
 Esthesis CORE can be deployed on Kubernetes using the publicly available Helm charts. The Helm
-charts are available on the [TBC].
+charts are available on [the Helm Chart Repo](https://esthes.is/helm).
 
 Esthesis CORE comes with a variety of different Helm charts. Some of the provided Helm charts
 pertain to mandatory components, while others are optional. During the installation you can choose which
@@ -23,7 +23,7 @@ specific instructions for the cloud provider you are using.
 </tip>
 
 ## Configuration parameters
-The following parameters can be defined from variables contained on vaules.yaml during installation:
+The following parameters can be defined from variables contained on values.yaml during installation:
 
 <chapter title="General" id="general" collapsible="true">
 
@@ -262,7 +262,7 @@ kafkaBootstrapServers: "kafka.<enter_your_namespace_here>.svc.cluster.local:9092
 mongoDbUrlCluster: "mongodb://mongodb-0.mongodb-headless.<enter_your_namespace_here>.svc.cluster.local:27017,mongodb-1.mongodb-headless.<enter_your_namespace_here>.svc.cluster.local:27017"
 ```
 
-#### Esthesis-core-deps values.yaml:
+#### Esthesis-core-deps values-deps.yaml:
 ```
 timezone: "Europe/Athens"
 esthesisAdminUsername: "esthesis-admin"
@@ -284,7 +284,7 @@ mosquittoServiceType: "LoadBalancer"
 - Install the supporting dependencies (e.g. Keycloak, MongoDB, Redis, etc.):
   ```shell
   helm install esthesis-core-deps esthesis/esthesis-core-deps \
-    --namespace fortesie \
+    --namespace esthesis \
     --create-namespace \
     -f values-deps.yaml
   ```
@@ -296,7 +296,7 @@ mosquittoServiceType: "LoadBalancer"
 - Install the main Esthesis CORE application components:
   ```shell
   helm install esthesis-core esthesis/esthesis-core \
-    --namespace fortesie \
+    --namespace esthesis \
     -f values.yaml
   ```
 
