@@ -284,7 +284,7 @@ mosquittoServiceType: "LoadBalancer"
 - Install the supporting dependencies (e.g. Keycloak, MongoDB, Redis, etc.):
   ```shell
   helm install esthesis-core-deps esthesis/esthesis-core-deps \
-    --namespace <your-namespace> \
+    --namespace fortesie \
     --create-namespace \
     -f values-deps.yaml
   ```
@@ -296,7 +296,7 @@ mosquittoServiceType: "LoadBalancer"
 - Install the main Esthesis CORE application components:
   ```shell
   helm install esthesis-core esthesis/esthesis-core \
-    --namespace <your-namespace> \
+    --namespace fortesie \
     -f values.yaml
   ```
 
