@@ -8,7 +8,7 @@
   <parent>
     <groupId>esthesis</groupId>
     <artifactId>esthesis-core-services-chatbot</artifactId>
-    <version>3.1.5</version>
+    <version>3.1.6-SNAPSHOT</version>
   </parent>
 
   <artifactId>esthesis-core-services-chatbot-impl</artifactId>
@@ -29,12 +29,12 @@
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-chatbot-client</artifactId>
-      <version>3.1.5</version>
+      <version>3.1.6-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>esthesis</groupId>
       <artifactId>esthesis-core-services-security-client</artifactId>
-      <version>3.1.5</version>
+      <version>3.1.6-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
