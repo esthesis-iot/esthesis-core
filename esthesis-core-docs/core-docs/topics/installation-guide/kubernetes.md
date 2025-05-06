@@ -242,7 +242,7 @@ tune their properties or replace them altogether with your own resources to supp
 production use case.
 
 ### Environment variables
-The following list is a starting point of variables on vaulues.yaml to set before you proceed on both helm charts with the installation, you need to amend them to match your own environment:
+The following list is a starting point of variables on values.yaml to set before you proceed on both helm charts with the installation, you need to amend them to match your own environment:
 
 #### Esthesis-core values.yaml:
 ```
