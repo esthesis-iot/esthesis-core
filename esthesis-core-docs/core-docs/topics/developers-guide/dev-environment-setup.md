@@ -30,7 +30,7 @@ different namespace, replace it accordingly.
 
 - Install the supporting dependencies in `esthesis-helm/esthesis-core-deps`:
 	 ```shell
-  helm install esthesis-core-deps esthesis/esthesis-core-deps \
+  helm install esthesis-core-deps . \
     --namespace esthesis \
     --create-namespace
   ```
@@ -51,21 +51,21 @@ different namespace, replace it accordingly.
 
   If you wish to enable any of these services, you can do so by setting the corresponding flag to `true` using the `--set` parameter. For example, to enable the `kafka-ui` service, you can run:
 	```shell
-	helm install esthesis-core esthesis/esthesis-core \
+	helm install esthesis-core-deps . \
 		--namespace esthesis \
 		--set charts_enabled.kafka-ui=true
 	```
 
   If you want to enable all optional services, you can use the `--set` parameter with a comma-separated list of flags:
   ```shell
-	helm install esthesis-core esthesis/esthesis-core \
+	helm install esthesis-core-deps . \
 		--namespace esthesis \
 		--set charts_enabled.kafka-ui=true,charts_enabled.orion=true,charts_enabled.docker-registry-ui=true,charts_enabled.grafana-tempo=true,charts_enabled.grafana-loki=true,charts_enabled.grafana=true,charts_enabled.ingress-nginx=true
 	```
 
 	If you enable the ingress-nginx service, you will need to also set the external IP address of your Kubernetes cluster in the `ingress-nginx` service configuration. You can do this by setting the `externalIPs` value in the Helm chart:
 	```shell
- 	helm install esthesis-core esthesis/esthesis-core \
+ 	helm install esthesis-core-deps . \
 		--namespace esthesis \
 		--set charts_enabled.ingress-nginx=true \
 		--set ingress-nginx.externalIPs={external-ip}
@@ -75,7 +75,7 @@ different namespace, replace it accordingly.
 
 - Install the application components in `esthesis-helm/esthesis-core`:
 	```shell
-  helm install esthesis-core esthesis/esthesis-core \
+  helm install esthesis-core . \
     --namespace esthesis
   ```
 
