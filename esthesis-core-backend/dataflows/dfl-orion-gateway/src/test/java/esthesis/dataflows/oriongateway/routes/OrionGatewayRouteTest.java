@@ -7,14 +7,12 @@ import esthesis.common.avro.PayloadData;
 import esthesis.common.avro.ValueData;
 import esthesis.common.avro.ValueTypeEnum;
 import esthesis.core.common.serder.kafka.EsthesisDataMessageSerializer;
-import esthesis.dataflows.oriongateway.service.OrionClientService;
 import esthesis.dataflows.oriongateway.service.OrionGatewayService;
 import esthesis.dataflows.oriongateway.service.OrionMessagingService;
 import esthesis.util.kafka.notifications.common.AppMessage;
 import esthesis.util.kafka.notifications.common.KafkaNotificationsConstants;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.AdviceWith;
@@ -39,10 +37,6 @@ class OrionGatewayRouteTest extends CamelQuarkusTestSupport {
 
 	@InjectMock
 	OrionGatewayService orionGatewayService;
-
-	// This will inject the mocked service (MockOrionClientService.class) instead of the real one.
-	@Inject
-	OrionClientService orionClientService;
 
 	EsthesisDataMessageSerializer esthesisDataMessageSerializer = new EsthesisDataMessageSerializer();
 
