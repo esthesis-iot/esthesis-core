@@ -41,6 +41,9 @@ Default: `WARN`<br/><br/>
 `ingressClassName`<br/>
 : The name of the ingress class to use for ingress rules.<br/><br/>
 
+`ingressTlsSecret`<br/>
+: The name of the Kubernetes TLS secret that contains the TLS certificate and private key for securing the Ingress with HTTPS.<br/><br/>
+
 </chapter>
 
 <chapter title="Accounts" id="accounts" collapsible="true">
@@ -81,28 +84,6 @@ Default: `true`<br/><br/>
 
 `keycloak.certManager.issuer`<br/>
 : Namespace-scoped Cert Manager issuer name. Mutually exclusive with `keycloak.certManager.clusterIssuer`.<br/><br/>
-
-</chapter>
-
-<chapter title="MongoDB" id="mongodb" collapsible="true">
-
-`mongodb.enabled`<br/>
-: Whether to deploy MongoDB.<br/>
-Default: `true`<br/><br/>
-
-`mongodb.urlCluster`<br/>
-: Internal MongoDB connection URL for Esthesis components.<br/>
-Default: `mongodb://mongodb:27017`<br/><br/>
-
-`mongodb.database`<br/>
-: Name of the MongoDB database.<br/>
-Default: `esthesiscore`<br/><br/>
-
-`mongodb.username`<br/>
-: MongoDB user (usually inherits from `esthesisSystemUsername`).<br/><br/>
-
-`mongodb.password`<br/>
-: MongoDB password (usually inherits from `esthesisSystemPassword`).<br/><br/>
 
 </chapter>
 
@@ -269,7 +250,6 @@ esthesisAdminUsername: "esthesis-admin"
 esthesisAdminPassword: "esthesis-admin"
 esthesisSystemUsername: "esthesis-system"
 esthesisSystemPassword: "esthesis-system"
-keycloak.ingress.hostname: "keycloak.esthesis.domain.com"
 mosquittoServiceType: "LoadBalancer"
 ```
 
