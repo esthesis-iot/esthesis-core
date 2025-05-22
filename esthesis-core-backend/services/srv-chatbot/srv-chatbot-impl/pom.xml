@@ -13,17 +13,50 @@
 
   <artifactId>esthesis-core-services-chatbot-impl</artifactId>
 
+	<properties>
+		<quarkus-langchain4j.version>0.27.0.CR2</quarkus-langchain4j.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.quarkiverse.langchain4j</groupId>
+				<artifactId>quarkus-langchain4j-bom</artifactId>
+				<version>${quarkus-langchain4j.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
   <dependencies>
 		<!-- QUARKUS -->
 		<dependency>
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-oidc</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-websockets-next</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-smallrye-fault-tolerance</artifactId>
+		</dependency>
 
-<!--		<dependency>-->
-<!--			<groupId>io.quarkiverse.langchain4j</groupId>-->
-<!--			<artifactId>quarkus-langchain4j-openai</artifactId>-->
-<!--		</dependency>-->
+		<!-- AI -->
+		<dependency>
+			<groupId>io.quarkiverse.langchain4j</groupId>
+			<artifactId>quarkus-langchain4j-openai</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.quarkiverse.langchain4j</groupId>
+			<artifactId>quarkus-langchain4j-ollama</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.quarkiverse.langchain4j</groupId>
+			<artifactId>quarkus-langchain4j-easy-rag</artifactId>
+		</dependency>
 
     <!-- ESTHESIS -->
     <dependency>
@@ -36,5 +69,10 @@
       <artifactId>esthesis-core-services-security-client</artifactId>
       <version>3.1.6-SNAPSHOT</version>
     </dependency>
-  </dependencies>
+		<dependency>
+			<groupId>esthesis</groupId>
+			<artifactId>esthesis-core-services-device-client</artifactId>
+			<version>3.1.4-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 </project>

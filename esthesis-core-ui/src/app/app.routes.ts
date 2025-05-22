@@ -6,7 +6,6 @@ import {CallbackComponent} from "./callback.component";
 
 // Configuration of Router with all available AppConstants.Routes.
 export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
-    // Redirect for empty path.
     {path: "", redirectTo: "dashboard", pathMatch: "full"},
     {path: "callback", component: CallbackComponent},
     {
@@ -98,13 +97,10 @@ export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot([
       loadChildren: () => import("./user/user.module").then(m => m.UserModule),
       canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: "|User"}
     },
-    {
-      path: "chatbot",
-      loadChildren: () => import("./chatbot/chatbot.module").then(m => m.ChatbotModule),
-      canActivate: [AutoLoginPartialRoutesGuard], data: {breadcrumb: ""}
-    }
+    {path: "**", redirectTo: "dashboard"}
   ],
   {
     enableTracing: false,
     scrollPositionRestoration: "top"
-  });
+  }
+);

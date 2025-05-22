@@ -23,12 +23,14 @@ export class SettingsMessagingComponent extends SecurityBaseComponent implements
   ngOnInit() {
     // Define the form.
     this.form = this.fb.group({
-      KAFKA_TOPIC_COMMAND_REQUEST: [null, []]
+      KAFKA_TOPIC_COMMAND_REQUEST: [null, []],
+      CHATBOT_ENABLED: [null, []]
     });
 
 
     // Fetch settings.
-    this.settingsService.findByNames([AppConstants.NAMED_SETTING.KAFKA_TOPIC_COMMAND_REQUEST]).subscribe(onNext => {
+    this.settingsService.findByNames([AppConstants.NAMED_SETTING.KAFKA_TOPIC_COMMAND_REQUEST,
+      AppConstants.NAMED_SETTING.CHATBOT_ENABLED]).subscribe(onNext => {
       onNext.forEach(setting => {
         this.form.controls[setting.name].patchValue(setting.value);
       });

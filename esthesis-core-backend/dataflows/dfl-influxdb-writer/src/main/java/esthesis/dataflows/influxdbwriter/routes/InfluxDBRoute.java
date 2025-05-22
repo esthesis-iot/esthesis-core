@@ -73,7 +73,6 @@ public class InfluxDBRoute extends RouteBuilder {
           .bean(influxDBService, "process");
     }, () -> log.debug("Kafka telemetry topic is not set, skipping route."));
 
-
     config.kafkaMetadataTopic().ifPresentOrElse(val -> {
       log.info("Setting up route from Kafka topic '{}' to InfluxDB '{}' "
           + "bucket '{}'.", val, config.influxUrl(), config.influxBucket());

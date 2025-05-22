@@ -76,39 +76,41 @@ export class DashboardViewComponent extends BaseComponent implements OnInit, OnD
   }
 
   private subscribeToDashboard() {
-    this.logger.logDebug("Subscribing to dashboard " + this.selectedDashboard?.id + ".");
-    this.oidcSecurityService.getAccessToken().subscribe((token) => {
-      // Set up a refresh subscription handler.
-      this.logger.logDebug("Setting up refresh subscription handler for dashboard " + this.selectedDashboard!.id + ".");
-      this.subscriptionRefreshHandler = window.setInterval(() => {
-        this.dashboardService.refreshSub(this.subscriptionId).subscribe({
-          next: () => {
-            this.logger.logDebug("Refreshed dashboard " + this.selectedDashboard!.id);
-          }, error: (error) => {
-            this.logger.logError("Could not refresh dashboard " + this.selectedDashboard!.id, error);
+    if (this.selectedDashboard) {
+      this.logger.logDebug("Subscribing to dashboard " + this.selectedDashboard!.id + ".");
+      this.oidcSecurityService.getAccessToken().subscribe((token) => {
+        // Set up a refresh subscription handler.
+        this.logger.logDebug("Setting up refresh subscription handler for dashboard " + this.selectedDashboard!.id + ".");
+        this.subscriptionRefreshHandler = window.setInterval(() => {
+          this.dashboardService.refreshSub(this.subscriptionId).subscribe({
+            next: () => {
+              this.logger.logDebug("Refreshed dashboard " + this.selectedDashboard!.id);
+            }, error: (error) => {
+              this.logger.logError("Could not refresh dashboard " + this.selectedDashboard!.id, error);
+            }
+          });
+        }, this.appConstants.DASHBOARD.REFRESH_INTERVAL_MINUTES * 60000);
+
+        // Subscribe to SSE events for this dashboard.
+        this.logger.logDebug("Subscribing to SSE events for dashboard " + this.selectedDashboard!.id + ".");
+        this.sseSubscription = this.sseClient.stream(
+          `/api/dashboard/v1/sub/${this.selectedDashboard!.id}/${this.subscriptionId}`,
+          {keepAlive: true, reconnectionDelay: 3000, responseType: "event"}).subscribe((event) => {
+          if (event.type === "error") {
+            const errorEvent = event as ErrorEvent;
+            this.logger.logError("Error in SSE event for dashboard " + this.selectedDashboard!.id
+              + ": " + errorEvent.message + ".");
+          } else {
+            const messageEvent = event as MessageEvent;
+            const eventData = JSON.parse(messageEvent.data);
+            // Uncomment to debug all incoming messages.
+            // this.logger.logDebug("Received SSE event for dashboard.", eventData);
+            this.dashboardService.sendMessage(eventData);
+            this.lastEventDate = new Date();
           }
         });
-      }, this.appConstants.DASHBOARD.REFRESH_INTERVAL_MINUTES * 60000);
-
-      // Subscribe to SSE events for this dashboard.
-      this.logger.logDebug("Subscribing to SSE events for dashboard " + this.selectedDashboard?.id + ".");
-      this.sseSubscription = this.sseClient.stream(
-        `/api/dashboard/v1/sub/${this.selectedDashboard?.id}/${this.subscriptionId}`,
-        {keepAlive: true, reconnectionDelay: 3000, responseType: "event"}).subscribe((event) => {
-        if (event.type === "error") {
-          const errorEvent = event as ErrorEvent;
-          this.logger.logError("Error in SSE event for dashboard " + this.selectedDashboard?.id
-            + ": " + errorEvent.message + ".");
-        } else {
-          const messageEvent = event as MessageEvent;
-          const eventData = JSON.parse(messageEvent.data);
-          // Uncomment to debug all incoming messages.
-          // this.logger.logDebug("Received SSE event for dashboard.", eventData);
-          this.dashboardService.sendMessage(eventData);
-          this.lastEventDate = new Date();
-        }
       });
-    });
+    }
   }
 
   private unsubscribeFromDashboard(): Observable<boolean> {

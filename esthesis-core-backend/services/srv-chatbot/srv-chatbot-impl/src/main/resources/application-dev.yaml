@@ -22,11 +22,12 @@ quarkus:
         traces:
           endpoint: http://grafana-tempo-distributor.esthesis:4317
   rest-client:
-    AuditResource:
-      url: http://localhost:59140
-      scope: Singleton
-    SecurityResource:
-      url: http://localhost:59170
+    DeviceResource:
+      url: http://localhost:59010
       scope: Singleton
   config:
     locations: "../../../../_dev/profiles"
+  langchain4j:
+    ollama:
+      base-url: "http://ollama.esthesis-dev:11434"
+

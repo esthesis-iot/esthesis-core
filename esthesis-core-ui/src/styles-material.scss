@@ -40,7 +40,7 @@ mat-tab-body {
   @apply mt-5;
 }
 
-mat-tab-group {
+mat-tab-group, nav {
   @apply bg-inherit font-inter #{!important};
   font-size: inherit #{!important};
   color: inherit #{!important};

@@ -111,6 +111,7 @@ import {provideLumberjackConsoleDriver} from "@ngworker/lumberjack/console-drive
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MtxSelect} from "@ng-matero/extensions/select";
+import {ChatbotModule} from "./chatbot/chatbot.module";
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -136,7 +137,7 @@ import {MtxSelect} from "@ng-matero/extensions/select";
     MatSnackBarModule,
     MatButtonModule,
     FontAwesomeModule,
-    ComponentsModule, NgProgressbar, NgProgressHttp, FormsModule, MatFormField, MatLabel, MtxSelect, ReactiveFormsModule],
+    ComponentsModule, NgProgressbar, NgProgressHttp, FormsModule, MatFormField, MatLabel, MtxSelect, ReactiveFormsModule, ChatbotModule],
   providers: [
     QFormsModule,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

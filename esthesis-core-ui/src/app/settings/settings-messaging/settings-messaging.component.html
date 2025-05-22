@@ -6,7 +6,19 @@
       esthesis-control-request.
     </mat-hint>
   </mat-form-field>
+
+  <div class="font-bold text-xl mt-10">Chatbot</div>
+  <mat-form-field>
+    <mat-select [formControlName]="appConstants.NAMED_SETTING.CHATBOT_ENABLED">
+      <mat-option [value]="'true'">Enabled</mat-option>
+      <mat-option [value]="'false'">Disabled</mat-option>
+    </mat-select>
+    <mat-hint>Set the status of the esthesis Chatbot. Requires integration with OpenAI API, or a
+      custom Ollama server.
+    </mat-hint>
+  </mat-form-field>
 </form>
 
-<button (click)="save()" *ngIf="allowWrite" [disabled]="form.invalid" class="btn btn-sm btn-primary mt-10">SAVE
+<button (click)="save()" *ngIf="allowWrite" [disabled]="form.invalid"
+        class="btn btn-sm btn-primary mt-10">SAVE
 </button>

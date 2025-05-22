@@ -93,4 +93,12 @@
       </ext:document>
     </ext:insertOne>
   </changeSet>
+
+	<changeSet author="European Dynamics SA" id="srv-settings-9">
+    <ext:insertOne collectionName="Setting">
+      <ext:document>
+				{"name":"CHATBOT_ENABLED", "value": "false"},
+      </ext:document>
+    </ext:insertOne>
+  </changeSet>
 </databaseChangeLog>

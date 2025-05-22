@@ -7,6 +7,7 @@ import esthesis.common.exception.QDoesNotExistException;
 import esthesis.common.exception.QExceptionWrapper;
 import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.Device.DataImportType;
+import esthesis.core.common.AppConstants.Device.Status;
 import esthesis.core.common.AppConstants.Security.Category;
 import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.service.audit.ccc.Audited;
@@ -180,6 +181,11 @@ public class DeviceResourceImpl implements DeviceResource {
 	@RolesAllowed(AppConstants.ROLE_USER)
 	public Long countByTags(@QueryParam("tags") String tags) {
 		return deviceTagService.countByTag(Arrays.asList(tags.split(",")));
+	}
+
+	@Override
+	public Long countByStatus(Status status) {
+		return deviceTagService.countByStatus(status);
 	}
 
 	@Override

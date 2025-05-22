@@ -42,17 +42,19 @@
         <toc-element topic="fiware-orion-gateway.md"/>
     </toc-element>
     <toc-element toc-title="Developers Guide">
-        <toc-element topic="dev-environment-setup.md"/>
+			<toc-element topic="dev-environment-setup.md"/>
         <toc-element topic="working-with-a-private-container-registry.md"/>
         <toc-element topic="developing-backend-services.md"/>
         <toc-element topic="developing-dataflows.md"/>
         <toc-element topic="permissions-and-security.md"/>
-        <toc-element topic="cross-service-transactions.md"/>
+			<toc-element topic="cross-service-transactions.md"/>
         <toc-element topic="developing-esthesis-device-agent.md"/>
         <toc-element topic="inter-service-notifications.md"/>
-        <toc-element topic="caching.md"/>
+			<toc-element topic="Chatbot-dev.md"/>
+			<toc-element topic="caching.md"/>
         <toc-element topic="Dashboard.md"/>
-        <toc-element topic="resources-vs-system-resources.md"/>
+        <toc-element topic="resources-vs-system-resources.md">
+				</toc-element>
         <toc-element topic="testing.md"/>
         <toc-element topic="auditing.md">
         </toc-element>
@@ -61,7 +63,7 @@
         <toc-element topic="release-process.md"/>
         <toc-element topic="faq.md"/>
     </toc-element>
-    <toc-element toc-title="References">
+	<toc-element toc-title="References">
         <toc-element topic="avro-support.md"/>
         <toc-element topic="esthesis-line-protocol.md"/>
     </toc-element>

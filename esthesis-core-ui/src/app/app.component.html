@@ -1,5 +1,5 @@
 <ng-progress ngProgressHttp></ng-progress>
-<!--<app-chatbot-view></app-chatbot-view>-->
+<app-chatbot-view *ngIf="isLoggedIn()"></app-chatbot-view>
 <div class="flex flex-row gap-6 pt-2" *ngIf="isLoggedIn()">
   <app-sidebar></app-sidebar>
   <div class="flex-col w-full mr-4">

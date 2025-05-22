@@ -47,7 +47,7 @@ different namespace, replace it accordingly.
 	- grafana-tempo
 	- grafana-loki:
 	- grafana
-	- ingress-nginx
+  - ollama
 
   If you wish to enable any of these services, you can do so by setting the corresponding flag to `true` using the `--set` parameter. For example, to enable the `kafka-ui` service, you can run:
 	```shell
@@ -60,18 +60,10 @@ different namespace, replace it accordingly.
   ```shell
 	helm install esthesis-core-deps . \
 		--namespace esthesis \
-		--set charts_enabled.kafka-ui=true,charts_enabled.orion=true,charts_enabled.docker-registry-ui=true,charts_enabled.grafana-tempo=true,charts_enabled.grafana-loki=true,charts_enabled.grafana=true,charts_enabled.ingress-nginx=true
+		--set charts_enabled.kafka-ui=true,charts_enabled.orion=true,...
 	```
 
-	If you enable the ingress-nginx service, you will need to also set the external IP address of your Kubernetes cluster in the `ingress-nginx` service configuration. You can do this by setting the `externalIPs` value in the Helm chart:
-	```shell
- 	helm install esthesis-core-deps . \
-		--namespace esthesis \
-		--set charts_enabled.ingress-nginx=true \
-		--set ingress-nginx.externalIPs={external-ip}
-	```
-
-	You can find the full list of available flags in the `values.yaml` file of the `esthesis-core-deps` Helm chart.
+- You can find the full list of available flags in the `values.yaml` file of the `esthesis-core-deps` Helm chart.
 
 - Install the application components in `esthesis-helm/esthesis-core`:
 	```shell
@@ -110,6 +102,7 @@ deploying the Helm Chart.
 | Kafka UI           | http://kafka-ui.esthesis                        ||
 | Docker Registry UI | http://docker-registry-user-interface.esthesis/ ||
 | Orion LD           | http://orionld.esthesis:1026                    ||
+| Ollama             | http://ollama.esthesis:11434                    ||
 
 ## Running the services
 The above installation will prepare all the necessary components to support esthesis CORE. The actual

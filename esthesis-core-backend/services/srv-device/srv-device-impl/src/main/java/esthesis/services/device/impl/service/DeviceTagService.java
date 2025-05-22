@@ -5,6 +5,7 @@ import static esthesis.core.common.AppConstants.Security.Operation.READ;
 import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
 
 import com.google.common.collect.Lists;
+import esthesis.core.common.AppConstants.Device.Status;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.security.annotation.ErnPermission;
 import esthesis.service.tag.entity.TagEntity;
@@ -124,4 +125,9 @@ public class DeviceTagService {
 				log.debug("Removed tag id '{}' from device '{}'.", tagId, device.getId());
 			});
 	}
+
+	@ErnPermission(category = DEVICE, operation = READ)
+  public Long countByStatus(Status status) {
+		return deviceRepository.countByStatus(status);
+  }
 }

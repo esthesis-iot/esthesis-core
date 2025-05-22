@@ -55,6 +55,10 @@ public interface DeviceResource {
 	@Path("/v1/count/by-tag")
 	Long countByTags(@QueryParam("tag") String tags);
 
+	@GET
+	@Path("/v1/count/by-status")
+	Long countByStatus(@QueryParam("status") AppConstants.Device.Status status);
+
 	/**
 	 * Counts the number of devices having one or more of the given hardware IDs.
 	 *

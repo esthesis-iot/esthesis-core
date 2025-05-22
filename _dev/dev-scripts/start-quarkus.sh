@@ -136,7 +136,7 @@ if [ "$KAFKA" = "true" ]; then
 	echo "Enabling Kafka configuration at: $ESTHESIS_KAFKA_URL."
 fi
 if [ "$ZEEBE" = "true" ]; then
-	ESTHESIS_CAMUNDA_ZEEBE_URL="camunda-zeebe-gateway.$NAMESPACE:26500"
+	ESTHESIS_CAMUNDA_ZEEBE_URL="zeebe-gateway.$NAMESPACE:26500"
 	echo "Enabling Zeebe configuration at: $ESTHESIS_CAMUNDA_ZEEBE_URL."
 fi
 if [ "$GRAFANA_TEMPO" = "true" ]; then

@@ -110,5 +110,6 @@ export default [
     target: "http://127.0.0.1:59190",
     pathRewrite: { "/chatbot": "/" },
     secure: false,
+    ws: true
   }
 ];

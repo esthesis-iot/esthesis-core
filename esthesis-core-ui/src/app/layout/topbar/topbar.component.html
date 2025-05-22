@@ -4,10 +4,10 @@
     <fa-icon icon="chevron-down"></fa-icon>
     <mat-menu #menu="matMenu" xPosition="before">
       <ul class="dropdown-content z-[1] menu p-2 rounded-box w-52" style="font-size:1.02rem">
-        <li><a [href]="'user/profile'">Profile</a></li>
-        <li><a [href]="'user/themes'">Themes</a></li>
+        <li><a routerLink="/user/profile">Profile</a></li>
+        <li><a routerLink="/user/themes">Themes</a></li>
         <div class="divider"></div>
-        <li><a [href]="'user/signout'">Sign out</a></li>
+        <li><a routerLink="/user/signout">Sign out</a></li>
       </ul>
     </mat-menu>
   </button>
