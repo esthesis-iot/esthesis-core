@@ -23,6 +23,7 @@ pipeline {
                 securityContext:
                   runAsUser: 0
                   runAsGroup: 0
+                  fsGroup: 0
                 containers:
                 - name: esthesis-dev-deployer
                   image: eddevopsd2/ubuntu-dind:docker24-mvn3.9.6-jdk21-node18.16-go1.23-buildx-helm-argocd
@@ -37,7 +38,6 @@ pipeline {
                   securityContext:
                     privileged: true
                     runAsUser: 0
-                    fsGroup: 0
                 imagePullSecrets:
                 - name: regcred
                 volumes:
@@ -114,8 +114,8 @@ pipeline {
                     def success = false
                     def retries = 0
                     while (!success) {
-                        if (retries < 5) {     
-                            try {                      
+                        if (retries < 5) {
+                            try {
                                 container(name: 'esthesis-dev-deployer') {
                                     withCredentials([usernamePassword(credentialsId: 'harbor-creds',
                                     usernameVariable: 'Username',
@@ -150,7 +150,7 @@ pipeline {
                     def success = false
                     def retries = 0
                     while (!success) {
-                        if (retries < 5) {     
+                        if (retries < 5) {
                             try {
                                 container(name: 'esthesis-dev-deployer') {
                                     withCredentials([usernamePassword(credentialsId: 'harbor-creds',
@@ -184,7 +184,7 @@ pipeline {
                     def success = false
                     def retries = 0
                     while (!success) {
-                        if (retries < 5) {     
+                        if (retries < 5) {
                             try {
                                 container(name: 'esthesis-dev-deployer') {
                                     withCredentials([usernamePassword(credentialsId: 'harbor-creds',
@@ -194,7 +194,7 @@ pipeline {
                                             cd esthesis-core-device
                                             export ESTHESIS_REGISTRY_TYPE=auth
                                             export ESTHESIS_REGISTRY_USERNAME=$Username
-                                            export ESTHESIS_REGISTRY_PASSWORD=$Password                        
+                                            export ESTHESIS_REGISTRY_PASSWORD=$Password
                                             ESTHESIS_REGISTRY_URL=harbor.devops-d2.eurodyn.com/esthesis ./publish.sh
                                         '''
                                     }
