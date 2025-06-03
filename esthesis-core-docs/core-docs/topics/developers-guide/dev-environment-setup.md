@@ -45,7 +45,7 @@ different namespace, replace it accordingly.
 	- orion
 	- docker-registry-ui
 	- grafana-tempo
-	- grafana-loki:
+	- grafana-loki
 	- grafana
   - ollama
 

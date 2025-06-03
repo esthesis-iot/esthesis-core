@@ -18,7 +18,7 @@ When using the `publish.sh` script to prepare your images, you can define the `E
 environment variable to point to a private registry. This variable should point to the IP address,
 port, and user/project name of your private registry, for example:
 ```shell
-ESTHESIS_REGISTRY_TYPE=open ESTHESIS_REGISTRY_URL=192.168.50.211:5000/esthesis ./publish.sh
+ESTHESIS_REGISTRY_TYPE=open ESTHESIS_REGISTRY_URL=192.168.50.211/esthesis ./publish.sh
 ```
 
 <tip>
@@ -55,16 +55,9 @@ ESTHESIS_REGISTRY_URL=192.168.50.211:5000/esthesis helmfile sync -n esthesis
 
 <tip>
 
-1. When using the Helm charts without the `-env dev` flag, the charts will automatically
-use multi-node deployments. If you are testing in a single-node Kubernetes cluster, you need to also
-define `ESTHESIS_SINGLE_NODE=true` environmental variable.
-
-2. If you want to use the Helm charts, locally available to your machine, while still deploying a
-production-level setup, you can use the `ESTHESIS_LOCAL_CHARTS=true` environmental variable.
-
-3. If while working with a private you are also deploying on a Kubernetes cluster thart does not
-have access to proper certificates, you can also set `OIDC_TLS_VERIFICATION=none` while deploying
-the Helm charts.
+1. If while working with a private registry you are also deploying on a Kubernetes cluster that does
+not have access to proper certificates, you can also set `QUARKUS_OIDC_TLS_VERIFICATION=none` while
+deploying the Helm charts.
 </tip>
 
 ## Deploying Dataflows

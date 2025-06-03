@@ -99,7 +99,7 @@ if [ "$ESTHESIS_REGISTRY_TYPE" = "auth" ]; then
 	fi
 fi
 
-MAVEN_OPTIMISE_PARAMS="-DskipTests -Dmaven.test.skip=true -T 1C"
+MAVEN_OPTIMISE_PARAMS="-DskipTests -DskipITs -Dmaven.test.skip=true -T 1C"
 
 # Find the version of the package.
 PACKAGE_VERSION=$(grep -A 1 '<artifactId>esthesis-core</artifactId>' pom.xml | grep '<version>' | sed -E 's/.*<version>(.*)<\/version>.*/\1/')

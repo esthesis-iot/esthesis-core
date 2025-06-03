@@ -11,8 +11,9 @@
         <toc-element topic="kubernetes.md"/>
         <toc-element topic="aws.md"/>
         <toc-element topic="backups.md"/>
-    </toc-element>
-    <toc-element toc-title="Startup guide">
+			<toc-element topic="Chatbot.md"/>
+		</toc-element>
+	<toc-element toc-title="Startup guide">
         <toc-element topic="initial_configuration.md"/>
         <toc-element topic="registering-a-test-device.md"/>
         <toc-element topic="mqtt-security-hardening.md"/>
