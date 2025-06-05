@@ -72,10 +72,5 @@ func Sign(privateKeyPEM string, content string) (string, error) {
 		return "", errors.New("could not generate signature")
 	}
 
-	if err != nil {
-		log.Debugf("Could not sign content due to '%s'.", err)
-		return "", errors.New("could not generate signature")
-	}
-
 	return base64.StdEncoding.EncodeToString(signature), nil
 }

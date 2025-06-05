@@ -14,14 +14,16 @@ require (
 	github.com/yuin/gopher-lua v1.1.0
 )
 
-require github.com/mochi-co/mqtt v1.3.2
+require (
+	github.com/mochi-co/mqtt v1.3.2
+	github.com/stretchr/testify v1.7.1
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rs/xid v1.4.0 // indirect
-	github.com/stretchr/testify v1.7.1 // indirect
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect

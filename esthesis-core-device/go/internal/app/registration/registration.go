@@ -124,7 +124,7 @@ func Register() bool {
 	defer esthesisPropertiesFile.Close()
 	_, errHnd = esthesisProperties.Write(esthesisPropertiesFile, properties.UTF8)
 	if errHnd != nil {
-		log.WithError(errHnd).Errorf("Could not write to file '%s'.")
+		log.WithError(errHnd).Errorf("Could not write to file '%s'.", propertiesFileLocation)
 		os.Exit(exitCodes.ExitCodeCouldNotRegister)
 	}
 	errHnd = esthesisPropertiesFile.Sync()

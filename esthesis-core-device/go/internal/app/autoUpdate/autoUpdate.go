@@ -109,8 +109,10 @@ func Update(packageId string) (string, error) {
 		provisioningPackageUrl, err = provisioningPackageUrl.Parse(finalProvisioningUrl)
 	}
 	if err != nil {
-		log.WithError(err).Errorf("Could not parse provisioning URL '%s'.", provisioningUrl)
+		errMessage = "Could not parse provisioning URL '" + provisioningUrl + "'"
+		log.WithError(err).Errorf(errMessage)
 		terminateUpdate()
+		return "", errors.New(errMessage + " " + err.Error())
 	}
 
 	values := provisioningPackageUrl.Query()
@@ -138,9 +140,9 @@ func Update(packageId string) (string, error) {
 		return "", errors.New(err.Error())
 	}
 	if response.IsError() {
-		log.Errorf("Could not get provisioning info due to '%s'.", response.Status())
+		errMessage = "Could not get provisioning info due to '" + response.Status() + "'."
 		terminateUpdate()
-		return "", errors.New(response.String())
+		return "", errors.New(errMessage + " " + response.String())
 	}
 	if agentProvisioningInfoResponse == nil || agentProvisioningInfoResponse.Id == "" {
 		errMessage = "No provisioning info available for provisioning package with id '" + packageId + "'."
