@@ -117,7 +117,9 @@ pipeline {
                             sh '''
                                 export PATH=$PATH:/usr/bin/gcc
                                 cd esthesis-core-device/go
+                                mkdir -p tmp
                                 go mod download
+                                go test ./... -coverprofile=tmp/coverage.out
                                 go build -o esthesis-core-device -ldflags '-linkmode external -w -extldflags "-static"' cmd/main.go
                             '''
                         }
