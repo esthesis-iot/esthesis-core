@@ -120,6 +120,7 @@ pipeline {
                                 mkdir -p tmp
                                 go mod download
                                 go test ./... -coverprofile=tmp/coverage.out
+                                sed -i 's|github.com/esthesis-iot/esthesis-device/|./go/|g' tmp/coverage.out
                                 go build -o esthesis-core-device -ldflags '-linkmode external -w -extldflags "-static"' cmd/main.go
                             '''
                         }
