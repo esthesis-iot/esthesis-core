@@ -1,12 +1,16 @@
 package autoUpdate
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/appConstants"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	"github.com/esthesis-iot/esthesis-device/internal/testutils"
+	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 // Ensures that the Update function returns an error when the provisioning URL is not set.
@@ -235,4 +239,90 @@ func TestUpdate_ProvisioningServerError(t *testing.T) {
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "Could not get provisioning info due to")
 	assert.False(t, IsUpdateInProgress())
+}
+
+// Tests the Start function to ensure it initiates the update process correctly.
+func TestStart(t *testing.T) {
+	updateInProgress = false
+
+	// Mock Provisioning server and response.
+	server := testutils.MockProvisioningServer(t, testutils.MockProvisioningServerOpts{
+		ResponseCode:     200,
+		ProvisioningType: appConstants.ProvisioningPackageTypeInternal,
+		DownloadContent:  []byte("test file content"),
+	})
+	defer server.Close()
+
+	testutils.MockProperties(t, map[string]string{
+		config.RegistrationPropertyProvisioningUrl: server.URL,
+	})
+
+	// Mock the existence of a provisioning script.
+	testutils.MockUpdateScript(t)
+
+	// Mock the existence of a version file.
+	testutils.MockVersionFile(t)
+	done := make(chan bool)
+	go func() {
+		assert.NotPanics(t, func() {
+			Start(done)
+			done <- true
+		})
+	}()
+
+	time.Sleep(2 * time.Second)
+	testutils.CleanUpTempFilesInCurrentPackage(t)
+
+}
+
+// Tests the Update function with all necessary conditions met for security provisioning.
+func TestUpdate_SuccessWithSecurity(t *testing.T) {
+	originalLogLevel := log.GetLevel()
+	defer func() {
+		log.SetLevel(originalLogLevel)
+	}()
+	log.SetLevel(log.DebugLevel)
+
+	updateInProgress = false
+
+	// Enable security provisioning.
+	config.Flags.SecureProvisioning = true
+	config.Flags.HardwareId = "test-hardware-id"
+
+	downloadContent := []byte("test file content")
+	sum := sha256.Sum256(downloadContent)
+	sha256str := hex.EncodeToString(sum[:])
+
+	// Mock Provisioning server and response.
+	server := testutils.MockProvisioningServer(t, testutils.MockProvisioningServerOpts{
+		ResponseCode:     200,
+		ProvisioningType: appConstants.ProvisioningPackageTypeInternal,
+		DownloadContent:  downloadContent,
+		Sha256:           sha256str,
+	})
+	defer server.Close()
+
+	// Generate a new private key for testing.
+	privPEM := testutils.GeneratePrivateKeyPEM()
+
+	testutils.MockProperties(t, map[string]string{
+		config.RegistrationPropertyProvisioningUrl: server.URL,
+		config.RegistrationPropertyPrivateKey:      privPEM,
+	})
+
+	// Mock the existence of a provisioning script.
+	testutils.MockUpdateScript(t)
+
+	// Mock the existence of a version file.
+	testutils.MockVersionFile(t)
+
+	msg, err := Update("")
+
+	// Assert update failed with expected error.
+	assert.NotEmpty(t, msg)
+	assert.NoError(t, err)
+	assert.Contains(t, msg, "Firmware update initiated")
+	assert.False(t, IsUpdateInProgress())
+
+	testutils.CleanUpTempFilesInCurrentPackage(t)
 }

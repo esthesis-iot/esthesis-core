@@ -26,3 +26,22 @@ func CleanUpTempFilesInCurrentPackage(t *testing.T) {
 	}
 
 }
+
+// createFile creates a temporary file in the current directory for testing purposes.
+func CreateFile(t *testing.T, filename string) *os.File {
+	t.Helper()
+
+	file, err := os.Create(filename)
+	if err != nil {
+		t.Fatalf("Failed to create file %s: %v", filename, err)
+	}
+
+	t.Cleanup(func() {
+		err := file.Close()
+		if err != nil {
+			log.Warnf("Failed to close file %s: %v", filename, err)
+		}
+	})
+
+	return file
+}

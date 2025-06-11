@@ -31,6 +31,7 @@ type MockProvisioningServerOpts struct {
 	DownloadStatusCode int
 	ProvisioningType   appConstants.ProvisioningType
 	DownloadContent    []byte
+	Sha256             string
 }
 
 // MockRegistrationServer creates a configurable HTTP test server with a customizable RegistrationResponse.
@@ -62,7 +63,7 @@ func MockProvisioningServer(t *testing.T, opts MockProvisioningServerOpts) *http
 				Type:          opts.ProvisioningType,
 				DownloadUrl:   server.URL + "/download", // Ensure full URL
 				Version:       "2.0.0",
-				Sha256:        "",
+				Sha256:        opts.Sha256,
 				Size:          123456,
 				DownloadToken: "test-token",
 			}

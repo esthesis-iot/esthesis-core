@@ -2,6 +2,7 @@ package mqttCommandRequestReceiver
 
 import (
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/appConstants"
+	"github.com/esthesis-iot/esthesis-device/internal/pkg/channels"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	"github.com/esthesis-iot/esthesis-device/internal/testutils"
 	"github.com/stretchr/testify/assert"
@@ -202,6 +203,86 @@ func Test_OnMessage_FirmwareCommand(t *testing.T) {
 	})
 }
 
-// ToDo Test_OnMessage_PingCommand.
+// Test_OnMessage_PingCommand tests the ping command functionality of the MQTT command request receiver.
+func Test_OnMessage_PingCommand(t *testing.T) {
+	// Start a test MQTT broker.
+	broker, brokerAddr := testutils.StartTestBroker(t)
+	defer broker.Close()
 
-// ToDo Test_OnMessage_HealthCommand.
+	// Mock MQTT server address and supported commands.
+	testutils.MockProperties(t, map[string]string{
+		config.RegistrationPropertyMqttServer: brokerAddr,
+	})
+
+	// Initialize relevant configurations.
+	config.Flags.SupportedCommands = string(appConstants.CommandTypeExec) +
+		string(appConstants.CommandTypeFirmware) +
+		string(appConstants.CommandTypeReboot) +
+		string(appConstants.CommandTypeHealth) +
+		string(appConstants.CommandTypeShutdown) +
+		string(appConstants.CommandTypePing)
+
+	// Create a test MQTT client.
+	testMqttClient := testutils.CreateMqttClient(t, brokerAddr, "", "")
+
+	// Define the ping command payload.
+	commandPayload := "123 ps"
+
+	// Create a mock MQTT message.
+	mockMessage := &testutils.MockMessage{
+		TopicName:   "test/topic",
+		PayloadName: []byte(commandPayload),
+	}
+
+	go func() {
+		// Read and ignore the value (false) sent by pingCommand to avoid blocking.
+		<-channels.GetPingChan()
+	}()
+
+	// Assert that the ping command does not panic.
+	assert.NotPanics(t, func() {
+		OnMessage(testMqttClient, mockMessage)
+	})
+}
+
+// Test_OnMessage_HealthCommand tests the health command functionality of the MQTT command request receiver.
+func Test_OnMessage_HealthCommand(t *testing.T) {
+	// Start a test MQTT broker.
+	broker, brokerAddr := testutils.StartTestBroker(t)
+	defer broker.Close()
+
+	// Mock MQTT server address and supported commands.
+	testutils.MockProperties(t, map[string]string{
+		config.RegistrationPropertyMqttServer: brokerAddr,
+	})
+
+	// Initialize relevant configurations.
+	config.Flags.SupportedCommands = string(appConstants.CommandTypeExec) +
+		string(appConstants.CommandTypeFirmware) +
+		string(appConstants.CommandTypeReboot) +
+		string(appConstants.CommandTypeHealth) +
+		string(appConstants.CommandTypeShutdown) +
+		string(appConstants.CommandTypePing)
+
+	// Create a test MQTT client.
+	testMqttClient := testutils.CreateMqttClient(t, brokerAddr, "", "")
+
+	// Define the health command payload.
+	commandPayload := "123 hs"
+
+	// Create a mock MQTT message.
+	mockMessage := &testutils.MockMessage{
+		TopicName:   "test/topic",
+		PayloadName: []byte(commandPayload),
+	}
+
+	go func() {
+		// Read and ignore the value (false) sent by healthCommand to avoid blocking.
+		<-channels.GetHealthChan()
+	}()
+
+	// Assert that the health command does not panic.
+	assert.NotPanics(t, func() {
+		OnMessage(testMqttClient, mockMessage)
+	})
+}

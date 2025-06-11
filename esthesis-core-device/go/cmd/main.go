@@ -23,6 +23,7 @@ import (
 )
 
 var wg sync.WaitGroup
+var exitFunc = os.Exit
 
 func main() {
 	// Print application banner.
@@ -57,31 +58,7 @@ func main() {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
-		channels.Shutdown()
-		log.Info("Stopping device agent gracefully.")
-		if channels.IsEndpointHttpChan() {
-			channels.GetEndpointHttpChan() <- true
-		}
-		if channels.IsEndpointMqttChan() {
-			channels.GetEndpointMqttChan() <- true
-		}
-		if channels.IsHealthChan() {
-			channels.GetHealthChan() <- true
-		}
-		if channels.IsPingChan() {
-			channels.GetPingChan() <- true
-		}
-		if channels.IsDemoChan() {
-			channels.GetDemoChan() <- true
-		}
-		if channels.IsAutoUpdateChan() {
-			channels.GetAutoUpdateChan() <- true
-		}
-		log.Debug("Disconnecting MQTT client.")
-		mqttClient.Disconnect()
-		wg.Wait()
-		log.Info("Graceful shutdown completed.")
-		os.Exit(0)
+		GracefulShutdown(&wg)
 	}()
 
 	// Register device.
@@ -174,4 +151,32 @@ func main() {
 	for {
 		time.Sleep(1000 * time.Millisecond)
 	}
+}
+
+func GracefulShutdown(waitGroup *sync.WaitGroup) {
+	channels.Shutdown()
+	log.Info("Stopping device agent gracefully.")
+	if channels.IsEndpointHttpChan() {
+		channels.GetEndpointHttpChan() <- true
+	}
+	if channels.IsEndpointMqttChan() {
+		channels.GetEndpointMqttChan() <- true
+	}
+	if channels.IsHealthChan() {
+		channels.GetHealthChan() <- true
+	}
+	if channels.IsPingChan() {
+		channels.GetPingChan() <- true
+	}
+	if channels.IsDemoChan() {
+		channels.GetDemoChan() <- true
+	}
+	if channels.IsAutoUpdateChan() {
+		channels.GetAutoUpdateChan() <- true
+	}
+	log.Debug("Disconnecting MQTT client.")
+	mqttClient.Disconnect()
+	waitGroup.Wait()
+	log.Info("Graceful shutdown completed.")
+	exitFunc(0)
 }

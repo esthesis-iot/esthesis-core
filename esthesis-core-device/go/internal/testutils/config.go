@@ -5,6 +5,7 @@ import (
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -19,8 +20,10 @@ func MockProperties(t *testing.T, props map[string]string) {
 
 	var mainContent, secureContent string
 	for key, value := range props {
+		value := strings.ReplaceAll(value, "\n", "\\n")
 		if key == config.RegistrationPropertyPrivateKey {
 			secureContent += fmt.Sprintf("%s = %s\n", key, value)
+
 		} else {
 			mainContent += fmt.Sprintf("%s = %s\n", key, value)
 		}
