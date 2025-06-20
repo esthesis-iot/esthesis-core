@@ -10,6 +10,5 @@ esthesis:
    # kafka-command-request-topic: "kafka-command-request"
     mqtt-command-reply-topic: "mqtt-command-reply"
     kafka-command-reply-topic: "kafka-command-reply"
-    mqtt-broker-cluster-url: "tcp://localhost:1883"
     mqtt-broker-keep-alive-interval: 60
     kafka-cluster-url: "localhost:9092"

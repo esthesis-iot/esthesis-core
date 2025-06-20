@@ -16,6 +16,7 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
+import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
@@ -79,7 +81,8 @@ class UpdateRepliesJobTest {
 		// Arrange a campaign and  a campaign device monitor.
 		CampaignEntity campaign =
 			campaignService.saveNew(testHelper.makeCampaignEntity("test", "test", EXECUTE_COMMAND, CREATED));
-		campaignDeviceMonitorService.save(testHelper.makeCampaignDeviceMonitorEntity(campaign.getId()));
+		campaignDeviceMonitorService.save(testHelper.makeCampaignDeviceMonitorEntity(
+			campaign.getId()).setGroup(1).setCommandReplyId(null));
 
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();
@@ -90,15 +93,18 @@ class UpdateRepliesJobTest {
 		when(activatedJob.getKey()).thenReturn(1L);
 
 		// Mock command replies.
-		when(commandSystemResource.getReplies(anyString())).thenReturn(
-			List.of(new CommandReplyEntity("correlation-id",
-				"hardware-id",
-				true,
-				"test-output",
-				Instant.now().minus(1, ChronoUnit.MINUTES),
-				false)));
+		CommandReplyEntity commandReply = new CommandReplyEntity("correlation-id",
+			"hardware-id",
+			true,
+			"test-output",
+			Instant.now().minus(1, ChronoUnit.MINUTES),
+			false);
+		commandReply.setId(new ObjectId());
+		when(commandSystemResource.getReplies(anyString())).thenReturn(List.of(commandReply));
 
 		assertDoesNotThrow(() -> updateRepliesJob.handle(jobClient, activatedJob));
+
+		verify(commandSystemResource).getReplies(anyString());
 
 		// Assert that the command reply ID is set in the device monitor.
 		assertNotNull(campaignDeviceMonitorService.findByCampaignID(campaign.getId().toHexString()).getFirst().getCommandReplyId());

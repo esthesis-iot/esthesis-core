@@ -1,7 +1,9 @@
 package esthesis.services.campaign.impl.job;
 
-import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.Campaign.Condition;
 import esthesis.core.common.AppConstants.Campaign.Condition.Op;
+import esthesis.core.common.AppConstants.Campaign.Condition.Stage;
+import esthesis.service.campaign.dto.CampaignConditionDTO;
 import esthesis.service.campaign.entity.CampaignEntity;
 import esthesis.services.campaign.impl.TestHelper;
 import esthesis.services.campaign.impl.service.CampaignService;
@@ -14,12 +16,20 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static esthesis.core.common.AppConstants.Campaign.State.CREATED;
 import static esthesis.core.common.AppConstants.Campaign.Type.EXECUTE_COMMAND;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
@@ -62,17 +72,17 @@ class DateTimeJobTest {
 		// Arrange a campaign without conditions.
 		CampaignEntity campaign =
 			campaignService.saveNew(testHelper.makeCampaignEntity(
-				"test",
-				"test",
-				EXECUTE_COMMAND,
-				CREATED)
+					"test",
+					"test",
+					EXECUTE_COMMAND,
+					CREATED)
 				.setConditions(List.of()));
 
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();
 		parameters.setCampaignId(campaign.getId().toHexString());
 		parameters.setGroup(1);
-		parameters.setStage(AppConstants.Campaign.Condition.Stage.ENTRY.name());
+		parameters.setStage(Stage.ENTRY.name());
 		when(activatedJob.getVariablesAsType(WorkflowParameters.class)).thenReturn(parameters);
 		when(activatedJob.getKey()).thenReturn(1L);
 
@@ -80,28 +90,46 @@ class DateTimeJobTest {
 		assertTrue(parameters.isDateTimeCondition());
 	}
 
-	@Test
-	void handle() {
+	@ParameterizedTest
+	@MethodSource("handleUseCases")
+	void handle(Op operation, Instant scheduleDate, boolean expectedResult) {
+		// Arrange condition for testing.
+		CampaignConditionDTO condition = new CampaignConditionDTO();
+		condition.setType(Condition.Type.DATETIME);
+		condition.setGroup(1);
+		condition.setStage(Stage.ENTRY);
+		condition.setOperation(operation);
+		condition.setScheduleDate(scheduleDate);
 		// Arrange a campaign.
 		CampaignEntity campaign =
-			campaignService.saveNew(
-				testHelper.makeCampaignEntity("test", "test", EXECUTE_COMMAND, CREATED));
+			campaignService.saveNew(testHelper.makeCampaignEntity(
+				"test", "test", EXECUTE_COMMAND, CREATED).setConditions(List.of(condition)));
 
-		// Update the campaign with Datetime conditions.
-		campaign.getConditions().add(testHelper.makeDateTimeCondition().setOperation(Op.BEFORE));
-		campaign.getConditions().add(testHelper.makeDateTimeCondition().setOperation(Op.AFTER));
-		campaign.getConditions().add(testHelper.makeDateTimeCondition().setOperation(Op.ABOVE));
-		campaignService.saveUpdate(campaign);
 
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();
 		parameters.setCampaignId(campaign.getId().toHexString());
 		parameters.setGroup(1);
-		parameters.setStage(AppConstants.Campaign.Condition.Stage.ENTRY.name());
+		parameters.setStage(Stage.ENTRY.name());
 		when(activatedJob.getVariablesAsType(WorkflowParameters.class)).thenReturn(parameters);
 		when(activatedJob.getKey()).thenReturn(1L);
 
 		assertDoesNotThrow(() -> dateTimeJob.handle(jobClient, activatedJob));
-		assertTrue(parameters.isDateTimeCondition());
+		assertEquals(expectedResult, parameters.isDateTimeCondition());
+	}
+
+	static Stream<Arguments> handleUseCases() {
+
+		Instant pastInstant = Instant.now().minus(1, ChronoUnit.HOURS);
+		Instant futureInstant = Instant.now().plus(1, ChronoUnit.HOURS);
+
+		return Stream.of(
+			Arguments.of(Op.BEFORE, pastInstant, false),
+			Arguments.of(Op.BEFORE, futureInstant, true),
+			Arguments.of(Op.AFTER, pastInstant, true),
+			Arguments.of(Op.AFTER, futureInstant, false),
+			Arguments.of(Op.EQUAL, pastInstant, true),
+			Arguments.of(Op.EQUAL, futureInstant, true)
+		);
 	}
 }

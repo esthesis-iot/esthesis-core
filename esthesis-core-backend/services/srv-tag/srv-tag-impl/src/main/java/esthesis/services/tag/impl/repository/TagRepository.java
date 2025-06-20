@@ -16,16 +16,8 @@ public class TagRepository implements PanacheMongoRepository<TagEntity> {
 		return findByName(Collections.singletonList(name));
 	}
 
-	public List<TagEntity> findByNamePartial(String name) {
-		return findByNamePartial(Collections.singletonList(name));
-	}
-
 	public List<TagEntity> findByName(List<String> names) {
 		return find("name in ?1", names).list();
-	}
-
-	public List<TagEntity> findByNamePartial(List<String> names) {
-		return find("name like ?1", names).list();
 	}
 
 }

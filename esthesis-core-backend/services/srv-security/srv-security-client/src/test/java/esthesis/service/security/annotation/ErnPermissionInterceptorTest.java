@@ -3,104 +3,99 @@ package esthesis.service.security.annotation;
 import esthesis.common.exception.QSecurityException;
 import esthesis.core.common.AppConstants.Security.Category;
 import esthesis.core.common.AppConstants.Security.Operation;
+import esthesis.core.common.entity.BaseEntity;
 import esthesis.service.security.resource.SecurityResource;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.interceptor.InvocationContext;
-import org.junit.jupiter.api.Disabled;
+import org.bson.types.ObjectId;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
+import java.lang.reflect.Method;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Disabled("WIP")
 class ErnPermissionInterceptorTest {
 
-	@Mock
-	private SecurityIdentity securityIdentity;
+	ErnPermissionInterceptor interceptor;
+	SecurityIdentity identity;
+	SecurityResource securityResource;
+	InvocationContext ctx;
 
-	@Mock
-	private SecurityResource securityResource;
+	@BeforeEach
+	void setup() throws Exception {
+		interceptor = new ErnPermissionInterceptor();
+		identity = mock(SecurityIdentity.class);
+		securityResource = mock(SecurityResource.class);
+		ctx = mock(InvocationContext.class);
 
-	@Mock
-	private InvocationContext invocationContext;
+		interceptor.securityIdentity = identity;
+		interceptor.securityResource = securityResource;
 
-	@InjectMocks
-	private ErnPermissionInterceptor ernPermissionInterceptor;
-
-	@Test
-	void allowsInvocationWhenBypassRoleIsPresent() throws Exception {
-		ErnPermission ernPermission = mock(ErnPermission.class);
-		when(ernPermission.bypassForRoles()).thenReturn(new String[]{"ADMIN"});
-		when(invocationContext.getMethod()).thenReturn(this.getClass().getMethod("allowsInvocationWhenBypassRoleIsPresent"));
-		when(invocationContext.getMethod().getAnnotation(ErnPermission.class)).thenReturn(ernPermission);
-		when(securityIdentity.hasRole("ADMIN")).thenReturn(true);
-
-		ernPermissionInterceptor.checkPermission(invocationContext);
-
-		verify(invocationContext).proceed();
+		Method dummyMethod = DummyClass.class.getMethod("secureMethod", Object.class);
+		when(ctx.getMethod()).thenReturn(dummyMethod);
+		when(ctx.getTarget()).thenReturn(new DummyClass());
+		when(ctx.proceed()).thenReturn("executed");
 	}
 
 	@Test
-	void deniesInvocationWhenPermissionIsNotGranted() throws Exception {
-		ErnPermission ernPermission = mock(ErnPermission.class);
-		when(ernPermission.bypassForRoles()).thenReturn(new String[]{});
-		when(ernPermission.category()).thenReturn(Category.USERS);
-		when(ernPermission.operation()).thenReturn(Operation.READ);
-		when(invocationContext.getMethod()).thenReturn(this.getClass().getMethod("deniesInvocationWhenPermissionIsNotGranted"));
-		when(invocationContext.getMethod().getAnnotation(ErnPermission.class)).thenReturn(ernPermission);
-		when(securityResource.isPermitted(Category.USERS, Operation.READ)).thenReturn(false);
-
-		assertThrows(QSecurityException.class, () -> ernPermissionInterceptor.checkPermission(invocationContext));
+	void testBypassForRole() throws Exception {
+		when(identity.hasRole("admin")).thenReturn(true);
+		Object result = interceptor.checkPermission(ctx);
+		assertEquals("executed", result);
 	}
 
 	@Test
-	void allowsInvocationWhenPermissionIsGranted() throws Exception {
-		ErnPermission ernPermission = mock(ErnPermission.class);
-		when(ernPermission.bypassForRoles()).thenReturn(new String[]{});
-		when(ernPermission.category()).thenReturn(Category.USERS);
-		when(ernPermission.operation()).thenReturn(Operation.READ);
-		when(invocationContext.getMethod()).thenReturn(this.getClass().getMethod("allowsInvocationWhenPermissionIsGranted"));
-		when(invocationContext.getMethod().getAnnotation(ErnPermission.class)).thenReturn(ernPermission);
-		when(securityResource.isPermitted(Category.USERS, Operation.READ)).thenReturn(true);
+	void testPermittedWithoutResourceId() throws Exception {
+		when(identity.hasRole("admin")).thenReturn(false);
+		when(ctx.getParameters()).thenReturn(new Object[]{});
+		when(securityResource.isPermitted(Category.DATAFLOW, Operation.READ)).thenReturn(true);
 
-		ernPermissionInterceptor.checkPermission(invocationContext);
-
-		verify(invocationContext).proceed();
+		Object result = interceptor.checkPermission(ctx);
+		assertEquals("executed", result);
 	}
 
 	@Test
-	void deniesInvocationWhenResourceIdPermissionIsNotGranted() throws Exception {
-		ErnPermission ernPermission = mock(ErnPermission.class);
-		when(ernPermission.bypassForRoles()).thenReturn(new String[]{});
-		when(ernPermission.category()).thenReturn(Category.USERS);
-		when(ernPermission.operation()).thenReturn(Operation.READ);
-		when(ernPermission.checkResourceId()).thenReturn(true);
-		when(invocationContext.getMethod()).thenReturn(this.getClass().getMethod("deniesInvocationWhenResourceIdPermissionIsNotGranted"));
-		when(invocationContext.getMethod().getAnnotation(ErnPermission.class)).thenReturn(ernPermission);
-		when(invocationContext.getParameters()).thenReturn(new Object[]{"resource-id"});
-		when(securityResource.isPermitted(Category.USERS, Operation.READ, "resource-id")).thenReturn(false);
+	void testPermittedWithResourceIdAsString() throws Exception {
+		when(identity.hasRole("admin")).thenReturn(false);
+		String resourceId = new ObjectId().toHexString();
+		when(ctx.getParameters()).thenReturn(new Object[]{resourceId});
+		when(securityResource.isPermitted(Category.DATAFLOW, Operation.READ, resourceId)).thenReturn(true);
 
-		assertThrows(QSecurityException.class, () -> ernPermissionInterceptor.checkPermission(invocationContext));
+		Object result = interceptor.checkPermission(ctx);
+		assertEquals("executed", result);
 	}
 
 	@Test
-	void allowsInvocationWhenResourceIdPermissionIsGranted() throws Exception {
-		ErnPermission ernPermission = mock(ErnPermission.class);
-		when(ernPermission.bypassForRoles()).thenReturn(new String[]{});
-		when(ernPermission.category()).thenReturn(Category.USERS);
-		when(ernPermission.operation()).thenReturn(Operation.READ);
-		when(ernPermission.checkResourceId()).thenReturn(true);
-		when(invocationContext.getMethod()).thenReturn(this.getClass().getMethod("allowsInvocationWhenResourceIdPermissionIsGranted"));
-		when(invocationContext.getMethod().getAnnotation(ErnPermission.class)).thenReturn(ernPermission);
-		when(invocationContext.getParameters()).thenReturn(new Object[]{"resource-id"});
-		when(securityResource.isPermitted(Category.USERS, Operation.READ, "resource-id")).thenReturn(true);
+	void testPermittedWithResourceIdFromEntity() throws Exception {
+		when(identity.hasRole("admin")).thenReturn(false);
+		BaseEntity entity = mock(BaseEntity.class);
+		ObjectId objectId = new ObjectId();
+		when(entity.getId()).thenReturn(objectId);
+		when(ctx.getParameters()).thenReturn(new Object[]{entity});
+		when(securityResource.isPermitted(Category.DATAFLOW, Operation.READ, objectId.toHexString()))
+			.thenReturn(true);
 
-		ernPermissionInterceptor.checkPermission(invocationContext);
+		Object result = interceptor.checkPermission(ctx);
+		assertEquals("executed", result);
+	}
 
-		verify(invocationContext).proceed();
+	@Test
+	void testNotPermittedThrowsException(){
+		when(identity.hasRole("admin")).thenReturn(false);
+		when(ctx.getParameters()).thenReturn(new Object[]{});
+		when(securityResource.isPermitted(Category.DATAFLOW, Operation.READ)).thenReturn(false);
+
+		assertThrows(QSecurityException.class, () -> interceptor.checkPermission(ctx));
+	}
+
+	public static class DummyClass {
+		@ErnPermission(category = Category.DATAFLOW, operation = Operation.READ, bypassForRoles = {"admin"}, checkResourceId = true)
+		public String secureMethod(Object param) {
+			return "executed";
+		}
 	}
 }

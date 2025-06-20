@@ -11,12 +11,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import esthesis.service.campaign.entity.CampaignEntity;
+import esthesis.service.campaign.exception.CampaignDeviceAmbiguous;
+import esthesis.service.campaign.exception.CampaignDeviceDoesNotExist;
 import esthesis.service.device.resource.DeviceResource;
 import esthesis.services.campaign.impl.TestHelper;
 import esthesis.services.campaign.impl.dto.GroupDTO;
@@ -61,12 +64,6 @@ class CampaignServiceTest {
 		when(campaignDeviceMonitorService.countReplies(anyString())).thenReturn(10L);
 		when(campaignDeviceMonitorService.countReplies(anyString(), anyInt())).thenReturn(10L);
 		when(campaignDeviceMonitorService.countAll(anyString())).thenReturn(100L);
-
-		// Mock finding devices by hardware ID and tag name.
-		when(deviceResource.findByHardwareIds(anyString()))
-			.thenReturn(List.of(testHelper.makeDeviceEntity("test-device-1")));
-		when(deviceResource.findByTagName(anyString()))
-			.thenReturn(List.of(testHelper.makeDeviceEntity("test-device-1")));
 
 	}
 
@@ -173,6 +170,11 @@ class CampaignServiceTest {
 
 	@Test
 	void start() {
+		// Mock finding devices by hardware ID and tag name.
+		when(deviceResource.findByHardwareIds(anyString()))
+			.thenReturn(List.of(testHelper.makeDeviceEntity("test-device-1")));
+		when(deviceResource.findByTagName(anyString()))
+			.thenReturn(List.of(testHelper.makeDeviceEntity("test-device-1")));
 
 		// Perform the save operation for a new campaign.
 		String campaignId = campaignService.saveNew(
@@ -197,6 +199,56 @@ class CampaignServiceTest {
 		assertNotNull(campaign.getProcessInstanceId());
 		assertNotNull(campaign.getStartedOn());
 		assertNull(campaign.getTerminatedOn());
+	}
+
+	@Test
+	void startWithoutDeviceFound() {
+
+		// Mock finding no device.
+		when(deviceResource.findByHardwareIds(anyString())).thenReturn(List.of());
+
+		// Perform the save operation for a new campaign.
+		String campaignId = campaignService.saveNew(
+				testHelper.makeCampaignEntity(
+						"test-campaign-new",
+						"test description",
+						PROVISIONING,
+						CREATED)
+					.setProcessInstanceId(null)
+					.setStartedOn(null)
+					.setTerminatedOn(null)
+			)
+			.getId()
+			.toHexString();
+
+		// Assert starting the campaign throws an exception due to not finding any device.
+		 assertThrows(CampaignDeviceDoesNotExist.class, () ->  campaignService.start(campaignId) );
+	}
+
+	@Test
+	void startWithMultipleDevicesFound() {
+
+		// Mock finding multiple devices.
+		when(deviceResource.findByHardwareIds(anyString())).thenReturn(List.of(
+			testHelper.makeDeviceEntity("test-device-1"),
+			testHelper.makeDeviceEntity("test-device-2")));
+
+		// Perform the save operation for a new campaign.
+		String campaignId = campaignService.saveNew(
+				testHelper.makeCampaignEntity(
+						"test-campaign-new",
+						"test description",
+						PROVISIONING,
+						CREATED)
+					.setProcessInstanceId(null)
+					.setStartedOn(null)
+					.setTerminatedOn(null)
+			)
+			.getId()
+			.toHexString();
+
+		// Assert starting the campaign throws an exception due to finding multiple devices.
+		assertThrows(CampaignDeviceAmbiguous.class, () ->  campaignService.start(campaignId) );
 	}
 
 	@Test

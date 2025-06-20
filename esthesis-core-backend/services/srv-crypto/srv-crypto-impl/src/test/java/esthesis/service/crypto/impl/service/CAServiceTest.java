@@ -19,13 +19,16 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
+
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.server.core.multipart.DefaultFileUpload;
 import org.jboss.resteasy.reactive.server.core.multipart.FormData;
@@ -92,6 +95,45 @@ class CAServiceTest {
 		assertEquals("Test new CA", savedCa.getName());
 		assertNotNull(savedCa.getPrivateKey());
 		assertNotNull(savedCa.getPublicKey());
+
+
+	}
+
+	@Test
+	void saveWithParentCA() {
+		// Perform the operation for saving the parent CA.
+		ObjectId parentCA = caService.save(new CaEntity()
+				.setCn("parent-ca")
+				.setIssued(Instant.now())
+				.setValidity(Instant.now().plus(360, ChronoUnit.DAYS))
+				.setName("Parent CA")
+				.setPrivateKey("test-private-key")
+				.setPublicKey("test-public-key"))
+			.getId();
+
+		// Perform the operation for saving a new CA.
+		String newCaId = caService.save(new CaEntity()
+				.setCn("test-new-ca")
+				.setIssued(Instant.now())
+				.setValidity(Instant.now().plus(360, ChronoUnit.DAYS))
+				.setName("Test new CA")
+				.setPrivateKey("test-private-key")
+				.setPublicKey("test-public-key")
+				.setParentCa("parent-ca")
+				.setParentCaId(parentCA)
+			)
+			.getId()
+			.toHexString();
+
+		// Assert CA was saved with the provided values.
+		CaEntity savedCa = caService.findById(newCaId);
+		assertEquals("test-new-ca", savedCa.getCn());
+		assertNotNull(savedCa.getIssued());
+		assertNotNull(savedCa.getValidity());
+		assertEquals("Test new CA", savedCa.getName());
+		assertNotNull(savedCa.getPrivateKey());
+		assertNotNull(savedCa.getPublicKey());
+		assertEquals(parentCA.toHexString(), savedCa.getParentCaId().toHexString());
 
 
 	}
@@ -234,6 +276,7 @@ class CAServiceTest {
 
 		// Assert CA can be found by id.
 		assertNotNull(caService.findById(caId));
+		assertFalse(caService.findByIds(caId).isEmpty());
 	}
 
 	@Test
@@ -246,5 +289,17 @@ class CAServiceTest {
 
 		// Assert CA can be found.
 		assertFalse(caService.find(testHelper.makePageable(0, 100)).getContent().isEmpty());
+	}
+
+	@Test
+	void findByCn() {
+		// Perform the operation for saving a new CA.
+		caService.save(testHelper.makeCaEntity(null).setCn("test")).getId().toHexString();
+
+		// Assert CA can be found by its cn.
+		assertNotNull(caService.findByCn("test"));
+
+		// Assert CA cannot be found by an invalid cn.
+		assertNull(caService.findByCn("nonexisting"));
 	}
 }

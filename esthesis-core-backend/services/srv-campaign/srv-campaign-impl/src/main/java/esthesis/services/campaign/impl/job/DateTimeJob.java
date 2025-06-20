@@ -57,10 +57,12 @@ public class DateTimeJob implements JobHandler {
 				if (condition.getOperation() == Op.BEFORE) {
 					if (!Instant.now().isBefore(condition.getScheduleDate())) {
 						p.setDateTimeCondition(false);
+						dateTimeCondition = false;
 					}
 				} else if (condition.getOperation() == Op.AFTER) {
 					if (!Instant.now().isAfter(condition.getScheduleDate())) {
 						p.setDateTimeCondition(false);
+						dateTimeCondition = false;
 					}
 				} else {
 					log.warn("Unsupported date/time condition operation '{}', will be skipped.",
@@ -74,6 +76,7 @@ public class DateTimeJob implements JobHandler {
 					break;
 				}
 			}
+			p.setDateTimeCondition(dateTimeCondition);
 		}
 
 		client.newCompleteCommand(job.getKey()).variables(p).send().join();

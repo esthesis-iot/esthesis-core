@@ -132,17 +132,17 @@ public class TestHelper {
 			.setOperation(Op.EQUAL);
 	}
 
-	public CampaignConditionDTO makeBatchCondition() {
+	public CampaignConditionDTO makeBatchCondition(int group) {
 		return new CampaignConditionDTO()
 			.setType(Type.BATCH)
-			.setGroup(1)
+			.setGroup(group)
 			.setValue("10");
 	}
 
 	public CampaignConditionDTO makeDateTimeCondition() {
 		return new CampaignConditionDTO()
 			.setType(Type.DATETIME)
-			.setStage(Stage.INSIDE)
+			.setStage(Stage.ENTRY)
 			.setOperation(Op.AFTER)
 			.setGroup(1)
 			.setScheduleDate(Instant.now().plus(1, ChronoUnit.DAYS));
@@ -154,7 +154,7 @@ public class TestHelper {
 			makeSuccessCondition(),
 			makePropertyCondition(),
 			makePauseCondition(),
-			makeBatchCondition(),
+			makeBatchCondition(1),
 			makeDateTimeCondition()
 		);
 	}

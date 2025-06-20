@@ -8,6 +8,7 @@ import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_PUSHED_TAGS;
 import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_REGISTRATION_MODE;
 import static esthesis.core.common.AppConstants.NamedSetting.DEVICE_REGISTRATION_SECRET;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -313,5 +314,27 @@ class DeviceRegistrationServiceTest {
 		// Verify new tag was persisted.
 		verify(tagResource).save(any());
 
+	}
+
+	@Test
+	@SneakyThrows
+	void registerWithNewAttributes() {
+		// Mock devices registration mode as "OPEN".
+		when(settingsResource.findByName(DEVICE_REGISTRATION_MODE))
+			.thenReturn(new SettingEntity(DEVICE_REGISTRATION_MODE.toString(),
+				AppConstants.DeviceRegistrationMode.OPEN.name()));
+
+		// Register a new CORE device with attributes.
+		String coreDeviceId =
+			deviceRegistrationService.register(new DeviceRegistrationDTO()
+				.setHardwareId("new-core-device")
+				.setAttributes("key1=value1,key2=value2")
+				.setType(CORE)).getId().toHexString();
+
+
+		// Assert CORE device was persisted with attributes.
+		DeviceEntity coreDevice = deviceService.findById(coreDeviceId);
+		assertNotNull(coreDevice);
+		assertFalse(testHelper.findDeviceAttributes(coreDeviceId).isEmpty());
 	}
 }

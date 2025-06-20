@@ -11,6 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import esthesis.common.crypto.CryptoUtil;
+import esthesis.common.crypto.dto.CreateCertificateRequestDTO;
+import esthesis.common.crypto.dto.CreateKeyPairRequestDTO;
+import esthesis.core.common.AppConstants;
 import esthesis.service.crypto.entity.CaEntity;
 import esthesis.service.crypto.entity.CertificateEntity;
 import esthesis.service.crypto.impl.TestHelper;
@@ -20,13 +24,17 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.KeyPair;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
+
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.server.core.multipart.DefaultFileUpload;
 import org.jboss.resteasy.reactive.server.core.multipart.FormData;
@@ -243,5 +251,60 @@ class CertificateServiceTest {
 
 		// Assert certificate can be found.
 		assertFalse(certificateService.find(testHelper.makePageable(0, 100)).getContent().isEmpty());
+	}
+
+	@SneakyThrows
+	@Test
+	void generateCertificateAsPEM() {
+		// Arrange: Create a request DTO for certificate generation.
+		CreateCertificateRequestDTO requestDTO = new CreateCertificateRequestDTO();
+		KeyPair keyPair = CryptoUtil.createKeyPair(
+			CreateKeyPairRequestDTO.builder()
+				.keySize(2048)
+				.keyPairGeneratorAlgorithm("RSA")
+				.build()
+		);
+		requestDTO.setKeyPair(keyPair);
+		requestDTO.setCn("Test CN");
+		requestDTO.setIncludeCertificateChain(false);
+
+		// Act: Generate the certificate as PEM.
+		String certificatePEM = certificateService.generateCertificateAsPEM(requestDTO);
+
+		// Assert: Verify the generated certificate is not null and contains expected content.
+		assertNotNull(certificatePEM);
+		assertTrue(certificatePEM.contains("BEGIN CERTIFICATE"));
+		assertTrue(certificatePEM.contains("END CERTIFICATE"));
+	}
+
+	@SneakyThrows
+	@Test
+	void generateCertificateAsPemWithRootCaAndCertificateChain() {
+
+		// Arrange: Mock Root CA.
+		String rootCaObjectId =  caService.save(testHelper.makeCaEntity(null)).getId().toHexString();
+		when(settingsResource.findByName(AppConstants.NamedSetting.DEVICE_ROOT_CA))
+			.thenReturn(new SettingEntity(AppConstants.NamedSetting.DEVICE_ROOT_CA.name(), rootCaObjectId));
+
+		// Arrange: Create a request DTO for certificate generation.
+		CreateCertificateRequestDTO requestDTO = new CreateCertificateRequestDTO();
+		KeyPair keyPair2 = CryptoUtil.createKeyPair(
+			CreateKeyPairRequestDTO.builder()
+				.keySize(2048)
+				.keyPairGeneratorAlgorithm("RSA")
+				.build()
+		);
+		requestDTO.setKeyPair(keyPair2);
+		requestDTO.setCn("Test CN");
+		requestDTO.setIncludeCertificateChain(true);
+
+		// Act: Generate the certificate as PEM.
+		String certificatePEM = certificateService.generateCertificateAsPEM(requestDTO);
+
+		// Assert: Verify the generated certificate is not null and contains expected content.
+		assertNotNull(certificatePEM);
+		assertTrue(certificatePEM.contains("BEGIN CERTIFICATE"));
+		assertTrue(certificatePEM.contains("END CERTIFICATE"));
+
 	}
 }

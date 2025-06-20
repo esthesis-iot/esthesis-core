@@ -5,6 +5,7 @@ import esthesis.core.common.AppConstants.Device.Status;
 import esthesis.core.common.entity.BaseEntity;
 import esthesis.service.common.paging.Pageable;
 import esthesis.service.device.dto.DeviceKeyDTO;
+import esthesis.service.device.entity.DeviceAttributeEntity;
 import esthesis.service.device.entity.DeviceEntity;
 import esthesis.service.settings.entity.DevicePageFieldEntity;
 import esthesis.service.tag.entity.TagEntity;
@@ -149,6 +150,10 @@ public class TestHelper {
 
 	public String getTagId(String tagName) {
 		return tagsIdMap.get(tagName);
+	}
+
+	public List<DeviceAttributeEntity> findDeviceAttributes(String deviceId){
+		return deviceAttributeRepository.findByDeviceId(deviceId);
 	}
 
 }
