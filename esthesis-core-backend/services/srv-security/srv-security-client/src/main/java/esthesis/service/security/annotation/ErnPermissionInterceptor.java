@@ -6,6 +6,7 @@ import esthesis.core.common.AppConstants.Security.Category;
 import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.core.common.entity.BaseEntity;
 import esthesis.service.security.resource.SecurityResource;
+import io.quarkus.arc.profile.UnlessBuildProfile;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
@@ -23,6 +24,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 @Interceptor
 @Priority(Interceptor.Priority.APPLICATION)
 @ErnPermission(category = Category.NULL, operation = Operation.NULL)
+@UnlessBuildProfile("test")
 public class ErnPermissionInterceptor {
 
 	@Inject
