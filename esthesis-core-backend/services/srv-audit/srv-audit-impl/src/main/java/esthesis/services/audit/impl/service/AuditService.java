@@ -2,7 +2,6 @@ package esthesis.services.audit.impl.service;
 
 import static esthesis.core.common.AppConstants.ROLE_SYSTEM;
 import static esthesis.core.common.AppConstants.Security.Category.AUDIT;
-import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
 import static esthesis.core.common.AppConstants.Security.Operation.READ;
 
@@ -46,7 +45,6 @@ public class AuditService extends BaseService<AuditEntity> {
 
 	@Override
 	@Transactional
-	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = AUDIT, operation = CREATE)
 	public AuditEntity save(AuditEntity auditEntity) {
 		if (super.findById(auditEntity.getId()) != null) {
 			throw new QAlreadyExistsException("Audit entries can not be updated.");
