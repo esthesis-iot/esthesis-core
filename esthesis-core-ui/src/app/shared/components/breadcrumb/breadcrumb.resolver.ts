@@ -20,6 +20,7 @@ import {SecurityRolesService} from "../../../security/security-roles.service";
 import {SecurityPoliciesService} from "../../../security/security-policies.service";
 import {AuditService} from "../../../audit/audit.service";
 import {DashboardService} from "../../../dashboard/dashboard.service";
+import {CommandsService} from "../../../commands/commands.service";
 
 export const deviceNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   return "|" + (await firstValueFrom(inject(DevicesService).findById(route.paramMap.get("id")))).hardwareId;
@@ -154,4 +155,19 @@ export const securityPolicyNameResolver: ResolveFn<string> = async (route: Activ
 
 export const auditNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
   return "|" + (await firstValueFrom(inject(AuditService).findById(route.paramMap.get("id")))).message;
+};
+
+export const commandsNameResolver: ResolveFn<string> = async (route: ActivatedRouteSnapshot) => {
+  const id = route.paramMap.get("id");
+  if (id === AppConstants.NEW_RECORD_ID) {
+    return `|New command`;
+  } else {
+    const commandTypeValue = (await firstValueFrom(inject(CommandsService).findById(id))).commandType;
+    const reverseCommandTypeMap = Object.fromEntries(
+      Object.entries(AppConstants.DEVICE.COMMAND.TYPE).map(([key, value]) => [value, key])
+    );
+    const commandTypeName = reverseCommandTypeMap[commandTypeValue] || commandTypeValue;
+
+    return "|" + commandTypeName;
+  }
 };
