@@ -29,5 +29,5 @@ quarkus:
     locations: "../../../../_dev/profiles"
   langchain4j:
     ollama:
-      base-url: "http://ollama.esthesis-dev:11434"
+      base-url: "http://ollama.esthesis:11434"
 
