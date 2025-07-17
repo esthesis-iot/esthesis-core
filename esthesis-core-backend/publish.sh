@@ -147,6 +147,7 @@ modulesServices=(
 	"services/srv-security/srv-security-impl" "srv-security"
 	"services/srv-settings/srv-settings-impl" "srv-settings"
 	"services/srv-tag/srv-tag-impl" "srv-tag"
+	"services/srv-chatbot/srv-chatbot-impl" "srv-chatbot"
 )
 
 # Check what should be published.
