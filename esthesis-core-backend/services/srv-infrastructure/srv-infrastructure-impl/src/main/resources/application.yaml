@@ -40,6 +40,7 @@ quarkus:
   # (otherwise environment variables such as QUARKUS_OIDC_CLIENT_GRANT_OPTIONS_PASSWORD_USERNAME
   # are ignored (see https://github.com/quarkusio/quarkus/discussions/41259#discussioncomment-9795685).
   oidc-client:
+    client-id: esthesis
     grant-options:
       password:
         username: defined-in-runtime
