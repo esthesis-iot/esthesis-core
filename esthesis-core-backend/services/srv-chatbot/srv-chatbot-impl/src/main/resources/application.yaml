@@ -60,7 +60,8 @@ quarkus:
         log-requests: false
         log-responses: false
     easy-rag:
-      path: src/main/resources/rag
+      path: rag
+      path-type: classpath
   banner:
     enabled: false
   otel:
