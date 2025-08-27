@@ -89,7 +89,6 @@ public class TagService extends BaseService<TagEntity> {
 	 * @param name the name of the tag to find.
 	 * @return the list of tags found.
 	 */
-	@ErnPermission(category = TAGS, operation = READ)
 	public List<TagEntity> findByName(String name) {
 		return findByName(Collections.singletonList(name));
 	}
@@ -100,7 +99,6 @@ public class TagService extends BaseService<TagEntity> {
 	 * @param names the names of the tags to find.
 	 * @return the list of tags found.
 	 */
-	@ErnPermission(category = TAGS, operation = READ)
 	public List<TagEntity> findByName(List<String> names) {
 		return tagRepository.findByName(names);
 	}
@@ -131,7 +129,6 @@ public class TagService extends BaseService<TagEntity> {
 	}
 
 	@Override
-	@ErnPermission(category = TAGS, operation = READ)
 	public TagEntity findFirstByColumn(String column, Object value) {
 		return super.findFirstByColumn(column, value);
 	}

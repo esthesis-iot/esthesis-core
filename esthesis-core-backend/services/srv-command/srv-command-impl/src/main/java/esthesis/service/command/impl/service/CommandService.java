@@ -290,7 +290,6 @@ public class CommandService {
 	 * @param correlationId The correlation ID of the replies.
 	 * @return The number of replies.
 	 */
-	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = COMMAND, operation = READ)
 	public long countCollectedReplies(String correlationId) {
 		return commandReplyService.countByColumn("correlationId", correlationId);
 	}

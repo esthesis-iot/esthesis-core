@@ -51,7 +51,6 @@ public class InfrastructureMqttService extends BaseService<InfrastructureMqttEnt
 	 * @param tags The tags to match.
 	 * @return The matching MQTT server, or an empty optional if no match is found.
 	 */
-	@ErnPermission(category = INFRASTRUCTURE, operation = READ)
 	public Optional<InfrastructureMqttEntity> matchByTags(String tags) {
 		log.debug("Looking for a matching MQTT server for tags '{}'.", tags);
 

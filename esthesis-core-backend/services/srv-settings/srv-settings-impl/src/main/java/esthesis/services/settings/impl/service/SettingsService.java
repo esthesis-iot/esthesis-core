@@ -48,7 +48,6 @@ public class SettingsService extends BaseService<SettingEntity> {
 	 * @param name the setting name.
 	 * @return the setting entity.
 	 */
-	@ErnPermission(category = SETTINGS, operation = READ)
 	public SettingEntity findByName(NamedSetting name) {
 		log.trace("Looking up key '{}'.", name);
 		SettingEntity settingEntity = findFirstByColumn("name", name.toString());
