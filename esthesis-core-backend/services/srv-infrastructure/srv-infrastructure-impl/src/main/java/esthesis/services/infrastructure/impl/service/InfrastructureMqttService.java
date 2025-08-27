@@ -1,5 +1,6 @@
 package esthesis.services.infrastructure.impl.service;
 
+import static esthesis.core.common.AppConstants.ROLE_SYSTEM;
 import static esthesis.core.common.AppConstants.Security.Category.INFRASTRUCTURE;
 import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.core.common.AppConstants.Security.Operation.DELETE;
@@ -51,6 +52,7 @@ public class InfrastructureMqttService extends BaseService<InfrastructureMqttEnt
 	 * @param tags The tags to match.
 	 * @return The matching MQTT server, or an empty optional if no match is found.
 	 */
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = INFRASTRUCTURE, operation = READ)
 	public Optional<InfrastructureMqttEntity> matchByTags(String tags) {
 		log.debug("Looking for a matching MQTT server for tags '{}'.", tags);
 
@@ -88,7 +90,7 @@ public class InfrastructureMqttService extends BaseService<InfrastructureMqttEnt
 	 *
 	 * @return The random MQTT server, or an empty optional if no match is found.
 	 */
-	@ErnPermission(category = INFRASTRUCTURE, operation = READ)
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = INFRASTRUCTURE, operation = READ)
 	public Optional<InfrastructureMqttEntity> matchRandom() {
 		log.debug("Looking for a random MQTT server.");
 

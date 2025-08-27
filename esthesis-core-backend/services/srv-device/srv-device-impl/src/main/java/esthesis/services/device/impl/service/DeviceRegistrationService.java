@@ -1,6 +1,7 @@
 package esthesis.services.device.impl.service;
 
 import static esthesis.core.common.AppConstants.HARDWARE_ID_REGEX;
+import static esthesis.core.common.AppConstants.ROLE_SYSTEM;
 import static esthesis.core.common.AppConstants.Security.Category.DEVICE;
 import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.core.common.AppConstants.Security.Operation.WRITE;
@@ -170,6 +171,7 @@ public class DeviceRegistrationService {
 	 * @param hardwareId The hardware id of the device to be registered.
 	 * @param tags       The tag names associated with this device as a comma-separated list.
 	 */
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = DEVICE, operation = CREATE)
 	@KafkaNotification(component = Component.DEVICE, subject = Subject.DEVICE, action = Action.CREATE,
 		idParamRegEx = "BaseEntity\\(id=(.*?)\\)")
 	DeviceEntity register(String hardwareId, List<String> tags, AppConstants.Device.Status status,
@@ -317,6 +319,7 @@ public class DeviceRegistrationService {
 	 * @throws OperatorCreationException If an error occurs during registration.
 	 * @throws NoSuchProviderException   If an error occurs during registration.
 	 */
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = DEVICE, operation = CREATE)
 	public DeviceEntity register(DeviceRegistrationDTO deviceRegistration)
 	throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, OperatorCreationException,
 				 NoSuchProviderException {
@@ -350,6 +353,7 @@ public class DeviceRegistrationService {
 	 * @param hardwareId The hardware id of the device to activate.
 	 * @return The activated device.
 	 */
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = DEVICE, operation = WRITE)
 	public DeviceEntity activatePreregisteredDevice(String hardwareId) {
 		Optional<DeviceEntity> optionalDevice = deviceRepository.findByHardwareIds(hardwareId);
 

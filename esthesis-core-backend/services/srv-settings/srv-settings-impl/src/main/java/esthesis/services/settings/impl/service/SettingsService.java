@@ -1,5 +1,6 @@
 package esthesis.services.settings.impl.service;
 
+import static esthesis.core.common.AppConstants.ROLE_SYSTEM;
 import static esthesis.core.common.AppConstants.Security.Category.SETTINGS;
 import static esthesis.core.common.AppConstants.Security.Operation.CREATE;
 import static esthesis.core.common.AppConstants.Security.Operation.READ;
@@ -48,6 +49,7 @@ public class SettingsService extends BaseService<SettingEntity> {
 	 * @param name the setting name.
 	 * @return the setting entity.
 	 */
+	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = SETTINGS, operation = READ)
 	public SettingEntity findByName(NamedSetting name) {
 		log.trace("Looking up key '{}'.", name);
 		SettingEntity settingEntity = findFirstByColumn("name", name.toString());
