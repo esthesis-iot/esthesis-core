@@ -1,4 +1,6 @@
 quarkus:
+  http:
+    test-port: 0
   redis:
     hosts: "redis://localhost:6379"
 esthesis:

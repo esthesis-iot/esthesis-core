@@ -1,4 +1,6 @@
 quarkus:
+  http:
+    test-port: 0
   log:
     level: INFO
   devservices:
