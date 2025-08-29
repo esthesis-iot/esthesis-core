@@ -1,0 +1,22 @@
+quarkus:
+  log:
+    level: INFO
+  devservices:
+    enabled: true
+    timeout: 5m
+  kafka:
+    devservices:
+      enabled: false
+      image-name: bitnami/kafka:3.6.1
+  mongodb:
+    database: esthesiscore-test
+    devservices:
+      enabled: true
+      image-name: mongo:7.0
+  keycloak:
+    devservices:
+      enabled: false
+  oidc:
+    enabled: false
+  http:
+    test-port: 0

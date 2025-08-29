@@ -2,6 +2,8 @@ package esthesis.service.common.gridfs;
 
 import esthesis.common.exception.QDoesNotExistException;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusTestProfile;
+import io.quarkus.test.junit.TestProfile;
 import jakarta.inject.Inject;
 import org.bson.types.ObjectId;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @QuarkusTest
+@TestProfile(GridFSServiceTest.GridFSServiceTestProfile.class)
 class GridFSServiceTest {
 
 	@Inject
@@ -106,6 +110,15 @@ class GridFSServiceTest {
 		@Override
 		public String charSet() {
 			return StandardCharsets.UTF_8.name();
+		}
+	}
+
+	public static class GridFSServiceTestProfile implements QuarkusTestProfile {
+		@Override public Map<String,String> getConfigOverrides() {
+			return Map.of(
+				"quarkus.http.test-port", "0",
+				"quarkus.http.test-ssl-port", "0"
+			);
 		}
 	}
 }
