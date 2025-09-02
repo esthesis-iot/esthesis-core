@@ -5,7 +5,7 @@ import esthesis.common.avro.ExecutionType;
 import esthesis.common.util.EsthesisCommonConstants;
 import esthesis.core.common.AppConstants;
 import esthesis.core.common.entity.BaseEntity;
-import esthesis.service.command.entity.CommandReplyEntity;
+import esthesis.core.common.entity.CommandReplyEntity;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.command.impl.repository.CommandReplyRepository;
 import esthesis.service.command.impl.repository.CommandRequestRepository;

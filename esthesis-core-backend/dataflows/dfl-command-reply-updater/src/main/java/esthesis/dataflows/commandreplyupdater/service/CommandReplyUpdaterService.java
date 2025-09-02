@@ -2,7 +2,7 @@ package esthesis.dataflows.commandreplyupdater.service;
 
 import esthesis.common.avro.EsthesisCommandReplyMessage;
 import esthesis.common.avro.ReplyType;
-import esthesis.service.command.entity.CommandReplyEntity;
+import esthesis.core.common.entity.CommandReplyEntity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import java.time.Instant;

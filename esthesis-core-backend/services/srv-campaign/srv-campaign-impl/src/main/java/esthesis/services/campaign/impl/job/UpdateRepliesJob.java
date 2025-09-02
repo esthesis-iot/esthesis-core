@@ -1,7 +1,7 @@
 package esthesis.services.campaign.impl.job;
 
 import esthesis.service.campaign.entity.CampaignDeviceMonitorEntity;
-import esthesis.service.command.entity.CommandReplyEntity;
+import esthesis.core.common.entity.CommandReplyEntity;
 import esthesis.service.command.resource.CommandSystemResource;
 import esthesis.services.campaign.impl.dto.GroupDTO;
 import esthesis.services.campaign.impl.service.CampaignDeviceMonitorService;

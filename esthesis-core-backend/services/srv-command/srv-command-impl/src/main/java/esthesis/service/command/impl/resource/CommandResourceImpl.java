@@ -6,7 +6,7 @@ import esthesis.core.common.AppConstants.Security.Operation;
 import esthesis.service.audit.ccc.Audited;
 import esthesis.service.audit.ccc.Audited.AuditLogType;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
-import esthesis.service.command.entity.CommandReplyEntity;
+import esthesis.core.common.entity.CommandReplyEntity;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.command.impl.service.CommandService;
 import esthesis.service.command.resource.CommandResource;

@@ -20,11 +20,6 @@
 			<artifactId>esthesis-core-dfl-common</artifactId>
 			<version>3.1.6-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>esthesis</groupId>
-			<artifactId>esthesis-core-services-command-client</artifactId>
-			<version>3.1.6-SNAPSHOT</version>
-		</dependency>
 
 		<!-- THIRD PARTY -->
 		<dependency>

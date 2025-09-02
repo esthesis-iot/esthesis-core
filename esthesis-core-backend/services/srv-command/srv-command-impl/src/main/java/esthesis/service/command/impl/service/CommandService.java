@@ -10,7 +10,7 @@ import esthesis.common.avro.EsthesisCommandRequestMessage;
 import esthesis.common.exception.QDoesNotExistException;
 import esthesis.core.common.AppConstants.NamedSetting;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
-import esthesis.service.command.entity.CommandReplyEntity;
+import esthesis.core.common.entity.CommandReplyEntity;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.common.paging.Page;
 import esthesis.service.common.paging.Pageable;

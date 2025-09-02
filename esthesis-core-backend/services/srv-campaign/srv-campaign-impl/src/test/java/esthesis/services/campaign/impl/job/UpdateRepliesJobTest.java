@@ -2,7 +2,7 @@ package esthesis.services.campaign.impl.job;
 
 import esthesis.core.common.AppConstants;
 import esthesis.service.campaign.entity.CampaignEntity;
-import esthesis.service.command.entity.CommandReplyEntity;
+import esthesis.core.common.entity.CommandReplyEntity;
 import esthesis.service.command.resource.CommandSystemResource;
 import esthesis.services.campaign.impl.TestHelper;
 import esthesis.services.campaign.impl.service.CampaignDeviceMonitorService;

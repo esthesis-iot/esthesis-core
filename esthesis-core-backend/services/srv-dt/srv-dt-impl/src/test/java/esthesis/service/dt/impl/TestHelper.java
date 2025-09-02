@@ -2,7 +2,7 @@ package esthesis.service.dt.impl;
 
 import esthesis.core.common.entity.BaseEntity;
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
-import esthesis.service.command.entity.CommandReplyEntity;
+import esthesis.core.common.entity.CommandReplyEntity;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.instancio.Instancio;
 

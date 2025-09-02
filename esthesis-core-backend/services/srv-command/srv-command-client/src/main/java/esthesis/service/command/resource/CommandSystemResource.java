@@ -1,7 +1,7 @@
 package esthesis.service.command.resource;
 
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
-import esthesis.service.command.entity.CommandReplyEntity;
+import esthesis.core.common.entity.CommandReplyEntity;
 import esthesis.service.command.entity.CommandRequestEntity;
 import io.quarkus.oidc.client.filter.OidcClientFilter;
 import jakarta.ws.rs.GET;

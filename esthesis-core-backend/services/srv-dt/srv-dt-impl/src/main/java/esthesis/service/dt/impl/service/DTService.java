@@ -4,7 +4,7 @@ import static esthesis.core.common.AppConstants.REDIS_KEY_SUFFIX_TIMESTAMP;
 import static esthesis.core.common.AppConstants.REDIS_KEY_SUFFIX_VALUE_TYPE;
 
 import esthesis.service.command.dto.ExecuteRequestScheduleInfoDTO;
-import esthesis.service.command.entity.CommandReplyEntity;
+import esthesis.core.common.entity.CommandReplyEntity;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.command.resource.CommandSystemResource;
 import esthesis.service.dt.dto.DTValueReplyDTO;
