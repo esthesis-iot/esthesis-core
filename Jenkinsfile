@@ -27,6 +27,7 @@ pipeline {
                 containers:
                 - name: esthesis-core-builder
                   image: eddevopsd2/ubuntu-dind:docker24-mvn3.9.6-jdk21-node20.19-go1.23-buildx-helm
+                  imagePullPolicy: Always
                   volumeMounts:
                   - name: maven
                     mountPath: /root/.m2/
