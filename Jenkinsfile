@@ -26,7 +26,7 @@ pipeline {
                   fsGroup: 0
                 containers:
                 - name: esthesis-core-builder
-                  image: eddevopsd2/ubuntu-dind:docker24-mvn3.9.6-jdk21-node18.16-go1.23-buildx-helm
+                  image: eddevopsd2/ubuntu-dind:docker24-mvn3.9.6-jdk21-node20.19-go1.23-buildx-helm
                   volumeMounts:
                   - name: maven
                     mountPath: /root/.m2/
@@ -231,7 +231,7 @@ pipeline {
                 container (name: 'esthesis-core-builder') {
                     sh '''
                         cd esthesis-core-ui
-                        npm install --global @cyclonedx/cdxgen
+                        npm install --global @cyclonedx/cdxgen@11.6.0
                         cdxgen -t nodejs -o bom.json
                     '''
                 }
