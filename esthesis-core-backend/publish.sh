@@ -119,41 +119,43 @@ if [ -z "$ESTHESIS_ARCHITECTURES" ]; then
 fi
 
 # Arrays with all modules to be published.
+# Format: "path" "service name" "custom profile(leave empty if none)".
 modulesDataFlows=(
-	"dataflows/dfl-command-reply-updater" "dfl-command-reply-updater"
-	"dataflows/dfl-influxdb-writer" "dfl-influxdb-writer"
-	"dataflows/dfl-mqtt-client" "dfl-mqtt-client"
-	"dataflows/dfl-orion-gateway" "dfl-orion-gateway"
-	"dataflows/dfl-ping-updater" "dfl-ping-updater"
-	"dataflows/dfl-rdbms-writer" "dfl-rdbms-writer"
-	"dataflows/dfl-redis-cache" "dfl-redis-cache"
+	"dataflows/dfl-command-reply-updater" "dfl-command-reply-updater" ""
+	"dataflows/dfl-influxdb-writer" "dfl-influxdb-writer" ""
+	"dataflows/dfl-mqtt-client" "dfl-mqtt-client" ""
+	"dataflows/dfl-orion-gateway" "dfl-orion-gateway" ""
+	"dataflows/dfl-ping-updater" "dfl-ping-updater" ""
+	"dataflows/dfl-rdbms-writer" "dfl-rdbms-writer" ""
+	"dataflows/dfl-redis-cache" "dfl-redis-cache" ""
 )
 modulesServices=(
-	"services/srv-about/srv-about-impl" "srv-about"
-	"services/srv-agent/srv-agent-impl" "srv-agent"
-	"services/srv-application/srv-application-impl" "srv-application"
-	"services/srv-audit/srv-audit-impl" "srv-audit"
-	"services/srv-campaign/srv-campaign-impl" "srv-campaign"
-	"services/srv-command/srv-command-impl" "srv-command"
-	"services/srv-crypto/srv-crypto-impl" "srv-crypto"
-	"services/srv-dashboard/srv-dashboard-impl" "srv-dashboard"
-	"services/srv-dataflow/srv-dataflow-impl" "srv-dataflow"
-	"services/srv-device/srv-device-impl" "srv-device"
-	"services/srv-dt/srv-dt-impl" "srv-dt"
-	"services/srv-infrastructure/srv-infrastructure-impl" "srv-infrastructure"
-	"services/srv-kubernetes/srv-kubernetes-impl" "srv-kubernetes"
-	"services/srv-provisioning/srv-provisioning-impl" "srv-provisioning"
-	"services/srv-public-access/srv-public-access-impl" "srv-public-access"
-	"services/srv-security/srv-security-impl" "srv-security"
-	"services/srv-settings/srv-settings-impl" "srv-settings"
-	"services/srv-tag/srv-tag-impl" "srv-tag"
-	"services/srv-chatbot/srv-chatbot-impl" "srv-chatbot"
+	"services/srv-about/srv-about-impl" "srv-about" ""
+	"services/srv-agent/srv-agent-impl" "srv-agent" ""
+	"services/srv-application/srv-application-impl" "srv-application" ""
+	"services/srv-audit/srv-audit-impl" "srv-audit" ""
+	"services/srv-campaign/srv-campaign-impl" "srv-campaign" ""
+	"services/srv-command/srv-command-impl" "srv-command" ""
+	"services/srv-crypto/srv-crypto-impl" "srv-crypto" ""
+	"services/srv-dashboard/srv-dashboard-impl" "srv-dashboard" ""
+	"services/srv-dataflow/srv-dataflow-impl" "srv-dataflow" ""
+	"services/srv-device/srv-device-impl" "srv-device" ""
+	"services/srv-dt/srv-dt-impl" "srv-dt" ""
+	"services/srv-infrastructure/srv-infrastructure-impl" "srv-infrastructure" ""
+	"services/srv-kubernetes/srv-kubernetes-impl" "srv-kubernetes" ""
+	"services/srv-provisioning/srv-provisioning-impl" "srv-provisioning" ""
+	"services/srv-public-access/srv-public-access-impl" "srv-public-access" ""
+	"services/srv-security/srv-security-impl" "srv-security" ""
+	"services/srv-settings/srv-settings-impl" "srv-settings" ""
+	"services/srv-tag/srv-tag-impl" "srv-tag" ""
+	"services/srv-chatbot/srv-chatbot-impl" "srv-chatbot-ollama" "ollama"
+	"services/srv-chatbot/srv-chatbot-impl" "srv-chatbot-openai" "openai"
 )
 
 # Check what should be published.
-if [ $# -eq 2 ]; then
+if [ $# -eq 3 ]; then
 	modules=(
-		"$1" "$2"
+		"$1" "$2" "$3"
 	)
 elif [ $# -eq 1 ] && [ $1 = "dfl" ]; then
 	modules=(
@@ -196,18 +198,25 @@ fi
 
 # Iterate over all modules and publish them.
 declare -a pids
-for ((i = 0; i < ${#modules[@]}; i += 2)); do
+for ((i = 0; i < ${#modules[@]}; i += 3)); do
 	MODULE_PATH="${modules[$i]}"
 	MODULE_NAME="${modules[$i+1]}"
+	MODULE_PROFILE="${modules[$i+2]}"
+
 	IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesis-core-$MODULE_NAME"
 	printInfo "Building $ESTHESIS_ARCHITECTURES for $IMAGE_NAME."
+
+  MAVEN_PARAMS="$MAVEN_OPTIMISE_PARAMS"
+	if [ -n "$MODULE_PROFILE" ]; then
+		MAVEN_PARAMS="$MAVEN_PARAMS -Dquarkus.profile=$MODULE_PROFILE"
+	fi
 
 	pushd .
 	cd "$MODULE_PATH" || exit
 	printInfo "Switching to $MODULE_NAME on $(pwd)."
 	if [ "$ESTHESIS_LOCAL_BUILD" = "true" ]; then
 		printInfo "Building module $MODULE_NAME."
-		$MVNW clean package "$MAVEN_OPTIMISE_PARAMS"
+		$MVNW clean package "$MAVEN_PARAMS"
 	fi
 
 	printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION"

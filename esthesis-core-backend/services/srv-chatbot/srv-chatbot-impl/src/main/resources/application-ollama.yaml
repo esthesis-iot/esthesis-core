@@ -1,0 +1,21 @@
+quarkus:
+  langchain4j:
+    chat-model:
+      provider: ollama
+    embedding-model:
+      provider: ollama
+    ollama:
+      base-url: "http://ollama:11434"
+      timeout: 60s
+      log-requests: false
+      log-responses: false
+      chat-model:
+        model-id: "qwen3:0.6b"
+        temperature: 0.1
+        log-requests: false
+        log-responses: false
+      embedding-model:
+        model-id: "nomic-embed-text"
+        temperature: 0.1
+        log-requests: false
+        log-responses: false

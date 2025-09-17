@@ -1,0 +1,16 @@
+quarkus:
+  langchain4j:
+    chat-model:
+      provider: openai
+    embedding-model:
+      provider: openai
+    openai:
+      api-key: defined-in-runtime
+      chat-model:
+        model-name: gpt-3.5-turbo
+        log-requests: false
+        log-responses: false
+        temperature: 0.1
+      embedding-model:
+        log-requests: false
+        log-responses: false
