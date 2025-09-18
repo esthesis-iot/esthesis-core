@@ -206,17 +206,15 @@ for ((i = 0; i < ${#modules[@]}; i += 3)); do
 	IMAGE_NAME="$ESTHESIS_REGISTRY_URL/esthesis-core-$MODULE_NAME"
 	printInfo "Building $ESTHESIS_ARCHITECTURES for $IMAGE_NAME."
 
-  MAVEN_PARAMS="$MAVEN_OPTIMISE_PARAMS"
-	if [ -n "$MODULE_PROFILE" ]; then
-		MAVEN_PARAMS="$MAVEN_PARAMS -Dquarkus.profile=$MODULE_PROFILE"
-	fi
+  read -r -a MAVEN_ARGS <<< "$MAVEN_OPTIMISE_PARAMS"
+  [ -n "$MODULE_PROFILE" ] && MAVEN_ARGS+=("-Dquarkus.profile=$MODULE_PROFILE")
 
 	pushd .
 	cd "$MODULE_PATH" || exit
 	printInfo "Switching to $MODULE_NAME on $(pwd)."
 	if [ "$ESTHESIS_LOCAL_BUILD" = "true" ]; then
 		printInfo "Building module $MODULE_NAME."
-		$MVNW clean package "$MAVEN_PARAMS"
+		$MVNW clean package "${MAVEN_ARGS[@]}"
 	fi
 
 	printInfo "Building container $IMAGE_NAME:$PACKAGE_VERSION"
